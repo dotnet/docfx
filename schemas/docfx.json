@@ -248,7 +248,10 @@
         "type": "string"
       }
     },
-    "monikerDefinitionUrl": {
+    "monikerDefinition": {
+      "type": "string"
+    },
+    "$schema": {
       "type": "string"
     }
   }

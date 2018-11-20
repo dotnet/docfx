@@ -55,7 +55,7 @@ inputs:
   docs/c.md: Link to @a
 outputs:
   docs/c.json: | 
-    {"content":"<p>Link to <a href=\"docs/a.json\">Title from yaml header a</a></p>\n"}
+    {"content":"<p>Link to <a href=\"/docs/a\">Title from yaml header a</a></p>\n"}
   docs/a.json:
   docs/b.json:
   xrefmap.json: | 
@@ -63,12 +63,12 @@ outputs:
       "references":[
         {
           "uid": "a",
-          "href": "docs/a.json",
+          "href": "/docs/a",
           "name": "Title from yaml header a"
         },
         {
           "uid": "b",
-          "href": "docs/b.json",
+          "href": "/docs/b",
           "name": "Title from yaml header b"
         }
       ]
@@ -93,13 +93,13 @@ inputs:
     Link to <xref:a?displayProperty=notExisting>
 outputs:
   docs/c.json: | 
-    {"content":"<p>Link to <a href=\"docs/a.json\">test.test</a>\nLink to <a href=\"docs/a.json\">test</a>\nLink to <a href=\"docs/a.json\">test</a></p>\n"}
+    {"content":"<p>Link to <a href=\"/docs/a.json\">test.test</a>\nLink to <a href=\"/docs/a.json\">test</a>\nLink to <a href=\"/docs/a.json\">test</a></p>\n"}
   docs/a.json:
   xrefmap.json: | 
-    {"references":[{"uid":"a","href":"docs/a.json"}]}
+    {"references":[{"uid":"a","href":"/docs/a.json"}]}
 ---
 # Define duplicate uid in conceptual and SDP 
-# should output warning and resolve it with the first one ordered by href
+# should output error and uid cannot be resolved
 inputs:
   docfx.yml:
   docs/a.yml: |
@@ -115,11 +115,12 @@ outputs:
   docs/a.json:
   docs/b.json: 
   docs/c.json: |
-    {"content":"<p>Link to <a href=\"docs/a.json\">a</a></p>\n"}
+    {"content":"<p>Link to @a</p>\n"}
   build.log: |
-    ["warning","uid-conflict","Two or more documents have defined the same Uid 'a': docs/a.json,docs/b.json"]
+    ["error","uid-conflict","Two or more documents have defined the same Uid 'a': /docs/a.json,/docs/b.json"]
+    ["info","at-uid-not-found","Cannot find uid 'a' using xref '@a'","docs/c.md"]
   xrefmap.json: | 
-    {"references":[{"uid":"a","href":"docs/a.json"}]}
+    {"references":[]}
 ---
 # Resolve xref in SDP
 inputs:
@@ -141,10 +142,10 @@ outputs:
   docs/a.json:
   docs/b.json: | 
     {
-      "content": {"xref": "docs/a.json"}
+      "content": {"xref": "/docs/a.json"}
     }
   xrefmap.json: | 
-    {"references":[{"uid":"a","href":"docs/a.json"}]}
+    {"references":[{"uid":"a","href":"/docs/a.json"}]}
 ---
 # Define uid with error
 inputs:
@@ -189,7 +190,7 @@ outputs:
   build.log: |
     ["info","at-uid-not-found","Cannot find uid 'b' using xref '@b'","docs/b.md"]
   xrefmap.json: | 
-    {"references":[{"uid":"a","href":"docs/a.json"}]}
+    {"references":[{"uid":"a","href":"/docs/a.json"}]}
 ---
 # Xref property field which supports markdown content
 inputs:
@@ -203,7 +204,7 @@ inputs:
 outputs:
   docs/a.json:
   xrefmap.json: | 
-    {"references":[{"uid":"a","href":"docs/a.json","summary":"<pre><code>Hello `docfx`!\n</code></pre>\n"}]}
+    {"references":[{"uid":"a","href":"/docs/a.json","summary":"<pre><code>Hello `docfx`!\n</code></pre>\n"}]}
 ---
 # Xref property field which supports inline markdown content
 inputs:
@@ -217,7 +218,7 @@ inputs:
 outputs:
   docs/a.json:
   xrefmap.json: | 
-    {"references":[{"uid":"a","href":"docs/a.json","inlineDescription":"Hello <code>docfx</code>!"}]}
+    {"references":[{"uid":"a","href":"/docs/a.json","inlineDescription":"Hello <code>docfx</code>!"}]}
 ---
 # Xref property field with dependecy
 inputs:
@@ -234,4 +235,4 @@ outputs:
   docs/a.json:
   docs/b.json:
   xrefmap.json: | 
-    {"references":[{"uid":"a","href":"docs/a.json","inlineDescription":"Hello <code>docfx</code>!"}]}
+    {"references":[{"uid":"a","href":"/docs/a.json","inlineDescription":"Hello <code>docfx</code>!"}]}

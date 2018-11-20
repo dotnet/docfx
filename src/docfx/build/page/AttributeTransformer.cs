@@ -29,14 +29,14 @@ namespace Microsoft.Docs.Build
 
                 if (attribute is MarkdownAttribute)
                 {
-                    var (html, markup) = Markup.ToHtml((string)value, file, ReadFileDelegate, GetLinkDelegate, ResolveXrefDelegate, MarkdownPipelineType.Markdown);
+                    var (html, markup) = Markup.ToHtml((string)value, file, ReadFileDelegate, GetLinkDelegate, ResolveXrefDelegate, null, MarkdownPipelineType.Markdown);
                     errors.AddRange(markup.Errors);
                     result = html;
                 }
 
                 if (attribute is InlineMarkdownAttribute)
                 {
-                    var (html, markup) = Markup.ToHtml((string)value, file, ReadFileDelegate, GetLinkDelegate, ResolveXrefDelegate, MarkdownPipelineType.InlineMarkdown);
+                    var (html, markup) = Markup.ToHtml((string)value, file, ReadFileDelegate, GetLinkDelegate, ResolveXrefDelegate, null, MarkdownPipelineType.InlineMarkdown);
                     errors.AddRange(markup.Errors);
                     result = html;
                 }
@@ -66,8 +66,8 @@ namespace Microsoft.Docs.Build
                 string GetLinkDelegate(string path, object relativeTo, object resultRelativeTo)
                     => Resolve.GetLink(path, relativeTo, resultRelativeTo, errors, callback?.BuildChild, callback?.DependencyMapBuilder, callback?.BookmarkValidator);
 
-                XrefSpec ResolveXrefDelegate(string uid)
-                    => Resolve.ResolveXref(uid, callback?.XrefMap);
+                XrefSpec ResolveXrefDelegate(string uid, string moniker)
+                    => Resolve.ResolveXref(uid, callback?.XrefMap, moniker);
             }
         }
     }

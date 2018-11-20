@@ -150,7 +150,7 @@ namespace Microsoft.Docs.Build
         public static (List<Error> errors, T model) DeserializeWithSchemaValidation<T>(string json)
         {
             var (errors, token) = Deserialize(json);
-            var (mismatchingErrors, result) = ToObject<T>(token);
+            var (mismatchingErrors, result) = ToObjectWithSchemaValidation<T>(token);
             errors.AddRange(mismatchingErrors);
             return (errors, result);
         }
@@ -177,16 +177,33 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
-        /// Creates an instance of the specified .NET type from the JToken
-        /// And validate mismatching field types
+        /// Creates an instance of the specified .NET type from the JToken with schema validation
         /// </summary>
-        public static (List<Error>, T) ToObject<T>(JToken token)
+        public static (List<Error>, T) ToObjectWithSchemaValidation<T>(JToken token)
         {
-            var (errors, obj) = ToObject(token, typeof(T));
+            var (errors, obj) = ToObjectWithSchemaValidation(token, typeof(T));
             return (errors, (T)obj);
         }
 
-        public static (List<Error>, object) ToObject(
+        /// <summary>
+        /// Creates an instance of the specified .NET type from the JToken
+        /// Schema validation errors will be ignored, type mismatch and syntax errors will be thrown
+        /// </summary>
+        public static T ToObject<T>(JToken token)
+        {
+            try
+            {
+                var obj = token.ToObject(typeof(T), JsonUtility.DefaultSerializer);
+                return (T)obj;
+            }
+            catch (JsonReaderException ex)
+            {
+                var (range, message, path) = ParseException(ex);
+                throw Errors.JsonSyntaxError(range, message, path).ToException(ex);
+            }
+        }
+
+        public static (List<Error>, object) ToObjectWithSchemaValidation(
             JToken token,
             Type type,
             Func<IEnumerable<DataTypeAttribute>, object, string, object> transform = null)
@@ -379,7 +396,7 @@ namespace Microsoft.Docs.Build
                     var prop = item as JProperty;
 
                     // skip the special property
-                    if (prop.Name.StartsWith('$'))
+                    if (prop.Name == "$schema")
                         continue;
 
                     var nestedType = GetNestedTypeAndCheckForUnknownField(type, prop, errors);

@@ -63,7 +63,7 @@ This document specifies Docfx vnext versioning dev design.
             "articles/folder1/": "articles/"
             "articles/folder2/": "articles/"
             "articles/folder3/": "articles/"
-        monikerDefinitionUrl: "https://api.docs.com/monikers/"
+        monikerDefinition: "https://api.docs.com/monikers/"
         ```
 
         If content writer want to reference `folder3/b.md` in `folder1/a.md` by link `'[B](../folder3/b.md)'`, when the reader click the link [B]() on page `{host}/{docset-base-path}/articles/a?view=netcore-1.0`, they will jump to page `{host}/{docset-base-path}/articles/b?view=netcore-1.0`, which is the output of file `folder2/b.md`.
@@ -95,7 +95,7 @@ This document specifies Docfx vnext versioning dev design.
             "articles/folder1/": "articles/"
             "articles/folder2/": "articles/"
             "articles/folder3/": "articles/"
-        monikerDefinitionUrl: "https://api.docs.com/monikers/"
+        monikerDefinition: "https://api.docs.com/monikers/"
         ```
 
         If content writer want to reference `folder3/b.md` in `folder1/a.md` by link `'[B](../folder2/b.md?view=netcore-2.0)'`, when the reader click the link [B]() on page `{host}/{docset-base-path}/articles/a?view=netcore-1.0`, they will jump to page `{host}/{docset-base-path}/articles/b?view=netcore-2.0`, which is the output of file `folder3/b.md`.
@@ -141,7 +141,7 @@ monikerRange:
 routing:
     "articles/v1.0/": "articles/"
     "articles/v2.0/": "articles/"
-monikerDefinitionUrl: "https://api.docs.com/monikers/"
+monikerDefinition: "https://api.docs.com/monikers/"
 ```
 
 ##### Explanation
@@ -179,7 +179,7 @@ monikerDefinitionUrl: "https://api.docs.com/monikers/"
 
     If in one round of build, different files with the same **SitePath** are included, if there are two files without `monikerRange` or the intersection of any two files' *moniker list* is not empty, an error throws. For example, `articles/v1.0/a.md` has monikers `v1.0, v2.0` while `articles/v2.0/a.md` has monikers `v2.0, v3.0`, **an error throws** as for version `v2.0`, the result is indeterministic.
 
-4. `monikerDefinitionUrl` is an API, which provide the definition for moniker list, both *file* and *http(s)* URI schemas are supported. The moniker definition defines the *moniker name*, *product name*, *order* and other metadata for moniker.
+4. `monikerDefinition` is an API, which provide the definition for moniker list, both *file* and *http(s)* URI schemas are supported. The moniker definition defines the *moniker name*, *product name*, *order* and other metadata for moniker.
 
     A better user experience sample when using the new config:
 
@@ -193,7 +193,7 @@ monikerDefinitionUrl: "https://api.docs.com/monikers/"
 
 ##### 2.2.1 YAML header
 
-For conceptual markdown file, file level monikerRange setting is supported by using YAML header.
+For conceptual markdown file, file level monikerRange setting is supported, user can set the file level monikerRange in `GlobalMetadata` and `FileMetadata` in config or YAML header.
 
 ```markdown
 ---
@@ -202,7 +202,7 @@ monikerRange: >=netcore-1.0
 ```
 
 > [!NOTE]
-> The final file level moniker range is the intersection of moniker range from `config file` and moniker range from `YAML header`, if the intersection is empty, a warning will be logged.
+> The final file level moniker range is the intersection of moniker range from `config file` and moniker range from fileMetadata, if the intersection is empty, a warning will be logged.
 
 > [!NOTE]
 > The `config file` level moniker range should be defined to enable versioning. If moniker range is not defined in `config file`, but `Yaml header` moniker range is defined, a warning will be logged.
@@ -230,7 +230,10 @@ content just in `>netcore-1.0`
 ```
 
 > [!NOTE]
-> The final zone moniker range is the intersection of moniker range of this file and moniker range of this zone. If the intersection is empty, an error throws.
+> The final zone moniker range is the intersection of file level moniker range and moniker range of this zone. If the intersection is empty, a warning will be logged.
+
+> [!NOTE]
+> The `config file` level moniker range should be defined to enable versioning. If moniker range is not defined in `config file`, but moniker zone syntax has been used, a warning will be logged.
 
 ##### 2.2.3 Link/Xref
 
@@ -251,7 +254,7 @@ There are several scenarios:
 
 In **Restore** step, moniker definition file will be restored to local storage, which will be used to evaluate monikerRange expression.
 
-An **ordered** moniker list is provided by moniker definition file restored from `monikerDefinitionUrl`, the file structure should be:
+An **ordered** moniker list is provided by moniker definition file restored from `monikerDefinition`, the file structure should be:
 
 ```json
 {
@@ -433,37 +436,19 @@ monikerRange:
 routing:
     "articles/v1.0/": "articles/"
     "articles/v2.0/": "articles/"
-monikerDefinitionUrl: "https://api.docs.com/monikers/"
+monikerDefinition: "https://api.docs.com/monikers/"
 redirections:
     articles/v1.0/old/a: /articles/a
+redirectionsWithoutId:
     articles/v2.0/old/a: /articles/a
 ```
 
-For now, the redirection URL returned by hosting doesn't contains original moniker query `?view={moniker}`. So if user access the URL `{host}/{docset-base-path}/articles/old/a?view=netcore-1.0` or `{host}/{docset-base-path}/articles/old/a?view=netcore-2.0`, they will both be redirected to `{host}/{docset-base-path}/articles/a`, and DHS will fallback to the latest version since it has no moniker query.
+The query `view={moniker}` will be appended to the `redirect_url` returned from hosting.
 
-So if the content writer want redirect URL `{host}/{docset-base-path}/articles/old/a?view=netcore-1.0` and `{host}/{docset-base-path}/articles/old/a?view=netcore-1.1` to `{host}/{docset-base-path}/articles/a?view=netcore-1.0`, there is a workaround:
+To make every version of redirection file redirect to corresponding target file version, content writer have to add multiple redirection rules which redirect to the same target URL, like `articles/v1.0/old/a: /articles/a`(redirections) and `articles/v2.0/old/a: /articles/a`(redirectionsWithoutId), and there is at most one rule set as *withDocumentId*.
 
-```yml
-name: dotnet
-content: "articles/**/*.md"
-monikerRange:
-    "articles/v1.0/**/*.md": "netcore-1.0 || netcore-1.1"
-    "articles/v2.0/**/*.md": "netcore-2.0"
-routing:
-    "articles/v1.0/": "articles/"
-    "articles/v2.0/": "articles/"
-monikerDefinitionUrl: "https://api.docs.com/monikers/"
-redirections:
-    articles/v1.0/old/a: /articles/a?view=netcore-1.0
-    articles/v2.0/old/a: /articles/a?view=netcore-2.0
-```
-
-But there is a limitation, if the content writer want:
-
-1. redirect URL `{host}/{docset-base-path}/articles/old/a?view=netcore-1.0` to `{host}/{docset-base-path}/articles/a?view=netcore-1.0`
-2. redirect URL `{host}/{docset-base-path}/articles/old/a?view=netcore-1.1` to `{host}/{docset-base-path}/articles/a?view=netcore-1.1`
-
-it cannot be achieved.
+> [!NOTE]
+> For redirection file with versioning, BI team should consider to use `document_version_independent_id` instead of `document_id`.
 
 #### 4.2 Blank page
 
@@ -518,9 +503,9 @@ To handle this, when we are generating the xref map for internal using, we have 
 
 If in one round of build, different files with the same **Uid** are included:
 
-1. When the files do not have `monikerRange` option set, an error throws.
+1. When the files do not have `monikerRange` option set, order them by output site url, take the first uid, log a warning.
 2. When the files have `monikerRange` option set, but have different **SitePath**, an error throws.
-3. When the files have `monikerRange` option set, and have the same **SitePath**, these file are considered as different version of the same **Uid**, this is allowed.
+3. When the files have `monikerRange` option set, and have the same **SitePath**, these file are considered as different version of the same **Uid**, this is allowed. And when refer to this uid without moniker, the latest one will be picked, i.e: prefer (netcore-2.0, netcore-2.1) to (netcore-1.0, netcore-1.1)
 
 #### 5.3 Toc
 
