@@ -38,12 +38,12 @@ namespace Microsoft.Docs.Build
                 var tocFiles = docset.ScanScope.Where(f => f.ContentType == ContentType.TableOfContents);
                 if (!tocFiles.Any())
                 {
-                    return builder.Build();
+                    return builder.Build(context);
                 }
 
                 ParallelUtility.ForEach(tocFiles, file => BuildTocMap(context, file, builder), Progress.Update);
 
-                return builder.Build();
+                return builder.Build(context);
             }
         }
 
