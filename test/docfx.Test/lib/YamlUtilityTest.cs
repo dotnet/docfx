@@ -299,6 +299,15 @@ items:
             Assert.Equal(expectedColumn, lineInfo.LinePosition);
         }
 
+        [Theory]
+        [InlineData(@"b: not number")]
+        public void SyntaxErrorShouldBeThrownWithoutSchemaValidation(string yaml)
+        {
+            var exception = Assert.Throws<DocfxException>(() => YamlUtility.Deserialize<BasicClass>(yaml));
+            Assert.Equal("json-syntax-error", exception.Error.Code);
+            Assert.Equal(ErrorLevel.Error, exception.Error.Level);
+        }
+
         public class BasicClass
         {
             public int B { get; set; }

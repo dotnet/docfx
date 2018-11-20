@@ -152,7 +152,8 @@ namespace Microsoft.Docs.Build
                         (errors, model, dependencies) = BuildTableOfContents.Build(context, file, tocMap);
                         break;
                     case ContentType.Redirection:
-                        model = BuildRedirection(file);
+                        (errors, model) = BuildRedirection.Build(file);
+                        monikers = ((RedirectionModel)model).Monikers;
                         break;
                 }
 
@@ -223,17 +224,6 @@ namespace Microsoft.Docs.Build
             Debug.Assert(file.ContentType == ContentType.Resource);
 
             return new ResourceModel { Locale = file.Docset.Locale };
-        }
-
-        private static RedirectionModel BuildRedirection(Document file)
-        {
-            Debug.Assert(file.ContentType == ContentType.Redirection);
-
-            return new RedirectionModel
-            {
-                RedirectUrl = file.RedirectionUrl,
-                Locale = file.Docset.Locale,
-            };
         }
 
         private static Manifest CreateManifest(FileManifest[] files, DependencyMap dependencies)

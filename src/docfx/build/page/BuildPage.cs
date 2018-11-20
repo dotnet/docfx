@@ -96,7 +96,7 @@ namespace Microsoft.Docs.Build
             var (yamlHeaderErrors, yamlHeader) = ExtractYamlHeader.Extract(file, context);
             errors.AddRange(yamlHeaderErrors);
 
-            var (metaErrors, metadata) = JsonUtility.ToObject<FileMetadata>(file.Docset.Metadata.GetMetadata(file, yamlHeader));
+            var (metaErrors, metadata) = JsonUtility.ToObjectWithSchemaValidation<FileMetadata>(file.Docset.Metadata.GetMetadata(file, yamlHeader));
             errors.AddRange(metaErrors);
 
             var (error, monikers) = file.Docset.MonikersProvider.GetFileLevelMonikers(file, metadata.MonikerRange);
@@ -108,7 +108,7 @@ namespace Microsoft.Docs.Build
                 file,
                 (path, relativeTo) => Resolve.ReadFile(path, relativeTo, errors, callback.DependencyMapBuilder),
                 (path, relativeTo, resultRelativeTo) => Resolve.GetLink(path, relativeTo, resultRelativeTo, errors, callback.BuildChild, callback.DependencyMapBuilder, callback.BookmarkValidator),
-                (uid) => Resolve.ResolveXref(uid, callback.XrefMap),
+                (uid, moniker) => Resolve.ResolveXref(uid, callback.XrefMap, moniker),
                 (rangeString) => file.Docset.MonikersProvider.GetZoneMonikers(file, rangeString, monikers, errors),
                 MarkdownPipelineType.ConceptualMarkdown);
             errors.AddRange(markup.Errors);
@@ -166,7 +166,7 @@ namespace Microsoft.Docs.Build
                 throw Errors.SchemaNotFound(file.Mime).ToException();
             }
 
-            var (schemaViolationErrors, content) = JsonUtility.ToObject(token, schema.Type, transform: AttributeTransformer.Transform(errors, file, callback));
+            var (schemaViolationErrors, content) = JsonUtility.ToObjectWithSchemaValidation(token, schema.Type, transform: AttributeTransformer.Transform(errors, file, callback));
             errors.AddRange(schemaViolationErrors);
 
             if (file.Docset.Legacy && schema.Attribute is PageSchemaAttribute)
@@ -177,7 +177,7 @@ namespace Microsoft.Docs.Build
             // TODO: add check before to avoid case failure
             var fileMetadata = obj?.Value<JObject>("metadata") ?? new JObject();
             var title = fileMetadata.Value<string>("title") ?? obj?.Value<string>("title");
-            var (metaErrors, metadata) = JsonUtility.ToObject<FileMetadata>(file.Docset.Metadata.GetMetadata(file, fileMetadata));
+            var (metaErrors, metadata) = JsonUtility.ToObjectWithSchemaValidation<FileMetadata>(file.Docset.Metadata.GetMetadata(file, fileMetadata));
             errors.AddRange(metaErrors);
 
             var model = new PageModel
