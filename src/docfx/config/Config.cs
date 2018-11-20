@@ -269,7 +269,7 @@ namespace Microsoft.Docs.Build
             return (errors, result);
         }
 
-        private static (List<Error>, JObject) ExtendConfigs(JObject config, RestoreMap restoreMap)
+        private static (List<Error>, JObject) ExtendConfigs(JObject config, string docsetPath)
         {
             var result = new JObject();
             var errors = new List<Error>();
