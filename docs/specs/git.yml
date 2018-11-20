@@ -1,7 +1,7 @@
 ---
 # Show git contribution info when userProfile & commitsTime is set to URL
 repos:
-  https://docs.com/testowner/testrepo#master-url-cache:
+  https://github.com/testowner/testrepo#master-url-cache:
     - author: Charlie
       email: charlie@contoso.com
       files:
@@ -41,7 +41,7 @@ outputs:
 ---
 # Show git contribution info when userProfile & commitsTime is set to relative file path
 repos:
-  https://docs.com/testowner/testrepo#master-file-cache:
+  https://github.com/testowner/testrepo#master-file-cache:
     - author: Charlie
       email: charlie@contoso.com
       files:
@@ -115,7 +115,7 @@ outputs:
 ---
 # Author should NOT exist in contributors. Author can have no contribution to the file before.
 repos:
-  https://docs.com/testowner/testrepo#master-author:
+  https://github.com/testowner/testrepo#master-author:
     - author: Bob 
       email: bob@contoso.com
       files:
@@ -155,7 +155,7 @@ outputs:
 # Author is case-insensitive
 # Contributors can be excluded, it's case insensitive
 repos:
-  https://docs.com/testowner/testrepo#master-exclude-contributors:
+  https://github.com/testowner/testrepo#master-exclude-contributors:
     - author: Charlie
       email: charlie@contoso.com
       files:
@@ -200,7 +200,7 @@ outputs:
 ---
 # Use the earliest contributor as author if author not specified in YAML header
 repos:
-  https://docs.com/testowner/testrepo#master-author-from-contributors:
+  https://github.com/testowner/testrepo#master-author-from-contributors:
     - author: Bob 
       email: bob@contoso.com
       files:
@@ -231,7 +231,7 @@ outputs:
 ---
 # Author can be excluded, it's case insensitive
 repos:
-  https://docs.com/testowner/testrepo#master-autho-case-insensitive:
+  https://github.com/testowner/testrepo#master-autho-case-insensitive:
     - author: Charlie
       email: charlie@contoso.com
       files:
@@ -277,7 +277,7 @@ outputs:
 ---
 # Show content_git_url, original_content_git_url and gitcommit
 repos:
-  https://docs.com/testowner/testrepo#master-content-git-url:
+  https://github.com/testowner/testrepo#master-content-git-url:
     - files:
         docs/index.md: Alice creates this.
 inputs:
@@ -286,31 +286,31 @@ outputs:
   docs/index.json: |
     {
       "open_to_public_contributors": true,
-      "content_git_url": "https://docs.com/testowner/testrepo/blob/master-content-git-url/docs/index.md",
-      "original_content_git_url": "https://docs.com/testowner/testrepo/blob/master-content-git-url/docs/index.md",
-      "gitcommit": "https://docs.com/testowner/testrepo/blob/e662dbc7c5e582a14b863d6a6a82e495d6272f91/docs/index.md",
+      "content_git_url": "https://github.com/testowner/testrepo/blob/master-content-git-url/docs/index.md",
+      "original_content_git_url": "https://github.com/testowner/testrepo/blob/master-content-git-url/docs/index.md",
+      "gitcommit": "https://github.com/testowner/testrepo/blob/e662dbc7c5e582a14b863d6a6a82e495d6272f91/docs/index.md",
     }
 ---
 # Specify editLink repo and branch in config
 repos:
-  https://docs.com/testowner/testrepo#master-edit-link:
+  https://github.com/testowner/testrepo#master-edit-link:
     - files:
         docs/index.md: Alice creates this.
 inputs:
   docfx.yml: |
     contribution:
-      repository: https://docs.com/contrib-owner/contrib-repo#contrib-branch
+      repository: https://github.com/contrib-owner/contrib-repo#contrib-branch
 outputs:
   docs/index.json: |
     {
-      "content_git_url": "https://docs.com/contrib-owner/contrib-repo/blob/contrib-branch/docs/index.md",
-      "original_content_git_url": "https://docs.com/testowner/testrepo/blob/master-edit-link/docs/index.md",
-      "gitcommit": "https://docs.com/testowner/testrepo/blob/e662dbc7c5e582a14b863d6a6a82e495d6272f91/docs/index.md",
+      "content_git_url": "https://github.com/contrib-owner/contrib-repo/blob/contrib-branch/docs/index.md",
+      "original_content_git_url": "https://github.com/testowner/testrepo/blob/master-edit-link/docs/index.md",
+      "gitcommit": "https://github.com/testowner/testrepo/blob/e662dbc7c5e582a14b863d6a6a82e495d6272f91/docs/index.md",
     }
 ---
 # Don't load git commits when showContributors is set to false
 repos:
-  https://docs.com/testowner/testrepo#master-no-load-commits:
+  https://github.com/testowner/testrepo#master-no-load-commits:
     - files:
         docs/index.md: Alice creates this.
 inputs:
@@ -321,12 +321,12 @@ outputs:
   docs/index.json: |
     {
       "contributors": [],
-      "gitcommit": "https://docs.com/testowner/testrepo/blob/e662dbc7c5e582a14b863d6a6a82e495d6272f91/docs/index.md",
+      "gitcommit": "https://github.com/testowner/testrepo/blob/e662dbc7c5e582a14b863d6a6a82e495d6272f91/docs/index.md",
     }
 ---
 # Use commit's time when gitCommitsTime file not given
 repos:
-  https://docs.com/testowner/testrepo#master-time-from-commit:
+  https://github.com/testowner/testrepo#master-time-from-commit:
     - time: 2018-01-01T00:00:00Z
       files:
         docs/index.md: Alice creates this.
