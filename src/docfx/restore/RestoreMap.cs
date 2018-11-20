@@ -37,18 +37,21 @@ namespace Microsoft.Docs.Build
 
             string FindLastModifiedGitRepository()
             {
-                var (remote, branch) = GitUtility.GetGitRemoteInfo(url);
-                var restoreDir = AppData.GetGitDir(remote);
+                var (remote, branch) = HrefUtility.SplitGitHref(url);
+                var repoPath = AppData.GetGitDir(remote);
 
-                if (!Directory.Exists(restoreDir))
+                if (!Directory.Exists(repoPath))
                 {
                     throw Errors.NeedRestore(url).ToException();
                 }
 
-                return Directory.EnumerateDirectories(restoreDir, "*", SearchOption.TopDirectoryOnly)
-                    .Where(f => f.EndsWith(HrefUtility.EscapeUrlSegment(branch)))
-                    .OrderByDescending(f => new DirectoryInfo(f).LastWriteTimeUtc)
-                    .FirstOrDefault();
+                return (
+                    from path in Directory.EnumerateDirectories(repoPath, "*", SearchOption.TopDirectoryOnly)
+                    let name = Path.GetFileName(path)
+                    where name.StartsWith(HrefUtility.EscapeUrlSegment(branch) + "-") &&
+                          GitUtility.IsWorkTreeCheckoutComplete(repoPath, name)
+                    orderby new DirectoryInfo(path).LastWriteTimeUtc
+                    select path).FirstOrDefault();
             }
         }
 
