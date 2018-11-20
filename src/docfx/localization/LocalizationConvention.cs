@@ -28,7 +28,7 @@ namespace Microsoft.Docs.Build
                 return (remote, branch);
             }
 
-            if (string.Equals(locale, defaultLocale, StringComparison.OrdinalIgnoreCase))
+            if (string.Equals(locale, defaultLocale))
             {
                 return (remote, branch);
             }
