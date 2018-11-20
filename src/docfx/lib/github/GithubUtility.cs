@@ -7,9 +7,10 @@ namespace Microsoft.Docs.Build
 {
     internal static class GitHubUtility
     {
+        // TODO: remove the hard coded "docs.com"
         private static readonly Regex s_gitHubRepoUrlRegex =
            new Regex(
-               @"^((https|http):\/\/github\.com)\/(?<account>[^\/\s]+)\/(?<repository>[A-Za-z0-9_.-]+)((\/)?|(#(?<branch>\S+))?)$",
+               @"^((https|http):\/\/(github|docs)\.com)\/(?<account>[^\/\s]+)\/(?<repository>[A-Za-z0-9_.-]+)((\/)?|(#(?<branch>\S+))?)$",
                RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.RightToLeft);
 
         public static bool TryParse(string remote, out string owner, out string name)
