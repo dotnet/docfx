@@ -32,6 +32,7 @@ namespace Microsoft.Docs.Build
                     var (html, markup) = Markup.ToHtml((string)value, file, ReadFileDelegate, GetLinkDelegate, ResolveXrefDelegate, null, MarkdownPipelineType.Markdown);
                     errors.AddRange(markup.Errors);
                     result = html;
+                    XrefMap.HandleDependencyMap(markup, file, callback?.DependencyMapBuilder);
                 }
 
                 if (attribute is InlineMarkdownAttribute)
@@ -39,6 +40,7 @@ namespace Microsoft.Docs.Build
                     var (html, markup) = Markup.ToHtml((string)value, file, ReadFileDelegate, GetLinkDelegate, ResolveXrefDelegate, null, MarkdownPipelineType.InlineMarkdown);
                     errors.AddRange(markup.Errors);
                     result = html;
+                    XrefMap.HandleDependencyMap(markup, file, callback?.DependencyMapBuilder);
                 }
 
                 if (attribute is HtmlAttribute)
@@ -50,7 +52,12 @@ namespace Microsoft.Docs.Build
                 if (attribute is XrefAttribute)
                 {
                     // TODO: how to fill xref resolving data besides href
-                    result = Resolve.ResolveXref((string)value, callback?.XrefMap)?.Href;
+                    var xrefSpec = Resolve.ResolveXref((string)value, callback?.XrefMap);
+                    result = xrefSpec?.Href;
+                    if (xrefSpec?.File != null)
+                    {
+                        callback.DependencyMapBuilder.AddDependencyItem(file, xrefSpec.File, DependencyType.Link);
+                    }
                 }
 
                 if (extensionData != null && attributes.Any(attr => attr is XrefPropertyAttribute))

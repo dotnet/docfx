@@ -98,6 +98,24 @@ namespace Microsoft.Docs.Build
             return new XrefMap(map, CreateInternalXrefMap(context, docset.ScanScope), context, docset.MonikerRangeParser);
         }
 
+        public static void HandleDependencyMap(MarkupResult markup, Document file, DependencyMapBuilder dependencyMapBuilder)
+        {
+            if (dependencyMapBuilder is null)
+                return;
+            foreach (var group in markup.XrefReferences.Where(x => x.xrefReferencedFile != null).GroupBy(item => item.xrefReferencedFile, item => item.uidInclusion))
+            {
+                // if the xref referenced file contains any uid inclusion
+                if (group.Any(x => x))
+                {
+                    dependencyMapBuilder.AddDependencyItem(file, group.Key, DependencyType.UidInclusion);
+                }
+                else
+                {
+                    dependencyMapBuilder.AddDependencyItem(file, group.Key, DependencyType.Link);
+                }
+            }
+        }
+
         public void OutputXrefMap(Context context)
         {
             var models = new XrefMapModel();
@@ -270,6 +288,7 @@ namespace Microsoft.Docs.Build
             {
                 Uid = metadata.Uid,
                 Href = file.SiteUrl,
+                File = file,
             };
             xref.ExtensionData["name"] = string.IsNullOrEmpty(metadata.Title) ? metadata.Uid : metadata.Title;
 
@@ -300,6 +319,7 @@ namespace Microsoft.Docs.Build
             {
                 Uid = uid,
                 Href = file.SiteUrl,
+                File = file,
             };
             xref.ExtensionData.Merge(extensionData);
             return (errors, xref);

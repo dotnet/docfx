@@ -73,6 +73,17 @@ outputs:
         }
       ]
     }
+  build.manifest: |
+    {
+      "dependencies": {
+          "docs/c.md": [
+              {
+                  "source": "docs/a.md",
+                  "type": "link"
+              }
+          ]
+      }
+    }
 ---
 # Define uid in SDP
 # Resolve xref with display property in conceptual document
@@ -97,6 +108,17 @@ outputs:
   docs/a.json:
   xrefmap.json: | 
     {"references":[{"uid":"a","href":"/docs/a.json"}]}
+  build.manifest: |
+    {
+      "dependencies": {
+          "docs/c.md": [
+              {
+                  "source": "docs/a.json",
+                  "type": "uidInclusion"
+              }
+          ]
+      }
+    }
 ---
 # Define duplicate uid in conceptual and SDP 
 # should output error and uid cannot be resolved
@@ -146,6 +168,17 @@ outputs:
     }
   xrefmap.json: | 
     {"references":[{"uid":"a","href":"/docs/a.json"}]}
+  build.manifest: |
+    {
+      "dependencies": {
+          "docs/b.json": [
+              {
+                  "source": "docs/a.json",
+                  "type": "link"
+              }
+          ]
+      }
+    }
 ---
 # Define uid with error
 inputs:

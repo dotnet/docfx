@@ -113,6 +113,8 @@ namespace Microsoft.Docs.Build
                 MarkdownPipelineType.ConceptualMarkdown);
             errors.AddRange(markup.Errors);
 
+            XrefMap.HandleDependencyMap(markup, file, callback.DependencyMapBuilder);
+
             var htmlDom = HtmlUtility.LoadHtml(html);
             var htmlTitleDom = HtmlUtility.LoadHtml(markup.HtmlTitle);
             var title = yamlHeader.Value<string>("title") ?? HtmlUtility.GetInnerText(htmlTitleDom);
