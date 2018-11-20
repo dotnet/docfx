@@ -30,7 +30,7 @@ namespace Microsoft.Docs.Build
             return (errors, model, dependencyMapBuilder.Build());
         }
 
-        public static TableOfContentsMap BuildTocMap(Context context, Docset docset)
+        public static (List<Error>, TableOfContentsMap) BuildTocMap(Context context, Docset docset)
         {
             using (Progress.Start("Loading TOC"))
             {
@@ -38,12 +38,12 @@ namespace Microsoft.Docs.Build
                 var tocFiles = docset.ScanScope.Where(f => f.ContentType == ContentType.TableOfContents);
                 if (!tocFiles.Any())
                 {
-                    return builder.Build(context);
+                    return builder.Build();
                 }
 
                 ParallelUtility.ForEach(tocFiles, file => BuildTocMap(context, file, builder), Progress.Update);
 
-                return builder.Build(context);
+                return builder.Build();
             }
         }
 
