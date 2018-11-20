@@ -351,3 +351,16 @@ outputs:
     {"document_id":"f481558d-b8fa-5acb-facb-d3bee58fbf3e","document_version_independent_id":"80168efe-9436-03b9-9e7c-eaf20a91d680"}
   build.manifest: |
     {"files":[{"siteUrl":"/docs/a.experimental","outputPath":"docs/a.experimental.json","sourcePath":"docs/a.experimental.md"},{"siteUrl":"/docs/a","outputPath":"docs/a.json","sourcePath":"docs/a.md"}],"dependencies":{}}
+---
+# `", '` should be properly escaped when written in html directly
+inputs:
+  docfx.yml:
+  docs/a.md: |
+    <a style="cursor:pointer" onclick='javascript:window.open("https://shell.azure.com", "_blank", "toolbar=no,scrollbars=yes,resizable=yes,menubar=no,location=no,status=no")'><image src="https://shell.azure.com/images/launchcloudshell.png" /></a>
+  docs/b.md: |
+    <a style="cursor:pointer" onclick="javascript:window.open('https://shell.azure.com', '_blank', 'toolbar=no,scrollbars=yes,resizable=yes,menubar=no,location=no,status=no')"><image src='https://shell.azure.com/images/launchcloudshell.png' /></a>
+outputs:
+  docs/a.json: |
+    { "content": "<p><a onclick='javascript:window.open(\"https://shell.azure.com\", \"_blank\", \"toolbar=no,scrollbars=yes,resizable=yes,menubar=no,location=no,status=no\")'><image src=\"https://shell.azure.com/images/launchcloudshell.png\"></image></a></p>\n" }
+  docs/b.json: |
+    { "content": "<p><a onclick=\"javascript:window.open('https://shell.azure.com', '_blank', 'toolbar=no,scrollbars=yes,resizable=yes,menubar=no,location=no,status=no')\"><image src='https://shell.azure.com/images/launchcloudshell.png'></image></a></p>\n" }
