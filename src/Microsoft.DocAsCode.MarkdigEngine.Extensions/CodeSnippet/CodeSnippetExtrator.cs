@@ -47,11 +47,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                         tagName = tagStack.Count > 0 ? tagStack.Pop() : string.Empty;
                     }
 
-                    if(!result.ContainsKey(tagName))
-                    {
-                        _context.LogWarning("invalid-codesnippet-tag", $"Can't find startTag {tagName}");
-                    }
-                    else
+                    if(result.ContainsKey(tagName))
                     {
                         if (result[tagName].End == 0)
                         {
