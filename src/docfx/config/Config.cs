@@ -212,6 +212,10 @@ namespace Microsoft.Docs.Build
             var optionConfigObject = ExpandAndNormalize(options?.ToJObject());
             var finalConfigObject = JsonUtility.Merge(configObject, optionConfigObject);
 
+            var globalErrors = new List<Error>();
+            (globalErrors, finalConfigObject) = ApplyGlobalConfig(finalConfigObject);
+            errors.AddRange(globalErrors);
+
             if (extend)
             {
                 var extendErrors = new List<Error>();
@@ -250,7 +254,7 @@ namespace Microsoft.Docs.Build
             return (errors, ExpandAndNormalize(config ?? new JObject()));
         }
 
-        private static (List<Error>, JObject) ExtendConfigs(JObject config, string docsetPath)
+        private static (List<Error>, JObject) ApplyGlobalConfig(JObject config)
         {
             var result = new JObject();
             var errors = new List<Error>();
@@ -258,9 +262,17 @@ namespace Microsoft.Docs.Build
             var globalConfigPath = AppData.GlobalConfigPath;
             if (File.Exists(globalConfigPath))
             {
-                var filePath = RestoreMap.GetFileRestorePath(docsetPath, globalConfigPath);
-                (errors, result) = LoadConfigObject(filePath, filePath);
+                (errors, result) = LoadConfigObject(globalConfigPath, globalConfigPath);
             }
+
+            result.Merge(config, JsonUtility.MergeSettings);
+            return (errors, result);
+        }
+
+        private static (List<Error>, JObject) ExtendConfigs(JObject config, RestoreMap restoreMap)
+        {
+            var result = new JObject();
+            var errors = new List<Error>();
 
             if (config[ConfigConstants.Extend] is JArray extends)
             {
