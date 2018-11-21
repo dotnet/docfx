@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace Microsoft.Docs.Build
 {
@@ -147,8 +148,11 @@ namespace Microsoft.Docs.Build
         public static Error UidConflict(string uid, IEnumerable<XrefSpec> conflicts)
         {
             var hint = conflicts.Count() > 5 ? "(Only 5 duplicates displayed)" : "";
-            return new Error(ErrorLevel.Warning, "uid-conflict", $"Two or more documents have defined the same Uid '{uid}': {string.Join(',', conflicts.Select(spec => spec.Href).Take(5))}{hint}");
+            return new Error(ErrorLevel.Error, "uid-conflict", $"Two or more documents have defined the same Uid '{uid}': {string.Join(',', conflicts.Select(spec => spec.Href).Take(5))}{hint}");
         }
+
+        public static Error MonikerOverlapping(IEnumerable<string> overlappingmonikers)
+            => new Error(ErrorLevel.Error, "moniker-overlapping", $"Two or more documents have defined overlapping moniker: {Join(overlappingmonikers)}");
 
         public static Error MonikerNameConflict(string monikerName)
             => new Error(ErrorLevel.Error, "moniker-name-conflict", $"Two or more moniker definitions have the same monikerName `{monikerName}`");
@@ -161,6 +165,9 @@ namespace Microsoft.Docs.Build
 
         public static Error EmptyMonikers(string message)
             => new Error(ErrorLevel.Warning, "empty-monikers", message);
+
+        public static Error InvalidUidMoniker(string moniker, string uid)
+            => new Error(ErrorLevel.Warning, "invalid-uid-moniker", $"Moniker '{moniker}' is not defined with uid '{uid}'");
 
         private static string Join<T>(IEnumerable<T> source, Func<T, string> selector = null)
             => string.Join(", ", source.Select(item => $"{selector?.Invoke(item) ?? item.ToString()}").OrderBy(_ => _, StringComparer.Ordinal).Select(_ => $"'{_}'").Take(5));

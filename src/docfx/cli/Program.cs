@@ -114,6 +114,7 @@ namespace Microsoft.Docs.Build
                 syntax.DefineOption("retention-days", ref options.RetentionDays, "Keep the files accessed/written within <d> days");
             });
 
+            options.Locale = options.Locale?.ToLowerInvariant();
             return (command, docset, options);
         }
 
