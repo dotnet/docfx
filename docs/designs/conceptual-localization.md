@@ -295,4 +295,27 @@ I recommend the different `folder` option, :)
 
 @Curt made a comment that maybe there is a requirement to combine all localization content into multiple repos instead of always one, for example, combine `zh-cn` and `de-de` into localiztaion-1 repo and `ja-jp` and `hu-hu` to localization-2 repo.
 
-I would like firstly need to know whether the requirement is valid or not, the reason why we want to combine all localization content into one repo is to save private repo's count, so we will apply this rules to small localization repositories and leave the big size repository like azure. And also if we combine all localization content into multiple repos, there must be **a mappings to be maintained** for LOC PM, so I would like to choice the simple and easy way, either one locale one repo, or all locales one repo, :)
+I would like firstly need to know whether the requirement is valid or not, the reason why we want to combine all localization content into one repo is to save private repo's count, so we will apply this rules to small localization repositories and leave the big size repository like azure.
+
+And also, if we combine all localization content into multiple repos, there must be **a mappings to be maintained** for LOC PM, so I would like to take the simple and easy way, either one locale one repo, or all locales one repo, :)
+
+### Fallback to corresponding branch only?
+
+Docfx localization build need involve missing content from source repo, strictly speaking, from source repo's one branch.
+
+Involving source repo's content is try to resolve two things:
+    - resolve urls which linked documents/resources have not been localized
+    - resolve missing inclusions like token and code snippet
+
+For example, loc `live` branch content need involve source repo's `live` branch content and loc `master` branch need source repo's `master` branch content.
+
+Basically involving corresponding source repos' branch content can meet our requirement, but sometimes for test purpose, we need create some non-live test branch in loc repo and also need them to be built successfully.
+
+The problem is above requirement is that usually these non-live test branch don't have corresponding branch in source repo, so we have three options here:
+
+- always need fallback to corresponding branch only, that's means user to create these test branch like `loc-test` in source repo
+- fallback to corresponding branch first and if it doesn't exist in source repo, fallback to master branch
+- always fallback to master for non-live test branch incudes master branch.
+
+Option-1 is easy and simple way, but a little hard for localization repo users, since usually they don't have the write permission to source repo.  
+Option-2 and Option-3 are more user-friendly, but build some extra works, appends `branch` info to resolved urls which linked to source content like `url?branch=master`
