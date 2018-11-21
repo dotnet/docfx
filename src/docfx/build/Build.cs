@@ -35,7 +35,7 @@ namespace Microsoft.Docs.Build
 
             var xrefMap = XrefMap.Create(context, docset);
 
-            var (manifest, files, sourceDependencies) = await BuildFiles(context, docset, tocMap, xrefMap, contribution);
+            var (manifest, fileManifests, sourceDependencies) = await BuildFiles(context, docset, tocMap, xrefMap, contribution);
 
             context.WriteJson(manifest, "build.manifest");
 
@@ -49,7 +49,7 @@ namespace Microsoft.Docs.Build
                 if (config.Output.Json)
                 {
                     // TODO: decouple files and dependencies from legacy.
-                    Legacy.ConvertToLegacyModel(docset, context, files, sourceDependencies, tocMap, xrefMap);
+                    Legacy.ConvertToLegacyModel(docset, context, fileManifests, sourceDependencies, tocMap, xrefMap);
                 }
                 else
                 {
@@ -67,7 +67,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static async Task<(Manifest, List<Document>, DependencyMap)> BuildFiles(
+        private static async Task<(Manifest, FileManifest[], DependencyMap)> BuildFiles(
             Context context,
             Docset docset,
             TableOfContentsMap tocMap,
@@ -85,11 +85,11 @@ namespace Microsoft.Docs.Build
 
                 ValidateBookmarks();
 
-                var (manifest, files) = manifestBuilder.Build(context);
+                var manifest = manifestBuilder.Build(context);
                 var allDependencies = sourceDependencies.OrderBy(d => d.Key.FilePath).ToDictionary(k => k.Key, v => v.Value);
                 var allDependencyMap = new DependencyMap(allDependencies);
 
-                return (CreateManifest(manifest, allDependencyMap), files, allDependencyMap);
+                return (CreateManifest(manifest, allDependencyMap), manifest, allDependencyMap);
 
                 async Task BuildOneFile(Document file, Action<Document> buildChild)
                 {
@@ -166,12 +166,17 @@ namespace Microsoft.Docs.Build
                     return DependencyMap.Empty;
                 }
 
+                var (groupId, outputPath) = GetOutputPath(file, monikers);
                 var manifest = new FileManifest
                 {
                     SourcePath = file.FilePath,
                     SiteUrl = file.SiteUrl,
-                    OutputPath = GetOutputPath(file, monikers),
+                    GroupId = groupId,
+                    OutputPath = outputPath,
+                    File = file,
                 };
+
+                manifest.Monikers.AddRange(monikers);
 
                 if (manifestBuilder.TryAdd(file, manifest, monikers))
                 {
@@ -201,24 +206,25 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static string GetOutputPath(Document file, List<string> monikers)
+        private static (string, string) GetOutputPath(Document file, List<string> monikers)
         {
+            string monikerSeg = null;
             if (file.ContentType == ContentType.Resource && !file.Docset.Config.Output.CopyResources)
             {
                 var docset = file.Docset;
-                return PathUtility.NormalizeFile(
+                return (monikerSeg, PathUtility.NormalizeFile(
                     Path.GetRelativePath(
                         Path.GetFullPath(Path.Combine(docset.DocsetPath, docset.Config.Output.Path)),
-                        Path.GetFullPath(Path.Combine(docset.DocsetPath, file.FilePath))));
+                        Path.GetFullPath(Path.Combine(docset.DocsetPath, file.FilePath)))));
             }
 
             var outputPath = file.SitePath;
             if (monikers.Count != 0)
             {
-                var monikerSeg = HashUtility.GetMd5HashShort(string.Join(',', monikers));
+                monikerSeg = HashUtility.GetMd5HashShort(string.Join(',', monikers));
                 outputPath = PathUtility.NormalizeFile(Path.Combine(monikerSeg, file.SitePath));
             }
-            return outputPath;
+            return (monikerSeg, outputPath);
         }
 
         private static ResourceModel BuildResource(Document file)

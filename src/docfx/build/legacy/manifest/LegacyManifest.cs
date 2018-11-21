@@ -11,15 +11,16 @@ namespace Microsoft.Docs.Build
 {
     internal static class LegacyManifest
     {
-        public static List<(LegacyManifestItem manifestItem, Document doc)> Convert(Docset docset, Context context, List<Document> documents)
+        public static List<(LegacyManifestItem manifestItem, Document doc)> Convert(Docset docset, Context context, FileManifest[] fileManifests)
         {
             using (Progress.Start("Convert Legacy Manifest"))
             {
                 var convertedItems = new ConcurrentBag<(LegacyManifestItem manifestItem, Document doc)>();
                 Parallel.ForEach(
-                    documents,
-                    document =>
+                    fileManifests,
+                    fileManifest =>
                     {
+                        var document = fileManifest.File;
                         var legacyOutputPathRelativeToBaseSitePath = document.ToLegacyOutputPathRelativeToBaseSitePath(docset);
                         var legacySiteUrlRelativeToBaseSitePath = document.ToLegacySiteUrlRelativeToBaseSitePath(docset);
 
@@ -90,6 +91,7 @@ namespace Microsoft.Docs.Build
                             Output = output,
                             SkipNormalization = !(document.ContentType == ContentType.Resource),
                             SkipSchemaCheck = !(document.ContentType == ContentType.Resource),
+                            Group = new LegacyManifestGroup { GroupId = fileManifest.GroupId, Monikers = fileManifest.Monikers },
                         };
 
                         convertedItems.Add((file, document));
@@ -98,6 +100,7 @@ namespace Microsoft.Docs.Build
                 context.WriteJson(
                 new
                 {
+                    groups = convertedItems.Select(item => item.manifestItem.Group),
                     default_version_info = new
                     {
                         name = string.Empty,
