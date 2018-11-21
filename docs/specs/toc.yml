@@ -1031,3 +1031,18 @@ inputs:
 outputs:
   docs/toc.json: |
     {"items": [{"maintainContext": true, "expanded": true, "displayName": "display name"}]}
+---
+# conflicted toc files will be removed from toc map and build outputs
+inputs:
+  docfx.yml:
+  docs/TOC.yml: |
+    - href: a.md
+      name: yml reference a
+  docs/TOC.md: |
+    # [md reference a](a.md)
+  docs/a.md:
+outputs:
+  docs/a.json: |
+    {"!toc_rel": null}
+  build.log: |
+    ["warning","publish-url-conflict","Two or more documents of the same version publish to the same url '/docs/toc.json': 'docs/TOC.md', 'docs/TOC.yml'"]
