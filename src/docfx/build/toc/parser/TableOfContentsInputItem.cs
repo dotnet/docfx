@@ -32,13 +32,16 @@ namespace Microsoft.Docs.Build
         [MinLength(1)]
         public List<TableOfContentsInputItem> Items { get; set; }
 
-        public static TableOfContentsItem ToTableOfContentsModel(TableOfContentsInputItem inputModel)
+        public List<string> Monikers { get; set; }
+
+        public static TableOfContentsItem ToTableOfContentsModel(TableOfContentsInputItem inputModel, HashSet<string> fileMonikers)
         {
             if (inputModel == null)
             {
                 return null;
             }
 
+            fileMonikers.UnionWith(inputModel.Monikers);
             return new TableOfContentsItem
             {
                 TocTitle = inputModel.Name,
@@ -48,7 +51,8 @@ namespace Microsoft.Docs.Build
                 MaintainContext = inputModel.MaintainContext,
                 Expanded = inputModel.Expanded,
                 ExtensionData = inputModel.ExtensionData,
-                Children = inputModel.Items?.Select(l => ToTableOfContentsModel(l)).ToList(),
+                Children = inputModel.Items?.Select(l => ToTableOfContentsModel(l, fileMonikers)).ToList(),
+                Monikers = inputModel.Monikers,
             };
         }
     }

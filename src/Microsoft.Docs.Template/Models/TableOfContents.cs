@@ -39,6 +39,9 @@ namespace Microsoft.Docs.Build
         [JsonProperty(PropertyName = "children")]
         public List<TableOfContentsItem> Children { get; set; }
 
+        [JsonProperty(PropertyName = "monikers")]
+        public List<string> Monikers { get; set; }
+
         [JsonExtensionData]
         public JObject ExtensionData { get; set; }
     }

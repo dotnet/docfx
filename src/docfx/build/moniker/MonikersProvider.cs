@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -10,6 +11,7 @@ namespace Microsoft.Docs.Build
     internal class MonikersProvider
     {
         private readonly List<(Func<string, bool> glob, string monikerRange)> _rules = new List<(Func<string, bool>, string)>();
+        private readonly ConcurrentDictionary<Document, List<string>> _monikersMap = new ConcurrentDictionary<Document, List<string>>();
 
         public MonikersProvider(Config config)
         {
@@ -79,6 +81,23 @@ namespace Microsoft.Docs.Build
                 errors.Add(Errors.EmptyMonikers($"No intersection between zone and file level monikers. The result of zone level range string '{rangeString}' is '{string.Join(',', zoneLevelMonikers)}', while file level monikers is '{string.Join(',', fileLevelMonikers)}'."));
             }
             return monikers;
+        }
+
+        public void SetFileMonikers(Document file, List<string> monikers)
+        {
+            _monikersMap.TryAdd(file, monikers);
+        }
+
+        public List<string> GetFileMonikers(Document file)
+        {
+            if (_monikersMap.TryGetValue(file, out var monikers))
+            {
+                return monikers;
+            }
+            else
+            {
+                return new List<string>();
+            }
         }
     }
 }

@@ -144,7 +144,7 @@ inputs:
     }
 outputs:
   build.log: |
-    ["warning","publish-url-conflict","Two or more documents of the same version publish to the same url '/docs/a': 'docs/a.md', 'docs/v1/a.md', 'docs/v2/a.md'"]
+    ["error","publish-url-conflict","Two or more documents of the same version('netcore-2.0') publish to the same url '/docs/a': 'docs/a.md', 'docs/v1/a.md', 'docs/v2/a.md'"]
 ---
 # With moniker range not defined in config, user should not define it in file metadata
 inputs:
@@ -240,3 +240,109 @@ outputs:
   9d4e15fd/docs/a.json:
   build.log: |
     ["warning","empty-monikers","No intersection between zone and file level monikers. The result of zone level range string 'netcore-1.2' is 'netcore-1.2', while file level monikers is 'netcore-1.0,netcore-1.1'.","docs/v1/a.md"]
+---
+# Build toc with monikers info
+inputs:
+  docfx.yml: |
+    monikerRange:
+      'docs/v1/**/*.md': '>= netcore-1.0'
+    routes:
+      docs/v1/: docs/
+    monikerDefinition: monikerDefinition.json
+  docs/v1/a.md: |
+    ---
+    monikerRange: netcore-1.0 || netcore-1.1
+    ---
+    Moniker: netcore-1.0, netcore-1.1
+  docs/v1/b.md: |
+    ---
+    monikerRange: netcore-1.1 || netcore-1.2
+    ---
+    Moniker: netcore-1.1, netcore-1.2
+  docs/v1/toc.md: |
+    # [A](a.md)
+    ## [B](b.md)
+  monikerDefinition.json: |
+    {
+      "monikers": [
+        { "name": "netcore-1.0", "product": ".NET Core" },
+        { "name": "netcore-1.1", "product": ".NET Core" },
+        { "name": "netcore-1.2", "product": ".NET Core" },
+        { "name": "netcore-1.3", "product": ".NET Core" },
+      ]
+    }
+outputs:
+  9d4e15fd/docs/a.json: |
+    {
+      "content": "<p>Moniker: netcore-1.0, netcore-1.1</p>",
+      "monikers": ["netcore-1.0", "netcore-1.1"]
+    }
+  e300a7df/docs/b.json: |
+    {
+      "content": "<p>Moniker: netcore-1.1, netcore-1.2</p>",
+      "monikers": ["netcore-1.1", "netcore-1.2"]
+    }
+  2420f88b/docs/toc.json: |
+    {
+      "items": [
+        {
+          "toc_title": "A",
+          "href": "a",
+          "children": [
+            {
+              "toc_title": "B",
+              "href": "b",
+              "monikers": ["netcore-1.1", "netcore-1.2"]
+            }
+          ],
+          "monikers": ["netcore-1.0", "netcore-1.1"]
+        }
+      ],
+      "metadata": {"monikers": ["netcore-1.0", "netcore-1.1", "netcore-1.2"]}
+    }
+---
+# Build toc with duplicate monikers
+inputs:
+  docfx.yml: |
+    monikerRange:
+      'docs/v1/**/*.md': '>= netcore-1.0 < netcore-2.0'
+      'docs/v2/**/*.md': '>= netcore-2.0'
+    routes:
+      docs/v1/: docs/
+      docs/v2/: docs/
+    monikerDefinition: monikerDefinition.json
+  docs/v1/a.md: |
+    ---
+    monikerRange: netcore-1.0
+    ---
+    Moniker: netcore-1.0
+  docs/v2/a.md: |
+    ---
+    monikerRange: netcore-2.0
+    ---
+    Moniker: netcore-2.0
+  docs/v1/toc.md: |
+    # [A](a.md)
+  docs/v2/toc.md: |
+    # [A](a.md)
+    # [A](../v1/a.md)
+  monikerDefinition.json: |
+    {
+      "monikers": [
+        { "name": "netcore-1.0", "product": ".NET Core" },
+        { "name": "netcore-2.0", "product": ".NET Core" },
+      ]
+    }
+outputs:
+  136a42ac/docs/a.json: |
+    {
+      "content": "<p>Moniker: netcore-1.0</p>",
+      "monikers": ["netcore-1.0"]
+    }
+  4667fedf/docs/a.json: |
+    {
+      "content": "<p>Moniker: netcore-2.0</p>",
+      "monikers": ["netcore-2.0"]
+    }
+  build.log: |
+    ["error","publish-url-conflict","Two or more documents of the same version('netcore-1.0') publish to the same url '/docs/toc.json': 'docs/v1/toc.md', 'docs/v2/toc.md'"]

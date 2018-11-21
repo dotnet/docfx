@@ -78,8 +78,12 @@ namespace Microsoft.Docs.Build
                 var sourceDependencies = new ConcurrentDictionary<Document, List<DependencyItem>>();
                 var bookmarkValidator = new BookmarkValidator();
                 var manifestBuilder = new ManifestBuilder();
+                var tocFiles = new HashSet<Document>();
 
                 await ParallelUtility.ForEach(docset.BuildScope, BuildOneFile, ShouldBuildFile, Progress.Update);
+
+                // Build TOC
+                await ParallelUtility.ForEach(tocFiles, BuildOneFile, (Document doc) => true, Progress.Update);
 
                 ValidateBookmarks();
 
@@ -106,6 +110,12 @@ namespace Microsoft.Docs.Build
                     // source content in a localization docset
                     if (docset.FallbackDocset != null && file.Docset.LocalizationDocset != null)
                     {
+                        return false;
+                    }
+
+                    if (file.ContentType == ContentType.TableOfContents)
+                    {
+                        tocFiles.Add(file);
                         return false;
                     }
 
@@ -149,7 +159,7 @@ namespace Microsoft.Docs.Build
                         (errors, model, dependencies, monikers) = await BuildPage.Build(context, file, tocMap, contribution, callback);
                         break;
                     case ContentType.TableOfContents:
-                        (errors, model, dependencies) = BuildTableOfContents.Build(context, file, tocMap);
+                        (errors, model, dependencies, monikers) = BuildTableOfContents.Build(context, file, tocMap);
                         break;
                     case ContentType.Redirection:
                         model = BuildRedirection(file);
@@ -188,6 +198,7 @@ namespace Microsoft.Docs.Build
                         context.WriteJson(model, manifest.OutputPath);
                     }
                 }
+                file.Docset.MonikersProvider.SetFileMonikers(file, monikers);
                 return dependencies;
             }
             catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
