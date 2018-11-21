@@ -14,10 +14,10 @@ namespace Microsoft.Docs.Build
 
         public string SourcePath { get; set; }
 
-        public List<string> Monikers { get; } = new List<string>();
+        public List<string> Monikers { get; set; }
 
         [JsonIgnore]
-        public string GroupId { get; set; }
+        public string MonikerSeg { get; set; }
 
         [JsonIgnore]
         public Document File { get; set; }

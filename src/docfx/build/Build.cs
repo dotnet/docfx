@@ -166,17 +166,16 @@ namespace Microsoft.Docs.Build
                     return DependencyMap.Empty;
                 }
 
-                var (groupId, outputPath) = GetOutputPath(file, monikers);
+                var (monikerSeg, outputPath) = GetOutputPath(file, monikers);
                 var manifest = new FileManifest
                 {
                     SourcePath = file.FilePath,
                     SiteUrl = file.SiteUrl,
-                    GroupId = groupId,
+                    Monikers = monikers,
+                    MonikerSeg = monikerSeg,
                     OutputPath = outputPath,
                     File = file,
                 };
-
-                manifest.Monikers.AddRange(monikers);
 
                 if (manifestBuilder.TryAdd(file, manifest, monikers))
                 {
@@ -206,7 +205,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static (string, string) GetOutputPath(Document file, List<string> monikers)
+        private static (string monikerSeg, string outputPath) GetOutputPath(Document file, List<string> monikers)
         {
             string monikerSeg = null;
             if (file.ContentType == ContentType.Resource && !file.Docset.Config.Output.CopyResources)

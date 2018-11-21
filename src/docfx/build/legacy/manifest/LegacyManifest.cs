@@ -91,7 +91,7 @@ namespace Microsoft.Docs.Build
                             Output = output,
                             SkipNormalization = !(document.ContentType == ContentType.Resource),
                             SkipSchemaCheck = !(document.ContentType == ContentType.Resource),
-                            Group = new LegacyManifestGroup { GroupId = fileManifest.GroupId, Monikers = fileManifest.Monikers },
+                            Group = new LegacyManifestGroup { GroupId = fileManifest.MonikerSeg, Monikers = fileManifest.Monikers },
                         };
 
                         convertedItems.Add((file, document));
