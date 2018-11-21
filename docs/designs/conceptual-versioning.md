@@ -391,7 +391,7 @@ _site/en-us/group-01ddf122/dotnet/api/system.string/index.html
     ```json
     {
         "groups":[
-            "groupId": "{groupId}",
+            "group": "{groupId}",
             "monikers": [
                 "moniker1",
                 ...
@@ -403,7 +403,7 @@ _site/en-us/group-01ddf122/dotnet/api/system.string/index.html
                 "siteUrl": "{SitePath}",
                 "outputPath": "{outputPath}",
                 "sourcePath": "{sourcePath}",
-                "group": "{groupid}"
+                "group": "{groupId}"
             },
         ]
     }
