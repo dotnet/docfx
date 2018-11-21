@@ -56,7 +56,7 @@ namespace Microsoft.Docs.Build
                     result = xrefSpec?.Href;
                     if (xrefSpec?.File != null)
                     {
-                        callback.DependencyMapBuilder.AddDependencyItem(file, xrefSpec.File, DependencyType.Link);
+                        callback.DependencyMapBuilder.AddDependencyItem(file, xrefSpec.File, DependencyType.UidInclusion);
                     }
                 }
 

@@ -79,7 +79,7 @@ outputs:
           "docs/c.md": [
               {
                   "source": "docs/a.md",
-                  "type": "link"
+                  "type": "uidInclusion"
               }
           ]
       }
@@ -174,7 +174,7 @@ outputs:
           "docs/b.json": [
               {
                   "source": "docs/a.json",
-                  "type": "link"
+                  "type": "uidInclusion"
               }
           ]
       }

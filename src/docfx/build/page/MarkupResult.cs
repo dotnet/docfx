@@ -3,7 +3,6 @@
 
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -17,7 +16,7 @@ namespace Microsoft.Docs.Build
 
         public bool FirstBlockIsInclusionBlock = false;
 
-        public ConcurrentBag<(Document xrefReferencedFile, bool uidInclusion)> XrefReferences = new ConcurrentBag<(Document xrefReferencedFile, bool uidInclusion)>();
+        public ConcurrentBag<Document> XrefReferences = new ConcurrentBag<Document>();
 
         public bool HasTitle => !string.IsNullOrEmpty(HtmlTitle);
     }

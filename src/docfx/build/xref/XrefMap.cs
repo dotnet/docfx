@@ -102,17 +102,10 @@ namespace Microsoft.Docs.Build
         {
             if (dependencyMapBuilder is null)
                 return;
-            foreach (var group in markup.XrefReferences.Where(x => x.xrefReferencedFile != null).GroupBy(item => item.xrefReferencedFile, item => item.uidInclusion))
+
+            foreach (var reference in markup.XrefReferences.Where(x => x != null))
             {
-                // if the xref referenced file contains any uid inclusion
-                if (group.Any(x => x))
-                {
-                    dependencyMapBuilder.AddDependencyItem(file, group.Key, DependencyType.UidInclusion);
-                }
-                else
-                {
-                    dependencyMapBuilder.AddDependencyItem(file, group.Key, DependencyType.Link);
-                }
+                dependencyMapBuilder.AddDependencyItem(file, reference, DependencyType.UidInclusion);
             }
         }
 
