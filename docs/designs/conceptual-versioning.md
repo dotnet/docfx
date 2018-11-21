@@ -390,13 +390,14 @@ _site/en-us/group-01ddf122/dotnet/api/system.string/index.html
 
     ```json
     {
-        "groups":{
-            "groupid" : [
+        "groups":[
+            "groupId": "{groupId}",
+            "monikers": [
                 "moniker1",
                 ...
             ],
             ...
-        },
+        ],
         "files":[
             {
                 "siteUrl": "{SitePath}",
