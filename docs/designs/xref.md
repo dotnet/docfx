@@ -134,7 +134,7 @@ Link to <xref:a?displayProperty=fullName>
 The expected resolved result would be a `XrefSpec` instance for the referenced uid. The remaining problem here is that we want to output an object with a string input at the same `xref` property [Related issue](https://github.com/dotnet/docfx/issues/3497).
 
 ### Dependency map
-For xref reference to the internal document, the reference relationship should be included into the dependency map. If `displayProperty` is involved in the reference, the dependency type would be `UidInclusion`, otherwise, the type would be `Link`.
+For xref reference to the internal document, the reference relationship should be included into the dependency map. The dependency type should be `UidInclusion` since `@uid` implicitly means `@uid?displayProperty=name.
 The outpupt `build.manidest` would look like:
 ```json
     {
