@@ -1043,6 +1043,6 @@ inputs:
   docs/a.md:
 outputs:
   docs/a.json: |
-    {"!toc_rel": null}
+    {"toc_rel": "toc.json"}
   build.log: |
-    ["warning","publish-url-conflict","Two or more documents of the same version publish to the same url '/docs/toc.json': 'docs/TOC.md', 'docs/TOC.yml'"]
+    ["error","output-path-conflict","Two or more documents output to the same path 'docs/toc.json': 'docs/TOC.md', 'docs/TOC.yml'"]

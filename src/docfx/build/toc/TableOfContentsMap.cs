@@ -156,8 +156,15 @@ namespace Microsoft.Docs.Build
             }
 
             var levenshteinDistanceCompareResult = candidateX.LevenshteinDistance - candidateY.LevenshteinDistance;
-            return levenshteinDistanceCompareResult == 0 ? StringComparer.OrdinalIgnoreCase.Compare(candidateX.Toc.SitePath, candidateY.Toc.SitePath)
-                : levenshteinDistanceCompareResult;
+            if (levenshteinDistanceCompareResult != 0)
+            {
+                return levenshteinDistanceCompareResult;
+            }
+            if (!StringComparer.OrdinalIgnoreCase.Equals(candidateX.Toc.SitePath, candidateY.Toc.SitePath))
+            {
+                StringComparer.OrdinalIgnoreCase.Compare(candidateX.Toc.SitePath, candidateY.Toc.SitePath);
+            }
+            return StringComparer.OrdinalIgnoreCase.Compare(candidateX.Toc.FilePath, candidateY.Toc.FilePath);
         }
     }
 }

@@ -143,7 +143,7 @@ inputs:
   docs/a.png:
 outputs:
   build.log: |
-    ["error","publish-url-conflict","Two or more documents without moniker publish to the same url '/docs/a.png': 'docs/a.png', 'docs/a.png.md'"]
+    ["error","publish-url-conflict","Two or more documents publish to the same url '/docs/a.png': 'docs/a.png', 'docs/a.png.md'"]
 ---
 # Prefer relative url to file when there is a matching folder name
 inputs:

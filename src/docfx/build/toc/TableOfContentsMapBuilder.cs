@@ -43,43 +43,20 @@ namespace Microsoft.Docs.Build
         /// Build toc map including all tocs and reversed toc mapping(document -> toc)
         /// </summary>
         /// <returns>The toc map</returns>
-        public (List<Error>, TableOfContentsMap) Build()
+        public TableOfContentsMap Build()
         {
             var documentToTocs = new Dictionary<Document, HashSet<Document>>();
-            var errors = new List<Error>();
 
             // reverse the mapping between toc and documents
             // order by toc path
             var allTocs = new List<Document>();
             var experimentalTocs = new List<Document>();
 
-            // handle conflicts
-            var tocsGroupBySiteUrl = _tocToDocuments.Keys.GroupBy(k => k.SiteUrl);
-            var conflictedTocs = new HashSet<Document>();
-            foreach (var group in tocsGroupBySiteUrl)
-            {
-                var siteUrl = group.Key;
-                if (group.Count() > 1)
-                {
-                    errors.Add(Errors.PublishUrlConflict(siteUrl, group));
-                    foreach (var toc in group)
-                    {
-                        conflictedTocs.Add(toc);
-                    }
-                }
-            }
-
             foreach (var (toc, documents) in _tocToDocuments)
             {
                 if (_referencedTocs.Contains(toc))
                 {
                     // referenced toc's mapping will be ignored
-                    continue;
-                }
-
-                if (conflictedTocs.Contains(toc))
-                {
-                    // conflicted tocs will be removed from toc map
                     continue;
                 }
 
@@ -102,7 +79,7 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            return (errors, new TableOfContentsMap(allTocs, experimentalTocs, documentToTocs));
+            return new TableOfContentsMap(allTocs, experimentalTocs, documentToTocs);
         }
     }
 }
