@@ -3,6 +3,8 @@
 
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -41,19 +43,43 @@ namespace Microsoft.Docs.Build
         /// Build toc map including all tocs and reversed toc mapping(document -> toc)
         /// </summary>
         /// <returns>The toc map</returns>
-        public TableOfContentsMap Build()
+        public (List<Error>, TableOfContentsMap) Build()
         {
             var documentToTocs = new Dictionary<Document, HashSet<Document>>();
+            var errors = new List<Error>();
 
             // reverse the mapping between toc and documents
             // order by toc path
             var allTocs = new List<Document>();
             var experimentalTocs = new List<Document>();
+
+            // handle conflicts
+            var tocsGroupBySiteUrl = _tocToDocuments.Keys.GroupBy(k => k.SiteUrl);
+            var conflictedTocs = new HashSet<Document>();
+            foreach (var group in tocsGroupBySiteUrl)
+            {
+                var siteUrl = group.Key;
+                if (group.Count() > 1)
+                {
+                    errors.Add(Errors.PublishUrlConflict(siteUrl, group));
+                    foreach (var toc in group)
+                    {
+                        conflictedTocs.Add(toc);
+                    }
+                }
+            }
+
             foreach (var (toc, documents) in _tocToDocuments)
             {
                 if (_referencedTocs.Contains(toc))
                 {
                     // referenced toc's mapping will be ignored
+                    continue;
+                }
+
+                if (conflictedTocs.Contains(toc))
+                {
+                    // conflicted tocs will be removed from toc map
                     continue;
                 }
 
@@ -63,11 +89,8 @@ namespace Microsoft.Docs.Build
                     experimentalTocs.Add(toc);
                     continue;
                 }
-                else
-                {
-                    allTocs.Add(toc);
-                }
 
+                allTocs.Add(toc);
                 foreach (var document in documents)
                 {
                     if (!documentToTocs.TryGetValue(document, out var tocs))
@@ -79,7 +102,7 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            return new TableOfContentsMap(allTocs, experimentalTocs, documentToTocs);
+            return (errors, new TableOfContentsMap(allTocs, experimentalTocs, documentToTocs));
         }
     }
 }

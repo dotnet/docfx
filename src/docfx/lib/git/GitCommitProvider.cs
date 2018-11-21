@@ -271,7 +271,6 @@ namespace Microsoft.Docs.Build
 
                 git_object_lookup(out var commit, _repo, &commitId, 1 /* GIT_OBJ_COMMIT */);
                 var author = git_commit_author(commit);
-                var committer = git_commit_committer(commit);
                 var parentCount = git_commit_parentcount(commit);
                 var parents = new git_oid[parentCount];
                 for (var i = 0; i < parentCount; i++)
