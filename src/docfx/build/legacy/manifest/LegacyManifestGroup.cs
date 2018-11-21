@@ -2,13 +2,16 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace Microsoft.Docs.Build
 {
     internal class LegacyManifestGroup
     {
+        [JsonProperty("group")]
         public string GroupId { get; set; }
 
+        [JsonProperty("monikers")]
         public List<string> Monikers { get; set; }
     }
 }
