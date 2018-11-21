@@ -18,7 +18,7 @@
         </div>
       </form>
       {{#_nav}}
-        {{>partials/li}}
+        {{>partials/navbar-li}}
       {{/_nav}}
     </div>
   </div>
