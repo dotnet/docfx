@@ -11,7 +11,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class LegacyManifest
     {
-        public static List<(LegacyManifestItem manifestItem, Document doc)> Convert(Docset docset, Context context, FileManifest[] fileManifests)
+        public static List<(LegacyManifestItem manifestItem, Document doc)> Convert(Docset docset, Context context, Dictionary<Document, FileManifest> fileManifests)
         {
             using (Progress.Start("Convert Legacy Manifest"))
             {
@@ -20,7 +20,7 @@ namespace Microsoft.Docs.Build
                     fileManifests,
                     fileManifest =>
                     {
-                        var document = fileManifest.File;
+                        var document = fileManifest.Key;
                         var legacyOutputPathRelativeToBaseSitePath = document.ToLegacyOutputPathRelativeToBaseSitePath(docset);
                         var legacySiteUrlRelativeToBaseSitePath = document.ToLegacySiteUrlRelativeToBaseSitePath(docset);
 
@@ -91,7 +91,7 @@ namespace Microsoft.Docs.Build
                             Output = output,
                             SkipNormalization = !(document.ContentType == ContentType.Resource),
                             SkipSchemaCheck = !(document.ContentType == ContentType.Resource),
-                            Group = new LegacyManifestGroup { GroupId = fileManifest.MonikerSeg, Monikers = fileManifest.Monikers },
+                            Group = new LegacyManifestGroup { GroupId = HashUtility.GetMd5HashShort(string.Join(',', fileManifest.Value.Monikers)), Monikers = fileManifest.Value.Monikers },
                         };
 
                         convertedItems.Add((file, document));

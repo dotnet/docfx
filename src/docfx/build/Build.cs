@@ -67,7 +67,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static async Task<(Manifest, FileManifest[], DependencyMap)> BuildFiles(
+        private static async Task<(Manifest, Dictionary<Document, FileManifest>, DependencyMap)> BuildFiles(
             Context context,
             Docset docset,
             TableOfContentsMap tocMap,
@@ -166,15 +166,12 @@ namespace Microsoft.Docs.Build
                     return DependencyMap.Empty;
                 }
 
-                var (monikerSeg, outputPath) = GetOutputPath(file, monikers);
                 var manifest = new FileManifest
                 {
                     SourcePath = file.FilePath,
                     SiteUrl = file.SiteUrl,
                     Monikers = monikers,
-                    MonikerSeg = monikerSeg,
-                    OutputPath = outputPath,
-                    File = file,
+                    OutputPath = GetOutputPath(file, monikers),
                 };
 
                 if (manifestBuilder.TryAdd(file, manifest, monikers))
@@ -205,25 +202,24 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static (string monikerSeg, string outputPath) GetOutputPath(Document file, List<string> monikers)
+        private static string GetOutputPath(Document file, List<string> monikers)
         {
-            string monikerSeg = null;
             if (file.ContentType == ContentType.Resource && !file.Docset.Config.Output.CopyResources)
             {
                 var docset = file.Docset;
-                return (monikerSeg, PathUtility.NormalizeFile(
+                return PathUtility.NormalizeFile(
                     Path.GetRelativePath(
                         Path.GetFullPath(Path.Combine(docset.DocsetPath, docset.Config.Output.Path)),
-                        Path.GetFullPath(Path.Combine(docset.DocsetPath, file.FilePath)))));
+                        Path.GetFullPath(Path.Combine(docset.DocsetPath, file.FilePath))));
             }
 
             var outputPath = file.SitePath;
             if (monikers.Count != 0)
             {
-                monikerSeg = HashUtility.GetMd5HashShort(string.Join(',', monikers));
+                var monikerSeg = HashUtility.GetMd5HashShort(string.Join(',', monikers));
                 outputPath = PathUtility.NormalizeFile(Path.Combine(monikerSeg, file.SitePath));
             }
-            return (monikerSeg, outputPath);
+            return outputPath;
         }
 
         private static ResourceModel BuildResource(Document file)
@@ -233,11 +229,11 @@ namespace Microsoft.Docs.Build
             return new ResourceModel { Locale = file.Docset.Locale };
         }
 
-        private static Manifest CreateManifest(FileManifest[] files, DependencyMap dependencies)
+        private static Manifest CreateManifest(Dictionary<Document, FileManifest> files, DependencyMap dependencies)
         {
             return new Manifest
             {
-                Files = files,
+                Files = files.Values.OrderBy(item => item.SourcePath).ToArray(),
 
                 Dependencies = dependencies.ToDictionary(
                            d => d.Key.FilePath,

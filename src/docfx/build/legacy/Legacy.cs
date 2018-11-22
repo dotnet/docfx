@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Microsoft.Docs.Build
@@ -10,7 +11,7 @@ namespace Microsoft.Docs.Build
         public static void ConvertToLegacyModel(
             Docset docset,
             Context context,
-            FileManifest[] fileManifests,
+            Dictionary<Document, FileManifest> fileManifests,
             DependencyMap dependencyMap,
             TableOfContentsMap tocMap,
             XrefMap xrefMap)
@@ -22,7 +23,7 @@ namespace Microsoft.Docs.Build
                 LegacyOutput.Convert(docset, context, legacyManifestItems);
 
                 // generate mappings
-                var files = fileManifests.Select(item => item.File).ToList();
+                var files = fileManifests.Keys.ToList();
                 LegacyFileMap.Convert(docset, context, files);
                 LegacyDependencyMap.Convert(docset, context, files, dependencyMap, tocMap);
                 LegacyCrossRepoReferenceInfo.Convert(docset, context);

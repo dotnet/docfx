@@ -15,11 +15,5 @@ namespace Microsoft.Docs.Build
         public string SourcePath { get; set; }
 
         public List<string> Monikers { get; set; }
-
-        [JsonIgnore]
-        public string MonikerSeg { get; set; }
-
-        [JsonIgnore]
-        public Document File { get; set; }
     }
 }
