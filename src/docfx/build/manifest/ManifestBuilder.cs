@@ -46,7 +46,7 @@ namespace Microsoft.Docs.Build
             return true;
         }
 
-        public (FileManifest[], List<Document>) Build(Context context)
+        public Dictionary<Document, FileManifest> Build(Context context)
         {
             // Handle publish url conflicts
             // TODO: Report more detail info for url conflict
@@ -108,9 +108,7 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            return (
-                _manifest.Values.OrderBy(item => item.SourcePath).ToArray(),
-                _manifest.Keys.OrderBy(item => item.FilePath).ToList());
+            return _manifest.ToDictionary(item => item.Key, item => item.Value);
         }
     }
 }
