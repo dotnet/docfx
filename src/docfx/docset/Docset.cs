@@ -120,7 +120,7 @@ namespace Microsoft.Docs.Build
             DocsetPath = PathUtility.NormalizeFolder(Path.GetFullPath(docsetPath));
             Locale = locale.ToLowerInvariant();
             Culture = CreateCultureInfo(locale);
-            ReversedRoutes = new Dictionary<string, string>(config.Routes.Reverse());
+            Routes = new Dictionary<string, string>(config.Routes.Reverse());
             FallbackDocset = fallbackDocset;
 
             var configErrors = new List<Error>();
