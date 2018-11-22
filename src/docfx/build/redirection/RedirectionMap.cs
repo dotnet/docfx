@@ -70,8 +70,9 @@ namespace Microsoft.Docs.Build
 
             void AddRedirections(Dictionary<string, string> items)
             {
-                foreach (var (pathToDocset, redirectTo) in items)
+                foreach (var (path, redirectTo) in items)
                 {
+                    var pathToDocset = PathUtility.NormalizeFile(path);
                     var (error, document) = Document.TryCreate(docset, pathToDocset, redirectTo);
                     if (error != null)
                     {

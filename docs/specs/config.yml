@@ -2,9 +2,7 @@
 # Specify include files, prefer docfx.yml to docfx.json
 inputs:
   docfx.yml: |
-    content:
-      include:
-        - docs/**/*.md
+    files: docs/**/*.md
   docfx.json: |
     {
       "content":
@@ -17,29 +15,10 @@ inputs:
 outputs:
   docs/index.json:
 ---
-# Specify include files by array
-inputs:
-  docfx.yml: |
-    content:
-      include: docs/**/*.md
-  ignore.md:
-  docs/index.md:
-outputs:
-  docs/index.json:
----
-# Content supports string form
-inputs:
-  docfx.yml: |
-    content: docs1/**/*.md
-  ignore.md:
-  docs1/index.md:
-outputs:
-  docs1/index.json:
----
 # Content supports array form
 inputs:
   docfx.yml: |
-    content:
+    files:
     - docs1/**/*.md
     - docs2/**/*.md
   ignore.md:
@@ -52,9 +31,8 @@ outputs:
 # Content supports exclude file
 inputs:
   docfx.yml: |
-    content:
-      include: docs/**/*.md
-      exclude: docs/**/ignore.md
+    files: docs/**/*.md
+    exclude: docs/**/ignore.md
   docs/index.md:
 outputs:
   docs/index.json:
@@ -62,9 +40,8 @@ outputs:
 # Content supports exclude folder
 inputs:
   docfx.yml: |
-    content:
-      include: docs/**/*.md
-      exclude:
+    files: docs/**/*.md
+    exclude:
       - docs/ignore/**/*.md
       - docs/codesnippet/**/*.md
   docs/index.md:
@@ -188,7 +165,7 @@ inputs:
   docfx.yml: |
     extend: _shared/extend.json
   _shared/extend.json: |
-    {"content": "a.md"}
+    {"files": "a.md"}
   a.md:
 outputs:
   a.json:
@@ -197,7 +174,7 @@ outputs:
 inputs:
   docfx.yml: |
     extend: docfx.yml
-    content: a.md
+    files: a.md
   a.md:
 outputs:
   a.json:
@@ -205,7 +182,7 @@ outputs:
 # absolute url extend
 inputs:
   docfx.yml: |
-    extend: https://raw.githubusercontent.com/docascode/docfx-test-dependencies/extend-test-1/extend1.yml
+    extend: https://raw.githubusercontent.com/docascode/docfx-test-dependencies/62b0448/extend1.yml
   a.md:
 outputs:
   a.json:
@@ -213,10 +190,10 @@ outputs:
 # current config takes precedence over extend config
 inputs:
   docfx.yml: |
-    content: a.md
+    files: a.md
     extend: extend.yml
   extend.yml: |
-    content: invalid.md
+    files: invalid.md
   a.md:
 outputs:
   a.json:
@@ -226,9 +203,9 @@ inputs:
   docfx.yml: |
     extend:
     - extendB.yml
-    - https://raw.githubusercontent.com/docascode/docfx-test-dependencies/extend-test-1/extend1.yml
+    - https://raw.githubusercontent.com/docascode/docfx-test-dependencies/62b0448/extend1.yml
   extendB.yml: |
-    content: invalid.md
+    files: invalid.md
   a.md:
 outputs:
   a.json:
@@ -248,25 +225,6 @@ inputs:
   docs/c.json: '{}'
   docs/d.json: '{}'
 outputs:
----
-# expand config before merge
-inputs:
-  docfx.yml: |
-    content: '**/*.md'
-    extend:
-      extend.json
-  extend.json: |
-    {
-      "content":
-        {
-          "include": "a.md",
-          "exclude": "b.md"
-        }
-    }
-  a.md:
-  b.md:
-outputs:
-  a.json:
 ---
 # `/` and `\` in path will be normalized
 inputs:
@@ -372,9 +330,9 @@ outputs:
 repo: https://github.com/docascode/docfx-test-dependencies#master
 inputs:
   docfx.yml: |
-    content: a.md
+    files: a.md
     "branches: [master]":
-      content: b.md
+      files: b.md
   a.md:
 outputs:
 ---
@@ -383,9 +341,9 @@ commands:
   - build --locale zh-cn
 inputs:
   docfx.yml: |
-    content: a.md
+    files: a.md
     "locales: [zh-cn,de-de]":
-      content: b.md
+      files: b.md
     localization:
       defaultLocale: "zh-cn"
   a.md:
@@ -399,16 +357,14 @@ inputs:
   docfx.yml: |
     localization:
       defaultLocale: "zh-cn"
-    content: a.md
+    files: a.md
     "locales: [zh-cn]":
-      content:
-        include: 
-          - b.md
-          - c.md
+      files:
+        - b.md
+        - c.md
     "branches: [master,live]":
-      content:
-        exclude:
-          - b.md
+      exclude:
+        - b.md
   a.md:
   b.md:
   c.md:
@@ -423,9 +379,9 @@ inputs:
   docfx.yml: |
     localization:
       defaultLocale: "zh-cn"
-    content: a.md
+    files: a.md
     "locales: [zh-cn, de-de] branches: [live]":
-      content: b.md
+      files: b.md
   a.md:
 outputs:
   a.json:
@@ -437,9 +393,9 @@ inputs:
   docfx.yml: |
     localization:
       defaultLocale: "zh-cn"
-    content: a.md
+    files: a.md
     "locales: zh-cn":
-      content: b.md
+      files: b.md
   a.md:
 outputs:
   a.json:
