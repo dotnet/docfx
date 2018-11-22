@@ -81,10 +81,18 @@ namespace Microsoft.Docs.Build
                 var manifestBuilder = new ManifestBuilder();
                 var monikersMap = new ConcurrentDictionary<Document, List<string>>();
 
-                await ParallelUtility.ForEach(docset.BuildScope, BuildOneFile, ShouldBuildFile, Progress.Update);
+                await ParallelUtility.ForEach(
+                    docset.BuildScope.Where(doc => doc.ContentType != ContentType.TableOfContents),
+                    BuildOneFile,
+                    ShouldBuildFile,
+                    Progress.Update);
 
                 // Build TOC: since toc file depends on the build result of every node
-                await ParallelUtility.ForEach(docset.BuildScope, BuildTocFile, ShouldBuildTocFile, Progress.Update);
+                await ParallelUtility.ForEach(
+                    docset.BuildScope.Where(doc => doc.ContentType == ContentType.TableOfContents),
+                    BuildTocFile,
+                    ShouldBuildFile,
+                    Progress.Update);
 
                 ValidateBookmarks();
 
@@ -133,20 +141,7 @@ namespace Microsoft.Docs.Build
                         return false;
                     }
 
-                    return file.ContentType != ContentType.TableOfContents
-                        && file.ContentType != ContentType.Unknown
-                        && recurseDetector.TryAdd(file);
-                }
-
-                bool ShouldBuildTocFile(Document file)
-                {
-                    // source content in a localization docset
-                    if (docset.FallbackDocset != null && file.Docset.LocalizationDocset != null)
-                    {
-                        return false;
-                    }
-
-                    return file.ContentType == ContentType.TableOfContents;
+                    return file.ContentType != ContentType.Unknown && recurseDetector.TryAdd(file);
                 }
 
                 void ValidateBookmarks()

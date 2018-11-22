@@ -744,7 +744,7 @@ inputs:
     monikerRange: netcore-1.1 || netcore-1.2
     ---
     Moniker: netcore-1.1, netcore-1.2
-  docs/v1/toc.md: |
+  docs/v1/TOC.md: |
     # [A](a.md)
     ## [B](b.md)
   monikerDefinition.json: |
@@ -806,9 +806,9 @@ inputs:
     monikerRange: netcore-2.0
     ---
     Moniker: netcore-2.0
-  docs/v1/toc.md: |
+  docs/v1/TOC.md: |
     # [A](a.md)
-  docs/v2/toc.md: |
+  docs/v2/TOC.md: |
     # [A](a.md)
     # [A](../v1/a.md)
   monikerDefinition.json: |
@@ -830,4 +830,4 @@ outputs:
       "monikers": ["netcore-2.0"]
     }
   build.log: |
-    ["error","publish-url-conflict","Two or more documents of the same version('netcore-1.0') publish to the same url '/docs/toc.json': 'docs/v1/toc.md', 'docs/v2/toc.md'"]
+    ["error","publish-url-conflict","Two or more documents of the same version('netcore-1.0') publish to the same url '/docs/toc.json': 'docs/v1/TOC.md', 'docs/v2/TOC.md'"]
