@@ -24,7 +24,7 @@ namespace Microsoft.Docs.Build
             var (errors, inputModel) = LoadInputModelItems(context, file, file, resolveContent, resolveHref, new List<Document>());
 
             var items = inputModel?.Items?.Select(r => TableOfContentsInputItem.ToTableOfContentsModel(r, file.Docset.MonikerAscendingComparer)).ToList();
-            var fileMonikers = items?.SelectMany(r => r.Monikers).ToHashSet(StringComparer.OrdinalIgnoreCase).ToList();
+            var fileMonikers = items?.SelectMany(r => r.Monikers).Distinct(StringComparer.OrdinalIgnoreCase).ToList();
             fileMonikers.Sort(file.Docset.MonikerAscendingComparer);
             return (errors, items, inputModel?.Metadata, fileMonikers);
         }
