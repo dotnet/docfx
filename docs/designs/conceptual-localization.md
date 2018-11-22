@@ -251,3 +251,102 @@ All links with bookmark which are resolved from fallback(source content) can't b
 ```
 
 For above case, the zh-cn's a.md's link to b.md can be resolved successfully, but the bookmark of this link can't be verified because the en-us b.md will not be built.
+
+## Open Issues
+
+### Different `folder` or `branch`
+
+When combine different locales into one repo, we meet a choice, put the different locale content in different `folder` or `branch`:
+
+Different `folder` example:
+```txt
+localization(repo):
+    live(branch):
+        |- zh-cn/
+        |   |- readmd.md
+        |- de-de/
+        |   | - readme.md
+    master(branch):
+        |- zh-cn/
+        |   |- readmd.md
+        |- de-de/
+        |   | - readme.md
+```
+Different `branch` example:
+```txt
+localization(repo):
+    zh-cn-live:
+        |- readme.md
+    zh-cn-master:
+        |- readme.md
+    de-de-live:
+        |- readme.md
+    de-de-master:
+        | - readme.md
+```
+
+For different `folder` option:
+
+  - 😄 it's easy to manage all localization contents and apply changes to all localization content
+  - 😄 the branch model is also friendly to ops backend service(build/dhs)
+  - 😭 we need a way to identify which locale need to be built once a changes comes, or trigger all locales builds.
+  - 😭 may have a little bigger impact to OL workflow(HB writing behavior).
+  - 😭 performance would be bad if we only want to build one locale(need checkout all locales' content)
+  - ❓ public contribution workflow maybe different?
+  - ❓ permission control on different locale may be a little hard
+
+For different `branch` option:
+
+  - 😄 I believe it has less impact to OL workflow, 
+  - 😄 and we can easily identify which locale to build once a new changes comes
+  - 😄 performance would be good if we only want to build one locale(only checkout one locale's content)
+  - 😄 public contribution workflow maybe easy and permission per branch can be implemented
+  - 😭 it brings to many branches to maintains, imagine that we have 64+ locales for one small repo. 
+  - 😭 it may have a little bigger impact to ops backend service because current **'master' and 'live' are hardcoded everywhere**.
+  - 😭 hard to apply localization fix/changes to all locales(just like now, you need a script to pull/add/commit/push 64+ times)  
+
+### Combine all localization content in one repo or multiple repos?
+
+@Curt made a comment that maybe there is a requirement to combine all localization content into multiple repos instead of always one, for example, combine `zh-cn` and `de-de` into localiztaion-1 repo and `ja-jp` and `hu-hu` to localization-2 repo.
+
+I would like firstly need to know whether the requirement is valid or not, the reason why we want to combine all localization content into one repo is to save private repo's count, so we will apply this rules to small localization repositories and leave the big size repository like azure.
+
+And also, if we combine all localization content into multiple repos, there must be **a mappings to be maintained** for LOC PM, are these mapping different per repo?  so I would like to take the simple and easy way, either one locale one repo, or all locales one repo, :)
+
+### Fallback to corresponding branch only?
+
+Docfx localization build need involve missing content from source repo, strictly speaking, from source repo's one branch.
+
+Involving source repo's content is try to resolve two things:
+
+  - resolve urls which linked documents/resources have not been localized
+  - resolve missing inclusions like token and code snippet
+
+For example, loc `live` branch content need involve source repo's `live` branch content and loc `master` branch need source repo's `master` branch content.
+
+Basically involving corresponding source repos' branch content can meet our requirement, but sometimes for test purpose, we need create some non-live test branch in loc repo and also need them to be built successfully.
+
+The problem is above requirement is that usually these non-live test branch don't have corresponding branch in source repo, so we have three options here:
+
+  - always need fallback to corresponding branch only, that's means user to create these test branch like `loc-test` in source repo
+  - fallback to corresponding branch first and if it doesn't exist in source repo, fallback to master branch
+  - always fallback to master for non-live test branch incudes master branch.
+
+Option-1 is easy and simple way, but a little hard for localization repo users, since usually they don't have the write permission to source repo.  
+Option-2 and Option-3 are more user-friendly, but build some extra works, appends `branch` info to resolved urls which linked to source content like `url?branch=master`
+
+### Inclusion TOC fallback
+
+When TOC-A includes TOC-B, the output of TOC-A would be TOC-A + TOC-B, so all built pages of articles referenced by TOC-B would have a combined TOC-A + TOC-B, that's TOC inclusion feature.
+
+In that case, if the TOC-A is not localized yet but TOC-B is, the TOC of the built articles' pages which are referenced by TOC-B has two options:
+  - `mixed` language toc combined by TOC-A(source) + TOC-B(loc) (v2 behavior)
+  - localized TOC-B only (v3 behavior)
+
+This case only happens when the repo is newly onboarded to OL or TOC-A is newly added(very rare), the TOC-A will be finally localized, but with some delay.
+
+In V3 design, we choice the 2nd option, based on below reasons:
+  - the TOC-A will be localized back soon, but with some delay, so this problem happens really rare.
+  - Mixed language toc maybe not a good user experience, need confirmed with Loc PM
+  - V3 want to do as little as possible specific features for localization, to reduce complexity and error-prone.
+
