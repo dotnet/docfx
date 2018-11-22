@@ -215,7 +215,7 @@ namespace Microsoft.Docs.Build
                     case "github-fail":
                         return Task.FromResult<(Error, GitHubUser)>((Errors.GitHubApiFailed("API call failed for some reasons", new Exception()), null));
                     default:
-                        return Task.FromResult((Errors.GitHubUserNotFound(login), new GitHubUser() { Login = login }));
+                        return Task.FromResult<(Error, GitHubUser)>(default);
                 }
             }
 
