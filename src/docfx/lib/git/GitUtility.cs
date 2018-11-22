@@ -22,21 +22,6 @@ namespace Microsoft.Docs.Build
         internal static Func<string, string> GitRemoteProxy;
 
         /// <summary>
-        /// Get the git remote information from remote href
-        /// </summary>
-        /// <param name="remoteHref">The git remote href like https://github.com/dotnet/docfx#master</param>
-        public static (string remote, string refspec) GetGitRemoteInfo(string remoteHref)
-        {
-            Debug.Assert(!string.IsNullOrEmpty(remoteHref));
-
-            var (path, _, fragment) = HrefUtility.SplitHref(remoteHref);
-
-            var refspec = (string.IsNullOrEmpty(fragment) || fragment.Length <= 1) ? "master" : fragment.Substring(1);
-
-            return (path, refspec);
-        }
-
-        /// <summary>
         /// Find git repo directory
         /// </summary>
         /// <param name="path">The git repo entry point</param>
@@ -157,6 +142,18 @@ namespace Microsoft.Docs.Build
                 }
                 return result;
             }
+        }
+
+        /// <summary>
+        /// Determines if a worktree has completed checkout
+        /// </summary>
+        public static bool IsWorkTreeCheckoutComplete(string repoPath, string worktreeName)
+        {
+            // Adding the HEAD file is the last step in a worktree checkout, use it to
+            // filter out worktrees that are still in progress.
+            //
+            // list_work_tree https://github.com/git/git/blob/e146cc97be4c054c60d38e9f4edcdc33205bf563/worktree.c#L93
+            return File.Exists(Path.Combine(repoPath, ".git/worktrees", worktreeName, "HEAD"));
         }
 
         /// <summary>
