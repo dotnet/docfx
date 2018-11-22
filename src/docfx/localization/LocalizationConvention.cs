@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -120,6 +121,67 @@ namespace Microsoft.Docs.Build
             contributionBranch = branch;
             return false;
         }
+
+        public static bool TryResolveDocset(this Docset docset, string file, out Docset resolvedDocset)
+        {
+            // resolve from localization docset
+            if (docset.LocalizationDocset != null && File.Exists(Path.Combine(docset.LocalizationDocset.DocsetPath, file)))
+            {
+                resolvedDocset = docset.LocalizationDocset;
+                return true;
+            }
+
+            // resolve from current docset
+            if (File.Exists(Path.Combine(docset.DocsetPath, file)))
+            {
+                resolvedDocset = docset;
+                return true;
+            }
+
+            // resolve from fallback docset
+            if (docset.FallbackDocset != null && File.Exists(Path.Combine(docset.FallbackDocset.DocsetPath, file)))
+            {
+                resolvedDocset = docset.FallbackDocset;
+                return true;
+            }
+
+            resolvedDocset = null;
+            return false;
+        }
+
+        public static HashSet<Document> CreateScanScope(this Docset docset)
+        {
+            var scanScopeFilePaths = new HashSet<string>(PathUtility.PathComparer);
+            var scanScope = new HashSet<Document>();
+
+            foreach (var buildScope in new[] { docset.LocalizationDocset?.BuildScope, docset.BuildScope, docset.FallbackDocset?.BuildScope })
+            {
+                if (buildScope == null)
+                {
+                    continue;
+                }
+
+                foreach (var document in buildScope)
+                {
+                    if (scanScopeFilePaths.Add(document.FilePath))
+                    {
+                        scanScope.Add(document);
+                    }
+                }
+            }
+
+            return scanScope;
+        }
+
+        public static Docset GetBuildDocset(this Docset sourceDocset)
+        {
+            Debug.Assert(sourceDocset != null);
+
+            return sourceDocset.LocalizationDocset ?? sourceDocset;
+        }
+
+        public static bool IsSourceDocset(this Docset docset)
+            => docset.FallbackDocset == null;
 
         private static string ToBilingualBranch(string branch) => $"{branch}-sxs";
     }

@@ -140,7 +140,7 @@ namespace Microsoft.Docs.Build
                 context.Report(Config.ConfigFileName, errors);
                 return map;
             });
-            _scanScope = new Lazy<HashSet<Document>>(() => CreateScanScope());
+            _scanScope = new Lazy<HashSet<Document>>(() => this.CreateScanScope());
             _metadata = new Lazy<MetadataProvider>(() => new MetadataProvider(config));
             _legacyTemplate = new Lazy<LegacyTemplate>(() => new LegacyTemplate(RestoreMap.GetGitRestorePath(Config.Dependencies["_themes"]), Locale));
             _monikerRangeParser = new Lazy<MonikerRangeParser>(() => CreateMonikerRangeParser());
@@ -210,30 +210,6 @@ namespace Microsoft.Docs.Build
 
                 return result;
             }
-        }
-
-        private HashSet<Document> CreateScanScope()
-        {
-            var scanScopeFilePaths = new HashSet<string>(PathUtility.PathComparer);
-            var scanScope = new HashSet<Document>();
-
-            foreach (var buildScope in new[] { LocalizationDocset?.BuildScope, BuildScope, FallbackDocset?.BuildScope })
-            {
-                if (buildScope == null)
-                {
-                    continue;
-                }
-
-                foreach (var document in buildScope)
-                {
-                    if (scanScopeFilePaths.Add(document.FilePath))
-                    {
-                        scanScope.Add(document);
-                    }
-                }
-            }
-
-            return scanScope;
         }
 
         private MonikerRangeParser CreateMonikerRangeParser()

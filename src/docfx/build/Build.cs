@@ -24,7 +24,7 @@ namespace Microsoft.Docs.Build
             var context = new Context(report, outputPath);
             context.Report(config.ConfigFileName, configErrors);
 
-            var docset = GetBuildDocset();
+            var docset = new Docset(context, docsetPath, config, options).GetBuildDocset();
 
             var githubUserCache = await GitHubUserCache.Create(docset, config.GitHub.AuthToken);
             var contribution = await ContributionProvider.Create(docset, githubUserCache);
@@ -59,12 +59,6 @@ namespace Microsoft.Docs.Build
 
             await saveGitHubUserCache;
             errors.ForEach(e => context.Report(e));
-
-            Docset GetBuildDocset()
-            {
-                var sourceDocset = new Docset(context, docsetPath, config, options);
-                return sourceDocset.LocalizationDocset ?? sourceDocset;
-            }
         }
 
         private static async Task<(Manifest, List<Document>, DependencyMap)> BuildFiles(
@@ -106,7 +100,7 @@ namespace Microsoft.Docs.Build
                 bool ShouldBuildFile(Document file)
                 {
                     // source content in a localization docset
-                    if (docset.FallbackDocset != null && file.Docset.LocalizationDocset != null)
+                    if (!docset.IsSourceDocset() && file.Docset.IsSourceDocset())
                     {
                         return false;
                     }
