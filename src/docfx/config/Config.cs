@@ -134,12 +134,17 @@ namespace Microsoft.Docs.Build
         public readonly string MonikerDefinition = string.Empty;
 
         /// <summary>
+        /// Get the theme repo url
+        /// </summary>
+        public readonly string Theme = string.Empty;
+
+        /// <summary>
         /// Gets the config file name.
         /// </summary>
         [JsonIgnore]
         public string ConfigFileName { get; private set; }
 
-        public IEnumerable<string> GetExternalReferences()
+        public IEnumerable<string> GetExternalReferences(string locale)
         {
             foreach (var url in Xref)
             {
@@ -149,6 +154,7 @@ namespace Microsoft.Docs.Build
             yield return Contribution.GitCommitsTime;
             yield return GitHub.UserCache;
             yield return MonikerDefinition;
+            yield return LocalizationConvention.GetLocalizationTheme(Theme, locale, Localization.DefaultLocale);
         }
 
         /// <summary>

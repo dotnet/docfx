@@ -11,8 +11,6 @@ namespace Microsoft.Docs.Build
 {
     internal static class LocalizationConvention
     {
-        private static readonly Regex s_repoNameWithLocale = new Regex(@"^.+?(\.[a-z]{2,4}-[a-z]{2,4}(-[a-z]{2,4})?|\.localization)?$", RegexOptions.IgnoreCase);
-
         /// <summary>
         /// The loc repo name follows below conventions:
         /// source remote                                           -->     loc remote
@@ -50,12 +48,15 @@ namespace Microsoft.Docs.Build
 
             var newLocale = mapping == LocalizationMapping.Repository ? $".{locale}" : ".localization";
             var newBranch = bilingual ? $"{branch}-sxs" : branch;
-            var repoName = remote.Split(new char[] { '/', '\\' }).Last();
-            var match = s_repoNameWithLocale.Match(repoName);
-            if (match.Success && match.Groups.Count >= 2 && !string.IsNullOrEmpty(match.Groups[1].Value))
+
+            if (remote.EndsWith($".{defaultLocale}", StringComparison.OrdinalIgnoreCase))
             {
-                var originLocale = match.Groups[1].Value;
-                return (remote.Replace(originLocale, newLocale), newBranch);
+                remote = remote.Substring(0, remote.Length - $".{defaultLocale}".Length);
+            }
+
+            if (remote.EndsWith(newLocale, StringComparison.OrdinalIgnoreCase))
+            {
+                return (remote, newBranch);
             }
 
             return ($"{remote}{newLocale}", newBranch);
@@ -106,6 +107,33 @@ namespace Microsoft.Docs.Build
             }
 
             return localizationDocsetPath;
+        }
+
+        public static string GetLocalizationTheme(string theme, string locale, string defaultLocale)
+        {
+            if (string.Equals(locale, defaultLocale))
+            {
+                return theme;
+            }
+
+            if (string.IsNullOrEmpty(theme))
+            {
+                return theme;
+            }
+
+            var (remote, branch) = HrefUtility.SplitGitHref(theme);
+
+            if (remote.EndsWith($".{defaultLocale}", StringComparison.OrdinalIgnoreCase))
+            {
+                remote = remote.Substring(0, remote.Length - $".{defaultLocale}".Length);
+            }
+
+            if (remote.EndsWith($".{locale}", StringComparison.OrdinalIgnoreCase))
+            {
+                return theme;
+            }
+
+            return $"{remote}.{locale}#{branch}";
         }
     }
 }
