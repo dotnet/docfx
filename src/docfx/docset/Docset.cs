@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -142,7 +143,12 @@ namespace Microsoft.Docs.Build
             });
             _scanScope = new Lazy<HashSet<Document>>(() => CreateScanScope());
             _metadata = new Lazy<MetadataProvider>(() => new MetadataProvider(config));
-            _legacyTemplate = new Lazy<LegacyTemplate>(() => new LegacyTemplate(RestoreMap.GetGitRestorePath(LocalizationConvention.GetLocalizationTheme(Config.Theme, Locale, Config.Localization.DefaultLocale)), Locale));
+            _legacyTemplate = new Lazy<LegacyTemplate>(() =>
+            {
+                Debug.Assert(!string.IsNullOrEmpty(config.Theme));
+                var (themeRemote, branch) = LocalizationConvention.GetLocalizationTheme(Config.Theme, Locale, Config.Localization.DefaultLocale);
+                return new LegacyTemplate(RestoreMap.GetGitRestorePath($"{themeRemote}#{branch}"), Locale);
+            });
             _monikerRangeParser = new Lazy<MonikerRangeParser>(() => CreateMonikerRangeParser());
             _monikersProvider = new Lazy<MonikersProvider>(() => new MonikersProvider(Config));
         }

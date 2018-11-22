@@ -109,24 +109,20 @@ namespace Microsoft.Docs.Build
             return localizationDocsetPath;
         }
 
-        public static string GetLocalizationTheme(string theme, string locale, string defaultLocale)
+        public static (string remote, string branch) GetLocalizationTheme(string theme, string locale, string defaultLocale)
         {
-            if (string.Equals(locale, defaultLocale))
-            {
-                return theme;
-            }
-
-            if (string.IsNullOrEmpty(theme))
-            {
-                return theme;
-            }
+            Debug.Assert(!string.IsNullOrEmpty(theme));
+            var (remote, branch) = HrefUtility.SplitGitHref(theme);
 
             if (string.IsNullOrEmpty(locale))
             {
-                return theme;
+                return (remote, branch);
             }
 
-            var (remote, branch) = HrefUtility.SplitGitHref(theme);
+            if (string.Equals(locale, defaultLocale))
+            {
+                return (remote, branch);
+            }
 
             if (remote.EndsWith($".{defaultLocale}", StringComparison.OrdinalIgnoreCase))
             {
@@ -135,10 +131,10 @@ namespace Microsoft.Docs.Build
 
             if (remote.EndsWith($".{locale}", StringComparison.OrdinalIgnoreCase))
             {
-                return theme;
+                return (remote, branch);
             }
 
-            return $"{remote}.{locale}#{branch}";
+            return ($"{remote}.{locale}", branch);
         }
     }
 }

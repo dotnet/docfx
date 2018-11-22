@@ -152,7 +152,7 @@ namespace Microsoft.Docs.Build
         [JsonIgnore]
         public string ConfigFileName { get; private set; }
 
-        public IEnumerable<string> GetExternalReferences(string locale)
+        public IEnumerable<string> GetFileReferences(string locale)
         {
             foreach (var url in Xref)
             {
@@ -162,7 +162,6 @@ namespace Microsoft.Docs.Build
             yield return Contribution.GitCommitsTime;
             yield return GitHub.UserCache;
             yield return MonikerDefinition;
-            yield return LocalizationConvention.GetLocalizationTheme(Theme, locale, Localization.DefaultLocale);
         }
 
         /// <summary>
