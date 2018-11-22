@@ -7,7 +7,7 @@ namespace Microsoft.Docs.Build
     {
         Link, // file reference
         Bookmark, // file reference with fragment
-        Uid, // uid reference
+        UidInclusion, // uid reference with display property
         Inclusion, // token or codesnippet
         Overwrite, // overwrite markdown reference
         TocInclusion, // toc reference toc
