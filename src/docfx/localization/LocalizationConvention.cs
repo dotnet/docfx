@@ -85,7 +85,7 @@ namespace Microsoft.Docs.Build
                             repo.Branch,
                             locale,
                             config.Localization.DefaultLocale);
-                        var restorePath = RestoreMap.GetGitRestorePath($"{locRemote}#{locBranch}");
+                        var restorePath = RestoreMap.GetGitRestorePath(locRemote, locBranch);
                         localizationDocsetPath = config.Localization.Mapping == LocalizationMapping.Repository
                             ? restorePath
                             : Path.Combine(restorePath, locale);
