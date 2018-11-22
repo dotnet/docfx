@@ -165,7 +165,7 @@ inputs:
   docfx.yml: |
     extend: _shared/extend.json
   _shared/extend.json: |
-    {"content": "a.md"}
+    {"files": "a.md"}
   a.md:
 outputs:
   a.json:
@@ -182,7 +182,7 @@ outputs:
 # absolute url extend
 inputs:
   docfx.yml: |
-    extend: https://raw.githubusercontent.com/docascode/docfx-test-dependencies/extend-test-1/extend1.yml
+    extend: https://raw.githubusercontent.com/docascode/docfx-test-dependencies/62b0448/extend1.yml
   a.md:
 outputs:
   a.json:
@@ -203,7 +203,7 @@ inputs:
   docfx.yml: |
     extend:
     - extendB.yml
-    - https://raw.githubusercontent.com/docascode/docfx-test-dependencies/extend-test-1/extend1.yml
+    - https://raw.githubusercontent.com/docascode/docfx-test-dependencies/62b0448/extend1.yml
   extendB.yml: |
     files: invalid.md
   a.md:

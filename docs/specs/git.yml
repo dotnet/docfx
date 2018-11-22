@@ -339,7 +339,7 @@ outputs:
     }
 ---
 # Support git submodule
-repo: https://github.com/docascode/docfx-test-dependencies#docset-with-submodule
+repo: https://github.com/docascode/docfx-test-dependencies#c70a63e
 outputs:
   readme.json: |
     {
