@@ -201,11 +201,11 @@ namespace Microsoft.Docs.Build
             Debug.Assert(!Path.IsPathRooted(path));
 
             var filePath = PathUtility.NormalizeFile(path);
-            var isConfigReference = docset.Config.Extend.Concat(docset.Config.GetExternalReferences()).Contains(filePath, PathUtility.PathComparer);
+            var isConfigReference = docset.Config.Extend.Concat(docset.Config.GetFileReferences()).Contains(filePath, PathUtility.PathComparer);
             var type = isConfigReference ? ContentType.Unknown : GetContentType(filePath);
             var (mime, schema) = type == ContentType.Page ? Schema.ReadFromFile(Path.Combine(docset.DocsetPath, filePath)) : default;
             var isExperimental = Path.GetFileNameWithoutExtension(filePath).EndsWith(".experimental", PathUtility.PathComparison);
-            var routedFilePath = ApplyRoutes(filePath, docset.ReversedRoutes);
+            var routedFilePath = ApplyRoutes(filePath, docset.Routes);
 
             var sitePath = FilePathToSitePath(routedFilePath, type, schema, docset.Config.Output.Json, docset.Config.Output.UglifyUrl);
             if (docset.Config.Output.LowerCaseUrl)
@@ -379,10 +379,10 @@ namespace Microsoft.Docs.Build
             return false;
         }
 
-        private static string ApplyRoutes(string path, IReadOnlyDictionary<string, string> reversedRoutes)
+        private static string ApplyRoutes(string path, IReadOnlyDictionary<string, string> routes)
         {
             // the latter rule takes precedence of the former rule
-            foreach (var (source, dest) in reversedRoutes)
+            foreach (var (source, dest) in routes)
             {
                 var result = ApplyRoutes(path, source, dest);
                 if (result != null)

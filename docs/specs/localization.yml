@@ -453,7 +453,7 @@ commands:
   - build --locale zh-cn
 inputs:
   docfx.yml: |
-    content: '**/*.md'
+    files: '**/*.md'
     localization:
       mapping: Folder
   localization/zh-cn/docs/a.md: |
@@ -467,7 +467,7 @@ outputs:
 # loc folder should be excluded from source docset during source docset build
 inputs:
   docfx.yml: |
-    content: '**/*.md'
+    files: '**/*.md'
     localization:
       mapping: Folder
   localization/zh-cn/docs/a.md:
@@ -654,3 +654,25 @@ repos:
 outputs:
   docs/a.json: |
     {"gitcommit":"https://github.com/bilingual/a.zh-cn/blob/b1990a2c68f76bcf400e766c38480834a40e80fc/docs/a.md"}
+---
+# conflicted toc files(source and loc) will be removed from toc map
+commands:
+  - restore --locale zh-cn
+  - build --locale zh-cn
+repos:
+  https://github.com/conflictedtoc/a:
+    - files:
+        docs/a/TOC.md: |
+          # [md reference a](a.md)
+        docfx.yml:
+  https://github.com/conflictedtoc/a.zh-cn:
+    - files:
+        docs/a/TOC.yml: |
+          - href: a.md
+            name: yml reference a
+        docs/a/a.md:
+outputs:
+  docs/a/a.json: |
+    {"!toc_rel": "toc.json"}
+  build.log: |
+    ["warning","publish-url-conflict","Two or more documents of the same version publish to the same url '/docs/a/toc.json': 'docs/a/TOC.md', 'docs/a/TOC.yml'"]

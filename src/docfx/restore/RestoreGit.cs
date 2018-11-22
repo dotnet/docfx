@@ -24,7 +24,7 @@ namespace Microsoft.Docs.Build
             async Task RestoreGitRepo(IGrouping<string, string> group)
             {
                 var remote = group.Key;
-                var branches = group.Distinct();
+                var branches = group.Distinct().ToArray();
                 var repoPath = Path.GetFullPath(Path.Combine(AppData.GetGitDir(remote), ".git"));
                 var childRepos = new List<string>();
 
@@ -54,9 +54,16 @@ namespace Microsoft.Docs.Build
 
                     await ParallelUtility.ForEach(branches, async branch =>
                     {
+                        // Bilingual repos ({branch}-sxs) only depend on non bilingual branch for git commit history,
+                        // so don't perform a checkout.
+                        if (branches.Contains($"{branch}-sxs"))
+                        {
+                            return;
+                        }
+
                         // use branch name instead of commit hash
                         // https://git-scm.com/docs/git-worktree#_commands
-                        var workTreeHead = $"{GitUtility.RevParse(repoPath, branch)}-{HrefUtility.EscapeUrlSegment(branch)}";
+                        var workTreeHead = $"{HrefUtility.EscapeUrlSegment(branch)}-{GitUtility.RevParse(repoPath, branch)}";
                         var workTreePath = Path.GetFullPath(Path.Combine(repoPath, "../", workTreeHead)).Replace('\\', '/');
 
                         if (existingWorkTreePath.TryAdd(workTreePath))
@@ -75,8 +82,19 @@ namespace Microsoft.Docs.Build
 
         private static IEnumerable<(string remote, string branch)> GetGitDependencies(string docsetPath, Config config, string locale)
         {
-            return config.Dependencies.Values.Select(GitUtility.GetGitRemoteInfo)
-                         .Concat(GetLocalizationGitDependencies(docsetPath, config, locale));
+            return config.Dependencies.Values.Select(HrefUtility.SplitGitHref)
+                         .Concat(GetLocalizationGitDependencies(docsetPath, config, locale))
+                         .Concat(GetThemeGitDependencies(config, locale));
+        }
+
+        private static IEnumerable<(string remote, string branch)> GetThemeGitDependencies(Config config, string locale)
+        {
+            if (string.IsNullOrEmpty(config.Theme))
+            {
+                yield break;
+            }
+
+            yield return LocalizationConvention.GetLocalizationTheme(config.Theme, locale, config.Localization.DefaultLocale);
         }
 
         private static IEnumerable<(string remote, string branch)> GetLocalizationGitDependencies(string docsetPath, Config config, string locale)

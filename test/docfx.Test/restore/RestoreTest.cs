@@ -19,10 +19,10 @@ namespace Microsoft.Docs.Build
         [InlineData("https://github.com/dotnet/docfx#986127a", "https://github.com/dotnet/docfx", "986127a")]
         [InlineData("https://github.com/dotnet/docfx#a#a", "https://github.com/dotnet/docfx", "a#a")]
         [InlineData("https://github.com/dotnet/docfx#a\\b/d<e>f*h|i%3C", "https://github.com/dotnet/docfx", "a\\b/d<e>f*h|i%3C")]
-        public static void GetGitInfo(string remote, string expectedUrl, string expectedRev)
+        public static void SplitGitHref(string remote, string expectedUrl, string expectedRev)
         {
             // Act
-            var (url, rev) = GitUtility.GetGitRemoteInfo(remote);
+            var (url, rev) = HrefUtility.SplitGitHref(remote);
 
             // Assert
             Assert.Equal(expectedUrl, url);
@@ -52,7 +52,7 @@ dependencies:
             var workTreeList = await GitUtility.ListWorkTree(restorePath);
             Assert.Equal(6, workTreeList.Count);
 
-            foreach(var wirkTreeFolder in workTreeList.Where(w => w.EndsWith("clean")))
+            foreach(var wirkTreeFolder in workTreeList.Where(w => w.Contains("-clean-")))
             {
                 Directory.SetLastWriteTimeUtc(wirkTreeFolder, DateTime.UtcNow - TimeSpan.FromDays(20));
             }

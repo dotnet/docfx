@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
@@ -11,15 +12,17 @@ namespace Microsoft.Docs.Build
 {
     internal static class LegacyManifest
     {
-        public static List<(LegacyManifestItem manifestItem, Document doc)> Convert(Docset docset, Context context, List<Document> documents)
+        public static List<(LegacyManifestItem manifestItem, Document doc)> Convert(Docset docset, Context context, Dictionary<Document, FileManifest> fileManifests)
         {
             using (Progress.Start("Convert Legacy Manifest"))
             {
+                var monikerGroups = new ConcurrentDictionary<string, Lazy<List<string>>>();
                 var convertedItems = new ConcurrentBag<(LegacyManifestItem manifestItem, Document doc)>();
                 Parallel.ForEach(
-                    documents,
-                    document =>
+                    fileManifests,
+                    fileManifest =>
                     {
+                        var document = fileManifest.Key;
                         var legacyOutputPathRelativeToBaseSitePath = document.ToLegacyOutputPathRelativeToBaseSitePath(docset);
                         var legacySiteUrlRelativeToBaseSitePath = document.ToLegacySiteUrlRelativeToBaseSitePath(docset);
 
@@ -80,6 +83,7 @@ namespace Microsoft.Docs.Build
                             }
                         }
 
+                        var groupId = HashUtility.GetMd5HashShort(string.Join(',', fileManifest.Value.Monikers));
                         var file = new LegacyManifestItem
                         {
                             SiteUrlRelativeToSiteBasePath = legacySiteUrlRelativeToBaseSitePath,
@@ -90,14 +94,21 @@ namespace Microsoft.Docs.Build
                             Output = output,
                             SkipNormalization = !(document.ContentType == ContentType.Resource),
                             SkipSchemaCheck = !(document.ContentType == ContentType.Resource),
+                            Group = groupId,
                         };
 
                         convertedItems.Add((file, document));
+                        monikerGroups.GetOrAdd(groupId, new Lazy<List<string>>(() => fileManifest.Value.Monikers));
                     });
 
                 context.WriteJson(
                 new
                 {
+                    groups = monikerGroups.Select(item => new
+                    {
+                        group = item.Key,
+                        monikers = item.Value,
+                    }),
                     default_version_info = new
                     {
                         name = string.Empty,

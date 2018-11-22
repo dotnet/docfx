@@ -30,7 +30,7 @@ namespace Microsoft.Docs.Build
             return (errors, model, dependencyMapBuilder.Build());
         }
 
-        public static TableOfContentsMap BuildTocMap(Context context, Docset docset)
+        public static (List<Error>, TableOfContentsMap) BuildTocMap(Context context, Docset docset)
         {
             using (Progress.Start("Loading TOC"))
             {
