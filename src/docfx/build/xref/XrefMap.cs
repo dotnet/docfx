@@ -275,7 +275,6 @@ namespace Microsoft.Docs.Build
             {
                 Uid = metadata.Uid,
                 Href = file.SiteUrl,
-                File = file,
             };
             xref.ExtensionData["name"] = string.IsNullOrEmpty(metadata.Title) ? metadata.Uid : metadata.Title;
 
@@ -306,7 +305,6 @@ namespace Microsoft.Docs.Build
             {
                 Uid = uid,
                 Href = file.SiteUrl,
-                File = file,
             };
             xref.ExtensionData.Merge(extensionData);
             return (errors, xref, file);
