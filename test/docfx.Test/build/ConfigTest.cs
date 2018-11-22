@@ -73,8 +73,8 @@ namespace Microsoft.Docs.Build
 
         [Theory]
         [InlineData("https://github.com/docs/theme", "en-us", "en-us", "https://github.com/docs/theme")]
-        [InlineData("https://github.com/docs/theme", "zh-cn", "en-us", "https://github.com/docs/theme")]
-        [InlineData("https://github.com/docs/theme", "", "en-us", "https://github.com/docs/theme.#master")]
+        [InlineData("https://github.com/docs/theme", "zh-cn", "en-us", "https://github.com/docs/theme.zh-cn#master")]
+        [InlineData("https://github.com/docs/theme", "", "en-us", "https://github.com/docs/theme")]
         [InlineData("https://github.com/docs/theme.zh-cn", "zh-cn", "en-us", "https://github.com/docs/theme.zh-cn")]
         [InlineData("https://github.com/docs/theme.en-us", "zh-cn", "en-us", "https://github.com/docs/theme.zh-cn#master")]
         [InlineData("", "zh-cn", "en-us", "")]
