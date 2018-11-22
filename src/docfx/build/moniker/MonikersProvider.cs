@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -11,7 +10,6 @@ namespace Microsoft.Docs.Build
     internal class MonikersProvider
     {
         private readonly List<(Func<string, bool> glob, string monikerRange)> _rules = new List<(Func<string, bool>, string)>();
-        private readonly ConcurrentDictionary<Document, List<string>> _monikersMap = new ConcurrentDictionary<Document, List<string>>();
 
         public MonikersProvider(Config config)
         {
