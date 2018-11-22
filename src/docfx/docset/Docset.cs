@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -158,7 +159,12 @@ namespace Microsoft.Docs.Build
             _monikerRangeParser = new Lazy<MonikerRangeParser>(() => new MonikerRangeParser(monikerDefinition));
             _monikerAscendingComparer = new Lazy<MonikerComparer>(() => new MonikerComparer(monikerDefinition));
             _monikerDescendingComparer = new Lazy<MonikerComparer>(() => new MonikerComparer(monikerDefinition, false));
-            _legacyTemplate = new Lazy<LegacyTemplate>(() => new LegacyTemplate(RestoreMap.GetGitRestorePath(LocalizationConvention.GetLocalizationTheme(Config.Theme, Locale, Config.Localization.DefaultLocale)), Locale));
+            _legacyTemplate = new Lazy<LegacyTemplate>(() =>
+            {
+                Debug.Assert(!string.IsNullOrEmpty(Config.Theme));
+                var (themeRemote, branch) = LocalizationConvention.GetLocalizationTheme(Config.Theme, Locale, Config.Localization.DefaultLocale);
+                return new LegacyTemplate(RestoreMap.GetGitRestorePath($"{themeRemote}#{branch}"), Locale);
+            });
             _monikersProvider = new Lazy<MonikersProvider>(() => new MonikersProvider(Config));
         }
 

@@ -72,12 +72,18 @@ namespace Microsoft.Docs.Build
             => Assert.Equal(targetBranch, LocalizationConvention.GetLocalizationRepo(locMappingType, enableBilingual, "abc", sourceBranch, locale, "en-us").branch);
 
         [Theory]
-        [InlineData("https://github.com/docs/theme", "en-us", "en-us", "https://github.com/docs/theme")]
+        [InlineData("https://github.com/docs/theme", "en-us", "en-us", "https://github.com/docs/theme#master")]
         [InlineData("https://github.com/docs/theme", "zh-cn", "en-us", "https://github.com/docs/theme.zh-cn#master")]
-        [InlineData("https://github.com/docs/theme.zh-cn", "zh-cn", "en-us", "https://github.com/docs/theme.zh-cn")]
+        [InlineData("https://github.com/docs/theme", "", "en-us", "https://github.com/docs/theme#master")]
+        [InlineData("https://github.com/docs/theme.zh-cn", "zh-cn", "en-us", "https://github.com/docs/theme.zh-cn#master")]
         [InlineData("https://github.com/docs/theme.en-us", "zh-cn", "en-us", "https://github.com/docs/theme.zh-cn#master")]
-        [InlineData("", "zh-cn", "en-us", "")]
+        [InlineData("https://github.com/docs/theme#live", "zh-cn", "en-us", "https://github.com/docs/theme.zh-cn#live")]
+        [InlineData("https://github.com/docs/theme.en-us#live", "zh-cn", "en-us", "https://github.com/docs/theme.zh-cn#live")]
+        [InlineData("https://github.com/docs/theme.zh-cn#live", "zh-cn", "en-us", "https://github.com/docs/theme.zh-cn#live")]
         public static void LocConfigConventionTheme(string theme, string locale, string defaultLocale, string expectedTheme)
-            => Assert.Equal(expectedTheme, LocalizationConvention.GetLocalizationTheme(theme, locale, defaultLocale));
+        {
+            var (remote, branch) = LocalizationConvention.GetLocalizationTheme(theme, locale, defaultLocale);
+            Assert.Equal(expectedTheme, $"{remote}#{branch}");
+        }
     }
 }
