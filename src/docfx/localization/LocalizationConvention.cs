@@ -49,7 +49,7 @@ namespace Microsoft.Docs.Build
             }
 
             var newLocale = mapping == LocalizationMapping.Repository ? $".{locale}" : ".localization";
-            var newBranch = bilingual ? $"{branch}-sxs" : branch;
+            var newBranch = bilingual ? ToBilingualBranch(branch) : branch;
             var repoName = remote.Split(new char[] { '/', '\\' }).Last();
             var match = s_repoNameWithLocale.Match(repoName);
             if (match.Success && match.Groups.Count >= 2 && !string.IsNullOrEmpty(match.Groups[1].Value))
@@ -107,5 +107,20 @@ namespace Microsoft.Docs.Build
 
             return localizationDocsetPath;
         }
+
+        public static bool TryToContributionBranch(string branch, out string contributionBranch)
+        {
+            Debug.Assert(!string.IsNullOrEmpty(branch));
+            if (branch.EndsWith("-sxs"))
+            {
+                contributionBranch = branch.Substring(0, branch.Length - 4);
+                return true;
+            }
+
+            contributionBranch = branch;
+            return false;
+        }
+
+        private static string ToBilingualBranch(string branch) => $"{branch}-sxs";
     }
 }
