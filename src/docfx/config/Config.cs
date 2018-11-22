@@ -134,7 +134,8 @@ namespace Microsoft.Docs.Build
         public readonly string MonikerDefinition = string.Empty;
 
         /// <summary>
-        /// Get the theme repo url
+        /// Get the theme repo url like https://github.com/docs/theme#master
+        /// It's used for legacy doc(docs.com) sites build
         /// </summary>
         public readonly string Theme = string.Empty;
 
