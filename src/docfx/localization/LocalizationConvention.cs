@@ -183,6 +183,6 @@ namespace Microsoft.Docs.Build
         public static bool IsSourceDocset(this Docset docset)
             => docset.FallbackDocset == null;
 
-        private static string ToBilingualBranch(string branch) => $"{branch}-sxs";
+        public static string ToBilingualBranch(string branch) => $"{branch}-sxs";
     }
 }
