@@ -285,11 +285,23 @@ localization(repo):
         | - readme.md
 ```
 
-For different `folder` option, it's easy to manage all localization contents, the branch model is also friendly to ops backend service(build/dhs), but we need a way to identify which locale need to be built once a changes comes and also may have a little bigger impact to OL workflow(HB writing behavior).
+For different `folder` option:
+    - 😄 it's easy to manage all localization contents and apply changes to all localization content
+    - 😄 the branch model is also friendly to ops backend service(build/dhs)
+    - 😭 we need a way to identify which locale need to be built once a changes comes, or trigger all locales builds.
+    - 😭 may have a little bigger impact to OL workflow(HB writing behavior).
+    - 😭 performance would be bad if we only want to build one locale(need checkout all locales's content)
+    - ❓ public contribution workflow maybe different?
+    - ❓ permission control on different locale may be a little hard
 
-For different `branch` options, I believe it has less impact to OL workflow, and we can easily identify which locale to build once a new changes comes, but the problems is that it brings to many branches to maintains, imagine that we have 64+ locales for one small repo. And also, it may have a little bigger impact to ops backend service because current **'master' and 'live' are hardcoded everywhere**.
-
-I recommend the different `folder` option, :)
+For different `branch` options:
+    - 😄 I believe it has less impact to OL workflow, 
+    - 😄 and we can easily identify which locale to build once a new changes comes
+    - 😄 performance would be good if we only want to build one locale(only checkout one locale's content)
+    - 😄 public contribution workflow maybe easy and permission per branch can be implemented
+    - 😭 it brings to many branches to maintains, imagine that we have 64+ locales for one small repo. 
+    - 😭 it may have a little bigger impact to ops backend service because current **'master' and 'live' are hardcoded everywhere**.
+    - 😭 hard to apply localization fix/changes to all locales(just like now, you need a script to pull/add/commit/push 64+ times)  
 
 ### Combine all localization content in one repo or multiple repos?
 
