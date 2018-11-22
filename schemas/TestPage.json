@@ -13,6 +13,9 @@
     },
     "href": {
       "type": "string"
+    },
+    "$schema": {
+      "type": "string"
     }
   }
 }

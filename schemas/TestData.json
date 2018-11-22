@@ -25,6 +25,9 @@
     },
     "data": {
       "$ref": "#"
+    },
+    "$schema": {
+      "type": "string"
     }
   }
 }

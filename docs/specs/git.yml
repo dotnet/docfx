@@ -1,263 +1,341 @@
 ---
 # Show git contribution info when userProfile & commitsTime is set to URL
-repo: https://github.com/docascode/docfx-test-dependencies#github-user-cache-url
+repos:
+  https://github.com/testowner/testrepo#master-url-cache:
+    - author: Charlie
+      email: charlie@contoso.com
+      files:
+        docs/index.md: |
+          ---
+          author: charlie
+          ---
+          Alice creates this. Bob updates this. Charlie becomes author.
+    - author: Bob 
+      email: bob@contoso.com
+      files:
+        docs/index.md: |
+          Alice creates this. Bob updates this.
+    - author: Alice 
+      email: alice@contoso.com
+      files:
+        docs/index.md: |
+          Alice creates this.
+inputs:
+  docfx.yml: |
+    gitHub:
+      userCache: https://raw.githubusercontent.com/docascode/docfx-test-dependencies/master/user_profile.json
+      resolveUsers: true
+    contribution:
+      gitCommitsTime: https://raw.githubusercontent.com/docascode/docfx-test-dependencies/master/build_history.json
 outputs:
-  readme.json: |
+  docs/index.json: |
     {
-      "author": {
-        "name": "superyyrrzz",
-        "profile_url": "https://github.com/superyyrrzz",
-        "display_name": "Renze Yu",
-        "id": "3831744"
-      },
+      "author": 
+        { "name": "charlie", "profile_url": "https://github.com/charlie", "display_name": "Charlie", "id": "3" },
       "contributors": [
-        {
-          "name": "yufeih",
-          "profile_url": "https://github.com/yufeih",
-          "display_name": "Yufei Huang",
-          "id": "511355"
-        },
-        {
-          "name": "OsmondJiang",
-          "profile_url": "https://github.com/OsmondJiang",
-          "display_name": "Osmond Jiang",
-          "id": "19990166"
-        }
+        { "name": "bob", "profile_url": "https://github.com/bob", "display_name": "Bob", "id": "2" },
+        { "name": "alice", "profile_url": "https://github.com/alice", "display_name": "Alice", "id": "1" }
       ],
-      "updated_at": "1874-01-01T00:00:00.0000000"
+      "updated_at": "2018-01-01T00:00:00.0000000"
     }
 ---
 # Show git contribution info when userProfile & commitsTime is set to relative file path
-repo: https://github.com/docascode/docfx-test-dependencies#github-user-cache-file
+repos:
+  https://github.com/testowner/testrepo#master-file-cache:
+    - author: Charlie
+      email: charlie@contoso.com
+      files:
+        docs/index.md: |
+          ---
+          author: charlie
+          ---
+          Alice creates this. Bob updates this. Charlie becomes author.
+    - author: Bob 
+      email: bob@contoso.com
+      files:
+        docs/index.md: |
+          Alice creates this. Bob updates this.
+    - author: Alice 
+      email: alice@contoso.com
+      files:
+        docs/index.md: |
+          Alice creates this.
 inputs:
   docfx.yml: |
-    content: README.md
     gitHub:
       userCache: user_profile.json
       resolveUsers: true
     contribution:
       gitCommitsTime: build_history.json
+  user_profile.json: |
+      { "users": [
+          {"name": "Alice", "login": "alice", "id": 1, "emails": ["alice@contoso.com"]},
+          {"name": "Bob", "login": "bob", "id": 2, "emails": ["bob@contoso.com"]},
+          {"name": "Charlie", "login": "charlie", "id": 3, "emails": ["charlie@contoso.com"]}
+        ]
+      }
+  build_history.json: |
+    { "commits": [
+        { "sha": "6547e91b51bb7cd49d8fbf71f7c61d14f6a49937", "built_at": "2018-01-01" }
+      ]
+    }
 outputs:
-  readme.json: |
+  docs/index.json: |
     {
-      "author": {
-        "name": "superyyrrzz",
-        "profile_url": "https://github.com/superyyrrzz",
-        "display_name": "Renze Yu",
-        "id": "3831744"
-      },
+      "author": 
+        { "name": "charlie", "profile_url": "https://github.com/charlie", "display_name": "Charlie", "id": "3" },
       "contributors": [
-        {
-          "name": "yufeih",
-          "profile_url": "https://github.com/yufeih",
-          "display_name": "Yufei Huang",
-          "id": "511355"
-        },
-        {
-          "name": "OsmondJiang",
-          "profile_url": "https://github.com/OsmondJiang",
-          "display_name": "Osmond Jiang",
-          "id": "19990166"
-        }
+        { "name": "bob", "profile_url": "https://github.com/bob", "display_name": "Bob", "id": "2" },
+        { "name": "alice", "profile_url": "https://github.com/alice", "display_name": "Alice", "id": "1" }
       ],
-      "updated_at": "1874-01-01T00:00:00.0000000"
+      "updated_at": "2018-01-01T00:00:00.0000000"
     }
 ---
 # Specify invalid author in YAML header should log warning
-repo: https://github.com/docascode/docfx-test-dependencies#github-user-cache-file
 inputs:
-  README.md: |
+  docs/index.md: |
     ---
     author: invalid_user
     ---
     # git-test
+  docfx.yml: |
+    gitHub:
+      userCache: user_profile.json
+      resolveUsers: true
   user_profile.json: |
     {
       "users": [
         {"login": "invalid_user"},
-        {"name": "Osmond Jiang", "login": "OsmondJiang", "id": 19990166, "emails": ["xinjiang@microsoft.com"]},
-        {"name": "Renze Yu", "login": "superyyrrzz", "id": 3831744, "emails": ["renzeyu@microsoft.com","superyyrrzz@gmail.com"]},
-        {"name": "Yufei Huang", "login": "yufeih", "id": 511355, "emails": ["yufeih@users.noreply.github.com","yufeih@live.com"]}
       ]
     }
 outputs:
-  readme.json:
+  docs/index.json:
   build.log: |
-    ["warning","github-user-not-found","Cannot find user 'invalid_user' on GitHub","README.md"]
+    ["warning","github-user-not-found","Cannot find user 'invalid_user' on GitHub","docs/index.md"]
 ---
 # Author should NOT exist in contributors. Author can have no contribution to the file before.
-repo: https://github.com/docascode/docfx-test-dependencies#github-user-cache-file
+repos:
+  https://github.com/testowner/testrepo#master-author:
+    - author: Bob 
+      email: bob@contoso.com
+      files:
+        docs/index.md: |
+          ---
+          author: charlie
+          ---
+          Alice creates this. Bob updates this, and thinks Charlie should be the author.
+    - author: Alice 
+      email: alice@contoso.com
+      files:
+        docs/index.md: |
+          Alice creates this.
 inputs:
-  README.md: |
-    ---
-    author: real_author
-    ---
-    # git-test
+  docfx.yml: |
+    gitHub:
+      userCache: user_profile.json
+      resolveUsers: true
   user_profile.json: |
-    {
-      "users": [
-        {"name": "Real Author", "login": "real_author", "id": 31415926, "emails": ["real_author@contoso.com"]},
-        {"name": "Osmond Jiang", "login": "OsmondJiang", "id": 19990166, "emails": ["xinjiang@microsoft.com"]},
-        {"name": "Renze Yu", "login": "superyyrrzz", "id": 3831744, "emails": ["renzeyu@microsoft.com","superyyrrzz@gmail.com"]},
-        {"name": "Yufei Huang", "login": "yufeih", "id": 511355, "emails": ["yufeih@users.noreply.github.com","yufeih@live.com"]}
-      ]
-    }
+      { "users": [
+          {"name": "Alice", "login": "alice", "id": 1, "emails": ["alice@contoso.com"]},
+          {"name": "Bob", "login": "bob", "id": 2, "emails": ["bob@contoso.com"]},
+          {"name": "Charlie", "login": "charlie", "id": 3, "emails": ["charlie@contoso.com"]}
+        ]
+      }
 outputs:
-  readme.json: |
+  docs/index.json: |
     {
-      "author": {
-        "name": "real_author",
-        "profile_url": "https://github.com/real_author",
-        "display_name": "Real Author",
-        "id": "31415926"
-      },
+      "author": 
+        { "name": "charlie", "profile_url": "https://github.com/charlie", "display_name": "Charlie", "id": "3" },
       "contributors": [
-        {
-          "name": "yufeih",
-          "profile_url": "https://github.com/yufeih",
-          "display_name": "Yufei Huang",
-          "id": "511355"
-        },
-        {
-          "name": "superyyrrzz",
-          "profile_url": "https://github.com/superyyrrzz",
-          "display_name": "Renze Yu",
-          "id": "3831744"
-        },
-        {
-          "name": "OsmondJiang",
-          "profile_url": "https://github.com/OsmondJiang",
-          "display_name": "Osmond Jiang",
-          "id": "19990166"
-        }
-      ],
+        { "name": "bob", "profile_url": "https://github.com/bob", "display_name": "Bob", "id": "2" },
+        { "name": "alice", "profile_url": "https://github.com/alice", "display_name": "Alice", "id": "1" }
+      ]
     }
 ---
 # Author is case-insensitive
 # Contributors can be excluded, it's case insensitive
-repo: https://github.com/docascode/docfx-test-dependencies#github-user-cache-file
+repos:
+  https://github.com/testowner/testrepo#master-exclude-contributors:
+    - author: Charlie
+      email: charlie@contoso.com
+      files:
+        docs/index.md: |
+          ---
+          author: ChArLiE
+          ---
+          Alice creates this. Bob updates this. Charlie becomes author.
+    - author: Bob 
+      email: bob@contoso.com
+      files:
+        docs/index.md: |
+          Alice creates this. Bob updates this.
+    - author: Alice 
+      email: alice@contoso.com
+      files:
+        docs/index.md: |
+          Alice creates this.
 inputs:
-  README.md: |
-    ---
-    author: OSMONDJIANG
-    ---
   docfx.yml: |
-    files: "README.md"
-    github:
-      resolveUsers: true
+    gitHub:
       userCache: user_profile.json
+      resolveUsers: true
     contribution:
       excludedContributors:
-        - superyyrrZZ
-        - YUFEIH
+        - AlIcE
+        - BoB
+  user_profile.json: |
+      { "users": [
+          {"name": "Alice", "login": "alice", "id": 1, "emails": ["alice@contoso.com"]},
+          {"name": "Bob", "login": "bob", "id": 2, "emails": ["bob@contoso.com"]},
+          {"name": "Charlie", "login": "charlie", "id": 3, "emails": ["charlie@contoso.com"]}
+        ]
+      }
 outputs:
-  readme.json: |
+  docs/index.json: |
     {
-      "author":  {
-        "name": "OsmondJiang",
-        "profile_url": "https://github.com/OsmondJiang",
-        "display_name": "Osmond Jiang",
-        "id": "19990166"
-      },
-      "contributors": [
-      ],
+      "author": 
+        { "name": "charlie", "profile_url": "https://github.com/charlie", "display_name": "Charlie", "id": "3" },
+      "contributors": []
     }
 ---
 # Use the earliest contributor as author if author not specified in YAML header
-repo: https://github.com/docascode/docfx-test-dependencies#contributors
-outputs:
-  contributors.json: |
-    {
-      "author": {
-        "name": "superyyrrzz",
-        "profile_url": "https://github.com/superyyrrzz",
-        "display_name": "Renze Yu",
-        "id": "3831744"
+repos:
+  https://github.com/testowner/testrepo#master-author-from-contributors:
+    - author: Bob 
+      email: bob@contoso.com
+      files:
+        docs/index.md: |
+          Alice creates this. Bob updates this.
+    - author: Alice 
+      email: alice@contoso.com
+      files:
+        docs/index.md: |
+          Alice creates this.
+inputs:
+  docfx.yml: |
+    gitHub:
+      userCache: user_profile.json
+      resolveUsers: true
+  user_profile.json: |
+      { "users": [
+          {"name": "Alice", "login": "alice", "id": 1, "emails": ["alice@contoso.com"]},
+          {"name": "Bob", "login": "bob", "id": 2, "emails": ["bob@contoso.com"]},
+        ]
       }
+outputs:
+  docs/index.json: |
+    {
+      "author": 
+        { "name": "alice", "profile_url": "https://github.com/alice", "display_name": "Alice", "id": "1" },
     }
 ---
 # Author can be excluded, it's case insensitive
-repo: https://github.com/docascode/docfx-test-dependencies#github-user-cache-file
+repos:
+  https://github.com/testowner/testrepo#master-autho-case-insensitive:
+    - author: Charlie
+      email: charlie@contoso.com
+      files:
+        docs/index.md: |
+          ---
+          author: charlie
+          ---
+          Alice creates this. Bob updates this. Charlie becomes author (but excluded in config).
+    - author: Bob 
+      email: bob@contoso.com
+      files:
+        docs/index.md: |
+          Alice creates this. Bob updates this.
+    - author: Alice 
+      email: alice@contoso.com
+      files:
+        docs/index.md: |
+          Alice creates this.
 inputs:
   docfx.yml: |
-    files: "README.md"
-    github:
+    gitHub:
       userCache: user_profile.json
       resolveUsers: true
     contribution:
       excludedContributors:
-        - superyyrrZZ
+        - ChArLiE
+  user_profile.json: |
+      { "users": [
+          {"name": "Alice", "login": "alice", "id": 1, "emails": ["alice@contoso.com"]},
+          {"name": "Bob", "login": "bob", "id": 2, "emails": ["bob@contoso.com"]},
+          {"name": "Charlie", "login": "charlie", "id": 3, "emails": ["charlie@contoso.com"]}
+        ]
+      }
 outputs:
-  readme.json: |
+  docs/index.json: |
     {
       "!author": null,
       "contributors": [
-        {
-          "name": "yufeih",
-          "profile_url": "https://github.com/yufeih",
-          "display_name": "Yufei Huang",
-          "id": "511355"
-        },
-        {
-          "name": "OsmondJiang",
-          "profile_url": "https://github.com/OsmondJiang",
-          "display_name": "Osmond Jiang",
-          "id": "19990166"
-        }
+        { "name": "bob", "profile_url": "https://github.com/bob", "display_name": "Bob", "id": "2" },
+        { "name": "alice", "profile_url": "https://github.com/alice", "display_name": "Alice", "id": "1" }
       ],
     }
 ---
 # Show content_git_url, original_content_git_url and gitcommit
-repo: https://github.com/docascode/docfx-test-dependencies#github-user-cache-file
+repos:
+  https://github.com/testowner/testrepo#master-content-git-url:
+    - files:
+        docs/index.md: Alice creates this.
+inputs:
+  docfx.yml:
 outputs:
-  readme.json: |
+  docs/index.json: |
     {
       "open_to_public_contributors": true,
-      "content_git_url": "https://github.com/docascode/docfx-test-dependencies/blob/github-user-cache-file/README.md",
-      "original_content_git_url": "https://github.com/docascode/docfx-test-dependencies/blob/github-user-cache-file/README.md",
-      "gitcommit": "https://github.com/docascode/docfx-test-dependencies/blob/b1f007c5a4a65274e64c0d4cfd128183c1a7e600/README.md",
+      "content_git_url": "https://github.com/testowner/testrepo/blob/master-content-git-url/docs/index.md",
+      "original_content_git_url": "https://github.com/testowner/testrepo/blob/master-content-git-url/docs/index.md",
+      "gitcommit": "https://github.com/testowner/testrepo/blob/e662dbc7c5e582a14b863d6a6a82e495d6272f91/docs/index.md",
     }
 ---
 # Specify editLink repo and branch in config
-repo: https://github.com/docascode/docfx-test-dependencies#github-user-cache-file
+repos:
+  https://github.com/testowner/testrepo#master-edit-link:
+    - files:
+        docs/index.md: Alice creates this.
 inputs:
   docfx.yml: |
-    files: "README.md"
-    github:
-      userCache: user_profile.json
-      resolveUsers: true
     contribution:
-      repository: https://github.com/test-org/test-repo#contribution
+      repository: https://github.com/contrib-owner/contrib-repo#contrib-branch
 outputs:
-  readme.json: |
+  docs/index.json: |
     {
-      "content_git_url": "https://github.com/test-org/test-repo/blob/contribution/README.md",
-      "original_content_git_url": "https://github.com/docascode/docfx-test-dependencies/blob/github-user-cache-file/README.md",
-      "gitcommit": "https://github.com/docascode/docfx-test-dependencies/blob/b1f007c5a4a65274e64c0d4cfd128183c1a7e600/README.md",
+      "content_git_url": "https://github.com/contrib-owner/contrib-repo/blob/contrib-branch/docs/index.md",
+      "original_content_git_url": "https://github.com/testowner/testrepo/blob/master-edit-link/docs/index.md",
+      "gitcommit": "https://github.com/testowner/testrepo/blob/e662dbc7c5e582a14b863d6a6a82e495d6272f91/docs/index.md",
     }
 ---
 # Don't load git commits when showContributors is set to false
-repo: https://github.com/docascode/docfx-test-dependencies#no-load-commits
+repos:
+  https://github.com/testowner/testrepo#master-no-load-commits:
+    - files:
+        docs/index.md: Alice creates this.
+inputs:
+  docfx.yml: |
+    contribution:
+      showContributors: false
 outputs:
-  readme.json: |
+  docs/index.json: |
     {
       "contributors": [],
-      "gitcommit": "https://github.com/docascode/docfx-test-dependencies/blob/5087ddfc6ee4886bcabe8cc93673edd8605fe15c/README.md"
+      "gitcommit": "https://github.com/testowner/testrepo/blob/e662dbc7c5e582a14b863d6a6a82e495d6272f91/docs/index.md",
     }
 ---
 # Use commit's time when gitCommitsTime file not given
-repo: https://github.com/docascode/docfx-test-dependencies#github-user-cache-file
+repos:
+  https://github.com/testowner/testrepo#master-time-from-commit:
+    - time: 2018-01-01T00:00:00Z
+      files:
+        docs/index.md: Alice creates this.
 inputs:
-  docfx.yml: |
-    files: "README.md"
-    github:
-      userCache: user_profile.json
-      resolveUsers: true
-    contribution:
+  docfx.yml:
 outputs:
-  readme.json: |
+  docs/index.json: |
     {
-      "updated_at": "2018-07-27T02:15:49Z",
+      "updated_at": "2018-01-01T00:00:00Z",
     }
 ---
 # Support git submodule

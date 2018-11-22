@@ -46,6 +46,9 @@
       "items": {
         "$ref": "#/definitions/TableOfContentsInputItem"
       }
+    },
+    "$schema": {
+      "type": "string"
     }
   }
 }

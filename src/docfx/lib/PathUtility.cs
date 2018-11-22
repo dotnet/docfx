@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 
@@ -21,6 +22,8 @@ namespace Microsoft.Docs.Build
         public static readonly StringComparer PathComparer = IsCaseSensitive ? StringComparer.Ordinal : StringComparer.OrdinalIgnoreCase;
 
         public static readonly StringComparison PathComparison = IsCaseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase;
+
+        private static readonly HashSet<char> s_invalidPathChars = Path.GetInvalidPathChars().Concat(Path.GetInvalidFileNameChars()).Distinct().ToHashSet();
 
         /// <summary>
         /// Check if the file is the same as matcher or is inside the directory specified by matcher.
@@ -126,6 +129,57 @@ namespace Microsoft.Docs.Build
             if (string.IsNullOrEmpty(directoryPath))
                 return;
             Directory.CreateDirectory(directoryPath);
+        }
+
+        /// <summary>
+        /// Converts an URL to a human readable short directory name
+        /// </summary>
+        public static string UrlToFolderName(string url)
+        {
+            var hash = url.GetMd5HashShort();
+
+            // Trim https://
+            var index = url.IndexOf(':');
+            if (index > 0)
+            {
+                url = url.Substring(index);
+            }
+
+            url = url.TrimStart('/', '\\', '.', ':').Trim();
+
+            var result = new StringBuilder();
+
+            // Take the surrounding 4 segments and the surrounding 8 chars in each segment, then remove invalid path chars.
+            var segments = url.Split(new[] { '/', '\\', ' ', '?', '#' }, StringSplitOptions.RemoveEmptyEntries);
+            for (var segmentIndex = 0; segmentIndex < segments.Length; segmentIndex++)
+            {
+                if (segmentIndex == 4 && segments.Length > 8)
+                {
+                    segmentIndex += segments.Length - 9;
+                    continue;
+                }
+
+                var segment = segments[segmentIndex];
+                for (var charIndex = 0; charIndex < segment.Length; charIndex++)
+                {
+                    var ch = segment[charIndex];
+                    if (charIndex == 8 && segment.Length > 16)
+                    {
+                        result.Append("..");
+                        charIndex += segment.Length - 17;
+                        continue;
+                    }
+                    if (!s_invalidPathChars.Contains(ch))
+                    {
+                        result.Append(ch);
+                    }
+                }
+
+                result.Append('+');
+            }
+
+            result.Append(hash);
+            return result.ToString();
         }
 
         private static string Normalize(string path)
