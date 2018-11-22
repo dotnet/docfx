@@ -121,6 +121,11 @@ namespace Microsoft.Docs.Build
                 return theme;
             }
 
+            if (string.IsNullOrEmpty(locale))
+            {
+                return theme;
+            }
+
             var (remote, branch) = HrefUtility.SplitGitHref(theme);
 
             if (remote.EndsWith($".{defaultLocale}", StringComparison.OrdinalIgnoreCase))
