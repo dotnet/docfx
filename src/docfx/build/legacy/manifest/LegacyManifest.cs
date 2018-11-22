@@ -91,7 +91,7 @@ namespace Microsoft.Docs.Build
                             Output = output,
                             SkipNormalization = !(document.ContentType == ContentType.Resource),
                             SkipSchemaCheck = !(document.ContentType == ContentType.Resource),
-                            Group = new LegacyManifestGroup { GroupId = HashUtility.GetMd5HashShort(string.Join(',', fileManifest.Value.Monikers)), Monikers = fileManifest.Value.Monikers },
+                            Group = HashUtility.GetMd5HashShort(string.Join(',', fileManifest.Value.Monikers)),
                         };
 
                         convertedItems.Add((file, document));

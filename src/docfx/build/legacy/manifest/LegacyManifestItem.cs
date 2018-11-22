@@ -35,10 +35,7 @@ namespace Microsoft.Docs.Build
         [JsonProperty("skip_schema_check")]
         public bool SkipSchemaCheck { get; set; }
 
-        [JsonIgnore]
-        public LegacyManifestGroup Group { get; set; }
-
         [JsonProperty("group")]
-        public string GroupId => Group.GroupId;
+        public string Group { get; set; }
     }
 }
