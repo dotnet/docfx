@@ -34,7 +34,7 @@ namespace Microsoft.Docs.Build
 
             var xrefMap = XrefMap.Create(context, docset);
 
-            var (manifest, files, sourceDependencies) = await BuildFiles(context, docset, tocMap, xrefMap, contribution);
+            var (manifest, fileManifests, sourceDependencies) = await BuildFiles(context, docset, tocMap, xrefMap, contribution);
 
             context.WriteJson(manifest, "build.manifest");
 
@@ -48,7 +48,7 @@ namespace Microsoft.Docs.Build
                 if (config.Output.Json)
                 {
                     // TODO: decouple files and dependencies from legacy.
-                    Legacy.ConvertToLegacyModel(docset, context, files, sourceDependencies, tocMap, xrefMap);
+                    Legacy.ConvertToLegacyModel(docset, context, fileManifests, sourceDependencies, tocMap, xrefMap);
                 }
                 else
                 {
@@ -66,7 +66,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static async Task<(Manifest, List<Document>, DependencyMap)> BuildFiles(
+        private static async Task<(Manifest, Dictionary<Document, FileManifest>, DependencyMap)> BuildFiles(
             Context context,
             Docset docset,
             TableOfContentsMap tocMap,
@@ -88,11 +88,11 @@ namespace Microsoft.Docs.Build
 
                 ValidateBookmarks();
 
-                var (manifest, files) = manifestBuilder.Build(context);
+                var manifest = manifestBuilder.Build(context);
                 var allDependencies = sourceDependencies.OrderBy(d => d.Key.FilePath).ToDictionary(k => k.Key, v => v.Value);
                 var allDependencyMap = new DependencyMap(allDependencies);
 
-                return (CreateManifest(manifest, allDependencyMap), files, allDependencyMap);
+                return (CreateManifest(manifest, allDependencyMap), manifest, allDependencyMap);
 
                 async Task BuildOneFile(Document file, Action<Document> buildChild)
                 {
@@ -206,6 +206,7 @@ namespace Microsoft.Docs.Build
                 {
                     SourcePath = file.FilePath,
                     SiteUrl = file.SiteUrl,
+                    Monikers = monikers,
                     OutputPath = GetOutputPath(file, monikers),
                 };
 
@@ -264,11 +265,11 @@ namespace Microsoft.Docs.Build
             return new ResourceModel { Locale = file.Docset.Locale };
         }
 
-        private static Manifest CreateManifest(FileManifest[] files, DependencyMap dependencies)
+        private static Manifest CreateManifest(Dictionary<Document, FileManifest> files, DependencyMap dependencies)
         {
             return new Manifest
             {
-                Files = files,
+                Files = files.Values.OrderBy(item => item.SourcePath).ToArray(),
 
                 Dependencies = dependencies.ToDictionary(
                            d => d.Key.FilePath,

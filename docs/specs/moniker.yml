@@ -88,6 +88,34 @@ outputs:
       "content": "<p>Moniker: netcore-2.0</p>",
       "monikers": ["netcore-2.0"]
     }
+  build.manifest: |
+    {
+      "files": [
+          {
+              "siteUrl": "/docs/a",
+              "outputPath": "docs/a.json",
+              "sourcePath": "docs/a.md",
+              "monikers": []
+          },
+          {
+              "siteUrl": "/docs/a",
+              "outputPath": "218c13d0/docs/a.json",
+              "sourcePath": "docs/v1/a.md",
+              "monikers": [
+                  "netcore-1.1"
+              ]
+          },
+          {
+              "siteUrl": "/docs/a",
+              "outputPath": "4667fedf/docs/a.json",
+              "sourcePath": "docs/v2/a.md",
+              "monikers": [
+                  "netcore-2.0"
+              ]
+          }
+      ],
+      "dependencies": {}
+    }
 ---
 # Moniker Zone syntax
 inputs:

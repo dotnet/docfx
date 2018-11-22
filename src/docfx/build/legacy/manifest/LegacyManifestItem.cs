@@ -34,5 +34,8 @@ namespace Microsoft.Docs.Build
 
         [JsonProperty("skip_schema_check")]
         public bool SkipSchemaCheck { get; set; }
+
+        [JsonProperty("group")]
+        public string Group { get; set; }
     }
 }
