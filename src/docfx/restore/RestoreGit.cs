@@ -88,7 +88,18 @@ namespace Microsoft.Docs.Build
         private static IEnumerable<(string remote, string branch)> GetGitDependencies(string docsetPath, Config config, string locale)
         {
             return config.Dependencies.Values.Select(HrefUtility.SplitGitHref)
-                         .Concat(GetLocalizationGitDependencies(docsetPath, config, locale));
+                         .Concat(GetLocalizationGitDependencies(docsetPath, config, locale))
+                         .Concat(GetThemeGitDependencies(config, locale));
+        }
+
+        private static IEnumerable<(string remote, string branch)> GetThemeGitDependencies(Config config, string locale)
+        {
+            if (string.IsNullOrEmpty(config.Theme))
+            {
+                yield break;
+            }
+
+            yield return LocalizationConvention.GetLocalizationTheme(config.Theme, locale, config.Localization.DefaultLocale);
         }
 
         private static IEnumerable<(string remote, string branch)> GetLocalizationGitDependencies(string docsetPath, Config config, string locale)

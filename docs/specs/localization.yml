@@ -432,7 +432,7 @@ commands:
   - build --locale zh-cn
 inputs:
   docfx.yml: |
-    content: '**/*.md'
+    files: '**/*.md'
     localization:
       mapping: Folder
   localization/zh-cn/docs/a.md: |
@@ -446,7 +446,7 @@ outputs:
 # loc folder should be excluded from source docset during source docset build
 inputs:
   docfx.yml: |
-    content: '**/*.md'
+    files: '**/*.md'
     localization:
       mapping: Folder
   localization/zh-cn/docs/a.md:

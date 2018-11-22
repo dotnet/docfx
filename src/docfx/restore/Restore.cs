@@ -67,7 +67,7 @@ namespace Microsoft.Docs.Build
 
             // restore urls except extend url
             await ParallelUtility.ForEach(
-                extendedConfig.GetExternalReferences().Where(HrefUtility.IsHttpHref),
+                extendedConfig.GetFileReferences().Where(HrefUtility.IsHttpHref),
                 restoreUrl => RestoreFile.Restore(restoreUrl, extendedConfig, @implicit));
         }
 

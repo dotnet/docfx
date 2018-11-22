@@ -390,25 +390,26 @@ _site/en-us/group-01ddf122/dotnet/api/system.string/index.html
 
     ```json
     {
-        "groups":{
-            "groupid" : [
+        "groups":[
+            "group": "{groupId}",
+            "monikers": [
                 "moniker1",
                 ...
             ],
             ...
-        },
+        ],
         "files":[
             {
                 "siteUrl": "{SitePath}",
                 "outputPath": "{outputPath}",
                 "sourcePath": "{sourcePath}",
-                "group": "{groupid}"
+                "group": "{groupId}"
             },
         ]
     }
     ```
 
-    > `groupid` is the first 8 characters of the hash of the monikers joined by whitespace.
+    > `groupid` is the first 8 characters of the hash of the monikers joined by `,`.
 
 ### 4 Feature supported
 

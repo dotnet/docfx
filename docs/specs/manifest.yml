@@ -24,7 +24,7 @@ outputs:
 # Manifest outputPath is source relative path when copyResources is set to false
 inputs:
   docfx.yml: |
-    content: '**'
+    files: '**'
     output:
       copyResources: false
   a.png:

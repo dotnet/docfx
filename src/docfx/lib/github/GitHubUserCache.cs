@@ -89,8 +89,10 @@ namespace Microsoft.Docs.Build
                 new Lazy<Task<(Error, GitHubUser)>>(
                     () => _getUserByLoginFromGitHub(login))).Value;
 
-            if (user != null)
+            if (error == null)
             {
+                if (user == null)
+                    (error, user) = (Errors.GitHubUserNotFound(login), new GitHubUser { Login = login });
                 user.Expiry = NextExpiry();
                 UpdateUser(user);
             }
@@ -115,7 +117,8 @@ namespace Microsoft.Docs.Build
                 new Lazy<Task<(Error, string)>>(
                     () => _getLoginByCommitFromGitHub(repoOwner, repoName, commitSha))).Value;
 
-            UpdateUser(new GitHubUser { Login = login, Emails = new[] { authorEmail }, Expiry = NextExpiry() });
+            if (error == null)
+                UpdateUser(new GitHubUser { Login = login, Emails = new[] { authorEmail }, Expiry = NextExpiry() });
 
             if (login == null)
                 return (error, null);
