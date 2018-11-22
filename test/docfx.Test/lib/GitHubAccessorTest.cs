@@ -11,16 +11,15 @@ namespace Microsoft.Docs.Build
         private GitHubAccessor _github = new GitHubAccessor();
 
         [Theory]
-        [InlineData("docascode", null, 14800732)]
-        [InlineData("N1o2t3E4x5i6s7t8N9a0m9e", "github-user-not-found", null)]
-        public async Task GetUserByLogin(string login, string errorCode, int? id)
+        [InlineData("docascode", 14800732)]
+        [InlineData("N1o2t3E4x5i6s7t8N9a0m9e", null)]
+        public async Task GetUserByLogin(string login, int? id)
         {
             var (error, profile) = await _github.GetUserByLogin(login);
 
             // skip check if the machine exceeds the GitHub API rate limit
-            if (error?.Code != "github-api-failed")
+            if (error == null)
             {
-                Assert.Equal(errorCode, error?.Code);
                 Assert.Equal(id, profile?.Id);
             }
         }
