@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 
 namespace Microsoft.Docs.Build
@@ -15,8 +14,6 @@ namespace Microsoft.Docs.Build
         public List<Error> Errors = new List<Error>();
 
         public bool FirstBlockIsInclusionBlock = false;
-
-        public ConcurrentBag<Document> XrefReferences = new ConcurrentBag<Document>();
 
         public bool HasTitle => !string.IsNullOrEmpty(HtmlTitle);
     }
