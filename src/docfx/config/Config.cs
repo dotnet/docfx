@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -12,6 +11,9 @@ namespace Microsoft.Docs.Build
 {
     internal sealed class Config
     {
+        private static readonly string[] s_defaultInclude = new[] { "docs/**/*.{md,yml,json}" };
+        private static readonly string[] s_defaultExclude = new[] { "_site/**/*", "localization/**/*" };
+
         /// <summary>
         /// Gets the default product name
         /// </summary>
@@ -23,9 +25,14 @@ namespace Microsoft.Docs.Build
         public readonly string Name = string.Empty;
 
         /// <summary>
-        /// Gets the contents that are managed by this docset.
+        /// Gets the file glob patterns included by the docset.
         /// </summary>
-        public readonly FileConfig Content = new FileConfig();
+        public readonly string[] Files = s_defaultInclude;
+
+        /// <summary>
+        /// Gets the file glob patterns excluded from this docset.
+        /// </summary>
+        public readonly string[] Exclude = s_defaultExclude;
 
         /// <summary>
         /// Gets the output config.
@@ -134,12 +141,18 @@ namespace Microsoft.Docs.Build
         public readonly string MonikerDefinition = string.Empty;
 
         /// <summary>
+        /// Get the theme repo url like https://github.com/docs/theme#master
+        /// It's used for legacy doc(docs.com) sites build
+        /// </summary>
+        public readonly string Theme = string.Empty;
+
+        /// <summary>
         /// Gets the config file name.
         /// </summary>
         [JsonIgnore]
         public string ConfigFileName { get; private set; }
 
-        public IEnumerable<string> GetExternalReferences()
+        public IEnumerable<string> GetExternalReferences(string locale)
         {
             foreach (var url in Xref)
             {
@@ -149,6 +162,7 @@ namespace Microsoft.Docs.Build
             yield return Contribution.GitCommitsTime;
             yield return GitHub.UserCache;
             yield return MonikerDefinition;
+            yield return LocalizationConvention.GetLocalizationTheme(Theme, locale, Localization.DefaultLocale);
         }
 
         /// <summary>
@@ -209,7 +223,7 @@ namespace Microsoft.Docs.Build
             Config config = null;
 
             var (loadErrors, configObject) = LoadConfigObject(configPath, configPath);
-            var optionConfigObject = ExpandAndNormalize(options?.ToJObject());
+            var optionConfigObject = Expand(options?.ToJObject());
             var finalConfigObject = JsonUtility.Merge(configObject, optionConfigObject);
 
             var globalErrors = new List<Error>();
@@ -251,7 +265,7 @@ namespace Microsoft.Docs.Build
             {
                 (errors, config) = JsonUtility.DeserializeWithSchemaValidation<JObject>(File.ReadAllText(filePath));
             }
-            return (errors, ExpandAndNormalize(config ?? new JObject()));
+            return (errors, Expand(config ?? new JObject()));
         }
 
         private static (List<Error>, JObject) ApplyGlobalConfig(JObject config)
@@ -318,7 +332,7 @@ namespace Microsoft.Docs.Build
                         (identifier.Locales.Count == 0 || (!string.IsNullOrEmpty(locale) && identifier.Locales.Contains(locale))) &&
                         value is JObject overwriteConfig)
                     {
-                        result.Merge(ExpandAndNormalize(overwriteConfig), JsonUtility.MergeSettings);
+                        result.Merge(Expand(overwriteConfig), JsonUtility.MergeSettings);
                     }
 
                     overwriteConfigIdentifiers.Add(key);
@@ -334,69 +348,12 @@ namespace Microsoft.Docs.Build
             return result;
         }
 
-        private static JObject ExpandAndNormalize(JObject config)
+        private static JObject Expand(JObject config)
         {
-            config[ConfigConstants.Content] = ExpandFiles(config[ConfigConstants.Content]);
-            config[ConfigConstants.Routes] = NormalizeRouteConfig(config[ConfigConstants.Routes]);
+            config[ConfigConstants.Files] = ExpandStringArray(config[ConfigConstants.Files]);
+            config[ConfigConstants.Exclude] = ExpandStringArray(config[ConfigConstants.Exclude]);
             config[ConfigConstants.Extend] = ExpandStringArray(config[ConfigConstants.Extend]);
-            config[ConfigConstants.Redirections] = NormalizeRedirections(config[ConfigConstants.Redirections]);
-            config[ConfigConstants.RedirectionsWithoutId] = NormalizeRedirections(config[ConfigConstants.RedirectionsWithoutId]);
             return config;
-        }
-
-        private static JToken NormalizeRedirections(JToken redirection)
-        {
-            if (redirection == null)
-                return null;
-
-            if (redirection is JObject redirectionJObject)
-            {
-                var normalizedRedirection = new JObject();
-                foreach (var (path, redirectTo) in redirectionJObject)
-                {
-                    var normalizedPath = PathUtility.NormalizeFile(path);
-                    normalizedRedirection[normalizedPath] = redirectTo;
-                }
-
-                return normalizedRedirection;
-            }
-
-            return redirection;
-        }
-
-        private static JToken NormalizeRouteConfig(JToken token)
-        {
-            if (token is JObject obj)
-            {
-                var result = new JObject();
-                foreach (var (key, value) in obj)
-                {
-                    result.Add(
-                        key.EndsWith('/') || key.EndsWith('\\') ? PathUtility.NormalizeFolder(key) : PathUtility.NormalizeFile(key),
-                        value is JValue v && v.Value is string str ? PathUtility.NormalizeFile(str) : value);
-                }
-                return result;
-            }
-            return token;
-        }
-
-        private static JObject ExpandFiles(JToken file)
-        {
-            if (file == null)
-                return null;
-            if (file is JValue str)
-                file = new JArray(str);
-            if (file is JArray arr)
-                file = new JObject { [ConfigConstants.Include] = arr };
-            return ExpandIncludeExclude((JObject)file);
-        }
-
-        private static JObject ExpandIncludeExclude(JObject item)
-        {
-            Debug.Assert(item != null);
-            item[ConfigConstants.Include] = ExpandStringArray(item[ConfigConstants.Include]);
-            item[ConfigConstants.Exclude] = ExpandStringArray(item[ConfigConstants.Exclude]);
-            return item;
         }
 
         private static JArray ExpandStringArray(JToken e)
