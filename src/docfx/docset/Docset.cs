@@ -119,8 +119,8 @@ namespace Microsoft.Docs.Build
             Config = config;
             DocsetPath = PathUtility.NormalizeFolder(Path.GetFullPath(docsetPath));
             Locale = locale.ToLowerInvariant();
+            Routes = NormalizeRoutes(config.Routes);
             Culture = CreateCultureInfo(locale);
-            Routes = new Dictionary<string, string>(config.Routes.Reverse());
             FallbackDocset = fallbackDocset;
 
             var configErrors = new List<Error>();
