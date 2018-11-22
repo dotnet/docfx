@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
@@ -15,6 +16,7 @@ namespace Microsoft.Docs.Build
         {
             using (Progress.Start("Convert Legacy Manifest"))
             {
+                var monikerGroups = new ConcurrentDictionary<string, Lazy<List<string>>>();
                 var convertedItems = new ConcurrentBag<(LegacyManifestItem manifestItem, Document doc)>();
                 Parallel.ForEach(
                     fileManifests,
@@ -81,6 +83,7 @@ namespace Microsoft.Docs.Build
                             }
                         }
 
+                        var groupId = HashUtility.GetMd5HashShort(string.Join(',', fileManifest.Value.Monikers));
                         var file = new LegacyManifestItem
                         {
                             SiteUrlRelativeToSiteBasePath = legacySiteUrlRelativeToBaseSitePath,
@@ -91,16 +94,21 @@ namespace Microsoft.Docs.Build
                             Output = output,
                             SkipNormalization = !(document.ContentType == ContentType.Resource),
                             SkipSchemaCheck = !(document.ContentType == ContentType.Resource),
-                            Group = HashUtility.GetMd5HashShort(string.Join(',', fileManifest.Value.Monikers)),
+                            Group = groupId,
                         };
 
                         convertedItems.Add((file, document));
+                        monikerGroups.GetOrAdd(groupId, new Lazy<List<string>>(() => fileManifest.Value.Monikers));
                     });
 
                 context.WriteJson(
                 new
                 {
-                    groups = convertedItems.Select(item => item.manifestItem.Group),
+                    groups = monikerGroups.Select(item => new
+                    {
+                        group = item.Key,
+                        monikers = item.Value,
+                    }),
                     default_version_info = new
                     {
                         name = string.Empty,
