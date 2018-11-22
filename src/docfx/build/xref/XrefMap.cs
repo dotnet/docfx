@@ -95,7 +95,7 @@ namespace Microsoft.Docs.Build
                     map[spec.Uid] = spec;
                 }
             }
-            return new XrefMap(map, CreateInternalXrefMap(context, docset.ScanScope), context, docset.MonikerRangeParser);
+            return new XrefMap(map, CreateInternalXrefMap(context, docset.ScanScope), context, docset.MonikerDescendingComparer);
         }
 
         public void OutputXrefMap(Context context)
@@ -203,12 +203,12 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private XrefMap(IReadOnlyDictionary<string, XrefSpec> externalXrefMap, IReadOnlyDictionary<string, List<Lazy<(List<Error>, XrefSpec)>>> internalXrefMap, Context context, MonikerRangeParser parser)
+        private XrefMap(IReadOnlyDictionary<string, XrefSpec> externalXrefMap, IReadOnlyDictionary<string, List<Lazy<(List<Error>, XrefSpec)>>> internalXrefMap, Context context, MonikerComparer monikerComparer)
         {
             _externalXrefMap = externalXrefMap;
             _internalXrefMap = internalXrefMap;
             _context = context;
-            _monikerComparer = parser.MonikerDescendingComparer;
+            _monikerComparer = monikerComparer;
         }
 
         private static void Load(Context context, ConcurrentDictionary<string, ConcurrentBag<Lazy<(List<Error>, XrefSpec)>>> xrefsByUid, Document file)

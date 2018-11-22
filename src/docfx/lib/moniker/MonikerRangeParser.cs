@@ -10,20 +10,12 @@ namespace Microsoft.Docs.Build
 {
     internal class MonikerRangeParser
     {
-        public readonly MonikerComparer MonikerAscendingComparer;
-        public readonly MonikerComparer MonikerDescendingComparer;
-
         private readonly ConcurrentDictionary<string, Lazy<List<string>>> _cache = new ConcurrentDictionary<string, Lazy<List<string>>>();
         private readonly EvaluatorWithMonikersVisitor _monikersEvaluator;
-        private readonly Dictionary<string, int> _monikerOrder;
 
         public MonikerRangeParser(MonikerDefinitionModel monikerDefinition)
         {
             _monikersEvaluator = new EvaluatorWithMonikersVisitor(monikerDefinition);
-            _monikerOrder = GetMoninkerOrder(monikerDefinition.Monikers);
-
-            MonikerAscendingComparer = new MonikerComparer(this);
-            MonikerDescendingComparer = new MonikerComparer(this, false);
         }
 
         public List<string> Parse(string rangeString)
@@ -37,7 +29,6 @@ namespace Microsoft.Docs.Build
                     {
                         var expression = ExpressionCreator.Create(rangeString);
                         monikerNames = expression.Accept(_monikersEvaluator).ToList();
-                        monikerNames.Sort();
                     }
                     catch (MonikerRangeException ex)
                     {
@@ -46,18 +37,5 @@ namespace Microsoft.Docs.Build
 
                     return monikerNames;
                 })).Value;
-
-        public bool TryGetMonikerOrderFromDefinition(string moniker, out int order)
-            => _monikerOrder.TryGetValue(moniker, out order);
-
-        private Dictionary<string, int> GetMoninkerOrder(List<Moniker> monikers)
-        {
-            var result = new Dictionary<string, int>();
-            for (int i = 0; i < monikers.Count; i++)
-            {
-                result[monikers[i].Name] = i;
-            }
-            return result;
-        }
     }
 }

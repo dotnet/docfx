@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -42,9 +43,9 @@ namespace Microsoft.Docs.Build
             }
 
             var children = inputModel.Items?.Select(l => ToTableOfContentsModel(l, comparer));
-            var childrenMonikers = children?.SelectMany(child => child.Monikers ?? new List<string>()).ToHashSet();
+            var childrenMonikers = children?.SelectMany(child => child.Monikers ?? new List<string>());
 
-            var monikers = childrenMonikers == null ? inputModel.Monikers.ToHashSet().ToList() : childrenMonikers.Union(inputModel.Monikers).ToList();
+            var monikers = (childrenMonikers == null ? inputModel.Monikers : childrenMonikers.Union(inputModel.Monikers)).ToHashSet(StringComparer.OrdinalIgnoreCase).ToList();
             monikers.Sort(comparer);
             return new TableOfContentsItem
             {
