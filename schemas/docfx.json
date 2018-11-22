@@ -251,6 +251,9 @@
     "monikerDefinition": {
       "type": "string"
     },
+    "theme": {
+      "type": "string"
+    },
     "$schema": {
       "type": "string"
     }
