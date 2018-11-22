@@ -295,7 +295,7 @@ For different `folder` option:
   - ❓ public contribution workflow maybe different?
   - ❓ permission control on different locale may be a little hard
 
-For different `branch` options:
+For different `branch` option:
 
   - 😄 I believe it has less impact to OL workflow, 
   - 😄 and we can easily identify which locale to build once a new changes comes
