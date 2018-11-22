@@ -160,9 +160,10 @@ namespace Microsoft.Docs.Build
             {
                 return levenshteinDistanceCompareResult;
             }
-            if (!StringComparer.OrdinalIgnoreCase.Equals(candidateX.Toc.SitePath, candidateY.Toc.SitePath))
+            var sitePathCompareResult = StringComparer.OrdinalIgnoreCase.Compare(candidateX.Toc.SitePath, candidateY.Toc.SitePath);
+            if (!(sitePathCompareResult == 0))
             {
-                StringComparer.OrdinalIgnoreCase.Compare(candidateX.Toc.SitePath, candidateY.Toc.SitePath);
+                return sitePathCompareResult;
             }
             return StringComparer.OrdinalIgnoreCase.Compare(candidateX.Toc.FilePath, candidateY.Toc.FilePath);
         }

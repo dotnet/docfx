@@ -34,14 +34,18 @@ namespace Microsoft.Docs.Build
 
         public List<string> Monikers { get; set; }
 
-        public static TableOfContentsItem ToTableOfContentsModel(TableOfContentsInputItem inputModel, HashSet<string> fileMonikers)
+        public static TableOfContentsItem ToTableOfContentsModel(TableOfContentsInputItem inputModel, MonikerComparer comparer)
         {
             if (inputModel == null)
             {
                 return null;
             }
 
-            fileMonikers.UnionWith(inputModel.Monikers);
+            var children = inputModel.Items?.Select(l => ToTableOfContentsModel(l, comparer));
+            var childrenMonikers = children?.SelectMany(child => child.Monikers ?? new List<string>()).ToHashSet();
+
+            var monikers = childrenMonikers == null ? inputModel.Monikers.ToHashSet().ToList() : childrenMonikers.Union(inputModel.Monikers).ToList();
+            monikers.Sort(comparer);
             return new TableOfContentsItem
             {
                 TocTitle = inputModel.Name,
@@ -51,8 +55,8 @@ namespace Microsoft.Docs.Build
                 MaintainContext = inputModel.MaintainContext,
                 Expanded = inputModel.Expanded,
                 ExtensionData = inputModel.ExtensionData,
-                Children = inputModel.Items?.Select(l => ToTableOfContentsModel(l, fileMonikers)).ToList(),
-                Monikers = inputModel.Monikers,
+                Children = children?.ToList(),
+                Monikers = monikers,
             };
         }
     }

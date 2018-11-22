@@ -12,7 +12,7 @@ namespace Microsoft.Docs.Build
     internal static class BuildTableOfContents
     {
         public static (IEnumerable<Error>, TableOfContentsModel, DependencyMap, List<string>) Build(
-            Context context, Document file, TableOfContentsMap tocMap)
+            Context context, Document file, TableOfContentsMap tocMap, Dictionary<Document, List<string>> monikersMap)
         {
             Debug.Assert(file.ContentType == ContentType.TableOfContents);
 
@@ -23,9 +23,11 @@ namespace Microsoft.Docs.Build
 
             // todo: build resource files linked by toc
             var dependencyMapBuilder = new DependencyMapBuilder();
-            var (errors, tocModel, tocMetadata, refArticles, refTocs, monikers) = Load(context, file, dependencyMapBuilder, true);
+            var (errors, tocModel, tocMetadata, refArticles, refTocs, monikers) = Load(context, file, dependencyMapBuilder, monikersMap);
 
             var metadata = file.Docset.Metadata.GetMetadata(file, tocMetadata);
+
+            // Monikers of toc file is the collection of every node's monikers
             metadata["monikers"] = new JArray(monikers);
 
             var model = new TableOfContentsModel
@@ -61,7 +63,7 @@ namespace Microsoft.Docs.Build
                 Debug.Assert(tocMapBuilder != null);
                 Debug.Assert(fileToBuild != null);
 
-                var (errors, tocModel, _, referencedDocuments, referencedTocs, _) = Load(context, fileToBuild);
+                var (_, _, _, referencedDocuments, referencedTocs, _) = Load(context, fileToBuild, null);
 
                 tocMapBuilder.Add(fileToBuild, referencedDocuments, referencedTocs);
             }
@@ -79,7 +81,7 @@ namespace Microsoft.Docs.Build
             List<Document> referencedTocs,
             List<string> monikers)
 
-            Load(Context context, Document fileToBuild, DependencyMapBuilder dependencyMapBuilder = null, bool outputMonikers = false)
+            Load(Context context, Document fileToBuild, DependencyMapBuilder dependencyMapBuilder = null, Dictionary<Document, List<string>> monikersMap = null)
         {
             var errors = new List<Error>();
             var referencedDocuments = new List<Document>();
@@ -107,14 +109,14 @@ namespace Microsoft.Docs.Build
                     var (error, link, fragment, buildItem) = file.TryResolveHref(href, resultRelativeTo);
                     errors.AddIfNotNull(error);
 
-                    List<string> itemMonikers = new List<string>();
+                    var itemMonikers = new List<string>();
                     if (buildItem != null)
                     {
                         referencedDocuments.Add(buildItem);
                         dependencyMapBuilder?.AddDependencyItem(file, buildItem, HrefUtility.FragmentToDependencyType(fragment));
-                        if (outputMonikers)
+                        if (monikersMap == null || !monikersMap.TryGetValue(buildItem, out itemMonikers))
                         {
-                            itemMonikers = buildItem.Docset.MonikersProvider.GetFileMonikers(buildItem);
+                            itemMonikers = new List<string>();
                         }
                     }
                     return (link, itemMonikers);

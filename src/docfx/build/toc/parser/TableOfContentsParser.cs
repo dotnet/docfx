@@ -23,8 +23,10 @@ namespace Microsoft.Docs.Build
         {
             var (errors, inputModel) = LoadInputModelItems(context, file, file, resolveContent, resolveHref, new List<Document>());
 
-            var fileMonikers = new HashSet<string>();
-            return (errors, inputModel?.Items?.Select(r => TableOfContentsInputItem.ToTableOfContentsModel(r, fileMonikers)).ToList(), inputModel?.Metadata, fileMonikers.ToList());
+            var items = inputModel?.Items?.Select(r => TableOfContentsInputItem.ToTableOfContentsModel(r, file.Docset.MonikerRangeParser.MonikerAscendingComparer)).ToList();
+            var fileMonikers = items?.SelectMany(r => r.Monikers).ToHashSet().ToList();
+            fileMonikers.Sort(file.Docset.MonikerRangeParser.MonikerAscendingComparer);
+            return (errors, items, inputModel?.Metadata, fileMonikers);
         }
 
         private static (List<Error> errors, TableOfContentsInputModel tocModel) LoadTocModel(Context context, Document file)

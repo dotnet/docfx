@@ -82,22 +82,5 @@ namespace Microsoft.Docs.Build
             }
             return monikers;
         }
-
-        public void SetFileMonikers(Document file, List<string> monikers)
-        {
-            _monikersMap.TryAdd(file, monikers);
-        }
-
-        public List<string> GetFileMonikers(Document file)
-        {
-            if (_monikersMap.TryGetValue(file, out var monikers))
-            {
-                return monikers;
-            }
-            else
-            {
-                return new List<string>();
-            }
-        }
     }
 }

@@ -752,7 +752,7 @@ outputs:
               "monikers": ["netcore-1.1", "netcore-1.2"]
             }
           ],
-          "monikers": ["netcore-1.0", "netcore-1.1"]
+          "monikers": ["netcore-1.0", "netcore-1.1", "netcore-1.2"]
         }
       ],
       "metadata": {"monikers": ["netcore-1.0", "netcore-1.1", "netcore-1.2"]}

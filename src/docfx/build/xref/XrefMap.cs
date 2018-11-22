@@ -17,7 +17,7 @@ namespace Microsoft.Docs.Build
         private readonly IReadOnlyDictionary<string, List<Lazy<(List<Error>, XrefSpec)>>> _internalXrefMap;
         private readonly IReadOnlyDictionary<string, XrefSpec> _externalXrefMap;
         private readonly Context _context;
-        private readonly MonikerRangeParser _parser;
+        private readonly MonikerComparer _monikerComparer;
 
         public IEnumerable<XrefSpec> InternalReferences
         {
@@ -106,7 +106,7 @@ namespace Microsoft.Docs.Build
         }
 
         private XrefSpec GetLatestInternalXrefmap(List<XrefSpec> specs)
-            => specs.OrderBy(item => item.Monikers.FirstOrDefault(), new MonikerDescendingComparer(_parser)).FirstOrDefault();
+            => specs.OrderBy(item => item.Monikers.FirstOrDefault(), _monikerComparer).FirstOrDefault();
 
         private bool TryGetValidXrefSpecs(string uid, List<Lazy<(List<Error>, XrefSpec)>> specsWithSameUid, out List<XrefSpec> validSpecs)
         {
@@ -165,7 +165,7 @@ namespace Microsoft.Docs.Build
                     // Sort monikers descending by moniker definition order
                     if (spec.Monikers.Count > 1)
                     {
-                        var orderedMonikers = spec.Monikers.OrderBy(item => item, new MonikerDescendingComparer(_parser)).ToHashSet();
+                        var orderedMonikers = spec.Monikers.OrderBy(item => item, _monikerComparer).ToHashSet();
                         spec.Monikers = orderedMonikers;
                     }
                 }
@@ -208,7 +208,7 @@ namespace Microsoft.Docs.Build
             _externalXrefMap = externalXrefMap;
             _internalXrefMap = internalXrefMap;
             _context = context;
-            _parser = parser;
+            _monikerComparer = parser.MonikerDescendingComparer;
         }
 
         private static void Load(Context context, ConcurrentDictionary<string, ConcurrentBag<Lazy<(List<Error>, XrefSpec)>>> xrefsByUid, Document file)
@@ -313,25 +313,6 @@ namespace Microsoft.Docs.Build
             }
 
             xrefsByUid.GetOrAdd(uid, _ => new ConcurrentBag<Lazy<(List<Error>, XrefSpec)>>()).Add(new Lazy<(List<Error>, XrefSpec)>(func));
-        }
-
-        private class MonikerDescendingComparer : IComparer<string>
-        {
-            private readonly MonikerRangeParser _parser;
-
-            public MonikerDescendingComparer(MonikerRangeParser parser)
-            {
-                _parser = parser;
-            }
-
-            public int Compare(string x, string y)
-            {
-                if (x is null || !_parser.TryGetMonikerOrderFromDefinition(x, out var orderX))
-                    return 1;
-                if (y is null || !_parser.TryGetMonikerOrderFromDefinition(y, out var orderY))
-                    return -1;
-                return orderY.CompareTo(orderX);
-            }
         }
     }
 }

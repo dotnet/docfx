@@ -10,6 +10,9 @@ namespace Microsoft.Docs.Build
 {
     internal class MonikerRangeParser
     {
+        public readonly MonikerComparer MonikerAscendingComparer;
+        public readonly MonikerComparer MonikerDescendingComparer;
+
         private readonly ConcurrentDictionary<string, Lazy<List<string>>> _cache = new ConcurrentDictionary<string, Lazy<List<string>>>();
         private readonly EvaluatorWithMonikersVisitor _monikersEvaluator;
         private readonly Dictionary<string, int> _monikerOrder;
@@ -18,6 +21,9 @@ namespace Microsoft.Docs.Build
         {
             _monikersEvaluator = new EvaluatorWithMonikersVisitor(monikerDefinition);
             _monikerOrder = GetMoninkerOrder(monikerDefinition.Monikers);
+
+            MonikerAscendingComparer = new MonikerComparer(this);
+            MonikerDescendingComparer = new MonikerComparer(this, false);
         }
 
         public List<string> Parse(string rangeString)

@@ -513,8 +513,10 @@ In current docfx v3, Toc file is build at the same time with `page` files, becau
 
 When build the toc file(including the toc file included in another), we have to cover:
 
-1. *Monikers* of every node in toc. We don't support setting monikers of node in toc file, the *monikers* of every node is evaluated from the build result of the corresponding file.
-1. *Monikers* of toc file. We don't support setting monikers of the toc file by config or file metadata, the *monikers* of toc file is the collection of every node' monikers.
+1. *Monikers* of every node in toc. We don't support setting monikers of node in toc file, 
+    1. If the node is a text node, the *monikers* of this node is the collection of its children's monikers.
+    1. If the node is a link node, the *monikers* of this node is the collection of its children's monikers and the monikers of this node.
+1. *Monikers* of toc file. We don't support setting monikers of the toc file by config or file metadata, the *monikers* of toc file is the collection of every node's monikers.
 
 In phase 1, when resolving the `toc_rel` of each file, we still take the nearest toc file.
 
