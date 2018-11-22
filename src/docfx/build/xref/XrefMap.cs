@@ -35,7 +35,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public XrefSpec Resolve(string uid, string moniker = null)
+        public XrefSpec Resolve(string uid, Document file, DependencyMapBuilder dependencyMapBuilder, string moniker = null)
         {
             if (_internalXrefMap.TryGetValue(uid, out var internalSpecs))
             {
@@ -48,6 +48,7 @@ namespace Microsoft.Docs.Build
                     {
                         if (internalSpec.Monikers.Contains(moniker))
                         {
+                            HandleDependencyMap(internalSpec);
                             return internalSpec;
                         }
                     }
@@ -62,17 +63,22 @@ namespace Microsoft.Docs.Build
                 var uidWithoutMoniker = validInternalSpecs.SingleOrDefault(spec => spec.Monikers.Count == 0);
                 if (uidWithoutMoniker != null)
                 {
+                    HandleDependencyMap(uidWithoutMoniker);
                     return uidWithoutMoniker;
                 }
 
                 // For uid with moniker range, take the latest moniker if no moniker defined while resolving
                 if (internalSpecs.Count > 1)
                 {
-                    return GetLatestInternalXrefmap(validInternalSpecs);
+                    var latestInternalXrefMap = GetLatestInternalXrefmap(validInternalSpecs);
+                    HandleDependencyMap(latestInternalXrefMap);
+                    return latestInternalXrefMap;
                 }
                 else
                 {
-                    return validInternalSpecs.Single();
+                    var validInternalSpec = validInternalSpecs.Single();
+                    HandleDependencyMap(validInternalSpec);
+                    return validInternalSpec;
                 }
             }
 
@@ -81,6 +87,14 @@ namespace Microsoft.Docs.Build
                 return externalSpec;
             }
             return null;
+
+            void HandleDependencyMap(XrefSpec spec)
+            {
+                if (spec?.File != null)
+                {
+                    dependencyMapBuilder?.AddDependencyItem(file, spec.File, DependencyType.UidInclusion);
+                }
+            }
         }
 
         public static XrefMap Create(Context context, Docset docset)
@@ -96,17 +110,6 @@ namespace Microsoft.Docs.Build
                 }
             }
             return new XrefMap(map, CreateInternalXrefMap(context, docset.ScanScope), context, docset.MonikerRangeParser);
-        }
-
-        public static void HandleDependencyMap(MarkupResult markup, Document file, DependencyMapBuilder dependencyMapBuilder)
-        {
-            if (dependencyMapBuilder is null)
-                return;
-
-            foreach (var reference in markup.XrefReferences.Where(x => x != null))
-            {
-                dependencyMapBuilder.AddDependencyItem(file, reference, DependencyType.UidInclusion);
-            }
         }
 
         public void OutputXrefMap(Context context)

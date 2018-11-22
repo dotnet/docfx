@@ -44,9 +44,9 @@ namespace Microsoft.Docs.Build
             return link;
         }
 
-        public static XrefSpec ResolveXref(string uid, XrefMap xrefMap, string moniker = null)
+        public static XrefSpec ResolveXref(string uid, XrefMap xrefMap, Document file, DependencyMapBuilder dependencyMapBuilder, string moniker = null)
         {
-            return xrefMap?.Resolve(uid, moniker);
+            return xrefMap?.Resolve(uid, file, dependencyMapBuilder, moniker);
         }
 
         public static (Error error, string content, Document file) TryResolveContent(this Document relativeTo, string href)

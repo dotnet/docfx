@@ -32,7 +32,6 @@ namespace Microsoft.Docs.Build
                     var (html, markup) = Markup.ToHtml((string)value, file, ReadFileDelegate, GetLinkDelegate, ResolveXrefDelegate, null, MarkdownPipelineType.Markdown);
                     errors.AddRange(markup.Errors);
                     result = html;
-                    XrefMap.HandleDependencyMap(markup, file, callback?.DependencyMapBuilder);
                 }
 
                 if (attribute is InlineMarkdownAttribute)
@@ -40,7 +39,6 @@ namespace Microsoft.Docs.Build
                     var (html, markup) = Markup.ToHtml((string)value, file, ReadFileDelegate, GetLinkDelegate, ResolveXrefDelegate, null, MarkdownPipelineType.InlineMarkdown);
                     errors.AddRange(markup.Errors);
                     result = html;
-                    XrefMap.HandleDependencyMap(markup, file, callback?.DependencyMapBuilder);
                 }
 
                 if (attribute is HtmlAttribute)
@@ -52,12 +50,7 @@ namespace Microsoft.Docs.Build
                 if (attribute is XrefAttribute)
                 {
                     // TODO: how to fill xref resolving data besides href
-                    var xrefSpec = Resolve.ResolveXref((string)value, callback?.XrefMap);
-                    result = xrefSpec?.Href;
-                    if (xrefSpec?.File != null)
-                    {
-                        callback.DependencyMapBuilder.AddDependencyItem(file, xrefSpec.File, DependencyType.UidInclusion);
-                    }
+                    return Resolve.ResolveXref((string)value, callback?.XrefMap, file, callback?.DependencyMapBuilder)?.Href;
                 }
 
                 if (extensionData != null && attributes.Any(attr => attr is XrefPropertyAttribute))
@@ -74,7 +67,7 @@ namespace Microsoft.Docs.Build
                     => Resolve.GetLink(path, relativeTo, resultRelativeTo, errors, callback?.BuildChild, callback?.DependencyMapBuilder, callback?.BookmarkValidator);
 
                 XrefSpec ResolveXrefDelegate(string uid, string moniker)
-                    => Resolve.ResolveXref(uid, callback?.XrefMap, moniker);
+                    => Resolve.ResolveXref(uid, callback?.XrefMap, file, callback?.DependencyMapBuilder, moniker);
             }
         }
     }

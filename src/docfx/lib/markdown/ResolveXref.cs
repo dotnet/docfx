@@ -42,8 +42,6 @@ namespace Microsoft.Docs.Build
                              return new LiteralInline(raw);
                          }
 
-                         Markup.Result.XrefReferences.Add(xrefSpec.File);
-
                          // fallback order:
                          // xrefSpec.displayPropertyName -> xrefSpec.name -> uid
                          var name = xrefSpec.GetXrefPropertyValue("name");
