@@ -152,7 +152,7 @@ namespace Microsoft.Docs.Build
         [JsonIgnore]
         public string ConfigFileName { get; private set; }
 
-        public IEnumerable<string> GetFileReferences(string locale)
+        public IEnumerable<string> GetFileReferences()
         {
             foreach (var url in Xref)
             {
