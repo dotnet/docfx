@@ -11,6 +11,7 @@ namespace Microsoft.Docs.Build
     {
         public string Uid { get; set; }
 
+        // not into output for now
         [JsonIgnore]
         public HashSet<string> Monikers { get; set; } = new HashSet<string>();
 
@@ -18,9 +19,6 @@ namespace Microsoft.Docs.Build
 
         [JsonExtensionData]
         public JObject ExtensionData { get; } = new JObject();
-
-        [JsonIgnore]
-        internal Document File { get; set; }
 
         public string GetName() => GetXrefPropertyValue("name");
 

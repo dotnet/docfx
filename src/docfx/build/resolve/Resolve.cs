@@ -46,7 +46,12 @@ namespace Microsoft.Docs.Build
 
         public static XrefSpec ResolveXref(string uid, XrefMap xrefMap, Document file, DependencyMapBuilder dependencyMapBuilder, string moniker = null)
         {
-            return xrefMap?.Resolve(uid, file, dependencyMapBuilder, moniker);
+            if (xrefMap is null)
+                return null;
+
+            var (xrefSpec, doc) = xrefMap.Resolve(uid, moniker);
+            dependencyMapBuilder.AddDependencyItem(file, doc, DependencyType.UidInclusion);
+            return xrefSpec;
         }
 
         public static (Error error, string content, Document file) TryResolveContent(this Document relativeTo, string href)
