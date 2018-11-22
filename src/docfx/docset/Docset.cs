@@ -142,7 +142,7 @@ namespace Microsoft.Docs.Build
             });
             _scanScope = new Lazy<HashSet<Document>>(() => CreateScanScope());
             _metadata = new Lazy<MetadataProvider>(() => new MetadataProvider(config));
-            _legacyTemplate = new Lazy<LegacyTemplate>(() => new LegacyTemplate(RestoreMap.GetGitRestorePath(Config.Dependencies["_themes"]), Locale));
+            _legacyTemplate = new Lazy<LegacyTemplate>(() => new LegacyTemplate(RestoreMap.GetGitRestorePath(LocalizationConvention.GetLocalizationTheme(Config.Theme, Locale, Config.Localization.DefaultLocale)), Locale));
             _monikerRangeParser = new Lazy<MonikerRangeParser>(() => CreateMonikerRangeParser());
             _monikersProvider = new Lazy<MonikersProvider>(() => new MonikersProvider(Config));
         }
