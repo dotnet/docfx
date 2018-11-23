@@ -31,15 +31,10 @@ namespace Microsoft.Docs.Build
 
         public static bool TryGetGitRestorePath(string remote, string branch, out string result)
         {
-            result = s_gitPath.GetOrAdd((remote, branch), new Lazy<string>(FindLastModifiedGitRepository)).Value;
-
-            // GetOrAdd and TryRemove together are not atomic operation,
-            // but because we only call TryGetGitRestorePath in implicit restore,
-            // it is very unlikely to cause a problem.
-            if (result == null)
-            {
-                s_gitPath.TryRemove((remote, branch), out _);
-            }
+            result = s_gitPath.AddOrUpdate(
+                (remote, branch),
+                new Lazy<string>(FindLastModifiedGitRepository),
+                (_, existing) => existing.Value != null ? existing : new Lazy<string>(FindLastModifiedGitRepository)).Value;
 
             return Directory.Exists(result);
 
@@ -89,11 +84,10 @@ namespace Microsoft.Docs.Build
             Debug.Assert(!string.IsNullOrEmpty(url));
             Debug.Assert(HrefUtility.IsHttpHref(url));
 
-            result = s_downloadPath.GetOrAdd(url, new Lazy<string>(FindLastModifiedFile)).Value;
-            if (result == null)
-            {
-                s_downloadPath.TryRemove(url, out _);
-            }
+            result = s_downloadPath.AddOrUpdate(
+                url,
+                new Lazy<string>(FindLastModifiedFile),
+                (_, existing) => existing.Value != null ? existing : new Lazy<string>(FindLastModifiedFile)).Value;
 
             return File.Exists(result);
 
