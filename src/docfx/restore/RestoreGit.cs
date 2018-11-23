@@ -61,10 +61,10 @@ namespace Microsoft.Docs.Build
                 {
                     var existingWorkTreePath = new ConcurrentHashSet<string>(await GitUtility.ListWorkTree(repoPath));
 
-                    await ParallelUtility.ForEach(group, async g =>
+                    await ParallelUtility.ForEach(branches, async branch =>
                     {
-                        var (branch, flags) = g;
-                        if ((flags & GitFlags.NoCheckout) != 0)
+                        var nocheckout = group.Where(g => g.branch == branch).All(g => (g.flags & GitFlags.NoCheckout) != 0);
+                        if (nocheckout)
                         {
                             return;
                         }
