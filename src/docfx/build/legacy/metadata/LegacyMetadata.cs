@@ -51,6 +51,7 @@ namespace Microsoft.Docs.Build
         public static JObject GenerateLegacyRedirectionRawMetadata(Docset docset, PageModel pageModel)
             => new JObject
             {
+                ["monikers"] = new JArray(pageModel.Monikers),
                 ["redirect_url"] = pageModel.RedirectUrl,
                 ["locale"] = docset.Locale,
             }.RemoveNulls();
@@ -78,6 +79,8 @@ namespace Microsoft.Docs.Build
             rawMetadata["rawTitle"] = pageModel.RawTitle ?? "";
 
             rawMetadata["_op_canonicalUrlPrefix"] = $"{docset.Config.BaseUrl}/{docset.Locale}/{docset.Config.DocumentId.SiteBasePath}/";
+
+            rawMetadata["monikers"] = new JArray(pageModel.Monikers);
 
             if (docset.Config.Output.Pdf)
             {
