@@ -4,6 +4,11 @@ Version Notes (Current Version: v2.41)
 v2.41(Pre-release)
 -----------
 
+v2.40.3
+-----------
+1. Bug fix:
+    1. Fix toc ui of static template. (#3606)
+
 v2.40.2
 -----------
 1. Add cache to fix swagger parser perf issue.
