@@ -181,8 +181,8 @@ namespace Microsoft.Docs.Build
             return sourceDocset.LocalizationDocset ?? sourceDocset;
         }
 
-        public static bool IsSourceDocset(this Docset docset)
-            => docset.FallbackDocset == null;
+        public static bool IsLocalized(this Docset docset)
+            => docset.FallbackDocset != null;
 
         public static string ToBilingualBranch(string branch) => $"{branch}-sxs";
 

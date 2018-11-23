@@ -245,7 +245,7 @@ namespace Microsoft.Docs.Build
 
             if (docset.Config.Contribution.ShowContributors)
             {
-                var bilingual = !docset.IsSourceDocset() && docset.Config.Localization.Bilingual;
+                var bilingual = docset.IsLocalized() && docset.Config.Localization.Bilingual;
                 var filesByRepo =
                     from file in docset.BuildScope
                     where file.ContentType == ContentType.Page

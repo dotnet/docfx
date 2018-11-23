@@ -100,7 +100,7 @@ namespace Microsoft.Docs.Build
                 bool ShouldBuildFile(Document file)
                 {
                     // source content in a localization docset
-                    if (!docset.IsSourceDocset() && file.Docset.IsSourceDocset())
+                    if (docset.IsLocalized() && !file.Docset.IsLocalized())
                     {
                         return false;
                     }
