@@ -656,6 +656,8 @@ outputs:
     {"gitcommit":"https://github.com/bilingual/a.zh-cn/blob/b1990a2c68f76bcf400e766c38480834a40e80fc/docs/a.md"}
 ---
 # conflicted toc files(source and loc)
+# 1. should not report warning
+# 2. `toc_rel` should be resolved to loc toc
 commands:
   - restore --locale zh-cn
   - build --locale zh-cn

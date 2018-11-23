@@ -83,14 +83,14 @@ namespace Microsoft.Docs.Build
 
                 await ParallelUtility.ForEach(
                     docset.BuildScope.Where(doc => doc.ContentType != ContentType.TableOfContents),
-                    BuildOneFile,
+                    async (file, buildChild) => { monikersMap.TryAdd(file, await BuildOneFile(file, buildChild)); },
                     ShouldBuildFile,
                     Progress.Update);
 
                 // Build TOC: since toc file depends on the build result of every node
                 await ParallelUtility.ForEach(
                     docset.BuildScope.Where(doc => doc.ContentType == ContentType.TableOfContents),
-                    BuildTocFile,
+                    (file, buildChild) => { return BuildTocFile(file, monikersMap.ToDictionary(item => item.Key, item => item.Value)); },
                     ShouldBuildFile,
                     Progress.Update);
 
@@ -102,7 +102,7 @@ namespace Microsoft.Docs.Build
 
                 return (CreateManifest(manifest, allDependencyMap), manifest, allDependencyMap);
 
-                async Task BuildOneFile(Document file, Action<Document> buildChild)
+                async Task<List<string>> BuildOneFile(Document file, Action<Document> buildChild)
                 {
                     var dependencyMapBuilder = new DependencyMapBuilder();
                     var callback = new PageCallback(xrefMap, dependencyMapBuilder, bookmarkValidator, buildChild);
@@ -113,17 +113,17 @@ namespace Microsoft.Docs.Build
                         sourceDependencies.TryAdd(source, dependencies);
                     }
 
-                    monikersMap.TryAdd(file, monikers);
+                    return monikers;
                 }
 
-                async Task BuildTocFile(Document file, Action<Document> buildChild)
+                async Task BuildTocFile(Document file, Dictionary<Document, List<string>> map)
                 {
                     var (dependencyMap, _) = await BuildFile(
                         context,
                         file,
                         tocMap,
                         contribution,
-                        monikersMap.ToDictionary(item => item.Key, item => item.Value),
+                        map,
                         null,
                         manifestBuilder);
 
@@ -182,6 +182,7 @@ namespace Microsoft.Docs.Build
                         (errors, model, dependencies, monikers) = await BuildPage.Build(context, file, tocMap, contribution, callback);
                         break;
                     case ContentType.TableOfContents:
+                        // TODO: improve error message for toc monikers overlap
                         (errors, model, dependencies, monikers) = BuildTableOfContents.Build(context, file, tocMap, monikersMap);
                         break;
                     case ContentType.Redirection:

@@ -1,11 +1,12 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 
 namespace Microsoft.Docs.Build
 {
-    internal class MonikerComparer : IComparer<string>
+    internal class MonikerComparer : IComparer<string>, IEqualityComparer<string>
     {
         private readonly bool _ascending;
         private readonly Dictionary<string, int> _monikerOrder;
@@ -34,12 +35,22 @@ namespace Microsoft.Docs.Build
             return _ascending ? result : -result;
         }
 
+        public bool Equals(string x, string y)
+        {
+            return Compare(x, y) == 0;
+        }
+
+        public int GetHashCode(string obj)
+        {
+            return obj.GetHashCode();
+        }
+
         private bool TryGetMonikerOrderFromDefinition(string moniker, out int order)
             => _monikerOrder.TryGetValue(moniker, out order);
 
         private Dictionary<string, int> GetMoninkerOrder(List<Moniker> monikers)
         {
-            var result = new Dictionary<string, int>();
+            var result = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
             for (int i = 0; i < monikers.Count; i++)
             {
                 result[monikers[i].Name] = i;

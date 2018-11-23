@@ -15,7 +15,7 @@ namespace Microsoft.Docs.Build
         private static readonly string[] s_tocFileNames = new[] { "TOC.md", "TOC.json", "TOC.yml" };
         private static readonly string[] s_experimentalTocFileNames = new[] { "TOC.experimental.md", "TOC.experimental.json", "TOC.experimental.yml" };
 
-        public delegate (string, List<string>) ResolveHref(Document relativeTo, string href, Document resultRelativeTo);
+        public delegate (string resolvedTopicHref, List<string> monikers) ResolveHref(Document relativeTo, string href, Document resultRelativeTo);
 
         public delegate (string content, Document file) ResolveContent(Document relativeTo, string href, bool isInclusion);
 
@@ -24,7 +24,7 @@ namespace Microsoft.Docs.Build
             var (errors, inputModel) = LoadInputModelItems(context, file, file, resolveContent, resolveHref, new List<Document>());
 
             var items = inputModel?.Items?.Select(r => TableOfContentsInputItem.ToTableOfContentsModel(r, file.Docset.MonikerAscendingComparer)).ToList();
-            var fileMonikers = items?.SelectMany(r => r.Monikers).Distinct(StringComparer.OrdinalIgnoreCase).ToList();
+            var fileMonikers = items?.SelectMany(r => r.Monikers).Distinct(file.Docset.MonikerAscendingComparer).ToList();
             fileMonikers.Sort(file.Docset.MonikerAscendingComparer);
             return (errors, items, inputModel?.Metadata, fileMonikers);
         }
@@ -210,7 +210,7 @@ namespace Microsoft.Docs.Build
                 return default;
             }
 
-            (string, List<string>) ProcessTopicHref(string topicHref)
+            (string resolvedTopicHref, List<string> monikers) ProcessTopicHref(string topicHref)
             {
                 if (string.IsNullOrEmpty(topicHref))
                 {
