@@ -10,10 +10,18 @@ namespace Microsoft.Docs.Build
     public class TableOfContentsModel
     {
         [JsonProperty(PropertyName = "metadata")]
-        public JObject Metadata { get; set; }
+        public TableOfContentsMetadata Metadata { get; set; }
 
         [JsonProperty(PropertyName = "items")]
         public List<TableOfContentsItem> Items { get; set; }
+    }
+
+    public class TableOfContentsMetadata
+    {
+        public List<string> Monikers { get; set; }
+
+        [JsonExtensionData]
+        public JObject ExtensionData { get; set; }
     }
 
     public class TableOfContentsItem

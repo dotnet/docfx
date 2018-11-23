@@ -39,7 +39,7 @@ namespace Microsoft.Docs.Build
 
             if (monikers.Count == 0)
             {
-                monikers = new List<string> { MonikerConstants.NoneVersion };
+                monikers = new List<string> { "NONE_VERSION" };
             }
             _filesBySiteUrl.GetOrAdd(manifest.SiteUrl, _ => new ConcurrentDictionary<Document, List<string>>()).TryAdd(file, monikers);
 

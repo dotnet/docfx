@@ -105,7 +105,7 @@ namespace Microsoft.Docs.Build
 
         public static Error PublishUrlConflict(string url, IEnumerable<Document> files, IEnumerable<string> conflictMonikers)
         {
-            var message = !conflictMonikers.Contains(MonikerConstants.NoneVersion) ? $" of the same version({Join(conflictMonikers)})" : null;
+            var message = !conflictMonikers.Contains("NONE_VERSION") ? $" of the same version({Join(conflictMonikers)})" : null;
             return new Error(ErrorLevel.Error, "publish-url-conflict", $"Two or more documents{message} publish to the same url '{url}': {Join(files, file => file.ContentType == ContentType.Redirection ? $"{file} <redirection>" : file.ToString())}");
         }
 

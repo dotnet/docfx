@@ -11,7 +11,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class BuildTableOfContents
     {
-        public static (IEnumerable<Error>, TableOfContentsModel, DependencyMap, List<string>) Build(
+        public static (IEnumerable<Error>, TableOfContentsModel, DependencyMap, List<string> monikers) Build(
             Context context, Document file, TableOfContentsMap tocMap, Dictionary<Document, List<string>> monikersMap)
         {
             Debug.Assert(file.ContentType == ContentType.TableOfContents);
@@ -25,10 +25,10 @@ namespace Microsoft.Docs.Build
             var dependencyMapBuilder = new DependencyMapBuilder();
             var (errors, tocModel, tocMetadata, refArticles, refTocs, monikers) = Load(context, file, dependencyMapBuilder, monikersMap);
 
-            var metadata = file.Docset.Metadata.GetMetadata(file, tocMetadata);
+            var metadata = file.Docset.Metadata.GetMetadata(file, tocMetadata).ToObject<TableOfContentsMetadata>();
 
             // Monikers of toc file is the collection of every node's monikers
-            metadata["monikers"] = new JArray(monikers);
+            metadata.Monikers = monikers;
 
             var model = new TableOfContentsModel
             {
@@ -63,7 +63,8 @@ namespace Microsoft.Docs.Build
                 Debug.Assert(tocMapBuilder != null);
                 Debug.Assert(fileToBuild != null);
 
-                var (_, _, _, referencedDocuments, referencedTocs, _) = Load(context, fileToBuild, null);
+                var (errors, _, _, referencedDocuments, referencedTocs, _) = Load(context, fileToBuild, null);
+                context.Report(fileToBuild.ToString(), errors);
 
                 tocMapBuilder.Add(fileToBuild, referencedDocuments, referencedTocs);
             }
