@@ -15,5 +15,9 @@ namespace Microsoft.Docs.Build
         public string RedirectUrl { get; set; }
 
         public List<string> Monikers { get; set; }
+
+        // Customize if the property should be serialized
+        // https://www.newtonsoft.com/json/help/html/ConditionalProperties.htm
+        public bool ShouldSerializeMonikers() => Monikers.Count > 0;
     }
 }
