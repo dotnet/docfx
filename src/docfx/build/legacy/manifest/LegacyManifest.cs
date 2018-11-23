@@ -110,11 +110,11 @@ namespace Microsoft.Docs.Build
                 context.WriteJson(
                 new
                 {
-                    groups = monikerGroups.Select(item => new
+                    groups = monikerGroups.Count > 0 ? monikerGroups.Select(item => new
                     {
                         group = item.Key,
                         monikers = item.Value,
-                    }),
+                    }) : null,
                     default_version_info = new
                     {
                         name = string.Empty,
