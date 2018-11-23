@@ -4,6 +4,11 @@ Version Notes (Current Version: v2.41)
 v2.41(Pre-release)
 -----------
 
+v2.40.2
+-----------
+1. Add cache to fix swagger parser perf issue.
+2. Add dropdown fix to static toc template. (#3361)
+
 v2.40.1
 -----------
 1. Fix codesnippet tagname bug.
