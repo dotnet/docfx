@@ -48,7 +48,7 @@ namespace Microsoft.Docs.Build
             }
 
             var newLocale = mapping == LocalizationMapping.Repository ? $".{locale}" : ".localization";
-            var newBranch = bilingual ? ToBilingualBranch(branch) : branch;
+            var newBranch = bilingual ? GetBilingualBranch(branch) : branch;
 
             if (remote.EndsWith($".{defaultLocale}", StringComparison.OrdinalIgnoreCase))
             {
@@ -110,7 +110,7 @@ namespace Microsoft.Docs.Build
             return localizationDocsetPath;
         }
 
-        public static bool TryToContributionBranch(string branch, out string contributionBranch)
+        public static bool TryGetContributionBranch(string branch, out string contributionBranch)
         {
             Debug.Assert(!string.IsNullOrEmpty(branch));
             if (branch.EndsWith("-sxs"))
@@ -184,7 +184,7 @@ namespace Microsoft.Docs.Build
         public static bool IsLocalized(this Docset docset)
             => docset.FallbackDocset != null;
 
-        public static string ToBilingualBranch(string branch) => $"{branch}-sxs";
+        public static string GetBilingualBranch(string branch) => $"{branch}-sxs";
 
         public static (string remote, string branch) GetLocalizationTheme(string theme, string locale, string defaultLocale)
         {

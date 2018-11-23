@@ -258,7 +258,7 @@ namespace Microsoft.Docs.Build
                 {
                     var repo = group.Key;
                     var repoPath = repo.Path;
-                    var contributionBranch = bilingual && LocalizationConvention.TryToContributionBranch(repo.Branch, out var cBranch) ? cBranch : null;
+                    var contributionBranch = bilingual && LocalizationConvention.TryGetContributionBranch(repo.Branch, out var cBranch) ? cBranch : null;
 
                     using (Progress.Start($"Loading commits for '{repoPath}'"))
                     using (var commitsProvider = await GitCommitProvider.Create(repoPath, AppData.GetCommitCachePath(repo.Remote)))

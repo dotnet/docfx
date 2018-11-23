@@ -55,7 +55,7 @@ namespace Microsoft.Docs.Build
                     await ParallelUtility.ForEach(branches, async branch =>
                     {
                         // contribution branch no need to be checked out
-                        if (branches.Any(b => LocalizationConvention.TryToContributionBranch(b, out var cb) && cb == branch))
+                        if (branches.Any(b => LocalizationConvention.TryGetContributionBranch(b, out var cb) && cb == branch))
                         {
                             return;
                         }
