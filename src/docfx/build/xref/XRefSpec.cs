@@ -11,6 +11,7 @@ namespace Microsoft.Docs.Build
     {
         public string Uid { get; set; }
 
+        // not into output for now
         [JsonIgnore]
         public HashSet<string> Monikers { get; set; } = new HashSet<string>();
 

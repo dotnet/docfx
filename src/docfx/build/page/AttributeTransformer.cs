@@ -50,7 +50,7 @@ namespace Microsoft.Docs.Build
                 if (attribute is XrefAttribute)
                 {
                     // TODO: how to fill xref resolving data besides href
-                    result = Resolve.ResolveXref((string)value, callback?.XrefMap)?.Href;
+                    result = Resolve.ResolveXref((string)value, callback?.XrefMap, file, callback?.DependencyMapBuilder)?.Href;
                 }
 
                 if (extensionData != null && attributes.Any(attr => attr is XrefPropertyAttribute))
@@ -67,7 +67,7 @@ namespace Microsoft.Docs.Build
                     => Resolve.GetLink(path, relativeTo, resultRelativeTo, errors, callback?.BuildChild, callback?.DependencyMapBuilder, callback?.BookmarkValidator);
 
                 XrefSpec ResolveXrefDelegate(string uid, string moniker)
-                    => Resolve.ResolveXref(uid, callback?.XrefMap, moniker);
+                    => Resolve.ResolveXref(uid, callback?.XrefMap, file, callback?.DependencyMapBuilder, moniker);
             }
         }
     }

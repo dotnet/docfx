@@ -20,7 +20,7 @@ inputs:
       siteBasePath: sccm
     name: sccm
     product: Win
-    content: sccm/**/*
+    files: sccm/**/*
   sccm/mdt/release-notes.md:
 outputs:
   sccm/mdt/release-notes.json: |
@@ -37,7 +37,7 @@ inputs:
       siteBasePath: sccm
     name: sccm
     product: Win
-    content: "**/*"
+    files: "**/*"
   sccm/mdm/index.md:
   sccm/index.md:
 outputs:
@@ -55,7 +55,7 @@ inputs:
       siteBasePath: sccm
     name: sccm
     product: Win
-    content: "**/*"
+    files: "**/*"
     redirections:
       sccm/mdm/index.md: /sccm/mdm/understand/hybrid-mobile-device-management
   sccm/mdm/understand/hybrid-mobile-device-management.md:
@@ -74,7 +74,7 @@ inputs:
       siteBasePath: sccm
     name: sccm
     product: Win
-    content: "sccm/mdm/understand/hybrid-mobile-device-management.md"
+    files: "sccm/mdm/understand/hybrid-mobile-device-management.md"
     redirections:
       sccm/mdm/index.md: /sccm/mdm/understand/hybrid-mobile-device-management
   sccm/mdm/understand/hybrid-mobile-device-management.md:
@@ -92,7 +92,7 @@ inputs:
       siteBasePath: sccm
     name: sccm
     product: Win
-    content: "**/*"
+    files: "**/*"
     redirectionsWithoutId:
       sccm/mdm/index.md: /sccm/mdm/understand/hybrid-mobile-device-management
   sccm/mdm/understand/hybrid-mobile-device-management.md:
@@ -110,7 +110,7 @@ inputs:
       siteBasePath: sccm
     name: sccm
     product: Win
-    content: "**/*"
+    files: "**/*"
     redirections:
       sccm/mdm/index.md: /sccm/mdm/understand/hybrid-mobile-device-management
       sccm/mdm/index2.md: /sccm/mdm/understand/hybrid-mobile-device-management
@@ -139,7 +139,7 @@ inputs:
         articles\billing/billing-add-change-azure-subscription-administrator.md: articles
     name: azure-documents
     product: Azure
-    content: "**/*"
+    files: "**/*"
     routes:
       articles/: "azure/"
   articles/iot-central/concepts-architecture.md:
@@ -246,7 +246,7 @@ inputs:
       siteBasePath: azure
     name: azure-documents
     product: Azure
-    content: "**/*"
+    files: "**/*"
     routes:
       articles/: "azure/"
     redirections:
@@ -270,7 +270,7 @@ inputs:
     name: azure-documents
     documentId:
       siteBasePath: articles
-    content: "**/*"
+    files: "**/*"
   articles/active-directory-b2c/index.yml : |
     ### YamlMime:YamlDocument
     documentType: LandingData
@@ -285,7 +285,7 @@ inputs:
     name: azure-documents
     documentId:
       siteBasePath: azure
-    content: "**/*"
+    files: "**/*"
     routes:
       articles/: "azure/"
     redirections:
@@ -301,7 +301,7 @@ outputs:
 # Generate canonical URL
 inputs:
   docfx.yml: |
-    content: "**/*"
+    files: "**/*"
     baseUrl: "https://docs.microsoft.com"
     routes:
       articles/: "azure/"
