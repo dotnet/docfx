@@ -49,12 +49,18 @@ namespace Microsoft.Docs.Build
         }
 
         public static JObject GenerateLegacyRedirectionRawMetadata(Docset docset, PageModel pageModel)
-            => new JObject
+        {
+            var rawMetadata = new JObject
             {
-                ["monikers"] = new JArray(pageModel.Monikers),
                 ["redirect_url"] = pageModel.RedirectUrl,
                 ["locale"] = docset.Locale,
-            }.RemoveNulls();
+            };
+            if (pageModel.Monikers.Count > 0)
+            {
+                rawMetadata["monikers"] = new JArray(pageModel.Monikers);
+            }
+            return rawMetadata.RemoveNulls();
+        }
 
         public static JObject GenerateLegacyRawMetadata(
                 PageModel pageModel,
@@ -80,7 +86,10 @@ namespace Microsoft.Docs.Build
 
             rawMetadata["_op_canonicalUrlPrefix"] = $"{docset.Config.BaseUrl}/{docset.Locale}/{docset.Config.DocumentId.SiteBasePath}/";
 
-            rawMetadata["monikers"] = new JArray(pageModel.Monikers);
+            if (pageModel.Monikers.Count > 0)
+            {
+                rawMetadata["monikers"] = new JArray(pageModel.Monikers);
+            }
 
             if (docset.Config.Output.Pdf)
             {
