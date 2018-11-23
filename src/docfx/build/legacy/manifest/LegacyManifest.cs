@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
@@ -16,7 +15,7 @@ namespace Microsoft.Docs.Build
         {
             using (Progress.Start("Convert Legacy Manifest"))
             {
-                var monikerGroups = new ConcurrentDictionary<string, Lazy<List<string>>>();
+                var monikerGroups = new ConcurrentDictionary<string, List<string>>();
                 var convertedItems = new ConcurrentBag<(LegacyManifestItem manifestItem, Document doc)>();
                 Parallel.ForEach(
                     fileManifests,
@@ -83,7 +82,11 @@ namespace Microsoft.Docs.Build
                             }
                         }
 
-                        var groupId = HashUtility.GetMd5HashShort(string.Join(',', fileManifest.Value.Monikers));
+                        string groupId = null;
+                        if (fileManifest.Value.Monikers.Count > 0)
+                        {
+                            groupId = HashUtility.GetMd5HashShort(string.Join(',', fileManifest.Value.Monikers));
+                        }
                         var file = new LegacyManifestItem
                         {
                             SiteUrlRelativeToSiteBasePath = legacySiteUrlRelativeToBaseSitePath,
@@ -98,7 +101,10 @@ namespace Microsoft.Docs.Build
                         };
 
                         convertedItems.Add((file, document));
-                        monikerGroups.GetOrAdd(groupId, new Lazy<List<string>>(() => fileManifest.Value.Monikers));
+                        if (groupId != null)
+                        {
+                            monikerGroups.TryAdd(groupId, fileManifest.Value.Monikers);
+                        }
                     });
 
                 context.WriteJson(
