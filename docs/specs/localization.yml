@@ -679,7 +679,6 @@ outputs:
   docs/a/toc.json: |
     {"items":[{"toc_title": "yml reference a"}]}
 ---
----
 # fallback to deleted token
 commands:
   - restore --locale zh-cn
