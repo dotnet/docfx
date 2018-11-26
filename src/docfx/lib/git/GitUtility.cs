@@ -213,29 +213,30 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public static unsafe string GetContentFromHistory(string repoPath, string filePath, string committish)
+        public static unsafe bool TryGetContentFromHistory(string repoPath, string filePath, string committish, out string content)
         {
+            content = null;
             if (git_repository_open(out var repo, repoPath) != 0)
             {
-                return null;
+                return false;
             }
 
             if (git_revparse_single(out var commit, repo, committish) != 0)
             {
                 git_repository_free(repo);
-                return null;
+                return false;
             }
 
             if (git_commit_tree(out var tree, commit) != 0)
             {
                 git_repository_free(repo);
-                return null;
+                return false;
             }
 
             if (git_tree_entry_bypath(out var entry, tree, filePath) != 0)
             {
                 git_repository_free(repo);
-                return null;
+                return false;
             }
 
             var obj = git_tree_entry_id(entry);
@@ -243,13 +244,14 @@ namespace Microsoft.Docs.Build
             {
                 git_tree_entry_free(entry);
                 git_repository_free(repo);
-                return null;
+                return false;
             }
-            var blobContent = git_blob_rawcontent(blob);
+
+            content = git_blob_rawcontent(blob);
             git_tree_entry_free(entry);
             git_repository_free(repo);
 
-            return blobContent;
+            return true;
         }
 
         /// <summary>

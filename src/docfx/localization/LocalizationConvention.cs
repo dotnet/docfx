@@ -150,7 +150,8 @@ namespace Microsoft.Docs.Build
                 return true;
             }
 
-            // resolve from source repo's git history
+            // try to resolve from source repo's git history
+            // TODO: if the current docset is source and relativeTo is token
             if (docset.IsLocalized() && Document.GetContentType(file) == ContentType.Page)
             {
                 var (gitCommitProvider, repoPath) = s_gitCommitProvider.GetOrAdd(docset.FallbackDocset.DocsetPath, docsetPath =>
@@ -172,9 +173,11 @@ namespace Microsoft.Docs.Build
                     if (commits.Count > 1)
                     {
                         // the latest commit would be deleting it from repo
-                        content = GitUtility.GetContentFromHistory(repoPath, pathToRepo, commits[1].Sha);
-                        resolvedDocset = docset;
-                        return true;
+                        if (GitUtility.TryGetContentFromHistory(repoPath, pathToRepo, commits[1].Sha, out content))
+                        {
+                            resolvedDocset = docset;
+                            return true;
+                        }
                     }
                 }
             }
