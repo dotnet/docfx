@@ -238,7 +238,7 @@ namespace Microsoft.Docs.Build
 
             pathToDocset = PathUtility.NormalizeFile(pathToDocset);
 
-            if (TryResolveDocset(docset, pathToDocset, out var resolvedDocset))
+            if (docset.TryResolveDocset(pathToDocset, out var resolvedDocset))
             {
                 var (error, file) = TryCreate(resolvedDocset, pathToDocset);
                 return error == null ? file : null;
@@ -349,34 +349,6 @@ namespace Microsoft.Docs.Build
                 default:
                     return url;
             }
-        }
-
-        // TODO: report the fallback info
-        private static bool TryResolveDocset(Docset docset, string file, out Docset resolvedDocset)
-        {
-            // resolve from localization docset
-            if (docset.LocalizationDocset != null && File.Exists(Path.Combine(docset.LocalizationDocset.DocsetPath, file)))
-            {
-                resolvedDocset = docset.LocalizationDocset;
-                return true;
-            }
-
-            // resolve from current docset
-            if (File.Exists(Path.Combine(docset.DocsetPath, file)))
-            {
-                resolvedDocset = docset;
-                return true;
-            }
-
-            // resolve from fallback docset
-            if (docset.FallbackDocset != null && File.Exists(Path.Combine(docset.FallbackDocset.DocsetPath, file)))
-            {
-                resolvedDocset = docset.FallbackDocset;
-                return true;
-            }
-
-            resolvedDocset = null;
-            return false;
         }
 
         private static string ApplyRoutes(string path, IReadOnlyDictionary<string, string> routes)

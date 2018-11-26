@@ -627,7 +627,9 @@ outputs:
   docs/a.json: |
     {"gitcommit":"https://github.com/bilingual/a.zh-cn/blob/b1990a2c68f76bcf400e766c38480834a40e80fc/docs/a.md"}
 ---
-# conflicted toc files(source and loc) will be removed from toc map
+# conflicted toc files(source and loc)
+# 1. should not report warning
+# 2. `toc_rel` should be resolved to loc toc
 commands:
   - restore --locale zh-cn
   - build --locale zh-cn
@@ -645,6 +647,6 @@ repos:
         docs/a/a.md:
 outputs:
   docs/a/a.json: |
-    {"!toc_rel": "toc.json"}
-  build.log: |
-    ["warning","publish-url-conflict","Two or more documents of the same version publish to the same url '/docs/a/toc.json': 'docs/a/TOC.md', 'docs/a/TOC.yml'"]
+    {"toc_rel": "toc.json"}
+  docs/a/toc.json: |
+    {"items":[{"toc_title": "yml reference a"}]}

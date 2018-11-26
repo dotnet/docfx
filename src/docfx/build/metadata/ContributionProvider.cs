@@ -245,7 +245,7 @@ namespace Microsoft.Docs.Build
 
             if (docset.Config.Contribution.ShowContributors)
             {
-                var bilingual = docset.FallbackDocset != null && docset.Config.Localization.Bilingual;
+                var bilingual = docset.IsLocalized() && docset.Config.Localization.Bilingual;
                 var filesByRepo =
                     from file in docset.BuildScope
                     where file.ContentType == ContentType.Page
@@ -258,7 +258,7 @@ namespace Microsoft.Docs.Build
                 {
                     var repo = group.Key;
                     var repoPath = repo.Path;
-                    var contributionBranch = bilingual && repo.Branch.EndsWith("-sxs") ? repo.Branch.Substring(0, repo.Branch.Length - 4) : null;
+                    var contributionBranch = bilingual && LocalizationConvention.TryGetContributionBranch(repo.Branch, out var cBranch) ? cBranch : null;
 
                     using (Progress.Start($"Loading commits for '{repoPath}'"))
                     using (var commitsProvider = await GitCommitProvider.Create(repoPath, AppData.GetCommitCachePath(repo.Remote)))
