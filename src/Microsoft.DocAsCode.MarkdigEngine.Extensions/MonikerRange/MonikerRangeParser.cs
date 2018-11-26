@@ -5,7 +5,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
     using Markdig.Helpers;
     using Markdig.Parsers;
-    using Markdig.Renderers.Html;
     using Markdig.Syntax;
 
     public class MonikerRangeParser : BlockParser
@@ -83,18 +82,14 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 _context.LogWarning("invalid-moniker-range", $"MonikerRange have some invalid chars in the starting.");
             }
 
-            var monikerRange = new MonikerRangeBlock(this)
+            processor.NewBlocks.Push(new MonikerRangeBlock(this)
             {
                 Closed = false,
                 MonikerRange = range.ToString(),
                 ColonCount = colonCount,
                 Column = column,
                 Span = new SourceSpan(sourcePosition, slice.End),
-            };
-
-            monikerRange.GetAttributes().AddPropertyIfNotExist("range", monikerRange.MonikerRange);
-
-            processor.NewBlocks.Push(monikerRange);
+            });
 
             return BlockState.ContinueDiscard;
         }

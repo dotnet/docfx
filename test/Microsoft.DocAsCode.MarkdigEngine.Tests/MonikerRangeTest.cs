@@ -45,7 +45,7 @@ Shared content.
 <p sourceFile=""fake.md"" sourceStartLineNumber=""3"">Shared content.</p>
 <h2 id=""section-1"" sourceFile=""fake.md"" sourceStartLineNumber=""5"">Section 1</h2>
 <p sourceFile=""fake.md"" sourceStartLineNumber=""7"">Shared content.</p>
-<div range=""&gt;= myproduct-4.1"" sourceFile=""fake.md"" sourceStartLineNumber=""9"">
+<div sourceFile=""fake.md"" sourceStartLineNumber=""9"" range="">= myproduct-4.1"">
 <h2 id=""section-for-myproduct-41-and-later"" sourceFile=""fake.md"" sourceStartLineNumber=""10"">Section for myproduct-4.1 and Later</h2>
 <p sourceFile=""fake.md"" sourceStartLineNumber=""12"">Some version-specific content here...</p>
 <p sourceFile=""fake.md"" sourceStartLineNumber=""14"">::: nested moniker zone is not allowed. So this line is in plain text.
