@@ -151,6 +151,7 @@ namespace Microsoft.Docs.Build
             }
 
             // try to resolve from source repo's git history
+            // todo: support code snippet
             var fallbackDocset = GetFallbackDocset();
             if (fallbackDocset != null && Document.GetContentType(file) == ContentType.Page)
             {
