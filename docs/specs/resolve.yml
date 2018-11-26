@@ -143,7 +143,7 @@ inputs:
   docs/a.png:
 outputs:
   build.log: |
-    ["warning","publish-url-conflict","Two or more documents of the same version publish to the same url '/docs/a.png': 'docs/a.png', 'docs/a.png.md'"]
+    ["error","publish-url-conflict","Two or more documents publish to the same url '/docs/a.png': 'docs/a.png', 'docs/a.png.md'"]
 ---
 # Prefer relative url to file when there is a matching folder name
 inputs:
@@ -219,7 +219,7 @@ inputs:
   docs/redirect.md:
 outputs:
   build.log: |
-    ["warning","output-path-conflict","Two or more documents output to the same path 'docs/redirect.json': 'docs/redirect.md', 'docs/redirect.md <redirection>'"]
+    ["error","output-path-conflict","Two or more documents output to the same path 'docs/redirect.json': 'docs/redirect.md', 'docs/redirect.md <redirection>'"]
 ---
 # Show warning if link to a page outside build scope
 inputs:
