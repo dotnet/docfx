@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Linq;
 
@@ -12,7 +12,7 @@ namespace Microsoft.Docs.Build
     /// </summary>
     internal class DependencyMapBuilder
     {
-        private readonly HashSet<DependencyItem> _dependencyItems = new HashSet<DependencyItem>();
+        private readonly ConcurrentHashSet<DependencyItem> _dependencyItems = new ConcurrentHashSet<DependencyItem>();
 
         public void AddDependencyItem(Document relativeTo, Document dependencyDoc, DependencyType type)
         {
@@ -23,7 +23,7 @@ namespace Microsoft.Docs.Build
                 return;
             }
 
-            _dependencyItems.Add(new DependencyItem(relativeTo, dependencyDoc, type));
+            _dependencyItems.TryAdd(new DependencyItem(relativeTo, dependencyDoc, type));
         }
 
         public DependencyMap Build()
