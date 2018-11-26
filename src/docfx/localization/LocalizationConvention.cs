@@ -2,16 +2,18 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
 {
     internal static class LocalizationConvention
     {
+        private static readonly ConcurrentDictionary<string, (GitCommitProvider gitProvider, string repoPath)> s_gitCommitProvider = new ConcurrentDictionary<string, (GitCommitProvider gitProvider, string repoPath)>();
+
         /// <summary>
         /// The loc repo name follows below conventions:
         /// source remote                                           -->     loc remote
@@ -123,8 +125,10 @@ namespace Microsoft.Docs.Build
             return false;
         }
 
-        public static bool TryResolveDocset(this Docset docset, string file, out Docset resolvedDocset)
+        public static bool TryResolveDocset(this Docset docset, string file, out Docset resolvedDocset, out string content)
         {
+            content = null;
+
             // resolve from localization docset
             if (docset.LocalizationDocset != null && File.Exists(Path.Combine(docset.LocalizationDocset.DocsetPath, file)))
             {
@@ -144,6 +148,35 @@ namespace Microsoft.Docs.Build
             {
                 resolvedDocset = docset.FallbackDocset;
                 return true;
+            }
+
+            // resolve from source repo's git history
+            if (docset.IsLocalized() && Document.GetContentType(file) == ContentType.Page)
+            {
+                var (gitCommitProvider, repoPath) = s_gitCommitProvider.GetOrAdd(docset.FallbackDocset.DocsetPath, docsetPath =>
+                {
+                    var repo = GitUtility.FindRepo(docsetPath);
+                    if (!string.IsNullOrEmpty(repo))
+                    {
+                        var (remote, _, _) = GitUtility.GetRepoInfo(repo);
+                        return (GitCommitProvider.Create(repo).Result/*TODO*/, repo);
+                    }
+
+                    return default;
+                });
+
+                if (gitCommitProvider != null)
+                {
+                    var pathToRepo = PathUtility.NormalizeFile(Path.GetRelativePath(repoPath, Path.Combine(docset.FallbackDocset.DocsetPath, file)));
+                    var commits = gitCommitProvider.GetCommitHistory(pathToRepo);
+                    if (commits.Count > 1)
+                    {
+                        // the latest commit would be deleting it from repo
+                        content = GitUtility.GetContentFromHistory(repoPath, pathToRepo, commits[1].Sha);
+                        resolvedDocset = docset;
+                        return true;
+                    }
+                }
             }
 
             resolvedDocset = null;

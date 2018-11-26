@@ -678,3 +678,25 @@ outputs:
     {"toc_rel": "toc.json"}
   docs/a/toc.json: |
     {"items":[{"toc_title": "yml reference a"}]}
+---
+---
+# fallback to deleted token
+commands:
+  - restore --locale zh-cn
+  - build --locale zh-cn
+repos:
+  https://github.com/deletedtoken/a:
+    - files:
+        docfx.yml:
+      author: a
+    - files:
+        docfx.yml:
+        docs/token.md: token
+      author: b
+  https://github.com/deletedtoken/a.zh-cn:
+    - files:
+        docs/a.md: |
+          [!include[include deleted token](token.md)
+outputs:
+  docs/a.json: |
+    {"content":"<p>token</p>\n"}

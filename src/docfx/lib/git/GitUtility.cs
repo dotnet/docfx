@@ -213,6 +213,45 @@ namespace Microsoft.Docs.Build
             }
         }
 
+        public static unsafe string GetContentFromHistory(string repoPath, string filePath, string committish)
+        {
+            if (git_repository_open(out var repo, repoPath) != 0)
+            {
+                return null;
+            }
+
+            if (git_revparse_single(out var commit, repo, committish) != 0)
+            {
+                git_repository_free(repo);
+                return null;
+            }
+
+            if (git_commit_tree(out var tree, commit) != 0)
+            {
+                git_repository_free(repo);
+                return null;
+            }
+
+            if (git_tree_entry_bypath(out var entry, tree, filePath) != 0)
+            {
+                git_repository_free(repo);
+                return null;
+            }
+
+            var obj = git_tree_entry_id(entry);
+            if (git_blob_lookup(out var blob, repo, obj) != 0)
+            {
+                git_tree_entry_free(entry);
+                git_repository_free(repo);
+                return null;
+            }
+            var blobContent = git_blob_rawcontent(blob);
+            git_tree_entry_free(entry);
+            git_repository_free(repo);
+
+            return blobContent;
+        }
+
         /// <summary>
         /// Clones or update a git repository to the latest version.
         /// </summary>

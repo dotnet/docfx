@@ -6,11 +6,14 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text;
 
 namespace Microsoft.Docs.Build
 {
     internal class Document
     {
+        private readonly string _content;
+
         /// <summary>
         /// Gets the owning docset of this document. A document can only belong to one docset.
         /// </summary>
@@ -107,6 +110,7 @@ namespace Microsoft.Docs.Build
             string mime,
             Schema schema,
             bool isExperimental,
+            string content = null,
             string redirectionUrl = null)
         {
             Debug.Assert(!Path.IsPathRooted(filePath));
@@ -123,6 +127,7 @@ namespace Microsoft.Docs.Build
             RedirectionUrl = redirectionUrl;
 
             _id = new Lazy<(string docId, string versionId)>(() => LoadDocumentId());
+            _content = content;
 
             Debug.Assert(IsValidRelativePath(FilePath));
             Debug.Assert(IsValidRelativePath(SitePath));
@@ -137,6 +142,12 @@ namespace Microsoft.Docs.Build
         public Stream ReadStream()
         {
             Debug.Assert(ContentType != ContentType.Redirection);
+
+            if (_content != null)
+            {
+                return new MemoryStream(Encoding.UTF8.GetBytes(_content));
+            }
+
             return File.OpenRead(Path.Combine(Docset.DocsetPath, FilePath));
         }
 
@@ -146,6 +157,12 @@ namespace Microsoft.Docs.Build
         public string ReadText()
         {
             Debug.Assert(ContentType != ContentType.Redirection);
+
+            if (_content != null)
+            {
+                return _content;
+            }
+
             using (var reader = new StreamReader(ReadStream()))
             {
                 return reader.ReadToEnd();
@@ -194,7 +211,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         /// <param name="docset">The current docset</param>
         /// <param name="path">The path relative to docset root</param>
-        public static (Error error, Document doc) TryCreate(Docset docset, string path, string redirectionUrl = null)
+        public static (Error error, Document doc) TryCreate(Docset docset, string path, string content = null, string redirectionUrl = null)
         {
             Debug.Assert(docset != null);
             Debug.Assert(!string.IsNullOrEmpty(path));
@@ -221,7 +238,7 @@ namespace Microsoft.Docs.Build
                 return (Errors.InvalidRedirection(filePath, type), null);
             }
 
-            return (null, new Document(docset, filePath, sitePath, siteUrl, contentType, mime, schema, isExperimental, redirectionUrl));
+            return (null, new Document(docset, filePath, sitePath, siteUrl, contentType, mime, schema, isExperimental, content, redirectionUrl));
         }
 
         /// <summary>
@@ -238,9 +255,9 @@ namespace Microsoft.Docs.Build
 
             pathToDocset = PathUtility.NormalizeFile(pathToDocset);
 
-            if (docset.TryResolveDocset(pathToDocset, out var resolvedDocset))
+            if (docset.TryResolveDocset(pathToDocset, out var resolvedDocset, out var content))
             {
-                var (error, file) = TryCreate(resolvedDocset, pathToDocset);
+                var (error, file) = TryCreate(resolvedDocset, pathToDocset, content);
                 return error == null ? file : null;
             }
 

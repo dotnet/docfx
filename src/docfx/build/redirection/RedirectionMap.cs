@@ -73,7 +73,7 @@ namespace Microsoft.Docs.Build
                 foreach (var (path, redirectTo) in items)
                 {
                     var pathToDocset = PathUtility.NormalizeFile(path);
-                    var (error, document) = Document.TryCreate(docset, pathToDocset, redirectTo);
+                    var (error, document) = Document.TryCreate(docset, pathToDocset, redirectionUrl: redirectTo);
                     if (error != null)
                     {
                         errors.Add(error);

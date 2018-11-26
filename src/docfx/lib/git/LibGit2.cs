@@ -112,6 +112,9 @@ namespace Microsoft.Docs.Build
         public static unsafe extern git_oid* git_commit_tree_id(IntPtr commit);
 
         [DllImport(LibName)]
+        public static unsafe extern int git_commit_tree(out IntPtr tree, IntPtr commit);
+
+        [DllImport(LibName)]
         public static unsafe extern int git_tree_walk(IntPtr tree, int mode, IntPtr callback, void* payload);
 
         [DllImport(LibName)]
@@ -156,6 +159,12 @@ namespace Microsoft.Docs.Build
         [DllImport(LibName)]
         public static unsafe extern void git_revwalk_free(IntPtr walk);
 
+        [DllImport(LibName)]
+        public static unsafe extern int git_blob_lookup(out IntPtr blob, IntPtr repo, git_oid* obj);
+
+        [DllImport(LibName)]
+        public static unsafe extern string git_blob_rawcontent(IntPtr blob);
+
         [StructLayout(LayoutKind.Sequential)]
         public struct git_time
         {
@@ -172,7 +181,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        [StructLayout(LayoutKind.Sequential, CharSet=CharSet.Auto)]
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
         public unsafe struct git_signature
         {
             public IntPtr name;
