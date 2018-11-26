@@ -141,7 +141,10 @@ namespace Microsoft.Docs.Build
                 {
                     Users = Users.ToArray(),
                 });
-                var tasks = new List<Task>
+               var tasks = new List<Task>
+                {
+                    ProcessUtility.WriteFile(_cachePath, file),
+                };
                 {
                     Task.Run(() => ProcessUtility.WriteFile(_cachePath, file)),
                 };
