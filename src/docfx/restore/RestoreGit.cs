@@ -36,17 +36,17 @@ namespace Microsoft.Docs.Build
                     remote,
                     async () =>
                     {
-                        try
+                        if (branchesToFetch.Length > 0)
                         {
-                            if (branchesToFetch.Length > 0)
+                            try
                             {
                                 await GitUtility.CloneOrUpdateBare(repoPath, remote, branchesToFetch, config);
-                                await AddWorkTrees();
                             }
-                        }
-                        catch (Exception ex)
-                        {
-                            throw Errors.GitCloneFailed(remote, branches).ToException(ex);
+                            catch (Exception ex)
+                            {
+                                throw Errors.GitCloneFailed(remote, branches).ToException(ex);
+                            }
+                            await AddWorkTrees();
                         }
                     });
 
