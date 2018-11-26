@@ -151,10 +151,10 @@ namespace Microsoft.Docs.Build
             }
 
             // try to resolve from source repo's git history
-            // TODO: if the current docset is source and relativeTo is token
-            if (docset.IsLocalized() && Document.GetContentType(file) == ContentType.Page)
+            var fallbackDocset = GetFallbackDocset();
+            if (fallbackDocset != null && Document.GetContentType(file) == ContentType.Page)
             {
-                var (gitCommitProvider, repoPath) = s_gitCommitProvider.GetOrAdd(docset.FallbackDocset.DocsetPath, docsetPath =>
+                var (gitCommitProvider, repoPath) = s_gitCommitProvider.GetOrAdd(fallbackDocset.DocsetPath, docsetPath =>
                 {
                     var repo = GitUtility.FindRepo(docsetPath);
                     if (!string.IsNullOrEmpty(repo))
@@ -168,14 +168,14 @@ namespace Microsoft.Docs.Build
 
                 if (gitCommitProvider != null)
                 {
-                    var pathToRepo = PathUtility.NormalizeFile(Path.GetRelativePath(repoPath, Path.Combine(docset.FallbackDocset.DocsetPath, file)));
+                    var pathToRepo = PathUtility.NormalizeFile(Path.GetRelativePath(repoPath, Path.Combine(fallbackDocset.DocsetPath, file)));
                     var commits = gitCommitProvider.GetCommitHistory(pathToRepo);
                     if (commits.Count > 1)
                     {
                         // the latest commit would be deleting it from repo
                         if (GitUtility.TryGetContentFromHistory(repoPath, pathToRepo, commits[1].Sha, out content))
                         {
-                            resolvedDocset = docset;
+                            resolvedDocset = fallbackDocset;
                             return true;
                         }
                     }
@@ -184,6 +184,24 @@ namespace Microsoft.Docs.Build
 
             resolvedDocset = null;
             return false;
+
+            Docset GetFallbackDocset()
+            {
+                if (docset.LocalizationDocset != null)
+                {
+                    // source docset in loc build
+                    return docset;
+                }
+
+                if (docset.FallbackDocset != null)
+                {
+                    // localized docset in loc build
+                    return docset.FallbackDocset;
+                }
+
+                // source docset in source build
+                return null;
+            }
         }
 
         public static HashSet<Document> CreateScanScope(this Docset docset)

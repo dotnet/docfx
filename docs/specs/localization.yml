@@ -690,12 +690,14 @@ repos:
       author: a
     - files:
         docfx.yml:
-        docs/token.md: token
+        docs/tokena.md: |
+          [!include[include deleted tokenb](tokenb.md)
+        docs/tokenb.md: b
       author: b
   https://github.com/deletedtoken/a.zh-cn:
     - files:
         docs/a.md: |
-          [!include[include deleted token](token.md)
+          [!include[include deleted tokena](tokena.md)
 outputs:
   docs/a.json: |
-    {"content":"<p>token</p>\n"}
+    {"content":"<p>b</p>\n"}
