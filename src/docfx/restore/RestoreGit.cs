@@ -50,12 +50,12 @@ namespace Microsoft.Docs.Build
                             try
                             {
                                 await GitUtility.CloneOrUpdateBare(repoPath, remote, branchesToFetch, depthOne, config);
-                                await AddWorkTrees();
                             }
                             catch (Exception ex)
                             {
                                 throw Errors.GitCloneFailed(remote, branches).ToException(ex);
                             }
+                            await AddWorkTrees();
                         }
                     });
 
