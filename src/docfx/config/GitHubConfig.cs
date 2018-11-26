@@ -17,6 +17,11 @@ namespace Microsoft.Docs.Build
         public readonly string UserCache = string.Empty;
 
         /// <summary>
+        /// Whether upload the updated user cache to remote if it is set to a URL.
+        /// </summary>
+        public readonly bool UpdateRemoteUserCache = false;
+
+        /// <summary>
         /// Determines how long a user remains valid in cache.
         /// </summary>
         public readonly int UserCacheExpirationInHours = 7 * 24;

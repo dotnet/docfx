@@ -90,7 +90,8 @@ namespace Microsoft.Docs.Build
             Dictionary<string, XrefSpec> map = new Dictionary<string, XrefSpec>();
             foreach (var url in docset.Config.Xref)
             {
-                var json = File.ReadAllText(docset.RestoreMap.GetFileRestorePath(url));
+                var (path, _) = docset.RestoreMap.GetFileRestorePath(url);
+                var json = File.ReadAllText(path);
                 var xRefMap = JsonUtility.Deserialize<XrefMapModel>(json);
                 foreach (var spec in xRefMap.References)
                 {

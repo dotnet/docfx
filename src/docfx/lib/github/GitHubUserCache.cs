@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -37,6 +38,7 @@ namespace Microsoft.Docs.Build
                    = new ConcurrentDictionary<string, Lazy<Task<(Error, string)>>>(StringComparer.OrdinalIgnoreCase);
 
         private readonly string _cachePath;
+        private readonly bool _isFromUrl;
         private readonly double _expirationInHours;
         private bool _updated = false;
 
@@ -55,8 +57,8 @@ namespace Microsoft.Docs.Build
             var github = new GitHubAccessor(token);
             _getUserByLoginFromGitHub = github.GetUserByLogin;
             _getLoginByCommitFromGitHub = github.GetLoginByCommit;
-            _cachePath = string.IsNullOrEmpty(docset.Config.GitHub.UserCache)
-                ? AppData.GitHubUserCachePath
+            (_cachePath, _isFromUrl) = string.IsNullOrEmpty(docset.Config.GitHub.UserCache)
+                ? (AppData.GitHubUserCachePath, false)
                 : docset.RestoreMap.GetFileRestorePath(docset.Config.GitHub.UserCache);
             _expirationInHours = docset.Config.GitHub.UserCacheExpirationInHours;
         }
@@ -126,7 +128,7 @@ namespace Microsoft.Docs.Build
             return await GetByLogin(login);
         }
 
-        public Task SaveChanges()
+        public Task SaveChanges(Config config)
         {
             if (!_updated)
             {
@@ -135,11 +137,20 @@ namespace Microsoft.Docs.Build
 
             lock (_lock)
             {
-                var file = new GitHubUserCacheFile
+                var file = JsonUtility.Serialize(new GitHubUserCacheFile
                 {
                     Users = Users.ToArray(),
+                });
+                var tasks = new List<Task>
+                {
+                    Task.Run(() => ProcessUtility.WriteFile(_cachePath, file)),
                 };
-                return ProcessUtility.WriteFile(_cachePath, JsonUtility.Serialize(file));
+                if (config.GitHub.UpdateRemoteUserCache && _isFromUrl)
+                {
+                    // TOOD: aware of ETag to handle conflicts
+                    tasks.Add(Task.Run(() => HttpClientUtility.PutAsync(config.GitHub.UserCache, new StringContent(file), config)));
+                }
+                return Task.WhenAll(tasks);
             }
         }
 

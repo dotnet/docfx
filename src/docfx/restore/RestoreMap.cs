@@ -55,7 +55,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public string GetFileRestorePath(string url)
+        public (string path, bool isFromUrl) GetFileRestorePath(string url)
         {
             Debug.Assert(!string.IsNullOrEmpty(url));
 
@@ -63,7 +63,7 @@ namespace Microsoft.Docs.Build
             {
                 // directly return the relative path
                 var fullPath = Path.Combine(_docsetPath, url);
-                return File.Exists(fullPath) ? fullPath : throw Errors.FileNotFound(_docsetPath, url).ToException();
+                return File.Exists(fullPath) ? (fullPath, false) : throw Errors.FileNotFound(_docsetPath, url).ToException();
             }
 
             var downloadPath = s_downloadPath.GetOrAdd(url, new Lazy<string>(FindLastModifiedFile)).Value;
@@ -73,7 +73,7 @@ namespace Microsoft.Docs.Build
                 throw Errors.NeedRestore(url).ToException();
             }
 
-            return downloadPath;
+            return (downloadPath, true);
 
             string FindLastModifiedFile()
             {
