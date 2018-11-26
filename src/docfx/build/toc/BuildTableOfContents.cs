@@ -28,7 +28,7 @@ namespace Microsoft.Docs.Build
             var metadata = file.Docset.Metadata.GetMetadata(file, tocMetadata).ToObject<TableOfContentsMetadata>();
 
             // Monikers of toc file is the collection of every node's monikers
-            metadata.Monikers = monikers;
+            metadata.Monikers.AddRange(monikers);
 
             var model = new TableOfContentsModel
             {

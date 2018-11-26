@@ -196,9 +196,9 @@ namespace Microsoft.Docs.Build
                 {
                     SourcePath = file.FilePath,
                     SiteUrl = file.SiteUrl,
-                    Monikers = monikers,
                     OutputPath = GetOutputPath(file, monikers),
                 };
+                manifest.Monikers.AddRange(monikers);
 
                 if (manifestBuilder.TryAdd(file, manifest, monikers))
                 {

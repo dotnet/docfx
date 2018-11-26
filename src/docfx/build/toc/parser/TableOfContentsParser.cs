@@ -119,7 +119,7 @@ namespace Microsoft.Docs.Build
                 // set resolved href back
                 tocModelItem.Href = resolvedTopicHref ?? resolvedTopicHrefFromTocHref;
                 tocModelItem.TocHref = resolvedTocHref;
-                tocModelItem.Monikers = monikers;
+                tocModelItem.Monikers.AddRange(monikers);
                 if (subChildren != null)
                 {
                     tocModelItem.Items = subChildren.Items;

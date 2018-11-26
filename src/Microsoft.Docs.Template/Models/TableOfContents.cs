@@ -18,7 +18,9 @@ namespace Microsoft.Docs.Build
 
     public class TableOfContentsMetadata
     {
-        public List<string> Monikers { get; set; }
+        public List<string> Monikers { get; } = new List<string>();
+
+        public bool ShouldSerializeMonikers() => Monikers.Count > 0;
 
         [JsonExtensionData]
         public JObject ExtensionData { get; set; }
@@ -48,7 +50,9 @@ namespace Microsoft.Docs.Build
         public List<TableOfContentsItem> Children { get; set; }
 
         [JsonProperty(PropertyName = "monikers")]
-        public List<string> Monikers { get; set; }
+        public List<string> Monikers { get; } = new List<string>();
+
+        public bool ShouldSerializeMonikers() => Monikers.Count > 0;
 
         [JsonExtensionData]
         public JObject ExtensionData { get; set; }

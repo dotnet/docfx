@@ -67,6 +67,9 @@ namespace Microsoft.Docs.Build
         {
             [JsonProperty(PropertyName = "pdf_absolute_path")]
             public string PdfAbsolutePath { get; set; }
+
+            [JsonProperty("monikers")]
+            public List<string> Monikers { get; set; }
         }
 
         private class LegacyTableOfContentsExperimentMetadata

@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -33,7 +32,9 @@ namespace Microsoft.Docs.Build
         [MinLength(1)]
         public List<TableOfContentsInputItem> Items { get; set; }
 
-        public List<string> Monikers { get; set; }
+        public List<string> Monikers { get; } = new List<string>();
+
+        public bool ShouldSerializeMonikers() => Monikers.Count > 0;
 
         public static TableOfContentsItem ToTableOfContentsModel(TableOfContentsInputItem inputModel, MonikerComparer comparer)
         {
@@ -43,11 +44,11 @@ namespace Microsoft.Docs.Build
             }
 
             var children = inputModel.Items?.Select(l => ToTableOfContentsModel(l, comparer));
-            var childrenMonikers = children?.SelectMany(child => child?.Monikers ?? new List<string>());
+            var childrenMonikers = children?.SelectMany(child => child?.Monikers);
 
             var monikers = (childrenMonikers == null ? inputModel.Monikers : childrenMonikers.Union(inputModel.Monikers)).Distinct(comparer).ToList();
             monikers.Sort(comparer);
-            return new TableOfContentsItem
+            var tocItem = new TableOfContentsItem
             {
                 TocTitle = inputModel.Name,
                 DisplayName = inputModel.DisplayName,
@@ -57,8 +58,9 @@ namespace Microsoft.Docs.Build
                 Expanded = inputModel.Expanded,
                 ExtensionData = inputModel.ExtensionData,
                 Children = children?.ToList(),
-                Monikers = monikers,
             };
+            tocItem.Monikers.AddRange(monikers);
+            return tocItem;
         }
     }
 }

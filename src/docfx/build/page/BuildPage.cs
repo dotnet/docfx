@@ -125,8 +125,8 @@ namespace Microsoft.Docs.Build
                 Title = title,
                 RawTitle = markup.HtmlTitle,
                 WordCount = wordCount,
-                Monikers = monikers,
             };
+            model.Monikers.AddRange(monikers);
 
             var bookmarks = HtmlUtility.GetBookmarks(htmlDom).Concat(HtmlUtility.GetBookmarks(htmlTitleDom)).ToHashSet();
 
@@ -185,7 +185,6 @@ namespace Microsoft.Docs.Build
                 Content = content,
                 Title = title,
                 RawTitle = file.Docset.Legacy ? $"<h1>{obj?.Value<string>("title")}</h1>" : null,
-                Monikers = new List<string>(),
             };
 
             return (errors, schema, model, metadata);

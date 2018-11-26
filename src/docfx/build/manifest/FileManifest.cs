@@ -13,6 +13,8 @@ namespace Microsoft.Docs.Build
 
         public string SourcePath { get; set; }
 
-        public List<string> Monikers { get; set; }
+        public List<string> Monikers { get; } = new List<string>();
+
+        public bool ShouldSerializeMonikers() => Monikers.Count > 0;
     }
 }

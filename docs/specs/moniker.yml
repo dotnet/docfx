@@ -37,8 +37,7 @@ outputs:
     }
   docs/a.json: |
     {
-      "content": "<p>No version</p>",
-      "monikers": []
+      "content": "<p>No version</p>"
     }
 ---
 # Apply moniker range setting in the config and yaml header to markdown file's output path and output content
@@ -75,8 +74,7 @@ inputs:
 outputs:
   docs/a.json: |
     {
-      "content": "<p>No version</p>",
-      "monikers": []
+      "content": "<p>No version</p>"
     }
   218c13d0/docs/a.json: |
     {
@@ -94,8 +92,7 @@ outputs:
           {
               "siteUrl": "/docs/a",
               "outputPath": "docs/a.json",
-              "sourcePath": "docs/a.md",
-              "monikers": []
+              "sourcePath": "docs/a.md"
           },
           {
               "siteUrl": "/docs/a",
@@ -403,13 +400,11 @@ inputs:
 outputs:
   docs/b.json: |
     {
-      "content": "<p>Link to <a href=\"/docs/a?view=netcore-1.1\">netcore-1.1</a></p>",
-      "monikers": []
+      "content": "<p>Link to <a href=\"/docs/a?view=netcore-1.1\">netcore-1.1</a></p>"
     }
   docs/a.json: |
     {
-      "content": "<p>No version</p>",
-      "monikers": []
+      "content": "<p>No version</p>"
     }
   218c13d0/docs/a.json: |
     {
@@ -465,13 +460,11 @@ inputs:
 outputs:
   docs/b.json: |
     {
-      "content": "<p>Link to <a href=\"/docs/a\">netcore-2.0</a></p>",
-      "monikers": []
+      "content": "<p>Link to <a href=\"/docs/a\">netcore-2.0</a></p>"
     }
   docs/a.json: |
     {
-      "content": "<p>No version</p>",
-      "monikers": []
+      "content": "<p>No version</p>"
     }
   218c13d0/docs/a.json: |
     {
@@ -567,8 +560,7 @@ inputs:
 outputs:
   docs/b.json: |
     {
-      "content": "<p>Link to <a href=\"/docs/a?view=netcore-1.0\">netcore-2.0</a></p>",
-      "monikers": [] 
+      "content": "<p>Link to <a href=\"/docs/a?view=netcore-1.0\">netcore-2.0</a></p>"
     }
   218c13d0/docs/a.json: |
     {
@@ -630,13 +622,11 @@ inputs:
 outputs:
   docs/b.json: |
     {
-      "content": "<p>Link to <a href=\"/docs/a\">no version</a></p>",
-      "monikers": []
+      "content": "<p>Link to <a href=\"/docs/a\">no version</a></p>"
     }
   docs/a.json: |
     {
-      "content": "<p>No version</p>",
-      "monikers": []
+      "content": "<p>No version</p>"
     }
   218c13d0/docs/a.json: |
     {
@@ -702,13 +692,11 @@ outputs:
   docs/b.json:
   docs/c.json: |
     {
-      "content": "<p>Link to @a</p>",
-      "monikers": []
+      "content": "<p>Link to @a</p>"
     }
   docs/a.json: |
     {
-      "content": "<p>No version</p>",
-      "monikers": []
+      "content": "<p>No version</p>"
     }
   218c13d0/docs/a.json: |
     {

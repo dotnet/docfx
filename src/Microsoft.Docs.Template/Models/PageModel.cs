@@ -51,7 +51,9 @@ namespace Microsoft.Docs.Build
 
         public bool Bilingual { get; set; }
 
-        public List<string> Monikers { get; set; }
+        public List<string> Monikers { get; } = new List<string>();
+
+        public bool ShouldSerializeMonikers() => Monikers.Count > 0;
     }
 
     [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
