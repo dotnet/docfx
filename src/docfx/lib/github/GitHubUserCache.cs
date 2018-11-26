@@ -151,7 +151,7 @@ namespace Microsoft.Docs.Build
                 if (config.GitHub.UpdateRemoteUserCache && _isFromUrl)
                 {
                     // TOOD: aware of ETag to handle conflicts
-                    tasks.Add(Task.Run(() => HttpClientUtility.PutAsync(config.GitHub.UserCache, new StringContent(file), config)));
+                    tasks.Add(HttpClientUtility.PutAsync(config.GitHub.UserCache, new StringContent(file), config));
                 }
                 return Task.WhenAll(tasks);
             }
