@@ -54,9 +54,8 @@ namespace Microsoft.Docs.Build
 
                     await ParallelUtility.ForEach(branches, async branch =>
                     {
-                        // Bilingual repos ({branch}-sxs) only depend on non bilingual branch for git commit history,
-                        // so don't perform a checkout.
-                        if (branches.Contains($"{branch}-sxs"))
+                        // contribution branch no need to be checked out
+                        if (branches.Any(b => LocalizationConvention.TryGetContributionBranch(b, out var cb) && cb == branch))
                         {
                             return;
                         }

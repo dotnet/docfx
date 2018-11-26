@@ -154,7 +154,7 @@ namespace Microsoft.Docs.Build
                 context.Report(Config.ConfigFileName, errors);
                 return map;
             });
-            _scanScope = new Lazy<HashSet<Document>>(() => CreateScanScope());
+            _scanScope = new Lazy<HashSet<Document>>(() => this.CreateScanScope());
             _metadata = new Lazy<MetadataProvider>(() => new MetadataProvider(config));
             _monikerRangeParser = new Lazy<MonikerRangeParser>(() => new MonikerRangeParser(monikerDefinition));
             _monikerAscendingComparer = new Lazy<MonikerComparer>(() => new MonikerComparer(monikerDefinition));
@@ -243,30 +243,6 @@ namespace Microsoft.Docs.Build
 
                 return result;
             }
-        }
-
-        private HashSet<Document> CreateScanScope()
-        {
-            var scanScopeFilePaths = new HashSet<string>(PathUtility.PathComparer);
-            var scanScope = new HashSet<Document>();
-
-            foreach (var buildScope in new[] { LocalizationDocset?.BuildScope, BuildScope, FallbackDocset?.BuildScope })
-            {
-                if (buildScope == null)
-                {
-                    continue;
-                }
-
-                foreach (var document in buildScope)
-                {
-                    if (scanScopeFilePaths.Add(document.FilePath))
-                    {
-                        scanScope.Add(document);
-                    }
-                }
-            }
-
-            return scanScope;
         }
     }
 }
