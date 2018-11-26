@@ -73,6 +73,10 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public MonikerRangeParser MonikerRangeParser => _monikerRangeParser.Value;
 
+        public MonikerComparer MonikerAscendingComparer => _monikerAscendingComparer.Value;
+
+        public MonikerComparer MonikerDescendingComparer => _monikerDescendingComparer.Value;
+
         /// <summary>
         /// Gets the redirection map.
         /// </summary>
@@ -102,6 +106,8 @@ namespace Microsoft.Docs.Build
         private readonly Lazy<LegacyTemplate> _legacyTemplate;
         private readonly Lazy<MetadataProvider> _metadata;
         private readonly Lazy<MonikerRangeParser> _monikerRangeParser;
+        private readonly Lazy<MonikerComparer> _monikerAscendingComparer;
+        private readonly Lazy<MonikerComparer> _monikerDescendingComparer;
         private readonly Lazy<MonikersProvider> _monikersProvider;
 
         public Docset(Context context, string docsetPath, Config config, CommandLineOptions options, bool isDependency = false)
@@ -132,6 +138,13 @@ namespace Microsoft.Docs.Build
             var configErrors = new List<Error>();
             (configErrors, DependentDocset) = LoadDependencies(Config, RestoreMap);
 
+            var monikerDefinition = new MonikerDefinitionModel();
+            if (!string.IsNullOrEmpty(Config.MonikerDefinition))
+            {
+                var path = RestoreMap.GetFileRestorePath(Config.MonikerDefinition);
+                monikerDefinition = JsonUtility.Deserialize<MonikerDefinitionModel>(File.ReadAllText(path));
+            }
+
             // pass on the command line options to its children
             _buildScope = new Lazy<HashSet<Document>>(() => CreateBuildScope(Redirections.Files));
             _redirections = new Lazy<RedirectionMap>(() =>
@@ -141,15 +154,17 @@ namespace Microsoft.Docs.Build
                 context.Report(Config.ConfigFileName, errors);
                 return map;
             });
-            _scanScope = new Lazy<HashSet<Document>>(() => CreateScanScope());
+            _scanScope = new Lazy<HashSet<Document>>(() => this.CreateScanScope());
             _metadata = new Lazy<MetadataProvider>(() => new MetadataProvider(config));
+            _monikerRangeParser = new Lazy<MonikerRangeParser>(() => new MonikerRangeParser(monikerDefinition));
+            _monikerAscendingComparer = new Lazy<MonikerComparer>(() => new MonikerComparer(monikerDefinition));
+            _monikerDescendingComparer = new Lazy<MonikerComparer>(() => new MonikerComparer(monikerDefinition, false));
             _legacyTemplate = new Lazy<LegacyTemplate>(() =>
             {
                 Debug.Assert(!string.IsNullOrEmpty(Config.Theme));
                 var (themeRemote, branch) = LocalizationConvention.GetLocalizationTheme(Config.Theme, Locale, Config.Localization.DefaultLocale);
                 return new LegacyTemplate(RestoreMap.GetGitRestorePath($"{themeRemote}#{branch}"), Locale);
             });
-            _monikerRangeParser = new Lazy<MonikerRangeParser>(() => CreateMonikerRangeParser());
             _monikersProvider = new Lazy<MonikersProvider>(() => new MonikersProvider(Config));
         }
 
@@ -228,41 +243,6 @@ namespace Microsoft.Docs.Build
 
                 return result;
             }
-        }
-
-        private HashSet<Document> CreateScanScope()
-        {
-            var scanScopeFilePaths = new HashSet<string>(PathUtility.PathComparer);
-            var scanScope = new HashSet<Document>();
-
-            foreach (var buildScope in new[] { LocalizationDocset?.BuildScope, BuildScope, FallbackDocset?.BuildScope })
-            {
-                if (buildScope == null)
-                {
-                    continue;
-                }
-
-                foreach (var document in buildScope)
-                {
-                    if (scanScopeFilePaths.Add(document.FilePath))
-                    {
-                        scanScope.Add(document);
-                    }
-                }
-            }
-
-            return scanScope;
-        }
-
-        private MonikerRangeParser CreateMonikerRangeParser()
-        {
-            var monikerDefinition = new MonikerDefinitionModel();
-            if (!string.IsNullOrEmpty(Config.MonikerDefinition))
-            {
-                var path = RestoreMap.GetFileRestorePath(Config.MonikerDefinition);
-                monikerDefinition = JsonUtility.Deserialize<MonikerDefinitionModel>(File.ReadAllText(path));
-            }
-            return new MonikerRangeParser(monikerDefinition);
         }
     }
 }

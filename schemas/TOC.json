@@ -30,6 +30,12 @@
             "$ref": "#/definitions/TableOfContentsInputItem"
           },
           "minItems": 1
+        },
+        "monikers": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
         }
       },
       "required": [
