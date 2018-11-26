@@ -20,7 +20,7 @@ namespace Microsoft.Docs.Build
             DepthOne = 1 << 2,
         }
 
-        public static Task Restore(string docsetPath, Config config, Func<string, Task> restoreChild, string locale)
+        public static Task Restore(string docsetPath, Config config, Func<string, Task> restoreChild, string locale, bool @implicit)
         {
             var gitDependencies =
                 from git in GetGitDependencies(docsetPath, config, locale)
@@ -34,6 +34,10 @@ namespace Microsoft.Docs.Build
                 var remote = group.Key;
                 var branches = group.Select(g => g.branch).Distinct().ToArray();
                 var depthOne = group.All(g => (g.flags & GitFlags.DepthOne) != 0);
+                var branchesToFetch = @implicit
+                    ? branches.Where(branch => !RestoreMap.TryGetGitRestorePath(remote, branch, out _)).ToArray()
+                    : branches;
+
                 var repoPath = Path.GetFullPath(Path.Combine(AppData.GetGitDir(remote), ".git"));
                 var childRepos = new List<string>();
 
@@ -41,27 +45,30 @@ namespace Microsoft.Docs.Build
                     remote,
                     async () =>
                     {
-                        try
+                        if (branchesToFetch.Length > 0)
                         {
-                            await GitUtility.CloneOrUpdateBare(repoPath, remote, branches, depthOne, config);
+                            try
+                            {
+                                await GitUtility.CloneOrUpdateBare(repoPath, remote, branchesToFetch, config);
+                            }
+                            catch (Exception ex)
+                            {
+                                throw Errors.GitCloneFailed(remote, branches).ToException(ex);
+                            }
                             await AddWorkTrees();
-                        }
-                        catch (Exception ex)
-                        {
-                            throw Errors.GitCloneFailed(remote, branches).ToException(ex);
                         }
                     });
 
-                foreach (var child in childRepos)
+                foreach (var branch in branches)
                 {
-                    await restoreChild(child);
+                    await restoreChild(RestoreMap.GetGitRestorePath(remote, branch));
                 }
 
                 async Task AddWorkTrees()
                 {
                     var existingWorkTreePath = new ConcurrentHashSet<string>(await GitUtility.ListWorkTree(repoPath));
 
-                    await ParallelUtility.ForEach(branches, async branch =>
+                    await ParallelUtility.ForEach(branchesToFetch, async branch =>
                     {
                         var nocheckout = group.Where(g => g.branch == branch).All(g => (g.flags & GitFlags.NoCheckout) != 0);
                         if (nocheckout)
@@ -76,10 +83,15 @@ namespace Microsoft.Docs.Build
 
                         if (existingWorkTreePath.TryAdd(workTreePath))
                         {
-                            await GitUtility.AddWorkTree(repoPath, branch, workTreePath);
+                            try
+                            {
+                                await GitUtility.AddWorkTree(repoPath, branch, workTreePath);
+                            }
+                            catch (Exception ex)
+                            {
+                                throw Errors.GitCloneFailed(remote, branches).ToException(ex);
+                            }
                         }
-
-                        childRepos.Add(workTreePath);
 
                         // update the last write time
                         Directory.SetLastWriteTimeUtc(workTreePath, DateTime.UtcNow);
