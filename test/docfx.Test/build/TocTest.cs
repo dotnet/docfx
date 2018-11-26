@@ -57,7 +57,7 @@ namespace Microsoft.Docs.Build
                 builder.Add(toc, new[] { document }, Array.Empty<Document>());
             }
 
-            var (_, tocMap) = builder.Build();
+            var tocMap = builder.Build();
             Assert.Equal(expectedTocPath, tocMap.FindTocRelativePath(document));
         }
     }

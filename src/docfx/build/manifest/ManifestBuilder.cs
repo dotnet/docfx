@@ -55,10 +55,11 @@ namespace Microsoft.Docs.Build
                 var conflictMoniker = files
                     .SelectMany(file => file.Value)
                     .GroupBy(moniker => moniker)
-                    .Where(group => group.Count() > 1);
+                    .Where(group => group.Count() > 1)
+                    .Select(group => group.Key);
                 if (conflictMoniker.Count() > 0)
                 {
-                    context.Report(Errors.PublishUrlConflict(siteUrl, files.Keys));
+                    context.Report(Errors.PublishUrlConflict(siteUrl, files.Keys, conflictMoniker));
 
                     foreach (var conflictingFile in files.Keys)
                     {

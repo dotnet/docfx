@@ -30,8 +30,7 @@ namespace Microsoft.Docs.Build
             var contribution = await ContributionProvider.Create(docset, githubUserCache);
 
             // TODO: toc map and xref map should always use source docset?
-            var (tocMapErrors, tocMap) = BuildTableOfContents.BuildTocMap(context, docset);
-            errors.AddRange(tocMapErrors);
+            var tocMap = BuildTableOfContents.BuildTocMap(context, docset);
 
             var xrefMap = XrefMap.Create(context, docset);
 
@@ -80,8 +79,20 @@ namespace Microsoft.Docs.Build
                 var sourceDependencies = new ConcurrentDictionary<Document, List<DependencyItem>>();
                 var bookmarkValidator = new BookmarkValidator();
                 var manifestBuilder = new ManifestBuilder();
+                var monikersMap = new ConcurrentDictionary<Document, List<string>>();
 
-                await ParallelUtility.ForEach(docset.BuildScope, BuildOneFile, ShouldBuildFile, Progress.Update);
+                await ParallelUtility.ForEach(
+                    docset.BuildScope.Where(doc => doc.ContentType != ContentType.TableOfContents),
+                    async (file, buildChild) => { monikersMap.TryAdd(file, await BuildOneFile(file, buildChild)); },
+                    ShouldBuildFile,
+                    Progress.Update);
+
+                // Build TOC: since toc file depends on the build result of every node
+                await ParallelUtility.ForEach(
+                    docset.BuildScope.Where(doc => doc.ContentType == ContentType.TableOfContents),
+                    (file, buildChild) => { return BuildTocFile(file, monikersMap.ToDictionary(item => item.Key, item => item.Value)); },
+                    ShouldBuildFile,
+                    Progress.Update);
 
                 ValidateBookmarks();
 
@@ -91,11 +102,30 @@ namespace Microsoft.Docs.Build
 
                 return (CreateManifest(manifest, allDependencyMap), manifest, allDependencyMap);
 
-                async Task BuildOneFile(Document file, Action<Document> buildChild)
+                async Task<List<string>> BuildOneFile(Document file, Action<Document> buildChild)
                 {
                     var dependencyMapBuilder = new DependencyMapBuilder();
                     var callback = new PageCallback(xrefMap, dependencyMapBuilder, bookmarkValidator, buildChild);
-                    var dependencyMap = await BuildFile(context, file, tocMap, contribution, callback, manifestBuilder);
+                    var (dependencyMap, monikers) = await BuildFile(context, file, tocMap, contribution, null, callback, manifestBuilder);
+
+                    foreach (var (source, dependencies) in dependencyMap)
+                    {
+                        sourceDependencies.TryAdd(source, dependencies);
+                    }
+
+                    return monikers;
+                }
+
+                async Task BuildTocFile(Document file, Dictionary<Document, List<string>> map)
+                {
+                    var (dependencyMap, _) = await BuildFile(
+                        context,
+                        file,
+                        tocMap,
+                        contribution,
+                        map,
+                        null,
+                        manifestBuilder);
 
                     foreach (var (source, dependencies) in dependencyMap)
                     {
@@ -127,11 +157,12 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static async Task<DependencyMap> BuildFile(
+        private static async Task<(DependencyMap dependencyMap, List<string> monikers)> BuildFile(
             Context context,
             Document file,
             TableOfContentsMap tocMap,
             ContributionProvider contribution,
+            Dictionary<Document, List<string>> monikersMap,
             PageCallback callback,
             ManifestBuilder manifestBuilder)
         {
@@ -151,7 +182,8 @@ namespace Microsoft.Docs.Build
                         (errors, model, dependencies, monikers) = await BuildPage.Build(context, file, tocMap, contribution, callback);
                         break;
                     case ContentType.TableOfContents:
-                        (errors, model, dependencies) = BuildTableOfContents.Build(context, file, tocMap);
+                        // TODO: improve error message for toc monikers overlap
+                        (errors, model, dependencies, monikers) = BuildTableOfContents.Build(context, file, tocMap, monikersMap);
                         break;
                     case ContentType.Redirection:
                         (errors, model) = BuildRedirection.Build(file);
@@ -163,7 +195,7 @@ namespace Microsoft.Docs.Build
                 if (hasErrors || model == null)
                 {
                     manifestBuilder.MarkError(file);
-                    return DependencyMap.Empty;
+                    return (DependencyMap.Empty, monikers);
                 }
 
                 var manifest = new FileManifest
@@ -192,13 +224,13 @@ namespace Microsoft.Docs.Build
                         context.WriteJson(model, manifest.OutputPath);
                     }
                 }
-                return dependencies;
+                return (dependencies, monikers);
             }
             catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
             {
                 context.Report(file.ToString(), dex.Error);
                 manifestBuilder.MarkError(file);
-                return DependencyMap.Empty;
+                return (DependencyMap.Empty, new List<string>());
             }
         }
 
