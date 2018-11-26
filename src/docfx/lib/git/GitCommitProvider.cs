@@ -57,12 +57,20 @@ namespace Microsoft.Docs.Build
             _repoPath = repoPath;
             _cacheFilePath = cacheFilePath;
             _commits = new ConcurrentDictionary<string, Lazy<(List<Commit>, Dictionary<long, Commit>)>>();
-            _commitCache = commitCache;
+            _commitCache = commitCache ?? new ConcurrentDictionary<string, Dictionary<(long commit, long blob), (long[] commitHistory, int lruOrder)>>();
         }
 
-        public static async Task<GitCommitProvider> Create(string repoPath, string cacheFilePath = null)
+        public static async Task<GitCommitProvider> CreateWithCache(string repoPath, string cacheFilePath)
         {
+            Debug.Assert(!string.IsNullOrEmpty(cacheFilePath));
+
             return new GitCommitProvider(repoPath, cacheFilePath, await LoadCommitCache(cacheFilePath));
+        }
+
+        public static GitCommitProvider Create(string repoPath)
+        {
+            // create without cache
+            return new GitCommitProvider(repoPath, cacheFilePath: null, commitCache: null);
         }
 
         public List<GitCommit> GetCommitHistory(string file, string committish = null)
@@ -358,7 +366,7 @@ namespace Microsoft.Docs.Build
         private static async Task<ConcurrentDictionary<string, Dictionary<(long commit, long blob), (long[] commitHistory, int lruOrder)>>>
             LoadCommitCache(string cacheFilePath)
         {
-            if (string.IsNullOrEmpty(cacheFilePath) || !File.Exists(cacheFilePath))
+            if (!File.Exists(cacheFilePath))
             {
                 return new ConcurrentDictionary<string, Dictionary<(long commit, long blob), (long[] commitHistory, int lruOrder)>>();
             }

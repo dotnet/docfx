@@ -160,7 +160,7 @@ namespace Microsoft.Docs.Build
                     if (!string.IsNullOrEmpty(repo))
                     {
                         var (remote, _, _) = GitUtility.GetRepoInfo(repo);
-                        return (GitCommitProvider.Create(repo).Result/*TODO*/, repo);
+                        return (GitCommitProvider.Create(repo), repo);
                     }
 
                     return default;

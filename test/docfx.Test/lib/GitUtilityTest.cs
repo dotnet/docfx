@@ -28,14 +28,14 @@ namespace Microsoft.Docs.Build
 
         [Theory]
         [InlineData("README.md")]
-        public static async Task GetCommitsSameAsGitExe(string file)
+        public static void GetCommitsSameAsGitExe(string file)
         {
             Assert.False(GitUtility.IsRepo(Path.GetFullPath(file)));
 
             var repo = GitUtility.FindRepo(Path.GetFullPath(file));
             Assert.NotNull(repo);
 
-            using (var commitsProvider = await GitCommitProvider.Create(repo))
+            using (var commitsProvider = GitCommitProvider.Create(repo))
             {
                 var pathToRepo = PathUtility.NormalizeFile(file);
 
@@ -54,8 +54,6 @@ namespace Microsoft.Docs.Build
                 Assert.Equal(
                     exe.Replace("\r", ""),
                     string.Join("\n", lib.Select(c => $"{c.Sha}|{c.Time.ToString("s")}{c.Time.ToString("zzz")}|{c.AuthorName}|{c.AuthorEmail}")));
-
-                await commitsProvider.SaveCache();
             }
         }
 
