@@ -64,7 +64,7 @@ This project has adopted the code of conduct defined by the [Contributor Covenan
 For more information see the [.NET Foundation Code of Conduct](http://www.dotnetfoundation.org/code-of-conduct).
 
 ## License
-*DocFX* is licensed under the [MIT license](LICENSE).
+*DocFX* is licensed under the [MIT license](LICENSE). 
 
 ### .NET Foundation
 *DocFX* is supported by the [.NET Foundation](http://www.dotnetfoundation.org).
