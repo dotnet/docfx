@@ -16,6 +16,7 @@ After completing walkthrough part II, our `D:\docfx_walkthrough\docfx_project` f
 ```
 
 Step0. Install prerequisite 
+---------------------------
 We leverage [wkhtmltopdf](https://wkhtmltopdf.org/) to generate PDF. [Download wkhtmltopdf](https://wkhtmltopdf.org/downloads.html) to some folder, e.g. `E:\Program Files\wkhtmltopdf\`, and save the executable folder path to **%PATH%** by: `set PATH=%PATH%;E:\Program Files\wkhtmltopdf\bin`.
 
 > [!NOTE]
@@ -100,6 +101,17 @@ Parameters are similar to `build` section, definitely it is using a different te
 
 Now, let's run `docfx`, and you can find pdf file walkthrough3_pdf.pdf generated under `_site_pdf` folder:
 ![PDF Preview](images/walkthrough3.png)
+
+*Optional* Step3. Enable plugins
+----------------------------------------------------
+If you wish to use plugins with pdf as well, you need to add a `template` node to the pdf section. It needs to start with the `pdf.template` followed by the path to the plugins you want to use:
+
+```json
+"template": [
+  "pdf.default",
+  "pluginPackages/rest.tagpage.2.31.0/content" 
+],
+```
 
 Conclusion
 ---------

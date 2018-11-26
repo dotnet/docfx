@@ -9,11 +9,13 @@ namespace Microsoft.DocAsCode.Build.Engine
     using System.Composition;
     using System.IO;
     using System.Linq;
+    using System.Threading.Tasks;
 
     using HtmlAgilityPack;
 
     using Microsoft.DocAsCode.Build.Engine.Incrementals;
     using Microsoft.DocAsCode.Common;
+    using Microsoft.DocAsCode.MarkdigEngine;
     using Microsoft.DocAsCode.MarkdownLite;
     using Microsoft.DocAsCode.Plugins;
 
@@ -29,11 +31,15 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         #region Properties
 
+        public IBuildParameters BuildParameters { get; }
+
         public TemplateProcessor Template { get; set; }
 
         public ImmutableList<FileModel> Models { get; private set; }
 
         public ImmutableDictionary<string, FileAndType> SourceFiles { get; set; }
+
+        public ImmutableList<string> InvalidSourceFiles { get; set; }
 
         public ImmutableDictionary<string, FileIncrementalInfo> IncrementalInfos { get; set; }
 
@@ -55,17 +61,27 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public string VersionOutputFolder { get; }
 
+        public GroupInfo GroupInfo { get; }
+
         #endregion
 
         #region Constructors
 
         public HostService(string baseDir, IEnumerable<FileModel> models)
-            : this(baseDir, models, null, null, 0) { }
+            : this(baseDir, models, null, null, 0, null) { }
 
         public HostService(string baseDir, IEnumerable<FileModel> models, string versionName, string versionDir, int lruSize)
+            : this(baseDir, models, versionName, versionDir, lruSize, null, null) { }
+
+        public HostService(string baseDir, IEnumerable<FileModel> models, string versionName, string versionDir, int lruSize, GroupInfo groupInfo)
+            : this(baseDir, models, versionName, versionDir, lruSize, groupInfo, null) { }
+
+        public HostService(string baseDir, IEnumerable<FileModel> models, string versionName, string versionDir, int lruSize, GroupInfo groupInfo, IBuildParameters buildParameters)
         {
             VersionName = versionName;
             VersionOutputFolder = versionDir;
+            GroupInfo = groupInfo;
+            BuildParameters = buildParameters;
 
             // Disable LRU, when Content.get, it is possible that the value is Serialized before the modification on the content does not complete yet
             //if (lruSize > 0)
@@ -116,18 +132,15 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public MarkupResult Markup(string markdown, FileAndType ft)
         {
-            if (markdown == null)
-            {
-                throw new ArgumentNullException(nameof(markdown));
-            }
-            if (ft == null)
-            {
-                throw new ArgumentNullException(nameof(ft));
-            }
-            return MarkupCore(markdown, ft, false);
+            return Markup(markdown, ft, false);
         }
 
         public MarkupResult Markup(string markdown, FileAndType ft, bool omitParse)
+        {
+            return Markup(markdown, ft, omitParse, false);
+        }
+
+        public MarkupResult Markup(string markdown, FileAndType ft, bool omitParse, bool enableValidation)
         {
             if (markdown == null)
             {
@@ -137,7 +150,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 throw new ArgumentNullException(nameof(ft));
             }
-            return MarkupCore(markdown, ft, omitParse);
+            return MarkupCore(markdown, ft, omitParse, enableValidation);
         }
 
         public MarkupResult Parse(MarkupResult markupResult, FileAndType ft)
@@ -145,11 +158,13 @@ namespace Microsoft.DocAsCode.Build.Engine
             return MarkupUtility.Parse(markupResult, ft.File, SourceFiles);
         }
 
-        private MarkupResult MarkupCore(string markdown, FileAndType ft, bool omitParse)
+        private MarkupResult MarkupCore(string markdown, FileAndType ft, bool omitParse, bool enableValidation)
         {
             try
             {
-                var mr = MarkdownService.Markup(markdown, ft.File);
+                var mr = MarkdownService is MarkdigMarkdownService
+                    ? MarkdownService.Markup(markdown, ft.File, enableValidation)
+                    : MarkdownService.Markup(markdown, ft.File);
                 if (omitParse)
                 {
                     return mr;
@@ -256,6 +271,8 @@ namespace Microsoft.DocAsCode.Build.Engine
         }
 
         public bool HasMetadataValidation => Validators.Count > 0;
+
+        public string MarkdownServiceName => MarkdownService.Name;
 
         public void ValidateInputMetadata(string sourceFile, ImmutableDictionary<string, object> metadata)
         {
@@ -377,7 +394,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             var lmm = incrementalContext.GetLastIntermediateModelManifest(this);
             var cmm = incrementalContext.GetCurrentIntermediateModelManifest(this);
 
-            foreach (var pair in mi)
+            Parallel.ForEach(mi, new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount }, pair =>
             {
                 IncrementalUtility.RetryIO(() =>
                 {
@@ -428,9 +445,12 @@ namespace Microsoft.DocAsCode.Build.Engine
                             items.Add(new ModelManifestItem() { SourceFilePath = model.FileAndType.File, FilePath = fileName });
                         }
                     }
-                    cmm.Models.Add(pair.Key, items);
+                    lock (cmm)
+                    {
+                        cmm.Models.Add(pair.Key, items);
+                    }
                 });
-            }
+            });
         }
 
         public IEnumerable<FileModel> LoadIntermediateModel(IncrementalBuildContext incrementalContext, string fileName)

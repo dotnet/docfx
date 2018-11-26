@@ -1,4 +1,4 @@
-﻿---
+---
 title: Welcome to DocFX website!
 documentType: index
 ---

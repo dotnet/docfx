@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.Build.Engine
 {
+    using System;
     using System.Collections.Generic;
 
     using Microsoft.DocAsCode.Plugins;
@@ -13,7 +14,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public override int Compare(XRefSpec x, XRefSpec y)
         {
-            return string.Compare(x.Uid, y.Uid);
+            return StringComparer.InvariantCulture.Compare(x.Uid, y.Uid);
         }
     }
 }

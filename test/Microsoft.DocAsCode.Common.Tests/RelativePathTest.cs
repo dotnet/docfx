@@ -390,5 +390,54 @@ namespace Microsoft.DocAsCode.Common.Tests
                 Assert.Equal(s, r);
             }
         }
+
+        [Theory]
+        [InlineData("a/b/c", "a/b/c")]
+        [InlineData("../a/b/c", "../a/b/c")]
+        [InlineData("a/b/c d", "a/b/c%20d")]
+        [InlineData("../a+b/c/d", "../a%2Bb/c/d")]
+        [InlineData("a%3fb", "a%253fb")]
+        public void TestUrlEncode(string path, string expected)
+        {
+            Assert.Equal(expected, ((RelativePath)path).UrlEncode());
+        }
+
+        [Theory]
+        [InlineData("a/b/c", "a/b/c")]
+        [InlineData("../a/b/c", "../a/b/c")]
+        [InlineData("a/b/c%20d", "a/b/c d")]
+        [InlineData("../a%2Bb/c/d", "../a+b/c/d")]
+        [InlineData("a%253fb", "a%3fb")]
+        [InlineData("a%2fb", "a%2fb")]
+        [InlineData("%2A%2F%3A%3C%3E%3F%5C%7C", "%2A%2F%3A%3C%3E%3F%5C%7C")] //*/:<>?\|
+        [InlineData("%2a%2f%3a%3c%3e%3f%5c%7c", "%2a%2f%3a%3c%3e%3f%5c%7c")]
+        public void TestUrlDecode(string path, string expected)
+        {
+            Assert.Equal(expected, ((RelativePath)path).UrlDecode());
+        }
+
+        [Theory]
+        [InlineData("a/b/c", "a/b/", true)]
+        [InlineData("~/a/b/c", "~/a/b/", true)]
+        [InlineData("a/b/c", "~/a/b/", false)]
+        [InlineData("~/a/b/c", "a/b/", false)]
+        [InlineData("a/b", "a/b", false)]
+        [InlineData("a/b/", "a/b", false)]
+        [InlineData("a/b", "a/b/", false)]
+        [InlineData("a/b/", "a/b/", true)]
+        [InlineData("a/b/c", "a/b/c", false)]
+        [InlineData("a/b/c", "a/b/c/d", false)]
+        [InlineData("a/b/c", "a/b/d", false)]
+        [InlineData("a/../b/c", "b/", true)]
+        [InlineData("../a/b", "../a", false)]
+        [InlineData("../a/b", "../", false)]
+        [InlineData("../a/b", "../../a", false)]
+        [InlineData("../../", "../", false)]
+        [InlineData("../", "../../", false)]
+        [InlineData("~/a/b", "~/../", false)]
+        public void TestStartsWith(string source, string dest, bool isStarstsWith)
+        {
+            Assert.Equal(isStarstsWith, ((RelativePath)source).InDirectory((RelativePath)dest));
+        }
     }
 }

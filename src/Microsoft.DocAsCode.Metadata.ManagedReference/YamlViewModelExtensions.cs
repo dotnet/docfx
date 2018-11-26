@@ -30,12 +30,12 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         public static MetadataItem ShrinkToSimpleToc(this MetadataItem item)
         {
-            MetadataItem shrinkedItem = new MetadataItem();
-            shrinkedItem.Name = item.Name;
-            shrinkedItem.DisplayNames = item.DisplayNames;
-
-            shrinkedItem.Items = null;
-
+            MetadataItem shrinkedItem = new MetadataItem()
+            {
+                Name = item.Name,
+                DisplayNames = item.DisplayNames,
+                Items = null
+            };
             if (item.Items == null)
             {
                 return shrinkedItem;
@@ -50,7 +50,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                         shrinkedItem.Items = new List<MetadataItem>();
                     }
 
-                    if (i.IsInvalid) continue;
+                    if (i.IsInvalid)
+                    {
+                        continue;
+                    }
                     var shrinkedI = i.ShrinkToSimpleToc();
                     shrinkedItem.Items.Add(shrinkedI);
                 }
@@ -67,12 +70,13 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         /// <returns></returns>
         public static MetadataItem ShrinkToSimpleTocWithNamespaceNotEmpty(this MetadataItem item)
         {
-            MetadataItem shrinkedItem = new MetadataItem();
-            shrinkedItem.Name = item.Name;
-            shrinkedItem.DisplayNames = item.DisplayNames;
-            shrinkedItem.Type = item.Type;
-            shrinkedItem.Items = null;
-
+            MetadataItem shrinkedItem = new MetadataItem()
+            {
+                Name = item.Name,
+                DisplayNames = item.DisplayNames,
+                Type = item.Type,
+                Items = null
+            };
             if (item.Type == MemberType.Toc || item.Type == MemberType.Namespace)
             {
                 if (item.Items != null)
@@ -84,16 +88,25 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                             shrinkedItem.Items = new List<MetadataItem>();
                         }
 
-                        if (i.IsInvalid) continue;
+                        if (i.IsInvalid)
+                        {
+                            continue;
+                        }
                         var shrinkedI = i.ShrinkToSimpleTocWithNamespaceNotEmpty();
-                        if (shrinkedI != null) shrinkedItem.Items.Add(shrinkedI);
+                        if (shrinkedI != null)
+                        {
+                            shrinkedItem.Items.Add(shrinkedI);
+                        }
                     }
                 }
             }
 
             if (item.Type == MemberType.Namespace)
             {
-                if (shrinkedItem.Items == null || shrinkedItem.Items.Count == 0) return null;
+                if (shrinkedItem.Items == null || shrinkedItem.Items.Count == 0)
+                {
+                    return null;
+                }
             }
 
             return shrinkedItem;
@@ -159,12 +172,12 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
             foreach (var item in model.References)
             {
-                result.References.Add(item.ToReferenceViewModel());
+                result.References.Add(ToReferenceViewModel(item));
             }
             return result;
         }
 
-        public static ReferenceViewModel ToReferenceViewModel(this KeyValuePair<string, ReferenceItem> model)
+        private static ReferenceViewModel ToReferenceViewModel(KeyValuePair<string, ReferenceItem> model)
         {
             Debug.Assert(model.Value != null, "Unexpected reference.");
             var result = new ReferenceViewModel
@@ -216,6 +229,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 result.Specs[Constants.DevLang.VB] = GetSpec(model.Value, SyntaxLanguage.VB);
                 result.IsExternal = GetIsExternal(model.Value);
                 result.Href = GetHref(model.Value);
+            }
+            else
+            {
+                result.IsExternal = true;
             }
             return result;
         }
@@ -358,8 +375,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         public static TValue GetLanguageProperty<TValue>(this SortedList<SyntaxLanguage, TValue> dict, SyntaxLanguage language, TValue defaultValue = null)
             where TValue : class
         {
-            TValue result;
-            if (dict.TryGetValue(language, out result))
+            if (dict.TryGetValue(language, out TValue result))
             {
                 return result;
             }
@@ -413,9 +429,17 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         private static bool? GetIsExternal(ReferenceItem reference)
         {
-            if (reference.IsDefinition != true)
+            if (reference.IsDefinition == null)
             {
                 return null;
+            }
+            if (reference.IsDefinition == false)
+            {
+                if (reference.Definition != null)
+                {
+                    return null;
+                }
+                return true;
             }
             foreach (var list in reference.Parts.Values)
             {
@@ -427,7 +451,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     }
                 }
             }
-            return false;
+            return null;
         }
 
         private static string GetHref(ReferenceItem reference)

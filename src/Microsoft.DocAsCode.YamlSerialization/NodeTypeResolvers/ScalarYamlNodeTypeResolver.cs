@@ -27,8 +27,21 @@ namespace Microsoft.DocAsCode.YamlSerialization.NodeTypeResolvers
 
                     if (Regexes.IntegerLike.IsMatch(scalar.Value))
                     {
-                        currentType = typeof(int);
-                        return true;
+                        if (int.TryParse(scalar.Value, out _))
+                        {
+                            currentType = typeof(int);
+                            return true;
+                        }
+                        if (long.TryParse(scalar.Value, out _))
+                        {
+                            currentType = typeof(long);
+                            return true;
+                        }
+                        if (ulong.TryParse(scalar.Value, out _))
+                        {
+                            currentType = typeof(ulong);
+                            return true;
+                        }
                     }
 
                     if (Regexes.DoubleLike.IsMatch(scalar.Value))

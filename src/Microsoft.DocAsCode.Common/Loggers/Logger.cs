@@ -4,15 +4,20 @@
 namespace Microsoft.DocAsCode.Common
 {
     using System;
+    using System.Threading;
 
     public static class Logger
     {
+        public const int WarningThrottling = 10000;
         public static bool HasError { get; private set; }
+        public static int WarningCount => _warningCount;
 
         private static readonly object _sync = new object();
         private static CompositeLogListener _syncListener = new CompositeLogListener();
         private static AsyncLogListener _asyncListener = new AsyncLogListener();
+        private static int _warningCount = 0;
         public volatile static LogLevel LogLevelThreshold = LogLevel.Info;
+        public volatile static bool WarningsAsErrors = false;
 
         public static void RegisterListener(ILoggerListener listener)
         {
@@ -87,6 +92,31 @@ namespace Microsoft.DocAsCode.Common
                 return;
             }
 
+            if (item.LogLevel == LogLevel.Warning)
+            {
+                if (WarningsAsErrors)
+                {
+                    HasError = true;
+                }
+
+                var count = Interlocked.Increment(ref _warningCount);
+                if (count > WarningThrottling)
+                {
+                    return;
+                }
+                else if (count == WarningThrottling)
+                {
+                    var msg = new LogItem
+                    {
+                        Code = WarningCodes.Build.TooManyWarnings,
+                        LogLevel = LogLevel.Warning,
+                        Message = "Too many warnings, no more warning will be logged."
+                    };
+                    _syncListener.WriteLine(msg);
+                    _asyncListener.WriteLine(msg);
+                }
+            }
+
             if (item.LogLevel == LogLevel.Error)
             {
                 HasError = true;
@@ -121,6 +151,27 @@ namespace Microsoft.DocAsCode.Common
                 Phase = phase ?? LoggerPhaseScope.GetPhaseName(),
 #endif
             });
+        }
+
+        public static ILogItem GetLogItem(LogLevel level, string message, string phase = null, string file = null, string line = null, string code = null)
+        {
+            return new LogItem
+            {
+#if NetCore
+                File = file,
+#else
+                File = file ?? LoggerFileScope.GetFileName(),
+#endif
+                Line = line,
+                LogLevel = level,
+                Message = message,
+                Code = code,
+#if NetCore
+                Phase = phase,
+#else
+                Phase = phase ?? LoggerPhaseScope.GetPhaseName(),
+#endif
+            };
         }
 
         [Obsolete]

@@ -49,8 +49,9 @@ namespace Microsoft.DocAsCode.Build.ResourceFiles
         {
             string uid = null;
             Dictionary<string, object> content = null;
-            var metafile = file.File.TrimEnd('.') + ".meta";
-            if (EnvironmentContext.FileAbstractLayer.Exists(metafile))
+            var pp = EnvironmentContext.FileAbstractLayer.GetPhysicalPath(file.File);
+            var metafile = pp.TrimEnd('.') + ".meta";
+            if (File.Exists(metafile))
             {
                 content = YamlUtility.Deserialize<Dictionary<string, object>>(metafile);
                 if (content != null)

@@ -1,0 +1,22 @@
+#YamlMime:UniversalReference
+api_name: []
+items:
+- _type: module
+  children:
+  - cntk.debugging.dump_function
+  - cntk.debugging.dump_signature
+  fullName: cntk.debugging
+  langs:
+  - python
+  module: cntk.debugging
+  name: debugging
+  source:
+    id: debugging
+    path: cntk/debugging/__init__.py
+    remote:
+      branch: master
+      path: cntk/debugging/__init__.py
+      repo: https://github.com/Microsoft/CNTK
+    startLine: 0
+  type: Namespace
+  uid: ""

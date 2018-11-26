@@ -1,0 +1,63 @@
+<Project>
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;net462</TargetFrameworks>
+    
+    <!-- Note: by convention assembly should be named after the root namespace -->
+    <AssemblyName Condition=" '$(AssemblyName)' == '' ">$(MSBuildProjectName)</AssemblyName>
+    <AssemblyTitle Condition=" '$(AssemblyTitle)' == '' ">$(MSBuildProjectName)</AssemblyTitle>
+    <Product Condition=" '$(Product)' == '' ">$(MSBuildProjectName)</Product>
+    <PackageId Condition=" '$(PackageId)' == '' ">$(MSBuildProjectName)</PackageId>
+    <Authors>Microsoft</Authors>
+    <Company Condition=" '$(Company)' == '' ">Microsoft</Company>
+    <Copyright Condition=" '$(Copyright)' == '' ">© Microsoft Corporation. All rights reserved.</Copyright>
+
+    <PackageProjectUrl Condition=" '$(PackageProjectUrl)' == '' ">https://github.com/dotnet/docfx</PackageProjectUrl>
+    <PackageLicenseUrl Condition=" '$(PackageLicenseUrl)' == '' ">https://github.com/dotnet/docfx/blob/dev/LICENSE</PackageLicenseUrl>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <PackageDescription Condition=" '$(PackageDescription)' == '' " >$(Product)</PackageDescription>
+
+    <VersionCSFile Condition="'$(VersionCSFile)' == ''">$(MSBuildThisFileDirectory)..\..\TEMP\version.cs</VersionCSFile>
+    <VersionFSFile Condition="'$(VersionFSFile)' == ''">$(MSBuildThisFileDirectory)..\..\TEMP\version.fs</VersionFSFile>        
+    <VersionFileExists Condition="Exists($(VersionCSFile))" >true</VersionFileExists>
+
+    <GenerateAssemblyVersionAttribute Condition=" '$(VersionFileExists)' == 'true' ">false</GenerateAssemblyVersionAttribute>
+    <GenerateAssemblyFileVersionAttribute Condition=" '$(VersionFileExists)' == 'true' ">false</GenerateAssemblyFileVersionAttribute>
+    <GenerateAssemblyInformationalVersionAttribute Condition=" '$(VersionFileExists)' == 'true' ">false</GenerateAssemblyInformationalVersionAttribute>
+
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <RootNamespace Condition=" '$(RootNamespace)' == '' ">$(AssemblyName)</RootNamespace>
+    <DebugSymbols>true</DebugSymbols>
+    <ErrorReport>prompt</ErrorReport>
+
+    <!-- Note: unless explicitly specified, we will generate DLL -->
+    <OutputType Condition=" '$(OutputType)' == '' ">Library</OutputType>
+    <Prefer32Bit>false</Prefer32Bit>
+    <RestorePackages Condition=" '$(RestorePackages)' == '' ">true</RestorePackages>
+
+    <!-- Note: get rid of vshost.exe since we don't gain much benefits -->
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <WarningLevel>4</WarningLevel>
+
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <DefineConstants>TRACE</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Condition="Exists($(VersionCSFile)) And '$(MSBuildProjectExtension)' == '.csproj'" Include="$(VersionCSFile)" />
+    <Compile Condition="Exists($(VersionFSFile)) And '$(MSBuildProjectExtension)' == '.fsproj'" Include="$(VersionFSFile)" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
+    <!-- Common references -->
+  </ItemGroup>
+</Project>

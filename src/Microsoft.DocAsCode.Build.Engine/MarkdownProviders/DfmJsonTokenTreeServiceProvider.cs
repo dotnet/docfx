@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.Build.Engine
 {
+    using System;
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Composition;
@@ -27,6 +28,8 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private sealed class DfmJsonTokenTreeService : IMarkdownService
         {
+            public string Name => "dfmJsonTokenTree";
+
             private readonly DfmEngineBuilder _builder;
 
             private readonly ImmutableDictionary<string, string> _tokens;
@@ -56,6 +59,11 @@ namespace Microsoft.DocAsCode.Build.Engine
                     result.Dependency = dependency.ToImmutableArray();
                 }
                 return result;
+            }
+
+            public MarkupResult Markup(string src, string path, bool enableValidation)
+            {
+                throw new NotImplementedException();
             }
         }
     }

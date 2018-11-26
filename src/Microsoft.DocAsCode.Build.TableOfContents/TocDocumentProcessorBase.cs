@@ -13,6 +13,8 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
     using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.Plugins;
 
+    using Newtonsoft.Json;
+
     /// <summary>
     /// Base document processor for table of contents.
     /// </summary>
@@ -30,10 +32,17 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             var repoDetail = GitUtility.TryGetFileDetail(filePath);
             var displayLocalPath = PathUtility.MakeRelativePath(EnvironmentContext.BaseDirectory, file.FullPath);
 
-            // todo : metadata.
+            // Apply metadata to TOC
+            foreach (var pair in metadata)
+            {
+                if (!toc.Metadata.TryGetValue(pair.Key, out var val))
+                {
+                    toc.Metadata[pair.Key] = pair.Value;
+                }
+            }
+
             return new FileModel(file, toc)
             {
-                Uids = new[] { new UidDefinition(file.File, displayLocalPath) }.ToImmutableArray(),
                 LocalPathFromRoot = displayLocalPath
             };
         }
@@ -42,19 +51,22 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
         {
             return new SaveResult
             {
-                DocumentType = "Toc",
+                DocumentType = Constants.DocumentType.Toc,
                 FileWithoutExtension = Path.ChangeExtension(model.File, null),
                 LinkToFiles = model.LinkToFiles.ToImmutableArray(),
                 LinkToUids = model.LinkToUids,
+                FileLinkSources = model.FileLinkSources,
+                UidLinkSources = model.UidLinkSources,
             };
         }
 
         public override void UpdateHref(FileModel model, IDocumentBuildContext context)
         {
-            var toc = (TocItemViewModel)model.Content;
+            var toc = ConvertFromObject(model.Content);
             UpdateTocItemHref(toc, model, context);
 
             RegisterTocToContext(toc, model, context);
+            model.Content = ConvertToObject(toc);
         }
 
         #endregion
@@ -69,36 +81,54 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
 
         #region Private methods
 
-        private void UpdateTocItemHref(TocItemViewModel toc, FileModel model, IDocumentBuildContext context)
+        private TocItemViewModel ConvertFromObject(object model)
+        {
+            using (var jr = new IgnoreStrongTypeObjectJsonReader(model))
+            {
+                return JsonUtility.DefaultSerializer.Value.Deserialize<TocItemViewModel>(jr);
+            }
+        }
+
+        private object ConvertToObject(TocItemViewModel model)
+        {
+            return ConvertToObjectHelper.ConvertStrongTypeToObject(model);
+        }
+
+        private void UpdateTocItemHref(TocItemViewModel toc, FileModel model, IDocumentBuildContext context, string includedFrom = null)
         {
             if (toc.IsHrefUpdated) return;
 
-            ResolveUid(toc, model, context);
+            ResolveUid(toc, model, context, includedFrom);
 
             // Have to register TocMap after uid is resolved
             RegisterTocMapToContext(toc, model, context);
 
             toc.Homepage = ResolveHref(toc.Homepage, toc.OriginalHomepage, model, context, nameof(toc.Homepage));
+            toc.OriginalHomepage = null;
             toc.Href = ResolveHref(toc.Href, toc.OriginalHref, model, context, nameof(toc.Href));
+            toc.OriginalHref = null;
             toc.TocHref = ResolveHref(toc.TocHref, toc.OriginalTocHref, model, context, nameof(toc.TocHref));
+            toc.OriginalTocHref = null;
             toc.TopicHref = ResolveHref(toc.TopicHref, toc.OriginalTopicHref, model, context, nameof(toc.TopicHref));
+            toc.OriginalTopicHref = null;
 
+            includedFrom = toc.IncludedFrom ?? includedFrom;
             if (toc.Items != null && toc.Items.Count > 0)
             {
                 foreach (var item in toc.Items)
                 {
-                    UpdateTocItemHref(item, model, context);
+                    UpdateTocItemHref(item, model, context, includedFrom);
                 }
             }
 
             toc.IsHrefUpdated = true;
         }
 
-        private void ResolveUid(TocItemViewModel item, FileModel model, IDocumentBuildContext context)
+        private void ResolveUid(TocItemViewModel item, FileModel model, IDocumentBuildContext context, string includedFrom)
         {
             if (item.TopicUid != null)
             {
-                var xref = GetXrefFromUid(item.TopicUid, model, context);
+                var xref = GetXrefFromUid(item.TopicUid, model, context, includedFrom);
                 if (xref != null)
                 {
                     item.Href = item.TopicHref = xref.Href;
@@ -119,12 +149,15 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             }
         }
 
-        private XRefSpec GetXrefFromUid(string uid, FileModel model, IDocumentBuildContext context)
+        private XRefSpec GetXrefFromUid(string uid, FileModel model, IDocumentBuildContext context, string includedFrom)
         {
             var xref = context.GetXrefSpec(uid);
             if (xref == null)
             {
-                Logger.LogWarning($"Unable to find file with uid \"{uid}\" referenced by TOC file \"{model.LocalPathFromRoot}\"");
+                Logger.LogWarning(
+                    $"Unable to find file with uid \"{uid}\" referenced by TOC file \"{includedFrom ?? model.LocalPathFromRoot}\"",
+                    code: WarningCodes.Build.UidNotFound,
+                    file: includedFrom);
             }
             return xref;
         }
@@ -145,27 +178,20 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             var path = UriUtility.GetPath(pathToFile);
             var segments = UriUtility.GetQueryStringAndFragment(pathToFile);
 
-            var href = context.GetFilePath(HttpUtility.UrlDecode(path));
+            var fli = FileLinkInfo.Create(model.LocalPathFromRoot, model.File, path, context);
+            var href = context.HrefGenerator?.GenerateHref(fli);
 
-            // original path to file can be null for files generated by docfx in PreBuild
-            var displayFilePath = string.IsNullOrEmpty(originalPathToFile) ? pathToFile : originalPathToFile;
-
-            if (href == null)
+            if (fli.ToFileInDest == null && href == null)
             {
+                // original path to file can be null for files generated by docfx in PreBuild
+                var displayFilePath = string.IsNullOrEmpty(originalPathToFile) ? pathToFile : originalPathToFile;
                 Logger.LogInfo($"Unable to find file \"{displayFilePath}\" for {propertyName} referenced by TOC file \"{model.LocalPathFromRoot}\"");
                 return originalPathToFile;
             }
 
-            var relativePath = GetRelativePath(href, model.File);
-            var resolvedHref = ((RelativePath)relativePath).UrlEncode().ToString() + segments;
-            return resolvedHref;
+            // fragment and query in original href takes precedence over the one from hrefGenerator
+            return href == null ? fli.Href + segments : UriUtility.MergeHref(href, segments);
         }
-
-        private string GetRelativePath(string pathFromWorkingFolder, string relativeToPath)
-        {
-            return ((RelativePath)pathFromWorkingFolder).MakeRelativeTo((((RelativePath)relativeToPath).UrlDecode()).GetPathFromWorkingFolder());
-        }
-
         #endregion
     }
 }

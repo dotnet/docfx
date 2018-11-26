@@ -13,11 +13,7 @@ namespace Microsoft.DocAsCode.YamlSerialization.Helpers
         {
             foreach (var interfacetype in GetImplementedInterfaces(type))
             {
-#if NetCore
-                if (interfacetype.IsConstructedGenericType && interfacetype.GetGenericTypeDefinition() == genericInterfaceType)
-#else
                 if (interfacetype.IsGenericType && interfacetype.GetGenericTypeDefinition() == genericInterfaceType)
-#endif
                 {
                     return interfacetype;
                 }
@@ -27,24 +23,12 @@ namespace Microsoft.DocAsCode.YamlSerialization.Helpers
 
         public static IEnumerable<Type> GetImplementedInterfaces(Type type)
         {
-#if NetCore
-            var ti = type.GetTypeInfo();
-            if (ti.IsInterface)
-            {
-                yield return type;
-            }
-#else
             if (type.IsInterface)
-#endif
             {
                 yield return type;
             }
 
-#if NetCore
-            foreach (var implementedInterface in ti.ImplementedInterfaces)
-#else
             foreach (var implementedInterface in type.GetInterfaces())
-#endif
             {
                 yield return implementedInterface;
             }

@@ -3,25 +3,28 @@
 
 namespace Microsoft.DocAsCode.Dfm
 {
-    using System.Collections.Immutable;
+    using System.IO;
 
-    using Microsoft.DocAsCode.Dfm;
     using Microsoft.DocAsCode.MarkdownLite;
 
     public class DfmMarkdownRenderer : MarkdownRenderer
     {
         public virtual StringBuffer Render(IMarkdownRenderer render, DfmIncludeInlineToken token, MarkdownInlineContext context)
         {
+            var src = token.Src.Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+
             return string.IsNullOrEmpty(token.Title)
-                    ? $"[!INCLUDE [{token.Name}]({token.Src})]"
-                    : $"[!INCLUDE [{token.Name}]({token.Src} \"{token.Title}\")]";
+                    ? $"[!INCLUDE [{token.Name}]({src})]"
+                    : $"[!INCLUDE [{token.Name}]({src} \"{token.Title}\")]";
         }
 
         public virtual StringBuffer Render(IMarkdownRenderer render, DfmIncludeBlockToken token, MarkdownBlockContext context)
         {
+            var src = token.Src.Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+
             return string.IsNullOrEmpty(token.Title)
-                    ? $"[!INCLUDE [{token.Name}]({token.Src})]\n\n"
-                    : $"[!INCLUDE [{token.Name}]({token.Src} \"{token.Title}\")]\n\n";
+                    ? $"[!INCLUDE [{token.Name}]({src})]\n\n"
+                    : $"[!INCLUDE [{token.Name}]({src} \"{token.Title}\")]\n\n";
         }
 
         public virtual StringBuffer Render(IMarkdownRenderer render, DfmNoteBlockToken token, MarkdownBlockContext context)

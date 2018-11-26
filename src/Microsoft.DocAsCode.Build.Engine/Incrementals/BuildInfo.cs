@@ -49,8 +49,21 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         /// The post process information
         /// </summary>
         public PostProcessInfo PostProcessInfo { get; set; }
+        /// <summary>
+        /// Is this cache valid.
+        /// </summary>
+        public bool IsValid { get; set; } = true;
+        /// <summary>
+        /// Details about why cache is not valid.
+        /// </summary>
+        public string Message { get; set; }
 
         public static BuildInfo Load(string baseDir)
+        {
+            return Load(baseDir, false);
+        }
+
+        public static BuildInfo Load(string baseDir, bool onlyValid)
         {
             if (baseDir == null)
             {
@@ -65,6 +78,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             baseDir = Path.GetFullPath(expanded);
             if (!File.Exists(Path.Combine(baseDir, FileName)))
             {
+                Logger.LogInfo($"Cannot load build info: '{FileName}' not found under '{baseDir}'");
                 return null;
             }
 
@@ -72,6 +86,12 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             try
             {
                 buildInfo = JsonUtility.Deserialize<BuildInfo>(Path.Combine(baseDir, FileName));
+                if (onlyValid && !buildInfo.IsValid)
+                {
+                    Logger.LogInfo($"Cannot load build info as cache is invalid: {buildInfo.Message}");
+                    return null;
+                }
+
                 var targetDirectory = Path.Combine(baseDir, buildInfo.DirectoryName);
                 foreach (var version in buildInfo.Versions)
                 {

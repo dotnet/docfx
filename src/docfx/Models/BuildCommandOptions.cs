@@ -28,9 +28,6 @@ namespace Microsoft.DocAsCode
         [OptionList("overwrite", Separator = ',', HelpText = "Specify overwrite files used by content files.")]
         public List<string> Overwrite { get; set; }
 
-        [OptionList("externalReference", Separator = ',', HelpText = "Specify external reference files used by content files.")]
-        public List<string> ExternalReference { get; set; }
-
         [OptionList('x', "xref", Separator = ',', HelpText = "Specify the urls of xrefmap used by content files.")]
         public List<string> XRefMaps { get; set; }
 
@@ -120,5 +117,14 @@ namespace Microsoft.DocAsCode
 
         [Option("cleanupCacheHistory", HelpText = "If set to true, docfx create a new intermediate folder for cache files, historical cache data will be cleaned up")]
         public bool CleanupCacheHistory { get; set; }
+
+        [Option("falName", HelpText = "Set the name of input file abstract layer builder.")]
+        public string FALName { get; set; }
+
+        [Option("disableGitFeatures", HelpText = "Disable fetching Git related information for articles. By default it is enabled and may have side effect on performance when the repo is large.")]
+        public bool DisableGitFeatures { get; set; }
+
+        [Option("schemaLicense", HelpText = "Please provide the license key for validating schema using NewtonsoftJson.Schema here.")]
+        public string SchemaLicense { get; set; }
     }
 }

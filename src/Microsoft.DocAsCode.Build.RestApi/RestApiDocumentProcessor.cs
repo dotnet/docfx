@@ -106,11 +106,9 @@ namespace Microsoft.DocAsCode.Build.RestApi
             }
             var vm = (RestApiRootItemViewModel)model.Content;
 
-            object documentTypeObject;
-            if (vm.Metadata.TryGetValue(DocumentTypeKey, out documentTypeObject))
+            if (vm.Metadata.TryGetValue(DocumentTypeKey, out object documentTypeObject))
             {
-                var documentType = documentTypeObject as string;
-                if (documentType != null)
+                if (documentTypeObject is string documentType)
                 {
                     model.DocumentType = documentType;
                 }
@@ -148,8 +146,12 @@ namespace Microsoft.DocAsCode.Build.RestApi
             return new FileModel(file, vm, serializer: new BinaryFormatter())
             {
                 Uids = new[] { new UidDefinition(vm.Uid, displayLocalPath) }
-                    .Concat(from item in vm.Children select new UidDefinition(item.Uid, displayLocalPath))
-                    .Concat(from tag in vm.Tags select new UidDefinition(tag.Uid, displayLocalPath)).ToImmutableArray(),
+                    .Concat(from item in vm.Children
+                            where !string.IsNullOrEmpty(item.Uid)
+                            select new UidDefinition(item.Uid, displayLocalPath))
+                    .Concat(from tag in vm.Tags
+                            where !string.IsNullOrEmpty(tag.Uid)
+                            select new UidDefinition(tag.Uid, displayLocalPath)).ToImmutableArray(),
                 LocalPathFromRoot = displayLocalPath
             };
         }
@@ -212,8 +214,7 @@ namespace Microsoft.DocAsCode.Build.RestApi
                 using (JsonReader reader = new JsonTextReader(streamReader))
                 {
                     var jObject = JObject.Load(reader);
-                    JToken swaggerValue;
-                    if (jObject.TryGetValue("swagger", out swaggerValue))
+                    if (jObject.TryGetValue("swagger", out JToken swaggerValue))
                     {
                         var swaggerString = (string)swaggerValue;
                         if (swaggerString != null && swaggerString.Equals("2.0"))
@@ -243,9 +244,7 @@ namespace Microsoft.DocAsCode.Build.RestApi
                 {
                     foreach (var operation in path.Value.Metadata)
                     {
-                        JToken operationId;
-                        var jObject = operation.Value as JObject;
-                        if (jObject != null && !jObject.TryGetValue(OperationIdKey, out operationId))
+                        if (operation.Value is JObject jObject && !jObject.TryGetValue(OperationIdKey, out JToken operationId))
                         {
                             throw new DocfxException($"{OperationIdKey} should exist in operation '{operation.Key}' of path '{path.Key}' for swagger file '{fileName}'");
                         }

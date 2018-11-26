@@ -1,15 +1,14 @@
 DocFx: Metadata Format for .NET Languages
 ===============================================
 
-0. Introduction
----------------
+## 0. Introduction
+
 
 ### 0.1 Goal and Non-goals
 
 ### 0.2 Terminology
 
-1. Items
---------
+## 1. Items
 
 The following .NET elements are defined as *items* in metadata:
 
@@ -19,8 +18,7 @@ The following .NET elements are defined as *items* in metadata:
 
 Other elements such as parameters and generic parameters are not standalone *items*, they're part of other *items*.
 
-2. Identifiers
---------------
+## 2. Identifiers
 
 ### 2.1 Unique Identifiers
 
@@ -65,8 +63,7 @@ And it also supports array and pointer.
 > - uid: System.Collections.Generic.List{{TArg}[]}
 > ```
 
-3. Namespaces
--------------
+## 3. Namespaces
 
 For all namespaces, they are flat, e.i. namespaces do not have the parent namespace.
 So for any namespace, *ID* is always same with its *UID*. 
@@ -89,8 +86,7 @@ So for any namespace, *ID* is always same with its *UID*.
 
 The children of namespace are all the visible types in the namespace.
 
-4. Types
---------
+## 4. Types
 
 Types include classes, structs, interfaces, enums, and delegates.
 They have following properties: summary, remarks, syntax, namespace, assemblies, inheritance.
@@ -98,6 +94,7 @@ The *parents* of types are namespaces.
 The *children* of types are members.
 
 #### ID
+
 *ID* for a type is also its *name*.
 
 > Example 4 Type
@@ -192,8 +189,7 @@ Only class contains inheritance, and the inheritance is a list of spec id.
 The syntax part for type contains declaration, and descriptions of type parameters for different languages.
 For delegates, it also contains descriptions of parameters and a return type.
 
-5. Members
-----------
+## 5. Members
 
 Members include fields, properties, methods, and events.
 They have the following properties: summary, remarks, exceptions, and syntax.
@@ -399,8 +395,7 @@ Indexer operator's name is metadata name, by default, it is `Item`, with bracket
 >   fullName.csharp: System.Collections.IList.Item[System.Int32]
 > ```
 
-6. Generics
------------
+## 6. Generics
 
 The *ID* of a generic type is its name with followed by `` `n ``, `n` and the count of generic type count, which is the same as the rule for document comment ID.
 For example, ``Dictionary`2``.
@@ -431,8 +426,7 @@ The *ID* of a generic method uses postfix ``` ``n ```, `n` is the count of in me
 >   fullName.csharp: System.Tuple.Create<T1,T2>(T1,T2)
 > ```
 
-7. Reference
-------------
+## 7. Reference
 
 The reference contains the following members:
   name, fullName, summary, isExternal, href, and more.

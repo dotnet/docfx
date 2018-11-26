@@ -1,0 +1,22 @@
+﻿### YamlMime:RESTMixedTest
+uid: management.azure.com.advisor.suppressions
+name: Suppressions
+operations:
+- id: management.azure.com.advisor.suppressions.create
+definitions:
+- name: Application 1
+  kind: object
+  properties:
+  - name: id
+    description: this will be overwritten in MarkdownFragments
+    types:
+    - uid: string
+  - name: displayName
+    types:
+    - uid: string
+- name: CloudError
+  kind: object
+  properties:
+  - name: error
+    types:
+    - uid: CloudErrorBody

@@ -14,7 +14,7 @@ var knownOptions = {
 var options = minimist(process.argv.slice(2), knownOptions);
 var templateFiles = [
     "layout/*",
-    "partials/*",
+    "partials/**/*",
     "*.js",
     "*.tmpl",
     "*.liquid",

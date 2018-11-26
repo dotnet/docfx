@@ -114,6 +114,15 @@ namespace Microsoft.DocAsCode.Common
             return new FileAbstractLayerBuilder(fal.Writer.CreateReader(), _writer);
         }
 
+        public FileAbstractLayerBuilder ReadWithFolderRedirection(FolderRedirectionManager frm)
+        {
+            if (frm == null)
+            {
+                throw new ArgumentNullException(nameof(frm));
+            }
+            return new FileAbstractLayerBuilder(new FileReaderWithFolderRedirection(_reader, frm), _writer);
+        }
+
         #endregion
 
         #region Write

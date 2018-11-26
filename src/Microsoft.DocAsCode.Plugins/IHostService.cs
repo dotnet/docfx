@@ -3,25 +3,33 @@
 
 namespace Microsoft.DocAsCode.Plugins
 {
+    using System;
     using System.Collections.Immutable;
 
     public interface IHostService
     {
+        IBuildParameters BuildParameters { get; }
+
         ImmutableList<TreeItemRestructure> TableOfContentRestructions { get; set; }
 
         /// <summary>
         /// current version's name, String.Empty for default version
         /// </summary>
+        [Obsolete("use GroupInfo")]
         string VersionName { get; }
 
         /// <summary>
         /// current version's output base folder
         /// </summary>
+        [Obsolete("use GroupInfo")]
         string VersionOutputFolder { get; }
+
+        GroupInfo GroupInfo { get; }
 
         MarkupResult Parse(MarkupResult markupResult, FileAndType ft);
         MarkupResult Markup(string markdown, FileAndType ft);
         MarkupResult Markup(string markdown, FileAndType ft, bool omitParse);
+        MarkupResult Markup(string markdown, FileAndType ft, bool omitParse, bool enableValidation);
         ImmutableDictionary<string, FileAndType> SourceFiles { get; }
         ImmutableDictionary<string, FileIncrementalInfo> IncrementalInfos { get; }
         ImmutableHashSet<string> GetAllUids();
@@ -77,6 +85,8 @@ namespace Microsoft.DocAsCode.Plugins
 
         bool HasMetadataValidation { get; }
         void ValidateInputMetadata(string file, ImmutableDictionary<string, object> metadata);
+
+        string MarkdownServiceName { get; }
 
         #region Log
         void LogDiagnostic(string message, string file = null, string line = null);

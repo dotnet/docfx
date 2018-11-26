@@ -406,7 +406,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
             Assert.Equal("N1.C1", reference.FullName);
             Assert.False(reference.FullNameInDevLangs.ContainsKey(Constants.DevLang.CSharp));
             Assert.False(reference.FullNameInDevLangs.ContainsKey(Constants.DevLang.VB));
-            Assert.False(reference.IsExternal);
+            Assert.Null(reference.IsExternal);
             Assert.Equal("href!", reference.Href);
         }
 

@@ -37,6 +37,21 @@ namespace Microsoft.DocAsCode.Common
             }
         }
 
+        public IEnumerable<string> GetExpectedPhysicalPath(RelativePath file)
+        {
+            lock (_mappings)
+            {
+                if (_mappings.TryGetValue(file, out var pm))
+                {
+                    return new[] { pm.PhysicalPath };
+                }
+                else
+                {
+                    return Enumerable.Empty<string>();
+                }
+            }
+        }
+
         #endregion
     }
 }

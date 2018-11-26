@@ -4,7 +4,6 @@
 namespace Microsoft.DocAsCode.Common
 {
     using System;
-    using System.Runtime.Remoting.Messaging;
     using System.Threading;
 
     [Serializable]
@@ -25,11 +24,7 @@ namespace Microsoft.DocAsCode.Common
 
         public static void SetResources(ComputerResourceCollection resources)
         {
-            if (resources == null)
-            {
-                throw new ArgumentNullException(nameof(resources));
-            }
-            _resources = resources;
+            _resources = resources ?? throw new ArgumentNullException(nameof(resources));
         }
 
         public static ComputerResource Require(ComputerResourceType type)
@@ -46,17 +41,17 @@ namespace Microsoft.DocAsCode.Common
         {
             if (resource == null)
             {
-                CallContext.FreeNamedDataSlot(nameof(ComputerResource));
+                LogicalCallContext.FreeData(nameof(ComputerResource));
             }
             else
             {
-                CallContext.LogicalSetData(nameof(ComputerResource), resource);
+                LogicalCallContext.SetData(nameof(ComputerResource), resource);
             }
         }
 
         private static ComputerResource GetResourceType()
         {
-            return (ComputerResource)CallContext.LogicalGetData(nameof(ComputerResource));
+            return (ComputerResource)LogicalCallContext.GetData(nameof(ComputerResource));
         }
 
         public static int GetAvailableCpuResource() => _resources.CpuResource.CurrentCount;

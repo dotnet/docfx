@@ -30,8 +30,7 @@ namespace Microsoft.DocAsCode.Tools
 
             foreach (var item in tgtVM.Items)
             {
-                ItemViewModel srcItem;
-                if (map.TryGetValue(item.Uid, out srcItem))
+                if (map.TryGetValue(item.Uid, out ItemViewModel srcItem))
                 {
                     item.Source = srcItem.Source;
                     item.Syntax = srcItem.Syntax;

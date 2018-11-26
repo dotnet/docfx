@@ -42,6 +42,11 @@
 
         public static void RunAll<TElement>(this IReadOnlyList<TElement> elements, Action<TElement> action)
         {
+            RunAll((IEnumerable<TElement>)elements, action);
+        }
+
+        public static void RunAll<TElement>(this IEnumerable<TElement> elements, Action<TElement> action)
+        {
             if (elements == null)
             {
                 throw new ArgumentNullException(nameof(elements));
@@ -51,11 +56,11 @@
                 throw new ArgumentNullException(nameof(action));
             }
             DocumentException firstException = null;
-            for (int i = 0; i < elements.Count; i++)
+            foreach (var element in elements)
             {
                 try
                 {
-                    action(elements[i]);
+                    action(element);
                 }
                 catch (DocumentException ex)
                 {
@@ -72,6 +77,11 @@
         }
 
         public static void RunAll<TElement>(this IReadOnlyList<TElement> elements, Action<TElement> action, int parallelism)
+        {
+            RunAll((IEnumerable<TElement>)elements, action, parallelism);
+        }
+
+        public static void RunAll<TElement>(this IEnumerable<TElement> elements, Action<TElement> action, int parallelism)
         {
             if (elements == null)
             {

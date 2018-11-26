@@ -66,7 +66,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 paths.Add(typeof(object).Assembly.Location);
                 var assemblies = (from path in paths
                                   select MetadataReference.CreateFromFile(path)).ToList();
-                var complilation = CS.CSharpCompilation.Create("EmptyProjectWithAssembly", new SyntaxTree[] { }, assemblies);
+                var options = new CS.CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary);
+                var complilation = CS.CSharpCompilation.Create("EmptyProjectWithAssembly", new SyntaxTree[] { }, assemblies, options);
                 return complilation;
             }
             catch (Exception e)
@@ -76,13 +77,32 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
         }
 
-        public static List<IAssemblySymbol> GetAssemblyFromAssemblyComplation(Compilation assemblyCompilation)
+        public static IEnumerable<(MetadataReference reference, IAssemblySymbol assembly)> GetAssemblyFromAssemblyComplation(Compilation assemblyCompilation, IReadOnlyCollection<string> assemblyPaths)
         {
-            return (from reference in assemblyCompilation.References
-                    let assembly = (IAssemblySymbol)assemblyCompilation.GetAssemblyOrModuleSymbol(reference)
+            foreach(var reference in assemblyCompilation.References)
+            {
+                Logger.LogVerbose($"Loading assembly {reference.Display}...");
+                var assembly = (IAssemblySymbol)assemblyCompilation.GetAssemblyOrModuleSymbol(reference);
+                if (assembly == null)
+                {
+                    Logger.LogWarning($"Unable to get symbol from {reference.Display}, ignored...");
+                }
+                else
+                {
                     //TODO: "mscorlib" shouldn't be ignored while extracting metadata from .NET Core/.NET Framework
-                    where assembly != null && assembly.Identity?.Name != "mscorlib"
-                    select assembly).ToList();
+                    if (assembly.Identity?.Name == "mscorlib")
+                    {
+                        Logger.LogVerbose($"Ignored mscorlib assembly {reference.Display}");
+                        continue;
+                    }
+
+                    if (reference is PortableExecutableReference portableReference &&
+                        assemblyPaths.Contains(portableReference.FilePath))
+                    {
+                        yield return (reference, assembly);
+                    }
+                }
+            }
         }
 
         private static string GetAbbreviateString(string input, int length = 20)

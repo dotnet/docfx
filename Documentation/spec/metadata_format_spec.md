@@ -1,8 +1,7 @@
 Doc-as-Code: Metadata Format Specification
 ==========================================
 
-0. Introduction
----------------
+## 0. Introduction
 
 ### 0.1 Goals and Non-goals
 
@@ -17,8 +16,7 @@ The key words **MUST**, **MUST NOT**, **REQUIRED**, **SHALL**, **SHALL NOT**, **
 
 Words in *italic* imply they are terms defined in an earlier section of this document.
 
-1. Items and Identifiers
-------------------------
+## 1. Items and Identifiers
 
 ### 1.1 Items
 
@@ -66,8 +64,7 @@ We can create short *alias* for *items* so that they can be referenced easily.
 
 We can easily get a "global" alias for an *item* by replacing the *ID* part of its *UID* with its alias.
 
-2. File Structure
------------------
+## 2. File Structure
 
 ### 2.1 File Format
 
@@ -164,6 +161,7 @@ Here is an example of a C# Dictionary class:
 ```
 
 ### 2.4 Custom Properties
+
 Besides the predefined *properties*, *item* can have its own *properties*. One restriction is *property* name **MUST NOT** contains dots, as dot in *property* name will have special meaning (described in later section).
 
 ### 2.5 Reference Section
@@ -193,6 +191,7 @@ references:
 ```
 
 ### 2.6 Multiple Language Support
+
 An *item* may need to support multiple languages. For example, in .NET, a class can be used in C#, VB, managed C++ and F#. Different languages may have differences in *properties*. For example, a list of string is displayed as `List<string>` in C#, while `List(Of string)` in VB.
 
 To support this scenario, we introduce a concept of language context to allow defining different *property* values in different languages.
@@ -209,8 +208,7 @@ This means the name of dictionary is `Dictionary<TKey, TValue>` in C# and `Dicti
 
 The following *properties* **SHALL NOT** be overridden in language context: uid, id, alias, children, and parent.
 
-3. Work with Metadata in Markdown 
----------------------------------
+## 3. Work with Metadata in Markdown 
 
 ### 3.1 YAML Metadata Section
 

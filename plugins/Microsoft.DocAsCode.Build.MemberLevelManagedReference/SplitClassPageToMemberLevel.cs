@@ -42,13 +42,14 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
         /// <returns></returns>
         public override IEnumerable<FileModel> Prebuild(ImmutableList<FileModel> models, IHostService host)
         {
-            var collection = new List<FileModel>(models);
+            var modelsDict = new Dictionary<string, FileModel>(FilePathComparer.OSPlatformSensitiveStringComparer);
+            var dupeModels = new List<FileModel>();
 
             // Separate items into different models if the PageViewModel contains more than one item
             var treeMapping = new Dictionary<string, Tuple<FileAndType, IEnumerable<TreeItem>>>();
             foreach (var model in models)
             {
-                var result = SplitModelToOverloadLevel(model);
+                var result = SplitModelToOverloadLevel(model, modelsDict, dupeModels);
                 if (result != null)
                 {
                     if (treeMapping.ContainsKey(result.Uid))
@@ -58,9 +59,25 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                     else
                     {
                         treeMapping.Add(result.Uid, Tuple.Create(model.OriginalFileAndType, result.TreeItems));
-                        collection.AddRange(result.Models);
                     }
                 }
+                else
+                {
+                    AddModelToDict(model, modelsDict, dupeModels);
+                }
+            }
+
+            // New dupe models
+            var newFilePaths = new Dictionary<string, int>(FilePathComparer.OSPlatformSensitiveStringComparer);
+
+            foreach (var dupeModel in dupeModels)
+            {
+                if (modelsDict.TryGetValue(dupeModel.File, out var dupe))
+                {
+                    modelsDict.Remove(dupeModel.File);
+                    RenewDupeFileModels(dupe, newFilePaths, modelsDict);
+                }
+                RenewDupeFileModels(dupeModel, newFilePaths, modelsDict);
             }
 
             host.TableOfContentRestructions =
@@ -74,7 +91,62 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                      SourceFiles = new FileAndType[] { item.Value.Item1 }.ToImmutableList(),
                  }).ToImmutableList();
 
-            return collection;
+            return modelsDict.Values;
+        }
+
+        private void RenewDupeFileModels(FileModel dupeModel, Dictionary<string, int> newFilePaths, Dictionary<string, FileModel> modelsDict)
+        {
+            var page = dupeModel.Content as PageViewModel;
+            var memberType = page.Items[0]?.Type;
+            var newFileName = Path.GetFileNameWithoutExtension(dupeModel.File);
+
+            if (memberType != null)
+            {
+                newFileName = newFileName + $"({memberType})";
+            }
+
+            var newFilePath = GetUniqueFilePath(dupeModel.File, newFileName, newFilePaths, modelsDict);
+            var newModel = GenerateNewFileModel(dupeModel, page, Path.GetFileNameWithoutExtension(newFilePath), new Dictionary<string, int> { });
+            modelsDict[newFilePath] = newModel;
+        }
+
+        private string GetUniqueFilePath(string dupePath, string newFileName, Dictionary<string, int> newFilePaths, Dictionary<string, FileModel> modelsDict)
+        {
+            var dir = Path.GetDirectoryName(dupePath);
+            var extension = Path.GetExtension(dupePath);
+            var newFilePath = Path.Combine(dir, newFileName + extension).ToNormalizedPath();
+
+            if (modelsDict.ContainsKey(newFilePath))
+            {
+                if (newFilePaths.TryGetValue(newFilePath, out int suffix))
+                {
+                    // new file path already exist and have suffix
+                    newFileName = newFileName + $"_{suffix}";
+                    suffix++;
+                }
+                else
+                {
+                    // new file path already exist but doesnt have suffix (special case) 
+                    newFileName = newFileName + "_1";
+                    newFilePaths[newFilePath] = 2;
+                }
+
+                // check if new file path unique for new file name (cover special case)
+                return GetUniqueFilePath(dupePath, newFileName, newFilePaths, modelsDict);
+            }
+            else
+            {
+                if (newFilePaths.TryGetValue(newFilePath, out int suffix))
+                {
+                    throw new Exception($"Failed to process new path {newFilePath}");
+                }
+                else
+                {
+                    newFilePaths[newFilePath] = 1;
+                }
+
+                return newFilePath;
+            }
         }
 
         #region ISupportIncrementalBuildStep Members
@@ -87,7 +159,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
 
         #endregion
 
-        private SplittedResult SplitModelToOverloadLevel(FileModel model)
+        private SplittedResult SplitModelToOverloadLevel(FileModel model, Dictionary<string, FileModel> models, List<FileModel> dupeModels)
         {
             if (model.Type != DocumentType.Article)
             {
@@ -108,35 +180,48 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             var itemsToSplit = page.Items.Skip(1);
             var children = new List<TreeItem>();
             var splittedModels = new List<FileModel>();
-            foreach (var newPage in GetNewPages(page))
+            var pages = GetNewPages(page).ToList();
+            if (pages.Count == 0)
+            {
+                return null;
+            }
+
+            foreach (var newPage in pages)
             {
                 var newPrimaryItem = newPage.Items[0];
 
                 var newFileName = GetNewFileName(primaryItem.Uid, newPrimaryItem);
                 var newModel = GenerateNewFileModel(model, newPage, newFileName, newFileNames);
 
-                newPrimaryItem.Metadata[SplitReferencePropertyName] = true;
-                splittedModels.Add(newModel);
+                newPage.Metadata[SplitReferencePropertyName] = true;
+
                 AddToTree(newPrimaryItem, children);
+                AddModelToDict(newModel, models, dupeModels);
             }
 
             // Convert children to references
             page.References = itemsToSplit.Select(ConvertToReference).Concat(page.References).ToList();
 
-            primaryItem.Metadata[SplitReferencePropertyName] = true;
-            primaryItem.Metadata[SplitFromPropertyName] = true;
-
             page.Items = new List<ItemViewModel> { primaryItem };
+            page.Metadata[SplitReferencePropertyName] = true;
+            page.Metadata[SplitFromPropertyName] = true;
 
             // Regenerate uids
             model.Uids = CalculateUids(page, model.LocalPathFromRoot);
             model.Content = page;
+
+            AddModelToDict(model, models, dupeModels);
             return new SplittedResult(primaryItem.Uid, children.OrderBy(s => GetDisplayName(s)), splittedModels);
         }
 
         private IEnumerable<PageViewModel> GetNewPages(PageViewModel page)
         {
             var primaryItem = page.Items[0];
+            if (primaryItem.Type == MemberType.Enum)
+            {
+                yield break;
+            }
+
             var itemsToSplit = page.Items.Skip(1);
             var group = (from item in itemsToSplit group item by item.Overload).ToList();
 
@@ -147,7 +232,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                 {
                     foreach (var item in overload)
                     {
-                        yield return ExtractPageViewModel(page, new List <ItemViewModel> { item });
+                        yield return ExtractPageViewModel(page, new List<ItemViewModel> { item });
                     }
                 }
                 else
@@ -162,11 +247,8 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
 
         private void AddToTree(ItemViewModel item, List<TreeItem> tree)
         {
-            if (!item.IsExplicitInterfaceImplementation)
-            {
-                var treeItem = ConvertToTreeItem(item);
-                tree.Add(treeItem);
-            }
+            var treeItem = ConvertToTreeItem(item);
+            tree.Add(treeItem);
         }
 
         private ItemViewModel GenerateOverloadPage(PageViewModel page, IGrouping<string, ItemViewModel> overload)
@@ -186,8 +268,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                 NamespaceName = firstMember.NamespaceName,
                 Metadata = new Dictionary<string, object>
                 {
-                    [IsOverloadPropertyName] = true,
-                    [SplitReferencePropertyName] = true
+                    [IsOverloadPropertyName] = true
                 },
                 Platform = MergeList(overload, s => s.Platform ?? EmptyList),
                 SupportedLanguages = MergeList(overload, s => s.SupportedLanguages ?? EmptyArray).ToArray(),
@@ -199,8 +280,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             var mergeVersion = MergeList(overload, s =>
             {
                 List<string> versionList = null;
-                object versionObj;
-                if (s.Metadata.TryGetValue(Constants.MetadataName.Version, out versionObj))
+                if (s.Metadata.TryGetValue(Constants.MetadataName.Version, out object versionObj))
                 {
                     versionList = GetVersionFromMetadata(versionObj);
                 }
@@ -239,8 +319,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
 
         private List<string> GetVersionFromMetadata(object value)
         {
-            var text = value as string;
-            if (text != null)
+            if (value is string text)
             {
                 return new List<string> { text };
             }
@@ -351,8 +430,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                 {
                     case "summary":
                         {
-                            var summary = pair.Value as string;
-                            if (summary != null)
+                            if (pair.Value is string summary)
                             {
                                 item.Summary = summary;
                             }
@@ -360,8 +438,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                         }
                     case "remarks":
                         {
-                            var remarks = pair.Value as string;
-                            if (remarks != null)
+                            if (pair.Value is string remarks)
                             {
                                 item.Remarks = remarks;
                             }
@@ -402,23 +479,24 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
 
         private TreeItem ConvertToTreeItem(ItemViewModel item, Dictionary<string, object> overwriteMetadata = null)
         {
-            var result = new TreeItem();
-            result.Metadata = new Dictionary<string, object>()
+            var result = new TreeItem()
             {
-                [Constants.PropertyName.Name] = item.Name,
-                [Constants.PropertyName.FullName] = item.FullName,
-                [Constants.PropertyName.TopicUid] = item.Uid,
-                [Constants.PropertyName.NameWithType] = item.NameWithType,
-                [Constants.PropertyName.Type] = item.Type.ToString()
+                Metadata =
+                {
+                    [Constants.PropertyName.Name] = item.Name,
+                    [Constants.PropertyName.FullName] = item.FullName,
+                    [Constants.PropertyName.TopicUid] = item.Uid,
+                    [Constants.PropertyName.NameWithType] = item.NameWithType,
+                    [Constants.PropertyName.Type] = item.Type.ToString(),
+                    ["isEii"] = item.IsExplicitInterfaceImplementation
+                }
             };
-
             if (item.Platform != null)
             {
                 result.Metadata[Constants.PropertyName.Platform] = item.Platform;
             }
 
-            object version;
-            if (item.Metadata.TryGetValue(Constants.MetadataName.Version, out version))
+            if (item.Metadata.TryGetValue(Constants.MetadataName.Version, out object version))
             {
                 result.Metadata[Constants.MetadataName.Version] = version;
             }
@@ -482,16 +560,16 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             var newFileAndType = new FileAndType(model.FileAndType.BaseDir, filePath, model.FileAndType.Type, model.FileAndType.SourceDir, model.FileAndType.DestinationDir);
             var keyForModel = "~/" + RelativePath.GetPathWithoutWorkingFolderChar(filePath);
 
-            var newModel = new FileModel(newFileAndType, newPage, model.OriginalFileAndType, model.Serializer, keyForModel);
-            newModel.LocalPathFromRoot = model.LocalPathFromRoot;
-            newModel.Uids = CalculateUids(newPage, model.LocalPathFromRoot);
-            return newModel;
+            return new FileModel(newFileAndType, newPage, model.OriginalFileAndType, model.Serializer, keyForModel)
+            {
+                LocalPathFromRoot = model.LocalPathFromRoot,
+                Uids = CalculateUids(newPage, model.LocalPathFromRoot)
+            };
         }
 
         private string GetUniqueFileNameWithSuffix(string fileName, Dictionary<string, int> existingFileNames)
         {
-            int suffix;
-            if (existingFileNames.TryGetValue(fileName, out suffix))
+            if (existingFileNames.TryGetValue(fileName, out int suffix))
             {
                 existingFileNames[fileName] = suffix + 1;
                 return GetUniqueFileNameWithSuffix($"{fileName}_{suffix}", existingFileNames);
@@ -530,19 +608,19 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
 
         private ImmutableArray<UidDefinition> CalculateUids(PageViewModel page, string file)
         {
-            return (from item in page.Items select new UidDefinition(item.Uid, file)).ToImmutableArray();
+            return (from item in page.Items
+                    where !string.IsNullOrEmpty(item.Uid)
+                    select new UidDefinition(item.Uid, file)).ToImmutableArray();
         }
 
         private List<string> GetListFromObject(object value)
         {
-            var collection = value as IEnumerable<object>;
-            if (collection != null)
+            if (value is IEnumerable<object> collection)
             {
                 return collection.OfType<string>().ToList();
             }
 
-            var jarray = value as JArray;
-            if (jarray != null)
+            if (value is JArray jarray)
             {
                 try
                 {
@@ -559,8 +637,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
 
         private T GetPropertyValue<T>(Dictionary<string, object> metadata, string key) where T : class
         {
-            object result;
-            if (metadata != null && metadata.TryGetValue(key, out result))
+            if (metadata != null && metadata.TryGetValue(key, out object result))
             {
                 return result as T;
             }
@@ -591,6 +668,18 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             {
                 PrimaryItem = item;
                 FileModel = fileModel;
+            }
+        }
+
+        private void AddModelToDict(FileModel model, Dictionary<string, FileModel> models, List<FileModel> dupeModels)
+        {
+            if (!models.ContainsKey(model.File))
+            {
+                models[model.File] = model;
+            }
+            else
+            {
+                dupeModels.Add(model);
             }
         }
     }

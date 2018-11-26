@@ -1,0 +1,143 @@
+{
+  "$schema": "http://dotnet.github.io/docfx/schemas/v1.0/schema.json#",
+  "version": "1.0.0",
+  "id": "https://github.com/dotnet/docfx/test/schemas/contextobject.test.schema.json",
+  "title": "ManagedReference",
+  "description": "A test schema for simple managed reference",
+  "type": "object",
+  "properties": {
+    "items": {
+      "items": {
+        "properties": {
+          "assemblies": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "children": {
+            "items": {
+              "type": "string",
+              "contentType": "xref"
+            },
+            "type": "array"
+          },
+          "commentId": {
+            "type": "string"
+          },
+          "example": {
+            "items": {
+              "type": "string",
+              "contentType": "markdown"
+            },
+            "type": "array"
+          },
+          "fullName": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "inheritance": {
+            "items": {
+              "type": "string",
+              "contentType": "xref"
+            },
+            "type": "array"
+          },
+          "inheritedMembers": {
+            "items": {
+              "type": "string",
+              "contentType": "xref"
+            },
+            "type": "array"
+          },
+          "langs": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "modifiers.csharp": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "modifiers.vb": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "name": {
+            "type": "string"
+          },
+          "nameWithType": {
+            "type": "string"
+          },
+          "namespace": {
+            "type": "string",
+            "contentType": "xref"
+          },
+          "parent": {
+            "type": "string",
+            "contentType": "xref"
+          },
+          "summary": {
+            "type": "string",
+            "contentType": "markdown"
+          },
+          "syntax": {
+            "properties": {
+              "content": {
+                "type": "string"
+              },
+              "content.vb": {
+                "type": "string"
+              }
+            },
+            "type": "object"
+          },
+          "type": {
+            "type": "string"
+          },
+          "uid": {
+            "type": "string",
+            "contentType": "uid"
+          }
+        },
+        "type": "object",
+        "xrefProperties": [ "name", "commentId", "nameWithType", "fullName", "summary", "extensionMethods/0" ]
+      },
+      "type": "array"
+    },
+    "references": {
+      "items": {
+        "properties": {
+          "commentId": {
+            "type": "string"
+          },
+          "fullName": {
+            "type": "string"
+          },
+          "isExternal": {
+            "type": "boolean"
+          },
+          "name": {
+            "type": "string"
+          },
+          "nameWithType": {
+            "type": "string"
+          },
+          "uid": {
+            "type": "string"
+          }
+        },
+        "type": "object",
+        "xrefProperties": [ "uid", "name", "commentId", "nameWithType", "fullName", "summary", "href" ]
+      },
+      "type": "array"
+    }
+  }
+}

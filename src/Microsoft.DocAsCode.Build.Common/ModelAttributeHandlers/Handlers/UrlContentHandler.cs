@@ -56,8 +56,7 @@ namespace Microsoft.DocAsCode.Build.Common
                     return null;
                 }
 
-                var val = currentObj as string;
-                if (val != null)
+                if (currentObj is string val)
                 {
                     var updated = GetHrefFromRoot(val, context);
                     if (currentPropertyInfo != null)
@@ -67,8 +66,7 @@ namespace Microsoft.DocAsCode.Build.Common
                     return updated;
                 }
 
-                var list = currentObj as IList<string>;
-                if (list != null)
+                if (currentObj is IList<string> list)
                 {
                     for (var i = 0; i < list.Count; i++)
                     {
@@ -108,8 +106,7 @@ namespace Microsoft.DocAsCode.Build.Common
                     result = file.UrlEncode().ToString() + UriUtility.GetQueryStringAndFragment(originalHref);
                 }
 
-                List<LinkSourceInfo> sources;
-                if (!context.FileLinkSources.TryGetValue(file, out sources))
+                if (!context.FileLinkSources.TryGetValue(file, out List<LinkSourceInfo> sources))
                 {
                     sources = new List<LinkSourceInfo>();
                     context.FileLinkSources[file] = sources;

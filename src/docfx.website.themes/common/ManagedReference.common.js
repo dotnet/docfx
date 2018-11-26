@@ -3,7 +3,7 @@ var common = require('./common.js');
 var classCategory = 'class';
 var namespaceCategory = 'ns';
 
-exports.transform = function (model)  {
+exports.transform = function (model) {
 
   if (!model) return null;
 
@@ -38,7 +38,7 @@ exports.transform = function (model)  {
   return model;
 }
 
-exports.getBookmarks = function (model, ignoreChildren)  {
+exports.getBookmarks = function (model, ignoreChildren) {
   if (!model || !model.type || model.type.toLowerCase() === "namespace") return null;
 
   var bookmarks = {};
@@ -85,12 +85,12 @@ function groupChildren(model, category) {
       c.syntax.return = undefined;
     }
     // special handle for property
-    if (type === "property" && c.syntax) {
+    if ((type === "property" || type === "attachedproperty") && c.syntax) {
       c.syntax.propertyValue = c.syntax.return;
       c.syntax.return = undefined;
     }
     // special handle for event
-    if (type === "event" && c.syntax) {
+    if ((type === "event" || type === "attachedevent") && c.syntax) {
       c.syntax.eventType = c.syntax.return;
       c.syntax.return = undefined;
     }
@@ -105,7 +105,7 @@ function groupChildren(model, category) {
       if (items && items.length > 0) {
         var item = {};
         for (var itemKey in typeChildrenItem) {
-          if (typeChildrenItem.hasOwnProperty(itemKey)){
+          if (typeChildrenItem.hasOwnProperty(itemKey)) {
             item[itemKey] = typeChildrenItem[itemKey];
           }
         }
@@ -165,13 +165,15 @@ function getDefinitions(category) {
     "delegate":     { inDelegate: true,     typePropertyName: "inDelegate",     id: "delegates" }
   };
   var classItems = {
-    "constructor":  { inConstructor: true,  typePropertyName: "inConstructor",  id: "constructors" },
-    "field":        { inField: true,        typePropertyName: "inField",        id: "fields" },
-    "property":     { inProperty: true,     typePropertyName: "inProperty",     id: "properties" },
-    "method":       { inMethod: true,       typePropertyName: "inMethod",       id: "methods" },
-    "event":        { inEvent: true,        typePropertyName: "inEvent",        id: "events" },
-    "operator":     { inOperator: true,     typePropertyName: "inOperator",     id: "operators" },
-    "eii":          { inEii: true,          typePropertyName: "inEii",          id: "eii" }
+    "constructor":      { inConstructor: true,      typePropertyName: "inConstructor",      id: "constructors" },
+    "field":            { inField: true,            typePropertyName: "inField",            id: "fields" },
+    "property":         { inProperty: true,         typePropertyName: "inProperty",         id: "properties" },
+    "attachedproperty": { inAttachedProperty: true, typePropertyName: "inAttachedProperty", id: "attachedProperties" },
+    "method":           { inMethod: true,           typePropertyName: "inMethod",           id: "methods" },
+    "event":            { inEvent: true,            typePropertyName: "inEvent",            id: "events" },
+    "attachedevent":    { inAttachedEvent: true,    typePropertyName: "inAttachedEvent",    id: "attachedEvents" },
+    "operator":         { inOperator: true,         typePropertyName: "inOperator",         id: "operators" },
+    "eii":              { inEii: true,              typePropertyName: "inEii",              id: "eii" }
   };
   if (category === 'class') {
     return classItems;
@@ -204,49 +206,49 @@ function handleItem(vm, gitContribute, gitUrlPattern) {
   }
 
   if (vm.supported_platforms) {
-      vm.supported_platforms = transformDictionaryToArray(vm.supported_platforms);
+    vm.supported_platforms = transformDictionaryToArray(vm.supported_platforms);
   }
 
   if (vm.requirements) {
-      var type = vm.type.toLowerCase();
-      if (type == "method") {
-          vm.requirements_method = transformDictionaryToArray(vm.requirements);
-      } else {
-          vm.requirements = transformDictionaryToArray(vm.requirements);
-      }
+    var type = vm.type.toLowerCase();
+    if (type == "method") {
+      vm.requirements_method = transformDictionaryToArray(vm.requirements);
+    } else {
+      vm.requirements = transformDictionaryToArray(vm.requirements);
+    }
   }
 
   if (vm && langs) {
-      if (shouldHideTitleType(vm)) {
-          vm.hideTitleType = true;
-      } else {
-          vm.hideTitleType = false;
-      }
+    if (shouldHideTitleType(vm)) {
+      vm.hideTitleType = true;
+    } else {
+      vm.hideTitleType = false;
+    }
 
-      if (shouldHideSubtitle(vm)) {
-          vm.hideSubtitle = true;
-      } else {
-          vm.hideSubtitle = false;
-      }
+    if (shouldHideSubtitle(vm)) {
+      vm.hideSubtitle = true;
+    } else {
+      vm.hideSubtitle = false;
+    }
   }
 
   function shouldHideTitleType(vm) {
-      var type = vm.type.toLowerCase();
-      return ((type === 'namespace' && langs.length == 1 && (langs[0] === 'objectivec' || langs[0] === 'java' || langs[0] === 'c'))
+    var type = vm.type.toLowerCase();
+    return ((type === 'namespace' && langs.length == 1 && (langs[0] === 'objectivec' || langs[0] === 'java' || langs[0] === 'c'))
       || ((type === 'class' || type === 'enum') && langs.length == 1 && langs[0] === 'c'));
   }
 
   function shouldHideSubtitle(vm) {
-      var type = vm.type.toLowerCase();
-      return (type === 'class' || type === 'namespace') && langs.length == 1 && langs[0] === 'c';
+    var type = vm.type.toLowerCase();
+    return (type === 'class' || type === 'namespace') && langs.length == 1 && langs[0] === 'c';
   }
 
   function transformDictionaryToArray(dic) {
     var array = [];
-    for(var key in dic) {
-        if (dic.hasOwnProperty(key)) {
-            array.push({"name": key, "value": dic[key]})
-        }
+    for (var key in dic) {
+      if (dic.hasOwnProperty(key)) {
+        array.push({ "name": key, "value": dic[key] })
+      }
     }
 
     return array;

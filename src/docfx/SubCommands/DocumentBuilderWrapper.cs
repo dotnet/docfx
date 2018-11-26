@@ -8,21 +8,25 @@ namespace Microsoft.DocAsCode.SubCommands
     using System.Collections.Immutable;
     using System.IO;
     using System.Linq;
+    using System.Net;
     using System.Runtime.Remoting.Lifetime;
     using System.Reflection;
     using System.Threading;
 
     using Microsoft.DocAsCode;
     using Microsoft.DocAsCode.Build.ConceptualDocuments;
+    using Microsoft.DocAsCode.Build.Engine;
     using Microsoft.DocAsCode.Build.Engine.Incrementals;
     using Microsoft.DocAsCode.Build.ManagedReference;
     using Microsoft.DocAsCode.Build.ResourceFiles;
     using Microsoft.DocAsCode.Build.RestApi;
+    using Microsoft.DocAsCode.Build.SchemaDriven;
     using Microsoft.DocAsCode.Build.TableOfContents;
-    using Microsoft.DocAsCode.Build.Engine;
+    using Microsoft.DocAsCode.Build.UniversalReference;
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Exceptions;
     using Microsoft.DocAsCode.Plugins;
+    using Microsoft.DocAsCode.MarkdigEngine;
 
     [Serializable]
     internal sealed class DocumentBuilderWrapper
@@ -31,19 +35,21 @@ namespace Microsoft.DocAsCode.SubCommands
         private readonly string _baseDirectory;
         private readonly string _outputDirectory;
         private readonly string _templateDirectory;
+        private readonly bool _disableGitFeatures;
+        private readonly string _version;
         private readonly BuildJsonConfig _config;
         private readonly CrossAppDomainListener _listener;
         private readonly TemplateManager _manager;
         private readonly LogLevel _logLevel;
 
-    public DocumentBuilderWrapper(
-            BuildJsonConfig config,
-            TemplateManager manager,
-            string baseDirectory,
-            string outputDirectory,
-            string pluginDirectory,
-            CrossAppDomainListener listener,
-            string templateDirectory)
+        public DocumentBuilderWrapper(
+                BuildJsonConfig config,
+                TemplateManager manager,
+                string baseDirectory,
+                string outputDirectory,
+                string pluginDirectory,
+                CrossAppDomainListener listener,
+                string templateDirectory)
         {
             _config = config ?? throw new ArgumentNullException(nameof(config));
             _pluginDirectory = pluginDirectory;
@@ -53,12 +59,18 @@ namespace Microsoft.DocAsCode.SubCommands
             _manager = manager;
             _logLevel = Logger.LogLevelThreshold;
             _templateDirectory = templateDirectory;
+
+            // pass EnvironmentContext into another domain
+            _disableGitFeatures = EnvironmentContext.GitFeaturesDisabled;
+            _version = EnvironmentContext.Version;
         }
 
         public void BuildDocument()
         {
             var sponsor = new ClientSponsor();
             EnvironmentContext.SetBaseDirectory(_baseDirectory);
+            EnvironmentContext.SetGitFeaturesDisabled(_disableGitFeatures);
+            EnvironmentContext.SetVersion(_version);
             if (_listener != null)
             {
                 Logger.LogLevelThreshold = _logLevel;
@@ -115,6 +127,11 @@ namespace Microsoft.DocAsCode.SubCommands
                 }
             }
 
+            if (!string.IsNullOrEmpty(config.SitemapOptions?.BaseUrl))
+            {
+                postProcessorNames = postProcessorNames.Add("SitemapGenerator");
+            }
+
             ChangeList changeList = null;
             if (config.ChangesFile != null)
             {
@@ -137,6 +154,9 @@ namespace Microsoft.DocAsCode.SubCommands
                 typeof(ResourceDocumentProcessor).Assembly,
                 typeof(RestApiDocumentProcessor).Assembly,
                 typeof(TocDocumentProcessor).Assembly,
+                typeof(SchemaDrivenDocumentProcessor).Assembly,
+                typeof(UniversalReferenceDocumentProcessor).Assembly,
+                typeof(MarkdigServiceProvider).Assembly
             };
             foreach (var assem in defaultPluggedAssemblies)
             {
@@ -201,7 +221,12 @@ namespace Microsoft.DocAsCode.SubCommands
             {
                 OutputBaseDir = outputDirectory,
                 ForceRebuild = config.Force ?? false,
-                ForcePostProcess = config.ForcePostProcess ?? false
+                ForcePostProcess = config.ForcePostProcess ?? false,
+                SitemapOptions = config.SitemapOptions,
+                FALName = config.FALName,
+                DisableGitFeatures = config.DisableGitFeatures,
+                SchemaLicense = config.SchemaLicense,
+                TagParameters = config.TagParameters
             };
             if (config.GlobalMetadata != null)
             {
@@ -215,14 +240,13 @@ namespace Microsoft.DocAsCode.SubCommands
             {
                 parameters.PostProcessors = config.PostProcessors.ToImmutableArray();
             }
-            parameters.ExternalReferencePackages =
-                GetFilesFromFileMapping(
-                    GlobUtility.ExpandFileMapping(baseDirectory, config.ExternalReference))
-                .ToImmutableArray();
-
             if (config.XRefMaps != null)
             {
                 parameters.XRefMaps = config.XRefMaps.ToImmutableArray();
+            }
+            if (config.XRefServiceUrls != null)
+            {
+                parameters.XRefServiceUrls = config.XRefServiceUrls.ToImmutableArray();
             }
             if (!config.NoLangKeyword)
             {
@@ -254,6 +278,7 @@ namespace Microsoft.DocAsCode.SubCommands
 
             parameters.ApplyTemplateSettings = applyTemplateSettings;
             parameters.TemplateManager = templateManager;
+
             if (config.MaxParallelism == null || config.MaxParallelism.Value <= 0)
             {
                 parameters.MaxParallelism = Environment.ProcessorCount;
@@ -267,6 +292,10 @@ namespace Microsoft.DocAsCode.SubCommands
                     ThreadPool.SetMinThreads(parameters.MaxParallelism, cpt);
                 }
             }
+
+            parameters.MaxHttpParallelism = Math.Max(64, parameters.MaxParallelism * 2);
+            ServicePointManager.DefaultConnectionLimit = parameters.MaxHttpParallelism;
+
             if (config.MarkdownEngineName != null)
             {
                 parameters.MarkdownEngineName = config.MarkdownEngineName;
@@ -298,14 +327,31 @@ namespace Microsoft.DocAsCode.SubCommands
                 parameters.KeepFileLink = true;
             }
 
+            if (config.Pairing != null)
+            {
+                parameters.OverwriteFragmentsRedirectionRules = config.Pairing.Select(i => new FolderRedirectionRule(i.ContentFolder, i.OverwriteFragmentsFolder)).ToImmutableArray();
+            }
+
+            parameters.XRefTags = config.XrefTags;
+
             foreach (var pair in fileMappingParametersDictionary)
             {
                 var p = parameters.Clone();
-                if (config.Versions != null && config.Versions.TryGetValue(pair.Key, out VersionConfig vi))
+                if (!string.IsNullOrEmpty(pair.Key))
                 {
-                    if (!string.IsNullOrEmpty(vi.Destination))
+                    p.GroupInfo = new GroupInfo()
                     {
-                        p.VersionDir = vi.Destination;
+                        Name = pair.Key,
+                    };
+                    if (config.Groups != null && config.Groups.TryGetValue(pair.Key, out GroupConfig gi))
+                    {
+                        p.GroupInfo.Destination = gi.Destination;
+                        p.GroupInfo.XRefTags = gi.XrefTags ?? new List<string>();
+                        p.GroupInfo.Metadata = gi.Metadata;
+                        if (!string.IsNullOrEmpty(gi.Destination))
+                        {
+                            p.VersionDir = gi.Destination;
+                        }
                     }
                 }
                 p.Files = GetFileCollectionFromFileMapping(
@@ -315,7 +361,6 @@ namespace Microsoft.DocAsCode.SubCommands
                     GlobUtility.ExpandFileMapping(baseDirectory, pair.Value.GetFileMapping(FileMappingType.Resource)));
                 p.VersionName = pair.Key;
                 p.Changes = GetIntersectChanges(p.Files, changeList);
-                // TODO: move RootTocPath to VersionInfo
                 p.RootTocPath = pair.Value.RootTocPath;
                 yield return p;
             }
@@ -348,7 +393,7 @@ namespace Microsoft.DocAsCode.SubCommands
             if (fileMapping == null) return;
             foreach (var item in fileMapping.Items)
             {
-                var version = item.VersionName ?? string.Empty;
+                var version = item.GroupName ?? item.VersionName ?? string.Empty;
                 if (fileMappingsDictionary.TryGetValue(version, out FileMappingParameters parameters))
                 {
                     if (parameters.TryGetValue(type, out FileMapping mapping))

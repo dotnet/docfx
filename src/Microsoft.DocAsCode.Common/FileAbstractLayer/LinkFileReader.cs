@@ -67,6 +67,30 @@ namespace Microsoft.DocAsCode.Common
             return set;
         }
 
+        public IEnumerable<string> GetExpectedPhysicalPath(RelativePath file)
+        {
+            var path = file.GetPathFromWorkingFolder();
+            foreach (var m in Mappings)
+            {
+                if (m.IsFolder)
+                {
+                    var localPath = path - m.LogicalPath;
+                    if (m.AllowMoveOut || localPath.ParentDirectoryCount == 0)
+                    {
+                        var physicalPath = Path.Combine(m.PhysicalPath, localPath.ToString());
+                        if (File.Exists(Environment.ExpandEnvironmentVariables(physicalPath)))
+                        {
+                            yield return physicalPath;
+                        }
+                    }
+                }
+                else if (m.LogicalPath == path)
+                {
+                    yield return m.PhysicalPath;
+                }
+            }
+        }
+
         #endregion
     }
 }

@@ -59,7 +59,11 @@ namespace Microsoft.DocAsCode.Build.Engine
                         {
                             throw new FileNotFoundException($"File not found: {file}", file);
                         }
-                        fs = File.Open(file, FileMode.Open, isReadOnly ? FileAccess.Read : FileAccess.ReadWrite);
+
+                        fs = isReadOnly
+                            ? File.Open(file, FileMode.Open, FileAccess.Read, FileShare.Read)
+                            : File.Open(file, FileMode.Open, FileAccess.ReadWrite);
+
                         archive = new ZipArchive(fs, isReadOnly ? ZipArchiveMode.Read : ZipArchiveMode.Update);
                         entries = (from entry in archive.Entries
                                    select entry.FullName).ToList();
@@ -261,39 +265,51 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private string CreateCore(string name, XRefMap map)
         {
-            var entry = CreateEntry(name);
-            using (var sw = new StreamWriter(entry.Open()))
+            lock (_archive)
             {
-                YamlUtility.Serialize(sw, map, YamlMime.XRefMap);
+                var entry = CreateEntry(name);
+                using (var sw = new StreamWriter(entry.Open()))
+                {
+                    YamlUtility.Serialize(sw, map, YamlMime.XRefMap);
+                }
+                return name;
             }
-            return name;
         }
 
         private XRefMap OpenCore(string name)
         {
-            var entry = _archive.GetEntry(name);
-            using (var sr = new StreamReader(entry.Open()))
+            lock (_archive)
             {
-                return YamlUtility.Deserialize<XRefMap>(sr);
+                var entry = _archive.GetEntry(name);
+                using (var sr = new StreamReader(entry.Open()))
+                {
+                    return YamlUtility.Deserialize<XRefMap>(sr);
+                }
             }
         }
 
         private void UpdateCore(string name, XRefMap map)
         {
-            var entry = _archive.GetEntry(name);
-            entry.Delete();
-            entry = _archive.CreateEntry(name);
-            using (var sw = new StreamWriter(entry.Open()))
+            lock (_archive)
             {
-                YamlUtility.Serialize(sw, map, YamlMime.XRefMap);
+                var entry = _archive.GetEntry(name);
+                entry.Delete();
+                entry = _archive.CreateEntry(name);
+                using (var sw = new StreamWriter(entry.Open()))
+                {
+                    YamlUtility.Serialize(sw, map, YamlMime.XRefMap);
+                }
             }
         }
 
         private void DeleteCore(int index)
         {
-            var entry = _archive.GetEntry(_entries[index]);
-            entry.Delete();
-            _entries.RemoveAt(index);
+            lock (_archive)
+            {
+                var entry = _archive.GetEntry(_entries[index]);
+                entry.Delete();
+                _entries.RemoveAt(index);
+            }
         }
 
         #endregion

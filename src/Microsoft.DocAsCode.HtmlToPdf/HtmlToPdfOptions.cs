@@ -71,6 +71,11 @@ namespace Microsoft.DocAsCode.HtmlToPdf
         public int MaxDegreeOfParallelism { get; set; } = 8;
 
         /// <summary>
+        /// Additional arguments.
+        /// </summary>
+        public string AdditionalArguments { get; set; }
+
+        /// <summary>
         /// Get the string of the html to pdf options.
         /// </summary>
         /// <returns>The configuration of html to pdf options.</returns>
@@ -85,30 +90,37 @@ namespace Microsoft.DocAsCode.HtmlToPdf
             sb.Append(OutlineOption == OutlineOption.WkDefaultOutline ? " --outline" : " --no-outline");
             if (!string.IsNullOrEmpty(Encoding))
             {
-                sb.Append($" --encoding {Encoding}");
+                sb.Append(" --encoding ").Append(Encoding);
             }
             if (string.IsNullOrEmpty(UserStyleSheet))
             {
-                sb.Append($" --user-style-sheet \"{DefaultStyleSheet}\"");
+                sb.Append(" --user-style-sheet \"").Append(DefaultStyleSheet).Append("\"");
             }
             else
             {
-                sb.Append($" --user-style-sheet \"{UserStyleSheet}\"");
+                sb.Append(" --user-style-sheet \"").Append(UserStyleSheet).Append("\"");
             }
 
             if (!string.IsNullOrEmpty(HeaderHtmlPath))
             {
-                sb.Append($" --header-html \"{HeaderHtmlPath}\"");
+                sb.Append(" --header-html \"").Append(HeaderHtmlPath).Append("\"");
             }
             if (!string.IsNullOrEmpty(FooterHtmlPath))
             {
-                sb.Append($" --footer-html \"{FooterHtmlPath}\"");
+                sb.Append(" --footer-html \"").Append(FooterHtmlPath).Append("\"");
             }
             if (!string.IsNullOrEmpty(LoadErrorHandling))
             {
-                sb.Append($" --load-error-handling {LoadErrorHandling}"); 
+                sb.Append(" --load-error-handling ").Append(LoadErrorHandling);
             }
-            sb.Append(IsReadArgsFromStdin ? " --read-args-from-stdin" : string.Empty);
+            if (IsReadArgsFromStdin)
+            {
+                sb.Append(" --read-args-from-stdin");
+            }
+            if (!string.IsNullOrEmpty(AdditionalArguments))
+            {
+                sb.Append(" ").Append(AdditionalArguments);
+            }
 
             return sb.ToString();
         }

@@ -20,7 +20,7 @@ namespace Microsoft.DocAsCode.Dfm.Tests
              "{\"name\":\"0>0>markdown\",\"children\":[{\"name\":\"1>1>Paragraph\",\"children\":[{\"name\":\"1>1>Text> \"},{\"name\":\"1>1>Link\",\"children\":[{\"name\":\"1>1>Raw(FromInline.Gfm.Url)>https://github.com/dotnet/docfx/releases\"}]},{\"name\":\"1>1>Text> \"}]}]}"
          )]
         [InlineData("<Insert OneGet Details - meeting on 10/30 for details.>",
-             "{\"name\":\"0>0>markdown\",\"children\":[{\"name\":\"1>1>Html\",\"children\":[{\"name\":\"1>1>Tag\"}]}]}")
+             "{\"name\":\"0>0>markdown\",\"children\":[{\"name\":\"1>1>Html\",\"children\":[{\"name\":\"1>1>Text>&lt;Insert OneGet Details - meeting on 10/30 for details.&gt;\"}]}]}")
         ]
         [InlineData("<http://example.com/>",
              "{\"name\":\"0>0>markdown\",\"children\":[{\"name\":\"1>1>Paragraph\",\"children\":[{\"name\":\"1>1>Link\",\"children\":[{\"name\":\"1>1>Raw(FromInline.AutoLink)>http://example.com/\"}]}]}]}"
@@ -329,18 +329,6 @@ Skip the note",
              "{\"name\":\"0>0>markdown\",\"children\":[{\"name\":\"1>13>Blockquote\",\"children\":[{\"name\":\"1>1>Section\"},{\"name\":\"2>11>ul\",\"children\":[{\"name\":\"2>2>ListItem\",\"children\":[{\"name\":\"2>2>NonParagraph\",\"children\":[{\"name\":\"2>2>Link\",\"children\":[{\"name\":\"2>2>Text>(iOS | .NET)\"}]}]}]},{\"name\":\"3>3>ListItem\",\"children\":[{\"name\":\"3>3>NonParagraph\",\"children\":[{\"name\":\"3>3>Link\",\"children\":[{\"name\":\"3>3>Text>(iOS | JavaScript)\"}]}]}]},{\"name\":\"4>4>ListItem\",\"children\":[{\"name\":\"4>4>NonParagraph\",\"children\":[{\"name\":\"4>4>Link\",\"children\":[{\"name\":\"4>4>Text>(Windows universal C# | .NET)\"}]}]}]},{\"name\":\"5>5>ListItem\",\"children\":[{\"name\":\"5>5>NonParagraph\",\"children\":[{\"name\":\"5>5>Link\",\"children\":[{\"name\":\"5>5>Text>(Windows universal C# | Javascript)\"}]}]}]},{\"name\":\"6>6>ListItem\",\"children\":[{\"name\":\"6>6>NonParagraph\",\"children\":[{\"name\":\"6>6>Link\",\"children\":[{\"name\":\"6>6>Text>(Windows Phone | .NET)\"}]}]}]},{\"name\":\"7>7>ListItem\",\"children\":[{\"name\":\"7>7>NonParagraph\",\"children\":[{\"name\":\"7>7>Link\",\"children\":[{\"name\":\"7>7>Text>(Windows Phone | Javascript)\"}]}]}]},{\"name\":\"8>8>ListItem\",\"children\":[{\"name\":\"8>8>NonParagraph\",\"children\":[{\"name\":\"8>8>Link\",\"children\":[{\"name\":\"8>8>Text>(Android | .NET)\"}]}]}]},{\"name\":\"9>9>ListItem\",\"children\":[{\"name\":\"9>9>NonParagraph\",\"children\":[{\"name\":\"9>9>Link\",\"children\":[{\"name\":\"9>9>Text>(Android | Javascript)\"}]}]}]},{\"name\":\"10>10>ListItem\",\"children\":[{\"name\":\"10>10>NonParagraph\",\"children\":[{\"name\":\"10>10>Link\",\"children\":[{\"name\":\"10>10>Text>(Xamarin iOS | Javascript)\"}]}]}]},{\"name\":\"11>11>ListItem\",\"children\":[{\"name\":\"11>11>NonParagraph\",\"children\":[{\"name\":\"11>11>Link\",\"children\":[{\"name\":\"11>11>Text>(Xamarin Android | Javascript)\"}]}]}]}]}]}]}"
          )]
         public void TestSection_AzureMultiSelector(string source, string expected)
-        {
-            TestDfmJsonTokenTreeJsonRender(source, expected);
-        }
-
-        [Theory]
-        [Trait("Related", "DfmMarkdown")]
-        [InlineData(
-             @"tag started with non-alphabet should be encoded <1-100>, <_hello>, <?world>, <1_2 href=""good"">, <1 att='bcd'>.
-tag started with alphabet should not be encode: <abc> <a-hello> <a?world> <a_b href=""good""> <AC att='bcd'>",
-             "{\"name\":\"0>0>markdown\",\"children\":[{\"name\":\"1>2>Paragraph\",\"children\":[{\"name\":\"1>1>Text>tag started with non-alphabet should be encoded \"},{\"name\":\"1>1>Text>&lt;1-100&gt;, \"},{\"name\":\"1>1>Text>&lt;\"},{\"name\":\"1>1>Text>_hello&gt;, \"},{\"name\":\"1>1>Text>&lt;?world&gt;, \"},{\"name\":\"1>1>Text>&lt;1_2 href=&quot;good&quot;&gt;, \"},{\"name\":\"1>2>Text>&lt;1 att=&#39;bcd&#39;&gt;.\\ntag started with alphabet should not be encode\"},{\"name\":\"2>2>Text>: \"},{\"name\":\"2>2>Tag\"},{\"name\":\"2>2>Text> \"},{\"name\":\"2>2>Tag\"},{\"name\":\"2>2>Text> \"},{\"name\":\"2>2>Tag\"},{\"name\":\"2>2>Text> \"},{\"name\":\"2>2>Tag\"},{\"name\":\"2>2>Text> \"},{\"name\":\"2>2>Tag\"}]}]}"
-         )]
-        public void TestDfm_EncodeInStrongEM(string source, string expected)
         {
             TestDfmJsonTokenTreeJsonRender(source, expected);
         }

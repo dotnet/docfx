@@ -1,0 +1,68 @@
+### YamlMime:ManagedReference
+items:
+- uid: com.microsoft.azure.management.sql.SqlServer.FirewallRules
+  id: FirewallRules
+  parent: com.microsoft.azure.management.sql
+  children:
+  - com.microsoft.azure.management.sql.SqlServer.FirewallRules.define(String)
+  href: com.microsoft.azure.management.sql.SqlServer.FirewallRules.yml
+  langs:
+  - java
+  name: SqlServer.FirewallRules
+  nameWithType: SqlServer.FirewallRules
+  fullName: com.microsoft.azure.management.sql.SqlServer.FirewallRules
+  type: Interface
+  source:
+    remote: &o0
+      path: azure-mgmt-sql/src/main/java/com/microsoft/azure/management/sql/SqlServer.java
+      branch: v1.3.0
+      repo: https://github.com/Azure/azure-sdk-for-java
+    path: azure-mgmt-sql/src/main/java/com/microsoft/azure/management/sql/SqlServer.java
+    startLine: 88
+  package: com.microsoft.azure.management.sql
+  summary: <p>Entry point to firewall rules from the SQL Server. </p>
+  syntax:
+    content: public interface FirewallRules
+- uid: com.microsoft.azure.management.sql.SqlServer.FirewallRules.define(String)
+  id: define(String)
+  parent: com.microsoft.azure.management.sql.SqlServer.FirewallRules
+  href: com.microsoft.azure.management.sql.SqlServer.FirewallRules.yml
+  langs:
+  - java
+  name: define(String firewallRuleName)
+  nameWithType: SqlServer.FirewallRules.define(String firewallRuleName)
+  fullName: com.microsoft.azure.management.sql.SqlServer.FirewallRules.define(String firewallRuleName)
+  overload: com.microsoft.azure.management.sql.SqlServer.FirewallRules.define*
+  type: Method
+  source:
+    remote: *o0
+    path: azure-mgmt-sql/src/main/java/com/microsoft/azure/management/sql/SqlServer.java
+    startLine: 103
+  package: com.microsoft.azure.management.sql
+  summary: >-
+    <p>Creates a new firewall rule in SQL Server.</p>
+
+    <p></p>
+  syntax:
+    content: public SqlFirewallRule.DefinitionStages.Blank define(String firewallRuleName)
+    parameters:
+    - id: firewallRuleName
+      type: "26831127"
+      description: <p>name of the firewall rule to be created </p>
+    return:
+      type: 54d349c4
+      description: <p>Returns a stage to specify arguments of the firewall rule </p>
+references:
+- uid: "26831127"
+  spec.java:
+  - name: String
+    fullName: String
+- uid: 54d349c4
+  spec.java:
+  - name: SqlFirewallRule.DefinitionStages.Blank
+    fullName: SqlFirewallRule.DefinitionStages.Blank
+- uid: com.microsoft.azure.management.sql.SqlServer.FirewallRules.define*
+  name: define
+  nameWithType: SqlServer.FirewallRules.define
+  fullName: com.microsoft.azure.management.sql.SqlServer.FirewallRules.define
+  package: com.microsoft.azure.management.sql

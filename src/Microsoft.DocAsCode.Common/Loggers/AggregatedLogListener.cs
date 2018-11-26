@@ -20,6 +20,11 @@ namespace Microsoft.DocAsCode.Common
         private readonly ILoggerListener _innerListener;
         private readonly AggregatedList _aggregatedList;
 
+        public AggregatedLogListener(AggregatedLogListener other) : this(other._threshold)
+        {
+            _aggregatedList = other._aggregatedList;
+        }
+
         public AggregatedLogListener(LogLevel threshold = LogLevel.Warning)
         {
             _threshold = threshold;

@@ -12,16 +12,16 @@ namespace Microsoft.DocAsCode
     /// FileMapping supports 3 forms:
     /// 1. Array form
     ///     This form supports multiple file mappings, and also allows additional properties per mapping.
-    ///     e.g. 
-    ///     <pre><code>
+    ///     e.g.
+    ///     <code>
     ///     "key": [
     ///       {"files": ["file1", "file2"], "dest": "dest1"},
     ///       {"files": "file3", "dest": "dest2"},
     ///       {"files": ["file4", "file5"], "exclude": ["file5"], "src": "folder1"},
-    ///       {"files": "Example.yml", "src": "v1.0", "dest":"v1.0/api", "version": "v1.0"},
-    ///       {"files": "Example.yml", "src": "v2.0", "dest":"v2.0/api", "version": "v2.0"}
+    ///       {"files": "Example.yml", "src": "v1.0", "dest":"v1.0/api", "group": "v1.0"},
+    ///       {"files": "Example.yml", "src": "v2.0", "dest":"v2.0/api", "group": "v2.0"}
     ///     ]
-    ///     </code></pre>
+    ///     </code>
     /// 2. Compact form
     ///     This form supports multiple file patterns in an array
     ///     e.g. <code>projects: ["file1", "file2"]</code>

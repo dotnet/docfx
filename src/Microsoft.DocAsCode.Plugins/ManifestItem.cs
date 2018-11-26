@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.Plugins
 {
+    using System;
     using System.Collections.Generic;
 
     using Newtonsoft.Json;
@@ -21,8 +22,12 @@ namespace Microsoft.DocAsCode.Plugins
         [JsonProperty("is_incremental")]
         public bool IsIncremental { get; set; }
 
+        [Obsolete("use group")]
         [JsonProperty("version")]
         public string Version { get; set; }
+
+        [JsonProperty("group")]
+        public string Group { get; set; }
 
         [JsonProperty("log_codes")]
         public ICollection<string> LogCodes;

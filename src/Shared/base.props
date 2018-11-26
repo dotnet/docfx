@@ -1,19 +1,23 @@
 <Project>
   <PropertyGroup>
-    <TargetFramework>net46</TargetFramework>
-
+    <TargetFramework>net462</TargetFramework>
+    <LangVersion>latest</LangVersion>
     <!-- Note: by convention assembly should be named after the root namespace -->
     <AssemblyName Condition=" '$(AssemblyName)' == '' ">$(MSBuildProjectName)</AssemblyName>
     <AssemblyTitle Condition=" '$(AssemblyTitle)' == '' ">$(MSBuildProjectName)</AssemblyTitle>
     <Product Condition=" '$(Product)' == '' ">$(MSBuildProjectName)</Product>
     <PackageId Condition=" '$(PackageId)' == '' ">$(MSBuildProjectName)</PackageId>
+    <Authors>Microsoft</Authors>
     <Company Condition=" '$(Company)' == '' ">Microsoft</Company>
-    <Copyright Condition=" '$(Copyright)' == '' ">Copyright © Microsoft docfx 2015-2017</Copyright>
+    <Copyright Condition=" '$(Copyright)' == '' ">© Microsoft Corporation. All rights reserved.</Copyright>
 
     <PackageProjectUrl Condition=" '$(PackageProjectUrl)' == '' ">https://github.com/dotnet/docfx</PackageProjectUrl>
     <PackageLicenseUrl Condition=" '$(PackageLicenseUrl)' == '' ">https://github.com/dotnet/docfx/blob/dev/LICENSE</PackageLicenseUrl>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <PackageDescription Condition=" '$(PackageDescription)' == '' " >$(Product)</PackageDescription>
 
     <VersionCSFile Condition="'$(VersionCSFile)' == ''">$(MSBuildThisFileDirectory)..\..\TEMP\version.cs</VersionCSFile>
+    <VersionFSFile Condition="'$(VersionFSFile)' == ''">$(MSBuildThisFileDirectory)..\..\TEMP\version.fs</VersionFSFile>    
     <VersionFileExists Condition="Exists($(VersionCSFile))" >true</VersionFileExists>
 
     <GenerateAssemblyVersionAttribute Condition=" '$(VersionFileExists)' == 'true' ">false</GenerateAssemblyVersionAttribute>
@@ -49,11 +53,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Condition="Exists($(VersionCSFile))" Include="$(VersionCSFile)" />
+    <Compile Condition="Exists($(VersionCSFile)) And '$(MSBuildProjectExtension)' == '.csproj'" Include="$(VersionCSFile)" />
+    <Compile Condition="Exists($(VersionFSFile)) And '$(MSBuildProjectExtension)' == '.fsproj'" Include="$(VersionFSFile)" />
   </ItemGroup>
-
-  <ItemGroup>
-    <!-- Roslyn depends on this package, however official dotnet/sdk also contains another version of compiler, add the reference to base so that all the projects use this reference when compile-->
-    <PackageReference Include="Microsoft.Net.Compilers" Version="2.2.0" />
+  
+  <ItemGroup Condition="'$(TargetFramework)' == 'net462' OR '$(TargetFramework)' == 'net461' OR '$(TargetFramework)' == 'net46' OR '$(TargetFramework)' == 'net452'">
+    <Reference Include="System" />
+    <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
 </Project>

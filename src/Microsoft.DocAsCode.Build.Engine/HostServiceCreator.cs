@@ -4,6 +4,7 @@
 namespace Microsoft.DocAsCode.Build.Engine
 {
     using System;
+    using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.IO;
@@ -11,6 +12,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
+    using Newtonsoft.Json.Linq;
 
     internal class HostServiceCreator : IHostServiceCreator
     {
@@ -39,17 +41,15 @@ namespace Microsoft.DocAsCode.Build.Engine
             IDocumentProcessor processor,
             IEnumerable<FileAndType> files)
         {
+            var (models, invalidFiles) = LoadModels(files, parameters, processor);
             var hostService = new HostService(
                 parameters.Files.DefaultBaseDir,
-                files == null
-                    ? Enumerable.Empty<FileModel>()
-                    : from file in files
-                      select Load(processor, parameters.Metadata, parameters.FileMetadata, file) into model
-                      where model != null
-                      select model,
+                models,
                 parameters.VersionName,
                 parameters.VersionDir,
-                parameters.LruSize)
+                parameters.LruSize,
+                parameters.GroupInfo,
+                new BuildParameters(parameters.TagParameters))
             {
                 MarkdownService = markdownService,
                 Processor = processor,
@@ -57,11 +57,16 @@ namespace Microsoft.DocAsCode.Build.Engine
                 Validators = metadataValidator?.ToImmutableList(),
                 ShouldTraceIncrementalInfo = ShouldProcessorTraceInfo(processor),
                 CanIncrementalBuild = CanProcessorIncremental(processor),
+                InvalidSourceFiles = invalidFiles.ToImmutableList(),
             };
             return hostService;
         }
 
-        public virtual FileModel Load(IDocumentProcessor processor, ImmutableDictionary<string, object> metadata, FileMetadata fileMetadata, FileAndType file)
+        public virtual (FileModel model, bool valid) Load(
+            IDocumentProcessor processor,
+            ImmutableDictionary<string, object> metadata,
+            FileMetadata fileMetadata,
+            FileAndType file)
         {
             using (new LoggerFileScope(file.File))
             {
@@ -71,14 +76,41 @@ namespace Microsoft.DocAsCode.Build.Engine
                 metadata = ApplyFileMetadata(path, metadata, fileMetadata);
                 try
                 {
-                    return processor.Load(file, metadata);
+                    return (processor.Load(file, metadata), true);
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
-                    Logger.LogError($"Unable to load file: {file.File} via processor: {processor.Name}.");
-                    throw;
+                    Logger.LogWarning(
+                        $"Unable to load file: {file.File} via processor: {processor.Name}: {e.Message}",
+                        code: WarningCodes.Build.InvalidInputFile);
+                    return (null, false);
                 }
             }
+        }
+
+        private (IEnumerable<FileModel> models, IEnumerable<string> invalidFiles) LoadModels(IEnumerable<FileAndType> files, DocumentBuildParameters parameters, IDocumentProcessor processor)
+        {
+            if (files == null)
+            {
+                return (Enumerable.Empty<FileModel>(), Enumerable.Empty<string>());
+            }
+
+            var models = new ConcurrentBag<FileModel>();
+            var invalidFiles = new ConcurrentBag<string>();
+            files.RunAll(file =>
+            {
+                var (model, valid) = Load(processor, parameters.Metadata, parameters.FileMetadata, file);
+                if (model != null)
+                {
+                    models.Add(model);
+                }
+                if (!valid)
+                {
+                    invalidFiles.Add(file.File);
+                }
+            }, _context.MaxParallelism);
+
+            return (models, invalidFiles);
         }
 
         private static ImmutableDictionary<string, object> ApplyFileMetadata(
@@ -99,12 +131,22 @@ namespace Microsoft.DocAsCode.Build.Engine
                     {
                         // override global metadata if metadata is defined in file metadata
                         result[item.Value[i].Key] = item.Value[i].Value;
-                        Logger.LogVerbose($"{relativePath} matches file metadata with glob pattern {item.Value[i].Glob.Raw} for property {item.Value[i].Key}");
+                        Logger.LogDiagnostic($"{relativePath} matches file metadata with glob pattern {item.Value[i].Glob.Raw} for property {item.Value[i].Key}");
                         break;
                     }
                 }
             }
             return result.ToImmutableDictionary();
+        }
+
+        private sealed class BuildParameters : IBuildParameters
+        {
+            public IReadOnlyDictionary<string, JArray> TagParameters { get; }
+
+            public BuildParameters(IReadOnlyDictionary<string, JArray> tagParameters)
+            {
+                TagParameters = tagParameters;
+            }
         }
     }
 }

@@ -58,6 +58,9 @@ namespace Microsoft.DocAsCode.Common
                    select ((RelativePath)f.Substring(length)).GetPathFromWorkingFolder();
         }
 
+        public IEnumerable<string> GetExpectedPhysicalPath(RelativePath file) =>
+            new[] { Path.Combine(InputFolder, file.RemoveWorkingFolder().ToString()) };
+
         #endregion
     }
 }

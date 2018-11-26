@@ -48,16 +48,26 @@ namespace Microsoft.DocAsCode.Build.Engine
             IDocumentProcessor processor,
             IEnumerable<FileAndType> files)
         {
+            ProcessorInfo info = null;
             if (ShouldProcessorTraceInfo(processor))
             {
-                IncrementalContext.CreateProcessorInfo(processor);
+                info = IncrementalContext.CreateProcessorInfo(processor);
             }
             var hs = base.CreateHostService(parameters, templateProcessor, markdownService, metadataValidator, processor, files);
+            if (ShouldProcessorTraceInfo(processor))
+            {
+                info.InvalidSourceFiles = hs.InvalidSourceFiles;
+            }
+
             PostCreate(hs, files);
             return hs;
         }
 
-        public override FileModel Load(IDocumentProcessor processor, ImmutableDictionary<string, object> metadata, FileMetadata fileMetadata, FileAndType file)
+        public override (FileModel model, bool valid) Load(
+            IDocumentProcessor processor,
+            ImmutableDictionary<string, object> metadata,
+            FileMetadata fileMetadata,
+            FileAndType file)
         {
             using (new LoggerFileScope(file.File))
             {
@@ -69,7 +79,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                         Logger.LogDiagnostic($"Processor {processor.Name}, File {file.FullPath}, ChangeType {ck}.");
                         if (ck == ChangeKindWithDependency.Deleted)
                         {
-                            return null;
+                            return (null, true);
                         }
                         if (ck == ChangeKindWithDependency.None)
                         {
@@ -77,7 +87,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                             if (processor.BuildSteps.Cast<ISupportIncrementalBuildStep>().All(step => step.CanIncrementalBuild(file)))
                             {
                                 Logger.LogDiagnostic($"Processor {processor.Name}, File {file.FullPath}: Skip build by incremental.");
-                                return null;
+                                return (null, true);
                             }
                             Logger.LogDiagnostic($"Processor {processor.Name}, File {file.FullPath}: Incremental not available.");
                         }
@@ -97,7 +107,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 }
                 var allFiles = files?.Select(f => f.File) ?? new string[0];
                 var loadedFiles = hostService.Models.Select(m => m.OriginalFileAndType.File);
-                IncrementalContext.ReportModelLoadInfo(hostService, allFiles.Except(loadedFiles), null);
+                IncrementalContext.ReportModelLoadInfo(hostService, allFiles.Except(loadedFiles).Except(hostService.InvalidSourceFiles), null);
                 IncrementalContext.ReportModelLoadInfo(hostService, loadedFiles, BuildPhase.Compile);
             }
         }

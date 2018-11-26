@@ -7,11 +7,12 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
-    using Xunit;
 
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Tests.Common;
+
+    using Xunit;
 
     [Trait("Owner", "lianwei")]
     [Trait("EntityType", "TemplateManager")]
@@ -437,7 +438,7 @@ exports.transform = function (model){
             };
             ProcessTemplate(templateName, inputFolder, new[] { item1, item2 }, model, _outputFolder,
                 Tuple.Create("default.html.tmpl", defaultTemplate),
-                Tuple.Create($"{templateName}/conceptual.md.tmpl", conceptualTemplate),
+                Tuple.Create("conceptual.md.tmpl", conceptualTemplate),
                 Tuple.Create("default.html.js", script),
                 Tuple.Create("conceptual.md.js", script)
                 );
@@ -784,7 +785,7 @@ exports.transform = function (model){
             };
             ProcessTemplate(templateName, inputFolder, new[] { item1, item2 }, model, _outputFolder,
                 Tuple.Create("default.html.liquid", defaultTemplate),
-                Tuple.Create($"{templateName}/conceptual.md.liquid", conceptualTemplate),
+                Tuple.Create("conceptual.md.liquid", conceptualTemplate),
                 Tuple.Create("default.html.js", script),
                 Tuple.Create("conceptual.md.js", script)
                 );
@@ -815,8 +816,8 @@ test2
             WriteTemplate(templateFolder, templateFiles);
             using (var resource = new ResourceFinder(null, null).Find(templateFolder))
             {
-                var processor = new TemplateProcessor(resource, null, 4);
                 var context = new DocumentBuildContext(inputFolder);
+                var processor = new TemplateProcessor(resource, context, 4);
                 foreach (var item in items)
                 {
                     if (item.ResourceFile != null)
@@ -833,7 +834,7 @@ test2
                 EnvironmentContext.SetOutputDirectory(outputFolder);
                 try
                 {
-                    processor.Process(items.ToList(), context, settings);
+                    processor.Process(items.ToList(), settings);
                 }
                 finally
                 {

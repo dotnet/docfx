@@ -20,6 +20,9 @@ namespace Microsoft.DocAsCode.Common
 
         public IEnumerable<RelativePath> EnumerateFiles() => Enumerable.Empty<RelativePath>();
 
+        public IEnumerable<string> GetExpectedPhysicalPath(RelativePath file) =>
+            Enumerable.Empty<string>();
+
         #endregion
     }
 }

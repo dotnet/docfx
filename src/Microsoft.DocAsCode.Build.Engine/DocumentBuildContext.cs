@@ -18,11 +18,12 @@ namespace Microsoft.DocAsCode.Build.Engine
     using Microsoft.DocAsCode.Exceptions;
     using Microsoft.DocAsCode.Plugins;
 
-
     public sealed class DocumentBuildContext : IDocumentBuildContext
     {
         private readonly ConcurrentDictionary<string, TocInfo> _tableOfContents = new ConcurrentDictionary<string, TocInfo>(FilePathComparer.OSPlatformSensitiveStringComparer);
         private readonly Task<IXRefContainerReader> _reader;
+        private ImmutableArray<string> _xrefMapUrls { get; }
+        private ImmutableArray<string> _xrefServiceUrls { get; }
 
         public DocumentBuildContext(string buildOutputFolder)
             : this(buildOutputFolder, Enumerable.Empty<FileAndType>(), ImmutableArray<string>.Empty, ImmutableArray<string>.Empty, 1, Directory.GetCurrentDirectory(), string.Empty, null, null) { }
@@ -31,7 +32,48 @@ namespace Microsoft.DocAsCode.Build.Engine
             : this(buildOutputFolder, allSourceFiles, externalReferencePackages, xrefMaps, maxParallelism, baseFolder, string.Empty, null, null) { }
 
         public DocumentBuildContext(string buildOutputFolder, IEnumerable<FileAndType> allSourceFiles, ImmutableArray<string> externalReferencePackages, ImmutableArray<string> xrefMaps, int maxParallelism, string baseFolder, string versionName, ApplyTemplateSettings applyTemplateSetting, string rootTocPath)
-            : this(buildOutputFolder, allSourceFiles, externalReferencePackages, xrefMaps, maxParallelism, baseFolder, versionName, applyTemplateSetting, rootTocPath, null) { }
+            : this(buildOutputFolder, allSourceFiles, externalReferencePackages, xrefMaps, maxParallelism, baseFolder, versionName, applyTemplateSetting, rootTocPath, null, ImmutableArray<string>.Empty) { }
+
+        public DocumentBuildContext(string buildOutputFolder, IEnumerable<FileAndType> allSourceFiles, ImmutableArray<string> externalReferencePackages, ImmutableArray<string> xrefMaps, int maxParallelism, string baseFolder, string versionName, ApplyTemplateSettings applyTemplateSetting, string rootTocPath, string versionFolder, ImmutableArray<string> xrefServiceUrls)
+            : this(buildOutputFolder, allSourceFiles, externalReferencePackages, xrefMaps, maxParallelism, baseFolder, versionName, applyTemplateSetting, rootTocPath, null, ImmutableArray<string>.Empty, null, null) { }
+
+        public DocumentBuildContext(DocumentBuildParameters parameters)
+        {
+            BuildOutputFolder = Path.Combine(Path.GetFullPath(EnvironmentContext.BaseDirectory), parameters.OutputBaseDir);
+            VersionName = parameters.VersionName;
+            ApplyTemplateSettings = parameters.ApplyTemplateSettings;
+            HrefGenerator = parameters.ApplyTemplateSettings?.HrefGenerator;
+            AllSourceFiles = GetAllSourceFiles(parameters.Files.EnumerateFiles());
+            _xrefMapUrls = parameters.XRefMaps;
+            _xrefServiceUrls = parameters.XRefServiceUrls;
+            GroupInfo = parameters.GroupInfo;
+            XRefTags = parameters.XRefTags;
+            MaxParallelism = parameters.MaxParallelism;
+            MaxHttpParallelism = parameters.MaxHttpParallelism;
+
+            if (parameters.XRefMaps.Length > 0)
+            {
+                _reader = new XRefCollection(
+                    from u in parameters.XRefMaps
+                    select new Uri(u, UriKind.RelativeOrAbsolute)).GetReaderAsync(parameters.Files.DefaultBaseDir);
+            }
+            RootTocPath = parameters.RootTocPath;
+
+            if (!string.IsNullOrEmpty(parameters.VersionDir) && Path.IsPathRooted(parameters.VersionDir))
+            {
+                throw new ArgumentException("VersionDir cannot be rooted.", nameof(parameters));
+            }
+            var versionDir = parameters.VersionDir;
+            if (!string.IsNullOrEmpty(versionDir))
+            {
+                versionDir = versionDir.Replace('\\', '/');
+                if (!versionDir.EndsWith("/"))
+                {
+                    versionDir += "/";
+                }
+            }
+            VersionFolder = versionDir;
+        }
 
         public DocumentBuildContext(
             string buildOutputFolder,
@@ -43,15 +85,23 @@ namespace Microsoft.DocAsCode.Build.Engine
             string versionName,
             ApplyTemplateSettings applyTemplateSetting,
             string rootTocPath,
-            string versionFolder)
+            string versionFolder,
+            ImmutableArray<string> xrefServiceUrls,
+            GroupInfo groupInfo,
+            List<string> xrefTags)
         {
             BuildOutputFolder = buildOutputFolder;
             VersionName = versionName;
             ApplyTemplateSettings = applyTemplateSetting;
+            HrefGenerator = applyTemplateSetting?.HrefGenerator;
             AllSourceFiles = GetAllSourceFiles(allSourceFiles);
             ExternalReferencePackages = externalReferencePackages;
-            XRefMapUrls = xrefMaps;
+            _xrefMapUrls = xrefMaps;
+            _xrefServiceUrls = xrefServiceUrls;
+            GroupInfo = groupInfo;
+            XRefTags = xrefTags;
             MaxParallelism = maxParallelism;
+            MaxHttpParallelism = maxParallelism * 2;
             if (xrefMaps.Length > 0)
             {
                 _reader = new XRefCollection(
@@ -76,19 +126,25 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public string BuildOutputFolder { get; }
 
+        [Obsolete("use GroupInfo")]
         public string VersionName { get; }
 
+        [Obsolete("use GroupInfo")]
         public string VersionFolder { get; }
+
+        public GroupInfo GroupInfo { get; }
+
+        public List<string> XRefTags { get; }
 
         public ApplyTemplateSettings ApplyTemplateSettings { get; set; }
 
-        public ImmutableArray<string> ExternalReferencePackages { get; }
-
-        public ImmutableArray<string> XRefMapUrls { get; }
+        public ImmutableArray<string> ExternalReferencePackages { get; } = ImmutableArray<string>.Empty;
 
         public ImmutableDictionary<string, FileAndType> AllSourceFiles { get; }
 
         public int MaxParallelism { get; }
+
+        public int MaxHttpParallelism { get; }
 
         public ConcurrentDictionary<string, string> FileMap { get; } = new ConcurrentDictionary<string, string>(FilePathComparer.OSPlatformSensitiveStringComparer);
 
@@ -101,6 +157,8 @@ namespace Microsoft.DocAsCode.Build.Engine
         public string RootTocPath { get; }
 
         public IMarkdownService MarkdownService { get; set; }
+
+        public ICustomHrefGenerator HrefGenerator { get; }
 
         internal IncrementalBuildContext IncrementalBuildContext { get; set; }
 
@@ -138,25 +196,49 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public void ResolveExternalXRefSpec()
         {
+            Task.WaitAll(
+                Task.Run(() => ResolveExternalXRefSpecForSpecs()),
+                Task.Run(() => ResolveExternalXRefSpecForNoneSpecsAsync()));
+        }
+
+        private void ResolveExternalXRefSpecForSpecs()
+        {
+            foreach (var item in from spec in ExternalXRefSpec.Values
+                                 where spec.Href == null && spec.IsSpec
+                                 select spec.Uid)
+            {
+                UnknownUids.TryAdd(item, null);
+            }
+        }
+
+        public async Task ResolveExternalXRefSpecForNoneSpecsAsync()
+        {
             // remove internal xref.
             var uidList =
                 (from uid in XRef
-                 where !XRefSpecMap.ContainsKey(uid)
+                 where !ExternalXRefSpec.ContainsKey(uid) && !XRefSpecMap.ContainsKey(uid)
                  select uid)
                 .Concat(
                  from spec in ExternalXRefSpec.Values
-                 where spec.Href == null
+                 where spec.Href == null && !spec.IsSpec && !XRefSpecMap.ContainsKey(spec.Uid)
                  select spec.Uid)
                 .ToList();
 
-            if (uidList.Count > 0)
+            if (uidList.Count == 0)
             {
-                uidList = ResolveByXRefMaps(uidList, ExternalXRefSpec);
+                return;
             }
+            uidList = ResolveByXRefMaps(uidList, ExternalXRefSpec);
             if (uidList.Count > 0)
             {
                 uidList = ResolveByExternalReferencePackages(uidList, ExternalXRefSpec);
             }
+            if (uidList.Count > 0)
+            {
+                uidList = await ResolveByXRefServiceAsync(uidList, ExternalXRefSpec);
+            }
+
+            Logger.LogVerbose($"{uidList.Count} uids are unresolved.");
 
             foreach (var uid in uidList)
             {
@@ -193,6 +275,58 @@ namespace Microsoft.DocAsCode.Build.Engine
             return list;
         }
 
+        private async Task<List<string>> ResolveByXRefServiceAsync(List<string> uidList, ConcurrentDictionary<string, XRefSpec> externalXRefSpec)
+        {
+            if (_xrefServiceUrls == null || _xrefServiceUrls.Length == 0)
+            {
+                return uidList;
+            }
+
+            var unresolvedUidList = await new XrefServiceResolver(_xrefServiceUrls, MaxHttpParallelism).ResolveAsync(uidList, externalXRefSpec);
+            Logger.LogInfo($"{uidList.Count - unresolvedUidList.Count} uids found in {_xrefServiceUrls.Length} xrefservice(s).");
+            return unresolvedUidList;
+        }
+
+        internal async Task<IList<XRefSpec>> QueryByHttpRequestAsync(HttpClient client, string requestUrl, string uid)
+        {
+            string url = requestUrl.Replace("{uid}", Uri.EscapeDataString(uid));
+            try
+            {
+                var data = await client.GetStreamAsync(url);
+                using (var sr = new StreamReader(data))
+                {
+                    var xsList = JsonUtility.Deserialize<List<Dictionary<string, object>>>(sr);
+                    return xsList.ConvertAll(item =>
+                    {
+                        var spec = new XRefSpec();
+                        foreach (var pair in item)
+                        {
+                            if (pair.Value is string s)
+                            {
+                                spec[pair.Key] = s;
+                            }
+                        }
+                        return spec;
+                    });
+                }
+            }
+            catch (HttpRequestException e)
+            {
+                Logger.LogWarning($"Error occurs when resolve {uid} from {requestUrl}.{e.InnerException.Message}");
+                return null;
+            }
+            catch (Newtonsoft.Json.JsonReaderException e)
+            {
+                Logger.LogWarning($"Response from {requestUrl} is not in valid JSON format.{e.Message}");
+                return null;
+            }
+            catch (Exception e)
+            {
+                Logger.LogWarning($"Error occurs when resolve {uid} from {requestUrl}.{e.Message}");
+                return null;
+            }
+        }
+
         private List<string> ResolveByXRefMaps(List<string> uidList, ConcurrentDictionary<string, XRefSpec> externalXRefSpec)
         {
             if (_reader == null)
@@ -213,7 +347,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     list.Add(uid);
                 }
             }
-            Logger.LogInfo($"{uidList.Count - list.Count} external references found in {XRefMapUrls.Length} xref maps.");
+            Logger.LogInfo($"{uidList.Count - list.Count} external references found in {_xrefMapUrls.Length} xref maps.");
             return list;
         }
 
@@ -221,8 +355,8 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             using (var client = new HttpClient())
             {
-                Logger.LogInfo($"Downloading xref maps from:{Environment.NewLine}{string.Join(Environment.NewLine, XRefMapUrls)}");
-                var mapTasks = (from url in XRefMapUrls
+                Logger.LogInfo($"Downloading xref maps from:{Environment.NewLine}{string.Join(Environment.NewLine, _xrefMapUrls)}");
+                var mapTasks = (from url in _xrefMapUrls
                                 select LoadXRefMap(url, client)).ToArray();
                 Task.WaitAll(mapTasks);
                 return (from t in mapTasks
@@ -427,6 +561,12 @@ namespace Microsoft.DocAsCode.Build.Engine
                 }
             }
 
+            var uidList = ResolveByXRefServiceAsync(new List<string> { uid }, ExternalXRefSpec).Result;
+            if (uidList.Count == 0)
+            {
+                return ExternalXRefSpec[uid];
+            }
+
             UnknownUids.TryAdd(uid, null);
             return null;
         }
@@ -453,7 +593,14 @@ namespace Microsoft.DocAsCode.Build.Engine
             TocMap.AddOrUpdate(
                 fileKey,
                 new HashSet<string>(FilePathComparer.OSPlatformSensitiveComparer) { tocFileKey },
-                (k, v) => { v.Add(tocFileKey); return v; });
+                (k, v) =>
+                {
+                    lock (v)
+                    {
+                        v.Add(tocFileKey);
+                    }
+                    return v;
+                });
         }
 
         public void RegisterTocInfo(TocInfo toc)

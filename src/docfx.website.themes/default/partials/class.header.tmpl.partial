@@ -10,11 +10,21 @@
   <div class="level{{index}}">{{{specName.0.value}}}</div>
   {{/inheritance}}
   <div class="level{{level}}"><span class="xref">{{name.0.value}}</span></div>
+  {{#derivedClasses}}
+    <div class="level{{index}}">{{{specName.0.value}}}</div>
+  {{/derivedClasses}}
 </div>
 {{/inClass}}
-{{#derivedClasses}}
-    <div class="level{{index}}">{{{specName.0.value}}}</div>
-{{/derivedClasses}}
+{{#implements.0}}
+<div classs="implements">
+  <h5>{{__global.implements}}</h5>
+{{/implements.0}}
+{{#implements}}
+  <div>{{{specName.0.value}}}</div>
+{{/implements}}
+{{#implements.0}}
+</div>
+{{/implements.0}}
 {{#inheritedMembers.0}}
 <div class="inheritedMembers">
   <h5>{{__global.inheritedMembers}}</h5>

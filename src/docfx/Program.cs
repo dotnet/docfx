@@ -4,11 +4,14 @@
 namespace Microsoft.DocAsCode
 {
     using System;
+    using System.Net;
 
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Exceptions;
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.SubCommands;
+
+    using Newtonsoft.Json;
 
     internal class Program
     {
@@ -16,6 +19,9 @@ namespace Microsoft.DocAsCode
         {
             try
             {
+                // TLS best practices for .NET: https://docs.microsoft.com/en-us/dotnet/framework/network-programming/tls
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+
                 var result = ExecSubCommand(args);
                 return Logger.HasError ? 1 : result;
             }
@@ -31,7 +37,9 @@ namespace Microsoft.DocAsCode
             EnvironmentContext.SetVersion(typeof(Program).Assembly.GetName().Version.ToString());
 
             var consoleLogListener = new ConsoleLogListener();
+            var aggregatedLogListener = new AggregatedLogListener();
             Logger.RegisterListener(consoleLogListener);
+            Logger.RegisterListener(aggregatedLogListener);
 
             CommandController controller = null;
             ISubCommand command;
@@ -40,7 +48,7 @@ namespace Microsoft.DocAsCode
                 controller = ArgsParser.Instance.Parse(args);
                 command = controller.Create();
             }
-            catch (Exception e) when (e is System.IO.FileNotFoundException fe || e is DocfxException)
+            catch (Exception e) when (e is System.IO.FileNotFoundException fe || e is DocfxException || e is JsonSerializationException)
             {
                 Logger.LogError(e.Message);
                 return 1;
@@ -66,8 +74,10 @@ namespace Microsoft.DocAsCode
 
             if (command.AllowReplay)
             {
-                Logger.RegisterAsyncListener(new AggregatedLogListener());
+                Logger.RegisterAsyncListener(new AggregatedLogListener(aggregatedLogListener));
             }
+
+            Logger.UnregisterListener(aggregatedLogListener);
 
             var context = new SubCommandRunningContext();
             PerformanceScope scope = null;

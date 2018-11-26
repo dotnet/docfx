@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.Plugins
 {
+    using System;
     using System.Collections.Generic;
     using System.Collections.Specialized;
     using System.ComponentModel;
@@ -27,15 +28,17 @@ namespace Microsoft.DocAsCode.Plugins
             Files.AddRange(files);
         }
 
-        [JsonProperty("templates")]
-        public List<string> Templates { get; set; }
+        [JsonProperty("sitemap")]
+        public SitemapOptions SitemapOptions { get; set; }
 
+        [Obsolete]
         [JsonProperty("homepages")]
         public List<HomepageInfo> Homepages { get; set; }
 
         [JsonProperty("source_base_path")]
         public string SourceBasePath { get; set; }
 
+        [Obsolete]
         [JsonProperty("xrefmap")]
         public object XRefMap { get; set; }
 
@@ -45,8 +48,12 @@ namespace Microsoft.DocAsCode.Plugins
         [JsonProperty("incremental_info")]
         public List<IncrementalInfo> IncrementalInfo { get; set; }
 
+        [Obsolete("use groups")]
         [JsonProperty("version_info")]
         public Dictionary<string, VersionInfo> VersionInfo { get; set; }
+
+        [JsonProperty("groups")]
+        public List<ManifestGroupInfo> Groups { get; set; }
 
         #region Public Methods
 

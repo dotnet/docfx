@@ -13,7 +13,7 @@ namespace Microsoft.DocAsCode.Dfm
 
     public class TabGroupAggregator : MarkdownTokenAggregator<MarkdownHeadingBlockToken>
     {
-        private static readonly Regex HrefRegex = new Regex(@"^#tab\/([a-zA-Z0-9\-]+)(?:\/([a-zA-Z0-9\-]+)?)?$", RegexOptions.Compiled);
+        private static readonly Regex HrefRegex = new Regex(@"^#tab\/(?<id>[a-zA-Z0-9\-]+(?:\+[a-zA-Z0-9\-]+)*)(?:\/(?<condition>[a-zA-Z0-9\-]+)?)?$", RegexOptions.Compiled);
 
         protected override bool AggregateCore(MarkdownHeadingBlockToken headToken, IMarkdownTokenAggregateContext context)
         {
@@ -113,8 +113,8 @@ namespace Microsoft.DocAsCode.Dfm
                 {
                     return new TabItemInfo
                     {
-                        Id = m.Groups[1].Value,
-                        Condition = m.Groups[2].Value,
+                        Id = m.Groups["id"].Value,
+                        Condition = m.Groups["condition"].Value,
                         Title = new InlineContent(link.Content),
                         HeadSource = headToken.SourceInfo,
                         Context = headToken.Context,

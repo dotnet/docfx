@@ -41,16 +41,13 @@ namespace Microsoft.DocAsCode.MarkdownLite
         /// </summary>
         public IMarkdownTokenTreeValidator TokenTreeValidator { get; set; }
 
-        [Obsolete]
-        public IMarkdownTokenAggregator TokenAggregator { get; set; }
-
         public ImmutableList<IMarkdownTokenAggregator> TokenAggregators { get; set; } = ImmutableList<IMarkdownTokenAggregator>.Empty;
 
         /// <summary>
         /// Create markdown paring context.
         /// </summary>
         /// <returns>a instance of <see cref="IMarkdownContext"/></returns>
-        protected virtual IMarkdownContext CreateParseContext()
+        public virtual IMarkdownContext CreateParseContext()
         {
             return new MarkdownBlockContext(BlockRules, new MarkdownInlineContext(InlineRules));
         }
@@ -65,7 +62,6 @@ namespace Microsoft.DocAsCode.MarkdownLite
             return new MarkdownEngine(CreateParseContext(), Rewriter, renderer, Options)
             {
                 TokenTreeValidator = TokenTreeValidator,
-                TokenAggregator = TokenAggregator,
                 TokenAggregators = TokenAggregators,
             };
         }

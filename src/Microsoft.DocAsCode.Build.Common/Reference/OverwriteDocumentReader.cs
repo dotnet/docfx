@@ -16,7 +16,8 @@ namespace Microsoft.DocAsCode.Build.Common
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.Plugins;
-    using Microsoft.DocAsCode.YamlSerialization;
+
+    using YamlDeserializer = Microsoft.DocAsCode.YamlSerialization.YamlDeserializer;
 
     public class OverwriteDocumentReader
     {
@@ -98,12 +99,7 @@ namespace Microsoft.DocAsCode.Build.Common
 
             public PlaceholderValueDeserializer(IValueDeserializer innerDeserializer, string replacer)
             {
-                if (innerDeserializer == null)
-                {
-                    throw new ArgumentNullException(nameof(innerDeserializer));
-                }
-
-                _innerDeserializer = innerDeserializer;
+                _innerDeserializer = innerDeserializer ?? throw new ArgumentNullException(nameof(innerDeserializer));
                 _replacer = replacer;
             }
 
@@ -119,8 +115,7 @@ namespace Microsoft.DocAsCode.Build.Common
             {
                 object value = _innerDeserializer.DeserializeValue(parser, expectedType, state, nestedObjectDeserializer);
 
-                var str = value as string;
-                if (str != null && str.Trim() == Constants.ContentPlaceholder)
+                if (value is string str && str.Trim() == Constants.ContentPlaceholder)
                 {
                     ContainPlaceholder = true;
                     return _replacer;

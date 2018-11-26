@@ -241,7 +241,7 @@
 
             public override ParseState Apply(ParseState state, Match match)
             {
-                return ApplyCore(state, match.Groups[1].Value.Length, null, null, match.Groups[3].Value);
+                return ApplyCore(state, match.Groups[1].Value.Length, null, null, match.Groups["uid"].Value);
             }
         }
 

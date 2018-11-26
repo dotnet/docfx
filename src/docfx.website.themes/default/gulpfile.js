@@ -1,7 +1,8 @@
 // Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.
 var path = require('path');
 var gulp = require('gulp');
-var minify = require('gulp-minify-css');
+var minifyCss = require('gulp-minify-css');
+var minifyJs = require('gulp-minify');
 var rename = require('gulp-rename');
 var concat = require('gulp-concat');
 var copy = require('gulp-copy');
@@ -13,14 +14,13 @@ var vendor = {
   js: ['bower_components/jquery/dist/jquery.min.js',
        'bower_components/bootstrap/dist/js/bootstrap.min.js',
        'bower_components/highlightjs/highlight.pack.min.js',
-       'bower_components/lunr.js/lunr.min.js',
        'bower_components/js-url/url.min.js',
        'bower_components/twbs-pagination/jquery.twbsPagination.min.js',
        "bower_components/mark.js/dist/jquery.mark.min.js",
        "bower_components/anchor-js/anchor.min.js"
       ],
   webWorker: {
-    src: ['lunr.min.js'],
+    src: ['lunr.js'],
     cwd: 'bower_components/lunr.js/'
   },
   font: {
@@ -31,7 +31,7 @@ var vendor = {
 
 gulp.task('concat', function () {
   gulp.src(vendor.css)
-    .pipe(minify({keepBreaks: true}))
+    .pipe(minifyCss({keepBreaks: true}))
     .pipe(rename({
         suffix: '.min'
     }))
@@ -48,8 +48,11 @@ gulp.task('copy', function () {
   gulp.src(vendor.font.src, {cwd: vendor.font.cwd})
     .pipe(copy('./fonts/'))
   ;
-  gulp.src(vendor.webWorker.src, {cwd:vendor.webWorker.cwd})
-    .pipe(copy('./styles/'))
+  gulp.src('bower_components/lunr.js/lunr.js')
+    .pipe(minifyJs({
+      ext:{min:'.min.js'}
+    }))
+    .pipe(gulp.dest('./styles/'))
   ;
 });
 

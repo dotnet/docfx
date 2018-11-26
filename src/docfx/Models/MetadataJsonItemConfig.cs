@@ -24,6 +24,9 @@ namespace Microsoft.DocAsCode
         [JsonProperty("raw")]
         public bool? Raw { get; set; }
 
+        [JsonProperty("references")]
+        public FileMapping References { get; set; }
+
         [JsonProperty("filter")]
         public string FilterConfigFile { get; set; }
 
@@ -40,6 +43,14 @@ namespace Microsoft.DocAsCode
         /// </summary>
         [JsonProperty("properties")]
         public Dictionary<string, string> MSBuildProperties { get; set; }
-    }
 
+        [JsonProperty("disableGitFeatures")]
+        public bool DisableGitFeatures { get; set; }
+
+        [JsonProperty("codeSourceBasePath")]
+        public string CodeSourceBasePath { get; set; }
+
+        [JsonProperty("disableDefaultFilter")]
+        public bool DisableDefaultFilter { get; set; }
+    }
 }

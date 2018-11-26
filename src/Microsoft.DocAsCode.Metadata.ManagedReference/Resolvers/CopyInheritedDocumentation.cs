@@ -47,8 +47,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     {
                         return;
                     }
-                    MetadataItem baseClass;
-                    if (!context.Members.TryGetValue(dest.Parent.Inheritance[dest.Parent.Inheritance.Count - 1], out baseClass))
+                    if (!context.Members.TryGetValue(dest.Parent.Inheritance[dest.Parent.Inheritance.Count - 1], out MetadataItem baseClass))
                     {
                         return;
                     }

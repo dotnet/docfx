@@ -98,8 +98,7 @@ namespace Microsoft.DocAsCode.Build.RestApi
                             };
 
                             // TODO: line number
-                            object value;
-                            if (swagger.Metadata.TryGetValue(Constants.PropertyName.Source, out value))
+                            if (swagger.Metadata.TryGetValue(Constants.PropertyName.Source, out object value))
                             {
                                 itemVm.Metadata[Constants.PropertyName.Source] = value;
                             }
@@ -200,8 +199,7 @@ namespace Microsoft.DocAsCode.Build.RestApi
 
         private static string GetMetadataStringValue(ParameterObject parameter, string metadataName)
         {
-            object metadataValue;
-            if (parameter.Metadata.TryGetValue(metadataName, out metadataValue))
+            if (parameter.Metadata.TryGetValue(metadataName, out object metadataValue))
             {
                 return (string)metadataValue;
             }

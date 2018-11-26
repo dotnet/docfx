@@ -75,11 +75,7 @@ namespace Microsoft.DocAsCode.YamlSerialization.TypeInspectors
             {
                 var result = new CachingItem();
 
-#if NetCore
-                if (!type.GetTypeInfo().IsVisible)
-#else
                 if (!type.IsVisible)
-#endif
                 {
                     result.Error = new YamlException($"Type {type.FullName} is invisible.");
                     return result;
@@ -90,11 +86,7 @@ namespace Microsoft.DocAsCode.YamlSerialization.TypeInspectors
                     {
                         continue;
                     }
-#if NetCore
-                    var getMethod = prop.GetMethod;
-#else
                     var getMethod = prop.GetGetMethod();
-#endif
                     if (getMethod == null)
                     {
                         continue;
@@ -103,11 +95,7 @@ namespace Microsoft.DocAsCode.YamlSerialization.TypeInspectors
                     var extAttr = prop.GetCustomAttribute<ExtensibleMemberAttribute>();
                     if (extAttr == null)
                     {
-#if NetCore
-                        var setMethod = prop.SetMethod;
-#else
                         var setMethod = prop.GetSetMethod();
-#endif
                         result.Properies.Add(new EmitPropertyDescriptorSkeleton
                         {
                             CanWrite = setMethod != null,
@@ -152,11 +140,7 @@ namespace Microsoft.DocAsCode.YamlSerialization.TypeInspectors
                 var dm = new DynamicMethod(string.Empty, typeof(object), new[] { typeof(object) });
                 var il = dm.GetILGenerator();
                 il.Emit(OpCodes.Ldarg_0);
-#if NetCore
-                if (hostType.GetTypeInfo().IsValueType)
-#else
                 if (hostType.IsValueType)
-#endif
                 {
                     il.Emit(OpCodes.Unbox, hostType);
                     il.Emit(OpCodes.Call, getMethod);
@@ -166,11 +150,7 @@ namespace Microsoft.DocAsCode.YamlSerialization.TypeInspectors
                     il.Emit(OpCodes.Castclass, hostType);
                     il.Emit(OpCodes.Callvirt, getMethod);
                 }
-#if NetCore
-                if (propertyType.GetTypeInfo().IsValueType)
-#else
                 if (propertyType.IsValueType)
-#endif
                 {
                     il.Emit(OpCodes.Box, propertyType);
                 }
@@ -185,11 +165,7 @@ namespace Microsoft.DocAsCode.YamlSerialization.TypeInspectors
                 var dm = new DynamicMethod(string.Empty, typeof(void), new[] { typeof(object), typeof(object) });
                 var il = dm.GetILGenerator();
                 il.Emit(OpCodes.Ldarg_0);
-#if NetCore
-                var isValueType = hostType.GetTypeInfo().IsValueType;
-#else
                 var isValueType = hostType.IsValueType;
-#endif
                 if (isValueType)
                 {
                     il.Emit(OpCodes.Unbox, hostType);
@@ -208,19 +184,6 @@ namespace Microsoft.DocAsCode.YamlSerialization.TypeInspectors
             private static Type GetGenericValueType(Type propertyType)
             {
                 Type valueType = null;
-#if NetCore
-                var propertyTypeInfo = propertyType.GetTypeInfo();
-                if (propertyTypeInfo.IsInterface)
-                {
-                    valueType = GetGenericValueTypeCore(propertyTypeInfo);
-                }
-                valueType = valueType ??
-                    (from ti in
-                         from t in propertyType.GetTypeInfo().ImplementedInterfaces
-                         select t.GetTypeInfo()
-                     where ti.IsVisible
-                     select GetGenericValueTypeCore(ti)).FirstOrDefault(x => x != null);
-#else
                 if (propertyType.IsInterface)
                 {
                     valueType = GetGenericValueTypeCore(propertyType);
@@ -229,25 +192,9 @@ namespace Microsoft.DocAsCode.YamlSerialization.TypeInspectors
                     (from t in propertyType.GetInterfaces()
                      where t.IsVisible
                      select GetGenericValueTypeCore(t)).FirstOrDefault(x => x != null);
-#endif
                 return valueType;
             }
 
-#if NetCore
-            private static Type GetGenericValueTypeCore(TypeInfo type)
-            {
-                if (type.IsGenericType &&
-                    type.GetGenericTypeDefinition() == typeof(IDictionary<,>))
-                {
-                    var args = type.GenericTypeParameters;
-                    if (args[0] == typeof(string))
-                    {
-                        return args[1];
-                    }
-                }
-                return null;
-            }
-#else
             private static Type GetGenericValueTypeCore(Type type)
             {
                 if (type.IsGenericType &&
@@ -261,7 +208,6 @@ namespace Microsoft.DocAsCode.YamlSerialization.TypeInspectors
                 }
                 return null;
             }
-#endif
 
             private static Func<object, ICollection<string>> CreateDictionaryKeyReader(MethodInfo getMethod, Type valueType)
             {
@@ -273,11 +219,7 @@ namespace Microsoft.DocAsCode.YamlSerialization.TypeInspectors
                 // return dict?.Keys;
                 var il = dm.GetILGenerator();
                 il.Emit(OpCodes.Ldarg_0);
-#if NetCore
-                if (hostType.GetTypeInfo().IsValueType)
-#else
                 if (hostType.IsValueType)
-#endif
                 {
                     il.Emit(OpCodes.Unbox, hostType);
                     il.Emit(OpCodes.Call, getMethod);
@@ -287,11 +229,7 @@ namespace Microsoft.DocAsCode.YamlSerialization.TypeInspectors
                     il.Emit(OpCodes.Castclass, hostType);
                     il.Emit(OpCodes.Callvirt, getMethod);
                 }
-#if NetCore
-                if (propertyType.GetTypeInfo().IsValueType)
-#else
                 if (propertyType.IsValueType)
-#endif
                 {
                     il.Emit(OpCodes.Box, propertyType);
                     il.Emit(OpCodes.Castclass, dictType);
@@ -309,11 +247,7 @@ namespace Microsoft.DocAsCode.YamlSerialization.TypeInspectors
                     il.MarkLabel(notNullLabel);
                     il.Emit(OpCodes.Ldloc_0);
                 }
-#if NetCore
-                il.Emit(OpCodes.Callvirt, dictType.GetTypeInfo().GetDeclaredMethod("get_Keys"));
-#else
                 il.Emit(OpCodes.Callvirt, dictType.GetMethod("get_Keys"));
-#endif
                 il.Emit(OpCodes.Ret);
 
                 return (Func<object, ICollection<string>>)dm.CreateDelegate(typeof(Func<object, ICollection<string>>));
@@ -334,11 +268,7 @@ namespace Microsoft.DocAsCode.YamlSerialization.TypeInspectors
                 il.DeclareLocal(valueType);
                 var nullLabel = il.DefineLabel();
                 il.Emit(OpCodes.Ldarg_0);
-#if NetCore
-                if (hostType.GetTypeInfo().IsValueType)
-#else
                 if (hostType.IsValueType)
-#endif
                 {
                     il.Emit(OpCodes.Unbox, hostType);
                     il.Emit(OpCodes.Call, getMethod);
@@ -348,11 +278,7 @@ namespace Microsoft.DocAsCode.YamlSerialization.TypeInspectors
                     il.Emit(OpCodes.Castclass, hostType);
                     il.Emit(OpCodes.Callvirt, getMethod);
                 }
-#if NetCore
-                if (propertyType.GetTypeInfo().IsValueType)
-#else
                 if (propertyType.IsValueType)
-#endif
                 {
                     il.Emit(OpCodes.Box, propertyType);
                     il.Emit(OpCodes.Castclass, dictType);
@@ -368,18 +294,10 @@ namespace Microsoft.DocAsCode.YamlSerialization.TypeInspectors
                 }
                 il.Emit(OpCodes.Ldarg_1);
                 il.Emit(OpCodes.Ldloca_S, (byte)0);
-#if NetCore
-                il.Emit(OpCodes.Callvirt, dictType.GetTypeInfo().GetDeclaredMethod("TryGetValue"));
-#else
                 il.Emit(OpCodes.Callvirt, dictType.GetMethod("TryGetValue"));
-#endif
                 il.Emit(OpCodes.Brfalse_S, nullLabel);
                 il.Emit(OpCodes.Ldloc_0);
-#if NetCore
-                if (valueType.GetTypeInfo().IsValueType)
-#else
                 if (valueType.IsValueType)
-#endif
                 {
                     il.Emit(OpCodes.Box, valueType);
                 }
@@ -402,11 +320,7 @@ namespace Microsoft.DocAsCode.YamlSerialization.TypeInspectors
                 var il = dm.GetILGenerator();
                 var nullLabel = il.DefineLabel();
                 il.Emit(OpCodes.Ldarg_0);
-#if NetCore
-                if (hostType.GetTypeInfo().IsValueType)
-#else
                 if (hostType.IsValueType)
-#endif
                 {
                     il.Emit(OpCodes.Unbox, hostType);
                     il.Emit(OpCodes.Call, getMethod);
@@ -416,11 +330,7 @@ namespace Microsoft.DocAsCode.YamlSerialization.TypeInspectors
                     il.Emit(OpCodes.Castclass, hostType);
                     il.Emit(OpCodes.Callvirt, getMethod);
                 }
-#if NetCore
-                if (propertyType.GetTypeInfo().IsValueType)
-#else
                 if (propertyType.IsValueType)
-#endif
                 {
                     il.Emit(OpCodes.Box, propertyType);
                     il.Emit(OpCodes.Castclass, dictType);
@@ -437,11 +347,7 @@ namespace Microsoft.DocAsCode.YamlSerialization.TypeInspectors
                 il.Emit(OpCodes.Ldarg_1);
                 il.Emit(OpCodes.Ldarg_2);
                 il.Emit(OpCodes.Unbox_Any, valueType);
-#if NetCore
-                il.Emit(OpCodes.Callvirt, dictType.GetTypeInfo().GetDeclaredMethod("set_Item"));
-#else
                 il.Emit(OpCodes.Callvirt, dictType.GetMethod("set_Item"));
-#endif
                 il.MarkLabel(nullLabel);
                 il.Emit(OpCodes.Ret);
 

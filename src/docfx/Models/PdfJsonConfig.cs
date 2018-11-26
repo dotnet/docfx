@@ -3,10 +3,12 @@
 
 namespace Microsoft.DocAsCode
 {
+    using System;
     using System.Collections.Generic;
 
     using Newtonsoft.Json;
 
+    [Serializable]
     public class PdfJsonConfig : BuildJsonConfig
     {
         [JsonProperty("name")]
@@ -44,5 +46,11 @@ namespace Microsoft.DocAsCode
         /// </summary>
         [JsonProperty("errorHandling")]
         public string LoadErrorHandling { get; set; }
+
+        /// <summary>
+        /// Specify options specific to the wkhtmltopdf tooling used by the pdf command.
+        /// </summary>
+        [JsonProperty("wkhtmltopdf")]
+        public WkhtmltopdfJsonConfig Wkhtmltopdf { get; set; }
     }
 }

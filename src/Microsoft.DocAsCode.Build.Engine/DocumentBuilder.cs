@@ -16,9 +16,11 @@ namespace Microsoft.DocAsCode.Build.Engine
     using Newtonsoft.Json;
 
     using Microsoft.DocAsCode.Build.Engine.Incrementals;
+    using Microsoft.DocAsCode.Build.SchemaDriven;
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Dfm.MarkdownValidators;
     using Microsoft.DocAsCode.Exceptions;
+    using Microsoft.DocAsCode.MarkdigEngine;
     using Microsoft.DocAsCode.Plugins;
 
     public class DocumentBuilder : IDisposable
@@ -97,6 +99,16 @@ namespace Microsoft.DocAsCode.Build.Engine
             var logCodesLogListener = new LogCodesLogListener();
             Logger.RegisterListener(logCodesLogListener);
 
+            // Load schema driven processor from template
+            var sdps = LoadSchemaDrivenDocumentProcessors(parameters[0]).ToList();
+
+            if (sdps.Count > 0)
+            {
+                Logger.LogInfo($"{sdps.Count()} schema driven document processor plug-in(s) loaded.");
+                Processors = Processors.Union(sdps);
+            }
+
+            BuildInfo lastBuildInfo = null;
             var currentBuildInfo =
                 new BuildInfo
                 {
@@ -106,7 +118,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
             try
             {
-                var lastBuildInfo = BuildInfo.Load(_intermediateFolder);
+                lastBuildInfo = BuildInfo.Load(_intermediateFolder, true);
 
                 currentBuildInfo.CommitFromSHA = _commitFromSHA;
                 currentBuildInfo.CommitToSHA = _commitToSHA;
@@ -129,6 +141,15 @@ namespace Microsoft.DocAsCode.Build.Engine
 
                 var manifests = new List<Manifest>();
                 bool transformDocument = false;
+                if (parameters.All(p => p.Files.Count == 0))
+                {
+                    Logger.LogWarning(
+                        $"No file found, nothing will be generated. Please make sure docfx.json is correctly configured.",
+                        code: WarningCodes.Build.EmptyInputFiles);
+                }
+
+                var noContentFound = true;
+                var emptyContentGroups = new List<string>();
                 foreach (var parameter in parameters)
                 {
                     if (parameter.CustomLinkResolver != null)
@@ -142,38 +163,53 @@ namespace Microsoft.DocAsCode.Build.Engine
                             Logger.LogWarning($"Custom href generator({parameter.CustomLinkResolver}) is not found.");
                         }
                     }
+                    FileAbstractLayerBuilder falBuilder;
                     if (_intermediateFolder == null)
                     {
-                        EnvironmentContext.FileAbstractLayerImpl =
-                            FileAbstractLayerBuilder.Default
+                        falBuilder = FileAbstractLayerBuilder.Default
                             .ReadFromRealFileSystem(EnvironmentContext.BaseDirectory)
-                            .WriteToRealFileSystem(parameter.OutputBaseDir)
-                            .Create();
+                            .WriteToRealFileSystem(parameter.OutputBaseDir);
                     }
                     else
                     {
-                        EnvironmentContext.FileAbstractLayerImpl =
-                            FileAbstractLayerBuilder.Default
+                        falBuilder = FileAbstractLayerBuilder.Default
                             .ReadFromRealFileSystem(EnvironmentContext.BaseDirectory)
-                            .WriteToLink(Path.Combine(_intermediateFolder, currentBuildInfo.DirectoryName))
-                            .Create();
+                            .WriteToLink(Path.Combine(_intermediateFolder, currentBuildInfo.DirectoryName));
                     }
+                    if (!string.IsNullOrEmpty(parameter.FALName))
+                    {
+                        if (_container.TryGetExport<IInputFileAbstractLayerBuilderProvider>(
+                            parameter.FALName, out var provider))
+                        {
+                            falBuilder = provider.Create(falBuilder, parameter);
+                        }
+                        else
+                        {
+                            Logger.LogWarning($"Input fal builder provider not found, name: {parameter.FALName}.");
+                        }
+                    }
+                    EnvironmentContext.FileAbstractLayerImpl = falBuilder.Create();
                     if (parameter.ApplyTemplateSettings.TransformDocument)
                     {
                         transformDocument = true;
                     }
 
-                    var versionMessageSuffix = string.IsNullOrEmpty(parameter.VersionName) ? string.Empty : $" in version \"{parameter.VersionName}\"";
                     if (parameter.Files.Count == 0)
                     {
-                        Logger.LogWarning($"No file found, nothing will be generated{versionMessageSuffix}. Please make sure docfx.json is correctly configured.");
                         manifests.Add(new Manifest());
                     }
                     else
                     {
                         if (!parameter.Files.EnumerateFiles().Any(s => s.Type == DocumentType.Article))
                         {
-                            Logger.LogWarning($"No content file found{versionMessageSuffix}. Please make sure the content section of docfx.json is correctly configured.");
+                            if (!string.IsNullOrEmpty(parameter.GroupInfo?.Name))
+                            {
+                                emptyContentGroups.Add(parameter.GroupInfo.Name);
+                            }
+                        }
+                        else
+                        {
+                            noContentFound = false;
                         }
 
                         parameter.Metadata = _postProcessorsManager.PrepareMetadata(parameter.Metadata);
@@ -181,13 +217,30 @@ namespace Microsoft.DocAsCode.Build.Engine
                         {
                             Logger.LogInfo($"Start building for version: {parameter.VersionName}");
                         }
-                        manifests.Add(BuildCore(parameter, markdownServiceProvider, currentBuildInfo, lastBuildInfo));
+
+                        using (new LoggerPhaseScope("BuildCore"))
+                        {
+                            manifests.Add(BuildCore(parameter, markdownServiceProvider, currentBuildInfo, lastBuildInfo));
+                        }
                     }
+                }
+                if (noContentFound)
+                {
+                    Logger.LogWarning(
+                        $"No content file found. Please make sure the content section of docfx.json is correctly configured.",
+                        code: WarningCodes.Build.EmptyInputContents);
+                }
+                else if (emptyContentGroups.Count > 0)
+                {
+                    Logger.LogWarning(
+                        $"No content file found in group: {string.Join(",", emptyContentGroups)}. Please make sure the content section of docfx.json is correctly configured.",
+                        code: WarningCodes.Build.EmptyInputContents);
                 }
 
                 using (new LoggerPhaseScope("Postprocess", LogLevel.Verbose))
                 {
                     var generatedManifest = ManifestUtility.MergeManifest(manifests);
+                    generatedManifest.SitemapOptions = parameters.FirstOrDefault()?.SitemapOptions;
                     ManifestUtility.RemoveDuplicateOutputFiles(generatedManifest.Files);
                     ManifestUtility.ApplyLogCodes(generatedManifest.Files, logCodesLogListener.Codes);
 
@@ -241,10 +294,15 @@ namespace Microsoft.DocAsCode.Build.Engine
                         {
                             try
                             {
-                                currentBuildInfo.Save(_intermediateFolder);
-                                if (lastBuildInfo != null && _cleanupCacheHistory)
+                                if (Logger.WarningCount >= Logger.WarningThrottling)
                                 {
-                                    ClearCacheWithNoThrow(lastBuildInfo.DirectoryName, true);
+                                    currentBuildInfo.IsValid = false;
+                                    currentBuildInfo.Message = $"Warning count {Logger.WarningCount} exceeds throttling {Logger.WarningThrottling}";
+                                }
+                                currentBuildInfo.Save(_intermediateFolder);
+                                if (_cleanupCacheHistory)
+                                {
+                                    ClearCacheExcept(currentBuildInfo.DirectoryName);
                                 }
                             }
                             catch (Exception ex)
@@ -262,7 +320,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 // however the cache file created by this build will never be cleaned up with DisableIncrementalFolderCleanup option
                 if (_intermediateFolder != null && _cleanupCacheHistory)
                 {
-                    ClearCacheWithNoThrow(currentBuildInfo.DirectoryName, true);
+                    ClearCacheExcept(lastBuildInfo?.DirectoryName);
                 }
                 throw;
             }
@@ -288,21 +346,83 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
-        private void ClearCacheWithNoThrow(string subFolder, bool recursive)
+        private IEnumerable<IDocumentProcessor> LoadSchemaDrivenDocumentProcessors(DocumentBuildParameters parameter)
         {
-            if (string.IsNullOrEmpty(subFolder))
+            SchemaValidateService.RegisterLicense(parameter.SchemaLicense);
+            using (var resource = parameter?.TemplateManager?.CreateTemplateResource())
             {
-                return;
-            }
+                if (resource == null || resource.IsEmpty)
+                {
+                    yield break;
+                }
 
-            try
-            {
-                string fullPath = Path.Combine(Environment.ExpandEnvironmentVariables(_intermediateFolder), subFolder);
-                Directory.Delete(fullPath, recursive);
+                var markdigMarkdownService = CreateMarkdigMarkdownService(parameter);
+                foreach (var pair in resource.GetResourceStreams(@"^schemas/.*\.schema\.json"))
+                {
+                    var fileName = Path.GetFileName(pair.Key);
+                    using (new LoggerFileScope(fileName))
+                    {
+                        using (var stream = pair.Value)
+                        {
+                            using (var sr = new StreamReader(stream))
+                            {
+                                DocumentSchema schema;
+                                try
+                                {
+                                    schema = DocumentSchema.Load(sr, fileName.Remove(fileName.Length - ".schema.json".Length));
+                                }
+                                catch (Exception e)
+                                {
+                                    Logger.LogError(e.Message);
+                                    throw;
+                                }
+                                var sdp = new SchemaDrivenDocumentProcessor(
+                                    schema,
+                                    new CompositionContainer(CompositionContainer.DefaultContainer),
+                                    markdigMarkdownService,
+                                    new FolderRedirectionManager(parameter.OverwriteFragmentsRedirectionRules));
+                                Logger.LogVerbose($"\t{sdp.Name} with build steps ({string.Join(", ", from bs in sdp.BuildSteps orderby bs.BuildOrder select bs.Name)})");
+                                yield return sdp;
+                            }
+                        }
+                    }
+                }
             }
-            catch (Exception ex)
+        }
+
+        private MarkdigMarkdownService CreateMarkdigMarkdownService(DocumentBuildParameters parameters)
+        {
+            var templateProcessor = parameters.TemplateManager?.GetTemplateProcessor(new DocumentBuildContext(parameters), parameters.MaxParallelism);
+
+            return new MarkdigMarkdownService(
+                new MarkdownServiceParameters
+                {
+                    BasePath = parameters.Files.DefaultBaseDir,
+                    TemplateDir = parameters.TemplateDir,
+                    Extensions = parameters.MarkdownEngineParameters,
+                    Tokens = templateProcessor?.Tokens?.ToImmutableDictionary(),
+                },
+                new CompositionContainer(CompositionContainer.DefaultContainer));
+        }
+
+        private void ClearCacheExcept(string subFolder)
+        {
+            string folder = Environment.ExpandEnvironmentVariables(_intermediateFolder);
+            string except = string.IsNullOrEmpty(subFolder) ? string.Empty : Path.Combine(folder, subFolder);
+            foreach (var f in Directory.EnumerateDirectories(folder))
             {
-                Logger.LogWarning($"Failed to delete cache files in path: {subFolder}. Details: {ex.Message}.");
+                if (FilePathComparer.OSPlatformSensitiveStringComparer.Equals(f, except))
+                {
+                    continue;
+                }
+                try
+                {
+                    Directory.Delete(f, true);
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogWarning($"Failed to delete cache files in path: {subFolder}. Details: {ex.Message}.");
+                }
             }
         }
 

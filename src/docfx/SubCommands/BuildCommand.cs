@@ -47,10 +47,12 @@ namespace Microsoft.DocAsCode.SubCommands
 
         public void Exec(SubCommandRunningContext context)
         {
+            EnvironmentContext.SetGitFeaturesDisabled(Config.DisableGitFeatures);
             EnvironmentContext.SetBaseDirectory(Path.GetFullPath(string.IsNullOrEmpty(Config.BaseDirectory) ? Directory.GetCurrentDirectory() : Config.BaseDirectory));
             // TODO: remove BaseDirectory from Config, it may cause potential issue when abused
             var baseDirectory = EnvironmentContext.BaseDirectory;
-            var intermediateOutputFolder = Path.Combine(baseDirectory, "obj");
+            Config.IntermediateFolder = Config.IntermediateFolder ?? Path.Combine(baseDirectory, "obj", ".cache", "build");
+
             var outputFolder = Path.GetFullPath(Path.Combine(string.IsNullOrEmpty(Config.OutputFolder) ? baseDirectory : Config.OutputFolder, Config.Destination ?? string.Empty));
 
             BuildDocument(baseDirectory, outputFolder);
@@ -197,19 +199,6 @@ namespace Microsoft.DocAsCode.SubCommands
                         SourceFolder = optionsBaseDirectory,
                     });
             }
-            if (options.ExternalReference != null)
-            {
-                if (config.ExternalReference == null)
-                {
-                    config.ExternalReference = new FileMapping(new FileMappingItem());
-                }
-                config.ExternalReference.Add(
-                    new FileMappingItem
-                    {
-                        Files = new FileItems(options.ExternalReference),
-                        SourceFolder = optionsBaseDirectory,
-                    });
-            }
 
             if (options.XRefMaps != null)
             {
@@ -284,7 +273,6 @@ namespace Microsoft.DocAsCode.SubCommands
             {
                 config.IntermediateFolder = options.IntermediateFolder;
             }
-            config.IntermediateFolder = config.IntermediateFolder ?? Path.Combine(config.BaseDirectory ?? optionsBaseDirectory, "obj", ".cache", "build");
             if (options.ChangesFile != null)
             {
                 config.ChangesFile = options.ChangesFile;
@@ -307,6 +295,7 @@ namespace Microsoft.DocAsCode.SubCommands
 
             config.KeepFileLink |= options.KeepFileLink;
             config.CleanupCacheHistory |= options.CleanupCacheHistory;
+            config.DisableGitFeatures |= options.DisableGitFeatures;
 
             config.FileMetadataFilePaths =
                 new ListWithStringFallback(config.FileMetadataFilePaths.Select(
@@ -314,6 +303,8 @@ namespace Microsoft.DocAsCode.SubCommands
 
             config.FileMetadata = GetFileMetadataFromOption(config.FileMetadata, options.FileMetadataFilePath, config.FileMetadataFilePaths);
             config.GlobalMetadata = GetGlobalMetadataFromOption(config.GlobalMetadata, options.GlobalMetadataFilePath, config.GlobalMetadataFilePaths, options.GlobalMetadata);
+            config.FALName = options.FALName ?? config.FALName;
+            config.SchemaLicense = options.SchemaLicense ?? config.SchemaLicense;
         }
 
         internal static Dictionary<string, FileMetadataPairs> GetFileMetadataFromOption(Dictionary<string, FileMetadataPairs> fileMetadataFromConfig, string fileMetadataFilePath, ListWithStringFallback fileMetadataFilePaths)
@@ -324,13 +315,13 @@ namespace Microsoft.DocAsCode.SubCommands
             {
                 foreach (var filePath in fileMetadataFilePaths)
                 {
-                    fileMetadata = MergeMetadataFromFile("fileMetadata", fileMetadata, filePath, path => JsonUtility.Deserialize<Dictionary<string, FileMetadataPairs>>(path), MergeFileMetadataPairs);
+                    fileMetadata = MergeMetadataFromFile("fileMetadata", fileMetadata, filePath, path => JsonUtility.Deserialize<Dictionary<string, FileMetadataPairs>>(path, GetToObjectSerializer()), MergeFileMetadataPairs);
                 }
             }
 
             if (fileMetadataFilePath != null)
             {
-                fileMetadata = MergeMetadataFromFile("fileMetadata", fileMetadata, fileMetadataFilePath, path => JsonUtility.Deserialize<BuildJsonConfig>(path)?.FileMetadata, MergeFileMetadataPairs);
+                fileMetadata = MergeMetadataFromFile("fileMetadata", fileMetadata, fileMetadataFilePath, path => JsonUtility.Deserialize<BuildJsonConfig>(path, GetToObjectSerializer())?.FileMetadata, MergeFileMetadataPairs);
             }
 
             return OptionMerger.MergeDictionary(
@@ -361,7 +352,7 @@ namespace Microsoft.DocAsCode.SubCommands
             {
                 foreach (var filePath in globalMetadataFilePaths)
                 {
-                    globalMetadata = MergeMetadataFromFile("globalMetadata", globalMetadata, filePath, path => JsonUtility.Deserialize<Dictionary<string, object>>(path), MergeGlobalMetadataItem);
+                    globalMetadata = MergeMetadataFromFile("globalMetadata", globalMetadata, filePath, path => JsonUtility.Deserialize<Dictionary<string, object>>(path, GetToObjectSerializer()), MergeGlobalMetadataItem);
                 }
             }
 

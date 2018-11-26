@@ -117,8 +117,7 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
 
         private string NormalizeAzureLink(string href, string defaultExtension, IMarkdownContext context, string rawMarkdown)
         {
-            bool isHrefRelativeNonMdFile;
-            var link = AppendDefaultExtension(href, defaultExtension, out isHrefRelativeNonMdFile);
+            var link = AppendDefaultExtension(href, defaultExtension, out bool isHrefRelativeNonMdFile);
             if (isHrefRelativeNonMdFile)
             {
                 link = FixNonMdRelativeFileHref(link, context, rawMarkdown);
@@ -222,8 +221,7 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
 
                 var nonMdHrefFileName = Path.GetFileName(nonMdHref);
                 var azureResourceFileInfoMapping = (Dictionary<string, AzureFileInfo>)context.Variables["azureResourceFileInfoMapping"];
-                AzureFileInfo azureResourceFileInfo;
-                if (!azureResourceFileInfoMapping.TryGetValue(nonMdHrefFileName, out azureResourceFileInfo))
+                if (!azureResourceFileInfoMapping.TryGetValue(nonMdHrefFileName, out AzureFileInfo azureResourceFileInfo))
                 {
                     Logger.LogWarning($"Can't find info for file name {nonMdHrefFileName} in azure resource file info mapping. Couldn't fix href: {nonMdHref} in file {currentFilePath}. raw: {rawMarkdown}");
                     return nonMdHref;

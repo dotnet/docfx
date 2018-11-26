@@ -58,29 +58,34 @@ namespace Microsoft.DocAsCode.SubCommands
 
             // If Root Output folder is specified from command line, use it instead of the base directory
             EnvironmentContext.SetOutputDirectory(OutputFolder ?? BaseDirectory);
-            foreach (var item in Config)
+            using (new MSBuildEnvironmentScope())
             {
-                VisitorHelper.GlobalNamespaceId = item.GlobalNamespaceId;
-
-                var inputModel = ConvertToInputModel(item);
-                
-                // TODO: Use plugin to generate metadata for files with different extension?
-                using (var worker = new ExtractMetadataWorker(inputModel))
+                foreach (var item in Config)
                 {
-                    // Use task.run to get rid of current context (causing deadlock in xunit)
-                    var task = Task.Run(worker.ExtractMetadataAsync);
-                    task.Wait();
+                    VisitorHelper.GlobalNamespaceId = item.GlobalNamespaceId;
+
+                    var inputModel = ConvertToInputModel(item);
+
+                    EnvironmentContext.SetGitFeaturesDisabled(item.DisableGitFeatures);
+
+                    // TODO: Use plugin to generate metadata for files with different extension?
+                    using (var worker = new ExtractMetadataWorker(inputModel))
+                    {
+                        // Use task.run to get rid of current context (causing deadlock in xunit)
+                        var task = Task.Run(worker.ExtractMetadataAsync);
+                        task.Wait();
+                    }
                 }
+
+                VisitorHelper.GlobalNamespaceId = originalGlobalNamespaceId;
             }
-            VisitorHelper.GlobalNamespaceId = originalGlobalNamespaceId;
         }
 
         private MetadataJsonConfig ParseOptions(MetadataCommandOptions options, out string baseDirectory, out string outputFolder)
         {
             MetadataJsonConfig config;
-            string configFile;
             baseDirectory = null;
-            if (TryGetJsonConfig(options.Projects, out configFile))
+            if (TryGetJsonConfig(options.Projects, out string configFile))
             {
                 config = CommandUtility.GetConfig<MetadataConfig>(configFile).Item;
                 if (config == null)
@@ -108,6 +113,8 @@ namespace Microsoft.DocAsCode.SubCommands
                 item.Force |= options.ForceRebuild;
                 item.Raw |= options.PreserveRawInlineComments;
                 item.ShouldSkipMarkup |= options.ShouldSkipMarkup;
+                item.DisableGitFeatures |= options.DisableGitFeatures;
+                item.DisableDefaultFilter |= options.DisableDefaultFilter;
                 if (!string.IsNullOrEmpty(options.FilterConfigFile))
                 {
                     item.FilterConfigFile = Path.GetFullPath(options.FilterConfigFile);
@@ -140,6 +147,7 @@ namespace Microsoft.DocAsCode.SubCommands
         private ExtractMetadataInputModel ConvertToInputModel(MetadataJsonItemConfig configModel)
         {
             var projects = configModel.Source;
+            var references = configModel.References;
             var outputFolder = configModel.Destination ?? Constants.DefaultMetadataOutputFolderName;
             var inputModel = new ExtractMetadataInputModel
             {
@@ -151,11 +159,15 @@ namespace Microsoft.DocAsCode.SubCommands
                 UseCompatibilityFileName = configModel?.UseCompatibilityFileName ?? false,
                 MSBuildProperties = configModel?.MSBuildProperties,
                 OutputFolder = outputFolder,
+                CodeSourceBasePath = configModel?.CodeSourceBasePath,
+                DisableDefaultFilter = configModel?.DisableDefaultFilter ?? false,
             };
 
-            var expandedFileMapping = GlobUtility.ExpandFileMapping(EnvironmentContext.BaseDirectory, projects);
+            var expandedFiles = GlobUtility.ExpandFileMapping(EnvironmentContext.BaseDirectory, projects);
+            var expandedReferences = GlobUtility.ExpandFileMapping(EnvironmentContext.BaseDirectory, references);
 
-            inputModel.Files = expandedFileMapping.Items.SelectMany(s => s.Files).ToList();
+            inputModel.Files = expandedFiles.Items.SelectMany(s => s.Files).ToList();
+            inputModel.References = expandedReferences?.Items.SelectMany(s => s.Files).ToList();
 
             return inputModel;
         }
@@ -186,7 +198,7 @@ namespace Microsoft.DocAsCode.SubCommands
 
         private static bool TryGetJsonConfig(List<string> projects, out string jsonConfig)
         {
-            if (!projects.Any())
+            if (projects.Count == 0)
             {
                 if (!File.Exists(Constants.ConfigFileName))
                 {

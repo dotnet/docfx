@@ -19,6 +19,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
     using Newtonsoft.Json.Linq;
     using Xunit;
 
+    [Collection("docfx STA")]
     [Trait("Owner", "lianwei")]
     [Trait("EntityType", "ConceptualDocumentProcessorTest")]
     public class ConceptualDocumentProcessorTest : TestBase
@@ -58,6 +59,18 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
         {
             EnvironmentContext.Clean();
             base.Dispose();
+        }
+
+        [Fact]
+        public void ProcessMarkdownResultWithEncodedUrlShouldSucceed()
+        {
+            var markdownResult = new MarkupResult
+            {
+                Html = @"<p><a href=""%7E/docs/csharp/language-reference/keywords/select-clause.md""></p>"
+            };
+
+            markdownResult = MarkupUtility.Parse(markdownResult, "docs/framework/data/wcf/how-to-project-query-results-wcf-data-services.md", ImmutableDictionary.Create<string, FileAndType>());
+            Assert.Equal("~/docs/csharp/language-reference/keywords/select-clause.md", markdownResult.LinkToFiles.First());
         }
 
         [Fact]

@@ -30,8 +30,8 @@ namespace Microsoft.DocAsCode.Common
             {
                 // TODO: plan to change this warning to error, add error code to analyze the impact.
                 Logger.LogWarning(
-                    $"Multiple input files are attempting to write to the same output file \"{duplicates.Key}\". Please rename at least {duplicates.Count() - 1} of following input files to ensure no duplicate output files: \"{string.Join(", ", duplicates.Select(duplicate => duplicate.item.SourceRelativePath))}\".",
-                    WarningCodes.Build.DuplicateOutputFiles);
+                    $"Multiple input files would generate to the same output path overwriting each other. Please rename at least {duplicates.Count() - 1} of following input files to ensure that there will be only one file to generate to the output path: \"{string.Join(", ", duplicates.Select(duplicate => duplicate.item.SourceRelativePath))}\".",
+                    code: WarningCodes.Build.DuplicateOutputFiles);
                 itemsToRemove.UnionWith(duplicates.Skip(1).Select(duplicate => duplicate.item.SourceRelativePath));
             }
             manifestItems.RemoveAll(m => itemsToRemove.Contains(m.SourceRelativePath));
@@ -50,6 +50,9 @@ namespace Microsoft.DocAsCode.Common
             var incrementalInfos = (from manifest in manifests
                                     from i in manifest.IncrementalInfo ?? Enumerable.Empty<IncrementalInfo>()
                                     select i).ToList();
+            var manifestGroupInfos = (from manifest in manifests
+                                      from g in manifest.Groups ?? Enumerable.Empty<ManifestGroupInfo>()
+                                      select g).ToList();
             return new Manifest(
                 (from manifest in manifests
                  from file in manifest.Files ?? Enumerable.Empty<ManifestItem>()
@@ -61,6 +64,7 @@ namespace Microsoft.DocAsCode.Common
                 XRefMap = xrefMaps.Count <= 1 ? xrefMaps.FirstOrDefault() : xrefMaps,
                 SourceBasePath = manifests.FirstOrDefault()?.SourceBasePath,
                 IncrementalInfo = incrementalInfos.Count > 0 ? incrementalInfos : null,
+                Groups = manifestGroupInfos.Count > 0 ? manifestGroupInfos : null,
                 VersionInfo = manifests.Where(m => m.VersionInfo != null).SelectMany(m => m.VersionInfo).ToDictionary(p => p.Key, p => p.Value)
             };
         }

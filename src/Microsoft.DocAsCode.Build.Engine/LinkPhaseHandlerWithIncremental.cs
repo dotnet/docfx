@@ -51,11 +51,11 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             PreHandle(hostServices);
             _inner.PostbuildAndSave(hostServices, maxParallelism);
+            _inner.ProcessManifest(hostServices, maxParallelism);
             using (new LoggerPhaseScope("SaveExternalXRefSpec", LogLevel.Verbose))
             {
                 SaveExternalXRefSpec();
             }
-            _inner.ProcessManifest(hostServices, maxParallelism);
             PostHandle(hostServices, maxParallelism);
         }
 
@@ -257,14 +257,17 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 foreach (var f in h.Models)
                 {
-                    var path = Context.GetFilePath(f.Key);
-                    if (path != null)
+                    using (new LoggerFileScope(f.OriginalFileAndType.File))
                     {
-                        if (!map.TryGetValue(f.OriginalFileAndType.File, out FileMapItem item))
+                        var path = Context.GetFilePath(f.Key);
+                        if (path != null)
                         {
-                            map[f.OriginalFileAndType.File] = item = new FileMapItem();
+                            if (!map.TryGetValue(f.OriginalFileAndType.File, out FileMapItem item))
+                            {
+                                map[f.OriginalFileAndType.File] = item = new FileMapItem();
+                            }
+                            item[f.Key] = path;
                         }
-                        item[f.Key] = path;
                     }
                 }
             }
@@ -277,20 +280,23 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 foreach (var f in h.Models)
                 {
-                    if (f.Type == DocumentType.Overwrite)
+                    using (new LoggerFileScope(f.OriginalFileAndType.File))
                     {
-                        map[f.OriginalFileAndType.File] = new List<XRefSpec>();
-                    }
-                    else
-                    {
-                        if (!map.TryGetValue(f.OriginalFileAndType.File, out List<XRefSpec> specs))
+                        if (f.Type == DocumentType.Overwrite)
                         {
-                            map[f.OriginalFileAndType.File] = specs = new List<XRefSpec>();
+                            map[f.OriginalFileAndType.File] = new List<XRefSpec>();
                         }
-                        specs.AddRange(from uid in f.Uids
-                                       let s = Context.GetXrefSpec(uid.Name)
-                                       where s != null
-                                       select s);
+                        else
+                        {
+                            if (!map.TryGetValue(f.OriginalFileAndType.File, out List<XRefSpec> specs))
+                            {
+                                map[f.OriginalFileAndType.File] = specs = new List<XRefSpec>();
+                            }
+                            specs.AddRange(from uid in f.Uids
+                                           let s = Context.GetXrefSpec(uid.Name)
+                                           where s != null
+                                           select s);
+                        }
                     }
                 }
             }

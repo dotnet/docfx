@@ -38,8 +38,6 @@ this is new line originally
             var expected = @"> Hello world
 > this is new line originally  
 > This is a new line
-> 
-> 
 
 ";
             var result = AzureMarked.Markup(source);
@@ -67,12 +65,6 @@ This is no-nested line
 > > > This is a third nested first line
 > > > This is a second nested second line
 > > > This is no-nested line
-> > > 
-> > > 
-> > 
-> > 
-> 
-> 
 
 ";
             var result = AzureMarked.Markup(source);
@@ -92,8 +84,6 @@ This is azure warning";
 > 
 > [!WARNING]
 > This is azure warning
-> 
-> 
 
 ";
             var result = AzureMarked.Markup(source);
@@ -110,8 +100,6 @@ This is azure warning";
             var expected = @"> [!NOTE]
 > This is a link [hello text](hello.md)
 > This is a style text *yes*
-> 
-> 
 
 ";
             var result = AzureMarked.Markup(source);
@@ -130,8 +118,6 @@ This is azure warning";
 > This is azure note text
 > Not code text
 > We should ignore the extra white spaces at the beginning
-> 
-> 
 
 ";
             var result = AzureMarked.Markup(source);
@@ -148,8 +134,6 @@ This is azure warning";
             var expected = @"> [!NOTE]
 > This information applies to the Azure AD B2C consumer identity service preview.  For information on Azure AD for employees and organizations, 
 > please refer to the [Azure Active Directory Developer Guide](active-directory-developers-guide.md).
-> 
-> 
 
 ";
             var result = AzureMarked.Markup(source);
@@ -177,8 +161,6 @@ This is azure TIP";
 > 
 > [!TIP]
 > This is azure TIP
-> 
-> 
 
 ";
             var result = AzureMarked.Markup(source);
@@ -213,12 +195,6 @@ This is TIP
 > > > 
 > > > [!CAUTION]
 > > > This is CAUTION
-> > > 
-> > > 
-> > 
-> > 
-> 
-> 
 
 ";
             var result = AzureMarked.Markup(source);
@@ -302,8 +278,6 @@ This is azure include block.
 > 
 > [!WARNING]
 > This is azure warning
-> 
-> 
 
 ";
 
@@ -518,7 +492,7 @@ _system_
 </div>";
             var expected = @"# This is an H1
 <div>
-_system_
+*system*
 </div>";
             var result = AzureMarked.Markup(source);
             Assert.Equal(expected.Replace("\r\n", "\n"), result);
@@ -648,7 +622,7 @@ this is a missing extension link with / and bookmark at the end [text](missing_e
 this is a normal link with / and extension at the end [text](normal.md) file ref
 this is a normal link with /, extension and bookmark at the end [text](normal.md#bookmark) file ref
 this is http link [text](http://www.google.com ""Google"") ref
-this is http escape link [text](http://www.google.com\'dd#bookmark ""Google\'s homepage"") ref
+this is http escape link [text](http://www.google.com\'dd#bookmark ""Google's homepage"") ref
 this is absolute link [text](c:/this/is/markdown ""Local File"") file ref
 
 ";
@@ -737,8 +711,8 @@ this is absolute link [text](c:/this/is/markdown ""Local File"") file ref
         [Trait("Related", "AzureMarkdownRewriters")]
         public void TestAzureMarkdownRewriters_AutoLink()
         {
-            var source = @" See [http://www.openldap.org/doc/admin24/overlays.html#Access Logging](http://www.openldap.org/doc/admin24/overlays.html#Access Logging)";
-            var expected = @" See [http://www.openldap.org/doc/admin24/overlays.html#Access Logging](http://www.openldap.org/doc/admin24/overlays.html#Access Logging)
+            var source = @" See [http://www.openldap.org/doc/admin24/overlays.html#Access%20Logging](http://www.openldap.org/doc/admin24/overlays.html#Access%20Logging)";
+            var expected = @" See [http://www.openldap.org/doc/admin24/overlays.html#Access%20Logging](http://www.openldap.org/doc/admin24/overlays.html#Access%20Logging)
 
 ";
             var result = AzureMarked.Markup(source);
@@ -761,7 +735,7 @@ this is absolute link [text](c:/this/is/markdown ""Local File"") file ref
         [Trait("Related", "AzureMarkdownRewriters")]
         public void TestAzureMarkdownRewriters_LinkRefWithBackslash()
         {
-            var source = @"[User-Defined Date/Time Formats (Format Function)](https\://github\.com/Azure-Samples\/active-directory-java-webapp\-openidconnect\\/archive/complete\.zip)";
+            var source = @"[User-Defined Date/Time Formats (Format Function)](https://github\.com/Azure-Samples/active-directory-java-webapp\-openidconnect\\/archive/complete\.zip)";
             var expected = @"[User-Defined Date/Time Formats (Format Function)](https://github.com/Azure-Samples/active-directory-java-webapp-openidconnect\\/archive/complete.zip)
 
 ";
@@ -791,8 +765,6 @@ this is absolute link [text](c:/this/is/markdown ""Local File"") file ref
 > * [Baidu](../articles/notification-hubs-baidu-get-started.md)
 > * [Xamarin.iOS](../articles/partner-xamarin-notification-hubs-ios-get-started.md)
 > * [Xamarin.Android](../articles/partner-xamarin-notification-hubs-android-get-started.md)
-> 
-> 
 
 ";
             var result = AzureMarked.Markup(source);
@@ -825,8 +797,6 @@ this is absolute link [text](c:/this/is/markdown ""Local File"") file ref
 > * [(Android | Javascript)](./mobile-services-javascript-backend-android-get-started-push.md)
 > * [(Xamarin iOS | Javascript)](./partner-xamarin-mobile-services-ios-get-started-push.md)
 > * [(Xamarin Android | Javascript)](./partner-xamarin-mobile-services-android-get-started-push.md)
-> 
-> 
 
 ";
             var result = AzureMarked.Markup(source);
@@ -1131,8 +1101,6 @@ ms.author: rogardle
         {
             var source = @"> [Just a test for blockquote]";
             var expected = @"> [Just a test for blockquote]
-> 
-> 
 
 ";
 
@@ -1214,8 +1182,6 @@ This command must be run in the context of each domain user that has signed into
 
             var source = @"> [AZURE.VIDEO azure-ad--introduction-to-dynamic-memberships-for-groups]";
             var expected = @"> [!VIDEO https://channel9.msdn.com/Series/Azure-Active-Directory-Videos-Demos/Azure-AD--Introduction-to-Dynamic-Memberships-for-Groups/player/]
-> 
-> 
 
 ";
 
@@ -1241,8 +1207,6 @@ This command must be run in the context of each domain user that has signed into
 
             var source = @"> [AZURE.VIDEO azure-ad--introduction-to-dynamic-memberships-for-groups]";
             var expected = @"> [!VIDEO azure-ad--introduction-to-dynamic-memberships-for-groups]
-> 
-> 
 
 ";
 

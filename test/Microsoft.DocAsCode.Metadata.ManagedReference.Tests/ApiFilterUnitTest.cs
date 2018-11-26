@@ -17,7 +17,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
 
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
 
-    using static Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataWorker;
+    using static Microsoft.DocAsCode.Metadata.ManagedReference.RoslynIntermediateMetadataExtractor;
 
     [Trait("Owner", "vwxyzh")]
     [Trait("Language", "CSharp")]
@@ -91,11 +91,21 @@ namespace Test1
     {
         [EditorBrowsable(EditorBrowsableState.Never)]
         public int C { get; set; }
-
         [EditorBrowsable(EditorBrowsableState.Always)]
         public int D { get; set; }
 
         void IFoo.Bar() {}
+
+        [Obsolete(""Some text."")]
+        public void ObsoleteTest()
+        {
+        }
+
+
+        [EnumDisplay(Test = null)]
+        public void Test(string a = null)
+        {
+        }
     }
 
     [EditorBrowsable(EditorBrowsableState.Never)]
@@ -103,16 +113,26 @@ namespace Test1
     {
         void Bar();
     }
-}
 
+    public class EnumDisplayAttribute : Attribute
+    {
+        public string Test { get; set; } = null;
+        public string Description { get; private set; }
+
+        public EnumDisplayAttribute(string description = null)
+        {
+            Description = description;
+        }
+    }
+}
 ";
             string configFile = "TestData/filterconfig.yml";
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code), filterConfigFile: configFile);
+            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code), options: new ExtractMetadataOptions { FilterConfigFile = configFile });
             Assert.Equal(2, output.Items.Count);
             var @namespace = output.Items[0];
             Assert.NotNull(@namespace);
             Assert.Equal("Test1", @namespace.Name);
-            Assert.Equal(4, @namespace.Items.Count);
+            Assert.Equal(5, @namespace.Items.Count);
             {
                 var class1 = @namespace.Items[0];
                 Assert.Equal("Test1.Class1", class1.Name);
@@ -135,8 +155,9 @@ namespace Test1
             {
                 var class6 = @namespace.Items[3];
                 Assert.Equal("Test1.Class6", class6.Name);
-                Assert.Equal(1, class6.Items.Count);
+                Assert.Equal(2, class6.Items.Count);
                 Assert.Equal("Test1.Class6.D", class6.Items[0].Name);
+                Assert.Equal("Test1.Class6.Test(System.String)", class6.Items[1].Name);
             }
 
             var nestedNamespace = output.Items[1];
@@ -169,7 +190,7 @@ namespace Test1
     }
 }";
             string configFile = "TestData/filterconfig_attribute.yml";
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code), filterConfigFile: configFile);
+            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code), options: new ExtractMetadataOptions { FilterConfigFile = configFile });
             var @namespace = output.Items[0];
             var class1 = @namespace.Items[0];
             Assert.Equal(1, class1.Attributes.Count);
@@ -208,6 +229,41 @@ namespace Test1
             var class1 = @namespace.Items[0];
             Assert.Equal(1, class1.Attributes.Count);
             Assert.Equal("System.SerializableAttribute", class1.Attributes[0].Type);
+        }
+
+        [Fact]
+        public void TestFilterBugIssue2547()
+        {
+            string code = @"using System;
+
+namespace Test1
+{
+    [Flags]
+    public enum ExecutionMode
+    {
+        None = 0,
+        Runtime = 1,
+        Editor = 2,
+        Thumbnail = 4,
+        Preview = 8,
+        EffectCompile = 16,
+        All = Runtime | Editor | Thumbnail | Preview | EffectCompile,
+    }
+
+    public class Test1Attribute : Attribute
+    {
+        public ExecutionMode ExecutionMode { get; set; } = ExecutionMode.All;
+    }
+
+    [Test1(ExecutionMode = ExecutionMode.Runtime | ExecutionMode.Thumbnail | ExecutionMode.Preview)]
+    public class Test2
+    {
+    }
+}";
+            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            var @namespace = output.Items[0];
+            Assert.NotNull(@namespace);
+            Assert.Equal(3, @namespace.Items.Count);
         }
 
         private static Compilation CreateCompilationFromCSharpCode(string code, params MetadataReference[] references)

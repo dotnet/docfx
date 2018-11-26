@@ -70,6 +70,7 @@ var gitUrlPatternItems = {
         'testRegex': /^(https?:\/\/)?(\S+\@)?(\S+\.)?github\.com(\/|:).*/i,
         'generateUrl': function (gitInfo) {
             var url = normalizeGitUrlToHttps(gitInfo.repo);
+            url = getRepoWithoutGitExtension(url);
             url += '/blob' + '/' + gitInfo.branch + '/' + gitInfo.path;
             if (gitInfo.startLine && gitInfo.startLine > 0) {
                 url += '/#L' + gitInfo.startLine;
@@ -78,6 +79,7 @@ var gitUrlPatternItems = {
         },
         'generateNewFileUrl': function (gitInfo, uid) {
             var url = normalizeGitUrlToHttps(gitInfo.repo);
+            url = getRepoWithoutGitExtension(url);
             url += '/new';
             url += '/' + gitInfo.branch;
             url += '/' + getOverrideFolder(gitInfo.apiSpecFolder);
@@ -89,11 +91,13 @@ var gitUrlPatternItems = {
     'vso': {
         // HTTPS form: https://{user}.visualstudio.com/{org}/_git/{repo}
         // SSH form: ssh://{user}@{user}.visualstudio.com:22/{org}/_git/{repo}
-        // generated URL: https://{user}.visualstudio.com/{org}/_git/{repo}?path={path}&version=GB{branch}
+        // generated URL under branch: https://{user}.visualstudio.com/{org}/_git/{repo}?path={path}&version=GB{branch}
+        // generated URL under detached HEAD: https://{user}.visualstudio.com/{org}/_git/{repo}?path={path}&version=GC{commit}
         'testRegex': /^(https?:\/\/)?(ssh:\/\/\S+\@)?(\S+\.)?visualstudio\.com(\/|:).*/i,
         'generateUrl': function (gitInfo) {
             var url = normalizeGitUrlToHttps(gitInfo.repo);
-            url += '?path=' + gitInfo.path + '&version=GB' + gitInfo.branch;
+            var branchPrefix = /[0-9a-fA-F]{40}/.test(gitInfo.branch) ? 'GC' : 'GB';
+            url += '?path=' + gitInfo.path + '&version=' + branchPrefix + gitInfo.branch;
             if (gitInfo.startLine && gitInfo.startLine > 0) {
                 url += '&line=' + gitInfo.startLine;
             }
@@ -103,6 +107,13 @@ var gitUrlPatternItems = {
             return '';
         }
     }
+}
+
+function getRepoWithoutGitExtension(repo) {
+    if (repo.substr(-4) === '.git') {
+        repo = repo.substr(0, repo.length - 4);
+    }
+    return repo;
 }
 
 function normalizeGitUrlToHttps(repo) {
@@ -122,10 +133,6 @@ function getNewFileUrl(item, gitContribute, gitUrlPattern) {
         return '';
     }
 
-    if (gitInfo.repo.substr(-4) === '.git') {
-        gitInfo.repo = gitInfo.repo.substr(0, gitInfo.repo.length - 4);
-    }
-
     var patternName = getPatternName(gitInfo.repo, gitUrlPattern);
     if (!patternName) return patternName;
     return gitUrlPatternItems[patternName].generateNewFileUrl(gitInfo, item.uid);
@@ -135,10 +142,6 @@ function getRemoteUrl(remote, startLine, gitContribute, gitUrlPattern) {
     var gitInfo = getGitInfo(gitContribute, remote);
     if (!gitInfo.repo || !gitInfo.branch || !gitInfo.path) {
         return '';
-    }
-
-    if (gitInfo.repo.substr(-4) === '.git') {
-        gitInfo.repo = gitInfo.repo.substr(0, gitInfo.repo.length - 4);
     }
 
     var patternName = getPatternName(gitInfo.repo, gitUrlPattern);

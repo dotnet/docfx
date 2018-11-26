@@ -1,0 +1,66 @@
+### YamlMime:ManagedReference
+items:
+- uid: com.microsoft.azure.management.sql.SqlServer
+  id: SqlServer
+  parent: com.microsoft.azure.management.sql
+  children:
+  - com.microsoft.azure.management.sql.SqlServer.firewallRules()
+  href: com.microsoft.azure.management.sql.SqlServer.yml
+  langs:
+  - java
+  name: SqlServer
+  nameWithType: SqlServer
+  fullName: com.microsoft.azure.management.sql.SqlServer
+  type: Interface
+  source:
+    remote: &o0
+      path: azure-mgmt-sql/src/main/java/com/microsoft/azure/management/sql/SqlServer.java
+      branch: master
+      repo: https://github.com/Azure/azure-libraries-for-java
+    path: azure-mgmt-sql/src/main/java/com/microsoft/azure/management/sql/SqlServer.java
+    startLine: 29
+  package: com.microsoft.azure.management.sql
+  summary: <p>An immutable client-side representation of an Azure SQL Server. </p>
+  syntax:
+    content: public interface SqlServer extends GroupableResource<SqlServerManager, ServerInner>,Refreshable<SqlServer>,Updatable<SqlServer.Update>,GroupableResource<SqlServerManager, ServerInner>,Refreshable<SqlServer>,Updatable<SqlServer.Update>
+- uid: com.microsoft.azure.management.sql.SqlServer.firewallRules()
+  id: firewallRules()
+  parent: com.microsoft.azure.management.sql.SqlServer
+  href: com.microsoft.azure.management.sql.SqlServer.yml
+  langs:
+  - java
+  name: firewallRules()
+  nameWithType: SqlServer.firewallRules()
+  fullName: com.microsoft.azure.management.sql.SqlServer.firewallRules()
+  overload: com.microsoft.azure.management.sql.SqlServer.firewallRules*
+  type: Method
+  source:
+    remote: *o0
+    path: azure-mgmt-sql/src/main/java/com/microsoft/azure/management/sql/SqlServer.java
+    startLine: 206
+  package: com.microsoft.azure.management.sql
+  syntax:
+    content: public SqlFirewallRuleOperations.SqlFirewallRuleActionsDefinition firewallRules()
+    return:
+      type: 2e74d140
+      description: <p>the entry point to manage SQL Firewall rules for this server </p>
+references:
+- uid: 2e74d140
+  spec.java:
+  - name: SqlFirewallRuleOperations.SqlFirewallRuleActionsDefinition
+    fullName: SqlFirewallRuleOperations.SqlFirewallRuleActionsDefinition
+- uid: com.microsoft.azure.management.sql.SqlServer.firewallRules*
+  name: firewallRules
+  nameWithType: SqlServer.firewallRules
+  fullName: com.microsoft.azure.management.sql.SqlServer.firewallRules
+  package: com.microsoft.azure.management.sql
+- uid: com.microsoft.azure.management.sql.SqlServer.FirewallRules
+  parent: com.microsoft.azure.management.sql
+  href: com.microsoft.azure.management.sql.SqlServer.FirewallRules.yml
+  name: SqlServer.FirewallRules
+  nameWithType: SqlServer.FirewallRules
+  fullName: com.microsoft.azure.management.sql.SqlServer.FirewallRules
+  type: Interface
+  summary: <p>Entry point to firewall rules from the SQL Server. </p>
+  syntax:
+    content: public interface FirewallRules

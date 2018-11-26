@@ -1,0 +1,136 @@
+{
+	"title": "RESTMixedTest",
+	"$schema": "https://dotnet.github.io/docfx/schemas/v1.0/schema.json#",
+	"version": "1.0.0",
+	"description": "The schema for REST Operation Group page",
+	"id": "https://github.com/dotnet/docfx/schemas/rest.operationgroup.schema.json",
+	"type": "object",
+	"properties": {
+		"apiVersion": {
+			"type": "string"
+		},
+		"name": {
+			"type": "string"
+		},
+		"operations": {
+			"items": {
+				"properties": {
+					"summary": {
+						"type": "string",
+						"contentType": "markdown",
+						"tags": [
+							"localizable"
+						]
+					},
+					"id": {
+						"type": "string",
+						"mergeType": "key"
+					}
+				},
+				"type": "object"
+			},
+			"type": "array"
+		},
+		"service": {
+			"description": "service uid",
+			"type": "string"
+		},
+		"summary": {
+			"type": "string",
+			"contentType": "markdown",
+			"tags": [
+				"localizable"
+			]
+		},
+		"uid": {
+			"contentType": "uid",
+			"type": "string"
+		},
+		"definitions": {
+			"items": {
+				"properties": {
+					"name": {
+						"type": "string",
+						"mergeType": "key"
+					},
+					"description": {
+						"type": "string",
+						"contentType": "markdown",
+						"tags": [
+							"localizable"
+						]
+					},
+					"kind": {
+						"type": "string",
+						"enum": [
+							"enum",
+							"object"
+						]
+					},
+					"properties": {
+						"items": {
+							"properties": {
+								"description": {
+									"type": "string",
+									"contentType": "markdown",
+									"tags": [
+										"localizable"
+									]
+								},
+								"name": {
+									"type": "string",
+									"mergeType": "key"
+								},
+								"types": {
+									"items": {
+										"properties": {
+											"id": {
+												"type": "string",
+											},
+											"isArray": {
+												"type": "boolean"
+											},
+											"isDictionary": {
+												"type": "boolean"
+											},
+											"additionalTypes": {
+												"items": {
+													"properties": {
+														"uid": {
+															"type": "string"
+														}
+													},
+													"type": "object"
+												},
+												"type": "array"
+											}
+										},
+										"type": "object"
+									},
+									"type": "array"
+								},
+								"format": {
+									"type": "string"
+								},
+								"typesTitle": {
+									"type": "string"
+								},
+								"pattern": {
+									"type": "string"
+								}
+							},
+							"type": "object"
+						},
+						"type": "array"
+					}
+				},
+				"type": "object"
+			},
+			"type": "array"
+		}
+	},
+	"metadata": "/metadata",
+	"xrefProperties": [
+		"name"
+	]
+}

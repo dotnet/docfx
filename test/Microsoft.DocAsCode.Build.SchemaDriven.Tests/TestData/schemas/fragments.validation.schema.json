@@ -1,0 +1,66 @@
+{
+  "title": "FragmentsValidation",
+  "$schema": "https://dotnet.github.io/docfx/schemas/v1.0/schema.json#",
+  "version": "1.0.0",
+  "description": "The schema for fragments validation",
+  "id": "https://github.com/dotnet/docfx/schemas/rest.operationgroup.schema.json",
+  "type": "object",
+  "properties": {
+    "operations": {
+      "items": {
+        "properties": {
+          "summary": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string",
+            "contentType": "markdown",
+            "tags": [
+              "editable"
+            ]
+          },
+          "id": {
+            "type": "string",
+            "mergeType": "key"
+          }
+        },
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "author": {
+      "description": "service uid",
+      "type": "string",
+      "tags": [
+        "editable"
+      ]
+    },
+    "depot_name": {
+      "description": "service uid",
+      "type": "string",
+      "contentType": "markdown"
+    },
+    "site_name": {
+      "description": "service uid",
+      "type": "string"
+    },
+    "summary": {
+      "type": "string",
+      "contentType": "markdown",
+      "tags": [
+        "editable"
+      ]
+    },
+    "description": {
+      "type": "string",
+      "contentType": "markdown",
+      "tags": [
+        "localizable"
+      ]
+    },
+    "uid": {
+      "contentType": "uid",
+      "type": "string"
+    }
+  }
+}

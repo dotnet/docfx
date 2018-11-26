@@ -5,6 +5,10 @@ namespace Microsoft.DocAsCode.Plugins
 {
     public interface IMarkdownService
     {
+        string Name { get; }
+
         MarkupResult Markup(string src, string path);
+
+        MarkupResult Markup(string src, string path, bool enableValidation);
     }
 }

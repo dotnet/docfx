@@ -18,11 +18,7 @@ namespace Microsoft.DocAsCode.YamlSerialization.NodeDeserializers
     public class EmitGenericDictionaryNodeDeserializer : INodeDeserializer
     {
         private static readonly MethodInfo DeserializeHelperMethod =
-#if NetCore
-            typeof(EmitGenericDictionaryNodeDeserializer).GetTypeInfo().GetDeclaredMethod(nameof(DeserializeHelper));
-#else
             typeof(EmitGenericDictionaryNodeDeserializer).GetMethod(nameof(DeserializeHelper));
-#endif
             private readonly IObjectFactory _objectFactory;
         private readonly Dictionary<Type, Type[]> _gpCache =
             new Dictionary<Type, Type[]>();
@@ -41,11 +37,15 @@ namespace Microsoft.DocAsCode.YamlSerialization.NodeDeserializers
                 var dictionaryType = ReflectionUtility.GetImplementedGenericInterface(expectedType, typeof(IDictionary<,>));
                 if (dictionaryType != null)
                 {
-#if NetCore
-                    gp = dictionaryType.GetTypeInfo().GenericTypeParameters;
-#else
                     gp = dictionaryType.GetGenericArguments();
-#endif
+                }
+                else
+                {
+                    dictionaryType = ReflectionUtility.GetImplementedGenericInterface(expectedType, typeof(IReadOnlyDictionary<,>));
+                    if (dictionaryType != null)
+                    {
+                        gp = dictionaryType.GetGenericArguments();
+                    }
                 }
                 _gpCache[expectedType] = gp;
             }

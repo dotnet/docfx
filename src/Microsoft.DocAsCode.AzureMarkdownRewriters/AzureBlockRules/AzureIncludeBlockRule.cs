@@ -40,8 +40,7 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
                 return new MarkdownTextToken(this, parser.Context, match.Value, sourceInfo);
             }
 
-            object currentFilePath;
-            if (!parser.Context.Variables.TryGetValue("path", out currentFilePath))
+            if (!parser.Context.Variables.TryGetValue("path", out object currentFilePath))
             {
                 Logger.LogWarning($"Can't get path for the file that ref azure block include file, return MarkdownTextToken. Raw: {match.Value}");
                 return new MarkdownTextToken(this, parser.Context, match.Value, sourceInfo);

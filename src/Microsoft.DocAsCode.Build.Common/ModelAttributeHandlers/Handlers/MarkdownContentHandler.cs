@@ -76,8 +76,7 @@ namespace Microsoft.DocAsCode.Build.Common
                     return null;
                 }
 
-                var val = currentObj as string;
-                if (val != null)
+                if (currentObj is string val)
                 {
                     var marked = Markup(val, context);
                     if (currentPropertyInfo != null)
@@ -87,8 +86,7 @@ namespace Microsoft.DocAsCode.Build.Common
                     return marked;
                 }
 
-                var list = currentObj as IList<string>;
-                if (list != null)
+                if (currentObj is IList<string> list)
                 {
                     for (var i = 0; i < list.Count; i++)
                     {
@@ -131,8 +129,7 @@ namespace Microsoft.DocAsCode.Build.Common
                     return content;
                 }
 
-                string result;
-                if (TryMarkupPlaceholderContent(content, context, out result))
+                if (TryMarkupPlaceholderContent(content, context, out string result))
                 {
                     return result;
                 }
@@ -166,6 +163,7 @@ namespace Microsoft.DocAsCode.Build.Common
                 context.LinkToFiles.UnionWith(mr.LinkToFiles);
                 context.FileLinkSources = context.FileLinkSources.Merge(mr.FileLinkSources.Select(s => new KeyValuePair<string, IEnumerable<LinkSourceInfo>>(s.Key, s.Value)));
                 context.UidLinkSources = context.UidLinkSources.Merge(mr.UidLinkSources.Select(s => new KeyValuePair<string, IEnumerable<LinkSourceInfo>>(s.Key, s.Value)));
+                context.Dependency.UnionWith(mr.Dependency);
                 return mr.Html;
             }
         }

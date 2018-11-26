@@ -11,7 +11,6 @@ namespace Microsoft.DocAsCode.MarkdownLite
     public class GfmFencesBlockRule : IMarkdownRule
     {
         private static readonly Matcher _EndFences =
-            Matcher.NewLine.RepeatAtLeast(1) +
             Matcher.WhiteSpace.Repeat(0, 3) +
             Matcher.BackReference("flag").RepeatAtLeast(3).CompareLength(LengthComparison.GreaterThanOrEquals, "flagLength") +
             Matcher.WhiteSpacesOrEmpty +
@@ -24,7 +23,8 @@ namespace Microsoft.DocAsCode.MarkdownLite
             Matcher.WhiteSpacesOrEmpty + Matcher.NewLine +
             (
                 _EndFences.ToNegativeTest() +
-                (Matcher.AnyStringInSingleLine | Matcher.NewLine.RepeatAtLeast(1))
+                Matcher.AnyStringInSingleLine.Maybe() +
+                Matcher.NewLine
             ).RepeatAtLeast(0).ToGroup("code") +
             (_EndFences | Matcher.EndOfString);
 
@@ -46,7 +46,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 {
                     code = Regex.Replace(code, "^ {1," + match["spaces"].Count.ToString() + "}", string.Empty, RegexOptions.Multiline);
                 }
-                return new MarkdownCodeBlockToken(this, parser.Context, code, match["lang"].GetValue(), sourceInfo);
+                return new MarkdownCodeBlockToken(this, parser.Context, Regexes.Lexers.TailingEmptyLine.Replace(code, string.Empty), match["lang"].GetValue(), sourceInfo);
             }
             return null;
         }

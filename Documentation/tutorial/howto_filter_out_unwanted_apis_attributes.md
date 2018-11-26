@@ -10,7 +10,7 @@ The path of the configuration file is specified in the following two ways. Optio
 
 1. docfx.exe metadata command argument.
 
-   `docfx.exe metadata -filter <path relative to baseDir or absolutepath>`
+   `docfx.exe metadata --filter <path relative to baseDir or absolutepath>`
 
 2. docfx.json metadata section `filter` property.
  
@@ -84,6 +84,8 @@ Supported `type`:
 > `Type` could be `Class`, `Struct`, `Enum`, `Interface`, or `Delegate`. `Member` could be `Event`, `Field`, `Method`, or `Property`.
 >
 > `Namespace` is flattened. Namely, excluding namespace 'A.B' has nothing to do with namespace 'A.B.C'.
+
+> [!Important]
 >
 > If a namespace is excluded, all types/members defined in the namespace would also be excluded.
 > If a type is excluded, all members defined in the type would also be excluded.
@@ -101,7 +103,7 @@ The below sample would exclude all APIs whose uid starts with 'Microsoft.DevDiv'
   
 You can specify an attribute by its `uid`, `ctorArguments` and `ctorNamedArguments`.
   
-> *Note*
+> [!Note]
 >
 > `ctorArguments` requires a full match of the attribute's constructor arguments, while `ctorNamedArguments` supports a partial match.
 > Namely, `ctorArguments` should contain all the arguments while `ctorNamedArguments` could contain a subset of the named arguments. 

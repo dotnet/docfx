@@ -62,6 +62,17 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
             }
             if (".md".Equals(Path.GetExtension(file.File), StringComparison.OrdinalIgnoreCase))
             {
+                var filenameWithoutExtension = Path.ChangeExtension(file.File, null);
+
+                // exclude overwrite markdown segments
+                var subExtension = Path.GetExtension(filenameWithoutExtension);
+                if ((".yml".Equals(subExtension, StringComparison.OrdinalIgnoreCase) ||
+                    ".yaml".Equals(subExtension, StringComparison.OrdinalIgnoreCase))
+                    && EnvironmentContext.FileAbstractLayer.Exists(filenameWithoutExtension))
+                {
+                    return ProcessingPriority.NotSupported;
+                }
+
                 return ProcessingPriority.Normal;
             }
             return ProcessingPriority.NotSupported;

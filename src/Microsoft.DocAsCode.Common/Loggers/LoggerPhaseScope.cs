@@ -4,13 +4,12 @@
 namespace Microsoft.DocAsCode.Common
 {
     using System;
-    using System.Runtime.Remoting.Messaging;
 
     public sealed class LoggerPhaseScope : IDisposable
     {
         private readonly string _originPhaseName;
         private readonly PerformanceScope _performanceScope;
-        private readonly AmbientContext? _ac = null;
+        private readonly AmbientContext? _ac;
         public LoggerPhaseScope(string phaseName)
             : this(phaseName, null) { }
 
@@ -75,12 +74,12 @@ namespace Microsoft.DocAsCode.Common
 
         internal static string GetPhaseName()
         {
-            return CallContext.LogicalGetData(nameof(LoggerPhaseScope)) as string;
+            return LogicalCallContext.GetData(nameof(LoggerPhaseScope)) as string;
         }
 
         private void SetPhaseName(string phaseName)
         {
-            CallContext.LogicalSetData(nameof(LoggerPhaseScope), phaseName);
+            LogicalCallContext.SetData(nameof(LoggerPhaseScope), phaseName);
         }
 
         public static object Capture()
@@ -96,8 +95,7 @@ namespace Microsoft.DocAsCode.Common
 
         private static LoggerPhaseScope Restore(object captured, LogLevel? perfLogLevel)
         {
-            var capturedScope = captured as CapturedLoggerPhaseScope;
-            if (capturedScope == null)
+            if (!(captured is CapturedLoggerPhaseScope capturedScope))
             {
                 return null;
             }

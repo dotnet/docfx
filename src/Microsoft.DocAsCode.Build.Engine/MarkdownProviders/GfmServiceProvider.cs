@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.Build.Engine
 {
+    using System;
     using System.Composition;
 
     using Microsoft.DocAsCode.MarkdownLite;
@@ -18,6 +19,8 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private sealed class GfmService : IMarkdownService
         {
+            public string Name => "gfm";
+
             private static GfmEngineBuilder Builder { get; } = new GfmEngineBuilder(new Options { XHtml = true, Mangle = false });
             private static HtmlRenderer Renderer { get; } = new HtmlRenderer();
 
@@ -28,6 +31,11 @@ namespace Microsoft.DocAsCode.Build.Engine
                 {
                     Html = html,
                 };
+            }
+
+            public MarkupResult Markup(string src, string path, bool enableValidation)
+            {
+                throw new NotImplementedException();
             }
         }
     }

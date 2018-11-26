@@ -92,8 +92,7 @@ namespace Microsoft.DocAsCode.ExternalPackageGenerators.Msdn
             MtpsApiUrlTemplate = ConfigurationManager.AppSettings["MtpsApiUrlTemplate"] ?? MtpsApiUrlTemplate;
             if (ConfigurationManager.AppSettings["HttpMaxConcurrency"] != null)
             {
-                int value;
-                if (int.TryParse(ConfigurationManager.AppSettings["HttpMaxConcurrency"], out value) && value > 0)
+                if (int.TryParse(ConfigurationManager.AppSettings["HttpMaxConcurrency"], out int value) && value > 0)
                 {
                     HttpMaxConcurrency = value;
                 }
@@ -125,8 +124,7 @@ namespace Microsoft.DocAsCode.ExternalPackageGenerators.Msdn
             }
             if (ConfigurationManager.AppSettings["StatisticsFreshPerSecond"] != null)
             {
-                int value;
-                if (int.TryParse(ConfigurationManager.AppSettings["StatisticsFreshPerSecond"], out value) && value > 0)
+                if (int.TryParse(ConfigurationManager.AppSettings["StatisticsFreshPerSecond"], out int value) && value > 0)
                 {
                     StatisticsFreshPerSecond = value;
                 }
@@ -451,8 +449,7 @@ namespace Microsoft.DocAsCode.ExternalPackageGenerators.Msdn
         private async Task<XRefSpec> GetOverloadXRefSpecCoreAsync(Tuple<XRefSpec, CommentIdAndUid> pair)
         {
             var dict = await _commentIdToShortIdMapCache.GetAsync(pair.Item1.CommentId);
-            string shortId;
-            if (dict.TryGetValue(pair.Item2.CommentId, out shortId))
+            if (dict.TryGetValue(pair.Item2.CommentId, out string shortId))
             {
                 return new XRefSpec
                 {
@@ -580,8 +577,7 @@ namespace Microsoft.DocAsCode.ExternalPackageGenerators.Msdn
                     return string.Empty;
                 }
                 var dict = await _commentIdToShortIdMapCache.GetAsync(containingCommentId);
-                string shortId;
-                if (dict.TryGetValue(commentId, out shortId))
+                if (dict.TryGetValue(commentId, out string shortId))
                 {
                     return shortId;
                 }

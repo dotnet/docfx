@@ -1,0 +1,320 @@
+### YamlMime:ManagedReference
+items:
+- uid: Microsoft.DocAsCode.Build.SchemaDriven.MergeType
+  commentId: T:Microsoft.DocAsCode.Build.SchemaDriven.MergeType
+  id: MergeType
+  parent: Microsoft.DocAsCode.Build.SchemaDriven
+  children:
+  - Microsoft.DocAsCode.Build.SchemaDriven.MergeType.Ignore
+  - Microsoft.DocAsCode.Build.SchemaDriven.MergeType.Key
+  - Microsoft.DocAsCode.Build.SchemaDriven.MergeType.Merge
+  - Microsoft.DocAsCode.Build.SchemaDriven.MergeType.Replace
+  langs:
+  - csharp
+  - vb
+  name: MergeType
+  nameWithType: MergeType
+  fullName: Microsoft.DocAsCode.Build.SchemaDriven.MergeType
+  type: Enum
+  source:
+    remote:
+      path: src/Microsoft.DocAsCode.Build.SchemaDriven/Models/MergeType.cs
+      branch: dev
+      repo: https://github.com/dotnet/docfx.git
+    id: MergeType
+    path: ../src/Microsoft.DocAsCode.Build.SchemaDriven/Models/MergeType.cs
+    startLine: 5
+  assemblies:
+  - Microsoft.DocAsCode.Build.SchemaDriven
+  namespace: Microsoft.DocAsCode.Build.SchemaDriven
+  syntax:
+    content: public enum MergeType
+    content.vb: Public Enum MergeType
+  extensionMethods:
+  - System.Object.Microsoft.DocAsCode.Common.JsonUtility.ToJsonString(Newtonsoft.Json.Formatting,Newtonsoft.Json.JsonSerializer)
+  modifiers.csharp:
+  - public
+  - enum
+  modifiers.vb:
+  - Public
+  - Enum
+- uid: Microsoft.DocAsCode.Build.SchemaDriven.MergeType.Merge
+  commentId: F:Microsoft.DocAsCode.Build.SchemaDriven.MergeType.Merge
+  id: Merge
+  parent: Microsoft.DocAsCode.Build.SchemaDriven.MergeType
+  langs:
+  - csharp
+  - vb
+  name: Merge
+  nameWithType: MergeType.Merge
+  fullName: Microsoft.DocAsCode.Build.SchemaDriven.MergeType.Merge
+  type: Field
+  source:
+    remote:
+      path: src/Microsoft.DocAsCode.Build.SchemaDriven/Models/MergeType.cs
+      branch: dev
+      repo: https://github.com/dotnet/docfx.git
+    id: Merge
+    path: ../src/Microsoft.DocAsCode.Build.SchemaDriven/Models/MergeType.cs
+    startLine: 7
+  assemblies:
+  - Microsoft.DocAsCode.Build.SchemaDriven
+  namespace: Microsoft.DocAsCode.Build.SchemaDriven
+  syntax:
+    content: Merge = 0
+    return:
+      type: Microsoft.DocAsCode.Build.SchemaDriven.MergeType
+  modifiers.csharp:
+  - public
+  - const
+  modifiers.vb:
+  - Public
+  - Const
+- uid: Microsoft.DocAsCode.Build.SchemaDriven.MergeType.Key
+  commentId: F:Microsoft.DocAsCode.Build.SchemaDriven.MergeType.Key
+  id: Key
+  parent: Microsoft.DocAsCode.Build.SchemaDriven.MergeType
+  langs:
+  - csharp
+  - vb
+  name: Key
+  nameWithType: MergeType.Key
+  fullName: Microsoft.DocAsCode.Build.SchemaDriven.MergeType.Key
+  type: Field
+  source:
+    remote:
+      path: src/Microsoft.DocAsCode.Build.SchemaDriven/Models/MergeType.cs
+      branch: dev
+      repo: https://github.com/dotnet/docfx.git
+    id: Key
+    path: ../src/Microsoft.DocAsCode.Build.SchemaDriven/Models/MergeType.cs
+    startLine: 8
+  assemblies:
+  - Microsoft.DocAsCode.Build.SchemaDriven
+  namespace: Microsoft.DocAsCode.Build.SchemaDriven
+  syntax:
+    content: Key = 1
+    return:
+      type: Microsoft.DocAsCode.Build.SchemaDriven.MergeType
+  modifiers.csharp:
+  - public
+  - const
+  modifiers.vb:
+  - Public
+  - Const
+- uid: Microsoft.DocAsCode.Build.SchemaDriven.MergeType.Replace
+  commentId: F:Microsoft.DocAsCode.Build.SchemaDriven.MergeType.Replace
+  id: Replace
+  parent: Microsoft.DocAsCode.Build.SchemaDriven.MergeType
+  langs:
+  - csharp
+  - vb
+  name: Replace
+  nameWithType: MergeType.Replace
+  fullName: Microsoft.DocAsCode.Build.SchemaDriven.MergeType.Replace
+  type: Field
+  source:
+    remote:
+      path: src/Microsoft.DocAsCode.Build.SchemaDriven/Models/MergeType.cs
+      branch: dev
+      repo: https://github.com/dotnet/docfx.git
+    id: Replace
+    path: ../src/Microsoft.DocAsCode.Build.SchemaDriven/Models/MergeType.cs
+    startLine: 9
+  assemblies:
+  - Microsoft.DocAsCode.Build.SchemaDriven
+  namespace: Microsoft.DocAsCode.Build.SchemaDriven
+  syntax:
+    content: Replace = 2
+    return:
+      type: Microsoft.DocAsCode.Build.SchemaDriven.MergeType
+  modifiers.csharp:
+  - public
+  - const
+  modifiers.vb:
+  - Public
+  - Const
+- uid: Microsoft.DocAsCode.Build.SchemaDriven.MergeType.Ignore
+  commentId: F:Microsoft.DocAsCode.Build.SchemaDriven.MergeType.Ignore
+  id: Ignore
+  parent: Microsoft.DocAsCode.Build.SchemaDriven.MergeType
+  langs:
+  - csharp
+  - vb
+  name: Ignore
+  nameWithType: MergeType.Ignore
+  fullName: Microsoft.DocAsCode.Build.SchemaDriven.MergeType.Ignore
+  type: Field
+  source:
+    remote:
+      path: src/Microsoft.DocAsCode.Build.SchemaDriven/Models/MergeType.cs
+      branch: dev
+      repo: https://github.com/dotnet/docfx.git
+    id: Ignore
+    path: ../src/Microsoft.DocAsCode.Build.SchemaDriven/Models/MergeType.cs
+    startLine: 10
+  assemblies:
+  - Microsoft.DocAsCode.Build.SchemaDriven
+  namespace: Microsoft.DocAsCode.Build.SchemaDriven
+  syntax:
+    content: Ignore = 3
+    return:
+      type: Microsoft.DocAsCode.Build.SchemaDriven.MergeType
+  modifiers.csharp:
+  - public
+  - const
+  modifiers.vb:
+  - Public
+  - Const
+references:
+- uid: Microsoft.DocAsCode.Build.SchemaDriven
+  commentId: N:Microsoft.DocAsCode.Build.SchemaDriven
+  isExternal: false
+  name: Microsoft.DocAsCode.Build.SchemaDriven
+  nameWithType: Microsoft.DocAsCode.Build.SchemaDriven
+  fullName: Microsoft.DocAsCode.Build.SchemaDriven
+- uid: System.Object.Microsoft.DocAsCode.Common.JsonUtility.ToJsonString(Newtonsoft.Json.Formatting,Newtonsoft.Json.JsonSerializer)
+  commentId: M:Microsoft.DocAsCode.Common.JsonUtility.ToJsonString(System.Object,Newtonsoft.Json.Formatting,Newtonsoft.Json.JsonSerializer)
+  parent: Microsoft.DocAsCode.Common.JsonUtility
+  definition: Microsoft.DocAsCode.Common.JsonUtility.ToJsonString(System.Object,Newtonsoft.Json.Formatting,Newtonsoft.Json.JsonSerializer)
+  name: ToJsonString(Formatting, JsonSerializer)
+  nameWithType: JsonUtility.ToJsonString(Formatting, JsonSerializer)
+  fullName: Microsoft.DocAsCode.Common.JsonUtility.ToJsonString(Newtonsoft.Json.Formatting, Newtonsoft.Json.JsonSerializer)
+  spec.csharp:
+  - uid: Microsoft.DocAsCode.Common.JsonUtility.ToJsonString(Newtonsoft.Json.Formatting,Newtonsoft.Json.JsonSerializer)
+    name: ToJsonString
+    nameWithType: JsonUtility.ToJsonString
+    fullName: Microsoft.DocAsCode.Common.JsonUtility.ToJsonString
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: Newtonsoft.Json.Formatting
+    name: Formatting
+    nameWithType: Formatting
+    fullName: Newtonsoft.Json.Formatting
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: Newtonsoft.Json.JsonSerializer
+    name: JsonSerializer
+    nameWithType: JsonSerializer
+    fullName: Newtonsoft.Json.JsonSerializer
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: Microsoft.DocAsCode.Common.JsonUtility.ToJsonString(Newtonsoft.Json.Formatting,Newtonsoft.Json.JsonSerializer)
+    name: ToJsonString
+    nameWithType: JsonUtility.ToJsonString
+    fullName: Microsoft.DocAsCode.Common.JsonUtility.ToJsonString
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: Newtonsoft.Json.Formatting
+    name: Formatting
+    nameWithType: Formatting
+    fullName: Newtonsoft.Json.Formatting
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: Newtonsoft.Json.JsonSerializer
+    name: JsonSerializer
+    nameWithType: JsonSerializer
+    fullName: Newtonsoft.Json.JsonSerializer
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Microsoft.DocAsCode.Common.JsonUtility.ToJsonString(System.Object,Newtonsoft.Json.Formatting,Newtonsoft.Json.JsonSerializer)
+  commentId: M:Microsoft.DocAsCode.Common.JsonUtility.ToJsonString(System.Object,Newtonsoft.Json.Formatting,Newtonsoft.Json.JsonSerializer)
+  isExternal: true
+  name: ToJsonString(Object, Formatting, JsonSerializer)
+  nameWithType: JsonUtility.ToJsonString(Object, Formatting, JsonSerializer)
+  fullName: Microsoft.DocAsCode.Common.JsonUtility.ToJsonString(System.Object, Newtonsoft.Json.Formatting, Newtonsoft.Json.JsonSerializer)
+  spec.csharp:
+  - uid: Microsoft.DocAsCode.Common.JsonUtility.ToJsonString(System.Object,Newtonsoft.Json.Formatting,Newtonsoft.Json.JsonSerializer)
+    name: ToJsonString
+    nameWithType: JsonUtility.ToJsonString
+    fullName: Microsoft.DocAsCode.Common.JsonUtility.ToJsonString
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: Newtonsoft.Json.Formatting
+    name: Formatting
+    nameWithType: Formatting
+    fullName: Newtonsoft.Json.Formatting
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: Newtonsoft.Json.JsonSerializer
+    name: JsonSerializer
+    nameWithType: JsonSerializer
+    fullName: Newtonsoft.Json.JsonSerializer
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: Microsoft.DocAsCode.Common.JsonUtility.ToJsonString(System.Object,Newtonsoft.Json.Formatting,Newtonsoft.Json.JsonSerializer)
+    name: ToJsonString
+    nameWithType: JsonUtility.ToJsonString
+    fullName: Microsoft.DocAsCode.Common.JsonUtility.ToJsonString
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: Newtonsoft.Json.Formatting
+    name: Formatting
+    nameWithType: Formatting
+    fullName: Newtonsoft.Json.Formatting
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: Newtonsoft.Json.JsonSerializer
+    name: JsonSerializer
+    nameWithType: JsonSerializer
+    fullName: Newtonsoft.Json.JsonSerializer
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Microsoft.DocAsCode.Common.JsonUtility
+  commentId: T:Microsoft.DocAsCode.Common.JsonUtility
+  parent: Microsoft.DocAsCode.Common
+  isExternal: false
+  name: JsonUtility
+  nameWithType: JsonUtility
+  fullName: Microsoft.DocAsCode.Common.JsonUtility
+- uid: Microsoft.DocAsCode.Common
+  commentId: N:Microsoft.DocAsCode.Common
+  isExternal: false
+  name: Microsoft.DocAsCode.Common
+  nameWithType: Microsoft.DocAsCode.Common
+  fullName: Microsoft.DocAsCode.Common
+- uid: Microsoft.DocAsCode.Build.SchemaDriven.MergeType
+  commentId: T:Microsoft.DocAsCode.Build.SchemaDriven.MergeType
+  parent: Microsoft.DocAsCode.Build.SchemaDriven
+  isExternal: false
+  name: MergeType
+  nameWithType: MergeType
+  fullName: Microsoft.DocAsCode.Build.SchemaDriven.MergeType

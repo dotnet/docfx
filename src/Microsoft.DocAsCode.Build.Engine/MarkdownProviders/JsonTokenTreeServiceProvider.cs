@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.Build.Engine
 {
+    using System;
     using System.Composition;
 
     using Microsoft.DocAsCode.MarkdownLite;
@@ -18,6 +19,8 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private sealed class JsonTokenTreeService : IMarkdownService
         {
+            public string Name => "jsonTokenTree";
+
             private static GfmEngineBuilder builder { get; } = new GfmEngineBuilder(new Options { XHtml = true, Mangle = false });
 
             private static JsonTokenTreeRenderer Renderer { get; } = new JsonTokenTreeRenderer();
@@ -34,6 +37,11 @@ namespace Microsoft.DocAsCode.Build.Engine
                     // TODO: rename
                     Html = $"{{\"name\":\"0>0>markdown\",\"children\":[{json}]}}",
                 };
+            }
+
+            public MarkupResult Markup(string src, string path, bool enableValidation)
+            {
+                throw new NotImplementedException();
             }
         }
     }

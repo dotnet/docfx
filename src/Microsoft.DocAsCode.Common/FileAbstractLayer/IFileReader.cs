@@ -21,5 +21,11 @@ namespace Microsoft.DocAsCode.Common
         /// </summary>
         /// <returns>A set of logical file path (from working folder).</returns>
         IEnumerable<RelativePath> EnumerateFiles();
+        /// <summary>
+        /// Get expected physical paths.
+        /// </summary>
+        /// <param name="file">Logical file path.</param>
+        /// <returns>Expected physical paths.</returns>
+        IEnumerable<string> GetExpectedPhysicalPath(RelativePath file);
     }
 }

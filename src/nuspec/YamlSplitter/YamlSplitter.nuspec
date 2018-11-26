@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/10/nuspec.xsd">
+  <metadata>
+    <id>YamlSplitter</id>
+    <version>1.0.0</version>
+    <title>YamlSplitter</title>
+    <authors>Microsoft</authors>
+    <owners>Microsoft</owners>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <licenseUrl>https://github.com/dotnet/docfx/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/dotnet/docfx</projectUrl>
+    <description>This is a DocFX tool to split Yaml into skeleton and Markdown fragments.</description>
+    <copyright>© Microsoft Corporation. All rights reserved.</copyright>
+    <tags>Documentation API Metadata docascode docfx Yaml</tags>
+  </metadata>
+  <files>
+    <file src="**" target="tools/" exclude="**/*.pdb"/>
+  </files>
+</package>

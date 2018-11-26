@@ -1,4 +1,4 @@
-﻿---
+---
 title: Thanks for installing DocFX!
 documentType: index
 ---

@@ -40,7 +40,8 @@ try{
     }
   } else{
       Write-Host "Creating '$refname' : ['$content'] to '$refname' section of '$configPath'"
-    $config | Add-Member -name $refname -value @($content) -membertype NoteProperty
+      $config.build | Add-Member -name $refname -value @($content) -membertype NoteProperty
+      ConvertTo-Json $config -Depth 6 | sc $configPath
   }}catch [System.Exception]{
   Write-Error "Unable to add '$content' to '$refname' section of '$configPath' : $_";
   Write-Host "To manaully set '$content' as '$refname', add '$content' to the '$refname' section of '$configPath'";

@@ -5,11 +5,9 @@ namespace Microsoft.DocAsCode.YamlSerialization.ObjectFactories
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Reflection;
     using System.Reflection.Emit;
-#if NetCore
-    using System.Linq;
-#endif
 
     using YamlDotNet.Serialization;
 
@@ -17,35 +15,40 @@ namespace Microsoft.DocAsCode.YamlSerialization.ObjectFactories
     {
         private readonly Dictionary<Type, Func<object>> _cache =
             new Dictionary<Type, Func<object>>();
-#if NetCore
-        private static Type[] EmptyTypes { get; } = new Type[0];
-#else
         private static Type[] EmptyTypes => Type.EmptyTypes;
-#endif
 
         public object Create(Type type)
         {
             if (!_cache.TryGetValue(type, out Func<object> func))
             {
-#if NetCore
-                var ti = type.GetTypeInfo();
-                if (ti.IsVisible)
-                {
-                    var ctor = ti.DeclaredConstructors.FirstOrDefault(c => c.GetParameters().Length == 0);
-#else
                 if (type.IsVisible)
                 {
-                    var ctor = type.GetConstructor(Type.EmptyTypes);
-#endif
+                    var realType = type;
+                    if (type.IsInterface && type.IsGenericType)
+                    {
+                        var def = type.GetGenericTypeDefinition();
+                        var args = type.GetGenericArguments();
+                        if (def == typeof(IDictionary<,>) || def == typeof(IReadOnlyDictionary<,>))
+                        {
+                            realType = typeof(Dictionary<,>).MakeGenericType(args);
+                        }
+                        if (def == typeof(IList<>) || def == typeof(IReadOnlyList<>) ||
+                            def == typeof(ICollection<>) || def == typeof(IReadOnlyCollection<>) ||
+                            def == typeof(IEnumerable<>))
+                        {
+                            realType = typeof(List<>).MakeGenericType(args);
+                        }
+                        if (def == typeof(ISet<>))
+                        {
+                            realType = typeof(HashSet<>).MakeGenericType(args);
+                        }
+                    }
+                    var ctor = realType.GetConstructor(Type.EmptyTypes);
                     if (ctor != null)
                     {
                         func = CreateReferenceTypeFactory(ctor);
                     }
-#if NetCore
-                    else if (ti.IsValueType)
-#else
                     else if (type.IsValueType)
-#endif
                     {
                         func = CreateValueTypeFactory(type);
                     }
@@ -53,10 +56,7 @@ namespace Microsoft.DocAsCode.YamlSerialization.ObjectFactories
                 if (func == null)
                 {
                     var typeName = type.FullName;
-                    func = () =>
-                    {
-                        throw new NotSupportedException(typeName);
-                    };
+                    func = () => throw new NotSupportedException(typeName);
                 }
                 _cache[type] = func;
             }
@@ -68,11 +68,7 @@ namespace Microsoft.DocAsCode.YamlSerialization.ObjectFactories
             var dm = new DynamicMethod(string.Empty, typeof(object), EmptyTypes);
             var il = dm.GetILGenerator();
             il.Emit(OpCodes.Newobj, ctor);
-#if NetCore
-            if (ctor.DeclaringType.GetTypeInfo().IsValueType)
-#else
             if (ctor.DeclaringType.IsValueType)
-#endif
             {
                 il.Emit(OpCodes.Box, ctor.DeclaringType);
             }

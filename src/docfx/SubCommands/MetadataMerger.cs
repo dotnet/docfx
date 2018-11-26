@@ -54,11 +54,13 @@ namespace Microsoft.DocAsCode.SubCommands
 
         private void MergePageViewModel(MetadataMergeParameters parameters)
         {
-            var p = new ManagedReferenceDocumentProcessor();
-            p.BuildSteps = new List<IDocumentBuildStep>
+            var p = new ManagedReferenceDocumentProcessor()
             {
-                new ApplyPlatformVersion(),
-                new MergeManagedReferenceDocument(),
+                BuildSteps = new List<IDocumentBuildStep>
+                {
+                    new ApplyPlatformVersion(),
+                    new MergeManagedReferenceDocument(),
+                }
             };
             var fc = new FileCollection(parameters.Files);
             fc.RemoveAll(x => "toc.yml".Equals(Path.GetFileName(x.File), StringComparison.OrdinalIgnoreCase));
@@ -117,8 +119,7 @@ namespace Microsoft.DocAsCode.SubCommands
                 {
                     var property = GetTableItem(item, metaNames);
 
-                    object uid;
-                    if (property.Count > 0 && item.TryGetValue(Constants.PropertyName.Uid, out uid))
+                    if (property.Count > 0 && item.TryGetValue(Constants.PropertyName.Uid, out object uid))
                     {
                         _propTable.Add((string)uid, property);
                     }
@@ -145,8 +146,7 @@ namespace Microsoft.DocAsCode.SubCommands
             var tableItem = new Dictionary<string, object>();
             foreach (var metaName in metaNames)
             {
-                object metaValue;
-                if (metadata.TryGetValue(metaName, out metaValue))
+                if (metadata.TryGetValue(metaName, out object metaValue))
                 {
                     tableItem.Add(metaName, metaValue);
                 }
@@ -174,8 +174,7 @@ namespace Microsoft.DocAsCode.SubCommands
 
         private void ApplyTocMetadata(TocItemViewModel item, Dictionary<string, Dictionary<string, object>> table)
         {
-            Dictionary<string, object> metadata;
-            if (table.TryGetValue(item.Uid, out metadata))
+            if (table.TryGetValue(item.Uid, out Dictionary<string, object> metadata))
             {
                 foreach (var metaPair in metadata)
                 {

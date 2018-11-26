@@ -34,10 +34,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
                     result.Add(GroupTextTokens(parser, rule, wrapParagraph, textContent, si));
                     textContent = StringBuffer.Empty;
                 }
-                if (token is MarkdownNewLineBlockToken)
-                {
-                    continue;
-                }
+
                 result.Add(token);
             }
             if (textContent != StringBuffer.Empty)

@@ -40,7 +40,7 @@ namespace Microsoft.DocAsCode.Dfm
             Matcher.WhiteSpacesOrEmpty +
             (Matcher.NewLine.RepeatAtLeast(1) | Matcher.EndOfString);
 
-        private static readonly Regex _dfmFencesRegex = new Regex(@"^ *\[\!((?i)code(\-(?<lang>[\w|\-]+))?)\s*\[(?<name>(?:\[[^\]]*\]|[^\[\]]|\](?=[^\[]*\]))*)\]\(\s*<?(?<path>[^\n]*?)((?<option>[\#|\?])(?<optionValue>\S+))?>?(?:\s+(?<quote>['""])(?<title>[\s\S]*?)\k<quote>)?\s*\)\]\s*(\n|$)", RegexOptions.Compiled, TimeSpan.FromSeconds(10));
+        private static readonly Regex _dfmFencesRegex = new Regex(@"^ *\[\!(?:(?i)code(?:\-(?<lang>[\w|\-]+))?)\s*\[(?<name>(?:\[[^\]]*\]|[^\[\]]|\](?=[^\[]*\]))*)\]\(\s*<?(?<path>(?:[^\n\]]|\\\])*?)((?<option>[\#|\?])(?<optionValue>\S+))?>?(?:\s+(?<quote>['""])(?<title>[\s\S]*?)\k<quote>)?\s*\)\]\s*(?:\n|$)", RegexOptions.Compiled, TimeSpan.FromSeconds(10));
 
         public override string Name => "DfmFences";
 
@@ -64,11 +64,7 @@ namespace Microsoft.DocAsCode.Dfm
                 var title = StringHelper.UnescapeMarkdown(match.GetGroup("title")?.GetValue() ?? string.Empty);
                 var queryStringAndFragment = UriUtility.GetQueryStringAndFragment(href);
                 var path = UriUtility.GetPath(href);
-                var pathQueryOption =
-                    !string.IsNullOrEmpty(queryStringAndFragment) ?
-                    ParsePathQueryString(queryStringAndFragment.Remove(1), queryStringAndFragment.Substring(1)) :
-                    null;
-                return new DfmFencesBlockToken(this, parser.Context, name, path, sourceInfo, lang, title, pathQueryOption);
+                return new DfmFencesBlockToken(this, parser.Context, name, path, sourceInfo, lang, title, queryStringAndFragment);
             }
             return null;
         }
@@ -90,7 +86,7 @@ namespace Microsoft.DocAsCode.Dfm
             var title = match.Groups["title"]?.Value;
             var pathQueryOption = ParsePathQueryString(match.Groups["option"]?.Value, match.Groups["optionValue"]?.Value);
 
-            return new DfmFencesBlockToken(this, parser.Context, name, path, sourceInfo, lang, title, pathQueryOption);
+            return new DfmFencesBlockToken(this, parser.Context, name, path, sourceInfo, lang, title, pathQueryOption, pathQueryOption != null ? match.Groups["option"]?.Value + match.Groups["optionValue"]?.Value : null);
         }
 
     }

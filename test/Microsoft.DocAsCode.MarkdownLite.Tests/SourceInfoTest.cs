@@ -24,24 +24,24 @@ More line.
 ## HEAD2
 Yeah!", File);
 
-            Assert.Equal(4, tokens.Length);
-            Assert.IsType<MarkdownHeadingBlockToken>(tokens[0]);
-            Assert.IsType<MarkdownParagraphBlockToken>(tokens[1]);
-            Assert.IsType<MarkdownHeadingBlockToken>(tokens[2]);
-            Assert.IsType<MarkdownParagraphBlockToken>(tokens[3]);
-            var para = (MarkdownParagraphBlockToken)tokens[1];
+            Assert.Equal(5, tokens.Length);
+            Assert.IsType<MarkdownHeadingBlockToken>(tokens[1]);
+            Assert.IsType<MarkdownParagraphBlockToken>(tokens[2]);
+            Assert.IsType<MarkdownHeadingBlockToken>(tokens[3]);
+            Assert.IsType<MarkdownParagraphBlockToken>(tokens[4]);
+            var para = (MarkdownParagraphBlockToken)tokens[2];
             Assert.Equal(3, para.InlineTokens.Tokens.Length);
             Assert.IsType<MarkdownTextToken>(para.InlineTokens.Tokens[0]);
             Assert.IsType<MarkdownBrInlineToken>(para.InlineTokens.Tokens[1]);
             Assert.IsType<MarkdownTextToken>(para.InlineTokens.Tokens[2]);
 
-            Assert.Equal(3, tokens[0].SourceInfo.LineNumber);
-            Assert.Equal(File, tokens[0].SourceInfo.File);
-            Assert.Equal("# HEAD1\n", tokens[0].SourceInfo.Markdown);
-
-            Assert.Equal(4, tokens[1].SourceInfo.LineNumber);
+            Assert.Equal(3, tokens[1].SourceInfo.LineNumber);
             Assert.Equal(File, tokens[1].SourceInfo.File);
-            Assert.Equal("First line.  \nMore line.\n", tokens[1].SourceInfo.Markdown);
+            Assert.Equal("# HEAD1\n", tokens[1].SourceInfo.Markdown);
+
+            Assert.Equal(4, tokens[2].SourceInfo.LineNumber);
+            Assert.Equal(File, tokens[2].SourceInfo.File);
+            Assert.Equal("First line.  \nMore line.\n", tokens[2].SourceInfo.Markdown);
 
             Assert.Equal(4, para.InlineTokens.Tokens[0].SourceInfo.LineNumber);
             Assert.Equal(File, para.InlineTokens.Tokens[0].SourceInfo.File);
@@ -55,13 +55,13 @@ Yeah!", File);
             Assert.Equal(File, para.InlineTokens.Tokens[2].SourceInfo.File);
             Assert.Equal("More line.", para.InlineTokens.Tokens[2].SourceInfo.Markdown);
 
-            Assert.Equal(6, tokens[2].SourceInfo.LineNumber);
-            Assert.Equal(File, tokens[2].SourceInfo.File);
-            Assert.Equal("## HEAD2\n", tokens[2].SourceInfo.Markdown);
-
-            Assert.Equal(7, tokens[3].SourceInfo.LineNumber);
+            Assert.Equal(6, tokens[3].SourceInfo.LineNumber);
             Assert.Equal(File, tokens[3].SourceInfo.File);
-            Assert.Equal("Yeah!", tokens[3].SourceInfo.Markdown);
+            Assert.Equal("## HEAD2\n", tokens[3].SourceInfo.Markdown);
+
+            Assert.Equal(7, tokens[4].SourceInfo.LineNumber);
+            Assert.Equal(File, tokens[4].SourceInfo.File);
+            Assert.Equal("Yeah!", tokens[4].SourceInfo.Markdown);
         }
 
         private static ImmutableArray<IMarkdownToken> Tokenize(string markdown, string file)
@@ -106,7 +106,7 @@ Yeah!", File);
             Assert.Equal(1, tokens.Length);
             Assert.IsType<MarkdownBlockquoteBlockToken>(tokens[0]);
             var blockquote = (MarkdownBlockquoteBlockToken)tokens[0];
-            Assert.Equal(3, blockquote.Tokens.Length);
+            Assert.Equal(5, blockquote.Tokens.Length);
 
             Assert.Equal(1, blockquote.SourceInfo.LineNumber);
             Assert.Equal(File, blockquote.SourceInfo.File);
@@ -130,9 +130,9 @@ Yeah!", File);
                 Assert.Equal(2, link.SourceInfo.LineNumber);
                 Assert.Equal(File, link.SourceInfo.File);
             }
-            Assert.IsType<MarkdownListBlockToken>(blockquote.Tokens[1]);
+            Assert.IsType<MarkdownListBlockToken>(blockquote.Tokens[2]);
             {
-                var list = (MarkdownListBlockToken)blockquote.Tokens[1];
+                var list = (MarkdownListBlockToken)blockquote.Tokens[2];
 
                 Assert.Equal(4, list.SourceInfo.LineNumber);
                 Assert.Equal(File, list.SourceInfo.File);
@@ -174,9 +174,9 @@ Yeah!", File);
                 }
             }
 
-            Assert.IsType<MarkdownParagraphBlockToken>(blockquote.Tokens[2]);
+            Assert.IsType<MarkdownParagraphBlockToken>(blockquote.Tokens[4]);
             {
-                var para = (MarkdownParagraphBlockToken)blockquote.Tokens[2];
+                var para = (MarkdownParagraphBlockToken)blockquote.Tokens[4];
                 Assert.Equal(9, para.SourceInfo.LineNumber);
                 Assert.Equal(File, para.SourceInfo.File);
             }
@@ -194,9 +194,9 @@ Yeah!", File);
 |R2C1|R2C2|
 ", File);
 
-            Assert.Equal(1, tokens.Length);
-            Assert.IsType<MarkdownTableBlockToken>(tokens[0]);
-            var table = (MarkdownTableBlockToken)tokens[0];
+            Assert.Equal(2, tokens.Length);
+            Assert.IsType<MarkdownTableBlockToken>(tokens[1]);
+            var table = (MarkdownTableBlockToken)tokens[1];
             Assert.Equal(2, table.Header.Length);
             Assert.Equal(2, table.Cells.Length);
 

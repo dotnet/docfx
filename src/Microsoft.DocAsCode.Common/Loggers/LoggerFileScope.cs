@@ -5,7 +5,6 @@
 namespace Microsoft.DocAsCode.Common
 {
     using System;
-    using System.Runtime.Remoting.Messaging;
 
     public sealed class LoggerFileScope : IDisposable
     {
@@ -28,12 +27,12 @@ namespace Microsoft.DocAsCode.Common
 
         internal static string GetFileName()
         {
-            return CallContext.LogicalGetData(nameof(LoggerFileScope)) as string;
+            return LogicalCallContext.GetData(nameof(LoggerFileScope)) as string;
         }
 
         private static void SetFileName(string fileName)
         {
-            CallContext.LogicalSetData(nameof(LoggerFileScope), fileName);
+            LogicalCallContext.SetData(nameof(LoggerFileScope), fileName);
         }
 
         public static object Capture()

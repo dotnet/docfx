@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.Build.MergeOverwrite
 {
+    using System;
     using System.Collections;
     using System.Collections.Generic;
     using System.Collections.Immutable;
@@ -19,8 +20,7 @@ namespace Microsoft.DocAsCode.Build.MergeOverwrite
         public IMarkdownService CreateMarkdownService(MarkdownServiceParameters parameters)
         {
             IReadOnlyList<string> fallbackFolders = null;
-            object obj;
-            if (parameters.Extensions != null && parameters.Extensions.TryGetValue("fallbackFolders", out obj))
+            if (parameters.Extensions != null && parameters.Extensions.TryGetValue("fallbackFolders", out object obj))
             {
                 try
                 {
@@ -45,6 +45,8 @@ namespace Microsoft.DocAsCode.Build.MergeOverwrite
 
         private sealed class DfmService : IMarkdownService
         {
+            public string Name => "dfm";
+
             private readonly DfmEngineBuilder _builder;
 
             private readonly ImmutableDictionary<string, string> _tokens;
@@ -74,6 +76,11 @@ namespace Microsoft.DocAsCode.Build.MergeOverwrite
                 }
                 return result;
             }
+
+            public MarkupResult Markup(string src, string path, bool enableValidation)
+            {
+                throw new NotImplementedException();
+            }
         }
 
         public class YamlHeaderMarkdownRenderer
@@ -82,8 +89,10 @@ namespace Microsoft.DocAsCode.Build.MergeOverwrite
 
             public StringBuffer Render(IMarkdownRenderer render, IMarkdownToken token, IMarkdownContext context)
             {
-                var yamlHeader = token as DfmYamlHeaderBlockToken;
-                if (yamlHeader != null) return RenderYamlHeader(render, yamlHeader, context);
+                if (token is DfmYamlHeaderBlockToken yamlHeader)
+                {
+                    return RenderYamlHeader(render, yamlHeader, context);
+                }
 
                 return StringHelper.HtmlEncode(_dfmMarkdownRenderer.Render(token));
             }

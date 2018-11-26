@@ -11,11 +11,14 @@ namespace Microsoft.DocAsCode.MarkdownLite
     public class MarkdownCodeBlockRule : IMarkdownRule
     {
         private static readonly Matcher _CodeMatcher =
+            Matcher.WhiteSpace.RepeatAtLeast(4) +
+            Matcher.AnyStringInSingleLine +
             (
+                Matcher.NewLine.RepeatAtLeast(1) +
                 Matcher.WhiteSpace.RepeatAtLeast(4) +
-                Matcher.AnyStringInSingleLine +
-                Matcher.NewLine.RepeatAtLeast(0)
-            ).RepeatAtLeast(1);
+                Matcher.AnyStringInSingleLine
+            ).RepeatAtLeast(0) +
+            Matcher.NewLine.Maybe();
 
         public virtual string Name => "Code";
 
@@ -45,7 +48,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 }
                 else
                 {
-                    return new MarkdownCodeBlockToken(this, parser.Context, Regexes.Lexers.TailingEmptyLines.Replace(capStr, string.Empty), null, sourceInfo);
+                    return new MarkdownCodeBlockToken(this, parser.Context, Regexes.Lexers.TailingEmptyLine.Replace(capStr, string.Empty), null, sourceInfo);
                 }
             }
             return null;
@@ -66,7 +69,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             }
             else
             {
-                return new MarkdownCodeBlockToken(this, parser.Context, Regexes.Lexers.TailingEmptyLines.Replace(capStr, string.Empty), null, sourceInfo);
+                return new MarkdownCodeBlockToken(this, parser.Context, Regexes.Lexers.TailingEmptyLine.Replace(capStr, string.Empty), null, sourceInfo);
             }
         }
     }

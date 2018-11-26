@@ -12,6 +12,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     {
         public List<string> Files { get; set; }
 
+        public List<string> References { get; set; }
+
         public string OutputFolder { get; set; }
 
         public bool PreserveRawInlineComments { get; set; }
@@ -25,6 +27,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         public bool UseCompatibilityFileName { get; set; }
 
         public string GlobalNamespaceId { get; set; }
+
+        public string CodeSourceBasePath { get; set; }
+
+        public bool DisableDefaultFilter { get; set; }
 
         public Dictionary<string, string> MSBuildProperties { get; set; }
 

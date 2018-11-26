@@ -1,0 +1,11 @@
+### YamlMime:TableOfContent
+- uid: com.microsoft.azure.management.sql
+  name: com.microsoft.azure.management.sql
+  href: com.microsoft.azure.management.sql.yml
+  items:
+  - uid: com.microsoft.azure.management.sql.SqlServer
+    name: SqlServer
+    href: com.microsoft.azure.management.sql.SqlServer.yml
+  - uid: com.microsoft.azure.management.sql.SqlServer.FirewallRules
+    name: SqlServer.FirewallRules
+    href: com.microsoft.azure.management.sql.SqlServer.FirewallRules.yml

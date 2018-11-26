@@ -1,8 +1,286 @@
-﻿Version Notes (Current Version: v2.22)
+Version Notes (Current Version: v2.41)
 =======================================
 
-v2.22 (Pre-release)
+v2.41(Pre-release)
 -----------
+
+v2.40.3
+-----------
+1. Bug fix:
+    1. Fix toc ui of static template. (#3606)
+
+v2.40.2
+-----------
+1. Add cache to fix swagger parser perf issue.
+2. Add dropdown fix to static toc template. (#3361)
+
+v2.40.1
+-----------
+1. Fix codesnippet tagname bug.
+
+v2.40
+-----------
+1. Upgrade Markdig to 0.15.4
+
+v2.39.2
+-----------
+1. Fix ArgumentNullException error when extracting metadata from DLL. (#3374)
+
+v2.39.1
+-----------
+1. Update Nuget package config.
+2. Fix Chocolatey package download error. (#3349)
+
+v2.39
+-----------
+1. Support warnings as errors by `--warningsAsErrors true`. (#3229)
+2. Support for value tuples in documentation. (#2512 #3211)
+3. Upgrade to net462 and support long path. (#3183)
+4. Upgrade Microsoft.Build to work with VS 15.8. (#3158 #3225 #3231)
+
+v2.38.1
+-----------
+1. Bug fix:
+    1. Fix yamlheader in inline inclusion (#3203)
+
+v2.38
+-----------
+1. Support `--disableDefaultFilter` to disable default API visibility filter rule. (#2561)
+2. Improve warning message for invalid link in TOC inclusion (#3106)
+3. Support dropdowns in top navigation bar. (#3168)
+
+v2.37.2
+-----------
+1. Bug fix:
+    1. Refine regex for tables and add timeout (#3118)
+
+v2.37.1
+-----------
+1. Defaults to TLS 1.2 when query from xref service and download xref map.
+2. Bug fix:
+    1. Fix FSharp project loading. (#2960)
+
+v2.37
+-----------
+
+v2.36.2
+-----------
+1. Bug fix:
+    1. Improve download command error message. (#2805)
+    2. Fix code indent issue. (#2830)
+    3. Fix error when generating metadata. (#2852)
+
+v2.36.1
+-----------
+1. Bug fix:
+    1. Fix .targets file. (#2804)
+    2. Fix missing publish `Microsoft.DocAsCode.Metadata.ManagedReference.FSharp` NuGet package. (#2779)
+
+v2.36
+-----------
+1. Allow setting the base path for code sources. (#2131)
+2. Bug fix:
+   1. Fix API filter for attribute. (#2451)
+   2. Fix error when attribute has null value. (#2539)
+   3. Fix Markdown when link contains space. (#2681)
+   4. Fix XML comment merge not preserving inheritdoc metadata.
+   5. Fix page error under Internet Explorer 11 (#2741)
+   6. Disable building document when live unit testing.
+
+v2.35.3
+-----------
+1. Bug fix: Tabbed content always enables second tab. (#2706)
+
+v2.35.1
+-----------
+1. Bug fix: codesnippet tagname is not recognized when the tag starts with \t in Markdig.
+
+v2.35
+-----------
+1. Bug fix:
+   1. Fix Tabbed Content rendering bug. (#2645)
+   2. Fix script error in getHierarch. (#2624)
+   3. Fix loading csproj NullObjectReferenceException. (#1944)
+   4. Fix affix "active" class issue. (#2658)
+
+v2.34
+-----------
+1. Bug fix:
+   1. Fix error with enum flags in attributes. (#2573)
+   2. Improve syntax formatting when containing `where` keyword. (#2410)
+   3. Fix XML syntax highlighting issue. (#2553)
+
+v2.33.2
+-----------
+1. support more languages for markdig (#2574)
+2. MonikerRange infinite loop bug (#2572)
+
+v2.33.1
+-----------
+1. Enable emoji in markdig
+2. Decode href in FileLinkInfo
+
+v2.33
+-----------
+1. Support generating API reference for TypeScript (#2220)
+2. Bug fix:
+   1. XRefService lookup of generic classes doesn't work (#2448)
+   2. Fix yaml serialize for string '~' (#2519)
+   3. Fix link bug after `<a/>` in markdown (#2521)
+   4. Fix VSTS's git url under detached HEAD (#2516)
+
+v2.32.2
+-----------
+1. Bug fixes:
+   1. Fix metadata broken with mono and linux (#2358).
+   2. Partially fix metadata broken with latest VS 15.6 with workaround:
+      ```batch
+      set VSINSTALLDIR=C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise
+      set VisualStudioVersion=15.0
+      set MSBuildExtensionsPath=C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\MSBuild\15.0\Bin
+      ```
+
+v2.32
+-----------
+1. Support remove special host name from xref service.
+2. Bug fixes:
+   1. Fix empty code block in markdown(dfm, dfm-latest).
+
+v2.31
+-----------
+1. Upgrade Roslyn's CodeAnalysis assemblies to latest 2.6.1
+2. Bug fixes:
+   1. Fix bug for missing `seealso` section in enum pages (#2402)
+   2. Fix bug for supporting `in` keyword which is introduced in by C# 7.2 (#2385)
+   3. Fix runtime error when EII name hits VB preserved keywords (#2379)
+   4. Fix `docfx.console` so that it can support the new netstandard csproj format (#2142)
+
+v2.30
+-----------
+1. Improve DFM performance for em rule (#2339)
+
+v2.29
+-----------
+1. Support generating API reference for JavaScript (#2220)
+2. Bug fixes:
+   1. Fix bug for query xref service (#2283)
+
+v2.28.3
+-----------
+1. Fix toc race condition and improve perf
+
+v2.28.2
+-----------
+1. Bug fixes:
+   1. Fix issues running under mono (#2262, #1856)
+   2. Fix VS17 15.5 support (#2265)
+
+v2.28.1
+-----------
+1. Bug fixes:
+   1. Fix .NET core .csproj files support (#1752)
+
+v2.28
+-----------
+1. Add warning throttling. (#2187)
+2. Enable schema validation for SDP.
+2. Bug fixes:
+   1. Fix markdown link behavior. (#2181)
+   2. Fix xref map sorted comparer. (#2191)
+   3. Fix yaml deserialize for int64. (#2193)
+   4. Fix xref query filter. (#2195)
+   5. Fix `docfx metadata` failure after VS2017 Update 15.3. (#1969)
+   6. Provide `MetadataOutputFolder` MSBuild parameter with `docfx.console`. (#2194)
+
+
+v2.27
+-----------
+1. Improve code snippet, add cs snippet for cshtml, add vb snippet for vbhtml.
+
+v2.26
+-----------
+1. New feature:
+   1. Support new syntax in Markdown: [tabbed content](~/spec/docfx_flavored_markdown.md#tabbed-content)
+   ````
+   # [Csharp](#tab/csharp)
+   ```cs
+   Console.WriteLine("Hello world");
+   ```
+   # [JavaScript](#tab/js)
+   ```js
+   console.log('hello world');
+   ```
+   ````
+   Renders to:
+
+   # [Csharp](#tab/csharp)
+   ```cs
+   Console.WriteLine("Hello world");
+   ```
+   # [JavaScript](#tab/js)
+   ```js
+   console.log('hello world');
+   ```
+
+2. Fix bugs:
+   1. Update DFM XREF short format.
+   2. Update Markdown EM rule.
+
+v2.25.2
+-----------
+1. Fix post-processor incremental bug that incremental post-processor is always disabled
+
+v2.25.1
+-----------
+1. Disable schema validation in schema-driven document processor temporarily.
+2. Disable loading overwrite documents in schema-driven document processor temporarily.
+
+v2.25
+-----------
+1. Use wbr instead of zero width space
+2. Remove warning invalid file link when customized href generator can resolve it.
+3. Support generating sitemap with at least `"sitemap": { "baseUrl": "https://yourwebsite.com/" }` defined in `"build"` section of `docfx.json` (https://github.com/dotnet/docfx/issues/1979)
+4. Support responsive table: https://github.com/dotnet/docfx/issues/2024
+5. Bug fixed:
+   1. Multithreads issue for reading xref zip file.
+   2. 404 issue for generated site. https://github.com/dotnet/docfx/issues/1858
+
+v2.24
+-----------
+1. Log warning for manage reference yaml file without yaml mime.
+2. Obsolete external reference. Please use xref instead.
+3. Add xref query client.
+4. Upgrade Roslyn's CodeAnalysis assemblies to latest 2.3.1
+5. Schema-driven document processor related
+    1. support `metadata` keyword
+    2. support all the functionalities defined in the spec
+6. Advanced `xref` syntax support: `<xref uid="System.String" template="partials/layout_section.tmpl">`
+7. Support global metadata and file metadata for TOC files
+8. Add class level implements to default template. https://github.com/dotnet/docfx/issues/1223
+9. Obsolete `version` and use `group` instead.
+10. Bug fixed:
+    1. Fix #1982: c# 7.1 feature `default` is not correctly handled
+
+v2.23
+-----------
+1. Improve error message for invalid toc yaml file.
+2. Use xhtml for dfm default setting.
+3. Add language support for aspx-cs and aspx-vb in code snippet.
+4. Bug fixed:
+   1. Fix #1825: ArgumentNullException when EII implements a member with EditorBrowsableState.Never.
+   2. Fix #1937: Anchor icon overlays Note icon.
+   3. Fix #1951, #1905: Running DocFX from outside the folder fails
+   4. Fix #1915: Cannot generate docs of two assemblies
+   5. Fix #1900: Add back Microsoft.CodeAnalysis.Csharp.Features.dll dependency
+
+v2.22
+-----------
+1. Support *REST* extensibility by `rest.tagpage` and `rest.operationpage` plugins, to split the original *REST* API page into smaller pages. Refer to [plugins dashboard](http://dotnet.github.io/docfx/templates-and-plugins/plugins-dashboard.html) for more details.
+2. Bug fixed:
+   1. Fix _rel unfound when href is url decoded.
+   2. Fix #1886: Fails when project doesn't contain git remote information.
+   3. Fix toc restruction to support expand child by sequence.
+   4. Ignore default plugged assemblies when loading plugins.
 
 v2.20
 -----------
@@ -373,16 +651,16 @@ v2.2.1
 
 v2.2
 -----------
-1.  Support multi-version site. (https://github.com/dotnet/docfx/issues/396)
-2.  Support loop reference for Swagger Rest API. (https://github.com/dotnet/docfx/issues/223)
-3.  Support plug-in for post processor.
-4.  Support href for see/seealso tags.
-5.  Improve API reference documentation of namespace and enum.
-6.  Update prerequisite to build docfx.
-7.  Update manifest schema.
-8.  Add chocolatey support in CI script.
-9.  Provide with options in build.cmd.
-10.  Bug fixes:
+1. Support multi-version site. (https://github.com/dotnet/docfx/issues/396)
+2. Support loop reference for Swagger Rest API. (https://github.com/dotnet/docfx/issues/223)
+3. Support plug-in for post processor.
+4. Support href for see/seealso tags.
+5. Improve API reference documentation of namespace and enum.
+6. Update prerequisite to build docfx.
+7. Update manifest schema.
+8. Add chocolatey support in CI script.
+9. Provide with options in build.cmd.
+10. Bug fixes:
     1. syntax for static class is incorrect.
     2. improve warning message about global namespace class. (https://github.com/dotnet/docfx/issues/417)
     3. fix normalizexml bug for empty `<code></code>` in tripleslashcomment.

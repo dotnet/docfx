@@ -31,8 +31,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 return null;
             }
 
-            BuildMessageInfo message;
-            if (!messages.TryGetValue(phase, out message))
+            if (!messages.TryGetValue(phase, out BuildMessageInfo message))
             {
                 messages[phase] = message = new BuildMessageInfo();
             }

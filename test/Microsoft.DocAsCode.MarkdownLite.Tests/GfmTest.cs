@@ -676,6 +676,15 @@ B", @"<p>A<br>B</p>
         [InlineData(@"A  
 B", @"<p>A<br>B</p>
 ")]
+        [InlineData(@"a*b\*c", @"<p>a*b*c</p>
+")]
+        [InlineData(@"a*b\*c*d", @"<p>a<em>b*c</em>d</p>
+")]
+        [InlineData(@"[a][ b] (c)
+[b]: x", @"<p><a href=""x"" data-raw-source=""[a][ b]"">a</a> (c)</p>
+")]
+        [InlineData(@"<a />[a](#b)", @"<p><a /><a href=""#b"" data-raw-source=""[a](#b)"">a</a></p>
+")]
         #endregion
         public void TestGfmInGeneral(string source, string expected)
         {
@@ -791,6 +800,42 @@ a</pre
             TestGfmInGeneral(source, expected);
         }
 
+        [Fact]
+        [Trait("Related", "Markdown")]
+        public void TestNoLinkWhenContainWhiteSpace()
+        {
+            // 1. Prepare data
+            var source = @"[macro](Outlook Macro.md)";
+            var expected = @"<p>[macro](Outlook Macro.md)</p>
+";
+            TestGfmInGeneral(source, expected);
+            TestLegacyGfmInGeneral(source, expected);
+        }
+
+        [Fact]
+        [Trait("Related", "Markdown")]
+        public void TestEscape()
+        {
+            // 1. Prepare data
+            var source = @"\@";
+            var expected = @"<p>@</p>
+";
+            TestGfmInGeneral(source, expected);
+            TestLegacyGfmInGeneral(source, expected);
+        }
+
+        [Fact]
+        [Trait("Related", "Markdown")]
+        public void TestHeadingDifference()
+        {
+            // 1. Prepare data
+            var source = @"#aaaa";
+            TestGfmInGeneral(source, @"<p>#aaaa</p>
+");
+            TestLegacyGfmInGeneral(source, @"<h1 id=""aaaa"">aaaa</h1>
+");
+        }
+
         [Theory]
         [Trait("Related", "Markdown")]
         [InlineData(@"<div a:b=""c"">")]
@@ -800,6 +845,58 @@ a</pre
         {
             TestGfmInGeneral(html, html);
             TestLegacyGfmInGeneral(html, html);
+        }
+
+        [Theory]
+        [Trait("Related", "Markdown")]
+        #region InlineData
+        [InlineData(@"a<x>", @"<p>a<x></p>
+")]
+        [InlineData(@"a</x>", @"<p>a</x></p>
+")]
+        [InlineData(@"a<x/>", @"<p>a<x/></p>
+")]
+        [InlineData(@"a<-x>", @"<p>a&lt;-x&gt;</p>
+")]
+        [InlineData(@"a<x-x>", @"<p>a<x-x></p>
+")]
+        [InlineData(@"a<_x>", @"<p>a&lt;_x&gt;</p>
+")]
+        [InlineData(@"a<x_x>", @"<p>a&lt;x_x&gt;</p>
+")]
+        [InlineData(@"a<x:y>", @"<p>a&lt;x:y&gt;</p>
+")]
+        [InlineData(@"a<x y>", @"<p>a<x y></p>
+")]
+        [InlineData(@"a<中文>", @"<p>a&lt;中文&gt;</p>
+")]
+        [InlineData(@"a<x中文>", @"<p>a&lt;x中文&gt;</p>
+")]
+        [InlineData(@"a<x 中文>", @"<p>a&lt;x 中文&gt;</p>
+")]
+        [InlineData(@"a<x y='中文'>", @"<p>a<x y='中文'></p>
+")]
+        [InlineData(@"a<x y:z='中文'>", @"<p>a<x y:z='中文'></p>
+")]
+        [InlineData(@"a<x-x y-y:z-z='中文'>", @"<p>a<x-x y-y:z-z='中文'></p>
+")]
+        [InlineData(@"a<x-x y_y:z_z='中文'>", @"<p>a<x-x y_y:z_z='中文'></p>
+")]
+        [InlineData(@"a<x _:_='中文'>", @"<p>a<x _:_='中文'></p>
+")]
+        [InlineData(@"a<x y='中文' z='中文'>", @"<p>a<x y='中文' z='中文'></p>
+")]
+        [InlineData(@"a<x
+y='中文'
+z='中文'>", @"<p>a<x
+y='中文'
+z='中文'></p>
+")]
+        #endregion
+        public void TestTag_MoreCase(string markdown, string html)
+        {
+            TestGfmInGeneral(markdown, html);
+            TestLegacyGfmInGeneral(markdown, html);
         }
 
         [Theory]
@@ -1161,6 +1258,22 @@ https://en.wikipedia.org/wiki/Draft:Microsoft_SQL_Server_Libraries/Drivers
 
             TestLegacyGfmInGeneral(source, expected);
             TestGfmInGeneral(source, expected);
+        }
+
+        [Fact]
+        [Trait("Related", "Markdown")]
+        public void TestGfmFences_WithEmptyFence()
+        {
+            var source = @"```
+```
+test";
+
+            var expected = @"<pre><code>
+</code></pre><p>test</p>
+";
+
+            TestGfmInGeneral(source, expected);
+            TestLegacyGfmInGeneral(source, expected);
         }
     }
 }

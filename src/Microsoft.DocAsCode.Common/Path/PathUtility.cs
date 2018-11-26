@@ -9,14 +9,13 @@ namespace Microsoft.DocAsCode.Common
     using System.Linq;
     using System.Text.RegularExpressions;
 
-    /// <summary>
-    /// 
-    /// </summary>
     public static class PathUtility
     {
         private static readonly Regex UriWithProtocol = new Regex(@"^\w{2,}\:", RegexOptions.Compiled);
-        private static readonly char[] InvalidFileNameChars = Path.GetInvalidFileNameChars();
-        private static readonly char[] InvalidPathChars = Path.GetInvalidPathChars();
+
+        private static readonly char[] AdditionalInvalidChars = ":*".ToArray();
+        public static readonly char[] InvalidFileNameChars = Path.GetInvalidFileNameChars().Concat(AdditionalInvalidChars).ToArray();
+        public static readonly char[] InvalidPathChars = Path.GetInvalidPathChars().Concat(AdditionalInvalidChars).ToArray();
         private static readonly string InvalidFileNameCharsRegexString = $"[{Regex.Escape(new string(InvalidFileNameChars))}]";
 
         // refers to http://index/?query=urlencode&rightProject=System&file=%5BRepoRoot%5D%5CNDP%5Cfx%5Csrc%5Cnet%5CSystem%5CNet%5Cwebclient.cs&rightSymbol=fptyy6owkva8
@@ -135,7 +134,7 @@ namespace Microsoft.DocAsCode.Common
             // Append / to the directory
             if (basePath[basePath.Length - 1] != '/')
             {
-                basePath = basePath + "/";
+                basePath += "/";
             }
 
             Uri fromUri = new Uri(Path.GetFullPath(basePath));
@@ -150,7 +149,7 @@ namespace Microsoft.DocAsCode.Common
             Uri relativeUri = fromUri.MakeRelativeUri(toUri);
             string relativePath = Uri.UnescapeDataString(relativeUri.ToString());
 
-            if (toUri.Scheme.ToUpperInvariant() == "FILE")
+            if (string.Equals(toUri.Scheme, "FILE", StringComparison.InvariantCultureIgnoreCase))
             {
                 relativePath = relativePath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
             }
@@ -336,7 +335,8 @@ namespace Microsoft.DocAsCode.Common
             {
                 throw new ArgumentException($"{nameof(path)} should not be null or empty string");
             }
-            return File.GetAttributes(path).HasFlag(FileAttributes.Directory);
+
+            return Directory.Exists(path);
         }
     }
 }

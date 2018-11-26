@@ -9,5 +9,6 @@ namespace Microsoft.DocAsCode.Plugins
         Overwrite,
         Resource,
         Metadata,
+        MarkdownFragments,
     }
 }

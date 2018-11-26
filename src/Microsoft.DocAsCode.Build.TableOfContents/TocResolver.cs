@@ -3,7 +3,10 @@
 
 namespace Microsoft.DocAsCode.Build.TableOfContents
 {
+    using System;
     using System.Collections.Generic;
+    using System.IO;
+    using System.Linq;
 
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.DataContracts.Common;
@@ -26,15 +29,15 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             return ResolveItem(_collection[file], new Stack<FileAndType>());
         }
 
-        private TocItemInfo ResolveItem(TocItemInfo wrapper, Stack<FileAndType> stack)
+        private TocItemInfo ResolveItem(TocItemInfo wrapper, Stack<FileAndType> stack, bool isRoot = true)
         {
             using (new LoggerFileScope(wrapper.File.File))
             {
-                return ResolveItemCore(wrapper, stack);
+                return ResolveItemCore(wrapper, stack, isRoot);
             }
         }
 
-        private TocItemInfo ResolveItemCore(TocItemInfo wrapper, Stack<FileAndType> stack)
+        private TocItemInfo ResolveItemCore(TocItemInfo wrapper, Stack<FileAndType> stack, bool isRoot)
         {
             if (wrapper.IsResolved)
             {
@@ -45,6 +48,12 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             if (stack.Contains(file))
             {
                 throw new DocumentException($"Circular reference to {file.FullPath} is found in {stack.Peek().FullPath}");
+            }
+
+            if (wrapper.Content == null)
+            {
+                Logger.LogWarning("Empty TOC item node found.", code: WarningCodes.Build.EmptyTocItemNode);
+                return null;
             }
 
             var item = wrapper.Content;
@@ -78,6 +87,14 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             }
             // validate href
             ValidateHref(item);
+
+            // validate if name is missing
+            if (!isRoot && string.IsNullOrEmpty(item.Name) && string.IsNullOrEmpty(item.TopicUid))
+            {
+                Logger.LogWarning(
+                    $"TOC item ({item.ToString()}) with empty name found. Missing a name?",
+                    code: WarningCodes.Build.EmptyTocItemName);
+            }
 
             // TocHref supports 2 forms: absolute path and local toc file.
             // When TocHref is set, using TocHref as Href in output, and using Href as Homepage in output
@@ -116,10 +133,10 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
                 case HrefType.RelativeFile:
                     if (item.Items != null && item.Items.Count > 0)
                     {
-                        for (int i = 0; i < item.Items.Count; i++)
-                        {
-                            item.Items[i] = ResolveItem(new TocItemInfo(file, item.Items[i]), stack).Content;
-                        }
+                        item.Items = new TocViewModel(from i in item.Items
+                                                      select ResolveItem(new TocItemInfo(file, i), stack, false) into r
+                                                      where r != null
+                                                      select r.Content);
                         if (string.IsNullOrEmpty(item.TopicHref) && string.IsNullOrEmpty(item.TopicUid))
                         {
                             var defaultItem = GetDefaultHomepageItem(item);
@@ -194,7 +211,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
                         {
                             for (int i = 0; i < item.Items.Count; i++)
                             {
-                                item.Items[i] = ResolveItem(new TocItemInfo(file, item.Items[i]), stack).Content;
+                                item.Items[i] = ResolveItem(new TocItemInfo(file, item.Items[i]), stack, false).Content;
                             }
                         }
                     }
@@ -202,27 +219,13 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
                 case HrefType.MarkdownTocFile:
                 case HrefType.YamlTocFile:
                     {
+                        item.IncludedFrom = item.Href;
+
                         var href = (RelativePath)item.Href;
                         var tocFilePath = (RelativePath)file.File + href;
                         var tocFile = file.ChangeFile(tocFilePath);
-                        TocItemInfo referencedTocFileModel;
-                        TocItemViewModel referencedToc;
                         stack.Push(file);
-                        if (_collection.TryGetValue(tocFile.FullPath, out referencedTocFileModel) || _notInProjectTocCache.TryGetValue(tocFile, out referencedTocFileModel))
-                        {
-                            referencedTocFileModel = ResolveItem(referencedTocFileModel, stack);
-                            referencedTocFileModel.IsReferenceToc = true;
-                            referencedToc = referencedTocFileModel.Content;
-                        }
-                        else
-                        {
-                            // It is acceptable that the referenced toc file is not included in docfx.json, as long as it can be found locally
-                            referencedTocFileModel = new TocItemInfo(tocFile, TocHelper.LoadSingleToc(tocFile.FullPath));
-
-                            referencedTocFileModel = ResolveItem(referencedTocFileModel, stack);
-                            referencedToc = referencedTocFileModel.Content;
-                            _notInProjectTocCache[tocFile] = referencedTocFileModel;
-                        }
+                        var referencedToc = GetReferencedToc(tocFile, stack);
                         stack.Pop();
                         // For referenced toc, content from referenced toc is expanded as the items of current toc item,
                         // Href is reset to the homepage of current toc item
@@ -247,6 +250,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             item.TocHref = NormalizeHref(item.TocHref, relativeToFile);
             item.TopicHref = NormalizeHref(item.TopicHref, relativeToFile);
             item.Homepage = NormalizeHref(item.Homepage, relativeToFile);
+            item.IncludedFrom = NormalizeHref(item.IncludedFrom, relativeToFile);
 
             wrapper.IsResolved = true;
 
@@ -258,6 +262,35 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             }
 
             return wrapper;
+        }
+
+        private TocItemViewModel GetReferencedToc(FileAndType tocFile, Stack<FileAndType> stack)
+        {
+            if (_collection.TryGetValue(tocFile.FullPath, out TocItemInfo referencedTocFileModel) || _notInProjectTocCache.TryGetValue(tocFile, out referencedTocFileModel))
+            {
+                referencedTocFileModel = ResolveItem(referencedTocFileModel, stack);
+                referencedTocFileModel.IsReferenceToc = true;
+                return referencedTocFileModel.Content;
+            }
+            else
+            {
+                // It is acceptable that the referenced toc file is not included in docfx.json, as long as it can be found locally
+                TocItemViewModel referencedTocItemViewModel;
+                try
+                {
+                    referencedTocItemViewModel = TocHelper.LoadSingleToc(tocFile.FullPath);
+                }
+                catch (FileNotFoundException fnfe)
+                {
+                    throw new DocumentException($"Referenced TOC file {tocFile.FullPath} does not exist.", fnfe);
+                }
+
+                referencedTocFileModel = new TocItemInfo(tocFile, referencedTocItemViewModel);
+
+                referencedTocFileModel = ResolveItem(referencedTocFileModel, stack);
+                _notInProjectTocCache[tocFile] = referencedTocFileModel;
+                return referencedTocFileModel.Content;
+            }
         }
 
         private TocViewModel UpdateOriginalHref(TocViewModel toc, RelativePath relativePath)
@@ -295,8 +328,18 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             {
                 return href;
             }
+            RelativePath relativeToTargetFile;
+            try
+            {
+                relativeToTargetFile = RelativePath.Parse(href);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogWarning(ex.Message, code: WarningCodes.Build.InvalidFileLink);
+                return href;
+            }
 
-            return (relativeToFile + (RelativePath)href).GetPathFromWorkingFolder();
+            return (relativeToFile + relativeToTargetFile).GetPathFromWorkingFolder();
         }
 
         private TocItemViewModel GetDefaultHomepageItem(TocItemViewModel toc)

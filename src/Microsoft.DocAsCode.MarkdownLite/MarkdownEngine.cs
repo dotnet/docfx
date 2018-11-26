@@ -101,17 +101,6 @@ namespace Microsoft.DocAsCode.MarkdownLite
                     MaxExtractCount + 1)));
 
             // Aggregate tokens.
-            if (TokenAggregator != null)
-            {
-                tokens = RewriteTokens(
-                    tokens,
-                    sourceInfo.File,
-                    new MarkdownAggregateEngine(
-                        this,
-                        TokenAggregator));
-            }
-
-            // Aggregate tokens.
             foreach (var agg in TokenAggregators)
             {
                 tokens = RewriteTokens(

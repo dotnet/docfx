@@ -27,14 +27,21 @@ namespace Microsoft.DocAsCode.Dfm
 
         public abstract IMarkdownToken TryMatch(IMarkdownParser parser, IMarkdownParsingContext context);
 
-        protected static IDfmFencesBlockPathQueryOption ParsePathQueryString(string queryOption, string queryString)
+        [Obsolete("use DfmCodeExtractor.ParsePathQueryString")]
+        public static IDfmFencesBlockPathQueryOption ParsePathQueryString(string queryOption, string queryString)
+        {
+            return ParsePathQueryString(queryOption, queryString, false);
+        }
+
+        [Obsolete("use DfmCodeExtractor.ParsePathQueryString")]
+        public static IDfmFencesBlockPathQueryOption ParsePathQueryString(string queryOption, string queryString, bool noCache = false)
         {
             if (string.IsNullOrEmpty(queryOption) || string.IsNullOrEmpty(queryString))
             {
                 return null;
             }
 
-            int startLine, endLine, line;
+            int startLine, endLine;
             if (queryOption == "#")
             {
                 // check if line number representation
@@ -45,7 +52,7 @@ namespace Microsoft.DocAsCode.Dfm
                 }
                 else
                 {
-                    return new TagNameBlockPathQueryOption { TagName = queryString };
+                    return new TagNameBlockPathQueryOption(noCache) { TagName = queryString};
                 }
             }
             else if (queryOption == "?")
@@ -59,8 +66,7 @@ namespace Microsoft.DocAsCode.Dfm
                 int? dedent = null;
                 if (collection[DedentQueryStringKey] != null)
                 {
-                    int dedentTemp;
-                    if (int.TryParse(collection[DedentQueryStringKey], out dedentTemp))
+                    if (int.TryParse(collection[DedentQueryStringKey], out int dedentTemp))
                     {
                         dedent = dedentTemp;
                     }
@@ -71,7 +77,7 @@ namespace Microsoft.DocAsCode.Dfm
                 }
                 if (tagName != null)
                 {
-                    return new TagNameBlockPathQueryOption { TagName = tagName , HighlightLines = highlight, DedentLength = dedent};
+                    return new TagNameBlockPathQueryOption(noCache) { TagName = tagName , HighlightLines = highlight, DedentLength = dedent};
                 }
                 else if (range != null)
                 {
@@ -93,7 +99,7 @@ namespace Microsoft.DocAsCode.Dfm
                             else
                             {
                                 // consider region as a sigine line number
-                                var tempLine = int.TryParse(region, out line) ? line : (int?)null;
+                                var tempLine = int.TryParse(region, out int line) ? line : (int?)null;
                                 option.LinePairs.Add(new Tuple<int?, int?>(tempLine, tempLine));
                             }
                         }

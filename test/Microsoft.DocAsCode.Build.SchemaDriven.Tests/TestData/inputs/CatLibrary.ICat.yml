@@ -1,0 +1,485 @@
+### YamlMime:ManagedReference
+items:
+- uid: CatLibrary.ICat
+  commentId: T:CatLibrary.ICat
+  id: ICat
+  parent: CatLibrary
+  children:
+  - CatLibrary.ICat.eat
+  langs:
+  - csharp
+  - vb
+  name: ICat
+  nameWithType: ICat
+  fullName: CatLibrary.ICat
+  type: Interface
+  source:
+    remote:
+      path: src/SampleClass1/CatLibrary/Class1.cs
+      branch: master
+      repo: https://github.com/docascode/docfx-seed.git
+    id: ICat
+    path: src/SampleClass1/CatLibrary/Class1.cs
+    startLine: 53
+  assemblies:
+  - CatLibrary
+  namespace: CatLibrary
+  summary: "\nCat&apos;s interface\n"
+  example: []
+  syntax:
+    content: 'public interface ICat : IAnimal'
+    content.vb: >-
+      Public Interface ICat
+          Inherits IAnimal
+  inheritedMembers:
+  - CatLibrary.IAnimal.Name
+  - CatLibrary.IAnimal.Item(System.Int32)
+  - CatLibrary.IAnimal.Eat
+  - CatLibrary.IAnimal.Eat``1({Tool})
+  - CatLibrary.IAnimal.Eat(System.String)
+  extensionMethods:
+  - CatLibrary.ICat.CatLibrary.ICatExtension.Sleep(System.Int64)
+  - CatLibrary.ICat.CatLibrary.ICatExtension.Play(System.String)
+  modifiers.csharp:
+  - public
+  - interface
+  modifiers.vb:
+  - Public
+  - Interface
+- uid: CatLibrary.ICat.eat
+  commentId: E:CatLibrary.ICat.eat
+  id: eat
+  parent: CatLibrary.ICat
+  langs:
+  - csharp
+  - vb
+  name: eat
+  nameWithType: ICat.eat
+  fullName: CatLibrary.ICat.eat
+  type: Event
+  source:
+    remote:
+      path: src/SampleClass1/CatLibrary/Class1.cs
+      branch: master
+      repo: https://github.com/docascode/docfx-seed.git
+    id: eat
+    path: src/SampleClass1/CatLibrary/Class1.cs
+    startLine: 59
+  assemblies:
+  - CatLibrary
+  namespace: CatLibrary
+  summary: "\neat event of cat. Every cat must implement this event.\n"
+  example: []
+  syntax:
+    content: event EventHandler eat
+    return:
+      type: System.EventHandler
+    content.vb: Event eat As EventHandler
+references:
+- uid: CatLibrary
+  commentId: N:CatLibrary
+  isExternal: false
+  name: CatLibrary
+  nameWithType: CatLibrary
+  fullName: CatLibrary
+- uid: CatLibrary.IAnimal.Name
+  commentId: P:CatLibrary.IAnimal.Name
+  parent: CatLibrary.IAnimal
+  isExternal: false
+  name: Name
+  nameWithType: IAnimal.Name
+  fullName: CatLibrary.IAnimal.Name
+- uid: CatLibrary.IAnimal.Item(System.Int32)
+  commentId: P:CatLibrary.IAnimal.Item(System.Int32)
+  parent: CatLibrary.IAnimal
+  isExternal: true
+  name: Item[Int32]
+  nameWithType: IAnimal.Item[Int32]
+  fullName: CatLibrary.IAnimal.Item[System.Int32]
+  nameWithType.vb: IAnimal.Item(Int32)
+  fullName.vb: CatLibrary.IAnimal.Item(System.Int32)
+  name.vb: Item(Int32)
+  spec.csharp:
+  - uid: CatLibrary.IAnimal.Item(System.Int32)
+    name: Item
+    nameWithType: IAnimal.Item
+    fullName: CatLibrary.IAnimal.Item
+  - name: '['
+    nameWithType: '['
+    fullName: '['
+  - uid: System.Int32
+    name: Int32
+    nameWithType: Int32
+    fullName: System.Int32
+    isExternal: true
+  - name: ']'
+    nameWithType: ']'
+    fullName: ']'
+  spec.vb:
+  - uid: CatLibrary.IAnimal.Item(System.Int32)
+    name: Item
+    nameWithType: IAnimal.Item
+    fullName: CatLibrary.IAnimal.Item
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Int32
+    name: Int32
+    nameWithType: Int32
+    fullName: System.Int32
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: CatLibrary.IAnimal.Eat
+  commentId: M:CatLibrary.IAnimal.Eat
+  parent: CatLibrary.IAnimal
+  isExternal: false
+  name: Eat()
+  nameWithType: IAnimal.Eat()
+  fullName: CatLibrary.IAnimal.Eat()
+  spec.csharp:
+  - uid: CatLibrary.IAnimal.Eat
+    name: Eat
+    nameWithType: IAnimal.Eat
+    fullName: CatLibrary.IAnimal.Eat
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: CatLibrary.IAnimal.Eat
+    name: Eat
+    nameWithType: IAnimal.Eat
+    fullName: CatLibrary.IAnimal.Eat
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: CatLibrary.IAnimal.Eat``1({Tool})
+  commentId: M:CatLibrary.IAnimal.Eat``1(``0)
+  parent: CatLibrary.IAnimal
+  definition: CatLibrary.IAnimal.Eat``1(``0)
+  name: Eat<Tool>(Tool)
+  nameWithType: IAnimal.Eat<Tool>(Tool)
+  fullName: CatLibrary.IAnimal.Eat<Tool>(Tool)
+  nameWithType.vb: IAnimal.Eat(Of Tool)(Tool)
+  fullName.vb: CatLibrary.IAnimal.Eat(Of Tool)(Tool)
+  name.vb: Eat(Of Tool)(Tool)
+  spec.csharp:
+  - uid: CatLibrary.IAnimal.Eat``1(``0)
+    name: Eat<Tool>
+    nameWithType: IAnimal.Eat<Tool>
+    fullName: CatLibrary.IAnimal.Eat<Tool>
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: Tool
+    nameWithType: Tool
+    fullName: Tool
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: CatLibrary.IAnimal.Eat``1(``0)
+    name: Eat(Of Tool)
+    nameWithType: IAnimal.Eat(Of Tool)
+    fullName: CatLibrary.IAnimal.Eat(Of Tool)
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: Tool
+    nameWithType: Tool
+    fullName: Tool
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: CatLibrary.IAnimal.Eat(System.String)
+  commentId: M:CatLibrary.IAnimal.Eat(System.String)
+  parent: CatLibrary.IAnimal
+  isExternal: true
+  name: Eat(String)
+  nameWithType: IAnimal.Eat(String)
+  fullName: CatLibrary.IAnimal.Eat(System.String)
+  spec.csharp:
+  - uid: CatLibrary.IAnimal.Eat(System.String)
+    name: Eat
+    nameWithType: IAnimal.Eat
+    fullName: CatLibrary.IAnimal.Eat
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.String
+    name: String
+    nameWithType: String
+    fullName: System.String
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: CatLibrary.IAnimal.Eat(System.String)
+    name: Eat
+    nameWithType: IAnimal.Eat
+    fullName: CatLibrary.IAnimal.Eat
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.String
+    name: String
+    nameWithType: String
+    fullName: System.String
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: CatLibrary.ICat.CatLibrary.ICatExtension.Sleep(System.Int64)
+  commentId: M:CatLibrary.ICatExtension.Sleep(CatLibrary.ICat,System.Int64)
+  parent: CatLibrary.ICatExtension
+  definition: CatLibrary.ICatExtension.Sleep(CatLibrary.ICat,System.Int64)
+  name: Sleep(Int64)
+  nameWithType: ICatExtension.Sleep(Int64)
+  fullName: CatLibrary.ICatExtension.Sleep(System.Int64)
+  spec.csharp:
+  - uid: CatLibrary.ICatExtension.Sleep(System.Int64)
+    name: Sleep
+    nameWithType: ICatExtension.Sleep
+    fullName: CatLibrary.ICatExtension.Sleep
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Int64
+    name: Int64
+    nameWithType: Int64
+    fullName: System.Int64
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: CatLibrary.ICatExtension.Sleep(System.Int64)
+    name: Sleep
+    nameWithType: ICatExtension.Sleep
+    fullName: CatLibrary.ICatExtension.Sleep
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Int64
+    name: Int64
+    nameWithType: Int64
+    fullName: System.Int64
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: CatLibrary.ICat.CatLibrary.ICatExtension.Play(System.String)
+  commentId: M:CatLibrary.ICatExtension.Play(CatLibrary.ICat,System.String)
+  parent: CatLibrary.ICatExtension
+  definition: CatLibrary.ICatExtension.Play(CatLibrary.ICat,System.String)
+  name: Play(String)
+  nameWithType: ICatExtension.Play(String)
+  fullName: CatLibrary.ICatExtension.Play(System.String)
+  spec.csharp:
+  - uid: CatLibrary.ICatExtension.Play(System.String)
+    name: Play
+    nameWithType: ICatExtension.Play
+    fullName: CatLibrary.ICatExtension.Play
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.String
+    name: String
+    nameWithType: String
+    fullName: System.String
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: CatLibrary.ICatExtension.Play(System.String)
+    name: Play
+    nameWithType: ICatExtension.Play
+    fullName: CatLibrary.ICatExtension.Play
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.String
+    name: String
+    nameWithType: String
+    fullName: System.String
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: CatLibrary.IAnimal
+  commentId: T:CatLibrary.IAnimal
+  parent: CatLibrary
+  isExternal: false
+  name: IAnimal
+  nameWithType: IAnimal
+  fullName: CatLibrary.IAnimal
+- uid: CatLibrary.IAnimal.Eat``1(``0)
+  commentId: M:CatLibrary.IAnimal.Eat``1(``0)
+  isExternal: false
+  name: Eat<Tool>(Tool)
+  nameWithType: IAnimal.Eat<Tool>(Tool)
+  fullName: CatLibrary.IAnimal.Eat<Tool>(Tool)
+  nameWithType.vb: IAnimal.Eat(Of Tool)(Tool)
+  fullName.vb: CatLibrary.IAnimal.Eat(Of Tool)(Tool)
+  name.vb: Eat(Of Tool)(Tool)
+  spec.csharp:
+  - uid: CatLibrary.IAnimal.Eat``1(``0)
+    name: Eat<Tool>
+    nameWithType: IAnimal.Eat<Tool>
+    fullName: CatLibrary.IAnimal.Eat<Tool>
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: Tool
+    nameWithType: Tool
+    fullName: Tool
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: CatLibrary.IAnimal.Eat``1(``0)
+    name: Eat(Of Tool)
+    nameWithType: IAnimal.Eat(Of Tool)
+    fullName: CatLibrary.IAnimal.Eat(Of Tool)
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: Tool
+    nameWithType: Tool
+    fullName: Tool
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: CatLibrary.ICatExtension.Sleep(CatLibrary.ICat,System.Int64)
+  commentId: M:CatLibrary.ICatExtension.Sleep(CatLibrary.ICat,System.Int64)
+  isExternal: true
+  name: Sleep(ICat, Int64)
+  nameWithType: ICatExtension.Sleep(ICat, Int64)
+  fullName: CatLibrary.ICatExtension.Sleep(CatLibrary.ICat, System.Int64)
+  spec.csharp:
+  - uid: CatLibrary.ICatExtension.Sleep(CatLibrary.ICat,System.Int64)
+    name: Sleep
+    nameWithType: ICatExtension.Sleep
+    fullName: CatLibrary.ICatExtension.Sleep
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: CatLibrary.ICat
+    name: ICat
+    nameWithType: ICat
+    fullName: CatLibrary.ICat
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Int64
+    name: Int64
+    nameWithType: Int64
+    fullName: System.Int64
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: CatLibrary.ICatExtension.Sleep(CatLibrary.ICat,System.Int64)
+    name: Sleep
+    nameWithType: ICatExtension.Sleep
+    fullName: CatLibrary.ICatExtension.Sleep
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: CatLibrary.ICat
+    name: ICat
+    nameWithType: ICat
+    fullName: CatLibrary.ICat
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Int64
+    name: Int64
+    nameWithType: Int64
+    fullName: System.Int64
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: CatLibrary.ICatExtension
+  commentId: T:CatLibrary.ICatExtension
+  parent: CatLibrary
+  isExternal: false
+  name: ICatExtension
+  nameWithType: ICatExtension
+  fullName: CatLibrary.ICatExtension
+- uid: CatLibrary.ICatExtension.Play(CatLibrary.ICat,System.String)
+  commentId: M:CatLibrary.ICatExtension.Play(CatLibrary.ICat,System.String)
+  isExternal: true
+  name: Play(ICat, String)
+  nameWithType: ICatExtension.Play(ICat, String)
+  fullName: CatLibrary.ICatExtension.Play(CatLibrary.ICat, System.String)
+  spec.csharp:
+  - uid: CatLibrary.ICatExtension.Play(CatLibrary.ICat,System.String)
+    name: Play
+    nameWithType: ICatExtension.Play
+    fullName: CatLibrary.ICatExtension.Play
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: CatLibrary.ICat
+    name: ICat
+    nameWithType: ICat
+    fullName: CatLibrary.ICat
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.String
+    name: String
+    nameWithType: String
+    fullName: System.String
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: CatLibrary.ICatExtension.Play(CatLibrary.ICat,System.String)
+    name: Play
+    nameWithType: ICatExtension.Play
+    fullName: CatLibrary.ICatExtension.Play
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: CatLibrary.ICat
+    name: ICat
+    nameWithType: ICat
+    fullName: CatLibrary.ICat
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.String
+    name: String
+    nameWithType: String
+    fullName: System.String
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.EventHandler
+  commentId: T:System.EventHandler
+  parent: System
+  isExternal: true
+  name: EventHandler
+  nameWithType: EventHandler
+  fullName: System.EventHandler
+- uid: System
+  commentId: N:System
+  isExternal: false
+  name: System
+  nameWithType: System
+  fullName: System

@@ -6,6 +6,10 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
     using System;
     using System.Collections.Generic;
     using System.Collections.Immutable;
+    using System.Linq;
+    using System.Net;
+    using System.Net.Http;
+    using System.Threading.Tasks;
     using System.IO;
     using System.Reflection;
 
@@ -21,6 +25,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
     using Microsoft.DocAsCode.Dfm.MarkdownValidators;
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Tests.Common;
+    using System.Composition;
 
     [Trait("Owner", "zhyan")]
     [Trait("EntityType", "DocumentBuilder")]
@@ -61,7 +66,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             var tocFile = CreateFile("toc.md",
                 new[]
                 {
-                    "# [test1](test.md)",
+                    "# [test1](test.md#bookmark)",
                     "## [test2](test/test.md)",
                     "# Api",
                     "## [Console](@System.Console)",
@@ -100,6 +105,8 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
                     "Test invalid xref with attribute: <xref href=\"invalid\" alt=\"Foo&lt;T&gt;\"/>",
                     "Test invalid xref with attribute: <xref href=\"invalid\" fullname=\"Foo&lt;T&gt;\"/>",
                     "Test external xref with absolute URL and anchor: @str",
+                    "Test invalid autolink xref: <xref:?displayProperty=fullName>",
+                    "Test href generator: [GitHub](GitHub.md?shouldBeAbbreviated=true#test)",
                     "<p>",
                     "test",
                 },
@@ -148,12 +155,17 @@ tagRules : [
             {
                 using (new LoggerPhaseScope(nameof(DocumentBuilderTest)))
                 {
+                    var applyTemplateSettings = new ApplyTemplateSettings(_inputFolder, _outputFolder);
+                    applyTemplateSettings.RawModelExportSettings.Export = true;
+                    applyTemplateSettings.HrefGenerator = new AbbrHrefGenerator();
+
                     BuildDocument(
                         files,
                         new Dictionary<string, object>
                         {
                             ["meta"] = "Hello world!",
                         },
+                        applyTemplateSettings: applyTemplateSettings,
                         templateFolder: _templateFolder);
 
                 }
@@ -175,7 +187,7 @@ tagRules : [
                     var model = JsonUtility.Deserialize<TocItemViewModel>(Path.Combine(_outputFolder, Path.ChangeExtension(tocFile, RawModelFileExtension))).Items;
                     Assert.NotNull(model);
                     Assert.Equal("test1", model[0].Name);
-                    Assert.Equal("test.html", model[0].Href);
+                    Assert.Equal("test.html#bookmark", model[0].Href);
                     Assert.NotNull(model[0].Items);
                     Assert.Equal("test2", model[0].Items[0].Name);
                     Assert.Equal("test/test.html", model[0].Items[0].Href);
@@ -204,7 +216,7 @@ tagRules : [
                             "<!-- I'm not title-->",
                             "<!-- Raw title is in the line below -->",
                             "",
-                            $"<p sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"11\" sourceendlinenumber=\"31\">Test XRef: <xref href=\"XRef1\" data-throw-if-not-resolved=\"False\" data-raw-source=\"@XRef1\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"11\" sourceendlinenumber=\"11\"></xref>",
+                            $"<p sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"11\" sourceendlinenumber=\"33\">Test XRef: <xref href=\"XRef1\" data-throw-if-not-resolved=\"False\" data-raw-source=\"@XRef1\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"11\" sourceendlinenumber=\"11\"></xref>",
                             $"Test link: <a href=\"~/{_inputFolder}/test/test.md\" data-raw-source=\"[link text](test/test.md)\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"12\" sourceendlinenumber=\"12\">link text</a>",
                             $"Test link: <a href=\"~/{resourceFile}\" data-raw-source=\"[link text 2](../Microsoft.DocAsCode.Build.Engine.Tests.dll)\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"13\" sourceendlinenumber=\"13\">link text 2</a>",
                             $"Test link style xref: <a href=\"xref:XRef2\" title=\"title\" data-raw-source=\"[link text 3](xref:XRef2 &quot;title&quot;)\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"14\" sourceendlinenumber=\"14\">link text 3</a>",
@@ -223,6 +235,8 @@ tagRules : [
                             "Test invalid xref with attribute: <xref href=\"invalid\" alt=\"Foo&lt;T&gt;\"></xref>",
                             "Test invalid xref with attribute: <xref href=\"invalid\" fullname=\"Foo&lt;T&gt;\"></xref>",
                             $"Test external xref with absolute URL and anchor: <xref href=\"str\" data-throw-if-not-resolved=\"False\" data-raw-source=\"@str\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"29\" sourceendlinenumber=\"29\"></xref>",
+                            $"Test invalid autolink xref: <xref href=\"?displayProperty=fullName\" data-throw-if-not-resolved=\"True\" data-raw-source=\"&lt;xref:?displayProperty=fullName&gt;\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"30\" sourceendlinenumber=\"30\"></xref>",
+                            $"Test href generator: <a href=\"GitHub.md?shouldBeAbbreviated=true#test\" data-raw-source=\"[GitHub](GitHub.md?shouldBeAbbreviated=true#test)\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"31\" sourceendlinenumber=\"31\">GitHub</a>",
                             "<p>",
                             @"test</p>",
                             ""),
@@ -253,6 +267,8 @@ tagRules : [
                             "Test invalid xref with attribute: <span class=\"xref\">Foo&lt;T&gt;</span>",
                             "Test invalid xref with attribute: <span class=\"xref\">Foo&lt;T&gt;</span>",
                             "Test external xref with absolute URL and anchor: <a class=\"xref\" href=\"https://docs.python.org/3.5/library/stdtypes.html#str\">str</a>",
+                            "Test invalid autolink xref: &lt;xref:?displayProperty=fullName&gt;",
+                            "Test href generator: <a href=\"GH.md?isAbbreviated=true&shouldBeAbbreviated=true#test\">GitHub</a>",
                             "<p>",
                             "test</p>",
                             ""),
@@ -535,6 +551,7 @@ exports.getOptions = function (){
                                         topicHref = "test.html"
                                     }
                                 },
+                                ["meta"] = "Hello world!",
                             },
                             [$"~/{_inputFolder}/test/toc.md"] = new Dictionary<string, object>
                             {
@@ -553,9 +570,11 @@ exports.getOptions = function (){
                                         topicHref = "test.html"
                                     }
                                 },
+                                ["meta"] = "Hello world!",
                             }
                         }
-                    }
+                    },
+                    ["meta"] = "Hello world!",
                 };
                 AssertMetadataEqual(expected, model);
             }
@@ -616,6 +635,7 @@ exports.getOptions = function (){
                                         topicHref = "test.html"
                                     }
                                 },
+                                ["meta"] = "Hello world!",
                             },
                             [$"~/{_inputFolder}/test/toc.md"] = new Dictionary<string, object>
                             {
@@ -634,6 +654,7 @@ exports.getOptions = function (){
                                         topicHref = "test.html"
                                     }
                                 },
+                                ["meta"] = "Hello world!",
                             }
                         }
                     }
@@ -664,7 +685,7 @@ exports.getOptions = function (){
                     "# Hello World",
                     "Test link: [link 1](test/test.md)",
                     "Test link: [link 2](http://www.microsoft.com)",
-                    "Test link: [link 3](a b c.md)",
+                    "Test link: [link 3](a%20b%20c.md)",
                     "Test link: [link 4](c:\\a.md)",
                     "Test link: [link 5](\\a.md)",
                     "Test link: [link 6](urn:a.md)",
@@ -727,11 +748,11 @@ exports.getOptions = function (){
                             "",
                             $"<p sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"2\" sourceendlinenumber=\"11\">Test link: <a href=\"~/{_inputFolder}/test/test.md\" data-raw-source=\"[link 1](test/test.md)\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"2\" sourceendlinenumber=\"2\">link 1</a>",
                             $"Test link: <a href=\"http://www.microsoft.com\" data-raw-source=\"[link 2](http://www.microsoft.com)\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"3\" sourceendlinenumber=\"3\">link 2</a>",
-                            $"Test link: <a href=\"a b c.md\" data-raw-source=\"[link 3](a b c.md)\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"4\" sourceendlinenumber=\"4\">link 3</a>",
+                            $"Test link: <a href=\"a%20b%20c.md\" data-raw-source=\"[link 3](a%20b%20c.md)\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"4\" sourceendlinenumber=\"4\">link 3</a>",
                             $"Test link: <a href=\"c:\\a.md\" data-raw-source=\"[link 4](c:\\a.md)\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"5\" sourceendlinenumber=\"5\">link 4</a>",
                             $"Test link: <a href=\"\\a.md\" data-raw-source=\"[link 5](\\a.md)\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"6\" sourceendlinenumber=\"6\">link 5</a>",
                             $"Test link: <a href=\"urn:a.md\" data-raw-source=\"[link 6](urn:a.md)\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"7\" sourceendlinenumber=\"7\">link 6</a>",
-                            $"Test link: <a href=\"bad urn:a.md\" data-raw-source=\"[link 7](bad urn:a.md)\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"8\" sourceendlinenumber=\"8\">link 7</a>",
+                            $"Test link: [link 7](bad urn:a.md)",
                             $"Test link: <a href=\"~/{_inputFolder}/test/test.md#top\" data-raw-source=\"[link 8](test/test.md#top)\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"9\" sourceendlinenumber=\"9\">link 8</a>",
                             $"Test link: <a href=\"a.md#top\" data-raw-source=\"[link 9](a.md#top)\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"10\" sourceendlinenumber=\"10\">link 9</a>",
                             $"Test link: <a href=\"#top\" data-raw-source=\"[link 10](#top)\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"11\" sourceendlinenumber=\"11\">link 10</a></p>",
@@ -743,11 +764,11 @@ exports.getOptions = function (){
                             "",
                             "<p>Test link: <a href=\"test/test.html\">link 1</a>",
                             $"Test link: <a href=\"http://www.microsoft.com\">link 2</a>",
-                            $"Test link: <a href=\"a b c.md\">link 3</a>",
+                            $"Test link: <a href=\"a%20b%20c.md\">link 3</a>",
                             $"Test link: <a href=\"c:\\a.md\">link 4</a>",
                             $"Test link: <a href=\"\\a.md\">link 5</a>",
                             $"Test link: <a href=\"urn:a.md\">link 6</a>",
-                            $"Test link: <a href=\"bad urn:a.md\">link 7</a>",
+                            $"Test link: [link 7](bad urn:a.md)",
                             $"Test link: <a href=\"test/test.html#top\">link 8</a>",
                             $"Test link: <a href=\"a.md#top\">link 9</a>",
                             $"Test link: <a href=\"#top\">link 10</a></p>",
@@ -812,6 +833,176 @@ exports.getOptions = function (){
         }
 
         [Fact]
+        public void TestBuildWithFallback()
+        {
+            #region Prepare test data
+            CreateFile("conceptual.html.primary.tmpl", "{{{conceptual}}}", _templateFolder);
+
+            var tocFile = CreateFile("toc.md",
+                new[]
+                {
+                    "# [test1](test.md)",
+                },
+                _inputFolder);
+            var conceptualFile = CreateFile("test.md",
+                new[]
+                {
+                    "[!include[](token-a.md)]",
+                    "[!include[](token-b.md)]",
+                },
+                _inputFolder);
+            var includeFile1 = CreateFile("token-a.md",
+                new[]
+                {
+                    "Standard token.",
+                },
+                _inputFolder);
+            var includeFile2 = CreateFile($"fb/{_inputFolder}/token-b.md",
+                new[]
+                {
+                    "Fallback token.",
+                },
+                _inputFolder);
+
+            CustomFALBuilderProvider.FallbackFolder = Path.Combine(Directory.GetCurrentDirectory(), _inputFolder, "fb");
+            FileCollection files = new FileCollection(Directory.GetCurrentDirectory());
+            files.Add(DocumentType.Article, new[] { tocFile, conceptualFile });
+            #endregion
+
+            Init(MarkdownValidatorBuilder.MarkdownValidatePhaseName);
+            try
+            {
+                using (new LoggerPhaseScope(nameof(DocumentBuilderTest)))
+                {
+                    BuildDocument(
+                        files,
+                        new Dictionary<string, object>
+                        {
+                            ["meta"] = "Hello fallback!",
+                        },
+                        templateFolder: _templateFolder,
+                        falName: "test");
+                }
+
+                {
+                    // check toc.
+                    Assert.True(File.Exists(Path.Combine(_outputFolder, Path.ChangeExtension(tocFile, RawModelFileExtension))));
+                    var model = JsonUtility.Deserialize<TocItemViewModel>(Path.Combine(_outputFolder, Path.ChangeExtension(tocFile, RawModelFileExtension))).Items;
+                    Assert.NotNull(model);
+                    Assert.Equal("test1", model[0].Name);
+                    Assert.Equal("test.html", model[0].Href);
+                }
+
+                {
+                    // check conceptual.
+                    var conceptualOutputPath = Path.Combine(_outputFolder, Path.ChangeExtension(conceptualFile, ".html"));
+                    Assert.True(File.Exists(conceptualOutputPath));
+                    Assert.True(File.Exists(Path.Combine(_outputFolder, Path.ChangeExtension(conceptualFile, RawModelFileExtension))));
+                    var model = JsonUtility.Deserialize<Dictionary<string, object>>(Path.Combine(_outputFolder, Path.ChangeExtension(conceptualFile, RawModelFileExtension)));
+                    Assert.Equal(
+                        string.Join(
+                            "\n",
+                            $@"<p sourcefile=""{_inputFolder}/token-a.md"" sourcestartlinenumber=""1"" sourceendlinenumber=""1"">Standard token.</p>",
+                            $@"<p sourcefile=""{_inputFolder}/token-b.md"" sourcestartlinenumber=""1"" sourceendlinenumber=""1"">Fallback token.</p>",
+                            ""),
+                        model[Constants.PropertyName.Conceptual]);
+                    Assert.Equal(
+                        string.Join(
+                            "\n",
+                            $@"<p>Standard token.</p>",
+                            $@"<p>Fallback token.</p>",
+                            ""),
+                        File.ReadAllText(conceptualOutputPath));
+                    Assert.Equal("Conceptual", model["type"]);
+                    Assert.Equal("Hello fallback!", model["meta"]);
+                }
+            }
+            finally
+            {
+                CleanUp();
+            }
+        }
+
+        private class FakeResponseHandler : DelegatingHandler
+        {
+            private readonly Dictionary<Uri, HttpResponseMessage> _fakeResponses = new Dictionary<Uri, HttpResponseMessage>();
+
+            public void AddFakeResponse(Uri uri, HttpResponseMessage responseMessage)
+            {
+                _fakeResponses.Add(uri, responseMessage);
+            }
+
+            protected async override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, System.Threading.CancellationToken cancellationToken)
+            {
+                if (_fakeResponses.ContainsKey(request.RequestUri))
+                {
+                    return _fakeResponses[request.RequestUri];
+                }
+                else
+                {
+                    return new HttpResponseMessage(HttpStatusCode.NotFound) { RequestMessage = request };
+                }
+            }
+        }
+
+        [Fact]
+        public async Task TestBuildWithXrefService()
+        {
+            var fakeResponseHandler = new FakeResponseHandler();
+            fakeResponseHandler.AddFakeResponse(new Uri("http://example.org/test1"), new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.OK,
+                Content = new StringContent("[]")
+            });
+            fakeResponseHandler.AddFakeResponse(new Uri("http://example.org/test2"), new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.OK,
+                Content = new StringContent("[{'uid':'csharp_coding_standards', 'name':'C# Coding Standards', 'href':'http://dotnet.github.io/docfx/guideline/csharp_coding_standards.html'}]")
+            });
+
+            var httpClient = new HttpClient(fakeResponseHandler);
+            var result = await new XrefServiceResolver(httpClient, ImmutableArray.Create("http://example.org/test1"), 1).ResolveAsync("xx");
+            Assert.Null(result);
+            result = await new XrefServiceResolver(httpClient, ImmutableArray.Create("http://example.org/test2|> removeHost |> addQueryString x y"), 1).ResolveAsync("xx");
+            Assert.Equal("csharp_coding_standards", result.Uid);
+            Assert.Equal("/docfx/guideline/csharp_coding_standards.html?x=y", result.Href);
+        }
+
+        [Fact]
+        public async Task TestBuildWithXrefServiceRemoveHostWithParameters()
+        {
+            var fakeResponseHandler = new FakeResponseHandler();
+            var httpClient = new HttpClient(fakeResponseHandler);
+
+            fakeResponseHandler.AddFakeResponse(new Uri("http://example.org/test1"), new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.OK,
+                Content = new StringContent("[{'uid':'csharp_coding_standards', 'name':'C# Coding Standards', 'href':'http://dotnet.github.io/docfx/guideline/csharp_coding_standards.html'}]")
+            });
+            var result = await new XrefServiceResolver(httpClient, ImmutableArray.Create("http://example.org/test1|> removeHost www.microsoft.com"), 1).ResolveAsync("xx");
+            Assert.Equal("csharp_coding_standards", result.Uid);
+            Assert.Equal("http://dotnet.github.io/docfx/guideline/csharp_coding_standards.html", result.Href);
+
+            fakeResponseHandler.AddFakeResponse(new Uri("http://example.org/test2"), new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.OK,
+                Content = new StringContent("[{'uid':'csharp_coding_standards', 'name':'C# Coding Standards', 'href':'http://www.microsoft.com/docfx/guideline/csharp_coding_standards.html'}]")
+            });
+            result = await new XrefServiceResolver(httpClient, ImmutableArray.Create("http://example.org/test2|> removeHost www.microsoft.com"), 1).ResolveAsync("xx");
+            Assert.Equal("csharp_coding_standards", result.Uid);
+            Assert.Equal("/docfx/guideline/csharp_coding_standards.html", result.Href);
+
+            fakeResponseHandler.AddFakeResponse(new Uri("http://example.org/test3"), new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.OK,
+                Content = new StringContent("[{'uid':'csharp_coding_standards', 'name':'C# Coding Standards', 'href':'http://dotnet.github.io/docfx/guideline/csharp_coding_standards.html'}]")
+            });
+            result = await new XrefServiceResolver(httpClient, ImmutableArray.Create("http://example.org/test3|> removeHost www.microsoft.com dotnet.github.io"), 1).ResolveAsync("xx");
+            Assert.Equal("csharp_coding_standards", result.Uid);
+            Assert.Equal("/docfx/guideline/csharp_coding_standards.html", result.Href);
+        }
+
+        [Fact]
         public void TestBuildWithMultipleVersion()
         {
             #region Prepare test data
@@ -848,7 +1039,13 @@ exports.getOptions = function (){
             Assert.True(equal, $"Expected: {expectedJObject.ToJsonString()};{Environment.NewLine}Actual: {actualJObject.ToJsonString()}.");
         }
 
-        private void BuildDocument(FileCollection files, Dictionary<string, object> metadata = null, ApplyTemplateSettings applyTemplateSettings = null, string templateFolder = null, string versionDir = null)
+        private void BuildDocument(
+            FileCollection files,
+            Dictionary<string, object> metadata = null,
+            ApplyTemplateSettings applyTemplateSettings = null,
+            string templateFolder = null,
+            string versionDir = null,
+            string falName = null)
         {
             using (var builder = new DocumentBuilder(LoadAssemblies(), ImmutableArray<string>.Empty, null))
             {
@@ -866,7 +1063,8 @@ exports.getOptions = function (){
                     TemplateManager = new TemplateManager(null, null, new List<string> { _templateFolder }, null, null),
                     TemplateDir = templateFolder,
                     VersionDir = versionDir,
-                    XRefMaps = ImmutableArray.Create("TestData/xrefmap.yml")
+                    XRefMaps = ImmutableArray.Create("TestData/xrefmap.yml"),
+                    FALName = falName,
                 };
                 builder.Build(parameters);
             }
@@ -878,6 +1076,7 @@ exports.getOptions = function (){
             yield return typeof(ManagedReferenceDocumentProcessor).Assembly;
             yield return typeof(ResourceDocumentProcessor).Assembly;
             yield return typeof(TocDocumentProcessor).Assembly;
+            yield return typeof(DocumentBuilderTest).Assembly;
         }
 
         private void Init(string phaseName)
@@ -890,6 +1089,35 @@ exports.getOptions = function (){
         {
             Logger.UnregisterListener(Listener);
             Listener = null;
+        }
+
+        [Export("test", typeof(IInputFileAbstractLayerBuilderProvider))]
+        public class CustomFALBuilderProvider : IInputFileAbstractLayerBuilderProvider
+        {
+            public static string FallbackFolder { get; set; }
+
+            public FileAbstractLayerBuilder Create(FileAbstractLayerBuilder defaultBuilder, DocumentBuildParameters parameters)
+            {
+                if (FallbackFolder == null)
+                {
+                    return defaultBuilder;
+                }
+                return defaultBuilder.FallbackReadFromInput(
+                    FileAbstractLayerBuilder.Default.ReadFromRealFileSystem(FallbackFolder).Create());
+            }
+        }
+
+        public class AbbrHrefGenerator : ICustomHrefGenerator
+        {
+            public string GenerateHref(IFileLinkInfo href)
+            {
+                var result = href.Href;
+                if (result.Contains("GitHub"))
+                {
+                    result = result.Replace("GitHub", "GH") + "?isAbbreviated=true";
+                }
+                return result;
+            }
         }
     }
 }

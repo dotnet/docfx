@@ -1,0 +1,90 @@
+{
+  "name": "DocFX",
+  "displayName": "DocFX",
+  "description": "An amazing tool that makes authoring of DocFX-based documentation even more convenient, the main features include previewing DocFX generated conceptual documents, generating token tree of markdown file",
+  "version": "0.1.3",
+  "publisher": "ms-docfx",
+  "preview": true,
+  "engines": {
+    "vscode": "^1.18.x"
+  },
+  "categories": [
+    "Languages",
+    "Other"
+  ],
+  "main": "./out/src/extension",
+  "icon": "images/logo.png",
+  "bugs": {
+    "url": "https://github.com/dotnet/docfx/issues"
+  },
+  "homepage": "https://github.com/dotnet/docfx/blob/dev/tools/VscExtension/README.md",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dotnet/docfx/tree/dev/tools/VscExtension"
+  },
+  "license": "MIT",
+  "activationEvents": [
+    "onCommand:DocFX.showDfmPreview",
+    "onCommand:DocFX.showDfmPreviewToSide",
+    "onCommand:DocFX.showDocFXPreviewToSide",
+    "oncommand:DocFX.showSource",
+    "onCommand:DocFX.showTokenTreeToSide"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "DocFX.showDfmPreview",
+        "title": "DocFX: Open DFM preview"
+      },
+      {
+        "command": "DocFX.showDfmPreviewToSide",
+        "title": "DocFX: Open DFM preview to the side"
+      },
+      {
+        "command": "DocFX.showDocFXPreviewToSide",
+        "title": "DocFX: Open DocFX preview to the side(Only support DocFX 2.17+)"
+      },
+      {
+        "command": "DocFX.showSource",
+        "title": "DocFX: Show source"
+      },
+      {
+        "command": "DocFX.showTokenTreeToSide",
+        "title": "DocFX: Open token tree to the side"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "DocFX.showDfmPreview",
+        "key": "ctrl+shift+q",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "DocFX.showDfmPreviewToSide",
+        "key": "ctrl+k q",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "DocFX.showTokenTreeToSide",
+        "key": "ctrl+shift+t",
+        "when": "editorTextFocus"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "tsc -p ./",
+    "compile": "tsc -watch -p ./",
+    "postinstall": "node ./node_modules/vscode/bin/install"
+  },
+  "devDependencies": {
+    "typescript": "^2.5.2",
+    "vscode": "^1.1.5",
+    "@types/node": "^6.0.40"
+  },
+  "dependencies": {
+    "axios": "^0.15.3",
+    "d3": "^3.5.17",
+    "highlightjs": "^8.7.0",
+    "jquery": "^3.1.0"
+  }
+}

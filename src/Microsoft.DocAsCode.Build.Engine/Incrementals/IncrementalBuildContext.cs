@@ -98,8 +98,10 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                 TocRestructionsFile = IncrementalUtility.CreateRandomFileName(baseDir),
             };
             cb.Versions.Add(cbv);
-            var context = new IncrementalBuildContext(baseDir, lastBaseDir, lastBuildStartTime, buildInfoIncrementalStatus, parameters, cbv, lbv);
-            context.IsTemplateUpdated = (cb.TemplateHash != lb?.TemplateHash);
+            var context = new IncrementalBuildContext(baseDir, lastBaseDir, lastBuildStartTime, buildInfoIncrementalStatus, parameters, cbv, lbv)
+            {
+                IsTemplateUpdated = (cb.TemplateHash != lb?.TemplateHash)
+            };
             context.InitDependency();
             context.InitFileAttributes();
             context.InitChanges();
@@ -163,8 +165,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             {
                 throw new InvalidOperationException($"HostService: {name} doesn't record incremental info, cannot call the method to get model load info.");
             }
-            OSPlatformSensitiveDictionary<BuildPhase?> mi;
-            if (ModelLoadInfo.TryGetValue(name, out mi))
+            if (ModelLoadInfo.TryGetValue(name, out OSPlatformSensitiveDictionary<BuildPhase?> mi))
             {
                 return mi;
             }
@@ -333,8 +334,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                     {
                         continue;
                     }
-                    FileAttributeItem item;
-                    if (!TryGetFileAttributeFromLast(key, out item))
+                    if (!TryGetFileAttributeFromLast(key, out FileAttributeItem item))
                     {
                         string md5;
                         using (var fs = File.OpenRead(f.FullPath))
@@ -418,14 +418,14 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         {
             if (!(processor is ISupportIncrementalDocumentProcessor))
             {
-                string message = $"Processor {processor.Name} cannot suppport incremental build because the processor doesn't implement {nameof(ISupportIncrementalDocumentProcessor)} interface.";
+                string message = $"Processor {processor.Name} cannot support incremental build because the processor doesn't implement {nameof(ISupportIncrementalDocumentProcessor)} interface.";
                 IncrementalInfo.ReportProcessorStatus(processor.Name, false, message);
                 Logger.LogVerbose(message);
                 return false;
             }
             if (!processor.BuildSteps.All(step => step is ISupportIncrementalBuildStep))
             {
-                string message = $"Processor {processor.Name} cannot suppport incremental build because the following steps don't implement {nameof(ISupportIncrementalBuildStep)} interface: {string.Join(",", processor.BuildSteps.Where(step => !(step is ISupportIncrementalBuildStep)).Select(s => s.Name))}.";
+                string message = $"Processor {processor.Name} cannot support incremental build because the following steps don't implement {nameof(ISupportIncrementalBuildStep)} interface: {string.Join(",", processor.BuildSteps.Where(step => !(step is ISupportIncrementalBuildStep)).Select(s => s.Name))}.";
                 IncrementalInfo.ReportProcessorStatus(processor.Name, false, message);
                 Logger.LogVerbose(message);
                 return false;
@@ -453,6 +453,13 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             if (lpi == null)
             {
                 string message = $"Processor {processor.Name} disable incremental build because last build doesn't contain version {Version}.";
+                IncrementalInfo.ReportProcessorStatus(processor.Name, false, message);
+                Logger.LogVerbose(message);
+                return false;
+            }
+            if (lpi.InvalidSourceFiles.Count > 0)
+            {
+                string message = $"Processor {processor.Name} disable incremental build because last build contains invalid input files";
                 IncrementalInfo.ReportProcessorStatus(processor.Name, false, message);
                 Logger.LogVerbose(message);
                 return false;
@@ -592,23 +599,35 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 
         private static IncrementalStatus GetBuildInfoIncrementalStatus(BuildInfo cb, BuildInfo lb)
         {
+            string details = null;
+            var canIncremental = false;
+
             if (lb == null)
             {
-                return new IncrementalStatus { CanIncremental = false, Details = "Cannot build incrementally because last build info is missing." };
+                details = "Cannot build incrementally because last build info is missing.";
             }
-            if (cb.DocfxVersion != lb.DocfxVersion)
+            else if (cb.DocfxVersion != lb.DocfxVersion)
             {
-                return new IncrementalStatus { CanIncremental = false, Details = $"Cannot build incrementally because docfx version changed from {lb.DocfxVersion} to {cb.DocfxVersion}." };
+                details = $"Cannot build incrementally because docfx version changed from {lb.DocfxVersion} to {cb.DocfxVersion}.";
             }
-            if (cb.PluginHash != lb.PluginHash)
+            else if (cb.PluginHash != lb.PluginHash)
             {
-                return new IncrementalStatus { CanIncremental = false, Details = "Cannot build incrementally because plugin changed." };
+                details = "Cannot build incrementally because plugin changed.";
             }
-            if (cb.CommitFromSHA != lb.CommitToSHA)
+            else if (cb.CommitFromSHA != lb.CommitToSHA)
             {
-                return new IncrementalStatus { CanIncremental = false, Details = $"Cannot build incrementally because commit SHA doesn't match. Last build commit: {lb.CommitToSHA}. Current build commit base: {cb.CommitFromSHA}." };
+                details = $"Cannot build incrementally because commit SHA doesn't match. Last build commit: {lb.CommitToSHA}. Current build commit base: {cb.CommitFromSHA}.";
             }
-            return new IncrementalStatus { CanIncremental = true };
+            else
+            {
+                canIncremental = true;
+            }
+
+            var buildStrategy = canIncremental ? InfoCodes.Build.IsIncrementalBuild : InfoCodes.Build.IsFullBuild;
+
+            Logger.LogInfo($"Build strategy: {buildStrategy}", code: buildStrategy);
+
+            return new IncrementalStatus { CanIncremental = canIncremental, Details = details };
         }
 
         private bool GetCanVersionIncremental(IncrementalStatus buildInfoIncrementalStatus)
@@ -639,17 +658,6 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                 IncrementalInfo.ReportStatus(false, IncrementalPhase.Build, message);
                 Logger.LogVerbose(message);
                 return false;
-            }
-            if (_parameters.ApplyTemplateSettings != null)
-            {
-                var options = _parameters.ApplyTemplateSettings.Options;
-                if ((options & (ApplyTemplateOptions.ExportRawModel | ApplyTemplateOptions.ExportViewModel)) != ApplyTemplateOptions.None)
-                {
-                    string message = $"Disable incremental build because ExportRawModel/ExportViewModel option enabled.";
-                    IncrementalInfo.ReportStatus(false, IncrementalPhase.Build, message);
-                    Logger.LogVerbose(message);
-                    return false;
-                }
             }
             IncrementalInfo.ReportStatus(true, IncrementalPhase.Build);
             return true;

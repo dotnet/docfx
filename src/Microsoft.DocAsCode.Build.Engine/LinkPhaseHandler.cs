@@ -130,20 +130,36 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             Context.SetFilePath(model.Key, ((RelativePath)model.File).GetPathFromWorkingFolder());
             DocumentException.RunAll(
-                () => CheckFileLink(hostService, result),
+                () => CheckFileLink(model, hostService, result),
                 () => HandleUids(result),
-                () => HandleToc(result),
                 () => RegisterXRefSpec(result));
 
             return GetManifestItem(model, result);
         }
 
-        private void CheckFileLink(HostService hostService, SaveResult result)
+        private void CheckFileLink(FileModel model, HostService hostService, SaveResult result)
         {
             result.LinkToFiles.RunAll(fileLink =>
             {
                 if (!hostService.SourceFiles.ContainsKey(fileLink))
                 {
+                    if (Context.ApplyTemplateSettings.HrefGenerator != null)
+                    {
+                        var path = ((RelativePath)fileLink).RemoveWorkingFolder() - ((RelativePath)model.OriginalFileAndType.File);
+                        var fli = new FileLinkInfo
+                        {
+                            FromFileInSource = model.OriginalFileAndType.File,
+                            FromFileInDest = model.File,
+                            ToFileInSource = ((RelativePath)fileLink).RemoveWorkingFolder().ToString(),
+                            FileLinkInSource = path,
+                            GroupInfo = Context.GroupInfo,
+                        };
+                        fli.Href = path.UrlEncode();
+                        if (Context.ApplyTemplateSettings.HrefGenerator.GenerateHref(fli) != null)
+                        {
+                            return;
+                        }
+                    }
                     if (result.FileLinkSources.TryGetValue(fileLink, out ImmutableList<LinkSourceInfo> list))
                     {
                         foreach (var fileLinkSourceFile in list)
@@ -169,27 +185,6 @@ namespace Microsoft.DocAsCode.Build.Engine
             if (result.LinkToUids.Count > 0)
             {
                 Context.XRef.UnionWith(result.LinkToUids.Where(s => s != null));
-            }
-        }
-
-        private void HandleToc(SaveResult result)
-        {
-            if (result.TocMap?.Count > 0)
-            {
-                foreach (var toc in result.TocMap)
-                {
-                    Context.TocMap.AddOrUpdate(
-                        toc.Key,
-                        toc.Value,
-                        (k, v) =>
-                        {
-                            foreach (var item in toc.Value)
-                            {
-                                v.Add(item);
-                            }
-                            return v;
-                        });
-                }
             }
         }
 

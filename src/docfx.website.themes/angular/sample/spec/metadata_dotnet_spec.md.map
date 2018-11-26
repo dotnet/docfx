@@ -1,1 +1,0 @@
-{"default":{"type":"markdown","startLine":0,"endLine":0,"remote":{"path":"docs/spec/metadata_dotnet_spec.md","branch":"dev","repo":"https://github.com/aspnet/docfx.git","key":"9c90d3ed"},"references":{"TItem[0-]":{"id":"TItem[0-]","type":"codeSnippet","startLine":0,"endLine":0,"Keys":["{{TItem}}"],"message":"C:\\code\\docfx\\docs\\spec\\TItem does not exist."}}}}

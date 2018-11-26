@@ -1,0 +1,33 @@
+{
+  "$schema": "http://dotnet.github.io/docfx/schemas/v1.0/schema.json#",
+  "version": "1.0.0",
+  "id": "https://github.com/dotnet/docfx/test/schemas/contextobject.test.schema.json",
+  "title": "ContextObject",
+  "description": "The test schema for context object",
+  "type": "object",
+  "definitions": {
+    "markdown_include": {
+      "type": "string",
+      "contentType": "markdown",
+      "reference": "file"
+    }
+  },
+  "properties": {
+    "breadcrumb_path": {
+      "type": "string",
+      "contentType": "href"
+    },
+    "toc_rel": {
+      "type": "string",
+      "contentType": "href"
+    },
+    "file_include": {
+      "$ref": "#/definitions/markdown_include"
+    },
+    "file_include2": {
+      "type": "string",
+      "contentType": "href",
+      "reference": "file"
+    }
+  }
+}

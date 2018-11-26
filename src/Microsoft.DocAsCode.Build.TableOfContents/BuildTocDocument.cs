@@ -121,8 +121,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
         {
             var allSourceFiles = host.SourceFiles;
             var tocOutputFile = GetOutputPath(toc.FileAndType);
-            FileAndType itemSource;
-            if (allSourceFiles.TryGetValue(item, out itemSource))
+            if (allSourceFiles.TryGetValue(item, out FileAndType itemSource))
             {
                 var itemOutputFile = GetOutputPath(itemSource);
                 var relative = tocOutputFile.RemoveWorkingFolder() - itemOutputFile;

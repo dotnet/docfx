@@ -7,12 +7,20 @@ namespace Microsoft.DocAsCode
     using System.Collections.Generic;
 
     using Microsoft.DocAsCode.Common;
+    using Microsoft.DocAsCode.Plugins;
 
     using Newtonsoft.Json;
+    using Newtonsoft.Json.Linq;
 
     [Serializable]
     public class BuildJsonConfig
     {
+        [JsonIgnore]
+        private Dictionary<string, GroupConfig> _versions;
+
+        [JsonIgnore]
+        private Dictionary<string, GroupConfig> _groups;
+
         [JsonIgnore]
         public string BaseDirectory { get; set; }
 
@@ -28,11 +36,17 @@ namespace Microsoft.DocAsCode
         [JsonProperty("overwrite")]
         public FileMapping Overwrite { get; set; }
 
-        [JsonProperty("externalReference")]
-        public FileMapping ExternalReference { get; set; }
+        [JsonProperty("pairing")]
+        public List<ContentPairingInfo> Pairing { get; set; }
+
+        [JsonProperty("xrefTags")]
+        public ListWithStringFallback XrefTags { get; set; }
 
         [JsonProperty("xref")]
         public ListWithStringFallback XRefMaps { get; set; }
+
+        [JsonProperty("xrefService")]
+        public ListWithStringFallback XRefServiceUrls { get; set; }
 
         [JsonProperty("dest")]
         public string Destination { get; set; }
@@ -53,6 +67,9 @@ namespace Microsoft.DocAsCode
         /// </summary>
         [JsonProperty("fileMetadata")]
         public Dictionary<string, FileMetadataPairs> FileMetadata { get; set; }
+
+        [JsonProperty("tagParameters")]
+        public Dictionary<string, JArray> TagParameters { get; set; }
 
         [JsonProperty("fileMetadataFiles")]
         public ListWithStringFallback FileMetadataFilePaths { get; set; } = new ListWithStringFallback();
@@ -127,8 +144,34 @@ namespace Microsoft.DocAsCode
         [JsonProperty("customLinkResolver")]
         public string CustomLinkResolver { get; set; }
 
+        [Obsolete]
         [JsonProperty("versions")]
-        public Dictionary<string, VersionConfig> Versions { get; set; }
+        public Dictionary<string, GroupConfig> Versions
+        {
+            get
+            {
+                return _versions;
+            }
+            set
+            {
+                _versions = value;
+            }
+        }
+
+        [JsonProperty("groups")]
+        public Dictionary<string, GroupConfig> Groups
+        {
+            get
+            {
+                return _groups ?? _versions;
+            }
+            set
+            {
+                _groups = value;
+                _versions = value;
+            }
+
+        }
 
         [JsonProperty("lruSize")]
         public int? LruSize { get; set; }
@@ -138,5 +181,17 @@ namespace Microsoft.DocAsCode
 
         [JsonProperty("cleanupCacheHistory")]
         public bool CleanupCacheHistory { get; set; }
+
+        [JsonProperty("sitemap")]
+        public SitemapOptions SitemapOptions { get; set; }
+
+        [JsonProperty("falName")]
+        public string FALName { get; set; }
+
+        [JsonProperty("disableGitFeatures")]
+        public bool DisableGitFeatures { get; set; }
+
+        [JsonProperty("schemaLicense")]
+        public string SchemaLicense { get; set; }
     }
 }

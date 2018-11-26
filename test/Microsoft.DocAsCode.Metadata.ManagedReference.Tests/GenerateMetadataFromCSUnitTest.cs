@@ -17,7 +17,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
 
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
 
-    using static Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataWorker;
+    using static Microsoft.DocAsCode.Metadata.ManagedReference.RoslynIntermediateMetadataExtractor;
 
     [Trait("Owner", "vwxyzh")]
     [Trait("Language", "CSharp")]
@@ -137,7 +137,7 @@ namespace Test1
 }
 ";
             MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
-            MetadataItem output_preserveRaw = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code), null, true);
+            MetadataItem output_preserveRaw = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code), null, options: new ExtractMetadataOptions { PreserveRawInlineComments = true });
             Assert.Equal(1, output.Items.Count);
             {
                 var type = output.Items[0].Items[0];
@@ -175,7 +175,7 @@ namespace Test1
                 Assert.NotNull(returnValue);
                 Assert.NotNull(returnValue.Type);
                 Assert.Equal("System.Nullable{{TResult}}", returnValue.Type);
-                Assert.Equal(@"public TResult? Func1<TResult>(T? x, IEnumerable<T> y)where TResult : struct", function.Syntax.Content[SyntaxLanguage.CSharp]);
+                Assert.Equal("public TResult? Func1<TResult>(T? x, IEnumerable<T> y)\r\n    where TResult : struct", function.Syntax.Content[SyntaxLanguage.CSharp]);
                 Assert.Equal(new[] { "public" }, function.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
@@ -657,7 +657,7 @@ namespace Test1
                 Assert.Equal("Bar<T>", type.DisplayNamesWithType[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Bar<T>", type.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Bar`1", type.Name);
-                Assert.Equal(@"public delegate T Bar<T>(IEnumerable<T> x = null)where T : class;", type.Syntax.Content[SyntaxLanguage.CSharp]);
+                Assert.Equal("public delegate T Bar<T>(IEnumerable<T> x = null)\r\n    where T : class;", type.Syntax.Content[SyntaxLanguage.CSharp]);
                 Assert.Equal(new[] { "public", "delegate" }, type.Modifiers[SyntaxLanguage.CSharp]);
 
                 Assert.NotNull(type.Syntax.Parameters);
@@ -739,7 +739,7 @@ namespace Test1
                 Assert.Equal("Foo<T>.M2<TArg>(TArg)", method.DisplayNamesWithType[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo<T>.M2<TArg>(TArg)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo`1.M2``1(``0)", method.Name);
-                Assert.Equal("protected virtual Foo<T> M2<TArg>(TArg arg)where TArg : Foo<T>", method.Syntax.Content[SyntaxLanguage.CSharp]);
+                Assert.Equal("protected virtual Foo<T> M2<TArg>(TArg arg)\r\n    where TArg : Foo<T>", method.Syntax.Content[SyntaxLanguage.CSharp]);
                 Assert.Equal(new[] { "protected", "virtual" }, method.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
@@ -749,7 +749,7 @@ namespace Test1
                 Assert.Equal("Foo<T>.M3<TResult>(String)", method.DisplayNamesWithType[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo<T>.M3<TResult>(System.String)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo`1.M3``1(System.String)", method.Name);
-                Assert.Equal("public static TResult M3<TResult>(string x)where TResult : class", method.Syntax.Content[SyntaxLanguage.CSharp]);
+                Assert.Equal("public static TResult M3<TResult>(string x)\r\n    where TResult : class", method.Syntax.Content[SyntaxLanguage.CSharp]);
                 Assert.Equal(new[] { "public", "static" }, method.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
@@ -782,7 +782,7 @@ namespace Test1
                 Assert.Equal("Bar.M2<TArg>(TArg)", method.DisplayNamesWithType[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Bar.M2<TArg>(TArg)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Bar.M2``1(``0)", method.Name);
-                Assert.Equal("protected override sealed Foo<T> M2<TArg>(TArg arg)where TArg : Foo<string>", method.Syntax.Content[SyntaxLanguage.CSharp]);
+                Assert.Equal("protected override sealed Foo<T> M2<TArg>(TArg arg)\r\n    where TArg : Foo<string>", method.Syntax.Content[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo{System.String}.M2``1({TArg})", method.Overridden);
             }
             {
@@ -792,7 +792,7 @@ namespace Test1
                 Assert.Equal("Bar.M5<TArg>(TArg)", method.DisplayNamesWithType[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Bar.M5<TArg>(TArg)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Bar.M5``1(``0)", method.Name);
-                Assert.Equal("public int M5<TArg>(TArg arg)where TArg : struct, new ()", method.Syntax.Content[SyntaxLanguage.CSharp]);
+                Assert.Equal("public int M5<TArg>(TArg arg)\r\n    where TArg : struct, new()", method.Syntax.Content[SyntaxLanguage.CSharp]);
                 Assert.Equal(new[] { "public" }, method.Modifiers[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.IFooBar.M5``1({TArg})", method.Implements[0]);
             }
@@ -814,7 +814,7 @@ namespace Test1
                 Assert.Equal("IFooBar.M2<TArg>(TArg)", method.DisplayNamesWithType[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.IFooBar.M2<TArg>(TArg)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.IFooBar.M2``1(``0)", method.Name);
-                Assert.Equal("Foo<T> M2<TArg>(TArg arg)where TArg : Foo<string>", method.Syntax.Content[SyntaxLanguage.CSharp]);
+                Assert.Equal("Foo<T> M2<TArg>(TArg arg)\r\n    where TArg : Foo<string>", method.Syntax.Content[SyntaxLanguage.CSharp]);
                 Assert.Equal(new string[0], method.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
@@ -824,7 +824,7 @@ namespace Test1
                 Assert.Equal("IFooBar.M5<TArg>(TArg)", method.DisplayNamesWithType[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.IFooBar.M5<TArg>(TArg)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.IFooBar.M5``1(``0)", method.Name);
-                Assert.Equal("int M5<TArg>(TArg arg)where TArg : struct, new ()", method.Syntax.Content[SyntaxLanguage.CSharp]);
+                Assert.Equal("int M5<TArg>(TArg arg)\r\n    where TArg : struct, new()", method.Syntax.Content[SyntaxLanguage.CSharp]);
                 Assert.Equal(new string[0], method.Modifiers[SyntaxLanguage.CSharp]);
             }
         }
@@ -848,11 +848,13 @@ namespace Test1
         int IFoo<string>.this[string x] { get { return 1; } }
         int IFoo<T>.this[T x] { get { return 1; } }
         event EventHandler IFoo.E { add { } remove { } }
+        public bool IFoo.Global { get; set; }
     }
     public interface IFoo
     {
         object Bar(ref int x);
         event EventHandler E;
+        bool Global { get; set;}
     }
     public interface IFoo<out T>
     {
@@ -976,6 +978,65 @@ namespace Test1
         }
 
         [Trait("Related", "Generic")]
+        [Trait("Related", "EII")]
+        [Fact]
+        public void TestGenerateMetadataWithEditorBrowsableNeverEii()
+        {
+            string code = @"
+namespace Test
+{
+    using System.ComponentModel;
+    public interface IInterface
+    {
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        bool Method();
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        bool Property { get; }
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        event EventHandler Event;
+    }
+
+    public class Class : IInterface
+    {
+        bool IInterface.Method() { return false; }
+        bool IInterface.Property { get { return false; } }
+        event EventHandler IInterface.Event { add {} remove {} }
+    }
+}
+";
+            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            Assert.Equal(1, output.Items.Count);
+            var ns = output.Items[0];
+            Assert.Equal(2, ns.Items.Count);
+            {
+                var type = ns.Items[0];
+                Assert.NotNull(type);
+                Assert.Equal("IInterface", type.DisplayNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("Test.IInterface", type.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("Test.IInterface", type.Name);
+                Assert.Equal("public interface IInterface", type.Syntax.Content[SyntaxLanguage.CSharp]);
+                Assert.Equal(new[] { "public", "interface" }, type.Modifiers[SyntaxLanguage.CSharp]);
+                Assert.Null(type.Implements);
+
+                // Verify member with EditorBrowsable.Never should be filtered out
+                Assert.Equal(0, type.Items.Count);
+            }
+            {
+                var type = ns.Items[1];
+                Assert.NotNull(type);
+                Assert.Equal("Class", type.DisplayNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("Test.Class", type.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("Test.Class", type.Name);
+                Assert.Equal("public class Class : IInterface", type.Syntax.Content[SyntaxLanguage.CSharp]);
+                Assert.Equal(new[] { "public", "class" }, type.Modifiers[SyntaxLanguage.CSharp]);
+                Assert.Equal("Test.IInterface", type.Implements[0]);
+
+                // Verify EII member with EditorBrowsable.Never should be filtered out
+                Assert.Equal(0, type.Items.Count);
+            }
+        }
+
+        [Trait("Related", "Generic")]
         [Trait("Related", "Extension Method")]
         [Fact]
         public void TestGenerateMetadataWithExtensionMethod()
@@ -1014,7 +1075,7 @@ namespace Test1
 }
 ";
             var compilation = CreateCompilationFromCSharpCode(code);
-            MetadataItem output = GenerateYamlMetadata(compilation, extensionMethods: GetAllExtensionMethodsFromCompilation(new[] { compilation }));
+            MetadataItem output = GenerateYamlMetadata(compilation, options: new ExtractMetadataOptions { RoslynExtensionMethods = GetAllExtensionMethodsFromCompilation(new[] { compilation }) });
             Assert.Equal(1, output.Items.Count);
             // FooImple<T>
             {
@@ -2414,12 +2475,12 @@ namespace Test1
             Assert.Equal("Test1.TestAttribute", @class.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
             Assert.Equal(@"[Serializable]
 [AttributeUsage(AttributeTargets.Assembly | AttributeTargets.Module | AttributeTargets.Class | AttributeTargets.Struct | AttributeTargets.Enum | AttributeTargets.Constructor | AttributeTargets.Method | AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Event | AttributeTargets.Interface | AttributeTargets.Parameter | AttributeTargets.Delegate | AttributeTargets.ReturnValue | AttributeTargets.GenericParameter | AttributeTargets.All, Inherited = true, AllowMultiple = true)]
-[TypeConverter(typeof (TestAttribute))]
-[TypeConverter(typeof (TestAttribute[]))]
+[TypeConverter(typeof(TestAttribute))]
+[TypeConverter(typeof(TestAttribute[]))]
 [Test(""test"")]
 [Test(new int[]{1, 2, 3})]
 [Test(new object[]{null, ""abc"", 'd', 1.1F, 1.2, (sbyte)2, (byte)3, (short)4, (ushort)5, 6, 7U, 8L, 9UL, new int[]{10, 11, 12}})]
-[Test(new Type[]{typeof (Func<>), typeof (Func<, >), typeof (Func<string, string>)})]
+[Test(new Type[]{typeof(Func<>), typeof(Func<, >), typeof(Func<string, string>)})]
 public class TestAttribute : Attribute, _Attribute", @class.Syntax.Content[SyntaxLanguage.CSharp]);
 
             Assert.NotNull(@class.Attributes);
@@ -2599,6 +2660,276 @@ namespace Test1
             var r2 = output.References["Test1.I1{{T}}.M1({T})"];
             Assert.False(r1.IsDefinition);
             Assert.Equal("Test1.I1`1.M1(`0)", r1.Definition);
+        }
+
+        [Fact]
+        [Trait("Related", "Generic")]
+        public void TestCSharpFeature_Default_7_1Class()
+        {
+            string code = @"
+namespace Test1
+{
+    public class Foo
+    {
+        public int Bar(int x = default) => 1;
+    }
+}
+";
+            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            Assert.Equal(1, output.Items.Count);
+            var ns = output.Items[0];
+            Assert.NotNull(ns);
+            var foo = ns.Items[0];
+            Assert.NotNull(foo);
+            Assert.Equal("Test1.Foo", foo.Name);
+            Assert.Equal(1, foo.Items.Count);
+            var bar = foo.Items[0];
+            Assert.Equal("Test1.Foo.Bar(System.Int32)", bar.Name);
+            Assert.Equal("public int Bar(int x = default(int))", bar.Syntax.Content[SyntaxLanguage.CSharp]);
+        }
+
+        [Fact]
+        [Trait("Related", "ValueTuple")]
+        public void TestGenerateMetadataAsyncWithTupleParameter()
+        {
+            string code = @"
+namespace Test1
+{
+    public class Foo
+    {
+        public int Bar((string prefix, string uri) @namespace) => 1;
+    }
+}
+";
+            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            Assert.Single(output.Items);
+            var ns = output.Items[0];
+            Assert.NotNull(ns);
+            var foo = ns.Items[0];
+            Assert.NotNull(foo);
+            Assert.Equal("Test1.Foo", foo.Name);
+            Assert.Single(foo.Items);
+            var bar = foo.Items[0];
+            Assert.Equal("Test1.Foo.Bar(System.ValueTuple{System.String,System.String})", bar.Name);
+            // TODO: when https://github.com/dotnet/roslyn/issues/29390 will be fixed add space before namespace
+            Assert.Equal("public int Bar((string prefix, string uri)namespace)", bar.Syntax.Content[SyntaxLanguage.CSharp]);
+        }
+
+        [Fact]
+        [Trait("Related", "ValueTuple")]
+        public void TestGenerateMetadataAsyncWithUnnamedTupleParameter()
+        {
+            string code = @"
+namespace Test1
+{
+    public class Foo
+    {
+        public int Bar((string, string) @namespace) => 1;
+    }
+}
+";
+            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            Assert.Single(output.Items);
+            var ns = output.Items[0];
+            Assert.NotNull(ns);
+            var foo = ns.Items[0];
+            Assert.NotNull(foo);
+            Assert.Equal("Test1.Foo", foo.Name);
+            Assert.Single(foo.Items);
+            var bar = foo.Items[0];
+            Assert.Equal("Test1.Foo.Bar(System.ValueTuple{System.String,System.String})", bar.Name);
+            // TODO: when https://github.com/dotnet/roslyn/issues/29390 will be fixed add space before namespace
+            Assert.Equal("public int Bar((string, string)namespace)", bar.Syntax.Content[SyntaxLanguage.CSharp]);
+        }
+
+        [Fact]
+        [Trait("Related", "ValueTuple")]
+        public void TestGenerateMetadataAsyncWithPartiallyUnnamedTupleParameter()
+        {
+            string code = @"
+namespace Test1
+{
+    public class Foo
+    {
+        public int Bar((string, string uri) @namespace) => 1;
+    }
+}
+";
+            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            Assert.Single(output.Items);
+            var ns = output.Items[0];
+            Assert.NotNull(ns);
+            var foo = ns.Items[0];
+            Assert.NotNull(foo);
+            Assert.Equal("Test1.Foo", foo.Name);
+            Assert.Single(foo.Items);
+            var bar = foo.Items[0];
+            Assert.Equal("Test1.Foo.Bar(System.ValueTuple{System.String,System.String})", bar.Name);
+            // TODO: when https://github.com/dotnet/roslyn/issues/29390 will be fixed add space before namespace
+            Assert.Equal("public int Bar((string, string uri)namespace)", bar.Syntax.Content[SyntaxLanguage.CSharp]);
+        }
+
+        [Fact]
+        [Trait("Related", "ValueTuple")]
+        public void TestGenerateMetadataAsyncWithTupleArrayParameter()
+        {
+            string code = @"
+namespace Test1
+{
+    public class Foo
+    {
+        public int Bar((string prefix, string uri)[] namespaces) => 1;
+    }
+}
+";
+            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            Assert.Single(output.Items);
+            var ns = output.Items[0];
+            Assert.NotNull(ns);
+            var foo = ns.Items[0];
+            Assert.NotNull(foo);
+            Assert.Equal("Test1.Foo", foo.Name);
+            Assert.Single(foo.Items);
+            var bar = foo.Items[0];
+            Assert.Equal("Test1.Foo.Bar(System.ValueTuple{System.String,System.String}[])", bar.Name);
+            Assert.Equal("public int Bar((string prefix, string uri)[] namespaces)", bar.Syntax.Content[SyntaxLanguage.CSharp]);
+        }
+
+        [Fact]
+        [Trait("Related", "ValueTuple")]
+        public void TestGenerateMetadataAsyncWithTupleEnumerableParameter()
+        {
+            string code = @"
+using System.Collections.Generic;
+
+namespace Test1
+{
+    public class Foo
+    {
+        public int Bar(IEnumerable<(string prefix, string uri)> namespaces) => 1;
+    }
+}
+";
+            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            Assert.Single(output.Items);
+            var ns = output.Items[0];
+            Assert.NotNull(ns);
+            var foo = ns.Items[0];
+            Assert.NotNull(foo);
+            Assert.Equal("Test1.Foo", foo.Name);
+            Assert.Single(foo.Items);
+            var bar = foo.Items[0];
+            Assert.Equal("Test1.Foo.Bar(System.Collections.Generic.IEnumerable{System.ValueTuple{System.String,System.String}})", bar.Name);
+            Assert.Equal("public int Bar(IEnumerable<(string prefix, string uri)> namespaces)", bar.Syntax.Content[SyntaxLanguage.CSharp]);
+        }
+
+        [Fact]
+        [Trait("Related", "ValueTuple")]
+        public void TestGenerateMetadataAsyncWithTupleResult()
+        {
+            string code = @"
+namespace Test1
+{
+    public class Foo
+    {
+        public (string prefix, string uri) Bar() => (string.Empty, string.Empty);
+    }
+}
+";
+            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            Assert.Single(output.Items);
+            var ns = output.Items[0];
+            Assert.NotNull(ns);
+            var foo = ns.Items[0];
+            Assert.NotNull(foo);
+            Assert.Equal("Test1.Foo", foo.Name);
+            Assert.Single(foo.Items);
+            var bar = foo.Items[0];
+            Assert.Equal("Test1.Foo.Bar", bar.Name);
+            // TODO: when https://github.com/dotnet/roslyn/issues/29390 will be fixed add space before Bar
+            Assert.Equal("public (string prefix, string uri)Bar()", bar.Syntax.Content[SyntaxLanguage.CSharp]);
+        }
+
+        [Fact]
+        [Trait("Related", "ValueTuple")]
+        public void TestGenerateMetadataAsyncWithUnnamedTupleResult()
+        {
+            string code = @"
+namespace Test1
+{
+    public class Foo
+    {
+        public (string, string) Bar() => (string.Empty, string.Empty);
+    }
+}
+";
+            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            Assert.Single(output.Items);
+            var ns = output.Items[0];
+            Assert.NotNull(ns);
+            var foo = ns.Items[0];
+            Assert.NotNull(foo);
+            Assert.Equal("Test1.Foo", foo.Name);
+            Assert.Single(foo.Items);
+            var bar = foo.Items[0];
+            Assert.Equal("Test1.Foo.Bar", bar.Name);
+            // TODO: when https://github.com/dotnet/roslyn/issues/29390 will be fixed add space before Bar
+            Assert.Equal("public (string, string)Bar()", bar.Syntax.Content[SyntaxLanguage.CSharp]);
+        }
+
+        [Fact]
+        [Trait("Related", "ValueTuple")]
+        public void TestGenerateMetadataAsyncWithPartiallyUnnamedTupleResult()
+        {
+            string code = @"
+namespace Test1
+{
+    public class Foo
+    {
+        public (string, string uri) Bar() => (string.Empty, string.Empty);
+    }
+}
+";
+            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            Assert.Single(output.Items);
+            var ns = output.Items[0];
+            Assert.NotNull(ns);
+            var foo = ns.Items[0];
+            Assert.NotNull(foo);
+            Assert.Equal("Test1.Foo", foo.Name);
+            Assert.Single(foo.Items);
+            var bar = foo.Items[0];
+            Assert.Equal("Test1.Foo.Bar", bar.Name);
+            // TODO: when https://github.com/dotnet/roslyn/issues/29390 will be fixed add space before Bar
+            Assert.Equal("public (string, string uri)Bar()", bar.Syntax.Content[SyntaxLanguage.CSharp]);
+        }
+
+        [Fact]
+        [Trait("Related", "ValueTuple")]
+        public void TestGenerateMetadataAsyncWithEnumerableTupleResult()
+        {
+            string code = @"
+using System.Collections.Generic;
+
+namespace Test1
+{
+    public class Foo
+    {
+        public IEnumerable<(string prefix, string uri)> Bar() => new (string.Empty, string.Empty)[0];
+    }
+}
+";
+            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            Assert.Single(output.Items);
+            var ns = output.Items[0];
+            Assert.NotNull(ns);
+            var foo = ns.Items[0];
+            Assert.NotNull(foo);
+            Assert.Equal("Test1.Foo", foo.Name);
+            Assert.Single(foo.Items);
+            var bar = foo.Items[0];
+            Assert.Equal("Test1.Foo.Bar", bar.Name);
+            Assert.Equal("public IEnumerable<(string prefix, string uri)> Bar()", bar.Syntax.Content[SyntaxLanguage.CSharp]);
         }
 
         private static Compilation CreateCompilationFromCSharpCode(string code, params MetadataReference[] references)

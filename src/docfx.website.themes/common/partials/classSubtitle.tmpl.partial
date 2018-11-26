@@ -20,3 +20,9 @@
 {{#inEii}}
 {{__global.eiisInSubtitle}}
 {{/inEii}}
+{{#inFunction}}
+{{__global.functionsInSubtitle}}
+{{/inFunction}}
+{{#inMember}}
+{{__global.membersInSubtitle}}
+{{/inMember}}

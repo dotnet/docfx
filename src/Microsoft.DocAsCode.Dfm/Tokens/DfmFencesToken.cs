@@ -3,11 +3,24 @@
 
 namespace Microsoft.DocAsCode.Dfm
 {
+    using System;
+
     using Microsoft.DocAsCode.MarkdownLite;
 
     public abstract class DfmFencesToken : IMarkdownToken
     {
+        [Obsolete]
         public DfmFencesToken(IMarkdownRule rule, IMarkdownContext context, string name, string path, SourceInfo sourceInfo, string lang, string title, IDfmFencesBlockPathQueryOption pathQueryOption)
+            : this(rule, context, name, path, sourceInfo, lang, title, pathQueryOption, null) { }
+
+        [Obsolete]
+        public DfmFencesToken(IMarkdownRule rule, IMarkdownContext context, string name, string path, SourceInfo sourceInfo, string lang, string title, IDfmFencesBlockPathQueryOption pathQueryOption, string queryStringAndFragment)
+            : this(rule, context, name, path, sourceInfo, lang, title, queryStringAndFragment)
+        {
+            PathQueryOption = pathQueryOption;
+        }
+
+        public DfmFencesToken(IMarkdownRule rule, IMarkdownContext context, string name, string path, SourceInfo sourceInfo, string lang, string title, string queryStringAndFragment)
         {
             Rule = rule;
             Context = context;
@@ -15,8 +28,8 @@ namespace Microsoft.DocAsCode.Dfm
             Lang = lang;
             Name = name;
             Title = title;
-            PathQueryOption = pathQueryOption;
             SourceInfo = sourceInfo;
+            QueryStringAndFragment = queryStringAndFragment;
         }
 
         public IMarkdownRule Rule { get; }
@@ -31,6 +44,9 @@ namespace Microsoft.DocAsCode.Dfm
 
         public string Title { get; }
 
+        public string QueryStringAndFragment { get; }
+
+        [Obsolete("use QueryStringAndFragment")]
         public IDfmFencesBlockPathQueryOption PathQueryOption { get; }
 
         public SourceInfo SourceInfo { get; }

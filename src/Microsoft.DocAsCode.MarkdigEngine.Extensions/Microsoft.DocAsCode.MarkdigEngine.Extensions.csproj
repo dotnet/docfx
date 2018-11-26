@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="../Shared/base.netstandard.props" />
+
+  <ItemGroup>
+    <PackageReference Include="Markdig" Version="0.15.4" />
+    <PackageReference Include="System.ValueTuple" Version="4.4.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Microsoft.DocAsCode.MarkdigEngine.Validators\Microsoft.DocAsCode.MarkdigEngine.Validators.csproj" />
+  </ItemGroup>
+
+</Project>

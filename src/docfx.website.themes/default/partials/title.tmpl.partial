@@ -38,3 +38,6 @@ Operator {{name.0.value}}
 {{#inEii}}
 Explict Interface Implementation {{name.0.value}}
 {{/inEii}}
+{{#inPackage}}
+Package {{name.0.value}}
+{{/inPackage}}

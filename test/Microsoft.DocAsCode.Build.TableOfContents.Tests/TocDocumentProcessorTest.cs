@@ -404,6 +404,7 @@ items:
                             new TocItemViewModel
                             {
                                 Name = "Topic1.1",
+                                IncludedFrom = "~/sub1/toc.md",
                                 Href = null, // For referenced toc, the content from the referenced toc is expanded as the items of current toc, and href is cleared
                                 TopicHref = null,
                                 Items = new TocViewModel
@@ -417,6 +418,7 @@ items:
                                     new TocItemViewModel
                                     {
                                         Name = "ReferencedToc",
+                                        IncludedFrom = "~/SUB1/sub2/toc.yml",
                                         Items = new TocViewModel
                                         {
                                             new TocItemViewModel
@@ -437,6 +439,7 @@ items:
                                     new TocItemViewModel
                                     {
                                         Name = "ReferencedToc2",
+                                        IncludedFrom = "~/SUB1/sub3/toc.md",
                                         Items = new TocViewModel
                                         {
                                             new TocItemViewModel
@@ -460,6 +463,7 @@ items:
                                 Name = "Topic1.2",
                                 Href = file1, // For referenced toc, href should be overwritten by homepage
                                 TopicHref = file1,
+                                IncludedFrom = "~/sub1/toc.md",
                                 Homepage = file1,
                                 Items = new TocViewModel
                                 {
@@ -472,6 +476,7 @@ items:
                                     new TocItemViewModel
                                     {
                                         Name = "ReferencedToc",
+                                        IncludedFrom = "~/SUB1/sub2/toc.yml",
                                         Items = new TocViewModel
                                         {
                                             new TocItemViewModel
@@ -491,6 +496,7 @@ items:
                                     new TocItemViewModel
                                     {
                                         Name = "ReferencedToc2",
+                                        IncludedFrom = "~/SUB1/sub3/toc.md",
                                         Items = new TocViewModel
                                         {
                                             new TocItemViewModel
@@ -514,6 +520,7 @@ items:
                     new TocItemViewModel
                     {
                         Name = "Topic2",
+                        IncludedFrom = "~/sub1/sub2/toc.yml",
                         Href = null,
                         Items = new TocViewModel
                         {
@@ -561,6 +568,34 @@ items:
             files.Add(DocumentType.Article, new[] { toc, subToc });
             var e = Assert.Throws<DocumentException>(() => BuildDocument(files));
             Assert.Equal($"Circular reference to {StringExtension.ToDisplayPath(Path.GetFullPath(Path.Combine(_inputFolder, subToc)))} is found in {StringExtension.ToDisplayPath(Path.GetFullPath(Path.Combine(_inputFolder, referencedToc)))}", e.Message, true);
+        }
+
+        [Fact]
+        public void ProcessMarkdownTocWithNonExistentReferencedTocShouldFail()
+        {
+            var pathToReferencedToc = "non-existent/toc.yml";
+            var toc = _fileCreator.CreateFile($@"
+#Topic
+##[ReferencedToc]({pathToReferencedToc})
+", FileType.MarkdownToc);
+            var files = new FileCollection(_inputFolder);
+            files.Add(DocumentType.Article, new[] { toc });
+            var e = Assert.Throws<DocumentException>(() => BuildDocument(files));
+            Assert.Equal($"Referenced TOC file {StringExtension.ToDisplayPath(Path.GetFullPath(Path.Combine(_inputFolder, pathToReferencedToc)))} does not exist.", e.Message, true);
+        }
+
+        [Fact]
+        public void ProcessYamlTocWithNonExistentReferencedTocShouldFail()
+        {
+            var pathToReferencedToc = "non-existent/TOC.md";
+            var toc = _fileCreator.CreateFile($@"
+- name: Topic
+  href: {pathToReferencedToc}
+", FileType.YamlToc);
+            var files = new FileCollection(_inputFolder);
+            files.Add(DocumentType.Article, new[] { toc });
+            var e = Assert.Throws<DocumentException>(() => BuildDocument(files));
+            Assert.Equal($"Referenced TOC file {StringExtension.ToDisplayPath(Path.GetFullPath(Path.Combine(_inputFolder, pathToReferencedToc)))} does not exist.", e.Message, true);
         }
 
         [Fact]
@@ -690,6 +725,7 @@ items:
             Assert.True(File.Exists(outputRawModelPath));
             var model = JsonUtility.Deserialize<Dictionary<string, object>>(outputRawModelPath);
             Assert.Equal("../toc.md", model["_tocRel"]);
+            Assert.Equal("Hello world!", model["meta"]);
         }
 
         [Fact]
@@ -706,6 +742,79 @@ items:
             files.Add(DocumentType.Article, new[] { toc });
             var e = Assert.Throws<DocumentException>(() => BuildDocument(files));
             Assert.Equal("TopicHref should be used to specify the homepage for /Topic1/ when tocHref is used.", e.Message);
+        }
+
+        [Fact]
+        public void LoadBadTocYamlFileShouldGiveLineNumber()
+        {
+            var content = @"
+- name: x
+    items:
+    - name: x1
+      href: x1.md
+    - name: x2
+      href: x2.md";
+            var toc = _fileCreator.CreateFile(content, FileType.YamlToc);
+            var ex = Assert.Throws<DocumentException>(() => TocHelper.LoadSingleToc(toc));
+            Assert.Equal("toc.yml is not a valid TOC File: toc.yml is not a valid TOC file, detail: (Line: 3, Col: 10, Idx: 22) - (Line: 3, Col: 10, Idx: 22): Mapping values are not allowed in this context..", ex.Message);
+        }
+
+        [Fact]
+        public void LoadTocYamlWithEmptyNodeShouldSucceed()
+        {
+            // Arrange
+            var content = @"
+- name: x
+  href: a.md
+-";
+            var files = new FileCollection(_inputFolder);
+            var file = _fileCreator.CreateFile(content, FileType.YamlToc);
+            files.Add(DocumentType.Article, new[] { file });
+
+            // Act
+            BuildDocument(files);
+
+            // Assert
+            var outputRawModelPath = Path.GetFullPath(Path.Combine(_outputFolder, Path.ChangeExtension(file, RawModelFileExtension)));
+            Assert.True(File.Exists(outputRawModelPath));
+            var model = JsonUtility.Deserialize<TocRootViewModel>(outputRawModelPath);
+            Assert.Single(model.Items); // empty node is removed
+        }
+
+        [Fact]
+        public void WarningShouldBeFromIncludedToc()
+        {
+            // Arrange
+            var masterContent = @"
+- name: TOC2
+  href: ../included/toc.yml";
+            var includedContent = @"
+- name: Article2
+  href: not-existing2.md
+- name: Article3ByUid
+  uid: not-existing-uid";
+            var files = new FileCollection(_inputFolder);
+            var masterFile = _fileCreator.CreateFile(masterContent, FileType.YamlToc, "master");
+            var includedFile = _fileCreator.CreateFile(includedContent, FileType.YamlToc, "included");
+            files.Add(DocumentType.Article, new[] { masterFile });
+
+            // Act
+            var listener = TestLoggerListener.CreateLoggerListenerWithCodesFilter(
+                new List<string> { WarningCodes.Build.InvalidFileLink, WarningCodes.Build.UidNotFound });
+            Logger.RegisterListener(listener);
+            using (new LoggerPhaseScope(nameof(TocDocumentProcessorTest)))
+            {
+                BuildDocument(files);
+            }
+            Logger.UnregisterListener(listener);
+
+            // Assert
+            Assert.NotNull(listener.Items);
+            Assert.Equal(2, listener.Items.Count);
+            Assert.Equal(WarningCodes.Build.InvalidFileLink, listener.Items[0].Code);
+            Assert.Equal("~/included/toc.yml", listener.Items[0].File);
+            Assert.Equal(WarningCodes.Build.UidNotFound, listener.Items[1].Code);
+            Assert.Equal("~/included/toc.yml", listener.Items[1].File);
         }
 
         #region Helper methods
@@ -766,6 +875,10 @@ items:
                 Files = files,
                 OutputBaseDir = _outputFolder,
                 ApplyTemplateSettings = _applyTemplateSettings,
+                Metadata = new Dictionary<string, object>
+                {
+                    ["meta"] = "Hello world!",
+                }.ToImmutableDictionary(),
             };
 
             using (var builder = new DocumentBuilder(LoadAssemblies(), ImmutableArray<string>.Empty, null))

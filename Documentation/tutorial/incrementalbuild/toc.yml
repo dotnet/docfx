@@ -6,3 +6,9 @@
   href: advanced_report_dependency.md
 - name: 'Advanced: Cache File Structure'
   href: advanced_cache_file_structure.md
+- name: Incremental post processing
+  items:
+  - name: Introduction to incremental post processing
+    href: intro_incremental_post_processing.md
+  - name: Customize a post processor to be incremental
+    href: customize_a_post_processor_to_be_incremental.md

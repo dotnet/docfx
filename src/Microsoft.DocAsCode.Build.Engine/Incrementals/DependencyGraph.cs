@@ -26,6 +26,12 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             },
             new DependencyType
             {
+                Name = DependencyTypeName.OverwriteFragments,
+                Phase = BuildPhase.Compile,
+                Transitivity = DependencyTransitivity.All,
+            },
+            new DependencyType
+            {
                 Name = DependencyTypeName.Overwrite,
                 Phase = BuildPhase.Link,
                 Transitivity = DependencyTransitivity.All,
@@ -408,7 +414,9 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 
             if (unresolved.Count > 0)
             {
-                Logger.LogVerbose($"Dependency graph failed to resolve {unresolved.Count} references: {string.Join(Environment.NewLine, unresolved)}.");
+                Logger.LogVerbose(
+                    $"Dependency graph: {unresolved.Count} unresolved references, following is the top 100: {Environment.NewLine}" +
+                    string.Join(Environment.NewLine, unresolved.Take(100)));
             }
         }
 
@@ -590,7 +598,10 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         {
             if (!_types.ContainsKey(dependency.Type))
             {
-                Logger.LogWarning($"dependency type {dependency.Type} isn't registered yet.");
+                // When the processor contains no files other than overwrites, this processor will not even loaded,
+                // As a result, the dependency types inside this processer will not be registered
+                // This is a common case from now on so there is no need to log warning
+                // Logger.LogWarning($"dependency type {dependency.Type} isn't registered yet.");
                 return false;
             }
             return true;

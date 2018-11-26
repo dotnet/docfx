@@ -42,7 +42,8 @@ export class Github {
         docfxJson: string,
         gitUserName: string,
         gitUserEmail: string,
-        gitCommitMessage: string) {
+        gitCommitMessage: string,
+        githubToken: string) {
 
         Guard.argumentNotNullOrEmpty(repoUrl, "repoUrl");
         Guard.argumentNotNullOrEmpty(siteFolder, "siteFolder");
@@ -51,6 +52,7 @@ export class Github {
         Guard.argumentNotNullOrEmpty(gitUserName, "gitUserName");
         Guard.argumentNotNullOrEmpty(gitUserEmail, "gitUserEmail");
         Guard.argumentNotNullOrEmpty(gitCommitMessage, "gitCommitMessage");
+        Guard.argumentNotNullOrEmpty(githubToken, "githubToken");
 
         await Common.execAsync(docfxExe, [docfxJson]);
 
@@ -67,6 +69,9 @@ export class Github {
         await Common.execAsync("git", ["config", "user.email", gitUserEmail], siteFolder);
         await Common.execAsync("git", ["add", "."], siteFolder);
         await Common.execAsync("git", ["commit", "-m", gitCommitMessage], siteFolder);
+        
+        var repoUrlWithToken = "https://dotnet:" + githubToken + "@" + repoUrl.substring("https://".length);
+        await Common.execAsync("git", ["remote", "set-url", "origin", repoUrlWithToken], siteFolder);
         return Common.execAsync("git", ["push", "origin", branch], siteFolder);
     }
 

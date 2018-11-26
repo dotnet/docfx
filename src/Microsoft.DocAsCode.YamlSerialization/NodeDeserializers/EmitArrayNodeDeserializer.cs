@@ -16,11 +16,7 @@ namespace Microsoft.DocAsCode.YamlSerialization.NodeDeserializers
     public class EmitArrayNodeDeserializer : INodeDeserializer
     {
         private static MethodInfo DeserializeHelperMethod =
-#if NetCore
-            typeof(EmitArrayNodeDeserializer).GetTypeInfo().GetDeclaredMethod(nameof(DeserializeHelper));
-#else
             typeof(EmitArrayNodeDeserializer).GetMethod(nameof(DeserializeHelper));
-#endif
         private static readonly ConcurrentDictionary<Type, Func<IParser, Type, Func<IParser, Type, object>, object>> _funcCache =
             new ConcurrentDictionary<Type, Func<IParser, Type, Func<IParser, Type, object>, object>>();
 

@@ -29,9 +29,8 @@ namespace Microsoft.DocAsCode.YamlSerialization.Helpers
 
         public TValue GetOrAdd(TKey key, Func<TKey, TValue> func)
         {
-            TValue value;
             var cache = _cache;
-            if (TryFindInCache(cache, key, out value))
+            if (TryFindInCache(cache, key, out TValue value))
             {
                 return value;
             }

@@ -23,6 +23,8 @@ namespace Microsoft.DocAsCode.DataContracts.ManagedReference
         Constructor,
         Method,
         Operator,
-        Container
+        Container,
+        AttachedEvent,
+        AttachedProperty
     }
 }

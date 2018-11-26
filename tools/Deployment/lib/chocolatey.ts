@@ -44,7 +44,7 @@ export class Chocolatey {
     }
 
     private static async prepareChocoAsync(homeDir: string, chocoToken: string): Promise<void> {
-        return Common.execAsync("choco", ["apiKey", "-k", chocoToken, "-source", "https://chocolatey.org/", homeDir]);
+        return Common.execAsync("choco", ["apiKey", "-k", chocoToken, "-source", "https://push.chocolatey.org/", homeDir]);
     }
 
     private static updateChocoConfig(scriptPath: string, nuspecPath: string, version: string, sha1: string) {

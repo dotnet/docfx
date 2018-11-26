@@ -4,6 +4,7 @@
 namespace Microsoft.DocAsCode.Build.Engine
 {
     using System;
+    using System.IO;
 
     using Microsoft.DocAsCode.Plugins;
 
@@ -14,6 +15,15 @@ namespace Microsoft.DocAsCode.Build.Engine
         public BasicXRefMapReader(XRefMap map)
         {
             Map = map ?? throw new ArgumentNullException(nameof(map));
+            if (map.HrefUpdated != true &&
+                map.BaseUrl != null)
+            {
+                if (!Uri.TryCreate(map.BaseUrl, UriKind.Absolute, out Uri baseUri))
+                {
+                    throw new InvalidDataException($"Xref map file has an invalid base url: {map.BaseUrl}.");
+                }
+                map.UpdateHref(baseUri);
+            }
         }
 
         public virtual XRefSpec Find(string uid)

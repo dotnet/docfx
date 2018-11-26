@@ -9,8 +9,8 @@ In this topic, we will show how to add a customized post-processor.
 
 * Create a new C# class library project in `Visual Studio`.
 * Add nuget packages:
-    * [`System.Collections.Immutable`](https://www.nuget.org/packages/System.Collections.Immutable/1.1.37) with version 1.1.37
-    * [`Microsoft.Composition`](https://www.nuget.org/packages/Microsoft.Composition/1.0.27) with version 1.0.27
+    * [`System.Collections.Immutable`](https://www.nuget.org/packages/System.Collections.Immutable/1.3.1) with version 1.3.1
+    * [`Microsoft.Composition`](https://www.nuget.org/packages/Microsoft.Composition/1.0.31) with version 1.0.31
 * Add `Microsoft.DocAsCode.Plugins`
 If you are building DocFX from source code, add this reference to the project,
 otherwise add the nuget package `Microsoft.DocAsCode.Plugins` with the same version as DocFX.

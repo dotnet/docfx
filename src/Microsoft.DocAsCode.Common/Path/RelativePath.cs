@@ -7,6 +7,7 @@ namespace Microsoft.DocAsCode.Common
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
+    using System.Text;
 
     /// <summary>
     /// relative path
@@ -15,14 +16,18 @@ namespace Microsoft.DocAsCode.Common
     {
 
         #region Consts/Fields
+        private const string ParentDirectory = "../";
         public const char WorkingFolderChar = '~';
-        public static readonly char[] InvalidChars = Path.GetInvalidPathChars().Concat(":*").ToArray();
+        public const string WorkingFolderString = "~";
         public static readonly string NormalizedWorkingFolder = "~/";
         public static readonly string AltWorkingFolder = "~\\";
         public static readonly RelativePath Empty = new RelativePath(false, 0, new string[] { string.Empty });
         public static readonly RelativePath WorkingFolder = new RelativePath(true, 0, new string[] { string.Empty });
+        public static readonly char[] InvalidPartChars = PathUtility.InvalidPathChars.Concat(@"\/?").ToArray();
+        private static readonly string[] EncodedInvalidPartChars = Array.ConvertAll(InvalidPartChars, ch => Uri.EscapeDataString(ch.ToString()));
+        private static readonly char[] UnsafeInvalidPartChars = { '/' };
+        private static readonly string[] EncodedUnsafeInvalidPartChars = Array.ConvertAll(UnsafeInvalidPartChars, ch => Uri.EscapeDataString(ch.ToString()));
 
-        private const string ParentDirectory = "../";
         private readonly bool _isFromWorkingFolder;
         private readonly int _parentDirectoryCount;
         private readonly string[] _parts;
@@ -40,6 +45,10 @@ namespace Microsoft.DocAsCode.Common
         #endregion
 
         #region Public Members
+        public static RelativePath FromUrl(string path)
+        {
+            return Parse(path).UrlDecode();
+        }
 
         public static bool IsRelativePath(string path)
         {
@@ -48,7 +57,7 @@ namespace Microsoft.DocAsCode.Common
                 path.Length > 0 &&
                 path[0] != '/' &&
                 path[0] != '\\' &&
-                path.IndexOfAny(InvalidChars) == -1;
+                path.IndexOfAny(PathUtility.InvalidPathChars) == -1;
         }
 
         public static RelativePath Parse(string path) => TryParseCore(path, true);
@@ -231,11 +240,25 @@ namespace Microsoft.DocAsCode.Common
 
         public RelativePath UrlDecode()
         {
-            var parts = new string[_parts.Length];
-            for (int i = 0; i < parts.Length; i++)
+            string[] parts = UrlDecodeCore(true);
+
+            if (_parts.Length > 0 && parts[0] == WorkingFolderString)
             {
-                parts[i] = Uri.UnescapeDataString(_parts[i]);
+                return new RelativePath(true, _parentDirectoryCount, parts.Skip(1).ToArray());
             }
+
+            return new RelativePath(_isFromWorkingFolder, _parentDirectoryCount, parts);
+        }
+
+        public RelativePath UrlDecodeUnsafe()
+        {
+            string[] parts = UrlDecodeCore(false);
+
+            if (_parts.Length > 0 && parts[0] == WorkingFolderString)
+            {
+                return new RelativePath(true, _parentDirectoryCount, parts.Skip(1).ToArray());
+            }
+
             return new RelativePath(_isFromWorkingFolder, _parentDirectoryCount, parts);
         }
 
@@ -288,6 +311,49 @@ namespace Microsoft.DocAsCode.Common
             string.Concat(Enumerable.Repeat(ParentDirectory, _parentDirectoryCount)) +
             string.Join("/", _parts);
 
+        /// <summary>
+        /// Test whether a relative path starts with another folder relative path
+        /// Return false if either path starts with "../"
+        /// </summary>
+        public bool InDirectory(RelativePath value)
+        {
+            if (value == null)
+            {
+                throw new ArgumentNullException(nameof(value));
+            }
+            if (value._parts[value._parts.Length - 1] != "")
+            {
+                return false;
+            }
+            if (_isFromWorkingFolder ^ value._isFromWorkingFolder)
+            {
+                return false;
+            }
+            if (_parentDirectoryCount > 0 || value._parentDirectoryCount > 0)
+            {
+                return false;
+            }
+            if (_parts.Length < value._parts.Length)
+            {
+                return false;
+            }
+
+            int i;
+            for (i = 0; i < value._parts.Length; i++)
+            {
+                if (value._parts[i] == string.Empty)
+                {
+                    return true;
+                }
+                if (!FilePathComparer.OSPlatformSensitiveComparer.Equals(_parts[i], value._parts[i]))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
         #endregion
 
         #region Private Members
@@ -306,7 +372,7 @@ namespace Microsoft.DocAsCode.Common
             {
                 return Empty;
             }
-            if (path.IndexOfAny(InvalidChars) != -1)
+            if (path.IndexOfAny(PathUtility.InvalidPathChars) != -1)
             {
                 if (throwOnError)
                 {
@@ -323,7 +389,7 @@ namespace Microsoft.DocAsCode.Common
                 return null;
             }
             bool isFromWorkingFolder = false;
-            var parts = path.Replace('\\', '/').Split('/');
+            var parts = path.Split('/', '\\');
             var stack = new Stack<string>();
             int parentCount = 0;
             for (int i = 0; i < parts.Length; i++)
@@ -397,6 +463,48 @@ namespace Microsoft.DocAsCode.Common
             var parts = (string[])_parts.Clone();
             parts[parts.Length - 1] = fileName;
             return new RelativePath(_isFromWorkingFolder, _parentDirectoryCount, parts);
+        }
+
+        private string[] UrlDecodeCore(bool safe)
+        {
+            StringBuilder sb = null;
+            var parts = new string[_parts.Length];
+            var invalidPartChars = safe ? InvalidPartChars : UnsafeInvalidPartChars;
+            for (int i = 0; i < parts.Length; i++)
+            {
+                var origin = _parts[i];
+                var value = Uri.UnescapeDataString(origin);
+                bool modified = false;
+                int index;
+                int lastIndex = value.Length - 1;
+                int originLastIndex = origin.Length - 1;
+                while (lastIndex != -1 && (index = value.LastIndexOfAny(invalidPartChars, lastIndex)) != -1)
+                {
+                    modified = true;
+                    lastIndex = index - 1;
+                    if (sb == null)
+                    {
+                        sb = new StringBuilder(value, Math.Max(value.Length + 18, 64));
+                    }
+                    else if (sb.Length == 0)
+                    {
+                        sb.Append(value);
+                    }
+                    var chIndex = Array.IndexOf(invalidPartChars, value[index]);
+                    sb.Remove(index, 1);
+                    var text = safe ? EncodedInvalidPartChars[chIndex] : EncodedUnsafeInvalidPartChars[chIndex];
+                    var originIndex = origin.LastIndexOf(text, originLastIndex, StringComparison.OrdinalIgnoreCase);
+                    originLastIndex = originIndex - 1;
+                    sb.Insert(index, origin.Substring(originIndex, text.Length));
+                }
+                parts[i] = modified ? sb.ToString() : value;
+                if (sb != null)
+                {
+                    sb.Length = 0;
+                }
+            }
+
+            return parts;
         }
 
         #endregion

@@ -71,7 +71,12 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 
         private void AddCore(string filePath, ChangeKind kind)
         {
-            _list.Add(new ChangeItem { FilePath = filePath, Kind = (ChangeKindWithDependency)kind });
+            _list.Add(
+                new ChangeItem
+                {
+                    FilePath = filePath,
+                    Kind = (ChangeKindWithDependency)kind
+                });
         }
 
         private static ChangeList ParseCore(string tsvFile, string baseDir)
@@ -109,8 +114,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                     }
                     if (path != null)
                     {
-                        ChangeKind kind;
-                        if (Enum.TryParse(columns[1], true, out kind))
+                        if (Enum.TryParse(columns[1], true, out ChangeKind kind))
                         {
                             if (kind != ChangeKind.Deleted)
                             {
@@ -135,14 +139,14 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             return result;
         }
 
-        public IEnumerator GetEnumerator()
+        IEnumerator IEnumerable.GetEnumerator()
         {
-            return ((IEnumerable)_list).GetEnumerator();
+            return _list.GetEnumerator();
         }
 
-        IEnumerator<ChangeItem> IEnumerable<ChangeItem>.GetEnumerator()
+        public IEnumerator<ChangeItem> GetEnumerator()
         {
-            return ((IEnumerable<ChangeItem>)_list).GetEnumerator();
+            return _list.GetEnumerator();
         }
     }
 }

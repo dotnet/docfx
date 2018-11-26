@@ -160,7 +160,7 @@ namespace Microsoft.DocAsCode.HtmlToPdf
                                 {
                                     DocsetName = _pdfOptions.PdfDocsetName,
                                     TocFiles = new string[] { tocFile.SourceRelativePath },
-                                    Version = tocFile.Version,
+                                    Version = tocFile.Group,
                                     AssetId = tocAssetId,
                                 });
                         }
@@ -313,7 +313,8 @@ namespace Microsoft.DocAsCode.HtmlToPdf
                 {
                     BasePath = basePath,
                     UserStyleSheet = _pdfOptions.CssFilePath,
-                    LoadErrorHandling = _pdfOptions.LoadErrorHandling
+                    LoadErrorHandling = _pdfOptions.LoadErrorHandling,
+                    AdditionalArguments = _pdfOptions.AdditionalPdfCommandArgs
                 });
 
             converter.Save(Path.Combine(_pdfOptions.DestDirectory, pdfFileName));

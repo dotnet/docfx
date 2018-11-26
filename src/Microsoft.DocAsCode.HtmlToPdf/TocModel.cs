@@ -17,7 +17,7 @@ namespace Microsoft.DocAsCode.HtmlToPdf
 
         [JsonProperty("external_link")]
         public string ExternalLink { get; set; }
-        
+
         [JsonProperty("children")]
         public IList<TocModel> Children { get; set; }
     }

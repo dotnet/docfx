@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\Shared\test.base.props" />
+  <ItemGroup>
+    <PackageReference Include="Markdig" Version="0.15.4" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Build.OverwriteDocuments\Microsoft.DocAsCode.Build.OverwriteDocuments.csproj" />
+    <ProjectReference Include="..\Microsoft.DocAsCode.Tests.Common\Microsoft.DocAsCode.Tests.Common.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="TestData\System.String.yml.md">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+</Project>

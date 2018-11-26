@@ -57,7 +57,6 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             CreateFile("ManagedReference.html.primary.tmpl", "managed content", templateFolder);
             CreateFile("ManagedReference.txt.tmpl", "{{summary}}{{remarks}}{{example.0}}", templateFolder);
             CreateFile("toc.html.tmpl", "toc", templateFolder);
-
             var tocFile = CreateFile("toc.md",
                 new[]
                 {
@@ -147,11 +146,12 @@ tagRules : [
     }
 ]
 }");
-
+            var mrefFile1 = CreateFile("api\\System.Console.csyml", File.ReadAllText("TestData/System.Console.csyml"), inputFolder);
+            var mrefFile2 = CreateFile("api\\System.ConsoleColor.csyml", File.ReadAllText("TestData/System.ConsoleColor.csyml"), inputFolder);
+            var codesnippet = CreateFile("api/snippets/dataflowdegreeofparallelism.cs", File.ReadAllText("TestData/snippets/dataflowdegreeofparallelism.cs"), inputFolder);
             FileCollection files = new FileCollection(Directory.GetCurrentDirectory());
-            files.Add(DocumentType.Article, new[] { tocFile, conceptualFile, conceptualFile2 });
+            files.Add(DocumentType.Article, new[] { tocFile, conceptualFile, conceptualFile2, mrefFile1, mrefFile2 });
             files.Add(DocumentType.Overwrite, new[] { overwriteFile });
-            files.Add(DocumentType.Article, new[] { "TestData/System.Console.csyml", "TestData/System.ConsoleColor.csyml" }, "TestData/", null);
             files.Add(DocumentType.Resource, new[] { resourceFile });
             #endregion
 
@@ -187,6 +187,11 @@ tagRules : [
                     var subFolders = Directory.GetDirectories(intermediateFolder, "*");
                     Assert.Equal(1, subFolders.Length);
                     cacheFolderName = Path.GetFileName(subFolders[0]);
+                }
+                {
+                    // check logs.
+                    var logs = Listener.Items.Where(i => i.Phase.StartsWith("IncrementalBuild.TestBasic")).ToList();
+                    Assert.Equal(7, logs.Count);
                 }
 
                 ClearListener();
@@ -261,7 +266,7 @@ tagRules : [
                             "Test xref with attribute: <a class=\"xref\" href=\"test/test.html\">Foo&lt;T&gt;</a>",
                             "Test invalid xref with attribute: <span class=\"xref\">Foo&lt;T&gt;</span>",
                             "Test invalid xref with attribute: <span class=\"xref\">Foo&lt;T&gt;</span>",
-                            "Test xref to overload method: <a class=\"xref\" href=\"../System.Console.html\">WriteLine</a>",
+                            "Test xref to overload method: <a class=\"xref\" href=\"api/System.Console.html\">WriteLine</a>",
                             "<p>",
                             "test</p>",
                             ""),
@@ -273,10 +278,10 @@ tagRules : [
                 }
                 {
                     // check mref.
-                    Assert.True(File.Exists(Path.Combine(outputFolderSecond, Path.ChangeExtension("System.Console.csyml", ".html"))));
-                    Assert.True(File.Exists(Path.Combine(outputFolderSecond, Path.ChangeExtension("System.ConsoleColor.csyml", ".html"))));
+                    Assert.True(File.Exists(Path.Combine(outputFolderSecond, Path.ChangeExtension(mrefFile1, ".html"))));
+                    Assert.True(File.Exists(Path.Combine(outputFolderSecond, Path.ChangeExtension(mrefFile2, ".html"))));
 
-                    var contentFile = Path.Combine(outputFolderSecond, "System.Console.txt");
+                    var contentFile = Path.Combine(outputFolderSecond, Path.ChangeExtension(mrefFile1, ".txt"));
                     Assert.True(File.Exists(contentFile));
                     Assert.Equal($"&lt;p sourcefile=&quot;{inputFolder}/test/ow.md&quot; sourcestartlinenumber=&quot;5&quot; sourceendlinenumber=&quot;5&quot;&gt;hello&lt;/p&gt;\n&lt;p sourcefile=&quot;{inputFolder}/test/ow.md&quot; sourcestartlinenumber=&quot;11&quot; sourceendlinenumber=&quot;11&quot;&gt;example&lt;/p&gt;\n"
 , File.ReadAllText(contentFile));
@@ -361,7 +366,7 @@ tagRules : [
                             "Test xref with attribute: <a class=\"xref\" href=\"test/test.html\">Foo&lt;T&gt;</a>",
                             "Test invalid xref with attribute: <span class=\"xref\">Foo&lt;T&gt;</span>",
                             "Test invalid xref with attribute: <span class=\"xref\">Foo&lt;T&gt;</span>",
-                            "Test xref to overload method: <a class=\"xref\" href=\"../System.Console.html\">WriteLine</a>",
+                            "Test xref to overload method: <a class=\"xref\" href=\"api/System.Console.html\">WriteLine</a>",
                             "<p>",
                             "test</p>",
                             ""),
@@ -373,8 +378,8 @@ tagRules : [
                 }
                 {
                     // check mref.
-                    Assert.True(File.Exists(Path.Combine(outputFolderThird, Path.ChangeExtension("System.Console.csyml", ".html"))));
-                    Assert.True(File.Exists(Path.Combine(outputFolderThird, Path.ChangeExtension("System.ConsoleColor.csyml", ".html"))));
+                    Assert.True(File.Exists(Path.Combine(outputFolderThird, Path.ChangeExtension(mrefFile1, ".html"))));
+                    Assert.True(File.Exists(Path.Combine(outputFolderThird, Path.ChangeExtension(mrefFile2, ".html"))));
                 }
 
                 {
@@ -419,11 +424,42 @@ tagRules : [
                     Assert.Equal(1, subFolders.Length);
                     Assert.NotEqual(cacheFolderName, Path.GetFileName(subFolders[0]));
                 }
+
+                // rename code snippet
+                using (new LoggerPhaseScope("IncrementalBuild.TestBasic-fifth"))
+                {
+                    ClearListener();
+                    File.Delete(codesnippet);
+                    BuildDocument(
+                        files, 
+                        inputFolder,
+                        outputFolderThird,
+                        new Dictionary<string, object>
+                        {
+                            ["meta"] = "Hello world!",
+                        },
+                        templateFolder: templateFolder,
+                        intermediateFolder: intermediateFolderVariable,
+                        cleanupCacheHistory: true);
+                    {
+                        // check logs.
+                        var logs = Listener.Items.Where(i => i.Phase.StartsWith("IncrementalBuild.TestBasic")).ToList();
+                        Assert.Equal(8, logs.Count);
+                        var errorLog = logs.First(s => s.LogLevel == LogLevel.Warning);
+                        Assert.NotNull(errorLog);
+                        Assert.Equal(mrefFile1, errorLog.File.Replace('\\', '/'));
+                        Assert.True(errorLog.Message.StartsWith("Unable to resolve"));
+                    }
+                }
             }
             finally
             {
                 Environment.SetEnvironmentVariable("cache", null);
                 CleanUp();
+                if (File.Exists(MarkdownSytleConfig.MarkdownStyleFileName))
+                {
+                    File.Delete(MarkdownSytleConfig.MarkdownStyleFileName);
+                }
             }
         }
 
@@ -615,6 +651,10 @@ tagRules : [
             finally
             {
                 CleanUp();
+                if (File.Exists(MarkdownSytleConfig.MarkdownStyleFileName))
+                {
+                    File.Delete(MarkdownSytleConfig.MarkdownStyleFileName);
+                }
             }
         }
 
@@ -808,6 +848,10 @@ tagRules : [
             finally
             {
                 CleanUp();
+                if (File.Exists(MarkdownSytleConfig.MarkdownStyleFileName))
+                {
+                    File.Delete(MarkdownSytleConfig.MarkdownStyleFileName);
+                }
             }
         }
 
@@ -1025,6 +1069,10 @@ tagRules : [
             finally
             {
                 CleanUp();
+                if (File.Exists(MarkdownSytleConfig.MarkdownStyleFileName))
+                {
+                    File.Delete(MarkdownSytleConfig.MarkdownStyleFileName);
+                }
             }
         }
 
@@ -1231,6 +1279,10 @@ tagRules : [
             finally
             {
                 CleanUp();
+                if (File.Exists(MarkdownSytleConfig.MarkdownStyleFileName))
+                {
+                    File.Delete(MarkdownSytleConfig.MarkdownStyleFileName);
+                }
             }
         }
 
@@ -1825,6 +1877,95 @@ tagRules : [
                     Assert.Equal(
                         GetLogMessages("IncrementalBuild.TestServerFileCaseChange-forcebuild-second"),
                         GetLogMessages(new[] { "IncrementalBuild.TestServerFileCaseChange-second", "IncrementalBuild.TestServerFileCaseChange-first" }));
+                }
+            }
+            finally
+            {
+                CleanUp();
+            }
+        }
+
+        [Fact]
+        public void TestCaseNotMatchIncludeFileWithInvalidBookmarkReplayLog()
+        {
+            #region Prepare test data
+
+            var inputFolder = GetRandomFolder();
+            var outputFolder = GetRandomFolder();
+            var templateFolder = GetRandomFolder();
+            var intermediateFolder = GetRandomFolder();
+            CreateFile("conceptual.html.primary.tmpl", "{{{conceptual}}}", templateFolder);
+
+            var includeFile = CreateFile("include.md",
+                @"[link](#invalid)",
+                inputFolder);
+
+            var conceptualFile1 = CreateFile("test.md",
+                @"[!INCLUDE [Include](INCLUDE.md)]",
+                inputFolder);
+            var conceptualFile2 = CreateFile("test1.md",
+                @"[!INCLUDE [Include](include.md)]",
+                inputFolder);
+            var conceptualFile3 = CreateFile("test2.md",
+                "hey",
+                inputFolder);
+
+            FileCollection files = new FileCollection(Directory.GetCurrentDirectory());
+            files.Add(DocumentType.Article, new[] { conceptualFile1, conceptualFile2, conceptualFile3 });
+            #endregion
+            var phaseName = "IncrementalBuild.TestIncludeFileCaseChangeWithInvalidBookmark";
+            Init(phaseName);
+            try
+            {
+                using (new LoggerPhaseScope(phaseName))
+                {
+                    BuildDocument(
+                        files,
+                        inputFolder,
+                        outputFolder,
+                        new Dictionary<string, object>
+                        {
+                            ["meta"] = "Hello world!",
+                        },
+                        templateFolder: templateFolder,
+                        intermediateFolder: intermediateFolder);
+                    Assert.Equal(2, Listener.Items.Count);
+                    Assert.NotNull(Listener.Items.FirstOrDefault(s => s.Message.StartsWith("Illegal link: `[link](#invalid)` -- missing bookmark"))); 
+                    ClearListener();
+
+                    // update conceptualFile2
+                    UpdateFile("test2.md", new string[] { "hello" }, inputFolder);
+
+                    BuildDocument(
+                        files,
+                        inputFolder,
+                        outputFolder,
+                        new Dictionary<string, object>
+                        {
+                            ["meta"] = "Hello world!",
+                        },
+                        templateFolder: templateFolder,
+                        intermediateFolder: intermediateFolder);
+                    Assert.Equal(2, Listener.Items.Count);
+                    Assert.NotNull(Listener.Items.FirstOrDefault(s => s.Message.StartsWith("Illegal link: `[link](#invalid)` -- missing bookmark"))); 
+                    ClearListener();
+
+                    // update conceptualFile2
+                    UpdateFile("test2.md", new string[] { "hello world" }, inputFolder);
+
+                    BuildDocument(
+                        files,
+                        inputFolder,
+                        outputFolder,
+                        new Dictionary<string, object>
+                        {
+                            ["meta"] = "Hello world!",
+                        },
+                        templateFolder: templateFolder,
+                        intermediateFolder: intermediateFolder);
+                    Assert.Equal(2, Listener.Items.Count);
+                    Assert.NotNull(Listener.Items.FirstOrDefault(s => s.Message.StartsWith("Illegal link: `[link](#invalid)` -- missing bookmark"))); 
+                    ClearListener();
                 }
             }
             finally
@@ -2923,7 +3064,7 @@ tagRules : [
                     var incrementalStatus = incrementalInfo[0].Status;
                     Assert.True(incrementalStatus.CanIncremental);
                     var processorsStatus = incrementalInfo[0].Processors;
-                    Assert.True(processorsStatus[nameof(ConceptualDocumentProcessor)].CanIncremental);
+                    Assert.False(processorsStatus.ContainsKey(nameof(ConceptualDocumentProcessor)));
                     Assert.True(processorsStatus[nameof(ManagedReferenceDocumentProcessor)].CanIncremental);
                 }
                 {
@@ -3088,7 +3229,7 @@ tagRules : [
                     var incrementalStatus = incrementalInfo[0].Status;
                     Assert.True(incrementalStatus.CanIncremental);
                     var processorsStatus = incrementalInfo[0].Processors;
-                    Assert.True(processorsStatus[nameof(ConceptualDocumentProcessor)].CanIncremental);
+                    Assert.False(processorsStatus.ContainsKey(nameof(ConceptualDocumentProcessor)));
                     Assert.True(processorsStatus[nameof(ManagedReferenceDocumentProcessor)].CanIncremental);
                 }
                 {
@@ -3257,7 +3398,7 @@ tagRules : [
                     var incrementalStatus = incrementalInfo[0].Status;
                     Assert.True(incrementalStatus.CanIncremental);
                     var processorsStatus = incrementalInfo[0].Processors;
-                    Assert.True(processorsStatus[nameof(ConceptualDocumentProcessor)].CanIncremental);
+                    Assert.False(processorsStatus.ContainsKey(nameof(ConceptualDocumentProcessor)));
                     Assert.True(processorsStatus[nameof(ManagedReferenceDocumentProcessor)].CanIncremental);
                 }
                 {
@@ -3418,7 +3559,7 @@ tagRules : [
                     var incrementalStatus = incrementalInfo[0].Status;
                     Assert.True(incrementalStatus.CanIncremental);
                     var processorsStatus = incrementalInfo[0].Processors;
-                    Assert.True(processorsStatus[nameof(ConceptualDocumentProcessor)].CanIncremental);
+                    Assert.False(processorsStatus.ContainsKey(nameof(ConceptualDocumentProcessor)));
                     Assert.True(processorsStatus[nameof(ManagedReferenceDocumentProcessor)].CanIncremental);
                 }
                 {
@@ -3585,7 +3726,7 @@ tagRules : [
                     var incrementalStatus = incrementalInfo[0].Status;
                     Assert.True(incrementalStatus.CanIncremental);
                     var processorsStatus = incrementalInfo[0].Processors;
-                    Assert.True(processorsStatus[nameof(ConceptualDocumentProcessor)].CanIncremental);
+                    Assert.False(processorsStatus.ContainsKey(nameof(ConceptualDocumentProcessor)));
                     Assert.True(processorsStatus[nameof(ManagedReferenceDocumentProcessor)].CanIncremental);
                 }
                 {
@@ -3752,7 +3893,7 @@ tagRules : [
                     var incrementalStatus = incrementalInfo[0].Status;
                     Assert.True(incrementalStatus.CanIncremental);
                     var processorsStatus = incrementalInfo[0].Processors;
-                    Assert.True(processorsStatus[nameof(ConceptualDocumentProcessor)].CanIncremental);
+                    Assert.False(processorsStatus.ContainsKey(nameof(ConceptualDocumentProcessor)));
                     Assert.True(processorsStatus[nameof(ManagedReferenceDocumentProcessor)].CanIncremental);
                 }
                 {
@@ -3930,7 +4071,7 @@ tagRules : [
                     var incrementalStatus = incrementalInfo[0].Status;
                     Assert.True(incrementalStatus.CanIncremental);
                     var processorsStatus = incrementalInfo[0].Processors;
-                    Assert.True(processorsStatus[nameof(ConceptualDocumentProcessor)].CanIncremental);
+                    Assert.False(processorsStatus.ContainsKey(nameof(ConceptualDocumentProcessor)));
                     Assert.True(processorsStatus[nameof(ManagedReferenceDocumentProcessor)].CanIncremental);
                 }
                 {
@@ -4212,7 +4353,7 @@ tagRules : [
                     var incrementalStatus = incrementalInfo[0].Status;
                     Assert.True(incrementalStatus.CanIncremental);
                     var processorsStatus = incrementalInfo[0].Processors;
-                    Assert.True(processorsStatus[nameof(ConceptualDocumentProcessor)].CanIncremental);
+                    Assert.False(processorsStatus.ContainsKey(nameof(ConceptualDocumentProcessor)));
                     Assert.True(processorsStatus[nameof(ManagedReferenceDocumentProcessor)].CanIncremental);
                 }
                 {
@@ -4448,7 +4589,7 @@ tagRules : [
                     var incrementalStatus = incrementalInfo[0].Status;
                     Assert.True(incrementalStatus.CanIncremental);
                     var processorsStatus = incrementalInfo[0].Processors;
-                    Assert.True(processorsStatus[nameof(ConceptualDocumentProcessor)].CanIncremental);
+                    Assert.False(processorsStatus.ContainsKey(nameof(ConceptualDocumentProcessor)));
                     Assert.True(processorsStatus[nameof(ManagedReferenceDocumentProcessor)].CanIncremental);
                 }
                 {
@@ -4674,7 +4815,7 @@ tagRules : [
                     var incrementalStatus = incrementalInfo[0].Status;
                     Assert.True(incrementalStatus.CanIncremental);
                     var processorsStatus = incrementalInfo[0].Processors;
-                    Assert.True(processorsStatus[nameof(ConceptualDocumentProcessor)].CanIncremental);
+                    Assert.False(processorsStatus.ContainsKey(nameof(ConceptualDocumentProcessor)));
                     Assert.True(processorsStatus[nameof(ManagedReferenceDocumentProcessor)].CanIncremental);
                 }
                 {
@@ -4798,8 +4939,9 @@ tagRules : [
                     var incrementalStatus = incrementalInfo[0].Status;
                     Assert.True(incrementalStatus.CanIncremental);
                     var processorsStatus = incrementalInfo[0].Processors;
-                    Assert.True(processorsStatus[nameof(ConceptualDocumentProcessor)].CanIncremental);
-                    Assert.True(processorsStatus[nameof(ManagedReferenceDocumentProcessor)].CanIncremental);
+                    Assert.False(processorsStatus.ContainsKey(nameof(ConceptualDocumentProcessor)));
+                    Assert.False(processorsStatus.ContainsKey(nameof(ManagedReferenceDocumentProcessor)));
+                    Assert.False(processorsStatus[nameof(RestApiDocumentProcessor)].CanIncremental);
                 }
                 {
                     // compare with force build
@@ -5002,7 +5144,7 @@ tagRules : [
                     TemplateManager = new TemplateManager(null, null, new List<string> { templateFolder }, null, null),
                     TemplateDir = templateFolder,
                     Changes = changes?.ToImmutableDictionary(FilePathComparer.OSPlatformSensitiveStringComparer),
-                    ForcePostProcess = true,
+                    ForcePostProcess = false,
                     ForceRebuild = forceRebuild,
                 };
                 builder.Build(parameters);

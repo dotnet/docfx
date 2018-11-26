@@ -4,7 +4,6 @@
 namespace DfmHttpService
 {
     using System;
-    using System.Collections.Generic;
     using System.IO;
     using System.Text.RegularExpressions;
     using System.Threading.Tasks;
@@ -18,7 +17,14 @@ namespace DfmHttpService
 
     internal class DfmPreviewHandler : IHttpHandler
     {
-        private readonly DfmServiceProvider _provider = new DfmServiceProvider();
+        private readonly IMarkdownService _service;
+
+        public DfmPreviewHandler(string workspacePath, bool isDfmLatest)
+        {
+            DfmServiceProvider provider = isDfmLatest ? new DfmServiceProvider() : new DfmLegacyServiceProvider();
+
+            _service = provider.CreateMarkdownService(new MarkdownServiceParameters { BasePath = workspacePath });
+        }
 
         public bool CanHandle(ServiceContext context)
         {
@@ -48,15 +54,11 @@ namespace DfmHttpService
 
         private string Preview(CommandMessage contextMessage)
         {
-            if (string.IsNullOrEmpty(contextMessage.WorkspacePath))
-            {
-                throw new HandlerClientException("Base directory should not be null or empty");
-            }
             if (string.IsNullOrEmpty(contextMessage.RelativePath))
             {
                 throw new HandlerClientException("Relative path should not be null or empty");
             }
-            string result = DfmMarkup(contextMessage.WorkspacePath, contextMessage.RelativePath, contextMessage.MarkdownContent);
+            string result = DfmMarkup(contextMessage.RelativePath, contextMessage.MarkdownContent);
             if (contextMessage.ShouldSeparateMarkupResult)
             {
                 var htmlInfo = HtmlDocumentUtility.SeparateHtml(result);
@@ -146,11 +148,9 @@ namespace DfmHttpService
             return result;
         }
 
-        private string DfmMarkup(string workspacePath, string relativePath, string markdownContent)
+        private string DfmMarkup(string relativePath, string markdownContent)
         {
-            var service = _provider.CreateMarkdownService(new MarkdownServiceParameters { BasePath = workspacePath });
-
-            return service.Markup(markdownContent, relativePath).Html;
+            return _service.Markup(markdownContent, relativePath).Html;
         }
 
         private string GetAbsolutePath(string builtHtmlPath, string elementRelativePath)

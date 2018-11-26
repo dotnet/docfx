@@ -44,8 +44,7 @@ namespace Microsoft.DocAsCode.HtmlToPdf.Transformer
                         foreach (var iframe in iframes)
                         {
                             var src = iframe.Attributes["src"].Value;
-                            Uri uri;
-                            if (Uri.TryCreate(src, UriKind.Absolute, out uri))
+                            if (Uri.TryCreate(src, UriKind.Absolute, out Uri uri))
                             {
                                 string host = uri.Host;
                                 if (_replaceHosts.Any(p => string.Equals(p, host, StringComparison.OrdinalIgnoreCase)))

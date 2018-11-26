@@ -1,2 +1,2 @@
-﻿# [Templates](templates-dashboard.md)
-# [Plugins](plugins-dashboard.md)
+# [Templates](templates-dashboard.yml)
+# [Plugins](plugins-dashboard.yml)

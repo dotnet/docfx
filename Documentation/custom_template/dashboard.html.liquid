@@ -1,0 +1,85 @@
+{% comment -%}Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.{% endcomment -%}
+{% ref /^styles/.*/ -%}
+{% ref /^fonts/.*/ -%}
+{% ref favicon.ico -%}
+{% ref logo.svg -%}
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  {% include partials/head -%}
+  <body data-spy="scroll" data-target="#affix">
+  <style type="text/css">
+  #template-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    clear: both;
+  }
+  .template-item {
+    flex: 0 0 50%;
+    display: block;
+    padding: 16px;
+  }
+  .template-screenshot {
+    position: relative;
+    margin-bottom: 16px;
+    padding-top: 60%;
+    height: 0;
+  }
+  .template-screenshot-img {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: auto;
+  }
+  .template-title {
+    font-weight: 600;
+    font-size: 1.1em;
+  }
+  </style>
+    <div id="wrapper">
+      <header>
+        {% include partials/navbar -%}
+        {% include partials/breadcrumb -%}
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+        {% include partials/toc -%}
+        <div class="article row grid-right">
+          <span class="pull-right mobile-hide">
+          <a href="{{contributionLink}}" class="contribution-link">Add Your Own Template</a>
+          </span>
+          {{rawTitle}}
+          {{description}}
+          {%- if items -%}
+          <ul id="template-container">
+          {%- for template in items -%}
+              <li class="template-item">
+                <div class="template-screenshot">
+                  <img src= "{{template.thumbnail}}" class="template-screenshot-img"/>
+                </div>
+                <a class="template-title" href="{{template.homepage}}">{{template.name}}</a>
+                <p class="template-desc" >{{template.description}}</p>
+                {%- if template.usage -%}
+                <ul>
+                  {%- if template.usage.init -%}
+                  <li><span>Init:<code>{{template.usage.init | escape}}</code></span></li>
+                  {%- endif -%}
+                  {%- if template.usage.command -%}
+                  <li><span>In command:<code>{{template.usage.command | escape}}</code></span></li>
+                  {%- endif -%}
+                  {%- if template.usage.config -%}
+                  <li><span>In <c>docfx.json</c>:<code>{{template.usage.config | escape}}</code></span></li>
+                  {%- endif -%}
+                </ul>
+                {%- endif -%}
+              </li>
+          {%- endfor -%}
+          </ul>
+          {%- endif -%}
+        </div>
+      </div>
+      {% include partials/footer -%}
+    </div>
+    {% include partials/scripts -%}
+  </body>
+</html>

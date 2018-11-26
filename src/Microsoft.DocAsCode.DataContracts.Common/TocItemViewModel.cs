@@ -10,8 +10,8 @@ namespace Microsoft.DocAsCode.DataContracts.Common
     using Newtonsoft.Json;
     using YamlDotNet.Serialization;
 
+    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.YamlSerialization;
-    using DocAsCode.Common;
 
     [Serializable]
     public class TocItemViewModel
@@ -38,8 +38,7 @@ namespace Microsoft.DocAsCode.DataContracts.Common
         {
             get
             {
-                string result;
-                NameInDevLangs.TryGetValue(Constants.DevLang.CSharp, out result);
+                NameInDevLangs.TryGetValue(Constants.DevLang.CSharp, out string result);
                 return result;
             }
             set { NameInDevLangs[Constants.DevLang.CSharp] = value; }
@@ -51,8 +50,7 @@ namespace Microsoft.DocAsCode.DataContracts.Common
         {
             get
             {
-                string result;
-                NameInDevLangs.TryGetValue(Constants.DevLang.VB, out result);
+                NameInDevLangs.TryGetValue(Constants.DevLang.VB, out string result);
                 return result;
             }
             set { NameInDevLangs[Constants.DevLang.VB] = value; }
@@ -62,36 +60,40 @@ namespace Microsoft.DocAsCode.DataContracts.Common
         [JsonProperty(Constants.PropertyName.Href)]
         public string Href { get; set; }
 
-        [YamlIgnore]
-        [JsonIgnore]
+        [YamlMember(Alias = "originalHref")]
+        [JsonProperty("originalHref")]
         public string OriginalHref { get; set; }
 
         [YamlMember(Alias = Constants.PropertyName.TocHref)]
         [JsonProperty(Constants.PropertyName.TocHref)]
         public string TocHref { get; set; }
 
-        [YamlIgnore]
-        [JsonIgnore]
+        [YamlMember(Alias = "originalTocHref")]
+        [JsonProperty("originalTocHref")]
         public string OriginalTocHref { get; set; }
 
         [YamlMember(Alias = Constants.PropertyName.TopicHref)]
         [JsonProperty(Constants.PropertyName.TopicHref)]
         public string TopicHref { get; set; }
 
-        [YamlIgnore]
-        [JsonIgnore]
+        [YamlMember(Alias = "originalTopicHref")]
+        [JsonProperty("originalTopicHref")]
         public string OriginalTopicHref { get; set; }
 
         [YamlIgnore]
         [JsonIgnore]
         public string AggregatedHref { get; set; }
 
+        [YamlMember(Alias = "includedFrom")]
+        [JsonProperty("includedFrom")]
+        public string IncludedFrom { get; set; }
+
         [YamlMember(Alias = "homepage")]
         [JsonProperty("homepage")]
         public string Homepage { get; set; }
 
-        [YamlIgnore]
-        [JsonIgnore]
+        [YamlMember(Alias = "originallHomepage")]
+        [JsonProperty("originallHomepage")]
         public string OriginalHomepage { get; set; }
 
         [YamlMember(Alias = "homepageUid")]
@@ -136,6 +138,27 @@ namespace Microsoft.DocAsCode.DataContracts.Common
                 cloned.Items = Items.Clone();
             }
             return cloned;
+        }
+
+        public override string ToString()
+        {
+            var result = string.Empty;
+            result += PropertyInfo(nameof(Name), Name);
+            result += PropertyInfo(nameof(Href), Href);
+            result += PropertyInfo(nameof(TopicHref), TopicHref);
+            result += PropertyInfo(nameof(TocHref), TocHref);
+            result += PropertyInfo(nameof(Uid), Uid);
+            result += PropertyInfo(nameof(TopicUid), TopicUid);
+            return result;
+
+            string PropertyInfo(string name, string value)
+            {
+                if (string.IsNullOrEmpty(value))
+                {
+                    return string.Empty;
+                }
+                return $"{name}:{value} ";
+            }
         }
     }
 }

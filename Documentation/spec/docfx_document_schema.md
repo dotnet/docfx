@@ -1,7 +1,7 @@
 # DocFX Document Schema v1.0 Specification
 
 ## 1. Introduction
-DocFX supports different [document processors](..\tutorial\howto_build_your_own_type_of_documentation_with_custom_plug-in.md) to handle different kinds of input. For now, if the data model changes a bit, a new document processor is needed, even most of the work in processors are the same.
+DocFX supports different [document processors](../tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md) to handle different kinds of input. For now, if the data model changes a bit, a new document processor is needed, even most of the work in processors are the same.
 
 DocFX Document Schema (abbreviated to *THIS schema* below) is introduced to address this problem. This schema is a JSON media type for defining the structure of a DocFX document. This schema is intended to **annotate**, **validate** and **interpret** the document data. 
 
@@ -19,7 +19,7 @@ DocFX Document Schema is in [JSON](http://www.json.org/) format. It borrows most
 
 ### 3.3 Interpretation
 Besides annotate and validate the input document model, *THIS schema* also defines multiple interpretations for each property of the document model.
-For example, a property named `summary` contains value in Markdown format, *THIS schema* can define a `markup` interpretation for the `summary` property, so that the property can be marked using [DFM](..\spec\docfx_flavored_markdown.md) syntax.
+For example, a property named `summary` contains value in Markdown format, *THIS schema* can define a `markup` interpretation for the `summary` property, so that the property can be marked using [DFM](../spec/docfx_flavored_markdown.md) syntax.
 
 ## 4. General Considerations
 * *THIS schema* leverages JSON schema definition, that is to say, keywords defined in JSON schema keeps its meaning in *THIS schema* when it is supported by *THIS schema*.
@@ -51,12 +51,14 @@ This is the root document object for *THIS schema*.
 | $schema         | string | `*`The version of the schema specification, for example, `https://github.com/dotnet/docfx/v1.0/schema#`.
 | version         | string | `*`The version of current schema object.
 | id              | string | It is best practice to include an `id` property as an unique identifier for each schema.
-| title           | string | The title of current schema, `LandingPage`, for example. In DocFX, this value can be used to determine what kind of documents apply to this schema, If not specified, file name before `schema.json` of this schema is used.
+| title           | string | The title of current schema, `LandingPage`, for example. In DocFX, this value can be used to determine what kind of documents apply to this schema, If not specified, file name before `schema.json` of this schema is used. Note that `.` is not allowed.
 | description     | string  | A short description of current schema.
 | type            | string | `*`The type of the root document model MUST be `object`.
 | properties      | [Property Definitions Object](#property-definitions-object) | An object to hold the schema of all the properties.
+| metadata        | string | In `json-pointer` format as defined in http://json-schema.org/latest/json-schema-validation.html#rfc.section.8.3.9. The format for JSON pointer is defined by https://tools.ietf.org/html/rfc6901, referencing to the metadata object. Metadata object is the object to define the metadata for current document, and can be also set through `globalMetadata` or `fileMetadata` in DocFX. The default value for metadata is empty which stands for the root object.
 
 ##### Patterned Field
+
 | Field Name | Type | Description
 |------------|------|----------
 | ^x-        | Any  | Allows extensions to *THIS schema*. The field name MUST begin with x-, for example, x-internal-id. The value can be null, a primitive, an array or an object.
@@ -78,8 +80,8 @@ An object to describe the schema of the value of the property.
 | Field Name      | Type   | Description
 |-----------------|--------|----------
 | title        | string | The title of the property.
-| description  | string | A lengthy explanation about the purpose of the data described by the schema
-| default      | what `type` defined | The default value for current field
+| description  | string | A lengthy explanation about the purpose of the data described by the schema.
+| default      | what `type` defined | The default value for current field.
 | type         | string | The type of the root document model. Refer to [type keyword](#61-type) for detailed description.
 | properties   | [Property Definitions Object](#property-definitions-object) | An object to hold the schema of all the properties if `type` for the model is `object`. Omitting this keyword has the same behavior as an empty object.
 | items        | [Property Object](#property-object) | An object to hold the schema of the items if `type` for the model is `array`. Omitting this keyword has the same behavior as an empty schema.
@@ -87,8 +89,10 @@ An object to describe the schema of the value of the property.
 | contentType  | string | Defines the content type of the property. Refer to [contentType](#63-contenttype) for detailed explanation.
 | tags       | array  | Defines the tags of the property. Refer to [tags](#64-tags) for detailed explanation.
 | mergeType      | string | Defines how to merge the property. Omitting this keyword has the same behavior as `merge`. Refer to [mergeType](#65-mergetype) for detailed explanation.
+| xrefProperties  | array | Defines the properties of current object when it is cross referenced by others. Each item is the name of the property in the instance. Refer to [xrefProperties](#66-xrefproperties) for detailed description of how to leverage this property.
 
 ##### Patterned Field
+
 | Field Name | Type | Description
 |------------|------|----------
 | ^x-        | Any  | Allows extensions to *THIS schema*. The field name MUST begin with x-, for example, x-internal-id. The value can be null, a primitive, an array or an object.
@@ -112,7 +116,7 @@ It defines whether current property is a reference to the actual value of the pr
 | Value      | Description
 |------------|-------------
 | `none`     | It means the property is not a reference.
-| `file`     | It means current property stands for a file path that contains content to be included
+| `file`     | It means current property stands for a file path that contains content to be included.
 
 ### 6.3 contentType
 It defines how applications interpret the property. If not defined, the behavior is similar to `default` value. The values MUST be one of the following:
@@ -120,17 +124,17 @@ It defines how applications interpret the property. If not defined, the behavior
 | Value      | Description
 |------------|-------------
 | `default`  | It means that no interpretion will be done to the property.
-| `uid`      | `type` MUST be `string`. It means the property defines a unique identifier inside current document model
-| `xref`     | `type` MUST be `string`. It means the property defines a file link inside current document model. Application CAN help to validate if the linked file exists, and update the file link if the linked file changes its output path.
-| `href`     | `type` MUST be `string`. It means the property defines a UID link inside current document model. Application CAN help to validate if the linked UID exists, and resolve the UID link to the corresponding file output link.
+| `uid`      | `type` MUST be `string`. With this value, the property name MUST be `uid`. It means the property defines a unique identifier inside current document model.
+| `href`     | `type` MUST be `string`. It means the property defines a file link inside current document model. Application CAN help to validate if the linked file exists, and update the file link if the linked file changes its output path.
+| `xref`     | `type` MUST be `string`. It means the property defines a UID link inside current document model. Application CAN help to validate if the linked UID exists, and resolve the UID link to the corresponding file output link.
 | `file`     | `type` MUST be `string`. It means the property defines a file path inside current document model. Application CAN help to validate if the linked file exists, and resolve the path to the corresponding file output path. The difference between `file` and `href` is that `href` is always URL encoded while `file` is not.
-| `markdown` | `type` MUST be `string`. It means the property is in [DocFX flavored Markdown](..\spec\docfx_flavored_markdown.md) syntax. Application CAN help to transform it into HTML format.
+| `markdown` | `type` MUST be `string`. It means the property is in [DocFX flavored Markdown](../spec/docfx_flavored_markdown.md) syntax. Application CAN help to transform it into HTML format.
 
 ### 6.4 tags
-The value of this keyword MUST be an `array`, elements of the array MUST be strings and MUST be unique. It provides hints for applications to decide how to interpret the property, for example, `localizable` tag can help Localization team to interpret the property as *localizable*; `metadata` tag can help DocFX to fill in additional metadata, e.g. github commit information.
+The value of this keyword MUST be an `array`, elements of the array MUST be strings and MUST be unique. It provides hints for applications to decide how to interpret the property, for example, `localizable` tag can help Localization team to interpret the property as *localizable*.
 
 ### 6.5 mergeType
-The value of this keyword MUST be a string. It specifies how to merge two values of the given property. One use scenario is how DocFX uses the [overwrite files](..\tutorial\intro_overwrite_files.md) to overwrite the existing values. In the below table, we use `source` and `target` to stands for the two values for merging.
+The value of this keyword MUST be a string. It specifies how to merge two values of the given property. One use scenario is how DocFX uses the [overwrite files](../tutorial/intro_overwrite_files.md) to overwrite the existing values. In the below table, we use `source` and `target` to stands for the two values for merging.
 
 The value MUST be one of the following:
 
@@ -141,11 +145,40 @@ The value MUST be one of the following:
 | `replace`  | `target` replaces `source`.
 | `ignore`   | `source` is not allowed to be merged.
 
+### 6.6 xrefProperties
+The value of this keyword MUST be an array of `string`. Each `string` value is the property name of current object that will be exported to be [Cross Referenced](docfx_flavored_markdown.md#cross-reference) by others.
+To leverage this feature, a new `xref` syntax with `template` attribute is support:
+```html
+<xref uid="{uid}" template="{path_of_partial_template}" />
+```
+For the parital template, the input model is the object containing properties `xrefProperties` defines.
+
+For example, in the sample schema defined by [7. Samples](#7-samples), ` "xrefProperties": [ "title", "description" ],`, `title` and `description` are `xrefProperties` for uid `webapp`. A partial template to render this xref, for example, named `partials/overview.tmpl`, looks like:
+```mustache
+{{title}}: {{{description}}}
+```
+When someone references this uid using `<xref uid="webapp" template="partials/overview.tmpl"`, `docfx` expand this `xref` into the following html:
+```html
+Web Apps Documentation: <p>This is description</p>
+```
+In this way, users can not only *cross reference* others to get the target url, but also *cross reference* other properties as they like.
+
+A common usage of this is the **Namespace** page in ManagedReference. The **Namespace** page shows a table of its **Classes** with the `summary` of the **Class**, with the help of `xrefProperties`, the source of truth `summary` is always from **Class**. For the **Namespace** page, it can, for example:
+1. Define a `class.tr.tmpl` template: `<tr><td>{{name}}</td><td>{{{summary}}}</td></tr>`
+2. The namespace `namespace.tmpl` template, use `xref` to render its children classes: 
+    ```mustache
+    {{#children}}
+      <xref uid="{{uid}}" template="class.tr.tmpl" />
+    {{/children}}
+    ```
+
 ## 7. Samples
 Here's an sample of the schema. Assume we have the following YAML file:
 ```yaml
 ### YamlMime:LandingPage
 title: Web Apps Documentation
+description: This is description
+uid: webapp
 metadata:
   title: Azure Web Apps Documentation - Tutorials, API Reference
   meta.description: Learn how to use App Service Web Apps to build and host websites and web applications.
@@ -186,16 +219,21 @@ Here's the schema to describe these operations:
 
 ```json
 {
-    "$schema": "https://github.com/dotnet/docfx/schemas/v1.0/schema.json#",
+    "$schema": "https://dotnet.github.io/docfx/schemas/v1.0/schema.json#",
     "version": "1.0.0",
     "id": "https://github.com/dotnet/docfx/schemas/landingpage.schema.json",
     "title": "LandingPage",
     "description": "The schema for landing page",
     "type": "object",
+    "xrefProperties": [ "title", "description" ],
     "properties": {
         "metadata": {
             "type": "object",
             "tags": [ "metadata" ]
+        },
+        "uid": {
+            "type": "string",
+            "contentType": "uid"
         },
         "sections": {
             "type": "array",
@@ -236,15 +274,9 @@ Here's the schema to describe these operations:
 }
 ```
 
-## 8. Open Issues
+## 8. Q & A
 1. DocFX fills `_global` metadata into the processed data model, should the schema reflect this behavior?
-   * If YES: 
-        * Pros:
-            1. Users are aware of the existence of `_global` metadata, they can overwrite the property if they want.
-            2. Template writers are aware of it, they can completely rely on the schema to write the template.
-        * Cons:
-            1. Schema writers need aware of the existence of `_global` metadata, it should always exists for any schema. (Should we introduce in a concept of base schema?)
-    * Decision: *NOT* include, this schema is for **general purpose**, use documents to describe the changes introduced by DocFX.
+    * Decision: *NOT* include, this schema is for **input model**, use another schema for output model.
 2. Is it necessary to prefix `d-` to every field that DocFX introduces in?
     * If keep `d-`
         * Pros:
@@ -255,3 +287,4 @@ Here's the schema to describe these operations:
             2. Little chance that keywords DocFX defines duplicate with what JSON schema defines, after all, JSON schema defines a finite set of reserved keywords.
             3. For example[Swagger spec](http://swagger.io/) is also based on JSON schema and the fields it introduces in has no prefix. 
     * Decision: *Remove* `d-` prefix.
+

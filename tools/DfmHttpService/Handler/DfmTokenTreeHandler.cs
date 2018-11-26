@@ -11,7 +11,13 @@ namespace DfmHttpService
 
     internal class DfmTokenTreeHandler : IHttpHandler
     {
-        private readonly DfmJsonTokenTreeServiceProvider _provider = new DfmJsonTokenTreeServiceProvider();
+        private readonly IMarkdownService _service;
+
+        public DfmTokenTreeHandler(string workspacePath)
+        {
+            DfmJsonTokenTreeServiceProvider provider = new DfmJsonTokenTreeServiceProvider();
+            _service = provider.CreateMarkdownService(new MarkdownServiceParameters { BasePath = workspacePath });
+        }
 
         public bool CanHandle(ServiceContext context)
         {
@@ -36,9 +42,7 @@ namespace DfmHttpService
 
         private string GenerateTokenTree(string documentation, string filePath, string workspacePath = null)
         {
-            var service = _provider.CreateMarkdownService(new MarkdownServiceParameters { BasePath = workspacePath });
-
-            return service.Markup(documentation, filePath).Html;
+            return _service.Markup(documentation, filePath).Html;
         }
     }
 }

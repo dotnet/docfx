@@ -44,7 +44,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
                     Aggregate(context);
                 }
             }
-            return context.Tokens;
+            return context.ImmutableTokens;
         }
 
         private void Aggregate(MarkdownTokenAggregateContext aggContext)

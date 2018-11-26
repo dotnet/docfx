@@ -40,14 +40,13 @@ namespace Microsoft.DocAsCode.HtmlToPdf.Transformer
                         var doc = new HtmlDocument();
                         doc.Load(htmlFilePath);
                         var tags = doc.DocumentNode.SelectNodes("//a[@href]");
-                        if (tags != null && tags.Count > 0)
+                        if (tags?.Count > 0)
                         {
                             bool isTransformed = false;
                             foreach (var tag in tags)
                             {
                                 var src = tag.Attributes["href"].Value;
-                                Uri uri;
-                                if (Uri.TryCreate(src, UriKind.Relative, out uri))
+                                if (Uri.TryCreate(src, UriKind.Relative, out Uri uri))
                                 {
                                     try
                                     {
@@ -58,8 +57,7 @@ namespace Microsoft.DocAsCode.HtmlToPdf.Transformer
                                                 Logger.LogVerbose($"No host passed, so just keep the url as origin: {src}.", htmlFilePath);
                                                 continue;
                                             }
-                                            Uri host;
-                                            if (Uri.TryCreate(_pdfOptions.Host, UriKind.Absolute, out host))
+                                            if (Uri.TryCreate(_pdfOptions.Host, UriKind.Absolute, out Uri host))
                                             {
                                                 tag.Attributes["href"].Value = new Uri(host, uri.OriginalString).ToString();
                                                 isTransformed = true;

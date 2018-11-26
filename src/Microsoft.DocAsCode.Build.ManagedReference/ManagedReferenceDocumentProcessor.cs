@@ -60,7 +60,8 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             "extensionMethods",
             "conceptual",
             "platform",
-            "attributes"
+            "attributes",
+            Constants.PropertyName.AdditionalNotes
         };
         #endregion
 
@@ -79,6 +80,14 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
 
         protected override FileModel LoadArticle(FileAndType file, ImmutableDictionary<string, object> metadata)
         {
+            if (YamlMime.ReadMime(file.File) == null)
+            {
+                Logger.LogWarning(
+                    "Please add `YamlMime` as the first line of file, e.g.: `### YamlMime:ManagedReference`, otherwise the file will be not treated as ManagedReference source file in near future.",
+                    file: file.File,
+                    code: WarningCodes.Yaml.MissingYamlMime);
+            }
+
             var page = YamlUtility.Deserialize<PageViewModel>(file.File);
             if (page.Items == null || page.Items.Count == 0)
             {
@@ -295,6 +304,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                 Name = item.Name,
                 Href = item.Href,
                 CommentId = item.CommentId,
+                IsSpec = item.IsExternal != true,
             };
             if (item.NameInDevLangs.Count > 0)
             {

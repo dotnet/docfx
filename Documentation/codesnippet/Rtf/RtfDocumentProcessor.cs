@@ -9,8 +9,8 @@ namespace RtfDocumentProcessors
     using System.Composition;
     using System.IO;
 
+    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
-    using Microsoft.DocAsCode.Utility;
 
     [Export(typeof(IDocumentProcessor))]
     public class RtfDocumentProcessor : IDocumentProcessor
@@ -45,7 +45,12 @@ namespace RtfDocumentProcessors
                 ["type"] = "Conceptual",
                 ["path"] = file.File,
             };
-            return new FileModel(file, content);
+            var localPathFromRoot = PathUtility.MakeRelativePath(EnvironmentContext.BaseDirectory, EnvironmentContext.FileAbstractLayer.GetPhysicalPath(file.File));
+
+            return new FileModel(file, content)
+            {
+                LocalPathFromRoot = localPathFromRoot,
+            };
         }
         #endregion
 
@@ -55,8 +60,7 @@ namespace RtfDocumentProcessors
             return new SaveResult
             {
                 DocumentType = "Conceptual",
-                ModelFile = model.File,
-                LinkToFiles = linkToFiles.ToImmutableArray(),
+                FileWithoutExtension = Path.ChangeExtension(model.File, null),
             };
         }
         #endregion

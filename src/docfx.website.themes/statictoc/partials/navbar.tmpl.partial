@@ -18,19 +18,7 @@
         </div>
       </form>
       {{#_nav}}
-        <ul class="nav level{{level}} navbar-nav">
-        {{!Allows only one level for nav bar}}
-        {{#items}}
-          <li class="{{#active}}active{{/active}}">
-            {{#href}}
-            <a href="{{href}}" title="{{name}}" class="{{#active}}active{{/active}}">{{name}}</a>
-            {{/href}}
-            {{^href}}
-            <a class="{{#active}}active{{/active}}">{{{name}}}</a>
-            {{/href}}
-          </li>
-        {{/items}}
-        </ul>
+        {{>partials/navbar-li}}
       {{/_nav}}
     </div>
   </div>

@@ -350,7 +350,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             {
                 content += render.Render(t);
             }
-            var contents = content.ToString().Split('\n');
+            var contents = content.ToString().TrimEnd('\n').Split('\n');
             content = StringBuffer.Empty;
             foreach (var item in contents)
             {
@@ -403,6 +403,11 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 }
             }
             return content + "\n";
+        }
+
+        public virtual StringBuffer Render(IMarkdownRenderer render, MarkdownNewLineBlockToken token, IMarkdownContext context)
+        {
+            return StringBuffer.Empty;
         }
 
         protected virtual StringBuffer Render(IMarkdownRenderer render, MarkdownListItemBlockToken token, string indent)

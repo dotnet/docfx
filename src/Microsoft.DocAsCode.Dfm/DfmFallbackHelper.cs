@@ -29,51 +29,57 @@ namespace Microsoft.DocAsCode.Dfm
             if (relativePath == null)
             {
                 throw new ArgumentNullException(nameof(relativePath));
-                throw new FileNotFoundException($"Couldn't resolve path {relativePath}.");
             }
 
             // var currentFileFolder = Path.Combine(context.GetBaseFolder(), Path.Combine(context.GetFilePathStack().Select(path => Path.GetDirectoryName(path)).ToArray()));
             // var originalFilePath = Path.Combine(context.GetBaseFolder(),  orginalRelativePath);
-            var filePathToDocset = relativePath;
+            RelativePath filePathToDocset = null;
             string parentFileDirectoryToDocset = context.GetBaseFolder();
             var parents = context.GetFilePathStack();
-            if(parents != null)
+            if (parents != null)
             {
                 var parent = parents.Peek();
-                filePathToDocset = ((RelativePath)parent + (RelativePath)filePathToDocset).RemoveWorkingFolder();
+                filePathToDocset = ((RelativePath)parent + (RelativePath)relativePath).RemoveWorkingFolder();
                 parentFileDirectoryToDocset = Path.GetDirectoryName(Path.Combine(context.GetBaseFolder(), parent));
             }
-
-            var originalFilePath = Path.Combine(context.GetBaseFolder(), filePathToDocset);
-            var actualFilePath = originalFilePath;
-            bool hitFallback = false;
-            if (!EnvironmentContext.FileAbstractLayer.Exists(originalFilePath))
+            else
             {
-                var fallbackFolders = context.GetFallbackFolders();
-                foreach (var folder in fallbackFolders)
-                {
-                    var fallbackFilePath = Path.Combine(folder, filePathToDocset);
-                    var fallbackFileRelativePath = PathUtility.MakeRelativePath(parentFileDirectoryToDocset, fallbackFilePath);
-                    context.ReportDependency(fallbackFileRelativePath); // All the high priority fallback files should be reported to the dependency.
-                    if (EnvironmentContext.FileAbstractLayer.Exists(fallbackFilePath))
-                    {
-                        actualFilePath = fallbackFilePath;
-                        hitFallback = true;
-                        break;
-                    }
-                }
-
-                if (!hitFallback)
-                {
-                    if (fallbackFolders.Count > 0)
-                    {
-                        throw new FileNotFoundException($"Couldn't find file {filePathToDocset}. Fallback folders: {string.Join(",", fallbackFolders)}", filePathToDocset);
-                    }
-                    throw new FileNotFoundException($"Couldn't find file {filePathToDocset}.", originalFilePath);
-                }
+                filePathToDocset = ((RelativePath)relativePath).RemoveWorkingFolder();
             }
 
-            return Tuple.Create(actualFilePath, hitFallback);
+            var originalFullPath = Path.Combine(context.GetBaseFolder(), filePathToDocset);
+            if (EnvironmentContext.FileAbstractLayer.Exists(filePathToDocset))
+            {
+                return Tuple.Create((string)filePathToDocset, false);
+            }
+            else
+            {
+                return FindInFallbackFolders(
+                    context,
+                    filePathToDocset,
+                    parentFileDirectoryToDocset,
+                    originalFullPath);
+            }
+        }
+
+        private static Tuple<string, bool> FindInFallbackFolders(IMarkdownContext context, RelativePath filePathToDocset, string parentFileDirectoryToDocset, string originalFullPath)
+        {
+            var fallbackFolders = context.GetFallbackFolders();
+            foreach (var folder in fallbackFolders)
+            {
+                var fallbackFilePath = Path.Combine(folder, filePathToDocset);
+                var fallbackFileRelativePath = PathUtility.MakeRelativePath(parentFileDirectoryToDocset, fallbackFilePath);
+                context.ReportDependency(fallbackFileRelativePath); // All the high priority fallback files should be reported to the dependency.
+                if (EnvironmentContext.FileAbstractLayer.Exists(fallbackFilePath))
+                {
+                    return Tuple.Create(fallbackFilePath, true);
+                }
+            }
+            if (fallbackFolders.Count > 0)
+            {
+                throw new FileNotFoundException($"Couldn't find file {filePathToDocset}. Fallback folders: {string.Join(",", fallbackFolders)}", filePathToDocset);
+            }
+            throw new FileNotFoundException($"Couldn't find file {filePathToDocset}.", originalFullPath);
         }
     }
 }

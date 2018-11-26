@@ -4,6 +4,8 @@
 namespace Microsoft.DocAsCode.Common.Tests
 {
     using System.Collections.Generic;
+    using System.Collections.Immutable;
+    using System.Collections.ObjectModel;
     using System.IO;
     using System.Linq;
 
@@ -69,6 +71,23 @@ C: Good!
         }
 
         [Fact]
+        public void TestBasicClassWithNullCharactor()
+        {
+            var sw = new StringWriter();
+            YamlUtility.Serialize(sw, new BasicClass { B = 1, C = "~" }, YamlMime.YamlMimePrefix + "Test-Yaml-Mime");
+            var yaml = sw.ToString();
+            Assert.Equal(@"### YamlMime:Test-Yaml-Mime
+B: 1
+C: ""~""
+".Replace("\r\n", "\n"), yaml.Replace("\r\n", "\n"));
+            Assert.Equal("YamlMime:Test-Yaml-Mime", YamlMime.ReadMime(new StringReader(yaml)));
+            var value = YamlUtility.Deserialize<BasicClass>(new StringReader(yaml));
+            Assert.NotNull(value);
+            Assert.Equal(1, value.B);
+            Assert.Equal("~", value.C);
+        }
+
+        [Fact]
         public void TestBoolean()
         {
             var sw = new StringWriter();
@@ -94,6 +113,28 @@ C: Good!
 "));
             Assert.NotNull(value2);
             Assert.Equal(new[] { true, true, true, false, false, false }, value2.Cast<bool>());
+        }
+
+        [Fact]
+        public void TestBigInteger()
+        {
+            var sw = new StringWriter();
+            YamlUtility.Serialize(sw, new object[] { 1234567890000L, 9876543210000L, long.MaxValue, ulong.MaxValue }, YamlMime.YamlMimePrefix + "Test-Yaml-Mime");
+            var yaml = sw.ToString();
+            Assert.Equal(@"### YamlMime:Test-Yaml-Mime
+- 1234567890000
+- 9876543210000
+- 9223372036854775807
+- 18446744073709551615
+".Replace("\r\n", "\n"), yaml.Replace("\r\n", "\n"));
+            Assert.Equal("YamlMime:Test-Yaml-Mime", YamlMime.ReadMime(new StringReader(yaml)));
+            var value = YamlUtility.Deserialize<object[]>(new StringReader(yaml));
+            Assert.NotNull(value);
+            Assert.Equal(4, value.Length);
+            Assert.Equal(1234567890000L, value[0]);
+            Assert.Equal(9876543210000L, value[1]);
+            Assert.Equal(long.MaxValue, value[2]);
+            Assert.Equal(ulong.MaxValue, value[3]);
         }
 
         [Fact]
@@ -304,6 +345,71 @@ bar: bar
             public string A { get; set; }
             [ExtensibleMember]
             public string StringExtensions { get; set; }
+        }
+
+        [Fact]
+        public void TestClassWithInterfaceMember()
+        {
+            var sw = new StringWriter();
+            YamlUtility.Serialize(sw, new ClassWithInterfaceMember
+            {
+                List = new List<string> { "a" },
+                ReadOnlyList = new[] { "b" },
+                Collection = new Collection<string> { "c" },
+                ReadOnlyCollection = ImmutableList.Create("d"),
+                Enumerable = Enumerable.Range(1, 1),
+                Dictionary = new Dictionary<string, string> { ["k1"] = "v1" },
+                ReadOnlyDictionary = new SortedDictionary<string, string> { ["k2"] = "v2" },
+                Set = new SortedSet<string> { "s" },
+            });
+            Assert.Equal(@"List:
+- a
+ReadOnlyList:
+- b
+Collection:
+- c
+ReadOnlyCollection:
+- d
+Enumerable:
+- 1
+Dictionary:
+  k1: v1
+ReadOnlyDictionary:
+  k2: v2
+Set:
+- s
+".Replace("\r\n", "\n"), sw.ToString().Replace("\r\n", "\n"));
+
+            var obj = YamlUtility.Deserialize<ClassWithInterfaceMember>(new StringReader(sw.ToString()));
+            Assert.NotNull(obj);
+            Assert.Single(obj.List);
+            Assert.Equal("a", obj.List[0]);
+            Assert.Single(obj.ReadOnlyList);
+            Assert.Equal("b", obj.ReadOnlyList[0]);
+            Assert.Single(obj.Collection);
+            Assert.Equal("c", obj.Collection.First());
+            Assert.Single(obj.ReadOnlyCollection);
+            Assert.Equal("d", obj.ReadOnlyCollection.First());
+            Assert.Single(obj.Enumerable);
+            Assert.Equal(1, obj.Enumerable.First());
+            Assert.Single(obj.Dictionary);
+            Assert.Equal(new KeyValuePair<string, string>("k1", "v1"), obj.Dictionary.First());
+            Assert.Single(obj.ReadOnlyDictionary);
+            Assert.Equal(new KeyValuePair<string, string>("k2", "v2"), obj.ReadOnlyDictionary.First());
+            Assert.Single(obj.Set);
+            Assert.Equal("s", obj.Set.First());
+        }
+
+        public class ClassWithInterfaceMember
+        {
+            public IList<string> List { get; set; }
+            public IReadOnlyList<string> ReadOnlyList { get; set; }
+            public ICollection<string> Collection { get; set; }
+            public IReadOnlyCollection<string> ReadOnlyCollection { get; set; }
+            public IEnumerable<int> Enumerable { get; set; }
+            public IDictionary<string, string> Dictionary { get; set; }
+            public IReadOnlyDictionary<string, string> ReadOnlyDictionary { get; set; }
+            public ISet<string> Set { get; set; }
         }
     }
 }

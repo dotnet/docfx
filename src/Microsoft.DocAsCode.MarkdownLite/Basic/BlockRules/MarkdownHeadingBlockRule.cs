@@ -17,7 +17,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
         private static readonly Matcher _HeadingMatcher =
             Matcher.WhiteSpacesOrEmpty +
             Matcher.Char('#').Repeat(1, 6).ToGroup("level") +
-            Matcher.WhiteSpacesOrEmpty +
+            Matcher.WhiteSpaces +
             (
                 _EndSymbol.ToNegativeTest() +
                 (Matcher.AnyCharNotIn('\n', ' ').RepeatAtLeast(1) | Matcher.WhiteSpaces)

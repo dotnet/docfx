@@ -80,6 +80,29 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
         }
 
         [Fact]
+        public void ProcessMrefEnumShouldSucceed()
+        {
+            var files = new FileCollection(Directory.GetCurrentDirectory());
+            files.Add(DocumentType.Article, new[] { "TestData/mref/Microsoft.DocAsCode.Build.SchemaDriven.MergeType.yml" }, "TestData/");
+            BuildDocument(files);
+            {
+                var outputRawModelPath = GetRawModelFilePath("Microsoft.DocAsCode.Build.SchemaDriven.MergeType.yml");
+                Assert.True(File.Exists(outputRawModelPath));
+                var model = JsonUtility.Deserialize<ApiBuildOutput>(outputRawModelPath);
+                Assert.NotNull(model);
+
+                Assert.Equal("Hello world!", model.Metadata["meta"]);
+                Assert.False(model.Metadata.TryGetValue("_splitReference", out var split));
+                Assert.False(model.Metadata.TryGetValue("_splitFrom", out var from));
+                Assert.Equal(4, model.Children.Count);
+            }
+            {
+                var xrefmap = YamlUtility.Deserialize<XRefMap>(Path.Combine(_outputFolder, "xrefmap.yml"));
+                Assert.Equal(5, xrefmap.References.Count);
+            }
+        }
+
+        [Fact]
         public void ProcessMrefWithTocShouldSucceed()
         {
             var files = new FileCollection(Directory.GetCurrentDirectory());
@@ -127,11 +150,11 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
                 Assert.NotNull(model);
                 Assert.Equal(1, model.Items.Count);
                 Assert.Equal("CatLibrary.Cat%602.html", model.Items[0].TopicHref);
-                Assert.Equal(13, model.Items[0].Items.Count);
+                Assert.Equal(16, model.Items[0].Items.Count);
                 Assert.Equal("CatLibrary.Cat-2.op_Addition.html", model.Items[0].Items[0].TopicHref);
                 Assert.Equal("Addition", model.Items[0].Items[0].Name);
-                Assert.Equal("CatLibrary.Cat-2.op_Subtraction.html", model.Items[0].Items[12].TopicHref);
-                Assert.Equal("Subtraction", model.Items[0].Items[12].Name);
+                Assert.Equal("CatLibrary.Cat-2.op_Subtraction.html", model.Items[0].Items[15].TopicHref);
+                Assert.Equal("Subtraction", model.Items[0].Items[15].Name);
 
                 var ctor = model.Items[0].Items.FirstOrDefault(s => s.Name == "Cat");
                 Assert.NotNull(ctor);
@@ -197,10 +220,70 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
                 Assert.NotNull(model);
                 Assert.Equal(1, model.Items.Count);
                 Assert.Equal("../System.Activities.Presentation.Model.ModelItemDictionary.html", model.Items[0].TopicHref);
-                Assert.Equal(19, model.Items[0].Items.Count);
+                Assert.Equal(38, model.Items[0].Items.Count);
 
                 Assert.Equal("../System.Activities.Presentation.Model.ModelItemDictionary.Add.html", model.Items[0].Items[0].TopicHref);
                 Assert.Equal("Add", model.Items[0].Items[0].Name);
+
+                var eiiItem = model.Items[0].Items[20];
+                Assert.Equal(5, eiiItem.Metadata.Count);
+                Assert.True(eiiItem.Metadata["isEii"] as bool?);
+            }
+        }
+
+        [Fact]
+        public void CheckDuplicateFileName()
+        {
+            var files = new FileCollection(Directory.GetCurrentDirectory());
+            files.Add(DocumentType.Article, new[] { "TestData/mref/com.microsoft.azure.management.sql.SqlServer.FirewallRules.yml" }, "TestData/");
+            files.Add(DocumentType.Article, new[] { "TestData/mref/com.microsoft.azure.management.sql.SqlServer.yml" }, "TestData/");
+            files.Add(DocumentType.Article, new[] { "TestData/mref/com.microsoft.azure.management.sql.yml" }, "TestData/");
+            files.Add(DocumentType.Article, new[] { "TestData/mref/sql/toc.yml" }, "TestData/");
+            BuildDocument(files);
+
+            var ignoreCase = PathUtility.IsPathCaseInsensitive();
+            {
+                var outputRawModelPath = GetRawModelFilePath("com.microsoft.azure.management.sql.SqlServer.firewallRules(Method).yml");
+                Assert.True(File.Exists(outputRawModelPath));
+                var model = JsonUtility.Deserialize<ApiBuildOutput>(outputRawModelPath);
+                Assert.NotNull(model);
+
+                Assert.Equal("mref/com.microsoft.azure.management.sql.SqlServer.firewallRules(Method).html", model.Metadata["_path"].ToString(), ignoreCase);
+                Assert.Equal("TestData/mref/com.microsoft.azure.management.sql.SqlServer.firewallRules(Method).yml", model.Metadata["_key"].ToString(), ignoreCase);
+            }
+            {
+                var outputRawModelPath = GetRawModelFilePath("com.microsoft.azure.management.sql.SqlServer.FirewallRules(Interface).yml");
+                Assert.True(File.Exists(outputRawModelPath));
+                var model = JsonUtility.Deserialize<ApiBuildOutput>(outputRawModelPath);
+                Assert.NotNull(model);
+
+                Assert.Equal("mref/com.microsoft.azure.management.sql.SqlServer.FirewallRules(Interface).html", model.Metadata["_path"].ToString(), ignoreCase);
+                Assert.Equal("TestData/mref/com.microsoft.azure.management.sql.SqlServer.FirewallRules(Interface).yml", model.Metadata["_key"].ToString(), ignoreCase);
+            }
+            {
+                var outputRawModelPath = GetRawModelFilePath("com.microsoft.azure.management.sql.SqlServer.firewallRules(Interface)_1.yml");
+                Assert.True(File.Exists(outputRawModelPath));
+                var model = JsonUtility.Deserialize<ApiBuildOutput>(outputRawModelPath);
+                Assert.NotNull(model);
+
+                Assert.Equal("mref/com.microsoft.azure.management.sql.SqlServer.firewallRules(Interface)_1.html", model.Metadata["_path"].ToString(), ignoreCase);
+                Assert.Equal("TestData/mref/com.microsoft.azure.management.sql.SqlServer.firewallRules(Interface)_1.yml", model.Metadata["_key"].ToString(), ignoreCase);
+            }
+            {
+                var outputRawModelPath = GetRawModelFilePath("sql\\toc.yml");
+                Assert.True(File.Exists(outputRawModelPath));
+                var model = JsonUtility.Deserialize<TocItemViewModel>(outputRawModelPath);
+                Assert.NotNull(model);
+
+                var topicHref = new List<string>()
+                {
+                    model.Items[0].Items[0].Items[0].TopicHref,
+                    model.Items[0].Items[1].TopicHref,
+                    model.Items[0].Items[2].TopicHref
+                };
+                Assert.Contains("../com.microsoft.azure.management.sql.SqlServer.firewallRules%28Method%29.html", topicHref, FilePathComparer.OSPlatformSensitiveStringComparer);
+                Assert.Contains("../com.microsoft.azure.management.sql.SqlServer.FirewallRules%28Interface%29.html", topicHref, FilePathComparer.OSPlatformSensitiveStringComparer);
+                Assert.Contains("../com.microsoft.azure.management.sql.SqlServer.firewallRules%28Interface%29_1.html", topicHref, FilePathComparer.OSPlatformSensitiveStringComparer);
             }
         }
 

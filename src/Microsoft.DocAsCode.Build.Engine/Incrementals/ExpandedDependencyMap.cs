@@ -53,8 +53,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals.Outputs
             {
                 throw new ArgumentNullException(nameof(from));
             }
-            HashSet<ExpandedDependencyItem> items;
-            if (_index.TryGetValue(from, out items))
+            if (_index.TryGetValue(from, out HashSet<ExpandedDependencyItem> items))
             {
                 return items;
             }
@@ -67,8 +66,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals.Outputs
             {
                 throw new ArgumentNullException(nameof(to));
             }
-            HashSet<ExpandedDependencyItem> items;
-            if (_inverseIndex.TryGetValue(to, out items))
+            if (_inverseIndex.TryGetValue(to, out HashSet<ExpandedDependencyItem> items))
             {
                 return items;
             }
@@ -79,8 +77,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals.Outputs
         {
             foreach (var dp in _dps)
             {
-                HashSet<ExpandedDependencyItem> items;
-                if (!_index.TryGetValue(dp.From, out items))
+                if (!_index.TryGetValue(dp.From, out HashSet<ExpandedDependencyItem> items))
                 {
                     _index[dp.From] = items = new HashSet<ExpandedDependencyItem>();
                 }

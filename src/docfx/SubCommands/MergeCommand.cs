@@ -41,12 +41,15 @@ namespace Microsoft.DocAsCode.SubCommands
         public void Exec(SubCommandRunningContext context)
         {
             var config = Config;
-            var baseDirectory = config.BaseDirectory ?? Directory.GetCurrentDirectory();
-            var intermediateOutputFolder = config.Destination ?? Path.Combine(baseDirectory, "obj");
-            EnvironmentContext.SetBaseDirectory(baseDirectory);
-            EnvironmentContext.SetOutputDirectory(intermediateOutputFolder);
-            MergeDocument(baseDirectory, intermediateOutputFolder);
-            EnvironmentContext.Clean();
+            foreach (var round in config)
+            {
+                var baseDirectory = round.BaseDirectory ?? Directory.GetCurrentDirectory();
+                var intermediateOutputFolder = round.Destination ?? Path.Combine(baseDirectory, "obj");
+                EnvironmentContext.SetBaseDirectory(baseDirectory);
+                EnvironmentContext.SetOutputDirectory(intermediateOutputFolder);
+                MergeDocument(baseDirectory, intermediateOutputFolder);
+                EnvironmentContext.Clean();
+            }
         }
 
         #region MergeCommand ctor related
@@ -66,7 +69,9 @@ namespace Microsoft.DocAsCode.SubCommands
                     else
                     {
                         config = new MergeJsonConfig();
-                        MergeOptionsToConfig(options, ref config);
+                        var item = new MergeJsonItemConfig();
+                        MergeOptionsToConfig(options, ref item);
+                        config.Add(item);
                         return config;
                     }
                 }
@@ -79,14 +84,18 @@ namespace Microsoft.DocAsCode.SubCommands
 
             config = CommandUtility.GetConfig<MergeConfig>(configFile).Item;
             if (config == null) throw new DocumentException($"Unable to find build subcommand config in file '{configFile}'.");
-            config.BaseDirectory = Path.GetDirectoryName(configFile);
+            for (int i = 0; i < config.Count; i++)
+            {
+                var round = config[i];
+                round.BaseDirectory = Path.GetDirectoryName(configFile);
 
-            MergeOptionsToConfig(options, ref config);
+                MergeOptionsToConfig(options, ref round);
+            }
 
             return config;
         }
 
-        private static void MergeOptionsToConfig(MergeCommandOptions options, ref MergeJsonConfig config)
+        private static void MergeOptionsToConfig(MergeCommandOptions options, ref MergeJsonItemConfig config)
         {
             // base directory for content from command line is current directory
             // e.g. C:\folder1>docfx build folder2\docfx.json --content "*.cs"
@@ -127,23 +136,26 @@ namespace Microsoft.DocAsCode.SubCommands
 
         private void MergeDocument(string baseDirectory, string outputDirectory)
         {
-            var parameters = ConfigToParameter(Config, baseDirectory, outputDirectory);
-            if (parameters.Files.Count == 0)
+            foreach (var round in Config)
             {
-                Logger.LogWarning("No files found, nothing is to be generated");
-                return;
-            }
-            try
-            {
-                new MetadataMerger().Merge(parameters);
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError(ex.ToString());
+                var parameters = ConfigToParameter(round, baseDirectory, outputDirectory);
+                if (parameters.Files.Count == 0)
+                {
+                    Logger.LogWarning("No files found, nothing is to be generated");
+                    continue;
+                }
+                try
+                {
+                    new MetadataMerger().Merge(parameters);
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogError(ex.ToString());
+                }
             }
         }
 
-        private static MetadataMergeParameters ConfigToParameter(MergeJsonConfig config, string baseDirectory, string outputDirectory) =>
+        private static MetadataMergeParameters ConfigToParameter(MergeJsonItemConfig config, string baseDirectory, string outputDirectory) =>
             new MetadataMergeParameters
             {
                 OutputBaseDir = outputDirectory,

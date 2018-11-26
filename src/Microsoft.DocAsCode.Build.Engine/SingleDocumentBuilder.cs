@@ -84,17 +84,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 Logger.LogInfo($"Max parallelism is {parameters.MaxParallelism}.");
                 Directory.CreateDirectory(parameters.OutputBaseDir);
 
-                var context = new DocumentBuildContext(
-                    Path.Combine(Directory.GetCurrentDirectory(), parameters.OutputBaseDir),
-                    parameters.Files.EnumerateFiles(),
-                    parameters.ExternalReferencePackages,
-                    parameters.XRefMaps,
-                    parameters.MaxParallelism,
-                    parameters.Files.DefaultBaseDir,
-                    parameters.VersionName,
-                    parameters.ApplyTemplateSettings,
-                    parameters.RootTocPath,
-                    parameters.VersionDir);
+                var context = new DocumentBuildContext(parameters);
 
                 Logger.LogVerbose("Start building document...");
 
@@ -104,7 +94,8 @@ namespace Microsoft.DocAsCode.Build.Engine
                 PhaseProcessor phaseProcessor = null;
                 try
                 {
-                    using (var templateProcessor = parameters.TemplateManager?.GetTemplateProcessor(context, parameters.MaxParallelism) ?? TemplateProcessor.DefaultProcessor)
+                    using (var templateProcessor = parameters.TemplateManager?.GetTemplateProcessor(context, parameters.MaxParallelism)
+                        ?? new TemplateProcessor(new EmptyResourceReader(), context, 16))
                     {
                         using (new LoggerPhaseScope("Prepare", LogLevel.Verbose))
                         {
@@ -131,14 +122,14 @@ namespace Microsoft.DocAsCode.Build.Engine
 
                         BuildCore(phaseProcessor, hostServices, context);
 
-                        return new Manifest(context.ManifestItems)
+                        var manifest = new Manifest(context.ManifestItems.Where(m => m.OutputFiles?.Count > 0))
                         {
                             Homepages = GetHomepages(context),
                             XRefMap = ExportXRefMap(parameters, context),
                             SourceBasePath = StringExtension.ToNormalizedPath(EnvironmentContext.BaseDirectory),
                             IncrementalInfo = context.IncrementalBuildContext != null ? new List<IncrementalInfo> { context.IncrementalBuildContext.IncrementalInfo } : null,
                             VersionInfo = string.IsNullOrEmpty(context.VersionName) ?
-                            new Dictionary<string, VersionInfo>():
+                            new Dictionary<string, VersionInfo>() :
                             new Dictionary<string, VersionInfo>
                                 {
                                     {
@@ -147,6 +138,14 @@ namespace Microsoft.DocAsCode.Build.Engine
                                     }
                                 }
                         };
+                        manifest.Groups = new List<ManifestGroupInfo>
+                        {
+                            new ManifestGroupInfo(parameters.GroupInfo)
+                            {
+                                XRefmap = (string)manifest.XRefMap
+                            }
+                        };
+                        return manifest;
                     }
                 }
                 finally
@@ -198,17 +197,18 @@ namespace Microsoft.DocAsCode.Build.Engine
                          group file by p).ToList();
 
             var toHandleItems = files.Where(s => s.Key != null);
-            var notToHandleItems = files.Where(s => s.Key == null);
-            foreach (var item in notToHandleItems)
+            var notToHandleItems = files
+                .Where(s => s.Key == null)
+                .SelectMany(s => s)
+                .Where(s => s.Type != DocumentType.Overwrite &&
+                    !s.File.EndsWith(".yaml.md", StringComparison.OrdinalIgnoreCase) &&
+                    !s.File.EndsWith(".yml.md", StringComparison.OrdinalIgnoreCase))
+                .ToList();
+            if (notToHandleItems.Count > 0)
             {
-                var sb = new StringBuilder();
-                sb.AppendLine("Cannot handle following file:");
-                foreach (var f in item)
-                {
-                    sb.Append("\t");
-                    sb.AppendLine(f.File);
-                }
-                Logger.LogWarning(sb.ToString());
+                Logger.LogWarning(
+                    $"Unable to handle following files: {notToHandleItems.Select(s => s.File).ToDelimitedString()}. Do they miss `YamlMime` as the first line of file, e.g.: `### YamlMime:ManagedReference`?",
+                    code: WarningCodes.Build.UnknownContentType);
             }
 
             try
@@ -216,6 +216,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 return (from processor in processors.AsParallel().WithDegreeOfParallelism(parameters.MaxParallelism)
                         join item in toHandleItems.AsParallel() on processor equals item.Key into g
                         from item in g.DefaultIfEmpty()
+                        where item != null && item.Any(s => s.Type != DocumentType.Overwrite) // when normal file exists then processing is needed
                         select LoggerPhaseScope.WithScope(
                             processor.Name,
                             LogLevel.Verbose,
@@ -230,7 +231,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
             catch (AggregateException ex)
             {
-                throw new DocfxException(ex.InnerException?.Message, ex);
+                throw ex.GetBaseException();
             }
         }
 
@@ -289,7 +290,10 @@ namespace Microsoft.DocAsCode.Build.Engine
         private static string ExportXRefMap(DocumentBuildParameters parameters, DocumentBuildContext context)
         {
             Logger.LogVerbose("Exporting xref map...");
-            var xrefMap = new XRefMap();
+            var xrefMap = new XRefMap
+            {
+                Tags = context.GroupInfo?.XRefTags ?? context.XRefTags,
+            };
             xrefMap.References =
                 (from xref in context.XRefSpecMap.Values.AsParallel().WithDegreeOfParallelism(parameters.MaxParallelism)
                  select new XRefSpec(xref)
@@ -297,15 +301,26 @@ namespace Microsoft.DocAsCode.Build.Engine
                      Href = context.UpdateHref(xref.Href, RelativePath.WorkingFolder)
                  }).ToList();
             xrefMap.Sort();
-            string xrefMapFileNameWithVersion = string.IsNullOrEmpty(parameters.VersionName) ?
-                XRefMapFileName :
-                parameters.VersionName + "." + XRefMapFileName;
+            string xrefMapFileNameWithVersion = GetXrefMapFileNameWithGroup(parameters);
             YamlUtility.Serialize(
                 Path.GetFullPath(Environment.ExpandEnvironmentVariables(Path.Combine(parameters.OutputBaseDir, xrefMapFileNameWithVersion))),
                 xrefMap,
                 YamlMime.XRefMap);
             Logger.LogInfo("XRef map exported.");
             return xrefMapFileNameWithVersion;
+        }
+
+        private static string GetXrefMapFileNameWithGroup(DocumentBuildParameters parameters)
+        {
+            if (!string.IsNullOrEmpty(parameters.GroupInfo?.Name))
+            {
+                return parameters.GroupInfo.Name + "." + XRefMapFileName;
+            }
+            if (!string.IsNullOrEmpty(parameters.VersionName))
+            {
+                return Uri.EscapeDataString(parameters.VersionName) + "." + XRefMapFileName;
+            }
+            return XRefMapFileName;
         }
 
         private IMarkdownService CreateMarkdownService(DocumentBuildParameters parameters, ImmutableDictionary<string, string> tokens)

@@ -1,7 +1,18 @@
 version: 1.0.{build}
-image: Visual Studio 2015
+environment:
+  nodejs_version: "7"
+branches:
+  only:
+    - dev
+skip_non_tags: true
+image: Visual Studio 2017
 init:
   - git config --global core.autocrlf true
+install:
+  - git clone -q https://github.com/docascode/docfx-seed.git ../docfx-seed
+  - ps: cd .\tools\Deployment
+  - ps: Install-Product node $env:nodejs_version
+  - npm install
+  - node .\node_modules\typescript\bin\tsc
 build_script:
-  - build.cmd
-test: off
+  - node .\node_modules\gulp\bin\gulp.js dev

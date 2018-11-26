@@ -53,7 +53,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         protected virtual bool LegacyMode => false;
 
-        protected virtual bool ShouldFixId { get; set; }
+        protected virtual bool ShouldFixId { get; set; } = true;
 
         [ImportMany]
         public IEnumerable<IMarkdownTokenTreeValidator> TokenTreeValidator { get; set; } = Enumerable.Empty<IMarkdownTokenTreeValidator>();
@@ -67,13 +67,15 @@ namespace Microsoft.DocAsCode.Build.Engine
         [Import]
         public ICompositionContainer Container { get; set; }
 
-        private sealed class DfmService : IMarkdownService, IHasIncrementalContext, IDisposable
+        public sealed class DfmService : IMarkdownService, IHasIncrementalContext, IDisposable
         {
-            private readonly DfmEngineBuilder _builder;
+            public string Name => "dfm";
+
+            public DfmEngineBuilder Builder { get; }
+
+            public object Renderer { get; }
 
             private readonly ImmutableDictionary<string, string> _tokens;
-
-            private readonly object _renderer;
 
             private readonly string _incrementalContextHash;
 
@@ -90,23 +92,33 @@ namespace Microsoft.DocAsCode.Build.Engine
                 options.LegacyMode = provider.LegacyMode;
                 options.ShouldFixId = provider.ShouldFixId;
                 options.ShouldExportSourceInfo = true;
-                _builder = new DfmEngineBuilder(
+                options.XHtml = true;
+                Builder = new DfmEngineBuilder(
                     options,
                     baseDir,
                     templateDir,
                     fallbackFolders,
-                    container);
-                _builder.TokenTreeValidator = MarkdownTokenTreeValidatorFactory.Combine(provider.TokenTreeValidator);
+                    container)
+                {
+                    TokenTreeValidator = MarkdownTokenTreeValidatorFactory.Combine(provider.TokenTreeValidator)
+                };
                 _tokens = tokens;
-                _renderer = CustomizedRendererCreator.CreateRenderer(new DfmRenderer { Tokens = _tokens }, provider.DfmRendererPartProviders, parameters);
+                Renderer = CustomizedRendererCreator.CreateRenderer(
+                    new DfmRenderer { Tokens = _tokens },
+                    provider.DfmRendererPartProviders,
+                    parameters);
                 foreach (var c in provider.DfmEngineCustomizers)
                 {
-                    c.Customize(_builder, parameters);
+                    c.Customize(Builder, parameters);
                 }
                 _incrementalContextHash = ComputeIncrementalContextHash(baseDir, templateDir, provider.TokenTreeValidator, parameters);
             }
 
-            private static string ComputeIncrementalContextHash(string baseDir, string templateDir, IEnumerable<IMarkdownTokenTreeValidator> tokenTreeValidator, IReadOnlyDictionary<string, object> parameters)
+            private static string ComputeIncrementalContextHash(
+                string baseDir,
+                string templateDir,
+                IEnumerable<IMarkdownTokenTreeValidator> tokenTreeValidator,
+                IReadOnlyDictionary<string, object> parameters)
             {
                 var content = (StringBuffer)"dfm";
                 if (baseDir != null)
@@ -147,7 +159,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             public MarkupResult Markup(string src, string path)
             {
                 var dependency = new HashSet<string>();
-                var html = _builder.CreateDfmEngine(_renderer).Markup(src, path, dependency);
+                var html = Builder.CreateDfmEngine(Renderer).Markup(src, path, dependency);
                 var result = new MarkupResult
                 {
                     Html = html,
@@ -159,11 +171,16 @@ namespace Microsoft.DocAsCode.Build.Engine
                 return result;
             }
 
+            public MarkupResult Markup(string src, string path, bool enableValidation)
+            {
+                throw new NotImplementedException();
+            }
+
             public string GetIncrementalContextHash() => _incrementalContextHash;
 
             public void Dispose()
             {
-                (_renderer as IDisposable)?.Dispose();
+                (Renderer as IDisposable)?.Dispose();
             }
         }
     }
