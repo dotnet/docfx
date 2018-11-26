@@ -15,6 +15,7 @@ namespace Microsoft.Docs.Build
         private readonly object _outputLock = new object();
         private readonly ConcurrentHashSet<Error> _errors = new ConcurrentHashSet<Error>(Error.Comparer);
 
+        private volatile string _outputPath;
         private Lazy<TextWriter> _output;
         private Config _config;
 
@@ -35,12 +36,14 @@ namespace Microsoft.Docs.Build
 
         public void Configure(string docsetPath, Config config)
         {
-            Debug.Assert(_output == null, "Cannot change report output path");
+            var outputPath = Path.Combine(docsetPath, config.Output.Path, "build.log");
+            Debug.Assert(_outputPath == null || _outputPath == outputPath, "Cannot change report output path");
 
             _config = config;
+            _outputPath = outputPath;
             _output = new Lazy<TextWriter>(() =>
             {
-                var outputFilePath = Path.GetFullPath(Path.Combine(docsetPath, config.Output.Path, "build.log"));
+                var outputFilePath = Path.GetFullPath(_outputPath);
 
                 PathUtility.CreateDirectoryFromFilePath(outputFilePath);
 
