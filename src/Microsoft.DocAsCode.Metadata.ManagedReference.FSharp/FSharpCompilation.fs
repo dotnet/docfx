@@ -940,6 +940,7 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
             elif ent.IsClass then MemberType.Class, ExtendedSymbolKind.Class
             elif ent.IsInterface then MemberType.Interface, ExtendedSymbolKind.Interface
             elif ent.IsValueType then MemberType.Struct, ExtendedSymbolKind.Struct
+            elif ent.IsOpaque then MemberType.Class, ExtendedSymbolKind.Class
             else failwithf "entity %A has unsupported type" ent            
 
         // extract basic information
