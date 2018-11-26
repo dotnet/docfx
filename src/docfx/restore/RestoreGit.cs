@@ -74,7 +74,14 @@ namespace Microsoft.Docs.Build
 
                         if (existingWorkTreePath.TryAdd(workTreePath))
                         {
-                            await GitUtility.AddWorkTree(repoPath, branch, workTreePath);
+                            try
+                            {
+                                await GitUtility.AddWorkTree(repoPath, branch, workTreePath);
+                            }
+                            catch (Exception ex)
+                            {
+                                throw Errors.GitCloneFailed(remote, branches).ToException(ex);
+                            }
                         }
 
                         // update the last write time
