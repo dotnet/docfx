@@ -428,7 +428,7 @@ Given multiple metadata files, the behavior would be **undetermined**, if same k
 
 #### 3.2.4 Xref service url pattern
 
-Xref service url pattern will exact url by following steps:
+To setup the Xref service, you'll need to either create or modify the `.htaccess` file for your website. The Xref service url pattern will exact url by following steps:
 
 1. Replace environment variables.
 
