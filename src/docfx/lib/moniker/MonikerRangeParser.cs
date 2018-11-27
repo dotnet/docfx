@@ -19,23 +19,28 @@ namespace Microsoft.Docs.Build
         }
 
         public List<string> Parse(string rangeString)
-            => string.IsNullOrWhiteSpace(rangeString)
-                ? new List<string>()
-                : _cache.GetOrAdd(rangeString, new Lazy<List<string>>(() =>
-                {
-                    List<string> monikerNames = new List<string>();
-
-                    try
+        {
+            var monikers = new List<string>();
+            if (!string.IsNullOrWhiteSpace(rangeString))
+            {
+                monikers.AddRange(_cache.GetOrAdd(rangeString, new Lazy<List<string>>(() =>
                     {
-                        var expression = ExpressionCreator.Create(rangeString);
-                        monikerNames = expression.Accept(_monikersEvaluator).ToList();
-                    }
-                    catch (MonikerRangeException ex)
-                    {
-                        throw Errors.InvalidMonikerRange(rangeString, ex.Message).ToException();
-                    }
+                        List<string> monikerNames = new List<string>();
 
-                    return monikerNames;
-                })).Value;
+                        try
+                        {
+                            var expression = ExpressionCreator.Create(rangeString);
+                            monikerNames = expression.Accept(_monikersEvaluator).ToList();
+                        }
+                        catch (MonikerRangeException ex)
+                        {
+                            throw Errors.InvalidMonikerRange(rangeString, ex.Message).ToException();
+                        }
+
+                        return monikerNames;
+                    })).Value);
+            }
+            return monikers;
+        }
     }
 }
