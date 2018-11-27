@@ -17,8 +17,6 @@ namespace Microsoft.Docs.Build
 
         private readonly Dictionary<string, DateTime> _updateTimeByCommit = new Dictionary<string, DateTime>();
 
-        private readonly ConcurrentDictionary<string, Repository> _repositoryByFolder = new ConcurrentDictionary<string, Repository>();
-
         private readonly ConcurrentDictionary<string, List<GitCommit>> _contributionCommitsByFile = new ConcurrentDictionary<string, List<GitCommit>>();
 
         private readonly ConcurrentDictionary<string, List<GitCommit>> _commitsByFile = new ConcurrentDictionary<string, List<GitCommit>>();
@@ -41,7 +39,7 @@ namespace Microsoft.Docs.Build
             string authorName)
         {
             Debug.Assert(document != null);
-            var (repo, _) = GetRepository(document);
+            var (repo, _) = Repository.GetRepository(document);
             if (repo == null)
             {
                 return default;
@@ -140,7 +138,7 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(document != null);
 
-            var (repo, pathToRepo) = GetRepository(document);
+            var (repo, pathToRepo) = Repository.GetRepository(document);
             if (repo == null)
                 return default;
 
@@ -204,27 +202,6 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private (Repository repo, string pathToRepo) GetRepository(Document document)
-        {
-            var fullPath = PathUtility.NormalizeFile(Path.Combine(document.Docset.DocsetPath, document.FilePath));
-            var repo = GetRepository(fullPath);
-            if (repo == null)
-                return default;
-
-            return (repo, PathUtility.NormalizeFile(Path.GetRelativePath(repo.Path, fullPath)));
-        }
-
-        private Repository GetRepository(string path)
-        {
-            if (GitUtility.IsRepo(path))
-                return Repository.CreateFromFolder(path);
-
-            var parent = path.Substring(0, path.LastIndexOf("/"));
-            return Directory.Exists(parent)
-                ? _repositoryByFolder.GetOrAdd(parent, GetRepository)
-                : null;
-        }
-
         private async Task LoadCommitsTime(Docset docset)
         {
             if (!string.IsNullOrEmpty(docset.Config.Contribution.GitCommitsTime))
@@ -249,7 +226,7 @@ namespace Microsoft.Docs.Build
                 var filesByRepo =
                     from file in docset.BuildScope
                     where file.ContentType == ContentType.Page
-                    let fileInRepo = GetRepository(file)
+                    let fileInRepo = Repository.GetRepository(file)
                     where fileInRepo.repo != null
                     group (file, fileInRepo.pathToRepo)
                     by fileInRepo.repo;

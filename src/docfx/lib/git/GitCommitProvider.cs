@@ -40,6 +40,8 @@ namespace Microsoft.Docs.Build
         // Only the last N = MaxCommitCacheCountPerFile commit histories are cached for a file, they are selected by least recently used order (lruOrder).
         private readonly ConcurrentDictionary<string, Dictionary<(long commit, long blob), (long[] commitHistory, int lruOrder)>> _commitCache;
 
+        private static readonly ConcurrentDictionary<string, Task<GitCommitProvider>> s_gitCommitProvider = new ConcurrentDictionary<string, Task<GitCommitProvider>>();
+
         private int _nextLruOrder;
         private int _nextStringId;
         private bool _cacheUpdated;
@@ -64,14 +66,12 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(!string.IsNullOrEmpty(cacheFilePath));
 
-            return new GitCommitProvider(repoPath, cacheFilePath, await LoadCommitCache(cacheFilePath));
+            var gitCommitProvider = await s_gitCommitProvider.GetOrAdd(repoPath, async path => new GitCommitProvider(repoPath, cacheFilePath, await LoadCommitCache(cacheFilePath)));
+            return gitCommitProvider;
         }
 
         public static GitCommitProvider Create(string repoPath)
-        {
-            // create without cache
-            return new GitCommitProvider(repoPath, cacheFilePath: null, commitCache: null);
-        }
+            => s_gitCommitProvider.GetOrAdd(repoPath, docsetPath => Task.FromResult(new GitCommitProvider(repoPath, cacheFilePath: null, commitCache: null))).Result;
 
         public List<GitCommit> GetCommitHistory(string file, string committish = null)
         {

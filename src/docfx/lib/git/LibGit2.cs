@@ -165,6 +165,9 @@ namespace Microsoft.Docs.Build
         [DllImport(LibName)]
         public static unsafe extern IntPtr git_blob_rawcontent(IntPtr blob);
 
+        [DllImport(LibName)]
+        public static unsafe extern int git_blob_rawsize(IntPtr blob);
+
         [StructLayout(LayoutKind.Sequential)]
         public struct git_time
         {

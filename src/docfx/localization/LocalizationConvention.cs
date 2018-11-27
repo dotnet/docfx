@@ -2,18 +2,14 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
 {
     internal static class LocalizationConvention
     {
-        private static readonly ConcurrentDictionary<string, (GitCommitProvider gitProvider, string repoPath)> s_gitCommitProvider = new ConcurrentDictionary<string, (GitCommitProvider gitProvider, string repoPath)>();
-
         /// <summary>
         /// The loc repo name follows below conventions:
         /// source remote                                           -->     loc remote
@@ -124,10 +120,55 @@ namespace Microsoft.Docs.Build
             return false;
         }
 
-        public static bool TryResolveDocset(this Docset docset, string file, out Docset resolvedDocset, out string content)
+        public static (Error error, string content, Document file) TryResolveFromHistory(Docset docset, string pathToDocset)
         {
-            content = null;
+            // try to resolve from source repo's git history
+            // todo: support code snippet
+            var fallbackDocset = GetFallbackDocset();
+            if (fallbackDocset != null && Document.GetContentType(pathToDocset) == ContentType.Page)
+            {
+                var repo = Repository.GetRepository(Path.Combine(fallbackDocset.DocsetPath, pathToDocset));
+                if (repo != null)
+                {
+                    var repoPath = PathUtility.NormalizeFolder(repo.Path);
+                    var gitCommitProvider = GitCommitProvider.Create(repoPath);
+                    var pathToRepo = PathUtility.NormalizeFile(Path.GetRelativePath(repoPath, Path.Combine(fallbackDocset.DocsetPath, pathToDocset)));
+                    var commits = gitCommitProvider.GetCommitHistory(pathToRepo);
+                    if (commits.Count > 1)
+                    {
+                        // the latest commit would be deleting it from repo
+                        if (GitUtility.TryGetContentFromHistory(repoPath, pathToRepo, commits[1].Sha, out var content))
+                        {
+                            var (error, doc) = Document.TryCreate(fallbackDocset, pathToDocset, isFromHistory: true);
+                            return (error, content, doc);
+                        }
+                    }
+                }
+            }
 
+            return default;
+
+            Docset GetFallbackDocset()
+            {
+                if (docset.LocalizationDocset != null)
+                {
+                    // source docset in loc build
+                    return docset;
+                }
+
+                if (docset.FallbackDocset != null)
+                {
+                    // localized docset in loc build
+                    return docset.FallbackDocset;
+                }
+
+                // source docset in source build
+                return null;
+            }
+        }
+
+        public static bool TryResolveDocset(this Docset docset, string file, out Docset resolvedDocset)
+        {
             // resolve from localization docset
             if (docset.LocalizationDocset != null && File.Exists(Path.Combine(docset.LocalizationDocset.DocsetPath, file)))
             {
@@ -149,59 +190,8 @@ namespace Microsoft.Docs.Build
                 return true;
             }
 
-            // try to resolve from source repo's git history
-            // todo: support code snippet
-            var fallbackDocset = GetFallbackDocset();
-            if (fallbackDocset != null && Document.GetContentType(file) == ContentType.Page)
-            {
-                var (gitCommitProvider, repoPath) = s_gitCommitProvider.GetOrAdd(fallbackDocset.DocsetPath, docsetPath =>
-                {
-                    var repo = GitUtility.FindRepo(docsetPath);
-                    if (!string.IsNullOrEmpty(repo))
-                    {
-                        var (remote, _, _) = GitUtility.GetRepoInfo(repo);
-                        return (GitCommitProvider.Create(repo), repo);
-                    }
-
-                    return default;
-                });
-
-                if (gitCommitProvider != null)
-                {
-                    var pathToRepo = PathUtility.NormalizeFile(Path.GetRelativePath(repoPath, Path.Combine(fallbackDocset.DocsetPath, file)));
-                    var commits = gitCommitProvider.GetCommitHistory(pathToRepo);
-                    if (commits.Count > 1)
-                    {
-                        // the latest commit would be deleting it from repo
-                        if (GitUtility.TryGetContentFromHistory(repoPath, pathToRepo, commits[1].Sha, out content))
-                        {
-                            resolvedDocset = fallbackDocset;
-                            return true;
-                        }
-                    }
-                }
-            }
-
             resolvedDocset = null;
             return false;
-
-            Docset GetFallbackDocset()
-            {
-                if (docset.LocalizationDocset != null)
-                {
-                    // source docset in loc build
-                    return docset;
-                }
-
-                if (docset.FallbackDocset != null)
-                {
-                    // localized docset in loc build
-                    return docset.FallbackDocset;
-                }
-
-                // source docset in source build
-                return null;
-            }
         }
 
         public static HashSet<Document> CreateScanScope(this Docset docset)

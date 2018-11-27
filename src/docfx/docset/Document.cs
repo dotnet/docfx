@@ -6,14 +6,11 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
 
 namespace Microsoft.Docs.Build
 {
     internal class Document
     {
-        private readonly string _content;
-
         /// <summary>
         /// Gets the owning docset of this document. A document can only belong to one docset.
         /// </summary>
@@ -86,6 +83,11 @@ namespace Microsoft.Docs.Build
         public bool IsExperimental { get; }
 
         /// <summary>
+        /// Gets a value indicating whether it's from git history(deleted/moved/renamed)
+        /// </summary>
+        public bool IsFromHistory { get; }
+
+        /// <summary>
         /// Gets a value indicating whether the current document is schema data
         /// </summary>
         public bool IsSchemaData => Schema != null && Schema.Attribute as PageSchemaAttribute == null;
@@ -110,8 +112,8 @@ namespace Microsoft.Docs.Build
             string mime,
             Schema schema,
             bool isExperimental,
-            string content = null,
-            string redirectionUrl = null)
+            string redirectionUrl = null,
+            bool isFromHistory = false)
         {
             Debug.Assert(!Path.IsPathRooted(filePath));
             Debug.Assert(ContentType == ContentType.Redirection ? redirectionUrl != null : true);
@@ -125,9 +127,9 @@ namespace Microsoft.Docs.Build
             Schema = schema;
             IsExperimental = isExperimental;
             RedirectionUrl = redirectionUrl;
+            IsFromHistory = isFromHistory;
 
             _id = new Lazy<(string docId, string versionId)>(() => LoadDocumentId());
-            _content = content;
 
             Debug.Assert(IsValidRelativePath(FilePath));
             Debug.Assert(IsValidRelativePath(SitePath));
@@ -142,11 +144,7 @@ namespace Microsoft.Docs.Build
         public Stream ReadStream()
         {
             Debug.Assert(ContentType != ContentType.Redirection);
-
-            if (_content != null)
-            {
-                return new MemoryStream(Encoding.UTF8.GetBytes(_content));
-            }
+            Debug.Assert(!IsFromHistory);
 
             return File.OpenRead(Path.Combine(Docset.DocsetPath, FilePath));
         }
@@ -157,11 +155,7 @@ namespace Microsoft.Docs.Build
         public string ReadText()
         {
             Debug.Assert(ContentType != ContentType.Redirection);
-
-            if (_content != null)
-            {
-                return _content;
-            }
+            Debug.Assert(!IsFromHistory);
 
             using (var reader = new StreamReader(ReadStream()))
             {
@@ -211,7 +205,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         /// <param name="docset">The current docset</param>
         /// <param name="path">The path relative to docset root</param>
-        public static (Error error, Document doc) TryCreate(Docset docset, string path, string content = null, string redirectionUrl = null)
+        public static (Error error, Document doc) TryCreate(Docset docset, string path, string redirectionUrl = null, bool isFromHistory = false)
         {
             Debug.Assert(docset != null);
             Debug.Assert(!string.IsNullOrEmpty(path));
@@ -238,7 +232,7 @@ namespace Microsoft.Docs.Build
                 return (Errors.InvalidRedirection(filePath, type), null);
             }
 
-            return (null, new Document(docset, filePath, sitePath, siteUrl, contentType, mime, schema, isExperimental, content, redirectionUrl));
+            return (null, new Document(docset, filePath, sitePath, siteUrl, contentType, mime, schema, isExperimental, redirectionUrl, isFromHistory));
         }
 
         /// <summary>
@@ -255,9 +249,9 @@ namespace Microsoft.Docs.Build
 
             pathToDocset = PathUtility.NormalizeFile(pathToDocset);
 
-            if (docset.TryResolveDocset(pathToDocset, out var resolvedDocset, out var content))
+            if (docset.TryResolveDocset(pathToDocset, out var resolvedDocset))
             {
-                var (error, file) = TryCreate(resolvedDocset, pathToDocset, content);
+                var (error, file) = TryCreate(resolvedDocset, pathToDocset);
                 return error == null ? file : null;
             }
 
