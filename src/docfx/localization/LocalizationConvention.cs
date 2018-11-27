@@ -63,12 +63,11 @@ namespace Microsoft.Docs.Build
             return ($"{remote}{newLocale}", newBranch);
         }
 
-        public static string GetLocalizationDocsetPath(string docsetPath, Config config, string locale, RestoreMap restoreMap)
+        public static string GetLocalizationDocsetPath(string docsetPath, Config config, string locale)
         {
             Debug.Assert(!string.IsNullOrEmpty(docsetPath));
             Debug.Assert(!string.IsNullOrEmpty(locale));
             Debug.Assert(config != null);
-            Debug.Assert(restoreMap != null);
 
             var localizationDocsetPath = docsetPath;
             switch (config.Localization.Mapping)
@@ -88,7 +87,7 @@ namespace Microsoft.Docs.Build
                             repo.Branch,
                             locale,
                             config.Localization.DefaultLocale);
-                        var restorePath = restoreMap.GetGitRestorePath($"{locRemote}#{locBranch}");
+                        var restorePath = RestoreMap.GetGitRestorePath(locRemote, locBranch);
                         localizationDocsetPath = config.Localization.Mapping == LocalizationMapping.Repository
                             ? restorePath
                             : Path.Combine(restorePath, locale);

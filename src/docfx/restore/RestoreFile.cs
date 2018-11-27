@@ -10,8 +10,13 @@ namespace Microsoft.Docs.Build
 {
     internal static class RestoreFile
     {
-        public static async Task Restore(string url, Config config)
+        public static async Task Restore(string url, Config config, bool @implict)
         {
+            if (implict && RestoreMap.TryGetFileRestorePath(url, out _))
+            {
+                return;
+            }
+
             var tempFile = await DownloadToTempFile(url, config);
 
             var fileHash = HashUtility.GetFileSha1Hash(tempFile);

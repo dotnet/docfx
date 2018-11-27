@@ -56,10 +56,12 @@ namespace Microsoft.Docs.Build
                             Done(stopwatch.Elapsed, report);
                             break;
                         case "build":
+                            await Restore.Run(docset, options, report, @implicit: true);
                             await Build.Run(docset, options, report);
                             Done(stopwatch.Elapsed, report);
                             break;
                         case "watch":
+                            await Restore.Run(docset, options, report, @implicit: true);
                             await Watch.Run(docset, options);
                             break;
                         case "gc":
@@ -101,12 +103,14 @@ namespace Microsoft.Docs.Build
                 syntax.DefineOption("o|output", ref options.Output, "Output directory in which to place built artifacts.");
                 syntax.DefineOption("legacy", ref options.Legacy, "Enable legacy output for backward compatibility.");
                 syntax.DefineOption("locale", ref options.Locale, "The locale of the docset to build.");
+                syntax.DefineOption("no-restore", ref options.NoRestore, "Do not restore the docset before building.");
                 syntax.DefineParameter("docset", ref docset, "Docset directory that contains docfx.yml/docfx.json.");
 
                 // Watch command
                 syntax.DefineCommand("watch", ref command, "Previews a docset and watch changes interactively.");
                 syntax.DefineOption("locale", ref options.Locale, "The locale of the docset to build.");
                 syntax.DefineOption("port", ref options.Port, "The port of the launched website.");
+                syntax.DefineOption("no-restore", ref options.NoRestore, "Do not restore the docset before building.");
                 syntax.DefineParameter("docset", ref docset, "Docset directory that contains docfx.yml/docfx.json.");
 
                 // GC command

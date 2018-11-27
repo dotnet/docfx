@@ -57,7 +57,7 @@ namespace Microsoft.Docs.Build
             _getLoginByCommitFromGitHub = github.GetLoginByCommit;
             _cachePath = string.IsNullOrEmpty(docset.Config.GitHub.UserCache)
                 ? AppData.GitHubUserCachePath
-                : docset.RestoreMap.GetFileRestorePath(docset.Config.GitHub.UserCache);
+                : docset.GetFileRestorePath(docset.Config.GitHub.UserCache);
             _expirationInHours = docset.Config.GitHub.UserCacheExpirationInHours;
         }
 
