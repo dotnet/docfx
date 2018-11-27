@@ -43,9 +43,9 @@ namespace Microsoft.Docs.Build
             }
 
             var children = inputModel.Items?.Select(l => ToTableOfContentsModel(l, comparer));
-            var childrenMonikers = children?.SelectMany(child => child?.Monikers ?? new List<string>());
+            var childrenMonikers = children?.SelectMany(child => child?.Monikers ?? new List<string>()) ?? new List<string>();
 
-            var monikers = (childrenMonikers == null ? inputModel.Monikers : childrenMonikers.Union(inputModel.Monikers)).Distinct(comparer).ToList();
+            var monikers = childrenMonikers.Union(inputModel.Monikers).Distinct(comparer).ToList();
             monikers.Sort(comparer);
             return new TableOfContentsItem
             {
