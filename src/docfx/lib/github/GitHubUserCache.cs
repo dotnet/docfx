@@ -143,11 +143,18 @@ namespace Microsoft.Docs.Build
                 });
             }
             await ProcessUtility.WriteFile(_cachePath, file);
-            if (config.GitHub.UpdateRemoteUserCache && HrefUtility.IsHttpHref(config.GitHub.UserCache))
+            var url = config.GitHub.UserCache;
+            if (config.GitHub.UpdateRemoteUserCache && HrefUtility.IsHttpHref(url))
             {
-                // TOOD: aware of ETag to handle conflicts
-                // TODO: error handling
-                await HttpClientUtility.PutAsync(config.GitHub.UserCache, new StringContent(file), config);
+                try
+                {
+                    // TOOD: aware of ETag to handle conflicts
+                    await HttpClientUtility.PutAsync(config.GitHub.UserCache, new StringContent(file), config);
+                }
+                catch (HttpRequestException ex)
+                {
+                    throw Errors.UploadFailed(url, ex.Message).ToException();
+                }
             }
         }
 
