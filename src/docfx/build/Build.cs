@@ -38,8 +38,7 @@ namespace Microsoft.Docs.Build
 
             context.WriteJson(manifest, "build.manifest");
 
-            // TODO: write back to global cache
-            var saveGitHubUserCache = githubUserCache.SaveChanges();
+            var saveGitHubUserCache = githubUserCache.SaveChanges(config);
 
             xrefMap.OutputXrefMap(context);
 
@@ -56,7 +55,7 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            await saveGitHubUserCache;
+            errors.AddIfNotNull(await saveGitHubUserCache);
             errors.ForEach(e => context.Report(e));
         }
 
