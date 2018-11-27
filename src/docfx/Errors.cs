@@ -55,6 +55,9 @@ namespace Microsoft.Docs.Build
         public static Error DownloadFailed(string url, string message)
             => new Error(ErrorLevel.Error, "download-failed", $"Download '{url}' failed: {message}");
 
+        public static Error UploadFailed(string url, string message)
+            => new Error(ErrorLevel.Warning, "upload-failed", $"Upload '{url}' failed: {message}");
+
         public static Error GitCloneFailed(string url, IEnumerable<string> branches)
             => new Error(ErrorLevel.Error, "git-clone-failed", $"Cloning git repository '{url}' ({Join(branches)}) failed.");
 
