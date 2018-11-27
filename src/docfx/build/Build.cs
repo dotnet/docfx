@@ -55,7 +55,7 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            await saveGitHubUserCache;
+            errors.AddIfNotNull(await saveGitHubUserCache);
             errors.ForEach(e => context.Report(e));
         }
 

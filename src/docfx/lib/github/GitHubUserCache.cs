@@ -127,11 +127,11 @@ namespace Microsoft.Docs.Build
             return await GetByLogin(login);
         }
 
-        public async Task SaveChanges(Config config)
+        public async Task<Error> SaveChanges(Config config)
         {
             if (!_updated)
             {
-                return;
+                return null;
             }
 
             string file;
@@ -144,17 +144,20 @@ namespace Microsoft.Docs.Build
             }
             await ProcessUtility.WriteFile(_cachePath, file);
             var url = config.GitHub.UserCache;
-            if (config.GitHub.UpdateRemoteUserCache && HrefUtility.IsHttpHref(url))
+            if (!config.GitHub.UpdateRemoteUserCache || !HrefUtility.IsHttpHref(url))
             {
-                try
-                {
-                    // TOOD: aware of ETag to handle conflicts
-                    await HttpClientUtility.PutAsync(config.GitHub.UserCache, new StringContent(file), config);
-                }
-                catch (HttpRequestException ex)
-                {
-                    throw Errors.UploadFailed(url, ex.Message).ToException();
-                }
+                return null;
+            }
+
+            try
+            {
+                // TOOD: aware of ETag to handle conflicts
+                await HttpClientUtility.PutAsync(config.GitHub.UserCache, new StringContent(file), config);
+                return null;
+            }
+            catch (HttpRequestException ex)
+            {
+                return Errors.UploadFailed(url, ex.Message);
             }
         }
 
