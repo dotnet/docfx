@@ -57,9 +57,9 @@ namespace Microsoft.Docs.Build
             var github = new GitHubAccessor(token);
             _getUserByLoginFromGitHub = github.GetUserByLogin;
             _getLoginByCommitFromGitHub = github.GetLoginByCommit;
-            (_cachePath, _isFromUrl) = string.IsNullOrEmpty(docset.Config.GitHub.UserCache)
-                ? (AppData.GitHubUserCachePath, false)
-                : docset.RestoreMap.GetFileRestorePath(docset.Config.GitHub.UserCache);
+            _cachePath = string.IsNullOrEmpty(docset.Config.GitHub.UserCache)
+                ? AppData.GitHubUserCachePath
+                : docset.GetFileRestorePath(docset.Config.GitHub.UserCache);
             _expirationInHours = docset.Config.GitHub.UserCacheExpirationInHours;
         }
 
