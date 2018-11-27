@@ -247,7 +247,7 @@ namespace Microsoft.Docs.Build
                 return false;
             }
 
-            content = git_blob_rawcontent(blob);
+            content = Marshal.PtrToStringUTF8(git_blob_rawcontent(blob));
             git_tree_entry_free(entry);
             git_repository_free(repo);
 

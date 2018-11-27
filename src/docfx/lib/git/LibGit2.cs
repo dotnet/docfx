@@ -163,7 +163,7 @@ namespace Microsoft.Docs.Build
         public static unsafe extern int git_blob_lookup(out IntPtr blob, IntPtr repo, git_oid* obj);
 
         [DllImport(LibName)]
-        public static unsafe extern string git_blob_rawcontent(IntPtr blob);
+        public static unsafe extern IntPtr git_blob_rawcontent(IntPtr blob);
 
         [StructLayout(LayoutKind.Sequential)]
         public struct git_time
