@@ -82,7 +82,7 @@ outputs:
 ---
 # Show error when dependent repo can't be found
 commands:
-  - build
+  - build --no-restore
 inputs:
   docfx.yml: |
     dependencies:
@@ -93,7 +93,7 @@ outputs:
 ---
 # Show error when dependent URL can't be found
 commands:
-  - build
+  - build --no-restore
 inputs:
   docfx.yml: |
     contribution:
@@ -103,8 +103,6 @@ outputs:
     ["error","need-restore","Cannot find dependency 'https://docs.microsoft.com/bad-url', did you forget to run `docfx restore`?"]
 ---
 # Show error when dependent file can't be found
-commands:
-  - build
 inputs:
   docfx.yml: |
     contribution:

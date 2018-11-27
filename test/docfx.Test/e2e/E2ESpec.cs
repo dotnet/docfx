@@ -17,7 +17,7 @@ namespace Microsoft.Docs.Build
 
         public readonly string[] Environments = Array.Empty<string>();
 
-        public readonly string[] Commands = new[] { "restore", "build" };
+        public readonly string[] Commands = new[] { "build" };
 
         public readonly string[] SkippableOutputs = new[] { "xrefmap.json", "build.manifest" };
 

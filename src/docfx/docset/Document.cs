@@ -262,7 +262,7 @@ namespace Microsoft.Docs.Build
             }
 
             // resolve from dependent docsets
-            foreach (var (dependencyName, dependentDocset) in docset.DependentDocset)
+            foreach (var (dependencyName, dependentDocset) in docset.DependencyDocsets)
             {
                 Debug.Assert(dependencyName.EndsWith('/'));
 

@@ -107,7 +107,7 @@ namespace Microsoft.Docs.Build
             }
 
             // Link to dependent repo, don't build the file, leave href as is
-            if (relativeTo.Docset.DependentDocset.Values.Any(v => file.Docset == v))
+            if (relativeTo.Docset.DependencyDocsets.Values.Any(v => file.Docset == v))
             {
                 return (Errors.LinkIsDependency(relativeTo, file, href), href, fragment, null);
             }
