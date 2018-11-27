@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Linq;
 using Xunit;
 
 namespace Microsoft.Docs.Build
@@ -86,7 +87,7 @@ namespace Microsoft.Docs.Build
             "netcore-2.0 netcore-3.0 dotnet-3.0")]
         public void TestEvaluateMonikerRange(string rangeString, string expectedMonikers)
         {
-            var result = _monikerRangeParser.Parse(rangeString);
+            var result = _monikerRangeParser.Parse(rangeString).ToList();
             result.Sort(_monikerComparer);
             Assert.Equal(expectedMonikers, string.Join(' ', result));
         }

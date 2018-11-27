@@ -10,7 +10,7 @@ namespace Microsoft.Docs.Build
 {
     internal class MonikerRangeParser
     {
-        private readonly ConcurrentDictionary<string, Lazy<List<string>>> _cache = new ConcurrentDictionary<string, Lazy<List<string>>>();
+        private readonly ConcurrentDictionary<string, Lazy<IEnumerable<string>>> _cache = new ConcurrentDictionary<string, Lazy<IEnumerable<string>>>();
         private readonly EvaluatorWithMonikersVisitor _monikersEvaluator;
 
         public MonikerRangeParser(MonikerDefinitionModel monikerDefinition)
@@ -18,29 +18,24 @@ namespace Microsoft.Docs.Build
             _monikersEvaluator = new EvaluatorWithMonikersVisitor(monikerDefinition);
         }
 
-        public List<string> Parse(string rangeString)
-        {
-            var monikers = new List<string>();
-            if (!string.IsNullOrWhiteSpace(rangeString))
-            {
-                monikers.AddRange(_cache.GetOrAdd(rangeString, new Lazy<List<string>>(() =>
+        public IEnumerable<string> Parse(string rangeString)
+            => string.IsNullOrWhiteSpace(rangeString)
+                ? Array.Empty<string>()
+                : _cache.GetOrAdd(rangeString, new Lazy<IEnumerable<string>>(() =>
+                {
+                    List<string> monikerNames = new List<string>();
+
+                    try
                     {
-                        List<string> monikerNames = new List<string>();
+                        var expression = ExpressionCreator.Create(rangeString);
+                        monikerNames = expression.Accept(_monikersEvaluator).ToList();
+                    }
+                    catch (MonikerRangeException ex)
+                    {
+                        throw Errors.InvalidMonikerRange(rangeString, ex.Message).ToException();
+                    }
 
-                        try
-                        {
-                            var expression = ExpressionCreator.Create(rangeString);
-                            monikerNames = expression.Accept(_monikersEvaluator).ToList();
-                        }
-                        catch (MonikerRangeException ex)
-                        {
-                            throw Errors.InvalidMonikerRange(rangeString, ex.Message).ToException();
-                        }
-
-                        return monikerNames;
-                    })).Value);
-            }
-            return monikers;
-        }
+                    return monikerNames;
+                })).Value;
     }
 }
