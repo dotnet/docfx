@@ -38,7 +38,6 @@ namespace Microsoft.Docs.Build
                    = new ConcurrentDictionary<string, Lazy<Task<(Error, string)>>>(StringComparer.OrdinalIgnoreCase);
 
         private readonly string _cachePath;
-        private readonly bool _isFromUrl;
         private readonly double _expirationInHours;
         private bool _updated = false;
 
@@ -128,29 +127,27 @@ namespace Microsoft.Docs.Build
             return await GetByLogin(login);
         }
 
-        public Task SaveChanges(Config config)
+        public async Task SaveChanges(Config config)
         {
             if (!_updated)
             {
-                return Task.CompletedTask;
+                return;
             }
 
+            string file;
             lock (_lock)
             {
-                var file = JsonUtility.Serialize(new GitHubUserCacheFile
+                file = JsonUtility.Serialize(new GitHubUserCacheFile
                 {
                     Users = Users.ToArray(),
                 });
-                var tasks = new List<Task>
-                {
-                    ProcessUtility.WriteFile(_cachePath, file),
-                };
-                if (config.GitHub.UpdateRemoteUserCache && _isFromUrl)
-                {
-                    // TOOD: aware of ETag to handle conflicts
-                    tasks.Add(HttpClientUtility.PutAsync(config.GitHub.UserCache, new StringContent(file), config));
-                }
-                return Task.WhenAll(tasks);
+            }
+            await ProcessUtility.WriteFile(_cachePath, file);
+            if (config.GitHub.UpdateRemoteUserCache && HrefUtility.IsHttpHref(config.GitHub.UserCache))
+            {
+                // TOOD: aware of ETag to handle conflicts
+                // TODO: error handling
+                await HttpClientUtility.PutAsync(config.GitHub.UserCache, new StringContent(file), config);
             }
         }
 

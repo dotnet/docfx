@@ -38,7 +38,6 @@ namespace Microsoft.Docs.Build
 
             context.WriteJson(manifest, "build.manifest");
 
-            // TODO: write back to global cache
             var saveGitHubUserCache = githubUserCache.SaveChanges(config);
 
             xrefMap.OutputXrefMap(context);
