@@ -30,7 +30,7 @@ namespace Microsoft.Docs.Build
                 if (glob(file.FilePath))
                 {
                     configMonikerRange = monikerRange;
-                    configMonikers = file.Docset.MonikerRangeParser.Parse(monikerRange);
+                    configMonikers.AddRange(file.Docset.MonikerRangeParser.Parse(monikerRange));
                 }
             }
 

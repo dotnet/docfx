@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -126,20 +127,37 @@ namespace Microsoft.Docs.Build
             return await GetByLogin(login);
         }
 
-        public Task SaveChanges()
+        public async Task<Error> SaveChanges(Config config)
         {
             if (!_updated)
             {
-                return Task.CompletedTask;
+                return null;
             }
 
+            string file;
             lock (_lock)
             {
-                var file = new GitHubUserCacheFile
+                file = JsonUtility.Serialize(new GitHubUserCacheFile
                 {
                     Users = Users.ToArray(),
-                };
-                return ProcessUtility.WriteFile(_cachePath, JsonUtility.Serialize(file));
+                });
+            }
+            await ProcessUtility.WriteFile(_cachePath, file);
+            var url = config.GitHub.UserCache;
+            if (!config.GitHub.UpdateRemoteUserCache || !HrefUtility.IsHttpHref(url))
+            {
+                return null;
+            }
+
+            try
+            {
+                // TOOD: aware of ETag to handle conflicts
+                await HttpClientUtility.PutAsync(config.GitHub.UserCache, new StringContent(file), config);
+                return null;
+            }
+            catch (HttpRequestException ex)
+            {
+                return Errors.UploadFailed(url, ex.Message);
             }
         }
 

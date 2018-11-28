@@ -58,6 +58,9 @@
         "userCache": {
           "type": "string"
         },
+        "updateRemoteUserCache": {
+          "type": "boolean"
+        },
         "userCacheExpirationInHours": {
           "type": "integer"
         },
