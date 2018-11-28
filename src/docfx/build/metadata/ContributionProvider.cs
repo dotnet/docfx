@@ -39,7 +39,7 @@ namespace Microsoft.Docs.Build
             string authorName)
         {
             Debug.Assert(document != null);
-            var (repo, _) = Repository.GetRepository(document);
+            var (repo, _) = RepositoryUtility.GetRepository(document);
             if (repo == null)
             {
                 return default;
@@ -138,7 +138,7 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(document != null);
 
-            var (repo, pathToRepo) = Repository.GetRepository(document);
+            var (repo, pathToRepo) = RepositoryUtility.GetRepository(document);
             if (repo == null)
                 return default;
 
@@ -226,7 +226,7 @@ namespace Microsoft.Docs.Build
                 var filesByRepo =
                     from file in docset.BuildScope
                     where file.ContentType == ContentType.Page
-                    let fileInRepo = Repository.GetRepository(file)
+                    let fileInRepo = RepositoryUtility.GetRepository(file)
                     where fileInRepo.repo != null
                     group (file, fileInRepo.pathToRepo)
                     by fileInRepo.repo;

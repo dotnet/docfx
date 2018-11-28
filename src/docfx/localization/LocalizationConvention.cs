@@ -73,7 +73,7 @@ namespace Microsoft.Docs.Build
                 case LocalizationMapping.Repository:
                 case LocalizationMapping.RepositoryAndFolder:
                     {
-                        var repo = Repository.CreateFromFolder(Path.GetFullPath(docsetPath));
+                        var repo = Repository.Create(Path.GetFullPath(docsetPath));
                         if (repo == null)
                         {
                             return null;
@@ -127,7 +127,7 @@ namespace Microsoft.Docs.Build
             var fallbackDocset = GetFallbackDocset();
             if (fallbackDocset != null && Document.GetContentType(pathToDocset) == ContentType.Page)
             {
-                var repo = Repository.GetRepository(Path.Combine(fallbackDocset.DocsetPath, pathToDocset));
+                var repo = RepositoryUtility.GetRepository(Path.Combine(fallbackDocset.DocsetPath, pathToDocset));
                 if (repo != null)
                 {
                     var repoPath = PathUtility.NormalizeFolder(repo.Path);
