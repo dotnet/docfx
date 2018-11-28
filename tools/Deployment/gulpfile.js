@@ -220,7 +220,7 @@ gulp.task("syncBranchCore", () => {
     var repoInfo = {
         "account": config.docfx.account,
         "token": process.env.TOKEN
-    }
+    };
     var repoUrl = config.docfx.httpsRepoUrlWithToken.format(repoInfo);
 
     let docfxHome = path.resolve(config.docfx.home);
