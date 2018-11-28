@@ -131,7 +131,7 @@ namespace Microsoft.Docs.Build
                 if (repo != null)
                 {
                     var repoPath = PathUtility.NormalizeFolder(repo.Path);
-                    var gitCommitProvider = GitCommitProvider.Create(repoPath);
+                    var gitCommitProvider = GitCommitProvider.Create(fallbackDocset.DocsetPath, repoPath);
                     var pathToRepo = PathUtility.NormalizeFile(Path.GetRelativePath(repoPath, Path.Combine(fallbackDocset.DocsetPath, pathToDocset)));
                     var commits = gitCommitProvider.GetCommitHistory(pathToRepo);
                     if (commits.Count > 1)

@@ -35,7 +35,7 @@ namespace Microsoft.Docs.Build
             var repo = GitUtility.FindRepo(Path.GetFullPath(file));
             Assert.NotNull(repo);
 
-            using (var commitsProvider = GitCommitProvider.Create(repo))
+            using (var commitsProvider = GitCommitProvider.Create("", repo))
             {
                 var pathToRepo = PathUtility.NormalizeFile(file);
 

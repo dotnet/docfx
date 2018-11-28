@@ -62,16 +62,16 @@ namespace Microsoft.Docs.Build
             _commitCache = commitCache ?? new ConcurrentDictionary<string, Dictionary<(long commit, long blob), (long[] commitHistory, int lruOrder)>>();
         }
 
-        public static async Task<GitCommitProvider> CreateWithCache(string repoPath, string cacheFilePath)
+        public static async Task<GitCommitProvider> CreateWithCache(string docsetPath, string repoPath, string cacheFilePath)
         {
             Debug.Assert(!string.IsNullOrEmpty(cacheFilePath));
 
-            var gitCommitProvider = await s_gitCommitProvider.GetOrAdd(repoPath, async path => new GitCommitProvider(repoPath, cacheFilePath, await LoadCommitCache(cacheFilePath)));
+            var gitCommitProvider = await s_gitCommitProvider.GetOrAdd(docsetPath + repoPath, async path => new GitCommitProvider(repoPath, cacheFilePath, await LoadCommitCache(cacheFilePath)));
             return gitCommitProvider;
         }
 
-        public static GitCommitProvider Create(string repoPath)
-            => s_gitCommitProvider.GetOrAdd(repoPath, docsetPath => Task.FromResult(new GitCommitProvider(repoPath, cacheFilePath: null, commitCache: null))).Result;
+        public static GitCommitProvider Create(string docsetPath, string repoPath)
+            => s_gitCommitProvider.GetOrAdd(docsetPath + repoPath, path => Task.FromResult(new GitCommitProvider(repoPath, cacheFilePath: null, commitCache: null))).Result;
 
         public List<GitCommit> GetCommitHistory(string file, string committish = null)
         {
