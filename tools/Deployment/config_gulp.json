@@ -2,6 +2,7 @@
   "docfx": {
     "home": "../../",
     "httpsRepoUrl": "https://github.com/dotnet/docfx.git",
+    "httpsRepoUrlWithToken": "https://{account}:{token}@github.com/dotnet/docfx.git",
     "sshRepoUrl": "git@github.com-ci:dotnet/docfx.git",
     "docfxSeedRepoUrl": "https://github.com/docascode/docfx-seed.git",
     "docfxSeedHome": "../../test/docfx-seed/",
@@ -9,6 +10,7 @@
     "targetFolder": "../../target/",
     "artifactsFolder": "../../artifacts/",
     "exe": "../../target/Release/docfx/docfx.exe",
+    "account": "openpublishbuild",
     "releaseNotePath": "../../RELEASENOTE.md",
     "releaseFolder": "../../target/Release/docfx",
     "assetZipPath": "../../Documentation/tutorial/artifacts/docfx.zip",

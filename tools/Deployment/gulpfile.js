@@ -10,6 +10,8 @@ let del = require("del");
 let glob = require("glob");
 let gulp = require("gulp");
 let nconf = require("nconf");
+let format = require("string-format");
+format.extend(String.prototype, {})
 
 let Common = require("./out/common").Common;
 let Guard = require("./out/common").Guard;
@@ -203,18 +205,26 @@ gulp.task("publish:chocolatey", () => {
 });
 
 gulp.task("syncBranchCore", () => {
-    Guard.argumentNotNullOrEmpty(config.docfx.sshRepoUrl, "config.docfx.sshRepoUrl", "Can't find docfx repo url in configuration.");
+    Guard.argumentNotNullOrEmpty(config.docfx.httpsRepoUrlWithToken, "config.docfx.httpsRepoUrlWithToken", "Can't find docfx repo url with token in configuration.");
     Guard.argumentNotNullOrEmpty(config.docfx.home, "config.docfx.home", "Can't find docfx home directory in configuration.");
+    Guard.argumentNotNullOrEmpty(config.docfx.account, "config.docfx.account", "Can't find account in configuration.");
     Guard.argumentNotNullOrEmpty(config.sync.fromBranch, "config.sync.fromBranch", "Can't find source branch in sync configuration.");
     Guard.argumentNotNullOrEmpty(config.sync.targetBranch, "config.sync.targetBranch", "Can't find target branch in sync configuration.");
+    Guard.argumentNotNullOrEmpty(process.env.TOKEN, "process.env.TOKEN", "No github account token in the environment.");
 
     if (Common.isThirdWeekInSprint()) {
         console.log("Ignore to sync in the third week of a sprint");
         process.exit(2);
     }
 
+    var repoInfo = {
+        "account": config.docfx.account,
+        "token": process.env.TOKEN
+    }
+    var repoUrl = config.docfx.httpsRepoUrlWithToken.format(repoInfo);
+
     let docfxHome = path.resolve(config.docfx.home);
-    return SyncBranch.runAsync(config.docfx.sshRepoUrl, docfxHome, config.sync.fromBranch, config.sync.targetBranch);
+    return SyncBranch.runAsync(repoUrl, docfxHome, config.sync.fromBranch, config.sync.targetBranch);
 });
 gulp.task("test", gulp.series("clean", "build", "e2eTest", "publish:myget-test"));
 gulp.task("dev", gulp.series("clean", "build", "e2eTest"));
