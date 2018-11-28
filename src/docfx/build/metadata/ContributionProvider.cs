@@ -238,7 +238,7 @@ namespace Microsoft.Docs.Build
                     var contributionBranch = bilingual && LocalizationConvention.TryGetContributionBranch(repo.Branch, out var cBranch) ? cBranch : null;
 
                     using (Progress.Start($"Loading commits for '{repoPath}'"))
-                    using (var commitsProvider = await GitCommitProvider.CreateWithCache(docset.DocsetPath, repoPath, AppData.GetCommitCachePath(repo.Remote)))
+                    using (var commitsProvider = GitCommitProvider.Create(docset.DocsetPath, repoPath, repo.Remote, await GitCommitCacheProvider.LoadCommitCache(repo.Remote)))
                     {
                         ParallelUtility.ForEach(
                             group,
@@ -256,7 +256,7 @@ namespace Microsoft.Docs.Build
                             },
                             Progress.Update);
 
-                        await commitsProvider.SaveCache();
+                        await commitsProvider.Update();
                     }
                 }
             }
