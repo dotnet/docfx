@@ -34,6 +34,7 @@
     "nconf": "^0.8.4",
     "request": "^2.69.0",
     "sha1": "^1.1.1",
+    "string-format": "^2.0.0",
     "typescript": "^2.2.2"
   }
 }
