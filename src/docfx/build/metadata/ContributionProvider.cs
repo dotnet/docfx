@@ -39,7 +39,7 @@ namespace Microsoft.Docs.Build
             string authorName)
         {
             Debug.Assert(document != null);
-            var (repo, _) = RepositoryUtility.GetRepository(document);
+            var (repo, _) = document.Docset.RepositoryProvider.GetRepository(document);
             if (repo == null)
             {
                 return default;
@@ -138,7 +138,7 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(document != null);
 
-            var (repo, pathToRepo) = RepositoryUtility.GetRepository(document);
+            var (repo, pathToRepo) = document.Docset.RepositoryProvider.GetRepository(document);
             if (repo == null)
                 return default;
 
@@ -226,7 +226,7 @@ namespace Microsoft.Docs.Build
                 var filesByRepo =
                     from file in docset.BuildScope
                     where file.ContentType == ContentType.Page
-                    let fileInRepo = RepositoryUtility.GetRepository(file)
+                    let fileInRepo = docset.RepositoryProvider.GetRepository(file)
                     where fileInRepo.repo != null
                     group (file, fileInRepo.pathToRepo)
                     by fileInRepo.repo;
@@ -238,7 +238,7 @@ namespace Microsoft.Docs.Build
                     var contributionBranch = bilingual && LocalizationConvention.TryGetContributionBranch(repo.Branch, out var cBranch) ? cBranch : null;
 
                     using (Progress.Start($"Loading commits for '{repoPath}'"))
-                    using (var commitsProvider = GitCommitProvider.Create(docset.DocsetPath, repoPath, repo.Remote, await GitCommitCacheProvider.LoadCommitCache(repo.Remote)))
+                    using (var commitsProvider = docset.RepositoryProvider.GetGitCommitProvider(repo.Path, repo.Remote, await GitCommitCacheProvider.LoadCommitCache(repo.Remote)))
                     {
                         ParallelUtility.ForEach(
                             group,
@@ -256,7 +256,7 @@ namespace Microsoft.Docs.Build
                             },
                             Progress.Update);
 
-                        await commitsProvider.Update();
+                        await commitsProvider.SaveCache();
                     }
                 }
             }

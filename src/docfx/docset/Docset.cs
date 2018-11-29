@@ -8,8 +8,6 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
-using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -87,6 +85,8 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public HashSet<Document> ScanScope => _scanScope.Value;
 
+        public RepositoryProvider RepositoryProvider { get; }
+
         public MetadataProvider Metadata => _metadata.Value;
 
         public MonikersProvider MonikersProvider => _monikersProvider.Value;
@@ -128,6 +128,7 @@ namespace Microsoft.Docs.Build
             Routes = NormalizeRoutes(config.Routes);
             Culture = CreateCultureInfo(locale);
             FallbackDocset = fallbackDocset;
+            RepositoryProvider = new RepositoryProvider();
 
             var configErrors = new List<Error>();
             (configErrors, DependencyDocsets) = LoadDependencies(Config);

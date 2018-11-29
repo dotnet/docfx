@@ -127,12 +127,11 @@ namespace Microsoft.Docs.Build
             var fallbackDocset = GetFallbackDocset();
             if (fallbackDocset != null && Document.GetContentType(pathToDocset) == ContentType.Page)
             {
-                var repo = RepositoryUtility.GetRepository(Path.Combine(fallbackDocset.DocsetPath, pathToDocset));
+                var (repo, pathToRepo) = fallbackDocset.RepositoryProvider.GetRepository(fallbackDocset, pathToDocset);
                 if (repo != null)
                 {
                     var repoPath = PathUtility.NormalizeFolder(repo.Path);
-                    var gitCommitProvider = GitCommitProvider.Create(fallbackDocset.DocsetPath, repoPath, repo.Remote);
-                    var pathToRepo = PathUtility.NormalizeFile(Path.GetRelativePath(repoPath, Path.Combine(fallbackDocset.DocsetPath, pathToDocset)));
+                    var gitCommitProvider = fallbackDocset.RepositoryProvider.GetGitCommitProvider(repo.Path);
                     var commits = gitCommitProvider.GetCommitHistory(pathToRepo);
                     if (commits.Count > 1)
                     {
