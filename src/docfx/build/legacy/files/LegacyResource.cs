@@ -9,8 +9,9 @@ namespace Microsoft.Docs.Build
             Docset docset,
             Context context,
             Document doc,
-            LegacyManifestOutput legacyManifestOutput)
+            LegacyManifestItem legacyManifestItem)
         {
+            var legacyManifestOutput = legacyManifestItem.Output;
             var metadata = docset.Metadata.GetMetadata(doc);
             metadata = LegacyMetadata.GenerataCommonMetadata(metadata, docset);
             metadata.Remove("__global");
@@ -19,10 +20,10 @@ namespace Microsoft.Docs.Build
             {
                 LegacyUtility.MoveFileSafe(
                     docset.GetAbsoluteOutputPathFromRelativePath(doc.OutputPath),
-                    docset.GetAbsoluteOutputPathFromRelativePath(legacyManifestOutput.ResourceOutput.ToLegacyOutputPath(docset)));
+                    docset.GetAbsoluteOutputPathFromRelativePath(legacyManifestOutput.ResourceOutput.ToLegacyOutputPath(docset, legacyManifestItem.Group)));
             }
 
-            context.WriteJson(metadata, legacyManifestOutput.MetadataOutput.ToLegacyOutputPath(docset));
+            context.WriteJson(metadata, legacyManifestOutput.MetadataOutput.ToLegacyOutputPath(docset, legacyManifestItem.Group));
         }
     }
 }
