@@ -17,7 +17,6 @@ namespace Microsoft.Docs.Build
         /// https:://github.com/{org}/{repo-name}.{source-locale}   -->     https:://github.com/{org}/{repo-name}.{loc-locale}
         /// // TODO: org name can be different
         /// </summary>
-        /// <returns>The loc remote url</returns>
         public static (string remote, string branch) GetLocalizationRepo(LocalizationMapping mapping, bool bilingual, string remote, string branch, string locale, string defaultLocale)
         {
             if (mapping == LocalizationMapping.Folder)
@@ -59,23 +58,6 @@ namespace Microsoft.Docs.Build
             }
 
             return ($"{remote}{newLocale}", newBranch);
-        }
-
-        public static string GetLocalizationBranch(LocalizationMapping mapping, string sourceBranch, string locale)
-        {
-            Debug.Assert(!string.IsNullOrEmpty(sourceBranch));
-
-            if (mapping != LocalizationMapping.Branch)
-            {
-                return sourceBranch;
-            }
-
-            if (string.IsNullOrEmpty(locale))
-            {
-                return sourceBranch;
-            }
-
-            return $"{locale}-{sourceBranch}";
         }
 
         public static string GetLocalizationDocsetPath(string docsetPath, Config config, string locale)
@@ -228,5 +210,22 @@ namespace Microsoft.Docs.Build
         }
 
         private static string GetBilingualBranch(string branch) => $"{branch}-sxs";
+
+        private static string GetLocalizationBranch(LocalizationMapping mapping, string sourceBranch, string locale)
+        {
+            Debug.Assert(!string.IsNullOrEmpty(sourceBranch));
+
+            if (mapping != LocalizationMapping.Branch)
+            {
+                return sourceBranch;
+            }
+
+            if (string.IsNullOrEmpty(locale))
+            {
+                return sourceBranch;
+            }
+
+            return $"{locale}-{sourceBranch}";
+        }
     }
 }
