@@ -64,15 +64,6 @@ namespace Microsoft.Docs.Build
         public IReadOnlyDictionary<string, string> Routes { get; }
 
         /// <summary>
-        /// Gets the moniker range parser
-        /// </summary>
-        public MonikerRangeParser MonikerRangeParser => _monikerRangeParser.Value;
-
-        public MonikerComparer MonikerAscendingComparer => _monikerAscendingComparer.Value;
-
-        public MonikerComparer MonikerDescendingComparer => _monikerDescendingComparer.Value;
-
-        /// <summary>
         /// Gets the redirection map.
         /// </summary>
         public RedirectionMap Redirections => _redirections.Value;
@@ -89,7 +80,7 @@ namespace Microsoft.Docs.Build
 
         public MetadataProvider Metadata => _metadata.Value;
 
-        public MonikersProvider MonikersProvider => _monikersProvider.Value;
+        public MonikersProvider Monikers => _monikers.Value;
 
         public LegacyTemplate LegacyTemplate => _legacyTemplate.Value;
 
@@ -100,10 +91,7 @@ namespace Microsoft.Docs.Build
         private readonly Lazy<RedirectionMap> _redirections;
         private readonly Lazy<LegacyTemplate> _legacyTemplate;
         private readonly Lazy<MetadataProvider> _metadata;
-        private readonly Lazy<MonikerRangeParser> _monikerRangeParser;
-        private readonly Lazy<MonikerComparer> _monikerAscendingComparer;
-        private readonly Lazy<MonikerComparer> _monikerDescendingComparer;
-        private readonly Lazy<MonikersProvider> _monikersProvider;
+        private readonly Lazy<MonikersProvider> _monikers;
 
         public Docset(Context context, string docsetPath, Config config, CommandLineOptions options, bool isDependency = false)
             : this(context, docsetPath, config, !string.IsNullOrEmpty(options.Locale) ? options.Locale : config.Localization.DefaultLocale, options, null)
@@ -132,13 +120,6 @@ namespace Microsoft.Docs.Build
             var configErrors = new List<Error>();
             (configErrors, DependencyDocsets) = LoadDependencies(Config);
 
-            var monikerDefinition = new MonikerDefinitionModel();
-            if (!string.IsNullOrEmpty(Config.MonikerDefinition))
-            {
-                var path = this.GetFileRestorePath(Config.MonikerDefinition);
-                monikerDefinition = JsonUtility.Deserialize<MonikerDefinitionModel>(File.ReadAllText(path));
-            }
-
             // pass on the command line options to its children
             _buildScope = new Lazy<HashSet<Document>>(() => CreateBuildScope(Redirections.Files));
             _redirections = new Lazy<RedirectionMap>(() =>
@@ -150,16 +131,14 @@ namespace Microsoft.Docs.Build
             });
             _scanScope = new Lazy<HashSet<Document>>(() => this.CreateScanScope());
             _metadata = new Lazy<MetadataProvider>(() => new MetadataProvider(config));
-            _monikerRangeParser = new Lazy<MonikerRangeParser>(() => new MonikerRangeParser(monikerDefinition));
-            _monikerAscendingComparer = new Lazy<MonikerComparer>(() => new MonikerComparer(monikerDefinition));
-            _monikerDescendingComparer = new Lazy<MonikerComparer>(() => new MonikerComparer(monikerDefinition, false));
+
             _legacyTemplate = new Lazy<LegacyTemplate>(() =>
             {
                 Debug.Assert(!string.IsNullOrEmpty(Config.Theme));
                 var (themeRemote, branch) = LocalizationConvention.GetLocalizationTheme(Config.Theme, Locale, Config.Localization.DefaultLocale);
                 return new LegacyTemplate(RestoreMap.GetGitRestorePath($"{themeRemote}#{branch}"), Locale);
             });
-            _monikersProvider = new Lazy<MonikersProvider>(() => new MonikersProvider(Config));
+            _monikers = new Lazy<MonikersProvider>(() => new MonikersProvider(this, Config));
         }
 
         private static IReadOnlyDictionary<string, string> NormalizeRoutes(Dictionary<string, string> routes)

@@ -97,7 +97,7 @@ namespace Microsoft.Docs.Build
                     map[spec.Uid] = spec;
                 }
             }
-            return new XrefMap(map, CreateInternalXrefMap(context, docset.ScanScope), context, docset.MonikerDescendingComparer);
+            return new XrefMap(map, CreateInternalXrefMap(context, docset.ScanScope), context, docset.Monikers.DescendingComparer);
         }
 
         public void OutputXrefMap(Context context)
@@ -278,7 +278,7 @@ namespace Microsoft.Docs.Build
             };
             xref.ExtensionData["name"] = string.IsNullOrEmpty(metadata.Title) ? metadata.Uid : metadata.Title;
 
-            var (error, monikers) = file.Docset.MonikersProvider.GetFileLevelMonikers(file, metadata.MonikerRange);
+            var (error, monikers) = file.Docset.Monikers.GetFileLevelMonikers(file, metadata.MonikerRange);
             foreach (var moniker in monikers)
             {
                 xref.Monikers.Add(moniker);
