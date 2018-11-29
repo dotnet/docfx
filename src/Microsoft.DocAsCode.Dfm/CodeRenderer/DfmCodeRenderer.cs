@@ -5,13 +5,14 @@ namespace Microsoft.DocAsCode.Dfm
 {
     using System;
     using System.IO;
-
+    using System.Linq;
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.MarkdownLite;
 
     public class DfmCodeRenderer
     {
         private readonly DfmCodeExtractor _dfmCodeExtractor;
+        private readonly char[] _invalidChars = Path.GetInvalidFileNameChars().Except(new char[] { '\\', '/' }).ToArray();
 
         public DfmCodeRenderer()
             : this((DfmCodeExtractor)null)
@@ -39,26 +40,37 @@ namespace Microsoft.DocAsCode.Dfm
 
             try
             {
-                // Always report original dependency
-                context.ReportDependency(token.Path);
-
                 var pathQueryOption =
                     !string.IsNullOrEmpty(token.QueryStringAndFragment) ?
                     _dfmCodeExtractor.ParsePathQueryString(token.QueryStringAndFragment) :
                     null;
                 var filePath = FindFile(token, context);
+
+                // Always report original dependency
+                context.ReportDependency(token.Path);
+
                 var code = ExtractCode(token, filePath, pathQueryOption);
                 return RenderFencesCode(token, renderer.Options, code.ErrorMessage, code.CodeLines, pathQueryOption);
             }
             catch (DirectoryNotFoundException)
             {
+                if (isValidPath(token.Path))
+                {
+                    context.ReportDependency(token.Path);
+                }
                 return RenderReferenceNotFoundErrorMessage(renderer, token);
             }
             catch (FileNotFoundException)
             {
+                if (isValidPath(token.Path))
+                {
+                    context.ReportDependency(token.Path);
+                }
                 return RenderReferenceNotFoundErrorMessage(renderer, token);
             }
         }
+
+        public bool isValidPath(string path) => !_invalidChars.Any(c => path.Contains(c));
 
         [Obsolete]
         public virtual StringBuffer RenderFencesFromCodeContent(string codeContent, string path, string queryStringAndFragment = null, string name = null, string lang = null, string title = null)
