@@ -30,7 +30,7 @@ namespace Microsoft.Docs.Build
 
             using (Progress.Start("Cleaning git repositories"))
             {
-                var gitWorkTreeRoots = Directory.EnumerateDirectories(AppData.GitRoot, ".git", SearchOption.AllDirectories);
+                var gitWorkTreeRoots = Directory.GetDirectories(AppData.GitRoot, ".git", SearchOption.AllDirectories);
 
                 await ParallelUtility.ForEach(gitWorkTreeRoots, CleanWorkTrees, Progress.Update);
             }
