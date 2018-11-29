@@ -51,7 +51,7 @@ namespace Microsoft.Docs.Build
 
         public static string ToLegacyOutputPath(this LegacyManifestOutputItem legacyManifestOutputItem, Docset docset, string groupId)
         {
-            return groupId is null
+            return string.IsNullOrEmpty(groupId)
                 ? Path.Combine(docset.Config.DocumentId.SiteBasePath, legacyManifestOutputItem.RelativePath)
                 : Path.Combine(groupId, docset.Config.DocumentId.SiteBasePath, legacyManifestOutputItem.RelativePath);
         }
