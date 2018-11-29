@@ -48,7 +48,7 @@ namespace Microsoft.Docs.Build
                 }
 
                 return (
-                    from path in Directory.EnumerateDirectories(repoPath, "*", SearchOption.TopDirectoryOnly)
+                    from path in Directory.GetDirectories(repoPath, "*", SearchOption.TopDirectoryOnly)
                     let name = Path.GetFileName(path)
                     where name.StartsWith(HrefUtility.EscapeUrlSegment(branch) + "-") &&
                           GitUtility.IsWorkTreeCheckoutComplete(repoPath, name)

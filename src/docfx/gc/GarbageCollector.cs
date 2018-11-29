@@ -43,7 +43,7 @@ namespace Microsoft.Docs.Build
                        {
                            var workTreeFolder = Path.GetDirectoryName(gitWorkTreeRoot);
                            var existingWorkTreeFolders = Directory
-                                .EnumerateDirectories(workTreeFolder, "*", SearchOption.TopDirectoryOnly)
+                                .GetDirectories(workTreeFolder, "*", SearchOption.TopDirectoryOnly)
                                 .Where(f => !f.EndsWith(".git"));
 
                            foreach (var existingWorkTreeFolder in existingWorkTreeFolders)
