@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace System.Collections.Concurrent
 {
-    internal class ConcurrentHashSet<T>
+    internal class ConcurrentHashSet<T> : IEnumerable<T>
     {
         private readonly ConcurrentDictionary<T, object> _dictionary;
 
@@ -19,5 +19,9 @@ namespace System.Collections.Concurrent
         public bool TryAdd(T value) => _dictionary.TryAdd(value, null);
 
         public bool Contains(T value) => _dictionary.ContainsKey(value);
+
+        public IEnumerator<T> GetEnumerator() => _dictionary.Keys.GetEnumerator();
+
+        IEnumerator IEnumerable.GetEnumerator() => _dictionary.Keys.GetEnumerator();
     }
 }

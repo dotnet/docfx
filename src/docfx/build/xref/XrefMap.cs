@@ -306,7 +306,11 @@ namespace Microsoft.Docs.Build
                 Uid = uid,
                 Href = file.SiteUrl,
             };
-            xref.ExtensionData.Merge(extensionData);
+
+            foreach (var (key, value) in extensionData)
+            {
+                xref.ExtensionData.TryAdd(key, value);
+            }
             return (errors, xref, file);
         }
 
