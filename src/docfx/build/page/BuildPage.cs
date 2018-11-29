@@ -11,7 +11,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class BuildPage
     {
-        public static async Task<(IEnumerable<Error> errors, object result, DependencyMap dependencies, List<string>)> Build(
+        public static async Task<(IEnumerable<Error> errors, object result, List<string>)> Build(
             Context context,
             Document file,
             TableOfContentsMap tocMap,
@@ -46,7 +46,7 @@ namespace Microsoft.Docs.Build
                     : await RazorTemplate.Render(model.PageType, model);
             }
 
-            return (errors, output, callback.DependencyMapBuilder.Build(), model.Monikers);
+            return (errors, output, model.Monikers);
         }
 
         private static string GetCanonicalUrl(Document file)

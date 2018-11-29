@@ -11,18 +11,16 @@ namespace Microsoft.Docs.Build
 {
     internal static class BuildTableOfContents
     {
-        public static (IEnumerable<Error>, TableOfContentsModel, DependencyMap, List<string> monikers) Build(
-            Context context, Document file, TableOfContentsMap tocMap, Dictionary<Document, List<string>> monikersMap)
+        public static (IEnumerable<Error>, TableOfContentsModel, List<string> monikers) Build(
+            Context context, Document file, TableOfContentsMap tocMap, DependencyMapBuilder dependencyMapBuilder, Dictionary<Document, List<string>> monikersMap)
         {
             Debug.Assert(file.ContentType == ContentType.TableOfContents);
 
             if (!tocMap.Contains(file))
             {
-                return (Enumerable.Empty<Error>(), null, DependencyMap.Empty, new List<string>());
+                return (Enumerable.Empty<Error>(), null, new List<string>());
             }
 
-            // todo: build resource files linked by toc
-            var dependencyMapBuilder = new DependencyMapBuilder();
             var (errors, tocModel, tocMetadata, refArticles, refTocs, monikers) = Load(context, file, dependencyMapBuilder, monikersMap);
 
             var metadata = file.Docset.Metadata.GetMetadata(file, tocMetadata).ToObject<TableOfContentsMetadata>();
@@ -36,7 +34,7 @@ namespace Microsoft.Docs.Build
                 Metadata = metadata,
             };
 
-            return (errors, model, dependencyMapBuilder.Build(), monikers);
+            return (errors, model, monikers);
         }
 
         public static TableOfContentsMap BuildTocMap(Context context, Docset docset)
