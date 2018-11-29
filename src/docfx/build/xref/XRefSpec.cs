@@ -23,7 +23,7 @@ namespace Microsoft.Docs.Build
 
         public string GetXrefPropertyValue(string property)
         {
-            if (!string.IsNullOrEmpty(property) && ExtensionData.TryGetValue(property, out var v) && v != null)
+            if (!string.IsNullOrEmpty(property) && ExtensionData.TryGetValue(property, out var v))
                 return v.ToString();
             return null;
         }

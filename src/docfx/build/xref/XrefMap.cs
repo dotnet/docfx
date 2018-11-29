@@ -309,7 +309,7 @@ namespace Microsoft.Docs.Build
 
             foreach (var (key, value) in extensionData)
             {
-                xref.ExtensionData.Add(key, value);
+                xref.ExtensionData.TryAdd(key, value);
             }
             return (errors, xref, file);
         }
