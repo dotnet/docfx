@@ -3,7 +3,6 @@
 
 using System.Collections.Generic;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -18,11 +17,15 @@ namespace Microsoft.Docs.Build
         public string Href { get; set; }
 
         [JsonExtensionData]
-        public JObject ExtensionData { get; } = new JObject();
+        public Dictionary<string, object> ExtensionData { get; } = new Dictionary<string, object>();
 
         public string GetName() => GetXrefPropertyValue("name");
 
         public string GetXrefPropertyValue(string property)
-            => ExtensionData.TryGetValue<JValue>(property, out var v) && v.Value is string str ? str : null;
+        {
+            if (!string.IsNullOrEmpty(property) && ExtensionData.TryGetValue(property, out var v))
+                return v.ToString();
+            return null;
+        }
     }
 }
