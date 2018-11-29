@@ -6,7 +6,7 @@ import { Common } from "./common";
 export class SyncBranch {
     static async runAsync(repoUrl: string, docfxHomeDir: string, fromBranch: string, targetBranch: string): Promise<void> {
         await Common.execAsync("git", ["remote", "set-url", "origin", repoUrl], docfxHomeDir);
-        await Common.execAsync("git", ["push", "origin", fromBranch + ":" + targetBranch], docfxHomeDir);
+        await Common.execAsync("git", ["push", "origin", "origin/" + fromBranch + ":" + targetBranch], docfxHomeDir);
         console.log("Sync successfully");
     }
 }
