@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace Microsoft.Docs.Build
@@ -10,14 +11,26 @@ namespace Microsoft.Docs.Build
     internal class MonikersProvider
     {
         private readonly List<(Func<string, bool> glob, string monikerRange)> _rules = new List<(Func<string, bool>, string)>();
+        private readonly MonikerRangeParser _rangeParser;
 
-        public MonikersProvider(Config config)
+        public MonikerComparer Comparer { get; }
+
+        public MonikersProvider(Docset docset)
         {
-            foreach (var (key, monikerRange) in config.MonikerRange)
+            foreach (var (key, monikerRange) in docset.Config.MonikerRange)
             {
                 _rules.Add((GlobUtility.CreateGlobMatcher(key), monikerRange));
             }
             _rules.Reverse();
+
+            var monikerDefinition = new MonikerDefinitionModel();
+            if (!string.IsNullOrEmpty(docset.Config.MonikerDefinition))
+            {
+                var path = docset.GetFileRestorePath(docset.Config.MonikerDefinition);
+                monikerDefinition = JsonUtility.Deserialize<MonikerDefinitionModel>(File.ReadAllText(path));
+            }
+            _rangeParser = new MonikerRangeParser(monikerDefinition);
+            Comparer = new MonikerComparer(monikerDefinition);
         }
 
         public (Error, List<string>) GetFileLevelMonikers(Document file, string fileMonikerRange = null)
@@ -30,7 +43,7 @@ namespace Microsoft.Docs.Build
                 if (glob(file.FilePath))
                 {
                     configMonikerRange = monikerRange;
-                    configMonikers.AddRange(file.Docset.MonikerRangeParser.Parse(monikerRange));
+                    configMonikers.AddRange(_rangeParser.Parse(monikerRange));
                 }
             }
 
@@ -44,7 +57,7 @@ namespace Microsoft.Docs.Build
                     return (error, configMonikers);
                 }
 
-                var fileMonikers = file.Docset.MonikerRangeParser.Parse(fileMonikerRange);
+                var fileMonikers = _rangeParser.Parse(fileMonikerRange);
                 var intersection = configMonikers.Intersect(fileMonikers, StringComparer.OrdinalIgnoreCase).ToList();
 
                 // With non-empty config monikers,
@@ -53,15 +66,15 @@ namespace Microsoft.Docs.Build
                 {
                     error = Errors.EmptyMonikers($"No moniker intersection between docfx.yml/docfx.json and file metadata. Config moniker range '{configMonikerRange}' is '{string.Join(',', configMonikers)}', while file moniker range '{fileMonikerRange}' is '{string.Join(',', fileMonikers)}'");
                 }
-                intersection.Sort(file.Docset.MonikerAscendingComparer);
+                intersection.Sort(Comparer);
                 return (error, intersection);
             }
 
-            configMonikers.Sort(file.Docset.MonikerAscendingComparer);
+            configMonikers.Sort(Comparer);
             return (error, configMonikers);
         }
 
-        public List<string> GetZoneMonikers(Document file, string rangeString, List<string> fileLevelMonikers, List<Error> errors)
+        public List<string> GetZoneMonikers(string rangeString, List<string> fileLevelMonikers, List<Error> errors)
         {
             var monikers = new List<string>();
 
@@ -73,14 +86,14 @@ namespace Microsoft.Docs.Build
                 return new List<string>();
             }
 
-            var zoneLevelMonikers = file.Docset.MonikerRangeParser.Parse(rangeString);
+            var zoneLevelMonikers = _rangeParser.Parse(rangeString);
             monikers = fileLevelMonikers.Intersect(zoneLevelMonikers, StringComparer.OrdinalIgnoreCase).ToList();
 
             if (monikers.Count == 0)
             {
                 errors.Add(Errors.EmptyMonikers($"No intersection between zone and file level monikers. The result of zone level range string '{rangeString}' is '{string.Join(',', zoneLevelMonikers)}', while file level monikers is '{string.Join(',', fileLevelMonikers)}'."));
             }
-            monikers.Sort(file.Docset.MonikerAscendingComparer);
+            monikers.Sort(Comparer);
             return monikers;
         }
     }
