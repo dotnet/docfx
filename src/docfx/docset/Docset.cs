@@ -138,7 +138,7 @@ namespace Microsoft.Docs.Build
                 var (themeRemote, branch) = LocalizationConvention.GetLocalizationTheme(Config.Theme, Locale, Config.Localization.DefaultLocale);
                 return new LegacyTemplate(RestoreMap.GetGitRestorePath($"{themeRemote}#{branch}"), Locale);
             });
-            _monikers = new Lazy<MonikersProvider>(() => new MonikersProvider(this, Config));
+            _monikers = new Lazy<MonikersProvider>(() => new MonikersProvider(this));
         }
 
         private static IReadOnlyDictionary<string, string> NormalizeRoutes(Dictionary<string, string> routes)

@@ -12,34 +12,29 @@ namespace Microsoft.Docs.Build
     {
         private readonly List<(Func<string, bool> glob, string monikerRange)> _rules = new List<(Func<string, bool>, string)>();
         private readonly MonikerRangeParser _rangeParser;
-        private readonly Lazy<MonikerComparer> _monikerAscendingComparer;
-        private readonly Lazy<MonikerComparer> _monikerDescendingComparer;
 
-        public MonikerComparer AscendingComparer => _monikerAscendingComparer.Value;
+        public MonikerComparer AscendingComparer { get; }
 
-        public MonikerComparer DescendingComparer => _monikerDescendingComparer.Value;
+        public MonikerComparer DescendingComparer { get; }
 
-        public MonikersProvider(Docset docset, Config config)
+        public MonikersProvider(Docset docset)
         {
-            foreach (var (key, monikerRange) in config.MonikerRange)
+            foreach (var (key, monikerRange) in docset.Config.MonikerRange)
             {
                 _rules.Add((GlobUtility.CreateGlobMatcher(key), monikerRange));
             }
             _rules.Reverse();
 
             var monikerDefinition = new MonikerDefinitionModel();
-            if (!string.IsNullOrEmpty(config.MonikerDefinition))
+            if (!string.IsNullOrEmpty(docset.Config.MonikerDefinition))
             {
-                var path = docset.GetFileRestorePath(config.MonikerDefinition);
+                var path = docset.GetFileRestorePath(docset.Config.MonikerDefinition);
                 monikerDefinition = JsonUtility.Deserialize<MonikerDefinitionModel>(File.ReadAllText(path));
             }
             _rangeParser = new MonikerRangeParser(monikerDefinition);
-            _monikerAscendingComparer = new Lazy<MonikerComparer>(() => new MonikerComparer(monikerDefinition));
-            _monikerDescendingComparer = new Lazy<MonikerComparer>(() => new MonikerComparer(monikerDefinition, false));
+            AscendingComparer = new MonikerComparer(monikerDefinition);
+            DescendingComparer = new MonikerComparer(monikerDefinition, false);
         }
-
-        public IReadOnlyList<string> GetRangeMonikers(string rangeString)
-            => _rangeParser.Parse(rangeString);
 
         public (Error, List<string>) GetFileLevelMonikers(Document file, string fileMonikerRange = null)
         {
@@ -51,7 +46,7 @@ namespace Microsoft.Docs.Build
                 if (glob(file.FilePath))
                 {
                     configMonikerRange = monikerRange;
-                    configMonikers.AddRange(GetRangeMonikers(monikerRange));
+                    configMonikers.AddRange(_rangeParser.Parse(monikerRange));
                 }
             }
 
@@ -65,7 +60,7 @@ namespace Microsoft.Docs.Build
                     return (error, configMonikers);
                 }
 
-                var fileMonikers = GetRangeMonikers(fileMonikerRange);
+                var fileMonikers = _rangeParser.Parse(fileMonikerRange);
                 var intersection = configMonikers.Intersect(fileMonikers, StringComparer.OrdinalIgnoreCase).ToList();
 
                 // With non-empty config monikers,
@@ -94,7 +89,7 @@ namespace Microsoft.Docs.Build
                 return new List<string>();
             }
 
-            var zoneLevelMonikers = GetRangeMonikers(rangeString);
+            var zoneLevelMonikers = _rangeParser.Parse(rangeString);
             monikers = fileLevelMonikers.Intersect(zoneLevelMonikers, StringComparer.OrdinalIgnoreCase).ToList();
 
             if (monikers.Count == 0)
