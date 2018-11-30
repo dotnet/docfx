@@ -76,14 +76,21 @@ namespace Microsoft.Docs.Build
 
                 await ParallelUtility.ForEach(
                     docset.BuildScope.Where(doc => doc.ContentType != ContentType.TableOfContents),
-                    async (file, buildChild) => { monikersMap.TryAdd(file, await BuildOneFile(file, buildChild)); },
-                    ShouldBuildFile,
+                    async (file, buildChild) => { monikersMap.TryAdd(file, await BuildOneFile(file, buildChild, null, null)); },
+                    (file) => { return file.ContentType != ContentType.Resource && ShouldBuildFile(file); },
+                    Progress.Update);
+
+                // Build resources: since the monikers of resource file is the collection of the monikers of the files referencing to this resource
+                await ParallelUtility.ForEach(
+                    dependencyMapBuilder.GetResourceDependencyMap(),
+                    (item, _) => { return BuildOneFile(item.Key, null, monikersMap.ToDictionary(m => m.Key, m => m.Value), item.Value); },
+                    item => ShouldBuildFile(item.Key),
                     Progress.Update);
 
                 // Build TOC: since toc file depends on the build result of every node
                 await ParallelUtility.ForEach(
                     docset.BuildScope.Where(doc => doc.ContentType == ContentType.TableOfContents),
-                    (file, buildChild) => { return BuildTocFile(file, monikersMap.ToDictionary(item => item.Key, item => item.Value)); },
+                    (file, buildChild) => { return BuildOneFile(file, buildChild, monikersMap.ToDictionary(item => item.Key, item => item.Value), null); },
                     ShouldBuildFile,
                     Progress.Update);
 
@@ -94,16 +101,14 @@ namespace Microsoft.Docs.Build
 
                 return (CreateManifest(manifest, dependencyMap), manifest, dependencyMap);
 
-                async Task<List<string>> BuildOneFile(Document file, Action<Document> buildChild)
+                async Task<List<string>> BuildOneFile(
+                    Document file,
+                    Action<Document> buildChild,
+                    Dictionary<Document, List<string>> fileMonikersMap,
+                    List<Document> referencingFiles)
                 {
                     var callback = new PageCallback(xrefMap, dependencyMapBuilder, bookmarkValidator, buildChild);
-                    return await BuildFile(context, file, tocMap, contribution, null, callback, manifestBuilder);
-                }
-
-                async Task BuildTocFile(Document file, Dictionary<Document, List<string>> map)
-                {
-                    var callback = new PageCallback(xrefMap, dependencyMapBuilder, bookmarkValidator, null);
-                    await BuildFile(context, file, tocMap, contribution, map, callback, manifestBuilder);
+                    return await BuildFile(context, file, tocMap, contribution, fileMonikersMap, referencingFiles, callback, manifestBuilder);
                 }
 
                 bool ShouldBuildFile(Document file)
@@ -136,6 +141,7 @@ namespace Microsoft.Docs.Build
             TableOfContentsMap tocMap,
             ContributionProvider contribution,
             Dictionary<Document, List<string>> monikersMap,
+            List<Document> referencingFiles,
             PageCallback callback,
             ManifestBuilder manifestBuilder)
         {
@@ -148,7 +154,8 @@ namespace Microsoft.Docs.Build
                 switch (file.ContentType)
                 {
                     case ContentType.Resource:
-                        model = BuildResource(file);
+                        model = BuildResource.Build(file, monikersMap, referencingFiles);
+                        monikers = ((ResourceModel)model).Monikers;
                         break;
                     case ContentType.Page:
                         (errors, model, monikers) = await BuildPage.Build(context, file, tocMap, contribution, callback);
@@ -224,13 +231,6 @@ namespace Microsoft.Docs.Build
                 outputPath = PathUtility.NormalizeFile(Path.Combine(monikerSeg, file.SitePath));
             }
             return outputPath;
-        }
-
-        private static ResourceModel BuildResource(Document file)
-        {
-            Debug.Assert(file.ContentType == ContentType.Resource);
-
-            return new ResourceModel { Locale = file.Docset.Locale };
         }
 
         private static Manifest CreateManifest(Dictionary<Document, FileManifest> files, DependencyMap dependencies)

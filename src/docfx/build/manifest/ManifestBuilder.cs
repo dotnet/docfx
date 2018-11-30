@@ -59,6 +59,7 @@ namespace Microsoft.Docs.Build
                     .Select(group => group.Key);
                 if (conflictMoniker.Count() > 0)
                 {
+                    // TODO: report more detail informtation for toc and resource.
                     context.Report(Errors.PublishUrlConflict(siteUrl, files.Keys, conflictMoniker));
 
                     foreach (var conflictingFile in files.Keys)

@@ -36,5 +36,16 @@ namespace Microsoft.Docs.Build
                          orderby r.Dest.FilePath, r.Type
                          select r).ToList()));
         }
+
+        public ResourceDependencyMap GetResourceDependencyMap()
+        {
+            return new ResourceDependencyMap(
+                _dependencyItems
+                    .Where(item => item.Dest.ContentType == ContentType.Resource)
+                    .GroupBy(item => item.Dest)
+                    .ToDictionary(
+                        g => g.Key,
+                        g => g.Distinct().Select(item => item.Source).ToList()));
+        }
     }
 }

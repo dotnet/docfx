@@ -15,6 +15,7 @@ namespace Microsoft.Docs.Build
             Context context, Document file, TableOfContentsMap tocMap, DependencyMapBuilder dependencyMapBuilder, Dictionary<Document, List<string>> monikersMap)
         {
             Debug.Assert(file.ContentType == ContentType.TableOfContents);
+            Debug.Assert(monikersMap != null);
 
             if (!tocMap.Contains(file))
             {
@@ -113,7 +114,7 @@ namespace Microsoft.Docs.Build
                     {
                         referencedDocuments.Add(buildItem);
                         dependencyMapBuilder?.AddDependencyItem(file, buildItem, HrefUtility.FragmentToDependencyType(fragment));
-                        if (monikersMap == null || !monikersMap.TryGetValue(buildItem, out itemMonikers))
+                        if (!monikersMap.TryGetValue(buildItem, out itemMonikers))
                         {
                             itemMonikers = new List<string>();
                         }

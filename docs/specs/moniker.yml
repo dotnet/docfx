@@ -831,3 +831,110 @@ outputs:
     }
   build.log: |
     ["error","publish-url-conflict","Two or more documents of the same version('netcore-1.0') publish to the same url '/docs/toc.json': 'docs/v1/TOC.md', 'docs/v2/TOC.md'"]
+---
+# Build resource file with moniker
+inputs:
+  docfx.yml: |
+    monikerRange:
+      'docs/v1/**/*.md': '>= netcore-1.0'
+    routes:
+      docs/v1/: docs/
+    monikerDefinition: monikerDefinition.json
+  docs/v1/a.md: |
+    ---
+    monikerRange: netcore-1.0 || netcore-1.1
+    ---
+    Moniker: netcore-1.0, netcore-1.1
+    ![image](c.png)
+  docs/v1/b.md: |
+    ---
+    monikerRange: netcore-1.1 || netcore-1.2
+    ---
+    Moniker: netcore-1.1, netcore-1.2
+    ![image](c.png)
+  docs/a.md: |
+    No version
+    ![image](c.png)
+  docs/v1/c.png:
+  docs/c.png:
+  monikerDefinition.json: |
+    {
+      "monikers": [
+        { "name": "netcore-1.0", "product": ".NET Core" },
+        { "name": "netcore-1.1", "product": ".NET Core" },
+        { "name": "netcore-1.2", "product": ".NET Core" }
+      ]
+    }
+outputs:
+  9d4e15fd/docs/a.json:
+  e300a7df/docs/b.json:
+  2420f88b/docs/c.png:
+  docs/a.json:
+  docs/c.png:
+  build.manifest: |
+    {
+      "files": [
+          {"siteUrl": "/docs/a"},
+          {
+              "siteUrl": "/docs/c.png",
+              "outputPath": "docs/c.png",
+              "sourcePath": "docs/c.png",
+              "monikers": []
+          },
+          {"siteUrl": "/docs/a"},
+          {"siteUrl": "/docs/b"},
+          {
+              "siteUrl": "/docs/c.png",
+              "outputPath": "2420f88b/docs/c.png",
+              "sourcePath": "docs/v1/c.png",
+              "monikers": ["netcore-1.0", "netcore-1.1", "netcore-1.2" ]
+          }
+      ],
+      "dependencies": { }
+    }
+---
+# Build resource file with moniker conflict
+inputs:
+  docfx.yml: |
+    monikerRange:
+      'docs/v1/**/*.md': '>= netcore-1.0'
+      'docs/v2/**/*.md': '>= netcore-1.0'
+    routes:
+      docs/v1/: docs/
+      docs/v2/: docs/
+    monikerDefinition: monikerDefinition.json
+  docs/v1/a.md: |
+    ---
+    monikerRange: netcore-1.0 || netcore-1.1
+    ---
+    Moniker: netcore-1.0, netcore-1.1
+    ![image](c.png)
+  docs/v2/b.md: |
+    ---
+    monikerRange: netcore-1.1 || netcore-1.2
+    ---
+    Moniker: netcore-1.1, netcore-1.2
+    ![image](c.png)
+  docs/v1/c.png:
+  docs/v2/c.png:
+  monikerDefinition.json: |
+    {
+      "monikers": [
+        { "name": "netcore-1.0", "product": ".NET Core" },
+        { "name": "netcore-1.1", "product": ".NET Core" },
+        { "name": "netcore-1.2", "product": ".NET Core" }
+      ]
+    }
+outputs:
+  9d4e15fd/docs/a.json:
+  e300a7df/docs/b.json:
+  build.manifest: |
+    {
+      "files": [
+          {"siteUrl": "/docs/a"},
+          {"siteUrl": "/docs/b"}
+      ],
+      "dependencies": { }
+    }
+  build.log: |
+    ["error","publish-url-conflict","Two or more documents of the same version('netcore-1.1') publish to the same url '/docs/c.png': 'docs/v1/c.png', 'docs/v2/c.png'"]
