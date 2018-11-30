@@ -10,7 +10,7 @@ namespace Microsoft.Docs.Build
 {
     internal class MonikerRangeParser
     {
-        private readonly ConcurrentDictionary<string, Lazy<IEnumerable<string>>> _cache = new ConcurrentDictionary<string, Lazy<IEnumerable<string>>>();
+        private readonly ConcurrentDictionary<string, Lazy<IReadOnlyList<string>>> _cache = new ConcurrentDictionary<string, Lazy<IReadOnlyList<string>>>();
         private readonly EvaluatorWithMonikersVisitor _monikersEvaluator;
 
         public MonikerRangeParser(MonikerDefinitionModel monikerDefinition)
@@ -18,10 +18,10 @@ namespace Microsoft.Docs.Build
             _monikersEvaluator = new EvaluatorWithMonikersVisitor(monikerDefinition);
         }
 
-        public IEnumerable<string> Parse(string rangeString)
+        public IReadOnlyList<string> Parse(string rangeString)
             => string.IsNullOrWhiteSpace(rangeString)
                 ? Array.Empty<string>()
-                : _cache.GetOrAdd(rangeString, new Lazy<IEnumerable<string>>(() =>
+                : _cache.GetOrAdd(rangeString, new Lazy<IReadOnlyList<string>>(() =>
                 {
                     List<string> monikerNames = new List<string>();
 
