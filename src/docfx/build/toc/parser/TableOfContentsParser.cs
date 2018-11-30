@@ -17,7 +17,7 @@ namespace Microsoft.Docs.Build
 
         public delegate (Error error, string href, Document file) ResolveHref(Document relativeTo, string href, Document resultRelativeTo);
 
-        public delegate (Error error, string content, Document file) ResolveContent(Document relativeTo, string href, bool isInclusion);
+        public delegate (Error error, string content, Document file) ResolveContent(Document relativeTo, string href);
 
         public static (List<Error> errors, List<TableOfContentsItem> items, JObject metadata, List<string> monikers)
             Load(Context context, Document file, Dictionary<Document, List<string>> monikerMap, ResolveContent resolveContent, ResolveHref resolveHref)
@@ -230,7 +230,7 @@ namespace Microsoft.Docs.Build
                         return default;
 
                     case TocHrefType.TocFile:
-                        var (error, _, includeFile) = resolveContent(filePath, tocHref, isInclusion: true);
+                        var (error, _, includeFile) = resolveContent(filePath, tocHref);
                         errors.AddIfNotNull(error);
 
                         if (includeFile == null)

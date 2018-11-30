@@ -90,10 +90,10 @@ namespace Microsoft.Docs.Build
                 context,
                 fileToBuild,
                 monikerMap,
-                (file, href, isInclude) =>
+                (file, href) =>
                 {
                     var (error, referencedTocContent, referencedToc) = file.TryResolveContent(href);
-                    if (referencedToc != null && isInclude)
+                    if (referencedToc != null)
                     {
                         // add to referenced toc list
                         referencedTocs.Add(referencedToc);
