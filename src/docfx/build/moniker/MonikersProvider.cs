@@ -13,9 +13,7 @@ namespace Microsoft.Docs.Build
         private readonly List<(Func<string, bool> glob, string monikerRange)> _rules = new List<(Func<string, bool>, string)>();
         private readonly MonikerRangeParser _rangeParser;
 
-        public MonikerComparer AscendingComparer { get; }
-
-        public MonikerComparer DescendingComparer { get; }
+        public MonikerComparer Comparer { get; }
 
         public MonikersProvider(Docset docset)
         {
@@ -32,8 +30,7 @@ namespace Microsoft.Docs.Build
                 monikerDefinition = JsonUtility.Deserialize<MonikerDefinitionModel>(File.ReadAllText(path));
             }
             _rangeParser = new MonikerRangeParser(monikerDefinition);
-            AscendingComparer = new MonikerComparer(monikerDefinition);
-            DescendingComparer = new MonikerComparer(monikerDefinition, false);
+            Comparer = new MonikerComparer(monikerDefinition);
         }
 
         public (Error, List<string>) GetFileLevelMonikers(Document file, string fileMonikerRange = null)
@@ -69,11 +66,11 @@ namespace Microsoft.Docs.Build
                 {
                     error = Errors.EmptyMonikers($"No moniker intersection between docfx.yml/docfx.json and file metadata. Config moniker range '{configMonikerRange}' is '{string.Join(',', configMonikers)}', while file moniker range '{fileMonikerRange}' is '{string.Join(',', fileMonikers)}'");
                 }
-                intersection.Sort(AscendingComparer);
+                intersection.Sort(Comparer);
                 return (error, intersection);
             }
 
-            configMonikers.Sort(AscendingComparer);
+            configMonikers.Sort(Comparer);
             return (error, configMonikers);
         }
 
@@ -96,7 +93,7 @@ namespace Microsoft.Docs.Build
             {
                 errors.Add(Errors.EmptyMonikers($"No intersection between zone and file level monikers. The result of zone level range string '{rangeString}' is '{string.Join(',', zoneLevelMonikers)}', while file level monikers is '{string.Join(',', fileLevelMonikers)}'."));
             }
-            monikers.Sort(AscendingComparer);
+            monikers.Sort(Comparer);
             return monikers;
         }
     }

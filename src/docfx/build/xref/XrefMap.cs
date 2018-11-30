@@ -97,7 +97,7 @@ namespace Microsoft.Docs.Build
                     map[spec.Uid] = spec;
                 }
             }
-            return new XrefMap(map, CreateInternalXrefMap(context, docset.ScanScope), context, docset.Monikers.DescendingComparer);
+            return new XrefMap(map, CreateInternalXrefMap(context, docset.ScanScope), context, docset.Monikers.Comparer);
         }
 
         public void OutputXrefMap(Context context)
@@ -108,7 +108,7 @@ namespace Microsoft.Docs.Build
         }
 
         private XrefSpec GetLatestInternalXrefmap(List<XrefSpec> specs)
-            => specs.OrderBy(item => item.Monikers.FirstOrDefault(), _monikerComparer).FirstOrDefault();
+            => specs.OrderByDescending(item => item.Monikers.FirstOrDefault(), _monikerComparer).FirstOrDefault();
 
         private bool TryGetValidXrefSpecs(string uid, List<Lazy<(List<Error> errors, XrefSpec spec, Document doc)>> specsWithSameUid, out List<XrefSpec> validSpecs, out Document file)
         {
