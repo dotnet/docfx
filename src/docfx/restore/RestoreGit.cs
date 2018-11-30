@@ -12,19 +12,28 @@ namespace Microsoft.Docs.Build
 {
     internal static class RestoreGit
     {
+        [Flags]
+        private enum GitFlags
+        {
+            None = 0,
+            NoCheckout = 1 << 1,
+            DepthOne = 1 << 2,
+        }
+
         public static Task Restore(string docsetPath, Config config, Func<string, Task> restoreChild, string locale, bool @implicit)
         {
             var gitDependencies =
                 from git in GetGitDependencies(docsetPath, config, locale)
-                group git.branch
+                group (git.branch, git.flags)
                 by git.remote;
 
             return ParallelUtility.ForEach(gitDependencies, RestoreGitRepo, Progress.Update);
 
-            async Task RestoreGitRepo(IGrouping<string, string> group)
+            async Task RestoreGitRepo(IGrouping<string, (string branch, GitFlags flags)> group)
             {
                 var remote = group.Key;
-                var branches = group.Distinct().ToArray();
+                var branches = group.Select(g => g.branch).Distinct().ToArray();
+                var depthOne = group.All(g => (g.flags & GitFlags.DepthOne) != 0);
                 var branchesToFetch = @implicit
                     ? branches.Where(branch => !RestoreMap.TryGetGitRestorePath(remote, branch, out _)).ToArray()
                     : branches;
@@ -40,7 +49,7 @@ namespace Microsoft.Docs.Build
                         {
                             try
                             {
-                                await GitUtility.CloneOrUpdateBare(repoPath, remote, branchesToFetch, config);
+                                await GitUtility.CloneOrUpdateBare(repoPath, remote, branchesToFetch, depthOne, config);
                             }
                             catch (Exception ex)
                             {
@@ -61,8 +70,8 @@ namespace Microsoft.Docs.Build
 
                     await ParallelUtility.ForEach(branchesToFetch, async branch =>
                     {
-                        // contribution branch no need to be checked out
-                        if (branches.Any(b => LocalizationConvention.TryGetContributionBranch(b, out var cb) && cb == branch))
+                        var nocheckout = group.Where(g => g.branch == branch).All(g => (g.flags & GitFlags.NoCheckout) != 0);
+                        if (nocheckout)
                         {
                             return;
                         }
@@ -91,24 +100,32 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static IEnumerable<(string remote, string branch)> GetGitDependencies(string docsetPath, Config config, string locale)
+        private static IEnumerable<(string remote, string branch, GitFlags flags)> GetGitDependencies(string docsetPath, Config config, string locale)
         {
-            return config.Dependencies.Values.Select(HrefUtility.SplitGitHref)
-                         .Concat(GetLocalizationGitDependencies(docsetPath, config, locale))
-                         .Concat(GetThemeGitDependencies(config, locale));
+            var dependencies = config.Dependencies.Values.Select(url =>
+            {
+                var (remote, branch) = HrefUtility.SplitGitHref(url);
+                return (remote, branch, GitFlags.DepthOne);
+            });
+
+            return dependencies
+                .Concat(GetLocalizationGitDependencies(docsetPath, config, locale))
+                .Concat(GetThemeGitDependencies(config, locale));
         }
 
-        private static IEnumerable<(string remote, string branch)> GetThemeGitDependencies(Config config, string locale)
+        private static IEnumerable<(string remote, string branch, GitFlags flags)> GetThemeGitDependencies(Config config, string locale)
         {
             if (string.IsNullOrEmpty(config.Theme))
             {
                 yield break;
             }
 
-            yield return LocalizationConvention.GetLocalizationTheme(config.Theme, locale, config.Localization.DefaultLocale);
+            var (remote, branch) = LocalizationConvention.GetLocalizationTheme(config.Theme, locale, config.Localization.DefaultLocale);
+
+            yield return (remote, branch, GitFlags.DepthOne);
         }
 
-        private static IEnumerable<(string remote, string branch)> GetLocalizationGitDependencies(string docsetPath, Config config, string locale)
+        private static IEnumerable<(string remote, string branch, GitFlags flags)> GetLocalizationGitDependencies(string docsetPath, Config config, string locale)
         {
             if (string.IsNullOrEmpty(locale))
             {
@@ -131,25 +148,29 @@ namespace Microsoft.Docs.Build
                 yield break;
             }
 
-            if (config.Localization.Bilingual)
-            {
-                // Bilingual repos also depend on non bilingual branch
-                yield return LocalizationConvention.GetLocalizationRepo(
-                    config.Localization.Mapping,
-                    bilingual: false,
-                    repo.Remote,
-                    repo.Branch,
-                    locale,
-                    config.Localization.DefaultLocale);
-            }
-
-            yield return LocalizationConvention.GetLocalizationRepo(
+            var (remote, branch) = LocalizationConvention.GetLocalizationRepo(
                 config.Localization.Mapping,
                 config.Localization.Bilingual,
                 repo.Remote,
                 repo.Branch,
                 locale,
                 config.Localization.DefaultLocale);
+
+            yield return (remote, branch, GitFlags.None);
+
+            if (config.Localization.Bilingual)
+            {
+                // Bilingual repos also depend on non bilingual branch for commit history
+                (remote, branch) = LocalizationConvention.GetLocalizationRepo(
+                    config.Localization.Mapping,
+                    bilingual: false,
+                    repo.Remote,
+                    repo.Branch,
+                    locale,
+                    config.Localization.DefaultLocale);
+
+                yield return (remote, branch, GitFlags.NoCheckout);
+            }
         }
     }
 }
