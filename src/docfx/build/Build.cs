@@ -15,7 +15,7 @@ namespace Microsoft.Docs.Build
     {
         public static async Task Run(string docsetPath, CommandLineOptions options, Report report)
         {
-            using (var gitCommmitProviderFactory = new GitCommitProvider())
+            using (var gitCommitProvider = new GitCommitProvider())
             {
                 var errors = new List<Error>();
 
@@ -29,8 +29,7 @@ namespace Microsoft.Docs.Build
                 var docset = new Docset(context, docsetPath, config, options).GetBuildDocset();
 
                 var githubUserCache = await GitHubUserCache.Create(docset, config.GitHub.AuthToken);
-                var repositoryProvider = new RepositoryProvider();
-                var contribution = await ContributionProvider.Create(docset, githubUserCache, gitCommmitProviderFactory, repositoryProvider);
+                var contribution = await ContributionProvider.Create(docset, githubUserCache, gitCommitProvider);
 
                 // TODO: toc map and xref map should always use source docset?
                 var tocMap = BuildTableOfContents.BuildTocMap(context, docset);
@@ -42,7 +41,7 @@ namespace Microsoft.Docs.Build
                 context.WriteJson(manifest, "build.manifest");
 
                 var saveGitHubUserCache = githubUserCache.SaveChanges(config);
-                var saveGitCommitCache = gitCommmitProviderFactory.SaveGitCommitCache();
+                var saveGitCommitCache = gitCommitProvider.SaveGitCommitCache();
 
                 xrefMap.OutputXrefMap(context);
 

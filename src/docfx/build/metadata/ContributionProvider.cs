@@ -17,23 +17,19 @@ namespace Microsoft.Docs.Build
 
         private readonly Dictionary<string, DateTime> _updateTimeByCommit = new Dictionary<string, DateTime>();
 
-        private readonly RepositoryProvider _repositoryProvider;
-
         private readonly GitCommitProvider _gitCommitProvider;
 
-        private ContributionProvider(GitHubUserCache gitHubUserCache, RepositoryProvider repositoryProvider, GitCommitProvider gitCommitProvider)
+        private ContributionProvider(GitHubUserCache gitHubUserCache, GitCommitProvider gitCommitProvider)
         {
-            Debug.Assert(repositoryProvider != null);
             Debug.Assert(gitCommitProvider != null);
 
             _gitHubUserCache = gitHubUserCache;
-            _repositoryProvider = repositoryProvider;
             _gitCommitProvider = gitCommitProvider;
         }
 
-        public static async Task<ContributionProvider> Create(Docset docset, GitHubUserCache cache, GitCommitProvider gitCommitProvider, RepositoryProvider repositoryProvider)
+        public static async Task<ContributionProvider> Create(Docset docset, GitHubUserCache cache, GitCommitProvider gitCommitProvider)
         {
-            var result = new ContributionProvider(cache, repositoryProvider, gitCommitProvider);
+            var result = new ContributionProvider(cache, gitCommitProvider);
             await result.LoadCommitsTime(docset);
             return result;
         }
@@ -43,13 +39,12 @@ namespace Microsoft.Docs.Build
             string authorName)
         {
             Debug.Assert(document != null);
-            var (repo, pathToRepo) = _repositoryProvider.GetRepository(document);
+            var (repo, pathToRepo, commits) = await _gitCommitProvider.GetCommitHistory(document);
             if (repo == null)
             {
                 return default;
             }
 
-            var commits = await _gitCommitProvider.GetCommitHistory(repo, pathToRepo);
             var contributionCommits = await GetContributionCommits();
 
             var excludes = document.Docset.Config.Contribution.ExcludedContributors;
@@ -133,7 +128,7 @@ namespace Microsoft.Docs.Build
                 var contributionBranch = bilingual && LocalizationConvention.TryGetContributionBranch(repo.Branch, out var cBranch) ? cBranch : null;
                 if (!string.IsNullOrEmpty(contributionBranch))
                 {
-                    result = await _gitCommitProvider.GetCommitHistory(repo, pathToRepo, contributionBranch);
+                    (_, _, result) = await _gitCommitProvider.GetCommitHistory(document, contributionBranch);
                 }
 
                 return result;
@@ -155,12 +150,12 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(document != null);
 
-            var (repo, pathToRepo) = _repositoryProvider.GetRepository(document);
+            var (repo, pathToRepo, commits) = await _gitCommitProvider.GetCommitHistory(document);
             if (repo == null)
                 return default;
 
             var repoHost = GitHubUtility.TryParse(repo.Remote, out _, out _) ? GitHost.GitHub : GitHost.Unknown;
-            var commit = (await _gitCommitProvider.GetCommitHistory(repo, pathToRepo)).FirstOrDefault()?.Sha;
+            var commit = commits.FirstOrDefault()?.Sha;
             if (commit == null)
             {
                 commit = repo.Commit;
