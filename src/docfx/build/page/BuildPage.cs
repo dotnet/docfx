@@ -99,7 +99,7 @@ namespace Microsoft.Docs.Build
             var (metaErrors, metadata) = JsonUtility.ToObjectWithSchemaValidation<FileMetadata>(file.Docset.Metadata.GetMetadata(file, yamlHeader));
             errors.AddRange(metaErrors);
 
-            var (error, monikers) = file.Docset.MonikersProvider.GetFileLevelMonikers(file, metadata.MonikerRange);
+            var (error, monikers) = file.Docset.Monikers.GetFileLevelMonikers(file, metadata.MonikerRange);
             errors.AddIfNotNull(error);
 
             // TODO: handle blank page
@@ -109,7 +109,7 @@ namespace Microsoft.Docs.Build
                 (path, relativeTo) => Resolve.ReadFile(path, relativeTo, errors, callback.DependencyMapBuilder),
                 (path, relativeTo, resultRelativeTo) => Resolve.GetLink(path, relativeTo, resultRelativeTo, errors, callback.BuildChild, callback.DependencyMapBuilder, callback.BookmarkValidator),
                 (uid, moniker) => Resolve.ResolveXref(uid, callback.XrefMap, file, callback?.DependencyMapBuilder, moniker),
-                (rangeString) => file.Docset.MonikersProvider.GetZoneMonikers(file, rangeString, monikers, errors),
+                (rangeString) => file.Docset.Monikers.GetZoneMonikers(rangeString, monikers, errors),
                 MarkdownPipelineType.ConceptualMarkdown);
             errors.AddRange(markup.Errors);
 
