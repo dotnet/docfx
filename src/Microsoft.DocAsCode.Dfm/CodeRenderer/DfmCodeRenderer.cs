@@ -5,6 +5,7 @@ namespace Microsoft.DocAsCode.Dfm
 {
     using System;
     using System.IO;
+    
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.MarkdownLite;
 
@@ -60,7 +61,7 @@ namespace Microsoft.DocAsCode.Dfm
             {
                 return RenderReferenceNotFoundErrorMessage(renderer, token);
             }
-        }       
+        }
 
         [Obsolete]
         public virtual StringBuffer RenderFencesFromCodeContent(string codeContent, string path, string queryStringAndFragment = null, string name = null, string lang = null, string title = null)
