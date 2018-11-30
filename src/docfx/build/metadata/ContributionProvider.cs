@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -156,7 +155,7 @@ namespace Microsoft.Docs.Build
 
             var repoHost = GitHubUtility.TryParse(repo.Remote, out _, out _) ? GitHost.GitHub : GitHost.Unknown;
             var commit = commits.FirstOrDefault()?.Sha;
-            if (commit == null)
+            if (string.IsNullOrEmpty(commit))
             {
                 commit = repo.Commit;
             }
