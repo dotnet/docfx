@@ -5,7 +5,7 @@ namespace Microsoft.DocAsCode.Dfm
 {
     using System;
     using System.IO;
-    
+
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.MarkdownLite;
 
