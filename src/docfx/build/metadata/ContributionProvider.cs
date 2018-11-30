@@ -17,24 +17,23 @@ namespace Microsoft.Docs.Build
 
         private readonly Dictionary<string, DateTime> _updateTimeByCommit = new Dictionary<string, DateTime>();
 
-        private readonly ConcurrentDictionary<string, List<GitCommit>> _contributionCommitsByFile = new ConcurrentDictionary<string, List<GitCommit>>();
-
-        private readonly ConcurrentDictionary<string, List<GitCommit>> _commitsByFile = new ConcurrentDictionary<string, List<GitCommit>>();
-
         private readonly RepositoryProvider _repositoryProvider;
 
-        private ContributionProvider(GitHubUserCache gitHubUserCache, RepositoryProvider repositoryProvider)
+        private readonly GitCommitProvider _gitCommitProvider;
+
+        private ContributionProvider(GitHubUserCache gitHubUserCache, RepositoryProvider repositoryProvider, GitCommitProvider gitCommitProvider)
         {
             Debug.Assert(repositoryProvider != null);
+            Debug.Assert(gitCommitProvider != null);
 
             _gitHubUserCache = gitHubUserCache;
             _repositoryProvider = repositoryProvider;
+            _gitCommitProvider = gitCommitProvider;
         }
 
         public static async Task<ContributionProvider> Create(Docset docset, GitHubUserCache cache, GitCommitProvider gitCommitProvider, RepositoryProvider repositoryProvider)
         {
-            var result = new ContributionProvider(cache, repositoryProvider);
-            await result.LoadCommits(docset, gitCommitProvider);
+            var result = new ContributionProvider(cache, repositoryProvider, gitCommitProvider);
             await result.LoadCommitsTime(docset);
             return result;
         }
@@ -44,14 +43,14 @@ namespace Microsoft.Docs.Build
             string authorName)
         {
             Debug.Assert(document != null);
-            var (repo, _) = _repositoryProvider.GetRepository(document);
+            var (repo, pathToRepo) = _repositoryProvider.GetRepository(document);
             if (repo == null)
             {
                 return default;
             }
 
-            var contributionCommits = _contributionCommitsByFile.TryGetValue(document.FilePath, out var cc) ? cc : default;
-            var commits = _commitsByFile.TryGetValue(document.FilePath, out var fc) ? fc : default;
+            var commits = await _gitCommitProvider.GetCommitHistory(repo, pathToRepo);
+            var contributionCommits = await GetContributionCommits();
 
             var excludes = document.Docset.Config.Contribution.ExcludedContributors;
 
@@ -126,6 +125,19 @@ namespace Microsoft.Docs.Build
                 }
                 return null;
             }
+
+            async Task<List<GitCommit>> GetContributionCommits()
+            {
+                var result = commits;
+                var bilingual = document.Docset.IsLocalized() && document.Docset.Config.Localization.Bilingual;
+                var contributionBranch = bilingual && LocalizationConvention.TryGetContributionBranch(repo.Branch, out var cBranch) ? cBranch : null;
+                if (!string.IsNullOrEmpty(contributionBranch))
+                {
+                    result = await _gitCommitProvider.GetCommitHistory(repo, pathToRepo, contributionBranch);
+                }
+
+                return result;
+            }
         }
 
         public DateTime GetUpdatedAt(Document document, List<GitCommit> fileCommits)
@@ -139,7 +151,7 @@ namespace Microsoft.Docs.Build
             return File.GetLastWriteTimeUtc(Path.Combine(document.Docset.DocsetPath, document.FilePath));
         }
 
-        public (string editUrl, string contentUrl, string commitUrl) GetGitUrls(Document document)
+        public async Task<(string editUrl, string contentUrl, string commitUrl)> GetGitUrls(Document document)
         {
             Debug.Assert(document != null);
 
@@ -148,9 +160,11 @@ namespace Microsoft.Docs.Build
                 return default;
 
             var repoHost = GitHubUtility.TryParse(repo.Remote, out _, out _) ? GitHost.GitHub : GitHost.Unknown;
-            var commit = _commitsByFile.TryGetValue(document.FilePath, out var value) && value.Count > 0
-                ? value[0].Sha
-                : repo.Commit;
+            var commit = (await _gitCommitProvider.GetCommitHistory(repo, pathToRepo)).FirstOrDefault()?.Sha;
+            if (commit == null)
+            {
+                commit = repo.Commit;
+            }
 
             return (GetEditUrl(), GetContentUrl(), GetCommitUrl());
 
@@ -219,49 +233,6 @@ namespace Microsoft.Docs.Build
                 foreach (var commit in JsonUtility.Deserialize<GitCommitsTime>(content).Commits)
                 {
                     _updateTimeByCommit.Add(commit.Sha, commit.BuiltAt);
-                }
-            }
-        }
-
-        private async Task LoadCommits(Docset docset, GitCommitProvider commitProvider)
-        {
-            var errors = new List<Error>();
-
-            if (docset.Config.Contribution.ShowContributors)
-            {
-                var bilingual = docset.IsLocalized() && docset.Config.Localization.Bilingual;
-                var filesByRepo =
-                    from file in docset.BuildScope
-                    where file.ContentType == ContentType.Page
-                    let fileInRepo = _repositoryProvider.GetRepository(file)
-                    where fileInRepo.repo != null
-                    group (file, fileInRepo.pathToRepo)
-                    by fileInRepo.repo;
-
-                foreach (var group in filesByRepo)
-                {
-                    var repo = group.Key;
-                    var repoPath = repo.Path;
-                    var contributionBranch = bilingual && LocalizationConvention.TryGetContributionBranch(repo.Branch, out var cBranch) ? cBranch : null;
-
-                    using (Progress.Start($"Loading commits for '{repoPath}'"))
-                    {
-                        await ParallelUtility.ForEach(
-                            group,
-                            async pair =>
-                            {
-                                _commitsByFile[pair.file.FilePath] = await commitProvider.GetCommitHistory(repo, pair.pathToRepo);
-                                if (!string.IsNullOrEmpty(contributionBranch))
-                                {
-                                    _contributionCommitsByFile[pair.file.FilePath] = await commitProvider.GetCommitHistory(repo, pair.pathToRepo, contributionBranch);
-                                }
-                                else
-                                {
-                                    _contributionCommitsByFile[pair.file.FilePath] = _commitsByFile[pair.file.FilePath];
-                                }
-                            },
-                            Progress.Update);
-                    }
                 }
             }
         }
