@@ -94,16 +94,16 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static async Task CloneOrUpdate(string path, string url, string committish, Config config = null)
         {
-            await CloneOrUpdate(path, url, new[] { committish }, bare: false, config);
+            await CloneOrUpdate(path, url, new[] { committish }, bare: false, depthOne: false, config);
             await ExecuteNonQuery(path, $"-c core.longpaths=true checkout --force --progress {committish}");
         }
 
         /// <summary>
         /// Clones or update a git bare repository to the latest version.
         /// </summary>
-        public static Task CloneOrUpdateBare(string path, string url, IEnumerable<string> committishes, Config config = null)
+        public static Task CloneOrUpdateBare(string path, string url, IEnumerable<string> committishes, bool depthOne, Config config = null)
         {
-            return CloneOrUpdate(path, url, committishes, bare: true, config);
+            return CloneOrUpdate(path, url, committishes, bare: true, depthOne, config);
         }
 
         /// <summary>
@@ -216,7 +216,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Clones or update a git repository to the latest version.
         /// </summary>
-        private static async Task CloneOrUpdate(string path, string url, IEnumerable<string> committishes, bool bare, Config config)
+        private static async Task CloneOrUpdate(string path, string url, IEnumerable<string> committishes, bool bare, bool depthOne, Config config)
         {
             // Unifies clone and fetch using a single flow:
             // - git init
@@ -245,16 +245,17 @@ namespace Microsoft.Docs.Build
 
             var httpConfig = GetGitCommandLineConfig(url, config);
             var refspecs = string.Join(' ', committishes.Select(rev => $"+{rev}:{rev}"));
+            var depth = depthOne ? "--depth 1" : "";
 
             try
             {
-                await ExecuteNonQuery(path, $"{httpConfig} fetch --tags --prune --progress --update-head-ok \"{url}\" {refspecs}", stderr: true);
+                await ExecuteNonQuery(path, $"{httpConfig} fetch --tags --prune --progress --update-head-ok {depth} \"{url}\" {refspecs}", stderr: true);
             }
             catch (InvalidOperationException ex) when (committishes.Any(rev => ex.Message.Contains(rev)))
             {
                 // Fallback to fetch all branches and tags if the input committish is not supported by fetch
                 refspecs = "+refs/heads/*:refs/heads/* +refs/tags/*:refs/tags/*";
-                await ExecuteNonQuery(path, $"{httpConfig} fetch --tags --prune --progress --update-head-ok \"{url}\" {refspecs}");
+                await ExecuteNonQuery(path, $"{httpConfig} fetch --tags --prune --progress --update-head-ok {depth} \"{url}\" {refspecs}");
             }
         }
 

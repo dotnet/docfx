@@ -8,13 +8,11 @@ namespace Microsoft.Docs.Build
 {
     internal class MonikerComparer : IComparer<string>, IEqualityComparer<string>
     {
-        private readonly bool _ascending;
         private readonly Dictionary<string, int> _monikerOrder;
 
-        public MonikerComparer(MonikerDefinitionModel monikerDefinition, bool ascending = true)
+        public MonikerComparer(MonikerDefinitionModel monikerDefinition)
         {
             _monikerOrder = GetMoninkerOrder(monikerDefinition.Monikers);
-            _ascending = ascending;
         }
 
         public int Compare(string x, string y)
@@ -32,7 +30,7 @@ namespace Microsoft.Docs.Build
             {
                 result = orderX.CompareTo(orderY);
             }
-            return _ascending ? result : -result;
+            return result;
         }
 
         public bool Equals(string x, string y)

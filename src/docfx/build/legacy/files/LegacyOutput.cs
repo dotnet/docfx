@@ -17,7 +17,7 @@ namespace Microsoft.Docs.Build
                 {
                     ParallelUtility.ForEach(
                         files.Where(f => f.document.ContentType == ContentType.TableOfContents),
-                        file => LegacyTableOfContents.Convert(docset, context, file.document, file.manifestItem.Output),
+                        file => LegacyTableOfContents.Convert(docset, context, file.document, file.manifestItem),
                         Progress.Update);
                 }
 
@@ -25,7 +25,7 @@ namespace Microsoft.Docs.Build
                 {
                     ParallelUtility.ForEach(
                         files.Where(f => f.document.ContentType == ContentType.Page || f.document.ContentType == ContentType.Redirection),
-                        file => LegacyPage.Convert(docset, context, file.document, file.manifestItem.Output),
+                        file => LegacyPage.Convert(docset, context, file.document, file.manifestItem),
                         Progress.Update);
                 }
 
@@ -33,7 +33,7 @@ namespace Microsoft.Docs.Build
                 {
                     ParallelUtility.ForEach(
                         files.Where(f => f.document.ContentType == ContentType.Resource),
-                        file => LegacyResource.Convert(docset, context, file.document, file.manifestItem.Output),
+                        file => LegacyResource.Convert(docset, context, file.document, file.manifestItem),
                         Progress.Update);
                 }
             }
