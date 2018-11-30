@@ -14,8 +14,9 @@ namespace Microsoft.Docs.Build
             Docset docset,
             Context context,
             Document doc,
-            LegacyManifestOutput legacyManifestOutput)
+            LegacyManifestItem legacyManifestItem)
         {
+            var legacyManifestOutput = legacyManifestItem.Output;
             var toc = JsonUtility.Deserialize<LegacyTableOfContentsModel>(File.ReadAllText(docset.GetAbsoluteOutputPathFromRelativePath(doc.OutputPath)));
             ConvertLegacyItems(toc.Items);
 
@@ -27,14 +28,14 @@ namespace Microsoft.Docs.Build
             }
 
             File.Delete(docset.GetAbsoluteOutputPathFromRelativePath(doc.OutputPath));
-            context.WriteJson(toc, legacyManifestOutput.TocOutput.ToLegacyOutputPath(docset));
+            context.WriteJson(toc, legacyManifestOutput.TocOutput.ToLegacyOutputPath(docset, legacyManifestItem.Group));
             context.WriteJson(
                 new LegacyTableOfContentsExperimentMetadata
                 {
                     Experimental = toc.Metadata.Experimental,
                     ExperimentId = toc.Metadata.ExperimentId,
                 },
-                legacyManifestOutput.MetadataOutput.ToLegacyOutputPath(docset));
+                legacyManifestOutput.MetadataOutput.ToLegacyOutputPath(docset, legacyManifestItem.Group));
         }
 
         private static void ConvertLegacyItems(IEnumerable<LegacyTableOfContentsItem> items)
