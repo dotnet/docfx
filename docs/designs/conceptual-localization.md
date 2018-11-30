@@ -72,7 +72,29 @@ Below kinds of mappings are considered to be supported and there is a **strong c
     ```
     
     > NOTE: The loc org name can be different, it should be configurable
+
+  - **Branch**, localization files are stored in ONE **different repository** for **all locales** under different **locale branch**
+
+    Here is an string convention for loc repo name:
     
+      - `{source-repo-name}` -> `{source-repo-name}.localization`
+      - `{source-repo-name}.{source-locale}` -> `{source-repo-name}.localization`
+
+    Here is an string convention for loc repo branch name:
+
+      - `{source-branch}` -> `{locale}-{source-branch}`
+    
+    ```txt
+    repo mapping example:
+    source repo       ->locale->      localization repo
+    dotnet/docfx        zh-cn         dotnet/docfx.localization
+    dotnet/docfx        de-de         dotnet/docfx.localization
+    branch mapping example:
+    source branch           -->           localization branch
+    master                  -->           zh-cn-master
+    live                    -->           de-de-live
+    ```
+
 ### Loc Overwrite Configuration
 
   - Overwrite the configurations you want or use source configuration by default  
