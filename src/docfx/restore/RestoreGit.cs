@@ -120,7 +120,7 @@ namespace Microsoft.Docs.Build
                 yield break;
             }
 
-            if (config.Localization.Mapping != LocalizationMapping.Repository && config.Localization.Mapping != LocalizationMapping.RepositoryAndFolder)
+            if (config.Localization.Mapping == LocalizationMapping.Folder)
             {
                 yield break;
             }
