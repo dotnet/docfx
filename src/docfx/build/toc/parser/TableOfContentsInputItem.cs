@@ -31,9 +31,9 @@ namespace Microsoft.Docs.Build
         public bool Expanded { get; set; }
 
         [MinLength(1)]
-        public List<TableOfContentsInputItem> Items { get; set; }
+        public List<TableOfContentsInputItem> Items { get; set; } = new List<TableOfContentsInputItem>();
 
-        public List<string> Monikers { get; set; }
+        public List<string> Monikers { get; set; } = new List<string>();
 
         public static TableOfContentsItem ToTableOfContentsModel(TableOfContentsInputItem inputModel, MonikerComparer comparer)
         {

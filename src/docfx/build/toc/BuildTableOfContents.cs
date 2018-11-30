@@ -80,7 +80,7 @@ namespace Microsoft.Docs.Build
             List<Document> referencedTocs,
             List<string> monikers)
 
-            Load(Context context, Document fileToBuild, DependencyMapBuilder dependencyMapBuilder = null, Dictionary<Document, List<string>> monikersMap = null)
+            Load(Context context, Document fileToBuild, DependencyMapBuilder dependencyMapBuilder = null, Dictionary<Document, List<string>> monikerMap = null)
         {
             var errors = new List<Error>();
             var referencedDocuments = new List<Document>();
@@ -89,6 +89,7 @@ namespace Microsoft.Docs.Build
             var (loadErrors, tocItems, tocMetadata, monikers) = TableOfContentsParser.Load(
                 context,
                 fileToBuild,
+                monikerMap,
                 (file, href, isInclude) =>
                 {
                     var (error, referencedTocContent, referencedToc) = file.TryResolveContent(href);
@@ -113,12 +114,8 @@ namespace Microsoft.Docs.Build
                     {
                         referencedDocuments.Add(buildItem);
                         dependencyMapBuilder?.AddDependencyItem(file, buildItem, HrefUtility.FragmentToDependencyType(fragment));
-                        if (monikersMap == null || !monikersMap.TryGetValue(buildItem, out itemMonikers))
-                        {
-                            itemMonikers = new List<string>();
-                        }
                     }
-                    return (link, itemMonikers);
+                    return (link, buildItem);
                 });
 
             errors.AddRange(loadErrors);
