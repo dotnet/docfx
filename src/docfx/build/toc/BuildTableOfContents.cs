@@ -97,7 +97,7 @@ namespace Microsoft.Docs.Build
                     {
                         // add to referenced toc list
                         referencedTocs.Add(referencedToc);
-                        dependencyMapBuilder?.AddDependencyItem(file, referencedToc, DependencyType.TocInclusion);
+                        dependencyMapBuilder?.AddDependencyItem(file, referencedToc, DependencyType.Inclusion);
                     }
                     return (referencedTocContent, referencedToc);
                 },
