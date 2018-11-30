@@ -32,31 +32,34 @@ namespace Microsoft.Docs.Build
         {
             Assert.False(GitUtility.IsRepo(Path.GetFullPath(file)));
 
-            var repo = GitUtility.FindRepo(Path.GetFullPath(file));
-            Assert.NotNull(repo);
+            var repoPath = GitUtility.FindRepo(Path.GetFullPath(file));
+            Assert.NotNull(repoPath);
 
-            using (var commitsProvider = await GitCommitProvider.Create(repo))
+            var repo = Repository.Create(repoPath);
+
+            using (var commitsProvider = new GitCommitProvider())
             {
                 var pathToRepo = PathUtility.NormalizeFile(file);
 
                 // current branch
-                var exe = Exec("git", $"--no-pager log --format=\"%H|%cI|%an|%ae\" -- \"{pathToRepo}\"", repo);
-                var lib = commitsProvider.GetCommitHistory(pathToRepo);
+                var exe = Exec("git", $"--no-pager log --format=\"%H|%cI|%an|%ae\" -- \"{pathToRepo}\"", repoPath);
+                var lib = await commitsProvider.GetCommitHistory(repo, pathToRepo);
 
                 Assert.Equal(
                     exe.Replace("\r", ""),
                     string.Join("\n", lib.Select(c => $"{c.Sha}|{c.Time.ToString("s")}{c.Time.ToString("zzz")}|{c.AuthorName}|{c.AuthorEmail}")));
 
                 // another branch
-                exe = Exec("git", $"--no-pager log --format=\"%H|%cI|%an|%ae\" a050eaf -- \"{pathToRepo}\"", repo);
-                lib = commitsProvider.GetCommitHistory(pathToRepo, "a050eaf");
+                exe = Exec("git", $"--no-pager log --format=\"%H|%cI|%an|%ae\" a050eaf -- \"{pathToRepo}\"", repoPath);
+                lib = await commitsProvider.GetCommitHistory(repo, pathToRepo, "a050eaf");
 
                 Assert.Equal(
                     exe.Replace("\r", ""),
                     string.Join("\n", lib.Select(c => $"{c.Sha}|{c.Time.ToString("s")}{c.Time.ToString("zzz")}|{c.AuthorName}|{c.AuthorEmail}")));
 
-                await commitsProvider.SaveCache();
+                await commitsProvider.SaveGitCommitCache();
             }
+
         }
 
         private static string Exec(string name, string args, string cwd)

@@ -15,48 +15,54 @@ namespace Microsoft.Docs.Build
     {
         public static async Task Run(string docsetPath, CommandLineOptions options, Report report)
         {
-            var errors = new List<Error>();
-
-            var (configErrors, config) = Config.Load(docsetPath, options);
-            report.Configure(docsetPath, config);
-
-            var outputPath = Path.Combine(docsetPath, config.Output.Path);
-            var context = new Context(report, outputPath);
-            context.Report(config.ConfigFileName, configErrors);
-
-            var docset = new Docset(context, docsetPath, config, options).GetBuildDocset();
-
-            var githubUserCache = await GitHubUserCache.Create(docset, config.GitHub.AuthToken);
-            var contribution = await ContributionProvider.Create(docset, githubUserCache);
-
-            // TODO: toc map and xref map should always use source docset?
-            var tocMap = BuildTableOfContents.BuildTocMap(context, docset);
-
-            var xrefMap = XrefMap.Create(context, docset);
-
-            var (manifest, fileManifests, sourceDependencies) = await BuildFiles(context, docset, tocMap, xrefMap, contribution);
-
-            context.WriteJson(manifest, "build.manifest");
-
-            var saveGitHubUserCache = githubUserCache.SaveChanges(config);
-
-            xrefMap.OutputXrefMap(context);
-
-            if (options.Legacy)
+            using (var gitCommmitProviderFactory = new GitCommitProvider())
             {
-                if (config.Output.Json)
-                {
-                    // TODO: decouple files and dependencies from legacy.
-                    Legacy.ConvertToLegacyModel(docset, context, fileManifests, sourceDependencies, tocMap, xrefMap);
-                }
-                else
-                {
-                    docset.LegacyTemplate.CopyTo(outputPath);
-                }
-            }
+                var errors = new List<Error>();
 
-            errors.AddIfNotNull(await saveGitHubUserCache);
-            errors.ForEach(e => context.Report(e));
+                var (configErrors, config) = Config.Load(docsetPath, options);
+                report.Configure(docsetPath, config);
+
+                var outputPath = Path.Combine(docsetPath, config.Output.Path);
+                var context = new Context(report, outputPath);
+                context.Report(config.ConfigFileName, configErrors);
+
+                var docset = new Docset(context, docsetPath, config, options).GetBuildDocset();
+
+                var githubUserCache = await GitHubUserCache.Create(docset, config.GitHub.AuthToken);
+                var repositoryProvider = new RepositoryProvider();
+                var contribution = await ContributionProvider.Create(docset, githubUserCache, gitCommmitProviderFactory, repositoryProvider);
+
+                // TODO: toc map and xref map should always use source docset?
+                var tocMap = BuildTableOfContents.BuildTocMap(context, docset);
+
+                var xrefMap = XrefMap.Create(context, docset);
+
+                var (manifest, fileManifests, sourceDependencies) = await BuildFiles(context, docset, tocMap, xrefMap, contribution);
+
+                context.WriteJson(manifest, "build.manifest");
+
+                var saveGitHubUserCache = githubUserCache.SaveChanges(config);
+                var saveGitCommitCache = gitCommmitProviderFactory.SaveGitCommitCache();
+
+                xrefMap.OutputXrefMap(context);
+
+                if (options.Legacy)
+                {
+                    if (config.Output.Json)
+                    {
+                        // TODO: decouple files and dependencies from legacy.
+                        Legacy.ConvertToLegacyModel(docset, context, fileManifests, sourceDependencies, tocMap, xrefMap);
+                    }
+                    else
+                    {
+                        docset.LegacyTemplate.CopyTo(outputPath);
+                    }
+                }
+
+                errors.AddIfNotNull(await saveGitHubUserCache);
+                await saveGitCommitCache;
+                errors.ForEach(e => context.Report(e));
+            }
         }
 
         private static async Task<(Manifest, Dictionary<Document, FileManifest>, DependencyMap)> BuildFiles(
