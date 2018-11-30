@@ -1039,4 +1039,4 @@ outputs:
   docs/a.json: |
     {"toc_rel": "toc.json"}
   build.log: |
-    ["error","output-path-conflict","Two or more documents output to the same path 'docs/toc.json': 'docs/TOC.md', 'docs/TOC.yml'"]
+    ["error","output-path-conflict","Two or more files output to the same path 'docs/toc.json': 'docs/TOC.md', 'docs/TOC.yml'"]

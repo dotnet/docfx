@@ -9,13 +9,12 @@ namespace Microsoft.Docs.Build
 {
     internal class BuildResource
     {
-        internal static ResourceModel Build(
+        internal static (ResourceModel model, List<string> monikers) Build(
             Document file,
             Dictionary<Document, List<string>> monikersMap,
             List<Document> referencingFiles)
         {
             Debug.Assert(file.ContentType == ContentType.Resource);
-            Debug.Assert(referencingFiles.Count > 0);
             Debug.Assert(monikersMap != null);
 
             var monikers = new List<string>();
@@ -27,12 +26,13 @@ namespace Microsoft.Docs.Build
                 }
             }
             monikers.Sort(file.Docset.MonikerAscendingComparer);
+            monikers = monikers.Distinct().ToList();
 
-            return new ResourceModel
+            return (new ResourceModel
             {
                 Locale = file.Docset.Locale,
-                Monikers = monikers.Distinct().ToList(),
-            };
+                Monikers = monikers,
+            }, monikers);
         }
     }
 }

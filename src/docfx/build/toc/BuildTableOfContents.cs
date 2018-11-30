@@ -114,7 +114,7 @@ namespace Microsoft.Docs.Build
                     {
                         referencedDocuments.Add(buildItem);
                         dependencyMapBuilder?.AddDependencyItem(file, buildItem, HrefUtility.FragmentToDependencyType(fragment));
-                        if (!monikersMap.TryGetValue(buildItem, out itemMonikers))
+                        if (monikersMap == null || !monikersMap.TryGetValue(buildItem, out itemMonikers))
                         {
                             itemMonikers = new List<string>();
                         }

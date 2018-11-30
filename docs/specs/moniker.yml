@@ -237,7 +237,7 @@ outputs:
       "monikers": ["netcore-1.2"]
     }
   build.log: |
-    ["error","publish-url-conflict","Two or more documents of the same version('netcore-1.1') publish to the same url '/docs/a-old': 'docs/v1/a-old.md <redirection>', 'docs/v2/a-old.md <redirection>'"]
+    ["error","publish-url-conflict","Two or more files of the same version('netcore-1.1') publish to the same url '/docs/a-old': 'docs/v1/a-old.md <redirection>', 'docs/v2/a-old.md <redirection>'"]
 ---
 # Two or more documents which don't have moniker or the moniker range is not mutually exclusive from others, publish to the same url
 inputs:
@@ -266,7 +266,7 @@ inputs:
     }
 outputs:
   build.log: |
-    ["error","publish-url-conflict","Two or more documents of the same version('netcore-2.0') publish to the same url '/docs/a': 'docs/a.md', 'docs/v1/a.md', 'docs/v2/a.md'"]
+    ["error","publish-url-conflict","Two or more files of the same version('netcore-2.0') publish to the same url '/docs/a': 'docs/a.md', 'docs/v1/a.md', 'docs/v2/a.md'"]
 ---
 # With moniker range not defined in config, user should not define it in file metadata
 inputs:
@@ -525,7 +525,7 @@ outputs:
   build.log: |
     ["error","moniker-overlapping","Two or more documents have defined overlapping moniker: 'netcore-2.0'"]
     ["info","at-uid-not-found","Cannot find uid 'a' using xref '@a'","docs/c.md"]
-    ["error","publish-url-conflict","Two or more documents of the same version('netcore-2.0') publish to the same url '/docs/a': 'docs/v1/a.md', 'docs/v2/a.md'"]
+    ["error","publish-url-conflict","Two or more files of the same version('netcore-2.0') publish to the same url '/docs/a': 'docs/v1/a.md', 'docs/v2/a.md'"]
   xrefmap.json: | 
     {"references":[]}
 ---
@@ -830,7 +830,7 @@ outputs:
       "monikers": ["netcore-2.0"]
     }
   build.log: |
-    ["error","publish-url-conflict","Two or more documents of the same version('netcore-1.0') publish to the same url '/docs/toc.json': 'docs/v1/TOC.md', 'docs/v2/TOC.md'"]
+    ["error","publish-url-conflict","Two or more files of the same version('netcore-1.0') publish to the same url '/docs/toc.json': 'docs/v1/TOC.md', 'docs/v2/TOC.md'"]
 ---
 # Build resource file with moniker
 inputs:
@@ -874,21 +874,11 @@ outputs:
   build.manifest: |
     {
       "files": [
-          {"siteUrl": "/docs/a"},
-          {
-              "siteUrl": "/docs/c.png",
-              "outputPath": "docs/c.png",
-              "sourcePath": "docs/c.png",
-              "monikers": []
-          },
-          {"siteUrl": "/docs/a"},
-          {"siteUrl": "/docs/b"},
-          {
-              "siteUrl": "/docs/c.png",
-              "outputPath": "2420f88b/docs/c.png",
-              "sourcePath": "docs/v1/c.png",
-              "monikers": ["netcore-1.0", "netcore-1.1", "netcore-1.2" ]
-          }
+          { "siteUrl": "/docs/a" },
+          { "siteUrl": "/docs/c.png", "outputPath": "docs/c.png", "sourcePath": "docs/c.png", "monikers": [] },
+          { "siteUrl": "/docs/a" },
+          { "siteUrl": "/docs/b" },
+          { "siteUrl": "/docs/c.png", "outputPath": "2420f88b/docs/c.png", "sourcePath": "docs/v1/c.png","monikers": ["netcore-1.0", "netcore-1.1", "netcore-1.2" ] }
       ],
       "dependencies": { }
     }
@@ -931,10 +921,10 @@ outputs:
   build.manifest: |
     {
       "files": [
-          {"siteUrl": "/docs/a"},
-          {"siteUrl": "/docs/b"}
+          { "siteUrl": "/docs/a" },
+          { "siteUrl": "/docs/b" }
       ],
       "dependencies": { }
     }
   build.log: |
-    ["error","publish-url-conflict","Two or more documents of the same version('netcore-1.1') publish to the same url '/docs/c.png': 'docs/v1/c.png', 'docs/v2/c.png'"]
+    ["error","publish-url-conflict","Two or more files of the same version('netcore-1.1') publish to the same url '/docs/c.png': 'docs/v1/c.png', 'docs/v2/c.png'"]

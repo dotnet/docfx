@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -75,23 +74,29 @@ namespace Microsoft.Docs.Build
                 var monikersMap = new ConcurrentDictionary<Document, List<string>>();
 
                 await ParallelUtility.ForEach(
-                    docset.BuildScope.Where(doc => doc.ContentType != ContentType.TableOfContents),
+                    docset.BuildScope,
                     async (file, buildChild) => { monikersMap.TryAdd(file, await BuildOneFile(file, buildChild, null, null)); },
-                    (file) => { return file.ContentType != ContentType.Resource && ShouldBuildFile(file); },
+                    (file) => { return ShouldBuildFile(file, new List<ContentType> { ContentType.Page, ContentType.Redirection }); },
                     Progress.Update);
 
                 // Build resources: since the monikers of resource file is the collection of the monikers of the files referencing to this resource
+                var resourcesFileBuildScope = dependencyMapBuilder.GetResourceDependencyMap();
+                foreach (var file in docset.BuildScope.Where(doc => doc.ContentType == ContentType.Resource))
+                {
+                    resourcesFileBuildScope.TryAdd(file, new List<Document>());
+                }
+
                 await ParallelUtility.ForEach(
-                    dependencyMapBuilder.GetResourceDependencyMap(),
+                    resourcesFileBuildScope,
                     (item, _) => { return BuildOneFile(item.Key, null, monikersMap.ToDictionary(m => m.Key, m => m.Value), item.Value); },
-                    item => ShouldBuildFile(item.Key),
+                    item => ShouldBuildFile(item.Key, new List<ContentType> { ContentType.Resource }),
                     Progress.Update);
 
                 // Build TOC: since toc file depends on the build result of every node
                 await ParallelUtility.ForEach(
                     docset.BuildScope.Where(doc => doc.ContentType == ContentType.TableOfContents),
                     (file, buildChild) => { return BuildOneFile(file, buildChild, monikersMap.ToDictionary(item => item.Key, item => item.Value), null); },
-                    ShouldBuildFile,
+                    file => { return ShouldBuildFile(file, new List<ContentType> { ContentType.TableOfContents }); },
                     Progress.Update);
 
                 ValidateBookmarks();
@@ -111,7 +116,7 @@ namespace Microsoft.Docs.Build
                     return await BuildFile(context, file, tocMap, contribution, fileMonikersMap, referencingFiles, callback, manifestBuilder);
                 }
 
-                bool ShouldBuildFile(Document file)
+                bool ShouldBuildFile(Document file, IEnumerable<ContentType> shouldBuildContentTypes)
                 {
                     // source content in a localization docset
                     if (docset.IsLocalized() && !file.Docset.IsLocalized())
@@ -119,7 +124,7 @@ namespace Microsoft.Docs.Build
                         return false;
                     }
 
-                    return file.ContentType != ContentType.Unknown && recurseDetector.TryAdd(file);
+                    return shouldBuildContentTypes.Contains(file.ContentType) && recurseDetector.TryAdd(file);
                 }
 
                 void ValidateBookmarks()
@@ -154,8 +159,7 @@ namespace Microsoft.Docs.Build
                 switch (file.ContentType)
                 {
                     case ContentType.Resource:
-                        model = BuildResource.Build(file, monikersMap, referencingFiles);
-                        monikers = ((ResourceModel)model).Monikers;
+                        (model, monikers) = BuildResource.Build(file, monikersMap, referencingFiles);
                         break;
                     case ContentType.Page:
                         (errors, model, monikers) = await BuildPage.Build(context, file, tocMap, contribution, callback);
@@ -165,8 +169,7 @@ namespace Microsoft.Docs.Build
                         (errors, model, monikers) = BuildTableOfContents.Build(context, file, tocMap, callback.DependencyMapBuilder, monikersMap);
                         break;
                     case ContentType.Redirection:
-                        (errors, model) = BuildRedirection.Build(file);
-                        monikers = ((RedirectionModel)model).Monikers;
+                        (errors, model, monikers) = BuildRedirection.Build(file);
                         break;
                 }
 

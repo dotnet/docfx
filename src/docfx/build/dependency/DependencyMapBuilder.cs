@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
@@ -37,15 +38,14 @@ namespace Microsoft.Docs.Build
                          select r).ToList()));
         }
 
-        public ResourceDependencyMap GetResourceDependencyMap()
+        public Dictionary<Document, List<Document>> GetResourceDependencyMap()
         {
-            return new ResourceDependencyMap(
-                _dependencyItems
+            return _dependencyItems
                     .Where(item => item.Dest.ContentType == ContentType.Resource)
                     .GroupBy(item => item.Dest)
                     .ToDictionary(
                         g => g.Key,
-                        g => g.Distinct().Select(item => item.Source).ToList()));
+                        g => g.Distinct().Select(item => item.Source).ToList());
         }
     }
 }
