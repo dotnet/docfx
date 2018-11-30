@@ -19,7 +19,7 @@ namespace Microsoft.Docs.Build
             var (metaErrors, metadata) = JsonUtility.ToObjectWithSchemaValidation<FileMetadata>(file.Docset.Metadata.GetMetadata(file, null));
             errors.AddRange(metaErrors);
 
-            var (error, monikers) = file.Docset.MonikersProvider.GetFileLevelMonikers(file, metadata.MonikerRange);
+            var (error, monikers) = file.Docset.Monikers.GetFileLevelMonikers(file, metadata.MonikerRange);
             errors.AddIfNotNull(error);
 
             return (errors, new RedirectionModel
