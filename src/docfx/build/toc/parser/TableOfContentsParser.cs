@@ -15,9 +15,9 @@ namespace Microsoft.Docs.Build
         private static readonly string[] s_tocFileNames = new[] { "TOC.md", "TOC.json", "TOC.yml" };
         private static readonly string[] s_experimentalTocFileNames = new[] { "TOC.experimental.md", "TOC.experimental.json", "TOC.experimental.yml" };
 
-        public delegate (string href, Document file) ResolveHref(Document relativeTo, string href, Document resultRelativeTo);
+        public delegate (Error error, string href, Document file) ResolveHref(Document relativeTo, string href, Document resultRelativeTo);
 
-        public delegate (string content, Document file) ResolveContent(Document relativeTo, string href, bool isInclusion);
+        public delegate (Error error, string content, Document file) ResolveContent(Document relativeTo, string href, bool isInclusion);
 
         public static (List<Error> errors, List<TableOfContentsItem> items, JObject metadata, List<string> monikers)
             Load(Context context, Document file, Dictionary<Document, List<string>> monikerMap, ResolveContent resolveContent, ResolveHref resolveHref)
@@ -205,30 +205,46 @@ namespace Microsoft.Docs.Build
                 var tocHrefType = GetHrefType(tocHref);
                 Debug.Assert(tocHrefType == TocHrefType.AbsolutePath || IsIncludeHref(tocHrefType));
 
-                if (tocHrefType == TocHrefType.AbsolutePath)
+                switch (tocHrefType)
                 {
-                    return (tocHref, default, default);
-                }
+                    case TocHrefType.AbsolutePath:
+                        return (tocHref, default, default);
 
-                var (hrefPath, fragment, query) = HrefUtility.SplitHref(tocHref);
-                tocHref = hrefPath;
+                    case TocHrefType.RelativeFolder:
+                        var (hrefPath, _, _) = HrefUtility.SplitHref(tocHref);
 
-                var (referencedTocContent, referenceTocFilePath) = ResolveTocHrefContent(tocHrefType, tocHref, filePath, resolveContent);
-                if (referencedTocContent != null)
-                {
-                    var (subErrors, nestedToc) = LoadInputModelItems(context, referenceTocFilePath, rootPath, monikerMap, resolveContent, resolveHref, parents);
-                    errors.AddRange(subErrors);
-                    if (tocHrefType == TocHrefType.RelativeFolder)
-                    {
-                        return (default, GetFirstHref(nestedToc.Items), default);
-                    }
-                    else
-                    {
+                        foreach (var tocFileName in s_tocFileNames)
+                        {
+                            var (_, _, resolvedTocFile) = resolveHref(filePath, Path.Combine(hrefPath, tocFileName), rootPath);
+                            if (resolvedTocFile == null)
+                            {
+                                continue;
+                            }
+
+                            var (loadErrors, loadedToc) = LoadInputModelItems(context, resolvedTocFile, rootPath, monikerMap, resolveContent, resolveHref, parents);
+                            errors.AddRange(loadErrors);
+                            return (default, GetFirstHref(loadedToc.Items), default);
+                        }
+
+                        // TODO: should we warn if we cannot find any TOC file inside that folder?
+                        return default;
+
+                    case TocHrefType.TocFile:
+                        var (error, _, includeFile) = resolveContent(filePath, tocHref, isInclusion: true);
+                        errors.AddIfNotNull(error);
+
+                        if (includeFile == null)
+                        {
+                            return default;
+                        }
+
+                        var (subErrors, nestedToc) = LoadInputModelItems(context, includeFile, rootPath, monikerMap, resolveContent, resolveHref, parents);
+                        errors.AddRange(subErrors);
                         return (default, default, nestedToc);
-                    }
-                }
 
-                return default;
+                    default:
+                        return default;
+                }
             }
 
             (string resolvedTopicHref, Document file) ProcessTopicHref(string topicHref)
@@ -241,7 +257,10 @@ namespace Microsoft.Docs.Build
                 var topicHrefType = GetHrefType(topicHref);
                 Debug.Assert(topicHrefType == TocHrefType.AbsolutePath || !IsIncludeHref(topicHrefType));
 
-                return resolveHref.Invoke(filePath, topicHref, rootPath);
+                var (error, href, file) = resolveHref.Invoke(filePath, topicHref, rootPath);
+                errors.AddIfNotNull(error);
+
+                return (href, file);
             }
         }
 
@@ -276,37 +295,6 @@ namespace Microsoft.Docs.Build
         private static bool IsIncludeHref(TocHrefType tocHrefType)
         {
             return tocHrefType == TocHrefType.TocFile || tocHrefType == TocHrefType.RelativeFolder;
-        }
-
-        private static (string content, Document filePath) ResolveTocHrefContent(TocHrefType tocHrefType, string href, Document filePath, ResolveContent resolveContent)
-        {
-            switch (tocHrefType)
-            {
-                case TocHrefType.RelativeFolder:
-                    foreach (var tocFileName in s_tocFileNames)
-                    {
-                        var subToc = Resolve(tocFileName);
-                        if (subToc != null)
-                        {
-                            return subToc.Value;
-                        }
-                    }
-                    return default;
-                case TocHrefType.TocFile:
-                    return resolveContent(filePath, href, isInclusion: true);
-                default:
-                    return default;
-            }
-
-            (string content, Document filePath)? Resolve(string name)
-            {
-                var content = resolveContent(filePath, Path.Combine(href, name), isInclusion: false);
-                if (content.file != null)
-                {
-                    return content;
-                }
-                return null;
-            }
         }
 
         private static TocHrefType GetHrefType(string href)

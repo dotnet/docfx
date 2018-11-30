@@ -93,21 +93,19 @@ namespace Microsoft.Docs.Build
                 (file, href, isInclude) =>
                 {
                     var (error, referencedTocContent, referencedToc) = file.TryResolveContent(href);
-                    errors.AddIfNotNull(error);
                     if (referencedToc != null && isInclude)
                     {
                         // add to referenced toc list
                         referencedTocs.Add(referencedToc);
                         dependencyMapBuilder?.AddDependencyItem(file, referencedToc, DependencyType.Inclusion);
                     }
-                    return (referencedTocContent, referencedToc);
+                    return (error, referencedTocContent, referencedToc);
                 },
                 (file, href, resultRelativeTo) =>
                 {
                     // add to referenced document list
                     // only resolve href, no need to build
                     var (error, link, fragment, buildItem) = file.TryResolveHref(href, resultRelativeTo);
-                    errors.AddIfNotNull(error);
 
                     var itemMonikers = new List<string>();
                     if (buildItem != null)
@@ -115,7 +113,7 @@ namespace Microsoft.Docs.Build
                         referencedDocuments.Add(buildItem);
                         dependencyMapBuilder?.AddDependencyItem(file, buildItem, HrefUtility.FragmentToDependencyType(fragment));
                     }
-                    return (link, buildItem);
+                    return (error, link, buildItem);
                 });
 
             errors.AddRange(loadErrors);
