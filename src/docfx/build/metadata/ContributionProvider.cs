@@ -180,24 +180,26 @@ namespace Microsoft.Docs.Build
                     return null;
                 }
 
-                // only loc docset document can be built, so the current repo is loc repo
-                var (locRemote, locBranch) = (repo.Remote, repo.Branch);
+                var (editRemote, editBranch) = (repo.Remote, repo.Branch);
                 if (!string.IsNullOrEmpty(document.Docset.Config.Contribution.Repository))
                 {
-                    (locRemote, locBranch) = HrefUtility.SplitGitHref(document.Docset.Config.Contribution.Repository);
-                    (locRemote, _) = LocalizationConvention.GetLocalizationRepo(
-                        document.Docset.Config.Localization.Mapping,
-                        document.Docset.Config.Localization.Bilingual,
-                        locRemote,
-                        locBranch,
-                        document.Docset.Locale,
-                        document.Docset.Config.Localization.DefaultLocale);
+                    (editRemote, editBranch) = HrefUtility.SplitGitHref(document.Docset.Config.Contribution.Repository);
+                    if (document.Docset.IsLocalized())
+                    {
+                        (editRemote, _) = LocalizationConvention.GetLocalizationRepo(
+                                            document.Docset.Config.Localization.Mapping,
+                                            document.Docset.Config.Localization.Bilingual,
+                                            editRemote,
+                                            editBranch,
+                                            document.Docset.Locale,
+                                            document.Docset.Config.Localization.DefaultLocale);
+                    }
                 }
 
                 // git edit url, only works for github repo
-                if (GitHubUtility.TryParse(locRemote, out _, out _))
+                if (GitHubUtility.TryParse(editRemote, out _, out _))
                 {
-                    return $"{locRemote}/blob/{locBranch}/{pathToRepo}";
+                    return $"{editRemote}/blob/{editBranch}/{pathToRepo}";
                 }
 
                 return null;

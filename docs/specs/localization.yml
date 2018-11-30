@@ -20,7 +20,7 @@ outputs:
   build.log: |
     ["warning","link-is-dependency","File 'docs/child.md' referenced by link '~/restore-child/docs/child.md' will not be built because it is from a dependency docset","docs/loc.md"]
 ---
-# restore loc repo, all loc files are in one repo
+# restore loc repo, all loc files are in one repo under different folder
 # [repository + folder mapping]
 commands:
   - build --locale zh-cn
@@ -33,6 +33,42 @@ repos:
   https://docs.com/b.localization#master2:
     - files:
         zh-cn/docs/dep.md: loc-DEP
+outputs:
+  docs/dep.json:
+---
+# restore loc repo, all loc files are in one repo under different branch
+# [branch mapping]
+commands:
+  - build --locale zh-cn
+repos:
+  https://docs.com/b#master3:
+    - files:
+        docfx.yml: |
+          localization:
+            mapping: Branch
+  https://docs.com/b.localization#zh-cn-master3:
+    - files:
+        docs/dep.md: loc-DEP
+outputs:
+  docs/dep.json:
+---
+# restore bilingual loc repo, all loc files are in one repo under different branch
+# [branch mapping]
+commands:
+  - build --locale zh-cn
+repos:
+  https://docs.com/b#master4:
+    - files:
+        docfx.yml: |
+          localization:
+            mapping: Branch
+            bilingual: true
+  https://docs.com/b.localization#zh-cn-master4-sxs:
+    - files:
+        docs/dep.md: loc-DEP
+  https://docs.com/b.localization#zh-cn-master4:
+    - files:
+        docs/dep.md: loc-DEP
 outputs:
   docs/dep.json:
 ---
@@ -114,10 +150,10 @@ repos:
         docs/a.md:
 outputs:
   docs/a.json: |
-    { "content_git_url": "*dotnet/docfx.zh-cn*"}
+    { "content_git_url": "*dotnet/docfx.zh-cn/blob/master/*"}
 ---
-# loc config convention with source locale
-# [repository mapping] 
+# edit url convention with source locale 1
+# [repository mapping]
 commands:
   - build --locale zh-cn
 repos: 
@@ -131,10 +167,11 @@ repos:
         docs/a.md:
 outputs:
   docs/a.json: |
-    { "content_git_url": "*dotnet/docfx.zh-cn*"}
+    { "content_git_url": "*dotnet/docfx.zh-cn/blob/master/*"}
 ---
-# loc config convention with source locale, all loc files are in one repo
-# [repository + folder mapping] 
+# edit url convention with source locale 2
+# all loc files are in one repo under different folder
+# [repository + folder mapping]
 commands:
   - build --locale zh-cn
 repos: 
@@ -150,10 +187,31 @@ repos:
         zh-cn/docs/a.md:
 outputs:
   docs/a.json: |
-    { "content_git_url": "*dotnet/docfx.localization/blob/master/zh-cn*"}
+    { "content_git_url": "*dotnet/docfx.localization/blob/master/zh-cn/*"}
 ---
-# loc config convention with source locale, all loc files are in source repo under different locale folder
-# [folder mapping] 
+# edit url convention with source locale 2
+# all loc files are in one repo under different branch
+# [branch mapping]
+commands:
+  - build --locale zh-cn
+repos: 
+  https://docfx.com/abc#loc-contribution4:
+    - files:
+        docfx.yml: |
+          contribution:
+            repository: https://github.com/dotnet/docfx.en-us
+          localization:
+            mapping: Branch
+  https://docfx.com/abc.localization#zh-cn-loc-contribution4:
+    - files:
+        docs/a.md:
+outputs:
+  docs/a.json: |
+    { "content_git_url": "*dotnet/docfx.localization/blob/master/docs/*"}
+---
+# edit url convention with source locale 3
+# all loc files are in source repo under different locale folder
+# [folder mapping]
 commands:
   - build --locale zh-cn
 inputs:
@@ -172,41 +230,41 @@ outputs:
 commands:
   - build --locale zh-cn
 repos: 
-  https://github.com/docascode/abc#loc-contribution5:
+  https://github.com/contribution/abc#master1:
     - files:
         docfx.yml:
-  https://github.com/docascode/abc.zh-cn#loc-contribution5:
+  https://github.com/contribution/abc.zh-cn#master1:
     - files:
         docs/a.md:
 inputs:
   docfx.yml:
 outputs:
   docs/a.json: |
-    { "content_git_url":"https://github.com/docascode/abc.zh-cn/blob/loc-contribution5/docs/a.md","original_content_git_url":"https://github.com/docascode/abc.zh-cn/blob/loc-contribution5/docs/a.md", "gitcommit":"https://github.com/docascode/abc.zh-cn/blob/f35b220adadfe88d1d4f1b043c8dc55db491c83e/docs/a.md"}
+    { "content_git_url":"https://github.com/contribution/abc.zh-cn/blob/master1/docs/a.md","original_content_git_url":"https://github.com/contribution/abc.zh-cn/blob/master1/docs/a.md", "gitcommit":"https://github.com/contribution/abc.zh-cn/blob/f35b220adadfe88d1d4f1b043c8dc55db491c83e/docs/a.md"}
 ---
 # loc file contributor info 2
-# all loc files are in one repo
+# all loc files are in one repo under different locale folder
 commands:
   - build --locale zh-cn
 repos: 
-  https://github.com/docascode/abc#loc-contribution6:
+  https://github.com/contribution/abc#master2:
     - files:
         docfx.yml: |
           localization:
             mapping: RepositoryAndFolder
-  https://github.com/docascode/abc.localization#loc-contribution6:
+  https://github.com/contribution/abc.localization#master2:
     - files:
         zh-cn/docs/a.md:
 outputs:
   docs/a.json: |
-    { "content_git_url":"https://github.com/docascode/abc.localization/blob/loc-contribution6/zh-cn/docs/a.md","original_content_git_url":"https://github.com/docascode/abc.localization/blob/loc-contribution6/zh-cn/docs/a.md", "gitcommit":"https://github.com/docascode/abc.localization/blob/c4e050bdaa03a863e0c9b274af6c0ddafa1b8189/zh-cn/docs/a.md"}
+    { "content_git_url":"https://github.com/contribution/abc.localization/blob/master2/zh-cn/docs/a.md","original_content_git_url":"https://github.com/contribution/abc.localization/blob/master2/zh-cn/docs/a.md", "gitcommit":"https://github.com/contribution/abc.localization/blob/c4e050bdaa03a863e0c9b274af6c0ddafa1b8189/zh-cn/docs/a.md"}
 ---
 # loc file contributor info 3
 # all loc file are in source repo under different locale folder
 commands:
   - build --locale zh-cn
 repos:
-  https://github.com/docascode/a#loc-contribution-folder:
+  https://github.com/contribution/a#master3:
     - files:
         docfx.yml: |
           localization:
@@ -214,18 +272,36 @@ repos:
         localization/zh-cn/docs/a.md:
 outputs:
   docs/a.json: |
-    { "content_git_url":"https://github.com/docascode/a/blob/loc-contribution-folder/localization/zh-cn/docs/a.md","original_content_git_url":"https://github.com/docascode/a/blob/loc-contribution-folder/localization/zh-cn/docs/a.md", "gitcommit":"https://github.com/docascode/a/blob/ffb8cfa5f33566a83770b90d647577a58e1d662d/localization/zh-cn/docs/a.md"}
+    { "content_git_url":"https://github.com/contribution/a/blob/master3/localization/zh-cn/docs/a.md","original_content_git_url":"https://github.com/contribution/a/blob/master3/localization/zh-cn/docs/a.md", "gitcommit":"https://github.com/contribution/a/blob/ffb8cfa5f33566a83770b90d647577a58e1d662d/localization/zh-cn/docs/a.md"}
 ---
-# loc page link and content fallback
+# loc file contributor info 4
+# all loc files are in one repo under different branch
+commands:
+  - build --locale zh-cn
+repos: 
+  https://github.com/contribution/abc#master4:
+    - files:
+        docfx.yml: |
+          localization:
+            mapping: Branch
+  https://github.com/contribution/abc.localization#zh-cn-master4:
+    - files:
+        docs/a.md:
+outputs:
+  docs/a.json: |
+    { "content_git_url":"https://github.com/contribution/abc.localization/blob/zh-cn-master4/docs/a.md","original_content_git_url":"https://github.com/contribution/abc.localization/blob/zh-cn-master4/docs/a.md", "gitcommit":"https://github.com/contribution/abc.localization/blob/f35b220adadfe88d1d4f1b043c8dc55db491c83e/docs/a.md"}
+---
+# loc page link and content fallback 1
+# [repository mapping]
 commands:
   - build --locale zh-cn
 repos:
-  https://docs.com/test#fallback1:
+  https://docs.com/test#page-fallback1:
     - files:
         docfx.yml:
         docs/b.md: |
           [link in a](a.md)
-  https://docs.com/test.zh-cn#fallback1:
+  https://docs.com/test.zh-cn#page-fallback1:
     - files:
         docs/a.md: |
           [link in b](b.md)
@@ -234,18 +310,40 @@ outputs:
   docs/a.json: |
     { "content":"<p><a href=\"b\">link in b</a></p>\n<p><a href=\"a\">link in a</a></p>\n"}
 ---
-# loc page fallback, all loc files are in one repo
+# loc page link and content fallback 2
+# [branch mapping]
 commands:
   - build --locale zh-cn
 repos:
-  https://docs.com/test#fallback2:
+  https://docs.com/test#page-fallback2:
+    - files:
+        docfx.yml: |
+          localization:
+            mapping: Branch
+        docs/b.md: |
+          [link in a](a.md)
+  https://docs.com/test.localization#zh-cn-page-fallback2:
+    - files:
+        docs/a.md: |
+          [link in b](b.md)
+          [!include[](b.md)]
+outputs:
+  docs/a.json: |
+    { "content":"<p><a href=\"b\">link in b</a></p>\n<p><a href=\"a\">link in a</a></p>\n"}
+---
+# loc page link and content fallback 3
+# [repository + folder mapping]
+commands:
+  - build --locale zh-cn
+repos:
+  https://docs.com/test#page-fallback3:
     - files:
         docs/b.md: |
           [link to a](a.md)
         docfx.yml: |
           localization:
             mapping: RepositoryAndFolder
-  https://docs.com/test.localization#fallback2:
+  https://docs.com/test.localization#page-fallback3:
     - files:
         zh-cn/docs/a.md: |
           [link to b](b.md)
@@ -254,15 +352,35 @@ outputs:
   docs/a.json: |
     { "content":"<p><a href=\"b\">link to b</a></p>\n<p><a href=\"a\">link to a</a></p>\n"}
 ---
-# loc resource fallback
+# loc resource fallback 1
+# [repository mapping]
 commands:
   - build --locale zh-cn
 repos:
-  https://docs.com/test#fallback3:
+  https://docs.com/test#resource-fallback1:
     - files:
         docs/b.png:
         docfx.yml:
-  https://docs.com/test.zh-cn#fallback3:
+  https://docs.com/test.zh-cn#resource-fallback1:
+    - files:
+        docs/a.md: |
+          [link to b](b.png)
+outputs:
+  docs/a.json: |
+    { "content":"<p><a href=\"b.png\">link to b</a></p>"}
+---
+# loc resource fallback 2
+# [branch mapping]
+commands:
+  - build --locale zh-cn
+repos:
+  https://docs.com/test#resource-fallback2:
+    - files:
+        docs/b.png:
+        docfx.yml: |
+          localization:
+            mapping: Branch
+  https://docs.com/test.localization#zh-cn-resource-fallback2:
     - files:
         docs/a.md: |
           [link to b](b.png)
@@ -454,7 +572,7 @@ inputs:
 outputs:
   docs/b.json:
 ---
-# built metadata for loc files
+# built metadata for loc files 1
 commands:
   - build --locale zh-cn
 repos:
@@ -469,7 +587,8 @@ outputs:
   docs/a.json: |
     {"locale": "zh-cn", "canonical_url": "https://docs.microsoft.com/zh-cn/docs/a", "document_id": "fa697b4e-3e52-77f6-2219-39040f6070da", "document_version_independent_id": "7c88e748-ed5e-a29a-c057-6f89857c3591",}
 ---
-# built metadata for loc files, all loc files are in same repo
+# built metadata for loc files 2
+# all loc files are in same repo under different folder
 commands:
   - build --locale zh-cn
 repos:
@@ -486,7 +605,8 @@ outputs:
   docs/a.json: |
     {"locale": "zh-cn", "canonical_url": "https://docs.microsoft.com/zh-cn/docs/a", "document_id": "fa697b4e-3e52-77f6-2219-39040f6070da", "document_version_independent_id": "7c88e748-ed5e-a29a-c057-6f89857c3591"}
 ---
-# built metadata for loc files, all loc files are in source repo under different locale folder
+# built metadata for loc files 3
+# all loc files are in source repo under different locale folder
 commands:
   - build --locale zh-cn
 inputs:
@@ -495,6 +615,24 @@ inputs:
     localization:
       mapping: Folder
   localization/zh-cn/docs/a.md:
+outputs:
+  docs/a.json: |
+    {"locale": "zh-cn", "canonical_url": "https://docs.microsoft.com/zh-cn/docs/a", "document_id": "fa697b4e-3e52-77f6-2219-39040f6070da", "document_version_independent_id": "7c88e748-ed5e-a29a-c057-6f89857c3591"}
+---
+# built metadata for loc files 4
+# all loc files are in same repo under different branch
+commands:
+  - build --locale zh-cn
+repos:
+  https://docs.com/test#metadata4:
+    - files:
+        docfx.yml: |
+          baseUrl: https://docs.microsoft.com
+          localization:
+            mapping: Branch
+  https://docs.com/test.localization#zh-cn-metadata4:
+    - files:
+        docs/a.md:
 outputs:
   docs/a.json: |
     {"locale": "zh-cn", "canonical_url": "https://docs.microsoft.com/zh-cn/docs/a", "document_id": "fa697b4e-3e52-77f6-2219-39040f6070da", "document_version_independent_id": "7c88e748-ed5e-a29a-c057-6f89857c3591"}
