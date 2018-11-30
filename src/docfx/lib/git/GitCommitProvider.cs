@@ -193,9 +193,12 @@ namespace Microsoft.Docs.Build
                 using (var writer = new BinaryWriter(stream))
                 {
                     // Create a snapshot of commit cache to ensure count and items matches.
-                    var commitCache = _commitCache.ToList();
+                    //
+                    // There is a race condition in Linq ToList() method, use ConcurrentDictionary.ToArray() to create a snapshot
+                    // https://stackoverflow.com/questions/11692389/getting-argument-exception-in-concurrent-dictionary-when-sorting-and-displaying
+                    var commitCache = _commitCache.ToArray();
 
-                    writer.Write(commitCache.Count);
+                    writer.Write(commitCache.Length);
                     foreach (var (file, value) in commitCache)
                     {
                         lock (value)
