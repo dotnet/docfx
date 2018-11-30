@@ -12,12 +12,13 @@ namespace Microsoft.Docs.Build
             Docset docset,
             Context context,
             Document doc,
-            LegacyManifestOutput legacyManifestOutput)
+            LegacyManifestItem legacyManifestItem)
         {
             // OPS build use TOC ouput as data page
+            var legacyManifestOutput = legacyManifestItem.Output;
             if (legacyManifestOutput.TocOutput != null)
             {
-                var outputPath = legacyManifestOutput.TocOutput.ToLegacyOutputPath(docset);
+                var outputPath = legacyManifestOutput.TocOutput.ToLegacyOutputPath(docset, legacyManifestItem.Group);
                 var model = JsonUtility.Deserialize<PageModel>(File.ReadAllText(docset.GetAbsoluteOutputPathFromRelativePath(outputPath)));
                 context.Delete(doc.OutputPath);
                 context.WriteJson(model.Content, outputPath);
@@ -26,7 +27,7 @@ namespace Microsoft.Docs.Build
             JObject rawMetadata = null;
             if (legacyManifestOutput.PageOutput != null)
             {
-                var rawPageOutputPath = legacyManifestOutput.PageOutput.ToLegacyOutputPath(docset);
+                var rawPageOutputPath = legacyManifestOutput.PageOutput.ToLegacyOutputPath(docset, legacyManifestItem.Group);
                 LegacyUtility.MoveFileSafe(
                     docset.GetAbsoluteOutputPathFromRelativePath(doc.OutputPath),
                     docset.GetAbsoluteOutputPathFromRelativePath(rawPageOutputPath));
@@ -65,7 +66,7 @@ namespace Microsoft.Docs.Build
 
             if (legacyManifestOutput.MetadataOutput != null && rawMetadata != null)
             {
-                var metadataOutputPath = legacyManifestOutput.MetadataOutput.ToLegacyOutputPath(docset);
+                var metadataOutputPath = legacyManifestOutput.MetadataOutput.ToLegacyOutputPath(docset, legacyManifestItem.Group);
                 var metadate = LegacyMetadata.GenerateLegacyMetadateOutput(rawMetadata);
                 context.WriteJson(metadate, metadataOutputPath);
             }
