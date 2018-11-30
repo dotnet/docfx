@@ -5,26 +5,11 @@ namespace Microsoft.Docs.Build
 {
     public enum DependencyType
     {
-        /// <summary>
-        /// Link to a file.
-        /// </summary>
-        Link,
-
-        /// <summary>
-        /// Link to a file with bookmark.
-        /// </summary>
-        Bookmark,
-
-        /// <summary>
-        /// Link to a file using uid.
-        /// <summary>
-        Uid,
-
-        /// <summary>
-        /// Include the content of another file,
-        /// like an article including a markdown token, codesnippet,
-        /// or table of content file include the content of another table of content.
-        /// </summary>
-        Inclusion,
+        Link, // file reference
+        Bookmark, // file reference with fragment
+        UidInclusion, // uid reference with display property
+        Inclusion, // token or codesnippet
+        Overwrite, // overwrite markdown reference
+        TocInclusion, // toc reference toc
     }
 }

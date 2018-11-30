@@ -148,7 +148,7 @@ outputs:
           "docs/TOC.md":[
              {  
                 "source":"docs/a/TOC.md",
-                "type":"inclusion"
+                "type":"tocInclusion"
              }
           ],
           "docs/a/TOC.md":[  

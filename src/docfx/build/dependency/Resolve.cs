@@ -50,7 +50,7 @@ namespace Microsoft.Docs.Build
                 return null;
 
             var (xrefSpec, doc) = xrefMap.Resolve(uid, moniker);
-            dependencyMapBuilder.AddDependencyItem(file, doc, DependencyType.Uid);
+            dependencyMapBuilder.AddDependencyItem(file, doc, DependencyType.UidInclusion);
             return xrefSpec;
         }
 
