@@ -8,6 +8,7 @@ namespace Microsoft.DocAsCode.Common
         public static class Build
         {
             public const string InvalidPropertyFormat = "InvalidPropertyFormat";
+            public const string InvalidInputFile = "InvalidInputFile";
         }
     }
 }

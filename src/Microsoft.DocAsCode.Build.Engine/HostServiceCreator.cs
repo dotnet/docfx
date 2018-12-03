@@ -80,9 +80,9 @@ namespace Microsoft.DocAsCode.Build.Engine
                 }
                 catch (Exception e)
                 {
-                    Logger.LogWarning(
+                    Logger.LogError(
                         $"Unable to load file: {file.File} via processor: {processor.Name}: {e.Message}",
-                        code: WarningCodes.Build.InvalidInputFile);
+                        code: ErrorCodes.Build.InvalidInputFile);
                     return (null, false);
                 }
             }
