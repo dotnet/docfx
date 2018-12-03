@@ -98,6 +98,15 @@ namespace Microsoft.Docs.Build
             };
             yield return new object[]
             {
+                "Get user by login from cache but cache expired",
+                 (Func<GitHubUserCache, Task>) ( async (cache) => await cache.GetByLogin("alice")),
+                "[{'id':1,'login':'alice','name':'Obsolete name of Alice','emails':['alice@contoso.com'],'expiry':'2000-01-01'}]",
+                "[{'id':1,'login':'alice','name':'Alice','emails':['alice@contoso.com']}]",
+                1,
+                0
+            };
+            yield return new object[]
+            {
                 "Get user by commit",
                 (Func<GitHubUserCache, Task>) ( async (cache) => await cache.GetByCommit("alice@contoso.com", "owner", "name", "1")),
                 "[]",
@@ -127,6 +136,15 @@ namespace Microsoft.Docs.Build
                 "[{'id':1,'login':'alice','name':'Alice','emails':['alice@contoso.com']}]",
                 0,
                 0
+            };
+            yield return new object[]
+            {
+                "Get user by commit from cache but cache expired",
+                (Func<GitHubUserCache, Task>) ( async (cache) => await cache.GetByCommit("alice@contoso.com", "owner", "name", "1")),
+                "[{'id':1,'login':'alice','name':'Obsolete name of Alice','emails':['alice@contoso.com'],'expiry':'2000-01-01'}]",
+                "[{'id':1,'login':'alice','name':'Alice','emails':['alice@contoso.com']}]",
+                1,
+                1
             };
             yield return new object[]
             {
