@@ -29,8 +29,11 @@ namespace Microsoft.Docs.Build
         {
             foreach (var value in _commitProviders.Values)
             {
-                var (provider, repo) = await value.Value;
-                await GitCommitCacheProvider.SaveCache(repo, provider.BuildCache());
+                if (value.IsValueCreated)
+                {
+                    var (provider, repo) = await value.Value;
+                    await GitCommitCacheProvider.SaveCache(repo, provider.BuildCache());
+                }
             }
         }
 
@@ -38,7 +41,10 @@ namespace Microsoft.Docs.Build
         {
             foreach (var value in _commitProviders.Values)
             {
-                value.Value.Result.provider.Dispose();
+                if (value.IsValueCreated && value.Value.IsCompletedSuccessfully)
+                {
+                    value.Value.Result.provider.Dispose();
+                }
             }
         }
 
@@ -63,11 +69,14 @@ namespace Microsoft.Docs.Build
 
         private Repository GetRepository(string fullPath)
         {
-            if (GitUtility.IsRepo(fullPath))
-                return Repository.Create(fullPath);
-            var parent = Path.GetDirectoryName(fullPath);
-            return !string.IsNullOrEmpty(parent)
-                ? _repositoryByFolder.GetOrAdd(parent, GetRepository)
+            return !string.IsNullOrEmpty(fullPath)
+                ? _repositoryByFolder.GetOrAdd(fullPath, p =>
+                {
+                    if (GitUtility.IsRepo(p))
+                        return Repository.Create(p);
+
+                    return GetRepository(Path.GetDirectoryName(fullPath));
+                })
                 : null;
         }
     }

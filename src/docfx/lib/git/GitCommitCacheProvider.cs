@@ -69,6 +69,7 @@ namespace Microsoft.Docs.Build
                     writer.Write(commitCache.Count);
                     foreach (var (file, value) in commitCache)
                     {
+                        // todo: this implicit lock is now split across too many places, need consolidate and abstract them.
                         lock (value)
                         {
                             writer.Write(file);

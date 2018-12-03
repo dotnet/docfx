@@ -172,6 +172,8 @@ namespace Microsoft.Docs.Build
         {
             if (_cacheUpdated)
             {
+                // There is a race condition in Linq ToList() method, use ConcurrentDictionary.ToArray() to create a snapshot
+                // https://stackoverflow.com/questions/11692389/getting-argument-exception-in-concurrent-dictionary-when-sorting-and-displaying
                 return _commitCache.ToArray();
             }
 
@@ -185,6 +187,13 @@ namespace Microsoft.Docs.Build
             {
                 git_repository_free(_repo);
             }
+
+            GC.SuppressFinalize(this);
+        }
+
+        ~FileCommitProvider()
+        {
+            Dispose();
         }
 
         private unsafe (List<Commit>, Dictionary<long, Commit>) LoadCommits(string committish = null)
