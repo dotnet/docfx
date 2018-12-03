@@ -37,6 +37,9 @@ namespace Microsoft.Docs.Build
 
         public (XrefSpec, Document) Resolve(string uid, string moniker = null)
         {
+            // need to url decode uid from input content
+            uid = System.Web.HttpUtility.UrlDecode(uid);
+
             if (_internalXrefMap.TryGetValue(uid, out var internalSpecs))
             {
                 if (!TryGetValidXrefSpecs(uid, internalSpecs, out var validInternalSpecs, out var referencedFile))

@@ -270,7 +270,7 @@ outputs:
   xrefmap.json: | 
     {"references":[{"uid":"a","href":"/docs/a.json","inlineDescription":"Hello <code>docfx</code>!"}]}
 ---
-# [only]Refer to uid with encoded content, it should be decoded then resolved
+# Refer to uid with encoded content, it should be decoded then resolved
 inputs:
   docfx.yml:
   docs/a.md: |
@@ -279,7 +279,12 @@ inputs:
     uid: a*
     ---
   docs/b.md: | 
-  <xref:a%2A>
+    Link to <xref:a%2A>
+    Link to @a%2A
+    Link to @a*
+    Link to @"a*"
+    Link to @"a%2A"
 outputs:
-  docs/a.json: |
-    { "content": "<p>Link to <a href=\"/docs/a\">Title from yaml header a</a></p>" }
+  docs/a.json:
+  docs/b.json: |
+    { "content": "<p>Link to <a href=\"/docs/a\">Title from yaml header a</a>\nLink to <a href=\"/docs/a\">Title from yaml header a</a>\nLink to <a href=\"/docs/a\">Title from yaml header a</a>\nLink to <a href=\"/docs/a\">Title from yaml header a</a>\nLink to <a href=\"/docs/a\">Title from yaml header a</a></p>" }
