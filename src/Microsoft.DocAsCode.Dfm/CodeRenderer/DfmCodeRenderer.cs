@@ -39,9 +39,12 @@ namespace Microsoft.DocAsCode.Dfm
 
             try
             {
-                // Always report original dependency
-                context.ReportDependency(token.Path);
-
+                // Always report original dependency when path is valid
+                if (PathUtility.IsVaildFilePath(token.Path))
+                {
+                    context.ReportDependency(token.Path);
+                }
+                
                 var pathQueryOption =
                     !string.IsNullOrEmpty(token.QueryStringAndFragment) ?
                     _dfmCodeExtractor.ParsePathQueryString(token.QueryStringAndFragment) :
