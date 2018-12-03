@@ -30,7 +30,9 @@ namespace Microsoft.Docs.Build
                              queries = HttpUtility.ParseQueryString(query.Substring(1));
                              moniker = queries?["view"];
                          }
-                         var xrefSpec = resolveXref(uid, moniker);
+
+                         // need to url decode uid from input content
+                         var xrefSpec = resolveXref(HttpUtility.UrlDecode(uid), moniker);
                          if (xrefSpec is null)
                          {
                              var raw = xref.GetAttributes().Properties.First(p => p.Key == "data-raw-source").Value;
