@@ -25,7 +25,7 @@ namespace Microsoft.Docs.Build
                     monikers.AddRange(fileMonikers);
                 }
             }
-            monikers.Sort(file.Docset.MonikerAscendingComparer);
+            monikers.Sort(file.Docset.Monikers.Comparer);
             monikers = monikers.Distinct().ToList();
 
             return (new ResourceModel
