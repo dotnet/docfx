@@ -15,53 +15,43 @@ namespace Microsoft.Docs.Build
     {
         public static async Task Run(string docsetPath, CommandLineOptions options, Report report)
         {
-            using (var gitCommitProvider = new GitCommitProvider())
+            var errors = new List<Error>();
+
+            var (configErrors, config) = Config.Load(docsetPath, options);
+            report.Configure(docsetPath, config);
+
+            var outputPath = Path.Combine(docsetPath, config.Output.Path);
+            var context = new Context(report, outputPath);
+            context.Report(config.ConfigFileName, configErrors);
+
+            var docset = new Docset(context, docsetPath, config, options).GetBuildDocset();
+
+            // TODO: toc map and xref map should always use source docset?
+            var tocMap = BuildTableOfContents.BuildTocMap(context, docset);
+            var xrefMap = XrefMap.Create(context, docset);
+
+            var githubUserCache = await GitHubUserCache.Create(docset, config.GitHub.AuthToken);
+            var (manifest, fileManifests, sourceDependencies) = await BuildFiles(context, docset, tocMap, xrefMap, githubUserCache);
+
+            context.WriteJson(manifest, "build.manifest");
+            var saveGitHubUserCache = githubUserCache.SaveChanges(config);
+            xrefMap.OutputXrefMap(context);
+
+            if (options.Legacy)
             {
-                var errors = new List<Error>();
-
-                var (configErrors, config) = Config.Load(docsetPath, options);
-                report.Configure(docsetPath, config);
-
-                var outputPath = Path.Combine(docsetPath, config.Output.Path);
-                var context = new Context(report, outputPath);
-                context.Report(config.ConfigFileName, configErrors);
-
-                var docset = new Docset(context, docsetPath, config, options).GetBuildDocset();
-
-                var githubUserCache = await GitHubUserCache.Create(docset, config.GitHub.AuthToken);
-                var contribution = await ContributionProvider.Create(docset, githubUserCache, gitCommitProvider);
-
-                // TODO: toc map and xref map should always use source docset?
-                var tocMap = BuildTableOfContents.BuildTocMap(context, docset);
-
-                var xrefMap = XrefMap.Create(context, docset);
-
-                var (manifest, fileManifests, sourceDependencies) = await BuildFiles(context, docset, tocMap, xrefMap, contribution);
-
-                context.WriteJson(manifest, "build.manifest");
-
-                var saveGitHubUserCache = githubUserCache.SaveChanges(config);
-                var saveGitCommitCache = gitCommitProvider.SaveGitCommitCache();
-
-                xrefMap.OutputXrefMap(context);
-
-                if (options.Legacy)
+                if (config.Output.Json)
                 {
-                    if (config.Output.Json)
-                    {
-                        // TODO: decouple files and dependencies from legacy.
-                        Legacy.ConvertToLegacyModel(docset, context, fileManifests, sourceDependencies, tocMap, xrefMap);
-                    }
-                    else
-                    {
-                        docset.LegacyTemplate.CopyTo(outputPath);
-                    }
+                    // TODO: decouple files and dependencies from legacy.
+                    Legacy.ConvertToLegacyModel(docset, context, fileManifests, sourceDependencies, tocMap, xrefMap);
                 }
-
-                errors.AddIfNotNull(await saveGitHubUserCache);
-                await saveGitCommitCache;
-                errors.ForEach(e => context.Report(e));
+                else
+                {
+                    docset.LegacyTemplate.CopyTo(outputPath);
+                }
             }
+
+            errors.AddIfNotNull(await saveGitHubUserCache);
+            errors.ForEach(e => context.Report(e));
         }
 
         private static async Task<(Manifest, Dictionary<Document, FileManifest>, DependencyMap)> BuildFiles(
@@ -69,9 +59,10 @@ namespace Microsoft.Docs.Build
             Docset docset,
             TableOfContentsMap tocMap,
             XrefMap xrefMap,
-            ContributionProvider contribution)
+            GitHubUserCache githubUserCache)
         {
             using (Progress.Start("Building files"))
+            using (var gitCommitProvider = new GitCommitProvider())
             {
                 var recurseDetector = new ConcurrentHashSet<Document>();
                 var dependencyMapBuilder = new DependencyMapBuilder();
@@ -79,6 +70,7 @@ namespace Microsoft.Docs.Build
                 var manifestBuilder = new ManifestBuilder();
                 var monikersMap = new ConcurrentDictionary<Document, List<string>>();
 
+                var contribution = await ContributionProvider.Create(docset, githubUserCache, gitCommitProvider);
                 await ParallelUtility.ForEach(
                     docset.BuildScope.Where(doc => doc.ContentType != ContentType.TableOfContents),
                     async (file, buildChild) => { monikersMap.TryAdd(file, await BuildOneFile(file, buildChild)); },
@@ -92,10 +84,13 @@ namespace Microsoft.Docs.Build
                     ShouldBuildFile,
                     Progress.Update);
 
-                ValidateBookmarks();
+                var saveGitCommitCache = gitCommitProvider.SaveGitCommitCache();
 
+                ValidateBookmarks();
                 var manifest = manifestBuilder.Build(context);
                 var dependencyMap = dependencyMapBuilder.Build();
+
+                await saveGitCommitCache;
 
                 return (CreateManifest(manifest, dependencyMap), manifest, dependencyMap);
 

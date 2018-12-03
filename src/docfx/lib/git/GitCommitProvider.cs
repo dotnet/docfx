@@ -69,14 +69,12 @@ namespace Microsoft.Docs.Build
 
         private Repository GetRepository(string fullPath)
         {
-            return !string.IsNullOrEmpty(fullPath)
-                ? _repositoryByFolder.GetOrAdd(fullPath, p =>
-                {
-                    if (GitUtility.IsRepo(p))
-                        return Repository.Create(p);
+            if (GitUtility.IsRepo(fullPath))
+                return Repository.Create(fullPath);
 
-                    return GetRepository(Path.GetDirectoryName(fullPath));
-                })
+            var parent = Path.GetDirectoryName(fullPath);
+            return !string.IsNullOrEmpty(parent)
+                ? _repositoryByFolder.GetOrAdd(parent, GetRepository)
                 : null;
         }
     }
