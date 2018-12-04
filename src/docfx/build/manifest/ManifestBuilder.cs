@@ -39,6 +39,7 @@ namespace Microsoft.Docs.Build
 
             if (monikers.Count == 0)
             {
+                // TODO: report a warning if there are multiple files published to same url, one of them have no version
                 monikers = new List<string> { "NONE_VERSION" };
             }
             _filesBySiteUrl.GetOrAdd(manifest.SiteUrl, _ => new ConcurrentDictionary<Document, List<string>>()).TryAdd(file, monikers);
@@ -49,6 +50,7 @@ namespace Microsoft.Docs.Build
         public Dictionary<Document, FileManifest> Build(Context context)
         {
             // Handle publish url conflicts
+            // TODO: Report more detail info for url conflict
             foreach (var (siteUrl, files) in _filesBySiteUrl)
             {
                 var conflictMoniker = files
@@ -58,7 +60,6 @@ namespace Microsoft.Docs.Build
                     .Select(group => group.Key);
                 if (conflictMoniker.Count() > 0)
                 {
-                    // TODO: report more detail informtation for toc and resource.
                     context.Report(Errors.PublishUrlConflict(siteUrl, files.Keys, conflictMoniker));
 
                     foreach (var conflictingFile in files.Keys)
