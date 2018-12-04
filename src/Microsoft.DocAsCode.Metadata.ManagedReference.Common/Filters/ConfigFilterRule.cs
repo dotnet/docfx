@@ -17,32 +17,19 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     public class ConfigFilterRule
     {
         [YamlMember(Alias = "apiRules")]
-        public List<ConfigFilterRuleItemUnion> ApiRules { get; set; } = new List<ConfigFilterRuleItemUnion>();
+        public IEnumerable<ConfigFilterRuleItemUnion> ApiRules { get; set; } = new List<ConfigFilterRuleItemUnion>();
 
         [YamlMember(Alias = "attributeRules")]
-        public List<ConfigFilterRuleItemUnion> AttributeRules { get; set; } = new List<ConfigFilterRuleItemUnion>();
+        public IEnumerable<ConfigFilterRuleItemUnion> AttributeRules { get; set; } = new List<ConfigFilterRuleItemUnion>();
 
         public bool CanVisitApi(SymbolFilterData symbol)
         {
-            return this.CanVisitCore(this.ApiRules, symbol);
+            return CanVisitCore(this.ApiRules, symbol);
         }
 
         public bool CanVisitAttribute(SymbolFilterData symbol)
         {
-            return this.CanVisitCore(this.AttributeRules, symbol);
-        }
-
-        private bool CanVisitCore(IEnumerable<ConfigFilterRuleItemUnion> ruleItems, SymbolFilterData symbol)
-        {
-            foreach (var ruleUnion in ruleItems)
-            {
-                ConfigFilterRuleItem rule = ruleUnion.Rule;
-                if (rule != null && rule.IsMatch(symbol))
-                {
-                    return rule.CanVisit;
-                }
-            }
-            return true;
+            return CanVisitCore(this.AttributeRules, symbol);
         }
 
         public static ConfigFilterRule Load(string configFile)
@@ -51,7 +38,11 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             {
                 return new ConfigFilterRule();
             }
-            if (!File.Exists(configFile)) throw new FileNotFoundException($"Filter Config file {configFile} does not exist!");
+
+            if (!File.Exists(configFile))
+            {
+                throw new FileNotFoundException($"Filter Config file {configFile} does not exist!");
+            }
 
             ConfigFilterRule rule = null;
             try
@@ -72,7 +63,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         public static ConfigFilterRule LoadWithDefaults(string filterConfigFile)
         {
-            ConfigFilterRule defaultRule, userRule;
+            ConfigFilterRule defaultRule;
 
             var assembly = Assembly.GetExecutingAssembly();
             var defaultConfigPath = $"{assembly.GetName().Name}.Filters.defaultfilterconfig.yml";
@@ -86,11 +77,23 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             {
                 return defaultRule;
             }
-            else
+
+            var userRule = Load(filterConfigFile);
+            return Merge(defaultRule, userRule);
+        }
+
+        private static bool CanVisitCore(IEnumerable<ConfigFilterRuleItemUnion> ruleItems, SymbolFilterData symbol)
+        {
+            foreach (var ruleUnion in ruleItems)
             {
-                userRule = Load(filterConfigFile);
-                return Merge(defaultRule, userRule);
+                ConfigFilterRuleItem rule = ruleUnion.Rule;
+                if (rule != null && rule.IsMatch(symbol))
+                {
+                    return rule.CanVisit;
+                }
             }
+
+            return TryVisitSymbolWithPriorSpecializedRuling(ruleItems.Where(item => item.Rule != null), symbol);
         }
 
         private static ConfigFilterRule Merge(ConfigFilterRule defaultRule, ConfigFilterRule userRule)
@@ -98,9 +101,47 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             return new ConfigFilterRule
             {
                 // user rule always overwrite default rule
-                ApiRules = userRule.ApiRules.Concat(defaultRule.ApiRules).ToList(),
-                AttributeRules = userRule.AttributeRules.Concat(defaultRule.AttributeRules).ToList(),
+                ApiRules = userRule.ApiRules.Concat(defaultRule.ApiRules),
+                AttributeRules = userRule.AttributeRules.Concat(defaultRule.AttributeRules),
             };
+        }
+
+        private static bool TryVisitSymbolWithPriorSpecializedRuling(IEnumerable<ConfigFilterRuleItemUnion> apiRules, SymbolFilterData filterData)
+        {
+            if (!apiRules.Any())
+            {
+                return false;
+            }
+
+            string GetCleanUidString(string inputString)
+            {
+                if (string.IsNullOrEmpty(inputString))
+                {
+                    return string.Empty;
+                }
+
+                if (!inputString.Contains("^") && !inputString.Contains(@"\"))
+                {
+                    // NOT a UID Regex. 
+                    return inputString;
+                }
+
+                return inputString.Replace("^", string.Empty).Replace(@"\", string.Empty);
+            }
+
+            bool DoesApiRuleIdMatchesSymbol(ConfigFilterRuleItem apiRule)
+            {
+                var apiIdentification = GetCleanUidString(apiRule?.UidRegex);
+                return apiIdentification != null && !string.IsNullOrWhiteSpace(filterData.Id) && apiIdentification.Contains(filterData.Id);
+            }
+
+            bool IsMatchedRulingConflictingWithFilters(ConfigFilterRuleItem apiRule)
+            {
+                ////var ruleSet = apiRules.Except(apiRules);
+                return false;
+            }
+
+            return apiRules.FirstOrDefault(apiRule => DoesApiRuleIdMatchesSymbol(apiRule.Rule) && !IsMatchedRulingConflictingWithFilters(apiRule.Rule)) != null;
         }
     }
 }
