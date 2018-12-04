@@ -504,7 +504,7 @@ metadata: Web Apps Documentation
                 FileCollection files = new FileCollection(_defaultFiles);
                 files.Add(DocumentType.Article, new[] { inputFile }, _inputFolder);
                 BuildDocument(files);
-                var errors = listener.Items.Where(s => s.LogLevel == LogLevel.Warning).ToList();
+                var errors = listener.Items.Where(s => s.Code == "InvalidInputFile").ToList();
                 Assert.Single(errors);
                 Assert.Equal($"Unable to load file: {inputFile} via processor: MetadataReferenceTest: Validation against \"http://dotnet.github.io/docfx/schemas/v1.0/schema.json#\" failed: \nInvalid type. Expected Object but got String. Path 'metadata'.", errors[0].Message);
             }

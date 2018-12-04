@@ -183,7 +183,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
         {
             var files = new FileCollection(Directory.GetCurrentDirectory());
             files.Add(DocumentType.Article, new[] { "TestData/swagger/externalRefNotExist.json" }, "TestData/");
-            var listener = TestLoggerListener.CreateLoggerListenerWithCodeFilter(WarningCodes.Build.InvalidInputFile);
+            var listener = TestLoggerListener.CreateLoggerListenerWithCodeFilter("InvalidInputFile");
             Logger.RegisterListener(listener);
 
             using (new LoggerPhaseScope(nameof(RestApiDocumentProcessorTest)))
@@ -201,7 +201,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
         {
             var files = new FileCollection(Directory.GetCurrentDirectory());
             files.Add(DocumentType.Article, new[] { "TestData/swagger/externalRefWithRefInside.json" }, "TestData/");
-            var listener = TestLoggerListener.CreateLoggerListenerWithCodeFilter(WarningCodes.Build.InvalidInputFile);
+            var listener = TestLoggerListener.CreateLoggerListenerWithCodeFilter("InvalidInputFile");
             Logger.RegisterListener(listener);
 
             using (new LoggerPhaseScope(nameof(RestApiDocumentProcessorTest)))
