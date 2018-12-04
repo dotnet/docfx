@@ -190,16 +190,15 @@ if (-not $skipTests) {
 
     # Run unit test cases
     Write-Host "Start running unit test"
-    foreach ($proj in (Get-ChildItem "test" -Include "*.csproj" -Recurse)) {
-        if (($proj.Name) -ne "docfx.E2E.Tests.csproj") {
-            if ($os -eq "Windows") {
-                & dotnet test $proj.FullName --no-build -c $configuration
-                ProcessLastExitCode $lastexitcode "dotnet test $($proj.FullName) --no-build -c $configuration"
-            }
-            else {
-                & mono ./TestTools/xunit.runner.console/tools/net452/xunit.console.exe "$($proj.DirectoryName)/bin/$configuration/$framework/$($proj.BaseName).dll"
-                ProcessLastExitCode $lastexitcode "mono ./TestTools/xunit.runner.console/tools/net452/xunit.console.exe '$($proj.DirectoryName)/bin/$configuration/$framework/$($proj.BaseName).dll'"
-            }
+    $exclude = @("docfx.E2E.Tests.csproj")
+    foreach ($proj in (Get-ChildItem "test" -Exclude $exclude -Include @("*.csproj", "*.fsproj") -Recurse)) {
+        if ($os -eq "Windows") {
+            & dotnet test $proj.FullName --no-build -c $configuration
+            ProcessLastExitCode $lastexitcode "dotnet test $($proj.FullName) --no-build -c $configuration"
+        }
+        else {
+            & mono ./TestTools/xunit.runner.console/tools/net452/xunit.console.exe "$($proj.DirectoryName)/bin/$configuration/$framework/$($proj.BaseName).dll"
+            ProcessLastExitCode $lastexitcode "mono ./TestTools/xunit.runner.console/tools/net452/xunit.console.exe '$($proj.DirectoryName)/bin/$configuration/$framework/$($proj.BaseName).dll'"
         }
     }
 }
