@@ -73,7 +73,7 @@ namespace Microsoft.Docs.Build
                 case LocalizationMapping.RepositoryAndFolder:
                 case LocalizationMapping.Branch:
                     {
-                        var repo = Repository.CreateFromFolder(Path.GetFullPath(docsetPath));
+                        var repo = Repository.Create(Path.GetFullPath(docsetPath));
                         if (repo == null)
                         {
                             return null;
