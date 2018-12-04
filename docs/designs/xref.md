@@ -94,14 +94,34 @@ xref:
 During `docfx restore`, all the JSON files will be restored and merged.
 
 ## Resolve xref
-### Using `@` to reference a uid in markdown
-Not supporting `displayProperty` for this case for now, we need to refine the validation pattern of uid firstly, could reference to [V2](https://dotnet.github.io/docfx/tutorial/links_and_cross_references.html#shorthand-form).
+### Using `xref` to reference a uid in markdown
+#### Support `displayProperty`
 ```
-Link to @a
+Link to <xref:a?displayProperty=fullName>
+```
+  And it will be resolved as below, notice that the display title is from `fullName` not `name`
+```json
+{"content":"<p>Link to <a href=\"aspnet/a.md\">ASP.NET Full Documentation</a></p>\n"}
+```
+#### Support hashtag
+```
+Link to <xref:a?displayProperty=fullName#bookmark>
+```
+  And it will be resolved as below, notice that the display title is from `fullName` not `name`
+```json
+{"content":"<p>Link to <a href=\"/aspnet/a#bookmark\">ASP.NET Full Documentation</a></p>\n"}
+```
+>> Since hashtag is supported in xref, that means if you have # in UID, it has to be encoded to %23.
+And then the xref format should follow URI standard, so all reserved characters should be encoded.
+
+### Using `@` to reference a uid in markdown
+According to [V2](https://dotnet.github.io/docfx/tutorial/links_and_cross_references.html#shorthand-form), shorthand form should work almost the same as 
+```
+Link to @a?displayProperty=fullName#bookmark
 ```
 The file above would be resolved using the restored xref map
 ```json
-{"content":"<p>Link to <a href=\"aspnet/a.md\">ASP.NET Documentation</a></p>\n"}
+{"content":"<p>Link to <a href=\"/aspnet/a#bookmark\">ASP.NETFull  Documentation</a></p>\n"}
 ```
 And if the UID could not be resolved, a warning will be logged
 ```yml
@@ -116,14 +136,6 @@ outputs:
 ```
   - User can also define which property to display for the referenced uid
 
-### Using `xref` to reference a uid in markdown
-```
-Link to <xref:a?displayProperty=fullName>
-```
-  And it will be resolved as below, notice that the display title is from `fullName` not `name`
-```json
-{"content":"<p>Link to <a href=\"aspnet/a.md\">ASP.NET Full Documentation</a></p>\n"}
-```
 ### For SDP(JSON/YAML) files
 ```json
     {
