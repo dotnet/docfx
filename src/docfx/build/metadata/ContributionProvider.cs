@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -17,21 +16,19 @@ namespace Microsoft.Docs.Build
 
         private readonly Dictionary<string, DateTime> _updateTimeByCommit = new Dictionary<string, DateTime>();
 
-        private readonly ConcurrentDictionary<string, Repository> _repositoryByFolder = new ConcurrentDictionary<string, Repository>();
+        private readonly GitCommitProvider _gitCommitProvider;
 
-        private readonly ConcurrentDictionary<string, List<GitCommit>> _contributionCommitsByFile = new ConcurrentDictionary<string, List<GitCommit>>();
-
-        private readonly ConcurrentDictionary<string, List<GitCommit>> _commitsByFile = new ConcurrentDictionary<string, List<GitCommit>>();
-
-        private ContributionProvider(GitHubUserCache gitHubUserCache)
+        private ContributionProvider(GitHubUserCache gitHubUserCache, GitCommitProvider gitCommitProvider)
         {
+            Debug.Assert(gitCommitProvider != null);
+
             _gitHubUserCache = gitHubUserCache;
+            _gitCommitProvider = gitCommitProvider;
         }
 
-        public static async Task<ContributionProvider> Create(Docset docset, GitHubUserCache cache)
+        public static async Task<ContributionProvider> Create(Docset docset, GitHubUserCache cache, GitCommitProvider gitCommitProvider)
         {
-            var result = new ContributionProvider(cache);
-            await result.LoadCommits(docset);
+            var result = new ContributionProvider(cache, gitCommitProvider);
             await result.LoadCommitsTime(docset);
             return result;
         }
@@ -41,14 +38,13 @@ namespace Microsoft.Docs.Build
             string authorName)
         {
             Debug.Assert(document != null);
-            var (repo, _) = GetRepository(document);
+            var (repo, pathToRepo, commits) = await _gitCommitProvider.GetCommitHistory(document);
             if (repo == null)
             {
                 return default;
             }
 
-            var contributionCommits = _contributionCommitsByFile.TryGetValue(document.FilePath, out var cc) ? cc : default;
-            var commits = _commitsByFile.TryGetValue(document.FilePath, out var fc) ? fc : default;
+            var contributionCommits = await GetContributionCommits();
 
             var excludes = document.Docset.Config.Contribution.ExcludedContributors;
 
@@ -123,6 +119,19 @@ namespace Microsoft.Docs.Build
                 }
                 return null;
             }
+
+            async Task<List<GitCommit>> GetContributionCommits()
+            {
+                var result = commits;
+                var bilingual = document.Docset.IsLocalized() && document.Docset.Config.Localization.Bilingual;
+                var contributionBranch = bilingual && LocalizationConvention.TryGetContributionBranch(repo.Branch, out var cBranch) ? cBranch : null;
+                if (!string.IsNullOrEmpty(contributionBranch))
+                {
+                    (_, _, result) = await _gitCommitProvider.GetCommitHistory(document, contributionBranch);
+                }
+
+                return result;
+            }
         }
 
         public DateTime GetUpdatedAt(Document document, List<GitCommit> fileCommits)
@@ -136,18 +145,20 @@ namespace Microsoft.Docs.Build
             return File.GetLastWriteTimeUtc(Path.Combine(document.Docset.DocsetPath, document.FilePath));
         }
 
-        public (string editUrl, string contentUrl, string commitUrl) GetGitUrls(Document document)
+        public async Task<(string editUrl, string contentUrl, string commitUrl)> GetGitUrls(Document document)
         {
             Debug.Assert(document != null);
 
-            var (repo, pathToRepo) = GetRepository(document);
+            var (repo, pathToRepo, commits) = await _gitCommitProvider.GetCommitHistory(document);
             if (repo == null)
                 return default;
 
             var repoHost = GitHubUtility.TryParse(repo.Remote, out _, out _) ? GitHost.GitHub : GitHost.Unknown;
-            var commit = _commitsByFile.TryGetValue(document.FilePath, out var value) && value.Count > 0
-                ? value[0].Sha
-                : repo.Commit;
+            var commit = commits.FirstOrDefault()?.Sha;
+            if (string.IsNullOrEmpty(commit))
+            {
+                commit = repo.Commit;
+            }
 
             return (GetEditUrl(), GetContentUrl(), GetCommitUrl());
 
@@ -206,27 +217,6 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private (Repository repo, string pathToRepo) GetRepository(Document document)
-        {
-            var fullPath = PathUtility.NormalizeFile(Path.Combine(document.Docset.DocsetPath, document.FilePath));
-            var repo = GetRepository(fullPath);
-            if (repo == null)
-                return default;
-
-            return (repo, PathUtility.NormalizeFile(Path.GetRelativePath(repo.Path, fullPath)));
-        }
-
-        private Repository GetRepository(string path)
-        {
-            if (GitUtility.IsRepo(path))
-                return Repository.CreateFromFolder(path);
-
-            var parent = path.Substring(0, path.LastIndexOf("/"));
-            return Directory.Exists(parent)
-                ? _repositoryByFolder.GetOrAdd(parent, GetRepository)
-                : null;
-        }
-
         private async Task LoadCommitsTime(Docset docset)
         {
             if (!string.IsNullOrEmpty(docset.Config.Contribution.GitCommitsTime))
@@ -237,52 +227,6 @@ namespace Microsoft.Docs.Build
                 foreach (var commit in JsonUtility.Deserialize<GitCommitsTime>(content).Commits)
                 {
                     _updateTimeByCommit.Add(commit.Sha, commit.BuiltAt);
-                }
-            }
-        }
-
-        private async Task LoadCommits(Docset docset)
-        {
-            var errors = new List<Error>();
-
-            if (docset.Config.Contribution.ShowContributors)
-            {
-                var bilingual = docset.IsLocalized() && docset.Config.Localization.Bilingual;
-                var filesByRepo =
-                    from file in docset.BuildScope
-                    where file.ContentType == ContentType.Page
-                    let fileInRepo = GetRepository(file)
-                    where fileInRepo.repo != null
-                    group (file, fileInRepo.pathToRepo)
-                    by fileInRepo.repo;
-
-                foreach (var group in filesByRepo)
-                {
-                    var repo = group.Key;
-                    var repoPath = repo.Path;
-                    var contributionBranch = bilingual && LocalizationConvention.TryGetContributionBranch(repo.Branch, out var cBranch) ? cBranch : null;
-
-                    using (Progress.Start($"Loading commits for '{repoPath}'"))
-                    using (var commitsProvider = await GitCommitProvider.Create(repoPath, AppData.GetCommitCachePath(repo.Remote)))
-                    {
-                        ParallelUtility.ForEach(
-                            group,
-                            pair =>
-                            {
-                                _commitsByFile[pair.file.FilePath] = commitsProvider.GetCommitHistory(pair.pathToRepo);
-                                if (!string.IsNullOrEmpty(contributionBranch))
-                                {
-                                    _contributionCommitsByFile[pair.file.FilePath] = commitsProvider.GetCommitHistory(pair.pathToRepo, contributionBranch);
-                                }
-                                else
-                                {
-                                    _contributionCommitsByFile[pair.file.FilePath] = _commitsByFile[pair.file.FilePath];
-                                }
-                            },
-                            Progress.Update);
-
-                        await commitsProvider.SaveCache();
-                    }
                 }
             }
         }
