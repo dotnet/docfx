@@ -9,26 +9,18 @@ namespace Microsoft.Docs.Build
 {
     internal class BuildResource
     {
-        internal static (ResourceModel model, List<string> monikers) Build(
-            Document file,
-            Dictionary<Document, List<string>> monikersMap,
-            List<Document> referencingFiles)
+        internal static (List<Error> errors, ResourceModel model, List<string> monikers) Build(Document file)
         {
             Debug.Assert(file.ContentType == ContentType.Resource);
-            Debug.Assert(monikersMap != null);
 
-            var monikers = new List<string>();
-            foreach (var referencingFile in referencingFiles)
-            {
-                if (monikersMap.TryGetValue(referencingFile, out var fileMonikers))
-                {
-                    monikers.AddRange(fileMonikers);
-                }
-            }
-            monikers.Sort(file.Docset.Monikers.Comparer);
-            monikers = monikers.Distinct().ToList();
+            var errors = new List<Error>();
+            var (metaErrors, metadata) = JsonUtility.ToObjectWithSchemaValidation<FileMetadata>(file.Docset.Metadata.GetMetadata(file));
+            errors.AddRange(metaErrors);
 
-            return (new ResourceModel
+            var (monikerError, monikers) = file.Docset.Monikers.GetFileLevelMonikers(file, metadata.MonikerRange);
+            errors.AddIfNotNull(monikerError);
+
+            return (errors, new ResourceModel
             {
                 Locale = file.Docset.Locale,
                 Monikers = monikers,

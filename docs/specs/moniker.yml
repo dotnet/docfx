@@ -3,8 +3,8 @@
 inputs:
   docfx.yml: |
     monikerRange:
-      'docs/v1/**/*.md': '< netcore-2.0'
-      'docs/v2/**/*.md': '>= netcore-2.0'
+      'docs/v1/**': '< netcore-2.0'
+      'docs/v2/**': '>= netcore-2.0'
     routes:
       docs/v1/: docs/
       docs/v2/: docs/
@@ -45,8 +45,8 @@ outputs:
 inputs:
   docfx.yml: |
     monikerRange:
-      'docs/v1/**/*.md': '< netcore-2.0'
-      'docs/v2/**/*.md': '>= netcore-2.0'
+      'docs/v1/**': '< netcore-2.0'
+      'docs/v2/**': '>= netcore-2.0'
     routes:
       docs/v1/: docs/
       docs/v2/: docs/
@@ -121,7 +121,7 @@ outputs:
 inputs:
   docfx.yml: |
     monikerRange:
-      'docs/v1/**/*.md': '>= netcore-1.0 <= netcore-1.2'
+      'docs/v1/**': '>= netcore-1.0 <= netcore-1.2'
     routes:
       docs/v1/: docs/
     monikerDefinition: monikerDefinition.json
@@ -149,8 +149,8 @@ outputs:
 inputs:
   docfx.yml: |
     monikerRange:
-      'docs/v1/**/*.md': '>= netcore-1.0 <= netcore-1.1'
-      'docs/v2/**/*.md': '> netcore-1.1 <= netcore-1.3'
+      'docs/v1/**': '>= netcore-1.0 <= netcore-1.1'
+      'docs/v2/**': '> netcore-1.1 <= netcore-1.3'
     routes:
       docs/v1/: docs/
       docs/v2/: docs/
@@ -200,8 +200,8 @@ outputs:
 inputs:
   docfx.yml: |
     monikerRange:
-      'docs/v1/**/*.md': '>= netcore-1.0 <= netcore-1.1'
-      'docs/v2/**/*.md': '>= netcore-1.1 <= netcore-1.2'
+      'docs/v1/**': '>= netcore-1.0 <= netcore-1.1'
+      'docs/v2/**': '>= netcore-1.1 <= netcore-1.2'
     routes:
       docs/v1/: docs/
       docs/v2/: docs/
@@ -243,8 +243,8 @@ outputs:
 inputs:
   docfx.yml: |
     monikerRange:
-      'docs/v1/**/*.md': '<= netcore-2.0'
-      'docs/v2/**/*.md': '>= netcore-2.0'
+      'docs/v1/**': '<= netcore-2.0'
+      'docs/v2/**': '>= netcore-2.0'
     routes:
       docs/v1/: docs/
       docs/v2/: docs/
@@ -314,7 +314,7 @@ outputs:
 inputs:
   docfx.yml: |
     monikerRange:
-      'docs/v1/**/*.md': '< netcore-2.0'
+      'docs/v1/**': '< netcore-2.0'
     routes:
       docs/v1/: docs/
     monikerDefinition: monikerDefinition.json
@@ -341,7 +341,7 @@ outputs:
 inputs:
   docfx.yml: |
     monikerRange:
-      'docs/v1/**/*.md': '<= netcore-1.1'
+      'docs/v1/**': '<= netcore-1.1'
     routes:
       docs/v1/: docs/
     monikerDefinition: monikerDefinition.json
@@ -367,8 +367,8 @@ outputs:
 inputs:
   docfx.yml: |
     monikerRange:
-      'docs/v1/**/*.md': '< netcore-2.0'
-      'docs/v2/**/*.md': '>= netcore-2.0'
+      'docs/v1/**': '< netcore-2.0'
+      'docs/v2/**': '>= netcore-2.0'
     routes:
       docs/v1/: docs/
       docs/v2/: docs/
@@ -429,8 +429,8 @@ outputs:
 inputs:
   docfx.yml: |
     monikerRange:
-      'docs/v1/**/*.md': '< netcore-2.0'
-      'docs/v2/**/*.md': '>= netcore-2.0'
+      'docs/v1/**': '< netcore-2.0'
+      'docs/v2/**': '>= netcore-2.0'
     routes:
       docs/v1/: docs/
       docs/v2/: docs/
@@ -490,8 +490,8 @@ outputs:
 inputs:
   docfx.yml: |
     monikerRange:
-      'docs/v1/**/*.md': '<= netcore-2.0'
-      'docs/v2/**/*.md': '>= netcore-2.0'
+      'docs/v1/**': '<= netcore-2.0'
+      'docs/v2/**': '>= netcore-2.0'
     routes:
       docs/v1/: docs/
       docs/v2/: docs/
@@ -533,8 +533,8 @@ outputs:
 inputs:
   docfx.yml: |
     monikerRange:
-      'docs/v1/**/*.md': '< netcore-2.0'
-      'docs/v2/**/*.md': '>= netcore-2.0'
+      'docs/v1/**': '< netcore-2.0'
+      'docs/v2/**': '>= netcore-2.0'
     routes:
       docs/v1/: docs/
       docs/v2/: docs/
@@ -590,8 +590,8 @@ outputs:
 inputs:
   docfx.yml: |
     monikerRange:
-      'docs/v1/**/*.md': '< netcore-2.0'
-      'docs/v2/**/*.md': '>= netcore-2.0'
+      'docs/v1/**': '< netcore-2.0'
+      'docs/v2/**': '>= netcore-2.0'
     routes:
       docs/v1/: docs/
       docs/v2/: docs/
@@ -655,8 +655,8 @@ outputs:
 inputs:
   docfx.yml: |
     monikerRange:
-      'docs/v1/**/*.md': '< netcore-2.0'
-      'docs/v2/**/*.md': '>= netcore-2.0'
+      'docs/v1/**': '< netcore-2.0'
+      'docs/v2/**': '>= netcore-2.0'
     routes:
       docs/v1/: docs/
       docs/v2/: docs/
@@ -730,7 +730,7 @@ outputs:
 inputs:
   docfx.yml: |
     monikerRange:
-      'docs/v1/**/*.md': '>= netcore-1.0'
+      'docs/v1/**': '>= netcore-1.0'
     routes:
       docs/v1/: docs/
     monikerDefinition: monikerDefinition.json
@@ -790,8 +790,8 @@ outputs:
 inputs:
   docfx.yml: |
     monikerRange:
-      'docs/v1/**/*.md': '>= netcore-1.0 < netcore-2.0'
-      'docs/v2/**/*.md': '>= netcore-2.0'
+      'docs/v1/**': '>= netcore-1.0 < netcore-2.0'
+      'docs/v2/**': '>= netcore-2.0'
     routes:
       docs/v1/: docs/
       docs/v2/: docs/
@@ -836,39 +836,32 @@ outputs:
 inputs:
   docfx.yml: |
     monikerRange:
-      'docs/v1/**/*.md': '>= netcore-1.0'
+      'docs/v1/**': '>= netcore-1.0'
     routes:
       docs/v1/: docs/
     monikerDefinition: monikerDefinition.json
   docs/v1/a.md: |
     ---
-    monikerRange: netcore-1.0 || netcore-1.1
+    monikerRange: netcore-1.0
     ---
-    Moniker: netcore-1.0, netcore-1.1
-    ![image](c.png)
-  docs/v1/b.md: |
-    ---
-    monikerRange: netcore-1.1 || netcore-1.2
-    ---
-    Moniker: netcore-1.1, netcore-1.2
+    Moniker: netcore-1.0
     ![image](c.png)
   docs/a.md: |
     No version
     ![image](c.png)
   docs/v1/c.png:
+  docs/v1/b.png:
   docs/c.png:
   monikerDefinition.json: |
     {
       "monikers": [
         { "name": "netcore-1.0", "product": ".NET Core" },
         { "name": "netcore-1.1", "product": ".NET Core" },
-        { "name": "netcore-1.2", "product": ".NET Core" }
       ]
     }
 outputs:
-  9d4e15fd/docs/a.json:
-  e300a7df/docs/b.json:
-  2420f88b/docs/c.png:
+  136a42ac/docs/a.json:
+  9d4e15fd/docs/c.png:
   docs/a.json:
   docs/c.png:
   build.manifest: |
@@ -877,8 +870,7 @@ outputs:
           { "siteUrl": "/docs/a" },
           { "siteUrl": "/docs/c.png", "outputPath": "docs/c.png", "sourcePath": "docs/c.png", "monikers": [] },
           { "siteUrl": "/docs/a" },
-          { "siteUrl": "/docs/b" },
-          { "siteUrl": "/docs/c.png", "outputPath": "2420f88b/docs/c.png", "sourcePath": "docs/v1/c.png","monikers": ["netcore-1.0", "netcore-1.1", "netcore-1.2" ] }
+          { "siteUrl": "/docs/c.png", "outputPath": "9d4e15fd/docs/c.png", "sourcePath": "docs/v1/c.png","monikers": ["netcore-1.0", "netcore-1.1" ] }
       ],
       "dependencies": { }
     }
@@ -887,26 +879,25 @@ outputs:
 inputs:
   docfx.yml: |
     monikerRange:
-      'docs/v1/**/*.md': '>= netcore-1.0'
-      'docs/v2/**/*.md': '>= netcore-1.0'
+      'docs/v1/**': '<= netcore-1.1'
+      'docs/v2/**': '>= netcore-1.1'
     routes:
       docs/v1/: docs/
       docs/v2/: docs/
     monikerDefinition: monikerDefinition.json
   docs/v1/a.md: |
-    ---
-    monikerRange: netcore-1.0 || netcore-1.1
-    ---
     Moniker: netcore-1.0, netcore-1.1
     ![image](c.png)
-  docs/v2/b.md: |
+  docs/v2/a.md: |
     ---
-    monikerRange: netcore-1.1 || netcore-1.2
+    monikerRange: netcore-1.2
     ---
-    Moniker: netcore-1.1, netcore-1.2
+    Moniker: netcore-1.2
     ![image](c.png)
   docs/v1/c.png:
+  docs/v1/b.png:
   docs/v2/c.png:
+  docs/v2/b.png:
   monikerDefinition.json: |
     {
       "monikers": [
@@ -917,12 +908,12 @@ inputs:
     }
 outputs:
   9d4e15fd/docs/a.json:
-  e300a7df/docs/b.json:
+  b201e604/docs/a.json:
   build.manifest: |
     {
       "files": [
           { "siteUrl": "/docs/a" },
-          { "siteUrl": "/docs/b" }
+          { "siteUrl": "/docs/a" }
       ],
       "dependencies": { }
     }

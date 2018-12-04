@@ -75,27 +75,14 @@ namespace Microsoft.Docs.Build
 
                 await ParallelUtility.ForEach(
                     docset.BuildScope,
-                    async (file, buildChild) => { monikersMap.TryAdd(file, await BuildOneFile(file, buildChild, null, null)); },
-                    (file) => { return ShouldBuildFile(file, new List<ContentType> { ContentType.Page, ContentType.Redirection }); },
-                    Progress.Update);
-
-                // Build resources: since the monikers of resource file is the collection of the monikers of the files referencing to this resource
-                var resourcesFileBuildScope = dependencyMapBuilder.GetResourceDependencyMap();
-                foreach (var file in docset.BuildScope.Where(doc => doc.ContentType == ContentType.Resource))
-                {
-                    resourcesFileBuildScope.TryAdd(file, new List<Document>());
-                }
-
-                await ParallelUtility.ForEach(
-                    resourcesFileBuildScope,
-                    (item, _) => { return BuildOneFile(item.Key, null, monikersMap.ToDictionary(m => m.Key, m => m.Value), item.Value); },
-                    item => ShouldBuildFile(item.Key, new List<ContentType> { ContentType.Resource }),
+                    async (file, buildChild) => { monikersMap.TryAdd(file, await BuildOneFile(file, buildChild, null)); },
+                    (file) => { return ShouldBuildFile(file, new List<ContentType> { ContentType.Page, ContentType.Redirection, ContentType.Resource }); },
                     Progress.Update);
 
                 // Build TOC: since toc file depends on the build result of every node
                 await ParallelUtility.ForEach(
                     docset.BuildScope.Where(doc => doc.ContentType == ContentType.TableOfContents),
-                    (file, buildChild) => { return BuildOneFile(file, buildChild, monikersMap.ToDictionary(item => item.Key, item => item.Value), null); },
+                    (file, buildChild) => { return BuildOneFile(file, buildChild, monikersMap.ToDictionary(item => item.Key, item => item.Value)); },
                     file => { return ShouldBuildFile(file, new List<ContentType> { ContentType.TableOfContents }); },
                     Progress.Update);
 
@@ -109,11 +96,10 @@ namespace Microsoft.Docs.Build
                 async Task<List<string>> BuildOneFile(
                     Document file,
                     Action<Document> buildChild,
-                    Dictionary<Document, List<string>> fileMonikersMap,
-                    List<Document> referencingFiles)
+                    Dictionary<Document, List<string>> fileMonikersMap)
                 {
                     var callback = new PageCallback(xrefMap, dependencyMapBuilder, bookmarkValidator, buildChild);
-                    return await BuildFile(context, file, tocMap, contribution, fileMonikersMap, referencingFiles, callback, manifestBuilder);
+                    return await BuildFile(context, file, tocMap, contribution, fileMonikersMap, callback, manifestBuilder);
                 }
 
                 bool ShouldBuildFile(Document file, IEnumerable<ContentType> shouldBuildContentTypes)
@@ -146,7 +132,6 @@ namespace Microsoft.Docs.Build
             TableOfContentsMap tocMap,
             ContributionProvider contribution,
             Dictionary<Document, List<string>> monikersMap,
-            List<Document> referencingFiles,
             PageCallback callback,
             ManifestBuilder manifestBuilder)
         {
@@ -159,7 +144,7 @@ namespace Microsoft.Docs.Build
                 switch (file.ContentType)
                 {
                     case ContentType.Resource:
-                        (model, monikers) = BuildResource.Build(file, monikersMap, referencingFiles);
+                        (errors, model, monikers) = BuildResource.Build(file);
                         break;
                     case ContentType.Page:
                         (errors, model, monikers) = await BuildPage.Build(context, file, tocMap, contribution, callback);
