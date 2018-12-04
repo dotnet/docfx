@@ -47,7 +47,7 @@ namespace Microsoft.Docs.Build
                 if (config.Output.Json)
                 {
                     // TODO: decouple files and dependencies from legacy.
-                    Legacy.ConvertToLegacyModel(docset, context, fileManifests, sourceDependencies, tocMap, xrefMap);
+                    Legacy.ConvertToLegacyModel(docset, context, fileManifests, sourceDependencies, tocMap);
                 }
                 else
                 {

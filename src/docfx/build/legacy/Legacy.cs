@@ -13,8 +13,7 @@ namespace Microsoft.Docs.Build
             Context context,
             Dictionary<Document, FileManifest> fileManifests,
             DependencyMap dependencyMap,
-            TableOfContentsMap tocMap,
-            XrefMap xrefMap)
+            TableOfContentsMap tocMap)
         {
             using (Progress.Start("Converting to legacy"))
             {
