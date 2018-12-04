@@ -90,12 +90,7 @@ namespace Microsoft.Docs.Build
             var total = 0;
             var running = 1; // Always run the virtual root node
 
-            queue = new ActionBlock<(T, bool)>(Run, new ExecutionDataflowBlockOptions
-            {
-                MaxDegreeOfParallelism = DataflowBlockOptions.Unbounded,
-                BoundedCapacity = DataflowBlockOptions.Unbounded,
-                EnsureOrdered = false,
-            });
+            queue = new ActionBlock<(T, bool)>(Run, s_dataflowOptions);
 
             // Enqueue a virtual root node as a placeholder,
             // it is responsible for queueing each items in source parameter

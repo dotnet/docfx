@@ -14,10 +14,10 @@ namespace Microsoft.Docs.Build
     {
         private const int MaxCommitCacheCountPerFile = 10;
 
-        public static async Task<ConcurrentDictionary<string, Dictionary<(long commit, long blob), (long[] commitHistory, int lruOrder)>>> LoadCommitCache(Repository repo)
+        public static async Task<ConcurrentDictionary<string, Dictionary<(long commit, long blob), (long[] commitHistory, int lruOrder)>>> LoadCommitCache(string repoRemote)
         {
-            Debug.Assert(repo != null);
-            var cacheFilePath = AppData.GetCommitCachePath(repo.Remote);
+            Debug.Assert(!string.IsNullOrEmpty(repoRemote));
+            var cacheFilePath = AppData.GetCommitCachePath(repoRemote);
             if (!File.Exists(cacheFilePath))
             {
                 return new ConcurrentDictionary<string, Dictionary<(long commit, long blob), (long[] commitHistory, int lruOrder)>>();
@@ -51,16 +51,16 @@ namespace Microsoft.Docs.Build
             });
         }
 
-        public static Task SaveCache(Repository repo, IReadOnlyList<KeyValuePair<string, Dictionary<(long commit, long blob), (long[] commitHistory, int lruOrder)>>> commitCache)
+        public static Task SaveCache(string repoRemote, IReadOnlyList<KeyValuePair<string, Dictionary<(long commit, long blob), (long[] commitHistory, int lruOrder)>>> commitCache)
         {
-            Debug.Assert(repo != null);
+            Debug.Assert(!string.IsNullOrEmpty(repoRemote));
 
             if (commitCache == null)
             {
                 return Task.CompletedTask;
             }
 
-            var cacheFilePath = AppData.GetCommitCachePath(repo.Remote);
+            var cacheFilePath = AppData.GetCommitCachePath(repoRemote);
             PathUtility.CreateDirectoryFromFilePath(cacheFilePath);
             return ProcessUtility.WriteFile(cacheFilePath, stream =>
             {
