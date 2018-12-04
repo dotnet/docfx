@@ -100,11 +100,11 @@ inputs:
     }
   docs/c.md: |
     Link to <xref:a?displayProperty=fullName>
-    Link to @a
+    Link to @a?displayProperty=fullName
     Link to <xref:a?displayProperty=notExisting>
 outputs:
   docs/c.json: | 
-    {"content":"<p>Link to <a href=\"/docs/a.json\">test.test</a>\nLink to <a href=\"/docs/a.json\">test</a>\nLink to <a href=\"/docs/a.json\">test</a></p>\n"}
+    {"content":"<p>Link to <a href=\"/docs/a.json\">test.test</a>\nLink to <a href=\"/docs/a.json\">test.test</a>\nLink to <a href=\"/docs/a.json\">test</a></p>\n"}
   docs/a.json:
   xrefmap.json: | 
     {"references":[{"uid":"a","href":"/docs/a.json"}]}
@@ -270,7 +270,23 @@ outputs:
   xrefmap.json: | 
     {"references":[{"uid":"a","href":"/docs/a.json","inlineDescription":"Hello <code>docfx</code>!"}]}
 ---
-# Refer to uid with encoded content, it should be decoded then resolved
+# Refer to uid with hashtag
+inputs:
+  docfx.yml:
+  docs/a.md: |
+    ---
+    title: Title from yaml header a
+    uid: a
+    ---
+  docs/b.md: | 
+    Link to <xref:a#bookmark>
+    Link to @a#bookmark
+outputs:
+  docs/a.json:
+  docs/b.json: |
+    { "content": "<p>Link to <a href=\"/docs/a#bookmark\">Title from yaml header a</a>\nLink to <a href=\"/docs/a#bookmark\">Title from yaml header a</a></p>" }
+---
+# Refer to uid with encoded content, it should be decoded and then resolved
 inputs:
   docfx.yml:
   docs/a.md: |

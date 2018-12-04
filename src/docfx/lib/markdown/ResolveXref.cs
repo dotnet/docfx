@@ -22,7 +22,7 @@ namespace Microsoft.Docs.Build
                  {
                      if (node is XrefInline xref)
                      {
-                         var (uid, query, _) = HrefUtility.SplitHref(xref.Href);
+                         var (uid, query, fragment) = HrefUtility.SplitHref(xref.Href);
                          string moniker = null;
                          NameValueCollection queries = null;
                          if (!string.IsNullOrEmpty(query))
@@ -50,6 +50,11 @@ namespace Microsoft.Docs.Build
                          var displayPropertyValue = xrefSpec.GetXrefPropertyValue(queries?["displayProperty"]);
                          string display = !string.IsNullOrEmpty(displayPropertyValue) ? displayPropertyValue : (!string.IsNullOrEmpty(name) ? name : uid);
                          var href = !string.IsNullOrEmpty(moniker) ? $"{xrefSpec.Href}?view={moniker}" : xrefSpec.Href;
+
+                         // append fragment if any
+                         if (!string.IsNullOrEmpty(fragment))
+                             href += fragment;
+
                          return new LinkInline(href, null).AppendChild(new LiteralInline(display));
                      }
                      return node;
