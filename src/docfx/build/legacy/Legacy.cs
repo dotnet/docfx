@@ -27,7 +27,8 @@ namespace Microsoft.Docs.Build
                 LegacyFileMap.Convert(docset, context, files);
                 LegacyDependencyMap.Convert(docset, context, files, dependencyMap, tocMap);
                 LegacyCrossRepoReferenceInfo.Convert(docset, context);
-                LegacyXrefMap.Convert(docset, context, xrefMap);
+
+                // TODO: removed xrefmap.yml legacy output, xref service needs to consume xrefmap.json
             }
         }
     }
