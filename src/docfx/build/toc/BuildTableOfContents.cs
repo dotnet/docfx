@@ -12,7 +12,12 @@ namespace Microsoft.Docs.Build
     internal static class BuildTableOfContents
     {
         public static (IEnumerable<Error>, TableOfContentsModel, List<string> monikers) Build(
-            Context context, Document file, TableOfContentsMap tocMap, DependencyMapBuilder dependencyMapBuilder, Dictionary<Document, List<string>> monikersMap)
+            Context context,
+            Document file,
+            TableOfContentsMap tocMap,
+            DependencyMapBuilder dependencyMapBuilder,
+            BookmarkValidator bookmarkValidator,
+            Dictionary<Document, List<string>> monikersMap)
         {
             Debug.Assert(file.ContentType == ContentType.TableOfContents);
             Debug.Assert(monikersMap != null);
@@ -22,7 +27,7 @@ namespace Microsoft.Docs.Build
                 return (Enumerable.Empty<Error>(), null, new List<string>());
             }
 
-            var (errors, tocModel, tocMetadata, refArticles, refTocs, monikers) = Load(context, file, dependencyMapBuilder, monikersMap);
+            var (errors, tocModel, tocMetadata, refArticles, refTocs, monikers) = Load(context, file, dependencyMapBuilder, bookmarkValidator, monikersMap);
 
             var metadata = file.Docset.Metadata.GetMetadata(file, tocMetadata).ToObject<TableOfContentsMetadata>();
 
@@ -62,7 +67,7 @@ namespace Microsoft.Docs.Build
                 Debug.Assert(tocMapBuilder != null);
                 Debug.Assert(fileToBuild != null);
 
-                var (errors, _, _, referencedDocuments, referencedTocs, _) = Load(context, fileToBuild, null);
+                var (errors, _, _, referencedDocuments, referencedTocs, _) = Load(context, fileToBuild, null, null);
                 context.Report(fileToBuild.ToString(), errors);
 
                 tocMapBuilder.Add(fileToBuild, referencedDocuments, referencedTocs);
@@ -81,7 +86,7 @@ namespace Microsoft.Docs.Build
             List<Document> referencedTocs,
             List<string> monikers)
 
-            Load(Context context, Document fileToBuild, DependencyMapBuilder dependencyMapBuilder = null, Dictionary<Document, List<string>> monikersMap = null)
+            Load(Context context, Document fileToBuild, DependencyMapBuilder dependencyMapBuilder = null, BookmarkValidator bookmarkValidator = null, Dictionary<Document, List<string>> monikersMap = null)
         {
             var errors = new List<Error>();
             var referencedDocuments = new List<Document>();
@@ -119,6 +124,7 @@ namespace Microsoft.Docs.Build
                             itemMonikers = new List<string>();
                         }
                     }
+                    bookmarkValidator?.AddBookmarkReference(file, buildItem ?? file, fragment);
                     return (link, itemMonikers);
                 });
 
