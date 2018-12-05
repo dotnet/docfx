@@ -122,9 +122,7 @@ This document specifies Docfx vnext versioning dev design.
 
 3. Not support generating static website. In phase 1, since docfx doesn't handle fallback case, there have to be hosting server.
 
-4. Not support setting monikerRange by yaml header in TOC file(toc.md).
-
-5. Not support setting monikerRange of node in TOC file.
+4. Not support setting monikerRange of node in TOC file.
 
 ### 2 Input
 
@@ -514,10 +512,10 @@ In current docfx v3, Toc file is build at the same time with `page` files, becau
 
 When build the toc file(including the toc file included in another), we have to cover:
 
-1. *Monikers* of every node in toc. We don't support setting monikers of node in toc file, 
+1. *Monikers* of every node in toc(We don't support setting monikers of node in toc file).
     1. If the node is a text node(`## Header`), the *monikers* of this node is the collection of its children's monikers.
     1. If the node is a link node(`## [Header](a.md)`), the *monikers* of this node is the collection of its children's monikers and the monikers of this node.
-1. *Monikers* of toc file. We don't support setting monikers of the toc file by config or file metadata, the *monikers* of toc file is the collection of every node's monikers.
+1. *Monikers* of toc file - Intersection of the monikerRange setting in the config and file metadata(If the intersection is empty, a warning will be logged).
 
 In phase 1, when resolving the `toc_rel` of each file, we still take the nearest toc file.
 

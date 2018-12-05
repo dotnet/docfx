@@ -26,12 +26,13 @@ namespace Microsoft.Docs.Build
                 return (Enumerable.Empty<Error>(), null, new List<string>());
             }
 
-            var (errors, tocModel, tocMetadata, refArticles, refTocs, monikers) = Load(context, file, dependencyMapBuilder, bookmarkValidator, monikersMap);
+            var (errors, tocModel, tocMetadata, refArticles, refTocs) = Load(context, file, dependencyMapBuilder, bookmarkValidator, monikersMap);
 
             var metadata = file.Docset.Metadata.GetMetadata(file, tocMetadata).ToObject<TableOfContentsMetadata>();
 
-            // Monikers of toc file is the collection of every node's monikers
-            metadata.Monikers = monikers;
+            Error monikerError;
+            (monikerError, metadata.Monikers) = file.Docset.Monikers.GetFileLevelMonikers(file, metadata.MonikerRange);
+            errors.AddIfNotNull(monikerError);
 
             var model = new TableOfContentsModel
             {
@@ -39,7 +40,7 @@ namespace Microsoft.Docs.Build
                 Metadata = metadata,
             };
 
-            return (errors, model, monikers);
+            return (errors, model, metadata.Monikers);
         }
 
         public static TableOfContentsMap BuildTocMap(Context context, Docset docset)
@@ -66,7 +67,7 @@ namespace Microsoft.Docs.Build
                 Debug.Assert(tocMapBuilder != null);
                 Debug.Assert(fileToBuild != null);
 
-                var (errors, _, _, referencedDocuments, referencedTocs, _) = Load(context, fileToBuild, null, null);
+                var (errors, _, _, referencedDocuments, referencedTocs) = Load(context, fileToBuild, null, null);
                 context.Report(fileToBuild.ToString(), errors);
 
                 tocMapBuilder.Add(fileToBuild, referencedDocuments, referencedTocs);
@@ -82,8 +83,7 @@ namespace Microsoft.Docs.Build
             List<TableOfContentsItem> tocItems,
             JObject metadata,
             List<Document> referencedDocuments,
-            List<Document> referencedTocs,
-            List<string> monikers)
+            List<Document> referencedTocs)
 
             Load(Context context, Document fileToBuild, DependencyMapBuilder dependencyMapBuilder = null, BookmarkValidator bookmarkValidator = null, Dictionary<Document, List<string>> monikersMap = null)
         {
@@ -91,7 +91,7 @@ namespace Microsoft.Docs.Build
             var referencedDocuments = new List<Document>();
             var referencedTocs = new List<Document>();
 
-            var (loadErrors, tocItems, tocMetadata, monikers) = TableOfContentsParser.Load(
+            var (loadErrors, tocItems, tocMetadata) = TableOfContentsParser.Load(
                 context,
                 fileToBuild,
                 (file, href, isInclude) =>
@@ -128,7 +128,7 @@ namespace Microsoft.Docs.Build
                 });
 
             errors.AddRange(loadErrors);
-            return (errors, tocItems, tocMetadata, referencedDocuments, referencedTocs, monikers);
+            return (errors, tocItems, tocMetadata, referencedDocuments, referencedTocs);
         }
     }
 }
