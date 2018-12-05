@@ -95,9 +95,12 @@ namespace Microsoft.Docs.Build
 
         public static string EscapeUrlSegment(string path)
         {
-            Debug.Assert(!string.IsNullOrEmpty(path));
-
             return Uri.EscapeDataString(path);
+        }
+
+        public static string UnescapeUrl(string path)
+        {
+            return Uri.UnescapeDataString(path);
         }
     }
 }
