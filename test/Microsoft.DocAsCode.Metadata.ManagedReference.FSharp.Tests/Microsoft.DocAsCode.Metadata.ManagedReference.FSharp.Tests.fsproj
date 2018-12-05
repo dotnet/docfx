@@ -14,7 +14,7 @@
     <MSBuild Projects="@(TestProjects)" Targets="Restore" />
     <Copy 
       SourceFiles="@(TestData)" 
-      DestinationFolder="@(TestData->'$(OutputPath)\TestData\%(RecursiveDir)%(Filename)%(Extension)')" />
+      DestinationFiles="@(TestData->'$(OutputPath)\TestData\%(RecursiveDir)%(Filename)%(Extension)')" />
   </Target>
 
   <ItemGroup>
