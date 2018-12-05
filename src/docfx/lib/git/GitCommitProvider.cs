@@ -11,7 +11,7 @@ namespace Microsoft.Docs.Build
     internal sealed class GitCommitProvider : IDisposable
     {
         private readonly ConcurrentDictionary<string, Repository> _repositoryByFolder = new ConcurrentDictionary<string, Repository>();
-        private readonly ConcurrentDictionary<string, (FileCommitProvider provider, string repoRemote)> _fileCommitProvidersByRepoPath = new ConcurrentDictionary<string, (FileCommitProvider provider, string repoRemote)>();
+        private readonly ConcurrentDictionary<string, Lazy<(FileCommitProvider provider, string repoRemote)>> _fileCommitProvidersByRepoPath = new ConcurrentDictionary<string, Lazy<(FileCommitProvider provider, string repoRemote)>>();
 
         public Task<(Repository repo, string pathToRepo, List<GitCommit> commits)> GetCommitHistory(Document document, string committish = null)
             => GetCommitHistory(Path.Combine(document.Docset.DocsetPath, document.FilePath), committish);
@@ -36,9 +36,12 @@ namespace Microsoft.Docs.Build
 
         public async Task SaveGitCommitCache()
         {
-            foreach (var (provider, repoRemote) in _fileCommitProvidersByRepoPath.Values)
+            foreach (var value in _fileCommitProvidersByRepoPath.Values)
             {
-                await GitCommitCacheProvider.SaveCache(repoRemote, await provider.BuildCache());
+                if (value.IsValueCreated)
+                {
+                    await GitCommitCacheProvider.SaveCache(value.Value.repoRemote, await value.Value.provider.BuildCache());
+                }
             }
         }
 
@@ -46,12 +49,15 @@ namespace Microsoft.Docs.Build
         {
             foreach (var value in _fileCommitProvidersByRepoPath.Values)
             {
-                value.provider.Dispose();
+                if (value.IsValueCreated)
+                {
+                    value.Value.provider.Dispose();
+                }
             }
         }
 
         private FileCommitProvider GetGitCommitProvider(Repository repo)
-            => _fileCommitProvidersByRepoPath.GetOrAdd(repo.Path, (new FileCommitProvider(repo.Path, new Lazy<Task<ConcurrentDictionary<string, Dictionary<(long commit, long blob), (long[] commitHistory, int lruOrder)>>>>(() => GitCommitCacheProvider.LoadCommitCache(repo.Remote))), repo.Remote)).provider;
+            => _fileCommitProvidersByRepoPath.GetOrAdd(repo.Path, new Lazy<(FileCommitProvider provider, string repoRemote)>(() => (new FileCommitProvider(repo.Path, new Lazy<Task<ConcurrentDictionary<string, Dictionary<(long commit, long blob), (long[] commitHistory, int lruOrder)>>>>(() => GitCommitCacheProvider.LoadCommitCache(repo.Remote))), repo.Remote))).Value.provider;
 
         private (Repository repo, string pathToRepo) GetRepository(string fullPath)
         {

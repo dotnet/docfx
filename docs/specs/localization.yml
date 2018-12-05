@@ -837,7 +837,7 @@ outputs:
   docs/b/toc.json: |
     {"items":[{"toc_title":"reference toc a","children":[{"toc_title":"reference markdown a","href":"../a/a"}]}]}
 ---
-# fallback to deleted inclusion(toc/codesnippet/token) only works for localization docset build
+# fallback to deleted toc only works for localization docset build
 commands:
   - build
 repos:
@@ -859,3 +859,24 @@ outputs:
   docs/a/a.json:
   docs/b/toc.json: |
     {"items":[{"toc_title":"reference toc a"}]}
+---
+# fallback to deleted token/codesnippet only works for loc docset build
+commands:
+  - build
+repos:
+  https://github.com/onlyloc/b:
+    - files:
+        docfx.yml:
+        docs/a.md: |
+          [!include[include deleted tokena](tokena.md)
+    - files:
+        docfx.yml:
+        docs/tokena.md: |
+          [!include[include deleted tokenb](tokenb.md)
+          [!code-csharp[Main](program.cs)]
+        docs/tokenb.md: b
+        docs/program.cs:
+outputs:
+  docs/a.json:
+  build.log: |
+    ["warning","include-not-found","Cannot resolve 'tokena.md' relative to 'docs/a.md'.","docs/a.md"]
