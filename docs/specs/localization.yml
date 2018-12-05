@@ -822,14 +822,14 @@ repos:
       author: a
     - files:
         docfx.yml:
-        docs/a/toc.yml: |
+        docs/a/TOC.yml: |
           - href: a.md
             name: reference markdown a
       author: b
   https://github.com/deletedtoc/a.zh-cn:
     - files:
-        docs/b/toc.yml: |
-          - href: ../a/toc.yml
+        docs/b/TOC.yml: |
+          - href: ../a/TOC.yml
             name: reference toc a
         docs/a/a.md:
 outputs:
@@ -844,14 +844,14 @@ repos:
   https://github.com/onlyloc/a:
     - files:
         docfx.yml:
-        docs/b/toc.yml: |
-          - href: ../a/toc.yml
+        docs/b/TOC.yml: |
+          - href: ../a/TOC.yml
             name: reference toc a
         docs/a/a.md:
       author: a
     - files:
         docfx.yml:
-        docs/a/toc.yml: |
+        docs/a/TOC.yml: |
           - href: a.md
             name: reference markdown a
       author: b
