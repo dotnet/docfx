@@ -4,6 +4,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
@@ -11,7 +12,7 @@ namespace Microsoft.Docs.Build
     internal sealed class GitCommitProvider : IDisposable
     {
         private readonly ConcurrentDictionary<string, Repository> _repositoryByFolder = new ConcurrentDictionary<string, Repository>();
-        private readonly ConcurrentDictionary<string, Lazy<Task<(FileCommitProvider provider, string repoRemote)>>> _fileCommitProvidersByRepoPath = new ConcurrentDictionary<string, Lazy<Task<(FileCommitProvider provider, string repoRemote)>>>();
+        private readonly ConcurrentDictionary<string, Lazy<FileCommitProvider>> _fileCommitProvidersByRepoPath = new ConcurrentDictionary<string, Lazy<FileCommitProvider>>();
 
         public Task<(Repository repo, string pathToRepo, List<GitCommit> commits)> GetCommitHistory(Document document, string committish = null)
            => GetCommitHistory(Path.Combine(document.Docset.DocsetPath, document.FilePath), committish);
@@ -22,49 +23,44 @@ namespace Microsoft.Docs.Build
             if (repo == null)
                 return default;
             var pathToRepo = PathUtility.NormalizeFile(Path.GetRelativePath(repo.Path, fullPath));
-            return (repo, pathToRepo, await GetCommitHistory(repo, pathToRepo, committish));
+
+            return (repo, pathToRepo, await GetCommitProvider(repo).GetCommitHistory(pathToRepo, committish));
         }
 
-        public async Task SaveGitCommitCache()
+        public List<GitCommit> GetCommitHistory(string fullPath, int top, string committish = null)
         {
-            foreach (var value in _fileCommitProvidersByRepoPath.Values)
-            {
-                if (value.IsValueCreated)
-                {
-                    var (provider, repoRemote) = await value.Value;
-                    await GitCommitCacheProvider.SaveCache(repoRemote, provider.BuildCache());
-                }
-            }
+            var repo = GetRepository(fullPath);
+            if (repo == null)
+                return default;
+            var pathToRepo = PathUtility.NormalizeFile(Path.GetRelativePath(repo.Path, fullPath));
+
+            return GetCommitProvider(repo).GetCommitHistory(pathToRepo, top, committish);
+        }
+
+        public Task SaveGitCommitCache()
+        {
+            return Task.WhenAll(
+                from provider in _fileCommitProvidersByRepoPath.Values
+                where provider.IsValueCreated
+                select provider.Value.SaveCache());
         }
 
         public void Dispose()
         {
             foreach (var value in _fileCommitProvidersByRepoPath.Values)
             {
-                if (value.IsValueCreated && value.Value.IsCompletedSuccessfully)
+                if (value.IsValueCreated)
                 {
-                    value.Value.Result.provider.Dispose();
+                    value.Value.Dispose();
                 }
             }
         }
 
-        private async Task<List<GitCommit>> GetCommitHistory(Repository repo, string file, string committish = null)
+        private FileCommitProvider GetCommitProvider(Repository repo)
         {
-            var fileCommitProvider = await GetGitCommitProvider(repo);
-
-            return fileCommitProvider.GetCommitHistory(file, committish);
-        }
-
-        private async Task<FileCommitProvider> GetGitCommitProvider(Repository repo)
-        {
-            var (provider, _) = await _fileCommitProvidersByRepoPath.GetOrAdd(
+            return _fileCommitProvidersByRepoPath.GetOrAdd(
                 repo.Path,
-                p => new Lazy<Task<(FileCommitProvider provider, string repoRemote)>>(async () =>
-                {
-                    return (new FileCommitProvider(repo.Path, await GitCommitCacheProvider.LoadCommitCache(repo.Remote)), repo.Remote);
-                })).Value;
-
-            return provider;
+                new Lazy<FileCommitProvider>(() => new FileCommitProvider(repo.Path, AppData.GetCommitCachePath(repo.Remote)))).Value;
         }
 
         private Repository GetRepository(string fullPath)
