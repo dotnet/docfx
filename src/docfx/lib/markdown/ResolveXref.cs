@@ -49,12 +49,8 @@ namespace Microsoft.Docs.Build
                          var name = xrefSpec.GetXrefPropertyValue("name");
                          var displayPropertyValue = xrefSpec.GetXrefPropertyValue(queries?["displayProperty"]);
                          string display = !string.IsNullOrEmpty(displayPropertyValue) ? displayPropertyValue : (!string.IsNullOrEmpty(name) ? name : uid);
-                         var href = !string.IsNullOrEmpty(moniker) ? $"{xrefSpec.Href}?view={moniker}" : xrefSpec.Href;
-
-                         // append fragment if any
-                         if (!string.IsNullOrEmpty(fragment))
-                             href += fragment;
-
+                         var monikerQuery = !string.IsNullOrEmpty(moniker) ? $"view={moniker}" : "";
+                         var href = HrefUtility.MergeHref(xrefSpec.Href, monikerQuery, fragment.Length == 0 ? "" : fragment.Substring(1));
                          return new LinkInline(href, null).AppendChild(new LiteralInline(display));
                      }
                      return node;
