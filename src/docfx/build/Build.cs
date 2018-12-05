@@ -26,20 +26,15 @@ namespace Microsoft.Docs.Build
 
             var docset = new Docset(context, docsetPath, config, options).GetBuildDocset();
 
-            var githubUserCache = await GitHubUserCache.Create(docset, config.GitHub.AuthToken);
-            var contribution = await ContributionProvider.Create(docset, githubUserCache);
-
             // TODO: toc map and xref map should always use source docset?
             var tocMap = BuildTableOfContents.BuildTocMap(context, docset);
-
             var xrefMap = XrefMap.Create(context, docset);
 
-            var (manifest, fileManifests, sourceDependencies) = await BuildFiles(context, docset, tocMap, xrefMap, contribution);
+            var githubUserCache = await GitHubUserCache.Create(docset, config.GitHub.AuthToken);
+            var (manifest, fileManifests, sourceDependencies) = await BuildFiles(context, docset, tocMap, xrefMap, githubUserCache);
 
             context.WriteJson(manifest, "build.manifest");
-
             var saveGitHubUserCache = githubUserCache.SaveChanges(config);
-
             xrefMap.OutputXrefMap(context);
 
             if (options.Legacy)
@@ -64,9 +59,10 @@ namespace Microsoft.Docs.Build
             Docset docset,
             TableOfContentsMap tocMap,
             XrefMap xrefMap,
-            ContributionProvider contribution)
+            GitHubUserCache githubUserCache)
         {
             using (Progress.Start("Building files"))
+            using (var gitCommitProvider = new GitCommitProvider())
             {
                 var recurseDetector = new ConcurrentHashSet<Document>();
                 var dependencyMapBuilder = new DependencyMapBuilder();
@@ -74,6 +70,7 @@ namespace Microsoft.Docs.Build
                 var manifestBuilder = new ManifestBuilder();
                 var monikersMap = new ConcurrentDictionary<Document, List<string>>();
 
+                var contribution = await ContributionProvider.Create(docset, githubUserCache, gitCommitProvider);
                 await ParallelUtility.ForEach(
                     docset.BuildScope.Where(doc => doc.ContentType != ContentType.TableOfContents),
                     async (file, buildChild) => { monikersMap.TryAdd(file, await BuildOneFile(file, buildChild)); },
@@ -87,10 +84,13 @@ namespace Microsoft.Docs.Build
                     ShouldBuildFile,
                     Progress.Update);
 
-                ValidateBookmarks();
+                var saveGitCommitCache = gitCommitProvider.SaveGitCommitCache();
 
+                ValidateBookmarks();
                 var manifest = manifestBuilder.Build(context);
                 var dependencyMap = dependencyMapBuilder.Build();
+
+                await saveGitCommitCache;
 
                 return (CreateManifest(manifest, dependencyMap), manifest, dependencyMap);
 
@@ -155,7 +155,7 @@ namespace Microsoft.Docs.Build
                         break;
                     case ContentType.TableOfContents:
                         // TODO: improve error message for toc monikers overlap
-                        (errors, model, monikers) = BuildTableOfContents.Build(context, file, tocMap, callback.DependencyMapBuilder, monikersMap);
+                        (errors, model, monikers) = BuildTableOfContents.Build(context, file, tocMap, callback.DependencyMapBuilder, callback.BookmarkValidator, monikersMap);
                         break;
                     case ContentType.Redirection:
                         (errors, model) = BuildRedirection.Build(file);

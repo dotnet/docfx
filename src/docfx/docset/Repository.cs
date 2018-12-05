@@ -24,7 +24,7 @@ namespace Microsoft.Docs.Build
             Path = path ?? throw new ArgumentNullException(nameof(path));
         }
 
-        public static Repository CreateFromFolder(string path)
+        public static Repository Create(string path)
         {
             Debug.Assert(!string.IsNullOrEmpty(path));
 

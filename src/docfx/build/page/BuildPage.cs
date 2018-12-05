@@ -31,7 +31,7 @@ namespace Microsoft.Docs.Build
             model.Bilingual = file.Docset.Config.Localization.Bilingual;
 
             (model.DocumentId, model.DocumentVersionIndependentId) = file.Docset.Redirections.TryGetDocumentId(file, out var docId) ? docId : file.Id;
-            (model.ContentGitUrl, model.OriginalContentGitUrl, model.Gitcommit) = contribution.GetGitUrls(file);
+            (model.ContentGitUrl, model.OriginalContentGitUrl, model.Gitcommit) = await contribution.GetGitUrls(file);
 
             List<Error> contributorErrors;
             (contributorErrors, model.Author, model.Contributors, model.UpdatedAt) = await contribution.GetAuthorAndContributors(file, metadata.Author);
