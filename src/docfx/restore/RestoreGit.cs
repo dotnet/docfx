@@ -142,7 +142,7 @@ namespace Microsoft.Docs.Build
                 yield break;
             }
 
-            var repo = Repository.CreateFromFolder(Path.GetFullPath(docsetPath));
+            var repo = Repository.Create(Path.GetFullPath(docsetPath));
             if (repo == null)
             {
                 yield break;
