@@ -97,13 +97,13 @@ namespace Microsoft.Docs.Build
                 async Task<List<string>> BuildOneFile(Document file, Action<Document> buildChild)
                 {
                     var callback = new PageCallback(xrefMap, dependencyMapBuilder, bookmarkValidator, buildChild);
-                    return await BuildFile(context, file, tocMap, contribution, null, callback, manifestBuilder);
+                    return await BuildFile(context, file, tocMap, contribution, null, callback, manifestBuilder, gitCommitProvider);
                 }
 
                 async Task BuildTocFile(Document file, Dictionary<Document, List<string>> map)
                 {
                     var callback = new PageCallback(xrefMap, dependencyMapBuilder, bookmarkValidator, null);
-                    await BuildFile(context, file, tocMap, contribution, map, callback, manifestBuilder);
+                    await BuildFile(context, file, tocMap, contribution, map, callback, manifestBuilder, gitCommitProvider);
                 }
 
                 bool ShouldBuildFile(Document file)
@@ -137,7 +137,8 @@ namespace Microsoft.Docs.Build
             ContributionProvider contribution,
             Dictionary<Document, List<string>> monikersMap,
             PageCallback callback,
-            ManifestBuilder manifestBuilder)
+            ManifestBuilder manifestBuilder,
+            GitCommitProvider gitCommitProvider)
         {
             try
             {
@@ -151,11 +152,11 @@ namespace Microsoft.Docs.Build
                         model = BuildResource(file);
                         break;
                     case ContentType.Page:
-                        (errors, model, monikers) = await BuildPage.Build(context, file, tocMap, contribution, callback);
+                        (errors, model, monikers) = await BuildPage.Build(context, file, tocMap, contribution, callback, gitCommitProvider);
                         break;
                     case ContentType.TableOfContents:
                         // TODO: improve error message for toc monikers overlap
-                        (errors, model, monikers) = BuildTableOfContents.Build(context, file, tocMap, callback.DependencyMapBuilder, callback.BookmarkValidator, monikersMap);
+                        (errors, model, monikers) = BuildTableOfContents.Build(context, file, tocMap, gitCommitProvider, callback.DependencyMapBuilder, callback.BookmarkValidator, monikersMap);
                         break;
                     case ContentType.Redirection:
                         (errors, model) = BuildRedirection.Build(file);

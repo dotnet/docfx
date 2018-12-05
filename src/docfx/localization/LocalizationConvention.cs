@@ -107,6 +107,50 @@ namespace Microsoft.Docs.Build
             return localizationDocsetPath;
         }
 
+        public static (Error error, string content, Document file) TryResolveFromHistory(GitCommitProvider gitCommitProvider, Docset docset, string pathToDocset)
+        {
+            // try to resolve from source repo's git history
+            // todo: support code snippet
+            var fallbackDocset = GetFallbackDocset();
+            if (fallbackDocset != null && Document.GetContentType(pathToDocset) == ContentType.Page)
+            {
+                var (repo, pathToRepo, commits) = gitCommitProvider.GetCommitHistory(Path.Combine(fallbackDocset.DocsetPath, pathToDocset)).Result; /*TODO*/
+                if (repo != null)
+                {
+                    var repoPath = PathUtility.NormalizeFolder(repo.Path);
+                    if (commits.Count > 1)
+                    {
+                        // the latest commit would be deleting it from repo
+                        if (GitUtility.TryGetContentFromHistory(repoPath, pathToRepo, commits[1].Sha, out var content))
+                        {
+                            var (error, doc) = Document.TryCreate(fallbackDocset, pathToDocset, isFromHistory: true);
+                            return (error, content, doc);
+                        }
+                    }
+                }
+            }
+
+            return default;
+
+            Docset GetFallbackDocset()
+            {
+                if (docset.LocalizationDocset != null)
+                {
+                    // source docset in loc build
+                    return docset;
+                }
+
+                if (docset.FallbackDocset != null)
+                {
+                    // localized docset in loc build
+                    return docset.FallbackDocset;
+                }
+
+                // source docset in source build
+                return null;
+            }
+        }
+
         public static bool TryGetContributionBranch(string branch, out string contributionBranch)
         {
             Debug.Assert(!string.IsNullOrEmpty(branch));
