@@ -18,6 +18,7 @@ namespace Microsoft.Docs.Build
 {
     internal sealed class FileCommitProvider : IDisposable
     {
+        private const int MaxParentBlob = 32;
         private readonly string _repoPath;
 
         // Commit history and a lookup table from commit hash to commit.
@@ -34,7 +35,7 @@ namespace Microsoft.Docs.Build
         // Commit history LRU cache per file. Key is the file path relative to repository root.
         // Value is a dictionary of git commit history for a particular commit hash and file blob hash.
         // Only the last N = MaxCommitCacheCountPerFile commit histories are cached for a file, they are selected by least recently used order (lruOrder).
-        private readonly ConcurrentDictionary<string, Dictionary<(long commit, long blob), (long[] commitHistory, int lruOrder)>> _commitCache;
+        private readonly Lazy<Task<ConcurrentDictionary<string, Dictionary<(long commit, long blob), (long[] commitHistory, int lruOrder)>>>> _commitCache;
 
         private int _nextLruOrder;
         private int _nextStringId;
@@ -43,7 +44,7 @@ namespace Microsoft.Docs.Build
 
         public FileCommitProvider(
             string repoPath,
-            ConcurrentDictionary<string, Dictionary<(long commit, long blob), (long[] commitHistory, int lruOrder)>> commitCache)
+            Lazy<Task<ConcurrentDictionary<string, Dictionary<(long commit, long blob), (long[] commitHistory, int lruOrder)>>>> commitCache)
         {
             if (git_repository_open(out _repo, repoPath) != 0)
             {
@@ -54,11 +55,9 @@ namespace Microsoft.Docs.Build
             _commitCache = commitCache;
         }
 
-        public List<GitCommit> GetCommitHistory(string file, string committish = null)
+        public async Task<List<GitCommit>> GetCommitHistory(string file, string committish = null)
         {
             Debug.Assert(!file.Contains('\\'));
-
-            const int MaxParentBlob = 32;
 
             var (commits, commitsBySha) = _commits.GetOrAdd(
                 committish ?? "",
@@ -71,12 +70,11 @@ namespace Microsoft.Docs.Build
 
             var updateCache = true;
             var result = new List<Commit>();
-            var parentBlobs = new long[MaxParentBlob];
             var pathSegments = Array.ConvertAll(file.Split('/'), GetStringId);
-            var commitCache = _commitCache.GetOrAdd(file, _ => new Dictionary<(long, long), (long[], int)>());
-
             var headCommit = commits[0];
             var headBlob = GetBlob(commits[0].Tree, pathSegments);
+
+            var commitCache = (await _commitCache.Value).GetOrAdd(file, _ => new Dictionary<(long, long), (long[], int)>());
             var commitsToFollow = new List<(Commit commit, long blob)> { (headCommit, headBlob) };
 
             // `commits` is the commit history for the current branch,
@@ -85,23 +83,14 @@ namespace Microsoft.Docs.Build
             foreach (var commit in commits)
             {
                 // Find and remove if this commit should be followed by the tree traversal.
-                var found = false;
-                var blob = 0L;
-                for (var i = 0; i < commitsToFollow.Count; i++)
-                {
-                    var commitToCheck = commitsToFollow[i];
-                    if (commitToCheck.commit == commit)
-                    {
-                        blob = commitToCheck.blob;
-                        commitsToFollow.RemoveAt(i);
-                        found = true;
-                        break;
-                    }
-                }
+                var (found, foundCommit) = GetCommitToCheck(commitsToFollow, commit);
                 if (!found)
                 {
                     continue;
                 }
+
+                commitsToFollow.Remove(foundCommit);
+                var blob = foundCommit.blob;
 
                 // Lookup and use cached commit history ONLY if there are no other commits to follow
                 if (commitsToFollow.Count == 0)
@@ -123,32 +112,10 @@ namespace Microsoft.Docs.Build
                     }
                 }
 
-                var singleParent = false;
                 var parentCount = Math.Min(MaxParentBlob, commit.Parents.Length);
-                var add = parentCount == 0 && blob != 0;
-
-                for (var i = 0; i < parentCount; i++)
-                {
-                    parentBlobs[i] = GetBlob(commit.Parents[i].Tree, pathSegments);
-                    if (parentBlobs[i] == blob)
-                    {
-                        // and it was TREESAME to one parent, follow only that parent.
-                        // (Even if there are several TREESAME parents, follow only one of them.)
-                        commitsToFollow.Add((commit.Parents[i], blob));
-                        singleParent = true;
-                        break;
-                    }
-                }
-
-                if (!singleParent)
-                {
-                    // Otherwise, follow all parents.
-                    for (var i = 0; i < parentCount; i++)
-                    {
-                        add = true;
-                        commitsToFollow.Add((commit.Parents[i], parentBlobs[i]));
-                    }
-                }
+                var (parentsToFollow, singleParent) = GetParentsToFollow(commit, blob, parentCount, pathSegments);
+                var add = (parentCount == 0 && blob != 0) || (parentCount > 0 && !singleParent);
+                commitsToFollow.AddRange(parentsToFollow);
 
                 if (add)
                 {
@@ -168,13 +135,61 @@ namespace Microsoft.Docs.Build
             return result.Select(c => c.GitCommit).ToList();
         }
 
-        public IReadOnlyList<KeyValuePair<string, Dictionary<(long commit, long blob), (long[] commitHistory, int lruOrder)>>> BuildCache()
+        public List<GitCommit> GetDeletedFileCommitHistory(string file, int top = -1, string committish = null)
+        {
+            Debug.Assert(!file.Contains('\\'));
+
+            var (commits, commitsBySha) = _commits.GetOrAdd(
+                committish ?? "",
+                key => new Lazy<(List<Commit>, Dictionary<long, Commit>)>(() => LoadCommits(key))).Value;
+
+            if (commits.Count <= 0)
+            {
+                return new List<GitCommit>();
+            }
+
+            var result = new List<Commit>();
+            var pathSegments = Array.ConvertAll(file.Split('/'), GetStringId);
+            var headCommit = commits[0];
+            var headBlob = GetBlob(commits[0].Tree, pathSegments);
+            var commitsToFollow = new List<(Commit commit, long blob)> { (headCommit, headBlob) };
+
+            // `commits` is the commit history for the current branch,
+            // the commit history for a file is always a subset of commit history of a branch with the same order.
+            // Reusing a single branch commit history is a performance optimization.
+            foreach (var commit in commits)
+            {
+                // Find and remove if this commit should be followed by the tree traversal.
+                var (found, foundCommit) = GetCommitToCheck(commitsToFollow, commit);
+                if (!found)
+                {
+                    continue;
+                }
+
+                commitsToFollow.Remove(foundCommit);
+                var blob = foundCommit.blob;
+
+                var parentCount = Math.Min(MaxParentBlob, commit.Parents.Length);
+                var (parentsToFollow, singleParent) = GetParentsToFollow(commit, blob, parentCount, pathSegments);
+                var add = (parentCount == 0 && blob != 0) || (parentCount > 0 && !singleParent);
+                commitsToFollow.AddRange(parentsToFollow);
+
+                if (add)
+                {
+                    result.Add(commit);
+                }
+            }
+
+            return result.Select(c => c.GitCommit).ToList();
+        }
+
+        public async Task<IReadOnlyList<KeyValuePair<string, Dictionary<(long commit, long blob), (long[] commitHistory, int lruOrder)>>>> BuildCache()
         {
             if (_cacheUpdated)
             {
                 // There is a race condition in Linq ToList() method, use ConcurrentDictionary.ToArray() to create a snapshot
                 // https://stackoverflow.com/questions/11692389/getting-argument-exception-in-concurrent-dictionary-when-sorting-and-displaying
-                return _commitCache.ToArray();
+                return (await _commitCache.Value).ToArray();
             }
 
             return null;
@@ -187,13 +202,50 @@ namespace Microsoft.Docs.Build
             {
                 git_repository_free(_repo);
             }
-
-            GC.SuppressFinalize(this);
         }
 
-        ~FileCommitProvider()
+        private (List<(Commit commit, long blob)> parentsToFollow, bool singleParent) GetParentsToFollow(Commit currentCommit, long foundBlob, int parentCount, int[] pathSegments)
         {
-            Dispose();
+            var singleParent = false;
+            var parentToFollow = new List<(Commit commit, long blob)>();
+            var parentBlobs = new long[parentCount];
+            for (var i = 0; i < parentCount; i++)
+            {
+                parentBlobs[i] = GetBlob(currentCommit.Parents[i].Tree, pathSegments);
+                if (parentBlobs[i] == foundBlob)
+                {
+                    // and it was TREESAME to one parent, follow only that parent.
+                    // (Even if there are several TREESAME parents, follow only one of them.)
+                    parentToFollow.Add((currentCommit.Parents[i], foundBlob));
+                    singleParent = true;
+                    break;
+                }
+            }
+
+            if (!singleParent)
+            {
+                // Otherwise, follow all parents.
+                for (var i = 0; i < parentCount; i++)
+                {
+                    parentToFollow.Add((currentCommit.Parents[i], parentBlobs[i]));
+                }
+            }
+
+            return (parentToFollow, singleParent);
+        }
+
+        private (bool found, (Commit commit, long blob) foundCommit) GetCommitToCheck(List<(Commit commit, long blob)> followCommits, Commit currentCommit)
+        {
+            for (var i = 0; i < followCommits.Count; i++)
+            {
+                var commitToCheck = followCommits[i];
+                if (commitToCheck.commit == currentCommit)
+                {
+                    return (true, commitToCheck);
+                }
+            }
+
+            return default;
         }
 
         private unsafe (List<Commit>, Dictionary<long, Commit>) LoadCommits(string committish = null)

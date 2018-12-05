@@ -114,7 +114,7 @@ namespace Microsoft.Docs.Build
             var fallbackDocset = GetFallbackDocset();
             if (fallbackDocset != null && Document.GetContentType(pathToDocset) == ContentType.Page)
             {
-                var (repo, pathToRepo, commits) = gitCommitProvider.GetCommitHistory(Path.Combine(fallbackDocset.DocsetPath, pathToDocset)).Result; /*TODO*/
+                var (repo, pathToRepo, commits) = gitCommitProvider.GetDeletedFileCommitHistory(Path.Combine(fallbackDocset.DocsetPath, pathToDocset), 2);
                 if (repo != null)
                 {
                     var repoPath = PathUtility.NormalizeFolder(repo.Path);
