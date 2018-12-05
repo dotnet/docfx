@@ -27,6 +27,20 @@ namespace Microsoft.Docs.Build
         }
 
         [Theory]
+        [InlineData("", "", "", "")]
+        [InlineData("", "b", "c", "")]
+        [InlineData("a", "b=1", "c", "a?b=1#c")]
+        [InlineData("a?b=1#c", "b=2", "c1", "a?b=2#c1")]
+        [InlineData("a?b=1#c", "b1=1", "", "a?b=1&b1=1#c")]
+        [InlineData("a?b=1#c", "", "c1", "a?b=1#c1")]
+        public static void MergeHref(string href, string query, string fragment, string expected)
+        {
+            var result = HrefUtility.MergeHref(href, query, fragment);
+
+            Assert.Equal(expected, result);
+        }
+
+        [Theory]
         [InlineData("a", false)]
         [InlineData("a/b", false)]
         [InlineData("a\\b", false)]
