@@ -65,40 +65,39 @@ outputs:
 # Support schema documents with Href content
 inputs:
   docfx.yml:
-  # TODO: why is there no output for this toc file?
-  TOC.yml:
+  docs/A/TOC.yml:
   docs/TOC.yml:
   docs/a.yml: |
     #YamlMime:ContextObject
     brand: azure
     breadcrumb_path: TOC.yml
-    toc_rel: ../TOC.yml
+    toc_rel: A/TOC.yml
 outputs:
   docs/toc.json:
+  docs/a/toc.json:
   docs/a.json: |
     {
-      "content": { "brand": "azure", "breadcrumb_path": "toc.json", "toc_rel": "../toc.json" },
+      "content": { "brand": "azure", "breadcrumb_path": "toc.json", "toc_rel": "a/toc.json" },
     }
-build.manifest: |
-    {  
-       "dependencies":{  
-          "docs/a.yml":[  
-             {
-               "source": "docs/TOC.yml",
-               "type": "link"
-             },
-             {  
-                "source":"TOC.yml",
-                "type":"link"
-             }
-          ]
-       }
-    }
+  build.manifest: |
+      {
+         "dependencies":{
+            "docs/a.yml":[
+               {
+                  "source":"docs/A/TOC.yml",
+                  "type":"link"
+               },
+               {
+                 "source": "docs/TOC.yml",
+                 "type": "link"
+               }
+            ]
+         }
+      }
 ---
 # schema documents with Href content but wrong type
 inputs:
   docfx.yml:
-  # TODO: why is there no output for this toc file?
   TOC.yml:
   docs/TOC.yml:
   docs/a.yml: |
@@ -110,6 +109,7 @@ outputs:
   docs/toc.json:
   build.log: |
     ["error","violate-schema","Cannot deserialize the current JSON object * into type 'System.String' because the type requires a JSON primitive value *","docs/a.yml","breadcrumb_path",3,18]
+    ["warning","link-out-of-scope","File 'TOC.yml' referenced by link '../TOC.yml' will not be built because it is not included in docfx.yml","docs/a.yml"]
 ---
 # Schema documents with Href content referencing resource file, the resouce file should be outputed
 inputs:

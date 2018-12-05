@@ -4,6 +4,7 @@
 using System;
 using System.Diagnostics;
 using System.Linq;
+using System.Web;
 
 namespace Microsoft.Docs.Build
 {
@@ -50,6 +51,29 @@ namespace Microsoft.Docs.Build
             }
 
             return (path, query, fragment);
+        }
+
+        /// <summary>
+        /// <paramref name="sourceQuery"/> and <paramref name="sourceFragment"/> will overwrite the ones in <paramref name="targetHref"/>
+        /// </summary>
+        public static string MergeHref(string targetHref, string sourceQuery, string sourceFragment)
+        {
+            var (targetPath, targetQuery, targetFragment) = SplitHref(targetHref);
+            if (string.IsNullOrEmpty(targetPath))
+                return targetHref;
+
+            var targetQueryParameters = HttpUtility.ParseQueryString(targetQuery.Length == 0 ? "" : targetQuery.Substring(1));
+            var sourceQueryParameters = HttpUtility.ParseQueryString(sourceQuery);
+
+            foreach (var key in sourceQueryParameters.AllKeys)
+            {
+                targetQueryParameters.Set(key, sourceQueryParameters[key]);
+            }
+
+            var query = targetQueryParameters.HasKeys() ? "?" + targetQueryParameters.ToString() : string.Empty;
+            var fragment = sourceFragment?.Length == 0 ? targetFragment : "#" + sourceFragment;
+
+            return targetPath + query + fragment;
         }
 
         /// <summary>

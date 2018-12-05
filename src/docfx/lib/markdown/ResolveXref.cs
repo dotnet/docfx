@@ -23,7 +23,7 @@ namespace Microsoft.Docs.Build
                  {
                      if (node is XrefInline xref)
                      {
-                         var (uid, query, _) = HrefUtility.SplitHref(xref.Href);
+                         var (uid, query, fragment) = HrefUtility.SplitHref(xref.Href);
                          string moniker = null;
                          NameValueCollection queries = null;
                          if (!string.IsNullOrEmpty(query))
@@ -31,7 +31,9 @@ namespace Microsoft.Docs.Build
                              queries = HttpUtility.ParseQueryString(query.Substring(1));
                              moniker = queries?["view"];
                          }
-                         var xrefSpec = resolveXref(uid, moniker);
+
+                         // need to url decode uid from input content
+                         var xrefSpec = resolveXref(HttpUtility.UrlDecode(uid), moniker);
                          if (xrefSpec is null)
                          {
                              var raw = xref.GetAttributes().Properties.First(p => p.Key == "data-raw-source").Value;
@@ -48,7 +50,8 @@ namespace Microsoft.Docs.Build
                          var name = xrefSpec.GetXrefPropertyValue("name");
                          var displayPropertyValue = xrefSpec.GetXrefPropertyValue(queries?["displayProperty"]);
                          string display = !string.IsNullOrEmpty(displayPropertyValue) ? displayPropertyValue : (!string.IsNullOrEmpty(name) ? name : uid);
-                         var href = !string.IsNullOrEmpty(moniker) ? $"{xrefSpec.Href}?view={moniker}" : xrefSpec.Href;
+                         var monikerQuery = !string.IsNullOrEmpty(moniker) ? $"view={moniker}" : "";
+                         var href = HrefUtility.MergeHref(xrefSpec.Href, monikerQuery, fragment.Length == 0 ? "" : fragment.Substring(1));
                          return new LinkInline(href, null).AppendChild(new LiteralInline(display));
                      }
                      return node;
