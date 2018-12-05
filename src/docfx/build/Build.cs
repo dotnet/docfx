@@ -73,14 +73,14 @@ namespace Microsoft.Docs.Build
                 await ParallelUtility.ForEach(
                     docset.BuildScope,
                     async (file, buildChild) => { monikersMap.TryAdd(file, await BuildOneFile(file, buildChild, null)); },
-                    (file) => { return ShouldBuildFile(file, new List<ContentType> { ContentType.Page, ContentType.Redirection, ContentType.Resource }); },
+                    (file) => { return ShouldBuildFile(file, new ContentType[] { ContentType.Page, ContentType.Redirection, ContentType.Resource }); },
                     Progress.Update);
 
                 // Build TOC: since toc file depends on the build result of every node
                 await ParallelUtility.ForEach(
                     docset.BuildScope,
                     (file, buildChild) => { return BuildOneFile(file, buildChild, monikersMap.ToDictionary(item => item.Key, item => item.Value)); },
-                    file => { return ShouldBuildFile(file, new List<ContentType> { ContentType.TableOfContents }); },
+                    file => { return ShouldBuildFile(file, new ContentType[] { ContentType.TableOfContents }); },
                     Progress.Update);
 
                 var saveGitCommitCache = gitCommitProvider.SaveGitCommitCache();
@@ -102,7 +102,7 @@ namespace Microsoft.Docs.Build
                     return await BuildFile(context, file, tocMap, contribution, fileMonikersMap, callback, manifestBuilder);
                 }
 
-                bool ShouldBuildFile(Document file, IEnumerable<ContentType> shouldBuildContentTypes)
+                bool ShouldBuildFile(Document file, ContentType[] shouldBuildContentTypes)
                 {
                     // source content in a localization docset
                     if (docset.IsLocalized() && !file.Docset.IsLocalized())
