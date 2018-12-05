@@ -13,6 +13,7 @@ open Microsoft.DocAsCode.Metadata.ManagedReference
 open Microsoft.DocAsCode.Metadata.ManagedReference.FSharp
 
 
+[<Collection("F# Test Collection")>]
 type FSharpProjectTests  (output: ITestOutputHelper) =
     let printfn format = Printf.kprintf (fun msg -> output.WriteLine(msg)) format 
    
