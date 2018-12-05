@@ -223,6 +223,7 @@ namespace Microsoft.Docs.Build
 
                             var (loadErrors, loadedToc) = LoadInputModelItems(context, resolvedTocFile, rootPath, monikerMap, resolveContent, resolveHref, parents);
                             errors.AddRange(loadErrors);
+
                             return (default, GetFirstHref(loadedToc.Items), default);
                         }
 
