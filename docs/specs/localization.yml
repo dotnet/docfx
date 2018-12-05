@@ -841,7 +841,7 @@ outputs:
 commands:
   - build
 repos:
-  https://github.com/deletedinclusion/a:
+  https://github.com/onlyloc/a:
     - files:
         docfx.yml:
         docs/b/toc.yml: |
