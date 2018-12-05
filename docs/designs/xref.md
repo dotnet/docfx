@@ -111,7 +111,7 @@ Link to <xref:a?displayProperty=fullName#bookmark>
 ```json
 {"content":"<p>Link to <a href=\"/aspnet/a#bookmark\">ASP.NET Full Documentation</a></p>\n"}
 ```
->> Since hashtag is supported in xref, that means if you have # in UID, it has to be encoded to %23.
+> Since hashtag is supported in xref, that means if you have # in UID, it has to be encoded to %23.
 And then the xref format should follow URI standard, so all reserved characters should be encoded.
 
 ### Using `@` to reference a uid in markdown
