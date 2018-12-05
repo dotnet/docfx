@@ -12,7 +12,9 @@
       <TestData Include="TestData/**/*" />
     </ItemGroup>
     <MSBuild Projects="@(TestProjects)" Targets="Restore" />
-    <Copy SourceFiles="@(TestData)" DestinationFolder="$(OutputPath)/TestData/%(RecursiveDir)" />
+    <Copy 
+      SourceFiles="@(TestData)" 
+      DestinationFolder="@(TestData->'$(OutputPath)\TestData\%(RecursiveDir)%(Filename)%(Extension)')" />
   </Target>
 
   <ItemGroup>
