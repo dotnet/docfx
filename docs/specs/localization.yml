@@ -769,7 +769,6 @@ outputs:
 # 1. should not report warning
 # 2. `toc_rel` should be resolved to loc toc
 commands:
-  - restore --locale zh-cn
   - build --locale zh-cn
 repos:
   https://github.com/conflictedtoc/a:
@@ -788,3 +787,75 @@ outputs:
     {"toc_rel": "toc.json"}
   docs/a/toc.json: |
     {"items":[{"toc_title": "yml reference a"}]}
+---
+# fallback to deleted token/codesnippet
+commands:
+  - build --locale zh-cn
+repos:
+  https://github.com/deletedtoken/a:
+    - files:
+        docfx.yml:
+      author: a
+    - files:
+        docfx.yml:
+        docs/tokena.md: |
+          [!include[include deleted tokenb](tokenb.md)
+          [!code-csharp[Main](program.cs)]
+        docs/tokenb.md: b
+        docs/program.cs:
+      author: b
+  https://github.com/deletedtoken/a.zh-cn:
+    - files:
+        docs/a.md: |
+          [!include[include deleted tokena](tokena.md)
+outputs:
+  docs/a.json: |
+    {"content":"<p>b</p>\n<pre><code class=\"lang-csharp\" name=\"Main\"></code></pre>"}
+---
+# fallback to deleted toc
+commands:
+  - build --locale zh-cn
+repos:
+  https://github.com/deletedtoc/a:
+    - files:
+        docfx.yml:
+      author: a
+    - files:
+        docfx.yml:
+        docs/a/toc.yml: |
+          - href: a.md
+            name: reference markdown a
+      author: b
+  https://github.com/deletedtoc/a.zh-cn:
+    - files:
+        docs/b/toc.yml: |
+          - href: ../a/toc.yml
+            name: reference toc a
+        docs/a/a.md:
+outputs:
+  docs/a/a.json:
+  docs/b/toc.json: |
+    {"items":[{"toc_title":"reference toc a","children":[{"toc_title":"reference markdown a","href":"../a/a"}]}]}
+---
+# fallback to deleted inclusion(toc/codesnippet/token) only works for localization docset build
+commands:
+  - build
+repos:
+  https://github.com/deletedinclusion/a:
+    - files:
+        docfx.yml:
+        docs/b/toc.yml: |
+          - href: ../a/toc.yml
+            name: reference toc a
+        docs/a/a.md:
+      author: a
+    - files:
+        docfx.yml:
+        docs/a/toc.yml: |
+          - href: a.md
+            name: reference markdown a
+      author: b
+outputs:
+  docs/a/a.json:
+  docs/b/toc.json: |
+    {"items":[{"toc_title":"reference toc a"}]}

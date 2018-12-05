@@ -148,6 +148,7 @@ namespace Microsoft.Docs.Build
                 return new List<GitCommit>();
             }
 
+            var total = 0;
             var result = new List<Commit>();
             var pathSegments = Array.ConvertAll(file.Split('/'), GetStringId);
             var headCommit = commits[0];
@@ -174,7 +175,7 @@ namespace Microsoft.Docs.Build
                 var add = (parentCount == 0 && blob != 0) || (parentCount > 0 && !singleParent);
                 commitsToFollow.AddRange(parentsToFollow);
 
-                if (add)
+                if (add && (top <= 0 || total++ < top))
                 {
                     result.Add(commit);
                 }

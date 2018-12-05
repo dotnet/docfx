@@ -65,7 +65,7 @@ namespace Microsoft.Docs.Build
 
             if (file == null && !string.IsNullOrEmpty(pathToDocset) && gitCommitProvider != null)
             {
-                var (errorFromHistory, content, fileFromHistory) = LocalizationConvention.TryResolveFromHistory(gitCommitProvider, relativeTo.Docset, pathToDocset);
+                var (errorFromHistory, content, fileFromHistory) = LocalizationConvention.TryResolveContentFromHistory(gitCommitProvider, relativeTo.Docset, pathToDocset);
                 if (errorFromHistory != null)
                 {
                     return (error, null, null);

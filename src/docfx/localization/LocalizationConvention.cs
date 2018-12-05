@@ -107,12 +107,11 @@ namespace Microsoft.Docs.Build
             return localizationDocsetPath;
         }
 
-        public static (Error error, string content, Document file) TryResolveFromHistory(GitCommitProvider gitCommitProvider, Docset docset, string pathToDocset)
+        public static (Error error, string content, Document file) TryResolveContentFromHistory(GitCommitProvider gitCommitProvider, Docset docset, string pathToDocset)
         {
             // try to resolve from source repo's git history
-            // todo: support code snippet
             var fallbackDocset = GetFallbackDocset();
-            if (fallbackDocset != null && Document.GetContentType(pathToDocset) == ContentType.Page)
+            if (fallbackDocset != null)
             {
                 var (repo, pathToRepo, commits) = gitCommitProvider.GetDeletedFileCommitHistory(Path.Combine(fallbackDocset.DocsetPath, pathToDocset), 2);
                 if (repo != null)
