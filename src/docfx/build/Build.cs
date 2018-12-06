@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -145,7 +144,7 @@ namespace Microsoft.Docs.Build
                 switch (file.ContentType)
                 {
                     case ContentType.Resource:
-                        (errors, model, monikers) = BuildAssert(file, ContentType.Resource);
+                        (errors, model, monikers) = BuildResource.Build(file);
                         break;
                     case ContentType.Page:
                         (errors, model, monikers) = await BuildPage.Build(context, file, tocMap, contribution, callback);
@@ -155,7 +154,7 @@ namespace Microsoft.Docs.Build
                         (errors, model, monikers) = BuildTableOfContents.Build(context, file, tocMap, callback.DependencyMapBuilder, callback.BookmarkValidator, monikersMap);
                         break;
                     case ContentType.Redirection:
-                        (errors, model, monikers) = BuildAssert(file, ContentType.Redirection);
+                        (errors, model, monikers) = BuildRedirection.Build(file);
                         break;
                 }
 
@@ -220,37 +219,6 @@ namespace Microsoft.Docs.Build
                 outputPath = PathUtility.NormalizeFile(Path.Combine(monikerSeg, file.SitePath));
             }
             return outputPath;
-        }
-
-        private static (List<Error> errors, object model, List<string> monikers) BuildAssert(Document file, ContentType contentType)
-        {
-            Debug.Assert(file.ContentType == contentType);
-            var errors = new List<Error>();
-
-            var (metaErrors, metadata) = JsonUtility.ToObjectWithSchemaValidation<FileMetadata>(file.Docset.Metadata.GetMetadata(file));
-            errors.AddRange(metaErrors);
-
-            var (monikerError, monikers) = file.Docset.Monikers.GetFileLevelMonikers(file, metadata.MonikerRange);
-            errors.AddIfNotNull(monikerError);
-
-            switch (contentType)
-            {
-                case ContentType.Resource:
-                    return (errors, new ResourceModel
-                    {
-                        Locale = file.Docset.Locale,
-                        Monikers = monikers,
-                    }, monikers);
-                case ContentType.Redirection:
-                    return (errors, new RedirectionModel
-                    {
-                        RedirectUrl = file.RedirectionUrl,
-                        Locale = file.Docset.Locale,
-                        Monikers = monikers,
-                    }, monikers);
-                default:
-                    return default;
-            }
         }
 
         private static Manifest CreateManifest(Dictionary<Document, FileManifest> files, DependencyMap dependencies)
