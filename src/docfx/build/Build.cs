@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -72,16 +71,16 @@ namespace Microsoft.Docs.Build
 
                 var contribution = await ContributionProvider.Create(docset, githubUserCache, gitCommitProvider);
                 await ParallelUtility.ForEach(
-                    docset.BuildScope.Where(doc => doc.ContentType != ContentType.TableOfContents),
-                    async (file, buildChild) => { monikersMap.TryAdd(file, await BuildOneFile(file, buildChild)); },
-                    ShouldBuildFile,
+                    docset.BuildScope,
+                    async (file, buildChild) => { monikersMap.TryAdd(file, await BuildOneFile(file, buildChild, null)); },
+                    (file) => { return ShouldBuildFile(file, new ContentType[] { ContentType.Page, ContentType.Redirection, ContentType.Resource }); },
                     Progress.Update);
 
                 // Build TOC: since toc file depends on the build result of every node
                 await ParallelUtility.ForEach(
-                    docset.BuildScope.Where(doc => doc.ContentType == ContentType.TableOfContents),
-                    (file, buildChild) => { return BuildTocFile(file, monikersMap.ToDictionary(item => item.Key, item => item.Value)); },
-                    ShouldBuildFile,
+                    docset.BuildScope,
+                    (file, buildChild) => { return BuildOneFile(file, buildChild, monikersMap.ToDictionary(item => item.Key, item => item.Value)); },
+                    file => { return ShouldBuildFile(file, new ContentType[] { ContentType.TableOfContents }); },
                     Progress.Update);
 
                 var saveGitCommitCache = gitCommitProvider.SaveGitCommitCache();
@@ -94,19 +93,16 @@ namespace Microsoft.Docs.Build
 
                 return (CreateManifest(manifest, dependencyMap), manifest, dependencyMap);
 
-                async Task<List<string>> BuildOneFile(Document file, Action<Document> buildChild)
+                async Task<List<string>> BuildOneFile(
+                    Document file,
+                    Action<Document> buildChild,
+                    Dictionary<Document, List<string>> fileMonikersMap)
                 {
                     var callback = new PageCallback(xrefMap, dependencyMapBuilder, bookmarkValidator, buildChild);
-                    return await BuildFile(context, file, tocMap, contribution, null, callback, manifestBuilder);
+                    return await BuildFile(context, file, tocMap, contribution, fileMonikersMap, callback, manifestBuilder);
                 }
 
-                async Task BuildTocFile(Document file, Dictionary<Document, List<string>> map)
-                {
-                    var callback = new PageCallback(xrefMap, dependencyMapBuilder, bookmarkValidator, null);
-                    await BuildFile(context, file, tocMap, contribution, map, callback, manifestBuilder);
-                }
-
-                bool ShouldBuildFile(Document file)
+                bool ShouldBuildFile(Document file, ContentType[] shouldBuildContentTypes)
                 {
                     // source content in a localization docset
                     if (docset.IsLocalized() && !file.Docset.IsLocalized())
@@ -114,7 +110,7 @@ namespace Microsoft.Docs.Build
                         return false;
                     }
 
-                    return file.ContentType != ContentType.Unknown && recurseDetector.TryAdd(file);
+                    return shouldBuildContentTypes.Contains(file.ContentType) && recurseDetector.TryAdd(file);
                 }
 
                 void ValidateBookmarks()
@@ -148,7 +144,7 @@ namespace Microsoft.Docs.Build
                 switch (file.ContentType)
                 {
                     case ContentType.Resource:
-                        model = BuildResource(file);
+                        (errors, model, monikers) = BuildResource.Build(file);
                         break;
                     case ContentType.Page:
                         (errors, model, monikers) = await BuildPage.Build(context, file, tocMap, contribution, callback);
@@ -158,8 +154,7 @@ namespace Microsoft.Docs.Build
                         (errors, model, monikers) = BuildTableOfContents.Build(context, file, tocMap, callback.DependencyMapBuilder, callback.BookmarkValidator, monikersMap);
                         break;
                     case ContentType.Redirection:
-                        (errors, model) = BuildRedirection.Build(file);
-                        monikers = ((RedirectionModel)model).Monikers;
+                        (errors, model, monikers) = BuildRedirection.Build(file);
                         break;
                 }
 
@@ -224,13 +219,6 @@ namespace Microsoft.Docs.Build
                 outputPath = PathUtility.NormalizeFile(Path.Combine(monikerSeg, file.SitePath));
             }
             return outputPath;
-        }
-
-        private static ResourceModel BuildResource(Document file)
-        {
-            Debug.Assert(file.ContentType == ContentType.Resource);
-
-            return new ResourceModel { Locale = file.Docset.Locale };
         }
 
         private static Manifest CreateManifest(Dictionary<Document, FileManifest> files, DependencyMap dependencies)
