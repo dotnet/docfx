@@ -1,25 +1,23 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
     internal static class BuildRedirection
     {
-        internal static (List<Error> errors, RedirectionModel model, List<string> monikers) Build(Document file)
+        internal static (List<Error> errors, RedirectionModel model, List<string> monikers)
+            Build(Document file, MetadataProvider metadataProvider, MonikersProvider monikersProvider)
         {
             Debug.Assert(file.ContentType == ContentType.Redirection);
             var errors = new List<Error>();
 
-            var (metaErrors, metadata) = JsonUtility.ToObjectWithSchemaValidation<FileMetadata>(file.Docset.Metadata.GetMetadata(file, null));
+            var (metaErrors, metadata) = JsonUtility.ToObjectWithSchemaValidation<FileMetadata>(metadataProvider.GetMetadata(file, null));
             errors.AddRange(metaErrors);
 
-            var (error, monikers) = file.Docset.Monikers.GetFileLevelMonikers(file, metadata.MonikerRange);
+            var (error, monikers) = monikersProvider.GetFileLevelMonikers(file, metadata.MonikerRange);
             errors.AddIfNotNull(error);
 
             return (errors, new RedirectionModel
