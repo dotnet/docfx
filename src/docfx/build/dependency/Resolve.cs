@@ -136,7 +136,9 @@ namespace Microsoft.Docs.Build
             }
 
             // Pages outside build scope, don't build the file, use relative href
-            if (error == null && file.ContentType == ContentType.Page && !file.Docset.BuildScope.Contains(file))
+            if (error == null
+                && (file.ContentType == ContentType.Page || file.ContentType == ContentType.TableOfContents)
+                && !file.Docset.BuildScope.Contains(file))
             {
                 return (Errors.LinkOutOfScope(relativeTo, file, href, file.Docset.Config.ConfigFileName), relativeUrl + query + fragment, fragment, null);
             }
