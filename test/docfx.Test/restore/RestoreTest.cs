@@ -100,8 +100,7 @@ github:
         }
 
         [Theory]
-        [InlineData("abc123", "\"0xdef456\"", "abc123+etag+%220xdef456%22")]
-        [InlineData("abc123", "", "abc123+etag+")]
+        [InlineData("abc123", "\"0xdef456\"", "abc123+%220xdef456%22")]
         [InlineData("abc123", null, "abc123")]
         public static void GetRestoreFileName(string hash, string etag, string expected)
         {
@@ -109,8 +108,7 @@ github:
         }
 
         [Theory]
-        [InlineData("abc123+etag+%220xdef456%22", "\"0xdef456\"")]
-        [InlineData("abc123+etag+", "")]
+        [InlineData("abc123+%220xdef456%22", "\"0xdef456\"")]
         [InlineData("abc123", null)]
         public static void GetEtag(string restoreFileName, string expected)
         {

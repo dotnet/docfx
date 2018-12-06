@@ -59,7 +59,7 @@ namespace Microsoft.Docs.Build
         /// Get restore file name from hash and ETag
         /// </summary>
         /// <param name="hash">SHA1 hash of file content</param>
-        /// <param name="etag">ETag of the resource, null if file is from local, empty if server doesn't specify ETag</param>
+        /// <param name="etag">ETag of the resource, null if server doesn't specify ETag</param>
         public static string GetRestoreFileName(string hash, string etag = null)
         {
             Debug.Assert(!string.IsNullOrEmpty(hash));
@@ -67,7 +67,7 @@ namespace Microsoft.Docs.Build
             var result = hash;
             if (etag != null)
             {
-                result += $"+etag+{HrefUtility.EscapeUrlSegment(etag)}";
+                result += $"+{HrefUtility.EscapeUrlSegment(etag)}";
             }
             return result;
         }
@@ -75,13 +75,13 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Get ETag from restore file name
         /// </summary>
-        /// <returns>ETag, null if file is from local, emtpy if server doesn't specify ETag</returns>
+        /// <returns>ETag of the resource, null if server doesn't specify ETag</returns>
         public static string GetEtag(string restoreFileName)
         {
             Debug.Assert(!string.IsNullOrEmpty(restoreFileName));
 
             var parts = restoreFileName.Split('+');
-            return parts.Length == 3 && parts[1] == "etag" ? HrefUtility.UnescapeUrl(parts[2]) : null;
+            return parts.Length == 2 ? HrefUtility.UnescapeUrl(parts[1]) : null;
         }
 
         private static async Task<(string filename, string etag)> DownloadToTempFile(string url, Config config, string existingEtag)
