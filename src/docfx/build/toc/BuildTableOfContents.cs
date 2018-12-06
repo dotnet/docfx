@@ -69,11 +69,7 @@ namespace Microsoft.Docs.Build
                 Debug.Assert(tocMapBuilder != null);
                 Debug.Assert(fileToBuild != null);
 
-<<<<<<< HEAD
-                var (errors, _, _, referencedDocuments, referencedTocs) = Load(context, fileToBuild, null, null);
-=======
-                var (errors, _, _, referencedDocuments, referencedTocs, _) = Load(context, fileToBuild);
->>>>>>> ddfda684d1a4d9a95ca5eb8616a132d58da94ce3
+                var (errors, _, _, referencedDocuments, referencedTocs) = Load(context, fileToBuild);
                 context.Report(fileToBuild.ToString(), errors);
 
                 tocMapBuilder.Add(fileToBuild, referencedDocuments, referencedTocs);
