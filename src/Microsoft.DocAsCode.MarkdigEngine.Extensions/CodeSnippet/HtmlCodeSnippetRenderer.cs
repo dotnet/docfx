@@ -18,7 +18,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         private readonly MarkdownContext _context;
         private const string tagPrefix = "snippet";
         private const string warningMessageId = "codeIncludeNotFound";
-        private const string defaultWarningMessage = "It looks like the sample you are looking for has moved!  Rest assured we are working on resolving this.";
+        private const string defaultWarningMessage = "It looks like the sample you are looking for does not exist.";
         private const string warningTitleId = "warning";
         private const string defaultWarningTitle = "<h5>WARNING</h5>";
 
