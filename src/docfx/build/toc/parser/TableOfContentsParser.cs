@@ -40,21 +40,21 @@ namespace Microsoft.Docs.Build
 
             if (filePath.EndsWith(".yml", PathUtility.PathComparison))
             {
-                var (errors, tocToken) = !file.IsFromHistory ? YamlUtility.Deserialize(file, context) : YamlUtility.Deserialize(content);
+                var (errors, tocToken) = string.IsNullOrEmpty(content) ? YamlUtility.Deserialize(file, context) : YamlUtility.Deserialize(content);
                 var (loadErrors, toc) = LoadTocModel(tocToken);
                 errors.AddRange(loadErrors);
                 return (errors, toc);
             }
             else if (filePath.EndsWith(".json", PathUtility.PathComparison))
             {
-                var (errors, tocToken) = !file.IsFromHistory ? JsonUtility.Deserialize(file, context) : JsonUtility.Deserialize(content);
+                var (errors, tocToken) = string.IsNullOrEmpty(content) ? JsonUtility.Deserialize(file, context) : JsonUtility.Deserialize(content);
                 var (loadErrors, toc) = LoadTocModel(tocToken);
                 errors.AddRange(loadErrors);
                 return (errors, toc);
             }
             else if (filePath.EndsWith(".md", PathUtility.PathComparison))
             {
-                content = file.IsFromHistory ? content : file.ReadText();
+                content = string.IsNullOrEmpty(content) ? file.ReadText() : content;
                 GitUtility.CheckMergeConflictMarker(content, file.FilePath);
                 return MarkdownTocMarkup.LoadMdTocModel(content, file, context);
             }
