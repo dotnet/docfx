@@ -66,7 +66,7 @@ namespace Microsoft.Docs.Build
             return GetCommitHistory(file, int.MaxValue, committish, fileCommitCache);
         }
 
-        public List<GitCommit> GetCommitHistory(string file, int top, string committish = null)
+        public List<GitCommit> GetCommitHistoryNoCache(string file, int top, string committish = null)
         {
             return GetCommitHistory(file, top, committish, new Dictionary<(long, long), (long[], int)>());
         }

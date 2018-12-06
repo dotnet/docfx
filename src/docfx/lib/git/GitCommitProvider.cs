@@ -27,14 +27,14 @@ namespace Microsoft.Docs.Build
             return (repo, pathToRepo, await GetCommitProvider(repo).GetCommitHistory(pathToRepo, committish));
         }
 
-        public List<GitCommit> GetCommitHistory(string fullPath, int top, string committish = null)
+        public List<GitCommit> GetCommitHistoryNoCache(string fullPath, int top, string committish = null)
         {
             var repo = GetRepository(fullPath);
             if (repo == null)
                 return default;
             var pathToRepo = PathUtility.NormalizeFile(Path.GetRelativePath(repo.Path, fullPath));
 
-            return GetCommitProvider(repo).GetCommitHistory(pathToRepo, top, committish);
+            return GetCommitProvider(repo).GetCommitHistoryNoCache(pathToRepo, top, committish);
         }
 
         public Task SaveGitCommitCache()
