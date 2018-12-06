@@ -5,6 +5,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -18,8 +19,10 @@ namespace Microsoft.Docs.Build
 {
     internal sealed class FileCommitProvider : IDisposable
     {
-        private const int MaxParentBlob = 32;
+        private const int MaxCommitCacheCountPerFile = 10;
+
         private readonly string _repoPath;
+        private readonly string _cacheFilePath;
 
         // Commit history and a lookup table from commit hash to commit.
         // Use `long` to represent SHA2 git hashes for more efficient lookup and smaller size.
@@ -42,39 +45,35 @@ namespace Microsoft.Docs.Build
         private bool _cacheUpdated;
         private IntPtr _repo;
 
-        public FileCommitProvider(
-            string repoPath,
-            Lazy<Task<ConcurrentDictionary<string, Dictionary<(long commit, long blob), (long[] commitHistory, int lruOrder)>>>> commitCache)
+        public FileCommitProvider(string repoPath, string cacheFilePath)
         {
             if (git_repository_open(out _repo, repoPath) != 0)
             {
                 throw new ArgumentException($"Invalid git repo {repoPath}");
             }
             _repoPath = repoPath;
+            _cacheFilePath = cacheFilePath;
             _commits = new ConcurrentDictionary<string, Lazy<(List<Commit>, Dictionary<long, Commit>)>>();
-            _commitCache = commitCache;
+            _commitCache = new Lazy<Task<ConcurrentDictionary<string, Dictionary<(long commit, long blob), (long[] commitHistory, int lruOrder)>>>>(
+                () => LoadCommitCache(_cacheFilePath));
         }
 
         public async Task<List<GitCommit>> GetCommitHistory(string file, string committish = null)
         {
             var commitCache = await _commitCache.Value;
             var fileCommitCache = commitCache.GetOrAdd(file, _ => new Dictionary<(long, long), (long[], int)>());
-            return GetCommitHistory(file, fileCommitCache, committish);
+
+            return GetCommitHistory(file, int.MaxValue, committish, fileCommitCache);
         }
 
-        public List<GitCommit> GetDeletedFileCommitHistory(string file, int top = -1, string committish = null)
-            => GetCommitHistory(file, null, committish, top);
-
-        public async Task<IReadOnlyList<KeyValuePair<string, Dictionary<(long commit, long blob), (long[] commitHistory, int lruOrder)>>>> BuildCache()
+        public List<GitCommit> GetCommitHistoryNoCache(string file, int top, string committish = null)
         {
-            if (_cacheUpdated)
-            {
-                // There is a race condition in Linq ToList() method, use ConcurrentDictionary.ToArray() to create a snapshot
-                // https://stackoverflow.com/questions/11692389/getting-argument-exception-in-concurrent-dictionary-when-sorting-and-displaying
-                return (await _commitCache.Value).ToArray();
-            }
+            return GetCommitHistory(file, top, committish, new Dictionary<(long, long), (long[], int)>());
+        }
 
-            return null;
+        public Task SaveCache()
+        {
+            return SaveCacheCore();
         }
 
         public void Dispose()
@@ -83,12 +82,24 @@ namespace Microsoft.Docs.Build
             if (repo != IntPtr.Zero)
             {
                 git_repository_free(_repo);
+                GC.SuppressFinalize(this);
             }
         }
 
-        private List<GitCommit> GetCommitHistory(string file, Dictionary<(long, long), (long[], int)> fileCommitCache = null, string committish = null, int top = -1)
+        ~FileCommitProvider()
+        {
+            Dispose();
+        }
+
+        private List<GitCommit> GetCommitHistory(
+            string file,
+            int top,
+            string committish,
+            Dictionary<(long commit, long blob), (long[] commitHistory, int lruOrder)> commitCache)
         {
             Debug.Assert(!file.Contains('\\'));
+
+            const int MaxParentBlob = 32;
 
             var (commits, commitsBySha) = _commits.GetOrAdd(
                 committish ?? "",
@@ -99,11 +110,11 @@ namespace Microsoft.Docs.Build
                 return new List<GitCommit>();
             }
 
-            var total = 0;
-            var updateCache = fileCommitCache != null;
+            var updateCache = true;
             var result = new List<Commit>();
             var parentBlobs = new long[MaxParentBlob];
             var pathSegments = Array.ConvertAll(file.Split('/'), GetStringId);
+
             var headCommit = commits[0];
             var headBlob = GetBlob(commits[0].Tree, pathSegments);
             var commitsToFollow = new List<(Commit commit, long blob)> { (headCommit, headBlob) };
@@ -114,62 +125,20 @@ namespace Microsoft.Docs.Build
             foreach (var commit in commits)
             {
                 // Find and remove if this commit should be followed by the tree traversal.
-                var (found, blob) = GetCommitToCheck(commit);
-                if (!found)
+                if (!TryRemoveCommit(commit, out var blob))
                 {
                     continue;
                 }
 
                 // Lookup and use cached commit history ONLY if there are no other commits to follow
-                if (commitsToFollow.Count == 0 && fileCommitCache != null)
+                if (commitsToFollow.Count == 0 && TryPopulateResultFromCache(commit, blob))
                 {
-                    lock (fileCommitCache)
-                    {
-                        if (fileCommitCache.TryGetValue((commit.Sha.a, blob), out var cachedValue))
-                        {
-                            updateCache = result.Count != 0;
-
-                            var (cachedCommitHistory, lruOrder) = cachedValue;
-                            foreach (var cachedCommit in cachedCommitHistory)
-                            {
-                                if (top > 0 && total++ > top)
-                                    break;
-
-                                result.Add(commitsBySha[cachedCommit]);
-                            }
-                            fileCommitCache[(commit.Sha.a, blob)] = (cachedCommitHistory, _nextLruOrder--);
-                            break;
-                        }
-                    }
+                    break;
                 }
 
-                var parentCount = Math.Min(MaxParentBlob, commit.Parents.Length);
-                var singleParent = GetParentsToFollow(commit, blob, parentCount);
-                var add = (parentCount == 0 && blob != 0) || (parentCount > 0 && !singleParent);
-
-                if (add)
-                {
-                    if (top > 0 && total++ > top)
-                        break;
-
-                    result.Add(commit);
-                }
-            }
-
-            if (updateCache && top <= 0)
-            {
-                lock (fileCommitCache)
-                {
-                    _cacheUpdated = true;
-                    fileCommitCache.Add((headCommit.Sha.a, headBlob), (result.Select(c => c.Sha.a).ToArray(), 0));
-                }
-            }
-
-            return result.Select(c => c.GitCommit).ToList();
-
-            bool GetParentsToFollow(Commit commit, long blob, int parentCount)
-            {
                 var singleParent = false;
+                var parentCount = Math.Min(MaxParentBlob, commit.Parents.Length);
+
                 for (var i = 0; i < parentCount; i++)
                 {
                     parentBlobs[i] = GetBlob(commit.Parents[i].Tree, pathSegments);
@@ -192,22 +161,63 @@ namespace Microsoft.Docs.Build
                     }
                 }
 
-                return singleParent;
-            }
-
-            (bool found, long blob) GetCommitToCheck(Commit currentCommit)
-            {
-                for (var i = 0; i < commitsToFollow.Count; i++)
+                if ((parentCount == 0 && blob != 0) || (parentCount > 0 && !singleParent))
                 {
-                    var (commit, blob) = commitsToFollow[i];
-                    if (commit == currentCommit)
+                    result.Add(commit);
+
+                    if (result.Count >= top)
                     {
-                        commitsToFollow.RemoveAt(i);
-                        return (true, blob);
+                        break;
                     }
                 }
+            }
 
-                return default;
+            if (updateCache && top == int.MaxValue)
+            {
+                lock (commitCache)
+                {
+                    _cacheUpdated = true;
+                    commitCache.Add((headCommit.Sha.a, headBlob), (result.Select(c => c.Sha.a).ToArray(), 0));
+                }
+            }
+
+            return result.Select(c => c.GitCommit).ToList();
+
+            bool TryRemoveCommit(Commit commit, out long blob)
+            {
+                blob = 0L;
+                for (var i = 0; i < commitsToFollow.Count; i++)
+                {
+                    var commitToCheck = commitsToFollow[i];
+                    if (commitToCheck.commit == commit)
+                    {
+                        blob = commitToCheck.blob;
+                        commitsToFollow.RemoveAt(i);
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+            bool TryPopulateResultFromCache(Commit commit, long blob)
+            {
+                lock (commitCache)
+                {
+                    if (commitCache.TryGetValue((commit.Sha.a, blob), out var cachedValue))
+                    {
+                        // Only update cache when the cached result has changed.
+                        updateCache = result.Count != 0;
+
+                        var (cachedCommitHistory, lruOrder) = cachedValue;
+                        foreach (var cachedCommit in cachedCommitHistory)
+                        {
+                            result.Add(commitsBySha[cachedCommit]);
+                        }
+                        commitCache[(commit.Sha.a, blob)] = (cachedCommitHistory, _nextLruOrder--);
+                        return true;
+                    }
+                    return false;
+                }
             }
         }
 
@@ -333,6 +343,91 @@ namespace Microsoft.Docs.Build
         private int GetStringId(string value)
         {
             return _stringPool.GetOrAdd(value, _ => Interlocked.Increment(ref _nextStringId));
+        }
+
+        private static async Task<ConcurrentDictionary<string, Dictionary<(long commit, long blob), (long[] commitHistory, int lruOrder)>>>
+            LoadCommitCache(string cacheFilePath)
+        {
+            if (string.IsNullOrEmpty(cacheFilePath) || !File.Exists(cacheFilePath))
+            {
+                return new ConcurrentDictionary<string, Dictionary<(long commit, long blob), (long[] commitHistory, int lruOrder)>>();
+            }
+
+            return await ProcessUtility.ReadFile(cacheFilePath, stream =>
+            {
+                var result = new ConcurrentDictionary<string, Dictionary<(long commit, long blob), (long[] commitHistory, int lruOrder)>>();
+                using (var reader = new BinaryReader(stream))
+                {
+                    var fileCount = reader.ReadInt32();
+                    for (var fileIndex = 0; fileIndex < fileCount; fileIndex++)
+                    {
+                        var file = reader.ReadString();
+                        var cacheCount = reader.ReadInt32();
+                        var cachedCommits = result.GetOrAdd(file, _ => new Dictionary<(long, long), (long[], int)>());
+
+                        for (var cacheIndex = 0; cacheIndex < cacheCount; cacheIndex++)
+                        {
+                            var commit = reader.ReadInt64();
+                            var blob = reader.ReadInt64();
+                            var commitCount = reader.ReadInt32();
+                            var commitHistory = new long[commitCount];
+
+                            for (var commitIndex = 0; commitIndex < commitCount; commitIndex++)
+                            {
+                                commitHistory[commitIndex] = reader.ReadInt64();
+                            }
+                            cachedCommits.Add((commit, blob), (commitHistory, cacheIndex + 1));
+                        }
+                    }
+                }
+                return result;
+            });
+        }
+
+        private Task SaveCacheCore()
+        {
+            if (!_cacheUpdated || string.IsNullOrEmpty(_cacheFilePath) || !_commitCache.IsValueCreated || !_commitCache.Value.IsCompletedSuccessfully)
+            {
+                return Task.CompletedTask;
+            }
+
+            PathUtility.CreateDirectoryFromFilePath(_cacheFilePath);
+
+            return ProcessUtility.WriteFile(_cacheFilePath, stream =>
+            {
+                using (var writer = new BinaryWriter(stream))
+                {
+                    // Create a snapshot of commit cache to ensure count and items matches.
+                    //
+                    // There is a race condition in Linq ToList() method, use ConcurrentDictionary.ToArray() to create a snapshot
+                    // https://stackoverflow.com/questions/11692389/getting-argument-exception-in-concurrent-dictionary-when-sorting-and-displaying
+                    var commitCache = _commitCache.Value.Result.ToArray();
+
+                    writer.Write(commitCache.Length);
+                    foreach (var (file, value) in commitCache)
+                    {
+                        lock (value)
+                        {
+                            writer.Write(file);
+                            writer.Write(Math.Min(value.Count, MaxCommitCacheCountPerFile));
+
+                            var lruValues = value.OrderBy(pair => pair.Value.lruOrder).Take(MaxCommitCacheCountPerFile);
+
+                            foreach (var ((commit, blob), (commitHistory, _)) in lruValues)
+                            {
+                                writer.Write(commit);
+                                writer.Write(blob);
+                                writer.Write(commitHistory.Length);
+
+                                foreach (var sha in commitHistory)
+                                {
+                                    writer.Write(sha);
+                                }
+                            }
+                        }
+                    }
+                }
+            });
         }
 
         private class Commit
