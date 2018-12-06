@@ -20,6 +20,7 @@ namespace Microsoft.Docs.Build
             Dictionary<Document, List<string>> monikersMap)
         {
             Debug.Assert(file.ContentType == ContentType.TableOfContents);
+            Debug.Assert(monikersMap != null);
 
             if (!tocMap.Contains(file))
             {
