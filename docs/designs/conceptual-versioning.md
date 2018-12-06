@@ -517,6 +517,8 @@ When build the toc file(including the toc file included in another), we have to 
     1. If the node is a link node(`## [Header](a.md)`), the *monikers* of this node is the collection of its children's monikers and the monikers of this node.
 1. *Monikers* of toc file - Intersection of the monikerRange setting in the config and file metadata(If the intersection is empty, a warning will be logged).
 
+> For now, if the monikers of the node is out of the moniker Range of this toc, we do not report warning.
+
 In phase 1, when resolving the `toc_rel` of each file, we still take the nearest toc file.
 
 #### 5.4 Redirection
