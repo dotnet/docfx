@@ -83,6 +83,11 @@ namespace Microsoft.Docs.Build
         public bool IsExperimental { get; }
 
         /// <summary>
+        /// Gets a value indicating whether it's from git history(deleted/moved/renamed)
+        /// </summary>
+        public bool IsFromHistory { get; }
+
+        /// <summary>
         /// Gets a value indicating whether the current document is schema data
         /// </summary>
         public bool IsSchemaData => Schema != null && Schema.Attribute as PageSchemaAttribute == null;
@@ -107,7 +112,8 @@ namespace Microsoft.Docs.Build
             string mime,
             Schema schema,
             bool isExperimental,
-            string redirectionUrl = null)
+            string redirectionUrl = null,
+            bool isFromHistory = false)
         {
             Debug.Assert(!Path.IsPathRooted(filePath));
             Debug.Assert(ContentType == ContentType.Redirection ? redirectionUrl != null : true);
@@ -121,6 +127,7 @@ namespace Microsoft.Docs.Build
             Schema = schema;
             IsExperimental = isExperimental;
             RedirectionUrl = redirectionUrl;
+            IsFromHistory = isFromHistory;
 
             _id = new Lazy<(string docId, string versionId)>(() => LoadDocumentId());
 
@@ -137,6 +144,8 @@ namespace Microsoft.Docs.Build
         public Stream ReadStream()
         {
             Debug.Assert(ContentType != ContentType.Redirection);
+            Debug.Assert(!IsFromHistory);
+
             return File.OpenRead(Path.Combine(Docset.DocsetPath, FilePath));
         }
 
@@ -146,6 +155,8 @@ namespace Microsoft.Docs.Build
         public string ReadText()
         {
             Debug.Assert(ContentType != ContentType.Redirection);
+            Debug.Assert(!IsFromHistory);
+
             using (var reader = new StreamReader(ReadStream()))
             {
                 return reader.ReadToEnd();
@@ -194,7 +205,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         /// <param name="docset">The current docset</param>
         /// <param name="path">The path relative to docset root</param>
-        public static (Error error, Document doc) TryCreate(Docset docset, string path, string redirectionUrl = null)
+        public static (Error error, Document doc) TryCreate(Docset docset, string path, string redirectionUrl = null, bool isFromHistory = false)
         {
             Debug.Assert(docset != null);
             Debug.Assert(!string.IsNullOrEmpty(path));
@@ -221,7 +232,7 @@ namespace Microsoft.Docs.Build
                 return (Errors.InvalidRedirection(filePath, type), null);
             }
 
-            return (null, new Document(docset, filePath, sitePath, siteUrl, contentType, mime, schema, isExperimental, redirectionUrl));
+            return (null, new Document(docset, filePath, sitePath, siteUrl, contentType, mime, schema, isExperimental, redirectionUrl, isFromHistory));
         }
 
         /// <summary>

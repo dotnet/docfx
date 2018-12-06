@@ -27,26 +27,32 @@ namespace Microsoft.Docs.Build
             return (errors, items, inputModel?.Metadata);
         }
 
-        private static (List<Error> errors, TableOfContentsInputModel tocModel) LoadTocModel(Context context, Document file)
+        private static (List<Error> errors, TableOfContentsInputModel tocModel) LoadTocModel(Context context, Document file, string content = null)
         {
             var filePath = file.FilePath;
+
+            if (file.IsFromHistory)
+            {
+                Debug.Assert(!string.IsNullOrEmpty(content));
+            }
+
             if (filePath.EndsWith(".yml", PathUtility.PathComparison))
             {
-                var (errors, tocToken) = YamlUtility.Deserialize(file, context);
+                var (errors, tocToken) = content == null ? YamlUtility.Deserialize(file, context) : YamlUtility.Deserialize(content);
                 var (loadErrors, toc) = LoadTocModel(tocToken);
                 errors.AddRange(loadErrors);
                 return (errors, toc);
             }
             else if (filePath.EndsWith(".json", PathUtility.PathComparison))
             {
-                var (errors, tocToken) = JsonUtility.Deserialize(file, context);
+                var (errors, tocToken) = content == null ? JsonUtility.Deserialize(file, context) : JsonUtility.Deserialize(content);
                 var (loadErrors, toc) = LoadTocModel(tocToken);
                 errors.AddRange(loadErrors);
                 return (errors, toc);
             }
             else if (filePath.EndsWith(".md", PathUtility.PathComparison))
             {
-                var content = file.ReadText();
+                content = content ?? file.ReadText();
                 GitUtility.CheckMergeConflictMarker(content, file.FilePath);
                 return MarkdownTocMarkup.LoadMdTocModel(content, file, context);
             }
@@ -76,7 +82,7 @@ namespace Microsoft.Docs.Build
             return (new List<Error>(), new TableOfContentsInputModel());
         }
 
-        private static (List<Error> errors, TableOfContentsInputModel model) LoadInputModelItems(Context context, Document file, Document rootPath, ResolveContent resolveContent, ResolveHref resolveHref, List<Document> parents)
+        private static (List<Error> errors, TableOfContentsInputModel model) LoadInputModelItems(Context context, Document file, Document rootPath, ResolveContent resolveContent, ResolveHref resolveHref, List<Document> parents, string content = null)
         {
             // add to parent path
             if (parents.Contains(file))
@@ -86,7 +92,7 @@ namespace Microsoft.Docs.Build
 
             parents.Add(file);
 
-            var (errors, models) = LoadTocModel(context, file);
+            var (errors, models) = LoadTocModel(context, file, content);
 
             if (models.Items.Any())
             {
@@ -193,7 +199,7 @@ namespace Microsoft.Docs.Build
                 var (referencedTocContent, referenceTocFilePath) = ResolveTocHrefContent(tocHrefType, tocHref, filePath, resolveContent);
                 if (referencedTocContent != null)
                 {
-                    var (subErrors, nestedToc) = LoadInputModelItems(context, referenceTocFilePath, rootPath, resolveContent, resolveHref, parents);
+                    var (subErrors, nestedToc) = LoadInputModelItems(context, referenceTocFilePath, rootPath, resolveContent, resolveHref, parents, referencedTocContent);
                     errors.AddRange(subErrors);
                     if (tocHrefType == TocHrefType.RelativeFolder)
                     {

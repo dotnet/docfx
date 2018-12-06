@@ -15,6 +15,7 @@ namespace Microsoft.Docs.Build
             Context context,
             Document file,
             TableOfContentsMap tocMap,
+            GitCommitProvider gitCommitProvider,
             DependencyMapBuilder dependencyMapBuilder,
             BookmarkValidator bookmarkValidator,
             Dictionary<Document, List<string>> monikersMap)
@@ -27,7 +28,7 @@ namespace Microsoft.Docs.Build
                 return (Enumerable.Empty<Error>(), null, new List<string>());
             }
 
-            var (errors, tocModel, tocMetadata, refArticles, refTocs) = Load(context, file, dependencyMapBuilder, bookmarkValidator, monikersMap);
+            var (errors, tocModel, tocMetadata, refArticles, refTocs) = Load(context, file, gitCommitProvider, dependencyMapBuilder, bookmarkValidator, monikersMap);
 
             var metadata = file.Docset.Metadata.GetMetadata(file, tocMetadata).ToObject<TableOfContentsMetadata>();
 
@@ -68,7 +69,11 @@ namespace Microsoft.Docs.Build
                 Debug.Assert(tocMapBuilder != null);
                 Debug.Assert(fileToBuild != null);
 
+<<<<<<< HEAD
                 var (errors, _, _, referencedDocuments, referencedTocs) = Load(context, fileToBuild, null, null);
+=======
+                var (errors, _, _, referencedDocuments, referencedTocs, _) = Load(context, fileToBuild);
+>>>>>>> ddfda684d1a4d9a95ca5eb8616a132d58da94ce3
                 context.Report(fileToBuild.ToString(), errors);
 
                 tocMapBuilder.Add(fileToBuild, referencedDocuments, referencedTocs);
@@ -86,7 +91,13 @@ namespace Microsoft.Docs.Build
             List<Document> referencedDocuments,
             List<Document> referencedTocs)
 
-            Load(Context context, Document fileToBuild, DependencyMapBuilder dependencyMapBuilder = null, BookmarkValidator bookmarkValidator = null, Dictionary<Document, List<string>> monikersMap = null)
+            Load(
+            Context context,
+            Document fileToBuild,
+            GitCommitProvider gitCommitProvider = null,
+            DependencyMapBuilder dependencyMapBuilder = null,
+            BookmarkValidator bookmarkValidator = null,
+            Dictionary<Document, List<string>> monikersMap = null)
         {
             var errors = new List<Error>();
             var referencedDocuments = new List<Document>();
@@ -97,7 +108,7 @@ namespace Microsoft.Docs.Build
                 fileToBuild,
                 (file, href, isInclude) =>
                 {
-                    var (error, referencedTocContent, referencedToc) = file.TryResolveContent(href);
+                    var (error, referencedTocContent, referencedToc) = file.TryResolveContent(href, gitCommitProvider);
                     errors.AddIfNotNull(error);
                     if (referencedToc != null && isInclude)
                     {
