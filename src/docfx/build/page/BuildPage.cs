@@ -16,11 +16,12 @@ namespace Microsoft.Docs.Build
             Document file,
             TableOfContentsMap tocMap,
             ContributionProvider contribution,
-            PageCallback callback)
+            PageCallback callback,
+            GitCommitProvider gitCommitProvider)
         {
             Debug.Assert(file.ContentType == ContentType.Page);
 
-            var (errors, schema, model, metadata) = await Load(context, file, callback);
+            var (errors, schema, model, metadata) = await Load(context, file, callback, gitCommitProvider);
 
             model.PageType = schema.Name;
             model.Locale = file.Docset.Locale;
@@ -70,24 +71,24 @@ namespace Microsoft.Docs.Build
 
         private static async Task<(List<Error> errors, Schema schema, PageModel model, FileMetadata metadata)>
             Load(
-            Context context, Document file, PageCallback callback)
+            Context context, Document file, PageCallback callback, GitCommitProvider gitCommitProvider)
         {
             if (file.FilePath.EndsWith(".md", PathUtility.PathComparison))
             {
-                return LoadMarkdown(context, file, callback);
+                return LoadMarkdown(context, file, callback, gitCommitProvider);
             }
             if (file.FilePath.EndsWith(".yml", PathUtility.PathComparison))
             {
-                return await LoadYaml(context, file, callback);
+                return await LoadYaml(context, file, callback, gitCommitProvider);
             }
 
             Debug.Assert(file.FilePath.EndsWith(".json", PathUtility.PathComparison));
-            return await LoadJson(context, file, callback);
+            return await LoadJson(context, file, callback, gitCommitProvider);
         }
 
         private static (List<Error> errors, Schema schema, PageModel model, FileMetadata metadata)
             LoadMarkdown(
-            Context context, Document file, PageCallback callback)
+            Context context, Document file, PageCallback callback, GitCommitProvider gitCommitProvider)
         {
             var errors = new List<Error>();
             var content = file.ReadText();
@@ -106,7 +107,7 @@ namespace Microsoft.Docs.Build
             var (html, markup) = Markup.ToHtml(
                 content,
                 file,
-                (path, relativeTo) => Resolve.ReadFile(path, relativeTo, errors, callback.DependencyMapBuilder),
+                (path, relativeTo) => Resolve.ReadFile(path, relativeTo, errors, callback.DependencyMapBuilder, gitCommitProvider),
                 (path, relativeTo, resultRelativeTo) => Resolve.GetLink(path, relativeTo, resultRelativeTo, errors, callback.BuildChild, callback.DependencyMapBuilder, callback.BookmarkValidator),
                 (uid, moniker) => Resolve.ResolveXref(uid, callback.XrefMap, file, callback?.DependencyMapBuilder, moniker),
                 (rangeString) => file.Docset.Monikers.GetZoneMonikers(rangeString, monikers, errors),
@@ -137,25 +138,25 @@ namespace Microsoft.Docs.Build
 
         private static async Task<(List<Error> errors, Schema schema, PageModel model, FileMetadata metadata)>
             LoadYaml(
-            Context context, Document file, PageCallback callback)
+            Context context, Document file, PageCallback callback, GitCommitProvider gitCommitProvider)
         {
             var (errors, token) = YamlUtility.Deserialize(file, context);
 
-            return await LoadSchemaDocument(errors, token, file, callback);
+            return await LoadSchemaDocument(errors, token, file, callback, gitCommitProvider);
         }
 
         private static async Task<(List<Error> errors, Schema schema, PageModel model, FileMetadata metadata)>
             LoadJson(
-            Context context, Document file, PageCallback callback)
+            Context context, Document file, PageCallback callback, GitCommitProvider gitCommitProvider)
         {
             var (errors, token) = JsonUtility.Deserialize(file, context);
 
-            return await LoadSchemaDocument(errors, token, file, callback);
+            return await LoadSchemaDocument(errors, token, file, callback, gitCommitProvider);
         }
 
         private static async Task<(List<Error> errors, Schema schema, PageModel model, FileMetadata metadata)>
             LoadSchemaDocument(
-            List<Error> errors, JToken token, Document file, PageCallback callback)
+            List<Error> errors, JToken token, Document file, PageCallback callback, GitCommitProvider gitCommitProvider)
         {
             // TODO: for backward compatibility, when #YamlMime:YamlDocument, documentType is used to determine schema.
             //       when everything is moved to SDP, we can refactor the mime check to Document.TryCreate
@@ -166,7 +167,7 @@ namespace Microsoft.Docs.Build
                 throw Errors.SchemaNotFound(file.Mime).ToException();
             }
 
-            var (schemaViolationErrors, content) = JsonUtility.ToObjectWithSchemaValidation(token, schema.Type, transform: AttributeTransformer.Transform(errors, file, callback));
+            var (schemaViolationErrors, content) = JsonUtility.ToObjectWithSchemaValidation(token, schema.Type, transform: AttributeTransformer.Transform(errors, file, callback, gitCommitProvider));
             errors.AddRange(schemaViolationErrors);
 
             if (file.Docset.Legacy && schema.Attribute is PageSchemaAttribute)
