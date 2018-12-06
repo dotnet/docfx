@@ -3,6 +3,7 @@
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using System.Collections.Generic;
 
 namespace Microsoft.Docs.Build
 {
@@ -10,5 +11,7 @@ namespace Microsoft.Docs.Build
     public class ResourceModel
     {
         public string Locale { get; set; }
+
+        public List<string> Monikers { get; set; }
     }
 }
