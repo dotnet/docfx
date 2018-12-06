@@ -75,6 +75,67 @@ namespace Microsoft.Docs.Build
             return GetCommitHistory(file, top, committish, fileCommitCache);
         }
 
+        public Task SaveCache()
+        {
+            if (!_cacheUpdated || string.IsNullOrEmpty(_cacheFilePath) || !_commitCache.IsValueCreated || !_commitCache.Value.IsCompletedSuccessfully)
+            {
+                return Task.CompletedTask;
+            }
+
+            PathUtility.CreateDirectoryFromFilePath(_cacheFilePath);
+
+            return ProcessUtility.WriteFile(_cacheFilePath, stream =>
+            {
+                using (var writer = new BinaryWriter(stream))
+                {
+                    // Create a snapshot of commit cache to ensure count and items matches.
+                    //
+                    // There is a race condition in Linq ToList() method, use ConcurrentDictionary.ToArray() to create a snapshot
+                    // https://stackoverflow.com/questions/11692389/getting-argument-exception-in-concurrent-dictionary-when-sorting-and-displaying
+                    var commitCache = _commitCache.Value.Result.ToArray();
+
+                    writer.Write(commitCache.Length);
+                    foreach (var (file, value) in commitCache)
+                    {
+                        lock (value)
+                        {
+                            writer.Write(file);
+                            writer.Write(Math.Min(value.Count, MaxCommitCacheCountPerFile));
+
+                            var lruValues = value.OrderBy(pair => pair.Value.lruOrder).Take(MaxCommitCacheCountPerFile);
+
+                            foreach (var ((commit, blob), (commitHistory, _)) in lruValues)
+                            {
+                                writer.Write(commit);
+                                writer.Write(blob);
+                                writer.Write(commitHistory.Length);
+
+                                foreach (var sha in commitHistory)
+                                {
+                                    writer.Write(sha);
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        public void Dispose()
+        {
+            var repo = Interlocked.Exchange(ref _repo, IntPtr.Zero);
+            if (repo != IntPtr.Zero)
+            {
+                git_repository_free(_repo);
+                GC.SuppressFinalize(this);
+            }
+        }
+
+        ~FileCommitProvider()
+        {
+            Dispose();
+        }
+
         private List<GitCommit> GetCommitHistory(
             string file,
             int top,
@@ -195,67 +256,6 @@ namespace Microsoft.Docs.Build
             }
 
             return result.Select(c => c.GitCommit).ToList();
-        }
-
-        public Task SaveCache()
-        {
-            if (!_cacheUpdated || string.IsNullOrEmpty(_cacheFilePath) || !_commitCache.IsValueCreated || !_commitCache.Value.IsCompletedSuccessfully)
-            {
-                return Task.CompletedTask;
-            }
-
-            PathUtility.CreateDirectoryFromFilePath(_cacheFilePath);
-
-            return ProcessUtility.WriteFile(_cacheFilePath, stream =>
-            {
-                using (var writer = new BinaryWriter(stream))
-                {
-                    // Create a snapshot of commit cache to ensure count and items matches.
-                    //
-                    // There is a race condition in Linq ToList() method, use ConcurrentDictionary.ToArray() to create a snapshot
-                    // https://stackoverflow.com/questions/11692389/getting-argument-exception-in-concurrent-dictionary-when-sorting-and-displaying
-                    var commitCache = _commitCache.Value.Result.ToArray();
-
-                    writer.Write(commitCache.Length);
-                    foreach (var (file, value) in commitCache)
-                    {
-                        lock (value)
-                        {
-                            writer.Write(file);
-                            writer.Write(Math.Min(value.Count, MaxCommitCacheCountPerFile));
-
-                            var lruValues = value.OrderBy(pair => pair.Value.lruOrder).Take(MaxCommitCacheCountPerFile);
-
-                            foreach (var ((commit, blob), (commitHistory, _)) in lruValues)
-                            {
-                                writer.Write(commit);
-                                writer.Write(blob);
-                                writer.Write(commitHistory.Length);
-
-                                foreach (var sha in commitHistory)
-                                {
-                                    writer.Write(sha);
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-        }
-
-        public void Dispose()
-        {
-            var repo = Interlocked.Exchange(ref _repo, IntPtr.Zero);
-            if (repo != IntPtr.Zero)
-            {
-                git_repository_free(_repo);
-                GC.SuppressFinalize(this);
-            }
-        }
-
-        ~FileCommitProvider()
-        {
-            Dispose();
         }
 
         private unsafe (List<Commit>, Dictionary<long, Commit>) LoadCommits(string committish = null)
