@@ -39,6 +39,7 @@ namespace Microsoft.Docs.Build
 
             if (monikers.Count == 0)
             {
+                // TODO: report a warning if there are multiple files published to same url, one of them have no version
                 monikers = new List<string> { "NONE_VERSION" };
             }
             _filesBySiteUrl.GetOrAdd(manifest.SiteUrl, _ => new ConcurrentDictionary<Document, List<string>>()).TryAdd(file, monikers);

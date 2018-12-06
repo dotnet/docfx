@@ -3,8 +3,8 @@
 inputs:
   docfx.yml: |
     monikerRange:
-      'docs/v1/**/*.md': '< netcore-2.0'
-      'docs/v2/**/*.md': '>= netcore-2.0'
+      'docs/v1/**': '< netcore-2.0'
+      'docs/v2/**': '>= netcore-2.0'
     routes:
       docs/v1/: docs/
       docs/v2/: docs/
@@ -45,8 +45,8 @@ outputs:
 inputs:
   docfx.yml: |
     monikerRange:
-      'docs/v1/**/*.md': '< netcore-2.0'
-      'docs/v2/**/*.md': '>= netcore-2.0'
+      'docs/v1/**': '< netcore-2.0'
+      'docs/v2/**': '>= netcore-2.0'
     routes:
       docs/v1/: docs/
       docs/v2/: docs/
@@ -121,7 +121,7 @@ outputs:
 inputs:
   docfx.yml: |
     monikerRange:
-      'docs/v1/**/*.md': '>= netcore-1.0 <= netcore-1.2'
+      'docs/v1/**': '>= netcore-1.0 <= netcore-1.2'
     routes:
       docs/v1/: docs/
     monikerDefinition: monikerDefinition.json
@@ -149,8 +149,8 @@ outputs:
 inputs:
   docfx.yml: |
     monikerRange:
-      'docs/v1/**/*.md': '>= netcore-1.0 <= netcore-1.1'
-      'docs/v2/**/*.md': '> netcore-1.1 <= netcore-1.3'
+      'docs/v1/**': '>= netcore-1.0 <= netcore-1.1'
+      'docs/v2/**': '> netcore-1.1 <= netcore-1.3'
     routes:
       docs/v1/: docs/
       docs/v2/: docs/
@@ -200,8 +200,8 @@ outputs:
 inputs:
   docfx.yml: |
     monikerRange:
-      'docs/v1/**/*.md': '>= netcore-1.0 <= netcore-1.1'
-      'docs/v2/**/*.md': '>= netcore-1.1 <= netcore-1.2'
+      'docs/v1/**': '>= netcore-1.0 <= netcore-1.1'
+      'docs/v2/**': '>= netcore-1.1 <= netcore-1.2'
     routes:
       docs/v1/: docs/
       docs/v2/: docs/
@@ -237,14 +237,14 @@ outputs:
       "monikers": ["netcore-1.2"]
     }
   build.log: |
-    ["error","publish-url-conflict","Two or more documents of the same version('netcore-1.1') publish to the same url '/docs/a-old': 'docs/v1/a-old.md <redirection>', 'docs/v2/a-old.md <redirection>'"]
+    ["error","publish-url-conflict","Two or more files of the same version('netcore-1.1') publish to the same url '/docs/a-old': 'docs/v1/a-old.md <redirection>', 'docs/v2/a-old.md <redirection>'"]
 ---
 # Two or more documents which don't have moniker or the moniker range is not mutually exclusive from others, publish to the same url
 inputs:
   docfx.yml: |
     monikerRange:
-      'docs/v1/**/*.md': '<= netcore-2.0'
-      'docs/v2/**/*.md': '>= netcore-2.0'
+      'docs/v1/**': '<= netcore-2.0'
+      'docs/v2/**': '>= netcore-2.0'
     routes:
       docs/v1/: docs/
       docs/v2/: docs/
@@ -266,7 +266,7 @@ inputs:
     }
 outputs:
   build.log: |
-    ["error","publish-url-conflict","Two or more documents of the same version('netcore-2.0') publish to the same url '/docs/a': 'docs/a.md', 'docs/v1/a.md', 'docs/v2/a.md'"]
+    ["error","publish-url-conflict","Two or more files of the same version('netcore-2.0') publish to the same url '/docs/a': 'docs/a.md', 'docs/v1/a.md', 'docs/v2/a.md'"]
 ---
 # With moniker range not defined in config, user should not define it in file metadata
 inputs:
@@ -314,7 +314,7 @@ outputs:
 inputs:
   docfx.yml: |
     monikerRange:
-      'docs/v1/**/*.md': '< netcore-2.0'
+      'docs/v1/**': '< netcore-2.0'
     routes:
       docs/v1/: docs/
     monikerDefinition: monikerDefinition.json
@@ -341,7 +341,7 @@ outputs:
 inputs:
   docfx.yml: |
     monikerRange:
-      'docs/v1/**/*.md': '<= netcore-1.1'
+      'docs/v1/**': '<= netcore-1.1'
     routes:
       docs/v1/: docs/
     monikerDefinition: monikerDefinition.json
@@ -367,8 +367,8 @@ outputs:
 inputs:
   docfx.yml: |
     monikerRange:
-      'docs/v1/**/*.md': '< netcore-2.0'
-      'docs/v2/**/*.md': '>= netcore-2.0'
+      'docs/v1/**': '< netcore-2.0'
+      'docs/v2/**': '>= netcore-2.0'
     routes:
       docs/v1/: docs/
       docs/v2/: docs/
@@ -429,8 +429,8 @@ outputs:
 inputs:
   docfx.yml: |
     monikerRange:
-      'docs/v1/**/*.md': '< netcore-2.0'
-      'docs/v2/**/*.md': '>= netcore-2.0'
+      'docs/v1/**': '< netcore-2.0'
+      'docs/v2/**': '>= netcore-2.0'
     routes:
       docs/v1/: docs/
       docs/v2/: docs/
@@ -490,8 +490,8 @@ outputs:
 inputs:
   docfx.yml: |
     monikerRange:
-      'docs/v1/**/*.md': '<= netcore-2.0'
-      'docs/v2/**/*.md': '>= netcore-2.0'
+      'docs/v1/**': '<= netcore-2.0'
+      'docs/v2/**': '>= netcore-2.0'
     routes:
       docs/v1/: docs/
       docs/v2/: docs/
@@ -525,7 +525,7 @@ outputs:
   build.log: |
     ["error","moniker-overlapping","Two or more documents have defined overlapping moniker: 'netcore-2.0'"]
     ["info","at-uid-not-found","Cannot find uid 'a' using xref '@a'","docs/c.md"]
-    ["error","publish-url-conflict","Two or more documents of the same version('netcore-2.0') publish to the same url '/docs/a': 'docs/v1/a.md', 'docs/v2/a.md'"]
+    ["error","publish-url-conflict","Two or more files of the same version('netcore-2.0') publish to the same url '/docs/a': 'docs/v1/a.md', 'docs/v2/a.md'"]
   xrefmap.json: | 
     {"references":[]}
 ---
@@ -533,8 +533,8 @@ outputs:
 inputs:
   docfx.yml: |
     monikerRange:
-      'docs/v1/**/*.md': '< netcore-2.0'
-      'docs/v2/**/*.md': '>= netcore-2.0'
+      'docs/v1/**': '< netcore-2.0'
+      'docs/v2/**': '>= netcore-2.0'
     routes:
       docs/v1/: docs/
       docs/v2/: docs/
@@ -590,8 +590,8 @@ outputs:
 inputs:
   docfx.yml: |
     monikerRange:
-      'docs/v1/**/*.md': '< netcore-2.0'
-      'docs/v2/**/*.md': '>= netcore-2.0'
+      'docs/v1/**': '< netcore-2.0'
+      'docs/v2/**': '>= netcore-2.0'
     routes:
       docs/v1/: docs/
       docs/v2/: docs/
@@ -655,8 +655,8 @@ outputs:
 inputs:
   docfx.yml: |
     monikerRange:
-      'docs/v1/**/*.md': '< netcore-2.0'
-      'docs/v2/**/*.md': '>= netcore-2.0'
+      'docs/v1/**': '< netcore-2.0'
+      'docs/v2/**': '>= netcore-2.0'
     routes:
       docs/v1/: docs/
       docs/v2/: docs/
@@ -730,7 +730,7 @@ outputs:
 inputs:
   docfx.yml: |
     monikerRange:
-      'docs/v1/**/*.md': '>= netcore-1.0'
+      'docs/v1/**': '>= netcore-1.0'
     routes:
       docs/v1/: docs/
     monikerDefinition: monikerDefinition.json
@@ -790,8 +790,8 @@ outputs:
 inputs:
   docfx.yml: |
     monikerRange:
-      'docs/v1/**/*.md': '>= netcore-1.0 < netcore-2.0'
-      'docs/v2/**/*.md': '>= netcore-2.0'
+      'docs/v1/**': '>= netcore-1.0 < netcore-2.0'
+      'docs/v2/**': '>= netcore-2.0'
     routes:
       docs/v1/: docs/
       docs/v2/: docs/
@@ -830,4 +830,92 @@ outputs:
       "monikers": ["netcore-2.0"]
     }
   build.log: |
-    ["error","publish-url-conflict","Two or more documents of the same version('netcore-1.0') publish to the same url '/docs/toc.json': 'docs/v1/TOC.md', 'docs/v2/TOC.md'"]
+    ["error","publish-url-conflict","Two or more files of the same version('netcore-1.0') publish to the same url '/docs/toc.json': 'docs/v1/TOC.md', 'docs/v2/TOC.md'"]
+---
+# Build resource file with moniker
+inputs:
+  docfx.yml: |
+    monikerRange:
+      'docs/v1/**': '>= netcore-1.0'
+    routes:
+      docs/v1/: docs/
+    monikerDefinition: monikerDefinition.json
+  docs/v1/a.md: |
+    ---
+    monikerRange: netcore-1.0
+    ---
+    Moniker: netcore-1.0
+    ![image](c.png)
+  docs/a.md: |
+    No version
+    ![image](c.png)
+  docs/v1/c.png:
+  docs/v1/b.png:
+  docs/c.png:
+  monikerDefinition.json: |
+    {
+      "monikers": [
+        { "name": "netcore-1.0", "product": ".NET Core" },
+        { "name": "netcore-1.1", "product": ".NET Core" },
+      ]
+    }
+outputs:
+  136a42ac/docs/a.json:
+  9d4e15fd/docs/c.png:
+  docs/a.json:
+  docs/c.png:
+  build.manifest: |
+    {
+      "files": [
+          { "siteUrl": "/docs/a" },
+          { "siteUrl": "/docs/c.png", "outputPath": "docs/c.png", "sourcePath": "docs/c.png", "monikers": [] },
+          { "siteUrl": "/docs/a" },
+          { "siteUrl": "/docs/c.png", "outputPath": "9d4e15fd/docs/c.png", "sourcePath": "docs/v1/c.png","monikers": ["netcore-1.0", "netcore-1.1" ] }
+      ],
+      "dependencies": { }
+    }
+---
+# Build resource file with moniker conflict
+inputs:
+  docfx.yml: |
+    monikerRange:
+      'docs/v1/**': '<= netcore-1.1'
+      'docs/v2/**': '>= netcore-1.1'
+    routes:
+      docs/v1/: docs/
+      docs/v2/: docs/
+    monikerDefinition: monikerDefinition.json
+  docs/v1/a.md: |
+    Moniker: netcore-1.0, netcore-1.1
+    ![image](c.png)
+  docs/v2/a.md: |
+    ---
+    monikerRange: netcore-1.2
+    ---
+    Moniker: netcore-1.2
+    ![image](c.png)
+  docs/v1/c.png:
+  docs/v1/b.png:
+  docs/v2/c.png:
+  docs/v2/b.png:
+  monikerDefinition.json: |
+    {
+      "monikers": [
+        { "name": "netcore-1.0", "product": ".NET Core" },
+        { "name": "netcore-1.1", "product": ".NET Core" },
+        { "name": "netcore-1.2", "product": ".NET Core" }
+      ]
+    }
+outputs:
+  9d4e15fd/docs/a.json:
+  b201e604/docs/a.json:
+  build.manifest: |
+    {
+      "files": [
+          { "siteUrl": "/docs/a" },
+          { "siteUrl": "/docs/a" }
+      ],
+      "dependencies": { }
+    }
+  build.log: |
+    ["error","publish-url-conflict","Two or more files of the same version('netcore-1.1') publish to the same url '/docs/c.png': 'docs/v1/c.png', 'docs/v2/c.png'"]
