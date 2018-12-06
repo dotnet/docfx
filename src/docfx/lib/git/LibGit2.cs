@@ -25,6 +25,15 @@ namespace Microsoft.Docs.Build
         }
 
         [DllImport(LibName)]
+        public static unsafe extern int git_blob_lookup(out IntPtr blob, IntPtr repo, git_oid* obj);
+
+        [DllImport(LibName)]
+        public static unsafe extern IntPtr git_blob_rawcontent(IntPtr blob);
+
+        [DllImport(LibName)]
+        public static unsafe extern int git_blob_rawsize(IntPtr blob);
+
+        [DllImport(LibName)]
         public static unsafe extern int git_libgit2_init();
 
         [DllImport(LibName)]
@@ -100,6 +109,9 @@ namespace Microsoft.Docs.Build
         public static unsafe extern git_signature* git_commit_committer(IntPtr commit);
 
         [DllImport(LibName)]
+        public static unsafe extern int git_commit_tree(out IntPtr tree, IntPtr commit);
+
+        [DllImport(LibName)]
         public static unsafe extern void git_signature_free(git_signature* sig);
 
         [DllImport(LibName)]
@@ -172,7 +184,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        [StructLayout(LayoutKind.Sequential, CharSet=CharSet.Auto)]
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
         public unsafe struct git_signature
         {
             public IntPtr name;
