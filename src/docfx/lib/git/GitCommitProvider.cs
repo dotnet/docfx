@@ -12,7 +12,7 @@ namespace Microsoft.Docs.Build
     internal sealed class GitCommitProvider : IDisposable
     {
         private readonly ConcurrentDictionary<string, Repository> _repositoryByFolder = new ConcurrentDictionary<string, Repository>();
-        private readonly ConcurrentDictionary<string, Lazy<FileCommitProvider>> _fileCommitProvidersByRepoPath = new ConcurrentDictionary<string, Lazy<FileCommitProvider>>();
+        private readonly ConcurrentDictionary<string, FileCommitProvider> _fileCommitProvidersByRepoPath = new ConcurrentDictionary<string, FileCommitProvider>();
 
         public Task<(Repository repo, string pathToRepo, List<GitCommit> commits)> GetCommitHistory(Document document, string committish = null)
            => GetCommitHistory(Path.Combine(document.Docset.DocsetPath, document.FilePath), committish);
@@ -39,20 +39,14 @@ namespace Microsoft.Docs.Build
 
         public Task SaveGitCommitCache()
         {
-            return Task.WhenAll(
-                from provider in _fileCommitProvidersByRepoPath.Values
-                where provider.IsValueCreated
-                select provider.Value.SaveCache());
+            return Task.WhenAll(_fileCommitProvidersByRepoPath.Values.Select(provider => provider.SaveCache()));
         }
 
         public void Dispose()
         {
-            foreach (var value in _fileCommitProvidersByRepoPath.Values)
+            foreach (var provider in _fileCommitProvidersByRepoPath.Values)
             {
-                if (value.IsValueCreated)
-                {
-                    value.Value.Dispose();
-                }
+                provider.Dispose();
             }
         }
 
@@ -60,7 +54,7 @@ namespace Microsoft.Docs.Build
         {
             return _fileCommitProvidersByRepoPath.GetOrAdd(
                 repo.Path,
-                new Lazy<FileCommitProvider>(() => new FileCommitProvider(repo.Path, AppData.GetCommitCachePath(repo.Remote)))).Value;
+                _ => new FileCommitProvider(repo.Path, AppData.GetCommitCachePath(repo.Remote)));
         }
 
         private Repository GetRepository(string fullPath)
