@@ -14,12 +14,10 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
 
     public class SchemaValidateService
     {
-        private static SchemaValidateService _instance = new SchemaValidateService();
-
         private readonly object _locker = new object();
         private volatile bool _schemaValidationEnabled = true;
 
-        public static SchemaValidateService Instance => _instance;
+        public static SchemaValidateService Instance { get; private set; } = new SchemaValidateService();
 
         private SchemaValidateService()
         {
@@ -35,7 +33,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
             try
             {
                 License.RegisterLicense(license);
-                _instance = new SchemaValidateService();
+                Instance = new SchemaValidateService();
             }
             catch (Exception e)
             {
@@ -72,7 +70,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
 
             if (errors.Count > 0)
             {
-                throw new InvalidSchemaException($"Validation against \"{schema.SchemaVersion.OriginalString}\" failed: \n{errors.ToDelimitedString("\n")}");
+                throw new InvalidSchemaException($"Schema validation failed. Please validate the file and make sure it conform to schema '{schema.Title}': \n{errors.ToDelimitedString("\n")}");
             }
         }
 
