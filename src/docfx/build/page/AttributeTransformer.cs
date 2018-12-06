@@ -14,6 +14,7 @@ namespace Microsoft.Docs.Build
             List<Error> errors,
             Document file,
             PageCallback callback,
+            GitCommitProvider gitCommitProvider,
             JObject extensionData = null)
         {
             return TransformContent;
@@ -61,7 +62,7 @@ namespace Microsoft.Docs.Build
                 return result;
 
                 (string content, object file) ReadFileDelegate(string path, object relativeTo)
-                    => Resolve.ReadFile(path, relativeTo, errors, callback?.DependencyMapBuilder);
+                    => Resolve.ReadFile(path, relativeTo, errors, callback?.DependencyMapBuilder, gitCommitProvider);
 
                 string GetLinkDelegate(string path, object relativeTo, object resultRelativeTo)
                     => Resolve.GetLink(path, relativeTo, resultRelativeTo, errors, callback?.BuildChild, callback?.DependencyMapBuilder, callback?.BookmarkValidator);

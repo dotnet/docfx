@@ -107,6 +107,49 @@ namespace Microsoft.Docs.Build
             return localizationDocsetPath;
         }
 
+        public static (Error error, string content, Document file) TryResolveContentFromHistory(GitCommitProvider gitCommitProvider, Docset docset, string pathToDocset)
+        {
+            // try to resolve from source repo's git history
+            var fallbackDocset = GetFallbackDocset();
+            if (fallbackDocset != null)
+            {
+                var (repo, pathToRepo, commits) = gitCommitProvider.GetCommitHistoryNoCache(Path.Combine(fallbackDocset.DocsetPath, pathToDocset), 2);
+                if (repo != null)
+                {
+                    var repoPath = PathUtility.NormalizeFolder(repo.Path);
+                    if (commits.Count > 1)
+                    {
+                        // the latest commit would be deleting it from repo
+                        if (GitUtility.TryGetContentFromHistory(repoPath, pathToRepo, commits[1].Sha, out var content))
+                        {
+                            var (error, doc) = Document.TryCreate(fallbackDocset, pathToDocset, isFromHistory: true);
+                            return (error, content, doc);
+                        }
+                    }
+                }
+            }
+
+            return default;
+
+            Docset GetFallbackDocset()
+            {
+                if (docset.LocalizationDocset != null)
+                {
+                    // source docset in loc build
+                    return docset;
+                }
+
+                if (docset.FallbackDocset != null)
+                {
+                    // localized docset in loc build
+                    return docset.FallbackDocset;
+                }
+
+                // source docset in source build
+                return null;
+            }
+        }
+
         public static bool TryGetContributionBranch(string branch, out string contributionBranch)
         {
             Debug.Assert(!string.IsNullOrEmpty(branch));
