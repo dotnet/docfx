@@ -10,7 +10,7 @@ We are still at an early develop phase, see our [roadmap](https://github.com/dot
 >  ```powershell
 >  dotnet tool install -g docfx --version 3.0.0-* --add-source https://www.myget.org/F/docfx-v3/api/v2
 >  ```
-> Note that the current output is raw JSON without any template applied, and it does not support source code or DLL as input for API reference. Right now it is foucs on Markdown input parity with https://docs.microsoft.com
+> Note that the current output is raw JSON without any template applied, and it does not support source code or DLL as input for API reference. Right now it foucses on Markdown input parity with https://docs.microsoft.com
 
 ## Usage
 Please make sure all the source files and corresponding `docfx.yml` are stored in your `docset_path`.
