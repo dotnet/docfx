@@ -87,7 +87,6 @@ namespace Microsoft.Docs.Build
         public readonly Dictionary<string, string> Redirections = new Dictionary<string, string>(PathUtility.PathComparer);
 
         /// <summary>
-        /// <summary>
         /// Gets the redirection mappings without document id
         /// The default value is empty mappings
         /// The redirection doesn't transfer the document id
