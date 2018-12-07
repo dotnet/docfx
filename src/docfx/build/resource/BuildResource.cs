@@ -9,15 +9,16 @@ namespace Microsoft.Docs.Build
 {
     internal class BuildResource
     {
-        internal static (List<Error> errors, ResourceModel model, List<string> monikers) Build(Document file)
+        internal static (List<Error> errors, ResourceModel model, List<string> monikers)
+            Build(Document file, MetadataProvider metadataProvider, MonikersProvider monikersProvider)
         {
             Debug.Assert(file.ContentType == ContentType.Resource);
 
             var errors = new List<Error>();
-            var (metaErrors, metadata) = JsonUtility.ToObjectWithSchemaValidation<FileMetadata>(file.Docset.Metadata.GetMetadata(file));
+            var (metaErrors, metadata) = JsonUtility.ToObjectWithSchemaValidation<FileMetadata>(metadataProvider.GetMetadata(file));
             errors.AddRange(metaErrors);
 
-            var (monikerError, monikers) = file.Docset.Monikers.GetFileLevelMonikers(file, metadata.MonikerRange);
+            var (monikerError, monikers) = monikersProvider.GetFileLevelMonikers(file, metadata.MonikerRange);
             errors.AddIfNotNull(monikerError);
 
             return (errors, new ResourceModel
