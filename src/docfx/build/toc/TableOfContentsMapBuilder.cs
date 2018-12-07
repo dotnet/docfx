@@ -47,7 +47,7 @@ namespace Microsoft.Docs.Build
             // order by toc path
             var allTocs = new List<Document>();
             var experimentalTocs = new List<Document>();
-            var referencedTocs = new HashSet<Document>(_tocToTocs.SelectMany(r => r.Value)); 
+            var referencedTocs = new HashSet<Document>(_tocToTocs.SelectMany(r => r.Value));
 
             foreach (var (toc, documents) in _tocToDocuments)
             {

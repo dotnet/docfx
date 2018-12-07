@@ -891,14 +891,18 @@ repos:
         docs/b/TOC.yml: |
           - href: ../a/TOC.yml
             name: reference toc a
-      author: b
+        docs/a/TOC.yml: |
+          - href: b.md
+            name: reference markdown b
   https://github.com/inclusiontoc/a.zh-cn:
     - files:
         docs/a/TOC.yml: |
           - href: a.md
             name: reference markdown a
         docs/a/a.md:
+        docs/a.b.md:
 outputs:
   docs/a/a.json:
+  docs/a/b.json:
   docs/b/toc.json: |
     {"items":[{"toc_title":"reference toc a","children":[{"toc_title":"reference markdown a","href":"../a/a"}]}]}
