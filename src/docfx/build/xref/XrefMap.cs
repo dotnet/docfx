@@ -235,7 +235,7 @@ namespace Microsoft.Docs.Build
                 if (file.FilePath.EndsWith(".md", PathUtility.PathComparison))
                 {
                     var (yamlHeaderErrors, yamlHeader) = ExtractYamlHeader.Extract(file, context);
-                    var (metaErrors, metadata) = JsonUtility.ToObjectWithSchemaValidation<FileMetadata>(metadataProvider.GetMetadata(file, yamlHeader));
+                    var (metaErrors, metadata) = JsonUtility.ToObjectWithSchemaValidation<FileMetadata>(metadataProvider.GetMetadata(file, yamlHeader).metadata);
 
                     errors.AddRange(yamlHeaderErrors);
                     if (!string.IsNullOrEmpty(metadata.Uid))

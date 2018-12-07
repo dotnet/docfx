@@ -30,17 +30,19 @@ namespace Microsoft.Docs.Build
                 return (Enumerable.Empty<Error>(), null, new List<string>());
             }
 
-            var (errors, tocModel, tocMetadata, refArticles, refTocs, monikers) = Load(context, file, monikersProvider, gitCommitProvider, dependencyMapBuilder, bookmarkValidator, monikersMap);
+            var (errors, tocModel, yamlHeader, refArticles, refTocs, monikers) = Load(context, file, monikersProvider, gitCommitProvider, dependencyMapBuilder, bookmarkValidator, monikersMap);
 
-            var metadata = metadataProvider.GetMetadata(file, tocMetadata).ToObject<TableOfContentsMetadata>();
+            var (metadataError, metadata) = metadataProvider.GetMetadata(file, yamlHeader);
+            errors.AddIfNotNull(metadataError);
 
             // Monikers of toc file is the collection of every node's monikers
-            metadata.Monikers = monikers;
+            var tocMetadata = metadata.ToObject<TableOfContentsMetadata>();
+            tocMetadata.Monikers = monikers;
 
             var model = new TableOfContentsModel
             {
                 Items = tocModel,
-                Metadata = metadata,
+                Metadata = tocMetadata,
             };
 
             return (errors, model, monikers);

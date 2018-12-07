@@ -14,13 +14,7 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(file.ContentType == ContentType.Resource);
 
-            var errors = new List<Error>();
-            var (metaErrors, metadata) = JsonUtility.ToObjectWithSchemaValidation<FileMetadata>(metadataProvider.GetMetadata(file));
-            errors.AddRange(metaErrors);
-
-            var (monikerError, monikers) = monikersProvider.GetFileLevelMonikers(file, metadata.MonikerRange);
-            errors.AddIfNotNull(monikerError);
-
+            var (errors, monikers) = monikersProvider.GetFileLevelMonikers(file, metadataProvider);
             return (errors, new ResourceModel
             {
                 Locale = file.Docset.Locale,

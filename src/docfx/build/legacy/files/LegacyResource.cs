@@ -13,7 +13,7 @@ namespace Microsoft.Docs.Build
             MetadataProvider metadataProvider)
         {
             var legacyManifestOutput = legacyManifestItem.Output;
-            var metadata = metadataProvider.GetMetadata(doc);
+            var metadata = metadataProvider.GetMetadata(doc).metadata;
             metadata = LegacyMetadata.GenerataCommonMetadata(metadata, docset);
             metadata.Remove("__global");
 

@@ -33,6 +33,18 @@ namespace Microsoft.Docs.Build
             Comparer = new MonikerComparer(monikerDefinition);
         }
 
+        public (List<Error> errors, List<string> monikers) GetFileLevelMonikers(Document file, MetadataProvider metadataProvider)
+        {
+            var errors = new List<Error>();
+            var (metaErrors, metadata) = JsonUtility.ToObjectWithSchemaValidation<FileMetadata>(metadataProvider.GetMetadata(file, null).metadata);
+            errors.AddRange(metaErrors);
+
+            var (monikerError, monikers) = GetFileLevelMonikers(file, metadata.MonikerRange);
+            errors.AddIfNotNull(monikerError);
+
+            return (errors, monikers);
+        }
+
         public (Error, List<string>) GetFileLevelMonikers(Document file, string fileMonikerRange = null)
         {
             Error error = null;

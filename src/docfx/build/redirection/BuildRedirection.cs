@@ -12,13 +12,7 @@ namespace Microsoft.Docs.Build
             Build(Document file, MetadataProvider metadataProvider, MonikersProvider monikersProvider)
         {
             Debug.Assert(file.ContentType == ContentType.Redirection);
-            var errors = new List<Error>();
-
-            var (metaErrors, metadata) = JsonUtility.ToObjectWithSchemaValidation<FileMetadata>(metadataProvider.GetMetadata(file, null));
-            errors.AddRange(metaErrors);
-
-            var (error, monikers) = monikersProvider.GetFileLevelMonikers(file, metadata.MonikerRange);
-            errors.AddIfNotNull(error);
+            var (errors, monikers) = monikersProvider.GetFileLevelMonikers(file, metadataProvider);
 
             return (errors, new RedirectionModel
             {

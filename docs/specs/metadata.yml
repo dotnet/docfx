@@ -312,3 +312,41 @@ outputs:
     { "canonical_url": "https://docs.microsoft.com/en-us/azure/app-service/" }
   azure/app-service/index.experimental.json: |
     { "canonical_url": "https://docs.microsoft.com/en-us/azure/app-service/" }
+---
+# redirection defined in markdown yml metadata is not supported
+inputs:
+  docfx.yml:
+  docs/a.md: |
+    ---
+    redirect_url: https://docfx.com
+    ---
+outputs:
+  docs/a.json: |
+    { "metadata":{} }
+  build.log: |
+    ["warning","redirection-in-metadata","Redirection defined in metadata(yaml header, file metadata or global metadata) is not supported, docfx only supports redirections defined in docfx.yml","docs/a.md"]
+---
+# redirection defined in file metadata is not supported
+inputs:
+  docfx.yml: |
+    fileMetadata:
+      redirect_url:
+        docs/a.md: https://docfx.com
+  docs/a.md:
+outputs:
+  docs/a.json: |
+    { "metadata":{} }
+  build.log: |
+    ["warning","redirection-in-metadata","Redirection defined in metadata(yaml header, file metadata or global metadata) is not supported, docfx only supports redirections defined in docfx.yml","docs/a.md"]
+---
+# redirection defined in global metadata is not supported
+inputs:
+  docfx.yml: |
+    globalMetadata:
+      redirect_url: https://docfx.com
+  docs/a.md:
+outputs:
+  docs/a.json: |
+    { "metadata":{} }
+  build.log: |
+    ["warning","redirection-in-metadata","Redirection defined in metadata(yaml header, file metadata or global metadata) is not supported, docfx only supports redirections defined in docfx.yml","docs/a.md"]

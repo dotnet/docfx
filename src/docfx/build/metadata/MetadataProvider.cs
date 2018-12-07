@@ -27,7 +27,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public JObject GetMetadata(Document file, JObject yamlHeader = null)
+        public (Error error, JObject metadata) GetMetadata(Document file, JObject yamlHeader = null)
         {
             Debug.Assert(file != null);
 
@@ -48,7 +48,14 @@ namespace Microsoft.Docs.Build
             {
                 result.Merge(yamlHeader, JsonUtility.MergeSettings);
             }
-            return result;
+
+            if (result.ContainsKey("redirect_url"))
+            {
+                result.Remove("redirect_url");
+                return (Errors.RedirectionInMetadata(), result);
+            }
+
+            return (null, result);
         }
     }
 }

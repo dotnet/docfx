@@ -99,10 +99,13 @@ namespace Microsoft.Docs.Build
             var (yamlHeaderErrors, yamlHeader) = ExtractYamlHeader.Extract(file, context);
             errors.AddRange(yamlHeaderErrors);
 
-            var (metaErrors, metadata) = JsonUtility.ToObjectWithSchemaValidation<FileMetadata>(metadataProvider.GetMetadata(file, yamlHeader));
+            var (metaError, metadata) = metadataProvider.GetMetadata(file, yamlHeader);
+            errors.AddIfNotNull(metaError);
+
+            var (metaErrors, fileMetadata) = JsonUtility.ToObjectWithSchemaValidation<FileMetadata>(metadata);
             errors.AddRange(metaErrors);
 
-            var (error, monikers) = monikersProvider.GetFileLevelMonikers(file, metadata.MonikerRange);
+            var (error, monikers) = monikersProvider.GetFileLevelMonikers(file, fileMetadata.MonikerRange);
             errors.AddIfNotNull(error);
 
             // TODO: handle blank page
@@ -135,7 +138,7 @@ namespace Microsoft.Docs.Build
 
             callback.BookmarkValidator.AddBookmarks(file, bookmarks);
 
-            return (errors, Schema.Conceptual, model, metadata);
+            return (errors, Schema.Conceptual, model, fileMetadata);
         }
 
         private static async Task<(List<Error> errors, Schema schema, PageModel model, FileMetadata metadata)>
@@ -178,9 +181,13 @@ namespace Microsoft.Docs.Build
             }
 
             // TODO: add check before to avoid case failure
-            var fileMetadata = obj?.Value<JObject>("metadata") ?? new JObject();
-            var title = fileMetadata.Value<string>("title") ?? obj?.Value<string>("title");
-            var (metaErrors, metadata) = JsonUtility.ToObjectWithSchemaValidation<FileMetadata>(metadataProvider.GetMetadata(file, fileMetadata));
+            var yamlHeader = obj?.Value<JObject>("metadata") ?? new JObject();
+            var title = yamlHeader.Value<string>("title") ?? obj?.Value<string>("title");
+
+            var (metaError, metadata) = metadataProvider.GetMetadata(file, yamlHeader);
+            errors.AddIfNotNull(metaError);
+
+            var (metaErrors, fileMetadata) = JsonUtility.ToObjectWithSchemaValidation<FileMetadata>(metadata);
             errors.AddRange(metaErrors);
 
             var model = new PageModel
@@ -191,7 +198,7 @@ namespace Microsoft.Docs.Build
                 Monikers = new List<string>(),
             };
 
-            return (errors, schema, model, metadata);
+            return (errors, schema, model, fileMetadata);
         }
     }
 }
