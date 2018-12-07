@@ -9,10 +9,11 @@ namespace Microsoft.Docs.Build
             Docset docset,
             Context context,
             Document doc,
-            LegacyManifestItem legacyManifestItem)
+            LegacyManifestItem legacyManifestItem,
+            MetadataProvider metadataProvider)
         {
             var legacyManifestOutput = legacyManifestItem.Output;
-            var metadata = docset.Metadata.GetMetadata(doc);
+            var metadata = metadataProvider.GetMetadata(doc);
             metadata = LegacyMetadata.GenerataCommonMetadata(metadata, docset);
             metadata.Remove("__global");
 
