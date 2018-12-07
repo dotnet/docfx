@@ -318,7 +318,7 @@ inputs:
   docfx.yml:
   docs/a.md: |
     ---
-    redirect_url: https://docfx.com
+    Redirect_url: https://docfx.com
     ---
 outputs:
   docs/a.json: |
@@ -330,7 +330,7 @@ outputs:
 inputs:
   docfx.yml: |
     fileMetadata:
-      redirect_url:
+      redirecT_url:
         docs/a.md: https://docfx.com
   docs/a.md:
 outputs:

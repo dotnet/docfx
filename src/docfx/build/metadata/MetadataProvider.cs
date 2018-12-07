@@ -49,9 +49,9 @@ namespace Microsoft.Docs.Build
                 result.Merge(yamlHeader, JsonUtility.MergeSettings);
             }
 
-            if (result.ContainsKey("redirect_url"))
+            if (result.TryGetValue("redirect_url", StringComparison.OrdinalIgnoreCase, out var token))
             {
-                result.Remove("redirect_url");
+                result.Remove(token.Path);
                 return (Errors.RedirectionInMetadata(), result);
             }
 
