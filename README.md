@@ -4,13 +4,13 @@
 
 Build your docs website with [DocFX](https://github.com/dotnet/docfx), with landing pages, markdown documents, API references for .NET, REST and more.
 
-> We are still at an early develop phase, see our [roadmap](https://github.com/dotnet/docfx/projects/1) for detailed planing.
+We are still at an early develop phase, see our [roadmap](https://github.com/dotnet/docfx/projects/1) for detailed planing.
 
-To access docfx 3 preview, install `docfx` using the latest version of [.NET Core](https://www.microsoft.com/net/download):
-
-```powershell
-dotnet tool install -g docfx --version 3.0.0-* --add-source https://www.myget.org/F/docfx-v3/api/v2
-```
+> To access docfx 3 preview, install `docfx` using the latest version of [.NET Core](https://www.microsoft.com/net/download):
+>  ```powershell
+>  dotnet tool install -g docfx --version 3.0.0-* --add-source https://www.myget.org/F/docfx-v3/api/v2
+>  ```
+> Note that the current output is raw JSON without any template applied, and it does not support source code or DLL as input for API reference. Right now it foucses on Markdown input parity with https://docs.microsoft.com
 
 ## Usage
 Please make sure all the source files and corresponding `docfx.yml` are stored in your `docset_path`.
