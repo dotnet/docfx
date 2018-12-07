@@ -3,7 +3,6 @@
 
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 
 namespace Microsoft.Docs.Build
@@ -17,7 +16,7 @@ namespace Microsoft.Docs.Build
         /// Tracks toc files which are included by other toc files
         /// Included toc files are excluded when finding nearest toc for an article.
         /// </summary>
-        private readonly ConcurrentHashSet<Document> _referencedTocs = new ConcurrentHashSet<Document>();
+        private readonly ConcurrentDictionary<Document, IEnumerable<Document>> _tocToTocs = new ConcurrentDictionary<Document, IEnumerable<Document>>();
 
         /// <summary>
         /// Mappings between toc and a collection of document
@@ -33,10 +32,7 @@ namespace Microsoft.Docs.Build
         public void Add(Document tocFile, IEnumerable<Document> referencedDocuments, IEnumerable<Document> referencedTocs)
         {
             _tocToDocuments.TryAdd(tocFile, referencedDocuments);
-            foreach (var referencedToc in referencedTocs)
-            {
-                _referencedTocs.TryAdd(referencedToc);
-            }
+            _tocToTocs.TryAdd(tocFile, referencedTocs);
         }
 
         /// <summary>
@@ -51,10 +47,11 @@ namespace Microsoft.Docs.Build
             // order by toc path
             var allTocs = new List<Document>();
             var experimentalTocs = new List<Document>();
+            var referencedTocs = new HashSet<Document>(_tocToTocs.SelectMany(r => r.Value)); 
 
             foreach (var (toc, documents) in _tocToDocuments)
             {
-                if (_referencedTocs.Contains(toc))
+                if (referencedTocs.Contains(toc))
                 {
                     // referenced toc's mapping will be ignored
                     continue;
@@ -79,7 +76,11 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            return new TableOfContentsMap(allTocs, experimentalTocs, documentToTocs);
+            return new TableOfContentsMap(
+                allTocs,
+                experimentalTocs,
+                documentToTocs,
+                _tocToTocs.ToDictionary(k => k.Key, v => new HashSet<Document>(v.Value)));
         }
     }
 }

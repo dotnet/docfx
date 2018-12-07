@@ -19,13 +19,34 @@ namespace Microsoft.Docs.Build
 
         private readonly IReadOnlyDictionary<Document, HashSet<Document>> _documentToTocs;
 
+        private readonly IReadOnlyDictionary<Document, HashSet<Document>> _tocToTocs;
+
         private static readonly char[] wordSplitChars = new char[] { '-', '#', '_', ' ', '/' };
 
-        public TableOfContentsMap(List<Document> tocs, List<Document> experimentalTocs, Dictionary<Document, HashSet<Document>> documentToTocs)
+        public TableOfContentsMap(
+            List<Document> tocs,
+            List<Document> experimentalTocs,
+            Dictionary<Document, HashSet<Document>> documentToTocs,
+            Dictionary<Document, HashSet<Document>> tocToTocs)
         {
             _tocs = new HashSet<Document>(tocs ?? throw new ArgumentNullException(nameof(tocs)));
             _experimentalTocs = new HashSet<Document>(experimentalTocs ?? throw new ArgumentNullException(nameof(experimentalTocs)));
             _documentToTocs = documentToTocs ?? throw new ArgumentNullException(nameof(documentToTocs));
+            _tocToTocs = tocToTocs ?? throw new ArgumentNullException(nameof(tocToTocs));
+        }
+
+        public bool TryFindParents(Document toc, out List<Document> parents)
+        {
+            parents = new List<Document>();
+            foreach (var (parent, children) in _tocToTocs)
+            {
+                if (children.Contains(toc))
+                {
+                    parents.Add(parent);
+                }
+            }
+
+            return parents.Any();
         }
 
         /// <summary>
@@ -160,11 +181,13 @@ namespace Microsoft.Docs.Build
             {
                 return levenshteinDistanceCompareResult;
             }
+
             var sitePathCompareResult = StringComparer.OrdinalIgnoreCase.Compare(candidateX.Toc.SitePath, candidateY.Toc.SitePath);
             if (!(sitePathCompareResult == 0))
             {
                 return sitePathCompareResult;
             }
+
             return StringComparer.OrdinalIgnoreCase.Compare(candidateX.Toc.FilePath, candidateY.Toc.FilePath);
         }
     }
