@@ -900,7 +900,7 @@ repos:
           - href: a.md
             name: reference markdown a
         docs/a/a.md:
-        docs/a.b.md:
+        docs/a/b.md:
 outputs:
   docs/a/a.json:
   docs/a/b.json:
