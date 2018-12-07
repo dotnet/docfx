@@ -37,6 +37,8 @@ namespace Microsoft.Docs.Build
         private readonly ConcurrentDictionary<string, Lazy<Task<(Error, string)>>> _outgoingGetLoginByCommitRequests
                    = new ConcurrentDictionary<string, Lazy<Task<(Error, string)>>>(StringComparer.OrdinalIgnoreCase);
 
+        private readonly string _url = null;
+        private readonly string _restorePath = null;
         private readonly string _cachePath;
         private readonly double _expirationInHours;
         private bool _updated = false;
@@ -56,10 +58,24 @@ namespace Microsoft.Docs.Build
             var github = new GitHubAccessor(token);
             _getUserByLoginFromGitHub = github.GetUserByLogin;
             _getLoginByCommitFromGitHub = github.GetLoginByCommit;
-            _cachePath = string.IsNullOrEmpty(docset.Config.GitHub.UserCache)
-                ? AppData.GitHubUserCachePath
-                : docset.GetFileRestorePath(docset.Config.GitHub.UserCache);
             _expirationInHours = docset.Config.GitHub.UserCacheExpirationInHours;
+            var path = docset.Config.GitHub.UserCache;
+            if (string.IsNullOrEmpty(path))
+            {
+                _cachePath = AppData.DefaultGitHubUserCachePath;
+                return;
+            }
+            var restorePath = docset.GetFileRestorePath(path);
+            if (HrefUtility.IsHttpHref(path))
+            {
+                _url = path;
+                _restorePath = restorePath;
+                _cachePath = AppData.GetGitHubUserCachePath(path);
+            }
+            else
+            {
+                _cachePath = restorePath;
+            }
         }
 
         public static async Task<GitHubUserCache> Create(Docset docset, string token)
@@ -142,22 +158,22 @@ namespace Microsoft.Docs.Build
                     Users = Users.ToArray(),
                 });
             }
+            PathUtility.CreateDirectoryFromFilePath(_cachePath);
             await ProcessUtility.WriteFile(_cachePath, file);
-            var url = config.GitHub.UserCache;
-            if (!config.GitHub.UpdateRemoteUserCache || !HrefUtility.IsHttpHref(url))
+
+            if (!config.GitHub.UpdateRemoteUserCache || _url == null)
             {
                 return null;
             }
-
             try
             {
                 // TOOD: aware of ETag to handle conflicts
-                await HttpClientUtility.PutAsync(config.GitHub.UserCache, new StringContent(file), config);
+                await HttpClientUtility.PutAsync(_url, new StringContent(file), config);
                 return null;
             }
             catch (HttpRequestException ex)
             {
-                return Errors.UploadFailed(url, ex.Message);
+                return Errors.UploadFailed(_url, ex.Message);
             }
         }
 
@@ -236,15 +252,21 @@ namespace Microsoft.Docs.Build
 
         private async Task ReadCacheFile()
         {
-            if (File.Exists(_cachePath))
+            await Read(_cachePath);
+            await Read(_restorePath);
+
+            async Task Read(string path)
             {
-                var content = await ProcessUtility.ReadFile(_cachePath);
-                var users = JsonUtility.Deserialize<GitHubUserCacheFile>(content).Users;
-                if (users != null)
+                if (path != null && File.Exists(path))
                 {
-                    lock (_lock)
+                    var content = await ProcessUtility.ReadFile(path);
+                    var users = JsonUtility.Deserialize<GitHubUserCacheFile>(content).Users;
+                    if (users != null)
                     {
-                        UnsafeUpdateUsers(users);
+                        lock (_lock)
+                        {
+                            UnsafeUpdateUsers(users);
+                        }
                     }
                 }
             }
