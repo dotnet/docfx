@@ -95,12 +95,12 @@ namespace Microsoft.Docs.Build
             foreach (var url in docset.Config.Xref)
             {
                 var content = File.ReadAllText(docset.GetFileRestorePath(url));
-                XrefMapModel xrefMap = null;
+                XrefMapModel xrefMap = new XrefMapModel();
                 if (url.EndsWith(".yml", StringComparison.OrdinalIgnoreCase))
                 {
                     xrefMap = YamlUtility.Deserialize<XrefMapModel>(content);
                 }
-                else if(url.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
+                else if (url.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
                 {
                     xrefMap = JsonUtility.Deserialize<XrefMapModel>(content);
                 }
