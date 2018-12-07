@@ -184,10 +184,10 @@ namespace Microsoft.Docs.Build
             var yamlHeader = obj?.Value<JObject>("metadata") ?? new JObject();
             var title = yamlHeader.Value<string>("title") ?? obj?.Value<string>("title");
 
-            var (metaError, metadata) = metadataProvider.GetMetadata(file, yamlHeader);
+            var (metaError, sectionMetadata) = metadataProvider.GetMetadata(file, yamlHeader);
             errors.AddIfNotNull(metaError);
 
-            var (metaErrors, fileMetadata) = JsonUtility.ToObjectWithSchemaValidation<FileMetadata>(metadata);
+            var (metaErrors, fileMetadata) = JsonUtility.ToObjectWithSchemaValidation<FileMetadata>(sectionMetadata);
             errors.AddRange(metaErrors);
 
             var model = new PageModel

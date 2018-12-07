@@ -122,7 +122,7 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Warning, "redirected-id-conflict", $"Multiple documents redirected to '{redirectTo}' with document id: {Join(redirectFromDocs)}");
 
         public static Error RedirectionInMetadata()
-            => new Error(ErrorLevel.Warning, "redirection-in-metadata", $"Redirection defined in metadata(yaml header, file metadata or global metadata) is not supported, docfx only supports redirections defined in docfx.yml");
+            => new Error(ErrorLevel.Error, "redirection-in-metadata", $"Redirection defined in metadata(yaml header, file metadata or global metadata) is not supported, docfx only supports redirections defined in docfx config");
 
         public static Error GitLogError(string repoPath, int errorCode)
             => new Error(ErrorLevel.Error, "git-log-error", $"Error computing git log [{errorCode}] for '{repoPath}', did you used a shadow clone?");
