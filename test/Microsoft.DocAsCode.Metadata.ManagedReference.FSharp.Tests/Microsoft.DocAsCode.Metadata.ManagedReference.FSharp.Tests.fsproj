@@ -9,9 +9,14 @@
   <Target Name="RestoreTestProjects" BeforeTargets="Build">
     <ItemGroup>
       <TestProjects Include="TestData/**/*.fsproj" />
-      <TestData Include="TestData/**/*" />
     </ItemGroup>
     <MSBuild Projects="@(TestProjects)" Targets="Restore" />
+  </Target>
+
+  <Target Name="CopyTestProjects" BeforeTargets="Build" AfterTargets="RestoreTestProjects">
+    <ItemGroup>
+      <TestData Include="TestData/**/*" />
+    </ItemGroup>
     <Copy 
       SourceFiles="@(TestData)" 
       DestinationFiles="@(TestData->'$(OutputPath)\TestData\%(RecursiveDir)%(Filename)%(Extension)')" />
