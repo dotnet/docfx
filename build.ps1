@@ -190,7 +190,7 @@ if (-not $skipTests) {
 
     # Run unit test cases
     Write-Host "Start running unit test"
-    $exclude = @("docfx.E2E.Tests.csproj")
+    $exclude = @("docfx.E2E.Tests.csproj", "NetCoreLibProject.fsproj", "NetCoreProject.fsproj")
     foreach ($proj in (Get-ChildItem "test" -Exclude $exclude -Include @("*.csproj", "*.fsproj") -Recurse)) {
         if ($os -eq "Windows") {
             & dotnet test $proj.FullName --no-build -c $configuration
