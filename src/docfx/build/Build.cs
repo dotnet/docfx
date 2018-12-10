@@ -177,7 +177,7 @@ namespace Microsoft.Docs.Build
                     SourcePath = file.FilePath,
                     SiteUrl = file.SiteUrl,
                     Monikers = monikers,
-                    OutputPath = GetOutputPath(file, monikers),
+                    OutputPath = GetOutputPath(file, monikers, monikersProvider),
                 };
 
                 if (manifestBuilder.TryAdd(file, manifest, monikers))
@@ -208,7 +208,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static string GetOutputPath(Document file, List<string> monikers)
+        private static string GetOutputPath(Document file, List<string> monikers, MonikersProvider monikersProvider)
         {
             if (file.ContentType == ContentType.Resource && !file.Docset.Config.Output.CopyResources)
             {
@@ -219,13 +219,9 @@ namespace Microsoft.Docs.Build
                         Path.GetFullPath(Path.Combine(docset.DocsetPath, file.FilePath))));
             }
 
-            var outputPath = file.SitePath;
-            if (monikers.Count != 0)
-            {
-                var monikerSeg = HashUtility.GetMd5HashShort(string.Join(',', monikers));
-                outputPath = PathUtility.NormalizeFile(Path.Combine(monikerSeg, file.SitePath));
-            }
-            return outputPath;
+            return PathUtility.NormalizeFile(Path.Combine(
+                $"{monikersProvider.GetGroupIdFromMonikerList(monikers)}",
+                file.SitePath));
         }
 
         private static Manifest CreateManifest(Dictionary<Document, FileManifest> files, DependencyMap dependencies)
