@@ -65,8 +65,8 @@ namespace Microsoft.Docs.Build
                 _cachePath = AppData.DefaultGitHubUserCachePath;
                 return;
             }
-            var restorePath = docset.GetFileRestorePath(path);
-            if (HrefUtility.IsHttpHref(path))
+            var (fromUrl, restorePath) = docset.GetFileRestorePath(path);
+            if (fromUrl)
             {
                 _url = path;
                 _restorePath = restorePath;
