@@ -11,7 +11,11 @@ namespace Microsoft.Docs.Build
 {
     internal static class LegacyManifest
     {
-        public static List<(LegacyManifestItem manifestItem, Document doc)> Convert(Docset docset, Context context, Dictionary<Document, FileManifest> fileManifests)
+        public static List<(LegacyManifestItem manifestItem, Document doc)> Convert(
+            Docset docset,
+            Context context,
+            Dictionary<Document, FileManifest> fileManifests,
+            MonikersProvider monikersProvider)
         {
             using (Progress.Start("Convert Legacy Manifest"))
             {
@@ -85,7 +89,7 @@ namespace Microsoft.Docs.Build
                         string groupId = null;
                         if (fileManifest.Value.Monikers.Count > 0)
                         {
-                            groupId = HashUtility.GetMd5HashShort(string.Join(',', fileManifest.Value.Monikers));
+                            groupId = monikersProvider.GetGroupIdFromMonikerList(fileManifest.Value.Monikers);
                         }
                         var file = new LegacyManifestItem
                         {

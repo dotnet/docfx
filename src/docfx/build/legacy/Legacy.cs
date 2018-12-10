@@ -14,12 +14,13 @@ namespace Microsoft.Docs.Build
             Dictionary<Document, FileManifest> fileManifests,
             DependencyMap dependencyMap,
             TableOfContentsMap tocMap,
-            MetadataProvider metadataProvider)
+            MetadataProvider metadataProvider,
+            MonikersProvider monikersProvider)
         {
             using (Progress.Start("Converting to legacy"))
             {
                 // generate manifest and corresponding files
-                var legacyManifestItems = LegacyManifest.Convert(docset, context, fileManifests);
+                var legacyManifestItems = LegacyManifest.Convert(docset, context, fileManifests, monikersProvider);
                 LegacyOutput.Convert(docset, context, metadataProvider, legacyManifestItems);
 
                 // generate mappings
