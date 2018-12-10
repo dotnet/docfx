@@ -4,6 +4,7 @@
 using System;
 using System.Diagnostics;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
@@ -14,7 +15,7 @@ namespace Microsoft.Docs.Build
         private const int RetryInterval = 1000;
         private static readonly HttpClient s_httpClient = new HttpClient();
 
-        public static async Task<HttpResponseMessage> GetAsync(string requestUri, Config config)
+        public static async Task<HttpResponseMessage> GetAsync(string requestUri, Config config, string etag = null)
         {
             HttpResponseMessage response;
             for (var i = 0; i < RetryCount; i++)
@@ -25,6 +26,10 @@ namespace Microsoft.Docs.Build
                     // "The request message was already sent. Cannot send the same request message multiple times."
                     var message = CreateHttpRequestMessage(requestUri, config);
                     message.Method = HttpMethod.Get;
+                    if (!string.IsNullOrEmpty(etag))
+                    {
+                        message.Headers.IfNoneMatch.Add(new EntityTagHeaderValue(etag));
+                    }
                     response = await s_httpClient.SendAsync(message);
                 }
                 catch (Exception ex) when (
