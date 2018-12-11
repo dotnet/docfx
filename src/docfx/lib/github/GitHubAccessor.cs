@@ -33,7 +33,9 @@ namespace Microsoft.Docs.Build
             var apiDetail = $"GET /users/{login}";
             try
             {
-                var user = await RetryUtility.Retry(() => _client.User.Get(login));
+                var user = await RetryUtility.Retry(
+                    () => _client.User.Get(login),
+                    new[] { typeof(OperationCanceledException) });
 
                 return (null, new GitHubUser
                 {
@@ -73,7 +75,9 @@ namespace Microsoft.Docs.Build
             var apiDetail = $"GET /repos/{repoOwner}/{repoName}/commits/{commitSha}";
             try
             {
-                var commit = await RetryUtility.Retry(() => _client.Repository.Commit.Get(repoOwner, repoName, commitSha));
+                var commit = await RetryUtility.Retry(
+                    () => _client.Repository.Commit.Get(repoOwner, repoName, commitSha),
+                    new[] { typeof(OperationCanceledException) });
                 return (null, commit.Author?.Login);
             }
             catch (NotFoundException)
