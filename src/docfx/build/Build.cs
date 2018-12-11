@@ -177,7 +177,7 @@ namespace Microsoft.Docs.Build
                     SourcePath = file.FilePath,
                     SiteUrl = file.SiteUrl,
                     Monikers = monikers,
-                    OutputPath = GetOutputPath(file, monikers, monikersProvider),
+                    OutputPath = GetOutputPath(file, monikers),
                 };
 
                 if (manifestBuilder.TryAdd(file, manifest, monikers))
@@ -208,7 +208,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static string GetOutputPath(Document file, List<string> monikers, MonikersProvider monikersProvider)
+        private static string GetOutputPath(Document file, List<string> monikers)
         {
             if (file.ContentType == ContentType.Resource && !file.Docset.Config.Output.CopyResources)
             {
