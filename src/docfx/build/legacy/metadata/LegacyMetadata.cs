@@ -179,12 +179,14 @@ namespace Microsoft.Docs.Build
                 var content = "";
                 if (value is JArray arr)
                 {
-                    if (!arr.All(item => item is JValue))
+                    foreach (var v in value)
                     {
-                        continue;
+                        if (v is JValue)
+                        {
+                            result.AppendLine($"<meta name=\"{HttpUtility.HtmlEncode(key)}\" content=\"{HttpUtility.HtmlEncode(v)}\" />");
+                        }
                     }
-
-                    content = string.Join(",", value);
+                    continue;
                 }
                 else if (value.Type == JTokenType.Boolean)
                 {
