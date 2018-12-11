@@ -7,7 +7,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -39,6 +41,7 @@ namespace Microsoft.Docs.Build
 
         private readonly string _url = null;
         private readonly string _restorePath = null;
+        private readonly EntityTagHeaderValue _etag = null;
         private readonly string _cachePath;
         private readonly double _expirationInHours;
         private bool _updated = false;
@@ -70,6 +73,7 @@ namespace Microsoft.Docs.Build
             {
                 _url = path;
                 _restorePath = restorePath;
+                _etag = RestoreFile.GetEtag(restorePath);
                 _cachePath = AppData.GetGitHubUserCachePath(path);
             }
             else
@@ -81,7 +85,7 @@ namespace Microsoft.Docs.Build
         public static async Task<GitHubUserCache> Create(Docset docset, string token)
         {
             var result = new GitHubUserCache(docset, token);
-            await result.ReadCacheFile();
+            await result.ReadCacheFiles();
             return result;
         }
 
@@ -143,13 +147,18 @@ namespace Microsoft.Docs.Build
             return await GetByLogin(login);
         }
 
-        public async Task<Error> SaveChanges(Config config)
+        public Task<Error> SaveChanges(Config config)
         {
             if (!_updated)
             {
                 return null;
             }
 
+            return SaveChangesCore(config, _etag);
+        }
+
+        public async Task<Error> SaveChangesCore(Config config, EntityTagHeaderValue etag)
+        {
             string file;
             lock (_lock)
             {
@@ -167,9 +176,16 @@ namespace Microsoft.Docs.Build
             }
             try
             {
-                // TOOD: aware of ETag to handle conflicts
-                await HttpClientUtility.PutAsync(_url, new StringContent(file), config);
-                return null;
+                var response = await HttpClientUtility.PutAsync(_url, new StringContent(file), config, etag);
+                if (response.StatusCode != HttpStatusCode.PreconditionFailed)
+                {
+                    return null;
+                }
+
+                var (restorePath, newEtag) = await RestoreFile.Restore(_url, config);
+                Debug.Assert(etag != newEtag);
+                await ReadCacheFile(restorePath);
+                return await SaveChangesCore(config, etag);
             }
             catch (HttpRequestException ex)
             {
@@ -250,23 +266,23 @@ namespace Microsoft.Docs.Build
         private DateTime NextExpiry()
             => DateTime.UtcNow.AddHours((_expirationInHours / 2) + (t_random.Value.NextDouble() * _expirationInHours));
 
-        private async Task ReadCacheFile()
+        private async Task ReadCacheFiles()
         {
-            await Read(_cachePath);
-            await Read(_restorePath);
+            await ReadCacheFile(_cachePath);
+            await ReadCacheFile(_restorePath);
+        }
 
-            async Task Read(string path)
+        private async Task ReadCacheFile(string path)
+        {
+            if (path != null && File.Exists(path))
             {
-                if (path != null && File.Exists(path))
+                var content = await ProcessUtility.ReadFile(path);
+                var users = JsonUtility.Deserialize<GitHubUserCacheFile>(content).Users;
+                if (users != null)
                 {
-                    var content = await ProcessUtility.ReadFile(path);
-                    var users = JsonUtility.Deserialize<GitHubUserCacheFile>(content).Users;
-                    if (users != null)
+                    lock (_lock)
                     {
-                        lock (_lock)
-                        {
-                            UnsafeUpdateUsers(users);
-                        }
+                        UnsafeUpdateUsers(users);
                     }
                 }
             }

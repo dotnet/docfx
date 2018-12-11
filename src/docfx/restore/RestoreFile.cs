@@ -13,14 +13,14 @@ namespace Microsoft.Docs.Build
 {
     internal static class RestoreFile
     {
-        public static async Task Restore(string url, Config config, bool @implict)
+        public static async Task<(string filePath, EntityTagHeaderValue etag)> Restore(string url, Config config, bool @implict = false)
         {
             if (RestoreMap.TryGetFileRestorePath(url, out var existingPath) && implict)
             {
-                return;
+                return default;
             }
 
-            string existingEtag = null;
+            EntityTagHeaderValue existingEtag = null;
             if (!string.IsNullOrEmpty(existingPath))
             {
                 existingEtag = GetEtag(Path.GetFileName(existingPath));
@@ -28,13 +28,13 @@ namespace Microsoft.Docs.Build
             var (tempFile, etag) = await DownloadToTempFile(url, config, existingEtag);
             if (tempFile == null)
             {
-                return;
+                return default;
             }
 
             var fileName = GetRestoreFileName(HashUtility.GetFileSha1Hash(tempFile), etag);
             var filePath = PathUtility.NormalizeFile(Path.Combine(AppData.GetFileDownloadDir(url), fileName));
-
             await ProcessUtility.RunInsideMutex(filePath, MoveFile);
+            return (filePath, etag);
 
             Task MoveFile()
             {
@@ -60,14 +60,14 @@ namespace Microsoft.Docs.Build
         /// </summary>
         /// <param name="hash">SHA1 hash of file content</param>
         /// <param name="etag">ETag of the resource, null if server doesn't specify ETag</param>
-        public static string GetRestoreFileName(string hash, string etag = null)
+        public static string GetRestoreFileName(string hash, EntityTagHeaderValue etag = null)
         {
             Debug.Assert(!string.IsNullOrEmpty(hash));
 
             var result = hash;
             if (etag != null)
             {
-                result += $"+{HrefUtility.EscapeUrlSegment(etag)}";
+                result += $"+{HrefUtility.EscapeUrlSegment(etag.ToString())}";
             }
             return result;
         }
@@ -76,15 +76,18 @@ namespace Microsoft.Docs.Build
         /// Get ETag from restore file name
         /// </summary>
         /// <returns>ETag of the resource, null if server doesn't specify ETag</returns>
-        public static string GetEtag(string restoreFileName)
+        public static EntityTagHeaderValue GetEtag(string restoreFileName)
         {
             Debug.Assert(!string.IsNullOrEmpty(restoreFileName));
 
             var parts = restoreFileName.Split('+');
-            return parts.Length == 2 ? HrefUtility.UnescapeUrl(parts[1]) : null;
+            return parts.Length == 2 ? new EntityTagHeaderValue(HrefUtility.UnescapeUrl(parts[1])) : null;
         }
 
-        private static async Task<(string filename, string etag)> DownloadToTempFile(string url, Config config, string existingEtag)
+        private static async Task<(string filename, EntityTagHeaderValue etag)> DownloadToTempFile(
+            string url,
+            Config config,
+            EntityTagHeaderValue existingEtag)
         {
             Directory.CreateDirectory(AppData.DownloadsRoot);
             var tempFile = Path.Combine(AppData.DownloadsRoot, "." + Guid.NewGuid().ToString("N"));
@@ -109,7 +112,7 @@ namespace Microsoft.Docs.Build
             {
                 throw Errors.DownloadFailed(url, ex.Message).ToException(ex);
             }
-            return (tempFile, etag == null ? "" : etag.ToString());
+            return (tempFile, etag);
         }
     }
 }

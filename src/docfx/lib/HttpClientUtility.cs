@@ -11,49 +11,42 @@ namespace Microsoft.Docs.Build
 {
     internal static class HttpClientUtility
     {
-        private const int RetryCount = 3;
-        private const int RetryInterval = 1000;
         private static readonly HttpClient s_httpClient = new HttpClient();
+        private static readonly Type[] s_exceptionsToRetry = new[] { typeof(HttpRequestException), typeof(TimeoutException), typeof(OperationCanceledException) };
 
-        public static async Task<HttpResponseMessage> GetAsync(string requestUri, Config config, string etag = null)
+        public static async Task<HttpResponseMessage> GetAsync(string requestUri, Config config, EntityTagHeaderValue etag = null)
         {
-            HttpResponseMessage response;
-            for (var i = 0; i < RetryCount; i++)
-            {
-                try
+            return await RetryUtility.Retry(
+                () =>
                 {
                     // Create new instance of HttpRequestMessage to avoid System.InvalidOperationException:
                     // "The request message was already sent. Cannot send the same request message multiple times."
                     var message = CreateHttpRequestMessage(requestUri, config);
                     message.Method = HttpMethod.Get;
-                    if (!string.IsNullOrEmpty(etag))
+                    if (etag != null)
                     {
-                        message.Headers.IfNoneMatch.Add(new EntityTagHeaderValue(etag));
+                        message.Headers.IfNoneMatch.Add(etag);
                     }
-                    response = await s_httpClient.SendAsync(message);
-                }
-                catch (Exception ex) when (
-                    i < RetryCount - 1 &&
-                    (ex is HttpRequestException ||
-                     ex is TimeoutException ||
-                     ex is OperationCanceledException))
-                {
-                    await Task.Delay(RetryInterval);
-                    continue;
-                }
-                return response;
-            }
-
-            Debug.Fail("should never reach here");
-            return null;
+                    return s_httpClient.SendAsync(message);
+                },
+                s_exceptionsToRetry);
         }
 
-        public static async Task<HttpResponseMessage> PutAsync(string requestUri, HttpContent content, Config config)
+        public static async Task<HttpResponseMessage> PutAsync(string requestUri, HttpContent content, Config config, EntityTagHeaderValue etag = null)
         {
-            var message = CreateHttpRequestMessage(requestUri, config);
-            message.Method = HttpMethod.Put;
-            message.Content = content;
-            return await s_httpClient.SendAsync(message);
+            return await RetryUtility.Retry(
+                () =>
+                {
+                    var message = CreateHttpRequestMessage(requestUri, config);
+                    message.Method = HttpMethod.Put;
+                    message.Content = content;
+                    if (etag != null)
+                    {
+                        message.Headers.IfMatch.Add(etag);
+                    }
+                    return s_httpClient.SendAsync(message);
+                },
+                s_exceptionsToRetry);
         }
 
         private static HttpRequestMessage CreateHttpRequestMessage(string requestUri, Config config)
