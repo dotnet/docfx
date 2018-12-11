@@ -147,14 +147,14 @@ namespace Microsoft.Docs.Build
             return await GetByLogin(login);
         }
 
-        public Task<Error> SaveChanges(Config config)
+        public async Task<Error> SaveChanges(Config config)
         {
             if (!_updated)
             {
                 return null;
             }
 
-            return SaveChangesCore(config, _etag);
+            return await SaveChangesCore(config, _etag);
         }
 
         public async Task<Error> SaveChangesCore(Config config, EntityTagHeaderValue etag)
