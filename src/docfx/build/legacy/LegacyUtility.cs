@@ -50,7 +50,7 @@ namespace Microsoft.Docs.Build
         }
 
         public static string ToLegacyOutputPath(this LegacyManifestOutputItem legacyManifestOutputItem, Docset docset, string groupId)
-            => Path.Combine($"{groupId}", docset.Config.DocumentId.SiteBasePath, legacyManifestOutputItem.RelativePath);
+            => Path.Combine(docset.Config.DocumentId.SiteBasePath, $"{groupId}", legacyManifestOutputItem.RelativePath);
 
         public static string GetAbsoluteOutputPathFromRelativePath(this Docset docset, string relativePath)
         {

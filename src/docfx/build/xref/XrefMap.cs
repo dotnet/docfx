@@ -95,9 +95,17 @@ namespace Microsoft.Docs.Build
             foreach (var url in docset.Config.Xref)
             {
                 var (_, path) = docset.GetFileRestorePath(url);
-                var json = File.ReadAllText(path);
-                var xRefMap = JsonUtility.Deserialize<XrefMapModel>(json);
-                foreach (var spec in xRefMap.References)
+                var content = File.ReadAllText(path);
+                XrefMapModel xrefMap = new XrefMapModel();
+                if (url.EndsWith(".yml", StringComparison.OrdinalIgnoreCase))
+                {
+                    xrefMap = YamlUtility.Deserialize<XrefMapModel>(content);
+                }
+                else
+                {
+                    xrefMap = JsonUtility.Deserialize<XrefMapModel>(content);
+                }
+                foreach (var spec in xrefMap.References)
                 {
                     map[spec.Uid] = spec;
                 }
