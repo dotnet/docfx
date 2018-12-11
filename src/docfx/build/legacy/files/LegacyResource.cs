@@ -1,6 +1,9 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Collections.Generic;
+using Newtonsoft.Json.Linq;
+
 namespace Microsoft.Docs.Build
 {
     internal static class LegacyResource
@@ -10,11 +13,16 @@ namespace Microsoft.Docs.Build
             Context context,
             Document doc,
             LegacyManifestItem legacyManifestItem,
-            MetadataProvider metadataProvider)
+            MetadataProvider metadataProvider,
+            List<string> monikers)
         {
             var legacyManifestOutput = legacyManifestItem.Output;
             var metadata = metadataProvider.GetMetadata(doc);
             metadata = LegacyMetadata.GenerataCommonMetadata(metadata, docset);
+            if (monikers?.Count > 0)
+            {
+                metadata["monikers"] = new JArray(monikers);
+            }
             metadata.Remove("__global");
 
             if (docset.Config.Output.CopyResources)
