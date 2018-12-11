@@ -100,7 +100,7 @@ namespace Microsoft.Docs.Build
                 {
                     xrefMap = YamlUtility.Deserialize<XrefMapModel>(content);
                 }
-                else if (url.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
+                else
                 {
                     xrefMap = JsonUtility.Deserialize<XrefMapModel>(content);
                 }
