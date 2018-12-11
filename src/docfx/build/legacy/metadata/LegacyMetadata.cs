@@ -77,7 +77,7 @@ namespace Microsoft.Docs.Build
             var path = PathUtility.NormalizeFile(Path.GetRelativePath(file.Docset.Config.DocumentId.SiteBasePath, file.SitePath));
 
             rawMetadata["_path"] = path;
-            rawMetadata["fileRelativePath"] = PathUtility.NormalizeFile(Path.Combine(group, Path.ChangeExtension(path, ".html")));
+            rawMetadata["fileRelativePath"] = PathUtility.NormalizeFile(Path.Combine($"{group}", Path.ChangeExtension(path, ".html")));
             rawMetadata["toc_rel"] = pageModel.TocRel;
 
             rawMetadata["wordCount"] = rawMetadata["word_count"] = pageModel.WordCount;
