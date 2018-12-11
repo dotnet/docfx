@@ -220,7 +220,7 @@ namespace Microsoft.Docs.Build
             }
 
             return PathUtility.NormalizeFile(Path.Combine(
-                $"{HashUtility.GetSortedMonikerListHash(monikers)}",
+                $"{HashUtility.GetMd5HashShort(monikers)}",
                 file.SitePath));
         }
 

@@ -55,14 +55,14 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public static string GetSortedMonikerListHash(List<string> monikers)
+        public static string GetMd5HashShort(List<string> list, string separator = ",")
         {
-            if (monikers == null || monikers.Count == 0)
+            if (list == null || list.Count == 0)
             {
                 return null;
             }
 
-            return GetMd5HashShort(string.Join(',', monikers));
+            return GetMd5HashShort(string.Join(separator, list));
         }
 
         private static string ToHexString(byte[] bytes, int digits = 0)

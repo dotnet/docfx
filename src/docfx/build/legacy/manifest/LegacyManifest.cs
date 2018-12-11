@@ -85,7 +85,7 @@ namespace Microsoft.Docs.Build
                         string groupId = null;
                         if (fileManifest.Value.Monikers.Count > 0)
                         {
-                            groupId = HashUtility.GetSortedMonikerListHash(fileManifest.Value.Monikers);
+                            groupId = HashUtility.GetMd5HashShort(fileManifest.Value.Monikers);
                         }
                         var file = new LegacyManifestItem
                         {
