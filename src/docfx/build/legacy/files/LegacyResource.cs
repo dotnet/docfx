@@ -19,7 +19,7 @@ namespace Microsoft.Docs.Build
             var metadata = metadataProvider.GetMetadata(doc);
             metadata = LegacyMetadata.GenerataCommonMetadata(metadata, docset);
 
-            List<string> metadataNeedToBeRemove = new List<string> { "__global" };
+            var metadataNeedToBeRemove = new List<string> { "__global" };
             foreach (var property in metadata)
             {
                 if (property.Key.StartsWith("_") && !property.Key.StartsWith("_op_"))
