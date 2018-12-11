@@ -96,17 +96,5 @@ namespace Microsoft.Docs.Build
             monikers.Sort(Comparer);
             return monikers;
         }
-
-        public string GetGroupIdFromMonikerList(IEnumerable<string> monikers)
-        {
-            if (monikers == null || monikers.Count() == 0)
-            {
-                return null;
-            }
-            var sortedMonikers = monikers.ToList();
-            sortedMonikers.Sort(Comparer);
-
-            return HashUtility.GetMd5HashShort(string.Join(',', monikers));
-        }
     }
 }

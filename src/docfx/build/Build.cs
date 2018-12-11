@@ -220,7 +220,7 @@ namespace Microsoft.Docs.Build
             }
 
             return PathUtility.NormalizeFile(Path.Combine(
-                $"{monikersProvider.GetGroupIdFromMonikerList(monikers)}",
+                $"{HashUtility.GetSortedMonikerListHash(monikers)}",
                 file.SitePath));
         }
 
