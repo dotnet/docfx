@@ -13,7 +13,8 @@ namespace Microsoft.Docs.Build
             Context context,
             Document doc,
             LegacyManifestItem legacyManifestItem,
-            MetadataProvider metadataProvider)
+            MetadataProvider metadataProvider,
+            List<string> monikers)
         {
             var legacyManifestOutput = legacyManifestItem.Output;
             var metadata = metadataProvider.GetMetadata(doc);
@@ -30,6 +31,10 @@ namespace Microsoft.Docs.Build
             foreach (var key in metadataNeedToBeRemove)
             {
                 metadata.Remove(key);
+            }
+            if (monikers?.Count > 0)
+            {
+                metadata["monikers"] = new JArray(monikers);
             }
 
             if (docset.Config.Output.CopyResources)
