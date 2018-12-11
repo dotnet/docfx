@@ -98,7 +98,6 @@ namespace Microsoft.Docs.Build
                             SkipNormalization = !(document.ContentType == ContentType.Resource),
                             SkipSchemaCheck = !(document.ContentType == ContentType.Resource),
                             Group = groupId,
-                            Monikers = fileManifest.Value.Monikers,
                         };
 
                         convertedItems.Add((file, document));

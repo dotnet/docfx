@@ -38,8 +38,5 @@ namespace Microsoft.Docs.Build
 
         [JsonProperty("group")]
         public string Group { get; set; }
-
-        [JsonIgnore]
-        public List<string> Monikers { get; set; }
     }
 }

@@ -32,8 +32,6 @@ namespace Microsoft.Docs.Build
                 metadata.Remove(key);
             }
 
-            metadata["monikers"] = JArray.FromObject(legacyManifestItem.Monikers);
-
             if (docset.Config.Output.CopyResources)
             {
                 LegacyUtility.MoveFileSafe(
