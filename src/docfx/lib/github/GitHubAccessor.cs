@@ -10,8 +10,6 @@ namespace Microsoft.Docs.Build
 {
     internal class GitHubAccessor
     {
-        private const int RetryCount = 3;
-        private const int RetryInterval = 10000;
         private readonly GitHubClient _client;
 
         private static volatile Error _rateLimitError;
@@ -35,9 +33,9 @@ namespace Microsoft.Docs.Build
             var apiDetail = $"GET /users/{login}";
             try
             {
-                var (error, user) = await RetryApi(apiDetail, () => _client.User.Get(login));
+                var user = await RetryUtility.Retry(() => _client.User.Get(login));
 
-                return (error, user == null ? null : new GitHubUser
+                return (null, new GitHubUser
                 {
                     Id = user.Id,
                     Login = user.Login,
@@ -75,8 +73,8 @@ namespace Microsoft.Docs.Build
             var apiDetail = $"GET /repos/{repoOwner}/{repoName}/commits/{commitSha}";
             try
             {
-                var (error, commit) = await RetryApi(apiDetail, () => _client.Repository.Commit.Get(repoOwner, repoName, commitSha));
-                return (null, commit?.Author?.Login);
+                var commit = await RetryUtility.Retry(() => _client.Repository.Commit.Get(repoOwner, repoName, commitSha));
+                return (null, commit.Author?.Login);
             }
             catch (NotFoundException)
             {
@@ -97,34 +95,6 @@ namespace Microsoft.Docs.Build
             {
                 return (Errors.GitHubApiFailed(apiDetail, ex), null);
             }
-        }
-
-        public async Task<(Error, T)> RetryApi<T>(string api, Func<Task<T>> action)
-        {
-            T result = default;
-            for (var i = 0; i < RetryCount; i++)
-            {
-                try
-                {
-                    result = await action();
-                }
-                catch (Exception ex)
-                {
-                    if (i < RetryCount - 1)
-                    {
-                        await Task.Delay(RetryInterval);
-                        continue;
-                    }
-                    else
-                    {
-                        return (Errors.GitHubApiFailed(api, ex), default);
-                    }
-                }
-                return (default, result);
-            }
-
-            Debug.Fail("should never reach here");
-            return default;
         }
     }
 }
