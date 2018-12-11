@@ -219,13 +219,9 @@ namespace Microsoft.Docs.Build
                         Path.GetFullPath(Path.Combine(docset.DocsetPath, file.FilePath))));
             }
 
-            var outputPath = file.SitePath;
-            if (monikers.Count != 0)
-            {
-                var monikerSeg = HashUtility.GetMd5HashShort(string.Join(',', monikers));
-                outputPath = PathUtility.NormalizeFile(Path.Combine(monikerSeg, file.SitePath));
-            }
-            return outputPath;
+            return PathUtility.NormalizeFile(Path.Combine(
+                $"{HashUtility.GetMd5HashShort(monikers)}",
+                file.SitePath));
         }
 
         private static Manifest CreateManifest(Dictionary<Document, FileManifest> files, DependencyMap dependencies)

@@ -44,10 +44,9 @@ namespace Microsoft.Docs.Build
                 }
 
                 var outputRootRelativePath =
-                    PathUtility.NormalizeFolder(
-                        Path.GetRelativePath(
-                            PathUtility.NormalizeFolder(Path.GetDirectoryName(legacyManifestOutput.PageOutput.RelativePath)),
-                            PathUtility.NormalizeFolder(".")));
+                    PathUtility.NormalizeFolder(Path.GetRelativePath(
+                        PathUtility.NormalizeFolder(Path.GetDirectoryName(rawPageOutputPath)),
+                        PathUtility.NormalizeFolder(docset.Config.DocumentId.SiteBasePath)));
 
                 var themesRelativePathToOutputRoot = "_themes/";
 
@@ -58,7 +57,7 @@ namespace Microsoft.Docs.Build
                 }
                 else
                 {
-                    rawMetadata = LegacyMetadata.GenerateLegacyRawMetadata(pageModel, content, doc);
+                    rawMetadata = LegacyMetadata.GenerateLegacyRawMetadata(pageModel, content, doc, legacyManifestItem.Group);
                     var pageMetadata = LegacyMetadata.CreateHtmlMetaTags(rawMetadata);
                     context.WriteJson(new { outputRootRelativePath, content, rawMetadata, pageMetadata, themesRelativePathToOutputRoot }, rawPageOutputPath);
                 }
