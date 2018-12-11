@@ -94,7 +94,8 @@ namespace Microsoft.Docs.Build
             Dictionary<string, XrefSpec> map = new Dictionary<string, XrefSpec>();
             foreach (var url in docset.Config.Xref)
             {
-                var content = File.ReadAllText(docset.GetFileRestorePath(url));
+                var (_, path) = docset.GetFileRestorePath(url);
+                var content = File.ReadAllText(path);
                 XrefMapModel xrefMap = new XrefMapModel();
                 if (url.EndsWith(".yml", StringComparison.OrdinalIgnoreCase))
                 {

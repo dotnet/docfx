@@ -90,7 +90,7 @@ namespace Microsoft.Docs.Build
         [InlineData("https://a.com?b=c#d", "a.com+b=c+d+2183540f")]
         public static void UrlToFolderName(string url, string folderName)
         {
-            Assert.Equal(folderName, PathUtility.UrlToFolderName(url));
+            Assert.Equal(folderName, PathUtility.UrlToShortName(url));
         }
 
         [Fact]
