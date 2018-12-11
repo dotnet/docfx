@@ -11,12 +11,12 @@ namespace Microsoft.Docs.Build
 {
     internal static class LegacyManifest
     {
-        public static List<(LegacyManifestItem manifestItem, Document doc)> Convert(Docset docset, Context context, Dictionary<Document, FileManifest> fileManifests)
+        public static List<(LegacyManifestItem manifestItem, Document doc, List<string> monikers)> Convert(Docset docset, Context context, Dictionary<Document, FileManifest> fileManifests)
         {
             using (Progress.Start("Convert Legacy Manifest"))
             {
                 var monikerGroups = new ConcurrentDictionary<string, List<string>>();
-                var convertedItems = new ConcurrentBag<(LegacyManifestItem manifestItem, Document doc)>();
+                var convertedItems = new ConcurrentBag<(LegacyManifestItem manifestItem, Document doc, List<string> monikers)>();
                 Parallel.ForEach(
                     fileManifests,
                     fileManifest =>
@@ -100,7 +100,7 @@ namespace Microsoft.Docs.Build
                             Group = groupId,
                         };
 
-                        convertedItems.Add((file, document));
+                        convertedItems.Add((file, document, fileManifest.Value.Monikers));
                         if (groupId != null)
                         {
                             monikerGroups.TryAdd(groupId, fileManifest.Value.Monikers);
