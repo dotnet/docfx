@@ -19,11 +19,23 @@ namespace Microsoft.Docs.Build
             var legacyManifestOutput = legacyManifestItem.Output;
             var metadata = metadataProvider.GetMetadata(doc);
             metadata = LegacyMetadata.GenerataCommonMetadata(metadata, docset);
+
+            var metadataNeedToBeRemove = new List<string> { "__global" };
+            foreach (var property in metadata)
+            {
+                if (property.Key.StartsWith("_") && !property.Key.StartsWith("_op_"))
+                {
+                    metadataNeedToBeRemove.AddIfNotNull(property.Key);
+                }
+            }
+            foreach (var key in metadataNeedToBeRemove)
+            {
+                metadata.Remove(key);
+            }
             if (monikers?.Count > 0)
             {
                 metadata["monikers"] = new JArray(monikers);
             }
-            metadata.Remove("__global");
 
             if (docset.Config.Output.CopyResources)
             {
