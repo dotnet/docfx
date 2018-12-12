@@ -328,11 +328,29 @@ inputs:
   docs/a.md: |
     ---
     title: Title from yaml header a
+    fullName: full name
     uid: a
     ---
   docs/b.md: | 
-    Link to [title](xref:a#bookmark)
+    Link to [title](xref:a?displayProperty=fullName#bookmark)
 outputs:
   docs/a.json:
   docs/b.json: |
     { "content": "<p>Link to <a href=\"/docs/a#bookmark\">title</a></p>" }
+---
+# Refer to uid within link, uid not found
+inputs:
+  docfx.yml:
+  docs/a.md: |
+    ---
+    title: Title from yaml header a
+    uid: a
+    ---
+  docs/b.md: | 
+    Link to [title](xref:c#bookmark)
+outputs:
+  docs/a.json:
+  docs/b.json: |
+    { "content": "<p>Link to <a href=\"xref:c#bookmark\">title</a></p>" }
+  build.log: |
+    ["warning","uid-not-found","Cannot find uid 'c' using xref 'xref:c#bookmark'","docs/b.md"]
