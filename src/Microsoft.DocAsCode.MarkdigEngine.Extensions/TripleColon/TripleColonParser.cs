@@ -54,7 +54,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             var block = new TripleColonBlock(this)
             {
-				Closed = false,
+                Closed = false,
                 Column = column,
                 Span = new SourceSpan(sourcePosition, slice.End),
                 Extension = extension,
@@ -70,8 +70,8 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             if (extension.SelfClosing)
             {
-				block.Closed = true;
-				return BlockState.BreakDiscard;
+                block.Closed = true;
+                return BlockState.BreakDiscard;
             }
 
             return BlockState.ContinueDiscard;
@@ -112,9 +112,9 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             block.UpdateSpanEnd(slice.End);
             block.IsOpen = false;
-			(block as TripleColonBlock).Closed = true;
+            (block as TripleColonBlock).Closed = true;
 
-			return BlockState.BreakDiscard;
+            return BlockState.BreakDiscard;
         }
 
         public override bool Close(BlockProcessor processor, Block block)
@@ -122,9 +122,9 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             var tripleColonBlock = (TripleColonBlock)block;
             if (tripleColonBlock.Extension.SelfClosing)
             {
-				block.IsOpen = false;
-				(block as TripleColonBlock).Closed = true;
-				return true;
+                block.IsOpen = false;
+                (block as TripleColonBlock).Closed = true;
+                return true;
             }
 
             var extensionName = tripleColonBlock.Extension.Name;
@@ -132,10 +132,10 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             {
                 _context.LogWarning($"invalid-{extensionName}", $"Invalid {extensionName} on line {block.Line}. No \"::: {extensionName}-end\" found. Blocks should be explicitly closed.");
             } else
-			{
-				(block as TripleColonBlock).Closed = true;
-			}
-			return true;
+            {
+                (block as TripleColonBlock).Closed = true;
+            }
+            return true;
         }
 
         private bool TryMatchIdentifier(ref StringSlice slice, out string name)
@@ -188,7 +188,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             while (true)
             {
                 ExtensionsHelper.SkipSpaces(ref slice);
-				if (slice.CurrentChar.IsZero() || (selfClosing && ExtensionsHelper.MatchStart(ref slice, ":::")))
+                if (slice.CurrentChar.IsZero() || (selfClosing && ExtensionsHelper.MatchStart(ref slice, ":::")))
                 {
                     return true;
                 }
