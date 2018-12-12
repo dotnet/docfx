@@ -162,6 +162,9 @@ namespace Microsoft.Docs.Build
 
         public static (Error error, string href, string display) TryResolveXref(string href, string uid, string query, string fragment, XrefMap xrefMap, DependencyMapBuilder dependencyMapBuilder, Document file)
         {
+            if (xrefMap is null)
+                return default;
+
             string moniker = null;
             NameValueCollection queries = null;
             if (!string.IsNullOrEmpty(query))

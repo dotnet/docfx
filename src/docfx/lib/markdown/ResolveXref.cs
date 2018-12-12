@@ -31,7 +31,6 @@ namespace Microsoft.Docs.Build
 
                              Markup.Result.Errors.Add(error);
                              return new LiteralInline(raw);
-
                          }
                          return new LinkInline(href, null).AppendChild(new LiteralInline(display));
                      }
