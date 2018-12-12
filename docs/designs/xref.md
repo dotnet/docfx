@@ -136,6 +136,17 @@ outputs:
 ```
   - User can also define which property to display for the referenced uid
 
+### Refer to uid within markdown link
+In markdown link url, the user can also refer to uid.
+```
+[link_text](xref:uid_of_another_file)
+```
+It should be resolved as:
+```
+<a href="path_of_another_file">link_text</a>
+```
+In this case, display text will be ignored unless `link_text` is empty.
+
 ### For SDP(JSON/YAML) files
 ```json
     {
