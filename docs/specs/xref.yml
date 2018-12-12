@@ -353,4 +353,4 @@ outputs:
   docs/b.json: |
     { "content": "<p>Link to <a href=\"xref:c#bookmark\">title</a></p>" }
   build.log: |
-    ["warning","uid-not-found","Cannot find uid 'c' using xref 'xref:c#bookmark'","docs/b.md"]
+    ["warning","uid-not-found","Cannot find uid 'c' using xref 'c#bookmark'","docs/b.md"]

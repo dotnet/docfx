@@ -91,8 +91,7 @@ namespace Microsoft.Docs.Build
 
             if (href.StartsWith("xref:"))
             {
-                var (uid, uidQuery, uidFragment) = HrefUtility.SplitHref(href.Substring("xref:".Length));
-                var (uidError, uidHref, _) = TryResolveXref(href, uid, uidQuery, uidFragment, xrefMap, dependencyMapBuilder, relativeTo);
+                var (uidError, uidHref, _) = TryResolveXref(href.Substring("xref:".Length), xrefMap, dependencyMapBuilder, relativeTo);
                 errors.AddIfNotNull(uidError);
                 return (errors, uidHref, fragment, file);
             }
@@ -160,11 +159,12 @@ namespace Microsoft.Docs.Build
             return (errors, relativeUrl + query + fragment, fragment, file);
         }
 
-        public static (Error error, string href, string display) TryResolveXref(string href, string uid, string query, string fragment, XrefMap xrefMap, DependencyMapBuilder dependencyMapBuilder, Document file)
+        public static (Error error, string href, string display) TryResolveXref(string href, XrefMap xrefMap, DependencyMapBuilder dependencyMapBuilder, Document file)
         {
             if (xrefMap is null)
                 return default;
 
+            var (uid, query, fragment) = HrefUtility.SplitHref(href);
             string moniker = null;
             NameValueCollection queries = null;
             if (!string.IsNullOrEmpty(query))

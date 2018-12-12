@@ -65,7 +65,7 @@ namespace Microsoft.Docs.Build
             Document file,
             Func<string, object, (string, object)> readFile,
             Func<string, object, object, string> getLink,
-            Func<string, string, string, string, (Error error, string href, string display)> resolveXref,
+            Func<string, (Error error, string href, string display)> resolveXref,
             Func<string, List<string>> parseMonikerRange,
             MarkdownPipelineType pipelineType)
         {
@@ -176,8 +176,8 @@ namespace Microsoft.Docs.Build
 
         private static string GetLink(string path, object relativeTo, object resultRelativeTo) => t_status.Peek().GetLinkDelegate(path, relativeTo, resultRelativeTo);
 
-        private static (Error error, string href, string display) ResolveXref(string href, string uid, string query, string fragment)
-            => t_status.Peek().ResolveXrefDelegate(href, uid, query, fragment);
+        private static (Error error, string href, string display) ResolveXref(string href)
+            => t_status.Peek().ResolveXrefDelegate(href);
 
         private static List<string> ParseMonikerRange(string monikerRange) => t_status.Peek().ParseMonikerRangeDelegate(monikerRange);
 
@@ -191,7 +191,7 @@ namespace Microsoft.Docs.Build
 
             public Func<string, object, object, string> GetLinkDelegate { get; set; }
 
-            public Func<string, string, string, string, (Error error, string href, string display)> ResolveXrefDelegate { get; set; }
+            public Func<string, (Error error, string href, string display)> ResolveXrefDelegate { get; set; }
 
             public Func<string, List<string>> ParseMonikerRangeDelegate { get; set; }
         }
