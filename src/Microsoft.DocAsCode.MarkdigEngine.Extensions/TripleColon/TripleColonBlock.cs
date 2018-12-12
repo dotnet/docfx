@@ -11,5 +11,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 		public IDictionary<string, string> RenderProperties { get; set; }
         public ITripleColonExtensionInfo Extension { get; set; }
         public TripleColonBlock(BlockParser parser) : base(parser) { }
-    }
+		public bool Closed { get; set; }
+	}
 }

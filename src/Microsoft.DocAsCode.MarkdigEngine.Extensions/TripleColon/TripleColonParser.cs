@@ -54,6 +54,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             var block = new TripleColonBlock(this)
             {
+				Closed = false,
                 Column = column,
                 Span = new SourceSpan(sourcePosition, slice.End),
                 Extension = extension,
@@ -69,6 +70,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             if (extension.SelfClosing)
             {
+				block.Closed = true;
 				return BlockState.BreakDiscard;
             }
 
@@ -110,8 +112,9 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             block.UpdateSpanEnd(slice.End);
             block.IsOpen = false;
+			(block as TripleColonBlock).Closed = true;
 
-            return BlockState.BreakDiscard;
+			return BlockState.BreakDiscard;
         }
 
         public override bool Close(BlockProcessor processor, Block block)
@@ -120,6 +123,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             if (tripleColonBlock.Extension.SelfClosing)
             {
 				block.IsOpen = false;
+				(block as TripleColonBlock).Closed = true;
 				return true;
             }
 
@@ -127,8 +131,11 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             if (block.IsOpen)
             {
                 _context.LogWarning($"invalid-{extensionName}", $"Invalid {extensionName} on line {block.Line}. No \"::: {extensionName}-end\" found. Blocks should be explicitly closed.");
-            }
-            return true;
+            } else
+			{
+				(block as TripleColonBlock).Closed = true;
+			}
+			return true;
         }
 
         private bool TryMatchIdentifier(ref StringSlice slice, out string name)
