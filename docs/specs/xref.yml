@@ -321,3 +321,18 @@ outputs:
   docs/a.json:
   docs/b.json: |
     { "content": "<p>Link to <a href=\"/docs/a\">Title from yaml header a</a>\nLink to <a href=\"/docs/a\">Title from yaml header a</a>\nLink to <a href=\"/docs/a\">Title from yaml header a</a>\nLink to <a href=\"/docs/a\">Title from yaml header a</a>\nLink to <a href=\"/docs/a\">Title from yaml header a</a></p>" }
+---
+# Refer to uid within link
+inputs:
+  docfx.yml:
+  docs/a.md: |
+    ---
+    title: Title from yaml header a
+    uid: a
+    ---
+  docs/b.md: | 
+    Link to [title](xref:a#bookmark)
+outputs:
+  docs/a.json:
+  docs/b.json: |
+    { "content": "<p>Link to <a href=\"/docs/a#bookmark\">title</a></p>" }

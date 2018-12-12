@@ -25,7 +25,7 @@ namespace Microsoft.Docs.Build
 
                 if (attribute is HrefAttribute)
                 {
-                    result = Resolve.GetLink((string)value, file, file, errors, callback?.BuildChild, callback?.DependencyMapBuilder, callback?.BookmarkValidator);
+                    result = Resolve.GetLink((string)value, file, file, errors, callback?.BuildChild, callback?.DependencyMapBuilder, callback?.BookmarkValidator, callback?.XrefMap);
                 }
 
                 if (attribute is MarkdownAttribute)
@@ -44,7 +44,7 @@ namespace Microsoft.Docs.Build
 
                 if (attribute is HtmlAttribute)
                 {
-                    var html = HtmlUtility.TransformLinks((string)value, href => Resolve.GetLink(href, file, file, errors, callback?.BuildChild, callback?.DependencyMapBuilder, callback?.BookmarkValidator));
+                    var html = HtmlUtility.TransformLinks((string)value, href => Resolve.GetLink(href, file, file, errors, callback?.BuildChild, callback?.DependencyMapBuilder, callback?.BookmarkValidator, callback?.XrefMap));
                     result = HtmlUtility.StripTags(HtmlUtility.LoadHtml(html)).OuterHtml;
                 }
 
@@ -65,10 +65,10 @@ namespace Microsoft.Docs.Build
                     => Resolve.ReadFile(path, relativeTo, errors, callback?.DependencyMapBuilder, gitCommitProvider);
 
                 string GetLinkDelegate(string path, object relativeTo, object resultRelativeTo)
-                    => Resolve.GetLink(path, relativeTo, resultRelativeTo, errors, callback?.BuildChild, callback?.DependencyMapBuilder, callback?.BookmarkValidator);
+                    => Resolve.GetLink(path, relativeTo, resultRelativeTo, errors, callback?.BuildChild, callback?.DependencyMapBuilder, callback?.BookmarkValidator, callback?.XrefMap);
 
-                XrefSpec ResolveXrefDelegate(string uid, string moniker)
-                    => Resolve.ResolveXref(uid, callback?.XrefMap, file, callback?.DependencyMapBuilder, moniker);
+                (Error error, string href, string display) ResolveXrefDelegate(string href, string uid, string query, string fragment)
+                    => Resolve.TryResolveXref(href, uid, query, fragment, callback?.XrefMap, callback?.DependencyMapBuilder, file);
             }
         }
     }
