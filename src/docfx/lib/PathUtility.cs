@@ -132,9 +132,9 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
-        /// Converts an URL to a human readable short directory name
+        /// Converts an URL to a human readable short name for directory or file
         /// </summary>
-        public static string UrlToFolderName(string url)
+        public static string UrlToShortName(string url)
         {
             var hash = url.GetMd5HashShort();
 
