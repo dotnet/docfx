@@ -21,22 +21,27 @@ namespace Microsoft.Docs.Build
 
         public static string GlobalConfigPath => GetGlobalConfigPath();
 
-        public static string GitHubUserCachePath => Path.Combine(CacheRoot, "github-users.json");
+        public static string DefaultGitHubUserCachePath => Path.Combine(CacheRoot, "github-users.json");
 
         public static string GetGitDir(string remote)
         {
             Debug.Assert(!remote.Contains('#'));
-            return PathUtility.NormalizeFolder(Path.Combine(GitRoot, PathUtility.UrlToFolderName(remote)));
+            return PathUtility.NormalizeFolder(Path.Combine(GitRoot, PathUtility.UrlToShortName(remote)));
         }
 
         public static string GetFileDownloadDir(string url)
         {
-            return PathUtility.NormalizeFolder(Path.Combine(DownloadsRoot, PathUtility.UrlToFolderName(url)));
+            return PathUtility.NormalizeFolder(Path.Combine(DownloadsRoot, PathUtility.UrlToShortName(url)));
         }
 
         public static string GetCommitCachePath(string remote)
         {
             return Path.Combine(CacheRoot, "commits", HashUtility.GetMd5Hash(remote));
+        }
+
+        public static string GetGitHubUserCachePath(string url)
+        {
+            return Path.Combine(CacheRoot, "github-users", PathUtility.UrlToShortName(url));
         }
 
         /// <summary>
