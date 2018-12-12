@@ -29,29 +29,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
         }
 
         [Fact]
-        public void TripleColonTestNested()
-        {
-            var source = @"::: moniker range="".NET""
-    ::: zone pivot=""windows""
-        hello
-
-    ::: zone-end
-    ::: form action=""create-resource"" submitText=""Create"" :::
-::: end-moniker
-";
-
-            /*
-            var expected = @"<div class=""zone has-pivot"" data-pivot=""windows"">
-<pre><code>hello
-</code></pre>
-</div>
-".Replace("\r\n", "\n");
-*/
-
-            TestUtility.MarkupWithoutSourceInfo(source);
-        }
-
-        [Fact]
         public void TripleColonTestSelfClosing()
         {
             var source = @"::: zone target=""chromeless""
