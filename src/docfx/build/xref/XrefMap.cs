@@ -35,7 +35,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public (XrefSpec, Document) Resolve(string uid, Document file, string moniker = null)
+        public (XrefSpec spec, Document referencedFile) Resolve(string uid, Document file, string moniker = null)
         {
             if (_internalXrefMap.TryGetValue(uid, out var internalSpecs))
             {
@@ -58,7 +58,7 @@ namespace Microsoft.Docs.Build
             return default;
         }
 
-        private (XrefSpec, Document) GetInternalSpec(string uid, Document file, string moniker, List<Lazy<(List<Error>, XrefSpec, Document)>> internalSpecs)
+        private (XrefSpec internalSpec, Document referencedFile) GetInternalSpec(string uid, Document file, string moniker, List<Lazy<(List<Error>, XrefSpec, Document)>> internalSpecs)
         {
             if (!TryGetValidXrefSpecs(uid, internalSpecs, out var validInternalSpecs, out var referencedFile))
                 return default;
