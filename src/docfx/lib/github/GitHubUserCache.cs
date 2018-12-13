@@ -158,9 +158,17 @@ namespace Microsoft.Docs.Build
             var (error, response) = await SaveChangesCore(config, _etag);
             while (error == null && remainingRetries-- > 0 && response.StatusCode == HttpStatusCode.PreconditionFailed)
             {
-                var (restorePath, etag) = await RestoreFile.Restore(_url, config);
-                await ReadCacheFile(restorePath);
-                (error, response) = await SaveChangesCore(config, etag);
+                try
+                {
+                    response = await HttpClientUtility.GetAsync(_url, config);
+                }
+                catch (HttpRequestException ex)
+                {
+                    throw Errors.DownloadFailed(_url, ex.Message).ToException(ex);
+                }
+                var content = await response.EnsureSuccessStatusCode().Content.ReadAsStringAsync();
+                ReadCache(content);
+                (error, response) = await SaveChangesCore(config, response.Headers.ETag);
             }
             return error;
         }
@@ -269,20 +277,25 @@ namespace Microsoft.Docs.Build
         {
             await ReadCacheFile(_cachePath);
             await ReadCacheFile(_restorePath);
+
+            async Task ReadCacheFile(string path)
+            {
+                if (path != null && File.Exists(path))
+                {
+                    var content = await ProcessUtility.ReadFile(path);
+                    ReadCache(content);
+                }
+            }
         }
 
-        private async Task ReadCacheFile(string path)
+        private void ReadCache(string content)
         {
-            if (path != null && File.Exists(path))
+            var users = JsonUtility.Deserialize<GitHubUserCacheFile>(content).Users;
+            if (users != null)
             {
-                var content = await ProcessUtility.ReadFile(path);
-                var users = JsonUtility.Deserialize<GitHubUserCacheFile>(content).Users;
-                if (users != null)
+                lock (_lock)
                 {
-                    lock (_lock)
-                    {
-                        UnsafeUpdateUsers(users);
-                    }
+                    UnsafeUpdateUsers(users);
                 }
             }
         }

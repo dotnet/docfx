@@ -8,10 +8,8 @@ namespace Microsoft.Docs.Build
     public class RetryUtilityTest
     {
         [Theory]
-        [InlineData(3, true, null)]
         [InlineData(3, true, new[] { typeof(InvalidOperationException) })]
         [InlineData(3, false, new[] { typeof(NullReferenceException) })]
-        [InlineData(30, false, null)]
         [InlineData(30, false, new[] { typeof(InvalidOperationException) })]
         public async Task RetryTest(int triesNeeded, bool succeed, Type[] catches)
         {

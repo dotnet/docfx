@@ -13,28 +13,27 @@ namespace Microsoft.Docs.Build
 {
     internal static class RestoreFile
     {
-        public static async Task<(string filePath, EntityTagHeaderValue etag)> Restore(string url, Config config, bool @implict = false)
+        public static async Task Restore(string url, Config config, bool @implict = false)
         {
             if (RestoreMap.TryGetFileRestorePath(url, out var existingPath) && implict)
             {
-                return default;
+                return;
             }
 
             EntityTagHeaderValue existingEtag = null;
             if (!string.IsNullOrEmpty(existingPath))
             {
-                existingEtag = GetEtag(Path.GetFileName(existingPath));
+                existingEtag = GetEtag(existingPath);
             }
             var (tempFile, etag) = await DownloadToTempFile(url, config, existingEtag);
             if (tempFile == null)
             {
-                return default;
+                return;
             }
 
             var fileName = GetRestoreFileName(HashUtility.GetFileSha1Hash(tempFile), etag);
             var filePath = PathUtility.NormalizeFile(Path.Combine(AppData.GetFileDownloadDir(url), fileName));
             await ProcessUtility.RunInsideMutex(filePath, MoveFile);
-            return (filePath, etag);
 
             Task MoveFile()
             {
