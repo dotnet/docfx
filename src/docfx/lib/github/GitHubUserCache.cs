@@ -193,7 +193,9 @@ namespace Microsoft.Docs.Build
             try
             {
                 var response = await HttpClientUtility.PutAsync(_url, new StringContent(file), config, etag);
-                var error = response.IsSuccessStatusCode ? null : Errors.UploadFailed(_url, response.ReasonPhrase);
+                var error = response.IsSuccessStatusCode || response.StatusCode == HttpStatusCode.PreconditionFailed
+                   ? null :
+                   Errors.UploadFailed(_url, response.ReasonPhrase);
                 return (error, response);
             }
             catch (HttpRequestException ex)
