@@ -3,7 +3,6 @@
 
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 
 namespace Microsoft.Docs.Build
@@ -27,15 +26,16 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Add toc files and toc mappings
         /// </summary>
-        /// <param name="tocFile">The toc file being built</param>
-        /// <param name="referencedDocuments">The document files which are referenced by the toc file being built</param>
-        /// <param name="referencedTocs">The toc files which are referenced by the toc file being built</param>
-        public void Add(Document tocFile, IEnumerable<Document> referencedDocuments, IEnumerable<Document> referencedTocs)
+        public void Add(Document tocFile, IEnumerable<Document> references)
         {
-            _tocToDocuments.TryAdd(tocFile, referencedDocuments);
-            foreach (var referencedToc in referencedTocs)
+            _tocToDocuments.TryAdd(tocFile, references.Where(file => file.ContentType == ContentType.Page));
+
+            foreach (var reference in references)
             {
-                _referencedTocs.TryAdd(referencedToc);
+                if (reference.ContentType == ContentType.TableOfContents)
+                {
+                    _referencedTocs.TryAdd(reference);
+                }
             }
         }
 

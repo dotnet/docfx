@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
 using System.IO;
 using Xunit;
 
@@ -54,7 +53,7 @@ namespace Microsoft.Docs.Build
             foreach (var tocFile in tocFiles)
             {
                 var (_, toc) = Document.TryCreate(s_docset, tocFile);
-                builder.Add(toc, new[] { document }, Array.Empty<Document>());
+                builder.Add(toc, new[] { document });
             }
 
             var tocMap = builder.Build();

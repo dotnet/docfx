@@ -30,7 +30,7 @@ namespace Microsoft.Docs.Build
                 return (Enumerable.Empty<Error>(), null, new List<string>());
             }
 
-            var (errors, tocModel, tocMetadata, refArticles, refTocs) = Load(context, file, monikersProvider, gitCommitProvider, dependencyMapBuilder, bookmarkValidator, monikersMap);
+            var (errors, tocModel, tocMetadata, _) = Load(context, file, monikersProvider, gitCommitProvider, dependencyMapBuilder, bookmarkValidator, monikersMap);
 
             var metadata = metadataProvider.GetMetadata(file, tocMetadata).ToObject<TableOfContentsMetadata>();
 
@@ -71,10 +71,10 @@ namespace Microsoft.Docs.Build
                 Debug.Assert(tocMapBuilder != null);
                 Debug.Assert(fileToBuild != null);
 
-                var (errors, _, _, referencedDocuments, referencedTocs) = Load(context, fileToBuild, monikersProvider);
+                var (errors, _, _, references) = Load(context, fileToBuild, monikersProvider);
                 context.Report(fileToBuild.ToString(), errors);
 
-                tocMapBuilder.Add(fileToBuild, referencedDocuments, referencedTocs);
+                tocMapBuilder.Add(fileToBuild, references);
             }
             catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
             {
@@ -86,8 +86,7 @@ namespace Microsoft.Docs.Build
             List<Error> errors,
             List<TableOfContentsItem> tocItems,
             JObject metadata,
-            List<Document> referencedDocuments,
-            List<Document> referencedTocs)
+            List<Document> referencedDocuments)
 
             Load(
             Context context,
@@ -112,8 +111,6 @@ namespace Microsoft.Docs.Build
                     var (error, referencedTocContent, referencedToc) = file.TryResolveContent(href, gitCommitProvider);
                     if (referencedToc != null)
                     {
-                        // add to referenced toc list
-                        referencedTocs.Add(referencedToc);
                         dependencyMapBuilder?.AddDependencyItem(file, referencedToc, DependencyType.TocInclusion);
                     }
                     return (error, referencedTocContent, referencedToc);
@@ -131,11 +128,12 @@ namespace Microsoft.Docs.Build
                         dependencyMapBuilder?.AddDependencyItem(file, buildItem, HrefUtility.FragmentToDependencyType(fragment));
                         bookmarkValidator?.AddBookmarkReference(file, buildItem ?? file, fragment);
                     }
+
                     return (error, link, buildItem);
                 });
 
             errors.AddRange(loadErrors);
-            return (errors, tocItems, tocMetadata, referencedDocuments, referencedTocs);
+            return (errors, tocItems, tocMetadata, referencedDocuments);
         }
     }
 }

@@ -600,7 +600,7 @@ outputs:
 # replace href finally
 inputs:
   docfx.yml: |
-    files: docs/**/TOC.*
+    files: docs/f1/TOC.yml
   docs/f1/TOC.yml: |
     - name: Toc Reference 1
       href: f11/TOC.md
