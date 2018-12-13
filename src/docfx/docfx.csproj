@@ -13,7 +13,6 @@
 
   <ItemGroup>
     <AdditionalFiles Include="../../stylecop.json" />
-    <None Include="data/**/*" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
   <ItemGroup>
