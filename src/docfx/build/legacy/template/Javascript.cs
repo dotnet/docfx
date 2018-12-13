@@ -64,10 +64,7 @@ namespace Microsoft.Docs.Build
 
             ObjectInstance Require(string path)
             {
-                var absolutePath = path == "./op.common.js"
-                    ? Path.Combine(AppContext.BaseDirectory, "data/op.common.js")
-                    : Path.Combine(Path.GetDirectoryName(scriptPath), path);
-                return Load(absolutePath, modules);
+                return Load(Path.Combine(Path.GetDirectoryName(scriptPath), path), modules);
             }
         }
 
