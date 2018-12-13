@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Threading.Tasks;
 
 using static Microsoft.Docs.Build.LibGit2;
@@ -213,6 +214,51 @@ namespace Microsoft.Docs.Build
             }
         }
 
+        public static unsafe bool TryGetContentFromHistory(string repoPath, string filePath, string committish, out string content)
+        {
+            content = null;
+            if (git_repository_open(out var repo, repoPath) != 0)
+            {
+                return false;
+            }
+
+            if (git_revparse_single(out var commit, repo, committish) != 0)
+            {
+                git_repository_free(repo);
+                return false;
+            }
+
+            if (git_commit_tree(out var tree, commit) != 0)
+            {
+                git_repository_free(repo);
+                return false;
+            }
+
+            if (git_tree_entry_bypath(out var entry, tree, filePath) != 0)
+            {
+                git_repository_free(repo);
+                return false;
+            }
+
+            var obj = git_tree_entry_id(entry);
+            if (git_blob_lookup(out var blob, repo, obj) != 0)
+            {
+                git_tree_entry_free(entry);
+                git_repository_free(repo);
+                return false;
+            }
+
+            using (var stream = new UnmanagedMemoryStream((byte*)git_blob_rawcontent(blob).ToPointer(), git_blob_rawsize(blob)))
+            using (var reader = new StreamReader(stream, Encoding.UTF8, true))
+            {
+                content = reader.ReadToEnd();
+            }
+
+            git_tree_entry_free(entry);
+            git_repository_free(repo);
+            return true;
+        }
+
         /// <summary>
         /// Clones or update a git repository to the latest version.
         /// </summary>
@@ -254,6 +300,7 @@ namespace Microsoft.Docs.Build
             catch (InvalidOperationException ex) when (committishes.Any(rev => ex.Message.Contains(rev)))
             {
                 // Fallback to fetch all branches and tags if the input committish is not supported by fetch
+                depth = "--depth 9999999999";
                 refspecs = "+refs/heads/*:refs/heads/* +refs/tags/*:refs/tags/*";
                 await ExecuteNonQuery(path, $"{httpConfig} fetch --tags --prune --progress --update-head-ok {depth} \"{url}\" {refspecs}");
             }

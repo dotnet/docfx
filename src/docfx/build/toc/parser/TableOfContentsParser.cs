@@ -24,32 +24,36 @@ namespace Microsoft.Docs.Build
         {
             var (errors, inputModel) = LoadInputModelItems(context, file, file, monikerMap, resolveContent, resolveHref, new List<Document>());
 
-            var items = inputModel?.Items?.Select(r => TableOfContentsInputItem.ToTableOfContentsModel(r, file.Docset.Monikers.Comparer)).ToList();
-            var fileMonikers = items?.SelectMany(r => r.Monikers).Distinct(file.Docset.Monikers.Comparer).ToList();
-            fileMonikers.Sort(file.Docset.Monikers.Comparer);
-            return (errors, items, inputModel?.Metadata, fileMonikers);
+            var items = inputModel?.Items?.Select(r => TableOfContentsInputItem.ToTableOfContentsModel(r, monikersProvider.Comparer)).ToList();
+            return (errors, items, inputModel?.Metadata);
         }
 
-        private static (List<Error> errors, TableOfContentsInputModel tocModel) LoadTocModel(Context context, Document file)
+        private static (List<Error> errors, TableOfContentsInputModel tocModel) LoadTocModel(Context context, Document file, string content = null)
         {
             var filePath = file.FilePath;
+
+            if (file.IsFromHistory)
+            {
+                Debug.Assert(!string.IsNullOrEmpty(content));
+            }
+
             if (filePath.EndsWith(".yml", PathUtility.PathComparison))
             {
-                var (errors, tocToken) = YamlUtility.Deserialize(file, context);
+                var (errors, tocToken) = content == null ? YamlUtility.Deserialize(file, context) : YamlUtility.Deserialize(content);
                 var (loadErrors, toc) = LoadTocModel(tocToken);
                 errors.AddRange(loadErrors);
                 return (errors, toc);
             }
             else if (filePath.EndsWith(".json", PathUtility.PathComparison))
             {
-                var (errors, tocToken) = JsonUtility.Deserialize(file, context);
+                var (errors, tocToken) = content == null ? JsonUtility.Deserialize(file, context) : JsonUtility.Deserialize(content);
                 var (loadErrors, toc) = LoadTocModel(tocToken);
                 errors.AddRange(loadErrors);
                 return (errors, toc);
             }
             else if (filePath.EndsWith(".md", PathUtility.PathComparison))
             {
-                var content = file.ReadText();
+                content = content ?? file.ReadText();
                 GitUtility.CheckMergeConflictMarker(content, file.FilePath);
                 return MarkdownTocMarkup.LoadMdTocModel(content, file, context);
             }
@@ -96,7 +100,7 @@ namespace Microsoft.Docs.Build
 
             parents.Add(file);
 
-            var (errors, models) = LoadTocModel(context, file);
+            var (errors, models) = LoadTocModel(context, file, content);
 
             if (models.Items.Any())
             {

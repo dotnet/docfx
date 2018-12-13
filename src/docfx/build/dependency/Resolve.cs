@@ -11,11 +11,11 @@ namespace Microsoft.Docs.Build
 {
     internal static class Resolve
     {
-        public static (string content, object file) ReadFile(string path, object relativeTo, List<Error> errors, DependencyMapBuilder dependencyMapBuilder)
+        public static (string content, object file) ReadFile(string path, object relativeTo, List<Error> errors, DependencyMapBuilder dependencyMapBuilder, GitCommitProvider gitCommitProvider)
         {
             Debug.Assert(relativeTo is Document);
 
-            var (error, content, child) = ((Document)relativeTo).TryResolveContent(path);
+            var (error, content, child) = ((Document)relativeTo).TryResolveContent(path, gitCommitProvider);
 
             errors.AddIfNotNull(error);
 
@@ -54,13 +54,26 @@ namespace Microsoft.Docs.Build
             return xrefSpec;
         }
 
-        public static (Error error, string content, Document file) TryResolveContent(this Document relativeTo, string href)
+        public static (Error error, string content, Document file) TryResolveContent(this Document relativeTo, string href, GitCommitProvider gitCommitProvider)
         {
-            var (error, file, redirect, _, _, _) = TryResolveFile(relativeTo, href);
+            var (error, file, redirect, _, _, _, pathToDocset) = TryResolveFile(relativeTo, href);
 
             if (redirect != null)
             {
                 return (Errors.IncludeRedirection(relativeTo, href), null, null);
+            }
+
+            if (file == null && !string.IsNullOrEmpty(pathToDocset) && gitCommitProvider != null)
+            {
+                var (errorFromHistory, content, fileFromHistory) = LocalizationConvention.TryResolveContentFromHistory(gitCommitProvider, relativeTo.Docset, pathToDocset);
+                if (errorFromHistory != null)
+                {
+                    return (error, null, null);
+                }
+                if (fileFromHistory != null)
+                {
+                    return (null, content, fileFromHistory);
+                }
             }
 
             return file != null ? (error, file.ReadText(), file) : default;
@@ -70,7 +83,7 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(resultRelativeTo != null);
 
-            var (error, file, redirectTo, query, fragment, isSelfBookmark) = TryResolveFile(relativeTo, href);
+            var (error, file, redirectTo, query, fragment, isSelfBookmark, _) = TryResolveFile(relativeTo, href);
 
             // Redirection
             // follow redirections
@@ -133,11 +146,11 @@ namespace Microsoft.Docs.Build
             return (error, relativeUrl + query + fragment, fragment, file);
         }
 
-        private static (Error error, Document file, string redirectTo, string query, string fragment, bool isSelfBookmark) TryResolveFile(this Document relativeTo, string href)
+        private static (Error error, Document file, string redirectTo, string query, string fragment, bool isSelfBookmark, string pathToDocset) TryResolveFile(this Document relativeTo, string href)
         {
             if (string.IsNullOrEmpty(href))
             {
-                return (Errors.LinkIsEmpty(relativeTo), null, null, null, null, false);
+                return (Errors.LinkIsEmpty(relativeTo), null, null, null, null, false, null);
             }
 
             var (path, query, fragment) = HrefUtility.SplitHref(href);
@@ -146,7 +159,7 @@ namespace Microsoft.Docs.Build
             // Self bookmark link
             if (string.IsNullOrEmpty(path))
             {
-                return (null, relativeTo, null, query, fragment, true);
+                return (null, relativeTo, null, query, fragment, true, pathToDocset);
             }
 
             // Leave absolute URL as is
@@ -158,7 +171,7 @@ namespace Microsoft.Docs.Build
             // Leave absolute file path as is
             if (Path.IsPathRooted(path))
             {
-                return (Errors.AbsoluteFilePath(relativeTo, path), null, null, null, null, false);
+                return (Errors.AbsoluteFilePath(relativeTo, path), null, null, null, null, false, pathToDocset);
             }
 
             // Leave absolute URL path as is
@@ -188,12 +201,12 @@ namespace Microsoft.Docs.Build
                 // TODO: In case of file rename, we should warn if the content is not inside build scope.
                 //       But we should not warn or do anything with absolute URLs.
                 var (error, redirectFile) = Document.TryCreate(relativeTo.Docset, pathToDocset);
-                return (error, redirectFile, redirectTo, query, fragment, false);
+                return (error, redirectFile, redirectTo, query, fragment, false, pathToDocset);
             }
 
             var file = Document.TryCreateFromFile(relativeTo.Docset, pathToDocset);
 
-            return (file != null ? null : Errors.FileNotFound(relativeTo.ToString(), path), file, null, query, fragment, false);
+            return (file != null ? null : Errors.FileNotFound(relativeTo.ToString(), path), file, null, query, fragment, false, pathToDocset);
         }
     }
 }

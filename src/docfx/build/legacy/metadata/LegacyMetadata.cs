@@ -63,9 +63,10 @@ namespace Microsoft.Docs.Build
         }
 
         public static JObject GenerateLegacyRawMetadata(
-                PageModel pageModel,
-                string content,
-                Document file)
+            PageModel pageModel,
+            string content,
+            Document file,
+            string group)
         {
             var docset = file.Docset;
             var rawMetadata = pageModel.Metadata != null ? JObject.FromObject(pageModel.Metadata) : new JObject();
@@ -76,7 +77,7 @@ namespace Microsoft.Docs.Build
             var path = PathUtility.NormalizeFile(Path.GetRelativePath(file.Docset.Config.DocumentId.SiteBasePath, file.SitePath));
 
             rawMetadata["_path"] = path;
-            rawMetadata["fileRelativePath"] = Path.ChangeExtension(path, ".html");
+            rawMetadata["fileRelativePath"] = PathUtility.NormalizeFile(Path.Combine($"{group}", Path.ChangeExtension(path, ".html")));
             rawMetadata["toc_rel"] = pageModel.TocRel;
 
             rawMetadata["wordCount"] = rawMetadata["word_count"] = pageModel.WordCount;
@@ -178,12 +179,14 @@ namespace Microsoft.Docs.Build
                 var content = "";
                 if (value is JArray arr)
                 {
-                    if (!arr.All(item => item is JValue))
+                    foreach (var v in value)
                     {
-                        continue;
+                        if (v is JValue)
+                        {
+                            result.AppendLine($"<meta name=\"{HttpUtility.HtmlEncode(key)}\" content=\"{HttpUtility.HtmlEncode(v)}\" />");
+                        }
                     }
-
-                    content = string.Join(",", value);
+                    continue;
                 }
                 else if (value.Type == JTokenType.Boolean)
                 {
