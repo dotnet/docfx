@@ -300,7 +300,7 @@ namespace Microsoft.Docs.Build
             catch (InvalidOperationException ex) when (committishes.Any(rev => ex.Message.Contains(rev)))
             {
                 // Fallback to fetch all branches and tags if the input committish is not supported by fetch
-                depth = depthOne ? "--unshallow" : "";
+                depth = "--depth 9999999999";
                 refspecs = "+refs/heads/*:refs/heads/* +refs/tags/*:refs/tags/*";
                 await ExecuteNonQuery(path, $"{httpConfig} fetch --tags --prune --progress --update-head-ok {depth} \"{url}\" {refspecs}");
             }
