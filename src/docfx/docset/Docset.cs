@@ -78,10 +78,6 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public HashSet<Document> ScanScope => _scanScope.Value;
 
-        public MetadataProvider Metadata => _metadata.Value;
-
-        public MonikersProvider Monikers => _monikers.Value;
-
         public LegacyTemplate LegacyTemplate => _legacyTemplate.Value;
 
         private readonly CommandLineOptions _options;
@@ -90,8 +86,6 @@ namespace Microsoft.Docs.Build
         private readonly Lazy<HashSet<Document>> _scanScope;
         private readonly Lazy<RedirectionMap> _redirections;
         private readonly Lazy<LegacyTemplate> _legacyTemplate;
-        private readonly Lazy<MetadataProvider> _metadata;
-        private readonly Lazy<MonikersProvider> _monikers;
 
         public Docset(Context context, string docsetPath, Config config, CommandLineOptions options, bool isDependency = false)
             : this(context, docsetPath, config, !string.IsNullOrEmpty(options.Locale) ? options.Locale : config.Localization.DefaultLocale, options, null)
@@ -130,7 +124,6 @@ namespace Microsoft.Docs.Build
                 return map;
             });
             _scanScope = new Lazy<HashSet<Document>>(() => this.CreateScanScope());
-            _metadata = new Lazy<MetadataProvider>(() => new MetadataProvider(config));
 
             _legacyTemplate = new Lazy<LegacyTemplate>(() =>
             {
@@ -138,7 +131,6 @@ namespace Microsoft.Docs.Build
                 var (themeRemote, branch) = LocalizationConvention.GetLocalizationTheme(Config.Theme, Locale, Config.Localization.DefaultLocale);
                 return new LegacyTemplate(RestoreMap.GetGitRestorePath($"{themeRemote}#{branch}"), Locale);
             });
-            _monikers = new Lazy<MonikersProvider>(() => new MonikersProvider(this));
         }
 
         private static IReadOnlyDictionary<string, string> NormalizeRoutes(Dictionary<string, string> routes)

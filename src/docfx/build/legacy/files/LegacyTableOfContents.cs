@@ -34,6 +34,7 @@ namespace Microsoft.Docs.Build
                 {
                     Experimental = toc.Metadata.Experimental,
                     ExperimentId = toc.Metadata.ExperimentId,
+                    Monikers = toc.Metadata.Monikers,
                 },
                 legacyManifestOutput.MetadataOutput.ToLegacyOutputPath(docset, legacyManifestItem.Group));
         }
@@ -77,6 +78,9 @@ namespace Microsoft.Docs.Build
 
             [JsonProperty(PropertyName = "experimental")]
             public bool? Experimental { get; set; }
+
+            [JsonProperty(PropertyName = "monikers")]
+            public List<string> Monikers { get; set; }
         }
 
         private class LegacyTableOfContentsModel

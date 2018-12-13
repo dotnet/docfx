@@ -20,6 +20,9 @@ namespace Microsoft.Docs.Build
     {
         public List<string> Monikers { get; set; }
 
+        [JsonProperty(PropertyName = "monikerRange")]
+        public string MonikerRange { get; set; }
+
         [JsonExtensionData]
         public JObject ExtensionData { get; set; }
     }

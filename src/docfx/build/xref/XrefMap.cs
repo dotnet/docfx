@@ -85,19 +85,32 @@ namespace Microsoft.Docs.Build
             return default;
         }
 
-        public static XrefMap Create(Context context, Docset docset)
+        public static XrefMap Create(
+            Context context,
+            Docset docset,
+            MetadataProvider metadataProvider,
+            MonikersProvider monikersProvider)
         {
             Dictionary<string, XrefSpec> map = new Dictionary<string, XrefSpec>();
             foreach (var url in docset.Config.Xref)
             {
-                var json = File.ReadAllText(docset.GetFileRestorePath(url));
-                var xRefMap = JsonUtility.Deserialize<XrefMapModel>(json);
-                foreach (var spec in xRefMap.References)
+                var (_, path) = docset.GetFileRestorePath(url);
+                var content = File.ReadAllText(path);
+                XrefMapModel xrefMap = new XrefMapModel();
+                if (url.EndsWith(".yml", StringComparison.OrdinalIgnoreCase))
+                {
+                    xrefMap = YamlUtility.Deserialize<XrefMapModel>(content);
+                }
+                else
+                {
+                    xrefMap = JsonUtility.Deserialize<XrefMapModel>(content);
+                }
+                foreach (var spec in xrefMap.References)
                 {
                     map[spec.Uid] = spec;
                 }
             }
-            return new XrefMap(map, CreateInternalXrefMap(context, docset.ScanScope), context, docset.Monikers.Comparer);
+            return new XrefMap(map, CreateInternalXrefMap(context, docset.ScanScope, metadataProvider, monikersProvider), context, monikersProvider.Comparer);
         }
 
         public void OutputXrefMap(Context context)
@@ -197,13 +210,14 @@ namespace Microsoft.Docs.Build
             return isOverlapping;
         }
 
-        private static IReadOnlyDictionary<string, List<Lazy<(List<Error>, XrefSpec, Document)>>> CreateInternalXrefMap(Context context, IEnumerable<Document> files)
+        private static IReadOnlyDictionary<string, List<Lazy<(List<Error>, XrefSpec, Document)>>>
+            CreateInternalXrefMap(Context context, IEnumerable<Document> files, MetadataProvider metadataProvider, MonikersProvider monikersProvider)
         {
             var xrefsByUid = new ConcurrentDictionary<string, ConcurrentBag<Lazy<(List<Error>, XrefSpec, Document)>>>();
             Debug.Assert(files != null);
             using (Progress.Start("Building Xref map"))
             {
-                ParallelUtility.ForEach(files.Where(f => f.ContentType == ContentType.Page), file => Load(context, xrefsByUid, file), Progress.Update);
+                ParallelUtility.ForEach(files.Where(f => f.ContentType == ContentType.Page), file => Load(context, xrefsByUid, file, metadataProvider, monikersProvider), Progress.Update);
                 return xrefsByUid.ToList().OrderBy(item => item.Key).ToDictionary(item => item.Key, item => item.Value.ToList());
             }
         }
@@ -216,7 +230,12 @@ namespace Microsoft.Docs.Build
             _monikerComparer = monikerComparer;
         }
 
-        private static void Load(Context context, ConcurrentDictionary<string, ConcurrentBag<Lazy<(List<Error>, XrefSpec, Document)>>> xrefsByUid, Document file)
+        private static void Load(
+            Context context,
+            ConcurrentDictionary<string, ConcurrentBag<Lazy<(List<Error>, XrefSpec, Document)>>> xrefsByUid,
+            Document file,
+            MetadataProvider metadataProvider,
+            MonikersProvider monikersProvider)
         {
             try
             {
@@ -225,14 +244,14 @@ namespace Microsoft.Docs.Build
                 if (file.FilePath.EndsWith(".md", PathUtility.PathComparison))
                 {
                     var (yamlHeaderErrors, yamlHeader) = ExtractYamlHeader.Extract(file, context);
-                    var (metaErrors, metadata) = JsonUtility.ToObjectWithSchemaValidation<FileMetadata>(file.Docset.Metadata.GetMetadata(file, yamlHeader));
+                    var (metaErrors, metadata) = JsonUtility.ToObjectWithSchemaValidation<FileMetadata>(metadataProvider.GetMetadata(file, yamlHeader));
 
                     errors.AddRange(yamlHeaderErrors);
                     if (!string.IsNullOrEmpty(metadata.Uid))
                     {
                         TryAddXref(xrefsByUid, metadata.Uid, () =>
                         {
-                            var (error, spec, _) = LoadMarkdown(metadata, file);
+                            var (error, spec, _) = LoadMarkdown(metadata, file, monikersProvider);
                             return (error is null ? new List<Error>() : new List<Error> { error }, spec, file);
                         });
                     }
@@ -269,7 +288,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static (Error error, XrefSpec spec, Document doc) LoadMarkdown(FileMetadata metadata, Document file)
+        private static (Error error, XrefSpec spec, Document doc) LoadMarkdown(FileMetadata metadata, Document file, MonikersProvider monikersProvider)
         {
             var xref = new XrefSpec
             {
@@ -278,7 +297,7 @@ namespace Microsoft.Docs.Build
             };
             xref.ExtensionData["name"] = string.IsNullOrEmpty(metadata.Title) ? metadata.Uid : metadata.Title;
 
-            var (error, monikers) = file.Docset.Monikers.GetFileLevelMonikers(file, metadata.MonikerRange);
+            var (error, monikers) = monikersProvider.GetFileLevelMonikers(file, metadata.MonikerRange);
             foreach (var moniker in monikers)
             {
                 xref.Monikers.Add(moniker);

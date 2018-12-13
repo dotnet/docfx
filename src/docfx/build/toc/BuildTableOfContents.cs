@@ -16,6 +16,8 @@ namespace Microsoft.Docs.Build
             Document file,
             TableOfContentsMap tocMap,
             GitCommitProvider gitCommitProvider,
+            MetadataProvider metadataProvider,
+            MonikersProvider monikersProvider,
             DependencyMapBuilder dependencyMapBuilder,
             BookmarkValidator bookmarkValidator,
             Dictionary<Document, List<string>> monikersMap)
@@ -28,12 +30,13 @@ namespace Microsoft.Docs.Build
                 return (Enumerable.Empty<Error>(), null, new List<string>());
             }
 
-            var (errors, tocModel, tocMetadata, refArticles, refTocs, monikers) = Load(context, file, gitCommitProvider, dependencyMapBuilder, bookmarkValidator, monikersMap);
+            var (errors, tocModel, tocMetadata, refArticles, refTocs) = Load(context, file, monikersProvider, gitCommitProvider, dependencyMapBuilder, bookmarkValidator, monikersMap);
 
-            var metadata = file.Docset.Metadata.GetMetadata(file, tocMetadata).ToObject<TableOfContentsMetadata>();
+            var metadata = metadataProvider.GetMetadata(file, tocMetadata).ToObject<TableOfContentsMetadata>();
 
-            // Monikers of toc file is the collection of every node's monikers
-            metadata.Monikers = monikers;
+            Error monikerError;
+            (monikerError, metadata.Monikers) = monikersProvider.GetFileLevelMonikers(file, metadata.MonikerRange);
+            errors.AddIfNotNull(monikerError);
 
             var model = new TableOfContentsModel
             {
@@ -41,10 +44,10 @@ namespace Microsoft.Docs.Build
                 Metadata = metadata,
             };
 
-            return (errors, model, monikers);
+            return (errors, model, metadata.Monikers);
         }
 
-        public static TableOfContentsMap BuildTocMap(Context context, Docset docset)
+        public static TableOfContentsMap BuildTocMap(Context context, Docset docset, MonikersProvider monikersProvider)
         {
             using (Progress.Start("Loading TOC"))
             {
@@ -55,20 +58,20 @@ namespace Microsoft.Docs.Build
                     return builder.Build();
                 }
 
-                ParallelUtility.ForEach(tocFiles, file => BuildTocMap(context, file, builder), Progress.Update);
+                ParallelUtility.ForEach(tocFiles, file => BuildTocMap(context, file, builder, monikersProvider), Progress.Update);
 
                 return builder.Build();
             }
         }
 
-        private static void BuildTocMap(Context context, Document fileToBuild, TableOfContentsMapBuilder tocMapBuilder)
+        private static void BuildTocMap(Context context, Document fileToBuild, TableOfContentsMapBuilder tocMapBuilder, MonikersProvider monikersProvider)
         {
             try
             {
                 Debug.Assert(tocMapBuilder != null);
                 Debug.Assert(fileToBuild != null);
 
-                var (errors, _, _, referencedDocuments, referencedTocs, _) = Load(context, fileToBuild);
+                var (errors, _, _, referencedDocuments, referencedTocs) = Load(context, fileToBuild, monikersProvider);
                 context.Report(fileToBuild.ToString(), errors);
 
                 tocMapBuilder.Add(fileToBuild, referencedDocuments, referencedTocs);
@@ -84,12 +87,12 @@ namespace Microsoft.Docs.Build
             List<TableOfContentsItem> tocItems,
             JObject metadata,
             List<Document> referencedDocuments,
-            List<Document> referencedTocs,
-            List<string> monikers)
+            List<Document> referencedTocs)
 
             Load(
             Context context,
             Document fileToBuild,
+            MonikersProvider monikersProvider,
             GitCommitProvider gitCommitProvider = null,
             DependencyMapBuilder dependencyMapBuilder = null,
             BookmarkValidator bookmarkValidator = null,
@@ -99,7 +102,7 @@ namespace Microsoft.Docs.Build
             var referencedDocuments = new List<Document>();
             var referencedTocs = new List<Document>();
 
-            var (loadErrors, tocItems, tocMetadata, monikers) = TableOfContentsParser.Load(
+            var (loadErrors, tocItems, tocMetadata) = TableOfContentsParser.Load(
                 context,
                 fileToBuild,
                 (file, href, isInclude) =>
@@ -133,10 +136,10 @@ namespace Microsoft.Docs.Build
                     }
                     bookmarkValidator?.AddBookmarkReference(file, buildItem ?? file, fragment);
                     return (link, itemMonikers);
-                });
+                }, monikersProvider);
 
             errors.AddRange(loadErrors);
-            return (errors, tocItems, tocMetadata, referencedDocuments, referencedTocs, monikers);
+            return (errors, tocItems, tocMetadata, referencedDocuments, referencedTocs);
         }
     }
 }
