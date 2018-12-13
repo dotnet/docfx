@@ -19,12 +19,13 @@ namespace Microsoft.Docs.Build
 
         public delegate (Error error, string content, Document file) ResolveContent(Document relativeTo, string href);
 
-        public static (List<Error> errors, List<TableOfContentsItem> items, JObject metadata, List<string> monikers)
-            Load(Context context, Document file, Dictionary<Document, List<string>> monikerMap, ResolveContent resolveContent, ResolveHref resolveHref)
+        public static (List<Error> errors, List<TableOfContentsItem> items, JObject metadata)
+            Load(Context context, Document file, MonikersProvider monikersProvider, Dictionary<Document, List<string>> monikerMap, ResolveContent resolveContent, ResolveHref resolveHref)
         {
             var (errors, inputModel) = LoadInputModelItems(context, file, file, monikerMap, resolveContent, resolveHref, new List<Document>());
 
             var items = inputModel?.Items?.Select(r => TableOfContentsInputItem.ToTableOfContentsModel(r, monikersProvider.Comparer)).ToList();
+
             return (errors, items, inputModel?.Metadata);
         }
 
@@ -90,7 +91,8 @@ namespace Microsoft.Docs.Build
             Dictionary<Document, List<string>> monikerMap,
             ResolveContent resolveContent,
             ResolveHref resolveHref,
-            List<Document> parents)
+            List<Document> parents,
+            string content = null)
         {
             // add to parent path
             if (parents.Contains(file))
@@ -219,13 +221,22 @@ namespace Microsoft.Docs.Build
 
                         foreach (var tocFileName in s_tocFileNames)
                         {
-                            var (_, _, resolvedTocFile) = resolveHref(filePath, Path.Combine(hrefPath, tocFileName), rootPath);
-                            if (resolvedTocFile == null)
+                            var (_, includeContent, includeTocFile) = resolveContent(filePath, Path.Combine(hrefPath, tocFileName));
+                            if (includeTocFile == null)
                             {
                                 continue;
                             }
 
-                            var (loadErrors, loadedToc) = LoadInputModelItems(context, resolvedTocFile, rootPath, monikerMap, resolveContent, resolveHref, parents);
+                            var (loadErrors, loadedToc) = LoadInputModelItems(
+                                context,
+                                includeTocFile,
+                                rootPath,
+                                monikerMap,
+                                resolveContent,
+                                resolveHref,
+                                parents,
+                                includeContent);
+
                             errors.AddRange(loadErrors);
 
                             return (default, GetFirstHref(loadedToc.Items), default);
@@ -235,7 +246,7 @@ namespace Microsoft.Docs.Build
                         return default;
 
                     case TocHrefType.TocFile:
-                        var (error, _, includeFile) = resolveContent(filePath, tocHref);
+                        var (error, content, includeFile) = resolveContent(filePath, tocHref);
                         errors.AddIfNotNull(error);
 
                         if (includeFile == null)
@@ -243,7 +254,16 @@ namespace Microsoft.Docs.Build
                             return default;
                         }
 
-                        var (subErrors, nestedToc) = LoadInputModelItems(context, includeFile, rootPath, monikerMap, resolveContent, resolveHref, parents);
+                        var (subErrors, nestedToc) = LoadInputModelItems(
+                            context,
+                            includeFile,
+                            rootPath,
+                            monikerMap,
+                            resolveContent,
+                            resolveHref,
+                            parents,
+                            content);
+
                         errors.AddRange(subErrors);
                         return (default, default, nestedToc);
 

@@ -105,6 +105,8 @@ namespace Microsoft.Docs.Build
             var (loadErrors, tocItems, tocMetadata) = TableOfContentsParser.Load(
                 context,
                 fileToBuild,
+                monikersProvider,
+                monikersMap,
                 (file, href) =>
                 {
                     var (error, referencedTocContent, referencedToc) = file.TryResolveContent(href, gitCommitProvider);
@@ -130,7 +132,7 @@ namespace Microsoft.Docs.Build
                         bookmarkValidator?.AddBookmarkReference(file, buildItem ?? file, fragment);
                     }
                     return (error, link, buildItem);
-                }, monikersProvider);
+                });
 
             errors.AddRange(loadErrors);
             return (errors, tocItems, tocMetadata, referencedDocuments, referencedTocs);
