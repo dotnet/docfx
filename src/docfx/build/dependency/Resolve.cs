@@ -84,17 +84,17 @@ namespace Microsoft.Docs.Build
         public static (List<Error> errors, string href, string fragment, Document file) TryResolveHref(this Document relativeTo, string href, Document resultRelativeTo, XrefMap xrefMap = null, DependencyMapBuilder dependencyMapBuilder = null)
         {
             Debug.Assert(resultRelativeTo != null);
-
             var errors = new List<Error>();
-            var (error, file, redirectTo, query, fragment, isSelfBookmark, _) = TryResolveFile(relativeTo, href);
-            errors.AddIfNotNull(error);
 
             if (href.StartsWith("xref:"))
             {
                 var (uidError, uidHref, _) = TryResolveXref(href.Substring("xref:".Length), xrefMap, dependencyMapBuilder, relativeTo);
                 errors.AddIfNotNull(uidError);
-                return (errors, uidHref, fragment, file);
+                return (errors, uidHref, null, null);
             }
+
+            var (error, file, redirectTo, query, fragment, isSelfBookmark, _) = TryResolveFile(relativeTo, href);
+            errors.AddIfNotNull(error);
 
             // Redirection
             // follow redirections
