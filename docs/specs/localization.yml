@@ -541,7 +541,7 @@ repos:
 outputs:
   docs/a.json:
   docs/b.json: |
-    {"content":"<p>link to <a href=\"/docs/a\">a</a>\nlink to <a href=\"/docs/c\">c</a></p>\n"}
+    {"content":"<p>link to <a href=\"a\">a</a>\nlink to <a href=\"c\">c</a></p>\n"}
   xrefmap.json: |
     {"references":[{"uid":"a","href":"/docs/a","name":"a"},{"uid":"c","href":"/docs/c","name":"c"}]}
 ---

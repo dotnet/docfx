@@ -28,54 +28,27 @@ namespace Microsoft.Docs.Build
                 {
                     if (TryGetValidXrefSpecs(uid, specsWithSameUid, out var validInternalSpecs, out var _))
                     {
-                        loadedInternalSpecs.Add(GetLatestInternalXrefmap(validInternalSpecs));
+                        loadedInternalSpecs.Add(GetLatestInternalXrefMap(validInternalSpecs));
                     }
                 }
                 return loadedInternalSpecs;
             }
         }
 
-        public (XrefSpec, Document) Resolve(string uid, string moniker = null)
+        public (XrefSpec, Document) Resolve(string uid, Document file, string moniker = null)
         {
             if (_internalXrefMap.TryGetValue(uid, out var internalSpecs))
             {
-                if (!TryGetValidXrefSpecs(uid, internalSpecs, out var validInternalSpecs, out var referencedFile))
+                var (internalSpec, referencedFile) = GetInternalSpec(uid, file, moniker, internalSpecs);
+                if (internalSpec is null)
                     return default;
 
-                if (!string.IsNullOrEmpty(moniker))
-                {
-                    foreach (var internalSpec in validInternalSpecs)
-                    {
-                        if (internalSpec.Monikers.Contains(moniker))
-                        {
-                            return (internalSpec, referencedFile);
-                        }
-                    }
-
-                    // if the moniker is not defined with the uid
-                    // log a warning and take the one with latest version
-                    _context.Report(Errors.InvalidUidMoniker(moniker, uid));
-                    return (GetLatestInternalXrefmap(validInternalSpecs), referencedFile);
-                }
-
-                // For uid with and without moniker range, take the one without moniker range
-                var uidWithoutMoniker = validInternalSpecs.SingleOrDefault(spec => spec.Monikers.Count == 0);
-                if (uidWithoutMoniker != null)
-                {
-                    return (uidWithoutMoniker, referencedFile);
-                }
-
-                // For uid with moniker range, take the latest moniker if no moniker defined while resolving
-                if (internalSpecs.Count > 1)
-                {
-                    var latestInternalXrefMap = GetLatestInternalXrefmap(validInternalSpecs);
-                    return (latestInternalXrefMap, referencedFile);
-                }
-                else
-                {
-                    var validInternalSpec = validInternalSpecs.Single();
-                    return (validInternalSpec, referencedFile);
-                }
+                var relativePath = PathUtility.GetRelativePathToFile(file.SiteUrl, internalSpec.Href);
+                var relativeUrl = HrefUtility.EscapeUrl(Document.PathToRelativeUrl(
+                    relativePath, file.ContentType, file.Schema, file.Docset.Config.Output.Json));
+                var spec = new XrefSpec { Uid = uid, Href = relativeUrl, Monikers = internalSpec.Monikers };
+                spec.ExtensionData.Merge(internalSpec.ExtensionData);
+                return (spec, referencedFile);
             }
 
             if (_externalXrefMap.TryGetValue(uid, out var externalSpec))
@@ -83,6 +56,47 @@ namespace Microsoft.Docs.Build
                 return (externalSpec, null);
             }
             return default;
+        }
+
+        private (XrefSpec, Document) GetInternalSpec(string uid, Document file, string moniker, List<Lazy<(List<Error>, XrefSpec, Document)>> internalSpecs)
+        {
+            if (!TryGetValidXrefSpecs(uid, internalSpecs, out var validInternalSpecs, out var referencedFile))
+                return default;
+
+            if (!string.IsNullOrEmpty(moniker))
+            {
+                foreach (var internalSpec in validInternalSpecs)
+                {
+                    if (internalSpec.Monikers.Contains(moniker))
+                    {
+                        return (internalSpec, referencedFile);
+                    }
+                }
+
+                // if the moniker is not defined with the uid
+                // log a warning and take the one with latest version
+                _context.Report(Errors.InvalidUidMoniker(moniker, uid));
+                return (GetLatestInternalXrefMap(validInternalSpecs), referencedFile);
+            }
+
+            // For uid with and without moniker range, take the one without moniker range
+            var uidWithoutMoniker = validInternalSpecs.SingleOrDefault(spec => spec.Monikers.Count == 0);
+            if (uidWithoutMoniker != null)
+            {
+                return (uidWithoutMoniker, referencedFile);
+            }
+
+            // For uid with moniker range, take the latest moniker if no moniker defined while resolving
+            if (internalSpecs.Count > 1)
+            {
+                var latestInternalXrefMap = GetLatestInternalXrefMap(validInternalSpecs);
+                return (latestInternalXrefMap, referencedFile);
+            }
+            else
+            {
+                var validInternalSpec = validInternalSpecs.Single();
+                return (validInternalSpec, referencedFile);
+            }
         }
 
         public static XrefMap Create(
@@ -120,7 +134,7 @@ namespace Microsoft.Docs.Build
             context.WriteJson(models, "xrefmap.json");
         }
 
-        private XrefSpec GetLatestInternalXrefmap(List<XrefSpec> specs)
+        private XrefSpec GetLatestInternalXrefMap(List<XrefSpec> specs)
             => specs.OrderByDescending(item => item.Monikers.FirstOrDefault(), _monikerComparer).FirstOrDefault();
 
         private bool TryGetValidXrefSpecs(string uid, List<Lazy<(List<Error> errors, XrefSpec spec, Document doc)>> specsWithSameUid, out List<XrefSpec> validSpecs, out Document file)
