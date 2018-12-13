@@ -16,4 +16,4 @@ Remove-Item ./drop -Force -Recurse -ErrorAction Ignore
 exec "dotnet run -p tools/CreateJsonSchema"
 exec "dotnet test test\docfx.Test"
 exec "dotnet test test\docfx.Test -c Release"
-exec "dotnet pack src\docfx -c Release -o $PSScriptRoot\drop /p:Version=$version /p:InformationalVersion=$version /p:PackAsTool=true"
+exec "dotnet pack src\docfx -c Release -o $PSScriptRoot\drop /p:Version=$version /p:InformationalVersion=$version"
