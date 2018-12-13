@@ -11,9 +11,9 @@ namespace Microsoft.Docs.Build
     internal static class RetryUtility
     {
         private const int RetryCount = 3;
-        private const int RetryInterval = 5000;
+        private const int RetryInterval = 1000;
 
-        public static async Task<T> Retry<T>(Func<Task<T>> action, IEnumerable<Type> exceptions = null)
+        public static async Task<T> Retry<T>(Func<Task<T>> action, Func<Exception, bool> isExpectedException = null)
         {
             var count = 0;
             while (true)
@@ -22,8 +22,7 @@ namespace Microsoft.Docs.Build
                 {
                     return await action();
                 }
-                catch (Exception ex)
-                when (exceptions == null || exceptions.Any(e => e.IsInstanceOfType(ex)))
+                catch (Exception ex) when (isExpectedException == null || isExpectedException(ex))
                 {
                     if (count++ < RetryCount - 1)
                     {

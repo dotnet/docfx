@@ -12,7 +12,6 @@ namespace Microsoft.Docs.Build
     internal static class HttpClientUtility
     {
         private static readonly HttpClient s_httpClient = new HttpClient();
-        private static readonly Type[] s_exceptionsToRetry = new[] { typeof(HttpRequestException), typeof(TimeoutException), typeof(OperationCanceledException) };
 
         public static async Task<HttpResponseMessage> GetAsync(string requestUri, Config config, EntityTagHeaderValue etag = null)
         {
@@ -29,24 +28,19 @@ namespace Microsoft.Docs.Build
                     }
                     return s_httpClient.SendAsync(message);
                 },
-                s_exceptionsToRetry);
+                IsExceptionsToRetry);
         }
 
-        public static async Task<HttpResponseMessage> PutAsync(string requestUri, HttpContent content, Config config, EntityTagHeaderValue etag = null)
+        public static Task<HttpResponseMessage> PutAsync(string requestUri, HttpContent content, Config config, EntityTagHeaderValue etag = null)
         {
-            return await RetryUtility.Retry(
-                () =>
-                {
-                    var message = CreateHttpRequestMessage(requestUri, config);
-                    message.Method = HttpMethod.Put;
-                    message.Content = content;
-                    if (etag != null)
-                    {
-                        message.Headers.IfMatch.Add(etag);
-                    }
-                    return s_httpClient.SendAsync(message);
-                },
-                s_exceptionsToRetry);
+            var message = CreateHttpRequestMessage(requestUri, config);
+            message.Method = HttpMethod.Put;
+            message.Content = content;
+            if (etag != null)
+            {
+                message.Headers.IfMatch.Add(etag);
+            }
+            return s_httpClient.SendAsync(message);
         }
 
         private static HttpRequestMessage CreateHttpRequestMessage(string requestUri, Config config)
@@ -69,6 +63,13 @@ namespace Microsoft.Docs.Build
 
             message.RequestUri = new Uri(requestUri);
             return message;
+        }
+
+        private static bool IsExceptionsToRetry(Exception ex)
+        {
+            return ex is HttpRequestException
+                || ex is TimeoutException
+                || ex is OperationCanceledException;
         }
     }
 }

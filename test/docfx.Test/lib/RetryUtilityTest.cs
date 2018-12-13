@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -12,12 +13,14 @@ namespace Microsoft.Docs.Build
         [InlineData(3, false, new[] { typeof(NullReferenceException) })]
         [InlineData(30, false, null)]
         [InlineData(30, false, new[] { typeof(InvalidOperationException) })]
-        public async Task RetryTest(int triesNeeded, bool succeed, Type[] exceptions)
+        public async Task RetryTest(int triesNeeded, bool succeed, Type[] catches)
         {
             var retry = new Retry(triesNeeded);
             try
             {
-                await RetryUtility.Retry(() => retry.Try(), exceptions);
+                await RetryUtility.Retry(
+                    () => retry.Try(),
+                    ex => catches == null ? true : catches.Any(e => e.IsInstanceOfType(ex)));
                 Assert.True(succeed);
             }
             catch (InvalidOperationException)

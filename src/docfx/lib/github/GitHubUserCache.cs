@@ -154,10 +154,18 @@ namespace Microsoft.Docs.Build
                 return null;
             }
 
-            return await SaveChangesCore(config, _etag);
+            var remainingRetries = 30;
+            var (error, response) = await SaveChangesCore(config, _etag);
+            while (error == null && remainingRetries-- > 0 && response.StatusCode == HttpStatusCode.PreconditionFailed)
+            {
+                var (restorePath, etag) = await RestoreFile.Restore(_url, config);
+                await ReadCacheFile(restorePath);
+                (error, response) = await SaveChangesCore(config, etag);
+            }
+            return error;
         }
 
-        public async Task<Error> SaveChangesCore(Config config, EntityTagHeaderValue etag)
+        public async Task<(Error, HttpResponseMessage)> SaveChangesCore(Config config, EntityTagHeaderValue etag)
         {
             string file;
             lock (_lock)
@@ -172,24 +180,15 @@ namespace Microsoft.Docs.Build
 
             if (!config.GitHub.UpdateRemoteUserCache || _url == null)
             {
-                return null;
+                return default;
             }
             try
             {
-                var response = await HttpClientUtility.PutAsync(_url, new StringContent(file), config, etag);
-                if (response.StatusCode != HttpStatusCode.PreconditionFailed)
-                {
-                    return null;
-                }
-
-                var (restorePath, newEtag) = await RestoreFile.Restore(_url, config);
-                Debug.Assert(etag != newEtag);
-                await ReadCacheFile(restorePath);
-                return await SaveChangesCore(config, etag);
+                return (null, await HttpClientUtility.PutAsync(_url, new StringContent(file), config, etag));
             }
             catch (HttpRequestException ex)
             {
-                return Errors.UploadFailed(_url, ex.Message);
+                return (Errors.UploadFailed(_url, ex.Message), null);
             }
         }
 

@@ -76,11 +76,11 @@ namespace Microsoft.Docs.Build
         /// Get ETag from restore file name
         /// </summary>
         /// <returns>ETag of the resource, null if server doesn't specify ETag</returns>
-        public static EntityTagHeaderValue GetEtag(string restoreFileName)
+        public static EntityTagHeaderValue GetEtag(string restorePath)
         {
-            Debug.Assert(!string.IsNullOrEmpty(restoreFileName));
+            Debug.Assert(!string.IsNullOrEmpty(restorePath));
 
-            var parts = restoreFileName.Split('+');
+            var parts = Path.GetFileName(restorePath).Split('+');
             return parts.Length == 2 ? new EntityTagHeaderValue(HrefUtility.UnescapeUrl(parts[1])) : null;
         }
 
