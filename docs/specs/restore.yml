@@ -3,12 +3,14 @@
 repos:
   https://docs.com/restore/a:
     - files:
-        docs/a.md: a
+        docs/a.md: a2
+    - files:
+        docs/a.md: a1
 inputs:
   docfx.yml: |
     dependencies:
       docfx-test-dependencies1: https://docs.com/restore/a
-      docfx-test-dependencies2: https://docs.com/restore/a
+      docfx-test-dependencies2: https://docs.com/restore/a#b6720c99618c1d080f48da04922fc9756e93818c
   docs/a.md: |
     [link to 1](~/docfx-test-dependencies1/docs/a.md)
     [!include[include to 2](~/docfx-test-dependencies2/docs/a.md)
@@ -16,7 +18,7 @@ outputs:
   build.log: |
     ["warning","link-is-dependency","File 'docs/a.md' referenced by link '~/docfx-test-dependencies1/docs/a.md' will not be built because it is from a dependency docset","docs/a.md"]
   docs/a.json: |
-    {"content":"<p><a href=\"%7E/docfx-test-dependencies1/docs/a.md\">link to 1</a></p>\n<p>a</p>\n"}
+    {"content":"<p><a href=\"%7E/docfx-test-dependencies1/docs/a.md\">link to 1</a></p>\n<p>a1</p>\n"}
 ---
 # Restore urls
 repos:
