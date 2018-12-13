@@ -32,8 +32,8 @@ namespace Microsoft.Docs.Build
             Debug.Assert(resultRelativeTo is Document);
 
             var self = (Document)relativeTo;
-            var (resolveErrors, link, fragment, child) = self.TryResolveHref(path, (Document)resultRelativeTo, xrefMap, dependencyMapBuilder);
-            errors.AddRange(resolveErrors);
+            var (error, link, fragment, child) = self.TryResolveHref(path, (Document)resultRelativeTo, xrefMap, dependencyMapBuilder);
+            errors.AddIfNotNull(error);
 
             if (child != null && buildChild != null)
             {
@@ -81,33 +81,30 @@ namespace Microsoft.Docs.Build
             return file != null ? (error, file.ReadText(), file) : default;
         }
 
-        public static (List<Error> errors, string href, string fragment, Document file) TryResolveHref(this Document relativeTo, string href, Document resultRelativeTo, XrefMap xrefMap = null, DependencyMapBuilder dependencyMapBuilder = null)
+        public static (Error error, string href, string fragment, Document file) TryResolveHref(this Document relativeTo, string href, Document resultRelativeTo, XrefMap xrefMap = null, DependencyMapBuilder dependencyMapBuilder = null)
         {
             Debug.Assert(resultRelativeTo != null);
-            var errors = new List<Error>();
 
             if (href.StartsWith("xref:"))
             {
                 var (uidError, uidHref, _) = TryResolveXref(href.Substring("xref:".Length), xrefMap, dependencyMapBuilder, relativeTo);
-                errors.AddIfNotNull(uidError);
-                return (errors, uidHref, null, null);
+                return (uidError, uidHref, null, null);
             }
 
             var (error, file, redirectTo, query, fragment, isSelfBookmark, _) = TryResolveFile(relativeTo, href);
-            errors.AddIfNotNull(error);
 
             // Redirection
             // follow redirections
             if (redirectTo != null && !relativeTo.Docset.Legacy)
             {
                 // TODO: append query and fragment to an absolute url with query and fragments may cause problems
-                return (errors, redirectTo + query + fragment, null, null);
+                return (error, redirectTo + query + fragment, null, null);
             }
 
             // Cannot resolve the file, leave href as is
             if (file == null)
             {
-                return (errors, href, fragment, null);
+                return (error, href, fragment, null);
             }
 
             // Self reference, don't build the file, leave href as is
@@ -117,24 +114,23 @@ namespace Microsoft.Docs.Build
                 {
                     if (isSelfBookmark)
                     {
-                        return (errors, query + fragment, fragment, null);
+                        return (error, query + fragment, fragment, null);
                     }
                     var selfUrl = HrefUtility.EscapeUrl(Document.PathToRelativeUrl(
                         Path.GetFileName(file.SitePath), file.ContentType, file.Schema, file.Docset.Config.Output.Json));
-                    return (errors, selfUrl + query + fragment, fragment, null);
+                    return (error, selfUrl + query + fragment, fragment, null);
                 }
                 if (string.IsNullOrEmpty(fragment))
                 {
                     fragment = "#";
                 }
-                return (errors, query + fragment, fragment, null);
+                return (error, query + fragment, fragment, null);
             }
 
             // Link to dependent repo, don't build the file, leave href as is
             if (relativeTo.Docset.DependencyDocsets.Values.Any(v => file.Docset == v))
             {
-                errors.Add(Errors.LinkIsDependency(relativeTo, file, href));
-                return (errors, href, fragment, null);
+                return (Errors.LinkIsDependency(relativeTo, file, href), href, fragment, null);
             }
 
             // Make result relative to `resultRelativeTo`
@@ -144,7 +140,7 @@ namespace Microsoft.Docs.Build
 
             if (redirectTo != null)
             {
-                return (errors, relativeUrl + query + fragment, fragment, null);
+                return (error, relativeUrl + query + fragment, fragment, null);
             }
 
             // Pages outside build scope, don't build the file, use relative href
@@ -152,11 +148,10 @@ namespace Microsoft.Docs.Build
                 && (file.ContentType == ContentType.Page || file.ContentType == ContentType.TableOfContents)
                 && !file.Docset.BuildScope.Contains(file))
             {
-                errors.Add(Errors.LinkOutOfScope(relativeTo, file, href, file.Docset.Config.ConfigFileName));
-                return (errors, relativeUrl + query + fragment, fragment, null);
+                return (Errors.LinkOutOfScope(relativeTo, file, href, file.Docset.Config.ConfigFileName), relativeUrl + query + fragment, fragment, null);
             }
 
-            return (errors, relativeUrl + query + fragment, fragment, file);
+            return (error, relativeUrl + query + fragment, fragment, file);
         }
 
         public static (Error error, string href, string display) TryResolveXref(string href, XrefMap xrefMap, DependencyMapBuilder dependencyMapBuilder, Document file)

@@ -123,8 +123,8 @@ namespace Microsoft.Docs.Build
                 {
                     // add to referenced document list
                     // only resolve href, no need to build
-                    var (resolveErrors, link, fragment, buildItem) = file.TryResolveHref(href, resultRelativeTo, xrefMap, dependencyMapBuilder);
-                    errors.AddRange(resolveErrors);
+                    var (error, link, fragment, buildItem) = file.TryResolveHref(href, resultRelativeTo, xrefMap, dependencyMapBuilder);
+                    errors.AddIfNotNull(error);
 
                     var itemMonikers = new List<string>();
                     if (buildItem != null)
