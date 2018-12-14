@@ -155,8 +155,8 @@ namespace Microsoft.Docs.Build
             }
 
             var remainingRetries = 3;
-            var (error, response) = await SaveChangesCore(config, _etag);
-            while (error == null && remainingRetries-- > 0 && response.StatusCode == HttpStatusCode.PreconditionFailed)
+            var (error, response, collide) = await SaveChangesCore(config, _etag);
+            while (collide && remainingRetries-- > 0)
             {
                 try
                 {
@@ -168,12 +168,12 @@ namespace Microsoft.Docs.Build
                 }
                 var content = await response.EnsureSuccessStatusCode().Content.ReadAsStringAsync();
                 ReadCache(content);
-                (error, response) = await SaveChangesCore(config, response.Headers.ETag);
+                (error, response, collide) = await SaveChangesCore(config, response.Headers.ETag);
             }
             return error;
         }
 
-        public async Task<(Error, HttpResponseMessage)> SaveChangesCore(Config config, EntityTagHeaderValue etag)
+        public async Task<(Error error, HttpResponseMessage response, bool collide)> SaveChangesCore(Config config, EntityTagHeaderValue etag)
         {
             string file;
             lock (_lock)
@@ -190,18 +190,27 @@ namespace Microsoft.Docs.Build
             {
                 return default;
             }
+            HttpResponseMessage response = null;
             try
             {
-                var response = await HttpClientUtility.PutAsync(_url, new StringContent(file), config, etag);
-                var error = response.IsSuccessStatusCode || response.StatusCode == HttpStatusCode.PreconditionFailed
-                   ? null :
-                   Errors.UploadFailed(_url, response.ReasonPhrase);
-                return (error, response);
+                 response = await HttpClientUtility.PutAsync(_url, new StringContent(file), config, etag);
             }
             catch (HttpRequestException ex)
             {
-                return (Errors.UploadFailed(_url, ex.Message), null);
+                return (Errors.UploadFailed(_url, ex.Message), null, false);
             }
+            if (!response.IsSuccessStatusCode)
+            {
+                if (response.StatusCode == HttpStatusCode.PreconditionFailed)
+                {
+                    return (null, response, true);
+                }
+                else
+                {
+                    return (Errors.UploadFailed(_url, response.ReasonPhrase), response, false);
+                }
+            }
+            return (null, response, false);
         }
 
         private GitHubUser TryGetByLogin(string login)
