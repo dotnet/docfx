@@ -52,7 +52,10 @@ namespace Microsoft.Docs.Build
                 return default;
 
             var (xrefSpec, referencedFile) = xrefMap.Resolve(uid, moniker);
-            dependencyMapBuilder.AddDependencyItem(file, referencedFile, DependencyType.UidInclusion);
+            if (xrefSpec != null)
+            {
+                dependencyMapBuilder.AddDependencyItem(file, referencedFile, DependencyType.UidInclusion);
+            }
 
             return (xrefSpec, referencedFile);
         }
@@ -88,7 +91,7 @@ namespace Microsoft.Docs.Build
 
             if (href.StartsWith("xref:"))
             {
-                var (uidError, uidHref, _) = TryResolveXref(href.Substring("xref:".Length), xrefMap, dependencyMapBuilder, relativeTo);
+                var (uidError, uidHref, _) = TryResolveXref(href.Substring("xref:".Length), xrefMap, dependencyMapBuilder, resultRelativeTo);
                 return (uidError, uidHref, null, null);
             }
 
@@ -135,9 +138,7 @@ namespace Microsoft.Docs.Build
             }
 
             // Make result relative to `resultRelativeTo`
-            var relativePath = PathUtility.GetRelativePathToFile(resultRelativeTo.SitePath, file.SitePath);
-            var relativeUrl = HrefUtility.EscapeUrl(Document.PathToRelativeUrl(
-                relativePath, file.ContentType, file.Schema, file.Docset.Config.Output.Json));
+            var relativeUrl = GetRelativeUrl(resultRelativeTo, file);
 
             if (redirectTo != null)
             {
@@ -183,8 +184,18 @@ namespace Microsoft.Docs.Build
             string display = !string.IsNullOrEmpty(displayPropertyValue) ? displayPropertyValue : (!string.IsNullOrEmpty(name) ? name : uid);
             var monikerQuery = !string.IsNullOrEmpty(moniker) ? $"view={moniker}" : "";
 
-            href = HrefUtility.MergeHref(referencedFile != null ? XrefMap.GetRelativeUrlForXrefReference(referencedFile, file) : xrefSpec.Href, monikerQuery, fragment.Length == 0 ? "" : fragment.Substring(1));
+            href = HrefUtility.MergeHref(referencedFile != null ? GetRelativeUrl(file, referencedFile) : xrefSpec.Href, monikerQuery, fragment.Length == 0 ? "" : fragment.Substring(1));
             return (null, href, display);
+        }
+
+        /// <summary>
+        /// Get relative url from file to the file relative to
+        /// </summary>
+        public static string GetRelativeUrl(Document fileRelativeTo, Document file)
+        {
+            var relativePath = PathUtility.GetRelativePathToFile(fileRelativeTo.SitePath, file.SitePath);
+            return HrefUtility.EscapeUrl(Document.PathToRelativeUrl(
+                relativePath, file.ContentType, file.Schema, file.Docset.Config.Output.Json));
         }
 
         private static (Error error, Document file, string redirectTo, string query, string fragment, bool isSelfBookmark, string pathToDocset) TryResolveFile(this Document relativeTo, string href)

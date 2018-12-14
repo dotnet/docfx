@@ -1076,6 +1076,6 @@ outputs:
   docs/toc.json: |
     {
       "items": [
-        { "toc_title":"Title","href":"a.json#bookmark","monikers":[] }
+        { "toc_title":"Title","href":"a#bookmark","monikers":[] }
       ]
     }

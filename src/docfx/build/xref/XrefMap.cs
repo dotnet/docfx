@@ -49,13 +49,6 @@ namespace Microsoft.Docs.Build
             return default;
         }
 
-        public static string GetRelativeUrlForXrefReference(Document referencedFile, Document fileRelativeTo)
-        {
-            var relativePath = PathUtility.GetRelativePathToFile(fileRelativeTo.SitePath, referencedFile.SitePath);
-            return HrefUtility.EscapeUrl(Document.PathToRelativeUrl(
-                relativePath, fileRelativeTo.ContentType, fileRelativeTo.Schema, fileRelativeTo.Docset.Config.Output.Json));
-        }
-
         private (XrefSpec internalSpec, Document referencedFile) GetInternalSpec(string uid, string moniker, List<Lazy<(List<Error>, XrefSpec, Document)>> internalSpecs)
         {
             if (!TryGetValidXrefSpecs(uid, internalSpecs, out var validInternalSpecs))

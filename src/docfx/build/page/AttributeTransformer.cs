@@ -54,7 +54,7 @@ namespace Microsoft.Docs.Build
                     var (spec, referencedFile) = Resolve.ResolveXref((string)value, callback?.XrefMap, file, callback?.DependencyMapBuilder);
                     if (referencedFile != null && spec != null)
                     {
-                        result = XrefMap.GetRelativeUrlForXrefReference(referencedFile, file);
+                        result = Resolve.GetRelativeUrl(file, referencedFile);
                     }
                     else
                     {
