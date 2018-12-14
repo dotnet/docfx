@@ -320,7 +320,7 @@ inputs:
 outputs:
   docs/a.json:
   docs/b.json: |
-    { "content": "<p>Link to <a href=\"/docs/a\">Title from yaml header a</a>\nLink to <a href=\"/docs/a\">Title from yaml header a</a>\nLink to <a href=\"/docs/a\">Title from yaml header a</a>\nLink to <a href=\"/docs/a\">Title from yaml header a</a>\nLink to <a href=\"/docs/a\">Title from yaml header a</a></p>" }
+    { "content": "<p>Link to <a href=\"a\">Title from yaml header a</a>\nLink to <a href=\"a\">Title from yaml header a</a>\nLink to <a href=\"a\">Title from yaml header a</a>\nLink to <a href=\"a\">Title from yaml header a</a>\nLink to <a href=\"a\">Title from yaml header a</a></p>" }
 ---
 # Refer to uid within link
 inputs:
@@ -336,7 +336,7 @@ inputs:
 outputs:
   docs/a.json:
   docs/b.json: |
-    { "content": "<p>Link to <a href=\"/docs/a#bookmark\">title</a></p>" }
+    { "content": "<p>Link to <a href=\"a#bookmark\">title</a></p>" }
 ---
 # Refer to uid within link, uid not found
 inputs:
