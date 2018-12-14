@@ -40,7 +40,7 @@ namespace Microsoft.Docs.Build
                 var tocMap = BuildTableOfContents.BuildTocMap(context, docset, monikersProvider, dependencyResolver);
 
                 var githubUserCache = await GitHubUserCache.Create(docset, config.GitHub.AuthToken);
-                var (manifest, fileManifests, sourceDependencies) = await BuildFiles(context, docset, tocMap, xrefMap, githubUserCache, metadataProvider, monikersProvider, dependencyResolver, gitCommitProvider);
+                var (manifest, fileManifests, sourceDependencies) = await BuildFiles(context, docset, tocMap, githubUserCache, metadataProvider, monikersProvider, dependencyResolver, gitCommitProvider);
 
                 context.WriteJson(manifest, "build.manifest");
                 var saveGitHubUserCache = githubUserCache.SaveChanges(config);
@@ -68,7 +68,6 @@ namespace Microsoft.Docs.Build
             Context context,
             Docset docset,
             TableOfContentsMap tocMap,
-            XrefMap xrefMap,
             GitHubUserCache githubUserCache,
             MetadataProvider metadataProvider,
             MonikersProvider monikersProvider,
