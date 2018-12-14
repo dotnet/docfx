@@ -62,6 +62,7 @@ namespace Microsoft.Docs.Build
             _getUserByLoginFromGitHub = github.GetUserByLogin;
             _getLoginByCommitFromGitHub = github.GetLoginByCommit;
             _expirationInHours = docset.Config.GitHub.UserCacheExpirationInHours;
+
             var path = docset.Config.GitHub.UserCache;
             if (string.IsNullOrEmpty(path))
             {
@@ -155,9 +156,10 @@ namespace Microsoft.Docs.Build
             }
 
             var remainingRetries = 3;
-            var (error, response, collide) = await SaveChangesCore(config, _etag);
+            var (error, collide) = await SaveChangesCore(config, _etag);
             while (collide && remainingRetries-- > 0)
             {
+                HttpResponseMessage response;
                 try
                 {
                     response = await HttpClientUtility.GetAsync(_url, config);
@@ -168,12 +170,12 @@ namespace Microsoft.Docs.Build
                 }
                 var content = await response.EnsureSuccessStatusCode().Content.ReadAsStringAsync();
                 ReadCache(content);
-                (error, response, collide) = await SaveChangesCore(config, response.Headers.ETag);
+                (error, collide) = await SaveChangesCore(config, response.Headers.ETag);
             }
             return error;
         }
 
-        public async Task<(Error error, HttpResponseMessage response, bool collide)> SaveChangesCore(Config config, EntityTagHeaderValue etag)
+        public async Task<(Error error, bool collide)> SaveChangesCore(Config config, EntityTagHeaderValue etag)
         {
             string file;
             lock (_lock)
@@ -183,34 +185,43 @@ namespace Microsoft.Docs.Build
                     Users = Users.ToArray(),
                 });
             }
-            PathUtility.CreateDirectoryFromFilePath(_cachePath);
-            await ProcessUtility.WriteFile(_cachePath, file);
 
-            if (!config.GitHub.UpdateRemoteUserCache || _url == null)
+            await SaveLocal(file);
+            if (config.GitHub.UpdateRemoteUserCache && _url != null)
             {
-                return default;
+                return await SaveRemote(file);
             }
-            HttpResponseMessage response = null;
-            try
+            return default;
+
+            async Task SaveLocal(string content)
             {
-                 response = await HttpClientUtility.PutAsync(_url, new StringContent(file), config, etag);
+                PathUtility.CreateDirectoryFromFilePath(_cachePath);
+                await ProcessUtility.WriteFile(_cachePath, content);
             }
-            catch (HttpRequestException ex)
+
+            async Task<(Error error, bool collide)> SaveRemote(string content)
             {
-                return (Errors.UploadFailed(_url, ex.Message), null, false);
-            }
-            if (!response.IsSuccessStatusCode)
-            {
-                if (response.StatusCode == HttpStatusCode.PreconditionFailed)
+                try
                 {
-                    return (null, response, true);
+                    var response = await HttpClientUtility.PutAsync(_url, new StringContent(file), config, etag);
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        return (null, false);
+                    }
+                    if (response.StatusCode == HttpStatusCode.PreconditionFailed)
+                    {
+                        return (null, true);
+                    }
+                    else
+                    {
+                        return (Errors.UploadFailed(_url, response.ReasonPhrase), false);
+                    }
                 }
-                else
+                catch (Exception ex)
                 {
-                    return (Errors.UploadFailed(_url, response.ReasonPhrase), response, false);
+                    return (Errors.UploadFailed(_url, ex.Message), false);
                 }
             }
-            return (null, response, false);
         }
 
         private GitHubUser TryGetByLogin(string login)
