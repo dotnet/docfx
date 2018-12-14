@@ -204,7 +204,7 @@ namespace Microsoft.Docs.Build
                 try
                 {
                     var response = await HttpClientUtility.PutAsync(_url, new StringContent(file), config, etag);
-                    if (!response.IsSuccessStatusCode)
+                    if (response.IsSuccessStatusCode)
                     {
                         return (null, false);
                     }
