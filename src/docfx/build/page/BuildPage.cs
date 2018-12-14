@@ -110,8 +110,8 @@ namespace Microsoft.Docs.Build
                 content,
                 file,
                 (path, relativeTo) => Resolve.ReadFile(path, relativeTo, errors, callback.DependencyMapBuilder, gitCommitProvider),
-                (path, relativeTo, resultRelativeTo) => Resolve.GetLink(path, relativeTo, resultRelativeTo, errors, callback.BuildChild, callback.DependencyMapBuilder, callback.BookmarkValidator),
-                (uid, moniker) => Resolve.ResolveXref(uid, callback.XrefMap, file, callback?.DependencyMapBuilder, moniker),
+                (path, relativeTo, resultRelativeTo) => Resolve.GetLink(path, relativeTo, resultRelativeTo, errors, callback.BuildChild, callback.DependencyMapBuilder, callback.BookmarkValidator, callback.XrefMap),
+                href => Resolve.TryResolveXref(href, callback.XrefMap, callback.DependencyMapBuilder, file),
                 (rangeString) => monikersProvider.GetZoneMonikers(rangeString, monikers, errors),
                 MarkdownPipelineType.ConceptualMarkdown);
             errors.AddRange(markup.Errors);

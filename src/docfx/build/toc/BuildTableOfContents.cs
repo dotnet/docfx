@@ -18,6 +18,7 @@ namespace Microsoft.Docs.Build
             GitCommitProvider gitCommitProvider,
             MetadataProvider metadataProvider,
             MonikersProvider monikersProvider,
+            XrefMap xrefMap,
             DependencyMapBuilder dependencyMapBuilder,
             BookmarkValidator bookmarkValidator,
             Dictionary<Document, List<string>> monikersMap)
@@ -30,7 +31,7 @@ namespace Microsoft.Docs.Build
                 return (Enumerable.Empty<Error>(), null, new List<string>());
             }
 
-            var (errors, tocModel, tocMetadata, refArticles, refTocs) = Load(context, file, monikersProvider, gitCommitProvider, dependencyMapBuilder, bookmarkValidator, monikersMap);
+            var (errors, tocModel, tocMetadata, refArticles, refTocs) = Load(context, file, monikersProvider, xrefMap, dependencyMapBuilder, gitCommitProvider, bookmarkValidator, monikersMap);
 
             var metadata = metadataProvider.GetMetadata(file, tocMetadata).ToObject<TableOfContentsMetadata>();
 
@@ -93,8 +94,9 @@ namespace Microsoft.Docs.Build
             Context context,
             Document fileToBuild,
             MonikersProvider monikersProvider,
-            GitCommitProvider gitCommitProvider = null,
+            XrefMap xrefMap = null,
             DependencyMapBuilder dependencyMapBuilder = null,
+            GitCommitProvider gitCommitProvider = null,
             BookmarkValidator bookmarkValidator = null,
             Dictionary<Document, List<string>> monikersMap = null)
         {
@@ -121,7 +123,7 @@ namespace Microsoft.Docs.Build
                 {
                     // add to referenced document list
                     // only resolve href, no need to build
-                    var (error, link, fragment, buildItem) = file.TryResolveHref(href, resultRelativeTo);
+                    var (error, link, fragment, buildItem) = file.TryResolveHref(href, resultRelativeTo, xrefMap, dependencyMapBuilder);
                     errors.AddIfNotNull(error);
 
                     var itemMonikers = new List<string>();

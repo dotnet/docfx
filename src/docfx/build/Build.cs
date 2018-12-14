@@ -158,7 +158,7 @@ namespace Microsoft.Docs.Build
                         break;
                     case ContentType.TableOfContents:
                         // TODO: improve error message for toc monikers overlap
-                        (errors, model, monikers) = BuildTableOfContents.Build(context, file, tocMap, gitCommitProvider, metadataProvider, monikersProvider, callback.DependencyMapBuilder, callback.BookmarkValidator, monikersMap);
+                        (errors, model, monikers) = BuildTableOfContents.Build(context, file, tocMap, gitCommitProvider, metadataProvider, monikersProvider, callback.XrefMap, callback.DependencyMapBuilder, callback.BookmarkValidator, monikersMap);
                         break;
                     case ContentType.Redirection:
                         (errors, model, monikers) = BuildRedirection.Build(file, metadataProvider, monikersProvider);
