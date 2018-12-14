@@ -46,14 +46,15 @@ namespace Microsoft.Docs.Build
             return link;
         }
 
-        public static XrefSpec ResolveXref(string uid, XrefMap xrefMap, Document file, DependencyMapBuilder dependencyMapBuilder, string moniker = null)
+        public static (XrefSpec spec, Document referencedFile) ResolveXref(string uid, XrefMap xrefMap, Document file, DependencyMapBuilder dependencyMapBuilder, string moniker = null)
         {
             if (xrefMap is null)
-                return null;
+                return default;
 
-            var (xrefSpec, doc) = xrefMap.Resolve(uid, file, moniker);
-            dependencyMapBuilder.AddDependencyItem(file, doc, DependencyType.UidInclusion);
-            return xrefSpec;
+            var (xrefSpec, referencedFile) = xrefMap.Resolve(uid, moniker);
+            dependencyMapBuilder.AddDependencyItem(file, referencedFile, DependencyType.UidInclusion);
+
+            return (xrefSpec, referencedFile);
         }
 
         public static (Error error, string content, Document file) TryResolveContent(this Document relativeTo, string href, GitCommitProvider gitCommitProvider)
@@ -169,7 +170,7 @@ namespace Microsoft.Docs.Build
             }
 
             // need to url decode uid from input content
-            var xrefSpec = ResolveXref(HttpUtility.UrlDecode(uid), xrefMap, file, dependencyMapBuilder, moniker);
+            var (xrefSpec, referencedFile) = ResolveXref(HttpUtility.UrlDecode(uid), xrefMap, file, dependencyMapBuilder, moniker);
             if (xrefSpec is null)
             {
                 return (Errors.UidNotFound(file, uid, href), null, null);
@@ -181,7 +182,8 @@ namespace Microsoft.Docs.Build
             var displayPropertyValue = xrefSpec.GetXrefPropertyValue(queries?["displayProperty"]);
             string display = !string.IsNullOrEmpty(displayPropertyValue) ? displayPropertyValue : (!string.IsNullOrEmpty(name) ? name : uid);
             var monikerQuery = !string.IsNullOrEmpty(moniker) ? $"view={moniker}" : "";
-            href = HrefUtility.MergeHref(xrefSpec.Href, monikerQuery, fragment.Length == 0 ? "" : fragment.Substring(1));
+
+            href = HrefUtility.MergeHref(referencedFile != null ? XrefMap.GetRelativeUrlForXrefReference(referencedFile, file) : xrefSpec.Href, monikerQuery, fragment.Length == 0 ? "" : fragment.Substring(1));
             return (null, href, display);
         }
 

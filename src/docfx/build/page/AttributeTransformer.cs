@@ -51,7 +51,15 @@ namespace Microsoft.Docs.Build
                 if (attribute is XrefAttribute)
                 {
                     // TODO: how to fill xref resolving data besides href
-                    result = Resolve.ResolveXref((string)value, callback?.XrefMap, file, callback?.DependencyMapBuilder)?.Href;
+                    var (spec, referencedFile) = Resolve.ResolveXref((string)value, callback?.XrefMap, file, callback?.DependencyMapBuilder);
+                    if (referencedFile != null && spec != null)
+                    {
+                        result = XrefMap.GetRelativeUrlForXrefReference(referencedFile, file);
+                    }
+                    else
+                    {
+                        result = spec?.Href;
+                    }
                 }
 
                 if (extensionData != null && attributes.Any(attr => attr is XrefPropertyAttribute))

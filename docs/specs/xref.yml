@@ -354,3 +354,20 @@ outputs:
     { "content": "<p>Link to <a href=\"xref:c#bookmark\">title</a></p>" }
   build.log: |
     ["warning","uid-not-found","Cannot find uid 'c' using xref 'c#bookmark'","docs/b.md"]
+---
+# Markdown inclusion with xref reference
+inputs:
+  docfx.yml:
+  docs/a.md: a [!INCLUDE[](1/b.md)]
+  docs/1/b.md: Link to @c
+  docs/c.md: |
+    ---
+    title: Title from yaml header c
+    uid: c
+    ---
+outputs:
+  docs/a.json: |
+    { "content": "<p>a Link to <a href=\"c\">Title from yaml header c</a></p>" }
+  docs/1/b.json: |
+    { "content": "<p>Link to <a href=\"../c\">Title from yaml header c</a></p>" }
+  docs/c.json:
