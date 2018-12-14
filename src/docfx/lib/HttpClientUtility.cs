@@ -28,7 +28,14 @@ namespace Microsoft.Docs.Build
                     }
                     return s_httpClient.SendAsync(message);
                 },
-                IsExceptionsToRetry);
+                NeedRetry);
+
+            bool NeedRetry(Exception ex)
+            {
+                return ex is HttpRequestException
+                    || ex is TimeoutException
+                    || ex is OperationCanceledException;
+            }
         }
 
         public static Task<HttpResponseMessage> PutAsync(string requestUri, HttpContent content, Config config, EntityTagHeaderValue etag = null)
@@ -63,13 +70,6 @@ namespace Microsoft.Docs.Build
 
             message.RequestUri = new Uri(requestUri);
             return message;
-        }
-
-        private static bool IsExceptionsToRetry(Exception ex)
-        {
-            return ex is HttpRequestException
-                || ex is TimeoutException
-                || ex is OperationCanceledException;
         }
     }
 }

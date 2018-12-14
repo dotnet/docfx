@@ -154,7 +154,7 @@ namespace Microsoft.Docs.Build
                 return null;
             }
 
-            var remainingRetries = 30;
+            var remainingRetries = 3;
             var (error, response) = await SaveChangesCore(config, _etag);
             while (error == null && remainingRetries-- > 0 && response.StatusCode == HttpStatusCode.PreconditionFailed)
             {
@@ -162,7 +162,7 @@ namespace Microsoft.Docs.Build
                 {
                     response = await HttpClientUtility.GetAsync(_url, config);
                 }
-                catch (HttpRequestException ex)
+                catch (Exception ex)
                 {
                     throw Errors.DownloadFailed(_url, ex.Message).ToException(ex);
                 }

@@ -107,7 +107,7 @@ namespace Microsoft.Docs.Build
                     await stream.CopyToAsync(file);
                 }
             }
-            catch (HttpRequestException ex)
+            catch (Exception ex)
             {
                 throw Errors.DownloadFailed(url, ex.Message).ToException(ex);
             }
