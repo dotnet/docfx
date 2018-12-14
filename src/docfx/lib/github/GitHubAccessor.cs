@@ -35,7 +35,7 @@ namespace Microsoft.Docs.Build
             {
                 var user = await RetryUtility.Retry(
                     () => _client.User.Get(login),
-                    new[] { typeof(OperationCanceledException) });
+                    ex => ex is OperationCanceledException);
 
                 return (null, new GitHubUser
                 {
@@ -77,7 +77,7 @@ namespace Microsoft.Docs.Build
             {
                 var commit = await RetryUtility.Retry(
                     () => _client.Repository.Commit.Get(repoOwner, repoName, commitSha),
-                    new[] { typeof(OperationCanceledException) });
+                    ex => ex is OperationCanceledException);
                 return (null, commit.Author?.Login);
             }
             catch (NotFoundException)
