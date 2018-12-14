@@ -154,7 +154,7 @@ namespace Microsoft.DocAsCode.Common
             {
                 if (i >= leftParts.Length - 1)
                     break;
-                if (!FilePathComparer.OSPlatformSensitiveComparer.Equals(leftParts[i], rightParts[i]))
+                if (!FilePathComparer.OSPlatformSensitiveRelativePathComparer.Equals(leftParts[i], rightParts[i]))
                     break;
                 commonCount++;
             }
