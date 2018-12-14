@@ -3,6 +3,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -52,7 +53,7 @@ dependencies:
             var workTreeList = await GitUtility.ListWorkTree(restorePath);
             Assert.Equal(6, workTreeList.Count);
 
-            foreach(var wirkTreeFolder in workTreeList.Where(w => w.Contains("-clean-")))
+            foreach (var wirkTreeFolder in workTreeList.Where(w => w.Contains("-clean-")))
             {
                 Directory.SetLastWriteTimeUtc(wirkTreeFolder, DateTime.UtcNow - TimeSpan.FromDays(20));
             }
@@ -104,7 +105,7 @@ github:
         [InlineData("abc123", null, "abc123")]
         public static void GetRestoreFileName(string hash, string etag, string expected)
         {
-            Assert.Equal(expected, RestoreFile.GetRestoreFileName(hash, etag));
+            Assert.Equal(expected, RestoreFile.GetRestoreFileName(hash, etag == null ? null : new EntityTagHeaderValue(etag)));
         }
 
         [Theory]
@@ -112,7 +113,7 @@ github:
         [InlineData("abc123", null)]
         public static void GetEtag(string restoreFileName, string expected)
         {
-            Assert.Equal(expected, RestoreFile.GetEtag(restoreFileName));
+            Assert.Equal(expected == null ? null : new EntityTagHeaderValue(expected), RestoreFile.GetEtag(restoreFileName));
         }
     }
 }

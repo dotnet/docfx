@@ -7,7 +7,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -39,6 +41,7 @@ namespace Microsoft.Docs.Build
 
         private readonly string _url = null;
         private readonly string _restorePath = null;
+        private readonly EntityTagHeaderValue _etag = null;
         private readonly string _cachePath;
         private readonly double _expirationInHours;
         private bool _updated = false;
@@ -70,6 +73,7 @@ namespace Microsoft.Docs.Build
             {
                 _url = path;
                 _restorePath = restorePath;
+                _etag = RestoreFile.GetEtag(restorePath);
                 _cachePath = AppData.GetGitHubUserCachePath(path);
             }
             else
@@ -81,7 +85,7 @@ namespace Microsoft.Docs.Build
         public static async Task<GitHubUserCache> Create(Docset docset, string token)
         {
             var result = new GitHubUserCache(docset, token);
-            await result.ReadCacheFile();
+            await result.ReadCacheFiles();
             return result;
         }
 
@@ -150,6 +154,27 @@ namespace Microsoft.Docs.Build
                 return null;
             }
 
+            var remainingRetries = 3;
+            var (error, response) = await SaveChangesCore(config, _etag);
+            while (error == null && remainingRetries-- > 0 && response.StatusCode == HttpStatusCode.PreconditionFailed)
+            {
+                try
+                {
+                    response = await HttpClientUtility.GetAsync(_url, config);
+                }
+                catch (Exception ex)
+                {
+                    throw Errors.DownloadFailed(_url, ex.Message).ToException(ex);
+                }
+                var content = await response.EnsureSuccessStatusCode().Content.ReadAsStringAsync();
+                ReadCache(content);
+                (error, response) = await SaveChangesCore(config, response.Headers.ETag);
+            }
+            return error;
+        }
+
+        public async Task<(Error, HttpResponseMessage)> SaveChangesCore(Config config, EntityTagHeaderValue etag)
+        {
             string file;
             lock (_lock)
             {
@@ -163,17 +188,19 @@ namespace Microsoft.Docs.Build
 
             if (!config.GitHub.UpdateRemoteUserCache || _url == null)
             {
-                return null;
+                return default;
             }
             try
             {
-                // TOOD: aware of ETag to handle conflicts
-                await HttpClientUtility.PutAsync(_url, new StringContent(file), config);
-                return null;
+                var response = await HttpClientUtility.PutAsync(_url, new StringContent(file), config, etag);
+                var error = response.IsSuccessStatusCode || response.StatusCode == HttpStatusCode.PreconditionFailed
+                   ? null :
+                   Errors.UploadFailed(_url, response.ReasonPhrase);
+                return (error, response);
             }
             catch (HttpRequestException ex)
             {
-                return Errors.UploadFailed(_url, ex.Message);
+                return (Errors.UploadFailed(_url, ex.Message), null);
             }
         }
 
@@ -250,24 +277,29 @@ namespace Microsoft.Docs.Build
         private DateTime NextExpiry()
             => DateTime.UtcNow.AddHours((_expirationInHours / 2) + (t_random.Value.NextDouble() * _expirationInHours));
 
-        private async Task ReadCacheFile()
+        private async Task ReadCacheFiles()
         {
-            await Read(_cachePath);
-            await Read(_restorePath);
+            await ReadCacheFile(_cachePath);
+            await ReadCacheFile(_restorePath);
 
-            async Task Read(string path)
+            async Task ReadCacheFile(string path)
             {
                 if (path != null && File.Exists(path))
                 {
                     var content = await ProcessUtility.ReadFile(path);
-                    var users = JsonUtility.Deserialize<GitHubUserCacheFile>(content).Users;
-                    if (users != null)
-                    {
-                        lock (_lock)
-                        {
-                            UnsafeUpdateUsers(users);
-                        }
-                    }
+                    ReadCache(content);
+                }
+            }
+        }
+
+        private void ReadCache(string content)
+        {
+            var users = JsonUtility.Deserialize<GitHubUserCacheFile>(content).Users;
+            if (users != null)
+            {
+                lock (_lock)
+                {
+                    UnsafeUpdateUsers(users);
                 }
             }
         }
