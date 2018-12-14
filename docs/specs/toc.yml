@@ -1060,3 +1060,22 @@ outputs:
     }
   build.log: |
     ["warning","bookmark-not-found","Cannot find bookmark '#title-2' in 'docs/a.md', did you mean '#title-1'?","docs/TOC.md"]
+---
+# reference uid within link
+inputs:
+  docfx.yml:
+  docs/a.md: |
+    ---
+    title: Title from yaml header a
+    uid: a
+    ---
+  docs/TOC.md: |
+    # [Title](xref:a#bookmark)
+outputs:
+  docs/a.json:
+  docs/toc.json: |
+    {
+      "items": [
+        { "toc_title":"Title","href":"/docs/a#bookmark","monikers":[] }
+      ]
+    }

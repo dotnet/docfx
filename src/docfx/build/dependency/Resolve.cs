@@ -3,9 +3,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Web;
 
 namespace Microsoft.Docs.Build
 {
@@ -24,13 +26,13 @@ namespace Microsoft.Docs.Build
             return (content, child);
         }
 
-        public static string GetLink(string path, object relativeTo, object resultRelativeTo, List<Error> errors, Action<Document> buildChild, DependencyMapBuilder dependencyMapBuilder, BookmarkValidator bookmarkValidator)
+        public static string GetLink(string path, object relativeTo, object resultRelativeTo, List<Error> errors, Action<Document> buildChild, DependencyMapBuilder dependencyMapBuilder, BookmarkValidator bookmarkValidator, XrefMap xrefMap)
         {
             Debug.Assert(relativeTo is Document);
             Debug.Assert(resultRelativeTo is Document);
 
             var self = (Document)relativeTo;
-            var (error, link, fragment, child) = self.TryResolveHref(path, (Document)resultRelativeTo);
+            var (error, link, fragment, child) = self.TryResolveHref(path, (Document)resultRelativeTo, xrefMap, dependencyMapBuilder);
             errors.AddIfNotNull(error);
 
             if (child != null && buildChild != null)
@@ -79,9 +81,15 @@ namespace Microsoft.Docs.Build
             return file != null ? (error, file.ReadText(), file) : default;
         }
 
-        public static (Error error, string href, string fragment, Document file) TryResolveHref(this Document relativeTo, string href, Document resultRelativeTo)
+        public static (Error error, string href, string fragment, Document file) TryResolveHref(this Document relativeTo, string href, Document resultRelativeTo, XrefMap xrefMap = null, DependencyMapBuilder dependencyMapBuilder = null)
         {
             Debug.Assert(resultRelativeTo != null);
+
+            if (href.StartsWith("xref:"))
+            {
+                var (uidError, uidHref, _) = TryResolveXref(href.Substring("xref:".Length), xrefMap, dependencyMapBuilder, relativeTo);
+                return (uidError, uidHref, null, null);
+            }
 
             var (error, file, redirectTo, query, fragment, isSelfBookmark, _) = TryResolveFile(relativeTo, href);
 
@@ -144,6 +152,37 @@ namespace Microsoft.Docs.Build
             }
 
             return (error, relativeUrl + query + fragment, fragment, file);
+        }
+
+        public static (Error error, string href, string display) TryResolveXref(string href, XrefMap xrefMap, DependencyMapBuilder dependencyMapBuilder, Document file)
+        {
+            if (xrefMap is null)
+                return default;
+
+            var (uid, query, fragment) = HrefUtility.SplitHref(href);
+            string moniker = null;
+            NameValueCollection queries = null;
+            if (!string.IsNullOrEmpty(query))
+            {
+                queries = HttpUtility.ParseQueryString(query.Substring(1));
+                moniker = queries?["view"];
+            }
+
+            // need to url decode uid from input content
+            var xrefSpec = ResolveXref(HttpUtility.UrlDecode(uid), xrefMap, file, dependencyMapBuilder, moniker);
+            if (xrefSpec is null)
+            {
+                return (Errors.UidNotFound(file, uid, href), null, null);
+            }
+
+            // fallback order:
+            // xrefSpec.displayPropertyName -> xrefSpec.name -> uid
+            var name = xrefSpec.GetXrefPropertyValue("name");
+            var displayPropertyValue = xrefSpec.GetXrefPropertyValue(queries?["displayProperty"]);
+            string display = !string.IsNullOrEmpty(displayPropertyValue) ? displayPropertyValue : (!string.IsNullOrEmpty(name) ? name : uid);
+            var monikerQuery = !string.IsNullOrEmpty(moniker) ? $"view={moniker}" : "";
+            href = HrefUtility.MergeHref(xrefSpec.Href, monikerQuery, fragment.Length == 0 ? "" : fragment.Substring(1));
+            return (null, href, display);
         }
 
         private static (Error error, Document file, string redirectTo, string query, string fragment, bool isSelfBookmark, string pathToDocset) TryResolveFile(this Document relativeTo, string href)
