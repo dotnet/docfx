@@ -21,6 +21,7 @@ namespace Microsoft.Docs.Build
             XrefMap xrefMap,
             DependencyMapBuilder dependencyMapBuilder,
             BookmarkValidator bookmarkValidator,
+            DependencyResolver dependencyResolver,
             Dictionary<Document, List<string>> monikersMap)
         {
             Debug.Assert(file.ContentType == ContentType.TableOfContents);
@@ -31,7 +32,7 @@ namespace Microsoft.Docs.Build
                 return (Enumerable.Empty<Error>(), null, new List<string>());
             }
 
-            var (errors, tocModel, tocMetadata, refArticles, refTocs) = Load(context, file, monikersProvider, xrefMap, dependencyMapBuilder, gitCommitProvider, bookmarkValidator, monikersMap);
+            var (errors, tocModel, tocMetadata, refArticles, refTocs) = Load(context, file, monikersProvider, dependencyResolver, xrefMap, dependencyMapBuilder, gitCommitProvider, bookmarkValidator, monikersMap);
 
             var metadata = metadataProvider.GetMetadata(file, tocMetadata).ToObject<TableOfContentsMetadata>();
 
@@ -48,7 +49,7 @@ namespace Microsoft.Docs.Build
             return (errors, model, metadata.Monikers);
         }
 
-        public static TableOfContentsMap BuildTocMap(Context context, Docset docset, MonikersProvider monikersProvider)
+        public static TableOfContentsMap BuildTocMap(Context context, Docset docset, MonikersProvider monikersProvider, DependencyResolver dependencyResolver)
         {
             using (Progress.Start("Loading TOC"))
             {
@@ -59,20 +60,20 @@ namespace Microsoft.Docs.Build
                     return builder.Build();
                 }
 
-                ParallelUtility.ForEach(tocFiles, file => BuildTocMap(context, file, builder, monikersProvider), Progress.Update);
+                ParallelUtility.ForEach(tocFiles, file => BuildTocMap(context, file, builder, monikersProvider, dependencyResolver), Progress.Update);
 
                 return builder.Build();
             }
         }
 
-        private static void BuildTocMap(Context context, Document fileToBuild, TableOfContentsMapBuilder tocMapBuilder, MonikersProvider monikersProvider)
+        private static void BuildTocMap(Context context, Document fileToBuild, TableOfContentsMapBuilder tocMapBuilder, MonikersProvider monikersProvider, DependencyResolver dependencyResolver)
         {
             try
             {
                 Debug.Assert(tocMapBuilder != null);
                 Debug.Assert(fileToBuild != null);
 
-                var (errors, _, _, referencedDocuments, referencedTocs) = Load(context, fileToBuild, monikersProvider);
+                var (errors, _, _, referencedDocuments, referencedTocs) = Load(context, fileToBuild, monikersProvider, dependencyResolver);
                 context.Report(fileToBuild.ToString(), errors);
 
                 tocMapBuilder.Add(fileToBuild, referencedDocuments, referencedTocs);
@@ -94,6 +95,7 @@ namespace Microsoft.Docs.Build
             Context context,
             Document fileToBuild,
             MonikersProvider monikersProvider,
+            DependencyResolver dependencyResolver,
             XrefMap xrefMap = null,
             DependencyMapBuilder dependencyMapBuilder = null,
             GitCommitProvider gitCommitProvider = null,
@@ -109,7 +111,7 @@ namespace Microsoft.Docs.Build
                 fileToBuild,
                 (file, href, isInclude) =>
                 {
-                    var (error, referencedTocContent, referencedToc) = file.TryResolveContent(href, gitCommitProvider);
+                    var (error, referencedTocContent, referencedToc) = dependencyResolver.TryResolveContent(file, href, gitCommitProvider);
                     errors.AddIfNotNull(error);
                     if (referencedToc != null && isInclude)
                     {
@@ -123,7 +125,7 @@ namespace Microsoft.Docs.Build
                 {
                     // add to referenced document list
                     // only resolve href, no need to build
-                    var (error, link, fragment, buildItem) = file.TryResolveHref(href, resultRelativeTo, xrefMap, dependencyMapBuilder);
+                    var (error, link, fragment, buildItem) = dependencyResolver.TryResolveHref(file, href, resultRelativeTo, xrefMap, dependencyMapBuilder);
                     errors.AddIfNotNull(error);
 
                     var itemMonikers = new List<string>();

@@ -11,13 +11,13 @@ using System.Web;
 
 namespace Microsoft.Docs.Build
 {
-    internal static class Resolve
+    internal class DependencyResolver
     {
-        public static (string content, object file) ReadFile(string path, object relativeTo, List<Error> errors, DependencyMapBuilder dependencyMapBuilder, GitCommitProvider gitCommitProvider)
+        public (string content, object file) ReadFile(string path, object relativeTo, List<Error> errors, DependencyMapBuilder dependencyMapBuilder, GitCommitProvider gitCommitProvider)
         {
             Debug.Assert(relativeTo is Document);
 
-            var (error, content, child) = ((Document)relativeTo).TryResolveContent(path, gitCommitProvider);
+            var (error, content, child) = TryResolveContent((Document)relativeTo, path, gitCommitProvider);
 
             errors.AddIfNotNull(error);
 
@@ -26,13 +26,13 @@ namespace Microsoft.Docs.Build
             return (content, child);
         }
 
-        public static string GetLink(string path, object relativeTo, object resultRelativeTo, List<Error> errors, Action<Document> buildChild, DependencyMapBuilder dependencyMapBuilder, BookmarkValidator bookmarkValidator, XrefMap xrefMap)
+        public string GetLink(string path, object relativeTo, object resultRelativeTo, List<Error> errors, Action<Document> buildChild, DependencyMapBuilder dependencyMapBuilder, BookmarkValidator bookmarkValidator, XrefMap xrefMap)
         {
             Debug.Assert(relativeTo is Document);
             Debug.Assert(resultRelativeTo is Document);
 
             var self = (Document)relativeTo;
-            var (error, link, fragment, child) = self.TryResolveHref(path, (Document)resultRelativeTo, xrefMap, dependencyMapBuilder);
+            var (error, link, fragment, child) = TryResolveHref(self, path, (Document)resultRelativeTo, xrefMap, dependencyMapBuilder);
             errors.AddIfNotNull(error);
 
             if (child != null && buildChild != null)
@@ -46,7 +46,7 @@ namespace Microsoft.Docs.Build
             return link;
         }
 
-        public static XrefSpec ResolveXref(string uid, XrefMap xrefMap, Document file, DependencyMapBuilder dependencyMapBuilder, string moniker = null)
+        public XrefSpec ResolveXref(string uid, XrefMap xrefMap, Document file, DependencyMapBuilder dependencyMapBuilder, string moniker = null)
         {
             if (xrefMap is null)
                 return null;
@@ -56,7 +56,7 @@ namespace Microsoft.Docs.Build
             return xrefSpec;
         }
 
-        public static (Error error, string content, Document file) TryResolveContent(this Document relativeTo, string href, GitCommitProvider gitCommitProvider)
+        public (Error error, string content, Document file) TryResolveContent(Document relativeTo, string href, GitCommitProvider gitCommitProvider)
         {
             var (error, file, redirect, _, _, _, pathToDocset) = TryResolveFile(relativeTo, href);
 
@@ -81,7 +81,7 @@ namespace Microsoft.Docs.Build
             return file != null ? (error, file.ReadText(), file) : default;
         }
 
-        public static (Error error, string href, string fragment, Document file) TryResolveHref(this Document relativeTo, string href, Document resultRelativeTo, XrefMap xrefMap = null, DependencyMapBuilder dependencyMapBuilder = null)
+        public (Error error, string href, string fragment, Document file) TryResolveHref(Document relativeTo, string href, Document resultRelativeTo, XrefMap xrefMap = null, DependencyMapBuilder dependencyMapBuilder = null)
         {
             Debug.Assert(resultRelativeTo != null);
 
@@ -154,7 +154,7 @@ namespace Microsoft.Docs.Build
             return (error, relativeUrl + query + fragment, fragment, file);
         }
 
-        public static (Error error, string href, string display) TryResolveXref(string href, XrefMap xrefMap, DependencyMapBuilder dependencyMapBuilder, Document file)
+        public (Error error, string href, string display) TryResolveXref(string href, XrefMap xrefMap, DependencyMapBuilder dependencyMapBuilder, Document file)
         {
             if (xrefMap is null)
                 return default;
@@ -185,7 +185,7 @@ namespace Microsoft.Docs.Build
             return (null, href, display);
         }
 
-        private static (Error error, Document file, string redirectTo, string query, string fragment, bool isSelfBookmark, string pathToDocset) TryResolveFile(this Document relativeTo, string href)
+        private static (Error error, Document file, string redirectTo, string query, string fragment, bool isSelfBookmark, string pathToDocset) TryResolveFile(Document relativeTo, string href)
         {
             if (string.IsNullOrEmpty(href))
             {

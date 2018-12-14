@@ -15,6 +15,7 @@ namespace Microsoft.Docs.Build
             Document file,
             PageCallback callback,
             GitCommitProvider gitCommitProvider,
+            DependencyResolver dependencyResolver,
             JObject extensionData = null)
         {
             return TransformContent;
@@ -25,7 +26,7 @@ namespace Microsoft.Docs.Build
 
                 if (attribute is HrefAttribute)
                 {
-                    result = Resolve.GetLink((string)value, file, file, errors, callback?.BuildChild, callback?.DependencyMapBuilder, callback?.BookmarkValidator, callback?.XrefMap);
+                    result = dependencyResolver.GetLink((string)value, file, file, errors, callback?.BuildChild, callback?.DependencyMapBuilder, callback?.BookmarkValidator, callback?.XrefMap);
                 }
 
                 if (attribute is MarkdownAttribute)
@@ -44,14 +45,14 @@ namespace Microsoft.Docs.Build
 
                 if (attribute is HtmlAttribute)
                 {
-                    var html = HtmlUtility.TransformLinks((string)value, href => Resolve.GetLink(href, file, file, errors, callback?.BuildChild, callback?.DependencyMapBuilder, callback?.BookmarkValidator, callback?.XrefMap));
+                    var html = HtmlUtility.TransformLinks((string)value, href => dependencyResolver.GetLink(href, file, file, errors, callback?.BuildChild, callback?.DependencyMapBuilder, callback?.BookmarkValidator, callback?.XrefMap));
                     result = HtmlUtility.StripTags(HtmlUtility.LoadHtml(html)).OuterHtml;
                 }
 
                 if (attribute is XrefAttribute)
                 {
                     // TODO: how to fill xref resolving data besides href
-                    result = Resolve.ResolveXref((string)value, callback?.XrefMap, file, callback?.DependencyMapBuilder)?.Href;
+                    result = dependencyResolver.ResolveXref((string)value, callback?.XrefMap, file, callback?.DependencyMapBuilder)?.Href;
                 }
 
                 if (extensionData != null && attributes.Any(attr => attr is XrefPropertyAttribute))
@@ -62,13 +63,13 @@ namespace Microsoft.Docs.Build
                 return result;
 
                 (string content, object file) ReadFileDelegate(string path, object relativeTo)
-                    => Resolve.ReadFile(path, relativeTo, errors, callback?.DependencyMapBuilder, gitCommitProvider);
+                    => dependencyResolver.ReadFile(path, relativeTo, errors, callback?.DependencyMapBuilder, gitCommitProvider);
 
                 string GetLinkDelegate(string path, object relativeTo, object resultRelativeTo)
-                    => Resolve.GetLink(path, relativeTo, resultRelativeTo, errors, callback?.BuildChild, callback?.DependencyMapBuilder, callback?.BookmarkValidator, callback?.XrefMap);
+                    => dependencyResolver.GetLink(path, relativeTo, resultRelativeTo, errors, callback?.BuildChild, callback?.DependencyMapBuilder, callback?.BookmarkValidator, callback?.XrefMap);
 
                 (Error error, string href, string display) ResolveXrefDelegate(string href)
-                    => Resolve.TryResolveXref(href, callback?.XrefMap, callback?.DependencyMapBuilder, file);
+                    => dependencyResolver.TryResolveXref(href, callback?.XrefMap, callback?.DependencyMapBuilder, file);
             }
         }
     }
