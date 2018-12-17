@@ -169,12 +169,10 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static (List<Error> errors, Config config) Load(string docsetPath, CommandLineOptions options, bool extend = true)
         {
-            if (!TryGetConfigPath(docsetPath, out var configPath, out var configFileName))
+            if (!LoadIfExists(docsetPath, options, out var errors, out var config, extend))
             {
-                throw Errors.ConfigNotFound(docsetPath, configFileName).ToException();
+                throw Errors.ConfigNotFound(docsetPath, config.ConfigFileName).ToException();
             }
-            var (errors, config) = LoadCore(docsetPath, configPath, options, extend);
-            config.ConfigFileName = configFileName;
             return (errors, config);
         }
 
@@ -184,17 +182,17 @@ namespace Microsoft.Docs.Build
         /// <returns>Whether config exists under <paramref name="docsetPath"/></returns>
         public static bool LoadIfExists(string docsetPath, CommandLineOptions options, out List<Error> errors, out Config config, bool extend = true)
         {
-            var exists = TryGetConfigPath(docsetPath, out var configPath, out var configFile);
-            if (exists)
-            {
-                (errors, config) = LoadCore(docsetPath, configPath, options, extend);
-            }
-            else
+            var configPath = PathUtility.FindYamlOrJson(Path.Combine(docsetPath, "docfx"));
+            if (configPath == null)
             {
                 errors = new List<Error>();
                 config = new Config();
+                return false;
             }
-            return exists;
+
+            (errors, config) = LoadCore(docsetPath, configPath, options, extend);
+            config.ConfigFileName = PathUtility.NormalizeFile(Path.GetRelativePath(docsetPath, configPath));
+            return true;
         }
 
         public static bool TryGetConfigPath(string parentPath, out string configPath, out string configFile)
