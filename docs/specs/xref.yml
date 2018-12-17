@@ -390,3 +390,35 @@ outputs:
   docs/1/b.json: |
     { "content": "<p>Link to <a href=\"../c\">title</a></p>" }
   docs/c.json:
+---
+# Cyclic xref reference
+inputs:
+  docfx.yml:
+  docs/a.md: |
+    ---
+    title: Title from yaml header a
+    uid: a
+    fullName: name for a
+    ---
+    Link to @b?displayProperty=description
+  docs/b.json: | 
+    {
+      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
+      "uid": "b",
+      "name": "name for b",
+      "description": "description for b",
+      "summary": "Link to @a?displayProperty=fullName",
+    }
+outputs:
+  docs/a.json: |
+    { "content": "<p>Link to <a href=\"b.json\">description for b</a></p>" }
+  docs/b.json: |
+    { 
+      "content": 
+      {
+        "name": "name for b",
+        "description": "description for b",
+        "summary": "<p>Link to <a href=\"a\">Title from yaml header a</a></p>\n",
+        "uid": "b"
+      }
+    }
