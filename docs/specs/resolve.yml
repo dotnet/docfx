@@ -173,7 +173,7 @@ outputs:
 inputs:
   docfx.yml: |
     redirections:
-      docs/redirect.md: /absolute/path
+      docs/redirect.md: /absolute/path?a=x#c
   docs/a.md: |
     [redirect](redirect.md?a#b)
 outputs:

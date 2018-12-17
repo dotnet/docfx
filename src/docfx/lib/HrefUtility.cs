@@ -24,11 +24,11 @@ namespace Microsoft.Docs.Build
             var fragmentIndex = href.IndexOf('#');
             if (fragmentIndex >= 0)
             {
-                fragment = href.Substring(fragmentIndex);
+                fragment = href.Substring(fragmentIndex + 1);
                 var queryIndex = href.IndexOf('?', 0, fragmentIndex);
                 if (queryIndex >= 0)
                 {
-                    query = href.Substring(queryIndex, fragmentIndex - queryIndex);
+                    query = href.Substring(queryIndex + 1, fragmentIndex - queryIndex - 1);
                     path = href.Substring(0, queryIndex);
                 }
                 else
@@ -41,7 +41,7 @@ namespace Microsoft.Docs.Build
                 var queryIndex = href.IndexOf('?');
                 if (queryIndex >= 0)
                 {
-                    query = href.Substring(queryIndex);
+                    query = href.Substring(queryIndex + 1);
                     path = href.Substring(0, queryIndex);
                 }
                 else
@@ -50,7 +50,7 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            return (path, query, fragment);
+            return (path, query, fragment.Trim());
         }
 
         /// <summary>
@@ -62,7 +62,7 @@ namespace Microsoft.Docs.Build
             if (string.IsNullOrEmpty(targetPath))
                 return targetHref;
 
-            var targetQueryParameters = HttpUtility.ParseQueryString(targetQuery.Length == 0 ? "" : targetQuery.Substring(1));
+            var targetQueryParameters = HttpUtility.ParseQueryString(targetQuery.Length == 0 ? "" : targetQuery);
             var sourceQueryParameters = HttpUtility.ParseQueryString(sourceQuery);
 
             foreach (var key in sourceQueryParameters.AllKeys)
@@ -86,7 +86,7 @@ namespace Microsoft.Docs.Build
 
             var (path, _, fragment) = SplitHref(remoteHref);
 
-            var refspec = (string.IsNullOrEmpty(fragment) || fragment.Length <= 1) ? "master" : fragment.Substring(1);
+            var refspec = (string.IsNullOrEmpty(fragment) || fragment.Length <= 1) ? "master" : fragment;
 
             return (path, refspec);
         }

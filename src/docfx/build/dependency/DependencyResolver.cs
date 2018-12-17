@@ -55,7 +55,7 @@ namespace Microsoft.Docs.Build
             NameValueCollection queries = null;
             if (!string.IsNullOrEmpty(query))
             {
-                queries = HttpUtility.ParseQueryString(query.Substring(1));
+                queries = HttpUtility.ParseQueryString(query);
                 moniker = queries?["view"];
             }
 
@@ -74,7 +74,8 @@ namespace Microsoft.Docs.Build
             var displayPropertyValue = xrefSpec.GetXrefPropertyValue(queries?["displayProperty"]);
             var display = !string.IsNullOrEmpty(displayPropertyValue) ? displayPropertyValue : (!string.IsNullOrEmpty(name) ? name : uid);
             var monikerQuery = !string.IsNullOrEmpty(moniker) ? $"view={moniker}" : "";
-            href = HrefUtility.MergeHref(xrefSpec.Href, monikerQuery, fragment.Length == 0 ? "" : fragment.Substring(1));
+            href = HrefUtility.MergeHref(xrefSpec.Href, monikerQuery, fragment.Length == 0 ? "" : fragment);
+
             return (null, href, display);
         }
 
@@ -119,8 +120,7 @@ namespace Microsoft.Docs.Build
             // follow redirections
             if (redirectTo != null && !relativeTo.Docset.Legacy)
             {
-                // TODO: append query and fragment to an absolute url with query and fragments may cause problems
-                return (error, redirectTo + query + fragment, null, null);
+                return (error, HrefUtility.MergeHref(redirectTo, query, fragment), null, null);
             }
 
             // Cannot resolve the file, leave href as is

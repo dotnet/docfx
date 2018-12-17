@@ -22,7 +22,7 @@ namespace Microsoft.Docs.Build
                 reference.FilePath.EndsWith(".md", PathUtility.PathComparison) &&
                 !string.IsNullOrEmpty(fragment))
             {
-                var bookmark = fragment.Substring(1).Trim();
+                var bookmark = fragment;
                 if (!string.IsNullOrEmpty(bookmark))
                 {
                     _references.Add((file, reference, bookmark));
