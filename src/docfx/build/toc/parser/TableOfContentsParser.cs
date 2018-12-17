@@ -19,15 +19,13 @@ namespace Microsoft.Docs.Build
 
         public delegate (string content, Document file) ResolveContent(Document relativeTo, string href, bool isInclusion);
 
-        public static (List<Error> errors, List<TableOfContentsItem> items, JObject metadata, List<string> monikers)
+        public static (List<Error> errors, List<TableOfContentsItem> items, JObject metadata)
             Load(Context context, Document file, ResolveContent resolveContent, ResolveHref resolveHref, MonikersProvider monikersProvider)
         {
             var (errors, inputModel) = LoadInputModelItems(context, file, file, resolveContent, resolveHref, new List<Document>());
 
             var items = inputModel?.Items?.Select(r => TableOfContentsInputItem.ToTableOfContentsModel(r, monikersProvider.Comparer)).ToList();
-            var fileMonikers = items?.SelectMany(r => r.Monikers).Distinct(monikersProvider.Comparer).ToList();
-            fileMonikers.Sort(monikersProvider.Comparer);
-            return (errors, items, inputModel?.Metadata, fileMonikers);
+            return (errors, items, inputModel?.Metadata);
         }
 
         private static (List<Error> errors, TableOfContentsInputModel tocModel) LoadTocModel(Context context, Document file, string content = null)

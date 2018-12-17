@@ -136,6 +136,18 @@ outputs:
 ```
   - User can also define which property to display for the referenced uid
 
+### Refer to uid within markdown link
+In markdown link url, the user can also refer to uid.
+```
+[link_text](xref:uid_of_another_file)
+```
+It should be resolved as:
+```
+<a href="path_of_another_file">link_text</a>
+```
+In this case, display text will be ignored.
+> Not supported corner case for now: when `link_text` is empty, we should use `displayProperty` instead. But we only send in `GetLink` delegate into markdig engine, seems like link text is only visible to markdig engine.
+
 ### For SDP(JSON/YAML) files
 ```json
     {

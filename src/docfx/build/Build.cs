@@ -158,7 +158,7 @@ namespace Microsoft.Docs.Build
                         break;
                     case ContentType.TableOfContents:
                         // TODO: improve error message for toc monikers overlap
-                        (errors, model, monikers) = BuildTableOfContents.Build(context, file, tocMap, gitCommitProvider, metadataProvider, monikersProvider, callback.DependencyMapBuilder, callback.BookmarkValidator, monikersMap);
+                        (errors, model, monikers) = BuildTableOfContents.Build(context, file, tocMap, gitCommitProvider, metadataProvider, monikersProvider, callback.XrefMap, callback.DependencyMapBuilder, callback.BookmarkValidator, monikersMap);
                         break;
                     case ContentType.Redirection:
                         (errors, model, monikers) = BuildRedirection.Build(file, metadataProvider, monikersProvider);
@@ -219,13 +219,9 @@ namespace Microsoft.Docs.Build
                         Path.GetFullPath(Path.Combine(docset.DocsetPath, file.FilePath))));
             }
 
-            var outputPath = file.SitePath;
-            if (monikers.Count != 0)
-            {
-                var monikerSeg = HashUtility.GetMd5HashShort(string.Join(',', monikers));
-                outputPath = PathUtility.NormalizeFile(Path.Combine(monikerSeg, file.SitePath));
-            }
-            return outputPath;
+            return PathUtility.NormalizeFile(Path.Combine(
+                $"{HashUtility.GetMd5HashShort(monikers)}",
+                file.SitePath));
         }
 
         private static Manifest CreateManifest(Dictionary<Document, FileManifest> files, DependencyMap dependencies)

@@ -57,18 +57,19 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public static string GetFileRestorePath(this Docset docset, string url)
+        public static (bool fromUrl, string path) GetFileRestorePath(this Docset docset, string url)
         {
             return GetFileRestorePath(docset.FallbackDocset?.DocsetPath ?? docset.DocsetPath, url);
         }
 
-        public static string GetFileRestorePath(string docsetPath, string url)
+        public static (bool fromUrl, string path) GetFileRestorePath(string docsetPath, string url)
         {
-            if (!HrefUtility.IsHttpHref(url))
+            var fromUrl = HrefUtility.IsHttpHref(url);
+            if (!fromUrl)
             {
                 // directly return the relative path
                 var fullPath = Path.Combine(docsetPath, url);
-                return File.Exists(fullPath) ? fullPath : throw Errors.FileNotFound(docsetPath, url).ToException();
+                return File.Exists(fullPath) ? (fromUrl, fullPath) : throw Errors.FileNotFound(docsetPath, url).ToException();
             }
 
             if (!TryGetFileRestorePath(url, out var result))
@@ -76,7 +77,7 @@ namespace Microsoft.Docs.Build
                 throw Errors.NeedRestore(url).ToException();
             }
 
-            return result;
+            return (fromUrl, result);
         }
 
         public static bool TryGetFileRestorePath(string url, out string result)
