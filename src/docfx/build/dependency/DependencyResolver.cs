@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
@@ -11,52 +10,75 @@ using System.Web;
 
 namespace Microsoft.Docs.Build
 {
-    internal static class Resolve
+    internal class DependencyResolver
     {
-        public static (string content, object file) ReadFile(string path, object relativeTo, List<Error> errors, DependencyMapBuilder dependencyMapBuilder, GitCommitProvider gitCommitProvider)
+        public readonly BookmarkValidator BookmarkValidator = new BookmarkValidator();
+        public readonly DependencyMapBuilder DependencyMapBuilder = new DependencyMapBuilder();
+
+        private readonly GitCommitProvider _gitCommitProvider;
+        private readonly Lazy<XrefMap> _xrefMap;
+
+        public DependencyResolver(GitCommitProvider gitCommitProvider, Lazy<XrefMap> xrefMap)
         {
-            Debug.Assert(relativeTo is Document);
-
-            var (error, content, child) = ((Document)relativeTo).TryResolveContent(path, gitCommitProvider);
-
-            errors.AddIfNotNull(error);
-
-            dependencyMapBuilder?.AddDependencyItem((Document)relativeTo, child, DependencyType.Inclusion);
-
-            return (content, child);
+            _gitCommitProvider = gitCommitProvider;
+            _xrefMap = xrefMap;
         }
 
-        public static string GetLink(string path, object relativeTo, object resultRelativeTo, List<Error> errors, Action<Document> buildChild, DependencyMapBuilder dependencyMapBuilder, BookmarkValidator bookmarkValidator, XrefMap xrefMap)
+        public (Error error, string content, Document file) ResolveContent(string path, Document relativeTo, DependencyType dependencyType = DependencyType.Inclusion)
         {
-            Debug.Assert(relativeTo is Document);
-            Debug.Assert(resultRelativeTo is Document);
+            var (error, content, child) = TryResolveContent(relativeTo, path);
 
-            var self = (Document)relativeTo;
-            var (error, link, fragment, child) = self.TryResolveHref(path, (Document)resultRelativeTo, xrefMap, dependencyMapBuilder);
-            errors.AddIfNotNull(error);
+            DependencyMapBuilder.AddDependencyItem(relativeTo, child, dependencyType);
 
-            if (child != null && buildChild != null)
+            return (error, content, child);
+        }
+
+        public (Error error, string link, Document file) ResolveLink(string path, Document relativeTo, Document resultRelativeTo, Action<Document> buildChild)
+        {
+            var (error, link, fragment, file) = TryResolveHref(relativeTo, path, resultRelativeTo);
+
+            if (file != null && buildChild != null)
             {
-                buildChild(child);
-                dependencyMapBuilder?.AddDependencyItem(self, child, HrefUtility.FragmentToDependencyType(fragment));
+                buildChild(file);
             }
 
-            bookmarkValidator?.AddBookmarkReference(self, child ?? self, fragment);
+            DependencyMapBuilder.AddDependencyItem(relativeTo, file, HrefUtility.FragmentToDependencyType(fragment));
+            BookmarkValidator.AddBookmarkReference(relativeTo, file ?? relativeTo, fragment);
 
-            return link;
+            return (error, link, file);
         }
 
-        public static XrefSpec ResolveXref(string uid, XrefMap xrefMap, Document file, DependencyMapBuilder dependencyMapBuilder, string moniker = null)
+        public (Error error, string href, string display) ResolveXref(string href, Document file)
         {
-            if (xrefMap is null)
-                return null;
+            var (uid, query, fragment) = HrefUtility.SplitHref(href);
+            string moniker = null;
+            NameValueCollection queries = null;
+            if (!string.IsNullOrEmpty(query))
+            {
+                queries = HttpUtility.ParseQueryString(query.Substring(1));
+                moniker = queries?["view"];
+            }
 
-            var (xrefSpec, doc) = xrefMap.Resolve(uid, moniker);
-            dependencyMapBuilder.AddDependencyItem(file, doc, DependencyType.UidInclusion);
-            return xrefSpec;
+            // need to url decode uid from input content
+            var (xrefSpec, doc) = _xrefMap.Value.Resolve(HttpUtility.UrlDecode(uid), moniker);
+            if (xrefSpec is null)
+            {
+                return (Errors.UidNotFound(file, uid, href), null, null);
+            }
+
+            DependencyMapBuilder.AddDependencyItem(file, doc, DependencyType.UidInclusion);
+
+            // fallback order:
+            // xrefSpec.displayPropertyName -> xrefSpec.name -> uid
+            var name = xrefSpec.GetXrefPropertyValue("name");
+            var displayPropertyValue = xrefSpec.GetXrefPropertyValue(queries?["displayProperty"]);
+            var display = !string.IsNullOrEmpty(displayPropertyValue) ? displayPropertyValue : (!string.IsNullOrEmpty(name) ? name : uid);
+            var monikerQuery = !string.IsNullOrEmpty(moniker) ? $"view={moniker}" : "";
+            href = HrefUtility.MergeHref(xrefSpec.Href, monikerQuery, fragment.Length == 0 ? "" : fragment.Substring(1));
+            return (null, href, display);
         }
 
-        public static (Error error, string content, Document file) TryResolveContent(this Document relativeTo, string href, GitCommitProvider gitCommitProvider)
+        private (Error error, string content, Document file) TryResolveContent(Document relativeTo, string href)
         {
             var (error, file, redirect, _, _, _, pathToDocset) = TryResolveFile(relativeTo, href);
 
@@ -65,9 +87,9 @@ namespace Microsoft.Docs.Build
                 return (Errors.IncludeRedirection(relativeTo, href), null, null);
             }
 
-            if (file == null && !string.IsNullOrEmpty(pathToDocset) && gitCommitProvider != null)
+            if (file == null && !string.IsNullOrEmpty(pathToDocset))
             {
-                var (errorFromHistory, content, fileFromHistory) = LocalizationConvention.TryResolveContentFromHistory(gitCommitProvider, relativeTo.Docset, pathToDocset);
+                var (errorFromHistory, content, fileFromHistory) = LocalizationConvention.TryResolveContentFromHistory(_gitCommitProvider, relativeTo.Docset, pathToDocset);
                 if (errorFromHistory != null)
                 {
                     return (error, null, null);
@@ -81,13 +103,13 @@ namespace Microsoft.Docs.Build
             return file != null ? (error, file.ReadText(), file) : default;
         }
 
-        public static (Error error, string href, string fragment, Document file) TryResolveHref(this Document relativeTo, string href, Document resultRelativeTo, XrefMap xrefMap = null, DependencyMapBuilder dependencyMapBuilder = null)
+        private (Error error, string href, string fragment, Document file) TryResolveHref(Document relativeTo, string href, Document resultRelativeTo)
         {
             Debug.Assert(resultRelativeTo != null);
 
             if (href.StartsWith("xref:"))
             {
-                var (uidError, uidHref, _) = TryResolveXref(href.Substring("xref:".Length), xrefMap, dependencyMapBuilder, relativeTo);
+                var (uidError, uidHref, _) = ResolveXref(href.Substring("xref:".Length), relativeTo);
                 return (uidError, uidHref, null, null);
             }
 
@@ -154,38 +176,7 @@ namespace Microsoft.Docs.Build
             return (error, relativeUrl + query + fragment, fragment, file);
         }
 
-        public static (Error error, string href, string display) TryResolveXref(string href, XrefMap xrefMap, DependencyMapBuilder dependencyMapBuilder, Document file)
-        {
-            if (xrefMap is null)
-                return default;
-
-            var (uid, query, fragment) = HrefUtility.SplitHref(href);
-            string moniker = null;
-            NameValueCollection queries = null;
-            if (!string.IsNullOrEmpty(query))
-            {
-                queries = HttpUtility.ParseQueryString(query.Substring(1));
-                moniker = queries?["view"];
-            }
-
-            // need to url decode uid from input content
-            var xrefSpec = ResolveXref(HttpUtility.UrlDecode(uid), xrefMap, file, dependencyMapBuilder, moniker);
-            if (xrefSpec is null)
-            {
-                return (Errors.UidNotFound(file, uid, href), null, null);
-            }
-
-            // fallback order:
-            // xrefSpec.displayPropertyName -> xrefSpec.name -> uid
-            var name = xrefSpec.GetXrefPropertyValue("name");
-            var displayPropertyValue = xrefSpec.GetXrefPropertyValue(queries?["displayProperty"]);
-            string display = !string.IsNullOrEmpty(displayPropertyValue) ? displayPropertyValue : (!string.IsNullOrEmpty(name) ? name : uid);
-            var monikerQuery = !string.IsNullOrEmpty(moniker) ? $"view={moniker}" : "";
-            href = HrefUtility.MergeHref(xrefSpec.Href, monikerQuery, fragment.Length == 0 ? "" : fragment.Substring(1));
-            return (null, href, display);
-        }
-
-        private static (Error error, Document file, string redirectTo, string query, string fragment, bool isSelfBookmark, string pathToDocset) TryResolveFile(this Document relativeTo, string href)
+        private static (Error error, Document file, string redirectTo, string query, string fragment, bool isSelfBookmark, string pathToDocset) TryResolveFile(Document relativeTo, string href)
         {
             if (string.IsNullOrEmpty(href))
             {
