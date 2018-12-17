@@ -63,9 +63,8 @@ namespace Microsoft.Docs.Build
         public static (string html, MarkupResult result) ToHtml(
             string markdown,
             Document file,
-            Func<string, object, (string, object)> readFile,
-            Func<string, object, object, string> getLink,
-            Func<string, string, XrefSpec> resolveXref,
+            DependencyResolver dependencyResolver,
+            Action<Document> buildChild,
             Func<string, List<string>> parseMonikerRange,
             MarkdownPipelineType pipelineType)
         {
@@ -77,10 +76,9 @@ namespace Microsoft.Docs.Build
                     {
                         Result = new MarkupResult(),
                         Culture = file.Docset.Culture,
-                        ReadFileDelegate = readFile,
-                        GetLinkDelegate = getLink,
-                        ResolveXrefDelegate = resolveXref,
+                        DependencyResolver = dependencyResolver,
                         ParseMonikerRangeDelegate = parseMonikerRange,
+                        BuildChild = buildChild,
                     };
                     t_status = t_status is null ? ImmutableStack.Create(status) : t_status.Push(status);
 
@@ -172,27 +170,39 @@ namespace Microsoft.Docs.Build
             Result.Errors.Add(new Error(ErrorLevel.Warning, code, message, doc, new Range(line, 0)));
         }
 
-        private static (string content, object file) ReadFile(string path, object relativeTo) => t_status.Peek().ReadFileDelegate(path, relativeTo);
+        private static (string content, object file) ReadFile(string path, object relativeTo)
+        {
+            var (error, content, file) = t_status.Peek().DependencyResolver.ResolveContent(path, (Document)relativeTo);
+            Result.Errors.AddIfNotNull(error);
+            return (content, file);
+        }
 
-        private static string GetLink(string path, object relativeTo, object resultRelativeTo) => t_status.Peek().GetLinkDelegate(path, relativeTo, resultRelativeTo);
+        private static string GetLink(string path, object relativeTo, object resultRelativeTo)
+        {
+            var peek = t_status.Peek();
+            var (error, link, _) = peek.DependencyResolver.ResolveLink(path, (Document)relativeTo, (Document)resultRelativeTo, peek.BuildChild);
+            Result.Errors.AddIfNotNull(error);
+            return link;
+        }
 
-        private static XrefSpec ResolveXref(string uid, string moniker) => t_status.Peek().ResolveXrefDelegate(uid, moniker);
+        private static (Error error, string href, string display) ResolveXref(string href)
+        {
+            return t_status.Peek().DependencyResolver.ResolveXref(href, (Document)InclusionContext.File);
+        }
 
         private static List<string> ParseMonikerRange(string monikerRange) => t_status.Peek().ParseMonikerRangeDelegate(monikerRange);
 
         private sealed class Status
         {
-            public MarkupResult Result { get; set; }
+            public MarkupResult Result;
 
-            public CultureInfo Culture { get; set; }
+            public CultureInfo Culture;
 
-            public Func<string, object, (string, object)> ReadFileDelegate { get; set; }
+            public DependencyResolver DependencyResolver;
 
-            public Func<string, object, object, string> GetLinkDelegate { get; set; }
+            public Action<Document> BuildChild;
 
-            public Func<string, string, XrefSpec> ResolveXrefDelegate { get; set; }
-
-            public Func<string, List<string>> ParseMonikerRangeDelegate { get; set; }
+            public Func<string, List<string>> ParseMonikerRangeDelegate;
         }
     }
 }

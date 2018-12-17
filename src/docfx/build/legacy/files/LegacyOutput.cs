@@ -3,13 +3,12 @@
 
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
 {
     internal static class LegacyOutput
     {
-        public static void Convert(Docset docset, Context context, MetadataProvider metadataProvider, List<(LegacyManifestItem manifestItem, Document document)> files)
+        public static void Convert(Docset docset, Context context, MetadataProvider metadataProvider, List<(LegacyManifestItem manifestItem, Document document, List<string> monikers)> files)
         {
             using (Progress.Start("Convert Legacy Files"))
             {
@@ -33,7 +32,7 @@ namespace Microsoft.Docs.Build
                 {
                     ParallelUtility.ForEach(
                         files.Where(f => f.document.ContentType == ContentType.Resource),
-                        file => LegacyResource.Convert(docset, context, file.document, file.manifestItem, metadataProvider),
+                        file => LegacyResource.Convert(docset, context, file.document, file.manifestItem, metadataProvider, file.monikers),
                         Progress.Update);
                 }
             }

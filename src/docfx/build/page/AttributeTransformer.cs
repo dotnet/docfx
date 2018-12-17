@@ -13,62 +13,68 @@ namespace Microsoft.Docs.Build
         public static Func<IEnumerable<DataTypeAttribute>, object, string, object> Transform(
             List<Error> errors,
             Document file,
-            PageCallback callback,
-            GitCommitProvider gitCommitProvider,
+            DependencyResolver dependencyResolver,
+            Action<Document> buildChild,
             JObject extensionData = null)
         {
-            return TransformContent;
-            object TransformContent(IEnumerable<DataTypeAttribute> attributes, object value, string jsonPath)
+            return TransformXrefSpec;
+
+            object TransformXrefSpec(IEnumerable<DataTypeAttribute> attributes, object value, string jsonPath)
             {
                 var attribute = attributes.SingleOrDefault(attr => !(attr is XrefPropertyAttribute));
-                string result = (string)value;
+                var result = TransformContent(attribute, value);
 
+                if (extensionData != null && attributes.Any(attr => attr is XrefPropertyAttribute))
+                {
+                    extensionData[jsonPath] = new JValue(result);
+                }
+
+                return result;
+            }
+
+            object TransformContent(DataTypeAttribute attribute, object value)
+            {
                 if (attribute is HrefAttribute)
                 {
-                    result = Resolve.GetLink((string)value, file, file, errors, callback?.BuildChild, callback?.DependencyMapBuilder, callback?.BookmarkValidator);
+                    var (error, link, _) = dependencyResolver.ResolveLink((string)value, file, file, buildChild);
+                    errors.AddIfNotNull(error);
+                    return link;
                 }
 
                 if (attribute is MarkdownAttribute)
                 {
-                    var (html, markup) = Markup.ToHtml((string)value, file, ReadFileDelegate, GetLinkDelegate, ResolveXrefDelegate, null, MarkdownPipelineType.Markdown);
+                    var (html, markup) = Markup.ToHtml((string)value, file, dependencyResolver, buildChild, null, MarkdownPipelineType.Markdown);
                     errors.AddRange(markup.Errors);
-                    result = html;
+                    return html;
                 }
 
                 if (attribute is InlineMarkdownAttribute)
                 {
-                    var (html, markup) = Markup.ToHtml((string)value, file, ReadFileDelegate, GetLinkDelegate, ResolveXrefDelegate, null, MarkdownPipelineType.InlineMarkdown);
+                    var (html, markup) = Markup.ToHtml((string)value, file, dependencyResolver, buildChild, null, MarkdownPipelineType.InlineMarkdown);
                     errors.AddRange(markup.Errors);
-                    result = html;
+                    return html;
                 }
 
                 if (attribute is HtmlAttribute)
                 {
-                    var html = HtmlUtility.TransformLinks((string)value, href => Resolve.GetLink(href, file, file, errors, callback?.BuildChild, callback?.DependencyMapBuilder, callback?.BookmarkValidator));
-                    result = HtmlUtility.StripTags(HtmlUtility.LoadHtml(html)).OuterHtml;
+                    var html = HtmlUtility.TransformLinks((string)value, href =>
+                    {
+                        var (error, link, _) = dependencyResolver.ResolveLink(href, file, file, buildChild);
+                        errors.AddIfNotNull(error);
+                        return link;
+                    });
+                    return HtmlUtility.StripTags(HtmlUtility.LoadHtml(html)).OuterHtml;
                 }
 
                 if (attribute is XrefAttribute)
                 {
                     // TODO: how to fill xref resolving data besides href
-                    result = Resolve.ResolveXref((string)value, callback?.XrefMap, file, callback?.DependencyMapBuilder)?.Href;
+                    var (error, link, _) = dependencyResolver.ResolveXref((string)value, file);
+                    errors.AddIfNotNull(error);
+                    return link;
                 }
 
-                if (extensionData != null && attributes.Any(attr => attr is XrefPropertyAttribute))
-                {
-                    extensionData[jsonPath] = result;
-                }
-
-                return result;
-
-                (string content, object file) ReadFileDelegate(string path, object relativeTo)
-                    => Resolve.ReadFile(path, relativeTo, errors, callback?.DependencyMapBuilder, gitCommitProvider);
-
-                string GetLinkDelegate(string path, object relativeTo, object resultRelativeTo)
-                    => Resolve.GetLink(path, relativeTo, resultRelativeTo, errors, callback?.BuildChild, callback?.DependencyMapBuilder, callback?.BookmarkValidator);
-
-                XrefSpec ResolveXrefDelegate(string uid, string moniker)
-                    => Resolve.ResolveXref(uid, callback?.XrefMap, file, callback?.DependencyMapBuilder, moniker);
+                return value;
             }
         }
     }

@@ -89,19 +89,29 @@ namespace Microsoft.Docs.Build
             Context context,
             Docset docset,
             MetadataProvider metadataProvider,
-            MonikersProvider monikersProvider)
+            MonikersProvider monikersProvider,
+            DependencyResolver dependencyResolver)
         {
             Dictionary<string, XrefSpec> map = new Dictionary<string, XrefSpec>();
             foreach (var url in docset.Config.Xref)
             {
-                var json = File.ReadAllText(docset.GetFileRestorePath(url));
-                var xRefMap = JsonUtility.Deserialize<XrefMapModel>(json);
-                foreach (var spec in xRefMap.References)
+                var (_, path) = docset.GetFileRestorePath(url);
+                var content = File.ReadAllText(path);
+                XrefMapModel xrefMap = new XrefMapModel();
+                if (url.EndsWith(".yml", StringComparison.OrdinalIgnoreCase))
+                {
+                    xrefMap = YamlUtility.Deserialize<XrefMapModel>(content);
+                }
+                else
+                {
+                    xrefMap = JsonUtility.Deserialize<XrefMapModel>(content);
+                }
+                foreach (var spec in xrefMap.References)
                 {
                     map[spec.Uid] = spec;
                 }
             }
-            return new XrefMap(map, CreateInternalXrefMap(context, docset.ScanScope, metadataProvider, monikersProvider), context, monikersProvider.Comparer);
+            return new XrefMap(map, CreateInternalXrefMap(context, docset.ScanScope, metadataProvider, monikersProvider, dependencyResolver), context, monikersProvider.Comparer);
         }
 
         public void OutputXrefMap(Context context)
@@ -202,13 +212,13 @@ namespace Microsoft.Docs.Build
         }
 
         private static IReadOnlyDictionary<string, List<Lazy<(List<Error>, XrefSpec, Document)>>>
-            CreateInternalXrefMap(Context context, IEnumerable<Document> files, MetadataProvider metadataProvider, MonikersProvider monikersProvider)
+            CreateInternalXrefMap(Context context, IEnumerable<Document> files, MetadataProvider metadataProvider, MonikersProvider monikersProvider, DependencyResolver dependencyResolver)
         {
             var xrefsByUid = new ConcurrentDictionary<string, ConcurrentBag<Lazy<(List<Error>, XrefSpec, Document)>>>();
             Debug.Assert(files != null);
             using (Progress.Start("Building Xref map"))
             {
-                ParallelUtility.ForEach(files.Where(f => f.ContentType == ContentType.Page), file => Load(context, xrefsByUid, file, metadataProvider, monikersProvider), Progress.Update);
+                ParallelUtility.ForEach(files.Where(f => f.ContentType == ContentType.Page), file => Load(context, xrefsByUid, file, metadataProvider, monikersProvider, dependencyResolver), Progress.Update);
                 return xrefsByUid.ToList().OrderBy(item => item.Key).ToDictionary(item => item.Key, item => item.Value.ToList());
             }
         }
@@ -226,7 +236,8 @@ namespace Microsoft.Docs.Build
             ConcurrentDictionary<string, ConcurrentBag<Lazy<(List<Error>, XrefSpec, Document)>>> xrefsByUid,
             Document file,
             MetadataProvider metadataProvider,
-            MonikersProvider monikersProvider)
+            MonikersProvider monikersProvider,
+            DependencyResolver dependencyResolver)
         {
             try
             {
@@ -256,7 +267,7 @@ namespace Microsoft.Docs.Build
                     var uid = obj?.Value<string>("uid");
                     if (!string.IsNullOrEmpty(uid))
                     {
-                        TryAddXref(xrefsByUid, uid, () => LoadSchemaDocument(obj, file, uid));
+                        TryAddXref(xrefsByUid, uid, () => LoadSchemaDocument(obj, file, uid, dependencyResolver));
                     }
                 }
                 else if (file.FilePath.EndsWith(".json", PathUtility.PathComparison))
@@ -268,7 +279,7 @@ namespace Microsoft.Docs.Build
                     var uid = obj.Value<string>("uid");
                     if (!string.IsNullOrEmpty(uid))
                     {
-                        TryAddXref(xrefsByUid, uid, () => LoadSchemaDocument(obj, file, uid));
+                        TryAddXref(xrefsByUid, uid, () => LoadSchemaDocument(obj, file, uid, dependencyResolver));
                     }
                 }
                 context.Report(file.ToString(), errors);
@@ -296,7 +307,7 @@ namespace Microsoft.Docs.Build
             return (error, xref, file);
         }
 
-        private static (List<Error> errors, XrefSpec spec, Document doc) LoadSchemaDocument(JObject obj, Document file, string uid)
+        private static (List<Error> errors, XrefSpec spec, Document doc) LoadSchemaDocument(JObject obj, Document file, string uid, DependencyResolver dependencyResolver)
         {
             var extensionData = new JObject();
 
@@ -309,7 +320,11 @@ namespace Microsoft.Docs.Build
             }
 
             var errors = new List<Error>();
-            var (schemaErrors, content) = JsonUtility.ToObjectWithSchemaValidation(obj, schema.Type, transform: AttributeTransformer.Transform(errors, file, null, null, extensionData));
+            var (schemaErrors, content) = JsonUtility.ToObjectWithSchemaValidation(
+                obj,
+                schema.Type,
+                transform: AttributeTransformer.Transform(errors, file, dependencyResolver, null, extensionData));
+
             errors.AddRange(schemaErrors);
             var xref = new XrefSpec
             {
