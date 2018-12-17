@@ -57,6 +57,26 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
+        /// Finds a yaml or json file under the specified location
+        /// </summary>
+        public static string FindYamlOrJson(string pathWithoutExtension)
+        {
+            var configPath = PathUtility.NormalizeFile(pathWithoutExtension + ".yml");
+            if (File.Exists(configPath))
+            {
+                return configPath;
+            }
+
+            configPath = PathUtility.NormalizeFile(pathWithoutExtension + ".json");
+            if (File.Exists(configPath))
+            {
+                return configPath;
+            }
+
+            return null;
+        }
+
+        /// <summary>
         /// Create a relative path from one path to another file.
         /// Use this over <see cref="Path.GetRelativePath(string, string)"/> when
         /// <paramref name="fileRelativeTo"/> is a file.
