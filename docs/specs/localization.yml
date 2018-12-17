@@ -812,7 +812,7 @@ outputs:
   docs/a.json: |
     {"content":"<p>b</p>\n<pre><code class=\"lang-csharp\" name=\"Main\"></code></pre>"}
   build.manifest: |
-    {"dependencies": {"!docs/a.md": null, "!docs/tokena.md": null}}
+    {"dependencies": {"!docs/tokena.md": null}}
 ---
 # fallback to deleted toc
 commands:
