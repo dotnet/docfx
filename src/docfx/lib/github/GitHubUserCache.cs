@@ -62,6 +62,7 @@ namespace Microsoft.Docs.Build
             _getUserByLoginFromGitHub = github.GetUserByLogin;
             _getLoginByCommitFromGitHub = github.GetLoginByCommit;
             _expirationInHours = docset.Config.GitHub.UserCacheExpirationInHours;
+
             var path = docset.Config.GitHub.UserCache;
             if (string.IsNullOrEmpty(path))
             {
@@ -155,9 +156,10 @@ namespace Microsoft.Docs.Build
             }
 
             var remainingRetries = 3;
-            var (error, response) = await SaveChangesCore(config, _etag);
-            while (error == null && remainingRetries-- > 0 && response.StatusCode == HttpStatusCode.PreconditionFailed)
+            var (error, collide) = await SaveChangesCore(config, _etag);
+            while (collide && remainingRetries-- > 0)
             {
+                HttpResponseMessage response;
                 try
                 {
                     response = await HttpClientUtility.GetAsync(_url, config);
@@ -168,12 +170,12 @@ namespace Microsoft.Docs.Build
                 }
                 var content = await response.EnsureSuccessStatusCode().Content.ReadAsStringAsync();
                 ReadCache(content);
-                (error, response) = await SaveChangesCore(config, response.Headers.ETag);
+                (error, collide) = await SaveChangesCore(config, response.Headers.ETag);
             }
             return error;
         }
 
-        public async Task<(Error, HttpResponseMessage)> SaveChangesCore(Config config, EntityTagHeaderValue etag)
+        public async Task<(Error error, bool collide)> SaveChangesCore(Config config, EntityTagHeaderValue etag)
         {
             string file;
             lock (_lock)
@@ -183,24 +185,42 @@ namespace Microsoft.Docs.Build
                     Users = Users.ToArray(),
                 });
             }
-            PathUtility.CreateDirectoryFromFilePath(_cachePath);
-            await ProcessUtility.WriteFile(_cachePath, file);
 
-            if (!config.GitHub.UpdateRemoteUserCache || _url == null)
+            await SaveLocal(file);
+            if (config.GitHub.UpdateRemoteUserCache && _url != null)
             {
-                return default;
+                return await SaveRemote(file);
             }
-            try
+            return default;
+
+            async Task SaveLocal(string content)
             {
-                var response = await HttpClientUtility.PutAsync(_url, new StringContent(file), config, etag);
-                var error = response.IsSuccessStatusCode || response.StatusCode == HttpStatusCode.PreconditionFailed
-                   ? null :
-                   Errors.UploadFailed(_url, response.ReasonPhrase);
-                return (error, response);
+                PathUtility.CreateDirectoryFromFilePath(_cachePath);
+                await ProcessUtility.WriteFile(_cachePath, content);
             }
-            catch (HttpRequestException ex)
+
+            async Task<(Error error, bool collide)> SaveRemote(string content)
             {
-                return (Errors.UploadFailed(_url, ex.Message), null);
+                try
+                {
+                    var response = await HttpClientUtility.PutAsync(_url, new StringContent(file), config, etag);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        return (null, false);
+                    }
+                    if (response.StatusCode == HttpStatusCode.PreconditionFailed)
+                    {
+                        return (null, true);
+                    }
+                    else
+                    {
+                        return (Errors.UploadFailed(_url, response.ReasonPhrase), false);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return (Errors.UploadFailed(_url, ex.Message), false);
+                }
             }
         }
 
