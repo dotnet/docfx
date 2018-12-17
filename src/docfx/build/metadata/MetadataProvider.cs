@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Serialization;
 
 namespace Microsoft.Docs.Build
 {
@@ -67,21 +68,31 @@ namespace Microsoft.Docs.Build
             return (null, result);
         }
 
+        public (List<Error> errors, FileMetadata fileMetadata) GetFileMetadata(Document file, JObject yamlHeader = null)
+        {
+            var errors = new List<Error>();
+            var (metaError, metadata) = GetMetadata(file, yamlHeader);
+            errors.AddIfNotNull(metaError);
+
+            var (fileMetaErrors, fileMetadata) = JsonUtility.ToObjectWithSchemaValidation<FileMetadata>(metadata);
+            errors.AddRange(fileMetaErrors);
+
+            return (errors, fileMetadata);
+        }
+
         private static HashSet<string> GetReservedMetadata()
         {
             var blackList = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-            var outputProperties = typeof(PageModel).GetProperties();
-            foreach (var propertyInfo in outputProperties)
+            var outputProperties = ((JsonObjectContract)JsonUtility.DefaultSerializer.ContractResolver.ResolveContract(typeof(PageModel))).Properties;
+            foreach (var property in outputProperties)
             {
-                blackList.Add(propertyInfo.Name);
-                blackList.Add(ToUnderscoreCase(propertyInfo.Name));
+                blackList.Add(property.PropertyName);
             }
 
-            var inputProperties = typeof(FileMetadata).GetProperties();
-            foreach (var propertyInfo in inputProperties)
+            var inputProperties = ((JsonObjectContract)JsonUtility.DefaultSerializer.ContractResolver.ResolveContract(typeof(FileMetadata))).Properties;
+            foreach (var property in inputProperties)
             {
-                blackList.Remove(propertyInfo.Name);
-                blackList.Remove(ToUnderscoreCase(propertyInfo.Name));
+                blackList.Remove(property.PropertyName);
             }
 
             return blackList;
