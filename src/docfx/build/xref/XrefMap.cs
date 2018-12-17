@@ -297,7 +297,6 @@ namespace Microsoft.Docs.Build
                 Uid = metadata.Uid,
                 Href = file.SiteUrl,
             };
-            xref.ExtensionData.Merge(metadata.ExtensionData);
             xref.ExtensionData["name"] = string.IsNullOrEmpty(metadata.Title) ? metadata.Uid : metadata.Title;
 
             var (error, monikers) = monikersProvider.GetFileLevelMonikers(file, metadata.MonikerRange);
