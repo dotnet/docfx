@@ -25,7 +25,7 @@ namespace Microsoft.Docs.Build
 
             var (errors, schema, model, metadata) = await Load(context, file, callback, gitCommitProvider, metadataProvider, monikersProvider);
 
-            model.PageType = schema.Name;
+            model.SchemaType = schema.Name;
             model.Locale = file.Docset.Locale;
             model.Metadata = metadata;
             model.OpenToPublicContributors = file.Docset.Config.Contribution.ShowEdit;
@@ -46,7 +46,7 @@ namespace Microsoft.Docs.Build
             {
                 output = file.Docset.Legacy
                     ? file.Docset.LegacyTemplate.Render(model, file, HashUtility.GetMd5HashShort(model.Monikers))
-                    : await RazorTemplate.Render(model.PageType, model);
+                    : await RazorTemplate.Render(model.SchemaType, model);
             }
 
             return (errors, output, model.Monikers);

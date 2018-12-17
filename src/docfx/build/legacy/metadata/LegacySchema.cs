@@ -10,7 +10,7 @@ namespace Microsoft.Docs.Build
     {
         public static JObject Transform(JObject metadata, PageModel model)
         {
-            switch (model.PageType)
+            switch (model.SchemaType)
             {
                 case "LandingData":
                     metadata["_op_layout"] = "LandingPage";
@@ -26,7 +26,7 @@ namespace Microsoft.Docs.Build
                     break;
 
                 default:
-                    throw new NotImplementedException($"Unknown page type {model.PageType}");
+                    throw new NotImplementedException($"Unknown page type {model.SchemaType}");
             }
 
             return metadata;
