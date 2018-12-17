@@ -27,49 +27,56 @@ namespace Microsoft.Docs.Build
             var docset = new Docset(context, docsetPath, config, options).GetBuildDocset();
             var monikersProvider = new MonikersProvider(docset);
 
-            // TODO: toc map and xref map should always use source docset?
-            var tocMap = BuildTableOfContents.BuildTocMap(context, docset, monikersProvider);
-            var xrefMap = XrefMap.Create(context, docset, metadataProvider, monikersProvider);
-
-            var githubUserCache = await GitHubUserCache.Create(docset, config.GitHub.AuthToken);
-            var (manifest, fileManifests, sourceDependencies) = await BuildFiles(context, docset, tocMap, xrefMap, githubUserCache, metadataProvider, monikersProvider);
-
-            context.WriteJson(manifest, "build.manifest");
-            var saveGitHubUserCache = githubUserCache.SaveChanges(config);
-            xrefMap.OutputXrefMap(context);
-
-            if (options.Legacy)
+            using (var gitCommitProvider = new GitCommitProvider())
             {
-                if (config.Output.Json)
-                {
-                    // TODO: decouple files and dependencies from legacy.
-                    Legacy.ConvertToLegacyModel(docset, context, fileManifests, sourceDependencies, tocMap, metadataProvider);
-                }
-                else
-                {
-                    docset.LegacyTemplate.CopyTo(outputPath);
-                }
-            }
+                XrefMap xrefMap = null;
 
-            errors.AddIfNotNull(await saveGitHubUserCache);
-            errors.ForEach(e => context.Report(e));
+                var dependencyResolver = new DependencyResolver(gitCommitProvider, new Lazy<XrefMap>(() => xrefMap));
+
+                // Xrefmap and dependency resolver has a circular dependency.
+                xrefMap = XrefMap.Create(context, docset, metadataProvider, monikersProvider, dependencyResolver);
+
+                // TODO: toc map and xref map should always use source docset?
+                var tocMap = BuildTableOfContents.BuildTocMap(context, docset, monikersProvider, dependencyResolver);
+
+                var githubUserCache = await GitHubUserCache.Create(docset, config.GitHub.AuthToken);
+                var (manifest, fileManifests, sourceDependencies) = await BuildFiles(context, docset, tocMap, githubUserCache, metadataProvider, monikersProvider, dependencyResolver, gitCommitProvider);
+
+                context.WriteJson(manifest, "build.manifest");
+                var saveGitHubUserCache = githubUserCache.SaveChanges(config);
+                xrefMap.OutputXrefMap(context);
+
+                if (options.Legacy)
+                {
+                    if (config.Output.Json)
+                    {
+                        // TODO: decouple files and dependencies from legacy.
+                        Legacy.ConvertToLegacyModel(docset, context, fileManifests, sourceDependencies, tocMap, metadataProvider);
+                    }
+                    else
+                    {
+                        docset.LegacyTemplate.CopyTo(outputPath);
+                    }
+                }
+
+                errors.AddIfNotNull(await saveGitHubUserCache);
+                errors.ForEach(e => context.Report(e));
+            }
         }
 
         private static async Task<(Manifest, Dictionary<Document, FileManifest>, DependencyMap)> BuildFiles(
             Context context,
             Docset docset,
             TableOfContentsMap tocMap,
-            XrefMap xrefMap,
             GitHubUserCache githubUserCache,
             MetadataProvider metadataProvider,
-            MonikersProvider monikersProvider)
+            MonikersProvider monikersProvider,
+            DependencyResolver dependencyResolver,
+            GitCommitProvider gitCommitProvider)
         {
             using (Progress.Start("Building files"))
-            using (var gitCommitProvider = new GitCommitProvider())
             {
                 var recurseDetector = new ConcurrentHashSet<Document>();
-                var dependencyMapBuilder = new DependencyMapBuilder();
-                var bookmarkValidator = new BookmarkValidator();
                 var manifestBuilder = new ManifestBuilder();
                 var monikersMap = new ConcurrentDictionary<Document, List<string>>();
 
@@ -91,7 +98,7 @@ namespace Microsoft.Docs.Build
 
                 ValidateBookmarks();
                 var manifest = manifestBuilder.Build(context);
-                var dependencyMap = dependencyMapBuilder.Build();
+                var dependencyMap = dependencyResolver.DependencyMapBuilder.Build();
 
                 await saveGitCommitCache;
 
@@ -102,8 +109,7 @@ namespace Microsoft.Docs.Build
                     Action<Document> buildChild,
                     Dictionary<Document, List<string>> fileMonikersMap)
                 {
-                    var callback = new PageCallback(xrefMap, dependencyMapBuilder, bookmarkValidator, buildChild);
-                    return await BuildFile(context, file, tocMap, contribution, fileMonikersMap, callback, manifestBuilder, gitCommitProvider, metadataProvider, monikersProvider);
+                    return await BuildFile(context, file, tocMap, contribution, fileMonikersMap, manifestBuilder, metadataProvider, monikersProvider, dependencyResolver, buildChild);
                 }
 
                 bool ShouldBuildFile(Document file, ContentType[] shouldBuildContentTypes)
@@ -119,7 +125,7 @@ namespace Microsoft.Docs.Build
 
                 void ValidateBookmarks()
                 {
-                    foreach (var (error, file) in bookmarkValidator.Validate())
+                    foreach (var (error, file) in dependencyResolver.BookmarkValidator.Validate())
                     {
                         if (context.Report(error))
                         {
@@ -136,11 +142,11 @@ namespace Microsoft.Docs.Build
             TableOfContentsMap tocMap,
             ContributionProvider contribution,
             Dictionary<Document, List<string>> monikersMap,
-            PageCallback callback,
             ManifestBuilder manifestBuilder,
-            GitCommitProvider gitCommitProvider,
             MetadataProvider metadataProvider,
-            MonikersProvider monikersProvider)
+            MonikersProvider monikersProvider,
+            DependencyResolver dependencyResolver,
+            Action<Document> buildChild)
         {
             try
             {
@@ -154,11 +160,11 @@ namespace Microsoft.Docs.Build
                         (errors, model, monikers) = BuildResource.Build(file, metadataProvider, monikersProvider);
                         break;
                     case ContentType.Page:
-                        (errors, model, monikers) = await BuildPage.Build(context, file, tocMap, contribution, callback, gitCommitProvider, metadataProvider, monikersProvider);
+                        (errors, model, monikers) = await BuildPage.Build(context, file, tocMap, contribution, metadataProvider, monikersProvider, dependencyResolver, buildChild);
                         break;
                     case ContentType.TableOfContents:
                         // TODO: improve error message for toc monikers overlap
-                        (errors, model, monikers) = BuildTableOfContents.Build(context, file, tocMap, gitCommitProvider, metadataProvider, monikersProvider, callback.XrefMap, callback.DependencyMapBuilder, callback.BookmarkValidator, monikersMap);
+                        (errors, model, monikers) = BuildTableOfContents.Build(context, file, tocMap, metadataProvider, monikersProvider, dependencyResolver, monikersMap);
                         break;
                     case ContentType.Redirection:
                         (errors, model, monikers) = BuildRedirection.Build(file, metadataProvider, monikersProvider);
