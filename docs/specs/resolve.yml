@@ -173,14 +173,14 @@ outputs:
 inputs:
   docfx.yml: |
     redirections:
-      docs/redirect.md: /absolute/path?a=x#c
+      docs/redirect.md: /absolute/path?a=1#c
   docs/a.md: |
-    [redirect](redirect.md?a#b)
+    [redirect](redirect.md?a=2#b)
 outputs:
   docs/a.json: |
-    {"content":"<p><a href=\"/absolute/path?a#b\">redirect</a></p>"}
+    {"content":"<p><a href=\"/absolute/path?a=2#b\">redirect</a></p>"}
   docs/redirect.json: |
-    {"redirect_url":"/absolute/path"}
+    {"redirect_url":"/absolute/path?a=1#c"}
 ---
 # Files redirected to a relative URL
 inputs:
