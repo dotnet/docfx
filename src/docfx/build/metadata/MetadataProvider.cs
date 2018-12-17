@@ -4,7 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-
+using System.Linq;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -13,6 +13,7 @@ namespace Microsoft.Docs.Build
     {
         private readonly Config _config;
         private readonly List<(Func<string, bool> glob, string key, JToken value)> _rules = new List<(Func<string, bool> glob, string key, JToken value)>();
+        private static readonly HashSet<string> _reservedNames = GetReservedMetadata();
 
         public MetadataProvider(Config config)
         {
@@ -49,12 +50,46 @@ namespace Microsoft.Docs.Build
                 result.Merge(yamlHeader, JsonUtility.MergeSettings);
             }
 
-            if (result.TryGetValue("redirect_url", StringComparison.OrdinalIgnoreCase, out _))
+            var invalidNames = new List<string>();
+            foreach (var (key, _) in result)
             {
-                return (Errors.RedirectionInMetadata(), result);
+                if (_reservedNames.Contains(key, StringComparer.OrdinalIgnoreCase))
+                {
+                    invalidNames.Add(key);
+                }
+            }
+
+            if (invalidNames.Count > 0)
+            {
+                return (Errors.ReservedMetadata(invalidNames), result);
             }
 
             return (null, result);
+        }
+
+        private static HashSet<string> GetReservedMetadata()
+        {
+            var blackList = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            var outputProperties = typeof(PageModel).GetProperties();
+            foreach (var propertyInfo in outputProperties)
+            {
+                blackList.Add(propertyInfo.Name);
+                blackList.Add(ToUnderscoreCase(propertyInfo.Name));
+            }
+
+            var inputProperties = typeof(FileMetadata).GetProperties();
+            foreach (var propertyInfo in inputProperties)
+            {
+                blackList.Remove(propertyInfo.Name);
+                blackList.Remove(ToUnderscoreCase(propertyInfo.Name));
+            }
+
+            return blackList;
+        }
+
+        private static string ToUnderscoreCase(string str)
+        {
+            return string.Concat(str.Select((x, i) => i > 0 && char.IsUpper(x) ? "_" + x.ToString() : x.ToString())).ToLowerInvariant();
         }
     }
 }
