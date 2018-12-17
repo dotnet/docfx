@@ -8664,6 +8664,19 @@ references:
   isSpec: "True"
   fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.ProcessorInfo.IntermediateModelManifestFile
   nameWithType: ProcessorInfo.IntermediateModelManifestFile
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.ProcessorInfo.InvalidSourceFiles
+  name: InvalidSourceFiles
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.ProcessorInfo.html#Microsoft_DocAsCode_Build_Engine_Incrementals_ProcessorInfo_InvalidSourceFiles
+  commentId: P:Microsoft.DocAsCode.Build.Engine.Incrementals.ProcessorInfo.InvalidSourceFiles
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.ProcessorInfo.InvalidSourceFiles
+  nameWithType: ProcessorInfo.InvalidSourceFiles
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.ProcessorInfo.InvalidSourceFiles*
+  name: InvalidSourceFiles
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.ProcessorInfo.html#Microsoft_DocAsCode_Build_Engine_Incrementals_ProcessorInfo_InvalidSourceFiles_
+  commentId: Overload:Microsoft.DocAsCode.Build.Engine.Incrementals.ProcessorInfo.InvalidSourceFiles
+  isSpec: "True"
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.ProcessorInfo.InvalidSourceFiles
+  nameWithType: ProcessorInfo.InvalidSourceFiles
 - uid: Microsoft.DocAsCode.Build.Engine.Incrementals.ProcessorInfo.Steps
   name: Steps
   href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.ProcessorInfo.html#Microsoft_DocAsCode_Build_Engine_Incrementals_ProcessorInfo_Steps
