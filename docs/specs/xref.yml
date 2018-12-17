@@ -218,6 +218,7 @@ outputs:
     { "content": {"!xref": null}}
   build.log: |
     ["error","json-syntax-error","Unexpected character encountered while parsing value: }.","docs/a.json","description",7]
+    ["warning","uid-not-found","Cannot find uid 'a' using xref 'a'","docs/b.json"]
   xrefmap.json: | 
     {"references":[]}
 ---
