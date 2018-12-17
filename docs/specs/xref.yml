@@ -399,19 +399,20 @@ inputs:
     title: Title from yaml header a
     uid: a
     fullName: name for a
+    summary: Link to @b?displayProperty=summary
     ---
-    Link to @b?displayProperty=description
+    Link to @b?displayProperty=summary
   docs/b.json: | 
     {
       "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
       "uid": "b",
       "name": "name for b",
       "description": "description for b",
-      "summary": "Link to @a?displayProperty=fullName",
+      "summary": "Link to @a?displayProperty=summary",
     }
 outputs:
   docs/a.json: |
-    { "content": "<p>Link to <a href=\"b.json\">description for b</a></p>" }
+    { "content": "<p>Link to <a href=\"b.json\">&lt;p&gt;Link to &lt;a href=&quot;a&quot;&gt;Title from yaml header a&lt;/a&gt;&lt;/p&gt;\n</a></p>" }
   docs/b.json: |
     { 
       "content": 
