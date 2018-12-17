@@ -299,8 +299,7 @@ inputs:
       articles/b.md: /absolute/path2
 outputs:
   docs/a.json:
-  build.log: |
-    ["warning","redirection-out-of-scope","Redirection file 'articles/b.md' will not be built because it is not included in docfx.yml"]
+  articles/b.json:
 ---
 # Multiple errors
 inputs:

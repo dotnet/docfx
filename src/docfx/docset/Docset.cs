@@ -192,21 +192,7 @@ namespace Microsoft.Docs.Build
                         }
                     });
 
-                var result = new HashSet<Document>(files);
-
-                foreach (var redirection in redirections)
-                {
-                    if (glob(redirection.FilePath))
-                    {
-                        result.Add(redirection);
-                    }
-                    else
-                    {
-                        _context.Report(Errors.RedirectionOutOfScope(redirection, Config.ConfigFileName));
-                    }
-                }
-
-                return result;
+                return new HashSet<Document>(files.Concat(redirections));
             }
         }
     }
