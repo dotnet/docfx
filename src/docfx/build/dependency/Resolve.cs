@@ -46,18 +46,25 @@ namespace Microsoft.Docs.Build
             return link;
         }
 
-        public static (XrefSpec spec, Document referencedFile) ResolveXref(string uid, XrefMap xrefMap, Document file, DependencyMapBuilder dependencyMapBuilder, string moniker = null)
+        public static XrefSpec ResolveXref(string uid, XrefMap xrefMap, Document file, DependencyMapBuilder dependencyMapBuilder, string moniker = null)
         {
             if (xrefMap is null)
-                return default;
+                return null;
 
             var (xrefSpec, referencedFile) = xrefMap.Resolve(uid, moniker);
             if (xrefSpec != null)
             {
                 dependencyMapBuilder.AddDependencyItem(file, referencedFile, DependencyType.UidInclusion);
-            }
 
-            return (xrefSpec, referencedFile);
+                if (referencedFile != null)
+                {
+                    var spec = xrefSpec.Clone();
+                    spec.Href = GetRelativeUrl(file, referencedFile);
+                    return spec;
+                }
+                return xrefSpec;
+            }
+            return null;
         }
 
         public static (Error error, string content, Document file) TryResolveContent(this Document relativeTo, string href, GitCommitProvider gitCommitProvider)
@@ -171,7 +178,7 @@ namespace Microsoft.Docs.Build
             }
 
             // need to url decode uid from input content
-            var (xrefSpec, referencedFile) = ResolveXref(HttpUtility.UrlDecode(uid), xrefMap, file, dependencyMapBuilder, moniker);
+            var xrefSpec = ResolveXref(HttpUtility.UrlDecode(uid), xrefMap, file, dependencyMapBuilder, moniker);
             if (xrefSpec is null)
             {
                 return (Errors.UidNotFound(file, uid, href), null, null);
@@ -184,14 +191,14 @@ namespace Microsoft.Docs.Build
             string display = !string.IsNullOrEmpty(displayPropertyValue) ? displayPropertyValue : (!string.IsNullOrEmpty(name) ? name : uid);
             var monikerQuery = !string.IsNullOrEmpty(moniker) ? $"view={moniker}" : "";
 
-            href = HrefUtility.MergeHref(referencedFile != null ? GetRelativeUrl(file, referencedFile) : xrefSpec.Href, monikerQuery, fragment.Length == 0 ? "" : fragment.Substring(1));
+            href = HrefUtility.MergeHref(xrefSpec.Href, monikerQuery, fragment.Length == 0 ? "" : fragment.Substring(1));
             return (null, href, display);
         }
 
         /// <summary>
         /// Get relative url from file to the file relative to
         /// </summary>
-        public static string GetRelativeUrl(Document fileRelativeTo, Document file)
+        private static string GetRelativeUrl(Document fileRelativeTo, Document file)
         {
             var relativePath = PathUtility.GetRelativePathToFile(fileRelativeTo.SitePath, file.SitePath);
             return HrefUtility.EscapeUrl(Document.PathToRelativeUrl(

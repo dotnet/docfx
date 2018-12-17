@@ -24,5 +24,15 @@ namespace Microsoft.Docs.Build
 
         public string GetXrefPropertyValue(string property)
             => ExtensionData.TryGetValue<JValue>(property, out var v) && v.Value is string str ? str : null;
+
+        public XrefSpec Clone()
+        {
+            var spec = new XrefSpec();
+            spec.Uid = Uid;
+            spec.Monikers = Monikers;
+            spec.Href = Href;
+            spec.ExtensionData.Merge(ExtensionData);
+            return spec;
+        }
     }
 }
