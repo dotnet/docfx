@@ -37,8 +37,14 @@ namespace Microsoft.Docs.Build
             {
                 foreach (var referencedToc in referencedTocs)
                 {
-                    var referencedBy = _referencedTocs.GetOrAdd(referencedToc, new ConcurrentBag<Document>());
-                    referencedBy.Add(tocFile);
+                    _referencedTocs.AddOrUpdate(
+                        referencedToc,
+                        new ConcurrentBag<Document>(),
+                        (_, oldValue) =>
+                        {
+                            oldValue.Add(tocFile);
+                            return oldValue;
+                        });
                 }
             }
         }
