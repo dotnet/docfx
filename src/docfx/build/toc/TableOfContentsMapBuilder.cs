@@ -16,7 +16,7 @@ namespace Microsoft.Docs.Build
         /// Tracks toc files which are included by other toc files
         /// Included toc files are excluded when finding nearest toc for an article.
         /// </summary>
-        private readonly ConcurrentDictionary<Document, IEnumerable<Document>> _tocToTocs = new ConcurrentDictionary<Document, IEnumerable<Document>>();
+        private readonly ConcurrentDictionary<Document, ConcurrentBag<Document>> _referencedTocs = new ConcurrentDictionary<Document, ConcurrentBag<Document>>();
 
         /// <summary>
         /// Mappings between toc and a collection of document
@@ -32,7 +32,15 @@ namespace Microsoft.Docs.Build
         public void Add(Document tocFile, IEnumerable<Document> referencedDocuments, IEnumerable<Document> referencedTocs)
         {
             _tocToDocuments.TryAdd(tocFile, referencedDocuments);
-            _tocToTocs.TryAdd(tocFile, referencedTocs);
+
+            if (referencedTocs != null)
+            {
+                foreach (var referencedToc in referencedTocs)
+                {
+                    var referencedBy = _referencedTocs.GetOrAdd(referencedToc, new ConcurrentBag<Document>());
+                    referencedBy.Add(tocFile);
+                }
+            }
         }
 
         /// <summary>
@@ -47,7 +55,7 @@ namespace Microsoft.Docs.Build
             // order by toc path
             var allTocs = new List<Document>();
             var experimentalTocs = new List<Document>();
-            var referencedTocs = new HashSet<Document>(_tocToTocs.SelectMany(r => r.Value));
+            var referencedTocs = new HashSet<Document>(_referencedTocs.Keys);
 
             foreach (var (toc, documents) in _tocToDocuments)
             {
@@ -80,7 +88,7 @@ namespace Microsoft.Docs.Build
                 allTocs,
                 experimentalTocs,
                 documentToTocs,
-                _tocToTocs.ToDictionary(k => k.Key, v => new HashSet<Document>(v.Value)));
+                _referencedTocs.ToDictionary(k => k.Key, v => new HashSet<Document>(v.Value)));
         }
     }
 }

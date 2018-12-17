@@ -35,18 +35,9 @@ namespace Microsoft.Docs.Build
             _tocToTocs = tocToTocs ?? throw new ArgumentNullException(nameof(tocToTocs));
         }
 
-        public bool TryFindParents(Document toc, out List<Document> parents)
+        public bool TryFindParents(Document toc, out HashSet<Document> parents)
         {
-            parents = new List<Document>();
-            foreach (var (parent, children) in _tocToTocs)
-            {
-                if (children.Contains(toc))
-                {
-                    parents.Add(parent);
-                }
-            }
-
-            return parents.Any();
+            return _tocToTocs.TryGetValue(toc, out parents);
         }
 
         /// <summary>
