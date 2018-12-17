@@ -15,12 +15,9 @@ namespace Microsoft.Docs.Build
             Context context,
             Document file,
             TableOfContentsMap tocMap,
-            GitCommitProvider gitCommitProvider,
             MetadataProvider metadataProvider,
             MonikersProvider monikersProvider,
-            XrefMap xrefMap,
-            DependencyMapBuilder dependencyMapBuilder,
-            BookmarkValidator bookmarkValidator,
+            DependencyResolver dependencyResolver,
             Dictionary<Document, List<string>> monikersMap)
         {
             Debug.Assert(file.ContentType == ContentType.TableOfContents);
@@ -31,7 +28,7 @@ namespace Microsoft.Docs.Build
                 return (Enumerable.Empty<Error>(), null, new List<string>());
             }
 
-            var (errors, tocModel, tocMetadata, refArticles, refTocs) = Load(context, file, monikersProvider, xrefMap, dependencyMapBuilder, gitCommitProvider, bookmarkValidator, monikersMap);
+            var (errors, tocModel, tocMetadata, refArticles, refTocs) = Load(context, file, monikersProvider, dependencyResolver, monikersMap);
 
             var metadata = metadataProvider.GetMetadata(file, tocMetadata).ToObject<TableOfContentsMetadata>();
 
@@ -48,7 +45,7 @@ namespace Microsoft.Docs.Build
             return (errors, model, metadata.Monikers);
         }
 
-        public static TableOfContentsMap BuildTocMap(Context context, Docset docset, MonikersProvider monikersProvider)
+        public static TableOfContentsMap BuildTocMap(Context context, Docset docset, MonikersProvider monikersProvider, DependencyResolver dependencyResolver)
         {
             using (Progress.Start("Loading TOC"))
             {
@@ -59,20 +56,20 @@ namespace Microsoft.Docs.Build
                     return builder.Build();
                 }
 
-                ParallelUtility.ForEach(tocFiles, file => BuildTocMap(context, file, builder, monikersProvider), Progress.Update);
+                ParallelUtility.ForEach(tocFiles, file => BuildTocMap(context, file, builder, monikersProvider, dependencyResolver), Progress.Update);
 
                 return builder.Build();
             }
         }
 
-        private static void BuildTocMap(Context context, Document fileToBuild, TableOfContentsMapBuilder tocMapBuilder, MonikersProvider monikersProvider)
+        private static void BuildTocMap(Context context, Document fileToBuild, TableOfContentsMapBuilder tocMapBuilder, MonikersProvider monikersProvider, DependencyResolver dependencyResolver)
         {
             try
             {
                 Debug.Assert(tocMapBuilder != null);
                 Debug.Assert(fileToBuild != null);
 
-                var (errors, _, _, referencedDocuments, referencedTocs) = Load(context, fileToBuild, monikersProvider);
+                var (errors, _, _, referencedDocuments, referencedTocs) = Load(context, fileToBuild, monikersProvider, dependencyResolver);
                 context.Report(fileToBuild.ToString(), errors);
 
                 tocMapBuilder.Add(fileToBuild, referencedDocuments, referencedTocs);
@@ -94,10 +91,7 @@ namespace Microsoft.Docs.Build
             Context context,
             Document fileToBuild,
             MonikersProvider monikersProvider,
-            XrefMap xrefMap = null,
-            DependencyMapBuilder dependencyMapBuilder = null,
-            GitCommitProvider gitCommitProvider = null,
-            BookmarkValidator bookmarkValidator = null,
+            DependencyResolver dependencyResolver,
             Dictionary<Document, List<string>> monikersMap = null)
         {
             var errors = new List<Error>();
@@ -109,13 +103,12 @@ namespace Microsoft.Docs.Build
                 fileToBuild,
                 (file, href, isInclude) =>
                 {
-                    var (error, referencedTocContent, referencedToc) = file.TryResolveContent(href, gitCommitProvider);
+                    var (error, referencedTocContent, referencedToc) = dependencyResolver.ResolveContent(href, file, DependencyType.TocInclusion);
                     errors.AddIfNotNull(error);
                     if (referencedToc != null && isInclude)
                     {
                         // add to referenced toc list
                         referencedTocs.Add(referencedToc);
-                        dependencyMapBuilder?.AddDependencyItem(file, referencedToc, DependencyType.TocInclusion);
                     }
                     return (referencedTocContent, referencedToc);
                 },
@@ -123,20 +116,18 @@ namespace Microsoft.Docs.Build
                 {
                     // add to referenced document list
                     // only resolve href, no need to build
-                    var (error, link, fragment, buildItem) = file.TryResolveHref(href, resultRelativeTo, xrefMap, dependencyMapBuilder);
+                    var (error, link, buildItem) = dependencyResolver.ResolveLink(href, file, resultRelativeTo, null);
                     errors.AddIfNotNull(error);
 
                     var itemMonikers = new List<string>();
                     if (buildItem != null)
                     {
                         referencedDocuments.Add(buildItem);
-                        dependencyMapBuilder?.AddDependencyItem(file, buildItem, HrefUtility.FragmentToDependencyType(fragment));
                         if (monikersMap == null || !monikersMap.TryGetValue(buildItem, out itemMonikers))
                         {
                             itemMonikers = new List<string>();
                         }
                     }
-                    bookmarkValidator?.AddBookmarkReference(file, buildItem ?? file, fragment);
                     return (link, itemMonikers);
                 }, monikersProvider);
 
