@@ -18,7 +18,14 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(relativeTo != null);
 
-            if (dependencyDoc == null)
+            if (relativeTo == null || dependencyDoc == null)
+            {
+                return;
+            }
+
+            // Do not mix source document in dependency map for localized build
+            var isLocalizedBuild = relativeTo.Docset.IsLocalizedBuild() || dependencyDoc.Docset.IsLocalizedBuild();
+            if (isLocalizedBuild && (!relativeTo.Docset.IsLocalized() || !dependencyDoc.Docset.IsLocalized()))
             {
                 return;
             }
