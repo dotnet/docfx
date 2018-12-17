@@ -62,6 +62,7 @@ inputs:
   docs/a.md: |
     ---
     title: Title from yaml header a
+    fullName: Full name for a
     uid: a
     ---
   docs/b.md: |
@@ -69,10 +70,10 @@ inputs:
     title: Title from yaml header b
     uid: b
     ---
-  docs/c.md: Link to @a
+  docs/c.md: Link to @a?displayProperty=fullName
 outputs:
   docs/c.json: | 
-    {"content":"<p>Link to <a href=\"a\">Title from yaml header a</a></p>\n"}
+    {"content":"<p>Link to <a href=\"a\">Full name for a</a></p>\n"}
   docs/a.json:
   docs/b.json:
   xrefmap.json: | 
@@ -412,14 +413,14 @@ inputs:
     }
 outputs:
   docs/a.json: |
-    { "content": "<p>Link to <a href=\"b.json\">&lt;p&gt;Link to &lt;a href=&quot;a&quot;&gt;Title from yaml header a&lt;/a&gt;&lt;/p&gt;\n</a></p>" }
+    { "content": "<p>Link to <a href=\"b.json\">&lt;p&gt;Link to &lt;a href=&quot;a&quot;&gt;Link to @b?displayProperty=summary&lt;/a&gt;&lt;/p&gt;\n</a></p>" }
   docs/b.json: |
     { 
       "content": 
       {
         "name": "name for b",
         "description": "description for b",
-        "summary": "<p>Link to <a href=\"a\">Title from yaml header a</a></p>\n",
+        "summary": "<p>Link to <a href=\"a\">Link to @b?displayProperty=summary</a></p>\n",
         "uid": "b"
       }
     }
