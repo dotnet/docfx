@@ -221,8 +221,9 @@ namespace Microsoft.Docs.Build
             return sourceDocset.LocalizationDocset ?? sourceDocset;
         }
 
-        public static bool IsLocalized(this Docset docset)
-            => docset.FallbackDocset != null;
+        public static bool IsLocalized(this Docset docset) => docset.FallbackDocset != null;
+
+        public static bool IsLocalizedBuild(this Docset docset) => docset.FallbackDocset != null || docset.LocalizationDocset != null;
 
         public static (string remote, string branch) GetLocalizationTheme(string theme, string locale, string defaultLocale)
         {
