@@ -27,10 +27,12 @@ namespace Microsoft.Docs.Build
 
         public XrefSpec Clone()
         {
-            var spec = new XrefSpec();
-            spec.Uid = Uid;
-            spec.Monikers = Monikers;
-            spec.Href = Href;
+            var spec = new XrefSpec
+            {
+                Uid = Uid,
+                Monikers = Monikers,
+                Href = Href,
+            };
             spec.ExtensionData.Merge(ExtensionData);
             return spec;
         }
