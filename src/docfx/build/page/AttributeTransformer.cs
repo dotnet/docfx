@@ -70,6 +70,7 @@ namespace Microsoft.Docs.Build
                 {
                     // TODO: how to fill xref resolving data besides href
                     var (error, link, _) = dependencyResolver.ResolveXref((string)value, file);
+                    errors.AddIfNotNull(error);
                     return link;
                 }
 
