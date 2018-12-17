@@ -1,8 +1,10 @@
-Version Notes (Current Version: v2.41)
+Version Notes (Current Version: v2.40.4)
 =======================================
 
-v2.41(Pre-release)
+v2.40.4
 -----------
+1. Bug fix:
+    1. Fix EntityMetadata for FSharp when parsing signature files.
 
 v2.40.3
 -----------
