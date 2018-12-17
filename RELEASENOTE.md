@@ -1,5 +1,12 @@
-Version Notes (Current Version: v2.40.4)
+Version Notes (Current Version: v2.40.5)
 =======================================
+
+v2.40.5
+-----------	-----------
+1. Show warnings on page when codesnippet is not found.
+1. Bug fix:
+    1. Fix EntityMetadata for FSharp when parsing signature files.
+    1. Fix FSharp tests.
 
 v2.40.4
 -----------
