@@ -48,7 +48,7 @@ namespace Microsoft.Docs.Build
             return (error, link, file);
         }
 
-        public (Error error, string href, string display, Document referencedFile) ResolveXref(string href, Document file)
+        public (Error error, string href, string display, Document file) ResolveXref(string href, Document file)
         {
             var (uid, query, fragment) = HrefUtility.SplitHref(href);
             string moniker = null;

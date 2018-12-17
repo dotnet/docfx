@@ -12,7 +12,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class ResolveXref
     {
-        public static MarkdownPipelineBuilder UseResolveXref(this MarkdownPipelineBuilder builder, Func<string, (Error error, string href, string display, Document referencedFile)> resolveXref)
+        public static MarkdownPipelineBuilder UseResolveXref(this MarkdownPipelineBuilder builder, Func<string, (Error error, string href, string display, Document file)> resolveXref)
         {
             return builder.Use(document =>
              {
