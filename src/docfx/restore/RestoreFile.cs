@@ -25,6 +25,7 @@ namespace Microsoft.Docs.Build
             {
                 existingEtag = GetEtag(existingPath);
             }
+
             var (tempFile, etag) = await DownloadToTempFile(url, config, existingEtag);
             if (tempFile == null)
             {
