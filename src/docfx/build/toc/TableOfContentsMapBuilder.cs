@@ -39,7 +39,7 @@ namespace Microsoft.Docs.Build
                 {
                     _referencedTocs.AddOrUpdate(
                         referencedToc,
-                        new ConcurrentBag<Document>(),
+                        new ConcurrentBag<Document> { tocFile },
                         (_, oldValue) =>
                         {
                             oldValue.Add(tocFile);
