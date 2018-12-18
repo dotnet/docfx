@@ -153,7 +153,7 @@ Classes in assemblies are by definition complete.
 <a href=""https://example.org"">example</a>
 <p>This is <code data-dev-comment-type=""paramref"" class=""paramref"">ref</code> a sample of exception node</p>
 <ul><li>
-<pre><code class=""c#"">public class XmlElement
+<pre><code class=""lang-c#"">public class XmlElement
     : XmlLinkedNode</code></pre>
 <ol><li>
             word inside list->listItem->list->listItem->para.>
