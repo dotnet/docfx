@@ -52,7 +52,7 @@ namespace Microsoft.Docs.Build
             return (error, link, file);
         }
 
-        public (Error error, string href, string display) ResolveXref(string href, Document file)
+        public (Error error, string href, string display, Document file) ResolveXref(string href, Document file)
         {
             var (uid, query, fragment) = HrefUtility.SplitHref(href);
             string moniker = null;
@@ -67,7 +67,7 @@ namespace Microsoft.Docs.Build
             var (xrefSpec, referencedFile) = _xrefMap.Value.Resolve(HttpUtility.UrlDecode(uid), moniker);
             if (xrefSpec is null)
             {
-                return (Errors.UidNotFound(file, uid, href), null, null);
+                return (Errors.UidNotFound(file, uid, href), null, null, null);
             }
 
             DependencyMapBuilder.AddDependencyItem(file, referencedFile, DependencyType.UidInclusion);
@@ -84,9 +84,9 @@ namespace Microsoft.Docs.Build
             var displayPropertyValue = xrefSpec.GetXrefPropertyValue(queries?["displayProperty"]);
             string display = !string.IsNullOrEmpty(displayPropertyValue) ? displayPropertyValue : (!string.IsNullOrEmpty(name) ? name : uid);
             var monikerQuery = !string.IsNullOrEmpty(moniker) ? $"view={moniker}" : "";
-            href = HrefUtility.MergeHref(xrefSpec.Href, monikerQuery, fragment.Length == 0 ? "" : fragment);
 
-            return (null, href, display);
+            href = HrefUtility.MergeHref(xrefSpec.Href, monikerQuery, fragment.Length == 0 ? "" : fragment);
+            return (null, href, display, referencedFile);
         }
 
         private (Error error, string content, Document file) TryResolveContent(Document relativeTo, string href)
@@ -120,8 +120,8 @@ namespace Microsoft.Docs.Build
 
             if (href.StartsWith("xref:"))
             {
-                var (uidError, uidHref, _) = ResolveXref(href.Substring("xref:".Length), resultRelativeTo);
-                return (uidError, uidHref, null, null);
+                var (uidError, uidHref, _, referencedFile) = ResolveXref(href.Substring("xref:".Length), resultRelativeTo);
+                return (uidError, uidHref, null, referencedFile);
             }
 
             var (error, file, redirectTo, query, fragment, isSelfBookmark, _) = TryResolveFile(relativeTo, href);
