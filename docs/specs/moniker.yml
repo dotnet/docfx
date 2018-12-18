@@ -737,6 +737,7 @@ inputs:
   docs/v1/a.md: |
     ---
     monikerRange: netcore-1.0 || netcore-1.1
+    uid: a
     ---
     Moniker: netcore-1.0, netcore-1.1
   docs/v1/b.md: |
@@ -749,6 +750,7 @@ inputs:
     monikerRange: '>= netcore-1.1'
     ---
     # [A](a.md)
+    ## [A](xref:a)
     ## [B](b.md)
   monikerDefinition.json: |
     {
@@ -777,6 +779,7 @@ outputs:
           "toc_title": "A",
           "href": "a",
           "children": [
+            { "toc_title": "A", "href": "a", "monikers": ["netcore-1.0", "netcore-1.1"] },
             { "toc_title": "B", "href": "b", "monikers": ["netcore-1.1", "netcore-1.2"] }
           ],
           "monikers": ["netcore-1.0", "netcore-1.1", "netcore-1.2"]

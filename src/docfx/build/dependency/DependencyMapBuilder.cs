@@ -14,16 +14,22 @@ namespace Microsoft.Docs.Build
     {
         private readonly ConcurrentHashSet<DependencyItem> _dependencyItems = new ConcurrentHashSet<DependencyItem>();
 
-        public void AddDependencyItem(Document relativeTo, Document dependencyDoc, DependencyType type)
+        public void AddDependencyItem(Document from, Document to, DependencyType type)
         {
-            Debug.Assert(relativeTo != null);
+            Debug.Assert(from != null);
 
-            if (dependencyDoc == null)
+            if (from == null || to == null)
             {
                 return;
             }
 
-            _dependencyItems.TryAdd(new DependencyItem(relativeTo, dependencyDoc, type));
+            var isLocalizedBuild = from.Docset.IsLocalizedBuild() || to.Docset.IsLocalizedBuild();
+            if (isLocalizedBuild && !from.Docset.IsLocalized())
+            {
+                return;
+            }
+
+            _dependencyItems.TryAdd(new DependencyItem(from, to, type));
         }
 
         public DependencyMap Build()
