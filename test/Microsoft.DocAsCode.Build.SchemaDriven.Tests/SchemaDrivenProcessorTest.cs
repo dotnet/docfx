@@ -484,6 +484,7 @@ uid: invalid.azure.hello2
                 var schemaFile = CreateFile("template/schemas/mta.reference.test.schema.json", @"
 {
   ""$schema"": ""http://dotnet.github.io/docfx/schemas/v1.0/schema.json#"",
+  ""id"": ""https://contoso.com/template/schemas/mta.reference.test.schema.json"",
   ""version"": ""1.0.0"",
   ""title"": ""MetadataReferenceTest"",
   ""description"": ""A simple test schema for sdp"",
@@ -506,7 +507,7 @@ metadata: Web Apps Documentation
                 BuildDocument(files);
                 var errors = listener.Items.Where(s => s.Code == "InvalidInputFile").ToList();
                 Assert.Single(errors);
-                Assert.Equal($"Unable to load file '{inputFile}' via processor 'MetadataReferenceTest': Schema validation failed. Please validate the file and make sure it conform to schema 'MetadataReferenceTest': \nInvalid type. Expected Object but got String. Path 'metadata'.", errors[0].Message);
+                Assert.Equal($"Unable to load file '{inputFile}' via processor 'MetadataReferenceTest': Schema validation failed. Please validate the file and make sure it conforms to schema 'MetadataReferenceTest' (https://contoso.com/template/schemas/mta.reference.test.schema.json): \nInvalid type. Expected Object but got String. Path 'metadata'.", errors[0].Message);
             }
         }
 
