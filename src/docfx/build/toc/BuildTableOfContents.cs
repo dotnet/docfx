@@ -115,7 +115,6 @@ namespace Microsoft.Docs.Build
                 (file, href, resultRelativeTo) =>
                 {
                     // add to referenced document list
-                    // only resolve href, no need to build
                     var (error, link, buildItem) = dependencyResolver.ResolveLink(href, file, resultRelativeTo, null);
                     errors.AddIfNotNull(error);
 
@@ -129,7 +128,26 @@ namespace Microsoft.Docs.Build
                         }
                     }
                     return (link, itemMonikers);
-                }, monikersProvider);
+                },
+                (file, uid) =>
+                {
+                    // add to referenced document list
+                    var (error, link, _, buildItem) = dependencyResolver.ResolveXref(uid, file);
+                    errors.AddIfNotNull(error);
+
+                    var itemMonikers = new List<string>();
+                    if (buildItem != null)
+                    {
+                        referencedDocuments.Add(buildItem);
+                        if (monikersMap == null || !monikersMap.TryGetValue(buildItem, out itemMonikers))
+                        {
+                            itemMonikers = new List<string>();
+                        }
+                    }
+
+                    return (link, itemMonikers);
+                },
+                monikersProvider);
 
             errors.AddRange(loadErrors);
             return (errors, tocItems, tocMetadata, referencedDocuments, referencedTocs);

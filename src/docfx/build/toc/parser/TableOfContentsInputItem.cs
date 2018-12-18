@@ -23,6 +23,8 @@ namespace Microsoft.Docs.Build
 
         public string TocHref { get; set; }
 
+        public string Uid { get; set; }
+
         [JsonExtensionData]
         public JObject ExtensionData { get; set; }
 

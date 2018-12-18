@@ -17,12 +17,14 @@ namespace Microsoft.Docs.Build
 
         public delegate (string resolvedTopicHref, List<string> monikers) ResolveHref(Document relativeTo, string href, Document resultRelativeTo);
 
+        public delegate (string resolvedTopicHref, List<string> monikers) ResolveXref(Document relativeTo, string uid);
+
         public delegate (string content, Document file) ResolveContent(Document relativeTo, string href, bool isInclusion);
 
         public static (List<Error> errors, List<TableOfContentsItem> items, JObject metadata)
-            Load(Context context, Document file, ResolveContent resolveContent, ResolveHref resolveHref, MonikersProvider monikersProvider)
+            Load(Context context, Document file, ResolveContent resolveContent, ResolveHref resolveHref, ResolveXref resolveXref, MonikersProvider monikersProvider)
         {
-            var (errors, inputModel) = LoadInputModelItems(context, file, file, resolveContent, resolveHref, new List<Document>());
+            var (errors, inputModel) = LoadInputModelItems(context, file, file, resolveContent, resolveHref, resolveXref, new List<Document>());
 
             var items = inputModel?.Items?.Select(r => TableOfContentsInputItem.ToTableOfContentsModel(r, monikersProvider.Comparer)).ToList();
             return (errors, items, inputModel?.Metadata);
@@ -83,7 +85,7 @@ namespace Microsoft.Docs.Build
             return (new List<Error>(), new TableOfContentsInputModel());
         }
 
-        private static (List<Error> errors, TableOfContentsInputModel model) LoadInputModelItems(Context context, Document file, Document rootPath, ResolveContent resolveContent, ResolveHref resolveHref, List<Document> parents, string content = null)
+        private static (List<Error> errors, TableOfContentsInputModel model) LoadInputModelItems(Context context, Document file, Document rootPath, ResolveContent resolveContent, ResolveHref resolveHref, ResolveXref resolveXref, List<Document> parents, string content = null)
         {
             // add to parent path
             if (parents.Contains(file))
@@ -97,29 +99,29 @@ namespace Microsoft.Docs.Build
 
             if (models.Items.Any())
             {
-                errors.AddRange(ResolveTocModelItems(context, models.Items, parents, file, rootPath, resolveContent, resolveHref));
+                errors.AddRange(ResolveTocModelItems(context, models.Items, parents, file, rootPath, resolveContent, resolveHref, resolveXref));
                 parents.RemoveAt(parents.Count - 1);
             }
 
             return (errors, models);
         }
 
-        // todo: uid support
-        private static List<Error> ResolveTocModelItems(Context context, List<TableOfContentsInputItem> tocModelItems, List<Document> parents, Document filePath, Document rootPath, ResolveContent resolveContent, ResolveHref resolveHref)
+        private static List<Error> ResolveTocModelItems(Context context, List<TableOfContentsInputItem> tocModelItems, List<Document> parents, Document filePath, Document rootPath, ResolveContent resolveContent, ResolveHref resolveHref, ResolveXref resolveXref)
         {
             var errors = new List<Error>();
             foreach (var tocModelItem in tocModelItems)
             {
                 if (tocModelItem.Items != null && tocModelItem.Items.Any())
                 {
-                    errors.AddRange(ResolveTocModelItems(context, tocModelItem.Items, parents, filePath, rootPath, resolveContent, resolveHref));
+                    errors.AddRange(ResolveTocModelItems(context, tocModelItem.Items, parents, filePath, rootPath, resolveContent, resolveHref, resolveXref));
                 }
 
                 var tocHref = GetTocHref(tocModelItem);
                 var topicHref = GetTopicHref(tocModelItem);
+                var topicUid = tocModelItem.Uid;
 
                 var (resolvedTocHref, resolvedTopicHrefFromTocHref, subChildren) = ProcessTocHref(tocHref);
-                var (resolvedTopicHref, monikers) = ProcessTopicHref(topicHref);
+                var (resolvedTopicHref, monikers) = ProcessTopicItem(topicUid, topicHref);
 
                 // set resolved href back
                 tocModelItem.Href = resolvedTopicHref ?? resolvedTopicHrefFromTocHref;
@@ -200,7 +202,7 @@ namespace Microsoft.Docs.Build
                 var (referencedTocContent, referenceTocFilePath) = ResolveTocHrefContent(tocHrefType, tocHref, filePath, resolveContent);
                 if (referencedTocContent != null)
                 {
-                    var (subErrors, nestedToc) = LoadInputModelItems(context, referenceTocFilePath, rootPath, resolveContent, resolveHref, parents, referencedTocContent);
+                    var (subErrors, nestedToc) = LoadInputModelItems(context, referenceTocFilePath, rootPath, resolveContent, resolveHref, resolveXref, parents, referencedTocContent);
                     errors.AddRange(subErrors);
                     if (tocHrefType == TocHrefType.RelativeFolder)
                     {
@@ -215,8 +217,19 @@ namespace Microsoft.Docs.Build
                 return default;
             }
 
-            (string resolvedTopicHref, List<string> monikers) ProcessTopicHref(string topicHref)
+            (string resolvedTopicHref, List<string> monikers) ProcessTopicItem(string uid, string topicHref)
             {
+                // process uid first
+                if (!string.IsNullOrEmpty(uid))
+                {
+                    var (resolvedTopicHref, monikers) = resolveXref.Invoke(filePath, uid);
+                    if (!string.IsNullOrEmpty(resolvedTopicHref))
+                    {
+                        return (resolvedTopicHref, monikers);
+                    }
+                }
+
+                // process topicHref then
                 if (string.IsNullOrEmpty(topicHref))
                 {
                     return (topicHref, new List<string>());
