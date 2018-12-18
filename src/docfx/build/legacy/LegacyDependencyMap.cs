@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
@@ -70,11 +71,14 @@ namespace Microsoft.Docs.Build
                 case DependencyType.Link:
                     return LegacyDependencyMapType.File;
                 case DependencyType.Inclusion:
+                case DependencyType.TocInclusion:
                     return LegacyDependencyMapType.Include;
+                case DependencyType.UidInclusion:
+                    return LegacyDependencyMapType.Uid;
                 case DependencyType.Bookmark:
                     return LegacyDependencyMapType.Bookmark;
                 default:
-                    return LegacyDependencyMapType.None;
+                    throw new NotSupportedException($"Legacy dependency type not supported: {dependencyType}");
             }
         }
 
@@ -92,7 +96,6 @@ namespace Microsoft.Docs.Build
 
         private enum LegacyDependencyMapType
         {
-            None,
             Uid,
             Include,
             File,
