@@ -882,3 +882,29 @@ outputs:
   docs/a.json:
   build.log: |
     ["warning","include-not-found","Cannot resolve 'tokena.md' relative to 'docs/a.md'.","docs/a.md"]
+---
+# fallback to inclusion parent toc
+commands:
+  - build --locale zh-cn
+repos:
+  https://github.com/inclusiontoc/a:
+    - files:
+        docfx.yml:
+        docs/b/TOC.yml: |
+          - href: ../a/TOC.yml
+            name: reference toc a
+        docs/a/TOC.yml: |
+          - href: b.md
+            name: reference markdown b
+  https://github.com/inclusiontoc/a.zh-cn:
+    - files:
+        docs/a/TOC.yml: |
+          - href: a.md
+            name: reference markdown a
+        docs/a/a.md:
+        docs/a/b.md:
+outputs:
+  docs/a/a.json:
+  docs/a/b.json:
+  docs/b/toc.json: |
+    {"items":[{"toc_title":"reference toc a","children":[{"toc_title":"reference markdown a","href":"../a/a"}]}]}
