@@ -3,6 +3,7 @@
 
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -11,23 +12,11 @@ namespace Microsoft.Docs.Build
     /// </summary>
     internal class MonikerMap
     {
-        private readonly HashSet<Document> _docs = new HashSet<Document>();
+        private readonly Dictionary<Document, List<string>> _documentToMonikers = new Dictionary<Document, List<string>>();
 
-        private readonly ConcurrentDictionary<Document, List<string>> _documentToMonikers = new ConcurrentDictionary<Document, List<string>>();
-
-        public bool Contains(Document doc) => _docs.Contains(doc);
-
-        public bool TryAdd(Document doc, List<string> monikers)
+        public MonikerMap(ConcurrentDictionary<Document, List<string>> monikerMap)
         {
-            if (_documentToMonikers.TryAdd(doc, monikers))
-            {
-                _docs.Add(doc);
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            _documentToMonikers = monikerMap.ToDictionary(item => item.Key, item => item.Value);
         }
 
         public bool TryGetValue(Document doc, out List<string> monikers)

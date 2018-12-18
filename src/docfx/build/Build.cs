@@ -78,7 +78,7 @@ namespace Microsoft.Docs.Build
             {
                 var recurseDetector = new ConcurrentHashSet<Document>();
                 var manifestBuilder = new ManifestBuilder();
-                var monikerMap = new MonikerMap();
+                var monikerMap = new ConcurrentDictionary<Document, List<string>>();
 
                 var contribution = await ContributionProvider.Create(docset, githubUserCache, gitCommitProvider);
                 await ParallelUtility.ForEach(
@@ -90,7 +90,7 @@ namespace Microsoft.Docs.Build
                 // Build TOC: since toc file depends on the build result of every node
                 await ParallelUtility.ForEach(
                     docset.BuildScope,
-                    (file, buildChild) => { return BuildOneFile(file, buildChild, monikerMap); },
+                    (file, buildChild) => { return BuildOneFile(file, buildChild, new MonikerMap(monikerMap)); },
                     file => { return ShouldBuildFile(file, new ContentType[] { ContentType.TableOfContents }); },
                     Progress.Update);
 
