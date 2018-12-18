@@ -12,7 +12,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class ResolveXref
     {
-        public static MarkdownPipelineBuilder UseResolveXref(this MarkdownPipelineBuilder builder, Func<string, (Error error, string href, string display)> resolveXref)
+        public static MarkdownPipelineBuilder UseResolveXref(this MarkdownPipelineBuilder builder, Func<string, (Error error, string href, string display, Document file)> resolveXref)
         {
             return builder.Use(document =>
              {
@@ -20,7 +20,7 @@ namespace Microsoft.Docs.Build
                  {
                      if (node is XrefInline xref)
                      {
-                         var (_, href, display) = resolveXref(xref.Href);
+                         var (_, href, display, _) = resolveXref(xref.Href);
                          if (href is null)
                          {
                              var raw = xref.GetAttributes().Properties.First(p => p.Key == "data-raw-source").Value;
