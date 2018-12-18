@@ -22,6 +22,9 @@ namespace Microsoft.Docs.Build
         public static Error ConfigNotFound(string docsetPath, string configFile)
             => new Error(ErrorLevel.Error, "config-not-found", $"Cannot find {configFile} at '{docsetPath}'");
 
+        public static Error CircularReference()
+            => new Error(ErrorLevel.Error, "circular-reference", "Found circular reference");
+
         public static Error CircularReference<T>(T filePath, IEnumerable<T> dependencyChain)
             => new Error(ErrorLevel.Error, "circular-reference", $"Found circular reference: {string.Join(" --> ", dependencyChain.Select(file => $"'{file}'"))} --> '{filePath}'", filePath.ToString());
 

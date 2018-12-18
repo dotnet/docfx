@@ -391,7 +391,7 @@ outputs:
     { "content": "<p>Link to <a href=\"../c\">title</a></p>" }
   docs/c.json:
 ---
-# Cyclic xref reference
+# Markdown and SDP cyclic xref reference
 inputs:
   docfx.yml:
   docs/a.md: |
@@ -399,7 +399,6 @@ inputs:
     title: Title from yaml header a
     uid: a
     fullName: name for a
-    summary: Link to @b?displayProperty=summary
     ---
     Link to @b?displayProperty=summary
   docs/b.json: | 
@@ -408,7 +407,7 @@ inputs:
       "uid": "b",
       "name": "name for b",
       "description": "description for b",
-      "summary": "Link to @a?displayProperty=summary",
+      "summary": "Link to @a",
     }
 outputs:
   docs/a.json: |
@@ -419,7 +418,43 @@ outputs:
       {
         "name": "name for b",
         "description": "description for b",
-        "summary": "<p>Link to <a href=\"a\">Title from yaml header a</a></p>\n",
+        "summary": "<p>Link to <a href=\"a\">Title from yaml header a</a></p>",
         "uid": "b"
       }
     }
+---
+# [only]SDP Cyclic xref reference
+inputs:
+  docfx.yml:
+  docs/a.json: |
+    {
+      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
+      "uid": "a",
+      "name": "name for a",
+      "inlineDescription": "description for a",
+      "summary": "Link to @b?displayProperty=inlineDescription",
+    }
+  docs/b.json: |
+    {
+      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
+      "uid": "b",
+      "name": "name for b",
+      "inlineDescription": "description for b",
+      "summary": "Link to @a",
+    }  
+  docs/c.json: |
+    {
+      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
+      "uid": "c",
+      "name": "name for c",
+    }
+  docs/d.json: |
+    {
+      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
+      "xref": "c",
+    }
+outputs:
+  docs/a.json:
+  docs/b.json:
+  docs/c.json:
+  docs/d.json:

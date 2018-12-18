@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
@@ -33,9 +34,9 @@ namespace Microsoft.Docs.Build
             return (error, content, child);
         }
 
-        public (Error error, string link, Document file) ResolveLink(string path, Document relativeTo, Document resultRelativeTo, Action<Document> buildChild)
+        public (Error error, string link, Document file) ResolveLink(string path, Document relativeTo, Document resultRelativeTo, Action<Document> buildChild, List<Document> callStack = null)
         {
-            var (error, link, fragment, file) = TryResolveHref(relativeTo, path, resultRelativeTo);
+            var (error, link, fragment, file) = TryResolveHref(relativeTo, path, resultRelativeTo, callStack);
 
             if (file != null && buildChild != null)
             {
@@ -48,7 +49,7 @@ namespace Microsoft.Docs.Build
             return (error, link, file);
         }
 
-        public (Error error, string href, string display) ResolveXref(string href, Document file)
+        public (Error error, string href, string display) ResolveXref(string href, Document file, List<Document> callStack)
         {
             var (uid, query, fragment) = HrefUtility.SplitHref(href);
             string moniker = null;
@@ -60,7 +61,7 @@ namespace Microsoft.Docs.Build
             }
 
             // need to url decode uid from input content
-            var (xrefSpec, referencedFile) = _xrefMap.Value.Resolve(HttpUtility.UrlDecode(uid), moniker);
+            var (xrefSpec, referencedFile) = _xrefMap.Value.Resolve(HttpUtility.UrlDecode(uid), file, moniker);
             if (xrefSpec is null)
             {
                 return (Errors.UidNotFound(file, uid, href), null, null);
@@ -110,13 +111,13 @@ namespace Microsoft.Docs.Build
             return file != null ? (error, file.ReadText(), file) : default;
         }
 
-        private (Error error, string href, string fragment, Document file) TryResolveHref(Document relativeTo, string href, Document resultRelativeTo)
+        private (Error error, string href, string fragment, Document file) TryResolveHref(Document relativeTo, string href, Document resultRelativeTo, List<Document> callStack)
         {
             Debug.Assert(resultRelativeTo != null);
 
             if (href.StartsWith("xref:"))
             {
-                var (uidError, uidHref, _) = ResolveXref(href.Substring("xref:".Length), resultRelativeTo);
+                var (uidError, uidHref, _) = ResolveXref(href.Substring("xref:".Length), resultRelativeTo, callStack);
                 return (uidError, uidHref, null, null);
             }
 

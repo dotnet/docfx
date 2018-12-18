@@ -45,7 +45,7 @@ namespace Microsoft.Docs.Build
             return (errors, model, metadata.Monikers);
         }
 
-        public static TableOfContentsMap BuildTocMap(Context context, Docset docset, MonikersProvider monikersProvider, DependencyResolver dependencyResolver)
+        public static TableOfContentsMap BuildTocMap(Context context, Docset docset, MonikersProvider monikersProvider, DependencyResolver dependencyResolver, List<Document> callStack)
         {
             using (Progress.Start("Loading TOC"))
             {
@@ -56,13 +56,13 @@ namespace Microsoft.Docs.Build
                     return builder.Build();
                 }
 
-                ParallelUtility.ForEach(tocFiles, file => BuildTocMap(context, file, builder, monikersProvider, dependencyResolver), Progress.Update);
+                ParallelUtility.ForEach(tocFiles, file => BuildTocMap(context, file, builder, monikersProvider, dependencyResolver, callStack), Progress.Update);
 
                 return builder.Build();
             }
         }
 
-        private static void BuildTocMap(Context context, Document fileToBuild, TableOfContentsMapBuilder tocMapBuilder, MonikersProvider monikersProvider, DependencyResolver dependencyResolver)
+        private static void BuildTocMap(Context context, Document fileToBuild, TableOfContentsMapBuilder tocMapBuilder, MonikersProvider monikersProvider, DependencyResolver dependencyResolver, List<Document> callStack)
         {
             try
             {
