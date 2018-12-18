@@ -295,7 +295,7 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
-        /// Report warnings for all null or undefined nulls, remove nulls inside arrays.
+        /// Report warnings for all null or undefined nodes, remove nulls inside arrays.
         /// </summary>
         public static (List<Error>, JToken) RemoveNulls(this JToken token)
         {
