@@ -57,6 +57,10 @@ function normalizeCore(item, rel, level, comparer) {
     item.href = rel + item.href;
   }
 
+  if (rel && common.isRelativePath(item.topicHref)) {
+    item.topicHref= rel + item.topicHref;
+  }
+
   if (item.items && item.items.length > 0) {
     item.leaf = false;
     for (var i = item.items.length - 1; i >= 0; i--) {
