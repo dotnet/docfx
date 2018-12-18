@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace Microsoft.Docs.Build
 {
-    internal class RedirectionFile
+    internal class RedirectionConfigModel
     {
         /// <summary>
         /// Gets the redirection mappings

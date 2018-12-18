@@ -48,10 +48,10 @@ namespace Microsoft.Docs.Build
         public static RedirectionMap Create(Context context, Docset docset)
         {
             var redirections = new HashSet<Document>();
-            var redirectionFiles = LoadRedirectionFiles(context, docset);
+            var redirectionConfigs = LoadRedirectionConfigs(context, docset);
 
             // load redirections with document id
-            foreach (var (filename, model) in redirectionFiles)
+            foreach (var (filename, model) in redirectionConfigs)
             {
                 AddRedirections(filename, model.Redirections);
             }
@@ -67,7 +67,7 @@ namespace Microsoft.Docs.Build
             context.Report(errors);
 
             // load redirections without document id
-            foreach (var (filename, model) in redirectionFiles)
+            foreach (var (filename, model) in redirectionConfigs)
             {
                 AddRedirections(filename, model.RedirectionsWithoutId);
             }
@@ -95,7 +95,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static List<(string filename, RedirectionFile)> LoadRedirectionFiles(Context context, Docset docset)
+        private static List<(string filename, RedirectionConfigModel)> LoadRedirectionConfigs(Context context, Docset docset)
         {
             var redirectionConfigs = (
                 from file in docset.BuildScope
@@ -108,14 +108,14 @@ namespace Microsoft.Docs.Build
                 redirectionConfigs.Add(mainRedirectionConfig);
             }
 
-            var redirectionFiles = new List<(string filename, RedirectionFile)>();
+            var redirectionFiles = new List<(string filename, RedirectionConfigModel)>();
             foreach (var configPath in redirectionConfigs.OrderBy(_ => _))
             {
                 var filename = PathUtility.NormalizeFile(Path.GetRelativePath(docset.DocsetPath, configPath));
                 var content = File.ReadAllText(configPath);
                 if (configPath.EndsWith(".yml", PathUtility.PathComparison))
                 {
-                    var (errors, model) = YamlUtility.DeserializeWithSchemaValidation<RedirectionFile>(content);
+                    var (errors, model) = YamlUtility.DeserializeWithSchemaValidation<RedirectionConfigModel>(content);
                     context.Report(filename, errors);
                     if (model != null)
                     {
@@ -124,7 +124,7 @@ namespace Microsoft.Docs.Build
                 }
                 else if (configPath.EndsWith(".json", PathUtility.PathComparison))
                 {
-                    var (errors, model) = JsonUtility.DeserializeWithSchemaValidation<RedirectionFile>(content);
+                    var (errors, model) = JsonUtility.DeserializeWithSchemaValidation<RedirectionConfigModel>(content);
                     context.Report(filename, errors);
                     if (model != null)
                     {
