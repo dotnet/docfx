@@ -171,7 +171,8 @@ outputs:
 ---
 # Files redirected to an aboslute URL
 inputs:
-  docfx.yml: |
+  docfx.yml:
+  redirection.yml: |
     redirections:
       docs/redirect.md: /absolute/path
   docs/a.md: |
@@ -184,7 +185,8 @@ outputs:
 ---
 # Files redirected to a relative URL
 inputs:
-  docfx.yml: |
+  docfx.yml:
+  redirection.yml: |
     redirections:
       docs/redirect.md: relative/path
   docs/a.md: |
@@ -197,7 +199,8 @@ outputs:
 ---
 # Show warning if inclusion is a redirection file
 inputs:
-  docfx.yml: |
+  docfx.yml:
+  redirection.yml: |
     redirections:
       docs/redirect.md: /absolute/path
   docs/a.md: |
@@ -213,7 +216,8 @@ outputs:
 ---
 # Show warning if redirection file conflicts with existing file
 inputs:
-  docfx.yml: |
+  docfx.yml:
+  redirection.yml: |
     redirections:
       docs/redirect.md: /absolute/path
   docs/redirect.md:

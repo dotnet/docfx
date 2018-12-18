@@ -272,16 +272,18 @@ outputs:
 ---
 # Invalid redirection file
 inputs:
-  docfx.yml: |
+  docfx.yml:
+  redirection.yml: |
     redirections:
       docs/TOC.md: /absolute/path
 outputs:
   build.log: |
-    ["error","invalid-redirection","The 'docs/TOC.md' shouldn't belong to redirections since it's a TableOfContents","docfx.yml"]
+    ["error","invalid-redirection","The 'docs/TOC.md' shouldn't belong to redirections since it's a TableOfContents","redirection.yml"]
 ---
 # Conflicted redirection file
 inputs:
-  docfx.yml: |
+  docfx.yml:
+  redirection.yml: |
     redirections:
       docs/a.md: /absolute/path1
     redirectionsWithoutId:
@@ -289,11 +291,12 @@ inputs:
 outputs:
   docs/a.json:
   build.log: |
-    ["error","redirection-conflict","The 'docs/a.md' appears twice or more in the redirection mappings","docfx.yml"]
+    ["error","redirection-conflict","The 'docs/a.md' appears twice or more in the redirection mappings","redirection.yml"]
 ---
-# Out scope redirection file
+# Redirection file out of build scope
 inputs:
-  docfx.yml: |
+  docfx.yml:
+  redirection.yml: |
     redirections:
       docs/a.md: /absolute/path1
       articles/b.md: /absolute/path2
@@ -302,9 +305,10 @@ outputs:
   build.log: |
     ["warning","redirection-out-of-scope","Redirection file 'articles/b.md' will not be built because it is not included in docfx.yml"]
 ---
-# Multiple errors
+# Multiple redirection errors
 inputs:
-  docfx.yml: |
+  docfx.yml:
+  redirection.yml: |
     redirections:
       docs/TOC.md: /absolute/path
       docs/a.md: /absolute/path1
@@ -313,8 +317,26 @@ inputs:
 outputs:
   docs/a.json:
   build.log: |
-    ["error","invalid-redirection","The 'docs/TOC.md' shouldn't belong to redirections since it's a TableOfContents","docfx.yml"]
-    ["error","redirection-conflict","The 'docs/a.md' appears twice or more in the redirection mappings","docfx.yml"]
+    ["error","invalid-redirection","The 'docs/TOC.md' shouldn't belong to redirections since it's a TableOfContents","redirection.yml"]
+    ["error","redirection-conflict","The 'docs/a.md' appears twice or more in the redirection mappings","redirection.yml"]
+---
+# Folder level redirection.yml or redirection.json files
+inputs:
+  docfx.yml:
+  redirection.yml: |
+    redirections:
+      docs/a.md: /a
+  docs/folder-1/redirection.json: |
+      { "redirections" : { "docs/folder-1/a.md": "/b" } }
+  docs/article.md: |
+    Link to [](a.md) and [](folder-1/a.md)
+outputs:
+  docs/a.json: |
+    { "redirect_url": "/a" }
+  docs/folder-1/a.json: |
+    { "redirect_url": "/b" }
+  docs/article.json: |
+    { "content": "<p>Link to <a href=\"/a\"></a> and <a href=\"/b\"></a></p>" }
 ---
 # Wrong locale
 os: windows

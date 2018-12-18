@@ -21,7 +21,8 @@ outputs:
 # Redirection config is case insensitive on windows and mac
 os: windows, osx
 inputs:
-  docfx.yml: |
+  docfx.yml:
+  redirection.yml: |
     redirections:
       docs/redirect.md: relative/path
       docs/redirect1.md: relative/PATH

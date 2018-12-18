@@ -29,5 +29,10 @@ namespace Microsoft.Docs.Build
         /// Redirected documents specifed in redirection config
         /// </summary>
         Redirection,
+
+        /// <summary>
+        /// Redirection configuration file named redirection.yml or redirection.json
+        /// </summary>
+        RedirectionConfig,
     }
 }

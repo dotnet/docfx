@@ -17,11 +17,13 @@ namespace Microsoft.Docs.Build
 
         private readonly GitCommitProvider _gitCommitProvider;
         private readonly Lazy<XrefMap> _xrefMap;
+        private readonly RedirectionMap _redirectionMap;
 
-        public DependencyResolver(GitCommitProvider gitCommitProvider, Lazy<XrefMap> xrefMap)
+        public DependencyResolver(GitCommitProvider gitCommitProvider, RedirectionMap redirectionMap, Lazy<XrefMap> xrefMap)
         {
             _gitCommitProvider = gitCommitProvider;
             _xrefMap = xrefMap;
+            _redirectionMap = redirectionMap;
         }
 
         public (Error error, string content, Document file) ResolveContent(string path, Document relativeTo, DependencyType dependencyType = DependencyType.Inclusion)
@@ -239,7 +241,7 @@ namespace Microsoft.Docs.Build
             // resolve from redirection files
             pathToDocset = PathUtility.NormalizeFile(pathToDocset);
 
-            if (relativeTo.Docset.Redirections.TryGetRedirectionUrl(pathToDocset, out var redirectTo))
+            if (_redirectionMap.TryGetRedirectionUrl(pathToDocset, out var redirectTo))
             {
                 // redirectTo always is absolute href
                 //

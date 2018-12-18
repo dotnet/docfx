@@ -29,6 +29,19 @@ namespace Microsoft.Docs.Build
 
         public (List<Error> errors, JObject metadata) ExtractMetadata(Document file) => _cache.ExtractMetadata(file);
 
+        public bool Report(IEnumerable<Error> errors)
+        {
+            var hasErrors = false;
+            foreach (var error in errors)
+            {
+                if (Report(error))
+                {
+                    hasErrors = true;
+                }
+            }
+            return hasErrors;
+        }
+
         public bool Report(string file, IEnumerable<Error> errors)
         {
             var hasErrors = false;

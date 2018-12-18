@@ -56,6 +56,7 @@ inputs:
     name: sccm
     product: Win
     files: "**/*"
+  redirection.yml: |
     redirections:
       sccm/mdm/index.md: /sccm/mdm/understand/hybrid-mobile-device-management
   sccm/mdm/understand/hybrid-mobile-device-management.md:
@@ -75,6 +76,7 @@ inputs:
     name: sccm
     product: Win
     files: "sccm/mdm/understand/hybrid-mobile-device-management.md"
+  redirection.yml: |
     redirections:
       sccm/mdm/index.md: /sccm/mdm/understand/hybrid-mobile-device-management
   sccm/mdm/understand/hybrid-mobile-device-management.md:
@@ -93,6 +95,7 @@ inputs:
     name: sccm
     product: Win
     files: "**/*"
+  redirection.yml: |
     redirectionsWithoutId:
       sccm/mdm/index.md: /sccm/mdm/understand/hybrid-mobile-device-management
   sccm/mdm/understand/hybrid-mobile-device-management.md:
@@ -111,6 +114,7 @@ inputs:
     name: sccm
     product: Win
     files: "**/*"
+  redirection.yml: |
     redirections:
       sccm/mdm/index.md: /sccm/mdm/understand/hybrid-mobile-device-management
       sccm/mdm/index2.md: /sccm/mdm/understand/hybrid-mobile-device-management
@@ -123,7 +127,7 @@ outputs:
   sccm/mdm/index2.json: |
     { "redirect_url":"/sccm/mdm/understand/hybrid-mobile-device-management" }
   build.log: |
-    ["warning","redirected-id-conflict","Multiple documents redirected to '/sccm/mdm/understand/hybrid-mobile-device-management' with document id: 'sccm/mdm/index.md', 'sccm/mdm/index2.md'","docfx.yml"]
+    ["warning","redirected-id-conflict","Multiple documents redirected to '/sccm/mdm/understand/hybrid-mobile-device-management' with document id: 'sccm/mdm/index.md', 'sccm/mdm/index2.md'"]
 ---
 # generate document id with depot mapping and directory mapping
 # id = hash({mapped_depot_name}|{mapped_file_in_docset})
@@ -249,6 +253,7 @@ inputs:
     files: "**/*"
     routes:
       articles/: "azure/"
+  redirection.yml: |
     redirections:
       articles/active-directory/active-directory-saas-splunkenterpriseandsplunkcloud-tutorial.md: /azure/active-directory/saas-apps/splunkenterpriseandsplunkcloud-tutorial
       articles/active-directory/active-directory-saas-splunk-enterprise-and-splunk-cloud-tutorial.md: /azure/active-directory/active-directory-saas-splunkenterpriseandsplunkcloud-tutorial
@@ -288,6 +293,7 @@ inputs:
     files: "**/*"
     routes:
       articles/: "azure/"
+  redirection.yml: |
     redirections:
       articles/virtual-machines/windows/classic/web-app-visual-studio.md: /azure/app-service/
   articles/app-service/index.yml : |

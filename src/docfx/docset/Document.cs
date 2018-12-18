@@ -294,6 +294,10 @@ namespace Microsoft.Docs.Build
             {
                 return ContentType.Unknown;
             }
+            if (name.Equals("redirection", PathUtility.PathComparison))
+            {
+                return ContentType.RedirectionConfig;
+            }
 
             return ContentType.Page;
         }

@@ -19,6 +19,7 @@ namespace Microsoft.Docs.Build
             ContributionProvider contribution,
             MetadataProvider metadataProvider,
             MonikersProvider monikersProvider,
+            RedirectionMap redirectionMap,
             DependencyResolver dependencyResolver,
             Action<Document> buildChild)
         {
@@ -34,7 +35,7 @@ namespace Microsoft.Docs.Build
             model.CanonicalUrl = GetCanonicalUrl(file);
             model.Bilingual = file.Docset.Config.Localization.Bilingual;
 
-            (model.DocumentId, model.DocumentVersionIndependentId) = file.Docset.Redirections.TryGetDocumentId(file, out var docId) ? docId : file.Id;
+            (model.DocumentId, model.DocumentVersionIndependentId) = redirectionMap.TryGetDocumentId(file, out var docId) ? docId : file.Id;
             (model.ContentGitUrl, model.OriginalContentGitUrl, model.Gitcommit) = await contribution.GetGitUrls(file);
 
             List<Error> contributorErrors;

@@ -155,6 +155,7 @@ inputs:
       docs/v1/: docs/
       docs/v2/: docs/
     monikerDefinition: monikerDefinition.json
+  redirection.yml: |
     redirections:
       docs/v1/a-old.md: /docs/a
     redirectionsWithoutId:
@@ -206,6 +207,7 @@ inputs:
       docs/v1/: docs/
       docs/v2/: docs/
     monikerDefinition: monikerDefinition.json
+  redirection.yml: |
     redirections:
       docs/v1/a-old.md: /docs/a
     redirectionsWithoutId:

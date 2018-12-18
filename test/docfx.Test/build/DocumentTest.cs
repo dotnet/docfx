@@ -27,6 +27,8 @@ namespace Microsoft.Docs.Build
         [InlineData("index.md", false, false, ContentType.Page, "index.html", "/", ".")]
         [InlineData("index.md", false, true, ContentType.Page, "index.html", "/", ".")]
         [InlineData("index.md", true, false, ContentType.Page, "index.json", "/", ".")]
+        [InlineData("redirection.yml", true, false, ContentType.RedirectionConfig, "redirection.yml", "/redirection.yml", "redirection.yml")]
+        [InlineData("a/redirection.json", true, false, ContentType.RedirectionConfig, "a/redirection.json", "/a/redirection.json", "a/redirection.json")]
         internal static void FilePathToUrl(
             string path,
             bool json,

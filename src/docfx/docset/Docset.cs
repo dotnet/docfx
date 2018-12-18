@@ -64,11 +64,6 @@ namespace Microsoft.Docs.Build
         public IReadOnlyDictionary<string, string> Routes { get; }
 
         /// <summary>
-        /// Gets the redirection map.
-        /// </summary>
-        public RedirectionMap Redirections => _redirections.Value;
-
-        /// <summary>
         /// Gets the initial build scope.
         /// </summary>
         public HashSet<Document> BuildScope => _buildScope.Value;
@@ -84,7 +79,6 @@ namespace Microsoft.Docs.Build
         private readonly Context _context;
         private readonly Lazy<HashSet<Document>> _buildScope;
         private readonly Lazy<HashSet<Document>> _scanScope;
-        private readonly Lazy<RedirectionMap> _redirections;
         private readonly Lazy<LegacyTemplate> _legacyTemplate;
 
         public Docset(Context context, string docsetPath, Config config, CommandLineOptions options, bool isDependency = false)
@@ -113,16 +107,10 @@ namespace Microsoft.Docs.Build
 
             var configErrors = new List<Error>();
             (configErrors, DependencyDocsets) = LoadDependencies(Config);
+            context.Report(Config.ConfigFileName, configErrors);
 
             // pass on the command line options to its children
-            _buildScope = new Lazy<HashSet<Document>>(() => CreateBuildScope(Redirections.Files));
-            _redirections = new Lazy<RedirectionMap>(() =>
-            {
-                var (errors, map) = RedirectionMap.Create(this);
-                errors.AddRange(configErrors);
-                context.Report(Config.ConfigFileName, errors);
-                return map;
-            });
+            _buildScope = new Lazy<HashSet<Document>>(() => CreateBuildScope());
             _scanScope = new Lazy<HashSet<Document>>(() => this.CreateScanScope());
 
             _legacyTemplate = new Lazy<LegacyTemplate>(() =>
@@ -174,7 +162,7 @@ namespace Microsoft.Docs.Build
             return (errors, result);
         }
 
-        private HashSet<Document> CreateBuildScope(IEnumerable<Document> redirections)
+        private HashSet<Document> CreateBuildScope()
         {
             using (Progress.Start("Globbing files"))
             {
@@ -192,21 +180,7 @@ namespace Microsoft.Docs.Build
                         }
                     });
 
-                var result = new HashSet<Document>(files);
-
-                foreach (var redirection in redirections)
-                {
-                    if (glob(redirection.FilePath))
-                    {
-                        result.Add(redirection);
-                    }
-                    else
-                    {
-                        _context.Report(Errors.RedirectionOutOfScope(redirection, Config.ConfigFileName));
-                    }
-                }
-
-                return result;
+                return files.ToHashSet();
             }
         }
     }
