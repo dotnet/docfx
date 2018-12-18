@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -188,6 +189,32 @@ namespace Microsoft.Docs.Build
 
             resolvedDocset = null;
             return false;
+        }
+
+        public static IReadOnlyList<Document> GetTableOfContents(this Docset docset, TableOfContentsMap tocMap)
+        {
+            Debug.Assert(tocMap != null);
+
+            var result = docset.BuildScope.Where(d => d.ContentType == ContentType.TableOfContents).ToList();
+
+            if (!docset.IsLocalized())
+            {
+                return result;
+            }
+
+            // if A toc includes B toc and only B toc is localized, then A need to be included and built
+            var fallbackTocs = new List<Document>();
+            foreach (var toc in result)
+            {
+                if (tocMap.TryFindParents(toc, out var parents))
+                {
+                    fallbackTocs.AddRange(parents);
+                }
+            }
+
+            result.AddRange(fallbackTocs);
+
+            return result;
         }
 
         public static HashSet<Document> CreateScanScope(this Docset docset)

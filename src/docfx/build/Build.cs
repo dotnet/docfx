@@ -89,9 +89,9 @@ namespace Microsoft.Docs.Build
 
                 // Build TOC: since toc file depends on the build result of every node
                 await ParallelUtility.ForEach(
-                    docset.BuildScope,
+                    docset.GetTableOfContents(tocMap),
                     (file, buildChild) => { return BuildOneFile(file, buildChild, monikersMap.ToDictionary(item => item.Key, item => item.Value)); },
-                    file => { return ShouldBuildFile(file, new ContentType[] { ContentType.TableOfContents }); },
+                    file => true,
                     Progress.Update);
 
                 var saveGitCommitCache = gitCommitProvider.SaveGitCommitCache();
