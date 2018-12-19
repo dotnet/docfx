@@ -18,7 +18,8 @@ namespace Microsoft.Docs.Build
             MetadataProvider metadataProvider,
             MonikersProvider monikersProvider,
             DependencyResolver dependencyResolver,
-            Dictionary<Document, List<string>> monikersMap)
+            Dictionary<Document, List<string>> monikersMap,
+            List<Document> callStack)
         {
             Debug.Assert(file.ContentType == ContentType.TableOfContents);
             Debug.Assert(monikersMap != null);
@@ -28,7 +29,7 @@ namespace Microsoft.Docs.Build
                 return (Enumerable.Empty<Error>(), null, new List<string>());
             }
 
-            var (errors, tocModel, tocMetadata, refArticles, refTocs) = Load(context, file, monikersProvider, dependencyResolver, monikersMap);
+            var (errors, tocModel, tocMetadata, refArticles, refTocs) = Load(context, file, monikersProvider, dependencyResolver, callStack, monikersMap);
 
             var metadata = metadataProvider.GetMetadata(file, tocMetadata).ToObject<TableOfContentsMetadata>();
 
@@ -69,7 +70,7 @@ namespace Microsoft.Docs.Build
                 Debug.Assert(tocMapBuilder != null);
                 Debug.Assert(fileToBuild != null);
 
-                var (errors, _, _, referencedDocuments, referencedTocs) = Load(context, fileToBuild, monikersProvider, dependencyResolver);
+                var (errors, _, _, referencedDocuments, referencedTocs) = Load(context, fileToBuild, monikersProvider, dependencyResolver, callStack);
                 context.Report(fileToBuild.ToString(), errors);
 
                 tocMapBuilder.Add(fileToBuild, referencedDocuments, referencedTocs);
@@ -92,6 +93,7 @@ namespace Microsoft.Docs.Build
             Document fileToBuild,
             MonikersProvider monikersProvider,
             DependencyResolver dependencyResolver,
+            List<Document> callStack,
             Dictionary<Document, List<string>> monikersMap = null)
         {
             var errors = new List<Error>();
@@ -116,7 +118,7 @@ namespace Microsoft.Docs.Build
                 {
                     // add to referenced document list
                     // only resolve href, no need to build
-                    var (error, link, buildItem) = dependencyResolver.ResolveLink(href, file, resultRelativeTo, null);
+                    var (error, link, buildItem) = dependencyResolver.ResolveLink(href, file, resultRelativeTo, null, callStack);
                     errors.AddIfNotNull(error);
 
                     var itemMonikers = new List<string>();

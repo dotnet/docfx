@@ -15,7 +15,7 @@ namespace Microsoft.Docs.Build
             Document file,
             DependencyResolver dependencyResolver,
             Action<Document> buildChild,
-            List<Document> callStack = null,
+            List<Document> callStack,
             JObject extensionData = null)
         {
             return TransformXrefSpec;

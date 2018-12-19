@@ -399,6 +399,7 @@ inputs:
     title: Title from yaml header a
     uid: a
     fullName: name for a
+    summary: Link to @b?displayProperty=summary
     ---
     Link to @b?displayProperty=summary
   docs/b.json: | 
@@ -407,21 +408,25 @@ inputs:
       "uid": "b",
       "name": "name for b",
       "description": "description for b",
-      "summary": "Link to @a",
+      "summary": "Link to @a?displayProperty=summary",
     }
 outputs:
   docs/a.json: |
-    { "content": "<p>Link to <a href=\"b.json\">&lt;p&gt;Link to &lt;a href=&quot;a&quot;&gt;Title from yaml header a&lt;/a&gt;&lt;/p&gt;\n</a></p>" }
+    { "content":"<p>Link to <a href=\"b.json\">&lt;p&gt;Link to @a?displayProperty=summary&lt;/p&gt;\n</a></p>\n" }
   docs/b.json: |
-    { 
+    {
       "content": 
       {
-        "name": "name for b",
-        "description": "description for b",
-        "summary": "<p>Link to <a href=\"a\">Title from yaml header a</a></p>",
-        "uid": "b"
+          "name": "name for b",
+          "description": "description for b",
+          "summary": "<p>Link to <a href=\"a\">Title from yaml header a</a></p>\n",
+          "uid": "b"
       }
     }
+  build.log: |
+    ["error","circular-reference","Found circular reference","docs/a.md"]
+    ["info","at-uid-not-found","Cannot find uid 'a?displayProperty=summary' using xref '@a?displayProperty=summary'","docs/b.json"]
+
 ---
 # SDP Cyclic xref reference 1
 inputs:
@@ -454,6 +459,10 @@ inputs:
       "xref": "c",
     }
 outputs:
+  docs/a.json: |
+    { "content":{"name":"name for a","summary":"<p>Link to <a href=\"b.json\">description for b</a></p>\n"} }
+  docs/b.json: |
+    { "content":{"name":"name for b","summary":"<p>Link to <a href=\"a.json\">name for a</a></p>\n"} }
   docs/c.json: | 
     {
       "content": 
@@ -470,8 +479,11 @@ outputs:
       }
     }
   build.log: |
-    ["error","circular-reference","Found circular reference: *","docs/a.json"]
-    ["error","circular-reference","Found circular reference: *","docs/b.json"]
+    ["error","circular-reference","Found circular reference","docs/a.json"]
+    ["error","circular-reference","Found circular reference","docs/b.json"]
+    ["info","at-uid-not-found","Cannot find uid 'b?displayProperty=inlineDescription' using xref '@b?displayProperty=inlineDescription'","docs/a.json"]
+    ["info","at-uid-not-found","Cannot find uid 'a' using xref '@a'","docs/b.json"]
+
 ---
 # SDP Cyclic xref reference 2
 inputs:
@@ -504,6 +516,10 @@ inputs:
       "xref": "c",
     }
 outputs:
+  docs/a.json: |
+    { "content":{"name":"name for a","summary":"<p>Link to <a href=\"b.json\">&lt;p&gt;Link to @a?displayProperty=summary&lt;/p&gt;\n</a></p>\n"} }
+  docs/b.json: |
+    { "content":{"name":"name for b","summary":"<p>Link to <a href=\"a.json\">&lt;p&gt;Link to @b?displayProperty=summary&lt;/p&gt;\n</a></p>\n"} }
   docs/c.json: | 
     {
       "content": 
@@ -520,6 +536,8 @@ outputs:
       }
     }
   build.log: |
-    ["error","circular-reference","Found circular reference: *","docs/a.json"]
-    ["error","circular-reference","Found circular reference: *","docs/b.json"]
-  
+    ["error","circular-reference","Found circular reference","docs/b.json"]
+    ["error","circular-reference","Found circular reference","docs/a.json"]
+    ["info","at-uid-not-found","Cannot find uid 'b?displayProperty=summary' using xref '@b?displayProperty=summary'","docs/a.json"]
+    ["info","at-uid-not-found","Cannot find uid 'a?displayProperty=summary' using xref '@a?displayProperty=summary'","docs/b.json"]
+

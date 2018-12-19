@@ -153,6 +153,7 @@ namespace Microsoft.Docs.Build
                 var model = (object)null;
                 var errors = Enumerable.Empty<Error>();
                 var monikers = new List<string>();
+                var callStack = new List<Document> { file };
 
                 switch (file.ContentType)
                 {
@@ -160,11 +161,11 @@ namespace Microsoft.Docs.Build
                         (errors, model, monikers) = BuildResource.Build(file, metadataProvider, monikersProvider);
                         break;
                     case ContentType.Page:
-                        (errors, model, monikers) = await BuildPage.Build(context, file, tocMap, contribution, metadataProvider, monikersProvider, dependencyResolver, buildChild);
+                        (errors, model, monikers) = await BuildPage.Build(context, file, tocMap, contribution, metadataProvider, monikersProvider, dependencyResolver, buildChild, callStack);
                         break;
                     case ContentType.TableOfContents:
                         // TODO: improve error message for toc monikers overlap
-                        (errors, model, monikers) = BuildTableOfContents.Build(context, file, tocMap, metadataProvider, monikersProvider, dependencyResolver, monikersMap);
+                        (errors, model, monikers) = BuildTableOfContents.Build(context, file, tocMap, metadataProvider, monikersProvider, dependencyResolver, monikersMap, callStack);
                         break;
                     case ContentType.Redirection:
                         (errors, model, monikers) = BuildRedirection.Build(file, metadataProvider, monikersProvider);

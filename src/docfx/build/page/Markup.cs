@@ -67,7 +67,7 @@ namespace Microsoft.Docs.Build
             Action<Document> buildChild,
             Func<string, List<string>> parseMonikerRange,
             MarkdownPipelineType pipelineType,
-            List<Document> callStack = null)
+            List<Document> callStack)
         {
             using (InclusionContext.PushFile(file))
             {

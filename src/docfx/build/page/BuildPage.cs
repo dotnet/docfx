@@ -20,11 +20,12 @@ namespace Microsoft.Docs.Build
             MetadataProvider metadataProvider,
             MonikersProvider monikersProvider,
             DependencyResolver dependencyResolver,
-            Action<Document> buildChild)
+            Action<Document> buildChild,
+            List<Document> callStack)
         {
             Debug.Assert(file.ContentType == ContentType.Page);
 
-            var (errors, schema, model, metadata) = await Load(context, file, metadataProvider, monikersProvider, dependencyResolver, buildChild);
+            var (errors, schema, model, metadata) = await Load(context, file, metadataProvider, monikersProvider, dependencyResolver, buildChild, callStack);
 
             model.PageType = schema.Name;
             model.Locale = file.Docset.Locale;
@@ -74,24 +75,24 @@ namespace Microsoft.Docs.Build
 
         private static async Task<(List<Error> errors, Schema schema, PageModel model, FileMetadata metadata)>
             Load(
-            Context context, Document file, MetadataProvider metadataProvider, MonikersProvider monikersProvider, DependencyResolver dependencyResolver, Action<Document> buildChild)
+            Context context, Document file, MetadataProvider metadataProvider, MonikersProvider monikersProvider, DependencyResolver dependencyResolver, Action<Document> buildChild, List<Document> callStack)
         {
             if (file.FilePath.EndsWith(".md", PathUtility.PathComparison))
             {
-                return LoadMarkdown(context, file, metadataProvider, monikersProvider, dependencyResolver, buildChild);
+                return LoadMarkdown(context, file, metadataProvider, monikersProvider, dependencyResolver, buildChild, callStack);
             }
             if (file.FilePath.EndsWith(".yml", PathUtility.PathComparison))
             {
-                return await LoadYaml(context, file, metadataProvider, dependencyResolver, buildChild);
+                return await LoadYaml(context, file, metadataProvider, dependencyResolver, buildChild, callStack);
             }
 
             Debug.Assert(file.FilePath.EndsWith(".json", PathUtility.PathComparison));
-            return await LoadJson(context, file, metadataProvider, dependencyResolver, buildChild);
+            return await LoadJson(context, file, metadataProvider, dependencyResolver, buildChild, callStack);
         }
 
         private static (List<Error> errors, Schema schema, PageModel model, FileMetadata metadata)
             LoadMarkdown(
-            Context context, Document file, MetadataProvider metadataProvider, MonikersProvider monikersProvider, DependencyResolver dependencyResolver, Action<Document> buildChild)
+            Context context, Document file, MetadataProvider metadataProvider, MonikersProvider monikersProvider, DependencyResolver dependencyResolver, Action<Document> buildChild, List<Document> callStack)
         {
             var errors = new List<Error>();
             var content = file.ReadText();
@@ -113,7 +114,8 @@ namespace Microsoft.Docs.Build
                 dependencyResolver,
                 buildChild,
                 (rangeString) => monikersProvider.GetZoneMonikers(rangeString, monikers, errors),
-                MarkdownPipelineType.ConceptualMarkdown);
+                MarkdownPipelineType.ConceptualMarkdown,
+                callStack);
             errors.AddRange(markup.Errors);
 
             var htmlDom = HtmlUtility.LoadHtml(html);
@@ -140,25 +142,25 @@ namespace Microsoft.Docs.Build
 
         private static async Task<(List<Error> errors, Schema schema, PageModel model, FileMetadata metadata)>
             LoadYaml(
-            Context context, Document file, MetadataProvider metadataProvider, DependencyResolver dependencyResolver, Action<Document> buildChild)
+            Context context, Document file, MetadataProvider metadataProvider, DependencyResolver dependencyResolver, Action<Document> buildChild, List<Document> callStack)
         {
             var (errors, token) = YamlUtility.Deserialize(file, context);
 
-            return await LoadSchemaDocument(errors, token, file, metadataProvider, dependencyResolver, buildChild);
+            return await LoadSchemaDocument(errors, token, file, metadataProvider, dependencyResolver, buildChild, callStack);
         }
 
         private static async Task<(List<Error> errors, Schema schema, PageModel model, FileMetadata metadata)>
             LoadJson(
-            Context context, Document file, MetadataProvider metadataProvider, DependencyResolver dependencyResolver, Action<Document> buildChild)
+            Context context, Document file, MetadataProvider metadataProvider, DependencyResolver dependencyResolver, Action<Document> buildChild, List<Document> callStack)
         {
             var (errors, token) = JsonUtility.Deserialize(file, context);
 
-            return await LoadSchemaDocument(errors, token, file, metadataProvider, dependencyResolver, buildChild);
+            return await LoadSchemaDocument(errors, token, file, metadataProvider, dependencyResolver, buildChild, callStack);
         }
 
         private static async Task<(List<Error> errors, Schema schema, PageModel model, FileMetadata metadata)>
             LoadSchemaDocument(
-            List<Error> errors, JToken token, Document file, MetadataProvider metadataProvider, DependencyResolver dependencyResolver, Action<Document> buildChild)
+            List<Error> errors, JToken token, Document file, MetadataProvider metadataProvider, DependencyResolver dependencyResolver, Action<Document> buildChild, List<Document> callStack)
         {
             // TODO: for backward compatibility, when #YamlMime:YamlDocument, documentType is used to determine schema.
             //       when everything is moved to SDP, we can refactor the mime check to Document.TryCreate
@@ -169,7 +171,7 @@ namespace Microsoft.Docs.Build
                 throw Errors.SchemaNotFound(file.Mime).ToException();
             }
 
-            var (schemaViolationErrors, content) = JsonUtility.ToObjectWithSchemaValidation(token, schema.Type, transform: AttributeTransformer.Transform(errors, file, dependencyResolver, buildChild));
+            var (schemaViolationErrors, content) = JsonUtility.ToObjectWithSchemaValidation(token, schema.Type, transform: AttributeTransformer.Transform(errors, file, dependencyResolver, buildChild, callStack));
             errors.AddRange(schemaViolationErrors);
 
             if (file.Docset.Legacy && schema.Attribute is PageSchemaAttribute)

@@ -35,7 +35,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public (XrefSpec spec, Document referencedFile) Resolve(string uid, Document file, string moniker = null)
+        public (XrefSpec spec, Document referencedFile, List<Document> callStack) Resolve(string uid, Document file, string moniker = null)
         {
             if (_internalXrefMap.TryGetValue(uid, out var internalSpecs))
             {
@@ -44,23 +44,23 @@ namespace Microsoft.Docs.Build
 
             if (_externalXrefMap.TryGetValue(uid, out var externalSpec))
             {
-                return (externalSpec, null);
+                return (externalSpec, null, new List<Document>());
             }
-            return default;
+            return (null, null, new List<Document>());
         }
 
-        private (XrefSpec internalSpec, Document referencedFile) GetInternalSpec(string uid, Document file, string moniker, List<(Lazy<(List<Error>, XrefSpec)>, Document, List<Document>)> internalSpecs)
+        private (XrefSpec internalSpec, Document referencedFile, List<Document> callStack) GetInternalSpec(string uid, Document file, string moniker, List<(Lazy<(List<Error>, XrefSpec)>, Document, List<Document>)> internalSpecs)
         {
             if (!TryGetValidXrefSpecs(uid, file, internalSpecs, out var validInternalSpecs))
                 return default;
 
             if (!string.IsNullOrEmpty(moniker))
             {
-                foreach (var (internalSpec, doc) in validInternalSpecs)
+                foreach (var (internalSpec, doc, files) in validInternalSpecs)
                 {
                     if (internalSpec.Monikers.Contains(moniker))
                     {
-                        return (internalSpec, doc);
+                        return (internalSpec, doc, files);
                     }
                 }
 
@@ -71,10 +71,10 @@ namespace Microsoft.Docs.Build
             }
 
             // For uid with and without moniker range, take the one without moniker range
-            var (uidWithoutMoniker, referencedFile) = validInternalSpecs.SingleOrDefault(item => item.spec?.Monikers.Count == 0);
+            var (uidWithoutMoniker, referencedFile, callStack) = validInternalSpecs.SingleOrDefault(item => item.spec?.Monikers.Count == 0);
             if (uidWithoutMoniker != null)
             {
-                return (uidWithoutMoniker, referencedFile);
+                return (uidWithoutMoniker, referencedFile, callStack);
             }
 
             // For uid with moniker range, take the latest moniker if no moniker defined while resolving
@@ -124,13 +124,13 @@ namespace Microsoft.Docs.Build
             context.WriteJson(models, "xrefmap.json");
         }
 
-        private (XrefSpec spec, Document referencedFile) GetLatestInternalXrefMap(List<(XrefSpec spec, Document referencedFile)> specs)
+        private (XrefSpec spec, Document referencedFile, List<Document> callStack) GetLatestInternalXrefMap(List<(XrefSpec spec, Document referencedFile, List<Document> callStack)> specs)
             => specs.OrderByDescending(item => item.spec.Monikers.FirstOrDefault(), _monikerComparer).FirstOrDefault();
 
-        private bool TryGetValidXrefSpecs(string uid, Document rootFile, List<(Lazy<(List<Error> errors, XrefSpec spec)> value, Document file, List<Document> callStack)> specsWithSameUid, out List<(XrefSpec spec, Document file)> validSpecs)
+        private bool TryGetValidXrefSpecs(string uid, Document rootFile, List<(Lazy<(List<Error> errors, XrefSpec spec)> value, Document file, List<Document> callStack)> specsWithSameUid, out List<(XrefSpec spec, Document file, List<Document>)> validSpecs)
         {
             var loadedSpecs = specsWithSameUid.Select(item => LoadXrefSpec(item));
-            validSpecs = new List<(XrefSpec, Document)>();
+            validSpecs = new List<(XrefSpec, Document, List<Document>)>();
 
             // no conflicts
             if (loadedSpecs.Count() == 1)
@@ -167,7 +167,7 @@ namespace Microsoft.Docs.Build
                 return true;
             }
 
-            (XrefSpec, Document) LoadXrefSpec((Lazy<(List<Error>, XrefSpec)> value, Document file, List<Document> callStack) input)
+            (XrefSpec, Document, List<Document>) LoadXrefSpec((Lazy<(List<Error>, XrefSpec)> value, Document file, List<Document> callStack) input)
             {
                 if (input.value is null)
                     return default;
@@ -176,11 +176,12 @@ namespace Microsoft.Docs.Build
 
                 if (!isValueCreated)
                 {
-                    if (input.file == rootFile)
+                    if (input.callStack.Contains(rootFile))
                     {
-                        throw Errors.CircularReference(rootFile, input.callStack).ToException();
+                        _context.Report(rootFile.FilePath, new List<Error> { Errors.CircularReference() });
+                        return (null, null, new List<Document>());
                     }
-                    input.callStack.AddIfNotNull(rootFile);
+                    input.callStack.Add(rootFile);
                 }
 
                 var (errors, spec) = input.value.Value;
@@ -198,7 +199,8 @@ namespace Microsoft.Docs.Build
                         spec.Monikers = orderedMonikers;
                     }
                 }
-                return (spec, input.file);
+                input.callStack.RemoveRange(1, input.callStack.Count - 1);
+                return (spec, input.file, input.callStack);
             }
         }
 

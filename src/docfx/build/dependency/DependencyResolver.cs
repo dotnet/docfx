@@ -34,7 +34,7 @@ namespace Microsoft.Docs.Build
             return (error, content, child);
         }
 
-        public (Error error, string link, Document file) ResolveLink(string path, Document relativeTo, Document resultRelativeTo, Action<Document> buildChild, List<Document> callStack = null)
+        public (Error error, string link, Document file) ResolveLink(string path, Document relativeTo, Document resultRelativeTo, Action<Document> buildChild, List<Document> callStack)
         {
             var (error, link, fragment, file) = TryResolveHref(relativeTo, path, resultRelativeTo, callStack);
 
@@ -61,13 +61,20 @@ namespace Microsoft.Docs.Build
             }
 
             // need to url decode uid from input content
-            var (xrefSpec, referencedFile) = _xrefMap.Value.Resolve(HttpUtility.UrlDecode(uid), file, moniker);
+            var (xrefSpec, referencedFile, referencedCallStack) = _xrefMap.Value.Resolve(HttpUtility.UrlDecode(uid), file, moniker);
             if (xrefSpec is null)
             {
                 return (Errors.UidNotFound(file, uid, href), null, null);
             }
 
             DependencyMapBuilder.AddDependencyItem(file, referencedFile, DependencyType.UidInclusion);
+
+            callStack.AddRange(referencedCallStack);
+            if (callStack.Count > 0 && referencedCallStack.Contains(file))
+            {
+                return (Errors.CircularReference(), null, null);
+            }
+
             if (referencedFile != null)
             {
                 var spec = xrefSpec.Clone();
