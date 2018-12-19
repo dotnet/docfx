@@ -37,18 +37,13 @@ namespace Microsoft.Docs.Build
 
         public List<string> Monikers { get; set; }
 
-        public static TableOfContentsItem ToTableOfContentsModel(TableOfContentsInputItem inputModel, MonikerComparer comparer)
+        public static TableOfContentsItem ToTableOfContentsModel(TableOfContentsInputItem inputModel)
         {
             if (inputModel == null)
             {
                 return null;
             }
 
-            var children = inputModel.Items?.Select(l => ToTableOfContentsModel(l, comparer));
-            var childrenMonikers = children?.SelectMany(child => child?.Monikers ?? new List<string>()) ?? new List<string>();
-
-            var monikers = childrenMonikers.Union(inputModel.Monikers).Distinct(comparer).ToList();
-            monikers.Sort(comparer);
             return new TableOfContentsItem
             {
                 TocTitle = inputModel.Name,
@@ -58,8 +53,8 @@ namespace Microsoft.Docs.Build
                 MaintainContext = inputModel.MaintainContext,
                 Expanded = inputModel.Expanded,
                 ExtensionData = inputModel.ExtensionData,
-                Children = children?.ToList(),
-                Monikers = monikers,
+                Children = inputModel.Items?.Select(l => ToTableOfContentsModel(l))?.ToList(),
+                Monikers = inputModel.Monikers,
             };
         }
     }
