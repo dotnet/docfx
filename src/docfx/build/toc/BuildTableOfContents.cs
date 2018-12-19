@@ -30,8 +30,8 @@ namespace Microsoft.Docs.Build
 
             var (errors, tocModel, yamlHeader, refArticles, refTocs) = Load(context, file, monikerProvider, dependencyResolver, monikerMap);
 
-            var (metadataError, metadata) = metadataProvider.GetMetadata(file, yamlHeader);
-            errors.AddIfNotNull(metadataError);
+            var (metadataErrors, metadata) = metadataProvider.GetMetadata(file, yamlHeader);
+            errors.AddRange(metadataErrors);
 
             Error monikerError;
             var tocMetadata = metadata.ToObject<TableOfContentsMetadata>();

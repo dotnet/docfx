@@ -14,13 +14,12 @@ namespace Microsoft.Docs.Build
     {
         private readonly Config _config;
         private readonly List<(Func<string, bool> glob, string key, JToken value)> _rules = new List<(Func<string, bool> glob, string key, JToken value)>();
-        private static readonly HashSet<string> _reservedNames = GetReservedMetadata();
 
         public MetadataProvider(Config config)
         {
             _config = config;
 
-            foreach (var (key, item) in config.FileMetadata)
+            foreach (var (key, item) in config.FileMetadata.ToObject<Dictionary<string, Dictionary<string, JToken>>>())
             {
                 foreach (var (glob, value) in item)
                 {
@@ -29,10 +28,11 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public (Error error, JObject metadata) GetMetadata(Document file, JObject yamlHeader = null)
+        public (List<Error> errors, JObject metadata) GetMetadata(Document file, JObject yamlHeader = null)
         {
             Debug.Assert(file != null);
 
+            var erros = new List<Error>();
             var fileMetadata = new JObject();
             foreach (var (glob, key, value) in _rules)
             {
@@ -48,54 +48,23 @@ namespace Microsoft.Docs.Build
 
             if (yamlHeader != null)
             {
+                erros.AddRange(MetadataValidator.Validate(yamlHeader, "yaml header"));
                 result.Merge(yamlHeader, JsonUtility.MergeSettings);
             }
 
-            var invalidNames = new List<string>();
-            foreach (var (key, _) in result)
-            {
-                if (_reservedNames.Contains(key, StringComparer.OrdinalIgnoreCase))
-                {
-                    invalidNames.Add(key);
-                }
-            }
-
-            if (invalidNames.Count > 0)
-            {
-                return (Errors.ReservedMetadata(invalidNames), result);
-            }
-
-            return (null, result);
+            return (erros, result);
         }
 
         public (List<Error> errors, FileMetadata fileMetadata) GetFileMetadata(Document file, JObject yamlHeader = null)
         {
             var errors = new List<Error>();
-            var (metaError, metadata) = GetMetadata(file, yamlHeader);
-            errors.AddIfNotNull(metaError);
+            var (metaErrors, metadata) = GetMetadata(file, yamlHeader);
+            errors.AddRange(metaErrors);
 
             var (fileMetaErrors, fileMetadata) = JsonUtility.ToObjectWithSchemaValidation<FileMetadata>(metadata);
             errors.AddRange(fileMetaErrors);
 
             return (errors, fileMetadata);
-        }
-
-        private static HashSet<string> GetReservedMetadata()
-        {
-            var blackList = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-            var outputProperties = ((JsonObjectContract)JsonUtility.DefaultSerializer.ContractResolver.ResolveContract(typeof(PageModel))).Properties;
-            foreach (var property in outputProperties)
-            {
-                blackList.Add(property.PropertyName);
-            }
-
-            var inputProperties = ((JsonObjectContract)JsonUtility.DefaultSerializer.ContractResolver.ResolveContract(typeof(FileMetadata))).Properties;
-            foreach (var property in inputProperties)
-            {
-                blackList.Remove(property.PropertyName);
-            }
-
-            return blackList;
         }
     }
 }
