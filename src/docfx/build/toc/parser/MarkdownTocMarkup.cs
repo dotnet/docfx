@@ -44,7 +44,7 @@ namespace Microsoft.Docs.Build
 
             try
             {
-                tocModel.Items = ConvertTo(file, headingBlocks.ToArray(), errors).children;
+                tocModel.Items = ConvertTo(file.FilePath, headingBlocks.ToArray(), errors).children;
             }
             catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
             {
@@ -54,7 +54,7 @@ namespace Microsoft.Docs.Build
             return (errors, tocModel);
         }
 
-        private static (List<TableOfContentsInputItem> children, int count) ConvertTo(Document file, HeadingBlock[] headingBlocks, List<Error> errors, int startIndex = 0)
+        private static (List<TableOfContentsInputItem> children, int count) ConvertTo(string filePath, HeadingBlock[] headingBlocks, List<Error> errors, int startIndex = 0)
         {
             if (headingBlocks.Length == 0)
             {
@@ -75,10 +75,10 @@ namespace Microsoft.Docs.Build
                 {
                     if (headingBlocks[i + 1].Level - currentLevel > 1)
                     {
-                        throw Errors.InvalidTocLevel(file.FilePath, currentLevel, headingBlocks[i + 1].Level).ToException();
+                        throw Errors.InvalidTocLevel(filePath, currentLevel, headingBlocks[i + 1].Level).ToException();
                     }
 
-                    var (children, count) = ConvertTo(file, headingBlocks, errors, i + 1);
+                    var (children, count) = ConvertTo(filePath, headingBlocks, errors, i + 1);
                     item.Items = children;
                     i += count;
                     childrenCount += count;
@@ -98,7 +98,7 @@ namespace Microsoft.Docs.Build
                 var currentItem = new TableOfContentsInputItem();
                 if (block.Inline == null || !block.Inline.Any())
                 {
-                    errors.Add(Errors.MissingTocHead(new Range(block.Line, block.Column), file.FilePath));
+                    errors.Add(Errors.MissingTocHead(new Range(block.Line, block.Column), filePath));
                     return currentItem;
                 }
 
