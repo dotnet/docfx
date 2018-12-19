@@ -1,6 +1,6 @@
 # Developer Guide
 
-## Building and Test
+## Build and Test
 
 ### Prerequisite
 
