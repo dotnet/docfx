@@ -11,8 +11,14 @@ namespace Microsoft.Docs.Build
 {
     internal sealed class Config
     {
-        private static readonly string[] s_defaultInclude = new[] { "docs/**/*.{md,yml,json}" };
-        private static readonly string[] s_defaultExclude = new[] { "_site/**/*", "localization/**/*" };
+        private static readonly string[] s_defaultInclude = new[] { "**/*.{md,yml,json}" };
+        private static readonly string[] s_defaultExclude = new[]
+        {
+            "_site/**",             // Default output location
+            "localization/**",      // Localization file when using folder convention
+            "**/includes/**",       // Default convention for reusable markdown tokens
+            "*",                    // Files in repository root directory like README.md
+        };
 
         /// <summary>
         /// Gets the default product name
