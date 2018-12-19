@@ -1,16 +1,36 @@
 # Developer Guide
 
-> __v3__ develop work currently happens in _v3_ branch, these instructions only applies to source code in _v3_ branch.
+## Building and Test
 
-## Building and Run
+### Prerequisite
 
-This repo can be build on Windows, Mac OS and Linux.
+- [git](https://git-scm.com/)
+- [.NET Core SDK 2.2](https://dotnet.microsoft.com/download/dotnet-core/2.2) or above
 
-If you have [Visual Studio](https://www.visualstudio.com/vs/) installed, simply open `docfx.sln` to build, debug and test the source code.
+This project can be build by running `build.ps1` on Windows, or by running `build.sh` on Mac OS and Linux.
 
-To build and test this repo, run `build.ps1` on Windows, run `build.sh` on Mac OS or Linux.
+You can use both [Visual Studio](https://www.visualstudio.com/vs/) or [Visual Studio Code](https://code.visualstudio.com/) with [C# extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode.csharp) to develop the project.
 
-## Coding Style
+## Release Process
+
+We do continously deployment 
+
+https://www.myget.org/F/docfx-v3/api/v2
+https://www.myget.org/F/docfx-v3-sandbox/api/v2
+
+
+
+### Definition of Ready to Ship
+
+- All test cases pass
+- No performance regression
+- No open issues that affects end users
+- No breaking changes
+    - Input output data contract *(At this stage ideal output changes are not considered breaking)*
+    - Config *(At this stage config changes are not considered breaking)*
+    - Errors and Warnings *(At this stage error message and line info is not considered breaking)*
+
+## Coding Guideline
 
 ### C#
 We follow [C# Coding Style](https://github.com/dotnet/corefx/blob/master/Documentation/coding-guidelines/coding-style.md) recommended by dotnet team. Stylecop and FxCop have been enabled for this project to enforce some of the rules.
