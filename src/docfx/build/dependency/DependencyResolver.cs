@@ -52,7 +52,7 @@ namespace Microsoft.Docs.Build
             return (error, link, file);
         }
 
-        public (Error error, string href, string display, Document file) ResolveXref(string href, Document file)
+        public (Error error, string href, string display, Document file) ResolveXref(string href, Document relativeTo)
         {
             var (uid, query, fragment) = HrefUtility.SplitHref(href);
             string moniker = null;
@@ -67,14 +67,14 @@ namespace Microsoft.Docs.Build
             var (xrefSpec, referencedFile) = _xrefMap.Value.Resolve(HttpUtility.UrlDecode(uid), moniker);
             if (xrefSpec is null)
             {
-                return (Errors.UidNotFound(file, uid, href), null, null, null);
+                return (Errors.UidNotFound(relativeTo, uid, href), null, null, null);
             }
 
-            DependencyMapBuilder.AddDependencyItem(file, referencedFile, DependencyType.UidInclusion);
+            DependencyMapBuilder.AddDependencyItem(relativeTo, referencedFile, DependencyType.UidInclusion);
             if (referencedFile != null)
             {
                 var spec = xrefSpec.Clone();
-                spec.Href = GetRelativeUrl(file, referencedFile);
+                spec.Href = GetRelativeUrl(relativeTo, referencedFile);
                 xrefSpec = spec;
             }
 
