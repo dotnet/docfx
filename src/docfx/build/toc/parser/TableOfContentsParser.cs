@@ -17,7 +17,7 @@ namespace Microsoft.Docs.Build
 
         public delegate (string resolvedTopicHref, Document file) ResolveHref(Document relativeTo, string href, Document resultRelativeTo);
 
-        public delegate (string resolvedTopicHref, Document file) ResolveXref(Document relativeTo, string uid);
+        public delegate (string resolvedTopicHref, string resolvedTopicName, Document file) ResolveXref(Document relativeTo, string uid);
 
         public delegate (string content, Document file) ResolveContent(Document relativeTo, string href, bool isInclusion);
 
@@ -142,11 +142,12 @@ namespace Microsoft.Docs.Build
                 var topicUid = tocModelItem.Uid;
 
                 var (resolvedTocHref, resolvedTopicHrefFromTocHref, subChildren) = ProcessTocHref(tocHref);
-                var (resolvedTopicHref, document) = ProcessTopicItem(topicUid, topicHref);
+                var (resolvedTopicHref, resolvedTopicName, document) = ProcessTopicItem(topicUid, topicHref);
 
                 // set resolved href back
                 tocModelItem.Href = resolvedTopicHref ?? resolvedTopicHrefFromTocHref;
                 tocModelItem.TocHref = resolvedTocHref;
+                tocModelItem.Name = tocModelItem.Name ?? resolvedTopicName;
                 if (subChildren != null)
                 {
                     tocModelItem.Items = subChildren.Items;
@@ -250,28 +251,29 @@ namespace Microsoft.Docs.Build
                 return default;
             }
 
-            (string resolvedTopicHref, Document file) ProcessTopicItem(string uid, string topicHref)
+            (string resolvedTopicHref, string resolvedTopicName, Document file) ProcessTopicItem(string uid, string topicHref)
             {
                 // process uid first
                 if (!string.IsNullOrEmpty(uid))
                 {
-                    var (resolvedTopicHref, file) = resolveXref.Invoke(filePath, uid);
-                    if (!string.IsNullOrEmpty(resolvedTopicHref))
+                    var (uidHref, uidDisplayName, uidFile) = resolveXref.Invoke(filePath, uid);
+                    if (!string.IsNullOrEmpty(uidHref))
                     {
-                        return (resolvedTopicHref, file);
+                        return (uidHref, uidDisplayName, uidFile);
                     }
                 }
 
                 // process topicHref then
                 if (string.IsNullOrEmpty(topicHref))
                 {
-                    return (topicHref, null);
+                    return (topicHref, null, null);
                 }
 
                 var topicHrefType = GetHrefType(topicHref);
                 Debug.Assert(topicHrefType == TocHrefType.AbsolutePath || !IsIncludeHref(topicHrefType));
 
-                return resolveHref.Invoke(filePath, topicHref, rootPath);
+                var (resolvedTopicHref, file) = resolveHref.Invoke(filePath, topicHref, rootPath);
+                return (resolvedTopicHref, null, file);
             }
         }
 

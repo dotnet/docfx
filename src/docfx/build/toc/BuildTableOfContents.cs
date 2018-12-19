@@ -131,7 +131,7 @@ namespace Microsoft.Docs.Build
                 (file, uid) =>
                 {
                     // add to referenced document list
-                    var (error, link, _, buildItem) = dependencyResolver.ResolveXref(uid, file);
+                    var (error, link, display, buildItem) = dependencyResolver.ResolveXref(uid, file);
                     errors.AddIfNotNull(error);
 
                     if (buildItem != null)
@@ -139,7 +139,7 @@ namespace Microsoft.Docs.Build
                         referencedDocuments.Add(buildItem);
                     }
 
-                    return (link, buildItem);
+                    return (link, display, buildItem);
                 });
 
             errors.AddRange(loadErrors);
