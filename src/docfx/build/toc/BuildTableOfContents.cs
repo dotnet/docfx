@@ -117,7 +117,6 @@ namespace Microsoft.Docs.Build
                 (file, href, resultRelativeTo) =>
                 {
                     // add to referenced document list
-                    // only resolve href, no need to build
                     var (error, link, buildItem) = dependencyResolver.ResolveLink(href, file, resultRelativeTo, null);
                     errors.AddIfNotNull(error);
 
@@ -125,6 +124,19 @@ namespace Microsoft.Docs.Build
                     {
                         referencedDocuments.Add(buildItem);
                     }
+                    return (link, buildItem);
+                },
+                (file, uid) =>
+                {
+                    // add to referenced document list
+                    var (error, link, _, buildItem) = dependencyResolver.ResolveXref(uid, file);
+                    errors.AddIfNotNull(error);
+
+                    if (buildItem != null)
+                    {
+                        referencedDocuments.Add(buildItem);
+                    }
+
                     return (link, buildItem);
                 });
 
