@@ -13,22 +13,25 @@ You can use both [Visual Studio](https://www.visualstudio.com/vs/) or [Visual St
 
 ## Release Process
 
-We do continously deployment 
+We continously deploy `v3` branch to [Production MyGet Feed](https://www.myget.org/F/docfx-v3/api/v2). It is then deployed to [docs](https://docs.microsoft.com) on a regular cadence. For this to work, `v3` branch **MUST** always be in [Ready to Ship](#definition-of-ready-to-ship) state.
 
-https://www.myget.org/F/docfx-v3/api/v2
-https://www.myget.org/F/docfx-v3-sandbox/api/v2
+Large feature work happens in feature branches. Feature branch name starts with `feature/`.
 
+Pull request validation, continous deployment to [Sandbox MyGet Feed](https://www.myget.org/F/docfx-v3-sandbox/api/v2) is enabled automatically on `v3` branch and all feature branches.
 
+> We currently do not deploy to NuGet until features that blocks community adoption are implemented.
 
 ### Definition of Ready to Ship
 
 - All test cases pass
 - No performance regression
 - No open issues that affects end users
-- No breaking changes
-    - Input output data contract *(At this stage ideal output changes are not considered breaking)*
-    - Config *(At this stage config changes are not considered breaking)*
-    - Errors and Warnings *(At this stage error message and line info is not considered breaking)*
+- No unintended breaking changes *
+    - Input output data contract
+    - Config
+    - Errors and Warnings
+
+    **At this stage, changes to ideal output, config, error message and line number are not considered breaking*
 
 ## Coding Guideline
 
