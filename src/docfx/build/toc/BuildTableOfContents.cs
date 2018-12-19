@@ -28,7 +28,7 @@ namespace Microsoft.Docs.Build
                 return (Enumerable.Empty<Error>(), null, new List<string>());
             }
 
-            var (errors, tocModel, tocMetadata, refArticles, refTocs) = Load(context, file, monikerProvider, dependencyResolver, monikerMap);
+            var (errors, tocModel, tocMetadata, refArticles, refTocs) = Load(context, file, dependencyResolver, monikerMap, monikerProvider.Comparer);
 
             var metadata = metadataProvider.GetMetadata(file, tocMetadata).ToObject<TableOfContentsMetadata>();
 
@@ -45,7 +45,7 @@ namespace Microsoft.Docs.Build
             return (errors, model, metadata.Monikers);
         }
 
-        public static TableOfContentsMap BuildTocMap(Context context, Docset docset, MonikerProvider monikerProvider, DependencyResolver dependencyResolver)
+        public static TableOfContentsMap BuildTocMap(Context context, Docset docset, DependencyResolver dependencyResolver)
         {
             using (Progress.Start("Loading TOC"))
             {
@@ -56,20 +56,20 @@ namespace Microsoft.Docs.Build
                     return builder.Build();
                 }
 
-                ParallelUtility.ForEach(tocFiles, file => BuildTocMap(context, file, builder, monikerProvider, dependencyResolver), Progress.Update);
+                ParallelUtility.ForEach(tocFiles, file => BuildTocMap(context, file, builder, dependencyResolver), Progress.Update);
 
                 return builder.Build();
             }
         }
 
-        private static void BuildTocMap(Context context, Document fileToBuild, TableOfContentsMapBuilder tocMapBuilder, MonikerProvider monikerProvider, DependencyResolver dependencyResolver)
+        private static void BuildTocMap(Context context, Document fileToBuild, TableOfContentsMapBuilder tocMapBuilder, DependencyResolver dependencyResolver)
         {
             try
             {
                 Debug.Assert(tocMapBuilder != null);
                 Debug.Assert(fileToBuild != null);
 
-                var (errors, _, _, referencedDocuments, referencedTocs) = Load(context, fileToBuild, monikerProvider, dependencyResolver);
+                var (errors, _, _, referencedDocuments, referencedTocs) = Load(context, fileToBuild, dependencyResolver);
                 context.Report(fileToBuild.ToString(), errors);
 
                 tocMapBuilder.Add(fileToBuild, referencedDocuments, referencedTocs);
@@ -90,10 +90,12 @@ namespace Microsoft.Docs.Build
             Load(
             Context context,
             Document fileToBuild,
-            MonikerProvider monikerProvider,
             DependencyResolver dependencyResolver,
-            MonikerMap monikerMap = null)
+            MonikerMap monikerMap = null,
+            MonikerComparer monikerComparer = null)
         {
+            Debug.Assert(!(monikerMap == null ^ monikerComparer == null));
+
             var errors = new List<Error>();
             var referencedDocuments = new List<Document>();
             var referencedTocs = new List<Document>();
@@ -101,7 +103,7 @@ namespace Microsoft.Docs.Build
             var (loadErrors, tocItems, tocMetadata) = TableOfContentsParser.Load(
                 context,
                 fileToBuild,
-                monikerProvider,
+                monikerComparer,
                 monikerMap,
                 (file, href, isInclude) =>
                 {
@@ -129,7 +131,7 @@ namespace Microsoft.Docs.Build
                 (file, uid) =>
                 {
                     // add to referenced document list
-                    var (error, link, _, buildItem) = dependencyResolver.ResolveXref(uid, file);
+                    var (error, link, display, buildItem) = dependencyResolver.ResolveXref(uid, file);
                     errors.AddIfNotNull(error);
 
                     if (buildItem != null)
@@ -137,7 +139,7 @@ namespace Microsoft.Docs.Build
                         referencedDocuments.Add(buildItem);
                     }
 
-                    return (link, buildItem);
+                    return (link, display, buildItem);
                 });
 
             errors.AddRange(loadErrors);

@@ -1080,7 +1080,7 @@ outputs:
       ]
     }
 ---
-# uid reference
+# uid reference in yaml toc
 inputs:
   docfx.yml:
   docs/a.md: |
@@ -1100,7 +1100,7 @@ outputs:
       ]
     }
 ---
-# uid reference first
+# uid reference first in yaml toc
 inputs:
   docfx.yml:
   docs/a.md: |
@@ -1129,7 +1129,7 @@ outputs:
   build.log: |
     ["warning","uid-not-found","Cannot find uid 'c' using xref 'c'","docs/TOC.yml"]
 ---
-# uid reference with monikers
+# uid reference with monikers in yaml toc
 inputs:
   docfx.yml: |
     monikerRange:
@@ -1161,3 +1161,74 @@ outputs:
       ],
       "metadata": {"monikers": ["netcore-1.1", "netcore-1.2", "netcore-1.3" ]}
     }
+---
+# uid reference in markdown toc
+inputs:
+  docfx.yml:
+  docs/TOC.md: |
+    # @b
+  docs/a.md: |
+    ---
+    title: Title A
+    uid: b
+    ---
+outputs:
+  docs/toc.json: |
+    {
+      "items": [
+        { "toc_title":"Title A","href":"a","monikers":[] }
+      ]
+    }
+  docs/a.json:
+---
+# uid reference with monikers in markdown toc
+inputs:
+  docfx.yml: |
+    monikerRange:
+      'docs/**': '>= netcore-1.1'
+    monikerDefinition: monikerDefinition.json
+  monikerDefinition.json: |
+    {
+      "monikers": [
+        { "name": "netcore-1.0", "product": ".NET Core" },
+        { "name": "netcore-1.1", "product": ".NET Core" },
+        { "name": "netcore-1.2", "product": ".NET Core" },
+        { "name": "netcore-1.3", "product": ".NET Core" },
+      ]
+    }
+  docs/a.md: |
+    ---
+    title: Title A
+    monikerRange: netcore-1.1 || netcore-1.2
+    uid: b
+    ---
+  docs/TOC.md: |
+    # @b
+outputs:
+  e300a7df/docs/a.json:
+  8169d1ea/docs/toc.json: |
+    {
+      "items": [
+        { "toc_title":"Title A","href":"a","monikers": ["netcore-1.1", "netcore-1.2"] }
+      ],
+      "metadata": {"monikers": ["netcore-1.1", "netcore-1.2", "netcore-1.3" ]}
+    }
+---
+# uid reference in toc inclusion
+inputs:
+  docfx.yml:
+  docs/a.md: |
+    ---
+    title: Title from yaml header a
+    uid: a
+    ---
+  docs/TOC.yml: |
+    - name: TOC Ref
+      tocHref: a/TOC.yml
+  docs/a/TOC.yml: |
+    - name: Uid Ref
+      uid: a
+outputs:
+  docs/a.json:
+  docs/toc.json: |
+    {"items":[{"toc_title":"TOC Ref","children":[{"toc_title":"Uid Ref","href":"a","monikers":[]}],"monikers":[]}]}
