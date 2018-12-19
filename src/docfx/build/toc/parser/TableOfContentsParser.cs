@@ -256,7 +256,7 @@ namespace Microsoft.Docs.Build
                 // process uid first
                 if (!string.IsNullOrEmpty(uid))
                 {
-                    var (uidHref, uidDisplayName, uidFile) = resolveXref.Invoke(filePath, uid);
+                    var (uidHref, uidDisplayName, uidFile) = resolveXref.Invoke(rootPath, uid);
                     if (!string.IsNullOrEmpty(uidHref))
                     {
                         return (uidHref, uidDisplayName, uidFile);
