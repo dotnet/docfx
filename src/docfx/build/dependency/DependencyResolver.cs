@@ -72,7 +72,7 @@ namespace Microsoft.Docs.Build
             callStack.AddRange(referencedCallStack);
             if (callStack.Count > 0 && referencedCallStack.Contains(file))
             {
-                return (Errors.CircularReference(), null, null);
+                throw Errors.CircularReference().ToException();
             }
 
             if (referencedFile != null)

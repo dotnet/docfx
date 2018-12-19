@@ -178,8 +178,7 @@ namespace Microsoft.Docs.Build
                 {
                     if (input.callStack.Contains(rootFile))
                     {
-                        _context.Report(rootFile.FilePath, new List<Error> { Errors.CircularReference() });
-                        return (null, null, new List<Document>());
+                        throw Errors.CircularReference().ToException();
                     }
                     input.callStack.Add(rootFile);
                 }
