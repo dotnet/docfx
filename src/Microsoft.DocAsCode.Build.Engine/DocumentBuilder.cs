@@ -462,7 +462,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     select item)
                 {
                     builder.AppendLine(item);
-                    Logger.LogVerbose($"New assembly info added: 'item'");
+                    Logger.LogVerbose($"New assembly info added: '{item}'");
                 }
                 result = builder.ToString().GetMd5String();
             }
