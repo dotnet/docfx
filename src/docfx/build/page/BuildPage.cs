@@ -25,7 +25,7 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(file.ContentType == ContentType.Page);
 
-            var (errors, schema, model, metadata) = await Load(context, file, metadataProvider, monikersProvider, dependencyResolver, buildChild, callStack);
+            var (errors, schema, model, metadata) = await Load(context, file, metadataProvider, monikerProvider, dependencyResolver, buildChild, callStack);
 
             model.PageType = schema.Name;
             model.Locale = file.Docset.Locale;
@@ -75,11 +75,11 @@ namespace Microsoft.Docs.Build
 
         private static async Task<(List<Error> errors, Schema schema, PageModel model, FileMetadata metadata)>
             Load(
-            Context context, Document file, MetadataProvider metadataProvider, MonikersProvider monikersProvider, DependencyResolver dependencyResolver, Action<Document> buildChild, List<Document> callStack)
+            Context context, Document file, MetadataProvider metadataProvider, MonikerProvider monikerProvider, DependencyResolver dependencyResolver, Action<Document> buildChild, List<Document> callStack)
         {
             if (file.FilePath.EndsWith(".md", PathUtility.PathComparison))
             {
-                return LoadMarkdown(context, file, metadataProvider, monikersProvider, dependencyResolver, buildChild, callStack);
+                return LoadMarkdown(context, file, metadataProvider, monikerProvider, dependencyResolver, buildChild, callStack);
             }
             if (file.FilePath.EndsWith(".yml", PathUtility.PathComparison))
             {
@@ -92,7 +92,7 @@ namespace Microsoft.Docs.Build
 
         private static (List<Error> errors, Schema schema, PageModel model, FileMetadata metadata)
             LoadMarkdown(
-            Context context, Document file, MetadataProvider metadataProvider, MonikersProvider monikersProvider, DependencyResolver dependencyResolver, Action<Document> buildChild, List<Document> callStack)
+            Context context, Document file, MetadataProvider metadataProvider, MonikerProvider monikerProvider, DependencyResolver dependencyResolver, Action<Document> buildChild, List<Document> callStack)
         {
             var errors = new List<Error>();
             var content = file.ReadText();
@@ -113,7 +113,7 @@ namespace Microsoft.Docs.Build
                 file,
                 dependencyResolver,
                 buildChild,
-                (rangeString) => monikersProvider.GetZoneMonikers(rangeString, monikers, errors),
+                (rangeString) => monikerProvider.GetZoneMonikers(rangeString, monikers, errors),
                 MarkdownPipelineType.ConceptualMarkdown,
                 callStack);
             errors.AddRange(markup.Errors);

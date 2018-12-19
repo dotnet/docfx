@@ -223,7 +223,7 @@ namespace Microsoft.Docs.Build
         }
 
         private static IReadOnlyDictionary<string, List<(Lazy<(List<Error>, XrefSpec)>, Document, List<Document>)>>
-            CreateInternalXrefMap(Context context, IEnumerable<Document> files, MetadataProvider metadataProvider, MonikersProvider monikersProvider, DependencyResolver dependencyResolver)
+            CreateInternalXrefMap(Context context, IEnumerable<Document> files, MetadataProvider metadataProvider, MonikerProvider monikerProvider, DependencyResolver dependencyResolver)
         {
             var xrefsByUid = new ConcurrentDictionary<string, ConcurrentBag<(Lazy<(List<Error>, XrefSpec)>, Document, List<Document>)>>();
             Debug.Assert(files != null);
@@ -264,7 +264,7 @@ namespace Microsoft.Docs.Build
                     {
                         TryAddXref(xrefsByUid, metadata.Uid, file, callStack, () =>
                         {
-                            var (error, spec, _) = LoadMarkdown(metadata, file, monikersProvider);
+                            var (error, spec, _) = LoadMarkdown(metadata, file, monikerProvider);
                             return (error is null ? new List<Error>() : new List<Error> { error }, spec);
                         });
                     }

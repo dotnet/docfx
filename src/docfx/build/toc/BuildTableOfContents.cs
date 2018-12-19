@@ -29,7 +29,7 @@ namespace Microsoft.Docs.Build
                 return (Enumerable.Empty<Error>(), null, new List<string>());
             }
 
-            var (errors, tocModel, tocMetadata, refArticles, refTocs) = Load(context, file, monikersProvider, dependencyResolver, callStack, monikersMap, monikerProvider.Comparer);
+            var (errors, tocModel, tocMetadata, refArticles, refTocs) = Load(context, file, dependencyResolver, callStack, monikerMap, monikerProvider.Comparer);
 
             var metadata = metadataProvider.GetMetadata(file, tocMetadata).ToObject<TableOfContentsMetadata>();
 
@@ -94,7 +94,7 @@ namespace Microsoft.Docs.Build
             DependencyResolver dependencyResolver,
             List<Document> callStack,
             MonikerMap monikerMap = null,
-            Dictionary<Document, List<string>> monikersMap = null)
+            MonikerComparer monikerComparer = null)
         {
             Debug.Assert(!(monikerMap == null ^ monikerComparer == null));
 
@@ -133,7 +133,7 @@ namespace Microsoft.Docs.Build
                 (file, uid) =>
                 {
                     // add to referenced document list
-                    var (error, link, display, buildItem) = dependencyResolver.ResolveXref(uid, file);
+                    var (error, link, display, buildItem) = dependencyResolver.ResolveXref(uid, file, callStack);
                     errors.AddIfNotNull(error);
 
                     if (buildItem != null)
