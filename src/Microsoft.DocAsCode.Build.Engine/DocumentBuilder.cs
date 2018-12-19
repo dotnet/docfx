@@ -448,7 +448,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private static string ComputePluginHash(List<Assembly> assemblyList)
         {
-            Logger.LogVerbose("Calculating plugin hash ...");
+            Logger.LogVerbose("Calculating plugin hash...");
 
             var result = string.Empty;
             if (assemblyList?.Count > 0)
