@@ -448,6 +448,9 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private static string ComputePluginHash(List<Assembly> assemblyList)
         {
+            Logger.LogVerbose("Calculating plugin hash...");
+
+            var result = string.Empty;
             if (assemblyList?.Count > 0)
             {
                 var builder = new StringBuilder();
@@ -459,10 +462,13 @@ namespace Microsoft.DocAsCode.Build.Engine
                     select item)
                 {
                     builder.AppendLine(item);
+                    Logger.LogVerbose($"New assembly info added: 'item'");
                 }
-                return builder.ToString().GetMd5String();
+                result = builder.ToString().GetMd5String();
             }
-            return string.Empty;
+
+            Logger.LogVerbose($"Plugin hash is '{result}'");
+            return result;
         }
 
         public void Dispose()
