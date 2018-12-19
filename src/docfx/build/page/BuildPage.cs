@@ -18,13 +18,13 @@ namespace Microsoft.Docs.Build
             TableOfContentsMap tocMap,
             ContributionProvider contribution,
             MetadataProvider metadataProvider,
-            MonikersProvider monikersProvider,
+            MonikerProvider monikerProvider,
             DependencyResolver dependencyResolver,
             Action<Document> buildChild)
         {
             Debug.Assert(file.ContentType == ContentType.Page);
 
-            var (errors, schema, model, metadata) = await Load(context, file, metadataProvider, monikersProvider, dependencyResolver, buildChild);
+            var (errors, schema, model, metadata) = await Load(context, file, metadataProvider, monikerProvider, dependencyResolver, buildChild);
 
             model.SchemaType = schema.Name;
             model.Locale = file.Docset.Locale;
@@ -74,11 +74,11 @@ namespace Microsoft.Docs.Build
 
         private static async Task<(List<Error> errors, Schema schema, PageModel model, FileMetadata metadata)>
             Load(
-            Context context, Document file, MetadataProvider metadataProvider, MonikersProvider monikersProvider, DependencyResolver dependencyResolver, Action<Document> buildChild)
+            Context context, Document file, MetadataProvider metadataProvider, MonikerProvider monikerProvider, DependencyResolver dependencyResolver, Action<Document> buildChild)
         {
             if (file.FilePath.EndsWith(".md", PathUtility.PathComparison))
             {
-                return LoadMarkdown(context, file, metadataProvider, monikersProvider, dependencyResolver, buildChild);
+                return LoadMarkdown(context, file, metadataProvider, monikerProvider, dependencyResolver, buildChild);
             }
             if (file.FilePath.EndsWith(".yml", PathUtility.PathComparison))
             {
@@ -91,7 +91,7 @@ namespace Microsoft.Docs.Build
 
         private static (List<Error> errors, Schema schema, PageModel model, FileMetadata metadata)
             LoadMarkdown(
-            Context context, Document file, MetadataProvider metadataProvider, MonikersProvider monikersProvider, DependencyResolver dependencyResolver, Action<Document> buildChild)
+            Context context, Document file, MetadataProvider metadataProvider, MonikerProvider monikerProvider, DependencyResolver dependencyResolver, Action<Document> buildChild)
         {
             var errors = new List<Error>();
             var content = file.ReadText();
@@ -103,7 +103,7 @@ namespace Microsoft.Docs.Build
             var (metaErrors, fileMetadata) = metadataProvider.GetFileMetadata(file, yamlHeader);
             errors.AddRange(metaErrors);
 
-            var (error, monikers) = monikersProvider.GetFileLevelMonikers(file, fileMetadata.MonikerRange);
+            var (error, monikers) = monikerProvider.GetFileLevelMonikers(file, fileMetadata.MonikerRange);
             errors.AddIfNotNull(error);
 
             // TODO: handle blank page
@@ -112,7 +112,7 @@ namespace Microsoft.Docs.Build
                 file,
                 dependencyResolver,
                 buildChild,
-                (rangeString) => monikersProvider.GetZoneMonikers(rangeString, monikers, errors),
+                (rangeString) => monikerProvider.GetZoneMonikers(rangeString, monikers, errors),
                 MarkdownPipelineType.ConceptualMarkdown);
             errors.AddRange(markup.Errors);
 

@@ -8,14 +8,14 @@ using System.Linq;
 
 namespace Microsoft.Docs.Build
 {
-    internal class MonikersProvider
+    internal class MonikerProvider
     {
         private readonly List<(Func<string, bool> glob, string monikerRange)> _rules = new List<(Func<string, bool>, string)>();
         private readonly MonikerRangeParser _rangeParser;
 
         public MonikerComparer Comparer { get; }
 
-        public MonikersProvider(Docset docset)
+        public MonikerProvider(Docset docset)
         {
             foreach (var (key, monikerRange) in docset.Config.MonikerRange)
             {
