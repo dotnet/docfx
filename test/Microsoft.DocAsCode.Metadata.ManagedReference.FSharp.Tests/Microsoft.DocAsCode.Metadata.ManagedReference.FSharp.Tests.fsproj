@@ -6,11 +6,21 @@
     <Compile Include="FSharpProjectTests.fs" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Include="TestData/*/*.fsproj;TestData/**/*.fs">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
+  <Target Name="RestoreTestProjects" BeforeTargets="Build">
+    <ItemGroup>
+      <TestProjects Include="TestData/**/*.fsproj" />
+    </ItemGroup>
+    <MSBuild Projects="@(TestProjects)" Targets="Restore" />
+  </Target>
+
+  <Target Name="CopyTestProjects" BeforeTargets="Build" AfterTargets="RestoreTestProjects">
+    <ItemGroup>
+      <TestData Include="TestData/**/*" />
+    </ItemGroup>
+    <Copy 
+      SourceFiles="@(TestData)" 
+      DestinationFiles="@(TestData->'$(OutputPath)\TestData\%(RecursiveDir)%(Filename)%(Extension)')" />
+  </Target>
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Microsoft.DocAsCode.DataContracts.Common\Microsoft.DocAsCode.DataContracts.Common.csproj" />

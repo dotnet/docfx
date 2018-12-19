@@ -8,8 +8,9 @@
 
 |            | Build Status  |  Package   |  Chocolatey |
 | ---------- | ------------- | ---------- | ----------- |
-| **master** |[![Build status](https://mseng.visualstudio.com/VSChina/_apis/build/status/docfx/docfx-master-ci)](https://mseng.visualstudio.com/VSChina/_build/latest?definitionId=6822) |[![NuGet](https://img.shields.io/nuget/v/docfx.svg)](http://www.nuget.org/packages/docfx/) |[![Chocolatey](https://img.shields.io/chocolatey/v/docfx.svg)](https://chocolatey.org/packages/docfx)
-|  **dev**   |[![devstatus](https://docfx.visualstudio.com/docfx/_apis/build/status/docfx-gated-checkin-CI)](https://docfx.visualstudio.com/docfx/_build/latest?definitionId=1) |[![MyGet](https://img.shields.io/myget/docfx-dev/v/docfx.svg?label=myget)](https://www.myget.org/feed/Packages/docfx-dev)
+| **master** |[![Master status](https://mseng.visualstudio.com/VSChina/_apis/build/status/docfx/docfx-master-ci)](https://mseng.visualstudio.com/VSChina/_build/latest?definitionId=6822) |[![NuGet](https://img.shields.io/nuget/v/docfx.svg)](http://www.nuget.org/packages/docfx/) |[![Chocolatey](https://img.shields.io/chocolatey/v/docfx.svg)](https://chocolatey.org/packages/docfx)
+| **stable** |[![Build Status](https://mseng.visualstudio.com/VSChina/_apis/build/status/docfx/v2/docfx-nightly-build)](https://mseng.visualstudio.com/VSChina/_build/latest?definitionId=7829) |[![MyGet](https://img.shields.io/myget/docfx-dev/v/docfx.svg?label=myget)](https://www.myget.org/feed/Packages/docfx-dev)
+| **dev** |[![devstatus](https://docfx.visualstudio.com/docfx/_apis/build/status/docfx-gated-checkin-CI)](https://docfx.visualstudio.com/docfx/_build/latest?definitionId=1)
 
 * Running Status
 
