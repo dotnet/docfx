@@ -18,7 +18,7 @@ namespace Microsoft.Docs.Build
             TableOfContentsMap tocMap,
             ContributionProvider contribution,
             MetadataProvider metadataProvider,
-            MonikersProvider monikersProvider,
+            MonikerProvider monikerProvider,
             DependencyResolver dependencyResolver,
             Action<Document> buildChild,
             List<Document> callStack)
@@ -104,7 +104,7 @@ namespace Microsoft.Docs.Build
             var (metaErrors, metadata) = JsonUtility.ToObjectWithSchemaValidation<FileMetadata>(metadataProvider.GetMetadata(file, yamlHeader));
             errors.AddRange(metaErrors);
 
-            var (error, monikers) = monikersProvider.GetFileLevelMonikers(file, metadata.MonikerRange);
+            var (error, monikers) = monikerProvider.GetFileLevelMonikers(file, metadata.MonikerRange);
             errors.AddIfNotNull(error);
 
             // TODO: handle blank page

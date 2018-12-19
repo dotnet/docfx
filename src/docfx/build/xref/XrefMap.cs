@@ -92,7 +92,7 @@ namespace Microsoft.Docs.Build
             Context context,
             Docset docset,
             MetadataProvider metadataProvider,
-            MonikersProvider monikersProvider,
+            MonikerProvider monikerProvider,
             DependencyResolver dependencyResolver)
         {
             Dictionary<string, XrefSpec> map = new Dictionary<string, XrefSpec>();
@@ -114,7 +114,7 @@ namespace Microsoft.Docs.Build
                     map[spec.Uid] = spec;
                 }
             }
-            return new XrefMap(map, CreateInternalXrefMap(context, docset.ScanScope, metadataProvider, monikersProvider, dependencyResolver), context, monikersProvider.Comparer);
+            return new XrefMap(map, CreateInternalXrefMap(context, docset.ScanScope, metadataProvider, monikerProvider, dependencyResolver), context, monikerProvider.Comparer);
         }
 
         public void OutputXrefMap(Context context)
@@ -229,7 +229,7 @@ namespace Microsoft.Docs.Build
             Debug.Assert(files != null);
             using (Progress.Start("Building Xref map"))
             {
-                ParallelUtility.ForEach(files.Where(f => f.ContentType == ContentType.Page), file => Load(context, xrefsByUid, file, metadataProvider, monikersProvider, dependencyResolver), Progress.Update);
+                ParallelUtility.ForEach(files.Where(f => f.ContentType == ContentType.Page), file => Load(context, xrefsByUid, file, metadataProvider, monikerProvider, dependencyResolver), Progress.Update);
                 return xrefsByUid.ToList().OrderBy(item => item.Key).ToDictionary(item => item.Key, item => item.Value.ToList());
             }
         }
@@ -247,7 +247,7 @@ namespace Microsoft.Docs.Build
             ConcurrentDictionary<string, ConcurrentBag<(Lazy<(List<Error>, XrefSpec)>, Document, List<Document>)>> xrefsByUid,
             Document file,
             MetadataProvider metadataProvider,
-            MonikersProvider monikersProvider,
+            MonikerProvider monikerProvider,
             DependencyResolver dependencyResolver)
         {
             try
@@ -299,7 +299,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static (Error error, XrefSpec spec, Document doc) LoadMarkdown(FileMetadata metadata, Document file, MonikersProvider monikersProvider)
+        private static (Error error, XrefSpec spec, Document doc) LoadMarkdown(FileMetadata metadata, Document file, MonikerProvider monikerProvider)
         {
             var xref = new XrefSpec
             {
@@ -308,7 +308,7 @@ namespace Microsoft.Docs.Build
             };
             xref.ExtensionData["name"] = string.IsNullOrEmpty(metadata.Title) ? metadata.Uid : metadata.Title;
 
-            var (error, monikers) = monikersProvider.GetFileLevelMonikers(file, metadata.MonikerRange);
+            var (error, monikers) = monikerProvider.GetFileLevelMonikers(file, metadata.MonikerRange);
             foreach (var moniker in monikers)
             {
                 xref.Monikers.Add(moniker);

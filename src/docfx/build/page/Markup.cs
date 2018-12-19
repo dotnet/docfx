@@ -187,7 +187,7 @@ namespace Microsoft.Docs.Build
             return link;
         }
 
-        private static (Error error, string href, string display) ResolveXref(string href)
+        private static (Error error, string href, string display, Document file) ResolveXref(string href)
         {
             var peek = t_status.Peek();
             return peek.DependencyResolver.ResolveXref(href, (Document)InclusionContext.RootFile, peek.CallStack);

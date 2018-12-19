@@ -25,7 +25,7 @@ namespace Microsoft.Docs.Build
 
             var metadataProvider = new MetadataProvider(config);
             var docset = new Docset(context, docsetPath, config, options).GetBuildDocset();
-            var monikersProvider = new MonikersProvider(docset);
+            var monikerProvider = new MonikerProvider(docset);
 
             using (var gitCommitProvider = new GitCommitProvider())
             {
@@ -34,13 +34,11 @@ namespace Microsoft.Docs.Build
                 var dependencyResolver = new DependencyResolver(gitCommitProvider, new Lazy<XrefMap>(() => xrefMap));
 
                 // Xrefmap and dependency resolver has a circular dependency.
-                xrefMap = XrefMap.Create(context, docset, metadataProvider, monikersProvider, dependencyResolver);
-
-                // TODO: toc map and xref map should always use source docset?
-                var tocMap = BuildTableOfContents.BuildTocMap(context, docset, monikersProvider, dependencyResolver, new List<Document>());
+                xrefMap = XrefMap.Create(context, docset, metadataProvider, monikerProvider, dependencyResolver);
+                var tocMap = BuildTableOfContents.BuildTocMap(context, docset, dependencyResolver);
 
                 var githubUserCache = await GitHubUserCache.Create(docset, config.GitHub.AuthToken);
-                var (manifest, fileManifests, sourceDependencies) = await BuildFiles(context, docset, tocMap, githubUserCache, metadataProvider, monikersProvider, dependencyResolver, gitCommitProvider);
+                var (manifest, fileManifests, sourceDependencies) = await BuildFiles(context, docset, tocMap, githubUserCache, metadataProvider, monikerProvider, dependencyResolver, gitCommitProvider);
 
                 context.WriteJson(manifest, "build.manifest");
                 var saveGitHubUserCache = githubUserCache.SaveChanges(config);
@@ -70,7 +68,7 @@ namespace Microsoft.Docs.Build
             TableOfContentsMap tocMap,
             GitHubUserCache githubUserCache,
             MetadataProvider metadataProvider,
-            MonikersProvider monikersProvider,
+            MonikerProvider monikerProvider,
             DependencyResolver dependencyResolver,
             GitCommitProvider gitCommitProvider)
         {
@@ -78,20 +76,20 @@ namespace Microsoft.Docs.Build
             {
                 var recurseDetector = new ConcurrentHashSet<Document>();
                 var manifestBuilder = new ManifestBuilder();
-                var monikersMap = new ConcurrentDictionary<Document, List<string>>();
+                var monikerMap = new ConcurrentDictionary<Document, List<string>>();
 
                 var contribution = await ContributionProvider.Create(docset, githubUserCache, gitCommitProvider);
                 await ParallelUtility.ForEach(
                     docset.BuildScope,
-                    async (file, buildChild) => { monikersMap.TryAdd(file, await BuildOneFile(file, buildChild, null)); },
+                    async (file, buildChild) => { monikerMap.TryAdd(file, await BuildOneFile(file, buildChild, null)); },
                     (file) => { return ShouldBuildFile(file, new ContentType[] { ContentType.Page, ContentType.Redirection, ContentType.Resource }); },
                     Progress.Update);
 
                 // Build TOC: since toc file depends on the build result of every node
                 await ParallelUtility.ForEach(
-                    docset.BuildScope,
-                    (file, buildChild) => { return BuildOneFile(file, buildChild, monikersMap.ToDictionary(item => item.Key, item => item.Value)); },
-                    file => { return ShouldBuildFile(file, new ContentType[] { ContentType.TableOfContents }); },
+                    docset.GetTableOfContents(tocMap),
+                    (file, buildChild) => { return BuildOneFile(file, buildChild, new MonikerMap(monikerMap)); },
+                    file => true,
                     Progress.Update);
 
                 var saveGitCommitCache = gitCommitProvider.SaveGitCommitCache();
@@ -107,9 +105,9 @@ namespace Microsoft.Docs.Build
                 async Task<List<string>> BuildOneFile(
                     Document file,
                     Action<Document> buildChild,
-                    Dictionary<Document, List<string>> fileMonikersMap)
+                    MonikerMap fileMonikerMap)
                 {
-                    return await BuildFile(context, file, tocMap, contribution, fileMonikersMap, manifestBuilder, metadataProvider, monikersProvider, dependencyResolver, buildChild);
+                    return await BuildFile(context, file, tocMap, contribution, fileMonikerMap, manifestBuilder, metadataProvider, monikerProvider, dependencyResolver, buildChild);
                 }
 
                 bool ShouldBuildFile(Document file, ContentType[] shouldBuildContentTypes)
@@ -141,10 +139,10 @@ namespace Microsoft.Docs.Build
             Document file,
             TableOfContentsMap tocMap,
             ContributionProvider contribution,
-            Dictionary<Document, List<string>> monikersMap,
+            MonikerMap monikerMap,
             ManifestBuilder manifestBuilder,
             MetadataProvider metadataProvider,
-            MonikersProvider monikersProvider,
+            MonikerProvider monikerProvider,
             DependencyResolver dependencyResolver,
             Action<Document> buildChild)
         {
@@ -158,7 +156,7 @@ namespace Microsoft.Docs.Build
                 switch (file.ContentType)
                 {
                     case ContentType.Resource:
-                        (errors, model, monikers) = BuildResource.Build(file, metadataProvider, monikersProvider);
+                        (errors, model, monikers) = BuildResource.Build(file, metadataProvider, monikerProvider);
                         break;
                     case ContentType.Page:
                         (errors, model, monikers) = await BuildPage.Build(context, file, tocMap, contribution, metadataProvider, monikersProvider, dependencyResolver, buildChild, callStack);
@@ -168,7 +166,7 @@ namespace Microsoft.Docs.Build
                         (errors, model, monikers) = BuildTableOfContents.Build(context, file, tocMap, metadataProvider, monikersProvider, dependencyResolver, monikersMap, callStack);
                         break;
                     case ContentType.Redirection:
-                        (errors, model, monikers) = BuildRedirection.Build(file, metadataProvider, monikersProvider);
+                        (errors, model, monikers) = BuildRedirection.Build(file, metadataProvider, monikerProvider);
                         break;
                 }
 

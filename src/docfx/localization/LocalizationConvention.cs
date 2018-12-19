@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -190,6 +191,32 @@ namespace Microsoft.Docs.Build
             return false;
         }
 
+        public static IReadOnlyList<Document> GetTableOfContents(this Docset docset, TableOfContentsMap tocMap)
+        {
+            Debug.Assert(tocMap != null);
+
+            var result = docset.BuildScope.Where(d => d.ContentType == ContentType.TableOfContents).ToList();
+
+            if (!docset.IsLocalized())
+            {
+                return result;
+            }
+
+            // if A toc includes B toc and only B toc is localized, then A need to be included and built
+            var fallbackTocs = new List<Document>();
+            foreach (var toc in result)
+            {
+                if (tocMap.TryFindParents(toc, out var parents))
+                {
+                    fallbackTocs.AddRange(parents);
+                }
+            }
+
+            result.AddRange(fallbackTocs);
+
+            return result;
+        }
+
         public static HashSet<Document> CreateScanScope(this Docset docset)
         {
             var scanScopeFilePaths = new HashSet<string>(PathUtility.PathComparer);
@@ -221,8 +248,9 @@ namespace Microsoft.Docs.Build
             return sourceDocset.LocalizationDocset ?? sourceDocset;
         }
 
-        public static bool IsLocalized(this Docset docset)
-            => docset.FallbackDocset != null;
+        public static bool IsLocalized(this Docset docset) => docset.FallbackDocset != null;
+
+        public static bool IsLocalizedBuild(this Docset docset) => docset.FallbackDocset != null || docset.LocalizationDocset != null;
 
         public static (string remote, string branch) GetLocalizationTheme(string theme, string locale, string defaultLocale)
         {
