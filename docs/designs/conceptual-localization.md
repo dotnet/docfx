@@ -220,6 +220,8 @@ Then it brings new problem: the `contributor info` need to be extracted from `ra
 
 So, during docfx build, if the current building content is sxs content, docfx will extract the contributors from corresponding raw content.
 
+> NOTE: For `branch mapping` localization repos(all locales in one repo under different branch), the sxs branch name follow this convention: `{branch}.locale` -> `{branch}-sxs.{locale}`
+
 ### Lookup no-existing source resources(token/codesnippet/image)
 
 All localization content is delayed translated, which means that the content version in loc docsets usually fall behind of source content version for one or two weeks:
@@ -297,13 +299,13 @@ localization(repo):
 Different `branch` example:
 ```txt
 localization(repo):
-    zh-cn-live:
+    live.zh-cn:
         |- readme.md
-    zh-cn-master:
+    master.zh-cn:
         |- readme.md
-    de-de-live:
+    live.de-de:
         |- readme.md
-    de-de-master:
+    master.de-de:
         | - readme.md
 ```
 
