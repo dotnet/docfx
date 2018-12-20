@@ -59,7 +59,7 @@ namespace Microsoft.Docs.Build
         /// Gets the file metadata added to each document.
         /// It is a map of `{metadata-name} -> {glob} -> {metadata-value}`
         /// </summary>
-        public readonly Dictionary<string, Dictionary<string, JToken>> FileMetadata = new Dictionary<string, Dictionary<string, JToken>>();
+        public readonly JObject FileMetadata = new JObject();
 
         /// <summary>
         /// Gets a map from source folder path and output URL path.
@@ -239,6 +239,9 @@ namespace Microsoft.Docs.Build
             var deserializeErrors = new List<Error>();
             (deserializeErrors, config) = JsonUtility.ToObjectWithSchemaValidation<Config>(finalConfigObject);
             errors.AddRange(deserializeErrors);
+
+            errors.AddRange(MetadataValidator.Validate(config.GlobalMetadata, nameof(GlobalMetadata)));
+            errors.AddRange(MetadataValidator.Validate(config.FileMetadata, nameof(FileMetadata)));
 
             return (errors, config);
 

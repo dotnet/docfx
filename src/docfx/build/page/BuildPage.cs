@@ -26,7 +26,7 @@ namespace Microsoft.Docs.Build
 
             var (errors, schema, model, metadata) = await Load(context, file, metadataProvider, monikerProvider, dependencyResolver, buildChild);
 
-            model.PageType = schema.Name;
+            model.SchemaType = schema.Name;
             model.Locale = file.Docset.Locale;
             model.Metadata = metadata;
             model.OpenToPublicContributors = file.Docset.Config.Contribution.ShowEdit;
@@ -47,7 +47,7 @@ namespace Microsoft.Docs.Build
             {
                 output = file.Docset.Legacy
                     ? file.Docset.LegacyTemplate.Render(model, file, HashUtility.GetMd5HashShort(model.Monikers))
-                    : await RazorTemplate.Render(model.PageType, model);
+                    : await RazorTemplate.Render(model.SchemaType, model);
             }
 
             return (errors, output, model.Monikers);
@@ -100,10 +100,10 @@ namespace Microsoft.Docs.Build
             var (yamlHeaderErrors, yamlHeader) = ExtractYamlHeader.Extract(file, context);
             errors.AddRange(yamlHeaderErrors);
 
-            var (metaErrors, metadata) = JsonUtility.ToObjectWithSchemaValidation<FileMetadata>(metadataProvider.GetMetadata(file, yamlHeader));
+            var (metaErrors, fileMetadata) = metadataProvider.GetFileMetadata(file, yamlHeader);
             errors.AddRange(metaErrors);
 
-            var (error, monikers) = monikerProvider.GetFileLevelMonikers(file, metadata.MonikerRange);
+            var (error, monikers) = monikerProvider.GetFileLevelMonikers(file, fileMetadata.MonikerRange);
             errors.AddIfNotNull(error);
 
             // TODO: handle blank page
@@ -135,7 +135,7 @@ namespace Microsoft.Docs.Build
 
             dependencyResolver.BookmarkValidator.AddBookmarks(file, bookmarks);
 
-            return (errors, Schema.Conceptual, model, metadata);
+            return (errors, Schema.Conceptual, model, fileMetadata);
         }
 
         private static async Task<(List<Error> errors, Schema schema, PageModel model, FileMetadata metadata)>
@@ -178,9 +178,10 @@ namespace Microsoft.Docs.Build
             }
 
             // TODO: add check before to avoid case failure
-            var fileMetadata = obj?.Value<JObject>("metadata") ?? new JObject();
-            var title = fileMetadata.Value<string>("title") ?? obj?.Value<string>("title");
-            var (metaErrors, metadata) = JsonUtility.ToObjectWithSchemaValidation<FileMetadata>(metadataProvider.GetMetadata(file, fileMetadata));
+            var yamlHeader = obj?.Value<JObject>("metadata") ?? new JObject();
+            var title = yamlHeader.Value<string>("title") ?? obj?.Value<string>("title");
+
+            var (metaErrors, fileMetadata) = metadataProvider.GetFileMetadata(file, yamlHeader);
             errors.AddRange(metaErrors);
 
             var model = new PageModel
@@ -191,7 +192,7 @@ namespace Microsoft.Docs.Build
                 Monikers = new List<string>(),
             };
 
-            return (errors, schema, model, metadata);
+            return (errors, schema, model, fileMetadata);
         }
     }
 }
