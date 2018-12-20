@@ -175,10 +175,16 @@ namespace Microsoft.Docs.Build
                 var (resolvedTopicHref, resolvedTopicName, document) = ProcessTopicItem(topicUid, topicHref);
 
                 // set resolved href back
+                tocModelItem.Href = resolvedTopicHref ?? resolvedTopicItemFromTocHref?.Href;
+                tocModelItem.TocHref = resolvedTocHref;
+                tocModelItem.Name = tocModelItem.Name ?? resolvedTopicName;
+                if (subChildren != null)
+                {
+                    tocModelItem.Items = subChildren.Items;
+                }
+
                 if (resolvedTopicHref != null)
                 {
-                    tocModelItem.Href = resolvedTopicHref;
-
                     if (monikerMap == null || document == null || !monikerMap.TryGetValue(document, out List<string> monikers))
                     {
                         monikers = new List<string>();
@@ -188,14 +194,7 @@ namespace Microsoft.Docs.Build
                 }
                 else
                 {
-                    tocModelItem.Href = resolvedTopicItemFromTocHref?.Href;
                     tocModelItem.Monikers = resolvedTopicItemFromTocHref?.Monikers;
-                }
-                tocModelItem.TocHref = resolvedTocHref;
-                tocModelItem.Name = tocModelItem.Name ?? resolvedTopicName;
-                if (subChildren != null)
-                {
-                    tocModelItem.Items = subChildren.Items;
                 }
             }
 
