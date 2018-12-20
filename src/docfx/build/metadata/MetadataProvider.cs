@@ -17,7 +17,7 @@ namespace Microsoft.Docs.Build
         {
             _config = config;
 
-            foreach (var (key, item) in config.FileMetadata.ToObject<Dictionary<string, Dictionary<string, JToken>>>())
+            foreach (var (key, item) in config.FileMetadata)
             {
                 foreach (var (glob, value) in item)
                 {

@@ -13,21 +13,24 @@ namespace Microsoft.Docs.Build
     {
         private static readonly HashSet<string> _reservedNames = GetReservedMetadata();
 
-        public static List<Error> Validate(JObject metadata, string from)
+        public static List<Error> Validate<T>(IEnumerable<KeyValuePair<string, T>> metadata, string from)
         {
             var errors = new List<Error>();
 
             foreach (var (key, token) in metadata)
             {
-                var lineInfo = (IJsonLineInfo)token;
+                var lineInfo = token as IJsonLineInfo;
                 if (_reservedNames.Contains(key))
                 {
-                    errors.Add(Errors.ReservedMetadata(new Range(lineInfo.LineNumber, lineInfo.LinePosition), key, from));
+                    errors.Add(Errors.ReservedMetadata(new Range(lineInfo?.LineNumber ?? 0, lineInfo?.LinePosition ?? 0), key, from));
                 }
             }
 
             return errors;
         }
+
+        public static List<Error> Validate(JObject metadata, string from)
+            => Validate((IEnumerable<KeyValuePair<string, JToken>>)metadata, from);
 
         private static HashSet<string> GetReservedMetadata()
         {
