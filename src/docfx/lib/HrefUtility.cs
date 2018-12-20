@@ -2,10 +2,8 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using System.Web;
 
 namespace Microsoft.Docs.Build
@@ -26,11 +24,11 @@ namespace Microsoft.Docs.Build
             var fragmentIndex = href.IndexOf('#');
             if (fragmentIndex >= 0)
             {
-                fragment = href.Substring(fragmentIndex + 1);
+                fragment = href.Substring(fragmentIndex);
                 var queryIndex = href.IndexOf('?', 0, fragmentIndex);
                 if (queryIndex >= 0)
                 {
-                    query = href.Substring(queryIndex + 1, fragmentIndex - queryIndex - 1);
+                    query = href.Substring(queryIndex, fragmentIndex - queryIndex);
                     path = href.Substring(0, queryIndex);
                 }
                 else
@@ -43,7 +41,7 @@ namespace Microsoft.Docs.Build
                 var queryIndex = href.IndexOf('?');
                 if (queryIndex >= 0)
                 {
-                    query = href.Substring(queryIndex + 1);
+                    query = href.Substring(queryIndex);
                     path = href.Substring(0, queryIndex);
                 }
                 else
@@ -52,7 +50,7 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            return (path.Trim(), query.Trim(), fragment.Trim());
+            return (path, query, fragment);
         }
 
         /// <summary>
@@ -61,38 +59,21 @@ namespace Microsoft.Docs.Build
         public static string MergeHref(string targetHref, string sourceQuery, string sourceFragment)
         {
             var (targetPath, targetQuery, targetFragment) = SplitHref(targetHref);
+            if (string.IsNullOrEmpty(targetPath))
+                return targetHref;
 
-            var result = new StringBuilder(targetPath);
+            var targetQueryParameters = HttpUtility.ParseQueryString(targetQuery.Length == 0 ? "" : targetQuery.Substring(1));
+            var sourceQueryParameters = HttpUtility.ParseQueryString(sourceQuery);
 
-            if (!string.IsNullOrEmpty(targetQuery) || !string.IsNullOrEmpty(sourceQuery))
+            foreach (var key in sourceQueryParameters.AllKeys)
             {
-                var targetQueryParameters = HttpUtility.ParseQueryString(targetQuery ?? "");
-                var sourceQueryParameters = HttpUtility.ParseQueryString(sourceQuery ?? "");
-
-                foreach (var key in sourceQueryParameters.AllKeys)
-                {
-                    targetQueryParameters.Set(key, sourceQueryParameters[key]);
-                }
-
-                if (targetQueryParameters.Count > 0)
-                {
-                    result.Append('?');
-                    result.Append(targetQueryParameters.ToString());
-                }
+                targetQueryParameters.Set(key, sourceQueryParameters[key]);
             }
 
-            if (!string.IsNullOrEmpty(sourceFragment))
-            {
-                result.Append('#');
-                result.Append(sourceFragment);
-            }
-            else if (!string.IsNullOrEmpty(targetFragment))
-            {
-                result.Append('#');
-                result.Append(targetFragment);
-            }
+            var query = targetQueryParameters.HasKeys() ? "?" + targetQueryParameters.ToString() : string.Empty;
+            var fragment = sourceFragment?.Length == 0 ? targetFragment : "#" + sourceFragment;
 
-            return result.ToString();
+            return targetPath + query + fragment;
         }
 
         /// <summary>
@@ -105,9 +86,16 @@ namespace Microsoft.Docs.Build
 
             var (path, _, fragment) = SplitHref(remoteHref);
 
-            var refspec = (string.IsNullOrEmpty(fragment) || fragment.Length <= 1) ? "master" : fragment;
+            var refspec = (string.IsNullOrEmpty(fragment) || fragment.Length <= 1) ? "master" : fragment.Substring(1);
 
             return (path, refspec);
+        }
+
+        public static DependencyType FragmentToDependencyType(string fragment)
+        {
+            Debug.Assert(string.IsNullOrEmpty(fragment) || fragment[0] == '#');
+
+            return fragment != null && fragment.Length > 1 ? DependencyType.Bookmark : DependencyType.Link;
         }
 
         public static bool IsAbsoluteHref(string str)

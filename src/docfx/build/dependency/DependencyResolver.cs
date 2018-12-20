@@ -37,16 +37,12 @@ namespace Microsoft.Docs.Build
         {
             var (error, link, fragment, file) = TryResolveHref(relativeTo, path, resultRelativeTo);
 
-            Debug.Assert(string.IsNullOrEmpty(fragment) || fragment[0] != '#');
-
             if (file != null && buildChild != null)
             {
                 buildChild(file);
             }
 
-            var dependencyType = string.IsNullOrEmpty(fragment) ? DependencyType.Link : DependencyType.Bookmark;
-
-            DependencyMapBuilder.AddDependencyItem(relativeTo, file, dependencyType);
+            DependencyMapBuilder.AddDependencyItem(relativeTo, file, HrefUtility.FragmentToDependencyType(fragment));
             BookmarkValidator.AddBookmarkReference(relativeTo, file ?? relativeTo, fragment);
 
             return (error, link, file);
@@ -59,7 +55,7 @@ namespace Microsoft.Docs.Build
             NameValueCollection queries = null;
             if (!string.IsNullOrEmpty(query))
             {
-                queries = HttpUtility.ParseQueryString(query);
+                queries = HttpUtility.ParseQueryString(query.Substring(1));
                 moniker = queries?["view"];
             }
 
@@ -85,7 +81,7 @@ namespace Microsoft.Docs.Build
             string display = !string.IsNullOrEmpty(displayPropertyValue) ? displayPropertyValue : (!string.IsNullOrEmpty(name) ? name : uid);
             var monikerQuery = !string.IsNullOrEmpty(moniker) ? $"view={moniker}" : "";
 
-            href = HrefUtility.MergeHref(xrefSpec.Href, monikerQuery, fragment.Length == 0 ? "" : fragment);
+            href = HrefUtility.MergeHref(xrefSpec.Href, monikerQuery, fragment.Length == 0 ? "" : fragment.Substring(1));
             return (null, href, display, referencedFile);
         }
 
@@ -130,7 +126,8 @@ namespace Microsoft.Docs.Build
             // follow redirections
             if (redirectTo != null && !relativeTo.Docset.Legacy)
             {
-                return (error, HrefUtility.MergeHref(redirectTo, query, fragment), null, null);
+                // TODO: append query and fragment to an absolute url with query and fragments may cause problems
+                return (error, redirectTo + query + fragment, null, null);
             }
 
             // Cannot resolve the file, leave href as is
@@ -146,21 +143,17 @@ namespace Microsoft.Docs.Build
                 {
                     if (isSelfBookmark)
                     {
-                        return (error, HrefUtility.MergeHref("", query, fragment), fragment, null);
+                        return (error, query + fragment, fragment, null);
                     }
-
                     var selfUrl = HrefUtility.EscapeUrl(Document.PathToRelativeUrl(
                         Path.GetFileName(file.SitePath), file.ContentType, file.Schema, file.Docset.Config.Output.Json));
-
-                    return (error, HrefUtility.MergeHref(selfUrl, query, fragment), fragment, null);
+                    return (error, selfUrl + query + fragment, fragment, null);
                 }
-
-                var resultHref = HrefUtility.MergeHref("", query, fragment);
-                if (string.IsNullOrEmpty(resultHref))
+                if (string.IsNullOrEmpty(fragment))
                 {
-                    resultHref = "#";
+                    fragment = "#";
                 }
-                return (error, resultHref, fragment, null);
+                return (error, query + fragment, fragment, null);
             }
 
             // Link to dependent repo, don't build the file, leave href as is
@@ -174,7 +167,7 @@ namespace Microsoft.Docs.Build
 
             if (redirectTo != null)
             {
-                return (error, HrefUtility.MergeHref(relativeUrl, query, fragment), fragment, null);
+                return (error, relativeUrl + query + fragment, fragment, null);
             }
 
             // Pages outside build scope, don't build the file, use relative href
@@ -182,14 +175,10 @@ namespace Microsoft.Docs.Build
                 && (file.ContentType == ContentType.Page || file.ContentType == ContentType.TableOfContents)
                 && !file.Docset.BuildScope.Contains(file))
             {
-                return (
-                    Errors.LinkOutOfScope(relativeTo, file, href, file.Docset.Config.ConfigFileName),
-                    HrefUtility.MergeHref(relativeUrl, query, fragment),
-                    fragment,
-                    null);
+                return (Errors.LinkOutOfScope(relativeTo, file, href, file.Docset.Config.ConfigFileName), relativeUrl + query + fragment, fragment, null);
             }
 
-            return (error, HrefUtility.MergeHref(relativeUrl, query, fragment), fragment, file);
+            return (error, relativeUrl + query + fragment, fragment, file);
         }
 
         /// <summary>
