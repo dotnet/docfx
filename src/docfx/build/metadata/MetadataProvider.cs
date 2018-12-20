@@ -17,7 +17,7 @@ namespace Microsoft.Docs.Build
         {
             _config = config;
 
-            foreach (var (key, item) in config.FileMetadata)
+            foreach (var (key, item) in config.FileMetadata.ToObject<Dictionary<string, Dictionary<string, JToken>>>())
             {
                 foreach (var (glob, value) in item)
                 {
@@ -26,10 +26,11 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public JObject GetMetadata(Document file, JObject yamlHeader = null)
+        public (List<Error> errors, JObject metadata) GetMetadata(Document file, JObject yamlHeader = null)
         {
             Debug.Assert(file != null);
 
+            var erros = new List<Error>();
             var fileMetadata = new JObject();
             foreach (var (glob, key, value) in _rules)
             {
@@ -45,9 +46,23 @@ namespace Microsoft.Docs.Build
 
             if (yamlHeader != null)
             {
+                erros.AddRange(MetadataValidator.Validate(yamlHeader, "yaml header"));
                 result.Merge(yamlHeader, JsonUtility.MergeSettings);
             }
-            return result;
+
+            return (erros, result);
+        }
+
+        public (List<Error> errors, FileMetadata fileMetadata) GetFileMetadata(Document file, JObject yamlHeader = null)
+        {
+            var errors = new List<Error>();
+            var (metaErrors, metadata) = GetMetadata(file, yamlHeader);
+            errors.AddRange(metaErrors);
+
+            var (fileMetaErrors, fileMetadata) = JsonUtility.ToObjectWithSchemaValidation<FileMetadata>(metadata);
+            errors.AddRange(fileMetaErrors);
+
+            return (errors, fileMetadata);
         }
     }
 }

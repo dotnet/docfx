@@ -19,6 +19,7 @@ namespace Microsoft.Docs.Build
             var (configErrors, config) = Config.Load(docsetPath, options);
             report.Configure(docsetPath, config);
 
+            // todo: abort the process if configuration loading has errors
             var outputPath = Path.Combine(docsetPath, config.Output.Path);
             var context = new Context(report, outputPath);
             context.Report(config.ConfigFileName, configErrors);
