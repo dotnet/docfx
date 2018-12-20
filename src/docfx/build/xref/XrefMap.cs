@@ -172,16 +172,12 @@ namespace Microsoft.Docs.Build
                 if (input.value is null)
                     return default;
 
-                var isValueCreated = input.value.IsValueCreated;
-
-                if (!isValueCreated)
+                if (input.file == rootFile)
                 {
-                    if (input.callStack.Contains(rootFile))
-                    {
-                        throw Errors.CircularReference().ToException();
-                    }
-                    input.callStack.Add(rootFile);
+                    throw Errors.CircularReference().ToException();
                 }
+
+                var isValueCreated = input.value.IsValueCreated;
 
                 var (errors, spec) = input.value.Value;
                 if (!isValueCreated)
@@ -198,7 +194,6 @@ namespace Microsoft.Docs.Build
                         spec.Monikers = orderedMonikers;
                     }
                 }
-                input.callStack.RemoveRange(1, input.callStack.Count - 1);
                 return (spec, input.file, input.callStack);
             }
         }
