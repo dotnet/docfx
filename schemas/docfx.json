@@ -167,7 +167,13 @@
         "type": "string"
       }
     },
-    "fileMetadata": {},
+    "fileMetadata": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": {}
+      }
+    },
     "routes": {
       "type": "object",
       "additionalProperties": {
