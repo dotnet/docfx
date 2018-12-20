@@ -729,6 +729,7 @@ outputs:
 # Build toc with monikers info
 inputs:
   docfx.yml: |
+    exclude: 'docs/v1/folder/TOC.yml'
     monikerRange:
       'docs/v1/**': '>= netcore-1.0'
     routes:
@@ -750,15 +751,25 @@ inputs:
     monikerRange: '>= netcore-1.1'
     ---
     # [A](a.md)
-    ## [A](xref:a)
     ## [B](b.md)
+    ## [C](/c)
+    ## [D](http://test.com/test)
+    ### [A](xref:a)
+    ## [Toc ref](folder/TOC.yml)
+    ## [Folder ref](folder/)
+  docs/v1/folder/TOC.yml: |
+    metadata:
+      monikerRange: '<= netcore-1.1'
+    items:
+      - name: B
+        href: ../b.md
   monikerDefinition.json: |
     {
       "monikers": [
         { "name": "netcore-1.0", "product": ".NET Core" },
         { "name": "netcore-1.1", "product": ".NET Core" },
         { "name": "netcore-1.2", "product": ".NET Core" },
-        { "name": "netcore-1.3", "product": ".NET Core" },
+        { "name": "netcore-1.3", "product": ".NET Core" }
       ]
     }
 outputs:
@@ -779,10 +790,26 @@ outputs:
           "toc_title": "A",
           "href": "a",
           "children": [
-            { "toc_title": "A", "href": "a", "monikers": ["netcore-1.0", "netcore-1.1"] },
-            { "toc_title": "B", "href": "b", "monikers": ["netcore-1.1", "netcore-1.2"] }
+            { "toc_title": "B", "href": "b", "monikers": ["netcore-1.1", "netcore-1.2"] },
+            { "toc_title": "C", "href": "/c", "monikers": ["netcore-1.1", "netcore-1.2", "netcore-1.3"] },
+            { 
+              "toc_title": "D",
+              "href": "http://test.com/test", 
+              "monikers": ["netcore-1.0", "netcore-1.1", "netcore-1.2", "netcore-1.3"],
+              "children": [
+                { "toc_title": "A", "href": "a", "monikers": ["netcore-1.0", "netcore-1.1"] }
+              ]
+            },
+            {
+              "toc_title": "Toc ref",
+              "monikers": ["netcore-1.1", "netcore-1.2"],
+              "children": [
+                { "toc_title": "B", "href": "b", "monikers": ["netcore-1.1", "netcore-1.2"] },
+              ]
+            },
+            { "toc_title": "Folder ref", "href": "b", "monikers": ["netcore-1.1", "netcore-1.2"] }
           ],
-          "monikers": ["netcore-1.0", "netcore-1.1", "netcore-1.2"]
+          "monikers": ["netcore-1.0", "netcore-1.1", "netcore-1.2", "netcore-1.3"]
         }
       ],
       "metadata": {"monikers": ["netcore-1.1", "netcore-1.2", "netcore-1.3" ]}
