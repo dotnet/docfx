@@ -89,7 +89,7 @@ namespace Microsoft.Docs.Build
                 await ParallelUtility.ForEach(
                     docset.GetTableOfContents(tocMap),
                     (file, buildChild) => { return BuildOneFile(file, buildChild, new MonikerMap(monikerMap)); },
-                    file => true,
+                    ShouldBuildTocFile,
                     Progress.Update);
 
                 var saveGitCommitCache = gitCommitProvider.SaveGitCommitCache();
@@ -120,6 +120,8 @@ namespace Microsoft.Docs.Build
 
                     return shouldBuildContentTypes.Contains(file.ContentType) && recurseDetector.TryAdd(file);
                 }
+
+                bool ShouldBuildTocFile(Document file) => file.ContentType == ContentType.TableOfContents && tocMap.Contains(file);
 
                 void ValidateBookmarks()
                 {
@@ -162,7 +164,7 @@ namespace Microsoft.Docs.Build
                         break;
                     case ContentType.TableOfContents:
                         // TODO: improve error message for toc monikers overlap
-                        (errors, model, monikers) = BuildTableOfContents.Build(context, file, tocMap, metadataProvider, monikerProvider, dependencyResolver, monikerMap);
+                        (errors, model, monikers) = BuildTableOfContents.Build(context, file, metadataProvider, monikerProvider, dependencyResolver, monikerMap);
                         break;
                     case ContentType.Redirection:
                         (errors, model, monikers) = BuildRedirection.Build(file, metadataProvider, monikerProvider);

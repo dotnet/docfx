@@ -1232,3 +1232,39 @@ outputs:
   docs/a.json:
   docs/toc.json: |
     {"items":[{"toc_title":"TOC Ref","children":[{"toc_title":"Uid Ref","href":"a","monikers":[]}],"monikers":[]}]}
+---
+# uid reference in markdown toc using bad syntax(multiple inlines for one heading block)
+# the xref inline has highest priority, then we only retrieve the first one
+inputs:
+  docfx.yml:
+  docs/TOC.md: |
+    # @b abc
+    # @b @a
+    # [Title X](a.md) bcd
+    # [Title X](a.md) [Title Y](b.md)
+    # @b [Title X](a.md)
+    # [Title X](a.md) @b
+  docs/a.md: |
+    ---
+    title: Title A
+    uid: b
+    ---
+  docs/b.md: |
+    ---
+    title: Title B
+    uid: a
+    ---
+outputs:
+  docs/toc.json: |
+    {
+      "items": [
+        { "toc_title":"Title A","href":"a","monikers":[] },
+        { "toc_title":"Title A","href":"a","monikers":[] },
+        { "toc_title":"Title X","href":"a","monikers":[] },
+        { "toc_title":"Title X","href":"a","monikers":[] },
+        { "toc_title":"Title A","href":"a","monikers":[] },
+        { "toc_title":"Title A","href":"a","monikers":[] }
+      ]
+    }
+  docs/a.json:
+  docs/b.json:
