@@ -35,10 +35,7 @@ namespace Microsoft.Docs.Build
         private static readonly JsonSerializerSettings s_noneFormatJsonSerializerSettings = new JsonSerializerSettings
         {
             NullValueHandling = NullValueHandling.Ignore,
-            Converters =
-                {
-                    new StringEnumConverter { CamelCaseText = true },
-                },
+            Converters = { new StringEnumConverter { NamingStrategy = new CamelCaseNamingStrategy() } },
             ContractResolver = new CamelCasePropertyNamesContractResolver(),
         };
 
@@ -46,10 +43,7 @@ namespace Microsoft.Docs.Build
         {
             NullValueHandling = NullValueHandling.Ignore,
             Formatting = Formatting.Indented,
-            Converters =
-                {
-                    new StringEnumConverter { CamelCaseText = true },
-                },
+            Converters = { new StringEnumConverter { NamingStrategy = new CamelCaseNamingStrategy() } },
             ContractResolver = new CamelCasePropertyNamesContractResolver(),
         };
 
