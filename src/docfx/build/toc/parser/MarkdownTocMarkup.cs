@@ -126,7 +126,7 @@ namespace Microsoft.Docs.Build
 
                 string GetName(IEnumerable<LeafInline> literalInlines)
                 {
-                    literalInlines = literalInlines?.Where(l => l != null);
+                    literalInlines = literalInlines?.Where(l => l != null && !l.Span.IsEmpty);
                     if (literalInlines == null || !literalInlines.Any())
                     {
                         return null;
