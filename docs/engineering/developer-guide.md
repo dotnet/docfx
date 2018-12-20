@@ -1,16 +1,45 @@
 # Developer Guide
 
-> __v3__ develop work currently happens in _v3_ branch, these instructions only applies to source code in _v3_ branch.
+## Build and Test
 
-## Building and Run
+Prerequisites:
 
-This repo can be build on Windows, Mac OS and Linux.
+- [git](https://git-scm.com/)
+- [.NET Core SDK 2.2](https://dotnet.microsoft.com/download/dotnet-core/2.2) or above
 
-If you have [Visual Studio](https://www.visualstudio.com/vs/) installed, simply open `docfx.sln` to build, debug and test the source code.
+Build and test this project by running `build.ps1` on Windows, or by running `build.sh` on Mac OS and Linux.
 
-To build and test this repo, run `build.ps1` on Windows, run `build.sh` on Mac OS or Linux.
+You can use [Visual Studio](https://www.visualstudio.com/vs/) or [Visual Studio Code](https://code.visualstudio.com/) with [C# extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode.csharp) to develop the project.
 
-## Coding Style
+## Release Process
+
+We continously deploy `v3` branch to [Production MyGet Feed](https://www.myget.org/F/docfx-v3/api/v2). It is then deployed to [docs](https://docs.microsoft.com) on a regular cadence. For this to work, `v3` branch **MUST** always be in [Ready to Ship](#definition-of-ready-to-ship) state.
+
+Large feature work happens in feature branches. Feature branch name starts with `feature/`.
+
+Pull request validation, continous deployment to [Sandbox MyGet Feed](https://www.myget.org/F/docfx-v3-sandbox/api/v2) is enabled automatically on `v3` branch and all feature branches.
+
+Package version produced from `v3` branch is higher than feature branches:
+- `v3`: `3.0.0-beta-{commitDepth}-{commitHash}`
+- `feature/{feature}`: `3.0.0-alpha-{feature}-{commitDepth}-{commitHash}`
+
+We currently do not deploy to NuGet until features blocking community adoption are implemented.
+
+In general we perfer **Squash and merge** against `v3` or feature branches. When merging from feature branches to `v3` with a lot of changes, we prefer **Rebase and merge**.
+
+### Definition of Ready to Ship
+
+- All test cases pass
+- No performance regression
+- No open issues that affects end users
+- No unintended breaking changes *
+    - Input output data contract
+    - Config
+    - Errors and Warnings
+
+    **At this stage, changes to ideal output, config, error message and line number are not considered breaking*
+
+## Coding Guideline
 
 ### C#
 We follow [C# Coding Style](https://github.com/dotnet/corefx/blob/master/Documentation/coding-guidelines/coding-style.md) recommended by dotnet team. Stylecop and FxCop have been enabled for this project to enforce some of the rules.
