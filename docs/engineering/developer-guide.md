@@ -7,9 +7,9 @@ Prerequisites:
 - [git](https://git-scm.com/)
 - [.NET Core SDK 2.2](https://dotnet.microsoft.com/download/dotnet-core/2.2) or above
 
-This project can be build by running `build.ps1` on Windows, or by running `build.sh` on Mac OS and Linux.
+Build and test this project by running `build.ps1` on Windows, or by running `build.sh` on Mac OS and Linux.
 
-You can use both [Visual Studio](https://www.visualstudio.com/vs/) or [Visual Studio Code](https://code.visualstudio.com/) with [C# extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode.csharp) to develop the project.
+You can use [Visual Studio](https://www.visualstudio.com/vs/) or [Visual Studio Code](https://code.visualstudio.com/) with [C# extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode.csharp) to develop the project.
 
 ## Release Process
 
