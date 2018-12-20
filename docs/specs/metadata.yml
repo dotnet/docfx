@@ -323,10 +323,9 @@ inputs:
     Redirect_url: https://docfx.com/b
     ---
 outputs:
-  docs/a.json: |
-    {"redirect_url":"https://docfx.com/a"}
   build.log: |
     ["warning","reserved-metadata","Metadata 'Redirect_url' is reserved by docfx, remove this metadata from yaml header","docs/a.md","",1,15]
+    ["error","output-path-conflict","Two or more files output to the same path 'docs/a.json': 'docs/a.md', 'docs/a.md <redirection>'"]
 ---
 # redirection defined in file metadata is not supported
 inputs:
