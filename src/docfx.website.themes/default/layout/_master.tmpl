@@ -24,11 +24,11 @@
       </div>
       {{/_enableSearch}}
       <div role="main" class="container body-content hide-when-search">
-      {{^_disableToc}}
+      {{#_disableToc}}
         {{>partials/toc}}
         <div class="article row grid-right">
       {{/_disableToc}}
-      {{#_disableToc}}
+      {{^_disableToc}}
         <div class="article row grid">
         {{/_disableToc}}
           {{#_disableAffix}}
