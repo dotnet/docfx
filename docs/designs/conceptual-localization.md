@@ -361,7 +361,7 @@ The problem is above requirement is that usually these non-live test branch don'
 Option-1 is easy and simple way, but a little hard for localization repo users, since usually they don't have the write permission to source repo.  
 Option-2 and Option-3 are more user-friendly, but build some extra works, appends `branch` info to resolved urls which linked to source content like `url?branch=master`
 
-**Answer**: ?
+**Answer**: Loc team confirmed that they always use `master/live` branch, so we only need fallback to `corresponding` branch **only** is enough.
 
 ### Inclusion TOC fallback
 
