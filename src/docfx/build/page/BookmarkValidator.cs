@@ -4,6 +4,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -14,14 +15,14 @@ namespace Microsoft.Docs.Build
 
         public void AddBookmarkReference(Document file, Document reference, string fragment)
         {
-            Debug.Assert(string.IsNullOrEmpty(fragment) || fragment[0] != '#');
+            Debug.Assert(string.IsNullOrEmpty(fragment) || fragment[0] == '#');
 
             // only validate against markdown files
             if (reference.ContentType == ContentType.Page &&
                 reference.FilePath.EndsWith(".md", PathUtility.PathComparison) &&
                 !string.IsNullOrEmpty(fragment))
             {
-                var bookmark = fragment;
+                var bookmark = fragment.Substring(1).Trim();
                 if (!string.IsNullOrEmpty(bookmark))
                 {
                     _references.Add((file, reference, bookmark));
