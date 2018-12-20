@@ -54,7 +54,7 @@ namespace Microsoft.DocAsCode.Dfm
                     currentPath = ((RelativePath)currentPath).BasedOn((RelativePath)parent);
                 }
 
-                if (parents.Contains(currentPath, FilePathComparer.OSPlatformSensitiveComparer))
+                if (parents.Contains(currentPath, FilePathComparer.OSPlatformSensitiveRelativePathComparer))
                 {
                     return GenerateErrorNodeWithCommentWrapper("INCLUDE", $"Circular dependency found in \"{parent}\"", sourceInfo);
                 }

@@ -154,7 +154,7 @@ namespace Microsoft.DocAsCode.Common
             {
                 if (i >= leftParts.Length - 1)
                     break;
-                if (!FilePathComparer.OSPlatformSensitiveRelativePathComparer.Equals(leftParts[i], rightParts[i]))
+                if (!FilePathComparer.OSPlatformSensitiveStringComparer.Equals(leftParts[i], rightParts[i]))
                     break;
                 commonCount++;
             }
@@ -345,7 +345,7 @@ namespace Microsoft.DocAsCode.Common
                 {
                     return true;
                 }
-                if (!FilePathComparer.OSPlatformSensitiveComparer.Equals(_parts[i], value._parts[i]))
+                if (!FilePathComparer.OSPlatformSensitiveStringComparer.Equals(_parts[i], value._parts[i]))
                 {
                     return false;
                 }
