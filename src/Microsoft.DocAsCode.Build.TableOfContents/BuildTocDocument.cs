@@ -94,22 +94,23 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
         private void UpdateNearestTocForNotInTocItem(List<FileModel> models, IHostService host, ConcurrentDictionary<string, Toc> nearest, int parallelism)
         {
             var allSourceFiles = host.SourceFiles;
+            var tocs = (from m in models
+                        select new Toc
+                        {
+                            Model = m,
+                            OutputPath = GetOutputPath(m.FileAndType),
+                        }).ToArray();
             Parallel.ForEach(
                 allSourceFiles.Keys.Except(nearest.Keys, FilePathComparer.OSPlatformSensitiveStringComparer).ToList(),
                 new ParallelOptions { MaxDegreeOfParallelism = parallelism },
                 item =>
                 {
                     var itemOutputFile = GetOutputPath(allSourceFiles[item]);
-                    var near = (from m in models
-                                let outputFile = GetOutputPath(m.FileAndType)
-                                let rel = outputFile.MakeRelativeTo(itemOutputFile)
+                    var near = (from toc in tocs
+                                let rel = toc.OutputPath.MakeRelativeTo(itemOutputFile)
                                 where rel.SubdirectoryCount == 0
                                 orderby rel.ParentDirectoryCount
-                                select new Toc
-                                {
-                                    Model = m,
-                                    OutputPath = rel,
-                                }).FirstOrDefault();
+                                select toc).FirstOrDefault();
                     if (near != null)
                     {
                         nearest[item] = near;
