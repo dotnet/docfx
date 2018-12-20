@@ -9,6 +9,19 @@ outputs:
   docs/a.json: |
     { "metadata": { "robots": "noindex, nofollow" } }
 ---
+# Preserve null custom metadata
+inputs:
+  docfx.yml:
+  docs/a.md: |
+    ---
+    ms.custom-metadata:
+    ---
+outputs:
+  docs/a.json: |
+    { "metadata": { "ms.custom-metadata": null } }
+  build.log: |
+    ["info","null-value","'ms.custom-metadata' contains null value","docs/a.md","['ms.custom-metadata']",1,1]
+---
 # generate normal document id and version id
 # backward compatible to docs.com
 # document id = md5("Win.sccm|mdt/release-notes.md")

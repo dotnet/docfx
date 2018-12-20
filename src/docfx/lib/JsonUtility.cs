@@ -294,18 +294,29 @@ namespace Microsoft.Docs.Build
             return result;
         }
 
+        /// <summary>
+        /// Report warnings for all null or undefined nodes, remove nulls inside arrays.
+        /// </summary>
         public static (List<Error>, JToken) RemoveNulls(this JToken token)
         {
             var errors = new List<Error>();
             var nullNodes = new List<JToken>();
-            token.FindNulls(errors, nullNodes);
+            var removeNodes = new List<JToken>();
+
+            RemoveNullsCore(token, errors, nullNodes, removeNodes);
+
             foreach (var node in nullNodes)
             {
                 var lineInfo = (IJsonLineInfo)node;
                 var name = node is JProperty prop ? prop.Name : (node.Parent?.Parent is JProperty p ? p.Name : node.Path);
                 errors.Add(Errors.NullValue(new Range(lineInfo.LineNumber, lineInfo.LinePosition), name, node.Path));
+            }
+
+            foreach (var node in removeNodes)
+            {
                 node.Remove();
             }
+
             return (errors, token);
         }
 
@@ -346,7 +357,7 @@ namespace Microsoft.Docs.Build
                 (token.Type == JTokenType.Undefined);
         }
 
-        private static void FindNulls(this JToken token, List<Error> errors, List<JToken> nullNodes)
+        private static void RemoveNullsCore(JToken token, List<Error> errors, List<JToken> nullNodes, List<JToken> removeNodes)
         {
             if (token is JArray array)
             {
@@ -355,10 +366,11 @@ namespace Microsoft.Docs.Build
                     if (item.IsNullOrUndefined())
                     {
                         nullNodes.Add(item);
+                        removeNodes.Add(item);
                     }
                     else
                     {
-                        item.FindNulls(errors, nullNodes);
+                        RemoveNullsCore(item, errors, nullNodes, removeNodes);
                     }
                 }
             }
@@ -373,7 +385,7 @@ namespace Microsoft.Docs.Build
                     }
                     else
                     {
-                        prop.Value.FindNulls(errors, nullNodes);
+                        RemoveNullsCore(prop.Value, errors, nullNodes, removeNodes);
                     }
                 }
             }
