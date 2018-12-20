@@ -1238,12 +1238,15 @@ outputs:
 inputs:
   docfx.yml:
   docs/TOC.md: |
+    # [Test <X> Y](a.md)
+    # [Test <X> Y]
     # @b abc
     # @b @a
     # [Title X](a.md) bcd
     # [Title X](a.md) [Title Y](b.md)
     # @b [Title X](a.md)
     # [Title X](a.md) @b
+    # [Title X](xref: a) @b
   docs/a.md: |
     ---
     title: Title A
@@ -1258,12 +1261,15 @@ outputs:
   docs/toc.json: |
     {
       "items": [
+        { "toc_title":"Test <X> Y","href":"a","monikers":[] },
+        { "toc_title":"[Test <X> Y]","monikers":[] },
         { "toc_title":"Title A","href":"a","monikers":[] },
         { "toc_title":"Title A","href":"a","monikers":[] },
         { "toc_title":"Title X","href":"a","monikers":[] },
         { "toc_title":"Title X","href":"a","monikers":[] },
         { "toc_title":"Title A","href":"a","monikers":[] },
-        { "toc_title":"Title A","href":"a","monikers":[] }
+        { "toc_title":"Title A","href":"a","monikers":[] },
+        { "toc_title":"Title A","href":"a","monikers":[] },
       ]
     }
   docs/a.json:

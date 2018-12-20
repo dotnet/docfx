@@ -44,7 +44,7 @@ namespace Microsoft.Docs.Build
 
             try
             {
-                tocModel.Items = ConvertTo(file.FilePath, headingBlocks.ToArray(), errors).children;
+                tocModel.Items = ConvertTo(tocContent, file.FilePath, headingBlocks.ToArray(), errors).children;
             }
             catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
             {
@@ -54,7 +54,7 @@ namespace Microsoft.Docs.Build
             return (errors, tocModel);
         }
 
-        private static (List<TableOfContentsInputItem> children, int count) ConvertTo(string filePath, HeadingBlock[] headingBlocks, List<Error> errors, int startIndex = 0)
+        private static (List<TableOfContentsInputItem> children, int count) ConvertTo(string tocContent, string filePath, HeadingBlock[] headingBlocks, List<Error> errors, int startIndex = 0)
         {
             if (headingBlocks.Length == 0)
             {
@@ -78,7 +78,7 @@ namespace Microsoft.Docs.Build
                         throw Errors.InvalidTocLevel(filePath, currentLevel, headingBlocks[i + 1].Level).ToException();
                     }
 
-                    var (children, count) = ConvertTo(filePath, headingBlocks, errors, i + 1);
+                    var (children, count) = ConvertTo(tocContent, filePath, headingBlocks, errors, i + 1);
                     item.Items = children;
                     i += count;
                     childrenCount += count;
@@ -110,7 +110,6 @@ namespace Microsoft.Docs.Build
                 }
 
                 var link = block.Inline.FirstOrDefault(l => l is LinkInline);
-                var literalLink = block.Inline.FirstOrDefault(l => l is LiteralInline);
                 if (link != null && link is LinkInline linkInline)
                 {
                     if (!string.IsNullOrEmpty(linkInline.Url))
@@ -118,15 +117,29 @@ namespace Microsoft.Docs.Build
                     if (!string.IsNullOrEmpty(linkInline.Title))
                         currentItem.DisplayName = linkInline.Title;
 
-                    literalLink = linkInline.FirstOrDefault(l => l is LiteralInline);
+                    currentItem.Name = GetName(linkInline.Select(l => l as LeafInline));
                 }
 
-                if (literalLink != null && literalLink is LiteralInline literalInline)
-                {
-                    currentItem.Name = literalInline.Content.ToString();
-                }
+                currentItem.Name = currentItem.Name ?? GetName(block.Inline.Select(l => l as LeafInline));
 
                 return currentItem;
+
+                string GetName(IEnumerable<LeafInline> literalInlines)
+                {
+                    literalInlines = literalInlines?.Where(l => l != null);
+                    if (literalInlines == null || !literalInlines.Any())
+                    {
+                        return null;
+                    }
+
+                    var start = literalInlines.First().Span.Start;
+                    var lenght = literalInlines.Last().Span.End - start + 1;
+
+                    if (start >= 0 && lenght > 0)
+                        return tocContent.Substring(start, lenght);
+
+                    return null;
+                }
             }
         }
     }
