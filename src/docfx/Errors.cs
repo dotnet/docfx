@@ -121,6 +121,9 @@ namespace Microsoft.Docs.Build
         public static Error RedirectionDocumentIdConflict(IEnumerable<Document> redirectFromDocs, string redirectTo)
             => new Error(ErrorLevel.Warning, "redirected-id-conflict", $"Multiple documents redirected to '{redirectTo}' with document id: {Join(redirectFromDocs)}");
 
+        public static Error ReservedMetadata(in Range range, string name, string removeFrom)
+            => new Error(ErrorLevel.Error, "reserved-metadata", $"Metadata '{name}' is reserved by docfx, remove this metadata from {removeFrom}", null, range);
+
         public static Error GitLogError(string repoPath, int errorCode)
             => new Error(ErrorLevel.Error, "git-log-error", $"Error computing git log [{errorCode}] for '{repoPath}', did you used a shadow clone?");
 

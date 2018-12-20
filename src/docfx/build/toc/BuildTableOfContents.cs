@@ -28,21 +28,22 @@ namespace Microsoft.Docs.Build
                 return (Enumerable.Empty<Error>(), null, new List<string>());
             }
 
-            var (errors, tocModel, tocMetadata, refArticles, refTocs) = Load(context, file, dependencyResolver, monikerMap, monikerProvider.Comparer);
-
-            var metadata = metadataProvider.GetMetadata(file, tocMetadata).ToObject<TableOfContentsMetadata>();
+            var (errors, tocModel, yamlHeader, refArticles, refTocs) = Load(context, file, dependencyResolver, monikerMap, monikerProvider.Comparer);
+            var (metadataErrors, metadata) = metadataProvider.GetMetadata(file, yamlHeader);
+            errors.AddRange(metadataErrors);
 
             Error monikerError;
-            (monikerError, metadata.Monikers) = monikerProvider.GetFileLevelMonikers(file, metadata.MonikerRange);
+            var tocMetadata = metadata.ToObject<TableOfContentsMetadata>();
+            (monikerError, tocMetadata.Monikers) = monikerProvider.GetFileLevelMonikers(file, tocMetadata.MonikerRange);
             errors.AddIfNotNull(monikerError);
 
             var model = new TableOfContentsModel
             {
                 Items = tocModel,
-                Metadata = metadata,
+                Metadata = tocMetadata,
             };
 
-            return (errors, model, metadata.Monikers);
+            return (errors, model, tocMetadata.Monikers);
         }
 
         public static TableOfContentsMap BuildTocMap(Context context, Docset docset, DependencyResolver dependencyResolver)
