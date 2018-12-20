@@ -35,9 +35,7 @@ namespace Microsoft.Docs.Build
 
                 // Xrefmap and dependency resolver has a circular dependency.
                 xrefMap = XrefMap.Create(context, docset, metadataProvider, monikerProvider, dependencyResolver);
-
-                // TODO: toc map and xref map should always use source docset?
-                var tocMap = BuildTableOfContents.BuildTocMap(context, docset, monikerProvider, dependencyResolver);
+                var tocMap = BuildTableOfContents.BuildTocMap(context, docset, dependencyResolver);
 
                 var githubUserCache = await GitHubUserCache.Create(docset, config.GitHub.AuthToken);
                 var (manifest, fileManifests, sourceDependencies) = await BuildFiles(context, docset, tocMap, githubUserCache, metadataProvider, monikerProvider, dependencyResolver, gitCommitProvider);

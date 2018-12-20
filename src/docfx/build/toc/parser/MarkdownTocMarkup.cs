@@ -8,6 +8,7 @@ using System.Linq;
 using Markdig.Extensions.Yaml;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
+using Microsoft.DocAsCode.MarkdigEngine.Extensions;
 
 namespace Microsoft.Docs.Build
 {
@@ -94,43 +95,36 @@ namespace Microsoft.Docs.Build
 
             TableOfContentsInputItem GetItem(HeadingBlock block)
             {
+                var currentItem = new TableOfContentsInputItem();
                 if (block.Inline == null || !block.Inline.Any())
                 {
                     errors.Add(Errors.MissingTocHead(new Range(block.Line, block.Column), filePath));
-                    return new TableOfContentsInputItem();
+                    return currentItem;
                 }
 
-                string name = null;
-                string displayName = null;
-                string href = null;
+                var xrefLink = block.Inline.FirstOrDefault(l => l is XrefInline);
+                if (xrefLink != null && xrefLink is XrefInline xrefInline && !string.IsNullOrEmpty(xrefInline.Href))
+                {
+                    currentItem.Uid = xrefInline.Href;
+                    return currentItem;
+                }
+
                 var link = block.Inline.FirstOrDefault(l => l is LinkInline);
+                var literalLink = block.Inline.FirstOrDefault(l => l is LiteralInline);
                 if (link != null && link is LinkInline linkInline)
                 {
                     if (!string.IsNullOrEmpty(linkInline.Url))
-                        href = linkInline.Url;
+                        currentItem.Href = linkInline.Url;
                     if (!string.IsNullOrEmpty(linkInline.Title))
-                        displayName = linkInline.Title;
-                    var literal = linkInline.FirstOrDefault(l => l is LiteralInline);
-                    if (literal != null && literal is LiteralInline literalInline)
-                    {
-                        name = literalInline.Content.ToString();
-                    }
-                }
-                else
-                {
-                    var literal = block.Inline.FirstOrDefault(l => l is LiteralInline);
-                    if (literal != null && literal is LiteralInline literalInline)
-                    {
-                        name = literalInline.Content.ToString();
-                    }
+                        currentItem.DisplayName = linkInline.Title;
+
+                    literalLink = linkInline.FirstOrDefault(l => l is LiteralInline);
                 }
 
-                var currentItem = new TableOfContentsInputItem
+                if (literalLink != null && literalLink is LiteralInline literalInline)
                 {
-                    DisplayName = displayName,
-                    Name = name,
-                    Href = href,
-                };
+                    currentItem.Name = literalInline.Content.ToString();
+                }
 
                 return currentItem;
             }
