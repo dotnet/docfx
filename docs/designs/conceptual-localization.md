@@ -327,7 +327,7 @@ For different `branch` option:
   - 😭 it may have a little bigger impact to ops backend service because current **'master' and 'live' are hardcoded everywhere**.
   - 😭 hard to apply localization fix/changes to all locales(just like now, you need a script to pull/add/commit/push 64+ times)
 
-**Anwswer**: We are going to use `branch` model.
+**Answer**: We are going to use `branch` model.
 
 ### Combine all localization content in one repo or multiple repos?
 
