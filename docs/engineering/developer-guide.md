@@ -19,6 +19,10 @@ Large feature work happens in feature branches. Feature branch name starts with 
 
 Pull request validation, continous deployment to [Sandbox MyGet Feed](https://www.myget.org/F/docfx-v3-sandbox/api/v2) is enabled automatically on `v3` branch and all feature branches.
 
+Package version produced from `v3` branch is higher than feature branches:
+- `v3`: `3.0.0-beta-{commitDepth}-{commitHash}`
+- `feature/{feature}`: `3.0.0-alpha-{feature}-{commitDepth}-{commitHash}`
+
 We currently do not deploy to NuGet until features blocking community adoption are implemented.
 
 In general we perfer **Squash and merge** against `v3` or feature branches. When merging from feature branches to `v3` with a lot of changes, we prefer **Rebase and merge**.
