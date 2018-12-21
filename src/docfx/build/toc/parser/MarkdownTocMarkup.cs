@@ -102,6 +102,12 @@ namespace Microsoft.Docs.Build
                     return currentItem;
                 }
 
+                if (block.Inline.Count() > 1 && block.Inline.Any(l => l is XrefInline || l is LinkInline))
+                {
+                    errors.Add(Errors.InvalidTocSyntax(new Range(block.Line, block.Column), filePath, tocContent.Substring(block.Span.Start, block.Span.Length), "multiple inlines in one heading block is not allowed"));
+                    return currentItem;
+                }
+
                 var xrefLink = block.Inline.FirstOrDefault(l => l is XrefInline);
                 if (xrefLink != null && xrefLink is XrefInline xrefInline && !string.IsNullOrEmpty(xrefInline.Href))
                 {
