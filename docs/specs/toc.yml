@@ -909,7 +909,8 @@ inputs:
 outputs:
   docs/f1/a.json:
   docs/f1/b.json:
-  docs/toc.json:
+  docs/toc.json: |
+    { "items":[{ "!tocHref": null }] }
   build.log: |
     ["info","null-value","'tocHref' contains null value","docs/TOC.yml","[0].tocHref",3,3]
 ---
