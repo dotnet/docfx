@@ -416,10 +416,9 @@ outputs:
   build.log: |
     ["error","circular-reference","Found circular reference","docs/a.md"]
     ["error","circular-reference","Found circular reference"]
-
-
 ---
-# SDP Cyclic xref reference 1
+# SDP Cyclic xref reference
+# whose display properties are plain text
 inputs:
   docfx.yml:
   docs/a.json: |
@@ -470,7 +469,8 @@ outputs:
     ["error","circular-reference","Found circular reference","docs/b.json"]
     ["error","circular-reference","Found circular reference"]
 ---
-# SDP Cyclic xref reference 2
+# SDP Cyclic xref reference
+# whose display properties referring to another uid
 inputs:
   docfx.yml:
   docs/a.json: |
@@ -520,5 +520,3 @@ outputs:
     ["error","circular-reference","Found circular reference","docs/b.json"]
     ["error","circular-reference","Found circular reference","docs/a.json"]
     ["error","circular-reference","Found circular reference"]
-
-
