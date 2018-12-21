@@ -17,7 +17,7 @@ namespace Microsoft.Docs.Build
             List<string> monikers)
         {
             var legacyManifestOutput = legacyManifestItem.Output;
-            var metadata = metadataProvider.GetMetadata(doc);
+            var metadata = metadataProvider.GetMetadata(doc).metadata;
             metadata = LegacyMetadata.GenerataCommonMetadata(metadata, docset);
 
             var metadataNeedToBeRemove = new List<string> { "__global" };

@@ -240,6 +240,9 @@ namespace Microsoft.Docs.Build
             (deserializeErrors, config) = JsonUtility.ToObjectWithSchemaValidation<Config>(finalConfigObject);
             errors.AddRange(deserializeErrors);
 
+            errors.AddRange(MetadataValidator.Validate(config.GlobalMetadata, nameof(GlobalMetadata)));
+            errors.AddRange(MetadataValidator.Validate(config.FileMetadata, nameof(FileMetadata)));
+
             return (errors, config);
 
             string GetBranch()

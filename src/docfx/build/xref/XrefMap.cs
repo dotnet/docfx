@@ -253,13 +253,15 @@ namespace Microsoft.Docs.Build
                 if (file.FilePath.EndsWith(".md", PathUtility.PathComparison))
                 {
                     var (yamlHeaderErrors, yamlHeader) = ExtractYamlHeader.Extract(file, context);
-                    var (metaErrors, metadata) = JsonUtility.ToObjectWithSchemaValidation<FileMetadata>(metadataProvider.GetMetadata(file, yamlHeader));
+
+                    var (fileMetaErrors, fileMetadata) = metadataProvider.GetFileMetadata(file, yamlHeader);
                     errors.AddRange(yamlHeaderErrors);
-                    if (!string.IsNullOrEmpty(metadata.Uid))
+
+                    if (!string.IsNullOrEmpty(fileMetadata.Uid))
                     {
-                        TryAddXref(xrefsByUid, metadata.Uid, file, callStack, () =>
+                        TryAddXref(xrefsByUid, fileMetadata.Uid, file, callStack, () =>
                         {
-                            var (error, spec, _) = LoadMarkdown(metadata, file, monikerProvider);
+                            var (error, spec, _) = LoadMarkdown(fileMetadata, file, monikerProvider);
                             return (error is null ? new List<Error>() : new List<Error> { error }, spec);
                         });
                     }
