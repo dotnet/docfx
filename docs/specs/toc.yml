@@ -1236,6 +1236,7 @@ outputs:
     {"items":[{"toc_title":"TOC Ref","children":[{"toc_title":"Uid Ref","href":"a","monikers":[]}],"monikers":[]}]}
 ---
 # markdown toc using bad syntax(multiple inlines for one heading block)
+inputs:
   docfx.yml:
   docs/TOC.md: |
     # @b abc
