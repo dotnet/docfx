@@ -12,21 +12,26 @@ exec "dotnet test test\docfx.Test"
 exec "dotnet test test\docfx.Test -c Release"
 
 # packing
-$featureBranchPrefix = "feature/"
+$featureBranchPrefix = "refs/heads/feature/"
 $commitSha = & { git describe --always }
 $commitCount = & { git rev-list --count HEAD }
 $revision = $commitCount.ToString().PadLeft(5, '0')
 $branch = & {git rev-parse --abbrev-ref HEAD}
 if ([string]::IsNullOrEmpty($branch)) {
-    $branch = $env:SOURCE_BRANCH
+    #https://docs.microsoft.com/en-us/azure/devops/pipelines/process/variables?view=vsts&tabs=yaml%2Cbatch#working-with-variables
+    $branch = $env:BUILD_SOURCEBRANCH
 }
 
-if ($branch -eq "v3") {
+if ($branch -eq "refs/heads/v3") {
+    # CI triggered by v3
     $version = "3.0.0-beta-$revision-$commitSha"
 } elseif ($branch.StartsWith($featureBranchPrefix)) {
+    # CI triggered by feature/*
     $feature = $branch.SubString($featureBranchPrefix.length)
     $version = "3.0.0-alpha-$feature-$revision-$commitSha"
 } else {
+    # local run
+    $branch = $branch.replace('/', '-')
     $version = "3.0.0-alpha-$revision-$commitSha"
 }
 
