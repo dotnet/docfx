@@ -13,10 +13,13 @@ exec "dotnet test test\docfx.Test -c Release"
 
 # packing
 $featureBranchPrefix = "feature/"
-$branch = & {git rev-parse --abbrev-ref HEAD}
 $commitSha = & { git describe --always }
 $commitCount = & { git rev-list --count HEAD }
 $revision = $commitCount.ToString().PadLeft(5, '0')
+$branch = & {git rev-parse --abbrev-ref HEAD}
+if ([string]::IsNullOrEmpty($branch)) {
+    $branch = $env:SOURCE_BRANCH
+}
 
 if ($branch -eq "v3") {
     $version = "3.0.0-beta-$revision-$commitSha"

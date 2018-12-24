@@ -12,6 +12,8 @@ steps:
   displayName: Impact Test
 
 - powershell: ./build.ps1
+  env:
+    SOURCE_BRANCH: $(variables['Build.SourceBranch'])
   displayName: Build
 
 - task: NuGetCommand@2
