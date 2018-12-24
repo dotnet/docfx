@@ -24,7 +24,7 @@ if ($branch -eq "v3") {
     $feature = $branch.SubString($featureBranchPrefix.length)
     $version = "3.0.0-alpha-$feature-$revision-$commitSha"
 } else {
-    exit 0
+    $version = "3.0.0-alpha-$revision-$commitSha"
 }
 
 Remove-Item ./drop -Force -Recurse -ErrorAction Ignore
