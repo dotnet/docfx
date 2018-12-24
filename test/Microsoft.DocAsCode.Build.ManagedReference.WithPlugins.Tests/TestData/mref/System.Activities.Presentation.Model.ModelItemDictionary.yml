@@ -667,7 +667,7 @@ items:
   - System.Activities.Presentation
   namespace: System.Activities.Presentation.Model
   summary: Gets an object that can be used to synchronize access to this collection.
-  remarks: The default implementation returns “this.”
+  remarks: The default implementation returns “this.?
   syntax:
     content: protected virtual object SyncRoot { get; }
     return:
