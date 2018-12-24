@@ -1235,9 +1235,7 @@ outputs:
   docs/toc.json: |
     {"items":[{"toc_title":"TOC Ref","children":[{"toc_title":"Uid Ref","href":"a","monikers":[]}],"monikers":[]}]}
 ---
-# uid reference in markdown toc using bad syntax(multiple inlines for one heading block)
-# the xref inline has highest priority, then we only retrieve the first one
-inputs:
+# markdown toc using bad syntax(multiple inlines for one heading block)
   docfx.yml:
   docs/TOC.md: |
     # @b abc
