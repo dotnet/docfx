@@ -188,7 +188,7 @@ namespace Microsoft.Docs.Build
             contributionBranch = branch;
             if (string.IsNullOrEmpty(branch))
             {
-                return false; 
+                return false;
             }
 
             if (branch.EndsWith("-sxs"))
