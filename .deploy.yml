@@ -15,10 +15,6 @@ steps:
   displayName: Build
 
 - task: NuGetCommand@2
-  condition: >-
-    and(succeeded(), or(
-      eq(variables['Build.SourceBranch'], 'refs/heads/v3'),
-      startsWith(variables['Build.SourceBranch'], 'feature/')))
   displayName: Push to Sandbox MyGet Feed
   inputs:
     command: push
