@@ -41,14 +41,11 @@ Below kinds of mappings are considered to be supported and there is a **strong c
     Here is an string convention for loc repo name:
     
       - `{source-repo-name}` -> `{source-repo-name}.{locale}`
-      - `{source-repo-name}.{source-locale}` -> `{source-repo-name}.{loc-locale}`
     
     ```txt
     source repo       ->locale->      localization repo
     dotnet/docfx        zh-cn         dotnet/docfx.zh-cn
     dotnet/docfx        de-de         dotnet/docfx.de-de
-    dotnet/docfx.en-us  zh-cn         dotnet/docfx.zh-cn
-    dotnet/docfx.zh-cn  en-us         dotent/docfx.en-us
     ```
     
     > NOTE: The loc org name can be different, it should be configurable
@@ -58,7 +55,6 @@ Below kinds of mappings are considered to be supported and there is a **strong c
     Here is an string convention for loc repo name:
     
       - `{source-repo-name}` -> `{source-repo-name}.loc`
-      - `{source-repo-name}.{source-locale}` -> `{source-repo-name}.loc`
   
     ```txt
     repo mapping example:
@@ -78,7 +74,6 @@ Below kinds of mappings are considered to be supported and there is a **strong c
     Here is an string convention for loc repo name:
     
       - `{source-repo-name}` -> `{source-repo-name}.loc`
-      - `{source-repo-name}.{source-locale}` -> `{source-repo-name}.loc`
 
     Here is an string convention for loc repo branch name:
 
@@ -114,11 +109,10 @@ Below kinds of mappings are considered to be supported and there is a **strong c
       bilingual: false
   ```
   - Follow some localization configuration conventions:
-    - Localization edit repo(source -> source.<locale> | source.<source-locale> -> source.<loc-locale>)
+    - Localization edit repo(source -> source.<locale>)
     ```txt
     source repo's eidt repo                      -> locale ->                      localization repo's edit repo
     https://github.com/microsoft/azure-docs         de-de                          https://github.com/microsoft/azure-docs.de-de
-    https://github.com/wcan/azure-docs.en-us        de-de                          https://github.com/wcan/azure-docs.de-de
     ```
     - Localization bingual branch(branch -> branch-sxs)
     ```txt
