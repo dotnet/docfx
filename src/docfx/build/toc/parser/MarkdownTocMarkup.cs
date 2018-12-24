@@ -139,12 +139,12 @@ namespace Microsoft.Docs.Build
                     }
 
                     var start = literalInlines.First().Span.Start;
-                    var lenght = literalInlines.Last().Span.End - start + 1;
+                    var length = literalInlines.Last().Span.End - start + 1;
 
-                    if (start >= 0 && lenght > 0)
-                        return tocContent.Substring(start, lenght);
+                    Debug.Assert(start >= 0);
+                    Debug.Assert(length > 0);
 
-                    return null;
+                    return tocContent.Substring(start, length);
                 }
             }
         }
