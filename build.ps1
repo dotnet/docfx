@@ -20,7 +20,7 @@ $revision = $commitCount.ToString().PadLeft(5, '0')
 
 if ($branch -eq "v3") {
     $version = "3.0.0-beta-$revision-$commitSha"
-} elseif ($branch.StartsWith($featureBranchPrefix)) {
+} elseif ($branch.ToLowerInvariant().StartsWith($featureBranchPrefix)) {
     $feature = $branch.SubString($featureBranchPrefix.length)
     $version = "3.0.0-alpha-$feature-$revision-$commitSha"
 } else {
