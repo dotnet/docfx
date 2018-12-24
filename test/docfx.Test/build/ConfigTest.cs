@@ -97,7 +97,7 @@ namespace Microsoft.Docs.Build
         [InlineData("https://test.visualstudio.com/_git/abc.zh-cn", "master", "https://test.visualstudio.com/_git/abc", "master", "zh-cn")]
         [InlineData("https://test.visualstudio.com/_git/abc.bs-Cyrl-BA", "master", "https://test.visualstudio.com/_git/abc", "master", "bs-cyrl-ba")]
         [InlineData("https://github.com/docs.zh-cn", "master-sxs", "https://github.com/docs", "master", "zh-cn")]
-        [InlineData("https://github.com/docs.loc", "master-sxs", "https://github.com/docs", "master", "loc")]
+        [InlineData("https://github.com/docs.loc", "master-sxs.zh-cn", "https://github.com/docs", "master", "zh-cn")]
         public static void LocConfigConventionSourceRepo(string remote, string branch, string expectedSourceRemote, string expectedSourceBranch, string expectedLocale)
         {
             LocalizationConvention.TryGetSourceRepository(remote, branch, out var sourceRemote, out var sourceBranch, out var locale);
