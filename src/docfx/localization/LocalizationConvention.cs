@@ -6,11 +6,14 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace Microsoft.Docs.Build
 {
     internal static class LocalizationConvention
     {
+        private static readonly Regex s_repoNameWithLocale = new Regex(@"^.+?(\.[a-z]{2,4}-[a-z]{2,4}(-[a-z]{2,4})?|\.loc)?$", RegexOptions.IgnoreCase);
+
         /// <summary>
         /// The loc repo name follows below conventions:
         /// source remote                                           -->     loc remote
@@ -59,6 +62,32 @@ namespace Microsoft.Docs.Build
             }
 
             return ($"{remote}{newLocale}", newBranch);
+        }
+
+        /// <summary>
+        /// Get the source repo's remote and branch from loc repo
+        /// </summary>
+        public static bool TryGetSourceRepository(string remote, string branch, out string sourceRemote, out string sourceBranch, out string locale)
+        {
+            sourceRemote = null;
+            sourceBranch = null;
+            locale = null;
+
+            if (string.IsNullOrEmpty(remote) || string.IsNullOrEmpty(branch))
+            {
+                return false;
+            }
+
+            var match = s_repoNameWithLocale.Match(remote);
+            if (match.Success && match.Groups.Count >= 2 && !string.IsNullOrEmpty(match.Groups[1].Value))
+            {
+                locale = match.Groups[1].Value.Substring(1).ToLowerInvariant();
+                sourceRemote = remote.Substring(0, remote.Length - match.Groups[1].Value.Length);
+                TryGetContributionBranch(branch, out sourceBranch);
+                return true;
+            }
+
+            return false;
         }
 
         public static string GetLocalizationDocsetPath(string docsetPath, Config config, string locale)

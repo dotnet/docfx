@@ -85,5 +85,26 @@ namespace Microsoft.Docs.Build
             var (remote, branch) = LocalizationConvention.GetLocalizationTheme(theme, locale, defaultLocale);
             Assert.Equal(expectedTheme, $"{remote}#{branch}");
         }
+
+        [Theory]
+        [InlineData("https://github.com/docs", "master", null, null, null)]
+        [InlineData("", "master", null, null, null)]
+        [InlineData("", null, null, null, null)]
+        [InlineData("https://github.com/docs.zh-cn", "master", "https://github.com/docs", "master", "zh-cn")]
+        [InlineData("https://github.com/docs.zh-CN", "master", "https://github.com/docs", "master", "zh-cn")]
+        [InlineData("https://github.com/docs.bs-Cyrl-BA", "master", "https://github.com/docs", "master", "bs-cyrl-ba")]
+        [InlineData("https://test.visualstudio.com/_git/abc", "master", null, null, null)]
+        [InlineData("https://test.visualstudio.com/_git/abc.zh-cn", "master", "https://test.visualstudio.com/_git/abc", "master", "zh-cn")]
+        [InlineData("https://test.visualstudio.com/_git/abc.bs-Cyrl-BA", "master", "https://test.visualstudio.com/_git/abc", "master", "bs-cyrl-ba")]
+        [InlineData("https://github.com/docs.zh-cn", "master-sxs", "https://github.com/docs", "master", "zh-cn")]
+        [InlineData("https://github.com/docs.loc", "master-sxs", "https://github.com/docs", "master", "loc")]
+        public static void LocConfigConventionSourceRepo(string remote, string branch, string expectedSourceRemote, string expectedSourceBranch, string expectedLocale)
+        {
+            LocalizationConvention.TryGetSourceRepository(remote, branch, out var sourceRemote, out var sourceBranch, out var locale);
+
+            Assert.Equal(expectedSourceRemote, sourceRemote);
+            Assert.Equal(expectedSourceBranch, sourceBranch);
+            Assert.Equal(expectedLocale, locale);
+        }
     }
 }
