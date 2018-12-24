@@ -17,11 +17,11 @@ We continously deploy `v3` branch to [Production MyGet Feed](https://www.myget.o
 
 Large feature work happens in feature branches. Feature branch name starts with `feature/`.
 
-Pull request validation, continous deployment to [Sandbox MyGet Feed](https://www.myget.org/F/docfx-v3-sandbox/api/v2) is enabled automatically on `v3` branch and all feature branches.
+Pull request validation, continous deployment to [Sandbox MyGet Feed](https://www.myget.org/F/docfx-v3-sandbox/api/v2) is enabled automatically on `v3` branch, feature branches and all pull request source branches.
 
-Package version produced from `v3` branch is higher than feature branches:
+Package version produced from `v3` branch is higher than other branches:
 - `v3`: `3.0.0-beta-{commitDepth}-{commitHash}`
-- `feature/{feature}`: `3.0.0-alpha-{feature}-{commitDepth}-{commitHash}`
+- Other branches *: `3.0.0-alpha-{branch}-{commitDepth}-{commitHash}`
 
 We currently do not deploy to NuGet until features blocking community adoption are implemented.
 
@@ -39,129 +39,47 @@ In general we perfer **Squash and merge** against `v3` or feature branches. When
 
     **At this stage, changes to ideal output, config, error message and line number are not considered breaking*
 
-## Coding Guideline
+## Coding Guidelines
 
 ### C#
+
 We follow [C# Coding Style](https://github.com/dotnet/corefx/blob/master/Documentation/coding-guidelines/coding-style.md) recommended by dotnet team. Stylecop and FxCop have been enabled for this project to enforce some of the rules.
 
-Besides that, we have some recommended but not mandatory (that is, not enabled by StyleCop/FxCop) rules as illustrated below.
+### Writing Tests
 
-#### Conventions
-* **DO** use `sealed` for private classes if they are not to be inherited.
-* **DO** use `static` methods if it is not instance relevant.
-* **DO** make sure `static` methods are thread safe.
+All code should be written in a "test first" or "test driven development" style. A typical development flow is simply write a test, see it fail, fix it with code, then refactor.
 
-#### *Sealed* classes
-Seal the class when it is not designed for extensibility. *When designing, it may be a good idea to lean towards sealing public types that don't explicitly need to be extended since unsealing a class in a future version is a non-breaking change while the reverse is not true.* In general, private classes can be `private sealed class` if they are not to be inherited.
+Tests should be fast, we try to keep total test execution time within 10s for in most cases.
 
-#### Regex
-Be careful about `RegexOptions.Compiled`. Generally if the regex expression is `static` `readonly` one to be shared and regularly reused, make it `RegexOptions.Compiled`. But when the regex expression is an instance object and the pattern always changes, because of the overhead of object instantiation and regular expression compilation, creating and rapidly destroying numerous Regex objects is a very expensive process. Details refer to https://docs.microsoft.com/en-us/dotnet/standard/base-types/compilation-and-reuse-in-regular-expressions#the-regular-expressions-cache
+Prefer writing yaml based end to end tests:
+- It clearly defines inputs and expected outputs, providing a consistent and readable way to define end to end usage.
+- It has no dependency on source code, giving us the freedom to refactor without changing test cases.
 
-#### Unit tests and functional tests
-##### Assembly naming
-The unit tests for the `Microsoft.Foo` assembly live in the `Microsoft.Foo.Tests` assembly.
+When you do need a unit test, use `[Theory]` for data driven tests, this makes it easier to add more test cases.
 
-The functional tests for the `Microsoft.Foo` assembly live in the `Microsoft.Foo.FunctionalTests` assembly.
+All test cases run in parallel, so keep them stateless and thread safe.
 
-In general there should be exactly one unit tests assembly for each product runtime assembly. In general there should be one functional tests assembly per repo. Exceptions can be made for both.
+### Immutability and Pure
 
-##### Unit test class naming
-Test class names end with `Test` suffix and live in the same namespace as the class being tested. For example, the unit tests for the `Microsoft.Foo.Boo` class would be in a `Microsoft.Foo.BooTest` class in the unit tests assembly `Microsoft.Foo.Tests`.
+Whenever possible, write simple functions that takes some inputs and produces some outputs without introducing any side effects. Side effects includes manipulating a shared state, mainpulating the input, accessing or mutating global or static state, reading additional variables from environments or files, writing outputs to files.
 
-##### Unit test method naming
-Unit test method names must be descriptive about *what developers are testing, under what conditions, and what the expectations are*. The following test name is correct:
+Write complex functions by composing smaller, simpler functions. Write functions that takes the minimum required parameters and dependencies.
 
-```cs
-PublicApiArgumentsShouldHaveNotNullAnnotation
-```
+Tuples, readonly, nested functions are the tools to help write these stateless pure functions. Try returning multiple outputs with tuples over manipulating an input context.
 
-The following test names are incorrect:
+### Naming Conventions
 
-```cs
-Test1
-Constructor
-FormatString
-GetData
-```
+We use the following naming conventions to improve shared understanding and enforce consistency. These rules are intend to be objective to avoid misunderstanding.
 
-##### Unit test structure
-The contents of every unit test should be split into three distinct stages (arrange, act and assert), optionally separated by these comments:
-
-```cs
-// Arrange
-// Act
-// Assert
-```
-
-The crucial thing here is the `Act` stage is exactly one statement. That one statement calls only the one method that you are trying to test. Keeping that one statement as simple as possible is also very important. For example, this is not ideal:
-
-```cs
-int result = myObj.CallSomeMethod(GetComplexParam1(), GetComplexParam2(), GetComplexParam3());
-```
-
-This style is not recommended because too much can go wrong in this one statement. All the `GetComplexParamN()` calls can throw exceptions for a variety of reasons unrelated to the test itself. It is thus unclear to someone running into a problem why the failure occurred.
-
-The ideal pattern is to move the complex parameter building into the `Arrange` section:
-
-```cs
-// Arrange
-P1 p1 = GetComplexParam1();
-P2 p2 = GetComplexParam2();
-P3 p3 = GetComplexParam3();
-
-// Act
-int result = myObj.CallSomeMethod(p1, p2, p3);
-
-// Assert
-Assert.AreEqual(1234, result);
-```
-
-Now the only reason the line with `CallSomeMethod()` can fail is if the method itself throws an error.
-
-##### Testing exception messages
-
-Testing the specific exception message in a unit test is important. This ensures that the desired exception is being tested rather than a different exception of the same type. In order to verify the exact exception, it is important to verify the message.
-
-```cs
-// Act
-var ex = Assert.Throws<InvalidOperationException>(() => fruitBasket.GetBananaById(-1));
-
-// Assert
-Assert.Equal("Cannot load banana with negative identifier.", ex.Message);
-```
-
-##### Use xUnit.net's plethora of built-in assertions
-xUnit.net includes many kinds of assertions – please use the most appropriate one for your test. This makes the tests much more readable and also allows the test runner to report the best possible errors (whether it's local or the CI machine). For example, these are bad:
-
-```cs
-Assert.Equal(true, someBool);
-
-Assert.True("abc123" == someString);
-
-Assert.True(list1.Length == list2.Length);
-
-for (int i = 0; i < list1.Length; i++) {
-    Assert.True(
-        String.Equals(
-            list1[i],
-            list2[i],
-            StringComparison.OrdinalIgnoreCase));
-}
-```
-
-These are good:
-
-```cs
-Assert.True(someBool);
-
-Assert.Equal("abc123", someString);
-
-// built-in collection assertions!
-Assert.Equal(list1, list2, StringComparer.OrdinalIgnoreCase);
-```
-
-##### Parallel tests
-By default all unit test assemblies should run in parallel mode, which is the default. Unit tests shouldn't depend on any shared state, and so should generally be runnable in parallel. If tests fail in parallel, the first thing to do is to figure out why; do not just disable parallel testing!
-
-For functional tests, you can disable parallel tests.
-
+Convention | Use case | Example
+-----------|----------|---------
+`{Command}.Run`  | Entry point for a command. | `Build.Run`
+`Build.Build{ContentType}` | Entry point for a particular content build. | `Build.BuildPage`
+`{ClassName}.Load{XXX}`  | Loads the content of a file from disk into a data model, the semantic is equivalent to *de-serialization*, additional logics are placed in other methods.  | `BuildPage.Load`
+`{ClassName}.Transform{XXX}` | Transforms inputs to outputs, **SHOULD NOT** mutate input model, **MAY** take additional callbacks. | `HtmlUtility.TransformLinks`
+`{ClassName}.Update{XXX}`  | Update input model to a new state, **SHOULD** mutate input model, **MAY** take additional callbacks. | `BuildTableOfContent.UpdateMonikers`
+`{ClassName}.Get{XXX}` | Simple stateless method that retrives information from input, **SHOULD NOT** mutable states or have any side effect | `MonikerProvider.GetMonikers`
+`{ClassName}.Resolve{XXX}` | Retrives information from input, **SHOULD NOT** mutable states, but **MAY** have side effects that are invisible to the caller | `DependencyProvider.ResolveLink`
+`{XXX}Map`, `{XXX}Builder` | Builds an **immutable** `{XXX}Map` from a **mutable** `{XXX}Builder` | `DependencyMap`, `DependencyMapBuilder`
+`{XXX}Provider`   | Groups **instance** helper methods for **Get** or **Resolve** | `MonikerProvider`
+`{XXX}Utility`    | Groups **static** helper methods | `GitUtility`
