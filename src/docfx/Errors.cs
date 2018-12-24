@@ -43,8 +43,8 @@ namespace Microsoft.Docs.Build
         public static Error MissingTocHead(in Range range, string filePath)
             => new Error(ErrorLevel.Error, "missing-toc-head", $"The toc head name is missing", filePath, range);
 
-        public static Error InvalidTocSyntax(in Range range, string filePath, string syntax)
-            => new Error(ErrorLevel.Error, "invalid-toc-syntax", $"The toc syntax '{syntax}' is invalid, the opening sequence of # characters must be followed by a space or by the end of line. Refer to [ATX heading](https://spec.commonmark.org/0.28/#atx-heading) to fix it", filePath, range);
+        public static Error InvalidTocSyntax(in Range range, string filePath, string syntax, string hint = null)
+            => new Error(ErrorLevel.Error, "invalid-toc-syntax", $"The toc syntax '{syntax}' is invalid, {hint ?? "the opening sequence of # characters must be followed by a space or by the end of line"}. Refer to [ATX heading](https://spec.commonmark.org/0.28/#atx-heading) to fix it", filePath, range);
 
         public static Error InvalidTocLevel(string filePath, int from, int to)
             => new Error(ErrorLevel.Error, "invalid-toc-level", $"The toc level can't be skipped from {from} to {to}", filePath);
