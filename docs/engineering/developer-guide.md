@@ -17,7 +17,7 @@ We continously deploy `v3` branch to [Production MyGet Feed](https://www.myget.o
 
 Large feature work happens in feature branches. Feature branch name starts with `feature/`.
 
-Pull request validation, continous deployment to [Sandbox MyGet Feed](https://www.myget.org/F/docfx-v3-sandbox/api/v2) is enabled automatically on `v3` branch and feature branches.
+Pull request validation, continous deployment to [Sandbox MyGet Feed](https://www.myget.org/F/docfx-v3-sandbox/api/v2) is enabled automatically on `v3` branch and all feature branches.
 
 Package version produced from `v3` branch is higher than other branches:
 - `v3`: `3.0.0-beta-{commitDepth}-{commitHash}`
