@@ -22,14 +22,7 @@ namespace Microsoft.Docs.Build
             Debug.Assert(file.ContentType == ContentType.TableOfContents);
             Debug.Assert(monikerMap != null);
 
-            var (errors, tocModel, yamlHeader, refArticles, refTocs) = Load(context, file, dependencyResolver, monikerMap, monikerProvider.Comparer);
-            var (metadataErrors, metadata) = metadataProvider.GetMetadata(file, yamlHeader);
-            errors.AddRange(metadataErrors);
-
-            Error monikerError;
-            var tocMetadata = metadata.ToObject<TableOfContentsMetadata>();
-            (monikerError, tocMetadata.Monikers) = monikerProvider.GetFileLevelMonikers(file, tocMetadata.MonikerRange);
-            errors.AddIfNotNull(monikerError);
+            var (errors, tocModel, tocMetadata, refArticles, refTocs) = Load(context, file, dependencyResolver, metadataProvider, monikerMap, monikerProvider);
 
             var model = new TableOfContentsModel
             {
@@ -78,7 +71,7 @@ namespace Microsoft.Docs.Build
         private static (
             List<Error> errors,
             List<TableOfContentsItem> tocItems,
-            JObject metadata,
+            TableOfContentsMetadata metadata,
             List<Document> referencedDocuments,
             List<Document> referencedTocs)
 
@@ -86,10 +79,11 @@ namespace Microsoft.Docs.Build
             Context context,
             Document fileToBuild,
             DependencyResolver dependencyResolver,
+            MetadataProvider metadataProvider = null,
             MonikerMap monikerMap = null,
-            MonikerComparer monikerComparer = null)
+            MonikerProvider monikerProvider = null)
         {
-            Debug.Assert(!(monikerMap == null ^ monikerComparer == null));
+            Debug.Assert(!(monikerMap == null ^ monikerProvider == null));
 
             var errors = new List<Error>();
             var referencedDocuments = new List<Document>();
@@ -98,7 +92,8 @@ namespace Microsoft.Docs.Build
             var (loadErrors, tocItems, tocMetadata) = TableOfContentsParser.Load(
                 context,
                 fileToBuild,
-                monikerComparer,
+                metadataProvider,
+                monikerProvider,
                 monikerMap,
                 (file, href, isInclude) =>
                 {
