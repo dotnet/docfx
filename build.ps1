@@ -12,7 +12,7 @@ exec "dotnet test test\docfx.Test"
 exec "dotnet test test\docfx.Test -c Release"
 
 # packing
-$featureBranchPrefix = "refs/heads/feature/"
+$branchPrefix = "refs/heads/"
 $commitSha = & { git describe --always }
 $commitCount = & { git rev-list --count HEAD }
 $revision = $commitCount.ToString().PadLeft(5, '0')
@@ -25,14 +25,14 @@ if ([string]::IsNullOrEmpty($branch)) {
 if ($branch -eq "refs/heads/v3") {
     # CI triggered by v3
     $version = "3.0.0-beta-$revision-$commitSha"
-} elseif ($branch.StartsWith($featureBranchPrefix)) {
-    # CI triggered by feature/*
-    $feature = $branch.SubString($featureBranchPrefix.length)
-    $version = "3.0.0-alpha-$feature-$revision-$commitSha"
+} elseif ($branch.StartsWith($branchPrefix)) {
+    # CI triggered by any other branch
+    $branch = $branch.SubString($branchPrefix.length).Replace('/', '-')
+    $version = "3.0.0-alpha-$branch-$revision-$commitSha"
 } else {
     # local run
-    $branch = $branch.replace('/', '-')
-    $version = "3.0.0-alpha-$revision-$commitSha"
+    $branch = $branch.Replace('/', '-')
+    $version = "3.0.0-alpha-$branch-$revision-$commitSha"
 }
 
 Remove-Item ./drop -Force -Recurse -ErrorAction Ignore
