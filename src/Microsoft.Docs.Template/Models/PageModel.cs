@@ -11,7 +11,7 @@ namespace Microsoft.Docs.Build
     [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
     public class PageModel
     {
-        public string PageType { get; set; }
+        public string SchemaType { get; set; }
 
         public object Content { get; set; }
 

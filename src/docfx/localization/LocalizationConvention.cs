@@ -6,11 +6,14 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace Microsoft.Docs.Build
 {
     internal static class LocalizationConvention
     {
+        private static readonly Regex s_nameWithLocale = new Regex(@"^.+?(\.[a-z]{2,4}-[a-z]{2,4}(-[a-z]{2,4})?|\.loc)?$", RegexOptions.IgnoreCase);
+
         /// <summary>
         /// The loc repo name follows below conventions:
         /// source remote                                           -->     loc remote
@@ -59,6 +62,35 @@ namespace Microsoft.Docs.Build
             }
 
             return ($"{remote}{newLocale}", newBranch);
+        }
+
+        /// <summary>
+        /// Get the source repo's remote and branch from loc repo
+        /// </summary>
+        public static bool TryGetSourceRepository(string remote, string branch, out string sourceRemote, out string sourceBranch, out string locale)
+        {
+            sourceRemote = null;
+            sourceBranch = null;
+            locale = null;
+
+            if (string.IsNullOrEmpty(remote) || string.IsNullOrEmpty(branch))
+            {
+                return false;
+            }
+
+            if (TryRemoveLocale(remote, out sourceRemote, out locale))
+            {
+                if (TryRemoveLocale(branch, out var branchWithoutLocale, out var branchLocale))
+                {
+                    branch = branchWithoutLocale;
+                    locale = branchLocale;
+                }
+
+                TryGetContributionBranch(branch, out sourceBranch);
+                return true;
+            }
+
+            return locale != null;
         }
 
         public static string GetLocalizationDocsetPath(string docsetPath, Config config, string locale)
@@ -153,7 +185,12 @@ namespace Microsoft.Docs.Build
 
         public static bool TryGetContributionBranch(string branch, out string contributionBranch)
         {
-            Debug.Assert(!string.IsNullOrEmpty(branch));
+            contributionBranch = branch;
+            if (string.IsNullOrEmpty(branch))
+            {
+                return false;
+            }
+
             if (branch.EndsWith("-sxs"))
             {
                 contributionBranch = branch.Substring(0, branch.Length - 4);
@@ -297,6 +334,27 @@ namespace Microsoft.Docs.Build
             }
 
             return $"{locale}-{sourceBranch}";
+        }
+
+        private static bool TryRemoveLocale(string name, out string nameWithoutLocale, out string locale)
+        {
+            nameWithoutLocale = null;
+            locale = null;
+            if (string.IsNullOrEmpty(name))
+            {
+                return false;
+            }
+
+            var match = s_nameWithLocale.Match(name);
+            if (match.Success && match.Groups.Count >= 2 && !string.IsNullOrEmpty(match.Groups[1].Value))
+            {
+                locale = match.Groups[1].Value.Substring(1).ToLowerInvariant();
+                nameWithoutLocale = name.Substring(0, name.Length - match.Groups[1].Value.Length);
+
+                return true;
+            }
+
+            return false;
         }
     }
 }

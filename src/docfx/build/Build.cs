@@ -19,6 +19,7 @@ namespace Microsoft.Docs.Build
             var (configErrors, config) = Config.Load(docsetPath, options);
             report.Configure(docsetPath, config);
 
+            // todo: abort the process if configuration loading has errors
             var outputPath = Path.Combine(docsetPath, config.Output.Path);
             var context = new Context(report, outputPath);
             context.Report(config.ConfigFileName, configErrors);
@@ -35,9 +36,7 @@ namespace Microsoft.Docs.Build
 
                 // Xrefmap and dependency resolver has a circular dependency.
                 xrefMap = XrefMap.Create(context, docset, metadataProvider, monikerProvider, dependencyResolver);
-
-                // TODO: toc map and xref map should always use source docset?
-                var tocMap = BuildTableOfContents.BuildTocMap(context, docset, monikerProvider, dependencyResolver);
+                var tocMap = BuildTableOfContents.BuildTocMap(context, docset, dependencyResolver);
 
                 var githubUserCache = await GitHubUserCache.Create(docset, config.GitHub.AuthToken);
                 var (manifest, fileManifests, sourceDependencies) = await BuildFiles(context, docset, tocMap, githubUserCache, metadataProvider, monikerProvider, dependencyResolver, gitCommitProvider);
@@ -91,7 +90,7 @@ namespace Microsoft.Docs.Build
                 await ParallelUtility.ForEach(
                     docset.GetTableOfContents(tocMap),
                     (file, buildChild) => { return BuildOneFile(file, buildChild, new MonikerMap(monikerMap)); },
-                    file => true,
+                    ShouldBuildTocFile,
                     Progress.Update);
 
                 var saveGitCommitCache = gitCommitProvider.SaveGitCommitCache();
@@ -122,6 +121,8 @@ namespace Microsoft.Docs.Build
 
                     return shouldBuildContentTypes.Contains(file.ContentType) && recurseDetector.TryAdd(file);
                 }
+
+                bool ShouldBuildTocFile(Document file) => file.ContentType == ContentType.TableOfContents && tocMap.Contains(file);
 
                 void ValidateBookmarks()
                 {
@@ -164,7 +165,7 @@ namespace Microsoft.Docs.Build
                         break;
                     case ContentType.TableOfContents:
                         // TODO: improve error message for toc monikers overlap
-                        (errors, model, monikers) = BuildTableOfContents.Build(context, file, tocMap, metadataProvider, monikerProvider, dependencyResolver, monikerMap);
+                        (errors, model, monikers) = BuildTableOfContents.Build(context, file, metadataProvider, monikerProvider, dependencyResolver, monikerMap);
                         break;
                     case ContentType.Redirection:
                         (errors, model, monikers) = BuildRedirection.Build(file, metadataProvider, monikerProvider);

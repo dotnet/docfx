@@ -156,7 +156,7 @@ namespace Microsoft.Docs.Build
         /// Gets the config file name.
         /// </summary>
         [JsonIgnore]
-        public string ConfigFileName { get; private set; }
+        public string ConfigFileName { get; private set; } = "docfx.yml";
 
         public IEnumerable<string> GetFileReferences()
         {
@@ -175,64 +175,40 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static (List<Error> errors, Config config) Load(string docsetPath, CommandLineOptions options, bool extend = true)
         {
-            if (!LoadIfExists(docsetPath, options, out var errors, out var config, extend))
-            {
-                throw Errors.ConfigNotFound(docsetPath, config.ConfigFileName).ToException();
-            }
-            return (errors, config);
-        }
-
-        /// <summary>
-        /// Load the config if it exists under <paramref name="docsetPath"/>
-        /// </summary>
-        /// <returns>Whether config exists under <paramref name="docsetPath"/></returns>
-        public static bool LoadIfExists(string docsetPath, CommandLineOptions options, out List<Error> errors, out Config config, bool extend = true)
-        {
             var configPath = PathUtility.FindYamlOrJson(Path.Combine(docsetPath, "docfx"));
             if (configPath == null)
             {
-                errors = new List<Error>();
-                config = new Config();
-                return false;
+                throw Errors.ConfigNotFound(docsetPath).ToException();
             }
 
-            (errors, config) = LoadCore(docsetPath, configPath, options, extend);
-            config.ConfigFileName = PathUtility.NormalizeFile(Path.GetRelativePath(docsetPath, configPath));
-            return true;
+            return TryLoad(docsetPath, options, extend);
         }
 
-        public static bool TryGetConfigPath(string parentPath, out string configPath, out string configFile)
-        {
-            configFile = "docfx.yml";
-            configPath = PathUtility.NormalizeFile(Path.Combine(parentPath, configFile));
-            if (File.Exists(configPath))
-            {
-                return true;
-            }
+        /// <summary>
+        /// Load the config if it exists under <paramref name="docsetPath"/> or return default config
+        /// </summary>
+        public static (List<Error> errors, Config config) TryLoad(string docsetPath, CommandLineOptions options, bool extend = true)
+            => LoadCore(docsetPath, options, extend);
 
-            configFile = "docfx.json";
-            configPath = PathUtility.NormalizeFile(Path.Combine(parentPath, configFile));
-            if (File.Exists(configPath))
-            {
-                return true;
-            }
-            return false;
-        }
-
-        private static (List<Error>, Config) LoadCore(string docsetPath, string configPath, CommandLineOptions options, bool extend)
+        private static (List<Error>, Config) LoadCore(string docsetPath, CommandLineOptions options, bool extend)
         {
-            // Options should be converted to config and overwrite the config parsed from docfx.yml/docfx.json
             var errors = new List<Error>();
             Config config = null;
 
-            var (loadErrors, configObject) = LoadConfigObject(configPath, configPath);
+            var configPath = PathUtility.FindYamlOrJson(Path.Combine(docsetPath, "docfx"));
+            var (loadErrors, configObject) = configPath == null ? (errors, new JObject()) : LoadConfigObject(configPath, configPath);
+
+            // apply options
             var optionConfigObject = Expand(options?.ToJObject());
             var finalConfigObject = JsonUtility.Merge(configObject, optionConfigObject);
+            errors.AddRange(loadErrors);
 
+            // apply global config
             var globalErrors = new List<Error>();
             (globalErrors, finalConfigObject) = ApplyGlobalConfig(finalConfigObject);
             errors.AddRange(globalErrors);
 
+            // apply extends
             if (extend)
             {
                 var extendErrors = new List<Error>();
@@ -240,12 +216,20 @@ namespace Microsoft.Docs.Build
                 errors.AddRange(extendErrors);
             }
 
+            // apply overwrite
             finalConfigObject = OverwriteConfig(finalConfigObject, options.Locale, GetBranch());
 
             var deserializeErrors = new List<Error>();
             (deserializeErrors, config) = JsonUtility.ToObjectWithSchemaValidation<Config>(finalConfigObject);
             errors.AddRange(deserializeErrors);
 
+            // validate metadata
+            errors.AddRange(MetadataValidator.Validate(config.GlobalMetadata, nameof(GlobalMetadata)));
+            errors.AddRange(MetadataValidator.Validate(config.FileMetadata, nameof(FileMetadata)));
+
+            config.ConfigFileName = configPath == null
+                ? config.ConfigFileName
+                : PathUtility.NormalizeFile(Path.GetRelativePath(docsetPath, configPath));
             return (errors, config);
 
             string GetBranch()

@@ -1,5 +1,6 @@
 trigger:
 - v3
+- feature/*
 queue:
   name: DocFX
 steps:
@@ -14,7 +15,16 @@ steps:
   displayName: Build
 
 - task: NuGetCommand@2
-  displayName: Push to MyGet
+  displayName: Push to Sandbox MyGet Feed
+  inputs:
+    command: push
+    packagesToPush: drop/**/*.nupkg
+    nuGetFeedType: external
+    publishFeedCredentials: myget.docfx-v3-sandbox
+
+- task: NuGetCommand@2
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/v3'))
+  displayName: Push to Production MyGet Feed
   inputs:
     command: push
     packagesToPush: drop/**/*.nupkg

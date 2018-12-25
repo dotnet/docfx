@@ -8,6 +8,7 @@ using System.Linq;
 using Markdig.Extensions.Yaml;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
+using Microsoft.DocAsCode.MarkdigEngine.Extensions;
 
 namespace Microsoft.Docs.Build
 {
@@ -43,7 +44,7 @@ namespace Microsoft.Docs.Build
 
             try
             {
-                tocModel.Items = ConvertTo(file.FilePath, headingBlocks.ToArray(), errors).children;
+                tocModel.Items = ConvertTo(tocContent, file.FilePath, headingBlocks.ToArray(), errors).children;
             }
             catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
             {
@@ -53,7 +54,7 @@ namespace Microsoft.Docs.Build
             return (errors, tocModel);
         }
 
-        private static (List<TableOfContentsInputItem> children, int count) ConvertTo(string filePath, HeadingBlock[] headingBlocks, List<Error> errors, int startIndex = 0)
+        private static (List<TableOfContentsInputItem> children, int count) ConvertTo(string tocContent, string filePath, HeadingBlock[] headingBlocks, List<Error> errors, int startIndex = 0)
         {
             if (headingBlocks.Length == 0)
             {
@@ -77,7 +78,7 @@ namespace Microsoft.Docs.Build
                         throw Errors.InvalidTocLevel(filePath, currentLevel, headingBlocks[i + 1].Level).ToException();
                     }
 
-                    var (children, count) = ConvertTo(filePath, headingBlocks, errors, i + 1);
+                    var (children, count) = ConvertTo(tocContent, filePath, headingBlocks, errors, i + 1);
                     item.Items = children;
                     i += count;
                     childrenCount += count;
@@ -94,45 +95,57 @@ namespace Microsoft.Docs.Build
 
             TableOfContentsInputItem GetItem(HeadingBlock block)
             {
+                var currentItem = new TableOfContentsInputItem();
                 if (block.Inline == null || !block.Inline.Any())
                 {
                     errors.Add(Errors.MissingTocHead(new Range(block.Line, block.Column), filePath));
-                    return new TableOfContentsInputItem();
+                    return currentItem;
                 }
 
-                string name = null;
-                string displayName = null;
-                string href = null;
+                if (block.Inline.Count() > 1 && block.Inline.Any(l => l is XrefInline || l is LinkInline))
+                {
+                    errors.Add(Errors.InvalidTocSyntax(new Range(block.Line, block.Column), filePath, tocContent.Substring(block.Span.Start, block.Span.Length), "multiple inlines in one heading block is not allowed"));
+                    return currentItem;
+                }
+
+                var xrefLink = block.Inline.FirstOrDefault(l => l is XrefInline);
+                if (xrefLink != null && xrefLink is XrefInline xrefInline && !string.IsNullOrEmpty(xrefInline.Href))
+                {
+                    currentItem.Uid = xrefInline.Href;
+                    return currentItem;
+                }
+
                 var link = block.Inline.FirstOrDefault(l => l is LinkInline);
                 if (link != null && link is LinkInline linkInline)
                 {
                     if (!string.IsNullOrEmpty(linkInline.Url))
-                        href = linkInline.Url;
+                        currentItem.Href = linkInline.Url;
                     if (!string.IsNullOrEmpty(linkInline.Title))
-                        displayName = linkInline.Title;
-                    var literal = linkInline.FirstOrDefault(l => l is LiteralInline);
-                    if (literal != null && literal is LiteralInline literalInline)
-                    {
-                        name = literalInline.Content.ToString();
-                    }
-                }
-                else
-                {
-                    var literal = block.Inline.FirstOrDefault(l => l is LiteralInline);
-                    if (literal != null && literal is LiteralInline literalInline)
-                    {
-                        name = literalInline.Content.ToString();
-                    }
+                        currentItem.DisplayName = linkInline.Title;
+
+                    currentItem.Name = GetName(linkInline.Select(l => l as LeafInline));
                 }
 
-                var currentItem = new TableOfContentsInputItem
-                {
-                    DisplayName = displayName,
-                    Name = name,
-                    Href = href,
-                };
+                currentItem.Name = currentItem.Name ?? GetName(block.Inline.Select(l => l as LeafInline));
 
                 return currentItem;
+
+                string GetName(IEnumerable<LeafInline> literalInlines)
+                {
+                    literalInlines = literalInlines?.Where(l => l != null && !l.Span.IsEmpty);
+                    if (literalInlines == null || !literalInlines.Any())
+                    {
+                        return null;
+                    }
+
+                    var start = literalInlines.First().Span.Start;
+                    var length = literalInlines.Last().Span.End - start + 1;
+
+                    Debug.Assert(start >= 0);
+                    Debug.Assert(length > 0);
+
+                    return tocContent.Substring(start, length);
+                }
             }
         }
     }
