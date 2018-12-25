@@ -23,52 +23,51 @@ namespace Microsoft.Docs.Build
             using (Progress.Start("Restore dependencies"))
             {
                 var restoredDocsets = new ConcurrentDictionary<string, int>(PathUtility.PathComparer);
-                restoredDocsets.TryAdd(docsetPath, 0);
 
-                // Root docset must have a config
-                var (configErrors, config) = Config.Load(docsetPath, options, extend: false);
-                ReportErrors(report, configErrors);
-                report.Configure(docsetPath, config);
+                await RestoreDocset(docsetPath, true);
 
-                await RestoreOneDocset(report, docsetPath, options, config, RestoreDocset, restoreLocRepo: true, @implicit);
-
-                async Task RestoreDocset(string docset)
+                async Task RestoreDocset(string docset, bool root)
                 {
-                    if (restoredDocsets.TryAdd(docset, 0) && Config.LoadIfExists(docset, options, out var loadErrors, out var childConfig, false))
+                    if (restoredDocsets.TryAdd(docset, 0))
                     {
+                        var (errors, config) = Config.TryLoad(docset, options, extend: false);
+                        ReportErrors(report, errors);
+
+                        if (root)
+                        {
+                            report.Configure(docsetPath, config);
+                        }
+
                         // no need to restore child docsets' loc repository
-                        await RestoreOneDocset(report, docset, options, childConfig, RestoreDocset, restoreLocRepo: false, @implicit);
+                        await RestoreOneDocset(docset, config, async subDocset => await RestoreDocset(subDocset, false), restoreLocRepo: root);
                     }
                 }
             }
-        }
 
-        private static async Task RestoreOneDocset(
-            Report report,
-            string docsetPath,
-            CommandLineOptions options,
-            Config config,
-            Func<string, Task> restoreChild,
-            bool restoreLocRepo = false,
-            bool @implicit = false)
-        {
-            // restore extend url firstly
-            // no need to extend config
-            await ParallelUtility.ForEach(
-                config.Extend.Where(HrefUtility.IsHttpHref),
-                restoreUrl => RestoreFile.Restore(restoreUrl, config, @implicit));
+            async Task RestoreOneDocset(
+                string docset,
+                Config config,
+                Func<string, Task> restoreChild,
+                bool restoreLocRepo = false)
+                {
+                    // restore extend url firstly
+                    // no need to extend config
+                    await ParallelUtility.ForEach(
+                        config.Extend.Where(HrefUtility.IsHttpHref),
+                        restoreUrl => RestoreFile.Restore(restoreUrl, config, @implicit));
 
-            // extend the config before loading
-            var (errors, extendedConfig) = Config.Load(docsetPath, options);
-            ReportErrors(report, errors);
+                    // extend the config before loading
+                    var (errors, extendedConfig) = Config.TryLoad(docset, options, extend: true);
+                    ReportErrors(report, errors);
 
-            // restore git repos includes dependency repos and loc repos
-            await RestoreGit.Restore(docsetPath, extendedConfig, restoreChild, restoreLocRepo ? options.Locale : null, @implicit);
+                    // restore git repos includes dependency repos and loc repos
+                    await RestoreGit.Restore(docset, extendedConfig, restoreChild, restoreLocRepo ? options.Locale : null, @implicit);
 
-            // restore urls except extend url
-            await ParallelUtility.ForEach(
-                extendedConfig.GetFileReferences().Where(HrefUtility.IsHttpHref),
-                restoreUrl => RestoreFile.Restore(restoreUrl, extendedConfig, @implicit));
+                    // restore urls except extend url
+                    await ParallelUtility.ForEach(
+                        extendedConfig.GetFileReferences().Where(HrefUtility.IsHttpHref),
+                        restoreUrl => RestoreFile.Restore(restoreUrl, extendedConfig, @implicit));
+                }
         }
 
         private static void ReportErrors(Report report, List<Error> errors)
