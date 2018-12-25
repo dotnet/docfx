@@ -45,29 +45,29 @@ namespace Microsoft.Docs.Build
             }
 
             async Task RestoreOneDocset(
-            string docset,
-            Config config,
-            Func<string, Task> restoreChild,
-            bool restoreLocRepo = false)
-            {
-                // restore extend url firstly
-                // no need to extend config
-                await ParallelUtility.ForEach(
-                    config.Extend.Where(HrefUtility.IsHttpHref),
-                    restoreUrl => RestoreFile.Restore(restoreUrl, config, @implicit));
+                string docset,
+                Config config,
+                Func<string, Task> restoreChild,
+                bool restoreLocRepo = false)
+                {
+                    // restore extend url firstly
+                    // no need to extend config
+                    await ParallelUtility.ForEach(
+                        config.Extend.Where(HrefUtility.IsHttpHref),
+                        restoreUrl => RestoreFile.Restore(restoreUrl, config, @implicit));
 
-                // extend the config before loading
-                var (errors, extendedConfig) = Config.TryLoad(docset, options, extend: true);
-                ReportErrors(report, errors);
+                    // extend the config before loading
+                    var (errors, extendedConfig) = Config.TryLoad(docset, options, extend: true);
+                    ReportErrors(report, errors);
 
-                // restore git repos includes dependency repos and loc repos
-                await RestoreGit.Restore(docset, extendedConfig, restoreChild, restoreLocRepo ? options.Locale : null, @implicit);
+                    // restore git repos includes dependency repos and loc repos
+                    await RestoreGit.Restore(docset, extendedConfig, restoreChild, restoreLocRepo ? options.Locale : null, @implicit);
 
-                // restore urls except extend url
-                await ParallelUtility.ForEach(
-                    extendedConfig.GetFileReferences().Where(HrefUtility.IsHttpHref),
-                    restoreUrl => RestoreFile.Restore(restoreUrl, extendedConfig, @implicit));
-            }
+                    // restore urls except extend url
+                    await ParallelUtility.ForEach(
+                        extendedConfig.GetFileReferences().Where(HrefUtility.IsHttpHref),
+                        restoreUrl => RestoreFile.Restore(restoreUrl, extendedConfig, @implicit));
+                }
         }
 
         private static void ReportErrors(Report report, List<Error> errors)
