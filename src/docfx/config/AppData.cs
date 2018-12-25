@@ -50,7 +50,7 @@ namespace Microsoft.Docs.Build
         private static string GetGlobalConfigPath()
         {
             var docfxGlobalConfig = Environment.GetEnvironmentVariable("DOCFX_GLOBAL_CONFIG_PATH");
-            Config.TryGetConfigPath(s_root, out string configPath, out string configFile);
+            var configPath = PathUtility.FindYamlOrJson(Path.Combine(s_root, "docfx"));
             return string.IsNullOrEmpty(docfxGlobalConfig) ? configPath : Path.GetFullPath(docfxGlobalConfig);
         }
 

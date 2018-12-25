@@ -14,7 +14,6 @@ namespace Microsoft.Docs.Build
         public static (IEnumerable<Error>, TableOfContentsModel, List<string> monikers) Build(
             Context context,
             Document file,
-            TableOfContentsMap tocMap,
             MetadataProvider metadataProvider,
             MonikerProvider monikerProvider,
             DependencyResolver dependencyResolver,
@@ -23,11 +22,6 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(file.ContentType == ContentType.TableOfContents);
             Debug.Assert(monikerMap != null);
-
-            if (!tocMap.Contains(file))
-            {
-                return (Enumerable.Empty<Error>(), null, new List<string>());
-            }
 
             var (errors, tocModel, yamlHeader, refArticles, refTocs) = Load(context, file, dependencyResolver, callStack, monikerMap, monikerProvider.Comparer);
             var (metadataErrors, metadata) = metadataProvider.GetMetadata(file, yamlHeader);

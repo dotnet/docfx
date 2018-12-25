@@ -909,7 +909,8 @@ inputs:
 outputs:
   docs/f1/a.json:
   docs/f1/b.json:
-  docs/toc.json:
+  docs/toc.json: |
+    { "items":[{ "!tocHref": null }] }
   build.log: |
     ["info","null-value","'tocHref' contains null value","docs/TOC.yml","[0].tocHref",3,3]
 ---
@@ -1001,17 +1002,19 @@ outputs:
   build.log: |
     ["error","missing-toc-head","The toc head name is missing","docs/TOC.md","",1]
 ---
-# Multiple Toc head names, following the below picking up order
-# 1. link inlie display name
-# 1. link inline name
-# 2. literal inline name
+# Multiple leaf inlines in toc title
 inputs:
   docfx.yml:
   docs/TOC.md: |
-    # Title **Title2** [Title3](https://github.com/docfx)
+    # [Test <X> Y](a.md)
+    # [Test <X> Y]
+    # [Test **Title2** Title3](a.md)
+    # [Test **Title2** Title3]
+  docs/a.md:
 outputs:
+  docs/a.json:
   docs/toc.json: |
-    {"items":[{"toc_title":"Title3", "href": "https://github.com/docfx"}]}
+    {"items":[{"toc_title":"Test <X> Y","href":"a"},{"toc_title":"[Test <X> Y]"},{"toc_title":"Test **Title2** Title3","href":"a"},{"toc_title":"[Test **Title2** Title3]"}]}
 ---
 # Expanded, MaintainContext and DisplayName
 inputs:
@@ -1232,3 +1235,38 @@ outputs:
   docs/a.json:
   docs/toc.json: |
     {"items":[{"toc_title":"TOC Ref","children":[{"toc_title":"Uid Ref","href":"a","monikers":[]}],"monikers":[]}]}
+---
+# markdown toc using bad syntax(multiple inlines for one heading block)
+inputs:
+  docfx.yml:
+  docs/TOC.md: |
+    # @b abc
+    # @b @a
+    # [Title X](a.md) bcd
+    # [Title X](a.md) [Title Y](b.md)
+    # @b [Title X](a.md)
+    # [Title X](a.md) @b
+    # [Title X](xref: a) @b
+    # Title1 Title2 [Title3](a.md)
+  docs/a.md: |
+    ---
+    title: Title A
+    uid: b
+    ---
+  docs/b.md: |
+    ---
+    title: Title B
+    uid: a
+    ---
+outputs:
+  docs/a.json:
+  docs/b.json:
+  build.log: |
+    ["error","invalid-toc-syntax","The toc syntax '# @b abc' is invalid, multiple inlines in one heading block is not allowed. Refer to [ATX heading](https://spec.commonmark.org/0.28/#atx-heading) to fix it","docs/TOC.md"]
+    ["error","invalid-toc-syntax","The toc syntax '# @b @a' is invalid, multiple inlines in one heading block is not allowed. Refer to [ATX heading](https://spec.commonmark.org/0.28/#atx-heading) to fix it","docs/TOC.md","",1]
+    ["error","invalid-toc-syntax","The toc syntax '# [Title X](a.md) bcd' is invalid, multiple inlines in one heading block is not allowed. Refer to [ATX heading](https://spec.commonmark.org/0.28/#atx-heading) to fix it","docs/TOC.md","",2]
+    ["error","invalid-toc-syntax","The toc syntax '# [Title X](a.md) [Title Y](b.md)' is invalid, multiple inlines in one heading block is not allowed. Refer to [ATX heading](https://spec.commonmark.org/0.28/#atx-heading) to fix it","docs/TOC.md","",3]
+    ["error","invalid-toc-syntax","The toc syntax '# @b [Title X](a.md)' is invalid, multiple inlines in one heading block is not allowed. Refer to [ATX heading](https://spec.commonmark.org/0.28/#atx-heading) to fix it","docs/TOC.md","",4]
+    ["error","invalid-toc-syntax","The toc syntax '# [Title X](a.md) @b' is invalid, multiple inlines in one heading block is not allowed. Refer to [ATX heading](https://spec.commonmark.org/0.28/#atx-heading) to fix it","docs/TOC.md","",5]
+    ["error","invalid-toc-syntax","The toc syntax '# [Title X](xref: a) @b' is invalid, multiple inlines in one heading block is not allowed. Refer to [ATX heading](https://spec.commonmark.org/0.28/#atx-heading) to fix it","docs/TOC.md","",6]
+    ["error","invalid-toc-syntax","The toc syntax '# Title1 Title2 [Title3](a.md)' is invalid, multiple inlines in one heading block is not allowed. Refer to [ATX heading](https://spec.commonmark.org/0.28/#atx-heading) to fix it","docs/TOC.md","",7]

@@ -41,14 +41,11 @@ Below kinds of mappings are considered to be supported and there is a **strong c
     Here is an string convention for loc repo name:
     
       - `{source-repo-name}` -> `{source-repo-name}.{locale}`
-      - `{source-repo-name}.{source-locale}` -> `{source-repo-name}.{loc-locale}`
     
     ```txt
     source repo       ->locale->      localization repo
     dotnet/docfx        zh-cn         dotnet/docfx.zh-cn
     dotnet/docfx        de-de         dotnet/docfx.de-de
-    dotnet/docfx.en-us  zh-cn         dotnet/docfx.zh-cn
-    dotnet/docfx.zh-cn  en-us         dotent/docfx.en-us
     ```
     
     > NOTE: The loc org name can be different, it should be configurable
@@ -57,14 +54,13 @@ Below kinds of mappings are considered to be supported and there is a **strong c
   
     Here is an string convention for loc repo name:
     
-      - `{source-repo-name}` -> `{source-repo-name}.localization`
-      - `{source-repo-name}.{source-locale}` -> `{source-repo-name}.localization`
+      - `{source-repo-name}` -> `{source-repo-name}.loc`
   
     ```txt
     repo mapping example:
     source repo       ->locale->      localization repo
-    dotnet/docfx        zh-cn         dotnet/docfx.localization
-    dotnet/docfx        de-de         dotnet/docfx.localization
+    dotnet/docfx        zh-cn         dotnet/docfx.loc
+    dotnet/docfx        de-de         dotnet/docfx.loc
     folder mapping example:
     source repo         -->           localization repo
     /readme.md          -->           /zh-cn/readme.md
@@ -77,22 +73,21 @@ Below kinds of mappings are considered to be supported and there is a **strong c
 
     Here is an string convention for loc repo name:
     
-      - `{source-repo-name}` -> `{source-repo-name}.localization`
-      - `{source-repo-name}.{source-locale}` -> `{source-repo-name}.localization`
+      - `{source-repo-name}` -> `{source-repo-name}.loc`
 
     Here is an string convention for loc repo branch name:
 
-      - `{source-branch}` -> `{locale}-{source-branch}`
+      - `{source-branch}` -> `{source-branch}.{locale}`
     
     ```txt
     repo mapping example:
     source repo       ->locale->      localization repo
-    dotnet/docfx        zh-cn         dotnet/docfx.localization
-    dotnet/docfx        de-de         dotnet/docfx.localization
+    dotnet/docfx        zh-cn         dotnet/docfx.loc
+    dotnet/docfx        de-de         dotnet/docfx.loc
     branch mapping example:
     source branch           -->           localization branch
-    master                  -->           zh-cn-master
-    live                    -->           de-de-live
+    master                  -->           master.zh-cn
+    live                    -->           live.de-de
     ```
 
 ### Loc Overwrite Configuration
@@ -114,11 +109,10 @@ Below kinds of mappings are considered to be supported and there is a **strong c
       bilingual: false
   ```
   - Follow some localization configuration conventions:
-    - Localization edit repo(source -> source.<locale> | source.<source-locale> -> source.<loc-locale>)
+    - Localization edit repo(source -> source.<locale>)
     ```txt
     source repo's eidt repo                      -> locale ->                      localization repo's edit repo
     https://github.com/microsoft/azure-docs         de-de                          https://github.com/microsoft/azure-docs.de-de
-    https://github.com/wcan/azure-docs.en-us        de-de                          https://github.com/wcan/azure-docs.de-de
     ```
     - Localization bingual branch(branch -> branch-sxs)
     ```txt
@@ -220,6 +214,8 @@ Then it brings new problem: the `contributor info` need to be extracted from `ra
 
 So, during docfx build, if the current building content is sxs content, docfx will extract the contributors from corresponding raw content.
 
+> NOTE: For `branch mapping` localization repos(all locales in one repo under different branch), the sxs branch name follow this convention: `{branch}.locale` -> `{branch}-sxs.{locale}`
+
 ### Lookup no-existing source resources(token/codesnippet/image)
 
 All localization content is delayed translated, which means that the content version in loc docsets usually fall behind of source content version for one or two weeks:
@@ -297,13 +293,13 @@ localization(repo):
 Different `branch` example:
 ```txt
 localization(repo):
-    zh-cn-live:
+    live.zh-cn:
         |- readme.md
-    zh-cn-master:
+    master.zh-cn:
         |- readme.md
-    de-de-live:
+    live.de-de:
         |- readme.md
-    de-de-master:
+    master.de-de:
         | - readme.md
 ```
 
@@ -325,7 +321,9 @@ For different `branch` option:
   - 😄 public contribution workflow maybe easy and permission per branch can be implemented
   - 😭 it brings to many branches to maintains, imagine that we have 64+ locales for one small repo. 
   - 😭 it may have a little bigger impact to ops backend service because current **'master' and 'live' are hardcoded everywhere**.
-  - 😭 hard to apply localization fix/changes to all locales(just like now, you need a script to pull/add/commit/push 64+ times)  
+  - 😭 hard to apply localization fix/changes to all locales(just like now, you need a script to pull/add/commit/push 64+ times)
+
+**Answer**: We are going to use `branch` model.
 
 ### Combine all localization content in one repo or multiple repos?
 
@@ -334,6 +332,8 @@ For different `branch` option:
 I would like firstly need to know whether the requirement is valid or not, the reason why we want to combine all localization content into one repo is to save private repo's count, so we will apply this rules to small localization repositories and leave the big size repository like azure.
 
 And also, if we combine all localization content into multiple repos, there must be **a mappings to be maintained** for LOC PM, are these mapping different per repo?  so I would like to take the simple and easy way, either one locale one repo, or all locales one repo, :)
+
+**Answer**: Two models are needed: all locales in one repo, or every locale in separate repo. There is no need for mixed model
 
 ### Fallback to corresponding branch only?
 
@@ -357,6 +357,8 @@ The problem is above requirement is that usually these non-live test branch don'
 Option-1 is easy and simple way, but a little hard for localization repo users, since usually they don't have the write permission to source repo.  
 Option-2 and Option-3 are more user-friendly, but build some extra works, appends `branch` info to resolved urls which linked to source content like `url?branch=master`
 
+**Answer**: Loc team confirmed that they always use `master/live` branch, so we only need fallback to `corresponding` branch **only** is enough.
+
 ### Inclusion TOC fallback
 
 When TOC-A includes TOC-B, the output of TOC-A would be TOC-A + TOC-B, so all built pages of articles referenced by TOC-B would have a combined TOC-A + TOC-B, that's TOC inclusion feature.
@@ -372,3 +374,4 @@ In V3 design, we choice the 2nd option, based on below reasons:
   - Mixed language toc maybe not a good user experience, need confirmed with Loc PM
   - V3 want to do as little as possible specific features for localization, to reduce complexity and error-prone.
 
+**Answer**: We are going to support `mixed` combined TOC option.
