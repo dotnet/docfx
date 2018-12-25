@@ -6,19 +6,19 @@ pr:
 - feature/*
 jobs:
 # unit & e2e test jobs
-- job: Linux Test(ubuntu-16.04)
+- job: LinuxTest_ubuntu_16_04
   pool:
     vmImage: 'ubuntu-16.04'
   condition: eq(variables['Build.Reason'], 'PullRequest')
   steps:
     - bash: ./build.sh
-- job: macOS Test(macOS-10.13)
+- job: macOSTest_macOS_10_13
   pool:
     vmImage: 'macOS-10.13'
   condition: eq(variables['Build.Reason'], 'PullRequest')
   steps:
     - bash: ./build.sh
-- job: Windows Test(vs2017-win2016)
+- job: WindowsTest_vs2017_win2016
   pool:
     vmImage: 'vs2017-win2016'
   condition: eq(variables['Build.Reason'], 'PullRequest')
