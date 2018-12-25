@@ -20,10 +20,10 @@ namespace Microsoft.Docs.Build
             DepthOne = 1 << 2,
         }
 
-        public static Task Restore(string docsetPath, Config config, Func<string, Task> restoreChild, string locale, bool @implicit)
+        public static Task Restore(string docsetPath, Config config, Func<string, Task> restoreChild, string locale, bool @implicit, bool isDependencyRepo)
         {
             var gitDependencies =
-                from git in GetGitDependencies(docsetPath, config, locale)
+                from git in GetGitDependencies(docsetPath, config, locale, isDependencyRepo)
                 group (git.branch, git.flags)
                 by git.remote;
 
@@ -100,7 +100,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static IEnumerable<(string remote, string branch, GitFlags flags)> GetGitDependencies(string docsetPath, Config config, string locale)
+        private static IEnumerable<(string remote, string branch, GitFlags flags)> GetGitDependencies(string docsetPath, Config config, string locale, bool isDependencyRepo)
         {
             var dependencies = config.Dependencies.Values.Select(url =>
             {
@@ -108,9 +108,16 @@ namespace Microsoft.Docs.Build
                 return (remote, branch, GitFlags.DepthOne);
             });
 
-            return dependencies
-                .Concat(GetLocalizationGitDependencies(docsetPath, config, locale))
-                .Concat(GetThemeGitDependencies(config, locale));
+            dependencies = dependencies.Concat(GetThemeGitDependencies(config, locale));
+
+            if (!isDependencyRepo)
+            {
+                dependencies = dependencies
+                    .Concat(GetSourceGitDependencies(docsetPath, config, locale))
+                    .Concat(GetLocalizationGitDependencies(docsetPath, config, locale));
+            }
+
+            return dependencies;
         }
 
         private static IEnumerable<(string remote, string branch, GitFlags flags)> GetThemeGitDependencies(Config config, string locale)
@@ -158,18 +165,29 @@ namespace Microsoft.Docs.Build
 
             yield return (remote, branch, GitFlags.None);
 
-            if (config.Localization.Bilingual)
+            if (config.Localization.Bilingual && LocalizationConvention.TryGetContributionBranch(branch, out var contributionBranch))
             {
                 // Bilingual repos also depend on non bilingual branch for commit history
-                (remote, branch) = LocalizationConvention.GetLocalizationRepo(
-                    config.Localization.Mapping,
-                    bilingual: false,
-                    repo.Remote,
-                    repo.Branch,
-                    locale,
-                    config.Localization.DefaultLocale);
+                yield return (remote, contributionBranch, GitFlags.NoCheckout);
+            }
+        }
 
-                yield return (remote, branch, GitFlags.NoCheckout);
+        private static IEnumerable<(string remote, string branch, GitFlags flags)> GetSourceGitDependencies(string docsetPath, Config config, string locale)
+        {
+            if (string.IsNullOrEmpty(locale))
+            {
+                yield break;
+            }
+
+            var repo = Repository.Create(docsetPath);
+            if (repo == null || string.IsNullOrEmpty(repo.Remote))
+            {
+                yield break;
+            }
+
+            if (LocalizationConvention.TryGetSourceRepository(repo.Remote, repo.Branch, config.Localization.DefaultLocale, out var sourceRemote, out var sourceBranch, out _))
+            {
+                yield return (sourceRemote, sourceBranch, GitFlags.None);
             }
         }
     }

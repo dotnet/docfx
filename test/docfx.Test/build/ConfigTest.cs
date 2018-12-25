@@ -98,9 +98,10 @@ namespace Microsoft.Docs.Build
         [InlineData("https://test.visualstudio.com/_git/abc.bs-Cyrl-BA", "master", "https://test.visualstudio.com/_git/abc", "master", "bs-cyrl-ba")]
         [InlineData("https://github.com/docs.zh-cn", "master-sxs", "https://github.com/docs", "master", "zh-cn")]
         [InlineData("https://github.com/docs.loc", "master-sxs.zh-cn", "https://github.com/docs", "master", "zh-cn")]
+        [InlineData("https://github.com/docs.en-us", "master", null, null, null)]
         public static void LocConfigConventionSourceRepo(string remote, string branch, string expectedSourceRemote, string expectedSourceBranch, string expectedLocale)
         {
-            LocalizationConvention.TryGetSourceRepository(remote, branch, out var sourceRemote, out var sourceBranch, out var locale);
+            LocalizationConvention.TryGetSourceRepository(remote, branch, "en-us", out var sourceRemote, out var sourceBranch, out var locale);
 
             Assert.Equal(expectedSourceRemote, sourceRemote);
             Assert.Equal(expectedSourceBranch, sourceBranch);

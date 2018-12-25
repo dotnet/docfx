@@ -24,14 +24,15 @@ namespace Microsoft.Docs.Build
             {
                 var restoredDocsets = new ConcurrentDictionary<string, int>(PathUtility.PathComparer);
 
-                await RestoreDocset(docsetPath, true);
+                await RestoreDocset(docsetPath);
 
-                async Task RestoreDocset(string docset, bool root)
+                async Task RestoreDocset(string docset, bool root = true, string locale = null)
                 {
                     if (restoredDocsets.TryAdd(docset, 0))
                     {
                         var (errors, config) = Config.TryLoad(docset, options, extend: false);
                         ReportErrors(report, errors);
+                        locale = locale ?? GetLocale(config);
 
                         if (root)
                         {
@@ -39,35 +40,47 @@ namespace Microsoft.Docs.Build
                         }
 
                         // no need to restore child docsets' loc repository
-                        await RestoreOneDocset(docset, config, async subDocset => await RestoreDocset(subDocset, false), restoreLocRepo: root);
+                        await RestoreOneDocset(docset, locale, config, async subDocset => await RestoreDocset(subDocset, root: false, locale: locale), isDependencyRepo: !root);
                     }
                 }
             }
 
             async Task RestoreOneDocset(
                 string docset,
+                string locale,
                 Config config,
                 Func<string, Task> restoreChild,
-                bool restoreLocRepo = false)
+                bool isDependencyRepo)
+            {
+                // restore extend url firstly
+                // no need to extend config
+                await ParallelUtility.ForEach(
+                    config.Extend.Where(HrefUtility.IsHttpHref),
+                    restoreUrl => RestoreFile.Restore(restoreUrl, config, @implicit));
+
+                // extend the config before loading
+                var (errors, extendedConfig) = Config.TryLoad(docset, options, extend: true);
+                ReportErrors(report, errors);
+
+                // restore git repos includes dependency repos and loc repos
+                await RestoreGit.Restore(docset, extendedConfig, restoreChild, locale, @implicit, isDependencyRepo);
+
+                // restore urls except extend url
+                await ParallelUtility.ForEach(
+                    extendedConfig.GetFileReferences().Where(HrefUtility.IsHttpHref),
+                    restoreUrl => RestoreFile.Restore(restoreUrl, extendedConfig, @implicit));
+            }
+
+            string GetLocale(Config config)
+            {
+                var repo = Repository.Create(docsetPath);
+                if (repo == null)
                 {
-                    // restore extend url firstly
-                    // no need to extend config
-                    await ParallelUtility.ForEach(
-                        config.Extend.Where(HrefUtility.IsHttpHref),
-                        restoreUrl => RestoreFile.Restore(restoreUrl, config, @implicit));
-
-                    // extend the config before loading
-                    var (errors, extendedConfig) = Config.TryLoad(docset, options, extend: true);
-                    ReportErrors(report, errors);
-
-                    // restore git repos includes dependency repos and loc repos
-                    await RestoreGit.Restore(docset, extendedConfig, restoreChild, restoreLocRepo ? options.Locale : null, @implicit);
-
-                    // restore urls except extend url
-                    await ParallelUtility.ForEach(
-                        extendedConfig.GetFileReferences().Where(HrefUtility.IsHttpHref),
-                        restoreUrl => RestoreFile.Restore(restoreUrl, extendedConfig, @implicit));
+                    return options.Locale;
                 }
+
+                return LocalizationConvention.TryGetSourceRepository(repo.Remote, repo.Branch, config.Localization.DefaultLocale, out _, out _, out var locale) ? locale : options.Locale;
+            }
         }
 
         private static void ReportErrors(Report report, List<Error> errors)
