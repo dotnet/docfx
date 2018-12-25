@@ -118,10 +118,9 @@ namespace Microsoft.Docs.Build
                 fileMonikers = tocMetadata.Monikers;
             }
 
-            parents.Add(file);
-
-            if (model.Items.Any())
+            if (model.Items.Count > 0)
             {
+                parents.Add(file);
                 errors.AddRange(ResolveTocModelItems(context, model.Items, parents, file, rootPath, monikerProvider, monikerMap, resolveContent, resolveHref, resolveXref, fileMonikers));
                 parents.RemoveAt(parents.Count - 1);
             }
@@ -322,7 +321,7 @@ namespace Microsoft.Docs.Build
             List<string> monikers = null;
             if (resolvedTopicHref != null)
             {
-                if (monikerMap != null && document != null)
+                if (document != null)
                 {
                     monikerMap.TryGetValue(document, out monikers);
                 }
