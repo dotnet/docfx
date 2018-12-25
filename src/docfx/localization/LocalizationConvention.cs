@@ -64,7 +64,7 @@ namespace Microsoft.Docs.Build
             return ($"{remote}{newLocale}", newBranch);
         }
 
-        public static bool TryGetSourceRepository(string docsetPath, out string sourceRemote, out string sourceBranch, out string locale)
+        public static bool TryGetSourceRepository(string docsetPath, Config config, out string sourceRemote, out string sourceBranch, out string locale)
         {
             Debug.Assert(!string.IsNullOrEmpty(docsetPath));
 
@@ -78,13 +78,13 @@ namespace Microsoft.Docs.Build
                 return false;
             }
 
-            return TryGetSourceRepository(repo.Remote, repo.Branch, out sourceRemote, out sourceBranch, out locale);
+            return TryGetSourceRepository(repo.Remote, repo.Branch, config, out sourceRemote, out sourceBranch, out locale);
         }
 
         /// <summary>
         /// Get the source repo's remote and branch from loc repo
         /// </summary>
-        public static bool TryGetSourceRepository(string remote, string branch, out string sourceRemote, out string sourceBranch, out string locale)
+        public static bool TryGetSourceRepository(string remote, string branch, Config config, out string sourceRemote, out string sourceBranch, out string locale)
         {
             sourceRemote = null;
             sourceBranch = null;
@@ -95,9 +95,9 @@ namespace Microsoft.Docs.Build
                 return false;
             }
 
-            if (TryRemoveLocale(remote, out sourceRemote, out locale))
+            if (TryRemoveLocale(remote, config?.Localization?.DefaultLocale, out sourceRemote, out locale))
             {
-                if (TryRemoveLocale(branch, out var branchWithoutLocale, out var branchLocale))
+                if (TryRemoveLocale(branch, config?.Localization?.DefaultLocale, out var branchWithoutLocale, out var branchLocale))
                 {
                     branch = branchWithoutLocale;
                     locale = branchLocale;
@@ -117,7 +117,7 @@ namespace Microsoft.Docs.Build
             Debug.Assert(!string.IsNullOrEmpty(docsetPath));
             Debug.Assert(config != null);
 
-            if (TryGetSourceRepository(docsetPath, out var sourceRemote, out var sourceBranch, out var locale) && locale != config.Localization.DefaultLocale)
+            if (TryGetSourceRepository(docsetPath, config, out var sourceRemote, out var sourceBranch, out var locale))
             {
                 sourceDocsetPath = RestoreMap.GetGitRestorePath(sourceRemote, sourceBranch);
                 return true;
@@ -128,7 +128,7 @@ namespace Microsoft.Docs.Build
 
         public static (List<Error> errors, Config config) GetConfig(string docset, CommandLineOptions options)
         {
-            if (TryGetSourceRepository(docset, out var sourceRemote, out var sourceBranch, out var locale))
+            if (TryGetSourceRepository(docset, null, out var sourceRemote, out var sourceBranch, out var locale))
             {
                 var sourceDocsetPath = RestoreMap.GetGitRestorePath(sourceRemote, sourceBranch);
                 return Config.Load(docset, options, locale);
@@ -139,8 +139,7 @@ namespace Microsoft.Docs.Build
 
         public static string GetLocale(string docset, Config config, CommandLineOptions options)
         {
-            // todo: remove xxx.en-us convention
-            return LocalizationConvention.TryGetSourceRepository(docset, out _, out _, out var locale) && locale != config.Localization.DefaultLocale ? locale : options.Locale;
+            return TryGetSourceRepository(docset, config, out _, out _, out var locale) ? locale : options.Locale;
         }
 
         public static bool TryGetLocalizationDocsetPath(string docsetPath, Config config, string locale, out string localizationDocsetPath)
@@ -386,11 +385,18 @@ namespace Microsoft.Docs.Build
             return $"{locale}-{sourceBranch}";
         }
 
-        private static bool TryRemoveLocale(string name, out string nameWithoutLocale, out string locale)
+        private static bool TryRemoveLocale(string name, string defaultLocale, out string nameWithoutLocale, out string locale)
         {
             nameWithoutLocale = null;
             locale = null;
             if (string.IsNullOrEmpty(name))
+            {
+                return false;
+            }
+
+            // todo: remove xxx.en-us convention
+            defaultLocale = defaultLocale ?? LocalizationConfig.DefaultLocaleStr;
+            if (name.EndsWith($".{defaultLocale}", StringComparison.OrdinalIgnoreCase))
             {
                 return false;
             }
