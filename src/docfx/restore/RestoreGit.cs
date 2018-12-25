@@ -112,9 +112,7 @@ namespace Microsoft.Docs.Build
 
             if (!isDependencyRepo)
             {
-                dependencies = dependencies
-                    .Concat(GetSourceGitDependencies(docsetPath, config, locale))
-                    .Concat(GetLocalizationGitDependencies(docsetPath, config, locale));
+                dependencies = dependencies.Concat(GetLocalizationGitDependencies(docsetPath, config, locale));
             }
 
             return dependencies;
@@ -132,6 +130,9 @@ namespace Microsoft.Docs.Build
             yield return (remote, branch, GitFlags.DepthOne);
         }
 
+        /// <summary>
+        /// Get source repository or localized repository
+        /// </summary>
         private static IEnumerable<(string remote, string branch, GitFlags flags)> GetLocalizationGitDependencies(string docsetPath, Config config, string locale)
         {
             if (string.IsNullOrEmpty(locale))
@@ -144,13 +145,19 @@ namespace Microsoft.Docs.Build
                 yield break;
             }
 
-            if (config.Localization.Mapping == LocalizationMapping.Folder)
+            var repo = Repository.Create(docsetPath);
+            if (repo == null || string.IsNullOrEmpty(repo.Remote))
             {
                 yield break;
             }
 
-            var repo = Repository.Create(Path.GetFullPath(docsetPath));
-            if (repo == null)
+            if (LocalizationConvention.TryGetSourceRepository(repo.Remote, repo.Branch, config.Localization.DefaultLocale, out var sourceRemote, out var sourceBranch, out _))
+            {
+                yield return (sourceRemote, sourceBranch, GitFlags.None);
+                yield break; // no need to find localized repo anymore
+            }
+
+            if (config.Localization.Mapping == LocalizationMapping.Folder)
             {
                 yield break;
             }
@@ -169,25 +176,6 @@ namespace Microsoft.Docs.Build
             {
                 // Bilingual repos also depend on non bilingual branch for commit history
                 yield return (remote, contributionBranch, GitFlags.NoCheckout);
-            }
-        }
-
-        private static IEnumerable<(string remote, string branch, GitFlags flags)> GetSourceGitDependencies(string docsetPath, Config config, string locale)
-        {
-            if (string.IsNullOrEmpty(locale))
-            {
-                yield break;
-            }
-
-            var repo = Repository.Create(docsetPath);
-            if (repo == null || string.IsNullOrEmpty(repo.Remote))
-            {
-                yield break;
-            }
-
-            if (LocalizationConvention.TryGetSourceRepository(repo.Remote, repo.Branch, config.Localization.DefaultLocale, out var sourceRemote, out var sourceBranch, out _))
-            {
-                yield return (sourceRemote, sourceBranch, GitFlags.None);
             }
         }
     }
