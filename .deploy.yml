@@ -24,6 +24,7 @@ jobs:
   condition: eq(variables['Build.Reason'], 'PullRequest')
   steps:
     - powershell: ./build.ps1
+    # todo: conditional PR deploy, check myget limits
 # deployment job(impact, build, pack, push package)
 - job: Deploy(private agent DocFX)
   pool:
