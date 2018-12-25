@@ -165,7 +165,7 @@ namespace Microsoft.Docs.Build
 
                 // get dependent docset config or default config
                 // todo: what parent config should be pass on its children
-                Config.LoadIfExists(dir, _options, out var loadErrors, out var subConfig);
+                var (loadErrors, subConfig) = Config.TryLoad(dir, _options);
                 errors.AddRange(loadErrors);
                 result.TryAdd(PathUtility.NormalizeFolder(name), new Docset(_context, dir, subConfig, _options, isDependency: true));
             }

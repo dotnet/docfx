@@ -19,8 +19,8 @@ namespace Microsoft.Docs.Build
         public static Error InvalidGlobPattern(string pattern, Exception ex)
             => new Error(ErrorLevel.Error, "invalid-glob-pattern", $"The glob pattern '{pattern}' is invalid: {ex.Message}");
 
-        public static Error ConfigNotFound(string docsetPath, string configFile)
-            => new Error(ErrorLevel.Error, "config-not-found", $"Cannot find {configFile} at '{docsetPath}'");
+        public static Error ConfigNotFound(string docsetPath)
+            => new Error(ErrorLevel.Error, "config-not-found", $"Cannot find 'docfx.yml/docfx.json' at '{docsetPath}'");
 
         public static Error CircularReference<T>(T filePath, IEnumerable<T> dependencyChain)
             => new Error(ErrorLevel.Error, "circular-reference", $"Found circular reference: {string.Join(" --> ", dependencyChain.Select(file => $"'{file}'"))} --> '{filePath}'", filePath.ToString());
@@ -43,8 +43,8 @@ namespace Microsoft.Docs.Build
         public static Error MissingTocHead(in Range range, string filePath)
             => new Error(ErrorLevel.Error, "missing-toc-head", $"The toc head name is missing", filePath, range);
 
-        public static Error InvalidTocSyntax(in Range range, string filePath, string syntax)
-            => new Error(ErrorLevel.Error, "invalid-toc-syntax", $"The toc syntax '{syntax}' is invalid, the opening sequence of # characters must be followed by a space or by the end of line. Refer to [ATX heading](https://spec.commonmark.org/0.28/#atx-heading) to fix it", filePath, range);
+        public static Error InvalidTocSyntax(in Range range, string filePath, string syntax, string hint = null)
+            => new Error(ErrorLevel.Error, "invalid-toc-syntax", $"The toc syntax '{syntax}' is invalid, {hint ?? "the opening sequence of # characters must be followed by a space or by the end of line"}. Refer to [ATX heading](https://spec.commonmark.org/0.28/#atx-heading) to fix it", filePath, range);
 
         public static Error InvalidTocLevel(string filePath, int from, int to)
             => new Error(ErrorLevel.Error, "invalid-toc-level", $"The toc level can't be skipped from {from} to {to}", filePath);
@@ -122,7 +122,7 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Warning, "redirected-id-conflict", $"Multiple documents redirected to '{redirectTo}' with document id: {Join(redirectFromDocs)}");
 
         public static Error ReservedMetadata(in Range range, string name, string removeFrom)
-            => new Error(ErrorLevel.Error, "reserved-metadata", $"Metadata '{name}' is reserved by docfx, remove this metadata from {removeFrom}", null, range);
+            => new Error(ErrorLevel.Warning, "reserved-metadata", $"Metadata '{name}' is reserved by docfx, remove this metadata from {removeFrom}", null, range);
 
         public static Error GitLogError(string repoPath, int errorCode)
             => new Error(ErrorLevel.Error, "git-log-error", $"Error computing git log [{errorCode}] for '{repoPath}', did you used a shadow clone?");
