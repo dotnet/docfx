@@ -167,7 +167,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Load the config under <paramref name="docsetPath"/>
         /// </summary>
-        public static (List<Error> errors, Config config) Load(string docsetPath, CommandLineOptions options, bool extend = true)
+        public static (List<Error> errors, Config config) Load(string docsetPath, CommandLineOptions options, string locale = null, bool extend = true)
         {
             var configPath = PathUtility.FindYamlOrJson(Path.Combine(docsetPath, "docfx"));
             if (configPath == null)
@@ -175,16 +175,16 @@ namespace Microsoft.Docs.Build
                 throw Errors.ConfigNotFound(docsetPath).ToException();
             }
 
-            return TryLoad(docsetPath, options, extend);
+            return TryLoad(docsetPath, options, locale, extend);
         }
 
         /// <summary>
         /// Load the config if it exists under <paramref name="docsetPath"/> or return default config
         /// </summary>
-        public static (List<Error> errors, Config config) TryLoad(string docsetPath, CommandLineOptions options, bool extend = true)
-            => LoadCore(docsetPath, options, extend);
+        public static (List<Error> errors, Config config) TryLoad(string docsetPath, CommandLineOptions options, string locale = null, bool extend = true)
+            => LoadCore(docsetPath, options, locale, extend);
 
-        private static (List<Error>, Config) LoadCore(string docsetPath, CommandLineOptions options, bool extend)
+        private static (List<Error>, Config) LoadCore(string docsetPath, CommandLineOptions options, string locale,  bool extend)
         {
             var errors = new List<Error>();
             Config config = null;
@@ -211,7 +211,7 @@ namespace Microsoft.Docs.Build
             }
 
             // apply overwrite
-            finalConfigObject = OverwriteConfig(finalConfigObject, options.Locale, GetBranch());
+            finalConfigObject = OverwriteConfig(finalConfigObject, locale ?? options.Locale, GetBranch());
 
             var deserializeErrors = new List<Error>();
             (deserializeErrors, config) = JsonUtility.ToObjectWithSchemaValidation<Config>(finalConfigObject);

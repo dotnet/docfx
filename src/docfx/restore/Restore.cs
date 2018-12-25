@@ -30,9 +30,9 @@ namespace Microsoft.Docs.Build
                 {
                     if (restoredDocsets.TryAdd(docset, 0))
                     {
-                        var (errors, config) = Config.TryLoad(docset, options, extend: false);
+                        var (errors, config) = Config.TryLoad(docset, options, locale, extend: false);
                         ReportErrors(report, errors);
-                        locale = locale ?? GetLocale(config);
+                        locale = locale ?? LocalizationConvention.GetLocale(docset, config, options);
 
                         if (root)
                         {
@@ -59,7 +59,7 @@ namespace Microsoft.Docs.Build
                     restoreUrl => RestoreFile.Restore(restoreUrl, config, @implicit));
 
                 // extend the config before loading
-                var (errors, extendedConfig) = Config.TryLoad(docset, options, extend: true);
+                var (errors, extendedConfig) = Config.TryLoad(docset, options, locale, extend: true);
                 ReportErrors(report, errors);
 
                 // restore git repos includes dependency repos and loc repos
@@ -69,17 +69,6 @@ namespace Microsoft.Docs.Build
                 await ParallelUtility.ForEach(
                     extendedConfig.GetFileReferences().Where(HrefUtility.IsHttpHref),
                     restoreUrl => RestoreFile.Restore(restoreUrl, extendedConfig, @implicit));
-            }
-
-            string GetLocale(Config config)
-            {
-                var repo = Repository.Create(docsetPath);
-                if (repo == null)
-                {
-                    return options.Locale;
-                }
-
-                return LocalizationConvention.TryGetSourceRepository(repo.Remote, repo.Branch, config.Localization.DefaultLocale, out _, out _, out var locale) ? locale : options.Locale;
             }
         }
 
