@@ -66,7 +66,7 @@ namespace Microsoft.Docs.Build
 
                 // if the moniker is not defined with the uid
                 // log a warning and take the one with latest version
-                _context.Report(Errors.InvalidUidMoniker(moniker, uid));
+                _context.Report.Write(Errors.InvalidUidMoniker(moniker, uid));
                 return GetLatestInternalXrefMap(validInternalSpecs);
             }
 
@@ -144,7 +144,7 @@ namespace Microsoft.Docs.Build
             if (conflictsWithoutMoniker.Count() > 1)
             {
                 var orderedConflict = conflictsWithoutMoniker.OrderBy(item => item.Item1.Href);
-                _context.Report(Errors.UidConflict(uid, orderedConflict.Select(x => x.Item1)));
+                _context.Report.Write(Errors.UidConflict(uid, orderedConflict.Select(x => x.Item1)));
                 return false;
             }
             else if (conflictsWithoutMoniker.Count() == 1)
@@ -156,7 +156,7 @@ namespace Microsoft.Docs.Build
             var conflictsWithMoniker = specsWithSameUid.Where(x => LoadXrefSpec(x).Item1.Monikers.Count > 0).Select(item => LoadXrefSpec(item));
             if (CheckOverlappingMonikers(loadedSpecs.Select(x => x.Item1), out var overlappingMonikers))
             {
-                _context.Report(Errors.MonikerOverlapping(overlappingMonikers));
+                _context.Report.Write(Errors.MonikerOverlapping(overlappingMonikers));
                 return false;
             }
 
@@ -178,7 +178,7 @@ namespace Microsoft.Docs.Build
                 {
                     foreach (var error in errors)
                     {
-                        _context.Report(error);
+                        _context.Report.Write(error);
                     }
 
                     // Sort monikers descending by moniker definition order
@@ -283,11 +283,11 @@ namespace Microsoft.Docs.Build
                         TryAddXref(xrefsByUid, uid, () => LoadSchemaDocument(obj, file, uid, dependencyResolver));
                     }
                 }
-                context.Report(file.ToString(), errors);
+                context.Report.Write(file.ToString(), errors);
             }
             catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
             {
-                context.Report(file.ToString(), dex.Error);
+                context.Report.Write(file.ToString(), dex.Error);
             }
         }
 
