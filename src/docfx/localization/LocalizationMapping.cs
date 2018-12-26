@@ -21,6 +21,7 @@ namespace Microsoft.Docs.Build
         /// /readme.md          -->         /localization/zh-cn/readme.md
         /// /files/a.md         -->         /localization/de-de/files/a.md
         /// </summary>
+        /// TODO: support build from localization folder directly?
         Folder,
 
         /// <summary>
@@ -33,8 +34,8 @@ namespace Microsoft.Docs.Build
         /// source repo         -->           localization repo
         /// /readme.md          -->           /zh-cn/readme.md
         /// /files/a.md         -->           /zh-cn/files/a.md
-        /// TODO: remove this mapping
         /// </summary>
+        /// TODO: remove this mapping
         RepositoryAndFolder,
 
         /// <summary>
@@ -48,6 +49,9 @@ namespace Microsoft.Docs.Build
         /// #master               -->           #zh-cn-master
         /// #live                 -->           #zh-cn-live
         /// </summary>
+        /// TODO:
+        /// 1. branch convention change to {branch}.{locale}
+        /// 2. repo name convention change to {name}.loc
         Branch,
     }
 }
