@@ -51,11 +51,6 @@ namespace Microsoft.Docs.Build
             var newLocale = mapping == LocalizationMapping.Repository ? $".{locale}" : ".loc";
             var newBranch = bilingual ? GetLocalizationBranch(mapping, GetBilingualBranch(branch), locale) : GetLocalizationBranch(mapping, branch, locale);
 
-            if (remote.EndsWith($".{defaultLocale}", StringComparison.OrdinalIgnoreCase))
-            {
-                remote = remote.Substring(0, remote.Length - $".{defaultLocale}".Length);
-            }
-
             if (remote.EndsWith(newLocale, StringComparison.OrdinalIgnoreCase))
             {
                 return (remote, newBranch);
@@ -192,9 +187,9 @@ namespace Microsoft.Docs.Build
                 return false;
             }
 
-            if (TryRemoveLocale(branch, out var branchWithouLocale, out locale))
+            if (TryRemoveLocale(branch, out var branchWithoutLocale, out locale))
             {
-                branch = branchWithouLocale;
+                branch = branchWithoutLocale;
             }
 
             if (branch.EndsWith("-sxs"))
@@ -311,11 +306,6 @@ namespace Microsoft.Docs.Build
             if (string.Equals(locale, defaultLocale))
             {
                 return (remote, branch);
-            }
-
-            if (remote.EndsWith($".{defaultLocale}", StringComparison.OrdinalIgnoreCase))
-            {
-                remote = remote.Substring(0, remote.Length - $".{defaultLocale}".Length);
             }
 
             if (remote.EndsWith($".{locale}", StringComparison.OrdinalIgnoreCase))

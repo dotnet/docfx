@@ -141,7 +141,7 @@ outputs:
 commands:
   - build --locale zh-cn
 repos: 
-  https://docfx.com/abc.en-us#loc-contribution2:
+  https://docfx.com/abc#loc-contribution2:
     - files:
         docfx.yml: |
           contribution:
@@ -151,7 +151,7 @@ repos:
         docs/a.md:
 outputs:
   docs/a.json: |
-    { "content_git_url": "*dotnet/docfx.zh-cn/blob/master/*"}
+    { "content_git_url": "*dotnet/docfx.en-us.zh-cn/blob/master/*"}
 ---
 # edit url convention with source locale 3
 # all loc files are in one repo under different branch
@@ -163,7 +163,7 @@ repos:
     - files:
         docfx.yml: |
           contribution:
-            repository: https://github.com/dotnet/docfx.en-us
+            repository: https://github.com/dotnet/docfx
           localization:
             mapping: Branch
   https://docfx.com/abc.loc#loc-contribution4.zh-cn:
