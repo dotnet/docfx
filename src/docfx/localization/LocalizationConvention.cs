@@ -80,15 +80,16 @@ namespace Microsoft.Docs.Build
 
             if (TryRemoveLocale(remote, out sourceRemote, out locale))
             {
+                sourceBranch = branch;
                 if (TryRemoveLocale(branch, out var branchWithoutLocale, out var branchLocale))
                 {
-                    branch = branchWithoutLocale;
+                    sourceBranch = branchWithoutLocale;
                     locale = branchLocale;
                 }
 
-                if (TryGetContributionBranch(branch, out var contributionBranch))
+                if (TryGetContributionBranch(sourceBranch, out var contributionBranch))
                 {
-                    branch = contributionBranch;
+                    sourceBranch = contributionBranch;
                 }
                 return true;
             }
