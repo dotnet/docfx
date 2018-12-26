@@ -590,6 +590,9 @@ repos:
           sxs content
           [link to b](b.md)
           [!include[include b](b.md)
+  https://github.com/ss/a.loc#master.zh-cn:
+    - files:
+        docs/a.md: a
 outputs:
   docs/a.json: |
     {"content":"<p>sxs content\n<a href=\"b\">link to b</a></p>\n<p><a href=\"a\">link to a</a></p>\n", "bilingual": true}
