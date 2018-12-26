@@ -14,6 +14,19 @@ namespace Microsoft.Docs.Build
         {
             var legacyCrrInfoItems = new List<LegacyCrossRepoReferenceInfoItem>();
 
+            if (!string.IsNullOrEmpty(docset.Config.Theme))
+            {
+                var url = docset.Config.Theme;
+                var branchIndex = url.IndexOf('#');
+
+                legacyCrrInfoItems.Add(new LegacyCrossRepoReferenceInfoItem
+                {
+                    PathToRoot = "_themes",
+                    Url = branchIndex == -1 ? url : url.Substring(0, branchIndex),
+                    Branch = branchIndex == -1 ? "master" : url.Substring(url.IndexOf('#') + 1),
+                });
+            }
+
             foreach (var dependentRepo in docset.Config.Dependencies)
             {
                 var (url, branch) = HrefUtility.SplitGitHref(dependentRepo.Value);
