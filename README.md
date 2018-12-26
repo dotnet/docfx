@@ -1,4 +1,4 @@
-# Build your docs with DocFX  
+# Build your docs with DocFX     
 
 [![Deploy Status](https://ceapex.visualstudio.com/Engineering/_apis/build/status/docfx/docfx-deploy)](https://ceapex.visualstudio.com/Engineering/_build/latest?definitionId=665)
 
