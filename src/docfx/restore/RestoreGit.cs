@@ -61,6 +61,11 @@ namespace Microsoft.Docs.Build
 
                 foreach (var branch in branches)
                 {
+                    if (group.Where(g => g.branch == branch).All(g => (g.flags & GitFlags.NoCheckout) != 0))
+                    {
+                        continue;
+                    }
+
                     await restoreChild(RestoreMap.GetGitRestorePath(remote, branch));
                 }
 
@@ -158,18 +163,10 @@ namespace Microsoft.Docs.Build
 
             yield return (remote, branch, GitFlags.None);
 
-            if (config.Localization.Bilingual)
+            if (config.Localization.Bilingual && LocalizationConvention.TryGetContributionBranch(branch, out var contributionBranch))
             {
                 // Bilingual repos also depend on non bilingual branch for commit history
-                (remote, branch) = LocalizationConvention.GetLocalizationRepo(
-                    config.Localization.Mapping,
-                    bilingual: false,
-                    repo.Remote,
-                    repo.Branch,
-                    locale,
-                    config.Localization.DefaultLocale);
-
-                yield return (remote, branch, GitFlags.NoCheckout);
+                yield return (remote, contributionBranch, GitFlags.NoCheckout);
             }
         }
     }
