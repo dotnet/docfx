@@ -14,38 +14,26 @@ namespace Microsoft.Docs.Build
         public static (IEnumerable<Error>, TableOfContentsModel, List<string> monikers) Build(
             Context context,
             Document file,
-            TableOfContentsMap tocMap,
             MetadataProvider metadataProvider,
-            MonikersProvider monikersProvider,
+            MonikerProvider monikerProvider,
             DependencyResolver dependencyResolver,
-            Dictionary<Document, List<string>> monikersMap)
+            MonikerMap monikerMap)
         {
             Debug.Assert(file.ContentType == ContentType.TableOfContents);
-            Debug.Assert(monikersMap != null);
+            Debug.Assert(monikerMap != null);
 
-            if (!tocMap.Contains(file))
-            {
-                return (Enumerable.Empty<Error>(), null, new List<string>());
-            }
-
-            var (errors, tocModel, tocMetadata, refArticles, refTocs) = Load(context, file, monikersProvider, dependencyResolver, monikersMap);
-
-            var metadata = metadataProvider.GetMetadata(file, tocMetadata).ToObject<TableOfContentsMetadata>();
-
-            Error monikerError;
-            (monikerError, metadata.Monikers) = monikersProvider.GetFileLevelMonikers(file, metadata.MonikerRange);
-            errors.AddIfNotNull(monikerError);
+            var (errors, tocModel, tocMetadata, refArticles, refTocs) = Load(context, file, dependencyResolver, metadataProvider, monikerMap, monikerProvider);
 
             var model = new TableOfContentsModel
             {
                 Items = tocModel,
-                Metadata = metadata,
+                Metadata = tocMetadata,
             };
 
-            return (errors, model, metadata.Monikers);
+            return (errors, model, tocMetadata.Monikers);
         }
 
-        public static TableOfContentsMap BuildTocMap(Context context, Docset docset, MonikersProvider monikersProvider, DependencyResolver dependencyResolver)
+        public static TableOfContentsMap BuildTocMap(Context context, Docset docset, DependencyResolver dependencyResolver)
         {
             using (Progress.Start("Loading TOC"))
             {
@@ -56,44 +44,47 @@ namespace Microsoft.Docs.Build
                     return builder.Build();
                 }
 
-                ParallelUtility.ForEach(tocFiles, file => BuildTocMap(context, file, builder, monikersProvider, dependencyResolver), Progress.Update);
+                ParallelUtility.ForEach(tocFiles, file => BuildTocMap(context, file, builder, dependencyResolver), Progress.Update);
 
                 return builder.Build();
             }
         }
 
-        private static void BuildTocMap(Context context, Document fileToBuild, TableOfContentsMapBuilder tocMapBuilder, MonikersProvider monikersProvider, DependencyResolver dependencyResolver)
+        private static void BuildTocMap(Context context, Document fileToBuild, TableOfContentsMapBuilder tocMapBuilder, DependencyResolver dependencyResolver)
         {
             try
             {
                 Debug.Assert(tocMapBuilder != null);
                 Debug.Assert(fileToBuild != null);
 
-                var (errors, _, _, referencedDocuments, referencedTocs) = Load(context, fileToBuild, monikersProvider, dependencyResolver);
-                context.Report(fileToBuild.ToString(), errors);
+                var (errors, _, _, referencedDocuments, referencedTocs) = Load(context, fileToBuild, dependencyResolver);
+                context.Report.Write(fileToBuild.ToString(), errors);
 
                 tocMapBuilder.Add(fileToBuild, referencedDocuments, referencedTocs);
             }
             catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
             {
-                context.Report(fileToBuild.ToString(), dex.Error);
+                context.Report.Write(fileToBuild.ToString(), dex.Error);
             }
         }
 
         private static (
             List<Error> errors,
             List<TableOfContentsItem> tocItems,
-            JObject metadata,
+            TableOfContentsMetadata metadata,
             List<Document> referencedDocuments,
             List<Document> referencedTocs)
 
             Load(
             Context context,
             Document fileToBuild,
-            MonikersProvider monikersProvider,
             DependencyResolver dependencyResolver,
-            Dictionary<Document, List<string>> monikersMap = null)
+            MetadataProvider metadataProvider = null,
+            MonikerMap monikerMap = null,
+            MonikerProvider monikerProvider = null)
         {
+            Debug.Assert(!(monikerMap == null ^ monikerProvider == null));
+
             var errors = new List<Error>();
             var referencedDocuments = new List<Document>();
             var referencedTocs = new List<Document>();
@@ -101,6 +92,9 @@ namespace Microsoft.Docs.Build
             var (loadErrors, tocItems, tocMetadata) = TableOfContentsParser.Load(
                 context,
                 fileToBuild,
+                metadataProvider,
+                monikerProvider,
+                monikerMap,
                 (file, href, isInclude) =>
                 {
                     var (error, referencedTocContent, referencedToc) = dependencyResolver.ResolveContent(href, file, DependencyType.TocInclusion);
@@ -115,21 +109,28 @@ namespace Microsoft.Docs.Build
                 (file, href, resultRelativeTo) =>
                 {
                     // add to referenced document list
-                    // only resolve href, no need to build
                     var (error, link, buildItem) = dependencyResolver.ResolveLink(href, file, resultRelativeTo, null);
                     errors.AddIfNotNull(error);
 
-                    var itemMonikers = new List<string>();
                     if (buildItem != null)
                     {
                         referencedDocuments.Add(buildItem);
-                        if (monikersMap == null || !monikersMap.TryGetValue(buildItem, out itemMonikers))
-                        {
-                            itemMonikers = new List<string>();
-                        }
                     }
-                    return (link, itemMonikers);
-                }, monikersProvider);
+                    return (link, buildItem);
+                },
+                (file, uid) =>
+                {
+                    // add to referenced document list
+                    var (error, link, display, buildItem) = dependencyResolver.ResolveXref(uid, file);
+                    errors.AddIfNotNull(error);
+
+                    if (buildItem != null)
+                    {
+                        referencedDocuments.Add(buildItem);
+                    }
+
+                    return (link, display, buildItem);
+                });
 
             errors.AddRange(loadErrors);
             return (errors, tocItems, tocMetadata, referencedDocuments, referencedTocs);

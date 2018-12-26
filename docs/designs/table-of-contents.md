@@ -1,7 +1,5 @@
 # Tabe of Contents
 
-[//]: # (todo: uid cross reference definition will be added later.)
-
 ## Introduction
 
 Table of contents file which is also called TOC file is used to organize file structure and to provide navigation in the published page. TOC Files must have file name toc.md or toc.yml, notice that file name is case-insensitive.
@@ -62,12 +60,13 @@ Property Name                    | Type                       | Description
 -------------------------------- | -------------------------- | ---------------------------
 *name*                           | string                     | Specifies the title of the *TOC Item*.
 *href*                           | string                     | Specifies the hyperlink of the *TOC Item*. When its value is another TOC file, it is a TOC include, and all the items inside the included toc are considered as the child of current *TOC Item*
+*uid*                            | string                     | Specifies the `uid` of referenced *TOC Item*. If the value is set, it overwrites the value of *href*., It will also fill the `name` of the *TOC Item* with uid display name if it's not set.
 *items*                          | array of *TOC Item Object* | Specifies the children *TOC Items* of current *TOC Item*.
 *topicHref*<sub>*advanced*</sub> | string                     | Specifies the topic href of the *TOC Item*. It is useful when *href* is linking to a folder or linking to a toc.
-*topicUid*<sub>*advanced*</sub>  | string                     | Specifies the `uid` of the *topicHref* file. If the value is set, it overwrites the value of *topicHref*.
+
 
 > [!Note]
-> *advanced*: These properties are useful when a TOC links another TOC, or links to a uid.
+> *advanced*: These properties are useful when a TOC links another TOC.
 
 ## Toc Item Link `href`
 

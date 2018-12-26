@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
@@ -49,6 +50,39 @@ namespace Microsoft.Docs.Build
 
                 return File.CreateText(outputFilePath);
             });
+        }
+
+        public bool Write(IEnumerable<Error> errors)
+        {
+            var hasErrors = false;
+            foreach (var error in errors)
+            {
+                if (Write(error))
+                {
+                    hasErrors = true;
+                }
+            }
+            return hasErrors;
+        }
+
+        public bool Write(string file, IEnumerable<Error> errors)
+        {
+            var hasErrors = false;
+            foreach (var error in errors)
+            {
+                if (Write(file, error))
+                {
+                    hasErrors = true;
+                }
+            }
+            return hasErrors;
+        }
+
+        public bool Write(string file, Error error)
+        {
+            return Write(file == error.File || !string.IsNullOrEmpty(error.File)
+                    ? error
+                    : new Error(error.Level, error.Code, error.Message, file, error.Range, error.JsonPath));
         }
 
         public bool Write(Error error, bool force = false)

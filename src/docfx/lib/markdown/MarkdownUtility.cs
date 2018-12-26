@@ -23,7 +23,7 @@ namespace Microsoft.Docs.Build
         Markdown,
     }
 
-    internal static class Markup
+    internal static class MarkdownUtility
     {
         private static readonly ConcurrentDictionary<string, Lazy<IReadOnlyDictionary<string, string>>> s_markdownTokens = new ConcurrentDictionary<string, Lazy<IReadOnlyDictionary<string, string>>>(StringComparer.OrdinalIgnoreCase);
 
@@ -185,7 +185,7 @@ namespace Microsoft.Docs.Build
             return link;
         }
 
-        private static (Error error, string href, string display) ResolveXref(string href)
+        private static (Error error, string href, string display, Document file) ResolveXref(string href)
         {
             return t_status.Peek().DependencyResolver.ResolveXref(href, (Document)InclusionContext.RootFile);
         }

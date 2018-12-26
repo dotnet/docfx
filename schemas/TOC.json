@@ -18,6 +18,9 @@
         "tocHref": {
           "type": "string"
         },
+        "uid": {
+          "type": "string"
+        },
         "maintainContext": {
           "type": "boolean"
         },

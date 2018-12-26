@@ -8,14 +8,14 @@ using System.Linq;
 
 namespace Microsoft.Docs.Build
 {
-    internal class MonikersProvider
+    internal class MonikerProvider
     {
         private readonly List<(Func<string, bool> glob, string monikerRange)> _rules = new List<(Func<string, bool>, string)>();
         private readonly MonikerRangeParser _rangeParser;
 
         public MonikerComparer Comparer { get; }
 
-        public MonikersProvider(Docset docset)
+        public MonikerProvider(Docset docset)
         {
             foreach (var (key, monikerRange) in docset.Config.MonikerRange)
             {
@@ -31,6 +31,18 @@ namespace Microsoft.Docs.Build
             }
             _rangeParser = new MonikerRangeParser(monikerDefinition);
             Comparer = new MonikerComparer(monikerDefinition);
+        }
+
+        public (List<Error> errors, List<string> monikers) GetFileLevelMonikers(Document file, MetadataProvider metadataProvider)
+        {
+            var errors = new List<Error>();
+            var (metaErrors, metadata) = metadataProvider.GetFileMetadata(file, null);
+            errors.AddRange(metaErrors);
+
+            var (monikerError, monikers) = GetFileLevelMonikers(file, metadata.MonikerRange);
+            errors.AddIfNotNull(monikerError);
+
+            return (errors, monikers);
         }
 
         public (Error, List<string>) GetFileLevelMonikers(Document file, string fileMonikerRange = null)

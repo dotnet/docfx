@@ -43,14 +43,14 @@ namespace Microsoft.Docs.Build
 
                 if (attribute is MarkdownAttribute)
                 {
-                    var (html, markup) = Markup.ToHtml((string)value, file, dependencyResolver, buildChild, null, MarkdownPipelineType.Markdown);
+                    var (html, markup) = MarkdownUtility.ToHtml((string)value, file, dependencyResolver, buildChild, null, MarkdownPipelineType.Markdown);
                     errors.AddRange(markup.Errors);
                     return html;
                 }
 
                 if (attribute is InlineMarkdownAttribute)
                 {
-                    var (html, markup) = Markup.ToHtml((string)value, file, dependencyResolver, buildChild, null, MarkdownPipelineType.InlineMarkdown);
+                    var (html, markup) = MarkdownUtility.ToHtml((string)value, file, dependencyResolver, buildChild, null, MarkdownPipelineType.InlineMarkdown);
                     errors.AddRange(markup.Errors);
                     return html;
                 }
@@ -69,7 +69,7 @@ namespace Microsoft.Docs.Build
                 if (attribute is XrefAttribute)
                 {
                     // TODO: how to fill xref resolving data besides href
-                    var (error, link, _) = dependencyResolver.ResolveXref((string)value, file);
+                    var (error, link, _, _) = dependencyResolver.ResolveXref((string)value, file);
                     errors.AddIfNotNull(error);
                     return link;
                 }

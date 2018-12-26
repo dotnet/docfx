@@ -12,7 +12,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class ResolveXref
     {
-        public static MarkdownPipelineBuilder UseResolveXref(this MarkdownPipelineBuilder builder, Func<string, (Error error, string href, string display)> resolveXref)
+        public static MarkdownPipelineBuilder UseResolveXref(this MarkdownPipelineBuilder builder, Func<string, (Error error, string href, string display, Document file)> resolveXref)
         {
             return builder.Use(document =>
              {
@@ -20,7 +20,7 @@ namespace Microsoft.Docs.Build
                  {
                      if (node is XrefInline xref)
                      {
-                         var (_, href, display) = resolveXref(xref.Href);
+                         var (_, href, display, _) = resolveXref(xref.Href);
                          if (href is null)
                          {
                              var raw = xref.GetAttributes().Properties.First(p => p.Key == "data-raw-source").Value;
@@ -28,7 +28,7 @@ namespace Microsoft.Docs.Build
                                  ? Errors.AtUidNotFound((Document)InclusionContext.File, xref.Href, raw)
                                  : Errors.UidNotFound((Document)InclusionContext.File, xref.Href, raw);
 
-                             Markup.Result.Errors.Add(error);
+                             MarkdownUtility.Result.Errors.Add(error);
                              return new LiteralInline(raw);
                          }
                          return new LinkInline(href, null).AppendChild(new LiteralInline(display));

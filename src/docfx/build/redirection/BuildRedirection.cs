@@ -9,16 +9,10 @@ namespace Microsoft.Docs.Build
     internal static class BuildRedirection
     {
         internal static (List<Error> errors, RedirectionModel model, List<string> monikers)
-            Build(Document file, MetadataProvider metadataProvider, MonikersProvider monikersProvider)
+            Build(Document file, MetadataProvider metadataProvider, MonikerProvider monikerProvider)
         {
             Debug.Assert(file.ContentType == ContentType.Redirection);
-            var errors = new List<Error>();
-
-            var (metaErrors, metadata) = JsonUtility.ToObjectWithSchemaValidation<FileMetadata>(metadataProvider.GetMetadata(file, null));
-            errors.AddRange(metaErrors);
-
-            var (error, monikers) = monikersProvider.GetFileLevelMonikers(file, metadata.MonikerRange);
-            errors.AddIfNotNull(error);
+            var (errors, monikers) = monikerProvider.GetFileLevelMonikers(file, metadataProvider);
 
             return (errors, new RedirectionModel
             {

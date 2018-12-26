@@ -45,7 +45,7 @@ namespace Microsoft.Docs.Build
 
             newMetadata["__global"] = docset.LegacyTemplate.Global;
 
-            return newMetadata.RemoveNulls();
+            return newMetadata;
         }
 
         public static JObject GenerateLegacyRedirectionRawMetadata(Docset docset, PageModel pageModel)
@@ -59,7 +59,7 @@ namespace Microsoft.Docs.Build
             {
                 rawMetadata["monikers"] = new JArray(pageModel.Monikers);
             }
-            return rawMetadata.RemoveNulls();
+            return rawMetadata;
         }
 
         public static JObject GenerateLegacyRawMetadata(
@@ -146,7 +146,7 @@ namespace Microsoft.Docs.Build
 
             return RemoveUpdatedAtDateTime(
                 LegacySchema.Transform(
-                    docset.LegacyTemplate.TransformMetadata("conceptual", rawMetadata), pageModel)).RemoveNulls();
+                    docset.LegacyTemplate.TransformMetadata("conceptual", rawMetadata), pageModel));
         }
 
         public static JObject GenerateLegacyMetadateOutput(JObject rawMetadata)
@@ -201,12 +201,6 @@ namespace Microsoft.Docs.Build
             }
 
             return result.ToString();
-        }
-
-        private static JObject RemoveNulls(this JObject graph)
-        {
-            var (_, jtoken) = ((JToken)graph).RemoveNulls();
-            return (JObject)jtoken;
         }
 
         private static JObject RemoveUpdatedAtDateTime(JObject rawMetadata)

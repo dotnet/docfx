@@ -18,15 +18,15 @@ namespace Microsoft.Docs.Build
             TableOfContentsMap tocMap,
             ContributionProvider contribution,
             MetadataProvider metadataProvider,
-            MonikersProvider monikersProvider,
+            MonikerProvider monikerProvider,
             DependencyResolver dependencyResolver,
             Action<Document> buildChild)
         {
             Debug.Assert(file.ContentType == ContentType.Page);
 
-            var (errors, schema, model, metadata) = await Load(context, file, metadataProvider, monikersProvider, dependencyResolver, buildChild);
+            var (errors, schema, model, metadata) = await Load(context, file, metadataProvider, monikerProvider, dependencyResolver, buildChild);
 
-            model.PageType = schema.Name;
+            model.SchemaType = schema.Name;
             model.Locale = file.Docset.Locale;
             model.Metadata = metadata;
             model.OpenToPublicContributors = file.Docset.Config.Contribution.ShowEdit;
@@ -47,7 +47,7 @@ namespace Microsoft.Docs.Build
             {
                 output = file.Docset.Legacy
                     ? file.Docset.LegacyTemplate.Render(model, file, HashUtility.GetMd5HashShort(model.Monikers))
-                    : await RazorTemplate.Render(model.PageType, model);
+                    : await RazorTemplate.Render(model.SchemaType, model);
             }
 
             return (errors, output, model.Monikers);
@@ -74,11 +74,11 @@ namespace Microsoft.Docs.Build
 
         private static async Task<(List<Error> errors, Schema schema, PageModel model, FileMetadata metadata)>
             Load(
-            Context context, Document file, MetadataProvider metadataProvider, MonikersProvider monikersProvider, DependencyResolver dependencyResolver, Action<Document> buildChild)
+            Context context, Document file, MetadataProvider metadataProvider, MonikerProvider monikerProvider, DependencyResolver dependencyResolver, Action<Document> buildChild)
         {
             if (file.FilePath.EndsWith(".md", PathUtility.PathComparison))
             {
-                return LoadMarkdown(context, file, metadataProvider, monikersProvider, dependencyResolver, buildChild);
+                return LoadMarkdown(context, file, metadataProvider, monikerProvider, dependencyResolver, buildChild);
             }
             if (file.FilePath.EndsWith(".yml", PathUtility.PathComparison))
             {
@@ -91,7 +91,7 @@ namespace Microsoft.Docs.Build
 
         private static (List<Error> errors, Schema schema, PageModel model, FileMetadata metadata)
             LoadMarkdown(
-            Context context, Document file, MetadataProvider metadataProvider, MonikersProvider monikersProvider, DependencyResolver dependencyResolver, Action<Document> buildChild)
+            Context context, Document file, MetadataProvider metadataProvider, MonikerProvider monikerProvider, DependencyResolver dependencyResolver, Action<Document> buildChild)
         {
             var errors = new List<Error>();
             var content = file.ReadText();
@@ -100,19 +100,19 @@ namespace Microsoft.Docs.Build
             var (yamlHeaderErrors, yamlHeader) = ExtractYamlHeader.Extract(file, context);
             errors.AddRange(yamlHeaderErrors);
 
-            var (metaErrors, metadata) = JsonUtility.ToObjectWithSchemaValidation<FileMetadata>(metadataProvider.GetMetadata(file, yamlHeader));
+            var (metaErrors, fileMetadata) = metadataProvider.GetFileMetadata(file, yamlHeader);
             errors.AddRange(metaErrors);
 
-            var (error, monikers) = monikersProvider.GetFileLevelMonikers(file, metadata.MonikerRange);
+            var (error, monikers) = monikerProvider.GetFileLevelMonikers(file, fileMetadata.MonikerRange);
             errors.AddIfNotNull(error);
 
             // TODO: handle blank page
-            var (html, markup) = Markup.ToHtml(
+            var (html, markup) = MarkdownUtility.ToHtml(
                 content,
                 file,
                 dependencyResolver,
                 buildChild,
-                (rangeString) => monikersProvider.GetZoneMonikers(rangeString, monikers, errors),
+                (rangeString) => monikerProvider.GetZoneMonikers(rangeString, monikers, errors),
                 MarkdownPipelineType.ConceptualMarkdown);
             errors.AddRange(markup.Errors);
 
@@ -135,7 +135,7 @@ namespace Microsoft.Docs.Build
 
             dependencyResolver.BookmarkValidator.AddBookmarks(file, bookmarks);
 
-            return (errors, Schema.Conceptual, model, metadata);
+            return (errors, Schema.Conceptual, model, fileMetadata);
         }
 
         private static async Task<(List<Error> errors, Schema schema, PageModel model, FileMetadata metadata)>
@@ -178,9 +178,10 @@ namespace Microsoft.Docs.Build
             }
 
             // TODO: add check before to avoid case failure
-            var fileMetadata = obj?.Value<JObject>("metadata") ?? new JObject();
-            var title = fileMetadata.Value<string>("title") ?? obj?.Value<string>("title");
-            var (metaErrors, metadata) = JsonUtility.ToObjectWithSchemaValidation<FileMetadata>(metadataProvider.GetMetadata(file, fileMetadata));
+            var yamlHeader = obj?.Value<JObject>("metadata") ?? new JObject();
+            var title = yamlHeader.Value<string>("title") ?? obj?.Value<string>("title");
+
+            var (metaErrors, fileMetadata) = metadataProvider.GetFileMetadata(file, yamlHeader);
             errors.AddRange(metaErrors);
 
             var model = new PageModel
@@ -191,7 +192,7 @@ namespace Microsoft.Docs.Build
                 Monikers = new List<string>(),
             };
 
-            return (errors, schema, model, metadata);
+            return (errors, schema, model, fileMetadata);
         }
     }
 }
