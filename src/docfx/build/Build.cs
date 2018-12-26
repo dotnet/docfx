@@ -21,12 +21,12 @@ namespace Microsoft.Docs.Build
 
             // todo: abort the process if configuration loading has errors
             var outputPath = Path.Combine(docsetPath, config.Output.Path);
-            var context = new Context(report, outputPath);
-            context.Report(config.ConfigFileName, configErrors);
+            var context = new Context(report, new Cache(), outputPath);
+            context.Report.Write(config.ConfigFileName, configErrors);
 
             var metadataProvider = new MetadataProvider(config);
-            var localeToBuild = LocalizationConvention.GetBuildLocale(docsetPath, config, options);
-            var docset = new Docset(context, docsetPath, localeToBuild, config, options).GetBuildDocset();
+            var localeToBuild = LocalizationConvention.GetBuildLocale(docsetPath, options);
+            var docset = new Docset(report, docsetPath, localeToBuild, config, options).GetBuildDocset();
             var monikerProvider = new MonikerProvider(docset);
 
             using (var gitCommitProvider = new GitCommitProvider())
@@ -60,7 +60,7 @@ namespace Microsoft.Docs.Build
                 }
 
                 errors.AddIfNotNull(await saveGitHubUserCache);
-                errors.ForEach(e => context.Report(e));
+                errors.ForEach(e => context.Report.Write(e));
             }
         }
 
@@ -129,7 +129,7 @@ namespace Microsoft.Docs.Build
                 {
                     foreach (var (error, file) in dependencyResolver.BookmarkValidator.Validate())
                     {
-                        if (context.Report(error))
+                        if (context.Report.Write(error))
                         {
                             manifestBuilder.MarkError(file);
                         }
@@ -173,7 +173,7 @@ namespace Microsoft.Docs.Build
                         break;
                 }
 
-                var hasErrors = context.Report(file.ToString(), errors);
+                var hasErrors = context.Report.Write(file.ToString(), errors);
                 if (hasErrors || model == null)
                 {
                     manifestBuilder.MarkError(file);
@@ -210,7 +210,7 @@ namespace Microsoft.Docs.Build
             }
             catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
             {
-                context.Report(file.ToString(), dex.Error);
+                context.Report.Write(file.ToString(), dex.Error);
                 manifestBuilder.MarkError(file);
                 return new List<string>();
             }

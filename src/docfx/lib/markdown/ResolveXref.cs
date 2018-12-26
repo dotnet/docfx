@@ -28,7 +28,7 @@ namespace Microsoft.Docs.Build
                                  ? Errors.AtUidNotFound((Document)InclusionContext.File, xref.Href, raw)
                                  : Errors.UidNotFound((Document)InclusionContext.File, xref.Href, raw);
 
-                             Markup.Result.Errors.Add(error);
+                             MarkdownUtility.Result.Errors.Add(error);
                              return new LiteralInline(raw);
                          }
                          return new LinkInline(href, null).AppendChild(new LiteralInline(display));

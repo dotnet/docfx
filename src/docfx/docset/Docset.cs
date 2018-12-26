@@ -79,36 +79,36 @@ namespace Microsoft.Docs.Build
         public LegacyTemplate LegacyTemplate => _legacyTemplate.Value;
 
         private readonly CommandLineOptions _options;
-        private readonly Context _context;
+        private readonly Report _report;
         private readonly Lazy<HashSet<Document>> _buildScope;
         private readonly Lazy<HashSet<Document>> _scanScope;
         private readonly Lazy<RedirectionMap> _redirections;
         private readonly Lazy<LegacyTemplate> _legacyTemplate;
 
-        public Docset(Context context, string docsetPath, string locale, Config config, CommandLineOptions options, bool isDependency = false)
-            : this(context, docsetPath, !string.IsNullOrEmpty(locale) ? locale : config.Localization.DefaultLocale, config, options, null, null)
+        public Docset(Report report, string docsetPath, string locale, Config config, CommandLineOptions options, bool isDependency = false)
+            : this(report, docsetPath, !string.IsNullOrEmpty(locale) ? locale : config.Localization.DefaultLocale, config, options, null, null)
         {
             if (!isDependency && !string.Equals(Locale, config.Localization.DefaultLocale, StringComparison.OrdinalIgnoreCase))
             {
                 // localization/fallback docset will share the same context, config, build locale and options with source docset
                 // source docset configuration will be overwritten by build locale overwrite configuration
-                if (LocalizationConvention.TryGetSourceDocsetPath(DocsetPath, Config, out var sourceDocsetPath))
+                if (LocalizationConvention.TryGetSourceDocsetPath(DocsetPath, out var sourceDocsetPath))
                 {
-                    FallbackDocset = new Docset(context, sourceDocsetPath, Locale, config, options, localizedDocset: this);
+                    FallbackDocset = new Docset(report, sourceDocsetPath, Locale, config, options, localizedDocset: this);
                 }
                 else if (LocalizationConvention.TryGetLocalizedDocsetPath(DocsetPath, Config, Locale, out var localizationDocsetPath))
                 {
-                    LocalizationDocset = new Docset(context, localizationDocsetPath, Locale, config, options, fallbackDocset: this);
+                    LocalizationDocset = new Docset(report, localizationDocsetPath, Locale, config, options, fallbackDocset: this);
                 }
             }
         }
 
-        private Docset(Context context, string docsetPath, string locale, Config config, CommandLineOptions options, Docset fallbackDocset = null, Docset localizedDocset = null)
+        private Docset(Report report, string docsetPath, string locale, Config config, CommandLineOptions options, Docset fallbackDocset = null, Docset localizedDocset = null)
         {
             Debug.Assert(fallbackDocset == null || localizedDocset == null);
 
             _options = options;
-            _context = context;
+            _report = report;
             Config = config;
             DocsetPath = PathUtility.NormalizeFolder(Path.GetFullPath(docsetPath));
             Locale = locale.ToLowerInvariant();
@@ -126,7 +126,7 @@ namespace Microsoft.Docs.Build
             {
                 var (errors, map) = RedirectionMap.Create(this);
                 errors.AddRange(configErrors);
-                context.Report(Config.ConfigFileName, errors);
+                report.Write(Config.ConfigFileName, errors);
                 return map;
             });
             _scanScope = new Lazy<HashSet<Document>>(() => this.CreateScanScope());
@@ -175,7 +175,7 @@ namespace Microsoft.Docs.Build
                 // todo: what parent config should be pass on its children
                 var (loadErrors, subConfig) = Config.TryLoad(dir, _options, Locale);
                 errors.AddRange(loadErrors);
-                result.TryAdd(PathUtility.NormalizeFolder(name), new Docset(_context, dir, Locale, subConfig, _options, isDependency: true));
+                result.TryAdd(PathUtility.NormalizeFolder(name), new Docset(_report, dir, Locale, subConfig, _options, isDependency: true));
             }
             return (errors, result);
         }
@@ -208,7 +208,7 @@ namespace Microsoft.Docs.Build
                     }
                     else
                     {
-                        _context.Report(Errors.RedirectionOutOfScope(redirection, Config.ConfigFileName));
+                        _report.Write(Errors.RedirectionOutOfScope(redirection, Config.ConfigFileName));
                     }
                 }
 

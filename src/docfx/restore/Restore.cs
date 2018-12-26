@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -23,16 +22,16 @@ namespace Microsoft.Docs.Build
             using (Progress.Start("Restore dependencies"))
             {
                 var restoredDocsets = new ConcurrentDictionary<string, int>(PathUtility.PathComparer);
+                var localeToRestore = LocalizationConvention.GetBuildLocale(docsetPath, options);
 
                 await RestoreDocset(docsetPath);
 
-                async Task RestoreDocset(string docset, bool root = true, string locale = null)
+                async Task RestoreDocset(string docset, bool root = true)
                 {
                     if (restoredDocsets.TryAdd(docset, 0))
                     {
-                        var (errors, config) = Config.TryLoad(docset, options, locale, extend: false);
-                        ReportErrors(report, errors);
-                        locale = locale ?? LocalizationConvention.GetBuildLocale(docset, config, options);
+                        var (errors, config) = Config.TryLoad(docset, options, localeToRestore, extend: false);
+                        report.Write(errors);
 
                         if (root)
                         {
@@ -40,7 +39,7 @@ namespace Microsoft.Docs.Build
                         }
 
                         // no need to restore child docsets' loc repository
-                        await RestoreOneDocset(docset, locale, config, async subDocset => await RestoreDocset(subDocset, root: false, locale: locale), isDependencyRepo: !root);
+                        await RestoreOneDocset(docset, localeToRestore, config, async subDocset => await RestoreDocset(subDocset, root: false), isDependencyRepo: !root);
                     }
                 }
             }
@@ -60,7 +59,7 @@ namespace Microsoft.Docs.Build
 
                 // extend the config before loading
                 var (errors, extendedConfig) = Config.TryLoad(docset, options, locale, extend: true);
-                ReportErrors(report, errors);
+                report.Write(errors);
 
                 // restore git repos includes dependency repos and loc repos
                 await RestoreGit.Restore(docset, extendedConfig, restoreChild, locale, @implicit, isDependencyRepo);
@@ -69,14 +68,6 @@ namespace Microsoft.Docs.Build
                 await ParallelUtility.ForEach(
                     extendedConfig.GetFileReferences().Where(HrefUtility.IsHttpHref),
                     restoreUrl => RestoreFile.Restore(restoreUrl, extendedConfig, @implicit));
-            }
-        }
-
-        private static void ReportErrors(Report report, List<Error> errors)
-        {
-            foreach (var error in errors)
-            {
-                report.Write(error);
             }
         }
     }

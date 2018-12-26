@@ -61,6 +61,11 @@ namespace Microsoft.Docs.Build
 
                 foreach (var branch in branches)
                 {
+                    if (group.Where(g => g.branch == branch).All(g => (g.flags & GitFlags.NoCheckout) != 0))
+                    {
+                        continue;
+                    }
+
                     await restoreChild(RestoreMap.GetGitRestorePath(remote, branch));
                 }
 
@@ -151,7 +156,7 @@ namespace Microsoft.Docs.Build
                 yield break;
             }
 
-            if (LocalizationConvention.TryGetSourceRepository(repo.Remote, repo.Branch, config, out var sourceRemote, out var sourceBranch, out var l))
+            if (LocalizationConvention.TryGetSourceRepository(repo.Remote, repo.Branch, out var sourceRemote, out var sourceBranch, out var l))
             {
                 yield return (sourceRemote, sourceBranch, GitFlags.None);
                 yield break; // no need to find localized repo anymore
