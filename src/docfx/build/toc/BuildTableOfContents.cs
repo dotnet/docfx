@@ -81,6 +81,7 @@ namespace Microsoft.Docs.Build
             Document fileToBuild,
             DependencyResolver dependencyResolver,
             List<Document> callStack,
+            MetadataProvider metadataProvider = null,
             MonikerMap monikerMap = null,
             MonikerProvider monikerProvider = null)
         {
