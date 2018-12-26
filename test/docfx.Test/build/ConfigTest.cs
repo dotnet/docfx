@@ -48,15 +48,8 @@ namespace Microsoft.Docs.Build
         [InlineData(LocalizationMapping.Repository, "https://github.com/docfx/test-repo.en-us", "bs-Cyrl-BA", "https://github.com/docfx/test-repo.bs-Cyrl-BA")]
         [InlineData(LocalizationMapping.Repository, "https://github.com/docfx/test-repo.bs-Cyrl-BA", "sr-Latn-RS", "https://github.com/docfx/test-repo.sr-Latn-RS", "bs-Cyrl-BA")]
         [InlineData(LocalizationMapping.Repository, "https://github.com/docfx/test-repo.bs-Cyrl-BA", "sr-Latn-RS", "https://github.com/docfx/test-repo.bs-Cyrl-BA.sr-Latn-RS")]
-        [InlineData(LocalizationMapping.RepositoryAndFolder, "https://github.com/docfx/test-repo", "zh-cn", "https://github.com/docfx/test-repo.localization")]
-        [InlineData(LocalizationMapping.RepositoryAndFolder, "https://github.com/docfx/test-repo.en-us", "zh-cn", "https://github.com/docfx/test-repo.localization")]
-        [InlineData(LocalizationMapping.RepositoryAndFolder, "https://github.com/docfx/test-repo.bs-Cyrl-BA", "sr-Latn-RS", "https://github.com/docfx/test-repo.localization", "bs-Cyrl-BA")]
-        [InlineData(LocalizationMapping.RepositoryAndFolder, "https://github.com/docfx/test-repo.bs-Cyrl-BA", "sr-Latn-RS", "https://github.com/docfx/test-repo.bs-Cyrl-BA.localization")]
         [InlineData(LocalizationMapping.Repository, "https://test.visualstudio.com/_git/TripleCrown.Backend", "sr-Latn-RS", "https://test.visualstudio.com/_git/TripleCrown.Backend.sr-Latn-RS")]
         [InlineData(LocalizationMapping.Repository, "https://test.visualstudio.com/_git/TripleCrown.Backend.en-us", "sr-Latn-RS", "https://test.visualstudio.com/_git/TripleCrown.Backend.sr-Latn-RS")]
-        [InlineData(LocalizationMapping.RepositoryAndFolder, "https://test.visualstudio.com/_git/TripleCrown.Backend", "sr-Latn-RS", "https://test.visualstudio.com/_git/TripleCrown.Backend.localization")]
-        [InlineData(LocalizationMapping.RepositoryAndFolder, "https://test.visualstudio.com/_git/TripleCrown.Backend.zh-cn", "sr-Latn-RS", "https://test.visualstudio.com/_git/TripleCrown.Backend.localization", "zh-cn")]
-        [InlineData(LocalizationMapping.RepositoryAndFolder, "https://test.visualstudio.com/_git/TripleCrown.Backend.zh-cn", "sr-Latn-RS", "https://test.visualstudio.com/_git/TripleCrown.Backend.zh-cn.localization")]
         public static void LocConfigConventionRepoRemote(LocalizationMapping locMappingType, string sourceName, string locale, string locName, string defaultLocale = "en-us")
             => Assert.Equal(locName, LocalizationConvention.GetLocalizationRepo(locMappingType, false, sourceName, "master", locale, defaultLocale).remote);
 
@@ -67,7 +60,7 @@ namespace Microsoft.Docs.Build
         [InlineData(LocalizationMapping.Repository, false, "master", "zh-cn", "master")]
         [InlineData(LocalizationMapping.Repository, false, "master", "en-us", "master")]
         [InlineData(LocalizationMapping.Repository, true, "master", "zh-cn", "master-sxs")]
-        [InlineData(LocalizationMapping.RepositoryAndFolder, true, "master", "zh-cn", "master-sxs")]
+        [InlineData(LocalizationMapping.Branch, true, "master", "zh-cn", "master-sxs.zh-cn")]
         public static void LocConfigConventionRepoBranch(LocalizationMapping locMappingType, bool enableBilingual, string sourceBranch, string locale, string targetBranch)
             => Assert.Equal(targetBranch, LocalizationConvention.GetLocalizationRepo(locMappingType, enableBilingual, "abc", sourceBranch, locale, "en-us").branch);
 
