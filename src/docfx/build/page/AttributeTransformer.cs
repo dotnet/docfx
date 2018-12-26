@@ -43,14 +43,14 @@ namespace Microsoft.Docs.Build
 
                 if (attribute is MarkdownAttribute)
                 {
-                    var (html, markup) = Markup.ToHtml((string)value, file, dependencyResolver, buildChild, null, MarkdownPipelineType.Markdown);
+                    var (html, markup) = MarkdownUtility.ToHtml((string)value, file, dependencyResolver, buildChild, null, MarkdownPipelineType.Markdown);
                     errors.AddRange(markup.Errors);
                     return html;
                 }
 
                 if (attribute is InlineMarkdownAttribute)
                 {
-                    var (html, markup) = Markup.ToHtml((string)value, file, dependencyResolver, buildChild, null, MarkdownPipelineType.InlineMarkdown);
+                    var (html, markup) = MarkdownUtility.ToHtml((string)value, file, dependencyResolver, buildChild, null, MarkdownPipelineType.InlineMarkdown);
                     errors.AddRange(markup.Errors);
                     return html;
                 }
