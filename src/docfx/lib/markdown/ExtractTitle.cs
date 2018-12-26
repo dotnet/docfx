@@ -20,7 +20,7 @@ namespace Microsoft.Docs.Build
             return builder.Use(document =>
             {
                 if (InclusionContext.IsInclude
-                    && (Markup.Result.HasTitle || !Markup.Result.FirstBlockIsInclusionBlock))
+                    && (MarkdownUtility.Result.HasTitle || !MarkdownUtility.Result.FirstBlockIsInclusionBlock))
                 {
                     return;
                 }
@@ -30,10 +30,10 @@ namespace Microsoft.Docs.Build
 
                 if (heading != null && heading.Level == 1)
                 {
-                    Markup.Result.HtmlTitle = RenderTitle(heading);
+                    MarkdownUtility.Result.HtmlTitle = RenderTitle(heading);
                     document.Remove(heading);
                 }
-                Markup.Result.FirstBlockIsInclusionBlock = firstBlock is InclusionBlock;
+                MarkdownUtility.Result.FirstBlockIsInclusionBlock = firstBlock is InclusionBlock;
             });
         }
 
