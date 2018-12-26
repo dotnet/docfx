@@ -162,7 +162,7 @@ namespace Microsoft.Docs.Build
                 yield break;
             }
 
-            var (remote, branch) = LocalizationConvention.GetLocalizationRepo(
+            var (remote, branch) = LocalizationConvention.GetLocalizedRepo(
                 config.Localization.Mapping,
                 config.Localization.Bilingual,
                 repo.Remote,

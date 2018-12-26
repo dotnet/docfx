@@ -21,7 +21,7 @@ namespace Microsoft.Docs.Build
         /// https:://github.com/{org}/{repo-name}.{source-locale}   -->     https:://github.com/{org}/{repo-name}.{loc-locale}
         /// // TODO: org name can be different
         /// </summary>
-        public static (string remote, string branch) GetLocalizationRepo(LocalizationMapping mapping, bool bilingual, string remote, string branch, string locale, string defaultLocale)
+        public static (string remote, string branch) GetLocalizedRepo(LocalizationMapping mapping, bool bilingual, string remote, string branch, string locale, string defaultLocale)
         {
             if (mapping == LocalizationMapping.Folder)
             {
@@ -62,6 +62,53 @@ namespace Microsoft.Docs.Build
             }
 
             return ($"{remote}{newLocale}", newBranch);
+        }
+
+        public static bool TryGetLocalizedDocsetPath(string docsetPath, Config config, string locale, out string localizationDocsetPath)
+        {
+            Debug.Assert(!string.IsNullOrEmpty(docsetPath));
+            Debug.Assert(!string.IsNullOrEmpty(locale));
+            Debug.Assert(config != null);
+
+            localizationDocsetPath = null;
+            switch (config.Localization.Mapping)
+            {
+                case LocalizationMapping.Repository:
+                case LocalizationMapping.RepositoryAndFolder:
+                case LocalizationMapping.Branch:
+                    {
+                        var repo = Repository.Create(Path.GetFullPath(docsetPath));
+                        if (repo == null)
+                        {
+                            return false;
+                        }
+                        var (locRemote, locBranch) = GetLocalizedRepo(
+                            config.Localization.Mapping,
+                            config.Localization.Bilingual,
+                            repo.Remote,
+                            repo.Branch,
+                            locale,
+                            config.Localization.DefaultLocale);
+                        var restorePath = RestoreMap.GetGitRestorePath(locRemote, locBranch);
+                        localizationDocsetPath = config.Localization.Mapping == LocalizationMapping.RepositoryAndFolder
+                            ? Path.Combine(restorePath, locale)
+                            : restorePath;
+                        break;
+                    }
+                case LocalizationMapping.Folder:
+                    {
+                        if (config.Localization.Bilingual)
+                        {
+                            throw new NotSupportedException($"{config.Localization.Mapping} is not supporting bilingual build");
+                        }
+                        localizationDocsetPath = Path.Combine(docsetPath, "localization", locale);
+                        break;
+                    }
+                default:
+                    throw new NotSupportedException($"{config.Localization.Mapping} is not supported yet");
+            }
+
+            return true;
         }
 
         public static bool TryGetSourceRepository(string docsetPath, Config config, out string sourceRemote, out string sourceBranch, out string locale)
@@ -124,69 +171,6 @@ namespace Microsoft.Docs.Build
             }
 
             return false;
-        }
-
-        public static (List<Error> errors, Config config) GetConfig(string docset, CommandLineOptions options)
-        {
-            if (TryGetSourceRepository(docset, null, out var sourceRemote, out var sourceBranch, out var locale))
-            {
-                var sourceDocsetPath = RestoreMap.GetGitRestorePath(sourceRemote, sourceBranch);
-                return Config.Load(docset, options, locale);
-            }
-
-            return Config.Load(docset, options);
-        }
-
-        public static string GetLocale(string docset, Config config, CommandLineOptions options)
-        {
-            return TryGetSourceRepository(docset, config, out _, out _, out var locale) ? locale : options.Locale;
-        }
-
-        public static bool TryGetLocalizationDocsetPath(string docsetPath, Config config, string locale, out string localizationDocsetPath)
-        {
-            Debug.Assert(!string.IsNullOrEmpty(docsetPath));
-            Debug.Assert(!string.IsNullOrEmpty(locale));
-            Debug.Assert(config != null);
-
-            localizationDocsetPath = null;
-            switch (config.Localization.Mapping)
-            {
-                case LocalizationMapping.Repository:
-                case LocalizationMapping.RepositoryAndFolder:
-                case LocalizationMapping.Branch:
-                    {
-                        var repo = Repository.Create(Path.GetFullPath(docsetPath));
-                        if (repo == null)
-                        {
-                            return false;
-                        }
-                        var (locRemote, locBranch) = GetLocalizationRepo(
-                            config.Localization.Mapping,
-                            config.Localization.Bilingual,
-                            repo.Remote,
-                            repo.Branch,
-                            locale,
-                            config.Localization.DefaultLocale);
-                        var restorePath = RestoreMap.GetGitRestorePath(locRemote, locBranch);
-                        localizationDocsetPath = config.Localization.Mapping == LocalizationMapping.RepositoryAndFolder
-                            ? Path.Combine(restorePath, locale)
-                            : restorePath;
-                        break;
-                    }
-                case LocalizationMapping.Folder:
-                    {
-                        if (config.Localization.Bilingual)
-                        {
-                            throw new NotSupportedException($"{config.Localization.Mapping} is not supporting bilingual build");
-                        }
-                        localizationDocsetPath = Path.Combine(docsetPath, "localization", locale);
-                        break;
-                    }
-                default:
-                    throw new NotSupportedException($"{config.Localization.Mapping} is not supported yet");
-            }
-
-            return true;
         }
 
         public static (Error error, string content, Document file) TryResolveContentFromHistory(GitCommitProvider gitCommitProvider, Docset docset, string pathToDocset)
@@ -332,6 +316,22 @@ namespace Microsoft.Docs.Build
             Debug.Assert(sourceDocset != null);
 
             return sourceDocset.LocalizationDocset ?? sourceDocset;
+        }
+
+        public static (List<Error> errors, Config config) GetBuildConfig(string docset, CommandLineOptions options)
+        {
+            if (TryGetSourceRepository(docset, null, out var sourceRemote, out var sourceBranch, out var locale))
+            {
+                var sourceDocsetPath = RestoreMap.GetGitRestorePath(sourceRemote, sourceBranch);
+                return Config.Load(sourceDocsetPath, options, locale);
+            }
+
+            return Config.Load(docset, options);
+        }
+
+        public static string GetBuildLocale(string docset, Config config, CommandLineOptions options)
+        {
+            return TryGetSourceRepository(docset, config, out _, out _, out var locale) ? locale : options.Locale;
         }
 
         public static bool IsLocalized(this Docset docset) => docset.FallbackDocset != null;

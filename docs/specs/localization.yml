@@ -52,6 +52,74 @@ repos:
 outputs:
   docs/dep.json:
 ---
+# restore source repo when build from loc repo directly 1
+# [repository mapping]
+repos:
+  https://docs.com/s.zh-cn#master:
+    - files:
+        docs/loc.md: |
+          [link to restore-child](~/restore-child/docs/child.md)
+  https://docs.com/s#master:
+    - files:
+        docfx.yml: |
+          dependencies:
+            restore-child: https://docs.com/s#child
+  https://docs.com/s#child:
+    - files:
+        docs/child.md:
+outputs:
+  docs/loc.json:
+  build.log: |
+    ["warning","link-is-dependency","File 'docs/child.md' referenced by link '~/restore-child/docs/child.md' will not be built because it is from a dependency docset","docs/loc.md"]
+---
+# restore source repo when build from loc repo directly 2
+# [repository mapping & bilingual]
+repos:
+  https://docs.com/ss.zh-cn#master-sxs:
+    - files:
+        docs/loc.md: |
+          [link to restore-child](~/restore-child/docs/child.md)
+  https://docs.com/ss#master:
+    - files:
+        docfx.yml: |
+          dependencies:
+            restore-child: https://docs.com/ss#child
+  https://docs.com/ss#child:
+    - files:
+        docs/child.md:
+outputs:
+  docs/loc.json:
+  build.log: |
+    ["warning","link-is-dependency","File 'docs/child.md' referenced by link '~/restore-child/docs/child.md' will not be built because it is from a dependency docset","docs/loc.md"]
+---
+# restore source repo when build from loc repo directly 3
+# [branch mapping]
+repos:
+  https://docs.com/sb.loc#master.zh-cn:
+    - files:
+        docs/dep.md: loc-DEP
+  https://docs.com/sb#master:
+    - files:
+        docfx.yml: |
+          localization:
+            mapping: Branch
+outputs:
+  docs/dep.json:
+---
+# restore source repo when build from loc repo directly 4
+# [branch mapping & bilingual]
+repos:
+  https://docs.com/ssb.loc#master-sxs.zh-cn:
+    - files:
+        docs/dep.md: loc-DEP
+  https://docs.com/ssb#master:
+    - files:
+        docfx.yml: |
+          localization:
+            mapping: Branch
+outputs:
+  docs/dep.json:
+---
 # restore bilingual loc repo, all loc files are in one repo under different branch
 # [branch mapping]
 commands:

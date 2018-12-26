@@ -32,7 +32,7 @@ namespace Microsoft.Docs.Build
                     {
                         var (errors, config) = Config.TryLoad(docset, options, locale, extend: false);
                         ReportErrors(report, errors);
-                        locale = locale ?? LocalizationConvention.GetLocale(docset, config, options);
+                        locale = locale ?? LocalizationConvention.GetBuildLocale(docset, config, options);
 
                         if (root)
                         {

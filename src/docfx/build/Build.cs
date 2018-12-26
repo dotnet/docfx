@@ -16,7 +16,7 @@ namespace Microsoft.Docs.Build
         {
             var errors = new List<Error>();
 
-            var (configErrors, config) = LocalizationConvention.GetConfig(docsetPath, options);
+            var (configErrors, config) = LocalizationConvention.GetBuildConfig(docsetPath, options);
             report.Configure(docsetPath, config);
 
             // todo: abort the process if configuration loading has errors
@@ -25,7 +25,7 @@ namespace Microsoft.Docs.Build
             context.Report(config.ConfigFileName, configErrors);
 
             var metadataProvider = new MetadataProvider(config);
-            var localeToBuild = LocalizationConvention.GetLocale(docsetPath, config, options);
+            var localeToBuild = LocalizationConvention.GetBuildLocale(docsetPath, config, options);
             var docset = new Docset(context, docsetPath, localeToBuild, config, options).GetBuildDocset();
             var monikerProvider = new MonikerProvider(docset);
 

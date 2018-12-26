@@ -96,7 +96,7 @@ namespace Microsoft.Docs.Build
                 {
                     FallbackDocset = new Docset(context, sourceDocsetPath, Locale, config, options, localizedDocset: this);
                 }
-                else if (LocalizationConvention.TryGetLocalizationDocsetPath(DocsetPath, Config, Locale, out var localizationDocsetPath))
+                else if (LocalizationConvention.TryGetLocalizedDocsetPath(DocsetPath, Config, Locale, out var localizationDocsetPath))
                 {
                     LocalizationDocset = new Docset(context, localizationDocsetPath, Locale, config, options, fallbackDocset: this);
                 }
