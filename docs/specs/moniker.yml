@@ -28,7 +28,8 @@ outputs:
   9d4e15fd/docs/a.json: |
     {
       "content": "<p>Moniker: netcore-1.0, netcore-1.1</p>",
-      "monikers": ["netcore-1.0", "netcore-1.1"]
+      "monikers": ["netcore-1.0", "netcore-1.1"],
+      "!monikerRange": null
     }
   23d205a5/docs/a.json: |
     {
