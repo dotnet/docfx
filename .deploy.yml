@@ -32,6 +32,7 @@ jobs:
   condition: ne(variables['Build.Reason'], 'PullRequest')
   steps:
   - powershell: ./impact.ps1
+    condition: eq(variables['Build.SourceBranch'], 'refs/heads/v3')
     env:
       OP_BUILD_USER_TOKEN: $(OpBuildUserToken)
       GITHUB_BASIC_AUTH: $(GitHubBasicAuth)
