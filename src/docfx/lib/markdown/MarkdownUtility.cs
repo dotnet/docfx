@@ -23,7 +23,7 @@ namespace Microsoft.Docs.Build
         Markdown,
     }
 
-    internal static class Markup
+    internal static class MarkdownUtility
     {
         private static readonly ConcurrentDictionary<string, Lazy<IReadOnlyDictionary<string, string>>> s_markdownTokens = new ConcurrentDictionary<string, Lazy<IReadOnlyDictionary<string, string>>>(StringComparer.OrdinalIgnoreCase);
 

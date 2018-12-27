@@ -108,7 +108,7 @@ namespace Microsoft.Docs.Build
             errors.AddIfNotNull(error);
 
             // TODO: handle blank page
-            var (html, markup) = Markup.ToHtml(
+            var (html, markup) = MarkdownUtility.ToHtml(
                 content,
                 file,
                 dependencyResolver,

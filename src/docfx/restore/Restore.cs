@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -31,7 +30,7 @@ namespace Microsoft.Docs.Build
                     if (restoredDocsets.TryAdd(docset, 0))
                     {
                         var (errors, config) = Config.TryLoad(docset, options, extend: false);
-                        ReportErrors(report, errors);
+                        report.Write(errors);
 
                         if (root)
                         {
@@ -49,32 +48,24 @@ namespace Microsoft.Docs.Build
                 Config config,
                 Func<string, Task> restoreChild,
                 bool restoreLocRepo = false)
-                {
-                    // restore extend url firstly
-                    // no need to extend config
-                    await ParallelUtility.ForEach(
-                        config.Extend.Where(HrefUtility.IsHttpHref),
-                        restoreUrl => RestoreFile.Restore(restoreUrl, config, @implicit));
-
-                    // extend the config before loading
-                    var (errors, extendedConfig) = Config.TryLoad(docset, options, extend: true);
-                    ReportErrors(report, errors);
-
-                    // restore git repos includes dependency repos and loc repos
-                    await RestoreGit.Restore(docset, extendedConfig, restoreChild, restoreLocRepo ? options.Locale : null, @implicit);
-
-                    // restore urls except extend url
-                    await ParallelUtility.ForEach(
-                        extendedConfig.GetFileReferences().Where(HrefUtility.IsHttpHref),
-                        restoreUrl => RestoreFile.Restore(restoreUrl, extendedConfig, @implicit));
-                }
-        }
-
-        private static void ReportErrors(Report report, List<Error> errors)
-        {
-            foreach (var error in errors)
             {
-                report.Write(error);
+                // restore extend url firstly
+                // no need to extend config
+                await ParallelUtility.ForEach(
+                    config.Extend.Where(HrefUtility.IsHttpHref),
+                    restoreUrl => RestoreFile.Restore(restoreUrl, config, @implicit));
+
+                // extend the config before loading
+                var (errors, extendedConfig) = Config.TryLoad(docset, options, extend: true);
+                report.Write(errors);
+
+                // restore git repos includes dependency repos and loc repos
+                await RestoreGit.Restore(docset, extendedConfig, restoreChild, restoreLocRepo ? options.Locale : null, @implicit);
+
+                // restore urls except extend url
+                await ParallelUtility.ForEach(
+                    extendedConfig.GetFileReferences().Where(HrefUtility.IsHttpHref),
+                    restoreUrl => RestoreFile.Restore(restoreUrl, extendedConfig, @implicit));
             }
         }
     }

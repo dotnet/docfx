@@ -96,7 +96,6 @@
           "enum": [
             "repository",
             "folder",
-            "repositoryAndFolder",
             "branch"
           ]
         },

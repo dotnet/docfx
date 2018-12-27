@@ -59,13 +59,13 @@ namespace Microsoft.Docs.Build
                 Debug.Assert(fileToBuild != null);
 
                 var (errors, _, _, referencedDocuments, referencedTocs) = Load(context, fileToBuild, dependencyResolver, callStack);
-                context.Report(fileToBuild.ToString(), errors);
+                context.Report.Write(fileToBuild.ToString(), errors);
 
                 tocMapBuilder.Add(fileToBuild, referencedDocuments, referencedTocs);
             }
             catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
             {
-                context.Report(fileToBuild.ToString(), dex.Error);
+                context.Report.Write(fileToBuild.ToString(), dex.Error);
             }
         }
 
