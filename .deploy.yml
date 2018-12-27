@@ -38,7 +38,7 @@ jobs:
     - task: PublishCodeCoverageResults@1
       inputs:
         codeCoverageTool: 'cobertura'
-        summaryFileLocation: '**/cobertura.xml'
+        summaryFileLocation: '**/coverage.cobertura.xml'
         reportDirectory: '**/TestResults/cobertura'
         failIfCoverageEmpty: true
 
@@ -74,7 +74,7 @@ jobs:
   - task: PublishCodeCoverageResults@1
     inputs:
       codeCoverageTool: 'cobertura'
-      summaryFileLocation: '**/cobertura.xml'
+      summaryFileLocation: '**/coverage.cobertura.xml'
       reportDirectory: '**/TestResults/cobertura'
       failIfCoverageEmpty: true
 
