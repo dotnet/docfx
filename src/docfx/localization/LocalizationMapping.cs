@@ -36,9 +36,6 @@ namespace Microsoft.Docs.Build
         /// #live                 -->           #live.zh-cn
         /// #live       -> bilingual ->         #live-sxs.zh-cn
         /// </summary>
-        /// TODO:
-        /// 1. branch convention change to {branch}.{locale}
-        /// 2. repo name convention change to {name}.loc
         Branch,
     }
 }
