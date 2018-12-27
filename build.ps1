@@ -22,6 +22,8 @@ function getBranchName() {
 # Run tests
 pushd test/docfx.Test
 
+Remove-Item ./TestResults -Force -Recurse -ErrorAction Ignore
+
 exec "dotnet test -c Debug --logger trx"
 exec "dotnet test -c Release --logger trx"
 exec "dotnet reportgenerator -reports:coverage.cobertura.xml -reporttypes:HtmlInline_AzurePipelines -targetdir:TestResults/cobertura"
