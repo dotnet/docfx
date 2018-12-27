@@ -35,7 +35,8 @@ jobs:
     - task: PublishCodeCoverageResults@1
       inputs:
         codeCoverageTool: 'cobertura'
-        summaryFileLocation: '**/coverage.cobertura.xml'
+        summaryFileLocation: '**/cobertura.xml'
+        reportDirectory: '**/TestResults/cobertura'
         failIfCoverageEmpty: true
 
     # todo: conditional PR deploy, check myget limits
@@ -70,7 +71,8 @@ jobs:
   - task: PublishCodeCoverageResults@1
     inputs:
       codeCoverageTool: 'cobertura'
-      summaryFileLocation: '**/coverage.cobertura.xml'
+      summaryFileLocation: '**/cobertura.xml'
+      reportDirectory: '**/TestResults/cobertura'
       failIfCoverageEmpty: true
 
   # Push to sandbox MyGet feed

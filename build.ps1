@@ -20,8 +20,13 @@ function getBranchName() {
 }
 
 # Run tests
-exec "dotnet test test\docfx.Test"
-exec "dotnet test test\docfx.Test -c Release --logger trx"
+pushd test/docfx.Test
+
+exec "dotnet test -c Debug --logger trx"
+exec "dotnet test -c Release --logger trx"
+exec "dotnet reportgenerator -reports:coverage.cobertura.xml -reporttypes:HtmlInline_AzurePipelines -targetdir:TestResults/cobertura"
+
+popd
 
 # Check test coverage
 $coverage = Select-Xml -Path 'test\docfx.Test\coverage.cobertura.xml' -XPath "//package[@name='docfx']" | select -exp Node | select -exp line-rate
