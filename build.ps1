@@ -21,7 +21,7 @@ function getBranchName() {
 # running tests
 exec "dotnet run -p tools/CreateJsonSchema"
 exec "dotnet test test\docfx.Test"
-exec "dotnet test test\docfx.Test -c Release"
+exec "dotnet test test\docfx.Test -c Release --logger trx"
 
 # packing
 $commitSha = & { git describe --always }
