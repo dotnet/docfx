@@ -19,17 +19,25 @@ namespace Microsoft.Docs.Build
         public string Href { get; set; }
 
         [JsonExtensionData]
-        public Dictionary<string, Lazy<(List<Error>, object)>> ExtensionData { get; set; }
+        public JObject ExtensionData { get; } = new JObject();
+
+        public Dictionary<string, Lazy<JValue>> InternalExtensionData { get; } = new Dictionary<string, Lazy<JValue>>();
+
+        public bool ShouldSerializeInternalExtensionData() => false;
 
         public string GetName() => GetXrefPropertyValue("name");
 
-        public string GetXrefPropertyValue(string property, Report report)
+        public string GetXrefPropertyValue(string property)
         {
-            if (ExtensionData.TryGetValue(property, out var v))
+            if (property is null)
+                return null;
+
+            if (ExtensionData.TryGetValue<JValue>(property, out var v))
             {
-                var (errors, result) = v.Value;
-                report.Write(errors);
+                return v.Value is string str ? str : null;
             }
+
+            return InternalExtensionData.TryGetValue(property, out var internalValue) && internalValue.Value.Value is string internalStr ? internalStr : null;
         }
 
         public XrefSpec Clone()
@@ -44,6 +52,11 @@ namespace Microsoft.Docs.Build
             foreach (var (key, value) in ExtensionData)
             {
                 spec.ExtensionData.TryAdd(key, value);
+            }
+
+            foreach (var (key, value) in InternalExtensionData)
+            {
+                spec.InternalExtensionData.TryAdd(key, value);
             }
             return spec;
         }

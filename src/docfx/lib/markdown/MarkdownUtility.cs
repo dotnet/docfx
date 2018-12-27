@@ -66,8 +66,7 @@ namespace Microsoft.Docs.Build
             DependencyResolver dependencyResolver,
             Action<Document> buildChild,
             Func<string, List<string>> parseMonikerRange,
-            MarkdownPipelineType pipelineType,
-            List<Document> callStack)
+            MarkdownPipelineType pipelineType)
         {
             using (InclusionContext.PushFile(file))
             {
@@ -80,7 +79,6 @@ namespace Microsoft.Docs.Build
                         DependencyResolver = dependencyResolver,
                         ParseMonikerRangeDelegate = parseMonikerRange,
                         BuildChild = buildChild,
-                        CallStack = callStack,
                     };
                     t_status = t_status is null ? ImmutableStack.Create(status) : t_status.Push(status);
 
@@ -182,7 +180,7 @@ namespace Microsoft.Docs.Build
         private static string GetLink(string path, object relativeTo, object resultRelativeTo)
         {
             var peek = t_status.Peek();
-            var (error, link, _) = peek.DependencyResolver.ResolveLink(path, (Document)relativeTo, (Document)resultRelativeTo, peek.BuildChild, peek.CallStack);
+            var (error, link, _) = peek.DependencyResolver.ResolveLink(path, (Document)relativeTo, (Document)resultRelativeTo, peek.BuildChild);
             Result.Errors.AddIfNotNull(error);
             return link;
         }
@@ -190,7 +188,7 @@ namespace Microsoft.Docs.Build
         private static (Error error, string href, string display, Document file) ResolveXref(string href)
         {
             var peek = t_status.Peek();
-            return peek.DependencyResolver.ResolveXref(href, (Document)InclusionContext.RootFile, peek.CallStack);
+            return peek.DependencyResolver.ResolveXref(href, (Document)InclusionContext.RootFile);
         }
 
         private static List<string> ParseMonikerRange(string monikerRange) => t_status.Peek().ParseMonikerRangeDelegate(monikerRange);
@@ -206,8 +204,6 @@ namespace Microsoft.Docs.Build
             public Action<Document> BuildChild;
 
             public Func<string, List<string>> ParseMonikerRangeDelegate;
-
-            public List<Document> CallStack;
         }
     }
 }

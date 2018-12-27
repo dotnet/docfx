@@ -17,13 +17,12 @@ namespace Microsoft.Docs.Build
             MetadataProvider metadataProvider,
             MonikerProvider monikerProvider,
             DependencyResolver dependencyResolver,
-            MonikerMap monikerMap,
-            List<Document> callStack)
+            MonikerMap monikerMap)
         {
             Debug.Assert(file.ContentType == ContentType.TableOfContents);
             Debug.Assert(monikerMap != null);
 
-            var (errors, tocModel, tocMetadata, refArticles, refTocs) = Load(context, file, dependencyResolver, callStack, metadataProvider, monikerMap, monikerProvider);
+            var (errors, tocModel, tocMetadata, refArticles, refTocs) = Load(context, file, dependencyResolver, metadataProvider, monikerMap, monikerProvider);
 
             var model = new TableOfContentsModel
             {
@@ -34,7 +33,7 @@ namespace Microsoft.Docs.Build
             return (errors, model, tocMetadata.Monikers);
         }
 
-        public static TableOfContentsMap BuildTocMap(Context context, Docset docset, DependencyResolver dependencyResolver, List<Document> callStack)
+        public static TableOfContentsMap BuildTocMap(Context context, Docset docset, DependencyResolver dependencyResolver)
         {
             using (Progress.Start("Loading TOC"))
             {
@@ -45,20 +44,20 @@ namespace Microsoft.Docs.Build
                     return builder.Build();
                 }
 
-                ParallelUtility.ForEach(tocFiles, file => BuildTocMap(context, file, builder, dependencyResolver, callStack), Progress.Update);
+                ParallelUtility.ForEach(tocFiles, file => BuildTocMap(context, file, builder, dependencyResolver), Progress.Update);
 
                 return builder.Build();
             }
         }
 
-        private static void BuildTocMap(Context context, Document fileToBuild, TableOfContentsMapBuilder tocMapBuilder, DependencyResolver dependencyResolver, List<Document> callStack)
+        private static void BuildTocMap(Context context, Document fileToBuild, TableOfContentsMapBuilder tocMapBuilder, DependencyResolver dependencyResolver)
         {
             try
             {
                 Debug.Assert(tocMapBuilder != null);
                 Debug.Assert(fileToBuild != null);
 
-                var (errors, _, _, referencedDocuments, referencedTocs) = Load(context, fileToBuild, dependencyResolver, callStack);
+                var (errors, _, _, referencedDocuments, referencedTocs) = Load(context, fileToBuild, dependencyResolver);
                 context.Report.Write(fileToBuild.ToString(), errors);
 
                 tocMapBuilder.Add(fileToBuild, referencedDocuments, referencedTocs);
@@ -80,7 +79,6 @@ namespace Microsoft.Docs.Build
             Context context,
             Document fileToBuild,
             DependencyResolver dependencyResolver,
-            List<Document> callStack,
             MetadataProvider metadataProvider = null,
             MonikerMap monikerMap = null,
             MonikerProvider monikerProvider = null)
@@ -111,7 +109,7 @@ namespace Microsoft.Docs.Build
                 (file, href, resultRelativeTo) =>
                 {
                     // add to referenced document list
-                    var (error, link, buildItem) = dependencyResolver.ResolveLink(href, file, resultRelativeTo, null, callStack);
+                    var (error, link, buildItem) = dependencyResolver.ResolveLink(href, file, resultRelativeTo, null);
                     errors.AddIfNotNull(error);
 
                     if (buildItem != null)
@@ -123,7 +121,7 @@ namespace Microsoft.Docs.Build
                 (file, uid) =>
                 {
                     // add to referenced document list
-                    var (error, link, display, buildItem) = dependencyResolver.ResolveXref(uid, file, callStack);
+                    var (error, link, display, buildItem) = dependencyResolver.ResolveXref(uid, file);
                     errors.AddIfNotNull(error);
 
                     if (buildItem != null)

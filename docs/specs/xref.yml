@@ -417,7 +417,7 @@ outputs:
     ["error","circular-reference","Found circular reference","docs/a.md"]
     ["error","circular-reference","Found circular reference"]
 ---
-# [only]SDP non-cyclic xref reference
+# SDP non-cyclic xref reference should be resolved
 # whose display properties are plain text
 inputs:
   docfx.yml:
@@ -438,8 +438,26 @@ inputs:
       "summary": "Link to @a",
     }
 outputs:
-  docs/a.json:
-  docs/b.json:
+  docs/a.json: |
+    {
+      "content": 
+      {
+        "name": "name for a",
+        "summary": "<p>Link to <a href=\"b.json\">description for b</a></p>\n",
+        "inlineDescription": "description for a",
+        "uid": "a"
+      }
+    }
+  docs/b.json: |
+    {
+      "content": 
+      {
+        "name": "name for b",
+        "summary": "<p>Link to <a href=\"a.json\">name for a</a></p>\n",
+        "inlineDescription": "description for b",
+        "uid": "b"
+      }
+    }
 ---
 # SDP cyclic xref reference
 # whose display properties referring to another uid

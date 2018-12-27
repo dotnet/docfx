@@ -34,9 +34,9 @@ namespace Microsoft.Docs.Build
             return (error, content, child);
         }
 
-        public (Error error, string link, Document file) ResolveLink(string path, Document relativeTo, Document resultRelativeTo, Action<Document> buildChild, List<Document> callStack)
+        public (Error error, string link, Document file) ResolveLink(string path, Document relativeTo, Document resultRelativeTo, Action<Document> buildChild)
         {
-            var (error, link, fragment, file) = TryResolveHref(relativeTo, path, resultRelativeTo, callStack);
+            var (error, link, fragment, file) = TryResolveHref(relativeTo, path, resultRelativeTo);
 
             if (file != null && buildChild != null)
             {
@@ -49,7 +49,7 @@ namespace Microsoft.Docs.Build
             return (error, link, file);
         }
 
-        public (Error error, string href, string display, Document file) ResolveXref(string href, Document relativeTo, List<Document> callStack)
+        public (Error error, string href, string display, Document file) ResolveXref(string href, Document relativeTo)
         {
             var (uid, query, fragment) = HrefUtility.SplitHref(href);
             string moniker = null;
@@ -61,19 +61,13 @@ namespace Microsoft.Docs.Build
             }
 
             // need to url decode uid from input content
-            var (xrefSpec, referencedFile, referencedCallStack) = _xrefMap.Value.Resolve(HttpUtility.UrlDecode(uid), relativeTo, moniker);
+            var (xrefSpec, referencedFile) = _xrefMap.Value.Resolve(HttpUtility.UrlDecode(uid), relativeTo, moniker);
             if (xrefSpec is null)
             {
                 return (Errors.UidNotFound(relativeTo, uid, href), null, null, null);
             }
 
             DependencyMapBuilder.AddDependencyItem(relativeTo, referencedFile, DependencyType.UidInclusion);
-
-            callStack.AddRange(referencedCallStack);
-            if (callStack.Count > 0 && referencedCallStack.Contains(relativeTo))
-            {
-                throw Errors.CircularReference().ToException();
-            }
 
             if (referencedFile != null)
             {
@@ -118,13 +112,13 @@ namespace Microsoft.Docs.Build
             return file != null ? (error, file.ReadText(), file) : default;
         }
 
-        private (Error error, string href, string fragment, Document file) TryResolveHref(Document relativeTo, string href, Document resultRelativeTo, List<Document> callStack)
+        private (Error error, string href, string fragment, Document file) TryResolveHref(Document relativeTo, string href, Document resultRelativeTo)
         {
             Debug.Assert(resultRelativeTo != null);
 
             if (href.StartsWith("xref:"))
             {
-                var (uidError, uidHref, _, referencedFile) = ResolveXref(href.Substring("xref:".Length), resultRelativeTo, callStack);
+                var (uidError, uidHref, _, referencedFile) = ResolveXref(href.Substring("xref:".Length), resultRelativeTo);
                 return (uidError, uidHref, null, referencedFile);
             }
 

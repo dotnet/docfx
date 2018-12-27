@@ -10,48 +10,49 @@ namespace Microsoft.Docs.Build
 {
     internal static class AttributeTransformer
     {
-        public static Func<IEnumerable<DataTypeAttribute>, object, string, (object, JObject)> Transform(
+        public static Func<IEnumerable<DataTypeAttribute>, object, string, object> Transform(
             List<Error> errors,
             Document file,
             DependencyResolver dependencyResolver,
             Action<Document> buildChild,
-            List<Document> callStack)
+            Dictionary<string, Lazy<JValue>> extensionData = null)
         {
             return TransformXrefSpec;
 
-            (object, JObject) TransformXrefSpec(IEnumerable<DataTypeAttribute> attributes, object value, string jsonPath)
+            object TransformXrefSpec(IEnumerable<DataTypeAttribute> attributes, object value, string jsonPath)
             {
-                var extensionData = new JObject();
-                var attribute = attributes.SingleOrDefault(attr => !(attr is XrefPropertyAttribute));
-                var result = TransformContent(attribute, value);
-
                 if (extensionData != null && attributes.Any(attr => attr is XrefPropertyAttribute))
                 {
-                    extensionData[jsonPath] = new JValue(result);
+                    var attribute = attributes.SingleOrDefault(attr => !(attr is XrefPropertyAttribute));
+                    extensionData[jsonPath] = new Lazy<JValue>(() => new JValue(TransformContent(attribute, value)));
+                    return null;
                 }
-
-                return (result, extensionData);
+                else
+                {
+                    var attribute = attributes.SingleOrDefault(attr => !(attr is XrefPropertyAttribute));
+                    return TransformContent(attribute, value);
+                }
             }
 
             object TransformContent(DataTypeAttribute attribute, object value)
             {
                 if (attribute is HrefAttribute)
                 {
-                    var (error, link, _) = dependencyResolver.ResolveLink((string)value, file, file, buildChild, callStack);
+                    var (error, link, _) = dependencyResolver.ResolveLink((string)value, file, file, buildChild);
                     errors.AddIfNotNull(error);
                     return link;
                 }
 
                 if (attribute is MarkdownAttribute)
                 {
-                    var (html, markup) = Markup.ToHtml((string)value, file, dependencyResolver, buildChild, null, MarkdownPipelineType.Markdown, callStack);
+                    var (html, markup) = MarkdownUtility.ToHtml((string)value, file, dependencyResolver, buildChild, null, MarkdownPipelineType.Markdown);
                     errors.AddRange(markup.Errors);
                     return html;
                 }
 
                 if (attribute is InlineMarkdownAttribute)
                 {
-                    var (html, markup) = Markup.ToHtml((string)value, file, dependencyResolver, buildChild, null, MarkdownPipelineType.InlineMarkdown, callStack);
+                    var (html, markup) = MarkdownUtility.ToHtml((string)value, file, dependencyResolver, buildChild, null, MarkdownPipelineType.InlineMarkdown);
                     errors.AddRange(markup.Errors);
                     return html;
                 }
@@ -60,7 +61,7 @@ namespace Microsoft.Docs.Build
                 {
                     var html = HtmlUtility.TransformLinks((string)value, href =>
                     {
-                        var (error, link, _) = dependencyResolver.ResolveLink(href, file, file, buildChild, callStack);
+                        var (error, link, _) = dependencyResolver.ResolveLink(href, file, file, buildChild);
                         errors.AddIfNotNull(error);
                         return link;
                     });
@@ -70,7 +71,7 @@ namespace Microsoft.Docs.Build
                 if (attribute is XrefAttribute)
                 {
                     // TODO: how to fill xref resolving data besides href
-                    var (error, link, _, _) = dependencyResolver.ResolveXref((string)value, file, callStack);
+                    var (error, link, _, _) = dependencyResolver.ResolveXref((string)value, file);
                     errors.AddIfNotNull(error);
                     return link;
                 }

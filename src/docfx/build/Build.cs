@@ -36,7 +36,7 @@ namespace Microsoft.Docs.Build
 
                 // Xrefmap and dependency resolver has a circular dependency.
                 xrefMap = XrefMap.Create(context, docset, metadataProvider, monikerProvider, dependencyResolver);
-                var tocMap = BuildTableOfContents.BuildTocMap(context, docset, dependencyResolver, new List<Document>());
+                var tocMap = BuildTableOfContents.BuildTocMap(context, docset, dependencyResolver);
 
                 var githubUserCache = await GitHubUserCache.Create(docset, config.GitHub.AuthToken);
                 var (manifest, fileManifests, sourceDependencies) = await BuildFiles(context, docset, tocMap, githubUserCache, metadataProvider, monikerProvider, dependencyResolver, gitCommitProvider);
@@ -154,7 +154,6 @@ namespace Microsoft.Docs.Build
                 var model = (object)null;
                 var errors = Enumerable.Empty<Error>();
                 var monikers = new List<string>();
-                var callStack = new List<Document> { file };
 
                 switch (file.ContentType)
                 {
@@ -162,11 +161,11 @@ namespace Microsoft.Docs.Build
                         (errors, model, monikers) = BuildResource.Build(file, metadataProvider, monikerProvider);
                         break;
                     case ContentType.Page:
-                        (errors, model, monikers) = await BuildPage.Build(context, file, tocMap, contribution, metadataProvider, monikerProvider, dependencyResolver, buildChild, callStack);
+                        (errors, model, monikers) = await BuildPage.Build(context, file, tocMap, contribution, metadataProvider, monikerProvider, dependencyResolver, buildChild);
                         break;
                     case ContentType.TableOfContents:
                         // TODO: improve error message for toc monikers overlap
-                        (errors, model, monikers) = BuildTableOfContents.Build(context, file, metadataProvider, monikerProvider, dependencyResolver, monikerMap, callStack);
+                        (errors, model, monikers) = BuildTableOfContents.Build(context, file, metadataProvider, monikerProvider, dependencyResolver, monikerMap);
                         break;
                     case ContentType.Redirection:
                         (errors, model, monikers) = BuildRedirection.Build(file, metadataProvider, monikerProvider);
