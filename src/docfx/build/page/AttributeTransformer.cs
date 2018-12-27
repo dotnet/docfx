@@ -10,18 +10,18 @@ namespace Microsoft.Docs.Build
 {
     internal static class AttributeTransformer
     {
-        public static Func<IEnumerable<DataTypeAttribute>, object, string, object> Transform(
+        public static Func<IEnumerable<DataTypeAttribute>, object, string, (object, JObject)> Transform(
             List<Error> errors,
             Document file,
             DependencyResolver dependencyResolver,
             Action<Document> buildChild,
-            List<Document> callStack,
-            JObject extensionData = null)
+            List<Document> callStack)
         {
             return TransformXrefSpec;
 
-            object TransformXrefSpec(IEnumerable<DataTypeAttribute> attributes, object value, string jsonPath)
+            (object, JObject) TransformXrefSpec(IEnumerable<DataTypeAttribute> attributes, object value, string jsonPath)
             {
+                var extensionData = new JObject();
                 var attribute = attributes.SingleOrDefault(attr => !(attr is XrefPropertyAttribute));
                 var result = TransformContent(attribute, value);
 
@@ -30,7 +30,7 @@ namespace Microsoft.Docs.Build
                     extensionData[jsonPath] = new JValue(result);
                 }
 
-                return result;
+                return (result, extensionData);
             }
 
             object TransformContent(DataTypeAttribute attribute, object value)

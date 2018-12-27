@@ -200,7 +200,7 @@ namespace Microsoft.Docs.Build
         public static (List<Error>, object) ToObjectWithSchemaValidation(
             JToken token,
             Type type,
-            Func<IEnumerable<DataTypeAttribute>, object, string, object> transform = null)
+            Func<IEnumerable<DataTypeAttribute>, object, string, (object, JObject)> transform = null)
         {
             var errors = new List<Error>();
             try
@@ -556,7 +556,7 @@ namespace Microsoft.Docs.Build
                     }
                 }
 
-                return t_status.Peek().Transform != null ? t_status.Peek().Transform(_attributes, value, reader.Path) : value;
+                return t_status.Peek().Transform != null ? t_status.Peek().Transform(_attributes, value, reader.Path).data : value;
             }
         }
 
@@ -564,7 +564,7 @@ namespace Microsoft.Docs.Build
         {
             public List<Error> SchemaViolationErrors { get; set; }
 
-            public Func<IEnumerable<DataTypeAttribute>, object, string, object> Transform { get; set; }
+            public Func<IEnumerable<DataTypeAttribute>, object, string, (object data, JObject extensionData)> Transform { get; set; }
         }
     }
 }
