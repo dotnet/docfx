@@ -19,7 +19,7 @@ function getBranchName() {
     return $branch
 }
 
-# Running tests
+# Run tests
 exec "dotnet test test\docfx.Test"
 exec "dotnet test test\docfx.Test -c Release --logger trx"
 
@@ -32,7 +32,7 @@ if ($coverage -lt 0.8) {
 # Check schema
 exec "dotnet run -p tools/CreateJsonSchema"
 
-# Packing
+# Create NuGet package
 $commitSha = & { git describe --always }
 $commitCount = & { git rev-list --count HEAD }
 $revision = $commitCount.ToString().PadLeft(5, '0')
