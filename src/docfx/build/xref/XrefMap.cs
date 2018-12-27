@@ -121,7 +121,7 @@ namespace Microsoft.Docs.Build
         {
             var models = new XrefMapModel();
             models.References.AddRange(InternalReferences);
-            context.WriteJson(models, "xrefmap.json");
+            context.Output.WriteJson(models, "xrefmap.json");
         }
 
         private (XrefSpec spec, Document referencedFile) GetLatestInternalXrefMap(List<(XrefSpec spec, Document referencedFile)> specs)
