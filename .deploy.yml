@@ -1,8 +1,8 @@
 trigger:
   batch: true
   branches:
-    - v3
-    - feature/*
+  - v3
+  - feature/*
 pr:
 - v3
 - feature/*
