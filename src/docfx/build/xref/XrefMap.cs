@@ -344,10 +344,7 @@ namespace Microsoft.Docs.Build
                 Href = file.SiteUrl,
             };
 
-            foreach (var (key, value) in extensionData)
-            {
-                xref.InternalExtensionData.TryAdd(key, value);
-            }
+            xref.InternalExtensionData.AddRange(extensionData);
             return (errors, xref);
         }
 

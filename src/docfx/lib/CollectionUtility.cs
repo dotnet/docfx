@@ -15,5 +15,13 @@ namespace Microsoft.Docs.Build
                 list.Add(value);
             }
         }
+
+        public static void AddRange<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, IDictionary<TKey, TValue> range)
+        {
+            foreach (var (key, value) in range)
+            {
+                dictionary[key] = value;
+            }
+        }
     }
 }

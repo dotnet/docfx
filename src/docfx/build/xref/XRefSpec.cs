@@ -49,15 +49,8 @@ namespace Microsoft.Docs.Build
                 Href = Href,
             };
 
-            foreach (var (key, value) in ExtensionData)
-            {
-                spec.ExtensionData.TryAdd(key, value);
-            }
-
-            foreach (var (key, value) in InternalExtensionData)
-            {
-                spec.InternalExtensionData.TryAdd(key, value);
-            }
+            spec.ExtensionData.Merge(ExtensionData);
+            spec.InternalExtensionData.AddRange(InternalExtensionData);
             return spec;
         }
     }

@@ -187,8 +187,7 @@ namespace Microsoft.Docs.Build
 
         private static (Error error, string href, string display, Document file) ResolveXref(string href)
         {
-            var peek = t_status.Peek();
-            return peek.DependencyResolver.ResolveXref(href, (Document)InclusionContext.RootFile);
+            return t_status.Peek().DependencyResolver.ResolveXref(href, (Document)InclusionContext.RootFile);
         }
 
         private static List<string> ParseMonikerRange(string monikerRange) => t_status.Peek().ParseMonikerRangeDelegate(monikerRange);
