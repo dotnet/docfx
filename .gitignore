@@ -13,6 +13,11 @@ obj
 
 _site
 
+TestResults
+
+coverage.json
+coverage.cobertura.xml
+
 # Carried from DocFX v2
 artifacts
 src/docfx/Template/*.zip

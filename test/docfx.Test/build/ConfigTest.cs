@@ -49,7 +49,7 @@ namespace Microsoft.Docs.Build
         [InlineData(LocalizationMapping.Repository, "https://test.visualstudio.com/_git/TripleCrown.Backend.en-us", "sr-Latn-RS", "https://test.visualstudio.com/_git/TripleCrown.Backend.en-us.sr-Latn-RS")]
         [InlineData(LocalizationMapping.Repository, "https://test.visualstudio.com/_git/TripleCrown.Backend.sr-Latn-RS", "sr-Latn-RS", "https://test.visualstudio.com/_git/TripleCrown.Backend.sr-Latn-RS")]
         public static void LocConfigConventionRepoRemote(LocalizationMapping locMappingType, string sourceName, string locale, string locName, string defaultLocale = "en-us")
-            => Assert.Equal(locName, LocalizationConvention.GetLocalizationRepo(locMappingType, false, sourceName, "master", locale, defaultLocale).remote);
+            => Assert.Equal(locName, LocalizationConvention.GetLocalizedRepo(locMappingType, false, sourceName, "master", locale, defaultLocale).remote);
 
         [Theory]
         [InlineData(LocalizationMapping.Folder, true, "master", "zh-cn", "master")]
@@ -60,7 +60,7 @@ namespace Microsoft.Docs.Build
         [InlineData(LocalizationMapping.Repository, true, "master", "zh-cn", "master-sxs")]
         [InlineData(LocalizationMapping.Branch, true, "master", "zh-cn", "master-sxs.zh-cn")]
         public static void LocConfigConventionRepoBranch(LocalizationMapping locMappingType, bool enableBilingual, string sourceBranch, string locale, string targetBranch)
-            => Assert.Equal(targetBranch, LocalizationConvention.GetLocalizationRepo(locMappingType, enableBilingual, "abc", sourceBranch, locale, "en-us").branch);
+            => Assert.Equal(targetBranch, LocalizationConvention.GetLocalizedRepo(locMappingType, enableBilingual, "abc", sourceBranch, locale, "en-us").branch);
 
         [Theory]
         [InlineData("https://github.com/docs/theme", "en-us", "en-us", "https://github.com/docs/theme#master")]

@@ -21,6 +21,7 @@ namespace Microsoft.Docs.Build
         /// /readme.md          -->         /localization/zh-cn/readme.md
         /// /files/a.md         -->         /localization/de-de/files/a.md
         /// </summary>
+        /// TODO: support build from localization folder directly?
         Folder,
 
         /// <summary>
