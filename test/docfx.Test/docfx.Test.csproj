@@ -7,6 +7,7 @@
     <RootNamespace>Microsoft.Docs.Build</RootNamespace>
     <CollectCoverage>true</CollectCoverage>
     <CoverletOutputFormat>cobertura</CoverletOutputFormat>
+    <Exclude>[xunit.*]*,[*.Views]*</Exclude>
   </PropertyGroup>
 
   <ItemGroup>
