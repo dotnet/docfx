@@ -197,7 +197,7 @@ namespace Microsoft.Docs.Build
                     (editRemote, editBranch) = HrefUtility.SplitGitHref(document.Docset.Config.Contribution.Repository);
                     if (document.Docset.IsLocalized())
                     {
-                        (editRemote, _) = LocalizationConvention.GetLocalizationRepo(
+                        (editRemote, _) = LocalizationConvention.GetLocalizedRepo(
                                             document.Docset.Config.Localization.Mapping,
                                             document.Docset.Config.Localization.Bilingual,
                                             editRemote,
