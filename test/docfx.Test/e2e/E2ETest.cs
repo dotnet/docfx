@@ -21,7 +21,7 @@ namespace Microsoft.Docs.Build
 {
     public static class E2ETest
     {
-        private static readonly ConcurrentDictionary<string, int> s_mockRepos = new ConcurrentDictionary<string, int>();
+        private static readonly ConcurrentDictionary<string, (int ordinal, string spec)> s_mockRepos = new ConcurrentDictionary<string, (int ordinal, string spec)>();
 
         public static readonly TheoryData<string> Specs = FindTestSpecs();
 
@@ -153,7 +153,6 @@ namespace Microsoft.Docs.Build
                 foreach (var section in sections)
                 {
                     var yaml = section.Trim('\r', '\n', '-');
-                    var spec = YamlUtility.Deserialize<E2ESpec>(yaml, false);
                     var header = YamlUtility.ReadHeader(yaml) ?? "";
                     if (string.IsNullOrEmpty(header))
                     {
@@ -165,10 +164,14 @@ namespace Microsoft.Docs.Build
 #else
                     var only = false;
 #endif
-                    if (spec.Commands != null && spec.Commands.Any(c => c != null && c.Contains("--locale"))
-                        && spec.Repos.Count() > 1 && !spec.Inputs.Any() && string.IsNullOrEmpty(spec.Repo))
+                    if (Path.GetFileNameWithoutExtension(file).Contains("localization"))
                     {
-                        specNames.Add(($"{Path.GetFileNameWithoutExtension(file)}/{i:D2}. [from loc] {header}", only));
+                        var spec = YamlUtility.Deserialize<E2ESpec>(yaml, false);
+                        if (spec.Commands != null && spec.Commands.Any(c => c != null && c.Contains("--locale"))
+                            && spec.Repos.Count() > 1 && !spec.Inputs.Any() && string.IsNullOrEmpty(spec.Repo))
+                        {
+                            specNames.Add(($"{Path.GetFileNameWithoutExtension(file)}/{i:D2}. [from loc] {header}", only));
+                        }
                     }
                     specNames.Add(($"{Path.GetFileNameWithoutExtension(file)}/{i++:D2}. {header}", only));
 
@@ -215,11 +218,11 @@ namespace Microsoft.Docs.Build
 
             var docsetPath = Path.Combine("specs-drop", name);
             var docsetCreatedFlag = Path.Combine("specs-flags", name);
-            if(fromLoc)
+            if (fromLoc)
             {
                 spec.Commands = new[] { "build" };
             }
-            var mockedRepos = MockGitRepos(ordinal, name, spec);
+            var mockedRepos = MockGitRepos(specPath, ordinal, name, spec);
 
             if (!File.Exists(docsetCreatedFlag))
             {
@@ -283,7 +286,7 @@ namespace Microsoft.Docs.Build
             return value;
         }
 
-        private static IReadOnlyDictionary<string, string> MockGitRepos(int ordinal, string name, E2ESpec spec)
+        private static IReadOnlyDictionary<string, string> MockGitRepos(string file, int ordinal, string name, E2ESpec spec)
         {
             var result = new ConcurrentDictionary<string, string>();
             var repos =
@@ -306,9 +309,9 @@ namespace Microsoft.Docs.Build
                 {
                     foreach (var (branch, commits) in repoInfo)
                     {
-                        s_mockRepos.AddOrUpdate($"{remote}#{branch}", ordinal, (key, oldValue) =>
+                        s_mockRepos.AddOrUpdate($"{remote}#{branch}", (ordinal, file), (key, oldValue) =>
                         {
-                            Debug.Assert(oldValue == ordinal, $"test {oldValue} and {ordinal} are using the same mokeup repo remote: {remote}#{branch}");
+                            Debug.Assert(oldValue.ordinal == ordinal && oldValue.spec == file, $"test {oldValue} and {ordinal} are using the same mokeup repo remote: {remote}#{branch}");
                             return oldValue;
                         });
 
