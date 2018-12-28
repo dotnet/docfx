@@ -9,6 +9,8 @@ namespace Microsoft.Docs.Build
 {
     public class E2ESpec
     {
+        public string[] Commands = new[] { "build" };
+
         public readonly string OS;
 
         public readonly string Repo;
@@ -16,8 +18,6 @@ namespace Microsoft.Docs.Build
         public readonly bool Watch;
 
         public readonly string[] Environments = Array.Empty<string>();
-
-        public readonly string[] Commands = new[] { "build" };
 
         public readonly string[] SkippableOutputs = new[] { "xrefmap.json", "build.manifest" };
 

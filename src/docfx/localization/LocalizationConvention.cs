@@ -210,6 +210,19 @@ namespace Microsoft.Docs.Build
             }
         }
 
+        public static bool TryGetContributionBranch(string docset, out string contributionBranch, out Repository repo)
+        {
+            contributionBranch = null;
+
+            repo = Repository.Create(docset);
+            if (repo == null)
+            {
+                return false;
+            }
+
+            return TryGetContributionBranch(repo.Branch, out contributionBranch);
+        }
+
         public static bool TryGetContributionBranch(string branch, out string contributionBranch)
         {
             contributionBranch = null;
@@ -364,26 +377,7 @@ namespace Microsoft.Docs.Build
             return ($"{remote}.{locale}", branch);
         }
 
-        private static string GetBilingualBranch(string branch) => $"{branch}-sxs";
-
-        private static string GetLocalizationBranch(LocalizationMapping mapping, string sourceBranch, string locale)
-        {
-            Debug.Assert(!string.IsNullOrEmpty(sourceBranch));
-
-            if (mapping != LocalizationMapping.Branch)
-            {
-                return sourceBranch;
-            }
-
-            if (string.IsNullOrEmpty(locale))
-            {
-                return sourceBranch;
-            }
-
-            return $"{sourceBranch}.{locale}";
-        }
-
-        private static bool TryRemoveLocale(string name, out string nameWithoutLocale, out string locale)
+        public static bool TryRemoveLocale(string name, out string nameWithoutLocale, out string locale)
         {
             nameWithoutLocale = null;
             locale = null;
@@ -402,6 +396,25 @@ namespace Microsoft.Docs.Build
             }
 
             return false;
+        }
+
+        private static string GetBilingualBranch(string branch) => $"{branch}-sxs";
+
+        private static string GetLocalizationBranch(LocalizationMapping mapping, string sourceBranch, string locale)
+        {
+            Debug.Assert(!string.IsNullOrEmpty(sourceBranch));
+
+            if (mapping != LocalizationMapping.Branch)
+            {
+                return sourceBranch;
+            }
+
+            if (string.IsNullOrEmpty(locale))
+            {
+                return sourceBranch;
+            }
+
+            return $"{sourceBranch}.{locale}";
         }
     }
 }

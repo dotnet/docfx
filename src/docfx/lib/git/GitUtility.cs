@@ -108,6 +108,14 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
+        /// Fetch a git repository's updates
+        /// </summary>
+        public static Task Fetch(string path, string url, string committish, Config config = null)
+        {
+            return CloneOrUpdate(path, url, new[] { committish }, bare: false, depthOne: false, config);
+        }
+
+        /// <summary>
         /// List work trees for a given repo
         /// </summary>
         public static Task<List<string>> ListWorkTree(string repoPath)

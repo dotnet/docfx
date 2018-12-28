@@ -20,14 +20,19 @@ namespace Microsoft.Docs.Build
             DepthOne = 1 << 2,
         }
 
-        public static Task Restore(string docsetPath, Config config, Func<string, Task> restoreChild, string locale, bool @implicit, bool isDependencyRepo)
+        public static async Task Restore(string docsetPath, Config config, Func<string, Task> restoreChild, string locale, bool @implicit, bool isDependencyRepo)
         {
             var gitDependencies =
                 from git in GetGitDependencies(docsetPath, config, locale, isDependencyRepo)
                 group (git.branch, git.flags)
                 by git.remote;
 
-            return ParallelUtility.ForEach(gitDependencies, RestoreGitRepo, Progress.Update);
+            await ParallelUtility.ForEach(gitDependencies, RestoreGitRepo, Progress.Update);
+
+            if (!isDependencyRepo && LocalizationConvention.TryGetContributionBranch(docsetPath, out var contributionBranch, out var repo))
+            {
+                await GitUtility.Fetch(repo.Path, repo.Remote, contributionBranch, config);
+            }
 
             async Task RestoreGitRepo(IGrouping<string, (string branch, GitFlags flags)> group)
             {
