@@ -220,7 +220,7 @@ namespace Microsoft.Docs.Build
             var docsetCreatedFlag = Path.Combine("specs-flags", name);
             if (fromLoc)
             {
-                spec.Commands = new[] { "build" };
+                spec = new E2ESpec(spec.OS, spec.Repo, spec.Watch, new[] { "build" }, spec.Environments, spec.SkippableOutputs, spec.Repos, spec.Inputs, spec.Outputs, spec.Http);
             }
             var mockedRepos = MockGitRepos(specPath, ordinal, name, spec);
 
