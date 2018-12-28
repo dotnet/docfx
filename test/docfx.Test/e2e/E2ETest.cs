@@ -311,7 +311,7 @@ namespace Microsoft.Docs.Build
                     {
                         s_mockRepos.AddOrUpdate($"{remote}#{branch}", (ordinal, file), (key, oldValue) =>
                         {
-                            Debug.Assert(oldValue.ordinal == ordinal && oldValue.spec == file, $"test {oldValue} and {ordinal}are using the same mokeup repo remote: {remote}#{branch}, '{file}'");
+                            Debug.Assert(oldValue.ordinal == ordinal && oldValue.spec == file, $"test {oldValue} and {ordinal} are using the same mock repo remote: {remote}#{branch}, '{file}'");
                             return oldValue;
                         });
 
