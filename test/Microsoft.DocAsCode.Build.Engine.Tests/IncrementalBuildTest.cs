@@ -5001,7 +5001,7 @@ tagRules : [
                 }
                 ClearListener();
 
-                var newIntermediateFolder = MoveIntermediateFolder(intermediateFolder);
+                MoveIntermediateFolder(intermediateFolder);
                 using (new LoggerPhaseScope("IncrementalBuild.TestShrinkWithVersion-second"))
                 {
                     BuildDocumentWithVersion(

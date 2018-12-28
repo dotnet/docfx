@@ -111,7 +111,6 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         public void SaveVersionsManifet(string baseDir)
         {
             var expanded = Path.GetFullPath(Environment.ExpandEnvironmentVariables(baseDir));
-            var targetDirectory = Path.Combine(expanded, DirectoryName);
             foreach (var version in Versions)
             {
                 version.SaveManifest();
