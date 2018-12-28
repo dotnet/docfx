@@ -52,7 +52,7 @@ namespace Microsoft.Docs.Build
             {
                 return (externalSpec, null);
             }
-            return (null, null);
+            return default;
         }
 
         private (XrefSpec internalSpec, Document referencedFile) GetInternalSpec(string uid, Document file, string moniker, List<(Lazy<(List<Error>, XrefSpec)>, Document)> internalSpecs)
@@ -77,7 +77,7 @@ namespace Microsoft.Docs.Build
             }
 
             // For uid with and without moniker range, take the one without moniker range
-            var (uidWithoutMoniker, referencedFile) = validInternalSpecs.SingleOrDefault(item => item.spec?.Monikers.Count == 0);
+            var (uidWithoutMoniker, referencedFile) = validInternalSpecs.SingleOrDefault(item => item.spec.Monikers.Count == 0);
             if (uidWithoutMoniker != null)
             {
                 return (uidWithoutMoniker, referencedFile);
@@ -159,7 +159,7 @@ namespace Microsoft.Docs.Build
             }
 
             // uid conflicts with overlapping monikers, drop the uid and log an error
-            var conflictsWithMoniker = specsWithSameUid.Where(x => LoadXrefSpec(x).Item1?.Monikers.Count > 0).Select(item => LoadXrefSpec(item));
+            var conflictsWithMoniker = specsWithSameUid.Where(x => LoadXrefSpec(x).Item1.Monikers.Count > 0).Select(item => LoadXrefSpec(item));
             if (CheckOverlappingMonikers(loadedSpecs.Select(x => x.Item1), out var overlappingMonikers))
             {
                 _context.Report.Write(Errors.MonikerOverlapping(overlappingMonikers));
