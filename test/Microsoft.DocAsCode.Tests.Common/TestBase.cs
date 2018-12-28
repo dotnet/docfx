@@ -16,15 +16,7 @@ namespace Microsoft.DocAsCode.Tests.Common
 
         protected string GetRandomFolder()
         {
-            var folder = Path.GetRandomFileName();
-            if (Directory.Exists(folder))
-            {
-                folder = folder + DateTime.Now.ToString("HHmmssffff");
-                if (Directory.Exists(folder))
-                {
-                    throw new InvalidOperationException($"Random folder name collides {folder}");
-                }
-            }
+            var folder = GetFolder();
 
             lock (_locker)
             {
@@ -34,6 +26,35 @@ namespace Microsoft.DocAsCode.Tests.Common
             Directory.CreateDirectory(folder);
             return folder;
         }
+
+        protected string MoveToRandomFolder(string origin)
+        {
+            var folder = GetFolder();
+
+            lock (_locker)
+            {
+                _folderCollection.Remove(folder);
+                _folderCollection.Add(folder);
+            }
+
+            Directory.Move(origin, folder);
+            return folder;
+        }
+
+        private string GetFolder()
+        {
+            var folder = Path.GetRandomFileName();
+            if (Directory.Exists(folder))
+            {
+                folder = folder + DateTime.Now.ToString("HHmmssffff");
+                if (Directory.Exists(folder))
+                {
+                    throw new InvalidOperationException($"Random folder name collides {folder}");
+                }
+            }
+            return folder;
+        }
+
 
         #region IO related
 
