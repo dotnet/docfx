@@ -398,8 +398,6 @@ inputs:
     ---
     title: Title from yaml header a
     uid: a
-    fullName: name for a
-    summary: Link to @b?displayProperty=summary
     ---
     Link to @b?displayProperty=summary
   docs/b.json: | 
