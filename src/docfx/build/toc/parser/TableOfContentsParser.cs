@@ -26,7 +26,7 @@ namespace Microsoft.Docs.Build
         {
             var (errors, inputModel, tocMetadata) = LoadInputModel(context, file, file, metadataProvider, monikerProvider, monikerMap, resolveContent, resolveHref, resolveXref, new List<Document>());
 
-            var items = inputModel?.Items?.Select(r => TableOfContentsInputItem.ToTableOfContentsModel(r)).ToList();
+            var items = inputModel?.Items?.Select(r => r.ToTableOfContentsModel()).ToList();
             return (errors, items, tocMetadata);
         }
 

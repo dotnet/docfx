@@ -441,8 +441,6 @@ namespace Microsoft.Docs.Build
             public Commit[] Parents;
 
             public GitCommit GitCommit;
-
-            public override string ToString() => Sha.ToString();
         }
     }
 }
