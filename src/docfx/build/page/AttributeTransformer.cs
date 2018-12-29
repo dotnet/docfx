@@ -17,7 +17,6 @@ namespace Microsoft.Docs.Build
             Context context,
             List<Error> errors,
             Document file,
-            DependencyResolver dependencyResolver,
             Action<Document> buildChild)
         {
             return Transform;
@@ -25,14 +24,14 @@ namespace Microsoft.Docs.Build
             object Transform(IEnumerable<DataTypeAttribute> attributes, object value, string jsonPath)
             {
                 var attribute = attributes.SingleOrDefault(attr => !(attr is XrefPropertyAttribute));
-                return TransformContent(errors, attribute, value, dependencyResolver, file, buildChild);
+                return TransformContent(context, errors, attribute, value, file, buildChild);
             }
         }
 
         public static Func<IEnumerable<DataTypeAttribute>, object, string, object> TransformXref(
+            Context context,
             List<Error> errors,
             Document file,
-            DependencyResolver dependencyResolver,
             Action<Document> buildChild,
             Dictionary<string, Lazy<Func<string, string, Document, Document, JValue>>> extensionData)
         {
@@ -54,12 +53,11 @@ namespace Microsoft.Docs.Build
                             var groups = s_recursionDetector.Where(x => x.RootFile == rootFile).GroupBy(x => x, new UidPropertyReferenceComparer());
                             if (rootFile == referencedFile || groups.Any(group => group.Count() > 1))
                             {
-                                var temp = s_recursionDetector.Where(x => x.RootFile == rootFile);
-                                var callStack = temp.Select(x => x.ReferencedFile).ToList();
+                                var callStack = s_recursionDetector.Where(x => x.RootFile == rootFile).Select(x => x.ReferencedFile).ToList();
                                 throw Errors.CircularReference(rootFile, callStack).ToException();
                             }
                         }
-                        return new JValue(TransformContent(errors, attribute, value, dependencyResolver, file, buildChild));
+                        return new JValue(TransformContent(context, errors, attribute, value, file, buildChild));
                     }
                     finally
                     {
@@ -72,25 +70,25 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static object TransformContent(List<Error> errors, DataTypeAttribute attribute, object value, DependencyResolver dependencyResolver, Document file, Action<Document> buildChild)
+        private static object TransformContent(Context context, List<Error> errors, DataTypeAttribute attribute, object value, Document file, Action<Document> buildChild)
         {
             if (attribute is HrefAttribute)
             {
-                var (error, link, _) = dependencyResolver.ResolveLink((string)value, file, file, buildChild);
+                var (error, link, _) = context.DependencyResolver.ResolveLink((string)value, file, file, buildChild);
                 errors.AddIfNotNull(error);
                 return link;
             }
 
             if (attribute is MarkdownAttribute)
             {
-                var (html, markup) = MarkdownUtility.ToHtml((string)value, file, dependencyResolver, buildChild, null, MarkdownPipelineType.Markdown);
+                var (html, markup) = MarkdownUtility.ToHtml((string)value, file, context.DependencyResolver, buildChild, null, MarkdownPipelineType.Markdown);
                 errors.AddRange(markup.Errors);
                 return html;
             }
 
             if (attribute is InlineMarkdownAttribute)
             {
-                var (html, markup) = MarkdownUtility.ToHtml((string)value, file, dependencyResolver, buildChild, null, MarkdownPipelineType.InlineMarkdown);
+                var (html, markup) = MarkdownUtility.ToHtml((string)value, file, context.DependencyResolver, buildChild, null, MarkdownPipelineType.InlineMarkdown);
                 errors.AddRange(markup.Errors);
                 return html;
             }
@@ -99,7 +97,7 @@ namespace Microsoft.Docs.Build
             {
                 var html = HtmlUtility.TransformLinks((string)value, href =>
                 {
-                    var (error, link, _) = dependencyResolver.ResolveLink(href, file, file, buildChild);
+                    var (error, link, _) = context.DependencyResolver.ResolveLink(href, file, file, buildChild);
                     errors.AddIfNotNull(error);
                     return link;
                 });
@@ -109,7 +107,7 @@ namespace Microsoft.Docs.Build
             if (attribute is XrefAttribute)
             {
                 // TODO: how to fill xref resolving data besides href
-                var (error, link, _, _) = dependencyResolver.ResolveXref((string)value, file);
+                var (error, link, _, _) = context.DependencyResolver.ResolveXref((string)value, file);
                 errors.AddIfNotNull(error);
                 return link;
             }
