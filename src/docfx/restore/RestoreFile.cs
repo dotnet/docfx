@@ -2,10 +2,10 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
-using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
@@ -82,6 +82,18 @@ namespace Microsoft.Docs.Build
 
             var parts = Path.GetFileName(restorePath).Split('+');
             return parts.Length == 2 ? new EntityTagHeaderValue(HrefUtility.UnescapeUrl(parts[1])) : null;
+        }
+
+        public static IEnumerable<string> GetFileReferences(this Config config)
+        {
+            foreach (var url in config.Xref)
+            {
+                yield return url;
+            }
+
+            yield return config.Contribution.GitCommitsTime;
+            yield return config.GitHub.UserCache;
+            yield return config.MonikerDefinition;
         }
 
         private static async Task<(string filename, EntityTagHeaderValue etag)> DownloadToTempFile(
