@@ -25,8 +25,6 @@ namespace Microsoft.Docs.Build
 
             var localeToBuild = LocalizationConvention.GetBuildLocale(docsetPath, options);
             var docset = new Docset(report, docsetPath, localeToBuild, config, options).GetBuildDocset();
-            var monikerProvider = new MonikerProvider(docset);
-
             var outputPath = Path.Combine(docsetPath, config.Output.Path);
 
             using (var context = await Context.Create(outputPath, report, docset, () => xrefMap))

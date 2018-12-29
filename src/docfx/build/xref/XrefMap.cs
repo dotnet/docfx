@@ -17,7 +17,6 @@ namespace Microsoft.Docs.Build
         private readonly IReadOnlyDictionary<string, List<Lazy<(List<Error>, XrefSpec, Document)>>> _internalXrefMap;
         private readonly IReadOnlyDictionary<string, XrefSpec> _externalXrefMap;
         private readonly Context _context;
-        private readonly MonikerComparer _monikerComparer;
 
         public IEnumerable<XrefSpec> InternalReferences
         {
