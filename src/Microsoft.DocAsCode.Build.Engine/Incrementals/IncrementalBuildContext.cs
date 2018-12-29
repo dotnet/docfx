@@ -91,6 +91,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                 FileMetadataHash = ComputeFileMetadataHash(parameters.FileMetadata),
                 FileMetadata = parameters.FileMetadata,
                 AttributesFile = IncrementalUtility.CreateRandomFileName(baseDir),
+                FileMetadataFile = IncrementalUtility.CreateRandomFileName(baseDir),
                 DependencyFile = IncrementalUtility.CreateRandomFileName(baseDir),
                 ManifestFile = IncrementalUtility.CreateRandomFileName(baseDir),
                 OutputFile = IncrementalUtility.CreateRandomFileName(baseDir),
