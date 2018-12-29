@@ -16,14 +16,13 @@ namespace Microsoft.Docs.Build
 
             if (!string.IsNullOrEmpty(docset.Config.Theme))
             {
-                var url = docset.Config.Theme;
-                var branchIndex = url.IndexOf('#');
+                var (url, branch) = HrefUtility.SplitGitHref(docset.Config.Theme);
 
                 legacyCrrInfoItems.Add(new LegacyCrossRepoReferenceInfoItem
                 {
                     PathToRoot = "_themes",
-                    Url = branchIndex == -1 ? url : url.Substring(0, branchIndex),
-                    Branch = branchIndex == -1 ? "master" : url.Substring(url.IndexOf('#') + 1),
+                    Url = url,
+                    Branch = branch,
                 });
             }
 
