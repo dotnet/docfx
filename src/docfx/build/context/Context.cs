@@ -9,7 +9,7 @@ namespace Microsoft.Docs.Build
     /// <summary>
     /// An immutable set of behavioral classes that are commonly used by the build pipeline.
     /// </summary>
-    internal class Context : IDisposable
+    internal sealed class Context : IDisposable
     {
         public readonly Report Report;
         public readonly Cache Cache;
