@@ -20,7 +20,12 @@ namespace Microsoft.Docs.Build
             var exception = await Assert.ThrowsAnyAsync<Exception>(() => ParallelUtility.ForEach(Enumerable.Range(0, 1000), Run));
             Assert.Equal(exceptionType, exception.GetType());
 
+            exception = await Assert.ThrowsAnyAsync<Exception>(() => ParallelUtility.ForEach(Enumerable.Range(0, 1000), RunExpandChild));
+            Assert.Equal(exceptionType, exception.GetType());
+
             Task Run(int n) => n % 500 == 0 ? throw (Exception)Activator.CreateInstance(exceptionType) : Task.CompletedTask;
+
+            Task RunExpandChild(int n, Action<int> queue) => n % 500 == 0 ? throw (Exception)Activator.CreateInstance(exceptionType) : Task.CompletedTask;
         }
 
         [Fact]

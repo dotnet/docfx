@@ -12,6 +12,7 @@ namespace Microsoft.Docs.Build
         private static readonly Docset s_docset = new Docset(
             new Report(),
             Directory.GetCurrentDirectory(),
+            "en-us",
             JsonUtility.Deserialize<Config>("{'output': { 'json': true } }".Replace('\'', '\"')),
             new CommandLineOptions());
 

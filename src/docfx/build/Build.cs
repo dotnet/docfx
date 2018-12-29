@@ -16,16 +16,17 @@ namespace Microsoft.Docs.Build
         {
             var errors = new List<Error>();
 
-            var (configErrors, config) = Config.Load(docsetPath, options);
+            var (configErrors, config) = LocalizationConvention.GetBuildConfig(docsetPath, options);
             report.Configure(docsetPath, config);
 
             // todo: abort the process if configuration loading has errors
             var outputPath = Path.Combine(docsetPath, config.Output.Path);
-            var context = new Context(report, new Cache(), outputPath);
+            var context = new Context(report, new Cache(), new Output(outputPath));
             context.Report.Write(config.ConfigFileName, configErrors);
 
             var metadataProvider = new MetadataProvider(config);
-            var docset = new Docset(report, docsetPath, config, options).GetBuildDocset();
+            var localeToBuild = LocalizationConvention.GetBuildLocale(docsetPath, options);
+            var docset = new Docset(report, docsetPath, localeToBuild, config, options).GetBuildDocset();
             var monikerProvider = new MonikerProvider(docset);
 
             using (var gitCommitProvider = new GitCommitProvider())
@@ -41,7 +42,7 @@ namespace Microsoft.Docs.Build
                 var githubUserCache = await GitHubUserCache.Create(docset, config.GitHub.AuthToken);
                 var (manifest, fileManifests, sourceDependencies) = await BuildFiles(context, docset, tocMap, githubUserCache, metadataProvider, monikerProvider, dependencyResolver, gitCommitProvider);
 
-                context.WriteJson(manifest, "build.manifest");
+                context.Output.WriteJson(manifest, "build.manifest");
                 var saveGitHubUserCache = githubUserCache.SaveChanges(config);
                 xrefMap.OutputXrefMap(context);
 
@@ -193,16 +194,16 @@ namespace Microsoft.Docs.Build
                     {
                         if (file.Docset.Config.Output.CopyResources)
                         {
-                            context.Copy(file, manifest.OutputPath);
+                            context.Output.Copy(file, manifest.OutputPath);
                         }
                     }
                     else if (model is string str)
                     {
-                        context.WriteText(str, manifest.OutputPath);
+                        context.Output.WriteText(str, manifest.OutputPath);
                     }
                     else
                     {
-                        context.WriteJson(model, manifest.OutputPath);
+                        context.Output.WriteJson(model, manifest.OutputPath);
                     }
                 }
                 return monikers;

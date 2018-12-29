@@ -25,17 +25,5 @@ namespace Microsoft.Docs.Build
             EndLine = endLine;
             EndCharacter = endCharacter;
         }
-
-        public override string ToString()
-        {
-            if (EndLine == 0 && EndCharacter == 0)
-            {
-                return $"(Line: {StartLine}, Character: {StartCharacter})";
-            }
-            else
-            {
-                return $"(Line: {StartLine}, Character: {StartCharacter}) - (Line: {EndLine}, Character: {EndCharacter})";
-            }
-        }
     }
 }

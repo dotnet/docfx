@@ -107,7 +107,7 @@ namespace Microsoft.Docs.Build
                         }
                     });
 
-                context.WriteJson(
+                context.Output.WriteJson(
                 new
                 {
                     groups = monikerGroups.Count > 0 ? monikerGroups.Select(item => new

@@ -22,14 +22,15 @@ namespace Microsoft.Docs.Build
             using (Progress.Start("Restore dependencies"))
             {
                 var restoredDocsets = new ConcurrentDictionary<string, int>(PathUtility.PathComparer);
+                var localeToRestore = LocalizationConvention.GetBuildLocale(docsetPath, options);
 
-                await RestoreDocset(docsetPath, true);
+                await RestoreDocset(docsetPath);
 
-                async Task RestoreDocset(string docset, bool root)
+                async Task RestoreDocset(string docset, bool root = true)
                 {
                     if (restoredDocsets.TryAdd(docset, 0))
                     {
-                        var (errors, config) = Config.TryLoad(docset, options, extend: false);
+                        var (errors, config) = Config.TryLoad(docset, options, localeToRestore, extend: false);
                         report.Write(errors);
 
                         if (root)
@@ -38,16 +39,17 @@ namespace Microsoft.Docs.Build
                         }
 
                         // no need to restore child docsets' loc repository
-                        await RestoreOneDocset(docset, config, async subDocset => await RestoreDocset(subDocset, false), restoreLocRepo: root);
+                        await RestoreOneDocset(docset, localeToRestore, config, async subDocset => await RestoreDocset(subDocset, root: false), isDependencyRepo: !root);
                     }
                 }
             }
 
             async Task RestoreOneDocset(
                 string docset,
+                string locale,
                 Config config,
                 Func<string, Task> restoreChild,
-                bool restoreLocRepo = false)
+                bool isDependencyRepo)
             {
                 // restore extend url firstly
                 // no need to extend config
@@ -56,11 +58,11 @@ namespace Microsoft.Docs.Build
                     restoreUrl => RestoreFile.Restore(restoreUrl, config, @implicit));
 
                 // extend the config before loading
-                var (errors, extendedConfig) = Config.TryLoad(docset, options, extend: true);
+                var (errors, extendedConfig) = Config.TryLoad(docset, options, locale, extend: true);
                 report.Write(errors);
 
                 // restore git repos includes dependency repos and loc repos
-                await RestoreGit.Restore(docset, extendedConfig, restoreChild, restoreLocRepo ? options.Locale : null, @implicit);
+                await RestoreGit.Restore(docset, extendedConfig, restoreChild, locale, @implicit, isDependencyRepo);
 
                 // restore urls except extend url
                 await ParallelUtility.ForEach(

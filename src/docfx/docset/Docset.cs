@@ -85,21 +85,28 @@ namespace Microsoft.Docs.Build
         private readonly Lazy<RedirectionMap> _redirections;
         private readonly Lazy<LegacyTemplate> _legacyTemplate;
 
-        public Docset(Report report, string docsetPath, Config config, CommandLineOptions options, bool isDependency = false)
-            : this(report, docsetPath, config, !string.IsNullOrEmpty(options.Locale) ? options.Locale : config.Localization.DefaultLocale, options, null)
+        public Docset(Report report, string docsetPath, string locale, Config config, CommandLineOptions options, bool isDependency = false)
+            : this(report, docsetPath, !string.IsNullOrEmpty(locale) ? locale : config.Localization.DefaultLocale, config, options, null, null)
         {
             if (!isDependency && !string.Equals(Locale, config.Localization.DefaultLocale, StringComparison.OrdinalIgnoreCase))
             {
-                var localizationDocsetPath = LocalizationConvention.GetLocalizationDocsetPath(DocsetPath, Config, Locale);
-
-                // localization docset will share the same context, config, build locale and options with source docset
+                // localization/fallback docset will share the same context, config, build locale and options with source docset
                 // source docset configuration will be overwritten by build locale overwrite configuration
-                LocalizationDocset = string.IsNullOrEmpty(localizationDocsetPath) ? null : new Docset(report, localizationDocsetPath, config, Locale, options, this);
+                if (LocalizationConvention.TryGetSourceDocsetPath(DocsetPath, out var sourceDocsetPath))
+                {
+                    FallbackDocset = new Docset(report, sourceDocsetPath, Locale, config, options, localizedDocset: this);
+                }
+                else if (LocalizationConvention.TryGetLocalizedDocsetPath(DocsetPath, Config, Locale, out var localizationDocsetPath))
+                {
+                    LocalizationDocset = new Docset(report, localizationDocsetPath, Locale, config, options, fallbackDocset: this);
+                }
             }
         }
 
-        private Docset(Report report, string docsetPath, Config config, string locale, CommandLineOptions options, Docset fallbackDocset)
+        private Docset(Report report, string docsetPath, string locale, Config config, CommandLineOptions options, Docset fallbackDocset = null, Docset localizedDocset = null)
         {
+            Debug.Assert(fallbackDocset == null || localizedDocset == null);
+
             _options = options;
             _report = report;
             Config = config;
@@ -108,6 +115,7 @@ namespace Microsoft.Docs.Build
             Routes = NormalizeRoutes(config.Routes);
             Culture = CreateCultureInfo(locale);
             FallbackDocset = fallbackDocset;
+            LocalizationDocset = localizedDocset;
 
             var configErrors = new List<Error>();
             (configErrors, DependencyDocsets) = LoadDependencies(Config);
@@ -165,9 +173,9 @@ namespace Microsoft.Docs.Build
 
                 // get dependent docset config or default config
                 // todo: what parent config should be pass on its children
-                var (loadErrors, subConfig) = Config.TryLoad(dir, _options);
+                var (loadErrors, subConfig) = Config.TryLoad(dir, _options, Locale);
                 errors.AddRange(loadErrors);
-                result.TryAdd(PathUtility.NormalizeFolder(name), new Docset(_report, dir, subConfig, _options, isDependency: true));
+                result.TryAdd(PathUtility.NormalizeFolder(name), new Docset(_report, dir, Locale, subConfig, _options, isDependency: true));
             }
             return (errors, result);
         }

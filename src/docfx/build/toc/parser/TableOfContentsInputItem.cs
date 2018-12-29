@@ -37,24 +37,19 @@ namespace Microsoft.Docs.Build
 
         public List<string> Monikers { get; set; }
 
-        public static TableOfContentsItem ToTableOfContentsModel(TableOfContentsInputItem inputModel)
+        public TableOfContentsItem ToTableOfContentsModel()
         {
-            if (inputModel == null)
-            {
-                return null;
-            }
-
             return new TableOfContentsItem
             {
-                TocTitle = inputModel.Name,
-                DisplayName = inputModel.DisplayName,
-                Href = inputModel.Href,
-                TocHref = inputModel.TocHref, // only breadcrumb toc will set the toc href
-                MaintainContext = inputModel.MaintainContext,
-                Expanded = inputModel.Expanded,
-                ExtensionData = inputModel.ExtensionData,
-                Children = inputModel.Items?.Select(l => ToTableOfContentsModel(l))?.ToList(),
-                Monikers = inputModel.Monikers,
+                TocTitle = this.Name,
+                DisplayName = this.DisplayName,
+                Href = this.Href,
+                TocHref = this.TocHref, // only breadcrumb toc will set the toc href
+                MaintainContext = this.MaintainContext,
+                Expanded = this.Expanded,
+                ExtensionData = this.ExtensionData,
+                Children = this.Items?.Select(l => l.ToTableOfContentsModel())?.ToList(),
+                Monikers = this.Monikers,
             };
         }
     }

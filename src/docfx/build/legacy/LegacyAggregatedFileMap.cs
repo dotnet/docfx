@@ -31,7 +31,7 @@ namespace Microsoft.Docs.Build
                 aggregatedFileMapItems.Add(PathUtility.NormalizeFile(Path.Combine(docset.Config.DocumentId.SourceBasePath, legacyFilePathRelativeToBaseFolder)), aggregatedFileMapItem);
             }
 
-            context.WriteJson(
+            context.Output.WriteJson(
                 new
                 {
                     aggregated_file_map_items = aggregatedFileMapItems,

@@ -58,8 +58,7 @@ namespace Microsoft.Docs.Build
             {
                 if (requestUri.StartsWith(baseUrl))
                 {
-                    // TODO: merge query if requestUri also contains query
-                    message.RequestUri = new Uri(requestUri + rule.Query);
+                    message.RequestUri = new Uri(HrefUtility.MergeHref(requestUri, rule.Query, null));
                     foreach (var header in rule.Headers)
                     {
                         message.Headers.Add(header.Key, header.Value);

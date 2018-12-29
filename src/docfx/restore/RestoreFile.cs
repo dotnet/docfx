@@ -89,10 +89,6 @@ namespace Microsoft.Docs.Build
             Config config,
             EntityTagHeaderValue existingEtag)
         {
-            Directory.CreateDirectory(AppData.DownloadsRoot);
-            var tempFile = Path.Combine(AppData.DownloadsRoot, "." + Guid.NewGuid().ToString("N"));
-            EntityTagHeaderValue etag = null;
-
             try
             {
                 var response = await HttpClientUtility.GetAsync(url, config, existingEtag);
@@ -101,18 +97,20 @@ namespace Microsoft.Docs.Build
                     return (null, existingEtag);
                 }
 
-                etag = response.Headers.ETag;
+                Directory.CreateDirectory(AppData.DownloadsRoot);
+                var tempFile = Path.Combine(AppData.DownloadsRoot, "." + Guid.NewGuid().ToString("N"));
+
                 using (var stream = await response.EnsureSuccessStatusCode().Content.ReadAsStreamAsync())
                 using (var file = new FileStream(tempFile, FileMode.Create, FileAccess.Write, FileShare.None))
                 {
                     await stream.CopyToAsync(file);
                 }
+                return (tempFile, response.Headers.ETag);
             }
             catch (Exception ex)
             {
                 throw Errors.DownloadFailed(url, ex.Message).ToException(ex);
             }
-            return (tempFile, etag);
         }
     }
 }

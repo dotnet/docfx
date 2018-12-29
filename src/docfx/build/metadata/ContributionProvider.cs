@@ -197,14 +197,19 @@ namespace Microsoft.Docs.Build
                     (editRemote, editBranch) = HrefUtility.SplitGitHref(document.Docset.Config.Contribution.Repository);
                     if (document.Docset.IsLocalized())
                     {
-                        (editRemote, _) = LocalizationConvention.GetLocalizationRepo(
-                                            document.Docset.Config.Localization.Mapping,
-                                            document.Docset.Config.Localization.Bilingual,
-                                            editRemote,
-                                            editBranch,
-                                            document.Docset.Locale,
-                                            document.Docset.Config.Localization.DefaultLocale);
+                        (editRemote, editBranch) = LocalizationConvention.GetLocalizedRepo(
+                                                    document.Docset.Config.Localization.Mapping,
+                                                    document.Docset.Config.Localization.Bilingual,
+                                                    editRemote,
+                                                    editBranch,
+                                                    document.Docset.Locale,
+                                                    document.Docset.Config.Localization.DefaultLocale);
                     }
+                }
+
+                if (LocalizationConvention.TryGetContributionBranch(editBranch, out var contributionBranch))
+                {
+                    editBranch = contributionBranch;
                 }
 
                 // git edit url, only works for github repo
