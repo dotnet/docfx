@@ -13,11 +13,10 @@ namespace Microsoft.Docs.Build
             Context context,
             Document doc,
             LegacyManifestItem legacyManifestItem,
-            MetadataProvider metadataProvider,
             List<string> monikers)
         {
             var legacyManifestOutput = legacyManifestItem.Output;
-            var metadata = metadataProvider.GetMetadata(doc).metadata;
+            var metadata = context.MetadataProvider.GetMetadata(doc).metadata;
             metadata = LegacyMetadata.GenerataCommonMetadata(metadata, docset);
 
             var metadataNeedToBeRemove = new List<string> { "__global" };

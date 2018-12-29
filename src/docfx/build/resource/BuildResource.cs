@@ -3,18 +3,16 @@
 
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 
 namespace Microsoft.Docs.Build
 {
     internal class BuildResource
     {
-        internal static (List<Error> errors, ResourceModel model, List<string> monikers)
-            Build(Document file, MetadataProvider metadataProvider, MonikerProvider monikerProvider)
+        internal static (List<Error> errors, ResourceModel model, List<string> monikers) Build(Context context, Document file)
         {
             Debug.Assert(file.ContentType == ContentType.Resource);
 
-            var (errors, monikers) = monikerProvider.GetFileLevelMonikers(file, metadataProvider);
+            var (errors, monikers) = context.MonikerProvider.GetFileLevelMonikers(file, context.MetadataProvider);
             return (errors, new ResourceModel
             {
                 Locale = file.Docset.Locale,

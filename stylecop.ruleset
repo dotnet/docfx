@@ -57,7 +57,8 @@
     <!-- CA1060: Move pinvokes to native methods class -->
     <Rule Id="CA1060" Action="None" />
     <Rule Id="CA1061" Action="Warning" />
-    <Rule Id="CA1063" Action="Warning" />
+    <!-- CA1063: Implement IDisposable correctly -->
+    <Rule Id="CA1063" Action="None" />
     <!-- CA1064: Make exception public -->
     <Rule Id="CA1064" Action="None" />
     <Rule Id="CA1065" Action="Warning" />
