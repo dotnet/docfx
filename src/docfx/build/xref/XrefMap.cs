@@ -119,7 +119,7 @@ namespace Microsoft.Docs.Build
         }
 
         private (XrefSpec spec, Document referencedFile) GetLatestInternalXrefMap(List<(XrefSpec spec, Document referencedFile)> specs)
-            => specs.OrderByDescending(item => item.spec.Monikers.FirstOrDefault(), _monikerComparer).FirstOrDefault();
+            => specs.OrderByDescending(item => item.spec.Monikers.FirstOrDefault(), _context.MonikerProvider.Comparer).FirstOrDefault();
 
         private bool TryGetValidXrefSpecs(string uid, List<Lazy<(List<Error> errors, XrefSpec spec, Document doc)>> specsWithSameUid, out List<(XrefSpec spec, Document file)> validSpecs)
         {
@@ -178,7 +178,7 @@ namespace Microsoft.Docs.Build
                     // Sort monikers descending by moniker definition order
                     if (spec.Monikers.Count > 1)
                     {
-                        var orderedMonikers = spec.Monikers.OrderBy(item => item, _monikerComparer).ToHashSet();
+                        var orderedMonikers = spec.Monikers.OrderBy(item => item, _context.MonikerProvider.Comparer).ToHashSet();
                         spec.Monikers = orderedMonikers;
                     }
                 }
