@@ -66,7 +66,7 @@ namespace Microsoft.Docs.Build
                     {
                         if (_manifest.TryRemove(conflictingFile, out var manifest))
                         {
-                            context.Delete(manifest.OutputPath);
+                            context.Output.Delete(manifest.OutputPath);
                         }
                     }
                 }
@@ -93,7 +93,7 @@ namespace Microsoft.Docs.Build
                 {
                     if (_manifest.TryRemove(conflictingFile, out var manifest))
                     {
-                        context.Delete(manifest.OutputPath);
+                        context.Output.Delete(manifest.OutputPath);
                     }
                 }
             }
@@ -105,7 +105,7 @@ namespace Microsoft.Docs.Build
                 {
                     if (_manifest.TryRemove(file, out var manifest))
                     {
-                        context.Delete(manifest.OutputPath);
+                        context.Output.Delete(manifest.OutputPath);
                     }
                 }
             }
