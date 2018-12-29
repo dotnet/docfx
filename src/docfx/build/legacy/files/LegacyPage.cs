@@ -20,8 +20,8 @@ namespace Microsoft.Docs.Build
             {
                 var outputPath = legacyManifestOutput.TocOutput.ToLegacyOutputPath(docset, legacyManifestItem.Group);
                 var model = JsonUtility.Deserialize<PageModel>(File.ReadAllText(docset.GetAbsoluteOutputPathFromRelativePath(outputPath)));
-                context.Delete(doc.OutputPath);
-                context.WriteJson(model.Content, outputPath);
+                context.Output.Delete(doc.OutputPath);
+                context.Output.WriteJson(model.Content, outputPath);
             }
 
             JObject rawMetadata = null;
@@ -53,13 +53,13 @@ namespace Microsoft.Docs.Build
                 if (!string.IsNullOrEmpty(doc.RedirectionUrl))
                 {
                     rawMetadata = LegacyMetadata.GenerateLegacyRedirectionRawMetadata(docset, pageModel);
-                    context.WriteJson(new { outputRootRelativePath, rawMetadata, themesRelativePathToOutputRoot }, rawPageOutputPath);
+                    context.Output.WriteJson(new { outputRootRelativePath, rawMetadata, themesRelativePathToOutputRoot }, rawPageOutputPath);
                 }
                 else
                 {
                     rawMetadata = LegacyMetadata.GenerateLegacyRawMetadata(pageModel, content, doc, legacyManifestItem.Group);
                     var pageMetadata = LegacyMetadata.CreateHtmlMetaTags(rawMetadata);
-                    context.WriteJson(new { outputRootRelativePath, content, rawMetadata, pageMetadata, themesRelativePathToOutputRoot }, rawPageOutputPath);
+                    context.Output.WriteJson(new { outputRootRelativePath, content, rawMetadata, pageMetadata, themesRelativePathToOutputRoot }, rawPageOutputPath);
                 }
             }
 
@@ -67,7 +67,7 @@ namespace Microsoft.Docs.Build
             {
                 var metadataOutputPath = legacyManifestOutput.MetadataOutput.ToLegacyOutputPath(docset, legacyManifestItem.Group);
                 var metadate = LegacyMetadata.GenerateLegacyMetadateOutput(rawMetadata);
-                context.WriteJson(metadate, metadataOutputPath);
+                context.Output.WriteJson(metadate, metadataOutputPath);
             }
         }
     }

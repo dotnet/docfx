@@ -1,93 +1,84 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Diagnostics;
-using System.IO;
+using System;
+using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
 {
-    internal class Context
+    /// <summary>
+    /// An immutable set of behavioral classes that are commonly used by the build pipeline.
+    /// </summary>
+    internal sealed class Context : IDisposable
     {
-        public readonly Cache Cache;
         public readonly Report Report;
+        public readonly Cache Cache;
+        public readonly Output Output;
+        public readonly MetadataProvider MetadataProvider;
+        public readonly MonikerProvider MonikerProvider;
+        public readonly GitCommitProvider GitCommitProvider;
+        public readonly BookmarkValidator BookmarkValidator;
+        public readonly DependencyMapBuilder DependencyMapBuilder;
+        public readonly DependencyResolver DependencyResolver;
+        public readonly GitHubUserCache GitHubUserCache;
+        public readonly ContributionProvider ContributionProvider;
 
-        private readonly string _outputPath;
-
-        public Context(Report report, Cache cache, string outputPath)
+        public Context(
+            Report report,
+            Output output,
+            Cache cache,
+            MetadataProvider metadataProvider,
+            MonikerProvider monikerProvider,
+            GitCommitProvider gitCommitProvider,
+            BookmarkValidator bookmarkValidator,
+            DependencyMapBuilder dependencyMapBuilder,
+            DependencyResolver dependencyResolver,
+            GitHubUserCache gitHubUserCache,
+            ContributionProvider contributionProvider)
         {
             Report = report;
+            Output = output;
             Cache = cache;
-            _outputPath = Path.GetFullPath(outputPath);
+            MetadataProvider = metadataProvider;
+            MonikerProvider = monikerProvider;
+            GitCommitProvider = gitCommitProvider;
+            BookmarkValidator = bookmarkValidator;
+            DependencyMapBuilder = dependencyMapBuilder;
+            DependencyResolver = dependencyResolver;
+            GitHubUserCache = gitHubUserCache;
+            ContributionProvider = contributionProvider;
         }
 
-        /// <summary>
-        /// Opens a write stream to write to an output file.
-        /// Throws if multiple threads trying to write to the same destination concurrently.
-        /// </summary>
-        public Stream WriteStream(string destRelativePath)
+        public static async Task<Context> Create(string outputPath, Report report, Docset docset, Func<XrefMap> xrefMap)
         {
-            Debug.Assert(!Path.IsPathRooted(destRelativePath));
+            var output = new Output(outputPath);
+            var cache = new Cache();
+            var metadataProvider = new MetadataProvider(docset.Config);
+            var monikerProvider = new MonikerProvider(docset);
+            var gitHubUserCache = await GitHubUserCache.Create(docset);
+            var gitCommitProvider = new GitCommitProvider();
+            var bookmarkValidator = new BookmarkValidator();
+            var dependencyMapBuilder = new DependencyMapBuilder();
+            var dependencyResolver = new DependencyResolver(gitCommitProvider, bookmarkValidator, dependencyMapBuilder, new Lazy<XrefMap>(xrefMap));
+            var contributionProvider = await ContributionProvider.Create(docset, gitHubUserCache, gitCommitProvider);
 
-            var destinationPath = Path.Combine(_outputPath, destRelativePath);
-
-            PathUtility.CreateDirectoryFromFilePath(destinationPath);
-
-            return File.Create(destinationPath);
+            return new Context(
+                report,
+                output,
+                cache,
+                metadataProvider,
+                monikerProvider,
+                gitCommitProvider,
+                bookmarkValidator,
+                dependencyMapBuilder,
+                dependencyResolver,
+                gitHubUserCache,
+                contributionProvider);
         }
 
-        /// <summary>
-        /// Writes the input object as json to an output file.
-        /// Throws if multiple threads trying to write to the same destination concurrently.
-        /// </summary>
-        public void WriteJson(object graph, string destRelativePath)
+        public void Dispose()
         {
-            using (var writer = new StreamWriter(WriteStream(destRelativePath)))
-            {
-                JsonUtility.Serialize(writer, graph);
-            }
-        }
-
-        /// <summary>
-        /// Writes the input text to an output file.
-        /// Throws if multiple threads trying to write to the same destination concurrently.
-        /// </summary>
-        public void WriteText(string contents, string destRelativePath)
-        {
-            Debug.Assert(!Path.IsPathRooted(destRelativePath));
-
-            var destinationPath = Path.Combine(_outputPath, destRelativePath);
-
-            PathUtility.CreateDirectoryFromFilePath(destinationPath);
-
-            File.WriteAllText(destinationPath, contents);
-        }
-
-        /// <summary>
-        /// Copies a file from source to destination, throws if source does not exists.
-        /// Throws if multiple threads trying to write to the same destination concurrently.
-        /// </summary>
-        public void Copy(Document file, string destRelativePath)
-        {
-            Debug.Assert(!Path.IsPathRooted(destRelativePath));
-
-            var sourcePath = Path.Combine(file.Docset.DocsetPath, file.FilePath);
-            var destinationPath = Path.Combine(_outputPath, destRelativePath);
-
-            PathUtility.CreateDirectoryFromFilePath(destinationPath);
-
-            File.Copy(sourcePath, destinationPath, overwrite: true);
-        }
-
-        public void Delete(string destRelativePath)
-        {
-            Debug.Assert(!Path.IsPathRooted(destRelativePath));
-
-            var destinationPath = Path.Combine(_outputPath, destRelativePath);
-
-            if (File.Exists(destinationPath))
-            {
-                File.Delete(destinationPath);
-            }
+            GitCommitProvider.Dispose();
         }
     }
 }

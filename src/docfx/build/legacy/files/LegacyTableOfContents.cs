@@ -28,8 +28,8 @@ namespace Microsoft.Docs.Build
             }
 
             File.Delete(docset.GetAbsoluteOutputPathFromRelativePath(doc.OutputPath));
-            context.WriteJson(toc, legacyManifestOutput.TocOutput.ToLegacyOutputPath(docset, legacyManifestItem.Group));
-            context.WriteJson(
+            context.Output.WriteJson(toc, legacyManifestOutput.TocOutput.ToLegacyOutputPath(docset, legacyManifestItem.Group));
+            context.Output.WriteJson(
                 new LegacyTableOfContentsExperimentMetadata
                 {
                     Experimental = toc.Metadata.Experimental,

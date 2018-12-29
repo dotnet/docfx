@@ -60,7 +60,7 @@ namespace Microsoft.Docs.Build
                     }
                 }
 
-                context.WriteJson(legacyDependencyMap, Path.Combine(docset.Config.DocumentId.SiteBasePath, ".dependency-map.json"));
+                context.Output.WriteJson(legacyDependencyMap, Path.Combine(docset.Config.DocumentId.SiteBasePath, ".dependency-map.json"));
             }
         }
 

@@ -14,6 +14,7 @@ namespace Microsoft.Docs.Build
         private static ConcurrentStack<UidPropertyReference> s_recursionDetector = new ConcurrentStack<UidPropertyReference>();
 
         public static Func<IEnumerable<DataTypeAttribute>, object, string, object> TransformSDP(
+            Context context,
             List<Error> errors,
             Document file,
             DependencyResolver dependencyResolver,

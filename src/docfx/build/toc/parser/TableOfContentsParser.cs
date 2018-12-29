@@ -22,11 +22,11 @@ namespace Microsoft.Docs.Build
         public delegate (string content, Document file) ResolveContent(Document relativeTo, string href, bool isInclusion);
 
         public static (List<Error> errors, List<TableOfContentsItem> items, TableOfContentsMetadata metadata)
-            Load(Context context, Document file, MetadataProvider metadataProvider, MonikerProvider monikerProvider, MonikerMap monikerMap, ResolveContent resolveContent, ResolveHref resolveHref, ResolveXref resolveXref)
+            Load(Context context, Document file, MonikerMap monikerMap, ResolveContent resolveContent, ResolveHref resolveHref, ResolveXref resolveXref)
         {
-            var (errors, inputModel, tocMetadata) = LoadInputModel(context, file, file, metadataProvider, monikerProvider, monikerMap, resolveContent, resolveHref, resolveXref, new List<Document>());
+            var (errors, inputModel, tocMetadata) = LoadInputModel(context, file, file, monikerMap, resolveContent, resolveHref, resolveXref, new List<Document>());
 
-            var items = inputModel?.Items?.Select(r => TableOfContentsInputItem.ToTableOfContentsModel(r)).ToList();
+            var items = inputModel?.Items?.Select(r => r.ToTableOfContentsModel()).ToList();
             return (errors, items, tocMetadata);
         }
 
@@ -86,8 +86,6 @@ namespace Microsoft.Docs.Build
             Context context,
             Document file,
             Document rootPath,
-            MetadataProvider metadataProvider,
-            MonikerProvider monikerProvider,
             MonikerMap monikerMap,
             ResolveContent resolveContent,
             ResolveHref resolveHref,
@@ -105,14 +103,14 @@ namespace Microsoft.Docs.Build
             var (errors, model) = LoadTocModel(context, file, content);
 
             TableOfContentsMetadata tocMetadata = null;
-            if (parents.Count == 0 && metadataProvider != null && monikerProvider != null)
+            if (parents.Count == 0)
             {
                 Error monikerError;
-                var (metadataErrors, metadata) = metadataProvider.GetMetadata(file, model.Metadata);
+                var (metadataErrors, metadata) = context.MetadataProvider.GetMetadata(file, model.Metadata);
                 errors.AddRange(metadataErrors);
 
                 tocMetadata = metadata.ToObject<TableOfContentsMetadata>();
-                (monikerError, tocMetadata.Monikers) = monikerProvider.GetFileLevelMonikers(file, tocMetadata.MonikerRange);
+                (monikerError, tocMetadata.Monikers) = context.MonikerProvider.GetFileLevelMonikers(file, tocMetadata.MonikerRange);
                 errors.AddIfNotNull(monikerError);
 
                 fileMonikers = tocMetadata.Monikers;
@@ -121,7 +119,7 @@ namespace Microsoft.Docs.Build
             if (model.Items.Count > 0)
             {
                 parents.Add(file);
-                errors.AddRange(ResolveTocModelItems(context, model.Items, parents, file, rootPath, monikerProvider, monikerMap, resolveContent, resolveHref, resolveXref, fileMonikers));
+                errors.AddRange(ResolveTocModelItems(context, model.Items, parents, file, rootPath, monikerMap, resolveContent, resolveHref, resolveXref, fileMonikers));
                 parents.RemoveAt(parents.Count - 1);
             }
 
@@ -135,7 +133,6 @@ namespace Microsoft.Docs.Build
             List<Document> parents,
             Document filePath,
             Document rootPath,
-            MonikerProvider monikerProvider,
             MonikerMap monikerMap,
             ResolveContent resolveContent,
             ResolveHref resolveHref,
@@ -147,7 +144,7 @@ namespace Microsoft.Docs.Build
             {
                 if (tocModelItem.Items != null && tocModelItem.Items.Any())
                 {
-                    errors.AddRange(ResolveTocModelItems(context, tocModelItem.Items, parents, filePath, rootPath, monikerProvider, monikerMap, resolveContent, resolveHref, resolveXref, fileMonikers));
+                    errors.AddRange(ResolveTocModelItems(context, tocModelItem.Items, parents, filePath, rootPath, monikerMap, resolveContent, resolveHref, resolveXref, fileMonikers));
                 }
 
                 var tocHref = GetTocHref(tocModelItem);
@@ -165,9 +162,9 @@ namespace Microsoft.Docs.Build
                 {
                     tocModelItem.Items = subChildren.Items;
                 }
-                if (monikerMap != null && monikerProvider != null)
+                if (monikerMap != null)
                 {
-                    tocModelItem.Monikers = ResolveMoniker(document, tocModelItem, monikerMap, monikerProvider.Comparer, fileMonikers, resolvedTopicHref, resolvedTopicItemFromTocHref);
+                    tocModelItem.Monikers = ResolveMoniker(document, tocModelItem, monikerMap, context.MonikerProvider.Comparer, fileMonikers, resolvedTopicHref, resolvedTopicItemFromTocHref);
                 }
             }
 
@@ -240,7 +237,7 @@ namespace Microsoft.Docs.Build
                 var (referencedTocContent, referenceTocFilePath) = ResolveTocHrefContent(tocHrefType, tocHref, filePath, resolveContent);
                 if (referencedTocContent != null)
                 {
-                    var (subErrors, nestedToc, _) = LoadInputModel(context, referenceTocFilePath, rootPath, null, monikerProvider, monikerMap, resolveContent, resolveHref, resolveXref, parents, fileMonikers, referencedTocContent);
+                    var (subErrors, nestedToc, _) = LoadInputModel(context, referenceTocFilePath, rootPath, monikerMap, resolveContent, resolveHref, resolveXref, parents, fileMonikers, referencedTocContent);
                     errors.AddRange(subErrors);
                     if (tocHrefType == TocHrefType.RelativeFolder)
                     {
