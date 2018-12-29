@@ -12,14 +12,15 @@ namespace Microsoft.Docs.Build
 {
     internal class DependencyResolver
     {
-        public readonly BookmarkValidator BookmarkValidator = new BookmarkValidator();
-        public readonly DependencyMapBuilder DependencyMapBuilder = new DependencyMapBuilder();
-
+        private readonly BookmarkValidator _bookmarkValidator;
+        private readonly DependencyMapBuilder _dependencyMapBuilder;
         private readonly GitCommitProvider _gitCommitProvider;
         private readonly Lazy<XrefMap> _xrefMap;
 
-        public DependencyResolver(GitCommitProvider gitCommitProvider, Lazy<XrefMap> xrefMap)
+        public DependencyResolver(GitCommitProvider gitCommitProvider, BookmarkValidator bookmarkValidator, DependencyMapBuilder dependencyMapBuilder, Lazy<XrefMap> xrefMap)
         {
+            _bookmarkValidator = bookmarkValidator;
+            _dependencyMapBuilder = dependencyMapBuilder;
             _gitCommitProvider = gitCommitProvider;
             _xrefMap = xrefMap;
         }
@@ -28,7 +29,7 @@ namespace Microsoft.Docs.Build
         {
             var (error, content, child) = TryResolveContent(relativeTo, path);
 
-            DependencyMapBuilder.AddDependencyItem(relativeTo, child, dependencyType);
+            _dependencyMapBuilder.AddDependencyItem(relativeTo, child, dependencyType);
 
             return (error, content, child);
         }
@@ -42,8 +43,8 @@ namespace Microsoft.Docs.Build
                 buildChild(file);
             }
 
-            DependencyMapBuilder.AddDependencyItem(relativeTo, file, HrefUtility.FragmentToDependencyType(fragment));
-            BookmarkValidator.AddBookmarkReference(relativeTo, file ?? relativeTo, fragment);
+            _dependencyMapBuilder.AddDependencyItem(relativeTo, file, HrefUtility.FragmentToDependencyType(fragment));
+            _bookmarkValidator.AddBookmarkReference(relativeTo, file ?? relativeTo, fragment);
 
             return (error, link, file);
         }
@@ -66,7 +67,7 @@ namespace Microsoft.Docs.Build
                 return (Errors.UidNotFound(relativeTo, uid, href), null, null, null);
             }
 
-            DependencyMapBuilder.AddDependencyItem(relativeTo, referencedFile, DependencyType.UidInclusion);
+            _dependencyMapBuilder.AddDependencyItem(relativeTo, referencedFile, DependencyType.UidInclusion);
             if (referencedFile != null)
             {
                 var spec = xrefSpec.Clone();

@@ -16,15 +16,11 @@ namespace Microsoft.Docs.Build
             Context context,
             Document file,
             TableOfContentsMap tocMap,
-            ContributionProvider contribution,
-            MetadataProvider metadataProvider,
-            MonikerProvider monikerProvider,
-            DependencyResolver dependencyResolver,
             Action<Document> buildChild)
         {
             Debug.Assert(file.ContentType == ContentType.Page);
 
-            var (errors, schema, model, metadata) = await Load(context, file, metadataProvider, monikerProvider, dependencyResolver, buildChild);
+            var (errors, schema, model, metadata) = await Load(context, file, buildChild);
 
             model.SchemaType = schema.Name;
             model.Locale = file.Docset.Locale;
@@ -35,10 +31,10 @@ namespace Microsoft.Docs.Build
             model.Bilingual = file.Docset.Config.Localization.Bilingual;
 
             (model.DocumentId, model.DocumentVersionIndependentId) = file.Docset.Redirections.TryGetDocumentId(file, out var docId) ? docId : file.Id;
-            (model.ContentGitUrl, model.OriginalContentGitUrl, model.Gitcommit) = await contribution.GetGitUrls(file);
+            (model.ContentGitUrl, model.OriginalContentGitUrl, model.Gitcommit) = await context.ContributionProvider.GetGitUrls(file);
 
             List<Error> contributorErrors;
-            (contributorErrors, model.Author, model.Contributors, model.UpdatedAt) = await contribution.GetAuthorAndContributors(file, metadata.Author);
+            (contributorErrors, model.Author, model.Contributors, model.UpdatedAt) = await context.ContributionProvider.GetAuthorAndContributors(file, metadata.Author);
             if (contributorErrors != null)
                 errors.AddRange(contributorErrors);
 
@@ -73,25 +69,23 @@ namespace Microsoft.Docs.Build
         }
 
         private static async Task<(List<Error> errors, Schema schema, PageModel model, FileMetadata metadata)>
-            Load(
-            Context context, Document file, MetadataProvider metadataProvider, MonikerProvider monikerProvider, DependencyResolver dependencyResolver, Action<Document> buildChild)
+            Load(Context context, Document file, Action<Document> buildChild)
         {
             if (file.FilePath.EndsWith(".md", PathUtility.PathComparison))
             {
-                return LoadMarkdown(context, file, metadataProvider, monikerProvider, dependencyResolver, buildChild);
+                return LoadMarkdown(context, file, buildChild);
             }
             if (file.FilePath.EndsWith(".yml", PathUtility.PathComparison))
             {
-                return await LoadYaml(context, file, metadataProvider, dependencyResolver, buildChild);
+                return await LoadYaml(context, file, buildChild);
             }
 
             Debug.Assert(file.FilePath.EndsWith(".json", PathUtility.PathComparison));
-            return await LoadJson(context, file, metadataProvider, dependencyResolver, buildChild);
+            return await LoadJson(context, file, buildChild);
         }
 
         private static (List<Error> errors, Schema schema, PageModel model, FileMetadata metadata)
-            LoadMarkdown(
-            Context context, Document file, MetadataProvider metadataProvider, MonikerProvider monikerProvider, DependencyResolver dependencyResolver, Action<Document> buildChild)
+            LoadMarkdown(Context context, Document file, Action<Document> buildChild)
         {
             var errors = new List<Error>();
             var content = file.ReadText();
@@ -100,19 +94,19 @@ namespace Microsoft.Docs.Build
             var (yamlHeaderErrors, yamlHeader) = ExtractYamlHeader.Extract(file, context);
             errors.AddRange(yamlHeaderErrors);
 
-            var (metaErrors, fileMetadata) = metadataProvider.GetFileMetadata(file, yamlHeader);
+            var (metaErrors, fileMetadata) = context.MetadataProvider.GetFileMetadata(file, yamlHeader);
             errors.AddRange(metaErrors);
 
-            var (error, monikers) = monikerProvider.GetFileLevelMonikers(file, fileMetadata.MonikerRange);
+            var (error, monikers) = context.MonikerProvider.GetFileLevelMonikers(file, fileMetadata.MonikerRange);
             errors.AddIfNotNull(error);
 
             // TODO: handle blank page
             var (html, markup) = MarkdownUtility.ToHtml(
                 content,
                 file,
-                dependencyResolver,
+                context.DependencyResolver,
                 buildChild,
-                (rangeString) => monikerProvider.GetZoneMonikers(rangeString, monikers, errors),
+                (rangeString) => context.MonikerProvider.GetZoneMonikers(rangeString, monikers, errors),
                 MarkdownPipelineType.ConceptualMarkdown);
             errors.AddRange(markup.Errors);
 
@@ -133,32 +127,29 @@ namespace Microsoft.Docs.Build
 
             var bookmarks = HtmlUtility.GetBookmarks(htmlDom).Concat(HtmlUtility.GetBookmarks(htmlTitleDom)).ToHashSet();
 
-            dependencyResolver.BookmarkValidator.AddBookmarks(file, bookmarks);
+            context.BookmarkValidator.AddBookmarks(file, bookmarks);
 
             return (errors, Schema.Conceptual, model, fileMetadata);
         }
 
         private static async Task<(List<Error> errors, Schema schema, PageModel model, FileMetadata metadata)>
-            LoadYaml(
-            Context context, Document file, MetadataProvider metadataProvider, DependencyResolver dependencyResolver, Action<Document> buildChild)
+            LoadYaml(Context context, Document file, Action<Document> buildChild)
         {
             var (errors, token) = YamlUtility.Deserialize(file, context);
 
-            return await LoadSchemaDocument(errors, token, file, metadataProvider, dependencyResolver, buildChild);
+            return await LoadSchemaDocument(context, errors, token, file, buildChild);
         }
 
         private static async Task<(List<Error> errors, Schema schema, PageModel model, FileMetadata metadata)>
-            LoadJson(
-            Context context, Document file, MetadataProvider metadataProvider, DependencyResolver dependencyResolver, Action<Document> buildChild)
+            LoadJson(Context context, Document file, Action<Document> buildChild)
         {
             var (errors, token) = JsonUtility.Deserialize(file, context);
 
-            return await LoadSchemaDocument(errors, token, file, metadataProvider, dependencyResolver, buildChild);
+            return await LoadSchemaDocument(context, errors, token, file, buildChild);
         }
 
         private static async Task<(List<Error> errors, Schema schema, PageModel model, FileMetadata metadata)>
-            LoadSchemaDocument(
-            List<Error> errors, JToken token, Document file, MetadataProvider metadataProvider, DependencyResolver dependencyResolver, Action<Document> buildChild)
+            LoadSchemaDocument(Context context, List<Error> errors, JToken token, Document file, Action<Document> buildChild)
         {
             // TODO: for backward compatibility, when #YamlMime:YamlDocument, documentType is used to determine schema.
             //       when everything is moved to SDP, we can refactor the mime check to Document.TryCreate
@@ -169,7 +160,7 @@ namespace Microsoft.Docs.Build
                 throw Errors.SchemaNotFound(file.Mime).ToException();
             }
 
-            var (schemaViolationErrors, content) = JsonUtility.ToObjectWithSchemaValidation(token, schema.Type, transform: AttributeTransformer.Transform(errors, file, dependencyResolver, buildChild));
+            var (schemaViolationErrors, content) = JsonUtility.ToObjectWithSchemaValidation(token, schema.Type, transform: AttributeTransformer.Transform(context, errors, file, buildChild));
             errors.AddRange(schemaViolationErrors);
 
             if (file.Docset.Legacy && schema.Attribute is PageSchemaAttribute)
@@ -181,7 +172,7 @@ namespace Microsoft.Docs.Build
             var yamlHeader = obj?.Value<JObject>("metadata") ?? new JObject();
             var title = yamlHeader.Value<string>("title") ?? obj?.Value<string>("title");
 
-            var (metaErrors, fileMetadata) = metadataProvider.GetFileMetadata(file, yamlHeader);
+            var (metaErrors, fileMetadata) = context.MetadataProvider.GetFileMetadata(file, yamlHeader);
             errors.AddRange(metaErrors);
 
             var model = new PageModel

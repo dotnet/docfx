@@ -8,11 +8,10 @@ namespace Microsoft.Docs.Build
 {
     internal static class BuildRedirection
     {
-        internal static (List<Error> errors, RedirectionModel model, List<string> monikers)
-            Build(Document file, MetadataProvider metadataProvider, MonikerProvider monikerProvider)
+        internal static (List<Error> errors, RedirectionModel model, List<string> monikers) Build(Context context, Document file)
         {
             Debug.Assert(file.ContentType == ContentType.Redirection);
-            var (errors, monikers) = monikerProvider.GetFileLevelMonikers(file, metadataProvider);
+            var (errors, monikers) = context.MonikerProvider.GetFileLevelMonikers(file, context.MetadataProvider);
 
             return (errors, new RedirectionModel
             {
