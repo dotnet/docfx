@@ -237,7 +237,7 @@ exportViewModel          | If set to true, data model to apply template will be 
 viewModelOutputFolder    | Specify the output folder for the view model. If not set, the view model will be generated to the same folder as the output documentation.
 dryRun                   | If set to true, template will not be actually applied to the documents. This option is always used with `--exportRawModel` or `--exportViewModel`, so that only raw model files or view model files are generated.
 maxParallelism           | Set the max parallelism, 0 (default) is same as the count of CPU cores.
-markdownEngineName       | Set the name of markdown engine, default is `dfm`, and another build-in engine is `gfm`.
+markdownEngineName       | Set the name of markdown engine, default is `dfm`, other available engines are `gfm` and `markdig`.
 markdownEngineProperties | Set the parameters for markdown engine, value should be a JSON string.
 noLangKeyword            | Disable default lang keyword, it can be downloaded from [here](http://dotnet.github.io/docfx/langwordmapping/langwordMapping.yml).
 keepFileLink             | If set to true, docfx does not dereference (aka. copy) file to the output folder, instead, it saves a `link_to_path` property inside `manifest.json` to indicate the physical location of that file. A file link will be created by incremental build and copy resouce file.
