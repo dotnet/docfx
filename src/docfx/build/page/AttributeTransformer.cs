@@ -2,16 +2,16 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
     internal static class AttributeTransformer
     {
-        private static ConcurrentStack<UidPropertyReference> s_recursionDetector = new ConcurrentStack<UidPropertyReference>();
+        private static ThreadLocal<Stack<UidPropertyReference>> t_recursionDetector = new ThreadLocal<Stack<UidPropertyReference>>(() => new Stack<UidPropertyReference>());
 
         public static Func<IEnumerable<DataTypeAttribute>, object, string, object> TransformSDP(
             Context context,
@@ -47,23 +47,21 @@ namespace Microsoft.Docs.Build
                 {
                     try
                     {
-                        if (referencedFile != null)
+                        if (rootFile != null)
                         {
-                            s_recursionDetector.Push(new UidPropertyReference(uid, propertyName, referencedFile, rootFile));
-                            var groups = s_recursionDetector.Where(x => x.RootFile == rootFile).GroupBy(x => x, new UidPropertyReferenceComparer());
-                            if (rootFile == referencedFile || groups.Any(group => group.Count() > 1))
+                            if (t_recursionDetector.Value.Contains(new UidPropertyReference(uid, propertyName, referencedFile, rootFile), new UidPropertyReferenceComparer()))
                             {
-                                var callStack = s_recursionDetector.Where(x => x.RootFile == rootFile).Select(x => x.ReferencedFile).ToList();
-                                throw Errors.CircularReference(rootFile, callStack).ToException();
+                                throw Errors.CircularReference(rootFile, t_recursionDetector.Value.Select(x => x.ReferencedFile).ToList()).ToException();
                             }
+                            t_recursionDetector.Value.Push(new UidPropertyReference(uid, propertyName, referencedFile, rootFile));
                         }
                         return new JValue(TransformContent(context, errors, attribute, value, file, buildChild));
                     }
                     finally
                     {
-                        if (referencedFile != null)
+                        if (rootFile != null && t_recursionDetector.Value.Count > 0)
                         {
-                            s_recursionDetector.TryPop(out var result);
+                            t_recursionDetector.Value.Pop();
                         }
                     }
                 }

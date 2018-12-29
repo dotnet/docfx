@@ -27,19 +27,19 @@ namespace Microsoft.Docs.Build
                 {
                     if (TryGetValidXrefSpecs(uid, specsWithSameUid, out var validInternalSpecs))
                     {
-                        var (internalSpec, file) = GetLatestInternalXrefMap(validInternalSpecs);
-                        loadedInternalSpecs.Add(internalSpec.ToExternalXrefSpec(file, null));
+                        var (internalSpec, referencedFile) = GetLatestInternalXrefMap(validInternalSpecs);
+                        loadedInternalSpecs.Add(internalSpec.ToExternalXrefSpec(referencedFile, null));
                     }
                 }
                 return loadedInternalSpecs;
             }
         }
 
-        public (XrefSpec spec, Document referencedFile) Resolve(string uid, Document file, string moniker = null)
+        public (XrefSpec spec, Document referencedFile) Resolve(string uid, string moniker = null)
         {
             if (_internalXrefMap.TryGetValue(uid, out var internalSpecs))
             {
-                return GetInternalSpec(uid, file, moniker, internalSpecs);
+                return GetInternalSpec(uid, moniker, internalSpecs);
             }
 
             if (_externalXrefMap.TryGetValue(uid, out var externalSpec))
@@ -49,7 +49,7 @@ namespace Microsoft.Docs.Build
             return default;
         }
 
-        private (InternalXrefSpec internalSpec, Document referencedFile) GetInternalSpec(string uid, Document file, string moniker, List<(Lazy<(List<Error>, InternalXrefSpec)>, Document)> internalSpecs)
+        private (InternalXrefSpec internalSpec, Document referencedFile) GetInternalSpec(string uid, string moniker, List<(Lazy<(List<Error>, InternalXrefSpec)>, Document)> internalSpecs)
         {
             if (!TryGetValidXrefSpecs(uid, internalSpecs, out var validInternalSpecs))
                 return default;
