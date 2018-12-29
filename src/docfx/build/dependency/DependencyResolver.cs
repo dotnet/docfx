@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
@@ -62,6 +61,7 @@ namespace Microsoft.Docs.Build
 
             // need to url decode uid from input content
             var (xrefSpec, referencedFile) = _xrefMap.Value.Resolve(HttpUtility.UrlDecode(uid), relativeTo, moniker);
+
             if (xrefSpec is null)
             {
                 return (Errors.UidNotFound(relativeTo, uid, href), null, null, null);
@@ -69,17 +69,25 @@ namespace Microsoft.Docs.Build
 
             DependencyMapBuilder.AddDependencyItem(relativeTo, referencedFile, DependencyType.UidInclusion);
 
-            if (referencedFile != null)
-            {
-                var spec = xrefSpec.Clone();
-                spec.Href = GetRelativeUrl(relativeTo, referencedFile);
-                xrefSpec = spec;
-            }
-
             // fallback order:
             // xrefSpec.displayPropertyName -> xrefSpec.name -> uid
-            var name = xrefSpec.GetXrefPropertyValue("name");
-            var displayPropertyValue = xrefSpec.GetXrefPropertyValue(queries?["displayProperty"]);
+            var displayProperty = queries?["displayProperty"];
+            string name;
+            string displayPropertyValue;
+            if (xrefSpec is InternalXrefSpec internalXrefSpec)
+            {
+                var spec = internalXrefSpec.Clone();
+                spec.Href = GetRelativeUrl(relativeTo, referencedFile);
+                xrefSpec = spec;
+                name = internalXrefSpec.GetName();
+                displayPropertyValue = internalXrefSpec.GetXrefPropertyValue(displayProperty, uid, referencedFile, relativeTo);
+            }
+            else
+            {
+                name = xrefSpec.GetName();
+                displayPropertyValue = xrefSpec.GetXrefPropertyValue(displayProperty);
+            }
+
             string display = !string.IsNullOrEmpty(displayPropertyValue) ? displayPropertyValue : (!string.IsNullOrEmpty(name) ? name : uid);
             var monikerQuery = !string.IsNullOrEmpty(moniker) ? $"view={moniker}" : "";
 

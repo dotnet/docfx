@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -21,23 +20,18 @@ namespace Microsoft.Docs.Build
         [JsonExtensionData]
         public JObject ExtensionData { get; } = new JObject();
 
-        public Dictionary<string, Lazy<JValue>> InternalExtensionData { get; } = new Dictionary<string, Lazy<JValue>>();
-
-        public bool ShouldSerializeInternalExtensionData() => false;
-
         public string GetName() => GetXrefPropertyValue("name");
 
-        public string GetXrefPropertyValue(string property)
+        public string GetXrefPropertyValue(string propertyName)
         {
-            if (property is null)
+            if (propertyName is null)
                 return null;
 
-            if (ExtensionData.TryGetValue<JValue>(property, out var v))
+            if (ExtensionData.TryGetValue<JValue>(propertyName, out var v))
             {
                 return v.Value is string str ? str : null;
             }
-
-            return InternalExtensionData.TryGetValue(property, out var internalValue) && internalValue.Value.Value is string internalStr ? internalStr : null;
+            return null;
         }
 
         public XrefSpec Clone()
@@ -50,7 +44,6 @@ namespace Microsoft.Docs.Build
             };
 
             spec.ExtensionData.Merge(ExtensionData);
-            spec.InternalExtensionData.AddRange(InternalExtensionData);
             return spec;
         }
     }

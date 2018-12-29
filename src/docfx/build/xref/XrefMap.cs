@@ -14,7 +14,7 @@ namespace Microsoft.Docs.Build
     internal class XrefMap
     {
         // TODO: key could be uid+moniker+locale
-        private readonly IReadOnlyDictionary<string, List<(Lazy<(List<Error>, XrefSpec)> specs, Document file)>> _internalXrefMap;
+        private readonly IReadOnlyDictionary<string, List<(Lazy<(List<Error>, InternalXrefSpec)> specs, Document file)>> _internalXrefMap;
         private readonly IReadOnlyDictionary<string, XrefSpec> _externalXrefMap;
         private readonly Context _context;
         private readonly MonikerComparer _monikerComparer;
@@ -26,15 +26,10 @@ namespace Microsoft.Docs.Build
                 var loadedInternalSpecs = new List<XrefSpec>();
                 foreach (var (uid, specsWithSameUid) in _internalXrefMap)
                 {
-                    if (TryGetValidXrefSpecs(uid, null, specsWithSameUid, out var validInternalSpecs))
+                    if (TryGetValidXrefSpecs(uid, specsWithSameUid, out var validInternalSpecs))
                     {
-                        var spec = GetLatestInternalXrefMap(validInternalSpecs).spec;
-
-                        foreach (var (key, value) in spec.InternalExtensionData)
-                        {
-                            spec.ExtensionData[key] = value.Value;
-                        }
-                        loadedInternalSpecs.Add(GetLatestInternalXrefMap(validInternalSpecs).spec);
+                        var (internalSpec, file) = GetLatestInternalXrefMap(validInternalSpecs);
+                        loadedInternalSpecs.Add(internalSpec.ToExternalXrefSpec(file, null));
                     }
                 }
                 return loadedInternalSpecs;
@@ -55,9 +50,9 @@ namespace Microsoft.Docs.Build
             return default;
         }
 
-        private (XrefSpec internalSpec, Document referencedFile) GetInternalSpec(string uid, Document file, string moniker, List<(Lazy<(List<Error>, XrefSpec)>, Document)> internalSpecs)
+        private (InternalXrefSpec internalSpec, Document referencedFile) GetInternalSpec(string uid, Document file, string moniker, List<(Lazy<(List<Error>, InternalXrefSpec)>, Document)> internalSpecs)
         {
-            if (!TryGetValidXrefSpecs(uid, file, internalSpecs, out var validInternalSpecs))
+            if (!TryGetValidXrefSpecs(uid, internalSpecs, out var validInternalSpecs))
                 return default;
 
             if (!string.IsNullOrEmpty(moniker))
@@ -130,13 +125,13 @@ namespace Microsoft.Docs.Build
             context.WriteJson(models, "xrefmap.json");
         }
 
-        private (XrefSpec spec, Document referencedFile) GetLatestInternalXrefMap(List<(XrefSpec spec, Document referencedFile)> specs)
+        private (InternalXrefSpec spec, Document referencedFile) GetLatestInternalXrefMap(List<(InternalXrefSpec spec, Document referencedFile)> specs)
             => specs.OrderByDescending(item => item.spec.Monikers.FirstOrDefault(), _monikerComparer).FirstOrDefault();
 
-        private bool TryGetValidXrefSpecs(string uid, Document rootFile, List<(Lazy<(List<Error> errors, XrefSpec spec)> value, Document file)> specsWithSameUid, out List<(XrefSpec spec, Document file)> validSpecs)
+        private bool TryGetValidXrefSpecs(string uid, List<(Lazy<(List<Error> errors, InternalXrefSpec spec)> value, Document file)> specsWithSameUid, out List<(InternalXrefSpec spec, Document file)> validSpecs)
         {
             var loadedSpecs = specsWithSameUid.Select(item => LoadXrefSpec(item));
-            validSpecs = new List<(XrefSpec, Document)>();
+            validSpecs = new List<(InternalXrefSpec, Document)>();
 
             // no conflicts
             if (loadedSpecs.Count() == 1)
@@ -173,15 +168,10 @@ namespace Microsoft.Docs.Build
                 return true;
             }
 
-            (XrefSpec, Document) LoadXrefSpec((Lazy<(List<Error>, XrefSpec)> value, Document file) input)
+            (InternalXrefSpec, Document) LoadXrefSpec((Lazy<(List<Error>, InternalXrefSpec)> value, Document file) input)
             {
                 if (input.value is null)
                     return default;
-
-                if (input.file == rootFile)
-                {
-                    throw Errors.CircularReference().ToException();
-                }
 
                 var isValueCreated = input.value.IsValueCreated;
 
@@ -223,10 +213,10 @@ namespace Microsoft.Docs.Build
             return isOverlapping;
         }
 
-        private static IReadOnlyDictionary<string, List<(Lazy<(List<Error>, XrefSpec)>, Document)>>
+        private static IReadOnlyDictionary<string, List<(Lazy<(List<Error>, InternalXrefSpec)>, Document)>>
             CreateInternalXrefMap(Context context, IEnumerable<Document> files, MetadataProvider metadataProvider, MonikerProvider monikerProvider, DependencyResolver dependencyResolver)
         {
-            var xrefsByUid = new ConcurrentDictionary<string, ConcurrentBag<(Lazy<(List<Error>, XrefSpec)>, Document)>>();
+            var xrefsByUid = new ConcurrentDictionary<string, ConcurrentBag<(Lazy<(List<Error>, InternalXrefSpec)>, Document)>>();
             Debug.Assert(files != null);
             using (Progress.Start("Building Xref map"))
             {
@@ -235,7 +225,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private XrefMap(IReadOnlyDictionary<string, XrefSpec> externalXrefMap, IReadOnlyDictionary<string, List<(Lazy<(List<Error>, XrefSpec)>, Document)>> internalXrefMap, Context context, MonikerComparer monikerComparer)
+        private XrefMap(IReadOnlyDictionary<string, XrefSpec> externalXrefMap, IReadOnlyDictionary<string, List<(Lazy<(List<Error>, InternalXrefSpec)>, Document)>> internalXrefMap, Context context, MonikerComparer monikerComparer)
         {
             _externalXrefMap = externalXrefMap;
             _internalXrefMap = internalXrefMap;
@@ -245,7 +235,7 @@ namespace Microsoft.Docs.Build
 
         private static void Load(
             Context context,
-            ConcurrentDictionary<string, ConcurrentBag<(Lazy<(List<Error>, XrefSpec)>, Document)>> xrefsByUid,
+            ConcurrentDictionary<string, ConcurrentBag<(Lazy<(List<Error>, InternalXrefSpec)>, Document)>> xrefsByUid,
             Document file,
             MetadataProvider metadataProvider,
             MonikerProvider monikerProvider,
@@ -302,14 +292,14 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static (Error error, XrefSpec spec, Document doc) LoadMarkdown(FileMetadata metadata, Document file, MonikerProvider monikerProvider)
+        private static (Error error, InternalXrefSpec spec, Document doc) LoadMarkdown(FileMetadata metadata, Document file, MonikerProvider monikerProvider)
         {
-            var xref = new XrefSpec
+            var xref = new InternalXrefSpec
             {
                 Uid = metadata.Uid,
                 Href = file.SiteUrl,
             };
-            xref.ExtensionData["name"] = string.IsNullOrEmpty(metadata.Title) ? metadata.Uid : metadata.Title;
+            xref.ExtensionData["name"] = new Lazy<Func<string, string, Document, Document, JValue>>(GetName);
 
             var (error, monikers) = monikerProvider.GetFileLevelMonikers(file, metadata.MonikerRange);
             foreach (var moniker in monikers)
@@ -317,11 +307,14 @@ namespace Microsoft.Docs.Build
                 xref.Monikers.Add(moniker);
             }
             return (error, xref, file);
+
+            JValue GetName(string uid, string propertyName, Document referencedFile, Document rootFile)
+                => new JValue(string.IsNullOrEmpty(metadata.Title) ? metadata.Uid : metadata.Title);
         }
 
-        private static (List<Error> errors, XrefSpec spec) LoadSchemaDocument(JObject obj, Document file, string uid, DependencyResolver dependencyResolver)
+        private static (List<Error> errors, InternalXrefSpec spec) LoadSchemaDocument(JObject obj, Document file, string uid, DependencyResolver dependencyResolver)
         {
-            var extensionData = new Dictionary<string, Lazy<JValue>>();
+            var extensionData = new Dictionary<string, Lazy<Func<string, string, Document, Document, JValue>>>();
 
             // TODO: for backward compatibility, when #YamlMime:YamlDocument, documentType is used to determine schema.
             //       when everything is moved to SDP, we can refactor the mime check to Document.TryCreate
@@ -335,27 +328,27 @@ namespace Microsoft.Docs.Build
             var (schemaErrors, content) = JsonUtility.ToObjectWithSchemaValidation(
                 obj,
                 schema.Type,
-                transform: AttributeTransformer.Transform(errors, file, dependencyResolver, null, extensionData));
+                transform: AttributeTransformer.TransformXref(errors, file, dependencyResolver, null, extensionData));
 
             errors.AddRange(schemaErrors);
-            var xref = new XrefSpec
+            var xref = new InternalXrefSpec
             {
                 Uid = uid,
                 Href = file.SiteUrl,
             };
 
-            xref.InternalExtensionData.AddRange(extensionData);
+            xref.ExtensionData.AddRange(extensionData);
             return (errors, xref);
         }
 
-        private static void TryAddXref(ConcurrentDictionary<string, ConcurrentBag<(Lazy<(List<Error>, XrefSpec)>, Document)>> xrefsByUid, string uid, Document file, Func<(List<Error>, XrefSpec)> func)
+        private static void TryAddXref(ConcurrentDictionary<string, ConcurrentBag<(Lazy<(List<Error>, InternalXrefSpec)>, Document)>> xrefsByUid, string uid, Document file, Func<(List<Error>, InternalXrefSpec)> func)
         {
             if (func is null)
             {
                 throw new ArgumentNullException(nameof(func));
             }
 
-            xrefsByUid.GetOrAdd(uid, _ => new ConcurrentBag<(Lazy<(List<Error>, XrefSpec)>, Document)>()).Add((new Lazy<(List<Error>, XrefSpec)>(func), file));
+            xrefsByUid.GetOrAdd(uid, _ => new ConcurrentBag<(Lazy<(List<Error>, InternalXrefSpec)>, Document)>()).Add((new Lazy<(List<Error>, InternalXrefSpec)>(func), file));
         }
     }
 }

@@ -22,9 +22,6 @@ namespace Microsoft.Docs.Build
         public static Error ConfigNotFound(string docsetPath)
             => new Error(ErrorLevel.Error, "config-not-found", $"Cannot find 'docfx.yml/docfx.json' at '{docsetPath}'");
 
-        public static Error CircularReference()
-            => new Error(ErrorLevel.Error, "circular-reference", "Found circular reference");
-
         public static Error CircularReference<T>(T filePath, IEnumerable<T> dependencyChain)
             => new Error(ErrorLevel.Error, "circular-reference", $"Found circular reference: {string.Join(" --> ", dependencyChain.Select(file => $"'{file}'"))} --> '{filePath}'", filePath.ToString());
 

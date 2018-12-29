@@ -391,7 +391,7 @@ outputs:
     { "content": "<p>Link to <a href=\"../c\">title</a></p>" }
   docs/c.json:
 ---
-# Markdown and SDP cyclic xref reference
+# Markdown and SDP non-cyclic xref reference
 inputs:
   docfx.yml:
   docs/a.md: |
@@ -409,11 +409,9 @@ inputs:
       "summary": "Link to @a?displayProperty=summary",
     }
 outputs:
+  docs/a.json:
   docs/b.json: |
     { "content":{"name":"name for b","description":"description for b"} }
-  build.log: |
-    ["error","circular-reference","Found circular reference","docs/a.md"]
-    ["error","circular-reference","Found circular reference"]
 ---
 # SDP non-cyclic xref reference should be resolved
 # whose display properties are plain text
@@ -476,35 +474,18 @@ inputs:
       "name": "name for b",
       "inlineDescription": "description for b",
       "summary": "Link to @a?displayProperty=summary",
-    }  
+    } 
   docs/c.json: |
     {
       "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
       "uid": "c",
       "name": "name for c",
-    }
-  docs/d.json: |
-    {
-      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
-      "xref": "c",
-    }
+      "inlineDescription": "description for c",
+      "summary": "Link to @a",
+    } 
 outputs:
-  docs/c.json: | 
-    {
-      "content": 
-      {
-        "name": "name for c",
-        "uid": "c"
-      }
-    }
-  docs/d.json: |
-    {
-      "content": 
-      {
-        "xref": "c.json"
-      }
-    }
+  docs/c.json: |
+    {"content":{"name":"name for c","summary":"<p>Link to <a href=\"a.json\">name for a</a></p>\n","inlineDescription":"description for c","uid":"c"}}
   build.log: |
-    ["error","circular-reference","Found circular reference","docs/b.json"]
-    ["error","circular-reference","Found circular reference","docs/a.json"]
-    ["error","circular-reference","Found circular reference"]
+    ["error","circular-reference","Found circular reference: 'docs/b.json' --> 'docs/a.json' --> 'docs/b.json'","docs/b.json"]
+    ["error","circular-reference","Found circular reference: 'docs/a.json' --> 'docs/b.json' --> 'docs/a.json'","docs/a.json"]
