@@ -1060,7 +1060,7 @@ outputs:
     {"items":[{"toc_title":"reference toc a","children":[{"toc_title":"reference markdown a","href":"../a/a"}]}]}
 ---
 # builf from loc folder for folder mapping is not supported
-root: localization/zh-cn/
+cwd: localization/zh-cn/
 repos:
   https://github.com/buildfromlocfolder/a:
     - files:
