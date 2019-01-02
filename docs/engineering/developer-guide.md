@@ -67,6 +67,41 @@ Write complex functions by composing smaller, simpler functions. Write functions
 
 Tuples, readonly, nested functions are the tools to help write these stateless pure functions. Try returning multiple outputs with tuples over manipulating an input context.
 
+### Data Modeling
+
+JSON `(.json)` is the format of our data contract. YAML `(.yml)` is an alternative and preferred input format for config and authoring.
+
+Whenever JSON is supported as an input format, YAML is supported as well. The same is true vice-versa.
+
+When YAML is used, we only support a subset of YAML that is JSON compatible, features like multiple documents, non-scalar keys, anchors and references are not supported.
+
+Flattened structure is prefered over nested structure, because YAML is indention based, nested structure creates a very bad YAML authoring experience.
+
+The default JSON naming convention is *snake_case* for property names and enum values:
+
+```json
+{
+    "a_property_name": "a_property_value"
+}
+```
+
+`null`s are ignored using `[NullValueHandling.Ignore]` to void [the billion-dollar mistake](https://en.wikipedia.org/wiki/Tony_Hoare). We will be using [strict null checking](https://blogs.msdn.microsoft.com/dotnet/2017/11/15/nullable-reference-types-in-csharp/) when C# 8 arrives.
+
+When creating a data contract in C#:
+
+- Make data contract [POCO (plain Old C# Object)](https://stackoverflow.com/questions/250001/poco-definition):
+    - With only simple serializable properties
+    - With no methods that contains business logic
+
+- Avoid `[JsonProperty]` unless the property does not use the above naming convention for backward compatibility reasons:
+    - It ensures we provide consistent input and output user experience.
+    - It ensures our C# model directly mapps to data contract using the same name.
+    - It is easier to find all naming exceptions by searching `[JsonProperty]`.
+
+- Avoid `[JsonIgnore]`: use of `[JsonIgnore]` typically means that you are mixing logic with data. You can use tuples to pass `JsonIgnored` parameters.
+
+- Avoid inheritance: type information does not exists in wire format, use enums instead.
+
 ### Naming Conventions
 
 We use the following naming conventions to improve shared understanding and enforce consistency. These rules are intend to be objective to avoid misunderstanding.
