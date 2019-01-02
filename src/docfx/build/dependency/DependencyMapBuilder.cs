@@ -18,7 +18,7 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(from != null);
 
-            if (from == null || to == null)
+            if (to == null)
             {
                 return;
             }

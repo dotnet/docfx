@@ -216,19 +216,19 @@ namespace Microsoft.Docs.Build
                 spec.Environments.Length > 0 &&
                 !spec.Environments.Any(env => string.IsNullOrEmpty(Environment.GetEnvironmentVariable(env)));
 
-            var docsetPath = Path.Combine("specs-drop", name);
-            var docsetCreatedFlag = Path.Combine("specs-flags", name);
+            var inputFolder = Path.Combine("specs-drop", name);
+            var inputFolderCreatedFlag = Path.Combine("specs-flags", name);
             if (fromLoc)
             {
                 spec = new E2ESpec(spec.OS, spec.Repo, spec.Watch, new[] { "build" }, spec.Environments, spec.SkippableOutputs, spec.Repos, spec.Inputs, spec.Outputs, spec.Http);
             }
             var mockedRepos = MockGitRepos(specPath, ordinal, name, spec);
 
-            if (!File.Exists(docsetCreatedFlag))
+            if (!File.Exists(inputFolderCreatedFlag))
             {
                 var inputRepo = spec.Repo
-                    ?? spec.Repos.Select(r => r.Key).FirstOrDefault(r => !fromLoc || LocalizationConvention.TryGetContributionBranch(HrefUtility.SplitGitHref(r).refspec, out _))
-                    ?? spec.Repos.Select(r => r.Key).FirstOrDefault(r => !fromLoc || LocalizationConvention.TryRemoveLocale(HrefUtility.SplitGitHref(r).remote.Split(new char[] { '\\', '/' }).Last(), out _, out _));
+                    ?? spec.Repos.Select(r => r.Key).FirstOrDefault(r => !fromLoc || LocalizationUtility.TryGetContributionBranch(HrefUtility.SplitGitHref(r).refspec, out _))
+                    ?? spec.Repos.Select(r => r.Key).FirstOrDefault(r => !fromLoc || LocalizationUtility.TryRemoveLocale(HrefUtility.SplitGitHref(r).remote.Split(new char[] { '\\', '/' }).Last(), out _, out _));
                 if (!string.IsNullOrEmpty(inputRepo))
                 {
                     try
@@ -236,8 +236,8 @@ namespace Microsoft.Docs.Build
                         t_mockedRepos.Value = mockedRepos;
 
                         var (remote, refspec) = HrefUtility.SplitGitHref(inputRepo);
-                        await GitUtility.CloneOrUpdate(docsetPath, remote, refspec);
-                        Process.Start(new ProcessStartInfo("git", "submodule update --init") { WorkingDirectory = docsetPath }).WaitForExit();
+                        await GitUtility.CloneOrUpdate(inputFolder, remote, refspec);
+                        Process.Start(new ProcessStartInfo("git", "submodule update --init") { WorkingDirectory = inputFolder }).WaitForExit();
                     }
                     finally
                     {
@@ -248,7 +248,7 @@ namespace Microsoft.Docs.Build
                 foreach (var (file, content) in spec.Inputs)
                 {
                     var mutableContent = content;
-                    var filePath = Path.Combine(docsetPath, file);
+                    var filePath = Path.Combine(inputFolder, file);
                     PathUtility.CreateDirectoryFromFilePath(filePath);
                     if (replaceEnvironments && Path.GetFileNameWithoutExtension(file) == "docfx")
                     {
@@ -260,16 +260,17 @@ namespace Microsoft.Docs.Build
                     File.WriteAllText(filePath, mutableContent);
                 }
 
-                PathUtility.CreateDirectoryFromFilePath(docsetCreatedFlag);
-                File.Create(docsetCreatedFlag);
+                PathUtility.CreateDirectoryFromFilePath(inputFolderCreatedFlag);
+                File.Create(inputFolderCreatedFlag);
             }
 
-            if (Directory.Exists(Path.Combine(docsetPath, "_site")))
+            var docset = Path.Combine(inputFolder, spec.Root ?? string.Empty);
+            if (Directory.Exists(Path.Combine(docset, "_site")))
             {
-                Directory.Delete(Path.Combine(docsetPath, "_site"), recursive: true);
+                Directory.Delete(Path.Combine(docset, "_site"), recursive: true);
             }
 
-            return (docsetPath, spec, mockedRepos);
+            return (docset, spec, mockedRepos);
         }
 
         private static string ToSafePathString(string value)

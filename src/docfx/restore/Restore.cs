@@ -22,7 +22,7 @@ namespace Microsoft.Docs.Build
             using (Progress.Start("Restore dependencies"))
             {
                 var restoredDocsets = new ConcurrentDictionary<string, int>(PathUtility.PathComparer);
-                var localeToRestore = LocalizationConvention.GetBuildLocale(docsetPath, options);
+                var localeToRestore = LocalizationUtility.GetBuildLocale(docsetPath, options);
 
                 await RestoreDocset(docsetPath);
 
