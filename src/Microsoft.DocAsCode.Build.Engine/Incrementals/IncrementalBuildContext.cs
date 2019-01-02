@@ -119,6 +119,8 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             IncrementalInfo = new IncrementalInfo();
             CanVersionIncremental = GetCanVersionIncremental(buildInfoIncrementalStatus);
 
+            var buildStrategy = CanVersionIncremental ? InfoCodes.Build.IsIncrementalBuild : InfoCodes.Build.IsFullBuild;
+            Logger.LogInfo($"Build strategy: {buildStrategy}", code: buildStrategy);
         }
 
         #endregion
@@ -623,10 +625,6 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             {
                 canIncremental = true;
             }
-
-            var buildStrategy = canIncremental ? InfoCodes.Build.IsIncrementalBuild : InfoCodes.Build.IsFullBuild;
-
-            Logger.LogInfo($"Build strategy: {buildStrategy}", code: buildStrategy);
 
             return new IncrementalStatus { CanIncremental = canIncremental, Details = details };
         }
