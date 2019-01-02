@@ -350,6 +350,11 @@ namespace Microsoft.Docs.Build
             return TryGetSourceRepository(docset, out _, out _, out var locale) ? locale : options.Locale;
         }
 
+        public static (bool fromUrl, string path) GetFileRestorePath(this Docset docset, string url)
+        {
+            return RestoreMap.GetFileRestorePath(docset.FallbackDocset?.DocsetPath ?? docset.DocsetPath, url);
+        }
+
         public static bool IsLocalized(this Docset docset) => docset.FallbackDocset != null;
 
         public static bool IsLocalizedBuild(this Docset docset) => docset.FallbackDocset != null || docset.LocalizationDocset != null;

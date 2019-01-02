@@ -57,11 +57,6 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public static (bool fromUrl, string path) GetFileRestorePath(this Docset docset, string url)
-        {
-            return GetFileRestorePath(docset.FallbackDocset?.DocsetPath ?? docset.DocsetPath, url);
-        }
-
         public static (bool fromUrl, string path) GetFileRestorePath(string docsetPath, string url)
         {
             var fromUrl = HrefUtility.IsHttpHref(url);

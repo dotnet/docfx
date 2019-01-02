@@ -1058,3 +1058,29 @@ outputs:
   docs/a/b.json:
   docs/b/toc.json: |
     {"items":[{"toc_title":"reference toc a","children":[{"toc_title":"reference markdown a","href":"../a/a"}]}]}
+---
+# loc build should only use loc repo's build history
+commands:
+  - build --locale zh-cn
+repos:
+  https://github.com/buildhistory/a:
+    - files:
+        docfx.yml: |
+          contribution:
+            gitCommitsTime: build_history.json
+        docs/a.md:
+        build_history.json: |
+          { "commits": [
+              { "sha": "6547e91b51bb7cd49d8fbf71f7c61d14f6a49937", "built_at": "2018-01-01" }
+            ]
+          }
+  https://github.com/buildhistory/a.zh-cn:
+    - files:
+        docfx.yml: |
+          contribution:
+            gitCommitsTime: build_history.json
+        docs/a.md:
+outputs:
+  build.log: |
+    ["error","file-not-found","Cannot find file 'build_history.json' relative to *","*"]
+
