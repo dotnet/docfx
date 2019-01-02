@@ -8,7 +8,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
-    internal sealed partial class Config
+    internal sealed class Config
     {
         private static readonly string[] s_defaultInclude = new[] { "docs/**/*.{md,yml,json}" };
         private static readonly string[] s_defaultExclude = new[] { "_site/**/*", "localization/**/*" };
@@ -149,6 +149,6 @@ namespace Microsoft.Docs.Build
         /// Gets the config file name.
         /// </summary>
         [JsonIgnore]
-        public string ConfigFileName { get; private set; } = "docfx.yml";
+        public string ConfigFileName { get; set; } = "docfx.yml";
     }
 }

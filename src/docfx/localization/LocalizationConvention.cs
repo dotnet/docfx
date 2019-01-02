@@ -339,10 +339,10 @@ namespace Microsoft.Docs.Build
             if (TryGetSourceRepository(docset, out var sourceRemote, out var sourceBranch, out var locale))
             {
                 var sourceDocsetPath = RestoreMap.GetGitRestorePath(sourceRemote, sourceBranch);
-                return Config.Load(sourceDocsetPath, options, locale);
+                return ConfigLoader.Load(sourceDocsetPath, options, locale);
             }
 
-            return Config.Load(docset, options);
+            return ConfigLoader.Load(docset, options);
         }
 
         public static string GetBuildLocale(string docset, CommandLineOptions options)

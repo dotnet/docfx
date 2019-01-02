@@ -8,13 +8,13 @@ using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
-    internal sealed partial class Config
+    internal static class ConfigLoader
     {
-        private const string KFiles = "files";
-        private const string KExclude = "exclude";
-        private const string KExtend = "extend";
-        private const string KDefaultLocale = "defaultLocale";
-        private const string KLocalization = "localization";
+        private const string Files = "files";
+        private const string Exclude = "exclude";
+        private const string Extend = "extend";
+        private const string DefaultLocale = "defaultLocale";
+        private const string Localization = "localization";
 
         /// <summary>
         /// Load the config under <paramref name="docsetPath"/>
@@ -70,8 +70,8 @@ namespace Microsoft.Docs.Build
             errors.AddRange(deserializeErrors);
 
             // validate metadata
-            errors.AddRange(MetadataValidator.Validate(config.GlobalMetadata, nameof(GlobalMetadata)));
-            errors.AddRange(MetadataValidator.Validate(config.FileMetadata, nameof(FileMetadata)));
+            errors.AddRange(MetadataValidator.Validate(config.GlobalMetadata, "global metadata"));
+            errors.AddRange(MetadataValidator.Validate(config.FileMetadata, "file metadata"));
 
             config.ConfigFileName = configPath == null
                 ? config.ConfigFileName
@@ -121,7 +121,7 @@ namespace Microsoft.Docs.Build
             var result = new JObject();
             var errors = new List<Error>();
 
-            if (config[KExtend] is JArray extends)
+            if (config[Extend] is JArray extends)
             {
                 foreach (var extend in extends)
                 {
@@ -143,8 +143,8 @@ namespace Microsoft.Docs.Build
         {
             if (string.IsNullOrEmpty(locale))
             {
-                if (config.TryGetValue<JObject>(KLocalization, out var localizationConfig) &&
-                    localizationConfig.TryGetValue<JValue>(KDefaultLocale, out var defaultLocale))
+                if (config.TryGetValue<JObject>(Localization, out var localizationConfig) &&
+                    localizationConfig.TryGetValue<JValue>(DefaultLocale, out var defaultLocale))
                 {
                     locale = defaultLocale.Value<string>();
                 }
@@ -183,9 +183,9 @@ namespace Microsoft.Docs.Build
 
         private static JObject Expand(JObject config)
         {
-            config[KFiles] = ExpandStringArray(config[KFiles]);
-            config[KExclude] = ExpandStringArray(config[KExclude]);
-            config[KExtend] = ExpandStringArray(config[KExtend]);
+            config[Files] = ExpandStringArray(config[Files]);
+            config[Exclude] = ExpandStringArray(config[Exclude]);
+            config[Extend] = ExpandStringArray(config[Extend]);
             return config;
         }
 
