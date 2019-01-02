@@ -352,7 +352,7 @@ namespace Microsoft.Docs.Build
 
         public static (bool fromUrl, string path) GetFileRestorePath(this Docset docset, string url)
         {
-            return RestoreMap.GetFileRestorePath(docset.FallbackDocset?.DocsetPath ?? docset.DocsetPath, url);
+            return RestoreMap.GetFileRestorePath(docset.DocsetPath, url, docset.FallbackDocset?.DocsetPath);
         }
 
         public static bool IsLocalized(this Docset docset) => docset.FallbackDocset != null;
