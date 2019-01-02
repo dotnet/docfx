@@ -36,7 +36,7 @@ namespace Microsoft.Docs.Build
             return spec;
         }
 
-        public new InternalXrefSpec Clone()
+        public InternalXrefSpec Clone()
         {
             var spec = new InternalXrefSpec
             {

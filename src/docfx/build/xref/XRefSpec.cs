@@ -24,27 +24,11 @@ namespace Microsoft.Docs.Build
 
         public string GetXrefPropertyValue(string propertyName)
         {
-            if (propertyName is null)
-                return null;
-
-            if (ExtensionData.TryGetValue<JValue>(propertyName, out var v))
+            if (propertyName != null && ExtensionData.TryGetValue<JValue>(propertyName, out var v))
             {
                 return v.Value is string str ? str : null;
             }
             return null;
-        }
-
-        public XrefSpec Clone()
-        {
-            var spec = new XrefSpec
-            {
-                Uid = Uid,
-                Monikers = Monikers,
-                Href = Href,
-            };
-
-            spec.ExtensionData.Merge(ExtensionData);
-            return spec;
         }
     }
 }
