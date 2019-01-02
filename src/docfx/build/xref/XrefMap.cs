@@ -289,7 +289,7 @@ namespace Microsoft.Docs.Build
                 Uid = metadata.Uid,
                 Href = file.SiteUrl,
             };
-            xref.ExtensionData["name"] = new Lazy<Func<string, string, Document, Document, JValue>>(GetName);
+            xref.InternalExtensionData["name"] = new Lazy<Func<string, string, Document, Document, JValue>>(GetName);
 
             var (error, monikers) = context.MonikerProvider.GetFileLevelMonikers(file, metadata.MonikerRange);
             foreach (var moniker in monikers)
@@ -327,7 +327,7 @@ namespace Microsoft.Docs.Build
                 Href = file.SiteUrl,
             };
 
-            xref.ExtensionData.AddRange(extensionData);
+            xref.InternalExtensionData.AddRange(extensionData);
             return (errors, xref);
         }
 

@@ -80,7 +80,7 @@ namespace Microsoft.Docs.Build
                 var spec = internalXrefSpec.Clone();
                 spec.Href = GetRelativeUrl(relativeTo, referencedFile);
                 xrefSpec = spec;
-                name = internalXrefSpec.GetName();
+                name = internalXrefSpec.GetName(referencedFile, relativeTo);
                 displayPropertyValue = internalXrefSpec.GetXrefPropertyValue(displayProperty, uid, referencedFile, relativeTo);
             }
             else

@@ -9,17 +9,17 @@ namespace Microsoft.Docs.Build
 {
     internal class InternalXrefSpec : XrefSpec
     {
-        public new Dictionary<string, Lazy<Func<string, string, Document, Document, JValue>>> ExtensionData { get; } = new Dictionary<string, Lazy<Func<string, string, Document, Document, JValue>>>();
+        public Dictionary<string, Lazy<Func<string, string, Document, Document, JValue>>> InternalExtensionData { get; } = new Dictionary<string, Lazy<Func<string, string, Document, Document, JValue>>>();
 
         public string GetXrefPropertyValue(string property, string uid, Document referencedFile, Document rootFile)
         {
             if (property is null)
                 return null;
 
-            return ExtensionData.TryGetValue(property, out var internalValue) && internalValue.Value(property, uid, referencedFile, rootFile).Value is string internalStr ? internalStr : null;
+            return InternalExtensionData.TryGetValue(property, out var internalValue) && internalValue.Value(property, uid, referencedFile, rootFile).Value is string internalStr ? internalStr : null;
         }
 
-        public new string GetName() => GetXrefPropertyValue("name", null, null, null);
+        public string GetName(Document referencedFile, Document rootFile) => GetXrefPropertyValue("name", Uid, referencedFile, rootFile);
 
         public XrefSpec ToExternalXrefSpec(Document referencedFile, Document rootFile)
         {
@@ -29,7 +29,7 @@ namespace Microsoft.Docs.Build
                 Monikers = Monikers,
                 Href = Href,
             };
-            foreach (var (key, value) in ExtensionData)
+            foreach (var (key, value) in InternalExtensionData)
             {
                 spec.ExtensionData[key] = value.Value(key, Uid, referencedFile, rootFile);
             }
@@ -45,9 +45,9 @@ namespace Microsoft.Docs.Build
                 Href = Href,
             };
 
-            foreach (var (key, value) in ExtensionData)
+            foreach (var (key, value) in InternalExtensionData)
             {
-                spec.ExtensionData[key] = value;
+                spec.InternalExtensionData[key] = value;
             }
             return spec;
         }

@@ -11,7 +11,8 @@ namespace Microsoft.Docs.Build
 {
     internal static class AttributeTransformer
     {
-        private static ThreadLocal<Stack<UidPropertyReference>> t_recursionDetector = new ThreadLocal<Stack<UidPropertyReference>>(() => new Stack<UidPropertyReference>());
+        private static ThreadLocal<Stack<(string propertyName, string uid, Document referencedFile, Document rootFile)>> t_recursionDetector
+            = new ThreadLocal<Stack<(string, string, Document, Document)>>(() => new Stack<(string, string, Document, Document)>());
 
         public static Func<IEnumerable<DataTypeAttribute>, object, string, object> TransformSDP(
             Context context,
@@ -47,19 +48,16 @@ namespace Microsoft.Docs.Build
                 {
                     try
                     {
-                        if (rootFile != null)
+                        if (t_recursionDetector.Value.Contains((propertyName, uid, referencedFile, rootFile)))
                         {
-                            if (t_recursionDetector.Value.Contains(new UidPropertyReference(uid, propertyName, referencedFile, rootFile), new UidPropertyReferenceComparer()))
-                            {
-                                throw Errors.CircularReference(rootFile, t_recursionDetector.Value.Select(x => x.ReferencedFile).ToList()).ToException();
-                            }
-                            t_recursionDetector.Value.Push(new UidPropertyReference(uid, propertyName, referencedFile, rootFile));
+                            throw Errors.CircularReference(rootFile, t_recursionDetector.Value.Where(x => x.rootFile == rootFile).Select(x => x.referencedFile).ToList()).ToException();
                         }
+                        t_recursionDetector.Value.Push((propertyName, uid, referencedFile, rootFile));
                         return new JValue(TransformContent(context, errors, attribute, value, file, buildChild));
                     }
                     finally
                     {
-                        if (rootFile != null && t_recursionDetector.Value.Count > 0)
+                        if (t_recursionDetector.Value.Count > 0)
                         {
                             t_recursionDetector.Value.Pop();
                         }
@@ -111,34 +109,6 @@ namespace Microsoft.Docs.Build
             }
 
             return value;
-        }
-
-        private sealed class UidPropertyReference
-        {
-            public string Uid { get; set; }
-
-            public string PropertyName { get; set; }
-
-            public Document ReferencedFile { get; set; }
-
-            public Document RootFile { get; set; }
-
-            public UidPropertyReference(string uid, string propertyName, Document referencedFile, Document rootFile)
-            {
-                Uid = uid;
-                PropertyName = propertyName;
-                ReferencedFile = referencedFile;
-                RootFile = rootFile;
-            }
-        }
-
-        private class UidPropertyReferenceComparer : IEqualityComparer<UidPropertyReference>
-        {
-            public bool Equals(UidPropertyReference x, UidPropertyReference y)
-                => x.Uid == y.Uid && x.PropertyName == y.PropertyName && x.ReferencedFile == y.ReferencedFile && x.RootFile == y.RootFile;
-
-            public int GetHashCode(UidPropertyReference obj)
-                => HashCode.Combine(obj.Uid, obj.PropertyName, obj.ReferencedFile, obj.RootFile);
         }
     }
 }
