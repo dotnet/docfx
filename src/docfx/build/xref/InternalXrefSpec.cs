@@ -3,25 +3,63 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
-    internal class InternalXrefSpec : XrefSpec
+    internal class InternalXrefSpec
     {
-        public Dictionary<string, Lazy<Func<string, string, Document, Document, JValue>>> InternalExtensionData { get; } = new Dictionary<string, Lazy<Func<string, string, Document, Document, JValue>>>();
+        private static ThreadLocal<Stack<(string propertyName, string uid, Document referencedFile, Document rootFile)>> t_recursionDetector
+            = new ThreadLocal<Stack<(string, string, Document, Document)>>(() => new Stack<(string, string, Document, Document)>());
 
-        public string GetXrefPropertyValue(string property, string uid, Document referencedFile, Document rootFile)
+        public string Uid { get; set; }
+
+        public string Href { get; set; }
+
+        public Document ReferencedFile { get; set; }
+
+        // if uid defined in SDP file, we need to check if circular reference exists
+        public bool NeedRecursionCheck
+            => ReferencedFile.FilePath.EndsWith(".json") || ReferencedFile.FilePath.EndsWith(".yaml");
+
+        public HashSet<string> Monikers { get; set; } = new HashSet<string>();
+
+        public Dictionary<string, Lazy<JValue>> ExtensionData { get; } = new Dictionary<string, Lazy<JValue>>();
+
+        public string GetXrefPropertyValue(string property, Document rootFile)
         {
             if (property is null)
                 return null;
 
-            return InternalExtensionData.TryGetValue(property, out var internalValue) && internalValue.Value(property, uid, referencedFile, rootFile).Value is string internalStr ? internalStr : null;
+            try
+            {
+                if (NeedRecursionCheck)
+                {
+                    if (rootFile == ReferencedFile || t_recursionDetector.Value.Contains((property, Uid, ReferencedFile, rootFile)))
+                    {
+                        var referenceMap = t_recursionDetector.Value.Where(x => x.rootFile == rootFile).Select(x => x.referencedFile).ToList();
+                        referenceMap.Insert(0, ReferencedFile);
+                        throw Errors.CircularReference(rootFile, referenceMap).ToException();
+                    }
+                    t_recursionDetector.Value.Push((property, Uid, ReferencedFile, rootFile));
+                }
+
+                return ExtensionData.TryGetValue(property, out var internalValue) && internalValue.Value.Value is string internalStr ? internalStr : null;
+            }
+            finally
+            {
+                if (NeedRecursionCheck && t_recursionDetector.Value.Count > 0)
+                {
+                    t_recursionDetector.Value.Pop();
+                }
+            }
         }
 
-        public string GetName(Document referencedFile, Document rootFile) => GetXrefPropertyValue("name", Uid, referencedFile, rootFile);
+        public string GetName(Document rootFile) => GetXrefPropertyValue("name", rootFile);
 
-        public XrefSpec ToExternalXrefSpec(Document referencedFile, Document rootFile)
+        public XrefSpec ToExternalXrefSpec(Document rootFile)
         {
             var spec = new XrefSpec
             {
@@ -29,25 +67,9 @@ namespace Microsoft.Docs.Build
                 Monikers = Monikers,
                 Href = Href,
             };
-            foreach (var (key, value) in InternalExtensionData)
+            foreach (var (key, value) in ExtensionData)
             {
-                spec.ExtensionData[key] = value.Value(key, Uid, referencedFile, rootFile);
-            }
-            return spec;
-        }
-
-        public InternalXrefSpec Clone()
-        {
-            var spec = new InternalXrefSpec
-            {
-                Uid = Uid,
-                Monikers = Monikers,
-                Href = Href,
-            };
-
-            foreach (var (key, value) in InternalExtensionData)
-            {
-                spec.InternalExtensionData[key] = value;
+                spec.ExtensionData[key] = GetXrefPropertyValue(key, rootFile);
             }
             return spec;
         }

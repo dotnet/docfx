@@ -11,9 +11,6 @@ namespace Microsoft.Docs.Build
 {
     internal static class AttributeTransformer
     {
-        private static ThreadLocal<Stack<(string propertyName, string uid, Document referencedFile, Document rootFile)>> t_recursionDetector
-            = new ThreadLocal<Stack<(string, string, Document, Document)>>(() => new Stack<(string, string, Document, Document)>());
-
         public static Func<IEnumerable<DataTypeAttribute>, object, string, object> TransformSDP(
             Context context,
             List<Error> errors,
@@ -33,36 +30,17 @@ namespace Microsoft.Docs.Build
             Context context,
             List<Error> errors,
             Document file,
+            string uid,
             Action<Document> buildChild,
-            Dictionary<string, Lazy<Func<string, string, Document, Document, JValue>>> extensionData)
+            Dictionary<string, Lazy<JValue>> extensionData)
         {
             return TransformXrefSpec;
 
             object TransformXrefSpec(IEnumerable<DataTypeAttribute> attributes, object value, string jsonPath)
             {
                 var attribute = attributes.SingleOrDefault(attr => !(attr is XrefPropertyAttribute));
-                extensionData[jsonPath] = new Lazy<Func<string, string, Document, Document, JValue>>(() => Load);
+                extensionData[jsonPath] = new Lazy<JValue>(() => new JValue(TransformContent(context, errors, attribute, value, file, buildChild)));
                 return null;
-
-                JValue Load(string propertyName, string uid, Document referencedFile, Document rootFile)
-                {
-                    try
-                    {
-                        if (t_recursionDetector.Value.Contains((propertyName, uid, referencedFile, rootFile)))
-                        {
-                            throw Errors.CircularReference(rootFile, t_recursionDetector.Value.Where(x => x.rootFile == rootFile).Select(x => x.referencedFile).ToList()).ToException();
-                        }
-                        t_recursionDetector.Value.Push((propertyName, uid, referencedFile, rootFile));
-                        return new JValue(TransformContent(context, errors, attribute, value, file, buildChild));
-                    }
-                    finally
-                    {
-                        if (t_recursionDetector.Value.Count > 0)
-                        {
-                            t_recursionDetector.Value.Pop();
-                        }
-                    }
-                }
             }
         }
 

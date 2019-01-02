@@ -59,41 +59,32 @@ namespace Microsoft.Docs.Build
                 queries = HttpUtility.ParseQueryString(query.Substring(1));
                 moniker = queries?["view"];
             }
+            var displayProperty = queries?["displayProperty"];
 
             // need to url decode uid from input content
-            var (xrefSpec, referencedFile) = _xrefMap.Value.Resolve(HttpUtility.UrlDecode(uid), moniker);
+            var (error, resolvedHref, display, referencedFile) = _xrefMap.Value.Resolve(HttpUtility.UrlDecode(uid), href, displayProperty, relativeTo, moniker);
 
-            if (xrefSpec is null)
+            if (referencedFile != null)
             {
-                return (Errors.UidNotFound(relativeTo, uid, href), null, null, null);
+                _dependencyMapBuilder.AddDependencyItem(relativeTo, referencedFile, DependencyType.UidInclusion);
             }
 
-            _dependencyMapBuilder.AddDependencyItem(relativeTo, referencedFile, DependencyType.UidInclusion);
-
-            // fallback order:
-            // xrefSpec.displayPropertyName -> xrefSpec.name -> uid
-            var displayProperty = queries?["displayProperty"];
-            string name;
-            string displayPropertyValue;
-            if (xrefSpec is InternalXrefSpec internalXrefSpec)
+            if (!string.IsNullOrEmpty(resolvedHref))
             {
-                var spec = internalXrefSpec.Clone();
-                spec.Href = GetRelativeUrl(relativeTo, referencedFile);
-                xrefSpec = spec;
-                name = internalXrefSpec.GetName(referencedFile, relativeTo);
-                displayPropertyValue = internalXrefSpec.GetXrefPropertyValue(displayProperty, uid, referencedFile, relativeTo);
+                var monikerQuery = !string.IsNullOrEmpty(moniker) ? $"view={moniker}" : "";
+                resolvedHref = HrefUtility.MergeHref(resolvedHref, monikerQuery, fragment.Length == 0 ? "" : fragment.Substring(1));
             }
-            else
-            {
-                name = xrefSpec.GetName();
-                displayPropertyValue = xrefSpec.GetXrefPropertyValue(displayProperty);
-            }
+            return (error, resolvedHref, display, referencedFile);
+        }
 
-            string display = !string.IsNullOrEmpty(displayPropertyValue) ? displayPropertyValue : (!string.IsNullOrEmpty(name) ? name : uid);
-            var monikerQuery = !string.IsNullOrEmpty(moniker) ? $"view={moniker}" : "";
-
-            href = HrefUtility.MergeHref(xrefSpec.Href, monikerQuery, fragment.Length == 0 ? "" : fragment.Substring(1));
-            return (null, href, display, referencedFile);
+        /// <summary>
+        /// Get relative url from file to the file relative to
+        /// </summary>
+        public string GetRelativeUrl(Document fileRelativeTo, Document file)
+        {
+            var relativePath = PathUtility.GetRelativePathToFile(fileRelativeTo.SitePath, file.SitePath);
+            return HrefUtility.EscapeUrl(Document.PathToRelativeUrl(
+                relativePath, file.ContentType, file.Schema, file.Docset.Config.Output.Json));
         }
 
         private (Error error, string content, Document file) TryResolveContent(Document relativeTo, string href)
@@ -190,16 +181,6 @@ namespace Microsoft.Docs.Build
             }
 
             return (error, relativeUrl + query + fragment, fragment, file);
-        }
-
-        /// <summary>
-        /// Get relative url from file to the file relative to
-        /// </summary>
-        private string GetRelativeUrl(Document fileRelativeTo, Document file)
-        {
-            var relativePath = PathUtility.GetRelativePathToFile(fileRelativeTo.SitePath, file.SitePath);
-            return HrefUtility.EscapeUrl(Document.PathToRelativeUrl(
-                relativePath, file.ContentType, file.Schema, file.Docset.Config.Output.Json));
         }
 
         private (Error error, Document file, string redirectTo, string query, string fragment, bool isSelfBookmark, string pathToDocset) TryResolveFile(Document relativeTo, string href)

@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -18,6 +19,9 @@ namespace Microsoft.Docs.Build
         private readonly IReadOnlyDictionary<string, XrefSpec> _externalXrefMap;
         private readonly Context _context;
 
+        private static ThreadLocal<Stack<(string uid, string displayPropertyName, Document referencedFile, Document rootFile)>> t_recursionDetector
+            = new ThreadLocal<Stack<(string, string, Document, Document)>>(() => new Stack<(string, string, Document, Document)>());
+
         public IEnumerable<XrefSpec> InternalReferences
         {
             get
@@ -25,33 +29,92 @@ namespace Microsoft.Docs.Build
                 var loadedInternalSpecs = new List<XrefSpec>();
                 foreach (var (uid, specsWithSameUid) in _internalXrefMap)
                 {
-                    if (TryGetValidXrefSpecs(uid, specsWithSameUid, out var validInternalSpecs))
+                    if (TryGetValidXrefSpecs(uid, null, specsWithSameUid, out var validInternalSpecs))
                     {
                         var (internalSpec, referencedFile) = GetLatestInternalXrefMap(validInternalSpecs);
-                        loadedInternalSpecs.Add(internalSpec.ToExternalXrefSpec(referencedFile, null));
+                        loadedInternalSpecs.Add(internalSpec.ToExternalXrefSpec(null));
                     }
                 }
                 return loadedInternalSpecs;
             }
         }
 
-        public (XrefSpec spec, Document referencedFile) Resolve(string uid, string moniker = null)
+        public (Error error, string href, string display, Document referencedFile) Resolve(string uid, string href, string displayPropertyName, Document rootFile, string moniker = null)
         {
-            if (_internalXrefMap.TryGetValue(uid, out var internalSpecs))
+            string name = null;
+            string displayPropertyValue = null;
+            string resolvedHref = null;
+            if (TryResolveFromInternal(uid, moniker, rootFile, out var internalXrefSpec, out var referencedFile))
             {
-                return GetInternalSpec(uid, moniker, internalSpecs);
+                resolvedHref = _context.DependencyResolver.GetRelativeUrl(rootFile, referencedFile);
+                name = internalXrefSpec.GetName(rootFile);
+                displayPropertyValue = internalXrefSpec.GetXrefPropertyValue(displayPropertyName, rootFile);
+            }
+            else if (TryResolveFromExternal(uid, moniker, out var xrefSpec))
+            {
+                resolvedHref = xrefSpec.Href;
+                name = xrefSpec.GetName();
+                displayPropertyValue = xrefSpec.GetXrefPropertyValue(displayPropertyName);
+            }
+            else
+            {
+                return (Errors.UidNotFound(rootFile, uid, href), null, null, null);
             }
 
-            if (_externalXrefMap.TryGetValue(uid, out var externalSpec))
-            {
-                return (externalSpec, null);
-            }
-            return default;
+            // fallback order:
+            // xrefSpec.displayPropertyName -> xrefSpec.name -> uid
+            string display = !string.IsNullOrEmpty(displayPropertyValue) ? displayPropertyValue : (!string.IsNullOrEmpty(name) ? name : uid);
+            return (null, resolvedHref, display, referencedFile);
         }
 
-        private (InternalXrefSpec internalSpec, Document referencedFile) GetInternalSpec(string uid, string moniker, List<(Lazy<(List<Error>, InternalXrefSpec)>, Document)> internalSpecs)
+        private JValue GetXrefPropertyValue(string propertyName, string uid, Document referencedFile, Document rootFile, Func<JValue> func)
         {
-            if (!TryGetValidXrefSpecs(uid, internalSpecs, out var validInternalSpecs))
+            try
+            {
+                if (t_recursionDetector.Value.Contains((propertyName, uid, referencedFile, rootFile)))
+                {
+                    var referenceMap = t_recursionDetector.Value.Select(x => x.referencedFile).ToList();
+                    throw Errors.CircularReference(rootFile, referenceMap).ToException();
+                }
+                return func();
+            }
+            finally
+            {
+                if (t_recursionDetector.Value.Count > 0)
+                {
+                    t_recursionDetector.Value.Pop();
+                }
+            }
+        }
+
+        private bool TryResolveFromInternal(string uid, string moniker, Document rootFile, out InternalXrefSpec internalXrefSpec, out Document referencedFile)
+        {
+            internalXrefSpec = null;
+            referencedFile = null;
+            if (_internalXrefMap.TryGetValue(uid, out var internalSpecs))
+            {
+                (internalXrefSpec, referencedFile) = GetInternalSpec(uid, moniker, rootFile, internalSpecs);
+                if (internalXrefSpec is null)
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
+        private bool TryResolveFromExternal(string uid, string moniker, out XrefSpec spec)
+        {
+            if (_externalXrefMap.TryGetValue(uid, out spec) && spec != null)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        private (InternalXrefSpec internalSpec, Document referencedFile) GetInternalSpec(string uid, string moniker, Document rootFile, List<(Lazy<(List<Error>, InternalXrefSpec)>, Document)> internalSpecs)
+        {
+            if (!TryGetValidXrefSpecs(uid, rootFile, internalSpecs, out var validInternalSpecs))
                 return default;
 
             if (!string.IsNullOrEmpty(moniker))
@@ -122,7 +185,7 @@ namespace Microsoft.Docs.Build
         private (InternalXrefSpec spec, Document referencedFile) GetLatestInternalXrefMap(List<(InternalXrefSpec spec, Document referencedFile)> specs)
             => specs.OrderByDescending(item => item.spec.Monikers.FirstOrDefault(), _context.MonikerProvider.Comparer).FirstOrDefault();
 
-        private bool TryGetValidXrefSpecs(string uid, List<(Lazy<(List<Error> errors, InternalXrefSpec spec)> value, Document file)> specsWithSameUid, out List<(InternalXrefSpec spec, Document file)> validSpecs)
+        private bool TryGetValidXrefSpecs(string uid, Document rootFile, List<(Lazy<(List<Error> errors, InternalXrefSpec spec)> value, Document file)> specsWithSameUid, out List<(InternalXrefSpec spec, Document file)> validSpecs)
         {
             var loadedSpecs = specsWithSameUid.Select(item => LoadXrefSpec(item));
             validSpecs = new List<(InternalXrefSpec, Document)>();
@@ -139,7 +202,7 @@ namespace Microsoft.Docs.Build
             if (conflictsWithoutMoniker.Count() > 1)
             {
                 var orderedConflict = conflictsWithoutMoniker.OrderBy(item => item.Item1.Href);
-                _context.Report.Write(Errors.UidConflict(uid, orderedConflict.Select(x => x.Item1)));
+                _context.Report.Write(Errors.UidConflict(uid, orderedConflict.Select(x => x.Item1.ToExternalXrefSpec(rootFile))));
                 return false;
             }
             else if (conflictsWithoutMoniker.Count() == 1)
@@ -188,7 +251,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private bool CheckOverlappingMonikers(IEnumerable<XrefSpec> specsWithSameUid, out HashSet<string> overlappingMonikers)
+        private bool CheckOverlappingMonikers(IEnumerable<InternalXrefSpec> specsWithSameUid, out HashSet<string> overlappingMonikers)
         {
             bool isOverlapping = false;
             overlappingMonikers = new HashSet<string>();
@@ -288,8 +351,9 @@ namespace Microsoft.Docs.Build
             {
                 Uid = metadata.Uid,
                 Href = file.SiteUrl,
+                ReferencedFile = file,
             };
-            xref.InternalExtensionData["name"] = new Lazy<Func<string, string, Document, Document, JValue>>(GetName);
+            xref.ExtensionData["name"] = new Lazy<JValue>(() => new JValue(string.IsNullOrEmpty(metadata.Title) ? metadata.Uid : metadata.Title));
 
             var (error, monikers) = context.MonikerProvider.GetFileLevelMonikers(file, metadata.MonikerRange);
             foreach (var moniker in monikers)
@@ -297,14 +361,11 @@ namespace Microsoft.Docs.Build
                 xref.Monikers.Add(moniker);
             }
             return (error, xref, file);
-
-            JValue GetName(string uid, string propertyName, Document referencedFile, Document rootFile)
-                => new JValue(string.IsNullOrEmpty(metadata.Title) ? metadata.Uid : metadata.Title);
         }
 
         private static (List<Error> errors, InternalXrefSpec spec) LoadSchemaDocument(Context context, JObject obj, Document file, string uid)
         {
-            var extensionData = new Dictionary<string, Lazy<Func<string, string, Document, Document, JValue>>>();
+            var extensionData = new Dictionary<string, Lazy<JValue>>();
 
             // TODO: for backward compatibility, when #YamlMime:YamlDocument, documentType is used to determine schema.
             //       when everything is moved to SDP, we can refactor the mime check to Document.TryCreate
@@ -318,16 +379,17 @@ namespace Microsoft.Docs.Build
             var (schemaErrors, content) = JsonUtility.ToObjectWithSchemaValidation(
                 obj,
                 schema.Type,
-                transform: AttributeTransformer.TransformXref(context, errors, file, null, extensionData));
+                transform: AttributeTransformer.TransformXref(context, errors, file, uid, null, extensionData));
 
             errors.AddRange(schemaErrors);
             var xref = new InternalXrefSpec
             {
                 Uid = uid,
                 Href = file.SiteUrl,
+                ReferencedFile = file,
             };
 
-            xref.InternalExtensionData.AddRange(extensionData);
+            xref.ExtensionData.AddRange(extensionData);
             return (errors, xref);
         }
 

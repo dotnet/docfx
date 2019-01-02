@@ -455,8 +455,8 @@ outputs:
       }
     }
 ---
-# SDP cyclic xref reference
-# whose display properties referring to another uid
+# SDP cyclic xref reference whose display properties referring to another uid
+# a.json -> b.json -> a.json && b.json -> a.json -> b.json
 inputs:
   docfx.yml:
   docs/a.json: |
@@ -482,7 +482,7 @@ inputs:
       "name": "name for c",
       "inlineDescription": "description for c",
       "summary": "Link to @a",
-    } 
+    }
 outputs:
   docs/c.json: |
     {"content":{"name":"name for c","summary":"<p>Link to <a href=\"a.json\">name for a</a></p>\n","inlineDescription":"description for c","uid":"c"}}
