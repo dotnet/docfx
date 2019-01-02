@@ -30,7 +30,7 @@ namespace Microsoft.Docs.Build
                 {
                     if (restoredDocsets.TryAdd(docset, 0))
                     {
-                        var (errors, config) = Config.TryLoad(docset, options, localeToRestore, extend: false);
+                        var (errors, config) = ConfigLoader.TryLoad(docset, options, localeToRestore, extend: false);
                         report.Write(errors);
 
                         if (root)
@@ -58,7 +58,7 @@ namespace Microsoft.Docs.Build
                     restoreUrl => RestoreFile.Restore(restoreUrl, config, @implicit));
 
                 // extend the config before loading
-                var (errors, extendedConfig) = Config.TryLoad(docset, options, locale, extend: true);
+                var (errors, extendedConfig) = ConfigLoader.TryLoad(docset, options, locale, extend: true);
                 report.Write(errors);
 
                 // restore git repos includes dependency repos and loc repos
