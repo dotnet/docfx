@@ -14,6 +14,18 @@ namespace Microsoft.Docs.Build
         {
             var legacyCrrInfoItems = new List<LegacyCrossRepoReferenceInfoItem>();
 
+            if (!string.IsNullOrEmpty(docset.Config.Theme))
+            {
+                var (url, branch) = HrefUtility.SplitGitHref(docset.Config.Theme);
+
+                legacyCrrInfoItems.Add(new LegacyCrossRepoReferenceInfoItem
+                {
+                    PathToRoot = "_themes",
+                    Url = url,
+                    Branch = branch,
+                });
+            }
+
             foreach (var dependentRepo in docset.Config.Dependencies)
             {
                 var (url, branch) = HrefUtility.SplitGitHref(dependentRepo.Value);
