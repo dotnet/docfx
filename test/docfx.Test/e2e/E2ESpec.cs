@@ -13,7 +13,7 @@ namespace Microsoft.Docs.Build
 
         public readonly string Repo;
 
-        public readonly string Root;
+        public readonly string Cwd;
 
         public readonly bool Watch;
 

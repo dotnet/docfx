@@ -264,7 +264,7 @@ namespace Microsoft.Docs.Build
                 File.Create(inputFolderCreatedFlag);
             }
 
-            var docset = Path.Combine(inputFolder, spec.Root ?? string.Empty);
+            var docset = Path.Combine(inputFolder, spec.Cwd ?? string.Empty);
             if (Directory.Exists(Path.Combine(docset, "_site")))
             {
                 Directory.Delete(Path.Combine(docset, "_site"), recursive: true);
