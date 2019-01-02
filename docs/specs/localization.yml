@@ -1070,5 +1070,5 @@ repos:
         localization/zh-cn/docs/a/a.md:
 outputs:
   build.log: |
-    ["error","config-not-found","Cannot find 'docfx.yml/docfx.json' at 'specs-drop\\localization 46. builf from loc folder for folder mapping is not supported-*\\localization/zh-cn/'"]
+    ["error","config-not-found","Cannot find 'docfx.yml/docfx.json' at *"]
 
