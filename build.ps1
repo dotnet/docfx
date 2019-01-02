@@ -8,13 +8,14 @@ function exec([string] $cmd) {
 
 function getBranchName() {
     $branchPrefix = "refs/heads/"
-    $branch = & {git rev-parse --abbrev-ref HEAD}
+    # https://docs.microsoft.com/en-us/azure/devops/pipelines/process/variables?view=vsts&tabs=yaml%2Cbatch#working-with-variables
+    $branch = $env:BUILD_SOURCEBRANCH
     if ([string]::IsNullOrEmpty($branch)) {
-        #https://docs.microsoft.com/en-us/azure/devops/pipelines/process/variables?view=vsts&tabs=yaml%2Cbatch#working-with-variables
-        $branch = $env:BUILD_SOURCEBRANCH
+        # Local detached head
+        return & {git rev-parse --abbrev-ref HEAD}
     }
     if ($branch.StartsWith($branchPrefix)) {
-        $branch = $branch.SubString($branchPrefix.length)
+        return $branch.SubString($branchPrefix.length)
     }
     return $branch
 }
