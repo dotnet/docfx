@@ -50,7 +50,7 @@ namespace Microsoft.Docs.Build
                 name = internalXrefSpec.GetName(rootFile);
                 displayPropertyValue = internalXrefSpec.GetXrefPropertyValue(displayPropertyName, rootFile);
             }
-            else if (TryResolveFromExternal(uid, moniker, out var xrefSpec))
+            else if (TryResolveFromExternal(uid, out var xrefSpec))
             {
                 resolvedHref = xrefSpec.Href;
                 name = xrefSpec.GetName();
@@ -103,7 +103,7 @@ namespace Microsoft.Docs.Build
             return false;
         }
 
-        private bool TryResolveFromExternal(string uid, string moniker, out XrefSpec spec)
+        private bool TryResolveFromExternal(string uid, out XrefSpec spec)
         {
             if (_externalXrefMap.TryGetValue(uid, out spec) && spec != null)
             {
@@ -379,7 +379,7 @@ namespace Microsoft.Docs.Build
             var (schemaErrors, content) = JsonUtility.ToObjectWithSchemaValidation(
                 obj,
                 schema.Type,
-                transform: AttributeTransformer.TransformXref(context, errors, file, uid, null, extensionData));
+                transform: AttributeTransformer.TransformXref(context, errors, file, null, extensionData));
 
             errors.AddRange(schemaErrors);
             var xref = new InternalXrefSpec

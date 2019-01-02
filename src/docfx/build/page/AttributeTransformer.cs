@@ -30,7 +30,6 @@ namespace Microsoft.Docs.Build
             Context context,
             List<Error> errors,
             Document file,
-            string uid,
             Action<Document> buildChild,
             Dictionary<string, Lazy<JValue>> extensionData)
         {
