@@ -1059,6 +1059,28 @@ outputs:
   docs/b/toc.json: |
     {"items":[{"toc_title":"reference toc a","children":[{"toc_title":"reference markdown a","href":"../a/a"}]}]}
 ---
+# loc build gets restored files
+# from current docset firestly, then from fallback docset if has
+commands:
+  - build --locale zh-cn
+repos:
+  https://github.com/buildhistory/a:
+    - files:
+        docfx.yml: |
+          contribution:
+            gitCommitsTime: build_history.json
+        docs/a.md:
+        build_history.json: |
+          { "commits": [
+              { "sha": "6547e91b51bb7cd49d8fbf71f7c61d14f6a49937", "built_at": "2018-01-01" }
+            ]
+          }
+  https://github.com/buildhistory/a.zh-cn:
+    - files:
+        docs/a.md:
+outputs:
+  docs/a.json:
+---
 # build from loc folder for folder mapping is not supported
 cwd: localization/zh-cn/
 repos:
@@ -1071,4 +1093,3 @@ repos:
 outputs:
   build.log: |
     ["error","config-not-found","Cannot find 'docfx.yml/docfx.json' at *"]
-

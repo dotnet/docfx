@@ -341,6 +341,11 @@ namespace Microsoft.Docs.Build
             return ConfigLoader.Load(docset, options);
         }
 
+        public static (bool fromUrl, string path) GetFileRestorePath(this Docset docset, string url)
+        {
+            return RestoreMap.GetFileRestorePath(docset.DocsetPath, url, docset.FallbackDocset?.DocsetPath);
+        }
+
         public static string GetBuildLocale(string docset, CommandLineOptions options)
         {
             return TryGetSourceRepository(docset, out _, out _, out var locale) ? locale : options.Locale;
