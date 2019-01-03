@@ -245,9 +245,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private void UpdateManifest()
         {
-            Context.ManifestItems.Shrink(IncrementalContext.BaseDir);
             CurrentBuildVersionInfo.Manifest = Context.ManifestItems;
-            CurrentBuildVersionInfo.SaveManifest();
         }
 
         private void UpdateFileMap(IEnumerable<HostService> hostServices)
