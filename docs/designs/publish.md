@@ -1,43 +1,32 @@
 # Publish
 
-## Publish Process
-
-## Pull Request Publish
-
 ## Publish Manifest File
 
-To efficiently look up a file from URL for dynamic rendering, 
-`docfx` produces a manifest file at `_site/build.manifest` that lists all the output files and properties needed for lookup.
-
-*locale*, *moniker* are special properties that flows dynamically when users navigate from page to page.
-These are called *browser navigation properties* and are stored in manifest.
+`docfx` generates a manifest file for publishing at `{output-path}/_build/publish.json` after build. It is the entry point for publishing. An example `publish.json` looks like this:
 
 ```javascript
 {
-    "files": [
+    "publish": [
         {
-            "siteUrl": "/dotnet/api/system.string",
-            "outputPath": "en-us/netstandard-2.0/dotnet/api/system.string.json",
+            "url": "/dotnet/api/system.string",
+            "path": "dotnet/api/system.string.json",
+            "hash": "d41d8cd98f00b204e9800998ecf8427e",
             "locale": "en-us",
-            "moniker": "netstandard-2.0", 
+            "monikers": ["netstandard-2.0"],
 
-            // other browser navigation properties...
-            // other properties needed for backward compatibility
-        }, 
-        {
-            "siteUrl": "/dotnet/api/system.string",
-
-            // when `outputPath` does not exist,
-            // use `sourcePath` relative to source docset folder to locate the file
-            "sourcePath": "en-us/netstandard-2.0/dotnet/api/system.string.json"
+            // additional properties needed for publish
         }
     ]
 }
 ```
 
-We only save *browser navigation properties* for images in `build.manifest`. Other image metadata are discarded.
+The format is a json file that contains a list of files to be published. Each item under `publish` section contains the following properties:
 
-Different verions of the same document, or difference locales of the same document may have the same output content.
-It is nessesary to duplicate them for static rendering. To save space for dynamic rendering, set the `path`
-property to the same location.
-
+Name        | Description
+------------|-----------------
+url         | site url without locale.
+path        | location of the content file relative to `{output-path}`. Different files may share the same `{path}` if their contents are the same.
+hash        | MD5 hash of the content file specified by `{path}`.
+locale      | locale of the file.
+monikers    | monikers of the file.
+*additional properties | Additional properties can be added here if they are required by publish. For backward compatibility reasons, article metadata is required by publish, thus they are also put here.
