@@ -109,7 +109,7 @@ outputs:
     { "content": "<p><a target=\"_blank\" href=\"c\">c</a></p>" }
   docs/dir/c.json:
 ---
-# Show warning if the link is empty, missing or points to absolute file path
+# Show warning if the link is empty, missing
 inputs:
   docfx.yml: |
     exclude: '*'
