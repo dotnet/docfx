@@ -1059,7 +1059,8 @@ outputs:
   docs/b/toc.json: |
     {"items":[{"toc_title":"reference toc a","children":[{"toc_title":"reference markdown a","href":"../a/a"}]}]}
 ---
-# loc build should only use loc repo's build history
+# loc build gets restored files
+# from current docset firestly, then from fallback docset if has
 commands:
   - build --locale zh-cn
 repos:
@@ -1076,11 +1077,7 @@ repos:
           }
   https://github.com/buildhistory/a.zh-cn:
     - files:
-        docfx.yml: |
-          contribution:
-            gitCommitsTime: build_history.json
         docs/a.md:
 outputs:
-  build.log: |
-    ["error","file-not-found","Cannot find file 'build_history.json' relative to *","*"]
+  docs/a.json:
 
