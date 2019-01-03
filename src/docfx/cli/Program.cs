@@ -114,7 +114,7 @@ namespace Microsoft.Docs.Build
                 syntax.DefineParameter("docset", ref docset, "Docset directory that contains docfx.yml/docfx.json.");
 
                 // GC command
-                syntax.DefineCommand("gc", ref command, "Grabage collect for `AppData` folder");
+                syntax.DefineCommand("gc", ref command, "Garbage collect for `AppData` folder");
                 syntax.DefineOption("retention-days", ref options.RetentionDays, "Keep the files accessed/written within <d> days");
             });
 

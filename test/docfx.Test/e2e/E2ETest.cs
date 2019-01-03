@@ -21,7 +21,7 @@ namespace Microsoft.Docs.Build
 {
     public static class E2ETest
     {
-        private static readonly ConcurrentDictionary<string, int> s_mockRepos = new ConcurrentDictionary<string, int>();
+        private static readonly ConcurrentDictionary<string, (int ordinal, string spec)> s_mockRepos = new ConcurrentDictionary<string, (int ordinal, string spec)>();
 
         public static readonly TheoryData<string> Specs = FindTestSpecs();
 
@@ -164,7 +164,17 @@ namespace Microsoft.Docs.Build
 #else
                     var only = false;
 #endif
+                    if (Path.GetFileNameWithoutExtension(file).Contains("localization"))
+                    {
+                        var spec = YamlUtility.Deserialize<E2ESpec>(yaml, false);
+                        if (spec.Commands != null && spec.Commands.Any(c => c != null && c.Contains("--locale"))
+                            && spec.Repos.Count() > 1 && !spec.Inputs.Any() && string.IsNullOrEmpty(spec.Repo))
+                        {
+                            specNames.Add(($"{Path.GetFileNameWithoutExtension(file)}/{i:D2}. [from loc] {header}", only));
+                        }
+                    }
                     specNames.Add(($"{Path.GetFileNameWithoutExtension(file)}/{i++:D2}. {header}", only));
+
                 }
             }
 
@@ -183,13 +193,13 @@ namespace Microsoft.Docs.Build
         private static async Task<(string docsetPath, E2ESpec spec, IReadOnlyDictionary<string, string> mockedRepos)>
             CreateDocset(string specName)
         {
-            var match = Regex.Match(specName, "^(.+?)/(\\d+). (.*)");
+            var match = Regex.Match(specName, "^(.+?)/(\\d+). (\\[from loc\\] )?(.*)");
             var specPath = match.Groups[1].Value + ".yml";
             var ordinal = int.Parse(match.Groups[2].Value);
             var sections = File.ReadAllText(Path.Combine("specs", specPath)).Split("\n---", StringSplitOptions.RemoveEmptyEntries);
             var yaml = sections[ordinal].Trim('\r', '\n', '-');
-
-            Assert.StartsWith($"# {match.Groups[3].Value}", yaml);
+            var fromLoc = !string.IsNullOrEmpty(match.Groups[3].Value);
+            Assert.StartsWith($"# {match.Groups[4].Value}", yaml);
 
             var yamlHash = HashUtility.GetMd5Hash(yaml).Substring(0, 5);
             var name = ToSafePathString(specName) + "-" + yamlHash;
@@ -206,13 +216,19 @@ namespace Microsoft.Docs.Build
                 spec.Environments.Length > 0 &&
                 !spec.Environments.Any(env => string.IsNullOrEmpty(Environment.GetEnvironmentVariable(env)));
 
-            var docsetPath = Path.Combine("specs-drop", name);
-            var docsetCreatedFlag = Path.Combine("specs-flags", name);
-            var mockedRepos = MockGitRepos(name, spec);
-
-            if (!File.Exists(docsetCreatedFlag))
+            var inputFolder = Path.Combine("specs-drop", name);
+            var inputFolderCreatedFlag = Path.Combine("specs-flags", name);
+            if (fromLoc)
             {
-                var inputRepo = spec.Repo ?? spec.Repos.Select(item => item.Key).FirstOrDefault();
+                spec = new E2ESpec(spec.OS, spec.Repo, spec.Watch, new[] { "build" }, spec.Environments, spec.SkippableOutputs, spec.Repos, spec.Inputs, spec.Outputs, spec.Http);
+            }
+            var mockedRepos = MockGitRepos(specPath, ordinal, name, spec);
+
+            if (!File.Exists(inputFolderCreatedFlag))
+            {
+                var inputRepo = spec.Repo
+                    ?? spec.Repos.Select(r => r.Key).FirstOrDefault(r => !fromLoc || LocalizationUtility.TryGetContributionBranch(HrefUtility.SplitGitHref(r).refspec, out _))
+                    ?? spec.Repos.Select(r => r.Key).FirstOrDefault(r => !fromLoc || LocalizationUtility.TryRemoveLocale(HrefUtility.SplitGitHref(r).remote.Split(new char[] { '\\', '/' }).Last(), out _, out _));
                 if (!string.IsNullOrEmpty(inputRepo))
                 {
                     try
@@ -220,8 +236,8 @@ namespace Microsoft.Docs.Build
                         t_mockedRepos.Value = mockedRepos;
 
                         var (remote, refspec) = HrefUtility.SplitGitHref(inputRepo);
-                        await GitUtility.CloneOrUpdate(docsetPath, remote, refspec);
-                        Process.Start(new ProcessStartInfo("git", "submodule update --init") { WorkingDirectory = docsetPath }).WaitForExit();
+                        await GitUtility.CloneOrUpdate(inputFolder, remote, refspec);
+                        Process.Start(new ProcessStartInfo("git", "submodule update --init") { WorkingDirectory = inputFolder }).WaitForExit();
                     }
                     finally
                     {
@@ -232,7 +248,7 @@ namespace Microsoft.Docs.Build
                 foreach (var (file, content) in spec.Inputs)
                 {
                     var mutableContent = content;
-                    var filePath = Path.Combine(docsetPath, file);
+                    var filePath = Path.Combine(inputFolder, file);
                     PathUtility.CreateDirectoryFromFilePath(filePath);
                     if (replaceEnvironments && Path.GetFileNameWithoutExtension(file) == "docfx")
                     {
@@ -244,16 +260,17 @@ namespace Microsoft.Docs.Build
                     File.WriteAllText(filePath, mutableContent);
                 }
 
-                PathUtility.CreateDirectoryFromFilePath(docsetCreatedFlag);
-                File.Create(docsetCreatedFlag);
+                PathUtility.CreateDirectoryFromFilePath(inputFolderCreatedFlag);
+                File.Create(inputFolderCreatedFlag);
             }
 
-            if (Directory.Exists(Path.Combine(docsetPath, "_site")))
+            var docset = Path.Combine(inputFolder, spec.Cwd ?? string.Empty);
+            if (Directory.Exists(Path.Combine(docset, "_site")))
             {
-                Directory.Delete(Path.Combine(docsetPath, "_site"), recursive: true);
+                Directory.Delete(Path.Combine(docset, "_site"), recursive: true);
             }
 
-            return (docsetPath, spec, mockedRepos);
+            return (docset, spec, mockedRepos);
         }
 
         private static string ToSafePathString(string value)
@@ -270,7 +287,7 @@ namespace Microsoft.Docs.Build
             return value;
         }
 
-        private static IReadOnlyDictionary<string, string> MockGitRepos(string name, E2ESpec spec)
+        private static IReadOnlyDictionary<string, string> MockGitRepos(string file, int ordinal, string name, E2ESpec spec)
         {
             var result = new ConcurrentDictionary<string, string>();
             var repos =
@@ -293,7 +310,11 @@ namespace Microsoft.Docs.Build
                 {
                     foreach (var (branch, commits) in repoInfo)
                     {
-                        Debug.Assert(s_mockRepos.TryAdd($"{remote}#{branch}", 0), $"mock repo's remote: {remote}#{branch} is duplicated");
+                        s_mockRepos.AddOrUpdate($"{remote}#{branch}", (ordinal, file), (key, oldValue) =>
+                        {
+                            Debug.Assert(oldValue.ordinal == ordinal && oldValue.spec == file, $"test {oldValue} and {ordinal} are using the same mock repo remote: {remote}#{branch}, '{file}'");
+                            return oldValue;
+                        });
 
                         var lastCommit = default(LibGit2Sharp.Commit);
                         foreach (var commit in commits.Reverse())

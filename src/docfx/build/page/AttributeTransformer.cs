@@ -11,9 +11,9 @@ namespace Microsoft.Docs.Build
     internal static class AttributeTransformer
     {
         public static Func<IEnumerable<DataTypeAttribute>, object, string, object> Transform(
+            Context context,
             List<Error> errors,
             Document file,
-            DependencyResolver dependencyResolver,
             Action<Document> buildChild,
             JObject extensionData = null)
         {
@@ -36,21 +36,21 @@ namespace Microsoft.Docs.Build
             {
                 if (attribute is HrefAttribute)
                 {
-                    var (error, link, _) = dependencyResolver.ResolveLink((string)value, file, file, buildChild);
+                    var (error, link, _) = context.DependencyResolver.ResolveLink((string)value, file, file, buildChild);
                     errors.AddIfNotNull(error);
                     return link;
                 }
 
                 if (attribute is MarkdownAttribute)
                 {
-                    var (html, markup) = Markup.ToHtml((string)value, file, dependencyResolver, buildChild, null, MarkdownPipelineType.Markdown);
+                    var (html, markup) = MarkdownUtility.ToHtml((string)value, file, context.DependencyResolver, buildChild, null, MarkdownPipelineType.Markdown);
                     errors.AddRange(markup.Errors);
                     return html;
                 }
 
                 if (attribute is InlineMarkdownAttribute)
                 {
-                    var (html, markup) = Markup.ToHtml((string)value, file, dependencyResolver, buildChild, null, MarkdownPipelineType.InlineMarkdown);
+                    var (html, markup) = MarkdownUtility.ToHtml((string)value, file, context.DependencyResolver, buildChild, null, MarkdownPipelineType.InlineMarkdown);
                     errors.AddRange(markup.Errors);
                     return html;
                 }
@@ -59,7 +59,7 @@ namespace Microsoft.Docs.Build
                 {
                     var html = HtmlUtility.TransformLinks((string)value, href =>
                     {
-                        var (error, link, _) = dependencyResolver.ResolveLink(href, file, file, buildChild);
+                        var (error, link, _) = context.DependencyResolver.ResolveLink(href, file, file, buildChild);
                         errors.AddIfNotNull(error);
                         return link;
                     });
@@ -69,7 +69,7 @@ namespace Microsoft.Docs.Build
                 if (attribute is XrefAttribute)
                 {
                     // TODO: how to fill xref resolving data besides href
-                    var (error, link, _, _) = dependencyResolver.ResolveXref((string)value, file);
+                    var (error, link, _, _) = context.DependencyResolver.ResolveXref((string)value, file);
                     errors.AddIfNotNull(error);
                     return link;
                 }

@@ -60,13 +60,13 @@ namespace Microsoft.Docs.Build
                     .Select(group => group.Key);
                 if (conflictMoniker.Count() > 0)
                 {
-                    context.Report(Errors.PublishUrlConflict(siteUrl, files.Keys, conflictMoniker));
+                    context.Report.Write(Errors.PublishUrlConflict(siteUrl, files.Keys, conflictMoniker));
 
                     foreach (var conflictingFile in files.Keys)
                     {
                         if (_manifest.TryRemove(conflictingFile, out var manifest))
                         {
-                            context.Delete(manifest.OutputPath);
+                            context.Output.Delete(manifest.OutputPath);
                         }
                     }
                 }
@@ -87,13 +87,13 @@ namespace Microsoft.Docs.Build
                     conflictingFiles.Add(removed);
                 }
 
-                context.Report(Errors.OutputPathConflict(outputPath, conflictingFiles));
+                context.Report.Write(Errors.OutputPathConflict(outputPath, conflictingFiles));
 
                 foreach (var conflictingFile in conflictingFiles)
                 {
                     if (_manifest.TryRemove(conflictingFile, out var manifest))
                     {
-                        context.Delete(manifest.OutputPath);
+                        context.Output.Delete(manifest.OutputPath);
                     }
                 }
             }
@@ -105,7 +105,7 @@ namespace Microsoft.Docs.Build
                 {
                     if (_manifest.TryRemove(file, out var manifest))
                     {
-                        context.Delete(manifest.OutputPath);
+                        context.Output.Delete(manifest.OutputPath);
                     }
                 }
             }

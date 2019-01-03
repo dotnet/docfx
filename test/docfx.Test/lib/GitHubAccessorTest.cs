@@ -27,6 +27,7 @@ namespace Microsoft.Docs.Build
         [Theory]
         [InlineData("docascode", "docfx-test-dependencies", "c467c848311ccd2550fdb25a77ef26f9d8a33d00", null, "OsmondJiang")]
         [InlineData("docascode", "docfx-test-dependencies", "deadbeefdeadbeefdeadbeefdeadbeefdeadbeef", null, null)]
+        [InlineData("docascode", "this-repo-does-not-exists", "deadbeefdeadbeefdeadbeefdeadbeefdeadbeef", null, null)]
         public async Task GetLoginByCommit(string repoOwner, string repoName, string commit, string errorCode, string login)
         {
             var (error, name) = await _github.GetLoginByCommit(repoOwner, repoName, commit);

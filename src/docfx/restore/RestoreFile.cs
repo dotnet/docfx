@@ -2,10 +2,10 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
-using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
@@ -84,15 +84,23 @@ namespace Microsoft.Docs.Build
             return parts.Length == 2 ? new EntityTagHeaderValue(HrefUtility.UnescapeUrl(parts[1])) : null;
         }
 
+        public static IEnumerable<string> GetFileReferences(this Config config)
+        {
+            foreach (var url in config.Xref)
+            {
+                yield return url;
+            }
+
+            yield return config.Contribution.GitCommitsTime;
+            yield return config.GitHub.UserCache;
+            yield return config.MonikerDefinition;
+        }
+
         private static async Task<(string filename, EntityTagHeaderValue etag)> DownloadToTempFile(
             string url,
             Config config,
             EntityTagHeaderValue existingEtag)
         {
-            Directory.CreateDirectory(AppData.DownloadsRoot);
-            var tempFile = Path.Combine(AppData.DownloadsRoot, "." + Guid.NewGuid().ToString("N"));
-            EntityTagHeaderValue etag = null;
-
             try
             {
                 var response = await HttpClientUtility.GetAsync(url, config, existingEtag);
@@ -101,18 +109,20 @@ namespace Microsoft.Docs.Build
                     return (null, existingEtag);
                 }
 
-                etag = response.Headers.ETag;
+                Directory.CreateDirectory(AppData.DownloadsRoot);
+                var tempFile = Path.Combine(AppData.DownloadsRoot, "." + Guid.NewGuid().ToString("N"));
+
                 using (var stream = await response.EnsureSuccessStatusCode().Content.ReadAsStreamAsync())
                 using (var file = new FileStream(tempFile, FileMode.Create, FileAccess.Write, FileShare.None))
                 {
                     await stream.CopyToAsync(file);
                 }
+                return (tempFile, response.Headers.ETag);
             }
             catch (Exception ex)
             {
                 throw Errors.DownloadFailed(url, ex.Message).ToException(ex);
             }
-            return (tempFile, etag);
         }
     }
 }

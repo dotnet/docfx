@@ -29,11 +29,5 @@ namespace Microsoft.Docs.Build
         /// Gets or sets the git commit time
         /// </summary>
         public DateTimeOffset Time { get; set; }
-
-        /// <summary>
-        /// Get the git commit string representation
-        /// </summary>
-        /// <returns>The git commit string representation</returns>
-        public override string ToString() => $"{Sha}: {AuthorName}, {AuthorEmail}";
     }
 }

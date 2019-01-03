@@ -40,7 +40,7 @@ namespace Microsoft.Docs.Build
 
         public static void Convert(Docset docset, Context context, IEnumerable<(string legacyFilePathRelativeToBaseFolder, LegacyFileMapItem fileMapItem)> items)
         {
-            context.WriteJson(
+            context.Output.WriteJson(
                 new
                 {
                     locale = docset.Locale,

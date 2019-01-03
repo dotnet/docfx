@@ -21,32 +21,20 @@ namespace Microsoft.Docs.Build
         /// /readme.md          -->         /localization/zh-cn/readme.md
         /// /files/a.md         -->         /localization/de-de/files/a.md
         /// </summary>
+        /// TODO: support build from localization folder directly?
         Folder,
-
-        /// <summary>
-        /// localization files are stored in ONE **different repository** for **all locales** under different **locale folder**
-        /// repo mapping example:
-        /// source repo         locale        localization repo
-        /// dotnet/docfx        zh-cn         dotnet/docfx.localization
-        /// dotnet/docfx        de-de         dotnet/docfx.localization
-        /// folder mapping example:
-        /// source repo         -->           localization repo
-        /// /readme.md          -->           /zh-cn/readme.md
-        /// /files/a.md         -->           /zh-cn/files/a.md
-        /// TODO: remove this mapping
-        /// </summary>
-        RepositoryAndFolder,
 
         /// <summary>
         /// localization files are stored in ONE **different repository** for **all locales** under different **locale branch**
         /// repo mapping example:
         /// source repo         locale        localization repo
-        /// dotnet/docfx        zh-cn         dotnet/docfx.localization
-        /// dotnet/docfx        de-de         dotnet/docfx.localization
+        /// dotnet/docfx        zh-cn         dotnet/docfx.loc
+        /// dotnet/docfx        de-de         dotnet/docfx.loc
         /// branch mapping example:
         /// source branch         -->           localization branch
-        /// #master               -->           #zh-cn-master
-        /// #live                 -->           #zh-cn-live
+        /// #master               -->           #master.zh-cn
+        /// #live                 -->           #live.zh-cn
+        /// #live       -> bilingual ->         #live-sxs.zh-cn
         /// </summary>
         Branch,
     }

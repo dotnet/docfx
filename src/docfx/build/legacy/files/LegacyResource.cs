@@ -13,25 +13,10 @@ namespace Microsoft.Docs.Build
             Context context,
             Document doc,
             LegacyManifestItem legacyManifestItem,
-            MetadataProvider metadataProvider,
             List<string> monikers)
         {
             var legacyManifestOutput = legacyManifestItem.Output;
-            var metadata = metadataProvider.GetMetadata(doc).metadata;
-            metadata = LegacyMetadata.GenerataCommonMetadata(metadata, docset);
-
-            var metadataNeedToBeRemove = new List<string> { "__global" };
-            foreach (var property in metadata)
-            {
-                if (property.Key.StartsWith("_") && !property.Key.StartsWith("_op_"))
-                {
-                    metadataNeedToBeRemove.AddIfNotNull(property.Key);
-                }
-            }
-            foreach (var key in metadataNeedToBeRemove)
-            {
-                metadata.Remove(key);
-            }
+            var metadata = new JObject { ["locale"] = docset.Locale };
             if (monikers?.Count > 0)
             {
                 metadata["monikers"] = new JArray(monikers);
@@ -44,7 +29,7 @@ namespace Microsoft.Docs.Build
                     docset.GetAbsoluteOutputPathFromRelativePath(legacyManifestOutput.ResourceOutput.ToLegacyOutputPath(docset, legacyManifestItem.Group)));
             }
 
-            context.WriteJson(metadata, legacyManifestOutput.MetadataOutput.ToLegacyOutputPath(docset, legacyManifestItem.Group));
+            context.Output.WriteJson(metadata, legacyManifestOutput.MetadataOutput.ToLegacyOutputPath(docset, legacyManifestItem.Group));
         }
     }
 }

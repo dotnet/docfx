@@ -246,7 +246,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Deserialize from JSON file, get from or add to cache
         /// </summary>
-        public static (List<Error>, JToken) Deserialize(Document file, Context context) => context.LoadJsonFile(file);
+        public static (List<Error>, JToken) Deserialize(Document file, Context context) => context.Cache.LoadJsonFile(file);
 
         /// <summary>
         /// Parse a string to JToken.

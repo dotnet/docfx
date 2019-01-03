@@ -56,9 +56,9 @@ namespace Microsoft.Docs.Build
             UnsafeUpdateUsers(users);
         }
 
-        private GitHubUserCache(Docset docset, string token)
+        private GitHubUserCache(Docset docset)
         {
-            var github = new GitHubAccessor(token);
+            var github = new GitHubAccessor(docset.Config.GitHub.AuthToken);
             _getUserByLoginFromGitHub = github.GetUserByLogin;
             _getLoginByCommitFromGitHub = github.GetLoginByCommit;
             _expirationInHours = docset.Config.GitHub.UserCacheExpirationInHours;
@@ -83,9 +83,9 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public static async Task<GitHubUserCache> Create(Docset docset, string token)
+        public static async Task<GitHubUserCache> Create(Docset docset)
         {
-            var result = new GitHubUserCache(docset, token);
+            var result = new GitHubUserCache(docset);
             await result.ReadCacheFiles();
             return result;
         }

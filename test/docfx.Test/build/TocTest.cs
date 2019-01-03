@@ -10,8 +10,9 @@ namespace Microsoft.Docs.Build
     public static class TocTest
     {
         private static readonly Docset s_docset = new Docset(
-            new Context(new Report(), "."),
+            new Report(),
             Directory.GetCurrentDirectory(),
+            "en-us",
             JsonUtility.Deserialize<Config>("{'output': { 'json': true } }".Replace('\'', '\"')),
             new CommandLineOptions());
 

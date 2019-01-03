@@ -350,7 +350,7 @@ inputs:
 outputs:
   docs/a.json:
   build.log: |
-    ["warning","reserved-metadata","Metadata 'redirecT_url' is reserved by docfx, remove this metadata from FileMetadata","docfx.yml"]
+    ["warning","reserved-metadata","Metadata 'redirecT_url' is reserved by docfx, remove this metadata from file metadata","docfx.yml"]
 ---
 # redirection defined in global metadata is not supported
 inputs:
@@ -361,4 +361,4 @@ inputs:
 outputs:
   docs/a.json:
   build.log: |
-    ["warning","reserved-metadata","Metadata 'redirect_url' is reserved by docfx, remove this metadata from GlobalMetadata","docfx.yml"]
+    ["warning","reserved-metadata","Metadata 'redirect_url' is reserved by docfx, remove this metadata from global metadata","docfx.yml"]
