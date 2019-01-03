@@ -218,14 +218,6 @@ namespace Microsoft.DocAsCode.Common
                 });
         }
 
-        public static void Shrink(this Manifest manifest, string incrementalFolder, int parallism = 0)
-        {
-            lock (manifest)
-            {
-                Shrink(manifest.Files, incrementalFolder, parallism);
-            }
-        }
-
         public static void Shrink(this IEnumerable<ManifestItem> items, string incrementalFolder, int parallism = 0)
         {
             Parallel.ForEach(

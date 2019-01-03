@@ -128,8 +128,6 @@ namespace Microsoft.DocAsCode.Build.Engine
                 {
                     Logger.UnregisterListener(_increContext.CurrentInfo.MessageInfo.GetListener());
 
-                    manifest.Shrink(_increContext.CurrentBaseDir);
-
                     TraceIntermediateInfo(manifest);
 
                     // Update manifest items in current post processing info
