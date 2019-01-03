@@ -1100,13 +1100,13 @@ outputs:
 commands:
   - build --locale zh-cn
 repos:
-  https://github.com/buildhistory/a:
+  https://github.com/locconfig/a:
     - files:
         docfx.yml: |
           contribution:
             repository: https://github.com/dotnet/docfx
         docs/a.md:
-  https://github.com/buildhistory/a.zh-cn:
+  https://github.com/locconfig/a.zh-cn:
     - files:
         docs/a.md:
         docfx.yml: |
@@ -1122,7 +1122,7 @@ outputs:
 commands:
   - build --locale zh-cn
 repos:
-  https://github.com/buildhistory/b:
+  https://github.com/locconfig/b:
     - files:
         docfx.yml: |
           contribution:
@@ -1130,7 +1130,7 @@ repos:
           localization:
             mapping: Branch
         docs/a.md:
-  https://github.com/buildhistory/b.loc#master.zh-cn:
+  https://github.com/locconfig/b.loc#master.zh-cn:
     - files:
         docs/a.md:
         docfx.yml: |
@@ -1148,7 +1148,7 @@ outputs:
 commands:
   - build --locale zh-cn
 repos:
-  https://github.com/buildhistory/c:
+  https://github.com/locconfig/c:
     - files:
         docfx.yml: |
           contribution:
@@ -1156,7 +1156,7 @@ repos:
           localization:
             bilingual: true
         docs/a.md:
-  https://github.com/buildhistory/c.zh-cn#master-sxs:
+  https://github.com/locconfig/c.zh-cn#master-sxs:
     - files:
         docs/a.md:
         docfx.yml: |
@@ -1164,7 +1164,7 @@ repos:
             repository: https://github.com/dotnet/docfx.zh-cn
           localization:
             bilingual: true
-  https://github.com/buildhistory/c.zh-cn:
+  https://github.com/locconfig/c.zh-cn:
     - files:
         docs/a.md:
 outputs:
@@ -1177,7 +1177,7 @@ outputs:
 commands:
   - build --locale zh-cn
 repos:
-  https://github.com/buildhistory/d:
+  https://github.com/locconfig/d:
     - files:
         docfx.yml: |
           contribution:
@@ -1186,7 +1186,7 @@ repos:
             mapping: Branch
             bilingual: true
         docs/a.md:
-  https://github.com/buildhistory/d.loc#master-sxs.zh-cn:
+  https://github.com/locconfig/d.loc#master-sxs.zh-cn:
     - files:
         docs/a.md:
         docfx.yml: |
@@ -1195,7 +1195,7 @@ repos:
           localization:
             mapping: Branch
             bilingual: true
-  https://github.com/buildhistory/d.loc#master.zh-cn:
+  https://github.com/locconfig/d.loc#master.zh-cn:
     - files:
         docs/a.md:
 outputs:
