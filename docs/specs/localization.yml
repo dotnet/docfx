@@ -1080,4 +1080,16 @@ repos:
         docs/a.md:
 outputs:
   docs/a.json:
-
+---
+# build from loc folder for folder mapping is not supported
+cwd: localization/zh-cn/
+repos:
+  https://github.com/buildfromlocfolder/a:
+    - files:
+        docfx.yml: |
+          localization:
+            mapping: Folder
+        localization/zh-cn/docs/a/a.md:
+outputs:
+  build.log: |
+    ["error","config-not-found","Cannot find 'docfx.yml/docfx.json' at *"]

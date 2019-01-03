@@ -95,7 +95,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static async Task CloneOrUpdate(string path, string url, string committish, Config config = null)
         {
-            await CloneOrUpdate(path, url, new[] { committish }, bare: false, depthOne: false, config);
+            await CloneOrUpdate(path, url, new[] { committish }, bare: false, depthOne: false, prune: true, config);
             await ExecuteNonQuery(path, $"-c core.longpaths=true checkout --force --progress {committish}");
         }
 
@@ -104,7 +104,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static Task CloneOrUpdateBare(string path, string url, IEnumerable<string> committishes, bool depthOne, Config config = null)
         {
-            return CloneOrUpdate(path, url, committishes, bare: true, depthOne, config);
+            return CloneOrUpdate(path, url, committishes, bare: true, depthOne, prune: true, config);
         }
 
         /// <summary>
@@ -112,7 +112,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static Task Fetch(string path, string url, string committish, Config config = null)
         {
-            return CloneOrUpdate(path, url, new[] { committish }, bare: false, depthOne: false, config);
+            return CloneOrUpdate(path, url, new[] { committish }, bare: false, depthOne: false, prune: false, config);
         }
 
         /// <summary>
@@ -270,7 +270,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Clones or update a git repository to the latest version.
         /// </summary>
-        private static async Task CloneOrUpdate(string path, string url, IEnumerable<string> committishes, bool bare, bool depthOne, Config config)
+        private static async Task CloneOrUpdate(string path, string url, IEnumerable<string> committishes, bool bare, bool depthOne, bool prune, Config config)
         {
             // Unifies clone and fetch using a single flow:
             // - git init
@@ -300,17 +300,18 @@ namespace Microsoft.Docs.Build
             var httpConfig = GetGitCommandLineConfig(url, config);
             var refspecs = string.Join(' ', committishes.Select(rev => $"+{rev}:{rev}"));
             var depth = depthOne ? "--depth 1" : "";
+            var pruneSwitch = prune ? "--prune" : "";
 
             try
             {
-                await ExecuteNonQuery(path, $"{httpConfig} fetch --tags --prune --progress --update-head-ok {depth} \"{url}\" {refspecs}", stderr: true);
+                await ExecuteNonQuery(path, $"{httpConfig} fetch --tags --prune --progress --update-head-ok {pruneSwitch} {depth} \"{url}\" {refspecs}", stderr: true);
             }
             catch (InvalidOperationException ex) when (committishes.Any(rev => ex.Message.Contains(rev)))
             {
                 // Fallback to fetch all branches and tags if the input committish is not supported by fetch
                 depth = "--depth 9999999999";
                 refspecs = "+refs/heads/*:refs/heads/* +refs/tags/*:refs/tags/*";
-                await ExecuteNonQuery(path, $"{httpConfig} fetch --tags --prune --progress --update-head-ok {depth} \"{url}\" {refspecs}");
+                await ExecuteNonQuery(path, $"{httpConfig} fetch --tags --prune --progress --update-head-ok {pruneSwitch} {depth} \"{url}\" {refspecs}");
             }
         }
 

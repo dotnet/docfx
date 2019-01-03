@@ -10,16 +10,12 @@ using System.Text.RegularExpressions;
 
 namespace Microsoft.Docs.Build
 {
-    internal static class LocalizationConvention
+    internal static class LocalizationUtility
     {
         private static readonly Regex s_nameWithLocale = new Regex(@"^.+?(\.[a-z]{2,4}-[a-z]{2,4}(-[a-z]{2,4})?|\.loc)?$", RegexOptions.IgnoreCase);
 
         /// <summary>
-        /// The loc repo name follows below conventions:
-        /// source remote                                           -->     loc remote
-        /// https:://github.com/{org}/{repo-name}                   -->     https:://github.com/{org}/{repo-name}.{locale}
-        /// https:://github.com/{org}/{repo-name}.{source-locale}   -->     https:://github.com/{org}/{repo-name}.{loc-locale}
-        /// // TODO: org name can be different
+        /// The loc repo remote and branch based on localization mapping<see cref="LocalizationMapping"/>
         /// </summary>
         public static (string remote, string branch) GetLocalizedRepo(LocalizationMapping mapping, bool bilingual, string remote, string branch, string locale, string defaultLocale)
         {
@@ -120,7 +116,7 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
-        /// Get the source repo's remote and branch from loc repo
+        /// Get the source repo's remote and branch from loc repo based on <see cref="LocalizationMapping"/>
         /// </summary>
         public static bool TryGetSourceRepository(string remote, string branch, out string sourceRemote, out string sourceBranch, out string locale)
         {
@@ -277,7 +273,7 @@ namespace Microsoft.Docs.Build
             return false;
         }
 
-        public static IReadOnlyList<Document> GetTableOfContents(this Docset docset, TableOfContentsMap tocMap)
+        public static IReadOnlyList<Document> GetTableOfContentsScope(this Docset docset, TableOfContentsMap tocMap)
         {
             Debug.Assert(tocMap != null);
 
@@ -303,7 +299,7 @@ namespace Microsoft.Docs.Build
             return result;
         }
 
-        public static HashSet<Document> CreateScanScope(this Docset docset)
+        public static HashSet<Document> GetScanScope(this Docset docset)
         {
             var scanScopeFilePaths = new HashSet<string>(PathUtility.PathComparer);
             var scanScope = new HashSet<Document>();
@@ -339,15 +335,10 @@ namespace Microsoft.Docs.Build
             if (TryGetSourceRepository(docset, out var sourceRemote, out var sourceBranch, out var locale))
             {
                 var sourceDocsetPath = RestoreMap.GetGitRestorePath(sourceRemote, sourceBranch);
-                return Config.Load(sourceDocsetPath, options, locale);
+                return ConfigLoader.Load(sourceDocsetPath, options, locale);
             }
 
-            return Config.Load(docset, options);
-        }
-
-        public static string GetBuildLocale(string docset, CommandLineOptions options)
-        {
-            return TryGetSourceRepository(docset, out _, out _, out var locale) ? locale : options.Locale;
+            return ConfigLoader.Load(docset, options);
         }
 
         public static (bool fromUrl, string path) GetFileRestorePath(this Docset docset, string url)
@@ -355,11 +346,16 @@ namespace Microsoft.Docs.Build
             return RestoreMap.GetFileRestorePath(docset.DocsetPath, url, docset.FallbackDocset?.DocsetPath);
         }
 
+        public static string GetBuildLocale(string docset, CommandLineOptions options)
+        {
+            return TryGetSourceRepository(docset, out _, out _, out var locale) ? locale : options.Locale;
+        }
+
         public static bool IsLocalized(this Docset docset) => docset.FallbackDocset != null;
 
         public static bool IsLocalizedBuild(this Docset docset) => docset.FallbackDocset != null || docset.LocalizationDocset != null;
 
-        public static (string remote, string branch) GetLocalizationTheme(string theme, string locale, string defaultLocale)
+        public static (string remote, string branch) GetLocalizedTheme(string theme, string locale, string defaultLocale)
         {
             Debug.Assert(!string.IsNullOrEmpty(theme));
             var (remote, branch) = HrefUtility.SplitGitHref(theme);

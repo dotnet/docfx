@@ -29,7 +29,7 @@ namespace Microsoft.Docs.Build
 
             await ParallelUtility.ForEach(gitDependencies, RestoreGitRepo, Progress.Update);
 
-            if (!isDependencyRepo && LocalizationConvention.TryGetContributionBranch(docsetPath, out var contributionBranch, out var repo))
+            if (!isDependencyRepo && LocalizationUtility.TryGetContributionBranch(docsetPath, out var contributionBranch, out var repo))
             {
                 await GitUtility.Fetch(repo.Path, repo.Remote, contributionBranch, config);
             }
@@ -135,7 +135,7 @@ namespace Microsoft.Docs.Build
                 yield break;
             }
 
-            var (remote, branch) = LocalizationConvention.GetLocalizationTheme(config.Theme, locale, config.Localization.DefaultLocale);
+            var (remote, branch) = LocalizationUtility.GetLocalizedTheme(config.Theme, locale, config.Localization.DefaultLocale);
 
             yield return (remote, branch, GitFlags.DepthOne);
         }
@@ -161,7 +161,7 @@ namespace Microsoft.Docs.Build
                 yield break;
             }
 
-            if (LocalizationConvention.TryGetSourceRepository(repo.Remote, repo.Branch, out var sourceRemote, out var sourceBranch, out var l))
+            if (LocalizationUtility.TryGetSourceRepository(repo.Remote, repo.Branch, out var sourceRemote, out var sourceBranch, out var l))
             {
                 yield return (sourceRemote, sourceBranch, GitFlags.None);
                 yield break; // no need to find localized repo anymore
@@ -172,7 +172,7 @@ namespace Microsoft.Docs.Build
                 yield break;
             }
 
-            var (remote, branch) = LocalizationConvention.GetLocalizedRepo(
+            var (remote, branch) = LocalizationUtility.GetLocalizedRepo(
                 config.Localization.Mapping,
                 config.Localization.Bilingual,
                 repo.Remote,
@@ -182,7 +182,7 @@ namespace Microsoft.Docs.Build
 
             yield return (remote, branch, GitFlags.None);
 
-            if (config.Localization.Bilingual && LocalizationConvention.TryGetContributionBranch(branch, out var contributionBranch))
+            if (config.Localization.Bilingual && LocalizationUtility.TryGetContributionBranch(branch, out var contributionBranch))
             {
                 // Bilingual repos also depend on non bilingual branch for commit history
                 yield return (remote, contributionBranch, GitFlags.NoCheckout);

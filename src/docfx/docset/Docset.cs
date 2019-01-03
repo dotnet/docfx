@@ -92,11 +92,11 @@ namespace Microsoft.Docs.Build
             {
                 // localization/fallback docset will share the same context, config, build locale and options with source docset
                 // source docset configuration will be overwritten by build locale overwrite configuration
-                if (LocalizationConvention.TryGetSourceDocsetPath(DocsetPath, out var sourceDocsetPath))
+                if (LocalizationUtility.TryGetSourceDocsetPath(DocsetPath, out var sourceDocsetPath))
                 {
                     FallbackDocset = new Docset(report, sourceDocsetPath, Locale, config, options, localizedDocset: this);
                 }
-                else if (LocalizationConvention.TryGetLocalizedDocsetPath(DocsetPath, Config, Locale, out var localizationDocsetPath))
+                else if (LocalizationUtility.TryGetLocalizedDocsetPath(DocsetPath, Config, Locale, out var localizationDocsetPath))
                 {
                     LocalizationDocset = new Docset(report, localizationDocsetPath, Locale, config, options, fallbackDocset: this);
                 }
@@ -129,12 +129,12 @@ namespace Microsoft.Docs.Build
                 report.Write(Config.ConfigFileName, errors);
                 return map;
             });
-            _scanScope = new Lazy<HashSet<Document>>(() => this.CreateScanScope());
+            _scanScope = new Lazy<HashSet<Document>>(() => this.GetScanScope());
 
             _legacyTemplate = new Lazy<LegacyTemplate>(() =>
             {
                 Debug.Assert(!string.IsNullOrEmpty(Config.Theme));
-                var (themeRemote, branch) = LocalizationConvention.GetLocalizationTheme(Config.Theme, Locale, Config.Localization.DefaultLocale);
+                var (themeRemote, branch) = LocalizationUtility.GetLocalizedTheme(Config.Theme, Locale, Config.Localization.DefaultLocale);
                 return new LegacyTemplate(RestoreMap.GetGitRestorePath($"{themeRemote}#{branch}"), Locale);
             });
         }
@@ -173,7 +173,7 @@ namespace Microsoft.Docs.Build
 
                 // get dependent docset config or default config
                 // todo: what parent config should be pass on its children
-                var (loadErrors, subConfig) = Config.TryLoad(dir, _options, Locale);
+                var (loadErrors, subConfig) = ConfigLoader.TryLoad(dir, _options, Locale);
                 errors.AddRange(loadErrors);
                 result.TryAdd(PathUtility.NormalizeFolder(name), new Docset(_report, dir, Locale, subConfig, _options, isDependency: true));
             }
