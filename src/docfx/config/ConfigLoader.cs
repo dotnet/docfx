@@ -36,13 +36,20 @@ namespace Microsoft.Docs.Build
         public static (List<Error> errors, Config config) TryLoad(string docsetPath, CommandLineOptions options, string locale = null, bool extend = true)
             => LoadCore(docsetPath, options, locale, extend);
 
+        public static bool TryGetConfigPath(string docset, out string configPath)
+        {
+            configPath = PathUtility.FindYamlOrJson(Path.Combine(docset, "docfx"));
+
+            return !string.IsNullOrEmpty(configPath);
+        }
+
         private static (List<Error>, Config) LoadCore(string docsetPath, CommandLineOptions options, string locale,  bool extend)
         {
             var errors = new List<Error>();
             Config config = null;
 
-            var configPath = PathUtility.FindYamlOrJson(Path.Combine(docsetPath, "docfx"));
-            var (loadErrors, configObject) = configPath == null ? (errors, new JObject()) : LoadConfigObject(configPath, configPath);
+            var configExists = TryGetConfigPath(docsetPath, out var configPath);
+            var (loadErrors, configObject) = !configExists ? (errors, new JObject()) : LoadConfigObject(configPath, configPath);
 
             // apply options
             var optionConfigObject = Expand(options?.ToJObject());
@@ -73,7 +80,7 @@ namespace Microsoft.Docs.Build
             errors.AddRange(MetadataValidator.Validate(config.GlobalMetadata, "global metadata"));
             errors.AddRange(MetadataValidator.Validate(config.FileMetadata, "file metadata"));
 
-            config.ConfigFileName = configPath == null
+            config.ConfigFileName = !configExists
                 ? config.ConfigFileName
                 : PathUtility.NormalizeFile(Path.GetRelativePath(docsetPath, configPath));
             return (errors, config);

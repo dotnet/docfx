@@ -1093,3 +1093,111 @@ repos:
 outputs:
   build.log: |
     ["error","config-not-found","Cannot find 'docfx.yml/docfx.json' at *"]
+---
+# loc build gets docfx config 1
+# from current docset firstly, then from fallback docset
+# [repo mapping]
+commands:
+  - build --locale zh-cn
+repos:
+  https://github.com/buildhistory/a:
+    - files:
+        docfx.yml: |
+          contribution:
+            repository: https://github.com/dotnet/docfx
+        docs/a.md:
+  https://github.com/buildhistory/a.zh-cn:
+    - files:
+        docs/a.md:
+        docfx.yml: |
+          contribution:
+            repository: https://github.com/dotnet/docfx.zh-cn
+outputs:
+  docs/a.json: |
+    { "content_git_url": "*dotnet/docfx.zh-cn/blob/master/*"}
+---
+# loc build gets docfx config 2
+# from current docset firstly, then from fallback docset
+# [branch mapping]
+commands:
+  - build --locale zh-cn
+repos:
+  https://github.com/buildhistory/b:
+    - files:
+        docfx.yml: |
+          contribution:
+            repository: https://github.com/dotnet/docfx#live
+          localization:
+            mapping: Branch
+        docs/a.md:
+  https://github.com/buildhistory/b.loc#master.zh-cn:
+    - files:
+        docs/a.md:
+        docfx.yml: |
+          contribution:
+            repository: https://github.com/dotnet/docfx.loc#live
+          localization:
+            mapping: Branch
+outputs:
+  docs/a.json: |
+    { "content_git_url": "*dotnet/docfx.loc/blob/live.zh-cn/*"}
+---
+# loc build gets docfx config 3
+# from current docset firstly, then from fallback docset
+# [repo mapping] & bilingual
+commands:
+  - build --locale zh-cn
+repos:
+  https://github.com/buildhistory/c:
+    - files:
+        docfx.yml: |
+          contribution:
+            repository: https://github.com/dotnet/docfx
+          localization:
+            bilingual: true
+        docs/a.md:
+  https://github.com/buildhistory/c.zh-cn#master-sxs:
+    - files:
+        docs/a.md:
+        docfx.yml: |
+          contribution:
+            repository: https://github.com/dotnet/docfx.zh-cn
+          localization:
+            bilingual: true
+  https://github.com/buildhistory/c.zh-cn:
+    - files:
+        docs/a.md:
+outputs:
+  docs/a.json: |
+    { "content_git_url": "*dotnet/docfx.zh-cn/blob/master/*"}
+---
+# loc build gets docfx config 4
+# from current docset firstly, then from fallback docset
+# [branch mapping] & bilingual
+commands:
+  - build --locale zh-cn
+repos:
+  https://github.com/buildhistory/d:
+    - files:
+        docfx.yml: |
+          contribution:
+            repository: https://github.com/dotnet/docfx#live
+          localization:
+            mapping: Branch
+            bilingual: true
+        docs/a.md:
+  https://github.com/buildhistory/d.loc#master-sxs.zh-cn:
+    - files:
+        docs/a.md:
+        docfx.yml: |
+          contribution:
+            repository: https://github.com/dotnet/docfx.loc#live
+          localization:
+            mapping: Branch
+            bilingual: true
+  https://github.com/buildhistory/d.loc#master.zh-cn:
+    - files:
+        docs/a.md:
+outputs:
+  docs/a.json: |
+    { "content_git_url": "*dotnet/docfx.loc/blob/live.zh-cn/*"}
