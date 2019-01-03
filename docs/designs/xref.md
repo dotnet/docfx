@@ -42,7 +42,7 @@ inputs:
     }
 outputs:
   docs/a.json:
-  xrefmap.json: | 
+  _build/xrefmap.json: | 
     {"references":[{"uid":"a","href":"docs/a.json","summary":"<pre><code>Hello `docfx`!\n</code></pre>\n"}]}
 ```
 Since the xref map would be outputted for external reference, if markdown contains a linking url, should it be resolved to an absolute url? It is resolved as relative url for now as below:
@@ -59,12 +59,12 @@ inputs:
 outputs:
   docs/a.json:
   docs/b.json:
-  xrefmap.json: | 
+  _build/xrefmap.json: | 
     {"references":[{"uid":"a","href":"docs/a.json","summary":"<p>Link to <a href=\"b\">b</a></p>\n"}]}
 ```
 
 ## Output xref map
-Docfx will output a JSON file named `xrefmap.json`. In V2, docfx used to output `xrefmap.yml`, it took much longer to be de-serialized compared to JSON format.
+Docfx will output a JSON file named `_build/xrefmap.json`. In V2, docfx used to output `xrefmap.yml`, it took much longer to be de-serialized compared to JSON format.
 ```json
 {
     "references": [
@@ -82,14 +82,14 @@ This file will be updated to some central place, and there would be a step to me
 ## Create xref map
 There are two parts of xref map, internal and external.
 ### Internal xref map
-User can define uids in the same repository and reference to them, and these defined uids will be outputted as `xrefmap.json`.
+User can define uids in the same repository and reference to them, and these defined uids will be outputted as `_build/xrefmap.json`.
 
 ### External xref map
-User can reference uids defined by other repositories as well, just define the urls of `xrefmap.json` in `docfx.yml`.
+User can reference uids defined by other repositories as well, just define the urls of `_build/xrefmap.json` in `docfx.yml`.
 ```yml
 xref:
-  - http://url1/xrefmap.json
-  - http://url2/xrefmap.json
+  - http://url1/_build/xrefmap.json
+  - http://url2/_build/xrefmap.json
 ```
 During `docfx restore`, all the JSON files will be restored and merged.
 
