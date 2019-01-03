@@ -629,11 +629,12 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         private bool GetCanVersionIncremental(IncrementalStatus buildInfoIncrementalStatus, DocumentBuildParameters parameters)
         {
             bool canIncremental = true;
-            string message = buildInfoIncrementalStatus.Details;
+            string message = null;
             if (!buildInfoIncrementalStatus.CanIncremental)
             {
-                IncrementalInfo.ReportStatus(false, IncrementalPhase.Build, buildInfoIncrementalStatus.Details);
-                Logger.LogVerbose(buildInfoIncrementalStatus.Details);
+                message = buildInfoIncrementalStatus.Details;
+                IncrementalInfo.ReportStatus(false, IncrementalPhase.Build, message);
+                Logger.LogVerbose(message);
                 canIncremental = false;
             }
             else if (LastBuildVersionInfo == null)
@@ -658,13 +659,18 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                 canIncremental = false;
             }
 
+            var buildStrategy = canIncremental ? InfoCodes.Build.IsIncrementalBuild : InfoCodes.Build.IsFullBuild;
+            var groupName = parameters.GroupInfo?.Name ?? "default";
             if (canIncremental)
             {
                 IncrementalInfo.ReportStatus(true, IncrementalPhase.Build);
+                Logger.LogInfo($"Group: {groupName}, build strategy: {buildStrategy}", code: buildStrategy);
+            }
+            else
+            {
+                Logger.LogInfo($"Group: {groupName}, build strategy: {buildStrategy}, details: {message}", code: buildStrategy);
             }
 
-            var buildStrategy = canIncremental ? InfoCodes.Build.IsIncrementalBuild : InfoCodes.Build.IsFullBuild;
-            Logger.LogInfo($"Group: {parameters.GroupInfo?.Name ?? "default"}, build strategy: {buildStrategy}, details: {message}", code: buildStrategy);
             return canIncremental;
         }
 
