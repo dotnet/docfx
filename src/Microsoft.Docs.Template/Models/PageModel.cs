@@ -52,6 +52,8 @@ namespace Microsoft.Docs.Build
         public bool Bilingual { get; set; }
 
         public List<string> Monikers { get; set; }
+
+        public string FeedbackGitHubRepo { get; set; }
     }
 
     [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]

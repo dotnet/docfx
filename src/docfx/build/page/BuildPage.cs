@@ -115,6 +115,7 @@ namespace Microsoft.Docs.Build
             var title = yamlHeader.Value<string>("title") ?? HtmlUtility.GetInnerText(htmlTitleDom);
             var finalHtml = markup.HasHtml ? htmlDom.StripTags().OuterHtml : html;
             var wordCount = HtmlUtility.CountWord(htmlDom);
+            var feedbackGitHubRepo = LocalizationUtility.GetFeedbackGitHubRepo(file.Docset.Config.FeedbackGitHubRepo, file.Docset.Locale, file.Docset.Config.Localization.DefaultLocale);
 
             var model = new PageModel
             {
@@ -123,6 +124,7 @@ namespace Microsoft.Docs.Build
                 RawTitle = markup.HtmlTitle,
                 WordCount = wordCount,
                 Monikers = monikers,
+                FeedbackGitHubRepo = feedbackGitHubRepo,
             };
 
             var bookmarks = HtmlUtility.GetBookmarks(htmlDom).Concat(HtmlUtility.GetBookmarks(htmlTitleDom)).ToHashSet();

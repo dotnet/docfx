@@ -134,7 +134,7 @@ namespace Microsoft.Docs.Build
             _legacyTemplate = new Lazy<LegacyTemplate>(() =>
             {
                 Debug.Assert(!string.IsNullOrEmpty(Config.Theme));
-                var (themeRemote, branch) = LocalizationUtility.GetLocalizedTheme(Config.Theme, Locale, Config.Localization.DefaultLocale);
+                var (themeRemote, branch) = LocalizationUtility.GetTheme(Config.Theme, Locale, Config.Localization.DefaultLocale);
                 return new LegacyTemplate(RestoreMap.GetGitRestorePath($"{themeRemote}#{branch}"), Locale);
             });
         }

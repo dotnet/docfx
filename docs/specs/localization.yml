@@ -1093,3 +1093,19 @@ repos:
 outputs:
   build.log: |
     ["error","config-not-found","Cannot find 'docfx.yml/docfx.json' at *"]
+---
+# feedback github repo
+commands:
+  - build --locale zh-cn
+repos:
+  https://github.com/feedback/a:
+    - files:
+        docfx.yml: |
+          feedbackGitHubRepo: microsoftdocs/docfx-docs-pr
+        docs/a.md:
+  https://github.com/feedback/a.zh-cn:
+    - files:
+        docs/a.md:
+outputs:
+  docs/a.json: |
+    {"feedback_git_hub_repo":"microsoftdocs/docfx-docs-pr.zh-cn"}

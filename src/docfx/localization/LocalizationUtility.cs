@@ -19,40 +19,12 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static (string remote, string branch) GetLocalizedRepo(LocalizationMapping mapping, bool bilingual, string remote, string branch, string locale, string defaultLocale)
         {
-            if (mapping == LocalizationMapping.Folder)
-            {
-                return (remote, branch);
-            }
+            var newRemote = GetLocalizationName(mapping, remote, locale, defaultLocale);
+            var newBranch = bilingual
+                ? GetLocalizationBranch(mapping, GetBilingualBranch(mapping, branch), locale, defaultLocale)
+                : GetLocalizationBranch(mapping, branch, locale, defaultLocale);
 
-            if (string.Equals(locale, defaultLocale))
-            {
-                return (remote, branch);
-            }
-
-            if (string.IsNullOrEmpty(remote))
-            {
-                return (remote, branch);
-            }
-
-            if (string.IsNullOrEmpty(branch))
-            {
-                return (remote, branch);
-            }
-
-            if (string.IsNullOrEmpty(locale))
-            {
-                return (remote, branch);
-            }
-
-            var newLocale = mapping == LocalizationMapping.Repository ? $".{locale}" : ".loc";
-            var newBranch = bilingual ? GetLocalizationBranch(mapping, GetBilingualBranch(branch), locale) : GetLocalizationBranch(mapping, branch, locale);
-
-            if (remote.EndsWith(newLocale, StringComparison.OrdinalIgnoreCase))
-            {
-                return (remote, newBranch);
-            }
-
-            return ($"{remote}{newLocale}", newBranch);
+            return (newRemote, newBranch);
         }
 
         public static bool TryGetLocalizedDocsetPath(string docsetPath, Config config, string locale, out string localizationDocsetPath)
@@ -355,28 +327,16 @@ namespace Microsoft.Docs.Build
 
         public static bool IsLocalizedBuild(this Docset docset) => docset.FallbackDocset != null || docset.LocalizationDocset != null;
 
-        public static (string remote, string branch) GetLocalizedTheme(string theme, string locale, string defaultLocale)
+        public static (string remote, string branch) GetTheme(string theme, string locale, string defaultLocale)
         {
             Debug.Assert(!string.IsNullOrEmpty(theme));
             var (remote, branch) = HrefUtility.SplitGitHref(theme);
 
-            if (string.IsNullOrEmpty(locale))
-            {
-                return (remote, branch);
-            }
-
-            if (string.Equals(locale, defaultLocale))
-            {
-                return (remote, branch);
-            }
-
-            if (remote.EndsWith($".{locale}", StringComparison.OrdinalIgnoreCase))
-            {
-                return (remote, branch);
-            }
-
-            return ($"{remote}.{locale}", branch);
+            return (GetLocalizationName(LocalizationMapping.Repository, remote, locale, defaultLocale), branch);
         }
+
+        public static string GetFeedbackGitHubRepo(string repo, string locale, string defaultLocale)
+            => GetLocalizationName(LocalizationMapping.Repository, repo, locale, defaultLocale);
 
         public static bool TryRemoveLocale(string name, out string nameWithoutLocale, out string locale)
         {
@@ -399,13 +359,24 @@ namespace Microsoft.Docs.Build
             return false;
         }
 
-        private static string GetBilingualBranch(string branch) => $"{branch}-sxs";
-
-        private static string GetLocalizationBranch(LocalizationMapping mapping, string sourceBranch, string locale)
+        private static string GetBilingualBranch(LocalizationMapping mapping, string branch)
         {
-            Debug.Assert(!string.IsNullOrEmpty(sourceBranch));
+            if (mapping == LocalizationMapping.Folder)
+            {
+                return branch;
+            }
 
+            return string.IsNullOrEmpty(branch) ? branch : $"{branch}-sxs";
+        }
+
+        private static string GetLocalizationBranch(LocalizationMapping mapping, string sourceBranch, string locale, string defaultLocale)
+        {
             if (mapping != LocalizationMapping.Branch)
+            {
+                return sourceBranch;
+            }
+
+            if (string.IsNullOrEmpty(sourceBranch))
             {
                 return sourceBranch;
             }
@@ -415,7 +386,43 @@ namespace Microsoft.Docs.Build
                 return sourceBranch;
             }
 
+            if (string.Equals(locale, defaultLocale))
+            {
+                return sourceBranch;
+            }
+
             return $"{sourceBranch}.{locale}";
+        }
+
+        private static string GetLocalizationName(LocalizationMapping mapping, string name, string locale, string defaultLocale)
+        {
+            if (mapping == LocalizationMapping.Folder)
+            {
+                return name;
+            }
+
+            if (string.Equals(locale, defaultLocale))
+            {
+                return name;
+            }
+
+            if (string.IsNullOrEmpty(name))
+            {
+                return name;
+            }
+
+            if (string.IsNullOrEmpty(locale))
+            {
+                return name;
+            }
+
+            var newLocale = mapping == LocalizationMapping.Repository ? $".{locale}" : ".loc";
+            if (name.EndsWith(newLocale, StringComparison.OrdinalIgnoreCase))
+            {
+                return name;
+            }
+
+            return $"{name}{newLocale}";
         }
     }
 }

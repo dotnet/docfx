@@ -135,7 +135,7 @@ namespace Microsoft.Docs.Build
                 yield break;
             }
 
-            var (remote, branch) = LocalizationUtility.GetLocalizedTheme(config.Theme, locale, config.Localization.DefaultLocale);
+            var (remote, branch) = LocalizationUtility.GetTheme(config.Theme, locale, config.Localization.DefaultLocale);
 
             yield return (remote, branch, GitFlags.DepthOne);
         }

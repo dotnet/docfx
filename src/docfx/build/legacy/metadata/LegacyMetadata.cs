@@ -144,6 +144,11 @@ namespace Microsoft.Docs.Build
                     rawMetadata["original_content_git_url"] = pageModel.OriginalContentGitUrl;
             }
 
+            if (string.IsNullOrEmpty(pageModel.FeedbackGitHubRepo))
+            {
+                rawMetadata["feedback_github_repo"] = pageModel.FeedbackGitHubRepo;
+            }
+
             return RemoveUpdatedAtDateTime(
                 LegacySchema.Transform(
                     docset.LegacyTemplate.TransformMetadata("conceptual", rawMetadata), pageModel));

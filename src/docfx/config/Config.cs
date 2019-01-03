@@ -146,7 +146,13 @@ namespace Microsoft.Docs.Build
         public readonly string Theme = string.Empty;
 
         /// <summary>
-        /// Gets the config file name.
+        /// Get the feedback github repo({org}/{name}) like "dotnet/docfx"
+        /// It's used for legacy doc(docs.com) sites build
+        /// </summary>
+        public readonly string FeedbackGitHubRepo = string.Empty;
+
+        /// <summary>
+        /// Gets or sets the config file name.
         /// </summary>
         [JsonIgnore]
         public string ConfigFileName { get; set; } = "docfx.yml";
