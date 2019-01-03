@@ -16,7 +16,6 @@ namespace Microsoft.Docs.Build
             "_site/**",             // Default output location
             "localization/**",      // Localization file when using folder convention
             "**/includes/**",       // Default convention for reusable markdown tokens
-            "*",                    // Files in repository root directory like README.md
         };
 
         /// <summary>

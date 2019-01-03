@@ -14,6 +14,7 @@ inputs:
   docs/n1.md:
   docs/f1/n1.md:
 outputs:
+  index.json:
   docs/index.json:
   docs/n1.json:
   docs/f1/n1.json:
@@ -49,8 +50,6 @@ outputs:
           }
       ]
     }
-  build.log: |
-    ["warning","link-out-of-scope","File 'index.md' referenced by link '../index.md' will not be built because it is not included in docfx.yml","docs/TOC.md"]
 ---
 # TOC can be a json file
 inputs:
