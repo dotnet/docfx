@@ -628,42 +628,46 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 
         private bool GetCanVersionIncremental(IncrementalStatus buildInfoIncrementalStatus)
         {
-            bool canIncremental = true;
+            bool canIncremental;
+            string message;
             if (!buildInfoIncrementalStatus.CanIncremental)
             {
-                IncrementalInfo.ReportStatus(false, IncrementalPhase.Build, buildInfoIncrementalStatus.Details);
-                Logger.LogVerbose(buildInfoIncrementalStatus.Details);
+                message = buildInfoIncrementalStatus.Details;
                 canIncremental = false;
             }
             else if (LastBuildVersionInfo == null)
             {
-                string message = $"Cannot build incrementally because last build didn't contain version {Version}.";
-                IncrementalInfo.ReportStatus(false, IncrementalPhase.Build, message);
-                Logger.LogVerbose(message);
+                message = $"Cannot build incrementally because last build didn't contain group {Version}.";
                 canIncremental = false;
             }
             else if (CurrentBuildVersionInfo.ConfigHash != LastBuildVersionInfo.ConfigHash)
             {
-                string message = "Cannot build incrementally because config changed.";
-                IncrementalInfo.ReportStatus(false, IncrementalPhase.Build, message);
-                Logger.LogVerbose(message);
+                message = "Cannot build incrementally because config changed.";
                 canIncremental = false;
             }
             else if (_parameters.ForceRebuild)
             {
-                string message = $"Disable incremental build by force rebuild option.";
-                IncrementalInfo.ReportStatus(false, IncrementalPhase.Build, message);
-                Logger.LogVerbose(message);
+                message = "Disable incremental build by force rebuild option.";
                 canIncremental = false;
             }
-
-            if (canIncremental)
+            else
             {
-                IncrementalInfo.ReportStatus(true, IncrementalPhase.Build);
+                message = null;
+                canIncremental = true;
             }
 
             var buildStrategy = canIncremental ? InfoCodes.Build.IsIncrementalBuild : InfoCodes.Build.IsFullBuild;
-            Logger.LogInfo($"Build strategy: {buildStrategy}", code: buildStrategy);
+            if (canIncremental)
+            {
+                IncrementalInfo.ReportStatus(true, IncrementalPhase.Build);
+                Logger.LogInfo($"Group: {Version}, build strategy: {buildStrategy}", code: buildStrategy);
+            }
+            else
+            {
+                IncrementalInfo.ReportStatus(false, IncrementalPhase.Build, message);
+                Logger.LogInfo($"Group: {Version}, build strategy: {buildStrategy}, details: {message}", code: buildStrategy);
+            }
+
             return canIncremental;
         }
 
