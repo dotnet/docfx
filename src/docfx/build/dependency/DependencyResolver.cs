@@ -97,7 +97,7 @@ namespace Microsoft.Docs.Build
 
             if (file == null && !string.IsNullOrEmpty(pathToDocset))
             {
-                var (errorFromHistory, content, fileFromHistory) = LocalizationConvention.TryResolveContentFromHistory(_gitCommitProvider, relativeTo.Docset, pathToDocset);
+                var (errorFromHistory, content, fileFromHistory) = LocalizationUtility.TryResolveContentFromHistory(_gitCommitProvider, relativeTo.Docset, pathToDocset);
                 if (errorFromHistory != null)
                 {
                     return (error, null, null);

@@ -13,6 +13,8 @@ namespace Microsoft.Docs.Build
 
         public readonly string Repo;
 
+        public readonly string Cwd;
+
         public readonly bool Watch;
 
         public readonly string[] Commands = new[] { "build" };

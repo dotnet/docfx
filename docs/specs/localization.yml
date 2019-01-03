@@ -1058,3 +1058,17 @@ outputs:
   docs/a/b.json:
   docs/b/toc.json: |
     {"items":[{"toc_title":"reference toc a","children":[{"toc_title":"reference markdown a","href":"../a/a"}]}]}
+---
+# build from loc folder for folder mapping is not supported
+cwd: localization/zh-cn/
+repos:
+  https://github.com/buildfromlocfolder/a:
+    - files:
+        docfx.yml: |
+          localization:
+            mapping: Folder
+        localization/zh-cn/docs/a/a.md:
+outputs:
+  build.log: |
+    ["error","config-not-found","Cannot find 'docfx.yml/docfx.json' at *"]
+

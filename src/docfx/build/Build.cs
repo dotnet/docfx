@@ -19,11 +19,11 @@ namespace Microsoft.Docs.Build
             var errors = new List<Error>();
 
             // todo: abort the process if configuration loading has errors
-            var (configErrors, config) = LocalizationConvention.GetBuildConfig(docsetPath, options);
+            var (configErrors, config) = LocalizationUtility.GetBuildConfig(docsetPath, options);
             report.Configure(docsetPath, config);
             report.Write(config.ConfigFileName, configErrors);
 
-            var localeToBuild = LocalizationConvention.GetBuildLocale(docsetPath, options);
+            var localeToBuild = LocalizationUtility.GetBuildLocale(docsetPath, options);
             var docset = new Docset(report, docsetPath, localeToBuild, config, options).GetBuildDocset();
             var outputPath = Path.Combine(docsetPath, config.Output.Path);
 
@@ -75,7 +75,7 @@ namespace Microsoft.Docs.Build
 
                 // Build TOC: since toc file depends on the build result of every node
                 await ParallelUtility.ForEach(
-                    docset.GetTableOfContents(tocMap),
+                    docset.GetTableOfContentsScope(tocMap),
                     (file, buildChild) => { return BuildOneFile(file, buildChild, new MonikerMap(monikerMap)); },
                     ShouldBuildTocFile,
                     Progress.Update);
