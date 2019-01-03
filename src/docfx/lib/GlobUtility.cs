@@ -60,7 +60,7 @@ namespace Microsoft.Docs.Build
                     ? GlobOptions.Compiled
                     : GlobOptions.Compiled | GlobOptions.CaseInsensitive;
 
-                return new Glob(pattern, options);
+                return new Glob(pattern, options | GlobOptions.MatchFullPath);
             }
             catch (Exception ex)
             {
