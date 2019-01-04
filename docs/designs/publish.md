@@ -2,7 +2,7 @@
 
 ## Publish Manifest File
 
-`docfx` generates a manifest file for publishing at `{output-path}/_build/publish.json` after build. It is the entry point for publishing. An example `publish.json` looks like this:
+`docfx` generates a manifest file for publishing at `{output-path}/.publish.json` after build. It is the entry point for publishing. An example `publish.json` looks like this:
 
 ```javascript
 {

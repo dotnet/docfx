@@ -116,14 +116,12 @@ Different files can share the same `{site-url}` or `{site-path}` due to versioni
 
 ## System Generated Outputs
 
-System generated outputs are put under the folder `_site/_build`, it contains miscellaneous files generated during build.
-
-> JSON files should end with `.json` for faster DHS download speed.
+Besides content files, `docfx` generates miscellaneous files during the build. The name of these system generated fiels starts with `.`. If the format is JSON, then the extension MUST be `.json` for faster DHS download speed.
 
 File name           | Description
 --------------------|-----------------
-publish.json        | A manifest of files to publish as described in [publish](publish.md)
-xrefmap.json        | A manifest of `uid` and xref specs as described in [xref](xref.md)
-report.log          | A report file that contains build errors and warnings. Each line is a json array: `[{level}, {code}, {message}, {file?}, {line?}, {column?}]`.
+.publish.json        | A manifest of files to publish as described in [publish](publish.md)
+.xrefmap.json        | A manifest of `uid` and xref specs as described in [xref](xref.md)
+.report.log          | A report file that contains build errors and warnings. Each line is a json array: `[{level}, {code}, {message}, {file?}, {line?}, {column?}]`.
 
 
