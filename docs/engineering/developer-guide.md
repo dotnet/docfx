@@ -52,8 +52,20 @@ All code should be written in a "test first" or "test driven development" style.
 Tests should be fast, we try to keep total test execution time within 10s for in most cases.
 
 Prefer writing yaml based end to end tests:
-- It clearly defines inputs and expected outputs, providing a consistent and readable way to define end to end usage.
+
+- It clearly defines inputs and expected outputs, providing a consistent and readable way to define and communicate behaviors.
 - It has no dependency on source code, giving us the freedom to refactor without changing test cases.
+
+When writing yaml test, keep in mind that yaml tests serves **MORE** as a **documentation** for collaboration then a pure regression test:
+
+- Keep each test short and minimum:
+    - Ideally in less than 10 lines.
+    - Prefer short symbols like `a.md` over long file names
+- One test should only cover a single aspect:
+    - Don't mix scenarios into one yaml test.
+    - Don't copy and paste generated output directly into expected outputs.
+    - Only outputs related to the test aspect.
+- Provide a one liner to describe the scenario, avoid using numbers.
 
 When you do need a unit test, use `[Theory]` for data driven tests, this makes it easier to add more test cases.
 
