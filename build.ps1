@@ -75,8 +75,7 @@ function testNuGetPackage() {
     }
 }
 
-
-#runTests
-#checkSchema
+runTests
+checkSchema
 createNuGetPackage
 testNuGetPackage
