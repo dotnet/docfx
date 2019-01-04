@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="../../docs/specs/**/*.yml" LinkBase="specs" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../../specs/**/*.yml" LinkBase="specs" CopyToOutputDirectory="PreserveNewest" />
     <None Include="data/**/*" CopyToOutputDirectory="PreserveNewest" />
     <None Include="*.json" CopyToOutputDirectory="PreserveNewest" />
     <None Include="*.yml" CopyToOutputDirectory="PreserveNewest" />

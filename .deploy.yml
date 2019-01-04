@@ -4,9 +4,20 @@ trigger:
     include:
       - v3
       - feature/*
+  paths:
+    exclude:
+      - docs/*
+      - .github/*
+      - README.md
 pr:
-- v3
-- feature/*
+  branches:
+    - v3
+    - feature/*
+  paths:
+    exclude:
+      - docs/*
+      - .github/*
+      - README.md
 jobs:
 # Test pull requests on windows, linux and mac
 - job: LinuxTest_ubuntu_16_04
