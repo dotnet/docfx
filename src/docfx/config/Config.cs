@@ -15,8 +15,6 @@ namespace Microsoft.Docs.Build
         {
             "_site/**",             // Default output location
             "localization/**",      // Localization file when using folder convention
-            "**/includes/**",       // Default convention for reusable markdown tokens
-            "*",                    // Top level files
         };
 
         /// <summary>

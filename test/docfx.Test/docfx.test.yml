@@ -1,7 +1,4 @@
 # default config for specs in docfx
-defaultExclude:
-  - "_site/**"
-  - "localization/**"
 rules:
   heading-not-found: off
   resolve-author-failed: off
