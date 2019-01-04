@@ -20,37 +20,40 @@ namespace Microsoft.Docs.Build
 
         public Document ReferencedFile { get; set; }
 
-        // if uid defined in SDP file, we need to check if circular reference exists
-        public bool NeedRecursionCheck
-            => ReferencedFile.FilePath.EndsWith(".json") || ReferencedFile.FilePath.EndsWith(".yaml");
-
         public HashSet<string> Monikers { get; set; } = new HashSet<string>();
 
         public Dictionary<string, Lazy<JValue>> ExtensionData { get; } = new Dictionary<string, Lazy<JValue>>();
 
-        public string GetXrefPropertyValue(string property, Document rootFile)
+        public string GetXrefPropertyValue(string propertyName, Document rootFile)
         {
-            if (property is null)
+            if (propertyName is null)
                 return null;
 
             try
             {
-                if (NeedRecursionCheck)
+                if (t_recursionDetector.Value.Contains((propertyName, Uid, ReferencedFile, rootFile)))
                 {
-                    if (rootFile == ReferencedFile || t_recursionDetector.Value.Contains((property, Uid, ReferencedFile, rootFile)))
+                    var referenceMap = t_recursionDetector.Value.Where(x => x.rootFile == rootFile).Select(x => x.referencedFile).ToList();
+                    if (!referenceMap.Contains(rootFile))
                     {
-                        var referenceMap = t_recursionDetector.Value.Where(x => x.rootFile == rootFile).Select(x => x.referencedFile).ToList();
-                        referenceMap.Insert(0, ReferencedFile);
+                        referenceMap.Reverse();
+                        referenceMap.Add(ReferencedFile);
+                        referenceMap.Insert(0, rootFile);
                         throw Errors.CircularReference(rootFile, referenceMap).ToException();
                     }
-                    t_recursionDetector.Value.Push((property, Uid, ReferencedFile, rootFile));
+                    else
+                    {
+                        referenceMap.Add(rootFile);
+                        throw Errors.CircularReference(rootFile, referenceMap).ToException();
+                    }
                 }
+                t_recursionDetector.Value.Push((propertyName, Uid, ReferencedFile, rootFile));
 
-                return ExtensionData.TryGetValue(property, out var internalValue) && internalValue.Value.Value is string internalStr ? internalStr : null;
+                return ExtensionData.TryGetValue(propertyName, out var internalValue) && internalValue.Value.Value is string internalStr ? internalStr : null;
             }
             finally
             {
-                if (NeedRecursionCheck && t_recursionDetector.Value.Count > 0)
+                if (t_recursionDetector.Value.Count > 0)
                 {
                     t_recursionDetector.Value.Pop();
                 }

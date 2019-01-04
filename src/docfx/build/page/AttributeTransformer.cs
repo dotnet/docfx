@@ -38,7 +38,7 @@ namespace Microsoft.Docs.Build
             object TransformXrefSpec(IEnumerable<DataTypeAttribute> attributes, object value, string jsonPath)
             {
                 var attribute = attributes.SingleOrDefault(attr => !(attr is XrefPropertyAttribute));
-                extensionData[jsonPath] = new Lazy<JValue>(() => new JValue(TransformContent(context, errors, attribute, value, file, buildChild)));
+                extensionData[jsonPath] = new Lazy<JValue>(() => new JValue(TransformContent(context, errors, attribute, value, file, buildChild)), LazyThreadSafetyMode.PublicationOnly);
                 return null;
             }
         }

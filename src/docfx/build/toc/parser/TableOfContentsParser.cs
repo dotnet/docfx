@@ -97,6 +97,7 @@ namespace Microsoft.Docs.Build
             // add to parent path
             if (parents.Contains(file))
             {
+                parents.Add(file);
                 throw Errors.CircularReference(file, parents).ToException();
             }
 
