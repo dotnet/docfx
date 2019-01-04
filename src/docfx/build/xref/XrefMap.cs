@@ -19,9 +19,6 @@ namespace Microsoft.Docs.Build
         private readonly IReadOnlyDictionary<string, XrefSpec> _externalXrefMap;
         private readonly Context _context;
 
-        private static ThreadLocal<Stack<(string uid, string displayPropertyName, Document referencedFile, Document rootFile)>> t_recursionDetector
-            = new ThreadLocal<Stack<(string, string, Document, Document)>>(() => new Stack<(string, string, Document, Document)>());
-
         public IEnumerable<XrefSpec> InternalReferences
         {
             get
@@ -65,26 +62,6 @@ namespace Microsoft.Docs.Build
             // xrefSpec.displayPropertyName -> xrefSpec.name -> uid
             string display = !string.IsNullOrEmpty(displayPropertyValue) ? displayPropertyValue : (!string.IsNullOrEmpty(name) ? name : uid);
             return (null, resolvedHref, display, referencedFile);
-        }
-
-        private JValue GetXrefPropertyValue(string propertyName, string uid, Document referencedFile, Document rootFile, Func<JValue> func)
-        {
-            try
-            {
-                if (t_recursionDetector.Value.Contains((propertyName, uid, referencedFile, rootFile)))
-                {
-                    var referenceMap = t_recursionDetector.Value.Select(x => x.referencedFile).ToList();
-                    throw Errors.CircularReference(rootFile, referenceMap).ToException();
-                }
-                return func();
-            }
-            finally
-            {
-                if (t_recursionDetector.Value.Count > 0)
-                {
-                    t_recursionDetector.Value.Pop();
-                }
-            }
         }
 
         private bool TryResolveFromInternal(string uid, string moniker, Document rootFile, out InternalXrefSpec internalXrefSpec, out Document referencedFile)
