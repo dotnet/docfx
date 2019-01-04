@@ -67,12 +67,7 @@ function createNuGetPackage() {
 function testNuGetPackage() {
     $toolPath = "$PSScriptRoot\drop\tools\$(New-Guid)"
     exec "dotnet tool install docfx --version 3.0.0-* --add-source $PSScriptRoot\drop --tool-path $toolPath"
-    try {
-        pushd $toolPath
-        exec "docfx --version"
-    } finally {
-        popd
-    }
+    exec "$toolPath\docfx --version"
 }
 
 runTests
