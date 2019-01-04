@@ -2,7 +2,7 @@
 
 ## Publish Manifest File
 
-`docfx` generates a manifest file for publishing at `{output-path}/.publish.json` after build. It is the entry point for publishing. An example `publish.json` looks like this:
+`docfx` generates a manifest file for publishing at `{output-path}/.publish.json` after build. It is the entry point for publishing. An example `.publish.json` looks like this:
 
 ```javascript
 {
@@ -15,8 +15,19 @@
             "monikers": ["netstandard-2.0"],
 
             // additional properties needed for publish
+        },
+        {
+            "url": "/dotnet/media/logo.png",
+            "path": "dotnet/media/logo.png",
+            "hash": "d41d8cd98f00b204e9800998ecf8427e",
+            "locale": "en-us",
+            "monikers": ["netstandard-2.0", "netstandard-2.1"],
+
+            // additional properties needed for publish
         }
     ]
+
+    // additional branch level properties
 }
 ```
 
@@ -29,4 +40,4 @@ path        | location of the content file relative to `{output-path}`. Differen
 hash        | MD5 hash of the content file specified by `{path}`.
 locale      | locale of the file.
 monikers    | monikers of the file.
-*additional properties | Additional properties can be added here if they are required by publish. For backward compatibility reasons, article metadata is required by publish, thus they are also put here.
+**additional properties* | Additional properties can be added here if they are required by publish. For backward compatibility reasons, article metadata is required by publish, thus they are also put here temporarily.
