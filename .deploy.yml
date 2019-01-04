@@ -11,8 +11,9 @@ trigger:
       - README.md
 pr:
   branches:
-    - v3
-    - feature/*
+    include:
+      - v3
+      - feature/*
   paths:
     exclude:
       - docs/*
