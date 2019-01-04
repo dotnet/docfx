@@ -153,6 +153,12 @@
         "type": "string"
       }
     },
+    "defaultExclude": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
     "output": {
       "$ref": "#/definitions/OutputConfig"
     },
