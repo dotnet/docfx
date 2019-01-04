@@ -28,7 +28,7 @@ namespace Microsoft.Docs.Build
                     if (TryGetValidXrefSpecs(uid, null, specsWithSameUid, out var validInternalSpecs))
                     {
                         var (internalSpec, referencedFile) = GetLatestInternalXrefMap(validInternalSpecs);
-                        loadedInternalSpecs.Add(internalSpec.ToExternalXrefSpec(null));
+                        loadedInternalSpecs.Add(internalSpec.ToExternalXrefSpec());
                     }
                 }
                 return loadedInternalSpecs;
@@ -43,8 +43,8 @@ namespace Microsoft.Docs.Build
             if (TryResolveFromInternal(uid, moniker, rootFile, out var internalXrefSpec, out var referencedFile))
             {
                 resolvedHref = _context.DependencyResolver.GetRelativeUrl(rootFile, referencedFile);
-                name = internalXrefSpec.GetName(rootFile);
-                displayPropertyValue = internalXrefSpec.GetXrefPropertyValue(displayPropertyName, rootFile);
+                name = internalXrefSpec.GetName();
+                displayPropertyValue = internalXrefSpec.GetXrefPropertyValue(displayPropertyName);
             }
             else if (TryResolveFromExternal(uid, out var xrefSpec))
             {
@@ -154,7 +154,14 @@ namespace Microsoft.Docs.Build
         public void OutputXrefMap(Context context)
         {
             var models = new XrefMapModel();
-            models.References.AddRange(InternalReferences);
+            try
+            {
+                models.References.AddRange(InternalReferences);
+            }
+            catch (DocfxException ex)
+            {
+                context.Report.Write("xrefmap.json", ex.Error);
+            }
             context.Output.WriteJson(models, "xrefmap.json");
         }
 
@@ -178,7 +185,7 @@ namespace Microsoft.Docs.Build
             if (conflictsWithoutMoniker.Count() > 1)
             {
                 var orderedConflict = conflictsWithoutMoniker.OrderBy(item => item.Item1.Href);
-                _context.Report.Write(Errors.UidConflict(uid, orderedConflict.Select(x => x.Item1.ToExternalXrefSpec(rootFile))));
+                _context.Report.Write(Errors.UidConflict(uid, orderedConflict.Select(x => x.Item1.ToExternalXrefSpec())));
                 return false;
             }
             else if (conflictsWithoutMoniker.Count() == 1)

@@ -487,11 +487,13 @@ outputs:
   docs/c.json: |
     {"content":{"name":"name for c","summary":"<p>Link to <a href=\"a.json\">name for a</a></p>\n","inlineDescription":"description for c","uid":"c"}}
   build.log: |
-    ["error","circular-reference","Found circular reference: 'docs/b.json' --> 'docs/a.json' --> 'docs/b.json'","docs/b.json"]
-    ["error","circular-reference","Found circular reference: 'docs/a.json' --> 'docs/b.json' --> 'docs/a.json'","docs/a.json"]
+    ["error","circular-reference","Found circular reference: 'docs/b.json' --> 'docs/a.json' --> 'docs/b.json'","docs/a.json"]
+    ["error","circular-reference","Found circular reference: 'docs/a.json' --> 'docs/b.json' --> 'docs/a.json'","docs/b.json"]
+    ["error","circular-reference","Found circular reference: 'docs/a.json' --> 'docs/b.json' --> 'docs/a.json'","xrefmap.json"]
+
 ---
 # SDP cyclic xref reference whose display properties referring to another uid
-# a.json -> b.json -> c.json -> b.json && b.json -> c.json -> b.json && c.json -> b.json -> c.json
+# b.json -> c.json -> b.json && b.json -> c.json -> b.json && c.json -> b.json -> c.json
 inputs:
   docfx.yml:
   docs/a.json: |
@@ -520,6 +522,24 @@ inputs:
     }
 outputs:
   build.log: | 
-    ["error","circular-reference","Found circular reference: 'docs/b.json' --> 'docs/c.json' --> 'docs/b.json'","docs/b.json"]
-    ["error","circular-reference","Found circular reference: 'docs/a.json' --> 'docs/b.json' --> 'docs/c.json' --> 'docs/b.json'","docs/a.json"]
-    ["error","circular-reference","Found circular reference: 'docs/c.json' --> 'docs/b.json' --> 'docs/c.json'","docs/c.json"]
+    ["error","circular-reference","Found circular reference: 'docs/b.json' --> 'docs/c.json' --> 'docs/b.json'","docs/c.json"]
+    ["error","circular-reference","Found circular reference: 'docs/c.json' --> 'docs/b.json' --> 'docs/c.json'","docs/b.json"]
+    ["error","circular-reference","Found circular reference: 'docs/b.json' --> 'docs/c.json' --> 'docs/b.json'","docs/a.json"]
+    ["error","circular-reference","Found circular reference: 'docs/a.json' --> 'docs/b.json' --> 'docs/c.json' --> 'docs/b.json'","xrefmap.json"]
+
+---
+# SDP cyclic xref reference to itself
+inputs:
+  docfx.yml:
+  docs/a.json: |
+    {
+      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
+      "uid": "a",
+      "name": "name for a",
+      "inlineDescription": "description for a",
+      "summary": "Link to @a?displayProperty=summary",
+    }
+outputs:
+  build.log: |
+    ["error","circular-reference","Found circular reference: 'docs/a.json' --> 'docs/a.json'","docs/a.json"]
+    ["error","circular-reference","Found circular reference: 'docs/a.json' --> 'docs/a.json'","xrefmap.json"]
