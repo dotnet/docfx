@@ -6534,6 +6534,19 @@ references:
   isSpec: "True"
   fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.BuildInfo.Save
   nameWithType: BuildInfo.Save
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.BuildInfo.SaveVersionsManifet(System.String)
+  name: SaveVersionsManifet(String)
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.BuildInfo.html#Microsoft_DocAsCode_Build_Engine_Incrementals_BuildInfo_SaveVersionsManifet_System_String_
+  commentId: M:Microsoft.DocAsCode.Build.Engine.Incrementals.BuildInfo.SaveVersionsManifet(System.String)
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.BuildInfo.SaveVersionsManifet(System.String)
+  nameWithType: BuildInfo.SaveVersionsManifet(String)
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.BuildInfo.SaveVersionsManifet*
+  name: SaveVersionsManifet
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.BuildInfo.html#Microsoft_DocAsCode_Build_Engine_Incrementals_BuildInfo_SaveVersionsManifet_
+  commentId: Overload:Microsoft.DocAsCode.Build.Engine.Incrementals.BuildInfo.SaveVersionsManifet
+  isSpec: "True"
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.BuildInfo.SaveVersionsManifet
+  nameWithType: BuildInfo.SaveVersionsManifet
 - uid: Microsoft.DocAsCode.Build.Engine.Incrementals.BuildInfo.TemplateHash
   name: TemplateHash
   href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.BuildInfo.html#Microsoft_DocAsCode_Build_Engine_Incrementals_BuildInfo_TemplateHash
