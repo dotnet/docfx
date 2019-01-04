@@ -1,8 +1,11 @@
-Version Notes (Current Version: v2.41)
+Version Notes (Current Version: v2.40.7)
 =======================================
 
-v2.41(Pre-release)
+v2.40.7
 -----------
+1. Fix perf issue when report toc dependency.
+1. Transform code language extracted from triple slash comments to style class.
+1. Fix cache corruption when shrink multiple times
 
 v2.40.5
 -----------
