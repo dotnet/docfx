@@ -20,40 +20,63 @@ function getBranchName() {
     return $branch
 }
 
-# Run tests
-pushd test/docfx.Test
+function runTests() {
+    try {
+        pushd test/docfx.Test
 
-Remove-Item ./TestResults -Force -Recurse -ErrorAction Ignore
+        Remove-Item ./TestResults -Force -Recurse -ErrorAction Ignore
 
-exec "dotnet test -c Debug"
-exec "dotnet test -c Release --logger trx"
-exec "dotnet reportgenerator -reports:coverage.cobertura.xml -reporttypes:HtmlInline_AzurePipelines -targetdir:TestResults/cobertura"
+        exec "dotnet test -c Debug"
+        exec "dotnet test -c Release --logger trx"
+        exec "dotnet reportgenerator -reports:coverage.cobertura.xml -reporttypes:HtmlInline_AzurePipelines -targetdir:TestResults/cobertura"
 
-popd
-
-# Check test coverage
-$coverage = Select-Xml -Path 'test\docfx.Test\coverage.cobertura.xml' -XPath "//package[@name='docfx']" | select -exp Node | select -exp line-rate
-if ($coverage -lt 0.8) {
-    throw ("Test code coverage MUST be > 0.8, but is now only $coverage")
+        # Check test coverage
+        $coverage = Select-Xml -Path 'coverage.cobertura.xml' -XPath "//package[@name='docfx']" | select -exp Node | select -exp line-rate
+        if ($coverage -lt 0.8) {
+            throw ("Test code coverage MUST be > 0.8, but is now only $coverage")
+        }
+    } finally {
+        popd
+    }
 }
 
-# Check schema
-exec "dotnet run -p tools/CreateJsonSchema"
-
-# Create NuGet package
-$commitSha = & { git describe --always }
-$commitCount = & { git rev-list --count HEAD }
-$revision = $commitCount.ToString().PadLeft(5, '0')
-$branch = getBranchName
-
-if ($branch -eq "v3") {
-    # CI triggered by v3
-    $version = "3.0.0-beta-$revision-$commitSha"
-} else {
-    # Local run
-    $branch = $branch.Replace('/', '-')
-    $version = "3.0.0-alpha-$branch-$revision-$commitSha"
+function checkSchema() {
+    exec "dotnet run -p tools/CreateJsonSchema"
 }
 
-Remove-Item ./drop -Force -Recurse -ErrorAction Ignore
-exec "dotnet pack src\docfx -c Release -o $PSScriptRoot\drop /p:Version=$version /p:InformationalVersion=$version"
+function createNuGetPackage() {
+    # Create NuGet package
+    $commitSha = & { git describe --always }
+    $commitCount = & { git rev-list --count HEAD }
+    $revision = $commitCount.ToString().PadLeft(5, '0')
+    $branch = getBranchName
+
+    if ($branch -eq "v3") {
+        # CI triggered by v3
+        $version = "3.0.0-beta-$revision-$commitSha"
+    } else {
+        # Local run
+        $branch = $branch.Replace('/', '-')
+        $version = "3.0.0-alpha-$branch-$revision-$commitSha"
+    }
+
+    Remove-Item ./drop -Force -Recurse -ErrorAction Ignore
+    exec "dotnet pack src\docfx -c Release -o $PSScriptRoot\drop /p:Version=$version /p:InformationalVersion=$version"
+}
+
+function testNuGetPackage() {
+    $toolPath = "$PSScriptRoot\drop\tools\$(New-Guid)"
+    exec "dotnet tool install docfx --version 3.0.0-* --add-source $PSScriptRoot\drop --tool-path $toolPath"
+    try {
+        pushd $toolPath
+        exec "docfx --version"
+    } finally {
+        popd
+    }
+}
+
+
+#runTests
+#checkSchema
+createNuGetPackage
+testNuGetPackage
