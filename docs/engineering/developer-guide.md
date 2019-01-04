@@ -64,7 +64,7 @@ When writing yaml test, keep in mind that yaml tests serves **MORE** as a **docu
 - One test should only cover a single aspect:
     - Don't mix scenarios into one yaml test.
     - Don't copy and paste generated output directly into expected outputs.
-    - Only outputs related to the test aspect.
+    - Only check outputs related to the current test aspect.
 - Provide a one liner to describe the scenario, avoid using numbers.
 
 When you do need a unit test, use `[Theory]` for data driven tests, this makes it easier to add more test cases.
