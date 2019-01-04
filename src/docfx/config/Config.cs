@@ -10,13 +10,13 @@ namespace Microsoft.Docs.Build
 {
     internal sealed class Config
     {
-        private static readonly string[] s_defaultInclude = new[] { "**/*.{md,yml,json}" };
-
         public static readonly string[] DefaultExclude = new[]
         {
             "_site/**",             // Default output location
             "localization/**",      // Localization file when using folder convention
         };
+
+        private static readonly string[] s_defaultInclude = new[] { "**/*.{md,yml,json}" };
 
         /// <summary>
         /// Gets the default product name
