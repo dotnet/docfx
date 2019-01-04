@@ -35,14 +35,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Gets the file glob patterns excluded from this docset.
         /// </summary>
-        public readonly string[] Exclude = Array.Empty<string>();
-
-        /// <summary>
-        /// Gets the default file glob patterns excluded from this docset.
-        /// This typically contains system reserved exclude patterns,
-        /// users are recommended to use <see cref="Exclude"/> to exclude files.
-        /// </summary>
-        public readonly string[] DefaultExclude = s_defaultExclude;
+        public readonly string[] Exclude = s_defaultExclude;
 
         /// <summary>
         /// Gets the output config.
