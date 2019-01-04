@@ -9,6 +9,7 @@ namespace Microsoft.Docs.Build
     public class GlobUtilityTest
     {
         [Theory]
+        [InlineData("a.md", "a.md", true)]
         [InlineData("", "a", false)]
         [InlineData("\\a", "a", false)]
         [InlineData("a*", "a abc abd abe", true)]
@@ -33,8 +34,10 @@ namespace Microsoft.Docs.Build
         [InlineData("?*??", "abc", true)]
         [InlineData("*??", "abc", true)]
         [InlineData("**/*?c", "abc a/b/dec a/bcdc a/b/c/dc", true)]
-        [InlineData("*c", "abc a/bc a/b/c", true)]
-        [InlineData("*?", "abc a/b/c", true)]
+        [InlineData("*c", "abc", true)]
+        [InlineData("*c", "a/bc a/b/c", false)]
+        [InlineData("*?", "abc", true)]
+        [InlineData("*?", "a/b/c", false)]
         [InlineData("a/*", "a", false)]
         [InlineData("a/*", "a/.a", false)]
         [InlineData("*.cs", "acs", false)]
@@ -70,10 +73,7 @@ namespace Microsoft.Docs.Build
         [InlineData("[abc[]]a")]
         [InlineData("[a[]")]
         [InlineData("[(]")]
-        [InlineData("[]]")]
         [InlineData("[")]
-        [InlineData("[\\w]a")]
-        [InlineData("a[\\\\b]c")]
         [InlineData("{{a,b}}")]
         [InlineData("z{a,b{,c}d")]
         public void InvalidGlobPattern(string pattern)

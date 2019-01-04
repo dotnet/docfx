@@ -10,8 +10,13 @@ namespace Microsoft.Docs.Build
 {
     internal sealed class Config
     {
-        private static readonly string[] s_defaultInclude = new[] { "docs/**/*.{md,yml,json}" };
-        private static readonly string[] s_defaultExclude = new[] { "_site/**/*", "localization/**/*" };
+        public static readonly string[] DefaultExclude = new[]
+        {
+            "_site/**",             // Default output location
+            "localization/**",      // Localization file when using folder convention
+        };
+
+        private static readonly string[] s_defaultInclude = new[] { "**/*.{md,yml,json}" };
 
         /// <summary>
         /// Gets the default product name
@@ -31,7 +36,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Gets the file glob patterns excluded from this docset.
         /// </summary>
-        public readonly string[] Exclude = s_defaultExclude;
+        public readonly string[] Exclude = Array.Empty<string>();
 
         /// <summary>
         /// Gets the output config.

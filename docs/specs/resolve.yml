@@ -109,9 +109,10 @@ outputs:
     { "content": "<p><a target=\"_blank\" href=\"c\">c</a></p>" }
   docs/dir/c.json:
 ---
-# Show warning if the link is empty, missing or points to absolute file path
+# Show warning if the link is empty, missing
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    exclude: '*'
   docs/a.md: |
     [Empty]() [Invalid](a<>b.md) [!INCLUDE[](../b.md)]
   b.md: |
@@ -223,7 +224,8 @@ outputs:
 ---
 # Show warning if link to a page outside build scope
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    exclude: '*'
   docs/a.md: 'Link to [c](../c.md)'
   docs/b.md: '[!include[](../c.md)]'
   c.md: '[](#self)'
@@ -248,7 +250,8 @@ outputs:
 ---
 # Don't show warning if include a page outside build scope
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    exclude: '*'
   docs/a.md: '[!include[a](../b.md)]'
   b.md: b
 outputs:
