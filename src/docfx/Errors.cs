@@ -151,10 +151,10 @@ namespace Microsoft.Docs.Build
         public static Error ExceedMaxErrors(int maxErrors)
             => new Error(ErrorLevel.Error, "exceed-max-errors", $"Error or warning count exceed '{maxErrors}'. Build will continue but newer logs will be ignored.");
 
-        public static Error UidConflict(string uid, IEnumerable<XrefSpec> conflicts)
+        public static Error UidConflict(string uid, IEnumerable<string> conflicts)
         {
             var hint = conflicts.Count() > 5 ? "(Only 5 duplicates displayed)" : "";
-            return new Error(ErrorLevel.Error, "uid-conflict", $"Two or more documents have defined the same Uid '{uid}': {string.Join(',', conflicts.Select(spec => spec.Href).Take(5))}{hint}");
+            return new Error(ErrorLevel.Error, "uid-conflict", $"Two or more documents have defined the same Uid '{uid}': {string.Join(',', conflicts.Take(5))}{hint}");
         }
 
         public static Error MonikerOverlapping(IEnumerable<string> overlappingmonikers)

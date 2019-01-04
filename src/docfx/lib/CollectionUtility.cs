@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
 using System.Collections.Generic;
 
 namespace Microsoft.Docs.Build
@@ -20,7 +19,7 @@ namespace Microsoft.Docs.Build
         {
             foreach (var (key, value) in range)
             {
-                dictionary[key] = value;
+                dictionary.Add(key, value);
             }
         }
     }

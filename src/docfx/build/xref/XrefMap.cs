@@ -18,23 +18,6 @@ namespace Microsoft.Docs.Build
         private readonly IReadOnlyDictionary<string, XrefSpec> _externalXrefMap;
         private readonly Context _context;
 
-        public IEnumerable<XrefSpec> InternalReferences
-        {
-            get
-            {
-                var loadedInternalSpecs = new List<XrefSpec>();
-                foreach (var (uid, specsWithSameUid) in _internalXrefMap)
-                {
-                    if (TryGetValidXrefSpecs(uid, specsWithSameUid, out var validInternalSpecs))
-                    {
-                        var (internalSpec, referencedFile) = GetLatestInternalXrefMap(validInternalSpecs);
-                        loadedInternalSpecs.Add(internalSpec.ToExternalXrefSpec());
-                    }
-                }
-                return loadedInternalSpecs;
-            }
-        }
-
         public (Error error, string href, string display, Document referencedFile) Resolve(string uid, string href, string displayPropertyName, Document rootFile, string moniker = null)
         {
             string name = null;
@@ -154,15 +137,22 @@ namespace Microsoft.Docs.Build
         public void OutputXrefMap(Context context)
         {
             var models = new XrefMapModel();
-            try
-            {
-                models.References.AddRange(InternalReferences);
-            }
-            catch (DocfxException ex)
-            {
-                context.Report.Write("xrefmap.json", ex.Error);
-            }
+            models.References.AddRange(ExpandInternalXrefSpecs());
             context.Output.WriteJson(models, "xrefmap.json");
+        }
+
+        private IEnumerable<XrefSpec> ExpandInternalXrefSpecs()
+        {
+            var loadedInternalSpecs = new List<XrefSpec>();
+            foreach (var (uid, specsWithSameUid) in _internalXrefMap)
+            {
+                if (TryGetValidXrefSpecs(uid, specsWithSameUid, out var validInternalSpecs))
+                {
+                    var (internalSpec, referencedFile) = GetLatestInternalXrefMap(validInternalSpecs);
+                    loadedInternalSpecs.Add(internalSpec.ToExternalXrefSpec(_context, referencedFile));
+                }
+            }
+            return loadedInternalSpecs;
         }
 
         private (InternalXrefSpec spec, Document referencedFile) GetLatestInternalXrefMap(List<(InternalXrefSpec spec, Document referencedFile)> specs)
@@ -185,7 +175,7 @@ namespace Microsoft.Docs.Build
             if (conflictsWithoutMoniker.Count() > 1)
             {
                 var orderedConflict = conflictsWithoutMoniker.OrderBy(item => item.Item1.Href);
-                _context.Report.Write(Errors.UidConflict(uid, orderedConflict.Select(x => x.Item1.ToExternalXrefSpec())));
+                _context.Report.Write(Errors.UidConflict(uid, orderedConflict.Select(x => x.Item2.FilePath)));
                 return false;
             }
             else if (conflictsWithoutMoniker.Count() == 1)
@@ -214,7 +204,6 @@ namespace Microsoft.Docs.Build
                     return default;
 
                 var isValueCreated = input.value.IsValueCreated;
-
                 var (errors, spec) = input.value.Value;
                 if (!isValueCreated)
                 {

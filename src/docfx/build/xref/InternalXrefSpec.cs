@@ -12,7 +12,7 @@ namespace Microsoft.Docs.Build
 {
     internal class InternalXrefSpec
     {
-        private static ThreadLocal<Stack<(string propertyName, Document includedFile)>> t_recursionDetector
+        private static ThreadLocal<Stack<(string propertyName, Document referencedFile)>> t_recursionDetector
             = new ThreadLocal<Stack<(string, Document)>>(() => new Stack<(string, Document)>());
 
         public string Uid { get; set; }
@@ -32,7 +32,7 @@ namespace Microsoft.Docs.Build
 
             if (t_recursionDetector.Value.Contains((propertyName, ReferencedFile)))
             {
-                var referenceMap = t_recursionDetector.Value.Select(x => x.includedFile).ToList();
+                var referenceMap = t_recursionDetector.Value.Select(x => x.referencedFile).ToList();
                 referenceMap.Reverse();
                 referenceMap.Add(ReferencedFile);
                 throw Errors.CircularReference(referenceMap).ToException();
@@ -52,7 +52,7 @@ namespace Microsoft.Docs.Build
 
         public string GetName() => GetXrefPropertyValue("name");
 
-        public XrefSpec ToExternalXrefSpec()
+        public XrefSpec ToExternalXrefSpec(Context context, Document file)
         {
             var spec = new XrefSpec
             {
@@ -62,7 +62,13 @@ namespace Microsoft.Docs.Build
             };
             foreach (var (key, value) in ExtensionData)
             {
-                spec.ExtensionData[key] = GetXrefPropertyValue(key);
+                try
+                {
+                    spec.ExtensionData[key] = GetXrefPropertyValue(key);
+                }
+                catch (DocfxException)
+                {
+                }
             }
             return spec;
         }
