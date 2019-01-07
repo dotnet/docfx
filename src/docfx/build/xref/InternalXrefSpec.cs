@@ -30,6 +30,7 @@ namespace Microsoft.Docs.Build
             if (propertyName is null)
                 return null;
 
+            // TODO: fix reference map while markdig engine split xref reference from inclusion
             if (t_recursionDetector.Value.Contains((propertyName, ReferencedFile)))
             {
                 var referenceMap = t_recursionDetector.Value.Select(x => x.referencedFile).ToList();
@@ -62,6 +63,7 @@ namespace Microsoft.Docs.Build
             };
             foreach (var (key, value) in ExtensionData)
             {
+                // TODO: remove exception sallow while markdig engine split xref reference from inclusion
                 try
                 {
                     spec.ExtensionData[key] = GetXrefPropertyValue(key);
