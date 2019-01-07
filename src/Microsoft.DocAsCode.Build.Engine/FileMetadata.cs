@@ -9,10 +9,12 @@ namespace Microsoft.DocAsCode.Build.Engine
     public sealed class FileMetadata : Dictionary<string, ImmutableArray<FileMetadataItem>>
     {
         public string BaseDir { get; }
+
         public FileMetadata(string baseDir) : base()
         {
             BaseDir = baseDir;
         }
+
         public FileMetadata(string baseDir, IDictionary<string, ImmutableArray<FileMetadataItem>> dictionary) : base(dictionary)
         {
             BaseDir = baseDir;

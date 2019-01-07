@@ -88,7 +88,10 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                 BaseDir = Path.GetFullPath(Environment.ExpandEnvironmentVariables(baseDir)),
                 VersionName = parameters.VersionName,
                 ConfigHash = ComputeConfigHash(parameters, markdownServiceContextHash),
+                FileMetadataHash = ComputeFileMetadataHash(parameters.FileMetadata),
+                FileMetadata = parameters.FileMetadata,
                 AttributesFile = IncrementalUtility.CreateRandomFileName(baseDir),
+                FileMetadataFile = IncrementalUtility.CreateRandomFileName(baseDir),
                 DependencyFile = IncrementalUtility.CreateRandomFileName(baseDir),
                 ManifestFile = IncrementalUtility.CreateRandomFileName(baseDir),
                 OutputFile = IncrementalUtility.CreateRandomFileName(baseDir),
@@ -278,6 +281,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                     _changeDict[file] = ChangeKindWithDependency.Created;
                 }
             }
+            LoadFileMetadataChanges();
         }
 
         public List<string> ExpandDependency(DependencyGraph dg, Func<DependencyItem, bool> isValid)
@@ -358,6 +362,21 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                             MD5 = item.MD5,
                             IsFromSource = f.IsFromSource,
                         };
+                    }
+                }
+            }
+        }
+
+        public void LoadFileMetadataChanges()
+        {
+            var changedGlobs = CurrentBuildVersionInfo.FileMetadata.GetChangedGlobs(LastBuildVersionInfo.FileMetadata).ToArray();
+            foreach (var file in LastBuildVersionInfo.Attributes.Keys)
+            {
+                if (changedGlobs.Any(g => g.Match(file)))
+                {
+                    if (_changeDict[file] == ChangeKindWithDependency.None)
+                    {
+                        _changeDict[file] = ChangeKindWithDependency.Updated;
                     }
                 }
             }
@@ -577,6 +596,19 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             }
         }
 
+        private static string ComputeFileMetadataHash(FileMetadata fileMetadata)
+        {
+            using (new LoggerPhaseScope("ComputeFileMetadataHash", LogLevel.Diagnostic))
+            {
+                if (fileMetadata == null)
+                {
+                    return string.Empty;
+                }
+                var json = JsonUtility.Serialize(fileMetadata);
+                return json.GetMd5String();
+            }
+        }
+
         private static DependencyGraph ConstructDependencyGraphFromLast(DependencyGraph ldg)
         {
             using (new LoggerPhaseScope("ConstructDgFromLast", LogLevel.Verbose))
@@ -640,7 +672,8 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                 message = $"Cannot build incrementally because last build didn't contain group {Version}.";
                 canIncremental = false;
             }
-            else if (CurrentBuildVersionInfo.ConfigHash != LastBuildVersionInfo.ConfigHash)
+            else if (CurrentBuildVersionInfo.ConfigHash != LastBuildVersionInfo.ConfigHash
+                || CurrentBuildVersionInfo.FileMetadataHash != LastBuildVersionInfo.FileMetadataHash) // TODO: move to file level check
             {
                 message = "Cannot build incrementally because config changed.";
                 canIncremental = false;
