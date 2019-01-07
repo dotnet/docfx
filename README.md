@@ -7,7 +7,7 @@ Build your docs website with [DocFX](https://github.com/dotnet/docfx), with land
 We are still at an early develop phase, see our [roadmap](https://github.com/dotnet/docfx/projects/1) for detailed planing.
 
 > To access docfx 3 preview, install `docfx` using the latest version of [.NET Core](https://www.microsoft.com/net/download):
->  ```powershell
+>  ```powershells
 >  dotnet tool install -g docfx --version 3.0.0-* --add-source https://www.myget.org/F/docfx-v3/api/v2
 >  ```
 > Note that it focuses on Markdown input parity with https://docs.microsoft.com, while the current output is still raw JSON without any template applied. API reference for source code or DLL will be one of the next focuses.
