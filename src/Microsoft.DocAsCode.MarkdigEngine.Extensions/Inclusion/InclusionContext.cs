@@ -18,9 +18,9 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     /// </remarks>
     public static class InclusionContext
     {
-        private static readonly ThreadLocal<Stack<(object file, List<object> dependencies, Stack<object> inclusionStack)>> t_markupStacks
-                          = new ThreadLocal<Stack<(object file, List<object> dependencies, Stack<object> inclusionStack)>>(
-                                  () => new Stack<(object file, List<object> dependencies, Stack<object> inclusionStack)>());
+        private static readonly ThreadLocal<Stack<(object file, HashSet<object> dependencies, Stack<object> inclusionStack)>> t_markupStacks
+                          = new ThreadLocal<Stack<(object file, HashSet<object> dependencies, Stack<object> inclusionStack)>>(
+                                  () => new Stack<(object file, HashSet<object> dependencies, Stack<object> inclusionStack)>());
 
         /// <summary>
         /// Gets the current file. This is the included file if the engine is currently parsing or rendering an include file.
@@ -78,7 +78,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             var markupStack = t_markupStacks.Value;
             var inclusionStack = new Stack<object>();
             inclusionStack.Push(file);
-            markupStack.Push((file, new List<object>(), inclusionStack));
+            markupStack.Push((file, new HashSet<object>(), inclusionStack));
 
             return new DelegatingDisposable(() => markupStack.Pop());
         }
