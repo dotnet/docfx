@@ -61,7 +61,7 @@ function createNuGetPackage() {
     }
 
     Remove-Item ./drop -Force -Recurse -ErrorAction Ignore
-    exec "dotnet pack src\docfx -c Release -o drop /p:Version=$version /p:InformationalVersion=$version"
+    exec "dotnet pack src\docfx -c Release -o $PSScriptRoot\drop /p:Version=$version /p:InformationalVersion=$version"
     exec "dotnet tool install docfx --version 3.0.0-* --add-source drop --tool-path drop"
     exec ".\drop\docfx --version"
 }
