@@ -43,7 +43,7 @@ docfx build <docset_path> [<options>]
 ### GC
 `gc` command helps you to clean up your local `%DOCFX_APPDATA_PATH%` folder, delete unused downloaded files and git work trees, save your storage usage.
 
-```powershell
+```powershells
 docfx gc [<options>]
 ```
 
