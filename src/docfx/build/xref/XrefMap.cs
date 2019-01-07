@@ -149,7 +149,7 @@ namespace Microsoft.Docs.Build
                 if (TryGetValidXrefSpecs(uid, specsWithSameUid, out var validInternalSpecs))
                 {
                     var (internalSpec, referencedFile) = GetLatestInternalXrefMap(validInternalSpecs);
-                    loadedInternalSpecs.Add(internalSpec.ToExternalXrefSpec(_context, referencedFile));
+                    loadedInternalSpecs.Add(internalSpec.ToExternalXrefSpec());
                 }
             }
             return loadedInternalSpecs;

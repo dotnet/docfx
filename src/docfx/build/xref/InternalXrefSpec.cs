@@ -53,7 +53,7 @@ namespace Microsoft.Docs.Build
 
         public string GetName() => GetXrefPropertyValue("name");
 
-        public XrefSpec ToExternalXrefSpec(Context context, Document file)
+        public XrefSpec ToExternalXrefSpec()
         {
             var spec = new XrefSpec
             {
