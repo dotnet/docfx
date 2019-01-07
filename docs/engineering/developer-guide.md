@@ -2,7 +2,7 @@
 
 ## Build and Test
 
-Prerequisites:
+Prerequisites:a
 
 - [git](https://git-scm.com/)
 - [.NET Core SDK 2.2](https://dotnet.microsoft.com/download/dotnet-core/2.2) or above
