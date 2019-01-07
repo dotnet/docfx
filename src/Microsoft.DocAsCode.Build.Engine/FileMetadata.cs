@@ -3,9 +3,11 @@
 
 namespace Microsoft.DocAsCode.Build.Engine
 {
+    using Newtonsoft.Json;
     using System.Collections.Generic;
     using System.Collections.Immutable;
 
+    [JsonConverter(typeof(FileMetadataConverter))]
     public sealed class FileMetadata : Dictionary<string, ImmutableArray<FileMetadataItem>>
     {
         public string BaseDir { get; }

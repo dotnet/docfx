@@ -169,7 +169,10 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         internal void Save(string baseDir)
         {
             IncrementalUtility.SaveDependency(Path.Combine(baseDir, DependencyFile), Dependency);
-            IncrementalUtility.SaveIntermediateFile(Path.Combine(baseDir, FileMetadataFile), FileMetadata);
+            if (FileMetadataFile != null)
+            {
+                IncrementalUtility.SaveIntermediateFile(Path.Combine(baseDir, FileMetadataFile), FileMetadata);
+            }
             IncrementalUtility.SaveIntermediateFile(Path.Combine(baseDir, AttributesFile), Attributes);
             IncrementalUtility.SaveIntermediateFile(Path.Combine(baseDir, OutputFile), BuildOutputs);
             IncrementalUtility.SaveIntermediateFile(Path.Combine(baseDir, XRefSpecMapFile), XRefSpecMap);

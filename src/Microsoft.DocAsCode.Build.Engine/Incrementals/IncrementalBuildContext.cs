@@ -91,7 +91,6 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                 FileMetadataHash = ComputeFileMetadataHash(parameters.FileMetadata),
                 FileMetadata = parameters.FileMetadata,
                 AttributesFile = IncrementalUtility.CreateRandomFileName(baseDir),
-                FileMetadataFile = IncrementalUtility.CreateRandomFileName(baseDir),
                 DependencyFile = IncrementalUtility.CreateRandomFileName(baseDir),
                 ManifestFile = IncrementalUtility.CreateRandomFileName(baseDir),
                 OutputFile = IncrementalUtility.CreateRandomFileName(baseDir),
@@ -100,6 +99,10 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                 BuildMessageFile = IncrementalUtility.CreateRandomFileName(baseDir),
                 TocRestructionsFile = IncrementalUtility.CreateRandomFileName(baseDir),
             };
+            if (parameters.FileMetadata != null)
+            {
+                cbv.FileMetadataFile = IncrementalUtility.CreateRandomFileName(baseDir);
+            }
             cb.Versions.Add(cbv);
             var context = new IncrementalBuildContext(baseDir, lastBaseDir, lastBuildStartTime, buildInfoIncrementalStatus, parameters, cbv, lbv)
             {
