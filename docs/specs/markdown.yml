@@ -368,4 +368,30 @@ outputs:
     { "content": "<p><a onclick=\"javascript:window.open('https://shell.azure.com', '_blank', 'toolbar=no,scrollbars=yes,resizable=yes,menubar=no,location=no,status=no')\"><image src='https://shell.azure.com/images/launchcloudshell.png'></image></a></p>\n" }
   docs/c.json: |
     { "content": "<p><a onclick='javascript:window.open(\"https://shell.azure.com\", \"_blank\", \"toolbar=no,scrollbars=yes,resizable=yes,menubar=no,location=no,status=no\")'><image src=\"https://shell.azure.com/images/launchcloudshell.png\"></image></a></p>\n" }
-    
+---
+# yaml header shouldn't be array
+inputs:
+  docfx.yml:
+  docs/a.md: |
+    ---
+    - arr element1
+    - arr element2
+    ---
+    # Title title
+outputs:
+  docs/a.json:
+  build.log: |
+    ["warning","yaml-header-not-object","Expect yaml header to be an object, but got an array","docs/a.md"]
+---
+# yaml header shouldn't be scalar
+inputs:
+  docfx.yml:
+  docs/a.md: |
+    ---
+    12306
+    ---
+    # Title title
+outputs:
+  docs/a.json:
+  build.log: |
+    ["warning","yaml-header-not-object","Expect yaml header to be an object, but got a scalar","docs/a.md"]
