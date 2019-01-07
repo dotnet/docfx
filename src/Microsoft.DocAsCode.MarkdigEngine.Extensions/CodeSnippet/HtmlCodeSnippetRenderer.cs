@@ -181,14 +181,11 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 return;
             }
 
-            using (InclusionContext.PushFile(codeSnippetPath))
-            {
-                codeSnippet.SetAttributeString();
+            codeSnippet.SetAttributeString();
 
-                renderer.Write("<pre><code").WriteAttributes(codeSnippet).Write(">");
-                renderer.WriteEscape(GetContent(content, codeSnippet));
-                renderer.Write("</code></pre>");
-            }
+            renderer.Write("<pre><code").WriteAttributes(codeSnippet).Write(">");
+            renderer.WriteEscape(GetContent(content, codeSnippet));
+            renderer.Write("</code></pre>");
         }
 
         private string GetContent(string content, CodeSnippet obj)
