@@ -107,7 +107,7 @@ namespace Microsoft.Docs.Build
                 (file, uid) =>
                 {
                     // add to referenced document list
-                    var (error, link, display, buildItem) = context.DependencyResolver.ResolveXref(uid, file);
+                    var (error, link, display, buildItem) = context.DependencyResolver.ResolveXref(uid, file, file);
                     errors.AddIfNotNull(error);
 
                     if (buildItem != null)

@@ -80,7 +80,7 @@ namespace Microsoft.Docs.Build
             if (attribute is XrefAttribute)
             {
                 // TODO: how to fill xref resolving data besides href
-                var (error, link, _, _) = context.DependencyResolver.ResolveXref((string)value, file);
+                var (error, link, _, _) = context.DependencyResolver.ResolveXref((string)value, file, file);
                 errors.AddIfNotNull(error);
                 return link;
             }

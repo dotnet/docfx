@@ -188,7 +188,7 @@ namespace Microsoft.Docs.Build
         private static (Error error, string href, string display, Document file) ResolveXref(string href)
         {
             // TODO: now markdig engine combines all kinds of reference with inclusion, we need to split them out
-            return t_status.Peek().DependencyResolver.ResolveXref(href, (Document)InclusionContext.RootFile);
+            return t_status.Peek().DependencyResolver.ResolveXref(href, (Document)InclusionContext.File, (Document)InclusionContext.RootFile);
         }
 
         private static List<string> ParseMonikerRange(string monikerRange) => t_status.Peek().ParseMonikerRangeDelegate(monikerRange);

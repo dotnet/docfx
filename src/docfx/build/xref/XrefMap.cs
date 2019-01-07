@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -18,14 +19,39 @@ namespace Microsoft.Docs.Build
         private readonly IReadOnlyDictionary<string, XrefSpec> _externalXrefMap;
         private readonly Context _context;
 
-        public (Error error, string href, string display, Document referencedFile) Resolve(string uid, string href, string displayPropertyName, Document rootFile, string moniker = null)
+        private static ThreadLocal<Stack<Document>> t_recursionDetector = new ThreadLocal<Stack<Document>>(() => new Stack<Document>());
+
+        public (Error error, string href, string display, Document referencedFile) Resolve(string uid, string href, string displayPropertyName, Document relativeTo, Document rootFile, string moniker = null)
+        {
+            if (t_recursionDetector.Value.Contains(relativeTo))
+            {
+                var referenceMap = t_recursionDetector.Value.ToList();
+                referenceMap.Reverse();
+                referenceMap.Add(relativeTo);
+                throw Errors.CircularReference(referenceMap).ToException();
+            }
+
+            try
+            {
+                t_recursionDetector.Value.Push(relativeTo);
+                return ResolveCore(uid, href, displayPropertyName, rootFile, moniker);
+            }
+            finally
+            {
+                Debug.Assert(t_recursionDetector.Value.Count > 0);
+                t_recursionDetector.Value.Pop();
+            }
+        }
+
+        private (Error error, string href, string display, Document referencedFile) ResolveCore(string uid, string href, string displayPropertyName, Document rootFile, string moniker = null)
         {
             string name = null;
             string displayPropertyValue = null;
             string resolvedHref = null;
+
             if (TryResolveFromInternal(uid, moniker, out var internalXrefSpec, out var referencedFile))
             {
-                resolvedHref = _context.DependencyResolver.GetRelativeUrl(rootFile, referencedFile);
+                resolvedHref = RebaseResolvedHref(rootFile, referencedFile);
                 name = internalXrefSpec.GetName();
                 displayPropertyValue = internalXrefSpec.GetXrefPropertyValue(displayPropertyName);
             }
@@ -45,6 +71,9 @@ namespace Microsoft.Docs.Build
             string display = !string.IsNullOrEmpty(displayPropertyValue) ? displayPropertyValue : (!string.IsNullOrEmpty(name) ? name : uid);
             return (null, resolvedHref, display, referencedFile);
         }
+
+        private string RebaseResolvedHref(Document rootFile, Document referencedFile)
+            => _context.DependencyResolver.GetRelativeUrl(rootFile, referencedFile);
 
         private bool TryResolveFromInternal(string uid, string moniker, out InternalXrefSpec internalXrefSpec, out Document referencedFile)
         {
@@ -149,7 +178,7 @@ namespace Microsoft.Docs.Build
                 if (TryGetValidXrefSpecs(uid, specsWithSameUid, out var validInternalSpecs))
                 {
                     var (internalSpec, referencedFile) = GetLatestInternalXrefMap(validInternalSpecs);
-                    loadedInternalSpecs.Add(internalSpec.ToExternalXrefSpec());
+                    loadedInternalSpecs.Add(internalSpec.ToExternalXrefSpec(_context, referencedFile));
                 }
             }
             return loadedInternalSpecs;

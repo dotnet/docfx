@@ -3,18 +3,12 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
     internal class InternalXrefSpec
     {
-        private static ThreadLocal<Stack<(string propertyName, Document referencedFile)>> t_recursionDetector
-            = new ThreadLocal<Stack<(string, Document)>>(() => new Stack<(string, Document)>());
-
         public string Uid { get; set; }
 
         public string Href { get; set; }
@@ -30,30 +24,12 @@ namespace Microsoft.Docs.Build
             if (propertyName is null)
                 return null;
 
-            // TODO: fix reference map while markdig engine split xref reference from inclusion
-            if (t_recursionDetector.Value.Contains((propertyName, ReferencedFile)))
-            {
-                var referenceMap = t_recursionDetector.Value.Select(x => x.referencedFile).ToList();
-                referenceMap.Reverse();
-                referenceMap.Add(ReferencedFile);
-                throw Errors.CircularReference(referenceMap).ToException();
-            }
-
-            try
-            {
-                t_recursionDetector.Value.Push((propertyName, ReferencedFile));
-                return ExtensionData.TryGetValue(propertyName, out var internalValue) && internalValue.Value.Value is string internalStr ? internalStr : null;
-            }
-            finally
-            {
-                Debug.Assert(t_recursionDetector.Value.Count > 0);
-                t_recursionDetector.Value.Pop();
-            }
+            return ExtensionData.TryGetValue(propertyName, out var internalValue) && internalValue.Value.Value is string internalStr ? internalStr : null;
         }
 
         public string GetName() => GetXrefPropertyValue("name");
 
-        public XrefSpec ToExternalXrefSpec()
+        public XrefSpec ToExternalXrefSpec(Context context, Document file)
         {
             var spec = new XrefSpec
             {
@@ -63,13 +39,13 @@ namespace Microsoft.Docs.Build
             };
             foreach (var (key, value) in ExtensionData)
             {
-                // TODO: remove exception sallow while markdig engine split xref reference from inclusion
                 try
                 {
                     spec.ExtensionData[key] = GetXrefPropertyValue(key);
                 }
-                catch (DocfxException)
+                catch (DocfxException ex)
                 {
+                    context.Report.Write(file.FilePath, ex.Error);
                 }
             }
             return spec;
