@@ -61,16 +61,11 @@ function createNuGetPackage() {
     }
 
     Remove-Item ./drop -Force -Recurse -ErrorAction Ignore
-    exec "dotnet pack src\docfx -c Release -o $PSScriptRoot\drop /p:Version=$version /p:InformationalVersion=$version"
-}
-
-function testNuGetPackage() {
-    $toolPath = "$PSScriptRoot\drop\tools\$(New-Guid)"
-    exec "dotnet tool install docfx --version 3.0.0-* --add-source $PSScriptRoot\drop --tool-path $toolPath"
-    exec "$toolPath\docfx --version"
+    exec "dotnet pack src\docfx -c Release -o drop /p:Version=$version /p:InformationalVersion=$version"
+    exec "dotnet tool install docfx --version 3.0.0-* --add-source drop --tool-path drop"
+    exec ".\drop\docfx --version"
 }
 
 runTests
 checkSchema
 createNuGetPackage
-testNuGetPackage
