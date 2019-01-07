@@ -19,13 +19,13 @@ namespace Microsoft.Docs.Build
         private readonly IReadOnlyDictionary<string, XrefSpec> _externalXrefMap;
         private readonly Context _context;
 
-        private static ThreadLocal<Stack<Document>> t_recursionDetector = new ThreadLocal<Stack<Document>>(() => new Stack<Document>());
+        private static ThreadLocal<Stack<(string uid, string propertyName, Document parent)>> t_recursionDetector = new ThreadLocal<Stack<(string, string, Document)>>(() => new Stack<(string, string, Document)>());
 
         public (Error error, string href, string display, Document referencedFile) Resolve(string uid, string href, string displayPropertyName, Document relativeTo, Document rootFile, string moniker = null)
         {
-            if (t_recursionDetector.Value.Contains(relativeTo))
+            if (t_recursionDetector.Value.Contains((uid, displayPropertyName, relativeTo)))
             {
-                var referenceMap = t_recursionDetector.Value.ToList();
+                var referenceMap = t_recursionDetector.Value.Select(x => x.parent).ToList();
                 referenceMap.Reverse();
                 referenceMap.Add(relativeTo);
                 throw Errors.CircularReference(referenceMap).ToException();
@@ -33,7 +33,7 @@ namespace Microsoft.Docs.Build
 
             try
             {
-                t_recursionDetector.Value.Push(relativeTo);
+                t_recursionDetector.Value.Push((uid, displayPropertyName, relativeTo));
                 return ResolveCore(uid, href, displayPropertyName, rootFile, moniker);
             }
             finally
