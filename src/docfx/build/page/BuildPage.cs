@@ -160,7 +160,7 @@ namespace Microsoft.Docs.Build
                 throw Errors.SchemaNotFound(file.Mime).ToException();
             }
 
-            var (schemaViolationErrors, content) = JsonUtility.ToObjectWithSchemaValidation(token, schema.Type, transform: AttributeTransformer.Transform(context, errors, file, buildChild));
+            var (schemaViolationErrors, content) = JsonUtility.ToObjectWithSchemaValidation(token, schema.Type, transform: AttributeTransformer.TransformSDP(context, errors, file, buildChild));
             errors.AddRange(schemaViolationErrors);
 
             if (file.Docset.Legacy && schema.Attribute is PageSchemaAttribute)

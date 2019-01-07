@@ -22,19 +22,13 @@ namespace Microsoft.Docs.Build
 
         public string GetName() => GetXrefPropertyValue("name");
 
-        public string GetXrefPropertyValue(string property)
-            => ExtensionData.TryGetValue<JValue>(property, out var v) && v.Value is string str ? str : null;
-
-        public XrefSpec Clone()
+        public string GetXrefPropertyValue(string propertyName)
         {
-            var spec = new XrefSpec
+            if (propertyName != null && ExtensionData.TryGetValue<JValue>(propertyName, out var v))
             {
-                Uid = Uid,
-                Monikers = Monikers,
-                Href = Href,
-            };
-            spec.ExtensionData.Merge(ExtensionData);
-            return spec;
+                return v.Value is string str ? str : null;
+            }
+            return null;
         }
     }
 }
