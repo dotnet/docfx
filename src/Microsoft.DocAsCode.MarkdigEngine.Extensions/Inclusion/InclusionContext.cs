@@ -112,7 +112,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             var markupStack = t_markupStacks.Value;
             var inclusionStack = markupStack.Count > 0 ? markupStack.Peek().inclusionStack : null;
-            if (inclusionStack.Contains(file))
+            if (inclusionStack != null && inclusionStack.Contains(file))
             {
                 dependencyChain = inclusionStack.Reverse();
                 return true;
