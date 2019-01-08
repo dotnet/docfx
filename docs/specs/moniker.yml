@@ -423,7 +423,7 @@ outputs:
       "monikers": ["netcore-2.0"]
     }
   xrefmap.json: | 
-    {"references":[{"uid":"a","href":"/docs/a","name":"netcore-2.0"}]}
+    {"references":[{"uid":"a","href":"https://docs.com/docs/a","name":"netcore-2.0"}]}
 ---
 # Define same uid with multiple moniker ranges, 
 # reference to it without moniker in the same docset, shoule take the latest one
@@ -485,7 +485,7 @@ outputs:
       "monikers": ["netcore-2.0"]
     }
   xrefmap.json: | 
-    {"references":[{"uid":"a","href":"/docs/a","name":"netcore-2.0"}]}
+    {"references":[{"uid":"a","href":"https://docs.com/docs/a","name":"netcore-2.0"}]}
 ---
 # Define same uid with overlapping moniker range
 inputs:
@@ -582,7 +582,7 @@ outputs:
       "monikers": ["netcore-2.0"]
     }
   xrefmap.json: | 
-    {"references":[{"uid":"a","href":"/docs/a","name":"netcore-2.0"}]}
+    {"references":[{"uid":"a","href":"https://docs.com/docs/a","name":"netcore-2.0"}]}
   build.log: |
     ["warning","invalid-uid-moniker","Moniker 'netcore-1.0' is not defined with uid 'a'"]
 ---
@@ -650,7 +650,7 @@ outputs:
       "monikers": ["netcore-2.0"]
     }
   xrefmap.json: | 
-    {"references":[{"uid":"a","href":"/docs/a","name":"netcore-2.0"}]}
+    {"references":[{"uid":"a","href":"https://docs.com/docs/a","name":"netcore-2.0"}]}
 ---
 # Define multiple uid without moniker range, and also uid with moniker range
 inputs:

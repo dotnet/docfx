@@ -48,7 +48,7 @@ namespace Microsoft.Docs.Build
         /// _site/en-us/603b739b/dotnet/api/system.string/index.json
         ///
         ///  - Normalized using <see cref="PathUtility.NormalizeFile(string)"/>
-        ///  - Docs not start with '/'
+        ///  - Does not start with '/'
         ///  - Does not end with '/'
         /// </summary>
         public string SitePath { get; }
@@ -66,6 +66,11 @@ namespace Microsoft.Docs.Build
         ///  - Does not escape with <see cref="HrefUtility.EscapeUrl(string)"/>
         /// </summary>
         public string SiteUrl { get; }
+
+        /// <summary>
+        /// Gets the external accessible URL
+        /// </summary>
+        public string ExternalUrl { get; }
 
         /// <summary>
         /// Gets the document id and version independent id
@@ -108,6 +113,7 @@ namespace Microsoft.Docs.Build
             string filePath,
             string sitePath,
             string siteUrl,
+            string externalUrl,
             ContentType contentType,
             string mime,
             Schema schema,
@@ -122,6 +128,7 @@ namespace Microsoft.Docs.Build
             FilePath = filePath;
             SitePath = sitePath;
             SiteUrl = siteUrl;
+            ExternalUrl = externalUrl;
             ContentType = contentType;
             Mime = mime;
             Schema = schema;
@@ -225,6 +232,7 @@ namespace Microsoft.Docs.Build
             }
 
             var siteUrl = PathToAbsoluteUrl(sitePath, type, schema, docset.Config.Output.Json);
+            var externalUrl = SiteUrlToExternalUrl(siteUrl, docset);
             var contentType = redirectionUrl != null ? ContentType.Redirection : type;
 
             if (contentType == ContentType.Redirection && type != ContentType.Page)
@@ -232,7 +240,7 @@ namespace Microsoft.Docs.Build
                 return (Errors.InvalidRedirection(filePath, type), null);
             }
 
-            return (null, new Document(docset, filePath, sitePath, siteUrl, contentType, mime, schema, isExperimental, redirectionUrl, isFromHistory));
+            return (null, new Document(docset, filePath, sitePath, siteUrl, externalUrl, contentType, mime, schema, isExperimental, redirectionUrl, isFromHistory));
         }
 
         /// <summary>
@@ -361,6 +369,9 @@ namespace Microsoft.Docs.Build
                     return url;
             }
         }
+
+        private static string SiteUrlToExternalUrl(string siteUrl, Docset docset)
+            => docset.Config.BaseUrl + siteUrl;
 
         private static string ApplyRoutes(string path, IReadOnlyDictionary<string, string> routes)
         {
