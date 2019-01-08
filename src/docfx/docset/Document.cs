@@ -73,6 +73,11 @@ namespace Microsoft.Docs.Build
         public string ExternalUrl { get; }
 
         /// <summary>
+        /// Gets the canonical URL
+        /// </summary>
+        public string CanonicalUrl { get; }
+
+        /// <summary>
         /// Gets the document id and version independent id
         /// </summary>
         public (string id, string versionIndependentId) Id => _id.Value;
@@ -114,6 +119,7 @@ namespace Microsoft.Docs.Build
             string sitePath,
             string siteUrl,
             string externalUrl,
+            string canonicalUrl,
             ContentType contentType,
             string mime,
             Schema schema,
@@ -129,6 +135,7 @@ namespace Microsoft.Docs.Build
             SitePath = sitePath;
             SiteUrl = siteUrl;
             ExternalUrl = externalUrl;
+            CanonicalUrl = canonicalUrl;
             ContentType = contentType;
             Mime = mime;
             Schema = schema;
@@ -234,13 +241,14 @@ namespace Microsoft.Docs.Build
             var siteUrl = PathToAbsoluteUrl(sitePath, type, schema, docset.Config.Output.Json);
             var externalUrl = SiteUrlToExternalUrl(siteUrl, docset);
             var contentType = redirectionUrl != null ? ContentType.Redirection : type;
+            var canonicalUrl = GetCanonicalUrl(siteUrl, sitePath, docset, isExperimental, contentType, schema);
 
             if (contentType == ContentType.Redirection && type != ContentType.Page)
             {
                 return (Errors.InvalidRedirection(filePath, type), null);
             }
 
-            return (null, new Document(docset, filePath, sitePath, siteUrl, externalUrl, contentType, mime, schema, isExperimental, redirectionUrl, isFromHistory));
+            return (null, new Document(docset, filePath, sitePath, siteUrl, externalUrl, canonicalUrl, contentType, mime, schema, isExperimental, redirectionUrl, isFromHistory));
         }
 
         /// <summary>
@@ -367,6 +375,24 @@ namespace Microsoft.Docs.Build
                     return url;
                 default:
                     return url;
+            }
+        }
+
+        private static string GetCanonicalUrl(string siteUrl, string sitePath, Docset docset, bool isExperimental, ContentType contentType, Schema schema)
+        {
+            var config = docset.Config;
+            if (isExperimental)
+            {
+                sitePath = ReplaceLast(sitePath, ".experimental", "");
+                siteUrl = Document.PathToAbsoluteUrl(sitePath, contentType, schema, config.Output.Json);
+            }
+
+            return $"{config.BaseUrl}/{docset.Locale}{siteUrl}";
+
+            string ReplaceLast(string source, string find, string replace)
+            {
+                var i = source.LastIndexOf(find);
+                return i >= 0 ? source.Remove(i, find.Length).Insert(i, replace) : source;
             }
         }
 
