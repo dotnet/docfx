@@ -155,13 +155,13 @@ repos:
         docfx.yml: |
           dependencies:
             restore-child1: https://docs.com/restore/x#child
-            restore-child2: https://docs.com/restore/x.child-a
+            restore-child2: https://docs.com/restore/x#child-a
         docs/a.md: |
           [!include[](~/restore-child1/docs/child.md)]
   https://docs.com/restore/x#child:
     - files:
         docs/child.md:
-  https://docs.com/restore/x.child-a:
+  https://docs.com/restore/x#child-a:
     - files:
         docs/childx.md:
 outputs:
