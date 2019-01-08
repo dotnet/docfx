@@ -351,7 +351,7 @@ namespace Microsoft.Docs.Build
             var xref = new InternalXrefSpec
             {
                 Uid = metadata.Uid,
-                Href = file.ExternalUrl,
+                Href = file.CanonicalUrlWithoutLocale,
                 ReferencedFile = file,
             };
             xref.ExtensionData["name"] = new Lazy<JValue>(() => new JValue(string.IsNullOrEmpty(metadata.Title) ? metadata.Uid : metadata.Title));
@@ -386,7 +386,7 @@ namespace Microsoft.Docs.Build
             var xref = new InternalXrefSpec
             {
                 Uid = uid,
-                Href = file.ExternalUrl,
+                Href = file.CanonicalUrlWithoutLocale,
                 ReferencedFile = file,
             };
 

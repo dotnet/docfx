@@ -68,9 +68,9 @@ namespace Microsoft.Docs.Build
         public string SiteUrl { get; }
 
         /// <summary>
-        /// Gets the external accessible URL
+        /// Gets the canonical URL without locale
         /// </summary>
-        public string ExternalUrl { get; }
+        public string CanonicalUrlWithoutLocale { get; }
 
         /// <summary>
         /// Gets the canonical URL
@@ -134,7 +134,7 @@ namespace Microsoft.Docs.Build
             FilePath = filePath;
             SitePath = sitePath;
             SiteUrl = siteUrl;
-            ExternalUrl = externalUrl;
+            CanonicalUrlWithoutLocale = externalUrl;
             CanonicalUrl = canonicalUrl;
             ContentType = contentType;
             Mime = mime;
@@ -239,16 +239,16 @@ namespace Microsoft.Docs.Build
             }
 
             var siteUrl = PathToAbsoluteUrl(sitePath, type, schema, docset.Config.Output.Json);
-            var externalUrl = SiteUrlToExternalUrl(siteUrl, docset);
             var contentType = redirectionUrl != null ? ContentType.Redirection : type;
             var canonicalUrl = GetCanonicalUrl(siteUrl, sitePath, docset, isExperimental, contentType, schema);
+            var canonicalUrlWithoutLocale = GetCanonicalUrl(siteUrl, sitePath, docset, isExperimental, contentType, schema, false);
 
             if (contentType == ContentType.Redirection && type != ContentType.Page)
             {
                 return (Errors.InvalidRedirection(filePath, type), null);
             }
 
-            return (null, new Document(docset, filePath, sitePath, siteUrl, externalUrl, canonicalUrl, contentType, mime, schema, isExperimental, redirectionUrl, isFromHistory));
+            return (null, new Document(docset, filePath, sitePath, siteUrl, canonicalUrlWithoutLocale, canonicalUrl, contentType, mime, schema, isExperimental, redirectionUrl, isFromHistory));
         }
 
         /// <summary>
@@ -378,7 +378,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static string GetCanonicalUrl(string siteUrl, string sitePath, Docset docset, bool isExperimental, ContentType contentType, Schema schema)
+        private static string GetCanonicalUrl(string siteUrl, string sitePath, Docset docset, bool isExperimental, ContentType contentType, Schema schema, bool withLocale = true)
         {
             var config = docset.Config;
             if (isExperimental)
@@ -387,7 +387,7 @@ namespace Microsoft.Docs.Build
                 siteUrl = Document.PathToAbsoluteUrl(sitePath, contentType, schema, config.Output.Json);
             }
 
-            return $"{config.BaseUrl}/{docset.Locale}{siteUrl}";
+            return withLocale ? $"{config.BaseUrl}/{docset.Locale}{siteUrl}" : $"{config.BaseUrl}{siteUrl}";
 
             string ReplaceLast(string source, string find, string replace)
             {
