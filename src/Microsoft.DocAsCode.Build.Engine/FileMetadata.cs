@@ -3,16 +3,20 @@
 
 namespace Microsoft.DocAsCode.Build.Engine
 {
+    using Newtonsoft.Json;
     using System.Collections.Generic;
     using System.Collections.Immutable;
 
+    [JsonConverter(typeof(FileMetadataConverter))]
     public sealed class FileMetadata : Dictionary<string, ImmutableArray<FileMetadataItem>>
     {
         public string BaseDir { get; }
+
         public FileMetadata(string baseDir) : base()
         {
             BaseDir = baseDir;
         }
+
         public FileMetadata(string baseDir, IDictionary<string, ImmutableArray<FileMetadataItem>> dictionary) : base(dictionary)
         {
             BaseDir = baseDir;

@@ -17,48 +17,69 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         /// The version name of documents.
         /// </summary>
         public string VersionName { get; set; }
+
         /// <summary>
         /// The information for processors.
         /// </summary>
         public List<ProcessorInfo> Processors { get; } = new List<ProcessorInfo>();
+
         /// <summary>
         /// The hash info for configs.
-        /// Include global metadata, file metadata.
+        /// Include global metadata, exclude file metadata.
         /// </summary>
         public string ConfigHash { get; set; }
+
+        /// <summary>
+        /// The hash info for the whole FileMetadata section in configs
+        /// </summary>
+        public string FileMetadataHash { get; set; }
+
         /// <summary>
         /// The file link for dependency (type is <see cref="DependencyGraph.Load(System.IO.TextReader)"/>).
         /// </summary>
         public string DependencyFile { get; set; }
+
+        /// <summary>
+        /// The file link for <see cref="FileMetadata"/>
+        /// </summary>
+        public string FileMetadataFile { get; set; }
+
         /// <summary>
         /// The file link for file attributes.(type is <see cref="FileAttributes"/>).
         /// e.g. last modified time, md5.
         /// </summary>
         public string AttributesFile { get; set; }
+
         /// <summary>
         /// The file link for build outputs (type is <see cref="BuildOutputs"/>).
         /// </summary>
         public string OutputFile { get; set; }
+
         /// <summary>
         /// The file link for the manifest file(type is <see cref="T:Microsoft.DocAsCode.Plugins.Manifest"/>).
         /// </summary>
         public string ManifestFile { get; set; }
+
         /// <summary>
         /// The file link for the XRefMap file(type is <see cref="XRefMap"/>).
         /// </summary>
         public string XRefSpecMapFile { get; set; }
+
         /// <summary>
         /// The file link for the ExternalXRefSpec file.
         /// </summary>
         public string ExternalXRefSpecFile { get; set; }
+
         /// <summary>
         /// The file link for the FileMap file.
         /// </summary>
         public string FileMapFile { get; set; }
+
         /// <summary>
         /// The file link for the build message file (type is <see cref="BuildMessage"/>).
         /// </summary>
         public string BuildMessageFile { get; set; }
+
         /// <summary>
         /// The file link for the TocRestructions file.
         /// </summary>
@@ -73,36 +94,49 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         /// </summary>
         [JsonIgnore]
         public DependencyGraph Dependency { get; set; }
+
+        /// <summary>
+        /// deserialized file metadata
+        /// </summary>
+        [JsonIgnore]
+        public FileMetadata FileMetadata { get; set; }
+
         /// <summary>
         /// deserialized attributes
         /// </summary>
         [JsonIgnore]
         public IDictionary<string, FileAttributeItem> Attributes { get; set; } = new OSPlatformSensitiveDictionary<FileAttributeItem>();
+
         /// <summary>
         /// deserialized manifestitems
         /// </summary>
         [JsonIgnore]
         public IEnumerable<ManifestItem> Manifest { get; set; }
+
         /// <summary>
         /// deserialized outputs
         /// </summary>
         [JsonIgnore]
         public BuildOutputs BuildOutputs { get; private set; } = new BuildOutputs();
+
         /// <summary>
         /// deserialized xrefspecmap. Key is original file path from root. Value is XrefSpecs reported by the file.
         /// </summary>
         [JsonIgnore]
         public IDictionary<string, List<XRefSpec>> XRefSpecMap { get; private set; } = new OSPlatformSensitiveDictionary<List<XRefSpec>>();
+
         /// <summary>
         /// deserialized filemap.
         /// </summary>
         [JsonIgnore]
         public IDictionary<string, FileMapItem> FileMap { get; private set; } = new OSPlatformSensitiveDictionary<FileMapItem>();
+
         /// <summary>
         /// deserialized build messages.
         /// </summary>
         [JsonIgnore]
         public BuildMessage BuildMessage { get; private set; } = new BuildMessage();
+
         /// <summary>
         /// deserialized Toc Restructions.
         /// </summary>
@@ -118,6 +152,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         internal void Load(string baseDir)
         {
             ActionWhenNotNull(baseDir, DependencyFile, f => { Dependency = IncrementalUtility.LoadDependency(f); });
+            ActionWhenNotNull(baseDir, FileMetadataFile, f => { FileMetadata = IncrementalUtility.LoadIntermediateFile<FileMetadata>(f); });
             ActionWhenNotNull(baseDir, AttributesFile, f => { Attributes = IncrementalUtility.LoadIntermediateFile<OSPlatformSensitiveDictionary<FileAttributeItem>>(f); });
             ActionWhenNotNull(baseDir, OutputFile, f => { BuildOutputs = IncrementalUtility.LoadIntermediateFile<BuildOutputs>(f); });
             ActionWhenNotNull(baseDir, ManifestFile, f => { Manifest = IncrementalUtility.LoadIntermediateFile<IEnumerable<ManifestItem>>(f); });
@@ -134,6 +169,10 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         internal void Save(string baseDir)
         {
             IncrementalUtility.SaveDependency(Path.Combine(baseDir, DependencyFile), Dependency);
+            if (FileMetadataFile != null)
+            {
+                IncrementalUtility.SaveIntermediateFile(Path.Combine(baseDir, FileMetadataFile), FileMetadata);
+            }
             IncrementalUtility.SaveIntermediateFile(Path.Combine(baseDir, AttributesFile), Attributes);
             IncrementalUtility.SaveIntermediateFile(Path.Combine(baseDir, OutputFile), BuildOutputs);
             IncrementalUtility.SaveIntermediateFile(Path.Combine(baseDir, XRefSpecMapFile), XRefSpecMap);

@@ -20,6 +20,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
     using Microsoft.DocAsCode.Plugins;
 
     using Xunit;
+    using Microsoft.DocAsCode.Glob;
 
     [Trait("Owner", "xuzho")]
     [Trait("EntityType", "DocumentBuilder")]
@@ -4962,8 +4963,6 @@ tagRules : [
             #region Prepare test data
             // arrange
             const string intermediateFolderVariable = "%cache%";
-            var resourceFile = Path.GetFileName(typeof(IncrementalBuildTest).Assembly.Location);
-
             var inputFolder = GetRandomFolder();
             var outputFolder = GetRandomFolder();
             var templateFolder = GetRandomFolder();
@@ -5044,6 +5043,128 @@ tagRules : [
             }
         }
 
+        [Fact]
+        public void TestIncrementalWithFileMetadataChange()
+        {
+            #region Prepare test data
+            // arrange
+            const string intermediateFolderVariable = "%cache%";
+            var inputFolder = GetRandomFolder();
+            var outputFolder = GetRandomFolder();
+            var templateFolder = GetRandomFolder();
+            var intermediateFolder = GetRandomFolder();
+            Environment.SetEnvironmentVariable("cache", Path.GetFullPath(intermediateFolder));
+
+            var fileAddFm = CreateFile("fileMetadata/toAdd.md", new[] { "test" }, inputFolder);
+            var fileRemoveFm = CreateFile("fileMetadata/toRemove.md", new[] { "test" }, inputFolder);
+            var fileModifyFm = CreateFile("fileMetadata/toModify.md", new[] { "test" }, inputFolder);
+            var fileKeepFm = CreateFile("fileMetadata/toKeep.md", new[] { "test" }, inputFolder);
+
+            var fileMetadataOriginal = new FileMetadata(inputFolder, new Dictionary<string, ImmutableArray<FileMetadataItem>>
+            {
+                ["meta"] = ImmutableArray.Create(
+                    new FileMetadataItem(new GlobMatcher("**/toRemove.md"), "meta", "toRemove"),
+                    new FileMetadataItem(new GlobMatcher("**/toModify.md"), "meta", "toModify"),
+                    new FileMetadataItem(new GlobMatcher("**/toKeep.md"), "meta", "toKeep"))
+            });
+            var fileMetadataUpdated = new FileMetadata(inputFolder, new Dictionary<string, ImmutableArray<FileMetadataItem>>
+            {
+                ["meta"] = ImmutableArray.Create(
+                    new FileMetadataItem(new GlobMatcher("**/toAdd.md"), "meta", "toAdd"),
+                    new FileMetadataItem(new GlobMatcher("**/toModify.md"), "meta", "Modified!"),
+                    new FileMetadataItem(new GlobMatcher("**/toKeep.md"), "meta", "toKeep"))
+            });
+
+            FileCollection files = new FileCollection(Directory.GetCurrentDirectory());
+            files.Add(DocumentType.Article, new[] { fileAddFm, fileRemoveFm, fileModifyFm, fileKeepFm});
+            #endregion
+
+            Init("IncrementalBuild.TestIncrementalWithFileMetadataChange");
+            var outputFolderFirst = Path.Combine(outputFolder, "IncrementalBuild.TestIncrementalWithFileMetadataChange");
+            var outputFolderForIncremental = Path.Combine(outputFolder, "IncrementalBuild.TestIncrementalWithFileMetadataChange.Second");
+            var outputFolderForCompare = Path.Combine(outputFolder, "IncrementalBuild.TestIncrementalWithFileMetadataChange.Second.ForceBuild");
+            try
+            {
+                using (new LoggerPhaseScope("IncrementalBuild.TestIncrementalWithFileMetadataChange-first"))
+                {
+                    BuildDocument(
+                        files,
+                        inputFolder,
+                        outputFolderFirst,
+                        new Dictionary<string, object> { ["meta"] = "Hello world!", },
+                        templateFolder: templateFolder,
+                        applyTemplateSettings: new ApplyTemplateSettings(inputFolder, outputFolderFirst)
+                        {
+                            RawModelExportSettings = { Export = true },
+                            TransformDocument = true,
+                        },
+                        intermediateFolder: intermediateFolderVariable,
+                        fileMetadata: fileMetadataOriginal);
+                }
+                ClearListener();
+
+                MoveIntermediateFolder(intermediateFolder);
+                using (new LoggerPhaseScope("IncrementalBuild.TestIncrementalWithFileMetadataChange-second"))
+                {
+                    BuildDocument(
+                        files,
+                        inputFolder,
+                        outputFolderForIncremental,
+                        new Dictionary<string, object> { ["meta"] = "Hello world!", },
+                        templateFolder: templateFolder,
+                        applyTemplateSettings: new ApplyTemplateSettings(inputFolder, outputFolderForIncremental)
+                        {
+                            RawModelExportSettings = { Export = true },
+                            TransformDocument = true,
+                        },
+                        intermediateFolder: intermediateFolderVariable,
+                        cleanupCacheHistory: true,
+                        fileMetadata: fileMetadataUpdated);
+                }
+
+                using (new LoggerPhaseScope("IncrementalBuild.TestIncrementalWithFileMetadataChange-forcebuild-second"))
+                {
+                    BuildDocument(
+                        files,
+                        inputFolder,
+                        outputFolderForCompare,
+                        new Dictionary<string, object> { ["meta"] = "Hello world!", },
+                        templateFolder: templateFolder,
+                        applyTemplateSettings: new ApplyTemplateSettings(inputFolder, outputFolderForCompare)
+                        {
+                            RawModelExportSettings = { Export = true },
+                            TransformDocument = true,
+                        },
+                        fileMetadata: fileMetadataUpdated);
+                }
+
+                {
+                    Assert.True(CompareDir(outputFolderForIncremental, outputFolderForCompare));
+                    Assert.Equal(
+                        GetLogMessages("IncrementalBuild.TestIncrementalWithFileMetadataChange-forcebuild-second"),
+                        GetLogMessages(new[] { "IncrementalBuild.TestIncrementalWithFileMetadataChange-second", "IncrementalBuild.TestIncrementalWithFileMetadataChange-first" }));
+
+                    // check manifest
+                    var manifestOutputPath = Path.GetFullPath(Path.Combine(outputFolderForIncremental, "manifest.json"));
+                    Assert.True(File.Exists(manifestOutputPath));
+                    var manifest = JsonUtility.Deserialize<Manifest>(manifestOutputPath);
+                    var incrementalInfo = manifest.IncrementalInfo;
+                    Assert.NotNull(incrementalInfo);
+                    Assert.Equal(2, incrementalInfo.Count);
+                    var incrementalStatus = incrementalInfo[0].Status;
+                    Assert.False(incrementalStatus.CanIncremental); // should be true when incremental FileMetadta finishes
+                }
+            }
+            finally
+            {
+                Environment.SetEnvironmentVariable("cache", null);
+                CleanUp();
+                if (File.Exists(MarkdownSytleConfig.MarkdownStyleFileName))
+                {
+                    File.Delete(MarkdownSytleConfig.MarkdownStyleFileName);
+                }
+            }
+        }
         [Fact(Skip = "wait for fix")]
         public void TestDestinationFolderUpdate()
         {
@@ -5214,7 +5335,8 @@ tagRules : [
             Dictionary<string, ChangeKindWithDependency> changes = null,
             bool enableSplit = false,
             bool forceRebuild = false,
-            bool cleanupCacheHistory = false)
+            bool cleanupCacheHistory = false,
+            FileMetadata fileMetadata = null)
         {
             using (var builder = new DocumentBuilder(LoadAssemblies(enableSplit), ImmutableArray<string>.Empty, templateHash, intermediateFolder, cleanupCacheHistory: cleanupCacheHistory))
             {
@@ -5233,6 +5355,7 @@ tagRules : [
                     Changes = changes?.ToImmutableDictionary(FilePathComparer.OSPlatformSensitiveStringComparer),
                     ForcePostProcess = false,
                     ForceRebuild = forceRebuild,
+                    FileMetadata = fileMetadata,
                 };
                 builder.Build(parameters);
             }
