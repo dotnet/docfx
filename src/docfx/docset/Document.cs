@@ -118,7 +118,7 @@ namespace Microsoft.Docs.Build
             string filePath,
             string sitePath,
             string siteUrl,
-            string externalUrl,
+            string canonicalUrlWithoutLocale,
             string canonicalUrl,
             ContentType contentType,
             string mime,
@@ -134,7 +134,7 @@ namespace Microsoft.Docs.Build
             FilePath = filePath;
             SitePath = sitePath;
             SiteUrl = siteUrl;
-            CanonicalUrlWithoutLocale = externalUrl;
+            CanonicalUrlWithoutLocale = canonicalUrlWithoutLocale;
             CanonicalUrl = canonicalUrl;
             ContentType = contentType;
             Mime = mime;
@@ -395,9 +395,6 @@ namespace Microsoft.Docs.Build
                 return i >= 0 ? source.Remove(i, find.Length).Insert(i, replace) : source;
             }
         }
-
-        private static string SiteUrlToExternalUrl(string siteUrl, Docset docset)
-            => docset.Config.BaseUrl + siteUrl;
 
         private static string ApplyRoutes(string path, IReadOnlyDictionary<string, string> routes)
         {
