@@ -116,7 +116,7 @@ Different files can share the same `{site-url}` or `{site-path}` due to versioni
 
 ## System Generated Outputs
 
-Besides content files, `docfx` generates miscellaneous files during the build. The name of these system generated fiels starts with `.`. The extension MUST be `.json` for files in json format.
+Besides content files, `docfx` generates miscellaneous files during the build. The name of these system generated files starts with `.`. The extension MUST be `.json` for files in json format.
 
 File name           | Description
 --------------------|-----------------
