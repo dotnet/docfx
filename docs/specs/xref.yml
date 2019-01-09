@@ -80,12 +80,12 @@ outputs:
       "references":[
         {
           "uid": "a",
-          "href": "/docs/a",
+          "href": "https://docs.com/docs/a",
           "name": "Title from yaml header a"
         },
         {
           "uid": "b",
-          "href": "/docs/b",
+          "href": "https://docs.com/docs/b",
           "name": "Title from yaml header b"
         }
       ]
@@ -124,7 +124,7 @@ outputs:
     {"content":"<p>Link to <a href=\"a.json\">test.test</a>\nLink to <a href=\"a.json\">test.test</a>\nLink to <a href=\"a.json\">test</a></p>\n"}
   docs/a.json:
   xrefmap.json: | 
-    {"references":[{"uid":"a","href":"/docs/a.json"}]}
+    {"references":[{"uid":"a","href":"https://docs.com/docs/a.json"}]}
   build.manifest: |
     {
       "dependencies": {
@@ -184,7 +184,7 @@ outputs:
       "content": {"xref": "a.json"}
     }
   xrefmap.json: | 
-    {"references":[{"uid":"a","href":"/docs/a.json"}]}
+    {"references":[{"uid":"a","href":"https://docs.com/docs/a.json"}]}
   build.manifest: |
     {
       "dependencies": {
@@ -241,7 +241,7 @@ outputs:
   build.log: |
     ["info","at-uid-not-found","Cannot find uid 'b' using xref '@b'","docs/b.md"]
   xrefmap.json: | 
-    {"references":[{"uid":"a","href":"/docs/a.json"}]}
+    {"references":[{"uid":"a","href":"https://docs.com/docs/a.json"}]}
 ---
 # Xref property field which supports markdown content
 inputs:
@@ -255,7 +255,7 @@ inputs:
 outputs:
   docs/a.json:
   xrefmap.json: | 
-    {"references":[{"uid":"a","href":"/docs/a.json","summary":"<pre><code>Hello `docfx`!\n</code></pre>\n"}]}
+    {"references":[{"uid":"a","href":"https://docs.com/docs/a.json","summary":"<pre><code>Hello `docfx`!\n</code></pre>\n"}]}
 ---
 # Xref property field which supports inline markdown content
 inputs:
@@ -269,7 +269,7 @@ inputs:
 outputs:
   docs/a.json:
   xrefmap.json: | 
-    {"references":[{"uid":"a","href":"/docs/a.json","inlineDescription":"Hello <code>docfx</code>!"}]}
+    {"references":[{"uid":"a","href":"https://docs.com/docs/a.json","inlineDescription":"Hello <code>docfx</code>!"}]}
 ---
 # Xref property field with dependecy
 inputs:
@@ -286,7 +286,7 @@ outputs:
   docs/a.json:
   docs/b.json:
   xrefmap.json: | 
-    {"references":[{"uid":"a","href":"/docs/a.json","inlineDescription":"Hello <code>docfx</code>!"}]}
+    {"references":[{"uid":"a","href":"https://docs.com/docs/a.json","inlineDescription":"Hello <code>docfx</code>!"}]}
 ---
 # Refer to uid with hashtag
 inputs:

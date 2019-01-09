@@ -27,7 +27,7 @@ namespace Microsoft.Docs.Build
             model.Metadata = metadata;
             model.OpenToPublicContributors = file.Docset.Config.Contribution.ShowEdit;
             model.TocRel = tocMap.FindTocRelativePath(file);
-            model.CanonicalUrl = GetCanonicalUrl(file);
+            model.CanonicalUrl = file.CanonicalUrl;
             model.Bilingual = file.Docset.Config.Localization.Bilingual;
 
             (model.DocumentId, model.DocumentVersionIndependentId) = file.Docset.Redirections.TryGetDocumentId(file, out var docId) ? docId : file.Id;
@@ -47,25 +47,6 @@ namespace Microsoft.Docs.Build
             }
 
             return (errors, output, model.Monikers);
-        }
-
-        private static string GetCanonicalUrl(Document file)
-        {
-            var config = file.Docset.Config;
-            var siteUrl = file.SiteUrl;
-            if (file.IsExperimental)
-            {
-                var sitePath = ReplaceLast(file.SitePath, ".experimental", "");
-                siteUrl = Document.PathToAbsoluteUrl(sitePath, file.ContentType, file.Schema, config.Output.Json);
-            }
-
-            return $"{config.BaseUrl}/{file.Docset.Locale}{siteUrl}";
-
-            string ReplaceLast(string source, string find, string replace)
-            {
-                var i = source.LastIndexOf(find);
-                return i >= 0 ? source.Remove(i, find.Length).Insert(i, replace) : source;
-            }
         }
 
         private static async Task<(List<Error> errors, Schema schema, PageModel model, FileMetadata metadata)>
