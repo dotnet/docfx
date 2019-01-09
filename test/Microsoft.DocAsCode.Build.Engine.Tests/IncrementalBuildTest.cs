@@ -5152,7 +5152,7 @@ tagRules : [
                     Assert.NotNull(incrementalInfo);
                     Assert.Equal(2, incrementalInfo.Count);
                     var incrementalStatus = incrementalInfo[0].Status;
-                    Assert.False(incrementalStatus.CanIncremental); // should be true when incremental FileMetadta finishes
+                    Assert.True(incrementalStatus.CanIncremental);
                 }
             }
             finally

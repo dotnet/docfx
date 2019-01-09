@@ -8,11 +8,13 @@ namespace Microsoft.DocAsCode.Glob
     using System.Text;
     using System.Text.RegularExpressions;
     using System.Linq;
+    using Microsoft.DocAsCode.Common;
 
     [Serializable]
-    public class GlobMatcher
+    public class GlobMatcher : IEquatable<GlobMatcher>
     {
         #region Private fields
+        private static readonly StringComparer Comparer = FilePathComparer.OSPlatformSensitiveStringComparer;
         private static readonly string[] EmptyString = new string[0];
         private const char NegateChar = '!';
         private const string GlobStar = "**";
@@ -760,6 +762,33 @@ namespace Microsoft.DocAsCode.Glob
             PlainText,
             Regex,
         }
+        #endregion
+
+        #region Compare & Equatable
+
+        public bool Equals(GlobMatcher other)
+        {
+            if (ReferenceEquals(null, other))
+            {
+                return false;
+            }
+            if (ReferenceEquals(this, other))
+            {
+                return true;
+            }
+            return Comparer.Equals(Raw, other.Raw) && Options == other.Options;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as GlobMatcher);
+        }
+
+        public override int GetHashCode()
+        {
+            return Options.GetHashCode() ^ (Comparer.GetHashCode(Raw) >> 1);
+        }
+
         #endregion
     }
 
