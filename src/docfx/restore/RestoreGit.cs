@@ -88,7 +88,7 @@ namespace Microsoft.Docs.Build
 
                         // use branch name instead of commit hash
                         // https://git-scm.com/docs/git-worktree#_commands
-                        var workTreeHead = $"{HrefUtility.EscapeUrlSegment(branch)}-{GitUtility.RevParse(repoPath, branch)}";
+                        var workTreeHead = $"{HrefUtility.EscapeUrlSegment(branch)}-{branch.GetMd5HashShort()}-{GitUtility.RevParse(repoPath, branch)}";
                         var workTreePath = Path.GetFullPath(Path.Combine(repoPath, "../", workTreeHead)).Replace('\\', '/');
 
                         if (existingWorkTreePath.TryAdd(workTreePath))

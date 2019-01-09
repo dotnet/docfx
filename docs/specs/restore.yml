@@ -147,3 +147,22 @@ outputs:
   docs/a.json:
   build.log: |
     ["warning","link-is-dependency","File 'dep/README.md' referenced by link '~/dep/README.md' will not be built because it is from a dependency docset","docs/a.md"]
+---
+# Restored repo should be always retrieved
+repos:
+  https://docs.com/restore/x#master1:
+    - files:
+        docfx.yml: |
+          dependencies:
+            restore-child1: https://docs.com/restore/x#child
+            restore-child2: https://docs.com/restore/x#child-a
+        docs/a.md: |
+          [!include[](~/restore-child1/docs/child.md)]
+  https://docs.com/restore/x#child:
+    - files:
+        docs/child.md:
+  https://docs.com/restore/x#child-a:
+    - files:
+        docs/childx.md:
+outputs:
+  docs/a.json:
