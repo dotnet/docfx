@@ -12,7 +12,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     {
         protected override void Write(HtmlRenderer renderer, MonikerRangeBlock obj)
         {
-            renderer.Write("<div").WriteAttributes(obj).Write($" range=\"{obj.MonikerRange}\"").WriteLine(">");
+            renderer.Write("<div").WriteAttributes(obj).WriteLine(">");
             renderer.WriteChildren(obj);
             renderer.WriteLine("</div>");
         }
