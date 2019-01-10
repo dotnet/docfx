@@ -5125,7 +5125,7 @@ tagRules : [
                 }
 
                 {
-                    // Assert.True(CompareDir(outputFolderForIncremental, outputFolderForCompare)); //todo: fix the compare
+                    Assert.True(CompareDir(outputFolderForIncremental, outputFolderForCompare));
                     Assert.Equal(
                        GetLogMessages("IncrementalBuild.TestIncrementalWithFileMetadataChange-forcebuild-second"),
                        GetLogMessages(new[] { "IncrementalBuild.TestIncrementalWithFileMetadataChange-second", "IncrementalBuild.TestIncrementalWithFileMetadataChange-first" }));

@@ -46,7 +46,44 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
         }
 
         [Fact]
-        public void TestGetChangedGlobs_AllChanged_With_BaseDir()
+        public void TestGetChangedGlobs_AllChanged_With_DifferentBaseDir()
+        {
+            var patterns = new string[] { "*md", "*.m", "abc", "/[]\\*.cs", "*/*.cs", "**" };
+            var left = new FileMetadata("inputFolder1", new Dictionary<string, ImmutableArray<FileMetadataItem>>
+            {
+                ["meta"] = ImmutableArray.Create(
+                    new FileMetadataItem(new GlobMatcher(patterns[0]), "meta", 1L),
+                    new FileMetadataItem(new GlobMatcher(patterns[1]), "meta", true),
+                    new FileMetadataItem(new GlobMatcher(patterns[2]), "meta", "string"),
+                    new FileMetadataItem(new GlobMatcher(patterns[3]), "meta", new Dictionary<string, object> { ["key"] = "2" }),
+                    new FileMetadataItem(new GlobMatcher(patterns[4]), "meta", new object[] { "1", "2" }),
+                    new FileMetadataItem(new GlobMatcher(patterns[5]), "meta", new Dictionary<string, object> { ["key"] = new object[] { "1", "2" } })
+                )
+            });
+
+            var right = new FileMetadata("inputFolder2", new Dictionary<string, ImmutableArray<FileMetadataItem>>
+            {
+                ["meta"] = ImmutableArray.Create(
+                    new FileMetadataItem(new GlobMatcher(patterns[0]), "meta", 1L),
+                    new FileMetadataItem(new GlobMatcher(patterns[1]), "meta", true),
+                    new FileMetadataItem(new GlobMatcher(patterns[2]), "meta", "string"),
+                    new FileMetadataItem(new GlobMatcher(patterns[3]), "meta", new Dictionary<string, object> { ["key"] = "2" }),
+                    new FileMetadataItem(new GlobMatcher(patterns[4]), "meta", new object[] { "1", "2" }),
+                    new FileMetadataItem(new GlobMatcher(patterns[5]), "meta", new Dictionary<string, object> { ["key"] = new object[] { "1", "2" } })
+                )
+            });
+
+            var actualResults = FileMetadataHelper.GetChangedGlobs(left, right).ToList();
+            Assert.True(actualResults != null);
+            Assert.True(actualResults.Count() == 6);
+            for (var index = 0; index < patterns.Length; index++)
+            {
+                Assert.Equal(patterns[index], actualResults[index].Raw);
+            }
+        }
+
+        [Fact]
+        public void TestGetChangedGlobs_AllChanged_With_DifferentPattern()
         {
             var baseDir = "inputFolder";
             var patternsA = new string[] { "*md", "*.m", "abc", "/[]\\*.cs", "*/*.cs", "**" };
@@ -80,43 +117,6 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             Assert.True(actualResults.Count() == 12);
             var patterns = patternsA.Concat(patternsB).ToList();
             for (var index = 0; index < patterns.Count(); index++)
-            {
-                Assert.Equal(patterns[index], actualResults[index].Raw);
-            }
-        }
-
-        [Fact]
-        public void TestGetChangedGlobs_AllChanged()
-        {
-            var patterns = new string[] { "*md", "*.m", "abc", "/[]\\*.cs", "*/*.cs", "**" };
-            var left = new FileMetadata("inputFolder1", new Dictionary<string, ImmutableArray<FileMetadataItem>>
-            {
-                ["meta"] = ImmutableArray.Create(
-                    new FileMetadataItem(new GlobMatcher(patterns[0]), "meta", 1L),
-                    new FileMetadataItem(new GlobMatcher(patterns[1]), "meta", true),
-                    new FileMetadataItem(new GlobMatcher(patterns[2]), "meta", "string"),
-                    new FileMetadataItem(new GlobMatcher(patterns[3]), "meta", new Dictionary<string, object> { ["key"] = "2" }),
-                    new FileMetadataItem(new GlobMatcher(patterns[4]), "meta", new object[] { "1", "2" }),
-                    new FileMetadataItem(new GlobMatcher(patterns[5]), "meta", new Dictionary<string, object> { ["key"] = new object[] { "1", "2" } })
-                )
-            });
-
-            var right = new FileMetadata("inputFolder2", new Dictionary<string, ImmutableArray<FileMetadataItem>>
-            {
-                ["meta"] = ImmutableArray.Create(
-                    new FileMetadataItem(new GlobMatcher(patterns[0]), "meta", 1L),
-                    new FileMetadataItem(new GlobMatcher(patterns[1]), "meta", true),
-                    new FileMetadataItem(new GlobMatcher(patterns[2]), "meta", "string"),
-                    new FileMetadataItem(new GlobMatcher(patterns[3]), "meta", new Dictionary<string, object> { ["key"] = "2" }),
-                    new FileMetadataItem(new GlobMatcher(patterns[4]), "meta", new object[] { "1", "2" }),
-                    new FileMetadataItem(new GlobMatcher(patterns[5]), "meta", new Dictionary<string, object> { ["key"] = new object[] { "1", "2" } })
-                )
-            });
-
-            var actualResults = FileMetadataHelper.GetChangedGlobs(left, right).ToList();
-            Assert.True(actualResults != null);
-            Assert.True(actualResults.Count() == 6);
-            for (var index = 0; index < patterns.Length; index++)
             {
                 Assert.Equal(patterns[index], actualResults[index].Raw);
             }
@@ -202,6 +202,80 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             Assert.True(actualResults != null);
             Assert.True(actualResults.Count() == 1);
             Assert.Equal(patterns[2], actualResults[0].Raw);
+        }
+
+        [Fact]
+        public void TestGetChangedGlobs_Changed()
+        {
+            var baseDir = "inputFolder";
+            var patterns = new string[] { "*md", "*.m", "abc", "/[]\\*.cs", "*/*.cs", "**" };
+            var left = new FileMetadata(baseDir, new Dictionary<string, ImmutableArray<FileMetadataItem>>
+            {
+                ["meta"] = ImmutableArray.Create(
+                    new FileMetadataItem(new GlobMatcher(patterns[0]), "meta", 1L),
+                    new FileMetadataItem(new GlobMatcher(patterns[1]), "meta", true),
+                    new FileMetadataItem(new GlobMatcher(patterns[3]), "meta", new Dictionary<string, object> { ["key"] = "2" }),
+                    new FileMetadataItem(new GlobMatcher(patterns[5]), "meta", new Dictionary<string, object> { ["key"] = new object[] { "1", "2" } })
+                )
+            });
+
+            var right = new FileMetadata(baseDir, new Dictionary<string, ImmutableArray<FileMetadataItem>>
+            {
+                ["meta"] = ImmutableArray.Create(
+                    new FileMetadataItem(new GlobMatcher(patterns[0]), "meta", 1L),
+                    new FileMetadataItem(new GlobMatcher(patterns[1]), "meta", true),
+                    new FileMetadataItem(new GlobMatcher(patterns[2]), "meta", "string"),
+                    new FileMetadataItem(new GlobMatcher(patterns[3]), "meta", new Dictionary<string, object> { ["key"] = "2" }),
+                    new FileMetadataItem(new GlobMatcher(patterns[4]), "meta", new object[] { "1", "2" })
+                )
+            });
+
+            var actualResults = FileMetadataHelper.GetChangedGlobs(left, right).ToList();
+            Assert.True(actualResults != null);
+            Assert.True(actualResults.Count() == 3);
+            Assert.Equal(patterns[5], actualResults[0].Raw);
+            Assert.Equal(patterns[2], actualResults[1].Raw);
+            Assert.Equal(patterns[4], actualResults[2].Raw);
+        }
+
+        [Fact]
+        public void TestGetChangedGlobs_Changed_Reverse()
+        {
+            var baseDir = "inputFolder";
+            var patterns = new string[] { "*md", "*.m" };
+            var left = new FileMetadata(baseDir, new Dictionary<string, ImmutableArray<FileMetadataItem>>
+            {
+                ["meta"] = ImmutableArray.Create(
+                    new FileMetadataItem(new GlobMatcher(patterns[0]), "meta", 1L),
+                    new FileMetadataItem(new GlobMatcher(patterns[1]), "meta", true)
+                )
+            });
+
+            var right = new FileMetadata(baseDir, new Dictionary<string, ImmutableArray<FileMetadataItem>>
+            {
+                ["meta"] = ImmutableArray.Create(
+                    new FileMetadataItem(new GlobMatcher(patterns[1]), "meta", true),
+                    new FileMetadataItem(new GlobMatcher(patterns[0]), "meta", 1L)
+                )
+            });
+
+            var actualResults = FileMetadataHelper.GetChangedGlobs(left, right).ToList();
+            Assert.True(actualResults != null);
+            Assert.True(actualResults.Count() == 1);
+            Assert.Equal(patterns[1], actualResults[0].Raw);
+        }
+
+        [Theory]
+        [InlineData("ABCBDAB", "BDCABA", "BCBA")]
+        [InlineData("ACCGGTCGAGTGCGCGGAAGCCGGCCGAA", "GTCGTTCGGAATGCCGTTGCTCTGTAAA", "GTCGTCGGAAGCCGGCCGAA")]
+        public void TestGetLongestCommonSequence(string input1, string input2, string expected)
+        {
+            var actual = FileMetadataHelper.GetLongestCommonSequence<char>(input1.ToImmutableArray(), input2.ToImmutableArray());
+            Assert.Equal(expected.Length, actual.Count());
+            for (int i = 0; i < expected.Length; i++)
+            {
+                Assert.Equal(expected[i], actual[i]);
+            }
         }
     }
 }
