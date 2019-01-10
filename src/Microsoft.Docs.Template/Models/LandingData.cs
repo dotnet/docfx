@@ -10,6 +10,8 @@ namespace Microsoft.Docs.Build
     {
         public string Title { get; set; }
 
+        public string TitleSuffix { get; set; }
+
         public JObject Metadata { get; set; }
 
         public LandingDataAbstract Abstract { get; set; }
