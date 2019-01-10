@@ -3,11 +3,12 @@
 
 namespace Microsoft.DocAsCode.Build.Engine
 {
-    using Microsoft.DocAsCode.Glob;
     using System;
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Linq;
+
+    using Microsoft.DocAsCode.Glob;
 
     public static class FileMetadataHelper
     {

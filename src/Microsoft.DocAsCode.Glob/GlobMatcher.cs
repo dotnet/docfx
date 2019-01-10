@@ -8,6 +8,7 @@ namespace Microsoft.DocAsCode.Glob
     using System.Text;
     using System.Text.RegularExpressions;
     using System.Linq;
+
     using Microsoft.DocAsCode.Common;
 
     [Serializable]
