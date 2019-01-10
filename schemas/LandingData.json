@@ -22,6 +22,9 @@
         "title": {
           "type": "string"
         },
+        "width": {
+          "type": "string"
+        },
         "href": {
           "type": "string"
         },
@@ -41,6 +44,9 @@
           "type": "string"
         },
         "alt": {
+          "type": "string"
+        },
+        "height": {
           "type": "string"
         },
         "width": {
@@ -156,6 +162,12 @@
         "title": {
           "type": "string"
         },
+        "type": {
+          "type": "string"
+        },
+        "text": {
+          "type": "string"
+        },
         "items": {
           "type": "array",
           "items": {
@@ -169,6 +181,9 @@
   "additionalProperties": false,
   "properties": {
     "title": {
+      "type": "string"
+    },
+    "titleSuffix": {
       "type": "string"
     },
     "metadata": {},
