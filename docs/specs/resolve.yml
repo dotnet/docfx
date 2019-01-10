@@ -57,19 +57,6 @@ outputs:
   docs/dir-b/b.json: |
     { "content": "<p>Link to <a href=\"../dir-a/a\">a</a></p>" }
 ---
-# Path starting with ~ resolves from docset root directory
-inputs:
-  docfx.yml:
-  docs/dir-a/a.md: Link to [b](~/docs/dir-b/b.md)
-  docs/dir-b/b.md: Link to [a](~docs/dir-a/a.md)
-outputs:
-  docs/dir-a/a.json: |
-    { "content": "<p>Link to <a href=\"../dir-b/b\">b</a></p>" }
-  docs/dir-b/b.json: |
-    { "content": "<p>Link to <a href=\"%7Edocs/dir-a/a.md\">a</a></p>" }
-  build.log: |
-    ["warning","file-not-found","Cannot find file '~docs/dir-a/a.md' relative to 'docs/dir-b/b.md'","docs/dir-b/b.md"]
----
 # Links in include files are resolved relative to the include file
 inputs:
   docfx.yml:
@@ -87,7 +74,7 @@ outputs:
 inputs:
   docfx.yml:
   docs/a.md: Link to <a href="b.md" target="_blank"><em>b</em></a>
-  docs/b.md: <div>Link to <img src="~/docs/c.png" /></div>
+  docs/b.md: <div>Link to <img src="c.png" /></div>
   docs/c.png:
 outputs:
   docs/a.json: |
@@ -263,12 +250,12 @@ inputs:
   docfx.yml: |
     dependencies:
       dep: https://github.com/docascode/docfx-test-dependencies
-  docs/a.md: 'Link to [dep](~/dep/logo.svg)'
+  docs/a.md: 'Link to [dep](../dep/logo.svg)'
 outputs:
   docs/a.json: |
-    {"content":"<p>Link to <a href=\"%7E/dep/logo.svg\">dep</a></p>"}
+    {"content":"<p>Link to <a href=\"../dep/logo.svg\">dep</a></p>"}
   build.log: |
-    ["warning","link-is-dependency","File 'logo.svg' referenced by link '~/dep/logo.svg' will not be built because it is from a dependency docset","docs/a.md"]
+    ["warning","link-is-dependency","File 'logo.svg' referenced by link '../dep/logo.svg' will not be built because it is from a dependency docset","docs/a.md"]
 ---
 # Don't show warning if include a file from dependency repo
 inputs:
@@ -279,3 +266,67 @@ inputs:
 outputs:
   docs/a.json: |
     {"content":"<p>DEP</p>"}
+---
+# Link with `~` - default TildePath config
+inputs:
+  docfx.yml:
+  docs/a.md: |
+    Link to [B1](~/b.md)
+    Link to [B2](~/docs/b.md)
+    Link to [B3](~docs/b.md)
+  docs/b.md:
+outputs:
+  docs/a.json: |
+    { "content": "<p>Link to <a href=\"%7E/b.md\">B1</a>Link to <a href=\"b\">B2</a>Link to <a href=\"%7Edocs/b.md\">B3</a></p>" }
+  docs/b.json:
+  build.log: |
+    ["warning","file-not-found","Cannot find file '~/b.md' relative to 'docs/a.md'","docs/a.md"]
+    ["warning","file-not-found","Cannot find file '~docs/b.md' relative to 'docs/a.md'","docs/a.md"]
+---
+# Link or Image with `~`
+inputs:
+  docfx.yml: |
+    tildePath: docs
+  docs/a.md: |
+    Link to [B1](~/b.md)
+    Link to [B2](~/docs/b.md)
+    ![C](~/c.png)
+  docs/b.md:
+  docs/c.png:
+outputs:
+  docs/a.json: |
+    { "content": "<p>Link to <a href=\"b\">B1</a>\nLink to <a href=\"%7E/docs/b.md\">B2</a>\n<img src=\"c.png\" alt=\"C\" /></p>\n" }
+  docs/b.json:
+  docs/c.png:
+  build.log: |
+    ["warning","file-not-found","Cannot find file '~/docs/b.md' relative to 'docs/a.md'","docs/a.md"]
+---
+# <a> or <img> tag with `~`
+inputs:
+  docfx.yml: |
+    tildePath: docs
+  docs/a.md: |
+    Link to <a href="~/b.md">b</a>
+    <div>Link to <img src="~/c.png" /></div>
+  docs/b.md:
+  docs/c.png:
+outputs:
+  docs/a.json: |
+    { "content": "<p>Link to <a href=\"b\">b</a></p>\n<div>Link to <img src=\"c.png\"></div>\n" }
+  docs/b.json:
+  docs/c.png:
+---
+# Include with `~`
+inputs:
+  docfx.yml: |
+    exclude: '*'
+    tildePath: docs/
+  docs/a.md: |
+    [!include[B1](~/b.md)]
+    [!include[B2](~/../b.md)]
+  b.md: Token
+outputs:
+  docs/a.json: |
+    { "content": "[!include[B1](~/b.md)]<p>Token</p>\n" }
+  build.log: |
+    ["warning","include-not-found","Cannot resolve '~/b.md' relative to 'docs/a.md'.","docs/a.md"]

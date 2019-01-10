@@ -220,7 +220,7 @@ namespace Microsoft.Docs.Build
             // Resolve path relative to docset
             if (path.StartsWith("~\\") || path.StartsWith("~/"))
             {
-                pathToDocset = path.Substring(2);
+                pathToDocset = Path.Combine(relativeTo.Docset.Config.TildePath, path.Substring(2));
             }
             else
             {

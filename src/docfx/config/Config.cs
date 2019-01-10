@@ -155,5 +155,10 @@ namespace Microsoft.Docs.Build
         /// </summary>
         [JsonIgnore]
         public string ConfigFileName { get; set; } = "docfx.yml";
+
+        /// <summary>
+        /// Gets the relative path of tilde symbol `~` relatived to repository root path
+        /// </summary>
+        public readonly string TildePath = ".";
     }
 }
