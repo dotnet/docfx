@@ -5053,6 +5053,7 @@ tagRules : [
             var outputFolder = GetRandomFolder();
             var templateFolder = GetRandomFolder();
             var intermediateFolder = GetRandomFolder();
+            CreateFile("conceptual.html.primary.tmpl", "meta: {{meta}}", templateFolder);
             Environment.SetEnvironmentVariable("cache", Path.GetFullPath(intermediateFolder));
 
             var fileAddFm = CreateFile("fileMetadata/toAdd.md", new[] { "test" }, inputFolder);
@@ -5093,11 +5094,6 @@ tagRules : [
                         outputFolderFirst,
                         new Dictionary<string, object> { ["meta"] = "Hello world!", },
                         templateFolder: templateFolder,
-                        applyTemplateSettings: new ApplyTemplateSettings(inputFolder, outputFolderFirst)
-                        {
-                            RawModelExportSettings = { Export = true },
-                            TransformDocument = true,
-                        },
                         intermediateFolder: intermediateFolderVariable,
                         fileMetadata: fileMetadataOriginal);
                 }
@@ -5112,11 +5108,6 @@ tagRules : [
                         outputFolderForIncremental,
                         new Dictionary<string, object> { ["meta"] = "Hello world!", },
                         templateFolder: templateFolder,
-                        applyTemplateSettings: new ApplyTemplateSettings(inputFolder, outputFolderForIncremental)
-                        {
-                            RawModelExportSettings = { Export = true },
-                            TransformDocument = true,
-                        },
                         intermediateFolder: intermediateFolderVariable,
                         cleanupCacheHistory: true,
                         fileMetadata: fileMetadataUpdated);
@@ -5130,11 +5121,6 @@ tagRules : [
                         outputFolderForCompare,
                         new Dictionary<string, object> { ["meta"] = "Hello world!", },
                         templateFolder: templateFolder,
-                        applyTemplateSettings: new ApplyTemplateSettings(inputFolder, outputFolderForCompare)
-                        {
-                            RawModelExportSettings = { Export = true },
-                            TransformDocument = true,
-                        },
                         fileMetadata: fileMetadataUpdated);
                 }
 
