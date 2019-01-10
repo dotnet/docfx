@@ -27,9 +27,18 @@ namespace Microsoft.Docs.Build
                 group (git.branch, git.flags)
                 by git.remote;
 
-            var workTrees = new List<string>();
+            var workTrees = new ConcurrentBag<string>();
 
-            await ParallelUtility.ForEach(gitDependencies, async group => { workTrees.AddRange(await RestoreGitRepo(group)); }, Progress.Update);
+            await ParallelUtility.ForEach(
+                gitDependencies,
+                async group =>
+                {
+                    foreach (var worktree in await RestoreGitRepo(group))
+                    {
+                        workTrees.Add(worktree);
+                    }
+                },
+                Progress.Update);
 
             foreach (var workTree in workTrees)
             {
