@@ -5077,7 +5077,7 @@ tagRules : [
             });
 
             FileCollection files = new FileCollection(Directory.GetCurrentDirectory());
-            files.Add(DocumentType.Article, new[] { fileAddFm, fileRemoveFm, fileModifyFm, fileKeepFm});
+            files.Add(DocumentType.Article, new[] { fileAddFm, fileRemoveFm, fileModifyFm, fileKeepFm });
             #endregion
 
             Init("IncrementalBuild.TestIncrementalWithFileMetadataChange");

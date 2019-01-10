@@ -21,15 +21,15 @@ namespace Microsoft.DocAsCode.Build.Engine
             if (left == null || right == null)
             {
                 return left == null
-                    ? right.SelectMany(r => r.Value).Select(r => r.Glob)
-                    : left.SelectMany(l => l.Value).Select(l => l.Glob);
+                    ? right.GetAllGlobs()
+                    : left.GetAllGlobs();
             }
 
             var changedGlobMatchers = new List<GlobMatcher>();
             if (!string.Equals(left.BaseDir, right.BaseDir))
             {
-                changedGlobMatchers.AddRange(left.SelectMany(l => l.Value).Select(l => l.Glob));
-                changedGlobMatchers.AddRange(right.SelectMany(r => r.Value).Select(r => r.Glob));
+                changedGlobMatchers.AddRange(left.GetAllGlobs());
+                changedGlobMatchers.AddRange(right.GetAllGlobs());
             }
             else
             {
