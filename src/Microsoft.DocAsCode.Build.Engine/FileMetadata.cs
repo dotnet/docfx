@@ -3,9 +3,13 @@
 
 namespace Microsoft.DocAsCode.Build.Engine
 {
-    using Newtonsoft.Json;
     using System.Collections.Generic;
     using System.Collections.Immutable;
+    using System.Linq;
+
+    using Microsoft.DocAsCode.Glob;
+
+    using Newtonsoft.Json;
 
     [JsonConverter(typeof(FileMetadataConverter))]
     public sealed class FileMetadata : Dictionary<string, ImmutableArray<FileMetadataItem>>
@@ -20,6 +24,11 @@ namespace Microsoft.DocAsCode.Build.Engine
         public FileMetadata(string baseDir, IDictionary<string, ImmutableArray<FileMetadataItem>> dictionary) : base(dictionary)
         {
             BaseDir = baseDir;
+        }
+
+        public IEnumerable<GlobMatcher> GetAllGlobs()
+        {
+            return this.SelectMany(r => r.Value).Select(r => r.Glob).Distinct();
         }
     }
 }

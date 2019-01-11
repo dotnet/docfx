@@ -675,8 +675,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                 message = $"Cannot build incrementally because last build didn't contain group {Version}.";
                 canIncremental = false;
             }
-            else if (CurrentBuildVersionInfo.ConfigHash != LastBuildVersionInfo.ConfigHash
-                || CurrentBuildVersionInfo.FileMetadataHash != LastBuildVersionInfo.FileMetadataHash) // TODO: move to file level check
+            else if (CurrentBuildVersionInfo.ConfigHash != LastBuildVersionInfo.ConfigHash)
             {
                 message = "Cannot build incrementally because config changed.";
                 canIncremental = false;
