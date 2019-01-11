@@ -49,7 +49,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Gets the resolve alias
         /// </summary>
-        public IReadOnlyDictionary<string, string> ResolveAlias { get; }
+        public IEnumerable<KeyValuePair<string, string>> ResolveAlias { get; }
 
         /// <summary>
         /// Gets the localization docset, it will be set when the current build locale is different with default locale
@@ -169,7 +169,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private Dictionary<string, string> LoadResolveAlias(Config config)
+        private IEnumerable<KeyValuePair<string, string>> LoadResolveAlias(Config config)
         {
             var result = new Dictionary<string, string>(PathUtility.PathComparer);
 
@@ -178,7 +178,7 @@ namespace Microsoft.Docs.Build
                 result.TryAdd(PathUtility.NormalizeFolder(alias), PathUtility.NormalizeFolder(aliasPath));
             }
 
-            return result;
+            return result.Reverse();
         }
 
         private (List<Error>, Dictionary<string, Docset>) LoadDependencies(Config config)

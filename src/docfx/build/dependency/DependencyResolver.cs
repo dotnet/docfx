@@ -242,7 +242,7 @@ namespace Microsoft.Docs.Build
             var docsetRelativePath = PathUtility.NormalizeFile(Path.Combine(Path.GetDirectoryName(relativeTo.FilePath), path));
             if (!File.Exists(Path.Combine(relativeTo.Docset.DocsetPath, docsetRelativePath)))
             {
-                foreach (var (alias, aliasPath) in relativeTo.Docset.ResolveAlias.Reverse())
+                foreach (var (alias, aliasPath) in relativeTo.Docset.ResolveAlias)
                 {
                     if (path.StartsWith(alias, PathUtility.PathComparison))
                     {
