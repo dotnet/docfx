@@ -5060,24 +5060,29 @@ tagRules : [
             var fileRemoveFm = CreateFile("fileMetadata/toRemove.md", new[] { "test" }, inputFolder);
             var fileModifyFm = CreateFile("fileMetadata/toModify.md", new[] { "test" }, inputFolder);
             var fileKeepFm = CreateFile("fileMetadata/toKeep.md", new[] { "test" }, inputFolder);
+            var fileReOrderFm = CreateFile("fileMetadata/toReOrder.md", new[] { "test" }, inputFolder);
 
             var fileMetadataOriginal = new FileMetadata(inputFolder, new Dictionary<string, ImmutableArray<FileMetadataItem>>
             {
                 ["meta"] = ImmutableArray.Create(
                     new FileMetadataItem(new GlobMatcher("**/toRemove.md"), "meta", "toRemove"),
                     new FileMetadataItem(new GlobMatcher("**/toModify.md"), "meta", "toModify"),
-                    new FileMetadataItem(new GlobMatcher("**/toKeep.md"), "meta", "toKeep"))
+                    new FileMetadataItem(new GlobMatcher("**/toKeep.md"), "meta", "toKeep"),
+                    new FileMetadataItem(new GlobMatcher("**/toReOrder.md"), "meta", "toReOrder1"),
+                    new FileMetadataItem(new GlobMatcher("**/toReOrder.md"), "meta", "toReOrder2"))
             });
             var fileMetadataUpdated = new FileMetadata(inputFolder, new Dictionary<string, ImmutableArray<FileMetadataItem>>
             {
                 ["meta"] = ImmutableArray.Create(
                     new FileMetadataItem(new GlobMatcher("**/toAdd.md"), "meta", "toAdd"),
                     new FileMetadataItem(new GlobMatcher("**/toModify.md"), "meta", "Modified!"),
-                    new FileMetadataItem(new GlobMatcher("**/toKeep.md"), "meta", "toKeep"))
+                    new FileMetadataItem(new GlobMatcher("**/toKeep.md"), "meta", "toKeep"),
+                    new FileMetadataItem(new GlobMatcher("**/toReOrder.md"), "meta", "toReOrder2"),
+                    new FileMetadataItem(new GlobMatcher("**/toReOrder.md"), "meta", "toReOrder1"))
             });
 
             FileCollection files = new FileCollection(Directory.GetCurrentDirectory());
-            files.Add(DocumentType.Article, new[] { fileAddFm, fileRemoveFm, fileModifyFm, fileKeepFm});
+            files.Add(DocumentType.Article, new[] { fileAddFm, fileRemoveFm, fileModifyFm, fileKeepFm, fileReOrderFm });
             #endregion
 
             Init("IncrementalBuild.TestIncrementalWithFileMetadataChange");
@@ -5127,8 +5132,8 @@ tagRules : [
                 {
                     Assert.True(CompareDir(outputFolderForIncremental, outputFolderForCompare));
                     Assert.Equal(
-                        GetLogMessages("IncrementalBuild.TestIncrementalWithFileMetadataChange-forcebuild-second"),
-                        GetLogMessages(new[] { "IncrementalBuild.TestIncrementalWithFileMetadataChange-second", "IncrementalBuild.TestIncrementalWithFileMetadataChange-first" }));
+                       GetLogMessages("IncrementalBuild.TestIncrementalWithFileMetadataChange-forcebuild-second"),
+                       GetLogMessages(new[] { "IncrementalBuild.TestIncrementalWithFileMetadataChange-second", "IncrementalBuild.TestIncrementalWithFileMetadataChange-first" }));
 
                     // check manifest
                     var manifestOutputPath = Path.GetFullPath(Path.Combine(outputFolderForIncremental, "manifest.json"));
@@ -5138,7 +5143,7 @@ tagRules : [
                     Assert.NotNull(incrementalInfo);
                     Assert.Equal(2, incrementalInfo.Count);
                     var incrementalStatus = incrementalInfo[0].Status;
-                    Assert.False(incrementalStatus.CanIncremental); // should be true when incremental FileMetadta finishes
+                    Assert.True(incrementalStatus.CanIncremental);
                 }
             }
             finally
@@ -5151,6 +5156,7 @@ tagRules : [
                 }
             }
         }
+
         [Fact(Skip = "wait for fix")]
         public void TestDestinationFolderUpdate()
         {
