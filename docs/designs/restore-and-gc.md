@@ -136,7 +136,7 @@ dependencyLock: .lock.json
 Whenever you run docfx `restore`, docfx will:
 
 - [GET] **Try** to get the `.lock.json` file from configuration, if it's present, any future dependencies restore will base its work off this file.
-- [UPDATE] Once finished the restore, docfx will **try** to update the `.lock.json` file defined in configuration, no matter it's a local file or remote file.
+- [UPDATE] Once finished the restore, docfx will **try** to create/update the `.lock.json` file defined in configuration, no matter it's a local or remote location.
 
 For the last step [UPDATE], you can use command `--no-save` to skip.
 
