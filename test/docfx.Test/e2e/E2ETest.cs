@@ -202,7 +202,7 @@ namespace Microsoft.Docs.Build
             Assert.StartsWith($"# {match.Groups[4].Value}", yaml);
 
             var yamlHash = HashUtility.GetMd5Hash(yaml).Substring(0, 5);
-            var name = ToSafePathString(specName) + "-" + yamlHash;
+            var name = ToSafePathString(specName).Substring(0, Math.Min(30, specName.Length)) + "-" + yamlHash;
 
             var spec = YamlUtility.Deserialize<E2ESpec>(yaml, false);
 
