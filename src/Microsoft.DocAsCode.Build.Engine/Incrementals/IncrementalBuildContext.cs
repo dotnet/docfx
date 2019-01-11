@@ -588,14 +588,14 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             using (new LoggerPhaseScope("ComputeConfigHash", LogLevel.Diagnostic))
             {
                 var json = JsonConvert.SerializeObject(
-                parameter,
-                new JsonSerializerSettings
-                {
-                    ContractResolver = new IncrementalIgnorePropertiesResolver()
-                });
-                var config = json + "|" + markdownServiceContextHash;
-                Logger.LogVerbose($"Config content: {config}");
-                return config.GetMd5String();
+                    parameter,
+                    new JsonSerializerSettings
+                    {
+                        ContractResolver = new IncrementalIgnorePropertiesResolver()
+                    });
+                string configStr = json + "|" + markdownServiceContextHash;
+                Logger.LogVerbose($"Config content: {configStr}");
+                return configStr.GetMd5String();
             }
         }
 
@@ -603,12 +603,13 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         {
             using (new LoggerPhaseScope("ComputeFileMetadataHash", LogLevel.Diagnostic))
             {
-                if (fileMetadata == null)
+                var fileMetadataStr = string.Empty;
+                if (fileMetadata != null)
                 {
-                    return string.Empty;
+                    fileMetadataStr = JsonUtility.Serialize(fileMetadata);
                 }
-                var json = JsonUtility.Serialize(fileMetadata);
-                return json.GetMd5String();
+                Logger.LogVerbose($"FileMetadata content: {fileMetadataStr}");
+                return fileMetadataStr.GetMd5String();
             }
         }
 
