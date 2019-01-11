@@ -149,3 +149,12 @@ With GC command docfx `gc`, you can clean up the `%DOCFX_APPDATA_PATH%`.
 Whenever the `restore` command is executed, the `last write time` of downloaded files and git repository folder will be refreshed always, so the `gc` will clean up these files/repositories based on the `last write time`.
 
 The default `retention` rules are 15 days, which means `gc` will only keep these files/repository work trees which are accessed within 15 days, you can also overwrite this default rule by using `--retention-days {days}` command options.
+
+# Future consideration of Restore and GC
+
+The `restore` is to `add new and forget` and `gc` is to `delete`, considering the work tree size and check-out speed, we may want to `re-use` instead of `delete`.
+
+`re-use` existing work-tree of git can help us reduce the disk size and improve the checkout speed, this actually also fits the dependency files.
+
+But this solution need track usage status of each work tree, so let's put it in the future improvements.
+
