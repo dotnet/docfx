@@ -175,13 +175,9 @@ namespace Microsoft.Docs.Build
 
             foreach (var (alias, aliasPath) in config.ResolveAlias)
             {
-                result[PathUtility.NormalizeFolder(alias)] = PathUtility.NormalizeFolder(aliasPath);
+                result.TryAdd(PathUtility.NormalizeFolder(alias), PathUtility.NormalizeFolder(aliasPath));
             }
 
-            if (!result.ContainsKey("~/"))
-            {
-                result.Add("~/", "./");
-            }
             return result;
         }
 

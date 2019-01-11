@@ -85,9 +85,9 @@ namespace Microsoft.Docs.Build
 
         /// <summary>
         /// Gets the map from resolve alias to relative path relatived to `docfx.yml` file
-        /// Default path of tilde symbol `~` is '.'
+        /// Default will be `~: .`
         /// </summary>
-        public readonly Dictionary<string, string> ResolveAlias = new Dictionary<string, string>(PathUtility.PathComparer);
+        public readonly Dictionary<string, string> ResolveAlias = new Dictionary<string, string>(PathUtility.PathComparer) { { "~",  "." } };
 
         /// <summary>
         /// Gets the redirection mappings

@@ -219,7 +219,7 @@ namespace Microsoft.Docs.Build
             }
 
             // Resolve path relative to docset
-            pathToDocset = ResolveToRelativePath(path, relativeTo);
+            pathToDocset = ResolveToDocsetRelativePath(path, relativeTo);
 
             // resolve from redirection files
             pathToDocset = PathUtility.NormalizeFile(pathToDocset);
@@ -239,9 +239,9 @@ namespace Microsoft.Docs.Build
             return (file != null ? null : Errors.FileNotFound(relativeTo.ToString(), path), file, null, query, fragment, false, pathToDocset);
         }
 
-        private string ResolveToRelativePath(string path, Document relativeTo)
+        private string ResolveToDocsetRelativePath(string path, Document relativeTo)
         {
-            foreach (var (alias, aliasPath) in relativeTo.Docset.ResolveAlias)
+            foreach (var (alias, aliasPath) in relativeTo.Docset.ResolveAlias.Reverse())
             {
                 if (path.StartsWith(alias, PathUtility.PathComparison))
                 {

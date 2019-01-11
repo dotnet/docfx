@@ -267,7 +267,7 @@ outputs:
   docs/a.json: |
     {"content":"<p>DEP</p>"}
 ---
-# Link with `~` - default TildePath config
+# Link with `~` - default resolveAlias config
 inputs:
   docfx.yml:
   docs/a.md: |
@@ -283,26 +283,43 @@ outputs:
     ["warning","file-not-found","Cannot find file '~/b.md' relative to 'docs/a.md'","docs/a.md"]
     ["warning","file-not-found","Cannot find file '~docs/b.md' relative to 'docs/a.md'","docs/a.md"]
 ---
-# Link or Image with `~`
+# Link or Image with resolve alias
 inputs:
   docfx.yml: |
     resolveAlias:
       ~: docs
+      $ROOT: .
   docs/a.md: |
     Link to [B1](~/b.md)
-    Link to [B2](~/docs/b.md)
+    Link to [B2]($ROOT/docs/b.md)
+    Link to [B3](~/docs/b.md)
     ![C](~/c.png)
   docs/b.md:
   docs/c.png:
 outputs:
   docs/a.json: |
-    { "content": "<p>Link to <a href=\"b\">B1</a>\nLink to <a href=\"%7E/docs/b.md\">B2</a>\n<img src=\"c.png\" alt=\"C\" /></p>\n" }
+    { "content": "<p>Link to <a href=\"b\">B1</a>\nLink to <a href=\"b\">B2</a>\nLink to <a href=\"%7E/docs/b.md\">B3</a>\n<img src=\"c.png\" alt=\"C\" /></p>\n" }
   docs/b.json:
   docs/c.png:
   build.log: |
     ["warning","file-not-found","Cannot find file '~/docs/b.md' relative to 'docs/a.md'","docs/a.md"]
 ---
-# <a> or <img> tag with `~`
+# Multiple matched alias, use the last one
+inputs:
+  docfx.yml: |
+    resolveAlias:
+      ~: docs
+      ~/test: docs
+  docs/a.md: |
+    Link to [B1](~/b.md)
+    Link to [B2](~/test/b.md)
+  docs/b.md:
+outputs:
+  docs/a.json: |
+    { "content": "<p>Link to <a href=\"b\">B1</a>\nLink to <a href=\"b\">B2</a></p>\n" }
+  docs/b.json:
+---
+# <a> or <img> tag with resolve alias
 inputs:
   docfx.yml: |
     resolveAlias:
@@ -318,7 +335,7 @@ outputs:
   docs/b.json:
   docs/c.png:
 ---
-# Include with `~`
+# Include with resolve alias
 inputs:
   docfx.yml: |
     exclude: '*'
