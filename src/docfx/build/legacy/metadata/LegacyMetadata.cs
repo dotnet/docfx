@@ -20,6 +20,7 @@ namespace Microsoft.Docs.Build
             "canonical_url",
             "content_git_url",
             "open_to_public_contributors",
+            "original_content_git_url_template",
             "fileRelativePath",
             "layout",
             "title",
