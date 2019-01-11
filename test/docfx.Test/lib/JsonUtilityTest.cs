@@ -219,15 +219,16 @@ namespace Microsoft.Docs.Build
         }
 
         [Theory]
-        [InlineData("{'name':'title','items':[,{'name':'1'}]}", "'items' contains null value, the null value has been removed", "items[0]")]
-        [InlineData("[1,,1,1]", "'[1]' contains null value, the null value has been removed", "[1]")]
-        public void TestListWithNullItem(string json, string message, string jsonPath)
+        [InlineData("{'name':'title','items':[,{'name':'1'}]}", "'items' contains null value, the null value has been removed", "items[0]", "null-array-value")]
+        [InlineData("{'name':'title','items':[{'name':,'displayName':'1'}]}", "'name' contains null value", "items[0].name", "null-value")]
+        [InlineData("[1,,1,1]", "'[1]' contains null value, the null value has been removed", "[1]", "null-array-value")]
+        public void TestNulllValue(string json, string message, string jsonPath, string errorCode)
         {
             var (errors, result) = JsonUtility.DeserializeWithSchemaValidation<JToken>(json.Replace('\'', '"'));
             Assert.Collection(errors, error =>
             {
                 Assert.Equal(ErrorLevel.Info, error.Level);
-                Assert.Equal("null-array-value", error.Code);
+                Assert.Equal(errorCode, error.Code);
                 Assert.Equal(message, error.Message);
                 Assert.Equal(jsonPath, error.JsonPath);
             });
