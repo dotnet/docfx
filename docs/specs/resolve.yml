@@ -135,7 +135,7 @@ outputs:
   docs/a.json: |
     { "content": "<p><a href=\"C:/a.md\">Absolute</a></p>" }
   build.log: |
-    ["warning","absolute-file-path","File path cannot be absolute: 'C:/a.md'","docs/a.md"]
+    ["warning","invalid-absolute-file-path","File path cannot be absolute: 'C:/a.md'","docs/a.md"]
 ---
 # Show warning if two files share the same site url
 inputs:

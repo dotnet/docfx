@@ -26,7 +26,7 @@ namespace Microsoft.Docs.Build
             {
                 if (!s_blockWhiteList.Contains(block.GetType()))
                 {
-                    errors.Add(Errors.InvalidTocSyntax(new Range(block.Line, block.Column), file.FilePath, tocContent.Substring(block.Span.Start, block.Span.Length)));
+                    errors.Add(Errors.InvalidMarkdownTocSyntax(new Range(block.Line, block.Column), file.FilePath, tocContent.Substring(block.Span.Start, block.Span.Length)));
                 }
 
                 if (block is HeadingBlock headingBlock)
@@ -75,7 +75,7 @@ namespace Microsoft.Docs.Build
                 {
                     if (headingBlocks[i + 1].Level - currentLevel > 1)
                     {
-                        throw Errors.InvalidTocLevel(filePath, currentLevel, headingBlocks[i + 1].Level).ToException();
+                        throw Errors.InvalidMarkdownTocLevel(filePath, currentLevel, headingBlocks[i + 1].Level).ToException();
                     }
 
                     var (children, count) = ConvertTo(tocContent, filePath, headingBlocks, errors, i + 1);
@@ -98,13 +98,13 @@ namespace Microsoft.Docs.Build
                 var currentItem = new TableOfContentsInputItem();
                 if (block.Inline == null || !block.Inline.Any())
                 {
-                    errors.Add(Errors.MissingTocHead(new Range(block.Line, block.Column), filePath));
+                    errors.Add(Errors.MissingMarkdownTocHead(new Range(block.Line, block.Column), filePath));
                     return currentItem;
                 }
 
                 if (block.Inline.Count() > 1 && block.Inline.Any(l => l is XrefInline || l is LinkInline))
                 {
-                    errors.Add(Errors.InvalidTocSyntax(new Range(block.Line, block.Column), filePath, tocContent.Substring(block.Span.Start, block.Span.Length), "multiple inlines in one heading block is not allowed"));
+                    errors.Add(Errors.InvalidMarkdownTocSyntax(new Range(block.Line, block.Column), filePath, tocContent.Substring(block.Span.Start, block.Span.Length), "multiple inlines in one heading block is not allowed"));
                     return currentItem;
                 }
 

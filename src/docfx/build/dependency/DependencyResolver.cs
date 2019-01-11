@@ -208,7 +208,7 @@ namespace Microsoft.Docs.Build
             // Leave absolute file path as is
             if (Path.IsPathRooted(path))
             {
-                return (Errors.AbsoluteFilePath(relativeTo, path), null, null, null, null, false, pathToDocset);
+                return (Errors.InvalidAbsoluteFilePath(relativeTo, path), null, null, null, null, false, pathToDocset);
             }
 
             // Leave absolute URL path as is

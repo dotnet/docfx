@@ -40,14 +40,14 @@ namespace Microsoft.Docs.Build
         public static Error InvalidTocHref(Document relativeTo, string tocHref)
             => new Error(ErrorLevel.Error, "invalid-toc-href", $"The toc href '{tocHref}' can only reference to a local TOC file, folder or absolute path", relativeTo.ToString());
 
-        public static Error MissingTocHead(in Range range, string filePath)
-            => new Error(ErrorLevel.Error, "missing-toc-head", $"The toc head name is missing", filePath, range);
+        public static Error MissingMarkdownTocHead(in Range range, string filePath)
+            => new Error(ErrorLevel.Error, "missing-markdown-toc-head", $"The toc head name is missing", filePath, range);
 
-        public static Error InvalidTocSyntax(in Range range, string filePath, string syntax, string hint = null)
-            => new Error(ErrorLevel.Error, "invalid-toc-syntax", $"The toc syntax '{syntax}' is invalid, {hint ?? "the opening sequence of # characters must be followed by a space or by the end of line"}. Refer to [ATX heading](https://spec.commonmark.org/0.28/#atx-heading) to fix it", filePath, range);
+        public static Error InvalidMarkdownTocSyntax(in Range range, string filePath, string syntax, string hint = null)
+            => new Error(ErrorLevel.Error, "invalid-markdown-toc-syntax", $"The toc syntax '{syntax}' is invalid, {hint ?? "the opening sequence of # characters must be followed by a space or by the end of line"}. Refer to [ATX heading](https://spec.commonmark.org/0.28/#atx-heading) to fix it", filePath, range);
 
-        public static Error InvalidTocLevel(string filePath, int from, int to)
-            => new Error(ErrorLevel.Error, "invalid-toc-level", $"The toc level can't be skipped from {from} to {to}", filePath);
+        public static Error InvalidMarkdownTocLevel(string filePath, int from, int to)
+            => new Error(ErrorLevel.Error, "invalid-markdown-toc-level", $"The toc level can't be skipped from {from} to {to}", filePath);
 
         public static Error InvalidLocale(string locale)
             => new Error(ErrorLevel.Error, "invalid-locale", $"Locale '{locale}' is not supported.");
@@ -88,8 +88,8 @@ namespace Microsoft.Docs.Build
         public static Error LinkIsDependency(Document relativeTo, Document file, string href)
             => new Error(ErrorLevel.Warning, "link-is-dependency", $"File '{file}' referenced by link '{href}' will not be built because it is from a dependency docset", relativeTo.ToString());
 
-        public static Error AbsoluteFilePath(Document relativeTo, string path)
-            => new Error(ErrorLevel.Warning, "absolute-file-path", $"File path cannot be absolute: '{path}'", relativeTo.ToString());
+        public static Error InvalidAbsoluteFilePath(Document relativeTo, string path)
+            => new Error(ErrorLevel.Warning, "invalid-absolute-file-path", $"File path cannot be absolute: '{path}'", relativeTo.ToString());
 
         public static Error HeadingNotFound(Document file)
             => new Error(ErrorLevel.Warning, "heading-not-found", $"The first visible block is not a heading block with `#`", file.ToString());
@@ -125,7 +125,7 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Warning, "reserved-metadata", $"Metadata '{name}' is reserved by docfx, remove this metadata from {removeFrom}", null, range);
 
         public static Error GitLogError(string repoPath, int errorCode)
-            => new Error(ErrorLevel.Error, "git-log-error", $"Error computing git log [{errorCode}] for '{repoPath}', did you used a shadow clone?");
+            => new Error(ErrorLevel.Error, "git-log-error", $"Error computing git log [{errorCode}] for '{repoPath}', did you used a shallow clone?");
 
         public static Error GitNotFound()
             => new Error(ErrorLevel.Error, "git-not-found", $"Cannot find git, install git https://git-scm.com/");
