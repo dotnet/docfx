@@ -66,5 +66,59 @@ namespace Microsoft.DocAsCode.Common
                .Merge(right.Select(s => new KeyValuePair<string, IEnumerable<T>>(s.Key, s.Value)))
                .ToImmutableDictionary(s => s.Key, s => s.Value.ToImmutableList());
         }
+
+        public static ImmutableArray<T> GetLongestCommonSequence<T>(this ImmutableArray<T> leftItems, ImmutableArray<T> rightItems)
+        {
+            var results = new List<T>();
+            if (leftItems == null || rightItems == null)
+            {
+                return results.ToImmutableArray();
+            }
+
+            int leftItemCount = leftItems.Count();
+            int rightItemCount = rightItems.Count();
+            int[,] dp = new int[leftItemCount + 1, rightItemCount + 1];
+
+            for (int i = 0; i <= leftItemCount; i++)
+            {
+                for (int j = 0; j <= rightItemCount; j++)
+                {
+                    if (i == 0 || j == 0)
+                    {
+                        dp[i, j] = 0;
+                    }
+                    else if (leftItems[i - 1].Equals(rightItems[j - 1]))
+                    {
+                        dp[i, j] = dp[i - 1, j - 1] + 1;
+                    }
+                    else
+                    {
+                        dp[i, j] = Math.Max(dp[i - 1, j], dp[i, j - 1]);
+                    }
+                }
+            }
+
+            int n = leftItemCount;
+            int m = rightItemCount;
+            while (dp[n, m] > 0)
+            {
+                if (dp[n, m] == dp[n - 1, m])
+                {
+                    n--;
+                }
+                else if (dp[n, m] == dp[n, m - 1])
+                {
+                    m--;
+                }
+                else
+                {
+                    results.Add(leftItems[n - 1]);
+                    n--;
+                    m--;
+                }
+            }
+            results.Reverse();
+            return results.ToImmutableArray();
+        }
     }
 }

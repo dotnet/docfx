@@ -40,9 +40,9 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             });
 
 
-            var actual = FileMetadataHelper.GetChangedGlobs(left, right);
-            Assert.True(actual != null);
-            Assert.True(actual.Count() == 0);
+            var actual = FileMetadataHelper.GetChangedGlobs(left, right).ToList();
+            Assert.NotNull(actual);
+            Assert.Empty(actual);
         }
 
         [Fact]
@@ -74,8 +74,8 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             });
 
             var actualResults = FileMetadataHelper.GetChangedGlobs(left, right).ToList();
-            Assert.True(actualResults != null);
-            Assert.True(actualResults.Count() == 6);
+            Assert.NotNull(actualResults);
+            Assert.Equal(6, actualResults.Count());
             for (var index = 0; index < patterns.Length; index++)
             {
                 Assert.Equal(patterns[index], actualResults[index].Raw);
@@ -113,8 +113,8 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             });
 
             var actualResults = FileMetadataHelper.GetChangedGlobs(left, right).ToList();
-            Assert.True(actualResults != null);
-            Assert.True(actualResults.Count() == 12);
+            Assert.NotNull(actualResults);
+            Assert.Equal(12, actualResults.Count());
             var patterns = patternsA.Concat(patternsB).ToList();
             for (var index = 0; index < patterns.Count(); index++)
             {
@@ -144,8 +144,8 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             });
 
             var actualResults = FileMetadataHelper.GetChangedGlobs(left, right).ToList();
-            Assert.True(actualResults != null);
-            Assert.True(actualResults.Count() == 2);
+            Assert.NotNull(actualResults);
+            Assert.Equal(2, actualResults.Count());
             Assert.Equal(patterns[0], actualResults[0].Raw);
             Assert.Equal(patterns[2], actualResults[1].Raw);
         }
@@ -171,8 +171,8 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             });
 
             var actualResults = FileMetadataHelper.GetChangedGlobs(left, right).ToList();
-            Assert.True(actualResults != null);
-            Assert.True(actualResults.Count() == 1);
+            Assert.NotNull(actualResults);
+            Assert.Single(actualResults);
             Assert.Equal(patterns[1], actualResults[0].Raw);
         }
 
@@ -199,8 +199,8 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             });
 
             var actualResults = FileMetadataHelper.GetChangedGlobs(left, right).ToList();
-            Assert.True(actualResults != null);
-            Assert.True(actualResults.Count() == 1);
+            Assert.NotNull(actualResults);
+            Assert.Single(actualResults);
             Assert.Equal(patterns[2], actualResults[0].Raw);
         }
 
@@ -231,8 +231,8 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             });
 
             var actualResults = FileMetadataHelper.GetChangedGlobs(left, right).ToList();
-            Assert.True(actualResults != null);
-            Assert.True(actualResults.Count() == 3);
+            Assert.NotNull(actualResults);
+            Assert.Equal(3, actualResults.Count());
             Assert.Equal(patterns[5], actualResults[0].Raw);
             Assert.Equal(patterns[2], actualResults[1].Raw);
             Assert.Equal(patterns[4], actualResults[2].Raw);
@@ -260,22 +260,9 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             });
 
             var actualResults = FileMetadataHelper.GetChangedGlobs(left, right).ToList();
-            Assert.True(actualResults != null);
-            Assert.True(actualResults.Count() == 1);
+            Assert.NotNull(actualResults);
+            Assert.Single(actualResults);
             Assert.Equal(patterns[1], actualResults[0].Raw);
-        }
-
-        [Theory]
-        [InlineData("ABCBDAB", "BDCABA", "BCBA")]
-        [InlineData("ACCGGTCGAGTGCGCGGAAGCCGGCCGAA", "GTCGTTCGGAATGCCGTTGCTCTGTAAA", "GTCGTCGGAAGCCGGCCGAA")]
-        public void TestGetLongestCommonSequence(string input1, string input2, string expected)
-        {
-            var actual = FileMetadataHelper.GetLongestCommonSequence<char>(input1.ToImmutableArray(), input2.ToImmutableArray());
-            Assert.Equal(expected.Length, actual.Count());
-            for (int i = 0; i < expected.Length; i++)
-            {
-                Assert.Equal(expected[i], actual[i]);
-            }
         }
     }
 }

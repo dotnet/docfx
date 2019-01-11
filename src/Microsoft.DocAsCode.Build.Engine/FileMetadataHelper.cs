@@ -3,11 +3,11 @@
 
 namespace Microsoft.DocAsCode.Build.Engine
 {
-    using System;
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Linq;
 
+    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Glob;
 
     public static class FileMetadataHelper
@@ -63,7 +63,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private static IEnumerable<GlobMatcher> GetChangedGlobsByGroup(ImmutableArray<FileMetadataItem> leftGroupItems, ImmutableArray<FileMetadataItem> rightGroupItems)
         {
-            var commonItems = GetLongestCommonSequence(leftGroupItems, rightGroupItems);
+            var commonItems = leftGroupItems.GetLongestCommonSequence(rightGroupItems);
             var changes = new List<GlobMatcher>();
             foreach (var leftItem in leftGroupItems)
             {
@@ -82,54 +82,6 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
 
             return changes;
-        }
-
-        public static IList<T> GetLongestCommonSequence<T>(ImmutableArray<T> leftItems, ImmutableArray<T> rightItems)
-        {
-            int leftItemCount = leftItems.Count();
-            int rightItemCount = rightItems.Count();
-            int[,] dp = new int[leftItemCount + 1, rightItemCount + 1];
-
-            for (int i = 0; i <= leftItemCount; i++)
-            {
-                for (int j = 0; j <= rightItemCount; j++)
-                {
-                    if (i == 0 || j == 0)
-                    {
-                        dp[i, j] = 0;
-                    }
-                    else if (leftItems[i - 1].Equals(rightItems[j - 1]))
-                    {
-                        dp[i, j] = dp[i - 1, j - 1] + 1;
-                    }
-                    else
-                    {
-                        dp[i, j] = Math.Max(dp[i - 1, j], dp[i, j - 1]);
-                    }
-                }
-            }
-            int n = leftItemCount;
-            int m = rightItemCount;
-            var results = new List<T>();
-            while (dp[n, m] > 0)
-            {
-                if (dp[n, m] == dp[n - 1, m])
-                {
-                    n--;
-                }
-                else if (dp[n, m] == dp[n, m - 1])
-                {
-                    m--;
-                }
-                else
-                {
-                    results.Add(leftItems[n - 1]);
-                    n--;
-                    m--;
-                }
-            }
-            results.Reverse();
-            return results;
         }
     }
 }
