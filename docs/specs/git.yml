@@ -352,3 +352,21 @@ outputs:
       "updated_at": "2018-07-18T05:03:26Z"
     }
 ---
+# Throw committish-not-found when try to resolve commit id by none-existing branch name
+commands:
+  - build --locale zh-cn
+repos: 
+  https://github.com/git/repo#live:
+    - files:
+        docfx.yml: |
+          localization:
+            bilingual: true
+  https://github.com/git/repo.zh-cn#live-none-existing:
+    - files:
+        a.md:
+  https://github.com/git/repo.zh-cn#live-sxs:
+    - files:
+        a.md:
+outputs:
+  build.log: |
+    ["error","committish-not-found","Cannot find branch, tag or commit 'live' for repo '*github.com+git+repo.zh-cn*","a.md"]

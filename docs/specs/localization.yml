@@ -398,7 +398,7 @@ outputs:
   docs/a.json: |
     { "content_git_url":"https://github.com/contribution/abc.zh-cn/blob/master5/docs/a.md","original_content_git_url":"https://github.com/contribution/abc.zh-cn/blob/master5-sxs/docs/a.md", "gitcommit":"https://github.com/contribution/abc.zh-cn/blob/f35b220adadfe88d1d4f1b043c8dc55db491c83e/docs/a.md"}
 ---
-# [only]loc file contributor info 5
+# loc file contributor info 5
 # [branch mapping] & bilingual
 commands:
   - build --locale zh-cn

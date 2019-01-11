@@ -304,14 +304,14 @@ namespace Microsoft.Docs.Build
 
             try
             {
-                await ExecuteNonQuery(path, $"{httpConfig} fetch --tags --prune --progress --update-head-ok {pruneSwitch} {depth} \"{url}\" {refspecs}", stderr: true);
+                await ExecuteNonQuery(path, $"{httpConfig} fetch --tags --progress --update-head-ok {pruneSwitch} {depth} \"{url}\" {refspecs}", stderr: true);
             }
             catch (InvalidOperationException ex) when (committishes.Any(rev => ex.Message.Contains(rev)))
             {
                 // Fallback to fetch all branches and tags if the input committish is not supported by fetch
                 depth = "--depth 9999999999";
                 refspecs = "+refs/heads/*:refs/heads/* +refs/tags/*:refs/tags/*";
-                await ExecuteNonQuery(path, $"{httpConfig} fetch --tags --prune --progress --update-head-ok {pruneSwitch} {depth} \"{url}\" {refspecs}");
+                await ExecuteNonQuery(path, $"{httpConfig} fetch --tags --progress --update-head-ok {pruneSwitch} {depth} \"{url}\" {refspecs}");
             }
         }
 
