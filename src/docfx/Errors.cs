@@ -139,6 +139,9 @@ namespace Microsoft.Docs.Build
         public static Error NullValue(in Range range, string name, string path)
             => new Error(ErrorLevel.Info, "null-value", $"'{name}' contains null value", range: range, jsonPath: path);
 
+        public static Error NullArrayValue(in Range range, string name, string path)
+            => new Error(ErrorLevel.Info, "null-array-value", $"'{name}' contains null value, the null value has been removed", range: range, jsonPath: path);
+
         public static Error UnknownField(in Range range, string propName, string typeName, string path)
             => new Error(ErrorLevel.Warning, "unknown-field", $"Could not find member '{propName}' on object of type '{typeName}'.", range: range, jsonPath: path);
 

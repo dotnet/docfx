@@ -295,23 +295,31 @@ namespace Microsoft.Docs.Build
         {
             var errors = new List<Error>();
             var nullNodes = new List<JToken>();
-            var removeNodes = new List<JToken>();
+            var nullArrayNodes = new List<JToken>();
 
-            RemoveNullsCore(token, errors, nullNodes, removeNodes);
+            RemoveNullsCore(token, errors, nullNodes, nullArrayNodes);
 
             foreach (var node in nullNodes)
             {
-                var lineInfo = (IJsonLineInfo)node;
-                var name = node is JProperty prop ? prop.Name : (node.Parent?.Parent is JProperty p ? p.Name : node.Path);
+                var (lineInfo, name) = Parse(node);
                 errors.Add(Errors.NullValue(new Range(lineInfo.LineNumber, lineInfo.LinePosition), name, node.Path));
             }
 
-            foreach (var node in removeNodes)
+            foreach (var node in nullArrayNodes)
             {
+                var (lineInfo, name) = Parse(node);
+                errors.Add(Errors.NullArrayValue(new Range(lineInfo.LineNumber, lineInfo.LinePosition), name, node.Path));
                 node.Remove();
             }
 
             return (errors, token);
+
+            (IJsonLineInfo lineInfo, string name) Parse(JToken node)
+            {
+                var lineInfo = (IJsonLineInfo)node;
+                var name = node is JProperty prop ? prop.Name : (node.Parent?.Parent is JProperty p ? p.Name : node.Path);
+                return (lineInfo, name);
+            }
         }
 
         public static bool TryGetValue<T>(this JObject obj, string key, out T value) where T : JToken
@@ -351,7 +359,7 @@ namespace Microsoft.Docs.Build
                 (token.Type == JTokenType.Undefined);
         }
 
-        private static void RemoveNullsCore(JToken token, List<Error> errors, List<JToken> nullNodes, List<JToken> removeNodes)
+        private static void RemoveNullsCore(JToken token, List<Error> errors, List<JToken> nullNodes, List<JToken> nullArrayNodes)
         {
             if (token is JArray array)
             {
@@ -359,12 +367,11 @@ namespace Microsoft.Docs.Build
                 {
                     if (item.IsNullOrUndefined())
                     {
-                        nullNodes.Add(item);
-                        removeNodes.Add(item);
+                        nullArrayNodes.Add(item);
                     }
                     else
                     {
-                        RemoveNullsCore(item, errors, nullNodes, removeNodes);
+                        RemoveNullsCore(item, errors, nullNodes, nullArrayNodes);
                     }
                 }
             }
@@ -379,7 +386,7 @@ namespace Microsoft.Docs.Build
                     }
                     else
                     {
-                        RemoveNullsCore(prop.Value, errors, nullNodes, removeNodes);
+                        RemoveNullsCore(prop.Value, errors, nullNodes, nullArrayNodes);
                     }
                 }
             }
