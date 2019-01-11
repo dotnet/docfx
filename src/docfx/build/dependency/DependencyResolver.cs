@@ -222,8 +222,6 @@ namespace Microsoft.Docs.Build
             pathToDocset = ResolveToDocsetRelativePath(path, relativeTo);
 
             // resolve from redirection files
-            pathToDocset = PathUtility.NormalizeFile(pathToDocset);
-
             if (relativeTo.Docset.Redirections.TryGetRedirectionUrl(pathToDocset, out var redirectTo))
             {
                 // redirectTo always is absolute href
@@ -241,14 +239,18 @@ namespace Microsoft.Docs.Build
 
         private string ResolveToDocsetRelativePath(string path, Document relativeTo)
         {
-            foreach (var (alias, aliasPath) in relativeTo.Docset.ResolveAlias.Reverse())
+            var docsetRelativePath = PathUtility.NormalizeFile(Path.Combine(Path.GetDirectoryName(relativeTo.FilePath), path));
+            if (!File.Exists(Path.Combine(relativeTo.Docset.DocsetPath, docsetRelativePath)))
             {
-                if (path.StartsWith(alias, PathUtility.PathComparison))
+                foreach (var (alias, aliasPath) in relativeTo.Docset.ResolveAlias.Reverse())
                 {
-                    return Path.Combine(aliasPath, path.Substring(alias.Length));
+                    if (path.StartsWith(alias, PathUtility.PathComparison))
+                    {
+                        return PathUtility.NormalizeFile(Path.Combine(aliasPath, path.Substring(alias.Length)));
+                    }
                 }
             }
-            return Path.Combine(Path.GetDirectoryName(relativeTo.FilePath), path);
+            return docsetRelativePath;
         }
     }
 }
