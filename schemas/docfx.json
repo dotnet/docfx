@@ -188,6 +188,12 @@
         "type": "string"
       }
     },
+    "resolveAlias": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
     "redirections": {
       "type": "object",
       "additionalProperties": {
@@ -246,9 +252,6 @@
       "type": "string"
     },
     "theme": {
-      "type": "string"
-    },
-    "tildePath": {
       "type": "string"
     },
     "$schema": {

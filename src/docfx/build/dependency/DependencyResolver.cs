@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
@@ -218,15 +219,7 @@ namespace Microsoft.Docs.Build
             }
 
             // Resolve path relative to docset
-            if (path.StartsWith("~\\") || path.StartsWith("~/"))
-            {
-                pathToDocset = Path.Combine(relativeTo.Docset.Config.TildePath, path.Substring(2));
-            }
-            else
-            {
-                // Resolve path relative to input file
-                pathToDocset = Path.Combine(Path.GetDirectoryName(relativeTo.FilePath), path);
-            }
+            pathToDocset = ResolveToRelativePath(path, relativeTo);
 
             // resolve from redirection files
             pathToDocset = PathUtility.NormalizeFile(pathToDocset);
@@ -244,6 +237,18 @@ namespace Microsoft.Docs.Build
             var file = Document.TryCreateFromFile(relativeTo.Docset, pathToDocset);
 
             return (file != null ? null : Errors.FileNotFound(relativeTo.ToString(), path), file, null, query, fragment, false, pathToDocset);
+        }
+
+        private string ResolveToRelativePath(string path, Document relativeTo)
+        {
+            foreach (var (alias, aliasPath) in relativeTo.Docset.ResolveAlias)
+            {
+                if (path.StartsWith(alias, PathUtility.PathComparison))
+                {
+                    return Path.Combine(aliasPath, path.Substring(alias.Length));
+                }
+            }
+            return Path.Combine(Path.GetDirectoryName(relativeTo.FilePath), path);
         }
     }
 }

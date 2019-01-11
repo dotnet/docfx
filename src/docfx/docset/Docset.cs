@@ -47,6 +47,11 @@ namespace Microsoft.Docs.Build
         public IReadOnlyDictionary<string, Docset> DependencyDocsets { get; }
 
         /// <summary>
+        /// Gets the resolve alias
+        /// </summary>
+        public IReadOnlyDictionary<string, string> ResolveAlias { get; }
+
+        /// <summary>
         /// Gets the localization docset, it will be set when the current build locale is different with default locale
         /// </summary>
         public Docset LocalizationDocset { get; }
@@ -119,6 +124,7 @@ namespace Microsoft.Docs.Build
 
             var configErrors = new List<Error>();
             (configErrors, DependencyDocsets) = LoadDependencies(Config);
+            ResolveAlias = LoadResolveAlias(Config);
 
             // pass on the command line options to its children
             _buildScope = new Lazy<HashSet<Document>>(() => CreateBuildScope(Redirections.Files));
@@ -161,6 +167,22 @@ namespace Microsoft.Docs.Build
             {
                 throw Errors.InvalidLocale(locale).ToException();
             }
+        }
+
+        private Dictionary<string, string> LoadResolveAlias(Config config)
+        {
+            var result = new Dictionary<string, string>(PathUtility.PathComparer);
+
+            foreach (var (alias, aliasPath) in config.ResolveAlias)
+            {
+                result[PathUtility.NormalizeFolder(alias)] = PathUtility.NormalizeFolder(aliasPath);
+            }
+
+            if (!result.ContainsKey("~/"))
+            {
+                result.Add("~/", "./");
+            }
+            return result;
         }
 
         private (List<Error>, Dictionary<string, Docset>) LoadDependencies(Config config)

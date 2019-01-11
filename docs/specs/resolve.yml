@@ -286,7 +286,8 @@ outputs:
 # Link or Image with `~`
 inputs:
   docfx.yml: |
-    tildePath: docs
+    resolveAlias:
+      ~: docs
   docs/a.md: |
     Link to [B1](~/b.md)
     Link to [B2](~/docs/b.md)
@@ -304,7 +305,8 @@ outputs:
 # <a> or <img> tag with `~`
 inputs:
   docfx.yml: |
-    tildePath: docs
+    resolveAlias:
+      ~: docs
   docs/a.md: |
     Link to <a href="~/b.md">b</a>
     <div>Link to <img src="~/c.png" /></div>
@@ -320,7 +322,8 @@ outputs:
 inputs:
   docfx.yml: |
     exclude: '*'
-    tildePath: docs/
+    resolveAlias:
+      ~: docs
   docs/a.md: |
     [!include[B1](~/b.md)]
     [!include[B2](~/../b.md)]
