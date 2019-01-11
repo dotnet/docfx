@@ -81,10 +81,12 @@ namespace Microsoft.Docs.Build
 
         private static async Task RunCore(string docsetPath, E2ESpec spec)
         {
+            bool failed = false;
             foreach (var command in spec.Commands)
             {
                 if (await Program.Run(command.Split(" ").Concat(new[] { docsetPath }).ToArray()) != 0)
                 {
+                    failed = true;
                     break;
                 }
             }
@@ -97,9 +99,9 @@ namespace Microsoft.Docs.Build
             var outputFileNames = outputs.Select(file => file.Substring(docsetOutputPath.Length + 1).Replace('\\', '/')).ToList();
 
             // Show build.log content if actual output has errors or warnings.
-            if (!spec.Outputs.Keys.Contains("build.log") && outputFileNames.Contains("build.log"))
+            if (failed && outputFileNames.Contains("build.log"))
             {
-                Assert.True(false, File.ReadAllText(Path.Combine(docsetOutputPath, "build.log")));
+                Assert.True(false, $"{Path.GetFileName(docsetPath)}: {File.ReadAllText(Path.Combine(docsetOutputPath, "build.log"))}");
             }
 
             // These files output mostly contains empty content which e2e tests are not intrested in

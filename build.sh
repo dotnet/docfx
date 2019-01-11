@@ -1,8 +1,8 @@
 #!/bin/bash
 set -e
 dotnet run -p tools/CreateJsonSchema
-dotnet test test/docfx.Test
-dotnet test test/docfx.Test -c Release
+dotnet test test/docfx.Test 2>&1
+dotnet test test/docfx.Test -c Release 2>&1
 
 
 rm -rf drop
