@@ -288,6 +288,7 @@ outputs:
       "open_to_public_contributors": true,
       "content_git_url": "https://github.com/testowner/testrepo/blob/master-content-git-url/docs/index.md",
       "original_content_git_url": "https://github.com/testowner/testrepo/blob/master-content-git-url/docs/index.md",
+      "original_content_git_url_template": "{repo}/blob/{branch}/docs/index.md",
       "gitcommit": "https://github.com/testowner/testrepo/blob/e662dbc7c5e582a14b863d6a6a82e495d6272f91/docs/index.md",
     }
 ---

@@ -27,21 +27,49 @@ namespace Microsoft.Docs.Build
                 group (git.branch, git.flags)
                 by git.remote;
 
-            await ParallelUtility.ForEach(gitDependencies, RestoreGitRepo, Progress.Update);
+            var workTrees = new ConcurrentBag<string>();
+
+            await ParallelUtility.ForEach(
+                gitDependencies,
+                async group =>
+                {
+                    foreach (var worktree in await RestoreGitRepo(group))
+                    {
+                        workTrees.Add(worktree);
+                    }
+                },
+                Progress.Update);
+
+            foreach (var workTree in workTrees)
+            {
+                // update the last write time
+                Directory.SetLastWriteTimeUtc(workTree, DateTime.UtcNow);
+            }
 
             if (!isDependencyRepo && LocalizationUtility.TryGetContributionBranch(docsetPath, out var contributionBranch, out var repo))
             {
                 await GitUtility.Fetch(repo.Path, repo.Remote, contributionBranch, config);
             }
 
-            async Task RestoreGitRepo(IGrouping<string, (string branch, GitFlags flags)> group)
+            async Task<List<string>> RestoreGitRepo(IGrouping<string, (string branch, GitFlags flags)> group)
             {
+                var worktreePaths = new List<string>();
                 var remote = group.Key;
-                var branches = group.Select(g => g.branch).Distinct().ToArray();
+                var branches = group.Select(g => g.branch).ToArray();
                 var depthOne = group.All(g => (g.flags & GitFlags.DepthOne) != 0);
-                var branchesToFetch = @implicit
-                    ? branches.Where(branch => !RestoreMap.TryGetGitRestorePath(remote, branch, out _)).ToArray()
-                    : branches;
+                var branchesToFetch = new HashSet<string>(branches);
+
+                if (@implicit)
+                {
+                    foreach (var branch in branches)
+                    {
+                        if (RestoreMap.TryGetGitRestorePath(remote, branch, out var existingPath))
+                        {
+                            branchesToFetch.Remove(branch);
+                            worktreePaths.Add(existingPath);
+                        }
+                    }
+                }
 
                 var repoPath = Path.GetFullPath(Path.Combine(AppData.GetGitDir(remote), ".git"));
                 var childRepos = new List<string>();
@@ -50,7 +78,7 @@ namespace Microsoft.Docs.Build
                     remote,
                     async () =>
                     {
-                        if (branchesToFetch.Length > 0)
+                        if (branchesToFetch.Count > 0)
                         {
                             try
                             {
@@ -64,15 +92,12 @@ namespace Microsoft.Docs.Build
                         }
                     });
 
-                foreach (var branch in branches)
+                foreach (var worktree in worktreePaths)
                 {
-                    if (group.Where(g => g.branch == branch).All(g => (g.flags & GitFlags.NoCheckout) != 0))
-                    {
-                        continue;
-                    }
-
-                    await restoreChild(RestoreMap.GetGitRestorePath(remote, branch));
+                    await restoreChild(worktree);
                 }
+
+                return worktreePaths;
 
                 async Task AddWorkTrees()
                 {
@@ -88,7 +113,7 @@ namespace Microsoft.Docs.Build
 
                         // use branch name instead of commit hash
                         // https://git-scm.com/docs/git-worktree#_commands
-                        var workTreeHead = $"{HrefUtility.EscapeUrlSegment(branch)}-{GitUtility.RevParse(repoPath, branch)}";
+                        var workTreeHead = $"{HrefUtility.EscapeUrlSegment(branch)}-{branch.GetMd5HashShort()}-{GitUtility.RevParse(repoPath, branch)}";
                         var workTreePath = Path.GetFullPath(Path.Combine(repoPath, "../", workTreeHead)).Replace('\\', '/');
 
                         if (existingWorkTreePath.TryAdd(workTreePath))
@@ -103,8 +128,7 @@ namespace Microsoft.Docs.Build
                             }
                         }
 
-                        // update the last write time
-                        Directory.SetLastWriteTimeUtc(workTreePath, DateTime.UtcNow);
+                        worktreePaths.Add(workTreePath);
                     });
                 }
             }

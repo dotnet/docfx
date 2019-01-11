@@ -80,6 +80,9 @@ namespace Microsoft.Docs.Build
 
         public bool Write(string file, Error error)
         {
+            if (error is null)
+                return false;
+
             return Write(file == error.File || !string.IsNullOrEmpty(error.File)
                     ? error
                     : new Error(error.Level, error.Code, error.Message, file, error.Range, error.JsonPath));

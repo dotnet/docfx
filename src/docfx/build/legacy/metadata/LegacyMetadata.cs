@@ -20,6 +20,7 @@ namespace Microsoft.Docs.Build
             "canonical_url",
             "content_git_url",
             "open_to_public_contributors",
+            "original_content_git_url_template",
             "fileRelativePath",
             "layout",
             "title",
@@ -142,6 +143,8 @@ namespace Microsoft.Docs.Build
                     rawMetadata["gitcommit"] = pageModel.Gitcommit;
                 if (!string.IsNullOrEmpty(pageModel.OriginalContentGitUrl))
                     rawMetadata["original_content_git_url"] = pageModel.OriginalContentGitUrl;
+                if (!string.IsNullOrEmpty(pageModel.OriginalContentGitUrlTemplate))
+                    rawMetadata["original_content_git_url_template"] = pageModel.OriginalContentGitUrlTemplate;
             }
 
             return RemoveUpdatedAtDateTime(

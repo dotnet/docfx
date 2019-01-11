@@ -10,19 +10,29 @@ using System.Threading;
 using Jint;
 using Jint.Native;
 using Jint.Native.Object;
+using Jint.Parser;
 using Jint.Runtime;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
-    internal class JavaScript
+    internal class JavascriptEngine
     {
+        /// <summary>
+        /// A private exception type just to include javascript stack trace.
+        /// </summary>
+        private class JintException : Exception
+        {
+            public JintException(string message)
+                : base(message) { }
+        }
+
         private static readonly Engine s_engine = new Engine();
 
         private readonly ConcurrentDictionary<string, ThreadLocal<Func<JObject, JObject>>> _scripts = new ConcurrentDictionary<string, ThreadLocal<Func<JObject, JObject>>>();
         private readonly string _scriptDir;
 
-        public JavaScript(string scriptDir) => _scriptDir = scriptDir;
+        public JavascriptEngine(string scriptDir) => _scriptDir = scriptDir;
 
         public JObject Run(string scriptName, JObject input)
         {
@@ -42,7 +52,7 @@ namespace Microsoft.Docs.Build
 
             return model =>
             {
-                var output = transform.Invoke(ToJsValue(model));
+                var output = Invoke(transform, ToJsValue(model));
                 var content = output.AsObject().Get("content").AsString();
                 return JObject.Parse(content);
             };
@@ -55,16 +65,28 @@ namespace Microsoft.Docs.Build
                 return module;
             }
 
-            var engine = new Engine();
+            var engine = new Engine(opt => opt.LimitRecursion(5000));
             engine.SetValue("exports", MakeObject());
             engine.SetValue("require", new Func<string, ObjectInstance>(Require));
-            engine.Execute(File.ReadAllText(scriptPath));
+            engine.Execute(File.ReadAllText(scriptPath), new ParserOptions { Source = scriptPath });
 
             return modules[scriptPath] = engine.GetValue("exports").AsObject();
 
             ObjectInstance Require(string path)
             {
                 return Load(Path.Combine(Path.GetDirectoryName(scriptPath), path), modules);
+            }
+        }
+
+        private static JsValue Invoke(JsValue func, params JsValue[] args)
+        {
+            try
+            {
+                return func.Invoke(args);
+            }
+            catch (JavaScriptException jse)
+            {
+                throw new JintException(jse.Error.ToString() + "\n" + jse.CallStack);
             }
         }
 

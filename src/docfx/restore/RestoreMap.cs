@@ -50,7 +50,7 @@ namespace Microsoft.Docs.Build
                 return (
                     from path in Directory.GetDirectories(repoPath, "*", SearchOption.TopDirectoryOnly)
                     let name = Path.GetFileName(path)
-                    where name.StartsWith(HrefUtility.EscapeUrlSegment(branch) + "-") &&
+                    where name.StartsWith(HrefUtility.EscapeUrlSegment(branch) + "-" + branch.GetMd5HashShort() + "-") &&
                           GitUtility.IsWorkTreeCheckoutComplete(repoPath, name)
                     orderby new DirectoryInfo(path).LastWriteTimeUtc
                     select path).FirstOrDefault();

@@ -10,6 +10,8 @@ namespace Microsoft.Docs.Build
     {
         public string Title { get; set; }
 
+        public string TitleSuffix { get; set; }
+
         public JObject Metadata { get; set; }
 
         public LandingDataAbstract Abstract { get; set; }
@@ -33,6 +35,8 @@ namespace Microsoft.Docs.Build
     {
         public string Title { get; set; }
 
+        public string Width { get; set; }
+
         [Href]
         public string Href { get; set; }
 
@@ -47,6 +51,8 @@ namespace Microsoft.Docs.Build
         public string Src { get; set; }
 
         public string Alt { get; set; }
+
+        public string Height { get; set; }
 
         public string Width { get; set; }
 
@@ -70,6 +76,10 @@ namespace Microsoft.Docs.Build
     public sealed class LandingDataSection
     {
         public string Title { get; set; }
+
+        public string Type { get; set; }
+
+        public string Text { get; set; }
 
         public LandingDataItem[] Items { get; set; }
     }

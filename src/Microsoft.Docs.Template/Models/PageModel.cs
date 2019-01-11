@@ -45,6 +45,8 @@ namespace Microsoft.Docs.Build
 
         public string OriginalContentGitUrl { get; set; }
 
+        public string OriginalContentGitUrlTemplate { get; set; }
+
         public string Gitcommit { get; set; }
 
         public FileMetadata Metadata { get; set; }
