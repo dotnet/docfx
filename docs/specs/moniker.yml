@@ -42,6 +42,29 @@ outputs:
       "monikers": []
     }
 ---
+# Multiple matched moniker range setting in the config, should use the last one
+inputs:
+  docfx.yml: |
+    monikerRange:
+      'docs/**': 'netcore-1.0'
+      'docs/v1/**': 'netcore-1.1'
+    monikerDefinition: monikerDefinition.json
+  docs/v1/a.md: |
+    Moniker: netcore-1.1
+  monikerDefinition.json: |
+    {
+      "monikers": [
+        { "name": "netcore-1.0", "product": ".NET Core" },
+        { "name": "netcore-1.1", "product": ".NET Core" },
+      ]
+    }
+outputs:
+  218c13d0/docs/v1/a.json: |
+    {
+      "content": "<p>Moniker: netcore-1.1</p>",
+      "monikers": ["netcore-1.1"]
+    }
+---
 # Apply moniker range setting in the config and yaml header to markdown file's output path and output content
 inputs:
   docfx.yml: |
