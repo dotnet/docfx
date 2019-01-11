@@ -36,7 +36,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 return;
             }
 
-            using (InclusionContext.PushFile(includeFilePath))
+            using (InclusionContext.PushInclusion(includeFilePath))
             {
                 renderer.Write(Markdown.ToHtml(content, _inlinePipeline));
             }
