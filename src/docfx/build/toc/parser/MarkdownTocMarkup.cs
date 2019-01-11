@@ -48,6 +48,7 @@ namespace Microsoft.Docs.Build
             }
             catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
             {
+                Log.Error(ex);
                 errors.Add(dex.Error);
             }
 
