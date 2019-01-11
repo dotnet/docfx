@@ -152,7 +152,7 @@ The default `retention` rules are 15 days, which means `gc` will only keep these
 
 # Future consideration of Restore and GC
 
-The `restore` is to `add new and forget` and `gc` is to `delete`, considering the work tree size and check-out speed, we may want to `re-use` instead of `delete`.
+The `restore` is to `add and forget` and `gc` is to `delete`, considering the work tree size and check-out speed, we may want to `re-use` instead of `delete`.
 
 `re-use` existing work-tree of git can help us reduce the disk size and improve the checkout speed, this actually also fits the dependency files.
 
