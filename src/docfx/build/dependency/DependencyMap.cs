@@ -3,6 +3,7 @@
 
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -13,6 +14,17 @@ namespace Microsoft.Docs.Build
         public DependencyMap(Dictionary<Document, List<DependencyItem>> map)
             : base(map)
         {
+        }
+
+        public Dictionary<string, DependencyManifestItem[]> ToDependencyMapModel()
+        {
+            return this.ToDictionary(
+                d => d.Key.FilePath,
+                d => d.Value.Select(v => new DependencyManifestItem
+                {
+                    Source = v.Dest.FilePath,
+                    Type = v.Type,
+                }).ToArray());
         }
     }
 }
