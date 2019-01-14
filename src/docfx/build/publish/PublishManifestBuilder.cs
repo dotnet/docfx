@@ -7,12 +7,12 @@ using System.Linq;
 
 namespace Microsoft.Docs.Build
 {
-    internal class ManifestBuilder
+    internal class PublishManifestBuilder
     {
         private readonly ConcurrentDictionary<string, ConcurrentBag<Document>> _outputPathConflicts = new ConcurrentDictionary<string, ConcurrentBag<Document>>(PathUtility.PathComparer);
         private readonly ConcurrentDictionary<string, ConcurrentDictionary<Document, List<string>>> _filesBySiteUrl = new ConcurrentDictionary<string, ConcurrentDictionary<Document, List<string>>>(PathUtility.PathComparer);
         private readonly ConcurrentDictionary<string, Document> _filesByOutputPath = new ConcurrentDictionary<string, Document>(PathUtility.PathComparer);
-        private readonly ConcurrentDictionary<Document, FileManifest> _manifest = new ConcurrentDictionary<Document, FileManifest>();
+        private readonly ConcurrentDictionary<Document, PublishManifestItem> _manifest = new ConcurrentDictionary<Document, PublishManifestItem>();
         private readonly ConcurrentBag<Document> _filesWithErrors = new ConcurrentBag<Document>();
 
         public void MarkError(Document file)
@@ -20,34 +20,35 @@ namespace Microsoft.Docs.Build
             _filesWithErrors.Add(file);
         }
 
-        public bool TryAdd(Document file, FileManifest manifest, List<string> monikers)
+        public bool TryAdd(Document file, PublishManifestItem item)
         {
-            _manifest[file] = manifest;
+            _manifest[file] = item;
 
             // TODO: see comments in Document.OutputPath.
-            file.OutputPath = manifest.OutputPath;
+            file.OutputPath = item.Path;
 
             // Find output path conflicts
-            if (!_filesByOutputPath.TryAdd(manifest.OutputPath, file))
+            if (!_filesByOutputPath.TryAdd(item.Path, file))
             {
-                if (_filesByOutputPath.TryGetValue(manifest.OutputPath, out var existingFile) && existingFile != file)
+                if (_filesByOutputPath.TryGetValue(item.Path, out var existingFile) && existingFile != file)
                 {
-                    _outputPathConflicts.GetOrAdd(manifest.OutputPath, _ => new ConcurrentBag<Document>()).Add(file);
+                    _outputPathConflicts.GetOrAdd(item.Path, _ => new ConcurrentBag<Document>()).Add(file);
                 }
                 return false;
             }
 
+            var monikers = item.Monikers;
             if (monikers.Count == 0)
             {
                 // TODO: report a warning if there are multiple files published to same url, one of them have no version
                 monikers = new List<string> { "NONE_VERSION" };
             }
-            _filesBySiteUrl.GetOrAdd(manifest.SiteUrl, _ => new ConcurrentDictionary<Document, List<string>>()).TryAdd(file, monikers);
+            _filesBySiteUrl.GetOrAdd(item.Url, _ => new ConcurrentDictionary<Document, List<string>>()).TryAdd(file, monikers);
 
             return true;
         }
 
-        public Dictionary<Document, FileManifest> Build(Context context)
+        public (PublishManifestModel, Dictionary<Document, PublishManifestItem>) Build(Context context)
         {
             // Handle publish url conflicts
             // TODO: Report more detail info for url conflict
@@ -66,7 +67,7 @@ namespace Microsoft.Docs.Build
                     {
                         if (_manifest.TryRemove(conflictingFile, out var manifest))
                         {
-                            context.Output.Delete(manifest.OutputPath);
+                            context.Output.Delete(manifest.Path);
                         }
                     }
                 }
@@ -93,7 +94,7 @@ namespace Microsoft.Docs.Build
                 {
                     if (_manifest.TryRemove(conflictingFile, out var manifest))
                     {
-                        context.Output.Delete(manifest.OutputPath);
+                        context.Output.Delete(manifest.Path);
                     }
                 }
             }
@@ -105,12 +106,19 @@ namespace Microsoft.Docs.Build
                 {
                     if (_manifest.TryRemove(file, out var manifest))
                     {
-                        context.Output.Delete(manifest.OutputPath);
+                        context.Output.Delete(manifest.Path);
                     }
                 }
             }
 
-            return _manifest.ToDictionary(item => item.Key, item => item.Value);
+            var model = new PublishManifestModel
+            {
+                Publish = _manifest.Values.OrderBy(item => item.Path).ToArray(),
+            };
+
+            var fileManifests = _manifest.ToDictionary(item => item.Key, item => item.Value);
+
+            return (model, fileManifests);
         }
     }
 }

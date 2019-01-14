@@ -11,7 +11,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class LegacyManifest
     {
-        public static List<(LegacyManifestItem manifestItem, Document doc, List<string> monikers)> Convert(Docset docset, Context context, Dictionary<Document, FileManifest> fileManifests)
+        public static List<(LegacyManifestItem manifestItem, Document doc, List<string> monikers)> Convert(Docset docset, Context context, Dictionary<Document, PublishManifestItem> fileManifests)
         {
             using (Progress.Start("Convert Legacy Manifest"))
             {
