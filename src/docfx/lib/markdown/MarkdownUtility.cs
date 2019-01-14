@@ -142,6 +142,7 @@ namespace Microsoft.Docs.Build
             return new MarkdownPipelineBuilder()
                 .UseYamlFrontMatter()
                 .UseDocfxExtensions(markdownContext)
+                .UseTocHeading()
                 .Build();
         }
 
