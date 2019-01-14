@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using Jint;
@@ -12,6 +11,7 @@ using Jint.Native;
 using Jint.Native.Object;
 using Jint.Parser;
 using Jint.Runtime;
+using Jint.Runtime.Interop;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -29,52 +29,55 @@ namespace Microsoft.Docs.Build
 
         private static readonly Engine s_engine = new Engine();
 
-        private readonly ConcurrentDictionary<string, ThreadLocal<Func<JObject, JObject>>> _scripts = new ConcurrentDictionary<string, ThreadLocal<Func<JObject, JObject>>>();
         private readonly string _scriptDir;
+        private readonly ConcurrentDictionary<string, ThreadLocal<JsValue>> _scripts
+                   = new ConcurrentDictionary<string, ThreadLocal<JsValue>>();
 
         public JavascriptEngine(string scriptDir) => _scriptDir = scriptDir;
 
-        public JObject Run(string scriptName, JObject input)
+        public JToken Run(string scriptPath, string methodName, params JToken[] args)
         {
-            var transform = _scripts.GetOrAdd(
-                scriptName,
-                key => new ThreadLocal<Func<JObject, JObject>>(() => LoadTransform(Path.Combine(_scriptDir, key))));
+            var scriptFullPath = Path.GetFullPath(Path.Combine(_scriptDir, scriptPath));
+            var exports = _scripts.GetOrAdd(scriptFullPath, file => new ThreadLocal<JsValue>(() => Run(file))).Value;
+            var method = exports.AsObject().Get(methodName);
 
-            Debug.Assert(transform != null);
-
-            return transform.Value(input);
+            return ToJToken(Invoke(method, Array.ConvertAll(args, ToJsValue)));
         }
 
-        private static Func<JObject, JObject> LoadTransform(string scriptPath)
+        private static JsValue Run(string entryScriptPath)
         {
-            var exports = Load(scriptPath, new Dictionary<string, ObjectInstance>());
-            var transform = exports.Get("transform");
+            var modules = new Dictionary<string, JsValue>();
 
-            return model =>
+            return RunCore(entryScriptPath);
+
+            JsValue RunCore(string path)
             {
-                var output = Invoke(transform, ToJsValue(model));
-                var content = output.AsObject().Get("content").AsString();
-                return JObject.Parse(content);
-            };
-        }
+                var fullPath = Path.GetFullPath(path);
+                if (modules.TryGetValue(fullPath, out var module))
+                {
+                    return module;
+                }
 
-        private static ObjectInstance Load(string scriptPath, Dictionary<string, ObjectInstance> modules)
-        {
-            if (modules.TryGetValue(scriptPath, out var module))
-            {
-                return module;
-            }
+                var engine = new Engine(opt => opt.LimitRecursion(5000));
+                var exports = modules[fullPath] = MakeObject();
+                var sourceCode = File.ReadAllText(fullPath);
+                var parserOptions = new ParserOptions { Source = fullPath };
+                var script = $@"
+;(function (module, exports, __dirname, require) {{
+{sourceCode}
+}})
+";
+                var dirname = Path.GetDirectoryName(fullPath);
+                var require = new ClrFunctionInstance(engine, Require);
 
-            var engine = new Engine(opt => opt.LimitRecursion(5000));
-            engine.SetValue("exports", MakeObject());
-            engine.SetValue("require", new Func<string, ObjectInstance>(Require));
-            engine.Execute(File.ReadAllText(scriptPath), new ParserOptions { Source = scriptPath });
+                var func = engine.Execute(script, parserOptions).GetCompletionValue();
+                func.Invoke(MakeObject(), exports, dirname, require);
+                return exports;
 
-            return modules[scriptPath] = engine.GetValue("exports").AsObject();
-
-            ObjectInstance Require(string path)
-            {
-                return Load(Path.Combine(Path.GetDirectoryName(scriptPath), path), modules);
+                JsValue Require(JsValue self, JsValue[] arguments)
+                {
+                    return RunCore(Path.Combine(dirname, arguments[0].AsString()));
+                }
             }
         }
 
@@ -111,6 +114,7 @@ namespace Microsoft.Docs.Build
                 }
                 return result;
             }
+
             if (token is JObject obj)
             {
                 var result = MakeObject();
@@ -120,7 +124,13 @@ namespace Microsoft.Docs.Build
                 }
                 return result;
             }
+
             return JsValue.FromObject(s_engine, ((JValue)token).Value);
+        }
+
+        private static JToken ToJToken(JsValue token)
+        {
+            return JToken.Parse(s_engine.Json.Stringify(null, new[] { token }).AsString());
         }
     }
 }
