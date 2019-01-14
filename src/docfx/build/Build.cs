@@ -32,18 +32,20 @@ namespace Microsoft.Docs.Build
                 xrefMap = XrefMap.Create(context, docset);
 
                 var tocMap = BuildTableOfContents.BuildTocMap(context, docset);
-                var (publishManifest, fileManifests, sourceDependencies) = await BuildFiles(context, docset, tocMap);
+                var (publishManifest, fileManifests, dependencyMap) = await BuildFiles(context, docset, tocMap);
 
-                context.Output.WriteJson(publishManifest, "build.manifest");
                 var saveGitHubUserCache = context.GitHubUserCache.SaveChanges(config);
-                xrefMap.OutputXrefMap(context);
+
+                context.Output.WriteJson(publishManifest, ".publish.json");
+                context.Output.WriteJson(dependencyMap, ".dependencymap.json");
+                context.Output.WriteJson(xrefMap.BuildXrefMapModel(), ".xrefmap.json");
 
                 if (options.Legacy)
                 {
                     if (config.Output.Json)
                     {
                         // TODO: decouple files and dependencies from legacy.
-                        Legacy.ConvertToLegacyModel(docset, context, fileManifests, sourceDependencies, tocMap);
+                        Legacy.ConvertToLegacyModel(docset, context, fileManifests, dependencyMap, tocMap);
                     }
                     else
                     {

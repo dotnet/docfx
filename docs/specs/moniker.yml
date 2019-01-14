@@ -112,7 +112,7 @@ outputs:
       "content": "<p>Moniker: netcore-2.0</p>",
       "monikers": ["netcore-2.0"]
     }
-  build.manifest: |
+  .publish.json: |
     {
       "files": [
           {
@@ -137,8 +137,7 @@ outputs:
                   "netcore-2.0"
               ]
           }
-      ],
-      "dependencies": {}
+      ]
     }
 ---
 # Moniker Zone syntax
@@ -960,15 +959,14 @@ outputs:
   9d4e15fd/docs/c.png:
   docs/a.json:
   docs/c.png:
-  build.manifest: |
+  .publish.json: |
     {
       "files": [
           { "siteUrl": "/docs/a" },
           { "siteUrl": "/docs/c.png", "outputPath": "docs/c.png", "sourcePath": "docs/c.png", "monikers": [] },
           { "siteUrl": "/docs/a" },
           { "siteUrl": "/docs/c.png", "outputPath": "9d4e15fd/docs/c.png", "sourcePath": "docs/v1/c.png","monikers": ["netcore-1.0", "netcore-1.1" ] }
-      ],
-      "dependencies": { }
+      ]
     }
 ---
 # Build resource file with moniker conflict
@@ -1005,13 +1003,12 @@ inputs:
 outputs:
   9d4e15fd/docs/a.json:
   b201e604/docs/a.json:
-  build.manifest: |
+  .publish.json: |
     {
       "files": [
           { "siteUrl": "/docs/a" },
           { "siteUrl": "/docs/a" }
-      ],
-      "dependencies": { }
+      ]
     }
   build.log: |
     ["error","publish-url-conflict","Two or more files of the same version('netcore-1.1') publish to the same url '/docs/c.png': 'docs/v1/c.png', 'docs/v2/c.png'"]

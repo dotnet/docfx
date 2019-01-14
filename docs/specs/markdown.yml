@@ -349,7 +349,7 @@ outputs:
     {"document_id":"fa697b4e-3e52-77f6-2219-39040f6070da","document_version_independent_id":"7c88e748-ed5e-a29a-c057-6f89857c3591"}
   docs/a.experimental.json: |
     {"document_id":"f481558d-b8fa-5acb-facb-d3bee58fbf3e","document_version_independent_id":"80168efe-9436-03b9-9e7c-eaf20a91d680"}
-  build.manifest: |
+  .publish.json: |
     {"files":[{"siteUrl":"/docs/a.experimental","outputPath":"docs/a.experimental.json","sourcePath":"docs/a.experimental.md"},{"siteUrl":"/docs/a","outputPath":"docs/a.json","sourcePath":"docs/a.md"}],"dependencies":{}}
 ---
 # `", '` should be properly escaped when written in html directly
