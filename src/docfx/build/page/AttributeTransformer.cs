@@ -13,7 +13,6 @@ namespace Microsoft.Docs.Build
     {
         public static Func<IEnumerable<DataTypeAttribute>, object, string, object> TransformSDP(
             Context context,
-            List<Error> errors,
             Document file,
             Action<Document> buildChild)
         {
@@ -22,13 +21,12 @@ namespace Microsoft.Docs.Build
             object Transform(IEnumerable<DataTypeAttribute> attributes, object value, string jsonPath)
             {
                 var attribute = attributes.SingleOrDefault(attr => !(attr is XrefPropertyAttribute));
-                return TransformContent(context, errors, attribute, value, file, buildChild);
+                return TransformContent(context, attribute, value, file, buildChild);
             }
         }
 
         public static Func<IEnumerable<DataTypeAttribute>, object, string, object> TransformXref(
             Context context,
-            List<Error> errors,
             Document file,
             Action<Document> buildChild,
             Dictionary<string, Lazy<JValue>> extensionData)
@@ -38,31 +36,31 @@ namespace Microsoft.Docs.Build
             object TransformXrefSpec(IEnumerable<DataTypeAttribute> attributes, object value, string jsonPath)
             {
                 var attribute = attributes.SingleOrDefault(attr => !(attr is XrefPropertyAttribute));
-                extensionData[jsonPath] = new Lazy<JValue>(() => new JValue(TransformContent(context, errors, attribute, value, file, buildChild)), LazyThreadSafetyMode.PublicationOnly);
+                extensionData[jsonPath] = new Lazy<JValue>(() => new JValue(TransformContent(context, attribute, value, file, buildChild)), LazyThreadSafetyMode.PublicationOnly);
                 return null;
             }
         }
 
-        private static object TransformContent(Context context, List<Error> errors, DataTypeAttribute attribute, object value, Document file, Action<Document> buildChild)
+        private static object TransformContent(Context context, DataTypeAttribute attribute, object value, Document file, Action<Document> buildChild)
         {
             if (attribute is HrefAttribute)
             {
                 var (error, link, _) = context.DependencyResolver.ResolveLink((string)value, file, file, buildChild);
-                errors.AddIfNotNull(error);
+                context.Report.Write(file.ToString(), error);
                 return link;
             }
 
             if (attribute is MarkdownAttribute)
             {
                 var (html, markup) = MarkdownUtility.ToHtml((string)value, file, context.DependencyResolver, buildChild, null, MarkdownPipelineType.Markdown);
-                errors.AddRange(markup.Errors);
+                context.Report.Write(file.ToString(), markup.Errors);
                 return html;
             }
 
             if (attribute is InlineMarkdownAttribute)
             {
                 var (html, markup) = MarkdownUtility.ToHtml((string)value, file, context.DependencyResolver, buildChild, null, MarkdownPipelineType.InlineMarkdown);
-                errors.AddRange(markup.Errors);
+                context.Report.Write(file.ToString(), markup.Errors);
                 return html;
             }
 
@@ -71,7 +69,7 @@ namespace Microsoft.Docs.Build
                 var html = HtmlUtility.TransformLinks((string)value, href =>
                 {
                     var (error, link, _) = context.DependencyResolver.ResolveLink(href, file, file, buildChild);
-                    errors.AddIfNotNull(error);
+                    context.Report.Write(file.ToString(), error);
                     return link;
                 });
                 return HtmlUtility.StripTags(HtmlUtility.LoadHtml(html)).OuterHtml;
@@ -81,7 +79,7 @@ namespace Microsoft.Docs.Build
             {
                 // TODO: how to fill xref resolving data besides href
                 var (error, link, _, _) = context.DependencyResolver.ResolveXref((string)value, file, file);
-                errors.AddIfNotNull(error);
+                context.Report.Write(file.ToString(), error);
                 return link;
             }
 

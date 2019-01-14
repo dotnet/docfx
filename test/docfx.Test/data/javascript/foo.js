@@ -1,4 +1,4 @@
-function bar(obj) {
+function bar (obj) {
     return obj
 }
 

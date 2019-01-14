@@ -56,6 +56,7 @@ namespace Microsoft.Docs.Build
                 {
                     configMonikerRange = monikerRange;
                     configMonikers.AddRange(_rangeParser.Parse(monikerRange));
+                    break;
                 }
             }
 

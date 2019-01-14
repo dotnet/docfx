@@ -16,7 +16,7 @@ namespace Microsoft.Docs.Build
 
             if (!string.IsNullOrEmpty(docset.Config.Theme))
             {
-                var (url, branch) = HrefUtility.SplitGitHref(docset.Config.Theme);
+                var (url, branch) = LocalizationUtility.GetLocalizedTheme(docset.Config.Theme, docset.Locale, docset.Config.Localization.DefaultLocale);
 
                 legacyCrrInfoItems.Add(new LegacyCrossRepoReferenceInfoItem
                 {
