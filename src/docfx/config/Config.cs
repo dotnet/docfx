@@ -84,6 +84,12 @@ namespace Microsoft.Docs.Build
         public readonly Dictionary<string, string> Dependencies = new Dictionary<string, string>(PathUtility.PathComparer);
 
         /// <summary>
+        /// Gets the map from resolve alias to relative path relatived to `docfx.yml` file
+        /// Default will be `~: .`
+        /// </summary>
+        public readonly Dictionary<string, string> ResolveAlias = new Dictionary<string, string>(PathUtility.PathComparer) { { "~",  "." } };
+
+        /// <summary>
         /// Gets the redirection mappings
         /// The default value is empty mappings
         /// The redirection always transfer the document id

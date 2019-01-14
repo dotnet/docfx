@@ -188,6 +188,12 @@
         "type": "string"
       }
     },
+    "resolveAlias": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
     "redirections": {
       "type": "object",
       "additionalProperties": {

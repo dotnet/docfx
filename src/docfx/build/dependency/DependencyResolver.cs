@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
@@ -218,19 +219,9 @@ namespace Microsoft.Docs.Build
             }
 
             // Resolve path relative to docset
-            if (path.StartsWith("~\\") || path.StartsWith("~/"))
-            {
-                pathToDocset = path.Substring(2);
-            }
-            else
-            {
-                // Resolve path relative to input file
-                pathToDocset = Path.Combine(Path.GetDirectoryName(relativeTo.FilePath), path);
-            }
+            pathToDocset = ResolveToDocsetRelativePath(path, relativeTo);
 
             // resolve from redirection files
-            pathToDocset = PathUtility.NormalizeFile(pathToDocset);
-
             if (relativeTo.Docset.Redirections.TryGetRedirectionUrl(pathToDocset, out var redirectTo))
             {
                 // redirectTo always is absolute href
@@ -244,6 +235,22 @@ namespace Microsoft.Docs.Build
             var file = Document.TryCreateFromFile(relativeTo.Docset, pathToDocset);
 
             return (file != null ? null : Errors.FileNotFound(relativeTo.ToString(), path), file, null, query, fragment, false, pathToDocset);
+        }
+
+        private string ResolveToDocsetRelativePath(string path, Document relativeTo)
+        {
+            var docsetRelativePath = PathUtility.NormalizeFile(Path.Combine(Path.GetDirectoryName(relativeTo.FilePath), path));
+            if (!File.Exists(Path.Combine(relativeTo.Docset.DocsetPath, docsetRelativePath)))
+            {
+                foreach (var (alias, aliasPath) in relativeTo.Docset.ResolveAlias)
+                {
+                    if (path.StartsWith(alias, PathUtility.PathComparison))
+                    {
+                        return PathUtility.NormalizeFile(Path.Combine(aliasPath, path.Substring(alias.Length)));
+                    }
+                }
+            }
+            return docsetRelativePath;
         }
     }
 }
