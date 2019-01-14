@@ -1271,7 +1271,6 @@ outputs:
     ["error","invalid-toc-syntax","The toc syntax '# Title1 Title2 [Title3](a.md)' is invalid, multiple inlines in one heading block is not allowed. Refer to [ATX heading](https://spec.commonmark.org/0.28/#atx-heading) to fix it","docs/TOC.md","",7]
 ---
 # more than 6 leading count of `#`
-# docfx support max leading count of `#`up to 20
 inputs:
   docfx.yml:
   docs/TOC.md: |
@@ -1281,17 +1280,5 @@ inputs:
 outputs:
   docs/toc.json: |
     {"items":[{"toc_title":"19 leading count","href":"a","children":[{"toc_title":"20 leading count","href":"a","monikers":[]}]}]}
-  docs/a.json:
----
-# more than 20 leading count of `#` is not supported
-inputs:
-  docfx.yml:
-  docs/TOC.md: |
-    #################### [20 leading count](a.md)
-    ##################### [21 leading count](a.md)
-  docs/a.md:
-outputs:
-  build.log: |
-    ["error","invalid-toc-syntax","The toc syntax '##################### [21 leading count](a.md)' is invalid, the opening sequence of # characters must be followed by a space or by the end of line. Refer to [ATX heading](https://spec.commonmark.org/0.28/#atx-heading) to fix it","docs/TOC.md","",1]
   docs/a.json:
 

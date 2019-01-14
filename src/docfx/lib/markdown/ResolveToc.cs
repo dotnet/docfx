@@ -10,7 +10,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class ResolveToc
     {
-        public static MarkdownPipelineBuilder UseTocHeading(this MarkdownPipelineBuilder builder, int maxLeadingCount = 20)
+        public static MarkdownPipelineBuilder UseTocHeading(this MarkdownPipelineBuilder builder, int maxLeadingCount = int.MaxValue)
         {
             Debug.Assert(maxLeadingCount > 0);
 
