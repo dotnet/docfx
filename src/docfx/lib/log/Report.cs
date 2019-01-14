@@ -78,6 +78,12 @@ namespace Microsoft.Docs.Build
             return hasErrors;
         }
 
+        public bool Write(string file, DocfxException exception)
+        {
+            Log.Write(exception);
+            return Write(file, exception.Error);
+        }
+
         public bool Write(string file, Error error)
         {
             if (error is null)

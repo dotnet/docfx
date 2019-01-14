@@ -16,7 +16,12 @@ namespace Microsoft.Docs.Build
             return new LogScope(() => t_verbose.Value = false);
         }
 
-        public static void Info(string message)
+        public static void Write(Exception exception)
+        {
+            Write(exception.ToString(), ConsoleColor.DarkRed);
+        }
+
+        public static void Write(string message, ConsoleColor color = ConsoleColor.DarkGray)
         {
             if (t_verbose.Value)
             {
@@ -24,27 +29,7 @@ namespace Microsoft.Docs.Build
                 lock (Console.Out)
 #pragma warning restore CA2002
                 {
-                    Console.ForegroundColor = ConsoleColor.DarkGray;
-                    Console.WriteLine(message);
-                    Console.ResetColor();
-                }
-            }
-        }
-
-        public static void Error(Exception exception)
-        {
-            Error(exception.ToString());
-        }
-
-        public static void Error(string message)
-        {
-            if (t_verbose.Value)
-            {
-#pragma warning disable CA2002
-                lock (Console.Out)
-#pragma warning restore CA2002
-                {
-                    Console.ForegroundColor = ConsoleColor.DarkRed;
+                    Console.ForegroundColor = color;
                     Console.WriteLine(message);
                     Console.ResetColor();
                 }
