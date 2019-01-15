@@ -55,16 +55,4 @@ namespace Microsoft.Docs.Build
 
         public List<string> Monikers { get; set; }
     }
-
-    [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
-    public class Contributor
-    {
-        public string Name { get; set; }
-
-        public string ProfileUrl { get; set; }
-
-        public string DisplayName { get; set; }
-
-        public string Id { get; set; }
-    }
 }
