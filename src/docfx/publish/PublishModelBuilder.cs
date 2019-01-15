@@ -113,7 +113,7 @@ namespace Microsoft.Docs.Build
 
             var model = new PublishModel
             {
-                Publish = _manifest.Values.OrderBy(item => item.Path).ToArray(),
+                Publish = _manifest.Values.OrderBy(item => item.Path).ThenBy(item => item.Url).ToArray(),
             };
 
             var fileManifests = _manifest.ToDictionary(item => item.Key, item => item.Value);

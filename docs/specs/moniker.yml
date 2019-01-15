@@ -115,9 +115,9 @@ outputs:
   .publish.json: |
     {
       "publish": [
-          { "url": "/docs/a", "path": "docs/a.json", "monikers": [] },
           { "url": "/docs/a", "path": "218c13d0/docs/a.json", "monikers": [ "netcore-1.1" ] },
-          { "url": "/docs/a", "path": "4667fedf/docs/a.json", "monikers": [ "netcore-2.0" ] }
+          { "url": "/docs/a", "path": "4667fedf/docs/a.json", "monikers": [ "netcore-2.0" ] },
+          { "url": "/docs/a", "path": "docs/a.json", "monikers": [] },
       ]
     }
 ---
@@ -943,10 +943,10 @@ outputs:
   .publish.json: |
     {
       "publish": [
-          { "url": "/docs/a" },
-          { "url": "/docs/c.png", "path": "docs/c.png", "monikers": [] },
-          { "url": "/docs/a" },
-          { "url": "/docs/c.png", "path": "9d4e15fd/docs/c.png", "monikers": ["netcore-1.0", "netcore-1.1" ] }
+        { "url": "/docs/a", "path": "136a42ac/docs/a.json", "monikers": [ "netcore-1.0" ] },
+        { "url": "/docs/c.png", "path": "9d4e15fd/docs/c.png", "monikers": [ "netcore-1.0", "netcore-1.1" ] },
+        { "url": "/docs/a", "path": "docs/a.json", "monikers": [] },
+        { "url": "/docs/c.png", "path": "docs/c.png", "monikers": [] }
       ]
     }
 ---

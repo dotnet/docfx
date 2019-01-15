@@ -16,15 +16,18 @@ namespace Microsoft.Docs.Build
         {
         }
 
-        public Dictionary<string, DependencyManifestItem[]> ToDependencyMapModel()
+        public object ToDependencyMapModel()
         {
-            return this.ToDictionary(
-                d => d.Key.FilePath,
-                d => d.Value.Select(v => new DependencyManifestItem
-                {
-                    Source = v.Dest.FilePath,
-                    Type = v.Type,
-                }).ToArray());
+            // TODO: Make dependency map a data model once we remove legacy.
+            var dependencies = this.ToDictionary(
+                    d => d.Key.FilePath,
+                    d => d.Value.Select(v => new DependencyManifestItem
+                    {
+                        Source = v.Dest.FilePath,
+                        Type = v.Type,
+                    }).ToArray());
+
+            return new { dependencies };
         }
     }
 }

@@ -251,6 +251,6 @@ inputs:
     a []()
 outputs:
   .publish.json: |
-    { files: [] }
+    { publish: [] }
   build.log: |
     ["error","link-is-empty","Link is empty","docs/a.md"]
