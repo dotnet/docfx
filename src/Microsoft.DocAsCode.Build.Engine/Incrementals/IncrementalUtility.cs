@@ -16,7 +16,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
     public static class IncrementalUtility
     {
         public static readonly JsonSerializerSettings FileMetadataJsonSerializationSettings
-            = new JsonSerializerSettings { ContractResolver = new IncrementalIgnorePropertiesResolver() };
+            = new JsonSerializerSettings { Converters = new List<JsonConverter> { new FileMetadataConverter(true) } };
 
         private const int MaxRetry = 3;
         private static readonly Encoding UTF8 = new UTF8Encoding(false, false);
