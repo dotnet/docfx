@@ -889,7 +889,6 @@ repos:
       author: Terry
       email: terry@contoso.com
 outputs:
-  .publish.json:
   docs/a.json: |
     {"author":{"display_name":"Terry","id": "terry@contoso.com"},"contributors":[{"display_name":"Bob","id":"bob@contoso.com"}],"bilingual": true}
 ---
