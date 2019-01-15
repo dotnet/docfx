@@ -67,6 +67,11 @@ namespace Microsoft.Docs.Build
         public IReadOnlyDictionary<string, string> Routes { get; }
 
         /// <summary>
+        /// Gets the root repository of docset
+        /// </summary>
+        public Repository Repository { get; }
+
+        /// <summary>
         /// Gets the redirection map.
         /// </summary>
         public RedirectionMap Redirections => _redirections.Value;
@@ -85,30 +90,33 @@ namespace Microsoft.Docs.Build
 
         private readonly CommandLineOptions _options;
         private readonly Report _report;
+        private readonly Dictionary<string, Repository> _repositories;
         private readonly Lazy<HashSet<Document>> _buildScope;
         private readonly Lazy<HashSet<Document>> _scanScope;
         private readonly Lazy<RedirectionMap> _redirections;
         private readonly Lazy<LegacyTemplate> _legacyTemplate;
 
-        public Docset(Report report, string docsetPath, string locale, Config config, CommandLineOptions options, bool isDependency = false)
-            : this(report, docsetPath, !string.IsNullOrEmpty(locale) ? locale : config.Localization.DefaultLocale, config, options, null, null)
+        public Docset(Report report, string docsetPath, string locale, Config config, CommandLineOptions options, Repository repository = null, bool isDependency = false)
+            : this(report, docsetPath, !string.IsNullOrEmpty(locale) ? locale : config.Localization.DefaultLocale, config, options, repository, null, null)
         {
             if (!isDependency && !string.Equals(Locale, config.Localization.DefaultLocale, StringComparison.OrdinalIgnoreCase))
             {
                 // localization/fallback docset will share the same context, config, build locale and options with source docset
                 // source docset configuration will be overwritten by build locale overwrite configuration
-                if (LocalizationUtility.TryGetSourceDocsetPath(DocsetPath, out var sourceDocsetPath))
+                if (LocalizationUtility.TryGetSourceDocsetPath(this, out var sourceDocsetPath, out var sourceBranch))
                 {
-                    FallbackDocset = new Docset(report, sourceDocsetPath, Locale, config, options, localizedDocset: this);
+                    var repo = Repository.Create(sourceDocsetPath, sourceBranch);
+                    FallbackDocset = new Docset(report, sourceDocsetPath, Locale, config, options, repo, localizedDocset: this);
                 }
-                else if (LocalizationUtility.TryGetLocalizedDocsetPath(DocsetPath, Config, Locale, out var localizationDocsetPath))
+                else if (LocalizationUtility.TryGetLocalizedDocsetPath(this, Config, Locale, out var localizationDocsetPath, out var localizationBranch))
                 {
-                    LocalizationDocset = new Docset(report, localizationDocsetPath, Locale, config, options, fallbackDocset: this);
+                    var repo = Repository.Create(localizationDocsetPath, localizationBranch);
+                    LocalizationDocset = new Docset(report, localizationDocsetPath, Locale, config, options, repo, fallbackDocset: this);
                 }
             }
         }
 
-        private Docset(Report report, string docsetPath, string locale, Config config, CommandLineOptions options, Docset fallbackDocset = null, Docset localizedDocset = null)
+        private Docset(Report report, string docsetPath, string locale, Config config, CommandLineOptions options, Repository repository = null, Docset fallbackDocset = null, Docset localizedDocset = null)
         {
             Debug.Assert(fallbackDocset == null || localizedDocset == null);
 
@@ -125,6 +133,7 @@ namespace Microsoft.Docs.Build
             var configErrors = new List<Error>();
             (configErrors, DependencyDocsets) = LoadDependencies(Config);
             ResolveAlias = LoadResolveAlias(Config);
+            Repository = repository ?? Repository.Create(DocsetPath, branch: null);
 
             // pass on the command line options to its children
             _buildScope = new Lazy<HashSet<Document>>(() => CreateBuildScope(Redirections.Files));
@@ -140,9 +149,23 @@ namespace Microsoft.Docs.Build
             _legacyTemplate = new Lazy<LegacyTemplate>(() =>
             {
                 Debug.Assert(!string.IsNullOrEmpty(Config.Theme));
-                var (themeRemote, branch) = LocalizationUtility.GetLocalizedTheme(Config.Theme, Locale, Config.Localization.DefaultLocale);
-                return new LegacyTemplate(RestoreMap.GetGitRestorePath($"{themeRemote}#{branch}"), Locale);
+                var (themeRemote, themeBranch) = LocalizationUtility.GetLocalizedTheme(Config.Theme, Locale, Config.Localization.DefaultLocale);
+                return new LegacyTemplate(RestoreMap.GetGitRestorePath($"{themeRemote}#{themeBranch}"), Locale);
             });
+
+            _repositories = LoadRepositories();
+        }
+
+        public Repository GetRepository(string filePath)
+        {
+            var documentFolder = PathUtility.NormalizeFolder(Path.GetDirectoryName(Path.Combine(DocsetPath, filePath)));
+
+            if (_repositories.TryGetValue(documentFolder, out var repository))
+            {
+                return repository;
+            }
+
+            return null;
         }
 
         private static IReadOnlyDictionary<string, string> NormalizeRoutes(Dictionary<string, string> routes)
@@ -196,6 +219,36 @@ namespace Microsoft.Docs.Build
                 result.TryAdd(PathUtility.NormalizeFolder(name), new Docset(_report, dir, Locale, subConfig, _options, isDependency: true));
             }
             return (errors, result);
+        }
+
+        private Dictionary<string, Repository> LoadRepositories()
+        {
+            var repositoryByFolder = new ConcurrentDictionary<string, Repository>();
+
+            ParallelUtility.ForEach(
+                    Directory.EnumerateFiles(DocsetPath, "*.*", SearchOption.AllDirectories),
+                    file => GetRepository(file));
+
+            Repository GetRepository(string fullPath)
+            {
+                fullPath = PathUtility.NormalizeFolder(fullPath);
+                if (GitUtility.IsRepo(fullPath))
+                {
+                    if (string.Equals(fullPath, DocsetPath, PathUtility.PathComparison))
+                    {
+                        return Repository;
+                    }
+
+                    return Repository.Create(fullPath, branch: null);
+                }
+
+                var parent = PathUtility.NormalizeFolder(Path.GetDirectoryName(fullPath));
+                return !string.IsNullOrEmpty(parent)
+                    ? repositoryByFolder.GetOrAdd(parent, GetRepository)
+                    : null;
+            }
+
+            return repositoryByFolder.ToDictionary(k => k.Key, v => v.Value);
         }
 
         private HashSet<Document> CreateBuildScope(IEnumerable<Document> redirections)

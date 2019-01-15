@@ -102,6 +102,11 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public bool IsSchemaData => Schema != null && Schema.Attribute as PageSchemaAttribute == null;
 
+        /// <summary>
+        /// Gets the repository
+        /// </summary>
+        public Repository Repository { get; }
+
         private readonly Lazy<(string docId, string versionIndependentId)> _id;
 
         // TODO:
@@ -124,6 +129,7 @@ namespace Microsoft.Docs.Build
             string mime,
             Schema schema,
             bool isExperimental,
+            Repository repository,
             string redirectionUrl = null,
             bool isFromHistory = false)
         {
@@ -142,6 +148,7 @@ namespace Microsoft.Docs.Build
             IsExperimental = isExperimental;
             RedirectionUrl = redirectionUrl;
             IsFromHistory = isFromHistory;
+            Repository = repository;
 
             _id = new Lazy<(string docId, string versionId)>(() => LoadDocumentId());
 
@@ -242,13 +249,14 @@ namespace Microsoft.Docs.Build
             var contentType = redirectionUrl != null ? ContentType.Redirection : type;
             var canonicalUrl = GetCanonicalUrl(siteUrl, sitePath, docset, isExperimental, contentType, schema);
             var canonicalUrlWithoutLocale = GetCanonicalUrl(siteUrl, sitePath, docset, isExperimental, contentType, schema, false);
+            var repository = docset.GetRepository(filePath);
 
             if (contentType == ContentType.Redirection && type != ContentType.Page)
             {
                 return (Errors.InvalidRedirection(filePath, type), null);
             }
 
-            return (null, new Document(docset, filePath, sitePath, siteUrl, canonicalUrlWithoutLocale, canonicalUrl, contentType, mime, schema, isExperimental, redirectionUrl, isFromHistory));
+            return (null, new Document(docset, filePath, sitePath, siteUrl, canonicalUrlWithoutLocale, canonicalUrl, contentType, mime, schema, isExperimental, repository, redirectionUrl, isFromHistory));
         }
 
         /// <summary>
