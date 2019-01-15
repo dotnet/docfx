@@ -120,8 +120,7 @@
     <Rule Id="CA2216" Action="Warning" />
     <Rule Id="CA2220" Action="Warning" />
     <Rule Id="CA2229" Action="Warning" />
-    <!-- CA2227: Collection properties should be read only
- -->
+    <!-- CA2227: Collection properties should be read only -->
     <Rule Id="CA2227" Action="None" />
     <Rule Id="CA2231" Action="Warning" />
     <Rule Id="CA2232" Action="Warning" />
