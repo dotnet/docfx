@@ -121,7 +121,7 @@ Besides content files, `docfx` generates miscellaneous files during the build. T
 File name           | Description
 --------------------|-----------------
 .publish.json        | A manifest of files to publish as described in [publish](publish.md)
-.xrefmap.json        | A manifest of `uid` and xref specs as described in [xref](xref.md)
+xrefmap.json        | A manifest of `uid` and xref specs as described in [xref](xref.md)
 .report.log          | A report file that contains build errors and warnings. Each line is a json array: `[{level}, {code}, {message}, {file?}, {line?}, {column?}]`.
 
 

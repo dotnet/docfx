@@ -38,7 +38,7 @@ namespace Microsoft.Docs.Build
 
                 context.Output.WriteJson(publishManifest, ".publish.json");
                 context.Output.WriteJson(sourceDependencies.ToDependencyMapModel(), ".dependencymap.json");
-                context.Output.WriteJson(xrefMap.BuildXrefMapModel(), ".xrefmap.json");
+                context.Output.WriteJson(xrefMap.BuildXrefMapModel(), "xrefmap.json");
 
                 if (options.Legacy)
                 {
