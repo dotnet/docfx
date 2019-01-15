@@ -68,7 +68,7 @@ namespace Microsoft.Docs.Build
                 t_scope.Value = t_scope.Value.Pop(out var scope);
 
                 var elapsedMs = Stopwatch.ElapsedMilliseconds;
-                if (elapsedMs > ProgressDelayMs)
+                if (Log.Verbose || elapsedMs > ProgressDelayMs)
                 {
                     Console.WriteLine($"{Name} done in {FormatTimeSpan(Stopwatch.Elapsed)}");
                 }
