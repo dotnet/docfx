@@ -163,18 +163,25 @@ namespace Microsoft.Docs.Build
             return new XrefMap(context, map, CreateInternalXrefMap(context, docset.ScanScope));
         }
 
-        public XrefMapModel BuildXrefMapModel()
+        public void OutputXrefMap(Context context)
         {
-            var result = new XrefMapModel();
+            var models = new XrefMapModel();
+            models.References.AddRange(ExpandInternalXrefSpecs());
+            context.Output.WriteJson(models, "xrefmap.json");
+        }
+
+        private IEnumerable<XrefSpec> ExpandInternalXrefSpecs()
+        {
+            var loadedInternalSpecs = new List<XrefSpec>();
             foreach (var (uid, specsWithSameUid) in _internalXrefMap)
             {
                 if (TryGetValidXrefSpecs(uid, specsWithSameUid, out var validInternalSpecs))
                 {
                     var (internalSpec, referencedFile) = GetLatestInternalXrefMap(validInternalSpecs);
-                    result.References.Add(internalSpec.ToExternalXrefSpec(_context, referencedFile));
+                    loadedInternalSpecs.Add(internalSpec.ToExternalXrefSpec(_context, referencedFile));
                 }
             }
-            return result;
+            return loadedInternalSpecs;
         }
 
         private (InternalXrefSpec spec, Document referencedFile) GetLatestInternalXrefMap(List<(InternalXrefSpec spec, Document referencedFile)> specs)

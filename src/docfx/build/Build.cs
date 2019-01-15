@@ -36,9 +36,9 @@ namespace Microsoft.Docs.Build
 
                 var saveGitHubUserCache = context.GitHubUserCache.SaveChanges(config);
 
+                xrefMap.OutputXrefMap(context);
                 context.Output.WriteJson(publishManifest, ".publish.json");
                 context.Output.WriteJson(sourceDependencies.ToDependencyMapModel(), ".dependencymap.json");
-                context.Output.WriteJson(xrefMap.BuildXrefMapModel(), "xrefmap.json");
 
                 if (options.Legacy)
                 {
