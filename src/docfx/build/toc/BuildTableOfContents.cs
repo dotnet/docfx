@@ -60,7 +60,7 @@ namespace Microsoft.Docs.Build
             }
             catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
             {
-                context.Report.Write(fileToBuild.ToString(), dex);
+                context.Report.Write(fileToBuild.ToString(), dex.Error);
             }
         }
 

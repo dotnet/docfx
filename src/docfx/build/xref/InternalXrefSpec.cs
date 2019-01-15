@@ -45,7 +45,7 @@ namespace Microsoft.Docs.Build
                 }
                 catch (DocfxException ex)
                 {
-                    context.Report.Write(file.FilePath, ex);
+                    context.Report.Write(file.FilePath, ex.Error);
                 }
             }
             return spec;

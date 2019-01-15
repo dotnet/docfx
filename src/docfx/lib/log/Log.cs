@@ -10,6 +10,8 @@ namespace Microsoft.Docs.Build
     {
         private static AsyncLocal<bool> t_verbose = new AsyncLocal<bool>();
 
+        public static bool Verbose => t_verbose.Value;
+
         public static IDisposable BeginScope(bool verbose)
         {
             t_verbose.Value = verbose;

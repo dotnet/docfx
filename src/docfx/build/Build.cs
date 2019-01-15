@@ -192,7 +192,7 @@ namespace Microsoft.Docs.Build
             }
             catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
             {
-                context.Report.Write(file.ToString(), dex);
+                context.Report.Write(file.ToString(), dex.Error);
                 manifestBuilder.MarkError(file);
                 return new List<string>();
             }
