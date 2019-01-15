@@ -11,7 +11,7 @@ namespace Microsoft.Docs.Build
         public static void ConvertToLegacyModel(
             Docset docset,
             Context context,
-            Dictionary<Document, PublishManifestItem> fileManifests,
+            Dictionary<Document, PublishItem> fileManifests,
             DependencyMap dependencyMap,
             TableOfContentsMap tocMap)
         {

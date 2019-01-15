@@ -114,29 +114,10 @@ outputs:
     }
   .publish.json: |
     {
-      "files": [
-          {
-              "siteUrl": "/docs/a",
-              "outputPath": "docs/a.json",
-              "sourcePath": "docs/a.md",
-              "monikers": []
-          },
-          {
-              "siteUrl": "/docs/a",
-              "outputPath": "218c13d0/docs/a.json",
-              "sourcePath": "docs/v1/a.md",
-              "monikers": [
-                  "netcore-1.1"
-              ]
-          },
-          {
-              "siteUrl": "/docs/a",
-              "outputPath": "4667fedf/docs/a.json",
-              "sourcePath": "docs/v2/a.md",
-              "monikers": [
-                  "netcore-2.0"
-              ]
-          }
+      "publish": [
+          { "url": "/docs/a", "path": "docs/a.json", "monikers": [] },
+          { "url": "/docs/a", "path": "218c13d0/docs/a.json", "monikers": [ "netcore-1.1" ] },
+          { "url": "/docs/a", "path": "4667fedf/docs/a.json", "monikers": [ "netcore-2.0" ] }
       ]
     }
 ---
@@ -961,11 +942,11 @@ outputs:
   docs/c.png:
   .publish.json: |
     {
-      "files": [
-          { "siteUrl": "/docs/a" },
-          { "siteUrl": "/docs/c.png", "outputPath": "docs/c.png", "sourcePath": "docs/c.png", "monikers": [] },
-          { "siteUrl": "/docs/a" },
-          { "siteUrl": "/docs/c.png", "outputPath": "9d4e15fd/docs/c.png", "sourcePath": "docs/v1/c.png","monikers": ["netcore-1.0", "netcore-1.1" ] }
+      "publish": [
+          { "url": "/docs/a" },
+          { "url": "/docs/c.png", "path": "docs/c.png", "monikers": [] },
+          { "url": "/docs/a" },
+          { "url": "/docs/c.png", "path": "9d4e15fd/docs/c.png", "monikers": ["netcore-1.0", "netcore-1.1" ] }
       ]
     }
 ---
@@ -1005,9 +986,9 @@ outputs:
   b201e604/docs/a.json:
   .publish.json: |
     {
-      "files": [
-          { "siteUrl": "/docs/a" },
-          { "siteUrl": "/docs/a" }
+      "publish": [
+          { "url": "/docs/a" },
+          { "url": "/docs/a" }
       ]
     }
   build.log: |

@@ -13,11 +13,11 @@ outputs:
   docs/index.json:
   .publish.json: |
     {
-      "files": [
-        { "siteUrl": "/docs/a", "outputPath": "docs/a.json" },
-        { "siteUrl": "/docs/folder/b~$", "outputPath": "docs/folder/b~$.json" },
-        { "siteUrl": "/docs/", "outputPath": "docs/index.json" },
-        { "siteUrl": "/docs/toc.json", "outputPath": "docs/toc.json" }
+      "publish": [
+        { "url": "/docs/a", "path": "docs/a.json" },
+        { "url": "/docs/folder/b~$", "path": "docs/folder/b~$.json" },
+        { "url": "/docs/", "path": "docs/index.json" },
+        { "url": "/docs/toc.json", "path": "docs/toc.json" }
       ]
     }
 ---
@@ -31,8 +31,8 @@ inputs:
 outputs:
   .publish.json: |
     {
-      "files": [
-        { "siteUrl": "/a.png", "sourcePath": "a.png", "outputPath": "../a.png" }
+      "publish": [
+        { "url": "/a.png", "path": "../a.png" }
       ]
     }
 ---

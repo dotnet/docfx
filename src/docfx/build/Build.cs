@@ -58,7 +58,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static async Task<(PublishManifestModel, Dictionary<Document, PublishManifestItem>, DependencyMap)> BuildFiles(
+        private static async Task<(PublishModel, Dictionary<Document, PublishItem>, DependencyMap)> BuildFiles(
             Context context,
             Docset docset,
             TableOfContentsMap tocMap)
@@ -163,7 +163,7 @@ namespace Microsoft.Docs.Build
                     return monikers;
                 }
 
-                var manifest = new PublishManifestItem
+                var manifest = new PublishItem
                 {
                     Url = file.SiteUrl,
                     Monikers = monikers,

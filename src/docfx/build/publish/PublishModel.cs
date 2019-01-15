@@ -3,8 +3,8 @@
 
 namespace Microsoft.Docs.Build
 {
-    internal class PublishManifestModel
+    internal class PublishModel
     {
-        public PublishManifestItem[] Publish { get; set; }
+        public PublishItem[] Publish { get; set; }
     }
 }

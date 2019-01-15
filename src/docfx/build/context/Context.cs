@@ -22,7 +22,7 @@ namespace Microsoft.Docs.Build
         public readonly DependencyResolver DependencyResolver;
         public readonly GitHubUserCache GitHubUserCache;
         public readonly ContributionProvider ContributionProvider;
-        public readonly PublishManifestBuilder PublishModelBuilder;
+        public readonly PublishModelBuilder PublishModelBuilder;
 
         public Context(
             Report report,
@@ -36,7 +36,7 @@ namespace Microsoft.Docs.Build
             DependencyResolver dependencyResolver,
             GitHubUserCache gitHubUserCache,
             ContributionProvider contributionProvider,
-            PublishManifestBuilder publishModelBuilder)
+            PublishModelBuilder publishModelBuilder)
         {
             Report = report;
             Output = output;
@@ -64,7 +64,7 @@ namespace Microsoft.Docs.Build
             var dependencyMapBuilder = new DependencyMapBuilder();
             var dependencyResolver = new DependencyResolver(gitCommitProvider, bookmarkValidator, dependencyMapBuilder, new Lazy<XrefMap>(xrefMap));
             var contributionProvider = await ContributionProvider.Create(docset, gitHubUserCache, gitCommitProvider);
-            var publishModelBuilder = new PublishManifestBuilder();
+            var publishModelBuilder = new PublishModelBuilder();
 
             return new Context(
                 report,

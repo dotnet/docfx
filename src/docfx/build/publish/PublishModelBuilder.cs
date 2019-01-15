@@ -7,12 +7,12 @@ using System.Linq;
 
 namespace Microsoft.Docs.Build
 {
-    internal class PublishManifestBuilder
+    internal class PublishModelBuilder
     {
         private readonly ConcurrentDictionary<string, ConcurrentBag<Document>> _outputPathConflicts = new ConcurrentDictionary<string, ConcurrentBag<Document>>(PathUtility.PathComparer);
         private readonly ConcurrentDictionary<string, ConcurrentDictionary<Document, List<string>>> _filesBySiteUrl = new ConcurrentDictionary<string, ConcurrentDictionary<Document, List<string>>>(PathUtility.PathComparer);
         private readonly ConcurrentDictionary<string, Document> _filesByOutputPath = new ConcurrentDictionary<string, Document>(PathUtility.PathComparer);
-        private readonly ConcurrentDictionary<Document, PublishManifestItem> _manifest = new ConcurrentDictionary<Document, PublishManifestItem>();
+        private readonly ConcurrentDictionary<Document, PublishItem> _manifest = new ConcurrentDictionary<Document, PublishItem>();
         private readonly ConcurrentBag<Document> _filesWithErrors = new ConcurrentBag<Document>();
 
         public void MarkError(Document file)
@@ -20,7 +20,7 @@ namespace Microsoft.Docs.Build
             _filesWithErrors.Add(file);
         }
 
-        public bool TryAdd(Document file, PublishManifestItem item)
+        public bool TryAdd(Document file, PublishItem item)
         {
             _manifest[file] = item;
 
@@ -48,7 +48,7 @@ namespace Microsoft.Docs.Build
             return true;
         }
 
-        public (PublishManifestModel, Dictionary<Document, PublishManifestItem>) Build(Context context)
+        public (PublishModel, Dictionary<Document, PublishItem>) Build(Context context)
         {
             // Handle publish url conflicts
             // TODO: Report more detail info for url conflict
@@ -111,7 +111,7 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            var model = new PublishManifestModel
+            var model = new PublishModel
             {
                 Publish = _manifest.Values.OrderBy(item => item.Path).ToArray(),
             };

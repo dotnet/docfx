@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace Microsoft.Docs.Build
 {
-    internal class PublishManifestItem
+    internal class PublishItem
     {
         public string Url { get; set; }
 
