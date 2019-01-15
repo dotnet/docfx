@@ -444,7 +444,7 @@ outputs:
       "content": "<p>Moniker: netcore-2.0</p>",
       "monikers": ["netcore-2.0"]
     }
-  xrefmap.json: | 
+  .xrefmap.json: | 
     {"references":[{"uid":"a","href":"https://docs.com/docs/a","name":"netcore-2.0"}]}
 ---
 # Define same uid with multiple moniker ranges, 
@@ -506,7 +506,7 @@ outputs:
       "content": "<p>Moniker: netcore-2.0</p>",
       "monikers": ["netcore-2.0"]
     }
-  xrefmap.json: | 
+  .xrefmap.json: | 
     {"references":[{"uid":"a","href":"https://docs.com/docs/a","name":"netcore-2.0"}]}
 ---
 # Define same uid with overlapping moniker range
@@ -549,7 +549,7 @@ outputs:
     ["error","moniker-overlapping","Two or more documents have defined overlapping moniker: 'netcore-2.0'"]
     ["info","at-uid-not-found","Cannot find uid 'a' using xref '@a'","docs/c.md"]
     ["error","publish-url-conflict","Two or more files of the same version('netcore-2.0') publish to the same url '/docs/a': 'docs/v1/a.md', 'docs/v2/a.md'"]
-  xrefmap.json: | 
+  .xrefmap.json: | 
     {"references":[]}
 ---
 # Define uid with moniker range, refer to it with invalid moniker, should fall back to the one with latest moniker
@@ -603,7 +603,7 @@ outputs:
       "content": "<p>Moniker: netcore-2.0</p>",
       "monikers": ["netcore-2.0"]
     }
-  xrefmap.json: | 
+  .xrefmap.json: | 
     {"references":[{"uid":"a","href":"https://docs.com/docs/a","name":"netcore-2.0"}]}
   build.log: |
     ["warning","invalid-uid-moniker","Moniker 'netcore-1.0' is not defined with uid 'a'"]
@@ -671,7 +671,7 @@ outputs:
       "content": "<p>Moniker: netcore-2.0</p>",
       "monikers": ["netcore-2.0"]
     }
-  xrefmap.json: | 
+  .xrefmap.json: | 
     {"references":[{"uid":"a","href":"https://docs.com/docs/a","name":"netcore-2.0"}]}
 ---
 # Define multiple uid without moniker range, and also uid with moniker range
@@ -743,7 +743,7 @@ outputs:
       "content": "<p>Moniker: netcore-2.0</p>",
       "monikers": ["netcore-2.0"]
     }
-  xrefmap.json: | 
+  .xrefmap.json: | 
     {"references":[]}
   build.log: |
     ["error","uid-conflict","Two or more documents have defined the same Uid 'a': docs/a.md,docs/b.md"]
