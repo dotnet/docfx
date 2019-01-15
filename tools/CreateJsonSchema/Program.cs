@@ -59,7 +59,7 @@ class Program
         yield return ((typeof(Config), "docfx"));
         yield return ((typeof(TableOfContentsInputModel), "TOC"));
 
-        foreach (var type in typeof(PageModel).Assembly.ExportedTypes)
+        foreach (var type in typeof(TestData).Assembly.ExportedTypes)
         {
             if (type.GetCustomAttribute<DataSchemaAttribute>() != null)
             {

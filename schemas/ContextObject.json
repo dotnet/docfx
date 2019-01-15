@@ -1,0 +1,37 @@
+{
+  "description": "The schema for context object",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "brand": {
+      "description": "The brand to be used for the content. Depending on the brand, this may override the UHF header. Not required. Example: azure",
+      "type": "string"
+    },
+    "breadcrumb_path": {
+      "description": "The absolute URL or relative location (relative to the context file) to use for the breadcrumb path file. Overrides the docset value. Example: ./powershell/breadcrumb.json",
+      "type": "string"
+    },
+    "chromeless": {
+      "description": "Whether or not to use chromeless rendering. Only used for Hands-On Learning tutorials.",
+      "type": "boolean"
+    },
+    "searchScope": {
+      "description": "A list of the search scopes to use with the content.",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "toc_rel": {
+      "description": "The absolute URL or relative location (relative to the context file) to use for the table of contents file. Overrides the docset value. Example: ../toc.yml",
+      "type": "string"
+    },
+    "uhfheaderId": {
+      "description": "The UHFHeaderID to use for the content. Overrides the default docset value. Example: MSDocsHeader-Dynamics365",
+      "type": "string"
+    },
+    "$schema": {
+      "type": "string"
+    }
+  }
+}

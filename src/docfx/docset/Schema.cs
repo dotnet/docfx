@@ -26,7 +26,7 @@ namespace Microsoft.Docs.Build
         }
 
         private static readonly IReadOnlyDictionary<string, Schema> s_schemas =
-            typeof(PageModel).Assembly.ExportedTypes
+            typeof(TestData).Assembly.ExportedTypes
             .Where(type => type.GetCustomAttribute<DataSchemaAttribute>() != null)
             .ToDictionary(item => item.Name, item => new Schema(item), StringComparer.OrdinalIgnoreCase);
 
