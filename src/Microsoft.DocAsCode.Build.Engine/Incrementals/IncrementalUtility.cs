@@ -11,9 +11,13 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
+    using Newtonsoft.Json;
 
     public static class IncrementalUtility
     {
+        public static readonly JsonSerializerSettings FileMetadataJsonSerializationSettings
+            = new JsonSerializerSettings { ContractResolver = new IncrementalIgnorePropertiesResolver() };
+
         private const int MaxRetry = 3;
         private static readonly Encoding UTF8 = new UTF8Encoding(false, false);
 
@@ -21,12 +25,22 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         {
             if (string.IsNullOrEmpty(fileName))
             {
-                return default(T);
+                return default;
             }
             using (var reader = new StreamReader(fileName))
             {
                 return JsonUtility.Deserialize<T>(reader);
             }
+        }
+
+        public static T LoadIntermediateFile<T>(string fileName, JsonSerializerSettings settings)
+        {
+            if (string.IsNullOrEmpty(fileName))
+            {
+                return default;
+            }
+            var json = File.ReadAllText(fileName);
+            return JsonConvert.DeserializeObject<T>(json, settings);
         }
 
         public static DependencyGraph LoadDependency(string dependencyFile)
@@ -61,12 +75,22 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         {
             if (string.IsNullOrEmpty(fileName))
             {
-                throw new ArgumentNullException("fileName");
+                throw new ArgumentNullException(nameof(fileName));
             }
             using (var writer = new StreamWriter(fileName))
             {
                 JsonUtility.Serialize(writer, content);
             }
+        }
+
+        public static void SaveIntermediateFile<T>(string fileName, T content, JsonSerializerSettings settings)
+        {
+            if (string.IsNullOrEmpty(fileName))
+            {
+                throw new ArgumentNullException(nameof(fileName));
+            }
+            var json = JsonConvert.SerializeObject(content, settings);
+            File.WriteAllText(fileName, json);
         }
 
         public static BuildMessage LoadBuildMessage(string file)

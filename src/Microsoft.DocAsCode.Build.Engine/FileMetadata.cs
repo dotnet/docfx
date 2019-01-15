@@ -11,7 +11,6 @@ namespace Microsoft.DocAsCode.Build.Engine
 
     using Newtonsoft.Json;
 
-    [JsonConverter(typeof(FileMetadataConverter))]
     public sealed class FileMetadata : Dictionary<string, ImmutableArray<FileMetadataItem>>
     {
         public string BaseDir { get; }
