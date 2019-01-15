@@ -274,10 +274,11 @@ inputs:
     Link to [B1](~/b.md)
     Link to [B2](~/docs/b.md)
     Link to [B3](~docs/b.md)
+    Link to [B4](~//docs/b.md)
   docs/b.md:
 outputs:
   docs/a.json: |
-    { "content": "<p>Link to <a href=\"%7E/b.md\">B1</a>Link to <a href=\"b\">B2</a>Link to <a href=\"%7Edocs/b.md\">B3</a></p>" }
+    { "content": "<p>Link to <a href=\"%7E/b.md\">B1</a>Link to <a href=\"b\">B2</a>Link to <a href=\"%7Edocs/b.md\">B3</a>Link to <a href=\"b\">B4</a></p>" }
   docs/b.json:
   build.log: |
     ["warning","file-not-found","Cannot find file '~/b.md' relative to 'docs/a.md'","docs/a.md"]

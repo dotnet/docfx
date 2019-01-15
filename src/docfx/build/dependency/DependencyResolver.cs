@@ -2,11 +2,11 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Web;
 
 namespace Microsoft.Docs.Build
@@ -239,7 +239,7 @@ namespace Microsoft.Docs.Build
 
         private string ResolveToDocsetRelativePath(string path, Document relativeTo)
         {
-            path = PathUtility.NormalizeFile(path);
+            path = Regex.Replace(path, @"/+", "/");
             var docsetRelativePath = PathUtility.NormalizeFile(Path.Combine(Path.GetDirectoryName(relativeTo.FilePath), path));
             if (!File.Exists(Path.Combine(relativeTo.Docset.DocsetPath, docsetRelativePath)))
             {
