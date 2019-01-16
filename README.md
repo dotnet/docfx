@@ -52,7 +52,7 @@ docfx gc [<options>]
 
 ## Contributing
 
-If you are interested in proposing ideas and fixing issues, see [How to Contribute](CONTRIBUTING.md).
+If you are interested in proposing ideas and fixing issues, see [How to Contribute](.github/CONTRIBUTING.md).
 
 This project has adopted the code of conduct defined by the [Contributor Covenant](http://contributor-covenant.org/) to clarify expected behavior in our community.
 For more information see the [.NET Foundation Code of Conduct](http://www.dotnetfoundation.org/code-of-conduct).

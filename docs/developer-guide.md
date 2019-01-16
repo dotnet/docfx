@@ -75,19 +75,21 @@ Whenever JSON is supported as an input format, YAML is supported as well. The sa
 
 When YAML is used, we only support a subset of YAML that is JSON compatible, features like multiple documents, non-scalar keys, anchors and references are not supported.
 
-Flattened structure is prefered over nested structure, because YAML is indention based, nested structure creates a very bad YAML authoring experience.
+The following guidelines applies to both input models and output models:
 
-The default JSON naming convention is *snake_case* for property names and enum values:
+- Flattened structure is prefered over nested structure, because YAML is indention based, nested structure creates a very bad YAML authoring experience.
+
+- The default JSON naming convention is *snake_case* for property names and enum values:
 
 ```json
 {
-    "a_property_name": "a_property_value"
+    "a_property_name": "an_enum_value"
 }
 ```
 
-`null`s are ignored using `[NullValueHandling.Ignore]` to void [the billion-dollar mistake](https://en.wikipedia.org/wiki/Tony_Hoare). We will be using [strict null checking](https://blogs.msdn.microsoft.com/dotnet/2017/11/15/nullable-reference-types-in-csharp/) when C# 8 arrives.
+- `null`s are ignored using `[NullValueHandling.Ignore]` to void [the billion-dollar mistake](https://en.wikipedia.org/wiki/Tony_Hoare). We will be using [strict null checking](https://blogs.msdn.microsoft.com/dotnet/2017/11/15/nullable-reference-types-in-csharp/) when C# 8 arrives.
 
-When creating a data contract in C#:
+> Note that `null`s for unknown properties marked as `[JsonExtensionData]` are still preserved.
 
 - Make data contract [POCO (plain Old C# Object)](https://stackoverflow.com/questions/250001/poco-definition):
     - With only simple serializable properties
@@ -100,7 +102,7 @@ When creating a data contract in C#:
 
 - Avoid `[JsonIgnore]`: use of `[JsonIgnore]` typically means that you are mixing logic with data. You can use tuples to pass `JsonIgnored` parameters.
 
-- Avoid inheritance: type information does not exists in wire format, use enums instead.
+- Avoid polymorphism : type information does not exists in wire format, use enums instead.
 
 ### Naming Conventions
 
