@@ -36,6 +36,31 @@ outputs:
       ]
     }
 ---
+# Redirections outputs redirect_url to .publish.json, but does not have output file
+inputs:
+  docfx.yml: |
+    redirections:
+      a.md: b
+outputs:
+  .publish.json: |
+    {
+      "publish": [
+        { "url": "/a", "redirect_url": "b", "!path": null }
+      ]
+    }
+---
+# Manifest for articles contains custom metadata
+inputs:
+  docfx.yml:
+  a.md: |
+    ---
+    ms.my: 1
+    ---
+outputs:
+  a.json:
+  .publish.json: |
+    { "publish": [{ "url": "/a", "ms.my": 1 }] }
+---
 # Manifest contains Toc dependencies
 inputs:
   docfx.yml:

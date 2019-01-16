@@ -30,8 +30,6 @@ inputs:
 outputs:
   docs/a.json: |
     {"content":"<p><a href=\"relative/path\">redirect</a></p>"}
-  docs/redirect.json:
-  docs/redirect1.json:
 ---
 # Dependency resolve is case insensitive on windows and mac
 os: windows, osx

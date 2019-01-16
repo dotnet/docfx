@@ -12,7 +12,7 @@ namespace Microsoft.Docs.Build
         private readonly ConcurrentDictionary<string, ConcurrentBag<Document>> _outputPathConflicts = new ConcurrentDictionary<string, ConcurrentBag<Document>>(PathUtility.PathComparer);
         private readonly ConcurrentDictionary<string, ConcurrentDictionary<Document, List<string>>> _filesBySiteUrl = new ConcurrentDictionary<string, ConcurrentDictionary<Document, List<string>>>(PathUtility.PathComparer);
         private readonly ConcurrentDictionary<string, Document> _filesByOutputPath = new ConcurrentDictionary<string, Document>(PathUtility.PathComparer);
-        private readonly ConcurrentDictionary<Document, PublishItem> _manifest = new ConcurrentDictionary<Document, PublishItem>();
+        private readonly ConcurrentDictionary<Document, PublishItem> _publishItems = new ConcurrentDictionary<Document, PublishItem>();
         private readonly ConcurrentBag<Document> _filesWithErrors = new ConcurrentBag<Document>();
 
         public void MarkError(Document file)
@@ -22,19 +22,20 @@ namespace Microsoft.Docs.Build
 
         public bool TryAdd(Document file, PublishItem item)
         {
-            _manifest[file] = item;
+            _publishItems[file] = item;
 
             // TODO: see comments in Document.OutputPath.
-            file.OutputPath = item.Path;
-
-            // Find output path conflicts
-            if (!_filesByOutputPath.TryAdd(item.Path, file))
+            if (item.Path != null)
             {
-                if (_filesByOutputPath.TryGetValue(item.Path, out var existingFile) && existingFile != file)
+                // Find output path conflicts
+                if (!_filesByOutputPath.TryAdd(item.Path, file))
                 {
-                    _outputPathConflicts.GetOrAdd(item.Path, _ => new ConcurrentBag<Document>()).Add(file);
+                    if (_filesByOutputPath.TryGetValue(item.Path, out var existingFile) && existingFile != file)
+                    {
+                        _outputPathConflicts.GetOrAdd(item.Path, _ => new ConcurrentBag<Document>()).Add(file);
+                    }
+                    return false;
                 }
-                return false;
             }
 
             var monikers = item.Monikers;
@@ -59,15 +60,16 @@ namespace Microsoft.Docs.Build
                     .GroupBy(moniker => moniker)
                     .Where(group => group.Count() > 1)
                     .Select(group => group.Key);
+
                 if (conflictMoniker.Count() > 0)
                 {
                     context.Report.Write(Errors.PublishUrlConflict(siteUrl, files.Keys, conflictMoniker));
 
                     foreach (var conflictingFile in files.Keys)
                     {
-                        if (_manifest.TryRemove(conflictingFile, out var manifest))
+                        if (_publishItems.TryRemove(conflictingFile, out var item) && item.Path != null)
                         {
-                            context.Output.Delete(manifest.Path);
+                            context.Output.Delete(item.Path);
                         }
                     }
                 }
@@ -92,9 +94,9 @@ namespace Microsoft.Docs.Build
 
                 foreach (var conflictingFile in conflictingFiles)
                 {
-                    if (_manifest.TryRemove(conflictingFile, out var manifest))
+                    if (_publishItems.TryRemove(conflictingFile, out var item) && item.Path != null)
                     {
-                        context.Output.Delete(manifest.Path);
+                        context.Output.Delete(item.Path);
                     }
                 }
             }
@@ -104,19 +106,24 @@ namespace Microsoft.Docs.Build
             {
                 if (_filesBySiteUrl.TryRemove(file.SiteUrl, out _))
                 {
-                    if (_manifest.TryRemove(file, out var manifest))
+                    if (_publishItems.TryRemove(file, out var item) && item.Path != null)
                     {
-                        context.Output.Delete(manifest.Path);
+                        context.Output.Delete(item.Path);
                     }
                 }
             }
 
             var model = new PublishModel
             {
-                Publish = _manifest.Values.OrderBy(item => item.Path).ThenBy(item => item.Url).ToArray(),
+                Publish = _publishItems.Values
+                    .OrderBy(item => item.Locale)
+                    .ThenBy(item => item.Path)
+                    .ThenBy(item => item.Url)
+                    .ThenBy(item => item.RedirectUrl)
+                    .ToArray(),
             };
 
-            var fileManifests = _manifest.ToDictionary(item => item.Key, item => item.Value);
+            var fileManifests = _publishItems.ToDictionary(item => item.Key, item => item.Value);
 
             return (model, fileManifests);
         }

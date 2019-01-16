@@ -10,7 +10,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class BuildTableOfContents
     {
-        public static (IEnumerable<Error>, TableOfContentsModel, List<string> monikers) Build(
+        public static (IEnumerable<Error>, TableOfContentsModel, PublishItem publishItem) Build(
             Context context,
             Document file,
             MonikerMap monikerMap)
@@ -26,7 +26,15 @@ namespace Microsoft.Docs.Build
                 Metadata = tocMetadata,
             };
 
-            return (errors, model, tocMetadata.Monikers);
+            var publishItem = new PublishItem
+            {
+                Url = file.SiteUrl,
+                Path = file.GetOutputPath(tocMetadata.Monikers),
+                Locale = file.Docset.Locale,
+                Monikers = tocMetadata.Monikers,
+            };
+
+            return (errors, model, publishItem);
         }
 
         public static TableOfContentsMap BuildTocMap(Context context, Docset docset)
