@@ -44,9 +44,7 @@ inputs:
 outputs:
   .publish.json: |
     {
-      "publish": [
-        { "url": "/a", "redirect_url": "b", "!path": null }
-      ]
+      "publish": [{ "url": "/a", "redirect_url": "b", "!path": null }]
     }
 ---
 # Manifest for articles contains custom metadata
@@ -59,7 +57,9 @@ inputs:
 outputs:
   a.json:
   .publish.json: |
-    { "publish": [{ "url": "/a", "ms.my": 1 }] }
+    {
+      "publish": [{ "url": "/a", "ms.my": 1 }]
+    }
 ---
 # Manifest contains Toc dependencies
 inputs:
