@@ -45,8 +45,7 @@ namespace Microsoft.Docs.Build
                             localeToRestore,
                             config,
                             async subDocset => await RestoreDocset(subDocset, root: false),
-                            rootRepository,
-                            dependencyLock);
+                            rootRepository);
                     }
                 }
             }

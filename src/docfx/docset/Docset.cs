@@ -90,7 +90,7 @@ namespace Microsoft.Docs.Build
 
         private readonly CommandLineOptions _options;
         private readonly Report _report;
-        private readonly Dictionary<string, Repository> _repositories;
+        private readonly ConcurrentDictionary<string, Repository> _repositories;
         private readonly Lazy<HashSet<Document>> _buildScope;
         private readonly Lazy<HashSet<Document>> _scanScope;
         private readonly Lazy<RedirectionMap> _redirections;
@@ -153,19 +153,30 @@ namespace Microsoft.Docs.Build
                 return new LegacyTemplate(RestoreMap.GetGitRestorePath($"{themeRemote}#{themeBranch}"), Locale);
             });
 
-            _repositories = LoadRepositories();
+            _repositories = new ConcurrentDictionary<string, Repository>();
         }
 
         public Repository GetRepository(string filePath)
         {
-            var documentFolder = PathUtility.NormalizeFolder(Path.GetDirectoryName(Path.Combine(DocsetPath, filePath)));
+            return GetRepositoryInternal(Path.Combine(DocsetPath, filePath));
 
-            if (_repositories.TryGetValue(documentFolder, out var repository))
+            Repository GetRepositoryInternal(string fullPath)
             {
-                return repository;
-            }
+                if (GitUtility.IsRepo(fullPath))
+                {
+                    if (string.Equals(fullPath, DocsetPath.Substring(0, DocsetPath.Length - 1), PathUtility.PathComparison))
+                    {
+                        return Repository;
+                    }
 
-            return null;
+                    return Repository.Create(fullPath, branch: null);
+                }
+
+                var parent = Path.GetDirectoryName(fullPath);
+                return !string.IsNullOrEmpty(parent)
+                    ? _repositories.GetOrAdd(PathUtility.NormalizeFile(parent), GetRepositoryInternal)
+                    : null;
+            }
         }
 
         private static IReadOnlyDictionary<string, string> NormalizeRoutes(Dictionary<string, string> routes)
@@ -219,36 +230,6 @@ namespace Microsoft.Docs.Build
                 result.TryAdd(PathUtility.NormalizeFolder(name), new Docset(_report, dir, Locale, subConfig, _options, isDependency: true));
             }
             return (errors, result);
-        }
-
-        private Dictionary<string, Repository> LoadRepositories()
-        {
-            var repositoryByFolder = new ConcurrentDictionary<string, Repository>();
-
-            ParallelUtility.ForEach(
-                    Directory.EnumerateFiles(DocsetPath, "*.*", SearchOption.AllDirectories),
-                    file => GetRepository(file));
-
-            Repository GetRepository(string fullPath)
-            {
-                fullPath = PathUtility.NormalizeFolder(fullPath);
-                if (GitUtility.IsRepo(fullPath))
-                {
-                    if (string.Equals(fullPath, DocsetPath, PathUtility.PathComparison))
-                    {
-                        return Repository;
-                    }
-
-                    return Repository.Create(fullPath, branch: null);
-                }
-
-                var parent = PathUtility.NormalizeFolder(Path.GetDirectoryName(fullPath));
-                return !string.IsNullOrEmpty(parent)
-                    ? repositoryByFolder.GetOrAdd(parent, GetRepository)
-                    : null;
-            }
-
-            return repositoryByFolder.ToDictionary(k => k.Key, v => v.Value);
         }
 
         private HashSet<Document> CreateBuildScope(IEnumerable<Document> redirections)

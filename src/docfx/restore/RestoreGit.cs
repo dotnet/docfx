@@ -116,7 +116,13 @@ namespace Microsoft.Docs.Build
                         {
                             return;
                         }
+
                         var headCommit = GitUtility.RevParse(repoPath, branch);
+                        if (string.IsNullOrEmpty(headCommit))
+                        {
+                            throw Errors.GitCloneFailed(remote, branches, $"'{branch}' can't be found").ToException();
+                        }
+
                         var workTreeHead = $"{HrefUtility.EscapeUrlSegment(branch)}-{branch.GetMd5HashShort()}-{headCommit}";
                         var workTreePath = Path.GetFullPath(Path.Combine(repoPath, "../", workTreeHead)).Replace('\\', '/');
 
