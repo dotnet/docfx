@@ -24,9 +24,11 @@ namespace Microsoft.Docs.Build
         {
             _publishItems[file] = item;
 
-            // TODO: see comments in Document.OutputPath.
             if (item.Path != null)
             {
+                // TODO: see comments in Document.OutputPath.
+                file.OutputPath = item.Path;
+
                 // Find output path conflicts
                 if (!_filesByOutputPath.TryAdd(item.Path, file))
                 {
