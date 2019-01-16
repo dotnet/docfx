@@ -13,11 +13,12 @@ namespace Microsoft.Docs.Build
         private readonly JavascriptEngine _js = new JavascriptEngine("data/javascript");
 
         [Theory]
-        [InlineData("{'a':'hello','tags':[1,2],'page':{'value':3}}", "{'a':'hello','tags':[1,2],'page':{'value':3}}")]
+        [InlineData("{'scalar':'hello','tags':[1,2],'page':{'value':3}}", "{'scalar':'hello','tags':[1,2],'page':{'value':3}}")]
+        [InlineData("{'a':true}", "['a','b']")]
         public void RunJavascript(string input, string output)
         {
             var inputJson = JObject.Parse(input.Replace('\'', '"'));
-            var outputJson = _js.Run("index.js", inputJson);
+            var outputJson = _js.Run("index.js", "main", inputJson);
             Assert.Equal(output.Replace('\'', '"'), outputJson.ToString(Formatting.None));
         }
 
@@ -26,7 +27,7 @@ namespace Microsoft.Docs.Build
         public void RunJavascriptError(string input, string errors)
         {
             var inputJson = JObject.Parse(input.Replace('\'', '"'));
-            var exception = Assert.ThrowsAny<Exception>(() => _js.Run("index.js", inputJson));
+            var exception = Assert.ThrowsAny<Exception>(() => _js.Run("index.js", "main", inputJson));
 
             foreach (var error in errors.Split('|'))
             {

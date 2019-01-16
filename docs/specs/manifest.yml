@@ -11,13 +11,13 @@ outputs:
   docs/toc.json:
   docs/folder/b~$.json:
   docs/index.json:
-  build.manifest: |
+  .publish.json: |
     {
-      "files": [
-        { "siteUrl": "/docs/a", "outputPath": "docs/a.json" },
-        { "siteUrl": "/docs/folder/b~$", "outputPath": "docs/folder/b~$.json" },
-        { "siteUrl": "/docs/", "outputPath": "docs/index.json" },
-        { "siteUrl": "/docs/toc.json", "outputPath": "docs/toc.json" }
+      "publish": [
+        { "url": "/docs/a", "path": "docs/a.json" },
+        { "url": "/docs/folder/b~$", "path": "docs/folder/b~$.json" },
+        { "url": "/docs/", "path": "docs/index.json" },
+        { "url": "/docs/toc.json", "path": "docs/toc.json" }
       ]
     }
 ---
@@ -29,10 +29,10 @@ inputs:
       copyResources: false
   a.png:
 outputs:
-  build.manifest: |
+  .publish.json: |
     {
-      "files": [
-        { "siteUrl": "/a.png", "sourcePath": "a.png", "outputPath": "../a.png" }
+      "publish": [
+        { "url": "/a.png", "path": "../a.png" }
       ]
     }
 ---
@@ -45,7 +45,7 @@ inputs:
 outputs:
   docs/a.json:
   docs/toc.json:
-  build.manifest: |
+  .dependencymap.json: |
     {  
        "dependencies":{  
           "docs/TOC.md":[  
@@ -65,7 +65,7 @@ inputs:
 outputs:
   docs/a.json:
   docs/b.json:
-  build.manifest: |
+  .dependencymap.json: |
     {  
        "dependencies":{  
           "docs/a.md":[  
@@ -85,7 +85,7 @@ inputs:
 outputs:
   docs/a.json:
   docs/b.json:
-  build.manifest: |
+  .dependencymap.json: |
     {  
        "dependencies":{  
           "docs/a.md":[  
@@ -109,7 +109,7 @@ outputs:
   docs/a.json:
   docs/b.json:
   docs/c.json:
-  build.manifest: |
+  .dependencymap.json: |
     {  
        "dependencies":{  
           "docs/a.md":[  
@@ -142,7 +142,7 @@ inputs:
 outputs:
   docs/toc.json:
   docs/a/b.json:
-  build.manifest: |
+  .dependencymap.json: |
     {  
        "dependencies":{
           "docs/TOC.md":[
@@ -170,7 +170,7 @@ inputs:
 outputs:
   docs/a.json:
   docs/b.json:
-  build.manifest: |
+  .dependencymap.json: |
     {  
        "dependencies":{  
           "docs/a.md":[  
@@ -202,7 +202,7 @@ inputs:
 outputs:
   docs/a.json:
   docs/b.json:
-  build.manifest: |
+  .dependencymap.json: |
     {  
        "dependencies":{  
           "docs/a.md":[  
@@ -230,7 +230,7 @@ inputs:
 outputs:
   docs/a.json:
   docs/b.json:
-  build.manifest: |
+  .dependencymap.json: |
     {  
        "dependencies":{  
           "docs/a.md":[  
@@ -250,7 +250,7 @@ inputs:
   docs/a.md: |
     a []()
 outputs:
-  build.manifest: |
-    { files: [] }
+  .publish.json: |
+    { publish: [] }
   build.log: |
     ["error","link-is-empty","Link is empty","docs/a.md"]

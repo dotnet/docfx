@@ -90,7 +90,7 @@ outputs:
         }
       ]
     }
-  build.manifest: |
+  .dependencymap.json: |
     {
       "dependencies": {
           "docs/c.md": [
@@ -125,7 +125,7 @@ outputs:
   docs/a.json:
   xrefmap.json: | 
     {"references":[{"uid":"a","href":"https://docs.com/docs/a.json"}]}
-  build.manifest: |
+  .dependencymap.json: |
     {
       "dependencies": {
           "docs/c.md": [
@@ -185,7 +185,7 @@ outputs:
     }
   xrefmap.json: | 
     {"references":[{"uid":"a","href":"https://docs.com/docs/a.json"}]}
-  build.manifest: |
+  .dependencymap.json: |
     {
       "dependencies": {
           "docs/b.json": [
