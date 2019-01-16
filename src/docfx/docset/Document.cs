@@ -105,9 +105,10 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Gets the repository
         /// </summary>
-        public Repository Repository { get; }
+        public Repository Repository => _repository.Value;
 
         private readonly Lazy<(string docId, string versionIndependentId)> _id;
+        private readonly Lazy<Repository> _repository;
 
         // TODO:
         // This is a temporary property just so that legacy can access OutputPath,
@@ -129,7 +130,6 @@ namespace Microsoft.Docs.Build
             string mime,
             Schema schema,
             bool isExperimental,
-            Repository repository,
             string redirectionUrl = null,
             bool isFromHistory = false)
         {
@@ -148,9 +148,9 @@ namespace Microsoft.Docs.Build
             IsExperimental = isExperimental;
             RedirectionUrl = redirectionUrl;
             IsFromHistory = isFromHistory;
-            Repository = repository;
 
             _id = new Lazy<(string docId, string versionId)>(() => LoadDocumentId());
+            _repository = new Lazy<Repository>(() => Docset.GetRepository(FilePath));
 
             Debug.Assert(IsValidRelativePath(FilePath));
             Debug.Assert(IsValidRelativePath(SitePath));
@@ -249,14 +249,13 @@ namespace Microsoft.Docs.Build
             var contentType = redirectionUrl != null ? ContentType.Redirection : type;
             var canonicalUrl = GetCanonicalUrl(siteUrl, sitePath, docset, isExperimental, contentType, schema);
             var canonicalUrlWithoutLocale = GetCanonicalUrl(siteUrl, sitePath, docset, isExperimental, contentType, schema, false);
-            var repository = docset.GetRepository(filePath);
 
             if (contentType == ContentType.Redirection && type != ContentType.Page)
             {
                 return (Errors.InvalidRedirection(filePath, type), null);
             }
 
-            return (null, new Document(docset, filePath, sitePath, siteUrl, canonicalUrlWithoutLocale, canonicalUrl, contentType, mime, schema, isExperimental, repository, redirectionUrl, isFromHistory));
+            return (null, new Document(docset, filePath, sitePath, siteUrl, canonicalUrlWithoutLocale, canonicalUrl, contentType, mime, schema, isExperimental, redirectionUrl, isFromHistory));
         }
 
         /// <summary>
