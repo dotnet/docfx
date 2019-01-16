@@ -22,6 +22,14 @@ namespace Microsoft.Docs.Build
                 Monikers = monikers,
             };
 
+            if (file.Docset.Legacy)
+            {
+                publishItem.Path = file.GetOutputPath(monikers);
+
+                var model = new { locale = file.Docset.Locale, monikers, redirect_url = file.RedirectionUrl };
+                context.Output.WriteJson(model, publishItem.Path);
+            }
+
             return (errors, publishItem);
         }
     }
