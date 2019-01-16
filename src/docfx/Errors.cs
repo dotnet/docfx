@@ -10,7 +10,7 @@ namespace Microsoft.Docs.Build
     internal static class Errors
     {
         /// <summary>
-        /// Defined same redirection entry in both config's redirections and redirectionsWithoutId.
+        /// Defined same redirection entry in both <see cref="Config.Redirections"/> and <see cref="Config.RedirectionsWithoutId"/>.
         /// </summary>
         public static Error RedirectionConflict(string redirectFrom)
             => new Error(ErrorLevel.Error, "redirection-conflict", $"The '{redirectFrom}' appears twice or more in the redirection mappings");
@@ -46,6 +46,7 @@ namespace Microsoft.Docs.Build
         ///   - a.md includes b.md and reversely
         ///   - toc1 references toc2 and reversely
         ///   - toc references itself
+        ///   - a.md references b.json's property with xref syntax, and b.json includes a.md reversely
         /// </summary>
         public static Error CircularReference<T>(IEnumerable<T> dependencyChain)
             => new Error(ErrorLevel.Error, "circular-reference", $"Found circular reference: {string.Join(" --> ", dependencyChain.Select(file => $"'{file}'"))}");
@@ -77,14 +78,14 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Warning, "github-api-failed", $"Failed calling GitHub API '{api}': {ex.Message}");
 
         /// <summary>
-        /// In yaml-format toc, topicHref should reference an article,
+        /// In yaml-format toc, topicHref SHOULD reference an article,
         /// rather than relative path or another toc file.
         /// </summary>
         public static Error InvalidTopicHref(Document relativeTo, string topicHref)
             => new Error(ErrorLevel.Error, "invalid-topic-href", $"The topic href '{topicHref}' can only reference to a local file or absolute path", relativeTo.ToString());
 
         /// <summary>
-        /// In markdown-format toc, link(treated as inclusion) can only be toc file, folder or absolute path.
+        /// In markdown-format toc, link(treated as inclusion) CAN ONLY be toc file, folder or absolute path.
         /// </summary>
         public static Error InvalidTocHref(Document relativeTo, string tocHref)
             => new Error(ErrorLevel.Error, "invalid-toc-href", $"The toc href '{tocHref}' can only reference to a local TOC file, folder or absolute path", relativeTo.ToString());
@@ -130,7 +131,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Failed to update user profile cache file.
         /// Examples:
-        ///   - when config.github.UpdateRemoteUserCache is turned on, and docfx fails to
+        ///   - when <see cref="GitHubConfig.UpdateRemoteUserCache"/> is turned on, and docfx fails to
         ///     update the file cache with put request
         /// </summary>
         public static Error UploadFailed(string url, string message)
@@ -223,13 +224,21 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Warning, "file-not-found", $"Cannot find file '{path}' relative to '{relativeTo}'", relativeTo);
 
         /// <summary>
-        /// Failed to resolve uid defined by [link](xref:uid) syntax.
+        /// Failed to resolve uid defined by [link](xref:uid) or <xref:uid> syntax.
         /// </summary>
         public static Error UidNotFound(Document file, string uid, string rawXref)
             => new Error(ErrorLevel.Warning, "uid-not-found", $"Cannot find uid '{uid}' using xref '{rawXref}'", file.ToString());
 
         /// <summary>
         /// File contains git merge conflict.
+        /// Examples:
+        ///   - <![CDATA[
+        ///     <<<<<<< HEAD
+        ///     head content
+        ///     =======
+        ///     branch content
+        ///     >>>>>>> refs/heads/branch
+        /// ]]>
         /// </summary>
         public static Error MergeConflict(string file)
             => new Error(ErrorLevel.Error, "merge-conflict", "File contains merge conflict", file);
@@ -250,7 +259,7 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
-        /// Inclusion is a redirections entry like [!INCLUDE[](redirect.md)]
+        /// Inclusion is a <see cref="Config.Redirections"/> entry like [!INCLUDE[](redirect.md)]
         /// </summary>
         public static Error IncludeRedirection(Document relativeTo, string path)
             => new Error(ErrorLevel.Warning, "include-is-redirection", $"Referenced inclusion {path} relative to '{relativeTo}' shouldn't belong to redirections", relativeTo.ToString());
@@ -258,14 +267,14 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// More than one files are resolved to the same output path.
         /// Examples:
-        ///   - in config's redirections section, defined an entry key that's also a file in build scope
-        ///   - different file extension with same filename, like `Toc.yml and `Toc.md`
+        ///   - in <see cref="Config.Redirections"/> section, defined an entry key that's also a file in build scope
+        ///   - different file extension with same filename, like `Toc.yml` and `Toc.md`
         /// </summary>
         public static Error OutputPathConflict(string path, IEnumerable<Document> files)
             => new Error(ErrorLevel.Error, "output-path-conflict", $"Two or more files output to the same path '{path}': {Join(files, file => file.ContentType == ContentType.Redirection ? $"{file} <redirection>" : file.ToString())}");
 
         /// <summary>
-        /// Multiple files defined in config's redirections are redirected to the same url,
+        /// Multiple files defined in <see cref="Config.Redirections"/> are redirected to the same url,
         /// can't decide which entry to use when computing document id.
         /// </summary>
         public static Error RedirectionDocumentIdConflict(IEnumerable<Document> redirectFromDocs, string redirectTo)
@@ -284,7 +293,7 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Error, "git-log-error", $"Error computing git log [{errorCode}] for '{repoPath}', did you used a shadow clone?");
 
         /// <summary>
-        /// Git isn't installed.
+        /// Git.exe isn't installed.
         /// </summary>
         public static Error GitNotFound()
             => new Error(ErrorLevel.Error, "git-not-found", $"Cannot find git, install git https://git-scm.com/");
@@ -325,10 +334,10 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Error, "violate-schema", $"{message}", range: range, jsonPath: path);
 
         /// <summary>
-        /// Used unknow YamlMime.
+        /// Used unknown YamlMime.
         /// Examples:
         ///   - forgot to define schema in schema document(yml)
-        ///   - defined a an unknow schema type(other than conceptual, contextObject, landingData)
+        ///   - defined a an unknown schema type(other than conceptual, contextObject, landingData)
         /// </summary>
         public static Error SchemaNotFound(string schema)
             => new Error(ErrorLevel.Error, "schema-not-found", !string.IsNullOrEmpty(schema) ? $"Unknown schema '{schema}', object model is missing." : $"Unknown schema '{schema}'");
@@ -386,7 +395,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Referenced an article using uid with invalid moniker(?view=).
         /// Examples:
-        ///   - article with uid `a` has only netcore-1.0 & netcore-1.1 version, but get referenced with @a? view = netcore - 2.0
+        ///   - article with uid `a` has only netcore-1.0 & netcore-1.1 version, but get referenced with @a?view=netcore-2.0
         /// </summary>
         public static Error InvalidUidMoniker(string moniker, string uid)
             => new Error(ErrorLevel.Warning, "invalid-uid-moniker", $"Moniker '{moniker}' is not defined with uid '{uid}'");
