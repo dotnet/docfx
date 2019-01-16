@@ -81,10 +81,12 @@ namespace Microsoft.Docs.Build
 
         private static async Task RunCore(string docsetPath, E2ESpec spec)
         {
+            bool failed = false;
             foreach (var command in spec.Commands)
             {
                 if (await Program.Run(command.Split(" ").Concat(new[] { docsetPath }).ToArray()) != 0)
                 {
+                    failed = true;
                     break;
                 }
             }
@@ -97,9 +99,9 @@ namespace Microsoft.Docs.Build
             var outputFileNames = outputs.Select(file => file.Substring(docsetOutputPath.Length + 1).Replace('\\', '/')).ToList();
 
             // Show build.log content if actual output has errors or warnings.
-            if (!spec.Outputs.Keys.Contains("build.log") && outputFileNames.Contains("build.log"))
+            if (failed && outputFileNames.Contains("build.log"))
             {
-                Assert.True(false, File.ReadAllText(Path.Combine(docsetOutputPath, "build.log")));
+                Console.WriteLine($"{Path.GetFileName(docsetPath)}: {File.ReadAllText(Path.Combine(docsetOutputPath, "build.log"))}");
             }
 
             // These files output mostly contains empty content which e2e tests are not intrested in
@@ -202,7 +204,7 @@ namespace Microsoft.Docs.Build
             Assert.StartsWith($"# {match.Groups[4].Value}", yaml);
 
             var yamlHash = HashUtility.GetMd5Hash(yaml).Substring(0, 5);
-            var name = ToSafePathString(specName) + "-" + yamlHash;
+            var name = ToSafePathString(specName).Substring(0, Math.Min(30, specName.Length)) + "-" + yamlHash;
 
             var spec = YamlUtility.Deserialize<E2ESpec>(yaml, false);
 
@@ -216,19 +218,19 @@ namespace Microsoft.Docs.Build
                 spec.Environments.Length > 0 &&
                 !spec.Environments.Any(env => string.IsNullOrEmpty(Environment.GetEnvironmentVariable(env)));
 
-            var docsetPath = Path.Combine("specs-drop", name);
-            var docsetCreatedFlag = Path.Combine("specs-flags", name);
+            var inputFolder = Path.Combine("specs-drop", name);
+            var inputFolderCreatedFlag = Path.Combine("specs-flags", name);
             if (fromLoc)
             {
                 spec = new E2ESpec(spec.OS, spec.Repo, spec.Watch, new[] { "build" }, spec.Environments, spec.SkippableOutputs, spec.Repos, spec.Inputs, spec.Outputs, spec.Http);
             }
             var mockedRepos = MockGitRepos(specPath, ordinal, name, spec);
 
-            if (!File.Exists(docsetCreatedFlag))
+            if (!File.Exists(inputFolderCreatedFlag))
             {
                 var inputRepo = spec.Repo
-                    ?? spec.Repos.Select(r => r.Key).FirstOrDefault(r => !fromLoc || LocalizationConvention.TryGetContributionBranch(HrefUtility.SplitGitHref(r).refspec, out _))
-                    ?? spec.Repos.Select(r => r.Key).FirstOrDefault(r => !fromLoc || LocalizationConvention.TryRemoveLocale(HrefUtility.SplitGitHref(r).remote.Split(new char[] { '\\', '/' }).Last(), out _, out _));
+                    ?? spec.Repos.Select(r => r.Key).FirstOrDefault(r => !fromLoc || LocalizationUtility.TryGetContributionBranch(HrefUtility.SplitGitHref(r).refspec, out _))
+                    ?? spec.Repos.Select(r => r.Key).FirstOrDefault(r => !fromLoc || LocalizationUtility.TryRemoveLocale(HrefUtility.SplitGitHref(r).remote.Split(new char[] { '\\', '/' }).Last(), out _, out _));
                 if (!string.IsNullOrEmpty(inputRepo))
                 {
                     try
@@ -236,8 +238,8 @@ namespace Microsoft.Docs.Build
                         t_mockedRepos.Value = mockedRepos;
 
                         var (remote, refspec) = HrefUtility.SplitGitHref(inputRepo);
-                        await GitUtility.CloneOrUpdate(docsetPath, remote, refspec);
-                        Process.Start(new ProcessStartInfo("git", "submodule update --init") { WorkingDirectory = docsetPath }).WaitForExit();
+                        await GitUtility.CloneOrUpdate(inputFolder, remote, refspec);
+                        Process.Start(new ProcessStartInfo("git", "submodule update --init") { WorkingDirectory = inputFolder }).WaitForExit();
                     }
                     finally
                     {
@@ -248,7 +250,7 @@ namespace Microsoft.Docs.Build
                 foreach (var (file, content) in spec.Inputs)
                 {
                     var mutableContent = content;
-                    var filePath = Path.Combine(docsetPath, file);
+                    var filePath = Path.Combine(inputFolder, file);
                     PathUtility.CreateDirectoryFromFilePath(filePath);
                     if (replaceEnvironments && Path.GetFileNameWithoutExtension(file) == "docfx")
                     {
@@ -260,16 +262,17 @@ namespace Microsoft.Docs.Build
                     File.WriteAllText(filePath, mutableContent);
                 }
 
-                PathUtility.CreateDirectoryFromFilePath(docsetCreatedFlag);
-                File.Create(docsetCreatedFlag);
+                PathUtility.CreateDirectoryFromFilePath(inputFolderCreatedFlag);
+                File.Create(inputFolderCreatedFlag);
             }
 
-            if (Directory.Exists(Path.Combine(docsetPath, "_site")))
+            var docset = Path.Combine(inputFolder, spec.Cwd ?? string.Empty);
+            if (Directory.Exists(Path.Combine(docset, "_site")))
             {
-                Directory.Delete(Path.Combine(docsetPath, "_site"), recursive: true);
+                Directory.Delete(Path.Combine(docset, "_site"), recursive: true);
             }
 
-            return (docsetPath, spec, mockedRepos);
+            return (docset, spec, mockedRepos);
         }
 
         private static string ToSafePathString(string value)

@@ -79,7 +79,7 @@ outputs:
     {
       "content": { "brand": "azure", "breadcrumb_path": "toc.json", "toc_rel": "a/toc.json" },
     }
-  build.manifest: |
+  .dependencymap.json: |
       {
          "dependencies":{
             "docs/a.yml":[
@@ -106,10 +106,10 @@ inputs:
     breadcrumb_path: {}
     toc_rel: ../TOC.yml
 outputs:
+  toc.json:
   docs/toc.json:
   build.log: |
     ["error","violate-schema","Cannot deserialize the current JSON object * into type 'System.String' because the type requires a JSON primitive value *","docs/a.yml","breadcrumb_path",3,18]
-    ["warning","link-out-of-scope","File 'TOC.yml' referenced by link '../TOC.yml' will not be built because it is not included in docfx.yml","docs/a.yml"]
 ---
 # Schema documents with Href content referencing resource file, the resouce file should be outputed
 inputs:

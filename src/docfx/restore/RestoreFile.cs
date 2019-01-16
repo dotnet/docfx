@@ -2,10 +2,10 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
-using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
@@ -15,43 +15,51 @@ namespace Microsoft.Docs.Build
     {
         public static async Task Restore(string url, Config config, bool @implict = false)
         {
-            if (RestoreMap.TryGetFileRestorePath(url, out var existingPath) && implict)
-            {
-                return;
-            }
+            var restoredPath = await RestoreUrl();
 
-            EntityTagHeaderValue existingEtag = null;
-            if (!string.IsNullOrEmpty(existingPath))
-            {
-                existingEtag = GetEtag(existingPath);
-            }
+            // update the last write date
+            File.SetLastWriteTimeUtc(restoredPath, DateTime.UtcNow);
 
-            var (tempFile, etag) = await DownloadToTempFile(url, config, existingEtag);
-            if (tempFile == null)
+            async Task<string> RestoreUrl()
             {
-                return;
-            }
-
-            var fileName = GetRestoreFileName(HashUtility.GetFileSha1Hash(tempFile), etag);
-            var filePath = PathUtility.NormalizeFile(Path.Combine(AppData.GetFileDownloadDir(url), fileName));
-            await ProcessUtility.RunInsideMutex(filePath, MoveFile);
-
-            Task MoveFile()
-            {
-                if (!File.Exists(filePath))
+                if (RestoreMap.TryGetFileRestorePath(url, out var existingPath) && implict)
                 {
-                    PathUtility.CreateDirectoryFromFilePath(filePath);
-                    File.Move(tempFile, filePath);
-                }
-                else
-                {
-                    File.Delete(tempFile);
+                    return existingPath;
                 }
 
-                // update the last write date
-                File.SetLastWriteTimeUtc(filePath, DateTime.UtcNow);
+                EntityTagHeaderValue existingEtag = null;
+                if (!string.IsNullOrEmpty(existingPath))
+                {
+                    existingEtag = GetEtag(existingPath);
+                }
 
-                return Task.CompletedTask;
+                var (tempFile, etag) = await DownloadToTempFile(url, config, existingEtag);
+                if (tempFile == null)
+                {
+                    // no change at all
+                    return existingPath;
+                }
+
+                var fileName = GetRestoreFileName(HashUtility.GetFileSha1Hash(tempFile), etag);
+                var filePath = PathUtility.NormalizeFile(Path.Combine(AppData.GetFileDownloadDir(url), fileName));
+                await ProcessUtility.RunInsideMutex(filePath, MoveFile);
+
+                return filePath;
+
+                Task MoveFile()
+                {
+                    if (!File.Exists(filePath))
+                    {
+                        PathUtility.CreateDirectoryFromFilePath(filePath);
+                        File.Move(tempFile, filePath);
+                    }
+                    else
+                    {
+                        File.Delete(tempFile);
+                    }
+
+                    return Task.CompletedTask;
+                }
             }
         }
 
@@ -82,6 +90,18 @@ namespace Microsoft.Docs.Build
 
             var parts = Path.GetFileName(restorePath).Split('+');
             return parts.Length == 2 ? new EntityTagHeaderValue(HrefUtility.UnescapeUrl(parts[1])) : null;
+        }
+
+        public static IEnumerable<string> GetFileReferences(this Config config)
+        {
+            foreach (var url in config.Xref)
+            {
+                yield return url;
+            }
+
+            yield return config.Contribution.GitCommitsTime;
+            yield return config.GitHub.UserCache;
+            yield return config.MonikerDefinition;
         }
 
         private static async Task<(string filename, EntityTagHeaderValue etag)> DownloadToTempFile(

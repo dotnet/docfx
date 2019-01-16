@@ -5,13 +5,11 @@ using System.Collections.Generic;
 
 namespace Microsoft.Docs.Build
 {
-    internal class FileManifest
+    internal class PublishItem
     {
-        public string SiteUrl { get; set; }
+        public string Url { get; set; }
 
-        public string OutputPath { get; set; }
-
-        public string SourcePath { get; set; }
+        public string Path { get; set; }
 
         public List<string> Monikers { get; set; }
     }

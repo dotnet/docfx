@@ -45,6 +45,7 @@ namespace Microsoft.Docs.Build
             var stopwatch = Stopwatch.StartNew();
             var (command, docset, options) = ParseCommandLineOptions(args);
 
+            using (Log.BeginScope(options.Verbose))
             using (var report = new Report(options.Legacy))
             {
                 try
@@ -73,6 +74,7 @@ namespace Microsoft.Docs.Build
                 }
                 catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
                 {
+                    Log.Write(dex);
                     report.Write(dex.Error, true);
                     return 1;
                 }
@@ -96,6 +98,7 @@ namespace Microsoft.Docs.Build
                 // Restore command
                 syntax.DefineCommand("restore", ref command, "Restores dependencies before build.");
                 syntax.DefineOption("locale", ref options.Locale, "The locale of the docset to build");
+                syntax.DefineOption("v|verbose", ref options.Verbose, "Enable diagnostics console output.");
                 syntax.DefineParameter("docset", ref docset, "Docset directory that contains docfx.yml/docfx.json.");
 
                 // Build command
@@ -104,6 +107,7 @@ namespace Microsoft.Docs.Build
                 syntax.DefineOption("legacy", ref options.Legacy, "Enable legacy output for backward compatibility.");
                 syntax.DefineOption("locale", ref options.Locale, "The locale of the docset to build.");
                 syntax.DefineOption("no-restore", ref options.NoRestore, "Do not restore the docset before building.");
+                syntax.DefineOption("v|verbose", ref options.Verbose, "Enable diagnostics console output.");
                 syntax.DefineParameter("docset", ref docset, "Docset directory that contains docfx.yml/docfx.json.");
 
                 // Watch command
@@ -111,10 +115,11 @@ namespace Microsoft.Docs.Build
                 syntax.DefineOption("locale", ref options.Locale, "The locale of the docset to build.");
                 syntax.DefineOption("port", ref options.Port, "The port of the launched website.");
                 syntax.DefineOption("no-restore", ref options.NoRestore, "Do not restore the docset before building.");
+                syntax.DefineOption("v|verbose", ref options.Verbose, "Enable diagnostics console output.");
                 syntax.DefineParameter("docset", ref docset, "Docset directory that contains docfx.yml/docfx.json.");
 
                 // GC command
-                syntax.DefineCommand("gc", ref command, "Grabage collect for `AppData` folder");
+                syntax.DefineCommand("gc", ref command, "Garbage collect for `AppData` folder");
                 syntax.DefineOption("retention-days", ref options.RetentionDays, "Keep the files accessed/written within <d> days");
             });
 

@@ -14,6 +14,7 @@ inputs:
   docs/n1.md:
   docs/f1/n1.md:
 outputs:
+  index.json:
   docs/index.json:
   docs/n1.json:
   docs/f1/n1.json:
@@ -49,8 +50,6 @@ outputs:
           }
       ]
     }
-  build.log: |
-    ["warning","link-out-of-scope","File 'index.md' referenced by link '../index.md' will not be built because it is not included in docfx.yml","docs/TOC.md"]
 ---
 # TOC can be a json file
 inputs:
@@ -1270,3 +1269,16 @@ outputs:
     ["error","invalid-toc-syntax","The toc syntax '# [Title X](a.md) @b' is invalid, multiple inlines in one heading block is not allowed. Refer to [ATX heading](https://spec.commonmark.org/0.28/#atx-heading) to fix it","docs/TOC.md","",5]
     ["error","invalid-toc-syntax","The toc syntax '# [Title X](xref: a) @b' is invalid, multiple inlines in one heading block is not allowed. Refer to [ATX heading](https://spec.commonmark.org/0.28/#atx-heading) to fix it","docs/TOC.md","",6]
     ["error","invalid-toc-syntax","The toc syntax '# Title1 Title2 [Title3](a.md)' is invalid, multiple inlines in one heading block is not allowed. Refer to [ATX heading](https://spec.commonmark.org/0.28/#atx-heading) to fix it","docs/TOC.md","",7]
+---
+# more than 6 leading count of `#`
+inputs:
+  docfx.yml:
+  docs/TOC.md: |
+    ################### [19 leading count](a.md)
+    #################### [20 leading count](a.md)
+  docs/a.md:
+outputs:
+  docs/toc.json: |
+    {"items":[{"toc_title":"19 leading count","href":"a","children":[{"toc_title":"20 leading count","href":"a","monikers":[]}]}]}
+  docs/a.json:
+

@@ -22,8 +22,8 @@ namespace Microsoft.Docs.Build
         public static Error ConfigNotFound(string docsetPath)
             => new Error(ErrorLevel.Error, "config-not-found", $"Cannot find 'docfx.yml/docfx.json' at '{docsetPath}'");
 
-        public static Error CircularReference<T>(T filePath, IEnumerable<T> dependencyChain)
-            => new Error(ErrorLevel.Error, "circular-reference", $"Found circular reference: {string.Join(" --> ", dependencyChain.Select(file => $"'{file}'"))} --> '{filePath}'", filePath.ToString());
+        public static Error CircularReference<T>(IEnumerable<T> dependencyChain)
+            => new Error(ErrorLevel.Error, "circular-reference", $"Found circular reference: {string.Join(" --> ", dependencyChain.Select(file => $"'{file}'"))}");
 
         public static Error NeedRestore(string dependenyRepoHref)
             => new Error(ErrorLevel.Error, "need-restore", $"Cannot find dependency '{dependenyRepoHref}', did you forget to run `docfx restore`?");
@@ -131,7 +131,7 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Error, "git-not-found", $"Cannot find git, install git https://git-scm.com/");
 
         public static Error CommittishNotFound(string repo, string committish)
-            => new Error(ErrorLevel.Error, "committish-not-found", $"Cannot find branch, tag or commit '{committish}'for repo '{repo}'.");
+            => new Error(ErrorLevel.Error, "committish-not-found", $"Cannot find branch, tag or commit '{committish}' for repo '{repo}'.");
 
         public static Error BookmarkNotFound(Document relativeTo, Document reference, string bookmark, IEnumerable<string> candidateBookmarks)
             => new Error(ErrorLevel.Warning, "bookmark-not-found", $"Cannot find bookmark '#{bookmark}' in '{reference}'{(FindBestMatch(bookmark, candidateBookmarks, out string matchedBookmark) ? $", did you mean '#{matchedBookmark}'?" : null)}", relativeTo.ToString());
@@ -151,10 +151,10 @@ namespace Microsoft.Docs.Build
         public static Error ExceedMaxErrors(int maxErrors)
             => new Error(ErrorLevel.Error, "exceed-max-errors", $"Error or warning count exceed '{maxErrors}'. Build will continue but newer logs will be ignored.");
 
-        public static Error UidConflict(string uid, IEnumerable<XrefSpec> conflicts)
+        public static Error UidConflict(string uid, IEnumerable<string> conflicts)
         {
             var hint = conflicts.Count() > 5 ? "(Only 5 duplicates displayed)" : "";
-            return new Error(ErrorLevel.Error, "uid-conflict", $"Two or more documents have defined the same Uid '{uid}': {string.Join(',', conflicts.Select(spec => spec.Href).Take(5))}{hint}");
+            return new Error(ErrorLevel.Error, "uid-conflict", $"Two or more documents have defined the same Uid '{uid}': {string.Join(',', conflicts.Take(5))}{hint}");
         }
 
         public static Error MonikerOverlapping(IEnumerable<string> overlappingmonikers)

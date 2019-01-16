@@ -697,7 +697,7 @@ outputs:
   docs/b.json: |
     {"content":"<p>link to <a href=\"a\">a</a>\nlink to <a href=\"c\">c</a></p>\n"}
   xrefmap.json: |
-    {"references":[{"uid":"a","href":"/docs/a","name":"a"},{"uid":"c","href":"/docs/c","name":"c"}]}
+    {"references":[{"uid":"a","href":"https://docs.com/docs/a","name":"a"},{"uid":"c","href":"https://docs.com/docs/c","name":"c"}]}
 ---
 # loc folder should be excluded from source docset during loc docset build
 commands:
@@ -889,7 +889,6 @@ repos:
       author: Terry
       email: terry@contoso.com
 outputs:
-  build.manifest:
   docs/a.json: |
     {"author":{"display_name":"Terry","id": "terry@contoso.com"},"contributors":[{"display_name":"Bob","id":"bob@contoso.com"}],"bilingual": true}
 ---
@@ -961,7 +960,7 @@ repos:
 outputs:
   docs/a.json: |
     {"content":"<p>b</p>\n<pre><code class=\"lang-csharp\" name=\"Main\"></code></pre>"}
-  build.manifest: |
+  .dependencymap.json: |
     {"dependencies": {"!docs/tokena.md": null}}
 ---
 # fallback to deleted toc
@@ -1058,3 +1057,146 @@ outputs:
   docs/a/b.json:
   docs/b/toc.json: |
     {"items":[{"toc_title":"reference toc a","children":[{"toc_title":"reference markdown a","href":"../a/a"}]}]}
+---
+# loc build gets restored files
+# from current docset firestly, then from fallback docset if has
+commands:
+  - build --locale zh-cn
+repos:
+  https://github.com/buildhistory/a:
+    - files:
+        docfx.yml: |
+          contribution:
+            gitCommitsTime: build_history.json
+        docs/a.md:
+        build_history.json: |
+          { "commits": [
+              { "sha": "6547e91b51bb7cd49d8fbf71f7c61d14f6a49937", "built_at": "2018-01-01" }
+            ]
+          }
+  https://github.com/buildhistory/a.zh-cn:
+    - files:
+        docs/a.md:
+outputs:
+  docs/a.json:
+---
+# build from loc folder for folder mapping is not supported
+cwd: localization/zh-cn/
+repos:
+  https://github.com/buildfromlocfolder/a:
+    - files:
+        docfx.yml: |
+          localization:
+            mapping: Folder
+        localization/zh-cn/docs/a/a.md:
+outputs:
+  build.log: |
+    ["error","config-not-found","Cannot find 'docfx.yml/docfx.json' at *"]
+---
+# loc build gets docfx config 1
+# from current docset firstly, then from fallback docset
+# [repo mapping]
+commands:
+  - build --locale zh-cn
+repos:
+  https://github.com/locconfig/a:
+    - files:
+        docfx.yml: |
+          contribution:
+            repository: https://github.com/dotnet/docfx
+        docs/a.md:
+  https://github.com/locconfig/a.zh-cn:
+    - files:
+        docs/a.md:
+        docfx.yml: |
+          contribution:
+            repository: https://github.com/dotnet/docfx.zh-cn
+outputs:
+  docs/a.json: |
+    { "content_git_url": "*dotnet/docfx.zh-cn/blob/master/*"}
+---
+# loc build gets docfx config 2
+# from current docset firstly, then from fallback docset
+# [branch mapping]
+commands:
+  - build --locale zh-cn
+repos:
+  https://github.com/locconfig/b:
+    - files:
+        docfx.yml: |
+          contribution:
+            repository: https://github.com/dotnet/docfx#live
+          localization:
+            mapping: Branch
+        docs/a.md:
+  https://github.com/locconfig/b.loc#master.zh-cn:
+    - files:
+        docs/a.md:
+        docfx.yml: |
+          contribution:
+            repository: https://github.com/dotnet/docfx.loc#live
+          localization:
+            mapping: Branch
+outputs:
+  docs/a.json: |
+    { "content_git_url": "*dotnet/docfx.loc/blob/live.zh-cn/*"}
+---
+# loc build gets docfx config 3
+# from current docset firstly, then from fallback docset
+# [repo mapping] & bilingual
+commands:
+  - build --locale zh-cn
+repos:
+  https://github.com/locconfig/c:
+    - files:
+        docfx.yml: |
+          contribution:
+            repository: https://github.com/dotnet/docfx
+          localization:
+            bilingual: true
+        docs/a.md:
+  https://github.com/locconfig/c.zh-cn#master-sxs:
+    - files:
+        docs/a.md:
+        docfx.yml: |
+          contribution:
+            repository: https://github.com/dotnet/docfx.zh-cn
+          localization:
+            bilingual: true
+  https://github.com/locconfig/c.zh-cn:
+    - files:
+        docs/a.md:
+outputs:
+  docs/a.json: |
+    { "content_git_url": "*dotnet/docfx.zh-cn/blob/master/*"}
+---
+# loc build gets docfx config 4
+# from current docset firstly, then from fallback docset
+# [branch mapping] & bilingual
+commands:
+  - build --locale zh-cn
+repos:
+  https://github.com/locconfig/d:
+    - files:
+        docfx.yml: |
+          contribution:
+            repository: https://github.com/dotnet/docfx#live
+          localization:
+            mapping: Branch
+            bilingual: true
+        docs/a.md:
+  https://github.com/locconfig/d.loc#master-sxs.zh-cn:
+    - files:
+        docs/a.md:
+        docfx.yml: |
+          contribution:
+            repository: https://github.com/dotnet/docfx.loc#live
+          localization:
+            mapping: Branch
+            bilingual: true
+  https://github.com/locconfig/d.loc#master.zh-cn:
+    - files:
+        docs/a.md:
+outputs:
+  docs/a.json: |
+    { "content_git_url": "*dotnet/docfx.loc/blob/live.zh-cn/*"}

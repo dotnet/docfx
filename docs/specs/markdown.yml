@@ -346,11 +346,16 @@ inputs:
   docs/a.experimental.md:
 outputs:
   docs/a.json: |
-    {"document_id":"fa697b4e-3e52-77f6-2219-39040f6070da","document_version_independent_id":"7c88e748-ed5e-a29a-c057-6f89857c3591"}
+    { "document_id": "fa697b4e-3e52-77f6-2219-39040f6070da", "document_version_independent_id": "7c88e748-ed5e-a29a-c057-6f89857c3591" }
   docs/a.experimental.json: |
-    {"document_id":"f481558d-b8fa-5acb-facb-d3bee58fbf3e","document_version_independent_id":"80168efe-9436-03b9-9e7c-eaf20a91d680"}
-  build.manifest: |
-    {"files":[{"siteUrl":"/docs/a.experimental","outputPath":"docs/a.experimental.json","sourcePath":"docs/a.experimental.md"},{"siteUrl":"/docs/a","outputPath":"docs/a.json","sourcePath":"docs/a.md"}],"dependencies":{}}
+    { "document_id": "f481558d-b8fa-5acb-facb-d3bee58fbf3e", "document_version_independent_id": "80168efe-9436-03b9-9e7c-eaf20a91d680" }
+  .publish.json: |
+    {
+      "publish":[
+        { "url": "/docs/a.experimental", "path": "docs/a.experimental.json" },
+        { "url": "/docs/a", "path": "docs/a.json" }
+      ]
+    }
 ---
 # `", '` should be properly escaped when written in html directly
 inputs:
@@ -368,4 +373,30 @@ outputs:
     { "content": "<p><a onclick=\"javascript:window.open('https://shell.azure.com', '_blank', 'toolbar=no,scrollbars=yes,resizable=yes,menubar=no,location=no,status=no')\"><image src='https://shell.azure.com/images/launchcloudshell.png'></image></a></p>\n" }
   docs/c.json: |
     { "content": "<p><a onclick='javascript:window.open(\"https://shell.azure.com\", \"_blank\", \"toolbar=no,scrollbars=yes,resizable=yes,menubar=no,location=no,status=no\")'><image src=\"https://shell.azure.com/images/launchcloudshell.png\"></image></a></p>\n" }
-    
+---
+# yaml header shouldn't be array
+inputs:
+  docfx.yml:
+  docs/a.md: |
+    ---
+    - arr element1
+    - arr element2
+    ---
+    # Title title
+outputs:
+  docs/a.json:
+  build.log: |
+    ["warning","yaml-header-not-object","Expect yaml header to be an object, but got an array","docs/a.md"]
+---
+# yaml header shouldn't be scalar
+inputs:
+  docfx.yml:
+  docs/a.md: |
+    ---
+    12306
+    ---
+    # Title title
+outputs:
+  docs/a.json:
+  build.log: |
+    ["warning","yaml-header-not-object","Expect yaml header to be an object, but got a scalar","docs/a.md"]

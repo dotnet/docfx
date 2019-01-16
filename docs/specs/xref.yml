@@ -80,17 +80,17 @@ outputs:
       "references":[
         {
           "uid": "a",
-          "href": "/docs/a",
+          "href": "https://docs.com/docs/a",
           "name": "Title from yaml header a"
         },
         {
           "uid": "b",
-          "href": "/docs/b",
+          "href": "https://docs.com/docs/b",
           "name": "Title from yaml header b"
         }
       ]
     }
-  build.manifest: |
+  .dependencymap.json: |
     {
       "dependencies": {
           "docs/c.md": [
@@ -124,8 +124,8 @@ outputs:
     {"content":"<p>Link to <a href=\"a.json\">test.test</a>\nLink to <a href=\"a.json\">test.test</a>\nLink to <a href=\"a.json\">test</a></p>\n"}
   docs/a.json:
   xrefmap.json: | 
-    {"references":[{"uid":"a","href":"/docs/a.json"}]}
-  build.manifest: |
+    {"references":[{"uid":"a","href":"https://docs.com/docs/a.json"}]}
+  .dependencymap.json: |
     {
       "dependencies": {
           "docs/c.md": [
@@ -156,7 +156,7 @@ outputs:
   docs/c.json: |
     {"content":"<p>Link to @a</p>\n"}
   build.log: |
-    ["error","uid-conflict","Two or more documents have defined the same Uid 'a': /docs/a.json,/docs/b.json"]
+    ["error","uid-conflict","Two or more documents have defined the same Uid 'a': docs/a.yml,docs/b.json"]
     ["info","at-uid-not-found","Cannot find uid 'a' using xref '@a'","docs/c.md"]
   xrefmap.json: | 
     {"references":[]}
@@ -184,8 +184,8 @@ outputs:
       "content": {"xref": "a.json"}
     }
   xrefmap.json: | 
-    {"references":[{"uid":"a","href":"/docs/a.json"}]}
-  build.manifest: |
+    {"references":[{"uid":"a","href":"https://docs.com/docs/a.json"}]}
+  .dependencymap.json: |
     {
       "dependencies": {
           "docs/b.json": [
@@ -241,7 +241,7 @@ outputs:
   build.log: |
     ["info","at-uid-not-found","Cannot find uid 'b' using xref '@b'","docs/b.md"]
   xrefmap.json: | 
-    {"references":[{"uid":"a","href":"/docs/a.json"}]}
+    {"references":[{"uid":"a","href":"https://docs.com/docs/a.json"}]}
 ---
 # Xref property field which supports markdown content
 inputs:
@@ -255,7 +255,7 @@ inputs:
 outputs:
   docs/a.json:
   xrefmap.json: | 
-    {"references":[{"uid":"a","href":"/docs/a.json","summary":"<pre><code>Hello `docfx`!\n</code></pre>\n"}]}
+    {"references":[{"uid":"a","href":"https://docs.com/docs/a.json","summary":"<pre><code>Hello `docfx`!\n</code></pre>\n"}]}
 ---
 # Xref property field which supports inline markdown content
 inputs:
@@ -269,7 +269,7 @@ inputs:
 outputs:
   docs/a.json:
   xrefmap.json: | 
-    {"references":[{"uid":"a","href":"/docs/a.json","inlineDescription":"Hello <code>docfx</code>!"}]}
+    {"references":[{"uid":"a","href":"https://docs.com/docs/a.json","inlineDescription":"Hello <code>docfx</code>!"}]}
 ---
 # Xref property field with dependecy
 inputs:
@@ -286,7 +286,7 @@ outputs:
   docs/a.json:
   docs/b.json:
   xrefmap.json: | 
-    {"references":[{"uid":"a","href":"/docs/a.json","inlineDescription":"Hello <code>docfx</code>!"}]}
+    {"references":[{"uid":"a","href":"https://docs.com/docs/a.json","inlineDescription":"Hello <code>docfx</code>!"}]}
 ---
 # Refer to uid with hashtag
 inputs:
@@ -390,3 +390,176 @@ outputs:
   docs/1/b.json: |
     { "content": "<p>Link to <a href=\"../c\">title</a></p>" }
   docs/c.json:
+---
+# Markdown and SDP non-cyclic xref reference
+inputs:
+  docfx.yml:
+  docs/a.md: |
+    ---
+    title: Title from yaml header a
+    uid: a
+    ---
+    Link to @b?displayProperty=summary
+  docs/b.json: | 
+    {
+      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
+      "uid": "b",
+      "name": "name for b",
+      "description": "description for b",
+      "summary": "Link to @a?displayProperty=summary",
+    }
+outputs:
+  docs/a.json:
+  docs/b.json: |
+    { "content":{"name":"name for b","description":"description for b"} }
+---
+# SDP non-cyclic xref reference should be resolved
+# whose display properties are plain text
+inputs:
+  docfx.yml:
+  docs/a.json: |
+    {
+      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
+      "uid": "a",
+      "name": "name for a",
+      "inlineDescription": "description for a",
+      "summary": "Link to @b?displayProperty=inlineDescription",
+    }
+  docs/b.json: |
+    {
+      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
+      "uid": "b",
+      "name": "name for b",
+      "inlineDescription": "description for b",
+      "summary": "Link to @a",
+    }
+outputs:
+  docs/a.json: |
+    {
+      "content": 
+      {
+        "name": "name for a",
+        "summary": "<p>Link to <a href=\"b.json\">description for b</a></p>\n",
+        "inlineDescription": "description for a",
+        "uid": "a"
+      }
+    }
+  docs/b.json: |
+    {
+      "content": 
+      {
+        "name": "name for b",
+        "summary": "<p>Link to <a href=\"a.json\">name for a</a></p>\n",
+        "inlineDescription": "description for b",
+        "uid": "b"
+      }
+    }
+---
+# SDP cyclic xref reference whose display properties referring to another uid
+# a.json -> b.json -> a.json && b.json -> a.json -> b.json
+inputs:
+  docfx.yml:
+  docs/a.json: |
+    {
+      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
+      "uid": "a",
+      "name": "name for a",
+      "inlineDescription": "description for a",
+      "summary": "Link to @b?displayProperty=summary",
+    }
+  docs/b.json: |
+    {
+      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
+      "uid": "b",
+      "name": "name for b",
+      "inlineDescription": "description for b",
+      "summary": "Link to @a?displayProperty=summary",
+    }
+  docs/c.json: |
+    {
+      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
+      "uid": "c",
+      "name": "name for c",
+      "inlineDescription": "description for c",
+      "summary": "Link to @a",
+    }
+outputs:
+  docs/c.json: |
+    {"content":{"name":"name for c","summary":"<p>Link to <a href=\"a.json\">name for a</a></p>\n","inlineDescription":"description for c","uid":"c"}}
+  build.log: |
+    ["error","circular-reference","Found circular reference: 'docs/a.json' --> 'docs/b.json' --> 'docs/a.json'","docs/a.json"]
+    ["error","circular-reference","Found circular reference: 'docs/b.json' --> 'docs/a.json' --> 'docs/b.json'","docs/b.json"]
+
+---
+# SDP cyclic xref reference whose display properties referring to another uid
+# b.json -> c.json -> b.json && b.json -> c.json -> b.json && c.json -> b.json -> c.json
+inputs:
+  docfx.yml:
+  docs/a.json: |
+    {
+      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
+      "uid": "a",
+      "name": "name for a",
+      "inlineDescription": "description for a",
+      "summary": "Link to @b?displayProperty=summary",
+    }
+  docs/b.json: |
+    {
+      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
+      "uid": "b",
+      "name": "name for b",
+      "inlineDescription": "description for b",
+      "summary": "Link to @c?displayProperty=summary",
+    }
+  docs/c.json: |
+    {
+      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
+      "uid": "c",
+      "name": "name for c",
+      "inlineDescription": "description for c",
+      "summary": "Link to @b?displayProperty=summary",
+    }
+outputs:
+  build.log: | 
+    ["error","circular-reference","Found circular reference: 'docs/c.json' --> 'docs/b.json' --> 'docs/c.json'","docs/c.json"]
+    ["error","circular-reference","Found circular reference: 'docs/b.json' --> 'docs/c.json' --> 'docs/b.json'","docs/b.json"]
+    ["error","circular-reference","Found circular reference: 'docs/a.json' --> 'docs/b.json' --> 'docs/c.json' --> 'docs/b.json'","docs/a.json"]
+
+---
+# SDP cyclic xref reference to itself
+inputs:
+  docfx.yml:
+  docs/a.json: |
+    {
+      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
+      "uid": "a",
+      "name": "name for a",
+      "inlineDescription": "description for a",
+      "summary": "Link to @a?displayProperty=summary",
+    }
+outputs:
+  build.log: |
+    ["error","circular-reference","Found circular reference: 'docs/a.json' --> 'docs/a.json'","docs/a.json"]
+---
+# SDP non-cyclic xref reference, whose property references can be resolved
+inputs:
+  docfx.yml:
+  docs/a.json: |
+    {
+      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
+      "uid": "a",
+      "name": "name for a",
+      "inlineDescription": "Link to @b?displayProperty=inlineDescription",
+      "summary": "Link to @b?displayProperty=summary",
+    }
+  docs/b.json: |
+    {
+      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
+      "uid": "b",
+      "name": "name for b",
+      "inlineDescription": "Link to @a?displayProperty=name",
+      "summary": "Link to @a?displayProperty=inlineDescription",
+    }
+outputs:
+  docs/a.json:
+  docs/b.json:

@@ -16,21 +16,7 @@ namespace Microsoft.Docs.Build
             List<string> monikers)
         {
             var legacyManifestOutput = legacyManifestItem.Output;
-            var metadata = context.MetadataProvider.GetMetadata(doc).metadata;
-            metadata = LegacyMetadata.GenerataCommonMetadata(metadata, docset);
-
-            var metadataNeedToBeRemove = new List<string> { "__global" };
-            foreach (var property in metadata)
-            {
-                if (property.Key.StartsWith("_") && !property.Key.StartsWith("_op_"))
-                {
-                    metadataNeedToBeRemove.AddIfNotNull(property.Key);
-                }
-            }
-            foreach (var key in metadataNeedToBeRemove)
-            {
-                metadata.Remove(key);
-            }
+            var metadata = new JObject { ["locale"] = docset.Locale };
             if (monikers?.Count > 0)
             {
                 metadata["monikers"] = new JArray(monikers);

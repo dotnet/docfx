@@ -13,13 +13,15 @@ namespace Microsoft.Docs.Build
 
         public readonly string Repo;
 
+        public readonly string Cwd;
+
         public readonly bool Watch;
 
         public readonly string[] Commands = new[] { "build" };
 
         public readonly string[] Environments = Array.Empty<string>();
 
-        public readonly string[] SkippableOutputs = new[] { "xrefmap.json", "build.manifest" };
+        public readonly string[] SkippableOutputs = new[] { "xrefmap.json", ".publish.json", ".dependencymap.json" };
 
         public readonly Dictionary<string, E2ECommit[]> Repos = new Dictionary<string, E2ECommit[]>();
 

@@ -48,7 +48,7 @@ namespace Microsoft.Docs.Build
         /// _site/en-us/603b739b/dotnet/api/system.string/index.json
         ///
         ///  - Normalized using <see cref="PathUtility.NormalizeFile(string)"/>
-        ///  - Docs not start with '/'
+        ///  - Does not start with '/'
         ///  - Does not end with '/'
         /// </summary>
         public string SitePath { get; }
@@ -66,6 +66,16 @@ namespace Microsoft.Docs.Build
         ///  - Does not escape with <see cref="HrefUtility.EscapeUrl(string)"/>
         /// </summary>
         public string SiteUrl { get; }
+
+        /// <summary>
+        /// Gets the canonical URL without locale
+        /// </summary>
+        public string CanonicalUrlWithoutLocale { get; }
+
+        /// <summary>
+        /// Gets the canonical URL
+        /// </summary>
+        public string CanonicalUrl { get; }
 
         /// <summary>
         /// Gets the document id and version independent id
@@ -108,6 +118,8 @@ namespace Microsoft.Docs.Build
             string filePath,
             string sitePath,
             string siteUrl,
+            string canonicalUrlWithoutLocale,
+            string canonicalUrl,
             ContentType contentType,
             string mime,
             Schema schema,
@@ -122,6 +134,8 @@ namespace Microsoft.Docs.Build
             FilePath = filePath;
             SitePath = sitePath;
             SiteUrl = siteUrl;
+            CanonicalUrlWithoutLocale = canonicalUrlWithoutLocale;
+            CanonicalUrl = canonicalUrl;
             ContentType = contentType;
             Mime = mime;
             Schema = schema;
@@ -226,13 +240,15 @@ namespace Microsoft.Docs.Build
 
             var siteUrl = PathToAbsoluteUrl(sitePath, type, schema, docset.Config.Output.Json);
             var contentType = redirectionUrl != null ? ContentType.Redirection : type;
+            var canonicalUrl = GetCanonicalUrl(siteUrl, sitePath, docset, isExperimental, contentType, schema);
+            var canonicalUrlWithoutLocale = GetCanonicalUrl(siteUrl, sitePath, docset, isExperimental, contentType, schema, false);
 
             if (contentType == ContentType.Redirection && type != ContentType.Page)
             {
                 return (Errors.InvalidRedirection(filePath, type), null);
             }
 
-            return (null, new Document(docset, filePath, sitePath, siteUrl, contentType, mime, schema, isExperimental, redirectionUrl, isFromHistory));
+            return (null, new Document(docset, filePath, sitePath, siteUrl, canonicalUrlWithoutLocale, canonicalUrl, contentType, mime, schema, isExperimental, redirectionUrl, isFromHistory));
         }
 
         /// <summary>
@@ -359,6 +375,24 @@ namespace Microsoft.Docs.Build
                     return url;
                 default:
                     return url;
+            }
+        }
+
+        private static string GetCanonicalUrl(string siteUrl, string sitePath, Docset docset, bool isExperimental, ContentType contentType, Schema schema, bool withLocale = true)
+        {
+            var config = docset.Config;
+            if (isExperimental)
+            {
+                sitePath = ReplaceLast(sitePath, ".experimental", "");
+                siteUrl = Document.PathToAbsoluteUrl(sitePath, contentType, schema, config.Output.Json);
+            }
+
+            return withLocale ? $"{config.BaseUrl}/{docset.Locale}{siteUrl}" : $"{config.BaseUrl}{siteUrl}";
+
+            string ReplaceLast(string source, string find, string replace)
+            {
+                var i = source.LastIndexOf(find);
+                return i >= 0 ? source.Remove(i, find.Length).Insert(i, replace) : source;
             }
         }
 

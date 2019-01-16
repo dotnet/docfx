@@ -124,7 +124,7 @@ namespace Microsoft.Docs.Build
             {
                 var result = commits;
                 var bilingual = document.Docset.IsLocalized() && document.Docset.Config.Localization.Bilingual;
-                var contributionBranch = bilingual && LocalizationConvention.TryGetContributionBranch(repo.Branch, out var cBranch) ? cBranch : null;
+                var contributionBranch = bilingual && LocalizationUtility.TryGetContributionBranch(repo.Branch, out var cBranch) ? cBranch : null;
                 if (!string.IsNullOrEmpty(contributionBranch))
                 {
                     (_, _, result) = await _gitCommitProvider.GetCommitHistory(document, contributionBranch);
@@ -145,7 +145,8 @@ namespace Microsoft.Docs.Build
             return File.GetLastWriteTimeUtc(Path.Combine(document.Docset.DocsetPath, document.FilePath));
         }
 
-        public async Task<(string editUrl, string contentUrl, string commitUrl)> GetGitUrls(Document document)
+        public async Task<(string contentGitUrl, string originalContentGitUrl, string originalContentGitUrlTemplate, string gitCommit)>
+            GetGitUrls(Document document)
         {
             Debug.Assert(document != null);
 
@@ -160,9 +161,12 @@ namespace Microsoft.Docs.Build
                 commit = repo.Commit;
             }
 
-            return (GetEditUrl(), GetContentUrl(), GetCommitUrl());
+            var originalContentGitUrlTemplate = GetOriginalContentGitUrlTemplate();
+            var originalContentGitUrl = originalContentGitUrlTemplate?.Replace("{repo}", repo.Remote).Replace("{branch}", repo.Branch);
 
-            string GetCommitUrl()
+            return (GetContentGitUrl(), originalContentGitUrl, originalContentGitUrlTemplate, GetGitCommit());
+
+            string GetGitCommit()
             {
                 switch (repoHost)
                 {
@@ -173,18 +177,18 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            string GetContentUrl()
+            string GetOriginalContentGitUrlTemplate()
             {
                 switch (repoHost)
                 {
                     case GitHost.GitHub:
-                        return $"{repo.Remote}/blob/{repo.Branch}/{pathToRepo}";
+                        return $"{{repo}}/blob/{{branch}}/{pathToRepo}";
                     default:
                         return null;
                 }
             }
 
-            string GetEditUrl()
+            string GetContentGitUrl()
             {
                 if (!document.Docset.Config.Contribution.ShowEdit)
                 {
@@ -197,7 +201,7 @@ namespace Microsoft.Docs.Build
                     (editRemote, editBranch) = HrefUtility.SplitGitHref(document.Docset.Config.Contribution.Repository);
                     if (document.Docset.IsLocalized())
                     {
-                        (editRemote, editBranch) = LocalizationConvention.GetLocalizedRepo(
+                        (editRemote, editBranch) = LocalizationUtility.GetLocalizedRepo(
                                                     document.Docset.Config.Localization.Mapping,
                                                     document.Docset.Config.Localization.Bilingual,
                                                     editRemote,
@@ -207,7 +211,7 @@ namespace Microsoft.Docs.Build
                     }
                 }
 
-                if (LocalizationConvention.TryGetContributionBranch(editBranch, out var contributionBranch))
+                if (LocalizationUtility.TryGetContributionBranch(editBranch, out var contributionBranch))
                 {
                     editBranch = contributionBranch;
                 }

@@ -56,11 +56,9 @@ namespace Microsoft.Docs.Build
         {
             try
             {
-                var options = PathUtility.IsCaseSensitive
-                    ? GlobOptions.Compiled
-                    : GlobOptions.Compiled | GlobOptions.CaseInsensitive;
+                var options = PathUtility.IsCaseSensitive ? GlobOptions.None : GlobOptions.CaseInsensitive;
 
-                return new Glob(pattern, options);
+                return new Glob(pattern, options | GlobOptions.MatchFullPath | GlobOptions.Compiled);
             }
             catch (Exception ex)
             {

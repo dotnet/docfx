@@ -57,19 +57,6 @@ outputs:
   docs/dir-b/b.json: |
     { "content": "<p>Link to <a href=\"../dir-a/a\">a</a></p>" }
 ---
-# Path starting with ~ resolves from docset root directory
-inputs:
-  docfx.yml:
-  docs/dir-a/a.md: Link to [b](~/docs/dir-b/b.md)
-  docs/dir-b/b.md: Link to [a](~docs/dir-a/a.md)
-outputs:
-  docs/dir-a/a.json: |
-    { "content": "<p>Link to <a href=\"../dir-b/b\">b</a></p>" }
-  docs/dir-b/b.json: |
-    { "content": "<p>Link to <a href=\"%7Edocs/dir-a/a.md\">a</a></p>" }
-  build.log: |
-    ["warning","file-not-found","Cannot find file '~docs/dir-a/a.md' relative to 'docs/dir-b/b.md'","docs/dir-b/b.md"]
----
 # Links in include files are resolved relative to the include file
 inputs:
   docfx.yml:
@@ -87,7 +74,7 @@ outputs:
 inputs:
   docfx.yml:
   docs/a.md: Link to <a href="b.md" target="_blank"><em>b</em></a>
-  docs/b.md: <div>Link to <img src="~/docs/c.png" /></div>
+  docs/b.md: <div>Link to <img src="c.png" /></div>
   docs/c.png:
 outputs:
   docs/a.json: |
@@ -109,9 +96,10 @@ outputs:
     { "content": "<p><a target=\"_blank\" href=\"c\">c</a></p>" }
   docs/dir/c.json:
 ---
-# Show warning if the link is empty, missing or points to absolute file path
+# Show warning if the link is empty, missing
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    exclude: '*'
   docs/a.md: |
     [Empty]() [Invalid](a<>b.md) [!INCLUDE[](../b.md)]
   b.md: |
@@ -223,7 +211,8 @@ outputs:
 ---
 # Show warning if link to a page outside build scope
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    exclude: '*'
   docs/a.md: 'Link to [c](../c.md)'
   docs/b.md: '[!include[](../c.md)]'
   c.md: '[](#self)'
@@ -248,7 +237,8 @@ outputs:
 ---
 # Don't show warning if include a page outside build scope
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    exclude: '*'
   docs/a.md: '[!include[a](../b.md)]'
   b.md: b
 outputs:
@@ -260,12 +250,12 @@ inputs:
   docfx.yml: |
     dependencies:
       dep: https://github.com/docascode/docfx-test-dependencies
-  docs/a.md: 'Link to [dep](~/dep/logo.svg)'
+  docs/a.md: 'Link to [dep](../dep/logo.svg)'
 outputs:
   docs/a.json: |
-    {"content":"<p>Link to <a href=\"%7E/dep/logo.svg\">dep</a></p>"}
+    {"content":"<p>Link to <a href=\"../dep/logo.svg\">dep</a></p>"}
   build.log: |
-    ["warning","link-is-dependency","File 'logo.svg' referenced by link '~/dep/logo.svg' will not be built because it is from a dependency docset","docs/a.md"]
+    ["warning","link-is-dependency","File 'logo.svg' referenced by link '../dep/logo.svg' will not be built because it is from a dependency docset","docs/a.md"]
 ---
 # Don't show warning if include a file from dependency repo
 inputs:
@@ -276,3 +266,105 @@ inputs:
 outputs:
   docs/a.json: |
     {"content":"<p>DEP</p>"}
+---
+# Link with `~` - default resolveAlias config
+inputs:
+  docfx.yml:
+  docs/a.md: |
+    Link to [B1](~/b.md)
+    Link to [B2](~/docs/b.md)
+    Link to [B3](~docs/b.md)
+  docs/b.md:
+outputs:
+  docs/a.json: |
+    { "content": "<p>Link to <a href=\"%7E/b.md\">B1</a>Link to <a href=\"b\">B2</a>Link to <a href=\"%7Edocs/b.md\">B3</a></p>" }
+  docs/b.json:
+  build.log: |
+    ["warning","file-not-found","Cannot find file '~/b.md' relative to 'docs/a.md'","docs/a.md"]
+    ["warning","file-not-found","Cannot find file '~docs/b.md' relative to 'docs/a.md'","docs/a.md"]
+---
+# Link or Image with resolve alias
+inputs:
+  docfx.yml: |
+    resolveAlias:
+      ~: docs
+      $ROOT: .
+  docs/a.md: |
+    Link to [B1](~/b.md)
+    Link to [B2]($ROOT/docs/b.md)
+    Link to [B3](~/docs/b.md)
+    ![C](~/c.png)
+  docs/b.md:
+  docs/c.png:
+outputs:
+  docs/a.json: |
+    { "content": "<p>Link to <a href=\"b\">B1</a>\nLink to <a href=\"b\">B2</a>\nLink to <a href=\"%7E/docs/b.md\">B3</a>\n<img src=\"c.png\" alt=\"C\" /></p>\n" }
+  docs/b.json:
+  docs/c.png:
+  build.log: |
+    ["warning","file-not-found","Cannot find file '~/docs/b.md' relative to 'docs/a.md'","docs/a.md"]
+---
+# Multiple matched alias, use the last one
+inputs:
+  docfx.yml: |
+    resolveAlias:
+      ~: docs
+      ~/test: docs
+  docs/a.md: |
+    Link to [B1](~/b.md)
+    Link to [B2](~/test/b.md)
+  docs/b.md:
+outputs:
+  docs/a.json: |
+    { "content": "<p>Link to <a href=\"b\">B1</a>\nLink to <a href=\"b\">B2</a></p>\n" }
+  docs/b.json:
+---
+# If the alias is conflict with the physical path, peek the physical path
+inputs:
+  docfx.yml: |
+    resolveAlias:
+      test: docs/test-test
+  docs/a.md: |
+    Link to [B](test/b.md)
+    Link to [C](test/c.md)
+  docs/test/b.md:
+  docs/test-test/b.md:
+  docs/test-test/c.md:
+outputs:
+  docs/a.json: |
+    { "content": "<p>Link to <a href=\"test/b\">B</a>\nLink to <a href=\"test-test/c\">C</a></p>\n" }
+  docs/test/b.json:
+  docs/test-test/b.json:
+  docs/test-test/c.json:
+---
+# <a> or <img> tag with resolve alias
+inputs:
+  docfx.yml: |
+    resolveAlias:
+      ~: docs
+  docs/a.md: |
+    Link to <a href="~/b.md">b</a>
+    <div>Link to <img src="~/c.png" /></div>
+  docs/b.md:
+  docs/c.png:
+outputs:
+  docs/a.json: |
+    { "content": "<p>Link to <a href=\"b\">b</a></p>\n<div>Link to <img src=\"c.png\"></div>\n" }
+  docs/b.json:
+  docs/c.png:
+---
+# Include with resolve alias
+inputs:
+  docfx.yml: |
+    exclude: '*'
+    resolveAlias:
+      ~: docs
+  docs/a.md: |
+    [!include[B1](~/b.md)]
+    [!include[B2](~/../b.md)]
+  b.md: Token
+outputs:
+  docs/a.json: |
+    { "content": "[!include[B1](~/b.md)]<p>Token</p>\n" }
+  build.log: |
+    ["warning","include-not-found","Cannot resolve '~/b.md' relative to 'docs/a.md'.","docs/a.md"]

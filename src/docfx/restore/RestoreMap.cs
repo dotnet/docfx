@@ -50,26 +50,31 @@ namespace Microsoft.Docs.Build
                 return (
                     from path in Directory.GetDirectories(repoPath, "*", SearchOption.TopDirectoryOnly)
                     let name = Path.GetFileName(path)
-                    where name.StartsWith(HrefUtility.EscapeUrlSegment(branch) + "-") &&
+                    where name.StartsWith(HrefUtility.EscapeUrlSegment(branch) + "-" + branch.GetMd5HashShort() + "-") &&
                           GitUtility.IsWorkTreeCheckoutComplete(repoPath, name)
                     orderby new DirectoryInfo(path).LastWriteTimeUtc
                     select path).FirstOrDefault();
             }
         }
 
-        public static (bool fromUrl, string path) GetFileRestorePath(this Docset docset, string url)
-        {
-            return GetFileRestorePath(docset.FallbackDocset?.DocsetPath ?? docset.DocsetPath, url);
-        }
-
-        public static (bool fromUrl, string path) GetFileRestorePath(string docsetPath, string url)
+        public static (bool fromUrl, string path) GetFileRestorePath(string docsetPath, string url, string fallbackDocset = null)
         {
             var fromUrl = HrefUtility.IsHttpHref(url);
             if (!fromUrl)
             {
                 // directly return the relative path
                 var fullPath = Path.Combine(docsetPath, url);
-                return File.Exists(fullPath) ? (fromUrl, fullPath) : throw Errors.FileNotFound(docsetPath, url).ToException();
+                if (File.Exists(fullPath))
+                {
+                    return (fromUrl, fullPath);
+                }
+
+                if (!string.IsNullOrEmpty(fallbackDocset))
+                {
+                    return GetFileRestorePath(fallbackDocset, url);
+                }
+
+                throw Errors.FileNotFound(docsetPath, url).ToException();
             }
 
             if (!TryGetFileRestorePath(url, out var result))

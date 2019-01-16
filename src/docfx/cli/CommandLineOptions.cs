@@ -10,6 +10,7 @@ namespace Microsoft.Docs.Build
         public string Output;
         public bool Legacy;
         public bool NoRestore;
+        public bool Verbose;
         public string Locale;
         public int Port;
         public int RetentionDays = 15;

@@ -14,7 +14,7 @@ namespace Microsoft.Docs.Build
         private readonly string _templateDir;
         private readonly string _locale;
         private readonly LiquidTemplate _liquid;
-        private readonly JavaScript _js;
+        private readonly JavascriptEngine _js;
 
         public JObject Global { get; }
 
@@ -25,7 +25,7 @@ namespace Microsoft.Docs.Build
             _templateDir = templateDir;
             _locale = locale.ToLowerInvariant();
             _liquid = new LiquidTemplate(templateDir);
-            _js = new JavaScript(contentTemplateDir);
+            _js = new JavascriptEngine(contentTemplateDir);
             Global = LoadGlobalTokens(templateDir, _locale);
         }
 
@@ -51,7 +51,7 @@ namespace Microsoft.Docs.Build
 
         public JObject TransformMetadata(string schemaName, JObject metadata)
         {
-            return _js.Run($"{schemaName}.mta.json.js", metadata);
+            return JObject.Parse(((JObject)_js.Run($"{schemaName}.mta.json.js", "transform", metadata)).Value<string>("content"));
         }
 
         public void CopyTo(string outputPath)

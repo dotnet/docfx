@@ -291,16 +291,17 @@ outputs:
   build.log: |
     ["error","redirection-conflict","The 'docs/a.md' appears twice or more in the redirection mappings","docfx.yml"]
 ---
-# Out scope redirection file
+# Out of scope redirection file
 inputs:
   docfx.yml: |
+    exclude: '*'
     redirections:
       docs/a.md: /absolute/path1
-      articles/b.md: /absolute/path2
+      b.md: /absolute/path2
 outputs:
   docs/a.json:
   build.log: |
-    ["warning","redirection-out-of-scope","Redirection file 'articles/b.md' will not be built because it is not included in docfx.yml"]
+    ["warning","redirection-out-of-scope","Redirection file 'b.md' will not be built because it is not included in docfx.yml"]
 ---
 # Multiple errors
 inputs:

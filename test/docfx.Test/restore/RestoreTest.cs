@@ -35,9 +35,13 @@ namespace Microsoft.Docs.Build
         {
             var docsetPath = "restore-worktrees";
             var gitUrl = "https://github.com/docascode/docfx-test-dependencies-clean";
-            Directory.CreateDirectory(docsetPath);
-            var restorePath = PathUtility.NormalizeFolder(Path.Combine(AppData.GetGitDir(gitUrl), ".git"));
 
+            Directory.CreateDirectory(docsetPath);
+
+            var restoreDir = AppData.GetGitDir(gitUrl);
+            DeleteDir(restoreDir);
+
+            var restorePath = PathUtility.NormalizeFolder(Path.Combine(restoreDir, ".git"));
             File.WriteAllText(Path.Combine(docsetPath, "docfx.yml"), $@"
 dependencies:
   dep1: {gitUrl}#test-1-clean
@@ -114,6 +118,35 @@ github:
         public static void GetEtag(string restoreFileName, string expected)
         {
             Assert.Equal(expected == null ? null : new EntityTagHeaderValue(expected), RestoreFile.GetEtag(restoreFileName));
+        }
+
+        private static void DeleteDir(string root)
+        {
+            if (!Directory.Exists(root))
+            {
+                return;
+            }
+
+            var dir = new DirectoryInfo(root);
+
+            if (dir.Exists)
+            {
+                SetAttributesNormal(dir);
+                dir.Delete(true);
+            }
+
+            void SetAttributesNormal(DirectoryInfo sub)
+            {
+                foreach (var subDir in sub.GetDirectories())
+                {
+                    SetAttributesNormal(subDir);
+                    subDir.Attributes = FileAttributes.Normal;
+                }
+                foreach (var file in sub.GetFiles())
+                {
+                    file.Attributes = FileAttributes.Normal;
+                }
+            }
         }
     }
 }
