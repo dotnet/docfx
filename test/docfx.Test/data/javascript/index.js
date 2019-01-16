@@ -1,14 +1,16 @@
 var foo = require('./foo.js')
+var a = require('./a/a.js')
 
 function fail(a) {
     a.go()
 }
 
-exports.transform = function (obj) {
+exports.main = function (obj) {
     if (obj.error) {
         fail()
     }
-    return {
-        content: JSON.stringify(foo.bar(obj))
+    if (obj.a) {
+        return a.a()
     }
+    return foo.bar(obj)
 }
