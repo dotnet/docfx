@@ -14,12 +14,12 @@ The highest priority of docfx v3 is to support <https://docs.microsoft.com>. It 
 - [ ] Publish integration with <https://docs.microsoft.com> _(in progress, targeting 6/2019)_
 - [ ] Config integration with <https://docs.microsoft.com>
 
-### Phase 2: Schema Contents
+### Phase 3: Schema Contents
 
 - [ ] Schema driven reference contents
 - [ ] Schema driven learn contents
 
-### Phase 3: Local Authoring Experience
+### Phase 4: Local Authoring Experience
 
 - [ ] Integration with <https://docs.microsoft.com> template system
 - [ ] Local watch
