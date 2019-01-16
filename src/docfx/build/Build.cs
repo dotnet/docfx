@@ -32,11 +32,13 @@ namespace Microsoft.Docs.Build
                 xrefMap = XrefMap.Create(context, docset);
 
                 var tocMap = BuildTableOfContents.BuildTocMap(context, docset);
-                var (manifest, fileManifests, sourceDependencies) = await BuildFiles(context, docset, tocMap);
+                var (publishManifest, fileManifests, sourceDependencies) = await BuildFiles(context, docset, tocMap);
 
-                context.Output.WriteJson(manifest, "build.manifest");
                 var saveGitHubUserCache = context.GitHubUserCache.SaveChanges(config);
+
                 xrefMap.OutputXrefMap(context);
+                context.Output.WriteJson(publishManifest, ".publish.json");
+                context.Output.WriteJson(sourceDependencies.ToDependencyMapModel(), ".dependencymap.json");
 
                 if (options.Legacy)
                 {
@@ -56,7 +58,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static async Task<(Manifest, Dictionary<Document, FileManifest>, DependencyMap)> BuildFiles(
+        private static async Task<(PublishModel, Dictionary<Document, PublishItem>, DependencyMap)> BuildFiles(
             Context context,
             Docset docset,
             TableOfContentsMap tocMap)
@@ -64,7 +66,6 @@ namespace Microsoft.Docs.Build
             using (Progress.Start("Building files"))
             {
                 var recurseDetector = new ConcurrentHashSet<Document>();
-                var manifestBuilder = new ManifestBuilder();
                 var monikerMap = new ConcurrentDictionary<Document, List<string>>();
 
                 await ParallelUtility.ForEach(
@@ -83,19 +84,20 @@ namespace Microsoft.Docs.Build
                 var saveGitCommitCache = context.GitCommitProvider.SaveGitCommitCache();
 
                 ValidateBookmarks();
-                var manifest = manifestBuilder.Build(context);
+
+                var (publishModel, fileManifests) = context.PublishModelBuilder.Build(context);
                 var dependencyMap = context.DependencyMapBuilder.Build();
 
                 await saveGitCommitCache;
 
-                return (CreateManifest(manifest, dependencyMap), manifest, dependencyMap);
+                return (publishModel, fileManifests, dependencyMap);
 
                 async Task<List<string>> BuildOneFile(
                     Document file,
                     Action<Document> buildChild,
                     MonikerMap fileMonikerMap)
                 {
-                    return await BuildFile(context, file, tocMap, fileMonikerMap, manifestBuilder, buildChild);
+                    return await BuildFile(context, file, tocMap, fileMonikerMap, buildChild);
                 }
 
                 bool ShouldBuildFile(Document file, ContentType[] shouldBuildContentTypes)
@@ -117,7 +119,7 @@ namespace Microsoft.Docs.Build
                     {
                         if (context.Report.Write(error))
                         {
-                            manifestBuilder.MarkError(file);
+                            context.PublishModelBuilder.MarkError(file);
                         }
                     }
                 }
@@ -129,7 +131,6 @@ namespace Microsoft.Docs.Build
             Document file,
             TableOfContentsMap tocMap,
             MonikerMap monikerMap,
-            ManifestBuilder manifestBuilder,
             Action<Document> buildChild)
         {
             try
@@ -158,34 +159,33 @@ namespace Microsoft.Docs.Build
                 var hasErrors = context.Report.Write(file.ToString(), errors);
                 if (hasErrors || model == null)
                 {
-                    manifestBuilder.MarkError(file);
+                    context.PublishModelBuilder.MarkError(file);
                     return monikers;
                 }
 
-                var manifest = new FileManifest
+                var manifest = new PublishItem
                 {
-                    SourcePath = file.FilePath,
-                    SiteUrl = file.SiteUrl,
+                    Url = file.SiteUrl,
                     Monikers = monikers,
-                    OutputPath = GetOutputPath(file, monikers),
+                    Path = GetOutputPath(file, monikers),
                 };
 
-                if (manifestBuilder.TryAdd(file, manifest, monikers))
+                if (context.PublishModelBuilder.TryAdd(file, manifest))
                 {
                     if (model is ResourceModel copy)
                     {
                         if (file.Docset.Config.Output.CopyResources)
                         {
-                            context.Output.Copy(file, manifest.OutputPath);
+                            context.Output.Copy(file, manifest.Path);
                         }
                     }
                     else if (model is string str)
                     {
-                        context.Output.WriteText(str, manifest.OutputPath);
+                        context.Output.WriteText(str, manifest.Path);
                     }
                     else
                     {
-                        context.Output.WriteJson(model, manifest.OutputPath);
+                        context.Output.WriteJson(model, manifest.Path);
                     }
                 }
                 return monikers;
@@ -193,7 +193,7 @@ namespace Microsoft.Docs.Build
             catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
             {
                 context.Report.Write(file.ToString(), dex.Error);
-                manifestBuilder.MarkError(file);
+                context.PublishModelBuilder.MarkError(file);
                 return new List<string>();
             }
         }
@@ -212,23 +212,6 @@ namespace Microsoft.Docs.Build
             return PathUtility.NormalizeFile(Path.Combine(
                 $"{HashUtility.GetMd5HashShort(monikers)}",
                 file.SitePath));
-        }
-
-        private static Manifest CreateManifest(Dictionary<Document, FileManifest> files, DependencyMap dependencies)
-        {
-            return new Manifest
-            {
-                Files = files.Values.OrderBy(item => item.SourcePath).ToArray(),
-
-                Dependencies = dependencies.ToDictionary(
-                           d => d.Key.FilePath,
-                           d => d.Value.Select(v =>
-                           new DependencyManifestItem
-                           {
-                               Source = v.Dest.FilePath,
-                               Type = v.Type,
-                           }).ToArray()),
-            };
         }
     }
 }
