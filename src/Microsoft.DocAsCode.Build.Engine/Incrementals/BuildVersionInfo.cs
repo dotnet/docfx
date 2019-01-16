@@ -152,7 +152,13 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         internal void Load(string baseDir)
         {
             ActionWhenNotNull(baseDir, DependencyFile, f => { Dependency = IncrementalUtility.LoadDependency(f); });
-            ActionWhenNotNull(baseDir, FileMetadataFile, f => { FileMetadata = IncrementalUtility.LoadIntermediateFile<FileMetadata>(f); });
+            ActionWhenNotNull(
+                baseDir,
+                FileMetadataFile,
+                f =>
+                {
+                    FileMetadata = IncrementalUtility.LoadIntermediateFile<FileMetadata>(f, IncrementalUtility.FileMetadataJsonSerializationSettings);
+                });
             ActionWhenNotNull(baseDir, AttributesFile, f => { Attributes = IncrementalUtility.LoadIntermediateFile<OSPlatformSensitiveDictionary<FileAttributeItem>>(f); });
             ActionWhenNotNull(baseDir, OutputFile, f => { BuildOutputs = IncrementalUtility.LoadIntermediateFile<BuildOutputs>(f); });
             ActionWhenNotNull(baseDir, ManifestFile, f => { Manifest = IncrementalUtility.LoadIntermediateFile<IEnumerable<ManifestItem>>(f); });
@@ -171,7 +177,10 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             IncrementalUtility.SaveDependency(Path.Combine(baseDir, DependencyFile), Dependency);
             if (FileMetadataFile != null)
             {
-                IncrementalUtility.SaveIntermediateFile(Path.Combine(baseDir, FileMetadataFile), FileMetadata);
+                IncrementalUtility.SaveIntermediateFile(
+                    Path.Combine(baseDir, FileMetadataFile),
+                    FileMetadata,
+                    IncrementalUtility.FileMetadataJsonSerializationSettings);
             }
             IncrementalUtility.SaveIntermediateFile(Path.Combine(baseDir, AttributesFile), Attributes);
             IncrementalUtility.SaveIntermediateFile(Path.Combine(baseDir, OutputFile), BuildOutputs);

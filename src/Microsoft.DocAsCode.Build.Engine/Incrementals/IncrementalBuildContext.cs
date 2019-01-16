@@ -603,13 +603,13 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         {
             using (new LoggerPhaseScope("ComputeFileMetadataHash", LogLevel.Diagnostic))
             {
-                var fileMetadataStr = string.Empty;
+                var json = string.Empty;
                 if (fileMetadata != null)
                 {
-                    fileMetadataStr = JsonUtility.Serialize(fileMetadata);
+                    json = JsonConvert.SerializeObject(fileMetadata, IncrementalUtility.FileMetadataJsonSerializationSettings);
                 }
-                Logger.LogVerbose($"FileMetadata content: {fileMetadataStr}");
-                return fileMetadataStr.GetMd5String();
+                Logger.LogVerbose($"FileMetadata content: {json}");
+                return json.GetMd5String();
             }
         }
 
