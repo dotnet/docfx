@@ -75,11 +75,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
 
             var actualResults = FileMetadataHelper.GetChangedGlobs(left, right).ToList();
             Assert.NotNull(actualResults);
-            Assert.Equal(6, actualResults.Count());
-            for (var index = 0; index < patterns.Length; index++)
-            {
-                Assert.Equal(patterns[index], actualResults[index].Raw);
-            }
+            Assert.Empty(actualResults);
         }
 
         [Fact]

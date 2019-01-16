@@ -5139,6 +5139,8 @@ tagRules : [
                     var manifestOutputPath = Path.GetFullPath(Path.Combine(outputFolderForIncremental, "manifest.json"));
                     Assert.True(File.Exists(manifestOutputPath));
                     var manifest = JsonUtility.Deserialize<Manifest>(manifestOutputPath);
+                    var toKeep = manifest.Files.First(f => f.SourceRelativePath.Contains("toKeep"));
+                    Assert.True(toKeep.IsIncremental);
                     var incrementalInfo = manifest.IncrementalInfo;
                     Assert.NotNull(incrementalInfo);
                     Assert.Equal(2, incrementalInfo.Count);
