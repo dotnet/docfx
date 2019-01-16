@@ -120,7 +120,7 @@ namespace Microsoft.Docs.Build
                         var headCommit = GitUtility.RevParse(repoPath, branch);
                         if (string.IsNullOrEmpty(headCommit))
                         {
-                            throw Errors.GitCloneFailed(remote, branches, $"'{branch}' can't be found").ToException();
+                            throw Errors.CommittishNotFound(remote, branch).ToException();
                         }
 
                         var workTreeHead = $"{HrefUtility.EscapeUrlSegment(branch)}-{branch.GetMd5HashShort()}-{headCommit}";
