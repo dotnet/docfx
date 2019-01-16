@@ -5062,23 +5062,23 @@ tagRules : [
             var fileKeepFm = CreateFile("fileMetadata/toKeep.md", new[] { "test" }, inputFolder);
             var fileReOrderFm = CreateFile("fileMetadata/toReOrder.md", new[] { "test" }, inputFolder);
 
-            var fileMetadataOriginal = new FileMetadata(inputFolder, new Dictionary<string, ImmutableArray<FileMetadataItem>>
+            var fileMetadataOriginal = new FileMetadata(Directory.GetCurrentDirectory(), new Dictionary<string, ImmutableArray<FileMetadataItem>>
             {
                 ["meta"] = ImmutableArray.Create(
-                    new FileMetadataItem(new GlobMatcher("**/toRemove.md"), "meta", "toRemove"),
-                    new FileMetadataItem(new GlobMatcher("**/toModify.md"), "meta", "toModify"),
-                    new FileMetadataItem(new GlobMatcher("**/toKeep.md"), "meta", "toKeep"),
-                    new FileMetadataItem(new GlobMatcher("**/toReOrder.md"), "meta", "toReOrder1"),
-                    new FileMetadataItem(new GlobMatcher("**/toReOrder.md"), "meta", "toReOrder2"))
+                    new FileMetadataItem(new GlobMatcher($"{inputFolder}/file*/toRemove.md"), "meta", "toRemove"),
+                    new FileMetadataItem(new GlobMatcher($"{inputFolder}/*/toModify.md"), "meta", "toModify"),
+                    new FileMetadataItem(new GlobMatcher($"{inputFolder}/fileMetadata/toKeep.md"), "meta", "toKeep"),
+                    new FileMetadataItem(new GlobMatcher($"{inputFolder}/fileMetadata/toReorder.md"), "meta", "toReorder1"),
+                    new FileMetadataItem(new GlobMatcher($"{inputFolder}/fileMetadata/toReorder.md"), "meta", "toReorder2"))
             });
-            var fileMetadataUpdated = new FileMetadata(inputFolder, new Dictionary<string, ImmutableArray<FileMetadataItem>>
+            var fileMetadataUpdated = new FileMetadata(Directory.GetCurrentDirectory(), new Dictionary<string, ImmutableArray<FileMetadataItem>>
             {
                 ["meta"] = ImmutableArray.Create(
-                    new FileMetadataItem(new GlobMatcher("**/toAdd.md"), "meta", "toAdd"),
-                    new FileMetadataItem(new GlobMatcher("**/toModify.md"), "meta", "Modified!"),
-                    new FileMetadataItem(new GlobMatcher("**/toKeep.md"), "meta", "toKeep"),
-                    new FileMetadataItem(new GlobMatcher("**/toReOrder.md"), "meta", "toReOrder2"),
-                    new FileMetadataItem(new GlobMatcher("**/toReOrder.md"), "meta", "toReOrder1"))
+                    new FileMetadataItem(new GlobMatcher($"{inputFolder}/*Metadata/toAdd.md"), "meta", "toAdd"),
+                    new FileMetadataItem(new GlobMatcher($"{inputFolder}/*/toModify.md"), "meta", "Modified!"),
+                    new FileMetadataItem(new GlobMatcher($"{inputFolder}/fileMetadata/toKeep.md"), "meta", "toKeep"),
+                    new FileMetadataItem(new GlobMatcher($"{inputFolder}/fileMetadata/toReorder.md"), "meta", "toReorder2"),
+                    new FileMetadataItem(new GlobMatcher($"{inputFolder}/fileMetadata/toReorder.md"), "meta", "toReorder1"))
             });
 
             FileCollection files = new FileCollection(Directory.GetCurrentDirectory());

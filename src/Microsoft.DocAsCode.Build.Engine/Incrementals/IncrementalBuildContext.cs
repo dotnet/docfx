@@ -373,14 +373,27 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         public void LoadFileMetadataChanges()
         {
             var changedGlobs = CurrentBuildVersionInfo.FileMetadata.GetChangedGlobs(LastBuildVersionInfo.FileMetadata).ToArray();
-            foreach (var file in LastBuildVersionInfo.Attributes.Keys)
+            foreach (var key in LastBuildVersionInfo.Attributes.Keys)
             {
-                if (changedGlobs.Any(g => g.Match(file)))
+                var path = ToPath(key);
+                if (changedGlobs.Any(g => g.Match(path)))
                 {
-                    if (_changeDict[file] == ChangeKindWithDependency.None)
+                    if (_changeDict[key] == ChangeKindWithDependency.None)
                     {
-                        _changeDict[file] = ChangeKindWithDependency.Updated;
+                        _changeDict[key] = ChangeKindWithDependency.Updated;
                     }
+                }
+            }
+
+            string ToPath(string key)
+            {
+                if (RelativePath.IsPathFromWorkingFolder(key))
+                {
+                    return key.Substring(2);
+                }
+                else
+                {
+                    return key;
                 }
             }
         }
