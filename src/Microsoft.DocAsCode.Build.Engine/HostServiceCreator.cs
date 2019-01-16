@@ -72,8 +72,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 Logger.LogDiagnostic($"Processor {processor.Name}, File {file.FullPath}: Loading...");
 
-                var path = Path.Combine(file.BaseDir, file.File);
-                metadata = ApplyFileMetadata(path, metadata, fileMetadata);
+                metadata = ApplyFileMetadata(file.FullPath, metadata, fileMetadata);
                 try
                 {
                     return (processor.Load(file, metadata), true);
@@ -118,7 +117,11 @@ namespace Microsoft.DocAsCode.Build.Engine
             ImmutableDictionary<string, object> metadata,
             FileMetadata fileMetadata)
         {
-            if (fileMetadata == null || fileMetadata.Count == 0) return metadata;
+            if (fileMetadata == null || fileMetadata.Count == 0)
+            {
+                return metadata;
+            }
+
             var result = new Dictionary<string, object>(metadata);
             var baseDir = string.IsNullOrEmpty(fileMetadata.BaseDir) ? Directory.GetCurrentDirectory() : fileMetadata.BaseDir;
             var relativePath = PathUtility.MakeRelativePath(baseDir, file);
