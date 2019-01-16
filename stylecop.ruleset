@@ -54,6 +54,8 @@
     <Rule Id="CA1032" Action="None" />
     <Rule Id="CA1033" Action="Warning" />
     <Rule Id="CA1049" Action="Warning" />
+    <!-- CA1056: URI properties should not be strings -->
+    <Rule Id="CA1056" Action="None" />
     <!-- CA1060: Move pinvokes to native methods class -->
     <Rule Id="CA1060" Action="None" />
     <Rule Id="CA1061" Action="Warning" />
@@ -118,6 +120,8 @@
     <Rule Id="CA2216" Action="Warning" />
     <Rule Id="CA2220" Action="Warning" />
     <Rule Id="CA2229" Action="Warning" />
+    <!-- CA2227: Collection properties should be read only -->
+    <Rule Id="CA2227" Action="None" />
     <Rule Id="CA2231" Action="Warning" />
     <Rule Id="CA2232" Action="Warning" />
     <Rule Id="CA2235" Action="Warning" />

@@ -151,7 +151,7 @@ namespace Microsoft.Docs.Build
             var culture = t_status.Peek().Culture;
             var markdownTokens = s_markdownTokens.GetOrAdd(culture.ToString(), _ => new Lazy<IReadOnlyDictionary<string, string>>(() =>
             {
-                var resourceManager = new ResourceManager("Microsoft.Docs.Template.resources.tokens", typeof(PageModel).Assembly);
+                var resourceManager = new ResourceManager("Microsoft.Docs.Template.resources.tokens", typeof(TestData).Assembly);
                 using (var resourceSet = resourceManager.GetResourceSet(culture, true, true))
                 {
                     return resourceSet.Cast<DictionaryEntry>().ToDictionary(k => k.Key.ToString(), v => v.Value.ToString(), StringComparer.OrdinalIgnoreCase);

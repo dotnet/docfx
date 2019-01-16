@@ -7,26 +7,6 @@ using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
-    public class TableOfContentsModel
-    {
-        [JsonProperty(PropertyName = "metadata")]
-        public TableOfContentsMetadata Metadata { get; set; }
-
-        [JsonProperty(PropertyName = "items")]
-        public List<TableOfContentsItem> Items { get; set; }
-    }
-
-    public class TableOfContentsMetadata
-    {
-        public List<string> Monikers { get; set; }
-
-        [JsonProperty(PropertyName = "monikerRange")]
-        public string MonikerRange { get; set; }
-
-        [JsonExtensionData]
-        public JObject ExtensionData { get; set; }
-    }
-
     public class TableOfContentsItem
     {
         [JsonProperty(PropertyName = "toc_title")]
