@@ -87,7 +87,7 @@ Whenever JSON is supported as an input format, YAML is supported as well. The sa
 
 When YAML is used, we only support a subset of YAML that is JSON compatible, features like multiple documents, non-scalar keys, anchors and references are not supported.
 
-The following guidelines applies to both input models and output models:
+The following guidelines apply to both input models and output models:
 
 - Flattened structure is prefered over nested structure, because YAML is indention based, nested structure creates a very bad YAML authoring experience.
 
