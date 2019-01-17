@@ -68,6 +68,11 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             processor.NewBlocks.Push(block);
 
+            if (extension.SelfClosing)
+            {
+                return BlockState.BreakDiscard;
+            }
+
             return BlockState.ContinueDiscard;
         }
 

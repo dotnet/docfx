@@ -9,6 +9,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
     using Microsoft.DocAsCode.Plugins;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Text;
     using Xunit;
 
     public class TripleColonTest
@@ -102,9 +103,63 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
                 
                 foreach (var block in blocks)
                 {
-                    Assert.True(block.Closed);
                     Assert.False(block.IsOpen);
                 }
+            }
+            Logger.UnregisterListener(listener);
+        }
+
+        [Fact]
+        public void TripleColonWithInMonikerTestBlockClosed()
+        {
+            var source = new StringBuilder()
+                .AppendLine("::: moniker range=\"chromeless\"")
+                .AppendLine("::: zone target=\"docs\"")
+                .AppendLine("## Alt text")
+                .AppendLine("::: zone-end")
+                .AppendLine("::: moniker-end")
+                .ToString();
+
+            var listener = TestLoggerListener.CreateLoggerListenerWithPhaseEqualFilter(LoggerPhase);
+
+            Logger.RegisterListener(listener);
+            using (new LoggerPhaseScope(LoggerPhase))
+            {
+                var service = TestUtility.CreateMarkdownService();
+                var document = service.Parse(source, "fakepath.md");
+
+                var monikerBlock = document.OfType<MonikerRangeBlock>().FirstOrDefault();
+                Assert.NotNull(monikerBlock);
+                var nestedZoneBlock = monikerBlock.OfType<TripleColonBlock>().FirstOrDefault();
+                Assert.NotNull(nestedZoneBlock);
+                Assert.True(nestedZoneBlock.Closed);
+            }
+            Logger.UnregisterListener(listener);
+        }
+
+        [Fact]
+        public void TripleColonWithInMonikerTestBlockUnClosed()
+        {
+            var source = new StringBuilder()
+                .AppendLine("::: moniker range=\"chromeless\"")
+                .AppendLine("::: zone target=\"docs\"")
+                .AppendLine("## Alt text")
+                .AppendLine("::: moniker-end")
+                .ToString();
+
+            var listener = TestLoggerListener.CreateLoggerListenerWithPhaseEqualFilter(LoggerPhase);
+
+            Logger.RegisterListener(listener);
+            using (new LoggerPhaseScope(LoggerPhase))
+            {
+                var service = TestUtility.CreateMarkdownService();
+                var document = service.Parse(source, "fakepath.md");
+
+                var monikerBlock = document.OfType<MonikerRangeBlock>().FirstOrDefault();
+                Assert.NotNull(monikerBlock);
+                var nestedZoneBlock = monikerBlock.OfType<TripleColonBlock>().FirstOrDefault();
+                Assert.NotNull(nestedZoneBlock);
+                Assert.False(nestedZoneBlock.Closed);
             }
             Logger.UnregisterListener(listener);
         }
