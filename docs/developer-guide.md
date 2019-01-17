@@ -109,7 +109,7 @@ The following guidelines applies to both input models and output models:
 
 - Avoid `[JsonProperty]` unless the property does not use the above naming convention for backward compatibility reasons:
     - It ensures we provide consistent input and output user experience.
-    - It ensures our C# model directly mapps to data contract using the same name.
+    - It ensures our C# model directly maps to data contract using the same name.
     - It is easier to find all naming exceptions by searching `[JsonProperty]`.
 
 - Avoid `[JsonIgnore]`: use of `[JsonIgnore]` typically means that you are mixing logic with data. You can use tuples to pass `JsonIgnored` parameters.
