@@ -22,6 +22,15 @@ namespace Microsoft.DocAsCode
         private const string Key = "key";
         private const string Value = "value";
 
+        private readonly bool _ignoreBaseDir;
+
+        public FileMetadataConverter() : base() { }
+
+        public FileMetadataConverter(bool ignoreBaseDir)
+        {
+            _ignoreBaseDir = ignoreBaseDir;
+        }
+
         public override bool CanConvert(Type objectType)
         {
             return objectType == typeof(FileMetadata);
@@ -57,7 +66,7 @@ namespace Microsoft.DocAsCode
             var fileMetadata = (FileMetadata)value;
             writer.WriteStartObject();
 
-            if (fileMetadata.BaseDir != null)
+            if (!_ignoreBaseDir && fileMetadata.BaseDir != null)
             {
                 writer.WritePropertyName(BaseDir);
                 writer.WriteRawValue(JsonUtility.Serialize(fileMetadata.BaseDir));

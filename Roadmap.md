@@ -5,6 +5,9 @@
 
 You may have noticed that the team is working on DocFX v3 right now. Yes, v3 is the long-term plan for DocFX to be the end-to-end "docs" tool to support
 
+> **NOTE:**
+> Roadmap for v3 is tracked [here](https://github.com/dotnet/docfx/tree/v3/docs/roadmap.md).
+
 - build of markdown and structured conceptuals (such as landing page, tutorial, etc.)
 - end-to-end generation of reference language documentation from either source codes or released packages (such as .NET, REST, Java, etc.)
 - able to run everywhere (i.e. cross-platform) and publish to anywhere possible (static site, or a built-in rendering stack with functionalities similar to <https://docs.microsoft.com>)
@@ -17,20 +20,6 @@ The reason why we choose to have a redesign and reimplementation of v3 instead o
 - The performance is also not ideal: two major issues are with AppDomain and Git related operations.
 - Technical stacks are not consistent throughout the pipeline, causing additional overhead in development and troubleshooting.
 - Community users are expressing their desire to have a documentation experience similar to <https://docs.microsoft.com> (i.e. [feature requests](README.md#collecting-feedbacks-and-proposals-for-docfx) on versioning, PDF link, REST definition pages, etc.), but there is no easy way to approach these requirements in v2.
-
-## v3 timeline
-
-v3 is a long journey that requires a substantial amount of time to deliver even the basic end-to-end experience parity to v2. In order to have better management and achieve continuous delivery, we break it down into various **phases**.
-
-*Phase 1* of v3 has been completed at the end of June 2018. At this stage, v3 is able to build markdown conceptual and TOC into an intermediate model (what we call raw page JSON model). We've also implemented the integration with <https://docs.microsoft.com> internally for Microsoft-owned content repos.
-
-*Phase 2* of v3 is targeted to the end of September 2018 with the goal to support 100% parity with v2 for markdown and structured conceptuals (via Schema Document Processor, or SDP). We're also going to prepare necessary tooling for migration from v2 to v3.
-
-For community users, we understand the requirement to build out a static site rather than a dynamic one like <https://docs.microsoft.com>. We plan to address this in *Phase 3* (targeted to the end of December 2018). As a result, we'd expect v3 to be able to roll out to community users at the end of 2018.
-
-*Phase 4* and beyond are still in very early stage for planning, but we would expect the scope expanding to `metadata`, `watch` and other features for community users.
-
-That being said, any thought, idea or suggestion on v3 is highly welcomed and appreciated. The dashboard [here](https://github.com/dotnet/docfx/projects/1) tracks phase target, individual task and progress in the team. The working branch for v3 is [`v3`](https://github.com/dotnet/docfx/tree/v3), and you may find usage and design documentation there. Any question, feel free to open an issue.
 
 ## v2 strategy
 

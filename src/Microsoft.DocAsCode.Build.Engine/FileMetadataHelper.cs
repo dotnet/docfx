@@ -26,35 +26,27 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
 
             var changedGlobMatchers = new List<GlobMatcher>();
-            if (!string.Equals(left.BaseDir, right.BaseDir))
+            var handledRightKeys = new Dictionary<string, bool>();
+            foreach (var leftItem in left)
             {
-                changedGlobMatchers.AddRange(left.GetAllGlobs());
-                changedGlobMatchers.AddRange(right.GetAllGlobs());
-            }
-            else
-            {
-                var handledRightKeys = new Dictionary<string, bool>();
-                foreach (var leftItem in left)
+                if (right.TryGetValue(leftItem.Key, out var rightFileMetadataItemsGroup))
                 {
-                    if (right.TryGetValue(leftItem.Key, out var rightFileMetadataItemsGroup))
-                    {
-                        handledRightKeys[leftItem.Key] = true;
-                        var leftFileMetadataItemsGroup = leftItem.Value;
+                    handledRightKeys[leftItem.Key] = true;
+                    var leftFileMetadataItemsGroup = leftItem.Value;
 
-                        var changes = GetChangedGlobsByGroup(leftFileMetadataItemsGroup, rightFileMetadataItemsGroup);
-                        changedGlobMatchers.AddRange(changes);
-                    }
-                    else
-                    {
-                        changedGlobMatchers.AddRange(leftItem.Value.Select(v => v.Glob));
-                    }
+                    var changes = GetChangedGlobsByGroup(leftFileMetadataItemsGroup, rightFileMetadataItemsGroup);
+                    changedGlobMatchers.AddRange(changes);
                 }
-                foreach (var rightItem in right)
+                else
                 {
-                    if (!handledRightKeys.TryGetValue(rightItem.Key, out var _))
-                    {
-                        changedGlobMatchers.AddRange(rightItem.Value.Select(v => v.Glob));
-                    }
+                    changedGlobMatchers.AddRange(leftItem.Value.Select(v => v.Glob));
+                }
+            }
+            foreach (var rightItem in right)
+            {
+                if (!handledRightKeys.TryGetValue(rightItem.Key, out var _))
+                {
+                    changedGlobMatchers.AddRange(rightItem.Value.Select(v => v.Glob));
                 }
             }
 
