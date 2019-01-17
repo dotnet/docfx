@@ -114,7 +114,7 @@ The following guidelines apply to both input models and output models:
 
 - Avoid `[JsonIgnore]`: use of `[JsonIgnore]` typically means that you are mixing logic with data. You can use tuples to pass `JsonIgnored` parameters.
 
-- Avoid polymorphism : type information does not exists in wire format, use enums instead.
+- Avoid polymorphism : type information does not exist in wire format, use enums instead.
 
 ### Naming Conventions
 
