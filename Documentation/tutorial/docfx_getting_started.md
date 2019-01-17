@@ -79,7 +79,7 @@ Consider a typical scenario: I want to set up a job on a CI service (e.g. [Azure
 
 1. clone repo
 2. `choco install docfx`
-3. `docfx {docsetPath}`
+3. `docfx {docsetPath}`, while you can change `build.dest` in `docfx.json` to set the output path
 4. push all the content in `docsetPath/_site` to `gh-pages` branch
 
 > [!NOTE]
