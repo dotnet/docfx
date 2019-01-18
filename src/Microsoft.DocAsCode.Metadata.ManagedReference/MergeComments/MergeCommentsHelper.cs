@@ -83,32 +83,30 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         private static void PatchMetadataItem(MetadataItem assembly, IEnumerable<CommentIdAndComment> list)
         {
+            var allItemsInAssembly = new Dictionary<string, MetadataItem>(StringComparer.OrdinalIgnoreCase);
+            GetAllItemByCommentId(allItemsInAssembly, assembly);
+
             foreach (var uidAndComment in list)
             {
                 MetadataItem item = null;
-                if (TryGetItemByCommentId(assembly, uidAndComment.CommentId, ref item))
+                if (allItemsInAssembly.TryGetValue(uidAndComment.CommentId, out item))
                 {
                     PatchViewModel(item, uidAndComment.Comment);
                 }
             }
         }
 
-        private static bool TryGetItemByCommentId(MetadataItem item, string commentId, ref MetadataItem resultItem)
+        private static void GetAllItemByCommentId(Dictionary<string, MetadataItem> items, MetadataItem item)
         {
-            if (string.Equals(item.CommentId, commentId, StringComparison.OrdinalIgnoreCase))
+            if (!items.ContainsKey(item.CommentId))
             {
-                resultItem = item;
-                return true;
+                items.Add(item.CommentId, item);
             }
 
             foreach (var metadataItem in item.Items ?? Enumerable.Empty<MetadataItem>())
             {
-                if (TryGetItemByCommentId(metadataItem, commentId, ref resultItem))
-                {
-                    return true;
-                }
+                GetAllItemByCommentId(items, metadataItem);
             }
-            return false;
         }
 
         private static void PatchViewModel(MetadataItem item, string comment)
