@@ -34,7 +34,7 @@ namespace Microsoft.Docs.Build
             (model.ContentGitUrl, model.OriginalContentGitUrl, model.OriginalContentGitUrlTemplate, model.Gitcommit) = await context.ContributionProvider.GetGitUrls(file);
 
             List<Error> contributorErrors;
-            (contributorErrors, model.Author, model.Contributors, model.UpdatedAt) = await context.ContributionProvider.GetAuthorAndContributors(file, metadata.Author);
+            (contributorErrors, model.Contributors, model.UpdatedAt) = await context.ContributionProvider.GetContributors(file, metadata.Author);
             if (contributorErrors != null)
                 errors.AddRange(contributorErrors);
 

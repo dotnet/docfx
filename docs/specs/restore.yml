@@ -33,7 +33,11 @@ repos:
       email: xinjiang@microsoft.com
 outputs:
   docs/a.json: |
-    {"author":{"name":"OsmondJiang","profile_url":"https://github.com/OsmondJiang","display_name":"Osmond Jiang","id":"19990166"}}
+    {
+      "contributors": [
+        { "name": "OsmondJiang", "profile_url": "https://github.com/OsmondJiang", "display_name": "Osmond Jiang", "id": "19990166" }
+      ]
+    }
 ---
 # Restore urls with extends
 repos:
@@ -46,7 +50,11 @@ repos:
       email: xinjiang@microsoft.com
 outputs:
   docs/a.json: |
-    {"author":{"name":"OsmondJiang","profile_url":"https://github.com/OsmondJiang","display_name":"Osmond Jiang","id":"19990166"}}
+    {
+      "contributors": [
+        { "name": "OsmondJiang", "profile_url": "https://github.com/OsmondJiang", "display_name": "Osmond Jiang", "id": "19990166" }
+      ]
+    }
 ---
 # Restore dependencies with extends
 repos:

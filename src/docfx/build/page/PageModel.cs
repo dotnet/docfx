@@ -33,8 +33,6 @@ namespace Microsoft.Docs.Build
 
         public string DocumentVersionIndependentId { get; set; }
 
-        public Contributor Author { get; set; }
-
         public List<Contributor> Contributors { get; set; }
 
         public DateTime UpdatedAt { get; set; }

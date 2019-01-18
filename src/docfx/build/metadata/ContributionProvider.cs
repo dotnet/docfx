@@ -33,7 +33,7 @@ namespace Microsoft.Docs.Build
             return result;
         }
 
-        public async Task<(List<Error> error, Contributor author, List<Contributor> contributors, DateTime updatedAt)> GetAuthorAndContributors(
+        public async Task<(List<Error> error, List<Contributor> contributors, DateTime updatedAt)> GetContributors(
             Document document,
             string authorName)
         {
@@ -76,9 +76,10 @@ namespace Microsoft.Docs.Build
             if (author != null)
             {
                 contributors.RemoveAll(c => c.Id == author.Id);
+                contributors.Insert(0, author);
             }
 
-            return (errors, author, contributors, updatedDateTime);
+            return (errors, contributors, updatedDateTime);
 
             async Task<Contributor> GetContributor(GitCommit commit)
             {

@@ -112,7 +112,7 @@ namespace Microsoft.Docs.Build
             {
                 rawMetadata["_op_gitContributorInformation"] = new JObject
                 {
-                    ["author"] = pageModel.Author?.ToJObject(),
+                    ["author"] = pageModel.Contributors.FirstOrDefault()?.ToJObject(),
                     ["contributors"] = pageModel.Contributors != null
                         ? new JArray(pageModel.Contributors.Select(c => c.ToJObject()))
                         : null,
@@ -120,8 +120,8 @@ namespace Microsoft.Docs.Build
                     ["updated_at_date_time"] = pageModel.UpdatedAt,
                 };
             }
-            if (!string.IsNullOrEmpty(pageModel.Author?.Name))
-                rawMetadata["author"] = pageModel.Author?.Name;
+
+            rawMetadata["author"] = pageModel.Metadata.Author;
             if (pageModel.UpdatedAt != default)
                 rawMetadata["updated_at"] = pageModel.UpdatedAt.ToString("yyyy-MM-dd hh:mm tt");
 

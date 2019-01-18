@@ -157,7 +157,7 @@ namespace Microsoft.Docs.Build
         public readonly string Theme = string.Empty;
 
         /// <summary>
-        /// Gets the config file name.
+        /// Gets or sets the config file name.
         /// </summary>
         [JsonIgnore]
         public string ConfigFileName { get; set; } = "docfx.yml";
