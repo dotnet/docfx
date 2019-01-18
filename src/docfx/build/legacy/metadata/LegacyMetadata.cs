@@ -42,7 +42,6 @@ namespace Microsoft.Docs.Build
 
             newMetadata["locale"] = docset.Locale;
             newMetadata["site_name"] = "Docs";
-            newMetadata["version"] = 0;
 
             newMetadata["__global"] = docset.LegacyTemplate.Global;
 
