@@ -26,6 +26,12 @@
     "data": {
       "$ref": "#"
     },
+    "array": {
+      "type": "array",
+      "items": {
+        "$ref": "#"
+      }
+    },
     "$schema": {
       "type": "string"
     }

@@ -301,7 +301,6 @@ namespace Microsoft.Docs.Build
                     {
                         TryAddXref(xrefsByUid, spec.Uid, file, spec);
                     }
-
                 }
                 else if (file.FilePath.EndsWith(".json", PathUtility.PathComparison))
                 {
