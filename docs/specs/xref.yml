@@ -230,16 +230,16 @@ inputs:
     uid: a
     description: description for a
     array:
-      - uid: b
-        description: description for b
+      - uid: a.b
+        description: description for a.b
         array:
-          - uid: d
-            description: description for d
-          - uid: e
-            description: description for e
-      - uid: c
-        description: description for c
-  docs/b.md: Link to @b
+          - uid: a.b.d
+            description: description for a.b.d
+          - uid: a.b.e
+            description: description for a.b.e
+      - uid: a.c
+        description: description for a.c
+  docs/b.md: Link to @a.b
 outputs:
   docs/a.json:
   docs/b.json:
@@ -250,23 +250,23 @@ outputs:
         "href": "https://docs.com/docs/a.json",
         "description": "description for a"
       }, {
-        "uid": "b",
-        "href": "https://docs.com/docs/a.json",
-        "description": "description for b"
+        "uid": "a.b",
+        "href": "https://docs.com/docs/a.json#a_b",
+        "description": "description for a.b"
+      },
+      {
+        "uid": "a.b.d",
+        "href": "https://docs.com/docs/a.json#a_b_d",
+        "description": "description for a.b.d"
+      },
+      {
+        "uid": "a.b.e",
+        "href": "https://docs.com/docs/a.json#a_b_e",
+        "description": "description for a.b.e"
       }, {
-        "uid": "c",
-        "href": "https://docs.com/docs/a.json",
-        "description": "description for c"
-      },
-      {
-        "uid": "d",
-        "href": "https://docs.com/docs/a.json",
-        "description": "description for d"
-      },
-      {
-        "uid": "e",
-        "href": "https://docs.com/docs/a.json",
-        "description": "description for e"
+        "uid": "a.c",
+        "href": "https://docs.com/docs/a.json#a_c",
+        "description": "description for a.c"
       }]
     }
 ---
@@ -287,7 +287,7 @@ outputs:
   build.log: |
     ["error","uid-conflict","The same Uid 'a' has been defined multiple times in the same file","docs/a.json"]
   xrefmap.json: |
-    {"references":[]}
+    {"references":[{"uid":"a","href":"https://docs.com/docs/a.json"}]}
 ---
 # Xref property field which supports markdown content
 inputs:

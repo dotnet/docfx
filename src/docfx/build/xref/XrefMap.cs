@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using Newtonsoft.Json.Linq;
 
@@ -346,8 +347,6 @@ namespace Microsoft.Docs.Build
             {
                 return (new List<Error>(), new List<InternalXrefSpec>());
             }
-
-            uids = uids.ToDictionary(x => x.Value, x => x.Key);
             var extensionData = new Dictionary<string, Lazy<JValue>>();
 
             // TODO: for backward compatibility, when #YamlMime:YamlDocument, documentType is used to determine schema.
@@ -366,13 +365,13 @@ namespace Microsoft.Docs.Build
 
             errors.AddRange(schemaErrors);
 
-            var extensionDataByUid = new Dictionary<string, Dictionary<string, Lazy<JValue>>>();
+            var extensionDataByUid = new Dictionary<string, (bool isRoot, Dictionary<string, Lazy<JValue>> properties)>();
 
             if (extensionData.Count == 0)
             {
-                foreach (var (_, uid) in uids)
+                foreach (var (uid, value) in uids)
                 {
-                    extensionDataByUid.Add(uid, new Dictionary<string, Lazy<JValue>>());
+                    extensionDataByUid.Add(uid, (string.IsNullOrEmpty(value), new Dictionary<string, Lazy<JValue>>()));
                 }
             }
             else
@@ -382,31 +381,37 @@ namespace Microsoft.Docs.Build
                     var (uid, resolvedJsonPath) = MatchExtensionDataToUid(jsonPath);
                     if (extensionDataByUid.ContainsKey(uid))
                     {
-                        extensionDataByUid[uid].Add(resolvedJsonPath, xrefProperty);
+                        var (_, properties) = extensionDataByUid[uid];
+                        properties.Add(resolvedJsonPath, xrefProperty);
                     }
                     else
                     {
-                        extensionDataByUid.Add(uid, new Dictionary<string, Lazy<JValue>> { { resolvedJsonPath, xrefProperty } });
+                        extensionDataByUid.Add(uid, (string.IsNullOrEmpty(uids[uid]), new Dictionary<string, Lazy<JValue>> { { resolvedJsonPath, xrefProperty } }));
                     }
                 }
             }
 
             var specs = extensionDataByUid.Select(item =>
             {
+                var (isRoot, properties) = item.Value;
                 var xref = new InternalXrefSpec
                 {
                     Uid = item.Key,
-                    Href = file.CanonicalUrlWithoutLocale,
+                    Href = isRoot ? file.CanonicalUrlWithoutLocale : $"{file.CanonicalUrlWithoutLocale}#{GetBookmarkFromUid(item.Key)}",
                     ReferencedFile = file,
                 };
-                xref.ExtensionData.AddRange(item.Value);
+                xref.ExtensionData.AddRange(properties);
                 return xref;
             }).ToList();
 
             return (errors, specs);
 
+            string GetBookmarkFromUid(string uid)
+                => Regex.Replace(uid, @"\W", "_");
+
             (string uid, string jsonPath) MatchExtensionDataToUid(string jsonPath)
             {
+                var reverse = uids.ToDictionary(x => x.Value, x => x.Key);
                 string subString;
                 var index = jsonPath.LastIndexOf('.');
                 if (index == -1)
@@ -418,7 +423,7 @@ namespace Microsoft.Docs.Build
                     subString = jsonPath.Substring(0, index);
                 }
 
-                return uids.ContainsKey(subString) ? (uids[subString], jsonPath.Substring(index + 1)) : MatchExtensionDataToUid(subString);
+                return reverse.ContainsKey(subString) ? (reverse[subString], jsonPath.Substring(index + 1)) : MatchExtensionDataToUid(subString);
             }
         }
 
