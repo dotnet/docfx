@@ -70,7 +70,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             if (extension.SelfClosing)
             {
-                block.Closed = true;
                 return BlockState.BreakDiscard;
             }
 
@@ -123,7 +122,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             if (tripleColonBlock.Extension.SelfClosing)
             {
                 block.IsOpen = false;
-                (block as TripleColonBlock).Closed = true;
                 return true;
             }
 
@@ -131,9 +129,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             if (block.IsOpen)
             {
                 _context.LogWarning($"invalid-{extensionName}", $"Invalid {extensionName} on line {block.Line}. No \"::: {extensionName}-end\" found. Blocks should be explicitly closed.");
-            } else
-            {
-                (block as TripleColonBlock).Closed = true;
             }
             return true;
         }
