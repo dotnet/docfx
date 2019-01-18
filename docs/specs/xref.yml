@@ -222,7 +222,55 @@ outputs:
   xrefmap.json: | 
     {"references":[]}
 ---
-# Define uid in non-root object level, it will be ignored
+# support multiple uids in the same array in one SDP
+inputs:
+  docfx.yml:
+  docs/a.yml: |
+    #YamlMime:TestData
+    uid: a
+    description: description for a
+    array:
+      - uid: b
+        description: description for b
+        array:
+          - uid: d
+            description: description for d
+          - uid: e
+            description: description for e
+      - uid: c
+        description: description for c
+  docs/b.md: Link to @b
+outputs:
+  docs/a.json:
+  docs/b.json:
+  xrefmap.json: |
+    {
+      "references": [{
+        "uid": "a",
+        "href": "https://docs.com/docs/a.json",
+        "description": "description for a"
+      }, {
+        "uid": "b",
+        "href": "https://docs.com/docs/a.json",
+        "description": "description for b"
+      }, {
+        "uid": "c",
+        "href": "https://docs.com/docs/a.json",
+        "description": "description for c"
+      },
+      {
+        "uid": "d",
+        "href": "https://docs.com/docs/a.json",
+        "description": "description for d"
+      },
+      {
+        "uid": "e",
+        "href": "https://docs.com/docs/a.json",
+        "description": "description for e"
+      }]
+    }
+---
+# uid conflict in one SDP
 inputs:
   docfx.yml:
   docs/a.json: |
@@ -231,17 +279,15 @@ inputs:
       "uid": "a",
       "data": 
       { 
-        "uid": "b"
+        "uid": "a"
       }
     }
-  docs/b.md: Link to @b
 outputs:
   docs/a.json:
-  docs/b.json:
   build.log: |
-    ["info","at-uid-not-found","Cannot find uid 'b' using xref '@b'","docs/b.md"]
-  xrefmap.json: | 
-    {"references":[{"uid":"a","href":"https://docs.com/docs/a.json"}]}
+    ["error","uid-conflict","The same Uid 'a' has been defined multiple times in the same file","docs/a.json"]
+  xrefmap.json: |
+    {"references":[]}
 ---
 # Xref property field which supports markdown content
 inputs:
@@ -489,7 +535,6 @@ outputs:
   build.log: |
     ["error","circular-reference","Found circular reference: 'docs/a.json' --> 'docs/b.json' --> 'docs/a.json'","docs/a.json"]
     ["error","circular-reference","Found circular reference: 'docs/b.json' --> 'docs/a.json' --> 'docs/b.json'","docs/b.json"]
-
 ---
 # SDP cyclic xref reference whose display properties referring to another uid
 # b.json -> c.json -> b.json && b.json -> c.json -> b.json && c.json -> b.json -> c.json
@@ -524,7 +569,6 @@ outputs:
     ["error","circular-reference","Found circular reference: 'docs/c.json' --> 'docs/b.json' --> 'docs/c.json'","docs/c.json"]
     ["error","circular-reference","Found circular reference: 'docs/b.json' --> 'docs/c.json' --> 'docs/b.json'","docs/b.json"]
     ["error","circular-reference","Found circular reference: 'docs/a.json' --> 'docs/b.json' --> 'docs/c.json' --> 'docs/b.json'","docs/a.json"]
-
 ---
 # SDP cyclic xref reference to itself
 inputs:

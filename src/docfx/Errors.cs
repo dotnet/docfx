@@ -353,8 +353,13 @@ namespace Microsoft.Docs.Build
         /// Examples:
         ///   - both files with no monikers defined same uid
         /// </summary>
-        public static Error UidConflict(string uid, IEnumerable<string> conflicts)
+        public static Error UidConflict(string uid, IEnumerable<string> conflicts = null)
         {
+            if (conflicts is null)
+            {
+                return new Error(ErrorLevel.Error, "uid-conflict", $"The same Uid '{uid}' has been defined multiple times in the same file");
+            }
+
             var hint = conflicts.Count() > 5 ? "(Only 5 duplicates displayed)" : "";
             return new Error(ErrorLevel.Error, "uid-conflict", $"Two or more documents have defined the same Uid '{uid}': {string.Join(',', conflicts.Take(5))}{hint}");
         }
