@@ -242,7 +242,8 @@ inputs:
   docs/b.md: Link to @a.b
 outputs:
   docs/a.json:
-  docs/b.json:
+  docs/b.json: |
+    {"content": "<p>Link to <a href=\"a.json#a_b\">a.b</a></p>\n"}
   xrefmap.json: |
     {
       "references": [{
