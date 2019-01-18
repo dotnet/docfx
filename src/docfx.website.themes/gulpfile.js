@@ -102,6 +102,7 @@ gulp.task('pack', function () {
             }
         }
     }
+    return Promise.resolve();
 
     function packFiles(key, dirname) {
         var files = pack[key];
@@ -126,8 +127,8 @@ gulp.task('pack', function () {
     function getStream(file, key) {
         var cwd = file.cwd || key;
         var base = file.base || cwd;
-        return gulp.src(file.files, { base: base, cwd: cwd });
+        return gulp.src(file.files, { base: base, cwd: cwd, allowEmpty: true });
     }
 });
 
-gulp.task('default', ['pack']);
+gulp.task('default', gulp.series('pack'));
