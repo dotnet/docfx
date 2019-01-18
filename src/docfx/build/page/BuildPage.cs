@@ -35,7 +35,8 @@ namespace Microsoft.Docs.Build
 
             List<Error> contributorErrors;
             (contributorErrors, model.Author, model.Contributors, model.UpdatedAt) = await context.ContributionProvider.GetAuthorAndContributors(file, metadata.Author);
-            errors.AddRange(contributorErrors);
+            if (contributorErrors != null)
+                errors.AddRange(contributorErrors);
 
             var output = (object)model;
             if (!file.Docset.Config.Output.Json && schema.Attribute is PageSchemaAttribute)
