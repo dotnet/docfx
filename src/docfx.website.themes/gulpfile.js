@@ -83,7 +83,7 @@ gulp.task('help', function () {
     console.log("gulp pack [-t <templateName>] [-dir <outputFolder>]");
 });
 
-gulp.task('pack', function () {
+gulp.task('pack', async function () {
     var dirname = options.dir;
     if (options.t) {
         var name = options.t;
@@ -102,7 +102,6 @@ gulp.task('pack', function () {
             }
         }
     }
-    return Promise.resolve();
 
     function packFiles(key, dirname) {
         var files = pack[key];
