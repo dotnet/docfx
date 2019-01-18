@@ -13,7 +13,7 @@ outputs:
   docs/index.json:
   .publish.json: |
     {
-      "publish": [
+      "files": [
         { "url": "/docs/a", "path": "docs/a.json" },
         { "url": "/docs/folder/b~$", "path": "docs/folder/b~$.json" },
         { "url": "/docs/", "path": "docs/index.json" },
@@ -31,7 +31,7 @@ inputs:
 outputs:
   .publish.json: |
     {
-      "publish": [
+      "files": [
         { "url": "/a.png", "path": "../a.png" }
       ]
     }
@@ -44,7 +44,7 @@ inputs:
 outputs:
   .publish.json: |
     {
-      "publish": [{ "url": "/a", "redirect_url": "b", "!path": null }]
+      "files": [{ "url": "/a", "redirect_url": "b", "!path": null }]
     }
 ---
 # Manifest for articles contains custom metadata
@@ -58,7 +58,7 @@ outputs:
   a.json:
   .publish.json: |
     {
-      "publish": [{ "url": "/a", "ms.my": 1 }]
+      "files": [{ "url": "/a", "ms.my": 1 }]
     }
 ---
 # Manifest contains Toc dependencies

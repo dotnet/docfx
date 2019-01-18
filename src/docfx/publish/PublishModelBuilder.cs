@@ -117,7 +117,7 @@ namespace Microsoft.Docs.Build
 
             var model = new PublishModel
             {
-                Publish = _publishItems.Values
+                Files = _publishItems.Values
                     .OrderBy(item => item.Locale)
                     .ThenBy(item => item.Path)
                     .ThenBy(item => item.Url)
