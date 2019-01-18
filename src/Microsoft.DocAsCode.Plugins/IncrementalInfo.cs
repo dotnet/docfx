@@ -40,6 +40,16 @@ namespace Microsoft.DocAsCode.Plugins
                 status.Details = details;
             }
         }
+
+        public void ReportProcessorFileCount(string processor, long totalFiles, long incrementalFiles)
+        {
+            lock (_syncRoot)
+            {
+                var status = _processors[processor];
+                status.TotalFiles = totalFiles;
+                status.IncrementalFiles = incrementalFiles;
+            }
+        }
     }
 
     public class IncrementalStatus
@@ -52,5 +62,11 @@ namespace Microsoft.DocAsCode.Plugins
 
         [JsonProperty("incrementalPhase")]
         public IncrementalPhase IncrementalPhase { get; set; }
+
+        [JsonProperty("total_files")]
+        public long TotalFiles { get; set; }
+
+        [JsonProperty("incremental_files")]
+        public long IncrementalFiles { get; set; }
     }
 }

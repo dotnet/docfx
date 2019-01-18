@@ -126,8 +126,8 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private void ReloadDependency(HashSet<string> nonIncreSet)
         {
-            // restore dependency graph from last dependency graph for unchanged files
-            using (new LoggerPhaseScope("ReportDependencyFromLastBuild", LogLevel.Verbose))
+            // restore dependency graph from last dependency graph for changed files
+            using (new LoggerPhaseScope("ReloadDependencyFromLastBuild", LogLevel.Verbose))
             {
                 var ldg = LastBuildVersionInfo?.Dependency;
                 if (ldg != null)

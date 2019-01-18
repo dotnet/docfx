@@ -105,10 +105,16 @@ namespace Microsoft.DocAsCode.Build.Engine
                 {
                     return;
                 }
+
                 var allFiles = files?.Select(f => f.File) ?? new string[0];
                 var loadedFiles = hostService.Models.Select(m => m.OriginalFileAndType.File);
-                IncrementalContext.ReportModelLoadInfo(hostService, allFiles.Except(loadedFiles).Except(hostService.InvalidSourceFiles), null);
+                var incrementalFiles = allFiles.Except(loadedFiles).Except(hostService.InvalidSourceFiles);
+                IncrementalContext.ReportModelLoadInfo(hostService, incrementalFiles, null);
                 IncrementalContext.ReportModelLoadInfo(hostService, loadedFiles, BuildPhase.Compile);
+
+                var allFilesCount = allFiles.Count();
+                var incrementalFilesCount = incrementalFiles.Count();
+                IncrementalContext.IncrementalInfo.ReportProcessorFileCount(hostService.Processor.Name, allFilesCount, incrementalFilesCount);
             }
         }
 

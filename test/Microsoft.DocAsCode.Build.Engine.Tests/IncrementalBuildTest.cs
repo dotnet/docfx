@@ -222,8 +222,14 @@ tagRules : [
                     var incrementalStatus = incrementalInfo[0].Status;
                     Assert.True(incrementalStatus.CanIncremental);
                     var processorsStatus = incrementalInfo[0].Processors;
-                    Assert.True(processorsStatus[nameof(ConceptualDocumentProcessor)].CanIncremental);
-                    Assert.True(processorsStatus[nameof(ManagedReferenceDocumentProcessor)].CanIncremental);
+                    var conceptualDocumentProcessorStatus = processorsStatus[nameof(ConceptualDocumentProcessor)];
+                    Assert.True(conceptualDocumentProcessorStatus.CanIncremental);
+                    Assert.Equal(2, conceptualDocumentProcessorStatus.TotalFiles);
+                    Assert.Equal(2, conceptualDocumentProcessorStatus.IncrementalFiles);
+                    var managedReferenceDocumentProcessorStatus = processorsStatus[nameof(ManagedReferenceDocumentProcessor)];
+                    Assert.True(managedReferenceDocumentProcessorStatus.CanIncremental);
+                    Assert.Equal(3, managedReferenceDocumentProcessorStatus.TotalFiles);
+                    Assert.Equal(3, managedReferenceDocumentProcessorStatus.IncrementalFiles);
                 }
                 {
                     // check cache folder
@@ -330,8 +336,14 @@ tagRules : [
                     var incrementalStatus = incrementalInfo[0].Status;
                     Assert.True(incrementalStatus.CanIncremental);
                     var processorsStatus = incrementalInfo[0].Processors;
-                    Assert.True(processorsStatus[nameof(ConceptualDocumentProcessor)].CanIncremental);
-                    Assert.True(processorsStatus[nameof(ManagedReferenceDocumentProcessor)].CanIncremental);
+                    var conceptualDocumentProcessorStatus = processorsStatus[nameof(ConceptualDocumentProcessor)];
+                    Assert.True(conceptualDocumentProcessorStatus.CanIncremental);
+                    Assert.Equal(2, conceptualDocumentProcessorStatus.TotalFiles);
+                    Assert.Equal(2, conceptualDocumentProcessorStatus.IncrementalFiles);
+                    var managedReferenceDocumentProcessorStatus = processorsStatus[nameof(ManagedReferenceDocumentProcessor)];
+                    Assert.True(managedReferenceDocumentProcessorStatus.CanIncremental);
+                    Assert.Equal(3, managedReferenceDocumentProcessorStatus.TotalFiles);
+                    Assert.Equal(3, managedReferenceDocumentProcessorStatus.IncrementalFiles);
                 }
                 {
                     // check xrefmap
@@ -631,7 +643,10 @@ tagRules : [
                     var incrementalStatus = incrementalInfo[0].Status;
                     Assert.True(incrementalStatus.CanIncremental);
                     var processorsStatus = incrementalInfo[0].Processors;
-                    Assert.True(processorsStatus[nameof(ConceptualDocumentProcessor)].CanIncremental);
+                    var conceptualDocumentProcessorStatus = processorsStatus[nameof(ConceptualDocumentProcessor)];
+                    Assert.True(conceptualDocumentProcessorStatus.CanIncremental);
+                    Assert.Equal(4, conceptualDocumentProcessorStatus.TotalFiles);
+                    Assert.Equal(2, conceptualDocumentProcessorStatus.IncrementalFiles);
                 }
                 {
                     // check xrefmap
@@ -828,7 +843,10 @@ tagRules : [
                     var incrementalStatus = incrementalInfo[0].Status;
                     Assert.True(incrementalStatus.CanIncremental);
                     var processorsStatus = incrementalInfo[0].Processors;
-                    Assert.True(processorsStatus[nameof(ConceptualDocumentProcessor)].CanIncremental);
+                    var conceptualDocumentProcessorStatus = processorsStatus[nameof(ConceptualDocumentProcessor)];
+                    Assert.True(conceptualDocumentProcessorStatus.CanIncremental);
+                    Assert.Equal(4, conceptualDocumentProcessorStatus.TotalFiles);
+                    Assert.Equal(2, conceptualDocumentProcessorStatus.IncrementalFiles);
                 }
                 {
                     // check xrefmap
@@ -1049,7 +1067,10 @@ tagRules : [
                     var incrementalStatus = incrementalInfo[0].Status;
                     Assert.True(incrementalStatus.CanIncremental);
                     var processorsStatus = incrementalInfo[0].Processors;
-                    Assert.True(processorsStatus[nameof(ConceptualDocumentProcessor)].CanIncremental);
+                    var conceptualDocumentProcessorStatus = processorsStatus[nameof(ConceptualDocumentProcessor)];
+                    Assert.True(conceptualDocumentProcessorStatus.CanIncremental);
+                    Assert.Equal(4, conceptualDocumentProcessorStatus.TotalFiles);
+                    Assert.Equal(1, conceptualDocumentProcessorStatus.IncrementalFiles);
                 }
                 {
                     // check xrefmap
@@ -1259,7 +1280,10 @@ tagRules : [
                     var incrementalStatus = incrementalInfo[0].Status;
                     Assert.True(incrementalStatus.CanIncremental);
                     var processorsStatus = incrementalInfo[0].Processors;
-                    Assert.True(processorsStatus[nameof(ConceptualDocumentProcessor)].CanIncremental);
+                    var conceptualDocumentProcessorStatus = processorsStatus[nameof(ConceptualDocumentProcessor)];
+                    Assert.True(conceptualDocumentProcessorStatus.CanIncremental);
+                    Assert.Equal(4, conceptualDocumentProcessorStatus.TotalFiles);
+                    Assert.Equal(1, conceptualDocumentProcessorStatus.IncrementalFiles);
                 }
                 {
                     // check xrefmap
@@ -1385,7 +1409,10 @@ tagRules : [
                     Assert.False(incrementalStatus.CanIncremental);
                     Assert.Equal(incrementalStatus.Details, "Cannot build incrementally because config changed.");
                     var processorsStatus = incrementalInfo[0].Processors;
-                    Assert.False(processorsStatus[nameof(ConceptualDocumentProcessor)].CanIncremental);
+                    var conceptualDocumentProcessorStatus = processorsStatus[nameof(ConceptualDocumentProcessor)];
+                    Assert.False(conceptualDocumentProcessorStatus.CanIncremental);
+                    Assert.Equal(1, conceptualDocumentProcessorStatus.TotalFiles);
+                    Assert.Equal(0, conceptualDocumentProcessorStatus.IncrementalFiles);
                 }
                 {
                     // check xrefmap
@@ -1508,7 +1535,10 @@ tagRules : [
                     var incrementalStatus = incrementalInfo[0].Status;
                     Assert.True(incrementalStatus.CanIncremental);
                     var processorsStatus = incrementalInfo[0].Processors;
-                    Assert.True(processorsStatus[nameof(ConceptualDocumentProcessor)].CanIncremental);
+                    var conceptualDocumentProcessorStatus = processorsStatus[nameof(ConceptualDocumentProcessor)];
+                    Assert.True(conceptualDocumentProcessorStatus.CanIncremental);
+                    Assert.Equal(1, conceptualDocumentProcessorStatus.TotalFiles);
+                    Assert.Equal(1, conceptualDocumentProcessorStatus.IncrementalFiles);
                     Assert.False(manifest.Files.Any(f => f.IsIncremental));
                 }
                 {
@@ -1634,7 +1664,10 @@ tagRules : [
                     var incrementalStatus = incrementalInfo[0].Status;
                     Assert.True(incrementalStatus.CanIncremental);
                     var processorsStatus = incrementalInfo[0].Processors;
-                    Assert.True(processorsStatus[nameof(ConceptualDocumentProcessor)].CanIncremental);
+                    var conceptualDocumentProcessorStatus = processorsStatus[nameof(ConceptualDocumentProcessor)];
+                    Assert.True(conceptualDocumentProcessorStatus.CanIncremental);
+                    Assert.Equal(2, conceptualDocumentProcessorStatus.TotalFiles);
+                    Assert.Equal(1, conceptualDocumentProcessorStatus.IncrementalFiles);
                 }
                 {
                     // compare with force build
@@ -1753,7 +1786,10 @@ tagRules : [
                     var incrementalStatus = incrementalInfo[0].Status;
                     Assert.True(incrementalStatus.CanIncremental);
                     var processorsStatus = incrementalInfo[0].Processors;
-                    Assert.True(processorsStatus[nameof(ConceptualDocumentProcessor)].CanIncremental);
+                    var conceptualDocumentProcessorStatus = processorsStatus[nameof(ConceptualDocumentProcessor)];
+                    Assert.True(conceptualDocumentProcessorStatus.CanIncremental);
+                    Assert.Equal(2, conceptualDocumentProcessorStatus.TotalFiles);
+                    Assert.Equal(2, conceptualDocumentProcessorStatus.IncrementalFiles);
                 }
                 {
                     // compare with force build
