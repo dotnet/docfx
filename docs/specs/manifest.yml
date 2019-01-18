@@ -13,7 +13,7 @@ outputs:
   docs/index.json:
   .publish.json: |
     {
-      "publish": [
+      "files": [
         { "url": "/docs/a", "path": "docs/a.json" },
         { "url": "/docs/folder/b~$", "path": "docs/folder/b~$.json" },
         { "url": "/docs/", "path": "docs/index.json" },
@@ -31,9 +31,34 @@ inputs:
 outputs:
   .publish.json: |
     {
-      "publish": [
+      "files": [
         { "url": "/a.png", "path": "../a.png" }
       ]
+    }
+---
+# Redirections outputs redirect_url to .publish.json, but does not have output file
+inputs:
+  docfx.yml: |
+    redirections:
+      a.md: b
+outputs:
+  .publish.json: |
+    {
+      "files": [{ "url": "/a", "redirect_url": "b", "!path": null }]
+    }
+---
+# Manifest for articles contains custom metadata
+inputs:
+  docfx.yml:
+  a.md: |
+    ---
+    ms.my: 1
+    ---
+outputs:
+  a.json:
+  .publish.json: |
+    {
+      "files": [{ "url": "/a", "ms.my": 1 }]
     }
 ---
 # Manifest contains Toc dependencies
@@ -251,6 +276,6 @@ inputs:
     a []()
 outputs:
   .publish.json: |
-    { publish: [] }
+    { "files": [] }
   build.log: |
     ["error","link-is-empty","Link is empty","docs/a.md"]

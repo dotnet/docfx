@@ -351,7 +351,7 @@ outputs:
     { "document_id": "f481558d-b8fa-5acb-facb-d3bee58fbf3e", "document_version_independent_id": "80168efe-9436-03b9-9e7c-eaf20a91d680" }
   .publish.json: |
     {
-      "publish":[
+      "files":[
         { "url": "/docs/a.experimental", "path": "docs/a.experimental.json" },
         { "url": "/docs/a", "path": "docs/a.json" }
       ]

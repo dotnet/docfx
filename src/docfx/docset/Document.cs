@@ -177,6 +177,11 @@ namespace Microsoft.Docs.Build
             }
         }
 
+        public string GetOutputPath(List<string> monikers)
+        {
+            return PathUtility.NormalizeFile(Path.Combine($"{HashUtility.GetMd5HashShort(monikers)}", SitePath));
+        }
+
         public override int GetHashCode()
         {
             return HashCode.Combine(Docset, PathUtility.PathComparer.GetHashCode(FilePath), ContentType);

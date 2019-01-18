@@ -5,6 +5,6 @@ namespace Microsoft.Docs.Build
 {
     internal class PublishModel
     {
-        public PublishItem[] Publish { get; set; }
+        public PublishItem[] Files { get; set; }
     }
 }
