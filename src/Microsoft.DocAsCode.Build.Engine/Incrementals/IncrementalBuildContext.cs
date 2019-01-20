@@ -234,7 +234,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 
                 // scenario: file itself doesn't change but add/remove from docfx.json
                 var lastSrcFiles = (from p in lastFileAttributes
-                                    where p.Value.IsFromSource == true
+                                    where p.Value.IsFromSource
                                     select p.Key).ToList();
                 foreach (var file in _parameters.Changes.Keys.Except(lastSrcFiles, FilePathComparer.OSPlatformSensitiveStringComparer))
                 {
@@ -252,7 +252,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             {
                 // get changelist from lastBuildInfo if user doesn't provide changelist
                 var fileAttributes = CurrentBuildVersionInfo.Attributes;
-                DateTime checkTime = LastBuildStartTime.Value;
+                var checkTime = LastBuildStartTime.Value;
                 foreach (var file in fileAttributes.Keys.Intersect(lastFileAttributes.Keys, FilePathComparer.OSPlatformSensitiveStringComparer))
                 {
                     var last = lastFileAttributes[file];
@@ -284,18 +284,22 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                     _changeDict[file] = ChangeKindWithDependency.Created;
                 }
             }
+
+            Logger.LogVerbose($"Number of files in user-provided change list or detected by last modified time and/or HASH change is {_changeDict.Count(change => change.Value != ChangeKindWithDependency.None)}.");
+
             LoadFileMetadataChanges();
+
+            Logger.LogVerbose($"Number of files in change list is updated to {_changeDict.Count(change => change.Value != ChangeKindWithDependency.None)} to account for files with file metadata change.");
         }
 
         public List<string> ExpandDependency(DependencyGraph dg, Func<DependencyItem, bool> isValid)
         {
-            var newChanges = new List<string>();
+            var changesCausedByDependency = new List<string>();
 
             if (dg != null)
             {
                 foreach (var change in (from c in _changeDict
-                                        where c.Value != ChangeKindWithDependency.None
-                                        where c.Value != ChangeKindWithDependency.DependencyUpdated
+                                        where c.Value != ChangeKindWithDependency.None && c.Value != ChangeKindWithDependency.DependencyUpdated
                                         select c).ToList())
                 {
                     foreach (var dt in dg.GetAllDependencyTo(change.Key))
@@ -304,17 +308,18 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                         {
                             continue;
                         }
+
                         string from = dt.From.Value;
                         if (!_changeDict.ContainsKey(from))
                         {
                             _changeDict[from] = ChangeKindWithDependency.DependencyUpdated;
-                            newChanges.Add(from);
+                            changesCausedByDependency.Add(from);
                         }
                         else
                         {
                             if (_changeDict[from] == ChangeKindWithDependency.None)
                             {
-                                newChanges.Add(from);
+                                changesCausedByDependency.Add(from);
                             }
                             _changeDict[from] |= ChangeKindWithDependency.DependencyUpdated;
                         }
@@ -322,7 +327,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                 }
             }
 
-            return newChanges;
+            return changesCausedByDependency;
         }
 
         #endregion
@@ -375,25 +380,13 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             var changedGlobs = CurrentBuildVersionInfo.FileMetadata.GetChangedGlobs(LastBuildVersionInfo.FileMetadata).ToArray();
             foreach (var key in LastBuildVersionInfo.Attributes.Keys)
             {
-                var path = ToPath(key);
+                var path = RelativePath.GetPathWithoutWorkingFolderChar(key);
                 if (changedGlobs.Any(g => g.Match(path)))
                 {
                     if (_changeDict[key] == ChangeKindWithDependency.None)
                     {
                         _changeDict[key] = ChangeKindWithDependency.Updated;
                     }
-                }
-            }
-
-            string ToPath(string key)
-            {
-                if (RelativePath.IsPathFromWorkingFolder(key))
-                {
-                    return key.Substring(2);
-                }
-                else
-                {
-                    return key;
                 }
             }
         }
@@ -636,7 +629,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                     return dg;
                 }
 
-                // reregister dependency types from last dependency graph
+                // re-register dependency types from last dependency graph
                 using (new LoggerPhaseScope("RegisterDependencyTypeFromLastBuild", LogLevel.Diagnostic))
                 {
                     dg.RegisterDependencyType(ldg.DependencyTypes.Values);
@@ -827,12 +820,15 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                 {
                     LoadChanges();
                 }
-                Logger.LogDiagnostic($"Before expanding dependency before build, changes: {JsonUtility.Serialize(ChangeDict, Formatting.Indented)}");
+
+                Logger.LogDiagnostic($"Before expanding dependency before build, changes: {JsonUtility.Serialize(_changeDict, Formatting.Indented)}");
                 using (new LoggerPhaseScope("ExpandDependency", LogLevel.Diagnostic))
                 {
                     ExpandDependency(LastBuildVersionInfo?.Dependency, d => CurrentBuildVersionInfo.Dependency.DependencyTypes[d.Type].Phase == BuildPhase.Compile);
                 }
-                Logger.LogDiagnostic($"After expanding dependency before build, changes: {JsonUtility.Serialize(ChangeDict, Formatting.Indented)}");
+                Logger.LogDiagnostic($"After expanding dependency before build, changes: {JsonUtility.Serialize(_changeDict, Formatting.Indented)}");
+
+                Logger.LogVerbose($"Number of files in change list is updated to {_changeDict.Count(change => change.Value != ChangeKindWithDependency.None)} after expanding dependency.");
             }
         }
 
