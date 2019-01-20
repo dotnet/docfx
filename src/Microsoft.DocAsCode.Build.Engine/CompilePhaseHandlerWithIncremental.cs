@@ -6,7 +6,6 @@ namespace Microsoft.DocAsCode.Build.Engine
     using System;
     using System.Collections.Generic;
     using System.Collections.Immutable;
-    using System.IO;
     using System.Linq;
 
     using Microsoft.DocAsCode.Build.Engine.Incrementals;
@@ -68,14 +67,14 @@ namespace Microsoft.DocAsCode.Build.Engine
                     hostService.IncrementalInfos = IncrementalContext.GetModelIncrementalInfo(hostService, Phase);
                 }
             }
-            var fileSet = new HashSet<string>(from h in hostServices
+            var nonIncreSet = new HashSet<string>(from h in hostServices
                                               where !h.CanIncrementalBuild
                                               from f in h.Models
                                               select IncrementalUtility.GetDependencyKey(f.OriginalFileAndType),
                                                   FilePathComparer.OSPlatformSensitiveStringComparer);
-            ReloadDependency(fileSet);
+            ReportDependency(nonIncreSet);
             LoadContextInfo(hostServices);
-            RegisterUnloadedTocRestructions(fileSet);
+            RegisterUnloadedTocRestructions(nonIncreSet);
             Logger.RegisterListener(CurrentBuildMessageInfo.GetListener());
         }
 
@@ -124,24 +123,25 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
-        private void ReloadDependency(HashSet<string> nonIncreSet)
+        private void ReportDependency(HashSet<string> nonIncreSet)
         {
-            // restore dependency graph from last dependency graph for changed files
-            using (new LoggerPhaseScope("ReloadDependencyFromLastBuild", LogLevel.Verbose))
+            // restore dependency graph from last dependency graph for unchanged files
+            using (new LoggerPhaseScope("ReportDependencyFromLastBuild", LogLevel.Verbose))
             {
                 var ldg = LastBuildVersionInfo?.Dependency;
                 if (ldg != null)
                 {
                     CurrentBuildVersionInfo.Dependency.ReportReference(from r in ldg.ReferenceReportedBys
-                                                                       where !IncrementalContext.ChangeDict.ContainsKey(r) || IncrementalContext.ChangeDict[r] == ChangeKindWithDependency.None
+                                                                       where !IncrementalContext.ChangeDict.TryGetValue(r, out var rChange) || rChange == ChangeKindWithDependency.None
                                                                        where !nonIncreSet.Contains(r)
                                                                        from reference in ldg.GetReferenceReportedBy(r)
                                                                        select reference);
+
                     CurrentBuildVersionInfo.Dependency.ReportDependency(from r in ldg.ReportedBys
-                                                                        where !IncrementalContext.ChangeDict.ContainsKey(r) || IncrementalContext.ChangeDict[r] == ChangeKindWithDependency.None
+                                                                        where !IncrementalContext.ChangeDict.TryGetValue(r, out var rChange) || rChange == ChangeKindWithDependency.None
                                                                         where !nonIncreSet.Contains(r)
-                                                                        from i in ldg.GetDependencyReportedBy(r)
-                                                                        select i);
+                                                                        from dependency in ldg.GetDependencyReportedBy(r)
+                                                                        select dependency);
                 }
             }
         }
@@ -163,7 +163,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     {
                         continue;
                     }
-                    if (!IncrementalContext.ChangeDict.ContainsKey(pathFromWorkingFolder) || IncrementalContext.ChangeDict[pathFromWorkingFolder] == ChangeKindWithDependency.None)
+                    if (!IncrementalContext.ChangeDict.TryGetValue(pathFromWorkingFolder, out var change) || change == ChangeKindWithDependency.None)
                     {
                         _inner.Restructions.AddRange(pair.Value);
                     }

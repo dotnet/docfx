@@ -108,13 +108,13 @@ namespace Microsoft.DocAsCode.Build.Engine
 
                 var allFiles = files?.Select(f => f.File) ?? new string[0];
                 var loadedFiles = hostService.Models.Select(m => m.OriginalFileAndType.File);
-                var incrementalFiles = allFiles.Except(loadedFiles).Except(hostService.InvalidSourceFiles);
-                IncrementalContext.ReportModelLoadInfo(hostService, incrementalFiles, null);
+                var skippedFiles = allFiles.Except(loadedFiles).Except(hostService.InvalidSourceFiles);
+                IncrementalContext.ReportModelLoadInfo(hostService, skippedFiles, null);
                 IncrementalContext.ReportModelLoadInfo(hostService, loadedFiles, BuildPhase.Compile);
 
                 var allFilesCount = allFiles.Count();
-                var incrementalFilesCount = incrementalFiles.Count();
-                IncrementalContext.IncrementalInfo.ReportProcessorFileCount(hostService.Processor.Name, allFilesCount, incrementalFilesCount);
+                var skippedFilesCount = skippedFiles.Count();
+                IncrementalContext.IncrementalInfo.ReportProcessorFileCount(hostService.Processor.Name, allFilesCount, skippedFilesCount);
             }
         }
 

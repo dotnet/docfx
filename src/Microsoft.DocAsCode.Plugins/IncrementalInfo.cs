@@ -41,13 +41,13 @@ namespace Microsoft.DocAsCode.Plugins
             }
         }
 
-        public void ReportProcessorFileCount(string processor, long totalFiles, long incrementalFiles)
+        public void ReportProcessorFileCount(string processor, long totalFileCount, long skippedFileCount)
         {
             lock (_syncRoot)
             {
                 var status = _processors[processor];
-                status.TotalFiles = totalFiles;
-                status.IncrementalFiles = incrementalFiles;
+                status.TotalFileCount = totalFileCount;
+                status.SkippedFileCount = skippedFileCount;
             }
         }
     }
@@ -63,10 +63,10 @@ namespace Microsoft.DocAsCode.Plugins
         [JsonProperty("incrementalPhase")]
         public IncrementalPhase IncrementalPhase { get; set; }
 
-        [JsonProperty("total_files")]
-        public long TotalFiles { get; set; }
+        [JsonProperty("total_file_count")]
+        public long TotalFileCount { get; set; }
 
-        [JsonProperty("incremental_files")]
-        public long IncrementalFiles { get; set; }
+        [JsonProperty("skipped_file_count")]
+        public long SkippedFileCount { get; set; }
     }
 }
