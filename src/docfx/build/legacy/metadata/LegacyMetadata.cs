@@ -62,13 +62,13 @@ namespace Microsoft.Docs.Build
             return rawMetadata;
         }
 
-        public static JObject GenerateLegacyRawMetadata(PageModel pageModel, string content, Document file)
+        public static JObject GenerateLegacyRawMetadata(PageModel pageModel, Document file)
         {
             var docset = file.Docset;
             var rawMetadata = pageModel.Metadata != null ? JObject.FromObject(pageModel.Metadata) : new JObject();
 
             rawMetadata = GenerataCommonMetadata(rawMetadata, docset);
-            rawMetadata["conceptual"] = content;
+            rawMetadata["conceptual"] = pageModel.Content as string;
 
             var path = PathUtility.NormalizeFile(Path.GetRelativePath(file.Docset.Config.DocumentId.SiteBasePath, file.SitePath));
 

@@ -52,7 +52,7 @@ namespace Microsoft.Docs.Build
                 }
                 else
                 {
-                    rawMetadata = LegacyMetadata.GenerateLegacyRawMetadata(pageModel, content, doc);
+                    rawMetadata = LegacyMetadata.GenerateLegacyRawMetadata(pageModel, doc);
                     var pageMetadata = LegacyMetadata.CreateHtmlMetaTags(rawMetadata);
                     context.Output.WriteJson(new { content, rawMetadata, pageMetadata, themesRelativePathToOutputRoot }, rawPageOutputPath);
                 }

@@ -33,7 +33,7 @@ namespace Microsoft.Docs.Build
         {
             // TODO: only works for conceptual
             var content = model.Content.ToString();
-            var page = LegacyMetadata.GenerateLegacyRawMetadata(model, content, file);
+            var page = LegacyMetadata.GenerateLegacyRawMetadata(model, file);
             var metadata = LegacyMetadata.CreateHtmlMetaTags(page);
             var layout = page.Value<string>("layout");
             var themeRelativePath = PathUtility.GetRelativePathToFile(file.SitePath, "_themes");
