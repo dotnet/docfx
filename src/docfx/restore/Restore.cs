@@ -27,7 +27,7 @@ namespace Microsoft.Docs.Build
 
                 await RestoreDocset(docsetPath, rootRepository: repository);
 
-                async Task RestoreDocset(string docset, bool root = true, Repository rootRepository = null)
+                async Task RestoreDocset(string docset, bool root = true, Repository rootRepository = null, DependencyLock dependencyLock = null)
                 {
                     if (restoredDocsets.TryAdd(docset, 0))
                     {
@@ -44,8 +44,9 @@ namespace Microsoft.Docs.Build
                             docset,
                             localeToRestore,
                             config,
-                            async subDocset => await RestoreDocset(subDocset, root: false),
-                            rootRepository);
+                            async (subDocset, subDependencyLock) => await RestoreDocset(subDocset, root: false, dependencyLock: subDependencyLock),
+                            rootRepository,
+                            dependencyLock);
                     }
                 }
             }
@@ -54,8 +55,9 @@ namespace Microsoft.Docs.Build
                 string docset,
                 string locale,
                 Config config,
-                Func<string, Task> restoreChild,
-                Repository rootRepository)
+                Func<string, DependencyLock, Task> restoreChild,
+                Repository rootRepository,
+                DependencyLock dependencyLock)
             {
                 // restore extend url firstly
                 // no need to extend config
@@ -67,8 +69,13 @@ namespace Microsoft.Docs.Build
                 var (errors, extendedConfig) = ConfigLoader.TryLoad(docset, options, locale, extend: true);
                 report.Write(errors);
 
+                // restore and load dependency lock if need
+                if (HrefUtility.IsHttpHref(extendedConfig.DependencyLock))
+                    await RestoreFile.Restore(extendedConfig.DependencyLock, extendedConfig, @implicit);
+                dependencyLock = dependencyLock ?? await RestoreLock.Load(docset, extendedConfig);
+
                 // restore git repos includes dependency repos and loc repos
-                await RestoreGit.Restore(extendedConfig, restoreChild, locale, @implicit, rootRepository);
+                await RestoreGit.Restore(extendedConfig, restoreChild, locale, @implicit, rootRepository, dependencyLock);
 
                 // restore urls except extend url
                 await ParallelUtility.ForEach(

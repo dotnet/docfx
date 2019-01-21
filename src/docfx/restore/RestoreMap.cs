@@ -14,31 +14,32 @@ namespace Microsoft.Docs.Build
         private static readonly ConcurrentDictionary<(string remote, string branch), Lazy<string>> s_gitPath = new ConcurrentDictionary<(string remote, string branch), Lazy<string>>();
         private static readonly ConcurrentDictionary<string, Lazy<string>> s_downloadPath = new ConcurrentDictionary<string, Lazy<string>>();
 
-        public static string GetGitRestorePath(string url)
+        public static string GetGitRestorePath(string url, string commit)
         {
             var (remote, branch) = HrefUtility.SplitGitHref(url);
-            return GetGitRestorePath(remote, branch);
+            return GetGitRestorePath(remote, branch, commit);
         }
 
-        public static string GetGitRestorePath(string remote, string branch)
+        public static string GetGitRestorePath(string remote, string branch, string commit)
         {
-            if (!TryGetGitRestorePath(remote, branch, out var result))
+            if (!TryGetGitRestorePath(remote, branch, out var result, commit))
             {
                 throw Errors.NeedRestore($"{remote}#{branch}").ToException();
             }
             return result;
         }
 
-        public static bool TryGetGitRestorePath(string remote, string branch, out string result)
+        public static bool TryGetGitRestorePath(string remote, string branch, out string result, string commit = null)
         {
+            var locked = !string.IsNullOrEmpty(commit);
             result = s_gitPath.AddOrUpdate(
                 (remote, branch),
-                new Lazy<string>(FindLastModifiedGitRepository),
-                (_, existing) => existing.Value != null ? existing : new Lazy<string>(FindLastModifiedGitRepository)).Value;
+                new Lazy<string>(FindGitRepository),
+                (_, existing) => existing.Value != null ? existing : new Lazy<string>(FindGitRepository)).Value;
 
             return Directory.Exists(result);
 
-            string FindLastModifiedGitRepository()
+            string FindGitRepository()
             {
                 var repoPath = AppData.GetGitDir(remote);
 
@@ -50,8 +51,9 @@ namespace Microsoft.Docs.Build
                 return (
                     from path in Directory.GetDirectories(repoPath, "*", SearchOption.TopDirectoryOnly)
                     let name = Path.GetFileName(path)
-                    where name.StartsWith(HrefUtility.EscapeUrlSegment(branch) + "-" + branch.GetMd5HashShort() + "-") &&
-                          GitUtility.IsWorkTreeCheckoutComplete(repoPath, name)
+                    where GitUtility.IsWorkTreeCheckoutComplete(repoPath, name) &&
+                        ((locked && name == $"{RestoreGit.GetWorkTreeHeadPrefix(branch, locked)}-{commit}") ||
+                        name.StartsWith(RestoreGit.GetWorkTreeHeadPrefix(branch)))
                     orderby new DirectoryInfo(path).LastWriteTimeUtc
                     select path).FirstOrDefault();
             }

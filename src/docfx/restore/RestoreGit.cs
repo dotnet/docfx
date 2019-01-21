@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -22,33 +23,35 @@ namespace Microsoft.Docs.Build
 
         public static async Task Restore(
             Config config,
-            Func<string, Task> restoreChild,
+            Func<string, DependencyLock, Task> restoreChild,
             string locale,
             bool @implicit,
-            Repository rootRepository)
+            Repository rootRepository,
+            DependencyLock dependencyLock)
         {
             var gitDependencies =
                 from git in GetGitDependencies(config, locale, rootRepository)
                 group (git.branch, git.flags)
                 by git.remote;
 
-            var workTrees = new ConcurrentBag<string>();
+            var children = new ConcurrentBag<(string workTree, DependencyLock dependencyLock)>();
 
+            // restore first level children
             await ParallelUtility.ForEach(
                 gitDependencies,
                 async group =>
                 {
-                    foreach (var worktree in await RestoreGitRepo(group))
+                    foreach (var child in await RestoreGitRepo(group))
                     {
-                        workTrees.Add(worktree);
+                        children.Add(child);
                     }
                 },
                 Progress.Update);
 
-            foreach (var workTree in workTrees)
+            // update the last write time
+            foreach (var child in children)
             {
-                // update the last write time
-                Directory.SetLastWriteTimeUtc(workTree, DateTime.UtcNow);
+                Directory.SetLastWriteTimeUtc(child.workTree, DateTime.UtcNow);
             }
 
             // fetch contribution branch
@@ -57,22 +60,30 @@ namespace Microsoft.Docs.Build
                 await GitUtility.Fetch(rootRepository.Path, rootRepository.Remote, contributionBranch, config);
             }
 
-            async Task<List<string>> RestoreGitRepo(IGrouping<string, (string branch, GitFlags flags)> group)
+            // restore sub-level children
+            foreach (var child in children)
             {
-                var worktreePaths = new List<string>();
+                await restoreChild(child.workTree, child.dependencyLock);
+            }
+
+            async Task<List<(string workTree, DependencyLock dependencyLock)>> RestoreGitRepo(IGrouping<string, (string branch, GitFlags flags)> group)
+            {
+                var subChildren = new List<(string workTree, DependencyLock dependencyLock)>();
                 var remote = group.Key;
                 var branches = group.Select(g => g.branch).ToArray();
-                var depthOne = group.All(g => (g.flags & GitFlags.DepthOne) != 0);
+                var depthOne = group.All(g => (g.flags & GitFlags.DepthOne) != 0) && !(dependencyLock?.ContainsGitLock(remote) ?? false);
                 var branchesToFetch = new HashSet<string>(branches);
 
                 if (@implicit)
                 {
                     foreach (var branch in branches)
                     {
-                        if (RestoreMap.TryGetGitRestorePath(remote, branch, out var existingPath))
+                        if (RestoreMap.TryGetGitRestorePath(remote, branch, out var existingPath, dependencyLock?.GetGitLock(remote, branch)?.Commit))
                         {
-                            branchesToFetch.Remove(branch);
-                            worktreePaths.Add(existingPath);
+                            {
+                                branchesToFetch.Remove(branch);
+                                subChildren.Add((existingPath, dependencyLock?.GetGitLock(remote, branch)));
+                            }
                         }
                     }
                 }
@@ -98,12 +109,7 @@ namespace Microsoft.Docs.Build
                         }
                     });
 
-                foreach (var worktree in worktreePaths)
-                {
-                    await restoreChild(worktree);
-                }
-
-                return worktreePaths;
+                return subChildren;
 
                 async Task AddWorkTrees()
                 {
@@ -123,7 +129,10 @@ namespace Microsoft.Docs.Build
                             throw Errors.CommittishNotFound(remote, branch).ToException();
                         }
 
-                        var workTreeHead = $"{HrefUtility.EscapeUrlSegment(branch)}-{branch.GetMd5HashShort()}-{headCommit}";
+                        var gitDependencyLock = dependencyLock?.GetGitLock(remote, branch);
+                        headCommit = gitDependencyLock?.Commit ?? headCommit;
+
+                        var workTreeHead = $"{GetWorkTreeHeadPrefix(branch, !string.IsNullOrEmpty(gitDependencyLock?.Commit))}-{headCommit}";
                         var workTreePath = Path.GetFullPath(Path.Combine(repoPath, "../", workTreeHead)).Replace('\\', '/');
 
                         if (existingWorkTreePath.TryAdd(workTreePath))
@@ -138,10 +147,20 @@ namespace Microsoft.Docs.Build
                             }
                         }
 
-                        worktreePaths.Add(workTreePath);
+                        subChildren.Add((workTreePath, gitDependencyLock));
                     });
                 }
             }
+        }
+
+        // todo: change to re-usable worktree prefix but stateful
+        public static string GetWorkTreeHeadPrefix(string branch, bool isLocked = false)
+        {
+            Debug.Assert(!string.IsNullOrEmpty(branch));
+
+            var workTreeHeadPrefix = isLocked ? "locked-" : "";
+
+            return $"{workTreeHeadPrefix}{HrefUtility.EscapeUrlSegment(branch)}-{branch.GetMd5HashShort()}-";
         }
 
         private static IEnumerable<(string remote, string branch, GitFlags flags)> GetGitDependencies(Config config, string locale, Repository rootRepository)
