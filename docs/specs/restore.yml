@@ -80,7 +80,7 @@ inputs:
       error: https://github.com/docascode/docfx-test-dependencies#bad-branch
 outputs:
   build.log: |
-    ["error","git-clone-failed","Cloning git repository 'https://github.com/docascode/docfx-test-dependencies' ('bad-branch') failed."]
+    ["error","committish-not-found","Cannot find branch, tag or commit 'bad-branch' for repo 'https://github.com/docascode/docfx-test-dependencies'."]
 ---
 # Show error when dependent repo can't be found
 commands:

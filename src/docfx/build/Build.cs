@@ -19,12 +19,13 @@ namespace Microsoft.Docs.Build
             var errors = new List<Error>();
 
             // todo: abort the process if configuration loading has errors
-            var (configErrors, config) = LocalizationUtility.GetBuildConfig(docsetPath, options);
+            var repository = Repository.Create(docsetPath, branch: null);
+            var (configErrors, config) = LocalizationUtility.GetBuildConfig(docsetPath, repository, options);
             report.Configure(docsetPath, config);
             report.Write(config.ConfigFileName, configErrors);
 
-            var localeToBuild = LocalizationUtility.GetBuildLocale(docsetPath, options);
-            var docset = new Docset(report, docsetPath, localeToBuild, config, options).GetBuildDocset();
+            var localeToBuild = LocalizationUtility.GetBuildLocale(repository, options);
+            var docset = new Docset(report, docsetPath, localeToBuild, config, options, repository).GetBuildDocset();
             var outputPath = Path.Combine(docsetPath, config.Output.Path);
 
             using (var context = await Context.Create(outputPath, report, docset, () => xrefMap))

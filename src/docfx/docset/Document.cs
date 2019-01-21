@@ -102,7 +102,13 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public bool IsSchemaData => Schema != null && Schema.Attribute as PageSchemaAttribute == null;
 
+        /// <summary>
+        /// Gets the repository
+        /// </summary>
+        public Repository Repository => _repository.Value;
+
         private readonly Lazy<(string docId, string versionIndependentId)> _id;
+        private readonly Lazy<Repository> _repository;
 
         // TODO:
         // This is a temporary property just so that legacy can access OutputPath,
@@ -144,6 +150,7 @@ namespace Microsoft.Docs.Build
             IsFromHistory = isFromHistory;
 
             _id = new Lazy<(string docId, string versionId)>(() => LoadDocumentId());
+            _repository = new Lazy<Repository>(() => Docset.GetRepository(FilePath));
 
             Debug.Assert(IsValidRelativePath(FilePath));
             Debug.Assert(IsValidRelativePath(SitePath));
