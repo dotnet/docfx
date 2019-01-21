@@ -29,11 +29,11 @@ namespace Microsoft.Docs.Build
             Global = LoadGlobalTokens(templateDir, _locale);
         }
 
-        public string Render(PageModel model, Document file, string group)
+        public string Render(PageModel model, Document file)
         {
             // TODO: only works for conceptual
             var content = model.Content.ToString();
-            var page = LegacyMetadata.GenerateLegacyRawMetadata(model, content, file, group);
+            var page = LegacyMetadata.GenerateLegacyRawMetadata(model, content, file);
             var metadata = LegacyMetadata.CreateHtmlMetaTags(page);
             var layout = page.Value<string>("layout");
             var themeRelativePath = PathUtility.GetRelativePathToFile(file.SitePath, "_themes");

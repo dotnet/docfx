@@ -43,23 +43,18 @@ namespace Microsoft.Docs.Build
                                     .RemoveRerunCodepenIframes());
                 }
 
-                var outputRootRelativePath =
-                    PathUtility.NormalizeFolder(Path.GetRelativePath(
-                        PathUtility.NormalizeFolder(Path.GetDirectoryName(rawPageOutputPath)),
-                        PathUtility.NormalizeFolder(docset.Config.DocumentId.SiteBasePath)));
-
                 var themesRelativePathToOutputRoot = "_themes/";
 
                 if (!string.IsNullOrEmpty(doc.RedirectionUrl))
                 {
                     rawMetadata = LegacyMetadata.GenerateLegacyRedirectionRawMetadata(docset, pageModel);
-                    context.Output.WriteJson(new { outputRootRelativePath, rawMetadata, themesRelativePathToOutputRoot }, rawPageOutputPath);
+                    context.Output.WriteJson(new { rawMetadata, themesRelativePathToOutputRoot }, rawPageOutputPath);
                 }
                 else
                 {
-                    rawMetadata = LegacyMetadata.GenerateLegacyRawMetadata(pageModel, content, doc, legacyManifestItem.Group);
+                    rawMetadata = LegacyMetadata.GenerateLegacyRawMetadata(pageModel, content, doc);
                     var pageMetadata = LegacyMetadata.CreateHtmlMetaTags(rawMetadata);
-                    context.Output.WriteJson(new { outputRootRelativePath, content, rawMetadata, pageMetadata, themesRelativePathToOutputRoot }, rawPageOutputPath);
+                    context.Output.WriteJson(new { content, rawMetadata, pageMetadata, themesRelativePathToOutputRoot }, rawPageOutputPath);
                 }
             }
 
