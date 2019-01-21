@@ -187,20 +187,8 @@ namespace Microsoft.Docs.Build
         public string GetOutputPath(List<string> monikers, bool rawPage = false)
         {
             var outputPath = PathUtility.NormalizeFile(Path.Combine($"{HashUtility.GetMd5HashShort(monikers)}", SitePath));
-            if (!Docset.Legacy)
-            {
-                return outputPath;
-            }
 
-            var basePath = Docset.Config.DocumentId.SiteBasePath;
-            if (!outputPath.StartsWith(basePath, PathUtility.PathComparison))
-            {
-                // TODO: we should never reach here if our routes config honors base_url.
-                throw new InvalidOperationException($"Output path '{outputPath}' does not start with base path '{basePath}'");
-            }
-
-            var assertId = outputPath.Substring(basePath.Length + 1);
-            return rawPage ? Path.ChangeExtension(assertId, ".raw.page.json") : assertId;
+            return Docset.Legacy && rawPage ? Path.ChangeExtension(outputPath, ".raw.page.json") : outputPath;
         }
 
         public override int GetHashCode()

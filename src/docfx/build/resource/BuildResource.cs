@@ -18,9 +18,7 @@ namespace Microsoft.Docs.Build
 
             if (file.Docset.Legacy)
             {
-                context.Output.WriteJson(
-                    new { locale = file.Docset.Locale, monikers },
-                    LegacyUtility.OutputPathToMtaJsonPath(outputPath));
+                context.Output.WriteJson(new { locale = file.Docset.Locale, monikers }, outputPath + ".mta.json");
             }
 
             if (file.Docset.Config.Output.CopyResources)

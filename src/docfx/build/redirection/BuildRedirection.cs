@@ -17,12 +17,18 @@ namespace Microsoft.Docs.Build
             if (file.Docset.Legacy)
             {
                 var outputPath = file.GetOutputPath(monikers, rawPage: true);
+                var metadataPath = outputPath.Substring(0, outputPath.Length - ".raw.page.json".Length) + ".mta.json";
+                var metadata = new
+                {
+                    locale = file.Docset.Locale,
+                    monikers,
+                    redirect_url = file.RedirectionUrl,
+                    is_dynamic_rendering = true,
+                };
 
                 // Note: produce an empty output to make publish happy
                 context.Output.WriteJson(new { }, outputPath);
-                context.Output.WriteJson(
-                    new { locale = file.Docset.Locale, monikers, redirect_url = file.RedirectionUrl },
-                    LegacyUtility.OutputPathToMtaJsonPath(outputPath));
+                context.Output.WriteJson(metadata, metadataPath);
             }
 
             var publishItem = new PublishItem
@@ -32,14 +38,6 @@ namespace Microsoft.Docs.Build
                 RedirectUrl = file.RedirectionUrl,
                 Monikers = monikers,
             };
-
-            if (file.Docset.Legacy)
-            {
-                publishItem.Path = file.GetOutputPath(monikers);
-
-                var model = new { locale = file.Docset.Locale, monikers, redirect_url = file.RedirectionUrl };
-                context.Output.WriteJson(model, publishItem.Path);
-            }
 
             return (errors, publishItem);
         }
