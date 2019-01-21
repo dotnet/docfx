@@ -14,23 +14,26 @@ namespace Microsoft.Docs.Build
         private static readonly ConcurrentDictionary<(string remote, string branch), Lazy<string>> s_gitPath = new ConcurrentDictionary<(string remote, string branch), Lazy<string>>();
         private static readonly ConcurrentDictionary<string, Lazy<string>> s_downloadPath = new ConcurrentDictionary<string, Lazy<string>>();
 
-        public static string GetGitRestorePath(string url, string commit)
+        public static (string path, DependencyLock subDependencyLock) GetGitRestorePath(string url, DependencyLock dependencyLock)
         {
             var (remote, branch) = HrefUtility.SplitGitHref(url);
-            return GetGitRestorePath(remote, branch, commit);
+            return GetGitRestorePath(remote, branch, dependencyLock);
         }
 
-        public static string GetGitRestorePath(string remote, string branch, string commit)
+        public static (string path, DependencyLock subDependencyLock) GetGitRestorePath(string remote, string branch, DependencyLock dependencyLock)
         {
-            if (!TryGetGitRestorePath(remote, branch, out var result, commit))
+            if (!TryGetGitRestorePath(remote, branch, dependencyLock, out var result, out var subDependencyLock))
             {
                 throw Errors.NeedRestore($"{remote}#{branch}").ToException();
             }
-            return result;
+
+            return (result, subDependencyLock);
         }
 
-        public static bool TryGetGitRestorePath(string remote, string branch, out string result, string commit = null)
+        public static bool TryGetGitRestorePath(string remote, string branch, DependencyLock dependencyLock, out string result, out DependencyLock subDependencyLock)
         {
+            subDependencyLock = dependencyLock?.GetGitLock(remote, branch);
+            var commit = subDependencyLock?.Commit;
             var locked = !string.IsNullOrEmpty(commit);
             result = s_gitPath.AddOrUpdate(
                 (remote, branch),

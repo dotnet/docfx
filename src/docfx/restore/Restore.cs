@@ -72,7 +72,7 @@ namespace Microsoft.Docs.Build
                 // restore and load dependency lock if need
                 if (HrefUtility.IsHttpHref(extendedConfig.DependencyLock))
                     await RestoreFile.Restore(extendedConfig.DependencyLock, extendedConfig, @implicit);
-                dependencyLock = dependencyLock ?? await RestoreLock.Load(docset, extendedConfig);
+                dependencyLock = dependencyLock ?? await RestoreLock.Load(docset, extendedConfig.DependencyLock);
 
                 // restore git repos includes dependency repos and loc repos
                 await RestoreGit.Restore(extendedConfig, restoreChild, locale, @implicit, rootRepository, dependencyLock);

@@ -78,11 +78,11 @@ namespace Microsoft.Docs.Build
                 {
                     foreach (var branch in branches)
                     {
-                        if (RestoreMap.TryGetGitRestorePath(remote, branch, out var existingPath, dependencyLock?.GetGitLock(remote, branch)?.Commit))
+                        if (RestoreMap.TryGetGitRestorePath(remote, branch, dependencyLock, out var existingPath, out var subDependencyLock))
                         {
                             {
                                 branchesToFetch.Remove(branch);
-                                subChildren.Add((existingPath, dependencyLock?.GetGitLock(remote, branch)));
+                                subChildren.Add((existingPath, subDependencyLock));
                             }
                         }
                     }

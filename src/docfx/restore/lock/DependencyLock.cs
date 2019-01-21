@@ -29,7 +29,7 @@ namespace Microsoft.Docs.Build
 
         public bool ContainsGitLock(string href)
         {
-            return Git.ContainsKey(href) || Git.Keys.Any(g => g.StartsWith(href));
+            return Git.ContainsKey(href) || Git.Keys.Any(g => g.StartsWith($"{href}#"));
         }
     }
 }
