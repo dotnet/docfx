@@ -215,3 +215,45 @@ repos:
 outputs:
   docs/a.json: |
     {"content":"<p>&quot;def&quot;</p>\n<p>233333</p>\n<p>2333</p>\n"}
+---
+# restore with sub dependency lock only
+repos:
+  https://docs.com/lock2/a#master:
+    - files:
+        docfx.yml: |
+          dependencies:
+            dep1: https://docs.com/lock2/b#master
+        docs/a.md: |
+          [!include[](~/dep1/docs/dep1.md)]
+  https://docs.com/lock2/b:
+    - files:
+        docs/dep1.md: |
+          "abc"
+          [!include[](~/dep2/docs/dep2.md)]
+        docfx.yml: |
+          dependencies:
+            dep2: https://docs.com/lock2/c
+          dependencyLock: .lock.json
+        .lock.json: |
+          {
+             "git":{
+                "https://docs.com/lock2/c#master":{
+                   "commit":"8720d784fb99abcbdfa922025b8bcc060f0f622a"
+                }
+             }
+          }
+    - files:
+        docs/dep1.md: |
+          "def"
+          [!include[](~/dep2/docs/dep2.md)]
+        docfx.yml: |
+          dependencies:
+            dep2: https://docs.com/lock2/c
+  https://docs.com/lock2/c:
+    - files:
+        docs/dep2.md: "2333"
+    - files:
+        docs/dep2.md: "233333"
+outputs:
+  docs/a.json: |
+    {"content":"<p>&quot;abc&quot;</p>\n<p>233333</p>"}

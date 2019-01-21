@@ -2,13 +2,13 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Diagnostics;
-using System.Threading.Tasks;
+using System.IO;
 
 namespace Microsoft.Docs.Build
 {
     internal static class RestoreLock
     {
-        public static async Task<DependencyLock> Load(string docset, string dependencyLockPath)
+        public static DependencyLock Load(string docset, string dependencyLockPath)
         {
             Debug.Assert(!string.IsNullOrEmpty(docset));
 
@@ -19,12 +19,11 @@ namespace Microsoft.Docs.Build
 
             var (_, restoredLockFile) = RestoreMap.GetFileRestorePath(docset, dependencyLockPath);
 
-            var content = await ProcessUtility.ReadFile(restoredLockFile);
-
-            return JsonUtility.Deserialize<DependencyLock>(content);
+            // todo: add process lock
+            return JsonUtility.Deserialize<DependencyLock>(File.ReadAllText(restoredLockFile));
         }
 
-        public static Task<DependencyLock> Load(string docset, CommandLineOptions commandLineOptions)
+        public static DependencyLock Load(string docset, CommandLineOptions commandLineOptions)
         {
             Debug.Assert(!string.IsNullOrEmpty(docset));
 

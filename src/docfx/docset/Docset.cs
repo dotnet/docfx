@@ -111,11 +111,13 @@ namespace Microsoft.Docs.Build
                 if (LocalizationUtility.TryGetSourceDocsetPath(this, out var sourceDocsetPath, out var sourceBranch, out var sourceDependencyLock))
                 {
                     var repo = Repository.Create(sourceDocsetPath, sourceBranch);
+                    sourceDependencyLock = sourceDependencyLock ?? RestoreLock.Load(sourceDocsetPath, config.DependencyLock);
                     FallbackDocset = new Docset(report, sourceDocsetPath, Locale, config, options, sourceDependencyLock, repo, localizedDocset: this);
                 }
                 else if (LocalizationUtility.TryGetLocalizedDocsetPath(this, Config, Locale, out var localizationDocsetPath, out var localizationBranch, out var localizationDependencyLock))
                 {
                     var repo = Repository.Create(localizationDocsetPath, localizationBranch);
+                    localizationDependencyLock = localizationDependencyLock ?? RestoreLock.Load(localizationDocsetPath, config.DependencyLock);
                     LocalizationDocset = new Docset(report, localizationDocsetPath, Locale, config, options, localizationDependencyLock, repo, fallbackDocset: this);
                 }
             }
@@ -233,6 +235,8 @@ namespace Microsoft.Docs.Build
                 // todo: what parent config should be pass on its children
                 var (loadErrors, subConfig) = ConfigLoader.TryLoad(dir, _options, Locale);
                 errors.AddRange(loadErrors);
+
+                subLock = subLock ?? RestoreLock.Load(dir, subConfig.DependencyLock);
                 result.TryAdd(PathUtility.NormalizeFolder(name), new Docset(_report, dir, Locale, subConfig, _options, subLock, isDependency: true));
             }
             return (errors, result);
