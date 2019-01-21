@@ -25,7 +25,7 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
-        /// Our repository's branch info should NOT depends on git, unless you are pretty sure about that
+        /// Our repository's branch info should NOT depend on git, unless you are pretty sure about that
         /// </summary>
         public static Repository Create(string path, string branch)
         {

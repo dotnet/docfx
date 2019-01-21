@@ -90,7 +90,7 @@ namespace Microsoft.Docs.Build
 
         private readonly CommandLineOptions _options;
         private readonly Report _report;
-        private readonly ConcurrentDictionary<string, Repository> _repositories;
+        private readonly ConcurrentDictionary<string, Lazy<Repository>> _repositories;
         private readonly Lazy<HashSet<Document>> _buildScope;
         private readonly Lazy<HashSet<Document>> _scanScope;
         private readonly Lazy<RedirectionMap> _redirections;
@@ -153,7 +153,7 @@ namespace Microsoft.Docs.Build
                 return new LegacyTemplate(RestoreMap.GetGitRestorePath($"{themeRemote}#{themeBranch}"), Locale);
             });
 
-            _repositories = new ConcurrentDictionary<string, Repository>();
+            _repositories = new ConcurrentDictionary<string, Lazy<Repository>>();
         }
 
         public Repository GetRepository(string filePath)
@@ -174,7 +174,7 @@ namespace Microsoft.Docs.Build
 
                 var parent = Path.GetDirectoryName(fullPath);
                 return !string.IsNullOrEmpty(parent)
-                    ? _repositories.GetOrAdd(PathUtility.NormalizeFile(parent), GetRepositoryInternal)
+                    ? _repositories.GetOrAdd(PathUtility.NormalizeFile(parent), k => new Lazy<Repository>(() => GetRepositoryInternal(k))).Value
                     : null;
             }
         }
