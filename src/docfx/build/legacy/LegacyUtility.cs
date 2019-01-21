@@ -8,6 +8,16 @@ namespace Microsoft.Docs.Build
 {
     internal static class LegacyUtility
     {
+        public static string OutputPathToMtaJsonPath(string outputPath)
+        {
+            if (outputPath.EndsWith(".raw.page.json"))
+            {
+                return outputPath.Substring(0, outputPath.Length - ".raw.page.json".Length) + ".mta.json";
+            }
+
+            return Path.ChangeExtension(outputPath, ".mta.json");
+        }
+
         public static void MoveFileSafe(string sourceFileName, string destFileName)
         {
             Debug.Assert(!string.IsNullOrEmpty(sourceFileName));

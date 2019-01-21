@@ -14,6 +14,17 @@ namespace Microsoft.Docs.Build
 
             var (errors, monikers) = context.MonikerProvider.GetFileLevelMonikers(file, context.MetadataProvider);
 
+            if (file.Docset.Legacy)
+            {
+                var outputPath = file.GetOutputPath(monikers, rawPage: true);
+
+                // Note: produce an empty output for redirection to make legacy publish happy
+                context.Output.WriteJson(new { }, outputPath);
+                context.Output.WriteJson(
+                    new { locale = file.Docset.Locale, monikers, redirect_url = file.RedirectionUrl },
+                    LegacyUtility.OutputPathToMtaJsonPath(outputPath));
+            }
+
             var publishItem = new PublishItem
             {
                 Url = file.SiteUrl,
