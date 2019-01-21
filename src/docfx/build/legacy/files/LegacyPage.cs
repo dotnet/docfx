@@ -35,16 +35,11 @@ namespace Microsoft.Docs.Build
                                     .RemoveRerunCodepenIframes());
                 }
 
-                var outputRootRelativePath =
-                    PathUtility.NormalizeFolder(Path.GetRelativePath(
-                        PathUtility.NormalizeFolder(Path.GetDirectoryName(rawPageOutputPath)),
-                        PathUtility.NormalizeFolder(docset.Config.DocumentId.SiteBasePath)));
-
                 var themesRelativePathToOutputRoot = "_themes/";
 
                 rawMetadata = LegacyMetadata.GenerateLegacyRawMetadata(pageModel, content, doc, legacyManifestItem.Group);
                 var pageMetadata = LegacyMetadata.CreateHtmlMetaTags(rawMetadata);
-                context.Output.WriteJson(new { outputRootRelativePath, content, rawMetadata, pageMetadata, themesRelativePathToOutputRoot }, rawPageOutputPath);
+                context.Output.WriteJson(new { content, rawMetadata, pageMetadata, themesRelativePathToOutputRoot }, rawPageOutputPath);
             }
 
             if (legacyManifestOutput.MetadataOutput != null && rawMetadata != null)

@@ -42,7 +42,7 @@ namespace Microsoft.Docs.Build
             if (!file.Docset.Config.Output.Json && schema.Attribute is PageSchemaAttribute)
             {
                 output = file.Docset.Legacy
-                    ? file.Docset.LegacyTemplate.Render(model, file, HashUtility.GetMd5HashShort(model.Monikers))
+                    ? file.Docset.LegacyTemplate.Render(model, file)
                     : await RazorTemplate.Render(model.SchemaType, model);
             }
 
