@@ -11,7 +11,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class RestoreMap
     {
-        private static readonly ConcurrentDictionary<(string remote, string branch), Lazy<string>> s_gitPath = new ConcurrentDictionary<(string remote, string branch), Lazy<string>>();
+        private static readonly ConcurrentDictionary<(string remote, string branch, string commit), Lazy<string>> s_gitPath = new ConcurrentDictionary<(string remote, string branch, string commit), Lazy<string>>();
         private static readonly ConcurrentDictionary<string, Lazy<string>> s_downloadPath = new ConcurrentDictionary<string, Lazy<string>>();
 
         public static (string path, DependencyLock subDependencyLock) GetGitRestorePath(string url, DependencyLock dependencyLock)
@@ -36,7 +36,7 @@ namespace Microsoft.Docs.Build
             var commit = subDependencyLock?.Commit;
             var locked = !string.IsNullOrEmpty(commit);
             result = s_gitPath.AddOrUpdate(
-                (remote, branch),
+                (remote, branch, commit),
                 new Lazy<string>(FindGitRepository),
                 (_, existing) => existing.Value != null ? existing : new Lazy<string>(FindGitRepository)).Value;
 
@@ -56,7 +56,7 @@ namespace Microsoft.Docs.Build
                     let name = Path.GetFileName(path)
                     where GitUtility.IsWorkTreeCheckoutComplete(repoPath, name) &&
                         ((locked && name == $"{RestoreGit.GetWorkTreeHeadPrefix(branch, locked)}-{commit}") ||
-                        name.StartsWith(RestoreGit.GetWorkTreeHeadPrefix(branch)))
+                        (!locked && name.StartsWith(RestoreGit.GetWorkTreeHeadPrefix(branch))))
                     orderby new DirectoryInfo(path).LastWriteTimeUtc
                     select path).FirstOrDefault();
             }

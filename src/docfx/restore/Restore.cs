@@ -22,14 +22,14 @@ namespace Microsoft.Docs.Build
             using (Progress.Start("Restore dependencies"))
             {
                 var repository = Repository.Create(docsetPath, branch: null);
-                var restoredDocsets = new ConcurrentDictionary<string, int>(PathUtility.PathComparer);
+                var restoredDocsets = new ConcurrentHashSet<string>(PathUtility.PathComparer);
                 var localeToRestore = LocalizationUtility.GetBuildLocale(repository, options);
 
                 await RestoreDocset(docsetPath, rootRepository: repository);
 
                 async Task RestoreDocset(string docset, bool root = true, Repository rootRepository = null, DependencyLock dependencyLock = null)
                 {
-                    if (restoredDocsets.TryAdd(docset, 0))
+                    if (restoredDocsets.TryAdd(docset + dependencyLock?.Commit))
                     {
                         var (errors, config) = ConfigLoader.TryLoad(docset, options, localeToRestore, extend: false);
                         report.Write(errors);
