@@ -26,6 +26,7 @@ exec "git $devopsAuth $githubAuth submodule update --init --progress"
 exec "git clean -xdf"
 exec "git status"
 
+exec "npm update @docfx-migration-tool/docs-docfx-migrationtool --save-dev"
 exec "npm install"
 exec "npm run impact -- --push --pack"
 
