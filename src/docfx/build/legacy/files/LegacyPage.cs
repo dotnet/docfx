@@ -37,7 +37,7 @@ namespace Microsoft.Docs.Build
 
                 var themesRelativePathToOutputRoot = "_themes/";
 
-                rawMetadata = LegacyMetadata.GenerateLegacyRawMetadata(pageModel, content, doc, legacyManifestItem.Group);
+                rawMetadata = LegacyMetadata.GenerateLegacyRawMetadata(pageModel, doc);
                 var pageMetadata = LegacyMetadata.CreateHtmlMetaTags(rawMetadata);
                 context.Output.WriteJson(new { content, rawMetadata, pageMetadata, themesRelativePathToOutputRoot }, rawPageOutputPath);
             }
