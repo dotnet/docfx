@@ -190,11 +190,6 @@ namespace Microsoft.Docs.Build
 
             string GetContentGitUrl()
             {
-                if (!document.Docset.Config.Contribution.ShowEdit)
-                {
-                    return null;
-                }
-
                 var (editRemote, editBranch) = (repo.Remote, repo.Branch);
                 if (!string.IsNullOrEmpty(document.Docset.Config.Contribution.Repository))
                 {
