@@ -18,7 +18,7 @@ namespace Microsoft.Docs.Build
             {
                 var outputPath = file.GetOutputPath(monikers, rawPage: true);
 
-                // Note: produce an empty output for redirection to make legacy publish happy
+                // Note: produce an empty output to make publish happy
                 context.Output.WriteJson(new { }, outputPath);
                 context.Output.WriteJson(
                     new { locale = file.Docset.Locale, monikers, redirect_url = file.RedirectionUrl },
