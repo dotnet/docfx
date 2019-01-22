@@ -72,6 +72,12 @@ namespace Microsoft.Docs.Build
             {
                 foreach (var (path, redirectTo) in items)
                 {
+                    if (string.IsNullOrEmpty(path) || string.IsNullOrEmpty(redirectTo))
+                    {
+                        errors.Add(Errors.RedirectionIsEmpty(path, redirectTo));
+                        continue;
+                    }
+
                     var pathToDocset = PathUtility.NormalizeFile(path);
                     var (error, document) = Document.TryCreate(docset, pathToDocset, redirectTo);
                     if (error != null)
