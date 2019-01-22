@@ -400,7 +400,7 @@ outputs:
   build.log: |
     ["warning","unknown-field","Could not find member 'locales: zh-cn' on object of type 'Config'.","docfx.yml","['locales: zh-cn']"]
 ---
-# redirect to must start with '/'
+# redirect to in config.redirections must start with '/'
 inputs:
   docfx.yml: |
     redirections:
