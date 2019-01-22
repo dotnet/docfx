@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
 {
@@ -54,12 +55,12 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Gets the localization docset, it will be set when the current build locale is different with default locale
         /// </summary>
-        public Docset LocalizationDocset { get; }
+        public Docset LocalizationDocset { get; private set; }
 
         /// <summary>
         /// Gets the fallback docset, usually is English docset. It will be set when the current docset is localization docset.
         /// </summary>
-        public Docset FallbackDocset { get; }
+        public Docset FallbackDocset { get; private set; }
 
         /// <summary>
         /// Gets the reversed <see cref="Config.Routes"/> for faster lookup.
@@ -101,29 +102,64 @@ namespace Microsoft.Docs.Build
         private readonly Lazy<RedirectionMap> _redirections;
         private readonly Lazy<TemplateEngine> _template;
 
-        public Docset(Report report, string docsetPath, string locale, Config config, CommandLineOptions options, DependencyLock dependencyLock, Repository repository = null, bool isDependency = false)
-            : this(report, docsetPath, !string.IsNullOrEmpty(locale) ? locale : config.Localization.DefaultLocale, config, options, dependencyLock, repository, null, null)
+        public static async Task<Docset> Create(
+            Report report,
+            string docsetPath,
+            string locale,
+            Config config,
+            CommandLineOptions options,
+            DependencyLock dependencyLock,
+            Repository repository = null,
+            Docset localizedDocset = null,
+            Docset fallbackDocset = null,
+            bool isDependency = false)
         {
-            if (!isDependency && !string.Equals(Locale, config.Localization.DefaultLocale, StringComparison.OrdinalIgnoreCase))
+            locale = !string.IsNullOrEmpty(locale) ? locale : config.Localization.DefaultLocale;
+            var (errors, dependencies) = await LoadDependencies(report, config, locale, dependencyLock, options);
+            var docset = new Docset(
+                report,
+                docsetPath,
+                locale,
+                config,
+                options,
+                dependencyLock,
+                dependencies,
+                repository,
+                fallbackDocset,
+                localizedDocset);
+
+            if (!isDependency && !string.Equals(locale, config.Localization.DefaultLocale, StringComparison.OrdinalIgnoreCase))
             {
                 // localization/fallback docset will share the same context, config, build locale and options with source docset
                 // source docset configuration will be overwritten by build locale overwrite configuration
-                if (LocalizationUtility.TryGetSourceDocsetPath(this, out var sourceDocsetPath, out var sourceBranch, out var sourceDependencyLock))
+                if (LocalizationUtility.TryGetSourceDocsetPath(docset, out var sourceDocsetPath, out var sourceBranch, out var sourceDependencyLock))
                 {
                     var repo = Repository.Create(sourceDocsetPath, sourceBranch);
-                    sourceDependencyLock = sourceDependencyLock ?? DependencyLock.Load(sourceDocsetPath, config.DependencyLock);
-                    FallbackDocset = new Docset(report, sourceDocsetPath, Locale, config, options, sourceDependencyLock, repo, localizedDocset: this);
+                    sourceDependencyLock = sourceDependencyLock ?? await DependencyLock.Load(sourceDocsetPath, config.DependencyLock);
+                    docset.FallbackDocset = await Create(report, sourceDocsetPath, locale, config, options, sourceDependencyLock, repo, localizedDocset: docset);
                 }
-                else if (LocalizationUtility.TryGetLocalizedDocsetPath(this, Config, Locale, out var localizationDocsetPath, out var localizationBranch, out var localizationDependencyLock))
+                else if (LocalizationUtility.TryGetLocalizedDocsetPath(docset, config, locale, out var localizationDocsetPath, out var localizationBranch, out var localizationDependencyLock))
                 {
                     var repo = Repository.Create(localizationDocsetPath, localizationBranch);
-                    localizationDependencyLock = localizationDependencyLock ?? DependencyLock.Load(localizationDocsetPath, config.DependencyLock);
-                    LocalizationDocset = new Docset(report, localizationDocsetPath, Locale, config, options, localizationDependencyLock, repo, fallbackDocset: this);
+                    localizationDependencyLock = localizationDependencyLock ?? await DependencyLock.Load(localizationDocsetPath, config.DependencyLock);
+                    docset.LocalizationDocset = await Create(report, localizationDocsetPath, locale, config, options, localizationDependencyLock, repo, fallbackDocset: docset);
                 }
             }
+
+            return docset;
         }
 
-        private Docset(Report report, string docsetPath, string locale, Config config, CommandLineOptions options, DependencyLock dependencyLock, Repository repository = null, Docset fallbackDocset = null, Docset localizedDocset = null)
+        private Docset(
+            Report report,
+            string docsetPath,
+            string locale,
+            Config config,
+            CommandLineOptions options,
+            DependencyLock dependencyLock,
+            IReadOnlyDictionary<string, Docset> dependencies,
+            Repository repository = null,
+            Docset fallbackDocset = null,
+            Docset localizedDocset = null)
         {
             Debug.Assert(fallbackDocset == null || localizedDocset == null);
 
@@ -134,21 +170,20 @@ namespace Microsoft.Docs.Build
             Locale = locale.ToLowerInvariant();
             Routes = NormalizeRoutes(config.Routes);
             Culture = CreateCultureInfo(locale);
-            FallbackDocset = fallbackDocset;
             LocalizationDocset = localizedDocset;
+            FallbackDocset = fallbackDocset;
+            DependencyDocsets = dependencies;
             DependencyLock = dependencyLock;
 
-            var configErrors = new List<Error>();
-            (configErrors, DependencyDocsets) = LoadDependencies(Config);
             ResolveAlias = LoadResolveAlias(Config);
             Repository = repository ?? Repository.Create(DocsetPath, branch: null);
 
             // pass on the command line options to its children
             _buildScope = new Lazy<HashSet<Document>>(() => CreateBuildScope(Redirections.Files));
+            _buildScope = new Lazy<HashSet<Document>>(() => CreateBuildScope(Redirections.Files));
             _redirections = new Lazy<RedirectionMap>(() =>
             {
                 var (errors, map) = RedirectionMap.Create(this);
-                errors.AddRange(configErrors);
                 report.Write(Config.ConfigFileName, errors);
                 return map;
             });
@@ -223,25 +258,6 @@ namespace Microsoft.Docs.Build
             return result.Reverse().ToDictionary(item => item.Key, item => item.Value);
         }
 
-        private (List<Error>, Dictionary<string, Docset>) LoadDependencies(Config config)
-        {
-            var errors = new List<Error>();
-            var result = new Dictionary<string, Docset>(config.Dependencies.Count, PathUtility.PathComparer);
-            foreach (var (name, url) in config.Dependencies)
-            {
-                var (dir, subLock) = RestoreMap.GetGitRestorePath(url, DependencyLock);
-
-                // get dependent docset config or default config
-                // todo: what parent config should be pass on its children
-                var (loadErrors, subConfig) = ConfigLoader.TryLoad(dir, _options, Locale);
-                errors.AddRange(loadErrors);
-
-                subLock = subLock ?? DependencyLock.Load(dir, subConfig.DependencyLock);
-                result.TryAdd(PathUtility.NormalizeFolder(name), new Docset(_report, dir, Locale, subConfig, _options, subLock, isDependency: true));
-            }
-            return (errors, result);
-        }
-
         private HashSet<Document> CreateBuildScope(IEnumerable<Document> redirections)
         {
             using (Progress.Start("Globbing files"))
@@ -276,6 +292,25 @@ namespace Microsoft.Docs.Build
 
                 return result;
             }
+        }
+
+        private static async Task<(List<Error>, Dictionary<string, Docset>)> LoadDependencies(Report report, Config config, string locale, DependencyLock dependencyLock, CommandLineOptions options)
+        {
+            var errors = new List<Error>();
+            var result = new Dictionary<string, Docset>(config.Dependencies.Count, PathUtility.PathComparer);
+            foreach (var (name, url) in config.Dependencies)
+            {
+                var (dir, subLock) = RestoreMap.GetGitRestorePath(url, dependencyLock);
+
+                // get dependent docset config or default config
+                // todo: what parent config should be pass on its children
+                var (loadErrors, subConfig) = ConfigLoader.TryLoad(dir, options, locale);
+                errors.AddRange(loadErrors);
+
+                subLock = subLock ?? await DependencyLock.Load(dir, subConfig.DependencyLock);
+                result.TryAdd(PathUtility.NormalizeFolder(name), await Create(report, dir, locale, subConfig, options, subLock, isDependency: true));
+            }
+            return (errors, result);
         }
     }
 }
