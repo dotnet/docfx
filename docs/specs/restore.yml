@@ -257,3 +257,58 @@ repos:
 outputs:
   docs/a.json: |
     {"content":"<p>&quot;abc&quot;</p>\n<p>233333</p>"}
+---
+# restore with root and sub dependency lock, root lock wins
+repos:
+  https://docs.com/lock3/a#master:
+    - files:
+        docfx.yml: |
+          dependencies:
+            dep1: https://docs.com/lock3/b#master
+          dependencyLock: .lock.json
+        docs/a.md: |
+          [!include[](~/dep1/docs/dep1.md)]
+        .lock.json: |
+          {  
+             "git":{  
+                "https://docs.com/lock3/b":{  
+                   "git":{  
+                      "https://docs.com/lock3/c#master":{  
+                         "commit":"c5969737496ff42854a019f982882d5fac486a56"
+                      }
+                   }
+                }
+             }
+          }
+  https://docs.com/lock3/b:
+    - files:
+        docs/dep1.md: |
+          "abc"
+          [!include[](~/dep2/docs/dep2.md)]
+        docfx.yml: |
+          dependencies:
+            dep2: https://docs.com/lock3/c
+          dependencyLock: .lock.json
+        .lock.json: |
+          {
+             "git":{
+                "https://docs.com/lock3/c#master":{
+                   "commit":"8720d784fb99abcbdfa922025b8bcc060f0f622a"
+                }
+             }
+          }
+    - files:
+        docs/dep1.md: |
+          "def"
+          [!include[](~/dep2/docs/dep2.md)]
+        docfx.yml: |
+          dependencies:
+            dep2: https://docs.com/lock3/c
+  https://docs.com/lock3/c:
+    - files:
+        docs/dep2.md: "2333"
+    - files:
+        docs/dep2.md: "233333"
+outputs:
+  docs/a.json: |
+    {"content":"<p>&quot;abc&quot;</p>\n<p>2333</p>"}
