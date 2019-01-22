@@ -116,6 +116,8 @@ namespace Microsoft.Docs.Build
         {
             locale = !string.IsNullOrEmpty(locale) ? locale : config.Localization.DefaultLocale;
             var (errors, dependencies) = await LoadDependencies(report, config, locale, dependencyLock, options);
+            report.Write(config.ConfigFileName, errors);
+
             var docset = new Docset(
                 report,
                 docsetPath,
@@ -136,13 +138,13 @@ namespace Microsoft.Docs.Build
                 {
                     var repo = Repository.Create(sourceDocsetPath, sourceBranch);
                     sourceDependencyLock = sourceDependencyLock ?? await DependencyLock.Load(sourceDocsetPath, config.DependencyLock);
-                    docset.FallbackDocset = await Create(report, sourceDocsetPath, locale, config, options, sourceDependencyLock, repo, localizedDocset: docset);
+                    docset.FallbackDocset = await Create(report, sourceDocsetPath, locale, config, options, sourceDependencyLock, repo, localizedDocset: docset, isDependency: true);
                 }
                 else if (LocalizationUtility.TryGetLocalizedDocsetPath(docset, config, locale, out var localizationDocsetPath, out var localizationBranch, out var localizationDependencyLock))
                 {
                     var repo = Repository.Create(localizationDocsetPath, localizationBranch);
                     localizationDependencyLock = localizationDependencyLock ?? await DependencyLock.Load(localizationDocsetPath, config.DependencyLock);
-                    docset.LocalizationDocset = await Create(report, localizationDocsetPath, locale, config, options, localizationDependencyLock, repo, fallbackDocset: docset);
+                    docset.LocalizationDocset = await Create(report, localizationDocsetPath, locale, config, options, localizationDependencyLock, repo, fallbackDocset: docset, isDependency: true);
                 }
             }
 
