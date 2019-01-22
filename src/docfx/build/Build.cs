@@ -21,7 +21,7 @@ namespace Microsoft.Docs.Build
             // todo: abort the process if configuration loading has errors
             var repository = Repository.Create(docsetPath, branch: null);
 
-            var dependencyLock = RestoreLock.Load(docsetPath, options);
+            var dependencyLock = DependencyLock.Load(docsetPath, options);
             var (configErrors, config) = LocalizationUtility.GetBuildConfig(docsetPath, repository, options, dependencyLock);
             report.Configure(docsetPath, config);
             report.Write(config.ConfigFileName, configErrors);
