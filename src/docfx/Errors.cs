@@ -22,10 +22,10 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Error, "invalid-redirection", $"The '{path}' shouldn't belong to redirections since it's a {contentType}");
 
         /// <summary>
-        /// The key or value of redirection is empty
+        /// The key or value of redirection is null or empty
         /// </summary>
-        public static Error RedirectionIsEmpty(string from, string to)
-            => new Error(ErrorLevel.Warning, "redirection-is-empty", $"The key or value of redirection '{from}: {to}' is empty");
+        public static Error RedirectionIsNullOrEmpty(string from, string to)
+            => new Error(ErrorLevel.Error, "redirection-is-empty", $"The key or value of redirection '{from}: {to}' is null or empty");
 
         /// <summary>
         /// Used invalid glob pattern in configuration.

@@ -74,7 +74,7 @@ namespace Microsoft.Docs.Build
                 {
                     if (string.IsNullOrEmpty(path) || string.IsNullOrEmpty(redirectTo))
                     {
-                        errors.Add(Errors.RedirectionIsEmpty(path, redirectTo));
+                        errors.Add(Errors.RedirectionIsNullOrEmpty(path, redirectTo));
                         continue;
                     }
 
