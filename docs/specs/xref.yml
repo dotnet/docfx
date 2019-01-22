@@ -563,3 +563,12 @@ inputs:
 outputs:
   docs/a.json:
   docs/b.json:
+---
+# input json file is not object
+inputs:
+  docfx.yml:
+  docs/a.json: |
+    1
+outputs:
+  build.log: |
+    ["error","schema-not-found","Unknown schema ''","docs/a.json"]
