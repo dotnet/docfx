@@ -86,7 +86,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public HashSet<Document> ScanScope => _scanScope.Value;
 
-        public LegacyTemplate LegacyTemplate => _legacyTemplate.Value;
+        public TemplateEngine Template => _template.Value;
 
         private readonly CommandLineOptions _options;
         private readonly Report _report;
@@ -94,7 +94,7 @@ namespace Microsoft.Docs.Build
         private readonly Lazy<HashSet<Document>> _buildScope;
         private readonly Lazy<HashSet<Document>> _scanScope;
         private readonly Lazy<RedirectionMap> _redirections;
-        private readonly Lazy<LegacyTemplate> _legacyTemplate;
+        private readonly Lazy<TemplateEngine> _template;
 
         public Docset(Report report, string docsetPath, string locale, Config config, CommandLineOptions options, Repository repository = null, bool isDependency = false)
             : this(report, docsetPath, !string.IsNullOrEmpty(locale) ? locale : config.Localization.DefaultLocale, config, options, repository, null, null)
@@ -146,11 +146,11 @@ namespace Microsoft.Docs.Build
             });
             _scanScope = new Lazy<HashSet<Document>>(() => this.GetScanScope());
 
-            _legacyTemplate = new Lazy<LegacyTemplate>(() =>
+            _template = new Lazy<TemplateEngine>(() =>
             {
                 Debug.Assert(!string.IsNullOrEmpty(Config.Theme));
                 var (themeRemote, themeBranch) = LocalizationUtility.GetLocalizedTheme(Config.Theme, Locale, Config.Localization.DefaultLocale);
-                return new LegacyTemplate(RestoreMap.GetGitRestorePath($"{themeRemote}#{themeBranch}"), Locale);
+                return new TemplateEngine(RestoreMap.GetGitRestorePath($"{themeRemote}#{themeBranch}"), Locale);
             });
 
             _repositories = new ConcurrentDictionary<string, Lazy<Repository>>();
