@@ -37,7 +37,7 @@ namespace Microsoft.Docs.Build
                 var content = pageModel.Content as string;
                 if (!string.IsNullOrEmpty(content))
                 {
-                    content = HtmlUtility.TransformHtml(
+                    pageModel.Content = HtmlUtility.TransformHtml(
                         content,
                         node => node.AddLinkType(docset.Locale, docset.Legacy)
                                     .RemoveRerunCodepenIframes());
