@@ -52,7 +52,7 @@ namespace Microsoft.Docs.Build
                     }
                     else
                     {
-                        docset.LegacyTemplate.CopyTo(outputPath);
+                        docset.Template.CopyTo(outputPath);
                     }
                 }
 

@@ -7,7 +7,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
-    internal class LegacyTemplate
+    internal class TemplateEngine
     {
         private static readonly string[] s_resourceFolders = new[] { "global", "css", "fonts" };
 
@@ -18,7 +18,7 @@ namespace Microsoft.Docs.Build
 
         public JObject Global { get; }
 
-        public LegacyTemplate(string templateDir, string locale)
+        public TemplateEngine(string templateDir, string locale)
         {
             var contentTemplateDir = Path.Combine(templateDir, "ContentTemplate");
 
@@ -29,11 +29,11 @@ namespace Microsoft.Docs.Build
             Global = LoadGlobalTokens(templateDir, _locale);
         }
 
-        public string Render(PageModel model, Document file, string group)
+        public string Render(PageModel model, Document file)
         {
             // TODO: only works for conceptual
             var content = model.Content.ToString();
-            var page = LegacyMetadata.GenerateLegacyRawMetadata(model, content, file, group);
+            var page = LegacyMetadata.GenerateLegacyRawMetadata(model, file);
             var metadata = LegacyMetadata.CreateHtmlMetaTags(page);
             var layout = page.Value<string>("layout");
             var themeRelativePath = PathUtility.GetRelativePathToFile(file.SitePath, "_themes");
