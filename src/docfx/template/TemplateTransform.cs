@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -10,11 +11,14 @@ using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
-    internal static class LegacyMetadata
+    internal static class TemplateTransform
     {
-        private static readonly string[] s_metadataBlackList = { "_op_", "fileRelativePath" };
+        private static readonly HashSet<string> s_metadataBlacklist = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        {
+            "fileRelativePath",
+        };
 
-        private static readonly HashSet<string> s_excludedHtmlMetaTags = new HashSet<string>
+        private static readonly HashSet<string> s_htmlMetaTagsBlacklist = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
         {
             "absolutePath",
             "canonical_url",
@@ -27,47 +31,40 @@ namespace Microsoft.Docs.Build
             "redirect_url",
             "contributors_to_exclude",
             "f1_keywords",
+            "is_dynamic_rendering",
         };
 
-        public static JObject GenerataCommonMetadata(JObject metadata, Docset docset)
+        public static (TemplateModel model, JObject metadata) Transform(PageModel pageModel, Document file)
         {
-            var newMetadata = new JObject(metadata);
+            var rawMetadata = CreateRawMetadata(pageModel, file);
+            var metadata = CreateMetadata(rawMetadata);
+            var pageMetadata = CreateHtmlMetaTags(metadata);
 
-            var depotName = $"{docset.Config.Product}.{docset.Config.Name}";
-            newMetadata["depot_name"] = depotName;
-
-            newMetadata["search.ms_docsetname"] = docset.Config.Name;
-            newMetadata["search.ms_product"] = docset.Config.Product;
-            newMetadata["search.ms_sitename"] = "Docs";
-
-            newMetadata["locale"] = docset.Locale;
-            newMetadata["site_name"] = "Docs";
-
-            newMetadata["__global"] = docset.Template.Global;
-
-            return newMetadata;
-        }
-
-        public static JObject GenerateLegacyRedirectionRawMetadata(Docset docset, PageModel pageModel)
-        {
-            var rawMetadata = new JObject
+            var model = new TemplateModel
             {
-                ["redirect_url"] = pageModel.RedirectUrl,
-                ["locale"] = docset.Locale,
+                Content = pageModel.Content as string,
+                RawMetadata = rawMetadata,
+                PageMetadata = pageMetadata,
+                ThemesRelativePathToOutputRoot = "_themes/",
             };
-            if (pageModel.Monikers.Count > 0)
-            {
-                rawMetadata["monikers"] = new JArray(pageModel.Monikers);
-            }
-            return rawMetadata;
+
+            return (model, metadata);
         }
 
-        public static JObject GenerateLegacyRawMetadata(PageModel pageModel, Document file)
+        private static JObject CreateRawMetadata(PageModel pageModel, Document file)
         {
             var docset = file.Docset;
             var rawMetadata = pageModel.Metadata != null ? JObject.FromObject(pageModel.Metadata) : new JObject();
+            rawMetadata["depot_name"] = $"{docset.Config.Product}.{docset.Config.Name}";
 
-            rawMetadata = GenerataCommonMetadata(rawMetadata, docset);
+            rawMetadata["search.ms_docsetname"] = docset.Config.Name;
+            rawMetadata["search.ms_product"] = docset.Config.Product;
+            rawMetadata["search.ms_sitename"] = "Docs";
+
+            rawMetadata["locale"] = docset.Locale;
+            rawMetadata["site_name"] = "Docs";
+
+            rawMetadata["__global"] = docset.Template.Global;
             rawMetadata["conceptual"] = pageModel.Content as string;
 
             var path = PathUtility.NormalizeFile(Path.GetRelativePath(file.Docset.Config.DocumentId.SiteBasePath, file.SitePath));
@@ -125,50 +122,70 @@ namespace Microsoft.Docs.Build
             }
 
             rawMetadata["_op_openToPublicContributors"] = docset.Config.Contribution.ShowEdit;
+            rawMetadata["open_to_public_contributors"] = docset.Config.Contribution.ShowEdit;
 
-            if (file.ContentType != ContentType.Redirection)
-            {
-                rawMetadata["open_to_public_contributors"] = docset.Config.Contribution.ShowEdit;
-
-                if (!string.IsNullOrEmpty(pageModel.ContentGitUrl))
-                    rawMetadata["content_git_url"] = pageModel.ContentGitUrl;
-
-                if (!string.IsNullOrEmpty(pageModel.Gitcommit))
-                    rawMetadata["gitcommit"] = pageModel.Gitcommit;
-                if (!string.IsNullOrEmpty(pageModel.OriginalContentGitUrl))
-                    rawMetadata["original_content_git_url"] = pageModel.OriginalContentGitUrl;
-                if (!string.IsNullOrEmpty(pageModel.OriginalContentGitUrlTemplate))
-                    rawMetadata["original_content_git_url_template"] = pageModel.OriginalContentGitUrlTemplate;
-            }
+            if (!string.IsNullOrEmpty(pageModel.ContentGitUrl))
+                rawMetadata["content_git_url"] = pageModel.ContentGitUrl;
+            if (!string.IsNullOrEmpty(pageModel.Gitcommit))
+                rawMetadata["gitcommit"] = pageModel.Gitcommit;
+            if (!string.IsNullOrEmpty(pageModel.OriginalContentGitUrl))
+                rawMetadata["original_content_git_url"] = pageModel.OriginalContentGitUrl;
+            if (!string.IsNullOrEmpty(pageModel.OriginalContentGitUrlTemplate))
+                rawMetadata["original_content_git_url_template"] = pageModel.OriginalContentGitUrlTemplate;
 
             return RemoveUpdatedAtDateTime(
-                LegacySchema.Transform(
+                TransformSchema(
                     docset.Template.TransformMetadata("conceptual", rawMetadata), pageModel));
         }
 
-        public static JObject GenerateLegacyMetadateOutput(JObject rawMetadata)
+        private static JObject TransformSchema(JObject metadata, PageModel model)
         {
-            var metadataOutput = new JObject();
-            foreach (var item in rawMetadata)
+            switch (model.SchemaType)
             {
-                if (!s_metadataBlackList.Any(blackList => item.Key.StartsWith(blackList)))
+                case "LandingData":
+                    metadata["_op_layout"] = "LandingPage";
+                    metadata["layout"] = "LandingPage";
+                    metadata["page_type"] = "landingdata";
+
+                    metadata.Remove("_op_gitContributorInformation");
+                    metadata.Remove("_op_allContributorsStr");
+                    break;
+
+                case "Conceptual":
+                case "ContextObject":
+                    break;
+
+                default:
+                    throw new NotImplementedException($"Unknown page type {model.SchemaType}");
+            }
+
+            return metadata;
+        }
+
+        private static JObject CreateMetadata(JObject rawMetadata)
+        {
+            var metadata = new JObject();
+
+            foreach (var (key, value) in rawMetadata)
+            {
+                if (!key.StartsWith("_op_") && !s_metadataBlacklist.Contains(key))
                 {
-                    metadataOutput[item.Key] = item.Value;
+                    metadata[key] = value;
                 }
             }
 
-            metadataOutput["is_dynamic_rendering"] = true;
+            metadata["is_dynamic_rendering"] = true;
 
-            return metadataOutput;
+            return metadata;
         }
 
-        public static string CreateHtmlMetaTags(JObject metadata)
+        private static string CreateHtmlMetaTags(JObject metadata)
         {
             var result = new StringBuilder();
 
             foreach (var (key, value) in metadata)
             {
-                if (value is JObject || key.StartsWith("_op_") || s_excludedHtmlMetaTags.Contains(key))
+                if (value is JObject || s_htmlMetaTagsBlacklist.Contains(key))
                 {
                     continue;
                 }

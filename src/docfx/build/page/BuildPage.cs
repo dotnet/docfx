@@ -39,17 +39,28 @@ namespace Microsoft.Docs.Build
                 errors.AddRange(contributorErrors);
 
             var output = (object)model;
-            if (!file.Docset.Config.Output.Json && schema.Attribute is PageSchemaAttribute)
+            var isPage = schema.Attribute is PageSchemaAttribute;
+            if (!file.Docset.Config.Output.Json && isPage)
             {
                 output = file.Docset.Legacy
                     ? file.Docset.Template.Render(model, file)
                     : await RazorTemplate.Render(model.SchemaType, model);
             }
 
+            var outputPath = file.GetOutputPath(model.Monikers, isPage);
+            if (file.Docset.Legacy && isPage)
+            {
+                var (templateModel, templateMetadata) = TemplateTransform.Transform(model, file);
+                context.Output.WriteJson(templateModel, outputPath);
+
+                var metadataPath = outputPath.Substring(0, outputPath.Length - ".raw.page.json".Length) + ".mta.json";
+                context.Output.WriteJson(templateMetadata, metadataPath);
+            }
+
             var publishItem = new PublishItem
             {
                 Url = file.SiteUrl,
-                Path = file.GetOutputPath(model.Monikers),
+                Path = outputPath,
                 Locale = file.Docset.Locale,
                 Monikers = model.Monikers,
                 ExtensionData = model.Metadata.ExtensionData, // TODO: run jint and put content in .mta.json here
@@ -103,12 +114,22 @@ namespace Microsoft.Docs.Build
             var htmlDom = HtmlUtility.LoadHtml(html);
             var htmlTitleDom = HtmlUtility.LoadHtml(markup.HtmlTitle);
             var title = yamlHeader.Value<string>("title") ?? HtmlUtility.GetInnerText(htmlTitleDom);
-            var finalHtml = markup.HasHtml ? htmlDom.StripTags().OuterHtml : html;
             var wordCount = HtmlUtility.CountWord(htmlDom);
+
+            if (markup.HasHtml)
+            {
+                htmlDom = htmlDom.StripTags();
+            }
+
+            if (file.Docset.Legacy)
+            {
+                htmlDom = htmlDom.AddLinkType(file.Docset.Locale, file.Docset.Legacy)
+                                 .RemoveRerunCodepenIframes();
+            }
 
             var model = new PageModel
             {
-                Content = finalHtml,
+                Content = htmlDom.OuterHtml,
                 Title = title,
                 RawTitle = markup.HtmlTitle,
                 WordCount = wordCount,
