@@ -1,22 +1,43 @@
 # Build with --legacy
 commands:
   - build --legacy
-inputs:
-  docfx.yml: |
-    redirections:
-      a.md: /b
-  c.md:
-  d.png:
+repos:
+  https://docs.com/legacy:
+  - files:
+      docfx.yml: |
+        theme: https://docs.com/template
+        redirections:
+          a.md: /b
+      c.md: |
+        ---
+        ms.author: yufeih
+        ---
+        [d](d.png)
+      d.png:
+  https://docs.com/template:
+  - files:
+      ContentTemplate/conceptual.mta.json.js: |
+        exports.transform = function (model) {
+          return {
+            content: JSON.stringify(model)
+          }
+        }
 outputs:
-  .manifest.json:
-  a.raw.page.json: |
-    { "content": "<p>Link to <a href=\"b\">b</a></p>" }
+  a.raw.page.json:
   a.mta.json: |
-    {}
+    { "locale": "en-us", "redirect_url": "/b" }
   c.raw.page.json: |
-    {}
+    {
+      "content": "<p><a href=\"d.png\" data-linktype=\"relative-path\">d</a></p>\n",
+      "rawMetadata": { "ms.author": "yufeih" },
+      "themesRelativePathToOutputRoot": "_themes/"
+    }
   c.mta.json: |
-    {}
-  d.png:
+    { "locale": "en-us", "ms.author": "yufeih", "is_dynamic_rendering": true }
   d.png.mta.json: |
-    {}
+    { "locale": "en-us" }
+  .manifest.json:
+  .dependency-map.json:
+  filemap.json:
+  op_aggregated_file_map_info.json:
+  op_crr_info.json:
