@@ -1,0 +1,22 @@
+# Build with --legacy
+commands:
+  - build --legacy
+inputs:
+  docfx.yml: |
+    redirections:
+      a.md: /b
+  c.md:
+  d.png:
+outputs:
+  .manifest.json:
+  a.raw.page.json: |
+    { "content": "<p>Link to <a href=\"b\">b</a></p>" }
+  a.mta.json: |
+    {}
+  c.raw.page.json: |
+    {}
+  c.mta.json: |
+    {}
+  d.png:
+  d.png.mta.json: |
+    {}
