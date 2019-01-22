@@ -115,11 +115,8 @@ namespace Microsoft.Docs.Build
                 rawMetadata["author"] = pageModel.Author?.Name;
             if (pageModel.UpdatedAt != default)
                 rawMetadata["updated_at"] = pageModel.UpdatedAt.ToString("yyyy-MM-dd hh:mm tt");
-
             if (pageModel.Bilingual)
-            {
                 rawMetadata["bilingual_type"] = "hover over";
-            }
 
             rawMetadata["_op_openToPublicContributors"] = docset.Config.Contribution.ShowEdit;
             rawMetadata["open_to_public_contributors"] = docset.Config.Contribution.ShowEdit;

@@ -39,22 +39,32 @@ namespace Microsoft.Docs.Build
                 errors.AddRange(contributorErrors);
 
             var output = (object)model;
+            var extensionData = default(JObject);
             var isPage = schema.Attribute is PageSchemaAttribute;
-            if (!file.Docset.Config.Output.Json && isPage)
-            {
-                output = file.Docset.Legacy
-                    ? file.Docset.Template.Render(model, file)
-                    : await RazorTemplate.Render(model.SchemaType, model);
-            }
-
             var outputPath = file.GetOutputPath(model.Monikers, isPage);
-            if (file.Docset.Legacy && isPage)
-            {
-                var (templateModel, templateMetadata) = TemplateTransform.Transform(model, file);
-                context.Output.WriteJson(templateModel, outputPath);
 
-                var metadataPath = outputPath.Substring(0, outputPath.Length - ".raw.page.json".Length) + ".mta.json";
-                context.Output.WriteJson(templateMetadata, metadataPath);
+            if (isPage)
+            {
+                if (file.Docset.Config.Output.Json)
+                {
+                    if (file.Docset.Legacy)
+                    {
+                        (output, extensionData) = TemplateTransform.Transform(model, file);
+
+                        var metadataPath = outputPath.Substring(0, outputPath.Length - ".raw.page.json".Length) + ".mta.json";
+                        context.Output.WriteJson(extensionData, metadataPath);
+                    }
+                    else
+                    {
+                        extensionData = JObject.FromObject(metadata, JsonUtility.DefaultSerializer);
+                    }
+                }
+                else
+                {
+                    output = file.Docset.Legacy
+                        ? file.Docset.Template.Render(model, file)
+                        : await RazorTemplate.Render(model.SchemaType, model);
+                }
             }
 
             var publishItem = new PublishItem
@@ -63,7 +73,7 @@ namespace Microsoft.Docs.Build
                 Path = outputPath,
                 Locale = file.Docset.Locale,
                 Monikers = model.Monikers,
-                ExtensionData = model.Metadata.ExtensionData, // TODO: run jint and put content in .mta.json here
+                ExtensionData = extensionData,
             };
 
             return (errors, output, publishItem);
