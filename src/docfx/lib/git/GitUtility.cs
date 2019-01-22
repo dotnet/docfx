@@ -299,7 +299,7 @@ namespace Microsoft.Docs.Build
 
             var httpConfig = GetGitCommandLineConfig(url, config);
             var refspecs = string.Join(' ', committishes.Select(rev => $"+{rev}:{rev}"));
-            var depth = depthOne ? "--depth 1" : "";
+            var depth = depthOne ? "--depth 1" : "--depth 9999999999";
             var pruneSwitch = prune ? "--prune" : "";
 
             try

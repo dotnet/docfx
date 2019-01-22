@@ -26,11 +26,10 @@ namespace Microsoft.Docs.Build
 
                 var pageModel = JsonUtility.Deserialize<PageModel>(File.ReadAllText(docset.GetAbsoluteOutputPathFromRelativePath(rawPageOutputPath)));
 
-                var content = pageModel.Content as string;
-                if (!string.IsNullOrEmpty(content))
+                if (pageModel.Content is string str)
                 {
-                    content = HtmlUtility.TransformHtml(
-                        content,
+                    pageModel.Content = HtmlUtility.TransformHtml(
+                        str,
                         node => node.AddLinkType(docset.Locale, docset.Legacy)
                                     .RemoveRerunCodepenIframes());
                 }
@@ -39,7 +38,7 @@ namespace Microsoft.Docs.Build
 
                 rawMetadata = LegacyMetadata.GenerateLegacyRawMetadata(pageModel, doc);
                 var pageMetadata = LegacyMetadata.CreateHtmlMetaTags(rawMetadata);
-                context.Output.WriteJson(new { content, rawMetadata, pageMetadata, themesRelativePathToOutputRoot }, rawPageOutputPath);
+                context.Output.WriteJson(new { content = pageModel.Content, rawMetadata, pageMetadata, themesRelativePathToOutputRoot }, rawPageOutputPath);
             }
 
             if (legacyManifestOutput.MetadataOutput != null && rawMetadata != null)

@@ -43,7 +43,7 @@ namespace Microsoft.Docs.Build
             newMetadata["locale"] = docset.Locale;
             newMetadata["site_name"] = "Docs";
 
-            newMetadata["__global"] = docset.LegacyTemplate.Global;
+            newMetadata["__global"] = docset.Template.Global;
 
             return newMetadata;
         }
@@ -143,7 +143,7 @@ namespace Microsoft.Docs.Build
 
             return RemoveUpdatedAtDateTime(
                 LegacySchema.Transform(
-                    docset.LegacyTemplate.TransformMetadata("conceptual", rawMetadata), pageModel));
+                    docset.Template.TransformMetadata("conceptual", rawMetadata), pageModel));
         }
 
         public static JObject GenerateLegacyMetadateOutput(JObject rawMetadata)
