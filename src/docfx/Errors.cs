@@ -28,7 +28,7 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Error, "redirection-is-empty", $"The key or value of redirection '{from}: {to}' is null or empty");
 
         /// <summary>
-        /// Defined http href in <see cref="Config.Redirections"/>.
+        /// Defined redirect dest not starting with '\' in <see cref="Config.Redirections"/>.
         /// </summary>
         public static Error InvalidRedirectTo(string path, string redirectTo)
             => new Error(ErrorLevel.Warning, "invalid-redirect-to", $"The redirect dest '{redirectTo}' isn't allowed for entry '{path}' in redirections, redirect dest must start with '/'");

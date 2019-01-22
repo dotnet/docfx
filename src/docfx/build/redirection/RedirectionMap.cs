@@ -78,6 +78,12 @@ namespace Microsoft.Docs.Build
                         continue;
                     }
 
+                    if (checkRedirectTo && !redirectTo.StartsWith('/'))
+                    {
+                        errors.Add(Errors.InvalidRedirectTo(path, redirectTo));
+                        continue;
+                    }
+
                     var pathToDocset = PathUtility.NormalizeFile(path);
                     var (error, document) = Document.TryCreate(docset, pathToDocset, redirectTo);
                     if (error != null)
@@ -86,10 +92,6 @@ namespace Microsoft.Docs.Build
                     }
                     else
                     {
-                        if (checkRedirectTo && !redirectTo.StartsWith('/'))
-                        {
-                            errors.Add(Errors.InvalidRedirectTo(path, redirectTo));
-                        }
                         if (!redirections.Add(document))
                         {
                             errors.Add(Errors.RedirectionConflict(pathToDocset));
