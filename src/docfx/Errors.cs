@@ -21,6 +21,9 @@ namespace Microsoft.Docs.Build
         public static Error InvalidRedirection(string path, ContentType contentType)
             => new Error(ErrorLevel.Error, "invalid-redirection", $"The '{path}' shouldn't belong to redirections since it's a {contentType}");
 
+        /// <summary>
+        /// The key or value of redirection is empty
+        /// </summary>
         public static Error RedirectionIsEmpty(string from, string to)
             => new Error(ErrorLevel.Warning, "redirection-is-empty", $"The key or value of redirection '{from}: {to}' is empty");
 
