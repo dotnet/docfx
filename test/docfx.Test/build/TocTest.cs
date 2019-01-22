@@ -14,7 +14,8 @@ namespace Microsoft.Docs.Build
             Directory.GetCurrentDirectory(),
             "en-us",
             JsonUtility.Deserialize<Config>("{'output': { 'json': true } }".Replace('\'', '\"')),
-            new CommandLineOptions());
+            new CommandLineOptions(),
+            null);
 
         [Theory]
         // same level

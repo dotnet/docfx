@@ -20,12 +20,14 @@ namespace Microsoft.Docs.Build
 
             // todo: abort the process if configuration loading has errors
             var repository = Repository.Create(docsetPath, branch: null);
-            var (configErrors, config) = LocalizationUtility.GetBuildConfig(docsetPath, repository, options);
+
+            var dependencyLock = DependencyLock.Load(docsetPath, options);
+            var (configErrors, config) = LocalizationUtility.GetBuildConfig(docsetPath, repository, options, dependencyLock);
             report.Configure(docsetPath, config);
             report.Write(config.ConfigFileName, configErrors);
 
             var localeToBuild = LocalizationUtility.GetBuildLocale(repository, options);
-            var docset = new Docset(report, docsetPath, localeToBuild, config, options, repository).GetBuildDocset();
+            var docset = new Docset(report, docsetPath, localeToBuild, config, options, dependencyLock, repository).GetBuildDocset();
             var outputPath = Path.Combine(docsetPath, config.Output.Path);
 
             using (var context = await Context.Create(outputPath, report, docset, () => xrefMap))
