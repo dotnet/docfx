@@ -40,11 +40,11 @@ outputs:
 inputs:
   docfx.yml: |
     redirections:
-      a.md: b
+      a.md: /b
 outputs:
   .publish.json: |
     {
-      "files": [{ "url": "/a", "redirect_url": "b", "!path": null }]
+      "files": [{ "url": "/a", "redirect_url": "/b", "!path": null }]
     }
 ---
 # Manifest for articles contains custom metadata
