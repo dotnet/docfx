@@ -399,3 +399,22 @@ outputs:
   a.json:
   build.log: |
     ["warning","unknown-field","Could not find member 'locales: zh-cn' on object of type 'Config'.","docfx.yml","['locales: zh-cn']"]
+---
+# redirect to must start with '/'
+inputs:
+  docfx.yml: |
+    redirections:
+      a.md: https://docs.microsoft.com/docfx/a
+      b.md: a
+outputs:
+  build.log: |
+    ["warning","invalid-redirect-to","The redirect dest 'https://docs.microsoft.com/docfx/a' isn't allowed for entry 'a.md' in redirections, redirect dest must start with '/'","docfx.yml"]
+    ["warning","invalid-redirect-to","The redirect dest 'a' isn't allowed for entry 'b.md' in redirections, redirect dest must start with '/'","docfx.yml"]
+---
+# redirect to not starting with '/' is allowed in config.redirectionWithoutIds
+inputs:
+  docfx.yml: |
+    RedirectionsWithoutId:
+      a.md: https://docs.microsoft.com/docfx/a
+      b.md: a
+outputs:
