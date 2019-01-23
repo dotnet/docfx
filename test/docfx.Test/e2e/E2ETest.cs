@@ -353,10 +353,12 @@ namespace Microsoft.Docs.Build
             switch (Path.GetExtension(file.ToLowerInvariant()))
             {
                 case ".json":
-                case ".manifest":
-                    TestUtility.VerifyJsonContainEquals(
-                        JToken.Parse(content ?? "{}"),
-                        JToken.Parse(File.ReadAllText(file)));
+                    if (!string.IsNullOrEmpty(content))
+                    {
+                        TestUtility.VerifyJsonContainEquals(
+                            JToken.Parse(content),
+                            JToken.Parse(File.ReadAllText(file)));
+                    }
                     break;
                 case ".log":
                     var expected = content.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).OrderBy(_ => _).ToArray();

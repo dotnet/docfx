@@ -307,7 +307,7 @@ namespace Microsoft.Docs.Build
                     var (jsonErrors, token) = JsonUtility.Deserialize(file, context);
                     errors.AddRange(jsonErrors);
                     var obj = token as JObject;
-                    var uid = obj.Value<string>("uid");
+                    var uid = obj?.Value<string>("uid");
                     if (!string.IsNullOrEmpty(uid))
                     {
                         var (schemaErrors, spec) = LoadSchemaDocument(context, obj, file, uid);
