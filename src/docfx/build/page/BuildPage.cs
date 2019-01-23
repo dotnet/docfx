@@ -186,39 +186,27 @@ namespace Microsoft.Docs.Build
         {
             var outputPath = file.GetOutputPath(model.Monikers, isPage);
 
+            if (!file.Docset.Config.Output.Json && !string.IsNullOrEmpty(file.Docset.Config.Theme))
+            {
+                return (file.Docset.Template.Render(model, file), outputPath, null);
+            }
+
             if (file.Docset.Legacy)
             {
                 var (output, extensionData) = TemplateTransform.Transform(model, file);
 
-                if (file.Docset.Config.Output.Json)
+                if (isPage)
                 {
-                    if (isPage)
-                    {
-                        var metadataPath = outputPath.Substring(0, outputPath.Length - ".raw.page.json".Length) + ".mta.json";
-                        context.Output.WriteJson(extensionData, metadataPath);
+                    var metadataPath = outputPath.Substring(0, outputPath.Length - ".raw.page.json".Length) + ".mta.json";
+                    context.Output.WriteJson(extensionData, metadataPath);
 
-                        return (output, outputPath, extensionData);
-                    }
-
-                    return (output, outputPath, null);
+                    return (output, outputPath, extensionData);
                 }
 
-                return (file.Docset.Template.Render(model, file), outputPath, null);
+                return (output, outputPath, null);
             }
-            else
-            {
-                if (file.Docset.Config.Output.Json)
-                {
-                    if (isPage)
-                    {
-                        return (model, outputPath, JObject.FromObject(model.Metadata, JsonUtility.DefaultSerializer));
-                    }
 
-                    return (model, outputPath, null);
-                }
-
-                throw new NotImplementedException();
-            }
+            return (model, outputPath, isPage ? JObject.FromObject(model.Metadata, JsonUtility.DefaultSerializer) : null);
         }
     }
 }
