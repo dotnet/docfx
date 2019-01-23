@@ -14,17 +14,9 @@ namespace Microsoft.Docs.Build
             Document doc,
             LegacyManifestItem legacyManifestItem)
         {
-            // OPS build use TOC ouput as data page
-            var legacyManifestOutput = legacyManifestItem.Output;
-            if (legacyManifestOutput.TocOutput != null)
-            {
-                var outputPath = legacyManifestOutput.TocOutput.ToLegacyOutputPath(docset, legacyManifestItem.Group);
-                var model = JsonUtility.Deserialize<PageModel>(File.ReadAllText(docset.GetAbsoluteOutputPathFromRelativePath(outputPath)));
-                context.Output.Delete(doc.OutputPath);
-                context.Output.WriteJson(model.Content, outputPath);
-            }
-
             JObject rawMetadata = null;
+
+            var legacyManifestOutput = legacyManifestItem.Output;
             if (legacyManifestOutput.PageOutput != null)
             {
                 var rawPageOutputPath = legacyManifestOutput.PageOutput.ToLegacyOutputPath(docset, legacyManifestItem.Group);
@@ -44,17 +36,9 @@ namespace Microsoft.Docs.Build
 
                 var themesRelativePathToOutputRoot = "_themes/";
 
-                if (!string.IsNullOrEmpty(doc.RedirectionUrl))
-                {
-                    rawMetadata = LegacyMetadata.GenerateLegacyRedirectionRawMetadata(docset, pageModel);
-                    context.Output.WriteJson(new { rawMetadata, themesRelativePathToOutputRoot }, rawPageOutputPath);
-                }
-                else
-                {
-                    rawMetadata = LegacyMetadata.GenerateLegacyRawMetadata(pageModel, doc);
-                    var pageMetadata = LegacyMetadata.CreateHtmlMetaTags(rawMetadata);
-                    context.Output.WriteJson(new { content = pageModel.Content, rawMetadata, pageMetadata, themesRelativePathToOutputRoot }, rawPageOutputPath);
-                }
+                rawMetadata = LegacyMetadata.GenerateLegacyRawMetadata(pageModel, doc);
+                var pageMetadata = LegacyMetadata.CreateHtmlMetaTags(rawMetadata);
+                context.Output.WriteJson(new { content = pageModel.Content, rawMetadata, pageMetadata, themesRelativePathToOutputRoot }, rawPageOutputPath);
             }
 
             if (legacyManifestOutput.MetadataOutput != null && rawMetadata != null)

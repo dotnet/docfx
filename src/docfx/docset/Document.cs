@@ -184,9 +184,11 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public string GetOutputPath(List<string> monikers)
+        public string GetOutputPath(List<string> monikers, bool rawPage = false)
         {
-            return PathUtility.NormalizeFile(Path.Combine($"{HashUtility.GetMd5HashShort(monikers)}", SitePath));
+            var outputPath = PathUtility.NormalizeFile(Path.Combine($"{HashUtility.GetMd5HashShort(monikers)}", SitePath));
+
+            return Docset.Legacy && rawPage ? Path.ChangeExtension(outputPath, ".raw.page.json") : outputPath;
         }
 
         public override int GetHashCode()
