@@ -714,13 +714,13 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             if (canIncremental)
             {
                 IncrementalInfo.ReportStatus(true, IncrementalPhase.Build);
-                Logger.LogInfo($"Group: {Version} will be built incrementally.", code: buildStrategy);
+                Logger.LogInfo($"Group {Version} will be built incrementally.", code: buildStrategy);
             }
             else
             {
                 IncrementalInfo.ReportStatus(false, IncrementalPhase.Build, details, fullBuildReasonCode);
-                Logger.LogInfo($"Group: {Version} will be built fully.", code: buildStrategy);
-                Logger.LogInfo(details, code: fullBuildReasonCode);
+                Logger.LogInfo($"Group {Version} will be built fully.", code: buildStrategy);
+                Logger.LogInfo($"The reason of full building under group {Version} is: {details}", code: fullBuildReasonCode);
             }
 
             return canIncremental;
