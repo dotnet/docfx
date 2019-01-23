@@ -132,7 +132,7 @@ namespace Microsoft.Docs.Build
 
             return RemoveUpdatedAtDateTime(
                 TransformSchema(
-                    docset.Template.TransformMetadata("conceptual", rawMetadata), pageModel));
+                    docset.Template.TransformMetadata("Conceptual", rawMetadata), pageModel));
         }
 
         private static JObject TransformSchema(JObject metadata, PageModel model)
