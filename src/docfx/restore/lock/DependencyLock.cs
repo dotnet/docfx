@@ -10,9 +10,28 @@ namespace Microsoft.Docs.Build
 {
     internal class DependencyLock : DependencyVersion
     {
-        public Dictionary<string, DependencyLock> Git { get; set; } = new Dictionary<string, DependencyLock>();
+        public IReadOnlyDictionary<string, DependencyLock> Git { get; set; } = new Dictionary<string, DependencyLock>();
 
-        public Dictionary<string, DependencyVersion> Downloads { get; set; } = new Dictionary<string, DependencyVersion>();
+        public IReadOnlyDictionary<string, DependencyVersion> Downloads { get; set; } = new Dictionary<string, DependencyVersion>();
+
+        public DependencyLock()
+        {
+        }
+
+        public DependencyLock(IReadOnlyDictionary<string, DependencyLock> gitVersions, IReadOnlyDictionary<string, DependencyVersion> downloads, DependencyVersion version = null)
+            : this(gitVersions, downloads, version?.Commit, version?.Hash)
+        {
+        }
+
+        public DependencyLock(IReadOnlyDictionary<string, DependencyLock> gitVersions, IReadOnlyDictionary<string, DependencyVersion> downloads, string commit, string hash)
+            : base(commit, hash)
+        {
+            Debug.Assert(gitVersions != null);
+            Debug.Assert(downloads != null);
+
+            Git = gitVersions;
+            Downloads = downloads;
+        }
 
         public DependencyLock GetGitLock(string href, string branch)
         {
