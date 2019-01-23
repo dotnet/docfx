@@ -4,9 +4,7 @@ inputs:
   docfx.yml: |
     files: docs/**/*.md
   docfx.json: |
-    {
-      "files": { "include": "ignore.md" }
-    }  
+    { "files": "ignore.md" }  
   ignore.md:
   docs/index.md:
 outputs:
