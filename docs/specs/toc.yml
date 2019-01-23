@@ -1056,8 +1056,8 @@ outputs:
   docs/toc.json: |
     {
       "items": [
-        { "toc_title": "link to title 1", "href": "a#title-1", "monikers": [] },
-        { "toc_title": "link to title 2", "href": "a#title-2", "monikers": [] }
+        { "toc_title": "link to title 1", "href": "a#title-1" },
+        { "toc_title": "link to title 2", "href": "a#title-2" }
       ]
     }
   build.log: |
@@ -1078,7 +1078,7 @@ outputs:
   docs/toc.json: |
     {
       "items": [
-        { "toc_title":"Title","href":"a#bookmark","monikers":[] }
+        { "toc_title":"Title","href":"a#bookmark" }
       ]
     }
 ---
@@ -1098,7 +1098,7 @@ outputs:
   docs/toc.json: |
     {
       "items": [
-        { "toc_title":"Uid Ref","href":"a","monikers":[] }
+        { "toc_title":"Uid Ref","href":"a" }
       ]
     }
 ---
@@ -1124,8 +1124,8 @@ outputs:
   docs/toc.json: |
     {
       "items": [
-        { "toc_title":"Uid Ref","href":"a","monikers":[] },
-        { "toc_title":"Uid Not Found","href":"b","monikers":[] }
+        { "toc_title":"Uid Ref","href":"a" },
+        { "toc_title":"Uid Not Found","href":"b" }
       ]
     }
   build.log: |
@@ -1178,7 +1178,7 @@ outputs:
   docs/toc.json: |
     {
       "items": [
-        { "toc_title":"Title A","href":"a","monikers":[] }
+        { "toc_title":"Title A","href":"a" }
       ]
     }
   docs/a.json:
@@ -1233,7 +1233,7 @@ inputs:
 outputs:
   docs/a.json:
   docs/toc.json: |
-    {"items":[{"toc_title":"TOC Ref","children":[{"toc_title":"Uid Ref","href":"a","monikers":[]}],"monikers":[]}]}
+    {"items":[{"toc_title":"TOC Ref","children":[{"toc_title":"Uid Ref","href":"a"}]}]}
 ---
 # markdown toc using bad syntax(multiple inlines for one heading block)
 inputs:
@@ -1279,6 +1279,6 @@ inputs:
   docs/a.md:
 outputs:
   docs/toc.json: |
-    {"items":[{"toc_title":"19 leading count","href":"a","children":[{"toc_title":"20 leading count","href":"a","monikers":[]}]}]}
+    {"items":[{"toc_title":"19 leading count","href":"a","children":[{"toc_title":"20 leading count","href":"a"}]}]}
   docs/a.json:
 

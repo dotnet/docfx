@@ -36,7 +36,7 @@ namespace Microsoft.Docs.Build
         {
             NullValueHandling = NullValueHandling.Ignore,
             Converters = { new StringEnumConverter { NamingStrategy = new CamelCaseNamingStrategy() } },
-            ContractResolver = new CamelCasePropertyNamesContractResolver(),
+            ContractResolver = new SerializerContractResolver(),
         };
 
         private static readonly JsonSerializerSettings s_indentedFormatJsonSerializerSettings = new JsonSerializerSettings
@@ -44,7 +44,7 @@ namespace Microsoft.Docs.Build
             NullValueHandling = NullValueHandling.Ignore,
             Formatting = Formatting.Indented,
             Converters = { new StringEnumConverter { NamingStrategy = new CamelCaseNamingStrategy() } },
-            ContractResolver = new CamelCasePropertyNamesContractResolver(),
+            ContractResolver = new SerializerContractResolver(),
         };
 
         private static readonly JsonSerializer s_defaultIndentedFormatSerializer = JsonSerializer.Create(s_indentedFormatJsonSerializerSettings);
@@ -482,6 +482,31 @@ namespace Microsoft.Docs.Build
             }
         }
 
+        private sealed class SerializerContractResolver : CamelCasePropertyNamesContractResolver
+        {
+            protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
+            {
+                var prop = base.CreateProperty(member, memberSerialization);
+                var contract = DefaultSerializer.ContractResolver.ResolveContract(prop.PropertyType);
+                if (contract is JsonArrayContract)
+                {
+                    prop.ShouldSerialize =
+                          value =>
+                          {
+                              var obj = JToken.FromObject(value);
+                              var array = (obj as JObject)?.GetValue(prop.PropertyName) as JArray;
+
+                              if (array?.Count == 0)
+                              {
+                                  return false;
+                              }
+                              return true;
+                          };
+                }
+                return prop;
+            }
+        }
+
         private sealed class JsonContractResolver : DefaultContractResolver
         {
             protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
@@ -491,14 +516,7 @@ namespace Microsoft.Docs.Build
 
                 if (converter != null)
                 {
-                    if (prop.PropertyType.IsArray)
-                    {
-                        prop.ItemConverter = converter;
-                    }
-                    else
-                    {
-                        prop.Converter = converter;
-                    }
+                    prop.Converter = converter;
                 }
 
                 SetFieldWritable(member, prop);

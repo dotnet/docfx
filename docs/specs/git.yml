@@ -194,8 +194,7 @@ outputs:
   docs/index.json: |
     {
       "author": 
-        { "name": "charlie", "profile_url": "https://github.com/charlie", "display_name": "Charlie", "id": "3" },
-      "contributors": []
+        { "name": "charlie", "profile_url": "https://github.com/charlie", "display_name": "Charlie", "id": "3" }
     }
 ---
 # Use the earliest contributor as author if author not specified in YAML header
@@ -321,7 +320,6 @@ inputs:
 outputs:
   docs/index.json: |
     {
-      "contributors": [],
       "gitcommit": "https://github.com/testowner/testrepo/blob/e662dbc7c5e582a14b863d6a6a82e495d6272f91/docs/index.md",
     }
 ---

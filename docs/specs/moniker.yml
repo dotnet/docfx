@@ -38,8 +38,7 @@ outputs:
     }
   docs/a.json: |
     {
-      "content": "<p>No version</p>",
-      "monikers": []
+      "content": "<p>No version</p>"
     }
 ---
 # Multiple matched moniker range setting in the config, should use the last one
@@ -99,8 +98,7 @@ inputs:
 outputs:
   docs/a.json: |
     {
-      "content": "<p>No version</p>",
-      "monikers": []
+      "content": "<p>No version</p>"
     }
   218c13d0/docs/a.json: |
     {
@@ -117,7 +115,7 @@ outputs:
       "files": [
           { "url": "/docs/a", "path": "218c13d0/docs/a.json", "monikers": [ "netcore-1.1" ] },
           { "url": "/docs/a", "path": "4667fedf/docs/a.json", "monikers": [ "netcore-2.0" ] },
-          { "url": "/docs/a", "path": "docs/a.json", "monikers": [] },
+          { "url": "/docs/a", "path": "docs/a.json" },
       ]
     }
 ---
@@ -406,13 +404,11 @@ inputs:
 outputs:
   docs/b.json: |
     {
-      "content": "<p>Link to <a href=\"a?view=netcore-1.1\">netcore-1.1</a></p>",
-      "monikers": []
+      "content": "<p>Link to <a href=\"a?view=netcore-1.1\">netcore-1.1</a></p>"
     }
   docs/a.json: |
     {
-      "content": "<p>No version</p>",
-      "monikers": []
+      "content": "<p>No version</p>"
     }
   218c13d0/docs/a.json: |
     {
@@ -468,13 +464,11 @@ inputs:
 outputs:
   docs/b.json: |
     {
-      "content": "<p>Link to <a href=\"a\">netcore-2.0</a></p>",
-      "monikers": []
+      "content": "<p>Link to <a href=\"a\">netcore-2.0</a></p>"
     }
   docs/a.json: |
     {
-      "content": "<p>No version</p>",
-      "monikers": []
+      "content": "<p>No version</p>"
     }
   218c13d0/docs/a.json: |
     {
@@ -570,8 +564,7 @@ inputs:
 outputs:
   docs/b.json: |
     {
-      "content": "<p>Link to <a href=\"a?view=netcore-1.0\">netcore-2.0</a></p>",
-      "monikers": [] 
+      "content": "<p>Link to <a href=\"a?view=netcore-1.0\">netcore-2.0</a></p>"
     }
   218c13d0/docs/a.json: |
     {
@@ -633,13 +626,11 @@ inputs:
 outputs:
   docs/b.json: |
     {
-      "content": "<p>Link to <a href=\"a\">no version</a></p>",
-      "monikers": []
+      "content": "<p>Link to <a href=\"a\">no version</a></p>"
     }
   docs/a.json: |
     {
-      "content": "<p>No version</p>",
-      "monikers": []
+      "content": "<p>No version</p>"
     }
   218c13d0/docs/a.json: |
     {
@@ -705,13 +696,11 @@ outputs:
   docs/b.json:
   docs/c.json: |
     {
-      "content": "<p>Link to @a</p>",
-      "monikers": []
+      "content": "<p>Link to @a</p>"
     }
   docs/a.json: |
     {
-      "content": "<p>No version</p>",
-      "monikers": []
+      "content": "<p>No version</p>"
     }
   218c13d0/docs/a.json: |
     {
@@ -944,8 +933,8 @@ outputs:
       "files": [
         { "url": "/docs/a", "path": "136a42ac/docs/a.json", "monikers": [ "netcore-1.0" ] },
         { "url": "/docs/c.png", "path": "9d4e15fd/docs/c.png", "monikers": [ "netcore-1.0", "netcore-1.1" ] },
-        { "url": "/docs/a", "path": "docs/a.json", "monikers": [] },
-        { "url": "/docs/c.png", "path": "docs/c.png", "monikers": [] }
+        { "url": "/docs/a", "path": "docs/a.json" },
+        { "url": "/docs/c.png", "path": "docs/c.png" }
       ]
     }
 ---
