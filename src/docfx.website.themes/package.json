@@ -5,7 +5,7 @@
   "author": "docfx",
   "license": "MIT",
   "devDependencies": {
-    "gulp": "^3.9.0",
+    "gulp": "^4.0.0",
     "gulp-unique-files": "^0.1.2",
     "gulp-zip": "^3.0.2",
     "meow": "^3.5.0",
