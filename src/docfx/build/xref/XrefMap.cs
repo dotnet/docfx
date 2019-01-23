@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using Newtonsoft.Json.Linq;
 
@@ -57,7 +58,7 @@ namespace Microsoft.Docs.Build
             }
             else if (TryResolveFromExternal(uid, out var xrefSpec))
             {
-                resolvedHref = xrefSpec.Href;
+                resolvedHref = RemoveHostnameIfSharingTheSameOne(xrefSpec.Href);
                 name = xrefSpec.GetName();
                 displayPropertyValue = xrefSpec.GetXrefPropertyValue(displayPropertyName);
             }
@@ -70,6 +71,21 @@ namespace Microsoft.Docs.Build
             // xrefSpec.displayPropertyName -> xrefSpec.name -> uid
             string display = !string.IsNullOrEmpty(displayPropertyValue) ? displayPropertyValue : (!string.IsNullOrEmpty(name) ? name : uid);
             return (null, resolvedHref, display, referencedFile);
+
+            string RemoveHostnameIfSharingTheSameOne(string input)
+            {
+                var match = Regex.Match(input, "^(http|https)://(.*)$");
+                if (match.Success)
+                {
+                    var url = match.Groups[2].Value;
+                    var hostname = url.Substring(0, url.IndexOf('/'));
+                    if (string.Compare(hostname, rootFile.Docset.Config.BaseUrl, StringComparison.OrdinalIgnoreCase) == 0)
+                    {
+                        return input.Substring(input.IndexOf(hostname) + hostname.Length);
+                    }
+                }
+                return input;
+            }
         }
 
         private string RebaseResolvedHref(Document rootFile, Document referencedFile)
