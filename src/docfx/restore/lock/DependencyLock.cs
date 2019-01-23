@@ -30,8 +30,8 @@ namespace Microsoft.Docs.Build
             Debug.Assert(gitVersions != null);
             Debug.Assert(downloads != null);
 
-            Git = gitVersions;
-            Downloads = downloads;
+            Git = gitVersions.OrderBy(g => g.Key).ToDictionary(k => k.Key, v => v.Value);
+            Downloads = downloads.OrderBy(d => d.Key).ToDictionary(k => k.Key, v => v.Value);
         }
 
         public DependencyLock GetGitLock(string href, string branch)
