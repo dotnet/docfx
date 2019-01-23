@@ -676,36 +676,36 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         private bool GetCanVersionIncremental(IncrementalStatus buildInfoIncrementalStatus)
         {
             bool canIncremental;
-            string message;
+            string details;
             string fullBuildReasonCode;
 
             if (!buildInfoIncrementalStatus.CanIncremental)
             {
-                message = buildInfoIncrementalStatus.Details;
+                details = buildInfoIncrementalStatus.Details;
                 fullBuildReasonCode = buildInfoIncrementalStatus.FullBuildReasonCode;
                 canIncremental = false;
             }
             else if (LastBuildVersionInfo == null)
             {
-                message = $"Cannot build incrementally because last build didn't contain group {Version}.";
+                details = $"Cannot build incrementally because last build didn't contain group {Version}.";
                 fullBuildReasonCode = InfoCodes.FullBuildReason.NoAvailableGroupCache;
                 canIncremental = false;
             }
             else if (CurrentBuildVersionInfo.ConfigHash != LastBuildVersionInfo.ConfigHash)
             {
-                message = "Cannot build incrementally because config changed.";
+                details = "Cannot build incrementally because config changed.";
                 fullBuildReasonCode = InfoCodes.FullBuildReason.ConfigChanged;
                 canIncremental = false;
             }
             else if (_parameters.ForceRebuild)
             {
-                message = "Disable incremental build by force rebuild option.";
+                details = "Disable incremental build by force rebuild option.";
                 fullBuildReasonCode = InfoCodes.FullBuildReason.ForceRebuild;
                 canIncremental = false;
             }
             else
             {
-                message = null;
+                details = null;
                 canIncremental = true;
                 fullBuildReasonCode = null;
             }
@@ -714,12 +714,13 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             if (canIncremental)
             {
                 IncrementalInfo.ReportStatus(true, IncrementalPhase.Build);
-                Logger.LogInfo($"Group: {Version}, build strategy: {buildStrategy}", code: buildStrategy);
+                Logger.LogInfo($"Group: {Version} will be built incrementally.", code: buildStrategy);
             }
             else
             {
-                IncrementalInfo.ReportStatus(false, IncrementalPhase.Build, message, fullBuildReasonCode);
-                Logger.LogInfo($"Group: {Version}, build strategy: {buildStrategy}, details: {message}, full build reason code: {fullBuildReasonCode}", code: buildStrategy);
+                IncrementalInfo.ReportStatus(false, IncrementalPhase.Build, details, fullBuildReasonCode);
+                Logger.LogInfo($"Group: {Version} will be built fully.", code: buildStrategy);
+                Logger.LogInfo(details, code: fullBuildReasonCode);
             }
 
             return canIncremental;
