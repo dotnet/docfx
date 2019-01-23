@@ -39,7 +39,7 @@ namespace Microsoft.Docs.Build
                 errors.AddRange(contributorErrors);
 
             var isPage = schema.Attribute is PageSchemaAttribute;
-            var (output, outputPath, extensionData) = await ApplyTemplate(context, file, model, isPage);
+            var (output, outputPath, extensionData) = ApplyTemplate(context, file, model, isPage);
 
             var publishItem = new PublishItem
             {
@@ -181,7 +181,7 @@ namespace Microsoft.Docs.Build
             return (errors, schema, model, fileMetadata);
         }
 
-        private static async Task<(object output, string outputPath, JObject extensionData)> ApplyTemplate(
+        private static (object output, string outputPath, JObject extensionData) ApplyTemplate(
             Context context, Document file, PageModel model, bool isPage)
         {
             var outputPath = file.GetOutputPath(model.Monikers, isPage);
@@ -209,34 +209,15 @@ namespace Microsoft.Docs.Build
             {
                 if (file.Docset.Config.Output.Json)
                 {
-                    var extensionData = isPage ? JObject.FromObject(model.Metadata, JsonUtility.DefaultSerializer) : null;
-                    return (model, outputPath, extensionData);
-                }
-                else
-                {
-
-                }
-            }
-            if (file.Docset.Config.Output.Json)
-                {
-                    if (file.Docset.Legacy)
+                    if (isPage)
                     {
-                        (output, extensionData) = TemplateTransform.Transform(model, file);
+                        return (model, outputPath, JObject.FromObject(model.Metadata, JsonUtility.DefaultSerializer));
+                    }
 
-                        var metadataPath = outputPath.Substring(0, outputPath.Length - ".raw.page.json".Length) + ".mta.json";
-                        context.Output.WriteJson(extensionData, metadataPath);
-                    }
-                    else
-                    {
-                        extensionData = JObject.FromObject(model.Metadata, JsonUtility.DefaultSerializer);
-                    }
+                    return (model, outputPath, null);
                 }
-                else
-                {
-                    output = file.Docset.Legacy
-                        ? file.Docset.Template.Render(model, file)
-                        : await RazorTemplate.Render(model.SchemaType, model);
-                }
+
+                throw new NotImplementedException();
             }
         }
     }
