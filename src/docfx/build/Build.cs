@@ -19,12 +19,15 @@ namespace Microsoft.Docs.Build
             var errors = new List<Error>();
 
             // todo: abort the process if configuration loading has errors
-            var (configErrors, config) = LocalizationUtility.GetBuildConfig(docsetPath, options);
+            var repository = Repository.Create(docsetPath, branch: null);
+
+            var dependencyLock = DependencyLock.Load(docsetPath, options);
+            var (configErrors, config) = LocalizationUtility.GetBuildConfig(docsetPath, repository, options, dependencyLock);
             report.Configure(docsetPath, config);
             report.Write(config.ConfigFileName, configErrors);
 
-            var localeToBuild = LocalizationUtility.GetBuildLocale(docsetPath, options);
-            var docset = new Docset(report, docsetPath, localeToBuild, config, options).GetBuildDocset();
+            var localeToBuild = LocalizationUtility.GetBuildLocale(repository, options);
+            var docset = new Docset(report, docsetPath, localeToBuild, config, options, dependencyLock, repository).GetBuildDocset();
             var outputPath = Path.Combine(docsetPath, config.Output.Path);
 
             using (var context = await Context.Create(outputPath, report, docset, () => xrefMap))
@@ -49,7 +52,7 @@ namespace Microsoft.Docs.Build
                     }
                     else
                     {
-                        docset.LegacyTemplate.CopyTo(outputPath);
+                        docset.Template.CopyTo(outputPath);
                     }
                 }
 
@@ -135,60 +138,47 @@ namespace Microsoft.Docs.Build
         {
             try
             {
-                var model = (object)null;
+                var model = default(object);
+                var publishItem = default(PublishItem);
                 var errors = Enumerable.Empty<Error>();
-                var monikers = new List<string>();
 
                 switch (file.ContentType)
                 {
                     case ContentType.Resource:
-                        (errors, model, monikers) = BuildResource.Build(context, file);
+                        (errors, publishItem) = BuildResource.Build(context, file);
                         break;
                     case ContentType.Page:
-                        (errors, model, monikers) = await BuildPage.Build(context, file, tocMap, buildChild);
+                        (errors, model, publishItem) = await BuildPage.Build(context, file, tocMap, buildChild);
                         break;
                     case ContentType.TableOfContents:
                         // TODO: improve error message for toc monikers overlap
-                        (errors, model, monikers) = BuildTableOfContents.Build(context, file, monikerMap);
+                        (errors, model, publishItem) = BuildTableOfContents.Build(context, file, monikerMap);
                         break;
                     case ContentType.Redirection:
-                        (errors, model, monikers) = BuildRedirection.Build(context, file);
+                        (errors, publishItem) = BuildRedirection.Build(context, file);
                         break;
                 }
 
                 var hasErrors = context.Report.Write(file.ToString(), errors);
-                if (hasErrors || model == null)
+                if (hasErrors)
                 {
                     context.PublishModelBuilder.MarkError(file);
-                    return monikers;
+                    return publishItem.Monikers;
                 }
 
-                var manifest = new PublishItem
+                if (context.PublishModelBuilder.TryAdd(file, publishItem))
                 {
-                    Url = file.SiteUrl,
-                    Monikers = monikers,
-                    Path = GetOutputPath(file, monikers),
-                };
-
-                if (context.PublishModelBuilder.TryAdd(file, manifest))
-                {
-                    if (model is ResourceModel copy)
+                    if (model is string str)
                     {
-                        if (file.Docset.Config.Output.CopyResources)
-                        {
-                            context.Output.Copy(file, manifest.Path);
-                        }
+                        context.Output.WriteText(str, publishItem.Path);
                     }
-                    else if (model is string str)
+                    else if (model != null)
                     {
-                        context.Output.WriteText(str, manifest.Path);
-                    }
-                    else
-                    {
-                        context.Output.WriteJson(model, manifest.Path);
+                        context.Output.WriteJson(model, publishItem.Path);
                     }
                 }
-                return monikers;
+
+                return publishItem.Monikers;
             }
             catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
             {
@@ -196,22 +186,6 @@ namespace Microsoft.Docs.Build
                 context.PublishModelBuilder.MarkError(file);
                 return new List<string>();
             }
-        }
-
-        private static string GetOutputPath(Document file, List<string> monikers)
-        {
-            if (file.ContentType == ContentType.Resource && !file.Docset.Config.Output.CopyResources)
-            {
-                var docset = file.Docset;
-                return PathUtility.NormalizeFile(
-                    Path.GetRelativePath(
-                        Path.GetFullPath(Path.Combine(docset.DocsetPath, docset.Config.Output.Path)),
-                        Path.GetFullPath(Path.Combine(docset.DocsetPath, file.FilePath))));
-            }
-
-            return PathUtility.NormalizeFile(Path.Combine(
-                $"{HashUtility.GetMd5HashShort(monikers)}",
-                file.SitePath));
         }
     }
 }

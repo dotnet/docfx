@@ -24,7 +24,10 @@ namespace Microsoft.Docs.Build
             Path = path ?? throw new ArgumentNullException(nameof(path));
         }
 
-        public static Repository Create(string path)
+        /// <summary>
+        /// Our repository's branch info should NOT depend on git, unless you are pretty sure about that
+        /// </summary>
+        public static Repository Create(string path, string branch)
         {
             Debug.Assert(!string.IsNullOrEmpty(path));
 
@@ -33,13 +36,13 @@ namespace Microsoft.Docs.Build
             if (repoPath == null)
                 return null;
 
-            var (remote, branch, commit) = GitUtility.GetRepoInfo(repoPath);
+            var (remote, repoBranch, commit) = GitUtility.GetRepoInfo(repoPath);
             var gitIndex = remote.IndexOf(".git");
             if (gitIndex >= 0)
             {
                 remote = remote.Remove(gitIndex);
             }
-            return new Repository(remote, branch, commit, PathUtility.NormalizeFolder(repoPath));
+            return new Repository(remote, branch ?? repoBranch, commit, PathUtility.NormalizeFolder(repoPath));
         }
     }
 }

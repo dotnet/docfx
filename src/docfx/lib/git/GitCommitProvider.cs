@@ -11,27 +11,27 @@ namespace Microsoft.Docs.Build
 {
     internal sealed class GitCommitProvider : IDisposable
     {
-        private readonly ConcurrentDictionary<string, Repository> _repositoryByFolder = new ConcurrentDictionary<string, Repository>();
         private readonly ConcurrentDictionary<string, FileCommitProvider> _fileCommitProvidersByRepoPath = new ConcurrentDictionary<string, FileCommitProvider>();
 
         public Task<(Repository repo, string pathToRepo, List<GitCommit> commits)> GetCommitHistory(Document document, string committish = null)
-           => GetCommitHistory(Path.Combine(document.Docset.DocsetPath, document.FilePath), committish);
+           => GetCommitHistory(Path.Combine(document.Docset.DocsetPath, document.FilePath), document.Repository, committish);
 
-        public async Task<(Repository repo, string pathToRepo, List<GitCommit> commits)> GetCommitHistory(string fullPath, string committish = null)
+        public async Task<(Repository repo, string pathToRepo, List<GitCommit> commits)> GetCommitHistory(string fullPath, Repository repo, string committish = null)
         {
-            var repo = GetRepository(fullPath);
             if (repo == null)
                 return default;
-            var pathToRepo = PathUtility.NormalizeFile(Path.GetRelativePath(repo.Path, fullPath));
 
+            var pathToRepo = PathUtility.NormalizeFile(Path.GetRelativePath(repo.Path, fullPath));
             return (repo, pathToRepo, await GetCommitProvider(repo).GetCommitHistory(pathToRepo, committish));
         }
 
-        public (Repository repo, string pathToRepo, List<GitCommit> commits) GetCommitHistoryNoCache(string fullPath, int top, string committish = null)
+        public (Repository repo, string pathToRepo, List<GitCommit> commits) GetCommitHistoryNoCache(Docset docset, string filePath, int top, string committish = null)
         {
-            var repo = GetRepository(fullPath);
+            var repo = docset.GetRepository(filePath);
             if (repo == null)
                 return default;
+
+            var fullPath = Path.Combine(docset.DocsetPath, filePath);
             var pathToRepo = PathUtility.NormalizeFile(Path.GetRelativePath(repo.Path, fullPath));
 
             return (repo, pathToRepo, GetCommitProvider(repo).GetCommitHistoryNoCache(pathToRepo, top, committish));
@@ -55,17 +55,6 @@ namespace Microsoft.Docs.Build
             return _fileCommitProvidersByRepoPath.GetOrAdd(
                 repo.Path,
                 _ => new FileCommitProvider(repo.Path, AppData.GetCommitCachePath(repo.Remote)));
-        }
-
-        private Repository GetRepository(string fullPath)
-        {
-            if (GitUtility.IsRepo(fullPath))
-                return Repository.Create(fullPath);
-
-            var parent = Path.GetDirectoryName(fullPath);
-            return !string.IsNullOrEmpty(parent)
-                ? _repositoryByFolder.GetOrAdd(parent, GetRepository)
-                : null;
         }
     }
 }

@@ -34,32 +34,26 @@ namespace Microsoft.Docs.Build
 
                 var pageModel = JsonUtility.Deserialize<PageModel>(File.ReadAllText(docset.GetAbsoluteOutputPathFromRelativePath(rawPageOutputPath)));
 
-                var content = pageModel.Content as string;
-                if (!string.IsNullOrEmpty(content))
+                if (pageModel.Content is string str)
                 {
-                    content = HtmlUtility.TransformHtml(
-                        content,
+                    pageModel.Content = HtmlUtility.TransformHtml(
+                        str,
                         node => node.AddLinkType(docset.Locale, docset.Legacy)
                                     .RemoveRerunCodepenIframes());
                 }
-
-                var outputRootRelativePath =
-                    PathUtility.NormalizeFolder(Path.GetRelativePath(
-                        PathUtility.NormalizeFolder(Path.GetDirectoryName(rawPageOutputPath)),
-                        PathUtility.NormalizeFolder(docset.Config.DocumentId.SiteBasePath)));
 
                 var themesRelativePathToOutputRoot = "_themes/";
 
                 if (!string.IsNullOrEmpty(doc.RedirectionUrl))
                 {
                     rawMetadata = LegacyMetadata.GenerateLegacyRedirectionRawMetadata(docset, pageModel);
-                    context.Output.WriteJson(new { outputRootRelativePath, rawMetadata, themesRelativePathToOutputRoot }, rawPageOutputPath);
+                    context.Output.WriteJson(new { rawMetadata, themesRelativePathToOutputRoot }, rawPageOutputPath);
                 }
                 else
                 {
-                    rawMetadata = LegacyMetadata.GenerateLegacyRawMetadata(pageModel, content, doc, legacyManifestItem.Group);
+                    rawMetadata = LegacyMetadata.GenerateLegacyRawMetadata(pageModel, doc);
                     var pageMetadata = LegacyMetadata.CreateHtmlMetaTags(rawMetadata);
-                    context.Output.WriteJson(new { outputRootRelativePath, content, rawMetadata, pageMetadata, themesRelativePathToOutputRoot }, rawPageOutputPath);
+                    context.Output.WriteJson(new { content = pageModel.Content, rawMetadata, pageMetadata, themesRelativePathToOutputRoot }, rawPageOutputPath);
                 }
             }
 

@@ -42,9 +42,8 @@ namespace Microsoft.Docs.Build
 
             newMetadata["locale"] = docset.Locale;
             newMetadata["site_name"] = "Docs";
-            newMetadata["version"] = 0;
 
-            newMetadata["__global"] = docset.LegacyTemplate.Global;
+            newMetadata["__global"] = docset.Template.Global;
 
             return newMetadata;
         }
@@ -63,22 +62,17 @@ namespace Microsoft.Docs.Build
             return rawMetadata;
         }
 
-        public static JObject GenerateLegacyRawMetadata(
-            PageModel pageModel,
-            string content,
-            Document file,
-            string group)
+        public static JObject GenerateLegacyRawMetadata(PageModel pageModel, Document file)
         {
             var docset = file.Docset;
             var rawMetadata = pageModel.Metadata != null ? JObject.FromObject(pageModel.Metadata) : new JObject();
 
             rawMetadata = GenerataCommonMetadata(rawMetadata, docset);
-            rawMetadata["conceptual"] = content;
+            rawMetadata["conceptual"] = pageModel.Content as string;
 
             var path = PathUtility.NormalizeFile(Path.GetRelativePath(file.Docset.Config.DocumentId.SiteBasePath, file.SitePath));
 
             rawMetadata["_path"] = path;
-            rawMetadata["fileRelativePath"] = PathUtility.NormalizeFile(Path.Combine($"{group}", Path.ChangeExtension(path, ".html")));
             rawMetadata["toc_rel"] = pageModel.TocRel;
 
             rawMetadata["wordCount"] = rawMetadata["word_count"] = pageModel.WordCount;
@@ -149,7 +143,7 @@ namespace Microsoft.Docs.Build
 
             return RemoveUpdatedAtDateTime(
                 LegacySchema.Transform(
-                    docset.LegacyTemplate.TransformMetadata("conceptual", rawMetadata), pageModel));
+                    docset.Template.TransformMetadata("conceptual", rawMetadata), pageModel));
         }
 
         public static JObject GenerateLegacyMetadateOutput(JObject rawMetadata)

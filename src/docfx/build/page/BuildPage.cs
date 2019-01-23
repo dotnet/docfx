@@ -12,7 +12,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class BuildPage
     {
-        public static async Task<(IEnumerable<Error> errors, object result, List<string>)> Build(
+        public static async Task<(IEnumerable<Error> errors, object result, PublishItem publishItem)> Build(
             Context context,
             Document file,
             TableOfContentsMap tocMap,
@@ -42,11 +42,20 @@ namespace Microsoft.Docs.Build
             if (!file.Docset.Config.Output.Json && schema.Attribute is PageSchemaAttribute)
             {
                 output = file.Docset.Legacy
-                    ? file.Docset.LegacyTemplate.Render(model, file, HashUtility.GetMd5HashShort(model.Monikers))
+                    ? file.Docset.Template.Render(model, file)
                     : await RazorTemplate.Render(model.SchemaType, model);
             }
 
-            return (errors, output, model.Monikers);
+            var publishItem = new PublishItem
+            {
+                Url = file.SiteUrl,
+                Path = file.GetOutputPath(model.Monikers),
+                Locale = file.Docset.Locale,
+                Monikers = model.Monikers,
+                ExtensionData = model.Metadata.ExtensionData, // TODO: run jint and put content in .mta.json here
+            };
+
+            return (errors, output, publishItem);
         }
 
         private static async Task<(List<Error> errors, Schema schema, PageModel model, FileMetadata metadata)>

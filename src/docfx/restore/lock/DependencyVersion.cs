@@ -3,8 +3,10 @@
 
 namespace Microsoft.Docs.Build
 {
-    internal class PublishModel
+    internal class DependencyVersion
     {
-        public PublishItem[] Files { get; set; }
+        public string Hash { get; set; }
+
+        public string Commit { get; set; }
     }
 }

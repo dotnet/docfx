@@ -157,6 +157,12 @@ namespace Microsoft.Docs.Build
         public readonly string Theme = string.Empty;
 
         /// <summary>
+        /// Gets the dependency lock file path
+        /// It should be absolute url or absolute/relative path
+        /// </summary>
+        public readonly string DependencyLock = string.Empty;
+
+        /// <summary>
         /// Gets the config file name.
         /// </summary>
         [JsonIgnore]

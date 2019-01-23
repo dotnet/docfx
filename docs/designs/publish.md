@@ -6,7 +6,7 @@
 
 ```javascript
 {
-    "publish": [
+    "files": [
         {
             "url": "/dotnet/api/system.string",
             "path": "dotnet/api/system.string.json",

@@ -167,8 +167,6 @@ inputs:
 outputs:
   docs/a.json: |
     {"content":"<p><a href=\"/absolute/path?a#b\">redirect</a></p>"}
-  docs/redirect.json: |
-    {"redirect_url":"/absolute/path"}
 ---
 # Files redirected to a relative URL
 inputs:
@@ -180,8 +178,6 @@ inputs:
 outputs:
   docs/a.json: |
     {"content":"<p><a href=\"relative/path\">redirect</a></p>"}
-  docs/redirect.json: |
-    {"redirect_url":"relative/path"}
 ---
 # Show warning if inclusion is a redirection file
 inputs:
@@ -193,8 +189,6 @@ inputs:
 outputs:
   docs/a.json: |
     {"content":"<p>Link to [!include[](redirect.md)]</p>"}
-  docs/redirect.json: |
-    {"redirect_url":"/absolute/path"}
   build.log: |
     ["warning","include-is-redirection","Referenced inclusion redirect.md relative to 'docs/a.md' shouldn't belong to redirections","docs/a.md"]
     ["warning","include-not-found","Cannot resolve 'redirect.md' relative to 'docs/a.md'.","docs/a.md"]
@@ -207,7 +201,7 @@ inputs:
   docs/redirect.md:
 outputs:
   build.log: |
-    ["error","output-path-conflict","Two or more files output to the same path 'docs/redirect.json': 'docs/redirect.md', 'docs/redirect.md <redirection>'"]
+    ["error","publish-url-conflict","Two or more files publish to the same url '/docs/redirect': 'docs/redirect.md', 'docs/redirect.md <redirection>'"]
 ---
 # Show warning if link to a page outside build scope
 inputs:

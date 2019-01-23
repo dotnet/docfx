@@ -32,24 +32,24 @@ namespace Microsoft.Docs.Build
         {
             Assert.False(GitUtility.IsRepo(Path.GetFullPath(file)));
 
-            var repoPath = GitUtility.FindRepo(Path.GetFullPath(file));
-            Assert.NotNull(repoPath);
+            var repo = Repository.Create(Path.GetFullPath(file), branch: null);
+            Assert.NotNull(repo);
 
             using (var gitCommitProvider = new GitCommitProvider())
             {
                 var pathToRepo = PathUtility.NormalizeFile(file);
 
                 // current branch
-                var exe = Exec("git", $"--no-pager log --format=\"%H|%cI|%an|%ae\" -- \"{pathToRepo}\"", repoPath);
-                var (_, _, lib) = await gitCommitProvider.GetCommitHistory(Path.Combine(repoPath, pathToRepo));
+                var exe = Exec("git", $"--no-pager log --format=\"%H|%cI|%an|%ae\" -- \"{pathToRepo}\"", repo.Path);
+                var (_, _, lib) = await gitCommitProvider.GetCommitHistory(Path.Combine(repo.Path, pathToRepo), repo);
 
                 Assert.Equal(
                     exe.Replace("\r", ""),
                     string.Join("\n", lib.Select(c => $"{c.Sha}|{c.Time.ToString("s")}{c.Time.ToString("zzz")}|{c.AuthorName}|{c.AuthorEmail}")));
 
                 // another branch
-                exe = Exec("git", $"--no-pager log --format=\"%H|%cI|%an|%ae\" a050eaf -- \"{pathToRepo}\"", repoPath);
-                (_, _, lib) = await gitCommitProvider.GetCommitHistory(Path.Combine(repoPath, pathToRepo), "a050eaf");
+                exe = Exec("git", $"--no-pager log --format=\"%H|%cI|%an|%ae\" a050eaf -- \"{pathToRepo}\"", repo.Path);
+                (_, _, lib) = await gitCommitProvider.GetCommitHistory(Path.Combine(repo.Path, pathToRepo), repo, "a050eaf");
 
                 Assert.Equal(
                     exe.Replace("\r", ""),
