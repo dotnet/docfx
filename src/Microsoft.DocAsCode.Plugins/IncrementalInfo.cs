@@ -40,6 +40,16 @@ namespace Microsoft.DocAsCode.Plugins
                 status.Details = details;
             }
         }
+
+        public void ReportProcessorFileCount(string processor, long totalFileCount, long skippedFileCount)
+        {
+            lock (_syncRoot)
+            {
+                var status = _processors[processor];
+                status.TotalFileCount = totalFileCount;
+                status.SkippedFileCount = skippedFileCount;
+            }
+        }
     }
 
     public class IncrementalStatus
@@ -52,5 +62,11 @@ namespace Microsoft.DocAsCode.Plugins
 
         [JsonProperty("incrementalPhase")]
         public IncrementalPhase IncrementalPhase { get; set; }
+
+        [JsonProperty("total_file_count")]
+        public long TotalFileCount { get; set; }
+
+        [JsonProperty("skipped_file_count")]
+        public long SkippedFileCount { get; set; }
     }
 }
