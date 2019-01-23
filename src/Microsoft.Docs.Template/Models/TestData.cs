@@ -30,6 +30,31 @@ namespace Microsoft.Docs.Build
         [Xref]
         public string Xref { get; set; }
 
-        public TestData Data { get; set; }
+        public NestedTestData Data { get; set; }
+    }
+
+    public sealed class NestedTestData
+    {
+        [XrefProperty]
+        public string Name { get; set; }
+
+        [XrefProperty]
+        public string FullName { get; set; }
+
+        [XrefProperty]
+        public string Description { get; set; }
+
+        [XrefProperty]
+        [Markdown]
+        public string Summary { get; set; }
+
+        [XrefProperty]
+        [InlineMarkdown]
+        public string InlineDescription { get; set; }
+
+        public string Uid { get; set; }
+
+        [Xref]
+        public string Xref { get; set; }
     }
 }

@@ -38,7 +38,8 @@ outputs:
     }
   docs/a.json: |
     {
-      "content": "<p>No version</p>"
+      "content": "<p>No version</p>",
+      "!monikers": null
     }
 ---
 # Multiple matched moniker range setting in the config, should use the last one
@@ -98,7 +99,8 @@ inputs:
 outputs:
   docs/a.json: |
     {
-      "content": "<p>No version</p>"
+      "content": "<p>No version</p>",
+      "!monikers": null
     }
   218c13d0/docs/a.json: |
     {
@@ -115,7 +117,7 @@ outputs:
       "files": [
           { "url": "/docs/a", "path": "218c13d0/docs/a.json", "monikers": [ "netcore-1.1" ] },
           { "url": "/docs/a", "path": "4667fedf/docs/a.json", "monikers": [ "netcore-2.0" ] },
-          { "url": "/docs/a", "path": "docs/a.json" },
+          { "url": "/docs/a", "path": "docs/a.json", "!monikers": null },
       ]
     }
 ---
@@ -404,11 +406,13 @@ inputs:
 outputs:
   docs/b.json: |
     {
-      "content": "<p>Link to <a href=\"a?view=netcore-1.1\">netcore-1.1</a></p>"
+      "content": "<p>Link to <a href=\"a?view=netcore-1.1\">netcore-1.1</a></p>",
+      "!monikers": null
     }
   docs/a.json: |
     {
-      "content": "<p>No version</p>"
+      "content": "<p>No version</p>",
+      "!monikers": null
     }
   218c13d0/docs/a.json: |
     {
@@ -464,11 +468,13 @@ inputs:
 outputs:
   docs/b.json: |
     {
-      "content": "<p>Link to <a href=\"a\">netcore-2.0</a></p>"
+      "content": "<p>Link to <a href=\"a\">netcore-2.0</a></p>",
+      "!monikers": null
     }
   docs/a.json: |
     {
-      "content": "<p>No version</p>"
+      "content": "<p>No version</p>",
+      "!monikers": null
     }
   218c13d0/docs/a.json: |
     {
@@ -524,7 +530,7 @@ outputs:
     ["info","at-uid-not-found","Cannot find uid 'a' using xref '@a'","docs/c.md"]
     ["error","publish-url-conflict","Two or more files of the same version('netcore-2.0') publish to the same url '/docs/a': 'docs/v1/a.md', 'docs/v2/a.md'"]
   xrefmap.json: | 
-    {"references":[]}
+    {"!references":null}
 ---
 # Define uid with moniker range, refer to it with invalid moniker, should fall back to the one with latest moniker
 inputs:
@@ -564,7 +570,8 @@ inputs:
 outputs:
   docs/b.json: |
     {
-      "content": "<p>Link to <a href=\"a?view=netcore-1.0\">netcore-2.0</a></p>"
+      "content": "<p>Link to <a href=\"a?view=netcore-1.0\">netcore-2.0</a></p>",
+      "!monikers": null
     }
   218c13d0/docs/a.json: |
     {
@@ -626,11 +633,13 @@ inputs:
 outputs:
   docs/b.json: |
     {
-      "content": "<p>Link to <a href=\"a\">no version</a></p>"
+      "content": "<p>Link to <a href=\"a\">no version</a></p>",
+      "!monikers": null
     }
   docs/a.json: |
     {
-      "content": "<p>No version</p>"
+      "content": "<p>No version</p>",
+      "!monikers": null
     }
   218c13d0/docs/a.json: |
     {
@@ -696,11 +705,13 @@ outputs:
   docs/b.json:
   docs/c.json: |
     {
-      "content": "<p>Link to @a</p>"
+      "content": "<p>Link to @a</p>",
+      "!monikers": null
     }
   docs/a.json: |
     {
-      "content": "<p>No version</p>"
+      "content": "<p>No version</p>",
+      "!monikers": null
     }
   218c13d0/docs/a.json: |
     {
@@ -713,7 +724,7 @@ outputs:
       "monikers": ["netcore-2.0"]
     }
   xrefmap.json: | 
-    {"references":[]}
+    {"!references":null}
   build.log: |
     ["error","uid-conflict","Two or more documents have defined the same Uid 'a': docs/a.md,docs/b.md"]
     ["info","at-uid-not-found","Cannot find uid 'a' using xref '@a'","docs/c.md"]
@@ -933,8 +944,8 @@ outputs:
       "files": [
         { "url": "/docs/a", "path": "136a42ac/docs/a.json", "monikers": [ "netcore-1.0" ] },
         { "url": "/docs/c.png", "path": "9d4e15fd/docs/c.png", "monikers": [ "netcore-1.0", "netcore-1.1" ] },
-        { "url": "/docs/a", "path": "docs/a.json" },
-        { "url": "/docs/c.png", "path": "docs/c.png" }
+        { "url": "/docs/a", "path": "docs/a.json", "!monikers": null },
+        { "url": "/docs/c.png", "path": "docs/c.png", "!monikers": null }
       ]
     }
 ---

@@ -24,7 +24,7 @@ namespace Microsoft.Docs.Build
         public static readonly JsonSerializer DefaultSerializer = new JsonSerializer
         {
             NullValueHandling = NullValueHandling.Ignore,
-            ContractResolver = new JsonContractResolver(),
+            ContractResolver = new SchemaValidationContractResolver(),
         };
 
         public static readonly JsonMergeSettings MergeSettings = new JsonMergeSettings
@@ -36,7 +36,7 @@ namespace Microsoft.Docs.Build
         {
             NullValueHandling = NullValueHandling.Ignore,
             Converters = { new StringEnumConverter { NamingStrategy = new CamelCaseNamingStrategy() } },
-            ContractResolver = new SerializerContractResolver(),
+            ContractResolver = new JsonContractResolver(),
         };
 
         private static readonly JsonSerializerSettings s_indentedFormatJsonSerializerSettings = new JsonSerializerSettings
@@ -44,7 +44,7 @@ namespace Microsoft.Docs.Build
             NullValueHandling = NullValueHandling.Ignore,
             Formatting = Formatting.Indented,
             Converters = { new StringEnumConverter { NamingStrategy = new CamelCaseNamingStrategy() } },
-            ContractResolver = new SerializerContractResolver(),
+            ContractResolver = new JsonContractResolver(),
         };
 
         private static readonly JsonSerializer s_defaultIndentedFormatSerializer = JsonSerializer.Create(s_indentedFormatJsonSerializerSettings);
@@ -482,7 +482,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private sealed class SerializerContractResolver : CamelCasePropertyNamesContractResolver
+        private class JsonContractResolver : CamelCasePropertyNamesContractResolver
         {
             protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
             {
@@ -491,12 +491,10 @@ namespace Microsoft.Docs.Build
                 if (contract is JsonArrayContract)
                 {
                     prop.ShouldSerialize =
-                          value =>
+                          target =>
                           {
-                              var obj = JToken.FromObject(value);
-                              var array = (obj as JObject)?.GetValue(prop.PropertyName) as JArray;
-
-                              if (array?.Count == 0)
+                              var array = prop.ValueProvider.GetValue(target) as IEnumerable<object>;
+                              if (array != null && !array.Any())
                               {
                                   return false;
                               }
@@ -507,7 +505,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private sealed class JsonContractResolver : DefaultContractResolver
+        private sealed class SchemaValidationContractResolver : JsonContractResolver
         {
             protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
             {
