@@ -1,4 +1,33 @@
 {
+  "definitions": {
+    "NestedTestData": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "fullName": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "summary": {
+          "type": "string"
+        },
+        "inlineDescription": {
+          "type": "string"
+        },
+        "uid": {
+          "type": "string"
+        },
+        "xref": {
+          "type": "string"
+        }
+      }
+    }
+  },
   "type": "object",
   "additionalProperties": false,
   "properties": {
@@ -24,7 +53,7 @@
       "type": "string"
     },
     "data": {
-      "$ref": "#"
+      "$ref": "#/definitions/NestedTestData"
     },
     "$schema": {
       "type": "string"
