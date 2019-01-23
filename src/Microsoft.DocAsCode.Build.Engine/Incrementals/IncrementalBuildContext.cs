@@ -653,7 +653,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             else if (cb.DocfxVersion != lb.DocfxVersion)
             {
                 details = $"Cannot build incrementally because docfx version changed from {lb.DocfxVersion} to {cb.DocfxVersion}.";
-                fullBuildReasonCode = InfoCodes.FullBuildReason.DocFxVersionEnforcement;
+                fullBuildReasonCode = InfoCodes.FullBuildReason.DocfxVersionChanged;
             }
             else if (cb.PluginHash != lb.PluginHash)
             {
@@ -663,7 +663,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             else if (cb.CommitFromSHA != lb.CommitToSHA)
             {
                 details = $"Cannot build incrementally because commit SHA doesn't match. Last build commit: {lb.CommitToSHA}. Current build commit base: {cb.CommitFromSHA}.";
-                fullBuildReasonCode = InfoCodes.FullBuildReason.SHAMismatch;
+                fullBuildReasonCode = InfoCodes.FullBuildReason.CommitShaMismatch;
             }
             else
             {
@@ -688,7 +688,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             else if (LastBuildVersionInfo == null)
             {
                 message = $"Cannot build incrementally because last build didn't contain group {Version}.";
-                fullBuildReasonCode = InfoCodes.FullBuildReason.NotContainGroup;
+                fullBuildReasonCode = InfoCodes.FullBuildReason.NoAvailableGroupCache;
                 canIncremental = false;
             }
             else if (CurrentBuildVersionInfo.ConfigHash != LastBuildVersionInfo.ConfigHash)

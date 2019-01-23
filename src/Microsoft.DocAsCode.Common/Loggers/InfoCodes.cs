@@ -13,10 +13,10 @@ namespace Microsoft.DocAsCode.Common
         public static class FullBuildReason
         {
             public const string NoAvailableBuildCache = "NoAvailableBuildCache";
-            public const string DocFxVersionEnforcement = "DocFxVersionEnforcement";            
+            public const string DocfxVersionChanged = "DocfxVersionChanged";            
             public const string PluginChanged = "PluginChanged";
-            public const string SHAMismatch = "SHAMismatch";
-            public const string NotContainGroup = "NotContainGroup";
+            public const string CommitShaMismatch = "CommitShaMismatch";
+            public const string NoAvailableGroupCache = "NoAvailableGroupCache";
             public const string ConfigChanged = "ConfigChanged";
             public const string ForceRebuild = "ForceRebuild";
         }
