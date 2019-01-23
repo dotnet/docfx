@@ -23,7 +23,7 @@ outputs:
 # hostname should be removed if docset sharing the same one
 inputs:
   docfx.yml: |
-    baseUrl: docs.microsoft.com
+    baseUrl: https://docs.microsoft.com
     xref: 
       - xrefmap.json
   docs/a.md: Link to @System.String

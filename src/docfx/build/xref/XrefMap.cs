@@ -74,15 +74,10 @@ namespace Microsoft.Docs.Build
 
             string RemoveHostnameIfSharingTheSameOne(string input)
             {
-                var match = Regex.Match(input, "^(http|https)://(.*)$");
-                if (match.Success)
+                var hostname = rootFile.Docset.Config.BaseUrl;
+                if (input.StartsWith(hostname, StringComparison.OrdinalIgnoreCase))
                 {
-                    var url = match.Groups[2].Value;
-                    var hostname = url.Substring(0, url.IndexOf('/'));
-                    if (string.Compare(hostname, rootFile.Docset.Config.BaseUrl, StringComparison.OrdinalIgnoreCase) == 0)
-                    {
-                        return input.Substring(input.IndexOf(hostname) + hostname.Length);
-                    }
+                    return input.Substring(input.IndexOf(hostname) + hostname.Length);
                 }
                 return input;
             }
