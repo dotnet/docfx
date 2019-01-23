@@ -16,7 +16,7 @@ repos:
       d.png:
   https://docs.com/template:
   - files:
-      ContentTemplate/conceptual.mta.json.js: |
+      ContentTemplate/Conceptual.mta.json.js: |
         exports.transform = function (model) {
           return {
             content: JSON.stringify(model)

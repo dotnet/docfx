@@ -51,7 +51,7 @@ namespace Microsoft.Docs.Build
 
         public JObject TransformMetadata(string schemaName, JObject metadata)
         {
-            return JObject.Parse(((JObject)_js.Run($"{schemaName}.mta.json.js".ToLowerInvariant(), "transform", metadata)).Value<string>("content"));
+            return JObject.Parse(((JObject)_js.Run($"{schemaName}.mta.json.js", "transform", metadata)).Value<string>("content"));
         }
 
         public void CopyTo(string outputPath)
