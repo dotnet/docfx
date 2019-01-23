@@ -55,7 +55,7 @@ namespace Microsoft.Docs.Build
                     from path in Directory.GetDirectories(repoPath, "*", SearchOption.TopDirectoryOnly)
                     let name = Path.GetFileName(path)
                     where GitUtility.IsWorkTreeCheckoutComplete(repoPath, name) &&
-                        ((locked && name == $"{RestoreGit.GetWorkTreeHeadPrefix(branch, locked)}{commit}") ||
+                        ((locked && (name == $"{RestoreGit.GetWorkTreeHeadPrefix(branch, locked)}{commit}" || name.EndsWith($"-{commit}"))) ||
                         (!locked && name.StartsWith(RestoreGit.GetWorkTreeHeadPrefix(branch))))
                     orderby new DirectoryInfo(path).LastWriteTimeUtc
                     select path).FirstOrDefault();

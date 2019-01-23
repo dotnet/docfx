@@ -72,16 +72,27 @@ namespace Microsoft.Docs.Build
                 // restore and load dependency lock if need
                 if (HrefUtility.IsHttpHref(extendedConfig.DependencyLock))
                     await RestoreFile.Restore(extendedConfig.DependencyLock, extendedConfig, @implicit);
+
+                var parentLock = dependencyLock != null;
                 dependencyLock = dependencyLock ?? await DependencyLock.Load(docset, extendedConfig.DependencyLock);
 
-                // restore git repos includes dependency repos and loc repos
+                // restore git repos includes dependency repos, theme repo and loc repos
                 var gitVersions = await RestoreGit.Restore(extendedConfig, restoreChild, locale, @implicit, rootRepository, dependencyLock);
 
                 // restore urls except extend url
                 var restoreUrls = extendedConfig.GetFileReferences().Where(HrefUtility.IsHttpHref).ToList();
                 var downloadVersions = await RestoreFile.Restore(restoreUrls, extendedConfig, @implicit);
 
-                return new DependencyLock(gitVersions, downloadVersions);
+                var generatedLock = new DependencyLock(gitVersions, downloadVersions);
+
+                // save dependency lock if need
+                // only save it when the dependency lock is NOT from parent
+                if (!parentLock && !string.IsNullOrEmpty(extendedConfig.DependencyLock))
+                {
+                    await DependencyLock.Save(docset, extendedConfig.DependencyLock, generatedLock);
+                }
+
+                return generatedLock;
             }
         }
     }

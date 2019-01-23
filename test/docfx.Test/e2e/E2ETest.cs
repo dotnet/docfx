@@ -267,6 +267,12 @@ namespace Microsoft.Docs.Build
             }
 
             var docset = Path.Combine(inputFolder, spec.Cwd ?? string.Empty);
+
+            if (GitUtility.IsRepo(docset))
+            {
+                Process.Start(new ProcessStartInfo("git", "reset --hard") { WorkingDirectory = docset }).WaitForExit();
+            }
+
             if (Directory.Exists(Path.Combine(docset, "_site")))
             {
                 Directory.Delete(Path.Combine(docset, "_site"), recursive: true);

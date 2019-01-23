@@ -3,6 +3,7 @@
 
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -62,9 +63,25 @@ namespace Microsoft.Docs.Build
                 return null;
             }
 
+            // dependency lock path can be a place holder for saving usage
+            if (!HrefUtility.IsHttpHref(dependencyLockPath))
+            {
+                if (!File.Exists(Path.Combine(docset, dependencyLockPath)))
+                {
+                    return null;
+                }
+            }
+
             var (_, restoredLockFile) = RestoreMap.GetFileRestorePath(docset, dependencyLockPath);
 
-            return JsonUtility.Deserialize<DependencyLock>(await ProcessUtility.ReadFile(restoredLockFile));
+            var content = await ProcessUtility.ReadFile(restoredLockFile);
+
+            if (string.IsNullOrEmpty(content))
+            {
+                return null;
+            }
+
+            return JsonUtility.Deserialize<DependencyLock>(content);
         }
 
         public static Task<DependencyLock> Load(string docset, CommandLineOptions commandLineOptions)
@@ -74,6 +91,21 @@ namespace Microsoft.Docs.Build
             var (errors, config) = ConfigLoader.TryLoad(docset, commandLineOptions);
 
             return Load(docset, config.DependencyLock);
+        }
+
+        public static async Task Save(string docset, string dependencyLockPath, DependencyLock dependencyLock)
+        {
+            Debug.Assert(!string.IsNullOrEmpty(docset));
+            Debug.Assert(!string.IsNullOrEmpty(dependencyLockPath));
+
+            var content = JsonUtility.Serialize(dependencyLock, formatting: Newtonsoft.Json.Formatting.Indented);
+
+            if (!HrefUtility.IsHttpHref(dependencyLockPath))
+            {
+                await ProcessUtility.WriteFile(Path.Combine(docset, dependencyLockPath), content);
+            }
+
+            // todo: upload to remote file directly
         }
     }
 }
