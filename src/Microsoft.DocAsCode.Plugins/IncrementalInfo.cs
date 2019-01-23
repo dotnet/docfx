@@ -18,17 +18,18 @@ namespace Microsoft.DocAsCode.Plugins
         [JsonProperty("processors")]
         public IReadOnlyDictionary<string, IncrementalStatus> Processors => _processors;
 
-        public void ReportStatus(bool canIncremental, IncrementalPhase incrementalPhase, string details = null)
+        public void ReportStatus(bool canIncremental, IncrementalPhase incrementalPhase, string details = null, string fullBuildReasonCode = null)
         {
             lock (_syncRoot)
             {
                 Status.CanIncremental = canIncremental;
                 Status.Details = details;
                 Status.IncrementalPhase = incrementalPhase;
+                Status.FullBuildReasonCode = fullBuildReasonCode;
             }
         }
 
-        public void ReportProcessorStatus(string processor, bool canIncremental, string details = null)
+        public void ReportProcessorStatus(string processor, bool canIncremental, string details = null, string fullBuildReasonCode = null)
         {
             lock (_syncRoot)
             {
@@ -38,6 +39,7 @@ namespace Microsoft.DocAsCode.Plugins
                 }
                 status.CanIncremental = canIncremental;
                 status.Details = details;
+                status.FullBuildReasonCode = fullBuildReasonCode;
             }
         }
 
@@ -58,7 +60,7 @@ namespace Microsoft.DocAsCode.Plugins
         public bool CanIncremental { get; set; }
 
         [JsonProperty("details")]
-        public string Details { get; set; }
+        public string Details { get; set; }      
 
         [JsonProperty("incrementalPhase")]
         public IncrementalPhase IncrementalPhase { get; set; }
@@ -68,5 +70,8 @@ namespace Microsoft.DocAsCode.Plugins
 
         [JsonProperty("skipped_file_count")]
         public long SkippedFileCount { get; set; }
+
+        [JsonProperty("full_build_reason_code")]
+        public string FullBuildReasonCode { get; set; }
     }
 }
