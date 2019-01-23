@@ -132,7 +132,7 @@ namespace Microsoft.Docs.Build
                         var gitDependencyLock = dependencyLock?.GetGitLock(remote, branch);
                         headCommit = gitDependencyLock?.Commit ?? headCommit;
 
-                        var workTreeHead = $"{GetWorkTreeHeadPrefix(branch, !string.IsNullOrEmpty(gitDependencyLock?.Commit))}-{headCommit}";
+                        var workTreeHead = $"{GetWorkTreeHeadPrefix(branch, !string.IsNullOrEmpty(gitDependencyLock?.Commit))}{headCommit}";
                         var workTreePath = Path.GetFullPath(Path.Combine(repoPath, "../", workTreeHead)).Replace('\\', '/');
 
                         if (existingWorkTreePath.TryAdd(workTreePath))

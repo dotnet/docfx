@@ -3,8 +3,8 @@
 
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
 {
@@ -34,7 +34,7 @@ namespace Microsoft.Docs.Build
             return Git.ContainsKey(href) || Git.Keys.Any(g => g.StartsWith($"{href}#"));
         }
 
-        public static DependencyLock Load(string docset, string dependencyLockPath)
+        public static async Task<DependencyLock> Load(string docset, string dependencyLockPath)
         {
             Debug.Assert(!string.IsNullOrEmpty(docset));
 
@@ -45,11 +45,10 @@ namespace Microsoft.Docs.Build
 
             var (_, restoredLockFile) = RestoreMap.GetFileRestorePath(docset, dependencyLockPath);
 
-            // todo: add process lock
-            return JsonUtility.Deserialize<DependencyLock>(File.ReadAllText(restoredLockFile));
+            return JsonUtility.Deserialize<DependencyLock>(await ProcessUtility.ReadFile(restoredLockFile));
         }
 
-        public static DependencyLock Load(string docset, CommandLineOptions commandLineOptions)
+        public static Task<DependencyLock> Load(string docset, CommandLineOptions commandLineOptions)
         {
             Debug.Assert(!string.IsNullOrEmpty(docset));
 
