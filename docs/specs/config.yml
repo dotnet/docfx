@@ -5,10 +5,7 @@ inputs:
     files: docs/**/*.md
   docfx.json: |
     {
-      "content":
-        {
-          "include": "ignore.md"
-        }
+      "files": { "include": "ignore.md" }
     }  
   ignore.md:
   docs/index.md:
