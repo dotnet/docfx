@@ -77,7 +77,7 @@ namespace Microsoft.Docs.Build
                 var hostname = rootFile.Docset.Config.BaseUrl;
                 if (input.StartsWith(hostname, StringComparison.OrdinalIgnoreCase))
                 {
-                    return input.Substring(input.IndexOf(hostname) + hostname.Length);
+                    return input.Substring(hostname.Length);
                 }
                 return input;
             }
