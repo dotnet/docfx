@@ -45,7 +45,6 @@ namespace Microsoft.Docs.Build
 
             var (_, restoredLockFile) = RestoreMap.GetFileRestorePath(docset, dependencyLockPath);
 
-            // todo: add process lock
             return JsonUtility.Deserialize<DependencyLock>(await ProcessUtility.ReadFile(restoredLockFile));
         }
 
