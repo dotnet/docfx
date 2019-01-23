@@ -38,9 +38,6 @@ namespace Microsoft.Docs.Build
 
             return new DependencyVersion(hash: Path.GetFileName(restoredPath));
 
-            // todo
-            throw new NotImplementedException();
-
             async Task<string> RestoreUrl()
             {
                 if (RestoreMap.TryGetFileRestorePath(url, out var existingPath) && @implicit)
