@@ -50,7 +50,7 @@ namespace Microsoft.Docs.Build
             var redirections = new HashSet<Document>();
 
             // load redirections with document id
-            AddRedirections(docset.Config.Redirections);
+            AddRedirections(docset.Config.Redirections, checkRedirectTo: true);
 
             var redirectionsByRedirectionUrl = redirections
                 .GroupBy(file => file.RedirectionUrl, PathUtility.PathComparer)
@@ -68,13 +68,19 @@ namespace Microsoft.Docs.Build
 
             return (errors, new RedirectionMap(redirectionsBySourcePath, redirectionsByRedirectionUrl));
 
-            void AddRedirections(Dictionary<string, string> items)
+            void AddRedirections(Dictionary<string, string> items, bool checkRedirectTo = false)
             {
                 foreach (var (path, redirectTo) in items)
                 {
                     if (string.IsNullOrEmpty(path) || string.IsNullOrEmpty(redirectTo))
                     {
                         errors.Add(Errors.RedirectionIsNullOrEmpty(path, redirectTo));
+                        continue;
+                    }
+
+                    if (checkRedirectTo && !redirectTo.StartsWith('/'))
+                    {
+                        errors.Add(Errors.InvalidRedirectTo(path, redirectTo));
                         continue;
                     }
 

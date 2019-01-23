@@ -9,13 +9,13 @@ namespace Microsoft.Docs.Build
 {
     public static class TocTest
     {
-        private static readonly Docset s_docset = new Docset(
+        private static readonly Docset s_docset = Docset.Create(
             new Report(),
             Directory.GetCurrentDirectory(),
             "en-us",
             JsonUtility.Deserialize<Config>("{'output': { 'json': true } }".Replace('\'', '\"')),
             new CommandLineOptions(),
-            null);
+            null).Result;
 
         [Theory]
         // same level

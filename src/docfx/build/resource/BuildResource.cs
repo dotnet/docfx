@@ -13,12 +13,16 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(file.ContentType == ContentType.Resource);
 
-            var outputPath = default(string);
             var (errors, monikers) = context.MonikerProvider.GetFileLevelMonikers(file, context.MetadataProvider);
+            var outputPath = file.GetOutputPath(monikers);
+
+            if (file.Docset.Legacy)
+            {
+                context.Output.WriteJson(new { locale = file.Docset.Locale, monikers }, outputPath + ".mta.json");
+            }
 
             if (file.Docset.Config.Output.CopyResources)
             {
-                outputPath = file.GetOutputPath(monikers);
                 context.Output.Copy(file, outputPath);
             }
             else

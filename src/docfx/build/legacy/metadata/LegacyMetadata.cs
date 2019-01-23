@@ -48,20 +48,6 @@ namespace Microsoft.Docs.Build
             return newMetadata;
         }
 
-        public static JObject GenerateLegacyRedirectionRawMetadata(Docset docset, PageModel pageModel)
-        {
-            var rawMetadata = new JObject
-            {
-                ["redirect_url"] = pageModel.RedirectUrl,
-                ["locale"] = docset.Locale,
-            };
-            if (pageModel.Monikers.Count > 0)
-            {
-                rawMetadata["monikers"] = new JArray(pageModel.Monikers);
-            }
-            return rawMetadata;
-        }
-
         public static JObject GenerateLegacyRawMetadata(PageModel pageModel, Document file)
         {
             var docset = file.Docset;
@@ -143,7 +129,7 @@ namespace Microsoft.Docs.Build
 
             return RemoveUpdatedAtDateTime(
                 LegacySchema.Transform(
-                    docset.Template.TransformMetadata("conceptual", rawMetadata), pageModel));
+                    docset.Template.TransformMetadata("Conceptual", rawMetadata), pageModel));
         }
 
         public static JObject GenerateLegacyMetadateOutput(JObject rawMetadata)

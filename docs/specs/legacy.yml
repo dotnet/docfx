@@ -1,0 +1,43 @@
+# Build with --legacy
+commands:
+  - build --legacy
+repos:
+  https://docs.com/legacy:
+  - files:
+      docfx.yml: |
+        theme: https://docs.com/template
+        redirections:
+          a.md: /b
+      c.md: |
+        ---
+        ms.author: yufeih
+        ---
+        [d](d.png)
+      d.png:
+  https://docs.com/template:
+  - files:
+      ContentTemplate/Conceptual.mta.json.js: |
+        exports.transform = function (model) {
+          return {
+            content: JSON.stringify(model)
+          }
+        }
+outputs:
+  a.raw.page.json:
+  a.mta.json: |
+    { "locale": "en-us", "redirect_url": "/b" }
+  c.raw.page.json: |
+    {
+      "content": "<p><a href=\"d.png\" data-linktype=\"relative-path\">d</a></p>\n",
+      "rawMetadata": { "ms.author": "yufeih" },
+      "themesRelativePathToOutputRoot": "_themes/"
+    }
+  c.mta.json: |
+    { "locale": "en-us", "ms.author": "yufeih", "is_dynamic_rendering": true }
+  d.png.mta.json: |
+    { "locale": "en-us" }
+  .manifest.json:
+  .dependency-map.json:
+  filemap.json:
+  op_aggregated_file_map_info.json:
+  op_crr_info.json:

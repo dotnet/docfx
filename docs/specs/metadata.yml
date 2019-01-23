@@ -330,7 +330,7 @@ outputs:
 inputs:
   docfx.yml: |
     redirections:
-      docs/a.md: https://docfx.com/a
+      docs/a.md: /a
   docs/a.md: |
     ---
     Redirect_url: https://docfx.com/b
