@@ -143,7 +143,7 @@ namespace Microsoft.Docs.Build
 
             return RemoveUpdatedAtDateTime(
                 LegacySchema.Transform(
-                    docset.Template.TransformMetadata("conceptual", rawMetadata), pageModel));
+                    docset.Template.TransformMetadata("Conceptual", rawMetadata), pageModel));
         }
 
         public static JObject GenerateLegacyMetadateOutput(JObject rawMetadata)
