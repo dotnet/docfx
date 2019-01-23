@@ -60,7 +60,7 @@ namespace Microsoft.DocAsCode.Plugins
         public bool CanIncremental { get; set; }
 
         [JsonProperty("details")]
-        public string Details { get; set; }      
+        public string Details { get; set; }
 
         [JsonProperty("incrementalPhase")]
         public IncrementalPhase IncrementalPhase { get; set; }
