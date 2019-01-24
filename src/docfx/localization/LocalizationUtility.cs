@@ -312,6 +312,7 @@ namespace Microsoft.Docs.Build
                 return ConfigLoader.Load(docset, options);
             }
 
+            Debug.Assert(dependencyLock != null);
             var (sourceDocsetPath, _) = RestoreMap.GetGitRestorePath(sourceRemote, sourceBranch, dependencyLock);
             return ConfigLoader.Load(sourceDocsetPath, options, locale);
         }
