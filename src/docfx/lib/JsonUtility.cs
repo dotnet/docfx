@@ -472,39 +472,42 @@ namespace Microsoft.Docs.Build
             return null;
         }
 
-        private static void SetFieldWritable(MemberInfo member, JsonProperty prop)
-        {
-            if (!prop.Writable)
-            {
-                if (member is FieldInfo f && f.IsPublic && !f.IsStatic)
-                {
-                    prop.Writable = true;
-                }
-            }
-        }
-
         private class JsonContractResolver : CamelCasePropertyNamesContractResolver
         {
             protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
             {
                 var prop = base.CreateProperty(member, memberSerialization);
-                var contract = s_contractResolver.ResolveContract(prop.PropertyType);
-                if (contract is JsonArrayContract)
+                ShouldNotSerializeEmptyArray();
+                SetFieldWritable();
+                return prop;
+
+                void ShouldNotSerializeEmptyArray()
                 {
-                    prop.ShouldSerialize =
-                          target =>
-                          {
-                              var array = prop.ValueProvider.GetValue(target) as IEnumerable<object>;
-                              if (array != null && !array.Any())
+                    if (s_contractResolver.ResolveContract(prop.PropertyType) is JsonArrayContract)
+                    {
+                        prop.ShouldSerialize =
+                              target =>
                               {
-                                  return false;
-                              }
-                              return true;
-                          };
+                                  var array = prop.ValueProvider.GetValue(target) as IEnumerable<object>;
+                                  if (array != null && !array.Any())
+                                  {
+                                      return false;
+                                  }
+                                  return true;
+                              };
+                    }
                 }
 
-                SetFieldWritable(member, prop);
-                return prop;
+                void SetFieldWritable()
+                {
+                    if (!prop.Writable)
+                    {
+                        if (member is FieldInfo f && f.IsPublic && !f.IsStatic)
+                        {
+                            prop.Writable = true;
+                        }
+                    }
+                }
             }
         }
 
