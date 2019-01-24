@@ -341,9 +341,10 @@ namespace Microsoft.Docs.Build
 
         private static (List<Error> errors, IReadOnlyList<InternalXrefSpec> specs) LoadSchemaDocument(Context context, JObject obj, Document file)
         {
-            var uids = new Dictionary<string, string>();
-            GetUids(context, file.FilePath, obj, string.Empty, uids);
-            if (uids.Count == 0)
+            var uidToJsonPath = new Dictionary<string, string>();
+            var jsonPathToUid = new Dictionary<string, string>();
+            GetUids(context, file.FilePath, obj, string.Empty, uidToJsonPath, jsonPathToUid);
+            if (uidToJsonPath.Count == 0)
             {
                 return (new List<Error>(), new List<InternalXrefSpec>());
             }
@@ -367,27 +368,22 @@ namespace Microsoft.Docs.Build
 
             var extensionDataByUid = new Dictionary<string, (bool isRoot, Dictionary<string, Lazy<JValue>> properties)>();
 
-            if (extensionData.Count == 0)
+            foreach (var (uid, value) in uidToJsonPath)
             {
-                foreach (var (uid, value) in uids)
-                {
-                    extensionDataByUid.Add(uid, (string.IsNullOrEmpty(value), new Dictionary<string, Lazy<JValue>>()));
-                }
+                extensionDataByUid.Add(uid, (string.IsNullOrEmpty(value), new Dictionary<string, Lazy<JValue>>()));
             }
-            else
+
+            foreach (var (jsonPath, xrefProperty) in extensionData)
             {
-                foreach (var (jsonPath, xrefProperty) in extensionData)
+                var (uid, resolvedJsonPath) = MatchExtensionDataToUid(jsonPath);
+                if (extensionDataByUid.ContainsKey(uid))
                 {
-                    var (uid, resolvedJsonPath) = MatchExtensionDataToUid(jsonPath);
-                    if (extensionDataByUid.ContainsKey(uid))
-                    {
-                        var (_, properties) = extensionDataByUid[uid];
-                        properties.Add(resolvedJsonPath, xrefProperty);
-                    }
-                    else
-                    {
-                        extensionDataByUid.Add(uid, (string.IsNullOrEmpty(uids[uid]), new Dictionary<string, Lazy<JValue>> { { resolvedJsonPath, xrefProperty } }));
-                    }
+                    var (_, properties) = extensionDataByUid[uid];
+                    properties.Add(resolvedJsonPath, xrefProperty);
+                }
+                else
+                {
+                    extensionDataByUid.Add(uid, (string.IsNullOrEmpty(uidToJsonPath[uid]), new Dictionary<string, Lazy<JValue>> { { resolvedJsonPath, xrefProperty } }));
                 }
             }
 
@@ -411,7 +407,6 @@ namespace Microsoft.Docs.Build
 
             (string uid, string jsonPath) MatchExtensionDataToUid(string jsonPath)
             {
-                var reverse = uids.ToDictionary(x => x.Value, x => x.Key);
                 string subString;
                 var index = jsonPath.LastIndexOf('.');
                 if (index == -1)
@@ -423,20 +418,24 @@ namespace Microsoft.Docs.Build
                     subString = jsonPath.Substring(0, index);
                 }
 
-                return reverse.ContainsKey(subString) ? (reverse[subString], jsonPath.Substring(index + 1)) : MatchExtensionDataToUid(subString);
+                return jsonPathToUid.ContainsKey(subString) ? (jsonPathToUid[subString], jsonPath.Substring(index + 1)) : MatchExtensionDataToUid(subString);
             }
         }
 
-        private static void GetUids(Context context, string filePath, JObject token, string parentName, Dictionary<string, string> uids)
+        private static void GetUids(Context context, string filePath, JObject token, string parentName, Dictionary<string, string> uidToJsonPath, Dictionary<string, string> jsonPathToUid)
         {
             if (token is null)
                 return;
 
             if (token.TryGetValue("uid", out var value) && value is JValue v && v.Value is string str)
             {
-                if (!uids.TryAdd(str, parentName))
+                if (!uidToJsonPath.TryAdd(str, parentName))
                 {
                     context.Report.Write(filePath, Errors.UidConflict(str));
+                }
+                else
+                {
+                    jsonPathToUid.TryAdd(parentName, str);
                 }
             }
 
@@ -445,15 +444,14 @@ namespace Microsoft.Docs.Build
                 var property = item as JProperty;
                 if (property.Value is JObject obj)
                 {
-                    GetUids(context, filePath, obj, string.IsNullOrEmpty(parentName) ? property.Name : $"{parentName}.{property.Name}", uids);
+                    GetUids(context, filePath, obj, obj.Path, uidToJsonPath, jsonPathToUid);
                 }
 
                 if (property.Value is JArray array)
                 {
-                    var children = array.Children().ToList();
-                    for (var i = 0; i < children.Count; i++)
+                    foreach (var child in array.Children())
                     {
-                        GetUids(context, filePath, children[i] as JObject, (string.IsNullOrEmpty(parentName) ? property.Name : $"{parentName}.{property.Name}") + $"[{i}]", uids);
+                        GetUids(context, filePath, child as JObject, child.Path, uidToJsonPath, jsonPathToUid);
                     }
                 }
             }
