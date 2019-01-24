@@ -8,5 +8,11 @@ namespace Microsoft.Docs.Build
         public string Hash { get; set; }
 
         public string Commit { get; set; }
+
+        public DependencyVersion(string commit = null, string hash = null)
+        {
+            Commit = commit;
+            Hash = hash;
+        }
     }
 }

@@ -21,20 +21,21 @@ namespace Microsoft.Docs.Build
             DepthOne = 1 << 2,
         }
 
-        public static async Task Restore(
+        public static async Task<IReadOnlyDictionary<string, DependencyLockModel>> Restore(
             Config config,
-            Func<string, DependencyLock, Task> restoreChild,
+            Func<string, DependencyLockModel, Task<DependencyLockModel>> restoreChild,
             string locale,
             bool @implicit,
             Repository rootRepository,
-            DependencyLock dependencyLock)
+            DependencyLockModel dependencyLock)
         {
+            var gitVersions = new Dictionary<string, DependencyLockModel>();
             var gitDependencies =
                 from git in GetGitDependencies(config, locale, rootRepository)
                 group (git.branch, git.flags)
                 by git.remote;
 
-            var children = new ConcurrentBag<(string workTree, DependencyLock dependencyLock)>();
+            var children = new ConcurrentBag<RestoreChild>();
 
             // restore first level children
             await ParallelUtility.ForEach(
@@ -51,7 +52,7 @@ namespace Microsoft.Docs.Build
             // update the last write time
             foreach (var child in children)
             {
-                Directory.SetLastWriteTimeUtc(child.workTree, DateTime.UtcNow);
+                Directory.SetLastWriteTimeUtc(child.Restored.path, DateTime.UtcNow);
             }
 
             // fetch contribution branch
@@ -63,12 +64,15 @@ namespace Microsoft.Docs.Build
             // restore sub-level children
             foreach (var child in children)
             {
-                await restoreChild(child.workTree, child.dependencyLock);
+                var childDependencyLock = await restoreChild(child.ToRestore.path, child.ToRestore.dependencyLock);
+                gitVersions.TryAdd($"{child.Restored.remote}#{child.Restored.branch}", new DependencyLockModel(childDependencyLock.Git, childDependencyLock.Downloads, child.Restored.gitVersion));
             }
 
-            async Task<List<(string workTree, DependencyLock dependencyLock)>> RestoreGitRepo(IGrouping<string, (string branch, GitFlags flags)> group)
+            return gitVersions;
+
+            async Task<ConcurrentBag<RestoreChild>> RestoreGitRepo(IGrouping<string, (string branch, GitFlags flags)> group)
             {
-                var subChildren = new List<(string workTree, DependencyLock dependencyLock)>();
+                var subChildren = new ConcurrentBag<RestoreChild>();
                 var remote = group.Key;
                 var branches = group.Select(g => g.branch).ToArray();
                 var depthOne = group.All(g => (g.flags & GitFlags.DepthOne) != 0) && !(dependencyLock?.ContainsGitLock(remote) ?? false);
@@ -82,7 +86,12 @@ namespace Microsoft.Docs.Build
                         {
                             {
                                 branchesToFetch.Remove(branch);
-                                subChildren.Add((existingPath, subDependencyLock));
+                                subChildren.Add(new RestoreChild(
+                                    existingPath,
+                                    remote,
+                                    branch,
+                                    subDependencyLock,
+                                    new DependencyVersion(subDependencyLock?.Commit ?? Path.GetFileName(existingPath).Split("-").Last())));
                             }
                         }
                     }
@@ -147,7 +156,7 @@ namespace Microsoft.Docs.Build
                             }
                         }
 
-                        subChildren.Add((workTreePath, gitDependencyLock));
+                        subChildren.Add(new RestoreChild(workTreePath, remote, branch, gitDependencyLock, new DependencyVersion(headCommit)));
                     });
                 }
             }
@@ -238,6 +247,24 @@ namespace Microsoft.Docs.Build
             {
                 // Bilingual repos also depend on non bilingual branch for commit history
                 yield return (remote, contributionBranch, GitFlags.NoCheckout);
+            }
+        }
+
+        private class RestoreChild
+        {
+            public (string path, DependencyLockModel dependencyLock) ToRestore { get; private set; }
+
+            public (string remote, string branch, string path, DependencyVersion gitVersion) Restored { get; private set; }
+
+            public RestoreChild(string path, string remote, string branch, DependencyLockModel dependencyLock, DependencyVersion dependencyVersion)
+            {
+                Debug.Assert(!string.IsNullOrEmpty(path));
+                Debug.Assert(!string.IsNullOrEmpty(remote));
+                Debug.Assert(!string.IsNullOrEmpty(branch));
+                Debug.Assert(!string.IsNullOrEmpty(dependencyVersion?.Commit));
+
+                Restored = (remote, branch, path, dependencyVersion);
+                ToRestore = (path, dependencyLock);
             }
         }
     }

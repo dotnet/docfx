@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -13,16 +14,34 @@ namespace Microsoft.Docs.Build
 {
     internal static class RestoreFile
     {
-        public static async Task Restore(string url, Config config, bool @implict = false)
+        // todo: support specific version from dependency lock
+        public static async Task<IReadOnlyDictionary<string, DependencyVersion>> Restore(List<string> urls, Config config, bool @implicit = false)
+        {
+            var downloadVersions = new ConcurrentDictionary<string, DependencyVersion>();
+
+            await ParallelUtility.ForEach(
+                    urls,
+                    async restoreUrl =>
+                    {
+                        var version = await Restore(restoreUrl, config, @implicit);
+                        downloadVersions.TryAdd(restoreUrl, version);
+                    });
+
+            return downloadVersions;
+        }
+
+        public static async Task<DependencyVersion> Restore(string url, Config config, bool @implicit = false)
         {
             var restoredPath = await RestoreUrl();
 
             // update the last write date
             File.SetLastWriteTimeUtc(restoredPath, DateTime.UtcNow);
 
+            return new DependencyVersion(hash: Path.GetFileName(restoredPath));
+
             async Task<string> RestoreUrl()
             {
-                if (RestoreMap.TryGetFileRestorePath(url, out var existingPath) && implict)
+                if (RestoreMap.TryGetFileRestorePath(url, out var existingPath) && @implicit)
                 {
                     return existingPath;
                 }

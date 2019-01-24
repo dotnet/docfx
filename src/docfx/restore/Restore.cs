@@ -22,14 +22,14 @@ namespace Microsoft.Docs.Build
             using (Progress.Start("Restore dependencies"))
             {
                 var repository = Repository.Create(docsetPath, branch: null);
-                var restoredDocsets = new ConcurrentHashSet<string>(PathUtility.PathComparer);
+                var restoredDocsets = new ConcurrentDictionary<string, Task<DependencyLockModel>>(PathUtility.PathComparer);
                 var localeToRestore = LocalizationUtility.GetBuildLocale(repository, options);
 
                 await RestoreDocset(docsetPath, rootRepository: repository);
 
-                async Task RestoreDocset(string docset, bool root = true, Repository rootRepository = null, DependencyLock dependencyLock = null)
+                Task<DependencyLockModel> RestoreDocset(string docset, bool root = true, Repository rootRepository = null, DependencyLockModel dependencyLock = null)
                 {
-                    if (restoredDocsets.TryAdd(docset + dependencyLock?.Commit))
+                    return restoredDocsets.GetOrAdd(docset + dependencyLock?.Commit, async k =>
                     {
                         var (errors, config) = ConfigLoader.TryLoad(docset, options, localeToRestore, extend: false);
                         report.Write(errors);
@@ -40,24 +40,24 @@ namespace Microsoft.Docs.Build
                         }
 
                         // no need to restore child docsets' loc repository
-                        await RestoreOneDocset(
+                        return await RestoreOneDocset(
                             docset,
                             localeToRestore,
                             config,
-                            async (subDocset, subDependencyLock) => await RestoreDocset(subDocset, root: false, dependencyLock: subDependencyLock),
+                            (subDocset, subDependencyLock) => RestoreDocset(subDocset, root: false, dependencyLock: subDependencyLock),
                             rootRepository,
                             dependencyLock);
-                    }
+                    });
                 }
             }
 
-            async Task RestoreOneDocset(
+            async Task<DependencyLockModel> RestoreOneDocset(
                 string docset,
                 string locale,
                 Config config,
-                Func<string, DependencyLock, Task> restoreChild,
+                Func<string, DependencyLockModel, Task<DependencyLockModel>> restoreChild,
                 Repository rootRepository,
-                DependencyLock dependencyLock)
+                DependencyLockModel dependencyLock)
             {
                 // restore extend url firstly
                 // no need to extend config
@@ -72,15 +72,27 @@ namespace Microsoft.Docs.Build
                 // restore and load dependency lock if need
                 if (HrefUtility.IsHttpHref(extendedConfig.DependencyLock))
                     await RestoreFile.Restore(extendedConfig.DependencyLock, extendedConfig, @implicit);
+
+                var parentLock = dependencyLock != null;
                 dependencyLock = dependencyLock ?? await DependencyLock.Load(docset, extendedConfig.DependencyLock);
 
-                // restore git repos includes dependency repos and loc repos
-                await RestoreGit.Restore(extendedConfig, restoreChild, locale, @implicit, rootRepository, dependencyLock);
+                // restore git repos includes dependency repos, theme repo and loc repos
+                var gitVersions = await RestoreGit.Restore(extendedConfig, restoreChild, locale, @implicit, rootRepository, dependencyLock);
 
                 // restore urls except extend url
-                await ParallelUtility.ForEach(
-                    extendedConfig.GetFileReferences().Where(HrefUtility.IsHttpHref),
-                    restoreUrl => RestoreFile.Restore(restoreUrl, extendedConfig, @implicit));
+                var restoreUrls = extendedConfig.GetFileReferences().Where(HrefUtility.IsHttpHref).ToList();
+                var downloadVersions = await RestoreFile.Restore(restoreUrls, extendedConfig, @implicit);
+
+                var generatedLock = new DependencyLockModel(gitVersions, downloadVersions);
+
+                // save dependency lock if need
+                // only save it when the dependency lock is NOT from parent
+                if (!parentLock && !string.IsNullOrEmpty(extendedConfig.DependencyLock))
+                {
+                    await DependencyLock.Save(docset, extendedConfig.DependencyLock, generatedLock);
+                }
+
+                return generatedLock;
             }
         }
     }
