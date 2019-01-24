@@ -32,6 +32,7 @@ namespace Microsoft.Docs.Build
             MergeArrayHandling = MergeArrayHandling.Replace,
         };
 
+        private static readonly CamelCasePropertyNamesContractResolver s_contractResolver = new CamelCasePropertyNamesContractResolver();
         private static readonly JsonSerializerSettings s_noneFormatJsonSerializerSettings = new JsonSerializerSettings
         {
             NullValueHandling = NullValueHandling.Ignore,
@@ -416,7 +417,7 @@ namespace Microsoft.Docs.Build
 
         private static Type GetCollectionItemTypeIfArrayType(Type type)
         {
-            var contract = DefaultSerializer.ContractResolver.ResolveContract(type);
+            var contract = s_contractResolver.ResolveContract(type);
             if (contract is JsonObjectContract)
             {
                 return type;
@@ -438,7 +439,7 @@ namespace Microsoft.Docs.Build
 
         private static Type GetNestedTypeAndCheckForUnknownField(Type type, JProperty prop, List<Error> errors)
         {
-            var contract = DefaultSerializer.ContractResolver.ResolveContract(type);
+            var contract = s_contractResolver.ResolveContract(type);
 
             if (contract is JsonObjectContract objectContract)
             {
@@ -487,7 +488,7 @@ namespace Microsoft.Docs.Build
             protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
             {
                 var prop = base.CreateProperty(member, memberSerialization);
-                var contract = DefaultSerializer.ContractResolver.ResolveContract(prop.PropertyType);
+                var contract = s_contractResolver.ResolveContract(prop.PropertyType);
                 if (contract is JsonArrayContract)
                 {
                     prop.ShouldSerialize =
