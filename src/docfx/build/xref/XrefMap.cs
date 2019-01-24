@@ -343,7 +343,7 @@ namespace Microsoft.Docs.Build
         {
             var uidToJsonPath = new Dictionary<string, string>();
             var jsonPathToUid = new Dictionary<string, string>();
-            GetUids(context, file.FilePath, obj, string.Empty, uidToJsonPath, jsonPathToUid);
+            GetUids(context, file.FilePath, obj, uidToJsonPath, jsonPathToUid);
             if (uidToJsonPath.Count == 0)
             {
                 return (new List<Error>(), new List<InternalXrefSpec>());
@@ -422,20 +422,20 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static void GetUids(Context context, string filePath, JObject token, string parentName, Dictionary<string, string> uidToJsonPath, Dictionary<string, string> jsonPathToUid)
+        private static void GetUids(Context context, string filePath, JObject token, Dictionary<string, string> uidToJsonPath, Dictionary<string, string> jsonPathToUid)
         {
             if (token is null)
                 return;
 
             if (token.TryGetValue("uid", out var value) && value is JValue v && v.Value is string str)
             {
-                if (!uidToJsonPath.TryAdd(str, parentName))
+                if (!uidToJsonPath.TryAdd(str, token.Path))
                 {
                     context.Report.Write(filePath, Errors.UidConflict(str));
                 }
                 else
                 {
-                    jsonPathToUid.TryAdd(parentName, str);
+                    jsonPathToUid.TryAdd(token.Path, str);
                 }
             }
 
@@ -444,14 +444,14 @@ namespace Microsoft.Docs.Build
                 var property = item as JProperty;
                 if (property.Value is JObject obj)
                 {
-                    GetUids(context, filePath, obj, obj.Path, uidToJsonPath, jsonPathToUid);
+                    GetUids(context, filePath, obj, uidToJsonPath, jsonPathToUid);
                 }
 
                 if (property.Value is JArray array)
                 {
                     foreach (var child in array.Children())
                     {
-                        GetUids(context, filePath, child as JObject, child.Path, uidToJsonPath, jsonPathToUid);
+                        GetUids(context, filePath, child as JObject, uidToJsonPath, jsonPathToUid);
                     }
                 }
             }
