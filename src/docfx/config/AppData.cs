@@ -19,6 +19,8 @@ namespace Microsoft.Docs.Build
 
         public static string CacheRoot => Path.Combine(s_root, "cache");
 
+        public static string DependencyLockRoot => Path.Combine(s_root, "lock");
+
         public static string GlobalConfigPath => GetGlobalConfigPath();
 
         public static string DefaultGitHubUserCachePath => Path.Combine(CacheRoot, "github-users.json");
@@ -32,6 +34,11 @@ namespace Microsoft.Docs.Build
         public static string GetFileDownloadDir(string url)
         {
             return PathUtility.NormalizeFolder(Path.Combine(DownloadsRoot, PathUtility.UrlToShortName(url)));
+        }
+
+        public static string GetDependencyLockFile(string docsetPath)
+        {
+            return PathUtility.NormalizeFile(Path.Combine(DependencyLockRoot, PathUtility.UrlToShortName(docsetPath), ".lock.json"));
         }
 
         public static string GetCommitCachePath(string remote)

@@ -15,7 +15,7 @@ namespace Microsoft.Docs.Build
     internal static class RestoreFile
     {
         // todo: support specific version from dependency lock
-        public static async Task<IReadOnlyDictionary<string, DependencyVersion>> Restore(List<string> urls, Config config, bool @implicit = false)
+        public static async Task<IReadOnlyDictionary<string, DependencyVersion>> Restore(List<string> urls, Config config, DependencyLockModel dependencyLock, bool @implicit = false)
         {
             var downloadVersions = new ConcurrentDictionary<string, DependencyVersion>();
 
@@ -23,14 +23,14 @@ namespace Microsoft.Docs.Build
                     urls,
                     async restoreUrl =>
                     {
-                        var version = await Restore(restoreUrl, config, @implicit);
+                        var version = await Restore(restoreUrl, config, @implicit, dependencyLock?.Downloads.GetValueOrDefault(restoreUrl));
                         downloadVersions.TryAdd(restoreUrl, version);
                     });
 
             return downloadVersions;
         }
 
-        public static async Task<DependencyVersion> Restore(string url, Config config, bool @implicit = false)
+        public static async Task<DependencyVersion> Restore(string url, Config config, bool @implicit = false, DependencyVersion dependencyVersion = null)
         {
             var restoredPath = await RestoreUrl();
 
@@ -41,7 +41,7 @@ namespace Microsoft.Docs.Build
 
             async Task<string> RestoreUrl()
             {
-                if (RestoreMap.TryGetFileRestorePath(url, out var existingPath) && @implicit)
+                if (RestoreMap.TryGetFileRestorePath(url, dependencyVersion, out var existingPath) && @implicit)
                 {
                     return existingPath;
                 }

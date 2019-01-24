@@ -70,7 +70,7 @@ namespace Microsoft.Docs.Build
 
             var (errors, config) = ConfigLoader.TryLoad(docset, commandLineOptions);
 
-            return Load(docset, config.DependencyLock);
+            return Load(docset, string.IsNullOrEmpty(config.DependencyLock) ? AppData.GetDependencyLockFile(docset) : config.DependencyLock);
         }
 
         public static async Task Save(string docset, string dependencyLockPath, DependencyLockModel dependencyLock)
@@ -82,7 +82,9 @@ namespace Microsoft.Docs.Build
 
             if (!HrefUtility.IsHttpHref(dependencyLockPath))
             {
-                await ProcessUtility.WriteFile(Path.Combine(docset, dependencyLockPath), content);
+                var path = Path.Combine(docset, dependencyLockPath);
+                Directory.CreateDirectory(Path.GetDirectoryName(path));
+                await ProcessUtility.WriteFile(path, content);
             }
 
             // todo: upload to remote file directly

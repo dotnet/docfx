@@ -318,7 +318,7 @@ namespace Microsoft.Docs.Build
 
         public static (bool fromUrl, string path) GetFileRestorePath(this Docset docset, string url)
         {
-            return RestoreMap.GetFileRestorePath(docset.DocsetPath, url, docset.FallbackDocset?.DocsetPath);
+            return RestoreMap.GetFileRestorePath(docset.DocsetPath, url, docset.DependencyLock, docset.FallbackDocset?.DocsetPath);
         }
 
         public static string GetBuildLocale(Repository repository, CommandLineOptions options)
