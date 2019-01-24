@@ -49,9 +49,9 @@ namespace Microsoft.Docs.Build
             return _liquid.Render(layout, liquidModel);
         }
 
-        public JObject TransformMetadata(string schemaName, JObject metadata)
+        public JObject TransformMetadata(string scriptPath, JObject model)
         {
-            return JObject.Parse(((JObject)_js.Run($"{schemaName}.mta.json.js", "transform", metadata)).Value<string>("content"));
+            return JObject.Parse(((JObject)_js.Run(scriptPath, "transform", model)).Value<string>("content"));
         }
 
         public void CopyTo(string outputPath)

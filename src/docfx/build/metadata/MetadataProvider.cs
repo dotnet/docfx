@@ -26,43 +26,43 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public (List<Error> errors, JObject metadata) GetMetadata(Document file, JObject yamlHeader = null)
+        public (List<Error> errors, T metadata) GetMetadata<T>(Document file, JObject yamlHeader = null, bool mergeConfig = true)
         {
             Debug.Assert(file != null);
 
-            var erros = new List<Error>();
-            var fileMetadata = new JObject();
-            foreach (var (glob, key, value) in _rules)
-            {
-                if (glob(file.FilePath))
-                {
-                    fileMetadata[key] = value;
-                }
-            }
-
+            var errors = new List<Error>();
             var result = new JObject();
-            result.Merge(_config.GlobalMetadata, JsonUtility.MergeSettings);
-            result.Merge(fileMetadata, JsonUtility.MergeSettings);
+
+            if (mergeConfig)
+            {
+                result.Merge(_config.GlobalMetadata, JsonUtility.MergeSettings);
+
+                var fileMetadata = new JObject();
+                foreach (var (glob, key, value) in _rules)
+                {
+                    if (glob(file.FilePath))
+                    {
+                        fileMetadata[key] = value;
+                    }
+                }
+                result.Merge(fileMetadata, JsonUtility.MergeSettings);
+            }
 
             if (yamlHeader != null)
             {
-                erros.AddRange(MetadataValidator.Validate(yamlHeader, "yaml header"));
+                errors.AddRange(MetadataValidator.Validate(yamlHeader, "yaml header"));
                 result.Merge(yamlHeader, JsonUtility.MergeSettings);
             }
 
-            return (erros, result);
-        }
+            if (typeof(T) == typeof(JObject))
+            {
+                return (errors, (T)(object)result);
+            }
 
-        public (List<Error> errors, FileMetadata fileMetadata) GetFileMetadata(Document file, JObject yamlHeader = null)
-        {
-            var errors = new List<Error>();
-            var (metaErrors, metadata) = GetMetadata(file, yamlHeader);
-            errors.AddRange(metaErrors);
+            var (schemaErrors, obj) = JsonUtility.ToObjectWithSchemaValidation<T>(result);
+            errors.AddRange(schemaErrors);
 
-            var (fileMetaErrors, fileMetadata) = JsonUtility.ToObjectWithSchemaValidation<FileMetadata>(metadata);
-            errors.AddRange(fileMetaErrors);
-
-            return (errors, fileMetadata);
+            return (errors, obj);
         }
     }
 }

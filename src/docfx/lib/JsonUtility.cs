@@ -171,6 +171,14 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
+        /// Converts a strongly typed C# object to weakly typed json object using the default serialization settings.
+        /// </summary>
+        public static JObject ToJObject(object model)
+        {
+            return JObject.FromObject(model, DefaultSerializer);
+        }
+
+        /// <summary>
         /// Creates an instance of the specified .NET type from the JToken with schema validation
         /// </summary>
         public static (List<Error>, T) ToObjectWithSchemaValidation<T>(JToken token)
@@ -482,25 +490,13 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private sealed class JsonContractResolver : DefaultContractResolver
+        private sealed class JsonContractResolver : CamelCasePropertyNamesContractResolver
         {
             protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
             {
                 var prop = base.CreateProperty(member, memberSerialization);
-                var converter = GetConverter(member);
 
-                if (converter != null)
-                {
-                    if (prop.PropertyType.IsArray)
-                    {
-                        prop.ItemConverter = converter;
-                    }
-                    else
-                    {
-                        prop.Converter = converter;
-                    }
-                }
-
+                // TODO:
                 SetFieldWritable(member, prop);
                 return prop;
             }

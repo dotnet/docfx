@@ -14,7 +14,12 @@ namespace Microsoft.Docs.Build
         [JsonProperty(PropertyName = "monikerRange")]
         public string MonikerRange { get; set; }
 
+        [JsonProperty(PropertyName = "pdf_absolute_path")]
+        public string PdfAbsolutePath { get; set; }
+
         [JsonExtensionData]
         public JObject ExtensionData { get; set; }
+
+        public bool ShouldSerializeMonikerRange() => false;
     }
 }

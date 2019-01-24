@@ -84,7 +84,7 @@ namespace Microsoft.Docs.Build
             var (yamlHeaderErrors, yamlHeader) = ExtractYamlHeader.Extract(file, context);
             errors.AddRange(yamlHeaderErrors);
 
-            var (metaErrors, fileMetadata) = context.MetadataProvider.GetFileMetadata(file, yamlHeader);
+            var (metaErrors, fileMetadata) = context.MetadataProvider.GetMetadata<FileMetadata>(file, yamlHeader);
             errors.AddRange(metaErrors);
 
             var (error, monikers) = context.MonikerProvider.GetFileLevelMonikers(file, fileMetadata.MonikerRange);
@@ -162,7 +162,7 @@ namespace Microsoft.Docs.Build
             var yamlHeader = obj?.Value<JObject>("metadata") ?? new JObject();
             var title = yamlHeader.Value<string>("title") ?? obj?.Value<string>("title");
 
-            var (metaErrors, fileMetadata) = context.MetadataProvider.GetFileMetadata(file, yamlHeader);
+            var (metaErrors, fileMetadata) = context.MetadataProvider.GetMetadata<FileMetadata>(file, yamlHeader);
             errors.AddRange(metaErrors);
 
             var model = new PageModel
