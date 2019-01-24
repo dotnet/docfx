@@ -64,13 +64,20 @@ namespace Microsoft.Docs.Build
             return JsonUtility.Deserialize<DependencyLockModel>(content);
         }
 
-        public static Task<DependencyLockModel> Load(string docset, CommandLineOptions commandLineOptions)
+        public static async Task<DependencyLockModel> Load(string docset, Repository repository, CommandLineOptions commandLineOptions)
         {
             Debug.Assert(!string.IsNullOrEmpty(docset));
 
             var (errors, config) = ConfigLoader.TryLoad(docset, commandLineOptions);
 
-            return Load(docset, string.IsNullOrEmpty(config.DependencyLock) ? AppData.GetDependencyLockFile(docset) : config.DependencyLock);
+            var dependencyLock = await Load(docset, string.IsNullOrEmpty(config.DependencyLock) ? AppData.GetDependencyLockFile(docset) : config.DependencyLock);
+
+            if (LocalizationUtility.TryGetSourceRepository(repository, out var sourceRemote, out var sourceBranch, out var locale))
+            {
+                return dependencyLock.GetGitLock(sourceRemote, sourceBranch);
+            }
+
+            return dependencyLock;
         }
 
         public static async Task Save(string docset, string dependencyLockPath, DependencyLockModel dependencyLock)
