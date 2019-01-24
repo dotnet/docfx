@@ -22,12 +22,12 @@ namespace Microsoft.Docs.Build
             using (Progress.Start("Restore dependencies"))
             {
                 var repository = Repository.Create(docsetPath, branch: null);
-                var restoredDocsets = new ConcurrentDictionary<string, Task<DependencyLock>>(PathUtility.PathComparer);
+                var restoredDocsets = new ConcurrentDictionary<string, Task<DependencyLockModel>>(PathUtility.PathComparer);
                 var localeToRestore = LocalizationUtility.GetBuildLocale(repository, options);
 
                 await RestoreDocset(docsetPath, rootRepository: repository);
 
-                Task<DependencyLock> RestoreDocset(string docset, bool root = true, Repository rootRepository = null, DependencyLock dependencyLock = null)
+                Task<DependencyLockModel> RestoreDocset(string docset, bool root = true, Repository rootRepository = null, DependencyLockModel dependencyLock = null)
                 {
                     return restoredDocsets.GetOrAdd(docset + dependencyLock?.Commit, async k =>
                     {
@@ -51,13 +51,13 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            async Task<DependencyLock> RestoreOneDocset(
+            async Task<DependencyLockModel> RestoreOneDocset(
                 string docset,
                 string locale,
                 Config config,
-                Func<string, DependencyLock, Task<DependencyLock>> restoreChild,
+                Func<string, DependencyLockModel, Task<DependencyLockModel>> restoreChild,
                 Repository rootRepository,
-                DependencyLock dependencyLock)
+                DependencyLockModel dependencyLock)
             {
                 // restore extend url firstly
                 // no need to extend config
@@ -83,7 +83,7 @@ namespace Microsoft.Docs.Build
                 var restoreUrls = extendedConfig.GetFileReferences().Where(HrefUtility.IsHttpHref).ToList();
                 var downloadVersions = await RestoreFile.Restore(restoreUrls, extendedConfig, @implicit);
 
-                var generatedLock = new DependencyLock(gitVersions, downloadVersions);
+                var generatedLock = new DependencyLockModel(gitVersions, downloadVersions);
 
                 // save dependency lock if need
                 // only save it when the dependency lock is NOT from parent

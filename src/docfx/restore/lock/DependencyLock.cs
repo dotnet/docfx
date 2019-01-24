@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -9,52 +8,33 @@ using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
 {
-    internal class DependencyLock : DependencyVersion
+    internal static class DependencyLock
     {
-        public IReadOnlyDictionary<string, DependencyLock> Git { get; set; } = new Dictionary<string, DependencyLock>();
-
-        public IReadOnlyDictionary<string, DependencyVersion> Downloads { get; set; } = new Dictionary<string, DependencyVersion>();
-
-        public DependencyLock()
+        public static DependencyLockModel GetGitLock(this DependencyLockModel dependencyLock, string href, string branch)
         {
-        }
+            Debug.Assert(dependencyLock != null);
 
-        public DependencyLock(IReadOnlyDictionary<string, DependencyLock> gitVersions, IReadOnlyDictionary<string, DependencyVersion> downloads, DependencyVersion version = null)
-            : this(gitVersions, downloads, version?.Commit, version?.Hash)
-        {
-        }
-
-        public DependencyLock(IReadOnlyDictionary<string, DependencyLock> gitVersions, IReadOnlyDictionary<string, DependencyVersion> downloads, string commit, string hash)
-            : base(commit, hash)
-        {
-            Debug.Assert(gitVersions != null);
-            Debug.Assert(downloads != null);
-
-            Git = gitVersions.OrderBy(g => g.Key).ToDictionary(k => k.Key, v => v.Value);
-            Downloads = downloads.OrderBy(d => d.Key).ToDictionary(k => k.Key, v => v.Value);
-        }
-
-        public DependencyLock GetGitLock(string href, string branch)
-        {
-            if (Git.TryGetValue($"{href}#{branch}", out var dependencyLock))
+            if (dependencyLock.Git.TryGetValue($"{href}#{branch}", out var gitLock))
             {
-                return dependencyLock;
+                return gitLock;
             }
 
-            if (branch == "master" && Git.TryGetValue($"{href}", out dependencyLock))
+            if (branch == "master" && dependencyLock.Git.TryGetValue($"{href}", out gitLock))
             {
-                return dependencyLock;
+                return gitLock;
             }
 
             return null;
         }
 
-        public bool ContainsGitLock(string href)
+        public static bool ContainsGitLock(this DependencyLockModel dependencyLock, string href)
         {
-            return Git.ContainsKey(href) || Git.Keys.Any(g => g.StartsWith($"{href}#"));
+            Debug.Assert(dependencyLock != null);
+
+            return dependencyLock.Git.ContainsKey(href) || dependencyLock.Git.Keys.Any(g => g.StartsWith($"{href}#"));
         }
 
-        public static async Task<DependencyLock> Load(string docset, string dependencyLockPath)
+        public static async Task<DependencyLockModel> Load(string docset, string dependencyLockPath)
         {
             Debug.Assert(!string.IsNullOrEmpty(docset));
 
@@ -81,10 +61,10 @@ namespace Microsoft.Docs.Build
                 return null;
             }
 
-            return JsonUtility.Deserialize<DependencyLock>(content);
+            return JsonUtility.Deserialize<DependencyLockModel>(content);
         }
 
-        public static Task<DependencyLock> Load(string docset, CommandLineOptions commandLineOptions)
+        public static Task<DependencyLockModel> Load(string docset, CommandLineOptions commandLineOptions)
         {
             Debug.Assert(!string.IsNullOrEmpty(docset));
 
@@ -93,7 +73,7 @@ namespace Microsoft.Docs.Build
             return Load(docset, config.DependencyLock);
         }
 
-        public static async Task Save(string docset, string dependencyLockPath, DependencyLock dependencyLock)
+        public static async Task Save(string docset, string dependencyLockPath, DependencyLockModel dependencyLock)
         {
             Debug.Assert(!string.IsNullOrEmpty(docset));
             Debug.Assert(!string.IsNullOrEmpty(dependencyLockPath));

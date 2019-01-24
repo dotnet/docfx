@@ -21,15 +21,15 @@ namespace Microsoft.Docs.Build
             DepthOne = 1 << 2,
         }
 
-        public static async Task<IReadOnlyDictionary<string, DependencyLock>> Restore(
+        public static async Task<IReadOnlyDictionary<string, DependencyLockModel>> Restore(
             Config config,
-            Func<string, DependencyLock, Task<DependencyLock>> restoreChild,
+            Func<string, DependencyLockModel, Task<DependencyLockModel>> restoreChild,
             string locale,
             bool @implicit,
             Repository rootRepository,
-            DependencyLock dependencyLock)
+            DependencyLockModel dependencyLock)
         {
-            var gitVersions = new Dictionary<string, DependencyLock>();
+            var gitVersions = new Dictionary<string, DependencyLockModel>();
             var gitDependencies =
                 from git in GetGitDependencies(config, locale, rootRepository)
                 group (git.branch, git.flags)
@@ -65,7 +65,7 @@ namespace Microsoft.Docs.Build
             foreach (var child in children)
             {
                 var childDependencyLock = await restoreChild(child.ToRestore.path, child.ToRestore.dependencyLock);
-                gitVersions.TryAdd($"{child.Restored.remote}#{child.Restored.branch}", new DependencyLock(childDependencyLock.Git, childDependencyLock.Downloads, child.Restored.gitVersion));
+                gitVersions.TryAdd($"{child.Restored.remote}#{child.Restored.branch}", new DependencyLockModel(childDependencyLock.Git, childDependencyLock.Downloads, child.Restored.gitVersion));
             }
 
             return gitVersions;
@@ -252,11 +252,11 @@ namespace Microsoft.Docs.Build
 
         private class RestoreChild
         {
-            public (string path, DependencyLock dependencyLock) ToRestore { get; private set; }
+            public (string path, DependencyLockModel dependencyLock) ToRestore { get; private set; }
 
             public (string remote, string branch, string path, DependencyVersion gitVersion) Restored { get; private set; }
 
-            public RestoreChild(string path, string remote, string branch, DependencyLock dependencyLock, DependencyVersion dependencyVersion)
+            public RestoreChild(string path, string remote, string branch, DependencyLockModel dependencyLock, DependencyVersion dependencyVersion)
             {
                 Debug.Assert(!string.IsNullOrEmpty(path));
                 Debug.Assert(!string.IsNullOrEmpty(remote));
