@@ -501,6 +501,8 @@ namespace Microsoft.Docs.Build
                               return true;
                           };
                 }
+
+                SetFieldWritable(member, prop);
                 return prop;
             }
         }
@@ -516,8 +518,6 @@ namespace Microsoft.Docs.Build
                 {
                     prop.Converter = converter;
                 }
-
-                SetFieldWritable(member, prop);
                 return prop;
             }
 
