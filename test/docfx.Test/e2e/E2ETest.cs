@@ -273,7 +273,7 @@ namespace Microsoft.Docs.Build
 
             var docset = Path.Combine(inputFolder, spec.Cwd ?? string.Empty);
 
-            if (GitUtility.IsRepo(docset) && !(spec.Inputs?.Any() ?? false))
+            if (GitUtility.IsRepo(docset) && !spec.Inputs.Any() && spec.Outputs.Any(k => k.Key.StartsWith("~/")))
             {
                 Process.Start(new ProcessStartInfo("git", "clean -fdx") { WorkingDirectory = docset }).WaitForExit();
             }
