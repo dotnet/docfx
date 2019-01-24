@@ -118,7 +118,7 @@ namespace Microsoft.Docs.Build
             Debug.Assert(HrefUtility.IsHttpHref(url));
 
             var fileName = dependencyVersion?.Hash;
-            var locked = string.IsNullOrEmpty(fileName);
+            var locked = !string.IsNullOrEmpty(fileName);
             result = s_downloadPath.AddOrUpdate(
                 (url, fileName),
                 new Lazy<string>(FindFile),

@@ -65,7 +65,14 @@ namespace Microsoft.Docs.Build
             foreach (var child in children)
             {
                 var childDependencyLock = await restoreChild(child.ToRestore.path, child.ToRestore.dependencyLock);
-                gitVersions.TryAdd($"{child.Restored.remote}#{child.Restored.branch}", new DependencyLockModel(childDependencyLock.Git, childDependencyLock.Downloads, child.Restored.gitVersion));
+                gitVersions.TryAdd(
+                    $"{child.Restored.remote}#{child.Restored.branch}",
+                    new DependencyLockModel
+                    {
+                        Git = childDependencyLock.Git,
+                        Downloads = childDependencyLock.Downloads,
+                        Commit = child.Restored.gitVersion.Commit,
+                    });
             }
 
             return gitVersions;
