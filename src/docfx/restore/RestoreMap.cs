@@ -54,7 +54,7 @@ namespace Microsoft.Docs.Build
                 // return specificed version
                 if (locked)
                 {
-                    if (TryGetWorkTreePath(repoPath, true, out var workTree) || TryGetWorkTreePath(repoPath, false, out workTree))
+                    if (TryGetLockedWorkTreePath(repoPath, true, out var workTree) || TryGetLockedWorkTreePath(repoPath, false, out workTree))
                     {
                         return workTree;
                     }
@@ -71,7 +71,7 @@ namespace Microsoft.Docs.Build
                     select path).FirstOrDefault();
             }
 
-            bool TryGetWorkTreePath(string root, bool isLocked, out string workTreePath)
+            bool TryGetLockedWorkTreePath(string root, bool isLocked, out string workTreePath)
             {
                 var workTreeName = $"{RestoreGit.GetWorkTreeHeadPrefix(branch, isLocked)}{commit}";
                 workTreePath = Path.Combine(root, workTreeName);
@@ -139,13 +139,7 @@ namespace Microsoft.Docs.Build
                 // return specified version
                 if (locked)
                 {
-                    var filePath = Path.Combine(restoreDir, fileName);
-                    if (File.Exists(filePath))
-                    {
-                        return filePath;
-                    }
-
-                    return null;
+                    return Path.Combine(restoreDir, fileName);
                 }
 
                 // return the latest version
