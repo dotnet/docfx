@@ -14,6 +14,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class RestoreFile
     {
+        // todo: support specific version from dependency lock
         public static async Task<IReadOnlyDictionary<string, DependencyVersion>> Restore(List<string> urls, Config config, bool @implicit = false)
         {
             var downloadVersions = new ConcurrentDictionary<string, DependencyVersion>();
