@@ -3,7 +3,9 @@ Version Notes (Current Version: v2.41)
 
 v2.41(Pre-release)
 -----------
-1. Improve performance by incresing incremental build chance when `fileMetadata` changes. 
+1. Performance improvement:
+    1. Increase incremental build chance when `fileMetadata` changes. (#3816)
+    2. Improvement query performance when extracting metadata. (#3207)
 
 v2.40.7
 -----------
