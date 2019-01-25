@@ -3,6 +3,7 @@ Version Notes (Current Version: v2.41)
 
 v2.41(Pre-release)
 -----------
+1. Improve performance by incresing incremental build chance when `fileMetadata` changes. 
 
 v2.40.7
 -----------
