@@ -38,21 +38,16 @@ namespace Microsoft.Docs.Build
             if (contributorErrors != null)
                 errors.AddRange(contributorErrors);
 
-            var output = (object)model;
-            if (!file.Docset.Config.Output.Json && schema.Attribute is PageSchemaAttribute)
-            {
-                output = file.Docset.Legacy
-                    ? file.Docset.Template.Render(model, file)
-                    : await RazorTemplate.Render(model.SchemaType, model);
-            }
+            var isPage = schema.Attribute is PageSchemaAttribute;
+            var (output, outputPath, extensionData) = ApplyTemplate(context, file, model, isPage);
 
             var publishItem = new PublishItem
             {
                 Url = file.SiteUrl,
-                Path = file.GetOutputPath(model.Monikers),
+                Path = outputPath,
                 Locale = file.Docset.Locale,
                 Monikers = model.Monikers,
-                ExtensionData = model.Metadata.ExtensionData, // TODO: run jint and put content in .mta.json here
+                ExtensionData = extensionData,
             };
 
             return (errors, output, publishItem);
@@ -103,12 +98,22 @@ namespace Microsoft.Docs.Build
             var htmlDom = HtmlUtility.LoadHtml(html);
             var htmlTitleDom = HtmlUtility.LoadHtml(markup.HtmlTitle);
             var title = yamlHeader.Value<string>("title") ?? HtmlUtility.GetInnerText(htmlTitleDom);
-            var finalHtml = markup.HasHtml ? htmlDom.StripTags().OuterHtml : html;
             var wordCount = HtmlUtility.CountWord(htmlDom);
+
+            if (markup.HasHtml)
+            {
+                htmlDom = htmlDom.StripTags();
+            }
+
+            if (file.Docset.Legacy)
+            {
+                htmlDom = htmlDom.AddLinkType(file.Docset.Locale, file.Docset.Legacy)
+                                 .RemoveRerunCodepenIframes();
+            }
 
             var model = new PageModel
             {
-                Content = finalHtml,
+                Content = htmlDom.OuterHtml,
                 Title = title,
                 RawTitle = markup.HtmlTitle,
                 WordCount = wordCount,
@@ -174,6 +179,34 @@ namespace Microsoft.Docs.Build
             };
 
             return (errors, schema, model, fileMetadata);
+        }
+
+        private static (object output, string outputPath, JObject extensionData) ApplyTemplate(
+            Context context, Document file, PageModel model, bool isPage)
+        {
+            var outputPath = file.GetOutputPath(model.Monikers, isPage);
+
+            if (!file.Docset.Config.Output.Json && !string.IsNullOrEmpty(file.Docset.Config.Theme))
+            {
+                return (file.Docset.Template.Render(model, file), outputPath, null);
+            }
+
+            if (file.Docset.Legacy)
+            {
+                var (output, extensionData) = TemplateTransform.Transform(model, file);
+
+                if (isPage)
+                {
+                    var metadataPath = outputPath.Substring(0, outputPath.Length - ".raw.page.json".Length) + ".mta.json";
+                    context.Output.WriteJson(extensionData, metadataPath);
+
+                    return (output, outputPath, extensionData);
+                }
+
+                return (output, outputPath, null);
+            }
+
+            return (model, outputPath, isPage ? JObject.FromObject(model.Metadata, JsonUtility.DefaultSerializer) : null);
         }
     }
 }
