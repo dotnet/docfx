@@ -195,17 +195,16 @@ namespace Microsoft.Docs.Build
 
             if (file.Docset.Legacy)
             {
-                var (output, extensionData) = TemplateTransform.Transform(model, file);
-
                 if (isPage)
                 {
+                    var (output, extensionData) = TemplateTransform.Transform(model, file);
                     var metadataPath = outputPath.Substring(0, outputPath.Length - ".raw.page.json".Length) + ".mta.json";
                     context.Output.WriteJson(extensionData, metadataPath);
 
                     return (output, outputPath, extensionData);
                 }
 
-                return (output, outputPath, null);
+                return (model, outputPath, null);
             }
 
             return (model, outputPath, isPage ? JObject.FromObject(model.Metadata, JsonUtility.DefaultSerializer) : null);
