@@ -18,7 +18,7 @@
       "output": {
         ".html": {
           "relative_path": "RELEASENOTE.html",
-          "hash": "HkPFTb+GDGAEHSzaE8tR5w=="
+          "hash": "3X70yuJYEltxea5AkIK3WA=="
         }
       },
       "is_incremental": false,
@@ -41,7 +41,7 @@
       "output": {
         ".html": {
           "relative_path": "README.html",
-          "hash": "H7GWpWwadh7C1WIDmiTPXA=="
+          "hash": "lxzP2t7jAumbwrL7JqqSgQ=="
         }
       },
       "is_incremental": false,
@@ -86,7 +86,7 @@
       "output": {
         ".html": {
           "relative_path": "guideline/csharp_coding_standards.html",
-          "hash": "+9PWjI0tFWLkrjWQfjLPUg=="
+          "hash": "ZnAGP/7pOIxPwjuukcsXQQ=="
         }
       },
       "is_incremental": false,
@@ -98,7 +98,7 @@
       "output": {
         ".html": {
           "relative_path": "guideline/engineering_guidelines.html",
-          "hash": "08beWB+dKHQQw8UBhrQweQ=="
+          "hash": "Ikp6Rvpag88aLyeHJSietQ=="
         }
       },
       "is_incremental": false,
@@ -122,7 +122,7 @@
       "output": {
         ".html": {
           "relative_path": "index.html",
-          "hash": "XVKLoDlxJDkimF2sIqivmw=="
+          "hash": "GG8CR+rSM7+1Me32f2lMLA=="
         }
       },
       "is_incremental": false,
@@ -134,7 +134,7 @@
       "output": {
         ".html": {
           "relative_path": "install.html",
-          "hash": "NrhvZly1ZB4JuIbfxHmjAg=="
+          "hash": "d4GqepATFZRTc9XPYd92Nw=="
         }
       },
       "is_incremental": false,
@@ -157,7 +157,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.AssemblyLicenseAttribute.html",
-          "hash": "eQwGhVx0m8qvBfFb7e0KkQ=="
+          "hash": "Zlvcckg3dDvX150je5RMFg=="
         }
       },
       "is_incremental": false,
@@ -169,7 +169,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.AssemblyUsageAttribute.html",
-          "hash": "QM1NDnMxWtWlrbN61mJ9DQ=="
+          "hash": "TVbJ/5iLDUJx3UJF2PxOiQ=="
         }
       },
       "is_incremental": false,
@@ -181,7 +181,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.AzureMarkdownRewriters.AzureBlockquoteBlockRule.html",
-          "hash": "d1VK57TVoYpo3siV9XZEdg=="
+          "hash": "uk8E2Dr8Vh4UgV4r9B0fPQ=="
         }
       },
       "is_incremental": false,
@@ -193,7 +193,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.AzureMarkdownRewriters.AzureBlockquoteBlockToken.html",
-          "hash": "p9yB8G6i0MTJwQR1oE2Wyw=="
+          "hash": "yVAJF/hH4bW8AFCAD1C2og=="
         }
       },
       "is_incremental": false,
@@ -205,7 +205,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.AzureMarkdownRewriters.AzureEngineBuilder.html",
-          "hash": "UUTBa42YTPgDhkO8efyqvw=="
+          "hash": "sb6rXyu6q5RMWaRok44YEg=="
         }
       },
       "is_incremental": false,
@@ -217,7 +217,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.AzureMarkdownRewriters.AzureFileInfo.html",
-          "hash": "ZYZBqcf2YAQev74tq861EQ=="
+          "hash": "VDq4W0uovHuY5nEDg1PAfw=="
         }
       },
       "is_incremental": false,
@@ -229,7 +229,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.AzureMarkdownRewriters.AzureHtmlMetadataBlockRule.html",
-          "hash": "y85JDQJBL5sZwa+GdcFUww=="
+          "hash": "D7zrhuJhJGf6MzW0TCRVzQ=="
         }
       },
       "is_incremental": false,
@@ -241,7 +241,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.AzureMarkdownRewriters.AzureHtmlMetadataBlockToken.html",
-          "hash": "/fyXJcot6hX61hMhaQvd0g=="
+          "hash": "EYnh3jDzu44AcdhXjnREbQ=="
         }
       },
       "is_incremental": false,
@@ -253,7 +253,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.AzureMarkdownRewriters.AzureIncludeBasicToken.html",
-          "hash": "tJ74XVioHhaFQ3RpQ1Cg2A=="
+          "hash": "p/xdoK2q3vQkXi2/qG02UA=="
         }
       },
       "is_incremental": false,
@@ -265,7 +265,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.AzureMarkdownRewriters.AzureIncludeBlockRule.html",
-          "hash": "3JYeZYTDtngBlMEkOy75fg=="
+          "hash": "AvE/4oFFQd0TQfOv3R6NBw=="
         }
       },
       "is_incremental": false,
@@ -277,7 +277,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.AzureMarkdownRewriters.AzureIncludeBlockToken.html",
-          "hash": "4YxI0axVQf9L52J6cl7KaA=="
+          "hash": "syDnvXz/0ADa4Z3PAZo+Bw=="
         }
       },
       "is_incremental": false,
@@ -289,7 +289,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.AzureMarkdownRewriters.AzureIncludeInlineRule.html",
-          "hash": "06y7V/kayAxkM0pujhh6Kw=="
+          "hash": "nE+RD/GXP9Okz4a7vXq4EA=="
         }
       },
       "is_incremental": false,
@@ -301,7 +301,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.AzureMarkdownRewriters.AzureIncludeInlineToken.html",
-          "hash": "jhRSFPJ8V2zIoV1xSMMluQ=="
+          "hash": "q+IZjKdMArdpTMkeq47zYQ=="
         }
       },
       "is_incremental": false,
@@ -313,7 +313,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.AzureMarkdownRewriters.AzureMarkdownRenderer.html",
-          "hash": "AHgFHT1em5ailn7QAKNqhw=="
+          "hash": "H43HBEM80Mesei1NcUNa8w=="
         }
       },
       "is_incremental": false,
@@ -325,7 +325,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.AzureMarkdownRewriters.AzureMarked.html",
-          "hash": "LzmE57Zhc1Qx3OvBt1m5rA=="
+          "hash": "0r4eDuUCx7z3i2ztQBK/sw=="
         }
       },
       "is_incremental": false,
@@ -337,7 +337,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.AzureMarkdownRewriters.AzureMigrationEngineBuilder.html",
-          "hash": "ynL05QPciPnb9yIYQRBL+Q=="
+          "hash": "HgJftAZ2GY3mdZdn2Qo3WQ=="
         }
       },
       "is_incremental": false,
@@ -349,7 +349,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.AzureMarkdownRewriters.AzureMigrationHtmlMetadataBlockRule.html",
-          "hash": "aAhyWdhTAI5W8gfS+mTHTQ=="
+          "hash": "3dVNRRUmNUICRrXwVSBEiQ=="
         }
       },
       "is_incremental": false,
@@ -361,7 +361,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.AzureMarkdownRewriters.AzureMigrationIncludeBasicToken.html",
-          "hash": "oeclb7XrLll3gnfBzSnYFQ=="
+          "hash": "z296jYe64V8BBQXFvd86og=="
         }
       },
       "is_incremental": false,
@@ -373,7 +373,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.AzureMarkdownRewriters.AzureMigrationIncludeBlockRule.html",
-          "hash": "hdjU+2PVjdroJPTi7gKnZQ=="
+          "hash": "i8c3FcZdw9HItVop0EJo9w=="
         }
       },
       "is_incremental": false,
@@ -385,7 +385,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.AzureMarkdownRewriters.AzureMigrationIncludeBlockToken.html",
-          "hash": "+cm1gXWRlA83aR5QGA7a9w=="
+          "hash": "kZIpklAi5caoqH9tq4ud4Q=="
         }
       },
       "is_incremental": false,
@@ -397,7 +397,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.AzureMarkdownRewriters.AzureMigrationIncludeInlineRule.html",
-          "hash": "BDXeKol4TkVQuipjJEcXuQ=="
+          "hash": "mobonhya4uT90xMj0A2gzg=="
         }
       },
       "is_incremental": false,
@@ -409,7 +409,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.AzureMarkdownRewriters.AzureMigrationIncludeInlineToken.html",
-          "hash": "lZr9WK5O7mSeeBHwZdAbTw=="
+          "hash": "XmEWJgfIiOlLX+JTMzGABw=="
         }
       },
       "is_incremental": false,
@@ -421,7 +421,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.AzureMarkdownRewriters.AzureMigrationMarked.html",
-          "hash": "zL9YMuSrVEiwxjGrg7pMPg=="
+          "hash": "0Xk5CDKKvX+ErLTbfb0D4Q=="
         }
       },
       "is_incremental": false,
@@ -433,7 +433,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.AzureMarkdownRewriters.AzureMigrationVideoBlockRule.html",
-          "hash": "4539mcj+LZeZJu2/iCXABA=="
+          "hash": "sGk6uVlTvWJB2Sh3VIngVw=="
         }
       },
       "is_incremental": false,
@@ -445,7 +445,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.AzureMarkdownRewriters.AzureNoteBlockRule.html",
-          "hash": "2Z1R7stB3xhsbzJ3iqfxVQ=="
+          "hash": "D14APGmJpZdb9U+H6JHQ1Q=="
         }
       },
       "is_incremental": false,
@@ -457,7 +457,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.AzureMarkdownRewriters.AzureNoteBlockToken.html",
-          "hash": "tSX7VTg7Wmyz73Rq5ZdIaw=="
+          "hash": "dlBRwcCJykNtvig1Skt+qg=="
         }
       },
       "is_incremental": false,
@@ -469,7 +469,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.AzureMarkdownRewriters.AzureSelectorBlockRule.html",
-          "hash": "72E+pVfYOVuk3K5hjwFO0Q=="
+          "hash": "5AMdjW/VdZ+AxUD8h0Txww=="
         }
       },
       "is_incremental": false,
@@ -481,7 +481,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.AzureMarkdownRewriters.AzureSelectorBlockToken.html",
-          "hash": "ZKef761XOvabwmJfpLlQCQ=="
+          "hash": "45KYgkWGR7NjMPOPuaNpmg=="
         }
       },
       "is_incremental": false,
@@ -493,7 +493,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.AzureMarkdownRewriters.AzureVideoBlockRule.html",
-          "hash": "Lnp1boumAjr+MdmOXabWSA=="
+          "hash": "qhrZiLfy33gTveEtBfJePA=="
         }
       },
       "is_incremental": false,
@@ -505,7 +505,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.AzureMarkdownRewriters.AzureVideoBlockToken.html",
-          "hash": "jR4OI08snBgconJOsj5C/Q=="
+          "hash": "XdAzkYeTu0XjuI5M8Cy1Vg=="
         }
       },
       "is_incremental": false,
@@ -517,7 +517,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.AzureMarkdownRewriters.AzureVideoInfo.html",
-          "hash": "UTF1O2hEZJPAzln8NjYeTw=="
+          "hash": "rRUh3JPO+7C7a99SSbLnSg=="
         }
       },
       "is_incremental": false,
@@ -529,7 +529,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.AzureMarkdownRewriters.html",
-          "hash": "8S4SOxq4MecuQyvNDiXIUQ=="
+          "hash": "zgjmBQSQZ2brZkSGkyjBBQ=="
         }
       },
       "is_incremental": false,
@@ -541,7 +541,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Common.ApplyOverwriteDocument.html",
-          "hash": "yhE29uaUh3dJmnbPUfbrCA=="
+          "hash": "kWM5G2tLbfhRnwV4AnJDOA=="
         }
       },
       "is_incremental": false,
@@ -553,7 +553,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Common.BaseDocumentBuildStep.html",
-          "hash": "6iW6ku1xAw6R+EO4v4Tf5A=="
+          "hash": "2/LtiXcdCvwJ4xk6v2BHhw=="
         }
       },
       "is_incremental": false,
@@ -565,7 +565,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Common.BaseModelAttributeHandler-1.PropInfo.html",
-          "hash": "Wmasf3o3YyEyelFB9Ys1Nw=="
+          "hash": "cuN6gy6HfF26PrIqpDoT4A=="
         }
       },
       "is_incremental": false,
@@ -577,7 +577,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Common.BaseModelAttributeHandler-1.html",
-          "hash": "m3S6xxP3f2nsNSwSal7V7Q=="
+          "hash": "0hDsiJyFO0MURu+8GTuFSQ=="
         }
       },
       "is_incremental": false,
@@ -589,7 +589,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Common.BuildReferenceDocumentBase.html",
-          "hash": "jI23TUiJLW4kLXcpFG1ufQ=="
+          "hash": "VITSpZunTuNZWZpi8sLWbQ=="
         }
       },
       "is_incremental": false,
@@ -601,7 +601,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Common.CompositeModelAttributeHandler.html",
-          "hash": "7bCXoAzDzPPyN2bcgRkoDw=="
+          "hash": "TYRHzW3HSInppPolOVJd2Q=="
         }
       },
       "is_incremental": false,
@@ -613,7 +613,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Common.DisposableDocumentProcessor.html",
-          "hash": "NNQl9MsBEiTFCifESEeMiA=="
+          "hash": "I08S9mjq69xnokOaQ7QEhA=="
         }
       },
       "is_incremental": false,
@@ -625,7 +625,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Common.FileModelPropertySerialization.html",
-          "hash": "BHGHVQnV/siKVXcbmGAVcA=="
+          "hash": "SD2NYAMbmjYrhZARrPm47w=="
         }
       },
       "is_incremental": false,
@@ -637,7 +637,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Common.HandleGenericItemsHelper.EnumerateIDictionaryItems-2.html",
-          "hash": "SP74T0mP8Ef0xqBoJ4J84Q=="
+          "hash": "MpOyTlIKQotel9QKq+aC3Q=="
         }
       },
       "is_incremental": false,
@@ -649,7 +649,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Common.HandleGenericItemsHelper.EnumerateIEnumerableItems-1.html",
-          "hash": "/HOujHCDhh9GskOEuYY/NA=="
+          "hash": "aHwPN+DgZwAx5NyMr24xbg=="
         }
       },
       "is_incremental": false,
@@ -661,7 +661,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Common.HandleGenericItemsHelper.EnumerateIReadonlyDictionaryItems-2.html",
-          "hash": "T4zKGaylAmAmsCC9y4jkqA=="
+          "hash": "zfACA0GlP00ZP8eZrp9HDg=="
         }
       },
       "is_incremental": false,
@@ -673,7 +673,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Common.HandleGenericItemsHelper.HandleIDictionaryItems-2.html",
-          "hash": "VvMd4u/R7wziZ0nGHdUvyw=="
+          "hash": "U7R5NkVUZYBxp5hHBRCRdA=="
         }
       },
       "is_incremental": false,
@@ -685,7 +685,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Common.HandleGenericItemsHelper.HandleIListItems-1.html",
-          "hash": "rIIh1MNE6CZNvGALSG272Q=="
+          "hash": "kI8idT0deklnuH10wSAgrQ=="
         }
       },
       "is_incremental": false,
@@ -697,7 +697,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Common.HandleGenericItemsHelper.html",
-          "hash": "89SjJz9tvvXimgNo8WYbiQ=="
+          "hash": "dLIj291fYbWtmW9Yx49B9w=="
         }
       },
       "is_incremental": false,
@@ -709,7 +709,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Common.HandleModelAttributesContext.html",
-          "hash": "arbK9sv5g0dCAFb6jM2KmA=="
+          "hash": "Q5yVADbBZqQHPLkgQW2zHQ=="
         }
       },
       "is_incremental": false,
@@ -721,7 +721,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Common.IModelAttributeHandler.html",
-          "hash": "5+p+JFSPYnU05Di+JpXGfw=="
+          "hash": "OL1o02fAebGmTRQGxs0J3A=="
         }
       },
       "is_incremental": false,
@@ -733,7 +733,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Common.MarkdownContentHandler.html",
-          "hash": "WQVefHowYNug9VqH5mV5Mg=="
+          "hash": "5RERTSZY6oiEJgwg14fSpg=="
         }
       },
       "is_incremental": false,
@@ -745,7 +745,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Common.MarkdownReader.html",
-          "hash": "Y089luHmuyVx5tUybCmTpw=="
+          "hash": "eDPw0wKL8x25WFx8T9sfNQ=="
         }
       },
       "is_incremental": false,
@@ -757,7 +757,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Common.OverwriteDocumentModel.html",
-          "hash": "yMNuYv2/aiM23wgEDDDK9w=="
+          "hash": "oVIo5RCAnu5nEebJjlhcdQ=="
         }
       },
       "is_incremental": false,
@@ -769,7 +769,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Common.OverwriteDocumentReader.html",
-          "hash": "6C3p8H/8dWzrLUH7TL5F/Q=="
+          "hash": "4JL4wFiX6qCcUr03BP+tqw=="
         }
       },
       "is_incremental": false,
@@ -781,7 +781,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Common.ReferenceDocumentProcessorBase.html",
-          "hash": "PBviC2iH6XlnvTjtIs0v0Q=="
+          "hash": "UI7J2UsLsxmz66cEwc+9kw=="
         }
       },
       "is_incremental": false,
@@ -793,7 +793,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Common.ReflectionHelper.html",
-          "hash": "3e+CBMK9h2+sIXnCslZ5ZQ=="
+          "hash": "F5oSj2060wZbSxkDUN5ZCw=="
         }
       },
       "is_incremental": false,
@@ -805,7 +805,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Common.UniqueIdentityReferenceHandler.html",
-          "hash": "Fz+2H/ToN78Nu3T5iFfqrg=="
+          "hash": "pYCEuGzQdFyMj1jVsIoUIg=="
         }
       },
       "is_incremental": false,
@@ -817,7 +817,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Common.UrlContentHandler.html",
-          "hash": "vnHLowClrbZYmd5Sx92y2g=="
+          "hash": "ByvcXqbv0ANvoe2FKmwQdg=="
         }
       },
       "is_incremental": false,
@@ -829,7 +829,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Common.YamlHtmlPart.html",
-          "hash": "kcaz2nnqwfauY+xHRPY23w=="
+          "hash": "0zcq5gATUoH0dupmNte4DQ=="
         }
       },
       "is_incremental": false,
@@ -841,7 +841,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Common.html",
-          "hash": "f1QcCKqPZ5MJmTKcMa3+RQ=="
+          "hash": "S/qPhNXzp2oXpUyOgs8J0w=="
         }
       },
       "is_incremental": false,
@@ -853,7 +853,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.ConceptualDocuments.BuildConceptualDocument.html",
-          "hash": "bqdkhdrgAeEdrgFPUCw0AQ=="
+          "hash": "DRdxtrBnQOaxz4sQDRaVQQ=="
         }
       },
       "is_incremental": false,
@@ -865,7 +865,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.ConceptualDocuments.ConceptualDocumentProcessor.html",
-          "hash": "4Ra2LtMRkHFqEDROn7alTg=="
+          "hash": "jl3FMlytu6oJy5YiGf8nuw=="
         }
       },
       "is_incremental": false,
@@ -877,7 +877,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.ConceptualDocuments.CountWord.html",
-          "hash": "3SYhvazbXUAeyTiEnQb/cw=="
+          "hash": "V4h7JJFL2HfxAkR0TX+UZg=="
         }
       },
       "is_incremental": false,
@@ -889,7 +889,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.ConceptualDocuments.HtmlDocumentUtility.html",
-          "hash": "TXdxr4O9ydvlnnEUxwpyKg=="
+          "hash": "T9PDKp4eyYNRgEQ5JuX9Ug=="
         }
       },
       "is_incremental": false,
@@ -901,7 +901,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.ConceptualDocuments.SeparatedHtmlInfo.html",
-          "hash": "WZ4YJ68CjAOlHvF3K3gyWA=="
+          "hash": "k6KG9oORhooXSNjJd02epw=="
         }
       },
       "is_incremental": false,
@@ -913,7 +913,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.ConceptualDocuments.ValidateConceptualDocumentMetadata.html",
-          "hash": "3TyJ57z2o3Uuw+P55ooLfQ=="
+          "hash": "QlSeeY0AUUgqYczy0eQO7A=="
         }
       },
       "is_incremental": false,
@@ -925,7 +925,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.ConceptualDocuments.html",
-          "hash": "2+x2Pc3b8lLBv9YwAL1DnA=="
+          "hash": "pZeQeRYzuit5ZfwM3x5YxQ=="
         }
       },
       "is_incremental": false,
@@ -937,7 +937,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.ApplyTemplateOptions.html",
-          "hash": "xplQRgchexnt6CH+aO/Djw=="
+          "hash": "xC9VIy/Rtz90LLENEdZX3Q=="
         }
       },
       "is_incremental": false,
@@ -949,7 +949,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.ApplyTemplateSettings.html",
-          "hash": "R4mNUKn3yYHsqtWyzVc1aw=="
+          "hash": "/XinVhaNt/ytx29QHLnKvw=="
         }
       },
       "is_incremental": false,
@@ -961,7 +961,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.ArchiveResourceReader.html",
-          "hash": "6GMfDZwK+7b835DN37aoxw=="
+          "hash": "+0PgCxy1Wm4Iol5zjWMQvQ=="
         }
       },
       "is_incremental": false,
@@ -973,7 +973,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.BasicXRefMapReader.html",
-          "hash": "On5f6OMXYglBhdVs7s2GGQ=="
+          "hash": "JqfYRfzlBpY5gQIB+jEl7w=="
         }
       },
       "is_incremental": false,
@@ -985,7 +985,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.BuildPhaseUtility.html",
-          "hash": "UITcdq4uljyPKrMJeEHMuw=="
+          "hash": "KJ8z8G3+QYmbifb8CH0TIw=="
         }
       },
       "is_incremental": false,
@@ -997,7 +997,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.CompositeResourceReader.html",
-          "hash": "VvpC8Mp/noynvUpHoHpH4Q=="
+          "hash": "KUaFqRoL07cJ7JN+VZhV1w=="
         }
       },
       "is_incremental": false,
@@ -1009,7 +1009,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.DfmJsonTokenTreeServiceProvider.html",
-          "hash": "VSAnhnjCuy3P8LRXoCvxUg=="
+          "hash": "qc7IbNedrVpOTZhkrNuaXQ=="
         }
       },
       "is_incremental": false,
@@ -1021,7 +1021,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.DfmLegacyServiceProvider.html",
-          "hash": "1LjigLGt9wE51nWUbArrdQ=="
+          "hash": "LwkNCUdfTaiG+lIwACns+Q=="
         }
       },
       "is_incremental": false,
@@ -1033,7 +1033,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.DfmServiceProvider.DfmService.html",
-          "hash": "sz+Rl5bfk7a1VS01r1NXIg=="
+          "hash": "gpe4l/M5UvYsqaLww5wYdw=="
         }
       },
       "is_incremental": false,
@@ -1045,7 +1045,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.DfmServiceProvider.html",
-          "hash": "jC8OzLOVYfTPv5V2DNITqA=="
+          "hash": "D+5B30pz30G6gRVUTga/GA=="
         }
       },
       "is_incremental": false,
@@ -1057,7 +1057,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.html",
-          "hash": "IhpMms0NA7nL/9j/hN2A6w=="
+          "hash": "wRZu4whmKgIUDIm806y51A=="
         }
       },
       "is_incremental": false,
@@ -1069,7 +1069,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.DocumentBuildParameters.html",
-          "hash": "rdsktP9ng5kHUvHe9Sn7Iw=="
+          "hash": "RHdTe7GBNOLjVm2h6NOL6Q=="
         }
       },
       "is_incremental": false,
@@ -1081,7 +1081,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.DocumentBuilder.html",
-          "hash": "UsuE3nG/6avwGtG/+W3eaw=="
+          "hash": "jlNf0BifKRZKC2Y3aiGWRQ=="
         }
       },
       "is_incremental": false,
@@ -1093,7 +1093,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.EmptyResourceReader.html",
-          "hash": "ad9z33eQVa8J9gCZaTBUzA=="
+          "hash": "eQXBOHDIE0XgzksrEafclw=="
         }
       },
       "is_incremental": false,
@@ -1105,7 +1105,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.ExportSettings.html",
-          "hash": "/PIPnB9iu1D2MmX4dRvuBw=="
+          "hash": "3pPFo+GwL8HOGD4fOsIT+Q=="
         }
       },
       "is_incremental": false,
@@ -1117,7 +1117,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.ExtractSearchIndex.html",
-          "hash": "nM4NVQ6LmXMGzTN5P0Q5PQ=="
+          "hash": "hQEcHgeFIfH8f1lA7aQn5A=="
         }
       },
       "is_incremental": false,
@@ -1129,7 +1129,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.FileCollection.html",
-          "hash": "sKmnh5L1d90fnB/c4Ni2XQ=="
+          "hash": "P+BIg1TqdsLWLji8Y/FISA=="
         }
       },
       "is_incremental": false,
@@ -1141,7 +1141,19 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.FileMetadata.html",
-          "hash": "aiDcHZtpqLOW4JpFpbktEA=="
+          "hash": "wCCDZQuNWEiqiyS9yOirTQ=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/temp/docfxapi/Microsoft.DocAsCode.Build.Engine.FileMetadataHelper.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Microsoft.DocAsCode.Build.Engine.FileMetadataHelper.html",
+          "hash": "o+Qd8EJZYafJK0zvdwcaCg=="
         }
       },
       "is_incremental": false,
@@ -1153,7 +1165,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.FileMetadataItem.html",
-          "hash": "RjsBnTum9Q4wPB/KoFlLKg=="
+          "hash": "rNUPZW1RdjY0inKnaAumvg=="
         }
       },
       "is_incremental": false,
@@ -1165,7 +1177,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.GfmServiceProvider.html",
-          "hash": "TTXR/+WGRyh4G8M+0h8rNA=="
+          "hash": "LJb0UBY6cyZFxdt6m7dmnw=="
         }
       },
       "is_incremental": false,
@@ -1177,7 +1189,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.HtmlDocumentHandler.html",
-          "hash": "rgkeHU3xwngs4nbUUEkodg=="
+          "hash": "r8dLnruhBKBP1HnbOQa9eQ=="
         }
       },
       "is_incremental": false,
@@ -1189,7 +1201,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.HtmlPostProcessContext.html",
-          "hash": "wA0HTXEu7AFkFy47vBfLeQ=="
+          "hash": "LU3MjeJ8TJa/x/7WDbXpIg=="
         }
       },
       "is_incremental": false,
@@ -1201,7 +1213,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.IHtmlDocumentHandler.html",
-          "hash": "qfQ+7EBh+3rr4pmbmHhSRw=="
+          "hash": "7rdaLoME2C4fIzuD+3SGnQ=="
         }
       },
       "is_incremental": false,
@@ -1213,7 +1225,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.IInputFileAbstractLayerBuilderProvider.html",
-          "hash": "+cgC4wC72GLMlPAXbU8vBw=="
+          "hash": "rD2p0XS/scVtt1eQGDJ+rg=="
         }
       },
       "is_incremental": false,
@@ -1225,7 +1237,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.IResourceFileReader.html",
-          "hash": "x/tgYe+j3y7aXriwNuEFtw=="
+          "hash": "4ru7uz/HodG3YRcd01HN1g=="
         }
       },
       "is_incremental": false,
@@ -1237,7 +1249,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.ITemplatePreprocessor.html",
-          "hash": "VfVoXYh7/WgZ8b3nshqEYg=="
+          "hash": "1GvJWdzz/pQE/MFqcnszMw=="
         }
       },
       "is_incremental": false,
@@ -1249,7 +1261,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.ITemplateRenderer.html",
-          "hash": "xfahivNMEcAzKUodLMN2dw=="
+          "hash": "cYXM8v4quNJ3Wlxr8s7ThQ=="
         }
       },
       "is_incremental": false,
@@ -1261,7 +1273,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.IXRefContainer.html",
-          "hash": "XkMSHpwt3ZkkgfbC9Y668A=="
+          "hash": "oBrDpcvmuBds1OzzF/8AMQ=="
         }
       },
       "is_incremental": false,
@@ -1273,7 +1285,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.IXRefContainerReader.html",
-          "hash": "JsJ9Pyci9DiQ5jAbfIf5ng=="
+          "hash": "LCW8YDFkRN5Vtz5i07Wj4g=="
         }
       },
       "is_incremental": false,
@@ -1285,7 +1297,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.Incrementals.BuildCacheException.html",
-          "hash": "ID2xuzx+8AzAN/zWmL6kAw=="
+          "hash": "Js2gTFsdvzpkq8KL2zSRIA=="
         }
       },
       "is_incremental": false,
@@ -1297,7 +1309,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.Incrementals.BuildInfo.html",
-          "hash": "tPAfpoWST1ReZ+yTA6AX7g=="
+          "hash": "kBKBY9q9mif9naG/HGEdbA=="
         }
       },
       "is_incremental": false,
@@ -1309,7 +1321,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.Incrementals.BuildMessage.html",
-          "hash": "cGWNp5FuSrhdiu13u4d4tA=="
+          "hash": "tJkHrwoYBcRqPa+K3YLfWw=="
         }
       },
       "is_incremental": false,
@@ -1321,7 +1333,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.Incrementals.BuildMessageInfo.html",
-          "hash": "8K/LlkutBnZ/AatKStmfmg=="
+          "hash": "euFggFYZ+ZV+0hHQM0IFJA=="
         }
       },
       "is_incremental": false,
@@ -1333,7 +1345,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.Incrementals.BuildOutputItem.html",
-          "hash": "5HfzRK4kf/+kAQQoTcROpQ=="
+          "hash": "z7FbbpFWVsuJ3E7964oC/Q=="
         }
       },
       "is_incremental": false,
@@ -1345,7 +1357,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.Incrementals.BuildOutputs.html",
-          "hash": "gn2wTvBMO3jm83MZ5fVLKQ=="
+          "hash": "gfPbEc5cinF62gMjZxx0PA=="
         }
       },
       "is_incremental": false,
@@ -1357,7 +1369,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.html",
-          "hash": "TNleEbUxTSb6ySeUxeSOmQ=="
+          "hash": "dAI6O9fDmcOwo+99c1xMgg=="
         }
       },
       "is_incremental": false,
@@ -1369,7 +1381,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.Incrementals.ChangeItem.html",
-          "hash": "h/3rEOKSvOV9mli01QJqhw=="
+          "hash": "N45c4beRUzrn/rgiRjhS+A=="
         }
       },
       "is_incremental": false,
@@ -1381,7 +1393,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.Incrementals.ChangeKind.html",
-          "hash": "evGTIv25rk+Fp9NZzefDjw=="
+          "hash": "086Io4/lXogeNshTFFpnVQ=="
         }
       },
       "is_incremental": false,
@@ -1393,7 +1405,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.Incrementals.ChangeKindWithDependency.html",
-          "hash": "YkPFr/XeNJ3hhGI7KorL8Q=="
+          "hash": "TLRXeqsPWenAMVBJIQGG8A=="
         }
       },
       "is_incremental": false,
@@ -1405,7 +1417,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.Incrementals.ChangeList.html",
-          "hash": "xhlLKFOwzhVMXYWeuWE2Vg=="
+          "hash": "P4hOudWhLmmKy7g/EA6jfg=="
         }
       },
       "is_incremental": false,
@@ -1417,7 +1429,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.Incrementals.DependencyGraph.html",
-          "hash": "tXOY7ZcdgyRbnmXLH9AQtA=="
+          "hash": "iywzgzz2SIHk644iXGyluQ=="
         }
       },
       "is_incremental": false,
@@ -1429,7 +1441,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.Incrementals.DependencyItem.html",
-          "hash": "6K5YdfqY7XXscVlXUawvZQ=="
+          "hash": "OizNwRjR2GHxxC46NG8Big=="
         }
       },
       "is_incremental": false,
@@ -1441,7 +1453,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.Incrementals.DependencyItemSourceInfo.html",
-          "hash": "lAbpvw2BP+zIUQxzL3I9qQ=="
+          "hash": "DVziF/6bsewr12QBhJSnWw=="
         }
       },
       "is_incremental": false,
@@ -1453,7 +1465,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.Incrementals.FileAttributeItem.html",
-          "hash": "fC/OPFxWOM2jT73ZMj2g6g=="
+          "hash": "W/2zSJfxrZaheSwhF6OnGA=="
         }
       },
       "is_incremental": false,
@@ -1465,7 +1477,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.Incrementals.FileAttributes.html",
-          "hash": "j7H6XgjCJY9401+lV9I3GA=="
+          "hash": "njg59QIiJJNBevDrxXxCkA=="
         }
       },
       "is_incremental": false,
@@ -1477,7 +1489,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.Incrementals.FileMapItem.html",
-          "hash": "ZuFqhF5FYsALbwMqVgRNVA=="
+          "hash": "pAlptw6/Bavj29DUQk0rjQ=="
         }
       },
       "is_incremental": false,
@@ -1489,7 +1501,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.Incrementals.IncrementalIgnoreAttribute.html",
-          "hash": "dGYOU8KFNVvqnjdyJ0NiPA=="
+          "hash": "jXIfENl4jcAhZP5RsaoV9w=="
         }
       },
       "is_incremental": false,
@@ -1501,7 +1513,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.Incrementals.IncrementalIgnorePropertiesResolver.html",
-          "hash": "RO0OB/YwEXNUNJHVJmg46Q=="
+          "hash": "jumPwvlOB4PmFSmDYJlMRg=="
         }
       },
       "is_incremental": false,
@@ -1513,7 +1525,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.Incrementals.IncrementalUtility.html",
-          "hash": "6AuiKFAWobQT7Jwgv2ui8w=="
+          "hash": "9oskXkDBf1BaAGQfOv9bxQ=="
         }
       },
       "is_incremental": false,
@@ -1525,7 +1537,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.Incrementals.ModelManifest.html",
-          "hash": "MxnjKPCl5j4qUtFVOqalBg=="
+          "hash": "9w9FD6QHHL/BVbtZU4dW4w=="
         }
       },
       "is_incremental": false,
@@ -1537,7 +1549,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.Incrementals.ModelManifestItem.html",
-          "hash": "5G6UPfzPvybSZrVTx2tgsw=="
+          "hash": "rosjrokNUVknRnry5Nexyg=="
         }
       },
       "is_incremental": false,
@@ -1549,7 +1561,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.Incrementals.OSPlatformSensitiveDictionary-1.html",
-          "hash": "wV1hR8BAV0TC7DTmzDAacA=="
+          "hash": "+WuE8YJXlJvarjtkaev48Q=="
         }
       },
       "is_incremental": false,
@@ -1561,7 +1573,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.Incrementals.Outputs.ExpandedDependencyItem.html",
-          "hash": "wOnl/6XO4uZXQRbOU4mIow=="
+          "hash": "7QkhFvCvoJOyv3+CmFUpPA=="
         }
       },
       "is_incremental": false,
@@ -1573,7 +1585,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.Incrementals.Outputs.ExpandedDependencyMap.html",
-          "hash": "xjviGYaWTBNR7Ev2W/mP5A=="
+          "hash": "s2j83/ESozBHG/JX9Fou/g=="
         }
       },
       "is_incremental": false,
@@ -1585,7 +1597,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.Incrementals.Outputs.html",
-          "hash": "e4XplJGtw9xb7pzZT3aM3g=="
+          "hash": "LFSOs1nc0luIsw+rlOhzng=="
         }
       },
       "is_incremental": false,
@@ -1597,7 +1609,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.Incrementals.PostProcessInfo.html",
-          "hash": "UGUCXiQh+v36PB5xusSxhg=="
+          "hash": "KYOZBOKQrgOW1EYOyqSoGQ=="
         }
       },
       "is_incremental": false,
@@ -1609,7 +1621,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.Incrementals.PostProcessOutputs.html",
-          "hash": "3gcXPndUx/FpqAlITmhoIQ=="
+          "hash": "6we6wnPuYGPnZy3zbs9qrQ=="
         }
       },
       "is_incremental": false,
@@ -1621,7 +1633,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.Incrementals.PostProcessorInfo.html",
-          "hash": "XUUnqJSgnRzXf36466U+fg=="
+          "hash": "8MQE1lbSJoPGNYmrbsZwQw=="
         }
       },
       "is_incremental": false,
@@ -1633,7 +1645,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.Incrementals.ProcessorInfo.html",
-          "hash": "xylZAAgNhhC2h+LZlzPKBQ=="
+          "hash": "yxZp6SBsddd1KKImORztdA=="
         }
       },
       "is_incremental": false,
@@ -1645,7 +1657,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.Incrementals.ProcessorInfoBase.html",
-          "hash": "BP4asbNLY0LWBXaKQf4Qkg=="
+          "hash": "nwy6QTsNHyJJoo3GgUNBlg=="
         }
       },
       "is_incremental": false,
@@ -1657,7 +1669,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.Incrementals.ProcessorStepInfo.html",
-          "hash": "RxWcIa5T3FimuLV5bFtWfw=="
+          "hash": "fgUTp0ElpkOoaB4UQ0GU+Q=="
         }
       },
       "is_incremental": false,
@@ -1669,7 +1681,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.Incrementals.ReferenceItem.html",
-          "hash": "M3WX28scR1NoJmVk3ipcNw=="
+          "hash": "Wu8AWqrYRf3UYEhqffAXNg=="
         }
       },
       "is_incremental": false,
@@ -1681,7 +1693,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.Incrementals.html",
-          "hash": "ILT14qyd5qCKcE5LAP0e8A=="
+          "hash": "3sk9ZJzKGS5YFfAARfGANw=="
         }
       },
       "is_incremental": false,
@@ -1693,7 +1705,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.InvalidCrossReferenceException.html",
-          "hash": "n0Ny1H9tba6Bcc29xSkkAg=="
+          "hash": "TdVraASgh4HKyCD4sNGsYQ=="
         }
       },
       "is_incremental": false,
@@ -1705,7 +1717,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.InvalidPreprocessorException.html",
-          "hash": "olCqxFPhpCmn5Ckd2K9k4A=="
+          "hash": "PSnbQLhE+hQqiSvqvzNoKQ=="
         }
       },
       "is_incremental": false,
@@ -1717,7 +1729,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.JintProcessorHelper.html",
-          "hash": "V7kd/paJkbhRMrwT1ZJoNQ=="
+          "hash": "4RWpN26FtLrGzQuwl8iGYw=="
         }
       },
       "is_incremental": false,
@@ -1729,7 +1741,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.JsonTokenTreeServiceProvider.html",
-          "hash": "mQGdFu/hDPa0nUqTGZBlug=="
+          "hash": "uU0LT7+X4rArNJK2+wDoXA=="
         }
       },
       "is_incremental": false,
@@ -1741,7 +1753,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.LocalFileResourceReader.html",
-          "hash": "rQnNdqXH88bPd0eEv7/fRQ=="
+          "hash": "CPxIzYQHILFYsO1YGSZLYw=="
         }
       },
       "is_incremental": false,
@@ -1753,7 +1765,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.MarkupUtility.html",
-          "hash": "RLdmuYir3hF1h/snd1J1iQ=="
+          "hash": "gFDrgDScgy67CjRbcPGgeA=="
         }
       },
       "is_incremental": false,
@@ -1765,7 +1777,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.PreprocessorLoader.html",
-          "hash": "OsH69U9dYRD3M9abp91DyA=="
+          "hash": "dCJv6KMXYKaRtNicT4tbGg=="
         }
       },
       "is_incremental": false,
@@ -1777,7 +1789,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.RemoveDebugInfo.html",
-          "hash": "L8XYyyMDbht0HPdYPeLYQg=="
+          "hash": "zata3WzU9O6yWSsmmo25sA=="
         }
       },
       "is_incremental": false,
@@ -1789,7 +1801,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.RendererLoader.html",
-          "hash": "+Z0vqozeiEtSGfzOM2U4dw=="
+          "hash": "I1/TiC4L75/pP07GcghGLQ=="
         }
       },
       "is_incremental": false,
@@ -1801,7 +1813,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.ResourceFileExceedsMaxDepthException.html",
-          "hash": "abSxRNS4eHFejiQwVwyn6w=="
+          "hash": "EtKq+piwYwWgnLM/6JfH+A=="
         }
       },
       "is_incremental": false,
@@ -1813,7 +1825,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.ResourceFileReader.html",
-          "hash": "rllwHnqW0Ao3CpDM5Xi89A=="
+          "hash": "8LKx8MQCGbQApxFOdw3SFw=="
         }
       },
       "is_incremental": false,
@@ -1825,7 +1837,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.ResourceFinder.html",
-          "hash": "YmffgwA5jXcr8/0U+0GW0w=="
+          "hash": "GQ7KL1JZ+p1xmvtvlFuO5A=="
         }
       },
       "is_incremental": false,
@@ -1837,7 +1849,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.ResourceInfo.html",
-          "hash": "Ak9bzGBIBCSkoL3pRmusfA=="
+          "hash": "IbPvkwWO2lRB6mxEVwUIHA=="
         }
       },
       "is_incremental": false,
@@ -1849,7 +1861,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.SearchIndexItem.html",
-          "hash": "I/GeFGAMRuer3BUntX+SMg=="
+          "hash": "cJrz6eczvCKDz8u9MHrcoQ=="
         }
       },
       "is_incremental": false,
@@ -1861,7 +1873,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.SingleDocumentBuilder.html",
-          "hash": "McptP9PM0XT5BAX5ZKiRPw=="
+          "hash": "XnJJNfItMz7Y32cO+oWaGg=="
         }
       },
       "is_incremental": false,
@@ -1873,7 +1885,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.SitemapGenerator.html",
-          "hash": "EtLDOpGtQdLysr/xrRrzjw=="
+          "hash": "c4qVHAWpWLbmrNyCz741qQ=="
         }
       },
       "is_incremental": false,
@@ -1885,7 +1897,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.Template.html",
-          "hash": "DiO3RMYYe+uZf5NqFuebzw=="
+          "hash": "e8HnKj/HBmfFjBU14UpmRw=="
         }
       },
       "is_incremental": false,
@@ -1897,7 +1909,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.TemplateBundle.html",
-          "hash": "aU+VOPCU3a3p61L1T8+ETA=="
+          "hash": "xTDeHYYkb8Ybh8ONOmaHGA=="
         }
       },
       "is_incremental": false,
@@ -1909,7 +1921,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.TemplateCollection.html",
-          "hash": "ONKMosV/X0ZjOanjcDYJXg=="
+          "hash": "rPhL9u2ezNiJiBH943CsJA=="
         }
       },
       "is_incremental": false,
@@ -1921,7 +1933,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.TemplateJintPreprocessor.html",
-          "hash": "Vr/NHq+Ob1kcM8XQBL8kUg=="
+          "hash": "tzcCfDrmyM0V6Lflek25Eg=="
         }
       },
       "is_incremental": false,
@@ -1933,7 +1945,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.TemplateManager.html",
-          "hash": "THseyq//ZZKGJrdqxVrs6A=="
+          "hash": "5hlLWL1Ziqs1W/rCJjPPug=="
         }
       },
       "is_incremental": false,
@@ -1945,7 +1957,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.TemplateModelTransformer.html",
-          "hash": "czZ/SsqFCTCcUAo+m9eoDw=="
+          "hash": "kSiwu3F9gslF3MLiYQbRUA=="
         }
       },
       "is_incremental": false,
@@ -1957,7 +1969,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.TemplatePageLoader.html",
-          "hash": "1NXWfCeF2vMysosxf12dDA=="
+          "hash": "U0hdNpQakundf2tnrwzRhw=="
         }
       },
       "is_incremental": false,
@@ -1969,7 +1981,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.TemplateProcessor.html",
-          "hash": "kTjKvZtgtT7lCDWbEkyXUg=="
+          "hash": "9OLloxYsdmJn2slnc9ri5A=="
         }
       },
       "is_incremental": false,
@@ -1981,7 +1993,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.TemplateRendererType.html",
-          "hash": "9jGZh3KvPi+Q+E60n1KH9g=="
+          "hash": "+mxKDit3YwC2vrwNxg7ykA=="
         }
       },
       "is_incremental": false,
@@ -1993,7 +2005,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.TemplateResourceInfo.html",
-          "hash": "EJjXKrJGX0vaazAZvNroQg=="
+          "hash": "H+5fIUBWKw+OJ0j5FrJiGQ=="
         }
       },
       "is_incremental": false,
@@ -2005,7 +2017,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.TemplateType.html",
-          "hash": "/2qwPjbhZ/KwcvU/RBO1Ww=="
+          "hash": "8c28iLvntrET1lWVZ+ZSkw=="
         }
       },
       "is_incremental": false,
@@ -2017,7 +2029,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.TemplateUtility.html",
-          "hash": "OCIOs8pfmFKiRqbCEvB49g=="
+          "hash": "1tHssQPwEkQxl+5qyF/lQw=="
         }
       },
       "is_incremental": false,
@@ -2029,7 +2041,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.TransformModelOptions.html",
-          "hash": "YB3YOK5fWHGbtxXFJz9k8g=="
+          "hash": "rB7dIyq6l94I7PygkvaZbQ=="
         }
       },
       "is_incremental": false,
@@ -2041,7 +2053,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.ValidateBookmark.html",
-          "hash": "UzHBZYWekkptvHvhPxeNmQ=="
+          "hash": "l9vWonYSRoWl99jQwYkXLg=="
         }
       },
       "is_incremental": false,
@@ -2053,7 +2065,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.XRefArchive.html",
-          "hash": "bPppb71W1zMULkjkuy/8QQ=="
+          "hash": "FjcPXdX1vqI8wBm0GNUXJA=="
         }
       },
       "is_incremental": false,
@@ -2065,7 +2077,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.XRefArchiveBuilder.html",
-          "hash": "89v1+rKkP3ittWaaQaJgow=="
+          "hash": "n4XiDiuABckUFIezfdgwkg=="
         }
       },
       "is_incremental": false,
@@ -2077,7 +2089,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.XRefArchiveMode.html",
-          "hash": "ijPBwm8dNHV2mR7F4SbNRw=="
+          "hash": "kk21b9XApIDvXJ6gETUTcg=="
         }
       },
       "is_incremental": false,
@@ -2089,7 +2101,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.XRefArchiveReader.html",
-          "hash": "IQKRV40Lgv6MkzyjQ6CCWg=="
+          "hash": "tUuWfQXaUlPy2C4WC8+NpQ=="
         }
       },
       "is_incremental": false,
@@ -2101,7 +2113,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.XRefDetails.html",
-          "hash": "wZfj4erFxTiKbd2YSNoYUA=="
+          "hash": "FLQHzKwBPhjttslNZFmRRA=="
         }
       },
       "is_incremental": false,
@@ -2113,7 +2125,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.XRefMap.html",
-          "hash": "yYqp+Pvrw4qKMYD67+ePKg=="
+          "hash": "vFGUn6vwzAJ58bEHV2n6Lg=="
         }
       },
       "is_incremental": false,
@@ -2125,7 +2137,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.XRefMapDownloader.html",
-          "hash": "PPNdsEjeE5k7/D5atNjLQg=="
+          "hash": "sZWsHhE3SLAzHhKQf7/FNg=="
         }
       },
       "is_incremental": false,
@@ -2137,7 +2149,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.XRefMapReader.html",
-          "hash": "0nEyaLmpeuWznGZD3uu58w=="
+          "hash": "lhwiklD3cMxEz06VuGUaIA=="
         }
       },
       "is_incremental": false,
@@ -2149,7 +2161,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.XRefMapRedirection.html",
-          "hash": "MF+gQ0kNPD3f9fsLTPZTQg=="
+          "hash": "hN1qr70G1GOf45QIgLUC6w=="
         }
       },
       "is_incremental": false,
@@ -2161,7 +2173,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.XRefRedirectionReader.html",
-          "hash": "x/nVet+MpW+GScHm6PSHIw=="
+          "hash": "GEkjAqWIMz4LSBA7KHJerg=="
         }
       },
       "is_incremental": false,
@@ -2173,7 +2185,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.XRefSpecUidComparer.html",
-          "hash": "ObJjI0jipfwQkZ0YNrSauw=="
+          "hash": "q1EGuCWhR2Wbe1ZzuVSVVA=="
         }
       },
       "is_incremental": false,
@@ -2185,7 +2197,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.XrefClient.html",
-          "hash": "ie+CcBj9LsxgXNqzSkCwRQ=="
+          "hash": "0hsTRjtpwosME5Sr0bORPg=="
         }
       },
       "is_incremental": false,
@@ -2197,7 +2209,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.XrefServiceResolver.html",
-          "hash": "DkIpD5//ab+XggGyssa64A=="
+          "hash": "KKlGXsNSh/KoMcVea8jX0A=="
         }
       },
       "is_incremental": false,
@@ -2209,7 +2221,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.Engine.html",
-          "hash": "jdjPyB4GPAnEM+nxbWSvog=="
+          "hash": "dRVjFM9pITbMypgWfRq3ZQ=="
         }
       },
       "is_incremental": false,
@@ -2221,7 +2233,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.ManagedReference.ApplyOverwriteDocumentForMref.html",
-          "hash": "ZDmlperSQ4XHP3AOMRhHHw=="
+          "hash": "6WujdColG6oVnzd2Peap1w=="
         }
       },
       "is_incremental": false,
@@ -2233,7 +2245,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.ManagedReference.ApplyPlatformVersion.html",
-          "hash": "vQRzBG8StFB3QPHM70UWUA=="
+          "hash": "AYM/Sq/x7FRtWImLQEXGQQ=="
         }
       },
       "is_incremental": false,
@@ -2245,7 +2257,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.ManagedReference.BuildManagedReferenceDocument.html",
-          "hash": "qGTCTKw59BvjwR0Zcn2DQQ=="
+          "hash": "VIxZb4U96ulIu3UZq3LJbQ=="
         }
       },
       "is_incremental": false,
@@ -2257,7 +2269,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiBuildOutput.html",
-          "hash": "5xNN0CuR6qmrc7dkVgNHDQ=="
+          "hash": "7yM7XdnmJ3y1RkW4HvBWOg=="
         }
       },
       "is_incremental": false,
@@ -2269,7 +2281,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiBuildOutputUtility.html",
-          "hash": "0dIvQPUQA4wWuAq8Mk979g=="
+          "hash": "l/SrdKgwKvIh7pW9tKMEWA=="
         }
       },
       "is_incremental": false,
@@ -2281,7 +2293,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiExceptionInfoBuildOutput.html",
-          "hash": "3pGZH7enGYSSU2291bACSQ=="
+          "hash": "wNyzaE1vOQXFztBwixr4gA=="
         }
       },
       "is_incremental": false,
@@ -2293,7 +2305,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiLanguageValuePair.html",
-          "hash": "HN0haREbwm5n3/udpb7XVg=="
+          "hash": "Rfagcw1Lf5PLvyFT5MrU4w=="
         }
       },
       "is_incremental": false,
@@ -2305,7 +2317,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiLinkInfoBuildOutput.html",
-          "hash": "NVIgPd1UJXRayha2zQPceQ=="
+          "hash": "nv6v61b0i7CTd/By+ArCgg=="
         }
       },
       "is_incremental": false,
@@ -2317,7 +2329,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiNames.html",
-          "hash": "EKuu9NKJPYgg8zwyb1eQyA=="
+          "hash": "yDKTVAZnRjtbSxQ3AAzRzw=="
         }
       },
       "is_incremental": false,
@@ -2329,7 +2341,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiParameterBuildOutput.html",
-          "hash": "nz2rHXiLl4TKH7/uGKlvGw=="
+          "hash": "vXZzxk4Ia5BPwNvLCvghyQ=="
         }
       },
       "is_incremental": false,
@@ -2341,7 +2353,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiReferenceBuildOutput.html",
-          "hash": "xhwWgMVgVm6/0I4GNRhxmg=="
+          "hash": "wo8rDoI8v2p94hZYDoz3qA=="
         }
       },
       "is_incremental": false,
@@ -2353,7 +2365,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiSyntaxBuildOutput.html",
-          "hash": "wlWjTW6RjidaZvtuN8rJbg=="
+          "hash": "c0zmzDtcTRAcmuYaQdsgOA=="
         }
       },
       "is_incremental": false,
@@ -2365,7 +2377,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.html",
-          "hash": "PXhwQp/XQeKCJfqEyc0HjA=="
+          "hash": "xD6liZbXoMA8MeBb2AqpmA=="
         }
       },
       "is_incremental": false,
@@ -2377,7 +2389,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.ManagedReference.FillReferenceInformation.html",
-          "hash": "cuMIUILFxCAtGFRp+WQ6+Q=="
+          "hash": "4Sn5hdqEN0Kfaewu+wzztg=="
         }
       },
       "is_incremental": false,
@@ -2389,7 +2401,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.ManagedReference.ManagedReferenceDocumentProcessor.html",
-          "hash": "/4UH2VYp7bnQNHtb1StOqw=="
+          "hash": "1EbLgkXiTsgXMrvayt+bhA=="
         }
       },
       "is_incremental": false,
@@ -2401,7 +2413,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.ManagedReference.MergeManagedReferenceDocument.html",
-          "hash": "YYiIOIMQXturNjxdKIBWKg=="
+          "hash": "qjNwjGWfcARf26UX8pqDGg=="
         }
       },
       "is_incremental": false,
@@ -2413,7 +2425,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.ManagedReference.ValidateManagedReferenceDocumentMetadata.html",
-          "hash": "A+RW4LVEqwnGM9XkyC02pA=="
+          "hash": "Lkx3+P6m6WcA1BYksQ/V3A=="
         }
       },
       "is_incremental": false,
@@ -2425,7 +2437,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.ManagedReference.html",
-          "hash": "mFKhcsEV5nLWwNcdhW0mEw=="
+          "hash": "TQzYSvpSFOxeLjZFzwI55Q=="
         }
       },
       "is_incremental": false,
@@ -2437,7 +2449,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.OverwriteDocuments.Constants.html",
-          "hash": "kR3TO6E7dKr2SFuNnf6jkA=="
+          "hash": "f/x0RI+BQcqQ1/wrDUxdyA=="
         }
       },
       "is_incremental": false,
@@ -2449,7 +2461,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.OverwriteDocuments.IOverwriteBlockRule.html",
-          "hash": "tIMa7Jrbuo2p26CCkeFF1g=="
+          "hash": "Tl69vNlIcT7o8fHJUcXLhA=="
         }
       },
       "is_incremental": false,
@@ -2461,7 +2473,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.OverwriteDocuments.InlineCodeHeadingRule.html",
-          "hash": "mdPNdr4vAp7U05bnALd7hw=="
+          "hash": "XqSq3JBJO+hp732HdE9tEg=="
         }
       },
       "is_incremental": false,
@@ -2473,7 +2485,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.OverwriteDocuments.L1InlineCodeHeadingRule.html",
-          "hash": "l1Aicd4GdeOCsZqWhJQ33Q=="
+          "hash": "FTmwV6418smGe8BXVOi7kg=="
         }
       },
       "is_incremental": false,
@@ -2485,7 +2497,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.OverwriteDocuments.L2InlineCodeHeadingRule.html",
-          "hash": "rmXrKOEW7dCY+1EER76lRg=="
+          "hash": "dEZLaEMGT4g2/5k+KWi5pg=="
         }
       },
       "is_incremental": false,
@@ -2497,7 +2509,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownFragment.html",
-          "hash": "de/M3N/25Gu7vxgUVXPhWg=="
+          "hash": "YEQwa8xcj3UVKBjIhr7P6A=="
         }
       },
       "is_incremental": false,
@@ -2509,7 +2521,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownFragmentModel.html",
-          "hash": "Huu5IeEGsrrSxEDFPHAJag=="
+          "hash": "yTl777++DF9JFs36Fk/o3Q=="
         }
       },
       "is_incremental": false,
@@ -2521,7 +2533,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownFragmentsCreater.html",
-          "hash": "TEPlthepvie+alG8GXMOTQ=="
+          "hash": "CgdF9alprxR0k35FoVtwPA=="
         }
       },
       "is_incremental": false,
@@ -2533,7 +2545,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownFragmentsException.html",
-          "hash": "vqLGh57x7kVsiRutBCB5Pw=="
+          "hash": "gW75dvSobfTDcprABo4kmA=="
         }
       },
       "is_incremental": false,
@@ -2545,7 +2557,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownProperty.html",
-          "hash": "1WmmfiiCB7JB5+yIHYz5nQ=="
+          "hash": "J1qPWLtQCRlG8xR/2qJsFg=="
         }
       },
       "is_incremental": false,
@@ -2557,7 +2569,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownPropertyModel.html",
-          "hash": "zOf/HwgjsoDAdG+cF2ge+w=="
+          "hash": "rZ318eEIZGWF8IqeGRQHVw=="
         }
       },
       "is_incremental": false,
@@ -2569,7 +2581,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.OverwriteDocuments.OPathSegment.html",
-          "hash": "0IXE81y+EsB3qAOd69aQKg=="
+          "hash": "AInyk+6K/SmQejkoGKVrgw=="
         }
       },
       "is_incremental": false,
@@ -2581,7 +2593,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.OverwriteDocuments.OverwriteDocumentModelCreater.html",
-          "hash": "/I8iZKvF18ZKyPLhrAbkOA=="
+          "hash": "t/c50WoVMPqkLPxXxGXeoQ=="
         }
       },
       "is_incremental": false,
@@ -2593,7 +2605,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.OverwriteDocuments.OverwriteUtility.html",
-          "hash": "Q2fUDnx+5kUlfl37K984eQ=="
+          "hash": "ZzXyg+/GBoGNrD+PwKpJGw=="
         }
       },
       "is_incremental": false,
@@ -2605,7 +2617,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.OverwriteDocuments.YamlCodeBlockRule.html",
-          "hash": "UF9RbjaEvoG+Pt1P65UmYg=="
+          "hash": "2KJrEw+R6P1s7CI5TMStGw=="
         }
       },
       "is_incremental": false,
@@ -2617,7 +2629,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.OverwriteDocuments.html",
-          "hash": "8KyQe6RRQ9Wa8CVqomXnwA=="
+          "hash": "5lB1XbwKsrBwx8AeqWrrIw=="
         }
       },
       "is_incremental": false,
@@ -2629,7 +2641,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.ResourceFiles.IResourceFileConfig.html",
-          "hash": "1WukMslUjKxwDBQ3A9Zs2Q=="
+          "hash": "cOjvI2XPaQYsxwYMtsxQhQ=="
         }
       },
       "is_incremental": false,
@@ -2641,7 +2653,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.ResourceFiles.ResourceDocumentProcessor.html",
-          "hash": "FWa9wm4npP7IT46am+m97w=="
+          "hash": "cFFXg78V8pa3POc5ZDbgvg=="
         }
       },
       "is_incremental": false,
@@ -2653,7 +2665,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.ResourceFiles.ValidateResourceMetadata.html",
-          "hash": "TtINyOtZYmqntWx9VqPMlg=="
+          "hash": "fxok6kVCv7YVTW5WyQwO9Q=="
         }
       },
       "is_incremental": false,
@@ -2665,7 +2677,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.ResourceFiles.html",
-          "hash": "KStU6oQJwQNF4H3ZkFTc/Q=="
+          "hash": "2uChGY6Sx10KunAsI7qnzA=="
         }
       },
       "is_incremental": false,
@@ -2677,7 +2689,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.RestApi.ApplyOverwriteDocumentForRestApi.html",
-          "hash": "iireiHMju7dsbObckWNDzQ=="
+          "hash": "ViTj/2y90V9ypG8y8ZjnCw=="
         }
       },
       "is_incremental": false,
@@ -2689,7 +2701,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.RestApi.BuildRestApiDocument.html",
-          "hash": "LkkFN3GxT2SNaNb9jDyPQw=="
+          "hash": "wEakgAvTErpsNtShcbAgDg=="
         }
       },
       "is_incremental": false,
@@ -2701,7 +2713,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.RestApi.RestApiDocumentProcessor.html",
-          "hash": "F0Sr8DQIExsVjSQfboF15A=="
+          "hash": "pGgNFEaMRHLp/qlwoBvmMw=="
         }
       },
       "is_incremental": false,
@@ -2713,7 +2725,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.RestApi.Swagger.InfoObject.html",
-          "hash": "+rGDa6cXHLcXwUFyuONKPg=="
+          "hash": "ppdbxY4LPP/tWwzVGq9l0w=="
         }
       },
       "is_incremental": false,
@@ -2725,7 +2737,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.RestApi.Swagger.OperationObject.html",
-          "hash": "DlPrZdeWY6J+d83Gg5s8Mg=="
+          "hash": "zQa5ptiqkhlWyerzrurP6Q=="
         }
       },
       "is_incremental": false,
@@ -2737,7 +2749,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.RestApi.Swagger.ParameterObject.html",
-          "hash": "cWepuIZ3GiirNtooacyuXA=="
+          "hash": "cmXRrfKThgwUCakMLqIJVw=="
         }
       },
       "is_incremental": false,
@@ -2749,7 +2761,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.RestApi.Swagger.PathItemObject.html",
-          "hash": "P7VFG0zrRM13K4l3i2r2tQ=="
+          "hash": "1Y8dPja1XkOHv5eQHdeT9Q=="
         }
       },
       "is_incremental": false,
@@ -2761,7 +2773,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.RestApi.Swagger.PathsObject.html",
-          "hash": "ra2gzkivGwJCynestiMtRQ=="
+          "hash": "ArCQcyB4TLx4yzeN3lE/fw=="
         }
       },
       "is_incremental": false,
@@ -2773,7 +2785,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.RestApi.Swagger.ResponseObject.html",
-          "hash": "PZtlPwN4vkTjWEdG2Lwziw=="
+          "hash": "ChbAfHab8rGNONNLOPz2/g=="
         }
       },
       "is_incremental": false,
@@ -2785,7 +2797,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.RestApi.Swagger.SwaggerJsonParser.html",
-          "hash": "qI5uShlWvwpxDZDLcBzCcQ=="
+          "hash": "SCOkyz6rcXXNEmfZEKb3lA=="
         }
       },
       "is_incremental": false,
@@ -2797,7 +2809,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.RestApi.Swagger.SwaggerModel.html",
-          "hash": "YwJb8dAgJTPDokoqnMq7yw=="
+          "hash": "NJhE/iNzI89q1mZ9P4akPA=="
         }
       },
       "is_incremental": false,
@@ -2809,7 +2821,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.RestApi.Swagger.TagItemObject.html",
-          "hash": "kqYbt8nkttqDvGB9s9JY5g=="
+          "hash": "SXlsKfLCe6bg2Uc6i94LhQ=="
         }
       },
       "is_incremental": false,
@@ -2821,7 +2833,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.RestApi.Swagger.html",
-          "hash": "cgYeF2MwFeG3MXd7JZE+qg=="
+          "hash": "DN+dAhsA5efGEC4VcSwbUw=="
         }
       },
       "is_incremental": false,
@@ -2833,7 +2845,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.RestApi.SwaggerModelConverter.html",
-          "hash": "/TZ7tBrZwOgK38G1ejt23Q=="
+          "hash": "PvU7A7IeU9tvF1IUVp7rdg=="
         }
       },
       "is_incremental": false,
@@ -2845,7 +2857,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.RestApi.ValidateRestApiDocumentMetadata.html",
-          "hash": "uQcXRxm/ud7LWezH959RkQ=="
+          "hash": "Gwpd4dOp4Wu44gmEN9srlw=="
         }
       },
       "is_incremental": false,
@@ -2857,7 +2869,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.RestApi.html",
-          "hash": "f0Iq/I5GH6KvRQL2jbAcaA=="
+          "hash": "BQvD4MNDaLzyhe1L3jgyTA=="
         }
       },
       "is_incremental": false,
@@ -2869,7 +2881,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.SchemaDriven.ApplyOverwriteDocument.html",
-          "hash": "2UbAleMUa4EMnnUcuAkkVw=="
+          "hash": "gbCforqw9pcrQY+cQzj0/Q=="
         }
       },
       "is_incremental": false,
@@ -2881,7 +2893,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.SchemaDriven.ApplyOverwriteFragments.html",
-          "hash": "Rbgs5ORJWWWz/PXv+iWfTA=="
+          "hash": "J7h7UJ+eUAEZcvJ3IcX7bg=="
         }
       },
       "is_incremental": false,
@@ -2893,7 +2905,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.SchemaDriven.ApplyTags.html",
-          "hash": "ZTXag3BW+CELUEy/e3hBIA=="
+          "hash": "juTyDAUQGWLC2ZjMVmHQvw=="
         }
       },
       "is_incremental": false,
@@ -2905,7 +2917,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.SchemaDriven.BaseSchema.html",
-          "hash": "mQUWyiyQenfPF2POw/2JyA=="
+          "hash": "8P/iTOUJRWZEzeQunDEd4Q=="
         }
       },
       "is_incremental": false,
@@ -2917,7 +2929,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.SchemaDriven.BuildSchemaBasedDocument.html",
-          "hash": "WTjUJRq/xcOGot1XCJRGyA=="
+          "hash": "t1Ba6xg15bPiGlLd1phAYA=="
         }
       },
       "is_incremental": false,
@@ -2929,7 +2941,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.SchemaDriven.ContentAnchorParser.html",
-          "hash": "r2hd2/hFa5P5EuW3CJpGrw=="
+          "hash": "/hCG4/5o9D+OYWlDrU+Z/A=="
         }
       },
       "is_incremental": false,
@@ -2941,7 +2953,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.SchemaDriven.ContentType.html",
-          "hash": "i2mtcR46wyWuBgK6dD/FSA=="
+          "hash": "ED4dxNHCYwwRtvgWv4ENuw=="
         }
       },
       "is_incremental": false,
@@ -2953,7 +2965,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.SchemaDriven.DocumentSchema.html",
-          "hash": "GrEgc+XcHuJkvgyIF61xig=="
+          "hash": "788n7NTZGzRwC9etDqyhbg=="
         }
       },
       "is_incremental": false,
@@ -2965,7 +2977,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.SchemaDriven.IContentAnchorParser.html",
-          "hash": "vcasjb4Zx81AH1Wt+ISdNg=="
+          "hash": "q5aAw/2e9zUX7rQS73pyKg=="
         }
       },
       "is_incremental": false,
@@ -2977,7 +2989,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.SchemaDriven.ISchemaFragmentsHandler.html",
-          "hash": "ocosAaXRTaFNu/fgDycK/A=="
+          "hash": "z8hxHlCiv5/1QzZvJ9MjGg=="
         }
       },
       "is_incremental": false,
@@ -2989,7 +3001,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.SchemaDriven.JsonPointer.html",
-          "hash": "1QX8KOHl/UX9jUUrKM1HmQ=="
+          "hash": "fu1+6wy0l/l3xslaBEH4Cg=="
         }
       },
       "is_incremental": false,
@@ -3001,7 +3013,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.SchemaDriven.MergeType.html",
-          "hash": "KRHLLyPzjMBD0V8nVzmWJg=="
+          "hash": "ykeysaBAs5UFhsS4RpybkQ=="
         }
       },
       "is_incremental": false,
@@ -3013,7 +3025,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.SchemaDriven.OverwriteApplier.html",
-          "hash": "wvq8QcHDSoMcpLtPxv7Mng=="
+          "hash": "dd1XZ8C4otSNFIFS+COiJQ=="
         }
       },
       "is_incremental": false,
@@ -3025,7 +3037,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.SchemaDriven.OverwriteModelType.html",
-          "hash": "EBDY1r2LkSqk0ZIHw2einQ=="
+          "hash": "E3IobQkD39sRndRqilxurw=="
         }
       },
       "is_incremental": false,
@@ -3037,7 +3049,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.SchemaDriven.Processors.FileIncludeInterpreter.html",
-          "hash": "+ZgEpRRv9PqfzMDkHVnf1g=="
+          "hash": "d0sdwDH5wL4DJb40/og2/w=="
         }
       },
       "is_incremental": false,
@@ -3049,7 +3061,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.SchemaDriven.Processors.FileInterpreter.html",
-          "hash": "o+C3HXxDLKBGmV1G+ww/fg=="
+          "hash": "uQBSPMIW+f9U4ZCEEFWKKw=="
         }
       },
       "is_incremental": false,
@@ -3061,7 +3073,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.SchemaDriven.Processors.FragmentsValidationInterpreter.html",
-          "hash": "W/BEGEi2JHG6GMHENrDglQ=="
+          "hash": "q1tiJv4O+/YdLqh5Mue2LA=="
         }
       },
       "is_incremental": false,
@@ -3073,7 +3085,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.SchemaDriven.Processors.HrefInterpreter.html",
-          "hash": "8Dg5r/r8BJEIIWqiY3R9QQ=="
+          "hash": "N2bu82UB1NfqpXjc0hb94w=="
         }
       },
       "is_incremental": false,
@@ -3085,7 +3097,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.SchemaDriven.Processors.IInterpreter.html",
-          "hash": "TMw4DQiHad9rZPRpByz1Bw=="
+          "hash": "sg1OIHqqzSdhbkJ4DRx0rQ=="
         }
       },
       "is_incremental": false,
@@ -3097,7 +3109,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.SchemaDriven.Processors.IProcessContext.html",
-          "hash": "FYawn8nmTfFiUWDagh0cpw=="
+          "hash": "/HebpYwsVqOxQO7zvEsNyQ=="
         }
       },
       "is_incremental": false,
@@ -3109,7 +3121,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.SchemaDriven.Processors.ITagInterpreter.html",
-          "hash": "IRK5fVMpiTgAB5t6/Cqkbg=="
+          "hash": "k5xQAqIQ4/pdF72ZJou49A=="
         }
       },
       "is_incremental": false,
@@ -3121,7 +3133,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.SchemaDriven.Processors.MarkdownAstInterpreter.html",
-          "hash": "DerT+61zqcmNytk/JmW0zA=="
+          "hash": "WcJ4o0xSkurCxmY+22gWpg=="
         }
       },
       "is_incremental": false,
@@ -3133,7 +3145,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.SchemaDriven.Processors.MarkdownInterpreter.html",
-          "hash": "eG6n3GxfmqcXSzb5YPtFag=="
+          "hash": "XJP+WgaFnhy1r0mfzN7JPw=="
         }
       },
       "is_incremental": false,
@@ -3145,7 +3157,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.SchemaDriven.Processors.MarkdownWithContentAnchorInterpreter.html",
-          "hash": "s6daXbym7a2lBKC9/qZDPQ=="
+          "hash": "U20dp8C6sV/NP5Cetd+yGg=="
         }
       },
       "is_incremental": false,
@@ -3157,7 +3169,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.SchemaDriven.Processors.MergeTypeInterpreter.html",
-          "hash": "EDeuuRhsN43B4yuDVgRy6g=="
+          "hash": "LMupSHOMk/9Pmv1UhpZDnQ=="
         }
       },
       "is_incremental": false,
@@ -3169,7 +3181,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.SchemaDriven.Processors.ProcessContext.html",
-          "hash": "KpouDq2+G6MD1evvkXXhTg=="
+          "hash": "FTFdVJw5iMs7DfGnH5ZypQ=="
         }
       },
       "is_incremental": false,
@@ -3181,7 +3193,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.SchemaDriven.Processors.SchemaProcessor.html",
-          "hash": "PHFDSLyCtFloWc7q4GHofg=="
+          "hash": "RmQI1fELzluNi/p9NUJ+uw=="
         }
       },
       "is_incremental": false,
@@ -3193,7 +3205,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.SchemaDriven.Processors.TagsInterpreter.html",
-          "hash": "MY3XoK8kdxOwLo62mPifjw=="
+          "hash": "fnw7Yz7FU/igHCOPZWnfHQ=="
         }
       },
       "is_incremental": false,
@@ -3205,7 +3217,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.SchemaDriven.Processors.XrefInterpreter.html",
-          "hash": "zJfdxoeHnZMWNtA+0TZNkQ=="
+          "hash": "raBo44XtHn0N9sW6Q1qnog=="
         }
       },
       "is_incremental": false,
@@ -3217,7 +3229,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.SchemaDriven.Processors.XrefPropertiesInterpreter.html",
-          "hash": "kLWsbnLk6WPxZJ0BW4lKOA=="
+          "hash": "hvwW1Y9WpHyorycAle+zXw=="
         }
       },
       "is_incremental": false,
@@ -3229,7 +3241,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.SchemaDriven.Processors.html",
-          "hash": "LcofZw202JdgY7uITRTuhQ=="
+          "hash": "3NX0DCsl0ZlR7xi8PgRZfg=="
         }
       },
       "is_incremental": false,
@@ -3241,7 +3253,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.SchemaDriven.ReferenceType.html",
-          "hash": "/5sOeUOZL00ghCReqHGylg=="
+          "hash": "gvBZYSwIMUbeewaKVhlzkQ=="
         }
       },
       "is_incremental": false,
@@ -3253,7 +3265,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.SchemaDriven.SchemaDrivenDocumentProcessor.html",
-          "hash": "0OgpPY++lC+CslUmeKb1og=="
+          "hash": "JLon4uH8NaTh+IfZDEEOrw=="
         }
       },
       "is_incremental": false,
@@ -3265,7 +3277,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.SchemaDriven.SchemaExtensions.html",
-          "hash": "8eLI008VS2q8PWtDgEMM1g=="
+          "hash": "ydZGIc4haBh6TjUoyS5gnQ=="
         }
       },
       "is_incremental": false,
@@ -3277,7 +3289,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.SchemaDriven.SchemaFragmentsIterator.html",
-          "hash": "bUywdHtoWrlXEj+oQc/QyQ=="
+          "hash": "D/TIar9wgiRsFyba1UkzGg=="
         }
       },
       "is_incremental": false,
@@ -3289,7 +3301,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.SchemaDriven.SchemaValidateService.html",
-          "hash": "O7dWQohgvThIZ79FvY5RMA=="
+          "hash": "XTccCc4723zXMDXYfCsPNw=="
         }
       },
       "is_incremental": false,
@@ -3301,7 +3313,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.SchemaDriven.SchemaValidator.html",
-          "hash": "k1uuVFdWVyVWjvHWE9vRcQ=="
+          "hash": "Gyd/QnWvh5orW3nCQ1g1uA=="
         }
       },
       "is_incremental": false,
@@ -3313,7 +3325,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.SchemaDriven.ValidateFragmentsHandler.html",
-          "hash": "jZ6R1GI7MYHTlhoxibezvQ=="
+          "hash": "RSGi/hNL8d3iLDRT0Cs6FQ=="
         }
       },
       "is_incremental": false,
@@ -3325,7 +3337,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.SchemaDriven.html",
-          "hash": "TtbR4VT2dAfkU32xyywC2g=="
+          "hash": "QsTXT+z/szvcX+dKGP2obw=="
         }
       },
       "is_incremental": false,
@@ -3337,7 +3349,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.TableOfContents.BuildTocDocument.html",
-          "hash": "aT+LqyvE9jCJ9ODO0geB0g=="
+          "hash": "Bk+ZaPdIh4RzaYJox7gM2A=="
         }
       },
       "is_incremental": false,
@@ -3349,7 +3361,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.TableOfContents.BuildTocDocumentStepBase.html",
-          "hash": "cspRtL9PQY6nILjWhasr7w=="
+          "hash": "zW6zsgtUezG74iZARSoLPw=="
         }
       },
       "is_incremental": false,
@@ -3361,7 +3373,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.TableOfContents.MarkdownTocReader.html",
-          "hash": "8AU1Nm56UQCQhlBMMBg9fQ=="
+          "hash": "VD2I3z2iEKfJmPfCwyhwdQ=="
         }
       },
       "is_incremental": false,
@@ -3373,7 +3385,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.TableOfContents.TocDocumentProcessor.html",
-          "hash": "GT6l9PNvnqCqfV/trLFDvA=="
+          "hash": "AxU+jimSNqiftNUSIaaSOw=="
         }
       },
       "is_incremental": false,
@@ -3385,7 +3397,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.TableOfContents.TocDocumentProcessorBase.html",
-          "hash": "MdbLWkOsa1c1OU5wk+jgMA=="
+          "hash": "FSeGmCDuOol+pD6YvG0FfA=="
         }
       },
       "is_incremental": false,
@@ -3397,7 +3409,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.TableOfContents.TocHelper.html",
-          "hash": "K079YIvRYHnETNIPD0Beaw=="
+          "hash": "FXSRkMSHwo3uCftWAzSwPA=="
         }
       },
       "is_incremental": false,
@@ -3409,7 +3421,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.TableOfContents.html",
-          "hash": "N4q3laMQSZLV+dlZv2j1Uw=="
+          "hash": "SjFZi61LxubLdDxnxwkgeg=="
         }
       },
       "is_incremental": false,
@@ -3421,7 +3433,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.UniversalReference.ApiBuildOutput.html",
-          "hash": "kOdaZW14GSsQKBDuR09exw=="
+          "hash": "dSaOAcq/sHEJFMuxGaKEgw=="
         }
       },
       "is_incremental": false,
@@ -3433,7 +3445,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.UniversalReference.ApiBuildOutputMetadataResolver.html",
-          "hash": "XHyc5pnD/MK+KC6iAIo2Ug=="
+          "hash": "oYhVEc5hdlJrhCj66w/eOg=="
         }
       },
       "is_incremental": false,
@@ -3445,7 +3457,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.UniversalReference.ApiBuildOutputProfile.html",
-          "hash": "Tdd3MdJfRZM71eVdD2M9XQ=="
+          "hash": "MYHNnx9gAIdaCxOQmylmBQ=="
         }
       },
       "is_incremental": false,
@@ -3457,7 +3469,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.UniversalReference.ApiExceptionInfoBuildOutput.html",
-          "hash": "75EVdczJLUkOCPf/FnV5lQ=="
+          "hash": "9xszwFV3tTM6SmpuuOnagw=="
         }
       },
       "is_incremental": false,
@@ -3469,7 +3481,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.UniversalReference.ApiHrefLinkInfoBuildOutputUrlResolver.html",
-          "hash": "aU0a/x9SAoynq8a1bgTvQg=="
+          "hash": "QGzcAkgDn92jmRrcG8wMVA=="
         }
       },
       "is_incremental": false,
@@ -3481,7 +3493,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.UniversalReference.ApiInheritanceTreeBuildOutput.html",
-          "hash": "mpKrISugRkfKvf+j75diJw=="
+          "hash": "fJ5MfELPtDac03v64sW11g=="
         }
       },
       "is_incremental": false,
@@ -3493,7 +3505,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.UniversalReference.ApiLanguageValuePair-1.html",
-          "hash": "NpZLptrTsUWWwsfhgR5o+Q=="
+          "hash": "FhxCZjcI+KadvEdkCLRFew=="
         }
       },
       "is_incremental": false,
@@ -3505,7 +3517,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.UniversalReference.ApiLinkInfoBuildOutput.html",
-          "hash": "uBMC/GVlyxLcutyhLDa7lg=="
+          "hash": "pH41VnMQfBzBRyYzOkK+lg=="
         }
       },
       "is_incremental": false,
@@ -3517,7 +3529,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.UniversalReference.ApiListInDevLangsOfApiNamesTypeConverter.html",
-          "hash": "bWKgcIsoJl8XOtmnCJNRXw=="
+          "hash": "WiDMC6V+rL9mnDsLhXUgbg=="
         }
       },
       "is_incremental": false,
@@ -3529,7 +3541,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.UniversalReference.ApiNames.html",
-          "hash": "yz/MTWlyCS1OPWM6nVU2ag=="
+          "hash": "QySGYl/X/s308KnU2saSFA=="
         }
       },
       "is_incremental": false,
@@ -3541,7 +3553,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.UniversalReference.ApiNamesProfile.html",
-          "hash": "Aq/3VMMYZMK/TaeqLPJZmQ=="
+          "hash": "dML+C1UjFwpRXKx6wq5KkA=="
         }
       },
       "is_incremental": false,
@@ -3553,7 +3565,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.UniversalReference.ApiNamesSpecResolver.html",
-          "hash": "mOZDzNTMhco2KayADGyL3Q=="
+          "hash": "kul2+WlTyQ6OcDcQg47Bqw=="
         }
       },
       "is_incremental": false,
@@ -3565,7 +3577,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.UniversalReference.ApiNamesTypeConverter.html",
-          "hash": "KLozm+1mb73Z6+Z/40bxcw=="
+          "hash": "HR6TCHaqfUWIlUhXj0NEwg=="
         }
       },
       "is_incremental": false,
@@ -3577,7 +3589,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.UniversalReference.ApiParameterBuildOutput.html",
-          "hash": "AaCtDiJBshWBthvanc3+Rg=="
+          "hash": "oZ5A57i55NXAVXa4MnR/mA=="
         }
       },
       "is_incremental": false,
@@ -3589,7 +3601,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.UniversalReference.ApiSyntaxBuildOutput.html",
-          "hash": "X76Qwi6OOM7GpOa7E2Mjvw=="
+          "hash": "nY/ssMiZyV6U6bxRMQL1nA=="
         }
       },
       "is_incremental": false,
@@ -3601,7 +3613,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.UniversalReference.ApplyOverwriteDocumentForUref.html",
-          "hash": "kwyijR0q/yy/d+3ypnSfWw=="
+          "hash": "lFXI6cef+3AkVPeBsQbmQA=="
         }
       },
       "is_incremental": false,
@@ -3613,7 +3625,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.UniversalReference.BuildUniversalReferenceDocument.html",
-          "hash": "HWPir09FT1Bq/KOM5DXCyQ=="
+          "hash": "l3ymIBLE3iqGGgx7cdUwAg=="
         }
       },
       "is_incremental": false,
@@ -3625,7 +3637,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.UniversalReference.FillReferenceInformation.html",
-          "hash": "MmQ+pQlE5ZcPK1uOfS+NSQ=="
+          "hash": "6Uj9wQUQGB0g5rA1dy4ODw=="
         }
       },
       "is_incremental": false,
@@ -3637,7 +3649,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.UniversalReference.ModelConverter.html",
-          "hash": "UfFJaE7yYC4MU29UUY/Zqg=="
+          "hash": "2/UHQ2jsnC7feR2xwe1SBQ=="
         }
       },
       "is_incremental": false,
@@ -3649,7 +3661,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.UniversalReference.UniversalReferenceDocumentProcessor.html",
-          "hash": "T0Q9LF/Q4opyLyDmVWSb4w=="
+          "hash": "Kb0hKXrLwzbNDzi+WUxLqQ=="
         }
       },
       "is_incremental": false,
@@ -3661,7 +3673,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Build.UniversalReference.html",
-          "hash": "NPrDN8pb/h3yTkCP8f9u4A=="
+          "hash": "9AqmtF3KWvODqrgleS2HLQ=="
         }
       },
       "is_incremental": false,
@@ -3673,7 +3685,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.BuildJsonConfig.html",
-          "hash": "qzg/Ocr8dj5+uYTYEH1tTA=="
+          "hash": "DkiBpKB8Q4Jia+0WonIgmg=="
         }
       },
       "is_incremental": false,
@@ -3685,7 +3697,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.CascadableOptions.html",
-          "hash": "VK9psRPr/PX7KKRGt4BoIw=="
+          "hash": "IeGczevsEEvOQYVVb+8v6Q=="
         }
       },
       "is_incremental": false,
@@ -3697,7 +3709,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Common.CompositionContainer.html",
-          "hash": "Bsa/RLq2ezsii+STS2S4Lw=="
+          "hash": "bti07M9cCXa82DFOINBh0Q=="
         }
       },
       "is_incremental": false,
@@ -3709,7 +3721,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Common.ManifestUtility.html",
-          "hash": "FpVy0dM63kU6vIVtEAcXFQ=="
+          "hash": "XhG4dvWAnH1h3U8O9A3lDA=="
         }
       },
       "is_incremental": false,
@@ -3721,7 +3733,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Common.html",
-          "hash": "HT9rdhcVc2I6SdqOF+/UWg=="
+          "hash": "ytKD4OITaJH2n2c0DluhKg=="
         }
       },
       "is_incremental": false,
@@ -3733,7 +3745,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.ContentPairingInfo.html",
-          "hash": "P/zffw2SPDcMgPX95qcrPw=="
+          "hash": "iYL59L7cpY5RlM9qtmbaZA=="
         }
       },
       "is_incremental": false,
@@ -3745,7 +3757,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.CustomAssemblyTextAttribute.html",
-          "hash": "NhG2XHreM25IBGQ9dKo4xg=="
+          "hash": "cbzzWGTI54CW616r9+nROA=="
         }
       },
       "is_incremental": false,
@@ -3757,7 +3769,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.DataContracts.Common.Constants.DevLang.html",
-          "hash": "chiLltEmfdmJzdmNzVpbPw=="
+          "hash": "DD+tuakWyPmri6nleg4V4Q=="
         }
       },
       "is_incremental": false,
@@ -3769,7 +3781,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.DataContracts.Common.Constants.DocumentType.html",
-          "hash": "aSBO9oFAkXCc2U9xiiqj8w=="
+          "hash": "RYVPy9aHw3qPe2j1bWAT+A=="
         }
       },
       "is_incremental": false,
@@ -3781,7 +3793,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.DataContracts.Common.Constants.ExtensionMemberPrefix.html",
-          "hash": "Hg+8DNQFELV1XKA1qAuH6A=="
+          "hash": "jhAhn+vEDBk4oOb84IJVEg=="
         }
       },
       "is_incremental": false,
@@ -3793,7 +3805,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.DataContracts.Common.Constants.MetadataName.html",
-          "hash": "Qy6aIUDQONlF+7d8BRa3Tw=="
+          "hash": "Wo/a20YgpjJiRM8RrW9TZQ=="
         }
       },
       "is_incremental": false,
@@ -3805,7 +3817,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.DataContracts.Common.Constants.PropertyName.html",
-          "hash": "qVSBnJZaMiWAAnn+UZcVag=="
+          "hash": "twvpQQIt6lG+EchagzHcRw=="
         }
       },
       "is_incremental": false,
@@ -3817,7 +3829,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.DataContracts.Common.Constants.TableOfContents.html",
-          "hash": "dOTIBrS6rPHmckEmVbr68Q=="
+          "hash": "Wh21bVkNAoej/KMt5k9T/w=="
         }
       },
       "is_incremental": false,
@@ -3829,7 +3841,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.DataContracts.Common.Constants.html",
-          "hash": "E5ETZStgNTf/ybb8Z9Cy5g=="
+          "hash": "sPkYy56GQkTpZTc4PTqs7g=="
         }
       },
       "is_incremental": false,
@@ -3841,7 +3853,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.DataContracts.Common.ExternalReferencePackageCollection.html",
-          "hash": "DUVgshB7xwAT2w7VPKVyzQ=="
+          "hash": "29YjZvoK+dA9LGxplGkguQ=="
         }
       },
       "is_incremental": false,
@@ -3853,7 +3865,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.DataContracts.Common.ExternalReferencePackageReader.html",
-          "hash": "M0YYnWo5eu5VDg+hEbhVNQ=="
+          "hash": "QKJh5yY5jSsOseqq1y2Mkw=="
         }
       },
       "is_incremental": false,
@@ -3865,7 +3877,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.DataContracts.Common.ExternalReferencePackageWriter.html",
-          "hash": "z5jh1B7RJ98+YenteQYNmg=="
+          "hash": "7umiz8eO23cSQ4ma50OEZQ=="
         }
       },
       "is_incremental": false,
@@ -3877,7 +3889,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.DataContracts.Common.IOverwriteDocumentViewModel.html",
-          "hash": "wl33OcPewuLzb2OfvRCwvw=="
+          "hash": "QsWMtOFsej2i1LfPdIXyqw=="
         }
       },
       "is_incremental": false,
@@ -3889,7 +3901,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.DataContracts.Common.JTokenConverter.html",
-          "hash": "iK+RTR6eVIYmvgBPXcQXyA=="
+          "hash": "6v5/xL+35w7G3+ldQRkSzA=="
         }
       },
       "is_incremental": false,
@@ -3901,7 +3913,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.DataContracts.Common.MarkdownContentAttribute.html",
-          "hash": "EYE49sVpMOw5+0i6mB86YQ=="
+          "hash": "CHi/myfovYEze3wNK/wSYw=="
         }
       },
       "is_incremental": false,
@@ -3913,7 +3925,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.DataContracts.Common.MarkdownContentIgnoreAttribute.html",
-          "hash": "nnl+HLDp/pR8+cCztIV8AQ=="
+          "hash": "m5/EZ4RHf3SEDJHBV4xCPQ=="
         }
       },
       "is_incremental": false,
@@ -3925,7 +3937,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.DataContracts.Common.ReferenceViewModel.html",
-          "hash": "+RuWFovdwemoQx1ee/PuQQ=="
+          "hash": "BAa/g1fL8Hcz2WfdLaB0wA=="
         }
       },
       "is_incremental": false,
@@ -3937,7 +3949,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.DataContracts.Common.SourceDetail.html",
-          "hash": "c/z1k+xOYZYs1GmEdn5XUQ=="
+          "hash": "9UnJq8agLEVO7qX3gCl/Bw=="
         }
       },
       "is_incremental": false,
@@ -3949,7 +3961,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.DataContracts.Common.SpecViewModel.html",
-          "hash": "Umxfqf/a8O6RMW87l5vsuw=="
+          "hash": "tyvIG1MOWoKiL8xDC4j2DQ=="
         }
       },
       "is_incremental": false,
@@ -3961,7 +3973,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.DataContracts.Common.TocItemViewModel.html",
-          "hash": "LY34cxIWj4N6RDKaWQxqHg=="
+          "hash": "jivWet3gY08Qsk4HAjek2A=="
         }
       },
       "is_incremental": false,
@@ -3973,7 +3985,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.DataContracts.Common.TocRootViewModel.html",
-          "hash": "CRPei91CrrKBcqItDuqS5Q=="
+          "hash": "do5OHUrYary9dut/ws/uMw=="
         }
       },
       "is_incremental": false,
@@ -3985,7 +3997,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.DataContracts.Common.TocViewModel.html",
-          "hash": "4xj5Tijot6006bbxHb8QMQ=="
+          "hash": "KEYS43Rw3KiBvh1A4f2KJA=="
         }
       },
       "is_incremental": false,
@@ -3997,7 +4009,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.DataContracts.Common.UniqueIdentityReferenceAttribute.html",
-          "hash": "AnO3PcsiWF2gwVOkCWJS5A=="
+          "hash": "ukVLQ9eme6KwXtl4MmsKXg=="
         }
       },
       "is_incremental": false,
@@ -4009,7 +4021,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.DataContracts.Common.UniqueIdentityReferenceIgnoreAttribute.html",
-          "hash": "DZn5KXWZJp9dUwKaJr7zrQ=="
+          "hash": "r407ikw0382Ycwa9PWc8jw=="
         }
       },
       "is_incremental": false,
@@ -4021,7 +4033,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.DataContracts.Common.UrlContentAttribute.html",
-          "hash": "gNptFXj+AETRBLLL6yPb8Q=="
+          "hash": "SLo9EX/5N88fQWsfS6f/zQ=="
         }
       },
       "is_incremental": false,
@@ -4033,7 +4045,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.DataContracts.Common.UrlContentIgnoreAttribute.html",
-          "hash": "ysm0wWPwrIGX9GQndFhjjA=="
+          "hash": "pohv1M3PFZdcZ1O5xmRGMQ=="
         }
       },
       "is_incremental": false,
@@ -4045,7 +4057,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.DataContracts.Common.html",
-          "hash": "f+da5PMt5x2TAY9UC8V5Fg=="
+          "hash": "BD4zN8IAuRA12XbCKylpHA=="
         }
       },
       "is_incremental": false,
@@ -4057,7 +4069,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.DataContracts.ManagedReference.AdditionalNotes.html",
-          "hash": "JgyUSN/azG9C5KrzH96bWA=="
+          "hash": "KhTIec0ZAjHB7YfFBbaTEg=="
         }
       },
       "is_incremental": false,
@@ -4069,7 +4081,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.DataContracts.ManagedReference.ApiParameter.html",
-          "hash": "WEer/S+jesMWi/NK6xn/Gg=="
+          "hash": "n6qzIA0WIZjdW1UbwJxBmQ=="
         }
       },
       "is_incremental": false,
@@ -4081,7 +4093,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.DataContracts.ManagedReference.ApiReferenceViewModel.html",
-          "hash": "vEfVwPJi4zZ/YBsVnbzdbA=="
+          "hash": "L7XQ+laiencLQ/bjMuyz0w=="
         }
       },
       "is_incremental": false,
@@ -4093,7 +4105,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.DataContracts.ManagedReference.ArgumentInfo.html",
-          "hash": "9OR+h4OPJezOF4mYtbhQJQ=="
+          "hash": "jsWETJ+gonIwTC6/mSmQaQ=="
         }
       },
       "is_incremental": false,
@@ -4105,7 +4117,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.DataContracts.ManagedReference.AttributeInfo.html",
-          "hash": "NOJBdq4JaHCR7Ev4cgMb3g=="
+          "hash": "0nmXDdEfeha6/L+7d9nBVQ=="
         }
       },
       "is_incremental": false,
@@ -4117,7 +4129,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.DataContracts.ManagedReference.ExceptionInfo.html",
-          "hash": "BoXvucdqN8ODxxw0WiT2iA=="
+          "hash": "1YaHgFYAeI3yNyNW370nlQ=="
         }
       },
       "is_incremental": false,
@@ -4129,7 +4141,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.DataContracts.ManagedReference.ItemViewModel.html",
-          "hash": "/WfzL9H71C3PegPfN0bLqA=="
+          "hash": "LBltchAB0cJz4+sSVp4XbA=="
         }
       },
       "is_incremental": false,
@@ -4141,7 +4153,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.DataContracts.ManagedReference.LinkInfo.html",
-          "hash": "95YNxdp8JgCiNuScuFyp/A=="
+          "hash": "kTe78wq4C0C8M7nXPQyXzw=="
         }
       },
       "is_incremental": false,
@@ -4153,7 +4165,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.DataContracts.ManagedReference.LinkType.html",
-          "hash": "mtVmS58BPRvFFqGpSLAzPA=="
+          "hash": "+qpnn19P6XNLc8A1BUHcLA=="
         }
       },
       "is_incremental": false,
@@ -4165,7 +4177,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.DataContracts.ManagedReference.MemberType.html",
-          "hash": "d0hhJpPFDD8rgT3NHbjSlQ=="
+          "hash": "Kh23Q0JLqld3sviejdpjuA=="
         }
       },
       "is_incremental": false,
@@ -4177,7 +4189,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.DataContracts.ManagedReference.NamedArgumentInfo.html",
-          "hash": "m79Eoj40rAAFz00hx/vv0w=="
+          "hash": "D0AAsSXWzepKqbMhMbWTWg=="
         }
       },
       "is_incremental": false,
@@ -4189,7 +4201,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.DataContracts.ManagedReference.PageViewModel.html",
-          "hash": "c1TDXAsblelYvFh0HrNqdw=="
+          "hash": "eRgwFq9yRS/8UOhDYmx7+A=="
         }
       },
       "is_incremental": false,
@@ -4201,7 +4213,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.DataContracts.ManagedReference.SyntaxDetailViewModel.html",
-          "hash": "j0YmDEDW+BdVEOaBzHz44A=="
+          "hash": "Rsi+4KMYtMoWjqKekPkiDA=="
         }
       },
       "is_incremental": false,
@@ -4213,7 +4225,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.DataContracts.ManagedReference.SyntaxLanguage.html",
-          "hash": "oWkjzXNizidNZalto4xvig=="
+          "hash": "yaleTEe1Ea/NcDYzxPeTqg=="
         }
       },
       "is_incremental": false,
@@ -4225,7 +4237,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.DataContracts.ManagedReference.html",
-          "hash": "NivYaRL+AWWtEjX7d4hFyw=="
+          "hash": "lrumHWj5AEO8JsKeUF75XA=="
         }
       },
       "is_incremental": false,
@@ -4237,7 +4249,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.DataContracts.RestApi.RestApiChildItemViewModel.html",
-          "hash": "7Dl3GwE3VsYMLXLc9CQhlw=="
+          "hash": "DsR5UZQbdaprkVOm8MQs6w=="
         }
       },
       "is_incremental": false,
@@ -4249,7 +4261,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.DataContracts.RestApi.RestApiItemViewModelBase.html",
-          "hash": "HmXCidVfEEqkz8QYzmzVYg=="
+          "hash": "K+dXf85WrmxkDH40CZB13A=="
         }
       },
       "is_incremental": false,
@@ -4261,7 +4273,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.DataContracts.RestApi.RestApiParameterViewModel.html",
-          "hash": "S1ryTUapfa0LK2B/uGZD8A=="
+          "hash": "42OUvp+tYWG+Cmc2PxrB6Q=="
         }
       },
       "is_incremental": false,
@@ -4273,7 +4285,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.DataContracts.RestApi.RestApiResponseExampleViewModel.html",
-          "hash": "WzFAxMhl7oC49VIyx9exug=="
+          "hash": "Wuj99QZL9QcWLuKXRvhC+w=="
         }
       },
       "is_incremental": false,
@@ -4285,7 +4297,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.DataContracts.RestApi.RestApiResponseViewModel.html",
-          "hash": "So//fsuMjajbsgxwoGzvVg=="
+          "hash": "KujbU8cP4ex67D1ktaIhpw=="
         }
       },
       "is_incremental": false,
@@ -4297,7 +4309,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.DataContracts.RestApi.RestApiRootItemViewModel.html",
-          "hash": "FGEGRxYpkOmB1ZUegXnxbw=="
+          "hash": "yLEevJuZQJ3VEq4hKMrgDA=="
         }
       },
       "is_incremental": false,
@@ -4309,7 +4321,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.DataContracts.RestApi.RestApiTagViewModel.html",
-          "hash": "0vyi5zoAhzBJXdtUIiPZzQ=="
+          "hash": "pRAg3Lt54GEn6NCTbpgUaQ=="
         }
       },
       "is_incremental": false,
@@ -4321,7 +4333,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.DataContracts.RestApi.html",
-          "hash": "rXLm1wZiUcslnbq4o4Pzig=="
+          "hash": "QOt3ki+JwbAjK2D5mVuOPw=="
         }
       },
       "is_incremental": false,
@@ -4333,7 +4345,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.DataContracts.UniversalReference.ApiParameter.html",
-          "hash": "CgdS1xRxoGE76HvVHscuXA=="
+          "hash": "iYqgyIpivKgyKFm+4GvJRg=="
         }
       },
       "is_incremental": false,
@@ -4345,7 +4357,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.DataContracts.UniversalReference.ArgumentInfo.html",
-          "hash": "hwn4JwWQwdUYejIBJYeNDA=="
+          "hash": "5Tmnmk+vndBslIf5J5uZ0w=="
         }
       },
       "is_incremental": false,
@@ -4357,7 +4369,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.DataContracts.UniversalReference.AttributeInfo.html",
-          "hash": "BJkPypzc+zoBYk2Bdzntaw=="
+          "hash": "wnjkHtI2g6AgSa8ancYPOw=="
         }
       },
       "is_incremental": false,
@@ -4369,7 +4381,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.DataContracts.UniversalReference.ExceptionInfo.html",
-          "hash": "YoOfYyn52SgHmf+pQ1vpBQ=="
+          "hash": "wE9hMV8AT+BzZqAv+z4EOw=="
         }
       },
       "is_incremental": false,
@@ -4381,7 +4393,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.DataContracts.UniversalReference.InheritanceTree.html",
-          "hash": "JPan/+o9OyLEwY+pnxAUKw=="
+          "hash": "v4FRDey3wmOt/d07Diks/w=="
         }
       },
       "is_incremental": false,
@@ -4393,7 +4405,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.DataContracts.UniversalReference.ItemViewModel.html",
-          "hash": "J3LHR8pvXVPZpQ/gcqscMw=="
+          "hash": "Xa4G7uJMSnBy8QgM5HvprA=="
         }
       },
       "is_incremental": false,
@@ -4405,7 +4417,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.DataContracts.UniversalReference.LinkInfo.html",
-          "hash": "5eHVazB3zTb1G2uwNFX4vw=="
+          "hash": "azfsvkesUwxWOGqIubPimQ=="
         }
       },
       "is_incremental": false,
@@ -4417,7 +4429,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.DataContracts.UniversalReference.LinkType.html",
-          "hash": "mGDHWld8WOorJK1XJcce6A=="
+          "hash": "NW5Sqck5RzVk7UBFjXhCAg=="
         }
       },
       "is_incremental": false,
@@ -4429,7 +4441,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.DataContracts.UniversalReference.NamedArgumentInfo.html",
-          "hash": "J602oRhvFfWz4J5r3RakRQ=="
+          "hash": "tI4U1+B3aUA8CmBRYNr56g=="
         }
       },
       "is_incremental": false,
@@ -4441,7 +4453,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.DataContracts.UniversalReference.PageViewModel.html",
-          "hash": "qXAGNVjZg/P4CX7qVcHO2w=="
+          "hash": "/BULyZu+ql1mKwG03U8Yaw=="
         }
       },
       "is_incremental": false,
@@ -4453,7 +4465,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.DataContracts.UniversalReference.SyntaxDetailViewModel.html",
-          "hash": "i8Gf8r2vpmpvnD4alGEC/Q=="
+          "hash": "e3012jo7dwosOnebNin9jQ=="
         }
       },
       "is_incremental": false,
@@ -4465,7 +4477,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.DataContracts.UniversalReference.html",
-          "hash": "xdQ6VRcoJDjZrXDrDe1pSw=="
+          "hash": "VOyJYcQowdGyoXuQgxu1ug=="
         }
       },
       "is_incremental": false,
@@ -4477,7 +4489,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Dfm.AggregateBlockPathQueryOptionCreator.html",
-          "hash": "ZNvoGleFoHlLmvYu31iedg=="
+          "hash": "fZiDGMtI7WwANVCZ78i8Ug=="
         }
       },
       "is_incremental": false,
@@ -4489,7 +4501,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Dfm.CodeLanguageExtractorsBuilder.html",
-          "hash": "H9MvK3sLTtFbRU9EtpLK4Q=="
+          "hash": "GN3iZtnnbW3gHW8qq6pLHg=="
         }
       },
       "is_incremental": false,
@@ -4501,7 +4513,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Dfm.CodeSnippetRegexExtractor.html",
-          "hash": "1hqPuFcZaA81OvbfmGKDAQ=="
+          "hash": "lS8mYaD7xcQ3VsuFpHhnOw=="
         }
       },
       "is_incremental": false,
@@ -4513,7 +4525,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Dfm.CodeSnippetTag.html",
-          "hash": "4wRWA7d4SCL7WJQa495jqw=="
+          "hash": "RRl/pLxNCs10Qi9+b59Hcw=="
         }
       },
       "is_incremental": false,
@@ -4525,7 +4537,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Dfm.CodeSnippetTagType.html",
-          "hash": "IJO1tpFa6A9L8Yu4ifvozw=="
+          "hash": "oCYzNVwirzUz9DNsVk4FDg=="
         }
       },
       "is_incremental": false,
@@ -4537,7 +4549,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Dfm.CustomizedRendererCreator.html",
-          "hash": "5nUEXwMFWCk64nQ/a9jD7A=="
+          "hash": "9DUZ6jFbCVreo0xF+MJTTw=="
         }
       },
       "is_incremental": false,
@@ -4549,7 +4561,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Dfm.DfmBlockquoteBlockRule.html",
-          "hash": "2gOaBqa2oMN19fReV2KYhA=="
+          "hash": "DPKrMKWH6VjDy+InQzfevQ=="
         }
       },
       "is_incremental": false,
@@ -4561,7 +4573,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Dfm.DfmBlockquoteHelper.html",
-          "hash": "Sguu52ejUBOujGcJq9E74g=="
+          "hash": "PPlLRqHfUcX7Zs5GrJ7XAQ=="
         }
       },
       "is_incremental": false,
@@ -4573,7 +4585,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Dfm.DfmCodeExtractor.html",
-          "hash": "TR20PGG0X3D3OCrDi+kDjg=="
+          "hash": "E7nuaQX2k79n3xliMEerTg=="
         }
       },
       "is_incremental": false,
@@ -4585,7 +4597,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Dfm.DfmCodeExtractorException.html",
-          "hash": "grfiK5pg8ikzPvz6RVRCTg=="
+          "hash": "YcGNnvVB4GPNFVJ/CxfVMQ=="
         }
       },
       "is_incremental": false,
@@ -4597,7 +4609,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Dfm.DfmCodeExtractorHelper.html",
-          "hash": "VuNhi0Cse7wpkCeEhxSiAA=="
+          "hash": "k6v5KsOgPABTSp2NL9CIdA=="
         }
       },
       "is_incremental": false,
@@ -4609,7 +4621,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Dfm.DfmCodeRenderer.html",
-          "hash": "VmXSt8DH2tpXj+I8ViZHaA=="
+          "hash": "i8UOxrMK6CLpiJFRhmM0dw=="
         }
       },
       "is_incremental": false,
@@ -4621,7 +4633,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Dfm.DfmContextExtensions.html",
-          "hash": "TRgXlLkSYzy5Y3aGzBviwQ=="
+          "hash": "EcG4YbRTZK9GiKF7nNbWCw=="
         }
       },
       "is_incremental": false,
@@ -4633,7 +4645,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Dfm.DfmCustomizedRendererPartBase-3.html",
-          "hash": "fU4tqdUR6s6QZUvtRlNDgQ=="
+          "hash": "DnCT8dOJQrskR/nStHqaog=="
         }
       },
       "is_incremental": false,
@@ -4645,7 +4657,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Dfm.DfmDefaultBlockQuoteBlockSplitToken.html",
-          "hash": "jhbdu+Zrk0ILm2NnxN6bew=="
+          "hash": "ODkaLCvr4ifv7jYSqWNK1g=="
         }
       },
       "is_incremental": false,
@@ -4657,7 +4669,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Dfm.DfmEmailInlineRule.html",
-          "hash": "X+0hID674Zd9Ip6ivvukvQ=="
+          "hash": "MNvCbU/kw63K/aedZNPPgg=="
         }
       },
       "is_incremental": false,
@@ -4669,7 +4681,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Dfm.DfmEngine.html",
-          "hash": "xOoBA7tkiZMklzfBu6G0Lg=="
+          "hash": "qI4Hl2yLifwtL/64xXmpRw=="
         }
       },
       "is_incremental": false,
@@ -4681,7 +4693,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Dfm.DfmEngineBuilder.html",
-          "hash": "FtViz4vMpCbIHb7HJOKdrw=="
+          "hash": "8eFphJBATwIuVAj9zx73mg=="
         }
       },
       "is_incremental": false,
@@ -4693,7 +4705,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Dfm.DfmExtractCodeResult.html",
-          "hash": "Pc1iHFL005rtzNsug3BQeQ=="
+          "hash": "EX4ErDeI2KG+vpqCnoULow=="
         }
       },
       "is_incremental": false,
@@ -4705,7 +4717,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Dfm.DfmFallbackHelper.html",
-          "hash": "WINWaG+gJ/0xeoEhqxWY9A=="
+          "hash": "+UeXZaeXSSMnKVw9YCqn7w=="
         }
       },
       "is_incremental": false,
@@ -4717,7 +4729,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Dfm.DfmFencesBlockHelper.html",
-          "hash": "YCvxht6rmJUU+waWr32HRA=="
+          "hash": "srMBnIYh+Xk4evCG++aUng=="
         }
       },
       "is_incremental": false,
@@ -4729,7 +4741,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Dfm.DfmFencesBlockPathQueryOption.html",
-          "hash": "vG21RKVTiyfxZDAlbfuAjw=="
+          "hash": "gCpToMAuvwN3mu/fS3ZBBg=="
         }
       },
       "is_incremental": false,
@@ -4741,7 +4753,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Dfm.DfmFencesBlockPathQueryOptionParameters.html",
-          "hash": "INpDmOnEvwim+uXzJhZgrQ=="
+          "hash": "S5W994O6oz5Z/4qXxugp2w=="
         }
       },
       "is_incremental": false,
@@ -4753,7 +4765,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Dfm.DfmFencesBlockRule.html",
-          "hash": "Y3YTEYnxA7M7nk/SUORIJw=="
+          "hash": "M4TV/Me0zyu6L/ynvApqzg=="
         }
       },
       "is_incremental": false,
@@ -4765,7 +4777,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Dfm.DfmFencesBlockToken.html",
-          "hash": "NUhAy6XhOGXUY5ECiKZsxA=="
+          "hash": "rp/V/YbolJ73mIcb35kHNA=="
         }
       },
       "is_incremental": false,
@@ -4777,7 +4789,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Dfm.DfmFencesInlineRule.html",
-          "hash": "YwaI3rjpbpkbUB84+vpyVg=="
+          "hash": "QX2jHBgMfSSEZUBduhC7Tw=="
         }
       },
       "is_incremental": false,
@@ -4789,7 +4801,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Dfm.DfmFencesInlineToken.html",
-          "hash": "nSFeNZMZtbGr/kj40IO3OQ=="
+          "hash": "k9H6Mz/cqt9a+n4kWWXKbw=="
         }
       },
       "is_incremental": false,
@@ -4801,7 +4813,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Dfm.DfmFencesRule.html",
-          "hash": "8IE3Jm+aNTLC0sjqVhcETw=="
+          "hash": "IR2lcwuNMjStnDBGjHbWuQ=="
         }
       },
       "is_incremental": false,
@@ -4813,7 +4825,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Dfm.DfmFencesToken.html",
-          "hash": "kVuwekvBfTBPxZK+erWDag=="
+          "hash": "oAymxr94dKjI3l/DV7XL5w=="
         }
       },
       "is_incremental": false,
@@ -4825,7 +4837,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Dfm.DfmIncludeBlockRule.html",
-          "hash": "l7OzUw42TcQM2Tggt+Fjgg=="
+          "hash": "3RsHK4486bji3hoVeXolXw=="
         }
       },
       "is_incremental": false,
@@ -4837,7 +4849,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Dfm.DfmIncludeBlockToken.html",
-          "hash": "XKiCD9yx4zM+G2dxcsEcEA=="
+          "hash": "oEGUEBDFvjufD8edTnbyMQ=="
         }
       },
       "is_incremental": false,
@@ -4849,7 +4861,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Dfm.DfmIncludeInlineRule.html",
-          "hash": "QdzIHMpJ+K9ETRlrOg5mlA=="
+          "hash": "z4HmLfX5nv9iqQ+OrLQ0Sg=="
         }
       },
       "is_incremental": false,
@@ -4861,7 +4873,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Dfm.DfmIncludeInlineToken.html",
-          "hash": "rr6nqBCiGuX5RGFQY9h9QA=="
+          "hash": "fZ0wIA6U463w0tiW88WxUw=="
         }
       },
       "is_incremental": false,
@@ -4873,7 +4885,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Dfm.DfmJsonTokenTreeRender.html",
-          "hash": "kzq9//1TRywngsvBdfqfxQ=="
+          "hash": "f0ptu2rRzGuh/APEjCTfhA=="
         }
       },
       "is_incremental": false,
@@ -4885,7 +4897,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Dfm.DfmMarkdownRenderer.html",
-          "hash": "9G0DCrvOCKNWE1KIqpRDQw=="
+          "hash": "VQK24eFcaWtXDvAiNsn+Pw=="
         }
       },
       "is_incremental": false,
@@ -4897,7 +4909,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Dfm.DfmNoteBlockRule.html",
-          "hash": "jrAn8V8LOYOhm6Poc69nuA=="
+          "hash": "KMjFraDIeiDAnn3mkm2tyQ=="
         }
       },
       "is_incremental": false,
@@ -4909,7 +4921,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Dfm.DfmNoteBlockSplitToken.html",
-          "hash": "vLwbpnDU+jtCFixfMK+73g=="
+          "hash": "oLzYLyJjgxoMEoCSFHGZkw=="
         }
       },
       "is_incremental": false,
@@ -4921,7 +4933,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Dfm.DfmNoteBlockToken.html",
-          "hash": "Jt0d58XgZOstsG14/iw2nA=="
+          "hash": "3x6h7vfwbGz94MBCaqDsgg=="
         }
       },
       "is_incremental": false,
@@ -4933,7 +4945,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Dfm.DfmNpTableBlockRule.html",
-          "hash": "GbD6dm1X2ZlY+43BNoU3JA=="
+          "hash": "qEmuD0FJ2+IyAt8vTrgiFA=="
         }
       },
       "is_incremental": false,
@@ -4945,7 +4957,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Dfm.DfmRenderer.html",
-          "hash": "ZeZieQRCQQv7uOg1nt37+Q=="
+          "hash": "bwa4Ns/qh0z4zxhCcsMgow=="
         }
       },
       "is_incremental": false,
@@ -4957,7 +4969,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Dfm.DfmSectionBlockRule.html",
-          "hash": "lOsBaD3YA2eRW2WC1LAMUw=="
+          "hash": "oeDIizCvnow9w3lse1VlSg=="
         }
       },
       "is_incremental": false,
@@ -4969,7 +4981,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Dfm.DfmSectionBlockSplitToken.html",
-          "hash": "c8AnfJfBM2DjyaiCvzcDzw=="
+          "hash": "jAs4St6SuZdbTFrARA5ITg=="
         }
       },
       "is_incremental": false,
@@ -4981,7 +4993,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Dfm.DfmSectionBlockToken.html",
-          "hash": "h32zGWp2Axcs+YWZaXV92A=="
+          "hash": "uBPX9AJYHUrcHvLkJUxdkA=="
         }
       },
       "is_incremental": false,
@@ -4993,7 +5005,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Dfm.DfmTabContentBlockToken.html",
-          "hash": "wOzKODElhCJGnhlyTY+tmw=="
+          "hash": "Ow1qOFPoeX3TztTeNj1Rsw=="
         }
       },
       "is_incremental": false,
@@ -5005,7 +5017,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Dfm.DfmTabGroupBlockRule.html",
-          "hash": "PsxW9LGya5p7jhTEauZz2A=="
+          "hash": "rT/U/Olj8P4sBNd79BD4xg=="
         }
       },
       "is_incremental": false,
@@ -5017,7 +5029,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Dfm.DfmTabGroupBlockToken.html",
-          "hash": "OKld0QI1hLhcES3n0l34Tg=="
+          "hash": "8LtuQyHC19FoS4gAUPzTpQ=="
         }
       },
       "is_incremental": false,
@@ -5029,7 +5041,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Dfm.DfmTabItemBlockToken.html",
-          "hash": "Yk8zMd3XImLnl1DgK7hjWg=="
+          "hash": "Q7TqjBVKcurqVqA2HfSpPg=="
         }
       },
       "is_incremental": false,
@@ -5041,7 +5053,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Dfm.DfmTabTitleBlockToken.html",
-          "hash": "cLSepnuxbYYhgzlsv9MeoA=="
+          "hash": "cjD7kKY1vJDR/GP5hIxwew=="
         }
       },
       "is_incremental": false,
@@ -5053,7 +5065,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Dfm.DfmTableBlockRule.html",
-          "hash": "RZwAkLrnVlgql0ll+84kPg=="
+          "hash": "vU1uACnyEdIGfvPcXvhBDQ=="
         }
       },
       "is_incremental": false,
@@ -5065,7 +5077,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Dfm.DfmTagNameResolveResult.html",
-          "hash": "GNAIZbxippc/55G+LqRYKA=="
+          "hash": "qDrXYqV/RHiavOETsw+24A=="
         }
       },
       "is_incremental": false,
@@ -5077,7 +5089,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Dfm.DfmTextInlineRule.html",
-          "hash": "xipQqLJNujujUuGw82XzPw=="
+          "hash": "/rkWYVvRDp1V2UB1ymBKZw=="
         }
       },
       "is_incremental": false,
@@ -5089,7 +5101,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Dfm.DfmVideoBlockRule.html",
-          "hash": "p/MlhPZkObHZ63vcP30q0Q=="
+          "hash": "mlq6bK/Su0JSdAYdkdxNrw=="
         }
       },
       "is_incremental": false,
@@ -5101,7 +5113,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Dfm.DfmVideoBlockSplitToken.html",
-          "hash": "tBhxelUgedqxfdwjALco7Q=="
+          "hash": "A9tSpUXFZ0i3YkMZ6vOfCA=="
         }
       },
       "is_incremental": false,
@@ -5113,7 +5125,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Dfm.DfmVideoBlockToken.html",
-          "hash": "YhkT8yCrFZJV1PAu/tC29A=="
+          "hash": "zLB0Z4mSN9DI36RZ+bK8kA=="
         }
       },
       "is_incremental": false,
@@ -5125,7 +5137,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Dfm.DfmXrefAutoLinkInlineRule.html",
-          "hash": "qI+8JpNB/EGPEPgOiH3RJg=="
+          "hash": "jX8zP5xdVf+9U3Xp8xOraw=="
         }
       },
       "is_incremental": false,
@@ -5137,7 +5149,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Dfm.DfmXrefInlineToken.html",
-          "hash": "XF7DvDSv59dlZsOVcVnDUw=="
+          "hash": "LdTu4hmwDMYai1vmMxl3pQ=="
         }
       },
       "is_incremental": false,
@@ -5149,7 +5161,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Dfm.DfmXrefShortcutInlineRule.html",
-          "hash": "LahJEeUDBwCZAAALqluHnQ=="
+          "hash": "6K9quGJHgThmbiXH37Ydqw=="
         }
       },
       "is_incremental": false,
@@ -5161,7 +5173,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Dfm.DfmYamlHeaderBlockRule.html",
-          "hash": "/unY5P1B761mnWHxOYbnUQ=="
+          "hash": "kzd9mlDyID7GsvNcn9k3xQ=="
         }
       },
       "is_incremental": false,
@@ -5173,7 +5185,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Dfm.DfmYamlHeaderBlockToken.html",
-          "hash": "xyF4NNkMmvHWa1ZNQZ7Exg=="
+          "hash": "t2ZVMztyv/V6myDUZDG70Q=="
         }
       },
       "is_incremental": false,
@@ -5185,7 +5197,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Dfm.DocfxFlavoredMarked.html",
-          "hash": "xtsrwd4MMsbey6pWEX4IpA=="
+          "hash": "AR2+TLj/maPtfjgfxZhaFQ=="
         }
       },
       "is_incremental": false,
@@ -5197,7 +5209,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Dfm.FileCacheLite.html",
-          "hash": "D0BM38Iiz3GHSNDOFhU2pg=="
+          "hash": "eCkubv0+huiV9GOV5gMXJg=="
         }
       },
       "is_incremental": false,
@@ -5209,7 +5221,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Dfm.FlatNameCodeSnippetExtractor.html",
-          "hash": "yoSZRa4/sXqUXOrzWCYwCg=="
+          "hash": "0zdnP/WybYk05Ba7gDAhxw=="
         }
       },
       "is_incremental": false,
@@ -5221,7 +5233,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Dfm.FullFileBlockPathQueryOption.html",
-          "hash": "Cs0ImEOfhpzOCtfmz2H39g=="
+          "hash": "hqmfLNxOjnXDxdxFXl6CvA=="
         }
       },
       "is_incremental": false,
@@ -5233,7 +5245,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Dfm.FullFileBlockPathQueryOptionCreator.html",
-          "hash": "dYJWVJ91E0kS4AurNb9XKg=="
+          "hash": "YB+ciF9Qjhk4l1t3IXTPUg=="
         }
       },
       "is_incremental": false,
@@ -5245,7 +5257,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Dfm.HeadingIdAggregator.html",
-          "hash": "8gHOKLx0WP3psn7RSOMPIQ=="
+          "hash": "x4WUXx6TKaBq0kx+qcj5+A=="
         }
       },
       "is_incremental": false,
@@ -5257,7 +5269,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Dfm.ICodeSnippetExtractor.html",
-          "hash": "DtzhCvzNDRQ8OU4zQorlTw=="
+          "hash": "28hIvKJTpJ4iT64YWURX3Q=="
         }
       },
       "is_incremental": false,
@@ -5269,7 +5281,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Dfm.IDfmBlockSpecialSplitToken.html",
-          "hash": "mfE9e6uwmCCiuWx4u1OxHw=="
+          "hash": "wP/4xWVGYoJGLuPyV1lFvw=="
         }
       },
       "is_incremental": false,
@@ -5281,7 +5293,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Dfm.IDfmCustomizedRendererPart.html",
-          "hash": "eERbQjtdAtlLP5W/LET6Lg=="
+          "hash": "dp+/j4Skczh6b5Cn0Bc8XA=="
         }
       },
       "is_incremental": false,
@@ -5293,7 +5305,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Dfm.IDfmCustomizedRendererPartProvider.html",
-          "hash": "4vvg4GV4ynAEj9NoP+Fw7A=="
+          "hash": "XMV+YnIB440/dB42hZ+mRQ=="
         }
       },
       "is_incremental": false,
@@ -5305,7 +5317,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Dfm.IDfmEngineCustomizer.html",
-          "hash": "8HD+fmHCkT3IdsuvPoR3wA=="
+          "hash": "H6CCq5r6rJAE5E3PpcJ9bg=="
         }
       },
       "is_incremental": false,
@@ -5317,7 +5329,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Dfm.IDfmFencesBlockPathQueryOption.html",
-          "hash": "oW6BHpEaKVbcVk9zft7Uuw=="
+          "hash": "FdluDGrzNxaFlNAjP3ZZ8A=="
         }
       },
       "is_incremental": false,
@@ -5329,7 +5341,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Dfm.IDfmFencesBlockPathQueryOptionCreator.html",
-          "hash": "hQPU+qSejCSuovnFOVGLfg=="
+          "hash": "NQhbWv1r/Gdblyo74oKUOA=="
         }
       },
       "is_incremental": false,
@@ -5341,7 +5353,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Dfm.LineRangeBlockPathQueryOption.html",
-          "hash": "Fm4kzYGdEmdH6ZF8gKVhLQ=="
+          "hash": "tSwQZQJvuZsh/b4UrvNI6Q=="
         }
       },
       "is_incremental": false,
@@ -5353,7 +5365,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Dfm.MarkdownValidators.MarkdownValidatorBuilder.html",
-          "hash": "vsrxNxISQ0pML/G9B/AWqA=="
+          "hash": "UNEZFMbZDWsZ6WkZCAlgvA=="
         }
       },
       "is_incremental": false,
@@ -5365,7 +5377,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Dfm.MarkdownValidators.html",
-          "hash": "txis9oYMqrckaFNXuVS3jw=="
+          "hash": "3ZKvEGtL84RZ6q3yG3Au0w=="
         }
       },
       "is_incremental": false,
@@ -5377,7 +5389,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Dfm.MultipleLineRangeBlockPathQueryOption.html",
-          "hash": "D8EpfvLE8LnYoegDyY0tPg=="
+          "hash": "pHLC8etONZBT+qkJ9ee9Cg=="
         }
       },
       "is_incremental": false,
@@ -5389,7 +5401,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Dfm.MultipleLineRangeBlockPathQueryOptionCreator.html",
-          "hash": "gvo69oCWb/kiT5e7CmhFUw=="
+          "hash": "pCr/3lcY6tLwLzdThgAQwg=="
         }
       },
       "is_incremental": false,
@@ -5401,7 +5413,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Dfm.PlugableRendererBase.html",
-          "hash": "3g/a4Nw9KSLLa9jHfGaJJw=="
+          "hash": "nqPWioabJpFcxu9OgN3yGQ=="
         }
       },
       "is_incremental": false,
@@ -5413,7 +5425,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Dfm.RecursiveNameCodeSnippetExtractor.html",
-          "hash": "BEbFSLIIGb2aVvJqzPX2dg=="
+          "hash": "LEOz4N7dRT6FYWcdXDPssw=="
         }
       },
       "is_incremental": false,
@@ -5425,7 +5437,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Dfm.SplitToken.html",
-          "hash": "HZ5LY7bKwmxpCna2IWhM3w=="
+          "hash": "94rjB8eYjfq7n+TkPMXUkg=="
         }
       },
       "is_incremental": false,
@@ -5437,7 +5449,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Dfm.TabGroupAggregator.html",
-          "hash": "OgPBPmDt9+R12vqDxv8lWw=="
+          "hash": "oxa2blUbrQRXe8SMaEe1Qg=="
         }
       },
       "is_incremental": false,
@@ -5449,7 +5461,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Dfm.TagNameBlockPathQueryOption.html",
-          "hash": "0gg9cX+BeKoc4oOm00WVGg=="
+          "hash": "Wqta8p8IUJt9xtRL/bzyFg=="
         }
       },
       "is_incremental": false,
@@ -5461,7 +5473,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Dfm.TagNameBlockPathQueryOptionCreator.html",
-          "hash": "y5XK3YKre+Mh8AxahacLeg=="
+          "hash": "yiIq8TWiuSniDbeBYq45sA=="
         }
       },
       "is_incremental": false,
@@ -5473,7 +5485,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Dfm.html",
-          "hash": "v/ujoCcIaEI0MNZYSyH8/g=="
+          "hash": "5yofcsGi11vPUbjbxLIx9g=="
         }
       },
       "is_incremental": false,
@@ -5485,7 +5497,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Exceptions.DocfxInitException.html",
-          "hash": "jQYmQT9EPGwfAmZbrac0Kw=="
+          "hash": "0cQrBdC98vE0dG2K8hyqEw=="
         }
       },
       "is_incremental": false,
@@ -5497,7 +5509,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Exceptions.DocfxMetadataException.html",
-          "hash": "PFu0O6wf5b4ZZQVSmw/grQ=="
+          "hash": "aD5bH7jcyHLrBW/ru3oSjg=="
         }
       },
       "is_incremental": false,
@@ -5509,7 +5521,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Exceptions.ExtractMetadataException.html",
-          "hash": "95fumlETyvupTUPWsHdvSw=="
+          "hash": "SjMErIzxQTCKLbLLQJRiAw=="
         }
       },
       "is_incremental": false,
@@ -5521,7 +5533,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Exceptions.InvalidJsonPointerException.html",
-          "hash": "OhJg7Z1KRK1rNOeyul+0Kw=="
+          "hash": "k/gatnqmdovfDc+bRitWuA=="
         }
       },
       "is_incremental": false,
@@ -5533,7 +5545,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Exceptions.InvalidOptionException.html",
-          "hash": "1g8h9Wf5WMPMwjgd3AE2rA=="
+          "hash": "XvOQLdpn13FeYgtAHkb6ng=="
         }
       },
       "is_incremental": false,
@@ -5545,7 +5557,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Exceptions.InvalidOverwriteDocumentException.html",
-          "hash": "vEtfLW2M6SdP6KOkKJyiSw=="
+          "hash": "+ngccwCYxlKKZ1Z4KxOWdw=="
         }
       },
       "is_incremental": false,
@@ -5557,7 +5569,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Exceptions.InvalidSchemaException.html",
-          "hash": "oqSxCAdMesZVScuUsRqzpg=="
+          "hash": "t53lsHjl29yjmV16aJ65MA=="
         }
       },
       "is_incremental": false,
@@ -5569,7 +5581,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Exceptions.PluginDirectoryAlreadyExistsException.html",
-          "hash": "YsSWeDJHhxj4Dx/dvuUGYg=="
+          "hash": "lsR/GuB5u03Tu1AiHxzxXw=="
         }
       },
       "is_incremental": false,
@@ -5581,7 +5593,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Exceptions.PluginException.html",
-          "hash": "tPVgNz9IDGWJAjpBA5m8xQ=="
+          "hash": "CthhTmC8P0MVUuJszVKocg=="
         }
       },
       "is_incremental": false,
@@ -5593,7 +5605,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Exceptions.SchemaFeatureNotSupportedException.html",
-          "hash": "OlgszHeNR0iGtWOKJ5hTXw=="
+          "hash": "Lmr8OC+vy52Fcsu0trRcoQ=="
         }
       },
       "is_incremental": false,
@@ -5605,7 +5617,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Exceptions.SchemaKeywordNotSupportedException.html",
-          "hash": "mFqvol8wJ4uWO62q3TgzPA=="
+          "hash": "I8OJwlMEPyEnSx9zJjNE5A=="
         }
       },
       "is_incremental": false,
@@ -5617,7 +5629,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Exceptions.html",
-          "hash": "8xfFxa3jUP0Q53TQeh6jtg=="
+          "hash": "V1Ue4BB+ZQSAgMdT/pVeuQ=="
         }
       },
       "is_incremental": false,
@@ -5629,7 +5641,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.FileItems.html",
-          "hash": "Yci1BAyozQmaCjFBvMHEYQ=="
+          "hash": "NcS9lS1vgC4WPcpaDEh0jw=="
         }
       },
       "is_incremental": false,
@@ -5641,7 +5653,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.FileMapping.html",
-          "hash": "hpego5FA9r9JbDD9qWUBnQ=="
+          "hash": "hNROWM24ZANo+G1jYTSp+A=="
         }
       },
       "is_incremental": false,
@@ -5653,7 +5665,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.FileMappingConverter.html",
-          "hash": "omYHNpwBaSt36URgBU5EyA=="
+          "hash": "VkKwHODgW9EP6xc4iQ/0cQ=="
         }
       },
       "is_incremental": false,
@@ -5665,7 +5677,19 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.FileMappingItem.html",
-          "hash": "jPgntKX7p09L/TW6BxWq8w=="
+          "hash": "4Ip2F8XGEnTAn5RqSHd66g=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/temp/docfxapi/Microsoft.DocAsCode.FileMetadataConverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Microsoft.DocAsCode.FileMetadataConverter.html",
+          "hash": "RpMM6jIOZ8ROwUXoaI0wSQ=="
         }
       },
       "is_incremental": false,
@@ -5677,7 +5701,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.FileMetadataPairs.html",
-          "hash": "ey1j82BKTRnK6FT6AYT9kA=="
+          "hash": "Np2ehXhDkW462jD/HqWetg=="
         }
       },
       "is_incremental": false,
@@ -5689,7 +5713,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.FileMetadataPairsConverter.html",
-          "hash": "eFXmJZDbmy8mYW82JB74XQ=="
+          "hash": "jRBw9oxAmxXtoChHMtgkZg=="
         }
       },
       "is_incremental": false,
@@ -5701,7 +5725,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.FileMetadataPairsItem.html",
-          "hash": "PwUxx11e8V3K0ac3Dtyc/A=="
+          "hash": "t2bjqLjBwZmXJkh//t8XRw=="
         }
       },
       "is_incremental": false,
@@ -5713,7 +5737,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Glob.FileGlob.html",
-          "hash": "SHxfPI0Q0aU7driAAz0MHQ=="
+          "hash": "1QQ0X6U6kUVUiVgwxFsyuw=="
         }
       },
       "is_incremental": false,
@@ -5725,7 +5749,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Glob.GlobMatcher.html",
-          "hash": "2+p3x4ULjSCV4JdNlk92HA=="
+          "hash": "/Jl/UTXZdX/ceTiG/HI5EQ=="
         }
       },
       "is_incremental": false,
@@ -5737,7 +5761,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Glob.GlobMatcherOptions.html",
-          "hash": "ScMtPv1Nxrh3PyHET+MFCw=="
+          "hash": "VwW4JFV3jr+wOpwAdivWUg=="
         }
       },
       "is_incremental": false,
@@ -5749,7 +5773,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Glob.html",
-          "hash": "81LSl0+wyAhlPmVeSuKY2A=="
+          "hash": "hOBrzVOPgyCexRsAv3ZRnQ=="
         }
       },
       "is_incremental": false,
@@ -5761,7 +5785,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.GroupConfig.html",
-          "hash": "uaGX1TI8AAi5mXvrTkK4Iw=="
+          "hash": "eHMAFQnLXn9zc3MdkxkgFg=="
         }
       },
       "is_incremental": false,
@@ -5773,7 +5797,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.HtmlToPdf.ConvertWrapper.html",
-          "hash": "X26v0wUejqldAPGKZ5tHbA=="
+          "hash": "xJLhNqidy02Sblu+tKlomQ=="
         }
       },
       "is_incremental": false,
@@ -5785,7 +5809,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.HtmlToPdf.FileOutput.html",
-          "hash": "N2e2NcoVQvL1EsuzHavofQ=="
+          "hash": "ZY/aQeBVJg6Hr5GHms+wuA=="
         }
       },
       "is_incremental": false,
@@ -5797,7 +5821,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.HtmlToPdf.FileOutputs.html",
-          "hash": "IGBPyRRZSFG5yIlz7aKBmQ=="
+          "hash": "yilDxehKeM4Ak78FIkZeUQ=="
         }
       },
       "is_incremental": false,
@@ -5809,7 +5833,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.HtmlToPdf.FolderUtility.html",
-          "hash": "saXSWgsLoeZanLSox8fRuQ=="
+          "hash": "ufEZ15KVB/MZ7LBdbo0Yew=="
         }
       },
       "is_incremental": false,
@@ -5821,7 +5845,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.HtmlToPdf.Guard.html",
-          "hash": "qrxtLs99/RFVt0g1Y70b9g=="
+          "hash": "2KDA9ONJE9ljqsu6b26owA=="
         }
       },
       "is_incremental": false,
@@ -5833,7 +5857,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.HtmlToPdf.HtmlModel.html",
-          "hash": "/Ch+gXGae7oInAuhaQWCgg=="
+          "hash": "sB068+h0X1N04rTgJuSslA=="
         }
       },
       "is_incremental": false,
@@ -5845,7 +5869,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.HtmlToPdf.HtmlToPdfConverter.html",
-          "hash": "xyIqIwbSyODA7a01UiyFFQ=="
+          "hash": "6b39fGAJaMKc4vNYoTJp9g=="
         }
       },
       "is_incremental": false,
@@ -5857,7 +5881,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.HtmlToPdf.HtmlToPdfOptions.html",
-          "hash": "RU0ZDKxMnXNWp4fBPoJ+Rw=="
+          "hash": "zEojXi9iXHmMUnuG5g67Dg=="
         }
       },
       "is_incremental": false,
@@ -5869,7 +5893,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.HtmlToPdf.ManifestItemType.html",
-          "hash": "M4O7eYz0337I22Ql77dRhA=="
+          "hash": "p9uqfnu4qQmpHbTobr+Ewg=="
         }
       },
       "is_incremental": false,
@@ -5881,7 +5905,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.HtmlToPdf.ManifestUtility.html",
-          "hash": "NKqU21bjFdwOJuxOLSmYcg=="
+          "hash": "19FJizw/81zE4KaQNjrkDQ=="
         }
       },
       "is_incremental": false,
@@ -5893,7 +5917,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.HtmlToPdf.OutlineOption.html",
-          "hash": "Dwx2DJlOn10N0gmUvg8pPg=="
+          "hash": "j8mHTN0UXWDiIW+HWd9d5Q=="
         }
       },
       "is_incremental": false,
@@ -5905,7 +5929,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.HtmlToPdf.OutputType.html",
-          "hash": "SbgvVUKIMVF2SXezZ/iM6g=="
+          "hash": "Zpbepo7C9/3IEByi71rljA=="
         }
       },
       "is_incremental": false,
@@ -5917,7 +5941,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.HtmlToPdf.PdfHelper.html",
-          "hash": "eFFN4bVw4vdHbXaysHP45g=="
+          "hash": "WBlwIpF7TSHyr9WdtNlRIw=="
         }
       },
       "is_incremental": false,
@@ -5929,7 +5953,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.HtmlToPdf.PdfInformation.html",
-          "hash": "iOuRG+H4ZhrnsDlJ1ciFyg=="
+          "hash": "abP2NBqkrzU2/H23tC6GPw=="
         }
       },
       "is_incremental": false,
@@ -5941,7 +5965,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.HtmlToPdf.PdfOptions.html",
-          "hash": "CwIfg/rqMSSkO/lK909CIw=="
+          "hash": "s9NlIq98aKy2kS7v/sgF5w=="
         }
       },
       "is_incremental": false,
@@ -5953,7 +5977,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.HtmlToPdf.SelfCleaningFolder.html",
-          "hash": "4td38PxWMJSxBLT0b5BT1g=="
+          "hash": "YhM4WNLMgs9MOyS2u/2lUQ=="
         }
       },
       "is_incremental": false,
@@ -5965,7 +5989,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.HtmlToPdf.TocModel.html",
-          "hash": "Iigl87CsWYWJ9olreqhrbg=="
+          "hash": "0U5wKLjEEoQB/xUl/GfjYQ=="
         }
       },
       "is_incremental": false,
@@ -5977,7 +6001,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.HtmlToPdf.Transformer.AbsolutePathInTocPageFileTransformer.html",
-          "hash": "0c3C0/2/k9ZpJ+4xz20Dgg=="
+          "hash": "kp8eORe/QfzZ1CJT5Nxnxw=="
         }
       },
       "is_incremental": false,
@@ -5989,7 +6013,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.HtmlToPdf.Transformer.FrameTransformer.html",
-          "hash": "glJedRG8N3+QQvvU1/NX5Q=="
+          "hash": "FF0lntb0nnEI9chShEbu1w=="
         }
       },
       "is_incremental": false,
@@ -6001,7 +6025,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.HtmlToPdf.Transformer.HtmlNotInTocTransformer.html",
-          "hash": "fkdAEyMUzsKHz5cRXUcc9Q=="
+          "hash": "fitBzPVjWTFJM+j2FRTIsw=="
         }
       },
       "is_incremental": false,
@@ -6013,7 +6037,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.HtmlToPdf.Transformer.ITransformer.html",
-          "hash": "Sdo4WBoPKSEl4eJbq6zDLw=="
+          "hash": "WYC61XoA7ziPEeD28tA4sA=="
         }
       },
       "is_incremental": false,
@@ -6025,7 +6049,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.HtmlToPdf.Transformer.RemoveQueryStringTransformer.html",
-          "hash": "+xoNjQQBZJRhaMDj4h9SaA=="
+          "hash": "c1zACW1fsGiLSyQ8C4+iVQ=="
         }
       },
       "is_incremental": false,
@@ -6037,7 +6061,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.HtmlToPdf.Transformer.html",
-          "hash": "3FwplKbutDXGHK+erdCcyA=="
+          "hash": "a5nwwtbWTxqNwCWKEpjl1w=="
         }
       },
       "is_incremental": false,
@@ -6049,7 +6073,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.HtmlToPdf.UrlCache.html",
-          "hash": "CqbjFR7Emx7RWrxaG1D22Q=="
+          "hash": "GFU5SPZuxsumX+FRSEdtbw=="
         }
       },
       "is_incremental": false,
@@ -6061,7 +6085,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.HtmlToPdf.html",
-          "hash": "zvQQdwoBxSC5ntH0HChAUw=="
+          "hash": "Ny0RepfwVCP7ek+DEr+o+A=="
         }
       },
       "is_incremental": false,
@@ -6073,7 +6097,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.ListWithStringFallback.html",
-          "hash": "81Yd9faZxmeSOm58JVtTjw=="
+          "hash": "x+j2kL3AOSQaIFkZxtvy1Q=="
         }
       },
       "is_incremental": false,
@@ -6085,7 +6109,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.ListWithStringFallbackConverter.html",
-          "hash": "0UBPX0nW+/2CMIio6XU5sA=="
+          "hash": "kWTf0oIPFAnv2AIiW0IuXA=="
         }
       },
       "is_incremental": false,
@@ -6097,7 +6121,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.MarkdigMarkdownRewriters.MarkdigMarkdownRenderer.html",
-          "hash": "x3Kua+vPy9fDOpBY4BTNzg=="
+          "hash": "3aW160EUecAfF02Mm/jxcg=="
         }
       },
       "is_incremental": false,
@@ -6109,7 +6133,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.MarkdigMarkdownRewriters.html",
-          "hash": "7qqJxvMV26L3gcoxhkiO1Q=="
+          "hash": "omba5X2+85nnahPK7VJqVA=="
         }
       },
       "is_incremental": false,
@@ -6121,7 +6145,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.MergeJsonConfig.html",
-          "hash": "1lP8QV/f7JpdkxhEMZ1rZw=="
+          "hash": "iG1xed0P1FM7MbawLjhUCA=="
         }
       },
       "is_incremental": false,
@@ -6133,7 +6157,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.MergeJsonConfigConverter.html",
-          "hash": "+M0c2GqcCxdshHFAlM+Z7w=="
+          "hash": "p465cFtUVUiQprWqa1GtFQ=="
         }
       },
       "is_incremental": false,
@@ -6145,7 +6169,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.MergeJsonItemConfig.html",
-          "hash": "hrtqBB1Vj/VUfzWM7hT0bQ=="
+          "hash": "olW6ClJzPu/v/L3WQF3QbQ=="
         }
       },
       "is_incremental": false,
@@ -6157,7 +6181,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Metadata.ManagedReference.AbstractCompilation.html",
-          "hash": "Dl1aabLbmpZQloGAg2Pn5w=="
+          "hash": "u6xwG85Y2BzgSZDvXABSkw=="
         }
       },
       "is_incremental": false,
@@ -6169,7 +6193,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Metadata.ManagedReference.AbstractDocument.html",
-          "hash": "qSLkg/OlxOD45LoVTgLuzQ=="
+          "hash": "8ONA1A3sDkxjk7QiFa62Bg=="
         }
       },
       "is_incremental": false,
@@ -6181,7 +6205,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Metadata.ManagedReference.AbstractProject.html",
-          "hash": "xFPOPcTh+mWp3674HmbqpA=="
+          "hash": "1ITiTnufsgTyeAMczNeHdA=="
         }
       },
       "is_incremental": false,
@@ -6193,7 +6217,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Metadata.ManagedReference.AbstractProjectLoader.html",
-          "hash": "ihns5d3xvdlcY+tCJ7qaug=="
+          "hash": "pCRr6W1cslMfsan9Yhj8VQ=="
         }
       },
       "is_incremental": false,
@@ -6205,7 +6229,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Metadata.ManagedReference.AllMemberFilterVisitor.html",
-          "hash": "jqzuh1xal5O1qC9AKUE3UA=="
+          "hash": "jRWP0nqTjJuTsZL2dszG5Q=="
         }
       },
       "is_incremental": false,
@@ -6217,7 +6241,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Metadata.ManagedReference.ApplicationLevelCache.html",
-          "hash": "0v24/zZxZLTsQF23CI7BNw=="
+          "hash": "FfBbwzBRAaYtw4iIaEmuAg=="
         }
       },
       "is_incremental": false,
@@ -6229,7 +6253,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Metadata.ManagedReference.AssemblyFileInputParameters.html",
-          "hash": "lxm8XNAPVZQewvy40VKraw=="
+          "hash": "msrOWhbUDPP9M+tTcQNE3Q=="
         }
       },
       "is_incremental": false,
@@ -6241,7 +6265,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Metadata.ManagedReference.AttributeFilterData.html",
-          "hash": "OzKZho77Q3hDZFfeeNrr9A=="
+          "hash": "plr+GKym9G6HiolwjHruIQ=="
         }
       },
       "is_incremental": false,
@@ -6253,7 +6277,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Metadata.ManagedReference.AttributeFilterInfo.html",
-          "hash": "Ewx2KxbnmvHKFRceFeanQw=="
+          "hash": "7th/6fv2W7Qukryx4h2wQQ=="
         }
       },
       "is_incremental": false,
@@ -6265,7 +6289,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Metadata.ManagedReference.BuildInfo.html",
-          "hash": "8AF5nfJs9AukuJ9PNzB5OA=="
+          "hash": "vM/gAyQX/Vf6WBlpfzQr2A=="
         }
       },
       "is_incremental": false,
@@ -6277,7 +6301,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Metadata.ManagedReference.BuildMembers.html",
-          "hash": "vL9UFEndTtBslhck4+KVkQ=="
+          "hash": "FKyH4TUqW1rUKFydzwCvJw=="
         }
       },
       "is_incremental": false,
@@ -6289,7 +6313,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Metadata.ManagedReference.BuildToc.html",
-          "hash": "F7cm9Gwmp91x53WWNTQyow=="
+          "hash": "/dDcdreXnDMRPxRKVUqoQw=="
         }
       },
       "is_incremental": false,
@@ -6301,7 +6325,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Metadata.ManagedReference.CRefTarget.html",
-          "hash": "nSVe9FhAY/C2ufYcshK+sA=="
+          "hash": "8TY4YUZXm+grJENF6N484Q=="
         }
       },
       "is_incremental": false,
@@ -6313,7 +6337,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Metadata.ManagedReference.CSReferenceItemVisitor.html",
-          "hash": "vVi+43KXbRHHBLOjdCtC6A=="
+          "hash": "wWGvKtN5sQpBPQ4MUGgx3A=="
         }
       },
       "is_incremental": false,
@@ -6325,7 +6349,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Metadata.ManagedReference.CSYamlModelGenerator.html",
-          "hash": "1fPpbYN8HqjqY0QG9c2RZg=="
+          "hash": "e9/YVqiTQdJffzgN1I9uZg=="
         }
       },
       "is_incremental": false,
@@ -6337,7 +6361,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Metadata.ManagedReference.CSharpNameVisitorCreator.html",
-          "hash": "rcL4/pbf3ej9S7AAFsGtbw=="
+          "hash": "4LevvROX2yoNsKqxOOBiNQ=="
         }
       },
       "is_incremental": false,
@@ -6349,7 +6373,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Metadata.ManagedReference.CacheBase.html",
-          "hash": "N0MtPd7EzIqstBDaRVnEFA=="
+          "hash": "jVdQvJUBafF6AgE4MND6qw=="
         }
       },
       "is_incremental": false,
@@ -6361,7 +6385,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Metadata.ManagedReference.CachedFilterVisitor.html",
-          "hash": "Hw04y0Sh7Qwh9t9pOQeSnA=="
+          "hash": "C4rOpJnbi9kjIFvnbyw6og=="
         }
       },
       "is_incremental": false,
@@ -6373,7 +6397,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Metadata.ManagedReference.CompositeYamlModelGenerator.html",
-          "hash": "PvUW+GX0yVVj7x/4xkHJQw=="
+          "hash": "shLvppKZlTgqcLCqooeY+Q=="
         }
       },
       "is_incremental": false,
@@ -6385,7 +6409,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Metadata.ManagedReference.ConfigFilterRule.html",
-          "hash": "dchnDW3PRMBINu4QoOZuTg=="
+          "hash": "A+HT2Oqm7YFaUpOURzpZGg=="
         }
       },
       "is_incremental": false,
@@ -6397,7 +6421,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Metadata.ManagedReference.ConfigFilterRuleExcludeItem.html",
-          "hash": "HdXg1DAFHxI9LKyclQdsNA=="
+          "hash": "6eJfk479lfAwOZh9uPD1uw=="
         }
       },
       "is_incremental": false,
@@ -6409,7 +6433,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Metadata.ManagedReference.ConfigFilterRuleIncludeItem.html",
-          "hash": "AOYS7MqPU/iXUoAET6WUAQ=="
+          "hash": "w5r3xTuWGdzVNH2ho/sRhQ=="
         }
       },
       "is_incremental": false,
@@ -6421,7 +6445,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Metadata.ManagedReference.ConfigFilterRuleItem.html",
-          "hash": "m5dqu1wum0ePVjPSFQkjQQ=="
+          "hash": "slWW4eoBU/jYhrnG22F3VA=="
         }
       },
       "is_incremental": false,
@@ -6433,7 +6457,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Metadata.ManagedReference.ConfigFilterRuleItemUnion.html",
-          "hash": "aeT7FZETEGUJ53sm1Ksy/A=="
+          "hash": "TTshADV8POzE695+dWLp4w=="
         }
       },
       "is_incremental": false,
@@ -6445,7 +6469,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Metadata.ManagedReference.ConfigFilterVisitor.html",
-          "hash": "UfclWKyYRPE+5Tm61zP7wA=="
+          "hash": "UAjW1pBtf5Xmr0DPslByXw=="
         }
       },
       "is_incremental": false,
@@ -6457,7 +6481,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Metadata.ManagedReference.CopyInherited.html",
-          "hash": "qrvFoMjCryTMiUqOruYeDQ=="
+          "hash": "pE5WdOFs8sQrIc8O+qJX4A=="
         }
       },
       "is_incremental": false,
@@ -6469,7 +6493,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Metadata.ManagedReference.DefaultFilterVisitor.html",
-          "hash": "MOUaK7ozhnaVGOqDPwn4ng=="
+          "hash": "HBaUqQfw3Vkx9iLY7VaCAA=="
         }
       },
       "is_incremental": false,
@@ -6481,7 +6505,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Metadata.ManagedReference.DelegatingFilterVisitor.html",
-          "hash": "Yw1EwZTmpuOKOBiRvx8q/Q=="
+          "hash": "6hP9pO1rgK2yfTW+9fR5mQ=="
         }
       },
       "is_incremental": false,
@@ -6493,7 +6517,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Metadata.ManagedReference.EnvironmentScope.html",
-          "hash": "W4xkgNJ4F/7oYSPbh90RnQ=="
+          "hash": "mCUw/ftOulKDIt15g53cIA=="
         }
       },
       "is_incremental": false,
@@ -6505,7 +6529,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Metadata.ManagedReference.ExtendedSymbolKind.html",
-          "hash": "fCm4mxUqos3/ZIEmNJbn6A=="
+          "hash": "o6oKpIeJcjeHfZEPpHY0oQ=="
         }
       },
       "is_incremental": false,
@@ -6517,7 +6541,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Metadata.ManagedReference.ExtendedSymbolKindHelper.html",
-          "hash": "SoWzV91bYAqB+hc65lz3QA=="
+          "hash": "/NKXYsjnjfZV1T+drwq6qw=="
         }
       },
       "is_incremental": false,
@@ -6529,7 +6553,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataInputModel.html",
-          "hash": "BxtYU0G+yYnUV01ROuYDZg=="
+          "hash": "1Z1auGGmxgKFHharKPJWBA=="
         }
       },
       "is_incremental": false,
@@ -6541,7 +6565,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataOptions.html",
-          "hash": "pXMa9dEOv8b0Ms2a1utdfw=="
+          "hash": "+/yhebT4yIqdye7FUvDr7Q=="
         }
       },
       "is_incremental": false,
@@ -6553,7 +6577,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataWorker.html",
-          "hash": "qnGozDENiIoxsDHfOtnSVg=="
+          "hash": "dga+9nTD396t4RvhhVt5Rw=="
         }
       },
       "is_incremental": false,
@@ -6565,7 +6589,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Metadata.ManagedReference.FilterVisitorExtensions.html",
-          "hash": "h5k3amZKrRkgjnbcYF1mhw=="
+          "hash": "iQgQZMWm+3uqRVMxqOawsg=="
         }
       },
       "is_incremental": false,
@@ -6577,7 +6601,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Metadata.ManagedReference.IBuildController.html",
-          "hash": "9zQvpf/DDYnZzaO7ZVvluA=="
+          "hash": "bjn+bF/De/h7c7WpdrpI3A=="
         }
       },
       "is_incremental": false,
@@ -6589,7 +6613,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Metadata.ManagedReference.IExtractor.html",
-          "hash": "TJm+SxgyaVGYEYthD5tHOA=="
+          "hash": "xWEGJf2jr0sFBnomuaCSyw=="
         }
       },
       "is_incremental": false,
@@ -6601,7 +6625,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Metadata.ManagedReference.IFilterVisitor.html",
-          "hash": "s3a3bYQT/74PL0EPTIwSTA=="
+          "hash": "MDkjveq02QxSEtKlJACKmg=="
         }
       },
       "is_incremental": false,
@@ -6613,7 +6637,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Metadata.ManagedReference.IInputParameters.html",
-          "hash": "korBQ8skBQRO5/ma+7gSuA=="
+          "hash": "5OdaD1ZY2qKSJzC57mTDuQ=="
         }
       },
       "is_incremental": false,
@@ -6625,7 +6649,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Metadata.ManagedReference.IProjectLoader.html",
-          "hash": "8pIUALIzRmP3J40Zh6DueA=="
+          "hash": "PgDjnD2utmjaUCXV1oexSg=="
         }
       },
       "is_incremental": false,
@@ -6637,7 +6661,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Metadata.ManagedReference.IResolverPipeline.html",
-          "hash": "LPrgreHn4QYBlmTS9b05HQ=="
+          "hash": "E6AXpBUO+CtOGGatl0cwSw=="
         }
       },
       "is_incremental": false,
@@ -6649,7 +6673,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Metadata.ManagedReference.IRoslynBuildController.html",
-          "hash": "LEZzjjHUoScu9xqg+BjhgQ=="
+          "hash": "rxZlCB45rsfgkLrZPltOrA=="
         }
       },
       "is_incremental": false,
@@ -6661,7 +6685,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Metadata.ManagedReference.ITripleSlashCommentParserContext.html",
-          "hash": "AyqPqIaivIQeuE8MC3vLaA=="
+          "hash": "8+sDR6PUJnk1DaYqlOtCKg=="
         }
       },
       "is_incremental": false,
@@ -6673,7 +6697,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Metadata.ManagedReference.IncrementalCheck.html",
-          "hash": "Wxdv00U9F/kXHWeAZ5imcA=="
+          "hash": "OQeRrWfFbXeixWCTIrN2eQ=="
         }
       },
       "is_incremental": false,
@@ -6685,7 +6709,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Metadata.ManagedReference.LayoutCheckAndCleanup.html",
-          "hash": "L5705hG5u8JmxxsAk2YU7g=="
+          "hash": "2hN069xVxiRN2WqqQOHVmQ=="
         }
       },
       "is_incremental": false,
@@ -6697,7 +6721,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Metadata.ManagedReference.LayoutItem.html",
-          "hash": "ky9MYZYPIeJRMzDturdxIA=="
+          "hash": "2NXAxzP1KQmpOG0Ddg6MEg=="
         }
       },
       "is_incremental": false,
@@ -6709,7 +6733,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Metadata.ManagedReference.LinkItem.html",
-          "hash": "iG4uWzlKMPkzRUehGO66qw=="
+          "hash": "SQmdfbBahTg8iRF1qnDWcA=="
         }
       },
       "is_incremental": false,
@@ -6721,7 +6745,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Metadata.ManagedReference.MSBuildEnvironmentScope.html",
-          "hash": "eZmpsB/XfNCh0zTOszGfrA=="
+          "hash": "4CsHyi6uExfqtHUX9P0bpA=="
         }
       },
       "is_incremental": false,
@@ -6733,7 +6757,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Metadata.ManagedReference.MergeCommentsHelper.html",
-          "hash": "yWxtkQnoOwdl0hHvnR3bMw=="
+          "hash": "lvyXkS+A86ZcD7FnAY2k4Q=="
         }
       },
       "is_incremental": false,
@@ -6745,7 +6769,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Metadata.ManagedReference.MetadataItem.html",
-          "hash": "mIbm05c/NGDKMF07lK8M+Q=="
+          "hash": "sCxdGSp4rqy67qb21ftqrA=="
         }
       },
       "is_incremental": false,
@@ -6757,7 +6781,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Metadata.ManagedReference.MetadataModel.html",
-          "hash": "LXSKyasG6cDxWwU31DtNzQ=="
+          "hash": "Vs/Dq84krPmstKU1mD1PWw=="
         }
       },
       "is_incremental": false,
@@ -6769,7 +6793,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Metadata.ManagedReference.NameOptions.html",
-          "hash": "MlIUqL/S1/u7ociyKsNHUg=="
+          "hash": "LweQdF+72gTZgol44/tIAw=="
         }
       },
       "is_incremental": false,
@@ -6781,7 +6805,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Metadata.ManagedReference.NameVisitor.html",
-          "hash": "sKt/OX25NhPlMvbaQjChyw=="
+          "hash": "qC6qupYBaUarpDHQ9/S/MA=="
         }
       },
       "is_incremental": false,
@@ -6793,7 +6817,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Metadata.ManagedReference.NameVisitorCreator.html",
-          "hash": "5Ho4zT4ZLuqeiMTWN+308A=="
+          "hash": "DjTvFrWAYhuUUbduG5fbvA=="
         }
       },
       "is_incremental": false,
@@ -6805,7 +6829,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Metadata.ManagedReference.NormalizeSyntax.html",
-          "hash": "KMvHnhpR8jUuAZprBI3EbQ=="
+          "hash": "iwpJQeJfBNaMZKN9NO6FAQ=="
         }
       },
       "is_incremental": false,
@@ -6817,7 +6841,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Metadata.ManagedReference.ProjectFileInputParameters.html",
-          "hash": "dFLhADrfLabl/p0UiyW4IQ=="
+          "hash": "GemUnoq4RuKdLeIEaG2b3w=="
         }
       },
       "is_incremental": false,
@@ -6829,7 +6853,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Metadata.ManagedReference.ProjectLevelCache.html",
-          "hash": "zq7LnVD96RU2ZgURNNC+AQ=="
+          "hash": "AZl+9FnAHJ3OVYs2av30ug=="
         }
       },
       "is_incremental": false,
@@ -6841,7 +6865,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Metadata.ManagedReference.ReferenceItem.html",
-          "hash": "ce+raZvRGSk9xdbI/FU3LA=="
+          "hash": "kR77Yw98tXPhkf235mqixA=="
         }
       },
       "is_incremental": false,
@@ -6853,7 +6877,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Metadata.ManagedReference.ReferenceItemVisitor.html",
-          "hash": "Zgts9jlyiWaEcOlS8mbbwQ=="
+          "hash": "lzJXHiCWsgDeIMVNhnIW9A=="
         }
       },
       "is_incremental": false,
@@ -6865,7 +6889,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Metadata.ManagedReference.ResolveReference.html",
-          "hash": "JJtjdgNHJGVOOlIp0P0eQA=="
+          "hash": "pHdDYXiMgESLu9FN4066zA=="
         }
       },
       "is_incremental": false,
@@ -6877,7 +6901,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Metadata.ManagedReference.ResolverContext.html",
-          "hash": "CrplP3Evt6/MzjQr5gWcsQ=="
+          "hash": "IfollSoSp4WRWvDpNBcqhA=="
         }
       },
       "is_incremental": false,
@@ -6889,7 +6913,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Metadata.ManagedReference.RoslynCompilation.html",
-          "hash": "MZCPpfjqRTONMtUgMXQj7A=="
+          "hash": "0syMYB+7DllnOw0b4a8KZA=="
         }
       },
       "is_incremental": false,
@@ -6901,7 +6925,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Metadata.ManagedReference.RoslynDocument.html",
-          "hash": "m90IZzJFvwsfKmtikWeyNQ=="
+          "hash": "wqIiOtVW/WIz5EFnhEgidA=="
         }
       },
       "is_incremental": false,
@@ -6913,7 +6937,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Metadata.ManagedReference.RoslynIntermediateMetadataExtractor.html",
-          "hash": "g/fPaB2b8Sj7RY/PsR2npg=="
+          "hash": "/osIUbg/qrJ1G4hKGocefg=="
         }
       },
       "is_incremental": false,
@@ -6925,7 +6949,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Metadata.ManagedReference.RoslynProject.html",
-          "hash": "oFtAq5+m1YClAeiiKEtNUQ=="
+          "hash": "CN0aN5uWRqY4O3iRkvfZlA=="
         }
       },
       "is_incremental": false,
@@ -6937,7 +6961,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Metadata.ManagedReference.RoslynProjectLoader.html",
-          "hash": "egjzEDxUt6fYQoOuCqk6Pg=="
+          "hash": "sYtbPmzexsjAh+pU0frkrA=="
         }
       },
       "is_incremental": false,
@@ -6949,7 +6973,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Metadata.ManagedReference.RoslynSourceFileBuildController.html",
-          "hash": "89hOmEaqtZVVyQjuJIHMPg=="
+          "hash": "UUI1Bl5vaavSJUKvTetrUQ=="
         }
       },
       "is_incremental": false,
@@ -6961,7 +6985,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Metadata.ManagedReference.SetDerivedClass.html",
-          "hash": "x49KOkL/CijNJfCm5NQBjg=="
+          "hash": "LBR7AFugXVaT+YaXGFw0iw=="
         }
       },
       "is_incremental": false,
@@ -6973,7 +6997,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Metadata.ManagedReference.SetParent.html",
-          "hash": "AtMdsGs3r8j5/cH/5D0tSg=="
+          "hash": "aNZKQgrccXRR+9vS0iE1iQ=="
         }
       },
       "is_incremental": false,
@@ -6985,7 +7009,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Metadata.ManagedReference.SimpleYamlModelGenerator.html",
-          "hash": "mMS0UlYuB3BXl2ErcT8g4Q=="
+          "hash": "WH6ndNWtTAtKEqbF6gVbQA=="
         }
       },
       "is_incremental": false,
@@ -6997,7 +7021,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Metadata.ManagedReference.SourceFileInputParameters.html",
-          "hash": "gPvi0OSiGlEle7uMmJMWaQ=="
+          "hash": "uqR05ojH28087l6dvDBvlQ=="
         }
       },
       "is_incremental": false,
@@ -7009,7 +7033,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Metadata.ManagedReference.SymbolFilterData.html",
-          "hash": "BhK37H2uKndsr9vN5b78Hw=="
+          "hash": "0EgRZPLBi87x9XM3zzq66g=="
         }
       },
       "is_incremental": false,
@@ -7021,7 +7045,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Metadata.ManagedReference.SymbolVisitorAdapter.html",
-          "hash": "08mt2iRF0lv0059xMKfRXA=="
+          "hash": "VXOWxDoFecYzdkszgYfjsA=="
         }
       },
       "is_incremental": false,
@@ -7033,7 +7057,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Metadata.ManagedReference.SyntaxDetail.html",
-          "hash": "YfXTdFsKvJwVE7tYjBks2g=="
+          "hash": "eQgyRC1DxMtxXHhPFZkvCg=="
         }
       },
       "is_incremental": false,
@@ -7045,7 +7069,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Metadata.ManagedReference.TripleSlashCommentModel.html",
-          "hash": "bMhNMkDXyx82WXm0W3XYKw=="
+          "hash": "Qe2ZnJRiPBNIvuhyApwOQg=="
         }
       },
       "is_incremental": false,
@@ -7057,7 +7081,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Metadata.ManagedReference.TripleSlashCommentParserContext.html",
-          "hash": "CcxEg4vPVVlBXlAdbnUpKg=="
+          "hash": "v1vote6KThwmWK1etLMMGw=="
         }
       },
       "is_incremental": false,
@@ -7069,7 +7093,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Metadata.ManagedReference.TripleSlashCommentTransformer.html",
-          "hash": "DM2znASCH9uIWEredWW36g=="
+          "hash": "+UU1nZf3658x0yvFEV8dGg=="
         }
       },
       "is_incremental": false,
@@ -7081,7 +7105,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Metadata.ManagedReference.VBNameVisitorCreator.html",
-          "hash": "ciB+cl8HWeBGrH7ZLv7Nag=="
+          "hash": "iCWIS0EYNy6kSnRbbMiGxg=="
         }
       },
       "is_incremental": false,
@@ -7093,7 +7117,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Metadata.ManagedReference.VBReferenceItemVisitor.html",
-          "hash": "osQsxjwL/t2CS84JsHBaQA=="
+          "hash": "U9gyWI0I4s2VRl9mE5B/XA=="
         }
       },
       "is_incremental": false,
@@ -7105,7 +7129,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Metadata.ManagedReference.VBYamlModelGenerator.html",
-          "hash": "j7mFc5YTQUYtW4mXIS3NNQ=="
+          "hash": "ggp/VC7y7HgGYEtaq2hClQ=="
         }
       },
       "is_incremental": false,
@@ -7117,7 +7141,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Metadata.ManagedReference.VisitorHelper.html",
-          "hash": "sD7zAMBWIEJORGS9VPpfaA=="
+          "hash": "oHgTs4PKzZ5+jrHsN2+p/A=="
         }
       },
       "is_incremental": false,
@@ -7129,7 +7153,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Metadata.ManagedReference.YamlMetadataResolver.html",
-          "hash": "XPUhXIciKNXg5ZKWJMCj5A=="
+          "hash": "RIJS7+ddnI3QDMOe7422KA=="
         }
       },
       "is_incremental": false,
@@ -7141,7 +7165,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Metadata.ManagedReference.YamlModelGenerator.html",
-          "hash": "Kygega7f/pxvolanff7GGg=="
+          "hash": "7Iq5UGZuOtIh/WGBulVvXQ=="
         }
       },
       "is_incremental": false,
@@ -7153,7 +7177,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Metadata.ManagedReference.YamlViewModelExtensions.html",
-          "hash": "DgzWBR56ySKcGTK4Q/BsiA=="
+          "hash": "07ieh0/5fXLqjZ+L2prPgA=="
         }
       },
       "is_incremental": false,
@@ -7165,7 +7189,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.Metadata.ManagedReference.html",
-          "hash": "fz4Xcwzu2gVkPKybP6JqOw=="
+          "hash": "/y+z3sVMYQJT0d7KyDnICQ=="
         }
       },
       "is_incremental": false,
@@ -7177,7 +7201,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.MetadataJsonConfig.html",
-          "hash": "fz1dI9Dk1pQqSrjp2Q5d9w=="
+          "hash": "AUIEO7LqfA8pMtI9FjWENg=="
         }
       },
       "is_incremental": false,
@@ -7189,7 +7213,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.MetadataJsonItemConfig.html",
-          "hash": "2ExLwkH4rN4TBX+elttvgQ=="
+          "hash": "KA79XqRQleeH0scrtyPrSg=="
         }
       },
       "is_incremental": false,
@@ -7201,7 +7225,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.OptionUsageAttribute.html",
-          "hash": "o6l2JgnXyM44sKm+/BrJVg=="
+          "hash": "nBMsiSLJ0HmfpGE2ElFyHA=="
         }
       },
       "is_incremental": false,
@@ -7213,7 +7237,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.PdfJsonConfig.html",
-          "hash": "/mf7v7uoyVig+M89CUxAHQ=="
+          "hash": "eO8AdMmKxLICu/923tOcKA=="
         }
       },
       "is_incremental": false,
@@ -7225,7 +7249,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.SubCommands.CommandOptionAttribute.html",
-          "hash": "Lkv518Zz2u7l5NM6HxjcZQ=="
+          "hash": "XeRldFz3oQRn2NTKC+Zwbg=="
         }
       },
       "is_incremental": false,
@@ -7237,7 +7261,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.SubCommands.MetadataMergeParameters.html",
-          "hash": "jy7QPrsYxhS2mi2QBE+92A=="
+          "hash": "ihhcWBlYKn4XcmmGgpHHlg=="
         }
       },
       "is_incremental": false,
@@ -7249,7 +7273,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.SubCommands.MetadataMerger.html",
-          "hash": "5f4Cmo4Af01ePajLNaKxOw=="
+          "hash": "V2JMqKTtvluZrkMRXudaCw=="
         }
       },
       "is_incremental": false,
@@ -7261,7 +7285,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.SubCommands.OptionParserException.html",
-          "hash": "OlWT6ejAmmDvfj21/F2axg=="
+          "hash": "q3eJBUpkyOfX4dC9ejMPWQ=="
         }
       },
       "is_incremental": false,
@@ -7273,7 +7297,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.SubCommands.html",
-          "hash": "3RrNpZ+u8Rl2NpHm+bbz+g=="
+          "hash": "xwdOQkKqoJGwfTFoF+Ui6A=="
         }
       },
       "is_incremental": false,
@@ -7285,7 +7309,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.WkhtmltopdfJsonConfig.html",
-          "hash": "nSFYOKRmA/v1MkCpXl0l1Q=="
+          "hash": "ba053wm/n3YNsIx+hjyPFA=="
         }
       },
       "is_incremental": false,
@@ -7297,7 +7321,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.DocAsCode.html",
-          "hash": "HKBBqbzLWpiHNq1VeHSx2Q=="
+          "hash": "ijEryexx6AImrw9SpFL6Tg=="
         }
       },
       "is_incremental": false,
@@ -7309,7 +7333,7 @@
       "output": {
         ".html": {
           "relative_path": "api/toc.html",
-          "hash": "3CRAO1W1XU/0HVmSWkkAPQ=="
+          "hash": "5z49DFKgVfpd9/uJmrZWxw=="
         }
       },
       "is_incremental": false,
@@ -7321,7 +7345,7 @@
       "output": {
         ".html": {
           "relative_path": "spec/docfx_build_manifest_file.html",
-          "hash": "dqZi3QL6Igv0FA3uqa/byQ=="
+          "hash": "Z6kVr6nlATgUb6m5Ug6Aag=="
         }
       },
       "is_incremental": false,
@@ -7333,7 +7357,7 @@
       "output": {
         ".html": {
           "relative_path": "spec/docfx_design_spec.html",
-          "hash": "yH5f9q47C5lyXESNdxLG7Q=="
+          "hash": "6PKxtzWVx0y+T1IgYdFWHw=="
         }
       },
       "is_incremental": false,
@@ -7345,7 +7369,7 @@
       "output": {
         ".html": {
           "relative_path": "spec/docfx_document_schema.html",
-          "hash": "fVaJvEvyEGWcjwLS2stiXw=="
+          "hash": "kc6+rob1sExw35KAVVOmiQ=="
         }
       },
       "is_incremental": false,
@@ -7357,7 +7381,7 @@
       "output": {
         ".html": {
           "relative_path": "spec/docfx_flavored_markdown.html",
-          "hash": "BrqQ9wLlsLUDr183Axm50g=="
+          "hash": "T5VQzpTAlkscuWrX8PkDnw=="
         }
       },
       "is_incremental": false,
@@ -7369,7 +7393,7 @@
       "output": {
         ".html": {
           "relative_path": "spec/docfx_incremental.html",
-          "hash": "oIINay6IuYDq1LUxEBITLA=="
+          "hash": "XZ76G0FzANaYJ9kPTy4JvA=="
         }
       },
       "is_incremental": false,
@@ -7425,7 +7449,7 @@
       "output": {
         ".html": {
           "relative_path": "spec/metadata_dotnet_spec.html",
-          "hash": "eDD9UdZ1xPzq05h9rqwvqQ=="
+          "hash": "IiwbvCeFhWoh+Bg+z9vMYA=="
         }
       },
       "is_incremental": false,
@@ -7437,7 +7461,7 @@
       "output": {
         ".html": {
           "relative_path": "spec/metadata_format_spec.html",
-          "hash": "Tq1dOyFjJaQFokDRecc/jQ=="
+          "hash": "1p9Ia4de0Z64OLUW8B2rXA=="
         }
       },
       "is_incremental": false,
@@ -7449,7 +7473,7 @@
       "output": {
         ".html": {
           "relative_path": "spec/sdp_design_spec.html",
-          "hash": "Jl7yL8geFhf5c2i9pqXr8w=="
+          "hash": "T4r1AjUIY74fYkXQfJIx0g=="
         }
       },
       "is_incremental": false,
@@ -7473,7 +7497,7 @@
       "output": {
         ".html": {
           "relative_path": "spec/triple_slash_comments_spec.html",
-          "hash": "jjSdOdHCmgb54JJQZjqQCQ=="
+          "hash": "s3uM2fxzwptHIh0u9bcJKQ=="
         }
       },
       "is_incremental": false,
@@ -7485,7 +7509,7 @@
       "output": {
         ".html": {
           "relative_path": "templates-and-plugins/contribute-your-template.html",
-          "hash": "HsaRzOiyfxW2li7QztC+NQ=="
+          "hash": "eQnQSOgB2sp0PF0p/3kgNg=="
         }
       },
       "is_incremental": false,
@@ -7596,7 +7620,7 @@
       "output": {
         ".html": {
           "relative_path": "templates-and-plugins/plugins-dashboard.html",
-          "hash": "3Ki5Lc43RjIEz0Azi8m2Eg=="
+          "hash": "+IozTZqJ+oewl2sehLtLZA=="
         }
       },
       "is_incremental": false,
@@ -7608,7 +7632,7 @@
       "output": {
         ".html": {
           "relative_path": "templates-and-plugins/templates-dashboard.html",
-          "hash": "ujYeyuUC8+Mph3OgRI1uDw=="
+          "hash": "yPOHJqihRMfWtb2HTDpEeA=="
         }
       },
       "is_incremental": false,
@@ -7644,7 +7668,7 @@
       "output": {
         ".html": {
           "relative_path": "tutorial/advanced_support_hyperlink.html",
-          "hash": "RycViEYLmjOYKxuKtfvUAw=="
+          "hash": "z/wQeCG72mn+oPba+a34AA=="
         }
       },
       "is_incremental": false,
@@ -7667,7 +7691,7 @@
       "output": {
         ".html": {
           "relative_path": "tutorial/docfx.exe_user_manual.html",
-          "hash": "4xkwJIgKCiHEVpmt1z/jEg=="
+          "hash": "0BI8ChaaMF0TeRD96Nsd4g=="
         }
       },
       "is_incremental": false,
@@ -7679,7 +7703,7 @@
       "output": {
         ".html": {
           "relative_path": "tutorial/docfx_getting_started.html",
-          "hash": "dkdxSUVk7HCLwJEM14OS4w=="
+          "hash": "hzxDg2HXrCtV5lJ/vd7BvQ=="
         }
       },
       "is_incremental": false,
@@ -7691,7 +7715,7 @@
       "output": {
         ".html": {
           "relative_path": "tutorial/howto_add_a_customized_post_processor.html",
-          "hash": "WZ8ivTlSYB2CYaHRRkcc/Q=="
+          "hash": "QxAaXuqud3l1OxRkFH9PCg=="
         }
       },
       "is_incremental": false,
@@ -7703,7 +7727,7 @@
       "output": {
         ".html": {
           "relative_path": "tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.html",
-          "hash": "u0I4qR9r8m7klbLclP3X6Q=="
+          "hash": "/gR11OLOIy0MI1n/U+v32g=="
         }
       },
       "is_incremental": false,
@@ -7715,7 +7739,7 @@
       "output": {
         ".html": {
           "relative_path": "tutorial/howto_create_custom_template.html",
-          "hash": "9KCBRLWpIBgxLp3qYPFzLw=="
+          "hash": "qRAKCGp0c9VvLdwg7KkTYg=="
         }
       },
       "is_incremental": false,
@@ -7730,7 +7754,7 @@
       "output": {
         ".html": {
           "relative_path": "tutorial/howto_customize_docfx_flavored_markdown.html",
-          "hash": "xqh/xGVHr2U/2EqRLPOoJQ=="
+          "hash": "8Mz7g4cFfdB94xOQDUttSA=="
         }
       },
       "is_incremental": false,
@@ -7742,7 +7766,7 @@
       "output": {
         ".html": {
           "relative_path": "tutorial/howto_filter_out_unwanted_apis_attributes.html",
-          "hash": "D6XT8iIJSJpA0wqElgGW1Q=="
+          "hash": "2J7hHgfUjh3I312fYSVSQg=="
         }
       },
       "is_incremental": false,
@@ -7787,7 +7811,7 @@
       "output": {
         ".html": {
           "relative_path": "tutorial/incrementalbuild/advanced_cache_file_structure.html",
-          "hash": "sXQLeLIDi2czn9xcHP/hkA=="
+          "hash": "zWQAFynORMAp7APjHbfA5A=="
         }
       },
       "is_incremental": false,
@@ -7799,7 +7823,7 @@
       "output": {
         ".html": {
           "relative_path": "tutorial/incrementalbuild/advanced_report_dependency.html",
-          "hash": "gifnRCxarujVCtV/kPr/0w=="
+          "hash": "wskGWW//VQmMCPsBnHbvrA=="
         }
       },
       "is_incremental": false,
@@ -7811,7 +7835,7 @@
       "output": {
         ".html": {
           "relative_path": "tutorial/incrementalbuild/customize_a_post_processor_to_be_incremental.html",
-          "hash": "BpK7AKCVYKuOyf5Yc6Cd5g=="
+          "hash": "UlYSMWivM7TptWkUEBRwxQ=="
         }
       },
       "is_incremental": false,
@@ -7823,7 +7847,7 @@
       "output": {
         ".html": {
           "relative_path": "tutorial/incrementalbuild/customize_a_processor_to_support_incremental.html",
-          "hash": "ztrTA6jLuycUFiWPSn7sgQ=="
+          "hash": "lTJw2e0iiy6g+yZ0HrZW0Q=="
         }
       },
       "is_incremental": false,
@@ -7857,7 +7881,7 @@
       "output": {
         ".html": {
           "relative_path": "tutorial/incrementalbuild/intro_incremental_build.html",
-          "hash": "L3pZ+ISJnnGEQGprAv1D7w=="
+          "hash": "rinqX+G2vkFLwTfHdKS18w=="
         }
       },
       "is_incremental": false,
@@ -7869,7 +7893,7 @@
       "output": {
         ".html": {
           "relative_path": "tutorial/incrementalbuild/intro_incremental_post_processing.html",
-          "hash": "sg5LmgsY8zf5EWxwKr5iQg=="
+          "hash": "vS2UN+lzCmvQbjQWI8+EsQ=="
         }
       },
       "is_incremental": false,
@@ -7881,7 +7905,7 @@
       "output": {
         ".html": {
           "relative_path": "tutorial/intro_default_template.html",
-          "hash": "x5RwpFv10kCWwYvHyPQKPg=="
+          "hash": "AKtJIVUEISbdax9qwz8Jfg=="
         }
       },
       "is_incremental": false,
@@ -7896,7 +7920,7 @@
       "output": {
         ".html": {
           "relative_path": "tutorial/intro_markdown_lite.html",
-          "hash": "BQcSU9eOJ/o2vwXyqO2V7A=="
+          "hash": "c5SDeYsW1Adp9o5ZhOqZ8Q=="
         }
       },
       "is_incremental": false,
@@ -7908,7 +7932,7 @@
       "output": {
         ".html": {
           "relative_path": "tutorial/intro_overwrite_files.html",
-          "hash": "wkWz5FWiz1odsB59yu2IDg=="
+          "hash": "o+YEUqjZkGKO8W6ecF0GIg=="
         }
       },
       "is_incremental": false,
@@ -7920,7 +7944,7 @@
       "output": {
         ".html": {
           "relative_path": "tutorial/intro_rest_api_documentation.html",
-          "hash": "Hpjjot+dE0wytlYpe+6YMw=="
+          "hash": "qZA+2RspPN5ceSyVq8ERgA=="
         }
       },
       "is_incremental": false,
@@ -7932,7 +7956,7 @@
       "output": {
         ".html": {
           "relative_path": "tutorial/intro_template.html",
-          "hash": "kZjKhG2ujLo7dp7Zc52YwQ=="
+          "hash": "RMEQDym6fBaBq7cToy8hcw=="
         }
       },
       "is_incremental": false,
@@ -7944,7 +7968,7 @@
       "output": {
         ".html": {
           "relative_path": "tutorial/intro_toc.html",
-          "hash": "J4D/eGYQO/3Y3MqZg2NBaQ=="
+          "hash": "wrXEoYqr83XMrWjvjwI3/A=="
         }
       },
       "is_incremental": false,
@@ -7956,7 +7980,7 @@
       "output": {
         ".html": {
           "relative_path": "tutorial/links_and_cross_references.html",
-          "hash": "HiWSi9f0u4PIOemltyZAiA=="
+          "hash": "Yh2H31bkPsUUHAfxD4TLPQ=="
         }
       },
       "is_incremental": false,
@@ -7980,7 +8004,7 @@
       "output": {
         ".html": {
           "relative_path": "tutorial/universalreference/gen_doc_for_js.html",
-          "hash": "XJ2CIXI16fVfLXkGLB1FsA=="
+          "hash": "trpdrX9jkdGOuQUaOMi+ww=="
         }
       },
       "is_incremental": false,
@@ -7992,7 +8016,7 @@
       "output": {
         ".html": {
           "relative_path": "tutorial/universalreference/gen_doc_for_ts.html",
-          "hash": "L/8Cm2CfEBlhE391LMIzJA=="
+          "hash": "xgBr17XUym+352p+ZEHyIA=="
         }
       },
       "is_incremental": false,
@@ -8004,7 +8028,7 @@
       "output": {
         ".html": {
           "relative_path": "tutorial/universalreference/intro_multiple_langs_support.html",
-          "hash": "lxi0ho7xrgXQAQAwJUid3A=="
+          "hash": "R1nZna8hP0FPafPS7tGYWA=="
         }
       },
       "is_incremental": false,
@@ -8019,7 +8043,7 @@
       "output": {
         ".html": {
           "relative_path": "tutorial/validate_your_markdown_files.html",
-          "hash": "no+IAWKYBv7gLPRM6NTKZQ=="
+          "hash": "WcvJ9Jqeeqv9SUBswzbPUw=="
         }
       },
       "is_incremental": false,
@@ -8031,7 +8055,7 @@
       "output": {
         ".html": {
           "relative_path": "tutorial/walkthrough/advanced_walkthrough.html",
-          "hash": "dDquhdi+7pQJKDJHQ3ykbQ=="
+          "hash": "4D+cVG0UBuj1RgPUkY+UQw=="
         }
       },
       "is_incremental": false,
@@ -8175,7 +8199,7 @@
       "output": {
         ".html": {
           "relative_path": "tutorial/walkthrough/walkthrough_create_a_docfx_project.html",
-          "hash": "R4Em93Z2GwT1OC9eeJ1yug=="
+          "hash": "PNKIIJhE4zt//cclpL/LhQ=="
         }
       },
       "is_incremental": false,
@@ -8187,7 +8211,7 @@
       "output": {
         ".html": {
           "relative_path": "tutorial/walkthrough/walkthrough_create_a_docfx_project_2.html",
-          "hash": "s/dO04FPPKiDqJ5WcZC8qA=="
+          "hash": "IK4lPCLV0TdCPG2e3GNEcw=="
         }
       },
       "is_incremental": false,
@@ -8199,7 +8223,7 @@
       "output": {
         ".html": {
           "relative_path": "tutorial/walkthrough/walkthrough_generate_pdf.html",
-          "hash": "iM/H/SG31SPS1jJ6HOp+iA=="
+          "hash": "C/XfzgNvGGT58UyqKFvZGA=="
         }
       },
       "is_incremental": false,
@@ -8211,7 +8235,7 @@
       "output": {
         ".html": {
           "relative_path": "tutorial/walkthrough/walkthrough_overview.html",
-          "hash": "utibsuK4qs3rHswhFq0voQ=="
+          "hash": "BIv03xeDEm7avYCIXpylNQ=="
         }
       },
       "is_incremental": false,
@@ -8223,30 +8247,42 @@
       "status": {
         "can_incremental": false,
         "details": "Cannot build incrementally because last build info is missing.",
-        "incrementalPhase": "build"
+        "incrementalPhase": "build",
+        "total_file_count": 0,
+        "skipped_file_count": 0
       },
       "processors": {
-        "ConceptualDocumentProcessor": {
-          "can_incremental": false,
-          "incrementalPhase": "build"
-        },
-        "ManagedReferenceDocumentProcessor": {
-          "can_incremental": false,
-          "incrementalPhase": "build"
-        },
         "TocDocumentProcessor": {
           "can_incremental": false,
           "details": "Processor TocDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
-          "incrementalPhase": "build"
+          "incrementalPhase": "build",
+          "total_file_count": 0,
+          "skipped_file_count": 0
+        },
+        "ManagedReferenceDocumentProcessor": {
+          "can_incremental": false,
+          "incrementalPhase": "build",
+          "total_file_count": 600,
+          "skipped_file_count": 0
         },
         "ResourceDocumentProcessor": {
           "can_incremental": false,
           "details": "Processor ResourceDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
-          "incrementalPhase": "build"
+          "incrementalPhase": "build",
+          "total_file_count": 0,
+          "skipped_file_count": 0
         },
         "Dashboard": {
           "can_incremental": false,
-          "incrementalPhase": "build"
+          "incrementalPhase": "build",
+          "total_file_count": 4,
+          "skipped_file_count": 0
+        },
+        "ConceptualDocumentProcessor": {
+          "can_incremental": false,
+          "incrementalPhase": "build",
+          "total_file_count": 46,
+          "skipped_file_count": 0
         }
       }
     },
@@ -8254,7 +8290,9 @@
       "status": {
         "can_incremental": false,
         "details": "Cannot support incremental post processing, the reason is: should not trace intermediate info.",
-        "incrementalPhase": "postProcessing"
+        "incrementalPhase": "postProcessing",
+        "total_file_count": 0,
+        "skipped_file_count": 0
       },
       "processors": {}
     }

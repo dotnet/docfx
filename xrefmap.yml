@@ -5963,6 +5963,38 @@ references:
   isSpec: "True"
   fullName: Microsoft.DocAsCode.Build.Engine.FileMetadata.BaseDir
   nameWithType: FileMetadata.BaseDir
+- uid: Microsoft.DocAsCode.Build.Engine.FileMetadata.GetAllGlobs
+  name: GetAllGlobs()
+  href: api/Microsoft.DocAsCode.Build.Engine.FileMetadata.html#Microsoft_DocAsCode_Build_Engine_FileMetadata_GetAllGlobs
+  commentId: M:Microsoft.DocAsCode.Build.Engine.FileMetadata.GetAllGlobs
+  fullName: Microsoft.DocAsCode.Build.Engine.FileMetadata.GetAllGlobs()
+  nameWithType: FileMetadata.GetAllGlobs()
+- uid: Microsoft.DocAsCode.Build.Engine.FileMetadata.GetAllGlobs*
+  name: GetAllGlobs
+  href: api/Microsoft.DocAsCode.Build.Engine.FileMetadata.html#Microsoft_DocAsCode_Build_Engine_FileMetadata_GetAllGlobs_
+  commentId: Overload:Microsoft.DocAsCode.Build.Engine.FileMetadata.GetAllGlobs
+  isSpec: "True"
+  fullName: Microsoft.DocAsCode.Build.Engine.FileMetadata.GetAllGlobs
+  nameWithType: FileMetadata.GetAllGlobs
+- uid: Microsoft.DocAsCode.Build.Engine.FileMetadataHelper
+  name: FileMetadataHelper
+  href: api/Microsoft.DocAsCode.Build.Engine.FileMetadataHelper.html
+  commentId: T:Microsoft.DocAsCode.Build.Engine.FileMetadataHelper
+  fullName: Microsoft.DocAsCode.Build.Engine.FileMetadataHelper
+  nameWithType: FileMetadataHelper
+- uid: Microsoft.DocAsCode.Build.Engine.FileMetadataHelper.GetChangedGlobs(Microsoft.DocAsCode.Build.Engine.FileMetadata,Microsoft.DocAsCode.Build.Engine.FileMetadata)
+  name: GetChangedGlobs(FileMetadata, FileMetadata)
+  href: api/Microsoft.DocAsCode.Build.Engine.FileMetadataHelper.html#Microsoft_DocAsCode_Build_Engine_FileMetadataHelper_GetChangedGlobs_Microsoft_DocAsCode_Build_Engine_FileMetadata_Microsoft_DocAsCode_Build_Engine_FileMetadata_
+  commentId: M:Microsoft.DocAsCode.Build.Engine.FileMetadataHelper.GetChangedGlobs(Microsoft.DocAsCode.Build.Engine.FileMetadata,Microsoft.DocAsCode.Build.Engine.FileMetadata)
+  fullName: Microsoft.DocAsCode.Build.Engine.FileMetadataHelper.GetChangedGlobs(Microsoft.DocAsCode.Build.Engine.FileMetadata, Microsoft.DocAsCode.Build.Engine.FileMetadata)
+  nameWithType: FileMetadataHelper.GetChangedGlobs(FileMetadata, FileMetadata)
+- uid: Microsoft.DocAsCode.Build.Engine.FileMetadataHelper.GetChangedGlobs*
+  name: GetChangedGlobs
+  href: api/Microsoft.DocAsCode.Build.Engine.FileMetadataHelper.html#Microsoft_DocAsCode_Build_Engine_FileMetadataHelper_GetChangedGlobs_
+  commentId: Overload:Microsoft.DocAsCode.Build.Engine.FileMetadataHelper.GetChangedGlobs
+  isSpec: "True"
+  fullName: Microsoft.DocAsCode.Build.Engine.FileMetadataHelper.GetChangedGlobs
+  nameWithType: FileMetadataHelper.GetChangedGlobs
 - uid: Microsoft.DocAsCode.Build.Engine.FileMetadataItem
   name: FileMetadataItem
   href: api/Microsoft.DocAsCode.Build.Engine.FileMetadataItem.html
@@ -5982,6 +6014,38 @@ references:
   isSpec: "True"
   fullName: Microsoft.DocAsCode.Build.Engine.FileMetadataItem.FileMetadataItem
   nameWithType: FileMetadataItem.FileMetadataItem
+- uid: Microsoft.DocAsCode.Build.Engine.FileMetadataItem.Equals(Microsoft.DocAsCode.Build.Engine.FileMetadataItem)
+  name: Equals(FileMetadataItem)
+  href: api/Microsoft.DocAsCode.Build.Engine.FileMetadataItem.html#Microsoft_DocAsCode_Build_Engine_FileMetadataItem_Equals_Microsoft_DocAsCode_Build_Engine_FileMetadataItem_
+  commentId: M:Microsoft.DocAsCode.Build.Engine.FileMetadataItem.Equals(Microsoft.DocAsCode.Build.Engine.FileMetadataItem)
+  fullName: Microsoft.DocAsCode.Build.Engine.FileMetadataItem.Equals(Microsoft.DocAsCode.Build.Engine.FileMetadataItem)
+  nameWithType: FileMetadataItem.Equals(FileMetadataItem)
+- uid: Microsoft.DocAsCode.Build.Engine.FileMetadataItem.Equals(System.Object)
+  name: Equals(Object)
+  href: api/Microsoft.DocAsCode.Build.Engine.FileMetadataItem.html#Microsoft_DocAsCode_Build_Engine_FileMetadataItem_Equals_System_Object_
+  commentId: M:Microsoft.DocAsCode.Build.Engine.FileMetadataItem.Equals(System.Object)
+  fullName: Microsoft.DocAsCode.Build.Engine.FileMetadataItem.Equals(System.Object)
+  nameWithType: FileMetadataItem.Equals(Object)
+- uid: Microsoft.DocAsCode.Build.Engine.FileMetadataItem.Equals*
+  name: Equals
+  href: api/Microsoft.DocAsCode.Build.Engine.FileMetadataItem.html#Microsoft_DocAsCode_Build_Engine_FileMetadataItem_Equals_
+  commentId: Overload:Microsoft.DocAsCode.Build.Engine.FileMetadataItem.Equals
+  isSpec: "True"
+  fullName: Microsoft.DocAsCode.Build.Engine.FileMetadataItem.Equals
+  nameWithType: FileMetadataItem.Equals
+- uid: Microsoft.DocAsCode.Build.Engine.FileMetadataItem.GetHashCode
+  name: GetHashCode()
+  href: api/Microsoft.DocAsCode.Build.Engine.FileMetadataItem.html#Microsoft_DocAsCode_Build_Engine_FileMetadataItem_GetHashCode
+  commentId: M:Microsoft.DocAsCode.Build.Engine.FileMetadataItem.GetHashCode
+  fullName: Microsoft.DocAsCode.Build.Engine.FileMetadataItem.GetHashCode()
+  nameWithType: FileMetadataItem.GetHashCode()
+- uid: Microsoft.DocAsCode.Build.Engine.FileMetadataItem.GetHashCode*
+  name: GetHashCode
+  href: api/Microsoft.DocAsCode.Build.Engine.FileMetadataItem.html#Microsoft_DocAsCode_Build_Engine_FileMetadataItem_GetHashCode_
+  commentId: Overload:Microsoft.DocAsCode.Build.Engine.FileMetadataItem.GetHashCode
+  isSpec: "True"
+  fullName: Microsoft.DocAsCode.Build.Engine.FileMetadataItem.GetHashCode
+  nameWithType: FileMetadataItem.GetHashCode
 - uid: Microsoft.DocAsCode.Build.Engine.FileMetadataItem.Glob
   name: Glob
   href: api/Microsoft.DocAsCode.Build.Engine.FileMetadataItem.html#Microsoft_DocAsCode_Build_Engine_FileMetadataItem_Glob
@@ -6889,6 +6953,45 @@ references:
   isSpec: "True"
   fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.FileMapFile
   nameWithType: BuildVersionInfo.FileMapFile
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.FileMetadata
+  name: FileMetadata
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.html#Microsoft_DocAsCode_Build_Engine_Incrementals_BuildVersionInfo_FileMetadata
+  commentId: P:Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.FileMetadata
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.FileMetadata
+  nameWithType: BuildVersionInfo.FileMetadata
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.FileMetadata*
+  name: FileMetadata
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.html#Microsoft_DocAsCode_Build_Engine_Incrementals_BuildVersionInfo_FileMetadata_
+  commentId: Overload:Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.FileMetadata
+  isSpec: "True"
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.FileMetadata
+  nameWithType: BuildVersionInfo.FileMetadata
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.FileMetadataFile
+  name: FileMetadataFile
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.html#Microsoft_DocAsCode_Build_Engine_Incrementals_BuildVersionInfo_FileMetadataFile
+  commentId: P:Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.FileMetadataFile
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.FileMetadataFile
+  nameWithType: BuildVersionInfo.FileMetadataFile
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.FileMetadataFile*
+  name: FileMetadataFile
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.html#Microsoft_DocAsCode_Build_Engine_Incrementals_BuildVersionInfo_FileMetadataFile_
+  commentId: Overload:Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.FileMetadataFile
+  isSpec: "True"
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.FileMetadataFile
+  nameWithType: BuildVersionInfo.FileMetadataFile
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.FileMetadataHash
+  name: FileMetadataHash
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.html#Microsoft_DocAsCode_Build_Engine_Incrementals_BuildVersionInfo_FileMetadataHash
+  commentId: P:Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.FileMetadataHash
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.FileMetadataHash
+  nameWithType: BuildVersionInfo.FileMetadataHash
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.FileMetadataHash*
+  name: FileMetadataHash
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.html#Microsoft_DocAsCode_Build_Engine_Incrementals_BuildVersionInfo_FileMetadataHash_
+  commentId: Overload:Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.FileMetadataHash
+  isSpec: "True"
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.FileMetadataHash
+  nameWithType: BuildVersionInfo.FileMetadataHash
 - uid: Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.Manifest
   name: Manifest
   href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.html#Microsoft_DocAsCode_Build_Engine_Incrementals_BuildVersionInfo_Manifest
@@ -8006,6 +8109,12 @@ references:
   isSpec: "True"
   fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.IncrementalUtility.CreateRandomFileStream
   nameWithType: IncrementalUtility.CreateRandomFileStream
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.IncrementalUtility.FileMetadataJsonSerializationSettings
+  name: FileMetadataJsonSerializationSettings
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.IncrementalUtility.html#Microsoft_DocAsCode_Build_Engine_Incrementals_IncrementalUtility_FileMetadataJsonSerializationSettings
+  commentId: F:Microsoft.DocAsCode.Build.Engine.Incrementals.IncrementalUtility.FileMetadataJsonSerializationSettings
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.IncrementalUtility.FileMetadataJsonSerializationSettings
+  nameWithType: IncrementalUtility.FileMetadataJsonSerializationSettings
 - uid: Microsoft.DocAsCode.Build.Engine.Incrementals.IncrementalUtility.GetDependencyKey(FileAndType)
   name: GetDependencyKey(FileAndType)
   href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.IncrementalUtility.html#Microsoft_DocAsCode_Build_Engine_Incrementals_IncrementalUtility_GetDependencyKey_FileAndType_
@@ -8074,6 +8183,15 @@ references:
   fullName.vb: Microsoft.DocAsCode.Build.Engine.Incrementals.IncrementalUtility.LoadIntermediateFile(Of T)(System.String)
   nameWithType: IncrementalUtility.LoadIntermediateFile<T>(String)
   nameWithType.vb: IncrementalUtility.LoadIntermediateFile(Of T)(String)
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.IncrementalUtility.LoadIntermediateFile``1(System.String,Newtonsoft.Json.JsonSerializerSettings)
+  name: LoadIntermediateFile<T>(String, JsonSerializerSettings)
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.IncrementalUtility.html#Microsoft_DocAsCode_Build_Engine_Incrementals_IncrementalUtility_LoadIntermediateFile__1_System_String_Newtonsoft_Json_JsonSerializerSettings_
+  commentId: M:Microsoft.DocAsCode.Build.Engine.Incrementals.IncrementalUtility.LoadIntermediateFile``1(System.String,Newtonsoft.Json.JsonSerializerSettings)
+  name.vb: LoadIntermediateFile(Of T)(String, JsonSerializerSettings)
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.IncrementalUtility.LoadIntermediateFile<T>(System.String, Newtonsoft.Json.JsonSerializerSettings)
+  fullName.vb: Microsoft.DocAsCode.Build.Engine.Incrementals.IncrementalUtility.LoadIntermediateFile(Of T)(System.String, Newtonsoft.Json.JsonSerializerSettings)
+  nameWithType: IncrementalUtility.LoadIntermediateFile<T>(String, JsonSerializerSettings)
+  nameWithType.vb: IncrementalUtility.LoadIntermediateFile(Of T)(String, JsonSerializerSettings)
 - uid: Microsoft.DocAsCode.Build.Engine.Incrementals.IncrementalUtility.RetryIO(System.Action)
   name: RetryIO(Action)
   href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.IncrementalUtility.html#Microsoft_DocAsCode_Build_Engine_Incrementals_IncrementalUtility_RetryIO_System_Action_
@@ -8138,6 +8256,15 @@ references:
   fullName.vb: Microsoft.DocAsCode.Build.Engine.Incrementals.IncrementalUtility.SaveIntermediateFile(Of T)(System.String, T)
   nameWithType: IncrementalUtility.SaveIntermediateFile<T>(String, T)
   nameWithType.vb: IncrementalUtility.SaveIntermediateFile(Of T)(String, T)
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.IncrementalUtility.SaveIntermediateFile``1(System.String,``0,Newtonsoft.Json.JsonSerializerSettings)
+  name: SaveIntermediateFile<T>(String, T, JsonSerializerSettings)
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.IncrementalUtility.html#Microsoft_DocAsCode_Build_Engine_Incrementals_IncrementalUtility_SaveIntermediateFile__1_System_String___0_Newtonsoft_Json_JsonSerializerSettings_
+  commentId: M:Microsoft.DocAsCode.Build.Engine.Incrementals.IncrementalUtility.SaveIntermediateFile``1(System.String,``0,Newtonsoft.Json.JsonSerializerSettings)
+  name.vb: SaveIntermediateFile(Of T)(String, T, JsonSerializerSettings)
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.IncrementalUtility.SaveIntermediateFile<T>(System.String, T, Newtonsoft.Json.JsonSerializerSettings)
+  fullName.vb: Microsoft.DocAsCode.Build.Engine.Incrementals.IncrementalUtility.SaveIntermediateFile(Of T)(System.String, T, Newtonsoft.Json.JsonSerializerSettings)
+  nameWithType: IncrementalUtility.SaveIntermediateFile<T>(String, T, JsonSerializerSettings)
+  nameWithType.vb: IncrementalUtility.SaveIntermediateFile(Of T)(String, T, JsonSerializerSettings)
 - uid: Microsoft.DocAsCode.Build.Engine.Incrementals.ModelManifest
   name: ModelManifest
   href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.ModelManifest.html
@@ -32163,6 +32290,70 @@ references:
   isSpec: "True"
   fullName: Microsoft.DocAsCode.FileMappingItem.VersionName
   nameWithType: FileMappingItem.VersionName
+- uid: Microsoft.DocAsCode.FileMetadataConverter
+  name: FileMetadataConverter
+  href: api/Microsoft.DocAsCode.FileMetadataConverter.html
+  commentId: T:Microsoft.DocAsCode.FileMetadataConverter
+  fullName: Microsoft.DocAsCode.FileMetadataConverter
+  nameWithType: FileMetadataConverter
+- uid: Microsoft.DocAsCode.FileMetadataConverter.#ctor
+  name: FileMetadataConverter()
+  href: api/Microsoft.DocAsCode.FileMetadataConverter.html#Microsoft_DocAsCode_FileMetadataConverter__ctor
+  commentId: M:Microsoft.DocAsCode.FileMetadataConverter.#ctor
+  fullName: Microsoft.DocAsCode.FileMetadataConverter.FileMetadataConverter()
+  nameWithType: FileMetadataConverter.FileMetadataConverter()
+- uid: Microsoft.DocAsCode.FileMetadataConverter.#ctor(System.Boolean)
+  name: FileMetadataConverter(Boolean)
+  href: api/Microsoft.DocAsCode.FileMetadataConverter.html#Microsoft_DocAsCode_FileMetadataConverter__ctor_System_Boolean_
+  commentId: M:Microsoft.DocAsCode.FileMetadataConverter.#ctor(System.Boolean)
+  fullName: Microsoft.DocAsCode.FileMetadataConverter.FileMetadataConverter(System.Boolean)
+  nameWithType: FileMetadataConverter.FileMetadataConverter(Boolean)
+- uid: Microsoft.DocAsCode.FileMetadataConverter.#ctor*
+  name: FileMetadataConverter
+  href: api/Microsoft.DocAsCode.FileMetadataConverter.html#Microsoft_DocAsCode_FileMetadataConverter__ctor_
+  commentId: Overload:Microsoft.DocAsCode.FileMetadataConverter.#ctor
+  isSpec: "True"
+  fullName: Microsoft.DocAsCode.FileMetadataConverter.FileMetadataConverter
+  nameWithType: FileMetadataConverter.FileMetadataConverter
+- uid: Microsoft.DocAsCode.FileMetadataConverter.CanConvert(System.Type)
+  name: CanConvert(Type)
+  href: api/Microsoft.DocAsCode.FileMetadataConverter.html#Microsoft_DocAsCode_FileMetadataConverter_CanConvert_System_Type_
+  commentId: M:Microsoft.DocAsCode.FileMetadataConverter.CanConvert(System.Type)
+  fullName: Microsoft.DocAsCode.FileMetadataConverter.CanConvert(System.Type)
+  nameWithType: FileMetadataConverter.CanConvert(Type)
+- uid: Microsoft.DocAsCode.FileMetadataConverter.CanConvert*
+  name: CanConvert
+  href: api/Microsoft.DocAsCode.FileMetadataConverter.html#Microsoft_DocAsCode_FileMetadataConverter_CanConvert_
+  commentId: Overload:Microsoft.DocAsCode.FileMetadataConverter.CanConvert
+  isSpec: "True"
+  fullName: Microsoft.DocAsCode.FileMetadataConverter.CanConvert
+  nameWithType: FileMetadataConverter.CanConvert
+- uid: Microsoft.DocAsCode.FileMetadataConverter.ReadJson(Newtonsoft.Json.JsonReader,System.Type,System.Object,Newtonsoft.Json.JsonSerializer)
+  name: ReadJson(JsonReader, Type, Object, JsonSerializer)
+  href: api/Microsoft.DocAsCode.FileMetadataConverter.html#Microsoft_DocAsCode_FileMetadataConverter_ReadJson_Newtonsoft_Json_JsonReader_System_Type_System_Object_Newtonsoft_Json_JsonSerializer_
+  commentId: M:Microsoft.DocAsCode.FileMetadataConverter.ReadJson(Newtonsoft.Json.JsonReader,System.Type,System.Object,Newtonsoft.Json.JsonSerializer)
+  fullName: Microsoft.DocAsCode.FileMetadataConverter.ReadJson(Newtonsoft.Json.JsonReader, System.Type, System.Object, Newtonsoft.Json.JsonSerializer)
+  nameWithType: FileMetadataConverter.ReadJson(JsonReader, Type, Object, JsonSerializer)
+- uid: Microsoft.DocAsCode.FileMetadataConverter.ReadJson*
+  name: ReadJson
+  href: api/Microsoft.DocAsCode.FileMetadataConverter.html#Microsoft_DocAsCode_FileMetadataConverter_ReadJson_
+  commentId: Overload:Microsoft.DocAsCode.FileMetadataConverter.ReadJson
+  isSpec: "True"
+  fullName: Microsoft.DocAsCode.FileMetadataConverter.ReadJson
+  nameWithType: FileMetadataConverter.ReadJson
+- uid: Microsoft.DocAsCode.FileMetadataConverter.WriteJson(Newtonsoft.Json.JsonWriter,System.Object,Newtonsoft.Json.JsonSerializer)
+  name: WriteJson(JsonWriter, Object, JsonSerializer)
+  href: api/Microsoft.DocAsCode.FileMetadataConverter.html#Microsoft_DocAsCode_FileMetadataConverter_WriteJson_Newtonsoft_Json_JsonWriter_System_Object_Newtonsoft_Json_JsonSerializer_
+  commentId: M:Microsoft.DocAsCode.FileMetadataConverter.WriteJson(Newtonsoft.Json.JsonWriter,System.Object,Newtonsoft.Json.JsonSerializer)
+  fullName: Microsoft.DocAsCode.FileMetadataConverter.WriteJson(Newtonsoft.Json.JsonWriter, System.Object, Newtonsoft.Json.JsonSerializer)
+  nameWithType: FileMetadataConverter.WriteJson(JsonWriter, Object, JsonSerializer)
+- uid: Microsoft.DocAsCode.FileMetadataConverter.WriteJson*
+  name: WriteJson
+  href: api/Microsoft.DocAsCode.FileMetadataConverter.html#Microsoft_DocAsCode_FileMetadataConverter_WriteJson_
+  commentId: Overload:Microsoft.DocAsCode.FileMetadataConverter.WriteJson
+  isSpec: "True"
+  fullName: Microsoft.DocAsCode.FileMetadataConverter.WriteJson
+  nameWithType: FileMetadataConverter.WriteJson
 - uid: Microsoft.DocAsCode.FileMetadataPairs
   name: FileMetadataPairs
   href: api/Microsoft.DocAsCode.FileMetadataPairs.html
@@ -32376,6 +32567,38 @@ references:
   commentId: F:Microsoft.DocAsCode.Glob.GlobMatcher.DefaultOptions
   fullName: Microsoft.DocAsCode.Glob.GlobMatcher.DefaultOptions
   nameWithType: GlobMatcher.DefaultOptions
+- uid: Microsoft.DocAsCode.Glob.GlobMatcher.Equals(Microsoft.DocAsCode.Glob.GlobMatcher)
+  name: Equals(GlobMatcher)
+  href: api/Microsoft.DocAsCode.Glob.GlobMatcher.html#Microsoft_DocAsCode_Glob_GlobMatcher_Equals_Microsoft_DocAsCode_Glob_GlobMatcher_
+  commentId: M:Microsoft.DocAsCode.Glob.GlobMatcher.Equals(Microsoft.DocAsCode.Glob.GlobMatcher)
+  fullName: Microsoft.DocAsCode.Glob.GlobMatcher.Equals(Microsoft.DocAsCode.Glob.GlobMatcher)
+  nameWithType: GlobMatcher.Equals(GlobMatcher)
+- uid: Microsoft.DocAsCode.Glob.GlobMatcher.Equals(System.Object)
+  name: Equals(Object)
+  href: api/Microsoft.DocAsCode.Glob.GlobMatcher.html#Microsoft_DocAsCode_Glob_GlobMatcher_Equals_System_Object_
+  commentId: M:Microsoft.DocAsCode.Glob.GlobMatcher.Equals(System.Object)
+  fullName: Microsoft.DocAsCode.Glob.GlobMatcher.Equals(System.Object)
+  nameWithType: GlobMatcher.Equals(Object)
+- uid: Microsoft.DocAsCode.Glob.GlobMatcher.Equals*
+  name: Equals
+  href: api/Microsoft.DocAsCode.Glob.GlobMatcher.html#Microsoft_DocAsCode_Glob_GlobMatcher_Equals_
+  commentId: Overload:Microsoft.DocAsCode.Glob.GlobMatcher.Equals
+  isSpec: "True"
+  fullName: Microsoft.DocAsCode.Glob.GlobMatcher.Equals
+  nameWithType: GlobMatcher.Equals
+- uid: Microsoft.DocAsCode.Glob.GlobMatcher.GetHashCode
+  name: GetHashCode()
+  href: api/Microsoft.DocAsCode.Glob.GlobMatcher.html#Microsoft_DocAsCode_Glob_GlobMatcher_GetHashCode
+  commentId: M:Microsoft.DocAsCode.Glob.GlobMatcher.GetHashCode
+  fullName: Microsoft.DocAsCode.Glob.GlobMatcher.GetHashCode()
+  nameWithType: GlobMatcher.GetHashCode()
+- uid: Microsoft.DocAsCode.Glob.GlobMatcher.GetHashCode*
+  name: GetHashCode
+  href: api/Microsoft.DocAsCode.Glob.GlobMatcher.html#Microsoft_DocAsCode_Glob_GlobMatcher_GetHashCode_
+  commentId: Overload:Microsoft.DocAsCode.Glob.GlobMatcher.GetHashCode
+  isSpec: "True"
+  fullName: Microsoft.DocAsCode.Glob.GlobMatcher.GetHashCode
+  nameWithType: GlobMatcher.GetHashCode
 - uid: Microsoft.DocAsCode.Glob.GlobMatcher.GetRegex
   name: GetRegex()
   href: api/Microsoft.DocAsCode.Glob.GlobMatcher.html#Microsoft_DocAsCode_Glob_GlobMatcher_GetRegex

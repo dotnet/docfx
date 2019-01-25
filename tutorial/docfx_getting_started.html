@@ -8,7 +8,7 @@
     <title>Getting Started with DocFX | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Getting Started with DocFX | DocFX website ">
-    <meta name="generator" content="docfx 2.40.7.0">
+    <meta name="generator" content="docfx 2.40.8.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -134,18 +134,31 @@ Install docfx through <a href="https://chocolatey.org/install">Chocolatey</a> by
 </ul>
 </div>
 <h2 id="4-use-docfx-with-a-build-server">4. Use <em>DocFX</em> with a Build Server</h2>
-<p><em>DocFX</em> can be used in a Continuous Integration environment.</p>
+<h2 id="41-steps">4.1 Steps</h2>
+<p><em>DocFX</em> can be used in a Continuous Integration (CI) environment.</p>
+<p>Consider a typical scenario: I want to set up a job on a CI service (e.g. <a href="https://azure.microsoft.com/en-us/services/devops/pipelines/">Azure Pipelines</a>) to build documents automatically and publish to a website (e.g. <a href="https://pages.github.com/">GitHub Pages</a>). We can achieve this by a script on CI jobs with following steps:</p>
+<ol>
+<li>clone repo</li>
+<li><code>choco install docfx</code></li>
+<li><code>docfx {docsetPath}</code>, while you can change <code>build.dest</code> in <code>docfx.json</code> to set the output path</li>
+<li>push all the content in <code>docsetPath/_site</code> to <code>gh-pages</code> branch</li>
+</ol>
+<div class="NOTE">
+<h5>Note</h5>
+<p>These steps give an overall impression of what to do. You can adjust them depending on actual scenario.</p>
+</div>
+<h2 id="42-set-branch-name">4.2 Set branch name</h2>
 <p>Most build systems do not checkout the branch that is being built, but use a <code>detached head</code> for the specific commit.  DocFX needs the branch name to implement the <code>View Source</code> link in the API documentation.</p>
-<p>Setting the environment variable <code>DOCFX_SOURCE_BRANCH_NAME</code> tells DocFX which branch name to use.</p>
-<p>Many build systems set an environment variable with the branch name.  DocFX uses the following:</p>
+<p>Many build systems set an environment variable with the branch name.  DocFX uses the following automatically:</p>
 <ul>
 <li><code>APPVEYOR_REPO_BRANCH</code> - <a href="https://www.appveyor.com/">AppVeyor</a></li>
-<li><code>BUILD_SOURCEBRANCHNAME</code> - <a href="https://www.visualstudio.com/team-services/">Visual Studio Team Services</a></li>
+<li><code>BUILD_SOURCEBRANCHNAME</code> - <a href="https://azure.microsoft.com/en-us/services/devops/pipelines/">Azure Pipelines</a></li>
 <li><code>CI_BUILD_REF_NAME</code> - <a href="https://about.gitlab.com/gitlab-ci/">GitLab CI</a></li>
 <li><code>Git_Branch</code> - <a href="https://www.jetbrains.com/teamcity/">TeamCity</a></li>
 <li><code>GIT_BRANCH</code> - <a href="https://jenkins.io/">Jenkins</a></li>
 <li><code>GIT_LOCAL_BRANCH</code> - <a href="https://jenkins.io/">Jenkins</a></li>
 </ul>
+<p>Setting the environment variable <code>DOCFX_SOURCE_BRANCH_NAME</code> tells DocFX which branch name to use, if the CI service you use is not in the list above.</p>
 <div class="NOTE">
 <h5>Note</h5>
 <p><em>Known issue in AppVeyor</em>: Currently <code>platform: Any CPU</code> in <em>appveyor.yml</em> causes <code>docfx metadata</code> failure. <a href="https://github.com/dotnet/docfx/issues/1078">https://github.com/dotnet/docfx/issues/1078</a></p>
