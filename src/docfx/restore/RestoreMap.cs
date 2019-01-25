@@ -72,7 +72,7 @@ namespace Microsoft.Docs.Build
                     return null;
                 }
 
-                // return specificed version
+                // return specified version
                 if (locked)
                 {
                     if (TryGetLockedWorkTreePath(repoPath, true, out var workTree) || TryGetLockedWorkTreePath(repoPath, false, out workTree))
