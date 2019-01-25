@@ -14,7 +14,7 @@ repos:
         ---
         [d](d.png)
       d.png:
-      toc.md: |
+      TOC.md: |
         # [c](c.md)
   https://docs.com/template:
   - files:
