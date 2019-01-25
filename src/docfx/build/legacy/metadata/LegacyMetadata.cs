@@ -68,7 +68,7 @@ namespace Microsoft.Docs.Build
 
             rawMetadata["_op_canonicalUrlPrefix"] = $"{docset.Config.BaseUrl}/{docset.Locale}/{docset.Config.DocumentId.SiteBasePath}/";
 
-            if (pageModel.Monikers.Count > 0)
+            if (pageModel?.Monikers?.Count > 0)
             {
                 rawMetadata["monikers"] = new JArray(pageModel.Monikers);
             }

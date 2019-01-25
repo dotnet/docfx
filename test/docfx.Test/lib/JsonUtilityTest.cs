@@ -456,7 +456,7 @@ namespace Microsoft.Docs.Build
                 Assert.Equal("violate-schema", error.Code);
                 Assert.Equal(1, error.Line);
                 Assert.Equal(1, error.Column);
-                Assert.Equal("Required property 'ValueRequired' not found in JSON.", error.Message);
+                Assert.Equal("Required property 'valueRequired' not found in JSON.", error.Message);
                 Assert.Equal("", error.JsonPath);
             }, error =>
             {
