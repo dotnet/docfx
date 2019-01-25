@@ -23,13 +23,13 @@ os: windows, osx
 inputs:
   docfx.yml: |
     redirections:
-      docs/redirect.md: relative/path
-      docs/redirect1.md: relative/PATH
+      docs/redirect.md: /path
+      docs/redirect1.md: /PATH
   docs/a.md: |
     [redirect](REDIRECT.md)
 outputs:
   docs/a.json: |
-    {"content":"<p><a href=\"relative/path\">redirect</a></p>"}
+    {"content":"<p><a href=\"/path\">redirect</a></p>"}
 ---
 # Dependency resolve is case insensitive on windows and mac
 os: windows, osx

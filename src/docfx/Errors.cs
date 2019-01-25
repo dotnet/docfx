@@ -22,10 +22,16 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Error, "invalid-redirection", $"The '{path}' shouldn't belong to redirections since it's a {contentType}");
 
         /// <summary>
-        /// The key or value of redirection is null or empty
+        /// The key or value of redirection is null or empty.
         /// </summary>
         public static Error RedirectionIsNullOrEmpty(string from, string to)
             => new Error(ErrorLevel.Error, "redirection-is-empty", $"The key or value of redirection '{from}: {to}' is null or empty");
+
+        /// <summary>
+        /// Defined redirect dest not starting with '\' in <see cref="Config.Redirections"/>.
+        /// </summary>
+        public static Error InvalidRedirectTo(string path, string redirectTo)
+            => new Error(ErrorLevel.Warning, "invalid-redirect-to", $"The redirect dest '{redirectTo}' isn't allowed for entry '{path}' in redirections, redirect dest must start with '/'");
 
         /// <summary>
         /// Used invalid glob pattern in configuration.

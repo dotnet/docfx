@@ -1,40 +1,40 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
 {
-    internal class DependencyLock : DependencyVersion
+    internal static class DependencyLock
     {
-        public Dictionary<string, DependencyLock> Git { get; set; } = new Dictionary<string, DependencyLock>();
-
-        public Dictionary<string, DependencyVersion> Downloads { get; set; } = new Dictionary<string, DependencyVersion>();
-
-        public DependencyLock GetGitLock(string href, string branch)
+        public static DependencyLockModel GetGitLock(this DependencyLockModel dependencyLock, string href, string branch)
         {
-            if (Git.TryGetValue($"{href}#{branch}", out var dependencyLock))
+            Debug.Assert(dependencyLock != null);
+
+            if (dependencyLock.Git.TryGetValue($"{href}#{branch}", out var gitLock))
             {
-                return dependencyLock;
+                return gitLock;
             }
 
-            if (branch == "master" && Git.TryGetValue($"{href}", out dependencyLock))
+            if (branch == "master" && dependencyLock.Git.TryGetValue($"{href}", out gitLock))
             {
-                return dependencyLock;
+                return gitLock;
             }
 
             return null;
         }
 
-        public bool ContainsGitLock(string href)
+        public static bool ContainsGitLock(this DependencyLockModel dependencyLock, string href)
         {
-            return Git.ContainsKey(href) || Git.Keys.Any(g => g.StartsWith($"{href}#"));
+            Debug.Assert(dependencyLock != null);
+
+            return dependencyLock.Git.ContainsKey(href) || dependencyLock.Git.Keys.Any(g => g.StartsWith($"{href}#"));
         }
 
-        public static async Task<DependencyLock> Load(string docset, string dependencyLockPath)
+        public static async Task<DependencyLockModel> Load(string docset, string dependencyLockPath)
         {
             Debug.Assert(!string.IsNullOrEmpty(docset));
 
@@ -43,18 +43,49 @@ namespace Microsoft.Docs.Build
                 return null;
             }
 
+            // dependency lock path can be a place holder for saving usage
+            if (!HrefUtility.IsHttpHref(dependencyLockPath))
+            {
+                if (!File.Exists(Path.Combine(docset, dependencyLockPath)))
+                {
+                    return null;
+                }
+            }
+
             var (_, restoredLockFile) = RestoreMap.GetFileRestorePath(docset, dependencyLockPath);
 
-            return JsonUtility.Deserialize<DependencyLock>(await ProcessUtility.ReadFile(restoredLockFile));
+            var content = await ProcessUtility.ReadFile(restoredLockFile);
+
+            if (string.IsNullOrEmpty(content))
+            {
+                return null;
+            }
+
+            return JsonUtility.Deserialize<DependencyLockModel>(content);
         }
 
-        public static Task<DependencyLock> Load(string docset, CommandLineOptions commandLineOptions)
+        public static Task<DependencyLockModel> Load(string docset, CommandLineOptions commandLineOptions)
         {
             Debug.Assert(!string.IsNullOrEmpty(docset));
 
             var (errors, config) = ConfigLoader.TryLoad(docset, commandLineOptions);
 
             return Load(docset, config.DependencyLock);
+        }
+
+        public static async Task Save(string docset, string dependencyLockPath, DependencyLockModel dependencyLock)
+        {
+            Debug.Assert(!string.IsNullOrEmpty(docset));
+            Debug.Assert(!string.IsNullOrEmpty(dependencyLockPath));
+
+            var content = JsonUtility.Serialize(dependencyLock, formatting: Newtonsoft.Json.Formatting.Indented);
+
+            if (!HrefUtility.IsHttpHref(dependencyLockPath))
+            {
+                await ProcessUtility.WriteFile(Path.Combine(docset, dependencyLockPath), content);
+            }
+
+            // todo: upload to remote file directly
         }
     }
 }

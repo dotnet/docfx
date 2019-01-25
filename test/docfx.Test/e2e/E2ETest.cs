@@ -115,10 +115,15 @@ namespace Microsoft.Docs.Build
             }
 
             // Verify output
-            Assert.Equal(spec.Outputs.Keys.OrderBy(_ => _), outputFileNames.OrderBy(_ => _));
+            Assert.Equal(spec.Outputs.Keys.Where(k => !k.StartsWith("~/")).OrderBy(_ => _), outputFileNames.OrderBy(_ => _));
 
             foreach (var (filename, content) in spec.Outputs)
             {
+                if (filename.StartsWith("~/"))
+                {
+                    VerifyFile(Path.GetFullPath(Path.Combine(docsetPath, filename.Substring(2))), content);
+                    continue;
+                }
                 VerifyFile(Path.GetFullPath(Path.Combine(docsetOutputPath, filename)), content);
             }
         }
@@ -267,6 +272,12 @@ namespace Microsoft.Docs.Build
             }
 
             var docset = Path.Combine(inputFolder, spec.Cwd ?? string.Empty);
+
+            if (GitUtility.IsRepo(docset) && !spec.Inputs.Any() && spec.Outputs.Any(k => k.Key.StartsWith("~/")))
+            {
+                Process.Start(new ProcessStartInfo("git", "clean -fdx") { WorkingDirectory = docset }).WaitForExit();
+            }
+
             if (Directory.Exists(Path.Combine(docset, "_site")))
             {
                 Directory.Delete(Path.Combine(docset, "_site"), recursive: true);

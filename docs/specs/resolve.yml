@@ -168,17 +168,6 @@ outputs:
   docs/a.json: |
     {"content":"<p><a href=\"/absolute/path?a#b\">redirect</a></p>"}
 ---
-# Files redirected to a relative URL
-inputs:
-  docfx.yml: |
-    redirections:
-      docs/redirect.md: relative/path
-  docs/a.md: |
-    [redirect](redirect.md)
-outputs:
-  docs/a.json: |
-    {"content":"<p><a href=\"relative/path\">redirect</a></p>"}
----
 # Show warning if inclusion is a redirection file
 inputs:
   docfx.yml: |

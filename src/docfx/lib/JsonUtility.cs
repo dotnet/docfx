@@ -24,7 +24,7 @@ namespace Microsoft.Docs.Build
         public static readonly JsonSerializer DefaultSerializer = new JsonSerializer
         {
             NullValueHandling = NullValueHandling.Ignore,
-            ContractResolver = new JsonContractResolver(),
+            ContractResolver = new SchemaValidationContractResolver(),
         };
 
         public static readonly JsonMergeSettings MergeSettings = new JsonMergeSettings
@@ -32,11 +32,12 @@ namespace Microsoft.Docs.Build
             MergeArrayHandling = MergeArrayHandling.Replace,
         };
 
+        private static readonly CamelCasePropertyNamesContractResolver s_contractResolver = new CamelCasePropertyNamesContractResolver();
         private static readonly JsonSerializerSettings s_noneFormatJsonSerializerSettings = new JsonSerializerSettings
         {
             NullValueHandling = NullValueHandling.Ignore,
             Converters = { new StringEnumConverter { NamingStrategy = new CamelCaseNamingStrategy() } },
-            ContractResolver = new CamelCasePropertyNamesContractResolver(),
+            ContractResolver = new JsonContractResolver(),
         };
 
         private static readonly JsonSerializerSettings s_indentedFormatJsonSerializerSettings = new JsonSerializerSettings
@@ -44,7 +45,7 @@ namespace Microsoft.Docs.Build
             NullValueHandling = NullValueHandling.Ignore,
             Formatting = Formatting.Indented,
             Converters = { new StringEnumConverter { NamingStrategy = new CamelCaseNamingStrategy() } },
-            ContractResolver = new CamelCasePropertyNamesContractResolver(),
+            ContractResolver = new JsonContractResolver(),
         };
 
         private static readonly JsonSerializer s_defaultIndentedFormatSerializer = JsonSerializer.Create(s_indentedFormatJsonSerializerSettings);
@@ -416,7 +417,7 @@ namespace Microsoft.Docs.Build
 
         private static Type GetCollectionItemTypeIfArrayType(Type type)
         {
-            var contract = DefaultSerializer.ContractResolver.ResolveContract(type);
+            var contract = s_contractResolver.ResolveContract(type);
             if (contract is JsonObjectContract)
             {
                 return type;
@@ -438,7 +439,7 @@ namespace Microsoft.Docs.Build
 
         private static Type GetNestedTypeAndCheckForUnknownField(Type type, JProperty prop, List<Error> errors)
         {
-            var contract = DefaultSerializer.ContractResolver.ResolveContract(type);
+            var contract = s_contractResolver.ResolveContract(type);
 
             if (contract is JsonObjectContract objectContract)
             {
@@ -471,18 +472,46 @@ namespace Microsoft.Docs.Build
             return null;
         }
 
-        private static void SetFieldWritable(MemberInfo member, JsonProperty prop)
+        private class JsonContractResolver : CamelCasePropertyNamesContractResolver
         {
-            if (!prop.Writable)
+            protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
             {
-                if (member is FieldInfo f && f.IsPublic && !f.IsStatic)
+                var prop = base.CreateProperty(member, memberSerialization);
+                ShouldNotSerializeEmptyArray();
+                SetFieldWritable();
+                return prop;
+
+                void ShouldNotSerializeEmptyArray()
                 {
-                    prop.Writable = true;
+                    if (s_contractResolver.ResolveContract(prop.PropertyType) is JsonArrayContract)
+                    {
+                        prop.ShouldSerialize =
+                              target =>
+                              {
+                                  var array = prop.ValueProvider.GetValue(target) as IEnumerable<object>;
+                                  if (array != null && !array.Any())
+                                  {
+                                      return false;
+                                  }
+                                  return true;
+                              };
+                    }
+                }
+
+                void SetFieldWritable()
+                {
+                    if (!prop.Writable)
+                    {
+                        if (member is FieldInfo f && f.IsPublic && !f.IsStatic)
+                        {
+                            prop.Writable = true;
+                        }
+                    }
                 }
             }
         }
 
-        private sealed class JsonContractResolver : DefaultContractResolver
+        private sealed class SchemaValidationContractResolver : JsonContractResolver
         {
             protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
             {
@@ -491,17 +520,8 @@ namespace Microsoft.Docs.Build
 
                 if (converter != null)
                 {
-                    if (prop.PropertyType.IsArray)
-                    {
-                        prop.ItemConverter = converter;
-                    }
-                    else
-                    {
-                        prop.Converter = converter;
-                    }
+                    prop.Converter = converter;
                 }
-
-                SetFieldWritable(member, prop);
                 return prop;
             }
 
