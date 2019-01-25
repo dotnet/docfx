@@ -281,7 +281,7 @@ inputs:
   docs/c.png:
 outputs:
   docs/a.json: |
-    { "content": "<p>Link to <a href=\"b\">B1</a>\nLink to <a href=\"b\">B2</a>\nLink to <a href=\"%7E/docs/b.md\">B3</a>\n<img src=\"c.png\" alt=\"C\" /></p>\n" }
+    { "content": "<p>Link to <a href=\"b\">B1</a>\nLink to <a href=\"b\">B2</a>\nLink to <a href=\"%7E/docs/b.md\">B3</a>\n<img src=\"c.png\" alt=\"C\"></p>\n" }
   docs/b.json:
   docs/c.png:
   build.log: |

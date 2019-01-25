@@ -929,7 +929,7 @@ outputs:
   docs/f1/b.json:
   build.log: |
     ["info","null-value","'tocHref' contains null value","docs/TOC.yml","[0].tocHref",2,3]
-    ["error","violate-schema","Required property 'Name' not found in JSON.","docs/TOC.yml","[0]",1,3]
+    ["error","violate-schema","Required property 'name' not found in JSON.","docs/TOC.yml","[0]",1,3]
     ["error","violate-schema","The field Items must be a string or array type with a minimum length of '1'.","docs/TOC.yml","[0].items",5,10]
 ---
 # Orphan file(not explicitly referenced in toc file)'s toc, only look up parent folder toc files
@@ -1056,8 +1056,8 @@ outputs:
   docs/toc.json: |
     {
       "items": [
-        { "name": "link to title 1", "href": "a#title-1", "monikers": [] },
-        { "name": "link to title 2", "href": "a#title-2", "monikers": [] }
+        { "name": "link to title 1", "href": "a#title-1", "!monikers":null },
+        { "name": "link to title 2", "href": "a#title-2", "!monikers":null }
       ]
     }
   build.log: |
@@ -1078,7 +1078,7 @@ outputs:
   docs/toc.json: |
     {
       "items": [
-        { "name":"Title","href":"a#bookmark","monikers":[] }
+        { "name":"Title","href":"a#bookmark", "!monikers":null }
       ]
     }
 ---
@@ -1098,7 +1098,7 @@ outputs:
   docs/toc.json: |
     {
       "items": [
-        { "name":"Uid Ref","href":"a","monikers":[] }
+        { "name":"Uid Ref","href":"a","!monikers":null }
       ]
     }
 ---
@@ -1124,8 +1124,8 @@ outputs:
   docs/toc.json: |
     {
       "items": [
-        { "name":"Uid Ref","href":"a","monikers":[] },
-        { "name":"Uid Not Found","href":"b","monikers":[] }
+        { "name":"Uid Ref","href":"a","!monikers":null },
+        { "name":"Uid Not Found","href":"b","!monikers":null }
       ]
     }
   build.log: |
@@ -1178,7 +1178,7 @@ outputs:
   docs/toc.json: |
     {
       "items": [
-        { "name":"Title A","href":"a","monikers":[] }
+        { "name":"Title A","href":"a","!monikers":null }
       ]
     }
   docs/a.json:
@@ -1233,7 +1233,7 @@ inputs:
 outputs:
   docs/a.json:
   docs/toc.json: |
-    {"items":[{"name":"TOC Ref","items":[{"name":"Uid Ref","href":"a","monikers":[]}],"monikers":[]}]}
+    {"items":[{"name":"TOC Ref","items":[{"name":"Uid Ref","href":"a","!monikers":null}],"!monikers":null}]}
 ---
 # markdown toc using bad syntax(multiple inlines for one heading block)
 inputs:
@@ -1279,6 +1279,6 @@ inputs:
   docs/a.md:
 outputs:
   docs/toc.json: |
-    {"items":[{"name":"19 leading count","href":"a","items":[{"name":"20 leading count","href":"a","monikers":[]}]}]}
+    {"items":[{"name":"19 leading count","href":"a","items":[{"name":"20 leading count","href":"a","!monikers":null}]}]}
   docs/a.json:
 

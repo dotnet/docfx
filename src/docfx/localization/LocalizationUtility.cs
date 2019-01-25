@@ -27,7 +27,7 @@ namespace Microsoft.Docs.Build
             return (newRemote, newBranch);
         }
 
-        public static bool TryGetLocalizedDocsetPath(Docset docset, Config config, string locale, out string localizationDocsetPath, out string localizationBranch, out DependencyLock subDependencyLock)
+        public static bool TryGetLocalizedDocsetPath(Docset docset, Config config, string locale, out string localizationDocsetPath, out string localizationBranch, out DependencyLockModel subDependencyLock)
         {
             Debug.Assert(docset != null);
             Debug.Assert(!string.IsNullOrEmpty(locale));
@@ -122,7 +122,7 @@ namespace Microsoft.Docs.Build
             return locale != null;
         }
 
-        public static bool TryGetSourceDocsetPath(Docset docset, out string sourceDocsetPath, out string sourceBranch, out DependencyLock dependencyLock)
+        public static bool TryGetSourceDocsetPath(Docset docset, out string sourceDocsetPath, out string sourceBranch, out DependencyLockModel dependencyLock)
         {
             sourceDocsetPath = null;
             sourceBranch = null;
@@ -305,7 +305,7 @@ namespace Microsoft.Docs.Build
             return sourceDocset.LocalizationDocset ?? sourceDocset;
         }
 
-        public static (List<Error> errors, Config config) GetBuildConfig(string docset, Repository repository, CommandLineOptions options, DependencyLock dependencyLock)
+        public static (List<Error> errors, Config config) GetBuildConfig(string docset, Repository repository, CommandLineOptions options, DependencyLockModel dependencyLock)
         {
             if (ConfigLoader.TryGetConfigPath(docset, out _) || !TryGetSourceRepository(repository, out var sourceRemote, out var sourceBranch, out var locale))
             {

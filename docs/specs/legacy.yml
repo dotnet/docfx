@@ -37,7 +37,7 @@ outputs:
   c.raw.page.json: |
     {
       "content": "<p><a href=\"d.png\" data-linktype=\"relative-path\">d</a></p>\n",
-      "rawMetadata": { "ms.author": "yufeih" },
+      "rawMetadata": { "ms.author": "yufeih", "!robots": null },
       "themesRelativePathToOutputRoot": "_themes/"
     }
   c.mta.json: |

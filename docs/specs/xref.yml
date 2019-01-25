@@ -161,7 +161,7 @@ outputs:
     ["error","uid-conflict","Two or more documents have defined the same Uid 'a': docs/a.yml,docs/b.json"]
     ["info","at-uid-not-found","Cannot find uid 'a' using xref '@a'","docs/c.md"]
   xrefmap.json: | 
-    {"references":[]}
+    {"!references":null}
 ---
 # Resolve xref in SDP
 inputs:
@@ -222,7 +222,7 @@ outputs:
     ["error","json-syntax-error","Unexpected character encountered while parsing value: }.","docs/a.json","description",7]
     ["warning","uid-not-found","Cannot find uid 'a' using xref 'a'","docs/b.json"]
   xrefmap.json: | 
-    {"references":[]}
+    {"!references":null}
 ---
 # Define uid in non-root object level, it will be ignored
 inputs:

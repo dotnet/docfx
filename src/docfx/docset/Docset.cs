@@ -75,7 +75,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Gets the dependency repos/files locked version
         /// </summary>
-        public DependencyLock DependencyLock { get; }
+        public DependencyLockModel DependencyLock { get; }
 
         /// <summary>
         /// Gets the redirection map.
@@ -108,7 +108,7 @@ namespace Microsoft.Docs.Build
             string locale,
             Config config,
             CommandLineOptions options,
-            DependencyLock dependencyLock,
+            DependencyLockModel dependencyLock,
             Repository repository = null,
             Docset localizedDocset = null,
             Docset fallbackDocset = null,
@@ -137,13 +137,13 @@ namespace Microsoft.Docs.Build
                 if (LocalizationUtility.TryGetSourceDocsetPath(docset, out var sourceDocsetPath, out var sourceBranch, out var sourceDependencyLock))
                 {
                     var repo = Repository.Create(sourceDocsetPath, sourceBranch);
-                    sourceDependencyLock = sourceDependencyLock ?? await DependencyLock.Load(sourceDocsetPath, config.DependencyLock);
+                    sourceDependencyLock = sourceDependencyLock ?? await Docs.Build.DependencyLock.Load(sourceDocsetPath, config.DependencyLock);
                     docset.FallbackDocset = await Create(report, sourceDocsetPath, locale, config, options, sourceDependencyLock, repo, localizedDocset: docset, isDependency: true);
                 }
                 else if (LocalizationUtility.TryGetLocalizedDocsetPath(docset, config, locale, out var localizationDocsetPath, out var localizationBranch, out var localizationDependencyLock))
                 {
                     var repo = Repository.Create(localizationDocsetPath, localizationBranch);
-                    localizationDependencyLock = localizationDependencyLock ?? await DependencyLock.Load(localizationDocsetPath, config.DependencyLock);
+                    localizationDependencyLock = localizationDependencyLock ?? await Docs.Build.DependencyLock.Load(localizationDocsetPath, config.DependencyLock);
                     docset.LocalizationDocset = await Create(report, localizationDocsetPath, locale, config, options, localizationDependencyLock, repo, fallbackDocset: docset, isDependency: true);
                 }
             }
@@ -157,7 +157,7 @@ namespace Microsoft.Docs.Build
             string locale,
             Config config,
             CommandLineOptions options,
-            DependencyLock dependencyLock,
+            DependencyLockModel dependencyLock,
             IReadOnlyDictionary<string, Docset> dependencies,
             Repository repository = null,
             Docset fallbackDocset = null,
@@ -295,7 +295,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static async Task<(List<Error>, Dictionary<string, Docset>)> LoadDependencies(Report report, Config config, string locale, DependencyLock dependencyLock, CommandLineOptions options)
+        private static async Task<(List<Error>, Dictionary<string, Docset>)> LoadDependencies(Report report, Config config, string locale, DependencyLockModel dependencyLock, CommandLineOptions options)
         {
             var errors = new List<Error>();
             var result = new Dictionary<string, Docset>(config.Dependencies.Count, PathUtility.PathComparer);
@@ -308,7 +308,7 @@ namespace Microsoft.Docs.Build
                 var (loadErrors, subConfig) = ConfigLoader.TryLoad(dir, options, locale);
                 errors.AddRange(loadErrors);
 
-                subLock = subLock ?? await DependencyLock.Load(dir, subConfig.DependencyLock);
+                subLock = subLock ?? await Docs.Build.DependencyLock.Load(dir, subConfig.DependencyLock);
                 result.TryAdd(PathUtility.NormalizeFolder(name), await Create(report, dir, locale, subConfig, options, subLock, isDependency: true));
             }
             return (errors, result);
