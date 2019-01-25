@@ -197,9 +197,12 @@ namespace Microsoft.Docs.Build
 
             var dependencyLock = await DependencyLock.Load(docset, string.IsNullOrEmpty(config.DependencyLock) ? AppData.GetDependencyLockFile(docset) : config.DependencyLock);
 
-            if (LocalizationUtility.TryGetSourceRepository(repository, out var sourceRemote, out var sourceBranch, out var locale))
+            if (LocalizationUtility.TryGetSourceRepository(repository, out var sourceRemote, out var sourceBranch, out var locale) &&
+                !ConfigLoader.TryGetConfigPath(docset, out _))
             {
-                var sourceDependencyLock = dependencyLock?.GetGitLock(sourceRemote, sourceBranch);
+                // build from loc repo directly with overwrite config
+                // which means it's using source repo's dependency lock
+                var sourceDependencyLock = dependencyLock.GetGitLock(sourceRemote, sourceBranch);
                 dependencyLock = sourceDependencyLock == null
                     ? null
                     : new DependencyLockModel

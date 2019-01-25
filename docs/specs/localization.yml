@@ -1200,3 +1200,85 @@ repos:
 outputs:
   docs/a.json: |
     { "content_git_url": "*dotnet/docfx.loc/blob/live.zh-cn/*"}
+---
+# loc build with different dependency git repository 1
+# [repo mapping] & bilingual
+commands:
+  - build --locale zh-cn
+repos:
+  https://github.com/locconfig2/c:
+    - files:
+        docfx.yml: |
+          dependencies:
+            child1: https://github.com/locconfig2/d#master
+          localization:
+            bilingual: true
+          "locales: [zh-cn]":
+            dependencies:
+              child1: https://github.com/locconfig2/d#live
+        docs/a.md:
+  https://github.com/locconfig2/c.zh-cn#master-sxs:
+    - files:
+        docs/a.md: |
+          [!include[include child](~/child1/token.md)
+        docfx.yml: |
+          dependencies:
+            child1: https://github.com/locconfig2/d#live
+          localization:
+            bilingual: true
+  https://github.com/locconfig2/c.zh-cn:
+    - files:
+        docs/a.md:
+  https://github.com/locconfig2/d#live:
+    - files:
+        token.md: |
+          live branch
+  https://github.com/locconfig2/d#master:
+    - files:
+        token.md: |
+          master branch
+outputs:
+  docs/a.json: |
+    { "content": "<p>live branch</p>\n" }
+---
+# loc build with different dependency git repository 2
+# [branch mapping] & bilingual
+commands:
+  - build --locale zh-cn
+repos:
+  https://github.com/locconfig3/c:
+    - files:
+        docfx.yml: |
+          dependencies:
+            child1: https://github.com/locconfig3/f#master
+          localization:
+            bilingual: true
+            mapping: Branch
+          "locales: [zh-cn]":
+            dependencies:
+              child1: https://github.com/locconfig3/f#live
+        docs/a.md:
+  https://github.com/locconfig3/c.loc#master-sxs.zh-cn:
+    - files:
+        docs/a.md: |
+          [!include[include child](~/child1/token.md)
+        docfx.yml: |
+          dependencies:
+            child1: https://github.com/locconfig3/f#live
+          localization:
+            bilingual: true
+            mapping: Branch
+  https://github.com/locconfig3/c.loc#master.zh-cn:
+    - files:
+        docs/a.md:
+  https://github.com/locconfig3/f#live:
+    - files:
+        token.md: |
+          live branch
+  https://github.com/locconfig3/f#master:
+    - files:
+        token.md: |
+          master branch
+outputs:
+  docs/a.json: |
+    { "content": "<p>live branch</p>\n" }
