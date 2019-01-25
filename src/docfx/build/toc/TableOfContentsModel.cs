@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Microsoft.Docs.Build
 {
-    public class TableOfContentsModel
+    public sealed class TableOfContentsModel
     {
         public TableOfContentsMetadata Metadata { get; set; } = new TableOfContentsMetadata();
 
