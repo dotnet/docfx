@@ -224,7 +224,85 @@ outputs:
   xrefmap.json: | 
     {"!references":null}
 ---
-# Define uid in non-root object level, it will be ignored
+# support multiple uids in the same array in one SDP
+inputs:
+  docfx.yml:
+  docs/a.yml: |
+    #YamlMime:TestData
+    uid: a
+    description: description for a
+    data:
+      uid: a.data
+      description: description for a.data
+    array:
+      - uid: a.b
+        description: description for a.b
+        array:
+          - uid: a.b.d
+            description: description for a.b.d
+          - uid: a.b.e
+            description: description for a.b.e
+      - uid: a.c
+        description: description for a.c
+  docs/b.md: Link to @a.b
+outputs:
+  docs/a.json:
+  docs/b.json: |
+    {"content": "<p>Link to <a href=\"a.json#a_b\">a.b</a></p>\n"}
+  xrefmap.json: |
+    {
+      "references": [{
+        "uid": "a",
+        "href": "https://docs.com/docs/a.json",
+        "description": "description for a"
+      }, 
+      {
+        "uid": "a.b",
+        "href": "https://docs.com/docs/a.json#a_b",
+        "description": "description for a.b"
+      },
+      {
+        "uid": "a.b.d",
+        "href": "https://docs.com/docs/a.json#a_b_d",
+        "description": "description for a.b.d"
+      },
+      {
+        "uid": "a.b.e",
+        "href": "https://docs.com/docs/a.json#a_b_e",
+        "description": "description for a.b.e"
+      }, 
+      {
+        "uid": "a.c",
+        "href": "https://docs.com/docs/a.json#a_c",
+        "description": "description for a.c"
+      },
+      {
+        "uid": "a.data",
+        "href": "https://docs.com/docs/a.json#a_data",
+        "description": "description for a.data"
+      }]
+    }
+---
+# uid conflict in one SDP
+inputs:
+  docfx.yml:
+  docs/a.json: |
+    {
+      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
+      "uid": "a",
+      "data": 
+      { 
+        "uid": "a"
+      }
+    }
+outputs:
+  docs/a.json:
+  build.log: |
+    ["error","uid-conflict","The same Uid 'a' has been defined multiple times in the same file","docs/a.json"]
+  xrefmap.json: |
+    {"references":[{"uid":"a","href":"https://docs.com/docs/a.json"}]}
+---
+# uid conflict in non-root level and another SDP
 inputs:
   docfx.yml:
   docs/a.json: |
@@ -236,13 +314,17 @@ inputs:
         "uid": "b"
       }
     }
-  docs/b.md: Link to @b
+  docs/b.json: |
+    {
+      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
+      "uid": "b"
+    }
 outputs:
   docs/a.json:
   docs/b.json:
   build.log: |
-    ["info","at-uid-not-found","Cannot find uid 'b' using xref '@b'","docs/b.md"]
-  xrefmap.json: | 
+    ["error","uid-conflict","Two or more documents have defined the same Uid 'b': docs/a.json,docs/b.json"]
+  xrefmap.json: |
     {"references":[{"uid":"a","href":"https://docs.com/docs/a.json"}]}
 ---
 # Xref property field which supports markdown content
@@ -491,7 +573,6 @@ outputs:
   build.log: |
     ["error","circular-reference","Found circular reference: 'docs/a.json' --> 'docs/b.json' --> 'docs/a.json'","docs/a.json"]
     ["error","circular-reference","Found circular reference: 'docs/b.json' --> 'docs/a.json' --> 'docs/b.json'","docs/b.json"]
-
 ---
 # SDP cyclic xref reference whose display properties referring to another uid
 # b.json -> c.json -> b.json && b.json -> c.json -> b.json && c.json -> b.json -> c.json
@@ -526,7 +607,6 @@ outputs:
     ["error","circular-reference","Found circular reference: 'docs/c.json' --> 'docs/b.json' --> 'docs/c.json'","docs/c.json"]
     ["error","circular-reference","Found circular reference: 'docs/b.json' --> 'docs/c.json' --> 'docs/b.json'","docs/b.json"]
     ["error","circular-reference","Found circular reference: 'docs/a.json' --> 'docs/b.json' --> 'docs/c.json' --> 'docs/b.json'","docs/a.json"]
-
 ---
 # SDP cyclic xref reference to itself
 inputs:
