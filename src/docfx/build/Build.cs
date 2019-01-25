@@ -27,7 +27,7 @@ namespace Microsoft.Docs.Build
 
             var errors = new List<Error>();
             var localeToBuild = LocalizationUtility.GetLocale(repository, options);
-            var docset = (await Docset.Create(report, docsetPath, localeToBuild, config, options, dependencyLock, repository)).GetBuildDocset();
+            var docset = GetBuildDocset(await Docset.Create(report, docsetPath, localeToBuild, config, options, dependencyLock, repository));
             var outputPath = Path.Combine(docsetPath, config.Output.Path);
 
             using (var context = await Context.Create(outputPath, report, docset, () => xrefMap))
@@ -228,7 +228,7 @@ namespace Microsoft.Docs.Build
             return ConfigLoader.Load(sourceDocsetPath, options, locale);
         }
 
-        private static Docset GetBuildDocset(this Docset sourceDocset)
+        private static Docset GetBuildDocset(Docset sourceDocset)
         {
             Debug.Assert(sourceDocset != null);
 
