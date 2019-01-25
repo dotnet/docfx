@@ -114,6 +114,8 @@ namespace Microsoft.Docs.Build
             Docset fallbackDocset = null,
             bool isDependency = false)
         {
+            Debug.Assert(dependencyLock != null);
+
             locale = !string.IsNullOrEmpty(locale) ? locale : config.Localization.DefaultLocale;
             var (errors, dependencies) = await LoadDependencies(report, config, locale, dependencyLock, options);
             report.Write(config.ConfigFileName, errors);
@@ -134,17 +136,15 @@ namespace Microsoft.Docs.Build
             {
                 // localization/fallback docset will share the same context, config, build locale and options with source docset
                 // source docset configuration will be overwritten by build locale overwrite configuration
-                if (LocalizationUtility.TryGetSourceDocsetPath(docset, out var sourceDocsetPath, out var sourceBranch, out var sourceDependencyLock))
+                if (LocalizationUtility.TryGetSourceDocsetPath(docset, out var sourceDocsetPath, out var sourceBranch, out _))
                 {
                     var repo = Repository.Create(sourceDocsetPath, sourceBranch);
-                    sourceDependencyLock = sourceDependencyLock ?? await Docs.Build.DependencyLock.Load(sourceDocsetPath, config.DependencyLock);
-                    docset.FallbackDocset = await Create(report, sourceDocsetPath, locale, config, options, sourceDependencyLock, repo, localizedDocset: docset, isDependency: true);
+                    docset.FallbackDocset = await Create(report, sourceDocsetPath, locale, config, options, dependencyLock, repo, localizedDocset: docset, isDependency: true);
                 }
                 else if (LocalizationUtility.TryGetLocalizedDocsetPath(docset, config, locale, out var localizationDocsetPath, out var localizationBranch, out var localizationDependencyLock))
                 {
                     var repo = Repository.Create(localizationDocsetPath, localizationBranch);
-                    localizationDependencyLock = localizationDependencyLock ?? await Docs.Build.DependencyLock.Load(localizationDocsetPath, config.DependencyLock);
-                    docset.LocalizationDocset = await Create(report, localizationDocsetPath, locale, config, options, localizationDependencyLock, repo, fallbackDocset: docset, isDependency: true);
+                    docset.LocalizationDocset = await Create(report, localizationDocsetPath, locale, config, options, dependencyLock, repo, fallbackDocset: docset, isDependency: true);
                 }
             }
 

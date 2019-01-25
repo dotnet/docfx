@@ -312,13 +312,14 @@ namespace Microsoft.Docs.Build
                 return ConfigLoader.Load(docset, options);
             }
 
+            Debug.Assert(dependencyLock != null);
             var (sourceDocsetPath, _) = RestoreMap.GetGitRestorePath(sourceRemote, sourceBranch, dependencyLock);
             return ConfigLoader.Load(sourceDocsetPath, options, locale);
         }
 
         public static (bool fromUrl, string path) GetFileRestorePath(this Docset docset, string url)
         {
-            return RestoreMap.GetFileRestorePath(docset.DocsetPath, url, docset.FallbackDocset?.DocsetPath);
+            return RestoreMap.GetFileRestorePath(docset.DocsetPath, url, docset.DependencyLock, docset.FallbackDocset?.DocsetPath);
         }
 
         public static string GetBuildLocale(Repository repository, CommandLineOptions options)

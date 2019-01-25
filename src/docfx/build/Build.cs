@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -21,7 +22,7 @@ namespace Microsoft.Docs.Build
             // todo: abort the process if configuration loading has errors
             var repository = Repository.Create(docsetPath, branch: null);
 
-            var dependencyLock = await DependencyLock.Load(docsetPath, options);
+            var dependencyLock = await LoadBuildDependencyLock(docsetPath, repository, options);
             var (configErrors, config) = LocalizationUtility.GetBuildConfig(docsetPath, repository, options, dependencyLock);
             report.Configure(docsetPath, config);
             report.Write(config.ConfigFileName, configErrors);
@@ -186,6 +187,34 @@ namespace Microsoft.Docs.Build
                 context.PublishModelBuilder.MarkError(file);
                 return new List<string>();
             }
+        }
+
+        private static async Task<DependencyLockModel> LoadBuildDependencyLock(string docset, Repository repository, CommandLineOptions commandLineOptions)
+        {
+            Debug.Assert(!string.IsNullOrEmpty(docset));
+
+            var (errors, config) = ConfigLoader.TryLoad(docset, commandLineOptions);
+
+            var dependencyLock = await DependencyLock.Load(docset, string.IsNullOrEmpty(config.DependencyLock) ? AppData.GetDependencyLockFile(docset) : config.DependencyLock);
+
+            if (LocalizationUtility.TryGetSourceRepository(repository, out var sourceRemote, out var sourceBranch, out var locale) &&
+                !ConfigLoader.TryGetConfigPath(docset, out _))
+            {
+                // build from loc repo directly with overwrite config
+                // which means it's using source repo's dependency lock
+                var sourceDependencyLock = dependencyLock.GetGitLock(sourceRemote, sourceBranch);
+                dependencyLock = sourceDependencyLock == null
+                    ? null
+                    : new DependencyLockModel
+                    {
+                        Downloads = sourceDependencyLock.Downloads,
+                        Hash = sourceDependencyLock.Hash,
+                        Commit = sourceDependencyLock.Commit,
+                        Git = new Dictionary<string, DependencyLockModel>(sourceDependencyLock.Git.Concat(new[] { KeyValuePair.Create($"{sourceRemote}#{sourceBranch}", sourceDependencyLock) })),
+                    };
+            }
+
+            return dependencyLock ?? new DependencyLockModel();
         }
     }
 }

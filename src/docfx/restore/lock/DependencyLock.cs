@@ -52,7 +52,7 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            var (_, restoredLockFile) = RestoreMap.GetFileRestorePath(docset, dependencyLockPath);
+            var (_, restoredLockFile) = RestoreMap.GetFileRestorePath(docset, dependencyLockPath, null);
 
             var content = await ProcessUtility.ReadFile(restoredLockFile);
 
@@ -64,15 +64,6 @@ namespace Microsoft.Docs.Build
             return JsonUtility.Deserialize<DependencyLockModel>(content);
         }
 
-        public static Task<DependencyLockModel> Load(string docset, CommandLineOptions commandLineOptions)
-        {
-            Debug.Assert(!string.IsNullOrEmpty(docset));
-
-            var (errors, config) = ConfigLoader.TryLoad(docset, commandLineOptions);
-
-            return Load(docset, config.DependencyLock);
-        }
-
         public static async Task Save(string docset, string dependencyLockPath, DependencyLockModel dependencyLock)
         {
             Debug.Assert(!string.IsNullOrEmpty(docset));
@@ -82,7 +73,9 @@ namespace Microsoft.Docs.Build
 
             if (!HrefUtility.IsHttpHref(dependencyLockPath))
             {
-                await ProcessUtility.WriteFile(Path.Combine(docset, dependencyLockPath), content);
+                var path = Path.Combine(docset, dependencyLockPath);
+                Directory.CreateDirectory(Path.GetDirectoryName(path));
+                await ProcessUtility.WriteFile(path, content);
             }
 
             // todo: upload to remote file directly
