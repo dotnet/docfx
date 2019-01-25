@@ -78,7 +78,7 @@ namespace Microsoft.Docs.Build
             Debug.Assert(!string.IsNullOrEmpty(docset));
             Debug.Assert(!string.IsNullOrEmpty(dependencyLockPath));
 
-            var content = JsonUtility.Serialize(dependencyLock, formatting: Newtonsoft.Json.Formatting.Indented);
+            var content = JsonUtility.Serialize(dependencyLock, indent: true);
 
             if (!HrefUtility.IsHttpHref(dependencyLockPath))
             {

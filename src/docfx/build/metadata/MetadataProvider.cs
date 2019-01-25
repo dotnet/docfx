@@ -41,13 +41,13 @@ namespace Microsoft.Docs.Build
             }
 
             var result = new JObject();
-            result.Merge(_config.GlobalMetadata, JsonUtility.MergeSettings);
-            result.Merge(fileMetadata, JsonUtility.MergeSettings);
+            JsonUtility.Merge(result, _config.GlobalMetadata);
+            JsonUtility.Merge(result, fileMetadata);
 
             if (yamlHeader != null)
             {
                 erros.AddRange(MetadataValidator.Validate(yamlHeader, "yaml header"));
-                result.Merge(yamlHeader, JsonUtility.MergeSettings);
+                JsonUtility.Merge(result, yamlHeader);
             }
 
             return (erros, result);
