@@ -17,7 +17,7 @@ namespace Microsoft.Docs.Build
 
         public readonly bool Watch;
 
-        public readonly string[] Commands = new[] { "build --verbose" };
+        public readonly string[] Commands = new[] { "build" };
 
         public readonly string[] Environments = Array.Empty<string>();
 
