@@ -127,7 +127,6 @@ namespace Microsoft.Docs.Build
             return (errors, model, tocMetadata);
         }
 
-        // todo: uid support
         private static List<Error> ResolveTocModelItems(
             Context context,
             List<TableOfContentsInputItem> tocModelItems,

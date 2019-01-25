@@ -23,7 +23,7 @@ namespace Microsoft.Docs.Build
             {
                 var repository = Repository.Create(docsetPath, branch: null);
                 var restoredDocsets = new ConcurrentDictionary<string, Task<DependencyLockModel>>(PathUtility.PathComparer);
-                var localeToRestore = LocalizationUtility.GetBuildLocale(repository, options);
+                var localeToRestore = LocalizationUtility.GetLocale(repository, options);
 
                 await RestoreDocset(docsetPath, rootRepository: repository);
 
