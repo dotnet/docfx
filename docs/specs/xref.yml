@@ -229,6 +229,9 @@ inputs:
     #YamlMime:TestData
     uid: a
     description: description for a
+    data:
+      uid: a.data
+      description: description for a.data
     array:
       - uid: a.b
         description: description for a.b
@@ -250,7 +253,8 @@ outputs:
         "uid": "a",
         "href": "https://docs.com/docs/a.json",
         "description": "description for a"
-      }, {
+      }, 
+      {
         "uid": "a.b",
         "href": "https://docs.com/docs/a.json#a_b",
         "description": "description for a.b"
@@ -264,10 +268,16 @@ outputs:
         "uid": "a.b.e",
         "href": "https://docs.com/docs/a.json#a_b_e",
         "description": "description for a.b.e"
-      }, {
+      }, 
+      {
         "uid": "a.c",
         "href": "https://docs.com/docs/a.json#a_c",
         "description": "description for a.c"
+      },
+      {
+        "uid": "a.data",
+        "href": "https://docs.com/docs/a.json#a_data",
+        "description": "description for a.data"
       }]
     }
 ---
@@ -287,6 +297,31 @@ outputs:
   docs/a.json:
   build.log: |
     ["error","uid-conflict","The same Uid 'a' has been defined multiple times in the same file","docs/a.json"]
+  xrefmap.json: |
+    {"references":[{"uid":"a","href":"https://docs.com/docs/a.json"}]}
+---
+# uid conflict in non-root leval and another SDP
+inputs:
+  docfx.yml:
+  docs/a.json: |
+    {
+      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
+      "uid": "a",
+      "data": 
+      { 
+        "uid": "b"
+      }
+    }
+  docs/b.json: |
+    {
+      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
+      "uid": "b"
+    }
+outputs:
+  docs/a.json:
+  docs/b.json:
+  build.log: |
+    ["error","uid-conflict","Two or more documents have defined the same Uid 'b': docs/a.json,docs/b.json"]
   xrefmap.json: |
     {"references":[{"uid":"a","href":"https://docs.com/docs/a.json"}]}
 ---
