@@ -8,9 +8,11 @@ namespace Microsoft.Docs.Build
 {
     internal static class Log
     {
+        internal static bool ForceVerbose;
+
         private static AsyncLocal<bool> t_verbose = new AsyncLocal<bool>();
 
-        public static bool Verbose => t_verbose.Value;
+        public static bool Verbose => ForceVerbose || t_verbose.Value;
 
         public static IDisposable BeginScope(bool verbose)
         {
@@ -25,7 +27,7 @@ namespace Microsoft.Docs.Build
 
         public static void Write(string message, ConsoleColor color = ConsoleColor.DarkGray)
         {
-            if (t_verbose.Value)
+            if (Verbose)
             {
 #pragma warning disable CA2002
                 lock (Console.Out)
