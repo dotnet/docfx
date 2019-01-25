@@ -300,7 +300,7 @@ outputs:
   xrefmap.json: |
     {"references":[{"uid":"a","href":"https://docs.com/docs/a.json"}]}
 ---
-# uid conflict in non-root leval and another SDP
+# uid conflict in non-root level and another SDP
 inputs:
   docfx.yml:
   docs/a.json: |
