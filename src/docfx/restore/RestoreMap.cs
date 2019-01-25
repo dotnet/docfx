@@ -14,26 +14,47 @@ namespace Microsoft.Docs.Build
         private static readonly ConcurrentDictionary<(string remote, string branch, string commit), Lazy<string>> s_gitPath = new ConcurrentDictionary<(string remote, string branch, string commit), Lazy<string>>();
         private static readonly ConcurrentDictionary<(string url, string version), Lazy<string>> s_downloadPath = new ConcurrentDictionary<(string url, string version), Lazy<string>>();
 
+        /// <summary>
+        /// Get restored git repository path with url and dependency lock
+        /// The dependency lock must be loaded before using this method
+        /// </summary>
         public static (string path, DependencyLockModel subDependencyLock) GetGitRestorePath(string url, DependencyLockModel dependencyLock)
         {
             var (remote, branch) = HrefUtility.SplitGitHref(url);
             return GetGitRestorePath(remote, branch, dependencyLock);
         }
 
+        /// <summary>
+        /// Get restored git repository path with remote, branch and dependency lock
+        /// The dependency lock must be loaded before using this method
+        /// </summary>
         public static (string path, DependencyLockModel subDependencyLock) GetGitRestorePath(string remote, string branch, DependencyLockModel dependencyLock)
         {
-            if (!TryGetGitRestorePath(remote, branch, dependencyLock, out var result, out var subDependencyLock))
+            Debug.Assert(dependencyLock != null);
+
+            var gitVersion = dependencyLock.GetGitLock(remote, branch);
+
+            if (gitVersion == null)
             {
                 throw Errors.NeedRestore($"{remote}#{branch}").ToException();
             }
 
-            return (result, subDependencyLock);
+            if (!TryGetGitRestorePath(remote, branch, gitVersion, out var result))
+            {
+                throw Errors.NeedRestore($"{remote}#{branch}").ToException();
+            }
+
+            return (result, gitVersion);
         }
 
-        public static bool TryGetGitRestorePath(string remote, string branch, DependencyLockModel dependencyLock, out string result, out DependencyLockModel subDependencyLock)
+        /// <summary>
+        /// Try get git dependency repository path with remote, branch and dependency version
+        /// If the dependency version is null, get the latest one(order by last write time)
+        /// If the dependency version is not null, get the one matched with the version(commit).
+        /// </summary>
+        public static bool TryGetGitRestorePath(string remote, string branch, DependencyVersion dependencyVersion, out string result)
         {
-            subDependencyLock = dependencyLock?.GetGitLock(remote, branch);
-            var commit = subDependencyLock?.Commit;
+            var commit = dependencyVersion?.Commit;
             var locked = !string.IsNullOrEmpty(commit);
             result = s_gitPath.AddOrUpdate(
                 (remote, branch, commit),
