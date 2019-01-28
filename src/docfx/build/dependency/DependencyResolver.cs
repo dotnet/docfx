@@ -35,9 +35,9 @@ namespace Microsoft.Docs.Build
             return (error, content, child);
         }
 
-        public (Error error, string link, Document file) ResolveLink(string path, Document relativeTo, Document resultRelativeTo, Action<Document> buildChild)
+        public (List<Error> errors, string link, Document file) ResolveLink(string path, Document relativeTo, Document resultRelativeTo, Action<Document> buildChild)
         {
-            var (error, link, fragment, file) = TryResolveHref(relativeTo, path, resultRelativeTo);
+            var (errors, link, fragment, file) = TryResolveHref(relativeTo, path, resultRelativeTo);
 
             if (file != null && buildChild != null)
             {
@@ -47,10 +47,10 @@ namespace Microsoft.Docs.Build
             _dependencyMapBuilder.AddDependencyItem(relativeTo, file, HrefUtility.FragmentToDependencyType(fragment));
             _bookmarkValidator.AddBookmarkReference(relativeTo, file ?? relativeTo, fragment);
 
-            return (error, link, file);
+            return (errors, link, file);
         }
 
-        public (Error error, string href, string display, Document file) ResolveXref(string href, Document relativeTo, Document rootFile)
+        public (List<Error> errors, string href, string display, Document file) ResolveXref(string href, Document relativeTo, Document rootFile)
         {
             var (uid, query, fragment) = HrefUtility.SplitHref(href);
             string moniker = null;
@@ -63,7 +63,7 @@ namespace Microsoft.Docs.Build
             var displayProperty = queries?["displayProperty"];
 
             // need to url decode uid from input content
-            var (error, resolvedHref, display, referencedFile) = _xrefMap.Value.Resolve(HttpUtility.UrlDecode(uid), href, displayProperty, relativeTo, rootFile, moniker);
+            var (errors, resolvedHref, display, referencedFile) = _xrefMap.Value.Resolve(HttpUtility.UrlDecode(uid), href, displayProperty, relativeTo, rootFile, moniker);
 
             if (referencedFile != null)
             {
@@ -75,7 +75,7 @@ namespace Microsoft.Docs.Build
                 var monikerQuery = !string.IsNullOrEmpty(moniker) ? $"view={moniker}" : "";
                 resolvedHref = HrefUtility.MergeHref(resolvedHref, monikerQuery, fragment.Length == 0 ? "" : fragment.Substring(1));
             }
-            return (error, resolvedHref, display, referencedFile);
+            return (errors, resolvedHref, display, referencedFile);
         }
 
         /// <summary>
@@ -113,30 +113,31 @@ namespace Microsoft.Docs.Build
             return file != null ? (error, file.ReadText(), file) : default;
         }
 
-        private (Error error, string href, string fragment, Document file) TryResolveHref(Document relativeTo, string href, Document resultRelativeTo)
+        private (List<Error> errors, string href, string fragment, Document file) TryResolveHref(Document relativeTo, string href, Document resultRelativeTo)
         {
             Debug.Assert(resultRelativeTo != null);
 
             if (href.StartsWith("xref:"))
             {
-                var (uidError, uidHref, _, referencedFile) = ResolveXref(href.Substring("xref:".Length), relativeTo, resultRelativeTo);
-                return (uidError, uidHref, null, referencedFile);
+                var (uidErrors, uidHref, _, referencedFile) = ResolveXref(href.Substring("xref:".Length), relativeTo, resultRelativeTo);
+                return (uidErrors, uidHref, null, referencedFile);
             }
 
             var (error, file, redirectTo, query, fragment, isSelfBookmark, _) = TryResolveFile(relativeTo, href);
+            var errors = new List<Error>() { error };
 
             // Redirection
             // follow redirections
             if (redirectTo != null && !relativeTo.Docset.Legacy)
             {
                 // TODO: append query and fragment to an absolute url with query and fragments may cause problems
-                return (error, redirectTo + query + fragment, null, null);
+                return (errors, redirectTo + query + fragment, null, null);
             }
 
             // Cannot resolve the file, leave href as is
             if (file == null)
             {
-                return (error, href, fragment, null);
+                return (errors, href, fragment, null);
             }
 
             // Self reference, don't build the file, leave href as is
@@ -146,23 +147,23 @@ namespace Microsoft.Docs.Build
                 {
                     if (isSelfBookmark)
                     {
-                        return (error, query + fragment, fragment, null);
+                        return (errors, query + fragment, fragment, null);
                     }
                     var selfUrl = HrefUtility.EscapeUrl(Document.PathToRelativeUrl(
                         Path.GetFileName(file.SitePath), file.ContentType, file.Schema, file.Docset.Config.Output.Json));
-                    return (error, selfUrl + query + fragment, fragment, null);
+                    return (errors, selfUrl + query + fragment, fragment, null);
                 }
                 if (string.IsNullOrEmpty(fragment))
                 {
                     fragment = "#";
                 }
-                return (error, query + fragment, fragment, null);
+                return (errors, query + fragment, fragment, null);
             }
 
             // Link to dependent repo, don't build the file, leave href as is
             if (relativeTo.Docset.DependencyDocsets.Values.Any(v => file.Docset == v))
             {
-                return (Errors.LinkIsDependency(relativeTo, file, href), href, fragment, null);
+                return (new List<Error> { Errors.LinkIsDependency(relativeTo, file, href) }, href, fragment, null);
             }
 
             // Make result relative to `resultRelativeTo`
@@ -170,7 +171,7 @@ namespace Microsoft.Docs.Build
 
             if (redirectTo != null)
             {
-                return (error, relativeUrl + query + fragment, fragment, null);
+                return (errors, relativeUrl + query + fragment, fragment, null);
             }
 
             // Pages outside build scope, don't build the file, use relative href
@@ -178,10 +179,10 @@ namespace Microsoft.Docs.Build
                 && (file.ContentType == ContentType.Page || file.ContentType == ContentType.TableOfContents)
                 && !file.Docset.BuildScope.Contains(file))
             {
-                return (Errors.LinkOutOfScope(relativeTo, file, href, file.Docset.Config.ConfigFileName), relativeUrl + query + fragment, fragment, null);
+                return (new List<Error> { Errors.LinkOutOfScope(relativeTo, file, href, file.Docset.Config.ConfigFileName) }, relativeUrl + query + fragment, fragment, null);
             }
 
-            return (error, relativeUrl + query + fragment, fragment, file);
+            return (errors, relativeUrl + query + fragment, fragment, file);
         }
 
         private (Error error, Document file, string redirectTo, string query, string fragment, bool isSelfBookmark, string pathToDocset) TryResolveFile(Document relativeTo, string href)

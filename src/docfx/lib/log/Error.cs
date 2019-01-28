@@ -49,6 +49,13 @@ namespace Microsoft.Docs.Build
             Range = range;
         }
 
+        public Error WithFile(string file)
+        {
+            return file == File || !string.IsNullOrEmpty(File)
+                ? this
+                : new Error(Level, Code, Message, file, Range, JsonPath);
+        }
+
         public override string ToString() => ToString(Level);
 
         public string ToString(ErrorLevel level)

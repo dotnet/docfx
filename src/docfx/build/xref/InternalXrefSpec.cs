@@ -17,20 +17,29 @@ namespace Microsoft.Docs.Build
 
         public HashSet<string> Monikers { get; set; } = new HashSet<string>();
 
-        public Dictionary<string, Lazy<JValue>> ExtensionData { get; } = new Dictionary<string, Lazy<JValue>>();
+        public Dictionary<string, Lazy<(List<Error> errors, JValue jValue)>> ExtensionData { get; } = new Dictionary<string, Lazy<(List<Error> errors, JValue jValue)>>();
 
-        public string GetXrefPropertyValue(string propertyName)
+        public (List<Error> errors, string value) GetXrefPropertyValue(string propertyName)
         {
-            if (propertyName is null)
-                return null;
+            var errors = new List<Error>();
 
-            return ExtensionData.TryGetValue(propertyName, out var internalValue) && internalValue.Value.Value is string internalStr ? internalStr : null;
+            if (propertyName is null)
+                return (errors, null);
+
+            if (ExtensionData.TryGetValue(propertyName, out var internalValue) && internalValue.Value.jValue.Value is string value)
+            {
+                errors.AddRange(errors);
+                return (errors, value);
+            }
+
+            return (errors, null);
         }
 
-        public string GetName() => GetXrefPropertyValue("name");
+        public (List<Error> errors, string value) GetName() => GetXrefPropertyValue("name");
 
-        public XrefSpec ToExternalXrefSpec(Context context, Document file)
+        public (List<Error> errors, XrefSpec xrefSpec) ToExternalXrefSpec(Context context, Document file)
         {
+            var errors = new List<Error>();
             var spec = new XrefSpec
             {
                 Uid = Uid,
@@ -41,14 +50,14 @@ namespace Microsoft.Docs.Build
             {
                 try
                 {
-                    spec.ExtensionData[key] = GetXrefPropertyValue(key);
+                    spec.ExtensionData[key] = errors.AddRange(GetXrefPropertyValue(key));
                 }
                 catch (DocfxException ex)
                 {
-                    context.Report.Write(file.FilePath, ex.Error);
+                    errors.Add(ex.Error);
                 }
             }
-            return spec;
+            return (errors, spec);
         }
     }
 }

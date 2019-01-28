@@ -417,6 +417,16 @@ namespace Microsoft.Docs.Build
         public static Error InvalidUidMoniker(string moniker, string uid)
             => new Error(ErrorLevel.Warning, "invalid-uid-moniker", $"Moniker '{moniker}' is not defined with uid '{uid}'");
 
+        public static T AddRange<T>(this List<Error> list, (List<Error> errors, T value) result) where T : class
+        {
+            if (!(result.errors is null))
+            {
+                list.AddRange(result.errors);
+            }
+
+            return result.value;
+        }
+
         private static string Join<T>(IEnumerable<T> source, Func<T, string> selector = null)
             => string.Join(", ", source.Select(item => $"{selector?.Invoke(item) ?? item.ToString()}").OrderBy(_ => _, StringComparer.Ordinal).Select(_ => $"'{_}'").Take(5));
 

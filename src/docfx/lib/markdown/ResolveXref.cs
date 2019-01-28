@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Markdig;
 using Markdig.Renderers.Html;
@@ -12,7 +13,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class ResolveXref
     {
-        public static MarkdownPipelineBuilder UseResolveXref(this MarkdownPipelineBuilder builder, Func<string, (Error error, string href, string display, Document file)> resolveXref)
+        public static MarkdownPipelineBuilder UseResolveXref(this MarkdownPipelineBuilder builder, Func<string, (List<Error> errors, string href, string display, Document file)> resolveXref)
         {
             return builder.Use(document =>
              {

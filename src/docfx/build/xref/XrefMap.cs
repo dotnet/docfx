@@ -22,7 +22,7 @@ namespace Microsoft.Docs.Build
 
         private static ThreadLocal<Stack<(string uid, string propertyName, Document parent)>> t_recursionDetector = new ThreadLocal<Stack<(string, string, Document)>>(() => new Stack<(string, string, Document)>());
 
-        public (Error error, string href, string display, Document referencedFile) Resolve(string uid, string href, string displayPropertyName, Document relativeTo, Document rootFile, string moniker = null)
+        public (List<Error> errors, string href, string display, Document referencedFile) Resolve(string uid, string href, string displayPropertyName, Document relativeTo, Document rootFile, string moniker = null)
         {
             if (t_recursionDetector.Value.Contains((uid, displayPropertyName, relativeTo)))
             {
@@ -44,8 +44,9 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private (Error error, string href, string display, Document referencedFile) ResolveCore(string uid, string href, string displayPropertyName, Document rootFile, string moniker = null)
+        private (List<Error> errors, string href, string display, Document referencedFile) ResolveCore(string uid, string href, string displayPropertyName, Document rootFile, string moniker = null)
         {
+            var errors = new List<Error>();
             string name = null;
             string displayPropertyValue = null;
             string resolvedHref = null;
@@ -54,8 +55,8 @@ namespace Microsoft.Docs.Build
             {
                 var (_, query, fragment) = HrefUtility.SplitHref(internalXrefSpec.Href);
                 resolvedHref = HrefUtility.MergeHref(RebaseResolvedHref(rootFile, referencedFile), query, fragment.Length == 0 ? "" : fragment.Substring(1));
-                name = internalXrefSpec.GetName();
-                displayPropertyValue = internalXrefSpec.GetXrefPropertyValue(displayPropertyName);
+                name = errors.AddRange(internalXrefSpec.GetName());
+                displayPropertyValue = errors.AddRange(internalXrefSpec.GetXrefPropertyValue(displayPropertyName));
             }
             else if (TryResolveFromExternal(uid, out var xrefSpec))
             {
@@ -65,13 +66,13 @@ namespace Microsoft.Docs.Build
             }
             else
             {
-                return (Errors.UidNotFound(rootFile, uid, href), null, null, null);
+                return (new List<Error> { Errors.UidNotFound(rootFile, uid, href) }, null, null, null);
             }
 
             // fallback order:
             // xrefSpec.displayPropertyName -> xrefSpec.name -> uid
             string display = !string.IsNullOrEmpty(displayPropertyValue) ? displayPropertyValue : (!string.IsNullOrEmpty(name) ? name : uid);
-            return (null, resolvedHref, display, referencedFile);
+            return (errors, resolvedHref, display, referencedFile);
 
             string RemoveHostnameIfSharingTheSameOne(string input)
             {
@@ -151,7 +152,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public static XrefMap Create(Context context, Docset docset)
+        public static (List<Error> errors, XrefMap map) Create(Context context, Docset docset)
         {
             Dictionary<string, XrefSpec> map = new Dictionary<string, XrefSpec>();
             foreach (var url in docset.Config.Xref)
@@ -172,28 +173,35 @@ namespace Microsoft.Docs.Build
                     map[spec.Uid] = spec;
                 }
             }
-            return new XrefMap(context, map, CreateInternalXrefMap(context, docset.ScanScope));
+
+            var (errors, internalXrefMap) = CreateInternalXrefMap(context, docset.ScanScope);
+
+            return (errors, new XrefMap(context, map, internalXrefMap));
         }
 
-        public void OutputXrefMap(Context context)
+        public List<Error> OutputXrefMap(Context context)
         {
+            var errors = new List<Error>();
             var models = new XrefMapModel();
-            models.References.AddRange(ExpandInternalXrefSpecs());
+            models.References.AddRange(errors.AddRange(ExpandInternalXrefSpecs()));
             context.Output.WriteJson(models, "xrefmap.json");
+
+            return errors;
         }
 
-        private IEnumerable<XrefSpec> ExpandInternalXrefSpecs()
+        private (List<Error> errors, IEnumerable<XrefSpec> specs) ExpandInternalXrefSpecs()
         {
+            var errors = new List<Error>();
             var loadedInternalSpecs = new List<XrefSpec>();
             foreach (var (uid, specsWithSameUid) in _internalXrefMap)
             {
                 if (TryGetValidXrefSpecs(uid, specsWithSameUid, out var validInternalSpecs))
                 {
                     var (internalSpec, referencedFile) = GetLatestInternalXrefMap(validInternalSpecs);
-                    loadedInternalSpecs.Add(internalSpec.ToExternalXrefSpec(_context, referencedFile));
+                    loadedInternalSpecs.Add(errors.AddRange(internalSpec.ToExternalXrefSpec(_context, referencedFile)));
                 }
             }
-            return loadedInternalSpecs;
+            return (errors, loadedInternalSpecs);
         }
 
         private (InternalXrefSpec spec, Document referencedFile) GetLatestInternalXrefMap(List<(InternalXrefSpec spec, Document referencedFile)> specs)
@@ -258,15 +266,26 @@ namespace Microsoft.Docs.Build
             return isOverlapping;
         }
 
-        private static IReadOnlyDictionary<string, List<(InternalXrefSpec, Document)>>
+        private static (List<Error> errors, IReadOnlyDictionary<string, List<(InternalXrefSpec, Document)>> map)
             CreateInternalXrefMap(Context context, IEnumerable<Document> files)
         {
             var xrefsByUid = new ConcurrentDictionary<string, ConcurrentBag<(InternalXrefSpec, Document)>>();
+            var errors = new ConcurrentBag<Error>();
             Debug.Assert(files != null);
             using (Progress.Start("Building Xref map"))
             {
-                ParallelUtility.ForEach(files.Where(f => f.ContentType == ContentType.Page), file => Load(context, xrefsByUid, file), Progress.Update);
-                return xrefsByUid.ToList().OrderBy(item => item.Key).ToDictionary(item => item.Key, item => item.Value.ToList());
+                ParallelUtility.ForEach(
+                    files.Where(f => f.ContentType == ContentType.Page),
+                    file =>
+                    {
+                        var errorsPerFile = Load(context, xrefsByUid, file);
+                        foreach (var errorPerFile in errorsPerFile)
+                        {
+                            errors.Add(errorPerFile.WithFile(file.ToString()));
+                        }
+                    },
+                    Progress.Update);
+                return (errors.ToList(), xrefsByUid.ToList().OrderBy(item => item.Key).ToDictionary(item => item.Key, item => item.Value.ToList()));
             }
         }
 
@@ -277,14 +296,15 @@ namespace Microsoft.Docs.Build
             _internalXrefMap = internalXrefMap;
         }
 
-        private static void Load(
+        private static List<Error> Load(
             Context context,
             ConcurrentDictionary<string, ConcurrentBag<(InternalXrefSpec, Document)>> xrefsByUid,
             Document file)
         {
+            var errors = new List<Error>();
+
             try
             {
-                var errors = new List<Error>();
                 var content = file.ReadText();
                 var callStack = new List<Document> { file };
                 if (file.FilePath.EndsWith(".md", PathUtility.PathComparison))
@@ -323,12 +343,13 @@ namespace Microsoft.Docs.Build
                         TryAddXref(xrefsByUid, spec.Uid, file, spec);
                     }
                 }
-                context.Report.Write(file.ToString(), errors);
             }
             catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
             {
-                context.Report.Write(file.ToString(), dex.Error);
+                errors.Add(dex.Error);
             }
+
+            return errors;
         }
 
         private static (Error error, InternalXrefSpec spec, Document doc) LoadMarkdown(Context context, FileMetadata metadata, Document file)
@@ -339,7 +360,7 @@ namespace Microsoft.Docs.Build
                 Href = file.CanonicalUrlWithoutLocale,
                 ReferencedFile = file,
             };
-            xref.ExtensionData["name"] = new Lazy<JValue>(() => new JValue(string.IsNullOrEmpty(metadata.Title) ? metadata.Uid : metadata.Title));
+            xref.ExtensionData["name"] = new Lazy<(List<Error> error, JValue jValue)>(() => (new List<Error>(), new JValue(string.IsNullOrEmpty(metadata.Title) ? metadata.Uid : metadata.Title)));
 
             var (error, monikers) = context.MonikerProvider.GetFileLevelMonikers(file, metadata.MonikerRange);
             foreach (var moniker in monikers)
@@ -358,7 +379,7 @@ namespace Microsoft.Docs.Build
             {
                 return (new List<Error>(), new List<InternalXrefSpec>());
             }
-            var extensionData = new Dictionary<string, Lazy<JValue>>();
+            var extensionData = new Dictionary<string, Lazy<(List<Error> errors, JValue jValue)>>();
 
             // TODO: for backward compatibility, when #YamlMime:YamlDocument, documentType is used to determine schema.
             //       when everything is moved to SDP, we can refactor the mime check to Document.TryCreate
@@ -376,11 +397,11 @@ namespace Microsoft.Docs.Build
 
             errors.AddRange(schemaErrors);
 
-            var extensionDataByUid = new Dictionary<string, (bool isRoot, Dictionary<string, Lazy<JValue>> properties)>();
+            var extensionDataByUid = new Dictionary<string, (bool isRoot, Dictionary<string, Lazy<(List<Error> errors, JValue jValue)>> properties)>();
 
             foreach (var (uid, value) in uidToJsonPath)
             {
-                extensionDataByUid.Add(uid, (string.IsNullOrEmpty(value), new Dictionary<string, Lazy<JValue>>()));
+                extensionDataByUid.Add(uid, (string.IsNullOrEmpty(value), new Dictionary<string, Lazy<(List<Error> errors, JValue jValue)>>()));
             }
 
             foreach (var (jsonPath, xrefProperty) in extensionData)
@@ -393,7 +414,7 @@ namespace Microsoft.Docs.Build
                 }
                 else
                 {
-                    extensionDataByUid.Add(uid, (string.IsNullOrEmpty(uidToJsonPath[uid]), new Dictionary<string, Lazy<JValue>> { { resolvedJsonPath, xrefProperty } }));
+                    extensionDataByUid.Add(uid, (string.IsNullOrEmpty(uidToJsonPath[uid]), new Dictionary<string, Lazy<(List<Error> errors, JValue jValue)>> { { resolvedJsonPath, xrefProperty } }));
                 }
             }
 

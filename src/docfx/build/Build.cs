@@ -32,14 +32,15 @@ namespace Microsoft.Docs.Build
 
             using (var context = await Context.Create(outputPath, report, docset, () => xrefMap))
             {
-                xrefMap = XrefMap.Create(context, docset);
+                xrefMap = errors.AddRange(XrefMap.Create(context, docset));
 
-                var tocMap = BuildTableOfContents.BuildTocMap(context, docset);
+                var tocMap = errors.AddRange(BuildTableOfContents.BuildTocMap(context, docset));
+
                 var (publishManifest, fileManifests, sourceDependencies) = await BuildFiles(context, docset, tocMap);
 
                 var saveGitHubUserCache = context.GitHubUserCache.SaveChanges(config);
 
-                xrefMap.OutputXrefMap(context);
+                errors.AddRange(xrefMap.OutputXrefMap(context));
                 context.Output.WriteJson(publishManifest, ".publish.json");
                 context.Output.WriteJson(sourceDependencies.ToDependencyMapModel(), ".dependencymap.json");
 

@@ -201,14 +201,14 @@ namespace Microsoft.Docs.Build
         public static (List<Error>, object) ToObjectWithSchemaValidation(
             JToken token,
             Type type,
-            Func<IEnumerable<DataTypeAttribute>, object, string, object> transform = null)
+            Func<IEnumerable<DataTypeAttribute>, object, string, (List<Error> error, object content)> transform = null)
         {
             var errors = new List<Error>();
             try
             {
                 var status = new Status
                 {
-                    SchemaViolationErrors = new List<Error>(),
+                    Errors = new List<Error>(),
                     Transform = transform,
                 };
                 t_status = t_status is null ? ImmutableStack.Create(status) : t_status.Push(status);
@@ -221,7 +221,7 @@ namespace Microsoft.Docs.Build
                 };
                 serializer.Error += HandleError;
                 var value = token.ToObject(type, serializer);
-                errors.AddRange(t_status.Peek().SchemaViolationErrors);
+                errors.AddRange(t_status.Peek().Errors);
                 return (errors, value);
             }
             finally
@@ -572,19 +572,27 @@ namespace Microsoft.Docs.Build
                     }
                     catch (Exception e)
                     {
-                        t_status.Peek().SchemaViolationErrors.Add(Errors.ViolateSchema(range, e.Message, reader.Path));
+                        t_status.Peek().Errors.Add(Errors.ViolateSchema(range, e.Message, reader.Path));
                     }
                 }
 
-                return t_status.Peek().Transform != null ? t_status.Peek().Transform(_attributes, value, reader.Path) : value;
+                if (t_status.Peek().Transform != null)
+                {
+                    var (errors, content) = t_status.Peek().Transform(_attributes, value, reader.Path);
+                    t_status.Peek().Errors.AddRange(errors);
+
+                    return content;
+                }
+
+                return value;
             }
         }
 
         private sealed class Status
         {
-            public List<Error> SchemaViolationErrors { get; set; }
+            public List<Error> Errors { get; set; }
 
-            public Func<IEnumerable<DataTypeAttribute>, object, string, object> Transform { get; set; }
+            public Func<IEnumerable<DataTypeAttribute>, object, string, (List<Error> error, object content)> Transform { get; set; }
         }
     }
 }

@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -37,39 +38,53 @@ namespace Microsoft.Docs.Build
             return (errors, model, publishItem);
         }
 
-        public static TableOfContentsMap BuildTocMap(Context context, Docset docset)
+        public static (List<Error> errors, TableOfContentsMap map) BuildTocMap(Context context, Docset docset)
         {
             using (Progress.Start("Loading TOC"))
             {
+                var errors = new ConcurrentBag<Error>();
                 var builder = new TableOfContentsMapBuilder();
                 var tocFiles = docset.ScanScope.Where(f => f.ContentType == ContentType.TableOfContents);
                 if (!tocFiles.Any())
                 {
-                    return builder.Build();
+                    return (errors.ToList(), builder.Build());
                 }
 
-                ParallelUtility.ForEach(tocFiles, file => BuildTocMap(context, file, builder), Progress.Update);
+                ParallelUtility.ForEach(
+                    tocFiles,
+                    file =>
+                    {
+                        var errorsPerFile = BuildTocMap(context, file, builder);
+                        foreach (var errorPerFile in errorsPerFile)
+                        {
+                            errors.Add(errorPerFile.WithFile(file.ToString()));
+                        }
+                    },
+                    Progress.Update);
 
-                return builder.Build();
+                return (errors.ToList(), builder.Build());
             }
         }
 
-        private static void BuildTocMap(Context context, Document fileToBuild, TableOfContentsMapBuilder tocMapBuilder)
+        private static List<Error> BuildTocMap(Context context, Document fileToBuild, TableOfContentsMapBuilder tocMapBuilder)
         {
+            var errors = new List<Error>();
             try
             {
                 Debug.Assert(tocMapBuilder != null);
                 Debug.Assert(fileToBuild != null);
 
-                var (errors, _, _, referencedDocuments, referencedTocs) = Load(context, fileToBuild);
-                context.Report.Write(fileToBuild.ToString(), errors);
+                var (loadErrors, _, _, referencedDocuments, referencedTocs) = Load(context, fileToBuild);
+                errors.AddRange(loadErrors);
 
                 tocMapBuilder.Add(fileToBuild, referencedDocuments, referencedTocs);
             }
             catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
             {
-                context.Report.Write(fileToBuild.ToString(), dex.Error);
+                errors.Add(dex.Error);
             }
+
+            return errors;
         }
 
         private static (
@@ -103,8 +118,8 @@ namespace Microsoft.Docs.Build
                 (file, href, resultRelativeTo) =>
                 {
                     // add to referenced document list
-                    var (error, link, buildItem) = context.DependencyResolver.ResolveLink(href, file, resultRelativeTo, null);
-                    errors.AddIfNotNull(error);
+                    var (linkErrors, link, buildItem) = context.DependencyResolver.ResolveLink(href, file, resultRelativeTo, null);
+                    errors.AddRange(linkErrors);
 
                     if (buildItem != null)
                     {
@@ -115,8 +130,8 @@ namespace Microsoft.Docs.Build
                 (file, uid) =>
                 {
                     // add to referenced document list
-                    var (error, link, display, buildItem) = context.DependencyResolver.ResolveXref(uid, file, file);
-                    errors.AddIfNotNull(error);
+                    var (xrefErrors, link, display, buildItem) = context.DependencyResolver.ResolveXref(uid, file, file);
+                    errors.AddRange(xrefErrors);
 
                     if (buildItem != null)
                     {

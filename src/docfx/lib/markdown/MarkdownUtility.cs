@@ -181,12 +181,12 @@ namespace Microsoft.Docs.Build
         private static string GetLink(string path, object relativeTo, object resultRelativeTo)
         {
             var peek = t_status.Peek();
-            var (error, link, _) = peek.DependencyResolver.ResolveLink(path, (Document)relativeTo, (Document)resultRelativeTo, peek.BuildChild);
-            Result.Errors.AddIfNotNull(error);
+            var (errors, link, _) = peek.DependencyResolver.ResolveLink(path, (Document)relativeTo, (Document)resultRelativeTo, peek.BuildChild);
+            Result.Errors.AddRange(errors);
             return link;
         }
 
-        private static (Error error, string href, string display, Document file) ResolveXref(string href)
+        private static (List<Error> errors, string href, string display, Document file) ResolveXref(string href)
         {
             // TODO: now markdig engine combines all kinds of reference with inclusion, we need to split them out
             return t_status.Peek().DependencyResolver.ResolveXref(href, (Document)InclusionContext.File, (Document)InclusionContext.RootFile);
