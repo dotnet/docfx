@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using HtmlAgilityPack;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -97,26 +98,13 @@ namespace Microsoft.Docs.Build
 
             var htmlDom = HtmlUtility.LoadHtml(html);
             var htmlTitleDom = HtmlUtility.LoadHtml(markup.HtmlTitle);
-            var title = yamlHeader.Value<string>("title") ?? HtmlUtility.GetInnerText(htmlTitleDom);
-            var wordCount = HtmlUtility.CountWord(htmlDom);
-
-            if (markup.HasHtml)
-            {
-                htmlDom = htmlDom.StripTags();
-            }
-
-            if (file.Docset.Legacy)
-            {
-                htmlDom = htmlDom.AddLinkType(file.Docset.Locale, file.Docset.Legacy)
-                                 .RemoveRerunCodepenIframes();
-            }
 
             var model = new PageModel
             {
-                Content = htmlDom.OuterHtml,
-                Title = title,
+                Content = HtmlPostProcess(file, htmlDom),
+                Title = yamlHeader.Value<string>("title") ?? HtmlUtility.GetInnerText(htmlTitleDom),
                 RawTitle = markup.HtmlTitle,
-                WordCount = wordCount,
+                WordCount = HtmlUtility.CountWord(htmlDom),
                 Monikers = monikers,
             };
 
@@ -160,7 +148,8 @@ namespace Microsoft.Docs.Build
 
             if (file.Docset.Legacy && schema.Attribute is PageSchemaAttribute)
             {
-                content = await RazorTemplate.Render(schema.Name, content);
+                var html = await RazorTemplate.Render(schema.Name, content);
+                content = HtmlPostProcess(file, HtmlUtility.LoadHtml(html));
             }
 
             // TODO: add check before to avoid case failure
@@ -181,6 +170,19 @@ namespace Microsoft.Docs.Build
             return (errors, schema, model, fileMetadata);
         }
 
+        private static string HtmlPostProcess(Document file, HtmlNode html)
+        {
+            html = html.StripTags();
+
+            if (file.Docset.Legacy)
+            {
+                html = html.AddLinkType(file.Docset.Locale, file.Docset.Legacy)
+                           .RemoveRerunCodepenIframes();
+            }
+
+            return html.OuterHtml;
+        }
+
         private static (object output, string outputPath, JObject extensionData) ApplyTemplate(
             Context context, Document file, PageModel model, bool isPage)
         {
@@ -193,17 +195,16 @@ namespace Microsoft.Docs.Build
 
             if (file.Docset.Legacy)
             {
-                var (output, extensionData) = TemplateTransform.Transform(model, file);
-
                 if (isPage)
                 {
+                    var (output, extensionData) = TemplateTransform.Transform(model, file);
                     var metadataPath = outputPath.Substring(0, outputPath.Length - ".raw.page.json".Length) + ".mta.json";
                     context.Output.WriteJson(extensionData, metadataPath);
 
                     return (output, outputPath, extensionData);
                 }
 
-                return (output, outputPath, null);
+                return (model, outputPath, null);
             }
 
             return (model, outputPath, isPage ? JObject.FromObject(model.Metadata, JsonUtility.DefaultSerializer) : null);

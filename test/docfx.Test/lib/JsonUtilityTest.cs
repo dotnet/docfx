@@ -56,7 +56,7 @@ namespace Microsoft.Docs.Build
         [Fact]
         public void TestBasicClass()
         {
-            var json = JsonUtility.Serialize(new BasicClass { B = 1, C = "Good!", D = true }, formatting: Formatting.Indented);
+            var json = JsonUtility.Serialize(new BasicClass { B = 1, C = "Good!", D = true }, indent: true);
             Assert.Equal(
                 @"{
   ""c"": ""Good!"",
@@ -156,7 +156,7 @@ namespace Microsoft.Docs.Build
                         C = "Amazing!",
                     },
                     ValueRequired = "a",
-                }, formatting: Formatting.Indented);
+                }, indent: true);
             var json = sw.ToString();
             Assert.Equal(
                 @"{
@@ -213,7 +213,9 @@ namespace Microsoft.Docs.Build
         {
             var targetJson = JsonUtility.Deserialize<JObject>(target);
             var sourceJson = JsonUtility.Deserialize<JObject>(source);
-            var resultJson = JsonUtility.Merge(targetJson, sourceJson);
+            var resultJson = new JObject();
+            JsonUtility.Merge(resultJson, targetJson);
+            JsonUtility.Merge(resultJson, sourceJson);
             var resultJsonString = JsonUtility.Serialize(resultJson);
             Assert.Equal(result, resultJsonString);
         }
@@ -446,22 +448,6 @@ namespace Microsoft.Docs.Build
             {
                 Assert.Equal(ErrorLevel.Error, error.Level);
                 Assert.Equal("violate-schema", error.Code);
-                Assert.Equal(6, error.Line);
-                Assert.Equal(19, error.Column);
-                Assert.Equal("Error converting value \"notArray\" to type 'System.Collections.Generic.List`1[Microsoft.Docs.Build.JsonUtilityTest+BasicClass]'.", error.Message);
-                Assert.Equal("Items", error.JsonPath);
-            }, error =>
-            {
-                Assert.Equal(ErrorLevel.Error, error.Level);
-                Assert.Equal("violate-schema", error.Code);
-                Assert.Equal(1, error.Line);
-                Assert.Equal(1, error.Column);
-                Assert.Equal("Required property 'valueRequired' not found in JSON.", error.Message);
-                Assert.Equal("", error.JsonPath);
-            }, error =>
-            {
-                Assert.Equal(ErrorLevel.Error, error.Level);
-                Assert.Equal("violate-schema", error.Code);
                 Assert.Equal(2, error.Line);
                 Assert.Equal(21, error.Column);
             }, error =>
@@ -486,6 +472,22 @@ namespace Microsoft.Docs.Build
                 Assert.Equal("violate-schema", error.Code);
                 Assert.Equal(5, error.Line);
                 Assert.Equal(52, error.Column);
+            }, error =>
+            {
+                Assert.Equal(ErrorLevel.Error, error.Level);
+                Assert.Equal("violate-schema", error.Code);
+                Assert.Equal(6, error.Line);
+                Assert.Equal(19, error.Column);
+                Assert.Equal("Error converting value \"notArray\" to type 'System.Collections.Generic.List`1[Microsoft.Docs.Build.JsonUtilityTest+BasicClass]'.", error.Message);
+                Assert.Equal("Items", error.JsonPath);
+            }, error =>
+            {
+                Assert.Equal(ErrorLevel.Error, error.Level);
+                Assert.Equal("violate-schema", error.Code);
+                Assert.Equal(1, error.Line);
+                Assert.Equal(1, error.Column);
+                Assert.Equal("Required property 'valueRequired' not found in JSON.", error.Message);
+                Assert.Equal("", error.JsonPath);
             });
         }
 

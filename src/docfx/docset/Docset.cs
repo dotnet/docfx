@@ -114,6 +114,8 @@ namespace Microsoft.Docs.Build
             Docset fallbackDocset = null,
             bool isDependency = false)
         {
+            Debug.Assert(dependencyLock != null);
+
             locale = !string.IsNullOrEmpty(locale) ? locale : config.Localization.DefaultLocale;
             var (errors, dependencies) = await LoadDependencies(report, config, locale, dependencyLock, options);
             report.Write(config.ConfigFileName, errors);
@@ -134,17 +136,15 @@ namespace Microsoft.Docs.Build
             {
                 // localization/fallback docset will share the same context, config, build locale and options with source docset
                 // source docset configuration will be overwritten by build locale overwrite configuration
-                if (LocalizationUtility.TryGetSourceDocsetPath(docset, out var sourceDocsetPath, out var sourceBranch, out var sourceDependencyLock))
+                if (LocalizationUtility.TryGetSourceDocsetPath(docset, out var sourceDocsetPath, out var sourceBranch, out _))
                 {
                     var repo = Repository.Create(sourceDocsetPath, sourceBranch);
-                    sourceDependencyLock = sourceDependencyLock ?? await Docs.Build.DependencyLock.Load(sourceDocsetPath, config.DependencyLock);
-                    docset.FallbackDocset = await Create(report, sourceDocsetPath, locale, config, options, sourceDependencyLock, repo, localizedDocset: docset, isDependency: true);
+                    docset.FallbackDocset = await Create(report, sourceDocsetPath, locale, config, options, dependencyLock, repo, localizedDocset: docset, isDependency: true);
                 }
                 else if (LocalizationUtility.TryGetLocalizedDocsetPath(docset, config, locale, out var localizationDocsetPath, out var localizationBranch, out var localizationDependencyLock))
                 {
                     var repo = Repository.Create(localizationDocsetPath, localizationBranch);
-                    localizationDependencyLock = localizationDependencyLock ?? await Docs.Build.DependencyLock.Load(localizationDocsetPath, config.DependencyLock);
-                    docset.LocalizationDocset = await Create(report, localizationDocsetPath, locale, config, options, localizationDependencyLock, repo, fallbackDocset: docset, isDependency: true);
+                    docset.LocalizationDocset = await Create(report, localizationDocsetPath, locale, config, options, dependencyLock, repo, fallbackDocset: docset, isDependency: true);
                 }
             }
 
@@ -188,7 +188,7 @@ namespace Microsoft.Docs.Build
                 report.Write(Config.ConfigFileName, errors);
                 return map;
             });
-            _scanScope = new Lazy<HashSet<Document>>(() => this.GetScanScope());
+            _scanScope = new Lazy<HashSet<Document>>(() => GetScanScope(this));
 
             _template = new Lazy<TemplateEngine>(() =>
             {
@@ -312,6 +312,30 @@ namespace Microsoft.Docs.Build
                 result.TryAdd(PathUtility.NormalizeFolder(name), await Create(report, dir, locale, subConfig, options, subLock, isDependency: true));
             }
             return (errors, result);
+        }
+
+        private static HashSet<Document> GetScanScope(Docset docset)
+        {
+            var scanScopeFilePaths = new HashSet<string>(PathUtility.PathComparer);
+            var scanScope = new HashSet<Document>();
+
+            foreach (var buildScope in new[] { docset.LocalizationDocset?.BuildScope, docset.BuildScope, docset.FallbackDocset?.BuildScope })
+            {
+                if (buildScope == null)
+                {
+                    continue;
+                }
+
+                foreach (var document in buildScope)
+                {
+                    if (scanScopeFilePaths.Add(document.FilePath))
+                    {
+                        scanScope.Add(document);
+                    }
+                }
+            }
+
+            return scanScope;
         }
     }
 }

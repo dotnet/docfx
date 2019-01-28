@@ -35,7 +35,7 @@ namespace Microsoft.Docs.Build
 
             if (mergeConfig)
             {
-                result.Merge(_config.GlobalMetadata, JsonUtility.MergeSettings);
+                JsonUtility.Merge(result, _config.GlobalMetadata);
 
                 var fileMetadata = new JObject();
                 foreach (var (glob, key, value) in _rules)
@@ -45,13 +45,7 @@ namespace Microsoft.Docs.Build
                         fileMetadata[key] = value;
                     }
                 }
-                result.Merge(fileMetadata, JsonUtility.MergeSettings);
-            }
-
-            if (yamlHeader != null)
-            {
-                errors.AddRange(MetadataValidator.Validate(yamlHeader, "yaml header"));
-                result.Merge(yamlHeader, JsonUtility.MergeSettings);
+                JsonUtility.Merge(result, fileMetadata);
             }
 
             if (typeof(T) == typeof(JObject))

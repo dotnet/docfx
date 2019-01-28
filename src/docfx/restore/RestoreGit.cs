@@ -65,7 +65,14 @@ namespace Microsoft.Docs.Build
             foreach (var child in children)
             {
                 var childDependencyLock = await restoreChild(child.ToRestore.path, child.ToRestore.dependencyLock);
-                gitVersions.TryAdd($"{child.Restored.remote}#{child.Restored.branch}", new DependencyLockModel(childDependencyLock.Git, childDependencyLock.Downloads, child.Restored.gitVersion));
+                gitVersions.TryAdd(
+                    $"{child.Restored.remote}#{child.Restored.branch}",
+                    new DependencyLockModel
+                    {
+                        Git = childDependencyLock.Git,
+                        Downloads = childDependencyLock.Downloads,
+                        Commit = child.Restored.gitVersion.Commit,
+                    });
             }
 
             return gitVersions;
@@ -82,7 +89,8 @@ namespace Microsoft.Docs.Build
                 {
                     foreach (var branch in branches)
                     {
-                        if (RestoreMap.TryGetGitRestorePath(remote, branch, dependencyLock, out var existingPath, out var subDependencyLock))
+                        var gitVersion = dependencyLock?.GetGitLock(remote, branch);
+                        if (RestoreMap.TryGetGitRestorePath(remote, branch, gitVersion, out var existingPath))
                         {
                             {
                                 branchesToFetch.Remove(branch);
@@ -90,8 +98,8 @@ namespace Microsoft.Docs.Build
                                     existingPath,
                                     remote,
                                     branch,
-                                    subDependencyLock,
-                                    new DependencyVersion(subDependencyLock?.Commit ?? Path.GetFileName(existingPath).Split("-").Last())));
+                                    gitVersion,
+                                    new DependencyVersion(gitVersion?.Commit ?? Path.GetFileName(existingPath).Split("-").Last())));
                             }
                         }
                     }

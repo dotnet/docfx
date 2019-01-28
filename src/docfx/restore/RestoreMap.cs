@@ -12,28 +12,49 @@ namespace Microsoft.Docs.Build
     internal static class RestoreMap
     {
         private static readonly ConcurrentDictionary<(string remote, string branch, string commit), Lazy<string>> s_gitPath = new ConcurrentDictionary<(string remote, string branch, string commit), Lazy<string>>();
-        private static readonly ConcurrentDictionary<string, Lazy<string>> s_downloadPath = new ConcurrentDictionary<string, Lazy<string>>();
+        private static readonly ConcurrentDictionary<(string url, string version), Lazy<string>> s_downloadPath = new ConcurrentDictionary<(string url, string version), Lazy<string>>();
 
+        /// <summary>
+        /// Get restored git repository path with url and dependency lock
+        /// The dependency lock must be loaded before using this method
+        /// </summary>
         public static (string path, DependencyLockModel subDependencyLock) GetGitRestorePath(string url, DependencyLockModel dependencyLock)
         {
             var (remote, branch) = HrefUtility.SplitGitHref(url);
             return GetGitRestorePath(remote, branch, dependencyLock);
         }
 
+        /// <summary>
+        /// Get restored git repository path with remote, branch and dependency lock
+        /// The dependency lock must be loaded before using this method
+        /// </summary>
         public static (string path, DependencyLockModel subDependencyLock) GetGitRestorePath(string remote, string branch, DependencyLockModel dependencyLock)
         {
-            if (!TryGetGitRestorePath(remote, branch, dependencyLock, out var result, out var subDependencyLock))
+            Debug.Assert(dependencyLock != null);
+
+            var gitVersion = dependencyLock.GetGitLock(remote, branch);
+
+            if (gitVersion == null)
             {
                 throw Errors.NeedRestore($"{remote}#{branch}").ToException();
             }
 
-            return (result, subDependencyLock);
+            if (!TryGetGitRestorePath(remote, branch, gitVersion, out var result))
+            {
+                throw Errors.NeedRestore($"{remote}#{branch}").ToException();
+            }
+
+            return (result, gitVersion);
         }
 
-        public static bool TryGetGitRestorePath(string remote, string branch, DependencyLockModel dependencyLock, out string result, out DependencyLockModel subDependencyLock)
+        /// <summary>
+        /// Try get git dependency repository path with remote, branch and dependency version
+        /// If the dependency version is null, get the latest one(order by last write time)
+        /// If the dependency version is not null, get the one matched with the version(commit).
+        /// </summary>
+        public static bool TryGetGitRestorePath(string remote, string branch, DependencyVersion dependencyVersion, out string result)
         {
-            subDependencyLock = dependencyLock?.GetGitLock(remote, branch);
-            var commit = subDependencyLock?.Commit;
+            var commit = dependencyVersion?.Commit;
             var locked = !string.IsNullOrEmpty(commit);
             result = s_gitPath.AddOrUpdate(
                 (remote, branch, commit),
@@ -51,18 +72,45 @@ namespace Microsoft.Docs.Build
                     return null;
                 }
 
+                // return specified version
+                if (locked)
+                {
+                    if (TryGetLockedWorkTreePath(repoPath, true, out var workTree) || TryGetLockedWorkTreePath(repoPath, false, out workTree))
+                    {
+                        return workTree;
+                    }
+
+                    return null;
+                }
+
+                // return the latest version
                 return (
                     from path in Directory.GetDirectories(repoPath, "*", SearchOption.TopDirectoryOnly)
                     let name = Path.GetFileName(path)
-                    where GitUtility.IsWorkTreeCheckoutComplete(repoPath, name) &&
-                        ((locked && (name == $"{RestoreGit.GetWorkTreeHeadPrefix(branch, locked)}{commit}" || name.EndsWith($"-{commit}"))) ||
-                        (!locked && name.StartsWith(RestoreGit.GetWorkTreeHeadPrefix(branch))))
-                    orderby new DirectoryInfo(path).LastWriteTimeUtc
+                    where GitUtility.IsWorkTreeCheckoutComplete(repoPath, name) && name.StartsWith(RestoreGit.GetWorkTreeHeadPrefix(branch))
+                    orderby new DirectoryInfo(path).LastWriteTimeUtc descending
                     select path).FirstOrDefault();
+            }
+
+            bool TryGetLockedWorkTreePath(string root, bool isLocked, out string workTreePath)
+            {
+                var workTreeName = $"{RestoreGit.GetWorkTreeHeadPrefix(branch, isLocked)}{commit}";
+                workTreePath = Path.Combine(root, workTreeName);
+                if (Directory.Exists(workTreePath) && GitUtility.IsWorkTreeCheckoutComplete(root, workTreeName))
+                {
+                    return true;
+                }
+
+                return false;
             }
         }
 
-        public static (bool fromUrl, string path) GetFileRestorePath(string docsetPath, string url, string fallbackDocset = null)
+        public static (bool fromUrl, string path) GetFileRestorePath(this Docset docset, string url)
+        {
+            return GetFileRestorePath(docset.DocsetPath, url, docset.DependencyLock, docset.FallbackDocset?.DocsetPath);
+        }
+
+        public static (bool fromUrl, string path) GetFileRestorePath(string docsetPath, string url, DependencyVersion dependencyVersion, string fallbackDocset = null)
         {
             var fromUrl = HrefUtility.IsHttpHref(url);
             if (!fromUrl)
@@ -76,13 +124,13 @@ namespace Microsoft.Docs.Build
 
                 if (!string.IsNullOrEmpty(fallbackDocset))
                 {
-                    return GetFileRestorePath(fallbackDocset, url);
+                    return GetFileRestorePath(fallbackDocset, url, dependencyVersion);
                 }
 
                 throw Errors.FileNotFound(docsetPath, url).ToException();
             }
 
-            if (!TryGetFileRestorePath(url, out var result))
+            if (!TryGetFileRestorePath(url, dependencyVersion, out var result))
             {
                 throw Errors.NeedRestore(url).ToException();
             }
@@ -90,19 +138,21 @@ namespace Microsoft.Docs.Build
             return (fromUrl, result);
         }
 
-        public static bool TryGetFileRestorePath(string url, out string result)
+        public static bool TryGetFileRestorePath(string url, DependencyVersion dependencyVersion, out string result)
         {
             Debug.Assert(!string.IsNullOrEmpty(url));
             Debug.Assert(HrefUtility.IsHttpHref(url));
 
+            var fileName = dependencyVersion?.Hash;
+            var locked = !string.IsNullOrEmpty(fileName);
             result = s_downloadPath.AddOrUpdate(
-                url,
-                new Lazy<string>(FindLastModifiedFile),
-                (_, existing) => existing.Value != null ? existing : new Lazy<string>(FindLastModifiedFile)).Value;
+                (url, fileName),
+                new Lazy<string>(FindFile),
+                (_, existing) => existing.Value != null ? existing : new Lazy<string>(FindFile)).Value;
 
             return File.Exists(result);
 
-            string FindLastModifiedFile()
+            string FindFile()
             {
                 // get the file path from restore map
                 var restoreDir = AppData.GetFileDownloadDir(url);
@@ -112,6 +162,13 @@ namespace Microsoft.Docs.Build
                     return null;
                 }
 
+                // return specified version
+                if (locked)
+                {
+                    return Path.Combine(restoreDir, fileName);
+                }
+
+                // return the latest version
                 return Directory.EnumerateFiles(restoreDir, "*", SearchOption.TopDirectoryOnly)
                        .OrderByDescending(f => new FileInfo(f).LastWriteTimeUtc)
                        .FirstOrDefault();

@@ -31,5 +31,7 @@ namespace Microsoft.Docs.Build
         public string Xref { get; set; }
 
         public TestData Data { get; set; }
+
+        public TestData[] Array { get; set; }
     }
 }
