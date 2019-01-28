@@ -38,7 +38,7 @@ namespace Microsoft.Docs.Build
 
         public static string GetDependencyLockFile(string docsetPath, string locale)
         {
-            return PathUtility.NormalizeFile(Path.Combine(DependencyLockRoot, PathUtility.UrlToShortName(docsetPath), locale, ".lock.json"));
+            return PathUtility.NormalizeFile(Path.Combine(DependencyLockRoot, PathUtility.UrlToShortName(docsetPath), locale ?? "", ".lock.json"));
         }
 
         public static string GetCommitCachePath(string remote)
