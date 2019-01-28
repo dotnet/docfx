@@ -42,14 +42,16 @@ namespace Microsoft.Docs.Build
 
             _config = config;
             _outputPath = outputPath;
-            _output = new Lazy<TextWriter>(() =>
-            {
-                var outputFilePath = Path.GetFullPath(_outputPath);
+            _output = _output != null && _output.IsValueCreated
+                ? _output
+                : new Lazy<TextWriter>(() =>
+                  {
+                      var outputFilePath = Path.GetFullPath(_outputPath);
 
-                PathUtility.CreateDirectoryFromFilePath(outputFilePath);
+                      PathUtility.CreateDirectoryFromFilePath(outputFilePath);
 
-                return File.CreateText(outputFilePath);
-            });
+                      return File.CreateText(outputFilePath);
+                  });
         }
 
         public bool Write(string file, IEnumerable<Error> errors)
