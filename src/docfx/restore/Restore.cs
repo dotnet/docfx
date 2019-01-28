@@ -32,12 +32,12 @@ namespace Microsoft.Docs.Build
                     return restoredDocsets.GetOrAdd(docset + dependencyLock?.Commit, async k =>
                     {
                         var (errors, config) = ConfigLoader.TryLoad(docset, options, localeToRestore, extend: false);
-                        report.Write(config.ConfigFileName, errors);
 
                         if (root)
                         {
                             report.Configure(docsetPath, config);
                         }
+                        report.Write(config.ConfigFileName, errors);
 
                         // no need to restore child docsets' loc repository
                         return await RestoreOneDocset(
