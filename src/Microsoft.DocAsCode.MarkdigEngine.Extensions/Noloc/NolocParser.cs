@@ -8,9 +8,9 @@
 
     public class NolocParser : InlineParser
     {
-        // syntax => ::: noloc text="{content}" :::
-        private const string StartString = "::: noloc text=\"";
-        private const string EndString = "\" :::";
+        // syntax => :::noloc text="{content}":::
+        private const string StartString = ":::noloc text=\"";
+        private const string EndString = "\":::";
 
         public NolocParser()
         {
@@ -19,19 +19,19 @@
 
         public override bool Match(InlineProcessor processor, ref StringSlice slice)
         {
-            if (!ExtensionsHelper.MatchStart(ref slice, StartString, false))
+            if (!ExtensionsHelper.MatchStart(ref slice, StartString, true))
             {
                 return false;
             }
 
             var text = ExtensionsHelper.TryGetStringBeforeChars(new char[] { '\"', '\n' }, ref slice);
 
-            if(text == null)
+            if(text == null || text.IndexOf('\n') != -1)
             {
                 return false;
             }
 
-            if (!ExtensionsHelper.MatchStart(ref slice, EndString, false))
+            if (!ExtensionsHelper.MatchStart(ref slice, EndString, true))
             {
                 return false;
             }
