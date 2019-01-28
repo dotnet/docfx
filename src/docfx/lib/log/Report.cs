@@ -52,19 +52,6 @@ namespace Microsoft.Docs.Build
             });
         }
 
-        public bool Write(IEnumerable<Error> errors)
-        {
-            var hasErrors = false;
-            foreach (var error in errors)
-            {
-                if (Write(error))
-                {
-                    hasErrors = true;
-                }
-            }
-            return hasErrors;
-        }
-
         public bool Write(string file, IEnumerable<Error> errors)
         {
             var hasErrors = false;
