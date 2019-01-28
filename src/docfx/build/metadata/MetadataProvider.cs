@@ -26,37 +26,29 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public (List<Error> errors, T metadata) GetMetadata<T>(Document file, JObject yamlHeader = null, bool mergeConfig = true)
+        public (List<Error> errors, T metadata) GetMetadata<T>(Document file, JObject yamlHeader = null)
         {
             Debug.Assert(file != null);
 
             var errors = new List<Error>();
             var result = new JObject();
 
-            if (mergeConfig)
-            {
-                JsonUtility.Merge(result, _config.GlobalMetadata);
+            JsonUtility.Merge(result, _config.GlobalMetadata);
 
-                var fileMetadata = new JObject();
-                foreach (var (glob, key, value) in _rules)
+            var fileMetadata = new JObject();
+            foreach (var (glob, key, value) in _rules)
+            {
+                if (glob(file.FilePath))
                 {
-                    if (glob(file.FilePath))
-                    {
-                        fileMetadata[key] = value;
-                    }
+                    fileMetadata[key] = value;
                 }
-                JsonUtility.Merge(result, fileMetadata);
             }
+            JsonUtility.Merge(result, fileMetadata);
 
             if (yamlHeader != null)
             {
                 errors.AddRange(MetadataValidator.Validate(yamlHeader, "yaml header"));
                 JsonUtility.Merge(result, yamlHeader);
-            }
-
-            if (typeof(T) == typeof(JObject))
-            {
-                return (errors, (T)(object)result);
             }
 
             var (schemaErrors, obj) = JsonUtility.ToObjectWithSchemaValidation<T>(result);
