@@ -50,6 +50,7 @@ namespace Microsoft.Docs.Build
 
             if (yamlHeader != null)
             {
+                errors.AddRange(MetadataValidator.Validate(yamlHeader, "yaml header"));
                 JsonUtility.Merge(result, yamlHeader);
             }
 
