@@ -32,12 +32,12 @@ namespace Microsoft.Docs.Build
                     return restoredDocsets.GetOrAdd(docset + dependencyLock?.Commit, async k =>
                     {
                         var (errors, config) = ConfigLoader.TryLoad(docset, options, localeToRestore, extend: false);
-                        report.Write(errors);
 
                         if (root)
                         {
                             report.Configure(docsetPath, config);
                         }
+                        report.Write(config.ConfigFileName, errors);
 
                         // no need to restore child docsets' loc repository
                         return await RestoreOneDocset(
@@ -67,7 +67,7 @@ namespace Microsoft.Docs.Build
 
                 // extend the config before loading
                 var (errors, extendedConfig) = ConfigLoader.TryLoad(docset, options, locale, extend: true);
-                report.Write(errors);
+                report.Write(extendedConfig.ConfigFileName, errors);
 
                 // restore and load dependency lock if need
                 if (HrefUtility.IsHttpHref(extendedConfig.DependencyLock))
@@ -89,7 +89,7 @@ namespace Microsoft.Docs.Build
                 // only save it when the dependency lock is NOT from parent
                 if (!parentLock)
                 {
-                    var dependencyLockFilePath = string.IsNullOrEmpty(extendedConfig.DependencyLock) ? AppData.GetDependencyLockFile(docset) : extendedConfig.DependencyLock;
+                    var dependencyLockFilePath = string.IsNullOrEmpty(extendedConfig.DependencyLock) ? AppData.GetDependencyLockFile(docset, locale) : extendedConfig.DependencyLock;
                     await DependencyLock.Save(docset, dependencyLockFilePath, generatedLock);
                 }
 

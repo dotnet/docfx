@@ -88,7 +88,7 @@ namespace Microsoft.Docs.Build
                     from path in Directory.GetDirectories(repoPath, "*", SearchOption.TopDirectoryOnly)
                     let name = Path.GetFileName(path)
                     where GitUtility.IsWorkTreeCheckoutComplete(repoPath, name) && name.StartsWith(RestoreGit.GetWorkTreeHeadPrefix(branch))
-                    orderby new DirectoryInfo(path).LastWriteTimeUtc
+                    orderby new DirectoryInfo(path).LastWriteTimeUtc descending
                     select path).FirstOrDefault();
             }
 

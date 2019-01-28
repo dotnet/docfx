@@ -17,7 +17,8 @@ namespace Microsoft.Docs.Build
         {
             XrefMap xrefMap = null;
             var repository = Repository.Create(docsetPath, branch: null);
-            var dependencyLock = await LoadBuildDependencyLock(docsetPath, repository, options);
+            var locale = LocalizationUtility.GetLocale(repository, options);
+            var dependencyLock = await LoadBuildDependencyLock(docsetPath, locale, repository, options);
             var (configErrors, config) = GetBuildConfig(docsetPath, repository, options, dependencyLock);
             report.Configure(docsetPath, config);
 
@@ -26,8 +27,7 @@ namespace Microsoft.Docs.Build
                 return;
 
             var errors = new List<Error>();
-            var localeToBuild = LocalizationUtility.GetLocale(repository, options);
-            var docset = GetBuildDocset(await Docset.Create(report, docsetPath, localeToBuild, config, options, dependencyLock, repository));
+            var docset = GetBuildDocset(await Docset.Create(report, docsetPath, locale, config, options, dependencyLock, repository));
             var outputPath = Path.Combine(docsetPath, config.Output.Path);
 
             using (var context = await Context.Create(outputPath, report, docset, () => xrefMap))
@@ -188,16 +188,15 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static async Task<DependencyLockModel> LoadBuildDependencyLock(string docset, Repository repository, CommandLineOptions commandLineOptions)
+        private static async Task<DependencyLockModel> LoadBuildDependencyLock(string docset, string locale, Repository repository, CommandLineOptions commandLineOptions)
         {
             Debug.Assert(!string.IsNullOrEmpty(docset));
 
             var (errors, config) = ConfigLoader.TryLoad(docset, commandLineOptions);
 
-            var dependencyLock = await DependencyLock.Load(docset, string.IsNullOrEmpty(config.DependencyLock) ? AppData.GetDependencyLockFile(docset) : config.DependencyLock);
+            var dependencyLock = await DependencyLock.Load(docset, string.IsNullOrEmpty(config.DependencyLock) ? AppData.GetDependencyLockFile(docset, locale) : config.DependencyLock);
 
-            if (LocalizationUtility.TryGetSourceRepository(repository, out var sourceRemote, out var sourceBranch, out var locale) &&
-                !ConfigLoader.TryGetConfigPath(docset, out _))
+            if (LocalizationUtility.TryGetSourceRepository(repository, out var sourceRemote, out var sourceBranch, out _) && !ConfigLoader.TryGetConfigPath(docset, out _))
             {
                 // build from loc repo directly with overwrite config
                 // which means it's using source repo's dependency lock
