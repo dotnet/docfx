@@ -48,6 +48,11 @@ namespace Microsoft.Docs.Build
                 JsonUtility.Merge(result, fileMetadata);
             }
 
+            if (yamlHeader != null)
+            {
+                JsonUtility.Merge(result, yamlHeader);
+            }
+
             if (typeof(T) == typeof(JObject))
             {
                 return (errors, (T)(object)result);

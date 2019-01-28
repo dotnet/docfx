@@ -37,9 +37,10 @@ namespace Microsoft.Docs.Build
 
             var (metaErrors, metadata) = ExtractYamlHeader.Extract(file, context);
             errors.AddRange(metaErrors);
+
             var tocModel = new TableOfContentsModel
             {
-                Metadata = metadata.ToObject<TableOfContentsMetadata>(),
+                Metadata = JsonUtility.ToObject<TableOfContentsMetadata>(metadata),
             };
 
             try

@@ -178,7 +178,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static JObject ToJObject(object model)
         {
-            return JObject.FromObject(model, DefaultSerializer);
+            return JObject.FromObject(model, s_serializer);
         }
 
         /// <summary>
