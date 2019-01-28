@@ -18,7 +18,7 @@ namespace Microsoft.Docs.Build
             XrefMap xrefMap = null;
             var repository = Repository.Create(docsetPath, branch: null);
             var locale = LocalizationUtility.GetLocale(repository, options);
-            var dependencyLock = await LoadBuildDependencyLock(docsetPath, repository, options);
+            var dependencyLock = await LoadBuildDependencyLock(docsetPath, locale, repository, options);
             var (configErrors, config) = GetBuildConfig(docsetPath, repository, options, dependencyLock);
             report.Configure(docsetPath, config);
 
