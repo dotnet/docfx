@@ -105,6 +105,11 @@ namespace Microsoft.Docs.Build
             }
         }
 
+        public static (bool fromUrl, string path) GetFileRestorePath(this Docset docset, string url)
+        {
+            return GetFileRestorePath(docset.DocsetPath, url, docset.DependencyLock, docset.FallbackDocset?.DocsetPath);
+        }
+
         public static (bool fromUrl, string path) GetFileRestorePath(string docsetPath, string url, DependencyVersion dependencyVersion, string fallbackDocset = null)
         {
             var fromUrl = HrefUtility.IsHttpHref(url);

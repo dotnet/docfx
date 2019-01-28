@@ -16,19 +16,18 @@ namespace Microsoft.Docs.Build
         public static async Task Run(string docsetPath, CommandLineOptions options, Report report)
         {
             XrefMap xrefMap = null;
+            var repository = Repository.Create(docsetPath, branch: null);
+            var dependencyLock = await LoadBuildDependencyLock(docsetPath, repository, options);
+            var (configErrors, config) = GetBuildConfig(docsetPath, repository, options, dependencyLock);
+            report.Configure(docsetPath, config);
+
+            // just return if config loading has errors
+            if (report.Write(config.ConfigFileName, configErrors))
+                return;
 
             var errors = new List<Error>();
-
-            // todo: abort the process if configuration loading has errors
-            var repository = Repository.Create(docsetPath, branch: null);
-
-            var dependencyLock = await LoadBuildDependencyLock(docsetPath, repository, options);
-            var (configErrors, config) = LocalizationUtility.GetBuildConfig(docsetPath, repository, options, dependencyLock);
-            report.Configure(docsetPath, config);
-            report.Write(config.ConfigFileName, configErrors);
-
-            var localeToBuild = LocalizationUtility.GetBuildLocale(repository, options);
-            var docset = (await Docset.Create(report, docsetPath, localeToBuild, config, options, dependencyLock, repository)).GetBuildDocset();
+            var localeToBuild = LocalizationUtility.GetLocale(repository, options);
+            var docset = GetBuildDocset(await Docset.Create(report, docsetPath, localeToBuild, config, options, dependencyLock, repository));
             var outputPath = Path.Combine(docsetPath, config.Output.Path);
 
             using (var context = await Context.Create(outputPath, report, docset, () => xrefMap))
@@ -80,7 +79,7 @@ namespace Microsoft.Docs.Build
 
                 // Build TOC: since toc file depends on the build result of every node
                 await ParallelUtility.ForEach(
-                    docset.GetTableOfContentsScope(tocMap),
+                    GetTableOfContentsScope(docset, tocMap),
                     (file, buildChild) => { return BuildOneFile(file, buildChild, new MonikerMap(monikerMap)); },
                     ShouldBuildTocFile,
                     Progress.Update);
@@ -215,6 +214,51 @@ namespace Microsoft.Docs.Build
             }
 
             return dependencyLock ?? new DependencyLockModel();
+        }
+
+        private static (List<Error> errors, Config config) GetBuildConfig(string docset, Repository repository, CommandLineOptions options, DependencyLockModel dependencyLock)
+        {
+            if (ConfigLoader.TryGetConfigPath(docset, out _) || !LocalizationUtility.TryGetSourceRepository(repository, out var sourceRemote, out var sourceBranch, out var locale))
+            {
+                return ConfigLoader.Load(docset, options);
+            }
+
+            Debug.Assert(dependencyLock != null);
+            var (sourceDocsetPath, _) = RestoreMap.GetGitRestorePath(sourceRemote, sourceBranch, dependencyLock);
+            return ConfigLoader.Load(sourceDocsetPath, options, locale);
+        }
+
+        private static Docset GetBuildDocset(Docset sourceDocset)
+        {
+            Debug.Assert(sourceDocset != null);
+
+            return sourceDocset.LocalizationDocset ?? sourceDocset;
+        }
+
+        private static IReadOnlyList<Document> GetTableOfContentsScope(Docset docset, TableOfContentsMap tocMap)
+        {
+            Debug.Assert(tocMap != null);
+
+            var result = docset.BuildScope.Where(d => d.ContentType == ContentType.TableOfContents).ToList();
+
+            if (!docset.IsLocalized())
+            {
+                return result;
+            }
+
+            // if A toc includes B toc and only B toc is localized, then A need to be included and built
+            var fallbackTocs = new List<Document>();
+            foreach (var toc in result)
+            {
+                if (tocMap.TryFindParents(toc, out var parents))
+                {
+                    fallbackTocs.AddRange(parents);
+                }
+            }
+
+            result.AddRange(fallbackTocs);
+
+            return result;
         }
     }
 }

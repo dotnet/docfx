@@ -188,7 +188,7 @@ namespace Microsoft.Docs.Build
                 report.Write(Config.ConfigFileName, errors);
                 return map;
             });
-            _scanScope = new Lazy<HashSet<Document>>(() => this.GetScanScope());
+            _scanScope = new Lazy<HashSet<Document>>(() => GetScanScope(this));
 
             _template = new Lazy<TemplateEngine>(() =>
             {
@@ -312,6 +312,30 @@ namespace Microsoft.Docs.Build
                 result.TryAdd(PathUtility.NormalizeFolder(name), await Create(report, dir, locale, subConfig, options, subLock, isDependency: true));
             }
             return (errors, result);
+        }
+
+        private static HashSet<Document> GetScanScope(Docset docset)
+        {
+            var scanScopeFilePaths = new HashSet<string>(PathUtility.PathComparer);
+            var scanScope = new HashSet<Document>();
+
+            foreach (var buildScope in new[] { docset.LocalizationDocset?.BuildScope, docset.BuildScope, docset.FallbackDocset?.BuildScope })
+            {
+                if (buildScope == null)
+                {
+                    continue;
+                }
+
+                foreach (var document in buildScope)
+                {
+                    if (scanScopeFilePaths.Add(document.FilePath))
+                    {
+                        scanScope.Add(document);
+                    }
+                }
+            }
+
+            return scanScope;
         }
     }
 }
