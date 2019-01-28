@@ -54,10 +54,10 @@ namespace Microsoft.Docs.Build
                     tocFiles,
                     file =>
                     {
-                        var errorsPerFile = BuildTocMap(context, file, builder);
-                        foreach (var errorPerFile in errorsPerFile)
+                        var mapErros = BuildTocMap(context, file, builder).WithFile(file.ToString());
+                        foreach (var error in mapErros)
                         {
-                            errors.Add(errorPerFile.WithFile(file.ToString()));
+                            errors.Add(error);
                         }
                     },
                     Progress.Update);

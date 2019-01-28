@@ -427,6 +427,16 @@ namespace Microsoft.Docs.Build
             return result.value;
         }
 
+        public static List<Error> WithFile(this List<Error> errors, string file)
+        {
+            if (errors == null)
+            {
+                return errors;
+            }
+
+            return errors.Where(e => e != null).Select(e => e.WithFile(file)).ToList();
+        }
+
         private static string Join<T>(IEnumerable<T> source, Func<T, string> selector = null)
             => string.Join(", ", source.Select(item => $"{selector?.Invoke(item) ?? item.ToString()}").OrderBy(_ => _, StringComparer.Ordinal).Select(_ => $"'{_}'").Take(5));
 

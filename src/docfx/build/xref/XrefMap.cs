@@ -278,10 +278,10 @@ namespace Microsoft.Docs.Build
                     files.Where(f => f.ContentType == ContentType.Page),
                     file =>
                     {
-                        var errorsPerFile = Load(context, xrefsByUid, file);
-                        foreach (var errorPerFile in errorsPerFile)
+                        var xrefErrors = Load(context, xrefsByUid, file).WithFile(file.ToString());
+                        foreach (var error in xrefErrors)
                         {
-                            errors.Add(errorPerFile.WithFile(file.ToString()));
+                            errors.Add(error);
                         }
                     },
                     Progress.Update);
