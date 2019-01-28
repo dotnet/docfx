@@ -66,7 +66,7 @@ namespace Microsoft.Docs.Build
             }
             else
             {
-                return (new List<Error> { Errors.UidNotFound(rootFile, uid, href) }, null, null, null);
+                return (Errors.UidNotFound(rootFile, uid, href).ToList(), null, null, null);
             }
 
             // fallback order:
@@ -323,10 +323,8 @@ namespace Microsoft.Docs.Build
                 }
                 else if (file.FilePath.EndsWith(".yml", PathUtility.PathComparison))
                 {
-                    var (yamlErrors, token) = YamlUtility.Deserialize(file, context);
-                    errors.AddRange(yamlErrors);
-                    var (schemaErrors, specs) = LoadSchemaDocument(context, token as JObject, file);
-                    errors.AddRange(schemaErrors);
+                    var token = errors.AddRange(YamlUtility.Deserialize(file, context));
+                    var specs = errors.AddRange(LoadSchemaDocument(context, token as JObject, file));
                     foreach (var spec in specs)
                     {
                         TryAddXref(xrefsByUid, spec.Uid, file, spec);
@@ -390,12 +388,10 @@ namespace Microsoft.Docs.Build
             }
 
             var errors = new List<Error>();
-            var (schemaErrors, _) = JsonUtility.ToObjectWithSchemaValidation(
+            errors.AddRange(JsonUtility.ToObjectWithSchemaValidation(
                 obj,
                 schema.Type,
-                transform: AttributeTransformer.TransformXref(context, file, null, extensionData));
-
-            errors.AddRange(schemaErrors);
+                transform: AttributeTransformer.TransformXref(context, file, null, extensionData)));
 
             var extensionDataByUid = new Dictionary<string, (bool isRoot, Dictionary<string, Lazy<(List<Error> errors, JValue jValue)>> properties)>();
 

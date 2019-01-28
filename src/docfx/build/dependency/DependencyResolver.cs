@@ -163,7 +163,7 @@ namespace Microsoft.Docs.Build
             // Link to dependent repo, don't build the file, leave href as is
             if (relativeTo.Docset.DependencyDocsets.Values.Any(v => file.Docset == v))
             {
-                return (new List<Error> { Errors.LinkIsDependency(relativeTo, file, href) }, href, fragment, null);
+                return (Errors.LinkIsDependency(relativeTo, file, href).ToList(), href, fragment, null);
             }
 
             // Make result relative to `resultRelativeTo`
@@ -179,7 +179,7 @@ namespace Microsoft.Docs.Build
                 && (file.ContentType == ContentType.Page || file.ContentType == ContentType.TableOfContents)
                 && !file.Docset.BuildScope.Contains(file))
             {
-                return (new List<Error> { Errors.LinkOutOfScope(relativeTo, file, href, file.Docset.Config.ConfigFileName) }, relativeUrl + query + fragment, fragment, null);
+                return (Errors.LinkOutOfScope(relativeTo, file, href, file.Docset.Config.ConfigFileName).ToList(), relativeUrl + query + fragment, fragment, null);
             }
 
             return (errors, relativeUrl + query + fragment, fragment, file);

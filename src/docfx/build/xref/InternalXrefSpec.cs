@@ -26,10 +26,13 @@ namespace Microsoft.Docs.Build
             if (propertyName is null)
                 return (errors, null);
 
-            if (ExtensionData.TryGetValue(propertyName, out var internalValue) && internalValue.Value.jValue.Value is string value)
+            if (ExtensionData.TryGetValue(propertyName, out var internalValue))
             {
-                errors.AddRange(errors);
-                return (errors, value);
+                var jValue = errors.AddRange(internalValue.Value);
+                if (jValue.Value is string value)
+                {
+                    return (errors, value);
+                }
             }
 
             return (errors, null);

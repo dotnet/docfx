@@ -76,6 +76,11 @@ namespace Microsoft.Docs.Build
             return new DocfxException(this, innerException);
         }
 
+        public List<Error> ToList()
+        {
+            return new List<Error> { this };
+        }
+
         private class EqualityComparer : IEqualityComparer<Error>
         {
             public bool Equals(Error x, Error y)
