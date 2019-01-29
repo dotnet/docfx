@@ -54,7 +54,7 @@ namespace Microsoft.Docs.Build
         private static JObject CreateRawMetadata(PageModel pageModel, Document file)
         {
             var docset = file.Docset;
-            var rawMetadata = pageModel.Metadata != null ? JObject.FromObject(pageModel.Metadata) : new JObject();
+            var rawMetadata = pageModel.Metadata != null ? JsonUtility.FromObject(pageModel.Metadata) : new JObject();
             rawMetadata["depot_name"] = $"{docset.Config.Product}.{docset.Config.Name}";
 
             rawMetadata["search.ms_docsetname"] = docset.Config.Name;
