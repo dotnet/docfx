@@ -53,27 +53,28 @@ namespace Microsoft.Docs.Build
 
             // apply options
             var optionConfigObject = Expand(options?.ToJObject());
-            var finalConfigObject = JsonUtility.Merge(configObject, optionConfigObject);
+
+            JsonUtility.Merge(configObject, optionConfigObject);
             errors.AddRange(loadErrors);
 
             // apply global config
             var globalErrors = new List<Error>();
-            (globalErrors, finalConfigObject) = ApplyGlobalConfig(finalConfigObject);
+            (globalErrors, configObject) = ApplyGlobalConfig(configObject);
             errors.AddRange(globalErrors);
 
             // apply extends
             if (extend)
             {
                 var extendErrors = new List<Error>();
-                (extendErrors, finalConfigObject) = ExtendConfigs(finalConfigObject, docsetPath);
+                (extendErrors, configObject) = ExtendConfigs(configObject, docsetPath);
                 errors.AddRange(extendErrors);
             }
 
             // apply overwrite
-            finalConfigObject = OverwriteConfig(finalConfigObject, locale ?? options.Locale, GetBranch());
+            configObject = OverwriteConfig(configObject, locale ?? options.Locale, GetBranch());
 
             var deserializeErrors = new List<Error>();
-            (deserializeErrors, config) = JsonUtility.ToObjectWithSchemaValidation<Config>(finalConfigObject);
+            (deserializeErrors, config) = JsonUtility.ToObjectWithSchemaValidation<Config>(configObject);
             errors.AddRange(deserializeErrors);
 
             // validate metadata
@@ -119,7 +120,7 @@ namespace Microsoft.Docs.Build
                 (errors, result) = LoadConfigObject(globalConfigPath, globalConfigPath);
             }
 
-            result.Merge(config, JsonUtility.MergeSettings);
+            JsonUtility.Merge(result, config);
             return (errors, result);
         }
 
@@ -137,12 +138,12 @@ namespace Microsoft.Docs.Build
                         var (_, filePath) = RestoreMap.GetFileRestorePath(docsetPath, str, null);
                         var (extendErros, extendConfigObject) = LoadConfigObject(str, filePath);
                         errors.AddRange(extendErros);
-                        result.Merge(extendConfigObject, JsonUtility.MergeSettings);
+                        JsonUtility.Merge(result, extendConfigObject);
                     }
                 }
             }
 
-            result.Merge(config, JsonUtility.MergeSettings);
+            JsonUtility.Merge(result, config);
             return (errors, result);
         }
 
@@ -163,7 +164,7 @@ namespace Microsoft.Docs.Build
 
             var result = new JObject();
             var overwriteConfigIdentifiers = new List<string>();
-            result.Merge(config, JsonUtility.MergeSettings);
+            JsonUtility.Merge(result, config);
             foreach (var (key, value) in config)
             {
                 if (OverwriteConfigIdentifier.TryMatch(key, out var identifier))
@@ -172,7 +173,7 @@ namespace Microsoft.Docs.Build
                         (identifier.Locales.Count == 0 || (!string.IsNullOrEmpty(locale) && identifier.Locales.Contains(locale))) &&
                         value is JObject overwriteConfig)
                     {
-                        result.Merge(Expand(overwriteConfig), JsonUtility.MergeSettings);
+                        JsonUtility.Merge(result, Expand(overwriteConfig));
                     }
 
                     overwriteConfigIdentifiers.Add(key);
