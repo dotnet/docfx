@@ -34,9 +34,11 @@ namespace Microsoft.Docs.Build
             {
                 output = file.Docset.Template.TransformMetadata("toc.json.js", JsonUtility.ToJObject(model));
 
-                context.Output.WriteText("{}", Path.ChangeExtension(outputPath, ".mta.json"));
+                var metadata = new { experimental = model.Metadata.Experimental, experiment_id = model.Metadata.ExperimentId };
+                context.Output.WriteJson(metadata, Path.ChangeExtension(outputPath, ".mta.json"));
             }
 
+            // TODO: Add experimental and experiment_id to publish item
             var publishItem = new PublishItem
             {
                 Url = file.SiteUrl,
