@@ -34,7 +34,7 @@ namespace Microsoft.Docs.Build
             {
                 output = file.Docset.Template.TransformMetadata("toc.json.js", JsonUtility.ToJObject(model));
 
-                context.Output.WriteJson(model.Metadata, Path.ChangeExtension(outputPath, ".mta.json"));
+                context.Output.WriteText("{}", Path.ChangeExtension(outputPath, ".mta.json"));
             }
 
             var publishItem = new PublishItem
