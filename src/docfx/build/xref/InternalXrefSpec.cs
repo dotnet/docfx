@@ -40,7 +40,7 @@ namespace Microsoft.Docs.Build
 
         public (List<Error> errors, string value) GetName() => GetXrefPropertyValue("name");
 
-        public (List<Error> errors, XrefSpec xrefSpec) ToExternalXrefSpec(Context context, Document file)
+        public (List<Error> errors, XrefSpec xrefSpec) ToExternalXrefSpec(Document file)
         {
             var errors = new List<Error>();
             var spec = new XrefSpec
