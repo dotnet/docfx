@@ -207,7 +207,7 @@ namespace Microsoft.Docs.Build
                 return (model, outputPath, null);
             }
 
-            return (model, outputPath, isPage ? JObject.FromObject(model.Metadata) : null);
+            return (model, outputPath, isPage ? JsonUtility.FromObject(model.Metadata) : null);
         }
     }
 }
