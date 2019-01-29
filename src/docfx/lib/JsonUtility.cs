@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
@@ -468,18 +469,25 @@ namespace Microsoft.Docs.Build
 
                 void ShouldNotSerializeEmptyArray()
                 {
-                    if (s_rawContractResolver.ResolveContract(prop.PropertyType) is JsonArrayContract)
+                    if (typeof(IEnumerable).IsAssignableFrom(prop.PropertyType))
                     {
                         prop.ShouldSerialize =
-                              target =>
-                              {
-                                  var array = prop.ValueProvider.GetValue(target) as IEnumerable<object>;
-                                  if (array != null && !array.Any())
-                                  {
-                                      return false;
-                                  }
-                                  return true;
-                              };
+                        target =>
+                        {
+                            var value = prop.ValueProvider.GetValue(target);
+
+                            if (value is string)
+                            {
+                                return true;
+                            }
+
+                            if (value is IEnumerable enumer && enumer != null && !enumer.GetEnumerator().MoveNext())
+                            {
+                                return false;
+                            }
+
+                            return true;
+                        };
                     }
                 }
 
