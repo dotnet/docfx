@@ -21,7 +21,9 @@ namespace Microsoft.Docs.Build
             (List<Error> error, object content) Transform(IEnumerable<DataTypeAttribute> attributes, object value, string jsonPath)
             {
                 var attribute = attributes.SingleOrDefault(attr => !(attr is XrefPropertyAttribute));
-                return TransformContent(context, attribute, value, file, buildChild);
+                var (errors, content) = TransformContent(context, attribute, value, file, buildChild);
+
+                return (errors.WithFile(file.ToString()), content);
             }
         }
 
@@ -40,7 +42,7 @@ namespace Microsoft.Docs.Build
                     () =>
                     {
                         var (errors, content) = TransformContent(context, attribute, value, file, buildChild);
-                        return (errors, new JValue(content));
+                        return (errors.WithFile(file.ToString()), new JValue(content));
                     },
                     LazyThreadSafetyMode.PublicationOnly);
 

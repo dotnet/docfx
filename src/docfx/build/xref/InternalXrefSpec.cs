@@ -60,7 +60,7 @@ namespace Microsoft.Docs.Build
                     errors.Add(ex.Error);
                 }
             }
-            return (errors, spec);
+            return (errors.WithFile(file.ToString()), spec);
         }
     }
 }

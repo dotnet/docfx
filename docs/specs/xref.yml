@@ -654,3 +654,24 @@ inputs:
 outputs:
   build.log: |
     ["error","schema-not-found","Unknown schema ''","docs/a.json"]
+---
+# build A but with errors in B
+inputs:
+  docfx.yml:
+  docs/a.json: |
+    {
+      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
+      "uid": "a",
+      "inlineDescription": "Link to @b?displayProperty=inlineDescription",
+    }
+  docs/b.json: |
+    {
+      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
+      "uid": "b",
+      "inlineDescription": "Link to @c",
+    }
+outputs:
+  docs/a.json:
+  docs/b.json:
+  build.log: |
+    ["info","at-uid-not-found","Cannot find uid 'c' using xref '@c'","docs/b.json"]
