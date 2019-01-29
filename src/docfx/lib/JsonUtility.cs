@@ -200,6 +200,14 @@ namespace Microsoft.Docs.Build
             }
         }
 
+        /// <summary>
+        /// Converts a strongly typed C# object to weakly typed json object using the default serialization settings.
+        /// </summary>
+        public static JObject FromObject(object model)
+        {
+            return JObject.FromObject(model, s_serializer);
+        }
+
         public static (List<Error>, object) ToObjectWithSchemaValidation(
             JToken token,
             Type type,
