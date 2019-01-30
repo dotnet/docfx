@@ -207,6 +207,11 @@ namespace Microsoft.DocAsCode.Common
             Log(LogLevel.Info, message, phase, file, line, code);
         }
 
+        public static void LogSuggestion(string message, string phase = null, string file = null, string line = null, string code = null)
+        {
+            Log(LogLevel.Suggestion, message, phase, file, line, code);
+        }
+
         [Obsolete]
         public static void LogWarning(string message, string phase, string file, string line)
         {
