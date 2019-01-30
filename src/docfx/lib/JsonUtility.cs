@@ -20,7 +20,6 @@ namespace Microsoft.Docs.Build
     internal static class JsonUtility
     {
         private static readonly NamingStrategy s_namingStrategy = new CamelCaseNamingStrategy();
-        private static readonly DefaultContractResolver s_rawContractResolver = new DefaultContractResolver { NamingStrategy = s_namingStrategy };
         private static readonly JsonMergeSettings s_mergeSettings = new JsonMergeSettings { MergeArrayHandling = MergeArrayHandling.Replace };
 
         private static readonly JsonSerializer s_serializer = new JsonSerializer
@@ -403,7 +402,7 @@ namespace Microsoft.Docs.Build
 
         private static Type GetCollectionItemTypeIfArrayType(Type type)
         {
-            var contract = s_rawContractResolver.ResolveContract(type);
+            var contract = s_serializer.ContractResolver.ResolveContract(type);
             if (contract is JsonObjectContract)
             {
                 return type;
@@ -425,7 +424,7 @@ namespace Microsoft.Docs.Build
 
         private static Type GetNestedTypeAndCheckForUnknownField(Type type, JProperty prop, List<Error> errors)
         {
-            var contract = s_rawContractResolver.ResolveContract(type);
+            var contract = s_serializer.ContractResolver.ResolveContract(type);
 
             if (contract is JsonObjectContract objectContract)
             {

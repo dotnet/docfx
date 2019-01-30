@@ -559,6 +559,7 @@ namespace Microsoft.Docs.Build
             public int[] D { get; set; } = new int[0];
             public IReadOnlyList<string> E { get; set; } = new List<string>();
             public IReadOnlyCollection<object> F { get; set; } = new List<object>();
+            public Dictionary<string, Dictionary<string, object>> G = new Dictionary<string, Dictionary<string, object>>();
         }
 
         public class BasicClass
