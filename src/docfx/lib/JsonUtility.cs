@@ -468,19 +468,14 @@ namespace Microsoft.Docs.Build
 
                 void ShouldNotSerializeEmptyArray()
                 {
-                    if (typeof(IEnumerable).IsAssignableFrom(prop.PropertyType))
+                    if (typeof(IEnumerable).IsAssignableFrom(prop.PropertyType) && !(prop.PropertyType == typeof(string)))
                     {
                         prop.ShouldSerialize =
                         target =>
                         {
                             var value = prop.ValueProvider.GetValue(target);
 
-                            if (value is string)
-                            {
-                                return true;
-                            }
-
-                            if (value is IEnumerable enumer && enumer != null && !enumer.GetEnumerator().MoveNext())
+                            if (value is IEnumerable enumer && !enumer.GetEnumerator().MoveNext())
                             {
                                 return false;
                             }
