@@ -227,9 +227,11 @@ outputs:
                    "commit":"8720d784fb99abcbdfa922025b8bcc060f0f622a"
                 }
              },
+             "!downloads": null,
              "commit":"6a7b7f142f2de52a0b488309f4257d462956f59f"
           }
-       }
+       },
+       "!downloads": null
     }
 ---
 # restore with sub dependency lock only
@@ -283,9 +285,11 @@ outputs:
               "commit": "8720d784fb99abcbdfa922025b8bcc060f0f622a"
             }
           },
+          "!downloads": null,
           "commit": "71ac1c4ce676987be5f15bffb7c97515adec5450"
         }
-      }
+      },
+      "!downloads": null
     }
 ---
 # restore with root and sub dependency lock, root lock wins
@@ -349,9 +353,11 @@ outputs:
           "git": {
             "https://docs.com/lock3/c#master": {
               "commit": "c5969737496ff42854a019f982882d5fac486a56"
-            }
+            },
+            "!downloads": null
           },
           "commit": "8b8e7ce24bfddb4ad489dd96ab00b10d0ba50bf3"
         }
-      }
+      },
+      "!downloads": null
     }
