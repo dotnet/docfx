@@ -87,7 +87,7 @@ namespace Microsoft.Docs.Build
                 {
                     Git = gitVersions.OrderBy(g => g.Key).ToDictionary(k => k.Key, v => v.Value),
 
-                    // Downloads' dependency lock is not supported by the services which store these files to be downloads
+                    // Downloads' dependency lock is not supported by the services which store these files to be downloaded
                     // Downloads = downloadVersions.OrderBy(g => g.Key).ToDictionary(k => k.Key, v => v.Value),
                 };
 
