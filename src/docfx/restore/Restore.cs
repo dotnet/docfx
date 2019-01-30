@@ -21,7 +21,7 @@ namespace Microsoft.Docs.Build
             // because Docset assumes the repo to physically exist on disk.
             using (Progress.Start("Restore dependencies"))
             {
-                var repository = Repository.Create(docsetPath, branch: null);
+                var repository = Repository.Create(docsetPath);
                 var restoredDocsets = new ConcurrentDictionary<string, Task<DependencyLockModel>>(PathUtility.PathComparer);
                 var localeToRestore = LocalizationUtility.GetLocale(repository, options);
 

@@ -25,6 +25,10 @@ namespace Microsoft.Docs.Build
 
         public static string DefaultGitHubUserCachePath => Path.Combine(CacheRoot, "github-users.json");
 
+        public static string RepositoryUrl = Environment.GetEnvironmentVariable("DOCFX_REPOSITORY_URL");
+
+        public static string RepositoryBranch = Environment.GetEnvironmentVariable("DOCFX_REPOSITORY_BRANCH");
+
         public static string GetGitDir(string remote)
         {
             Debug.Assert(!remote.Contains('#'));

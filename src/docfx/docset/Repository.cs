@@ -25,9 +25,18 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
-        /// Our repository's branch info should NOT depend on git, unless you are pretty sure about that
+        /// Create repository from environment variable(remote + branch), fallback to git info if they are not set
         /// </summary>
-        public static Repository Create(string path, string branch)
+        public static Repository Create(string path)
+        {
+            return Create(path, AppData.RepositoryBranch, AppData.RepositoryBranch);
+        }
+
+        /// <summary>
+        /// Repository's branch info ashould NOT depend on git, unless you are pretty sure about that
+        /// Repository's url can also be overwritten
+        /// </summary>
+        public static Repository Create(string path, string branch, string repoUrl = null)
         {
             Debug.Assert(!string.IsNullOrEmpty(path));
 
@@ -42,7 +51,7 @@ namespace Microsoft.Docs.Build
             {
                 remote = remote.Remove(gitIndex);
             }
-            return new Repository(remote, branch ?? repoBranch, commit, PathUtility.NormalizeFolder(repoPath));
+            return new Repository(repoUrl ?? remote, branch ?? repoBranch, commit, PathUtility.NormalizeFolder(repoPath));
         }
     }
 }
