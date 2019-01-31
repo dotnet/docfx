@@ -25,10 +25,6 @@ namespace Microsoft.Docs.Build
 
         public static string DefaultGitHubUserCachePath => Path.Combine(CacheRoot, "github-users.json");
 
-        public static string RepositoryUrl => GetRepositoryUrlFromEnvironment();
-
-        public static string RepositoryBranch => Environment.GetEnvironmentVariable("DOCFX_REPOSITORY_BRANCH");
-
         public static string GetGitDir(string remote)
         {
             Debug.Assert(!remote.Contains('#'));
@@ -60,7 +56,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         private static string GetGlobalConfigPath()
         {
-            var docfxGlobalConfig = Environment.GetEnvironmentVariable("DOCFX_GLOBAL_CONFIG_PATH");
+            var docfxGlobalConfig = EnvironmentVariable.GlobalConfigPath;
             var configPath = PathUtility.FindYamlOrJson(Path.Combine(s_root, "docfx"));
             return string.IsNullOrEmpty(docfxGlobalConfig) ? configPath : Path.GetFullPath(docfxGlobalConfig);
         }
@@ -71,23 +67,11 @@ namespace Microsoft.Docs.Build
         /// </summary>
         private static string GetAppDataRoot()
         {
-            var docfxAppData = Environment.GetEnvironmentVariable("DOCFX_APPDATA_PATH");
+            var docfxAppData = EnvironmentVariable.AppDataPath;
 
             return string.IsNullOrEmpty(docfxAppData)
                 ? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".docfx")
                 : Path.GetFullPath(docfxAppData);
-        }
-
-        private static string GetRepositoryUrlFromEnvironment()
-        {
-            var value = Environment.GetEnvironmentVariable("DOCFX_REPOSITORY_URL");
-            if (!string.IsNullOrEmpty(value))
-            {
-                var (remote, branch) = HrefUtility.SplitGitHref(value);
-                return remote;
-            }
-
-            return null;
         }
     }
 }
