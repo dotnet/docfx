@@ -13,6 +13,7 @@ open Microsoft.DocAsCode.Metadata.ManagedReference
 open Microsoft.DocAsCode.Metadata.ManagedReference.FSharp
 
 
+[<Collection("F# Test Collection")>]
 type FSharpProjectTests  (output: ITestOutputHelper) =
     let printfn format = Printf.kprintf (fun msg -> output.WriteLine(msg)) format 
    
@@ -29,17 +30,17 @@ type FSharpProjectTests  (output: ITestOutputHelper) =
         let projPath = "TestData/NetCoreProject/NetCoreProject.fsproj"
 
         let proj = FSharpProject (projPath, msBuildProps, loader, checker)
-        Assert.Equal (proj.FilePath, Path.GetFullPath projPath)
+        Assert.Equal (Path.GetFullPath projPath, proj.FilePath)
         Assert.True (proj.HasDocuments)
         let docs = List.ofSeq proj.Documents
-        Assert.Equal (docs.Length, 3)
-        Assert.Equal (docs.[0].FilePath, Path.GetFullPath "TestData/NetCoreProject/Module1.fs")
-        Assert.Equal (docs.[1].FilePath, Path.GetFullPath "TestData/NetCoreProject/Module2.fs")
-        Assert.Equal (docs.[2].FilePath, Path.GetFullPath "TestData/NetCoreProject/Program.fs")
+        Assert.Equal (4, docs.Length)
+        Assert.Equal (Path.GetFullPath "TestData/NetCoreProject/Module1.fs", docs.[1].FilePath)
+        Assert.Equal (Path.GetFullPath "TestData/NetCoreProject/Module2.fs", docs.[2].FilePath)
+        Assert.Equal (Path.GetFullPath "TestData/NetCoreProject/Program.fs", docs.[3].FilePath)
         let refs = List.ofSeq proj.ProjectReferences
-        Assert.Equal (refs.Length, 1)
+        Assert.Equal (1, refs.Length)
         Assert.IsType<FSharpProject> refs.[0] |> ignore
-        Assert.Equal (refs.[0].FilePath, Path.GetFullPath "TestData/NetCoreLibProject/NetCoreLibProject.fsproj")
+        Assert.Equal (Path.GetFullPath "TestData/NetCoreLibProject/NetCoreLibProject.fsproj", refs.[0].FilePath)
                                   
     [<Fact>]
     let NetCoreProjectCompilation () =
@@ -56,12 +57,12 @@ type FSharpProjectTests  (output: ITestOutputHelper) =
         let projPath = "TestData/NetCoreLibProject/NetCoreLibProject.fsproj"
 
         let proj = FSharpProject (projPath, msBuildProps, loader, checker)
-        Assert.Equal (proj.FilePath, Path.GetFullPath projPath)
+        Assert.Equal (Path.GetFullPath projPath, proj.FilePath)
         Assert.True (proj.HasDocuments)
         let docs = List.ofSeq proj.Documents
-        Assert.Equal (docs.Length, 1)
-        Assert.Equal (docs.[0].FilePath, Path.GetFullPath "TestData/NetCoreLibProject/Library.fs")
+        Assert.Equal (2, docs.Length)
+        Assert.Equal (Path.GetFullPath "TestData/NetCoreLibProject/Library.fs", docs.[1].FilePath)
         let refs = List.ofSeq proj.ProjectReferences
-        Assert.Equal (refs.Length, 0)
+        Assert.Equal (0, refs.Length)
         
         

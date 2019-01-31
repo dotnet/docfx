@@ -54,6 +54,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             var block = new TripleColonBlock(this)
             {
+                Closed = false,
                 Column = column,
                 Span = new SourceSpan(sourcePosition, slice.End),
                 Extension = extension,
@@ -69,12 +70,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             if (extension.SelfClosing)
             {
-                ExtensionsHelper.SkipSpaces(ref slice);
-                if (!ExtensionsHelper.MatchStart(ref slice, ":::"))
-                {
-                    _context.LogWarning($"invalid-{extensionName}", $"Invalid {extensionName} on line {block.Line}. \"{slice.Text}\" is invalid. Blocks should be explicitly closed with :::");
-                }
-
                 return BlockState.BreakDiscard;
             }
 
@@ -116,6 +111,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             block.UpdateSpanEnd(slice.End);
             block.IsOpen = false;
+            (block as TripleColonBlock).Closed = true;
 
             return BlockState.BreakDiscard;
         }
@@ -125,6 +121,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             var tripleColonBlock = (TripleColonBlock)block;
             if (tripleColonBlock.Extension.SelfClosing)
             {
+                block.IsOpen = false;
                 return true;
             }
 

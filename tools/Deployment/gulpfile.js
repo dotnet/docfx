@@ -103,7 +103,6 @@ gulp.task("e2eTest:test", () => {
     return Common.execAsync("dotnet", ["test"], config.docfx.e2eTestsHome);
 });
 
-// TODO: fix e2eTest
 gulp.task("e2eTest", gulp.series("e2eTest:installFirefox", "e2eTest:restoreSeed", "e2eTest:buildSeed", "e2eTest:restore", "e2eTest:test"));
 
 gulp.task("publish:myget-dev", () => {

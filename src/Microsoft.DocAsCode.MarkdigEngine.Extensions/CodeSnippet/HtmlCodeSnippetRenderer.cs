@@ -17,6 +17,10 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     {
         private readonly MarkdownContext _context;
         private const string tagPrefix = "snippet";
+        private const string warningMessageId = "codeIncludeNotFound";
+        private const string defaultWarningMessage = "It looks like the sample you are looking for does not exist.";
+        private const string warningTitleId = "warning";
+        private const string defaultWarningTitle = "<h5>WARNING</h5>";
 
         private static readonly IReadOnlyDictionary<string, List<string>> LanguageAlias = new Dictionary<string, List<string>>
         {
@@ -173,18 +177,15 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             if (content == null)
             {
                 _context.LogWarning("codesnippet-not-found", $"Cannot resolve '{codeSnippet.CodePath}' relative to '{InclusionContext.File}'.");
-                renderer.WriteEscape(codeSnippet.Raw);
+                renderer.Write(GetWarning());
                 return;
             }
 
-            using (InclusionContext.PushFile(codeSnippetPath))
-            {
-                codeSnippet.SetAttributeString();
+            codeSnippet.SetAttributeString();
 
-                renderer.Write("<pre><code").WriteAttributes(codeSnippet).Write(">");
-                renderer.WriteEscape(GetContent(content, codeSnippet));
-                renderer.Write("</code></pre>");
-            }
+            renderer.Write("<pre><code").WriteAttributes(codeSnippet).Write(">");
+            renderer.WriteEscape(GetContent(content, codeSnippet));
+            renderer.Write("</code></pre>");
         }
 
         private string GetContent(string content, CodeSnippet obj)
@@ -368,6 +369,18 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             }
 
             return -1;
+        }
+
+        private string GetWarning()
+        {
+            var warningTitle = _context.GetToken(warningTitleId) ?? defaultWarningTitle;
+            var warningMessage = _context.GetToken(warningMessageId) ?? defaultWarningMessage;
+
+            return string.Format(@"<div class=""WARNING"">
+{0}
+<p>{1}</p>
+</div>", warningTitle, warningMessage);
+
         }
     }
 }

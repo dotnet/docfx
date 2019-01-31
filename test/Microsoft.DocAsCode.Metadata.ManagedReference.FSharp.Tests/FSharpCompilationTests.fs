@@ -15,7 +15,7 @@ open Microsoft.DocAsCode.Metadata.ManagedReference.FSharp
 open Microsoft.DocAsCode.DataContracts.ManagedReference
 open Microsoft.DocAsCode.DataContracts.Common
 
-
+[<Collection("F# Test Collection")>]
 type FSharpCompilationTests (output: ITestOutputHelper) =
     let printfn format = Printf.kprintf (fun msg -> output.WriteLine(msg)) format 
 

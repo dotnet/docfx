@@ -244,6 +244,16 @@ namespace Microsoft.DocAsCode.Build.Engine
                     ManifestUtility.RemoveDuplicateOutputFiles(generatedManifest.Files);
                     ManifestUtility.ApplyLogCodes(generatedManifest.Files, logCodesLogListener.Codes);
 
+                    // We can only globally shrink once to avoid invalid reference.
+                    // Shrink multiplie times may remove files that are already linked in saved manifest.
+                    if (_intermediateFolder != null)
+                    {
+                        // TODO: shrink here is not safe as post processor may update it.
+                        //       should shrink once at last to handle everything, or make FAL support copy on writes
+                        generatedManifest.Files.Shrink(_intermediateFolder, parameters[0].MaxParallelism);
+                        currentBuildInfo.SaveVersionsManifet(_intermediateFolder);
+                    }
+
                     EnvironmentContext.FileAbstractLayerImpl =
                         FileAbstractLayerBuilder.Default
                         .ReadFromManifest(generatedManifest, parameters[0].OutputBaseDir)
@@ -448,6 +458,9 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private static string ComputePluginHash(List<Assembly> assemblyList)
         {
+            Logger.LogVerbose("Calculating plugin hash...");
+
+            var result = string.Empty;
             if (assemblyList?.Count > 0)
             {
                 var builder = new StringBuilder();
@@ -459,10 +472,13 @@ namespace Microsoft.DocAsCode.Build.Engine
                     select item)
                 {
                     builder.AppendLine(item);
+                    Logger.LogVerbose($"New assembly info added: '{item}'");
                 }
-                return builder.ToString().GetMd5String();
+                result = builder.ToString().GetMd5String();
             }
-            return string.Empty;
+
+            Logger.LogVerbose($"Plugin hash is '{result}'");
+            return result;
         }
 
         public void Dispose()

@@ -4,6 +4,34 @@ Version Notes (Current Version: v2.41)
 v2.41(Pre-release)
 -----------
 
+v2.40.9
+-----------
+1. Fix error extracting metadata from DLL files. (#3979)
+
+v2.40.8
+-----------
+1. Performance improvement:
+    1. Increase incremental build chance when `fileMetadata` changes. (#3816)
+    2. Improvement query performance when extracting metadata. (#3207)
+
+v2.40.7
+-----------
+1. Fix perf issue when report toc dependency.
+1. Transform code language extracted from triple slash comments to style class.
+1. Fix cache corruption when shrink multiple times
+
+v2.40.5
+-----------
+1. Show warnings on page when codesnippet is not found.
+1. Bug fix:
+    1. Fix EntityMetadata for FSharp when parsing signature files.
+    1. Fix FSharp tests.
+
+v2.40.4
+-----------
+1. Bug fix:
+    1. Fix EntityMetadata for FSharp when parsing signature files.
+
 v2.40.3
 -----------
 1. Bug fix:

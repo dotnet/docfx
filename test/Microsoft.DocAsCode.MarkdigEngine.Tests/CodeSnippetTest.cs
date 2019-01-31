@@ -4,6 +4,7 @@
 namespace Microsoft.DocAsCode.MarkdigEngine.Tests
 {
     using System.Collections.Generic;
+    using System.Collections.Immutable;
     using System.IO;
     using System.Linq;
 
@@ -17,6 +18,32 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
         private static MarkupResult SimpleMarkup(string source)
         {
             return TestUtility.MarkupWithoutSourceInfo(source, "Topic.md");
+        }
+
+        [Fact]
+        public void CodeSnippetNotFound()
+        {
+            var parameter = new MarkdownServiceParameters
+            {
+                BasePath = ".",
+                Tokens = new Dictionary<string, string>
+                {
+                    {"codeIncludeNotFound", "你要查找的示例似乎已移动！ 不要担心，我们正在努力解决此问题。"},
+                    {"warning", "<h5>警告</h5>" }
+                }.ToImmutableDictionary(),
+                Extensions = new Dictionary<string, object>
+                {
+                    { "EnableSourceInfo", false }
+                }
+            };
+            var service = new MarkdigMarkdownService(parameter);
+            var marked = service.Markup(@"[!code-csharp[name](Program1.cs)]", "Topic.md");
+            // assert
+            var expected = @"<div class=""WARNING"">
+<h5>警告</h5>
+<p>你要查找的示例似乎已移动！ 不要担心，我们正在努力解决此问题。</p>
+</div>";
+            Assert.Equal(expected.Replace("\r\n", "\n"), marked.Html.Replace("\r\n", "\n"));
         }
 
         [Fact]
@@ -138,27 +165,6 @@ public class MyClass
 }
 </code></pre>";
             Assert.Equal(expected.Replace("\r\n", "\n"), marked.Html);
-        }
-
-        [Fact]
-        [Trait("Related", "DfmMarkdown")]
-        public void TestCode_ParentFolderNotExist()
-        {
-            var source = @"[!code-cs[not exist](not_exist_folder/file.cs)]";
-            var expected = "[!code-cs[not exist](not_exist_folder/file.cs)]";
-
-            var marked = TestUtility.MarkupWithoutSourceInfo(source, "Topic.md");
-            Assert.Equal(expected.Replace("\r\n", "\n"), marked.Html);
-        }
-
-        [Fact]
-        [Trait("Related", "DfmMarkdown")]
-        public void TestCodeFenceWithSpaceInFileName()
-        {
-            var source = @"  [!code-csharp  [  Test Space  ] ( test space in\) link.cs#abc ""title test"" ) ]  ";
-
-            var marked = TestUtility.MarkupWithoutSourceInfo(source, "Topic.md");
-            Assert.Equal(@"[!code-csharp  [  Test Space  ] ( test space in\) link.cs#abc &quot;title test&quot; ) ]", marked.Html);
         }
 
         [Fact]

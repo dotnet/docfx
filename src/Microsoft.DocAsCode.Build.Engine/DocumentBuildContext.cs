@@ -592,7 +592,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
             TocMap.AddOrUpdate(
                 fileKey,
-                new HashSet<string>(FilePathComparer.OSPlatformSensitiveComparer) { tocFileKey },
+                new HashSet<string>(FilePathComparer.OSPlatformSensitiveRelativePathComparer) { tocFileKey },
                 (k, v) =>
                 {
                     lock (v)

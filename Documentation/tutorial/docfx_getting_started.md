@@ -71,20 +71,34 @@ Now you can view the generated website on http://localhost:8080.
 
 ## 4. Use *DocFX* with a Build Server
 
-*DocFX* can be used in a Continuous Integration environment.
+## 4.1 Steps
+
+*DocFX* can be used in a Continuous Integration (CI) environment. 
+
+Consider a typical scenario: I want to set up a job on a CI service (e.g. [Azure Pipelines](https://azure.microsoft.com/en-us/services/devops/pipelines/)) to build documents automatically and publish to a website (e.g. [GitHub Pages](https://pages.github.com/)). We can achieve this by a script on CI jobs with following steps:
+
+1. clone repo
+2. `choco install docfx`
+3. `docfx {docsetPath}`, while you can change `build.dest` in `docfx.json` to set the output path
+4. push all the content in `docsetPath/_site` to `gh-pages` branch
+
+> [!NOTE]
+> These steps give an overall impression of what to do. You can adjust them depending on actual scenario.
+
+## 4.2 Set branch name
 
 Most build systems do not checkout the branch that is being built, but use a `detached head` for the specific commit.  DocFX needs the branch name to implement the `View Source` link in the API documentation.
 
-Setting the environment variable `DOCFX_SOURCE_BRANCH_NAME` tells DocFX which branch name to use.
-
-Many build systems set an environment variable with the branch name.  DocFX uses the following:
+Many build systems set an environment variable with the branch name.  DocFX uses the following automatically:
 
 - `APPVEYOR_REPO_BRANCH` - [AppVeyor](https://www.appveyor.com/)
-- `BUILD_SOURCEBRANCHNAME` - [Visual Studio Team Services](https://www.visualstudio.com/team-services/)
+- `BUILD_SOURCEBRANCHNAME` - [Azure Pipelines](https://azure.microsoft.com/en-us/services/devops/pipelines/)
 - `CI_BUILD_REF_NAME` - [GitLab CI](https://about.gitlab.com/gitlab-ci/)
 - `Git_Branch` - [TeamCity](https://www.jetbrains.com/teamcity/)
 - `GIT_BRANCH` - [Jenkins](https://jenkins.io/)
 - `GIT_LOCAL_BRANCH` - [Jenkins](https://jenkins.io/)
+
+Setting the environment variable `DOCFX_SOURCE_BRANCH_NAME` tells DocFX which branch name to use, if the CI service you use is not in the list above.
 
 > [!NOTE]
 > *Known issue in AppVeyor*: Currently `platform: Any CPU` in *appveyor.yml* causes `docfx metadata` failure. https://github.com/dotnet/docfx/issues/1078
