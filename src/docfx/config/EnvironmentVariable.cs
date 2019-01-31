@@ -5,7 +5,7 @@ using System;
 
 namespace Microsoft.Docs.Build
 {
-    public static class EnvironmentVariables
+    public static class EnvironmentVariable
     {
         public static string GlobalConfigPath => Environment.GetEnvironmentVariable("DOCFX_GLOBAL_CONFIG_PATH");
 
