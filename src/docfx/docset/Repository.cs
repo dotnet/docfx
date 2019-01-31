@@ -29,7 +29,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static Repository Create(string path)
         {
-            return Create(path, EnvironmentVariable.RepositoryBranch, EnvironmentVariable.RepositoryUrl);
+            return Create(path, EnvironmentVariables.RepositoryBranch, EnvironmentVariables.RepositoryUrl);
         }
 
         /// <summary>
