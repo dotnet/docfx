@@ -25,9 +25,9 @@ namespace Microsoft.Docs.Build
 
         public static string DefaultGitHubUserCachePath => Path.Combine(CacheRoot, "github-users.json");
 
-        public static string RepositoryUrl = Environment.GetEnvironmentVariable("DOCFX_REPOSITORY_URL");
+        public static string RepositoryUrl => GetRepositoryUrlFromEnvironment();
 
-        public static string RepositoryBranch = Environment.GetEnvironmentVariable("DOCFX_REPOSITORY_BRANCH");
+        public static string RepositoryBranch => Environment.GetEnvironmentVariable("DOCFX_REPOSITORY_BRANCH");
 
         public static string GetGitDir(string remote)
         {
@@ -76,6 +76,18 @@ namespace Microsoft.Docs.Build
             return string.IsNullOrEmpty(docfxAppData)
                 ? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".docfx")
                 : Path.GetFullPath(docfxAppData);
+        }
+
+        private static string GetRepositoryUrlFromEnvironment()
+        {
+            var value = Environment.GetEnvironmentVariable("DOCFX_REPOSITORY_URL");
+            if (!string.IsNullOrEmpty(value))
+            {
+                var (remote, branch) = HrefUtility.SplitGitHref(value);
+                return remote;
+            }
+
+            return null;
         }
     }
 }
