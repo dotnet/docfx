@@ -1,5 +1,9 @@
-Version Notes (Current Version: v2.40.8)
+Version Notes (Current Version: v2.40.9)
 =======================================
+
+v2.40.9
+-----------
+1. Fix error extracting metadata from DLL files. (#3979)
 
 v2.40.8
 -----------
