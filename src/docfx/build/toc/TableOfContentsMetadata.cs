@@ -18,11 +18,6 @@ namespace Microsoft.Docs.Build
 
         public string PdfAbsolutePath { get; set; }
 
-        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public bool Experimental { get; set; }
-
-        public string ExperimentId { get; set; }
-
         [JsonExtensionData]
         public JObject ExtensionData { get; set; }
 
