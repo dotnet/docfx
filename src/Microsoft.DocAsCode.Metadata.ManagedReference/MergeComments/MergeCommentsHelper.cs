@@ -98,7 +98,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         private static void GetAllItemByCommentId(Dictionary<string, MetadataItem> items, MetadataItem item)
         {
-            if (!items.ContainsKey(item.CommentId))
+            if (item.CommentId != null && !items.ContainsKey(item.CommentId))
             {
                 items.Add(item.CommentId, item);
             }
