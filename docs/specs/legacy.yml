@@ -40,4 +40,3 @@ outputs:
   .dependency-map.json:
   filemap.json:
   op_aggregated_file_map_info.json:
-  op_crr_info.json:
