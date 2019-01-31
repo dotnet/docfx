@@ -78,6 +78,8 @@ namespace Microsoft.DocAsCode.Common
                     return MessageSeverity.Verbose;
                 case LogLevel.Info:
                     return MessageSeverity.Info;
+                case LogLevel.Suggestion:
+                    return MessageSeverity.Suggestion;
                 case LogLevel.Warning:
                     return MessageSeverity.Warning;
                 case LogLevel.Error:
@@ -133,6 +135,7 @@ namespace Microsoft.DocAsCode.Common
         {
             Error,
             Warning,
+            Suggestion,
             Info,
             Verbose,
             Diagnostic

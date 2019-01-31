@@ -10,5 +10,15 @@ namespace Microsoft.DocAsCode.Common
             public const string IsFullBuild = "IsFullBuild";
             public const string IsIncrementalBuild = "IsIncrementalBuild";
         }
+        public static class FullBuildReason
+        {
+            public const string NoAvailableBuildCache = "NoAvailableBuildCache";
+            public const string DocfxVersionChanged = "DocfxVersionChanged";            
+            public const string PluginChanged = "PluginChanged";
+            public const string CommitShaMismatch = "CommitShaMismatch";
+            public const string NoAvailableGroupCache = "NoAvailableGroupCache";
+            public const string ConfigChanged = "ConfigChanged";
+            public const string ForceRebuild = "ForceRebuild";
+        }
     }
 }
