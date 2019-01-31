@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -107,7 +108,7 @@ namespace Microsoft.Docs.Build
 
         public static (bool fromUrl, string path) GetFileRestorePath(this Docset docset, string url)
         {
-            return GetFileRestorePath(docset.DocsetPath, url, docset.DependencyLock, docset.FallbackDocset?.DocsetPath);
+            return GetFileRestorePath(docset.DocsetPath, url, docset.DependencyLock?.Downloads.GetValueOrDefault(url), docset.FallbackDocset?.DocsetPath);
         }
 
         public static (bool fromUrl, string path) GetFileRestorePath(string docsetPath, string url, DependencyVersion dependencyVersion, string fallbackDocset = null)

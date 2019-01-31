@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
@@ -19,7 +20,6 @@ namespace Microsoft.Docs.Build
     internal static class JsonUtility
     {
         private static readonly NamingStrategy s_namingStrategy = new CamelCaseNamingStrategy();
-        private static readonly DefaultContractResolver s_rawContractResolver = new DefaultContractResolver { NamingStrategy = s_namingStrategy };
         private static readonly JsonMergeSettings s_mergeSettings = new JsonMergeSettings { MergeArrayHandling = MergeArrayHandling.Replace };
 
         private static readonly JsonSerializer s_serializer = new JsonSerializer
@@ -402,7 +402,7 @@ namespace Microsoft.Docs.Build
 
         private static Type GetCollectionItemTypeIfArrayType(Type type)
         {
-            var contract = s_rawContractResolver.ResolveContract(type);
+            var contract = s_serializer.ContractResolver.ResolveContract(type);
             if (contract is JsonObjectContract)
             {
                 return type;
@@ -424,7 +424,7 @@ namespace Microsoft.Docs.Build
 
         private static Type GetNestedTypeAndCheckForUnknownField(Type type, JProperty prop, List<Error> errors)
         {
-            var contract = s_rawContractResolver.ResolveContract(type);
+            var contract = s_serializer.ContractResolver.ResolveContract(type);
 
             if (contract is JsonObjectContract objectContract)
             {
@@ -468,18 +468,20 @@ namespace Microsoft.Docs.Build
 
                 void ShouldNotSerializeEmptyArray()
                 {
-                    if (s_rawContractResolver.ResolveContract(prop.PropertyType) is JsonArrayContract)
+                    if (typeof(IEnumerable).IsAssignableFrom(prop.PropertyType) && !(prop.PropertyType == typeof(string)))
                     {
                         prop.ShouldSerialize =
-                              target =>
-                              {
-                                  var array = prop.ValueProvider.GetValue(target) as IEnumerable<object>;
-                                  if (array != null && !array.Any())
-                                  {
-                                      return false;
-                                  }
-                                  return true;
-                              };
+                        target =>
+                        {
+                            var value = prop.ValueProvider.GetValue(target);
+
+                            if (value is IEnumerable enumer && !enumer.GetEnumerator().MoveNext())
+                            {
+                                return false;
+                            }
+
+                            return true;
+                        };
                     }
                 }
 

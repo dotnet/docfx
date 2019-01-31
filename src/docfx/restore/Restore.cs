@@ -83,7 +83,13 @@ namespace Microsoft.Docs.Build
                 var restoreUrls = extendedConfig.GetFileReferences().Where(HrefUtility.IsHttpHref).ToList();
                 var downloadVersions = await RestoreFile.Restore(restoreUrls, extendedConfig, dependencyLock, @implicit);
 
-                var generatedLock = new DependencyLockModel() { Git = gitVersions.OrderBy(g => g.Key).ToDictionary(k => k.Key, v => v.Value), Downloads = downloadVersions.OrderBy(g => g.Key).ToDictionary(k => k.Key, v => v.Value) };
+                var generatedLock = new DependencyLockModel
+                {
+                    Git = gitVersions.OrderBy(g => g.Key).ToDictionary(k => k.Key, v => v.Value),
+
+                    // Downloads' dependency lock is not supported by the services which store these files to be downloaded
+                    // Downloads = downloadVersions.OrderBy(g => g.Key).ToDictionary(k => k.Key, v => v.Value),
+                };
 
                 // save dependency lock if need
                 // only save it when the dependency lock is NOT from parent

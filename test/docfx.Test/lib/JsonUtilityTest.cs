@@ -544,6 +544,24 @@ namespace Microsoft.Docs.Build
             Assert.Equal(ErrorLevel.Error, exception.Error.Level);
         }
 
+        [Fact]
+        public void OmitEmptyEnumerableValue()
+        {
+            var content = JsonUtility.Serialize(new EmptyEnumerable());
+            Assert.Equal("{\"a\":\"\"}", content);
+        }
+
+        public class EmptyEnumerable
+        {
+            public string A { get; set; } = "";
+            public List<string> B { get; set; } = new List<string>();
+            public IReadOnlyDictionary<string, object> C { get; set; } = new Dictionary<string, object>();
+            public int[] D { get; set; } = new int[0];
+            public IReadOnlyList<string> E { get; set; } = new List<string>();
+            public IReadOnlyCollection<object> F { get; set; } = new List<object>();
+            public Dictionary<string, Dictionary<string, object>> G = new Dictionary<string, Dictionary<string, object>>();
+        }
+
         public class BasicClass
         {
             public string C { get; set; }
