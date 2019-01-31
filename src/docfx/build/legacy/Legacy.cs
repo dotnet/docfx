@@ -25,7 +25,6 @@ namespace Microsoft.Docs.Build
                 var files = fileManifests.Keys.ToList();
                 LegacyFileMap.Convert(docset, context, files);
                 LegacyDependencyMap.Convert(docset, context, files, dependencyMap, tocMap);
-                LegacyCrossRepoReferenceInfo.Convert(docset, context);
             }
         }
     }
