@@ -56,7 +56,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         private static string GetGlobalConfigPath()
         {
-            var docfxGlobalConfig = Environment.GetEnvironmentVariable("DOCFX_GLOBAL_CONFIG_PATH");
+            var docfxGlobalConfig = EnvironmentVariable.GlobalConfigPath;
             var configPath = PathUtility.FindYamlOrJson(Path.Combine(s_root, "docfx"));
             return string.IsNullOrEmpty(docfxGlobalConfig) ? configPath : Path.GetFullPath(docfxGlobalConfig);
         }
@@ -67,7 +67,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         private static string GetAppDataRoot()
         {
-            var docfxAppData = Environment.GetEnvironmentVariable("DOCFX_APPDATA_PATH");
+            var docfxAppData = EnvironmentVariable.AppDataPath;
 
             return string.IsNullOrEmpty(docfxAppData)
                 ? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".docfx")
