@@ -193,8 +193,12 @@ namespace Microsoft.Docs.Build
             _template = new Lazy<TemplateEngine>(() =>
             {
                 Debug.Assert(!string.IsNullOrEmpty(Config.Theme));
+
                 var (themeRemote, themeBranch) = LocalizationUtility.GetLocalizedTheme(Config.Theme, Locale, Config.Localization.DefaultLocale);
-                return new TemplateEngine(RestoreMap.GetGitRestorePath($"{themeRemote}#{themeBranch}", DependencyLock).path, Locale);
+                var (themePath, themeLock) = RestoreMap.GetGitRestorePath($"{themeRemote}#{themeBranch}", DependencyLock);
+                Log.Write($"Using theme '{themeRemote}#{themeLock.Commit}' at '{themePath}'");
+
+                return new TemplateEngine(themePath, Locale);
             });
 
             _repositories = new ConcurrentDictionary<string, Lazy<Repository>>();
