@@ -1,5 +1,10 @@
-Version Notes (Current Version: v2.40.9)
+Version Notes (Current Version: v2.40.10)
 =======================================
+
+v2.40.10
+-----------
+1. Bug fix:
+    1. Non-source files should not be included in file metadata changes when incremental build.
 
 v2.40.9
 -----------
