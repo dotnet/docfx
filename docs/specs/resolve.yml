@@ -143,7 +143,7 @@ outputs:
   docs/a/index.json: |
     { "content": "<p>Link to <a href=\"../a\">1</a> <a href=\"a\">2</a></p>" }
   docs/a/a.json: |
-    { "content": "<p>Link to <a href=\".\">index</a></p>" }
+    { "content": "<p>Link to <a href=\"./\">index</a></p>" }
   docs/a.json: |
     { "content": "<p>Link to <a href=\"a/\">index</a></p>" }
 ---

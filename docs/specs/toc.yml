@@ -46,7 +46,7 @@ outputs:
                 }
             ],
             "name":"Index Reference",
-            "href":"."
+            "href":"./"
           }
       ]
     }
@@ -145,7 +145,7 @@ outputs:
                 }
             ],
             "name":"Index Reference",
-            "href":"."
+            "href":"./"
           }
       ]
     }
@@ -186,7 +186,7 @@ outputs:
                 }
             ],
             "name":"Index Reference",
-            "href":"."
+            "href":"./"
           }
       ]
     }
@@ -323,7 +323,7 @@ outputs:
                 }
             ],
             "name":"Topic1",
-            "href":"."
+            "href":"./"
           },
           {  
             "name":"Topic2",

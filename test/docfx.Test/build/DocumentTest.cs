@@ -24,9 +24,9 @@ namespace Microsoft.Docs.Build
         [InlineData("a.md", false, true, ContentType.Page, "a.html", "/a.html", "a.html")]
         [InlineData("a/index.md", false, false, ContentType.Page, "a/index.html", "/a/", "a/")]
         [InlineData("a/index.md", false, true, ContentType.Page, "a/index.html", "/a/", "a/")]
-        [InlineData("index.md", false, false, ContentType.Page, "index.html", "/", ".")]
-        [InlineData("index.md", false, true, ContentType.Page, "index.html", "/", ".")]
-        [InlineData("index.md", true, false, ContentType.Page, "index.json", "/", ".")]
+        [InlineData("index.md", false, false, ContentType.Page, "index.html", "/", "./")]
+        [InlineData("index.md", false, true, ContentType.Page, "index.html", "/", "./")]
+        [InlineData("index.md", true, false, ContentType.Page, "index.json", "/", "./")]
         internal static void FilePathToUrl(
             string path,
             bool json,
