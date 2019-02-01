@@ -361,7 +361,7 @@ namespace Microsoft.Docs.Build
         internal static string PathToAbsoluteUrl(string path, ContentType contentType, Schema schema, bool json)
         {
             var url = PathToRelativeUrl(path, contentType, schema, json);
-            return url == "." ? "/" : "/" + url;
+            return url == "./" ? "/" : "/" + url;
         }
 
         internal static string PathToRelativeUrl(string path, ContentType contentType, Schema schema, bool json)
@@ -377,7 +377,7 @@ namespace Microsoft.Docs.Build
                         if (fileName.Equals("index", PathUtility.PathComparison))
                         {
                             var i = url.LastIndexOf('/');
-                            return i >= 0 ? url.Substring(0, i + 1) : ".";
+                            return i >= 0 ? url.Substring(0, i + 1) : "./";
                         }
                         if (json)
                         {
