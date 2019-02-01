@@ -15,10 +15,12 @@ namespace Microsoft.Docs.Build
         {
             using (Progress.Start("Convert Legacy Manifest"))
             {
-                var itemsToPublish = new List<LegacyItemToPublish>();
-                itemsToPublish.Add(new LegacyItemToPublish { RelativePath = "filemap.json", Type = "filemap" });
-                itemsToPublish.Add(new LegacyItemToPublish { RelativePath = ".dependency-map.json", Type = "dependencymap" });
-                itemsToPublish.Add(new LegacyItemToPublish { RelativePath = "xrefmap.json", Type = "xrefmap", Version = ""/*todo*/ });
+                var itemsToPublish = new List<LegacyItemToPublish>
+                {
+                    new LegacyItemToPublish { RelativePath = "filemap.json", Type = "filemap" },
+                    new LegacyItemToPublish { RelativePath = ".dependency-map.json", Type = "dependencymap" },
+                    new LegacyItemToPublish { RelativePath = "xrefmap.json", Type = "xrefmap", Version = ""/*todo*/ }
+                };
 
                 var monikerGroups = new ConcurrentDictionary<string, List<string>>();
                 var convertedItems = new ConcurrentBag<(LegacyManifestItem manifestItem, Document doc, List<string> monikers)>();
