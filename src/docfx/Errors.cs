@@ -357,8 +357,8 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Build errors is larger than <see cref="OutputConfig.MaxErrors"/>.
         /// </summary>
-        public static Error ExceedMaxErrors(int maxErrors)
-            => new Error(ErrorLevel.Error, "exceed-max-errors", $"Error or warning count exceed '{maxErrors}'. Build will continue but newer logs will be ignored.");
+        public static Error ExceedMaxErrors(int maxErrors, ErrorLevel level)
+            => new Error(level, "exceed-max-errors", $"{level} count exceed '{maxErrors}'. Build will continue but newer {level} logs will be ignored.");
 
         /// <summary>
         /// More than one files defined the same uid.
