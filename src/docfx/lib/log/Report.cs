@@ -97,7 +97,7 @@ namespace Microsoft.Docs.Build
             {
                 if (Interlocked.Exchange(ref _maxExceeded, 1) == 0)
                 {
-                    WriteCore(Errors.ExceedMaxErrors(maxErrors, level.ToString()), level);
+                    WriteCore(Errors.ExceedMaxErrors(maxErrors, level), level);
                 }
             }
             else if (_errors.TryAdd(error) && !IncrementExceedMaxErrors())
