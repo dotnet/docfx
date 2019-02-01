@@ -92,6 +92,23 @@ items:
       init: "nuget install DocFx.Plugins.PlantUml -ExcludeVersion -OutputDirectory ."
       command: "-t default,DocFx.Plugins.PlantUml/template"
       config: '"template":["default","DocFx.Plugins.PlantUml/template"]'
+  - name: DocFX Material
+    description: A simple material theme for DocFX
+    type: External
+    author: ovasquez
+    version: 0.1
+    engines:
+      docfx: ">=2.40.0"
+    thumbnail: ~/templates-and-plugins/images/material.screenshot.png
+    homepage: https://github.com/ovasquez/docfx-material
+    repository:
+      type: git
+      url: "https://github.com/ovasquez/docfx-material.git"
+    license: MIT
+    usage:
+      init: "git clone https://github.com/ovasquez/docfx-material.git material"
+      command: "-t default, material/material"
+      config: '"template":["default","material/material"]'
 description: |
   # Dashboard for Templates
   The templates listed here mainly focus on the layout and themes of the generated website. Add your own customized templates here for others to view and use!
