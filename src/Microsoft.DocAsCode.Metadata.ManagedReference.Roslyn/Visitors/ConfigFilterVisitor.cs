@@ -16,7 +16,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             : base(inner)
         {
             _configFile = configFile;
-            _configRule = ConfigFilterRule.Load(configFile);
+            _configRule = ConfigFilterRule.LoadFilteringRule(configFile);
         }
 
         public ConfigFilterVisitor(IFilterVisitor inner, ConfigFilterRule rule)

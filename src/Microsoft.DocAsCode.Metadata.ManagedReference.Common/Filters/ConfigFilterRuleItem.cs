@@ -15,10 +15,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         [YamlMember(Alias = "uidRegex")]
         public string UidRegex
         {
-            get
-            {
-                return _uidRegex?.ToString();
-            }
+            get => _uidRegex?.ToString();
             set
             {
                 _uidRegex = new Regex(value);

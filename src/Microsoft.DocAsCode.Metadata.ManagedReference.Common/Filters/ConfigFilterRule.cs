@@ -13,55 +13,126 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
     using Microsoft.DocAsCode.Common;
 
+    /// <summary>
+    ///     Defines the configuration filter rules to use in order to determine which APIs can be documented with the tool.
+    /// </summary>
     [Serializable]
     public class ConfigFilterRule
     {
+        /// <summary>
+        ///     Validates whether the user provided a filter document in the configuration file (docfx.json)
+        /// </summary>
+        private static bool DidUserProvideFilterDocument;
+
+        /// <summary>
+        ///     Anchor used in a Regex pattern to indicate to match on any string that start with an indicated string.
+        /// </summary>
+        private static readonly string RegexStartOfStringAnchor = "^";
+
+        /// <summary>
+        ///     An escaped special character used in a path.
+        /// </summary>
+        private static readonly string EscapedSpecialCharacterInNamespacePath = @"\";
+
+        /// <summary>
+        ///     The API rules indicated by the user.
+        /// </summary>
         [YamlMember(Alias = "apiRules")]
         public IEnumerable<ConfigFilterRuleItemUnion> ApiRules { get; set; } = new List<ConfigFilterRuleItemUnion>();
 
+        /// <summary>
+        ///     The API attributes rules indicated by the user.
+        /// </summary>
         [YamlMember(Alias = "attributeRules")]
         public IEnumerable<ConfigFilterRuleItemUnion> AttributeRules { get; set; } = new List<ConfigFilterRuleItemUnion>();
 
+        /// <summary>
+        ///     Method responsible to validate if it's possible to visit an API.
+        /// </summary>
+        /// <param name="symbol">
+        ///     The symbol to analyze.
+        /// </param>
+        /// <returns>
+        ///     When the method returns <see langword="true"/>, DocFX is able to extract the metadata of the API.
+        /// </returns>
         public bool CanVisitApi(SymbolFilterData symbol)
         {
             return CanVisitCore(this.ApiRules, symbol);
         }
 
+        /// <summary>
+        ///     Method responsible to validate if it's possible to visit the attributes on an API.
+        /// </summary>
+        /// <param name="symbol">
+        ///     The symbol to analyze.
+        /// </param>
+        /// <returns>
+        ///     When the method returns <see langword="true"/>, DocFX is able to extract the metadata of the API.
+        /// </returns>
         public bool CanVisitAttribute(SymbolFilterData symbol)
         {
             return CanVisitCore(this.AttributeRules, symbol);
         }
 
-        public static ConfigFilterRule Load(string configFile)
+        /// <summary>
+        ///     Load a user defined filtering rule for APIs.
+        /// </summary>
+        /// <param name="filterDocumentFilePath">
+        ///     The path to the filter document.
+        /// </param>
+        /// <returns>
+        ///     A loaded filtering rule for APIs
+        /// </returns>
+        /// <exception cref="FileNotFoundException">
+        ///     <paramref name="filterDocumentFilePath"/> the path to the file does not exist.
+        /// </exception>
+        /// <exception cref="InvalidDataException">
+        ///     When there was an error while deserializing the filtering document.
+        /// </exception>
+        /// <exception cref="InvalidDataException">
+        ///     When it's impossible to deserialize the filtering document.
+        /// </exception>
+        public static ConfigFilterRule LoadFilteringRule(string filterDocumentFilePath)
         {
-            if (string.IsNullOrEmpty(configFile))
+            if (string.IsNullOrWhiteSpace(filterDocumentFilePath))
             {
                 return new ConfigFilterRule();
             }
 
-            if (!File.Exists(configFile))
+            if (!File.Exists(filterDocumentFilePath))
             {
-                throw new FileNotFoundException($"Filter Config file {configFile} does not exist!");
+                throw new FileNotFoundException($"Filter Config file {filterDocumentFilePath} does not exist!");
             }
 
-            ConfigFilterRule rule = null;
+            DidUserProvideFilterDocument = true;
+            ConfigFilterRule rule;
             try
             {
-                rule = YamlUtility.Deserialize<ConfigFilterRule>(configFile);
+                rule = YamlUtility.Deserialize<ConfigFilterRule>(filterDocumentFilePath);
             }
             catch (Exception e)
             {
-                throw new InvalidDataException($"Error parsing filter config file {configFile}: {e.Message}");
+                throw new InvalidDataException($"Error parsing filter config file {filterDocumentFilePath}: {e.Message}");
             }
 
             if (rule == null)
             {
-                throw new InvalidDataException($"Unable to deserialize filter config {configFile}.");
+                throw new InvalidDataException($"Unable to deserialize filter config {filterDocumentFilePath}.");
             }
             return rule;
         }
 
-        public static ConfigFilterRule LoadWithDefaults(string filterConfigFile)
+        /// <summary>
+        ///     This method is responsible to load a configuration filtering rule for APIs with the default definition.
+        ///     When the user provides a valic filter document, its rules will superseed the default rules.
+        /// </summary>
+        /// <param name="filterDocumentFilePath">
+        ///     The filter document's path.
+        /// </param>
+        /// <returns>
+        ///     A loaded configuration filtering rule.
+        /// </returns>
+        public static ConfigFilterRule LoadDefaultWithUserRules(string filterDocumentFilePath)
         {
             ConfigFilterRule defaultRule;
 
@@ -73,31 +144,14 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 defaultRule = YamlUtility.Deserialize<ConfigFilterRule>(reader);
             }
 
-            if (string.IsNullOrEmpty(filterConfigFile))
+            if (string.IsNullOrEmpty(filterDocumentFilePath))
             {
                 return defaultRule;
             }
 
-            var userRule = Load(filterConfigFile);
-            return Merge(defaultRule, userRule);
-        }
+            DidUserProvideFilterDocument = true;
+            ConfigFilterRule userRule = LoadFilteringRule(filterDocumentFilePath);
 
-        private static bool CanVisitCore(IEnumerable<ConfigFilterRuleItemUnion> ruleItems, SymbolFilterData symbol)
-        {
-            foreach (var ruleUnion in ruleItems)
-            {
-                ConfigFilterRuleItem rule = ruleUnion.Rule;
-                if (rule != null && rule.IsMatch(symbol))
-                {
-                    return rule.CanVisit;
-                }
-            }
-
-            return TryVisitSymbolWithPriorSpecializedRuling(ruleItems.Where(item => item.Rule != null), symbol);
-        }
-
-        private static ConfigFilterRule Merge(ConfigFilterRule defaultRule, ConfigFilterRule userRule)
-        {
             return new ConfigFilterRule
             {
                 // user rule always overwrite default rule
@@ -106,7 +160,38 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             };
         }
 
-        private static bool TryVisitSymbolWithPriorSpecializedRuling(IEnumerable<ConfigFilterRuleItemUnion> apiRules, SymbolFilterData filterData)
+        /// <summary>
+        ///     This method is responsible to validate whether or not it is possible to extract the metadata of a type or its members.
+        /// </summary>
+        /// <param name="ruleItems">
+        ///     The defined user rules.
+        /// </param>
+        /// <param name="symbol">
+        ///     The symbol to analyze.
+        /// </param>
+        /// <returns>
+        ///     When the method returns <see langword="true"/>, DocFX is able to extract the metadata of the API.
+        /// </returns>
+        private static bool CanVisitCore(IEnumerable<ConfigFilterRuleItemUnion> ruleItems, SymbolFilterData symbol)
+        {
+            return DidUserProvideFilterDocument
+                ? IsPossibleToVisitSymbolWithUserRule(ruleItems.Where(item => item.Rule != null), symbol)
+                : ruleItems.Where(ruleUnion => ruleUnion.Rule != null).Select(ruleUnion => ruleUnion.Rule).Any(rule => rule.IsMatch(symbol) && rule.CanVisit);
+        }
+
+        /// <summary>
+        ///     This method is responsible to determine whether or not it's possible to visit the APIs that match the user's rules even when it's not a type but only the type's members.
+        /// </summary>
+        /// <param name="apiRules">
+        ///     The API rules given by the user.
+        /// </param>
+        /// <param name="filterData">
+        ///     The symbol that needs to be analyze.
+        /// </param>
+        /// <returns>
+        ///     When the method returns <see langword="true"/>, DocFX is able to extract the metadata of the API.
+        /// </returns>
+        private static bool IsPossibleToVisitSymbolWithUserRule(IEnumerable<ConfigFilterRuleItemUnion> apiRules, SymbolFilterData filterData)
         {
             if (!apiRules.Any())
             {
@@ -120,13 +205,13 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     return string.Empty;
                 }
 
-                if (!inputString.Contains("^") && !inputString.Contains(@"\"))
+                if (!inputString.Contains(RegexStartOfStringAnchor) && !inputString.Contains(EscapedSpecialCharacterInNamespacePath))
                 {
-                    // NOT a UID Regex. 
+                    // NOT a UID Regex.
                     return inputString;
                 }
 
-                return inputString.Replace("^", string.Empty).Replace(@"\", string.Empty);
+                return inputString.Replace(RegexStartOfStringAnchor, string.Empty).Replace(EscapedSpecialCharacterInNamespacePath, string.Empty);
             }
 
             bool DoesApiRuleIdMatchesSymbol(ConfigFilterRuleItem apiRule)
@@ -135,13 +220,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 return apiIdentification != null && !string.IsNullOrWhiteSpace(filterData.Id) && apiIdentification.Contains(filterData.Id);
             }
 
-            bool IsMatchedRulingConflictingWithFilters(ConfigFilterRuleItem apiRule)
-            {
-                ////var ruleSet = apiRules.Except(apiRules);
-                return false;
-            }
-
-            return apiRules.FirstOrDefault(apiRule => DoesApiRuleIdMatchesSymbol(apiRule.Rule) && !IsMatchedRulingConflictingWithFilters(apiRule.Rule)) != null;
+            return apiRules.FirstOrDefault(apiRule => DoesApiRuleIdMatchesSymbol(apiRule.Rule)) != null;
         }
     }
 }

@@ -42,7 +42,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             _currentCompilation = compilation;
             _currentCompilationRef = compilation.ToMetadataReference();
             _preserveRawInlineComments = options.PreserveRawInlineComments;
-            var configFilterRule = ConfigFilterRule.LoadWithDefaults(options.FilterConfigFile);
+            var configFilterRule = ConfigFilterRule.LoadDefaultWithUserRules(options.FilterConfigFile);
             var filterVisitor = options.DisableDefaultFilter ? (IFilterVisitor)new AllMemberFilterVisitor() : new DefaultFilterVisitor();
             FilterVisitor = filterVisitor.WithConfig(configFilterRule).WithCache();
             _extensionMethods = options.RoslynExtensionMethods != null ? options.RoslynExtensionMethods.ToDictionary(p => p.Key, p => p.Value.Where(e => FilterVisitor.CanVisitApi(e))) : new Dictionary<Compilation, IEnumerable<IMethodSymbol>>();

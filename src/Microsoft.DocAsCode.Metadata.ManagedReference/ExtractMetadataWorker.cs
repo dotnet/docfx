@@ -161,7 +161,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                                 // If the project is supported, add to project dictionary, otherwise, ignore
                                 if (projectFile.IsSupportedProject())
                                 {
-                                    projectCache.GetOrAdd(projectFile.NormalizedPath, 
+                                    projectCache.GetOrAdd(projectFile.NormalizedPath,
                                                           s => _loader.Load(projectFile.NormalizedPath));
                                 }
                                 else
@@ -295,11 +295,11 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             // Build all the projects to get the output and save to cache
             List<MetadataItem> projectMetadataList = new List<MetadataItem>();
             ConcurrentDictionary<string, bool> projectRebuildInfo = new ConcurrentDictionary<string, bool>();
-            ConcurrentDictionary<string, AbstractCompilation> compilationCache = 
+            ConcurrentDictionary<string, AbstractCompilation> compilationCache =
                 await GetProjectCompilationAsync(projectCache);
             var roslynProjects = compilationCache.Values.OfType<RoslynCompilation>().Select(rc => rc.Compilation);
-            options.RoslynExtensionMethods = 
-                RoslynIntermediateMetadataExtractor.GetAllExtensionMethodsFromCompilation(roslynProjects); 
+            options.RoslynExtensionMethods =
+                RoslynIntermediateMetadataExtractor.GetAllExtensionMethodsFromCompilation(roslynProjects);
             foreach (var key in GetTopologicalSortedItems(projectDependencyGraph))
             {
                 var dependencyRebuilt = projectDependencyGraph[key].Any(r => projectRebuildInfo[r]);
@@ -362,7 +362,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                         var controller = new RoslynSourceFileBuildController(assemblyCompilation, assembly);
 
                         var mta = GetMetadataFromProjectLevelCache(controller, input);
-                        
+
                         if (mta != null)
                         {
                             MergeCommentsHelper.MergeComments(mta.Item1, commentFiles);
@@ -479,7 +479,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             MetadataItem projectMetadata;
             if (!rebuildProject)
             {
-                // Load from cache
+                // LoadFilteringRule from cache
                 var cacheFile = Path.Combine(projectConfig.OutputFolder, projectConfig.RelativeOutputFiles.First());
                 Logger.Log(LogLevel.Info, $"'{projectConfig.InputFilesKey}' keep up-to-date since '{projectConfig.TriggeredUtcTime.ToString()}', cached intermediate result '{cacheFile}' is used.");
                 if (TryParseYamlMetadataFile(cacheFile, out projectMetadata))
