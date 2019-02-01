@@ -100,7 +100,7 @@ items:
     engines:
       docfx: ">=2.40.0"
     thumbnail: ~/templates-and-plugins/images/material.screenshot.png
-    homepage: https://github.com/ovasquez/docfx-material
+    homepage: https://ovasquez.github.io/docfx-material
     repository:
       type: git
       url: "https://github.com/ovasquez/docfx-material.git"
