@@ -22,30 +22,30 @@ outputs:
     {  
       "items":[  
           {  
-            "children":[  
+            "items":[  
                 {  
-                  "children":[  
+                  "items":[  
                       {  
-                        "toc_title":"Reference Normal File 1",
+                        "name":"Reference Normal File 1",
                         "href":"n1"
                       },
                       {  
-                        "toc_title":"Reference Normal File 2",
+                        "name":"Reference Normal File 2",
                         "href":"../"
                       },
                       {  
-                        "toc_title":"Reference Normal File 3",
+                        "name":"Reference Normal File 3",
                         "href":"f1/n1?branch=master"
                       },
                       {  
-                        "toc_title":"Reference Normal File 4",
+                        "name":"Reference Normal File 4",
                         "href":"n1"
                       }
                   ],
-                  "toc_title":"Existing File Reference"
+                  "name":"Existing File Reference"
                 }
             ],
-            "toc_title":"Index Reference",
+            "name":"Index Reference",
             "href":"."
           }
       ]
@@ -61,7 +61,7 @@ outputs:
     {  
       "items":[
           {
-            "toc_title":"title"
+            "name":"title"
           }
       ]
     }
@@ -88,7 +88,7 @@ outputs:
     {
       "items": [
         {
-          "toc_title": "a",
+          "name": "a",
           "href": "a/b"
         }
       ]
@@ -97,7 +97,7 @@ outputs:
     {
       "items": [
         {
-          "toc_title": "b",
+          "name": "b",
           "href": "b"
         }
       ]
@@ -121,30 +121,30 @@ outputs:
     {  
       "items":[  
           {  
-            "children":[  
+            "items":[  
                 {  
-                  "children":[  
+                  "items":[  
                       {  
-                        "toc_title":"Reference No-Existing File 1",
+                        "name":"Reference No-Existing File 1",
                         "href":"no-existing.md"
                       },
                       {  
-                        "toc_title":"Reference No-Existing File 2",
+                        "name":"Reference No-Existing File 2",
                         "href":"no-existing.system.md"
                       },
                       {  
-                        "toc_title":"Reference No-Existing File 3",
+                        "name":"Reference No-Existing File 3",
                         "href":"../no-existing.md"
                       },
                       {  
-                        "toc_title":"Reference No-Existing File 4",
+                        "name":"Reference No-Existing File 4",
                         "href":"~/docs/no-existing.md"
                       }
                   ],
-                  "toc_title":"No Existing File Reference"
+                  "name":"No Existing File Reference"
                 }
             ],
-            "toc_title":"Index Reference",
+            "name":"Index Reference",
             "href":"."
           }
       ]
@@ -170,22 +170,22 @@ outputs:
     {  
       "items":[  
           {  
-            "children":[  
+            "items":[  
                 {  
-                  "children":[  
+                  "items":[  
                       {  
-                        "toc_title":"Reference Absolute path 1",
+                        "name":"Reference Absolute path 1",
                         "href":"https://worldready.cloudapp.net/Styleguide/Read?id=2700&topicid=26906"
                       },
                       {  
-                        "toc_title":"Reference Absolute Path 2",
+                        "name":"Reference Absolute Path 2",
                         "href":"/help/style/style-how-to-accessibility?toc=/help/contribute/TOC.json&bc=toc=%2Fazure%2Fapi-management%2Ftoc.json"
                       }
                   ],
-                  "toc_title":"Absolute File Reference"
+                  "name":"Absolute File Reference"
                 }
             ],
-            "toc_title":"Index Reference",
+            "name":"Index Reference",
             "href":"."
           }
       ]
@@ -208,31 +208,31 @@ outputs:
     {  
        "items":[  
           {  
-             "children":[  
+             "items":[  
                 {  
-                   "toc_title":"Index Reference",
+                   "name":"Index Reference",
                    "href":"f1/"
                 }
              ],
-             "toc_title":"Reference TOC File 1"
+             "name":"Reference TOC File 1"
           },
           {  
-             "children":[  
+             "items":[  
                 {  
-                   "toc_title":"Index Reference",
+                   "name":"Index Reference",
                    "href":"f1/"
                 }
              ],
-             "toc_title":"Reference TOC File 2"
+             "name":"Reference TOC File 2"
           },
           {  
-             "children":[  
+             "items":[  
                 {  
-                   "toc_title":"Index Reference",
+                   "name":"Index Reference",
                    "href":"f1/"
                 }
              ],
-             "toc_title":"Reference TOC File 3"
+             "name":"Reference TOC File 3"
           }
        ]
     }
@@ -260,27 +260,27 @@ outputs:
    {  
        "items":[  
           {  
-             "children":[  
+             "items":[  
                 {  
                    "href": "f1/f11/",
-                   "toc_title":"Reference TOC File"
+                   "name":"Reference TOC File"
                 }
              ],
-             "toc_title":"Reference TOC File 1"
+             "name":"Reference TOC File 1"
           },
           {  
-             "children":[  
+             "items":[  
                 {  
-                   "children":[  
+                   "items":[  
                       {  
-                         "toc_title":"Index Reference",
+                         "name":"Index Reference",
                          "href":"f1/f11/"
                       }
                    ],
-                   "toc_title":"Toc Reference"
+                   "name":"Toc Reference"
                 }
              ],
-             "toc_title":"Reference TOC File 2"
+             "name":"Reference TOC File 2"
           }
        ]
     }
@@ -302,31 +302,31 @@ outputs:
     {  
       "items":[  
           {  
-            "children":[  
+            "items":[  
                 {  
-                  "children":[  
+                  "items":[  
                       {  
-                        "toc_title":"Topic1.1.1",
+                        "name":"Topic1.1.1",
                         "href":"/href1.1.1"
                       }
                   ],
-                  "toc_title":"Topic1.1 Lanaguage C#"
+                  "name":"Topic1.1 Lanaguage C#"
                 },
                 {  
-                  "children":[  
+                  "items":[  
                       {  
-                        "toc_title":"Topic1.2.1",
+                        "name":"Topic1.2.1",
                         "href":"/href1.2.1"
                       }
                   ],
-                  "toc_title":"Topic1.2 Language Java",
+                  "name":"Topic1.2 Language Java",
                 }
             ],
-            "toc_title":"Topic1",
+            "name":"Topic1",
             "href":"."
           },
           {  
-            "toc_title":"Topic2",
+            "name":"Topic2",
             "href":"https://github.com/docfx"
           }
       ]
@@ -388,20 +388,20 @@ outputs:
     {  
        "items":[  
           {  
-             "toc_title":"Toc Reference",
-             "children":[  
+             "name":"Toc Reference",
+             "items":[  
                 {  
-                   "toc_title":"Index Reference",
+                   "name":"Index Reference",
                    "href":"f1/"
                 }
              ]
           },
           {  
-             "toc_title":"Folder Reference1",
+             "name":"Folder Reference1",
              "href":"f1/"
           },
           {  
-             "toc_title":"Folder Reference2",
+             "name":"Folder Reference2",
              "href":"f1/a"
           }
        ]
@@ -422,7 +422,7 @@ outputs:
    {  
        "items":[  
           {  
-             "toc_title":"Folder Reference",
+             "name":"Folder Reference",
              "href": "f1/"
           }
        ]
@@ -454,11 +454,11 @@ outputs:
    {  
        "items":[  
           {  
-             "toc_title":"Folder Reference1",
+             "name":"Folder Reference1",
              "href":"f1/b"
           },
           {  
-             "toc_title":"Folder Reference2",
+             "name":"Folder Reference2",
              "href":"f2/a"
           }
        ]
@@ -481,17 +481,17 @@ outputs:
     {  
        "items":[  
           {  
-             "toc_title":"File Reference",
+             "name":"File Reference",
              "href":"f1/a"
           }
        ]
     }
 ---
-# Combine toc href, topic href => href + children
+# Combine toc href, topic href => href + items
 inputs:
   docfx.yml:
   docs/TOC.yml: |
-    - name: href + children
+    - name: href + items
       topicHref: f1/a.md
       tocHref: f1/TOC.md
   docs/f1/a.md:
@@ -503,11 +503,11 @@ outputs:
     {  
        "items":[  
           {  
-             "toc_title":"href + children",
+             "name":"href + items",
              "href":"f1/a",
-             "children": [
+             "items": [
                 {
-                  "toc_title": "Reference a",
+                  "name": "Reference a",
                   "href": "f1/a"
                 }
              ]
@@ -515,11 +515,11 @@ outputs:
        ]
     }
 ---
-# Combine toc href, href => href + children
+# Combine toc href, href => href + items
 inputs:
   docfx.yml:
   docs/TOC.yml: |
-    - name: href + children
+    - name: href + items
       href: f1/a.md
       tocHref: f1/TOC.md
   docs/f1/a.md:
@@ -531,11 +531,11 @@ outputs:
     {  
        "items":[  
           {  
-             "toc_title":"href + children",
+             "name":"href + items",
              "href":"f1/a",
-             "children": [
+             "items": [
                 {
-                  "toc_title": "Reference a",
+                  "name": "Reference a",
                   "href": "f1/a"
                 }
              ]
@@ -543,11 +543,11 @@ outputs:
        ]
     }
 ---
-# Combine toc href, href(toc) => toc href > href + children
+# Combine toc href, href(toc) => toc href > href + items
 inputs:
   docfx.yml:
   docs/TOC.yml: |
-    - name: toc href > href + children
+    - name: toc href > href + items
       href: f1/TOC.md
       tocHref: f2/TOC.md
   docs/f1/TOC.md:
@@ -561,10 +561,10 @@ outputs:
     {  
        "items":[  
           {  
-             "toc_title":"toc href > href + children",
-             "children": [
+             "name":"toc href > href + items",
+             "items": [
                 {
-                  "toc_title": "Reference a",
+                  "name": "Reference a",
                   "href": "f2/a"
                 }
              ]
@@ -587,7 +587,7 @@ outputs:
     {  
        "items":[  
           {  
-             "toc_title":"topic href has higher priority",
+             "name":"topic href has higher priority",
              "href":"n2",
           }
        ]
@@ -595,7 +595,7 @@ outputs:
   build.log: |
     ["warning","link-out-of-scope","File 'docs/f1/n2.md' referenced by link '~/docs/f1/n2.md' will not be built because it is not included in docfx.yml","docs/f1/TOC.yml"]
 ---
-# Combine topic href and href(toc) => href + children
+# Combine topic href and href(toc) => href + items
 # replace href finally
 inputs:
   docfx.yml: |
@@ -614,18 +614,18 @@ outputs:
     {  
        "items":[  
           {  
-             "children":[  
+             "items":[  
                 {  
-                   "toc_title":"Index Reference",
+                   "name":"Index Reference",
                    "href":"f11/n1"
                 }
              ],
-             "toc_title":"Toc Reference 1",
+             "name":"Toc Reference 1",
              "href":"f11/n1"
           },
           {  
              "href":"f11/n1",
-             "toc_title":"Toc Reference 2"
+             "name":"Toc Reference 2"
           }
        ]
     }
@@ -649,7 +649,7 @@ outputs:
     {  
        "items":[  
           {  
-             "toc_title":"topic href has higher priority",
+             "name":"topic href has higher priority",
              "href":"f1/a"
           }
        ]
@@ -674,7 +674,7 @@ outputs:
     {  
        "items":[  
           {  
-             "toc_title":"href has higher priority than toc href",
+             "name":"href has higher priority than toc href",
              "href":"f1/a"
           }
        ]
@@ -702,7 +702,7 @@ outputs:
     {  
        "items":[  
           {  
-             "toc_title":"topic href has highest priority",
+             "name":"topic href has highest priority",
              "href":"f1/a"
           }
        ]
@@ -790,11 +790,11 @@ inputs:
 outputs:
   docs/index.json:
   docs/f1/toc.experimental.json: |
-    {"items":[{"toc_title":"Index Reference","href":"../"}]}
+    {"items":[{"name":"Index Reference","href":"../"}]}
   docs/f2/toc.experimental.json: |
-    {"items":[{"toc_title":"Index Reference","href":"../"}]}
+    {"items":[{"name":"Index Reference","href":"../"}]}
   docs/f3/toc.experimental.json: |
-    {"items":[{"toc_title":"Index Reference","href":"../"}]}
+    {"items":[{"name":"Index Reference","href":"../"}]}
 ---
 # Paired experimental TOC should be built 
 inputs:
@@ -807,7 +807,7 @@ outputs:
   docs/index.json:
   docs/f1/toc.json:
   docs/f1/toc.experimental.json: |
-    {"items":[{"toc_title":"Index Reference","href":"../"}]}
+    {"items":[{"name":"Index Reference","href":"../"}]}
 ---
 # Paired experimental markdown TOCs' metadata
 inputs:
@@ -829,7 +829,7 @@ outputs:
   docs/f1/toc.json: |
     {"metadata": {"experimental": true, "experiment_id": "d1c17cc0-2ae0-4b"}}
   docs/f1/toc.experimental.json: |
-    {"items":[{"toc_title":"Index Reference","href":"../"}], "metadata": {"experimental": false, "experiment_id": "d1c17cc0-2ae0-4b"}}
+    {"items":[{"name":"Index Reference","href":"../"}], "metadata": {"experimental": false, "experiment_id": "d1c17cc0-2ae0-4b"}}
 ---
 # Paired experimental yml TOCs' metadata
 inputs:
@@ -848,7 +848,7 @@ outputs:
   docs/f1/toc.json: |
     {"metadata": {"experimental": true, "experiment_id": "d1c17cc0-2ae0-4b"}}
   docs/f1/toc.experimental.json: |
-    {"items":[{"toc_title":"title"}], "metadata": {"experimental": false, "experiment_id": "d1c17cc0-2ae0-4b"}}
+    {"items":[{"name":"title"}], "metadata": {"experimental": false, "experiment_id": "d1c17cc0-2ae0-4b"}}
 ---
 # Experimental TOC should be removed from toc map
 inputs:
@@ -879,7 +879,7 @@ inputs:
 outputs:
   docs/index.json:
   docs/f1/toc.json: |
-    {"items":[{"toc_title":"TOC Reference","children":[{"toc_title": "Index Reference", "href": "../"}]}]}
+    {"items":[{"name":"TOC Reference","items":[{"name": "Index Reference", "href": "../"}]}]}
 ---
 # Experimental TOC should be excluded using folder ref
 inputs:
@@ -893,7 +893,7 @@ outputs:
   docs/index.json:
   docs/f2/toc.experimental.json:
   docs/f1/toc.json: |
-    {"items":[{"toc_title":"TOC Reference"}]}
+    {"items":[{"name":"TOC Reference"}]}
 ---
 # Toc with null value
 inputs:
@@ -1013,7 +1013,7 @@ inputs:
 outputs:
   docs/a.json:
   docs/toc.json: |
-    {"items":[{"toc_title":"Test <X> Y","href":"a"},{"toc_title":"[Test <X> Y]"},{"toc_title":"Test **Title2** Title3","href":"a"},{"toc_title":"[Test **Title2** Title3]"}]}
+    {"items":[{"name":"Test <X> Y","href":"a"},{"name":"[Test <X> Y]"},{"name":"Test **Title2** Title3","href":"a"},{"name":"[Test **Title2** Title3]"}]}
 ---
 # Expanded, MaintainContext and DisplayName
 inputs:
@@ -1056,8 +1056,8 @@ outputs:
   docs/toc.json: |
     {
       "items": [
-        { "toc_title": "link to title 1", "href": "a#title-1", "!monikers":null },
-        { "toc_title": "link to title 2", "href": "a#title-2", "!monikers":null }
+        { "name": "link to title 1", "href": "a#title-1", "!monikers":null },
+        { "name": "link to title 2", "href": "a#title-2", "!monikers":null }
       ]
     }
   build.log: |
@@ -1078,7 +1078,7 @@ outputs:
   docs/toc.json: |
     {
       "items": [
-        { "toc_title":"Title","href":"a#bookmark", "!monikers":null }
+        { "name":"Title","href":"a#bookmark", "!monikers":null }
       ]
     }
 ---
@@ -1098,7 +1098,7 @@ outputs:
   docs/toc.json: |
     {
       "items": [
-        { "toc_title":"Uid Ref","href":"a","!monikers":null }
+        { "name":"Uid Ref","href":"a","!monikers":null }
       ]
     }
 ---
@@ -1124,8 +1124,8 @@ outputs:
   docs/toc.json: |
     {
       "items": [
-        { "toc_title":"Uid Ref","href":"a","!monikers":null },
-        { "toc_title":"Uid Not Found","href":"b","!monikers":null }
+        { "name":"Uid Ref","href":"a","!monikers":null },
+        { "name":"Uid Not Found","href":"b","!monikers":null }
       ]
     }
   build.log: |
@@ -1159,7 +1159,7 @@ outputs:
   8169d1ea/docs/toc.json: |
     {
       "items": [
-        { "toc_title":"Uid Ref","href":"a","monikers": ["netcore-1.1", "netcore-1.2"] }
+        { "name":"Uid Ref","href":"a","monikers": ["netcore-1.1", "netcore-1.2"] }
       ],
       "metadata": {"monikers": ["netcore-1.1", "netcore-1.2", "netcore-1.3" ]}
     }
@@ -1178,7 +1178,7 @@ outputs:
   docs/toc.json: |
     {
       "items": [
-        { "toc_title":"Title A","href":"a","!monikers":null }
+        { "name":"Title A","href":"a","!monikers":null }
       ]
     }
   docs/a.json:
@@ -1211,7 +1211,7 @@ outputs:
   8169d1ea/docs/toc.json: |
     {
       "items": [
-        { "toc_title":"Title A","href":"a","monikers": ["netcore-1.1", "netcore-1.2"] }
+        { "name":"Title A","href":"a","monikers": ["netcore-1.1", "netcore-1.2"] }
       ],
       "metadata": {"monikers": ["netcore-1.1", "netcore-1.2", "netcore-1.3" ]}
     }
@@ -1233,7 +1233,7 @@ inputs:
 outputs:
   docs/a.json:
   docs/toc.json: |
-    {"items":[{"toc_title":"TOC Ref","children":[{"toc_title":"Uid Ref","href":"a","!monikers":null}],"!monikers":null}]}
+    {"items":[{"name":"TOC Ref","items":[{"name":"Uid Ref","href":"a","!monikers":null}],"!monikers":null}]}
 ---
 # markdown toc using bad syntax(multiple inlines for one heading block)
 inputs:
@@ -1279,6 +1279,6 @@ inputs:
   docs/a.md:
 outputs:
   docs/toc.json: |
-    {"items":[{"toc_title":"19 leading count","href":"a","children":[{"toc_title":"20 leading count","href":"a","!monikers":null}]}]}
+    {"items":[{"name":"19 leading count","href":"a","items":[{"name":"20 leading count","href":"a","!monikers":null}]}]}
   docs/a.json:
 

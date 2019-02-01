@@ -183,12 +183,12 @@ outputs:
   docs/json/toc.json: |
     {  
       "metadata": {"a": "b"},
-      "items":[{"toc_title":"title"}]
+      "items":[{"name":"title"}]
     }
   docs/yaml/toc.json: |
     {  
       "metadata": {"a": "b"},
-      "items":[{"toc_title":"title"}]
+      "items":[{"name":"title"}]
     }
 ---
 # yaml&json toc leaf metadata
@@ -202,11 +202,11 @@ inputs:
 outputs:
   docs/json/toc.json: |
     {  
-      "items":[{"toc_title":"title", "a": "b"}]
+      "items":[{"name":"title", "a": "b"}]
     }
   docs/yaml/toc.json: |
     {  
-      "items":[{"toc_title":"title", "a": "b"}]
+      "items":[{"name":"title", "a": "b"}]
     }
 ---
 # yaml&json toc metadata inclusion
@@ -224,10 +224,10 @@ inputs:
 outputs:
   docs/yaml/toc.json: |
     {  
-      "items":[{"toc_title":"toc reference", "children": [{"toc_title":"title", "c": "d"}]}]
+      "items":[{"name":"toc reference", "items": [{"name":"title", "c": "d"}]}]
     }
 ---
-# toc global metadata
+# TOC does not respect global metadata and file metadata
 inputs:
   docfx.yml: |
     globalMetadata:
@@ -244,15 +244,15 @@ inputs:
 outputs:
   docs/yaml/toc.json: |
     {  
-      "items":[{"toc_title":"title"}], "metadata": {"a":"b", "c": "d"}
+      "items": [{ "name": "title" }], "metadata": { "!a": null, "c": "d"}
     }
   docs/json/toc.json: |
     {  
-      "items":[{"toc_title":"title"}], "metadata": {"a":"b"}
+      "items": [{ "name": "title" }], "metadata": { "!a": null }
     }
   docs/md/toc.json: |
     {  
-      "items":[{"toc_title":"title"}], "metadata": {"a":"b"}
+      "items": [{ "name": "title" }], "metadata": { "!a": null }
     }
 ---
 # redirect to redirect

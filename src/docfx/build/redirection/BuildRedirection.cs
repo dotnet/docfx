@@ -27,7 +27,7 @@ namespace Microsoft.Docs.Build
                 };
 
                 // Note: produce an empty output to make publish happy
-                context.Output.WriteJson(new { }, outputPath);
+                context.Output.WriteText("{}", outputPath);
                 context.Output.WriteJson(metadata, metadataPath);
             }
 

@@ -54,7 +54,7 @@ namespace Microsoft.Docs.Build
         private static JObject CreateRawMetadata(PageModel pageModel, Document file)
         {
             var docset = file.Docset;
-            var rawMetadata = pageModel.Metadata != null ? JsonUtility.FromObject(pageModel.Metadata) : new JObject();
+            var rawMetadata = pageModel.Metadata != null ? JsonUtility.ToJObject(pageModel.Metadata) : new JObject();
             rawMetadata["depot_name"] = $"{docset.Config.Product}.{docset.Config.Name}";
 
             rawMetadata["search.ms_docsetname"] = docset.Config.Name;
@@ -132,7 +132,7 @@ namespace Microsoft.Docs.Build
 
             return RemoveUpdatedAtDateTime(
                 TransformSchema(
-                    docset.Template.TransformMetadata("Conceptual", rawMetadata), pageModel));
+                    docset.Template.TransformMetadata("Conceptual.mta.json.js", rawMetadata), pageModel));
         }
 
         private static JObject TransformSchema(JObject metadata, PageModel model)

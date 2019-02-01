@@ -174,6 +174,14 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
+        /// Converts a strongly typed C# object to weakly typed json object using the default serialization settings.
+        /// </summary>
+        public static JObject ToJObject(object model)
+        {
+            return JObject.FromObject(model, s_serializer);
+        }
+
+        /// <summary>
         /// Creates an instance of the specified .NET type from the JToken with schema validation
         /// </summary>
         public static (List<Error>, T) ToObjectWithSchemaValidation<T>(JToken token)
@@ -198,14 +206,6 @@ namespace Microsoft.Docs.Build
                 var (range, message, path) = ParseException(ex);
                 throw Errors.JsonSyntaxError(range, message, path).ToException(ex);
             }
-        }
-
-        /// <summary>
-        /// Converts a strongly typed C# object to weakly typed json object using the default serialization settings.
-        /// </summary>
-        public static JObject FromObject(object model)
-        {
-            return JObject.FromObject(model, s_serializer);
         }
 
         public static (List<Error>, object) ToObjectWithSchemaValidation(

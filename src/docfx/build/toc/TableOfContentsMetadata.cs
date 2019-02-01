@@ -4,9 +4,11 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Serialization;
 
 namespace Microsoft.Docs.Build
 {
+    [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
     public class TableOfContentsMetadata
     {
         public List<string> Monikers { get; set; }
@@ -14,7 +16,11 @@ namespace Microsoft.Docs.Build
         [JsonProperty(PropertyName = "monikerRange")]
         public string MonikerRange { get; set; }
 
+        public string PdfAbsolutePath { get; set; }
+
         [JsonExtensionData]
         public JObject ExtensionData { get; set; }
+
+        public bool ShouldSerializeMonikerRange() => false;
     }
 }

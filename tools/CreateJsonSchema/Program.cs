@@ -57,7 +57,7 @@ class Program
     static IEnumerable<(Type type, string name)> GetSchemas()
     {
         yield return ((typeof(Config), "docfx"));
-        yield return ((typeof(TableOfContentsInputModel), "TOC"));
+        yield return ((typeof(TableOfContentsModel), "TOC"));
 
         foreach (var type in typeof(TestData).Assembly.ExportedTypes)
         {

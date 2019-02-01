@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -9,29 +10,29 @@ namespace Microsoft.Docs.Build
 {
     public class TableOfContentsItem
     {
-        [JsonProperty(PropertyName = "toc_title")]
-        public string TocTitle { get; set; }
+        [JsonRequired]
+        public string Name { get; set; }
 
-        [JsonProperty(PropertyName = "displayName")]
         public string DisplayName { get; set; }
 
-        [JsonProperty(PropertyName = "href")]
         public string Href { get; set; }
 
-        [JsonProperty(PropertyName = "tocHref")]
+        public string TopicHref { get; set; }
+
         public string TocHref { get; set; }
 
-        [JsonProperty(PropertyName = "expanded", DefaultValueHandling = DefaultValueHandling.Ignore)]
+        public string Uid { get; set; }
+
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
         public bool Expanded { get; set; }
 
-        [JsonProperty(PropertyName = "maintainContext", DefaultValueHandling = DefaultValueHandling.Ignore)]
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
         public bool MaintainContext { get; set; }
 
-        [JsonProperty(PropertyName = "children")]
-        public List<TableOfContentsItem> Children { get; set; }
-
-        [JsonProperty(PropertyName = "monikers")]
         public List<string> Monikers { get; set; }
+
+        [MinLength(1)]
+        public List<TableOfContentsItem> Items { get; set; } = new List<TableOfContentsItem>();
 
         [JsonExtensionData]
         public JObject ExtensionData { get; set; }

@@ -4,13 +4,14 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 
 namespace Microsoft.Docs.Build
 {
     internal static class BuildTableOfContents
     {
-        public static (IEnumerable<Error>, TableOfContentsModel, PublishItem publishItem) Build(
+        public static (IEnumerable<Error>, object, PublishItem publishItem) Build(
             Context context,
             Document file,
             MonikerMap monikerMap)
@@ -18,23 +19,34 @@ namespace Microsoft.Docs.Build
             Debug.Assert(file.ContentType == ContentType.TableOfContents);
             Debug.Assert(monikerMap != null);
 
-            var (errors, tocModel, tocMetadata, refArticles, refTocs) = Load(context, file, monikerMap);
+            var (errors, model, refArticles, refTocs) = Load(context, file, monikerMap);
+            var outputPath = file.GetOutputPath(model.Metadata.Monikers);
 
-            var model = new TableOfContentsModel
+            if (file.Docset.Config.Output.Pdf)
             {
-                Items = tocModel,
-                Metadata = tocMetadata,
-            };
+                var siteBasePath = file.Docset.Config.DocumentId.SiteBasePath;
+                var relativePath = PathUtility.NormalizeFile(Path.GetRelativePath(siteBasePath, Path.ChangeExtension(outputPath, ".pdf")));
+                model.Metadata.PdfAbsolutePath = $"/{siteBasePath}/opbuildpdf/{relativePath}";
+            }
 
+            var output = (object)model;
+            if (file.Docset.Legacy)
+            {
+                output = file.Docset.Template.TransformMetadata("toc.json.js", JsonUtility.ToJObject(model));
+
+                context.Output.WriteJson(model.Metadata, Path.ChangeExtension(outputPath, ".mta.json"));
+            }
+
+            // TODO: Add experimental and experiment_id to publish item
             var publishItem = new PublishItem
             {
                 Url = file.SiteUrl,
-                Path = file.GetOutputPath(tocMetadata.Monikers),
+                Path = outputPath,
                 Locale = file.Docset.Locale,
-                Monikers = tocMetadata.Monikers,
+                Monikers = model.Metadata.Monikers,
             };
 
-            return (errors, model, publishItem);
+            return (errors, output, publishItem);
         }
 
         public static TableOfContentsMap BuildTocMap(Context context, Docset docset)
@@ -61,7 +73,7 @@ namespace Microsoft.Docs.Build
                 Debug.Assert(tocMapBuilder != null);
                 Debug.Assert(fileToBuild != null);
 
-                var (errors, _, _, referencedDocuments, referencedTocs) = Load(context, fileToBuild);
+                var (errors, _, referencedDocuments, referencedTocs) = Load(context, fileToBuild);
                 context.Report.Write(fileToBuild.ToString(), errors);
 
                 tocMapBuilder.Add(fileToBuild, referencedDocuments, referencedTocs);
@@ -74,8 +86,7 @@ namespace Microsoft.Docs.Build
 
         private static (
             List<Error> errors,
-            List<TableOfContentsItem> tocItems,
-            TableOfContentsMetadata metadata,
+            TableOfContentsModel model,
             List<Document> referencedDocuments,
             List<Document> referencedTocs)
 
@@ -85,7 +96,7 @@ namespace Microsoft.Docs.Build
             var referencedDocuments = new List<Document>();
             var referencedTocs = new List<Document>();
 
-            var (loadErrors, tocItems, tocMetadata) = TableOfContentsParser.Load(
+            var (loadErrors, model) = TableOfContentsParser.Load(
                 context,
                 fileToBuild,
                 monikerMap,
@@ -127,7 +138,8 @@ namespace Microsoft.Docs.Build
                 });
 
             errors.AddRange(loadErrors);
-            return (errors, tocItems, tocMetadata, referencedDocuments, referencedTocs);
+
+            return (errors, model, referencedDocuments, referencedTocs);
         }
     }
 }

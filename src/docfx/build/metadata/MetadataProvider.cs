@@ -26,11 +26,15 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public (List<Error> errors, JObject metadata) GetMetadata(Document file, JObject yamlHeader = null)
+        public (List<Error> errors, T metadata) GetMetadata<T>(Document file, JObject yamlHeader = null)
         {
             Debug.Assert(file != null);
 
-            var erros = new List<Error>();
+            var errors = new List<Error>();
+            var result = new JObject();
+
+            JsonUtility.Merge(result, _config.GlobalMetadata);
+
             var fileMetadata = new JObject();
             foreach (var (glob, key, value) in _rules)
             {
@@ -39,30 +43,18 @@ namespace Microsoft.Docs.Build
                     fileMetadata[key] = value;
                 }
             }
-
-            var result = new JObject();
-            JsonUtility.Merge(result, _config.GlobalMetadata);
             JsonUtility.Merge(result, fileMetadata);
 
             if (yamlHeader != null)
             {
-                erros.AddRange(MetadataValidator.Validate(yamlHeader, "yaml header"));
+                errors.AddRange(MetadataValidator.Validate(yamlHeader, "yaml header"));
                 JsonUtility.Merge(result, yamlHeader);
             }
 
-            return (erros, result);
-        }
+            var (schemaErrors, obj) = JsonUtility.ToObjectWithSchemaValidation<T>(result);
+            errors.AddRange(schemaErrors);
 
-        public (List<Error> errors, FileMetadata fileMetadata) GetFileMetadata(Document file, JObject yamlHeader = null)
-        {
-            var errors = new List<Error>();
-            var (metaErrors, metadata) = GetMetadata(file, yamlHeader);
-            errors.AddRange(metaErrors);
-
-            var (fileMetaErrors, fileMetadata) = JsonUtility.ToObjectWithSchemaValidation<FileMetadata>(metadata);
-            errors.AddRange(fileMetaErrors);
-
-            return (errors, fileMetadata);
+            return (errors, obj);
         }
     }
 }

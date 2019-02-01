@@ -1,6 +1,6 @@
 {
   "definitions": {
-    "TableOfContentsInputItem": {
+    "TableOfContentsItem": {
       "type": "object",
       "properties": {
         "name": {
@@ -21,40 +21,60 @@
         "uid": {
           "type": "string"
         },
-        "maintainContext": {
-          "type": "boolean"
-        },
         "expanded": {
           "type": "boolean"
         },
-        "items": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/TableOfContentsInputItem"
-          },
-          "minItems": 1
+        "maintainContext": {
+          "type": "boolean"
         },
         "monikers": {
           "type": "array",
           "items": {
             "type": "string"
           }
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TableOfContentsItem"
+          },
+          "minItems": 1
         }
       },
       "required": [
         "name"
       ]
+    },
+    "TableOfContentsMetadata": {
+      "type": "object",
+      "properties": {
+        "monikers": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "monikerRange": {
+          "type": "string"
+        },
+        "pdf_absolute_path": {
+          "type": "string"
+        }
+      }
     }
   },
   "type": "object",
   "additionalProperties": false,
   "properties": {
-    "metadata": {},
+    "metadata": {
+      "$ref": "#/definitions/TableOfContentsMetadata"
+    },
     "items": {
       "type": "array",
       "items": {
-        "$ref": "#/definitions/TableOfContentsInputItem"
-      }
+        "$ref": "#/definitions/TableOfContentsItem"
+      },
+      "minItems": 1
     },
     "$schema": {
       "type": "string"

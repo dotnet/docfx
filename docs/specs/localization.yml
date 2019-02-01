@@ -583,7 +583,7 @@ outputs:
   docs/b.json: |
     {"toc_rel": "toc.json"}
   docs/toc.json: |
-    {"items": [{"toc_title": "reference a", "href": "a"},{"toc_title": "reference b", "href": "b"}]}
+    {"items": [{"name": "reference a", "href": "a"},{"name": "reference b", "href": "b"}]}
 ---
 # loc build with mixed toc map
 commands:
@@ -604,7 +604,7 @@ outputs:
   docs/b/b.json: |
     {"toc_rel": "toc.json"}
   docs/a/toc.json: |
-    {"items": [{"toc_title": "reference a", "href": "a"}]}
+    {"items": [{"name": "reference a", "href": "a"}]}
 ---
 # loc build with mixed toc map, all loc files are in source repo under different locale folder
 commands:
@@ -623,7 +623,7 @@ outputs:
   docs/b/b.json: |
     {"toc_rel": "toc.json"}
   docs/a/toc.json: |
-    {"items": [{"toc_title": "reference a", "href": "a"}]}
+    {"items": [{"name": "reference a", "href": "a"}]}
 ---
 # loc build with xref map, loc file has higher priority
 commands:
@@ -935,7 +935,7 @@ outputs:
   docs/a/a.json: |
     {"toc_rel": "toc.json"}
   docs/a/toc.json: |
-    {"items":[{"toc_title": "yml reference a"}]}
+    {"items":[{"name": "yml reference a"}]}
 ---
 # fallback to deleted token/codesnippet
 commands:
@@ -986,7 +986,7 @@ repos:
 outputs:
   docs/a/a.json:
   docs/b/toc.json: |
-    {"items":[{"toc_title":"reference toc a","children":[{"toc_title":"reference markdown a","href":"../a/a"}]}]}
+    {"items":[{"name":"reference toc a","items":[{"name":"reference markdown a","href":"../a/a"}]}]}
 ---
 # fallback to deleted toc only works for localization docset build
 commands:
@@ -1009,7 +1009,7 @@ repos:
 outputs:
   docs/a/a.json:
   docs/b/toc.json: |
-    {"items":[{"toc_title":"reference toc a"}]}
+    {"items":[{"name":"reference toc a"}]}
 ---
 # fallback to deleted token/codesnippet only works for loc docset build
 commands:
@@ -1056,7 +1056,7 @@ outputs:
   docs/a/a.json:
   docs/a/b.json:
   docs/b/toc.json: |
-    {"items":[{"toc_title":"reference toc a","children":[{"toc_title":"reference markdown a","href":"../a/a"}]}]}
+    {"items":[{"name":"reference toc a","items":[{"name":"reference markdown a","href":"../a/a"}]}]}
 ---
 # loc build gets restored files
 # from current docset firestly, then from fallback docset if has

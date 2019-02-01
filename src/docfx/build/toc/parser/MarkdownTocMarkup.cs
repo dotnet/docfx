@@ -16,7 +16,7 @@ namespace Microsoft.Docs.Build
     {
         private static readonly HashSet<Type> s_blockWhiteList = new HashSet<Type> { typeof(HeadingBlock) /*header*/, typeof(YamlFrontMatterBlock) /*yaml header*/, typeof(HtmlBlock) /*comment*/ };
 
-        public static (List<Error> errors, TableOfContentsInputModel model) LoadMdTocModel(string tocContent, Document file, Context context)
+        public static (List<Error> errors, TableOfContentsModel model) LoadMdTocModel(string tocContent, Document file, Context context)
         {
             var errors = new List<Error>();
             var headingBlocks = new List<HeadingBlock>();
@@ -37,9 +37,10 @@ namespace Microsoft.Docs.Build
 
             var (metaErrors, metadata) = ExtractYamlHeader.Extract(file, context);
             errors.AddRange(metaErrors);
-            var tocModel = new TableOfContentsInputModel
+
+            var tocModel = new TableOfContentsModel
             {
-                Metadata = metadata,
+                Metadata = JsonUtility.ToObject<TableOfContentsMetadata>(metadata),
             };
 
             try
@@ -54,17 +55,17 @@ namespace Microsoft.Docs.Build
             return (errors, tocModel);
         }
 
-        private static (List<TableOfContentsInputItem> children, int count) ConvertTo(string tocContent, string filePath, HeadingBlock[] headingBlocks, List<Error> errors, int startIndex = 0)
+        private static (List<TableOfContentsItem> children, int count) ConvertTo(string tocContent, string filePath, HeadingBlock[] headingBlocks, List<Error> errors, int startIndex = 0)
         {
             if (headingBlocks.Length == 0)
             {
-                return (new List<TableOfContentsInputItem>(), 0);
+                return (new List<TableOfContentsItem>(), 0);
             }
 
             Debug.Assert(startIndex < headingBlocks.Length);
 
             int i = startIndex;
-            var items = new List<TableOfContentsInputItem>();
+            var items = new List<TableOfContentsItem>();
             var childrenCount = 0;
             do
             {
@@ -93,9 +94,9 @@ namespace Microsoft.Docs.Build
 
             return (items, items.Count + childrenCount);
 
-            TableOfContentsInputItem GetItem(HeadingBlock block)
+            TableOfContentsItem GetItem(HeadingBlock block)
             {
-                var currentItem = new TableOfContentsInputItem();
+                var currentItem = new TableOfContentsItem();
                 if (block.Inline == null || !block.Inline.Any())
                 {
                     errors.Add(Errors.MissingTocHead(new Range(block.Line, block.Column), filePath));

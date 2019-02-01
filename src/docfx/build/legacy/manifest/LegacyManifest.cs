@@ -11,7 +11,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class LegacyManifest
     {
-        public static List<(LegacyManifestItem manifestItem, Document doc, List<string> monikers)> Convert(Docset docset, Context context, Dictionary<Document, PublishItem> fileManifests)
+        public static void Convert(Docset docset, Context context, Dictionary<Document, PublishItem> fileManifests)
         {
             using (Progress.Start("Convert Legacy Manifest"))
             {
@@ -135,8 +135,6 @@ namespace Microsoft.Docs.Build
                     items_to_publish = itemsToPublish,
                 },
                 Path.Combine(docset.Config.DocumentId.SiteBasePath, ".manifest.json"));
-
-                return convertedItems.ToList();
             }
         }
 

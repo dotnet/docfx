@@ -14,9 +14,17 @@ repos:
         ---
         [d](d.png)
       d.png:
+      TOC.md: |
+        # [c](c.md)
   https://docs.com/template:
   - files:
       ContentTemplate/Conceptual.mta.json.js: |
+        exports.transform = function (model) {
+          return {
+            content: JSON.stringify(model)
+          }
+        }
+      ContentTemplate/toc.json.js: |
         exports.transform = function (model) {
           return {
             content: JSON.stringify(model)
@@ -36,6 +44,8 @@ outputs:
     { "locale": "en-us", "ms.author": "yufeih", "is_dynamic_rendering": true }
   d.png.mta.json: |
     { "locale": "en-us" }
+  toc.json:
+  toc.mta.json:
   .manifest.json:
   .dependency-map.json:
   filemap.json:
