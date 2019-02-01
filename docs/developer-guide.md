@@ -39,6 +39,38 @@ In general we perfer **Squash and merge** against `v3` or feature branches. When
 
     **At this stage, changes to ideal output, config, error message and line number are not considered breaking*
 
+## Triage Process
+
+We are happy to accept small fixes and small enhancements through pull requests directly.
+For proposals or large changes, we use the following process to pickup, review and approve issues that aligns with our [roadmap](roadmap.md) and priority:
+
+1. Create an issue on GitHub to start a discussion of the proposal. We'll assign a team member once it is picked.
+
+2. Label it as `needs-discussion` for group discussion in review meetings.
+
+3. Label it as `read-for-review` for approval in review meetings when the following conditions are met:
+
+    - Contains enough details for someone else to start work on it.
+    - Contains work items to support the end to end scenario, including internal works needed beyond docfx.
+    - No open questions.
+    - A draft API proposal to illustrate the change if applicable.
+
+Running the review meeting:
+
+1. Go through issues without assignees that are not in our backlog. Assign a team member and a milestone if the issue is ready to pickup, otherwise add it to backlog using the `backlog` label.
+
+2. Go through issues with the `ready-for-review` label. Remove the `ready-for-review` label to indicate that reviewing is done. Add `approved` label to approve issues.
+
+3. Go through issues with the `needs-disussion` label. Remove the `needs-disussion` label to indicate that disussion is done.
+
+4. Check our backlog from time to time and pick up from there when we have capacity.
+
+Additional notes:
+
+- We usually have milestones for the next 2 quarters and a `future` milestone for work beyond that. The milestone specifies a deadline, work can start at any time when there is bandwidth.
+
+- For changes that potentially affect our internal partners, use the `needs-confirm` label to track these changes.
+
 ## Coding Guidelines
 
 ### C#
