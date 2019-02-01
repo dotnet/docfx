@@ -381,13 +381,13 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             {
                 return;
             }
-
             var changedGlobs = CurrentBuildVersionInfo.FileMetadata.GetChangedGlobs(LastBuildVersionInfo.FileMetadata).ToArray();
-            var lastSrcFiles = (from p in LastBuildVersionInfo.Attributes
-                                where p.Value.IsFromSource
-                                select p.Key).ToList();
             if (changedGlobs?.Count() > 0)
             {
+                var lastSrcFiles = (from p in LastBuildVersionInfo.Attributes
+                                    where p.Value.IsFromSource
+                                    select p.Key).ToList();
+
                 foreach (var key in lastSrcFiles)
                 {
                     var path = RelativePath.GetPathWithoutWorkingFolderChar(key);
