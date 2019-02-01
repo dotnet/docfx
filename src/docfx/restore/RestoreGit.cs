@@ -177,7 +177,7 @@ namespace Microsoft.Docs.Build
 
             var workTreeHeadPrefix = isLocked ? "locked-" : "";
 
-            return $"{workTreeHeadPrefix}{HrefUtility.EscapeUrlSegment(branch)}-{branch.GetMd5HashShort()}-";
+            return $"{workTreeHeadPrefix}{HrefUtility.EscapeUrlSegment(branch)}-{HashUtility.GetMd5HashShort(branch)}-";
         }
 
         private static IEnumerable<(string remote, string branch, GitFlags flags)> GetGitDependencies(Config config, string locale, Repository rootRepository)

@@ -170,11 +170,11 @@ namespace Microsoft.Docs.Build
                 {
                     if (model is string str)
                     {
-                        context.Output.WriteText(str, publishItem.Path);
+                        publishItem.Hash = context.Output.WriteTextWithHash(str, publishItem.Path);
                     }
                     else if (model != null)
                     {
-                        context.Output.WriteJson(model, publishItem.Path);
+                        publishItem.Hash = context.Output.WriteJsonWithHash(model, publishItem.Path);
                     }
                 }
 

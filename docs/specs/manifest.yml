@@ -1,5 +1,5 @@
 ---
-# Manifest contains files to publish
+# Publish manifest contains files to publish
 inputs:
   docfx.yml:
   docs/a.md:
@@ -21,7 +21,7 @@ outputs:
       ]
     }
 ---
-# Manifest outputPath is source relative path when copyResources is set to false
+# Publish manifest path is source relative path when copyResources is set to false
 inputs:
   docfx.yml: |
     files: '**'
@@ -36,6 +36,29 @@ outputs:
       ]
     }
 ---
+# Publish manifest output contains file hash
+inputs:
+  docfx.yml: |
+    files: '**'
+    redirections:
+      c.md: "/"
+  a.md:
+  b.png:
+  TOC.md:
+outputs:
+  a.json:
+  b.png:
+  toc.json:
+  .publish.json: |
+    {
+      "files": [
+        { "url": "/c", "!hash": null },
+        { "url": "/a", "hash": "eb046e908d1001c3f624092ed3ac7097a0e06652" },
+        { "url": "/b.png", "hash": "61f7e192c19a0d695d0482ac455ac68811fbe8ed" },
+        { "url": "/toc.json", "hash": "2e0952c041a983488ca4d8f1073a8f5b5f996d90" }
+      ]
+    }
+---
 # Redirections outputs redirect_url to .publish.json, but does not have output file
 inputs:
   docfx.yml: |
@@ -44,10 +67,10 @@ inputs:
 outputs:
   .publish.json: |
     {
-      "files": [{ "url": "/a", "redirect_url": "/b", "!path": null }]
+      "files": [{ "url": "/a", "redirect_url": "/b", "!path": null, "!hash": null }]
     }
 ---
-# Manifest for articles contains custom metadata
+# Publish manifest for articles contains custom metadata
 inputs:
   docfx.yml:
   a.md: |
