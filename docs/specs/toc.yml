@@ -487,6 +487,26 @@ outputs:
        ]
     }
 ---
+# Toc href takes predecance over href
+inputs:
+  docfx.yml:
+  docs/TOC.yml: |
+    - name: Azure
+      tocHref: /azure/
+      topicHref: /azure/index
+outputs:
+  docs/toc.json: |
+    {
+      "items": [
+        {
+          "name": "Azure",
+          "href": "/azure/",
+          "tocHref": "/azure/",
+          "topicHref": "/azure/index"
+        }
+      ]
+    }
+---
 # Combine toc href, topic href => href + items
 inputs:
   docfx.yml:
