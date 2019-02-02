@@ -19,7 +19,6 @@ namespace Microsoft.Docs.Build
                 {
                     new LegacyItemToPublish { RelativePath = "filemap.json", Type = "filemap" },
                     new LegacyItemToPublish { RelativePath = ".dependency-map.json", Type = "unknown" },
-                    new LegacyItemToPublish { RelativePath = "xrefmap.json", Type = "xrefmap", Version = ""/*todo*/ },
                 };
 
                 var monikerGroups = new ConcurrentDictionary<string, List<string>>();
