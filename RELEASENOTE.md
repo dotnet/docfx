@@ -4,6 +4,10 @@ Version Notes (Current Version: v2.41)
 v2.41(Pre-release)
 -----------
 
+v2.40.9
+-----------
+1. Fix error extracting metadata from DLL files. (#3979)
+
 v2.40.8
 -----------
 1. Performance improvement:
