@@ -37,14 +37,16 @@ outputs:
     }
 ---
 # Publish manifest output contains file hash
-inputs:
-  docfx.yml: |
-    files: '**'
-    redirections:
-      c.md: "/"
-  a.md:
-  b.png:
-  TOC.md:
+repos:
+  https://docs.com/output-hash:
+  - files:
+      docfx.yml: |
+        files: '**'
+        redirections:
+          c.md: "/"
+      a.md:
+      b.png:
+      TOC.md:
 outputs:
   a.json:
   b.png:
@@ -53,9 +55,9 @@ outputs:
     {
       "files": [
         { "url": "/c", "!hash": null },
-        { "url": "/a", "hash": "eb046e908d1001c3f624092ed3ac7097a0e06652" },
-        { "url": "/b.png", "hash": "61f7e192c19a0d695d0482ac455ac68811fbe8ed" },
-        { "url": "/toc.json", "hash": "2e0952c041a983488ca4d8f1073a8f5b5f996d90" }
+        { "url": "/a", "hash": "bfbbe0080a162c951c3fb9b2349be9aa173edac1" },
+        { "url": "/b.png", "hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709" },
+        { "url": "/toc.json", "hash": "ad75fac1a867d604c1df88742ed36d56aecd1926" }
       ]
     }
 ---
