@@ -44,11 +44,13 @@ In general we perfer **Squash and merge** against `v3` or feature branches. When
 We are happy to accept small fixes and small enhancements through pull requests directly.
 For proposals or large changes, we use the following process to pickup, review and approve issues that aligns with our [roadmap](roadmap.md) and priority:
 
-1. Create an issue on GitHub to start a discussion of the proposal. We'll assign a team member once it is picked.
+1. Create an issue on GitHub to start a discussion of the proposal.
 
-2. Label it as `needs-discussion` for group discussion in review meetings.
+2. Assign a team member when an issue is picked up in review meetings.
 
-3. Label it as `read-for-review` for approval in review meetings when the following conditions are met:
+3. Issue assignee label it as `needs-discussion` for group discussion in review meetings.
+
+4. Issue assignee label it as `read-for-review` for approval in review meetings when the following conditions are met:
 
     - Contains enough details for someone else to start work on it.
     - Contains work items to support the end to end scenario, including internal works needed beyond docfx.
