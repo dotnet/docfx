@@ -59,17 +59,15 @@ For proposals or large changes, we use the following process to pickup, review a
 
 Running the review meeting:
 
-1. Go through issues without assignees that are not in our backlog. Assign a team member and a milestone if the issue is ready to pickup, otherwise add it to backlog using the `backlog` label.
+1. Go through issues without assignees that is not labled as future. Assign a team member if the issue is ready to pickup, otherwise lable it as `future`. If the issue has a due date, assign a milestone. We usually have milestones for the next 2 quarters. Issues with assignees can start at any time based on priority and bandwidth.
 
-2. Go through issues with the `ready-for-review` label. Remove the `ready-for-review` label to indicate that reviewing is done. Add `approved` label to approve issues.
+2. Go through issues with the `ready-for-review` label. Remove the `ready-for-review` label to indicate that reviewing is done. Add `approved` label to approve the design so it is ready to accept pull requests.
 
 3. Go through issues with the `needs-disussion` label. Remove the `needs-disussion` label to indicate that disussion is done.
 
-4. Check our backlog from time to time and pick up from there when we have capacity.
+4. Check our issues with `future` label from time to time and pick up from there when we have capacity.
 
 Additional notes:
-
-- We usually have milestones for the next 2 quarters and a `future` milestone for work beyond that. The milestone specifies a deadline, work can start at any time when there is bandwidth.
 
 - For changes that potentially affect our internal partners, use the `needs-confirm` label to track these changes.
 
