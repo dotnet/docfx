@@ -156,7 +156,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static string UrlToShortName(string url)
         {
-            var hash = url.GetMd5HashShort();
+            var hash = HashUtility.GetMd5HashShort(url);
 
             // Trim https://
             var index = url.IndexOf(':');

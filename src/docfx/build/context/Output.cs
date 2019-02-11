@@ -3,6 +3,7 @@
 
 using System.Diagnostics;
 using System.IO;
+using System.Text;
 
 namespace Microsoft.Docs.Build
 {
@@ -16,29 +17,40 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
-        /// Opens a write stream to write to an output file.
-        /// Throws if multiple threads trying to write to the same destination concurrently.
-        /// </summary>
-        public Stream WriteStream(string destRelativePath)
-        {
-            Debug.Assert(!Path.IsPathRooted(destRelativePath));
-
-            var destinationPath = Path.Combine(_outputPath, destRelativePath);
-
-            PathUtility.CreateDirectoryFromFilePath(destinationPath);
-
-            return File.Create(destinationPath);
-        }
-
-        /// <summary>
         /// Writes the input object as json to an output file.
         /// Throws if multiple threads trying to write to the same destination concurrently.
         /// </summary>
         public void WriteJson(object graph, string destRelativePath)
         {
-            using (var writer = new StreamWriter(WriteStream(destRelativePath)))
+            using (var writer = new StreamWriter(GetDestinationPath(destRelativePath)))
             {
                 JsonUtility.Serialize(writer, graph);
+            }
+        }
+
+        /// <summary>
+        /// Computes the SHA1 hash of the input object as json and write it to an output file.
+        /// Throws if multiple threads trying to write to the same destination concurrently.
+        /// </summary>
+        public string WriteJsonWithHash(object graph, string destRelativePath)
+        {
+            using (var ms = new MemoryStream())
+            {
+                using (var writer = new StreamWriter(ms, Encoding.UTF8, 1024, leaveOpen: true))
+                {
+                    JsonUtility.Serialize(writer, graph);
+                }
+
+                ms.Seek(0, SeekOrigin.Begin);
+                var hash = HashUtility.GetSha1Hash(ms);
+
+                ms.Seek(0, SeekOrigin.Begin);
+                using (var output = File.Create(GetDestinationPath(destRelativePath)))
+                {
+                    ms.CopyTo(output);
+                }
+
+                return hash;
             }
         }
 
@@ -46,15 +58,20 @@ namespace Microsoft.Docs.Build
         /// Writes the input text to an output file.
         /// Throws if multiple threads trying to write to the same destination concurrently.
         /// </summary>
-        public void WriteText(string contents, string destRelativePath)
+        public void WriteText(string text, string destRelativePath)
         {
-            Debug.Assert(!Path.IsPathRooted(destRelativePath));
+            File.WriteAllText(GetDestinationPath(destRelativePath), text);
+        }
 
-            var destinationPath = Path.Combine(_outputPath, destRelativePath);
+        /// <summary>
+        /// Computes the SHA1 hash of the input text and write it to an output file.
+        /// Throws if multiple threads trying to write to the same destination concurrently.
+        /// </summary>
+        public string WriteTextWithHash(string text, string destRelativePath)
+        {
+            File.WriteAllText(GetDestinationPath(destRelativePath), text);
 
-            PathUtility.CreateDirectoryFromFilePath(destinationPath);
-
-            File.WriteAllText(destinationPath, contents);
+            return HashUtility.GetMd5Hash(text);
         }
 
         /// <summary>
@@ -63,14 +80,9 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public void Copy(Document file, string destRelativePath)
         {
-            Debug.Assert(!Path.IsPathRooted(destRelativePath));
-
             var sourcePath = Path.Combine(file.Docset.DocsetPath, file.FilePath);
-            var destinationPath = Path.Combine(_outputPath, destRelativePath);
 
-            PathUtility.CreateDirectoryFromFilePath(destinationPath);
-
-            File.Copy(sourcePath, destinationPath, overwrite: true);
+            File.Copy(sourcePath, GetDestinationPath(destRelativePath), overwrite: true);
         }
 
         public void Delete(string destRelativePath)
@@ -83,6 +95,17 @@ namespace Microsoft.Docs.Build
             {
                 File.Delete(destinationPath);
             }
+        }
+
+        private string GetDestinationPath(string destRelativePath)
+        {
+            Debug.Assert(!Path.IsPathRooted(destRelativePath));
+
+            var destinationPath = Path.Combine(_outputPath, destRelativePath);
+
+            PathUtility.CreateDirectoryFromFilePath(destinationPath);
+
+            return destinationPath;
         }
     }
 }
