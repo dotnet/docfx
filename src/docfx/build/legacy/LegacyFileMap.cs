@@ -11,7 +11,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class LegacyFileMap
     {
-        public static void Convert(Docset docset, Context context, List<Document> documents)
+        public static void Convert(Docset docset, Context context, List<Document> documents, Dictionary<string, List<LegacyDependencyMapItem>> dependencyMap)
         {
             using (Progress.Start("Convert Legacy File Map"))
             {
@@ -34,7 +34,7 @@ namespace Microsoft.Docs.Build
                     });
 
                 Convert(docset, context, fileMapItems);
-                LegacyAggregatedFileMap.Convert(docset, context, fileMapItems);
+                LegacyAggregatedFileMap.Convert(docset, context, fileMapItems, dependencyMap);
             }
         }
 

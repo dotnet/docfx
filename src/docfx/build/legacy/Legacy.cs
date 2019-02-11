@@ -20,8 +20,8 @@ namespace Microsoft.Docs.Build
                 var files = fileManifests.Keys.ToList();
 
                 LegacyManifest.Convert(docset, context, fileManifests);
-                LegacyFileMap.Convert(docset, context, files);
-                LegacyDependencyMap.Convert(docset, context, files, dependencyMap, tocMap);
+                var legacyDependencyMap = LegacyDependencyMap.Convert(docset, context, files, dependencyMap, tocMap);
+                LegacyFileMap.Convert(docset, context, files, legacyDependencyMap);
             }
         }
     }
