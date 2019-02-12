@@ -12,8 +12,6 @@ namespace Microsoft.Docs.Build
 {
     internal static class HrefUtility
     {
-        private static readonly Regex s_uriWithProtocol = new Regex(@"^\w{2,}\:", RegexOptions.Compiled);
-
         /// <summary>
         /// Split href to path, fragement and query
         /// </summary>
@@ -109,7 +107,13 @@ namespace Microsoft.Docs.Build
                 return HrefType.RelativePath;
             }
 
-            if (Path.IsPathRooted(href))
+            if (href[0] == '/' || href[0] == '\\')
+            {
+                return HrefType.AbsolutePath;
+            }
+
+            // If it is a windows rooted path like C:
+            if (href.Length > 2 && href[1] == ':')
             {
                 return HrefType.AbsolutePath;
             }
@@ -119,12 +123,12 @@ namespace Microsoft.Docs.Build
                 return HrefType.External;
             }
 
-            if (s_uriWithProtocol.IsMatch(href))
+            if (char.IsLetter(href[0]) && href.Contains(':'))
             {
                 return HrefType.External;
             }
 
-            if (href.StartsWith('#'))
+            if (href[0] == '#')
             {
                 return HrefType.Bookmark;
             }
