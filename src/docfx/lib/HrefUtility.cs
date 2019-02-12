@@ -107,7 +107,9 @@ namespace Microsoft.Docs.Build
                 return HrefType.RelativePath;
             }
 
-            if (href[0] == '/' || href[0] == '\\')
+            var ch = href[0];
+
+            if (ch == '/' || ch == '\\')
             {
                 return HrefType.AbsolutePath;
             }
@@ -123,12 +125,12 @@ namespace Microsoft.Docs.Build
                 return HrefType.External;
             }
 
-            if (char.IsLetter(href[0]) && href.Contains(':'))
+            if (char.IsLetter(ch) && href.Contains(':'))
             {
                 return HrefType.External;
             }
 
-            if (href[0] == '#')
+            if (ch == '#')
             {
                 return HrefType.Bookmark;
             }
