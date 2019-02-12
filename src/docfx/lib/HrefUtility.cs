@@ -3,13 +3,17 @@
 
 using System;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Web;
 
 namespace Microsoft.Docs.Build
 {
     internal static class HrefUtility
     {
+        private static readonly Regex s_uriWithProtocol = new Regex(@"^\w{2,}\:", RegexOptions.Compiled);
+
         /// <summary>
         /// Split href to path, fragement and query
         /// </summary>
@@ -98,11 +102,34 @@ namespace Microsoft.Docs.Build
             return fragment != null && fragment.Length > 1 ? DependencyType.Bookmark : DependencyType.Link;
         }
 
-        public static bool IsAbsoluteHref(string str)
+        public static HrefType GetHrefType(string href)
         {
-            return str.StartsWith('/')
-                || str.StartsWith('\\')
-                || Uri.TryCreate(str, UriKind.Absolute, out _);
+            if (string.IsNullOrEmpty(href))
+            {
+                return HrefType.RelativePath;
+            }
+
+            if (Path.IsPathRooted(href))
+            {
+                return HrefType.AbsolutePath;
+            }
+
+            if (Uri.TryCreate(href, UriKind.Absolute, out _))
+            {
+                return HrefType.External;
+            }
+
+            if (s_uriWithProtocol.IsMatch(href))
+            {
+                return HrefType.External;
+            }
+
+            if (href.StartsWith('#'))
+            {
+                return HrefType.Bookmark;
+            }
+
+            return HrefType.RelativePath;
         }
 
         public static bool IsHttpHref(string str)

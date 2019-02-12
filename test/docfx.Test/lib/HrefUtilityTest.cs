@@ -41,19 +41,23 @@ namespace Microsoft.Docs.Build
         }
 
         [Theory]
-        [InlineData("a", false)]
-        [InlineData("a/b", false)]
-        [InlineData("a\\b", false)]
-        [InlineData("/a", true)]
-        [InlineData("\\a", true)]
-        [InlineData("#a", false)]
-        [InlineData("http://a", true)]
-        [InlineData("https://a.com", true)]
-        [InlineData("c:/a", true)]
-        [InlineData("c:\\a", true)]
-        public static void IsAbsolutePath(string href, bool expected)
+        [InlineData("", HrefType.RelativePath)]
+        [InlineData("a", HrefType.RelativePath)]
+        [InlineData("a/b", HrefType.RelativePath)]
+        [InlineData("a\\b", HrefType.RelativePath)]
+        [InlineData("/a", HrefType.AbsolutePath)]
+        [InlineData("\\a", HrefType.AbsolutePath)]
+        [InlineData("#", HrefType.Bookmark)]
+        [InlineData("#a", HrefType.Bookmark)]
+        [InlineData("http://a", HrefType.External)]
+        [InlineData("https://a.com", HrefType.External)]
+        [InlineData("http:a", HrefType.External)]
+        [InlineData("feedback-url:?query=a", HrefType.External)]
+        [InlineData("c:/a", HrefType.AbsolutePath)]
+        [InlineData("c:\\a", HrefType.AbsolutePath)]
+        public static void GetHrefType(string href, HrefType expected)
         {
-            Assert.Equal(expected, HrefUtility.IsAbsoluteHref(href));
+            Assert.Equal(expected, HrefUtility.GetHrefType(href));
         }
 
         [Theory]

@@ -368,7 +368,8 @@ namespace Microsoft.Docs.Build
 
         private static TocHrefType GetHrefType(string href)
         {
-            if (HrefUtility.IsAbsoluteHref(href))
+            var hrefType = HrefUtility.GetHrefType(href);
+            if (hrefType == HrefType.AbsolutePath || hrefType == HrefType.External)
             {
                 return TocHrefType.AbsolutePath;
             }
