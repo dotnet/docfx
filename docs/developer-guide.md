@@ -48,28 +48,29 @@ For proposals or large changes, we use the following process to pickup, review a
 
 2. We assign a team member when an issue is picked up in review meetings.
 
-3. Assignee label the issue as `needs-discussion` for group discussion in review meetings.
-
-4. Assignee label the issue as `read-for-review` for approval in review meetings when the following conditions are met:
+3. Assignee label the issue as `read-for-review` for approval in review meetings only when the following conditions are met:
 
     - Contains enough details for someone else to start work on it.
     - Contains work items to support the end to end scenario, including internal works needed beyond docfx.
     - No open questions.
     - A draft API proposal to illustrate the change if applicable.
 
+4. Assignee label the issue as `needs-discussion` for group discussion in review meeting only when the following conditions are met:
+
+    - The issue can be addressed by different solutions.
+    - Contains enough details for all possible solutions.
+    
+5. Label the issue as `needs-confirm` if the change potentially affects our partners.
+
 Running the review meeting:
 
-1. Go through issues without assignees that is not labled as future. Assign a team member if the issue is ready to pickup, otherwise lable it as `future`. If the issue has a due date, assign a milestone. We usually have milestones for the next 2 quarters. Issues with assignees can start at any time based on priority and bandwidth.
+1. Go through issues without assignees that is not labled as `future`. Assign a team member if the issue is ready to pickup, otherwise lable it as `future`. If the issue has a due date, assign a milestone. We usually have milestones for the next 2 quarters. Issues with assignees can start at any time based on priority and bandwidth.
 
 2. Go through issues with the `ready-for-review` label. Remove the `ready-for-review` label to indicate that reviewing is done. Add `approved` label to approve the design so it is ready to accept pull requests.
 
 3. Go through issues with the `needs-disussion` label. Remove the `needs-disussion` label to indicate that disussion is done.
 
-4. Check our issues with `future` label from time to time and pick up from there when we have capacity.
-
-Additional notes:
-
-- For changes that potentially affect our internal partners, use the `needs-confirm` label to track these changes.
+4. Check our issues with `future` label from every month and pick up from there when we have capacity.
 
 ## Coding Guidelines
 
