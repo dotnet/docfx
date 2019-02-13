@@ -18,7 +18,25 @@ namespace Microsoft.Docs.Build
             Debug.Assert(file.ContentType == ContentType.TableOfContents);
             Debug.Assert(monikerMap != null);
 
-            var (errors, model, refArticles, refTocs) = Load(context, file, monikerMap);
+            // load toc model
+            var hrefMap = new Dictionary<string, List<string>>();
+            var (errors, model, refArticles, refTocs) = Load(context, file);
+            foreach (var (doc, href) in refArticles)
+            {
+                if (!hrefMap.TryGetValue(href, out _) && monikerMap.TryGetValue(doc, out var monikers))
+                {
+                    hrefMap[href] = monikers;
+                }
+            }
+
+            // resolve monikers
+            var (monikerError, fileMonikers) = context.MonikerProvider.GetFileLevelMonikers(file, model.Metadata.MonikerRange);
+            errors.AddIfNotNull(monikerError);
+
+            model.Metadata.Monikers = fileMonikers;
+            ResolveItemMonikers(model.Items);
+
+            // enable pdf
             var outputPath = file.GetOutputPath(model.Metadata.Monikers);
 
             if (file.Docset.Config.Output.Pdf)
@@ -28,6 +46,7 @@ namespace Microsoft.Docs.Build
                 model.Metadata.PdfAbsolutePath = $"/{siteBasePath}/opbuildpdf/{relativePath}";
             }
 
+            // output model
             var output = (object)model;
             if (file.Docset.Legacy)
             {
@@ -44,82 +63,6 @@ namespace Microsoft.Docs.Build
                 Locale = file.Docset.Locale,
                 Monikers = model.Metadata.Monikers,
             };
-
-            return (errors, output, publishItem);
-        }
-
-        public static (
-            List<Error> errors,
-            TableOfContentsModel model,
-            List<Document> referencedDocuments,
-            List<Document> referencedTocs)
-
-            Load(Context context, Document fileToBuild, MonikerMap monikerMap = null)
-        {
-            var errors = new List<Error>();
-            var referencedDocuments = new List<Document>();
-            var referencedTocs = new List<Document>();
-            var hrefMap = new Dictionary<string, List<string>>();
-
-            // load toc model
-            var (loadErrors, model) = TableOfContentsParser.Load(
-                context,
-                fileToBuild,
-                (file, href, isInclude) =>
-                {
-                    var (error, referencedTocContent, referencedToc) = context.DependencyResolver.ResolveContent(href, file, DependencyType.TocInclusion);
-                    errors.AddIfNotNull(error);
-                    if (referencedToc != null && isInclude)
-                    {
-                        // add to referenced toc list
-                        referencedTocs.Add(referencedToc);
-                    }
-                    return (referencedTocContent, referencedToc);
-                },
-                (file, href, resultRelativeTo) =>
-                {
-                    // add to referenced document list
-                    var (error, link, buildItem) = context.DependencyResolver.ResolveLink(href, file, resultRelativeTo, null);
-                    errors.AddIfNotNull(error);
-
-                    if (buildItem != null)
-                    {
-                        referencedDocuments.Add(buildItem);
-                        if (!hrefMap.ContainsKey(link) && monikerMap != null && monikerMap.TryGetValue(buildItem, out var moniker))
-                        {
-                            hrefMap.Add(link, moniker);
-                        }
-                    }
-                    return (link, buildItem);
-                },
-                (file, uid) =>
-                {
-                    // add to referenced document list
-                    var (error, link, display, buildItem) = context.DependencyResolver.ResolveXref(uid, file, file);
-                    errors.AddIfNotNull(error);
-
-                    if (buildItem != null)
-                    {
-                        referencedDocuments.Add(buildItem);
-                        if (!hrefMap.ContainsKey(link) && monikerMap != null && monikerMap.TryGetValue(buildItem, out var moniker))
-                        {
-                            hrefMap.Add(link, moniker);
-                        }
-                    }
-
-                    return (link, display, buildItem);
-                });
-
-            errors.AddRange(loadErrors);
-
-            // resolve monikers
-            var (monikerError, fileMonikers) = context.MonikerProvider.GetFileLevelMonikers(fileToBuild, model.Metadata.MonikerRange);
-            errors.AddIfNotNull(monikerError);
-
-            model.Metadata.Monikers = fileMonikers;
-            ResolveItemMonikers(model.Items);
-
-            return (errors, model, referencedDocuments, referencedTocs);
 
             void ResolveItemMonikers(List<TableOfContentsItem> items)
             {
@@ -146,6 +89,67 @@ namespace Microsoft.Docs.Build
                     item.Monikers = monikers;
                 }
             }
+
+            return (errors, output, publishItem);
+        }
+
+        public static (
+            List<Error> errors,
+            TableOfContentsModel model,
+            List<(Document doc, string href)> referencedDocuments,
+            List<Document> referencedTocs)
+
+            Load(Context context, Document fileToBuild)
+        {
+            var errors = new List<Error>();
+            var referencedDocuments = new List<(Document doc, string href)>();
+            var referencedTocs = new List<Document>();
+            var hrefMap = new Dictionary<string, List<string>>();
+
+            // load toc model
+            var (loadErrors, model) = TableOfContentsParser.Load(
+                context,
+                fileToBuild,
+                (file, href, isInclude) =>
+                {
+                    var (error, referencedTocContent, referencedToc) = context.DependencyResolver.ResolveContent(href, file, DependencyType.TocInclusion);
+                    errors.AddIfNotNull(error);
+                    if (referencedToc != null && isInclude)
+                    {
+                        // add to referenced toc list
+                        referencedTocs.Add(referencedToc);
+                    }
+                    return (referencedTocContent, referencedToc);
+                },
+                (file, href, resultRelativeTo) =>
+                {
+                    // add to referenced document list
+                    var (error, link, buildItem) = context.DependencyResolver.ResolveLink(href, file, resultRelativeTo, null);
+                    errors.AddIfNotNull(error);
+
+                    if (buildItem != null)
+                    {
+                        referencedDocuments.Add((buildItem, link));
+                    }
+                    return (link, buildItem);
+                },
+                (file, uid) =>
+                {
+                    // add to referenced document list
+                    var (error, link, display, buildItem) = context.DependencyResolver.ResolveXref(uid, file, file);
+                    errors.AddIfNotNull(error);
+
+                    if (buildItem != null)
+                    {
+                        referencedDocuments.Add((buildItem, link));
+                    }
+
+                    return (link, display, buildItem);
+                });
+
+            errors.AddRange(loadErrors);
+
+            return (errors, model, referencedDocuments, referencedTocs);
         }
     }
 }

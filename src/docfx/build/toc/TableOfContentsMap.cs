@@ -110,7 +110,7 @@ namespace Microsoft.Docs.Build
                     var (errors, _, referencedDocuments, referencedTocs) = BuildTableOfContents.Load(context, fileToBuild);
                     context.Report.Write(fileToBuild.ToString(), errors);
 
-                    tocMapBuilder.Add(fileToBuild, referencedDocuments, referencedTocs);
+                    tocMapBuilder.Add(fileToBuild, referencedDocuments.Select(r => r.doc), referencedTocs);
                 }
                 catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
                 {
