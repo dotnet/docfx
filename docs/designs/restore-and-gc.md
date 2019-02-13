@@ -20,20 +20,40 @@ github:
   userCache: https:///some-blob-service/github-user-cache.json
 ```
 
-The restored files will be stored at `%DOCFX_APPDATA_PATH%/downloads/{url-short-path}/{version}+{etag}` like:
+The restored files will be stored at `%DOCFX_APPDATA_PATH%/downloads/{url-short-path}/{number}` like:
 
 ```text
 `%DOCFX_APPDATA_PATH%`
     | - downloads
         | - raw.gith..tent.com+docascode+docfx-te..ndencies+62b0448+extend1.yml+dc363b0e
-            | - 18b265bc4e9a6b4fdff8b5210caf9e3541f4cb2d+%22f02fde5b4f3817266458170ba048c7fc2de46287%22
-            | - 3111eb522b092c9cef5cd0ccd86892cf847592d6+%2299a5dbb8d73da1ec452d74c0ab45b11ebe8615a0%22
+            | - 1
+            | - 2
 
+```
+
+And there is another index file `index.txt` under `%DOCFX_APPDATA_PATH%/downloads/{url-short-path}/` tracking the detail info of each `{number} file`.
+
+```text
+`%DOCFX_APPDATA_PATH%`
+    | - downloads
+        | - raw.gith..tent.com+docascode+docfx-te..ndencies+62b0448+extend1.yml+dc363b0e
+            | - 1
+            | - 2
+            | - index.txt
+
+```
+
+`index.txt`:
+```text
+1 {version} {etag} {date} {in-use}
+2 {version} {etag} {date} {in-use}
 ```
 
 - `{url-short-path}` is calculated from `file` url
 - `{version}` is sha1 hash of file content, 
 - `{etag}` is timestamp or something else supported by the service which stores the `file`.
+- `{date}` is the download date, it will be set or overwritten during restore.
+- `{in-use}` is tracking the file is in use or not, if it is, it's can't be overwritten, otherwise, it can be overwritten for reusing during restore.
 
 If the `etag` is supported by its service, docfx avoids duplicated downloads for the file never changed.
 
@@ -56,19 +76,40 @@ Content:
 Example: [!code-csharp[Main](docfx-code/program.cs)]
 ```
 
-The restored dependency repositories will be stored at `%DOCFX_APPDATA_PATH%/git/{url-short-path}/{worktree-name}` organized by [git work tree](https://git-scm.com/docs/git-worktree) like:
+The restored dependency repositories will be stored at `%DOCFX_APPDATA_PATH%/git/{url-short-path}/{number}` organized by [git work tree](https://git-scm.com/docs/git-worktree) like:
 
 ```text
 `%DOCFX_APPDATA_PATH%`
     | - git
         | - github.com+Microsoft+Luis-Samples+5e455995
             | - .git
-            | - master-fd6968dec9a9a39aec1845232466fe35fca520da
-            | - live-a82cb2a51f6925b2fa87275218b01678c5aadfe1
+            | - 1
+            | - 2
+```
+
+And there is another file `index.txt` under `%DOCFX_APPDATA_PATH%/git/{url-short-path}` tracking the detail info of each `work-tree`.
+
+```text
+`%DOCFX_APPDATA_PATH%`
+    | - git
+        | - github.com+Microsoft+Luis-Samples+5e455995
+            | - .git
+            | - 1
+            | - 2
+            | - index.txt
+```
+
+`index.txt`:
+```
+1 {branch} {commit} {date} {in-use}
+2 {branch} {commit} {date} {in-use}
 ```
 
 - `{url-short-path}` is calculated from `git remote` url
-- `{worktree-name}` is combined by `branch name` and `HEAD commit id`
+- `{branch}` is the branch name
+- `{commit}` is the HEAD commit
+- `{date}` is the last restore date, it will be set or overwritten during restore.
+- `{in-use}` is tracking if the `work-tree` is in use or not, if it is, it can't be operated any git operations, otherwise, we can reuse this `work-tree` during restore, fetch and checkout to new branch/commit.
 
 ## Dependency lock
 
@@ -196,22 +237,4 @@ For above example:
 
 - Even there is new commits in `https://github.com/dotnet/docfx-sample-code` `master` branch, but with the `.lock.json` file, we still using the `19a9a39aec184523246678c5aadfea82cb2` commit.
 - Since the `https://github.com/microsoft/azure-sample-code#live` is not defined in existing `.lock.json`, `restore` will check-out latest commit of live branch of this repository to one work tree and add it to `.lock.json`.
-
-# Garbage collection
-
-Since all of the dependencies files/repositories are stored under `%DOCFX_APPDATA_PATH%` folder, this folder will be bigger and bigger, a lot of out-of-date version of files or repository work trees are left there. 
-
-With GC command docfx `gc`, you can clean up the `%DOCFX_APPDATA_PATH%`. 
-
-Whenever the `restore` command is executed, the `last write time` of downloaded files and git repository folder will be refreshed always, so the `gc` will clean up these files/repositories based on the `last write time`.
-
-The default `retention` rules are 15 days, which means `gc` will only keep these files/repository work trees which are accessed within 15 days, you can also overwrite this default rule by using `--retention-days {days}` command options.
-
-# Future consideration of Restore and GC
-
-The `restore` is to `add and forget` and `gc` is to `delete`, considering the work tree size and check-out speed, we may want to `re-use` instead of `delete`.
-
-`re-use` existing work-tree of git can help us reduce the disk size and improve the checkout speed, this actually also fits the dependency files.
-
-But this solution need track usage status of each work tree, not a status-less design so let's put it in the future improvements.
 
