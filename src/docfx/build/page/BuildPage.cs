@@ -177,7 +177,7 @@ namespace Microsoft.Docs.Build
 
             if (file.Docset.Legacy)
             {
-                html = html.AddLinkType(file.Docset.Locale, file.Docset.Legacy)
+                html = html.AddLinkType(file.Docset.Locale)
                            .RemoveRerunCodepenIframes();
             }
 

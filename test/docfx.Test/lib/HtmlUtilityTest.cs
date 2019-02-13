@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using HtmlAgilityPack;
 using Xunit;
 
 namespace Microsoft.Docs.Build
@@ -20,7 +19,7 @@ namespace Microsoft.Docs.Build
         [InlineData("<a href='/de-de/a' />", "<a href='/de-de/a' data-linktype='absolute-path' />")]
         [InlineData("<a href='http://abc' />", "<a href='http://abc' data-linktype='external' />")]
         [InlineData("<a href='https://abc' />", "<a href='https://abc' data-linktype='external' />")]
-        [InlineData("<a href='https://[abc]' />", "<a href='https://[abc]' data-linktype='relative-path' />")]
+        [InlineData("<a href='https://[abc]' />", "<a href='https://[abc]' data-linktype='external' />")]
         public void AddLinkType(string input, string output)
         {
             var actual = HtmlUtility.TransformHtml(input, node => node.AddLinkType("zh-cn"));
