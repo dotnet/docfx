@@ -4,6 +4,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -58,11 +59,12 @@ namespace Microsoft.Docs.Build
             var errors = new List<Error>();
             var referencedDocuments = new List<Document>();
             var referencedTocs = new List<Document>();
+            var hrefMap = new Dictionary<string, List<string>>();
 
+            // load toc model
             var (loadErrors, model) = TableOfContentsParser.Load(
                 context,
                 fileToBuild,
-                monikerMap,
                 (file, href, isInclude) =>
                 {
                     var (error, referencedTocContent, referencedToc) = context.DependencyResolver.ResolveContent(href, file, DependencyType.TocInclusion);
@@ -83,6 +85,10 @@ namespace Microsoft.Docs.Build
                     if (buildItem != null)
                     {
                         referencedDocuments.Add(buildItem);
+                        if (!hrefMap.ContainsKey(link) && monikerMap != null && monikerMap.TryGetValue(buildItem, out var moniker))
+                        {
+                            hrefMap.Add(link, moniker);
+                        }
                     }
                     return (link, buildItem);
                 },
@@ -95,6 +101,10 @@ namespace Microsoft.Docs.Build
                     if (buildItem != null)
                     {
                         referencedDocuments.Add(buildItem);
+                        if (!hrefMap.ContainsKey(link) && monikerMap != null && monikerMap.TryGetValue(buildItem, out var moniker))
+                        {
+                            hrefMap.Add(link, moniker);
+                        }
                     }
 
                     return (link, display, buildItem);
@@ -102,7 +112,40 @@ namespace Microsoft.Docs.Build
 
             errors.AddRange(loadErrors);
 
+            // resolve monikers
+            var (monikerError, fileMonikers) = context.MonikerProvider.GetFileLevelMonikers(fileToBuild, model.Metadata.MonikerRange);
+            errors.AddIfNotNull(monikerError);
+
+            model.Metadata.Monikers = fileMonikers;
+            ResolveItemMonikers(model.Items);
+
             return (errors, model, referencedDocuments, referencedTocs);
+
+            void ResolveItemMonikers(List<TableOfContentsItem> items)
+            {
+                foreach (var item in items)
+                {
+                    if (item.Items != null)
+                    {
+                        ResolveItemMonikers(item.Items);
+                    }
+
+                    List<string> monikers = null;
+                    if (item.Href == null || !hrefMap.TryGetValue(item.Href, out monikers))
+                    {
+                        if (item.TopicHref == null || !hrefMap.TryGetValue(item.TopicHref, out monikers))
+                        {
+                            monikers = fileMonikers;
+                        }
+                    }
+
+                    var childrenMonikers = item.Items?.SelectMany(child => child?.Monikers ?? new List<string>()) ?? new List<string>();
+                    monikers = childrenMonikers.Union(monikers ?? new List<string>()).Distinct(context.MonikerProvider.Comparer).ToList();
+                    monikers.Sort(context.MonikerProvider.Comparer);
+
+                    item.Monikers = monikers;
+                }
+            }
         }
     }
 }
