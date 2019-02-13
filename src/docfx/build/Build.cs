@@ -33,8 +33,8 @@ namespace Microsoft.Docs.Build
             using (var context = await Context.Create(outputPath, report, docset, () => xrefMap))
             {
                 xrefMap = XrefMap.Create(context, docset);
+                var tocMap = TableOfContentsMap.Create(context, docset);
 
-                var tocMap = BuildTableOfContents.BuildTocMap(context, docset);
                 var (publishManifest, fileManifests, sourceDependencies) = await BuildFiles(context, docset, tocMap);
 
                 var saveGitHubUserCache = context.GitHubUserCache.SaveChanges(config);
