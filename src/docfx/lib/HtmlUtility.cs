@@ -27,11 +27,6 @@ namespace Microsoft.Docs.Build
             return transform(document.DocumentNode).OuterHtml;
         }
 
-        public static string GetInnerText(this HtmlNode html)
-        {
-            return html.InnerText;
-        }
-
         public static HtmlNode AddLinkType(this HtmlNode html, string locale)
         {
             AddLinkType(html, "a", "href", locale);

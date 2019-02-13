@@ -70,14 +70,6 @@ namespace Microsoft.Docs.Build
         }
 
         [Theory]
-        [InlineData("", "")]
-        [InlineData("<p id='1'>a</p>", "a")]
-        public void GetInnerText(string input, string output)
-        {
-            Assert.Equal(output, HtmlUtility.GetInnerText(HtmlUtility.LoadHtml(input)));
-        }
-
-        [Theory]
         [InlineData("", 0)]
         [InlineData("a", 1)]
         [InlineData("a b", 2)]
