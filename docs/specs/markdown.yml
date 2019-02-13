@@ -221,15 +221,15 @@ inputs:
     ---
     metaKey: metaValue
     ---
-    # This is *a* title
+    # This is *a* title &
     
     body
 outputs:
   docs/a.json: |
     {
       "content": "<p>body</p>",
-      "title": "This is a title",
-      "raw_title": "<h1 id=\"this-is-a-title\">This is <em>a</em> title</h1>",
+      "title": "This is a title &",
+      "raw_title": "<h1 id=\"this-is-a-title-\">This is <em>a</em> title &amp;</h1>",
       "metadata": { "metaKey": "metaValue" }
     }
 ---
