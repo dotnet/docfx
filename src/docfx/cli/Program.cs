@@ -26,11 +26,23 @@ namespace Microsoft.Docs.Build
                 try
                 {
                     PrintFatalErrorMessage(ex);
+                    Telemetry.TrackException(ex);
                 }
                 catch
                 {
                 }
                 return 1;
+            }
+            finally
+            {
+                try
+                {
+                    Telemetry.Flush();
+                }
+                catch (Exception ex)
+                {
+                    PrintFatalErrorMessage(ex);
+                }
             }
         }
 
