@@ -13,6 +13,7 @@ namespace Microsoft.Docs.Build
     {
         private readonly ConcurrentDictionary<string, Lazy<(List<Error>, JToken)>> _tokenCache = new ConcurrentDictionary<string, Lazy<(List<Error>, JToken)>>();
         private readonly ConcurrentDictionary<string, Lazy<(List<Error>, JObject)>> _metadataCache = new ConcurrentDictionary<string, Lazy<(List<Error>, JObject)>>();
+        private readonly ConcurrentDictionary<string, Lazy<(List<Error>, TableOfContentsModel, List<(Document doc, string herf)>, List<Document>)>> _tocModelCache = new ConcurrentDictionary<string, Lazy<(List<Error>, TableOfContentsModel, List<(Document doc, string herf)>, List<Document>)>>();
 
         public (List<Error> errors, JToken token) LoadYamlFile(Document file)
             => _tokenCache.GetOrAdd(GetKeyFromFile(file), new Lazy<(List<Error>, JToken)>(() =>
@@ -38,6 +39,14 @@ namespace Microsoft.Docs.Build
                     return ExtractYamlHeader.Extract(reader);
                 }
             })).Value;
+
+        public (List<Error>, TableOfContentsModel, List<(Document doc, string herf)>, List<Document>) LoadTocModel(Context context, Document file)
+        {
+            return _tocModelCache.GetOrAdd(
+                file.FilePath,
+                new Lazy<(List<Error>, TableOfContentsModel, List<(Document doc, string herf)>, List<Document>)>(
+                    () => BuildTableOfContents.Load(context, file))).Value;
+        }
 
         private string GetKeyFromFile(Document file)
         {

@@ -20,7 +20,7 @@ namespace Microsoft.Docs.Build
 
             // load toc model
             var hrefMap = new Dictionary<string, List<string>>();
-            var (errors, model, refArticles, refTocs) = Load(context, file);
+            var (errors, model, refArticles, refTocs) = context.Cache.LoadTocModel(context, file);
             foreach (var (doc, href) in refArticles)
             {
                 if (!hrefMap.TryGetValue(href, out _) && monikerMap.TryGetValue(doc, out var monikers))
