@@ -1,11 +1,9 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -49,42 +47,7 @@ namespace Microsoft.Docs.Build
             return (errors, output, publishItem);
         }
 
-        public static TableOfContentsMap BuildTocMap(Context context, Docset docset)
-        {
-            using (Progress.Start("Loading TOC"))
-            {
-                var builder = new TableOfContentsMapBuilder();
-                var tocFiles = docset.ScanScope.Where(f => f.ContentType == ContentType.TableOfContents);
-                if (!tocFiles.Any())
-                {
-                    return builder.Build();
-                }
-
-                ParallelUtility.ForEach(tocFiles, file => BuildTocMap(context, file, builder), Progress.Update);
-
-                return builder.Build();
-            }
-        }
-
-        private static void BuildTocMap(Context context, Document fileToBuild, TableOfContentsMapBuilder tocMapBuilder)
-        {
-            try
-            {
-                Debug.Assert(tocMapBuilder != null);
-                Debug.Assert(fileToBuild != null);
-
-                var (errors, _, referencedDocuments, referencedTocs) = Load(context, fileToBuild);
-                context.Report.Write(fileToBuild.ToString(), errors);
-
-                tocMapBuilder.Add(fileToBuild, referencedDocuments, referencedTocs);
-            }
-            catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
-            {
-                context.Report.Write(fileToBuild.ToString(), dex.Error);
-            }
-        }
-
-        private static (
+        public static (
             List<Error> errors,
             TableOfContentsModel model,
             List<Document> referencedDocuments,

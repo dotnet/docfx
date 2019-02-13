@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
@@ -81,6 +82,41 @@ namespace Microsoft.Docs.Build
             {
                 return CompareTocCandidate(minCandidate, nextCandidate) <= 0 ? minCandidate : nextCandidate;
             })?.Toc;
+        }
+
+        public static TableOfContentsMap Create(Context context, Docset docset)
+        {
+            using (Progress.Start("Loading TOC"))
+            {
+                var builder = new TableOfContentsMapBuilder();
+                var tocFiles = docset.ScanScope.Where(f => f.ContentType == ContentType.TableOfContents);
+                if (!tocFiles.Any())
+                {
+                    return builder.Build();
+                }
+
+                ParallelUtility.ForEach(tocFiles, file => BuildTocMap(file, builder), Progress.Update);
+
+                return builder.Build();
+            }
+
+            void BuildTocMap(Document fileToBuild, TableOfContentsMapBuilder tocMapBuilder)
+            {
+                try
+                {
+                    Debug.Assert(tocMapBuilder != null);
+                    Debug.Assert(fileToBuild != null);
+
+                    var (errors, _, referencedDocuments, referencedTocs) = BuildTableOfContents.Load(context, fileToBuild);
+                    context.Report.Write(fileToBuild.ToString(), errors);
+
+                    tocMapBuilder.Add(fileToBuild, referencedDocuments, referencedTocs);
+                }
+                catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
+                {
+                    context.Report.Write(fileToBuild.ToString(), dex.Error);
+                }
+            }
         }
 
         private static (int subDirectoryCount, int parentDirectoryCount)
