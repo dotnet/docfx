@@ -48,7 +48,7 @@ For proposals or large changes, we use the following process to pickup, review a
 
 2. We assign a team member when an issue is picked up in review meetings.
 
-3. Assignee label the issue as `read-for-review` for approval in review meetings only when the following conditions are met:
+3. Assignee label the issue as `ready-for-review` for approval in review meetings only when the following conditions are met:
 
     - Contains enough details for someone else to start work on it.
     - Contains work items to support the end to end scenario, including internal works needed beyond docfx.
