@@ -87,7 +87,7 @@ The restored dependency repositories will be stored at `%DOCFX_APPDATA_PATH%/git
             | - 2
 ```
 
-And there is another file `index.txt` under `%DOCFX_APPDATA_PATH%/git/{url-short-path}` tracing the detail info of each `work-tree`.
+And there is another file `index.txt` under `%DOCFX_APPDATA_PATH%/git/{url-short-path}` tracking the detail info of each `work-tree`.
 
 ```text
 `%DOCFX_APPDATA_PATH%`
