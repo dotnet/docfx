@@ -125,6 +125,7 @@ namespace Microsoft.Docs.Build
                 return HrefType.External;
             }
 
+            // Uri.TryCreate does not handle some common errors like http:docs.com, so specialize them here
             if (char.IsLetter(ch) && href.Contains(':'))
             {
                 return HrefType.External;
