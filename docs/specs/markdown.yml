@@ -400,3 +400,30 @@ outputs:
   docs/a.json:
   build.log: |
     ["warning","yaml-header-not-object","Expect yaml header to be an object, but got a scalar","docs/a.md"]
+---
+# handle link escape
+inputs:
+  docfx.yml:
+  links.md: |
+    [a b](a%20b.md)
+    [a&b](a&b.md)
+    [a&amp;b](a&amp;b.md)
+    [a&amp;amp;b](a&amp;amp;b.md)
+  html-links.md: |
+    <a href='a%20b.md'>a%20b.md</a>
+    <a href='a&b.md'>a&b.md</a>
+    <a href='a&amp;amp;b.md'>a&amp;amp;b.md</a>
+  includes.md: |
+    [!include[a b](a%20b.md)]
+    [!include[a&b](a&b.md)]
+    [!include[a&amp;amp;b](a&amp;amp;b.md)]
+  'a b.md': 'a b'
+  a&b.md: 'a&b'
+  a&amp;b.md: 'a&amp;b'
+outputs:
+  links.json:
+  html-links.json:
+  includes.json:
+  'a b.md':
+  a&b.md:
+  a&amp;b.md:
