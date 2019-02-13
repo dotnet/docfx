@@ -3,9 +3,7 @@
 
 using System;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Web;
 
 namespace Microsoft.Docs.Build
@@ -117,7 +115,7 @@ namespace Microsoft.Docs.Build
             // If it is a windows rooted path like C:
             if (href.Length > 2 && href[1] == ':')
             {
-                return HrefType.AbsolutePath;
+                return HrefType.WindowsAbsolutePath;
             }
 
             if (Uri.TryCreate(href, UriKind.Absolute, out _))

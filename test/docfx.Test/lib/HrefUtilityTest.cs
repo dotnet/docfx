@@ -53,8 +53,8 @@ namespace Microsoft.Docs.Build
         [InlineData("https://a.com", HrefType.External)]
         [InlineData("http:a", HrefType.External)]
         [InlineData("feedback-url:?query=a", HrefType.External)]
-        [InlineData("c:/a", HrefType.AbsolutePath)]
-        [InlineData("c:\\a", HrefType.AbsolutePath)]
+        [InlineData("c:/a", HrefType.WindowsAbsolutePath)]
+        [InlineData("c:\\a", HrefType.WindowsAbsolutePath)]
         public static void GetHrefType(string href, HrefType expected)
         {
             Assert.Equal(expected, HrefUtility.GetHrefType(href));

@@ -177,6 +177,7 @@ namespace Microsoft.Docs.Build
                         node.SetAttributeValue("data-linktype", "self-bookmark");
                         break;
                     case HrefType.AbsolutePath:
+                    case HrefType.WindowsAbsolutePath:
                         node.SetAttributeValue("data-linktype", "absolute-path");
                         node.SetAttributeValue(attribute, AddLocaleIfMissing(href, locale));
                         break;
