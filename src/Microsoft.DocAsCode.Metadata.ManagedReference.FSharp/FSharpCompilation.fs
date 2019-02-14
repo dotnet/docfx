@@ -88,7 +88,7 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
     let mutable references = Dictionary<string, ReferenceItem>()
 
     /// visibility filter
-    let mutable filter = ConfigFilterRule()
+    let filter: ConfigFilterRule option = None
 
     /// adds a reference
     let addReference name (ref: ReferenceItem) =
@@ -111,6 +111,10 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
     /// Creates a SourceDetail from an F# compiler range.
     let srcDetail name (declLoc: Range.range) =
         SourceDetail(Name=name, Path=declLoc.FileName, StartLine=declLoc.StartLine)
+
+    /// Validates with filtering rule whether it's possible to extract metadata from an API endpoint.
+    let isPossibleToVisitApiEndpoint (filter: ConfigFilterRule option) filterData =
+        filter |> Option.map(fun x -> x.CanVisitApi filterData) |> Option.isSome
         
     /// LinkItems for an F# type reference.
     let rec typeRefParts (typ: FSharpType) : LinkItem list =
@@ -510,7 +514,7 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
         filterData.Id <- attr.AttributeType.FullName
         filterData.Kind <- Nullable ExtendedSymbolKind.Class
         filterData.Attributes <- Seq.empty
-        filter.CanVisitAttribute filterData
+        (filter, filterData) ||> isPossibleToVisitApiEndpoint
 
     /// Extract MetadataItem for an F# attribute.
     let attrMetadata (attr: FSharpAttribute) =
@@ -917,7 +921,8 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
         | _ -> skip <- true
 
         filterData.Id <- symMd.Name
-        if not skip && filter.CanVisitApi filterData then Some symMd
+        let canVisitApi = (filter, filterData) ||> isPossibleToVisitApiEndpoint
+        if not skip && canVisitApi then Some symMd
         else None
 
 
@@ -1047,13 +1052,14 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
         let filterData = SymbolFilterData()
         filterData.Id <- md.Name     
         filterData.Kind <- Nullable extendedSymbolKind
-        filterData.Attributes <- attrsFilterData ent.Attributes              
+        filterData.Attributes <- attrsFilterData ent.Attributes        
+        let canVisitApi = (filter, filterData) ||> isPossibleToVisitApiEndpoint
 
         // check if entity should be filtered out
         if ent.IsFSharpModule && Seq.isEmpty md.Items then
             // skip modules that only contain nested types
             None
-        elif not (filter.CanVisitApi filterData) then
+        elif not canVisitApi then
             // filtered out by user specified filter
             None
         else
@@ -1079,8 +1085,9 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
         filterData.Id <- md.Name     
         filterData.Kind <- Nullable ExtendedSymbolKind.Namespace
         filterData.Attributes <- Seq.empty   
+        let canVisitApi = (filter, filterData) ||> isPossibleToVisitApiEndpoint
 
-        if filter.CanVisitApi filterData then
+        if canVisitApi then
             addReferenceFromMetadata md
             Some md
         else
@@ -1126,7 +1133,7 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
     member this.ExtractMetadata (parameters: IInputParameters) =
         Log.verbose "Extracting F# metadata for assembly %s" assemblyName
 
-        filter <- ConfigFilterRule.LoadWithDefaults parameters.Options.FilterConfigFile
+        filter = Some (parameters.Options.FilterConfigFile |> ConfigFilterRule.LoadDefaultWithUserRules) |> ignore<bool>
         references <- Dictionary<string, ReferenceItem>()
         let md = this.AssemblyMetadata()
 
@@ -1145,4 +1152,3 @@ and FSharpBuildController (compilation: FSharpCompilation) =
     interface IBuildController with
         member __.ExtractMetadata parameters =
             compilation.ExtractMetadata parameters
-
