@@ -4,6 +4,11 @@ Version Notes (Current Version: v2.41)
 v2.41(Pre-release)
 -----------
 
+v2.40.10
+-----------
+1. Bug fix:
+    1. Non-source files should not be included in file metadata changes when incremental build.
+
 v2.40.9
 -----------
 1. Fix error extracting metadata from DLL files. (#3979)
