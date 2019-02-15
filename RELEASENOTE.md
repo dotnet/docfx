@@ -1,8 +1,9 @@
-Version Notes (Current Version: v2.41)
+Version Notes (Current Version: v2.40.11)
 =======================================
 
-v2.41(Pre-release)
+v2.40.11
 -----------
+1. Add new severity level - `Suggestion`.
 
 v2.40.10
 -----------
