@@ -367,7 +367,8 @@ namespace Microsoft.Docs.Build
                     if (!string.IsNullOrEmpty(content))
                     {
                         TestUtility.VerifyJsonContainEquals(
-                            JToken.Parse(content),
+                            // Test expectation can use YAML for readability
+                            content.StartsWith("{") ? JToken.Parse(content) : YamlUtility.Deserialize(content, nullValidation: false).Item2,
                             JToken.Parse(File.ReadAllText(file)));
                     }
                     break;

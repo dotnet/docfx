@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -46,14 +47,13 @@ namespace Microsoft.Docs.Build
                 var expectedValue = ((JValue)expected).Value;
                 var actualValue = ((JValue)actual).Value;
 
-                if (expectedValue is string expectedHtml && actualValue is string actualHtml &&
-                    expectedHtml.StartsWith('<') && expectedHtml.EndsWith('>'))
+                if (expectedValue is string expectedHtml && actualValue is string actualHtml && IsHtmlLike(expectedHtml))
                 {
                     // Treat `content` as html if the expected value looks like: <blablabla>
-                    Assert.Equal(TestUtility.NormalizeHtml(expectedHtml), TestUtility.NormalizeHtml(actualHtml));
+                    Assert.Equal(NormalizeHtml(expectedHtml), NormalizeHtml(actualHtml));
                 }
-                else
-                if (expectedValue is string expectedStr && actualValue is string actualStr &&
+                else if (
+                    expectedValue is string expectedStr && actualValue is string actualStr &&
                     expectedStr.StartsWith("*") && expectedStr.EndsWith("*"))
                 {
                     expectedStr = expectedStr.Trim(new[] { '*' });
@@ -63,6 +63,12 @@ namespace Microsoft.Docs.Build
                 {
                     Assert.Equal(expectedValue, actualValue);
                 }
+            }
+
+            bool IsHtmlLike(string content)
+            {
+                var trimedContent = content.Trim();
+                return trimedContent.StartsWith('<') && trimedContent.EndsWith('>');
             }
         }
 

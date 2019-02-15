@@ -7,9 +7,13 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Resources;
+using System.Text;
+using System.Web;
 using Markdig;
+using Markdig.Renderers;
 using Markdig.Syntax;
 using Microsoft.DocAsCode.MarkdigEngine.Extensions;
 
@@ -96,6 +100,17 @@ namespace Microsoft.Docs.Build
             }
         }
 
+        /// <summary>
+        /// Escapes an URL using the same algorithm as markdig.
+        /// </summary>
+        public static string EscapeUrl(string url)
+        {
+            var result = new StringBuilder();
+            var renderer = new HtmlRenderer(new StringWriter(result));
+            renderer.WriteEscapeUrl(url);
+            return result.ToString();
+        }
+
         private static MarkdownPipeline CreateConceptualMarkdownPipeline()
         {
             var markdownContext = new MarkdownContext(GetToken, LogWarning, LogError, ReadFile, GetLink);
@@ -180,6 +195,7 @@ namespace Microsoft.Docs.Build
 
         private static string GetLink(string path, object relativeTo, object resultRelativeTo)
         {
+            var decodedPath = HttpUtility.HtmlDecode(Uri.UnescapeDataString(path));
             var peek = t_status.Peek();
             var (error, link, _) = peek.DependencyResolver.ResolveLink(path, (Document)relativeTo, (Document)resultRelativeTo, peek.BuildChild);
             Result.Errors.AddIfNotNull(error);
