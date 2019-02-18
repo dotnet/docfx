@@ -155,7 +155,7 @@ outputs:
     ["warning","file-not-found","Cannot find file '../no-existing.md' relative to 'docs/TOC.md'","docs/TOC.md"]
     ["warning","file-not-found","Cannot find file '~/docs/no-existing.md' relative to 'docs/TOC.md'","docs/TOC.md"]
 ---
-# Absolute file reference
+# [only]Absolute file reference
 inputs:
   docfx.yml:
   docs/index.md:
