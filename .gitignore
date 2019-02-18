@@ -8,6 +8,8 @@ obj
 *.suo
 *.sdf
 *.user
+*.psess
+*.vspx
 
 *.DS_Store
 
