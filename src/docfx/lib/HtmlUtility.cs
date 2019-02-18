@@ -143,7 +143,7 @@ namespace Microsoft.Docs.Build
                 var transformed = transform(HttpUtility.HtmlDecode(link.Value));
                 if (!string.IsNullOrEmpty(transformed))
                 {
-                    result.Append(MarkdownUtility.EscapeUrl(transformed));
+                    result.Append(HttpUtility.HtmlAttributeEncode(transformed));
                 }
                 pos = link.ValueStartIndex + link.ValueLength;
             }

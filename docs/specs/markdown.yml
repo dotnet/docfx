@@ -401,7 +401,7 @@ outputs:
   build.log: |
     ["warning","yaml-header-not-object","Expect yaml header to be an object, but got a scalar","docs/a.md"]
 ---
-# [only] Perform html decode and url decode for both html links and markdown links, but not for includes at the moment
+# Perform html decode and url decode for both html links and markdown links, but not for includes at the moment
 inputs:
   docfx.yml:
   links.md: |

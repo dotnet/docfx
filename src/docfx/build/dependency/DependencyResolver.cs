@@ -117,15 +117,14 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(resultRelativeTo != null);
 
-            href = HttpUtility.UrlDecode(href);
-
             if (href.StartsWith("xref:"))
             {
                 var (uidError, uidHref, _, referencedFile) = ResolveXref(href.Substring("xref:".Length), relativeTo, resultRelativeTo);
                 return (uidError, uidHref, null, referencedFile);
             }
 
-            var (error, file, redirectTo, query, fragment, isSelfBookmark, _) = TryResolveFile(relativeTo, href);
+            var decodedHref = HttpUtility.UrlDecode(href);
+            var (error, file, redirectTo, query, fragment, isSelfBookmark, _) = TryResolveFile(relativeTo, decodedHref);
 
             // Redirection
             // follow redirections
@@ -138,7 +137,7 @@ namespace Microsoft.Docs.Build
             // Cannot resolve the file, leave href as is
             if (file == null)
             {
-                return (error, href, fragment, null);
+                return (error, Uri.EscapeUriString(decodedHref), fragment, null);
             }
 
             // Self reference, don't build the file, leave href as is

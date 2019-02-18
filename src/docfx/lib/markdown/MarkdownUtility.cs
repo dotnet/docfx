@@ -7,13 +7,9 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Globalization;
-using System.IO;
 using System.Linq;
 using System.Resources;
-using System.Text;
-using System.Web;
 using Markdig;
-using Markdig.Renderers;
 using Markdig.Syntax;
 using Microsoft.DocAsCode.MarkdigEngine.Extensions;
 
@@ -98,17 +94,6 @@ namespace Microsoft.Docs.Build
                     t_status = t_status.Pop();
                 }
             }
-        }
-
-        /// <summary>
-        /// Escapes an URL using the same algorithm as markdig.
-        /// </summary>
-        public static string EscapeUrl(string url)
-        {
-            var result = new StringBuilder();
-            var renderer = new HtmlRenderer(new StringWriter(result));
-            renderer.WriteEscapeUrl(url);
-            return result.ToString();
         }
 
         private static MarkdownPipeline CreateConceptualMarkdownPipeline()
