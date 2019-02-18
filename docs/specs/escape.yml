@@ -54,7 +54,7 @@ outputs:
         <a href="a%26b">a&amp;b.md</a>
         <a href="a%26b">a&amp;b.md</a>
         <a href="a%26amp%3Bb">a&amp;amp;b.md</a>
-        <a href="http://foo%20b%C3%A4">http://foo%20bä</a>
+        <a href="http://foo%20b&#228;">http://foo%20bä</a>
       </p>
   'a b.json':
   a&b.json:

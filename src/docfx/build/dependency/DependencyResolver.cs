@@ -134,10 +134,10 @@ namespace Microsoft.Docs.Build
                 return (error, redirectTo + query + fragment, null, null);
             }
 
-            // Cannot resolve the file, escape the url
+            // Cannot resolve the file, leave href as is
             if (file == null)
             {
-                return (error, Uri.EscapeUriString(decodedHref), fragment, null);
+                return (error, href, fragment, null);
             }
 
             // Self reference, don't build the file, leave href as is
