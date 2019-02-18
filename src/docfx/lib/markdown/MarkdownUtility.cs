@@ -195,7 +195,6 @@ namespace Microsoft.Docs.Build
 
         private static string GetLink(string path, object relativeTo, object resultRelativeTo)
         {
-            var decodedPath = HttpUtility.HtmlDecode(Uri.UnescapeDataString(path));
             var peek = t_status.Peek();
             var (error, link, _) = peek.DependencyResolver.ResolveLink(path, (Document)relativeTo, (Document)resultRelativeTo, peek.BuildChild);
             Result.Errors.AddIfNotNull(error);

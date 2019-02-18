@@ -117,6 +117,8 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(resultRelativeTo != null);
 
+            href = HttpUtility.UrlDecode(href);
+
             if (href.StartsWith("xref:"))
             {
                 var (uidError, uidHref, _, referencedFile) = ResolveXref(href.Substring("xref:".Length), relativeTo, resultRelativeTo);
