@@ -31,7 +31,7 @@ The restored files will be stored at `%DOCFX_APPDATA_PATH%/downloads/{url-short-
 
 ```
 
-And there is another index file `index.txt` under `%DOCFX_APPDATA_PATH%/downloads/{url-short-path}/` tracking the detail info of each `{number} file`.
+And there is another index file `index.json` under `%DOCFX_APPDATA_PATH%/downloads/{url-short-path}/` tracking the detail info of each `{number} file`.
 
 ```text
 `%DOCFX_APPDATA_PATH%`
@@ -39,21 +39,35 @@ And there is another index file `index.txt` under `%DOCFX_APPDATA_PATH%/download
         | - raw.gith..tent.com+docascode+docfx-te..ndencies+62b0448+extend1.yml+dc363b0e
             | - 1
             | - 2
-            | - index.txt
+            | - index.json
 
 ```
 
-`index.txt`:
-```text
-1 {version} {etag} {date} {in-use}
-2 {version} {etag} {date} {in-use}
+`index.json`:
+```json
+[
+    {
+        "id": 1,
+        "version": "{version}",
+        "etag": "{etag}",
+        "date": "{date}",
+        "inuse": "{in-use}"
+    },
+    {
+        "id": 2,
+        "version": "{version}",
+        "etag": "{etag}",
+        "date": "{date}",
+        "inuse": "{in-use}"
+    }
+]
 ```
 
 - `{url-short-path}` is calculated from `file` url
 - `{version}` is sha1 hash of file content, 
 - `{etag}` is timestamp or something else supported by the service which stores the `file`.
 - `{date}` is the download date, it will be set or overwritten during restore.
-- `{in-use}` is tracking the file is in use or not, if it is, it's can't be overwritten, otherwise, it can be overwritten for reusing during restore.
+- `{in-use}` is tracking the file is in use or not(restoring or building), if it has value, it's can't be overwritten, otherwise, it can be overwritten for reusing during restore.
 
 If the `etag` is supported by its service, docfx avoids duplicated downloads for the file never changed.
 
@@ -87,7 +101,7 @@ The restored dependency repositories will be stored at `%DOCFX_APPDATA_PATH%/git
             | - 2
 ```
 
-And there is another file `index.txt` under `%DOCFX_APPDATA_PATH%/git/{url-short-path}` tracking the detail info of each `work-tree`.
+And there is another file `index.json` under `%DOCFX_APPDATA_PATH%/git/{url-short-path}` tracking the detail info of each `work-tree`.
 
 ```text
 `%DOCFX_APPDATA_PATH%`
@@ -96,20 +110,34 @@ And there is another file `index.txt` under `%DOCFX_APPDATA_PATH%/git/{url-short
             | - .git
             | - 1
             | - 2
-            | - index.txt
+            | - index.json
 ```
 
-`index.txt`:
-```
-1 {branch} {commit} {date} {in-use}
-2 {branch} {commit} {date} {in-use}
+`index.json`:
+```json
+[
+    {
+        "id": 1,
+        "branch": "{branch}",
+        "commit": "{commit}",
+        "date": "{date}",
+        "inuse": "{in-use}"
+    },
+    {
+        "id": 2,
+        "branch": "{branch}",
+        "commit": "{commit}",
+        "date": "{date}",
+        "inuse": "{in-use}"
+    }
+]
 ```
 
 - `{url-short-path}` is calculated from `git remote` url
 - `{branch}` is the branch name
 - `{commit}` is the HEAD commit
 - `{date}` is the last restore date, it will be set or overwritten during restore.
-- `{in-use}` is tracking if the `work-tree` is in use or not, if it is, it can't be operated any git operations, otherwise, we can reuse this `work-tree` during restore, fetch and checkout to new branch/commit.
+- `{in-use}` is tracking if the `work-tree` is in use or not(restoring or building), if it is, it can't be operated any git operations, otherwise, we can reuse this `work-tree` during restore, fetch and checkout to new branch/commit.
 
 ## Dependency lock
 
