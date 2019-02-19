@@ -55,7 +55,7 @@ And there is another index file `index.json` under `%DOCFX_APPDATA_PATH%/downloa
         "acquiredBy": [
             {
                 "id": "1",
-                "date": "acquired date"
+                "date": "acquiring date"
             }
         ]
     },
@@ -68,7 +68,7 @@ And there is another index file `index.json` under `%DOCFX_APPDATA_PATH%/downloa
         "acquiredBy": [
             {
                 "id": "1",
-                "date": "acquired date"
+                "date": "acquiring date"
             }
         ]
     }
@@ -140,7 +140,7 @@ And there is another file `index.json` under `%DOCFX_APPDATA_PATH%/git/{url-shor
         "acquiredBy": [
             {
                 "id": "1",
-                "date": "acquired date"
+                "date": "acquiring date"
             }
         ]
     },
@@ -153,7 +153,7 @@ And there is another file `index.json` under `%DOCFX_APPDATA_PATH%/git/{url-shor
         "acquiredBy": [
             {
                 "id": "1",
-                "date": "acquired date"
+                "date": "acquiring date"
             }
         ]
     }
