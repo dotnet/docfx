@@ -79,7 +79,7 @@ And there is another index file `index.json` under `%DOCFX_APPDATA_PATH%/downloa
 - `{version}` is sha1 hash of file content, 
 - `{etag}` is timestamp or something else supported by the service which stores the `file`.
 - `{date}` is the download date, it will be set or overwritten during restore.
-- `{acquired}` is tracking the file is in use or not(restoring or building), if it has value, it's can't be overwritten, otherwise, it can be overwritten for reusing during restore.
+- `{acquired}` is tracking the file is in use or not(restoring or building), if it has value, this file can't be overwritten, otherwise, it can be overwritten for reusing during restore. `restoring` is exclusive lock, `building` is shared lock.
 - `{acquiredBy}` is the info of acquirers
     - `{id}` is the acquirer id, usually it's the thread id
     - `{date}` is the acquiring date, we have a default period of requiring timeout, in case the docfx crashed.
@@ -164,7 +164,7 @@ And there is another file `index.json` under `%DOCFX_APPDATA_PATH%/git/{url-shor
 - `{branch}` is the branch name
 - `{commit}` is the HEAD commit
 - `{date}` is the last restore date, it will be set or overwritten during restore.
-- `{acquired}` is tracking the file is in use or not(restoring or building), if it has value, it's can't be overwritten, otherwise, it can be overwritten for reusing during restore.
+- `{acquired}` is tracking the file is in use or not(restoring or building), if it has value, this work-tree can't be overwritten, otherwise, it can be overwritten for reusing during restore.`restoring` is exclusive lock, `building` is shared lock.
 - `{acquiredBy}` is the info of acquirers
     - `{id}` is the acquirer id, usually it's the thread id
     - `{date}` is the acquiring date, we have a default period of requiring timeout, in case the docfx crashed.
