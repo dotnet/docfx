@@ -51,14 +51,26 @@ And there is another index file `index.json` under `%DOCFX_APPDATA_PATH%/downloa
         "version": "{version}",
         "etag": "{etag}",
         "date": "{date}",
-        "inuse": "{in-use}"
+        "acquired": "{acquiring type}",
+        "acquiredBy": [
+            {
+                "id": "1",
+                "date": "acquired date"
+            }
+        ]
     },
     {
         "id": 2,
         "version": "{version}",
         "etag": "{etag}",
         "date": "{date}",
-        "inuse": "{in-use}"
+        "acquired": "{acquiring type}",
+        "acquiredBy": [
+            {
+                "id": "1",
+                "date": "acquired date"
+            }
+        ]
     }
 ]
 ```
@@ -67,7 +79,10 @@ And there is another index file `index.json` under `%DOCFX_APPDATA_PATH%/downloa
 - `{version}` is sha1 hash of file content, 
 - `{etag}` is timestamp or something else supported by the service which stores the `file`.
 - `{date}` is the download date, it will be set or overwritten during restore.
-- `{in-use}` is tracking the file is in use or not(restoring or building), if it has value, it's can't be overwritten, otherwise, it can be overwritten for reusing during restore.
+- `{acquired}` is tracking the file is in use or not(restoring or building), if it has value, it's can't be overwritten, otherwise, it can be overwritten for reusing during restore.
+- `{acquiredBy}` is the info of acquirers
+    - `{id}` is the acquirer id, usually it's the thread id
+    - `{date}` is the acquiring date, we have a default period of requiring timeout, in case the docfx crashed.
 
 If the `etag` is supported by its service, docfx avoids duplicated downloads for the file never changed.
 
@@ -121,14 +136,26 @@ And there is another file `index.json` under `%DOCFX_APPDATA_PATH%/git/{url-shor
         "branch": "{branch}",
         "commit": "{commit}",
         "date": "{date}",
-        "inuse": "{in-use}"
+        "acquired": "{acquiring type}",
+        "acquiredBy": [
+            {
+                "id": "1",
+                "date": "acquired date"
+            }
+        ]
     },
     {
         "id": 2,
         "branch": "{branch}",
         "commit": "{commit}",
         "date": "{date}",
-        "inuse": "{in-use}"
+        "acquired": "{acquiring type}",
+        "acquiredBy": [
+            {
+                "id": "1",
+                "date": "acquired date"
+            }
+        ]
     }
 ]
 ```
@@ -137,7 +164,10 @@ And there is another file `index.json` under `%DOCFX_APPDATA_PATH%/git/{url-shor
 - `{branch}` is the branch name
 - `{commit}` is the HEAD commit
 - `{date}` is the last restore date, it will be set or overwritten during restore.
-- `{in-use}` is tracking if the `work-tree` is in use or not(restoring or building), if it is, it can't be operated any git operations, otherwise, we can reuse this `work-tree` during restore, fetch and checkout to new branch/commit.
+- `{acquired}` is tracking the file is in use or not(restoring or building), if it has value, it's can't be overwritten, otherwise, it can be overwritten for reusing during restore.
+- `{acquiredBy}` is the info of acquirers
+    - `{id}` is the acquirer id, usually it's the thread id
+    - `{date}` is the acquiring date, we have a default period of requiring timeout, in case the docfx crashed.
 
 ## Dependency lock
 
