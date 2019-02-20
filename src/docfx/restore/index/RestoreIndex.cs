@@ -32,7 +32,7 @@ namespace Microsoft.Docs.Build
 
             if (index != null)
             {
-                path = Path.Combine(restoreDir, $"{index.Id}");
+                path = PathUtility.NormalizeFile(Path.Combine(restoreDir, $"{index.Id}"));
             }
 
             return Directory.Exists(path);
@@ -132,7 +132,7 @@ namespace Microsoft.Docs.Build
                     return Task.CompletedTask;
                 });
 
-            return index == null ? default : (Path.Combine(restoreDir, $"{index.Id}"), index);
+            return index == null ? default : (PathUtility.NormalizeFile(Path.Combine(restoreDir, $"{index.Id}")), index);
         }
 
         private static List<T> GetIndexes<T>(string restoreDir) where T : RestoreIndexModel

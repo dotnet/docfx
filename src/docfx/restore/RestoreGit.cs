@@ -152,7 +152,7 @@ namespace Microsoft.Docs.Build
                         {
                             if (existingWorkTreePath.TryAdd(workTreePath))
                             {
-                                // create new worktrees
+                                // create new worktree
                                 try
                                 {
                                     await GitUtility.AddWorkTree(repoPath, headCommit, workTreePath);
@@ -165,8 +165,8 @@ namespace Microsoft.Docs.Build
                             else
                             {
                                 // worktree already exists
-                                // fetch and checkout to {headCommit}
-                                // todo
+                                // checkout to {headCommit}, no need to fetch
+                                await GitUtility.Checkout(workTreePath, headCommit);
                             }
                         }
                         catch
