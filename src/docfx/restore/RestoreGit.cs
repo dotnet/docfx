@@ -173,6 +173,7 @@ namespace Microsoft.Docs.Build
                         catch
                         {
                             restored = false;
+                            throw;
                         }
                         finally
                         {
