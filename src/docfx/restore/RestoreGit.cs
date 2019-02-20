@@ -88,7 +88,7 @@ namespace Microsoft.Docs.Build
                 foreach (var branch in branches)
                 {
                     var gitVersion = dependencyLock?.GetGitLock(remote, branch);
-                    if ((@implicit || string.IsNullOrEmpty(gitVersion?.Commit)) && RestoreMap.TryGetGitRestorePath(remote, branch, gitVersion, out var existingPath))
+                    if ((@implicit || string.IsNullOrEmpty(gitVersion?.Commit)) && RestoreIndex.TryGetGitIndex(remote, branch, gitVersion?.Commit, out var existingPath, out var index))
                     {
                         {
                             branchesToFetch.Remove(branch);
@@ -97,7 +97,7 @@ namespace Microsoft.Docs.Build
                                 remote,
                                 branch,
                                 gitVersion,
-                                new DependencyVersion(gitVersion?.Commit ?? Path.GetFileName(existingPath).Split("-").Last())));
+                                new DependencyVersion(index.Commit)));
                         }
                     }
                 }
@@ -146,19 +146,36 @@ namespace Microsoft.Docs.Build
                         var gitDependencyLock = dependencyLock?.GetGitLock(remote, branch);
                         headCommit = gitDependencyLock?.Commit ?? headCommit;
 
-                        var workTreeHead = $"{GetWorkTreeHeadPrefix(branch, !string.IsNullOrEmpty(gitDependencyLock?.Commit))}{headCommit}";
-                        var workTreePath = Path.GetFullPath(Path.Combine(repoPath, "../", workTreeHead)).Replace('\\', '/');
-
-                        if (existingWorkTreePath.TryAdd(workTreePath))
+                        var (workTreePath, index) = await RestoreIndex.RequireGitIndex(remote, branch, headCommit, LockType.Exclusive);
+                        var restored = true;
+                        try
                         {
-                            try
+                            if (existingWorkTreePath.TryAdd(workTreePath))
                             {
-                                await GitUtility.AddWorkTree(repoPath, headCommit, workTreePath);
+                                // create new worktrees
+                                try
+                                {
+                                    await GitUtility.AddWorkTree(repoPath, headCommit, workTreePath);
+                                }
+                                catch (Exception ex)
+                                {
+                                    throw Errors.GitCloneFailed(remote, branches).ToException(ex);
+                                }
                             }
-                            catch (Exception ex)
+                            else
                             {
-                                throw Errors.GitCloneFailed(remote, branches).ToException(ex);
+                                // worktree already exists
+                                // fetch and checkout to {headCommit}
+                                // todo
                             }
+                        }
+                        catch
+                        {
+                            restored = false;
+                        }
+                        finally
+                        {
+                            await RestoreIndex.ReleaseIndex(remote, index, restored);
                         }
 
                         subChildren.Add(new RestoreChild(workTreePath, remote, branch, gitDependencyLock, new DependencyVersion(headCommit)));

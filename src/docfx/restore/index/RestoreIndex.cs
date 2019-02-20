@@ -15,21 +15,34 @@ namespace Microsoft.Docs.Build
     {
         private const int _defaultTimeoutInSeconds = 60 * 30;
 
-        public static RestoreGitIndex TryGetGitIndex(string remote, string branch, string commit)
+        public static bool TryGetGitIndex(string remote, string branch, string commit, out string path, out RestoreGitIndex index)
         {
             var restoreDir = PathUtility.UrlToShortName(remote);
             var indexes = GetIndexes<RestoreGitIndex>(restoreDir).Where(i => i.Branch == branch);
 
+            path = null;
             if (!string.IsNullOrEmpty(commit))
             {
-                return indexes.FirstOrDefault(i => i.Commit == commit);
+                // found commit matched index
+                index = indexes.FirstOrDefault(i => i.Commit == commit && i.LockType != LockType.Exclusive/*not being restored*/);
             }
 
-            return indexes.OrderByDescending(i => i.Date).FirstOrDefault();
+            // found latest restored index
+            index = indexes.OrderByDescending(i => i.RestoredDate).FirstOrDefault(i => i.LockType != LockType.Exclusive/*not being restored*/);
+
+            if (index != null)
+            {
+                path = Path.Combine(restoreDir, $"{index.Id}");
+            }
+
+            return Directory.Exists(path);
         }
 
         public static Task<(string path, RestoreGitIndex index)> RequireGitIndex(string remote, string branch, string commit, LockType type)
         {
+            Debug.Assert(string.IsNullOrEmpty(branch));
+            Debug.Assert(string.IsNullOrEmpty(commit));
+
             return RequireIndex(
                 remote,
                 type,
@@ -37,12 +50,12 @@ namespace Microsoft.Docs.Build
                 {
                     Id = id,
                     Branch = branch,
-                    Commit = commit ?? "{commit}",
+                    Commit = commit,
                 },
                 existingIndex => existingIndex.Branch == branch && existingIndex.Commit == commit);
         }
 
-        public static async Task ReleaseIndex<T>(string remote, T index) where T : RestoreIndexModel
+        public static async Task ReleaseIndex<T>(string remote, T index, bool successed = true) where T : RestoreIndexModel
         {
             Debug.Assert(index != null);
             var restoreDir = PathUtility.UrlToShortName(remote);
@@ -58,22 +71,23 @@ namespace Microsoft.Docs.Build
                     Debug.Assert(index != null);
                     Debug.Assert(indexToRelease != null);
 
-                    switch (index.LockType)
+                    switch (indexToRelease.LockType)
                     {
                         case LockType.Exclusive:
-                            Debug.Assert(index.RequiredBy.Count() == 1);
-                            index.RequiredBy.Clear();
-                            index.LockType = LockType.None;
+                            Debug.Assert(indexToRelease.RequiredBy.Count() == 1);
+                            indexToRelease.RequiredBy.Clear();
+                            indexToRelease.LockType = LockType.None;
                             break;
                         case LockType.Shared:
-                            index.RequiredBy.RemoveAll(r => r.Id == Thread.CurrentThread.ManagedThreadId);
-                            if (!index.RequiredBy.Any())
+                            indexToRelease.RequiredBy.RemoveAll(r => r.Id == Thread.CurrentThread.ManagedThreadId);
+                            if (!indexToRelease.RequiredBy.Any())
                             {
-                                index.LockType = LockType.None;
+                                indexToRelease.LockType = LockType.None;
                             }
                             break;
                     }
 
+                    indexToRelease.Restored = successed;
                     WriteIndexes<T>(restoreDir, indexes);
                     return Task.CompletedTask;
                 });
@@ -98,13 +112,13 @@ namespace Microsoft.Docs.Build
                         case LockType.Exclusive: // find an available index or create a new index for using
                             index = indexes.FirstOrDefault(i => i.LockType == LockType.None) ?? createNewIndex(indexes.Count + 1);
                             Debug.Assert(!index.RequiredBy.Any());
-                            index.Date = DateTime.UtcNow;
+                            index.RestoredDate = DateTime.UtcNow;
                             index.LockType = LockType.Exclusive;
                             index.RequiredBy = new List<RestoreIndexAcquirer> { requirer };
                             indexes.Add(index);
                             break;
                         case LockType.Shared: // find an matched index for using
-                            index = indexes.FirstOrDefault(i => (i.LockType == LockType.None || i.LockType == LockType.Shared) && matchExistingIndex(i));
+                            index = indexes.FirstOrDefault(i => (i.LockType == LockType.None || i.LockType == LockType.Shared) && matchExistingIndex(i) && i.Restored);
                             if (index != null)
                             {
                                 index.RequiredBy.Add(requirer);

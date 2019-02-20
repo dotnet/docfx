@@ -10,7 +10,9 @@ namespace Microsoft.Docs.Build
     {
         public int Id { get; set; }
 
-        public DateTime Date { get; set; }
+        public DateTime RestoredDate { get; set; }
+
+        public bool Restored { get; set; }
 
         public LockType LockType { get; set; }
 
