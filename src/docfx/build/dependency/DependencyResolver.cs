@@ -123,7 +123,8 @@ namespace Microsoft.Docs.Build
                 return (uidError, uidHref, null, referencedFile);
             }
 
-            var (error, file, redirectTo, query, fragment, isSelfBookmark, _) = TryResolveFile(relativeTo, href);
+            var decodedHref = HttpUtility.UrlDecode(href);
+            var (error, file, redirectTo, query, fragment, isSelfBookmark, _) = TryResolveFile(relativeTo, decodedHref);
 
             // Redirection
             // follow redirections

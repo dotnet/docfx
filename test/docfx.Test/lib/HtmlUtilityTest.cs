@@ -56,7 +56,7 @@ namespace Microsoft.Docs.Build
         [InlineData("</a>", "666", "</a>")]
         [InlineData("<a href='hello'>", "666", "<a href='666'>")]
         [InlineData("<a href='hello'>", null, "<a href=''>")]
-        [InlineData("<a href='hello'>", "~!@#$%^&*()<>?:,./][{}|", "<a href='~!@#$%^&amp;*()&lt;>?:,./][{}|'>")]
+        [InlineData("<a href='hello'>", "~!@#$%^&*()<>?:,./][{}|", "<a href='~!@#$%^&amp;*()&lt;&gt;?:,./][{}|'>")]
         [InlineData("<A hrEf=''>", "666", "<A hrEf='666'>")]
         [InlineData("<a href = 'hello'>", "666", "<a href = '666'>")]
         [InlineData("<a   target='_blank'   href='h'>", "666", "<a   target='_blank'   href='666'>")]
