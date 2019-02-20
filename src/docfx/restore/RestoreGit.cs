@@ -177,7 +177,7 @@ namespace Microsoft.Docs.Build
                         }
                         finally
                         {
-                            await DependencyIndexPool.ReleaseIndex(remote, index, LockType.Restore, restored);
+                            await DependencyIndexPool.ReleaseIndex(index, LockType.Restore, restored);
                         }
 
                         subChildren.Add(new RestoreChild(workTreePath, remote, branch, gitDependencyLock, new DependencyVersion(headCommit)));

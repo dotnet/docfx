@@ -82,13 +82,15 @@ namespace Microsoft.Docs.Build
         public static Task<(string path, DependencyGitIndex index)> AcquireGitIndex2Restore(string remote, string branch, string commit)
             => AcquireGitIndex(remote, branch, commit, LockType.Restore);
 
-        public static async Task ReleaseIndex<T>(string remote, T index, LockType lockType, bool successed = true) where T : DependencyIndex
+        public static async Task ReleaseIndex<T>(T index, LockType lockType, bool successed = true) where T : DependencyIndex
         {
-            Debug.Assert(index != null);
-            var restoreDir = AppData.GetGitDir(remote);
+            Debug.Assert(!string.IsNullOrEmpty(index?.Url));
+
+            var url = index.Url;
+            var restoreDir = AppData.GetGitDir(url);
 
             await ProcessUtility.RunInsideMutex(
-                remote + "/index.json",
+                url + "/index.json",
                 () =>
                 {
                     var indexes = GetIndexes<T>(restoreDir);
@@ -109,7 +111,7 @@ namespace Microsoft.Docs.Build
                     }
 
                     indexToRelease.Restored = successed;
-                    WriteIndexes<T>(restoreDir, indexes);
+                    WriteIndexes(restoreDir, indexes);
                     return Task.CompletedTask;
                 });
         }
@@ -131,15 +133,15 @@ namespace Microsoft.Docs.Build
                 existingIndex => existingIndex.Branch == branch && existingIndex.Commit == commit);
         }
 
-        private static async Task<(string path, T index)> AcquireIndex<T>(string remote, LockType type, Func<string, T> createNewIndex, Func<T, bool> matchExistingIndex) where T : DependencyIndex
+        private static async Task<(string path, T index)> AcquireIndex<T>(string url, LockType type, Func<string, T> createNewIndex, Func<T, bool> matchExistingIndex) where T : DependencyIndex
         {
-            Debug.Assert(!string.IsNullOrEmpty(remote));
+            Debug.Assert(!string.IsNullOrEmpty(url));
 
-            var restoreDir = AppData.GetGitDir(remote);
+            var restoreDir = AppData.GetGitDir(url);
 
             T index = null;
             await ProcessUtility.RunInsideMutex(
-                remote + "/index.json",
+                url + "/index.json",
                 () =>
                 {
                     var indexes = GetIndexes<T>(restoreDir);
@@ -153,6 +155,7 @@ namespace Microsoft.Docs.Build
                                     ?? createNewIndex($"{indexes.Count + 1}");
                             index.RestoredDate = DateTime.UtcNow;
                             index.Restored = false;
+                            index.Url = url;
                             indexes.Add(index);
                             break;
                         case LockType.Build: // find an matched index for building
@@ -165,7 +168,7 @@ namespace Microsoft.Docs.Build
                             throw new NotSupportedException($"{type} is not supported");
                     }
 
-                    WriteIndexes<T>(restoreDir, indexes);
+                    WriteIndexes(restoreDir, indexes);
                     return Task.CompletedTask;
                 });
 

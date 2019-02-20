@@ -73,7 +73,7 @@ namespace Microsoft.Docs.Build
             {
                 foreach (var index in indexPool)
                 {
-                    await DependencyIndexPool.ReleaseIndex(null/*todo*/, index, LockType.Build);
+                    await DependencyIndexPool.ReleaseIndex(index, LockType.Build);
                 }
             }
         }

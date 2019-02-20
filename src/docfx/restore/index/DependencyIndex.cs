@@ -9,6 +9,8 @@ namespace Microsoft.Docs.Build
     {
         public string Id { get; set; }
 
+        public string Url { get; set; }
+
         public DateTime RestoredDate { get; set; }
 
         public bool Restored { get; set; }
