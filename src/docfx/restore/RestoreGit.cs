@@ -146,7 +146,8 @@ namespace Microsoft.Docs.Build
                         var gitDependencyLock = dependencyLock?.GetGitLock(remote, branch);
                         headCommit = gitDependencyLock?.Commit ?? headCommit;
 
-                        var (workTreePath, index) = await RestoreIndex.RequireGitIndex(remote, branch, headCommit, LockType.Exclusive);
+                        var (workTreeHead, index) = await RestoreIndex.RequireGitIndex(remote, branch, headCommit, LockType.Exclusive);
+                        var workTreePath = Path.GetFullPath(Path.Combine(repoPath, "../", workTreeHead)).Replace('\\', '/');
                         var restored = true;
                         try
                         {

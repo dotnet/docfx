@@ -17,7 +17,7 @@ namespace Microsoft.Docs.Build
 
         public static bool TryGetGitIndex(string remote, string branch, string commit, out string path, out RestoreGitIndex index)
         {
-            var restoreDir = PathUtility.UrlToShortName(remote);
+            var restoreDir = AppData.GetGitDir(remote);
             var indexes = GetIndexes<RestoreGitIndex>(restoreDir).Where(i => i.Branch == branch);
 
             path = null;
@@ -40,8 +40,8 @@ namespace Microsoft.Docs.Build
 
         public static Task<(string path, RestoreGitIndex index)> RequireGitIndex(string remote, string branch, string commit, LockType type)
         {
-            Debug.Assert(string.IsNullOrEmpty(branch));
-            Debug.Assert(string.IsNullOrEmpty(commit));
+            Debug.Assert(!string.IsNullOrEmpty(branch));
+            Debug.Assert(!string.IsNullOrEmpty(commit));
 
             return RequireIndex(
                 remote,
@@ -58,10 +58,10 @@ namespace Microsoft.Docs.Build
         public static async Task ReleaseIndex<T>(string remote, T index, bool successed = true) where T : RestoreIndexModel
         {
             Debug.Assert(index != null);
-            var restoreDir = PathUtility.UrlToShortName(remote);
+            var restoreDir = AppData.GetGitDir(remote);
 
             await ProcessUtility.RunInsideMutex(
-                restoreDir,
+                remote + "/index.json",
                 () =>
                 {
                     var indexes = GetIndexes<T>(restoreDir);
@@ -97,12 +97,12 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(!string.IsNullOrEmpty(remote));
 
-            var restoreDir = PathUtility.UrlToShortName(remote);
+            var restoreDir = AppData.GetGitDir(remote);
             var requirer = new RestoreIndexAcquirer { Id = Thread.CurrentThread.ManagedThreadId, Date = DateTime.UtcNow };
 
             T index = null;
             await ProcessUtility.RunInsideMutex(
-                restoreDir,
+                remote + "/index.json",
                 () =>
                 {
                     var indexes = GetIndexes<T>(restoreDir);
@@ -132,7 +132,7 @@ namespace Microsoft.Docs.Build
                     return Task.CompletedTask;
                 });
 
-            return index == null ? default : (PathUtility.NormalizeFile(Path.Combine(restoreDir, $"{index.Id}")), index);
+            return index == null ? default : ($"{index.Id}", index);
         }
 
         private static List<T> GetIndexes<T>(string restoreDir) where T : RestoreIndexModel
@@ -140,7 +140,7 @@ namespace Microsoft.Docs.Build
             var indexFile = Path.Combine(restoreDir, "index.json");
             var content = File.Exists(indexFile) ? File.ReadAllText(indexFile) : string.Empty;
 
-            var indexes = JsonUtility.Deserialize<List<T>>(content);
+            var indexes = JsonUtility.Deserialize<List<T>>(content) ?? new List<T>();
 
             foreach (var index in indexes)
             {
@@ -157,6 +157,7 @@ namespace Microsoft.Docs.Build
 
         private static void WriteIndexes<T>(string restoreDir, List<T> indexes) where T : RestoreIndexModel
         {
+            Directory.CreateDirectory(restoreDir);
             var indexFile = Path.Combine(restoreDir, "index.json");
             File.WriteAllText(indexFile, JsonUtility.Serialize(indexes));
         }
