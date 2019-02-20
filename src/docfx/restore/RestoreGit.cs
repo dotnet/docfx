@@ -85,22 +85,19 @@ namespace Microsoft.Docs.Build
                 var depthOne = group.All(g => (g.flags & GitFlags.DepthOne) != 0) && !(dependencyLock?.ContainsGitLock(remote) ?? false);
                 var branchesToFetch = new HashSet<string>(branches);
 
-                if (@implicit)
+                foreach (var branch in branches)
                 {
-                    foreach (var branch in branches)
+                    var gitVersion = dependencyLock?.GetGitLock(remote, branch);
+                    if ((@implicit || string.IsNullOrEmpty(gitVersion?.Commit)) && RestoreMap.TryGetGitRestorePath(remote, branch, gitVersion, out var existingPath))
                     {
-                        var gitVersion = dependencyLock?.GetGitLock(remote, branch);
-                        if (RestoreMap.TryGetGitRestorePath(remote, branch, gitVersion, out var existingPath))
                         {
-                            {
-                                branchesToFetch.Remove(branch);
-                                subChildren.Add(new RestoreChild(
-                                    existingPath,
-                                    remote,
-                                    branch,
-                                    gitVersion,
-                                    new DependencyVersion(gitVersion?.Commit ?? Path.GetFileName(existingPath).Split("-").Last())));
-                            }
+                            branchesToFetch.Remove(branch);
+                            subChildren.Add(new RestoreChild(
+                                existingPath,
+                                remote,
+                                branch,
+                                gitVersion,
+                                new DependencyVersion(gitVersion?.Commit ?? Path.GetFileName(existingPath).Split("-").Last())));
                         }
                     }
                 }

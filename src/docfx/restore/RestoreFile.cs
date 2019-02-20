@@ -41,7 +41,7 @@ namespace Microsoft.Docs.Build
 
             async Task<string> RestoreUrl()
             {
-                if (RestoreMap.TryGetFileRestorePath(url, dependencyVersion, out var existingPath) && @implicit)
+                if (RestoreMap.TryGetFileRestorePath(url, dependencyVersion, out var existingPath) && (!string.IsNullOrEmpty(dependencyVersion?.Hash) || @implicit))
                 {
                     return existingPath;
                 }
