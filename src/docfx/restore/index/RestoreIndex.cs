@@ -12,6 +12,8 @@ namespace Microsoft.Docs.Build
 {
     internal static class RestoreIndex
     {
+        private const int _defaultLockdownTimeInSecond = 10 * 60;
+
         /// <summary>
         /// Try get git dependency repository path with remote, branch and dependency version(commit).
         /// If the dependency version is null, get the latest one(order by last write time).
@@ -105,8 +107,12 @@ namespace Microsoft.Docs.Build
                     switch (type)
                     {
                         case LockType.Restore: // find an available index or create a new index for using
-                            index = indexes.FirstOrDefault(i => ProcessUtility.AcquireExclusiveLock(i.Id)) ?? createNewIndex($"{indexes.Count + 1}");
+                            index = indexes.FirstOrDefault(i =>
+                                        DateTime.UtcNow - i.RestoredDate > TimeSpan.FromSeconds(_defaultLockdownTimeInSecond) && // in case it's just restored, not used yet
+                                        ProcessUtility.AcquireExclusiveLock(i.Id))
+                                    ?? createNewIndex($"{indexes.Count + 1}");
                             index.RestoredDate = DateTime.UtcNow;
+                            index.Restored = false;
                             indexes.Add(index);
                             break;
                         case LockType.Build: // find an matched index for using
