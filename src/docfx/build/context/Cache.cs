@@ -41,12 +41,10 @@ namespace Microsoft.Docs.Build
             })).Value;
 
         public (List<Error>, TableOfContentsModel, List<(Document doc, string herf)>, List<Document>) LoadTocModel(Context context, Document file)
-        {
-            return _tocModelCache.GetOrAdd(
+            => _tocModelCache.GetOrAdd(
                 file.FilePath,
                 new Lazy<(List<Error>, TableOfContentsModel, List<(Document doc, string herf)>, List<Document>)>(
                     () => BuildTableOfContents.Load(context, file))).Value;
-        }
 
         private string GetKeyFromFile(Document file)
         {

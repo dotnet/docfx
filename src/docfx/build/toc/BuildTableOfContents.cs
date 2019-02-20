@@ -23,7 +23,7 @@ namespace Microsoft.Docs.Build
             var (errors, model, refArticles, refTocs) = context.Cache.LoadTocModel(context, file);
             foreach (var (doc, href) in refArticles)
             {
-                if (!hrefMap.TryGetValue(href, out _) && monikerMap.TryGetValue(doc, out var monikers))
+                if (!hrefMap.ContainsKey(href) && monikerMap.TryGetValue(doc, out var monikers))
                 {
                     hrefMap[href] = monikers;
                 }
