@@ -1,12 +1,15 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
+using System.Collections.Generic;
+
 namespace Microsoft.Docs.Build
 {
-    internal class RestoreGitIndex : RestoreIndexModel
+    internal class RestoreIndexAcquirer
     {
-        public string Commit { get; set; }
+        public int Id { get; set; }
 
-        public string Branch { get; set; }
+        public DateTime Date { get; set; }
     }
 }

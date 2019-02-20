@@ -6,73 +6,43 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
 {
     internal static class RestoreIndex
     {
+        private const int _defaultTimeoutInSeconds = 60 * 30;
+
         public static RestoreGitIndex TryGetGitIndex(string remote, string branch, string commit)
         {
             var restoreDir = PathUtility.UrlToShortName(remote);
-            var indexes = GetGitIndexes(restoreDir).Where(i => i.Branch == branch);
+            var indexes = GetIndexes<RestoreGitIndex>(restoreDir).Where(i => i.Branch == branch);
 
             if (!string.IsNullOrEmpty(commit))
             {
                 return indexes.FirstOrDefault(i => i.Commit == commit);
             }
 
-            return indexes.OrderBy(i => i.Date).FirstOrDefault();
+            return indexes.OrderByDescending(i => i.Date).FirstOrDefault();
         }
 
-        public static async Task<(string path, RestoreGitIndex index)> RequireGitIndex(string remote, string branch, string commit, InUseType type)
+        public static Task<(string path, RestoreGitIndex index)> RequireGitIndex(string remote, string branch, string commit, LockType type)
         {
-            Debug.Assert(!string.IsNullOrEmpty(branch));
-            Debug.Assert(!string.IsNullOrEmpty(remote));
-
-            var restoreDir = PathUtility.UrlToShortName(remote);
-
-            RestoreGitIndex index = null;
-            await ProcessUtility.RunInsideMutex(
-                restoreDir,
-                () =>
+            return RequireIndex(
+                remote,
+                type,
+                id => new RestoreGitIndex
                 {
-                    var indexes = GetGitIndexes(restoreDir);
-
-                    switch (type)
-                    {
-                        case InUseType.Restore:
-                            index = indexes.FirstOrDefault(i => string.IsNullOrEmpty(i.InUse)) ?? new RestoreGitIndex
-                            {
-                                Line = indexes.Count() + 1,
-                                Branch = branch,
-                                Commit = commit ?? "{commit}",
-                                Date = DateTime.UtcNow,
-                                InUse = type.ToString(),
-                            };
-
-                            indexes.Add(index);
-                            break;
-                        case InUseType.Build:
-                            Debug.Assert(!string.IsNullOrEmpty(commit));
-                            index = indexes.FirstOrDefault(i => (string.IsNullOrEmpty(i.InUse) || i.InUse == type.ToString()) && i.Branch == branch && i.Commit == commit);
-                            if (index != null)
-                            {
-                                index.InUse = type.ToString();
-                            }
-                            break;
-                        default:
-                            throw new NotSupportedException($"{type} is not supported");
-                    }
-
-                    WriteGitIndexes(restoreDir, indexes);
-                    return Task.CompletedTask;
-                });
-
-            return index == null ? default : (Path.Combine(restoreDir, $"{index.Line}"), index);
+                    Id = id,
+                    Branch = branch,
+                    Commit = commit ?? "{commit}",
+                },
+                existingIndex => existingIndex.Branch == branch && existingIndex.Commit == commit);
         }
 
-        public static async Task ReleaseGitIndex(string remote, RestoreGitIndex index)
+        public static async Task ReleaseIndex<T>(string remote, T index) where T : RestoreIndexModel
         {
             Debug.Assert(index != null);
             var restoreDir = PathUtility.UrlToShortName(remote);
@@ -81,37 +51,107 @@ namespace Microsoft.Docs.Build
                 restoreDir,
                 () =>
                 {
-                    var indexes = GetGitIndexes(restoreDir);
+                    var indexes = GetIndexes<T>(restoreDir);
 
-                    var indexToRelease = indexes.FirstOrDefault(i => i.Line == index.Line && i.InUse == InUseType.Build.ToString());
+                    var indexToRelease = indexes.FirstOrDefault(i => i.Id == index.Id && i.LockType == index.LockType);
 
                     Debug.Assert(index != null);
+                    Debug.Assert(indexToRelease != null);
 
-                    indexToRelease.InUse = null;
+                    switch (index.LockType)
+                    {
+                        case LockType.Exclusive:
+                            Debug.Assert(index.RequiredBy.Count() == 1);
+                            index.RequiredBy.Clear();
+                            index.LockType = LockType.None;
+                            break;
+                        case LockType.Shared:
+                            index.RequiredBy.RemoveAll(r => r.Id == Thread.CurrentThread.ManagedThreadId);
+                            if (!index.RequiredBy.Any())
+                            {
+                                index.LockType = LockType.None;
+                            }
+                            break;
+                    }
 
-                    WriteGitIndexes(restoreDir, indexes);
+                    WriteIndexes<T>(restoreDir, indexes);
                     return Task.CompletedTask;
                 });
         }
 
-        private static List<RestoreGitIndex> GetGitIndexes(string restoreDir)
+        private static async Task<(string path, T index)> RequireIndex<T>(string remote, LockType type, Func<int, T> createNewIndex, Func<T, bool> matchExistingIndex) where T : RestoreIndexModel
         {
-            var indexFile = Path.Combine(restoreDir, "index.txt");
-            var content = File.Exists(indexFile) ? File.ReadAllText(indexFile) : string.Empty;
+            Debug.Assert(!string.IsNullOrEmpty(remote));
 
-            return JsonUtility.Deserialize<List<RestoreGitIndex>>(content);
+            var restoreDir = PathUtility.UrlToShortName(remote);
+            var requirer = new RestoreIndexAcquirer { Id = Thread.CurrentThread.ManagedThreadId, Date = DateTime.UtcNow };
+
+            T index = null;
+            await ProcessUtility.RunInsideMutex(
+                restoreDir,
+                () =>
+                {
+                    var indexes = GetIndexes<T>(restoreDir);
+
+                    switch (type)
+                    {
+                        case LockType.Exclusive: // find an available index or create a new index for using
+                            index = indexes.FirstOrDefault(i => i.LockType == LockType.None) ?? createNewIndex(indexes.Count + 1);
+                            Debug.Assert(!index.RequiredBy.Any());
+                            index.Date = DateTime.UtcNow;
+                            index.LockType = LockType.Exclusive;
+                            index.RequiredBy = new List<RestoreIndexAcquirer> { requirer };
+                            indexes.Add(index);
+                            break;
+                        case LockType.Shared: // find an matched index for using
+                            index = indexes.FirstOrDefault(i => (i.LockType == LockType.None || i.LockType == LockType.Shared) && matchExistingIndex(i));
+                            if (index != null)
+                            {
+                                index.RequiredBy.Add(requirer);
+                            }
+                            break;
+                        default:
+                            throw new NotSupportedException($"{type} is not supported");
+                    }
+
+                    WriteIndexes<T>(restoreDir, indexes);
+                    return Task.CompletedTask;
+                });
+
+            return index == null ? default : (Path.Combine(restoreDir, $"{index.Id}"), index);
         }
 
-        private static void WriteGitIndexes(string restoreDir, List<RestoreGitIndex> indexes)
+        private static List<T> GetIndexes<T>(string restoreDir) where T : RestoreIndexModel
         {
-            var indexFile = Path.Combine(restoreDir, "index.txt");
+            var indexFile = Path.Combine(restoreDir, "index.json");
+            var content = File.Exists(indexFile) ? File.ReadAllText(indexFile) : string.Empty;
+
+            var indexes = JsonUtility.Deserialize<List<T>>(content);
+
+            foreach (var index in indexes)
+            {
+                // incase index requirer crashed, no longer release the index anymore
+                index.RequiredBy.RemoveAll(r => DateTime.UtcNow - r.Date > TimeSpan.FromSeconds(_defaultTimeoutInSeconds));
+                if (!index.RequiredBy.Any())
+                {
+                    index.LockType = LockType.None;
+                }
+            }
+
+            return indexes;
+        }
+
+        private static void WriteIndexes<T>(string restoreDir, List<T> indexes) where T : RestoreIndexModel
+        {
+            var indexFile = Path.Combine(restoreDir, "index.json");
             File.WriteAllText(indexFile, JsonUtility.Serialize(indexes));
         }
     }
 
-    public enum InUseType
+    public enum LockType
     {
-        Restore,
-        Build,
+        None,
+        Shared,
+        Exclusive,
     }
 }
