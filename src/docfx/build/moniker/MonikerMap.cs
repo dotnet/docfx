@@ -3,7 +3,6 @@
 
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -12,11 +11,11 @@ namespace Microsoft.Docs.Build
     /// </summary>
     internal class MonikerMap
     {
-        private readonly Dictionary<Document, List<string>> _documentToMonikers = new Dictionary<Document, List<string>>();
+        private readonly IReadOnlyDictionary<Document, List<string>> _documentToMonikers;
 
         public MonikerMap(ConcurrentDictionary<Document, List<string>> monikerMap)
         {
-            _documentToMonikers = monikerMap.ToDictionary(item => item.Key, item => item.Value);
+            _documentToMonikers = monikerMap;
         }
 
         public bool TryGetValue(Document doc, out List<string> monikers)
