@@ -127,8 +127,8 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
         private static Tuple<string, string, LinkInline> ParseHeading(HeadingBlock block)
         {
-            var inlines = block.Inline.ToList();
-            if (inlines.Count == 1 && inlines.First() is LinkInline link)
+            var child = block.Inline.FirstChild;
+            if (child != null && child.NextSibling == null && child is LinkInline link && link.Url.StartsWith("#tab/"))
             {
                 var m = HrefRegex.Match(link.Url);
                 if (m.Success)
