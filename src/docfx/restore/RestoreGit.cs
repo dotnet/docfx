@@ -88,7 +88,7 @@ namespace Microsoft.Docs.Build
                 foreach (var branch in branches)
                 {
                     var gitVersion = dependencyLock?.GetGitLock(remote, branch);
-                    if ((@implicit || string.IsNullOrEmpty(gitVersion?.Commit)) && RestoreIndex.TryGetGitIndex(remote, branch, gitVersion?.Commit, out var existingPath, out var index))
+                    if ((@implicit || string.IsNullOrEmpty(gitVersion?.Commit)) && DependencyIndexPool.TryGetGitIndex(remote, branch, gitVersion?.Commit, out var existingPath, out var index))
                     {
                         {
                             branchesToFetch.Remove(branch);
@@ -146,7 +146,7 @@ namespace Microsoft.Docs.Build
                         var gitDependencyLock = dependencyLock?.GetGitLock(remote, branch);
                         headCommit = gitDependencyLock?.Commit ?? headCommit;
 
-                        var (workTreeHead, index) = await RestoreIndex.RequireGitIndex(remote, branch, headCommit, LockType.Restore);
+                        var (workTreeHead, index) = await DependencyIndexPool.AcquireGitIndex2Restore(remote, branch, headCommit);
                         var workTreePath = Path.GetFullPath(Path.Combine(repoPath, "../", workTreeHead)).Replace('\\', '/');
                         var restored = true;
                         try
@@ -176,7 +176,7 @@ namespace Microsoft.Docs.Build
                         }
                         finally
                         {
-                            await RestoreIndex.ReleaseIndex(remote, index, LockType.Restore, restored);
+                            await DependencyIndexPool.ReleaseIndex(remote, index, LockType.Restore, restored);
                         }
 
                         subChildren.Add(new RestoreChild(workTreePath, remote, branch, gitDependencyLock, new DependencyVersion(headCommit)));
@@ -245,7 +245,7 @@ namespace Microsoft.Docs.Build
                 yield break;
             }
 
-            if (LocalizationUtility.TryGetSourceRepository(repo.Remote, repo.Branch, out var sourceRemote, out var sourceBranch, out var l))
+            if (LocalizationUtility.TryGetSourceRepositoryInfo(repo.Remote, repo.Branch, out var sourceRemote, out var sourceBranch, out var l))
             {
                 yield return (sourceRemote, sourceBranch, GitFlags.None);
                 yield break; // no need to find localized repo anymore

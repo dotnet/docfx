@@ -78,6 +78,11 @@ namespace Microsoft.Docs.Build
         public DependencyLockModel DependencyLock { get; }
 
         /// <summary>
+        /// Gets the template engine
+        /// </summary>
+        public TemplateEngine Template { get; }
+
+        /// <summary>
         /// Gets the redirection map.
         /// </summary>
         public RedirectionMap Redirections => _redirections.Value;
@@ -92,17 +97,14 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public HashSet<Document> ScanScope => _scanScope.Value;
 
-        public TemplateEngine Template => _template.Value;
-
         private readonly CommandLineOptions _options;
         private readonly Report _report;
         private readonly ConcurrentDictionary<string, Lazy<Repository>> _repositories;
         private readonly Lazy<HashSet<Document>> _buildScope;
         private readonly Lazy<HashSet<Document>> _scanScope;
         private readonly Lazy<RedirectionMap> _redirections;
-        private readonly Lazy<TemplateEngine> _template;
 
-        public static async Task<Docset> Create(
+        public static async Task<(Docset, List<DependencyGitIndex>)> Create(
             Report report,
             string docsetPath,
             string locale,
@@ -116,9 +118,17 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(dependencyLock != null);
 
+            var gitIndexes = new List<DependencyGitIndex>();
             locale = !string.IsNullOrEmpty(locale) ? locale : config.Localization.DefaultLocale;
-            var (errors, dependencies) = await LoadDependencies(report, config, locale, dependencyLock, options);
+
+            // load dependency repos
+            var (errors, dependencies, dependencyIndexes) = await LoadDependencies(report, config, locale, dependencyLock, options);
+            gitIndexes.AddRange(dependencyIndexes);
             report.Write(config.ConfigFileName, errors);
+
+            // load theme
+            var (templateEngine, templateIndex) = await LoadTemplateEngine(config, locale, dependencyLock);
+            gitIndexes.AddIfNotNull(templateIndex);
 
             var docset = new Docset(
                 report,
@@ -128,6 +138,7 @@ namespace Microsoft.Docs.Build
                 options,
                 dependencyLock,
                 dependencies,
+                templateEngine,
                 repository,
                 fallbackDocset,
                 localizedDocset);
@@ -136,19 +147,30 @@ namespace Microsoft.Docs.Build
             {
                 // localization/fallback docset will share the same context, config, build locale and options with source docset
                 // source docset configuration will be overwritten by build locale overwrite configuration
-                if (LocalizationUtility.TryGetSourceDocsetPath(docset, out var sourceDocsetPath, out var sourceBranch, out _))
+                var (sourceDocsetPath, sourceBranch, _, sourceIndex) = await LocalizationUtility.TryGetSourceDocsetPath(docset);
+                if (string.IsNullOrEmpty(sourceDocsetPath))
                 {
+                    gitIndexes.AddIfNotNull(sourceIndex);
                     var repo = Repository.Create(sourceDocsetPath, sourceBranch);
-                    docset.FallbackDocset = await Create(report, sourceDocsetPath, locale, config, options, dependencyLock, repo, localizedDocset: docset, isDependency: true);
+                    var fallbackIndexes = new List<DependencyGitIndex>();
+                    (docset.FallbackDocset, fallbackIndexes) = await Create(report, sourceDocsetPath, locale, config, options, dependencyLock, repo, localizedDocset: docset, isDependency: true);
+                    gitIndexes.AddRange(fallbackIndexes);
                 }
-                else if (LocalizationUtility.TryGetLocalizedDocsetPath(docset, config, locale, out var localizationDocsetPath, out var localizationBranch, out var localizationDependencyLock))
+                else
                 {
-                    var repo = Repository.Create(localizationDocsetPath, localizationBranch);
-                    docset.LocalizationDocset = await Create(report, localizationDocsetPath, locale, config, options, dependencyLock, repo, fallbackDocset: docset, isDependency: true);
+                    var (localizationDocsetPath, localizationBranch, _, localizationIndex) = await LocalizationUtility.TryGetLocalizedDocsetPath(docset, config, locale);
+                    if (string.IsNullOrEmpty(localizationDocsetPath))
+                    {
+                        gitIndexes.AddIfNotNull(localizationIndex);
+                        var repo = Repository.Create(localizationDocsetPath, localizationBranch);
+                        var localzationIndexes = new List<DependencyGitIndex>();
+                        (docset.LocalizationDocset, localzationIndexes) = await Create(report, localizationDocsetPath, locale, config, options, dependencyLock, repo, fallbackDocset: docset, isDependency: true);
+                        gitIndexes.AddRange(localzationIndexes);
+                    }
                 }
             }
 
-            return docset;
+            return (docset, gitIndexes);
         }
 
         private Docset(
@@ -159,6 +181,7 @@ namespace Microsoft.Docs.Build
             CommandLineOptions options,
             DependencyLockModel dependencyLock,
             IReadOnlyDictionary<string, Docset> dependencies,
+            TemplateEngine templateEngine,
             Repository repository = null,
             Docset fallbackDocset = null,
             Docset localizedDocset = null)
@@ -176,6 +199,7 @@ namespace Microsoft.Docs.Build
             FallbackDocset = fallbackDocset;
             DependencyDocsets = dependencies;
             DependencyLock = dependencyLock;
+            Template = templateEngine;
 
             ResolveAlias = LoadResolveAlias(Config);
             Repository = repository ?? Repository.Create(DocsetPath, branch: null);
@@ -189,17 +213,6 @@ namespace Microsoft.Docs.Build
                 return map;
             });
             _scanScope = new Lazy<HashSet<Document>>(() => GetScanScope(this));
-
-            _template = new Lazy<TemplateEngine>(() =>
-            {
-                Debug.Assert(!string.IsNullOrEmpty(Config.Theme));
-
-                var (themeRemote, themeBranch) = LocalizationUtility.GetLocalizedTheme(Config.Theme, Locale, Config.Localization.DefaultLocale);
-                var (themePath, themeLock) = RestoreMap.GetGitRestorePath($"{themeRemote}#{themeBranch}", DependencyLock);
-                Log.Write($"Using theme '{themeRemote}#{themeLock.Commit}' at '{themePath}'");
-
-                return new TemplateEngine(themePath, Locale);
-            });
 
             _repositories = new ConcurrentDictionary<string, Lazy<Repository>>();
         }
@@ -299,13 +312,15 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static async Task<(List<Error>, Dictionary<string, Docset>)> LoadDependencies(Report report, Config config, string locale, DependencyLockModel dependencyLock, CommandLineOptions options)
+        private static async Task<(List<Error>, Dictionary<string, Docset>, List<DependencyGitIndex>)> LoadDependencies(Report report, Config config, string locale, DependencyLockModel dependencyLock, CommandLineOptions options)
         {
             var errors = new List<Error>();
             var result = new Dictionary<string, Docset>(config.Dependencies.Count, PathUtility.PathComparer);
+            var gitIndexes = new List<DependencyGitIndex>();
             foreach (var (name, url) in config.Dependencies)
             {
-                var (dir, subLock) = RestoreMap.GetGitRestorePath(url, dependencyLock);
+                var (dir, subLock, subIndex) = await DependencyIndexPool.AcquireGitIndex2Build(url, dependencyLock);
+                gitIndexes.AddIfNotNull(subIndex);
 
                 // get dependent docset config or default config
                 // todo: what parent config should be pass on its children
@@ -313,9 +328,23 @@ namespace Microsoft.Docs.Build
                 errors.AddRange(loadErrors);
 
                 subLock = subLock ?? await Docs.Build.DependencyLock.Load(dir, subConfig.DependencyLock);
-                result.TryAdd(PathUtility.NormalizeFolder(name), await Create(report, dir, locale, subConfig, options, subLock, isDependency: true));
+                var (subDocset, subIndexes) = await Create(report, dir, locale, subConfig, options, subLock, isDependency: true);
+                gitIndexes.AddRange(subIndexes);
+
+                result.TryAdd(PathUtility.NormalizeFolder(name), subDocset);
             }
-            return (errors, result);
+            return (errors, result, gitIndexes);
+        }
+
+        private static async Task<(TemplateEngine enginne, DependencyGitIndex gitIndex)> LoadTemplateEngine(Config config, string locale, DependencyLockModel dependencyLock)
+        {
+            Debug.Assert(!string.IsNullOrEmpty(config.Theme));
+
+            var (themeRemote, themeBranch) = LocalizationUtility.GetLocalizedTheme(config.Theme, locale, config.Localization.DefaultLocale);
+            var (themePath, themeLock, themeIndex) = await DependencyIndexPool.AcquireGitIndex2Build($"{themeRemote}#{themeBranch}", dependencyLock);
+            Log.Write($"Using theme '{themeRemote}#{themeLock.Commit}' at '{themePath}'");
+
+            return (new TemplateEngine(themePath, locale), themeIndex);
         }
 
         private static HashSet<Document> GetScanScope(Docset docset)

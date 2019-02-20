@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
 {
@@ -27,15 +28,16 @@ namespace Microsoft.Docs.Build
             return (newRemote, newBranch);
         }
 
-        public static bool TryGetLocalizedDocsetPath(Docset docset, Config config, string locale, out string localizationDocsetPath, out string localizationBranch, out DependencyLockModel subDependencyLock)
+        public static async Task<(string path, string branch, DependencyLockModel dependencyLock, DependencyGitIndex gitIndex)> TryGetLocalizedDocsetPath(Docset docset, Config config, string locale)
         {
             Debug.Assert(docset != null);
             Debug.Assert(!string.IsNullOrEmpty(locale));
             Debug.Assert(config != null);
 
-            localizationDocsetPath = null;
-            localizationBranch = null;
-            subDependencyLock = null;
+            string localizationDocsetPath = null;
+            string localizationBranch = null;
+            DependencyLockModel subDependencyLock = null;
+            DependencyGitIndex gitIndex = null;
             switch (config.Localization.Mapping)
             {
                 case LocalizationMapping.Repository:
@@ -44,7 +46,7 @@ namespace Microsoft.Docs.Build
                         var repo = docset.Repository;
                         if (repo == null)
                         {
-                            return false;
+                            return default;
                         }
                         var (locRemote, locBranch) = GetLocalizedRepo(
                             config.Localization.Mapping,
@@ -53,7 +55,7 @@ namespace Microsoft.Docs.Build
                             repo.Branch,
                             locale,
                             config.Localization.DefaultLocale);
-                        (localizationDocsetPath, subDependencyLock) = RestoreMap.GetGitRestorePath(locRemote, locBranch, docset.DependencyLock);
+                        (localizationDocsetPath, subDependencyLock, gitIndex) = await DependencyIndexPool.AcquireGitIndex2Build(locRemote, locBranch, docset.DependencyLock);
                         localizationBranch = locBranch;
                         break;
                     }
@@ -66,16 +68,17 @@ namespace Microsoft.Docs.Build
                         localizationDocsetPath = Path.Combine(docset.DocsetPath, "localization", locale);
                         localizationBranch = null;
                         subDependencyLock = null;
+                        gitIndex = null;
                         break;
                     }
                 default:
                     throw new NotSupportedException($"{config.Localization.Mapping} is not supported yet");
             }
 
-            return true;
+            return (localizationDocsetPath, localizationBranch, subDependencyLock, gitIndex);
         }
 
-        public static bool TryGetSourceRepository(Repository repository, out string sourceRemote, out string sourceBranch, out string locale)
+        public static bool TryGetSourceRepositoryInfo(Repository repository, out string sourceRemote, out string sourceBranch, out string locale)
         {
             sourceRemote = null;
             sourceBranch = null;
@@ -86,13 +89,13 @@ namespace Microsoft.Docs.Build
                 return false;
             }
 
-            return TryGetSourceRepository(repository.Remote, repository.Branch, out sourceRemote, out sourceBranch, out locale);
+            return TryGetSourceRepositoryInfo(repository.Remote, repository.Branch, out sourceRemote, out sourceBranch, out locale);
         }
 
         /// <summary>
         /// Get the source repo's remote and branch from loc repo based on <see cref="LocalizationMapping"/>
         /// </summary>
-        public static bool TryGetSourceRepository(string remote, string branch, out string sourceRemote, out string sourceBranch, out string locale)
+        public static bool TryGetSourceRepositoryInfo(string remote, string branch, out string sourceRemote, out string sourceBranch, out string locale)
         {
             sourceRemote = null;
             sourceBranch = null;
@@ -122,21 +125,21 @@ namespace Microsoft.Docs.Build
             return locale != null;
         }
 
-        public static bool TryGetSourceDocsetPath(Docset docset, out string sourceDocsetPath, out string sourceBranch, out DependencyLockModel dependencyLock)
+        public static async Task<(string path, string branch, DependencyLockModel dependencyLock, DependencyGitIndex gitIndex)> TryGetSourceDocsetPath(Docset docset)
         {
-            sourceDocsetPath = null;
-            sourceBranch = null;
-            dependencyLock = null;
+            string sourceDocsetPath = null;
+            DependencyLockModel dependencyLock = null;
+            DependencyGitIndex gitIndex = null;
 
             Debug.Assert(docset != null);
 
-            if (TryGetSourceRepository(docset.Repository, out var sourceRemote, out sourceBranch, out var locale))
+            if (TryGetSourceRepositoryInfo(docset.Repository, out var sourceRemote, out var sourceBranch, out var locale))
             {
-                (sourceDocsetPath, dependencyLock) = RestoreMap.GetGitRestorePath(sourceRemote, sourceBranch, docset.DependencyLock);
-                return true;
+                (sourceDocsetPath, dependencyLock, gitIndex) = await DependencyIndexPool.AcquireGitIndex2Build(sourceRemote, sourceBranch, docset.DependencyLock);
+                return (sourceDocsetPath, sourceBranch, dependencyLock, gitIndex);
             }
 
-            return false;
+            return default;
         }
 
         public static bool TryGetContributionBranch(Repository repository, out string contributionBranch)
@@ -180,7 +183,7 @@ namespace Microsoft.Docs.Build
 
         public static string GetLocale(Repository repository, CommandLineOptions options)
         {
-            return TryGetSourceRepository(repository, out _, out _, out var locale) ? locale : options.Locale;
+            return TryGetSourceRepositoryInfo(repository, out _, out _, out var locale) ? locale : options.Locale;
         }
 
         public static bool IsLocalized(this Docset docset) => docset.FallbackDocset != null;

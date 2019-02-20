@@ -10,19 +10,19 @@ using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
 {
-    internal static class RestoreIndex
+    internal static class DependencyIndexPool
     {
         private const int _defaultLockdownTimeInSecond = 10 * 60;
 
         /// <summary>
-        /// Try get git dependency repository path with remote, branch and dependency version(commit).
+        /// Try get git dependency repository path and index with remote, branch and dependency version(commit).
         /// If the dependency version is null, get the latest one(order by last write time).
         /// If the dependency version is not null, get the one matched with the version(commit).
         /// </summary>
-        public static bool TryGetGitIndex(string remote, string branch, string commit, out string path, out RestoreGitIndex index)
+        public static bool TryGetGitIndex(string remote, string branch, string commit, out string path, out DependencyGitIndex index)
         {
             var restoreDir = AppData.GetGitDir(remote);
-            var indexes = GetIndexes<RestoreGitIndex>(restoreDir).Where(i => i.Branch == branch);
+            var indexes = GetIndexes<DependencyGitIndex>(restoreDir).Where(i => i.Branch == branch);
 
             path = null;
             if (!string.IsNullOrEmpty(commit))
@@ -42,24 +42,47 @@ namespace Microsoft.Docs.Build
             return Directory.Exists(path);
         }
 
-        public static Task<(string path, RestoreGitIndex index)> RequireGitIndex(string remote, string branch, string commit, LockType type)
+        /// <summary>
+        /// Get restored git repository path, dependencyLock and index with url and dependency lock
+        /// The dependency lock must be loaded before using this method
+        /// </summary>
+        public static Task<(string path, DependencyLockModel subDependencyLock, DependencyGitIndex gitIndex)> AcquireGitIndex2Build(string url, DependencyLockModel dependencyLock)
         {
-            Debug.Assert(!string.IsNullOrEmpty(branch));
-            Debug.Assert(!string.IsNullOrEmpty(commit));
-
-            return RequireIndex(
-                remote,
-                type,
-                id => new RestoreGitIndex
-                {
-                    Id = id,
-                    Branch = branch,
-                    Commit = commit,
-                },
-                existingIndex => existingIndex.Branch == branch && existingIndex.Commit == commit);
+            var (remote, branch) = HrefUtility.SplitGitHref(url);
+            return AcquireGitIndex2Build(remote, branch, dependencyLock);
         }
 
-        public static async Task ReleaseIndex<T>(string remote, T index, LockType lockType, bool successed = true) where T : RestoreIndexModel
+        /// <summary>
+        /// The dependency lock must be loaded before using this method
+        /// </summary>
+        public static async Task<(string path, DependencyLockModel subDependencyLock, DependencyGitIndex gitIndex)> AcquireGitIndex2Build(string remote, string branch, DependencyLockModel dependencyLock)
+        {
+            Debug.Assert(dependencyLock != null);
+
+            var gitVersion = dependencyLock.GetGitLock(remote, branch);
+
+            if (gitVersion == null)
+            {
+                throw Errors.NeedRestore($"{remote}#{branch}").ToException();
+            }
+
+            var (path, index) = await AcquireGitIndex(remote, branch, gitVersion.Commit, LockType.Build);
+
+            if (string.IsNullOrEmpty(path) || index == null)
+            {
+                throw Errors.NeedRestore($"{remote}#{branch}").ToException();
+            }
+
+            path = Path.Combine(AppData.GetGitDir(remote), path);
+            Debug.Assert(Directory.Exists(path));
+
+            return (path, gitVersion, index);
+        }
+
+        public static Task<(string path, DependencyGitIndex index)> AcquireGitIndex2Restore(string remote, string branch, string commit)
+            => AcquireGitIndex(remote, branch, commit, LockType.Restore);
+
+        public static async Task ReleaseIndex<T>(string remote, T index, LockType lockType, bool successed = true) where T : DependencyIndex
         {
             Debug.Assert(index != null);
             var restoreDir = AppData.GetGitDir(remote);
@@ -91,7 +114,24 @@ namespace Microsoft.Docs.Build
                 });
         }
 
-        private static async Task<(string path, T index)> RequireIndex<T>(string remote, LockType type, Func<string, T> createNewIndex, Func<T, bool> matchExistingIndex) where T : RestoreIndexModel
+        private static Task<(string path, DependencyGitIndex index)> AcquireGitIndex(string remote, string branch, string commit, LockType type)
+        {
+            Debug.Assert(!string.IsNullOrEmpty(branch));
+            Debug.Assert(!string.IsNullOrEmpty(commit));
+
+            return AcquireIndex(
+                remote,
+                type,
+                id => new DependencyGitIndex
+                {
+                    Id = id,
+                    Branch = branch,
+                    Commit = commit,
+                },
+                existingIndex => existingIndex.Branch == branch && existingIndex.Commit == commit);
+        }
+
+        private static async Task<(string path, T index)> AcquireIndex<T>(string remote, LockType type, Func<string, T> createNewIndex, Func<T, bool> matchExistingIndex) where T : DependencyIndex
         {
             Debug.Assert(!string.IsNullOrEmpty(remote));
 
@@ -106,17 +146,20 @@ namespace Microsoft.Docs.Build
 
                     switch (type)
                     {
-                        case LockType.Restore: // find an available index or create a new index for using
+                        case LockType.Restore: // find an available index or create a new index for restoring
                             index = indexes.FirstOrDefault(i =>
                                         DateTime.UtcNow - i.RestoredDate > TimeSpan.FromSeconds(_defaultLockdownTimeInSecond) && // in case it's just restored, not used yet
-                                        ProcessUtility.AcquireExclusiveLock(i.Id))
+                                        ProcessUtility.AcquireExclusiveLock(i.Id)) // compairing conderations' order matters
                                     ?? createNewIndex($"{indexes.Count + 1}");
                             index.RestoredDate = DateTime.UtcNow;
                             index.Restored = false;
                             indexes.Add(index);
                             break;
-                        case LockType.Build: // find an matched index for using
-                            index = indexes.FirstOrDefault(i => ProcessUtility.AcquireSharedLock(i.Id) && matchExistingIndex(i) && i.Restored);
+                        case LockType.Build: // find an matched index for building
+                            index = indexes.FirstOrDefault(i =>
+                                        matchExistingIndex(i) &&
+                                        i.Restored &&
+                                        ProcessUtility.AcquireSharedLock(i.Id)); // compairing conderations' order matters
                             break;
                         default:
                             throw new NotSupportedException($"{type} is not supported");
@@ -129,7 +172,7 @@ namespace Microsoft.Docs.Build
             return index == null ? default : ($"{index.Id}", index);
         }
 
-        private static List<T> GetIndexes<T>(string restoreDir) where T : RestoreIndexModel
+        private static List<T> GetIndexes<T>(string restoreDir) where T : DependencyIndex
         {
             var indexFile = Path.Combine(restoreDir, "index.json");
             var content = File.Exists(indexFile) ? File.ReadAllText(indexFile) : string.Empty;
@@ -137,7 +180,7 @@ namespace Microsoft.Docs.Build
             return JsonUtility.Deserialize<List<T>>(content) ?? new List<T>();
         }
 
-        private static void WriteIndexes<T>(string restoreDir, List<T> indexes) where T : RestoreIndexModel
+        private static void WriteIndexes<T>(string restoreDir, List<T> indexes) where T : DependencyIndex
         {
             Directory.CreateDirectory(restoreDir);
             var indexFile = Path.Combine(restoreDir, "index.json");
