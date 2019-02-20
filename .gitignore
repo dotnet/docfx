@@ -10,6 +10,8 @@ obj
 *.user
 *.psess
 *.vspx
+*.vsps
+*.vsp
 
 *.DS_Store
 
