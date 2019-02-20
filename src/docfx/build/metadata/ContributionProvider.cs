@@ -193,7 +193,8 @@ namespace Microsoft.Docs.Build
                 var (editRemote, editBranch) = (repo.Remote, repo.Branch);
                 if (!string.IsNullOrEmpty(document.Docset.Config.Contribution.Repository))
                 {
-                    (editRemote, editBranch) = HrefUtility.SplitGitHref(document.Docset.Config.Contribution.Repository);
+                    var (contribRemote, contribBranch, hasRefSpec) = HrefUtility.SplitGitHref(document.Docset.Config.Contribution.Repository);
+                    (editRemote, editBranch) = (contribRemote, hasRefSpec ? contribBranch : editBranch);
                     if (document.Docset.IsLocalized())
                     {
                         (editRemote, editBranch) = LocalizationUtility.GetLocalizedRepo(
