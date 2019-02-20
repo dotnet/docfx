@@ -146,7 +146,7 @@ namespace Microsoft.Docs.Build
                         var gitDependencyLock = dependencyLock?.GetGitLock(remote, branch);
                         headCommit = gitDependencyLock?.Commit ?? headCommit;
 
-                        var (workTreeHead, index) = await RestoreIndex.RequireGitIndex(remote, branch, headCommit, LockType.Exclusive);
+                        var (workTreeHead, index) = await RestoreIndex.RequireGitIndex(remote, branch, headCommit, LockType.Restore);
                         var workTreePath = Path.GetFullPath(Path.Combine(repoPath, "../", workTreeHead)).Replace('\\', '/');
                         var restored = true;
                         try
@@ -176,7 +176,7 @@ namespace Microsoft.Docs.Build
                         }
                         finally
                         {
-                            await RestoreIndex.ReleaseIndex(remote, index, restored);
+                            await RestoreIndex.ReleaseIndex(remote, index, LockType.Restore, restored);
                         }
 
                         subChildren.Add(new RestoreChild(workTreePath, remote, branch, gitDependencyLock, new DependencyVersion(headCommit)));

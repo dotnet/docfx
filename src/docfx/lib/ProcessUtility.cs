@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Concurrent;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
@@ -16,7 +17,84 @@ namespace Microsoft.Docs.Build
     /// </summary>
     internal static class ProcessUtility
     {
+        // todo: need cross process read write lock
+        private static ConcurrentDictionary<string, ReaderWriterLock> s_readWriteLocks = new ConcurrentDictionary<string, ReaderWriterLock>();
         private static AsyncLocal<string> t_innerCall = new AsyncLocal<string>();
+
+        public static bool IsExclusiveLockHeld(string lockName)
+            => s_readWriteLocks.GetOrAdd(lockName, key => new ReaderWriterLock()).IsWriterLockHeld;
+
+        public static bool AcquireSharedLock(string lockName)
+        {
+            Debug.Assert(!string.IsNullOrEmpty(lockName));
+            lockName = HashUtility.GetMd5Hash(lockName);
+
+            var readWriteLock = s_readWriteLocks.GetOrAdd(lockName, key => new ReaderWriterLock());
+
+            try
+            {
+                readWriteLock.AcquireReaderLock(0);
+                return true;
+            }
+            catch (ApplicationException)
+            {
+                return false;
+            }
+        }
+
+        public static bool ReleaseSharedLock(string lockName)
+        {
+            Debug.Assert(!string.IsNullOrEmpty(lockName));
+            lockName = HashUtility.GetMd5Hash(lockName);
+
+            var readWriteLock = s_readWriteLocks.GetOrAdd(lockName, key => new ReaderWriterLock());
+
+            try
+            {
+                readWriteLock.ReleaseReaderLock();
+                return true;
+            }
+            catch (ApplicationException)
+            {
+                return false;
+            }
+        }
+
+        public static bool AcquireExclusiveLock(string lockName)
+        {
+            Debug.Assert(!string.IsNullOrEmpty(lockName));
+            lockName = HashUtility.GetMd5Hash(lockName);
+
+            var readWriteLock = s_readWriteLocks.GetOrAdd(lockName, key => new ReaderWriterLock());
+
+            try
+            {
+                readWriteLock.AcquireWriterLock(0);
+                return true;
+            }
+            catch (ApplicationException)
+            {
+                return false;
+            }
+        }
+
+        public static bool ReleaseExclusiveLock(string lockName)
+        {
+            Debug.Assert(!string.IsNullOrEmpty(lockName));
+            lockName = HashUtility.GetMd5Hash(lockName);
+
+            var readWriteLock = s_readWriteLocks.GetOrAdd(lockName, key => new ReaderWriterLock());
+
+            try
+            {
+                readWriteLock.ReleaseWriterLock();
+                return true;
+            }
+            catch (ApplicationException)
+            {
+                return false;
+            }
+        }
 
         /// <summary>
         /// Start a new process and wait for its execution asynchroniously
