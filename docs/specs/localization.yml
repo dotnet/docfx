@@ -234,7 +234,7 @@ repos:
         docs/a.md:
 outputs:
   docs/a.json: |
-    { "content_git_url": "*dotnet/docfx.zh-cn/blob/master/*"}
+    { "content_git_url": "*dotnet/docfx.zh-cn/edit-url1/master/*"}
 ---
 # edit url convention without source locale 2
 # [branch mapping]

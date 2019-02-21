@@ -223,7 +223,7 @@ namespace Microsoft.Docs.Build
                 return branch;
             }
 
-            return string.IsNullOrEmpty(branch) ? branch : $"{branch}-sxs";
+            return string.IsNullOrEmpty(branch) || branch.EndsWith("-sxs") ? branch : $"{branch}-sxs";
         }
 
         private static string GetLocalizationBranch(LocalizationMapping mapping, string sourceBranch, string locale, string defaultLocale)
