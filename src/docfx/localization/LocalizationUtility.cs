@@ -248,6 +248,12 @@ namespace Microsoft.Docs.Build
                 return sourceBranch;
             }
 
+            if (TryRemoveLocale(sourceBranch, out string sourceBranchWithoutLocale, out string branchLocale) &&
+                string.Equals(locale, branchLocale))
+            {
+                return sourceBranch;
+            }
+
             return $"{sourceBranch}.{locale}";
         }
 
