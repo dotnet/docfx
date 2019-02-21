@@ -18,6 +18,12 @@ namespace Microsoft.Docs.Build
     /// </summary>
     internal static class ProcessUtility
     {
+        private const int _defaultLockExpireTimeInSecond = 60 * 20;
+
+        /// <summary>
+        /// Acquire a shared lock for input lock name
+        /// The returned `acquirer` are used for tracking the acquired lock, instead of thread info, since the thread info may change in asynchronous programming model
+        /// </summary>
         public static async Task<(bool acquired, string acquirer)> AcquireSharedLock(string lockName)
         {
             Debug.Assert(!string.IsNullOrEmpty(lockName));
@@ -29,6 +35,7 @@ namespace Microsoft.Docs.Build
             await ReadAndWriteFile<LockInfo>(lockPath, lockInfo =>
             {
                 lockInfo = lockInfo ?? new LockInfo();
+                lockInfo = FilterExpiredAcquirers(lockInfo);
 
                 if (lockInfo.Type == LockType.Exclusive)
                 {
@@ -82,6 +89,10 @@ namespace Microsoft.Docs.Build
             return released;
         }
 
+        /// <summary>
+        /// Acquire a exclusive lock for input lock name
+        /// The returned `acquirer` are used for tracking the acquired lock, instead of thread info, since the thread info may change in asynchronous programming model
+        /// </summary>
         public static async Task<(bool acquired, string acquirer)> AcquireExclusiveLock(string lockName)
         {
             Debug.Assert(!string.IsNullOrEmpty(lockName));
@@ -93,6 +104,7 @@ namespace Microsoft.Docs.Build
             await ReadAndWriteFile<LockInfo>(lockPath, lockInfo =>
             {
                 lockInfo = lockInfo ?? new LockInfo();
+                lockInfo = FilterExpiredAcquirers(lockInfo);
 
                 if (lockInfo.Type != LockType.None)
                 {
@@ -419,6 +431,20 @@ namespace Microsoft.Docs.Build
             Directory.CreateDirectory(AppData.MutexRoot);
             var lockPath = Path.Combine(AppData.MutexRoot, HashUtility.GetMd5Hash(lockName) + "-rw");
             return lockPath;
+        }
+
+        private static LockInfo FilterExpiredAcquirers(LockInfo lockInfo)
+        {
+            Debug.Assert(lockInfo != null);
+
+            lockInfo.AcquiredBy.RemoveAll(r => DateTime.UtcNow - r.Date > TimeSpan.FromSeconds(_defaultLockExpireTimeInSecond));
+
+            if (!lockInfo.AcquiredBy.Any())
+            {
+                lockInfo.Type = LockType.None;
+            }
+
+            return lockInfo;
         }
 
         private enum LockType
