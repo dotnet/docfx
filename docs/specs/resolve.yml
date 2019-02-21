@@ -113,7 +113,6 @@ outputs:
     ["warning","file-not-found","Cannot find file 'c.md' relative to 'b.md'","b.md"]
 ---
 # Show warning if the link points to absolute file path
-os: windows
 inputs:
   docfx.yml:
   docs/a.md: |

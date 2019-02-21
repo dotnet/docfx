@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Web;
 using HtmlAgilityPack;
 using Newtonsoft.Json.Linq;
 
@@ -102,7 +103,7 @@ namespace Microsoft.Docs.Build
             var model = new PageModel
             {
                 Content = HtmlPostProcess(file, htmlDom),
-                Title = yamlHeader.Value<string>("title") ?? HtmlUtility.GetInnerText(htmlTitleDom),
+                Title = yamlHeader.Value<string>("title") ?? HttpUtility.HtmlDecode(htmlTitleDom.InnerText),
                 RawTitle = markup.HtmlTitle,
                 WordCount = HtmlUtility.CountWord(htmlDom),
                 Monikers = monikers,
@@ -176,7 +177,7 @@ namespace Microsoft.Docs.Build
 
             if (file.Docset.Legacy)
             {
-                html = html.AddLinkType(file.Docset.Locale, file.Docset.Legacy)
+                html = html.AddLinkType(file.Docset.Locale)
                            .RemoveRerunCodepenIframes();
             }
 

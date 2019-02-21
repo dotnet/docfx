@@ -123,7 +123,8 @@ namespace Microsoft.Docs.Build
                 return (uidError, uidHref, null, referencedFile);
             }
 
-            var (error, file, redirectTo, query, fragment, isSelfBookmark, _) = TryResolveFile(relativeTo, href);
+            var decodedHref = HttpUtility.UrlDecode(href);
+            var (error, file, redirectTo, query, fragment, isSelfBookmark, _) = TryResolveFile(relativeTo, decodedHref);
 
             // Redirection
             // follow redirections
@@ -192,49 +193,38 @@ namespace Microsoft.Docs.Build
             }
 
             var (path, query, fragment) = HrefUtility.SplitHref(href);
-            var pathToDocset = "";
 
-            // Self bookmark link
-            if (string.IsNullOrEmpty(path))
+            switch (HrefUtility.GetHrefType(href))
             {
-                return (null, relativeTo, null, query, fragment, true, pathToDocset);
+                case HrefType.Bookmark:
+                    return (null, relativeTo, null, query, fragment, true, null);
+
+                case HrefType.WindowsAbsolutePath:
+                    return (Errors.AbsoluteFilePath(relativeTo, path), null, null, null, null, false, null);
+
+                case HrefType.RelativePath:
+
+                    // Resolve path relative to docset
+                    var pathToDocset = ResolveToDocsetRelativePath(path, relativeTo);
+
+                    // resolve from redirection files
+                    if (relativeTo.Docset.Redirections.TryGetRedirectionUrl(pathToDocset, out var redirectTo))
+                    {
+                        // redirectTo always is absolute href
+                        //
+                        // TODO: In case of file rename, we should warn if the content is not inside build scope.
+                        //       But we should not warn or do anything with absolute URLs.
+                        var (error, redirectFile) = Document.TryCreate(relativeTo.Docset, pathToDocset);
+                        return (error, redirectFile, redirectTo, query, fragment, false, pathToDocset);
+                    }
+
+                    var file = Document.TryCreateFromFile(relativeTo.Docset, pathToDocset);
+
+                    return (file != null ? null : Errors.FileNotFound(relativeTo.ToString(), path), file, null, query, fragment, false, pathToDocset);
+
+                default:
+                    return default;
             }
-
-            // Leave absolute URL as is
-            if (path.StartsWith('/') || path.StartsWith('\\'))
-            {
-                return default;
-            }
-
-            // Leave absolute file path as is
-            if (Path.IsPathRooted(path))
-            {
-                return (Errors.AbsoluteFilePath(relativeTo, path), null, null, null, null, false, pathToDocset);
-            }
-
-            // Leave absolute URL path as is
-            if (Uri.TryCreate(path, UriKind.Absolute, out _))
-            {
-                return default;
-            }
-
-            // Resolve path relative to docset
-            pathToDocset = ResolveToDocsetRelativePath(path, relativeTo);
-
-            // resolve from redirection files
-            if (relativeTo.Docset.Redirections.TryGetRedirectionUrl(pathToDocset, out var redirectTo))
-            {
-                // redirectTo always is absolute href
-                //
-                // TODO: In case of file rename, we should warn if the content is not inside build scope.
-                //       But we should not warn or do anything with absolute URLs.
-                var (error, redirectFile) = Document.TryCreate(relativeTo.Docset, pathToDocset);
-                return (error, redirectFile, redirectTo, query, fragment, false, pathToDocset);
-            }
-
-            var file = Document.TryCreateFromFile(relativeTo.Docset, pathToDocset);
-
-            return (file != null ? null : Errors.FileNotFound(relativeTo.ToString(), path), file, null, query, fragment, false, pathToDocset);
         }
 
         private string ResolveToDocsetRelativePath(string path, Document relativeTo)

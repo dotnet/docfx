@@ -98,11 +98,43 @@ namespace Microsoft.Docs.Build
             return fragment != null && fragment.Length > 1 ? DependencyType.Bookmark : DependencyType.Link;
         }
 
-        public static bool IsAbsoluteHref(string str)
+        public static HrefType GetHrefType(string href)
         {
-            return str.StartsWith('/')
-                || str.StartsWith('\\')
-                || Uri.TryCreate(str, UriKind.Absolute, out _);
+            if (string.IsNullOrEmpty(href))
+            {
+                return HrefType.RelativePath;
+            }
+
+            var ch = href[0];
+
+            if (ch == '/' || ch == '\\')
+            {
+                return HrefType.AbsolutePath;
+            }
+
+            // If it is a windows rooted path like C:
+            if (href.Length > 2 && href[1] == ':')
+            {
+                return HrefType.WindowsAbsolutePath;
+            }
+
+            if (Uri.TryCreate(href, UriKind.Absolute, out _))
+            {
+                return HrefType.External;
+            }
+
+            // Uri.TryCreate does not handle some common errors like http:docs.com, so specialize them here
+            if (char.IsLetter(ch) && href.Contains(':'))
+            {
+                return HrefType.External;
+            }
+
+            if (ch == '#')
+            {
+                return HrefType.Bookmark;
+            }
+
+            return HrefType.RelativePath;
         }
 
         public static bool IsHttpHref(string str)

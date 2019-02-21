@@ -295,7 +295,7 @@ namespace Microsoft.Docs.Build
         }
 
         private DateTime NextExpiry()
-            => DateTime.UtcNow.AddHours((_expirationInHours / 2) + (t_random.Value.NextDouble() * _expirationInHours));
+            => DateTime.UtcNow.AddHours((_expirationInHours / 2) + (t_random.Value.NextDouble() * _expirationInHours / 2));
 
         private async Task ReadCacheFiles()
         {
