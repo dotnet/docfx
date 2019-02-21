@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
@@ -34,13 +35,52 @@ namespace Microsoft.Docs.Build
 
         public DependencyMap Build()
         {
-            return new DependencyMap(_dependencyItems
-                .GroupBy(k => k.Source)
+            return new DependencyMap(Flatten());
+        }
+
+        private Dictionary<Document, HashSet<DependencyItem>> Flatten()
+        {
+            var result = new Dictionary<Document, HashSet<DependencyItem>>();
+            var graph = _dependencyItems
+                .GroupBy(k => k.From)
                 .ToDictionary(
                     k => k.Key,
-                    v => (from r in v.Distinct()
-                         orderby r.Dest.FilePath, r.Type
-                         select r).ToList()));
+                    v => (from r in v
+                          orderby r.To.FilePath, r.Type
+                          select r).ToHashSet());
+
+            foreach (var (from, value) in graph)
+            {
+                result[from] = new HashSet<DependencyItem>();
+                foreach (var item in value)
+                {
+                    result[from].Add(item);
+                    AddToExisting(from, graph, null, item, result[from]);
+                }
+            }
+            return result;
         }
+
+        private void AddToExisting(Document from, Dictionary<Document, HashSet<DependencyItem>> graph, DependencyItem previous, DependencyItem current, HashSet<DependencyItem> dependencies)
+        {
+            if (previous != null && !CanTransit(previous))
+            {
+                return;
+            }
+            if (!graph.ContainsKey(current.To) || current.To.Equals(from))
+            {
+                dependencies.Add(new DependencyItem(from, current.To, current.Type));
+            }
+            else
+            {
+                foreach (var item in graph[current.To])
+                {
+                    AddToExisting(from, graph, current, item, dependencies);
+                }
+            }
+        }
+
+        private bool CanTransit(DependencyItem dependencyItem)
+            => dependencyItem.Type == DependencyType.Inclusion;
     }
 }
