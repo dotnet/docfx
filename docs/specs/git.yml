@@ -390,7 +390,7 @@ outputs:
       "gitcommit": "https://github.com/testowner/testrepo/blob/e662dbc7c5e582a14b863d6a6a82e495d6272f91/docs/index.md",
     }
 ---
-# Use default `master` branch when edit branch isn't specified in contribution config,
+# Use current repo's branch when edit branch isn't specified in contribution config,
 # even contribution config's repository doesn't equal to current repo's
 repos:
   https://github.com/testowner/testrepo#default-building-branch:
