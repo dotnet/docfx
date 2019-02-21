@@ -18,7 +18,7 @@ namespace Microsoft.Docs.Build
             XrefMap xrefMap = null;
 
             var repository = Repository.Create(docsetPath);
-            Telemetry.SetRepository(repository.Remote, repository.Branch);
+            Telemetry.SetRepository(repository?.Remote, repository?.Branch);
 
             var locale = LocalizationUtility.GetLocale(repository, options);
             var dependencyLock = await LoadBuildDependencyLock(docsetPath, locale, repository, options);
