@@ -24,6 +24,8 @@ namespace Microsoft.Docs.Build
 
             var (errors, schema, model, metadata) = await Load(context, file, buildChild);
 
+            ResolveBreadcrumb();
+
             model.SchemaType = schema.Name;
             model.Locale = file.Docset.Locale;
             model.Metadata = metadata;
@@ -35,10 +37,7 @@ namespace Microsoft.Docs.Build
             (model.DocumentId, model.DocumentVersionIndependentId) = file.Docset.Redirections.TryGetDocumentId(file, out var docId) ? docId : file.Id;
             (model.ContentGitUrl, model.OriginalContentGitUrl, model.OriginalContentGitUrlTemplate, model.Gitcommit) = await context.ContributionProvider.GetGitUrls(file);
 
-            List<Error> contributorErrors;
-            (contributorErrors, model.Author, model.Contributors, model.UpdatedAt) = await context.ContributionProvider.GetAuthorAndContributors(file, metadata.Author);
-            if (contributorErrors != null)
-                errors.AddRange(contributorErrors);
+            await ResolveContributors();
 
             var isPage = schema.Attribute is PageSchemaAttribute;
             var (output, outputPath, extensionData) = ApplyTemplate(context, file, model, isPage);
@@ -53,6 +52,24 @@ namespace Microsoft.Docs.Build
             };
 
             return (errors, output, publishItem);
+
+            void ResolveBreadcrumb()
+            {
+                if (!string.IsNullOrEmpty(metadata.BreadcrumbPath))
+                {
+                    var (breadcrumbError, breadcrumbPath, _) = context.DependencyResolver.ResolveLink(metadata.BreadcrumbPath, file, file, buildChild);
+                    errors.AddIfNotNull(breadcrumbError);
+                    metadata.BreadcrumbPath = breadcrumbPath;
+                }
+            }
+
+            async Task ResolveContributors()
+            {
+                List<Error> contributorErrors;
+                (contributorErrors, model.Author, model.Contributors, model.UpdatedAt) = await context.ContributionProvider.GetAuthorAndContributors(file, metadata.Author);
+                if (contributorErrors != null)
+                    errors.AddRange(contributorErrors);
+            }
         }
 
         private static async Task<(List<Error> errors, Schema schema, PageModel model, FileMetadata metadata)>

@@ -362,3 +362,16 @@ outputs:
   docs/a.json:
   build.log: |
     ["warning","reserved-metadata","Metadata 'redirect_url' is reserved by docfx, remove this metadata from global metadata","docfx.yml"]
+---
+# resolve breadcrumb_path
+inputs:
+  docfx.yml: |
+    globalMetadata:
+      breadcrumb_path: ~/breadcrumbs/toc.json
+  a.md:
+  breadcrumbs/toc.json: '{}'
+outputs:
+  a.json: |
+    metadata:
+      breadcrumb_path: breadcrumbs/toc.json
+  breadcrumbs/toc.json:
