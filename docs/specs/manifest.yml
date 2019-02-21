@@ -166,6 +166,14 @@ outputs:
              {  
                 "source":"docs/b.md",
                 "type":"inclusion"
+             },
+             {  
+                "source":"docs/c.md",
+                "type":"link"
+             },
+             {  
+                "source":"docs/c.md",
+                "type":"inclusion"
              }
           ],
           "docs/b.md":[  
@@ -223,13 +231,21 @@ outputs:
   .dependencymap.json: |
     {  
        "dependencies":{  
-          "docs/a.md":[  
+          "docs/b.md":[  
+             {  
+                "source":"docs/a.md",
+                "type":"inclusion"
+             },
              {  
                 "source":"docs/b.md",
                 "type":"inclusion"
              }
           ],
-          "docs/b.md":[  
+          "docs/a.md":[  
+             {  
+                "source":"docs/b.md",
+                "type":"inclusion"
+             },
              {  
                 "source":"docs/a.md",
                 "type":"inclusion"
