@@ -97,6 +97,7 @@ namespace Microsoft.Docs.Build
             if (string.IsNullOrEmpty(login))
                 return default;
 
+            Telemetry.TrackCacheTotal(CacheName.GitHubUserCache);
             var user = TryGetByLogin(login);
             if (user != null)
             {
@@ -108,8 +109,11 @@ namespace Microsoft.Docs.Build
 
             (error, user) = await _outgoingGetUserByLoginRequests.GetOrAdd(
                 login,
-                new Lazy<Task<(Error, GitHubUser)>>(
-                    () => _getUserByLoginFromGitHub(login))).Value;
+                new Lazy<Task<(Error, GitHubUser)>>(() =>
+                {
+                    Telemetry.TrackCacheMiss(CacheName.GitHubUserCache);
+                    return _getUserByLoginFromGitHub(login);
+                })).Value;
 
             if (error == null)
             {
@@ -130,14 +134,18 @@ namespace Microsoft.Docs.Build
             if (string.IsNullOrEmpty(authorEmail))
                 return default;
 
+            Telemetry.TrackCacheTotal(CacheName.GitHubUserCache);
             var user = TryGetByEmail(authorEmail);
             if (user != null)
                 return (null, user.IsValid() ? user : null);
 
             var (error, login) = await _outgoingGetLoginByCommitRequests.GetOrAdd(
                 commitSha,
-                new Lazy<Task<(Error, string)>>(
-                    () => _getLoginByCommitFromGitHub(repoOwner, repoName, commitSha))).Value;
+                new Lazy<Task<(Error, string)>>(() =>
+                {
+                    Telemetry.TrackCacheMiss(CacheName.GitHubUserCache);
+                    return _getLoginByCommitFromGitHub(repoOwner, repoName, commitSha);
+                })).Value;
 
             if (error == null)
                 UpdateUser(new GitHubUser { Login = login, Emails = new[] { authorEmail }, Expiry = NextExpiry() });

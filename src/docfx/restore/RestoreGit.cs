@@ -90,15 +90,13 @@ namespace Microsoft.Docs.Build
                     var gitVersion = dependencyLock?.GetGitLock(remote, branch);
                     if ((@implicit || string.IsNullOrEmpty(gitVersion?.Commit)) && RestoreMap.TryGetGitRestorePath(remote, branch, gitVersion, out var existingPath))
                     {
-                        {
-                            branchesToFetch.Remove(branch);
-                            subChildren.Add(new RestoreChild(
-                                existingPath,
-                                remote,
-                                branch,
-                                gitVersion,
-                                new DependencyVersion(gitVersion?.Commit ?? Path.GetFileName(existingPath).Split("-").Last())));
-                        }
+                        branchesToFetch.Remove(branch);
+                        subChildren.Add(new RestoreChild(
+                            existingPath,
+                            remote,
+                            branch,
+                            gitVersion,
+                            new DependencyVersion(gitVersion?.Commit ?? Path.GetFileName(existingPath).Split("-").Last())));
                     }
                 }
 
