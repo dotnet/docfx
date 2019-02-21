@@ -4,6 +4,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -17,7 +18,25 @@ namespace Microsoft.Docs.Build
             Debug.Assert(file.ContentType == ContentType.TableOfContents);
             Debug.Assert(monikerMap != null);
 
-            var (errors, model, refArticles, refTocs) = Load(context, file, monikerMap);
+            // load toc model
+            var hrefMap = new Dictionary<string, List<string>>();
+            var (errors, model, refArticles, refTocs) = context.Cache.LoadTocModel(context, file);
+            foreach (var (doc, href) in refArticles)
+            {
+                if (!hrefMap.ContainsKey(href) && monikerMap.TryGetValue(doc, out var monikers))
+                {
+                    hrefMap[href] = monikers;
+                }
+            }
+
+            // resolve monikers
+            var (monikerError, fileMonikers) = context.MonikerProvider.GetFileLevelMonikers(file, model.Metadata.MonikerRange);
+            errors.AddIfNotNull(monikerError);
+
+            model.Metadata.Monikers = fileMonikers;
+            ResolveItemMonikers(model.Items);
+
+            // enable pdf
             var outputPath = file.GetOutputPath(model.Metadata.Monikers);
 
             if (file.Docset.Config.Output.Pdf)
@@ -27,6 +46,7 @@ namespace Microsoft.Docs.Build
                 model.Metadata.PdfAbsolutePath = $"/{siteBasePath}/opbuildpdf/{relativePath}";
             }
 
+            // output model
             var output = (object)model;
             if (file.Docset.Legacy)
             {
@@ -44,25 +64,52 @@ namespace Microsoft.Docs.Build
                 Monikers = model.Metadata.Monikers,
             };
 
+            void ResolveItemMonikers(List<TableOfContentsItem> items)
+            {
+                foreach (var item in items)
+                {
+                    if (item.Items != null)
+                    {
+                        ResolveItemMonikers(item.Items);
+                    }
+
+                    List<string> monikers = null;
+                    if (item.Href == null || !hrefMap.TryGetValue(item.Href, out monikers))
+                    {
+                        if (item.TopicHref == null || !hrefMap.TryGetValue(item.TopicHref, out monikers))
+                        {
+                            monikers = fileMonikers;
+                        }
+                    }
+
+                    var childrenMonikers = item.Items?.SelectMany(child => child?.Monikers ?? new List<string>()) ?? new List<string>();
+                    monikers = childrenMonikers.Union(monikers ?? new List<string>()).Distinct(context.MonikerProvider.Comparer).ToList();
+                    monikers.Sort(context.MonikerProvider.Comparer);
+
+                    item.Monikers = monikers;
+                }
+            }
+
             return (errors, output, publishItem);
         }
 
         public static (
             List<Error> errors,
             TableOfContentsModel model,
-            List<Document> referencedDocuments,
+            List<(Document doc, string href)> referencedDocuments,
             List<Document> referencedTocs)
 
-            Load(Context context, Document fileToBuild, MonikerMap monikerMap = null)
+            Load(Context context, Document fileToBuild)
         {
             var errors = new List<Error>();
-            var referencedDocuments = new List<Document>();
+            var referencedDocuments = new List<(Document doc, string href)>();
             var referencedTocs = new List<Document>();
+            var hrefMap = new Dictionary<string, List<string>>();
 
+            // load toc model
             var (loadErrors, model) = TableOfContentsParser.Load(
                 context,
                 fileToBuild,
-                monikerMap,
                 (file, href, isInclude) =>
                 {
                     var (error, referencedTocContent, referencedToc) = context.DependencyResolver.ResolveContent(href, file, DependencyType.TocInclusion);
@@ -82,7 +129,7 @@ namespace Microsoft.Docs.Build
 
                     if (buildItem != null)
                     {
-                        referencedDocuments.Add(buildItem);
+                        referencedDocuments.Add((buildItem, link));
                     }
                     return (link, buildItem);
                 },
@@ -94,7 +141,7 @@ namespace Microsoft.Docs.Build
 
                     if (buildItem != null)
                     {
-                        referencedDocuments.Add(buildItem);
+                        referencedDocuments.Add((buildItem, link));
                     }
 
                     return (link, display, buildItem);
