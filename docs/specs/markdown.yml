@@ -502,3 +502,35 @@ outputs:
     }
    }
 ---
+# circular chain
+inputs:
+  docfx.yml:
+  docs/a.md: a [!INCLUDE[](b.md)]
+  docs/b.md: b [a](a.md)
+outputs:
+  docs/a.json: |
+    { "content": "<p>a b<a href=\"a\">a</a></p>\n" }
+  docs/b.json: |
+    { "content": "<p>b <a href=\"a\">a</a></p>\n" }
+  .dependencymap.json: |
+   {
+    "dependencies": {
+      "docs/b.md": [
+        {
+          "source": "docs/a.md",
+          "type": "link"
+        }
+      ],
+      "docs/a.md": [
+        {
+          "source": "docs/b.md",
+          "type": "inclusion"
+        },
+        {
+          "source": "docs/a.md",
+          "type": "link"
+        }
+      ]
+    }
+   }
+---
