@@ -11,7 +11,7 @@ namespace Microsoft.Docs.Build
 
         public string Url { get; set; }
 
-        public DateTime RestoredDate { get; set; }
+        public DateTime LastAccessDate { get; set; }
 
         public bool Restored { get; set; }
     }

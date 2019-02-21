@@ -19,27 +19,40 @@ namespace Microsoft.Docs.Build
         /// If the dependency version is null, get the latest one(order by last write time).
         /// If the dependency version is not null, get the one matched with the version(commit).
         /// </summary>
-        public static bool TryGetGitIndex(string remote, string branch, string commit, out string path, out DependencyGitIndex index)
+        public static async Task<(string path, DependencyGitIndex index)> TryGetGitIndex(string remote, string branch, string commit)
         {
             var restoreDir = AppData.GetGitDir(remote);
-            var indexes = GetIndexes<DependencyGitIndex>(restoreDir).Where(i => i.Branch == branch);
 
-            path = null;
-            if (!string.IsNullOrEmpty(commit))
-            {
-                // found commit matched index
-                index = indexes.FirstOrDefault(i => i.Commit == commit && ProcessUtility.IsExclusiveLockHeld(i.Id) /*not being restored*/);
-            }
+            string path = null;
+            DependencyGitIndex index = null;
+            await ProcessUtility.RunInsideMutex(
+                remote + "/index.json",
+                () =>
+                {
+                    var indexes = GetIndexes<DependencyGitIndex>(restoreDir).Where(i => i.Branch == branch);
 
-            // found latest restored index
-            index = indexes.OrderByDescending(i => i.RestoredDate).FirstOrDefault(i => ProcessUtility.IsExclusiveLockHeld(i.Id) /*not being restored*/);
+                    var filteredIndex = indexes;
+                    if (!string.IsNullOrEmpty(commit))
+                    {
+                        // found commit matched index
+                        filteredIndex = indexes.Where(i => i.Commit == commit);
+                    }
 
-            if (index != null)
-            {
-                path = PathUtility.NormalizeFile(Path.Combine(restoreDir, $"{index.Id}"));
-            }
+                    // found latest restored index
+                    index = indexes.OrderByDescending(i => i.LastAccessDate).FirstOrDefault(i => ProcessUtility.IsExclusiveLockHeld(GetLockKey(remote, i.Id)) /*not being restored*/);
 
-            return Directory.Exists(path);
+                    if (index != null)
+                    {
+                        index.LastAccessDate = DateTime.UtcNow;
+                        path = PathUtility.NormalizeFile(Path.Combine(restoreDir, $"{index.Id}"));
+                    }
+
+                    WriteIndexes(restoreDir, indexes.ToList());
+
+                    return Task.CompletedTask;
+                });
+
+            return !Directory.Exists(path) ? default : (path, index);
         }
 
         /// <summary>
@@ -94,19 +107,21 @@ namespace Microsoft.Docs.Build
                 () =>
                 {
                     var indexes = GetIndexes<T>(restoreDir);
-                    var indexToRelease = indexes.FirstOrDefault(i => i.Id == index.Id);
+                    var indexesToRelease = indexes.Where(i => i.Id == index.Id);
+                    Debug.Assert(indexesToRelease.Count() == 1);
 
+                    var indexToRelease = indexesToRelease.First();
                     Debug.Assert(index != null);
                     Debug.Assert(indexToRelease != null);
 
                     switch (lockType)
                     {
                         case LockType.Restore:
-                            indexToRelease.RestoredDate = DateTime.UtcNow;
-                            ProcessUtility.ReleaseExclusiveLock(indexToRelease.Id);
+                            indexToRelease.LastAccessDate = DateTime.UtcNow;
+                            ProcessUtility.ReleaseExclusiveLock(GetLockKey(url, indexToRelease.Id));
                             break;
                         case LockType.Build:
-                            ProcessUtility.ReleaseSharedLock(indexToRelease.Id);
+                            ProcessUtility.ReleaseSharedLock(GetLockKey(url, indexToRelease.Id));
                             break;
                     }
 
@@ -150,10 +165,9 @@ namespace Microsoft.Docs.Build
                     {
                         case LockType.Restore: // find an available index or create a new index for restoring
                             index = indexes.FirstOrDefault(i =>
-                                        DateTime.UtcNow - i.RestoredDate > TimeSpan.FromSeconds(_defaultLockdownTimeInSecond) && // in case it's just restored, not used yet
-                                        ProcessUtility.AcquireExclusiveLock(i.Id)) // compairing conderations' order matters
+                                        DateTime.UtcNow - i.LastAccessDate > TimeSpan.FromSeconds(_defaultLockdownTimeInSecond) && // in case it's just restored, not used yet
+                                        ProcessUtility.AcquireExclusiveLock(GetLockKey(url, i.Id))) // compairing conderations' order matters
                                     ?? createNewIndex($"{indexes.Count + 1}");
-                            index.RestoredDate = DateTime.UtcNow;
                             index.Restored = false;
                             index.Url = url;
                             indexes.Add(index);
@@ -162,7 +176,7 @@ namespace Microsoft.Docs.Build
                             index = indexes.FirstOrDefault(i =>
                                         matchExistingIndex(i) &&
                                         i.Restored &&
-                                        ProcessUtility.AcquireSharedLock(i.Id)); // compairing conderations' order matters
+                                        ProcessUtility.AcquireSharedLock(GetLockKey(url, i.Id))); // compairing conderations' order matters
                             break;
                         default:
                             throw new NotSupportedException($"{type} is not supported");
@@ -189,6 +203,8 @@ namespace Microsoft.Docs.Build
             var indexFile = Path.Combine(restoreDir, "index.json");
             File.WriteAllText(indexFile, JsonUtility.Serialize(indexes));
         }
+
+        private static string GetLockKey(string remote, string id) => $"{remote}/{id}";
     }
 
     public enum LockType

@@ -88,8 +88,10 @@ namespace Microsoft.Docs.Build
                 foreach (var branch in branches)
                 {
                     var gitVersion = dependencyLock?.GetGitLock(remote, branch);
-                    if ((@implicit || string.IsNullOrEmpty(gitVersion?.Commit)) && DependencyIndexPool.TryGetGitIndex(remote, branch, gitVersion?.Commit, out var existingPath, out var index))
+                    if (@implicit || string.IsNullOrEmpty(gitVersion?.Commit))
                     {
+                        var (existingPath, index) = await DependencyIndexPool.TryGetGitIndex(remote, branch, gitVersion?.Commit);
+                        if (!string.IsNullOrEmpty(existingPath))
                         {
                             branchesToFetch.Remove(branch);
                             subChildren.Add(new RestoreChild(
