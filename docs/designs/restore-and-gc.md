@@ -50,13 +50,13 @@ And there is another index file `index.json` under `%DOCFX_APPDATA_PATH%/downloa
         "id": 1,
         "version": "{version}",
         "etag": "{etag}",
-        "date": "{date}",
+        "date": "{date}"
     },
     {
         "id": 2,
         "version": "{version}",
         "etag": "{etag}",
-        "date": "{date}",
+        "date": "{date}"
     }
 ]
 ```
@@ -64,7 +64,7 @@ And there is another index file `index.json` under `%DOCFX_APPDATA_PATH%/downloa
 - `{url-short-path}` is calculated from `file` url
 - `{version}` is sha1 hash of file content, 
 - `{etag}` is timestamp or something else supported by the service which stores the `file`.
-- `{date}` is the download date, it will be set or overwritten during restore.
+- `{date}` is the last access date, it will be set or overwritten during restore.
 
 We are using [Shared/Exclusive Lock](https://www.ibm.com/support/knowledgecenter/en/SSGMCP_5.1.0/com.ibm.cics.ts.applicationprogramming.doc/topics/dfhp39o.html) to trakcing each index using states:
 
@@ -124,20 +124,13 @@ And there is another file `index.json` under `%DOCFX_APPDATA_PATH%/git/{url-shor
         "id": 1,
         "branch": "{branch}",
         "commit": "{commit}",
-        "date": "{date}",
+        "date": "{date}"
     },
     {
         "id": 2,
         "branch": "{branch}",
         "commit": "{commit}",
-        "date": "{date}",
-        "acquired": "{acquiring type}",
-        "acquiredBy": [
-            {
-                "id": "1",
-                "date": "{acquiring date}"
-            }
-        ]
+        "date": "{date}"
     }
 ]
 ```
@@ -145,7 +138,7 @@ And there is another file `index.json` under `%DOCFX_APPDATA_PATH%/git/{url-shor
 - `{url-short-path}` is calculated from `git remote` url
 - `{branch}` is the branch name
 - `{commit}` is the HEAD commit
-- `{date}` is the last restore date, it will be set or overwritten during restore.
+- `{date}` is the last access date, it will be set or overwritten during restore.
 
 We are using [Shared/Exclusive Lock](https://www.ibm.com/support/knowledgecenter/en/SSGMCP_5.1.0/com.ibm.cics.ts.applicationprogramming.doc/topics/dfhp39o.html) to trakcing each index using states:
 - During build, we acquire an index available from pool with `shared lock`.
