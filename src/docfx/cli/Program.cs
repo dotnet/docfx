@@ -149,7 +149,7 @@ namespace Microsoft.Docs.Build
             {
                 Console.ResetColor();
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine($"Done in {Progress.FormatTimeSpan(duration)}");
+                Console.WriteLine($"{char.ToUpperInvariant(command[0])}{command.Substring(1)} done in {Progress.FormatTimeSpan(duration)}");
 
                 if (report.ErrorCount > 0 || report.WarningCount > 0)
                 {
