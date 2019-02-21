@@ -51,26 +51,12 @@ And there is another index file `index.json` under `%DOCFX_APPDATA_PATH%/downloa
         "version": "{version}",
         "etag": "{etag}",
         "date": "{date}",
-        "acquired": "{acquiring type}",
-        "acquiredBy": [
-            {
-                "id": "1",
-                "date": "{acquiring date}"
-            }
-        ]
     },
     {
         "id": 2,
         "version": "{version}",
         "etag": "{etag}",
         "date": "{date}",
-        "acquired": "{acquiring type}",
-        "acquiredBy": [
-            {
-                "id": "1",
-                "date": "{acquiring date}"
-            }
-        ]
     }
 ]
 ```
@@ -79,10 +65,13 @@ And there is another index file `index.json` under `%DOCFX_APPDATA_PATH%/downloa
 - `{version}` is sha1 hash of file content, 
 - `{etag}` is timestamp or something else supported by the service which stores the `file`.
 - `{date}` is the download date, it will be set or overwritten during restore.
-- `{acquired}` is tracking the file is in use or not(restoring or building), if it has value, this file can't be overwritten, otherwise, it can be overwritten for reusing during restore. `restoring` is exclusive lock, `building` is shared lock.
-- `{acquiredBy}` is the info of acquirers
-    - `{id}` is the acquirer id, usually it's the guid generate at that time, following the index acquired.
-    - `{date}` is the acquiring date, we have a default period of requiring timeout, in case the docfx crashed.
+
+We are using [Shared/Exclusive Lock](https://www.ibm.com/support/knowledgecenter/en/SSGMCP_5.1.0/com.ibm.cics.ts.applicationprogramming.doc/topics/dfhp39o.html) to trakcing each index using states:
+
+- During build, we acquire an available index from pool with `shared lock`.
+- During restore, we acquire an available index from pool with `exclusive lock`.
+
+>NOTE: Shared and Exclusived Lock need to be cross process, we are not going to discuss about that detailed here
 
 If the `etag` is supported by its service, docfx avoids duplicated downloads for the file never changed.
 
@@ -136,13 +125,6 @@ And there is another file `index.json` under `%DOCFX_APPDATA_PATH%/git/{url-shor
         "branch": "{branch}",
         "commit": "{commit}",
         "date": "{date}",
-        "acquired": "{acquiring type}",
-        "acquiredBy": [
-            {
-                "id": "1",
-                "date": "{acquiring date}"
-            }
-        ]
     },
     {
         "id": 2,
@@ -164,10 +146,12 @@ And there is another file `index.json` under `%DOCFX_APPDATA_PATH%/git/{url-shor
 - `{branch}` is the branch name
 - `{commit}` is the HEAD commit
 - `{date}` is the last restore date, it will be set or overwritten during restore.
-- `{acquired}` is tracking the file is in use or not(restoring or building), if it has value, this work-tree can't be overwritten, otherwise, it can be overwritten for reusing during restore.`restoring` is exclusive lock, `building` is shared lock.
-- `{acquiredBy}` is the info of acquirers
-    - `{id}` is the acquirer id, it's the guid generate at that time, following the index acquired.
-    - `{date}` is the acquiring date, we have a default period of requiring timeout, in case the docfx crashed.
+
+We are using [Shared/Exclusive Lock](https://www.ibm.com/support/knowledgecenter/en/SSGMCP_5.1.0/com.ibm.cics.ts.applicationprogramming.doc/topics/dfhp39o.html) to trakcing each index using states:
+- During build, we acquire an index available from pool with `shared lock`.
+- During restore, we acquire an index available from pool with `exclusive lock`.
+
+>NOTE: Shared and Exclusived Lock need to be cross process, we are not going to discuss about that detailed here
 
 ## Dependency lock
 
