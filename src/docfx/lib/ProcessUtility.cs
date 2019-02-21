@@ -18,22 +18,19 @@ namespace Microsoft.Docs.Build
     internal static class ProcessUtility
     {
         // todo: need cross process read write lock
-        private static ConcurrentDictionary<string, ReaderWriterLock> s_readWriteLocks = new ConcurrentDictionary<string, ReaderWriterLock>();
+        private static ConcurrentDictionary<string, Lazy<ReaderWriterLock>> _readWriteLocks = new ConcurrentDictionary<string, Lazy<ReaderWriterLock>>();
         private static AsyncLocal<string> t_innerCall = new AsyncLocal<string>();
 
         public static bool IsExclusiveLockHeld(string lockName)
-            => s_readWriteLocks.GetOrAdd(lockName, key => new ReaderWriterLock()).IsWriterLockHeld;
+            => _readWriteLocks.GetOrAdd(lockName, key => new Lazy<ReaderWriterLock>(() => new ReaderWriterLock())).Value.IsWriterLockHeld;
 
         public static bool AcquireSharedLock(string lockName)
         {
             Debug.Assert(!string.IsNullOrEmpty(lockName));
-            lockName = HashUtility.GetMd5Hash(lockName);
-
-            var readWriteLock = s_readWriteLocks.GetOrAdd(lockName, key => new ReaderWriterLock());
 
             try
             {
-                readWriteLock.AcquireReaderLock(0);
+                _readWriteLocks.GetOrAdd(lockName, key => new Lazy<ReaderWriterLock>(() => new ReaderWriterLock())).Value.AcquireReaderLock(0);
                 return true;
             }
             catch (ApplicationException)
@@ -45,13 +42,10 @@ namespace Microsoft.Docs.Build
         public static bool ReleaseSharedLock(string lockName)
         {
             Debug.Assert(!string.IsNullOrEmpty(lockName));
-            lockName = HashUtility.GetMd5Hash(lockName);
-
-            var readWriteLock = s_readWriteLocks.GetOrAdd(lockName, key => new ReaderWriterLock());
 
             try
             {
-                readWriteLock.ReleaseReaderLock();
+                _readWriteLocks.GetOrAdd(lockName, key => new Lazy<ReaderWriterLock>(() => new ReaderWriterLock())).Value.ReleaseReaderLock();
                 return true;
             }
             catch (ApplicationException)
@@ -63,13 +57,10 @@ namespace Microsoft.Docs.Build
         public static bool AcquireExclusiveLock(string lockName)
         {
             Debug.Assert(!string.IsNullOrEmpty(lockName));
-            lockName = HashUtility.GetMd5Hash(lockName);
-
-            var readWriteLock = s_readWriteLocks.GetOrAdd(lockName, key => new ReaderWriterLock());
 
             try
             {
-                readWriteLock.AcquireWriterLock(0);
+                _readWriteLocks.GetOrAdd(lockName, key => new Lazy<ReaderWriterLock>(() => new ReaderWriterLock())).Value.AcquireWriterLock(0);
                 return true;
             }
             catch (ApplicationException)
@@ -81,13 +72,10 @@ namespace Microsoft.Docs.Build
         public static bool ReleaseExclusiveLock(string lockName)
         {
             Debug.Assert(!string.IsNullOrEmpty(lockName));
-            lockName = HashUtility.GetMd5Hash(lockName);
-
-            var readWriteLock = s_readWriteLocks.GetOrAdd(lockName, key => new ReaderWriterLock());
 
             try
             {
-                readWriteLock.ReleaseWriterLock();
+                _readWriteLocks.GetOrAdd(lockName, key => new Lazy<ReaderWriterLock>(() => new ReaderWriterLock())).Value.ReleaseWriterLock();
                 return true;
             }
             catch (ApplicationException)
@@ -155,7 +143,7 @@ namespace Microsoft.Docs.Build
             };
 
             lock (processExited)
-            {
+            { 
                 process.Start();
 
                 if (stdout)

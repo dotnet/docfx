@@ -29,17 +29,17 @@ namespace Microsoft.Docs.Build
                 remote + "/index.json",
                 () =>
                 {
-                    var indexes = GetIndexes<DependencyGitIndex>(restoreDir).Where(i => i.Branch == branch);
+                    var indexes = GetIndexes<DependencyGitIndex>(restoreDir);
 
-                    var filteredIndex = indexes;
+                    var filteredIndex = indexes.Where(i => i.Branch == branch);
                     if (!string.IsNullOrEmpty(commit))
                     {
                         // found commit matched index
-                        filteredIndex = indexes.Where(i => i.Commit == commit);
+                        filteredIndex = filteredIndex.Where(i => i.Commit == commit);
                     }
 
                     // found latest restored index
-                    index = indexes.OrderByDescending(i => i.LastAccessDate).FirstOrDefault(i => ProcessUtility.IsExclusiveLockHeld(GetLockKey(remote, i.Id)) /*not being restored*/);
+                    index = indexes.OrderByDescending(i => i.LastAccessDate).FirstOrDefault(i => i.Restored);
 
                     if (index != null)
                     {
@@ -118,10 +118,10 @@ namespace Microsoft.Docs.Build
                     {
                         case LockType.Restore:
                             indexToRelease.LastAccessDate = DateTime.UtcNow;
-                            ProcessUtility.ReleaseExclusiveLock(GetLockKey(url, indexToRelease.Id));
+                            Debug.Assert(ProcessUtility.ReleaseExclusiveLock(GetLockKey(url, indexToRelease.Id)));
                             break;
                         case LockType.Build:
-                            ProcessUtility.ReleaseSharedLock(GetLockKey(url, indexToRelease.Id));
+                            Debug.Assert(ProcessUtility.ReleaseSharedLock(GetLockKey(url, indexToRelease.Id)));
                             break;
                     }
 
@@ -167,7 +167,8 @@ namespace Microsoft.Docs.Build
                             index = indexes.FirstOrDefault(i =>
                                         DateTime.UtcNow - i.LastAccessDate > TimeSpan.FromSeconds(_defaultLockdownTimeInSecond) && // in case it's just restored, not used yet
                                         ProcessUtility.AcquireExclusiveLock(GetLockKey(url, i.Id))) // compairing conderations' order matters
-                                    ?? createNewIndex($"{indexes.Count + 1}");
+                                    ?? (ProcessUtility.AcquireExclusiveLock(GetLockKey(url, $"{indexes.Count + 1}")) ? createNewIndex($"{indexes.Count + 1}") : null);
+                            Debug.Assert(index != null);
                             index.Restored = false;
                             index.Url = url;
                             indexes.Add(index);
