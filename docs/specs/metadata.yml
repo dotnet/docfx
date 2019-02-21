@@ -367,9 +367,9 @@ outputs:
 inputs:
   docfx.yml: |
     globalMetadata:
-      breadcrumb_path: ~/breadcrumbs/toc.json
+      breadcrumb_path: ~/breadcrumbs/TOC.json
   a.md:
-  breadcrumbs/toc.json: '{}'
+  breadcrumbs/TOC.json: '{}'
 outputs:
   a.json: |
     metadata:
