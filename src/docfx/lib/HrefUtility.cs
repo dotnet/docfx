@@ -80,15 +80,16 @@ namespace Microsoft.Docs.Build
         /// Get the git remote information from remote href
         /// </summary>
         /// <param name="remoteHref">The git remote href like https://github.com/dotnet/docfx#master</param>
-        public static (string remote, string refspec) SplitGitHref(string remoteHref)
+        public static (string remote, string refspec, bool hasRefSpec) SplitGitHref(string remoteHref)
         {
             Debug.Assert(!string.IsNullOrEmpty(remoteHref));
 
             var (path, _, fragment) = SplitHref(remoteHref);
 
-            var refspec = (string.IsNullOrEmpty(fragment) || fragment.Length <= 1) ? "master" : fragment.Substring(1);
+            var hasRefSpec = !string.IsNullOrEmpty(fragment) && fragment.Length > 1;
+            var refspec = hasRefSpec ? fragment.Substring(1) : "master";
 
-            return (path, refspec);
+            return (path, refspec, hasRefSpec);
         }
 
         public static DependencyType FragmentToDependencyType(string fragment)
