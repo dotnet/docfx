@@ -20,6 +20,8 @@ namespace Microsoft.Docs.Build
 
         public string Robots { get; set; }
 
+        public string BreadcrumbPath { get; set; }
+
         [JsonProperty("monikerRange")]
         public string MonikerRange { get; set; }
 
