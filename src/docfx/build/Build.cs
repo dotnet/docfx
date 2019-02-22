@@ -86,18 +86,20 @@ namespace Microsoft.Docs.Build
             using (Progress.Start("Building files"))
             {
                 var recurseDetector = new ConcurrentHashSet<Document>();
-                var monikerMap = new ConcurrentDictionary<Document, List<string>>();
+                var monikerMapBuilder = new MonikerMapBuilder();
 
                 await ParallelUtility.ForEach(
                     docset.BuildScope,
-                    async (file, buildChild) => { monikerMap.TryAdd(file, await BuildOneFile(file, buildChild, null)); },
-                    (file) => { return ShouldBuildFile(file, new ContentType[] { ContentType.Page, ContentType.Redirection, ContentType.Resource }); },
+                    async (file, buildChild) => { monikerMapBuilder.Add(file, await BuildOneFile(file, buildChild, null)); },
+                    (file) => ShouldBuildFile(file, new ContentType[] { ContentType.Page, ContentType.Redirection, ContentType.Resource }),
                     Progress.Update);
+
+                var monikerMap = monikerMapBuilder.Build();
 
                 // Build TOC: since toc file depends on the build result of every node
                 await ParallelUtility.ForEach(
                     GetTableOfContentsScope(docset, tocMap),
-                    (file, buildChild) => { return BuildOneFile(file, buildChild, new MonikerMap(monikerMap)); },
+                    (file, buildChild) => BuildOneFile(file, buildChild, monikerMap),
                     ShouldBuildTocFile,
                     Progress.Update);
 

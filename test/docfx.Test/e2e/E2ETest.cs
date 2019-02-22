@@ -242,7 +242,7 @@ namespace Microsoft.Docs.Build
                     {
                         t_mockedRepos.Value = mockedRepos;
 
-                        var (remote, refspec) = HrefUtility.SplitGitHref(inputRepo);
+                        var (remote, refspec, _) = HrefUtility.SplitGitHref(inputRepo);
                         await GitUtility.CloneOrUpdate(inputFolder, remote, refspec);
                         Process.Start(new ProcessStartInfo("git", "submodule update --init") { WorkingDirectory = inputFolder }).WaitForExit();
                     }
@@ -367,7 +367,8 @@ namespace Microsoft.Docs.Build
                     if (!string.IsNullOrEmpty(content))
                     {
                         TestUtility.VerifyJsonContainEquals(
-                            JToken.Parse(content),
+                            // Test expectation can use YAML for readability
+                            content.StartsWith("{") ? JToken.Parse(content) : YamlUtility.Deserialize(content, nullValidation: false).Item2,
                             JToken.Parse(File.ReadAllText(file)));
                     }
                     break;

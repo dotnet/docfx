@@ -202,7 +202,7 @@ namespace Microsoft.Docs.Build
         {
             var dependencies = config.Dependencies.Values.Select(url =>
             {
-                var (remote, branch) = HrefUtility.SplitGitHref(url);
+                var (remote, branch, _) = HrefUtility.SplitGitHref(url);
                 return (remote, branch, GitFlags.DepthOne);
             });
 

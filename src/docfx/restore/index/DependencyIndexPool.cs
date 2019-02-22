@@ -27,7 +27,7 @@ namespace Microsoft.Docs.Build
             DependencyGitIndex index = null;
             await ProcessUtility.RunInsideMutex(
                 remote + "/index.json",
-                () =>
+                async () =>
                 {
                     var indexes = GetIndexes<DependencyGitIndex>(restoreDir);
 
@@ -39,7 +39,14 @@ namespace Microsoft.Docs.Build
                     }
 
                     // found latest restored index
-                    index = indexes.OrderByDescending(i => i.LastAccessDate).FirstOrDefault(i => i.Restored);
+                    foreach (var i in filteredIndex.OrderByDescending(i => i.LastAccessDate))
+                    {
+                        if (i.Restored && !await ProcessUtility.IsExclusiveLockHeld(GetLockKey(remote, i.Id)))
+                        {
+                            index = i;
+                            break;
+                        }
+                    }
 
                     if (index != null)
                     {
@@ -48,8 +55,6 @@ namespace Microsoft.Docs.Build
                     }
 
                     WriteIndexes(restoreDir, indexes.ToList());
-
-                    return Task.CompletedTask;
                 });
 
             return !Directory.Exists(path) ? default : (path, index);
@@ -61,7 +66,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static Task<(string path, DependencyLockModel subDependencyLock, DependencyGitIndex gitIndex)> AcquireGitIndex2Build(string url, DependencyLockModel dependencyLock)
         {
-            var (remote, branch) = HrefUtility.SplitGitHref(url);
+            var (remote, branch, _) = HrefUtility.SplitGitHref(url);
             return AcquireGitIndex2Build(remote, branch, dependencyLock);
         }
 
@@ -97,6 +102,7 @@ namespace Microsoft.Docs.Build
 
         public static async Task ReleaseIndex<T>(T index, LockType lockType, bool successed = true) where T : DependencyIndex
         {
+            Debug.Assert(index != null);
             Debug.Assert(!string.IsNullOrEmpty(index?.Url));
 
             var url = index.Url;
@@ -104,30 +110,29 @@ namespace Microsoft.Docs.Build
 
             await ProcessUtility.RunInsideMutex(
                 url + "/index.json",
-                () =>
+                async () =>
                 {
                     var indexes = GetIndexes<T>(restoreDir);
                     var indexesToRelease = indexes.Where(i => i.Id == index.Id);
                     Debug.Assert(indexesToRelease.Count() == 1);
 
                     var indexToRelease = indexesToRelease.First();
-                    Debug.Assert(index != null);
                     Debug.Assert(indexToRelease != null);
+                    Debug.Assert(!string.IsNullOrEmpty(indexToRelease.Acquirer));
 
                     switch (lockType)
                     {
                         case LockType.Restore:
                             indexToRelease.LastAccessDate = DateTime.UtcNow;
-                            Debug.Assert(ProcessUtility.ReleaseExclusiveLock(GetLockKey(url, indexToRelease.Id)));
+                            indexToRelease.Restored = successed;
+                            Debug.Assert(await ProcessUtility.ReleaseExclusiveLock(GetLockKey(url, index.Id), index.Acquirer));
                             break;
                         case LockType.Build:
-                            Debug.Assert(ProcessUtility.ReleaseSharedLock(GetLockKey(url, indexToRelease.Id)));
+                            Debug.Assert(await ProcessUtility.ReleaseSharedLock(GetLockKey(url, index.Id), index.Acquirer));
                             break;
                     }
 
-                    indexToRelease.Restored = successed;
                     WriteIndexes(restoreDir, indexes);
-                    return Task.CompletedTask;
                 });
         }
 
@@ -136,56 +141,96 @@ namespace Microsoft.Docs.Build
             Debug.Assert(!string.IsNullOrEmpty(branch));
             Debug.Assert(!string.IsNullOrEmpty(commit));
 
-            return AcquireIndex(
+            return AcquireIndex<DependencyGitIndex>(
                 remote,
                 type,
-                id => new DependencyGitIndex
+                index =>
                 {
-                    Id = id,
-                    Branch = branch,
-                    Commit = commit,
+                    // update branch and commit info to new rented index
+                    index.Commit = commit;
+                    index.Branch = branch;
+                    return index;
                 },
                 existingIndex => existingIndex.Branch == branch && existingIndex.Commit == commit);
         }
 
-        private static async Task<(string path, T index)> AcquireIndex<T>(string url, LockType type, Func<string, T> createNewIndex, Func<T, bool> matchExistingIndex) where T : DependencyIndex
+        private static async Task<(string path, T index)> AcquireIndex<T>(string url, LockType type, Func<T, T> updateExistingIndex, Func<T, bool> matchExistingIndex) where T : DependencyIndex, new()
         {
             Debug.Assert(!string.IsNullOrEmpty(url));
 
             var restoreDir = AppData.GetGitDir(url);
 
             T index = null;
+            bool acquired = false;
+            string acquirer = null;
             await ProcessUtility.RunInsideMutex(
                 url + "/index.json",
-                () =>
+                async () =>
                 {
                     var indexes = GetIndexes<T>(restoreDir);
 
                     switch (type)
                     {
                         case LockType.Restore: // find an available index or create a new index for restoring
-                            index = indexes.FirstOrDefault(i =>
-                                        DateTime.UtcNow - i.LastAccessDate > TimeSpan.FromSeconds(_defaultLockdownTimeInSecond) && // in case it's just restored, not used yet
-                                        ProcessUtility.AcquireExclusiveLock(GetLockKey(url, i.Id))) // compairing conderations' order matters
-                                    ?? (ProcessUtility.AcquireExclusiveLock(GetLockKey(url, $"{indexes.Count + 1}")) ? createNewIndex($"{indexes.Count + 1}") : null);
-                            Debug.Assert(index != null);
-                            index.Restored = false;
+                            foreach (var i in indexes)
+                            {
+                                if (DateTime.UtcNow - i.LastAccessDate > TimeSpan.FromSeconds(_defaultLockdownTimeInSecond))
+                                {
+                                    (acquired, acquirer) = await ProcessUtility.AcquireExclusiveLock(GetLockKey(url, i.Id));
+                                    if (acquired)
+                                    {
+                                        index = i;
+                                        break;
+                                    }
+                                }
+                            }
+
+                            if (index == null)
+                            {
+                                (acquired, acquirer) = await ProcessUtility.AcquireExclusiveLock(GetLockKey(url, $"{indexes.Count + 1}"));
+                                if (acquired)
+                                {
+                                    index = new T() { Id = $"{indexes.Count + 1}" };
+                                }
+                            }
+
+                            Debug.Assert(index != null && acquired && !string.IsNullOrEmpty(acquirer));
+
+                            // reset every property of rented index
                             index.Url = url;
+                            index.Restored = false;
+                            index.LastAccessDate = DateTime.MinValue;
+                            index.Acquirer = acquirer;
+
+                            index = updateExistingIndex(index);
                             indexes.Add(index);
                             break;
                         case LockType.Build: // find an matched index for building
-                            index = indexes.FirstOrDefault(i =>
-                                        matchExistingIndex(i) &&
-                                        i.Restored &&
-                                        ProcessUtility.AcquireSharedLock(GetLockKey(url, i.Id))); // compairing conderations' order matters
+                            foreach (var i in indexes)
+                            {
+                                if (matchExistingIndex(i))
+                                {
+                                    (acquired, acquirer) = await ProcessUtility.AcquireSharedLock(GetLockKey(url, i.Id));
+                                    if (acquired)
+                                    {
+                                        index = i;
+                                        index.Acquirer = acquirer;
+                                        break;
+                                    }
+                                }
+                            }
                             break;
                         default:
                             throw new NotSupportedException($"{type} is not supported");
                     }
 
                     WriteIndexes(restoreDir, indexes);
-                    return Task.CompletedTask;
                 });
+
+            if (index != null)
+            {
+                Debug.Assert(!string.IsNullOrEmpty(index.Acquirer));
+            }
 
             return index == null ? default : ($"{index.Id}", index);
         }

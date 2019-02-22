@@ -2,10 +2,11 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using Newtonsoft.Json;
 
 namespace Microsoft.Docs.Build
 {
-    internal abstract class DependencyIndex
+    internal class DependencyIndex
     {
         public string Id { get; set; }
 
@@ -14,5 +15,8 @@ namespace Microsoft.Docs.Build
         public DateTime LastAccessDate { get; set; }
 
         public bool Restored { get; set; }
+
+        [JsonIgnore]
+        public string Acquirer { get; set; }
     }
 }

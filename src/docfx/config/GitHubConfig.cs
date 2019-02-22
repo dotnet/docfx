@@ -22,7 +22,7 @@ namespace Microsoft.Docs.Build
         public readonly bool UpdateRemoteUserCache = false;
 
         /// <summary>
-        /// Determines how long a user remains valid in cache.
+        /// Determines how long at most a user remains valid in cache.
         /// </summary>
         public readonly int UserCacheExpirationInHours = 7 * 24;
 
