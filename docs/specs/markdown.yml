@@ -443,10 +443,8 @@ inputs:
   docs/b.md: b [c](c.md)
   docs/c.md: c
 outputs:
-  docs/a.json: |
-    { "content": "<p>a <a href=\"b\">b</a></p>\n" }
-  docs/b.json: |
-    { "content": "<p>b <a href=\"c\">c</a></p>\n" }
+  docs/a.json:
+  docs/b.json:
   docs/c.json: |
     { "content": "<p>c</p>" }
   .dependencymap.json: |
@@ -467,17 +465,15 @@ outputs:
     }
    }
 ---
-# mixed chain
+# mixed chain a include b, b link c
 inputs:
   docfx.yml:
   docs/a.md: a [!INCLUDE[](b.md)]
   docs/b.md: b [c](c.md)
   docs/c.md: c
 outputs:
-  docs/a.json: |
-    { "content": "<p>a b<a href=\"c\">c</a></p>\n" }
-  docs/b.json: |
-    { "content": "<p>b <a href=\"c\">c</a></p>\n" }
+  docs/a.json:
+  docs/b.json:
   docs/c.json: |
     { "content": "<p>c</p>" }
   .dependencymap.json: |
@@ -502,16 +498,43 @@ outputs:
     }
    }
 ---
+# mixed chain a link b, b include c
+inputs:
+  docfx.yml:
+  docs/a.md: a [b](b.md)
+  docs/b.md: b [!INCLUDE[](c.md)]
+  docs/c.md: c
+outputs:
+  docs/a.json:
+  docs/b.json:
+  docs/c.json: |
+    { "content": "<p>c</p>" }
+  .dependencymap.json: |
+   {
+    "dependencies": {
+      "docs/b.md": [
+        {
+          "source": "docs/c.md",
+          "type": "inclusion"
+        }
+      ],
+      "docs/a.md": [
+        {
+          "source": "docs/b.md",
+          "type": "link"
+        }
+      ]
+    }
+   }
+---
 # circular chain
 inputs:
   docfx.yml:
   docs/a.md: a [!INCLUDE[](b.md)]
   docs/b.md: b [a](a.md)
 outputs:
-  docs/a.json: |
-    { "content": "<p>a b<a href=\"a\">a</a></p>\n" }
-  docs/b.json: |
-    { "content": "<p>b <a href=\"a\">a</a></p>\n" }
+  docs/a.json:
+  docs/b.json:
   .dependencymap.json: |
    {
     "dependencies": {

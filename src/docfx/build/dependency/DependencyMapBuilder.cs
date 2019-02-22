@@ -55,27 +55,38 @@ namespace Microsoft.Docs.Build
                 foreach (var item in value)
                 {
                     result[from].Add(item);
-                    AddToExisting(from, graph, null, item, result[from]);
+                    AddToExisting(from, graph, item, item, result);
                 }
             }
             return result;
         }
 
-        private void AddToExisting(Document from, Dictionary<Document, HashSet<DependencyItem>> graph, DependencyItem previous, DependencyItem current, HashSet<DependencyItem> dependencies)
+        private void AddToExisting(Document from, Dictionary<Document, HashSet<DependencyItem>> graph, DependencyItem current, DependencyItem next, Dictionary<Document, HashSet<DependencyItem>> dependencies)
         {
-            if (previous != null && !CanTransit(previous))
+            if (!CanTransit(current))
             {
                 return;
             }
-            if (!graph.ContainsKey(current.To) || current.To.Equals(from))
+
+            // if the dependency destination is already in the result set, we can reuse it
+            if (next.To != from && dependencies.ContainsKey(next.To))
             {
-                dependencies.Add(new DependencyItem(from, current.To, current.Type));
+                foreach (var item in dependencies[next.To])
+                {
+                    dependencies[from].Add(new DependencyItem(from, item.To, item.Type));
+                }
+                return;
+            }
+
+            if (!graph.ContainsKey(next.To) || next.To.Equals(from))
+            {
+                dependencies[from].Add(new DependencyItem(from, next.To, next.Type));
             }
             else
             {
-                foreach (var item in graph[current.To])
+                foreach (var item in graph[next.To])
                 {
-                    AddToExisting(from, graph, current, item, dependencies);
+                    AddToExisting(from, graph, next, item, dependencies);
                 }
             }
         }
