@@ -71,7 +71,7 @@ We are using [Shared/Exclusive Lock](https://www.ibm.com/support/knowledgecenter
 - During build, we acquire an available index from pool with `shared lock`.
 - During restore, we acquire an available index from pool with `exclusive lock`.
 
->NOTE: Shared and Exclusived Lock need to be cross process, we are not going to discuss about that detailed here
+>NOTE: Shared and Exclusived Lock need to be cross process, we are not going to discuss about that details here
 
 If the `etag` is supported by its service, docfx avoids duplicated downloads for the file never changed.
 
