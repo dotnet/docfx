@@ -141,7 +141,7 @@ namespace Microsoft.Docs.Build
 
         private static void Done(string command, TimeSpan duration, Report report)
         {
-            Telemetry.TrackOperationDuration(command, duration);
+            Telemetry.TrackOperationTime(command, duration);
 
 #pragma warning disable CA2002 // Do not lock on objects with weak identity
             lock (Console.Out)
