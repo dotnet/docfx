@@ -144,7 +144,7 @@ We are using [Shared/Exclusive Lock](https://www.ibm.com/support/knowledgecenter
 - During build, we acquire an index available from pool with `shared lock`.
 - During restore, we acquire an index available from pool with `exclusive lock`.
 
->NOTE: Shared and Exclusived Lock need to be cross process, we are not going to discuss about that detailed here
+>NOTE: Shared and Exclusived Lock need to be cross process, we are not going to discuss about that details here
 
 ## Dependency lock
 
