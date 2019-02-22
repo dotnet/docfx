@@ -246,27 +246,17 @@ namespace Microsoft.Docs.Build
         {
             await RunInsideMutex(path, async () =>
             {
-                var content = File.Exists(path) ? File.ReadAllText(path) : string.Empty;
-                var result = JsonUtility.Deserialize<T>(content);
+                using (var file = File.Open(path, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None))
+                {
+                    var streamReader = new StreamReader(file);
+                    var result = JsonUtility.Deserialize<T>(streamReader.ReadToEnd());
 
-                var updatedResult = await update(result);
-
-                File.WriteAllText(path, JsonUtility.Serialize(updatedResult));
-            });
-        }
-
-        /// <summary>
-        /// Reads the content of a file, update content and write back to file in one atomic operation
-        /// </summary>
-        public static async Task ReadAndWriteFile(string path, Func<string, Task<string>> update)
-        {
-            await RunInsideMutex(path, async () =>
-            {
-                var content = File.Exists(path) ? File.ReadAllText(path) : null;
-
-                var updatedContent = await update(content);
-
-                File.WriteAllText(path, updatedContent);
+                    file.Position = 0;
+                    var updatedResult = await update(result);
+                    var steamWriter = new StreamWriter(file);
+                    steamWriter.Write(JsonUtility.Serialize(updatedResult));
+                    steamWriter.Close();
+                }
             });
         }
 
