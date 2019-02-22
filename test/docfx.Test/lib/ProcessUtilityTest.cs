@@ -72,10 +72,11 @@ namespace Microsoft.Docs.Build
             // doesn't work for requiring a lock before releasing a lock
             await Assert.ThrowsAnyAsync<Exception>(async () =>
             {
-                await ProcessUtility.RunInsideMutex($"process-test/{Guid.NewGuid()}",
+                var name = Guid.NewGuid();
+                await ProcessUtility.RunInsideMutex($"process-test/{name}",
                         async () =>
                         {
-                            await ProcessUtility.RunInsideMutex($"process-test/{Guid.NewGuid()}",
+                            await ProcessUtility.RunInsideMutex($"process-test/{name}",
                                 async () =>
                                 {
                                     await Task.Delay(100);

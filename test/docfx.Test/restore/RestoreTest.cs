@@ -44,33 +44,23 @@ namespace Microsoft.Docs.Build
             var restorePath = PathUtility.NormalizeFolder(Path.Combine(restoreDir, ".git"));
             File.WriteAllText(Path.Combine(docsetPath, "docfx.yml"), $@"
 dependencies:
-  dep1: {gitUrl}#test-1-clean
-  dep2: {gitUrl}#test-2-clean
-  dep3: {gitUrl}#test-3-clean
-  dep4: {gitUrl}#test-4-clean
   dep5: {gitUrl}#master
   dep6: {gitUrl}#chi");
 
+            // reset the lockdown time to 0
+            // typeof(DependencyIndexPool).GetField("_defaultLockdownTimeInSecond", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static).SetValue(null, 0);
 
             // run restroe and check the work trees
             await Program.Run(new[] { "restore", docsetPath });
             var workTreeList = await GitUtility.ListWorkTree(restorePath);
-            Assert.Equal(6, workTreeList.Count);
-
-            foreach (var wirkTreeFolder in workTreeList.Where(w => w.Contains("-clean-")))
-            {
-                Directory.SetLastWriteTimeUtc(wirkTreeFolder, DateTime.UtcNow - TimeSpan.FromDays(20));
-            }
+            Assert.Equal(2, workTreeList.Count);
 
             File.WriteAllText(Path.Combine(docsetPath, "docfx.yml"), $@"
 dependencies:
-  dep5: {gitUrl}#master
-  dep6: {gitUrl}#chi");
+  dep1: {gitUrl}#test-1-clean");
 
-            // run restore again to clean up
-            // check the work trees
+            // run restore again
             await Program.Run(new[] { "restore", docsetPath });
-            await Program.Run(new[] { "gc" });
 
             workTreeList = await GitUtility.ListWorkTree(restorePath);
             Assert.Equal(2, workTreeList.Count);

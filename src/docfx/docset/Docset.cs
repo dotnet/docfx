@@ -148,7 +148,7 @@ namespace Microsoft.Docs.Build
                 // localization/fallback docset will share the same context, config, build locale and options with source docset
                 // source docset configuration will be overwritten by build locale overwrite configuration
                 var (sourceDocsetPath, sourceBranch, _, sourceIndex) = await LocalizationUtility.TryGetSourceDocsetPath(docset);
-                if (string.IsNullOrEmpty(sourceDocsetPath))
+                if (!string.IsNullOrEmpty(sourceDocsetPath))
                 {
                     gitIndexes.AddIfNotNull(sourceIndex);
                     var repo = Repository.Create(sourceDocsetPath, sourceBranch);
@@ -159,7 +159,7 @@ namespace Microsoft.Docs.Build
                 else
                 {
                     var (localizationDocsetPath, localizationBranch, _, localizationIndex) = await LocalizationUtility.TryGetLocalizedDocsetPath(docset, config, locale);
-                    if (string.IsNullOrEmpty(localizationDocsetPath))
+                    if (!string.IsNullOrEmpty(localizationDocsetPath))
                     {
                         gitIndexes.AddIfNotNull(localizationIndex);
                         var repo = Repository.Create(localizationDocsetPath, localizationBranch);
@@ -338,7 +338,10 @@ namespace Microsoft.Docs.Build
 
         private static async Task<(TemplateEngine enginne, DependencyGitIndex gitIndex)> LoadTemplateEngine(Config config, string locale, DependencyLockModel dependencyLock)
         {
-            Debug.Assert(!string.IsNullOrEmpty(config.Theme));
+            if (string.IsNullOrEmpty(config.Theme))
+            {
+                return default;
+            }
 
             var (themeRemote, themeBranch) = LocalizationUtility.GetLocalizedTheme(config.Theme, locale, config.Localization.DefaultLocale);
             var (themePath, themeLock, themeIndex) = await DependencyIndexPool.AcquireGitIndex2Build($"{themeRemote}#{themeBranch}", dependencyLock);

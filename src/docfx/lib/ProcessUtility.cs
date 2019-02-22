@@ -26,7 +26,7 @@ namespace Microsoft.Docs.Build
             Debug.Assert(!string.IsNullOrEmpty(lockName));
 
             var lockPath = GetLockFilePath(lockName);
-            return FilterExpiredAcquirers(await ReadFile<LockInfo>(lockPath)).Type == LockType.Exclusive;
+            return FilterExpiredAcquirers(await ReadFile<LockInfo>(lockPath) ?? new LockInfo()).Type == LockType.Exclusive;
         }
 
         /// <summary>
@@ -253,14 +253,14 @@ namespace Microsoft.Docs.Build
         {
             await RunInsideMutex(path, async () =>
             {
-                using (var file = File.Open(path, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None))
+                using (var fs = File.Open(path, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None))
                 {
-                    var streamReader = new StreamReader(file);
+                    var streamReader = new StreamReader(fs);
                     var result = JsonUtility.Deserialize<T>(streamReader.ReadToEnd());
 
-                    file.Position = 0;
+                    fs.SetLength(0);
                     var updatedResult = await update(result);
-                    var steamWriter = new StreamWriter(file);
+                    var steamWriter = new StreamWriter(fs);
                     steamWriter.Write(JsonUtility.Serialize(updatedResult));
                     steamWriter.Close();
                 }
@@ -290,7 +290,7 @@ namespace Microsoft.Docs.Build
             T result = default;
             await RunInsideMutex(path, () =>
             {
-                using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read, 1024, FileOptions.SequentialScan))
+                using (var fs = new FileStream(path, FileMode.OpenOrCreate, FileAccess.Read, FileShare.Read, 1024, FileOptions.SequentialScan))
                 {
                     result = read(fs);
                     return Task.CompletedTask;

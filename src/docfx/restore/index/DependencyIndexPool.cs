@@ -12,7 +12,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class DependencyIndexPool
     {
-        private const int _defaultLockdownTimeInSecond = 10 * 60;
+        private static int _defaultLockdownTimeInSecond = 10 * 60;
 
         /// <summary>
         /// Try get git dependency repository path and index with remote, branch and dependency version(commit).
@@ -103,7 +103,8 @@ namespace Microsoft.Docs.Build
         public static async Task ReleaseIndex<T>(T index, LockType lockType, bool successed = true) where T : DependencyIndex
         {
             Debug.Assert(index != null);
-            Debug.Assert(!string.IsNullOrEmpty(index?.Url));
+            Debug.Assert(!string.IsNullOrEmpty(index.Url));
+            Debug.Assert(!string.IsNullOrEmpty(index.Acquirer));
 
             var url = index.Url;
             var restoreDir = AppData.GetGitDir(url);
@@ -118,7 +119,6 @@ namespace Microsoft.Docs.Build
 
                     var indexToRelease = indexesToRelease.First();
                     Debug.Assert(indexToRelease != null);
-                    Debug.Assert(!string.IsNullOrEmpty(indexToRelease.Acquirer));
 
                     switch (lockType)
                     {
@@ -172,6 +172,7 @@ namespace Microsoft.Docs.Build
                     switch (type)
                     {
                         case LockType.Restore: // find an available index or create a new index for restoring
+                            var existed = false;
                             foreach (var i in indexes)
                             {
                                 if (DateTime.UtcNow - i.LastAccessDate > TimeSpan.FromSeconds(_defaultLockdownTimeInSecond))
@@ -179,6 +180,7 @@ namespace Microsoft.Docs.Build
                                     (acquired, acquirer) = await ProcessUtility.AcquireExclusiveLock(GetLockKey(url, i.Id));
                                     if (acquired)
                                     {
+                                        existed = true;
                                         index = i;
                                         break;
                                     }
@@ -203,12 +205,13 @@ namespace Microsoft.Docs.Build
                             index.Acquirer = acquirer;
 
                             index = updateExistingIndex(index);
-                            indexes.Add(index);
+                            if (!existed)
+                                indexes.Add(index);
                             break;
                         case LockType.Build: // find an matched index for building
                             foreach (var i in indexes)
                             {
-                                if (matchExistingIndex(i))
+                                if (matchExistingIndex(i) && i.Restored)
                                 {
                                     (acquired, acquirer) = await ProcessUtility.AcquireSharedLock(GetLockKey(url, i.Id));
                                     if (acquired)
