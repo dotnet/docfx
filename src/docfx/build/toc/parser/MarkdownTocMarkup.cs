@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Text;
 using Markdig.Extensions.Yaml;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
@@ -20,7 +21,7 @@ namespace Microsoft.Docs.Build
         {
             var errors = new List<Error>();
             var headingBlocks = new List<HeadingBlock>();
-            var (ast, result) = MarkdownUtility.Parse(tocContent);
+            var (ast, result) = MarkdownUtility.Parse(tocContent, MarkdownPipelineType.TocMarkdown);
             errors.AddRange(result.Errors);
             foreach (var block in ast)
             {
@@ -124,29 +125,33 @@ namespace Microsoft.Docs.Build
                     if (!string.IsNullOrEmpty(linkInline.Title))
                         currentItem.DisplayName = linkInline.Title;
 
-                    currentItem.Name = GetName(linkInline.Select(l => l as LeafInline));
+                    currentItem.Name = GetLiteral(linkInline);
                 }
 
-                currentItem.Name = currentItem.Name ?? GetName(block.Inline.Select(l => l as LeafInline));
+                currentItem.Name = currentItem.Name ?? GetLiteral(block.Inline);
 
                 return currentItem;
+            }
 
-                string GetName(IEnumerable<LeafInline> literalInlines)
+            string GetLiteral(ContainerInline inline)
+            {
+                var result = new StringBuilder();
+                var child = inline.FirstChild;
+
+                while (child != null)
                 {
-                    literalInlines = literalInlines?.Where(l => l != null && !l.Span.IsEmpty);
-                    if (literalInlines == null || !literalInlines.Any())
+                    if (!(child is LiteralInline literal))
                     {
+                        errors.Add(Errors.InvalidTocSyntax(new Range(inline.Line, inline.Column), filePath));
                         return null;
                     }
 
-                    var start = literalInlines.First().Span.Start;
-                    var length = literalInlines.Last().Span.End - start + 1;
-
-                    Debug.Assert(start >= 0);
-                    Debug.Assert(length > 0);
-
-                    return tocContent.Substring(start, length);
+                    var content = literal.Content;
+                    result.Append(content.Text, content.Start, content.Length);
+                    child = child.NextSibling;
                 }
+
+                return result.ToString();
             }
         }
     }
