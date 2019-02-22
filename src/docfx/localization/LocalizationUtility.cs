@@ -223,7 +223,7 @@ namespace Microsoft.Docs.Build
                 return branch;
             }
 
-            return string.IsNullOrEmpty(branch) || branch.EndsWith("-sxs") ? branch : $"{branch}-sxs";
+            return string.IsNullOrEmpty(branch) ? branch : $"{branch}-sxs";
         }
 
         private static string GetLocalizationBranch(LocalizationMapping mapping, string sourceBranch, string locale, string defaultLocale)
@@ -248,8 +248,7 @@ namespace Microsoft.Docs.Build
                 return sourceBranch;
             }
 
-            if (TryRemoveLocale(sourceBranch, out string sourceBranchWithoutLocale, out string branchLocale) &&
-                string.Equals(locale, branchLocale))
+            if (sourceBranch.EndsWith(locale, StringComparison.OrdinalIgnoreCase))
             {
                 return sourceBranch;
             }
