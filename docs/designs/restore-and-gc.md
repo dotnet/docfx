@@ -140,7 +140,7 @@ And there is another file `index.json` under `%DOCFX_APPDATA_PATH%/git/{url-shor
 - `{commit}` is the HEAD commit
 - `{date}` is the last access date, it will be set or overwritten during restore.
 
-We are using [Shared/Exclusive Lock](https://www.ibm.com/support/knowledgecenter/en/SSGMCP_5.1.0/com.ibm.cics.ts.applicationprogramming.doc/topics/dfhp39o.html) to trakcing each index using states:
+We are using [Shared/Exclusive Lock](https://www.ibm.com/support/knowledgecenter/en/SSGMCP_5.1.0/com.ibm.cics.ts.applicationprogramming.doc/topics/dfhp39o.html) to tracking each index using states:
 - During build, we acquire an index available from pool with `shared lock`.
 - During restore, we acquire an index available from pool with `exclusive lock`.
 
