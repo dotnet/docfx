@@ -112,17 +112,22 @@ namespace Microsoft.Docs.Build
         [InlineData(new[] { "a-e:a", "a-s:a", "r-s:a", "r-e:a" }, new[] { true, false, false, true })]
         [InlineData(new[] { "a-s:a", "a-e:b", "r-s:a", "r-e:b" }, new[] { true, true, true, true })]
 
-        public static async Task RunSharedAndExclusiveLockInOneThread(string[] steps, bool[] results)
+        public static async Task RunSharedAndExclusiveLock(string[] steps, bool[] results)
         {
             Debug.Assert(steps != null);
             Debug.Assert(results != null);
             Debug.Assert(steps.Length == results.Length);
             var guid = Guid.NewGuid().ToString();
 
-            int i = 0;
+            int index = 0;
             var acquirers = new Dictionary<string, List<string>>();
-            foreach (var step in steps)
+            var stepsWithIndex = steps.Select(s => (s, index++)).ToArray();
+
+            await ParallelUtility.ForEach(stepsWithIndex, async stepWithIndex =>
             {
+                var (step, i) = stepWithIndex;
+                await Task.Delay(100 * i);
+
                 var parts = step.Split(new[] { ':' });
                 Debug.Assert(parts.Length == 2);
                 string acquirer = null;
@@ -185,9 +190,7 @@ namespace Microsoft.Docs.Build
                         Debug.Assert(exclusivedReleased == results[i], $"{i}");
                         break;
                 }
-
-                i++;
-            }
+            });
         }
     }
 }
