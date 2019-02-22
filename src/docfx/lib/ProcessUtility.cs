@@ -20,6 +20,9 @@ namespace Microsoft.Docs.Build
     {
         private const int _defaultLockExpireTimeInSecond = 60 * 60 * 6; /*six hours*/
 
+        [ThreadStatic]
+        private static bool t_alreadyInsideMutex;
+
         /// <summary>
         /// Acquire a shared lock for input lock name
         /// The returned `acquirer` are used for tracking the acquired lock, instead of thread info, since the thread info may change in asynchronous programming model
@@ -158,8 +161,6 @@ namespace Microsoft.Docs.Build
 
             return released;
         }
-
-        private static AsyncLocal<object> t_innerCall = new AsyncLocal<object>();
 
         /// <summary>
         /// Start a new process and wait for its execution asynchroniously
@@ -323,43 +324,44 @@ namespace Microsoft.Docs.Build
         /// </summary>
         /// <param name="mutexName">A globbaly unique mutext name</param>
         /// <param name="action">The action/resource you want to lock</param>
-        public static async Task RunInsideMutex(string mutexName, Func<Task> action)
+        public static Task RunInsideMutex(string mutexName, Func<Task> action)
         {
-            Debug.Assert(!string.IsNullOrEmpty(mutexName));
-
-            // avoid the RunInsideMutex to be nested used
-            // doesn't support to require a lock before releasing a lock
-            // which may cause deadlock
-            if (t_innerCall.Value != null)
+            using (var mutex = new Mutex(initiallyOwned: false, $"Global\\{HashUtility.GetMd5Hash(mutexName)}"))
             {
-                throw new NotImplementedException("Nested call to RunInsideMutex is not supported yet");
-            }
-
-            t_innerCall.Value = new object();
-
-            try
-            {
-                Directory.CreateDirectory(AppData.MutexRoot);
-
-                var lockPath = Path.Combine(AppData.MutexRoot, HashUtility.GetMd5Hash(mutexName));
-
-                using (await RetryUntilSucceed(mutexName, IsFileAlreadyExistsException, CreateFile))
+                while (!mutex.WaitOne(TimeSpan.FromSeconds(30)))
                 {
-                    await action();
+#pragma warning disable CA2002 // Do not lock on objects with weak identity
+                    lock (Console.Out)
+#pragma warning restore CA2002
+                    {
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        Console.WriteLine($"Waiting for another process to access '{mutexName}'");
+                        Console.ResetColor();
+                    }
                 }
 
-                FileStream CreateFile() => new FileStream(
-                    lockPath,
-                    FileMode.CreateNew,
-                    FileAccess.ReadWrite,
-                    FileShare.None,
-                    1,
-                    FileOptions.DeleteOnClose);
+                try
+                {
+                    if (t_alreadyInsideMutex)
+                    {
+                        throw new InvalidOperationException("Nested call to RunInsideMutex could lead to deadlock");
+                    }
+
+                    t_alreadyInsideMutex = true;
+
+                    // TODO: mutex wait and release needs to run in one thread, so block the async call.
+                    //       we could turn these async calls into sync calls.
+                    action().GetAwaiter().GetResult();
+                }
+                finally
+                {
+                    t_alreadyInsideMutex = false;
+
+                    mutex.ReleaseMutex();
+                }
             }
-            finally
-            {
-                t_innerCall.Value = null;
-            }
+
+            return Task.CompletedTask;
         }
 
         /// <summary>
@@ -369,51 +371,6 @@ namespace Microsoft.Docs.Build
         {
             return ex.ErrorCode == -2147467259 // Error_ENOENT = 0x1002D, No such file or directory
                 || ex.ErrorCode == 2; // ERROR_FILE_NOT_FOUND = 0x2, The system cannot find the file specified
-        }
-
-        /// <summary>
-        /// Checks if the exception thrown by new FileStream is caused by another process holding the file lock.
-        /// </summary>
-        public static bool IsFileAlreadyExistsException(Exception ex)
-        {
-            if (ex is IOException ioe)
-            {
-                return ex.HResult == 17 // Mac
-                    || ex.HResult == -2147024816; // Windows
-            }
-            return ex is UnauthorizedAccessException;
-        }
-
-        private static async Task<T> RetryUntilSucceed<T>(string name, Func<Exception, bool> expectException, Func<T> action)
-        {
-            var retryDelay = 100;
-            var lastWait = DateTime.UtcNow;
-
-            while (true)
-            {
-                try
-                {
-                    return action();
-                }
-                catch (Exception ex) when (expectException(ex))
-                {
-                    if (DateTime.UtcNow - lastWait > TimeSpan.FromSeconds(30))
-                    {
-                        lastWait = DateTime.UtcNow;
-#pragma warning disable CA2002 // Do not lock on objects with weak identity
-                        lock (Console.Out)
-#pragma warning restore CA2002
-                        {
-                            Console.ForegroundColor = ConsoleColor.Yellow;
-                            Console.WriteLine($"Waiting for another process to access '{name}'");
-                            Console.ResetColor();
-                        }
-                    }
-
-                    await Task.Delay(retryDelay);
-                    retryDelay = Math.Min(retryDelay + 100, 1000);
-                }
-            }
         }
 
         private static string GetLockFilePath(string lockName)
