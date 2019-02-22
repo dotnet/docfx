@@ -45,7 +45,9 @@ namespace Microsoft.Docs.Build
                 .GroupBy(k => k.From)
                 .ToDictionary(
                     k => k.Key,
-                    v => v.ToHashSet());
+                    v => (from r in v
+                          orderby r.To.FilePath, r.Type
+                          select r).ToHashSet());
 
             foreach (var (from, value) in graph)
             {
@@ -67,9 +69,9 @@ namespace Microsoft.Docs.Build
             }
 
             // if the dependency destination is already in the result set, we can reuse it
-            if (next.To != from && dependencies.ContainsKey(next.To))
+            if (next.To != from && dependencies.TryGetValue(next.To, out var nextDependencies))
             {
-                foreach (var item in dependencies[next.To])
+                foreach (var item in nextDependencies)
                 {
                     dependencies[from].Add(new DependencyItem(from, item.To, item.Type));
                 }

@@ -84,12 +84,12 @@ outputs:
          "dependencies":{
             "docs/a.yml":[
                {
-                 "source": "docs/TOC.yml",
-                 "type": "link"
-               },
-               {
                   "source":"docs/A/TOC.yml",
                   "type":"link"
+               },
+               {
+                 "source": "docs/TOC.yml",
+                 "type": "link"
                }
             ]
          }
