@@ -190,7 +190,7 @@ namespace Microsoft.Docs.Build
         public static (string remote, string branch) GetLocalizedTheme(string theme, string locale, string defaultLocale)
         {
             Debug.Assert(!string.IsNullOrEmpty(theme));
-            var (remote, branch) = HrefUtility.SplitGitHref(theme);
+            var (remote, branch, _) = HrefUtility.SplitGitHref(theme);
 
             return (GetLocalizationName(LocalizationMapping.Repository, remote, locale, defaultLocale), branch);
         }
@@ -244,6 +244,11 @@ namespace Microsoft.Docs.Build
             }
 
             if (string.Equals(locale, defaultLocale))
+            {
+                return sourceBranch;
+            }
+
+            if (sourceBranch.EndsWith(locale, StringComparison.OrdinalIgnoreCase))
             {
                 return sourceBranch;
             }

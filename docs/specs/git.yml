@@ -371,3 +371,39 @@ repos:
 outputs:
   build.log: |
     ["error","committish-not-found","Cannot find branch, tag or commit 'live' for repo '*github.com+git+repo.zh-cn*","a.md"]
+---
+# Use current repo's branch when edit branch isn't specified in contribution config,
+# and contribution config's repository equals to current repo's
+repos:
+  https://github.com/testowner/testrepo#building-branch:
+    - files:
+        docs/index.md: Alice creates this.
+inputs:
+  docfx.yml: |
+    contribution:
+      repository: https://github.com/testowner/testrepo
+outputs:
+  docs/index.json: |
+    {
+      "content_git_url": "https://github.com/testowner/testrepo/blob/building-branch/docs/index.md",
+      "original_content_git_url": "https://github.com/testowner/testrepo/blob/building-branch/docs/index.md",
+      "gitcommit": "https://github.com/testowner/testrepo/blob/e662dbc7c5e582a14b863d6a6a82e495d6272f91/docs/index.md",
+    }
+---
+# Use current repo's branch when edit branch isn't specified in contribution config,
+# even contribution config's repository doesn't equal to current repo's
+repos:
+  https://github.com/testowner/testrepo#default-building-branch:
+    - files:
+        docs/index.md: Alice creates this.
+inputs:
+  docfx.yml: |
+    contribution:
+      repository: https://github.com/contrib-owner/contrib-repo
+outputs:
+  docs/index.json: |
+    {
+      "content_git_url": "https://github.com/contrib-owner/contrib-repo/blob/default-building-branch/docs/index.md",
+      "original_content_git_url": "https://github.com/testowner/testrepo/blob/default-building-branch/docs/index.md",
+      "gitcommit": "https://github.com/testowner/testrepo/blob/e662dbc7c5e582a14b863d6a6a82e495d6272f91/docs/index.md",
+    }

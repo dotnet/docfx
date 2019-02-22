@@ -21,7 +21,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static (string path, DependencyLockModel subDependencyLock) GetGitRestorePath(string url, DependencyLockModel dependencyLock)
         {
-            var (remote, branch) = HrefUtility.SplitGitHref(url);
+            var (remote, branch, _) = HrefUtility.SplitGitHref(url);
             return GetGitRestorePath(remote, branch, dependencyLock);
         }
 
