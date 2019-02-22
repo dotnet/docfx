@@ -119,15 +119,12 @@ namespace Microsoft.Docs.Build
             Debug.Assert(steps.Length == results.Length);
             var guid = Guid.NewGuid().ToString();
 
-            int index = 0;
+            int i = 0;
             var acquirers = new Dictionary<string, List<string>>();
-            var stepsWithIndex = steps.Select(s => (s, index++)).ToArray();
 
-            await ParallelUtility.ForEach(stepsWithIndex, async stepWithIndex =>
+            foreach(var step in steps)
             {
-                var (step, i) = stepWithIndex;
-                await Task.Delay(100 * i);
-
+                await Task.Yield();
                 var parts = step.Split(new[] { ':' });
                 Debug.Assert(parts.Length == 2);
                 string acquirer = null;
@@ -190,7 +187,9 @@ namespace Microsoft.Docs.Build
                         Debug.Assert(exclusivedReleased == results[i], $"{i}");
                         break;
                 }
-            });
+
+                i++;
+            }
         }
     }
 }

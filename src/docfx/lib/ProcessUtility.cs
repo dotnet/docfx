@@ -18,7 +18,7 @@ namespace Microsoft.Docs.Build
     /// </summary>
     internal static class ProcessUtility
     {
-        private const int _defaultLockExpireTimeInSecond = 60 * 20;
+        private const int _defaultLockExpireTimeInSecond = 60 * 60 * 6; /*six hours*/
 
         /// <summary>
         /// Acquire a shared lock for input lock name

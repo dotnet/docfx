@@ -32,8 +32,6 @@ namespace Microsoft.Docs.Build
             Log.ForceVerbose = true;
 
             MakeDebugAssertThrowException();
-            if (Directory.Exists(AppData.MutexRoot))
-                Directory.Delete(AppData.MutexRoot, true);
             return new ParallelExecutor(assemblyName, SourceInformationProvider, DiagnosticMessageSink);
         }
 
