@@ -43,52 +43,52 @@ namespace Microsoft.Docs.Build
             var result = new Dictionary<Document, HashSet<DependencyItem>>();
             var graph = _dependencyItems
                 .GroupBy(k => k.From)
+                .OrderByDescending(k => k.Key.FilePath)
                 .ToDictionary(
                     k => k.Key,
-                    v => (from r in v
-                          orderby r.To.FilePath, r.Type
-                          select r).ToHashSet());
+                    v => v.ToHashSet());
 
             foreach (var (from, value) in graph)
             {
                 result[from] = new HashSet<DependencyItem>();
                 foreach (var item in value)
                 {
-                    result[from].Add(item);
-                    Transit(from, graph, item, item, result);
+                    var stack = new Stack<DependencyItem>();
+                    stack.Push(item);
+                    var visited = new HashSet<Document> { from };
+                    DependencyItem previous = null;
+                    while (stack.Count > 0)
+                    {
+                        var current = stack.Pop();
+                        if (previous != null && !CanTransit(previous))
+                        {
+                            continue;
+                        }
+                        result[from].Add(new DependencyItem(from, current.To, current.Type));
+
+                        // if the dependency destination is already in the result set, we can reuse it
+                        if (current.To != from && CanTransit(current) && result.TryGetValue(current.To, out var nextDependencies))
+                        {
+                            foreach (var dependency in nextDependencies)
+                            {
+                                result[from].Add(new DependencyItem(from, dependency.To, dependency.Type));
+                            }
+                            continue;
+                        }
+
+                        if (graph.ContainsKey(current.To) && !visited.Contains(current.To))
+                        {
+                            foreach (var dependencyItem in graph[current.To])
+                            {
+                                previous = current;
+                                visited.Add(current.To);
+                                stack.Push(dependencyItem);
+                            }
+                        }
+                    }
                 }
             }
             return result;
-        }
-
-        private void Transit(Document from, Dictionary<Document, HashSet<DependencyItem>> graph, DependencyItem current, DependencyItem next, Dictionary<Document, HashSet<DependencyItem>> dependencies)
-        {
-            if (!CanTransit(current))
-            {
-                return;
-            }
-
-            // if the dependency destination is already in the result set, we can reuse it
-            if (next.To != from && dependencies.TryGetValue(next.To, out var nextDependencies))
-            {
-                foreach (var item in nextDependencies)
-                {
-                    dependencies[from].Add(new DependencyItem(from, item.To, item.Type));
-                }
-                return;
-            }
-
-            if (!graph.ContainsKey(next.To) || next.To.Equals(from))
-            {
-                dependencies[from].Add(new DependencyItem(from, next.To, next.Type));
-            }
-            else
-            {
-                foreach (var item in graph[next.To])
-                {
-                    Transit(from, graph, next, item, dependencies);
-                }
-            }
         }
 
         private bool CanTransit(DependencyItem dependencyItem)

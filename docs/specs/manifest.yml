@@ -164,7 +164,7 @@ outputs:
        "dependencies":{  
           "docs/a.md":[  
              {  
-                "source":"docs/b.md",
+                "source":"docs/c.md",
                 "type":"inclusion"
              },
              {  
@@ -172,18 +172,18 @@ outputs:
                 "type":"link"
              },
              {  
-                "source":"docs/c.md",
+                "source":"docs/b.md",
                 "type":"inclusion"
              }
           ],
           "docs/b.md":[  
              {  
                 "source":"docs/c.md",
-                "type":"link"
+                "type":"inclusion"
              },
              {  
                 "source":"docs/c.md",
-                "type":"inclusion"
+                "type":"link"
              }
           ]
        }
@@ -233,11 +233,11 @@ outputs:
        "dependencies":{  
           "docs/b.md":[  
              {  
-                "source":"docs/a.md",
+                "source":"docs/b.md",
                 "type":"inclusion"
              },
              {  
-                "source":"docs/b.md",
+                "source":"docs/a.md",
                 "type":"inclusion"
              }
           ],
@@ -345,11 +345,11 @@ outputs:
       ],
       "docs/a.md": [
         {
-          "source": "docs/b.md",
+          "source": "docs/c.md",
           "type": "inclusion"
         },
         {
-          "source": "docs/c.md",
+          "source": "docs/b.md",
           "type": "inclusion"
         }
       ]
@@ -407,12 +407,12 @@ outputs:
       ],
       "docs/a.md": [
         {
-          "source": "docs/b.md",
-          "type": "inclusion"
-        },
-        {
           "source": "docs/c.md",
           "type": "link"
+        },
+        {
+          "source": "docs/b.md",
+          "type": "inclusion"
         }
       ]
     }
@@ -476,4 +476,43 @@ outputs:
       ]
     }
    }
+---
+# circular chain a include b include c include d link b
+inputs:
+  docfx.yml:
+  docs/a.md: a [!INCLUDE[](b.md)]
+  docs/b.md: b [!INCLUDE[](c.md)]
+  docs/c.md: c [!INCLUDE[](d.md)]
+  docs/d.md: d [b](b.md)
+outputs:
+  docs/a.json:
+  docs/b.json:
+  docs/c.json:
+  docs/d.json:
+  .dependencymap.json: |
+    dependencies:
+      docs/d.md:
+        - source: docs/b.md
+          type: link
+      docs/c.md:
+        - source: docs/d.md
+          type: inclusion
+        - source: docs/b.md
+          type: link
+      docs/b.md:
+        - source: docs/d.md
+          type: inclusion
+        - source: docs/c.md
+          type: inclusion
+        - source: docs/b.md
+          type: link
+      docs/a.md:
+        - source: docs/d.md
+          type: inclusion
+        - source: docs/c.md
+          type: inclusion
+        - source: docs/b.md
+          type: inclusion
+        - source: docs/b.md
+          type: link
 ---
