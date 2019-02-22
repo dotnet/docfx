@@ -45,9 +45,7 @@ namespace Microsoft.Docs.Build
                 .GroupBy(k => k.From)
                 .ToDictionary(
                     k => k.Key,
-                    v => (from r in v
-                          orderby r.To.FilePath, r.Type
-                          select r).ToHashSet());
+                    v => v.ToHashSet());
 
             foreach (var (from, value) in graph)
             {
