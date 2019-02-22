@@ -16,7 +16,7 @@ namespace Microsoft.Docs.Build
 
         private static readonly Metric s_operationTimeMetric = s_telemetryClient.GetMetric(new MetricIdentifier(null, $"time", "name", "os", "version", "repo", "branch"));
         private static readonly Metric s_errorCountMetric = s_telemetryClient.GetMetric(new MetricIdentifier(null, $"error", "code", "level", "os", "version", "repo", "branch"));
-        private static readonly Metric s_cacheCountMetric = s_telemetryClient..GetMetric(new MetricIdentifier(null, $"cache", "name", "state", "os", "version", "repo", "branch"));
+        private static readonly Metric s_cacheCountMetric = s_telemetryClient.GetMetric(new MetricIdentifier(null, $"cache", "name", "state", "os", "version", "repo", "branch"));
 
         private static readonly string s_version = typeof(Telemetry).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ?? "<null>";
         private static readonly string s_os = RuntimeInformation.OSDescription ?? "<null>";
