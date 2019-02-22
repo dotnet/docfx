@@ -3,7 +3,7 @@
 
 namespace Microsoft.Docs.Build
 {
-    internal enum CacheName
+    internal enum TelemetryName
     {
         GitCommitCache,
         GitRepositoryCache,

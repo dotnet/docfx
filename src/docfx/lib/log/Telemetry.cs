@@ -40,14 +40,14 @@ namespace Microsoft.Docs.Build
                 .TrackValue(1, code, level.ToString(), s_os, s_version, s_repo, s_branch);
         }
 
-        public static void TrackCacheTotal(CacheName name)
+        public static void TrackCacheTotalCount(TelemetryName name)
         {
             s_telemetryClient
                 .GetMetric(new MetricIdentifier(null, $"cache", "name", "state", "os", "version", "repo", "branch"))
                 .TrackValue(1, name.ToString(), "total", s_os, s_version, s_repo, s_branch);
         }
 
-        public static void TrackCacheMiss(CacheName name)
+        public static void TrackCacheMissCount(TelemetryName name)
         {
             s_telemetryClient
                 .GetMetric(new MetricIdentifier(null, $"cache", "name", "state", "os", "version", "repo", "branch"))

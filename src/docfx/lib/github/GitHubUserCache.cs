@@ -97,7 +97,7 @@ namespace Microsoft.Docs.Build
             if (string.IsNullOrEmpty(login))
                 return default;
 
-            Telemetry.TrackCacheTotal(CacheName.GitHubUserCache);
+            Telemetry.TrackCacheTotalCount(TelemetryName.GitHubUserCache);
             var user = TryGetByLogin(login);
             if (user != null)
             {
@@ -111,7 +111,7 @@ namespace Microsoft.Docs.Build
                 login,
                 new Lazy<Task<(Error, GitHubUser)>>(() =>
                 {
-                    Telemetry.TrackCacheMiss(CacheName.GitHubUserCache);
+                    Telemetry.TrackCacheMissCount(TelemetryName.GitHubUserCache);
                     return _getUserByLoginFromGitHub(login);
                 })).Value;
 
@@ -134,7 +134,7 @@ namespace Microsoft.Docs.Build
             if (string.IsNullOrEmpty(authorEmail))
                 return default;
 
-            Telemetry.TrackCacheTotal(CacheName.GitHubUserCache);
+            Telemetry.TrackCacheTotalCount(TelemetryName.GitHubUserCache);
             var user = TryGetByEmail(authorEmail);
             if (user != null)
                 return (null, user.IsValid() ? user : null);
@@ -143,7 +143,7 @@ namespace Microsoft.Docs.Build
                 commitSha,
                 new Lazy<Task<(Error, string)>>(() =>
                 {
-                    Telemetry.TrackCacheMiss(CacheName.GitHubUserCache);
+                    Telemetry.TrackCacheMissCount(TelemetryName.GitHubUserCache);
                     return _getLoginByCommitFromGitHub(repoOwner, repoName, commitSha);
                 })).Value;
 

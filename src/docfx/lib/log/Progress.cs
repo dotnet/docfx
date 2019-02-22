@@ -67,11 +67,9 @@ namespace Microsoft.Docs.Build
             {
                 t_scope.Value = t_scope.Value.Pop(out var scope);
 
-                var elapsed = Stopwatch.Elapsed;
-                var elapsedMs = elapsed.TotalMilliseconds;
+                var elapsedMs = Stopwatch.ElapsedMilliseconds;
                 if (Log.Verbose || elapsedMs > ProgressDelayMs)
                 {
-                    Telemetry.TrackOperationDuration(Name, elapsed);
                     Console.WriteLine($"{Name} done in {FormatTimeSpan(Stopwatch.Elapsed)}");
                 }
             }
