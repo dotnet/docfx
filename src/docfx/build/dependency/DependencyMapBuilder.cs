@@ -55,13 +55,13 @@ namespace Microsoft.Docs.Build
                 foreach (var item in value)
                 {
                     result[from].Add(item);
-                    AddToExisting(from, graph, item, item, result);
+                    Transit(from, graph, item, item, result);
                 }
             }
             return result;
         }
 
-        private void AddToExisting(Document from, Dictionary<Document, HashSet<DependencyItem>> graph, DependencyItem current, DependencyItem next, Dictionary<Document, HashSet<DependencyItem>> dependencies)
+        private void Transit(Document from, Dictionary<Document, HashSet<DependencyItem>> graph, DependencyItem current, DependencyItem next, Dictionary<Document, HashSet<DependencyItem>> dependencies)
         {
             if (!CanTransit(current))
             {
@@ -86,7 +86,7 @@ namespace Microsoft.Docs.Build
             {
                 foreach (var item in graph[next.To])
                 {
-                    AddToExisting(from, graph, next, item, dependencies);
+                    Transit(from, graph, next, item, dependencies);
                 }
             }
         }
