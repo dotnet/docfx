@@ -284,8 +284,10 @@ namespace Microsoft.Docs.Build
                 throw new InvalidOperationException($"Cannot initialize a git repo at {path}");
             }
 
+            Telemetry.TrackCacheTotalCount(TelemetryName.GitRepositoryCache);
             if (git_remote_create(out var remote, repo, "origin", url) == 0)
             {
+                Telemetry.TrackCacheMissCount(TelemetryName.GitRepositoryCache);
                 git_remote_free(remote);
             }
 

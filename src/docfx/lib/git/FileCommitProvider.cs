@@ -348,11 +348,13 @@ namespace Microsoft.Docs.Build
         private static async Task<ConcurrentDictionary<string, Dictionary<(long commit, long blob), (long[] commitHistory, int lruOrder)>>>
             LoadCommitCache(string cacheFilePath)
         {
+            Telemetry.TrackCacheTotalCount(TelemetryName.GitCommitCache);
             if (string.IsNullOrEmpty(cacheFilePath) || !File.Exists(cacheFilePath))
             {
                 return new ConcurrentDictionary<string, Dictionary<(long commit, long blob), (long[] commitHistory, int lruOrder)>>();
             }
 
+            Telemetry.TrackCacheMissCount(TelemetryName.GitCommitCache);
             return await ProcessUtility.ReadFile(cacheFilePath, stream =>
             {
                 var result = new ConcurrentDictionary<string, Dictionary<(long commit, long blob), (long[] commitHistory, int lruOrder)>>();

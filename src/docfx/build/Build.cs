@@ -16,7 +16,10 @@ namespace Microsoft.Docs.Build
         public static async Task Run(string docsetPath, CommandLineOptions options, Report report)
         {
             XrefMap xrefMap = null;
+
             var repository = Repository.Create(docsetPath);
+            Telemetry.SetRepository(repository?.Remote, repository?.Branch);
+
             var locale = LocalizationUtility.GetLocale(repository, options);
             var dependencyLock = await LoadBuildDependencyLock(docsetPath, locale, repository, options);
             var (configErrors, config) = GetBuildConfig(docsetPath, repository, options, dependencyLock);
