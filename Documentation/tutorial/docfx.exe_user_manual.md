@@ -9,7 +9,7 @@ Doc-as-code: `docfx.exe` User Manual
 
 `docfx.exe` is used to generate documentation for programs. It has the ability to:
 
-1. Extract language metadata for programing languages as defined in [Metadata Format Specification](../spec/metadata_format_spec.md). Currently language `VB` and `CSharp` are supported. The language metadata will be saved with `YAML` format as described in [YAML 1.2][1].
+1. Extract language metadata for programing languages as defined in [Metadata Format Specification](../spec/metadata_format_spec.md). Currently `C#`, `VB` and `F#` are supported. The language metadata will be saved with `YAML` format as described in [YAML 1.2][1].
 2. Look for available conceptual files as provided and link it with existing programs with syntax described in [Section 3. Work with Metadata in Markdown](../spec/metadata_format_spec.md). Supported conceptual files are *plain text* files, *html* files, and *markdown* files.
 3. Generate documentation to
    a. Visualize language metadata, with extra **content** provided by linked conceptual files using syntax described in [Section 3. Work with Metadata in Markdown](../spec/metadata_format_spec.md).
