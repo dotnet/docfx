@@ -62,6 +62,7 @@ namespace Microsoft.Docs.Build
             var url = slot.Url;
             var restoreDir = AppData.GetGitDir(url);
 
+            var released = false;
             await ProcessUtility.RunInsideMutex(
                 url + "/index.json",
                 async () =>
@@ -78,15 +79,17 @@ namespace Microsoft.Docs.Build
                         case LockType.Exclusive:
                             slotToRelease.LastAccessDate = DateTime.UtcNow;
                             slotToRelease.Restored = successed;
-                            Debug.Assert(await ProcessUtility.ReleaseExclusiveLock(GetLockKey(url, slot.Id), slot.Acquirer));
+                            released = await ProcessUtility.ReleaseExclusiveLock(GetLockKey(url, slot.Id), slot.Acquirer);
                             break;
                         case LockType.Shared:
-                            Debug.Assert(await ProcessUtility.ReleaseSharedLock(GetLockKey(url, slot.Id), slot.Acquirer));
+                            released = await ProcessUtility.ReleaseSharedLock(GetLockKey(url, slot.Id), slot.Acquirer);
                             break;
                     }
 
                     WriteSlots(restoreDir, slots);
                 });
+
+            Debug.Assert(released);
         }
 
         public static async Task<(string path, T slot)> AcquireSlots<T>(string url, LockType type, Func<T, T> updateExistingSlot, Func<T, bool> matchExistingSlot) where T : DependencySlot, new()

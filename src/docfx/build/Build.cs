@@ -16,27 +16,43 @@ namespace Microsoft.Docs.Build
         public static async Task Run(string docsetPath, CommandLineOptions options, Report report)
         {
             XrefMap xrefMap = null;
-            var gitsToRelease = new List<DependencyGit>();
+            List<DependencyGit> gitsToRelease = null;
 
             try
             {
+                gitsToRelease = await RunWithGit();
+            }
+            finally
+            {
+                if (gitsToRelease != null)
+                {
+                    foreach (var git in gitsToRelease)
+                    {
+                        await DependencySlotPool.ReleaseSlot(git, LockType.Shared);
+                    }
+                }
+            }
+
+            async Task<List<DependencyGit>> RunWithGit()
+            {
+                var gits = new List<DependencyGit>();
                 var repository = Repository.Create(docsetPath);
                 Telemetry.SetRepository(repository?.Remote, repository?.Branch);
 
                 var locale = LocalizationUtility.GetLocale(repository, options);
                 var dependencyLock = await LoadBuildDependencyLock(docsetPath, locale, repository, options);
                 var (configErrors, config, sourceGit) = await GetBuildConfig(docsetPath, repository, options, dependencyLock);
-                gitsToRelease.AddIfNotNull(sourceGit);
+                gits.AddIfNotNull(sourceGit);
                 report.Configure(docsetPath, config);
 
                 // just return if config loading has errors
                 if (report.Write(config.ConfigFileName, configErrors))
-                    return;
+                    return gits;
 
                 var errors = new List<Error>();
 
                 var (entryDocset, dependencyGits) = await Docset.Create(report, docsetPath, locale, config, options, dependencyLock, repository);
-                gitsToRelease.AddRange(dependencyGits);
+                gits.AddRange(dependencyGits);
 
                 var docset = GetBuildDocset(entryDocset);
                 var outputPath = Path.Combine(docsetPath, config.Output.Path);
@@ -70,13 +86,8 @@ namespace Microsoft.Docs.Build
                     errors.AddIfNotNull(await saveGitHubUserCache);
                     errors.ForEach(e => context.Report.Write(e));
                 }
-            }
-            finally
-            {
-                foreach (var git in gitsToRelease)
-                {
-                    await DependencySlotPool.ReleaseSlot(git, LockType.Shared);
-                }
+
+                return gits;
             }
         }
 
