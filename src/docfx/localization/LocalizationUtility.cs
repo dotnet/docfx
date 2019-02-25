@@ -76,7 +76,7 @@ namespace Microsoft.Docs.Build
             return (localizationDocsetPath, localizationBranch, subDependencyLock, git);
         }
 
-        public static bool TryGetSourceRepositoryInfo(Repository repository, out string sourceRemote, out string sourceBranch, out string locale)
+        public static bool TryGetSourceRepository(Repository repository, out string sourceRemote, out string sourceBranch, out string locale)
         {
             sourceRemote = null;
             sourceBranch = null;
@@ -87,13 +87,13 @@ namespace Microsoft.Docs.Build
                 return false;
             }
 
-            return TryGetSourceRepositoryInfo(repository.Remote, repository.Branch, out sourceRemote, out sourceBranch, out locale);
+            return TryGetSourceRepository(repository.Remote, repository.Branch, out sourceRemote, out sourceBranch, out locale);
         }
 
         /// <summary>
         /// Get the source repo's remote and branch from loc repo based on <see cref="LocalizationMapping"/>
         /// </summary>
-        public static bool TryGetSourceRepositoryInfo(string remote, string branch, out string sourceRemote, out string sourceBranch, out string locale)
+        public static bool TryGetSourceRepository(string remote, string branch, out string sourceRemote, out string sourceBranch, out string locale)
         {
             sourceRemote = null;
             sourceBranch = null;
@@ -131,7 +131,7 @@ namespace Microsoft.Docs.Build
 
             Debug.Assert(docset != null);
 
-            if (TryGetSourceRepositoryInfo(docset.Repository, out var sourceRemote, out var sourceBranch, out var locale))
+            if (TryGetSourceRepository(docset.Repository, out var sourceRemote, out var sourceBranch, out var locale))
             {
                 (sourceDocsetPath, dependencyLock, git) = await DependencyGitPool.AcquireSharedGit(sourceRemote, sourceBranch, docset.DependencyLock);
                 return (sourceDocsetPath, sourceBranch, dependencyLock, git);
@@ -181,7 +181,7 @@ namespace Microsoft.Docs.Build
 
         public static string GetLocale(Repository repository, CommandLineOptions options)
         {
-            return TryGetSourceRepositoryInfo(repository, out _, out _, out var locale) ? locale : options.Locale;
+            return TryGetSourceRepository(repository, out _, out _, out var locale) ? locale : options.Locale;
         }
 
         public static bool IsLocalized(this Docset docset) => docset.FallbackDocset != null;

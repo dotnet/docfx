@@ -11,7 +11,7 @@ namespace Microsoft.Docs.Build
     {
         private static readonly string s_root = GetAppDataRoot();
 
-        public static string GitRoot => Path.Combine(s_root, "git-index");
+        public static string GitRoot => Path.Combine(s_root, "git2");
 
         public static string DownloadsRoot => Path.Combine(s_root, "downloads");
 
