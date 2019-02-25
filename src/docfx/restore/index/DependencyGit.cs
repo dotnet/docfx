@@ -3,7 +3,7 @@
 
 namespace Microsoft.Docs.Build
 {
-    internal class DependencyGitIndex : DependencyIndex
+    internal class DependencyGit : DependencySlot
     {
         public string Commit { get; set; }
 

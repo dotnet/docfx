@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 
 namespace Microsoft.Docs.Build
 {
-    internal class DependencyIndex
+    internal class DependencySlot
     {
         public string Id { get; set; }
 

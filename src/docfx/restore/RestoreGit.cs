@@ -90,7 +90,7 @@ namespace Microsoft.Docs.Build
                     var gitVersion = dependencyLock?.GetGitLock(remote, branch);
                     if (@implicit || string.IsNullOrEmpty(gitVersion?.Commit))
                     {
-                        var (existingPath, index) = await DependencyIndexPool.TryGetGitIndex(remote, branch, gitVersion?.Commit);
+                        var (existingPath, git) = await DependencyGitPool.TryGetGit(remote, branch, gitVersion?.Commit);
                         if (!string.IsNullOrEmpty(existingPath))
                         {
                             branchesToFetch.Remove(branch);
@@ -99,7 +99,7 @@ namespace Microsoft.Docs.Build
                                 remote,
                                 branch,
                                 gitVersion,
-                                new DependencyVersion(index.Commit)));
+                                new DependencyVersion(git.Commit)));
                         }
                     }
                 }
@@ -148,9 +148,10 @@ namespace Microsoft.Docs.Build
                         var gitDependencyLock = dependencyLock?.GetGitLock(remote, branch);
                         headCommit = gitDependencyLock?.Commit ?? headCommit;
 
-                        var (workTreeHead, index) = await DependencyIndexPool.AcquireGitIndex2Restore(remote, branch, headCommit);
+                        var (workTreeHead, gitSlot) = await DependencyGitPool.AcquireExclusiveGit(remote, branch, headCommit);
                         var workTreePath = Path.GetFullPath(Path.Combine(repoPath, "../", workTreeHead)).Replace('\\', '/');
                         var restored = true;
+
                         try
                         {
                             if (existingWorkTreePath.TryAdd(workTreePath))
@@ -179,7 +180,7 @@ namespace Microsoft.Docs.Build
                         }
                         finally
                         {
-                            await DependencyIndexPool.ReleaseIndex(index, LockType.Restore, restored);
+                            await DependencySlotPool.ReleaseSlot(gitSlot, LockType.Exclusive, restored);
                         }
 
                         subChildren.Add(new RestoreChild(workTreePath, remote, branch, gitDependencyLock, new DependencyVersion(headCommit)));

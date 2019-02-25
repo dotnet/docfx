@@ -2,10 +2,8 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -28,7 +26,7 @@ namespace Microsoft.Docs.Build
             return (newRemote, newBranch);
         }
 
-        public static async Task<(string path, string branch, DependencyLockModel dependencyLock, DependencyGitIndex gitIndex)> TryGetLocalizedDocsetPath(Docset docset, Config config, string locale)
+        public static async Task<(string path, string branch, DependencyLockModel dependencyLock, DependencyGit gitIndex)> TryGetLocalizedDocsetPath(Docset docset, Config config, string locale)
         {
             Debug.Assert(docset != null);
             Debug.Assert(!string.IsNullOrEmpty(locale));
@@ -37,7 +35,7 @@ namespace Microsoft.Docs.Build
             string localizationDocsetPath = null;
             string localizationBranch = null;
             DependencyLockModel subDependencyLock = null;
-            DependencyGitIndex gitIndex = null;
+            DependencyGit git = null;
             switch (config.Localization.Mapping)
             {
                 case LocalizationMapping.Repository:
@@ -55,7 +53,7 @@ namespace Microsoft.Docs.Build
                             repo.Branch,
                             locale,
                             config.Localization.DefaultLocale);
-                        (localizationDocsetPath, subDependencyLock, gitIndex) = await DependencyIndexPool.AcquireGitIndex2Build(locRemote, locBranch, docset.DependencyLock);
+                        (localizationDocsetPath, subDependencyLock, git) = await DependencyGitPool.AcquireSharedGit(locRemote, locBranch, docset.DependencyLock);
                         localizationBranch = locBranch;
                         break;
                     }
@@ -68,14 +66,14 @@ namespace Microsoft.Docs.Build
                         localizationDocsetPath = Path.Combine(docset.DocsetPath, "localization", locale);
                         localizationBranch = null;
                         subDependencyLock = null;
-                        gitIndex = null;
+                        git = null;
                         break;
                     }
                 default:
                     throw new NotSupportedException($"{config.Localization.Mapping} is not supported yet");
             }
 
-            return (localizationDocsetPath, localizationBranch, subDependencyLock, gitIndex);
+            return (localizationDocsetPath, localizationBranch, subDependencyLock, git);
         }
 
         public static bool TryGetSourceRepositoryInfo(Repository repository, out string sourceRemote, out string sourceBranch, out string locale)
@@ -125,18 +123,18 @@ namespace Microsoft.Docs.Build
             return locale != null;
         }
 
-        public static async Task<(string path, string branch, DependencyLockModel dependencyLock, DependencyGitIndex gitIndex)> TryGetSourceDocsetPath(Docset docset)
+        public static async Task<(string path, string branch, DependencyLockModel dependencyLock, DependencyGit gitIndex)> TryGetSourceDocsetPath(Docset docset)
         {
             string sourceDocsetPath = null;
             DependencyLockModel dependencyLock = null;
-            DependencyGitIndex gitIndex = null;
+            DependencyGit git = null;
 
             Debug.Assert(docset != null);
 
             if (TryGetSourceRepositoryInfo(docset.Repository, out var sourceRemote, out var sourceBranch, out var locale))
             {
-                (sourceDocsetPath, dependencyLock, gitIndex) = await DependencyIndexPool.AcquireGitIndex2Build(sourceRemote, sourceBranch, docset.DependencyLock);
-                return (sourceDocsetPath, sourceBranch, dependencyLock, gitIndex);
+                (sourceDocsetPath, dependencyLock, git) = await DependencyGitPool.AcquireSharedGit(sourceRemote, sourceBranch, docset.DependencyLock);
+                return (sourceDocsetPath, sourceBranch, dependencyLock, git);
             }
 
             return default;

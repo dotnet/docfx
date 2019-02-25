@@ -16,7 +16,7 @@ namespace Microsoft.Docs.Build
         public static async Task Run(string docsetPath, CommandLineOptions options, Report report)
         {
             XrefMap xrefMap = null;
-            var indexPool = new List<DependencyGitIndex>();
+            var gitsToRelease = new List<DependencyGit>();
 
             try
             {
@@ -25,8 +25,8 @@ namespace Microsoft.Docs.Build
 
                 var locale = LocalizationUtility.GetLocale(repository, options);
                 var dependencyLock = await LoadBuildDependencyLock(docsetPath, locale, repository, options);
-                var (configErrors, config, gitIndex) = await GetBuildConfig(docsetPath, repository, options, dependencyLock);
-                indexPool.AddIfNotNull(gitIndex);
+                var (configErrors, config, sourceGit) = await GetBuildConfig(docsetPath, repository, options, dependencyLock);
+                gitsToRelease.AddIfNotNull(sourceGit);
                 report.Configure(docsetPath, config);
 
                 // just return if config loading has errors
@@ -35,8 +35,8 @@ namespace Microsoft.Docs.Build
 
                 var errors = new List<Error>();
 
-                var (entryDocset, gitIndexes) = await Docset.Create(report, docsetPath, locale, config, options, dependencyLock, repository);
-                indexPool.AddRange(gitIndexes);
+                var (entryDocset, dependencyGits) = await Docset.Create(report, docsetPath, locale, config, options, dependencyLock, repository);
+                gitsToRelease.AddRange(dependencyGits);
 
                 var docset = GetBuildDocset(entryDocset);
                 var outputPath = Path.Combine(docsetPath, config.Output.Path);
@@ -73,9 +73,9 @@ namespace Microsoft.Docs.Build
             }
             finally
             {
-                foreach (var index in indexPool)
+                foreach (var git in gitsToRelease)
                 {
-                    await DependencyIndexPool.ReleaseIndex(index, LockType.Build);
+                    await DependencySlotPool.ReleaseSlot(git, LockType.Shared);
                 }
             }
         }
@@ -236,7 +236,7 @@ namespace Microsoft.Docs.Build
             return dependencyLock ?? new DependencyLockModel();
         }
 
-        private static async Task<(List<Error> errors, Config config, DependencyGitIndex sourceIndex)> GetBuildConfig(string docset, Repository repository, CommandLineOptions options, DependencyLockModel dependencyLock)
+        private static async Task<(List<Error> errors, Config config, DependencyGit sourceGit)> GetBuildConfig(string docset, Repository repository, CommandLineOptions options, DependencyLockModel dependencyLock)
         {
             if (ConfigLoader.TryGetConfigPath(docset, out _) || !LocalizationUtility.TryGetSourceRepositoryInfo(repository, out var sourceRemote, out var sourceBranch, out var locale))
             {
@@ -245,9 +245,9 @@ namespace Microsoft.Docs.Build
             }
 
             Debug.Assert(dependencyLock != null);
-            var (sourceDocsetPath, _, sourceIndex) = await DependencyIndexPool.AcquireGitIndex2Build(sourceRemote, sourceBranch, dependencyLock);
+            var (sourceDocsetPath, _, sourceGit) = await DependencyGitPool.AcquireSharedGit(sourceRemote, sourceBranch, dependencyLock);
             var (sourceErrors, sourceConfig) = ConfigLoader.Load(sourceDocsetPath, options, locale);
-            return (sourceErrors, sourceConfig, sourceIndex);
+            return (sourceErrors, sourceConfig, sourceGit);
         }
 
         private static Docset GetBuildDocset(Docset sourceDocset)
