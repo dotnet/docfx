@@ -71,6 +71,11 @@ namespace Microsoft.Docs.Build
             }
         }
 
+        public string GetToken(string key)
+        {
+            return Global[key]?.ToString();
+        }
+
         private JObject LoadGlobalTokens(string templateDir, string locale)
         {
             var path = Path.Combine(templateDir, $"LocalizedTokens/docs({locale}).html/tokens.json");
