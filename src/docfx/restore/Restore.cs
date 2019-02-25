@@ -22,6 +22,8 @@ namespace Microsoft.Docs.Build
             using (Progress.Start("Restore dependencies"))
             {
                 var repository = Repository.Create(docsetPath);
+                Telemetry.SetRepository(repository?.Remote, repository?.Branch);
+
                 var restoredDocsets = new ConcurrentDictionary<string, Task<DependencyLockModel>>(PathUtility.PathComparer);
                 var localeToRestore = LocalizationUtility.GetLocale(repository, options);
 

@@ -7,11 +7,11 @@ using System.Linq;
 
 namespace Microsoft.Docs.Build
 {
-    internal class DependencyMap : ReadOnlyDictionary<Document, List<DependencyItem>>
+    internal class DependencyMap : ReadOnlyDictionary<Document, HashSet<DependencyItem>>
     {
-        public static readonly DependencyMap Empty = new DependencyMap(new Dictionary<Document, List<DependencyItem>>());
+        public static readonly DependencyMap Empty = new DependencyMap(new Dictionary<Document, HashSet<DependencyItem>>());
 
-        public DependencyMap(Dictionary<Document, List<DependencyItem>> map)
+        public DependencyMap(Dictionary<Document, HashSet<DependencyItem>> map)
             : base(map)
         {
         }
@@ -21,11 +21,13 @@ namespace Microsoft.Docs.Build
             // TODO: Make dependency map a data model once we remove legacy.
             var dependencies = this.ToDictionary(
                     d => d.Key.FilePath,
-                    d => d.Value.Select(v => new DependencyManifestItem
-                    {
-                        Source = v.Dest.FilePath,
-                        Type = v.Type,
-                    }).ToArray());
+                    d => (from r in d.Value
+                                  orderby r.To.FilePath descending, r.Type descending
+                                  select r).Select(v => new DependencyManifestItem
+                     {
+                         Source = v.To.FilePath,
+                         Type = v.Type,
+                     }).ToArray());
 
             return new { dependencies };
         }

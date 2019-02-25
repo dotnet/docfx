@@ -47,7 +47,7 @@ namespace Microsoft.Docs.Build
                 {
                     foreach (var dependencyItem in dependencies)
                     {
-                        if (source.Equals(dependencyItem.Dest))
+                        if (source.Equals(dependencyItem.To))
                         {
                             continue;
                         }
@@ -55,7 +55,7 @@ namespace Microsoft.Docs.Build
                         legacyDependencyMap.Add(new LegacyDependencyMapItem
                         {
                             From = $"~/{source.ToLegacyPathRelativeToBasePath(docset)}",
-                            To = $"~/{dependencyItem.Dest.ToLegacyPathRelativeToBasePath(docset)}",
+                            To = $"~/{dependencyItem.To.ToLegacyPathRelativeToBasePath(docset)}",
                             Type = dependencyItem.Type.ToLegacyDependencyMapType(),
                         });
                     }

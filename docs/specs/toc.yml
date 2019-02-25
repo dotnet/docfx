@@ -998,8 +998,7 @@ inputs:
 outputs:
   docs/test.json:
   build.log: |
-    ["error","invalid-toc-syntax","The toc syntax '[bad1]()\n#[bad2](test.md)' is invalid, the opening sequence of # characters must be followed by a space or by the end of line. Refer to [ATX heading](https://spec.commonmark.org/0.28/#atx-heading) to fix it","docs/TOC.md","",1]
-    ["error","invalid-toc-syntax","The toc syntax '>_<\n#bad4' is invalid, the opening sequence of # characters must be followed by a space or by the end of line. Refer to [ATX heading](https://spec.commonmark.org/0.28/#atx-heading) to fix it","docs/TOC.md","",3]
+    ["error","invalid-toc-syntax","The toc syntax '[bad1]()\n#[bad2](test.md)\n>_<\n#bad4' is invalid, the opening sequence of # characters must be followed by a space or by the end of line. Refer to [ATX heading](https://spec.commonmark.org/0.28/#atx-heading) to fix it","docs/TOC.md","",1]
 ---
 # Skip-level Toc markdown
 inputs:

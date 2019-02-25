@@ -82,6 +82,7 @@ namespace Microsoft.Docs.Build
             var level = !force && _config != null && _config.Rules.TryGetValue(error.Code, out var overrideLevel)
                 ? overrideLevel
                 : error.Level;
+
             if (level == ErrorLevel.Off)
             {
                 return false;
@@ -147,6 +148,8 @@ namespace Microsoft.Docs.Build
 
         private void WriteCore(Error error, ErrorLevel level)
         {
+            Telemetry.TrackErrorCount(error.Code, level);
+
             if (_output != null)
             {
                 var line = _legacy ? LegacyReport(error, level) : error.ToString(level);

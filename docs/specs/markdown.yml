@@ -400,4 +400,4 @@ outputs:
   docs/a.json:
   build.log: |
     ["warning","yaml-header-not-object","Expect yaml header to be an object, but got a scalar","docs/a.md"]
-    
+---

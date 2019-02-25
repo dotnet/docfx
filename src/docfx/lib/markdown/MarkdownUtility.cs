@@ -10,6 +10,8 @@ using System.Linq;
 using System.Resources;
 using System.Threading;
 using Markdig;
+using Markdig.Parsers;
+using Markdig.Parsers.Inlines;
 using Markdig.Syntax;
 using Microsoft.DocAsCode.MarkdigEngine.Extensions;
 
@@ -27,20 +29,19 @@ namespace Microsoft.Docs.Build
     {
         private static readonly ConcurrentDictionary<string, Lazy<IReadOnlyDictionary<string, string>>> s_markdownTokens = new ConcurrentDictionary<string, Lazy<IReadOnlyDictionary<string, string>>>(StringComparer.OrdinalIgnoreCase);
 
-        private static readonly Dictionary<MarkdownPipelineType, MarkdownPipeline> s_pipelineMapping =
-            new Dictionary<MarkdownPipelineType, MarkdownPipeline>()
-                {
-                    { MarkdownPipelineType.ConceptualMarkdown, CreateConceptualMarkdownPipeline() },
-                    { MarkdownPipelineType.InlineMarkdown, CreateInlineMarkdownPipeline() },
-                    { MarkdownPipelineType.TocMarkdown, CreateTocPipeline() },
-                    { MarkdownPipelineType.Markdown, CreateMarkdownPipeline() },
-                };
+        private static readonly MarkdownPipeline[] s_markdownPipelines = new[]
+        {
+            CreateConceptualMarkdownPipeline(),
+            CreateInlineMarkdownPipeline(),
+            CreateTocMarkdownPipeline(),
+            CreateMarkdownPipeline(),
+        };
 
         private static readonly ThreadLocal<Stack<Status>> t_status = new ThreadLocal<Stack<Status>>(() => new Stack<Status>());
 
         public static MarkupResult Result => t_status.Value.Peek().Result;
 
-        public static (MarkdownDocument ast, MarkupResult result) Parse(string content)
+        public static (MarkdownDocument ast, MarkupResult result) Parse(string content, MarkdownPipelineType piplineType)
         {
             try
             {
@@ -48,7 +49,7 @@ namespace Microsoft.Docs.Build
 
                 t_status.Value.Push(status);
 
-                var ast = Markdown.Parse(content, s_pipelineMapping[MarkdownPipelineType.TocMarkdown]);
+                var ast = Markdown.Parse(content, s_markdownPipelines[(int)piplineType]);
 
                 return (ast, Result);
             }
@@ -81,7 +82,7 @@ namespace Microsoft.Docs.Build
 
                     t_status.Value.Push(status);
 
-                    var html = Markdown.ToHtml(markdown, s_pipelineMapping[pipelineType]);
+                    var html = Markdown.ToHtml(markdown, s_markdownPipelines[(int)pipelineType]);
                     if (pipelineType == MarkdownPipelineType.ConceptualMarkdown && !Result.HasTitle)
                     {
                         Result.Errors.Add(Errors.HeadingNotFound(file));
@@ -134,15 +135,20 @@ namespace Microsoft.Docs.Build
                 .Build();
         }
 
-        private static MarkdownPipeline CreateTocPipeline()
+        private static MarkdownPipeline CreateTocMarkdownPipeline()
         {
-            var markdownContext = new MarkdownContext(null, LogWarning, LogError, null, null);
+            var builder = new MarkdownPipelineBuilder();
 
-            return new MarkdownPipelineBuilder()
-                .UseYamlFrontMatter()
-                .UseDocfxExtensions(markdownContext)
-                .UseTocHeading()
-                .Build();
+            // Only supports heading block and link inline
+            builder.BlockParsers.RemoveAll(parser => !(parser is HeadingBlockParser || parser is ParagraphBlockParser || parser is ThematicBreakParser));
+            builder.InlineParsers.RemoveAll(parser => !(parser is LinkInlineParser));
+
+            builder.BlockParsers.Find<HeadingBlockParser>().MaxLeadingCount = int.MaxValue;
+
+            builder.UseYamlFrontMatter()
+                   .UseXref();
+
+            return builder.Build();
         }
 
         private static string GetToken(string key)

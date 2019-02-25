@@ -21,6 +21,8 @@ namespace Microsoft.Docs.Build
             try
             {
                 var repository = Repository.Create(docsetPath);
+                Telemetry.SetRepository(repository?.Remote, repository?.Branch);
+
                 var locale = LocalizationUtility.GetLocale(repository, options);
                 var dependencyLock = await LoadBuildDependencyLock(docsetPath, locale, repository, options);
                 var (configErrors, config, gitIndex) = await GetBuildConfig(docsetPath, repository, options, dependencyLock);
