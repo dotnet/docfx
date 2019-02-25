@@ -47,9 +47,6 @@ dependencies:
   dep5: {gitUrl}#master
   dep6: {gitUrl}#chi");
 
-            // reset the lockdown time to 0
-            // typeof(DependencyIndexPool).GetField("_defaultLockdownTimeInSecond", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static).SetValue(null, 0);
-
             // run restroe and check the work trees
             await Program.Run(new[] { "restore", docsetPath });
             var workTreeList = await GitUtility.ListWorkTree(restorePath);
@@ -62,8 +59,28 @@ dependencies:
             // run restore again
             await Program.Run(new[] { "restore", docsetPath });
 
+            // since the lockdown time works, new slot will be created
             workTreeList = await GitUtility.ListWorkTree(restorePath);
-            Assert.Equal(2, workTreeList.Count);
+            Assert.Equal(3, workTreeList.Count);
+
+            File.WriteAllText(Path.Combine(docsetPath, "docfx.yml"), $@"
+dependencies:
+  dep2: {gitUrl}#test-2-clean
+  dep3: {gitUrl}#test-3-clean");
+
+            // reset last access time
+            // make one slot availabe for next restore
+            var slots = DependencySlotPool.GetSlots<DependencyGit>(AppData.GetGitDir(gitUrl));
+            Assert.True(slots.Count == 3);
+            slots[1].LastAccessDate = DateTime.UtcNow - TimeSpan.FromDays(1);
+            DependencySlotPool.WriteSlots(AppData.GetGitDir(gitUrl), slots);
+
+            // run restore again
+            await Program.Run(new[] { "restore", docsetPath });
+
+            // will create a new slot and find an available slot
+            workTreeList = await GitUtility.ListWorkTree(restorePath);
+            Assert.Equal(4, workTreeList.Count);
         }
 
         [Fact]
