@@ -302,7 +302,7 @@ namespace Microsoft.Docs.Build
                 var (loadErrors, subConfig) = ConfigLoader.TryLoad(dir, options, locale);
                 errors.AddRange(loadErrors);
 
-                result.TryAdd(PathUtility.NormalizeFolder(name), Create(report, dir, locale, subConfig, options, subLock, isDependency: true));
+                result.TryAdd(PathUtility.NormalizeFolder(name), new Docset(report, dir, locale, subConfig, options, subLock, isDependency: true));
             }
             return (errors, result);
         }
