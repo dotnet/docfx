@@ -312,7 +312,6 @@ namespace Microsoft.Docs.Build
                 var (loadErrors, subConfig) = ConfigLoader.TryLoad(dir, options, locale);
                 errors.AddRange(loadErrors);
 
-                subLock = subLock ?? await Docs.Build.DependencyLock.Load(dir, subConfig.DependencyLock);
                 result.TryAdd(PathUtility.NormalizeFolder(name), await Create(report, dir, locale, subConfig, options, subLock, isDependency: true));
             }
             return (errors, result);
