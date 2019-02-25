@@ -15,27 +15,26 @@ namespace Microsoft.Docs.Build
     {
         public static async Task Run(string docsetPath, CommandLineOptions options, Report report)
         {
-            XrefMap xrefMap = null;
-            List<DependencyGit> gitsToRelease = null;
+            var gits = new List<DependencyGit>();
 
             try
             {
-                gitsToRelease = await RunWithGit();
+                await RunWithGit();
             }
             finally
             {
-                if (gitsToRelease != null)
+                if (gits != null)
                 {
-                    foreach (var git in gitsToRelease)
+                    foreach (var git in gits)
                     {
                         await DependencySlotPool.ReleaseSlot(git, LockType.Shared);
                     }
                 }
             }
 
-            async Task<List<DependencyGit>> RunWithGit()
+            async Task RunWithGit()
             {
-                var gits = new List<DependencyGit>();
+                XrefMap xrefMap = null;
                 var repository = Repository.Create(docsetPath);
                 Telemetry.SetRepository(repository?.Remote, repository?.Branch);
 
@@ -47,7 +46,7 @@ namespace Microsoft.Docs.Build
 
                 // just return if config loading has errors
                 if (report.Write(config.ConfigFileName, configErrors))
-                    return gits;
+                    return;
 
                 var errors = new List<Error>();
 
@@ -86,8 +85,6 @@ namespace Microsoft.Docs.Build
                     errors.AddIfNotNull(await saveGitHubUserCache);
                     errors.ForEach(e => context.Report.Write(e));
                 }
-
-                return gits;
             }
         }
 
