@@ -204,7 +204,7 @@ outputs:
   build.log: |
     ["warning","heading-not-found","The first visible block is not a heading block with `#`","docs/a.md"]
 ---
-# note token can be replaced by template
+# note token text can be replaced by template
 repos:
   https://docs.com/markdown-note:
   - files:
