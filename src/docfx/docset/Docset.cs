@@ -43,11 +43,6 @@ namespace Microsoft.Docs.Build
         public bool Legacy => _options.Legacy;
 
         /// <summary>
-        /// Gets the dependent docsets
-        /// </summary>
-        public IReadOnlyDictionary<string, Docset> DependencyDocsets { get; }
-
-        /// <summary>
         /// Gets the resolve alias
         /// </summary>
         public IReadOnlyDictionary<string, string> ResolveAlias { get; }
@@ -78,6 +73,11 @@ namespace Microsoft.Docs.Build
         public DependencyLockModel DependencyLock { get; }
 
         /// <summary>
+        /// Gets the dependent docsets
+        /// </summary>
+        public IReadOnlyDictionary<string, Docset> DependencyDocsets => _dependencyDocsets.Value;
+
+        /// <summary>
         /// Gets the redirection map.
         /// </summary>
         public RedirectionMap Redirections => _redirections.Value;
@@ -101,8 +101,9 @@ namespace Microsoft.Docs.Build
         private readonly Lazy<HashSet<Document>> _scanScope;
         private readonly Lazy<RedirectionMap> _redirections;
         private readonly Lazy<TemplateEngine> _template;
+        private readonly Lazy<IReadOnlyDictionary<string, Docset>> _dependencyDocsets;
 
-        public static async Task<Docset> Create(
+        public Docset(
             Report report,
             string docsetPath,
             string locale,
@@ -113,42 +114,26 @@ namespace Microsoft.Docs.Build
             Docset localizedDocset = null,
             Docset fallbackDocset = null,
             bool isDependency = false)
+            : this(report, docsetPath, !string.IsNullOrEmpty(locale) ? locale : config.Localization.DefaultLocale, config, options, dependencyLock, repository, fallbackDocset, localizedDocset)
         {
             Debug.Assert(dependencyLock != null);
-
-            locale = !string.IsNullOrEmpty(locale) ? locale : config.Localization.DefaultLocale;
-            var (errors, dependencies) = await LoadDependencies(report, config, locale, dependencyLock, options);
-            report.Write(config.ConfigFileName, errors);
-
-            var docset = new Docset(
-                report,
-                docsetPath,
-                locale,
-                config,
-                options,
-                dependencyLock,
-                dependencies,
-                repository,
-                fallbackDocset,
-                localizedDocset);
 
             if (!isDependency && !string.Equals(locale, config.Localization.DefaultLocale, StringComparison.OrdinalIgnoreCase))
             {
                 // localization/fallback docset will share the same context, config, build locale and options with source docset
                 // source docset configuration will be overwritten by build locale overwrite configuration
-                if (LocalizationUtility.TryGetSourceDocsetPath(docset, out var sourceDocsetPath, out var sourceBranch, out _))
+                if (LocalizationUtility.TryGetSourceDocsetPath(this, out var sourceDocsetPath, out var sourceBranch, out _))
                 {
                     var repo = Repository.Create(sourceDocsetPath, sourceBranch);
-                    docset.FallbackDocset = await Create(report, sourceDocsetPath, locale, config, options, dependencyLock, repo, localizedDocset: docset, isDependency: true);
+                    FallbackDocset = new Docset(report, sourceDocsetPath, locale, config, options, dependencyLock, repo, localizedDocset: this, isDependency: true);
                 }
-                else if (LocalizationUtility.TryGetLocalizedDocsetPath(docset, config, locale, out var localizationDocsetPath, out var localizationBranch, out var localizationDependencyLock))
+                else if (LocalizationUtility.TryGetLocalizedDocsetPath(this, config, locale, out var localizationDocsetPath, out var localizationBranch, out var localizationDependencyLock))
                 {
                     var repo = Repository.Create(localizationDocsetPath, localizationBranch);
-                    docset.LocalizationDocset = await Create(report, localizationDocsetPath, locale, config, options, dependencyLock, repo, fallbackDocset: docset, isDependency: true);
+                    LocalizationDocset = new Docset(report, localizationDocsetPath, locale, config, options, dependencyLock, repo, fallbackDocset: this, isDependency: true);
                 }
             }
 
-            return docset;
         }
 
         private Docset(
@@ -158,7 +143,6 @@ namespace Microsoft.Docs.Build
             Config config,
             CommandLineOptions options,
             DependencyLockModel dependencyLock,
-            IReadOnlyDictionary<string, Docset> dependencies,
             Repository repository = null,
             Docset fallbackDocset = null,
             Docset localizedDocset = null)
@@ -174,7 +158,6 @@ namespace Microsoft.Docs.Build
             Culture = CreateCultureInfo(locale);
             LocalizationDocset = localizedDocset;
             FallbackDocset = fallbackDocset;
-            DependencyDocsets = dependencies;
             DependencyLock = dependencyLock;
 
             ResolveAlias = LoadResolveAlias(Config);
@@ -199,6 +182,13 @@ namespace Microsoft.Docs.Build
                 Log.Write($"Using theme '{themeRemote}#{themeLock.Commit}' at '{themePath}'");
 
                 return new TemplateEngine(themePath, Locale);
+            });
+
+            _dependencyDocsets = new Lazy<IReadOnlyDictionary<string, Docset>>(() =>
+            {
+                var (errors, dependencies) = LoadDependencies(_report, Config, Locale, DependencyLock, options);
+                _report.Write(config.ConfigFileName, errors);
+                return dependencies;
             });
 
             _repositories = new ConcurrentDictionary<string, Lazy<Repository>>();
@@ -299,7 +289,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static async Task<(List<Error>, Dictionary<string, Docset>)> LoadDependencies(Report report, Config config, string locale, DependencyLockModel dependencyLock, CommandLineOptions options)
+        private static (List<Error>, Dictionary<string, Docset>) LoadDependencies(Report report, Config config, string locale, DependencyLockModel dependencyLock, CommandLineOptions options)
         {
             var errors = new List<Error>();
             var result = new Dictionary<string, Docset>(config.Dependencies.Count, PathUtility.PathComparer);
@@ -312,7 +302,7 @@ namespace Microsoft.Docs.Build
                 var (loadErrors, subConfig) = ConfigLoader.TryLoad(dir, options, locale);
                 errors.AddRange(loadErrors);
 
-                result.TryAdd(PathUtility.NormalizeFolder(name), await Create(report, dir, locale, subConfig, options, subLock, isDependency: true));
+                result.TryAdd(PathUtility.NormalizeFolder(name), Create(report, dir, locale, subConfig, options, subLock, isDependency: true));
             }
             return (errors, result);
         }
