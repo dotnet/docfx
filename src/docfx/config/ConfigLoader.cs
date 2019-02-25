@@ -151,10 +151,10 @@ namespace Microsoft.Docs.Build
         {
             if (string.IsNullOrEmpty(locale))
             {
-                if (config.TryGetValue<JObject>(Localization, out var localizationConfig) &&
-                    localizationConfig.TryGetValue<JValue>(DefaultLocale, out var defaultLocale))
+                if (config[Localization] is JObject localizationConfig &&
+                    localizationConfig.TryGetValue<string>(DefaultLocale, out var defaultLocale))
                 {
-                    locale = defaultLocale.Value<string>();
+                    locale = defaultLocale;
                 }
                 else
                 {

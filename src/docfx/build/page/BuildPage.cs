@@ -100,7 +100,8 @@ namespace Microsoft.Docs.Build
                 file,
                 context.DependencyResolver,
                 buildChild,
-                (rangeString) => context.MonikerProvider.GetZoneMonikers(rangeString, monikers, errors),
+                rangeString => context.MonikerProvider.GetZoneMonikers(rangeString, monikers, errors),
+                file.Docset.Template.GetToken,
                 MarkdownPipelineType.ConceptualMarkdown);
             errors.AddRange(markup.Errors);
 

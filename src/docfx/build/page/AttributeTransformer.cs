@@ -52,14 +52,30 @@ namespace Microsoft.Docs.Build
 
             if (attribute is MarkdownAttribute)
             {
-                var (html, markup) = MarkdownUtility.ToHtml((string)value, file, context.DependencyResolver, buildChild, null, MarkdownPipelineType.Markdown);
+                var (html, markup) = MarkdownUtility.ToHtml(
+                    (string)value,
+                    file,
+                    context.DependencyResolver,
+                    buildChild,
+                    null,
+                    file.Docset.Template.GetToken,
+                    MarkdownPipelineType.Markdown);
+
                 context.Report.Write(file.ToString(), markup.Errors);
                 return html;
             }
 
             if (attribute is InlineMarkdownAttribute)
             {
-                var (html, markup) = MarkdownUtility.ToHtml((string)value, file, context.DependencyResolver, buildChild, null, MarkdownPipelineType.InlineMarkdown);
+                var (html, markup) = MarkdownUtility.ToHtml(
+                    (string)value,
+                    file,
+                    context.DependencyResolver,
+                    buildChild,
+                    null,
+                    file.Docset.Template.GetToken,
+                    MarkdownPipelineType.InlineMarkdown);
+
                 context.Report.Write(file.ToString(), markup.Errors);
                 return html;
             }

@@ -286,20 +286,15 @@ namespace Microsoft.Docs.Build
             return (errors, token);
         }
 
-        public static bool TryGetValue<T>(this JObject obj, string key, out T value) where T : JToken
+        public static bool TryGetValue<T>(this JObject obj, string key, out T value)
         {
-            value = null;
-            if (obj == null || string.IsNullOrEmpty(key))
+            if (obj.TryGetValue(key, out var valueToken) && valueToken is JValue jvalue && jvalue.Value is T result)
             {
-                return false;
-            }
-
-            if (obj.TryGetValue(key, out var valueToken) && valueToken is T valueT)
-            {
-                value = valueT;
+                value = result;
                 return true;
             }
 
+            value = default;
             return false;
         }
 

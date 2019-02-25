@@ -190,16 +190,7 @@ namespace Microsoft.Docs.Build
             });
             _scanScope = new Lazy<HashSet<Document>>(() => GetScanScope(this));
 
-            _template = new Lazy<TemplateEngine>(() =>
-            {
-                Debug.Assert(!string.IsNullOrEmpty(Config.Theme));
-
-                var (themeRemote, themeBranch) = LocalizationUtility.GetLocalizedTheme(Config.Theme, Locale, Config.Localization.DefaultLocale);
-                var (themePath, themeLock) = RestoreMap.GetGitRestorePath($"{themeRemote}#{themeBranch}", DependencyLock);
-                Log.Write($"Using theme '{themeRemote}#{themeLock.Commit}' at '{themePath}'");
-
-                return new TemplateEngine(themePath, Locale);
-            });
+            _template = new Lazy<TemplateEngine>(CreateTemplate);
 
             _repositories = new ConcurrentDictionary<string, Lazy<Repository>>();
         }
@@ -297,6 +288,20 @@ namespace Microsoft.Docs.Build
 
                 return result;
             }
+        }
+
+        private TemplateEngine CreateTemplate()
+        {
+            if (string.IsNullOrEmpty(Config.Theme))
+            {
+                return new TemplateEngine(Path.Combine(AppContext.BaseDirectory, "theme"), Locale);
+            }
+
+            var (themeRemote, themeBranch) = LocalizationUtility.GetLocalizedTheme(Config.Theme, Locale, Config.Localization.DefaultLocale);
+            var (themePath, themeLock) = RestoreMap.GetGitRestorePath($"{themeRemote}#{themeBranch}", DependencyLock);
+            Log.Write($"Using theme '{themeRemote}#{themeLock.Commit}' at '{themePath}'");
+
+            return new TemplateEngine(themePath, Locale);
         }
 
         private static async Task<(List<Error>, Dictionary<string, Docset>)> LoadDependencies(Report report, Config config, string locale, DependencyLockModel dependencyLock, CommandLineOptions options)

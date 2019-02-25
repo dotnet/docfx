@@ -204,15 +204,22 @@ outputs:
   build.log: |
     ["warning","heading-not-found","The first visible block is not a heading block with `#`","docs/a.md"]
 ---
-# note
-inputs:
-  docfx.yml:
-  docs/a.md: |
-    >[!NOTE]
-    >note
+# note token can be replaced by template
+repos:
+  https://docs.com/markdown-note:
+  - files:
+      docfx.yml: |
+        theme: https://docs.com/template/token
+      docs/a.md: |
+        >[!NOTE]
+        >note
+  https://docs.com/template/token:
+  - files:
+      LocalizedTokens/docs(en-us).html/tokens.json: |
+        { "note": "<p>my note</p>" }
 outputs:
   docs/a.json: |
-    { "content": "<div class=\"NOTE\"><p>Note</p><p>note</p></div>" }
+    { "content": "<div class=\"NOTE\"><p>my note</p><p>note</p></div>" }
 ---
 # title
 inputs:
