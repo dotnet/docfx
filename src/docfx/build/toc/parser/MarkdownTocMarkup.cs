@@ -15,24 +15,26 @@ namespace Microsoft.Docs.Build
 {
     internal static class MarkdownTocMarkup
     {
-        private static readonly HashSet<Type> s_blockWhiteList = new HashSet<Type> { typeof(HeadingBlock) /*header*/, typeof(YamlFrontMatterBlock) /*yaml header*/, typeof(HtmlBlock) /*comment*/ };
-
         public static (List<Error> errors, TableOfContentsModel model) LoadMdTocModel(string tocContent, Document file, Context context)
         {
             var errors = new List<Error>();
             var headingBlocks = new List<HeadingBlock>();
             var (ast, result) = MarkdownUtility.Parse(tocContent, MarkdownPipelineType.TocMarkdown);
             errors.AddRange(result.Errors);
+
             foreach (var block in ast)
             {
-                if (!s_blockWhiteList.Contains(block.GetType()))
+                switch (block)
                 {
-                    errors.Add(Errors.InvalidTocSyntax(new Range(block.Line, block.Column), file.FilePath, tocContent.Substring(block.Span.Start, block.Span.Length)));
-                }
-
-                if (block is HeadingBlock headingBlock)
-                {
-                    headingBlocks.Add(headingBlock);
+                    case HeadingBlock headingBlock:
+                        headingBlocks.Add(headingBlock);
+                        break;
+                    case YamlFrontMatterBlock _:
+                    case HtmlBlock htmlBlock when htmlBlock.Type == HtmlBlockType.Comment:
+                        break;
+                    default:
+                        errors.Add(Errors.InvalidTocSyntax(new Range(block.Line, block.Column), file.FilePath, tocContent.Substring(block.Span.Start, block.Span.Length)));
+                        break;
                 }
             }
 

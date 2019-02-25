@@ -140,7 +140,10 @@ namespace Microsoft.Docs.Build
             var builder = new MarkdownPipelineBuilder();
 
             // Only supports heading block and link inline
-            builder.BlockParsers.RemoveAll(parser => !(parser is HeadingBlockParser || parser is ParagraphBlockParser || parser is ThematicBreakParser));
+            builder.BlockParsers.RemoveAll(parser => !(
+                parser is HeadingBlockParser || parser is ParagraphBlockParser ||
+                parser is ThematicBreakParser || parser is HtmlBlockParser));
+
             builder.InlineParsers.RemoveAll(parser => !(parser is LinkInlineParser));
 
             builder.BlockParsers.Find<HeadingBlockParser>().MaxLeadingCount = int.MaxValue;

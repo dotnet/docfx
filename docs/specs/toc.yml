@@ -104,6 +104,14 @@ outputs:
     }
   docs/a/b.json:
 ---
+# TOC.md can contain xml comments
+inputs:
+  docfx.yml:
+  TOC.md: |
+    <!-- this is an xml comemnt -->
+outputs:
+  toc.json:
+---
 # No-existing file reference
 inputs:
   docfx.yml:
