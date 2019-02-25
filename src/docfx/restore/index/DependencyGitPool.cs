@@ -15,9 +15,9 @@ namespace Microsoft.Docs.Build
         /// If the dependency version is null, get the latest one(order by last write time).
         /// If the dependency version is not null, get the one matched with the version(commit).
         /// </summary>
-        public static Task<(string path, DependencyGit git)> TryGetGit(string remote, string branch, string commit)
+        public static async Task<(string path, DependencyGit git)> TryGetGit(string remote, string branch, string commit)
         {
-            return DependencySlotPool.TryGetSlot<DependencyGit>(remote, gits =>
+            var (path, slot) = await DependencySlotPool.TryGetSlot<DependencyGit>(remote, gits =>
             {
                 var filteredGits = gits.Where(i => i.Branch == branch);
                 if (!string.IsNullOrEmpty(commit))
@@ -28,6 +28,11 @@ namespace Microsoft.Docs.Build
 
                 return filteredGits.ToList();
             });
+
+            if (!string.IsNullOrEmpty(path))
+                path = Path.Combine(AppData.GetGitDir(remote), path);
+
+            return !Directory.Exists(path) ? default : (path, slot);
         }
 
         /// <summary>
@@ -67,8 +72,15 @@ namespace Microsoft.Docs.Build
             return (path, gitVersion, git);
         }
 
-        public static Task<(string path, DependencyGit git)> AcquireExclusiveGit(string remote, string branch, string commit)
-            => AcquireGit(remote, branch, commit, LockType.Exclusive);
+        public static async Task<(string path, DependencyGit git)> AcquireExclusiveGit(string remote, string branch, string commit)
+        {
+            var (path, git) = await AcquireGit(remote, branch, commit, LockType.Exclusive);
+
+            Debug.Assert(path != null && git != null);
+            path = Path.Combine(AppData.GetGitDir(remote), path);
+
+            return (path, git);
+        }
 
         private static Task<(string path, DependencyGit git)> AcquireGit(string remote, string branch, string commit, LockType type)
         {

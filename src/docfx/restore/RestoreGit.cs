@@ -148,8 +148,8 @@ namespace Microsoft.Docs.Build
                         var gitDependencyLock = dependencyLock?.GetGitLock(remote, branch);
                         headCommit = gitDependencyLock?.Commit ?? headCommit;
 
-                        var (workTreeHead, gitSlot) = await DependencyGitPool.AcquireExclusiveGit(remote, branch, headCommit);
-                        var workTreePath = Path.GetFullPath(Path.Combine(repoPath, "../", workTreeHead)).Replace('\\', '/');
+                        var (workTreePath, gitSlot) = await DependencyGitPool.AcquireExclusiveGit(remote, branch, headCommit);
+                        workTreePath = Path.GetFullPath(workTreePath).Replace('\\', '/');
                         var restored = true;
 
                         try

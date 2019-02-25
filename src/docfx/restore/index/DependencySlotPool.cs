@@ -44,13 +44,13 @@ namespace Microsoft.Docs.Build
                     if (slot != null)
                     {
                         slot.LastAccessDate = DateTime.UtcNow;
-                        path = PathUtility.NormalizeFile(Path.Combine(restoreDir, $"{slot.Id}"));
+                        path = $"{slot.Id}";
                     }
 
                     WriteSlots(restoreDir, slots.ToList());
                 });
 
-            return !Directory.Exists(path) ? default : (path, slot);
+            return (path, slot);
         }
 
         public static async Task ReleaseSlot<T>(T slot, LockType lockType, bool successed = true) where T : DependencySlot
