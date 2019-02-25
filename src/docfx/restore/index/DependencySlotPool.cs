@@ -34,7 +34,8 @@ namespace Microsoft.Docs.Build
                     // found latest restored slot
                     foreach (var i in filteredSlots.OrderByDescending(i => i.LastAccessDate))
                     {
-                        if (i.Restored && !await ProcessUtility.IsExclusiveLockHeld(GetLockKey(remote, i.Id)))
+                        if (i.Restored /*restored successfully*/ &&
+                        !await ProcessUtility.IsExclusiveLockHeld(GetLockKey(remote, i.Id)) /*not being used for restoring*/)
                         {
                             slot = i;
                             break;
