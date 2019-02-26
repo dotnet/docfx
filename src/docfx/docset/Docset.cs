@@ -118,22 +118,21 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(dependencyLock != null);
 
-            if (!isDependency && !string.Equals(locale, config.Localization.DefaultLocale, StringComparison.OrdinalIgnoreCase))
+            if (!isDependency && !string.Equals(Locale, Config.Localization.DefaultLocale, StringComparison.OrdinalIgnoreCase))
             {
                 // localization/fallback docset will share the same context, config, build locale and options with source docset
                 // source docset configuration will be overwritten by build locale overwrite configuration
                 if (LocalizationUtility.TryGetSourceDocsetPath(this, out var sourceDocsetPath, out var sourceBranch, out _))
                 {
                     var repo = Repository.Create(sourceDocsetPath, sourceBranch);
-                    FallbackDocset = new Docset(report, sourceDocsetPath, locale, config, options, dependencyLock, repo, localizedDocset: this, isDependency: true);
+                    FallbackDocset = new Docset(_report, sourceDocsetPath, Locale, Config, _options, DependencyLock, repo, localizedDocset: this, isDependency: true);
                 }
-                else if (LocalizationUtility.TryGetLocalizedDocsetPath(this, config, locale, out var localizationDocsetPath, out var localizationBranch, out var localizationDependencyLock))
+                else if (LocalizationUtility.TryGetLocalizedDocsetPath(this, Config, Locale, out var localizationDocsetPath, out var localizationBranch, out var localizationDependencyLock))
                 {
                     var repo = Repository.Create(localizationDocsetPath, localizationBranch);
-                    LocalizationDocset = new Docset(report, localizationDocsetPath, locale, config, options, dependencyLock, repo, fallbackDocset: this, isDependency: true);
+                    LocalizationDocset = new Docset(_report, localizationDocsetPath, Locale, Config, _options, DependencyLock, repo, fallbackDocset: this, isDependency: true);
                 }
             }
-
         }
 
         private Docset(
