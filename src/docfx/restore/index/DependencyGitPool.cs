@@ -64,11 +64,9 @@ namespace Microsoft.Docs.Build
             var released = true;
             foreach (var gitVersion in dependencyLock.Git)
             {
-                if (_acquiredGits.TryGetValue((gitVersion.Key, gitVersion.Value.Commit, LockType.Shared), out var gitInfo))
-                {
-                    released &= await DependencySlotPool.ReleaseSlot(gitInfo.git, LockType.Shared);
-                }
-
+                var contains = _acquiredGits.TryGetValue((gitVersion.Key, gitVersion.Value.Commit, LockType.Shared), out var gitInfo);
+                Debug.Assert(contains);
+                released &= await DependencySlotPool.ReleaseSlot(gitInfo.git, LockType.Shared);
                 released &= await ReleaseSharedGits(gitVersion.Value);
             }
 
