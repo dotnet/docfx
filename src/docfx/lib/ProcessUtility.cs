@@ -328,13 +328,11 @@ namespace Microsoft.Docs.Build
 
             var lockPath = Path.Combine(AppData.MutexRoot, HashUtility.GetMd5Hash(mutexName));
 
-            // avoid the RunInsideMutex to be nested used
-            // doesn't support to require a lock before releasing a lock
-            // which may cause deadlock
+            // avoid the RunInsideMutex to be nested used with same mutex name
             t_innerCall.Value = t_innerCall.Value ?? new HashSet<string>();
             if (!t_innerCall.Value.Add(lockPath))
             {
-                throw new NotImplementedException($"Nested call to RunInsideMutex is not detected, {mutexName}");
+                throw new ApplicationException($"Nested call to RunInsideMutex is detected, mutex name: {mutexName}");
             }
 
             try
