@@ -16,6 +16,8 @@ namespace Microsoft.Docs.Build
         public static async Task Run(string docsetPath, CommandLineOptions options, Report report)
         {
             var repository = Repository.Create(docsetPath);
+            Telemetry.SetRepository(repository?.Remote, repository?.Branch);
+
             var locale = LocalizationUtility.GetLocale(repository, options);
             var dependencyLock = await LoadBuildDependencyLock(docsetPath, locale, repository, options);
             var dependencyGitPool = new DependencyGitPool();
@@ -34,7 +36,6 @@ namespace Microsoft.Docs.Build
         private static async Task Run(string docsetPath, Repository repository, string locale, CommandLineOptions options, Report report, DependencyLockModel dependencyLock, DependencyGitPool dependencyGitPool)
         {
             XrefMap xrefMap = null;
-            Telemetry.SetRepository(repository?.Remote, repository?.Branch);
             var (configErrors, config) = GetBuildConfig(docsetPath, repository, options, dependencyLock, dependencyGitPool);
             report.Configure(docsetPath, config);
 
@@ -243,8 +244,7 @@ namespace Microsoft.Docs.Build
 
             Debug.Assert(dependencyLock != null);
             var (sourceDocsetPath, _) = dependencyGitPool.AcquireSharedGit(sourceRemote, sourceBranch, dependencyLock);
-            var (sourceErrors, sourceConfig) = ConfigLoader.Load(sourceDocsetPath, options, locale);
-            return (sourceErrors, sourceConfig);
+            return ConfigLoader.Load(sourceDocsetPath, options, locale);
         }
 
         private static Docset GetBuildDocset(Docset sourceDocset)

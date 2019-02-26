@@ -128,12 +128,12 @@ namespace Microsoft.Docs.Build
                 if (LocalizationUtility.TryGetSourceDocsetPath(this, dependencyGitPool, out var sourceDocsetPath, out var sourceBranch, out _))
                 {
                     var repo = Repository.Create(sourceDocsetPath, sourceBranch);
-                    FallbackDocset = new Docset(_report, sourceDocsetPath, Locale, Config, _options, DependencyLock, dependencyGitPool, repo, localizedDocset: this, isDependency: true);
+                    FallbackDocset = new Docset(_report, sourceDocsetPath, Locale, Config, _options, DependencyLock, _dependencyGitPool, repo, localizedDocset: this, isDependency: true);
                 }
                 else if (LocalizationUtility.TryGetLocalizedDocsetPath(this, dependencyGitPool, Config, Locale, out var localizationDocsetPath, out var localizationBranch, out var localizationDependencyLock))
                 {
                     var repo = Repository.Create(localizationDocsetPath, localizationBranch);
-                    LocalizationDocset = new Docset(_report, localizationDocsetPath, Locale, Config, _options, DependencyLock, dependencyGitPool, repo, fallbackDocset: this, isDependency: true);
+                    LocalizationDocset = new Docset(_report, localizationDocsetPath, Locale, Config, _options, DependencyLock, _dependencyGitPool, repo, fallbackDocset: this, isDependency: true);
                 }
             }
         }
