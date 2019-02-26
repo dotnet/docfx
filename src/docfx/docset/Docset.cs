@@ -185,8 +185,8 @@ namespace Microsoft.Docs.Build
 
             _dependencyDocsets = new Lazy<IReadOnlyDictionary<string, Docset>>(() =>
             {
-                var (errors, dependencies) = LoadDependencies(_report, Config, Locale, DependencyLock, options);
-                _report.Write(config.ConfigFileName, errors);
+                var (errors, dependencies) = LoadDependencies(_report, Config, Locale, DependencyLock, _options);
+                _report.Write(Config.ConfigFileName, errors);
                 return dependencies;
             });
 
