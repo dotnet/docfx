@@ -121,13 +121,13 @@ $@"<div class=""tabGroup"" id=""tabgroup_{groupId}"" sourceFile=""Topic.md"" sou
 
 <table sourceFile=""Topic.md"" sourceStartLineNumber=""3"">
 <thead>
-<tr>
+<tr sourceFile=""Topic.md"" sourceStartLineNumber=""3"">
 <th sourceFile=""Topic.md"" sourceStartLineNumber=""3"">a</th>
 <th sourceFile=""Topic.md"" sourceStartLineNumber=""3"">b</th>
 </tr>
 </thead>
 <tbody>
-<tr>
+<tr sourceFile=""Topic.md"" sourceStartLineNumber=""5"">
 <td sourceFile=""Topic.md"" sourceStartLineNumber=""5"">c</td>
 <td sourceFile=""Topic.md"" sourceStartLineNumber=""5"">d</td>
 </tr>
