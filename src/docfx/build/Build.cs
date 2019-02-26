@@ -30,7 +30,7 @@ namespace Microsoft.Docs.Build
                 return;
 
             var errors = new List<Error>();
-            var docset = GetBuildDocset(await Docset.Create(report, docsetPath, locale, config, options, dependencyLock, repository));
+            var docset = GetBuildDocset(new Docset(report, docsetPath, locale, config, options, dependencyLock, repository));
             var outputPath = Path.Combine(docsetPath, config.Output.Path);
 
             using (var context = await Context.Create(outputPath, report, docset, () => xrefMap))
