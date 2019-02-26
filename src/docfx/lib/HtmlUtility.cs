@@ -108,7 +108,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public static string TransformLinks(this string html, Func<string, string> transform)
+        public static string TransformLinks(string html, Func<string, string> transform)
         {
             // Fast pass it does not have <a> tag or <img> tag
             if (!((html.Contains("<a", StringComparison.OrdinalIgnoreCase) && html.Contains("href", StringComparison.OrdinalIgnoreCase)) ||
@@ -140,10 +140,10 @@ namespace Microsoft.Docs.Build
                 {
                     result.Append(html, pos, link.ValueStartIndex - pos);
                 }
-                var transformed = transform(link.Value);
+                var transformed = transform(HttpUtility.HtmlDecode(link.Value));
                 if (!string.IsNullOrEmpty(transformed))
                 {
-                    result.Append(HttpUtility.HtmlAttributeEncode(transformed));
+                    result.Append(HttpUtility.HtmlEncode(transformed));
                 }
                 pos = link.ValueStartIndex + link.ValueLength;
             }

@@ -2,9 +2,11 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,7 +18,155 @@ namespace Microsoft.Docs.Build
     /// </summary>
     internal static class ProcessUtility
     {
-        private static AsyncLocal<object> t_innerCall = new AsyncLocal<object>();
+        private const int _defaultLockExpireTimeInSecond = 60 * 60 * 6; /*six hours*/
+        private static AsyncLocal<string> t_innerCall = new AsyncLocal<string>();
+
+        public static async Task<bool> IsExclusiveLockHeld(string lockName)
+        {
+            Debug.Assert(!string.IsNullOrEmpty(lockName));
+
+            var lockPath = GetLockFilePath(lockName);
+            return FilterExpiredAcquirers(await ReadFile<LockInfo>(lockPath) ?? new LockInfo()).Type == LockType.Exclusive;
+        }
+
+        /// <summary>
+        /// Acquire a shared lock for input lock name
+        /// The returned `acquirer` are used for tracking the acquired lock, instead of thread info, since the thread info may change in asynchronous programming model
+        /// </summary>
+        public static async Task<(bool acquired, string acquirer)> AcquireSharedLock(string lockName)
+        {
+            Debug.Assert(!string.IsNullOrEmpty(lockName));
+
+            var acquired = false;
+            var acquirer = (string)null;
+            var lockPath = GetLockFilePath(lockName);
+
+            await ReadAndWriteFile<LockInfo>(lockPath, lockInfo =>
+            {
+                lockInfo = lockInfo ?? new LockInfo();
+                lockInfo = FilterExpiredAcquirers(lockInfo);
+
+                if (lockInfo.Type == LockType.Exclusive)
+                {
+                    return Task.FromResult(lockInfo);
+                }
+
+                acquired = true;
+                acquirer = Guid.NewGuid().ToString();
+                lockInfo.Type = LockType.Shared;
+                lockInfo.AcquiredBy.Add(new Acquirer { Id = acquirer, Date = DateTime.UtcNow });
+                return Task.FromResult(lockInfo);
+            });
+
+            return (acquired, acquirer);
+        }
+
+        public static async Task<bool> ReleaseSharedLock(string lockName, string acquirer)
+        {
+            Debug.Assert(!string.IsNullOrEmpty(lockName));
+            Debug.Assert(!string.IsNullOrEmpty(acquirer));
+
+            var released = false;
+            var lockPath = GetLockFilePath(lockName);
+
+            await ReadAndWriteFile<LockInfo>(lockPath, lockInfo =>
+            {
+                lockInfo = lockInfo ?? new LockInfo();
+
+                if (lockInfo.Type != LockType.Shared)
+                {
+                    return Task.FromResult(lockInfo);
+                }
+
+                var removed = lockInfo.AcquiredBy.RemoveAll(i => i.Id == acquirer);
+                Debug.Assert(removed <= 1);
+
+                if (removed <= 0)
+                {
+                    return Task.FromResult(lockInfo);
+                }
+
+                if (!lockInfo.AcquiredBy.Any())
+                {
+                    lockInfo.Type = LockType.None;
+                }
+
+                released = true;
+                return Task.FromResult(lockInfo);
+            });
+
+            return released;
+        }
+
+        /// <summary>
+        /// Acquire a exclusive lock for input lock name
+        /// The returned `acquirer` are used for tracking the acquired lock, instead of thread info, since the thread info may change in asynchronous programming model
+        /// </summary>
+        public static async Task<(bool acquired, string acquirer)> AcquireExclusiveLock(string lockName)
+        {
+            Debug.Assert(!string.IsNullOrEmpty(lockName));
+
+            var acquired = false;
+            var acquirer = (string)null;
+            var lockPath = GetLockFilePath(lockName);
+
+            await ReadAndWriteFile<LockInfo>(lockPath, lockInfo =>
+            {
+                lockInfo = lockInfo ?? new LockInfo();
+                lockInfo = FilterExpiredAcquirers(lockInfo);
+
+                if (lockInfo.Type != LockType.None)
+                {
+                    return Task.FromResult(lockInfo);
+                }
+
+                acquirer = Guid.NewGuid().ToString();
+                acquired = true;
+                lockInfo.Type = LockType.Exclusive;
+                lockInfo.AcquiredBy = new List<Acquirer> { new Acquirer { Id = acquirer, Date = DateTime.UtcNow } };
+                return Task.FromResult(lockInfo);
+            });
+
+            return (acquired, acquirer);
+        }
+
+        public static async Task<bool> ReleaseExclusiveLock(string lockName, string acquirer)
+        {
+            Debug.Assert(!string.IsNullOrEmpty(lockName));
+            Debug.Assert(!string.IsNullOrEmpty(acquirer));
+
+            var released = false;
+            var lockPath = GetLockFilePath(lockName);
+
+            await ReadAndWriteFile<LockInfo>(lockPath, lockInfo =>
+            {
+                lockInfo = lockInfo ?? new LockInfo();
+
+                if (lockInfo.Type != LockType.Exclusive)
+                {
+                    return Task.FromResult(lockInfo);
+                }
+
+                Debug.Assert(lockInfo.AcquiredBy.Count == 1);
+                var removed = lockInfo.AcquiredBy.RemoveAll(i => i.Id == acquirer);
+                Debug.Assert(removed <= 1);
+
+                if (removed <= 0)
+                {
+                    return Task.FromResult(lockInfo);
+                }
+
+                if (!lockInfo.AcquiredBy.Any())
+                {
+                    lockInfo.Type = LockType.None;
+                }
+
+                released = true;
+                return Task.FromResult(lockInfo);
+            });
+
+            return released;
+        }
 
         /// <summary>
         /// Start a new process and wait for its execution asynchroniously
@@ -97,6 +247,27 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
+        /// Reads the content of a file, update content and write back to file in one atomic operation
+        /// </summary>
+        public static async Task ReadAndWriteFile<T>(string path, Func<T, Task<T>> update)
+        {
+            await RunInsideMutex(path, async () =>
+            {
+                using (var fs = File.Open(path, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None))
+                {
+                    var streamReader = new StreamReader(fs);
+                    var result = JsonUtility.Deserialize<T>(streamReader.ReadToEnd());
+
+                    fs.SetLength(0);
+                    var updatedResult = await update(result);
+                    var steamWriter = new StreamWriter(fs);
+                    steamWriter.Write(JsonUtility.Serialize(updatedResult));
+                    steamWriter.Close();
+                }
+            });
+        }
+
+        /// <summary>
         /// Reads the content of a file.
         /// When used together with <see cref="WriteFile(string,string)"/>, provides inter-process synchronized access to the file.
         /// </summary>
@@ -111,12 +282,15 @@ namespace Microsoft.Docs.Build
             return result;
         }
 
+        public static Task<T> ReadFile<T>(string path)
+            => ReadFile(path, stream => JsonUtility.Deserialize<T>(new StreamReader(stream).ReadToEnd()));
+
         public static async Task<T> ReadFile<T>(string path, Func<Stream, T> read)
         {
             T result = default;
             await RunInsideMutex(path, () =>
             {
-                using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read, 1024, FileOptions.SequentialScan))
+                using (var fs = new FileStream(path, FileMode.OpenOrCreate, FileAccess.Read, FileShare.Read, 1024, FileOptions.SequentialScan))
                 {
                     result = read(fs);
                     return Task.CompletedTask;
@@ -162,22 +336,19 @@ namespace Microsoft.Docs.Build
         public static async Task RunInsideMutex(string mutexName, Func<Task> action)
         {
             Debug.Assert(!string.IsNullOrEmpty(mutexName));
+            var lockPath = Path.Combine(AppData.MutexRoot, HashUtility.GetMd5Hash(mutexName));
 
-            // avoid the RunInsideMutex to be nested used
-            // doesn't support to require a lock before releasing a lock
-            // which may cause deadlock
-            if (t_innerCall.Value != null)
+            // avoid the RunInsideMutex to be nested used which cause deadlock
+            if (t_innerCall.Value != null && t_innerCall.Value == lockPath)
             {
-                throw new NotImplementedException("Nested call to RunInsideMutex is not supported yet");
+                throw new NotImplementedException("Nested call to RunInsideMutex is detected");
             }
 
-            t_innerCall.Value = new object();
+            t_innerCall.Value = lockPath;
 
             try
             {
                 Directory.CreateDirectory(AppData.MutexRoot);
-
-                var lockPath = Path.Combine(AppData.MutexRoot, HashUtility.GetMd5Hash(mutexName));
 
                 using (await RetryUntilSucceed(mutexName, IsFileAlreadyExistsException, CreateFile))
                 {
@@ -250,6 +421,48 @@ namespace Microsoft.Docs.Build
                     retryDelay = Math.Min(retryDelay + 100, 1000);
                 }
             }
+        }
+
+        private static string GetLockFilePath(string lockName)
+        {
+            Directory.CreateDirectory(AppData.MutexRoot);
+            var lockPath = Path.Combine(AppData.MutexRoot, HashUtility.GetMd5Hash(lockName) + "-rw");
+            return lockPath;
+        }
+
+        private static LockInfo FilterExpiredAcquirers(LockInfo lockInfo)
+        {
+            Debug.Assert(lockInfo != null);
+
+            lockInfo.AcquiredBy.RemoveAll(r => DateTime.UtcNow - r.Date > TimeSpan.FromSeconds(_defaultLockExpireTimeInSecond));
+
+            if (!lockInfo.AcquiredBy.Any())
+            {
+                lockInfo.Type = LockType.None;
+            }
+
+            return lockInfo;
+        }
+
+        private enum LockType
+        {
+            None,
+            Shared,
+            Exclusive,
+        }
+
+        private class LockInfo
+        {
+            public LockType Type { get; set; }
+
+            public List<Acquirer> AcquiredBy { get; set; } = new List<Acquirer>();
+        }
+
+        private class Acquirer
+        {
+            public string Id { get; set; }
+
+            public DateTime Date { get; set; }
         }
     }
 }

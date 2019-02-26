@@ -115,7 +115,7 @@ namespace Microsoft.Docs.Build
         ///     the opening sequence of, characters must be followed by a space or by the end of line
         ///   - The toc syntax '# @b abc' is invalid, multiple inlines in one heading block is not allowed
         /// </summary>
-        public static Error InvalidTocSyntax(in Range range, string filePath, string syntax, string hint = null)
+        public static Error InvalidTocSyntax(in Range range, string filePath, string syntax = null, string hint = null)
             => new Error(ErrorLevel.Error, "invalid-toc-syntax", $"The toc syntax '{syntax}' is invalid, {hint ?? "the opening sequence of # characters must be followed by a space or by the end of line"}. Refer to [ATX heading](https://spec.commonmark.org/0.28/#atx-heading) to fix it", filePath, range);
 
         /// <summary>

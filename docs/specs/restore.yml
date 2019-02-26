@@ -89,9 +89,11 @@ inputs:
   docfx.yml: |
     dependencies:
       dep: https://github.com/docascode/docfx-test-dependencies#bad-branch
+  docs/a.md: |
+    [test](dep/abc)
 outputs:
   build.log: |
-    ["error","need-restore","Cannot find dependency 'https://github.com/docascode/docfx-test-dependencies#bad-branch', did you forget to run `docfx restore`?"]
+    ["error","need-restore","Cannot find dependency 'https://github.com/docascode/docfx-test-dependencies#bad-branch', did you forget to run `docfx restore`?","docs/a.md"]
 ---
 # Show error when dependent URL can't be found
 commands:
@@ -234,7 +236,7 @@ outputs:
        "!downloads": null
     }
 ---
-# restore with sub dependency lock only
+# restore with sub dependency lock only, sub dependency lock doesn't work
 repos:
   https://docs.com/lock2/a#master:
     - files:
@@ -275,14 +277,14 @@ repos:
         docs/dep2.md: "233333"
 outputs:
   docs/a.json: |
-    {"content":"<p>&quot;abc&quot;</p>\n<p>233333</p>"}
+    {"content":"<p>&quot;abc&quot;</p>\n<p>2333</p>"}
   ~/.non-exist.json: |
     {
       "git": {
         "https://docs.com/lock2/b#master": {
           "git": {
             "https://docs.com/lock2/c#master": {
-              "commit": "8720d784fb99abcbdfa922025b8bcc060f0f622a"
+              "commit": "c5969737496ff42854a019f982882d5fac486a56"
             }
           },
           "!downloads": null,

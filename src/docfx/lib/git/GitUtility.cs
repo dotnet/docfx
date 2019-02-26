@@ -91,6 +91,12 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
+        /// checkout existing git repository to specificed committish
+        /// </summary>
+        public static Task Checkout(string path, string committish)
+            => ExecuteNonQuery(path, $"-c core.longpaths=true checkout --force --progress {committish}");
+
+        /// <summary>
         /// Clones or update a git repository to the latest version.
         /// </summary>
         public static async Task CloneOrUpdate(string path, string url, string committish, Config config = null)
@@ -284,8 +290,10 @@ namespace Microsoft.Docs.Build
                 throw new InvalidOperationException($"Cannot initialize a git repo at {path}");
             }
 
+            Telemetry.TrackCacheTotalCount(TelemetryName.GitRepositoryCache);
             if (git_remote_create(out var remote, repo, "origin", url) == 0)
             {
+                Telemetry.TrackCacheMissCount(TelemetryName.GitRepositoryCache);
                 git_remote_free(remote);
             }
 

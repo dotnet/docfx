@@ -26,11 +26,23 @@ namespace Microsoft.Docs.Build
                 try
                 {
                     PrintFatalErrorMessage(ex);
+                    Telemetry.TrackException(ex);
                 }
                 catch
                 {
                 }
                 return 1;
+            }
+            finally
+            {
+                try
+                {
+                    Telemetry.Flush();
+                }
+                catch (Exception ex)
+                {
+                    PrintFatalErrorMessage(ex);
+                }
             }
         }
 
@@ -54,12 +66,12 @@ namespace Microsoft.Docs.Build
                     {
                         case "restore":
                             await Restore.Run(docset, options, report);
-                            Done(stopwatch.Elapsed, report);
+                            Done(command, stopwatch.Elapsed, report);
                             break;
                         case "build":
                             await Restore.Run(docset, options, report, @implicit: true);
                             await Build.Run(docset, options, report);
-                            Done(stopwatch.Elapsed, report);
+                            Done(command, stopwatch.Elapsed, report);
                             break;
                         case "watch":
                             await Restore.Run(docset, options, report, @implicit: true);
@@ -67,7 +79,7 @@ namespace Microsoft.Docs.Build
                             break;
                         case "gc":
                             await GarbageCollector.Collect(options.RetentionDays);
-                            Done(stopwatch.Elapsed, report);
+                            Done(command, stopwatch.Elapsed, report);
                             break;
                     }
                     return 0;
@@ -127,15 +139,17 @@ namespace Microsoft.Docs.Build
             return (command, docset, options);
         }
 
-        private static void Done(TimeSpan duration, Report report)
+        private static void Done(string command, TimeSpan duration, Report report)
         {
+            Telemetry.TrackOperationTime(command, duration);
+
 #pragma warning disable CA2002 // Do not lock on objects with weak identity
             lock (Console.Out)
 #pragma warning restore CA2002
             {
                 Console.ResetColor();
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine($"Done in {Progress.FormatTimeSpan(duration)}");
+                Console.WriteLine($"{char.ToUpperInvariant(command[0])}{command.Substring(1)} done in {Progress.FormatTimeSpan(duration)}");
 
                 if (report.ErrorCount > 0 || report.WarningCount > 0)
                 {

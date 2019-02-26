@@ -24,6 +24,13 @@ namespace Microsoft.Docs.Build
 
             var (errors, schema, model, metadata) = await Load(context, file, buildChild);
 
+            if (!string.IsNullOrEmpty(metadata.BreadcrumbPath))
+            {
+                var (breadcrumbError, breadcrumbPath, _) = context.DependencyResolver.ResolveLink(metadata.BreadcrumbPath, file, file, buildChild);
+                errors.AddIfNotNull(breadcrumbError);
+                metadata.BreadcrumbPath = breadcrumbPath;
+            }
+
             model.SchemaType = schema.Name;
             model.Locale = file.Docset.Locale;
             model.Metadata = metadata;

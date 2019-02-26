@@ -85,22 +85,21 @@ namespace Microsoft.Docs.Build
                 var depthOne = group.All(g => (g.flags & GitFlags.DepthOne) != 0) && !(dependencyLock?.ContainsGitLock(remote) ?? false);
                 var branchesToFetch = new HashSet<string>(branches);
 
-                if (@implicit)
+                foreach (var branch in branches)
                 {
-                    foreach (var branch in branches)
+                    var gitVersion = (dependencyLock?.GetGitLock(remote, branch))?.value;
+                    if (@implicit || string.IsNullOrEmpty(gitVersion?.Commit))
                     {
-                        var gitVersion = dependencyLock?.GetGitLock(remote, branch);
-                        if (RestoreMap.TryGetGitRestorePath(remote, branch, gitVersion, out var existingPath))
+                        var (existingPath, git) = await DependencyGitPool.TryGetGit(remote, branch, gitVersion?.Commit);
+                        if (!string.IsNullOrEmpty(existingPath))
                         {
-                            {
-                                branchesToFetch.Remove(branch);
-                                subChildren.Add(new RestoreChild(
-                                    existingPath,
-                                    remote,
-                                    branch,
-                                    gitVersion,
-                                    new DependencyVersion(gitVersion?.Commit ?? Path.GetFileName(existingPath).Split("-").Last())));
-                            }
+                            branchesToFetch.Remove(branch);
+                            subChildren.Add(new RestoreChild(
+                                existingPath,
+                                remote,
+                                branch,
+                                gitVersion,
+                                new DependencyVersion(git.Commit)));
                         }
                     }
                 }
@@ -146,22 +145,42 @@ namespace Microsoft.Docs.Build
                             throw Errors.CommittishNotFound(remote, branch).ToException();
                         }
 
-                        var gitDependencyLock = dependencyLock?.GetGitLock(remote, branch);
+                        var gitDependencyLock = (dependencyLock?.GetGitLock(remote, branch))?.value;
                         headCommit = gitDependencyLock?.Commit ?? headCommit;
 
-                        var workTreeHead = $"{GetWorkTreeHeadPrefix(branch, !string.IsNullOrEmpty(gitDependencyLock?.Commit))}{headCommit}";
-                        var workTreePath = Path.GetFullPath(Path.Combine(repoPath, "../", workTreeHead)).Replace('\\', '/');
+                        var (workTreePath, gitSlot) = await DependencyGitPool.AcquireExclusiveGit(remote, branch, headCommit);
+                        workTreePath = Path.GetFullPath(workTreePath).Replace('\\', '/');
+                        var restored = true;
 
-                        if (existingWorkTreePath.TryAdd(workTreePath))
+                        try
                         {
-                            try
+                            if (existingWorkTreePath.TryAdd(workTreePath))
                             {
-                                await GitUtility.AddWorkTree(repoPath, headCommit, workTreePath);
+                                // create new worktree
+                                try
+                                {
+                                    await GitUtility.AddWorkTree(repoPath, headCommit, workTreePath);
+                                }
+                                catch (Exception ex)
+                                {
+                                    throw Errors.GitCloneFailed(remote, branches).ToException(ex);
+                                }
                             }
-                            catch (Exception ex)
+                            else
                             {
-                                throw Errors.GitCloneFailed(remote, branches).ToException(ex);
+                                // worktree already exists
+                                // checkout to {headCommit}, no need to fetch
+                                await GitUtility.Checkout(workTreePath, headCommit);
                             }
+                        }
+                        catch
+                        {
+                            restored = false;
+                            throw;
+                        }
+                        finally
+                        {
+                            await DependencySlotPool.ReleaseSlot(gitSlot, LockType.Exclusive, restored);
                         }
 
                         subChildren.Add(new RestoreChild(workTreePath, remote, branch, gitDependencyLock, new DependencyVersion(headCommit)));
@@ -184,7 +203,7 @@ namespace Microsoft.Docs.Build
         {
             var dependencies = config.Dependencies.Values.Select(url =>
             {
-                var (remote, branch) = HrefUtility.SplitGitHref(url);
+                var (remote, branch, _) = HrefUtility.SplitGitHref(url);
                 return (remote, branch, GitFlags.DepthOne);
             });
 
