@@ -11,7 +11,7 @@ namespace Microsoft.Docs.Build
 {
     internal class DependencyGitPool
     {
-        private Dictionary<(string remote, string commit, LockType lockType), (string path, DependencyGit git)> _acquiredGits = new Dictionary<(string remote, string commit, LockType lockType), (string path, DependencyGit git)>();
+        private Dictionary<(string remote, string commit, LockType lockType), (string path, DependencyGit git, bool released)> _acquiredGits = new Dictionary<(string remote, string commit, LockType lockType), (string path, DependencyGit git, bool released)>();
 
         /// <summary>
         /// Acquired all shared git based on dependency lock
@@ -31,7 +31,7 @@ namespace Microsoft.Docs.Build
                     {
                         var (remote, branch, _) = HrefUtility.SplitGitHref(gitVersion.Key);
                         var (path, git) = await AcquireGit(remote, branch, gitVersion.Value.Commit, LockType.Shared);
-                        _acquiredGits[(gitVersion.Key, gitVersion.Value.Commit/*commit*/, LockType.Shared)] = (path, git);
+                        _acquiredGits[(gitVersion.Key, gitVersion.Value.Commit/*commit*/, LockType.Shared)] = (path, git, false);
                         gits.Add(git);
                     }
 
@@ -64,9 +64,13 @@ namespace Microsoft.Docs.Build
             var released = true;
             foreach (var gitVersion in dependencyLock.Git)
             {
-                var contains = _acquiredGits.TryGetValue((gitVersion.Key, gitVersion.Value.Commit, LockType.Shared), out var gitInfo);
-                Debug.Assert(contains);
-                released &= await DependencySlotPool.ReleaseSlot(gitInfo.git, LockType.Shared);
+                var contained = _acquiredGits.TryGetValue((gitVersion.Key, gitVersion.Value.Commit, LockType.Shared), out var gitSlot);
+                Debug.Assert(contained);
+                if (!gitSlot.released)
+                {
+                    released &= await DependencySlotPool.ReleaseSlot(gitSlot.git, LockType.Shared);
+                    _acquiredGits[(gitVersion.Key, gitVersion.Value.Commit, LockType.Shared)] = (gitSlot.path, gitSlot.git, true);
+                }
                 released &= await ReleaseSharedGits(gitVersion.Value);
             }
 
@@ -99,7 +103,7 @@ namespace Microsoft.Docs.Build
                 throw Errors.NeedRestore($"{remote}#{branch}").ToException();
             }
 
-            if (_acquiredGits.TryGetValue((key, gitVersion.Commit, LockType.Shared), out var gitInfo))
+            if (!_acquiredGits.TryGetValue((key, gitVersion.Commit, LockType.Shared), out var gitInfo))
             {
                 throw Errors.NeedRestore($"{remote}#{branch}").ToException();
             }
