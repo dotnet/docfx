@@ -90,7 +90,7 @@ namespace Microsoft.Docs.Build
                     var gitVersion = (dependencyLock?.GetGitLock(remote, branch))?.value;
                     if (@implicit || string.IsNullOrEmpty(gitVersion?.Commit))
                     {
-                        var (existingPath, git) = await DependencyGitPool.TryGetGit(remote, branch, gitVersion?.Commit);
+                        var (existingPath, git) = await DependencyGitPool.TryGetGitRestorePath(remote, branch, gitVersion?.Commit);
                         if (!string.IsNullOrEmpty(existingPath))
                         {
                             branchesToFetch.Remove(branch);

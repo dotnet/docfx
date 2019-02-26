@@ -182,7 +182,7 @@ namespace Microsoft.Docs.Build
                 Debug.Assert(!string.IsNullOrEmpty(Config.Theme));
 
                 var (themeRemote, themeBranch) = LocalizationUtility.GetLocalizedTheme(Config.Theme, Locale, Config.Localization.DefaultLocale);
-                var (themePath, themeLock) = _dependencyGitPool.AcquireSharedGit($"{themeRemote}#{themeBranch}", DependencyLock);
+                var (themePath, themeLock) = _dependencyGitPool.GetGitRestorePath($"{themeRemote}#{themeBranch}", DependencyLock);
                 Log.Write($"Using theme '{themeRemote}#{themeLock.Commit}' at '{themePath}'");
 
                 return new TemplateEngine(themePath, Locale);
@@ -299,7 +299,7 @@ namespace Microsoft.Docs.Build
             var result = new Dictionary<string, Docset>(config.Dependencies.Count, PathUtility.PathComparer);
             foreach (var (name, url) in config.Dependencies)
             {
-                var (dir, subLock) = dependencyGitPool.AcquireSharedGit(url, dependencyLock);
+                var (dir, subLock) = dependencyGitPool.GetGitRestorePath(url, dependencyLock);
 
                 // get dependent docset config or default config
                 // todo: what parent config should be pass on its children

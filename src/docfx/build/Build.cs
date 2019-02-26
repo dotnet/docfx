@@ -238,12 +238,11 @@ namespace Microsoft.Docs.Build
         {
             if (ConfigLoader.TryGetConfigPath(docset, out _) || !LocalizationUtility.TryGetSourceRepository(repository, out var sourceRemote, out var sourceBranch, out var locale))
             {
-                var (errors, config) = ConfigLoader.Load(docset, options);
-                return (errors, config);
+                return ConfigLoader.Load(docset, options);
             }
 
             Debug.Assert(dependencyLock != null);
-            var (sourceDocsetPath, _) = dependencyGitPool.AcquireSharedGit(sourceRemote, sourceBranch, dependencyLock);
+            var (sourceDocsetPath, _) = dependencyGitPool.GetGitRestorePath(sourceRemote, sourceBranch, dependencyLock);
             return ConfigLoader.Load(sourceDocsetPath, options, locale);
         }
 

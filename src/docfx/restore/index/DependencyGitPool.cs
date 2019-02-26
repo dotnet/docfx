@@ -83,16 +83,16 @@ namespace Microsoft.Docs.Build
         /// Acquire restored git repository path, dependencyLock and git slot with url and dependency lock
         /// The dependency lock must be loaded before using this method
         /// </summary>
-        public (string path, DependencyLockModel subDependencyLock) AcquireSharedGit(string url, DependencyLockModel dependencyLock)
+        public (string path, DependencyLockModel subDependencyLock) GetGitRestorePath(string url, DependencyLockModel dependencyLock)
         {
             var (remote, branch, _) = HrefUtility.SplitGitHref(url);
-            return AcquireSharedGit(remote, branch, dependencyLock);
+            return GetGitRestorePath(remote, branch, dependencyLock);
         }
 
         /// <summary>
         /// The dependency lock must be loaded before using this method
         /// </summary>
-        public (string path, DependencyLockModel subDependencyLock) AcquireSharedGit(string remote, string branch, DependencyLockModel dependencyLock)
+        public (string path, DependencyLockModel subDependencyLock) GetGitRestorePath(string remote, string branch, DependencyLockModel dependencyLock)
         {
             Debug.Assert(dependencyLock != null);
 
@@ -124,7 +124,7 @@ namespace Microsoft.Docs.Build
         /// If the dependency version is null, get the latest one(order by last write time).
         /// If the dependency version is not null, get the one matched with the version(commit).
         /// </summary>
-        public static async Task<(string path, DependencyGit git)> TryGetGit(string remote, string branch, string commit)
+        public static async Task<(string path, DependencyGit git)> TryGetGitRestorePath(string remote, string branch, string commit)
         {
             var (path, slot) = await DependencySlotPool.TryGetSlot<DependencyGit>(remote, gits =>
             {

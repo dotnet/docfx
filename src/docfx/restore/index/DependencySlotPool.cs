@@ -204,7 +204,6 @@ namespace Microsoft.Docs.Build
 
     public enum LockType
     {
-        None,
         Shared,
         Exclusive,
     }

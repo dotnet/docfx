@@ -51,7 +51,7 @@ namespace Microsoft.Docs.Build
                             repo.Branch,
                             locale,
                             config.Localization.DefaultLocale);
-                        (localizationDocsetPath, subDependencyLock) = dependencyGitPool.AcquireSharedGit(locRemote, locBranch, docset.DependencyLock);
+                        (localizationDocsetPath, subDependencyLock) = dependencyGitPool.GetGitRestorePath(locRemote, locBranch, docset.DependencyLock);
                         localizationBranch = locBranch;
                         break;
                     }
@@ -131,7 +131,7 @@ namespace Microsoft.Docs.Build
 
             if (TryGetSourceRepository(docset.Repository, out var sourceRemote, out sourceBranch, out var locale))
             {
-                (sourceDocsetPath, dependencyLock) = dependencyGitPool.AcquireSharedGit(sourceRemote, sourceBranch, docset.DependencyLock);
+                (sourceDocsetPath, dependencyLock) = dependencyGitPool.GetGitRestorePath(sourceRemote, sourceBranch, docset.DependencyLock);
                 return true;
             }
 
