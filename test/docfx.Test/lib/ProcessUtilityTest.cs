@@ -65,22 +65,34 @@ namespace Microsoft.Docs.Build
         [Fact]
         public static async Task NestedRunInMutexTest()
         {
-            // works for one lock one file
-            await ProcessUtility.RunInsideMutex($"process-test/{Guid.NewGuid()}", async () => { await Task.Delay(100); });
-            await ProcessUtility.RunInsideMutex($"process-test/{Guid.NewGuid()}", async () => { await Task.Delay(100); });
-
-            // doesn't work for requiring a lock before releasing a lock
-            await Assert.ThrowsAnyAsync<Exception>(async () =>
-            {
-                await ProcessUtility.RunInsideMutex($"process-test/{Guid.NewGuid()}",
+            // nested run works for different names
+            await ProcessUtility.RunInsideMutex($"process-test/{Guid.NewGuid()}",
+                async () =>
+                {
+                    await ProcessUtility.RunInsideMutex($"process-test/{Guid.NewGuid()}",
                         async () =>
                         {
-                            await ProcessUtility.RunInsideMutex($"process-test/{Guid.NewGuid()}",
-                                async () =>
-                                {
-                                    await Task.Delay(100);
-                                });
+                            await Task.Delay(100);
                         });
+                });
+
+            // nested run doesn't work for sanme lock name
+            await Assert.ThrowsAnyAsync<Exception>(async () =>
+            {
+                var name = Guid.NewGuid().ToString();
+                await ProcessUtility.RunInsideMutex($"process-test/{name}",
+                    async () =>
+                    {
+                        await ProcessUtility.RunInsideMutex($"process-test/{Guid.NewGuid()}",
+                            async () =>
+                            {
+                                await ProcessUtility.RunInsideMutex($"process-test/{name}",
+                                    async () =>
+                                    {
+                                        await Task.Delay(100);
+                                    });
+                            });
+                    });
             });
         }
 
