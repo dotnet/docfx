@@ -88,6 +88,8 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                 BaseDir = Path.GetFullPath(Environment.ExpandEnvironmentVariables(baseDir)),
                 VersionName = parameters.VersionName,
                 ConfigHash = ComputeConfigHash(parameters, markdownServiceContextHash),
+                FileMetadataHash = ComputeFileMetadataHash(parameters.FileMetadata),
+                FileMetadata = parameters.FileMetadata,
                 AttributesFile = IncrementalUtility.CreateRandomFileName(baseDir),
                 DependencyFile = IncrementalUtility.CreateRandomFileName(baseDir),
                 ManifestFile = IncrementalUtility.CreateRandomFileName(baseDir),
@@ -97,6 +99,10 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                 BuildMessageFile = IncrementalUtility.CreateRandomFileName(baseDir),
                 TocRestructionsFile = IncrementalUtility.CreateRandomFileName(baseDir),
             };
+            if (parameters.FileMetadata != null)
+            {
+                cbv.FileMetadataFile = IncrementalUtility.CreateRandomFileName(baseDir);
+            }
             cb.Versions.Add(cbv);
             var context = new IncrementalBuildContext(baseDir, lastBaseDir, lastBuildStartTime, buildInfoIncrementalStatus, parameters, cbv, lbv)
             {
@@ -229,7 +235,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 
                 // scenario: file itself doesn't change but add/remove from docfx.json
                 var lastSrcFiles = (from p in lastFileAttributes
-                                    where p.Value.IsFromSource == true
+                                    where p.Value.IsFromSource
                                     select p.Key).ToList();
                 foreach (var file in _parameters.Changes.Keys.Except(lastSrcFiles, FilePathComparer.OSPlatformSensitiveStringComparer))
                 {
@@ -247,7 +253,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             {
                 // get changelist from lastBuildInfo if user doesn't provide changelist
                 var fileAttributes = CurrentBuildVersionInfo.Attributes;
-                DateTime checkTime = LastBuildStartTime.Value;
+                var checkTime = LastBuildStartTime.Value;
                 foreach (var file in fileAttributes.Keys.Intersect(lastFileAttributes.Keys, FilePathComparer.OSPlatformSensitiveStringComparer))
                 {
                     var last = lastFileAttributes[file];
@@ -279,17 +285,22 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                     _changeDict[file] = ChangeKindWithDependency.Created;
                 }
             }
+
+            Logger.LogVerbose($"Number of files in user-provided change list or detected by last modified time and/or HASH change is {_changeDict.Count(change => change.Value != ChangeKindWithDependency.None)}.");
+
+            LoadFileMetadataChanges();
+
+            Logger.LogVerbose($"Number of files in change list is updated to {_changeDict.Count(change => change.Value != ChangeKindWithDependency.None)} to account for files with file metadata change.");
         }
 
         public List<string> ExpandDependency(DependencyGraph dg, Func<DependencyItem, bool> isValid)
         {
-            var newChanges = new List<string>();
+            var changesCausedByDependency = new List<string>();
 
             if (dg != null)
             {
                 foreach (var change in (from c in _changeDict
-                                        where c.Value != ChangeKindWithDependency.None
-                                        where c.Value != ChangeKindWithDependency.DependencyUpdated
+                                        where c.Value != ChangeKindWithDependency.None && c.Value != ChangeKindWithDependency.DependencyUpdated
                                         select c).ToList())
                 {
                     foreach (var dt in dg.GetAllDependencyTo(change.Key))
@@ -298,17 +309,18 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                         {
                             continue;
                         }
+
                         string from = dt.From.Value;
                         if (!_changeDict.ContainsKey(from))
                         {
                             _changeDict[from] = ChangeKindWithDependency.DependencyUpdated;
-                            newChanges.Add(from);
+                            changesCausedByDependency.Add(from);
                         }
                         else
                         {
                             if (_changeDict[from] == ChangeKindWithDependency.None)
                             {
-                                newChanges.Add(from);
+                                changesCausedByDependency.Add(from);
                             }
                             _changeDict[from] |= ChangeKindWithDependency.DependencyUpdated;
                         }
@@ -316,7 +328,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                 }
             }
 
-            return newChanges;
+            return changesCausedByDependency;
         }
 
         #endregion
@@ -359,6 +371,33 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                             MD5 = item.MD5,
                             IsFromSource = f.IsFromSource,
                         };
+                    }
+                }
+            }
+        }
+
+        public void LoadFileMetadataChanges()
+        {
+            if (CurrentBuildVersionInfo.FileMetadataHash == LastBuildVersionInfo.FileMetadataHash)
+            {
+                return;
+            }
+            var changedGlobs = CurrentBuildVersionInfo.FileMetadata.GetChangedGlobs(LastBuildVersionInfo.FileMetadata).ToArray();
+            if (changedGlobs.Length > 0)
+            {
+                var lastSrcFiles = from p in LastBuildVersionInfo.Attributes
+                                   where p.Value.IsFromSource
+                                   select p.Key;
+
+                foreach (var key in lastSrcFiles)
+                {
+                    var path = RelativePath.GetPathWithoutWorkingFolderChar(key);
+                    if (changedGlobs.Any(g => g.Match(path)))
+                    {
+                        if (_changeDict[key] == ChangeKindWithDependency.None)
+                        {
+                            _changeDict[key] = ChangeKindWithDependency.Updated;
+                        }
                     }
                 }
             }
@@ -567,14 +606,28 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             using (new LoggerPhaseScope("ComputeConfigHash", LogLevel.Diagnostic))
             {
                 var json = JsonConvert.SerializeObject(
-                parameter,
-                new JsonSerializerSettings
+                    parameter,
+                    new JsonSerializerSettings
+                    {
+                        ContractResolver = new IncrementalIgnorePropertiesResolver()
+                    });
+                string configStr = json + "|" + markdownServiceContextHash;
+                Logger.LogVerbose($"Config content: {configStr}");
+                return configStr.GetMd5String();
+            }
+        }
+
+        private static string ComputeFileMetadataHash(FileMetadata fileMetadata)
+        {
+            using (new LoggerPhaseScope("ComputeFileMetadataHash", LogLevel.Diagnostic))
+            {
+                var json = string.Empty;
+                if (fileMetadata != null)
                 {
-                    ContractResolver = new IncrementalIgnorePropertiesResolver()
-                });
-                var config = json + "|" + markdownServiceContextHash;
-                Logger.LogVerbose($"Config content: {config}");
-                return config.GetMd5String();
+                    json = JsonConvert.SerializeObject(fileMetadata, IncrementalUtility.FileMetadataJsonSerializationSettings);
+                }
+                Logger.LogVerbose($"FileMetadata content: {json}");
+                return json.GetMd5String();
             }
         }
 
@@ -588,7 +641,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                     return dg;
                 }
 
-                // reregister dependency types from last dependency graph
+                // re-register dependency types from last dependency graph
                 using (new LoggerPhaseScope("RegisterDependencyTypeFromLastBuild", LogLevel.Diagnostic))
                 {
                     dg.RegisterDependencyType(ldg.DependencyTypes.Values);
@@ -602,71 +655,84 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         {
             string details = null;
             var canIncremental = false;
+            string fullBuildReasonCode = null;
 
             if (lb == null)
             {
                 details = "Cannot build incrementally because last build info is missing.";
+                fullBuildReasonCode = InfoCodes.FullBuildReason.NoAvailableBuildCache;
             }
             else if (cb.DocfxVersion != lb.DocfxVersion)
             {
                 details = $"Cannot build incrementally because docfx version changed from {lb.DocfxVersion} to {cb.DocfxVersion}.";
+                fullBuildReasonCode = InfoCodes.FullBuildReason.DocfxVersionChanged;
             }
             else if (cb.PluginHash != lb.PluginHash)
             {
                 details = "Cannot build incrementally because plugin changed.";
+                fullBuildReasonCode = InfoCodes.FullBuildReason.PluginChanged;
             }
             else if (cb.CommitFromSHA != lb.CommitToSHA)
             {
                 details = $"Cannot build incrementally because commit SHA doesn't match. Last build commit: {lb.CommitToSHA}. Current build commit base: {cb.CommitFromSHA}.";
+                fullBuildReasonCode = InfoCodes.FullBuildReason.CommitShaMismatch;
             }
             else
             {
                 canIncremental = true;
             }
 
-            return new IncrementalStatus { CanIncremental = canIncremental, Details = details };
+            return new IncrementalStatus { CanIncremental = canIncremental, Details = details, FullBuildReasonCode = fullBuildReasonCode };
         }
 
         private bool GetCanVersionIncremental(IncrementalStatus buildInfoIncrementalStatus)
         {
             bool canIncremental;
-            string message;
+            string details;
+            string fullBuildReasonCode;
+
             if (!buildInfoIncrementalStatus.CanIncremental)
             {
-                message = buildInfoIncrementalStatus.Details;
+                details = buildInfoIncrementalStatus.Details;
+                fullBuildReasonCode = buildInfoIncrementalStatus.FullBuildReasonCode;
                 canIncremental = false;
             }
             else if (LastBuildVersionInfo == null)
             {
-                message = $"Cannot build incrementally because last build didn't contain group {Version}.";
+                details = $"Cannot build incrementally because last build didn't contain group {Version}.";
+                fullBuildReasonCode = InfoCodes.FullBuildReason.NoAvailableGroupCache;
                 canIncremental = false;
             }
             else if (CurrentBuildVersionInfo.ConfigHash != LastBuildVersionInfo.ConfigHash)
             {
-                message = "Cannot build incrementally because config changed.";
+                details = "Cannot build incrementally because config changed.";
+                fullBuildReasonCode = InfoCodes.FullBuildReason.ConfigChanged;
                 canIncremental = false;
             }
             else if (_parameters.ForceRebuild)
             {
-                message = "Disable incremental build by force rebuild option.";
+                details = "Disable incremental build by force rebuild option.";
+                fullBuildReasonCode = InfoCodes.FullBuildReason.ForceRebuild;
                 canIncremental = false;
             }
             else
             {
-                message = null;
+                details = null;
                 canIncremental = true;
+                fullBuildReasonCode = null;
             }
 
             var buildStrategy = canIncremental ? InfoCodes.Build.IsIncrementalBuild : InfoCodes.Build.IsFullBuild;
             if (canIncremental)
             {
                 IncrementalInfo.ReportStatus(true, IncrementalPhase.Build);
-                Logger.LogInfo($"Group: {Version}, build strategy: {buildStrategy}", code: buildStrategy);
+                Logger.LogInfo($"Group {Version} will be built incrementally.", code: buildStrategy);
             }
             else
             {
-                IncrementalInfo.ReportStatus(false, IncrementalPhase.Build, message);
-                Logger.LogInfo($"Group: {Version}, build strategy: {buildStrategy}, details: {message}", code: buildStrategy);
+                IncrementalInfo.ReportStatus(false, IncrementalPhase.Build, details, fullBuildReasonCode);
+                Logger.LogInfo($"Group {Version} will be built fully.", code: buildStrategy);
+                Logger.LogInfo($"The reason of full building under group {Version} is: {details}", code: fullBuildReasonCode);
             }
 
             return canIncremental;
@@ -779,12 +845,15 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                 {
                     LoadChanges();
                 }
-                Logger.LogDiagnostic($"Before expanding dependency before build, changes: {JsonUtility.Serialize(ChangeDict, Formatting.Indented)}");
+
+                Logger.LogDiagnostic($"Before expanding dependency before build, changes: {JsonUtility.Serialize(_changeDict, Formatting.Indented)}");
                 using (new LoggerPhaseScope("ExpandDependency", LogLevel.Diagnostic))
                 {
                     ExpandDependency(LastBuildVersionInfo?.Dependency, d => CurrentBuildVersionInfo.Dependency.DependencyTypes[d.Type].Phase == BuildPhase.Compile);
                 }
-                Logger.LogDiagnostic($"After expanding dependency before build, changes: {JsonUtility.Serialize(ChangeDict, Formatting.Indented)}");
+                Logger.LogDiagnostic($"After expanding dependency before build, changes: {JsonUtility.Serialize(_changeDict, Formatting.Indented)}");
+
+                Logger.LogVerbose($"Number of files in change list is updated to {_changeDict.Count(change => change.Value != ChangeKindWithDependency.None)} after expanding dependency.");
             }
         }
 

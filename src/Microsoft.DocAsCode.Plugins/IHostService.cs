@@ -92,6 +92,7 @@ namespace Microsoft.DocAsCode.Plugins
         void LogDiagnostic(string message, string file = null, string line = null);
         void LogVerbose(string message, string file = null, string line = null);
         void LogInfo(string message, string file = null, string line = null);
+        void LogSuggestion(string message, string file = null, string line = null);
         void LogWarning(string message, string file = null, string line = null);
         void LogError(string message, string file = null, string line = null);
         #endregion

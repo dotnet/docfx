@@ -4,6 +4,25 @@ Version Notes (Current Version: v2.41)
 v2.41(Pre-release)
 -----------
 
+v2.40.11
+-----------
+1. Add new severity level - `Suggestion`.
+
+v2.40.10
+-----------
+1. Bug fix:
+    1. Non-source files should not be included in file metadata changes when incremental build.
+
+v2.40.9
+-----------
+1. Fix error extracting metadata from DLL files. (#3979)
+
+v2.40.8
+-----------
+1. Performance improvement:
+    1. Increase incremental build chance when `fileMetadata` changes. (#3816)
+    2. Improvement query performance when extracting metadata. (#3207)
+
 v2.40.7
 -----------
 1. Fix perf issue when report toc dependency.

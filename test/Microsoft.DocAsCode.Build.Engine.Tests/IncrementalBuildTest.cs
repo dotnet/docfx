@@ -20,6 +20,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
     using Microsoft.DocAsCode.Plugins;
 
     using Xunit;
+    using Microsoft.DocAsCode.Glob;
 
     [Trait("Owner", "xuzho")]
     [Trait("EntityType", "DocumentBuilder")]
@@ -221,8 +222,14 @@ tagRules : [
                     var incrementalStatus = incrementalInfo[0].Status;
                     Assert.True(incrementalStatus.CanIncremental);
                     var processorsStatus = incrementalInfo[0].Processors;
-                    Assert.True(processorsStatus[nameof(ConceptualDocumentProcessor)].CanIncremental);
-                    Assert.True(processorsStatus[nameof(ManagedReferenceDocumentProcessor)].CanIncremental);
+                    var conceptualDocumentProcessorStatus = processorsStatus[nameof(ConceptualDocumentProcessor)];
+                    Assert.True(conceptualDocumentProcessorStatus.CanIncremental);
+                    Assert.Equal(2, conceptualDocumentProcessorStatus.TotalFileCount);
+                    Assert.Equal(2, conceptualDocumentProcessorStatus.SkippedFileCount);
+                    var managedReferenceDocumentProcessorStatus = processorsStatus[nameof(ManagedReferenceDocumentProcessor)];
+                    Assert.True(managedReferenceDocumentProcessorStatus.CanIncremental);
+                    Assert.Equal(3, managedReferenceDocumentProcessorStatus.TotalFileCount);
+                    Assert.Equal(3, managedReferenceDocumentProcessorStatus.SkippedFileCount);
                 }
                 {
                     // check cache folder
@@ -329,8 +336,14 @@ tagRules : [
                     var incrementalStatus = incrementalInfo[0].Status;
                     Assert.True(incrementalStatus.CanIncremental);
                     var processorsStatus = incrementalInfo[0].Processors;
-                    Assert.True(processorsStatus[nameof(ConceptualDocumentProcessor)].CanIncremental);
-                    Assert.True(processorsStatus[nameof(ManagedReferenceDocumentProcessor)].CanIncremental);
+                    var conceptualDocumentProcessorStatus = processorsStatus[nameof(ConceptualDocumentProcessor)];
+                    Assert.True(conceptualDocumentProcessorStatus.CanIncremental);
+                    Assert.Equal(2, conceptualDocumentProcessorStatus.TotalFileCount);
+                    Assert.Equal(2, conceptualDocumentProcessorStatus.SkippedFileCount);
+                    var managedReferenceDocumentProcessorStatus = processorsStatus[nameof(ManagedReferenceDocumentProcessor)];
+                    Assert.True(managedReferenceDocumentProcessorStatus.CanIncremental);
+                    Assert.Equal(3, managedReferenceDocumentProcessorStatus.TotalFileCount);
+                    Assert.Equal(3, managedReferenceDocumentProcessorStatus.SkippedFileCount);
                 }
                 {
                     // check xrefmap
@@ -630,7 +643,10 @@ tagRules : [
                     var incrementalStatus = incrementalInfo[0].Status;
                     Assert.True(incrementalStatus.CanIncremental);
                     var processorsStatus = incrementalInfo[0].Processors;
-                    Assert.True(processorsStatus[nameof(ConceptualDocumentProcessor)].CanIncremental);
+                    var conceptualDocumentProcessorStatus = processorsStatus[nameof(ConceptualDocumentProcessor)];
+                    Assert.True(conceptualDocumentProcessorStatus.CanIncremental);
+                    Assert.Equal(4, conceptualDocumentProcessorStatus.TotalFileCount);
+                    Assert.Equal(2, conceptualDocumentProcessorStatus.SkippedFileCount);
                 }
                 {
                     // check xrefmap
@@ -827,7 +843,10 @@ tagRules : [
                     var incrementalStatus = incrementalInfo[0].Status;
                     Assert.True(incrementalStatus.CanIncremental);
                     var processorsStatus = incrementalInfo[0].Processors;
-                    Assert.True(processorsStatus[nameof(ConceptualDocumentProcessor)].CanIncremental);
+                    var conceptualDocumentProcessorStatus = processorsStatus[nameof(ConceptualDocumentProcessor)];
+                    Assert.True(conceptualDocumentProcessorStatus.CanIncremental);
+                    Assert.Equal(4, conceptualDocumentProcessorStatus.TotalFileCount);
+                    Assert.Equal(2, conceptualDocumentProcessorStatus.SkippedFileCount);
                 }
                 {
                     // check xrefmap
@@ -1048,7 +1067,10 @@ tagRules : [
                     var incrementalStatus = incrementalInfo[0].Status;
                     Assert.True(incrementalStatus.CanIncremental);
                     var processorsStatus = incrementalInfo[0].Processors;
-                    Assert.True(processorsStatus[nameof(ConceptualDocumentProcessor)].CanIncremental);
+                    var conceptualDocumentProcessorStatus = processorsStatus[nameof(ConceptualDocumentProcessor)];
+                    Assert.True(conceptualDocumentProcessorStatus.CanIncremental);
+                    Assert.Equal(4, conceptualDocumentProcessorStatus.TotalFileCount);
+                    Assert.Equal(1, conceptualDocumentProcessorStatus.SkippedFileCount);
                 }
                 {
                     // check xrefmap
@@ -1258,7 +1280,10 @@ tagRules : [
                     var incrementalStatus = incrementalInfo[0].Status;
                     Assert.True(incrementalStatus.CanIncremental);
                     var processorsStatus = incrementalInfo[0].Processors;
-                    Assert.True(processorsStatus[nameof(ConceptualDocumentProcessor)].CanIncremental);
+                    var conceptualDocumentProcessorStatus = processorsStatus[nameof(ConceptualDocumentProcessor)];
+                    Assert.True(conceptualDocumentProcessorStatus.CanIncremental);
+                    Assert.Equal(4, conceptualDocumentProcessorStatus.TotalFileCount);
+                    Assert.Equal(1, conceptualDocumentProcessorStatus.SkippedFileCount);
                 }
                 {
                     // check xrefmap
@@ -1382,9 +1407,12 @@ tagRules : [
                     Assert.Equal(2, incrementalInfo.Count);
                     var incrementalStatus = incrementalInfo[0].Status;
                     Assert.False(incrementalStatus.CanIncremental);
-                    Assert.Equal(incrementalStatus.Details, "Cannot build incrementally because config changed.");
+                    Assert.Equal("Cannot build incrementally because config changed.", incrementalStatus.Details);
                     var processorsStatus = incrementalInfo[0].Processors;
-                    Assert.False(processorsStatus[nameof(ConceptualDocumentProcessor)].CanIncremental);
+                    var conceptualDocumentProcessorStatus = processorsStatus[nameof(ConceptualDocumentProcessor)];
+                    Assert.False(conceptualDocumentProcessorStatus.CanIncremental);
+                    Assert.Equal(1, conceptualDocumentProcessorStatus.TotalFileCount);
+                    Assert.Equal(0, conceptualDocumentProcessorStatus.SkippedFileCount);
                 }
                 {
                     // check xrefmap
@@ -1507,7 +1535,10 @@ tagRules : [
                     var incrementalStatus = incrementalInfo[0].Status;
                     Assert.True(incrementalStatus.CanIncremental);
                     var processorsStatus = incrementalInfo[0].Processors;
-                    Assert.True(processorsStatus[nameof(ConceptualDocumentProcessor)].CanIncremental);
+                    var conceptualDocumentProcessorStatus = processorsStatus[nameof(ConceptualDocumentProcessor)];
+                    Assert.True(conceptualDocumentProcessorStatus.CanIncremental);
+                    Assert.Equal(1, conceptualDocumentProcessorStatus.TotalFileCount);
+                    Assert.Equal(1, conceptualDocumentProcessorStatus.SkippedFileCount);
                     Assert.False(manifest.Files.Any(f => f.IsIncremental));
                 }
                 {
@@ -1633,7 +1664,10 @@ tagRules : [
                     var incrementalStatus = incrementalInfo[0].Status;
                     Assert.True(incrementalStatus.CanIncremental);
                     var processorsStatus = incrementalInfo[0].Processors;
-                    Assert.True(processorsStatus[nameof(ConceptualDocumentProcessor)].CanIncremental);
+                    var conceptualDocumentProcessorStatus = processorsStatus[nameof(ConceptualDocumentProcessor)];
+                    Assert.True(conceptualDocumentProcessorStatus.CanIncremental);
+                    Assert.Equal(2, conceptualDocumentProcessorStatus.TotalFileCount);
+                    Assert.Equal(1, conceptualDocumentProcessorStatus.SkippedFileCount);
                 }
                 {
                     // compare with force build
@@ -1752,7 +1786,10 @@ tagRules : [
                     var incrementalStatus = incrementalInfo[0].Status;
                     Assert.True(incrementalStatus.CanIncremental);
                     var processorsStatus = incrementalInfo[0].Processors;
-                    Assert.True(processorsStatus[nameof(ConceptualDocumentProcessor)].CanIncremental);
+                    var conceptualDocumentProcessorStatus = processorsStatus[nameof(ConceptualDocumentProcessor)];
+                    Assert.True(conceptualDocumentProcessorStatus.CanIncremental);
+                    Assert.Equal(2, conceptualDocumentProcessorStatus.TotalFileCount);
+                    Assert.Equal(2, conceptualDocumentProcessorStatus.SkippedFileCount);
                 }
                 {
                     // compare with force build
@@ -1869,6 +1906,11 @@ tagRules : [
                     Assert.Equal(2, incrementalInfo.Count);
                     var incrementalStatus = incrementalInfo[0].Status;
                     Assert.True(incrementalStatus.CanIncremental);
+                    var processorsStatus = incrementalInfo[0].Processors;
+                    var conceptualDocumentProcessorStatus = processorsStatus[nameof(ConceptualDocumentProcessor)];
+                    Assert.True(conceptualDocumentProcessorStatus.CanIncremental);
+                    Assert.Equal(1, conceptualDocumentProcessorStatus.TotalFileCount);
+                    Assert.Equal(0, conceptualDocumentProcessorStatus.SkippedFileCount);
                 }
                 {
                     // compare with force build
@@ -2070,6 +2112,11 @@ tagRules : [
                     Assert.Equal(2, incrementalInfo.Count);
                     var incrementalStatus = incrementalInfo[0].Status;
                     Assert.True(incrementalStatus.CanIncremental);
+                    var processorsStatus = incrementalInfo[0].Processors;
+                    var conceptualDocumentProcessorStatus = processorsStatus[nameof(ConceptualDocumentProcessor)];
+                    Assert.True(conceptualDocumentProcessorStatus.CanIncremental);
+                    Assert.Equal(1, conceptualDocumentProcessorStatus.TotalFileCount);
+                    Assert.Equal(1, conceptualDocumentProcessorStatus.SkippedFileCount);
                 }
                 {
                     // compare with force build
@@ -2206,6 +2253,11 @@ tagRules : [
                     Assert.Equal(2, incrementalInfo.Count);
                     var incrementalStatus = incrementalInfo[0].Status;
                     Assert.True(incrementalStatus.CanIncremental);
+                    var processorsStatus = incrementalInfo[0].Processors;
+                    var conceptualDocumentProcessorStatus = processorsStatus[nameof(ConceptualDocumentProcessor)];
+                    Assert.True(conceptualDocumentProcessorStatus.CanIncremental);
+                    Assert.Equal(2, conceptualDocumentProcessorStatus.TotalFileCount);
+                    Assert.Equal(2, conceptualDocumentProcessorStatus.SkippedFileCount);
                 }
                 {
                     // compare with force build
@@ -2336,6 +2388,11 @@ tagRules : [
                     Assert.Equal(2, incrementalInfo.Count);
                     var incrementalStatus = incrementalInfo[0].Status;
                     Assert.True(incrementalStatus.CanIncremental);
+                    var processorsStatus = incrementalInfo[0].Processors;
+                    var conceptualDocumentProcessorStatus = processorsStatus[nameof(ConceptualDocumentProcessor)];
+                    Assert.True(conceptualDocumentProcessorStatus.CanIncremental);
+                    Assert.Equal(2, conceptualDocumentProcessorStatus.TotalFileCount);
+                    Assert.Equal(2, conceptualDocumentProcessorStatus.SkippedFileCount);
                 }
                 {
                     // compare with force build
@@ -2473,6 +2530,11 @@ tagRules : [
                     Assert.Equal(2, incrementalInfo.Count);
                     var incrementalStatus = incrementalInfo[0].Status;
                     Assert.True(incrementalStatus.CanIncremental);
+                    var processorsStatus = incrementalInfo[0].Processors;
+                    var conceptualDocumentProcessorStatus = processorsStatus[nameof(ConceptualDocumentProcessor)];
+                    Assert.True(conceptualDocumentProcessorStatus.CanIncremental);
+                    Assert.Equal(2, conceptualDocumentProcessorStatus.TotalFileCount);
+                    Assert.Equal(2, conceptualDocumentProcessorStatus.SkippedFileCount);
                 }
                 {
                     // compare with force build
@@ -2606,7 +2668,10 @@ tagRules : [
                     var incrementalStatus = incrementalInfo[0].Status;
                     Assert.True(incrementalStatus.CanIncremental);
                     var processorsStatus = incrementalInfo[0].Processors;
-                    Assert.True(processorsStatus[nameof(ConceptualDocumentProcessor)].CanIncremental);
+                    var conceptualDocumentProcessorStatus = processorsStatus[nameof(ConceptualDocumentProcessor)];
+                    Assert.True(conceptualDocumentProcessorStatus.CanIncremental);
+                    Assert.Equal(2, conceptualDocumentProcessorStatus.TotalFileCount);
+                    Assert.Equal(1, conceptualDocumentProcessorStatus.SkippedFileCount);
                 }
                 {
                     // compare with force build
@@ -2735,8 +2800,10 @@ tagRules : [
                     var incrementalStatus = incrementalInfo[0].Status;
                     Assert.True(incrementalStatus.CanIncremental);
                     var processorsStatus = incrementalInfo[0].Processors;
-                    Assert.True(processorsStatus[nameof(ConceptualDocumentProcessor)].CanIncremental);
-                    Assert.True(processorsStatus[nameof(ManagedReferenceDocumentProcessor)].CanIncremental);
+                    var conceptualDocumentProcessorStatus = processorsStatus[nameof(ConceptualDocumentProcessor)];
+                    Assert.True(conceptualDocumentProcessorStatus.CanIncremental);
+                    Assert.Equal(2, conceptualDocumentProcessorStatus.TotalFileCount);
+                    Assert.Equal(2, conceptualDocumentProcessorStatus.SkippedFileCount);
                 }
                 {
                     // compare with force build
@@ -2867,8 +2934,14 @@ tagRules : [
                     var incrementalStatus = incrementalInfo[0].Status;
                     Assert.True(incrementalStatus.CanIncremental);
                     var processorsStatus = incrementalInfo[0].Processors;
-                    Assert.True(processorsStatus[nameof(ConceptualDocumentProcessor)].CanIncremental);
-                    Assert.True(processorsStatus[nameof(ManagedReferenceDocumentProcessor)].CanIncremental);
+                    var conceptualDocumentProcessorStatus = processorsStatus[nameof(ConceptualDocumentProcessor)];
+                    Assert.True(conceptualDocumentProcessorStatus.CanIncremental);
+                    Assert.Equal(1, conceptualDocumentProcessorStatus.TotalFileCount);
+                    Assert.Equal(1, conceptualDocumentProcessorStatus.SkippedFileCount);
+                    var managedReferenceDocumentProcessorStatus = processorsStatus[nameof(ManagedReferenceDocumentProcessor)];
+                    Assert.True(managedReferenceDocumentProcessorStatus.CanIncremental);
+                    Assert.Equal(2, managedReferenceDocumentProcessorStatus.TotalFileCount);
+                    Assert.Equal(2, managedReferenceDocumentProcessorStatus.SkippedFileCount);
                 }
                 {
                     // compare with force build
@@ -3064,7 +3137,10 @@ tagRules : [
                     Assert.True(incrementalStatus.CanIncremental);
                     var processorsStatus = incrementalInfo[0].Processors;
                     Assert.False(processorsStatus.ContainsKey(nameof(ConceptualDocumentProcessor)));
-                    Assert.True(processorsStatus[nameof(ManagedReferenceDocumentProcessor)].CanIncremental);
+                    var managedReferenceDocumentProcessorStatus = processorsStatus[nameof(ManagedReferenceDocumentProcessor)];
+                    Assert.True(managedReferenceDocumentProcessorStatus.CanIncremental);
+                    Assert.Equal(3, managedReferenceDocumentProcessorStatus.TotalFileCount);
+                    Assert.Equal(2, managedReferenceDocumentProcessorStatus.SkippedFileCount);
                 }
                 {
                     // compare with force build
@@ -3229,7 +3305,10 @@ tagRules : [
                     Assert.True(incrementalStatus.CanIncremental);
                     var processorsStatus = incrementalInfo[0].Processors;
                     Assert.False(processorsStatus.ContainsKey(nameof(ConceptualDocumentProcessor)));
-                    Assert.True(processorsStatus[nameof(ManagedReferenceDocumentProcessor)].CanIncremental);
+                    var managedReferenceDocumentProcessorStatus = processorsStatus[nameof(ManagedReferenceDocumentProcessor)];
+                    Assert.True(managedReferenceDocumentProcessorStatus.CanIncremental);
+                    Assert.Equal(3, managedReferenceDocumentProcessorStatus.TotalFileCount);
+                    Assert.Equal(2, managedReferenceDocumentProcessorStatus.SkippedFileCount);
                 }
                 {
                     // compare with force build
@@ -3398,7 +3477,10 @@ tagRules : [
                     Assert.True(incrementalStatus.CanIncremental);
                     var processorsStatus = incrementalInfo[0].Processors;
                     Assert.False(processorsStatus.ContainsKey(nameof(ConceptualDocumentProcessor)));
-                    Assert.True(processorsStatus[nameof(ManagedReferenceDocumentProcessor)].CanIncremental);
+                    var managedReferenceDocumentProcessorStatus = processorsStatus[nameof(ManagedReferenceDocumentProcessor)];
+                    Assert.True(managedReferenceDocumentProcessorStatus.CanIncremental);
+                    Assert.Equal(3, managedReferenceDocumentProcessorStatus.TotalFileCount);
+                    Assert.Equal(2, managedReferenceDocumentProcessorStatus.SkippedFileCount);
                 }
                 {
                     // compare with force build
@@ -3559,7 +3641,10 @@ tagRules : [
                     Assert.True(incrementalStatus.CanIncremental);
                     var processorsStatus = incrementalInfo[0].Processors;
                     Assert.False(processorsStatus.ContainsKey(nameof(ConceptualDocumentProcessor)));
-                    Assert.True(processorsStatus[nameof(ManagedReferenceDocumentProcessor)].CanIncremental);
+                    var managedReferenceDocumentProcessorStatus = processorsStatus[nameof(ManagedReferenceDocumentProcessor)];
+                    Assert.True(managedReferenceDocumentProcessorStatus.CanIncremental);
+                    Assert.Equal(3, managedReferenceDocumentProcessorStatus.TotalFileCount);
+                    Assert.Equal(2, managedReferenceDocumentProcessorStatus.SkippedFileCount);
                 }
                 {
                     // compare with force build
@@ -3726,7 +3811,10 @@ tagRules : [
                     Assert.True(incrementalStatus.CanIncremental);
                     var processorsStatus = incrementalInfo[0].Processors;
                     Assert.False(processorsStatus.ContainsKey(nameof(ConceptualDocumentProcessor)));
-                    Assert.True(processorsStatus[nameof(ManagedReferenceDocumentProcessor)].CanIncremental);
+                    var managedReferenceDocumentProcessorStatus = processorsStatus[nameof(ManagedReferenceDocumentProcessor)];
+                    Assert.True(managedReferenceDocumentProcessorStatus.CanIncremental);
+                    Assert.Equal(3, managedReferenceDocumentProcessorStatus.TotalFileCount);
+                    Assert.Equal(2, managedReferenceDocumentProcessorStatus.SkippedFileCount);
                 }
                 {
                     // compare with force build
@@ -3893,7 +3981,10 @@ tagRules : [
                     Assert.True(incrementalStatus.CanIncremental);
                     var processorsStatus = incrementalInfo[0].Processors;
                     Assert.False(processorsStatus.ContainsKey(nameof(ConceptualDocumentProcessor)));
-                    Assert.True(processorsStatus[nameof(ManagedReferenceDocumentProcessor)].CanIncremental);
+                    var managedReferenceDocumentProcessorStatus = processorsStatus[nameof(ManagedReferenceDocumentProcessor)];
+                    Assert.True(managedReferenceDocumentProcessorStatus.CanIncremental);
+                    Assert.Equal(3, managedReferenceDocumentProcessorStatus.TotalFileCount);
+                    Assert.Equal(2, managedReferenceDocumentProcessorStatus.SkippedFileCount);
                 }
                 {
                     // compare with force build
@@ -4071,7 +4162,10 @@ tagRules : [
                     Assert.True(incrementalStatus.CanIncremental);
                     var processorsStatus = incrementalInfo[0].Processors;
                     Assert.False(processorsStatus.ContainsKey(nameof(ConceptualDocumentProcessor)));
-                    Assert.True(processorsStatus[nameof(ManagedReferenceDocumentProcessor)].CanIncremental);
+                    var managedReferenceDocumentProcessorStatus = processorsStatus[nameof(ManagedReferenceDocumentProcessor)];
+                    Assert.True(managedReferenceDocumentProcessorStatus.CanIncremental);
+                    Assert.Equal(2, managedReferenceDocumentProcessorStatus.TotalFileCount);
+                    Assert.Equal(1, managedReferenceDocumentProcessorStatus.SkippedFileCount);
                 }
                 {
                     // compare with force build
@@ -4962,8 +5056,6 @@ tagRules : [
             #region Prepare test data
             // arrange
             const string intermediateFolderVariable = "%cache%";
-            var resourceFile = Path.GetFileName(typeof(IncrementalBuildTest).Assembly.Location);
-
             var inputFolder = GetRandomFolder();
             var outputFolder = GetRandomFolder();
             var templateFolder = GetRandomFolder();
@@ -5031,6 +5123,127 @@ tagRules : [
                         GetLogMessages("IncrementalBuild.TestShrinkWithVersion-forcebuild-second"),
                         GetLogMessages(new[] { "IncrementalBuild.TestShrinkWithVersion-second", "IncrementalBuild.TestShrinkWithVersion-first" }));
 
+                }
+            }
+            finally
+            {
+                Environment.SetEnvironmentVariable("cache", null);
+                CleanUp();
+                if (File.Exists(MarkdownSytleConfig.MarkdownStyleFileName))
+                {
+                    File.Delete(MarkdownSytleConfig.MarkdownStyleFileName);
+                }
+            }
+        }
+
+        [Fact]
+        public void TestIncrementalWithFileMetadataChange()
+        {
+            #region Prepare test data
+            // arrange
+            const string intermediateFolderVariable = "%cache%";
+            var inputFolder = GetRandomFolder();
+            var outputFolder = GetRandomFolder();
+            var templateFolder = GetRandomFolder();
+            var intermediateFolder = GetRandomFolder();
+            CreateFile("conceptual.html.primary.tmpl", "meta: {{meta}}", templateFolder);
+            Environment.SetEnvironmentVariable("cache", Path.GetFullPath(intermediateFolder));
+
+            var fileAddFm = CreateFile("fileMetadata/toAdd.md", new[] { "test" }, inputFolder);
+            var fileRemoveFm = CreateFile("fileMetadata/toRemove.md", new[] { "test" }, inputFolder);
+            var fileModifyFm = CreateFile("fileMetadata/toModify.md", new[] { "test" }, inputFolder);
+            var fileKeepFm = CreateFile("fileMetadata/toKeep.md", new[] { "test" }, inputFolder);
+            var fileReOrderFm = CreateFile("fileMetadata/toReOrder.md", new[] { "test" }, inputFolder);
+
+            var fileMetadataOriginal = new FileMetadata(Directory.GetCurrentDirectory(), new Dictionary<string, ImmutableArray<FileMetadataItem>>
+            {
+                ["meta"] = ImmutableArray.Create(
+                    new FileMetadataItem(new GlobMatcher($"{inputFolder}/file*/toRemove.md"), "meta", "toRemove"),
+                    new FileMetadataItem(new GlobMatcher($"{inputFolder}/*/toModify.md"), "meta", "toModify"),
+                    new FileMetadataItem(new GlobMatcher($"{inputFolder}/fileMetadata/toKeep.md"), "meta", "toKeep"),
+                    new FileMetadataItem(new GlobMatcher($"{inputFolder}/fileMetadata/toReorder.md"), "meta", "toReorder1"),
+                    new FileMetadataItem(new GlobMatcher($"{inputFolder}/fileMetadata/toReorder.md"), "meta", "toReorder2"))
+            });
+            var fileMetadataUpdated = new FileMetadata(Directory.GetCurrentDirectory(), new Dictionary<string, ImmutableArray<FileMetadataItem>>
+            {
+                ["meta"] = ImmutableArray.Create(
+                    new FileMetadataItem(new GlobMatcher($"{inputFolder}/*Metadata/toAdd.md"), "meta", "toAdd"),
+                    new FileMetadataItem(new GlobMatcher($"{inputFolder}/*/toModify.md"), "meta", "Modified!"),
+                    new FileMetadataItem(new GlobMatcher($"{inputFolder}/fileMetadata/toKeep.md"), "meta", "toKeep"),
+                    new FileMetadataItem(new GlobMatcher($"{inputFolder}/fileMetadata/toReorder.md"), "meta", "toReorder2"),
+                    new FileMetadataItem(new GlobMatcher($"{inputFolder}/fileMetadata/toReorder.md"), "meta", "toReorder1"))
+            });
+
+            FileCollection files = new FileCollection(Directory.GetCurrentDirectory());
+            files.Add(DocumentType.Article, new[] { fileAddFm, fileRemoveFm, fileModifyFm, fileKeepFm, fileReOrderFm });
+            #endregion
+
+            Init("IncrementalBuild.TestIncrementalWithFileMetadataChange");
+            var outputFolderFirst = Path.Combine(outputFolder, "IncrementalBuild.TestIncrementalWithFileMetadataChange");
+            var outputFolderForIncremental = Path.Combine(outputFolder, "IncrementalBuild.TestIncrementalWithFileMetadataChange.Second");
+            var outputFolderForCompare = Path.Combine(outputFolder, "IncrementalBuild.TestIncrementalWithFileMetadataChange.Second.ForceBuild");
+            try
+            {
+                using (new LoggerPhaseScope("IncrementalBuild.TestIncrementalWithFileMetadataChange-first"))
+                {
+                    BuildDocument(
+                        files,
+                        inputFolder,
+                        outputFolderFirst,
+                        new Dictionary<string, object> { ["meta"] = "Hello world!", },
+                        templateFolder: templateFolder,
+                        intermediateFolder: intermediateFolderVariable,
+                        fileMetadata: fileMetadataOriginal);
+                }
+                ClearListener();
+
+                MoveIntermediateFolder(intermediateFolder);
+                using (new LoggerPhaseScope("IncrementalBuild.TestIncrementalWithFileMetadataChange-second"))
+                {
+                    BuildDocument(
+                        files,
+                        inputFolder,
+                        outputFolderForIncremental,
+                        new Dictionary<string, object> { ["meta"] = "Hello world!", },
+                        templateFolder: templateFolder,
+                        intermediateFolder: intermediateFolderVariable,
+                        cleanupCacheHistory: true,
+                        fileMetadata: fileMetadataUpdated);
+                }
+
+                using (new LoggerPhaseScope("IncrementalBuild.TestIncrementalWithFileMetadataChange-forcebuild-second"))
+                {
+                    BuildDocument(
+                        files,
+                        inputFolder,
+                        outputFolderForCompare,
+                        new Dictionary<string, object> { ["meta"] = "Hello world!", },
+                        templateFolder: templateFolder,
+                        fileMetadata: fileMetadataUpdated);
+                }
+
+                {
+                    Assert.True(CompareDir(outputFolderForIncremental, outputFolderForCompare));
+                    Assert.Equal(
+                       GetLogMessages("IncrementalBuild.TestIncrementalWithFileMetadataChange-forcebuild-second"),
+                       GetLogMessages(new[] { "IncrementalBuild.TestIncrementalWithFileMetadataChange-second", "IncrementalBuild.TestIncrementalWithFileMetadataChange-first" }));
+
+                    // check manifest
+                    var manifestOutputPath = Path.GetFullPath(Path.Combine(outputFolderForIncremental, "manifest.json"));
+                    Assert.True(File.Exists(manifestOutputPath));
+                    var manifest = JsonUtility.Deserialize<Manifest>(manifestOutputPath);
+                    var toKeep = manifest.Files.First(f => f.SourceRelativePath.Contains("toKeep"));
+                    Assert.True(toKeep.IsIncremental);
+                    var incrementalInfo = manifest.IncrementalInfo;
+                    Assert.NotNull(incrementalInfo);
+                    Assert.Equal(2, incrementalInfo.Count);
+                    var incrementalStatus = incrementalInfo[0].Status;
+                    Assert.True(incrementalStatus.CanIncremental);
+                    var processorsStatus = incrementalInfo[0].Processors;
+                    var conceptualDocumentProcessorStatus = processorsStatus[nameof(ConceptualDocumentProcessor)];
+                    Assert.True(conceptualDocumentProcessorStatus.CanIncremental);
+                    Assert.Equal(5, conceptualDocumentProcessorStatus.TotalFileCount);
+                    Assert.Equal(1, conceptualDocumentProcessorStatus.SkippedFileCount);
                 }
             }
             finally
@@ -5214,7 +5427,8 @@ tagRules : [
             Dictionary<string, ChangeKindWithDependency> changes = null,
             bool enableSplit = false,
             bool forceRebuild = false,
-            bool cleanupCacheHistory = false)
+            bool cleanupCacheHistory = false,
+            FileMetadata fileMetadata = null)
         {
             using (var builder = new DocumentBuilder(LoadAssemblies(enableSplit), ImmutableArray<string>.Empty, templateHash, intermediateFolder, cleanupCacheHistory: cleanupCacheHistory))
             {
@@ -5233,6 +5447,7 @@ tagRules : [
                     Changes = changes?.ToImmutableDictionary(FilePathComparer.OSPlatformSensitiveStringComparer),
                     ForcePostProcess = false,
                     ForceRebuild = forceRebuild,
+                    FileMetadata = fileMetadata,
                 };
                 builder.Build(parameters);
             }
