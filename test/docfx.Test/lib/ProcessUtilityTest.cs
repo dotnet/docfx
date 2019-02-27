@@ -100,6 +100,24 @@ namespace Microsoft.Docs.Build
             });
         }
 
+        [Fact]
+        public static async Task ParallelNestedRunInMutexWithSameNameTest()
+        {
+            var name = Guid.NewGuid().ToString();
+
+            await ProcessUtility.RunInsideMutex($"process-test/123", async () =>
+            {
+                await ParallelUtility.ForEach(new[] { 1, 2, 3, 4, 5 }, async i =>
+                {
+                    await ProcessUtility.RunInsideMutex($"process-test/{name}",
+                        () =>
+                        {
+                            return Task.CompletedTask;
+                        });
+                });
+            });
+        }
+
         [Theory]
         [InlineData(new[] { "a-s:a", "r-s:a" }, new[] { true, true })]
         [InlineData(new[] { "a-s:a", "r-s:a", "a-s:a", "r-s:a" }, new[] { true, true, true, true })]
