@@ -87,7 +87,7 @@ namespace Microsoft.Docs.Build
 
                 foreach (var branch in branches)
                 {
-                    var gitVersion = (dependencyLock?.GetGitLock(remote, branch))?.value;
+                    var gitVersion = dependencyLock?.GetGitLock(remote, branch);
                     if (@implicit || string.IsNullOrEmpty(gitVersion?.Commit))
                     {
                         var (existingPath, git) = await DependencyGitPool.TryGetGitRestorePath(remote, branch, gitVersion?.Commit);
@@ -145,7 +145,7 @@ namespace Microsoft.Docs.Build
                             throw Errors.CommittishNotFound(remote, branch).ToException();
                         }
 
-                        var gitDependencyLock = (dependencyLock?.GetGitLock(remote, branch))?.value;
+                        var gitDependencyLock = dependencyLock?.GetGitLock(remote, branch);
                         headCommit = gitDependencyLock?.Commit ?? headCommit;
 
                         var (workTreePath, gitSlot) = await DependencyGitPool.AcquireExclusiveGit(remote, branch, headCommit);

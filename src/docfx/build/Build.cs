@@ -219,7 +219,7 @@ namespace Microsoft.Docs.Build
             {
                 // build from loc repo directly with overwrite config
                 // which means it's using source repo's dependency lock
-                var (_, sourceDependencyLock) = dependencyLock.GetGitLock(sourceRemote, sourceBranch);
+                var sourceDependencyLock = dependencyLock.GetGitLock(sourceRemote, sourceBranch);
                 dependencyLock = sourceDependencyLock == null
                     ? null
                     : new DependencyLockModel

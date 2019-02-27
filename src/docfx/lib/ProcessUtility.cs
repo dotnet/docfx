@@ -26,7 +26,18 @@ namespace Microsoft.Docs.Build
             Debug.Assert(!string.IsNullOrEmpty(lockName));
 
             var lockPath = GetLockFilePath(lockName);
-            return FilterExpiredAcquirers(await ReadFile<LockInfo>(lockPath) ?? new LockInfo()).Type == LockType.Exclusive;
+            var held = false;
+            await ReadAndWriteFile<LockInfo>(lockPath, lockInfo =>
+            {
+                lockInfo = lockInfo ?? new LockInfo();
+                lockInfo = FilterExpiredAcquirers(lockInfo);
+
+                held = lockInfo.Type == LockType.Exclusive;
+
+                return Task.FromResult(lockInfo);
+            });
+
+            return held;
         }
 
         /// <summary>
@@ -253,14 +264,14 @@ namespace Microsoft.Docs.Build
         {
             await RunInsideMutex(path, async () =>
             {
-                using (var fs = File.Open(path, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None))
+                using (var file = File.Open(path, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None))
                 {
-                    var streamReader = new StreamReader(fs);
+                    var streamReader = new StreamReader(file);
                     var result = JsonUtility.Deserialize<T>(streamReader.ReadToEnd());
 
-                    fs.SetLength(0);
+                    file.SetLength(0);
                     var updatedResult = await update(result);
-                    var steamWriter = new StreamWriter(fs);
+                    var steamWriter = new StreamWriter(file);
                     steamWriter.Write(JsonUtility.Serialize(updatedResult));
                     steamWriter.Close();
                 }
@@ -282,15 +293,12 @@ namespace Microsoft.Docs.Build
             return result;
         }
 
-        public static Task<T> ReadFile<T>(string path)
-            => ReadFile(path, stream => JsonUtility.Deserialize<T>(new StreamReader(stream).ReadToEnd()));
-
         public static async Task<T> ReadFile<T>(string path, Func<Stream, T> read)
         {
             T result = default;
             await RunInsideMutex(path, () =>
             {
-                using (var fs = new FileStream(path, FileMode.OpenOrCreate, FileAccess.Read, FileShare.Read, 1024, FileOptions.SequentialScan))
+                using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read, 1024, FileOptions.SequentialScan))
                 {
                     result = read(fs);
                     return Task.CompletedTask;

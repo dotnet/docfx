@@ -10,18 +10,18 @@ namespace Microsoft.Docs.Build
 {
     internal static class DependencyLock
     {
-        public static (string key, DependencyLockModel value) GetGitLock(this DependencyLockModel dependencyLock, string href, string branch)
+        public static DependencyLockModel GetGitLock(this DependencyLockModel dependencyLock, string href, string branch)
         {
             Debug.Assert(dependencyLock != null);
 
             if (dependencyLock.Git.TryGetValue($"{href}#{branch}", out var gitLock))
             {
-                return ($"{href}#{branch}", gitLock);
+                return gitLock;
             }
 
             if (branch == "master" && dependencyLock.Git.TryGetValue($"{href}", out gitLock))
             {
-                return ($"{href}", gitLock);
+                return gitLock;
             }
 
             return default;
