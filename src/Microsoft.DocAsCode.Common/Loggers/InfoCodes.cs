@@ -13,7 +13,7 @@ namespace Microsoft.DocAsCode.Common
         public static class FullBuildReason
         {
             public const string NoAvailableBuildCache = "NoAvailableBuildCache";
-            public const string DocfxVersionChanged = "DocfxVersionChanged";            
+            public const string DocfxVersionChanged = "DocfxVersionChanged";
             public const string PluginChanged = "PluginChanged";
             public const string CommitShaMismatch = "CommitShaMismatch";
             public const string NoAvailableGroupCache = "NoAvailableGroupCache";
