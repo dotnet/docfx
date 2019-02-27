@@ -24,7 +24,7 @@ namespace Microsoft.Docs.Build
                 return gitLock;
             }
 
-            return default;
+            return null;
         }
 
         public static bool ContainsGitLock(this DependencyLockModel dependencyLock, string href)
