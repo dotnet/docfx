@@ -63,7 +63,7 @@ namespace Microsoft.Docs.Build
         }
 
         [Fact]
-        public static async Task NestedRunInMutexTest()
+        public static async Task NestedRunInMutexWithDifferentNameTest()
         {
             // nested run works for different names
             await ProcessUtility.RunInsideMutex($"process-test/{Guid.NewGuid()}",
@@ -75,7 +75,11 @@ namespace Microsoft.Docs.Build
                             await Task.Delay(100);
                         });
                 });
+        }
 
+        [Fact]
+        public static async Task NestedRunInMutexWithSameNameTest()
+        {
             // nested run doesn't work for sanme lock name
             await Assert.ThrowsAnyAsync<Exception>(async () =>
             {
