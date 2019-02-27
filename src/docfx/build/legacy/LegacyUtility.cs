@@ -46,7 +46,10 @@ namespace Microsoft.Docs.Build
                 legacySiteUrlRelativeToSiteBasePath = Path.GetRelativePath(docset.Config.DocumentId.SiteBasePath, legacySiteUrlRelativeToSiteBasePath.Substring(1));
             }
 
-            return PathUtility.NormalizeFile(doc.FilePath.EndsWith("index.md", PathUtility.PathComparison) ? $"{legacySiteUrlRelativeToSiteBasePath}/index" : legacySiteUrlRelativeToSiteBasePath);
+            return PathUtility.NormalizeFile(
+                Path.GetFileNameWithoutExtension(doc.FilePath).Equals("index", PathUtility.PathComparison)
+                ? $"{legacySiteUrlRelativeToSiteBasePath}/index"
+                : legacySiteUrlRelativeToSiteBasePath);
         }
 
         public static string ToLegacyOutputPath(this LegacyManifestOutputItem legacyManifestOutputItem, Docset docset, string groupId)
