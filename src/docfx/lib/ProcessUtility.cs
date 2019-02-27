@@ -19,7 +19,7 @@ namespace Microsoft.Docs.Build
     internal static class ProcessUtility
     {
         private const int _defaultLockExpireTimeInSecond = 60 * 60 * 6; /*six hours*/
-        private static AsyncLocal<string> t_innerCall = new AsyncLocal<string>();
+        private static AsyncLocal<HashSet<string>> t_innerCall = new AsyncLocal<HashSet<string>>();
 
         public static async Task<bool> IsExclusiveLockHeld(string lockName)
         {
@@ -338,16 +338,15 @@ namespace Microsoft.Docs.Build
             Debug.Assert(!string.IsNullOrEmpty(mutexName));
             var lockPath = Path.Combine(AppData.MutexRoot, HashUtility.GetMd5Hash(mutexName));
 
-            // avoid the RunInsideMutex to be nested used which cause deadlock
-            if (t_innerCall.Value != null && t_innerCall.Value == lockPath)
-            {
-                throw new NotImplementedException("Nested call to RunInsideMutex is detected");
-            }
-
-            t_innerCall.Value = lockPath;
-
             try
             {
+                // avoid the RunInsideMutex to be nested used with same mutex name
+                t_innerCall.Value = t_innerCall.Value ?? new HashSet<string>();
+                if (!t_innerCall.Value.Add(lockPath))
+                {
+                    throw new ApplicationException($"Nested call to RunInsideMutex is detected, mutex name: {mutexName}");
+                }
+
                 Directory.CreateDirectory(AppData.MutexRoot);
 
                 using (await RetryUntilSucceed(mutexName, IsFileAlreadyExistsException, CreateFile))
@@ -365,7 +364,7 @@ namespace Microsoft.Docs.Build
             }
             finally
             {
-                t_innerCall.Value = null;
+                t_innerCall.Value.Remove(lockPath);
             }
         }
 
