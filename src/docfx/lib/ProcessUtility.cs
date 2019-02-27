@@ -19,6 +19,7 @@ namespace Microsoft.Docs.Build
     internal static class ProcessUtility
     {
         private const int _defaultLockExpireTimeInSecond = 60 * 60 * 6; /*six hours*/
+        private static AsyncLocal<HashSet<string>> t_innerCall = new AsyncLocal<HashSet<string>>();
 
         /// <summary>
         /// Acquire a shared lock for input lock name
@@ -158,8 +159,6 @@ namespace Microsoft.Docs.Build
 
             return released;
         }
-
-        private static AsyncLocal<object> t_innerCall = new AsyncLocal<object>();
 
         /// <summary>
         /// Start a new process and wait for its execution asynchroniously
@@ -326,22 +325,18 @@ namespace Microsoft.Docs.Build
         public static async Task RunInsideMutex(string mutexName, Func<Task> action)
         {
             Debug.Assert(!string.IsNullOrEmpty(mutexName));
-
-            // avoid the RunInsideMutex to be nested used
-            // doesn't support to require a lock before releasing a lock
-            // which may cause deadlock
-            if (t_innerCall.Value != null)
-            {
-                throw new NotImplementedException("Nested call to RunInsideMutex is not supported yet");
-            }
-
-            t_innerCall.Value = new object();
+            var lockPath = Path.Combine(AppData.MutexRoot, HashUtility.GetMd5Hash(mutexName));
 
             try
             {
-                Directory.CreateDirectory(AppData.MutexRoot);
+                // avoid the RunInsideMutex to be nested used with same mutex name
+                t_innerCall.Value = t_innerCall.Value ?? new HashSet<string>();
+                if (!t_innerCall.Value.Add(lockPath))
+                {
+                    throw new ApplicationException($"Nested call to RunInsideMutex is detected, mutex name: {mutexName}");
+                }
 
-                var lockPath = Path.Combine(AppData.MutexRoot, HashUtility.GetMd5Hash(mutexName));
+                Directory.CreateDirectory(AppData.MutexRoot);
 
                 using (await RetryUntilSucceed(mutexName, IsFileAlreadyExistsException, CreateFile))
                 {
@@ -358,7 +353,7 @@ namespace Microsoft.Docs.Build
             }
             finally
             {
-                t_innerCall.Value = null;
+                t_innerCall.Value.Remove(lockPath);
             }
         }
 
