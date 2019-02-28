@@ -95,7 +95,7 @@ namespace Microsoft.Docs.Build
             return released;
         }
 
-        public static async Task<(string path, T slot)> AcquireSlots<T>(string url, LockType type, Func<T, T> updateExistingSlot, Func<T, bool> matchExistingSlot) where T : DependencySlot, new()
+        public static async Task<(string path, T slot)> AcquireSlot<T>(string url, LockType type, Func<T, T> updateExistingSlot, Func<T, bool> matchExistingSlot) where T : DependencySlot, new()
         {
             Debug.Assert(!string.IsNullOrEmpty(url));
 
@@ -158,6 +158,7 @@ namespace Microsoft.Docs.Build
                                     if (acquired)
                                     {
                                         slot = i;
+                                        slot.Url = url;
                                         slot.Acquirer = acquirer;
                                         break;
                                     }

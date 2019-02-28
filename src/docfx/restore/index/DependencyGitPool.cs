@@ -11,73 +11,11 @@ namespace Microsoft.Docs.Build
 {
     internal class DependencyGitPool
     {
-        private Dictionary<(string remote, string branch, string commit, LockType lockType), (string path, DependencyGit git, bool released)> _acquiredGits = new Dictionary<(string remote, string branch, string commit, LockType lockType), (string path, DependencyGit git, bool released)>();
+        private IReadOnlyDictionary<(string remote, string branch, string commit), (string path, DependencyGit git)> _acquiredGits;
 
-        /// <summary>
-        /// Acquired all shared git based on dependency lock
-        /// The dependency lock must be loaded before using this method
-        /// </summary>
-        public async Task<List<DependencyGit>> AcquireSharedGits(DependencyLockModel dependencyLock)
+        public DependencyGitPool(IReadOnlyDictionary<(string remote, string branch, string commit), (string path, DependencyGit git)> acquiredGits)
         {
-            Debug.Assert(dependencyLock != null);
-
-            var successed = true;
-            var gits = new List<DependencyGit>();
-            try
-            {
-                foreach (var gitVersion in dependencyLock.Git)
-                {
-                    var (remote, branch, _) = HrefUtility.SplitGitHref(gitVersion.Key);
-                    if (!_acquiredGits.ContainsKey((remote, branch, gitVersion.Value.Commit/*commit*/, LockType.Shared)))
-                    {
-                        var (path, git) = await AcquireGit(remote, branch, gitVersion.Value.Commit, LockType.Shared);
-                        _acquiredGits[(remote, branch, gitVersion.Value.Commit/*commit*/, LockType.Shared)] = (path, git, false);
-                        gits.Add(git);
-                    }
-
-                    gits.AddRange(await AcquireSharedGits(gitVersion.Value));
-                }
-            }
-            catch
-            {
-                successed = false;
-                throw;
-            }
-            finally
-            {
-                if (!successed)
-                {
-                    foreach (var git in gits)
-                    {
-                        await DependencySlotPool.ReleaseSlot(git, LockType.Shared, false);
-                    }
-                }
-            }
-
-            return gits;
-        }
-
-        public async Task<bool> ReleaseSharedGits(DependencyLockModel dependencyLock)
-        {
-            Debug.Assert(dependencyLock != null);
-
-            var released = true;
-            foreach (var gitVersion in dependencyLock.Git)
-            {
-                var (remote, branch, _) = HrefUtility.SplitGitHref(gitVersion.Key);
-                var contained = _acquiredGits.TryGetValue((remote, branch, gitVersion.Value.Commit, LockType.Shared), out var gitSlot);
-                Debug.Assert(contained);
-                if (!gitSlot.released)
-                {
-                    released &= await DependencySlotPool.ReleaseSlot(gitSlot.git, LockType.Shared);
-                    _acquiredGits[(remote, branch, gitVersion.Value.Commit, LockType.Shared)] = (gitSlot.path, gitSlot.git, true);
-                }
-                released &= await ReleaseSharedGits(gitVersion.Value);
-            }
-
-            Debug.Assert(released);
-
-            return released;
+            _acquiredGits = acquiredGits ?? new Dictionary<(string remote, string branch, string commit), (string path, DependencyGit git)>();
         }
 
         /// <summary>
@@ -104,7 +42,7 @@ namespace Microsoft.Docs.Build
                 throw Errors.NeedRestore($"{remote}#{branch}").ToException();
             }
 
-            if (!_acquiredGits.TryGetValue((remote, branch, gitVersion.Commit, LockType.Shared), out var gitInfo))
+            if (!_acquiredGits.TryGetValue((remote, branch, gitVersion.Commit), out var gitInfo))
             {
                 throw Errors.NeedRestore($"{remote}#{branch}").ToException();
             }
@@ -145,6 +83,69 @@ namespace Microsoft.Docs.Build
             return !Directory.Exists(path) ? default : (path, slot);
         }
 
+        /// <summary>
+        /// Acquired all shared git based on dependency lock
+        /// The dependency lock must be loaded before using this method
+        /// </summary>
+        public static async Task<IReadOnlyDictionary<(string remote, string branch, string commit), (string path, DependencyGit git)>>
+            AcquireSharedGits(
+            DependencyLockModel dependencyLock,
+            Dictionary<(string remote, string branch, string commit), (string path, DependencyGit git)> acquired = null)
+        {
+            Debug.Assert(dependencyLock != null);
+
+            var root = acquired == null;
+            acquired = acquired ?? new Dictionary<(string remote, string branch, string commit), (string path, DependencyGit git)>();
+
+            var successed = true;
+            try
+            {
+                foreach (var gitVersion in dependencyLock.Git)
+                {
+                    var (remote, branch, _) = HrefUtility.SplitGitHref(gitVersion.Key);
+                    if (!acquired.ContainsKey((remote, branch, gitVersion.Value.Commit/*commit*/)))
+                    {
+                        var (path, git) = await AcquireGit(remote, branch, gitVersion.Value.Commit, LockType.Shared);
+                        acquired[(remote, branch, gitVersion.Value.Commit/*commit*/)] = (path, git);
+                    }
+
+                    await AcquireSharedGits(gitVersion.Value, acquired);
+                }
+            }
+            catch
+            {
+                successed = false;
+                throw;
+            }
+            finally
+            {
+                if (!successed && root)
+                {
+                    foreach (var (k, v) in acquired)
+                    {
+                        await DependencySlotPool.ReleaseSlot(v.git, LockType.Shared, false);
+                    }
+                }
+            }
+
+            return acquired;
+        }
+
+        public static async Task<bool> ReleaseSharedGits(IReadOnlyDictionary<(string remote, string branch, string commit), (string path, DependencyGit git)> gits)
+        {
+            Debug.Assert(gits != null);
+
+            var released = true;
+            foreach (var (k, v) in gits)
+            {
+                released &= await DependencySlotPool.ReleaseSlot(v.git, LockType.Shared);
+            }
+
+            Debug.Assert(released);
+
+            return released;
+        }
+
         public static async Task<(string path, DependencyGit git)> AcquireExclusiveGit(string remote, string branch, string commit)
         {
             var (path, git) = await AcquireGit(remote, branch, commit, LockType.Exclusive);
@@ -160,7 +161,7 @@ namespace Microsoft.Docs.Build
             Debug.Assert(!string.IsNullOrEmpty(branch));
             Debug.Assert(!string.IsNullOrEmpty(commit));
 
-            return DependencySlotPool.AcquireSlots<DependencyGit>(
+            return DependencySlotPool.AcquireSlot<DependencyGit>(
                 remote,
                 type,
                 slot =>
