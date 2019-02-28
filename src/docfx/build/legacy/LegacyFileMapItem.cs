@@ -23,6 +23,7 @@ namespace Microsoft.Docs.Build
             switch (contentType)
             {
                 case ContentType.Page:
+                case ContentType.Redirection:
                     Type = "Content";
                     OutputRelativePath = PathUtility.NormalizeFile(Path.ChangeExtension(legacyOutputFilePathRelativeToSiteBasePath, ".html"));
                     AssetId = PathUtility.NormalizeFile(RemoveExtension(legacyOutputFilePathRelativeToSiteBasePath));
@@ -39,7 +40,7 @@ namespace Microsoft.Docs.Build
 
         public static LegacyFileMapItem Instance(string legacyOutputFilePathRelativeToSiteBasePath, ContentType contentType)
         {
-            if (contentType == ContentType.TableOfContents || contentType == ContentType.Unknown || contentType == ContentType.Redirection)
+            if (contentType == ContentType.TableOfContents || contentType == ContentType.Unknown)
             {
                 return null;
             }
