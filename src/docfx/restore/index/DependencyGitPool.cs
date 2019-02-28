@@ -63,7 +63,7 @@ namespace Microsoft.Docs.Build
             var released = true;
             foreach (var (k, v) in _acquiredGits)
             {
-                released &= await DependencySlotPool.ReleaseSlot(v.git, LockType.Shared);
+                released &= await ReleaseGit(v.git, LockType.Shared);
             }
 
             Debug.Assert(released);
@@ -111,7 +111,7 @@ namespace Microsoft.Docs.Build
                 {
                     foreach (var (k, v) in acquired)
                     {
-                        await DependencySlotPool.ReleaseSlot(v.git, LockType.Shared, false);
+                        await ReleaseGit(v.git, LockType.Shared, false);
                     }
                 }
             }
@@ -153,6 +153,9 @@ namespace Microsoft.Docs.Build
 
             return (path, git);
         }
+
+        public static Task<bool> ReleaseGit(DependencyGit git, LockType lockType, bool successed = true)
+            => DependencySlotPool.ReleaseSlot(git, lockType, successed);
 
         private static Task<(string path, DependencyGit git)> AcquireGit(string remote, string branch, string commit, LockType type)
         {

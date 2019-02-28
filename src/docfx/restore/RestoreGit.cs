@@ -180,7 +180,7 @@ namespace Microsoft.Docs.Build
                         }
                         finally
                         {
-                            await DependencySlotPool.ReleaseSlot(gitSlot, LockType.Exclusive, restored);
+                            await DependencyGitPool.ReleaseGit(gitSlot, LockType.Exclusive, restored);
                         }
 
                         subChildren.Add(new RestoreChild(workTreePath, remote, branch, gitDependencyLock, new DependencyVersion(headCommit)));
