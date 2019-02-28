@@ -13,7 +13,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class LibGit2
     {
-        private const string LibName = "git2-8e0b172";
+        private const string LibName = "git2-572e4d8";
 
         static LibGit2()
         {
