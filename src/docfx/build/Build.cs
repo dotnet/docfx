@@ -21,15 +21,14 @@ namespace Microsoft.Docs.Build
             var locale = LocalizationUtility.GetLocale(repository, options);
             var dependencyLock = await LoadBuildDependencyLock(docsetPath, locale, repository, options);
 
-            var acquiredGits = await DependencyGitPool.AcquireSharedGits(dependencyLock);
+            var dependencyGitPool = await DependencyGitPool.AcquireGitPool(dependencyLock);
             try
             {
-                var dependencyGitPool = new DependencyGitPool(acquiredGits);
                 await Run(docsetPath, repository, locale, options, report, dependencyLock, dependencyGitPool);
             }
             finally
             {
-                await DependencyGitPool.ReleaseSharedGits(acquiredGits);
+                await dependencyGitPool.Release();
             }
         }
 
