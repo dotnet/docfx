@@ -186,7 +186,7 @@ namespace Microsoft.Docs.Build
             var slotsFile = Path.Combine(restoreDir, "index.json");
             var content = File.Exists(slotsFile) ? File.ReadAllText(slotsFile) : string.Empty;
 
-            return JsonUtility.Deserialize<List<T>>(content) ?? new List<T>();
+            return (JsonUtility.Deserialize<SlotInfo<T>>(content) ?? new SlotInfo<T>()).Slots;
         }
 
         public static void WriteSlots<T>(string restoreDir, List<T> slots) where T : DependencySlot
@@ -195,11 +195,19 @@ namespace Microsoft.Docs.Build
             Debug.Assert(slots != null);
 
             Directory.CreateDirectory(restoreDir);
+
+            var slotInfo = new SlotInfo<T> { Slots = slots };
             var slotsFile = Path.Combine(restoreDir, "index.json");
-            File.WriteAllText(slotsFile, JsonUtility.Serialize(slots));
+            File.WriteAllText(slotsFile, JsonUtility.Serialize(slotInfo));
         }
 
         private static string GetLockKey(string remote, string id) => $"{remote}/{id}";
+
+        // in case of any extened requirements
+        private class SlotInfo<T> where T : DependencySlot
+        {
+            public List<T> Slots { get; set; } = new List<T>();
+        }
     }
 
     public enum LockType
