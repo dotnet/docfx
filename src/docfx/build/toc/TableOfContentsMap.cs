@@ -75,7 +75,7 @@ namespace Microsoft.Docs.Build
             var fileNames = Path.GetFileNameWithoutExtension(file.SitePath).Split(wordSplitChars, StringSplitOptions.RemoveEmptyEntries);
             var tocCandidates = from toc in filteredTocs
                                 let dirInfo = GetRelativeDirectoryInfo(file, toc)
-                                where hasReferencedTocs || dirInfo.parentDirectoryCount >= dirInfo.subDirectoryCount
+                                where hasReferencedTocs || (dirInfo.parentDirectoryCount >= dirInfo.subDirectoryCount && dirInfo.subDirectoryCount == 0)
                                 select new TocCandidate(dirInfo.subDirectoryCount, dirInfo.parentDirectoryCount, toc, fileNames);
 
             return tocCandidates.DefaultIfEmpty().Aggregate((minCandidate, nextCandidate) =>
