@@ -88,15 +88,19 @@ namespace Microsoft.Docs.Build
                 foreach (var branch in branches)
                 {
                     var gitVersion = dependencyLock?.GetGitLock(remote, branch);
-                    if ((@implicit || string.IsNullOrEmpty(gitVersion?.Commit)) && RestoreMap.TryGetGitRestorePath(remote, branch, gitVersion, out var existingPath))
+                    if (@implicit || string.IsNullOrEmpty(gitVersion?.Commit))
                     {
-                        branchesToFetch.Remove(branch);
-                        subChildren.Add(new RestoreChild(
-                            existingPath,
-                            remote,
-                            branch,
-                            gitVersion,
-                            new DependencyVersion(gitVersion?.Commit ?? Path.GetFileName(existingPath).Split("-").Last())));
+                        var (existingPath, git) = await DependencyGitPool.TryGetGitRestorePath(remote, branch, gitVersion?.Commit);
+                        if (!string.IsNullOrEmpty(existingPath))
+                        {
+                            branchesToFetch.Remove(branch);
+                            subChildren.Add(new RestoreChild(
+                                existingPath,
+                                remote,
+                                branch,
+                                gitVersion,
+                                new DependencyVersion(git.Commit)));
+                        }
                     }
                 }
 
@@ -144,19 +148,39 @@ namespace Microsoft.Docs.Build
                         var gitDependencyLock = dependencyLock?.GetGitLock(remote, branch);
                         headCommit = gitDependencyLock?.Commit ?? headCommit;
 
-                        var workTreeHead = $"{GetWorkTreeHeadPrefix(branch, !string.IsNullOrEmpty(gitDependencyLock?.Commit))}{headCommit}";
-                        var workTreePath = Path.GetFullPath(Path.Combine(repoPath, "../", workTreeHead)).Replace('\\', '/');
+                        var (workTreePath, gitSlot) = await DependencyGitPool.AcquireExclusiveGit(remote, branch, headCommit);
+                        workTreePath = Path.GetFullPath(workTreePath).Replace('\\', '/');
+                        var restored = true;
 
-                        if (existingWorkTreePath.TryAdd(workTreePath))
+                        try
                         {
-                            try
+                            if (existingWorkTreePath.TryAdd(workTreePath))
                             {
-                                await GitUtility.AddWorkTree(repoPath, headCommit, workTreePath);
+                                // create new worktree
+                                try
+                                {
+                                    await GitUtility.AddWorkTree(repoPath, headCommit, workTreePath);
+                                }
+                                catch (Exception ex)
+                                {
+                                    throw Errors.GitCloneFailed(remote, branches).ToException(ex);
+                                }
                             }
-                            catch (Exception ex)
+                            else
                             {
-                                throw Errors.GitCloneFailed(remote, branches).ToException(ex);
+                                // worktree already exists
+                                // checkout to {headCommit}, no need to fetch
+                                await GitUtility.Checkout(workTreePath, headCommit);
                             }
+                        }
+                        catch
+                        {
+                            restored = false;
+                            throw;
+                        }
+                        finally
+                        {
+                            await DependencyGitPool.ReleaseGit(gitSlot, LockType.Exclusive, restored);
                         }
 
                         subChildren.Add(new RestoreChild(workTreePath, remote, branch, gitDependencyLock, new DependencyVersion(headCommit)));

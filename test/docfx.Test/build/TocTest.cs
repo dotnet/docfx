@@ -15,7 +15,8 @@ namespace Microsoft.Docs.Build
             "en-us",
             JsonUtility.Deserialize<Config>("{'output': { 'json': true } }".Replace('\'', '\"')),
             new CommandLineOptions(),
-            new DependencyLockModel());
+            new DependencyLockModel(),
+            new DependencyGitPool(null));
 
         [Theory]
         // same level

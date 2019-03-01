@@ -217,6 +217,8 @@ namespace Microsoft.Docs.Build
                             exclusiveList.RemoveAt(exclusiveList.Count - 1);
                             acquirers.Remove("e" + parts[1]);
                         }
+                        if(!string.IsNullOrEmpty(exclusiveAcquirer))
+                            Assert.True(await ProcessUtility.IsExclusiveLockHeld(guid + parts[1]));
                         var exclusivedReleased = await ProcessUtility.ReleaseExclusiveLock(guid + parts[1], exclusiveAcquirer ?? "not exists");
                         Debug.Assert(exclusivedReleased == results[i], $"{i}");
                         break;

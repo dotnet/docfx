@@ -22,6 +22,25 @@ namespace Microsoft.Docs.Build
         private const int _defaultLockExpireTimeInSecond = 60 * 60 * 6; /*six hours*/
         private static AsyncLocal<ImmutableStack<string>> t_innerCall = new AsyncLocal<ImmutableStack<string>>();
 
+        public static async Task<bool> IsExclusiveLockHeld(string lockName)
+        {
+            Debug.Assert(!string.IsNullOrEmpty(lockName));
+
+            var lockPath = GetLockFilePath(lockName);
+            var held = false;
+            await ReadAndWriteFile<LockInfo>(lockPath, lockInfo =>
+            {
+                lockInfo = lockInfo ?? new LockInfo();
+                lockInfo = FilterExpiredAcquirers(lockInfo);
+
+                held = lockInfo.Type == LockType.Exclusive;
+
+                return Task.FromResult(lockInfo);
+            });
+
+            return held;
+        }
+
         /// <summary>
         /// Acquire a shared lock for input lock name
         /// The returned `acquirer` are used for tracking the acquired lock, instead of thread info, since the thread info may change in asynchronous programming model
@@ -251,7 +270,7 @@ namespace Microsoft.Docs.Build
                     var streamReader = new StreamReader(file);
                     var result = JsonUtility.Deserialize<T>(streamReader.ReadToEnd());
 
-                    file.Position = 0;
+                    file.SetLength(0);
                     var updatedResult = await update(result);
                     var steamWriter = new StreamWriter(file);
                     steamWriter.Write(JsonUtility.Serialize(updatedResult));
