@@ -81,7 +81,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             var baseDir = Path.Combine(intermediateFolder, cb.DirectoryName);
             var lastBaseDir = lb != null ? Path.Combine(intermediateFolder, lb.DirectoryName) : null;
             var lastBuildStartTime = lb?.BuildStartTime;
-            var buildInfoIncrementalStatus = GetBuildInfoIncrementalStatus(cb, lb);
+            var buildInfoIncrementalStatus = GetBuildInfoIncrementalStatus(cb, lb, parameters.ForceRebuild);
             var lbv = lb?.Versions?.SingleOrDefault(v => v.VersionName == parameters.VersionName);
             var cbv = new BuildVersionInfo()
             {
@@ -124,6 +124,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             LastBuildVersionInfo = lbv;
             IncrementalInfo = new IncrementalInfo();
             CanVersionIncremental = GetCanVersionIncremental(buildInfoIncrementalStatus);
+
         }
 
         #endregion
@@ -650,13 +651,18 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             }
         }
 
-        private static IncrementalStatus GetBuildInfoIncrementalStatus(BuildInfo cb, BuildInfo lb)
+        private static IncrementalStatus GetBuildInfoIncrementalStatus(BuildInfo cb, BuildInfo lb, bool forceRebuild)
         {
             string details = null;
             var canIncremental = false;
             string fullBuildReasonCode = null;
 
-            if (lb == null)
+            if (forceRebuild)
+            {
+                details = "Disable incremental build by force rebuild option.";
+                fullBuildReasonCode = InfoCodes.FullBuildReason.ForceRebuild;
+            }
+            else if (lb == null)
             {
                 details = "Cannot build incrementally because last build info is missing.";
                 fullBuildReasonCode = InfoCodes.FullBuildReason.NoAvailableBuildCache;
@@ -706,12 +712,6 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             {
                 details = "Cannot build incrementally because config changed.";
                 fullBuildReasonCode = InfoCodes.FullBuildReason.ConfigChanged;
-                canIncremental = false;
-            }
-            else if (_parameters.ForceRebuild)
-            {
-                details = "Disable incremental build by force rebuild option.";
-                fullBuildReasonCode = InfoCodes.FullBuildReason.ForceRebuild;
                 canIncremental = false;
             }
             else
