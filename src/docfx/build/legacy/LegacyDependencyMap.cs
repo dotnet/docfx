@@ -61,8 +61,11 @@ namespace Microsoft.Docs.Build
                     }
                 }
 
-                context.Output.WriteJson(legacyDependencyMap, Path.Combine(docset.Config.DocumentId.SiteBasePath, ".dependency-map.json"));
-                return legacyDependencyMap.Select(x => new LegacyDependencyMapItem { From = x.From.Substring(2), To = x.To.Substring(2), Type = x.Type })
+                var sorted = from d in legacyDependencyMap
+                             orderby d.From, d.To, d.Type
+                             select d;
+                context.Output.WriteJson(sorted, Path.Combine(docset.Config.DocumentId.SiteBasePath, ".dependency-map.json"));
+                return sorted.Select(x => new LegacyDependencyMapItem { From = x.From.Substring(2), To = x.To.Substring(2), Type = x.Type })
                     .GroupBy(x => x.From).ToDictionary(g => g.Key, g => g.ToList());
             }
         }
