@@ -85,6 +85,8 @@ Consider a typical scenario: I want to set up a job on a CI service (e.g. [Azure
 > [!NOTE]
 > These steps give an overall impression of what to do. You can adjust them depending on actual scenario.
 
+[docfx-seed](https://github.com/docascode/docfx-seed/blob/master/appveyor.yml) project provides a sample integrating with AppVeyor.
+
 ## 4.2 Set branch name
 
 Most build systems do not checkout the branch that is being built, but use a `detached head` for the specific commit.  DocFX needs the branch name to implement the `View Source` link in the API documentation.
