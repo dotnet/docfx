@@ -21,7 +21,7 @@ namespace Microsoft.Docs.Build
             var locale = LocalizationUtility.GetLocale(repository, options);
             var dependencyLock = await LoadBuildDependencyLock(docsetPath, locale, repository, options);
 
-            var dependencyGitPool = await DependencyGitPool.AcquireGitPool(dependencyLock);
+            var dependencyGitPool = await DependencyGitPool.Create(dependencyLock);
             try
             {
                 await Run(docsetPath, repository, locale, options, report, dependencyLock, dependencyGitPool);

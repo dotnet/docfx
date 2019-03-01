@@ -10,11 +10,11 @@ using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
 {
-    internal static class DependencySlotPool
+    internal static class DependencySlotPool<T> where T : DependencySlot, new()
     {
         private static int _defaultLockdownTimeInSecond = 10 * 60;
 
-        public static async Task<(string path, T slot)> TryGetSlot<T>(string remote, Func<IReadOnlyList<T>, IReadOnlyList<T>> matchExistingSlots) where T : DependencySlot
+        public static async Task<(string path, T slot)> TryGetSlot(string remote, Func<IReadOnlyList<T>, IReadOnlyList<T>> matchExistingSlots)
         {
             Debug.Assert(!string.IsNullOrEmpty(remote));
             Debug.Assert(matchExistingSlots != null);
@@ -27,7 +27,7 @@ namespace Microsoft.Docs.Build
                 remote + "/index.json",
                 async () =>
                 {
-                    var slots = GetSlots<T>(restoreDir);
+                    var slots = GetSlots(restoreDir);
 
                     var filteredSlots = matchExistingSlots(slots);
 
@@ -54,7 +54,7 @@ namespace Microsoft.Docs.Build
             return (path, slot);
         }
 
-        public static async Task<bool> ReleaseSlot<T>(T slot, LockType lockType, bool successed = true) where T : DependencySlot
+        public static async Task<bool> ReleaseSlot(T slot, LockType lockType, bool successed = true)
         {
             Debug.Assert(slot != null);
             Debug.Assert(!string.IsNullOrEmpty(slot.Url));
@@ -68,11 +68,9 @@ namespace Microsoft.Docs.Build
                 url + "/index.json",
                 async () =>
                 {
-                    var slots = GetSlots<T>(restoreDir);
-                    var slotsToRelease = slots.Where(i => i.Id == slot.Id);
-                    Debug.Assert(slotsToRelease.Count() == 1);
+                    var slots = GetSlots(restoreDir);
+                    var slotToRelease = slots.Single(i => i.Id == slot.Id);
 
-                    var slotToRelease = slotsToRelease.First();
                     Debug.Assert(slotToRelease != null);
 
                     switch (lockType)
@@ -95,7 +93,7 @@ namespace Microsoft.Docs.Build
             return released;
         }
 
-        public static async Task<(string path, T slot)> AcquireSlot<T>(string url, LockType type, Func<T, T> updateExistingSlot, Func<T, bool> matchExistingSlot) where T : DependencySlot, new()
+        public static async Task<(string path, T slot)> AcquireSlot(string url, LockType type, Func<T, T> updateExistingSlot, Func<T, bool> matchExistingSlot)
         {
             Debug.Assert(!string.IsNullOrEmpty(url));
 
@@ -108,7 +106,7 @@ namespace Microsoft.Docs.Build
                 url + "/index.json",
                 async () =>
                 {
-                    var slots = GetSlots<T>(restoreDir);
+                    var slots = GetSlots(restoreDir);
 
                     switch (type)
                     {
@@ -180,24 +178,24 @@ namespace Microsoft.Docs.Build
             return slot == null ? default : ($"{slot.Id}", slot);
         }
 
-        public static List<T> GetSlots<T>(string restoreDir) where T : DependencySlot
+        public static List<T> GetSlots(string restoreDir)
         {
             Debug.Assert(!string.IsNullOrEmpty(restoreDir));
 
             var slotsFile = Path.Combine(restoreDir, "index.json");
             var content = File.Exists(slotsFile) ? File.ReadAllText(slotsFile) : string.Empty;
 
-            return (JsonUtility.Deserialize<SlotInfo<T>>(content) ?? new SlotInfo<T>()).Slots;
+            return (JsonUtility.Deserialize<SlotInfo>(content) ?? new SlotInfo()).Slots;
         }
 
-        public static void WriteSlots<T>(string restoreDir, List<T> slots) where T : DependencySlot
+        public static void WriteSlots(string restoreDir, List<T> slots)
         {
             Debug.Assert(!string.IsNullOrEmpty(restoreDir));
             Debug.Assert(slots != null);
 
             Directory.CreateDirectory(restoreDir);
 
-            var slotInfo = new SlotInfo<T> { Slots = slots };
+            var slotInfo = new SlotInfo { Slots = slots };
             var slotsFile = Path.Combine(restoreDir, "index.json");
             File.WriteAllText(slotsFile, JsonUtility.Serialize(slotInfo));
         }
@@ -205,7 +203,7 @@ namespace Microsoft.Docs.Build
         private static string GetLockKey(string remote, string id) => $"{remote}/{id}";
 
         // in case of any extened requirements
-        private class SlotInfo<T> where T : DependencySlot
+        private class SlotInfo
         {
             public List<T> Slots { get; set; } = new List<T>();
         }

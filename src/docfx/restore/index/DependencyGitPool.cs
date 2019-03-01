@@ -76,12 +76,13 @@ namespace Microsoft.Docs.Build
         /// The dependency lock must be loaded before using this method
         /// </summary>
         public static async Task<DependencyGitPool>
-            AcquireGitPool(
+            Create(
             DependencyLockModel dependencyLock,
             Dictionary<(string remote, string branch, string commit), (string path, DependencyGit git)> acquired = null)
         {
             Debug.Assert(dependencyLock != null);
 
+            DependencyGitPool gitPool = null;
             var root = acquired == null;
             acquired = acquired ?? new Dictionary<(string remote, string branch, string commit), (string path, DependencyGit git)>();
 
@@ -97,8 +98,11 @@ namespace Microsoft.Docs.Build
                         acquired[(remote, branch, gitVersion.Value.Commit/*commit*/)] = (path, git);
                     }
 
-                    await AcquireGitPool(gitVersion.Value, acquired);
+                    await Create(gitVersion.Value, acquired);
                 }
+
+                gitPool = new DependencyGitPool(acquired);
+                return gitPool;
             }
             catch
             {
@@ -115,8 +119,6 @@ namespace Microsoft.Docs.Build
                     }
                 }
             }
-
-            return new DependencyGitPool(acquired);
         }
 
         /// <summary>
@@ -126,7 +128,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static async Task<(string path, DependencyGit git)> TryGetGitRestorePath(string remote, string branch, string commit)
         {
-            var (path, slot) = await DependencySlotPool.TryGetSlot<DependencyGit>(remote, gits =>
+            var (path, slot) = await DependencySlotPool<DependencyGit>.TryGetSlot(remote, gits =>
             {
                 var filteredGits = gits.Where(i => i.Branch == branch);
                 if (!string.IsNullOrEmpty(commit))
@@ -155,14 +157,14 @@ namespace Microsoft.Docs.Build
         }
 
         public static Task<bool> ReleaseGit(DependencyGit git, LockType lockType, bool successed = true)
-            => DependencySlotPool.ReleaseSlot(git, lockType, successed);
+            => DependencySlotPool<DependencyGit>.ReleaseSlot(git, lockType, successed);
 
         private static Task<(string path, DependencyGit git)> AcquireGit(string remote, string branch, string commit, LockType type)
         {
             Debug.Assert(!string.IsNullOrEmpty(branch));
             Debug.Assert(!string.IsNullOrEmpty(commit));
 
-            return DependencySlotPool.AcquireSlot<DependencyGit>(
+            return DependencySlotPool<DependencyGit>.AcquireSlot(
                 remote,
                 type,
                 slot =>

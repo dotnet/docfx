@@ -70,10 +70,10 @@ dependencies:
 
             // reset last access time
             // make one slot availabe for next restore
-            var slots = DependencySlotPool.GetSlots<DependencyGit>(AppData.GetGitDir(gitUrl));
+            var slots = DependencySlotPool<DependencyGit>.GetSlots(AppData.GetGitDir(gitUrl));
             Assert.True(slots.Count == 3);
             slots[1].LastAccessDate = DateTime.UtcNow - TimeSpan.FromDays(1);
-            DependencySlotPool.WriteSlots(AppData.GetGitDir(gitUrl), slots);
+            DependencySlotPool<DependencyGit>.WriteSlots(AppData.GetGitDir(gitUrl), slots);
 
             // run restore again
             await Program.Run(new[] { "restore", docsetPath });
