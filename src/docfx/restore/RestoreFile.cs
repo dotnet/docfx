@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -14,34 +13,26 @@ namespace Microsoft.Docs.Build
 {
     internal static class RestoreFile
     {
-        // todo: support specific version from dependency lock
-        public static async Task<IReadOnlyDictionary<string, DependencyVersion>> Restore(List<string> urls, Config config, DependencyLockModel dependencyLock, bool @implicit = false)
+        public static Task Restore(List<string> urls, Config config, bool @implicit = false)
         {
-            var downloadVersions = new ConcurrentDictionary<string, DependencyVersion>();
-
-            await ParallelUtility.ForEach(
-                    urls,
-                    async restoreUrl =>
-                    {
-                        var version = await Restore(restoreUrl, config, @implicit, dependencyLock?.Downloads.GetValueOrDefault(restoreUrl));
-                        downloadVersions.TryAdd(restoreUrl, version);
-                    });
-
-            return downloadVersions;
+            return ParallelUtility.ForEach(
+                   urls,
+                   restoreUrl =>
+                   {
+                       return Restore(restoreUrl, config, @implicit);
+                   });
         }
 
-        public static async Task<DependencyVersion> Restore(string url, Config config, bool @implicit = false, DependencyVersion dependencyVersion = null)
+        public static async Task Restore(string url, Config config, bool @implicit = false)
         {
             var restoredPath = await RestoreUrl();
 
             // update the last write date
             File.SetLastWriteTimeUtc(restoredPath, DateTime.UtcNow);
 
-            return new DependencyVersion(hash: Path.GetFileName(restoredPath));
-
             async Task<string> RestoreUrl()
             {
-                if (RestoreMap.TryGetFileRestorePath(url, dependencyVersion, out var existingPath) && (!string.IsNullOrEmpty(dependencyVersion?.Hash) || @implicit))
+                if (RestoreMap.TryGetFileRestorePath(url, out var existingPath) && @implicit)
                 {
                     return existingPath;
                 }

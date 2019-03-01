@@ -8,7 +8,5 @@ namespace Microsoft.Docs.Build
     internal class DependencyLockModel : DependencyVersion
     {
         public IReadOnlyDictionary<string, DependencyLockModel> Git { get; set; } = new Dictionary<string, DependencyLockModel>();
-
-        public IReadOnlyDictionary<string, DependencyVersion> Downloads { get; set; } = new Dictionary<string, DependencyVersion>();
     }
 }
