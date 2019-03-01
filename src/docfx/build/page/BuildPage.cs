@@ -189,7 +189,7 @@ namespace Microsoft.Docs.Build
                            .RemoveRerunCodepenIframes();
             }
 
-            return html.OuterHtml;
+            return string.IsNullOrEmpty(html.OuterHtml) ? "<div></div>" : html.OuterHtml;
         }
 
         private static (object output, string outputPath, JObject extensionData) ApplyTemplate(

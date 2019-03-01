@@ -43,50 +43,41 @@ namespace Microsoft.Docs.Build
             var result = new Dictionary<Document, HashSet<DependencyItem>>();
             var graph = _dependencyItems
                 .GroupBy(k => k.From)
-                .OrderByDescending(k => k.Key.FilePath)
-                .ToDictionary(
-                    k => k.Key,
-                    v => v.ToHashSet());
+                .ToDictionary(k => k.Key);
 
             foreach (var (from, value) in graph)
             {
-                result[from] = new HashSet<DependencyItem>();
+                var dependencies = new HashSet<DependencyItem>();
                 foreach (var item in value)
                 {
                     var stack = new Stack<DependencyItem>();
                     stack.Push(item);
                     var visited = new HashSet<Document> { from };
-                    DependencyItem previous = null;
-                    while (stack.Count > 0)
+                    while (stack.TryPop(out var current))
                     {
-                        var current = stack.Pop();
-                        if (previous != null && !CanTransit(previous))
-                        {
-                            continue;
-                        }
-                        result[from].Add(new DependencyItem(from, current.To, current.Type));
+                        dependencies.Add(new DependencyItem(from, current.To, current.Type));
 
                         // if the dependency destination is already in the result set, we can reuse it
                         if (current.To != from && CanTransit(current) && result.TryGetValue(current.To, out var nextDependencies))
                         {
                             foreach (var dependency in nextDependencies)
                             {
-                                result[from].Add(new DependencyItem(from, dependency.To, dependency.Type));
+                                dependencies.Add(new DependencyItem(from, dependency.To, dependency.Type));
                             }
                             continue;
                         }
 
-                        if (graph.ContainsKey(current.To) && !visited.Contains(current.To))
+                        if (graph.TryGetValue(current.To, out var toDependencies) && !visited.Contains(current.To) && CanTransit(current))
                         {
-                            foreach (var dependencyItem in graph[current.To])
+                            foreach (var dependencyItem in toDependencies)
                             {
-                                previous = current;
                                 visited.Add(current.To);
                                 stack.Push(dependencyItem);
                             }
                         }
                     }
                 }
+                result[from] = dependencies;
             }
             return result;
         }

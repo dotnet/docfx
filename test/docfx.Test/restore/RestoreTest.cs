@@ -44,36 +44,43 @@ namespace Microsoft.Docs.Build
             var restorePath = PathUtility.NormalizeFolder(Path.Combine(restoreDir, ".git"));
             File.WriteAllText(Path.Combine(docsetPath, "docfx.yml"), $@"
 dependencies:
-  dep1: {gitUrl}#test-1-clean
-  dep2: {gitUrl}#test-2-clean
-  dep3: {gitUrl}#test-3-clean
-  dep4: {gitUrl}#test-4-clean
   dep5: {gitUrl}#master
   dep6: {gitUrl}#chi");
-
 
             // run restroe and check the work trees
             await Program.Run(new[] { "restore", docsetPath });
             var workTreeList = await GitUtility.ListWorkTree(restorePath);
-            Assert.Equal(6, workTreeList.Count);
-
-            foreach (var wirkTreeFolder in workTreeList.Where(w => w.Contains("-clean-")))
-            {
-                Directory.SetLastWriteTimeUtc(wirkTreeFolder, DateTime.UtcNow - TimeSpan.FromDays(20));
-            }
+            Assert.Equal(2, workTreeList.Count);
 
             File.WriteAllText(Path.Combine(docsetPath, "docfx.yml"), $@"
 dependencies:
-  dep5: {gitUrl}#master
-  dep6: {gitUrl}#chi");
+  dep1: {gitUrl}#test-1-clean");
 
-            // run restore again to clean up
-            // check the work trees
+            // run restore again
             await Program.Run(new[] { "restore", docsetPath });
-            await Program.Run(new[] { "gc" });
 
+            // since the lockdown time works, new slot will be created
             workTreeList = await GitUtility.ListWorkTree(restorePath);
-            Assert.Equal(2, workTreeList.Count);
+            Assert.Equal(3, workTreeList.Count);
+
+            File.WriteAllText(Path.Combine(docsetPath, "docfx.yml"), $@"
+dependencies:
+  dep2: {gitUrl}#test-2-clean
+  dep3: {gitUrl}#test-3-clean");
+
+            // reset last access time
+            // make one slot availabe for next restore
+            var slots = DependencySlotPool<DependencyGit>.GetSlots(AppData.GetGitDir(gitUrl));
+            Assert.True(slots.Count == 3);
+            slots[1].LastAccessDate = DateTime.UtcNow - TimeSpan.FromDays(1);
+            DependencySlotPool<DependencyGit>.WriteSlots(AppData.GetGitDir(gitUrl), slots);
+
+            // run restore again
+            await Program.Run(new[] { "restore", docsetPath });
+
+            // will create a new slot and find an available slot
+            workTreeList = await GitUtility.ListWorkTree(restorePath);
+            Assert.Equal(4, workTreeList.Count);
         }
 
         [Fact]
