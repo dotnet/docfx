@@ -219,7 +219,7 @@ repos:
         { "note": "<p>my note</p>" }
 outputs:
   docs/a.json: |
-    { "content": "<div class=\"NOTE\"><p>my note</p><p>note</p></div>" }
+    { "content": "<div class=\"NOTE\"><p>Note</p><p>note</p></div>" }
 ---
 # title
 inputs:

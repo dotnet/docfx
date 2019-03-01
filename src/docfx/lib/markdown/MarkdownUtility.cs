@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -26,6 +27,8 @@ namespace Microsoft.Docs.Build
 
     internal static class MarkdownUtility
     {
+        private static readonly ConcurrentDictionary<string, Lazy<IReadOnlyDictionary<string, string>>> s_markdownTokens = new ConcurrentDictionary<string, Lazy<IReadOnlyDictionary<string, string>>>(StringComparer.OrdinalIgnoreCase);
+
         private static readonly MarkdownPipeline[] s_markdownPipelines = new[]
         {
             CreateConceptualMarkdownPipeline(),
@@ -62,7 +65,6 @@ namespace Microsoft.Docs.Build
             DependencyResolver dependencyResolver,
             Action<Document> buildChild,
             Func<string, List<string>> parseMonikerRange,
-            Func<string, string> getToken,
             MarkdownPipelineType pipelineType)
         {
             using (InclusionContext.PushFile(file))
@@ -72,9 +74,9 @@ namespace Microsoft.Docs.Build
                     var status = new Status
                     {
                         Result = new MarkupResult(),
+                        Culture = file.Docset.Culture,
                         DependencyResolver = dependencyResolver,
                         ParseMonikerRangeDelegate = parseMonikerRange,
-                        GetToken = getToken,
                         BuildChild = buildChild,
                     };
 
@@ -154,7 +156,17 @@ namespace Microsoft.Docs.Build
 
         private static string GetToken(string key)
         {
-            return t_status.Value.Peek().GetToken(key);
+            var culture = t_status.Value.Peek().Culture;
+            var markdownTokens = s_markdownTokens.GetOrAdd(culture.ToString(), _ => new Lazy<IReadOnlyDictionary<string, string>>(() =>
+            {
+                var resourceManager = new ResourceManager("Microsoft.Docs.Template.resources.tokens", typeof(TestData).Assembly);
+                using (var resourceSet = resourceManager.GetResourceSet(culture, true, true))
+                {
+                    return resourceSet.Cast<DictionaryEntry>().ToDictionary(k => k.Key.ToString(), v => v.Value.ToString(), StringComparer.OrdinalIgnoreCase);
+                }
+            }));
+
+            return markdownTokens.Value.TryGetValue(key, out var value) ? value : null;
         }
 
         private static void LogError(string code, string message, string doc, int line)
@@ -194,13 +206,13 @@ namespace Microsoft.Docs.Build
         {
             public MarkupResult Result;
 
+            public CultureInfo Culture;
+
             public DependencyResolver DependencyResolver;
 
             public Action<Document> BuildChild;
 
             public Func<string, List<string>> ParseMonikerRangeDelegate;
-
-            public Func<string, string> GetToken;
         }
     }
 }

@@ -24,7 +24,11 @@ namespace Microsoft.Docs.Build
 
         public string GetXrefPropertyValue(string propertyName)
         {
-            return ExtensionData.TryGetValue<string>(propertyName, out var value) ? value : null;
+            if (propertyName != null && ExtensionData.TryGetValue<JValue>(propertyName, out var v))
+            {
+                return v.Value is string str ? str : null;
+            }
+            return null;
         }
     }
 }
