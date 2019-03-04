@@ -88,27 +88,27 @@ dependencies:
         {
             // prepare versions
             var docsetPath = "restore-urls";
+            if (Directory.Exists(docsetPath))
+            {
+                Directory.Delete(docsetPath, true);
+            }
             Directory.CreateDirectory(docsetPath);
             var url = "https://raw.githubusercontent.com/docascode/docfx-test-dependencies-clean/master/README.md";
             var restoreDir = AppData.GetFileDownloadDir(url);
-            await ParallelUtility.ForEach(Enumerable.Range(0, 10), version =>
-            {
-                var restorePath = Path.Combine(restoreDir, version.ToString());
-                PathUtility.CreateDirectoryFromFilePath(restorePath);
-                File.WriteAllText(restorePath, $"{version}");
-                File.SetLastWriteTimeUtc(restorePath, DateTime.UtcNow - TimeSpan.FromDays(20));
-                return Task.CompletedTask;
-            });
 
             File.WriteAllText(Path.Combine(docsetPath, "docfx.yml"), $@"
 github:
   userCache: https://raw.githubusercontent.com/docascode/docfx-test-dependencies-clean/master/README.md");
 
-            // run restore again to clean up
+            // run restore
             await Program.Run(new[] { "restore", docsetPath });
-            await Program.Run(new[] { "gc" });
 
-            Assert.Single(Directory.EnumerateFiles(restoreDir, "*"));
+            Assert.Equal(2, Directory.EnumerateFiles(restoreDir, "*").Count());
+
+            // run restore again
+            await Program.Run(new[] { "restore", docsetPath });
+
+            Assert.Equal(2, Directory.EnumerateFiles(restoreDir, "*").Count());
         }
 
         private static void DeleteDir(string root)

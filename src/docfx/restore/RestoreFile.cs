@@ -76,7 +76,7 @@ namespace Microsoft.Docs.Build
         public static string GetRestorePath(string url)
         {
             Debug.Assert(!string.IsNullOrEmpty(url));
-            Debug.Assert(!HrefUtility.IsHttpHref(url));
+            Debug.Assert(HrefUtility.IsHttpHref(url));
 
             return PathUtility.NormalizeFile(Path.Combine(AppData.GetFileDownloadDir(url), HashUtility.GetMd5HashShort(url)));
         }
