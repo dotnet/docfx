@@ -5257,6 +5257,92 @@ tagRules : [
             }
         }
 
+
+        [Fact]
+        public void TestIncrementalWithContentProvidedDocumentType()
+        {
+            #region Prepare test data
+            // arrange
+            const string intermediateFolderVariable = "%cache%";
+            var inputFolder = GetRandomFolder();
+            var outputFolder = GetRandomFolder();
+            var templateFolder = GetRandomFolder();
+            var intermediateFolder = GetRandomFolder();
+            Environment.SetEnvironmentVariable("cache", Path.GetFullPath(intermediateFolder));
+
+            var fileMain = CreateFile(
+                "fileMain.yml",
+                new[] { "### YamlMime:YamlDocument", "contentType: testPage", "summary: for test" },
+                inputFolder);
+            var fileToc = CreateFile(
+                "toc.yml",
+                new[] { "- name: for test", "  href: fileMain.yml" },
+                inputFolder);
+            CreateFile("testPage.html.primary.tmpl", "{{{summary}}}", templateFolder);
+
+            FileCollection files = new FileCollection(Directory.GetCurrentDirectory());
+            files.Add(DocumentType.Article, new[] { fileMain, fileToc });
+            #endregion
+
+            Init("IncrementalBuild.TestIncrementalWithContentProvidedDocumentType");
+            var outputFolderFirst = Path.Combine(outputFolder, "IncrementalBuild.TestIncrementalWithContentProvidedDocumentType");
+            var outputFolderForIncremental = Path.Combine(outputFolder, "IncrementalBuild.TestIncrementalWithContentProvidedDocumentType.Second");
+            var outputFolderForCompare = Path.Combine(outputFolder, "IncrementalBuild.TestIncrementalWithContentProvidedDocumentType.Second.ForceBuild");
+            try
+            {
+                using (new LoggerPhaseScope("IncrementalBuild.TestIncrementalWithContentProvidedDocumentType-first"))
+                {
+                    BuildDocument(
+                        files,
+                        inputFolder,
+                        outputFolderFirst,
+                        new Dictionary<string, object> { ["meta"] = "Hello world!", },
+                        templateFolder: templateFolder,
+                        intermediateFolder: intermediateFolderVariable);
+                }
+                ClearListener();
+
+                MoveIntermediateFolder(intermediateFolder);
+                UpdateFile("toc.yml", new[] { "- name: changed", "  href: fileMain.yml" }, inputFolder);
+                using (new LoggerPhaseScope("IncrementalBuild.TestIncrementalWithContentProvidedDocumentType-second"))
+                {
+                    BuildDocument(
+                        files,
+                        inputFolder,
+                        outputFolderForIncremental,
+                        new Dictionary<string, object> { ["meta"] = "Hello world!", },
+                        templateFolder: templateFolder,
+                        intermediateFolder: intermediateFolderVariable,
+                        cleanupCacheHistory: true);
+                }
+
+                using (new LoggerPhaseScope("IncrementalBuild.TestIncrementalWithContentProvidedDocumentType-forcebuild-second"))
+                {
+                    BuildDocument(
+                        files,
+                        inputFolder,
+                        outputFolderForCompare,
+                        new Dictionary<string, object> { ["meta"] = "Hello world!", },
+                        templateFolder: templateFolder);
+                }
+
+                {
+                    Assert.True(CompareDir(outputFolderForIncremental, outputFolderForCompare));
+                    Assert.Equal(
+                       GetLogMessages("IncrementalBuild.TestIncrementalWithContentProvidedDocumentType-forcebuild-second"),
+                       GetLogMessages(new[] {
+                           "IncrementalBuild.TestIncrementalWithContentProvidedDocumentType-second",
+                           "IncrementalBuild.TestIncrementalWithFileMetadataChange-first" }));
+                }
+            }
+            finally
+            {
+                Environment.SetEnvironmentVariable("cache", null);
+                CleanUp();
+            }
+        }
+
+
         [Fact(Skip = "wait for fix")]
         public void TestDestinationFolderUpdate()
         {
@@ -5503,6 +5589,7 @@ tagRules : [
             yield return typeof(ResourceDocumentProcessor).Assembly;
             yield return typeof(TocDocumentProcessor).Assembly;
             yield return typeof(RestApiDocumentProcessor).Assembly;
+            yield return typeof(YamlDocumentProcessor).Assembly;
             if (enableSplit)
             {
                 yield return typeof(SplitClassPageToMemberLevel).Assembly;
