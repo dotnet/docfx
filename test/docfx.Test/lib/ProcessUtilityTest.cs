@@ -156,7 +156,7 @@ namespace Microsoft.Docs.Build
             int i = 0;
             var acquirers = new Dictionary<string, List<string>>();
 
-            foreach(var step in steps)
+            foreach (var step in steps)
             {
                 await Task.Yield();
                 var parts = step.Split(new[] { ':' });
@@ -217,7 +217,7 @@ namespace Microsoft.Docs.Build
                             exclusiveList.RemoveAt(exclusiveList.Count - 1);
                             acquirers.Remove("e" + parts[1]);
                         }
-                        if(!string.IsNullOrEmpty(exclusiveAcquirer))
+                        if (!string.IsNullOrEmpty(exclusiveAcquirer))
                             Assert.True(await ProcessUtility.IsExclusiveLockHeld(guid + parts[1]));
                         var exclusivedReleased = await ProcessUtility.ReleaseExclusiveLock(guid + parts[1], exclusiveAcquirer ?? "not exists");
                         Debug.Assert(exclusivedReleased == results[i], $"{i}");
