@@ -54,18 +54,16 @@ namespace Microsoft.Docs.Build
 
             await ProcessUtility.RunInsideMutex(filePath, () =>
             {
-                etag = GetEtag();
-                content = File.Exists(filePath) ? File.ReadAllText(filePath) : null;
+                content = GetFileContentIfExists(filePath);
+                etag = GetFileContentIfExists($"{filePath}.etag");
 
                 return Task.CompletedTask;
 
-                string GetEtag()
+                string GetFileContentIfExists(string file)
                 {
-                    var etagFile = $"{filePath}.etag";
-
-                    if (File.Exists(etagFile))
+                    if (File.Exists(file))
                     {
-                        return File.ReadAllText(etagFile);
+                        return File.ReadAllText(file);
                     }
 
                     return null;

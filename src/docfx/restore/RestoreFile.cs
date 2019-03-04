@@ -27,18 +27,13 @@ namespace Microsoft.Docs.Build
         {
             var filePath = GetRestorePath(url);
 
-            var existingEtagStr = (string)null;
-            var existingContent = (string)null;
-            if (@implicit)
-            {
-                (existingContent, existingEtagStr) = await RestoreMap.TryGetFileRestorePath(url);
-                if (!string.IsNullOrEmpty(existingContent))
-                    return;
-            }
+            var (existingContent, existingEtagContent) = await RestoreMap.TryGetFileRestorePath(url);
+            if (!string.IsNullOrEmpty(existingContent) && @implicit)
+                return;
 
             await ProcessUtility.RunInsideMutex(filePath, async () =>
             {
-                var existingEtag = !string.IsNullOrEmpty(existingEtagStr) ? new EntityTagHeaderValue(existingEtagStr) : null;
+                var existingEtag = !string.IsNullOrEmpty(existingEtagContent) ? new EntityTagHeaderValue(existingEtagContent) : null;
 
                 var (tempFile, etag) = await DownloadToTempFile(url, config, existingEtag);
                 if (tempFile == null)
