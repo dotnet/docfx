@@ -1,24 +1,20 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
-using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
+using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
 {
     internal static class RestoreMap
     {
-        private static readonly ConcurrentDictionary<string, Lazy<string>> s_downloadPath = new ConcurrentDictionary<string, Lazy<string>>();
-
-        public static (bool fromUrl, string path) GetFileRestorePath(this Docset docset, string url)
+        public static Task<(string localPath, string content, string etag)> GetFileRestorePath(this Docset docset, string url)
         {
             return GetFileRestorePath(docset.DocsetPath, url, docset.FallbackDocset?.DocsetPath);
         }
 
-        public static (bool fromUrl, string path) GetFileRestorePath(string docsetPath, string url, string fallbackDocset = null)
+        public static async Task<(string localPath, string content, string etag)> GetFileRestorePath(string docsetPath, string url, string fallbackDocset = null)
         {
             var fromUrl = HrefUtility.IsHttpHref(url);
             if (!fromUrl)
@@ -27,52 +23,56 @@ namespace Microsoft.Docs.Build
                 var fullPath = Path.Combine(docsetPath, url);
                 if (File.Exists(fullPath))
                 {
-                    return (fromUrl, fullPath);
+                    return (fullPath, File.ReadAllText(fullPath), null);
                 }
 
                 if (!string.IsNullOrEmpty(fallbackDocset))
                 {
-                    return GetFileRestorePath(fallbackDocset, url);
+                    return await GetFileRestorePath(fallbackDocset, url);
                 }
 
                 throw Errors.FileNotFound(docsetPath, url).ToException();
             }
 
-            if (!TryGetFileRestorePath(url, out var result))
+            var (content, etag) = await TryGetFileRestorePath(url);
+            if (string.IsNullOrEmpty(content))
             {
                 throw Errors.NeedRestore(url).ToException();
             }
 
-            return (fromUrl, result);
+            return (null, content, etag);
         }
 
-        public static bool TryGetFileRestorePath(string url, out string result)
+        public static async Task<(string content, string etag)> TryGetFileRestorePath(string url)
         {
             Debug.Assert(!string.IsNullOrEmpty(url));
             Debug.Assert(HrefUtility.IsHttpHref(url));
 
-            result = s_downloadPath.AddOrUpdate(
-                url,
-                new Lazy<string>(FindFile),
-                (_, existing) => existing.Value != null ? existing : new Lazy<string>(FindFile)).Value;
+            var filePath = RestoreFile.GetRestorePath(url);
+            string etag = null;
+            string content = null;
 
-            return File.Exists(result);
-
-            string FindFile()
+            await ProcessUtility.RunInsideMutex(filePath, () =>
             {
-                // get the file path from restore map
-                var restoreDir = AppData.GetFileDownloadDir(url);
+                etag = GetEtag();
+                content = File.Exists(filePath) ? File.ReadAllText(filePath) : null;
 
-                if (!Directory.Exists(restoreDir))
+                return Task.CompletedTask;
+
+                string GetEtag()
                 {
+                    var etagFile = $"{filePath}.etag";
+
+                    if (File.Exists(etagFile))
+                    {
+                        return File.ReadAllText(etagFile);
+                    }
+
                     return null;
                 }
+            });
 
-                // return the latest version
-                return Directory.EnumerateFiles(restoreDir, "*", SearchOption.TopDirectoryOnly)
-                       .OrderByDescending(f => new FileInfo(f).LastWriteTimeUtc)
-                       .FirstOrDefault();
-            }
+            return (content, etag);
         }
     }
 }

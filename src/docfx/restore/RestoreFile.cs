@@ -25,81 +25,40 @@ namespace Microsoft.Docs.Build
 
         public static async Task Restore(string url, Config config, bool @implicit = false)
         {
-            var restoredPath = await RestoreUrl();
+            var filePath = GetRestorePath(url);
 
-            // update the last write date
-            File.SetLastWriteTimeUtc(restoredPath, DateTime.UtcNow);
-
-            async Task<string> RestoreUrl()
+            var existingEtagStr = (string)null;
+            var existingContent = (string)null;
+            if (@implicit)
             {
-                if (RestoreMap.TryGetFileRestorePath(url, out var existingPath) && @implicit)
-                {
-                    return existingPath;
-                }
+                (existingContent, existingEtagStr) = await RestoreMap.TryGetFileRestorePath(url);
+                if (!string.IsNullOrEmpty(existingContent))
+                    return;
+            }
 
-                EntityTagHeaderValue existingEtag = null;
-                if (!string.IsNullOrEmpty(existingPath))
-                {
-                    existingEtag = GetEtag(existingPath);
-                }
+            await ProcessUtility.RunInsideMutex(filePath, async () =>
+            {
+                var existingEtag = !string.IsNullOrEmpty(existingEtagStr) ? new EntityTagHeaderValue(existingEtagStr) : null;
 
                 var (tempFile, etag) = await DownloadToTempFile(url, config, existingEtag);
                 if (tempFile == null)
                 {
                     // no change at all
-                    return existingPath;
+                    return;
                 }
 
-                var fileName = GetRestoreFileName(HashUtility.GetFileSha1Hash(tempFile), etag);
-                var filePath = PathUtility.NormalizeFile(Path.Combine(AppData.GetFileDownloadDir(url), fileName));
-                await ProcessUtility.RunInsideMutex(filePath, MoveFile);
-
-                return filePath;
-
-                Task MoveFile()
+                if (!File.Exists(filePath))
                 {
-                    if (!File.Exists(filePath))
-                    {
-                        PathUtility.CreateDirectoryFromFilePath(filePath);
-                        File.Move(tempFile, filePath);
-                    }
-                    else
-                    {
-                        File.Delete(tempFile);
-                    }
-
-                    return Task.CompletedTask;
+                    PathUtility.CreateDirectoryFromFilePath(filePath);
+                    File.Move(tempFile, filePath);
                 }
-            }
-        }
+                else
+                {
+                    File.Delete(tempFile);
+                }
 
-        /// <summary>
-        /// Get restore file name from hash and ETag
-        /// </summary>
-        /// <param name="hash">SHA1 hash of file content</param>
-        /// <param name="etag">ETag of the resource, null if server doesn't specify ETag</param>
-        public static string GetRestoreFileName(string hash, EntityTagHeaderValue etag = null)
-        {
-            Debug.Assert(!string.IsNullOrEmpty(hash));
-
-            var result = hash;
-            if (etag != null)
-            {
-                result += $"+{HrefUtility.EscapeUrlSegment(etag.ToString())}";
-            }
-            return result;
-        }
-
-        /// <summary>
-        /// Get ETag from restore file name
-        /// </summary>
-        /// <returns>ETag of the resource, null if server doesn't specify ETag</returns>
-        public static EntityTagHeaderValue GetEtag(string restorePath)
-        {
-            Debug.Assert(!string.IsNullOrEmpty(restorePath));
-
-            var parts = Path.GetFileName(restorePath).Split('+');
-            return parts.Length == 2 ? new EntityTagHeaderValue(HrefUtility.UnescapeUrl(parts[1])) : null;
+                File.WriteAllText($"{filePath}.etag", etag?.ToString());
+            });
         }
 
         public static IEnumerable<string> GetFileReferences(this Config config)
@@ -112,6 +71,14 @@ namespace Microsoft.Docs.Build
             yield return config.Contribution.GitCommitsTime;
             yield return config.GitHub.UserCache;
             yield return config.MonikerDefinition;
+        }
+
+        public static string GetRestorePath(string url)
+        {
+            Debug.Assert(!string.IsNullOrEmpty(url));
+            Debug.Assert(!HrefUtility.IsHttpHref(url));
+
+            return PathUtility.NormalizeFile(Path.Combine(AppData.GetFileDownloadDir(url), HashUtility.GetMd5HashShort(url)));
         }
 
         private static async Task<(string filename, EntityTagHeaderValue etag)> DownloadToTempFile(

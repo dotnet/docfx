@@ -111,22 +111,6 @@ github:
             Assert.Single(Directory.EnumerateFiles(restoreDir, "*"));
         }
 
-        [Theory]
-        [InlineData("abc123", "\"0xdef456\"", "abc123+%220xdef456%22")]
-        [InlineData("abc123", null, "abc123")]
-        public static void GetRestoreFileName(string hash, string etag, string expected)
-        {
-            Assert.Equal(expected, RestoreFile.GetRestoreFileName(hash, etag == null ? null : new EntityTagHeaderValue(etag)));
-        }
-
-        [Theory]
-        [InlineData("abc123+%220xdef456%22", "\"0xdef456\"")]
-        [InlineData("abc123", null)]
-        public static void GetEtag(string restoreFileName, string expected)
-        {
-            Assert.Equal(expected == null ? null : new EntityTagHeaderValue(expected), RestoreFile.GetEtag(restoreFileName));
-        }
-
         private static void DeleteDir(string root)
         {
             if (!Directory.Exists(root))

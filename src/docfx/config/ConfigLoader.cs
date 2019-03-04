@@ -94,17 +94,20 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static (List<Error>, JObject) LoadConfigObject(string fileName, string filePath)
+        private static (List<Error>, JObject) LoadConfigObject(string fileName, string file)
+            => LoadConfigObjectContent(fileName, File.ReadAllText(file));
+
+        private static (List<Error>, JObject) LoadConfigObjectContent(string fileName, string content)
         {
             var errors = new List<Error>();
             JObject config = null;
             if (fileName.EndsWith(".yml", StringComparison.OrdinalIgnoreCase))
             {
-                (errors, config) = YamlUtility.DeserializeWithSchemaValidation<JObject>(File.ReadAllText(filePath));
+                (errors, config) = YamlUtility.DeserializeWithSchemaValidation<JObject>(content);
             }
             else if (fileName.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
             {
-                (errors, config) = JsonUtility.DeserializeWithSchemaValidation<JObject>(File.ReadAllText(filePath));
+                (errors, config) = JsonUtility.DeserializeWithSchemaValidation<JObject>(content);
             }
             return (errors, Expand(config ?? new JObject()));
         }
@@ -135,8 +138,8 @@ namespace Microsoft.Docs.Build
                 {
                     if (extend is JValue value && value.Value is string str)
                     {
-                        var (_, filePath) = RestoreMap.GetFileRestorePath(docsetPath, str);
-                        var (extendErros, extendConfigObject) = LoadConfigObject(str, filePath);
+                        var (_, content, _) = RestoreMap.GetFileRestorePath(docsetPath, str).GetAwaiter().GetResult(); /*todo: remove GetResult()*/
+                        var (extendErros, extendConfigObject) = LoadConfigObjectContent(str, content);
                         errors.AddRange(extendErros);
                         JsonUtility.Merge(result, extendConfigObject);
                     }
