@@ -156,7 +156,7 @@ namespace Microsoft.Docs.Build
             int i = 0;
             var acquirers = new Dictionary<string, List<string>>();
 
-            foreach(var step in steps)
+            foreach (var step in steps)
             {
                 await Task.Yield();
                 var parts = step.Split(new[] { ':' });
@@ -217,7 +217,7 @@ namespace Microsoft.Docs.Build
                             exclusiveList.RemoveAt(exclusiveList.Count - 1);
                             acquirers.Remove("e" + parts[1]);
                         }
-                        if(!string.IsNullOrEmpty(exclusiveAcquirer))
+                        if (!string.IsNullOrEmpty(exclusiveAcquirer))
                             Assert.True(await ProcessUtility.IsExclusiveLockHeld(guid + parts[1]));
                         var exclusivedReleased = await ProcessUtility.ReleaseExclusiveLock(guid + parts[1], exclusiveAcquirer ?? "not exists");
                         Debug.Assert(exclusivedReleased == results[i], $"{i}");
@@ -225,6 +225,33 @@ namespace Microsoft.Docs.Build
                 }
 
                 i++;
+            }
+        }
+
+        [Fact]
+        public async static Task AcquireSharedAndExclusiveLockWithRetry()
+        {
+            var name = Guid.NewGuid().ToString();
+            await Task.WhenAll(Enumerable.Range(0, 5).AsParallel().SelectMany(r => new[] { AcquireExclusiveLock(r * 10), AcquireSharedLock(r * 10) }));
+
+            async Task AcquireExclusiveLock(int exclusiveWaitingTime)
+            {
+                var (acquired, acquirer) = await ProcessUtility.AcquireExclusiveLock(name, true);
+                Assert.True(acquired);
+
+                await Task.Delay(exclusiveWaitingTime);
+
+                Assert.True(await ProcessUtility.ReleaseExclusiveLock(name, acquirer));
+            }
+
+            async Task AcquireSharedLock(int sharedWaitingTime)
+            {
+                var (acquired, acquirer) = await ProcessUtility.AcquireExclusiveLock(name, true);
+                Assert.True(acquired);
+
+                await Task.Delay(sharedWaitingTime);
+
+                Assert.True(await ProcessUtility.ReleaseExclusiveLock(name, acquirer));
             }
         }
     }
