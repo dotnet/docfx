@@ -70,7 +70,7 @@ namespace Microsoft.Docs.Build
                     new DependencyLockModel
                     {
                         Git = childDependencyLock.Git,
-                        Commit = child.Restored.gitVersion.Commit,
+                        Commit = child.Restored.commit,
                     });
             }
 
@@ -98,7 +98,7 @@ namespace Microsoft.Docs.Build
                                 remote,
                                 branch,
                                 gitVersion,
-                                new DependencyVersion(git.Commit)));
+                                git.Commit));
                         }
                     }
                 }
@@ -182,7 +182,7 @@ namespace Microsoft.Docs.Build
                             await DependencyGitPool.ReleaseGit(gitSlot, LockType.Exclusive, restored);
                         }
 
-                        subChildren.Add(new RestoreChild(workTreePath, remote, branch, gitDependencyLock, new DependencyVersion(headCommit)));
+                        subChildren.Add(new RestoreChild(workTreePath, remote, branch, gitDependencyLock, headCommit));
                     });
                 }
             }
@@ -280,16 +280,16 @@ namespace Microsoft.Docs.Build
         {
             public (string path, DependencyLockModel dependencyLock) ToRestore { get; private set; }
 
-            public (string remote, string branch, string path, DependencyVersion gitVersion) Restored { get; private set; }
+            public (string remote, string branch, string path, string commit) Restored { get; private set; }
 
-            public RestoreChild(string path, string remote, string branch, DependencyLockModel dependencyLock, DependencyVersion dependencyVersion)
+            public RestoreChild(string path, string remote, string branch, DependencyLockModel dependencyLock, string commit)
             {
                 Debug.Assert(!string.IsNullOrEmpty(path));
                 Debug.Assert(!string.IsNullOrEmpty(remote));
                 Debug.Assert(!string.IsNullOrEmpty(branch));
-                Debug.Assert(!string.IsNullOrEmpty(dependencyVersion?.Commit));
+                Debug.Assert(!string.IsNullOrEmpty(commit));
 
-                Restored = (remote, branch, path, dependencyVersion);
+                Restored = (remote, branch, path, commit);
                 ToRestore = (path, dependencyLock);
             }
         }
