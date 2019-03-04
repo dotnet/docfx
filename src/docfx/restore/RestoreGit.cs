@@ -70,7 +70,6 @@ namespace Microsoft.Docs.Build
                     new DependencyLockModel
                     {
                         Git = childDependencyLock.Git,
-                        Downloads = childDependencyLock.Downloads,
                         Commit = child.Restored.gitVersion.Commit,
                     });
             }

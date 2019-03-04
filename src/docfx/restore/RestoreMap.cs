@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -12,14 +11,14 @@ namespace Microsoft.Docs.Build
 {
     internal static class RestoreMap
     {
-        private static readonly ConcurrentDictionary<(string url, string version), Lazy<string>> s_downloadPath = new ConcurrentDictionary<(string url, string version), Lazy<string>>();
+        private static readonly ConcurrentDictionary<string, Lazy<string>> s_downloadPath = new ConcurrentDictionary<string, Lazy<string>>();
 
         public static (bool fromUrl, string path) GetFileRestorePath(this Docset docset, string url)
         {
-            return GetFileRestorePath(docset.DocsetPath, url, docset.DependencyLock?.Downloads.GetValueOrDefault(url), docset.FallbackDocset?.DocsetPath);
+            return GetFileRestorePath(docset.DocsetPath, url, docset.FallbackDocset?.DocsetPath);
         }
 
-        public static (bool fromUrl, string path) GetFileRestorePath(string docsetPath, string url, DependencyVersion dependencyVersion, string fallbackDocset = null)
+        public static (bool fromUrl, string path) GetFileRestorePath(string docsetPath, string url, string fallbackDocset = null)
         {
             var fromUrl = HrefUtility.IsHttpHref(url);
             if (!fromUrl)
@@ -33,13 +32,13 @@ namespace Microsoft.Docs.Build
 
                 if (!string.IsNullOrEmpty(fallbackDocset))
                 {
-                    return GetFileRestorePath(fallbackDocset, url, dependencyVersion);
+                    return GetFileRestorePath(fallbackDocset, url);
                 }
 
                 throw Errors.FileNotFound(docsetPath, url).ToException();
             }
 
-            if (!TryGetFileRestorePath(url, dependencyVersion, out var result))
+            if (!TryGetFileRestorePath(url, out var result))
             {
                 throw Errors.NeedRestore(url).ToException();
             }
@@ -47,15 +46,13 @@ namespace Microsoft.Docs.Build
             return (fromUrl, result);
         }
 
-        public static bool TryGetFileRestorePath(string url, DependencyVersion dependencyVersion, out string result)
+        public static bool TryGetFileRestorePath(string url, out string result)
         {
             Debug.Assert(!string.IsNullOrEmpty(url));
             Debug.Assert(HrefUtility.IsHttpHref(url));
 
-            var fileName = dependencyVersion?.Hash;
-            var locked = !string.IsNullOrEmpty(fileName);
             result = s_downloadPath.AddOrUpdate(
-                (url, fileName),
+                url,
                 new Lazy<string>(FindFile),
                 (_, existing) => existing.Value != null ? existing : new Lazy<string>(FindFile)).Value;
 
@@ -69,12 +66,6 @@ namespace Microsoft.Docs.Build
                 if (!Directory.Exists(restoreDir))
                 {
                     return null;
-                }
-
-                // return specified version
-                if (locked)
-                {
-                    return Path.Combine(restoreDir, fileName);
                 }
 
                 // return the latest version
