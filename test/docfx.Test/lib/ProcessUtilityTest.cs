@@ -227,32 +227,5 @@ namespace Microsoft.Docs.Build
                 i++;
             }
         }
-
-        [Fact]
-        public async static Task AcquireSharedAndExclusiveLockWithRetry()
-        {
-            var name = Guid.NewGuid().ToString();
-            await Task.WhenAll(Enumerable.Range(0, 5).AsParallel().SelectMany(r => new[] { AcquireExclusiveLock(r * 10), AcquireSharedLock(r * 10) }));
-
-            async Task AcquireExclusiveLock(int exclusiveWaitingTime)
-            {
-                var (acquired, acquirer) = await ProcessUtility.AcquireExclusiveLock(name, true);
-                Assert.True(acquired);
-
-                await Task.Delay(exclusiveWaitingTime);
-
-                Assert.True(await ProcessUtility.ReleaseExclusiveLock(name, acquirer));
-            }
-
-            async Task AcquireSharedLock(int sharedWaitingTime)
-            {
-                var (acquired, acquirer) = await ProcessUtility.AcquireExclusiveLock(name, true);
-                Assert.True(acquired);
-
-                await Task.Delay(sharedWaitingTime);
-
-                Assert.True(await ProcessUtility.ReleaseExclusiveLock(name, acquirer));
-            }
-        }
     }
 }

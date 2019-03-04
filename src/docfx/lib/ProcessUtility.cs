@@ -45,36 +45,32 @@ namespace Microsoft.Docs.Build
         /// Acquire a shared lock for input lock name
         /// The returned `acquirer` are used for tracking the acquired lock, instead of thread info, since the thread info may change in asynchronous programming model
         /// </summary>
-        public static Task<(bool acquired, string acquirer)> AcquireSharedLock(string lockName, bool retryUntilSuccess = false)
+        public static async Task<(bool acquired, string acquirer)> AcquireSharedLock(string lockName)
         {
             Debug.Assert(!string.IsNullOrEmpty(lockName));
+
+            var acquired = false;
+            var acquirer = (string)null;
             var lockPath = GetLockFilePath(lockName);
 
-            return retryUntilSuccess ? AcquireWithRetry(lockName, AcquireLock) : AcquireLock();
-
-            async Task<(bool, string)> AcquireLock()
+            await ReadAndWriteFile<LockInfo>(lockPath, lockInfo =>
             {
-                var acquired = false;
-                var acquirer = (string)null;
-                await ReadAndWriteFile<LockInfo>(lockPath, lockInfo =>
+                lockInfo = lockInfo ?? new LockInfo();
+                lockInfo = FilterExpiredAcquirers(lockInfo);
+
+                if (lockInfo.Type == LockType.Exclusive)
                 {
-                    lockInfo = lockInfo ?? new LockInfo();
-                    lockInfo = FilterExpiredAcquirers(lockInfo);
-
-                    if (lockInfo.Type == LockType.Exclusive)
-                    {
-                        return Task.FromResult(lockInfo);
-                    }
-
-                    acquired = true;
-                    acquirer = Guid.NewGuid().ToString();
-                    lockInfo.Type = LockType.Shared;
-                    lockInfo.AcquiredBy.Add(new Acquirer { Id = acquirer, Date = DateTime.UtcNow });
                     return Task.FromResult(lockInfo);
-                });
+                }
 
-                return (acquired, acquirer);
-            }
+                acquired = true;
+                acquirer = Guid.NewGuid().ToString();
+                lockInfo.Type = LockType.Shared;
+                lockInfo.AcquiredBy.Add(new Acquirer { Id = acquirer, Date = DateTime.UtcNow });
+                return Task.FromResult(lockInfo);
+            });
+
+            return (acquired, acquirer);
         }
 
         public static async Task<bool> ReleaseSharedLock(string lockName, string acquirer)
@@ -118,37 +114,32 @@ namespace Microsoft.Docs.Build
         /// Acquire a exclusive lock for input lock name
         /// The returned `acquirer` are used for tracking the acquired lock, instead of thread info, since the thread info may change in asynchronous programming model
         /// </summary>
-        public static Task<(bool acquired, string acquirer)> AcquireExclusiveLock(string lockName, bool retryUntilSuccess = false)
+        public static async Task<(bool acquired, string acquirer)> AcquireExclusiveLock(string lockName)
         {
             Debug.Assert(!string.IsNullOrEmpty(lockName));
 
+            var acquired = false;
+            var acquirer = (string)null;
             var lockPath = GetLockFilePath(lockName);
 
-            return retryUntilSuccess ? AcquireWithRetry(lockName, AcquireLock) : AcquireLock();
-
-            async Task<(bool, string)> AcquireLock()
+            await ReadAndWriteFile<LockInfo>(lockPath, lockInfo =>
             {
-                var acquired = false;
-                var acquirer = (string)null;
-                await ReadAndWriteFile<LockInfo>(lockPath, lockInfo =>
+                lockInfo = lockInfo ?? new LockInfo();
+                lockInfo = FilterExpiredAcquirers(lockInfo);
+
+                if (lockInfo.Type != LockType.None)
                 {
-                    lockInfo = lockInfo ?? new LockInfo();
-                    lockInfo = FilterExpiredAcquirers(lockInfo);
-
-                    if (lockInfo.Type != LockType.None)
-                    {
-                        return Task.FromResult(lockInfo);
-                    }
-
-                    acquirer = Guid.NewGuid().ToString();
-                    acquired = true;
-                    lockInfo.Type = LockType.Exclusive;
-                    lockInfo.AcquiredBy = new List<Acquirer> { new Acquirer { Id = acquirer, Date = DateTime.UtcNow } };
                     return Task.FromResult(lockInfo);
-                });
+                }
 
-                return (acquired, acquirer);
-            }
+                acquirer = Guid.NewGuid().ToString();
+                acquired = true;
+                lockInfo.Type = LockType.Exclusive;
+                lockInfo.AcquiredBy = new List<Acquirer> { new Acquirer { Id = acquirer, Date = DateTime.UtcNow } };
+                return Task.FromResult(lockInfo);
+            });
+
+            return (acquired, acquirer);
         }
 
         public static async Task<bool> ReleaseExclusiveLock(string lockName, string acquirer)
@@ -373,13 +364,13 @@ namespace Microsoft.Docs.Build
                     await action();
                 }
 
-                Task<FileStream> CreateFile() => Task.FromResult(new FileStream(
+                FileStream CreateFile() => new FileStream(
                     lockPath,
                     FileMode.CreateNew,
                     FileAccess.ReadWrite,
                     FileShare.None,
                     1,
-                    FileOptions.DeleteOnClose));
+                    FileOptions.DeleteOnClose);
             }
             finally
             {
@@ -409,7 +400,7 @@ namespace Microsoft.Docs.Build
             return ex is UnauthorizedAccessException;
         }
 
-        private static async Task<T> RetryUntilSucceed<T>(string name, Func<Exception, bool> expectException, Func<Task<T>> action)
+        private static async Task<T> RetryUntilSucceed<T>(string name, Func<Exception, bool> expectException, Func<T> action)
         {
             var retryDelay = 100;
             var lastWait = DateTime.UtcNow;
@@ -418,7 +409,7 @@ namespace Microsoft.Docs.Build
             {
                 try
                 {
-                    return await action();
+                    return action();
                 }
                 catch (Exception ex) when (expectException(ex))
                 {
@@ -460,23 +451,6 @@ namespace Microsoft.Docs.Build
             }
 
             return lockInfo;
-        }
-
-        private static Task<(bool, string)> AcquireWithRetry(string lockName, Func<Task<(bool, string)>> acquireLock)
-        {
-            return RetryUntilSucceed(lockName, ex => ex is ApplicationException, ThrowOnNotAcquired);
-
-            async Task<(bool, string)> ThrowOnNotAcquired()
-            {
-                var (acquired, acquirer) = await acquireLock();
-
-                if (!acquired)
-                {
-                    throw new ApplicationException($"{lockName} is not acquired");
-                }
-
-                return (acquired, acquirer);
-            }
         }
 
         private enum LockType
