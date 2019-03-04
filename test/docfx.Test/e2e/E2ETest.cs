@@ -375,8 +375,6 @@ namespace Microsoft.Docs.Build
                 case ".log":
                     var expected = content.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).OrderBy(_ => _).ToArray();
                     var actual = File.ReadAllLines(file).OrderBy(_ => _).ToArray();
-                    // TODO: Configure github token in CI to get rid of github rate limit,
-                    // then we could remove the wildcard match
                     if (expected.Any(str => str.Contains("*")))
                     {
                         Assert.Matches("^" + Regex.Escape(string.Join("\n", expected)).Replace("\\*", ".*") + "$", string.Join("\n", actual));
