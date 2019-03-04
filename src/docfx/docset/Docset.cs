@@ -179,7 +179,10 @@ namespace Microsoft.Docs.Build
 
             _template = new Lazy<TemplateEngine>(() =>
             {
-                Debug.Assert(!string.IsNullOrEmpty(Config.Theme));
+                if (string.IsNullOrEmpty(Config.Theme))
+                {
+                    return null;
+                }
 
                 var (themeRemote, themeBranch) = LocalizationUtility.GetLocalizedTheme(Config.Theme, Locale, Config.Localization.DefaultLocale);
                 var (themePath, themeLock) = _dependencyGitPool.GetGitRestorePath($"{themeRemote}#{themeBranch}", DependencyLock);

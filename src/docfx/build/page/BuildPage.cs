@@ -100,7 +100,8 @@ namespace Microsoft.Docs.Build
                 file,
                 context.DependencyResolver,
                 buildChild,
-                (rangeString) => context.MonikerProvider.GetZoneMonikers(rangeString, monikers, errors),
+                rangeString => context.MonikerProvider.GetZoneMonikers(rangeString, monikers, errors),
+                key => file.Docset.Template?.GetToken(key),
                 MarkdownPipelineType.ConceptualMarkdown);
             errors.AddRange(markup.Errors);
 
@@ -196,7 +197,7 @@ namespace Microsoft.Docs.Build
         {
             var outputPath = file.GetOutputPath(model.Monikers, isPage);
 
-            if (!file.Docset.Config.Output.Json && !string.IsNullOrEmpty(file.Docset.Config.Theme))
+            if (!file.Docset.Config.Output.Json && file.Docset.Template != null)
             {
                 return (file.Docset.Template.Render(model, file), outputPath, null);
             }
