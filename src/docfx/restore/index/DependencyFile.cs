@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
 {
-    internal static class RestoreMap
+    internal static class DependencyFile
     {
         public static Task<(string localPath, string content, string etag)> GetRestoredFileContent(this Docset docset, string url)
         {

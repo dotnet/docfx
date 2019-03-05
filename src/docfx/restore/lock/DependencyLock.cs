@@ -52,7 +52,7 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            var (_, content, _) = await RestoreMap.GetRestoredFileContent(docset, dependencyLockPath);
+            var (_, content, _) = await DependencyFile.GetRestoredFileContent(docset, dependencyLockPath);
 
             if (string.IsNullOrEmpty(content))
             {
