@@ -25,23 +25,23 @@ namespace Microsoft.Docs.Build
 
         public static async Task Restore(string url, Config config, bool @implicit = false)
         {
-            var filePath = GetRestorePath(url);
+            var filePath = GetRestoreContentPath(url);
 
             var (existingContent, existingEtagContent) = await RestoreMap.TryGetRestoredFileContent(url);
             if (!string.IsNullOrEmpty(existingContent) && @implicit)
                 return;
 
-            await ProcessUtility.RunInsideMutex(filePath, async () =>
+            var existingEtag = !string.IsNullOrEmpty(existingEtagContent) ? new EntityTagHeaderValue(existingEtagContent) : null;
+
+            var (tempFile, etag) = await DownloadToTempFile(url, config, existingEtag);
+            if (tempFile == null)
             {
-                var existingEtag = !string.IsNullOrEmpty(existingEtagContent) ? new EntityTagHeaderValue(existingEtagContent) : null;
+                // no change at all
+                return;
+            }
 
-                var (tempFile, etag) = await DownloadToTempFile(url, config, existingEtag);
-                if (tempFile == null)
-                {
-                    // no change at all
-                    return;
-                }
-
+            await ProcessUtility.RunInsideMutex(filePath, () =>
+            {
                 if (!File.Exists(filePath))
                 {
                     PathUtility.CreateDirectoryFromFilePath(filePath);
@@ -52,7 +52,9 @@ namespace Microsoft.Docs.Build
                     File.Delete(tempFile);
                 }
 
-                File.WriteAllText($"{filePath}.etag", etag?.ToString());
+                File.WriteAllText(GetRestoreEtagPath(url), etag?.ToString());
+
+                return Task.CompletedTask;
             });
         }
 
@@ -68,12 +70,20 @@ namespace Microsoft.Docs.Build
             yield return config.MonikerDefinition;
         }
 
-        public static string GetRestorePath(string url)
+        public static string GetRestoreContentPath(string url)
         {
             Debug.Assert(!string.IsNullOrEmpty(url));
             Debug.Assert(HrefUtility.IsHttpHref(url));
 
-            return PathUtility.NormalizeFile(Path.Combine(AppData.GetFileDownloadDir(url), HashUtility.GetMd5HashShort(url)));
+            return PathUtility.NormalizeFile(Path.Combine(AppData.GetFileDownloadDir(url), "content"));
+        }
+
+        public static string GetRestoreEtagPath(string url)
+        {
+            Debug.Assert(!string.IsNullOrEmpty(url));
+            Debug.Assert(HrefUtility.IsHttpHref(url));
+
+            return PathUtility.NormalizeFile(Path.Combine(AppData.GetFileDownloadDir(url), "etag"));
         }
 
         private static async Task<(string filename, EntityTagHeaderValue etag)> DownloadToTempFile(

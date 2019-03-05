@@ -20,39 +20,38 @@ github:
   userCache: https:///some-blob-service/github-user-cache.json
 ```
 
-The restored files will be stored at `%DOCFX_APPDATA_PATH%/downloads/{url-short-path}/{url-hash}` like:
+The restored files will be stored at `%DOCFX_APPDATA_PATH%/downloads/{url-short-path}/content` like:
 
 ```text
 `%DOCFX_APPDATA_PATH%`
     | - downloads
         | - raw.gith..tent.com+docascode+docfx-te..ndencies+62b0448+extend1.yml+dc363b0e
-            | - dc363b0e
+            | - content
 
 ```
 
-And there is another etag file `{url-hash}.etag` under `%DOCFX_APPDATA_PATH%/downloads/{url-short-path}/` tracking the `etag` info of this file if has.
+And there is another etag file `etag` under `%DOCFX_APPDATA_PATH%/downloads/{url-short-path}/` tracking the `etag` info of this file if has.
 
 ```text
 `%DOCFX_APPDATA_PATH%`
     | - downloads
         | - raw.gith..tent.com+docascode+docfx-te..ndencies+62b0448+extend1.yml+dc363b0e
-            | - dc363b0e
-            | - dc363b0e.etag
+            | - content
+            | - etag
 
 ```
 
-`{url-hash}.etag`:
+`etag`:
 ```text
 "f8b4e180558bb672ba084a0baa2c345c642328e4"
 ```
 
 - `{url-short-path}` is calculated from `file` url.
-- `{url-hash}` is md5 short hash of `file` url.
 - `{etag}` is timestamp or something else supported by the service which stores the `file`.
 
 Same url will always be restored to the same place, and we are using `Process Lock` to read/write the file and its etag file.
 
-> NOTE: docfx will load all restored files' content at the first stage of build, never load again, in case ths file is restored again(changed) in current build.
+> NOTE: docfx will load all restored files' content at the first stage of build, never load again, in case this file is restored again(changed) in current build.
 
 If the `etag` is supported by its service, docfx avoids duplicated downloads for the file never changed.
 

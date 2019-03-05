@@ -48,14 +48,15 @@ namespace Microsoft.Docs.Build
             Debug.Assert(!string.IsNullOrEmpty(url));
             Debug.Assert(HrefUtility.IsHttpHref(url));
 
-            var filePath = RestoreFile.GetRestorePath(url);
+            var filePath = RestoreFile.GetRestoreContentPath(url);
+            var etagPath = RestoreFile.GetRestoreEtagPath(url);
             string etag = null;
             string content = null;
 
             await ProcessUtility.RunInsideMutex(filePath, () =>
             {
                 content = GetFileContentIfExists(filePath);
-                etag = GetFileContentIfExists($"{filePath}.etag");
+                etag = GetFileContentIfExists(etagPath);
 
                 return Task.CompletedTask;
 
