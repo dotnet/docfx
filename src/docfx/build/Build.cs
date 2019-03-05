@@ -223,7 +223,6 @@ namespace Microsoft.Docs.Build
                     ? null
                     : new DependencyLockModel
                     {
-                        Hash = sourceDependencyLock.Hash,
                         Commit = sourceDependencyLock.Commit,
                         Git = new Dictionary<string, DependencyLockModel>(sourceDependencyLock.Git.Concat(new[] { KeyValuePair.Create($"{sourceRemote}#{sourceBranch}", sourceDependencyLock) })),
                     };
