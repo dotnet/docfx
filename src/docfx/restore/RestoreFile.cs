@@ -27,7 +27,7 @@ namespace Microsoft.Docs.Build
         {
             var filePath = GetRestoreContentPath(url);
 
-            var (existingContent, existingEtagContent) = await RestoreMap.TryGetRestoredFileContent(url);
+            var (existingContent, existingEtagContent) = await DependencyFile.TryGetRestoredFileContent(url);
             if (!string.IsNullOrEmpty(existingContent) && @implicit)
                 return;
 
