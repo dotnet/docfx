@@ -93,7 +93,7 @@ namespace Microsoft.Docs.Build
                     return new GitHubUserCache(docset, AppData.DefaultGitHubUserCachePath);
                 }
 
-                var (localPath, content, etag) = await docset.GetFileRestorePath(path);
+                var (localPath, content, etag) = await docset.GetRestoredFileContent(path);
                 if (string.IsNullOrEmpty(localPath))
                 {
                     return new GitHubUserCache(docset, path, content, etag, AppData.GetGitHubUserCachePath(path));

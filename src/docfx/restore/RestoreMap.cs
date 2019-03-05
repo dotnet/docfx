@@ -9,12 +9,12 @@ namespace Microsoft.Docs.Build
 {
     internal static class RestoreMap
     {
-        public static Task<(string localPath, string content, string etag)> GetFileRestorePath(this Docset docset, string url)
+        public static Task<(string localPath, string content, string etag)> GetRestoredFileContent(this Docset docset, string url)
         {
-            return GetFileRestorePath(docset.DocsetPath, url, docset.FallbackDocset?.DocsetPath);
+            return GetRestoredFileContent(docset.DocsetPath, url, docset.FallbackDocset?.DocsetPath);
         }
 
-        public static async Task<(string localPath, string content, string etag)> GetFileRestorePath(string docsetPath, string url, string fallbackDocset = null)
+        public static async Task<(string localPath, string content, string etag)> GetRestoredFileContent(string docsetPath, string url, string fallbackDocset = null)
         {
             var fromUrl = HrefUtility.IsHttpHref(url);
             if (!fromUrl)
@@ -28,13 +28,13 @@ namespace Microsoft.Docs.Build
 
                 if (!string.IsNullOrEmpty(fallbackDocset))
                 {
-                    return await GetFileRestorePath(fallbackDocset, url);
+                    return await GetRestoredFileContent(fallbackDocset, url);
                 }
 
                 throw Errors.FileNotFound(docsetPath, url).ToException();
             }
 
-            var (content, etag) = await TryGetFileRestorePath(url);
+            var (content, etag) = await TryGetRestoredFileContent(url);
             if (string.IsNullOrEmpty(content))
             {
                 throw Errors.NeedRestore(url).ToException();
@@ -43,7 +43,7 @@ namespace Microsoft.Docs.Build
             return (null, content, etag);
         }
 
-        public static async Task<(string content, string etag)> TryGetFileRestorePath(string url)
+        public static async Task<(string content, string etag)> TryGetRestoredFileContent(string url)
         {
             Debug.Assert(!string.IsNullOrEmpty(url));
             Debug.Assert(HrefUtility.IsHttpHref(url));

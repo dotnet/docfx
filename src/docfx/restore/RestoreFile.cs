@@ -27,7 +27,7 @@ namespace Microsoft.Docs.Build
         {
             var filePath = GetRestorePath(url);
 
-            var (existingContent, existingEtagContent) = await RestoreMap.TryGetFileRestorePath(url);
+            var (existingContent, existingEtagContent) = await RestoreMap.TryGetRestoredFileContent(url);
             if (!string.IsNullOrEmpty(existingContent) && @implicit)
                 return;
 
