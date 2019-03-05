@@ -77,10 +77,6 @@ namespace Microsoft.Docs.Build
                             await Restore.Run(docset, options, report, @implicit: true);
                             await Watch.Run(docset, options);
                             break;
-                        case "gc":
-                            await GarbageCollector.Collect(options.RetentionDays);
-                            Done(command, stopwatch.Elapsed, report);
-                            break;
                     }
                     return 0;
                 }
@@ -129,10 +125,6 @@ namespace Microsoft.Docs.Build
                 syntax.DefineOption("no-restore", ref options.NoRestore, "Do not restore the docset before building.");
                 syntax.DefineOption("v|verbose", ref options.Verbose, "Enable diagnostics console output.");
                 syntax.DefineParameter("docset", ref docset, "Docset directory that contains docfx.yml/docfx.json.");
-
-                // GC command
-                syntax.DefineCommand("gc", ref command, "Garbage collect for `AppData` folder");
-                syntax.DefineOption("retention-days", ref options.RetentionDays, "Keep the files accessed/written within <d> days");
             });
 
             options.Locale = options.Locale?.ToLowerInvariant();
