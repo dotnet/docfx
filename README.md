@@ -65,5 +65,5 @@ Apart from `dev` branch, `stable` branch builds daily, and `master` branch is th
 * Running Status
 
 | Running Status| Windows with .NET Core v2.0.3 | Windows with VS2017 | Ubuntu Linux with Mono
-| ---------- | ------------- |---------- | ------------- |----------
+| ---------- | ------------- |---------- | ------------- 
 | [![NuGet](https://img.shields.io/nuget/v/docfx.svg)](http://www.nuget.org/packages/docfx/)|[![.NET CORE](https://docascode.visualstudio.com/_apis/public/build/definitions/c8f1f4cb-74cb-4c89-a2db-6c3438796b0a/1/badge)](https://docascode.visualstudio.com/docfx/_build/index?context=mine&path=%5C&definitionId=1&_a=completed)|[![VS](https://docascode.visualstudio.com/_apis/public/build/definitions/c8f1f4cb-74cb-4c89-a2db-6c3438796b0a/2/badge)](https://docascode.visualstudio.com/docfx/_build/index?context=mine&path=%5C&definitionId=2&_a=completed)|[![Ubuntu](https://travis-ci.org/docascode/docfx.test.svg?branch=master)](https://travis-ci.org/docascode/docfx.test)
