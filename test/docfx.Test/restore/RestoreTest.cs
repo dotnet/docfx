@@ -3,7 +3,6 @@
 using System;
 using System.IO;
 using System.Linq;
-using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -88,43 +87,27 @@ dependencies:
         {
             // prepare versions
             var docsetPath = "restore-urls";
+            if (Directory.Exists(docsetPath))
+            {
+                Directory.Delete(docsetPath, true);
+            }
             Directory.CreateDirectory(docsetPath);
             var url = "https://raw.githubusercontent.com/docascode/docfx-test-dependencies-clean/master/README.md";
             var restoreDir = AppData.GetFileDownloadDir(url);
-            await ParallelUtility.ForEach(Enumerable.Range(0, 10), version =>
-            {
-                var restorePath = Path.Combine(restoreDir, version.ToString());
-                PathUtility.CreateDirectoryFromFilePath(restorePath);
-                File.WriteAllText(restorePath, $"{version}");
-                File.SetLastWriteTimeUtc(restorePath, DateTime.UtcNow - TimeSpan.FromDays(20));
-                return Task.CompletedTask;
-            });
 
             File.WriteAllText(Path.Combine(docsetPath, "docfx.yml"), $@"
 github:
   userCache: https://raw.githubusercontent.com/docascode/docfx-test-dependencies-clean/master/README.md");
 
-            // run restore again to clean up
+            // run restore
             await Program.Run(new[] { "restore", docsetPath });
-            await Program.Run(new[] { "gc" });
 
-            Assert.Single(Directory.EnumerateFiles(restoreDir, "*"));
-        }
+            Assert.Equal(2, Directory.EnumerateFiles(restoreDir, "*").Count());
 
-        [Theory]
-        [InlineData("abc123", "\"0xdef456\"", "abc123+%220xdef456%22")]
-        [InlineData("abc123", null, "abc123")]
-        public static void GetRestoreFileName(string hash, string etag, string expected)
-        {
-            Assert.Equal(expected, RestoreFile.GetRestoreFileName(hash, etag == null ? null : new EntityTagHeaderValue(etag)));
-        }
+            // run restore again
+            await Program.Run(new[] { "restore", docsetPath });
 
-        [Theory]
-        [InlineData("abc123+%220xdef456%22", "\"0xdef456\"")]
-        [InlineData("abc123", null)]
-        public static void GetEtag(string restoreFileName, string expected)
-        {
-            Assert.Equal(expected == null ? null : new EntityTagHeaderValue(expected), RestoreFile.GetEtag(restoreFileName));
+            Assert.Equal(2, Directory.EnumerateFiles(restoreDir, "*").Count());
         }
 
         private static void DeleteDir(string root)
