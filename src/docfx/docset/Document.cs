@@ -110,12 +110,6 @@ namespace Microsoft.Docs.Build
         private readonly Lazy<(string docId, string versionIndependentId)> _id;
         private readonly Lazy<Repository> _repository;
 
-        // TODO:
-        // This is a temporary property just so that legacy can access OutputPath,
-        // I'll slowly converge legacy into main build and remove this property eventually.
-        // Do not use this property in main build.
-        internal string OutputPath;
-
         /// <summary>
         /// Intentionally left as private. Use <see cref="Document.TryCreateFromFile(Docset, string)"/> instead.
         /// </summary>
