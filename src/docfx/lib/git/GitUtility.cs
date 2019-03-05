@@ -160,18 +160,6 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
-        /// Determines if a worktree has completed checkout
-        /// </summary>
-        public static bool IsWorkTreeCheckoutComplete(string repoPath, string worktreeName)
-        {
-            // Adding the HEAD file is the last step in a worktree checkout, use it to
-            // filter out worktrees that are still in progress.
-            //
-            // list_work_tree https://github.com/git/git/blob/e146cc97be4c054c60d38e9f4edcdc33205bf563/worktree.c#L93
-            return File.Exists(Path.Combine(repoPath, ".git/worktrees", worktreeName, "HEAD"));
-        }
-
-        /// <summary>
         /// Create a work tree for a given repo
         /// </summary>
         /// <param name="cwd">The current working directory</param>

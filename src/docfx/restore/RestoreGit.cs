@@ -49,12 +49,6 @@ namespace Microsoft.Docs.Build
                 },
                 Progress.Update);
 
-            // update the last write time
-            foreach (var child in children)
-            {
-                Directory.SetLastWriteTimeUtc(child.Restored.path, DateTime.UtcNow);
-            }
-
             // fetch contribution branch
             if (rootRepository != null && LocalizationUtility.TryGetContributionBranch(rootRepository, out var contributionBranch))
             {
@@ -188,16 +182,6 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        // todo: change to re-usable worktree prefix but stateful
-        public static string GetWorkTreeHeadPrefix(string branch, bool isLocked = false)
-        {
-            Debug.Assert(!string.IsNullOrEmpty(branch));
-
-            var workTreeHeadPrefix = isLocked ? "locked-" : "";
-
-            return $"{workTreeHeadPrefix}{HrefUtility.EscapeUrlSegment(branch)}-{HashUtility.GetMd5HashShort(branch)}-";
-        }
-
         private static IEnumerable<(string remote, string branch, GitFlags flags)> GetGitDependencies(Config config, string locale, Repository rootRepository)
         {
             var dependencies = config.Dependencies.Values.Select(url =>
@@ -280,7 +264,7 @@ namespace Microsoft.Docs.Build
         {
             public (string path, DependencyLockModel dependencyLock) ToRestore { get; private set; }
 
-            public (string remote, string branch, string path, string commit) Restored { get; private set; }
+            public (string remote, string branch, string commit) Restored { get; private set; }
 
             public RestoreChild(string path, string remote, string branch, DependencyLockModel dependencyLock, string commit)
             {
@@ -289,7 +273,7 @@ namespace Microsoft.Docs.Build
                 Debug.Assert(!string.IsNullOrEmpty(branch));
                 Debug.Assert(!string.IsNullOrEmpty(commit));
 
-                Restored = (remote, branch, path, commit);
+                Restored = (remote, branch, commit);
                 ToRestore = (path, dependencyLock);
             }
         }
