@@ -31,6 +31,16 @@ private void UpdateAbstract()
         {
             <div class="menu">
                 <div class="abstract-title">@Model.Abstract?.Menu?.Title</div>
+                <ul>
+                    @foreach (var item in Model.Abstract.Menu.Items)
+                    {
+                        <li>
+                            <a href="@item.Href">
+                                @item.Text
+                            </a>
+                        </li>
+                    }
+                </ul>
             </div>
         }
         @if (Model.Abstract?.Aside != null)
