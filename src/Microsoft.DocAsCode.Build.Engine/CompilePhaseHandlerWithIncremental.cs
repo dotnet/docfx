@@ -68,9 +68,9 @@ namespace Microsoft.DocAsCode.Build.Engine
                 }
             }
             var nonIncreSet = new HashSet<string>(from h in hostServices
-                                              where !h.CanIncrementalBuild
-                                              from f in h.Models
-                                              select IncrementalUtility.GetDependencyKey(f.OriginalFileAndType),
+                                                  where !h.CanIncrementalBuild
+                                                  from f in h.Models
+                                                  select IncrementalUtility.GetDependencyKey(f.OriginalFileAndType),
                                                   FilePathComparer.OSPlatformSensitiveStringComparer);
             ReportDependency(nonIncreSet);
             LoadContextInfo(hostServices);
@@ -231,14 +231,8 @@ namespace Microsoft.DocAsCode.Build.Engine
                     foreach (var fileLinkSourceFile in list)
                     {
                         var sourceFile = fileLinkSourceFile.SourceFile != null ? ((RelativePath)fileLinkSourceFile.SourceFile).GetPathFromWorkingFolder().ToString() : fromNode;
-                        if (!string.IsNullOrEmpty(fileLinkSourceFile.Anchor))
-                        {
-                            yield return new DependencyItem(sourceFile, f, sourceFile, DependencyTypeName.Bookmark);
-                        }
-                        else
-                        {
-                            yield return new DependencyItem(sourceFile, f, sourceFile, DependencyTypeName.File);
-                        }
+                        var type = IsBookmark(fileLinkSourceFile) ? DependencyTypeName.Bookmark : DependencyTypeName.File;
+                        yield return new DependencyItem(sourceFile, f, sourceFile, type);
                     }
                 }
                 else
@@ -286,14 +280,8 @@ namespace Microsoft.DocAsCode.Build.Engine
                     foreach (var uidLinkSourceFile in list)
                     {
                         var sourceFile = uidLinkSourceFile.SourceFile != null ? ((RelativePath)uidLinkSourceFile.SourceFile).GetPathFromWorkingFolder().ToString() : fromNode;
-                        if (!string.IsNullOrEmpty(uidLinkSourceFile.Anchor))
-                        {
-                            yield return new DependencyItem(sourceFile, item, sourceFile, DependencyTypeName.Bookmark);
-                        }
-                        else
-                        {
-                            yield return new DependencyItem(sourceFile, item, sourceFile, DependencyTypeName.Uid);
-                        }
+                        var type = IsBookmark(uidLinkSourceFile) ? DependencyTypeName.Bookmark : DependencyTypeName.Uid;
+                        yield return new DependencyItem(sourceFile, item, sourceFile, type);
                     }
                 }
                 else
@@ -301,6 +289,11 @@ namespace Microsoft.DocAsCode.Build.Engine
                     yield return new DependencyItem(fromNode, item, fromNode, DependencyTypeName.Uid);
                 }
             }
+        }
+
+        private bool IsBookmark(LinkSourceInfo info)
+        {
+            return info.Anchor?.Contains("#") == true;
         }
 
         #endregion
