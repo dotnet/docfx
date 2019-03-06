@@ -20,7 +20,7 @@ namespace Microsoft.Docs.Build
     internal static class ProcessUtility
     {
         private static readonly TimeSpan s_defaultLockExpireTime = TimeSpan.FromHours(6);
-        private static readonly AsyncLocal<ImmutableStack<string>> t_innerCall = new AsyncLocal<ImmutableStack<string>>();
+        private static readonly AsyncLocal<ImmutableStack<string>> t_mutexRecursionStack = new AsyncLocal<ImmutableStack<string>>();
 
         public static async Task<bool> IsExclusiveLockHeld(string lockName)
         {
@@ -358,13 +358,13 @@ namespace Microsoft.Docs.Build
                     }
                 }
 
-                // avoid the RunInsideMutex to be nested used with same mutex name
-                t_innerCall.Value = t_innerCall.Value ?? ImmutableStack<string>.Empty;
-                if (t_innerCall.Value.Contains(mutexName))
+                // avoid nested calls to RunInsideMutex with same mutex name
+                t_mutexRecursionStack.Value = t_mutexRecursionStack.Value ?? ImmutableStack<string>.Empty;
+                if (t_mutexRecursionStack.Value.Contains(mutexName))
                 {
                     throw new ApplicationException($"Nested call to RunInsideMutex is detected, mutex name: {mutexName}");
                 }
-                t_innerCall.Value = t_innerCall.Value.Push(mutexName);
+                t_mutexRecursionStack.Value = t_mutexRecursionStack.Value.Push(mutexName);
 
                 try
                 {
@@ -374,7 +374,7 @@ namespace Microsoft.Docs.Build
                 }
                 finally
                 {
-                    t_innerCall.Value = t_innerCall.Value.Pop();
+                    t_mutexRecursionStack.Value = t_mutexRecursionStack.Value.Pop();
                     mutex.ReleaseMutex();
                 }
             }
