@@ -61,6 +61,15 @@ namespace Microsoft.Docs.Build
     public sealed class LandingDataMenu
     {
         public string Title { get; set; }
+
+        public LandingDataMenuItem[] Items { get; set; }
+    }
+
+    public sealed class LandingDataMenuItem
+    {
+        public string Href { get; set; }
+
+        public string Text { get; set; }
     }
 
     public enum LandingDataType
