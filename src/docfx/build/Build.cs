@@ -156,7 +156,6 @@ namespace Microsoft.Docs.Build
         {
             try
             {
-                var model = default(object);
                 var publishItem = default(PublishItem);
                 var errors = Enumerable.Empty<Error>();
 
@@ -166,11 +165,11 @@ namespace Microsoft.Docs.Build
                         (errors, publishItem) = BuildResource.Build(context, file);
                         break;
                     case ContentType.Page:
-                        (errors, model, publishItem) = await BuildPage.Build(context, file, tocMap, buildChild);
+                        (errors, publishItem) = await BuildPage.Build(context, file, tocMap, buildChild);
                         break;
                     case ContentType.TableOfContents:
                         // TODO: improve error message for toc monikers overlap
-                        (errors, model, publishItem) = BuildTableOfContents.Build(context, file, monikerMap);
+                        (errors, publishItem) = BuildTableOfContents.Build(context, file, monikerMap);
                         break;
                     case ContentType.Redirection:
                         (errors, publishItem) = BuildRedirection.Build(context, file);
@@ -181,19 +180,6 @@ namespace Microsoft.Docs.Build
                 if (hasErrors)
                 {
                     context.PublishModelBuilder.MarkError(file);
-                    return publishItem.Monikers;
-                }
-
-                if (context.PublishModelBuilder.TryAdd(file, publishItem))
-                {
-                    if (model is string str)
-                    {
-                        publishItem.Hash = context.Output.WriteTextWithHash(str, publishItem.Path);
-                    }
-                    else if (model != null)
-                    {
-                        publishItem.Hash = context.Output.WriteJsonWithHash(model, publishItem.Path);
-                    }
                 }
 
                 return publishItem.Monikers;

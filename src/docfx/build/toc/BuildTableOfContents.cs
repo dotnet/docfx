@@ -10,7 +10,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class BuildTableOfContents
     {
-        public static (IEnumerable<Error>, object, PublishItem publishItem) Build(
+        public static (IEnumerable<Error>, PublishItem publishItem) Build(
             Context context,
             Document file,
             MonikerMap monikerMap)
@@ -46,15 +46,6 @@ namespace Microsoft.Docs.Build
                 model.Metadata.PdfAbsolutePath = $"/{siteBasePath}/opbuildpdf/{relativePath}";
             }
 
-            // output model
-            var output = (object)model;
-            if (file.Docset.Legacy)
-            {
-                output = file.Docset.Template.TransformMetadata("toc.json.js", JsonUtility.ToJObject(model));
-
-                context.Output.WriteJson(model.Metadata, Path.ChangeExtension(outputPath, ".mta.json"));
-            }
-
             // TODO: Add experimental and experiment_id to publish item
             var publishItem = new PublishItem
             {
@@ -63,6 +54,22 @@ namespace Microsoft.Docs.Build
                 Locale = file.Docset.Locale,
                 Monikers = model.Metadata.Monikers,
             };
+
+            if (context.PublishModelBuilder.TryAdd(file, publishItem))
+            {
+                if (file.Docset.Legacy)
+                {
+                    var output = file.Docset.Template.TransformMetadata("toc.json.js", JsonUtility.ToJObject(model));
+                    publishItem.Hash = context.Output.WriteJsonWithHash(output, outputPath);
+                    context.Output.WriteJson(model.Metadata, Path.ChangeExtension(outputPath, ".mta.json"));
+                }
+                else
+                {
+                    publishItem.Hash = context.Output.WriteJsonWithHash(model, outputPath);
+                }
+            }
+
+            return (errors, publishItem);
 
             void ResolveItemMonikers(List<TableOfContentsItem> items)
             {
@@ -89,8 +96,6 @@ namespace Microsoft.Docs.Build
                     item.Monikers = monikers;
                 }
             }
-
-            return (errors, output, publishItem);
         }
 
         public static (
