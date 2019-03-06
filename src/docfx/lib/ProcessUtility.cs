@@ -19,8 +19,8 @@ namespace Microsoft.Docs.Build
     /// </summary>
     internal static class ProcessUtility
     {
-        private const int _defaultLockExpireTimeInSecond = 60 * 60 * 6; /*six hours*/
-        private static AsyncLocal<ImmutableStack<string>> t_innerCall = new AsyncLocal<ImmutableStack<string>>();
+        private static readonly TimeSpan s_defaultLockExpireTime = TimeSpan.FromHours(6);
+        private static readonly AsyncLocal<ImmutableStack<string>> t_innerCall = new AsyncLocal<ImmutableStack<string>>();
 
         public static async Task<bool> IsExclusiveLockHeld(string lockName)
         {
@@ -40,9 +40,6 @@ namespace Microsoft.Docs.Build
 
             return held;
         }
-
-        [ThreadStatic]
-        private static bool t_alreadyInsideMutex;
 
         /// <summary>
         /// Acquire a shared lock for input lock name
@@ -363,11 +360,11 @@ namespace Microsoft.Docs.Build
 
                 // avoid the RunInsideMutex to be nested used with same mutex name
                 t_innerCall.Value = t_innerCall.Value ?? ImmutableStack<string>.Empty;
-                if (t_innerCall.Value.Contains(lockPath))
+                if (t_innerCall.Value.Contains(mutexName))
                 {
                     throw new ApplicationException($"Nested call to RunInsideMutex is detected, mutex name: {mutexName}");
                 }
-                t_innerCall.Value = t_innerCall.Value.Push(lockPath);
+                t_innerCall.Value = t_innerCall.Value.Push(mutexName);
 
                 try
                 {
@@ -405,7 +402,7 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(lockInfo != null);
 
-            lockInfo.AcquiredBy.RemoveAll(r => DateTime.UtcNow - r.Date > TimeSpan.FromSeconds(_defaultLockExpireTimeInSecond));
+            lockInfo.AcquiredBy.RemoveAll(r => DateTime.UtcNow - r.Date > s_defaultLockExpireTime);
 
             if (!lockInfo.AcquiredBy.Any())
             {
