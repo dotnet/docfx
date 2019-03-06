@@ -20,58 +20,38 @@ github:
   userCache: https:///some-blob-service/github-user-cache.json
 ```
 
-The restored files will be stored at `%DOCFX_APPDATA_PATH%/downloads/{url-short-path}/{number}` like:
+The restored files will be stored at `%DOCFX_APPDATA_PATH%/downloads/{url-short-path}/content` like:
 
 ```text
 `%DOCFX_APPDATA_PATH%`
     | - downloads
         | - raw.gith..tent.com+docascode+docfx-te..ndencies+62b0448+extend1.yml+dc363b0e
-            | - 1
-            | - 2
+            | - content
 
 ```
 
-And there is another index file `index.json` under `%DOCFX_APPDATA_PATH%/downloads/{url-short-path}/` tracking the detail info of each `{number} file`.
+And there is another etag file `etag` under `%DOCFX_APPDATA_PATH%/downloads/{url-short-path}/` tracking the `etag` info of this file if has.
 
 ```text
 `%DOCFX_APPDATA_PATH%`
     | - downloads
         | - raw.gith..tent.com+docascode+docfx-te..ndencies+62b0448+extend1.yml+dc363b0e
-            | - 1
-            | - 2
-            | - index.json
+            | - content
+            | - etag
 
 ```
 
-`index.json`:
-```json
-[
-    {
-        "id": 1,
-        "version": "{version}",
-        "etag": "{etag}",
-        "date": "{date}"
-    },
-    {
-        "id": 2,
-        "version": "{version}",
-        "etag": "{etag}",
-        "date": "{date}"
-    }
-]
+`etag`:
+```text
+"f8b4e180558bb672ba084a0baa2c345c642328e4"
 ```
 
-- `{url-short-path}` is calculated from `file` url
-- `{version}` is sha1 hash of file content, 
+- `{url-short-path}` is calculated from `file` url.
 - `{etag}` is timestamp or something else supported by the service which stores the `file`.
-- `{date}` is the last access date, it will be set or overwritten during restore.
 
-We are using [Shared/Exclusive Lock](https://www.ibm.com/support/knowledgecenter/en/SSGMCP_5.1.0/com.ibm.cics.ts.applicationprogramming.doc/topics/dfhp39o.html) to trakcing each index using states:
+Same url will always be restored to the same place, and we are using `Process Lock` to read/write the file and its etag file.
 
-- During build, we acquire an available index from pool with `shared lock`.
-- During restore, we acquire an available index from pool with `exclusive lock`.
-
->NOTE: Shared and Exclusived Lock need to be cross process, we are not going to discuss about that details here
+> NOTE: docfx will load all restored files' content at the first stage of build, never load again, in case this file is restored again(changed) in current build.
 
 If the `etag` is supported by its service, docfx avoids duplicated downloads for the file never changed.
 

@@ -47,7 +47,7 @@ namespace Microsoft.Docs.Build
                 {
                     foreach (var dependencyItem in dependencies)
                     {
-                        if (source.Equals(dependencyItem.Dest))
+                        if (source.Equals(dependencyItem.To))
                         {
                             continue;
                         }
@@ -55,14 +55,17 @@ namespace Microsoft.Docs.Build
                         legacyDependencyMap.Add(new LegacyDependencyMapItem
                         {
                             From = $"~/{source.ToLegacyPathRelativeToBasePath(docset)}",
-                            To = $"~/{dependencyItem.Dest.ToLegacyPathRelativeToBasePath(docset)}",
+                            To = $"~/{dependencyItem.To.ToLegacyPathRelativeToBasePath(docset)}",
                             Type = dependencyItem.Type.ToLegacyDependencyMapType(),
                         });
                     }
                 }
 
-                context.Output.WriteJson(legacyDependencyMap, Path.Combine(docset.Config.DocumentId.SiteBasePath, ".dependency-map.json"));
-                return legacyDependencyMap.Select(x => new LegacyDependencyMapItem { From = x.From.Substring(2), To = x.To.Substring(2), Type = x.Type })
+                var sorted = from d in legacyDependencyMap
+                             orderby d.From, d.To, d.Type
+                             select d;
+                context.Output.WriteJson(sorted, Path.Combine(docset.Config.DocumentId.SiteBasePath, ".dependency-map.json"));
+                return sorted.Select(x => new LegacyDependencyMapItem { From = x.From.Substring(2), To = x.To.Substring(2), Type = x.Type })
                     .GroupBy(x => x.From).ToDictionary(g => g.Key, g => g.ToList());
             }
         }

@@ -37,7 +37,6 @@ namespace Microsoft.Docs.Build
 
         public string Width { get; set; }
 
-        [Href]
         public string Href { get; set; }
 
         public LandingDataImage Image { get; set; }
@@ -45,9 +44,9 @@ namespace Microsoft.Docs.Build
 
     public sealed class LandingDataImage
     {
-        [Href]
         public string Href { get; set; }
 
+        [Href]
         public string Src { get; set; }
 
         public string Alt { get; set; }
@@ -62,6 +61,15 @@ namespace Microsoft.Docs.Build
     public sealed class LandingDataMenu
     {
         public string Title { get; set; }
+
+        public LandingDataMenuItem[] Items { get; set; }
+    }
+
+    public sealed class LandingDataMenuItem
+    {
+        public string Href { get; set; }
+
+        public string Text { get; set; }
     }
 
     public enum LandingDataType
@@ -123,7 +131,6 @@ namespace Microsoft.Docs.Build
 
     public sealed class LandingDataRowValue
     {
-        [Href]
         public string Href { get; set; }
     }
 
@@ -139,7 +146,6 @@ namespace Microsoft.Docs.Build
         [Html]
         public string Html { get; set; }
 
-        [Href]
         public string Href { get; set; }
 
         public LandingDataImage Image { get; set; }

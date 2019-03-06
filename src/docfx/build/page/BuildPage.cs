@@ -14,7 +14,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class BuildPage
     {
-        public static async Task<(IEnumerable<Error> errors, object result, PublishItem publishItem)> Build(
+        public static async Task<(IEnumerable<Error> errors, PublishItem publishItem)> Build(
             Context context,
             Document file,
             TableOfContentsMap tocMap,
@@ -48,7 +48,8 @@ namespace Microsoft.Docs.Build
                 errors.AddRange(contributorErrors);
 
             var isPage = schema.Attribute is PageSchemaAttribute;
-            var (output, outputPath, extensionData) = ApplyTemplate(context, file, model, isPage);
+            var outputPath = file.GetOutputPath(model.Monikers, isPage);
+            var (output, extensionData) = ApplyTemplate(file, model, isPage);
 
             var publishItem = new PublishItem
             {
@@ -59,7 +60,25 @@ namespace Microsoft.Docs.Build
                 ExtensionData = extensionData,
             };
 
-            return (errors, output, publishItem);
+            if (context.PublishModelBuilder.TryAdd(file, publishItem))
+            {
+                if (output is string str)
+                {
+                    publishItem.Hash = context.Output.WriteTextWithHash(str, publishItem.Path);
+                }
+                else
+                {
+                    publishItem.Hash = context.Output.WriteJsonWithHash(output, publishItem.Path);
+                }
+
+                if (file.Docset.Legacy && extensionData != null)
+                {
+                    var metadataPath = outputPath.Substring(0, outputPath.Length - ".raw.page.json".Length) + ".mta.json";
+                    context.Output.WriteJson(extensionData, metadataPath);
+                }
+            }
+
+            return (errors, publishItem);
         }
 
         private static async Task<(List<Error> errors, Schema schema, PageModel model, FileMetadata metadata)>
@@ -100,7 +119,8 @@ namespace Microsoft.Docs.Build
                 file,
                 context.DependencyResolver,
                 buildChild,
-                (rangeString) => context.MonikerProvider.GetZoneMonikers(rangeString, monikers, errors),
+                rangeString => context.MonikerProvider.GetZoneMonikers(rangeString, monikers, errors),
+                key => file.Docset.Template?.GetToken(key),
                 MarkdownPipelineType.ConceptualMarkdown);
             errors.AddRange(markup.Errors);
 
@@ -188,34 +208,32 @@ namespace Microsoft.Docs.Build
                            .RemoveRerunCodepenIframes();
             }
 
-            return html.OuterHtml;
+            if (string.IsNullOrEmpty(html.OuterHtml))
+            {
+                return "<div></div>";
+            }
+
+            return LocalizationUtility.AddLeftToRightMarker(file.Docset, html.OuterHtml);
         }
 
-        private static (object output, string outputPath, JObject extensionData) ApplyTemplate(
-            Context context, Document file, PageModel model, bool isPage)
+        private static (object output, JObject extensionData) ApplyTemplate(Document file, PageModel model, bool isPage)
         {
-            var outputPath = file.GetOutputPath(model.Monikers, isPage);
-
-            if (!file.Docset.Config.Output.Json && !string.IsNullOrEmpty(file.Docset.Config.Theme))
+            if (!file.Docset.Config.Output.Json && file.Docset.Template != null)
             {
-                return (file.Docset.Template.Render(model, file), outputPath, null);
+                return (file.Docset.Template.Render(model, file), null);
             }
 
             if (file.Docset.Legacy)
             {
                 if (isPage)
                 {
-                    var (output, extensionData) = TemplateTransform.Transform(model, file);
-                    var metadataPath = outputPath.Substring(0, outputPath.Length - ".raw.page.json".Length) + ".mta.json";
-                    context.Output.WriteJson(extensionData, metadataPath);
-
-                    return (output, outputPath, extensionData);
+                    return TemplateTransform.Transform(model, file);
                 }
 
-                return (model, outputPath, null);
+                return (model, null);
             }
 
-            return (model, outputPath, isPage ? JsonUtility.ToJObject(model.Metadata) : null);
+            return (model, isPage ? JsonUtility.ToJObject(model.Metadata) : null);
         }
     }
 }

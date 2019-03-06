@@ -1285,3 +1285,18 @@ repos:
 outputs:
   docs/a.json: |
     { "content": "<p>live branch</p>\n" }
+---
+# Apply &lrm; for right to left languages
+commands:
+  - build --locale ar-sa
+repos:
+  https://docs.com/test#lrm:
+    - files:
+        docfx.yml:
+  https://docs.com/test.ar-sa#lrm:
+    - files:
+        docs/a.md: |
+          Learn c#.
+outputs:
+  docs/a.json: |
+    content: <p>Learn c#&lrm;.</p>

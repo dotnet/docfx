@@ -40,7 +40,7 @@ namespace Microsoft.Docs.Build
                    = new ConcurrentDictionary<string, Lazy<Task<(Error, string)>>>(StringComparer.OrdinalIgnoreCase);
 
         private readonly string _url = null;
-        private readonly string _restorePath = null;
+        private readonly string _content = null;
         private readonly EntityTagHeaderValue _etag = null;
         private readonly string _cachePath;
         private readonly double _expirationInHours;
@@ -56,38 +56,51 @@ namespace Microsoft.Docs.Build
             UnsafeUpdateUsers(users);
         }
 
-        private GitHubUserCache(Docset docset)
+        private GitHubUserCache(Docset docset, string cachePath)
         {
+            Debug.Assert(!string.IsNullOrEmpty(cachePath));
+
             var github = new GitHubAccessor(docset.Config.GitHub.AuthToken);
             _getUserByLoginFromGitHub = github.GetUserByLogin;
             _getLoginByCommitFromGitHub = github.GetLoginByCommit;
             _expirationInHours = docset.Config.GitHub.UserCacheExpirationInHours;
+            _cachePath = cachePath;
+        }
 
-            var path = docset.Config.GitHub.UserCache;
-            if (string.IsNullOrEmpty(path))
-            {
-                _cachePath = AppData.DefaultGitHubUserCachePath;
-                return;
-            }
-            var (fromUrl, restorePath) = docset.GetFileRestorePath(path);
-            if (fromUrl)
-            {
-                _url = path;
-                _restorePath = restorePath;
-                _etag = RestoreFile.GetEtag(restorePath);
-                _cachePath = AppData.GetGitHubUserCachePath(path);
-            }
-            else
-            {
-                _cachePath = restorePath;
-            }
+        private GitHubUserCache(Docset docset, string url, string content, string etag, string cachePath)
+            : this(docset, cachePath)
+        {
+            Debug.Assert(!string.IsNullOrEmpty(url));
+            Debug.Assert(!string.IsNullOrEmpty(content));
+            Debug.Assert(!string.IsNullOrEmpty(etag));
+
+            _url = url;
+            _content = content;
+            _etag = new EntityTagHeaderValue(etag);
         }
 
         public static async Task<GitHubUserCache> Create(Docset docset)
         {
-            var result = new GitHubUserCache(docset);
+            var result = await Create();
             await result.ReadCacheFiles();
             return result;
+
+            async Task<GitHubUserCache> Create()
+            {
+                var path = docset.Config.GitHub.UserCache;
+                if (string.IsNullOrEmpty(path))
+                {
+                    return new GitHubUserCache(docset, AppData.DefaultGitHubUserCachePath);
+                }
+
+                var (localPath, content, etag) = await docset.GetRestoredFileContent(path);
+                if (string.IsNullOrEmpty(localPath))
+                {
+                    return new GitHubUserCache(docset, path, content, etag, AppData.GetGitHubUserCachePath(path));
+                }
+
+                return new GitHubUserCache(docset, localPath);
+            }
         }
 
         public async Task<(Error error, GitHubUser user)> GetByLogin(string login)
@@ -97,6 +110,7 @@ namespace Microsoft.Docs.Build
             if (string.IsNullOrEmpty(login))
                 return default;
 
+            Telemetry.TrackCacheTotalCount(TelemetryName.GitHubUserCache);
             var user = TryGetByLogin(login);
             if (user != null)
             {
@@ -108,8 +122,11 @@ namespace Microsoft.Docs.Build
 
             (error, user) = await _outgoingGetUserByLoginRequests.GetOrAdd(
                 login,
-                new Lazy<Task<(Error, GitHubUser)>>(
-                    () => _getUserByLoginFromGitHub(login))).Value;
+                new Lazy<Task<(Error, GitHubUser)>>(() =>
+                {
+                    Telemetry.TrackCacheMissCount(TelemetryName.GitHubUserCache);
+                    return _getUserByLoginFromGitHub(login);
+                })).Value;
 
             if (error == null)
             {
@@ -130,14 +147,18 @@ namespace Microsoft.Docs.Build
             if (string.IsNullOrEmpty(authorEmail))
                 return default;
 
+            Telemetry.TrackCacheTotalCount(TelemetryName.GitHubUserCache);
             var user = TryGetByEmail(authorEmail);
             if (user != null)
                 return (null, user.IsValid() ? user : null);
 
             var (error, login) = await _outgoingGetLoginByCommitRequests.GetOrAdd(
                 commitSha,
-                new Lazy<Task<(Error, string)>>(
-                    () => _getLoginByCommitFromGitHub(repoOwner, repoName, commitSha))).Value;
+                new Lazy<Task<(Error, string)>>(() =>
+                {
+                    Telemetry.TrackCacheMissCount(TelemetryName.GitHubUserCache);
+                    return _getLoginByCommitFromGitHub(repoOwner, repoName, commitSha);
+                })).Value;
 
             if (error == null)
                 UpdateUser(new GitHubUser { Login = login, Emails = new[] { authorEmail }, Expiry = NextExpiry() });
@@ -300,7 +321,11 @@ namespace Microsoft.Docs.Build
         private async Task ReadCacheFiles()
         {
             await ReadCacheFile(_cachePath);
-            await ReadCacheFile(_restorePath);
+
+            if (!string.IsNullOrEmpty(_content))
+            {
+                ReadCache(_content);
+            }
 
             async Task ReadCacheFile(string path)
             {

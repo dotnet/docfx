@@ -2,10 +2,8 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace Microsoft.Docs.Build
@@ -13,6 +11,22 @@ namespace Microsoft.Docs.Build
     internal static class LocalizationUtility
     {
         private static readonly Regex s_nameWithLocale = new Regex(@"^.+?(\.[a-z]{2,4}-[a-z]{2,4}(-[a-z]{2,4})?|\.loc)?$", RegexOptions.IgnoreCase);
+        private static readonly Regex s_lrmAdjustment = new Regex(@"(^|\s|\>)(C#|F#|C\+\+)(\s*|[.!?;:]*)(\<|[\n\r]|$)", RegexOptions.IgnoreCase);
+
+        public static string AddLeftToRightMarker(Docset docset, string text)
+        {
+            if (!docset.Culture.TextInfo.IsRightToLeft)
+            {
+                return text;
+            }
+
+            // This is used to protect against C#, F# and C++ from being split up when they are at the end of line of RTL text.
+            // Find a(space or >), followed by product name, followed by zero or more(spaces or punctuation), followed by a(&lt; or newline)
+            // &lrm is added after name to prevent the punctuation from moving to the other end of the line.
+            // This should only be run on strings that are marked as RTL
+            // & lrm may be added at places other than the end of a string, and that is ok
+            return s_lrmAdjustment.Replace(text, me => $"{me.Groups[1]}{me.Groups[2]}&lrm;{me.Groups[3]}{me.Groups[4]}");
+        }
 
         /// <summary>
         /// The loc repo remote and branch based on localization mapping<see cref="LocalizationMapping"/>
@@ -27,7 +41,7 @@ namespace Microsoft.Docs.Build
             return (newRemote, newBranch);
         }
 
-        public static bool TryGetLocalizedDocsetPath(Docset docset, Config config, string locale, out string localizationDocsetPath, out string localizationBranch, out DependencyLockModel subDependencyLock)
+        public static bool TryGetLocalizedDocsetPath(Docset docset, DependencyGitPool dependencyGitPool, Config config, string locale, out string localizationDocsetPath, out string localizationBranch, out DependencyLockModel subDependencyLock)
         {
             Debug.Assert(docset != null);
             Debug.Assert(!string.IsNullOrEmpty(locale));
@@ -53,7 +67,7 @@ namespace Microsoft.Docs.Build
                             repo.Branch,
                             locale,
                             config.Localization.DefaultLocale);
-                        (localizationDocsetPath, subDependencyLock) = RestoreMap.GetGitRestorePath(locRemote, locBranch, docset.DependencyLock);
+                        (localizationDocsetPath, subDependencyLock) = dependencyGitPool.GetGitRestorePath(locRemote, locBranch, docset.DependencyLock);
                         localizationBranch = locBranch;
                         break;
                     }
@@ -122,17 +136,18 @@ namespace Microsoft.Docs.Build
             return locale != null;
         }
 
-        public static bool TryGetSourceDocsetPath(Docset docset, out string sourceDocsetPath, out string sourceBranch, out DependencyLockModel dependencyLock)
+        public static bool TryGetSourceDocsetPath(Docset docset, DependencyGitPool dependencyGitPool, out string sourceDocsetPath, out string sourceBranch, out DependencyLockModel dependencyLock)
         {
+            Debug.Assert(docset != null);
+            Debug.Assert(dependencyGitPool != null);
+
             sourceDocsetPath = null;
             sourceBranch = null;
             dependencyLock = null;
 
-            Debug.Assert(docset != null);
-
             if (TryGetSourceRepository(docset.Repository, out var sourceRemote, out sourceBranch, out var locale))
             {
-                (sourceDocsetPath, dependencyLock) = RestoreMap.GetGitRestorePath(sourceRemote, sourceBranch, docset.DependencyLock);
+                (sourceDocsetPath, dependencyLock) = dependencyGitPool.GetGitRestorePath(sourceRemote, sourceBranch, docset.DependencyLock);
                 return true;
             }
 

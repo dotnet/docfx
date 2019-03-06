@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -14,101 +13,49 @@ namespace Microsoft.Docs.Build
 {
     internal static class RestoreFile
     {
-        // todo: support specific version from dependency lock
-        public static async Task<IReadOnlyDictionary<string, DependencyVersion>> Restore(List<string> urls, Config config, DependencyLockModel dependencyLock, bool @implicit = false)
+        public static Task Restore(List<string> urls, Config config, bool @implicit = false)
         {
-            var downloadVersions = new ConcurrentDictionary<string, DependencyVersion>();
-
-            await ParallelUtility.ForEach(
-                    urls,
-                    async restoreUrl =>
-                    {
-                        var version = await Restore(restoreUrl, config, @implicit, dependencyLock?.Downloads.GetValueOrDefault(restoreUrl));
-                        downloadVersions.TryAdd(restoreUrl, version);
-                    });
-
-            return downloadVersions;
+            return ParallelUtility.ForEach(
+                   urls,
+                   restoreUrl =>
+                   {
+                       return Restore(restoreUrl, config, @implicit);
+                   });
         }
 
-        public static async Task<DependencyVersion> Restore(string url, Config config, bool @implicit = false, DependencyVersion dependencyVersion = null)
+        public static async Task Restore(string url, Config config, bool @implicit = false)
         {
-            var restoredPath = await RestoreUrl();
+            var filePath = GetRestoreContentPath(url);
 
-            // update the last write date
-            File.SetLastWriteTimeUtc(restoredPath, DateTime.UtcNow);
+            var (existingContent, existingEtagContent) = await RestoreMap.TryGetRestoredFileContent(url);
+            if (!string.IsNullOrEmpty(existingContent) && @implicit)
+                return;
 
-            return new DependencyVersion(hash: Path.GetFileName(restoredPath));
+            var existingEtag = !string.IsNullOrEmpty(existingEtagContent) ? new EntityTagHeaderValue(existingEtagContent) : null;
 
-            async Task<string> RestoreUrl()
+            var (tempFile, etag) = await DownloadToTempFile(url, config, existingEtag);
+            if (tempFile == null)
             {
-                if (RestoreMap.TryGetFileRestorePath(url, dependencyVersion, out var existingPath) && (!string.IsNullOrEmpty(dependencyVersion?.Hash) || @implicit))
-                {
-                    return existingPath;
-                }
-
-                EntityTagHeaderValue existingEtag = null;
-                if (!string.IsNullOrEmpty(existingPath))
-                {
-                    existingEtag = GetEtag(existingPath);
-                }
-
-                var (tempFile, etag) = await DownloadToTempFile(url, config, existingEtag);
-                if (tempFile == null)
-                {
-                    // no change at all
-                    return existingPath;
-                }
-
-                var fileName = GetRestoreFileName(HashUtility.GetFileSha1Hash(tempFile), etag);
-                var filePath = PathUtility.NormalizeFile(Path.Combine(AppData.GetFileDownloadDir(url), fileName));
-                await ProcessUtility.RunInsideMutex(filePath, MoveFile);
-
-                return filePath;
-
-                Task MoveFile()
-                {
-                    if (!File.Exists(filePath))
-                    {
-                        PathUtility.CreateDirectoryFromFilePath(filePath);
-                        File.Move(tempFile, filePath);
-                    }
-                    else
-                    {
-                        File.Delete(tempFile);
-                    }
-
-                    return Task.CompletedTask;
-                }
+                // no change at all
+                return;
             }
-        }
 
-        /// <summary>
-        /// Get restore file name from hash and ETag
-        /// </summary>
-        /// <param name="hash">SHA1 hash of file content</param>
-        /// <param name="etag">ETag of the resource, null if server doesn't specify ETag</param>
-        public static string GetRestoreFileName(string hash, EntityTagHeaderValue etag = null)
-        {
-            Debug.Assert(!string.IsNullOrEmpty(hash));
-
-            var result = hash;
-            if (etag != null)
+            await ProcessUtility.RunInsideMutex(filePath, () =>
             {
-                result += $"+{HrefUtility.EscapeUrlSegment(etag.ToString())}";
-            }
-            return result;
-        }
+                if (!File.Exists(filePath))
+                {
+                    PathUtility.CreateDirectoryFromFilePath(filePath);
+                    File.Move(tempFile, filePath);
+                }
+                else
+                {
+                    File.Delete(tempFile);
+                }
 
-        /// <summary>
-        /// Get ETag from restore file name
-        /// </summary>
-        /// <returns>ETag of the resource, null if server doesn't specify ETag</returns>
-        public static EntityTagHeaderValue GetEtag(string restorePath)
-        {
-            Debug.Assert(!string.IsNullOrEmpty(restorePath));
+                File.WriteAllText(GetRestoreEtagPath(url), etag?.ToString());
 
-            var parts = Path.GetFileName(restorePath).Split('+');
-            return parts.Length == 2 ? new EntityTagHeaderValue(HrefUtility.UnescapeUrl(parts[1])) : null;
+                return Task.CompletedTask;
+            });
         }
 
         public static IEnumerable<string> GetFileReferences(this Config config)
@@ -121,6 +68,22 @@ namespace Microsoft.Docs.Build
             yield return config.Contribution.GitCommitsTime;
             yield return config.GitHub.UserCache;
             yield return config.MonikerDefinition;
+        }
+
+        public static string GetRestoreContentPath(string url)
+        {
+            Debug.Assert(!string.IsNullOrEmpty(url));
+            Debug.Assert(HrefUtility.IsHttpHref(url));
+
+            return PathUtility.NormalizeFile(Path.Combine(AppData.GetFileDownloadDir(url), "content"));
+        }
+
+        public static string GetRestoreEtagPath(string url)
+        {
+            Debug.Assert(!string.IsNullOrEmpty(url));
+            Debug.Assert(HrefUtility.IsHttpHref(url));
+
+            return PathUtility.NormalizeFile(Path.Combine(AppData.GetFileDownloadDir(url), "etag"));
         }
 
         private static async Task<(string filename, EntityTagHeaderValue etag)> DownloadToTempFile(

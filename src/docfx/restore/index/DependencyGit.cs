@@ -3,16 +3,10 @@
 
 namespace Microsoft.Docs.Build
 {
-    internal class DependencyVersion
+    internal class DependencyGit : DependencySlot
     {
-        public string Hash { get; set; }
-
         public string Commit { get; set; }
 
-        public DependencyVersion(string commit = null, string hash = null)
-        {
-            Commit = commit;
-            Hash = hash;
-        }
+        public string Branch { get; set; }
     }
 }

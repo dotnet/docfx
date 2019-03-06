@@ -14,7 +14,15 @@ namespace Microsoft.Docs.Build
 
             var (errors, monikers) = context.MonikerProvider.GetFileLevelMonikers(file, context.MetadataProvider);
 
-            if (file.Docset.Legacy)
+            var publishItem = new PublishItem
+            {
+                Url = file.SiteUrl,
+                Locale = file.Docset.Locale,
+                RedirectUrl = file.RedirectionUrl,
+                Monikers = monikers,
+            };
+
+            if (context.PublishModelBuilder.TryAdd(file, publishItem) && file.Docset.Legacy)
             {
                 var outputPath = file.GetOutputPath(monikers, rawPage: true);
                 var metadataPath = outputPath.Substring(0, outputPath.Length - ".raw.page.json".Length) + ".mta.json";
@@ -30,14 +38,6 @@ namespace Microsoft.Docs.Build
                 context.Output.WriteText("{}", outputPath);
                 context.Output.WriteJson(metadata, metadataPath);
             }
-
-            var publishItem = new PublishItem
-            {
-                Url = file.SiteUrl,
-                Locale = file.Docset.Locale,
-                RedirectUrl = file.RedirectionUrl,
-                Monikers = monikers,
-            };
 
             return (errors, publishItem);
         }

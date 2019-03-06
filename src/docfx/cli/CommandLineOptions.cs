@@ -13,7 +13,6 @@ namespace Microsoft.Docs.Build
         public bool Verbose;
         public string Locale;
         public int Port;
-        public int RetentionDays = 15;
 
         public JObject ToJObject()
         {

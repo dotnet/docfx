@@ -15,11 +15,27 @@ namespace Microsoft.Docs.Build
     {
         public static async Task Run(string docsetPath, CommandLineOptions options, Report report)
         {
-            XrefMap xrefMap = null;
             var repository = Repository.Create(docsetPath);
+            Telemetry.SetRepository(repository?.Remote, repository?.Branch);
+
             var locale = LocalizationUtility.GetLocale(repository, options);
             var dependencyLock = await LoadBuildDependencyLock(docsetPath, locale, repository, options);
-            var (configErrors, config) = GetBuildConfig(docsetPath, repository, options, dependencyLock);
+
+            var dependencyGitPool = await DependencyGitPool.Create(dependencyLock);
+            try
+            {
+                await Run(docsetPath, repository, locale, options, report, dependencyLock, dependencyGitPool);
+            }
+            finally
+            {
+                await dependencyGitPool.Release();
+            }
+        }
+
+        private static async Task Run(string docsetPath, Repository repository, string locale, CommandLineOptions options, Report report, DependencyLockModel dependencyLock, DependencyGitPool dependencyGitPool)
+        {
+            XrefMap xrefMap = null;
+            var (configErrors, config) = GetBuildConfig(docsetPath, repository, options, dependencyLock, dependencyGitPool);
             report.Configure(docsetPath, config);
 
             // just return if config loading has errors
@@ -27,12 +43,12 @@ namespace Microsoft.Docs.Build
                 return;
 
             var errors = new List<Error>();
-            var docset = GetBuildDocset(await Docset.Create(report, docsetPath, locale, config, options, dependencyLock, repository));
+            var docset = GetBuildDocset(new Docset(report, docsetPath, locale, config, options, dependencyLock, dependencyGitPool, repository));
             var outputPath = Path.Combine(docsetPath, config.Output.Path);
 
             using (var context = await Context.Create(outputPath, report, docset, () => xrefMap))
             {
-                xrefMap = XrefMap.Create(context, docset);
+                xrefMap = await XrefMap.Create(context, docset);
                 var tocMap = TableOfContentsMap.Create(context, docset);
 
                 var (publishManifest, fileManifests, sourceDependencies) = await BuildFiles(context, docset, tocMap);
@@ -140,7 +156,6 @@ namespace Microsoft.Docs.Build
         {
             try
             {
-                var model = default(object);
                 var publishItem = default(PublishItem);
                 var errors = Enumerable.Empty<Error>();
 
@@ -150,11 +165,11 @@ namespace Microsoft.Docs.Build
                         (errors, publishItem) = BuildResource.Build(context, file);
                         break;
                     case ContentType.Page:
-                        (errors, model, publishItem) = await BuildPage.Build(context, file, tocMap, buildChild);
+                        (errors, publishItem) = await BuildPage.Build(context, file, tocMap, buildChild);
                         break;
                     case ContentType.TableOfContents:
                         // TODO: improve error message for toc monikers overlap
-                        (errors, model, publishItem) = BuildTableOfContents.Build(context, file, monikerMap);
+                        (errors, publishItem) = BuildTableOfContents.Build(context, file, monikerMap);
                         break;
                     case ContentType.Redirection:
                         (errors, publishItem) = BuildRedirection.Build(context, file);
@@ -165,19 +180,6 @@ namespace Microsoft.Docs.Build
                 if (hasErrors)
                 {
                     context.PublishModelBuilder.MarkError(file);
-                    return publishItem.Monikers;
-                }
-
-                if (context.PublishModelBuilder.TryAdd(file, publishItem))
-                {
-                    if (model is string str)
-                    {
-                        publishItem.Hash = context.Output.WriteTextWithHash(str, publishItem.Path);
-                    }
-                    else if (model != null)
-                    {
-                        publishItem.Hash = context.Output.WriteJsonWithHash(model, publishItem.Path);
-                    }
                 }
 
                 return publishItem.Monikers;
@@ -207,8 +209,6 @@ namespace Microsoft.Docs.Build
                     ? null
                     : new DependencyLockModel
                     {
-                        Downloads = sourceDependencyLock.Downloads,
-                        Hash = sourceDependencyLock.Hash,
                         Commit = sourceDependencyLock.Commit,
                         Git = new Dictionary<string, DependencyLockModel>(sourceDependencyLock.Git.Concat(new[] { KeyValuePair.Create($"{sourceRemote}#{sourceBranch}", sourceDependencyLock) })),
                     };
@@ -217,7 +217,7 @@ namespace Microsoft.Docs.Build
             return dependencyLock ?? new DependencyLockModel();
         }
 
-        private static (List<Error> errors, Config config) GetBuildConfig(string docset, Repository repository, CommandLineOptions options, DependencyLockModel dependencyLock)
+        private static (List<Error> errors, Config config) GetBuildConfig(string docset, Repository repository, CommandLineOptions options, DependencyLockModel dependencyLock, DependencyGitPool dependencyGitPool)
         {
             if (ConfigLoader.TryGetConfigPath(docset, out _) || !LocalizationUtility.TryGetSourceRepository(repository, out var sourceRemote, out var sourceBranch, out var locale))
             {
@@ -225,7 +225,7 @@ namespace Microsoft.Docs.Build
             }
 
             Debug.Assert(dependencyLock != null);
-            var (sourceDocsetPath, _) = RestoreMap.GetGitRestorePath(sourceRemote, sourceBranch, dependencyLock);
+            var (sourceDocsetPath, _) = dependencyGitPool.GetGitRestorePath(sourceRemote, sourceBranch, dependencyLock);
             return ConfigLoader.Load(sourceDocsetPath, options, locale);
         }
 

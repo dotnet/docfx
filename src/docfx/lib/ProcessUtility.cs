@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
@@ -19,6 +20,26 @@ namespace Microsoft.Docs.Build
     internal static class ProcessUtility
     {
         private const int _defaultLockExpireTimeInSecond = 60 * 60 * 6; /*six hours*/
+        private static AsyncLocal<ImmutableStack<string>> t_innerCall = new AsyncLocal<ImmutableStack<string>>();
+
+        public static async Task<bool> IsExclusiveLockHeld(string lockName)
+        {
+            Debug.Assert(!string.IsNullOrEmpty(lockName));
+
+            var lockPath = GetLockFilePath(lockName);
+            var held = false;
+            await ReadAndWriteFile<LockInfo>(lockPath, lockInfo =>
+            {
+                lockInfo = lockInfo ?? new LockInfo();
+                lockInfo = FilterExpiredAcquirers(lockInfo);
+
+                held = lockInfo.Type == LockType.Exclusive;
+
+                return Task.FromResult(lockInfo);
+            });
+
+            return held;
+        }
 
         [ThreadStatic]
         private static bool t_alreadyInsideMutex;
@@ -252,7 +273,7 @@ namespace Microsoft.Docs.Build
                     var streamReader = new StreamReader(file);
                     var result = JsonUtility.Deserialize<T>(streamReader.ReadToEnd());
 
-                    file.Position = 0;
+                    file.SetLength(0);
                     var updatedResult = await update(result);
                     var steamWriter = new StreamWriter(file);
                     steamWriter.Write(JsonUtility.Serialize(updatedResult));
@@ -340,23 +361,23 @@ namespace Microsoft.Docs.Build
                     }
                 }
 
+                // avoid the RunInsideMutex to be nested used with same mutex name
+                t_innerCall.Value = t_innerCall.Value ?? ImmutableStack<string>.Empty;
+                if (t_innerCall.Value.Contains(lockPath))
+                {
+                    throw new ApplicationException($"Nested call to RunInsideMutex is detected, mutex name: {mutexName}");
+                }
+                t_innerCall.Value = t_innerCall.Value.Push(lockPath);
+
                 try
                 {
-                    if (t_alreadyInsideMutex)
-                    {
-                        throw new InvalidOperationException("Nested call to RunInsideMutex could lead to deadlock");
-                    }
-
-                    t_alreadyInsideMutex = true;
-
                     // TODO: mutex wait and release needs to run in one thread, so block the async call.
                     //       we could turn these async calls into sync calls.
                     action().GetAwaiter().GetResult();
                 }
                 finally
                 {
-                    t_alreadyInsideMutex = false;
-
+                    t_innerCall.Value = t_innerCall.Value.Pop();
                     mutex.ReleaseMutex();
                 }
             }

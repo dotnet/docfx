@@ -52,9 +52,7 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            var (_, restoredLockFile) = RestoreMap.GetFileRestorePath(docset, dependencyLockPath, dependencyVersion: null);
-
-            var content = await ProcessUtility.ReadFile(restoredLockFile);
+            var (_, content, _) = await RestoreMap.GetRestoredFileContent(docset, dependencyLockPath);
 
             if (string.IsNullOrEmpty(content))
             {
