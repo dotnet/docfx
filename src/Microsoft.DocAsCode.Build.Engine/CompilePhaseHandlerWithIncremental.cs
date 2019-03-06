@@ -293,7 +293,12 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private bool IsBookmark(LinkSourceInfo info)
         {
-            return info.Anchor?.Contains("#") == true;
+            if (string.IsNullOrEmpty(info.Anchor))
+            {
+                return false;
+            }
+            var index = info.Anchor.IndexOf('#');
+            return index != -1 && index < info.Anchor.Length - 1;
         }
 
         #endregion
