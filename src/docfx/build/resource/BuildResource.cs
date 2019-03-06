@@ -16,32 +16,35 @@ namespace Microsoft.Docs.Build
             var (errors, monikers) = context.MonikerProvider.GetFileLevelMonikers(file, context.MetadataProvider);
             var outputPath = file.GetOutputPath(monikers);
 
-            if (file.Docset.Legacy)
-            {
-                context.Output.WriteJson(new { locale = file.Docset.Locale, monikers }, outputPath + ".mta.json");
-            }
-
-            if (file.Docset.Config.Output.CopyResources)
-            {
-                context.Output.Copy(file, outputPath);
-            }
-            else
-            {
-                // Output path is source file path relative to output folder when copy resource is disabled
-                outputPath = PathUtility.NormalizeFile(
+            // Output path is source file path relative to output folder when copy resource is disabled
+            var publishPash = file.Docset.Config.Output.CopyResources
+                ? outputPath
+                : PathUtility.NormalizeFile(
                     Path.GetRelativePath(
                         Path.GetFullPath(Path.Combine(file.Docset.DocsetPath, file.Docset.Config.Output.Path)),
                         Path.GetFullPath(Path.Combine(file.Docset.DocsetPath, file.FilePath))));
-            }
 
             var publishItem = new PublishItem
             {
                 Url = file.SiteUrl,
-                Path = outputPath,
+                Path = publishPash,
                 Hash = HashUtility.GetFileSha1Hash(Path.Combine(file.Docset.DocsetPath, file.FilePath)),
                 Locale = file.Docset.Locale,
                 Monikers = monikers,
             };
+
+            if (context.PublishModelBuilder.TryAdd(file, publishItem))
+            {
+                if (file.Docset.Legacy)
+                {
+                    context.Output.WriteJson(new { locale = file.Docset.Locale, monikers }, outputPath + ".mta.json");
+                }
+
+                if (file.Docset.Config.Output.CopyResources)
+                {
+                    context.Output.Copy(file, outputPath);
+                }
+            }
 
             return (errors, publishItem);
         }
