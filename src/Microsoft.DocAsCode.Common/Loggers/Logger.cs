@@ -9,13 +9,16 @@ namespace Microsoft.DocAsCode.Common
     public static class Logger
     {
         public const int WarningThrottling = 10000;
+        public const int SuggestionThrottling = 10000;
         public static bool HasError { get; private set; }
         public static int WarningCount => _warningCount;
+        public static int SuggestionCount => _suggestionCount;
 
         private static readonly object _sync = new object();
         private static CompositeLogListener _syncListener = new CompositeLogListener();
         private static AsyncLogListener _asyncListener = new AsyncLogListener();
         private static int _warningCount = 0;
+        private static int _suggestionCount = 0;
         public volatile static LogLevel LogLevelThreshold = LogLevel.Info;
         public volatile static bool WarningsAsErrors = false;
 
@@ -114,6 +117,26 @@ namespace Microsoft.DocAsCode.Common
                     };
                     _syncListener.WriteLine(msg);
                     _asyncListener.WriteLine(msg);
+                }
+            }
+
+            if (item.LogLevel == LogLevel.Suggestion)
+            {
+                var count = Interlocked.Increment(ref _suggestionCount);
+                if (count > SuggestionThrottling)
+                {
+                    return;
+                }
+                else if (count == SuggestionThrottling)
+                {
+                    var message = new LogItem
+                    {
+                        Code = SuggestionCodes.Build.TooManySuggestions,
+                        LogLevel = LogLevel.Suggestion,
+                        Message = "Too many suggestions, no more suggestion will be logged."
+                    };
+                    _syncListener.WriteLine(message);
+                    _asyncListener.WriteLine(message);
                 }
             }
 
