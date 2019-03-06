@@ -208,7 +208,12 @@ namespace Microsoft.Docs.Build
                            .RemoveRerunCodepenIframes();
             }
 
-            return string.IsNullOrEmpty(html.OuterHtml) ? "<div></div>" : html.OuterHtml;
+            if (string.IsNullOrEmpty(html.OuterHtml))
+            {
+                return "<div></div>";
+            }
+
+            return LocalizationUtility.AddLeftToRightMarker(file.Docset, html.OuterHtml);
         }
 
         private static (object output, JObject extensionData) ApplyTemplate(Document file, PageModel model, bool isPage)
