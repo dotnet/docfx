@@ -12,7 +12,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         /// <summary>
         /// Logs an error or warning message.
         /// </summary>
-        public delegate void LogActionDelegate(string code, string message, string file = null, int line = 0);
+        public delegate void LogActionDelegate(string code, string message, MarkdownObject origin, int line = 0);
 
         /// <summary>
         /// Reads a file as text based on path relative to an existing file.

@@ -24,14 +24,14 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             if (content == null)
             {
-                _context.LogWarning("include-not-found", $"Cannot resolve '{inclusion.IncludedFilePath}' relative to '{InclusionContext.File}'.");
+                _context.LogWarning("include-not-found", $"Cannot resolve '{inclusion.IncludedFilePath}' relative to '{InclusionContext.File}'.", inclusion);
                 renderer.Write(inclusion.GetRawToken());
                 return;
             }
 
             if (InclusionContext.IsCircularReference(includeFilePath, out var dependencyChain))
             {
-                _context.LogWarning("circular-reference", $"Found circular reference: {string.Join(" --> ", dependencyChain)} --> {includeFilePath}");
+                _context.LogWarning("circular-reference", $"Found circular reference: {string.Join(" --> ", dependencyChain)} --> {includeFilePath}", inclusion);
                 renderer.Write(inclusion.GetRawToken());
                 return;
             }
