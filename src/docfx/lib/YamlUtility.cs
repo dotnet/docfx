@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Text.RegularExpressions;
@@ -144,11 +145,9 @@ namespace Microsoft.Docs.Build
             {
                 if (scalar.Style == ScalarStyle.Plain)
                 {
-                    if (string.IsNullOrWhiteSpace(scalar.Value))
-                    {
-                        return PopulateLineInfoToJToken(JValue.CreateNull(), node);
-                    }
-                    if (scalar.Value == "~")
+                    if (string.IsNullOrWhiteSpace(scalar.Value) ||
+                        scalar.Value == "~" ||
+                        string.Equals(scalar.Value, "null", StringComparison.OrdinalIgnoreCase))
                     {
                         return PopulateLineInfoToJToken(JValue.CreateNull(), node);
                     }
@@ -156,7 +155,7 @@ namespace Microsoft.Docs.Build
                     {
                         return PopulateLineInfoToJToken(new JValue(n), node);
                     }
-                    if (double.TryParse(scalar.Value, out var d))
+                    if (double.TryParse(scalar.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out var d))
                     {
                         return PopulateLineInfoToJToken(new JValue(d), node);
                     }
