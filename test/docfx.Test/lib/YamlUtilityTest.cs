@@ -158,6 +158,37 @@ D: true
             Assert.Equal(new[] { true, true, true, false, false, false }, value2.Select(j => (bool)j).ToArray());
         }
 
+        [Fact]
+        public void TestNull()
+        {
+            var yaml = @"
+- null
+- Null
+- NULL
+-
+";
+            var (errors, value) = YamlUtility.DeserializeWithSchemaValidation<object[]>(yaml, nullValidation: false);
+            Assert.Empty(errors);
+            Assert.NotEmpty(value);
+            value.ToList().ForEach(v => Assert.Null(v));
+        }
+
+        [Fact]
+        public void TestSpecialDouble()
+        {
+            var yaml = @"
+- Infinity
+- -Infinity
+- NaN
+";
+            var (errors, value) = YamlUtility.DeserializeWithSchemaValidation<double[]>(yaml);
+            Assert.Empty(errors);
+            Assert.NotEmpty(value);
+            Assert.True(double.IsPositiveInfinity(value[0]));
+            Assert.True(double.IsNegativeInfinity(value[1]));
+            Assert.True(double.IsNaN(value[2]));
+        }
+
         [Theory]
         [InlineData("", null)]
         [InlineData("### No-Yaml-Mime\r\n1\r\n...\r\n", null)]
