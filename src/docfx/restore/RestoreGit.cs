@@ -83,7 +83,7 @@ namespace Microsoft.Docs.Build
                     var gitVersion = dependencyLock?.GetGitLock(remote, branch);
                     if (@implicit || string.IsNullOrEmpty(gitVersion?.Commit))
                     {
-                        var (existingPath, git) = await DependencyGitPool.TryGetGitRestorePath(remote, branch, gitVersion?.Commit);
+                        var (existingPath, git) = await RestoreMap.TryGetGitRestorePath(remote, branch, gitVersion?.Commit);
                         if (!string.IsNullOrEmpty(existingPath))
                         {
                             branchesToFetch.Remove(branch);
@@ -141,7 +141,7 @@ namespace Microsoft.Docs.Build
                         var gitDependencyLock = dependencyLock?.GetGitLock(remote, branch);
                         headCommit = gitDependencyLock?.Commit ?? headCommit;
 
-                        var (workTreePath, gitSlot) = await DependencyGitPool.AcquireExclusiveGit(remote, branch, headCommit);
+                        var (workTreePath, gitSlot) = await RestoreMap.AcquireExclusiveGit(remote, branch, headCommit);
                         workTreePath = Path.GetFullPath(workTreePath).Replace('\\', '/');
                         var restored = true;
 
@@ -173,7 +173,7 @@ namespace Microsoft.Docs.Build
                         }
                         finally
                         {
-                            await DependencyGitPool.ReleaseGit(gitSlot, LockType.Exclusive, restored);
+                            await RestoreMap.ReleaseGit(gitSlot, LockType.Exclusive, restored);
                         }
 
                         subChildren.Add(new RestoreChild(workTreePath, remote, branch, gitDependencyLock, headCommit));
