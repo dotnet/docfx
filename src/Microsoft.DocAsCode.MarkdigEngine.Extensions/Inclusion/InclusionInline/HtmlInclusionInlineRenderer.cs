@@ -20,7 +20,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
         protected override void Write(HtmlRenderer renderer, InclusionInline inclusion)
         {
-            var (content, includeFilePath) = _context.ReadFile(inclusion.IncludedFilePath, InclusionContext.File);
+            var (content, includeFilePath) = _context.ReadFile(inclusion.IncludedFilePath, InclusionContext.File, inclusion);
 
             if (content == null)
             {

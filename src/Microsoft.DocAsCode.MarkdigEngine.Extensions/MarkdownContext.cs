@@ -5,6 +5,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
     using System;
     using System.IO;
+    using Markdig.Syntax;
 
     public class MarkdownContext
     {
@@ -18,8 +19,9 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         /// </summary>
         /// <param name="path">Path to the file being opened.</param>
         /// <param name="relativeTo">The source file that path is based on.</param>
+        /// <param name="origin">The original markdown element that triggered the read request.</param>
         /// <returns>An stream and the opened file, or default if such file does not exists.</returns>
-        public delegate (string content, object file) ReadFileDelegate(string path, object relativeTo);
+        public delegate (string content, object file) ReadFileDelegate(string path, object relativeTo, MarkdownObject origin);
 
         /// <summary>
         /// Allows late binding of urls.
@@ -27,8 +29,9 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         /// <param name="path">Path of the link</param>
         /// <param name="relativeTo">The source file that path is based on.</param>
         /// <param name="resultRelativeTo">The entry file that returned URL should be rebased upon.</param>
+        /// <param name="origin">The original markdown element that triggered the read request.</param>
         /// <returns>Url bound to the path</returns>
-        public delegate string GetLinkDelegate(string path, object relativeTo, object resultRelativeTo);
+        public delegate string GetLinkDelegate(string path, object relativeTo, object resultRelativeTo, MarkdownObject origin);
 
 
         /// <summary>
@@ -67,13 +70,13 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         {
             _getToken = getToken ?? (_ => null);
             ReadFile = readFile ?? ReadFileDefault;
-            GetLink = getLink ?? ((path, a, b) => path);
+            GetLink = getLink ?? ((path, a, b, c) => path);
 
             LogWarning = logWarning ?? ((a, b, c, d) => { });
             LogError = logError ?? ((a, b, c, d) => { });
         }
 
-        private static (string content, object file) ReadFileDefault(string path, object relativeTo)
+        private static (string content, object file) ReadFileDefault(string path, object relativeTo, MarkdownObject origin)
         {
             var target = relativeTo != null ? path : Path.Combine(relativeTo.ToString(), path);
 
