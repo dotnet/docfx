@@ -159,6 +159,29 @@ D: true
         }
 
         [Theory]
+        [InlineData("")]
+        [InlineData("null")]
+        [InlineData("Null")]
+        [InlineData("NULL")]
+        public void TestNull(string yaml)
+        {
+            var (errors, value) = YamlUtility.DeserializeWithSchemaValidation<object>(yaml, nullValidation: false);
+            Assert.Empty(errors);
+            Assert.Null(value);
+        }
+
+        [Theory]
+        [InlineData("Infinity", double.PositiveInfinity)]
+        [InlineData("-Infinity", double.NegativeInfinity)]
+        [InlineData("NaN", double.NaN)]
+        public void TestSpecialDouble(string yaml, double expected)
+        {
+            var (errors, value) = YamlUtility.DeserializeWithSchemaValidation<double>(yaml);
+            Assert.Empty(errors);
+            Assert.Equal(value, expected);
+        }
+
+        [Theory]
         [InlineData("", null)]
         [InlineData("### No-Yaml-Mime\r\n1\r\n...\r\n", null)]
         [InlineData("#YamlMime:a", "a")]
