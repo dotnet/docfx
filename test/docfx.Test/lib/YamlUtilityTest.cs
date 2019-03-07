@@ -158,35 +158,27 @@ D: true
             Assert.Equal(new[] { true, true, true, false, false, false }, value2.Select(j => (bool)j).ToArray());
         }
 
-        [Fact]
-        public void TestNull()
+        [Theory]
+        [InlineData("")]
+        [InlineData("null")]
+        [InlineData("Null")]
+        [InlineData("NULL")]
+        public void TestNull(string yaml)
         {
-            var yaml = @"
-- null
-- Null
-- NULL
--
-";
-            var (errors, value) = YamlUtility.DeserializeWithSchemaValidation<object[]>(yaml, nullValidation: false);
+            var (errors, value) = YamlUtility.DeserializeWithSchemaValidation<object>(yaml, nullValidation: false);
             Assert.Empty(errors);
-            Assert.NotEmpty(value);
-            value.ToList().ForEach(v => Assert.Null(v));
+            Assert.Null(value);
         }
 
-        [Fact]
-        public void TestSpecialDouble()
+        [Theory]
+        [InlineData("Infinity", double.PositiveInfinity)]
+        [InlineData("-Infinity", double.NegativeInfinity)]
+        [InlineData("NaN", double.NaN)]
+        public void TestSpecialDouble(string yaml, double expected)
         {
-            var yaml = @"
-- Infinity
-- -Infinity
-- NaN
-";
-            var (errors, value) = YamlUtility.DeserializeWithSchemaValidation<double[]>(yaml);
+            var (errors, value) = YamlUtility.DeserializeWithSchemaValidation<double>(yaml);
             Assert.Empty(errors);
-            Assert.NotEmpty(value);
-            Assert.True(double.IsPositiveInfinity(value[0]));
-            Assert.True(double.IsNegativeInfinity(value[1]));
-            Assert.True(double.IsNaN(value[2]));
+            Assert.Equal(value, expected);
         }
 
         [Theory]
