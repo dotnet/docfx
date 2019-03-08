@@ -31,7 +31,7 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
                 return;
             }
             var metadata = ((Dictionary<string, object>)model.Content).ToImmutableDictionary().Remove(ConceptualKey);
-            if(model.Properties.IsUserDefinedTitle == false)
+            if(!model.Properties.IsUserDefinedTitle)
             {
                 metadata = metadata.Remove(Constants.PropertyName.Title);
             }
