@@ -732,7 +732,7 @@ body";
         public void TestBlockInclude_Does_Not_Replace_AutoLink()
         {
             var root = "https://docs.microsoft.com";
-            var context = new MarkdownContext(getLink: (path, relativeTo, resultRelativeTo) => "REPLACE IT");
+            var context = new MarkdownContext(getLink: (path, relativeTo, resultRelativeTo, _) => "REPLACE IT");
             var pipeline = new MarkdownPipelineBuilder().UseDocfxExtensions(context).Build();
             var result = Markdown.ToHtml(root, pipeline);
 
@@ -746,7 +746,7 @@ body";
             var root = "[!include[](embed)]";
 
             var context = new MarkdownContext(
-                readFile: (path, relativeTo) =>
+                readFile: (path, relativeTo, _) =>
                 {
                     Assert.Equal("embed", path);
                     Assert.Equal("root", relativeTo);
@@ -756,7 +756,7 @@ body";
 
                     return ("embed [content](c.md)", "embed");
                 },
-                getLink: (path, relativeTo, resultRelativeTo) =>
+                getLink: (path, relativeTo, resultRelativeTo, _) =>
                 {
                     Assert.Equal("c.md", path);
                     Assert.Equal("embed", relativeTo);

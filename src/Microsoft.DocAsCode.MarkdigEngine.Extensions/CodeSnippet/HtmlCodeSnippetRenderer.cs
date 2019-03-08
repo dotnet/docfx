@@ -172,11 +172,11 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
         protected override void Write(HtmlRenderer renderer, CodeSnippet codeSnippet)
         {
-            var (content, codeSnippetPath) = _context.ReadFile(codeSnippet.CodePath, InclusionContext.File);
+            var (content, codeSnippetPath) = _context.ReadFile(codeSnippet.CodePath, InclusionContext.File, codeSnippet);
 
             if (content == null)
             {
-                _context.LogWarning("codesnippet-not-found", $"Cannot resolve '{codeSnippet.CodePath}' relative to '{InclusionContext.File}'.");
+                _context.LogWarning("codesnippet-not-found", $"Cannot resolve '{codeSnippet.CodePath}' relative to '{InclusionContext.File}'.", codeSnippet);
                 renderer.Write(GetWarning());
                 return;
             }
@@ -198,7 +198,10 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 var lang = obj.Language ?? Path.GetExtension(obj.CodePath);
                 if (!CodeLanguageExtractors.TryGetValue(lang, out List<CodeSnippetExtrator> extrators))
                 {
-                    _context.LogError("unknown-language-code", $"{lang} is not supported languaging name, alias or extension for parsing code snippet with tag name, you can use line numbers instead");
+                    _context.LogError(
+                        "unknown-language-code",
+                        $"{lang} is not supported languaging name, alias or extension for parsing code snippet with tag name, you can use line numbers instead",
+                        obj);
                 }
 
                 if (extrators != null)

@@ -42,7 +42,12 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             IDictionary<string, string> attributes;
             HtmlAttributes htmlAttributes;
             IDictionary<string, string> renderProperties;
-            Action<string> logError = (string message) => _context.LogError($"invalid-{extensionName}", $"Invalid {extensionName} on line {processor.LineIndex}. \"{slice.Text}\" is invalid. {message}", line: processor.LineIndex);
+            Action<string> logError = (string message) => _context.LogError(
+                $"invalid-{extensionName}",
+                $"Invalid {extensionName} on line {processor.LineIndex}. \"{slice.Text}\" is invalid. {message}",
+                null,
+                line: processor.LineIndex);
+
             if (!TryMatchIdentifier(ref slice, out extensionName)
                 || !_extensions.TryGetValue(extensionName, out extension)
                 || !extension.TryValidateAncestry(processor.CurrentContainer, logError)
@@ -56,6 +61,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             {
                 Closed = false,
                 Column = column,
+                Line = processor.LineIndex,
                 Span = new SourceSpan(sourcePosition, slice.End),
                 Extension = extension,
                 RenderProperties = renderProperties
@@ -106,7 +112,10 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             if (!c.IsZero())
             {
-                _context.LogWarning($"invalid-{extensionName}", $"Invalid {extensionName} on line {block.Line}. \"{slice.Text}\" is invalid. Invalid character after \"::: {extensionName}-end\": \"{c}\"");
+                _context.LogWarning(
+                    $"invalid-{extensionName}",
+                    $"Invalid {extensionName} on line {block.Line}. \"{slice.Text}\" is invalid. Invalid character after \"::: {extensionName}-end\": \"{c}\"",
+                    block);
             }
 
             block.UpdateSpanEnd(slice.End);
@@ -128,7 +137,10 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             var extensionName = tripleColonBlock.Extension.Name;
             if (block.IsOpen)
             {
-                _context.LogWarning($"invalid-{extensionName}", $"Invalid {extensionName} on line {block.Line}. No \"::: {extensionName}-end\" found. Blocks should be explicitly closed.");
+                _context.LogWarning(
+                    $"invalid-{extensionName}",
+                    $"Invalid {extensionName} on line {block.Line}. No \"::: {extensionName}-end\" found. Blocks should be explicitly closed.",
+                    block);
             }
             return true;
         }
