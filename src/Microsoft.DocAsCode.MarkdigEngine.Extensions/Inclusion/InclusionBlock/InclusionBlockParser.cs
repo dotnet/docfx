@@ -26,7 +26,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             var column = processor.Column;
             var line = processor.Line;
             var command = line.ToString();
-            var includeFile = new InclusionBlock(this);
 
             if (!ExtensionsHelper.MatchStart(ref line, StartString, false))
             {
@@ -53,9 +52,13 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 return BlockState.None;
             }
 
-            includeFile.Title = title;
-            includeFile.IncludedFilePath = path;
-            processor.NewBlocks.Push(includeFile);
+            processor.NewBlocks.Push(new InclusionBlock(this)
+            {
+                Title = title,
+                IncludedFilePath = path,
+                Line = processor.LineIndex,
+                Column = column,
+            });
 
             return BlockState.BreakDiscard;
         }
