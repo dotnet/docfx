@@ -5,25 +5,40 @@ namespace Microsoft.Docs.Build
 {
     internal readonly struct Range
     {
+        /// <summary>
+        /// A one based start line value.
+        /// </summary>
         public readonly int StartLine;
-        public readonly int StartCharacter;
+
+        /// <summary>
+        /// A one based start column value.
+        /// </summary>
+        public readonly int StartColumn;
+
+        /// <summary>
+        /// A one based end line value.
+        /// </summary>
         public readonly int EndLine;
-        public readonly int EndCharacter;
+
+        /// <summary>
+        /// A one based end column value.
+        /// </summary>
+        public readonly int EndColumn;
 
         public Range(int line, int column)
         {
             StartLine = line;
-            StartCharacter = column;
+            StartColumn = column;
             EndLine = line;
-            EndCharacter = column;
+            EndColumn = column;
         }
 
-        public Range(int startLine, int startCharacter, int endLine, int endCharacter)
+        public Range(int startLine, int startColumn, int endLine, int endColumn)
         {
             StartLine = startLine;
-            StartCharacter = startCharacter;
+            StartColumn = startColumn;
             EndLine = endLine;
-            EndCharacter = endCharacter;
+            EndColumn = endColumn;
         }
     }
 }
