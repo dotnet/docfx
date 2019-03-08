@@ -27,7 +27,7 @@ namespace Microsoft.Docs.Build
 
         public int Line => Range.StartLine;
 
-        public int Column => Range.StartCharacter;
+        public int Column => Range.StartColumn;
 
         public Error(
             ErrorLevel level,
@@ -78,9 +78,9 @@ namespace Microsoft.Docs.Build
                        x.Message == y.Message &&
                        x.File == y.File &&
                        x.Range.StartLine == y.Range.StartLine &&
-                       x.Range.StartCharacter == y.Range.StartCharacter &&
+                       x.Range.StartColumn == y.Range.StartColumn &&
                        x.Range.EndLine == y.Range.EndLine &&
-                       x.Range.EndCharacter == y.Range.EndCharacter &&
+                       x.Range.EndColumn == y.Range.EndColumn &&
                        x.JsonPath == y.JsonPath;
             }
 
@@ -92,9 +92,9 @@ namespace Microsoft.Docs.Build
                     obj.Message,
                     obj.File,
                     obj.Range.StartLine,
-                    obj.Range.StartCharacter,
+                    obj.Range.StartColumn,
                     obj.Range.EndLine,
-                    obj.Range.EndCharacter);
+                    obj.Range.EndColumn);
             }
         }
     }
