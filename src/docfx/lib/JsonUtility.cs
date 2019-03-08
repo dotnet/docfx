@@ -273,9 +273,8 @@ namespace Microsoft.Docs.Build
 
             foreach (var node in nullNodes)
             {
-                var lineInfo = (IJsonLineInfo)node;
                 var name = node is JProperty prop ? prop.Name : (node.Parent?.Parent is JProperty p ? p.Name : node.Path);
-                errors.Add(Errors.NullValue(new Range(lineInfo.LineNumber, lineInfo.LinePosition), name, node.Path));
+                errors.Add(Errors.NullValue(ToRange(node), name, node.Path));
             }
 
             foreach (var node in removeNodes)
@@ -301,6 +300,11 @@ namespace Microsoft.Docs.Build
             }
 
             return false;
+        }
+
+        private static Range ToRange(IJsonLineInfo lineInfo)
+        {
+            return lineInfo.HasLineInfo() ? new Range(lineInfo.LineNumber, lineInfo.LinePosition) : default;
         }
 
         private static void HandleError(object sender, Newtonsoft.Json.Serialization.ErrorEventArgs args)
@@ -431,9 +435,7 @@ namespace Microsoft.Docs.Build
                 var matchingProperty = objectContract.Properties.GetClosestMatchProperty(prop.Name);
                 if (matchingProperty == null && type.IsSealed)
                 {
-                    var lineInfo = prop as IJsonLineInfo;
-                    errors.Add(Errors.UnknownField(
-                        new Range(lineInfo.LineNumber, lineInfo.LinePosition), prop.Name, type.Name, prop.Path));
+                    errors.Add(Errors.UnknownField(ToRange(prop), prop.Name, type.Name, prop.Path));
                 }
                 return matchingProperty?.PropertyType;
             }
@@ -543,8 +545,7 @@ namespace Microsoft.Docs.Build
 
             public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
             {
-                var lineInfo = (IJsonLineInfo)reader;
-                var range = new Range(lineInfo.LineNumber, lineInfo.LinePosition);
+                var range = ToRange((IJsonLineInfo)reader);
                 var value = serializer.Deserialize(reader, objectType);
                 if (value == null)
                 {
