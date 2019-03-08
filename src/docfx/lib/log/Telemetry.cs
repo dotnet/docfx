@@ -5,6 +5,8 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.ApplicationInsights;
 using Microsoft.ApplicationInsights.Metrics;
 
@@ -63,8 +65,9 @@ namespace Microsoft.Docs.Build
 
         public static void Flush()
         {
-            // Default timeout of 100 sec is used
-            s_telemetryClient.Flush();
+            // Default timeout of TelemetryClient.Flush is 100 seconds,
+            // but we only want to wait for 2 seconds at most.
+            Task.WaitAny(Task.Run(s_telemetryClient.Flush), Task.Delay(2000));
         }
     }
 }
