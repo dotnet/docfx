@@ -42,8 +42,6 @@ outputs:
     }
   c.mta.json: |
     { "locale": "en-us", "ms.author": "yufeih", "is_dynamic_rendering": true }
-  d.png.mta.json: |
-    { "locale": "en-us" }
   toc.json:
   toc.mta.json:
   .manifest.json:
