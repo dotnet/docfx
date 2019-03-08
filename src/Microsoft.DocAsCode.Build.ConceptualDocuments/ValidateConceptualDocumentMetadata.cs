@@ -30,9 +30,12 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
             {
                 return;
             }
-            host.ValidateInputMetadata(
-                model.OriginalFileAndType.File,
-                ((Dictionary<string, object>)model.Content).ToImmutableDictionary().Remove(ConceptualKey));
+            var metadata = ((Dictionary<string, object>)model.Content).ToImmutableDictionary().Remove(ConceptualKey);
+            if(model.Properties.IsUserDefinedTitle == false)
+            {
+                metadata = metadata.Remove(Constants.PropertyName.Title);
+            }
+            host.ValidateInputMetadata(model.OriginalFileAndType.File, metadata);
         }
 
         #region ISupportIncrementalBuildStep Members
