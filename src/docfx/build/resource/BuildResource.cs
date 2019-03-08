@@ -33,17 +33,9 @@ namespace Microsoft.Docs.Build
                 Monikers = monikers,
             };
 
-            if (context.PublishModelBuilder.TryAdd(file, publishItem))
+            if (context.PublishModelBuilder.TryAdd(file, publishItem) && file.Docset.Config.Output.CopyResources)
             {
-                if (file.Docset.Legacy)
-                {
-                    context.Output.WriteJson(new { locale = file.Docset.Locale, monikers }, outputPath + ".mta.json");
-                }
-
-                if (file.Docset.Config.Output.CopyResources)
-                {
-                    context.Output.Copy(file, outputPath);
-                }
+                context.Output.Copy(file, outputPath);
             }
 
             return (errors, publishItem);
