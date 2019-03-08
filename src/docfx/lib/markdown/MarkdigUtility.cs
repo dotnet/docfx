@@ -5,7 +5,6 @@ using System;
 using Markdig;
 using Markdig.Parsers;
 using Markdig.Renderers;
-using Markdig.Renderers.Html;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
 
@@ -13,6 +12,18 @@ namespace Microsoft.Docs.Build
 {
     internal static class MarkdigUtility
     {
+        public static Range ToRange(this MarkdownObject obj, int? line = null)
+        {
+            // Line info in markdown object is zero based, turn it into one based.
+            if (obj != null)
+                return new Range(obj.Line + 1, obj.Column + 1);
+
+            if (line != null)
+                return new Range(line.Value + 1, 0);
+
+            return default;
+        }
+
         /// <summary>
         /// Traverse the markdown object graph, returns true to stop the traversal.
         /// </summary>
