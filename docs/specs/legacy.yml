@@ -10,7 +10,8 @@ repos:
           a.md: /b
       c.md: |
         ---
-        api_name: "API Name"
+        api_name:
+          - "API Name"
         ms.author: yufeih
         ---
         [d](d.png)
@@ -38,7 +39,7 @@ outputs:
   c.raw.page.json: |
     {
       "content": "<p><a href=\"d.png\" data-linktype=\"relative-path\">d</a></p>\n",
-      "rawMetadata": { "ms.author": "yufeih", "!robots": null, "api_name": "API Name" },
+      "rawMetadata": { "ms.author": "yufeih", "!robots": null, "api_name": ["API Name"] },
       "themesRelativePathToOutputRoot": "_themes/",
       "pageMetadata": "<meta name=\"APIName\" content=\"API Name\" />\r\n<meta name=\"ms.author\" content=\"yufeih\" />\r\n<meta name=\"depot_name\" content=\".\" />\r\n<meta name=\"search.ms_docsetname\" content=\"\" />\r\n<meta name=\"search.ms_product\" content=\"\" />\r\n<meta name=\"search.ms_sitename\" content=\"Docs\" />\r\n<meta name=\"locale\" content=\"en-us\" />\r\n<meta name=\"site_name\" content=\"Docs\" />\r\n<meta name=\"conceptual\" content=\"&lt;p&gt;&lt;a href=&quot;d.png&quot; data-linktype=&quot;relative-path&quot;&gt;d&lt;/a&gt;&lt;/p&gt;\n\" />\r\n<meta name=\"_path\" content=\"c.json\" />\r\n<meta name=\"toc_rel\" content=\"toc.json\" />\r\n<meta name=\"word_count\" content=\"1\" />\r\n<meta name=\"wordCount\" content=\"1\" />\r\n<meta name=\"rawTitle\" content=\"\" />\r\n<meta name=\"document_id\" content=\"fdb5a0d7-b68e-c465-9c5e-54a5cda94902\" />\r\n<meta name=\"document_version_independent_id\" content=\"92a5a770-f05f-b8bb-81c9-a8d786a9e608\" />\r\n<meta name=\"updated_at\" content=\"2018-10-30 12:00 AM\" />\r\n"
     }
