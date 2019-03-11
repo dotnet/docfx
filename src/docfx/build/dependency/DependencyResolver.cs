@@ -124,7 +124,7 @@ namespace Microsoft.Docs.Build
             }
 
             var decodedHref = HttpUtility.UrlDecode(href);
-            var (error, file, redirectTo, query, fragment, isSelfBookmark, _) = TryResolveFile(relativeTo, decodedHref);
+            var (error, file, redirectTo, query, fragment, hrefType, _) = TryResolveFile(relativeTo, decodedHref);
 
             // Redirection
             // follow redirections
@@ -132,6 +132,11 @@ namespace Microsoft.Docs.Build
             {
                 // TODO: append query and fragment to an absolute url with query and fragments may cause problems
                 return (error, redirectTo + query + fragment, null, null);
+            }
+
+            if (hrefType == HrefType.WindowsAbsolutePath)
+            {
+                return (error, "", fragment, null);
             }
 
             // Cannot resolve the file, leave href as is
@@ -145,7 +150,7 @@ namespace Microsoft.Docs.Build
             {
                 if (relativeTo.Docset.Legacy)
                 {
-                    if (isSelfBookmark)
+                    if (hrefType == HrefType.SelfBookmark)
                     {
                         return (error, query + fragment, fragment, null);
                     }
@@ -185,25 +190,24 @@ namespace Microsoft.Docs.Build
             return (error, relativeUrl + query + fragment, fragment, file);
         }
 
-        private (Error error, Document file, string redirectTo, string query, string fragment, bool isSelfBookmark, string pathToDocset) TryResolveFile(Document relativeTo, string href)
+        private (Error error, Document file, string redirectTo, string query, string fragment, HrefType? hrefType, string pathToDocset) TryResolveFile(Document relativeTo, string href)
         {
             if (string.IsNullOrEmpty(href))
             {
-                return (Errors.LinkIsEmpty(relativeTo), null, null, null, null, false, null);
+                return (Errors.LinkIsEmpty(relativeTo), null, null, null, null, null, null);
             }
 
             var (path, query, fragment) = HrefUtility.SplitHref(href);
 
             switch (HrefUtility.GetHrefType(href))
             {
-                case HrefType.Bookmark:
-                    return (null, relativeTo, null, query, fragment, true, null);
+                case HrefType.SelfBookmark:
+                    return (null, relativeTo, null, query, fragment, HrefType.SelfBookmark, null);
 
                 case HrefType.WindowsAbsolutePath:
-                    return (Errors.AbsoluteFilePath(relativeTo, path), null, null, null, null, false, null);
+                    return (Errors.AbsoluteFilePath(relativeTo, path), null, null, null, null, HrefType.WindowsAbsolutePath, null);
 
                 case HrefType.RelativePath:
-
                     // Resolve path relative to docset
                     var pathToDocset = ResolveToDocsetRelativePath(path, relativeTo);
 
@@ -215,12 +219,12 @@ namespace Microsoft.Docs.Build
                         // TODO: In case of file rename, we should warn if the content is not inside build scope.
                         //       But we should not warn or do anything with absolute URLs.
                         var (error, redirectFile) = Document.TryCreate(relativeTo.Docset, pathToDocset);
-                        return (error, redirectFile, redirectTo, query, fragment, false, pathToDocset);
+                        return (error, redirectFile, redirectTo, query, fragment, HrefType.RelativePath, pathToDocset);
                     }
 
                     var file = Document.TryCreateFromFile(relativeTo.Docset, pathToDocset);
 
-                    return (file != null ? null : Errors.FileNotFound(relativeTo.ToString(), path), file, null, query, fragment, false, pathToDocset);
+                    return (file != null ? null : Errors.FileNotFound(relativeTo.ToString(), path), file, null, query, fragment, null, pathToDocset);
 
                 default:
                     return default;
