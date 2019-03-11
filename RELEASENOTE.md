@@ -3,6 +3,9 @@ Version Notes (Current Version: v2.41)
 
 v2.41(Pre-release)
 -----------
+
+v2.40.12
+-----------
 1. Improve performance in Markdig Markdown engine. (#4048)
 1. Bug fix:
     1. DocFX fails when runs under Mono on Linux/MacOS. (#3389 #3746)
