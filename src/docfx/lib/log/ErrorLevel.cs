@@ -7,6 +7,7 @@ namespace Microsoft.Docs.Build
     {
         Off,
         Info,
+        Suggestion,
         Warning,
         Error,
     }
