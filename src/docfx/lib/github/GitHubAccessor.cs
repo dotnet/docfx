@@ -3,6 +3,7 @@
 
 using System;
 using System.Diagnostics;
+using System.Threading;
 using System.Threading.Tasks;
 using Octokit;
 
@@ -13,6 +14,10 @@ namespace Microsoft.Docs.Build
         private readonly GitHubClient _client;
 
         private static volatile Error _rateLimitError;
+
+        // Bypass GitHub abuse detection:
+        // https://developer.github.com/v3/guides/best-practices-for-integrators/#dealing-with-abuse-rate-limits
+        private static Mutex _mutex = new Mutex();
 
         public GitHubAccessor(string token = null)
         {
@@ -34,7 +39,7 @@ namespace Microsoft.Docs.Build
             try
             {
                 var user = await RetryUtility.Retry(
-                    () => _client.User.Get(login),
+                    () => UseResource(() => _client.User.Get(login)),
                     ex => ex is OperationCanceledException);
 
                 return (null, new GitHubUser
@@ -76,7 +81,7 @@ namespace Microsoft.Docs.Build
             try
             {
                 var commit = await RetryUtility.Retry(
-                    () => _client.Repository.Commit.Get(repoOwner, repoName, commitSha),
+                    () => UseResource(() => _client.Repository.Commit.Get(repoOwner, repoName, commitSha)),
                     ex => ex is OperationCanceledException);
                 return (null, commit.Author?.Login);
             }
@@ -99,6 +104,15 @@ namespace Microsoft.Docs.Build
             {
                 return (Errors.GitHubApiFailed(apiDetail, ex), null);
             }
+        }
+
+        private async Task<T> UseResource<T>(Func<Task<T>> action)
+        {
+            _mutex.WaitOne();
+            var result = await action();
+            _mutex.ReleaseMutex();
+
+            return result;
         }
     }
 }
