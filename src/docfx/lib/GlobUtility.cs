@@ -29,17 +29,18 @@ namespace Microsoft.Docs.Build
                     return false;
                 }
 
+                foreach (var exclude in excludeGlobs)
+                {
+                    if (exclude != null && exclude.IsMatch(path))
+                    {
+                        return false;
+                    }
+                }
+
                 foreach (var include in includeGlobs)
                 {
                     if (include != null && include.IsMatch(path))
                     {
-                        foreach (var exclude in excludeGlobs)
-                        {
-                            if (exclude != null && exclude.IsMatch(path))
-                            {
-                                return false;
-                            }
-                        }
                         return true;
                     }
                 }
