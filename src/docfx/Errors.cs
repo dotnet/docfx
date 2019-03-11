@@ -175,9 +175,6 @@ namespace Microsoft.Docs.Build
         public static Error YamlDuplicateKey(in Range range, string key)
             => new Error(ErrorLevel.Error, "yaml-duplicate-key", $"Key '{key}' is already defined, remove the duplicate key.", range: range);
 
-        public static Error InvalidYamlHeader(Document file, Exception ex)
-            => new Error(ErrorLevel.Warning, "invalid-yaml-header", ex.Message, file.ToString());
-
         /// <summary>
         /// Syntax error in json file.
         /// Examples:
@@ -302,7 +299,7 @@ namespace Microsoft.Docs.Build
         /// Failed to compute specific info of a commit.
         /// </summary>
         public static Error GitLogError(string repoPath, int errorCode)
-            => new Error(ErrorLevel.Error, "git-log-error", $"Error computing git log [{errorCode}] for '{repoPath}', did you used a shadow clone?");
+            => new Error(ErrorLevel.Error, "git-log-error", $"Error computing git log [{errorCode}] for '{repoPath}', did you use a shallow clone?");
 
         /// <summary>
         /// Git.exe isn't installed.
