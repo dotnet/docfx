@@ -20,6 +20,27 @@ outputs:
   docs/a.json: |
     {"content":"<p><a href=\"%7E/docfx-test-dependencies1/docs/a.md\">link to 1</a></p>\n<p>a1</p>\n"}
 ---
+# Restore vsts dependencies with their children
+repos:
+  https://docascode.visualstudio.com/project/_git/a:
+    - files:
+        docs/a.md: a2
+    - files:
+        docs/a.md: a1
+inputs:
+  docfx.yml: |
+    dependencies:
+      docfx-test-dependencies1: https://docascode.visualstudio.com/project/_git/a
+      docfx-test-dependencies2: https://docascode.visualstudio.com/project/_git/a#b6720c99618c1d080f48da04922fc9756e93818c
+  docs/a.md: |
+    [link to 1](~/docfx-test-dependencies1/docs/a.md)
+    [!include[include to 2](~/docfx-test-dependencies2/docs/a.md)
+outputs:
+  build.log: |
+    ["warning","link-is-dependency","File 'docs/a.md' referenced by link '~/docfx-test-dependencies1/docs/a.md' will not be built because it is from a dependency docset","docs/a.md"]
+  docs/a.json: |
+    {"content":"<p><a href=\"%7E/docfx-test-dependencies1/docs/a.md\">link to 1</a></p>\n<p>a1</p>\n"}
+---
 # Restore urls
 repos:
   https://github.com/restore/b:
@@ -132,7 +153,7 @@ outputs:
       "content": "<p>for long file path test.</p>"
     }
 ---
-# Restore private repos with dependencies
+# Restore private vsts repos with dependencies
 inputs:
   docfx.yml: |
     dependencies:
@@ -231,6 +252,73 @@ outputs:
              },
              "!downloads": null,
              "commit":"6a7b7f142f2de52a0b488309f4257d462956f59f"
+          }
+       },
+       "!downloads": null
+    }
+---
+# restore with vsts dependency lock
+repos:
+  https://docascode.visualstudio.com/lock/_git/a:
+    - files:
+        docfx.yml: |
+          dependencies:
+            dep1: https://docascode.visualstudio.com/lock/_git/b#master
+            dep2: https://docascode.visualstudio.com/lock/_git/c
+          dependencyLock: .lock.json
+        docs/a.md: |
+          [!include[](~/dep1/docs/dep1.md)]
+          [!include[](~/dep2/docs/dep2.md)]
+        .lock.json: |
+          {  
+             "git":{  
+                "https://docascode.visualstudio.com/lock/_git/b":{
+                   "commit":"921c49b9f8d6889d36d8aadc570922462963348d",
+                   "git":{  
+                      "https://docascode.visualstudio.com/lock/_git/c#master":{
+                         "commit":"8720d784fb99abcbdfa922025b8bcc060f0f622a"
+                      }
+                   }
+                }
+             }
+          }
+  https://docascode.visualstudio.com/lock/_git/b:
+    - files:
+        docs/dep1.md: |
+          "abc"
+          [!include[](~/dep2/docs/dep2.md)]
+        docfx.yml: |
+          dependencies:
+            dep2: https://docascode.visualstudio.com/lock/_git/c
+    - files:
+        docs/dep1.md: |
+          "def"
+          [!include[](~/dep2/docs/dep2.md)]
+        docfx.yml: |
+          dependencies:
+            dep2: https://docascode.visualstudio.com/lock/_git/c
+  https://docascode.visualstudio.com/lock/_git/c:
+    - files:
+        docs/dep2.md: "2333"
+    - files:
+        docs/dep2.md: "233333"
+outputs:
+  docs/a.json: |
+    {"content":"<p>&quot;def&quot;</p>\n<p>233333</p>\n<p>2333</p>\n"}
+  ~/.lock.json: |
+    {
+       "git":{
+          "https://docascode.visualstudio.com/lock/_git/c#master":{
+             "commit":"c5969737496ff42854a019f982882d5fac486a56"
+          },
+          "https://docascode.visualstudio.com/lock/_git/b#master":{
+             "git":{
+                "https://docascode.visualstudio.com/lock/_git/c#master":{
+                   "commit":"8720d784fb99abcbdfa922025b8bcc060f0f622a"
+                }
+             },
+             "!downloads": null,
+             "commit":"921c49b9f8d6889d36d8aadc570922462963348d"
           }
        },
        "!downloads": null
