@@ -20,7 +20,11 @@ namespace Microsoft.Docs.Build
     internal static class JsonUtility
     {
         private static readonly NamingStrategy s_namingStrategy = new CamelCaseNamingStrategy();
-        private static readonly JsonMergeSettings s_mergeSettings = new JsonMergeSettings { MergeArrayHandling = MergeArrayHandling.Replace, PropertyNameComparison = StringComparison.OrdinalIgnoreCase };
+        private static readonly JsonMergeSettings s_mergeSettings = new JsonMergeSettings
+        {
+            MergeArrayHandling = MergeArrayHandling.Replace,
+            PropertyNameComparison = StringComparison.OrdinalIgnoreCase,
+        };
 
         private static readonly JsonSerializer s_serializer = new JsonSerializer
         {
