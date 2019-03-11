@@ -1,7 +1,7 @@
-Version Notes (Current Version: v2.41)
+Version Notes (Current Version: v2.40.12)
 =======================================
 
-v2.41(Pre-release)
+v2.40.12
 -----------
 1. Improve performance in Markdig Markdown engine. (#4048)
 1. Bug fix:
