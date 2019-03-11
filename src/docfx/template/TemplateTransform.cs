@@ -59,7 +59,7 @@ namespace Microsoft.Docs.Build
         {
             { "product", "Product" },
             { "topic_type", "TopicType" },
-            { "api_type", "APIType"},
+            { "api_type", "APIType" },
             { "api_location", "APILocation" },
             { "api_name", "APIName" },
             { "api_extra_info", "APIExtraInfo" },
