@@ -13,11 +13,11 @@ namespace Microsoft.Docs.Build
     {
         private readonly GitHubClient _client;
 
-        private static volatile Error _rateLimitError;
-
         // Bypass GitHub abuse detection:
         // https://developer.github.com/v3/guides/best-practices-for-integrators/#dealing-with-abuse-rate-limits
-        private static Mutex _mutex = new Mutex();
+        private static readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1);
+
+        private static volatile Error _rateLimitError;
 
         public GitHubAccessor(string token = null)
         {
@@ -108,11 +108,15 @@ namespace Microsoft.Docs.Build
 
         private async Task<T> UseResource<T>(Func<Task<T>> action)
         {
-            _mutex.WaitOne();
-            var result = await action();
-            _mutex.ReleaseMutex();
-
-            return result;
+            await _semaphore.WaitAsync();
+            try
+            {
+                return await action();
+            }
+            finally
+            {
+                _semaphore.Release();
+            }
         }
     }
 }
