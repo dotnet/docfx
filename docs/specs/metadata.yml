@@ -375,3 +375,17 @@ outputs:
     metadata:
       breadcrumb_path: breadcrumbs/toc.json
   breadcrumbs/toc.json:
+---
+# yaml header metadata takes precedence over global/file metadata
+inputs:
+  docfx.yml: |
+    fileMetadata:
+      ROBOTS:
+        docs/**/*.md: noindex, nofollow
+  docs/a.md: |
+    ---
+    Robots: INDEX
+    ---
+outputs:
+  docs/a.json: |
+    { "metadata": { "robots": "INDEX" } }
