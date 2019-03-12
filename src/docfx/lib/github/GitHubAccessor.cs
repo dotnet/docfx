@@ -3,6 +3,7 @@
 
 using System;
 using System.Diagnostics;
+using System.Threading;
 using System.Threading.Tasks;
 using Octokit;
 
@@ -11,6 +12,10 @@ namespace Microsoft.Docs.Build
     internal class GitHubAccessor
     {
         private readonly GitHubClient _client;
+
+        // Bypass GitHub abuse detection:
+        // https://developer.github.com/v3/guides/best-practices-for-integrators/#dealing-with-abuse-rate-limits
+        private static readonly SemaphoreSlim _semaphore = new SemaphoreSlim(10, 10);
 
         private static volatile Error _rateLimitError;
 
@@ -34,7 +39,7 @@ namespace Microsoft.Docs.Build
             try
             {
                 var user = await RetryUtility.Retry(
-                    () => _client.User.Get(login),
+                    () => UseResource(() => _client.User.Get(login)),
                     ex => ex is OperationCanceledException);
 
                 return (null, new GitHubUser
@@ -76,7 +81,7 @@ namespace Microsoft.Docs.Build
             try
             {
                 var commit = await RetryUtility.Retry(
-                    () => _client.Repository.Commit.Get(repoOwner, repoName, commitSha),
+                    () => UseResource(() => _client.Repository.Commit.Get(repoOwner, repoName, commitSha)),
                     ex => ex is OperationCanceledException);
                 return (null, commit.Author?.Login);
             }
@@ -98,6 +103,19 @@ namespace Microsoft.Docs.Build
             catch (Exception ex)
             {
                 return (Errors.GitHubApiFailed(apiDetail, ex), null);
+            }
+        }
+
+        private async Task<T> UseResource<T>(Func<Task<T>> action)
+        {
+            await _semaphore.WaitAsync();
+            try
+            {
+                return await action();
+            }
+            finally
+            {
+                _semaphore.Release();
             }
         }
     }
