@@ -55,6 +55,17 @@ namespace Microsoft.Docs.Build
             "is_hidden",
         };
 
+        private static Dictionary<string, string> s_displayNameMapping = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        {
+            { "product", "Product" },
+            { "topic_type", "TopicType" },
+            { "api_type", "APIType" },
+            { "api_location", "APILocation" },
+            { "api_name", "APIName" },
+            { "api_extra_info", "APIExtraInfo" },
+            { "target_os", "TargetOS" },
+        };
+
         public static (TemplateModel model, JObject metadata) Transform(PageModel pageModel, Document file)
         {
             var rawMetadata = CreateRawMetadata(pageModel, file);
@@ -211,6 +222,8 @@ namespace Microsoft.Docs.Build
                     continue;
                 }
 
+                var name = s_displayNameMapping.TryGetValue(key, out var diplayName) ? diplayName : key;
+
                 var content = "";
                 if (value is JArray arr)
                 {
@@ -218,7 +231,7 @@ namespace Microsoft.Docs.Build
                     {
                         if (v is JValue)
                         {
-                            result.AppendLine($"<meta name=\"{HttpUtility.HtmlEncode(key)}\" content=\"{HttpUtility.HtmlEncode(v)}\" />");
+                            result.AppendLine($"<meta name=\"{HttpUtility.HtmlEncode(name)}\" content=\"{HttpUtility.HtmlEncode(v)}\" />");
                         }
                     }
                     continue;
@@ -232,7 +245,7 @@ namespace Microsoft.Docs.Build
                     content = value.ToString();
                 }
 
-                result.AppendLine($"<meta name=\"{HttpUtility.HtmlEncode(key)}\" content=\"{HttpUtility.HtmlEncode(content)}\" />");
+                result.AppendLine($"<meta name=\"{HttpUtility.HtmlEncode(name)}\" content=\"{HttpUtility.HtmlEncode(content)}\" />");
             }
 
             return result.ToString();
