@@ -15,7 +15,7 @@ namespace Microsoft.Docs.Build
 
         // Bypass GitHub abuse detection:
         // https://developer.github.com/v3/guides/best-practices-for-integrators/#dealing-with-abuse-rate-limits
-        private static readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1);
+        private static readonly SemaphoreSlim _semaphore = new SemaphoreSlim(10, 10);
 
         private static volatile Error _rateLimitError;
 
