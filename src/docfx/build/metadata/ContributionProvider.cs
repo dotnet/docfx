@@ -154,7 +154,7 @@ namespace Microsoft.Docs.Build
             if (repo == null)
                 return default;
 
-            var escapedPathToRepo = Uri.EscapeDataString(pathToRepo);
+            var escapedPathToRepo = HrefUtility.EscapeUrl(pathToRepo);
             var repoHost = GitHubUtility.TryParse(repo.Remote, out _, out _) ? GitHost.GitHub : GitHost.Unknown;
             var commit = commits.FirstOrDefault()?.Sha;
             if (string.IsNullOrEmpty(commit))
