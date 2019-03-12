@@ -8,6 +8,7 @@
     <RootNamespace>Microsoft.Docs.Build</RootNamespace>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <PackAsTool>true</PackAsTool>
+    <NoWarn>NU1701</NoWarn>
     <TreatWarningsAsErrors Condition="'$(Configuration)'=='Release'">true</TreatWarningsAsErrors>
   </PropertyGroup>
 
