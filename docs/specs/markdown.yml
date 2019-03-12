@@ -408,3 +408,23 @@ outputs:
   build.log: |
     ["warning","yaml-header-not-object","Expect yaml header to be an object, but got a scalar","docs/a.md"]
 ---
+# Handling malformed HTML tags using HtmlAgilityPack 1.4.9
+inputs:
+  docfx.yml:
+  docs/a.md: |
+    1.  a
+        <UL><LI><LI></UL>
+    2.  b
+        <UL><LI>
+    ## c
+outputs:
+  docs/a.json: |
+    content: |
+      <ol>
+        <li>a
+          <ul><li><li></li></li></ul>
+        <li>b
+          <ul><li></li></ul></li>
+        </li>
+      </ol>
+      <h2 id="c">c</h2>
