@@ -168,7 +168,7 @@ namespace Microsoft.Docs.Build
 
                 switch (HrefUtility.GetHrefType(href))
                 {
-                    case HrefType.Bookmark:
+                    case HrefType.SelfBookmark:
                         node.SetAttributeValue("data-linktype", "self-bookmark");
                         break;
                     case HrefType.AbsolutePath:

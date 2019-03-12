@@ -119,7 +119,7 @@ inputs:
     [Absolute](C:/a.md)
 outputs:
   docs/a.json: |
-    { "content": "<p><a href=\"C:/a.md\">Absolute</a></p>" }
+    { "content": "<p><a href=\"\">Absolute</a></p>" }
   build.log: |
     ["warning","absolute-file-path","File path cannot be absolute: 'C:/a.md'","docs/a.md","",1,1]
 ---
