@@ -18,7 +18,8 @@
   <ItemGroup>
     <PackageReference Include="DotLiquid" Version="2.0.298" />
     <PackageReference Include="Glob" Version="1.1.1" />
-    <PackageReference Include="HtmlAgilityPack" Version="1.9.0" />
+    <!-- To keep HTML intact during v3 migration, keep using HtmlAgilityPack 1.4.9 -->
+    <PackageReference Include="HtmlAgilityPack" Version="1.4.9" />
     <PackageReference Include="LibGit2Sharp.NativeBinaries" Version="2.0.267" />
     <PackageReference Include="Microsoft.ApplicationInsights" Version="2.9.1" />
     <PackageReference Include="Microsoft.AspNetCore" Version="2.2.0" />

@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Web;
 using HtmlAgilityPack;
 
@@ -13,6 +12,9 @@ namespace Microsoft.Docs.Build
 {
     internal static class HtmlUtility
     {
+        private static readonly Func<HtmlAgilityPack.HtmlAttribute, int> s_getValueStartIndex =
+            ReflectionUtility.CreateInstanceFieldGetter<HtmlAgilityPack.HtmlAttribute, int>("_valuestartindex");
+
         public static HtmlNode LoadHtml(string html)
         {
             var doc = new HtmlDocument();
@@ -136,16 +138,18 @@ namespace Microsoft.Docs.Build
                 {
                     continue;
                 }
-                if (link.ValueStartIndex > pos)
+
+                var valueStartIndex = s_getValueStartIndex(link);
+                if (valueStartIndex > pos)
                 {
-                    result.Append(html, pos, link.ValueStartIndex - pos);
+                    result.Append(html, pos, valueStartIndex - pos);
                 }
                 var transformed = transform(HttpUtility.HtmlDecode(link.Value));
                 if (!string.IsNullOrEmpty(transformed))
                 {
                     result.Append(HttpUtility.HtmlEncode(transformed));
                 }
-                pos = link.ValueStartIndex + link.ValueLength;
+                pos = valueStartIndex + link.Value.Length;
             }
 
             if (html.Length > pos)
