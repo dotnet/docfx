@@ -8,7 +8,6 @@ using System.IO;
 using System.Linq;
 
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using Xunit;
 
 namespace Microsoft.Docs.Build
@@ -28,7 +27,7 @@ namespace Microsoft.Docs.Build
         [InlineData("😄")]
         public void TestObjectWithStringProperty(string input)
         {
-            var yaml = $"C: \"{input}\"";
+            var yaml = $"c: \"{input}\"";
             var (errors, value) = YamlUtility.DeserializeWithSchemaValidation<BasicClass>(yaml);
             Assert.Empty(errors);
             Assert.NotNull(value);
@@ -63,7 +62,7 @@ namespace Microsoft.Docs.Build
             @"this is multi-line string single-quoted style")]
         public void TestObjectWithMultiLinesStringProperty(string input, string expected)
         {
-            var yaml = $"C: {input}";
+            var yaml = $"c: {input}";
             var (errors, value) = YamlUtility.DeserializeWithSchemaValidation<BasicClass>(yaml);
             Assert.Empty(errors);
             Assert.NotNull(value);
@@ -106,23 +105,23 @@ namespace Microsoft.Docs.Build
         public void TestAnchor()
         {
             var yaml = @"
-A: &anchor test
-B: *anchor
+a: &anchor test
+b: *anchor
 ";
             var (errors, value) = YamlUtility.DeserializeWithSchemaValidation<Dictionary<string, string>>(yaml);
             Assert.Empty(errors);
             Assert.NotNull(value);
-            Assert.Equal("test", value["A"]);
-            Assert.Equal("test", value["B"]);
+            Assert.Equal("test", value["a"]);
+            Assert.Equal("test", value["b"]);
         }
 
         [Fact]
         public void TestBasicClass()
         {
             var yaml = @"
-B: 1
-C: Good!
-D: true
+b: 1
+c: Good!
+d: true
 ";
             var (errors, value) = YamlUtility.DeserializeWithSchemaValidation<BasicClass>(yaml);
             Assert.Empty(errors);
@@ -195,34 +194,34 @@ D: true
         [Fact]
         public void TestListOfBasicClass()
         {
-            var yaml = @"- C: Good0!
-- B: 1
-  C: Good1!
-  D: true
-- C: Good2!
-  B: 2
-  D: false
-- D: true
-  C: Good3!
-  B: 3
-- B: 4
-  C: Good4!
-  D: false
-- B: 5
-  C: Good5!
-  D: true
-- B: 6
-  C: Good6!
-  D: false
-- B: 7
-  C: Good7!
-  D: true
-- B: 8
-  C: Good8!
-  D: false
-- B: 9
-  C: Good9!
-  D: true
+            var yaml = @"- c: Good0!
+- b: 1
+  c: Good1!
+  d: true
+- c: Good2!
+  b: 2
+  d: false
+- d: true
+  c: Good3!
+  b: 3
+- b: 4
+  c: Good4!
+  d: false
+- b: 5
+  c: Good5!
+  d: true
+- b: 6
+  c: Good6!
+  d: false
+- b: 7
+  c: Good7!
+  d: true
+- b: 8
+  c: Good8!
+  d: false
+- b: 9
+  c: Good9!
+  d: true
 ";
             var (errors, values) = YamlUtility.DeserializeWithSchemaValidation<List<BasicClass>>(yaml);
             Assert.Empty(errors);
@@ -239,7 +238,7 @@ D: true
         [Fact]
         public void TestClassWithReadOnlyField()
         {
-            var yaml = $"B: test";
+            var yaml = $"b: test";
             var (errors, value) = YamlUtility.DeserializeWithSchemaValidation<ClassWithReadOnlyField>(yaml);
             Assert.Empty(errors);
             Assert.NotNull(value);
@@ -249,23 +248,23 @@ D: true
         [Fact]
         public void TestClassWithMoreMembers()
         {
-            var yaml = @"B: 1
-C: Good1!
-D: true
-ValueDict:
-  KeyA: 1
-  KeyB: Good2!
-  KeyC: true
-ValueList:
+            var yaml = @"b: 1
+c: Good1!
+d: true
+valueDict:
+  keyA: 1
+  keyB: Good2!
+  keyC: true
+valueList:
 - ItemA
 - ""True""
 - ""3""
 - ""ItemB""
-ValueBasic:
-  B: 2
-  C: Good3!
-  D: false
-ValueRequired: a
+valueBasic:
+  b: 2
+  c: Good3!
+  d: false
+valueRequired: a
 ";
             var (errors, value) = YamlUtility.DeserializeWithSchemaValidation<ClassWithMoreMembers>(yaml);
             Assert.Empty(errors.Where(error => error.Level == ErrorLevel.Error));
@@ -273,9 +272,9 @@ ValueRequired: a
             Assert.Equal(1, value.B);
             Assert.Equal("Good1!", value.C);
             Assert.True(value.D);
-            Assert.Equal((long)1, value.ValueDict["KeyA"]);
-            Assert.Equal("Good2!", value.ValueDict["KeyB"]);
-            Assert.True((bool)value.ValueDict["KeyC"]);
+            Assert.Equal((long)1, value.ValueDict["keyA"]);
+            Assert.Equal("Good2!", value.ValueDict["keyB"]);
+            Assert.True((bool)value.ValueDict["keyC"]);
             Assert.Equal("ItemA", value.ValueList[0]);
             Assert.Equal("True", value.ValueList[1]);
             Assert.Equal("3", value.ValueList[2]);
