@@ -1,4 +1,4 @@
-# Metadata keys are case insensitive
+# Metadata keys are case sensitive
 inputs:
   docfx.yml: |
     globalMetadata:
