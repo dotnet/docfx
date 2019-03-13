@@ -249,7 +249,7 @@ inputs:
   docfx.yml: |
     rules:
       file-not-found: off
-    gitHub:
+    github:
       userCache: user_profile.json
 outputs:
   build.log: |
@@ -409,7 +409,7 @@ outputs:
 # redirect to not starting with '/' is allowed in config.redirectionWithoutIds
 inputs:
   docfx.yml: |
-    RedirectionsWithoutId:
+    redirectionsWithoutId:
       a.md: https://docs.microsoft.com/docfx/a
       b.md: a
 outputs:

@@ -116,7 +116,7 @@ inputs:
   docfx.yml:
   docs/a.yml: |
     #YamlMime:TestPage
-    Href: image.png
+    href: image.png
   docs/image.png:
 outputs:
   docs/a.json: |

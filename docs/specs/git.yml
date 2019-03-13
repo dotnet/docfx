@@ -22,7 +22,7 @@ repos:
           Alice creates this.
 inputs:
   docfx.yml: |
-    gitHub:
+    github:
       userCache: https://raw.githubusercontent.com/docascode/docfx-test-dependencies/master/user_profile.json
       resolveUsers: true
     contribution:
@@ -62,7 +62,7 @@ repos:
           Alice creates this.
 inputs:
   docfx.yml: |
-    gitHub:
+    github:
       userCache: user_profile.json
       resolveUsers: true
     contribution:
@@ -99,7 +99,7 @@ inputs:
     ---
     # git-test
   docfx.yml: |
-    gitHub:
+    github:
       userCache: user_profile.json
       resolveUsers: true
   user_profile.json: |
@@ -131,7 +131,7 @@ repos:
           Alice creates this.
 inputs:
   docfx.yml: |
-    gitHub:
+    github:
       userCache: user_profile.json
       resolveUsers: true
   user_profile.json: |
@@ -176,7 +176,7 @@ repos:
           Alice creates this.
 inputs:
   docfx.yml: |
-    gitHub:
+    github:
       userCache: user_profile.json
       resolveUsers: true
     contribution:
@@ -213,7 +213,7 @@ repos:
           Alice creates this.
 inputs:
   docfx.yml: |
-    gitHub:
+    github:
       userCache: user_profile.json
       resolveUsers: true
   user_profile.json: |
@@ -252,7 +252,7 @@ repos:
           Alice creates this.
 inputs:
   docfx.yml: |
-    gitHub:
+    github:
       userCache: user_profile.json
       resolveUsers: true
     contribution:

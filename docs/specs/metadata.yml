@@ -1,13 +1,17 @@
-# known metadata keys are case insensitive
+# Metadata keys are case insensitive
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    globalMetadata:
+      key: global
+      KEY: GLOBAL
   docs/a.md: |
     ---
-    Robots: noindex, nofollow
+    key: header
+    KEY: HEADER
     ---
 outputs:
   docs/a.json: |
-    { "metadata": { "robots": "noindex, nofollow" } }
+    { "metadata": { "key": "header", "KEY": "HEADER" } }
 ---
 # Preserve null custom metadata
 inputs:

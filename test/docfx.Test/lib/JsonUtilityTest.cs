@@ -73,6 +73,13 @@ namespace Microsoft.Docs.Build
         }
 
         [Fact]
+        public void TestJsonDeserializeIsCaseSensitive()
+        {
+            var (errors, value) = JsonUtility.DeserializeWithSchemaValidation<BasicClass>("{\"B\":1}");
+            Assert.Equal(0, value.B);
+        }
+
+        [Fact]
         public void TestBasicClassWithNullCharactor()
         {
             var json = JsonUtility.Serialize(new BasicClass { C = null, });
