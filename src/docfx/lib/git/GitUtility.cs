@@ -91,6 +91,12 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
+        /// checkout existing git repository to specificed committish
+        /// </summary>
+        public static Task Checkout(string path, string committish)
+            => ExecuteNonQuery(path, $"-c core.longpaths=true checkout --force --progress {committish}");
+
+        /// <summary>
         /// Clones or update a git repository to the latest version.
         /// </summary>
         public static async Task CloneOrUpdate(string path, string url, string committish, Config config = null)
@@ -151,18 +157,6 @@ namespace Microsoft.Docs.Build
                 }
                 return result;
             }
-        }
-
-        /// <summary>
-        /// Determines if a worktree has completed checkout
-        /// </summary>
-        public static bool IsWorkTreeCheckoutComplete(string repoPath, string worktreeName)
-        {
-            // Adding the HEAD file is the last step in a worktree checkout, use it to
-            // filter out worktrees that are still in progress.
-            //
-            // list_work_tree https://github.com/git/git/blob/e146cc97be4c054c60d38e9f4edcdc33205bf563/worktree.c#L93
-            return File.Exists(Path.Combine(repoPath, ".git/worktrees", worktreeName, "HEAD"));
         }
 
         /// <summary>
@@ -284,8 +278,10 @@ namespace Microsoft.Docs.Build
                 throw new InvalidOperationException($"Cannot initialize a git repo at {path}");
             }
 
+            Telemetry.TrackCacheTotalCount(TelemetryName.GitRepositoryCache);
             if (git_remote_create(out var remote, repo, "origin", url) == 0)
             {
+                Telemetry.TrackCacheMissCount(TelemetryName.GitRepositoryCache);
                 git_remote_free(remote);
             }
 
@@ -299,19 +295,19 @@ namespace Microsoft.Docs.Build
 
             var httpConfig = GetGitCommandLineConfig(url, config);
             var refspecs = string.Join(' ', committishes.Select(rev => $"+{rev}:{rev}"));
-            var depth = depthOne ? "--depth 1" : "";
+            var depth = depthOne ? "--depth 1" : "--depth 9999999999";
             var pruneSwitch = prune ? "--prune" : "";
 
             try
             {
-                await ExecuteNonQuery(path, $"{httpConfig} fetch --tags --prune --progress --update-head-ok {pruneSwitch} {depth} \"{url}\" {refspecs}", stderr: true);
+                await ExecuteNonQuery(path, $"{httpConfig} fetch --tags --progress --update-head-ok {pruneSwitch} {depth} \"{url}\" {refspecs}", stderr: true);
             }
             catch (InvalidOperationException ex) when (committishes.Any(rev => ex.Message.Contains(rev)))
             {
                 // Fallback to fetch all branches and tags if the input committish is not supported by fetch
                 depth = "--depth 9999999999";
                 refspecs = "+refs/heads/*:refs/heads/* +refs/tags/*:refs/tags/*";
-                await ExecuteNonQuery(path, $"{httpConfig} fetch --tags --prune --progress --update-head-ok {pruneSwitch} {depth} \"{url}\" {refspecs}");
+                await ExecuteNonQuery(path, $"{httpConfig} fetch --tags --progress --update-head-ok {pruneSwitch} {depth} \"{url}\" {refspecs}");
             }
         }
 

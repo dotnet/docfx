@@ -20,8 +20,10 @@ outputs:
     ["info","at-uid-not-found","Cannot find uid 'a' using xref '@a'","docs/a.md"]
 ---
 # Restore xref map from configured url and use the map for resolving
+# hostname should be removed if docset sharing the same one
 inputs:
   docfx.yml: |
+    baseUrl: https://docs.microsoft.com
     xref: 
       - xrefmap.json
   docs/a.md: Link to @System.String
@@ -37,7 +39,7 @@ inputs:
     }
 outputs:
   docs/a.json: |
-    { "content": "<p>Link to <a href=\"https://docs.microsoft.com/en-us/dotnet/api/system.string\">String</a></p>\n"}
+    { "content": "<p>Link to <a href=\"/en-us/dotnet/api/system.string\">String</a></p>\n"}
 ---
 # Restore xref map from configured url and use the YAML file for resolving
 inputs:
@@ -90,7 +92,7 @@ outputs:
         }
       ]
     }
-  build.manifest: |
+  .dependencymap.json: |
     {
       "dependencies": {
           "docs/c.md": [
@@ -125,7 +127,7 @@ outputs:
   docs/a.json:
   xrefmap.json: | 
     {"references":[{"uid":"a","href":"https://docs.com/docs/a.json"}]}
-  build.manifest: |
+  .dependencymap.json: |
     {
       "dependencies": {
           "docs/c.md": [
@@ -159,7 +161,7 @@ outputs:
     ["error","uid-conflict","Two or more documents have defined the same Uid 'a': docs/a.yml,docs/b.json"]
     ["info","at-uid-not-found","Cannot find uid 'a' using xref '@a'","docs/c.md"]
   xrefmap.json: | 
-    {"references":[]}
+    {"!references":null}
 ---
 # Resolve xref in SDP
 inputs:
@@ -185,7 +187,7 @@ outputs:
     }
   xrefmap.json: | 
     {"references":[{"uid":"a","href":"https://docs.com/docs/a.json"}]}
-  build.manifest: |
+  .dependencymap.json: |
     {
       "dependencies": {
           "docs/b.json": [
@@ -220,9 +222,87 @@ outputs:
     ["error","json-syntax-error","Unexpected character encountered while parsing value: }.","docs/a.json","description",7]
     ["warning","uid-not-found","Cannot find uid 'a' using xref 'a'","docs/b.json"]
   xrefmap.json: | 
-    {"references":[]}
+    {"!references":null}
 ---
-# Define uid in non-root object level, it will be ignored
+# support multiple uids in the same array in one SDP
+inputs:
+  docfx.yml:
+  docs/a.yml: |
+    #YamlMime:TestData
+    uid: a
+    description: description for a
+    data:
+      uid: a.data
+      description: description for a.data
+    array:
+      - uid: a.b
+        description: description for a.b
+        array:
+          - uid: a.b.d
+            description: description for a.b.d
+          - uid: a.b.e
+            description: description for a.b.e
+      - uid: a.c
+        description: description for a.c
+  docs/b.md: Link to @a.b
+outputs:
+  docs/a.json:
+  docs/b.json: |
+    {"content": "<p>Link to <a href=\"a.json#a_b\">a.b</a></p>\n"}
+  xrefmap.json: |
+    {
+      "references": [{
+        "uid": "a",
+        "href": "https://docs.com/docs/a.json",
+        "description": "description for a"
+      }, 
+      {
+        "uid": "a.b",
+        "href": "https://docs.com/docs/a.json#a_b",
+        "description": "description for a.b"
+      },
+      {
+        "uid": "a.b.d",
+        "href": "https://docs.com/docs/a.json#a_b_d",
+        "description": "description for a.b.d"
+      },
+      {
+        "uid": "a.b.e",
+        "href": "https://docs.com/docs/a.json#a_b_e",
+        "description": "description for a.b.e"
+      }, 
+      {
+        "uid": "a.c",
+        "href": "https://docs.com/docs/a.json#a_c",
+        "description": "description for a.c"
+      },
+      {
+        "uid": "a.data",
+        "href": "https://docs.com/docs/a.json#a_data",
+        "description": "description for a.data"
+      }]
+    }
+---
+# uid conflict in one SDP
+inputs:
+  docfx.yml:
+  docs/a.json: |
+    {
+      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
+      "uid": "a",
+      "data": 
+      { 
+        "uid": "a"
+      }
+    }
+outputs:
+  docs/a.json:
+  build.log: |
+    ["error","uid-conflict","The same Uid 'a' has been defined multiple times in the same file","docs/a.json"]
+  xrefmap.json: |
+    {"references":[{"uid":"a","href":"https://docs.com/docs/a.json"}]}
+---
+# uid conflict in non-root level and another SDP
 inputs:
   docfx.yml:
   docs/a.json: |
@@ -234,13 +314,17 @@ inputs:
         "uid": "b"
       }
     }
-  docs/b.md: Link to @b
+  docs/b.json: |
+    {
+      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
+      "uid": "b"
+    }
 outputs:
   docs/a.json:
   docs/b.json:
   build.log: |
-    ["info","at-uid-not-found","Cannot find uid 'b' using xref '@b'","docs/b.md"]
-  xrefmap.json: | 
+    ["error","uid-conflict","Two or more documents have defined the same Uid 'b': docs/a.json,docs/b.json"]
+  xrefmap.json: |
     {"references":[{"uid":"a","href":"https://docs.com/docs/a.json"}]}
 ---
 # Xref property field which supports markdown content
@@ -354,7 +438,7 @@ outputs:
   docs/b.json: |
     { "content": "<p>Link to <a href=\"xref:c#bookmark\">title</a></p>" }
   build.log: |
-    ["warning","uid-not-found","Cannot find uid 'c' using xref 'c#bookmark'","docs/b.md"]
+    ["warning","uid-not-found","Cannot find uid 'c' using xref 'c#bookmark'","docs/b.md","",1,9]
 ---
 # Markdown inclusion with xref reference
 inputs:
@@ -489,7 +573,6 @@ outputs:
   build.log: |
     ["error","circular-reference","Found circular reference: 'docs/a.json' --> 'docs/b.json' --> 'docs/a.json'","docs/a.json"]
     ["error","circular-reference","Found circular reference: 'docs/b.json' --> 'docs/a.json' --> 'docs/b.json'","docs/b.json"]
-
 ---
 # SDP cyclic xref reference whose display properties referring to another uid
 # b.json -> c.json -> b.json && b.json -> c.json -> b.json && c.json -> b.json -> c.json
@@ -524,7 +607,6 @@ outputs:
     ["error","circular-reference","Found circular reference: 'docs/c.json' --> 'docs/b.json' --> 'docs/c.json'","docs/c.json"]
     ["error","circular-reference","Found circular reference: 'docs/b.json' --> 'docs/c.json' --> 'docs/b.json'","docs/b.json"]
     ["error","circular-reference","Found circular reference: 'docs/a.json' --> 'docs/b.json' --> 'docs/c.json' --> 'docs/b.json'","docs/a.json"]
-
 ---
 # SDP cyclic xref reference to itself
 inputs:
@@ -563,3 +645,12 @@ inputs:
 outputs:
   docs/a.json:
   docs/b.json:
+---
+# input json file is not object
+inputs:
+  docfx.yml:
+  docs/a.json: |
+    1
+outputs:
+  build.log: |
+    ["error","schema-not-found","Unknown schema ''","docs/a.json"]

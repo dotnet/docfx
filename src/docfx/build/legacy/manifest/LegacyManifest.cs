@@ -11,10 +11,16 @@ namespace Microsoft.Docs.Build
 {
     internal static class LegacyManifest
     {
-        public static List<(LegacyManifestItem manifestItem, Document doc, List<string> monikers)> Convert(Docset docset, Context context, Dictionary<Document, FileManifest> fileManifests)
+        public static void Convert(Docset docset, Context context, Dictionary<Document, PublishItem> fileManifests)
         {
             using (Progress.Start("Convert Legacy Manifest"))
             {
+                var itemsToPublish = new List<LegacyItemToPublish>
+                {
+                    new LegacyItemToPublish { RelativePath = "filemap.json", Type = "filemap" },
+                    new LegacyItemToPublish { RelativePath = ".dependency-map.json", Type = "unknown" },
+                };
+
                 var monikerGroups = new ConcurrentDictionary<string, List<string>>();
                 var convertedItems = new ConcurrentBag<(LegacyManifestItem manifestItem, Document doc, List<string> monikers)>();
                 Parallel.ForEach(
@@ -27,7 +33,7 @@ namespace Microsoft.Docs.Build
 
                         var output = new LegacyManifestOutput
                         {
-                            MetadataOutput = document.IsSchemaData
+                            MetadataOutput = document.IsSchemaData || document.ContentType == ContentType.Resource
                             ? null
                             : new LegacyManifestOutputItem
                             {
@@ -125,13 +131,9 @@ namespace Microsoft.Docs.Build
                     is_already_processed = true,
                     source_base_path = docset.Config.DocumentId.SourceBasePath,
                     version_info = new { },
-
-                    // todo: items to publish
-                    // todo: type_mapping
+                    items_to_publish = itemsToPublish,
                 },
                 Path.Combine(docset.Config.DocumentId.SiteBasePath, ".manifest.json"));
-
-                return convertedItems.ToList();
             }
         }
 

@@ -16,7 +16,7 @@ inputs:
     [!include[include to 2](~/docfx-test-dependencies2/docs/a.md)
 outputs:
   build.log: |
-    ["warning","link-is-dependency","File 'docs/a.md' referenced by link '~/docfx-test-dependencies1/docs/a.md' will not be built because it is from a dependency docset","docs/a.md"]
+    ["warning","link-is-dependency","File 'docs/a.md' referenced by link '~/docfx-test-dependencies1/docs/a.md' will not be built because it is from a dependency docset","docs/a.md","",1,1]
   docs/a.json: |
     {"content":"<p><a href=\"%7E/docfx-test-dependencies1/docs/a.md\">link to 1</a></p>\n<p>a1</p>\n"}
 ---
@@ -61,7 +61,7 @@ inputs:
     [!include[include to 2](~/docfx-test-dependencies2/docs/a.md)
 outputs:
   build.log: |
-    ["warning","link-is-dependency","File 'docs/a.md' referenced by link '~/docfx-test-dependencies1/docs/a.md' will not be built because it is from a dependency docset","docs/a.md"]
+    ["warning","link-is-dependency","File 'docs/a.md' referenced by link '~/docfx-test-dependencies1/docs/a.md' will not be built because it is from a dependency docset","docs/a.md","",1,1]
   docs/a.json: |
     {"content":"<p><a href=\"%7E/docfx-test-dependencies1/docs/a.md\">link to 1</a></p>\n<p>d</p>\n"}
 ---
@@ -80,7 +80,7 @@ inputs:
       error: https://github.com/docascode/docfx-test-dependencies#bad-branch
 outputs:
   build.log: |
-    ["error","git-clone-failed","Cloning git repository 'https://github.com/docascode/docfx-test-dependencies' ('bad-branch') failed."]
+    ["error","committish-not-found","Cannot find branch, tag or commit 'bad-branch' for repo 'https://github.com/docascode/docfx-test-dependencies'."]
 ---
 # Show error when dependent repo can't be found
 commands:
@@ -89,9 +89,11 @@ inputs:
   docfx.yml: |
     dependencies:
       dep: https://github.com/docascode/docfx-test-dependencies#bad-branch
+  docs/a.md: |
+    [test](dep/abc)
 outputs:
   build.log: |
-    ["error","need-restore","Cannot find dependency 'https://github.com/docascode/docfx-test-dependencies#bad-branch', did you forget to run `docfx restore`?"]
+    ["error","need-restore","Cannot find dependency 'https://github.com/docascode/docfx-test-dependencies#bad-branch', did you forget to run `docfx restore`?","docs/a.md"]
 ---
 # Show error when dependent URL can't be found
 commands:
@@ -166,3 +168,198 @@ repos:
         docs/childx.md:
 outputs:
   docs/a.json:
+---
+# restore with dependency lock
+repos:
+  https://docs.com/lock1/a#master:
+    - files:
+        docfx.yml: |
+          dependencies:
+            dep1: https://docs.com/lock1/b#master
+            dep2: https://docs.com/lock1/c
+          dependencyLock: .lock.json
+        docs/a.md: |
+          [!include[](~/dep1/docs/dep1.md)]
+          [!include[](~/dep2/docs/dep2.md)]
+        .lock.json: |
+          {  
+             "git":{  
+                "https://docs.com/lock1/b":{  
+                   "commit":"6a7b7f142f2de52a0b488309f4257d462956f59f",
+                   "git":{  
+                      "https://docs.com/lock1/c#master":{  
+                         "commit":"8720d784fb99abcbdfa922025b8bcc060f0f622a"
+                      }
+                   }
+                }
+             }
+          }
+  https://docs.com/lock1/b:
+    - files:
+        docs/dep1.md: |
+          "abc"
+          [!include[](~/dep2/docs/dep2.md)]
+        docfx.yml: |
+          dependencies:
+            dep2: https://docs.com/lock1/c
+    - files:
+        docs/dep1.md: |
+          "def"
+          [!include[](~/dep2/docs/dep2.md)]
+        docfx.yml: |
+          dependencies:
+            dep2: https://docs.com/lock1/c
+  https://docs.com/lock1/c:
+    - files:
+        docs/dep2.md: "2333"
+    - files:
+        docs/dep2.md: "233333"
+outputs:
+  docs/a.json: |
+    {"content":"<p>&quot;def&quot;</p>\n<p>233333</p>\n<p>2333</p>\n"}
+  ~/.lock.json: |
+    {
+       "git":{
+          "https://docs.com/lock1/c#master":{
+             "commit":"c5969737496ff42854a019f982882d5fac486a56"
+          },
+          "https://docs.com/lock1/b#master":{
+             "git":{
+                "https://docs.com/lock1/c#master":{
+                   "commit":"8720d784fb99abcbdfa922025b8bcc060f0f622a"
+                }
+             },
+             "!downloads": null,
+             "commit":"6a7b7f142f2de52a0b488309f4257d462956f59f"
+          }
+       },
+       "!downloads": null
+    }
+---
+# restore with sub dependency lock only, sub dependency lock doesn't work
+repos:
+  https://docs.com/lock2/a#master:
+    - files:
+        docfx.yml: |
+          dependencies:
+            dep1: https://docs.com/lock2/b#master
+          dependencyLock: .non-exist.json
+        docs/a.md: |
+          [!include[](~/dep1/docs/dep1.md)]
+  https://docs.com/lock2/b:
+    - files:
+        docs/dep1.md: |
+          "abc"
+          [!include[](~/dep2/docs/dep2.md)]
+        docfx.yml: |
+          dependencies:
+            dep2: https://docs.com/lock2/c
+          dependencyLock: .lock.json
+        .lock.json: |
+          {
+             "git":{
+                "https://docs.com/lock2/c#master":{
+                   "commit":"8720d784fb99abcbdfa922025b8bcc060f0f622a"
+                }
+             }
+          }
+    - files:
+        docs/dep1.md: |
+          "def"
+          [!include[](~/dep2/docs/dep2.md)]
+        docfx.yml: |
+          dependencies:
+            dep2: https://docs.com/lock2/c
+  https://docs.com/lock2/c:
+    - files:
+        docs/dep2.md: "2333"
+    - files:
+        docs/dep2.md: "233333"
+outputs:
+  docs/a.json: |
+    {"content":"<p>&quot;abc&quot;</p>\n<p>2333</p>"}
+  ~/.non-exist.json: |
+    {
+      "git": {
+        "https://docs.com/lock2/b#master": {
+          "git": {
+            "https://docs.com/lock2/c#master": {
+              "commit": "c5969737496ff42854a019f982882d5fac486a56"
+            }
+          },
+          "!downloads": null,
+          "commit": "71ac1c4ce676987be5f15bffb7c97515adec5450"
+        }
+      },
+      "!downloads": null
+    }
+---
+# restore with root and sub dependency lock, root lock wins
+repos:
+  https://docs.com/lock3/a#master:
+    - files:
+        docfx.yml: |
+          dependencies:
+            dep1: https://docs.com/lock3/b#master
+          dependencyLock: .lock.json
+        docs/a.md: |
+          [!include[](~/dep1/docs/dep1.md)]
+        .lock.json: |
+          {  
+             "git":{  
+                "https://docs.com/lock3/b":{  
+                   "git":{  
+                      "https://docs.com/lock3/c#master":{  
+                         "commit":"c5969737496ff42854a019f982882d5fac486a56"
+                      }
+                   }
+                }
+             }
+          }
+  https://docs.com/lock3/b:
+    - files:
+        docs/dep1.md: |
+          "abc"
+          [!include[](~/dep2/docs/dep2.md)]
+        docfx.yml: |
+          dependencies:
+            dep2: https://docs.com/lock3/c
+          dependencyLock: .lock.json
+        .lock.json: |
+          {
+             "git":{
+                "https://docs.com/lock3/c#master":{
+                   "commit":"8720d784fb99abcbdfa922025b8bcc060f0f622a"
+                }
+             }
+          }
+    - files:
+        docs/dep1.md: |
+          "def"
+          [!include[](~/dep2/docs/dep2.md)]
+        docfx.yml: |
+          dependencies:
+            dep2: https://docs.com/lock3/c
+  https://docs.com/lock3/c:
+    - files:
+        docs/dep2.md: "2333"
+    - files:
+        docs/dep2.md: "233333"
+outputs:
+  docs/a.json: |
+    {"content":"<p>&quot;abc&quot;</p>\n<p>2333</p>"}
+  ~/.lock.json: |
+    {
+      "git": {
+        "https://docs.com/lock3/b#master": {
+          "git": {
+            "https://docs.com/lock3/c#master": {
+              "commit": "c5969737496ff42854a019f982882d5fac486a56"
+            },
+            "!downloads": null
+          },
+          "commit": "8b8e7ce24bfddb4ad489dd96ab00b10d0ba50bf3"
+        }
+      },
+      "!downloads": null
+    }

@@ -40,19 +40,12 @@ docfx build <docset_path> [<options>]
   - --log: The output build log path.
   - --github-token: The GitHub token used to get contribution information from GitHub API
 
-### GC
-`gc` command helps you to clean up your local `%DOCFX_APPDATA_PATH%` folder, delete unused downloaded files and git work trees, save your storage usage.
-
-```powershell
-docfx gc [<options>]
-```
-
 -options:
   - --retention-days: Only keep files/folder which are accessed/written within <retention-days> days.
 
 ## Contributing
 
-If you are interested in proposing ideas and fixing issues, see [How to Contribute](CONTRIBUTING.md).
+If you are interested in proposing ideas and fixing issues, see [How to Contribute](.github/CONTRIBUTING.md).
 
 This project has adopted the code of conduct defined by the [Contributor Covenant](http://contributor-covenant.org/) to clarify expected behavior in our community.
 For more information see the [.NET Foundation Code of Conduct](http://www.dotnetfoundation.org/code-of-conduct).

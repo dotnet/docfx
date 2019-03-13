@@ -6,13 +6,15 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Web;
+using HtmlAgilityPack;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
     internal static class BuildPage
     {
-        public static async Task<(IEnumerable<Error> errors, object result, List<string>)> Build(
+        public static async Task<(IEnumerable<Error> errors, PublishItem publishItem)> Build(
             Context context,
             Document file,
             TableOfContentsMap tocMap,
@@ -21,6 +23,13 @@ namespace Microsoft.Docs.Build
             Debug.Assert(file.ContentType == ContentType.Page);
 
             var (errors, schema, model, metadata) = await Load(context, file, buildChild);
+
+            if (!string.IsNullOrEmpty(metadata.BreadcrumbPath))
+            {
+                var (breadcrumbError, breadcrumbPath, _) = context.DependencyResolver.ResolveLink(metadata.BreadcrumbPath, file, file, buildChild);
+                errors.AddIfNotNull(breadcrumbError);
+                metadata.BreadcrumbPath = breadcrumbPath;
+            }
 
             model.SchemaType = schema.Name;
             model.Locale = file.Docset.Locale;
@@ -31,22 +40,45 @@ namespace Microsoft.Docs.Build
             model.Bilingual = file.Docset.Config.Localization.Bilingual;
 
             (model.DocumentId, model.DocumentVersionIndependentId) = file.Docset.Redirections.TryGetDocumentId(file, out var docId) ? docId : file.Id;
-            (model.ContentGitUrl, model.OriginalContentGitUrl, model.Gitcommit) = await context.ContributionProvider.GetGitUrls(file);
+            (model.ContentGitUrl, model.OriginalContentGitUrl, model.OriginalContentGitUrlTemplate, model.Gitcommit) = await context.ContributionProvider.GetGitUrls(file);
 
             List<Error> contributorErrors;
             (contributorErrors, model.Author, model.Contributors, model.UpdatedAt) = await context.ContributionProvider.GetAuthorAndContributors(file, metadata.Author);
             if (contributorErrors != null)
                 errors.AddRange(contributorErrors);
 
-            var output = (object)model;
-            if (!file.Docset.Config.Output.Json && schema.Attribute is PageSchemaAttribute)
+            var isPage = schema.Attribute is PageSchemaAttribute;
+            var outputPath = file.GetOutputPath(model.Monikers, isPage);
+            var (output, extensionData) = ApplyTemplate(file, model, isPage);
+
+            var publishItem = new PublishItem
             {
-                output = file.Docset.Legacy
-                    ? file.Docset.LegacyTemplate.Render(model, file, HashUtility.GetMd5HashShort(model.Monikers))
-                    : await RazorTemplate.Render(model.SchemaType, model);
+                Url = file.SiteUrl,
+                Path = outputPath,
+                Locale = file.Docset.Locale,
+                Monikers = model.Monikers,
+                ExtensionData = extensionData,
+            };
+
+            if (context.PublishModelBuilder.TryAdd(file, publishItem))
+            {
+                if (output is string str)
+                {
+                    publishItem.Hash = context.Output.WriteTextWithHash(str, publishItem.Path);
+                }
+                else
+                {
+                    publishItem.Hash = context.Output.WriteJsonWithHash(output, publishItem.Path);
+                }
+
+                if (file.Docset.Legacy && extensionData != null)
+                {
+                    var metadataPath = outputPath.Substring(0, outputPath.Length - ".raw.page.json".Length) + ".mta.json";
+                    context.Output.WriteJson(extensionData, metadataPath);
+                }
             }
 
-            return (errors, output, model.Monikers);
+            return (errors, publishItem);
         }
 
         private static async Task<(List<Error> errors, Schema schema, PageModel model, FileMetadata metadata)>
@@ -75,7 +107,7 @@ namespace Microsoft.Docs.Build
             var (yamlHeaderErrors, yamlHeader) = ExtractYamlHeader.Extract(file, context);
             errors.AddRange(yamlHeaderErrors);
 
-            var (metaErrors, fileMetadata) = context.MetadataProvider.GetFileMetadata(file, yamlHeader);
+            var (metaErrors, fileMetadata) = context.MetadataProvider.GetMetadata<FileMetadata>(file, yamlHeader);
             errors.AddRange(metaErrors);
 
             var (error, monikers) = context.MonikerProvider.GetFileLevelMonikers(file, fileMetadata.MonikerRange);
@@ -87,22 +119,20 @@ namespace Microsoft.Docs.Build
                 file,
                 context.DependencyResolver,
                 buildChild,
-                (rangeString) => context.MonikerProvider.GetZoneMonikers(rangeString, monikers, errors),
+                rangeString => context.MonikerProvider.GetZoneMonikers(rangeString, monikers, errors),
+                key => file.Docset.Template?.GetToken(key),
                 MarkdownPipelineType.ConceptualMarkdown);
             errors.AddRange(markup.Errors);
 
             var htmlDom = HtmlUtility.LoadHtml(html);
             var htmlTitleDom = HtmlUtility.LoadHtml(markup.HtmlTitle);
-            var title = yamlHeader.Value<string>("title") ?? HtmlUtility.GetInnerText(htmlTitleDom);
-            var finalHtml = markup.HasHtml ? htmlDom.StripTags().OuterHtml : html;
-            var wordCount = HtmlUtility.CountWord(htmlDom);
 
             var model = new PageModel
             {
-                Content = finalHtml,
-                Title = title,
+                Content = HtmlPostProcess(file, htmlDom),
+                Title = yamlHeader.Value<string>("title") ?? HttpUtility.HtmlDecode(htmlTitleDom.InnerText),
                 RawTitle = markup.HtmlTitle,
-                WordCount = wordCount,
+                WordCount = HtmlUtility.CountWord(htmlDom),
                 Monikers = monikers,
             };
 
@@ -146,14 +176,15 @@ namespace Microsoft.Docs.Build
 
             if (file.Docset.Legacy && schema.Attribute is PageSchemaAttribute)
             {
-                content = await RazorTemplate.Render(schema.Name, content);
+                var html = await RazorTemplate.Render(schema.Name, content);
+                content = HtmlPostProcess(file, HtmlUtility.LoadHtml(html));
             }
 
             // TODO: add check before to avoid case failure
             var yamlHeader = obj?.Value<JObject>("metadata") ?? new JObject();
             var title = yamlHeader.Value<string>("title") ?? obj?.Value<string>("title");
 
-            var (metaErrors, fileMetadata) = context.MetadataProvider.GetFileMetadata(file, yamlHeader);
+            var (metaErrors, fileMetadata) = context.MetadataProvider.GetMetadata<FileMetadata>(file, yamlHeader);
             errors.AddRange(metaErrors);
 
             var model = new PageModel
@@ -165,6 +196,44 @@ namespace Microsoft.Docs.Build
             };
 
             return (errors, schema, model, fileMetadata);
+        }
+
+        private static string HtmlPostProcess(Document file, HtmlNode html)
+        {
+            html = html.StripTags();
+
+            if (file.Docset.Legacy)
+            {
+                html = html.AddLinkType(file.Docset.Locale)
+                           .RemoveRerunCodepenIframes();
+            }
+
+            if (string.IsNullOrEmpty(html.OuterHtml))
+            {
+                return "<div></div>";
+            }
+
+            return LocalizationUtility.AddLeftToRightMarker(file.Docset, html.OuterHtml);
+        }
+
+        private static (object output, JObject extensionData) ApplyTemplate(Document file, PageModel model, bool isPage)
+        {
+            if (!file.Docset.Config.Output.Json && file.Docset.Template != null)
+            {
+                return (file.Docset.Template.Render(model, file), null);
+            }
+
+            if (file.Docset.Legacy)
+            {
+                if (isPage)
+                {
+                    return TemplateTransform.Transform(model, file);
+                }
+
+                return (model, null);
+            }
+
+            return (model, isPage ? JsonUtility.ToJObject(model.Metadata) : null);
         }
     }
 }

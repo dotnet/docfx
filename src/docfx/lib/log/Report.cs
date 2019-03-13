@@ -22,6 +22,7 @@ namespace Microsoft.Docs.Build
 
         private int _errorCount;
         private int _warningCount;
+        private int _suggestionCount;
         private int _infoCount;
 
         private int _maxExceeded;
@@ -29,6 +30,8 @@ namespace Microsoft.Docs.Build
         public int ErrorCount => _errorCount;
 
         public int WarningCount => _warningCount;
+
+        public int SuggestionCount => _suggestionCount;
 
         public Report(bool legacy = false)
         {
@@ -42,27 +45,16 @@ namespace Microsoft.Docs.Build
 
             _config = config;
             _outputPath = outputPath;
-            _output = new Lazy<TextWriter>(() =>
-            {
-                var outputFilePath = Path.GetFullPath(_outputPath);
+            _output = _output != null && _output.IsValueCreated
+                ? _output
+                : new Lazy<TextWriter>(() =>
+                  {
+                      var outputFilePath = Path.GetFullPath(_outputPath);
 
-                PathUtility.CreateDirectoryFromFilePath(outputFilePath);
+                      PathUtility.CreateDirectoryFromFilePath(outputFilePath);
 
-                return File.CreateText(outputFilePath);
-            });
-        }
-
-        public bool Write(IEnumerable<Error> errors)
-        {
-            var hasErrors = false;
-            foreach (var error in errors)
-            {
-                if (Write(error))
-                {
-                    hasErrors = true;
-                }
-            }
-            return hasErrors;
+                      return File.CreateText(outputFilePath);
+                  });
         }
 
         public bool Write(string file, IEnumerable<Error> errors)
@@ -93,6 +85,7 @@ namespace Microsoft.Docs.Build
             var level = !force && _config != null && _config.Rules.TryGetValue(error.Code, out var overrideLevel)
                 ? overrideLevel
                 : error.Level;
+
             if (level == ErrorLevel.Off)
             {
                 return false;
@@ -108,7 +101,7 @@ namespace Microsoft.Docs.Build
             {
                 if (Interlocked.Exchange(ref _maxExceeded, 1) == 0)
                 {
-                    WriteCore(Errors.ExceedMaxErrors(maxErrors), level);
+                    WriteCore(Errors.ExceedMaxErrors(maxErrors, level), level);
                 }
             }
             else if (_errors.TryAdd(error) && !IncrementExceedMaxErrors())
@@ -126,6 +119,8 @@ namespace Microsoft.Docs.Build
                         return Volatile.Read(ref _errorCount) >= maxErrors;
                     case ErrorLevel.Warning:
                         return Volatile.Read(ref _warningCount) >= maxErrors;
+                    case ErrorLevel.Suggestion:
+                        return Volatile.Read(ref _suggestionCount) >= maxErrors;
                     default:
                         return Volatile.Read(ref _infoCount) >= maxErrors;
                 }
@@ -139,6 +134,8 @@ namespace Microsoft.Docs.Build
                         return Interlocked.Increment(ref _errorCount) > maxErrors;
                     case ErrorLevel.Warning:
                         return Interlocked.Increment(ref _warningCount) > maxErrors;
+                    case ErrorLevel.Suggestion:
+                        return Interlocked.Increment(ref _suggestionCount) > maxErrors;
                     default:
                         return Interlocked.Increment(ref _infoCount) > maxErrors;
                 }
@@ -158,6 +155,8 @@ namespace Microsoft.Docs.Build
 
         private void WriteCore(Error error, ErrorLevel level)
         {
+            Telemetry.TrackErrorCount(error.Code, level);
+
             if (_output != null)
             {
                 var line = _legacy ? LegacyReport(error, level) : error.ToString(level);
@@ -207,6 +206,8 @@ namespace Microsoft.Docs.Build
                     return ConsoleColor.Red;
                 case ErrorLevel.Warning:
                     return ConsoleColor.Yellow;
+                case ErrorLevel.Suggestion:
+                    return ConsoleColor.Magenta;
                 default:
                     return ConsoleColor.Cyan;
             }

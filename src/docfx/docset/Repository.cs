@@ -24,7 +24,19 @@ namespace Microsoft.Docs.Build
             Path = path ?? throw new ArgumentNullException(nameof(path));
         }
 
+        /// <summary>
+        /// Create repository from environment variable(remote + branch), fallback to git info if they are not set
+        /// </summary>
         public static Repository Create(string path)
+        {
+            return Create(path, EnvironmentVariable.RepositoryBranch, EnvironmentVariable.RepositoryUrl);
+        }
+
+        /// <summary>
+        /// Repository's branch info ashould NOT depend on git, unless you are pretty sure about that
+        /// Repository's url can also be overwritten
+        /// </summary>
+        public static Repository Create(string path, string branch, string repoUrl = null)
         {
             Debug.Assert(!string.IsNullOrEmpty(path));
 
@@ -33,13 +45,13 @@ namespace Microsoft.Docs.Build
             if (repoPath == null)
                 return null;
 
-            var (remote, branch, commit) = GitUtility.GetRepoInfo(repoPath);
+            var (remote, repoBranch, commit) = GitUtility.GetRepoInfo(repoPath);
             var gitIndex = remote.IndexOf(".git");
             if (gitIndex >= 0)
             {
                 remote = remote.Remove(gitIndex);
             }
-            return new Repository(remote, branch, commit, PathUtility.NormalizeFolder(repoPath));
+            return new Repository(repoUrl ?? remote, branch ?? repoBranch, commit, PathUtility.NormalizeFolder(repoPath));
         }
     }
 }

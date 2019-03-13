@@ -5,6 +5,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
@@ -12,7 +13,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class LegacyDependencyMap
     {
-        public static void Convert(Docset docset, Context context, List<Document> documemts, DependencyMap dependencyMap, TableOfContentsMap tocMap)
+        public static Dictionary<string, List<LegacyDependencyMapItem>> Convert(Docset docset, Context context, List<Document> documemts, DependencyMap dependencyMap, TableOfContentsMap tocMap)
         {
             using (Progress.Start("Convert Legacy Dependency Map"))
             {
@@ -46,7 +47,7 @@ namespace Microsoft.Docs.Build
                 {
                     foreach (var dependencyItem in dependencies)
                     {
-                        if (source.Equals(dependencyItem.Dest))
+                        if (source.Equals(dependencyItem.To))
                         {
                             continue;
                         }
@@ -54,13 +55,18 @@ namespace Microsoft.Docs.Build
                         legacyDependencyMap.Add(new LegacyDependencyMapItem
                         {
                             From = $"~/{source.ToLegacyPathRelativeToBasePath(docset)}",
-                            To = $"~/{dependencyItem.Dest.ToLegacyPathRelativeToBasePath(docset)}",
+                            To = $"~/{dependencyItem.To.ToLegacyPathRelativeToBasePath(docset)}",
                             Type = dependencyItem.Type.ToLegacyDependencyMapType(),
                         });
                     }
                 }
 
-                context.Output.WriteJson(legacyDependencyMap, Path.Combine(docset.Config.DocumentId.SiteBasePath, ".dependency-map.json"));
+                var sorted = from d in legacyDependencyMap
+                             orderby d.From, d.To, d.Type
+                             select d;
+                context.Output.WriteJson(sorted, Path.Combine(docset.Config.DocumentId.SiteBasePath, ".dependency-map.json"));
+                return sorted.Select(x => new LegacyDependencyMapItem { From = x.From.Substring(2), To = x.To.Substring(2), Type = x.Type })
+                    .GroupBy(x => x.From).ToDictionary(g => g.Key, g => g.ToList());
             }
         }
 
@@ -80,29 +86,6 @@ namespace Microsoft.Docs.Build
                 default:
                     throw new NotSupportedException($"Legacy dependency type not supported: {dependencyType}");
             }
-        }
-
-        private class LegacyDependencyMapItem
-        {
-            [JsonProperty("from")]
-            public string From { get; set; }
-
-            [JsonProperty("to")]
-            public string To { get; set; }
-
-            [JsonProperty("type")]
-            public LegacyDependencyMapType Type { get; set; }
-        }
-
-        private enum LegacyDependencyMapType
-        {
-            Uid,
-            Include,
-            File,
-            Overwrite,
-            OverwriteFragments,
-            Bookmark,
-            Metadata,
         }
     }
 }

@@ -3,13 +3,14 @@
 
 using System;
 using System.Collections;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Globalization;
 using System.Linq;
 using System.Resources;
+using System.Threading;
 using Markdig;
+using Markdig.Parsers;
+using Markdig.Parsers.Inlines;
 using Markdig.Syntax;
 using Microsoft.DocAsCode.MarkdigEngine.Extensions;
 
@@ -25,38 +26,33 @@ namespace Microsoft.Docs.Build
 
     internal static class MarkdownUtility
     {
-        private static readonly ConcurrentDictionary<string, Lazy<IReadOnlyDictionary<string, string>>> s_markdownTokens = new ConcurrentDictionary<string, Lazy<IReadOnlyDictionary<string, string>>>(StringComparer.OrdinalIgnoreCase);
+        private static readonly MarkdownPipeline[] s_markdownPipelines = new[]
+        {
+            CreateConceptualMarkdownPipeline(),
+            CreateInlineMarkdownPipeline(),
+            CreateTocMarkdownPipeline(),
+            CreateMarkdownPipeline(),
+        };
 
-        private static readonly Dictionary<MarkdownPipelineType, MarkdownPipeline> s_pipelineMapping =
-            new Dictionary<MarkdownPipelineType, MarkdownPipeline>()
-                {
-                    { MarkdownPipelineType.ConceptualMarkdown, CreateConceptualMarkdownPipeline() },
-                    { MarkdownPipelineType.InlineMarkdown, CreateInlineMarkdownPipeline() },
-                    { MarkdownPipelineType.TocMarkdown, CreateTocPipeline() },
-                    { MarkdownPipelineType.Markdown, CreateMarkdownPipeline() },
-                };
+        private static readonly ThreadLocal<Stack<Status>> t_status = new ThreadLocal<Stack<Status>>(() => new Stack<Status>());
 
-        [ThreadStatic]
-        private static ImmutableStack<Status> t_status;
+        public static MarkupResult Result => t_status.Value.Peek().Result;
 
-        public static MarkupResult Result => t_status.Peek().Result;
-
-        public static (MarkdownDocument ast, MarkupResult result) Parse(string content)
+        public static (MarkdownDocument ast, MarkupResult result) Parse(string content, MarkdownPipelineType piplineType)
         {
             try
             {
-                var status = new Status
-                {
-                    Result = new MarkupResult(),
-                };
-                t_status = t_status == null ? ImmutableStack.Create(status) : t_status.Push(status);
-                var ast = Markdown.Parse(content, s_pipelineMapping[MarkdownPipelineType.TocMarkdown]);
+                var status = new Status { Result = new MarkupResult() };
+
+                t_status.Value.Push(status);
+
+                var ast = Markdown.Parse(content, s_markdownPipelines[(int)piplineType]);
 
                 return (ast, Result);
             }
             finally
             {
-                t_status = t_status.Pop();
+                t_status.Value.Pop();
             }
         }
 
@@ -66,6 +62,7 @@ namespace Microsoft.Docs.Build
             DependencyResolver dependencyResolver,
             Action<Document> buildChild,
             Func<string, List<string>> parseMonikerRange,
+            Func<string, string> getToken,
             MarkdownPipelineType pipelineType)
         {
             using (InclusionContext.PushFile(file))
@@ -75,14 +72,15 @@ namespace Microsoft.Docs.Build
                     var status = new Status
                     {
                         Result = new MarkupResult(),
-                        Culture = file.Docset.Culture,
                         DependencyResolver = dependencyResolver,
                         ParseMonikerRangeDelegate = parseMonikerRange,
+                        GetToken = getToken,
                         BuildChild = buildChild,
                     };
-                    t_status = t_status is null ? ImmutableStack.Create(status) : t_status.Push(status);
 
-                    var html = Markdown.ToHtml(markdown, s_pipelineMapping[pipelineType]);
+                    t_status.Value.Push(status);
+
+                    var html = Markdown.ToHtml(markdown, s_markdownPipelines[(int)pipelineType]);
                     if (pipelineType == MarkdownPipelineType.ConceptualMarkdown && !Result.HasTitle)
                     {
                         Result.Errors.Add(Errors.HeadingNotFound(file));
@@ -91,7 +89,7 @@ namespace Microsoft.Docs.Build
                 }
                 finally
                 {
-                    t_status = t_status.Pop();
+                    t_status.Value.Pop();
                 }
             }
         }
@@ -135,75 +133,76 @@ namespace Microsoft.Docs.Build
                 .Build();
         }
 
-        private static MarkdownPipeline CreateTocPipeline()
+        private static MarkdownPipeline CreateTocMarkdownPipeline()
         {
-            var markdownContext = new MarkdownContext(null, LogWarning, LogError, null, null);
+            var builder = new MarkdownPipelineBuilder();
 
-            return new MarkdownPipelineBuilder()
-                .UseYamlFrontMatter()
-                .UseDocfxExtensions(markdownContext)
-                .Build();
+            // Only supports heading block and link inline
+            builder.BlockParsers.RemoveAll(parser => !(
+                parser is HeadingBlockParser || parser is ParagraphBlockParser ||
+                parser is ThematicBreakParser || parser is HtmlBlockParser));
+
+            builder.InlineParsers.RemoveAll(parser => !(parser is LinkInlineParser));
+
+            builder.BlockParsers.Find<HeadingBlockParser>().MaxLeadingCount = int.MaxValue;
+
+            builder.UseYamlFrontMatter()
+                   .UseXref();
+
+            return builder.Build();
         }
 
         private static string GetToken(string key)
         {
-            var culture = t_status.Peek().Culture;
-            var markdownTokens = s_markdownTokens.GetOrAdd(culture.ToString(), _ => new Lazy<IReadOnlyDictionary<string, string>>(() =>
-            {
-                var resourceManager = new ResourceManager("Microsoft.Docs.Template.resources.tokens", typeof(PageModel).Assembly);
-                using (var resourceSet = resourceManager.GetResourceSet(culture, true, true))
-                {
-                    return resourceSet.Cast<DictionaryEntry>().ToDictionary(k => k.Key.ToString(), v => v.Value.ToString(), StringComparer.OrdinalIgnoreCase);
-                }
-            }));
-
-            return markdownTokens.Value.TryGetValue(key, out var value) ? value : null;
+            return t_status.Value.Peek().GetToken(key);
         }
 
-        private static void LogError(string code, string message, string doc, int line)
+        private static void LogError(string code, string message, MarkdownObject origin, int? line)
         {
-            Result.Errors.Add(new Error(ErrorLevel.Error, code, message, doc, new Range(line, 0)));
+            Result.Errors.Add(new Error(ErrorLevel.Error, code, message, InclusionContext.File.ToString(), origin.ToRange(line)));
         }
 
-        private static void LogWarning(string code, string message, string doc, int line)
+        private static void LogWarning(string code, string message, MarkdownObject origin, int? line)
         {
-            Result.Errors.Add(new Error(ErrorLevel.Warning, code, message, doc, new Range(line, 0)));
+            Result.Errors.Add(new Error(ErrorLevel.Warning, code, message, InclusionContext.File.ToString(), origin.ToRange(line)));
         }
 
-        private static (string content, object file) ReadFile(string path, object relativeTo)
+        private static (string content, object file) ReadFile(string path, object relativeTo, MarkdownObject origin)
         {
-            var (error, content, file) = t_status.Peek().DependencyResolver.ResolveContent(path, (Document)relativeTo);
-            Result.Errors.AddIfNotNull(error);
+            var (error, content, file) = t_status.Value.Peek().DependencyResolver.ResolveContent(path, (Document)relativeTo);
+            Result.Errors.AddIfNotNull(error?.WithRange(origin.ToRange()));
             return (content, file);
         }
 
-        private static string GetLink(string path, object relativeTo, object resultRelativeTo)
+        private static string GetLink(string path, object relativeTo, object resultRelativeTo, MarkdownObject origin)
         {
-            var peek = t_status.Peek();
+            var peek = t_status.Value.Peek();
             var (error, link, _) = peek.DependencyResolver.ResolveLink(path, (Document)relativeTo, (Document)resultRelativeTo, peek.BuildChild);
-            Result.Errors.AddIfNotNull(error);
+            Result.Errors.AddIfNotNull(error?.WithRange(origin.ToRange()));
             return link;
         }
 
-        private static (Error error, string href, string display, Document file) ResolveXref(string href)
+        private static (Error error, string href, string display, Document file) ResolveXref(string href, MarkdownObject origin)
         {
             // TODO: now markdig engine combines all kinds of reference with inclusion, we need to split them out
-            return t_status.Peek().DependencyResolver.ResolveXref(href, (Document)InclusionContext.File, (Document)InclusionContext.RootFile);
+            var result = t_status.Value.Peek().DependencyResolver.ResolveXref(href, (Document)InclusionContext.File, (Document)InclusionContext.RootFile);
+            result.error = result.error?.WithRange(origin.ToRange());
+            return result;
         }
 
-        private static List<string> ParseMonikerRange(string monikerRange) => t_status.Peek().ParseMonikerRangeDelegate(monikerRange);
+        private static List<string> ParseMonikerRange(string monikerRange) => t_status.Value.Peek().ParseMonikerRangeDelegate(monikerRange);
 
         private sealed class Status
         {
             public MarkupResult Result;
-
-            public CultureInfo Culture;
 
             public DependencyResolver DependencyResolver;
 
             public Action<Document> BuildChild;
 
             public Func<string, List<string>> ParseMonikerRangeDelegate;
+
+            public Func<string, string> GetToken;
         }
     }
 }

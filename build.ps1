@@ -26,14 +26,14 @@ function runTests() {
 
         Remove-Item ./TestResults -Force -Recurse -ErrorAction Ignore
 
-        exec "dotnet test -c Debug"
-        exec "dotnet test -c Release --logger trx"
+        exec "dotnet test -c Debug" 2>&1
+        exec "dotnet test -c Release --logger trx" 2>&1
         exec "dotnet reportgenerator -reports:coverage.cobertura.xml -reporttypes:HtmlInline_AzurePipelines -targetdir:TestResults/cobertura"
 
         # Check test coverage
         $coverage = Select-Xml -Path 'coverage.cobertura.xml' -XPath "//package[@name='docfx']" | select -exp Node | select -exp line-rate
-        if ($coverage -lt 0.8) {
-            throw ("Test code coverage MUST be > 0.8, but is now only $coverage")
+        if ($coverage -lt 0.9) {
+            throw ("Test code coverage MUST be > 0.9, but is now only $coverage")
         }
     } finally {
         popd

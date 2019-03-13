@@ -18,7 +18,7 @@ repos:
 outputs:
   docs/loc.json:
   build.log: |
-    ["warning","link-is-dependency","File 'docs/child.md' referenced by link '~/restore-child/docs/child.md' will not be built because it is from a dependency docset","docs/loc.md"]
+    ["warning","link-is-dependency","File 'docs/child.md' referenced by link '~/restore-child/docs/child.md' will not be built because it is from a dependency docset","docs/loc.md","",1,1]
 ---
 # restore loc repo with dependencies 2
 # [repository mapping & bilingual]
@@ -45,7 +45,7 @@ repos:
 outputs:
   docs/loc.json:
   build.log: |
-    ["warning","link-is-dependency","File 'docs/child.md' referenced by link '~/restore-child/docs/child.md' will not be built because it is from a dependency docset","docs/loc.md"]
+    ["warning","link-is-dependency","File 'docs/child.md' referenced by link '~/restore-child/docs/child.md' will not be built because it is from a dependency docset","docs/loc.md","",1,1]
 ---
 # restore loc repo without dependencies 1
 # [branch mapping]
@@ -234,7 +234,7 @@ repos:
         docs/a.md:
 outputs:
   docs/a.json: |
-    { "content_git_url": "*dotnet/docfx.zh-cn/blob/master/*"}
+    { "content_git_url": "*dotnet/docfx.zh-cn/blob/edit-url1/*"}
 ---
 # edit url convention without source locale 2
 # [branch mapping]
@@ -253,7 +253,7 @@ repos:
         docs/a.md:
 outputs:
   docs/a.json: |
-    { "content_git_url": "*dotnet/docfx.loc/blob/master.zh-cn*"}
+    { "content_git_url": "*dotnet/docfx.loc/blob/edit-url2.zh-cn*"}
 ---
 # edit url convention with source locale 1
 # [repository mapping]
@@ -270,7 +270,7 @@ repos:
         docs/a.md:
 outputs:
   docs/a.json: |
-    { "content_git_url": "*dotnet/docfx.en-us.zh-cn/blob/master/*"}
+    { "content_git_url": "*dotnet/docfx.en-us.zh-cn/blob/edit-url3/*"}
 ---
 # edit url convention with source locale 2
 # all loc files are in one repo under different branch
@@ -290,23 +290,26 @@ repos:
         docs/a.md:
 outputs:
   docs/a.json: |
-    { "content_git_url": "*dotnet/docfx.loc/blob/master.zh-cn/docs/*"}
+    { "content_git_url": "*dotnet/docfx.loc/blob/edit-url4.zh-cn/docs/*"}
 ---
 # edit url convention with source locale 3
 # all loc files are in source repo under different locale folder
 # [folder mapping]
 commands:
   - build --locale zh-cn
-inputs:
-  docfx.yml: |
-    contribution:
-      repository: https://github.com/dotnet/docfx.en-us
-    localization:
-      mapping: Folder
-  localization/zh-cn/docs/a.md:
+repos:
+  https://github.com/dotnet/docfx.en-us#folder-mapping:
+  - files:
+      docfx.yml: |
+        contribution:
+          repository: https://github.com/dotnet/docfx.en-us
+        localization:
+          mapping: Folder
+      localization/zh-cn/docs/a.md:
+      docs/a.md:
 outputs:
   docs/a.json: |
-    { "content_git_url": "*dotnet/docfx.en-us/blob/master/*"}
+    { "content_git_url": "*dotnet/docfx.en-us/blob/folder-mapping/*"}
 ---
 # edit url convention with branch
 # all loc files are in one repo under different branch
@@ -583,7 +586,7 @@ outputs:
   docs/b.json: |
     {"toc_rel": "toc.json"}
   docs/toc.json: |
-    {"items": [{"toc_title": "reference a", "href": "a"},{"toc_title": "reference b", "href": "b"}]}
+    {"items": [{"name": "reference a", "href": "a"},{"name": "reference b", "href": "b"}]}
 ---
 # loc build with mixed toc map
 commands:
@@ -604,7 +607,7 @@ outputs:
   docs/b/b.json: |
     {"toc_rel": "toc.json"}
   docs/a/toc.json: |
-    {"items": [{"toc_title": "reference a", "href": "a"}]}
+    {"items": [{"name": "reference a", "href": "a"}]}
 ---
 # loc build with mixed toc map, all loc files are in source repo under different locale folder
 commands:
@@ -623,7 +626,7 @@ outputs:
   docs/b/b.json: |
     {"toc_rel": "toc.json"}
   docs/a/toc.json: |
-    {"items": [{"toc_title": "reference a", "href": "a"}]}
+    {"items": [{"name": "reference a", "href": "a"}]}
 ---
 # loc build with xref map, loc file has higher priority
 commands:
@@ -713,7 +716,7 @@ inputs:
 outputs:
   docs/a.json:
   build.log: |
-    ["warning","link-out-of-scope","File 'localization/zh-cn/docs/a.md' referenced by link '~/localization/zh-cn/docs/a.md' will not be built because it is not included in docfx.yml","docs/a.md"]
+    ["warning","link-out-of-scope","File 'localization/zh-cn/docs/a.md' referenced by link '~/localization/zh-cn/docs/a.md' will not be built because it is not included in docfx.yml","docs/a.md","",1,1]
 ---
 # loc folder should be excluded from source docset during source docset build
 inputs:
@@ -889,7 +892,6 @@ repos:
       author: Terry
       email: terry@contoso.com
 outputs:
-  build.manifest:
   docs/a.json: |
     {"author":{"display_name":"Terry","id": "terry@contoso.com"},"contributors":[{"display_name":"Bob","id":"bob@contoso.com"}],"bilingual": true}
 ---
@@ -936,7 +938,7 @@ outputs:
   docs/a/a.json: |
     {"toc_rel": "toc.json"}
   docs/a/toc.json: |
-    {"items":[{"toc_title": "yml reference a"}]}
+    {"items":[{"name": "yml reference a"}]}
 ---
 # fallback to deleted token/codesnippet
 commands:
@@ -961,7 +963,7 @@ repos:
 outputs:
   docs/a.json: |
     {"content":"<p>b</p>\n<pre><code class=\"lang-csharp\" name=\"Main\"></code></pre>"}
-  build.manifest: |
+  .dependencymap.json: |
     {"dependencies": {"!docs/tokena.md": null}}
 ---
 # fallback to deleted toc
@@ -987,7 +989,7 @@ repos:
 outputs:
   docs/a/a.json:
   docs/b/toc.json: |
-    {"items":[{"toc_title":"reference toc a","children":[{"toc_title":"reference markdown a","href":"../a/a"}]}]}
+    {"items":[{"name":"reference toc a","items":[{"name":"reference markdown a","href":"../a/a"}]}]}
 ---
 # fallback to deleted toc only works for localization docset build
 commands:
@@ -1010,7 +1012,7 @@ repos:
 outputs:
   docs/a/a.json:
   docs/b/toc.json: |
-    {"items":[{"toc_title":"reference toc a"}]}
+    {"items":[{"name":"reference toc a"}]}
 ---
 # fallback to deleted token/codesnippet only works for loc docset build
 commands:
@@ -1031,7 +1033,7 @@ repos:
 outputs:
   docs/a.json:
   build.log: |
-    ["warning","include-not-found","Cannot resolve 'tokena.md' relative to 'docs/a.md'.","docs/a.md"]
+    ["warning","include-not-found","Cannot resolve 'tokena.md' relative to 'docs/a.md'.","docs/a.md","",1,1]
 ---
 # fallback to inclusion parent toc
 commands:
@@ -1057,7 +1059,7 @@ outputs:
   docs/a/a.json:
   docs/a/b.json:
   docs/b/toc.json: |
-    {"items":[{"toc_title":"reference toc a","children":[{"toc_title":"reference markdown a","href":"../a/a"}]}]}
+    {"items":[{"name":"reference toc a","items":[{"name":"reference markdown a","href":"../a/a"}]}]}
 ---
 # loc build gets restored files
 # from current docset firestly, then from fallback docset if has
@@ -1201,3 +1203,100 @@ repos:
 outputs:
   docs/a.json: |
     { "content_git_url": "*dotnet/docfx.loc/blob/live.zh-cn/*"}
+---
+# loc build with different dependency git repository 1
+# [repo mapping] & bilingual
+commands:
+  - build --locale zh-cn
+repos:
+  https://github.com/locconfig2/c:
+    - files:
+        docfx.yml: |
+          dependencies:
+            child1: https://github.com/locconfig2/d#master
+          localization:
+            bilingual: true
+          "locales: [zh-cn]":
+            dependencies:
+              child1: https://github.com/locconfig2/d#live
+        docs/a.md:
+  https://github.com/locconfig2/c.zh-cn#master-sxs:
+    - files:
+        docs/a.md: |
+          [!include[include child](~/child1/token.md)
+        docfx.yml: |
+          dependencies:
+            child1: https://github.com/locconfig2/d#live
+          localization:
+            bilingual: true
+  https://github.com/locconfig2/c.zh-cn:
+    - files:
+        docs/a.md:
+  https://github.com/locconfig2/d#live:
+    - files:
+        token.md: |
+          live branch
+  https://github.com/locconfig2/d#master:
+    - files:
+        token.md: |
+          master branch
+outputs:
+  docs/a.json: |
+    { "content": "<p>live branch</p>\n" }
+---
+# loc build with different dependency git repository 2
+# [branch mapping] & bilingual
+commands:
+  - build --locale zh-cn
+repos:
+  https://github.com/locconfig3/c:
+    - files:
+        docfx.yml: |
+          dependencies:
+            child1: https://github.com/locconfig3/f#master
+          localization:
+            bilingual: true
+            mapping: Branch
+          "locales: [zh-cn]":
+            dependencies:
+              child1: https://github.com/locconfig3/f#live
+        docs/a.md:
+  https://github.com/locconfig3/c.loc#master-sxs.zh-cn:
+    - files:
+        docs/a.md: |
+          [!include[include child](~/child1/token.md)
+        docfx.yml: |
+          dependencies:
+            child1: https://github.com/locconfig3/f#live
+          localization:
+            bilingual: true
+            mapping: Branch
+  https://github.com/locconfig3/c.loc#master.zh-cn:
+    - files:
+        docs/a.md:
+  https://github.com/locconfig3/f#live:
+    - files:
+        token.md: |
+          live branch
+  https://github.com/locconfig3/f#master:
+    - files:
+        token.md: |
+          master branch
+outputs:
+  docs/a.json: |
+    { "content": "<p>live branch</p>\n" }
+---
+# Apply &lrm; for right to left languages
+commands:
+  - build --locale ar-sa
+repos:
+  https://docs.com/test#lrm:
+    - files:
+        docfx.yml:
+  https://docs.com/test.ar-sa#lrm:
+    - files:
+        docs/a.md: |
+          Learn c#.
+outputs:
+  docs/a.json: |
+    content: <p>Learn c#&lrm;.</p>

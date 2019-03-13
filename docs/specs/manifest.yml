@@ -1,5 +1,5 @@
 ---
-# Manifest contains files to publish
+# Publish manifest contains files to publish
 inputs:
   docfx.yml:
   docs/a.md:
@@ -11,17 +11,17 @@ outputs:
   docs/toc.json:
   docs/folder/b~$.json:
   docs/index.json:
-  build.manifest: |
+  .publish.json: |
     {
       "files": [
-        { "siteUrl": "/docs/a", "outputPath": "docs/a.json" },
-        { "siteUrl": "/docs/folder/b~$", "outputPath": "docs/folder/b~$.json" },
-        { "siteUrl": "/docs/", "outputPath": "docs/index.json" },
-        { "siteUrl": "/docs/toc.json", "outputPath": "docs/toc.json" }
+        { "url": "/docs/a", "path": "docs/a.json" },
+        { "url": "/docs/folder/b~$", "path": "docs/folder/b~$.json" },
+        { "url": "/docs/", "path": "docs/index.json" },
+        { "url": "/docs/toc.json", "path": "docs/toc.json" }
       ]
     }
 ---
-# Manifest outputPath is source relative path when copyResources is set to false
+# Publish manifest path is source relative path when copyResources is set to false
 inputs:
   docfx.yml: |
     files: '**'
@@ -29,11 +29,61 @@ inputs:
       copyResources: false
   a.png:
 outputs:
-  build.manifest: |
+  .publish.json: |
     {
       "files": [
-        { "siteUrl": "/a.png", "sourcePath": "a.png", "outputPath": "../a.png" }
+        { "url": "/a.png", "path": "../a.png" }
       ]
+    }
+---
+# Publish manifest output contains file hash
+repos:
+  https://docs.com/output-hash:
+  - files:
+      docfx.yml: |
+        files: '**'
+        redirections:
+          c.md: "/"
+      a.md:
+      b.png:
+      TOC.md:
+outputs:
+  a.json:
+  b.png:
+  toc.json:
+  .publish.json: |
+    {
+      "files": [
+        { "url": "/c", "!hash": null },
+        { "url": "/a", "hash": "cc98fe5ff90ff67265c7d6f3f7ed70298d2f19a7" },
+        { "url": "/b.png", "hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709" },
+        { "url": "/toc.json", "hash": "ad75fac1a867d604c1df88742ed36d56aecd1926" }
+      ]
+    }
+---
+# Redirections outputs redirect_url to .publish.json, but does not have output file
+inputs:
+  docfx.yml: |
+    redirections:
+      a.md: /b
+outputs:
+  .publish.json: |
+    {
+      "files": [{ "url": "/a", "redirect_url": "/b", "!path": null, "!hash": null }]
+    }
+---
+# Publish manifest for articles contains custom metadata
+inputs:
+  docfx.yml:
+  a.md: |
+    ---
+    ms.my: 1
+    ---
+outputs:
+  a.json:
+  .publish.json: |
+    {
+      "files": [{ "url": "/a", "ms.my": 1 }]
     }
 ---
 # Manifest contains Toc dependencies
@@ -45,7 +95,7 @@ inputs:
 outputs:
   docs/a.json:
   docs/toc.json:
-  build.manifest: |
+  .dependencymap.json: |
     {  
        "dependencies":{  
           "docs/TOC.md":[  
@@ -65,7 +115,7 @@ inputs:
 outputs:
   docs/a.json:
   docs/b.json:
-  build.manifest: |
+  .dependencymap.json: |
     {  
        "dependencies":{  
           "docs/a.md":[  
@@ -85,7 +135,7 @@ inputs:
 outputs:
   docs/a.json:
   docs/b.json:
-  build.manifest: |
+  .dependencymap.json: |
     {  
        "dependencies":{  
           "docs/a.md":[  
@@ -109,10 +159,18 @@ outputs:
   docs/a.json:
   docs/b.json:
   docs/c.json:
-  build.manifest: |
+  .dependencymap.json: |
     {  
        "dependencies":{  
           "docs/a.md":[  
+             {  
+                "source":"docs/c.md",
+                "type":"inclusion"
+             },
+             {  
+                "source":"docs/c.md",
+                "type":"link"
+             },
              {  
                 "source":"docs/b.md",
                 "type":"inclusion"
@@ -121,11 +179,11 @@ outputs:
           "docs/b.md":[  
              {  
                 "source":"docs/c.md",
-                "type":"link"
+                "type":"inclusion"
              },
              {  
                 "source":"docs/c.md",
-                "type":"inclusion"
+                "type":"link"
              }
           ]
        }
@@ -142,7 +200,7 @@ inputs:
 outputs:
   docs/toc.json:
   docs/a/b.json:
-  build.manifest: |
+  .dependencymap.json: |
     {  
        "dependencies":{
           "docs/TOC.md":[
@@ -164,22 +222,30 @@ outputs:
 inputs:
   docfx.yml:
   docs/a.md: |
-    a [!INCLUDE[](b.md)
+    one [!INCLUDE[](b.md)
   docs/b.md: |
-    b [!INCLUDE[](a.md)
+    another [!INCLUDE[](a.md)
 outputs:
   docs/a.json:
   docs/b.json:
-  build.manifest: |
+  .dependencymap.json: |
     {  
        "dependencies":{  
+          "docs/b.md":[  
+             {  
+                "source":"docs/b.md",
+                "type":"inclusion"
+             },
+             {  
+                "source":"docs/a.md",
+                "type":"inclusion"
+             }
+          ],
           "docs/a.md":[  
              {  
                 "source":"docs/b.md",
                 "type":"inclusion"
-             }
-          ],
-          "docs/b.md":[  
+             },
              {  
                 "source":"docs/a.md",
                 "type":"inclusion"
@@ -188,8 +254,8 @@ outputs:
        }
     }
   build.log: |
-    ["warning","circular-reference","Found circular reference: docs/b.md --> docs/a.md --> docs/b.md","docs/b.md"]
-    ["warning","circular-reference","Found circular reference: docs/a.md --> docs/b.md --> docs/a.md","docs/a.md"]
+    ["warning","circular-reference","Found circular reference: docs/b.md --> docs/a.md --> docs/b.md","docs/a.md","",1,5]
+    ["warning","circular-reference","Found circular reference: docs/a.md --> docs/b.md --> docs/a.md","docs/b.md","",1,9]
 ---
 # Manifest link circular reference
 inputs:
@@ -202,7 +268,7 @@ inputs:
 outputs:
   docs/a.json:
   docs/b.json:
-  build.manifest: |
+  .dependencymap.json: |
     {  
        "dependencies":{  
           "docs/a.md":[  
@@ -230,7 +296,7 @@ inputs:
 outputs:
   docs/a.json:
   docs/b.json:
-  build.manifest: |
+  .dependencymap.json: |
     {  
        "dependencies":{  
           "docs/a.md":[  
@@ -250,7 +316,203 @@ inputs:
   docs/a.md: |
     a []()
 outputs:
-  build.manifest: |
-    { files: [] }
+  .publish.json: |
+    { "!files": null }
   build.log: |
-    ["error","link-is-empty","Link is empty","docs/a.md"]
+    ["error","link-is-empty","Link is empty","docs/a.md","",1,3]
+---
+# inclusion chain
+inputs:
+  docfx.yml:
+  docs/a.md: a [!INCLUDE[](b.md)]
+  docs/b.md: b [!INCLUDE[](c.md)]
+  docs/c.md: c
+outputs:
+  docs/a.json: |
+    { "content": "<p>a b c</p>" }
+  docs/b.json: |
+    { "content": "<p>b c</p>" }
+  docs/c.json: |
+    { "content": "<p>c</p>" }
+  .dependencymap.json: |
+   {
+    "dependencies": {
+      "docs/b.md": [
+        {
+          "source": "docs/c.md",
+          "type": "inclusion"
+        }
+      ],
+      "docs/a.md": [
+        {
+          "source": "docs/c.md",
+          "type": "inclusion"
+        },
+        {
+          "source": "docs/b.md",
+          "type": "inclusion"
+        }
+      ]
+    }
+   }
+---
+# link chain
+inputs:
+  docfx.yml:
+  docs/a.md: a [b](b.md)
+  docs/b.md: b [c](c.md)
+  docs/c.md: c
+outputs:
+  docs/a.json:
+  docs/b.json:
+  docs/c.json: |
+    { "content": "<p>c</p>" }
+  .dependencymap.json: |
+   {
+    "dependencies": {
+      "docs/b.md": [
+        {
+          "source": "docs/c.md",
+          "type": "link"
+        }
+      ],
+      "docs/a.md": [
+        {
+          "source": "docs/b.md",
+          "type": "link"
+        }
+      ]
+    }
+   }
+---
+# mixed chain a include b, b link c
+inputs:
+  docfx.yml:
+  docs/a.md: a [!INCLUDE[](b.md)]
+  docs/b.md: b [c](c.md)
+  docs/c.md: c
+outputs:
+  docs/a.json:
+  docs/b.json:
+  docs/c.json: |
+    { "content": "<p>c</p>" }
+  .dependencymap.json: |
+   {
+    "dependencies": {
+      "docs/b.md": [
+        {
+          "source": "docs/c.md",
+          "type": "link"
+        }
+      ],
+      "docs/a.md": [
+        {
+          "source": "docs/c.md",
+          "type": "link"
+        },
+        {
+          "source": "docs/b.md",
+          "type": "inclusion"
+        }
+      ]
+    }
+   }
+---
+# mixed chain a link b, b include c
+inputs:
+  docfx.yml:
+  docs/a.md: a [b](b.md)
+  docs/b.md: b [!INCLUDE[](c.md)]
+  docs/c.md: c
+outputs:
+  docs/a.json:
+  docs/b.json:
+  docs/c.json: |
+    { "content": "<p>c</p>" }
+  .dependencymap.json: |
+   {
+    "dependencies": {
+      "docs/b.md": [
+        {
+          "source": "docs/c.md",
+          "type": "inclusion"
+        }
+      ],
+      "docs/a.md": [
+        {
+          "source": "docs/b.md",
+          "type": "link"
+        }
+      ]
+    }
+   }
+---
+# circular chain
+inputs:
+  docfx.yml:
+  docs/a.md: a [!INCLUDE[](b.md)]
+  docs/b.md: b [a](a.md)
+outputs:
+  docs/a.json:
+  docs/b.json:
+  .dependencymap.json: |
+   {
+    "dependencies": {
+      "docs/b.md": [
+        {
+          "source": "docs/a.md",
+          "type": "link"
+        }
+      ],
+      "docs/a.md": [
+        {
+          "source": "docs/b.md",
+          "type": "inclusion"
+        },
+        {
+          "source": "docs/a.md",
+          "type": "link"
+        }
+      ]
+    }
+   }
+---
+# circular chain a include b include c include d link b
+inputs:
+  docfx.yml:
+  docs/a.md: a [!INCLUDE[](b.md)]
+  docs/b.md: b [!INCLUDE[](c.md)]
+  docs/c.md: c [!INCLUDE[](d.md)]
+  docs/d.md: d [b](b.md)
+outputs:
+  docs/a.json:
+  docs/b.json:
+  docs/c.json:
+  docs/d.json:
+  .dependencymap.json: |
+    dependencies:
+      docs/d.md:
+        - source: docs/b.md
+          type: link
+      docs/c.md:
+        - source: docs/d.md
+          type: inclusion
+        - source: docs/b.md
+          type: link
+      docs/b.md:
+        - source: docs/d.md
+          type: inclusion
+        - source: docs/c.md
+          type: inclusion
+        - source: docs/b.md
+          type: link
+      docs/a.md:
+        - source: docs/d.md
+          type: inclusion
+        - source: docs/c.md
+          type: inclusion
+        - source: docs/b.md
+          type: inclusion
+        - source: docs/b.md
+          type: link
+---

@@ -21,35 +21,47 @@ namespace Microsoft.Docs.Build
             // because Docset assumes the repo to physically exist on disk.
             using (Progress.Start("Restore dependencies"))
             {
-                var restoredDocsets = new ConcurrentDictionary<string, int>(PathUtility.PathComparer);
-                var localeToRestore = LocalizationUtility.GetBuildLocale(docsetPath, options);
+                var repository = Repository.Create(docsetPath);
+                Telemetry.SetRepository(repository?.Remote, repository?.Branch);
 
-                await RestoreDocset(docsetPath);
+                var restoredDocsets = new ConcurrentDictionary<string, Task<DependencyLockModel>>(PathUtility.PathComparer);
+                var localeToRestore = LocalizationUtility.GetLocale(repository, options);
 
-                async Task RestoreDocset(string docset, bool root = true)
+                await RestoreDocset(docsetPath, rootRepository: repository);
+
+                Task<DependencyLockModel> RestoreDocset(string docset, bool root = true, Repository rootRepository = null, DependencyLockModel dependencyLock = null)
                 {
-                    if (restoredDocsets.TryAdd(docset, 0))
+                    return restoredDocsets.GetOrAdd(docset + dependencyLock?.Commit, async k =>
                     {
                         var (errors, config) = ConfigLoader.TryLoad(docset, options, localeToRestore, extend: false);
-                        report.Write(errors);
 
                         if (root)
                         {
                             report.Configure(docsetPath, config);
                         }
+                        report.Write(config.ConfigFileName, errors);
 
                         // no need to restore child docsets' loc repository
-                        await RestoreOneDocset(docset, localeToRestore, config, async subDocset => await RestoreDocset(subDocset, root: false), isDependencyRepo: !root);
-                    }
+                        return await RestoreOneDocset(
+                            docset,
+                            localeToRestore,
+                            config,
+                            (subDocset, subDependencyLock) => RestoreDocset(subDocset, root: false, dependencyLock: subDependencyLock),
+                            rootRepository,
+                            dependencyLock,
+                            root);
+                    });
                 }
             }
 
-            async Task RestoreOneDocset(
+            async Task<DependencyLockModel> RestoreOneDocset(
                 string docset,
                 string locale,
                 Config config,
-                Func<string, Task> restoreChild,
-                bool isDependencyRepo)
+                Func<string, DependencyLockModel, Task<DependencyLockModel>> restoreChild,
+                Repository rootRepository,
+                DependencyLockModel dependencyLock,
+                bool root)
             {
                 // restore extend url firstly
                 // no need to extend config
@@ -59,15 +71,35 @@ namespace Microsoft.Docs.Build
 
                 // extend the config before loading
                 var (errors, extendedConfig) = ConfigLoader.TryLoad(docset, options, locale, extend: true);
-                report.Write(errors);
+                report.Write(extendedConfig.ConfigFileName, errors);
 
-                // restore git repos includes dependency repos and loc repos
-                await RestoreGit.Restore(docset, extendedConfig, restoreChild, locale, @implicit, isDependencyRepo);
+                // restore and load dependency lock if need
+                if (HrefUtility.IsHttpHref(extendedConfig.DependencyLock))
+                    await RestoreFile.Restore(extendedConfig.DependencyLock, extendedConfig, @implicit);
+
+                if (root)
+                    dependencyLock = await DependencyLock.Load(docset, extendedConfig.DependencyLock);
+
+                // restore git repos includes dependency repos, theme repo and loc repos
+                var gitVersions = await RestoreGit.Restore(extendedConfig, restoreChild, locale, @implicit, rootRepository, dependencyLock);
 
                 // restore urls except extend url
-                await ParallelUtility.ForEach(
-                    extendedConfig.GetFileReferences().Where(HrefUtility.IsHttpHref),
-                    restoreUrl => RestoreFile.Restore(restoreUrl, extendedConfig, @implicit));
+                var restoreUrls = extendedConfig.GetFileReferences().Where(HrefUtility.IsHttpHref).ToList();
+                await RestoreFile.Restore(restoreUrls, extendedConfig, @implicit);
+
+                var generatedLock = new DependencyLockModel
+                {
+                    Git = gitVersions.OrderBy(g => g.Key).ToDictionary(k => k.Key, v => v.Value),
+                };
+
+                // save dependency lock if it's root entry
+                if (root)
+                {
+                    var dependencyLockFilePath = string.IsNullOrEmpty(extendedConfig.DependencyLock) ? AppData.GetDependencyLockFile(docset, locale) : extendedConfig.DependencyLock;
+                    await DependencyLock.Save(docset, dependencyLockFilePath, generatedLock);
+                }
+
+                return generatedLock;
             }
         }
     }

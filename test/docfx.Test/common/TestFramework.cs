@@ -29,6 +29,8 @@ namespace Microsoft.Docs.Build
             Environment.SetEnvironmentVariable("DOCFX_APPDATA_PATH", Path.GetFullPath("appdata"));
             Environment.SetEnvironmentVariable("DOCFX_GLOBAL_CONFIG_PATH", Path.GetFullPath("docfx.test.yml"));
 
+            Log.ForceVerbose = true;
+
             MakeDebugAssertThrowException();
             return new ParallelExecutor(assemblyName, SourceInformationProvider, DiagnosticMessageSink);
         }

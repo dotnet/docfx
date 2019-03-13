@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Text;
 using Markdig.Extensions.Yaml;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
@@ -14,32 +15,35 @@ namespace Microsoft.Docs.Build
 {
     internal static class MarkdownTocMarkup
     {
-        private static readonly HashSet<Type> s_blockWhiteList = new HashSet<Type> { typeof(HeadingBlock) /*header*/, typeof(YamlFrontMatterBlock) /*yaml header*/, typeof(HtmlBlock) /*comment*/ };
-
-        public static (List<Error> errors, TableOfContentsInputModel model) LoadMdTocModel(string tocContent, Document file, Context context)
+        public static (List<Error> errors, TableOfContentsModel model) LoadMdTocModel(string tocContent, Document file, Context context)
         {
             var errors = new List<Error>();
             var headingBlocks = new List<HeadingBlock>();
-            var (ast, result) = MarkdownUtility.Parse(tocContent);
+            var (ast, result) = MarkdownUtility.Parse(tocContent, MarkdownPipelineType.TocMarkdown);
             errors.AddRange(result.Errors);
+
             foreach (var block in ast)
             {
-                if (!s_blockWhiteList.Contains(block.GetType()))
+                switch (block)
                 {
-                    errors.Add(Errors.InvalidTocSyntax(new Range(block.Line, block.Column), file.FilePath, tocContent.Substring(block.Span.Start, block.Span.Length)));
-                }
-
-                if (block is HeadingBlock headingBlock)
-                {
-                    headingBlocks.Add(headingBlock);
+                    case HeadingBlock headingBlock:
+                        headingBlocks.Add(headingBlock);
+                        break;
+                    case YamlFrontMatterBlock _:
+                    case HtmlBlock htmlBlock when htmlBlock.Type == HtmlBlockType.Comment:
+                        break;
+                    default:
+                        errors.Add(Errors.InvalidTocSyntax(new Range(block.Line, block.Column), file.FilePath, tocContent.Substring(block.Span.Start, block.Span.Length)));
+                        break;
                 }
             }
 
             var (metaErrors, metadata) = ExtractYamlHeader.Extract(file, context);
             errors.AddRange(metaErrors);
-            var tocModel = new TableOfContentsInputModel
+
+            var tocModel = new TableOfContentsModel
             {
-                Metadata = metadata,
+                Metadata = JsonUtility.ToObject<TableOfContentsMetadata>(metadata),
             };
 
             try
@@ -54,17 +58,17 @@ namespace Microsoft.Docs.Build
             return (errors, tocModel);
         }
 
-        private static (List<TableOfContentsInputItem> children, int count) ConvertTo(string tocContent, string filePath, HeadingBlock[] headingBlocks, List<Error> errors, int startIndex = 0)
+        private static (List<TableOfContentsItem> children, int count) ConvertTo(string tocContent, string filePath, HeadingBlock[] headingBlocks, List<Error> errors, int startIndex = 0)
         {
             if (headingBlocks.Length == 0)
             {
-                return (new List<TableOfContentsInputItem>(), 0);
+                return (new List<TableOfContentsItem>(), 0);
             }
 
             Debug.Assert(startIndex < headingBlocks.Length);
 
             int i = startIndex;
-            var items = new List<TableOfContentsInputItem>();
+            var items = new List<TableOfContentsItem>();
             var childrenCount = 0;
             do
             {
@@ -93,9 +97,9 @@ namespace Microsoft.Docs.Build
 
             return (items, items.Count + childrenCount);
 
-            TableOfContentsInputItem GetItem(HeadingBlock block)
+            TableOfContentsItem GetItem(HeadingBlock block)
             {
-                var currentItem = new TableOfContentsInputItem();
+                var currentItem = new TableOfContentsItem();
                 if (block.Inline == null || !block.Inline.Any())
                 {
                     errors.Add(Errors.MissingTocHead(new Range(block.Line, block.Column), filePath));
@@ -123,29 +127,33 @@ namespace Microsoft.Docs.Build
                     if (!string.IsNullOrEmpty(linkInline.Title))
                         currentItem.DisplayName = linkInline.Title;
 
-                    currentItem.Name = GetName(linkInline.Select(l => l as LeafInline));
+                    currentItem.Name = GetLiteral(linkInline);
                 }
 
-                currentItem.Name = currentItem.Name ?? GetName(block.Inline.Select(l => l as LeafInline));
+                currentItem.Name = currentItem.Name ?? GetLiteral(block.Inline);
 
                 return currentItem;
+            }
 
-                string GetName(IEnumerable<LeafInline> literalInlines)
+            string GetLiteral(ContainerInline inline)
+            {
+                var result = new StringBuilder();
+                var child = inline.FirstChild;
+
+                while (child != null)
                 {
-                    literalInlines = literalInlines?.Where(l => l != null && !l.Span.IsEmpty);
-                    if (literalInlines == null || !literalInlines.Any())
+                    if (!(child is LiteralInline literal))
                     {
+                        errors.Add(Errors.InvalidTocSyntax(new Range(inline.Line, inline.Column), filePath));
                         return null;
                     }
 
-                    var start = literalInlines.First().Span.Start;
-                    var length = literalInlines.Last().Span.End - start + 1;
-
-                    Debug.Assert(start >= 0);
-                    Debug.Assert(length > 0);
-
-                    return tocContent.Substring(start, length);
+                    var content = literal.Content;
+                    result.Append(content.Text, content.Start, content.Length);
+                    child = child.NextSibling;
                 }
+
+                return result.ToString();
             }
         }
     }

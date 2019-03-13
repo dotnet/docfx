@@ -79,17 +79,17 @@ outputs:
     {
       "content": { "brand": "azure", "breadcrumb_path": "toc.json", "toc_rel": "a/toc.json" },
     }
-  build.manifest: |
+  .dependencymap.json: |
       {
          "dependencies":{
             "docs/a.yml":[
                {
-                  "source":"docs/A/TOC.yml",
-                  "type":"link"
-               },
-               {
                  "source": "docs/TOC.yml",
                  "type": "link"
+               },
+               {
+                  "source":"docs/A/TOC.yml",
+                  "type":"link"
                }
             ]
          }

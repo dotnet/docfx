@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Web;
 using HtmlAgilityPack;
 
@@ -13,7 +12,8 @@ namespace Microsoft.Docs.Build
 {
     internal static class HtmlUtility
     {
-        private static readonly Regex s_uriWithProtocol = new Regex(@"^\w{2,}\:", RegexOptions.Compiled);
+        private static readonly Func<HtmlAgilityPack.HtmlAttribute, int> s_getValueStartIndex =
+            ReflectionUtility.CreateInstanceFieldGetter<HtmlAgilityPack.HtmlAttribute, int>("_valuestartindex");
 
         public static HtmlNode LoadHtml(string html)
         {
@@ -29,15 +29,10 @@ namespace Microsoft.Docs.Build
             return transform(document.DocumentNode).OuterHtml;
         }
 
-        public static string GetInnerText(this HtmlNode html)
+        public static HtmlNode AddLinkType(this HtmlNode html, string locale)
         {
-            return html.InnerText;
-        }
-
-        public static HtmlNode AddLinkType(this HtmlNode html, string locale, bool legacy = false)
-        {
-            AddLinkType(html, "a", "href", locale, legacy);
-            AddLinkType(html, "img", "src", locale, legacy);
+            AddLinkType(html, "a", "href", locale);
+            AddLinkType(html, "img", "src", locale);
             return html;
         }
 
@@ -115,7 +110,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public static string TransformLinks(this string html, Func<string, string> transform)
+        public static string TransformLinks(string html, Func<string, string> transform)
         {
             // Fast pass it does not have <a> tag or <img> tag
             if (!((html.Contains("<a", StringComparison.OrdinalIgnoreCase) && html.Contains("href", StringComparison.OrdinalIgnoreCase)) ||
@@ -143,16 +138,18 @@ namespace Microsoft.Docs.Build
                 {
                     continue;
                 }
-                if (link.ValueStartIndex > pos)
+
+                var valueStartIndex = s_getValueStartIndex(link);
+                if (valueStartIndex > pos)
                 {
-                    result.Append(html, pos, link.ValueStartIndex - pos);
+                    result.Append(html, pos, valueStartIndex - pos);
                 }
-                var transformed = transform(link.Value);
+                var transformed = transform(HttpUtility.HtmlDecode(link.Value));
                 if (!string.IsNullOrEmpty(transformed))
                 {
-                    result.Append(HttpUtility.HtmlAttributeEncode(transformed));
+                    result.Append(HttpUtility.HtmlEncode(transformed));
                 }
-                pos = link.ValueStartIndex + link.ValueLength;
+                pos = valueStartIndex + link.Value.Length;
             }
 
             if (html.Length > pos)
@@ -162,41 +159,35 @@ namespace Microsoft.Docs.Build
             return result.ToString();
         }
 
-        private static void AddLinkType(this HtmlNode html, string tag, string attribute, string locale, bool legacy = false)
+        private static void AddLinkType(this HtmlNode html, string tag, string attribute, string locale)
         {
             foreach (var node in html.Descendants(tag))
             {
                 var href = node.GetAttributeValue(attribute, null);
+
                 if (string.IsNullOrEmpty(href))
                 {
                     continue;
                 }
-                if (href[0] == '#')
-                {
-                    node.SetAttributeValue("data-linktype", "self-bookmark");
-                    continue;
-                }
-                if ((href[0] == '/' || href[0] == '\\') && !href.StartsWith("//"))
-                {
-                    node.SetAttributeValue(attribute, AddLocaleIfMissing(href, locale));
-                    node.SetAttributeValue("data-linktype", "absolute-path");
-                    continue;
-                }
-                if (IsUri(href, legacy))
-                {
-                    node.SetAttributeValue("data-linktype", "external");
-                    continue;
-                }
-                node.SetAttributeValue(attribute, href);
-                node.SetAttributeValue("data-linktype", "relative-path");
-            }
-        }
 
-        private static bool IsUri(string href, bool legacy = false)
-        {
-            return legacy
-                ? href.StartsWith("//") || s_uriWithProtocol.IsMatch(href)
-                : Uri.TryCreate(href, UriKind.Absolute, out _);
+                switch (HrefUtility.GetHrefType(href))
+                {
+                    case HrefType.SelfBookmark:
+                        node.SetAttributeValue("data-linktype", "self-bookmark");
+                        break;
+                    case HrefType.AbsolutePath:
+                    case HrefType.WindowsAbsolutePath:
+                        node.SetAttributeValue("data-linktype", "absolute-path");
+                        node.SetAttributeValue(attribute, AddLocaleIfMissing(href, locale));
+                        break;
+                    case HrefType.RelativePath:
+                        node.SetAttributeValue("data-linktype", "relative-path");
+                        break;
+                    case HrefType.External:
+                        node.SetAttributeValue("data-linktype", "external");
+                        break;
+                }
+            }
         }
 
         private static string AddLocaleIfMissing(string href, string locale)

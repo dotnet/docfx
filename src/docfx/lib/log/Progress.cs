@@ -16,7 +16,14 @@ namespace Microsoft.Docs.Build
         public static IDisposable Start(string name)
         {
             var scope = new LogScope { Name = name, Stopwatch = Stopwatch.StartNew() };
+
             t_scope.Value = (t_scope.Value ?? ImmutableStack<LogScope>.Empty).Push(scope);
+
+            if (Log.Verbose)
+            {
+                Console.Write(scope.Name + '\r');
+            }
+
             return scope;
         }
 
@@ -68,7 +75,7 @@ namespace Microsoft.Docs.Build
                 t_scope.Value = t_scope.Value.Pop(out var scope);
 
                 var elapsedMs = Stopwatch.ElapsedMilliseconds;
-                if (elapsedMs > ProgressDelayMs)
+                if (Log.Verbose || elapsedMs > ProgressDelayMs)
                 {
                     Console.WriteLine($"{Name} done in {FormatTimeSpan(Stopwatch.Elapsed)}");
                 }

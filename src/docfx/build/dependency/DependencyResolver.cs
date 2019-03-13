@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
@@ -98,7 +99,7 @@ namespace Microsoft.Docs.Build
 
             if (file == null && !string.IsNullOrEmpty(pathToDocset))
             {
-                var (errorFromHistory, content, fileFromHistory) = LocalizationUtility.TryResolveContentFromHistory(_gitCommitProvider, relativeTo.Docset, pathToDocset);
+                var (errorFromHistory, content, fileFromHistory) = TryResolveContentFromHistory(_gitCommitProvider, relativeTo.Docset, pathToDocset);
                 if (errorFromHistory != null)
                 {
                     return (error, null, null);
@@ -122,7 +123,8 @@ namespace Microsoft.Docs.Build
                 return (uidError, uidHref, null, referencedFile);
             }
 
-            var (error, file, redirectTo, query, fragment, isSelfBookmark, _) = TryResolveFile(relativeTo, href);
+            var decodedHref = HttpUtility.UrlDecode(href);
+            var (error, file, redirectTo, query, fragment, hrefType, _) = TryResolveFile(relativeTo, decodedHref);
 
             // Redirection
             // follow redirections
@@ -130,6 +132,11 @@ namespace Microsoft.Docs.Build
             {
                 // TODO: append query and fragment to an absolute url with query and fragments may cause problems
                 return (error, redirectTo + query + fragment, null, null);
+            }
+
+            if (hrefType == HrefType.WindowsAbsolutePath)
+            {
+                return (error, "", fragment, null);
             }
 
             // Cannot resolve the file, leave href as is
@@ -143,7 +150,7 @@ namespace Microsoft.Docs.Build
             {
                 if (relativeTo.Docset.Legacy)
                 {
-                    if (isSelfBookmark)
+                    if (hrefType == HrefType.SelfBookmark)
                     {
                         return (error, query + fragment, fragment, null);
                     }
@@ -183,67 +190,104 @@ namespace Microsoft.Docs.Build
             return (error, relativeUrl + query + fragment, fragment, file);
         }
 
-        private (Error error, Document file, string redirectTo, string query, string fragment, bool isSelfBookmark, string pathToDocset) TryResolveFile(Document relativeTo, string href)
+        private (Error error, Document file, string redirectTo, string query, string fragment, HrefType? hrefType, string pathToDocset) TryResolveFile(Document relativeTo, string href)
         {
             if (string.IsNullOrEmpty(href))
             {
-                return (Errors.LinkIsEmpty(relativeTo), null, null, null, null, false, null);
+                return (Errors.LinkIsEmpty(relativeTo), null, null, null, null, null, null);
             }
 
             var (path, query, fragment) = HrefUtility.SplitHref(href);
-            var pathToDocset = "";
 
-            // Self bookmark link
-            if (string.IsNullOrEmpty(path))
+            switch (HrefUtility.GetHrefType(href))
             {
-                return (null, relativeTo, null, query, fragment, true, pathToDocset);
+                case HrefType.SelfBookmark:
+                    return (null, relativeTo, null, query, fragment, HrefType.SelfBookmark, null);
+
+                case HrefType.WindowsAbsolutePath:
+                    return (Errors.AbsoluteFilePath(relativeTo, path), null, null, null, null, HrefType.WindowsAbsolutePath, null);
+
+                case HrefType.RelativePath:
+                    // Resolve path relative to docset
+                    var pathToDocset = ResolveToDocsetRelativePath(path, relativeTo);
+
+                    // resolve from redirection files
+                    if (relativeTo.Docset.Redirections.TryGetRedirectionUrl(pathToDocset, out var redirectTo))
+                    {
+                        // redirectTo always is absolute href
+                        //
+                        // TODO: In case of file rename, we should warn if the content is not inside build scope.
+                        //       But we should not warn or do anything with absolute URLs.
+                        var (error, redirectFile) = Document.TryCreate(relativeTo.Docset, pathToDocset);
+                        return (error, redirectFile, redirectTo, query, fragment, HrefType.RelativePath, pathToDocset);
+                    }
+
+                    var file = Document.TryCreateFromFile(relativeTo.Docset, pathToDocset);
+
+                    return (file != null ? null : Errors.FileNotFound(relativeTo.ToString(), path), file, null, query, fragment, null, pathToDocset);
+
+                default:
+                    return default;
+            }
+        }
+
+        private string ResolveToDocsetRelativePath(string path, Document relativeTo)
+        {
+            var docsetRelativePath = PathUtility.NormalizeFile(Path.Combine(Path.GetDirectoryName(relativeTo.FilePath), path));
+            if (!File.Exists(Path.Combine(relativeTo.Docset.DocsetPath, docsetRelativePath)))
+            {
+                foreach (var (alias, aliasPath) in relativeTo.Docset.ResolveAlias)
+                {
+                    if (path.StartsWith(alias, PathUtility.PathComparison))
+                    {
+                        return PathUtility.NormalizeFile(Path.Combine(aliasPath, path.Substring(alias.Length)));
+                    }
+                }
+            }
+            return docsetRelativePath;
+        }
+
+        private static (Error error, string content, Document file) TryResolveContentFromHistory(GitCommitProvider gitCommitProvider, Docset docset, string pathToDocset)
+        {
+            // try to resolve from source repo's git history
+            var fallbackDocset = GetFallbackDocset();
+            if (fallbackDocset != null)
+            {
+                var (repo, pathToRepo, commits) = gitCommitProvider.GetCommitHistoryNoCache(fallbackDocset, pathToDocset, 2);
+                if (repo != null)
+                {
+                    var repoPath = PathUtility.NormalizeFolder(repo.Path);
+                    if (commits.Count > 1)
+                    {
+                        // the latest commit would be deleting it from repo
+                        if (GitUtility.TryGetContentFromHistory(repoPath, pathToRepo, commits[1].Sha, out var content))
+                        {
+                            var (error, doc) = Document.TryCreate(fallbackDocset, pathToDocset, isFromHistory: true);
+                            return (error, content, doc);
+                        }
+                    }
+                }
             }
 
-            // Leave absolute URL as is
-            if (path.StartsWith('/') || path.StartsWith('\\'))
+            return default;
+
+            Docset GetFallbackDocset()
             {
-                return default;
+                if (docset.LocalizationDocset != null)
+                {
+                    // source docset in loc build
+                    return docset;
+                }
+
+                if (docset.FallbackDocset != null)
+                {
+                    // localized docset in loc build
+                    return docset.FallbackDocset;
+                }
+
+                // source docset in source build
+                return null;
             }
-
-            // Leave absolute file path as is
-            if (Path.IsPathRooted(path))
-            {
-                return (Errors.AbsoluteFilePath(relativeTo, path), null, null, null, null, false, pathToDocset);
-            }
-
-            // Leave absolute URL path as is
-            if (Uri.TryCreate(path, UriKind.Absolute, out _))
-            {
-                return default;
-            }
-
-            // Resolve path relative to docset
-            if (path.StartsWith("~\\") || path.StartsWith("~/"))
-            {
-                pathToDocset = path.Substring(2);
-            }
-            else
-            {
-                // Resolve path relative to input file
-                pathToDocset = Path.Combine(Path.GetDirectoryName(relativeTo.FilePath), path);
-            }
-
-            // resolve from redirection files
-            pathToDocset = PathUtility.NormalizeFile(pathToDocset);
-
-            if (relativeTo.Docset.Redirections.TryGetRedirectionUrl(pathToDocset, out var redirectTo))
-            {
-                // redirectTo always is absolute href
-                //
-                // TODO: In case of file rename, we should warn if the content is not inside build scope.
-                //       But we should not warn or do anything with absolute URLs.
-                var (error, redirectFile) = Document.TryCreate(relativeTo.Docset, pathToDocset);
-                return (error, redirectFile, redirectTo, query, fragment, false, pathToDocset);
-            }
-
-            var file = Document.TryCreateFromFile(relativeTo.Docset, pathToDocset);
-
-            return (file != null ? null : Errors.FileNotFound(relativeTo.ToString(), path), file, null, query, fragment, false, pathToDocset);
         }
     }
 }

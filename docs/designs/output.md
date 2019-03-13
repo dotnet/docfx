@@ -52,7 +52,7 @@ https://docs.microsoft.com/en-us/netstandard-2.0/dotnet/api/system.string.html#I
 > When a docset is not localized, we will not create the `{locale}` folder.
 > This allows static websites with minimal url when localized and verioning is not needed.
 
-## File Outputs
+## Content Outputs
 
 Each input file transforms to zero or more output files depending on its content type. `docfx` places output files in `output-path` relative to output directory. **Regardless of static rendering or dynamic rendering, output path shares the same schema**:
 
@@ -114,80 +114,14 @@ Different files can share the same `{site-url}` or `{site-path}` due to versioni
     | `site-path` | dotnet/api/thumbnail.png |
     | `output-path` | en-us/netstandard-2.0/dotnet/api/thumbnail.png |
 
-## Manifest
+## System Generated Outputs
 
-### Files
+Besides content files, `docfx` generates miscellaneous files during the build. The name of these system generated files starts with `.`. The extension MUST be `.json` for files in json format.
 
-To efficiently look up a file from URL for dynamic rendering, 
-`docfx` produces a manifest file at `_site/build.manifest` that lists all the output files and properties needed for lookup.
+File name           | Description
+--------------------|-----------------
+.publish.json        | A manifest of files to publish as described in [publish](publish.md)
+.xrefmap.json        | A manifest of `uid` and xref specs as described in [xref](xref.md)
+.report.log          | A report file that contains build errors and warnings. Each line is a json array: `[{level}, {code}, {message}, {file?}, {line?}, {column?}]`.
 
-*locale*, *moniker* are special properties that flows dynamically when users navigate from page to page.
-These are called *browser navigation properties* and are stored in manifest.
 
-```javascript
-{
-    "files": [
-        {
-            "siteUrl": "/dotnet/api/system.string",
-            "outputPath": "en-us/netstandard-2.0/dotnet/api/system.string.json",
-            "locale": "en-us",
-            "moniker": "netstandard-2.0", 
-
-            // other browser navigation properties...
-            // other properties needed for backward compatibility
-        }, 
-        {
-            "siteUrl": "/dotnet/api/system.string",
-
-            // when `outputPath` does not exist,
-            // use `sourcePath` relative to source docset folder to locate the file
-            "sourcePath": "en-us/netstandard-2.0/dotnet/api/system.string.json"
-        }
-    ]
-}
-```
-
-We only save *browser navigation properties* for images in `build.manifest`. Other image metadata are discarded.
-
-Different verions of the same document, or difference locales of the same document may have the same output content.
-It is nessesary to duplicate them for static rendering. To save space for dynamic rendering, set the `path`
-property to the same location.
-
-### Dependencies
-
-To efficiently look up the impacted files for a given file,
-`docfx` produces a dependency list at `_site/build.manifest` that lists all the relationships between different files.
-
-*Dependency impacts* means the impacts(build/publish) to the referenced file causing by one or more file changes:
-
-  - **Content impact** means the changing file content has impact to the referenced file(s), like token/codesnippet, overwrite markdown.
-    - Inclusion(token/codesnippet) reference, like `![include](token file path)`.
-    - Overwrite markdown reference(TODO).
-  - **URL impact** means the changing file output URL has impact to the referenced file(s), like file link, UID reference.
-    - File link reference, like `[link title](file path)`.
-    - UID reference, like `<xref:System.Char>`.
-    - Metadata reference, like `toc_rel: ../TOC.json`.
-
-```json
-{  
-   "dependencies":[  
-      {  
-         "dotnet/azure/service-less-app.md": [
-            {  
-               "source":"dotnet/azure/service-less-app-dependent.md",
-               "type":"link"
-            },
-            {  
-               "source":"dotnet/azure/service-less-app-token.md",
-               "type":"inclusion"
-            }
-         ]
-      }
-   ]
-}
-```
-
-## Report
-
-`docfx` produces a report file at `_site/build.log`.
-Each line is a *json array*: `[{level}, {code}, {message}, {file?}, {line?}, {column?}]`.

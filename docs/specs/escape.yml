@@ -1,0 +1,98 @@
+# Handle encoding for markdown links
+repos:
+  https://github.com/escape/markdown:
+  - files:
+      docfx.yml:
+      links.md: |
+        [a%20b.md](a%20b.md)
+        [a&b.md](a&b.md)
+        [a&amp;b.md](a&amp;b.md)
+        [a&amp;amp;b.md](a&amp;amp;b.md)
+        [http://foo%20b&auml;](http://foo%20b&auml;)
+      'a b.md':
+      a&b.md:
+      a&amp;b.md:
+outputs:
+  links.json: |
+    content: |
+      <p>
+        <a href="a%20b">a%20b.md</a>
+        <a href="a%26b">a&amp;b.md</a>
+        <a href="a%26b">a&amp;b.md</a>
+        <a href="a%26amp%3Bb">a&amp;amp;b.md</a>
+        <a href="http://foo%20b%C3%A4">http://foo%20bä</a>
+      </p>
+  .publish.json: |
+    files:
+    - url: /a b
+      path: a b.json
+    - url: /a&amp;b
+      path: a&amp;b.json
+    - url: /a&b
+      path: a&b.json
+    - url: /links
+      path: links.json
+  'a b.json': |
+    gitcommit: https://github.com/escape/markdown/blob/45a321cc85de6b430b5e1cb1c6f7399d34550939/a%20b.md
+    content_git_url: https://github.com/escape/markdown/blob/master/a%20b.md
+    original_content_git_url: https://github.com/escape/markdown/blob/master/a%20b.md
+    original_content_git_url_template: '{repo}/blob/{branch}/a%20b.md'
+  a&b.json: |
+    gitcommit: https://github.com/escape/markdown/blob/45a321cc85de6b430b5e1cb1c6f7399d34550939/a%26b.md
+    content_git_url: https://github.com/escape/markdown/blob/master/a%26b.md
+    original_content_git_url: https://github.com/escape/markdown/blob/master/a%26b.md
+    original_content_git_url_template: '{repo}/blob/{branch}/a%26b.md'
+  a&amp;b.json: |
+    gitcommit: https://github.com/escape/markdown/blob/45a321cc85de6b430b5e1cb1c6f7399d34550939/a%26amp%3Bb.md
+    content_git_url: https://github.com/escape/markdown/blob/master/a%26amp%3Bb.md
+    original_content_git_url: https://github.com/escape/markdown/blob/master/a%26amp%3Bb.md
+    original_content_git_url_template: '{repo}/blob/{branch}/a%26amp%3Bb.md'
+---
+# Handle encoding for html links
+inputs:
+  docfx.yml:
+  html-links.md: |
+    <a href='a%20b.md'>a%20b.md</a>
+    <a href='a&b.md'>a&b.md</a>
+    <a href='a&amp;b.md'>a&amp;b.md</a>
+    <a href='a&amp;amp;b.md'>a&amp;amp;b.md</a>
+    <a href='http://foo%20b&auml;'>http://foo%20b&auml;</a>
+  'a b.md':
+  a&b.md:
+  a&amp;b.md:
+outputs:
+  html-links.json: |
+    content: |
+      <p>
+        <a href="a%20b">a%20b.md</a>
+        <a href="a%26b">a&amp;b.md</a>
+        <a href="a%26b">a&amp;b.md</a>
+        <a href="a%26amp%3Bb">a&amp;amp;b.md</a>
+        <a href="http://foo%20b&#228;">http://foo%20bä</a>
+      </p>
+  'a b.json':
+  a&b.json:
+  a&amp;b.json:
+  .publish.json:
+---
+# Don't handle encoding for includes at the moment
+inputs:
+  docfx.yml:
+  includes.md: |
+    [!include[a%20b.md](a%20b.md)]
+    [!include[a&b.md](a&b.md)]
+    [!include[a&amp;b.md](a&amp;b.md)]
+    [!include[a&amp;amp;b.md](a&amp;amp;b.md)]
+  'a b.md': 'a b'
+  a&b.md: 'a&b'
+  a&amp;b.md: 'a&amp;b'
+outputs:
+  includes.json:
+  'a b.json':
+  a&b.json:
+  a&amp;b.json:
+  build.log: |
+    ["warning","include-not-found","Cannot resolve 'a%20b.md' relative to 'includes.md'.","includes.md","",1,1]
+    ["warning","include-not-found","Cannot resolve 'a&amp;amp;b.md' relative to 'includes.md'.","includes.md","",4,1]
+  .publish.json:
+---

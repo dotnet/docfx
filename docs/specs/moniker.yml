@@ -39,7 +39,30 @@ outputs:
   docs/a.json: |
     {
       "content": "<p>No version</p>",
-      "monikers": []
+      "!monikers": null
+    }
+---
+# Multiple matched moniker range setting in the config, should use the last one
+inputs:
+  docfx.yml: |
+    monikerRange:
+      'docs/**': 'netcore-1.0'
+      'docs/v1/**': 'netcore-1.1'
+    monikerDefinition: monikerDefinition.json
+  docs/v1/a.md: |
+    Moniker: netcore-1.1
+  monikerDefinition.json: |
+    {
+      "monikers": [
+        { "name": "netcore-1.0", "product": ".NET Core" },
+        { "name": "netcore-1.1", "product": ".NET Core" },
+      ]
+    }
+outputs:
+  218c13d0/docs/v1/a.json: |
+    {
+      "content": "<p>Moniker: netcore-1.1</p>",
+      "monikers": ["netcore-1.1"]
     }
 ---
 # Apply moniker range setting in the config and yaml header to markdown file's output path and output content
@@ -77,7 +100,7 @@ outputs:
   docs/a.json: |
     {
       "content": "<p>No version</p>",
-      "monikers": []
+      "!monikers": null
     }
   218c13d0/docs/a.json: |
     {
@@ -89,33 +112,13 @@ outputs:
       "content": "<p>Moniker: netcore-2.0</p>",
       "monikers": ["netcore-2.0"]
     }
-  build.manifest: |
+  .publish.json: |
     {
       "files": [
-          {
-              "siteUrl": "/docs/a",
-              "outputPath": "docs/a.json",
-              "sourcePath": "docs/a.md",
-              "monikers": []
-          },
-          {
-              "siteUrl": "/docs/a",
-              "outputPath": "218c13d0/docs/a.json",
-              "sourcePath": "docs/v1/a.md",
-              "monikers": [
-                  "netcore-1.1"
-              ]
-          },
-          {
-              "siteUrl": "/docs/a",
-              "outputPath": "4667fedf/docs/a.json",
-              "sourcePath": "docs/v2/a.md",
-              "monikers": [
-                  "netcore-2.0"
-              ]
-          }
-      ],
-      "dependencies": {}
+          { "url": "/docs/a", "path": "218c13d0/docs/a.json", "monikers": [ "netcore-1.1" ] },
+          { "url": "/docs/a", "path": "4667fedf/docs/a.json", "monikers": [ "netcore-2.0" ] },
+          { "url": "/docs/a", "path": "docs/a.json", "!monikers": null },
+      ]
     }
 ---
 # Moniker Zone syntax
@@ -157,9 +160,9 @@ inputs:
       docs/v2/: docs/
     monikerDefinition: monikerDefinition.json
     redirections:
-      docs/v1/a-old.md: /docs/a
+      docs/v1/a-old.md: /docs/a1
     redirectionsWithoutId:
-      docs/v2/a-old.md: /docs/a
+      docs/v2/a-old.md: /docs/a2
   docs/v1/a.md: |
     Moniker: netcore-1.0, netcore-1.1
   docs/v2/a.md: |
@@ -176,25 +179,24 @@ inputs:
 outputs:
   9d4e15fd/docs/a.json: |
     {
-      "document_id": "2f5db941-5d87-5c7e-668b-00a1e364cc0e",
+      "document_id": "e6bc2b27-51df-e84a-768d-3008b0540975",
       "content": "<p>Moniker: netcore-1.0, netcore-1.1</p>",
-      "monikers": ["netcore-1.0", "netcore-1.1"]
-    }
-  9d4e15fd/docs/a-old.json: |
-    {
-      "redirect_url": "/docs/a",
       "monikers": ["netcore-1.0", "netcore-1.1"]
     }
   f961cd88/docs/a.json: |
     {
-      "document_id": "2f5db941-5d87-5c7e-668b-00a1e364cc0e",
+      "document_id": "977a62e2-6380-388e-e785-819686caac32",
       "content": "<p>Moniker: netcore-1.2, netcore-1.3</p>",
       "monikers": ["netcore-1.2", "netcore-1.3"]
     }
-  f961cd88/docs/a-old.json: |
+  .publish.json: |
     {
-      "redirect_url": "/docs/a",
-      "monikers": ["netcore-1.2", "netcore-1.3"]
+      "files": [
+        { "url": "/docs/a-old", "redirect_url": "/docs/a1", "monikers": [ "netcore-1.0", "netcore-1.1" ] },
+        { "url": "/docs/a-old", "redirect_url": "/docs/a2", "monikers": [ "netcore-1.2", "netcore-1.3" ] },
+        { "url": "/docs/a", "monikers": [ "netcore-1.0", "netcore-1.1" ] },
+        { "url": "/docs/a", "monikers": [ "netcore-1.2", "netcore-1.3" ] },
+      ]
     }
 ---
 # Redirection file with monikers range overlap
@@ -405,12 +407,12 @@ outputs:
   docs/b.json: |
     {
       "content": "<p>Link to <a href=\"a?view=netcore-1.1\">netcore-1.1</a></p>",
-      "monikers": []
+      "!monikers": null
     }
   docs/a.json: |
     {
       "content": "<p>No version</p>",
-      "monikers": []
+      "!monikers": null
     }
   218c13d0/docs/a.json: |
     {
@@ -467,12 +469,12 @@ outputs:
   docs/b.json: |
     {
       "content": "<p>Link to <a href=\"a\">netcore-2.0</a></p>",
-      "monikers": []
+      "!monikers": null
     }
   docs/a.json: |
     {
       "content": "<p>No version</p>",
-      "monikers": []
+      "!monikers": null
     }
   218c13d0/docs/a.json: |
     {
@@ -528,7 +530,7 @@ outputs:
     ["info","at-uid-not-found","Cannot find uid 'a' using xref '@a'","docs/c.md"]
     ["error","publish-url-conflict","Two or more files of the same version('netcore-2.0') publish to the same url '/docs/a': 'docs/v1/a.md', 'docs/v2/a.md'"]
   xrefmap.json: | 
-    {"references":[]}
+    {"!references":null}
 ---
 # Define uid with moniker range, refer to it with invalid moniker, should fall back to the one with latest moniker
 inputs:
@@ -569,7 +571,7 @@ outputs:
   docs/b.json: |
     {
       "content": "<p>Link to <a href=\"a?view=netcore-1.0\">netcore-2.0</a></p>",
-      "monikers": [] 
+      "!monikers": null
     }
   218c13d0/docs/a.json: |
     {
@@ -632,12 +634,12 @@ outputs:
   docs/b.json: |
     {
       "content": "<p>Link to <a href=\"a\">no version</a></p>",
-      "monikers": []
+      "!monikers": null
     }
   docs/a.json: |
     {
       "content": "<p>No version</p>",
-      "monikers": []
+      "!monikers": null
     }
   218c13d0/docs/a.json: |
     {
@@ -704,12 +706,12 @@ outputs:
   docs/c.json: |
     {
       "content": "<p>Link to @a</p>",
-      "monikers": []
+      "!monikers": null
     }
   docs/a.json: |
     {
       "content": "<p>No version</p>",
-      "monikers": []
+      "!monikers": null
     }
   218c13d0/docs/a.json: |
     {
@@ -722,7 +724,7 @@ outputs:
       "monikers": ["netcore-2.0"]
     }
   xrefmap.json: | 
-    {"references":[]}
+    {"!references":null}
   build.log: |
     ["error","uid-conflict","Two or more documents have defined the same Uid 'a': docs/a.md,docs/b.md"]
     ["info","at-uid-not-found","Cannot find uid 'a' using xref '@a'","docs/c.md"]
@@ -780,17 +782,17 @@ outputs:
     {
       "items": [
         {
-          "toc_title": "A",
+          "name": "A",
           "href": "a",
-          "children": [
-            { "toc_title": "B", "href": "b", "monikers": ["netcore-1.1", "netcore-1.2"] },
-            { "toc_title": "C", "href": "/c", "monikers": ["netcore-1.1", "netcore-1.2", "netcore-1.3"] },
+          "items": [
+            { "name": "B", "href": "b", "monikers": ["netcore-1.1", "netcore-1.2"] },
+            { "name": "C", "href": "/c", "monikers": ["netcore-1.1", "netcore-1.2", "netcore-1.3"] },
             { 
-              "toc_title": "D",
+              "name": "D",
               "href": "http://test.com/test", 
               "monikers": ["netcore-1.0", "netcore-1.1", "netcore-1.2", "netcore-1.3"],
-              "children": [
-                { "toc_title": "A", "href": "a", "monikers": ["netcore-1.0", "netcore-1.1"] }
+              "items": [
+                { "name": "A", "href": "a", "monikers": ["netcore-1.0", "netcore-1.1"] }
               ]
             }
           ],
@@ -843,14 +845,14 @@ outputs:
     {
       "items": [
         {
-          "toc_title": "Toc ref",
+          "name": "Toc ref",
           "monikers": ["netcore-1.1", "netcore-1.2", "netcore-1.3"],
-          "children": [
-            { "toc_title": "B", "href": "b", "monikers": ["netcore-1.1", "netcore-1.2"] },
-            { "toc_title": "C", "href": "/c", "monikers": ["netcore-1.1", "netcore-1.2", "netcore-1.3"] }
+          "items": [
+            { "name": "B", "href": "b", "monikers": ["netcore-1.1", "netcore-1.2"] },
+            { "name": "C", "href": "/c", "monikers": ["netcore-1.1", "netcore-1.2", "netcore-1.3"] }
           ]
         },
-        { "toc_title": "Folder ref", "href": "b", "monikers": ["netcore-1.1", "netcore-1.2"] }
+        { "name": "Folder ref", "href": "b", "monikers": ["netcore-1.1", "netcore-1.2"] }
       ],
       "metadata": { "monikers": ["netcore-1.1", "netcore-1.2", "netcore-1.3" ] }
     }
@@ -937,15 +939,14 @@ outputs:
   9d4e15fd/docs/c.png:
   docs/a.json:
   docs/c.png:
-  build.manifest: |
+  .publish.json: |
     {
       "files": [
-          { "siteUrl": "/docs/a" },
-          { "siteUrl": "/docs/c.png", "outputPath": "docs/c.png", "sourcePath": "docs/c.png", "monikers": [] },
-          { "siteUrl": "/docs/a" },
-          { "siteUrl": "/docs/c.png", "outputPath": "9d4e15fd/docs/c.png", "sourcePath": "docs/v1/c.png","monikers": ["netcore-1.0", "netcore-1.1" ] }
-      ],
-      "dependencies": { }
+        { "url": "/docs/a", "path": "136a42ac/docs/a.json", "monikers": [ "netcore-1.0" ] },
+        { "url": "/docs/c.png", "path": "9d4e15fd/docs/c.png", "monikers": [ "netcore-1.0", "netcore-1.1" ] },
+        { "url": "/docs/a", "path": "docs/a.json", "!monikers": null },
+        { "url": "/docs/c.png", "path": "docs/c.png", "!monikers": null }
+      ]
     }
 ---
 # Build resource file with moniker conflict
@@ -982,13 +983,12 @@ inputs:
 outputs:
   9d4e15fd/docs/a.json:
   b201e604/docs/a.json:
-  build.manifest: |
+  .publish.json: |
     {
       "files": [
-          { "siteUrl": "/docs/a" },
-          { "siteUrl": "/docs/a" }
-      ],
-      "dependencies": { }
+          { "url": "/docs/a" },
+          { "url": "/docs/a" }
+      ]
     }
   build.log: |
     ["error","publish-url-conflict","Two or more files of the same version('netcore-1.1') publish to the same url '/docs/c.png': 'docs/v1/c.png', 'docs/v2/c.png'"]

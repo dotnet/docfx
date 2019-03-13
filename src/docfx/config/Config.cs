@@ -84,6 +84,12 @@ namespace Microsoft.Docs.Build
         public readonly Dictionary<string, string> Dependencies = new Dictionary<string, string>(PathUtility.PathComparer);
 
         /// <summary>
+        /// Gets the map from resolve alias to relative path relatived to `docfx.yml` file
+        /// Default will be `~: .`
+        /// </summary>
+        public readonly Dictionary<string, string> ResolveAlias = new Dictionary<string, string>(PathUtility.PathComparer) { { "~",  "." } };
+
+        /// <summary>
         /// Gets the redirection mappings
         /// The default value is empty mappings
         /// The redirection always transfer the document id
@@ -149,6 +155,12 @@ namespace Microsoft.Docs.Build
         /// It's used for legacy doc(docs.com) sites build
         /// </summary>
         public readonly string Theme = string.Empty;
+
+        /// <summary>
+        /// Gets the dependency lock file path
+        /// It should be absolute url or absolute/relative path
+        /// </summary>
+        public readonly string DependencyLock = string.Empty;
 
         /// <summary>
         /// Gets the config file name.

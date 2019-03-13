@@ -3,7 +3,6 @@
 using System;
 using System.IO;
 using System.Linq;
-using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -23,7 +22,7 @@ namespace Microsoft.Docs.Build
         public static void SplitGitHref(string remote, string expectedUrl, string expectedRev)
         {
             // Act
-            var (url, rev) = HrefUtility.SplitGitHref(remote);
+            var (url, rev, _) = HrefUtility.SplitGitHref(remote);
 
             // Assert
             Assert.Equal(expectedUrl, url);
@@ -44,36 +43,43 @@ namespace Microsoft.Docs.Build
             var restorePath = PathUtility.NormalizeFolder(Path.Combine(restoreDir, ".git"));
             File.WriteAllText(Path.Combine(docsetPath, "docfx.yml"), $@"
 dependencies:
-  dep1: {gitUrl}#test-1-clean
-  dep2: {gitUrl}#test-2-clean
-  dep3: {gitUrl}#test-3-clean
-  dep4: {gitUrl}#test-4-clean
   dep5: {gitUrl}#master
   dep6: {gitUrl}#chi");
-
 
             // run restroe and check the work trees
             await Program.Run(new[] { "restore", docsetPath });
             var workTreeList = await GitUtility.ListWorkTree(restorePath);
-            Assert.Equal(6, workTreeList.Count);
-
-            foreach (var wirkTreeFolder in workTreeList.Where(w => w.Contains("-clean-")))
-            {
-                Directory.SetLastWriteTimeUtc(wirkTreeFolder, DateTime.UtcNow - TimeSpan.FromDays(20));
-            }
+            Assert.Equal(2, workTreeList.Count);
 
             File.WriteAllText(Path.Combine(docsetPath, "docfx.yml"), $@"
 dependencies:
-  dep5: {gitUrl}#master
-  dep6: {gitUrl}#chi");
+  dep1: {gitUrl}#test-1-clean");
 
-            // run restore again to clean up
-            // check the work trees
+            // run restore again
             await Program.Run(new[] { "restore", docsetPath });
-            await Program.Run(new[] { "gc" });
 
+            // since the lockdown time works, new slot will be created
             workTreeList = await GitUtility.ListWorkTree(restorePath);
-            Assert.Equal(2, workTreeList.Count);
+            Assert.Equal(3, workTreeList.Count);
+
+            File.WriteAllText(Path.Combine(docsetPath, "docfx.yml"), $@"
+dependencies:
+  dep2: {gitUrl}#test-2-clean
+  dep3: {gitUrl}#test-3-clean");
+
+            // reset last access time
+            // make one slot availabe for next restore
+            var slots = DependencySlotPool<DependencyGit>.GetSlots(AppData.GetGitDir(gitUrl));
+            Assert.True(slots.Count == 3);
+            slots[1].LastAccessDate = DateTime.UtcNow - TimeSpan.FromDays(1);
+            DependencySlotPool<DependencyGit>.WriteSlots(AppData.GetGitDir(gitUrl), slots);
+
+            // run restore again
+            await Program.Run(new[] { "restore", docsetPath });
+
+            // will create a new slot and find an available slot
+            workTreeList = await GitUtility.ListWorkTree(restorePath);
+            Assert.Equal(4, workTreeList.Count);
         }
 
         [Fact]
@@ -81,43 +87,27 @@ dependencies:
         {
             // prepare versions
             var docsetPath = "restore-urls";
+            if (Directory.Exists(docsetPath))
+            {
+                Directory.Delete(docsetPath, true);
+            }
             Directory.CreateDirectory(docsetPath);
             var url = "https://raw.githubusercontent.com/docascode/docfx-test-dependencies-clean/master/README.md";
             var restoreDir = AppData.GetFileDownloadDir(url);
-            await ParallelUtility.ForEach(Enumerable.Range(0, 10), version =>
-            {
-                var restorePath = Path.Combine(restoreDir, version.ToString());
-                PathUtility.CreateDirectoryFromFilePath(restorePath);
-                File.WriteAllText(restorePath, $"{version}");
-                File.SetLastWriteTimeUtc(restorePath, DateTime.UtcNow - TimeSpan.FromDays(20));
-                return Task.CompletedTask;
-            });
 
             File.WriteAllText(Path.Combine(docsetPath, "docfx.yml"), $@"
 github:
   userCache: https://raw.githubusercontent.com/docascode/docfx-test-dependencies-clean/master/README.md");
 
-            // run restore again to clean up
+            // run restore
             await Program.Run(new[] { "restore", docsetPath });
-            await Program.Run(new[] { "gc" });
 
-            Assert.Single(Directory.EnumerateFiles(restoreDir, "*"));
-        }
+            Assert.Equal(2, Directory.EnumerateFiles(restoreDir, "*").Count());
 
-        [Theory]
-        [InlineData("abc123", "\"0xdef456\"", "abc123+%220xdef456%22")]
-        [InlineData("abc123", null, "abc123")]
-        public static void GetRestoreFileName(string hash, string etag, string expected)
-        {
-            Assert.Equal(expected, RestoreFile.GetRestoreFileName(hash, etag == null ? null : new EntityTagHeaderValue(etag)));
-        }
+            // run restore again
+            await Program.Run(new[] { "restore", docsetPath });
 
-        [Theory]
-        [InlineData("abc123+%220xdef456%22", "\"0xdef456\"")]
-        [InlineData("abc123", null)]
-        public static void GetEtag(string restoreFileName, string expected)
-        {
-            Assert.Equal(expected == null ? null : new EntityTagHeaderValue(expected), RestoreFile.GetEtag(restoreFileName));
+            Assert.Equal(2, Directory.EnumerateFiles(restoreDir, "*").Count());
         }
 
         private static void DeleteDir(string root)

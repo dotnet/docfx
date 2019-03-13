@@ -3,8 +3,8 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
 {
@@ -15,7 +15,7 @@ namespace Microsoft.Docs.Build
 
         public MonikerComparer Comparer { get; }
 
-        public MonikerProvider(Docset docset)
+        private MonikerProvider(Docset docset, MonikerDefinitionModel monikerDefinition)
         {
             foreach (var (key, monikerRange) in docset.Config.MonikerRange)
             {
@@ -23,20 +23,26 @@ namespace Microsoft.Docs.Build
             }
             _rules.Reverse();
 
+            _rangeParser = new MonikerRangeParser(monikerDefinition);
+            Comparer = new MonikerComparer(monikerDefinition);
+        }
+
+        public static async Task<MonikerProvider> Create(Docset docset)
+        {
             var monikerDefinition = new MonikerDefinitionModel();
             if (!string.IsNullOrEmpty(docset.Config.MonikerDefinition))
             {
-                var (_, path) = docset.GetFileRestorePath(docset.Config.MonikerDefinition);
-                monikerDefinition = JsonUtility.Deserialize<MonikerDefinitionModel>(File.ReadAllText(path));
+                var (_, content, _) = await RestoreMap.GetRestoredFileContent(docset, docset.Config.MonikerDefinition);
+                monikerDefinition = JsonUtility.Deserialize<MonikerDefinitionModel>(content);
             }
-            _rangeParser = new MonikerRangeParser(monikerDefinition);
-            Comparer = new MonikerComparer(monikerDefinition);
+
+            return new MonikerProvider(docset, monikerDefinition);
         }
 
         public (List<Error> errors, List<string> monikers) GetFileLevelMonikers(Document file, MetadataProvider metadataProvider)
         {
             var errors = new List<Error>();
-            var (metaErrors, metadata) = metadataProvider.GetFileMetadata(file, null);
+            var (metaErrors, metadata) = metadataProvider.GetMetadata<FileMetadata>(file, null);
             errors.AddRange(metaErrors);
 
             var (monikerError, monikers) = GetFileLevelMonikers(file, metadata.MonikerRange);
@@ -56,6 +62,7 @@ namespace Microsoft.Docs.Build
                 {
                     configMonikerRange = monikerRange;
                     configMonikers.AddRange(_rangeParser.Parse(monikerRange));
+                    break;
                 }
             }
 

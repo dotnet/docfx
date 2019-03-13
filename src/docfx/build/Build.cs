@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -14,29 +15,49 @@ namespace Microsoft.Docs.Build
     {
         public static async Task Run(string docsetPath, CommandLineOptions options, Report report)
         {
+            var repository = Repository.Create(docsetPath);
+            Telemetry.SetRepository(repository?.Remote, repository?.Branch);
+
+            var locale = LocalizationUtility.GetLocale(repository, options);
+            var dependencyLock = await LoadBuildDependencyLock(docsetPath, locale, repository, options);
+
+            var restoreMap = await RestoreMap.Create(dependencyLock);
+            try
+            {
+                await Run(docsetPath, repository, locale, options, report, dependencyLock, restoreMap);
+            }
+            finally
+            {
+                await restoreMap.Release();
+            }
+        }
+
+        private static async Task Run(string docsetPath, Repository repository, string locale, CommandLineOptions options, Report report, DependencyLockModel dependencyLock, RestoreMap restoreMap)
+        {
             XrefMap xrefMap = null;
+            var (configErrors, config) = GetBuildConfig(docsetPath, repository, options, dependencyLock, restoreMap);
+            report.Configure(docsetPath, config);
+
+            // just return if config loading has errors
+            if (report.Write(config.ConfigFileName, configErrors))
+                return;
 
             var errors = new List<Error>();
-
-            // todo: abort the process if configuration loading has errors
-            var (configErrors, config) = LocalizationUtility.GetBuildConfig(docsetPath, options);
-            report.Configure(docsetPath, config);
-            report.Write(config.ConfigFileName, configErrors);
-
-            var localeToBuild = LocalizationUtility.GetBuildLocale(docsetPath, options);
-            var docset = new Docset(report, docsetPath, localeToBuild, config, options).GetBuildDocset();
+            var docset = GetBuildDocset(new Docset(report, docsetPath, locale, config, options, dependencyLock, restoreMap, repository));
             var outputPath = Path.Combine(docsetPath, config.Output.Path);
 
             using (var context = await Context.Create(outputPath, report, docset, () => xrefMap))
             {
-                xrefMap = XrefMap.Create(context, docset);
+                xrefMap = await XrefMap.Create(context, docset);
+                var tocMap = TableOfContentsMap.Create(context, docset);
 
-                var tocMap = BuildTableOfContents.BuildTocMap(context, docset);
-                var (manifest, fileManifests, sourceDependencies) = await BuildFiles(context, docset, tocMap);
+                var (publishManifest, fileManifests, sourceDependencies) = await BuildFiles(context, docset, tocMap);
 
-                context.Output.WriteJson(manifest, "build.manifest");
                 var saveGitHubUserCache = context.GitHubUserCache.SaveChanges(config);
+
                 xrefMap.OutputXrefMap(context);
+                context.Output.WriteJson(publishManifest, ".publish.json");
+                context.Output.WriteJson(sourceDependencies.ToDependencyMapModel(), ".dependencymap.json");
 
                 if (options.Legacy)
                 {
@@ -47,7 +68,7 @@ namespace Microsoft.Docs.Build
                     }
                     else
                     {
-                        docset.LegacyTemplate.CopyTo(outputPath);
+                        docset.Template.CopyTo(outputPath);
                     }
                 }
 
@@ -56,7 +77,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static async Task<(Manifest, Dictionary<Document, FileManifest>, DependencyMap)> BuildFiles(
+        private static async Task<(PublishModel, Dictionary<Document, PublishItem>, DependencyMap)> BuildFiles(
             Context context,
             Docset docset,
             TableOfContentsMap tocMap)
@@ -64,38 +85,40 @@ namespace Microsoft.Docs.Build
             using (Progress.Start("Building files"))
             {
                 var recurseDetector = new ConcurrentHashSet<Document>();
-                var manifestBuilder = new ManifestBuilder();
-                var monikerMap = new ConcurrentDictionary<Document, List<string>>();
+                var monikerMapBuilder = new MonikerMapBuilder();
 
                 await ParallelUtility.ForEach(
                     docset.BuildScope,
-                    async (file, buildChild) => { monikerMap.TryAdd(file, await BuildOneFile(file, buildChild, null)); },
-                    (file) => { return ShouldBuildFile(file, new ContentType[] { ContentType.Page, ContentType.Redirection, ContentType.Resource }); },
+                    async (file, buildChild) => { monikerMapBuilder.Add(file, await BuildOneFile(file, buildChild, null)); },
+                    (file) => ShouldBuildFile(file, new ContentType[] { ContentType.Page, ContentType.Redirection, ContentType.Resource }),
                     Progress.Update);
+
+                var monikerMap = monikerMapBuilder.Build();
 
                 // Build TOC: since toc file depends on the build result of every node
                 await ParallelUtility.ForEach(
-                    docset.GetTableOfContentsScope(tocMap),
-                    (file, buildChild) => { return BuildOneFile(file, buildChild, new MonikerMap(monikerMap)); },
+                    GetTableOfContentsScope(docset, tocMap),
+                    (file, buildChild) => BuildOneFile(file, buildChild, monikerMap),
                     ShouldBuildTocFile,
                     Progress.Update);
 
                 var saveGitCommitCache = context.GitCommitProvider.SaveGitCommitCache();
 
                 ValidateBookmarks();
-                var manifest = manifestBuilder.Build(context);
+
+                var (publishModel, fileManifests) = context.PublishModelBuilder.Build(context);
                 var dependencyMap = context.DependencyMapBuilder.Build();
 
                 await saveGitCommitCache;
 
-                return (CreateManifest(manifest, dependencyMap), manifest, dependencyMap);
+                return (publishModel, fileManifests, dependencyMap);
 
                 async Task<List<string>> BuildOneFile(
                     Document file,
                     Action<Document> buildChild,
                     MonikerMap fileMonikerMap)
                 {
-                    return await BuildFile(context, file, tocMap, fileMonikerMap, manifestBuilder, buildChild);
+                    return await BuildFile(context, file, tocMap, fileMonikerMap, buildChild);
                 }
 
                 bool ShouldBuildFile(Document file, ContentType[] shouldBuildContentTypes)
@@ -117,7 +140,7 @@ namespace Microsoft.Docs.Build
                     {
                         if (context.Report.Write(error))
                         {
-                            manifestBuilder.MarkError(file);
+                            context.PublishModelBuilder.MarkError(file);
                         }
                     }
                 }
@@ -129,106 +152,114 @@ namespace Microsoft.Docs.Build
             Document file,
             TableOfContentsMap tocMap,
             MonikerMap monikerMap,
-            ManifestBuilder manifestBuilder,
             Action<Document> buildChild)
         {
             try
             {
-                var model = (object)null;
+                var publishItem = default(PublishItem);
                 var errors = Enumerable.Empty<Error>();
-                var monikers = new List<string>();
 
                 switch (file.ContentType)
                 {
                     case ContentType.Resource:
-                        (errors, model, monikers) = BuildResource.Build(context, file);
+                        (errors, publishItem) = BuildResource.Build(context, file);
                         break;
                     case ContentType.Page:
-                        (errors, model, monikers) = await BuildPage.Build(context, file, tocMap, buildChild);
+                        (errors, publishItem) = await BuildPage.Build(context, file, tocMap, buildChild);
                         break;
                     case ContentType.TableOfContents:
                         // TODO: improve error message for toc monikers overlap
-                        (errors, model, monikers) = BuildTableOfContents.Build(context, file, monikerMap);
+                        (errors, publishItem) = BuildTableOfContents.Build(context, file, monikerMap);
                         break;
                     case ContentType.Redirection:
-                        (errors, model, monikers) = BuildRedirection.Build(context, file);
+                        (errors, publishItem) = BuildRedirection.Build(context, file);
                         break;
                 }
 
                 var hasErrors = context.Report.Write(file.ToString(), errors);
-                if (hasErrors || model == null)
+                if (hasErrors)
                 {
-                    manifestBuilder.MarkError(file);
-                    return monikers;
+                    context.PublishModelBuilder.MarkError(file);
                 }
 
-                var manifest = new FileManifest
-                {
-                    SourcePath = file.FilePath,
-                    SiteUrl = file.SiteUrl,
-                    Monikers = monikers,
-                    OutputPath = GetOutputPath(file, monikers),
-                };
-
-                if (manifestBuilder.TryAdd(file, manifest, monikers))
-                {
-                    if (model is ResourceModel copy)
-                    {
-                        if (file.Docset.Config.Output.CopyResources)
-                        {
-                            context.Output.Copy(file, manifest.OutputPath);
-                        }
-                    }
-                    else if (model is string str)
-                    {
-                        context.Output.WriteText(str, manifest.OutputPath);
-                    }
-                    else
-                    {
-                        context.Output.WriteJson(model, manifest.OutputPath);
-                    }
-                }
-                return monikers;
+                return publishItem.Monikers;
             }
             catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
             {
                 context.Report.Write(file.ToString(), dex.Error);
-                manifestBuilder.MarkError(file);
+                context.PublishModelBuilder.MarkError(file);
                 return new List<string>();
             }
         }
 
-        private static string GetOutputPath(Document file, List<string> monikers)
+        private static async Task<DependencyLockModel> LoadBuildDependencyLock(string docset, string locale, Repository repository, CommandLineOptions commandLineOptions)
         {
-            if (file.ContentType == ContentType.Resource && !file.Docset.Config.Output.CopyResources)
+            Debug.Assert(!string.IsNullOrEmpty(docset));
+
+            var (errors, config) = ConfigLoader.TryLoad(docset, commandLineOptions);
+
+            var dependencyLock = await DependencyLock.Load(docset, string.IsNullOrEmpty(config.DependencyLock) ? AppData.GetDependencyLockFile(docset, locale) : config.DependencyLock);
+
+            if (LocalizationUtility.TryGetSourceRepository(repository, out var sourceRemote, out var sourceBranch, out _) && !ConfigLoader.TryGetConfigPath(docset, out _))
             {
-                var docset = file.Docset;
-                return PathUtility.NormalizeFile(
-                    Path.GetRelativePath(
-                        Path.GetFullPath(Path.Combine(docset.DocsetPath, docset.Config.Output.Path)),
-                        Path.GetFullPath(Path.Combine(docset.DocsetPath, file.FilePath))));
+                // build from loc repo directly with overwrite config
+                // which means it's using source repo's dependency lock
+                var sourceDependencyLock = dependencyLock.GetGitLock(sourceRemote, sourceBranch);
+                dependencyLock = sourceDependencyLock == null
+                    ? null
+                    : new DependencyLockModel
+                    {
+                        Commit = sourceDependencyLock.Commit,
+                        Git = new Dictionary<string, DependencyLockModel>(sourceDependencyLock.Git.Concat(new[] { KeyValuePair.Create($"{sourceRemote}#{sourceBranch}", sourceDependencyLock) })),
+                    };
             }
 
-            return PathUtility.NormalizeFile(Path.Combine(
-                $"{HashUtility.GetMd5HashShort(monikers)}",
-                file.SitePath));
+            return dependencyLock ?? new DependencyLockModel();
         }
 
-        private static Manifest CreateManifest(Dictionary<Document, FileManifest> files, DependencyMap dependencies)
+        private static (List<Error> errors, Config config) GetBuildConfig(string docset, Repository repository, CommandLineOptions options, DependencyLockModel dependencyLock, RestoreMap restoreMap)
         {
-            return new Manifest
+            if (ConfigLoader.TryGetConfigPath(docset, out _) || !LocalizationUtility.TryGetSourceRepository(repository, out var sourceRemote, out var sourceBranch, out var locale))
             {
-                Files = files.Values.OrderBy(item => item.SourcePath).ToArray(),
+                return ConfigLoader.Load(docset, options);
+            }
 
-                Dependencies = dependencies.ToDictionary(
-                           d => d.Key.FilePath,
-                           d => d.Value.Select(v =>
-                           new DependencyManifestItem
-                           {
-                               Source = v.Dest.FilePath,
-                               Type = v.Type,
-                           }).ToArray()),
-            };
+            Debug.Assert(dependencyLock != null);
+            var (sourceDocsetPath, _) = restoreMap.GetGitRestorePath(sourceRemote, sourceBranch, dependencyLock);
+            return ConfigLoader.Load(sourceDocsetPath, options, locale);
+        }
+
+        private static Docset GetBuildDocset(Docset sourceDocset)
+        {
+            Debug.Assert(sourceDocset != null);
+
+            return sourceDocset.LocalizationDocset ?? sourceDocset;
+        }
+
+        private static IReadOnlyList<Document> GetTableOfContentsScope(Docset docset, TableOfContentsMap tocMap)
+        {
+            Debug.Assert(tocMap != null);
+
+            var result = docset.BuildScope.Where(d => d.ContentType == ContentType.TableOfContents).ToList();
+
+            if (!docset.IsLocalized())
+            {
+                return result;
+            }
+
+            // if A toc includes B toc and only B toc is localized, then A need to be included and built
+            var fallbackTocs = new List<Document>();
+            foreach (var toc in result)
+            {
+                if (tocMap.TryFindParents(toc, out var parents))
+                {
+                    fallbackTocs.AddRange(parents);
+                }
+            }
+
+            result.AddRange(fallbackTocs);
+
+            return result;
         }
     }
 }

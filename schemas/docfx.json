@@ -188,6 +188,12 @@
         "type": "string"
       }
     },
+    "resolveAlias": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
     "redirections": {
       "type": "object",
       "additionalProperties": {
@@ -210,6 +216,7 @@
         "enum": [
           "off",
           "info",
+          "suggestion",
           "warning",
           "error"
         ]
@@ -246,6 +253,9 @@
       "type": "string"
     },
     "theme": {
+      "type": "string"
+    },
+    "dependencyLock": {
       "type": "string"
     },
     "$schema": {

@@ -1,16 +1,16 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 
 namespace Microsoft.Docs.Build
 {
     internal static class BuildTableOfContents
     {
-        public static (IEnumerable<Error>, TableOfContentsModel, List<string> monikers) Build(
+        public static (IEnumerable<Error>, PublishItem publishItem) Build(
             Context context,
             Document file,
             MonikerMap monikerMap)
@@ -18,69 +18,103 @@ namespace Microsoft.Docs.Build
             Debug.Assert(file.ContentType == ContentType.TableOfContents);
             Debug.Assert(monikerMap != null);
 
-            var (errors, tocModel, tocMetadata, refArticles, refTocs) = Load(context, file, monikerMap);
-
-            var model = new TableOfContentsModel
+            // load toc model
+            var hrefMap = new Dictionary<string, List<string>>();
+            var (errors, model, refArticles, refTocs) = context.Cache.LoadTocModel(context, file);
+            foreach (var (doc, href) in refArticles)
             {
-                Items = tocModel,
-                Metadata = tocMetadata,
+                if (!hrefMap.ContainsKey(href) && monikerMap.TryGetValue(doc, out var monikers))
+                {
+                    hrefMap[href] = monikers;
+                }
+            }
+
+            // resolve monikers
+            var (monikerError, fileMonikers) = context.MonikerProvider.GetFileLevelMonikers(file, model.Metadata.MonikerRange);
+            errors.AddIfNotNull(monikerError);
+
+            model.Metadata.Monikers = fileMonikers;
+            ResolveItemMonikers(model.Items);
+
+            // enable pdf
+            var outputPath = file.GetOutputPath(model.Metadata.Monikers);
+
+            if (file.Docset.Config.Output.Pdf)
+            {
+                var siteBasePath = file.Docset.Config.DocumentId.SiteBasePath;
+                var relativePath = PathUtility.NormalizeFile(Path.GetRelativePath(siteBasePath, Path.ChangeExtension(outputPath, ".pdf")));
+                model.Metadata.PdfAbsolutePath = $"/{siteBasePath}/opbuildpdf/{relativePath}";
+            }
+
+            // TODO: Add experimental and experiment_id to publish item
+            var publishItem = new PublishItem
+            {
+                Url = file.SiteUrl,
+                Path = outputPath,
+                Locale = file.Docset.Locale,
+                Monikers = model.Metadata.Monikers,
             };
 
-            return (errors, model, tocMetadata.Monikers);
-        }
-
-        public static TableOfContentsMap BuildTocMap(Context context, Docset docset)
-        {
-            using (Progress.Start("Loading TOC"))
+            if (context.PublishModelBuilder.TryAdd(file, publishItem))
             {
-                var builder = new TableOfContentsMapBuilder();
-                var tocFiles = docset.ScanScope.Where(f => f.ContentType == ContentType.TableOfContents);
-                if (!tocFiles.Any())
+                if (file.Docset.Legacy)
                 {
-                    return builder.Build();
+                    var output = file.Docset.Template.TransformMetadata("toc.json.js", JsonUtility.ToJObject(model));
+                    publishItem.Hash = context.Output.WriteJsonWithHash(output, outputPath);
+                    context.Output.WriteJson(model.Metadata, Path.ChangeExtension(outputPath, ".mta.json"));
                 }
+                else
+                {
+                    publishItem.Hash = context.Output.WriteJsonWithHash(model, outputPath);
+                }
+            }
 
-                ParallelUtility.ForEach(tocFiles, file => BuildTocMap(context, file, builder), Progress.Update);
+            return (errors, publishItem);
 
-                return builder.Build();
+            void ResolveItemMonikers(List<TableOfContentsItem> items)
+            {
+                foreach (var item in items)
+                {
+                    if (item.Items != null)
+                    {
+                        ResolveItemMonikers(item.Items);
+                    }
+
+                    List<string> monikers = null;
+                    if (item.Href == null || !hrefMap.TryGetValue(item.Href, out monikers))
+                    {
+                        if (item.TopicHref == null || !hrefMap.TryGetValue(item.TopicHref, out monikers))
+                        {
+                            monikers = fileMonikers;
+                        }
+                    }
+
+                    var childrenMonikers = item.Items?.SelectMany(child => child?.Monikers ?? new List<string>()) ?? new List<string>();
+                    monikers = childrenMonikers.Union(monikers ?? new List<string>()).Distinct(context.MonikerProvider.Comparer).ToList();
+                    monikers.Sort(context.MonikerProvider.Comparer);
+
+                    item.Monikers = monikers;
+                }
             }
         }
 
-        private static void BuildTocMap(Context context, Document fileToBuild, TableOfContentsMapBuilder tocMapBuilder)
-        {
-            try
-            {
-                Debug.Assert(tocMapBuilder != null);
-                Debug.Assert(fileToBuild != null);
-
-                var (errors, _, _, referencedDocuments, referencedTocs) = Load(context, fileToBuild);
-                context.Report.Write(fileToBuild.ToString(), errors);
-
-                tocMapBuilder.Add(fileToBuild, referencedDocuments, referencedTocs);
-            }
-            catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
-            {
-                context.Report.Write(fileToBuild.ToString(), dex.Error);
-            }
-        }
-
-        private static (
+        public static (
             List<Error> errors,
-            List<TableOfContentsItem> tocItems,
-            TableOfContentsMetadata metadata,
-            List<Document> referencedDocuments,
+            TableOfContentsModel model,
+            List<(Document doc, string href)> referencedDocuments,
             List<Document> referencedTocs)
 
-            Load(Context context, Document fileToBuild, MonikerMap monikerMap = null)
+            Load(Context context, Document fileToBuild)
         {
             var errors = new List<Error>();
-            var referencedDocuments = new List<Document>();
+            var referencedDocuments = new List<(Document doc, string href)>();
             var referencedTocs = new List<Document>();
+            var hrefMap = new Dictionary<string, List<string>>();
 
-            var (loadErrors, tocItems, tocMetadata) = TableOfContentsParser.Load(
+            // load toc model
+            var (loadErrors, model) = TableOfContentsParser.Load(
                 context,
                 fileToBuild,
-                monikerMap,
                 (file, href, isInclude) =>
                 {
                     var (error, referencedTocContent, referencedToc) = context.DependencyResolver.ResolveContent(href, file, DependencyType.TocInclusion);
@@ -100,7 +134,7 @@ namespace Microsoft.Docs.Build
 
                     if (buildItem != null)
                     {
-                        referencedDocuments.Add(buildItem);
+                        referencedDocuments.Add((buildItem, link));
                     }
                     return (link, buildItem);
                 },
@@ -112,14 +146,15 @@ namespace Microsoft.Docs.Build
 
                     if (buildItem != null)
                     {
-                        referencedDocuments.Add(buildItem);
+                        referencedDocuments.Add((buildItem, link));
                     }
 
                     return (link, display, buildItem);
                 });
 
             errors.AddRange(loadErrors);
-            return (errors, tocItems, tocMetadata, referencedDocuments, referencedTocs);
+
+            return (errors, model, referencedDocuments, referencedTocs);
         }
     }
 }

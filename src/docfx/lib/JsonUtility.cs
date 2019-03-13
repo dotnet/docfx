@@ -2,13 +2,14 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using System.Threading;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
@@ -16,42 +17,39 @@ using Newtonsoft.Json.Serialization;
 
 namespace Microsoft.Docs.Build
 {
-    /// <summary>
-    /// Provide Utilities of Json
-    /// </summary>
     internal static class JsonUtility
     {
-        public static readonly JsonSerializer DefaultSerializer = new JsonSerializer
+        private static readonly NamingStrategy s_namingStrategy = new CamelCaseNamingStrategy();
+        private static readonly JsonMergeSettings s_mergeSettings = new JsonMergeSettings { MergeArrayHandling = MergeArrayHandling.Replace };
+
+        private static readonly JsonSerializer s_serializer = new JsonSerializer
         {
             NullValueHandling = NullValueHandling.Ignore,
-            ContractResolver = new JsonContractResolver(),
+            ContractResolver = new JsonContractResolver { NamingStrategy = s_namingStrategy },
+            Converters = { new StringEnumConverter { NamingStrategy = s_namingStrategy } },
         };
 
-        public static readonly JsonMergeSettings MergeSettings = new JsonMergeSettings
-        {
-            MergeArrayHandling = MergeArrayHandling.Replace,
-        };
-
-        private static readonly JsonSerializerSettings s_noneFormatJsonSerializerSettings = new JsonSerializerSettings
+        private static readonly JsonSerializer s_schemaValidationSerializer = new JsonSerializer
         {
             NullValueHandling = NullValueHandling.Ignore,
-            Converters = { new StringEnumConverter { NamingStrategy = new CamelCaseNamingStrategy() } },
-            ContractResolver = new CamelCasePropertyNamesContractResolver(),
+            ContractResolver = new SchemaValidationContractResolver { NamingStrategy = s_namingStrategy },
+            Converters = { new StringEnumConverter { NamingStrategy = s_namingStrategy } },
         };
 
-        private static readonly JsonSerializerSettings s_indentedFormatJsonSerializerSettings = new JsonSerializerSettings
+        private static readonly JsonSerializer s_indentSerializer = new JsonSerializer
         {
-            NullValueHandling = NullValueHandling.Ignore,
             Formatting = Formatting.Indented,
-            Converters = { new StringEnumConverter { NamingStrategy = new CamelCaseNamingStrategy() } },
-            ContractResolver = new CamelCasePropertyNamesContractResolver(),
+            NullValueHandling = NullValueHandling.Ignore,
+            ContractResolver = new JsonContractResolver { NamingStrategy = s_namingStrategy },
+            Converters = { new StringEnumConverter { NamingStrategy = s_namingStrategy } },
         };
 
-        private static readonly JsonSerializer s_defaultIndentedFormatSerializer = JsonSerializer.Create(s_indentedFormatJsonSerializerSettings);
-        private static readonly JsonSerializer s_defaultNoneFormatSerializer = JsonSerializer.Create(s_noneFormatJsonSerializerSettings);
+        private static ThreadLocal<Stack<Status>> t_status = new ThreadLocal<Stack<Status>>(() => new Stack<Status>());
 
-        [ThreadStatic]
-        private static ImmutableStack<Status> t_status;
+        static JsonUtility()
+        {
+            s_schemaValidationSerializer.Error += HandleError;
+        }
 
         /// <summary>
         /// Fast pass to read MIME from $schema attribute.
@@ -117,23 +115,28 @@ namespace Microsoft.Docs.Build
             }
         }
 
+        public static IEnumerable<string> GetPropertyNames(Type type)
+        {
+            return ((JsonObjectContract)s_serializer.ContractResolver.ResolveContract(type)).Properties.Select(prop => prop.PropertyName);
+        }
+
         /// <summary>
         /// Serialize an object to TextWriter
         /// </summary>
-        public static void Serialize(TextWriter writer, object graph, Formatting formatting = Formatting.None)
+        public static void Serialize(TextWriter writer, object graph, bool indent = false)
         {
-            var localSerializer = formatting == Formatting.Indented ? s_defaultIndentedFormatSerializer : s_defaultNoneFormatSerializer;
-            localSerializer.Serialize(writer, graph);
+            var serializer = indent ? s_indentSerializer : s_serializer;
+            serializer.Serialize(writer, graph);
         }
 
         /// <summary>
         /// Serialize an object to string
         /// </summary>
-        public static string Serialize(object graph, Formatting formatting = Formatting.None)
+        public static string Serialize(object graph, bool indent = false)
         {
             using (StringWriter writer = new StringWriter())
             {
-                Serialize(writer, graph, formatting);
+                Serialize(writer, graph, indent);
                 return writer.ToString();
             }
         }
@@ -160,7 +163,7 @@ namespace Microsoft.Docs.Build
             {
                 try
                 {
-                    return DefaultSerializer.Deserialize<T>(reader);
+                    return s_serializer.Deserialize<T>(reader);
                 }
                 catch (JsonReaderException ex)
                 {
@@ -168,6 +171,14 @@ namespace Microsoft.Docs.Build
                     throw Errors.JsonSyntaxError(range, message, path).ToException(ex);
                 }
             }
+        }
+
+        /// <summary>
+        /// Converts a strongly typed C# object to weakly typed json object using the default serialization settings.
+        /// </summary>
+        public static JObject ToJObject(object model)
+        {
+            return JObject.FromObject(model, s_serializer);
         }
 
         /// <summary>
@@ -187,7 +198,7 @@ namespace Microsoft.Docs.Build
         {
             try
             {
-                var obj = token.ToObject(typeof(T), JsonUtility.DefaultSerializer);
+                var obj = token.ToObject(typeof(T), JsonUtility.s_serializer);
                 return (T)obj;
             }
             catch (JsonReaderException ex)
@@ -202,44 +213,22 @@ namespace Microsoft.Docs.Build
             Type type,
             Func<IEnumerable<DataTypeAttribute>, object, string, object> transform = null)
         {
-            var errors = new List<Error>();
             try
             {
-                var status = new Status
-                {
-                    SchemaViolationErrors = new List<Error>(),
-                    Transform = transform,
-                };
-                t_status = t_status is null ? ImmutableStack.Create(status) : t_status.Push(status);
+                var errors = new List<Error>();
+                var status = new Status { Errors = errors, Transform = transform };
+
+                t_status.Value.Push(status);
 
                 token.ReportUnknownFields(errors, type);
-                var serializer = new JsonSerializer
-                {
-                    NullValueHandling = NullValueHandling.Ignore,
-                    ContractResolver = DefaultSerializer.ContractResolver,
-                };
-                serializer.Error += HandleError;
-                var value = token.ToObject(type, serializer);
-                errors.AddRange(t_status.Peek().SchemaViolationErrors);
+
+                var value = token.ToObject(type, s_schemaValidationSerializer);
+
                 return (errors, value);
             }
             finally
             {
-                t_status = t_status.Pop();
-            }
-
-            void HandleError(object sender, Newtonsoft.Json.Serialization.ErrorEventArgs args)
-            {
-                // only log an error once
-                if (args.CurrentObject == args.ErrorContext.OriginalObject)
-                {
-                    if (args.ErrorContext.Error is JsonReaderException || args.ErrorContext.Error is JsonSerializationException jse)
-                    {
-                        var (range, message, path) = ParseException(args.ErrorContext.Error);
-                        errors.Add(Errors.ViolateSchema(range, message, path));
-                        args.ErrorContext.Handled = true;
-                    }
-                }
+                t_status.Value.Pop();
             }
         }
 
@@ -266,26 +255,9 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public static JObject Merge(JObject a, JObject b)
+        public static void Merge(JObject container, JObject overwrite)
         {
-            var result = new JObject();
-            result.Merge(a, MergeSettings);
-            result.Merge(b, MergeSettings);
-            return result;
-        }
-
-        public static JObject Merge(JObject first, IEnumerable<JObject> objs)
-        {
-            var result = new JObject();
-            result.Merge(first);
-            foreach (var obj in objs)
-            {
-                if (obj != null)
-                {
-                    result.Merge(obj, MergeSettings);
-                }
-            }
-            return result;
+            container.Merge(overwrite, s_mergeSettings);
         }
 
         /// <summary>
@@ -337,6 +309,25 @@ namespace Microsoft.Docs.Build
             }
 
             return false;
+        }
+
+        private static Range ToRange(IJsonLineInfo lineInfo)
+        {
+            return lineInfo.HasLineInfo() ? new Range(lineInfo.LineNumber, lineInfo.LinePosition) : default;
+        }
+
+        private static void HandleError(object sender, Newtonsoft.Json.Serialization.ErrorEventArgs args)
+        {
+            // only log an error once
+            if (args.CurrentObject == args.ErrorContext.OriginalObject)
+            {
+                if (args.ErrorContext.Error is JsonReaderException || args.ErrorContext.Error is JsonSerializationException jse)
+                {
+                    var (range, message, path) = ParseException(args.ErrorContext.Error);
+                    t_status.Value.Peek().Errors.Add(Errors.ViolateSchema(range, message, path));
+                    args.ErrorContext.Handled = true;
+                }
+            }
         }
 
         private static (Range, string message, string path) ParseException(Exception ex)
@@ -423,7 +414,7 @@ namespace Microsoft.Docs.Build
 
         private static Type GetCollectionItemTypeIfArrayType(Type type)
         {
-            var contract = DefaultSerializer.ContractResolver.ResolveContract(type);
+            var contract = s_serializer.ContractResolver.ResolveContract(type);
             if (contract is JsonObjectContract)
             {
                 return type;
@@ -445,16 +436,14 @@ namespace Microsoft.Docs.Build
 
         private static Type GetNestedTypeAndCheckForUnknownField(Type type, JProperty prop, List<Error> errors)
         {
-            var contract = DefaultSerializer.ContractResolver.ResolveContract(type);
+            var contract = s_serializer.ContractResolver.ResolveContract(type);
 
             if (contract is JsonObjectContract objectContract)
             {
                 var matchingProperty = objectContract.Properties.GetClosestMatchProperty(prop.Name);
                 if (matchingProperty == null && type.IsSealed)
                 {
-                    var lineInfo = prop as IJsonLineInfo;
-                    errors.Add(Errors.UnknownField(
-                        new Range(lineInfo.LineNumber, lineInfo.LinePosition), prop.Name, type.Name, prop.Path));
+                    errors.Add(Errors.UnknownField(ToRange(prop), prop.Name, type.Name, prop.Path));
                 }
                 return matchingProperty?.PropertyType;
             }
@@ -470,7 +459,7 @@ namespace Microsoft.Docs.Build
 
         private static JsonPropertyCollection GetPropertiesFromJsonArrayContract(JsonArrayContract arrayContract)
         {
-            var itemContract = DefaultSerializer.ContractResolver.ResolveContract(arrayContract.CollectionItemType);
+            var itemContract = s_serializer.ContractResolver.ResolveContract(arrayContract.CollectionItemType);
             if (itemContract is JsonObjectContract objectContract)
                 return objectContract.Properties;
             else if (itemContract is JsonArrayContract contract)
@@ -478,18 +467,48 @@ namespace Microsoft.Docs.Build
             return null;
         }
 
-        private static void SetFieldWritable(MemberInfo member, JsonProperty prop)
+        private class JsonContractResolver : DefaultContractResolver
         {
-            if (!prop.Writable)
+            protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
             {
-                if (member is FieldInfo f && f.IsPublic && !f.IsStatic)
+                var prop = base.CreateProperty(member, memberSerialization);
+                ShouldNotSerializeEmptyArray();
+                SetFieldWritable();
+                return prop;
+
+                void ShouldNotSerializeEmptyArray()
                 {
-                    prop.Writable = true;
+                    if (typeof(IEnumerable).IsAssignableFrom(prop.PropertyType) && !(prop.PropertyType == typeof(string)))
+                    {
+                        prop.ShouldSerialize =
+                        target =>
+                        {
+                            var value = prop.ValueProvider.GetValue(target);
+
+                            if (value is IEnumerable enumer && !enumer.GetEnumerator().MoveNext())
+                            {
+                                return false;
+                            }
+
+                            return true;
+                        };
+                    }
+                }
+
+                void SetFieldWritable()
+                {
+                    if (!prop.Writable)
+                    {
+                        if (member is FieldInfo f && f.IsPublic && !f.IsStatic)
+                        {
+                            prop.Writable = true;
+                        }
+                    }
                 }
             }
         }
 
-        private sealed class JsonContractResolver : DefaultContractResolver
+        private sealed class SchemaValidationContractResolver : JsonContractResolver
         {
             protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
             {
@@ -498,17 +517,8 @@ namespace Microsoft.Docs.Build
 
                 if (converter != null)
                 {
-                    if (prop.PropertyType.IsArray)
-                    {
-                        prop.ItemConverter = converter;
-                    }
-                    else
-                    {
-                        prop.Converter = converter;
-                    }
+                    prop.Converter = converter;
                 }
-
-                SetFieldWritable(member, prop);
                 return prop;
             }
 
@@ -543,8 +553,7 @@ namespace Microsoft.Docs.Build
 
             public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
             {
-                var lineInfo = (IJsonLineInfo)reader;
-                var range = new Range(lineInfo.LineNumber, lineInfo.LinePosition);
+                var range = ToRange((IJsonLineInfo)reader);
                 var value = serializer.Deserialize(reader, objectType);
                 if (value == null)
                 {
@@ -559,17 +568,18 @@ namespace Microsoft.Docs.Build
                     }
                     catch (Exception e)
                     {
-                        t_status.Peek().SchemaViolationErrors.Add(Errors.ViolateSchema(range, e.Message, reader.Path));
+                        t_status.Value.Peek().Errors.Add(Errors.ViolateSchema(range, e.Message, reader.Path));
                     }
                 }
 
-                return t_status.Peek().Transform != null ? t_status.Peek().Transform(_attributes, value, reader.Path) : value;
+                var transform = t_status.Value.Peek().Transform;
+                return transform != null ? transform(_attributes, value, reader.Path) : value;
             }
         }
 
         private sealed class Status
         {
-            public List<Error> SchemaViolationErrors { get; set; }
+            public List<Error> Errors { get; set; }
 
             public Func<IEnumerable<DataTypeAttribute>, object, string, object> Transform { get; set; }
         }

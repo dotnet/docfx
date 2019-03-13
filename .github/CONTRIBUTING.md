@@ -25,7 +25,7 @@ Please kindly provide the minimal reproduce steps to help us identify the proble
 
 ## Contributing Code
 
-If you are interested in writing code to fix issues, please see [Developer Guide](docs/engineering/developer-guide.md).
+If you are interested in writing code to fix issues, please see [Developer Guide](../docs/developer-guide.md).
 
 You will need to sign a [Contributor License Agreement](https://cla.dotnetfoundation.org/) before submitting your pull request. To complete the Contributor License Agreement (CLA), you will need to submit a request via the form and then electronically sign the Contributor License Agreement when you receive the email containing the link to the document. This needs to only be done once for any .NET Foundation OSS project.
 

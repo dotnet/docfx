@@ -53,27 +53,28 @@ namespace Microsoft.Docs.Build
 
             // apply options
             var optionConfigObject = Expand(options?.ToJObject());
-            var finalConfigObject = JsonUtility.Merge(configObject, optionConfigObject);
+
+            JsonUtility.Merge(configObject, optionConfigObject);
             errors.AddRange(loadErrors);
 
             // apply global config
             var globalErrors = new List<Error>();
-            (globalErrors, finalConfigObject) = ApplyGlobalConfig(finalConfigObject);
+            (globalErrors, configObject) = ApplyGlobalConfig(configObject);
             errors.AddRange(globalErrors);
 
             // apply extends
             if (extend)
             {
                 var extendErrors = new List<Error>();
-                (extendErrors, finalConfigObject) = ExtendConfigs(finalConfigObject, docsetPath);
+                (extendErrors, configObject) = ExtendConfigs(configObject, docsetPath);
                 errors.AddRange(extendErrors);
             }
 
             // apply overwrite
-            finalConfigObject = OverwriteConfig(finalConfigObject, locale ?? options.Locale, GetBranch());
+            configObject = OverwriteConfig(configObject, locale ?? options.Locale, GetBranch());
 
             var deserializeErrors = new List<Error>();
-            (deserializeErrors, config) = JsonUtility.ToObjectWithSchemaValidation<Config>(finalConfigObject);
+            (deserializeErrors, config) = JsonUtility.ToObjectWithSchemaValidation<Config>(configObject);
             errors.AddRange(deserializeErrors);
 
             // validate metadata
@@ -93,17 +94,20 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static (List<Error>, JObject) LoadConfigObject(string fileName, string filePath)
+        private static (List<Error>, JObject) LoadConfigObject(string fileName, string file)
+            => LoadConfigObjectContent(fileName, File.ReadAllText(file));
+
+        private static (List<Error>, JObject) LoadConfigObjectContent(string fileName, string content)
         {
             var errors = new List<Error>();
             JObject config = null;
             if (fileName.EndsWith(".yml", StringComparison.OrdinalIgnoreCase))
             {
-                (errors, config) = YamlUtility.DeserializeWithSchemaValidation<JObject>(File.ReadAllText(filePath));
+                (errors, config) = YamlUtility.DeserializeWithSchemaValidation<JObject>(content);
             }
             else if (fileName.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
             {
-                (errors, config) = JsonUtility.DeserializeWithSchemaValidation<JObject>(File.ReadAllText(filePath));
+                (errors, config) = JsonUtility.DeserializeWithSchemaValidation<JObject>(content);
             }
             return (errors, Expand(config ?? new JObject()));
         }
@@ -119,7 +123,7 @@ namespace Microsoft.Docs.Build
                 (errors, result) = LoadConfigObject(globalConfigPath, globalConfigPath);
             }
 
-            result.Merge(config, JsonUtility.MergeSettings);
+            JsonUtility.Merge(result, config);
             return (errors, result);
         }
 
@@ -134,15 +138,15 @@ namespace Microsoft.Docs.Build
                 {
                     if (extend is JValue value && value.Value is string str)
                     {
-                        var (_, filePath) = RestoreMap.GetFileRestorePath(docsetPath, str);
-                        var (extendErros, extendConfigObject) = LoadConfigObject(str, filePath);
+                        var (_, content, _) = RestoreMap.GetRestoredFileContent(docsetPath, str).GetAwaiter().GetResult(); /*todo: remove GetResult()*/
+                        var (extendErros, extendConfigObject) = LoadConfigObjectContent(str, content);
                         errors.AddRange(extendErros);
-                        result.Merge(extendConfigObject, JsonUtility.MergeSettings);
+                        JsonUtility.Merge(result, extendConfigObject);
                     }
                 }
             }
 
-            result.Merge(config, JsonUtility.MergeSettings);
+            JsonUtility.Merge(result, config);
             return (errors, result);
         }
 
@@ -163,7 +167,7 @@ namespace Microsoft.Docs.Build
 
             var result = new JObject();
             var overwriteConfigIdentifiers = new List<string>();
-            result.Merge(config, JsonUtility.MergeSettings);
+            JsonUtility.Merge(result, config);
             foreach (var (key, value) in config)
             {
                 if (OverwriteConfigIdentifier.TryMatch(key, out var identifier))
@@ -172,7 +176,7 @@ namespace Microsoft.Docs.Build
                         (identifier.Locales.Count == 0 || (!string.IsNullOrEmpty(locale) && identifier.Locales.Contains(locale))) &&
                         value is JObject overwriteConfig)
                     {
-                        result.Merge(Expand(overwriteConfig), JsonUtility.MergeSettings);
+                        JsonUtility.Merge(result, Expand(overwriteConfig));
                     }
 
                     overwriteConfigIdentifiers.Add(key);

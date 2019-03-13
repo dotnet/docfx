@@ -1,63 +1,82 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
-using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
 {
-    internal static class RestoreMap
+    internal class RestoreMap
     {
-        private static readonly ConcurrentDictionary<(string remote, string branch), Lazy<string>> s_gitPath = new ConcurrentDictionary<(string remote, string branch), Lazy<string>>();
-        private static readonly ConcurrentDictionary<string, Lazy<string>> s_downloadPath = new ConcurrentDictionary<string, Lazy<string>>();
+        private IReadOnlyDictionary<(string remote, string branch, string commit), (string path, DependencyGit git)> _acquiredGits;
 
-        public static string GetGitRestorePath(string url)
+        public RestoreMap(IReadOnlyDictionary<(string remote, string branch, string commit), (string path, DependencyGit git)> acquiredGits)
         {
-            var (remote, branch) = HrefUtility.SplitGitHref(url);
-            return GetGitRestorePath(remote, branch);
+            _acquiredGits = acquiredGits ?? new Dictionary<(string remote, string branch, string commit), (string path, DependencyGit git)>();
         }
 
-        public static string GetGitRestorePath(string remote, string branch)
+        /// <summary>
+        /// Acquire restored git repository path, dependencyLock and git slot with url and dependency lock
+        /// The dependency lock must be loaded before using this method
+        /// </summary>
+        public (string path, DependencyLockModel subDependencyLock) GetGitRestorePath(string url, DependencyLockModel dependencyLock)
         {
-            if (!TryGetGitRestorePath(remote, branch, out var result))
+            var (remote, branch, _) = HrefUtility.SplitGitHref(url);
+            return GetGitRestorePath(remote, branch, dependencyLock);
+        }
+
+        /// <summary>
+        /// The dependency lock must be loaded before using this method
+        /// </summary>
+        public (string path, DependencyLockModel subDependencyLock) GetGitRestorePath(string remote, string branch, DependencyLockModel dependencyLock)
+        {
+            Debug.Assert(dependencyLock != null);
+
+            var gitVersion = dependencyLock.GetGitLock(remote, branch);
+
+            if (gitVersion == null)
             {
                 throw Errors.NeedRestore($"{remote}#{branch}").ToException();
             }
-            return result;
-        }
 
-        public static bool TryGetGitRestorePath(string remote, string branch, out string result)
-        {
-            result = s_gitPath.AddOrUpdate(
-                (remote, branch),
-                new Lazy<string>(FindLastModifiedGitRepository),
-                (_, existing) => existing.Value != null ? existing : new Lazy<string>(FindLastModifiedGitRepository)).Value;
-
-            return Directory.Exists(result);
-
-            string FindLastModifiedGitRepository()
+            if (!_acquiredGits.TryGetValue((remote, branch, gitVersion.Commit), out var gitInfo))
             {
-                var repoPath = AppData.GetGitDir(remote);
-
-                if (!Directory.Exists(repoPath))
-                {
-                    return null;
-                }
-
-                return (
-                    from path in Directory.GetDirectories(repoPath, "*", SearchOption.TopDirectoryOnly)
-                    let name = Path.GetFileName(path)
-                    where name.StartsWith(HrefUtility.EscapeUrlSegment(branch) + "-" + branch.GetMd5HashShort() + "-") &&
-                          GitUtility.IsWorkTreeCheckoutComplete(repoPath, name)
-                    orderby new DirectoryInfo(path).LastWriteTimeUtc
-                    select path).FirstOrDefault();
+                throw Errors.NeedRestore($"{remote}#{branch}").ToException();
             }
+
+            if (string.IsNullOrEmpty(gitInfo.path) || gitInfo.git == null)
+            {
+                throw Errors.NeedRestore($"{remote}#{branch}").ToException();
+            }
+
+            var path = Path.Combine(AppData.GetGitDir(remote), gitInfo.path);
+            Debug.Assert(Directory.Exists(path));
+
+            return (path, gitVersion);
         }
 
-        public static (bool fromUrl, string path) GetFileRestorePath(string docsetPath, string url, string fallbackDocset = null)
+        public async Task<bool> Release()
+        {
+            var released = true;
+            foreach (var (k, v) in _acquiredGits)
+            {
+                released &= await ReleaseGit(v.git, LockType.Shared);
+            }
+
+            Debug.Assert(released);
+
+            return released;
+        }
+
+        public static Task<(string localPath, string content, string etag)> GetRestoredFileContent(Docset docset, string url)
+        {
+            return GetRestoredFileContent(docset.DocsetPath, url, docset.FallbackDocset?.DocsetPath);
+        }
+
+        public static async Task<(string localPath, string content, string etag)> GetRestoredFileContent(string docsetPath, string url, string fallbackDocset = null)
         {
             var fromUrl = HrefUtility.IsHttpHref(url);
             if (!fromUrl)
@@ -66,51 +85,161 @@ namespace Microsoft.Docs.Build
                 var fullPath = Path.Combine(docsetPath, url);
                 if (File.Exists(fullPath))
                 {
-                    return (fromUrl, fullPath);
+                    return (fullPath, File.ReadAllText(fullPath), null);
                 }
 
                 if (!string.IsNullOrEmpty(fallbackDocset))
                 {
-                    return GetFileRestorePath(fallbackDocset, url);
+                    return await GetRestoredFileContent(fallbackDocset, url);
                 }
 
                 throw Errors.FileNotFound(docsetPath, url).ToException();
             }
 
-            if (!TryGetFileRestorePath(url, out var result))
+            var (content, etag) = await TryGetRestoredFileContent(url);
+            if (string.IsNullOrEmpty(content))
             {
                 throw Errors.NeedRestore(url).ToException();
             }
 
-            return (fromUrl, result);
+            return (null, content, etag);
         }
 
-        public static bool TryGetFileRestorePath(string url, out string result)
+        public static async Task<(string content, string etag)> TryGetRestoredFileContent(string url)
         {
             Debug.Assert(!string.IsNullOrEmpty(url));
             Debug.Assert(HrefUtility.IsHttpHref(url));
 
-            result = s_downloadPath.AddOrUpdate(
-                url,
-                new Lazy<string>(FindLastModifiedFile),
-                (_, existing) => existing.Value != null ? existing : new Lazy<string>(FindLastModifiedFile)).Value;
+            var filePath = RestoreFile.GetRestoreContentPath(url);
+            var etagPath = RestoreFile.GetRestoreEtagPath(url);
+            string etag = null;
+            string content = null;
 
-            return File.Exists(result);
-
-            string FindLastModifiedFile()
+            await ProcessUtility.RunInsideMutex(filePath, () =>
             {
-                // get the file path from restore map
-                var restoreDir = AppData.GetFileDownloadDir(url);
+                content = GetFileContentIfExists(filePath);
+                etag = GetFileContentIfExists(etagPath);
 
-                if (!Directory.Exists(restoreDir))
+                return Task.CompletedTask;
+
+                string GetFileContentIfExists(string file)
                 {
+                    if (File.Exists(file))
+                    {
+                        return File.ReadAllText(file);
+                    }
+
                     return null;
                 }
+            });
 
-                return Directory.EnumerateFiles(restoreDir, "*", SearchOption.TopDirectoryOnly)
-                       .OrderByDescending(f => new FileInfo(f).LastWriteTimeUtc)
-                       .FirstOrDefault();
+            return (content, etag);
+        }
+
+        /// <summary>
+        /// Acquired all shared git based on dependency lock
+        /// The dependency lock must be loaded before using this method
+        /// </summary>
+        public static async Task<RestoreMap>
+            Create(
+            DependencyLockModel dependencyLock,
+            Dictionary<(string remote, string branch, string commit), (string path, DependencyGit git)> acquired = null)
+        {
+            Debug.Assert(dependencyLock != null);
+
+            RestoreMap gitPool = null;
+            var root = acquired == null;
+            acquired = acquired ?? new Dictionary<(string remote, string branch, string commit), (string path, DependencyGit git)>();
+
+            var successed = true;
+            try
+            {
+                foreach (var gitVersion in dependencyLock.Git)
+                {
+                    var (remote, branch, _) = HrefUtility.SplitGitHref(gitVersion.Key);
+                    if (!acquired.ContainsKey((remote, branch, gitVersion.Value.Commit/*commit*/)))
+                    {
+                        var (path, git) = await AcquireGit(remote, branch, gitVersion.Value.Commit, LockType.Shared);
+                        acquired[(remote, branch, gitVersion.Value.Commit/*commit*/)] = (path, git);
+                    }
+
+                    await Create(gitVersion.Value, acquired);
+                }
+
+                gitPool = new RestoreMap(acquired);
+                return gitPool;
             }
+            catch
+            {
+                successed = false;
+                throw;
+            }
+            finally
+            {
+                if (!successed && root)
+                {
+                    foreach (var (k, v) in acquired)
+                    {
+                        await ReleaseGit(v.git, LockType.Shared, false);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Try get git dependency repository path and git slot with remote, branch and dependency version(commit).
+        /// If the dependency version is null, get the latest one(order by last write time).
+        /// If the dependency version is not null, get the one matched with the version(commit).
+        /// </summary>
+        public static async Task<(string path, DependencyGit git)> TryGetGitRestorePath(string remote, string branch, string commit)
+        {
+            var (path, slot) = await DependencySlotPool<DependencyGit>.TryGetSlot(remote, gits =>
+            {
+                var filteredGits = gits.Where(i => i.Branch == branch);
+                if (!string.IsNullOrEmpty(commit))
+                {
+                    // found commit matched slot
+                    filteredGits = filteredGits.Where(i => i.Commit == commit);
+                }
+
+                return filteredGits.ToList();
+            });
+
+            if (!string.IsNullOrEmpty(path))
+                path = Path.Combine(AppData.GetGitDir(remote), path);
+
+            return !Directory.Exists(path) ? default : (path, slot);
+        }
+
+        public static async Task<(string path, DependencyGit git)> AcquireExclusiveGit(string remote, string branch, string commit)
+        {
+            var (path, git) = await AcquireGit(remote, branch, commit, LockType.Exclusive);
+
+            Debug.Assert(path != null && git != null);
+            path = Path.Combine(AppData.GetGitDir(remote), path);
+
+            return (path, git);
+        }
+
+        public static Task<bool> ReleaseGit(DependencyGit git, LockType lockType, bool successed = true)
+            => DependencySlotPool<DependencyGit>.ReleaseSlot(git, lockType, successed);
+
+        private static Task<(string path, DependencyGit git)> AcquireGit(string remote, string branch, string commit, LockType type)
+        {
+            Debug.Assert(!string.IsNullOrEmpty(branch));
+            Debug.Assert(!string.IsNullOrEmpty(commit));
+
+            return DependencySlotPool<DependencyGit>.AcquireSlot(
+                remote,
+                type,
+                slot =>
+                {
+                    // update branch and commit info to new rented slot
+                    slot.Commit = commit;
+                    slot.Branch = branch;
+                    return slot;
+                },
+                existingSlot => existingSlot.Branch == branch && existingSlot.Commit == commit);
         }
     }
 }

@@ -2,10 +2,8 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace Microsoft.Docs.Build
@@ -13,6 +11,22 @@ namespace Microsoft.Docs.Build
     internal static class LocalizationUtility
     {
         private static readonly Regex s_nameWithLocale = new Regex(@"^.+?(\.[a-z]{2,4}-[a-z]{2,4}(-[a-z]{2,4})?|\.loc)?$", RegexOptions.IgnoreCase);
+        private static readonly Regex s_lrmAdjustment = new Regex(@"(^|\s|\>)(C#|F#|C\+\+)(\s*|[.!?;:]*)(\<|[\n\r]|$)", RegexOptions.IgnoreCase);
+
+        public static string AddLeftToRightMarker(Docset docset, string text)
+        {
+            if (!docset.Culture.TextInfo.IsRightToLeft)
+            {
+                return text;
+            }
+
+            // This is used to protect against C#, F# and C++ from being split up when they are at the end of line of RTL text.
+            // Find a(space or >), followed by product name, followed by zero or more(spaces or punctuation), followed by a(&lt; or newline)
+            // &lrm is added after name to prevent the punctuation from moving to the other end of the line.
+            // This should only be run on strings that are marked as RTL
+            // & lrm may be added at places other than the end of a string, and that is ok
+            return s_lrmAdjustment.Replace(text, me => $"{me.Groups[1]}{me.Groups[2]}&lrm;{me.Groups[3]}{me.Groups[4]}");
+        }
 
         /// <summary>
         /// The loc repo remote and branch based on localization mapping<see cref="LocalizationMapping"/>
@@ -27,19 +41,21 @@ namespace Microsoft.Docs.Build
             return (newRemote, newBranch);
         }
 
-        public static bool TryGetLocalizedDocsetPath(string docsetPath, Config config, string locale, out string localizationDocsetPath)
+        public static bool TryGetLocalizedDocsetPath(Docset docset, RestoreMap restoreMap, Config config, string locale, out string localizationDocsetPath, out string localizationBranch, out DependencyLockModel subDependencyLock)
         {
-            Debug.Assert(!string.IsNullOrEmpty(docsetPath));
+            Debug.Assert(docset != null);
             Debug.Assert(!string.IsNullOrEmpty(locale));
             Debug.Assert(config != null);
 
             localizationDocsetPath = null;
+            localizationBranch = null;
+            subDependencyLock = null;
             switch (config.Localization.Mapping)
             {
                 case LocalizationMapping.Repository:
                 case LocalizationMapping.Branch:
                     {
-                        var repo = Repository.Create(Path.GetFullPath(docsetPath));
+                        var repo = docset.Repository;
                         if (repo == null)
                         {
                             return false;
@@ -51,7 +67,8 @@ namespace Microsoft.Docs.Build
                             repo.Branch,
                             locale,
                             config.Localization.DefaultLocale);
-                        localizationDocsetPath = RestoreMap.GetGitRestorePath(locRemote, locBranch);
+                        (localizationDocsetPath, subDependencyLock) = restoreMap.GetGitRestorePath(locRemote, locBranch, docset.DependencyLock);
+                        localizationBranch = locBranch;
                         break;
                     }
                 case LocalizationMapping.Folder:
@@ -60,7 +77,9 @@ namespace Microsoft.Docs.Build
                         {
                             throw new NotSupportedException($"{config.Localization.Mapping} is not supporting bilingual build");
                         }
-                        localizationDocsetPath = Path.Combine(docsetPath, "localization", locale);
+                        localizationDocsetPath = Path.Combine(docset.DocsetPath, "localization", locale);
+                        localizationBranch = null;
+                        subDependencyLock = null;
                         break;
                     }
                 default:
@@ -70,21 +89,18 @@ namespace Microsoft.Docs.Build
             return true;
         }
 
-        public static bool TryGetSourceRepository(string docsetPath, out string sourceRemote, out string sourceBranch, out string locale)
+        public static bool TryGetSourceRepository(Repository repository, out string sourceRemote, out string sourceBranch, out string locale)
         {
-            Debug.Assert(!string.IsNullOrEmpty(docsetPath));
-
             sourceRemote = null;
             sourceBranch = null;
             locale = null;
 
-            var repo = Repository.Create(docsetPath);
-            if (repo == null || string.IsNullOrEmpty(repo.Remote))
+            if (repository == null || string.IsNullOrEmpty(repository.Remote))
             {
                 return false;
             }
 
-            return TryGetSourceRepository(repo.Remote, repo.Branch, out sourceRemote, out sourceBranch, out locale);
+            return TryGetSourceRepository(repository.Remote, repository.Branch, out sourceRemote, out sourceBranch, out locale);
         }
 
         /// <summary>
@@ -120,75 +136,34 @@ namespace Microsoft.Docs.Build
             return locale != null;
         }
 
-        public static bool TryGetSourceDocsetPath(string docsetPath, out string sourceDocsetPath)
+        public static bool TryGetSourceDocsetPath(Docset docset, RestoreMap restoreMap, out string sourceDocsetPath, out string sourceBranch, out DependencyLockModel dependencyLock)
         {
+            Debug.Assert(docset != null);
+            Debug.Assert(restoreMap != null);
+
             sourceDocsetPath = null;
+            sourceBranch = null;
+            dependencyLock = null;
 
-            Debug.Assert(!string.IsNullOrEmpty(docsetPath));
-
-            if (TryGetSourceRepository(docsetPath, out var sourceRemote, out var sourceBranch, out var locale))
+            if (TryGetSourceRepository(docset.Repository, out var sourceRemote, out sourceBranch, out var locale))
             {
-                sourceDocsetPath = RestoreMap.GetGitRestorePath(sourceRemote, sourceBranch);
+                (sourceDocsetPath, dependencyLock) = restoreMap.GetGitRestorePath(sourceRemote, sourceBranch, docset.DependencyLock);
                 return true;
             }
 
             return false;
         }
 
-        public static (Error error, string content, Document file) TryResolveContentFromHistory(GitCommitProvider gitCommitProvider, Docset docset, string pathToDocset)
-        {
-            // try to resolve from source repo's git history
-            var fallbackDocset = GetFallbackDocset();
-            if (fallbackDocset != null)
-            {
-                var (repo, pathToRepo, commits) = gitCommitProvider.GetCommitHistoryNoCache(Path.Combine(fallbackDocset.DocsetPath, pathToDocset), 2);
-                if (repo != null)
-                {
-                    var repoPath = PathUtility.NormalizeFolder(repo.Path);
-                    if (commits.Count > 1)
-                    {
-                        // the latest commit would be deleting it from repo
-                        if (GitUtility.TryGetContentFromHistory(repoPath, pathToRepo, commits[1].Sha, out var content))
-                        {
-                            var (error, doc) = Document.TryCreate(fallbackDocset, pathToDocset, isFromHistory: true);
-                            return (error, content, doc);
-                        }
-                    }
-                }
-            }
-
-            return default;
-
-            Docset GetFallbackDocset()
-            {
-                if (docset.LocalizationDocset != null)
-                {
-                    // source docset in loc build
-                    return docset;
-                }
-
-                if (docset.FallbackDocset != null)
-                {
-                    // localized docset in loc build
-                    return docset.FallbackDocset;
-                }
-
-                // source docset in source build
-                return null;
-            }
-        }
-
-        public static bool TryGetContributionBranch(string docset, out string contributionBranch, out Repository repo)
+        public static bool TryGetContributionBranch(Repository repository, out string contributionBranch)
         {
             contributionBranch = null;
 
-            repo = Repository.Create(docset);
-            if (repo == null)
+            if (repository == null)
             {
                 return false;
             }
 
-            return TryGetContributionBranch(repo.Branch, out contributionBranch);
+            return TryGetContributionBranch(repository.Branch, out contributionBranch);
         }
 
         public static bool TryGetContributionBranch(string branch, out string contributionBranch)
@@ -218,109 +193,9 @@ namespace Microsoft.Docs.Build
             return false;
         }
 
-        public static bool TryResolveDocset(this Docset docset, string file, out Docset resolvedDocset)
+        public static string GetLocale(Repository repository, CommandLineOptions options)
         {
-            // resolve from localization docset
-            if (docset.LocalizationDocset != null && File.Exists(Path.Combine(docset.LocalizationDocset.DocsetPath, file)))
-            {
-                resolvedDocset = docset.LocalizationDocset;
-                return true;
-            }
-
-            // resolve from current docset
-            if (File.Exists(Path.Combine(docset.DocsetPath, file)))
-            {
-                resolvedDocset = docset;
-                return true;
-            }
-
-            // resolve from fallback docset
-            if (docset.FallbackDocset != null && File.Exists(Path.Combine(docset.FallbackDocset.DocsetPath, file)))
-            {
-                resolvedDocset = docset.FallbackDocset;
-                return true;
-            }
-
-            resolvedDocset = null;
-            return false;
-        }
-
-        public static IReadOnlyList<Document> GetTableOfContentsScope(this Docset docset, TableOfContentsMap tocMap)
-        {
-            Debug.Assert(tocMap != null);
-
-            var result = docset.BuildScope.Where(d => d.ContentType == ContentType.TableOfContents).ToList();
-
-            if (!docset.IsLocalized())
-            {
-                return result;
-            }
-
-            // if A toc includes B toc and only B toc is localized, then A need to be included and built
-            var fallbackTocs = new List<Document>();
-            foreach (var toc in result)
-            {
-                if (tocMap.TryFindParents(toc, out var parents))
-                {
-                    fallbackTocs.AddRange(parents);
-                }
-            }
-
-            result.AddRange(fallbackTocs);
-
-            return result;
-        }
-
-        public static HashSet<Document> GetScanScope(this Docset docset)
-        {
-            var scanScopeFilePaths = new HashSet<string>(PathUtility.PathComparer);
-            var scanScope = new HashSet<Document>();
-
-            foreach (var buildScope in new[] { docset.LocalizationDocset?.BuildScope, docset.BuildScope, docset.FallbackDocset?.BuildScope })
-            {
-                if (buildScope == null)
-                {
-                    continue;
-                }
-
-                foreach (var document in buildScope)
-                {
-                    if (scanScopeFilePaths.Add(document.FilePath))
-                    {
-                        scanScope.Add(document);
-                    }
-                }
-            }
-
-            return scanScope;
-        }
-
-        public static Docset GetBuildDocset(this Docset sourceDocset)
-        {
-            Debug.Assert(sourceDocset != null);
-
-            return sourceDocset.LocalizationDocset ?? sourceDocset;
-        }
-
-        public static (List<Error> errors, Config config) GetBuildConfig(string docset, CommandLineOptions options)
-        {
-            if (ConfigLoader.TryGetConfigPath(docset, out _) || !TryGetSourceRepository(docset, out var sourceRemote, out var sourceBranch, out var locale))
-            {
-                return ConfigLoader.Load(docset, options);
-            }
-
-            var sourceDocsetPath = RestoreMap.GetGitRestorePath(sourceRemote, sourceBranch);
-            return ConfigLoader.Load(sourceDocsetPath, options, locale);
-        }
-
-        public static (bool fromUrl, string path) GetFileRestorePath(this Docset docset, string url)
-        {
-            return RestoreMap.GetFileRestorePath(docset.DocsetPath, url, docset.FallbackDocset?.DocsetPath);
-        }
-
-        public static string GetBuildLocale(string docset, CommandLineOptions options)
-        {
-            return TryGetSourceRepository(docset, out _, out _, out var locale) ? locale : options.Locale;
+            return TryGetSourceRepository(repository, out _, out _, out var locale) ? locale : options.Locale;
         }
 
         public static bool IsLocalized(this Docset docset) => docset.FallbackDocset != null;
@@ -330,7 +205,7 @@ namespace Microsoft.Docs.Build
         public static (string remote, string branch) GetLocalizedTheme(string theme, string locale, string defaultLocale)
         {
             Debug.Assert(!string.IsNullOrEmpty(theme));
-            var (remote, branch) = HrefUtility.SplitGitHref(theme);
+            var (remote, branch, _) = HrefUtility.SplitGitHref(theme);
 
             return (GetLocalizationName(LocalizationMapping.Repository, remote, locale, defaultLocale), branch);
         }
@@ -384,6 +259,11 @@ namespace Microsoft.Docs.Build
             }
 
             if (string.Equals(locale, defaultLocale))
+            {
+                return sourceBranch;
+            }
+
+            if (sourceBranch.EndsWith(locale, StringComparison.OrdinalIgnoreCase))
             {
                 return sourceBranch;
             }

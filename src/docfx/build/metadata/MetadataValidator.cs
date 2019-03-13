@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Newtonsoft.Json.Serialization;
 
 namespace Microsoft.Docs.Build
 {
@@ -34,17 +33,11 @@ namespace Microsoft.Docs.Build
 
         private static HashSet<string> GetReservedMetadata()
         {
-            var blackList = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-            var outputProperties = ((JsonObjectContract)JsonUtility.DefaultSerializer.ContractResolver.ResolveContract(typeof(PageModel))).Properties;
-            foreach (var property in outputProperties)
-            {
-                blackList.Add(property.PropertyName);
-            }
+            var blackList = new HashSet<string>(JsonUtility.GetPropertyNames(typeof(PageModel)), StringComparer.OrdinalIgnoreCase);
 
-            var inputProperties = ((JsonObjectContract)JsonUtility.DefaultSerializer.ContractResolver.ResolveContract(typeof(FileMetadata))).Properties;
-            foreach (var property in inputProperties)
+            foreach (var name in JsonUtility.GetPropertyNames(typeof(FileMetadata)))
             {
-                blackList.Remove(property.PropertyName);
+                blackList.Remove(name);
             }
 
             return blackList;

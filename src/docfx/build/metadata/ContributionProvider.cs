@@ -145,7 +145,8 @@ namespace Microsoft.Docs.Build
             return File.GetLastWriteTimeUtc(Path.Combine(document.Docset.DocsetPath, document.FilePath));
         }
 
-        public async Task<(string editUrl, string contentUrl, string commitUrl)> GetGitUrls(Document document)
+        public async Task<(string contentGitUrl, string originalContentGitUrl, string originalContentGitUrlTemplate, string gitCommit)>
+            GetGitUrls(Document document)
         {
             Debug.Assert(document != null);
 
@@ -153,6 +154,7 @@ namespace Microsoft.Docs.Build
             if (repo == null)
                 return default;
 
+            var escapedPathToRepo = HrefUtility.EscapeUrl(pathToRepo);
             var repoHost = GitHubUtility.TryParse(repo.Remote, out _, out _) ? GitHost.GitHub : GitHost.Unknown;
             var commit = commits.FirstOrDefault()?.Sha;
             if (string.IsNullOrEmpty(commit))
@@ -160,46 +162,53 @@ namespace Microsoft.Docs.Build
                 commit = repo.Commit;
             }
 
-            return (GetEditUrl(), GetContentUrl(), GetCommitUrl());
+            var originalContentGitUrlTemplate = GetOriginalContentGitUrlTemplate();
+            var originalContentGitUrl = originalContentGitUrlTemplate?.Replace("{repo}", repo.Remote).Replace("{branch}", repo.Branch);
 
-            string GetCommitUrl()
+            return (GetContentGitUrl(), originalContentGitUrl, originalContentGitUrlTemplate, GetGitCommit());
+
+            string GetGitCommit()
             {
                 switch (repoHost)
                 {
                     case GitHost.GitHub:
-                        return commit != null ? $"{repo.Remote}/blob/{commit}/{pathToRepo}" : null;
+                        return commit != null ? $"{repo.Remote}/blob/{commit}/{escapedPathToRepo}" : null;
                     default:
                         return null;
                 }
             }
 
-            string GetContentUrl()
+            string GetOriginalContentGitUrlTemplate()
             {
                 switch (repoHost)
                 {
                     case GitHost.GitHub:
-                        return $"{repo.Remote}/blob/{repo.Branch}/{pathToRepo}";
+                        return $"{{repo}}/blob/{{branch}}/{escapedPathToRepo}";
                     default:
                         return null;
                 }
             }
 
-            string GetEditUrl()
+            string GetContentGitUrl()
             {
-                if (!document.Docset.Config.Contribution.ShowEdit)
-                {
-                    return null;
-                }
-
                 var (editRemote, editBranch) = (repo.Remote, repo.Branch);
+
+                if (LocalizationUtility.TryGetContributionBranch(editBranch, out var contributionBranch1))
+                {
+                    editBranch = contributionBranch1;
+                }
+
                 if (!string.IsNullOrEmpty(document.Docset.Config.Contribution.Repository))
                 {
-                    (editRemote, editBranch) = HrefUtility.SplitGitHref(document.Docset.Config.Contribution.Repository);
+                    var (contribRemote, contribBranch, hasRefSpec) = HrefUtility.SplitGitHref(document.Docset.Config.Contribution.Repository);
+
+                    (editRemote, editBranch) = (contribRemote, hasRefSpec ? contribBranch : editBranch);
+
                     if (document.Docset.IsLocalized())
                     {
                         (editRemote, editBranch) = LocalizationUtility.GetLocalizedRepo(
                                                     document.Docset.Config.Localization.Mapping,
-                                                    document.Docset.Config.Localization.Bilingual,
+                                                    false,
                                                     editRemote,
                                                     editBranch,
                                                     document.Docset.Locale,
@@ -207,15 +216,10 @@ namespace Microsoft.Docs.Build
                     }
                 }
 
-                if (LocalizationUtility.TryGetContributionBranch(editBranch, out var contributionBranch))
-                {
-                    editBranch = contributionBranch;
-                }
-
                 // git edit url, only works for github repo
                 if (GitHubUtility.TryParse(editRemote, out _, out _))
                 {
-                    return $"{editRemote}/blob/{editBranch}/{pathToRepo}";
+                    return $"{editRemote}/blob/{editBranch}/{escapedPathToRepo}";
                 }
 
                 return null;
@@ -226,8 +230,7 @@ namespace Microsoft.Docs.Build
         {
             if (!string.IsNullOrEmpty(docset.Config.Contribution.GitCommitsTime))
             {
-                var (_, path) = docset.GetFileRestorePath(docset.Config.Contribution.GitCommitsTime);
-                var content = await ProcessUtility.ReadFile(path);
+                var (_, content, _) = await RestoreMap.GetRestoredFileContent(docset, docset.Config.Contribution.GitCommitsTime);
 
                 foreach (var commit in JsonUtility.Deserialize<GitCommitsTime>(content).Commits)
                 {

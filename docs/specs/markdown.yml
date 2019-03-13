@@ -204,15 +204,22 @@ outputs:
   build.log: |
     ["warning","heading-not-found","The first visible block is not a heading block with `#`","docs/a.md"]
 ---
-# note
-inputs:
-  docfx.yml:
-  docs/a.md: |
-    >[!NOTE]
-    >note
+# note token text can be replaced by template
+repos:
+  https://docs.com/markdown-note:
+  - files:
+      docfx.yml: |
+        theme: https://docs.com/template/token
+      docs/a.md: |
+        >[!NOTE]
+        >note
+  https://docs.com/template/token:
+  - files:
+      LocalizedTokens/docs(en-us).html/tokens.json: |
+        { "note": "<p>my note</p>" }
 outputs:
   docs/a.json: |
-    { "content": "<div class=\"NOTE\"><p>Note</p><p>note</p></div>" }
+    { "content": "<div class=\"NOTE\"><p>my note</p><p>note</p></div>" }
 ---
 # title
 inputs:
@@ -221,15 +228,15 @@ inputs:
     ---
     metaKey: metaValue
     ---
-    # This is *a* title
+    # This is *a* title &
     
     body
 outputs:
   docs/a.json: |
     {
       "content": "<p>body</p>",
-      "title": "This is a title",
-      "raw_title": "<h1 id=\"this-is-a-title\">This is <em>a</em> title</h1>",
+      "title": "This is a title &",
+      "raw_title": "<h1 id=\"this-is-a-title-\">This is <em>a</em> title &amp;</h1>",
       "metadata": { "metaKey": "metaValue" }
     }
 ---
@@ -346,11 +353,16 @@ inputs:
   docs/a.experimental.md:
 outputs:
   docs/a.json: |
-    {"document_id":"fa697b4e-3e52-77f6-2219-39040f6070da","document_version_independent_id":"7c88e748-ed5e-a29a-c057-6f89857c3591"}
+    { "document_id": "fa697b4e-3e52-77f6-2219-39040f6070da", "document_version_independent_id": "7c88e748-ed5e-a29a-c057-6f89857c3591" }
   docs/a.experimental.json: |
-    {"document_id":"f481558d-b8fa-5acb-facb-d3bee58fbf3e","document_version_independent_id":"80168efe-9436-03b9-9e7c-eaf20a91d680"}
-  build.manifest: |
-    {"files":[{"siteUrl":"/docs/a.experimental","outputPath":"docs/a.experimental.json","sourcePath":"docs/a.experimental.md"},{"siteUrl":"/docs/a","outputPath":"docs/a.json","sourcePath":"docs/a.md"}],"dependencies":{}}
+    { "document_id": "f481558d-b8fa-5acb-facb-d3bee58fbf3e", "document_version_independent_id": "80168efe-9436-03b9-9e7c-eaf20a91d680" }
+  .publish.json: |
+    {
+      "files":[
+        { "url": "/docs/a.experimental", "path": "docs/a.experimental.json" },
+        { "url": "/docs/a", "path": "docs/a.json" }
+      ]
+    }
 ---
 # `", '` should be properly escaped when written in html directly
 inputs:
@@ -395,3 +407,24 @@ outputs:
   docs/a.json:
   build.log: |
     ["warning","yaml-header-not-object","Expect yaml header to be an object, but got a scalar","docs/a.md"]
+---
+# Handling malformed HTML tags using HtmlAgilityPack 1.4.9
+inputs:
+  docfx.yml:
+  docs/a.md: |
+    1.  a
+        <UL><LI><LI></UL>
+    2.  b
+        <UL><LI>
+    ## c
+outputs:
+  docs/a.json: |
+    content: |
+      <ol>
+        <li>a
+          <ul><li><li></li></li></ul>
+        <li>b
+          <ul><li></li></ul></li>
+        </li>
+      </ol>
+      <h2 id="c">c</h2>

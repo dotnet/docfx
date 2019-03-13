@@ -81,10 +81,12 @@ namespace Microsoft.Docs.Build
 
         private static async Task RunCore(string docsetPath, E2ESpec spec)
         {
+            bool failed = false;
             foreach (var command in spec.Commands)
             {
                 if (await Program.Run(command.Split(" ").Concat(new[] { docsetPath }).ToArray()) != 0)
                 {
+                    failed = true;
                     break;
                 }
             }
@@ -97,9 +99,9 @@ namespace Microsoft.Docs.Build
             var outputFileNames = outputs.Select(file => file.Substring(docsetOutputPath.Length + 1).Replace('\\', '/')).ToList();
 
             // Show build.log content if actual output has errors or warnings.
-            if (!spec.Outputs.Keys.Contains("build.log") && outputFileNames.Contains("build.log"))
+            if (failed && outputFileNames.Contains("build.log"))
             {
-                Assert.True(false, File.ReadAllText(Path.Combine(docsetOutputPath, "build.log")));
+                Console.WriteLine($"{Path.GetFileName(docsetPath)}: {File.ReadAllText(Path.Combine(docsetOutputPath, "build.log"))}");
             }
 
             // These files output mostly contains empty content which e2e tests are not intrested in
@@ -113,10 +115,15 @@ namespace Microsoft.Docs.Build
             }
 
             // Verify output
-            Assert.Equal(spec.Outputs.Keys.OrderBy(_ => _), outputFileNames.OrderBy(_ => _));
+            Assert.Equal(spec.Outputs.Keys.Where(k => !k.StartsWith("~/")).OrderBy(_ => _), outputFileNames.OrderBy(_ => _));
 
             foreach (var (filename, content) in spec.Outputs)
             {
+                if (filename.StartsWith("~/"))
+                {
+                    VerifyFile(Path.GetFullPath(Path.Combine(docsetPath, filename.Substring(2))), content);
+                    continue;
+                }
                 VerifyFile(Path.GetFullPath(Path.Combine(docsetOutputPath, filename)), content);
             }
         }
@@ -202,7 +209,7 @@ namespace Microsoft.Docs.Build
             Assert.StartsWith($"# {match.Groups[4].Value}", yaml);
 
             var yamlHash = HashUtility.GetMd5Hash(yaml).Substring(0, 5);
-            var name = ToSafePathString(specName) + "-" + yamlHash;
+            var name = ToSafePathString(specName).Substring(0, Math.Min(30, specName.Length)) + "-" + yamlHash;
 
             var spec = YamlUtility.Deserialize<E2ESpec>(yaml, false);
 
@@ -235,7 +242,7 @@ namespace Microsoft.Docs.Build
                     {
                         t_mockedRepos.Value = mockedRepos;
 
-                        var (remote, refspec) = HrefUtility.SplitGitHref(inputRepo);
+                        var (remote, refspec, _) = HrefUtility.SplitGitHref(inputRepo);
                         await GitUtility.CloneOrUpdate(inputFolder, remote, refspec);
                         Process.Start(new ProcessStartInfo("git", "submodule update --init") { WorkingDirectory = inputFolder }).WaitForExit();
                     }
@@ -265,6 +272,12 @@ namespace Microsoft.Docs.Build
             }
 
             var docset = Path.Combine(inputFolder, spec.Cwd ?? string.Empty);
+
+            if (GitUtility.IsRepo(docset) && !spec.Inputs.Any() && spec.Outputs.Any(k => k.Key.StartsWith("~/")))
+            {
+                Process.Start(new ProcessStartInfo("git", "clean -fdx") { WorkingDirectory = docset }).WaitForExit();
+            }
+
             if (Directory.Exists(Path.Combine(docset, "_site")))
             {
                 Directory.Delete(Path.Combine(docset, "_site"), recursive: true);
@@ -351,16 +364,17 @@ namespace Microsoft.Docs.Build
             switch (Path.GetExtension(file.ToLowerInvariant()))
             {
                 case ".json":
-                case ".manifest":
-                    TestUtility.VerifyJsonContainEquals(
-                        JToken.Parse(content ?? "{}"),
-                        JToken.Parse(File.ReadAllText(file)));
+                    if (!string.IsNullOrEmpty(content))
+                    {
+                        TestUtility.VerifyJsonContainEquals(
+                            // Test expectation can use YAML for readability
+                            content.StartsWith("{") ? JToken.Parse(content) : YamlUtility.Deserialize(content, nullValidation: false).Item2,
+                            JToken.Parse(File.ReadAllText(file)));
+                    }
                     break;
                 case ".log":
                     var expected = content.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).OrderBy(_ => _).ToArray();
                     var actual = File.ReadAllLines(file).OrderBy(_ => _).ToArray();
-                    // TODO: Configure github token in CI to get rid of github rate limit,
-                    // then we could remove the wildcard match
                     if (expected.Any(str => str.Contains("*")))
                     {
                         Assert.Matches("^" + Regex.Escape(string.Join("\n", expected)).Replace("\\*", ".*") + "$", string.Join("\n", actual));

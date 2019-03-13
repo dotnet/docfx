@@ -5,9 +5,10 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
+using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -51,13 +52,14 @@ namespace Microsoft.Docs.Build
 
             if (TryResolveFromInternal(uid, moniker, out var internalXrefSpec, out var referencedFile))
             {
-                resolvedHref = RebaseResolvedHref(rootFile, referencedFile);
+                var (_, query, fragment) = HrefUtility.SplitHref(internalXrefSpec.Href);
+                resolvedHref = HrefUtility.MergeHref(RebaseResolvedHref(rootFile, referencedFile), query, fragment.Length == 0 ? "" : fragment.Substring(1));
                 name = internalXrefSpec.GetName();
                 displayPropertyValue = internalXrefSpec.GetXrefPropertyValue(displayPropertyName);
             }
             else if (TryResolveFromExternal(uid, out var xrefSpec))
             {
-                resolvedHref = xrefSpec.Href;
+                resolvedHref = RemoveHostnameIfSharingTheSameOne(xrefSpec.Href);
                 name = xrefSpec.GetName();
                 displayPropertyValue = xrefSpec.GetXrefPropertyValue(displayPropertyName);
             }
@@ -70,6 +72,16 @@ namespace Microsoft.Docs.Build
             // xrefSpec.displayPropertyName -> xrefSpec.name -> uid
             string display = !string.IsNullOrEmpty(displayPropertyValue) ? displayPropertyValue : (!string.IsNullOrEmpty(name) ? name : uid);
             return (null, resolvedHref, display, referencedFile);
+
+            string RemoveHostnameIfSharingTheSameOne(string input)
+            {
+                var hostname = rootFile.Docset.Config.BaseUrl;
+                if (input.StartsWith(hostname, StringComparison.OrdinalIgnoreCase))
+                {
+                    return input.Substring(hostname.Length);
+                }
+                return input;
+            }
         }
 
         private string RebaseResolvedHref(Document rootFile, Document referencedFile)
@@ -139,13 +151,12 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public static XrefMap Create(Context context, Docset docset)
+        public static async Task<XrefMap> Create(Context context, Docset docset)
         {
             Dictionary<string, XrefSpec> map = new Dictionary<string, XrefSpec>();
             foreach (var url in docset.Config.Xref)
             {
-                var (_, path) = docset.GetFileRestorePath(url);
-                var content = File.ReadAllText(path);
+                var (_, content, _) = await RestoreMap.GetRestoredFileContent(docset, url);
                 XrefMapModel xrefMap = new XrefMapModel();
                 if (url.EndsWith(".yml", StringComparison.OrdinalIgnoreCase))
                 {
@@ -279,7 +290,7 @@ namespace Microsoft.Docs.Build
                 {
                     var (yamlHeaderErrors, yamlHeader) = ExtractYamlHeader.Extract(file, context);
 
-                    var (fileMetaErrors, fileMetadata) = context.MetadataProvider.GetFileMetadata(file, yamlHeader);
+                    var (fileMetaErrors, fileMetadata) = context.MetadataProvider.GetMetadata<FileMetadata>(file, yamlHeader);
                     errors.AddRange(yamlHeaderErrors);
 
                     if (!string.IsNullOrEmpty(fileMetadata.Uid))
@@ -293,26 +304,22 @@ namespace Microsoft.Docs.Build
                 {
                     var (yamlErrors, token) = YamlUtility.Deserialize(file, context);
                     errors.AddRange(yamlErrors);
-                    var obj = token as JObject;
-                    var uid = obj?.Value<string>("uid");
-                    if (!string.IsNullOrEmpty(uid))
+                    var (schemaErrors, specs) = LoadSchemaDocument(context, token as JObject, file);
+                    errors.AddRange(schemaErrors);
+                    foreach (var spec in specs)
                     {
-                        var (schemaErrors, spec) = LoadSchemaDocument(context, obj, file, uid);
-                        errors.AddRange(schemaErrors);
-                        TryAddXref(xrefsByUid, uid, file, spec);
+                        TryAddXref(xrefsByUid, spec.Uid, file, spec);
                     }
                 }
                 else if (file.FilePath.EndsWith(".json", PathUtility.PathComparison))
                 {
                     var (jsonErrors, token) = JsonUtility.Deserialize(file, context);
                     errors.AddRange(jsonErrors);
-                    var obj = token as JObject;
-                    var uid = obj.Value<string>("uid");
-                    if (!string.IsNullOrEmpty(uid))
+                    var (schemaErrors, specs) = LoadSchemaDocument(context, token as JObject, file);
+                    errors.AddRange(schemaErrors);
+                    foreach (var spec in specs)
                     {
-                        var (schemaErrors, spec) = LoadSchemaDocument(context, obj, file, uid);
-                        errors.AddRange(schemaErrors);
-                        TryAddXref(xrefsByUid, uid, file, spec);
+                        TryAddXref(xrefsByUid, spec.Uid, file, spec);
                     }
                 }
                 context.Report.Write(file.ToString(), errors);
@@ -341,8 +348,15 @@ namespace Microsoft.Docs.Build
             return (error, xref, file);
         }
 
-        private static (List<Error> errors, InternalXrefSpec spec) LoadSchemaDocument(Context context, JObject obj, Document file, string uid)
+        private static (List<Error> errors, IReadOnlyList<InternalXrefSpec> specs) LoadSchemaDocument(Context context, JObject obj, Document file)
         {
+            var uidToJsonPath = new Dictionary<string, string>();
+            var jsonPathToUid = new Dictionary<string, string>();
+            GetUids(context, file.FilePath, obj, uidToJsonPath, jsonPathToUid);
+            if (uidToJsonPath.Count == 0)
+            {
+                return (new List<Error>(), new List<InternalXrefSpec>());
+            }
             var extensionData = new Dictionary<string, Lazy<JValue>>();
 
             // TODO: for backward compatibility, when #YamlMime:YamlDocument, documentType is used to determine schema.
@@ -354,21 +368,102 @@ namespace Microsoft.Docs.Build
             }
 
             var errors = new List<Error>();
-            var (schemaErrors, content) = JsonUtility.ToObjectWithSchemaValidation(
+            var (schemaErrors, _) = JsonUtility.ToObjectWithSchemaValidation(
                 obj,
                 schema.Type,
                 transform: AttributeTransformer.TransformXref(context, file, null, extensionData));
 
             errors.AddRange(schemaErrors);
-            var xref = new InternalXrefSpec
-            {
-                Uid = uid,
-                Href = file.CanonicalUrlWithoutLocale,
-                ReferencedFile = file,
-            };
 
-            xref.ExtensionData.AddRange(extensionData);
-            return (errors, xref);
+            var extensionDataByUid = new Dictionary<string, (bool isRoot, Dictionary<string, Lazy<JValue>> properties)>();
+
+            foreach (var (uid, value) in uidToJsonPath)
+            {
+                extensionDataByUid.Add(uid, (string.IsNullOrEmpty(value), new Dictionary<string, Lazy<JValue>>()));
+            }
+
+            foreach (var (jsonPath, xrefProperty) in extensionData)
+            {
+                var (uid, resolvedJsonPath) = MatchExtensionDataToUid(jsonPath);
+                if (extensionDataByUid.ContainsKey(uid))
+                {
+                    var (_, properties) = extensionDataByUid[uid];
+                    properties.Add(resolvedJsonPath, xrefProperty);
+                }
+                else
+                {
+                    extensionDataByUid.Add(uid, (string.IsNullOrEmpty(uidToJsonPath[uid]), new Dictionary<string, Lazy<JValue>> { { resolvedJsonPath, xrefProperty } }));
+                }
+            }
+
+            var specs = extensionDataByUid.Select(item =>
+            {
+                var (isRoot, properties) = item.Value;
+                var xref = new InternalXrefSpec
+                {
+                    Uid = item.Key,
+                    Href = isRoot ? file.CanonicalUrlWithoutLocale : $"{file.CanonicalUrlWithoutLocale}#{GetBookmarkFromUid(item.Key)}",
+                    ReferencedFile = file,
+                };
+                xref.ExtensionData.AddRange(properties);
+                return xref;
+            }).ToList();
+
+            return (errors, specs);
+
+            string GetBookmarkFromUid(string uid)
+                => Regex.Replace(uid, @"\W", "_");
+
+            (string uid, string jsonPath) MatchExtensionDataToUid(string jsonPath)
+            {
+                string subString;
+                var index = jsonPath.LastIndexOf('.');
+                if (index == -1)
+                {
+                    subString = string.Empty;
+                }
+                else
+                {
+                    subString = jsonPath.Substring(0, index);
+                }
+
+                return jsonPathToUid.ContainsKey(subString) ? (jsonPathToUid[subString], jsonPath.Substring(index + 1)) : MatchExtensionDataToUid(subString);
+            }
+        }
+
+        private static void GetUids(Context context, string filePath, JObject token, Dictionary<string, string> uidToJsonPath, Dictionary<string, string> jsonPathToUid)
+        {
+            if (token is null)
+                return;
+
+            if (token.TryGetValue("uid", out var value) && value is JValue v && v.Value is string str)
+            {
+                if (!uidToJsonPath.TryAdd(str, token.Path))
+                {
+                    context.Report.Write(filePath, Errors.UidConflict(str));
+                }
+                else
+                {
+                    jsonPathToUid.TryAdd(token.Path, str);
+                }
+            }
+
+            foreach (var item in token.Children())
+            {
+                var property = item as JProperty;
+                if (property.Value is JObject obj)
+                {
+                    GetUids(context, filePath, obj, uidToJsonPath, jsonPathToUid);
+                }
+
+                if (property.Value is JArray array)
+                {
+                    foreach (var child in array.Children())
+                    {
+                        GetUids(context, filePath, child as JObject, uidToJsonPath, jsonPathToUid);
+                    }
+                }
+            }
         }
 
         private static void TryAddXref(ConcurrentDictionary<string, ConcurrentBag<(InternalXrefSpec, Document)>> xrefsByUid, string uid, Document file, InternalXrefSpec spec)

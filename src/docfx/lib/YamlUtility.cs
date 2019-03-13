@@ -4,8 +4,8 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
-using System.Reflection;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json.Linq;
 
@@ -21,12 +21,8 @@ namespace Microsoft.Docs.Build
     {
         public const string YamlMimePrefix = "YamlMime:";
 
-        private static readonly MethodInfo s_setLineInfo = typeof(JToken).GetMethod(
-            "SetLineInfo",
-            BindingFlags.NonPublic | BindingFlags.Instance,
-            null,
-            new[] { typeof(int), typeof(int) },
-            null);
+        private static readonly Action<JToken, int, int> s_setLineInfo =
+            ReflectionUtility.CreateInstanceMethod<JToken, Action<JToken, int, int>>("SetLineInfo", new[] { typeof(int), typeof(int) });
 
         public static string ReadMime(TextReader reader)
         {
@@ -144,11 +140,9 @@ namespace Microsoft.Docs.Build
             {
                 if (scalar.Style == ScalarStyle.Plain)
                 {
-                    if (string.IsNullOrWhiteSpace(scalar.Value))
-                    {
-                        return PopulateLineInfoToJToken(JValue.CreateNull(), node);
-                    }
-                    if (scalar.Value == "~")
+                    if (string.IsNullOrWhiteSpace(scalar.Value) ||
+                        scalar.Value == "~" ||
+                        string.Equals(scalar.Value, "null", StringComparison.OrdinalIgnoreCase))
                     {
                         return PopulateLineInfoToJToken(JValue.CreateNull(), node);
                     }
@@ -156,7 +150,7 @@ namespace Microsoft.Docs.Build
                     {
                         return PopulateLineInfoToJToken(new JValue(n), node);
                     }
-                    if (double.TryParse(scalar.Value, out var d))
+                    if (double.TryParse(scalar.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out var d))
                     {
                         return PopulateLineInfoToJToken(new JValue(d), node);
                     }
@@ -201,7 +195,7 @@ namespace Microsoft.Docs.Build
         private static JToken PopulateLineInfoToJToken(JToken token, YamlNode node)
         {
             Debug.Assert(token != null);
-            s_setLineInfo.Invoke(token, new object[] { node.Start.Line, node.Start.Column });
+            s_setLineInfo(token, node.Start.Line, node.Start.Column);
             return token;
         }
     }

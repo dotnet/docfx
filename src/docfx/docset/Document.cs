@@ -102,13 +102,13 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public bool IsSchemaData => Schema != null && Schema.Attribute as PageSchemaAttribute == null;
 
-        private readonly Lazy<(string docId, string versionIndependentId)> _id;
+        /// <summary>
+        /// Gets the repository
+        /// </summary>
+        public Repository Repository => _repository.Value;
 
-        // TODO:
-        // This is a temporary property just so that legacy can access OutputPath,
-        // I'll slowly converge legacy into main build and remove this property eventually.
-        // Do not use this property in main build.
-        internal string OutputPath;
+        private readonly Lazy<(string docId, string versionIndependentId)> _id;
+        private readonly Lazy<Repository> _repository;
 
         /// <summary>
         /// Intentionally left as private. Use <see cref="Document.TryCreateFromFile(Docset, string)"/> instead.
@@ -144,6 +144,7 @@ namespace Microsoft.Docs.Build
             IsFromHistory = isFromHistory;
 
             _id = new Lazy<(string docId, string versionId)>(() => LoadDocumentId());
+            _repository = new Lazy<Repository>(() => Docset.GetRepository(FilePath));
 
             Debug.Assert(IsValidRelativePath(FilePath));
             Debug.Assert(IsValidRelativePath(SitePath));
@@ -175,6 +176,13 @@ namespace Microsoft.Docs.Build
             {
                 return reader.ReadToEnd();
             }
+        }
+
+        public string GetOutputPath(List<string> monikers, bool rawPage = false)
+        {
+            var outputPath = PathUtility.NormalizeFile(Path.Combine($"{HashUtility.GetMd5HashShort(monikers)}", SitePath));
+
+            return Docset.Legacy && rawPage ? Path.ChangeExtension(outputPath, ".raw.page.json") : outputPath;
         }
 
         public override int GetHashCode()
@@ -265,7 +273,7 @@ namespace Microsoft.Docs.Build
 
             pathToDocset = PathUtility.NormalizeFile(pathToDocset);
 
-            if (docset.TryResolveDocset(pathToDocset, out var resolvedDocset))
+            if (TryResolveDocset(docset, pathToDocset, out var resolvedDocset))
             {
                 var (error, file) = TryCreate(resolvedDocset, pathToDocset);
                 return error == null ? file : null;
@@ -347,7 +355,7 @@ namespace Microsoft.Docs.Build
         internal static string PathToAbsoluteUrl(string path, ContentType contentType, Schema schema, bool json)
         {
             var url = PathToRelativeUrl(path, contentType, schema, json);
-            return url == "." ? "/" : "/" + url;
+            return url == "./" ? "/" : "/" + url;
         }
 
         internal static string PathToRelativeUrl(string path, ContentType contentType, Schema schema, bool json)
@@ -363,7 +371,7 @@ namespace Microsoft.Docs.Build
                         if (fileName.Equals("index", PathUtility.PathComparison))
                         {
                             var i = url.LastIndexOf('/');
-                            return i >= 0 ? url.Substring(0, i + 1) : ".";
+                            return i >= 0 ? url.Substring(0, i + 1) : "./";
                         }
                         if (json)
                         {
@@ -466,6 +474,33 @@ namespace Microsoft.Docs.Build
             return (
                 HashUtility.GetMd5Guid($"{depotName}|{sourcePath.ToLowerInvariant()}").ToString(),
                 HashUtility.GetMd5Guid($"{depotName}|{sitePath.ToLowerInvariant()}").ToString());
+        }
+
+        private static bool TryResolveDocset(Docset docset, string file, out Docset resolvedDocset)
+        {
+            // resolve from localization docset
+            if (docset.LocalizationDocset != null && File.Exists(Path.Combine(docset.LocalizationDocset.DocsetPath, file)))
+            {
+                resolvedDocset = docset.LocalizationDocset;
+                return true;
+            }
+
+            // resolve from current docset
+            if (File.Exists(Path.Combine(docset.DocsetPath, file)))
+            {
+                resolvedDocset = docset;
+                return true;
+            }
+
+            // resolve from fallback docset
+            if (docset.FallbackDocset != null && File.Exists(Path.Combine(docset.FallbackDocset.DocsetPath, file)))
+            {
+                resolvedDocset = docset.FallbackDocset;
+                return true;
+            }
+
+            resolvedDocset = null;
+            return false;
         }
     }
 }
