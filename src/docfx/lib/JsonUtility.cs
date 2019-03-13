@@ -44,7 +44,7 @@ namespace Microsoft.Docs.Build
             Converters = { new StringEnumConverter { NamingStrategy = s_namingStrategy } },
         };
 
-        private static ThreadLocal<Stack<Status>> t_status = new ThreadLocal<Stack<Status>>(() => new Stack<Status>());
+        private static readonly ThreadLocal<Stack<Status>> t_status = new ThreadLocal<Stack<Status>>(() => new Stack<Status>());
 
         // HACK: Json.NET property deserialization is case insensitive:
         // https://github.com/JamesNK/Newtonsoft.Json/issues/815,
