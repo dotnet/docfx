@@ -331,7 +331,7 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Info, "null-value", $"'{name}' contains null value", range: range, jsonPath: path);
 
         public static Error NullArrayValue(in Range range, string name, string path)
-            => new Error(ErrorLevel.Info, "null-array-value", $"'{name}' contains null value, the null value has been removed", range: range, jsonPath: path);
+            => new Error(ErrorLevel.Warning, "null-array-value", $"'{name}' contains null value, the null value has been removed", range: range, jsonPath: path);
 
         /// <summary>
         /// Defined extra field(s) in input model in schema document(json, yml).
