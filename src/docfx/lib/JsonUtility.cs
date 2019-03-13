@@ -19,14 +19,6 @@ namespace Microsoft.Docs.Build
 {
     internal static class JsonUtility
     {
-        // HACK: Json.NET property deserialization is case insensitive:
-        // https://github.com/JamesNK/Newtonsoft.Json/issues/815,
-        // Force property deserialization to be case sensitive by hijacking GetClosestMatchProperty implementation.
-        private static readonly Action<JsonPropertyCollection, List<JsonProperty>> s_makeJsonCaseSensitive =
-            ReflectionUtility.CreateInstanceFieldSetter<JsonPropertyCollection, List<JsonProperty>>("_list");
-
-        private static readonly List<JsonProperty> s_emptyPropertyList = new List<JsonProperty>();
-
         private static readonly NamingStrategy s_namingStrategy = new CamelCaseNamingStrategy();
         private static readonly JsonMergeSettings s_mergeSettings = new JsonMergeSettings { MergeArrayHandling = MergeArrayHandling.Replace };
 
@@ -53,6 +45,14 @@ namespace Microsoft.Docs.Build
         };
 
         private static ThreadLocal<Stack<Status>> t_status = new ThreadLocal<Stack<Status>>(() => new Stack<Status>());
+
+        // HACK: Json.NET property deserialization is case insensitive:
+        // https://github.com/JamesNK/Newtonsoft.Json/issues/815,
+        // Force property deserialization to be case sensitive by hijacking GetClosestMatchProperty implementation.
+        private static readonly Action<JsonPropertyCollection, List<JsonProperty>> s_makeJsonCaseSensitive =
+            ReflectionUtility.CreateInstanceFieldSetter<JsonPropertyCollection, List<JsonProperty>>("_list");
+
+        private static readonly List<JsonProperty> s_emptyPropertyList = new List<JsonProperty>();
 
         static JsonUtility()
         {
