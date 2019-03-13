@@ -211,7 +211,7 @@ inputs:
     extend:
       - docs/a.yml
       - docs/b.yml
-    github:
+    gitHub:
       userCache: docs/d.json
     contribution:
       gitCommitsTime: docs/c.json
@@ -249,7 +249,7 @@ inputs:
   docfx.yml: |
     rules:
       file-not-found: off
-    github:
+    gitHub:
       userCache: user_profile.json
 outputs:
   build.log: |

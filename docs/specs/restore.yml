@@ -26,7 +26,7 @@ repos:
     - files:
         docs/a.md:
         docfx.yml: |
-          github:
+          gitHub:
             userCache: https://raw.githubusercontent.com/docascode/docfx-test-dependencies/github-user-cache-file/user_profile.json
             resolveUsers: true
       author: OsmondJiang

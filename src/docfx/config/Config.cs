@@ -121,7 +121,6 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Gets the configurations related to GitHub APIs, usually related to resolve contributors.
         /// </summary>
-        [JsonProperty("github")]
         public readonly GitHubConfig GitHub = new GitHubConfig();
 
         /// <summary>
