@@ -228,7 +228,7 @@
         "$ref": "#/definitions/HttpConfig"
       }
     },
-    "github": {
+    "gitHub": {
       "$ref": "#/definitions/GitHubConfig"
     },
     "warningsAsErrors": {
