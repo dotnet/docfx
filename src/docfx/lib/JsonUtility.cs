@@ -274,7 +274,7 @@ namespace Microsoft.Docs.Build
             foreach (var node in nullNodes)
             {
                 var (lineInfo, name) = Parse(node);
-                errors.Add(Errors.NullValue(new Range(lineInfo.LineNumber, lineInfo.LinePosition), name, node.Path));
+                errors.Add(Errors.NullValue(ToRange(node), name, node.Path));
             }
 
             foreach (var node in nullArrayNodes)
