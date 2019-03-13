@@ -96,7 +96,7 @@ dependencies:
             var restoreDir = AppData.GetFileDownloadDir(url);
 
             File.WriteAllText(Path.Combine(docsetPath, "docfx.yml"), $@"
-github:
+gitHub:
   userCache: https://raw.githubusercontent.com/docascode/docfx-test-dependencies-clean/master/README.md");
 
             // run restore
