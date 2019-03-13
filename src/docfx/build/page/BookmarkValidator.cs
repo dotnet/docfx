@@ -4,7 +4,6 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -45,7 +44,8 @@ namespace Microsoft.Docs.Build
                 {
                     continue;
                 }
-                result.Add((Errors.BookmarkNotFound(file, reference, bookmark, bookmarks), file));
+                result.Add(file == reference ? (Errors.InternalBookmarkNotFound(file, bookmark, bookmarks), file) :
+                                               (Errors.ExternalBookmarkNotFound(file, reference, bookmark, bookmarks), file));
             }
 
             return result;
