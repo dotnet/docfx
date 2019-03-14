@@ -94,7 +94,7 @@ namespace Microsoft.Docs.Build
 
             if (redirect != null)
             {
-                return (Errors.IncludeRedirection(relativeTo, href), null, null);
+                return (Errors.IncludeIsRedirection(relativeTo, href), null, null);
             }
 
             if (file == null && !string.IsNullOrEmpty(pathToDocset))

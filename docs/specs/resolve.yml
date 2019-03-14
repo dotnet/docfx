@@ -167,7 +167,7 @@ outputs:
   docs/a.json: |
     {"content":"<p><a href=\"/absolute/path?a#b\">redirect</a></p>"}
 ---
-# Show warning if inclusion is a redirection file
+# Show error if inclusion is a redirection file
 inputs:
   docfx.yml: |
     redirections:
@@ -175,10 +175,8 @@ inputs:
   docs/a.md: |
     Link to [!INCLUDE[](redirect.md)]
 outputs:
-  docs/a.json: |
-    {"content":"<p>Link to [!include[](redirect.md)]</p>"}
   build.log: |
-    ["warning","include-is-redirection","Referenced inclusion redirect.md relative to 'docs/a.md' shouldn't belong to redirections","docs/a.md","",1,9]
+    ["error","include-is-redirection","Referenced inclusion redirect.md relative to 'docs/a.md' shouldn't belong to redirections","docs/a.md","",1,9]
     ["warning","include-not-found","Cannot resolve 'redirect.md' relative to 'docs/a.md'.","docs/a.md","",1,9]
 ---
 # Show warning if redirection file conflicts with existing file
