@@ -28,22 +28,7 @@ outputs:
   build.log: |
     ["info","null-value","'title' contains null value","docs/a.md","title",1,1]
 ---
-# Yaml header
-inputs:
-  docfx.yml:
-  docs/a.md: |
-    ---
-    title: me
-    ---
-    hello
-outputs:
-  docs/a.json: |
-    {
-      "content": "<p>hello</p>",
-      "metadata": { "title": "me" }
-    }
----
-# Yaml header title in lower-case
+# title metadata overrides h1
 inputs:
   docfx.yml:
   docs/a.md: |
@@ -61,24 +46,6 @@ outputs:
       "metadata": { "title": "title from yaml header" }
     }
 ---
-# Yaml header title in upper-case
-inputs:
-  docfx.yml:
-  docs/a.md: |
-    ---
-    Title: Title from yaml header
-    ---
-    # Title from H1
-    hello
-outputs:
-  docs/a.json: |
-    {
-      "content": "<p>hello</p>",
-      "raw_title": "<h1 id=\"title-from-h1\">Title from H1</h1>",
-      "title": "Title from H1",
-      "metadata": { "title": "Title from yaml header" }
-    }
----
 # No H1
 inputs:
   docfx.yml: |
@@ -86,7 +53,7 @@ inputs:
       heading-not-found: warning
   docs/a.md: |
     ---
-    Title: Title from yaml header
+    title: Title from yaml header
     ---
 
     hello
@@ -102,7 +69,7 @@ inputs:
       heading-not-found: warning
   docs/a.md: |
     ---
-    Title: Title from yaml header
+    title: Title from yaml header
     ---
 
     hello
@@ -118,7 +85,7 @@ inputs:
   docfx.yml:
   docs/a.md: |
     ---
-    Title: Title from yaml header
+    title: Title from yaml header
     ---
 
     <!-- This is comment -->
@@ -136,7 +103,7 @@ inputs:
   docfx.yml:
   docs/a.md: |
     ---
-    Title: Title from yaml header
+    title: Title from yaml header
     ---
 
     hello

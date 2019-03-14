@@ -44,7 +44,15 @@ namespace Microsoft.Docs.Build
             Converters = { new StringEnumConverter { NamingStrategy = s_namingStrategy } },
         };
 
-        private static ThreadLocal<Stack<Status>> t_status = new ThreadLocal<Stack<Status>>(() => new Stack<Status>());
+        private static readonly ThreadLocal<Stack<Status>> t_status = new ThreadLocal<Stack<Status>>(() => new Stack<Status>());
+
+        // HACK: Json.NET property deserialization is case insensitive:
+        // https://github.com/JamesNK/Newtonsoft.Json/issues/815,
+        // Force property deserialization to be case sensitive by hijacking GetClosestMatchProperty implementation.
+        private static readonly Action<JsonPropertyCollection, List<JsonProperty>> s_makeJsonCaseSensitive =
+            ReflectionUtility.CreateInstanceFieldSetter<JsonPropertyCollection, List<JsonProperty>>("_list");
+
+        private static readonly List<JsonProperty> s_emptyPropertyList = new List<JsonProperty>();
 
         static JsonUtility()
         {
@@ -467,8 +475,20 @@ namespace Microsoft.Docs.Build
             return null;
         }
 
+        private static void MakePropertyCollectionCaseSensitive(JsonPropertyCollection properties)
+        {
+            s_makeJsonCaseSensitive(properties, s_emptyPropertyList);
+        }
+
         private class JsonContractResolver : DefaultContractResolver
         {
+            protected override JsonObjectContract CreateObjectContract(Type objectType)
+            {
+                var contract = base.CreateObjectContract(objectType);
+                MakePropertyCollectionCaseSensitive(contract.Properties);
+                return contract;
+            }
+
             protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
             {
                 var prop = base.CreateProperty(member, memberSerialization);
