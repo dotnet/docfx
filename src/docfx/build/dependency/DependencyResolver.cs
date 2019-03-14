@@ -84,8 +84,7 @@ namespace Microsoft.Docs.Build
         public string GetRelativeUrl(Document fileRelativeTo, Document file)
         {
             var relativePath = PathUtility.GetRelativePathToFile(fileRelativeTo.SitePath, file.SitePath);
-            return HrefUtility.EscapeUrl(Document.PathToRelativeUrl(
-                relativePath, file.ContentType, file.Schema, file.Docset.Config.Output.Json));
+            return Document.PathToRelativeUrl(relativePath, file.ContentType, file.Schema, file.Docset.Config.Output.Json);
         }
 
         private (Error error, string content, Document file) TryResolveContent(Document relativeTo, string href)
@@ -154,8 +153,8 @@ namespace Microsoft.Docs.Build
                     {
                         return (error, query + fragment, fragment, null);
                     }
-                    var selfUrl = HrefUtility.EscapeUrl(Document.PathToRelativeUrl(
-                        Path.GetFileName(file.SitePath), file.ContentType, file.Schema, file.Docset.Config.Output.Json));
+                    var selfUrl = Document.PathToRelativeUrl(
+                        Path.GetFileName(file.SitePath), file.ContentType, file.Schema, file.Docset.Config.Output.Json);
                     return (error, selfUrl + query + fragment, fragment, null);
                 }
                 if (string.IsNullOrEmpty(fragment))

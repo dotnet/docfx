@@ -144,20 +144,5 @@ namespace Microsoft.Docs.Build
                 && Uri.TryCreate(str, UriKind.Absolute, out var uriResult)
                 && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
         }
-
-        public static string EscapeUrl(string path)
-        {
-            return string.Join('/', path.Split('/', '\\').Select(segment => Uri.EscapeDataString(segment)));
-        }
-
-        public static string EscapeUrlSegment(string path)
-        {
-            return Uri.EscapeDataString(path);
-        }
-
-        public static string UnescapeUrl(string path)
-        {
-            return Uri.UnescapeDataString(path);
-        }
     }
 }
