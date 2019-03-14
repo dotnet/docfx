@@ -60,10 +60,6 @@ namespace Microsoft.Docs.Build
                 _rateLimitError = Errors.GitHubApiFailed(apiDetail, ex);
                 return (_rateLimitError, null);
             }
-            catch (AbuseException ex)
-            {
-                return (Errors.GitHubApiFailed(apiDetail, ex, ex.RetryAfterSeconds), null);
-            }
             catch (Exception ex)
             {
                 return (Errors.GitHubApiFailed(apiDetail, ex), null);
@@ -103,10 +99,6 @@ namespace Microsoft.Docs.Build
             {
                 _rateLimitError = Errors.GitHubApiFailed(apiDetail, ex);
                 return (_rateLimitError, null);
-            }
-            catch (AbuseException ex)
-            {
-                return (Errors.GitHubApiFailed(apiDetail, ex, ex.RetryAfterSeconds), null);
             }
             catch (Exception ex)
             {

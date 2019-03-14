@@ -86,15 +86,8 @@ namespace Microsoft.Docs.Build
         ///   - the api call reach github limit
         ///   - using invalid access token(more detailed info in ex.Message)
         /// </summary>
-        public static Error GitHubApiFailed(string api, Exception ex, int? retryAfterSeconds = null)
-        {
-            var message = $"Failed calling GitHub API '{api}': {ex.Message}";
-            if (retryAfterSeconds.HasValue)
-            {
-                message += $" It is recommended to retry after {retryAfterSeconds} seconds.";
-            }
-            return new Error(ErrorLevel.Warning, "github-api-failed", message);
-        }
+        public static Error GitHubApiFailed(string api, Exception ex)
+            => new Error(ErrorLevel.Warning, "github-api-failed", $"Failed calling GitHub API '{api}': {ex.Message}");
 
         /// <summary>
         /// In yaml-format toc, topicHref SHOULD reference an article,
