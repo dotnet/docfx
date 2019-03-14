@@ -55,7 +55,7 @@ outputs:
   output/a.json:
   output/b.json:
 ---
-# Resolve to the same lowercase image on windows and mac
+# Resolve to the same lower case image on windows and mac
 os: windows, osx
 inputs:
   docfx.yml:
@@ -69,15 +69,14 @@ outputs:
     {"content":"<p><img src=\"image.png\" alt=\"\" /></p>"}
   docs/image.png:
 ---
-# Preserve URL casing when lowercaseUrl is false
+# Preserve URL casing when lowerCaseUrl is false
 inputs:
   docfx.yml: |
     output:
-      lowercaseUrl: false
+      lowerCaseUrl: false
   docs/A.md: '[](B.md)'
   docs/B.md:
 outputs:
   docs/A.json: |
     {"content":"<p><a href=\"B\"></a></p>"}
   docs/B.json:
----
