@@ -62,6 +62,7 @@ namespace Microsoft.Docs.Build
             }
             catch (Exception ex)
             {
+                LogAbuseExceptionDetail(apiDetail, ex);
                 return (Errors.GitHubApiFailed(apiDetail, ex), null);
             }
         }
@@ -102,11 +103,16 @@ namespace Microsoft.Docs.Build
             }
             catch (Exception ex)
             {
-                if (ex is AbuseException aex)
-                {
-                    Log.Write($"Failed calling GitHub API '{apiDetail}', message: '{ex.Message}', retryAfterSeconds: '{aex.RetryAfterSeconds}'");
-                }
+                LogAbuseExceptionDetail(apiDetail, ex);
                 return (Errors.GitHubApiFailed(apiDetail, ex), null);
+            }
+        }
+
+        private void LogAbuseExceptionDetail(string api, Exception ex)
+        {
+            if (ex is AbuseException aex)
+            {
+                Log.Write($"Failed calling GitHub API '{api}', message: '{ex.Message}', retryAfterSeconds: '{aex.RetryAfterSeconds}'");
             }
         }
 
