@@ -102,6 +102,10 @@ namespace Microsoft.Docs.Build
             }
             catch (Exception ex)
             {
+                if (ex is AbuseException aex)
+                {
+                    Log.Write($"Failed calling GitHub API '{apiDetail}', message: '{ex.Message}', retryAfterSeconds: '{aex.RetryAfterSeconds}'");
+                }
                 return (Errors.GitHubApiFailed(apiDetail, ex), null);
             }
         }
