@@ -109,7 +109,6 @@ namespace Microsoft.Docs.Build
 
         public LandingDataRow[] Rows { get; set; }
 
-        [Html]
         public string Html { get; set; }
     }
 
@@ -143,7 +142,6 @@ namespace Microsoft.Docs.Build
         [Markdown]
         public string Content { get; set; }
 
-        [Html]
         public string Html { get; set; }
 
         public string Href { get; set; }

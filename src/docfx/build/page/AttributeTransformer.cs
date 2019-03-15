@@ -82,7 +82,13 @@ namespace Microsoft.Docs.Build
 
             if (attribute is HtmlAttribute)
             {
-                return HtmlUtility.StripTags(HtmlUtility.LoadHtml((string)value)).OuterHtml;
+                var html = HtmlUtility.TransformLinks((string)value, href =>
+                {
+                    var (error, link, _) = context.DependencyResolver.ResolveLink(href, file, file, buildChild);
+                    context.Report.Write(file.ToString(), error);
+                    return link;
+                });
+                return HtmlUtility.StripTags(HtmlUtility.LoadHtml(html)).OuterHtml;
             }
 
             if (attribute is XrefAttribute)
