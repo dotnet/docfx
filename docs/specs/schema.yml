@@ -170,7 +170,7 @@ inputs:
   docfx.yml:
   docs/a.yml: |
     #YamlMime:TestPage
-    html: link <a href="b.md"></a> <script></script>
+    html: link <a href="b"></a> <script></script>
   docs/b.md:
 outputs:
   docs/a.json: |
