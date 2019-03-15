@@ -54,7 +54,8 @@ namespace Microsoft.Docs.Build
             var userIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             var updatedDateTime = GetUpdatedAt(document, commits);
 
-            var resolveGitHubUsers = GitHubUtility.TryParse(repo?.Remote, out var gitHubOwner, out var gitHubRepoName) && document.Docset.Config.GitHub.ResolveUsers;
+            var isGithubRepo = GitHubUtility.TryParse(repo?.Remote, out var gitHubOwner, out var gitHubRepoName);
+            var resolveGitHubUsers = document.Docset.Config.GitHub.ResolveUsers;
 
             // Resolve contributors from commits
             if (contributionCommits != null)
@@ -87,7 +88,7 @@ namespace Microsoft.Docs.Build
                     return new Contributor { DisplayName = commit.AuthorName, Id = commit.AuthorEmail };
                 }
 
-                var (error, user) = await _gitHubUserCache.GetByCommit(commit.AuthorEmail, gitHubOwner, gitHubRepoName, commit.Sha);
+                var (error, user) = await _gitHubUserCache.GetByEmailOrCommit(commit.AuthorEmail, gitHubOwner, gitHubRepoName, commit.Sha, isGithubRepo);
                 errors.AddIfNotNull(error);
 
                 return user?.ToContributor();
