@@ -46,7 +46,13 @@ namespace Microsoft.Docs.Build
             if (attribute is HrefAttribute)
             {
                 var (error, link, _) = context.DependencyResolver.ResolveLink((string)value, file, file, buildChild);
-                context.Report.Write(file.ToString(), error);
+
+                // mute file-not-found for landing page
+                // https://ceapex.visualstudio.com/Engineering/_workitems/edit/74434
+                if (!file.FilePath.EndsWith("index.yml"))
+                {
+                    context.Report.Write(file.ToString(), error);
+                }
                 return link;
             }
 
@@ -85,7 +91,13 @@ namespace Microsoft.Docs.Build
                 var html = HtmlUtility.TransformLinks((string)value, href =>
                 {
                     var (error, link, _) = context.DependencyResolver.ResolveLink(href, file, file, buildChild);
-                    context.Report.Write(file.ToString(), error);
+
+                    // mute file-not-found for landing page
+                    // https://ceapex.visualstudio.com/Engineering/_workitems/edit/74434
+                    if (!file.FilePath.EndsWith("index.yml"))
+                    {
+                        context.Report.Write(file.ToString(), error);
+                    }
                     return link;
                 });
                 return HtmlUtility.StripTags(HtmlUtility.LoadHtml(html)).OuterHtml;
