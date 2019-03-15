@@ -72,11 +72,10 @@ namespace Microsoft.Docs.Build
             var hasReferencedTocs = false;
             var filteredTocs = (hasReferencedTocs = _documentToTocs.TryGetValue(file, out var referencedTocFiles)) ? referencedTocFiles : _tocs;
 
-            var fileNames = Path.GetFileNameWithoutExtension(file.SitePath).Split(wordSplitChars, StringSplitOptions.RemoveEmptyEntries);
             var tocCandidates = from toc in filteredTocs
                                 let dirInfo = GetRelativeDirectoryInfo(file, toc)
                                 where hasReferencedTocs || dirInfo.subDirectoryCount == 0 /*due breadcrumb toc*/
-                                select new TocCandidate(dirInfo.subDirectoryCount, dirInfo.parentDirectoryCount, toc, fileNames);
+                                select new TocCandidate(dirInfo.subDirectoryCount, dirInfo.parentDirectoryCount, toc);
 
             return tocCandidates.DefaultIfEmpty().Aggregate((minCandidate, nextCandidate) =>
             {
@@ -154,30 +153,13 @@ namespace Microsoft.Docs.Build
 
             public int ParentDirectoryCount { get; }
 
-            public int LevenshteinDistance => _levenshteinDistance.Value;
-
             public Document Toc { get; }
 
-            public string[] FileNames { get; }
-
-            public TocCandidate(int subDirectoryCount, int parentDirectoryCount, Document toc, string[] fileNames)
+            public TocCandidate(int subDirectoryCount, int parentDirectoryCount, Document toc)
             {
                 SubDirectoryCount = subDirectoryCount;
                 ParentDirectoryCount = parentDirectoryCount;
                 Toc = toc;
-                FileNames = fileNames;
-                _levenshteinDistance = new Lazy<int>(() => GetLevenshteinDistanceToFile());
-            }
-
-            // save the calculated distance during comparison to avoid repeadly calculation
-            private readonly Lazy<int> _levenshteinDistance;
-
-            private int GetLevenshteinDistanceToFile()
-            {
-                return Levenshtein.GetLevenshteinDistance(
-                    FileNames,
-                    Toc.SitePath.Split(wordSplitChars, StringSplitOptions.RemoveEmptyEntries),
-                    StringComparer.OrdinalIgnoreCase);
             }
         }
 
