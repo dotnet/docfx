@@ -11,13 +11,13 @@ namespace Microsoft.Docs.Build
 {
     internal class GitHubAccessor
     {
-        private readonly GitHubClient _client;
-
         // Bypass GitHub abuse detection:
         // https://developer.github.com/v3/guides/best-practices-for-integrators/#dealing-with-abuse-rate-limits
         private static readonly SemaphoreSlim _semaphore = new SemaphoreSlim(10, 10);
 
         private static volatile Error _rateLimitError;
+
+        private readonly GitHubClient _client;
 
         public GitHubAccessor(string token = null)
         {
@@ -36,6 +36,8 @@ namespace Microsoft.Docs.Build
             }
 
             var apiDetail = $"GET /users/{login}";
+            Log.Write(apiDetail);
+
             try
             {
                 var user = await RetryUtility.Retry(
@@ -79,6 +81,8 @@ namespace Microsoft.Docs.Build
             }
 
             var apiDetail = $"GET /repos/{repoOwner}/{repoName}/commits/{commitSha}";
+            Log.Write(apiDetail);
+
             try
             {
                 var commit = await RetryUtility.Retry(
@@ -116,7 +120,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private async Task<T> UseResource<T>(Func<Task<T>> action)
+        private static async Task<T> UseResource<T>(Func<Task<T>> action)
         {
             await _semaphore.WaitAsync();
             try
