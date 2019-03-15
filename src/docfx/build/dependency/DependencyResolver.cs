@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
@@ -35,6 +34,8 @@ namespace Microsoft.Docs.Build
             return (error, content, child);
         }
 
+        // forLandingPage should not be used, it is a hack to handle some specific logic for landing page based on the user input for now
+        // which needs to be removed once the user input is correct
         public (Error error, string link, Document file) ResolveLink(string path, Document relativeTo, Document resultRelativeTo, Action<Document> buildChild, bool forLandingPage = false)
         {
             var (error, link, fragment, file) = TryResolveHref(relativeTo, path, resultRelativeTo, forLandingPage);
