@@ -348,20 +348,3 @@ outputs:
     { "content": "[!include[B1](~/b.md)]<p>Token</p>\n" }
   build.log: |
     ["warning","include-not-found","Cannot resolve '~/b.md' relative to 'docs/a.md'.","docs/a.md","",1,1]
----
-# Resolve link for landing page
-inputs:
-  docfx.yml:
-  docs/index.yml: |
-    ### YamlMime:YamlDocument
-    documentType: LandingData
-    title: REST API Documentation
-    abstract:
-      menu:
-        items:
-        - href: ~/b
-  b.md: b
-outputs:
-  docs/index.json: |
-    { "content": {"title":"REST API Documentation","abstract":{"menu":{"items":[{"href":"../b"}]}},"documentType":"LandingData"} }
-  b.json:
