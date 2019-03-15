@@ -68,3 +68,20 @@ outputs:
   .dependency-map.json:
   filemap.json:
   op_aggregated_file_map_info.json:
+---
+# Resolve link for landing page
+inputs:
+  docfx.yml:
+  docs/index.yml: |
+    ### YamlMime:YamlDocument
+    documentType: LandingData
+    title: REST API Documentation
+    abstract:
+      menu:
+        items:
+        - href: ~/b
+  b.md: b
+outputs:
+  docs/index.json: |
+    { "content": {"title":"REST API Documentation","abstract":{"menu":{"items":[{"href":"../b"}]}},"documentType":"LandingData"} }
+  b.json:

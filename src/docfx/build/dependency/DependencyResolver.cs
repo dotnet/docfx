@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
@@ -35,9 +34,11 @@ namespace Microsoft.Docs.Build
             return (error, content, child);
         }
 
-        public (Error error, string link, Document file) ResolveLink(string path, Document relativeTo, Document resultRelativeTo, Action<Document> buildChild)
+        // forLandingPage should not be used, it is a hack to handle some specific logic for landing page based on the user input for now
+        // which needs to be removed once the user input is correct
+        public (Error error, string link, Document file) ResolveLink(string path, Document relativeTo, Document resultRelativeTo, Action<Document> buildChild, bool forLandingPage = false)
         {
-            var (error, link, fragment, file) = TryResolveHref(relativeTo, path, resultRelativeTo);
+            var (error, link, fragment, file) = TryResolveHref(relativeTo, path, resultRelativeTo, forLandingPage);
 
             if (file != null && buildChild != null)
             {
@@ -113,7 +114,7 @@ namespace Microsoft.Docs.Build
             return file != null ? (error, file.ReadText(), file) : default;
         }
 
-        private (Error error, string href, string fragment, Document file) TryResolveHref(Document relativeTo, string href, Document resultRelativeTo)
+        private (Error error, string href, string fragment, Document file) TryResolveHref(Document relativeTo, string href, Document resultRelativeTo, bool forLandingPage)
         {
             Debug.Assert(resultRelativeTo != null);
 
@@ -124,7 +125,7 @@ namespace Microsoft.Docs.Build
             }
 
             var decodedHref = HttpUtility.UrlDecode(href);
-            var (error, file, redirectTo, query, fragment, hrefType, _) = TryResolveFile(relativeTo, decodedHref);
+            var (error, file, redirectTo, query, fragment, hrefType, _) = TryResolveFile(relativeTo, decodedHref, forLandingPage);
 
             // Redirection
             // follow redirections
@@ -190,7 +191,7 @@ namespace Microsoft.Docs.Build
             return (error, relativeUrl + query + fragment, fragment, file);
         }
 
-        private (Error error, Document file, string redirectTo, string query, string fragment, HrefType? hrefType, string pathToDocset) TryResolveFile(Document relativeTo, string href)
+        private (Error error, Document file, string redirectTo, string query, string fragment, HrefType? hrefType, string pathToDocset) TryResolveFile(Document relativeTo, string href, bool forLandingPage = false)
         {
             if (string.IsNullOrEmpty(href))
             {
@@ -224,7 +225,14 @@ namespace Microsoft.Docs.Build
 
                     var file = Document.TryCreateFromFile(relativeTo.Docset, pathToDocset);
 
-                    return (file != null ? null : Errors.FileNotFound(relativeTo.ToString(), path), file, null, query, fragment, null, pathToDocset);
+                    // try to resolve with .md for landing page
+                    if (file is null && forLandingPage)
+                    {
+                        pathToDocset = ResolveToDocsetRelativePath($"{path}.md", relativeTo);
+                        file = Document.TryCreateFromFile(relativeTo.Docset, pathToDocset);
+                    }
+
+                    return (file != null ? null : (forLandingPage ? null : Errors.FileNotFound(relativeTo.ToString(), path)), file, null, query, fragment, null, pathToDocset);
 
                 default:
                     return default;
