@@ -80,7 +80,7 @@ namespace Microsoft.Docs.Build
 
             return tocCandidates.DefaultIfEmpty().Aggregate((minCandidate, nextCandidate) =>
             {
-                return CompareTocCandidate(minCandidate, nextCandidate, !file.Docset.Legacy) <= 0 ? minCandidate : nextCandidate;
+                return CompareTocCandidate(minCandidate, nextCandidate) <= 0 ? minCandidate : nextCandidate;
             })?.Toc;
         }
 
@@ -186,10 +186,9 @@ namespace Microsoft.Docs.Build
         /// Return negative if x is closer than y, possitive if x is farer than y, 0 if x equals y.
         /// 1. sub nearest
         /// 2. parent nearest
-        /// 3. sub-name word-level levenshtein distance nearest
         /// 4. sub-name lexicographical nearest
         /// </summary>
-        private static int CompareTocCandidate(TocCandidate candidateX, TocCandidate candidateY, bool compareLevenshteinDistance)
+        private static int CompareTocCandidate(TocCandidate candidateX, TocCandidate candidateY)
         {
             var subDirCompareResult = candidateX.SubDirectoryCount - candidateY.SubDirectoryCount;
             if (subDirCompareResult != 0)
@@ -201,15 +200,6 @@ namespace Microsoft.Docs.Build
             if (parentDirCompareResult != 0)
             {
                 return parentDirCompareResult;
-            }
-
-            if (compareLevenshteinDistance)
-            {
-                var levenshteinDistanceCompareResult = candidateX.LevenshteinDistance - candidateY.LevenshteinDistance;
-                if (levenshteinDistanceCompareResult != 0)
-                {
-                    return levenshteinDistanceCompareResult;
-                }
             }
 
             var sitePathCompareResult = StringComparer.OrdinalIgnoreCase.Compare(candidateX.Toc.SitePath, candidateY.Toc.SitePath);
