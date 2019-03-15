@@ -22,8 +22,6 @@ namespace Microsoft.Docs.Build
 
         private readonly IReadOnlyDictionary<Document, HashSet<Document>> _tocToTocs;
 
-        private static readonly char[] wordSplitChars = new char[] { '-', '#', '_', ' ', '/' };
-
         public TableOfContentsMap(
             List<Document> tocs,
             List<Document> experimentalTocs,
