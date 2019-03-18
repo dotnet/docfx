@@ -132,7 +132,7 @@ namespace Microsoft.Docs.Build
 
             if (ch == '#')
             {
-                return HrefType.Bookmark;
+                return HrefType.SelfBookmark;
             }
 
             return HrefType.RelativePath;
@@ -143,21 +143,6 @@ namespace Microsoft.Docs.Build
             return !string.IsNullOrEmpty(str)
                 && Uri.TryCreate(str, UriKind.Absolute, out var uriResult)
                 && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
-        }
-
-        public static string EscapeUrl(string path)
-        {
-            return string.Join('/', path.Split('/', '\\').Select(segment => Uri.EscapeDataString(segment)));
-        }
-
-        public static string EscapeUrlSegment(string path)
-        {
-            return Uri.EscapeDataString(path);
-        }
-
-        public static string UnescapeUrl(string path)
-        {
-            return Uri.UnescapeDataString(path);
         }
     }
 }

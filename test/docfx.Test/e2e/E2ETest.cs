@@ -21,6 +21,20 @@ namespace Microsoft.Docs.Build
 {
     public static class E2ETest
     {
+        private static readonly string[] s_errorCodesWithoutLineInfo =
+        {
+            "need-restore", "publish-url-conflict", "output-path-conflict", "download-failed", "heading-not-found", "config-not-found",
+
+            // These error codes are the ones we could have line info but haven't implement them yet:
+            "external-bookmark-not-found", "internal-bookmark-not-found", "file-not-found", "uid-not-found", "committish-not-found",
+            "invalid-toc-syntax", "yaml-header-not-object",
+            "reserved-metadata", "invalid-toc-level", "redirection-out-of-scope", "invalid-redirect-to", "moniker-config-missing",
+            "at-uid-not-found", "empty-monikers", "circular-reference", "invalid-toc-href", "invalid-uid-moniker", "moniker-overlapping",
+            "uid-conflict", "redirection-is-empty", "redirection-conflict", "invalid-locale", "unknown-field", "link-out-of-scope",
+            "github-user-not-found", "invalid-redirection", "merge-conflict", "invalid-topic-href",
+            "redirected-id-conflict", "schema-not-found"
+        };
+
         private static readonly ConcurrentDictionary<string, (int ordinal, string spec)> s_mockRepos = new ConcurrentDictionary<string, (int ordinal, string spec)>();
 
         public static readonly TheoryData<string> Specs = FindTestSpecs();
@@ -383,6 +397,7 @@ namespace Microsoft.Docs.Build
                     {
                         Assert.Equal(string.Join("\n", expected), string.Join("\n", actual));
                     }
+                    VerifyLogsHasLineInfo(actual);
                     break;
                 case ".html":
                     if (!string.IsNullOrEmpty(content))
@@ -403,6 +418,17 @@ namespace Microsoft.Docs.Build
                             ignoreWhiteSpaceDifferences: true);
                     }
                     break;
+            }
+        }
+
+        private static void VerifyLogsHasLineInfo(string[] logs)
+        {
+            foreach (var log in Array.ConvertAll(logs, JArray.Parse))
+            {
+                if (!s_errorCodesWithoutLineInfo.Contains(log[1].ToString()) && log.Count < 6)
+                {
+                    Assert.True(false, $"Error code {log[1].ToString()} must have line info");
+                }
             }
         }
     }

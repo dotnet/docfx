@@ -270,8 +270,8 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Inclusion is a <see cref="Config.Redirections"/> entry like [!INCLUDE[](redirect.md)]
         /// </summary>
-        public static Error IncludeRedirection(Document relativeTo, string path)
-            => new Error(ErrorLevel.Warning, "include-is-redirection", $"Referenced inclusion {path} relative to '{relativeTo}' shouldn't belong to redirections", relativeTo.ToString());
+        public static Error IncludeIsRedirection(Document relativeTo, string path)
+            => new Error(ErrorLevel.Error, "include-is-redirection", $"Referenced inclusion {path} relative to '{relativeTo}' shouldn't belong to redirections", relativeTo.ToString());
 
         /// <summary>
         /// More than one files are resolved to the same output path.
@@ -316,10 +316,16 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Error, "committish-not-found", $"Cannot find branch, tag or commit '{committish}' for repo '{repo}'.");
 
         /// <summary>
-        /// Defined refrence with by #bookmark fragment within/between articles, which doesn't exist.
+        /// Defined refrence with by #bookmark fragment between articles, which doesn't exist.
         /// </summary>
-        public static Error BookmarkNotFound(Document relativeTo, Document reference, string bookmark, IEnumerable<string> candidateBookmarks)
-            => new Error(ErrorLevel.Warning, "bookmark-not-found", $"Cannot find bookmark '#{bookmark}' in '{reference}'{(FindBestMatch(bookmark, candidateBookmarks, out string matchedBookmark) ? $", did you mean '#{matchedBookmark}'?" : null)}", relativeTo.ToString());
+        public static Error ExternalBookmarkNotFound(Document relativeTo, Document reference, string bookmark, IEnumerable<string> candidateBookmarks)
+            => new Error(ErrorLevel.Warning, "external-bookmark-not-found", $"Cannot find bookmark '#{bookmark}' in '{reference}'{(FindBestMatch(bookmark, candidateBookmarks, out string matchedBookmark) ? $", did you mean '#{matchedBookmark}'?" : null)}", relativeTo.ToString());
+
+        /// <summary>
+        /// Defined refrence with by #bookmark fragment within articles, which doesn't exist.
+        /// </summary>
+        public static Error InternalBookmarkNotFound(Document file, string bookmark, IEnumerable<string> candidateBookmarks)
+            => new Error(ErrorLevel.Suggestion, "internal-bookmark-not-found", $"Cannot find bookmark '#{bookmark}' in '{file}'{(FindBestMatch(bookmark, candidateBookmarks, out string matchedBookmark) ? $", did you mean '#{matchedBookmark}'?" : null)}", file.ToString());
 
         /// <summary>
         /// Used null value in yaml header or schema documents.
@@ -329,6 +335,9 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static Error NullValue(in Range range, string name, string path)
             => new Error(ErrorLevel.Info, "null-value", $"'{name}' contains null value", range: range, jsonPath: path);
+
+        public static Error NullArrayValue(in Range range, string name, string path)
+            => new Error(ErrorLevel.Warning, "null-array-value", $"'{name}' contains null value, the null value has been removed", range: range, jsonPath: path);
 
         /// <summary>
         /// Defined extra field(s) in input model in schema document(json, yml).

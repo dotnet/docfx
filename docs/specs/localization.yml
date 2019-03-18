@@ -92,7 +92,7 @@ repos:
   https://github.com/docascode/c#share-restore1:
     - files:
         docfx.yml: |
-          github:
+          gitHub:
             userCache: github-user.json
             resolveUsers: true
           dependencies:
@@ -159,7 +159,7 @@ repos:
           localization:
             bilingual: true
             mapping: Branch
-          github:
+          gitHub:
             userCache: github-user.json
             resolveUsers: true
           dependencies:
@@ -868,7 +868,7 @@ repos:
           localization:
             mapping: Branch
             bilingual: true
-          github:
+          gitHub:
             userCache: github-user.json
         github-user.json: |
           { "users": [

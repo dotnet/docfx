@@ -45,7 +45,8 @@ namespace Microsoft.Docs.Build
         {
             if (attribute is HrefAttribute)
             {
-                var (error, link, _) = context.DependencyResolver.ResolveLink((string)value, file, file, buildChild);
+                var (error, link, _) = context.DependencyResolver.ResolveLink((string)value, file, file, buildChild, file.FilePath.EndsWith("index.yml"));
+
                 context.Report.Write(file.ToString(), error);
                 return link;
             }
@@ -84,7 +85,8 @@ namespace Microsoft.Docs.Build
             {
                 var html = HtmlUtility.TransformLinks((string)value, href =>
                 {
-                    var (error, link, _) = context.DependencyResolver.ResolveLink(href, file, file, buildChild);
+                    var (error, link, _) = context.DependencyResolver.ResolveLink(href, file, file, buildChild, file.FilePath.EndsWith("index.yml"));
+
                     context.Report.Write(file.ToString(), error);
                     return link;
                 });
