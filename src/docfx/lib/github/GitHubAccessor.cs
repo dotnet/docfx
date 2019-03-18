@@ -67,7 +67,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public async Task<(Error, string login)> GetLoginByCommit(string repoOwner, string repoName, string commitSha)
+        public async Task<(Error, GitHubUser)> GetUserByCommit(string repoOwner, string repoName, string commitSha)
         {
             Debug.Assert(!string.IsNullOrEmpty(repoOwner));
             Debug.Assert(!string.IsNullOrEmpty(repoName));
@@ -84,7 +84,14 @@ namespace Microsoft.Docs.Build
                 var commit = await RetryUtility.Retry(
                     () => UseResource(() => _client.Repository.Commit.Get(repoOwner, repoName, commitSha)),
                     ex => ex is OperationCanceledException);
-                return (null, commit.Author?.Login);
+
+                return (null, new GitHubUser
+                {
+                    Id = commit.Author.Id,
+                    Login = commit.Author.Login,
+                    Name = commit.Commit.Author.Name,
+                    Emails = new[] { commit.Commit.Author.Email },
+                });
             }
             catch (NotFoundException)
             {

@@ -23,7 +23,7 @@ namespace Microsoft.Docs.Build
         internal Func<string, Task<(Error, GitHubUser)>> _getUserByLoginFromGitHub;
 
         // calls GitHubAccessor.GetLoginByCommit, which ohly for private use, and tests can swap this out
-        internal Func<string, string, string, Task<(Error, string)>> _getLoginByCommitFromGitHub;
+        internal Func<string, string, string, Task<(Error, GitHubUser)>> _getUserByCommitFromGitHub;
 
         private static int s_randomSeed = Environment.TickCount;
         private static ThreadLocal<Random> t_random = new ThreadLocal<Random>(() => new Random(Interlocked.Increment(ref s_randomSeed)));
@@ -36,8 +36,8 @@ namespace Microsoft.Docs.Build
         private readonly ConcurrentDictionary<string, Lazy<Task<(Error, GitHubUser)>>> _outgoingGetUserByLoginRequests
                    = new ConcurrentDictionary<string, Lazy<Task<(Error, GitHubUser)>>>(StringComparer.OrdinalIgnoreCase);
 
-        private readonly ConcurrentDictionary<string, Lazy<Task<(Error, string)>>> _outgoingGetLoginByCommitRequests
-                   = new ConcurrentDictionary<string, Lazy<Task<(Error, string)>>>(StringComparer.OrdinalIgnoreCase);
+        private readonly ConcurrentDictionary<string, Lazy<Task<(Error, GitHubUser)>>> _outgoingGetUserByCommitRequests
+                   = new ConcurrentDictionary<string, Lazy<Task<(Error, GitHubUser)>>>(StringComparer.OrdinalIgnoreCase);
 
         private readonly string _url = null;
         private readonly string _content = null;
@@ -62,7 +62,7 @@ namespace Microsoft.Docs.Build
 
             var github = new GitHubAccessor(docset.Config.GitHub.AuthToken);
             _getUserByLoginFromGitHub = github.GetUserByLogin;
-            _getLoginByCommitFromGitHub = github.GetLoginByCommit;
+            _getUserByCommitFromGitHub = github.GetUserByCommit;
             _expirationInHours = docset.Config.GitHub.UserCacheExpirationInHours;
             _cachePath = cachePath;
         }
@@ -148,25 +148,30 @@ namespace Microsoft.Docs.Build
                 return default;
 
             Telemetry.TrackCacheTotalCount(TelemetryName.GitHubUserCache);
-            var user = TryGetByEmail(authorEmail);
-            if (user != null)
-                return (null, user.IsValid() ? user : null);
+            var existingUser = TryGetByEmail(authorEmail);
+            if (existingUser != null)
+                return (null, existingUser.IsValid() ? existingUser : null);
 
-            var (error, login) = await _outgoingGetLoginByCommitRequests.GetOrAdd(
+            var (error, user) = await _outgoingGetUserByCommitRequests.GetOrAdd(
                 commitSha,
-                new Lazy<Task<(Error, string)>>(() =>
+                new Lazy<Task<(Error, GitHubUser)>>(() =>
                 {
                     Telemetry.TrackCacheMissCount(TelemetryName.GitHubUserCache);
-                    return _getLoginByCommitFromGitHub(repoOwner, repoName, commitSha);
+                    return _getUserByCommitFromGitHub(repoOwner, repoName, commitSha);
                 })).Value;
 
             if (error == null)
-                UpdateUser(new GitHubUser { Login = login, Emails = new[] { authorEmail }, Expiry = NextExpiry() });
+            {
+                if (user == null)
+                    user = new GitHubUser { Emails = new[] { authorEmail } };
+                user.Expiry = NextExpiry();
+                UpdateUser(user);
+            }
 
-            if (login == null)
+            if (error != null)
                 return (error, null);
 
-            return await GetByLogin(login);
+            return (error, user);
         }
 
         public async Task<Error> SaveChanges(Config config)
