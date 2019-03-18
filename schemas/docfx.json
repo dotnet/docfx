@@ -216,6 +216,7 @@
         "enum": [
           "off",
           "info",
+          "suggestion",
           "warning",
           "error"
         ]

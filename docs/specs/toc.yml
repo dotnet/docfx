@@ -1088,7 +1088,7 @@ outputs:
       ]
     }
   build.log: |
-    ["warning","bookmark-not-found","Cannot find bookmark '#title-2' in 'docs/a.md', did you mean '#title-1'?","docs/TOC.md"]
+    ["warning","external-bookmark-not-found","Cannot find bookmark '#title-2' in 'docs/a.md', did you mean '#title-1'?","docs/TOC.md"]
 ---
 # reference uid within link
 inputs:

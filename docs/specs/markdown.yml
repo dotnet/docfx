@@ -28,22 +28,7 @@ outputs:
   build.log: |
     ["info","null-value","'title' contains null value","docs/a.md","title",1,1]
 ---
-# Yaml header
-inputs:
-  docfx.yml:
-  docs/a.md: |
-    ---
-    title: me
-    ---
-    hello
-outputs:
-  docs/a.json: |
-    {
-      "content": "<p>hello</p>",
-      "metadata": { "title": "me" }
-    }
----
-# Yaml header title in lower-case
+# title metadata overrides h1
 inputs:
   docfx.yml:
   docs/a.md: |
@@ -61,24 +46,6 @@ outputs:
       "metadata": { "title": "title from yaml header" }
     }
 ---
-# Yaml header title in upper-case
-inputs:
-  docfx.yml:
-  docs/a.md: |
-    ---
-    Title: Title from yaml header
-    ---
-    # Title from H1
-    hello
-outputs:
-  docs/a.json: |
-    {
-      "content": "<p>hello</p>",
-      "raw_title": "<h1 id=\"title-from-h1\">Title from H1</h1>",
-      "title": "Title from H1",
-      "metadata": { "title": "Title from yaml header" }
-    }
----
 # No H1
 inputs:
   docfx.yml: |
@@ -86,7 +53,7 @@ inputs:
       heading-not-found: warning
   docs/a.md: |
     ---
-    Title: Title from yaml header
+    title: Title from yaml header
     ---
 
     hello
@@ -102,7 +69,7 @@ inputs:
       heading-not-found: warning
   docs/a.md: |
     ---
-    Title: Title from yaml header
+    title: Title from yaml header
     ---
 
     hello
@@ -118,7 +85,7 @@ inputs:
   docfx.yml:
   docs/a.md: |
     ---
-    Title: Title from yaml header
+    title: Title from yaml header
     ---
 
     <!-- This is comment -->
@@ -136,7 +103,7 @@ inputs:
   docfx.yml:
   docs/a.md: |
     ---
-    Title: Title from yaml header
+    title: Title from yaml header
     ---
 
     hello
@@ -277,7 +244,7 @@ outputs:
   docs/a.json: |
     { "content": "<p>http://*.windowsupdate.microsoft.com</p>" }
 ---
-# validate bookmarks in markdown documents
+# validate internal/external bookmarks in markdown documents
 inputs:
   docfx.yml:
   docs/a.md: |
@@ -286,7 +253,7 @@ inputs:
     [link to title 2](#title-2)
     [link to title 3](#title-3)
     [link to html title](#html-title)
-    [link to yaml](c.yml#no-such-bookmark) does not warn
+    [link to yaml](c.yml#no-such-bookmark) does not warn, only validate against markdown files
     ## title 2
     <h2 id="html-title">title</h2>
     [!include[](d.md)]
@@ -304,22 +271,22 @@ outputs:
   docs/c.json:
   docs/d.json:
   build.log: |
-    ["warning","bookmark-not-found","Cannot find bookmark '#title-3' in 'docs/a.md', did you mean '#title-1'?","docs/b.md"]
-    ["warning","bookmark-not-found","Cannot find bookmark '#title-3' in 'docs/a.md', did you mean '#title-1'?","docs/a.md"]
-    ["warning","bookmark-not-found","Cannot find bookmark '#title-3' in 'docs/a.md', did you mean '#title-1'?","docs/d.md"]
+    ["warning","external-bookmark-not-found","Cannot find bookmark '#title-3' in 'docs/a.md', did you mean '#title-1'?","docs/b.md"]
+    ["suggestion","internal-bookmark-not-found","Cannot find bookmark '#title-3' in 'docs/a.md', did you mean '#title-1'?","docs/a.md"]
+    ["warning","external-bookmark-not-found","Cannot find bookmark '#title-3' in 'docs/a.md', did you mean '#title-1'?","docs/d.md"]
 ---
-# do not output file if bookmark-not-found is treated as error
+# do not output file if external-bookmark-not-found is treated as error
 inputs:
   docfx.yml: |
     rules:
-      bookmark-not-found: error
+      external-bookmark-not-found: error
   docs/a.md: |
     [link to b](b.md#bookmark)
   docs/b.md:
 outputs:
   docs/b.json:
   build.log: |
-    ["error","bookmark-not-found","Cannot find bookmark '#bookmark' in 'docs/b.md'","docs/a.md"]
+    ["error","external-bookmark-not-found","Cannot find bookmark '#bookmark' in 'docs/b.md'","docs/a.md"]
 ---
 # Bookmark suggestion and validation
 inputs:
@@ -342,9 +309,9 @@ outputs:
   docs/c.json:
   docs/d.json:
   build.log: |
-    ["warning","bookmark-not-found","Cannot find bookmark '#some-bookmark' in 'docs/a.md', did you mean '#a-bookmark'?","docs/b.md"]
-    ["warning","bookmark-not-found","Cannot find bookmark '#b-has-no-bookmark' in 'docs/b.md'","docs/c.md"]
-    ["warning","bookmark-not-found","Cannot find bookmark '#bookmark123456' in 'docs/c.md'","docs/d.md"]
+    ["warning","external-bookmark-not-found","Cannot find bookmark '#some-bookmark' in 'docs/a.md', did you mean '#a-bookmark'?","docs/b.md"]
+    ["warning","external-bookmark-not-found","Cannot find bookmark '#b-has-no-bookmark' in 'docs/b.md'","docs/c.md"]
+    ["warning","external-bookmark-not-found","Cannot find bookmark '#bookmark123456' in 'docs/c.md'","docs/d.md"]
 ---
 # experimental pairs
 inputs:
@@ -408,3 +375,23 @@ outputs:
   build.log: |
     ["warning","yaml-header-not-object","Expect yaml header to be an object, but got a scalar","docs/a.md"]
 ---
+# Handling malformed HTML tags using HtmlAgilityPack 1.4.9
+inputs:
+  docfx.yml:
+  docs/a.md: |
+    1.  a
+        <UL><LI><LI></UL>
+    2.  b
+        <UL><LI>
+    ## c
+outputs:
+  docs/a.json: |
+    content: |
+      <ol>
+        <li>a
+          <ul><li><li></li></li></ul>
+        <li>b
+          <ul><li></li></ul></li>
+        </li>
+      </ol>
+      <h2 id="c">c</h2>

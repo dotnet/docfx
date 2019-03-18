@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
@@ -35,9 +34,11 @@ namespace Microsoft.Docs.Build
             return (error, content, child);
         }
 
-        public (Error error, string link, Document file) ResolveLink(string path, Document relativeTo, Document resultRelativeTo, Action<Document> buildChild)
+        // forLandingPage should not be used, it is a hack to handle some specific logic for landing page based on the user input for now
+        // which needs to be removed once the user input is correct
+        public (Error error, string link, Document file) ResolveLink(string path, Document relativeTo, Document resultRelativeTo, Action<Document> buildChild, bool forLandingPage = false)
         {
-            var (error, link, fragment, file) = TryResolveHref(relativeTo, path, resultRelativeTo);
+            var (error, link, fragment, file) = TryResolveHref(relativeTo, path, resultRelativeTo, forLandingPage);
 
             if (file != null && buildChild != null)
             {
@@ -84,8 +85,7 @@ namespace Microsoft.Docs.Build
         public string GetRelativeUrl(Document fileRelativeTo, Document file)
         {
             var relativePath = PathUtility.GetRelativePathToFile(fileRelativeTo.SitePath, file.SitePath);
-            return HrefUtility.EscapeUrl(Document.PathToRelativeUrl(
-                relativePath, file.ContentType, file.Schema, file.Docset.Config.Output.Json));
+            return Document.PathToRelativeUrl(relativePath, file.ContentType, file.Schema, file.Docset.Config.Output.Json);
         }
 
         private (Error error, string content, Document file) TryResolveContent(Document relativeTo, string href)
@@ -94,7 +94,7 @@ namespace Microsoft.Docs.Build
 
             if (redirect != null)
             {
-                return (Errors.IncludeRedirection(relativeTo, href), null, null);
+                return (Errors.IncludeIsRedirection(relativeTo, href), null, null);
             }
 
             if (file == null && !string.IsNullOrEmpty(pathToDocset))
@@ -113,7 +113,7 @@ namespace Microsoft.Docs.Build
             return file != null ? (error, file.ReadText(), file) : default;
         }
 
-        private (Error error, string href, string fragment, Document file) TryResolveHref(Document relativeTo, string href, Document resultRelativeTo)
+        private (Error error, string href, string fragment, Document file) TryResolveHref(Document relativeTo, string href, Document resultRelativeTo, bool forLandingPage)
         {
             Debug.Assert(resultRelativeTo != null);
 
@@ -124,7 +124,7 @@ namespace Microsoft.Docs.Build
             }
 
             var decodedHref = HttpUtility.UrlDecode(href);
-            var (error, file, redirectTo, query, fragment, isSelfBookmark, _) = TryResolveFile(relativeTo, decodedHref);
+            var (error, file, redirectTo, query, fragment, hrefType, _) = TryResolveFile(relativeTo, decodedHref, forLandingPage);
 
             // Redirection
             // follow redirections
@@ -132,6 +132,11 @@ namespace Microsoft.Docs.Build
             {
                 // TODO: append query and fragment to an absolute url with query and fragments may cause problems
                 return (error, redirectTo + query + fragment, null, null);
+            }
+
+            if (hrefType == HrefType.WindowsAbsolutePath)
+            {
+                return (error, "", fragment, null);
             }
 
             // Cannot resolve the file, leave href as is
@@ -145,12 +150,12 @@ namespace Microsoft.Docs.Build
             {
                 if (relativeTo.Docset.Legacy)
                 {
-                    if (isSelfBookmark)
+                    if (hrefType == HrefType.SelfBookmark)
                     {
                         return (error, query + fragment, fragment, null);
                     }
-                    var selfUrl = HrefUtility.EscapeUrl(Document.PathToRelativeUrl(
-                        Path.GetFileName(file.SitePath), file.ContentType, file.Schema, file.Docset.Config.Output.Json));
+                    var selfUrl = Document.PathToRelativeUrl(
+                        Path.GetFileName(file.SitePath), file.ContentType, file.Schema, file.Docset.Config.Output.Json);
                     return (error, selfUrl + query + fragment, fragment, null);
                 }
                 if (string.IsNullOrEmpty(fragment))
@@ -185,25 +190,24 @@ namespace Microsoft.Docs.Build
             return (error, relativeUrl + query + fragment, fragment, file);
         }
 
-        private (Error error, Document file, string redirectTo, string query, string fragment, bool isSelfBookmark, string pathToDocset) TryResolveFile(Document relativeTo, string href)
+        private (Error error, Document file, string redirectTo, string query, string fragment, HrefType? hrefType, string pathToDocset) TryResolveFile(Document relativeTo, string href, bool forLandingPage = false)
         {
             if (string.IsNullOrEmpty(href))
             {
-                return (Errors.LinkIsEmpty(relativeTo), null, null, null, null, false, null);
+                return (Errors.LinkIsEmpty(relativeTo), null, null, null, null, null, null);
             }
 
             var (path, query, fragment) = HrefUtility.SplitHref(href);
 
             switch (HrefUtility.GetHrefType(href))
             {
-                case HrefType.Bookmark:
-                    return (null, relativeTo, null, query, fragment, true, null);
+                case HrefType.SelfBookmark:
+                    return (null, relativeTo, null, query, fragment, HrefType.SelfBookmark, null);
 
                 case HrefType.WindowsAbsolutePath:
-                    return (Errors.AbsoluteFilePath(relativeTo, path), null, null, null, null, false, null);
+                    return (Errors.AbsoluteFilePath(relativeTo, path), null, null, null, null, HrefType.WindowsAbsolutePath, null);
 
                 case HrefType.RelativePath:
-
                     // Resolve path relative to docset
                     var pathToDocset = ResolveToDocsetRelativePath(path, relativeTo);
 
@@ -215,12 +219,19 @@ namespace Microsoft.Docs.Build
                         // TODO: In case of file rename, we should warn if the content is not inside build scope.
                         //       But we should not warn or do anything with absolute URLs.
                         var (error, redirectFile) = Document.TryCreate(relativeTo.Docset, pathToDocset);
-                        return (error, redirectFile, redirectTo, query, fragment, false, pathToDocset);
+                        return (error, redirectFile, redirectTo, query, fragment, HrefType.RelativePath, pathToDocset);
                     }
 
                     var file = Document.TryCreateFromFile(relativeTo.Docset, pathToDocset);
 
-                    return (file != null ? null : Errors.FileNotFound(relativeTo.ToString(), path), file, null, query, fragment, false, pathToDocset);
+                    // try to resolve with .md for landing page
+                    if (file is null && forLandingPage)
+                    {
+                        pathToDocset = ResolveToDocsetRelativePath($"{path}.md", relativeTo);
+                        file = Document.TryCreateFromFile(relativeTo.Docset, pathToDocset);
+                    }
+
+                    return (file != null ? null : (forLandingPage ? null : Errors.FileNotFound(relativeTo.ToString(), path)), file, null, query, fragment, null, pathToDocset);
 
                 default:
                     return default;

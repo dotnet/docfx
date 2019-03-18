@@ -211,7 +211,7 @@ inputs:
     extend:
       - docs/a.yml
       - docs/b.yml
-    github:
+    gitHub:
       userCache: docs/d.json
     contribution:
       gitCommitsTime: docs/c.json
@@ -263,7 +263,7 @@ inputs:
     [b](b.md)
 outputs:
   build.log: |
-    ["error","file-not-found","Cannot find file 'b.md' relative to 'docs/a.md'","docs/a.md"]
+    ["error","file-not-found","Cannot find file 'b.md' relative to 'docs/a.md'","docs/a.md","",1,1]
 ---
 # Invalid redirection file
 inputs:
@@ -409,7 +409,7 @@ outputs:
 # redirect to not starting with '/' is allowed in config.redirectionWithoutIds
 inputs:
   docfx.yml: |
-    RedirectionsWithoutId:
+    redirectionsWithoutId:
       a.md: https://docs.microsoft.com/docfx/a
       b.md: a
 outputs:

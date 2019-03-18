@@ -10,6 +10,8 @@ repos:
           a.md: /b
       c.md: |
         ---
+        api_name:
+          - "API Name"
         ms.author: yufeih
         ---
         [d](d.png)
@@ -37,8 +39,26 @@ outputs:
   c.raw.page.json: |
     {
       "content": "<p><a href=\"d.png\" data-linktype=\"relative-path\">d</a></p>\n",
-      "rawMetadata": { "ms.author": "yufeih", "!robots": null },
-      "themesRelativePathToOutputRoot": "_themes/"
+      "rawMetadata": { "ms.author": "yufeih", "!robots": null, "api_name": ["API Name"] },
+      "themesRelativePathToOutputRoot": "_themes/",
+      "pageMetadata": "
+        <meta name=\"APIName\" content=\"API Name\" />
+        <meta name=\"ms.author\" content=\"yufeih\" />
+        <meta name=\"depot_name\" content=\".\" />
+        <meta name=\"search.ms_docsetname\" content=\"\" />
+        <meta name=\"search.ms_product\" content=\"\" />
+        <meta name=\"search.ms_sitename\" content=\"Docs\" />
+        <meta name=\"locale\" content=\"en-us\" />
+        <meta name=\"site_name\" content=\"Docs\" />
+        <meta name=\"conceptual\" content=\"&lt;p&gt;&lt;a href=&quot;d.png&quot; data-linktype=&quot;relative-path&quot;&gt;d&lt;/a&gt;&lt;/p&gt;\n\" />
+        <meta name=\"_path\" content=\"c.json\" />
+        <meta name=\"toc_rel\" content=\"toc.json\" />
+        <meta name=\"word_count\" content=\"1\" />
+        <meta name=\"wordCount\" content=\"1\" />
+        <meta name=\"rawTitle\" content=\"\" />
+        <meta name=\"document_id\" content=\"fdb5a0d7-b68e-c465-9c5e-54a5cda94902\" />
+        <meta name=\"document_version_independent_id\" content=\"92a5a770-f05f-b8bb-81c9-a8d786a9e608\" />
+        <meta name=\"updated_at\" content=\"2018-10-30 12:00 AM\" />"
     }
   c.mta.json: |
     { "locale": "en-us", "ms.author": "yufeih", "is_dynamic_rendering": true }
@@ -48,3 +68,20 @@ outputs:
   .dependency-map.json:
   filemap.json:
   op_aggregated_file_map_info.json:
+---
+# Resolve link for landing page
+inputs:
+  docfx.yml:
+  docs/index.yml: |
+    ### YamlMime:YamlDocument
+    documentType: LandingData
+    title: REST API Documentation
+    abstract:
+      menu:
+        items:
+        - href: ~/b
+  b.md: b
+outputs:
+  docs/index.json: |
+    { "content": {"title":"REST API Documentation","abstract":{"menu":{"items":[{"href":"../b"}]}},"documentType":"LandingData"} }
+  b.json:
