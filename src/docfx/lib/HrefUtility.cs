@@ -132,7 +132,7 @@ namespace Microsoft.Docs.Build
 
             if (ch == '#')
             {
-                return HrefType.Bookmark;
+                return HrefType.SelfBookmark;
             }
 
             return HrefType.RelativePath;

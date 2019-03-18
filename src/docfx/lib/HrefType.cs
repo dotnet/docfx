@@ -23,7 +23,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// The link is a bookmark on same page, e.g. #title
         /// </summary>
-        Bookmark,
+        SelfBookmark,
 
         /// <summary>
         /// The link points to an absolute windows file path with volumn separator, e.g. C:/foo.md

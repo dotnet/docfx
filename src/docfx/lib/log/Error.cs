@@ -49,6 +49,8 @@ namespace Microsoft.Docs.Build
             Range = range;
         }
 
+        public Error WithRange(in Range range) => new Error(Level, Code, Message, File, range, JsonPath);
+
         public override string ToString() => ToString(Level);
 
         public string ToString(ErrorLevel level)

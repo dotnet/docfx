@@ -44,7 +44,15 @@ namespace Microsoft.Docs.Build
             Converters = { new StringEnumConverter { NamingStrategy = s_namingStrategy } },
         };
 
-        private static ThreadLocal<Stack<Status>> t_status = new ThreadLocal<Stack<Status>>(() => new Stack<Status>());
+        private static readonly ThreadLocal<Stack<Status>> t_status = new ThreadLocal<Stack<Status>>(() => new Stack<Status>());
+
+        // HACK: Json.NET property deserialization is case insensitive:
+        // https://github.com/JamesNK/Newtonsoft.Json/issues/815,
+        // Force property deserialization to be case sensitive by hijacking GetClosestMatchProperty implementation.
+        private static readonly Action<JsonPropertyCollection, List<JsonProperty>> s_makeJsonCaseSensitive =
+            ReflectionUtility.CreateInstanceFieldSetter<JsonPropertyCollection, List<JsonProperty>>("_list");
+
+        private static readonly List<JsonProperty> s_emptyPropertyList = new List<JsonProperty>();
 
         static JsonUtility()
         {
@@ -267,22 +275,31 @@ namespace Microsoft.Docs.Build
         {
             var errors = new List<Error>();
             var nullNodes = new List<JToken>();
-            var removeNodes = new List<JToken>();
+            var nullArrayNodes = new List<JToken>();
 
-            RemoveNullsCore(token, errors, nullNodes, removeNodes);
+            RemoveNullsCore(token, errors, nullNodes, nullArrayNodes);
 
             foreach (var node in nullNodes)
             {
-                var name = node is JProperty prop ? prop.Name : (node.Parent?.Parent is JProperty p ? p.Name : node.Path);
+                var (lineInfo, name) = Parse(node);
                 errors.Add(Errors.NullValue(ToRange(node), name, node.Path));
             }
 
-            foreach (var node in removeNodes)
+            foreach (var node in nullArrayNodes)
             {
+                var (lineInfo, name) = Parse(node);
+                errors.Add(Errors.NullArrayValue(new Range(lineInfo.LineNumber, lineInfo.LinePosition), name, node.Path));
                 node.Remove();
             }
 
             return (errors, token);
+
+            (IJsonLineInfo lineInfo, string name) Parse(JToken node)
+            {
+                var lineInfo = (IJsonLineInfo)node;
+                var name = node is JProperty prop ? prop.Name : (node.Parent?.Parent is JProperty p ? p.Name : node.Path);
+                return (lineInfo, name);
+            }
         }
 
         public static bool TryGetValue<T>(this JObject obj, string key, out T value) where T : JToken
@@ -341,7 +358,7 @@ namespace Microsoft.Docs.Build
                 (token.Type == JTokenType.Undefined);
         }
 
-        private static void RemoveNullsCore(JToken token, List<Error> errors, List<JToken> nullNodes, List<JToken> removeNodes)
+        private static void RemoveNullsCore(JToken token, List<Error> errors, List<JToken> nullNodes, List<JToken> nullArrayNodes)
         {
             if (token is JArray array)
             {
@@ -349,12 +366,11 @@ namespace Microsoft.Docs.Build
                 {
                     if (item.IsNullOrUndefined())
                     {
-                        nullNodes.Add(item);
-                        removeNodes.Add(item);
+                        nullArrayNodes.Add(item);
                     }
                     else
                     {
-                        RemoveNullsCore(item, errors, nullNodes, removeNodes);
+                        RemoveNullsCore(item, errors, nullNodes, nullArrayNodes);
                     }
                 }
             }
@@ -369,7 +385,7 @@ namespace Microsoft.Docs.Build
                     }
                     else
                     {
-                        RemoveNullsCore(prop.Value, errors, nullNodes, removeNodes);
+                        RemoveNullsCore(prop.Value, errors, nullNodes, nullArrayNodes);
                     }
                 }
             }
@@ -459,8 +475,20 @@ namespace Microsoft.Docs.Build
             return null;
         }
 
+        private static void MakePropertyCollectionCaseSensitive(JsonPropertyCollection properties)
+        {
+            s_makeJsonCaseSensitive(properties, s_emptyPropertyList);
+        }
+
         private class JsonContractResolver : DefaultContractResolver
         {
+            protected override JsonObjectContract CreateObjectContract(Type objectType)
+            {
+                var contract = base.CreateObjectContract(objectType);
+                MakePropertyCollectionCaseSensitive(contract.Properties);
+                return contract;
+            }
+
             protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
             {
                 var prop = base.CreateProperty(member, memberSerialization);
