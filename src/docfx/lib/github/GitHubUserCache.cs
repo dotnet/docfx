@@ -23,21 +23,19 @@ namespace Microsoft.Docs.Build
         internal Func<string, Task<(Error, GitHubUser)>> _getUserByLoginFromGitHub;
 
         // calls GitHubAccessor.GetLoginByCommit, which ohly for private use, and tests can swap this out
-        internal Func<string, string, string, Task<(Error, string)>> _getLoginByCommitFromGitHub;
+        internal Func<string, string, string, Task<(Error, GitHubUser)>> _getUserByCommitFromGitHub;
 
         private static int s_randomSeed = Environment.TickCount;
         private static ThreadLocal<Random> t_random = new ThreadLocal<Random>(() => new Random(Interlocked.Increment(ref s_randomSeed)));
 
-        private readonly object _lock = new object();
         private readonly Dictionary<string, GitHubUser> _usersByLogin = new Dictionary<string, GitHubUser>(StringComparer.OrdinalIgnoreCase);
         private readonly Dictionary<string, GitHubUser> _usersByEmail = new Dictionary<string, GitHubUser>(StringComparer.OrdinalIgnoreCase);
 
-        // Ensures we only call GitHub once for parallel requests with same input parameter
-        private readonly ConcurrentDictionary<string, Lazy<Task<(Error, GitHubUser)>>> _outgoingGetUserByLoginRequests
-                   = new ConcurrentDictionary<string, Lazy<Task<(Error, GitHubUser)>>>(StringComparer.OrdinalIgnoreCase);
+        // A lock to ensure mutations to `_usersByLogin` and `_usersByEmail` is sequential.
+        private readonly object _lock = new object();
 
-        private readonly ConcurrentDictionary<string, Lazy<Task<(Error, string)>>> _outgoingGetLoginByCommitRequests
-                   = new ConcurrentDictionary<string, Lazy<Task<(Error, string)>>>(StringComparer.OrdinalIgnoreCase);
+        // A lock to ensure async operations with the same key are sequential.
+        private readonly ConcurrentDictionary<string, SemaphoreSlim> _syncRoots = new ConcurrentDictionary<string, SemaphoreSlim>(StringComparer.OrdinalIgnoreCase);
 
         private readonly string _url = null;
         private readonly string _content = null;
@@ -62,7 +60,7 @@ namespace Microsoft.Docs.Build
 
             var github = new GitHubAccessor(docset.Config.GitHub.AuthToken);
             _getUserByLoginFromGitHub = github.GetUserByLogin;
-            _getLoginByCommitFromGitHub = github.GetLoginByCommit;
+            _getUserByCommitFromGitHub = github.GetUserByCommit;
             _expirationInHours = docset.Config.GitHub.UserCacheExpirationInHours;
             _cachePath = cachePath;
         }
@@ -103,70 +101,69 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public async Task<(Error error, GitHubUser user)> GetByLogin(string login)
+        public Task<(Error error, GitHubUser user)> GetByLogin(string login)
         {
-            Error error;
-
             if (string.IsNullOrEmpty(login))
                 return default;
 
-            Telemetry.TrackCacheTotalCount(TelemetryName.GitHubUserCache);
-            var user = TryGetByLogin(login);
-            if (user != null)
-            {
-                if (user.IsValid())
-                    return ((Error)null, user);
-                if (!user.IsPartial())
-                    return (Errors.GitHubUserNotFound(login), null);
-            }
+            return Synchronized(login, GetByLoginCore);
 
-            (error, user) = await _outgoingGetUserByLoginRequests.GetOrAdd(
-                login,
-                new Lazy<Task<(Error, GitHubUser)>>(() =>
+            async Task<(Error error, GitHubUser user)> GetByLoginCore()
+            {
+                Telemetry.TrackCacheTotalCount(TelemetryName.GitHubUserCache);
+                var existingUser = TryGetByLogin(login);
+                if (existingUser != null)
                 {
-                    Telemetry.TrackCacheMissCount(TelemetryName.GitHubUserCache);
-                    return _getUserByLoginFromGitHub(login);
-                })).Value;
+                    if (existingUser.IsValid())
+                        return (null, existingUser);
+                    return (Errors.GitHubUserNotFound(login), null);
+                }
 
-            if (error is null)
-            {
-                if (user is null)
-                    (error, user) = (Errors.GitHubUserNotFound(login), new GitHubUser { Login = login });
-                user.Expiry = NextExpiry();
-                UpdateUser(user);
+                Log.Write($"Calling GitHub user API to resolve {login}");
+                Telemetry.TrackCacheMissCount(TelemetryName.GitHubUserCache);
+
+                var (error, user) = await _getUserByLoginFromGitHub(login);
+                if (error is null)
+                {
+                    if (user is null)
+                        error = Errors.GitHubUserNotFound(login);
+                    UpdateUser(user ?? new GitHubUser { Login = login });
+                }
+                return (error, user);
             }
-
-            if (error != null)
-                return (error, null);
-
-            return (null, TryGetByLogin(login));
         }
 
-        public async Task<(Error, GitHubUser)> GetByCommit(string authorEmail, string repoOwner, string repoName, string commitSha)
+        public Task<(Error, GitHubUser)> GetByCommit(string authorEmail, string repoOwner, string repoName, string commitSha)
         {
             if (string.IsNullOrEmpty(authorEmail))
                 return default;
 
-            Telemetry.TrackCacheTotalCount(TelemetryName.GitHubUserCache);
-            var user = TryGetByEmail(authorEmail);
-            if (user != null)
-                return (null, user.IsValid() ? user : null);
+            return Synchronized(authorEmail, GetByCommitCore);
 
-            var (error, login) = await _outgoingGetLoginByCommitRequests.GetOrAdd(
-                commitSha,
-                new Lazy<Task<(Error, string)>>(() =>
+            async Task<(Error, GitHubUser)> GetByCommitCore()
+            {
+                Telemetry.TrackCacheTotalCount(TelemetryName.GitHubUserCache);
+                var existingUser = TryGetByEmail(authorEmail);
+                if (existingUser != null)
                 {
-                    Telemetry.TrackCacheMissCount(TelemetryName.GitHubUserCache);
-                    return _getLoginByCommitFromGitHub(repoOwner, repoName, commitSha);
-                })).Value;
+                    if (existingUser.IsValid())
+                        return (null, existingUser);
+                    return (Errors.GitHubUserNotFound(authorEmail), null);
+                }
 
-            if (error is null)
-                UpdateUser(new GitHubUser { Login = login, Emails = new[] { authorEmail }, Expiry = NextExpiry() });
+                Log.Write($"Calling GitHub commit API to resolve {authorEmail}");
+                Telemetry.TrackCacheMissCount(TelemetryName.GitHubUserCache);
 
-            if (login is null)
-                return (error, null);
+                var (error, user) = await _getUserByCommitFromGitHub(repoOwner, repoName, commitSha);
 
-            return await GetByLogin(login);
+                // When GetUserByCommit failed, it could either the commit is not found or the user is not found,
+                // only mark the email as invalid when the user is not found
+                if (user != null)
+                {
+                    UpdateUser(user);
+                }
+                return (error, user);
+            }
         }
 
         public async Task<Error> SaveChanges(Config config)
@@ -276,33 +273,30 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
-        /// Update the cache index by login/email. It can have several useages:
+        /// Update the cache index by login/email. It can have 3 forms:
         ///
-        /// 1. Get user from GitHub Users API. It has 2 forms depending on whether the user is valid:
-        ///   1.1 Valid user: { "id": 123, "login": "...", "emails": ["..."] }
-        ///   1.2 Invalid User: { "login": "..." }
-        ///
-        /// 2. Get login-email matching from GitHub Commits API. It has 2 forms depending on whether matching is got:
-        ///   2.1 Valid login-email pair (partial user): { "login": "...", "emails": [ "..." ] }
-        ///   2.2 Invalid email: { "emails": [ "..." ] }
-        ///
-        /// 3. Construct cache when first read from disk. It can be one of the following formats:
-        ///   - Valid user (See 1.1)
-        ///   - Invalid user (See 1.2)
-        ///   - Invalid email (See 2.2)
+        /// 1. Valid user: { "id": 123, "login": "...", "emails": ["..."] }
+        /// 2. User missing with the specified login: { "login": "..." }
+        /// 3. User missing with the specified email: { "emails": [ "..." ] }
         /// </summary>
         private void UnsafeUpdateUser(GitHubUser user)
         {
             Debug.Assert(user != null);
+
             if (user.IsExpired())
                 return;
 
-            if (user.Login != null
-                && _usersByLogin.TryGetValue(user.Login, out var existingUser)
-                && !existingUser.IsExpired())
+            if (user.Login != null &&
+                _usersByLogin.TryGetValue(user.Login, out var existingUser) &&
+                !existingUser.IsExpired())
             {
-                existingUser.Merge(user);
-                user = existingUser;
+                if (user.Id is null)
+                    user.Id = existingUser.Id;
+                if (user.Login is null)
+                    user.Login = existingUser.Login;
+                if (user.Name is null)
+                    user.Name = existingUser.Name;
+                user.Emails = user.Emails.Concat(existingUser.Emails).Distinct().ToArray();
             }
 
             if (user.Expiry is null)
@@ -354,6 +348,24 @@ namespace Microsoft.Docs.Build
             foreach (var user in users)
             {
                 UnsafeUpdateUser(user);
+            }
+        }
+
+        private async Task<T> Synchronized<T>(string key, Func<Task<T>> action)
+        {
+            var semaphore = _syncRoots.GetOrAdd(key, _ => new SemaphoreSlim(1, 1));
+
+            try
+            {
+                await semaphore.WaitAsync();
+                return await action();
+            }
+            finally
+            {
+                if (semaphore.Release() == 0)
+                {
+                    _syncRoots.TryRemove(key, out _);
+                }
             }
         }
     }
