@@ -54,7 +54,9 @@ namespace Microsoft.Docs.Build
             var userIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             var updatedDateTime = GetUpdatedAt(document, commits);
 
-            var isGithubRepo = GitHubUtility.TryParse(repo?.Remote, out var gitHubOwner, out var gitHubRepoName);
+            _ = GitHubUtility.TryParse(repo?.Remote, out var gitHubOwner, out var gitHubRepoName) ||
+                GitHubUtility.TryParse(document.Docset.Config.Contribution.Repository, out gitHubOwner, out gitHubRepoName);
+
             var resolveGitHubUsers = document.Docset.Config.GitHub.ResolveUsers;
 
             // Resolve contributors from commits
@@ -88,7 +90,7 @@ namespace Microsoft.Docs.Build
                     return new Contributor { DisplayName = commit.AuthorName, Id = commit.AuthorEmail };
                 }
 
-                var (error, user) = await _gitHubUserCache.GetByEmailOrCommit(commit.AuthorEmail, gitHubOwner, gitHubRepoName, commit.Sha, isGithubRepo);
+                var (error, user) = await _gitHubUserCache.GetByEmailOrCommit(commit.AuthorEmail, gitHubOwner, gitHubRepoName, commit.Sha);
                 errors.AddIfNotNull(error);
 
                 return user?.ToContributor();
@@ -155,7 +157,6 @@ namespace Microsoft.Docs.Build
             if (repo == null)
                 return default;
 
-            var escapedPathToRepo = HrefUtility.EscapeUrl(pathToRepo);
             var repoHost = GitHubUtility.TryParse(repo.Remote, out _, out _) ? GitHost.GitHub : GitHost.Unknown;
             var commit = commits.FirstOrDefault()?.Sha;
             if (string.IsNullOrEmpty(commit))
@@ -173,7 +174,7 @@ namespace Microsoft.Docs.Build
                 switch (repoHost)
                 {
                     case GitHost.GitHub:
-                        return commit != null ? $"{repo.Remote}/blob/{commit}/{escapedPathToRepo}" : null;
+                        return commit != null ? $"{repo.Remote}/blob/{commit}/{pathToRepo}" : null;
                     default:
                         return null;
                 }
@@ -184,7 +185,7 @@ namespace Microsoft.Docs.Build
                 switch (repoHost)
                 {
                     case GitHost.GitHub:
-                        return $"{{repo}}/blob/{{branch}}/{escapedPathToRepo}";
+                        return $"{{repo}}/blob/{{branch}}/{pathToRepo}";
                     default:
                         return null;
                 }
@@ -220,7 +221,7 @@ namespace Microsoft.Docs.Build
                 // git edit url, only works for github repo
                 if (GitHubUtility.TryParse(editRemote, out _, out _))
                 {
-                    return $"{editRemote}/blob/{editBranch}/{escapedPathToRepo}";
+                    return $"{editRemote}/blob/{editBranch}/{pathToRepo}";
                 }
 
                 return null;

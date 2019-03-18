@@ -142,14 +142,14 @@ namespace Microsoft.Docs.Build
             return (null, TryGetByLogin(login));
         }
 
-        public async Task<(Error, GitHubUser)> GetByEmailOrCommit(string authorEmail, string repoOwner, string repoName, string commitSha, bool isGitHubRepo = true)
+        public async Task<(Error, GitHubUser)> GetByEmailOrCommit(string authorEmail, string repoOwner, string repoName, string commitSha)
         {
             if (string.IsNullOrEmpty(authorEmail))
                 return default;
 
             Telemetry.TrackCacheTotalCount(TelemetryName.GitHubUserCache);
             var user = TryGetByEmail(authorEmail);
-            if (user != null || !isGitHubRepo)
+            if (user != null || string.IsNullOrEmpty(repoOwner) || string.IsNullOrEmpty(repoName))
                 return (null, (user?.IsValid() ?? false) ? user : null);
 
             var (error, login) = await _outgoingGetLoginByCommitRequests.GetOrAdd(

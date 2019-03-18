@@ -418,23 +418,24 @@ repos:
           ---
           author: charlie
           ---
-          Alice creates this. Bob updates this. Charlie becomes author.
+          Osmond creates this. Bob updates this. Charlie becomes author.
     - author: Bob 
       email: bob@contoso.com
       files:
         docs/index.md: |
-          Alice creates this. Bob updates this.
-    - author: Alice 
-      email: wrong@contoso.com
+          Osmond creates this. Bob updates this.
+    - author: osmondjiang 
+      email: xinjiang@microsoft.com
       files:
         docs/index.md: |
-          Alice creates this, without email
+          Osmond creates this, without email
 inputs:
   docfx.yml: |
     gitHub:
       userCache: user_profile.json
       resolveUsers: true
     contribution:
+      repository: https://github.com/docascode/contribution-test
       gitCommitsTime: build_history.json
   user_profile.json: |
       { "users": [
@@ -445,7 +446,7 @@ inputs:
       }
   build_history.json: |
     { "commits": [
-        { "sha": "f2d46ffd9b59b64ce1e7b7f8f07ba10c560378d1", "built_at": "2018-01-01" }
+        { "sha": "bc09224561ce6d13411cb48506b1900d6c6b94cb", "built_at": "2018-01-01" }
       ]
     }
 outputs:
@@ -454,7 +455,8 @@ outputs:
       "author": 
         { "name": "charlie", "profile_url": "https://github.com/charlie", "display_name": "Charlie", "id": "3" },
       "contributors": [
-        { "name": "bob", "profile_url": "https://github.com/bob", "display_name": "Bob", "id": "2" }
+        { "name": "bob", "profile_url": "https://github.com/bob", "display_name": "Bob", "id": "2" },
+        { "name": "OsmondJiang", "profile_url": "https://github.com/OsmondJiang", "display_name": "Osmond Jiang", "id": "19990166" }
       ],
       "updated_at": "2018-01-01T00:00:00.0000000"
     }
