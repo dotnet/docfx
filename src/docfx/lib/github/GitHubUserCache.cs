@@ -133,7 +133,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public Task<(Error, GitHubUser)> GetByCommit(string authorEmail, string repoOwner, string repoName, string commitSha)
+        public Task<(Error error, GitHubUser user)> GetByCommit(string authorEmail, string repoOwner, string repoName, string commitSha)
         {
             if (string.IsNullOrEmpty(authorEmail))
                 return default;
@@ -148,7 +148,7 @@ namespace Microsoft.Docs.Build
                 {
                     if (existingUser.IsValid())
                         return (null, existingUser);
-                    return (Errors.GitHubUserNotFound(authorEmail), null);
+                    return default;
                 }
 
                 Log.Write($"Calling GitHub commit API to resolve {authorEmail}");

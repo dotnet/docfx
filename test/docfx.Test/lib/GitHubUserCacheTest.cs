@@ -127,6 +127,28 @@ namespace Microsoft.Docs.Build
             };
             yield return new object[]
             {
+                "Get user by commit does not return user not found error",
+                (Func<GitHubUserCache, Task>) ( async (cache) =>
+                {
+                    Assert.Null((await cache.GetByCommit("me@contoso.com", "owner", "name", "3")).error);
+                    Assert.Null((await cache.GetByCommit("me@contoso.com", "owner", "name", "3")).error);
+                }),
+                "[]",
+                "[{'emails':['me@contoso.com']}]",
+                0,
+                1
+            };
+            yield return new object[]
+            {
+                "Get user by commit does not cache email when commit is not resolved",
+                (Func<GitHubUserCache, Task>) ( async (cache) => await cache.GetByCommit("me2@contoso.com", "", "", "") ),
+                "[]",
+                "[]",
+                0,
+                1
+            };
+            yield return new object[]
+            {
                 "Get user by commit from cache",
                 (Func<GitHubUserCache, Task>) ( async (cache) => await cache.GetByCommit("alice@contoso.com", "owner", "name", "1")),
                 "[{'id':1,'login':'alice','name':'Alice','emails':['alice@contoso.com']}]",
@@ -208,7 +230,7 @@ namespace Microsoft.Docs.Build
                 switch (login)
                 {
                     case "alice":
-                        return Task.FromResult<(Error, GitHubUser)>((null, new GitHubUser() { Id = 1, Login = "alice", Name = "Alice", Emails = new[] { "alice@contoso.com" } }));
+                        return Task.FromResult<(Error, GitHubUser)>((null, new GitHubUser { Id = 1, Login = "alice", Name = "Alice", Emails = new[] { "alice@contoso.com" } }));
                     case "github-fail":
                         return Task.FromResult<(Error, GitHubUser)>((Errors.GitHubApiFailed("API call failed for some reasons", new Exception()), null));
                     default:
@@ -222,9 +244,11 @@ namespace Microsoft.Docs.Build
                 switch ($"{repoOwner}/{repoName}/{commitSha}")
                 {
                     case "owner/name/1":
-                        return Task.FromResult<(Error, GitHubUser)>((null, new GitHubUser() { Id = 1, Login = "alice", Name = "Alice", Emails = new[] { "alice@contoso.com" } }));
+                        return Task.FromResult<(Error, GitHubUser)>((null, new GitHubUser { Id = 1, Login = "alice", Name = "Alice", Emails = new[] { "alice@contoso.com" } }));
                     case "owner/name/2":
                         return Task.FromResult<(Error, GitHubUser)>((Errors.GitHubApiFailed("API call failed for some reasons", new Exception()), null));
+                    case "owner/name/3":
+                        return Task.FromResult<(Error, GitHubUser)>((null, new GitHubUser { Emails = new[] { "me@contoso.com" } }));
                     default:
                         return Task.FromResult<(Error, GitHubUser)>(default);
                 }
