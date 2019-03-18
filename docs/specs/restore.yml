@@ -37,7 +37,7 @@ inputs:
     [!include[include to 2](~/docfx-test-dependencies2/docs/a.md)
 outputs:
   build.log: |
-    ["warning","link-is-dependency","File 'docs/a.md' referenced by link '~/docfx-test-dependencies1/docs/a.md' will not be built because it is from a dependency docset","docs/a.md"]
+    ["warning","link-is-dependency","File 'docs/a.md' referenced by link '~/docfx-test-dependencies1/docs/a.md' will not be built because it is from a dependency docset","docs/a.md", "", 1,1]
   docs/a.json: |
     {"content":"<p><a href=\"%7E/docfx-test-dependencies1/docs/a.md\">link to 1</a></p>\n<p>a1</p>\n"}
 ---
@@ -191,6 +191,7 @@ outputs:
   docs/a.json:
 ---
 # restore with dependency lock
+# TODO: always get latest version for dependency without lock
 repos:
   https://docs.com/lock1/a#master:
     - files:
@@ -212,6 +213,9 @@ repos:
                          "commit":"8720d784fb99abcbdfa922025b8bcc060f0f622a"
                       }
                    }
+                },
+                "https://docs.com/lock1/c#master": {
+                  "commit": "c5969737496ff42854a019f982882d5fac486a56"
                 }
              }
           }
