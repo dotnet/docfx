@@ -113,7 +113,11 @@ namespace Microsoft.Docs.Build
                 Telemetry.TrackCacheTotalCount(TelemetryName.GitHubUserCache);
                 var existingUser = TryGetByLogin(login);
                 if (existingUser != null)
-                    return (null, existingUser.IsValid() ? existingUser : null);
+                {
+                    if (existingUser.IsValid())
+                        return (null, existingUser);
+                    return (Errors.GitHubUserNotFound(login), null);
+                }
 
                 Log.Write($"Calling GitHub user API to resolve {login}");
                 Telemetry.TrackCacheMissCount(TelemetryName.GitHubUserCache);
@@ -141,15 +145,22 @@ namespace Microsoft.Docs.Build
                 Telemetry.TrackCacheTotalCount(TelemetryName.GitHubUserCache);
                 var existingUser = TryGetByEmail(authorEmail);
                 if (existingUser != null)
-                    return (null, existingUser.IsValid() ? existingUser : null);
+                {
+                    if (existingUser.IsValid())
+                        return (null, existingUser);
+                    return (Errors.GitHubUserNotFound(authorEmail), null);
+                }
 
                 Log.Write($"Calling GitHub commit API to resolve {authorEmail}");
                 Telemetry.TrackCacheMissCount(TelemetryName.GitHubUserCache);
 
                 var (error, user) = await _getUserByCommitFromGitHub(repoOwner, repoName, commitSha);
-                if (error == null)
+
+                // When GetUserByCommit failed, it could either the commit is not found or the user is not found,
+                // only mark the email as invalid when the user is not found
+                if (user != null)
                 {
-                    UpdateUser(user ?? new GitHubUser { Emails = new[] { authorEmail } });
+                    UpdateUser(user);
                 }
                 return (error, user);
             }
