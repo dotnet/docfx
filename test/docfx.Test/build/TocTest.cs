@@ -49,13 +49,6 @@ namespace Microsoft.Docs.Build
         [InlineData(new[] { "c/b/TOC.md", "TOC.md" }, "c/b/a.md", "toc.json", "toc.json")]
         [InlineData(new[] { "c/b/TOC.md", "c/d/e/TOC.md" }, "c/f/h/a.md", "../../b/toc.json", null)]
 
-        // order by levenshtein distance
-        [InlineData(new[] { "a/TOC.md", "b/TOC.md" }, "b.md", "b/toc.json", null)]
-        [InlineData(new[] { "c/b/TOC.md", "c/a/TOC.md" }, "c/e/b.md", "../b/toc.json", null)]
-        [InlineData(new[] { "a/multi-factor-authentication/TOC.md", "a/active-directory-domain-services/toc.md" },
-                    "a/multi-factor-authentication.md",
-                    "multi-factor-authentication/toc.json", null)]
-
         public static void FindTocRelativePath(string[] tocFiles, string file, string expectedTocPath, string expectedOrphanTocPath)
         {
             var builder = new TableOfContentsMapBuilder();
