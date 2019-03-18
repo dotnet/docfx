@@ -18,7 +18,7 @@ namespace Microsoft.Docs.Build
 
         public async Task<(Repository repo, string pathToRepo, List<GitCommit> commits)> GetCommitHistory(string fullPath, Repository repo, string committish = null)
         {
-            if (repo == null)
+            if (repo is null)
                 return default;
 
             var pathToRepo = PathUtility.NormalizeFile(Path.GetRelativePath(repo.Path, fullPath));
@@ -28,7 +28,7 @@ namespace Microsoft.Docs.Build
         public (Repository repo, string pathToRepo, List<GitCommit> commits) GetCommitHistoryNoCache(Docset docset, string filePath, int top, string committish = null)
         {
             var repo = docset.GetRepository(filePath);
-            if (repo == null)
+            if (repo is null)
                 return default;
 
             var fullPath = Path.Combine(docset.DocsetPath, filePath);

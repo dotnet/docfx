@@ -34,7 +34,7 @@ namespace Microsoft.Docs.Build
             var existingEtag = !string.IsNullOrEmpty(existingEtagContent) ? new EntityTagHeaderValue(existingEtagContent) : null;
 
             var (tempFile, etag) = await DownloadToTempFile(url, config, existingEtag);
-            if (tempFile == null)
+            if (tempFile is null)
             {
                 // no change at all
                 return;

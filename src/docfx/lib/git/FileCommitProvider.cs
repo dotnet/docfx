@@ -308,7 +308,7 @@ namespace Microsoft.Docs.Build
             for (var i = 0; i < pathSegments.Length; i++)
             {
                 var files = _trees.GetOrAdd(blob.a, _ => LoadTree(blob));
-                if (files == null || !files.TryGetValue(pathSegments[i], out blob))
+                if (files is null || !files.TryGetValue(pathSegments[i], out blob))
                 {
                     return default;
                 }

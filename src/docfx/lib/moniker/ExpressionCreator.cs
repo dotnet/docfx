@@ -65,7 +65,7 @@ namespace Microsoft.Docs.Build
                         result = comparator;
                     }
                 }
-                if (result == null)
+                if (result is null)
                 {
                     throw new MonikerRangeException($"Expect a comparator set, but got `{rangeString}`");
                 }

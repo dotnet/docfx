@@ -134,7 +134,7 @@ namespace Microsoft.Docs.Build
                          : node.Name == "img" ? node.Attributes["src"]
                          : null;
 
-                if (link == null)
+                if (link is null)
                 {
                     continue;
                 }

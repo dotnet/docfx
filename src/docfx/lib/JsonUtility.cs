@@ -65,7 +65,7 @@ namespace Microsoft.Docs.Build
         public static string ReadMime(TextReader reader)
         {
             var schema = ReadSchema(reader);
-            if (schema == null)
+            if (schema is null)
                 return null;
 
             // TODO: be more strict
@@ -305,7 +305,7 @@ namespace Microsoft.Docs.Build
         public static bool TryGetValue<T>(this JObject obj, string key, out T value) where T : JToken
         {
             value = null;
-            if (obj == null || string.IsNullOrEmpty(key))
+            if (obj is null || string.IsNullOrEmpty(key))
             {
                 return false;
             }
@@ -353,7 +353,7 @@ namespace Microsoft.Docs.Build
         private static bool IsNullOrUndefined(this JToken token)
         {
             return
-                (token == null) ||
+                (token is null) ||
                 (token.Type == JTokenType.Null) ||
                 (token.Type == JTokenType.Undefined);
         }
@@ -449,7 +449,7 @@ namespace Microsoft.Docs.Build
             if (contract is JsonObjectContract objectContract)
             {
                 var matchingProperty = objectContract.Properties.GetClosestMatchProperty(prop.Name);
-                if (matchingProperty == null && type.IsSealed)
+                if (matchingProperty is null && type.IsSealed)
                 {
                     errors.Add(Errors.UnknownField(ToRange(prop), prop.Name, type.Name, prop.Path));
                 }
@@ -575,7 +575,7 @@ namespace Microsoft.Docs.Build
             {
                 var range = ToRange((IJsonLineInfo)reader);
                 var value = serializer.Deserialize(reader, objectType);
-                if (value == null)
+                if (value is null)
                 {
                     return null;
                 }

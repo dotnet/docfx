@@ -39,7 +39,7 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(document != null);
             var (repo, pathToRepo, commits) = await _gitCommitProvider.GetCommitHistory(document);
-            if (repo == null)
+            if (repo is null)
             {
                 return default;
             }
@@ -151,7 +151,7 @@ namespace Microsoft.Docs.Build
             Debug.Assert(document != null);
 
             var (repo, pathToRepo, commits) = await _gitCommitProvider.GetCommitHistory(document);
-            if (repo == null)
+            if (repo is null)
                 return default;
 
             var repoHost = GitHubUtility.TryParse(repo.Remote, out _, out _) ? GitHost.GitHub : GitHost.Unknown;

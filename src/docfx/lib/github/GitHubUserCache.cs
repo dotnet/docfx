@@ -128,9 +128,9 @@ namespace Microsoft.Docs.Build
                     return _getUserByLoginFromGitHub(login);
                 })).Value;
 
-            if (error == null)
+            if (error is null)
             {
-                if (user == null)
+                if (user is null)
                     (error, user) = (Errors.GitHubUserNotFound(login), new GitHubUser { Login = login });
                 user.Expiry = NextExpiry();
                 UpdateUser(user);
@@ -160,10 +160,10 @@ namespace Microsoft.Docs.Build
                     return _getLoginByCommitFromGitHub(repoOwner, repoName, commitSha);
                 })).Value;
 
-            if (error == null)
+            if (error is null)
                 UpdateUser(new GitHubUser { Login = login, Emails = new[] { authorEmail }, Expiry = NextExpiry() });
 
-            if (login == null)
+            if (login is null)
                 return (error, null);
 
             return await GetByLogin(login);
@@ -305,7 +305,7 @@ namespace Microsoft.Docs.Build
                 user = existingUser;
             }
 
-            if (user.Expiry == null)
+            if (user.Expiry is null)
                 user.Expiry = NextExpiry();
 
             if (user.Login != null)

@@ -35,7 +35,7 @@ namespace Microsoft.Docs.Build
         public static string ReadMime(string yaml)
         {
             var header = ReadHeader(yaml);
-            if (header == null || !header.StartsWith(YamlMimePrefix, StringComparison.OrdinalIgnoreCase))
+            if (header is null || !header.StartsWith(YamlMimePrefix, StringComparison.OrdinalIgnoreCase))
             {
                 return null;
             }
