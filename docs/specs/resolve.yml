@@ -146,14 +146,14 @@ outputs:
   docs/a.json: |
     { "content": "<p>Link to <a href=\"a/\">index</a></p>" }
 ---
-# Escape special charactors in path
+# HTML encode special charactors in path
 inputs:
   docfx.yml:
   docs/a.md: Link to [b](b&/c~.md)
   docs/b&/c~.md:
 outputs:
   docs/a.json: |
-    { "content": "<p>Link to <a href=\"b%26/c%7E\">b</a></p>" }
+    { "content": "<p>Link to <a href=\"b&amp;/c%7E\">b</a></p>" }
   docs/b&/c~.json:
 ---
 # Files redirected to an aboslute URL

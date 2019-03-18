@@ -76,30 +76,5 @@ namespace Microsoft.Docs.Build
         [InlineData("https://////a.com", false)]
         public static void IsHttpHref(string href, bool expected)
             => Assert.Equal(expected, HrefUtility.IsHttpHref(href));
-
-        [Theory]
-        [InlineData("", "")]
-        [InlineData("a&#/b\\.* d.png", "a%26%23/b/.%2A%20d.png")]
-        public static void EscapeUrl(string path, string expected)
-        {
-            Assert.Equal(expected, HrefUtility.EscapeUrl(path));
-        }
-
-        [Theory]
-        [InlineData("a&#/b\\.* d.png", "a%26%23%2Fb%5C.%2A%20d.png")]
-        [InlineData("\"0x8D658F7F87AE5C5\"", "%220x8D658F7F87AE5C5%22")]
-        public static void EscapeUrlSegment(string path, string expected)
-        {
-            Assert.Equal(expected, HrefUtility.EscapeUrlSegment(path));
-        }
-
-        [Theory]
-        [InlineData("a%26%23/b/.%2A%20d.png", "a&#/b/.* d.png")]
-        [InlineData("a%26%23%2Fb%5C.%2A%20d.png", "a&#/b\\.* d.png")]
-        [InlineData("%220x8D658F7F87AE5C5%22", "\"0x8D658F7F87AE5C5\"")]
-        public static void UnescapeUrl(string path, string expected)
-        {
-            Assert.Equal(expected, HrefUtility.UnescapeUrl(path));
-        }
     }
 }
