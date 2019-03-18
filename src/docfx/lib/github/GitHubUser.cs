@@ -22,8 +22,6 @@ namespace Microsoft.Docs.Build
 
         public bool IsExpired() => Expiry != null && Expiry < DateTime.UtcNow;
 
-        public bool IsPartial() => !Id.HasValue && !string.IsNullOrEmpty(Login) && Emails.Length > 0;
-
         public Contributor ToContributor()
         {
             return new Contributor
@@ -33,15 +31,6 @@ namespace Microsoft.Docs.Build
                 DisplayName = Name,
                 ProfileUrl = "https://github.com/" + Login,
             };
-        }
-
-        public void Merge(GitHubUser user)
-        {
-            Id = !user.IsValid() ? Id : user.Id;
-            Login = string.IsNullOrEmpty(user.Login) ? Login : user.Login;
-            Name = string.IsNullOrEmpty(user.Name) ? Name : user.Name;
-            Emails = Emails.Concat(user.Emails).Distinct().ToArray();
-            Expiry = Expiry > user.Expiry ? Expiry : user.Expiry;
         }
     }
 }

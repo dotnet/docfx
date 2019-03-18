@@ -87,8 +87,8 @@ namespace Microsoft.Docs.Build
 
                 return (null, new GitHubUser
                 {
-                    Id = commit.Author.Id,
-                    Login = commit.Author.Login,
+                    Id = commit.Author?.Id,
+                    Login = commit.Author?.Login,
                     Name = commit.Commit.Author.Name,
                     Emails = new[] { commit.Commit.Author.Email },
                 });
