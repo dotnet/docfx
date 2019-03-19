@@ -456,7 +456,7 @@ outputs:
         { "name": "charlie", "profile_url": "https://github.com/charlie", "display_name": "Charlie", "id": "3" },
       "contributors": [
         { "name": "bob", "profile_url": "https://github.com/bob", "display_name": "Bob", "id": "2" },
-        { "name": "OsmondJiang", "profile_url": "https://github.com/OsmondJiang", "display_name": "Osmond Jiang", "id": "19990166" }
+        { "name": "OsmondJiang", "profile_url": "https://github.com/OsmondJiang", "display_name": "osmondjiang", "id": "19990166" }
       ],
       "updated_at": "2018-01-01T00:00:00.0000000"
     }

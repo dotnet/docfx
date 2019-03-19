@@ -55,8 +55,8 @@ namespace Microsoft.Docs.Build
             var updatedDateTime = GetUpdatedAt(document, commits);
 
             var resolveGitHubUsers =
-                GitHubUtility.TryParse(repo?.Remote, out var gitHubOwner, out var gitHubRepoName) ||
-                GitHubUtility.TryParse(document.Docset.Config.Contribution.Repository, out gitHubOwner, out gitHubRepoName) ||
+                (GitHubUtility.TryParse(repo?.Remote, out var gitHubOwner, out var gitHubRepoName) ||
+                GitHubUtility.TryParse(document.Docset.Config.Contribution.Repository, out gitHubOwner, out gitHubRepoName)) &&
                 document.Docset.Config.GitHub.ResolveUsers;
 
             // Resolve contributors from commits
