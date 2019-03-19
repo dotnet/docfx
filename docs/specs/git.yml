@@ -407,3 +407,16 @@ outputs:
       "original_content_git_url": "https://github.com/testowner/testrepo/blob/default-building-branch/docs/index.md",
       "gitcommit": "https://github.com/testowner/testrepo/blob/e662dbc7c5e582a14b863d6a6a82e495d6272f91/docs/index.md",
     }
+---
+# Show (original) content git (branch/commit) url for vsts
+repos:
+  https://docascode.visualstudio.com/git-url/_git/a:
+    - files:
+        docs/index.md:
+inputs:
+  docfx.yml: |
+    contribution:
+      repository: https://github.com/docascode/git-url
+outputs:
+  docs/index.json: |
+    {"content_git_url":"https://github.com/docascode/git-url/blob/master/docs/index.md","original_content_git_url":"https://docascode.visualstudio.com/git-url/_git/a/?path=docs/index.md&branch=GBmaster","original_content_git_url_template":"{repo}/?path=docs/index.md&branch=GB{branch}","gitcommit":"https://docascode.visualstudio.com/git-url/_git/a/?path=docs/index.md&branch=GB73d1bc95f9df03e553c39cf8c685df09af8d5297"}

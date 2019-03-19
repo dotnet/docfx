@@ -194,7 +194,7 @@ namespace Microsoft.Docs.Build
                     }
                 }
 
-                return contentGitUrlTemplate.Replace("{repo}", editRemote).Replace("{commit-ish}", editBranch);
+                return contentGitUrlTemplate?.Replace("{repo}", editRemote).Replace("{commit-ish}", editBranch);
             }
         }
 
