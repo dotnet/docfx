@@ -126,7 +126,7 @@ namespace Microsoft.Docs.Build
                                 }
                             }
 
-                            if (slot == null)
+                            if (slot is null)
                             {
                                 (acquired, acquirer) = await ProcessUtility.AcquireExclusiveLock(GetLockKey(url, $"{slots.Count + 1}"));
                                 if (acquired)
@@ -175,7 +175,7 @@ namespace Microsoft.Docs.Build
                 Debug.Assert(!string.IsNullOrEmpty(slot.Acquirer));
             }
 
-            return slot == null ? default : ($"{slot.Id}", slot);
+            return slot is null ? default : ($"{slot.Id}", slot);
         }
 
         public static List<T> GetSlots(string restoreDir)

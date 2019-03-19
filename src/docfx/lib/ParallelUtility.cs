@@ -140,7 +140,7 @@ namespace Microsoft.Docs.Build
             {
                 Debug.Assert(item != null);
 
-                if (predicate == null || predicate(item))
+                if (predicate is null || predicate(item))
                 {
                     Interlocked.Increment(ref running);
 

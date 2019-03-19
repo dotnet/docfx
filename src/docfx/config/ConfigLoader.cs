@@ -22,7 +22,7 @@ namespace Microsoft.Docs.Build
         public static (List<Error> errors, Config config) Load(string docsetPath, CommandLineOptions options, string locale = null, bool extend = true)
         {
             var configPath = PathUtility.FindYamlOrJson(Path.Combine(docsetPath, "docfx"));
-            if (configPath == null)
+            if (configPath is null)
             {
                 throw Errors.ConfigNotFound(docsetPath).ToException();
             }
@@ -90,7 +90,7 @@ namespace Microsoft.Docs.Build
             {
                 var repoPath = GitUtility.FindRepo(docsetPath);
 
-                return repoPath == null ? null : GitUtility.GetRepoInfo(repoPath).branch;
+                return repoPath is null ? null : GitUtility.GetRepoInfo(repoPath).branch;
             }
         }
 
@@ -202,7 +202,7 @@ namespace Microsoft.Docs.Build
 
         private static JArray ExpandStringArray(JToken e)
         {
-            if (e == null)
+            if (e is null)
                 return null;
             if (e is JValue str)
                 return new JArray(e);

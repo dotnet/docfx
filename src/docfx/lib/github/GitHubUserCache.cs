@@ -123,9 +123,9 @@ namespace Microsoft.Docs.Build
                 Telemetry.TrackCacheMissCount(TelemetryName.GitHubUserCache);
 
                 var (error, user) = await _getUserByLoginFromGitHub(login);
-                if (error == null)
+                if (error is null)
                 {
-                    if (user == null)
+                    if (user is null)
                         error = Errors.GitHubUserNotFound(login);
                     UpdateUser(user ?? new GitHubUser { Login = login });
                 }
@@ -290,16 +290,16 @@ namespace Microsoft.Docs.Build
                 _usersByLogin.TryGetValue(user.Login, out var existingUser) &&
                 !existingUser.IsExpired())
             {
-                if (user.Id == null)
+                if (user.Id is null)
                     user.Id = existingUser.Id;
-                if (user.Login == null)
+                if (user.Login is null)
                     user.Login = existingUser.Login;
-                if (user.Name == null)
+                if (user.Name is null)
                     user.Name = existingUser.Name;
                 user.Emails = user.Emails.Concat(existingUser.Emails).Distinct().ToArray();
             }
 
-            if (user.Expiry == null)
+            if (user.Expiry is null)
                 user.Expiry = NextExpiry();
 
             if (user.Login != null)

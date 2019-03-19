@@ -37,7 +37,7 @@ namespace Microsoft.Docs.Build
 
             var gitVersion = dependencyLock.GetGitLock(remote, branch);
 
-            if (gitVersion == null)
+            if (gitVersion is null)
             {
                 throw Errors.NeedRestore($"{remote}#{branch}").ToException();
             }
@@ -47,7 +47,7 @@ namespace Microsoft.Docs.Build
                 throw Errors.NeedRestore($"{remote}#{branch}").ToException();
             }
 
-            if (string.IsNullOrEmpty(gitInfo.path) || gitInfo.git == null)
+            if (string.IsNullOrEmpty(gitInfo.path) || gitInfo.git is null)
             {
                 throw Errors.NeedRestore($"{remote}#{branch}").ToException();
             }
@@ -148,7 +148,7 @@ namespace Microsoft.Docs.Build
             Debug.Assert(dependencyLock != null);
 
             RestoreMap gitPool = null;
-            var root = acquired == null;
+            var root = acquired is null;
             acquired = acquired ?? new Dictionary<(string remote, string branch, string commit), (string path, DependencyGit git)>();
 
             var successed = true;

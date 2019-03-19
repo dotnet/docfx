@@ -18,7 +18,7 @@ namespace Microsoft.Docs.Build
             {
                 await RetryUtility.Retry(
                     () => retry.Try(),
-                    ex => catches == null ? true : catches.Any(e => e.IsInstanceOfType(ex)));
+                    ex => catches is null ? true : catches.Any(e => e.IsInstanceOfType(ex)));
                 Assert.True(succeed);
             }
             catch (InvalidOperationException)

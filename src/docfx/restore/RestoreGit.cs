@@ -227,7 +227,7 @@ namespace Microsoft.Docs.Build
                 yield break;
             }
 
-            if (repo == null || string.IsNullOrEmpty(repo.Remote))
+            if (repo is null || string.IsNullOrEmpty(repo.Remote))
             {
                 yield break;
             }

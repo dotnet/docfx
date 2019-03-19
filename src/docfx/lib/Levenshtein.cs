@@ -33,8 +33,8 @@ namespace Microsoft.Docs.Build
             // for all i and j, matrix[i,j] will hold the Levenshtein distance between
             // the first i characters of source and the first j characters of target
             // note that matrix has (src + 1) * (target + 1) values
-            int srcLength = src == null ? 0 : src.Length;
-            int targetLength = target == null ? 0 : target.Length;
+            int srcLength = src.Length;
+            int targetLength = target.Length;
 
             if (srcLength == 0)
             {

@@ -94,7 +94,7 @@ namespace Microsoft.Docs.Build
 
         private static object ToLiquidObject(JToken token)
         {
-            if (token == null)
+            if (token is null)
                 return null;
 
             if (token is JValue value)
