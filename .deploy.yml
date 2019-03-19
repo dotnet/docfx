@@ -29,7 +29,6 @@ jobs:
   steps:
     - powershell: ./build.ps1
     env:
-      OP_BUILD_USER_TOKEN: $(OpBuildUserToken)
       GITHUB_BASIC_AUTH: $(GitHubBasicAuth)
       SYSTEM_ACCESS_TOKEN: $(System.AccessToken)
       GITHUB_ACCESS_TOKEN: $(GitHubAccessToken)
@@ -61,7 +60,6 @@ jobs:
   - powershell: ./impact.ps1
     condition: eq(variables['Build.SourceBranch'], 'refs/heads/v3')
     env:
-      OP_BUILD_USER_TOKEN: $(OpBuildUserToken)
       GITHUB_BASIC_AUTH: $(GitHubBasicAuth)
       SYSTEM_ACCESS_TOKEN: $(System.AccessToken)
       GITHUB_ACCESS_TOKEN: $(GitHubAccessToken)
@@ -71,7 +69,6 @@ jobs:
   - powershell: ./build.ps1
     displayName: Build
     env:
-      OP_BUILD_USER_TOKEN: $(OpBuildUserToken)
       GITHUB_BASIC_AUTH: $(GitHubBasicAuth)
       SYSTEM_ACCESS_TOKEN: $(System.AccessToken)
       GITHUB_ACCESS_TOKEN: $(GitHubAccessToken)
