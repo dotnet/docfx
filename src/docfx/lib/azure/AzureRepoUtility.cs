@@ -7,7 +7,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class AzureRepoUtility
     {
-        private static readonly Regex s_vstsRepoUrlRegex =
+        private static readonly Regex s_azureRepoUrlRegex =
             new Regex(
                 @"^(https|http):\/\/(?<account>[^\/\s]+)\.visualstudio\.com\/(?<project>[^\/\s]+)\/_git\/(?<repository>[A-Za-z0-9_.-]+)((\/)?|(#(?<branch>\S+))?)$",
                 RegexOptions.Compiled | RegexOptions.IgnoreCase);
@@ -19,7 +19,7 @@ namespace Microsoft.Docs.Build
             if (string.IsNullOrEmpty(remote))
                 return false;
 
-            var match = s_vstsRepoUrlRegex.Match(remote);
+            var match = s_azureRepoUrlRegex.Match(remote);
             if (!match.Success)
                 return false;
 

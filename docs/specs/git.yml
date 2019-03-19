@@ -408,7 +408,7 @@ outputs:
       "gitcommit": "https://github.com/testowner/testrepo/blob/e662dbc7c5e582a14b863d6a6a82e495d6272f91/docs/index.md",
     }
 ---
-# Show (original) content git (branch/commit) url for vsts
+# Show (original) content git (branch/commit) url for azure repos
 repos:
   https://docascode.visualstudio.com/git-url/_git/a:
     - files:
@@ -426,7 +426,7 @@ outputs:
       "gitcommit":"https://docascode.visualstudio.com/git-url/_git/a/?path=docs/index.md&branch=GB73d1bc95f9df03e553c39cf8c685df09af8d5297"
     }
 ---
-# Show git contribution info for vsts repo
+# Show git contribution info for azure repo
 repos:
   https://docascode.visualstudio.com/contribution/_git/a:
     - author: Charlie
