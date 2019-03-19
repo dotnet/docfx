@@ -141,7 +141,7 @@ namespace Microsoft.Docs.Build
             yield return new object[]
             {
                 "Get user by commit does not cache email when commit is not resolved",
-                (Func<GitHubUserCache, Task>) ( async (cache) => await cache.GetByCommit("me2@contoso.com", "", "", "") ),
+                (Func<GitHubUserCache, Task>) ( async (cache) => await cache.GetByCommit("me2@contoso.com", "not-exist", "not-eixts", "") ),
                 "[]",
                 "[]",
                 0,
