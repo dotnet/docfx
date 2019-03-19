@@ -165,9 +165,9 @@ namespace Microsoft.Docs.Build
             var originalContentGitUrl = contentGitCommitUrl?.Replace(commit, repo.Branch);
             var originalContentGitUrlTemplate = contentGitUrlTemplate?.Replace("{commit-ish}", "{branch}");
 
-            return (GetContentGitUrl(), originalContentGitUrl, originalContentGitUrlTemplate, contentGitCommitUrl);
+            return (GetContentGitUrl(contentGitUrlTemplate), originalContentGitUrl, originalContentGitUrlTemplate, contentGitCommitUrl);
 
-            string GetContentGitUrl()
+            string GetContentGitUrl(string urlTemplate)
             {
                 var (editRemote, editBranch) = (repo.Remote, repo.Branch);
 
@@ -179,7 +179,7 @@ namespace Microsoft.Docs.Build
                 if (!string.IsNullOrEmpty(document.Docset.Config.Contribution.Repository))
                 {
                     var (contributionRemote, contributionBranch, hasRefSpec) = HrefUtility.SplitGitHref(document.Docset.Config.Contribution.Repository);
-                    contentGitUrlTemplate = GetContentCommittishUrlTemplate(contributionRemote, pathToRepo);
+                    urlTemplate = GetContentCommittishUrlTemplate(contributionRemote, pathToRepo);
 
                     (editRemote, editBranch) = (contributionRemote, hasRefSpec ? contributionBranch : editBranch);
                     if (document.Docset.IsLocalized())
@@ -194,7 +194,7 @@ namespace Microsoft.Docs.Build
                     }
                 }
 
-                return contentGitUrlTemplate?.Replace("{repo}", editRemote).Replace("{commit-ish}", editBranch);
+                return urlTemplate?.Replace("{repo}", editRemote).Replace("{commit-ish}", editBranch);
             }
         }
 
