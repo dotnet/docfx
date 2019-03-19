@@ -85,7 +85,7 @@ namespace Microsoft.Docs.Build
             File.Copy(sourcePath, GetDestinationPath(destRelativePath), overwrite: true);
         }
 
-        public void Delete(string destRelativePath)
+        public void Delete(string destRelativePath, bool legacy = false)
         {
             Debug.Assert(!Path.IsPathRooted(destRelativePath));
 
@@ -94,6 +94,15 @@ namespace Microsoft.Docs.Build
             if (File.Exists(destinationPath))
             {
                 File.Delete(destinationPath);
+            }
+
+            if (legacy)
+            {
+                var mtaJsonPath = Path.ChangeExtension(destinationPath.Replace(".raw.page.json", ".json"), "mta.json");
+                if (File.Exists(mtaJsonPath))
+                {
+                    File.Delete(mtaJsonPath);
+                }
             }
         }
 
