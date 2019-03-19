@@ -336,7 +336,7 @@ namespace Microsoft.Docs.Build
 
         private static string GetGitCommandLineConfig(string url, Config config)
         {
-            if (config == null)
+            if (config is null)
             {
                 return "";
             }

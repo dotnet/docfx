@@ -29,7 +29,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static bool Visit(this MarkdownObject obj, Func<MarkdownObject, bool> action)
         {
-            if (obj == null)
+            if (obj is null)
                 return true;
 
             if (action(obj))
@@ -69,7 +69,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static MarkdownObject Replace(this MarkdownObject obj, Func<MarkdownObject, MarkdownObject> action)
         {
-            if (obj == null)
+            if (obj is null)
                 return null;
 
             obj = action(obj);
@@ -94,7 +94,7 @@ namespace Microsoft.Docs.Build
                 foreach (var child in inline)
                 {
                     var replacement = Replace(child, action);
-                    if (replacement == null)
+                    if (replacement is null)
                     {
                         child.Remove();
                     }

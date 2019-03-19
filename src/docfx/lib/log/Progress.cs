@@ -21,7 +21,7 @@ namespace Microsoft.Docs.Build
 
             if (Log.Verbose)
             {
-                Console.Write(scope.Name + '\r');
+                Console.Write(scope.Name + "...\r");
             }
 
             return scope;
