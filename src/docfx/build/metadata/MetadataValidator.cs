@@ -2,7 +2,10 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -10,26 +13,62 @@ namespace Microsoft.Docs.Build
 {
     internal static class MetadataValidator
     {
-        private static readonly HashSet<string> _reservedNames = GetReservedMetadata();
+        private static readonly HashSet<string> s_reservedNames = GetReservedMetadata();
+        private static readonly ConcurrentDictionary<string, Lazy<Type>> s_fileMetadataTypes = new ConcurrentDictionary<string, Lazy<Type>>(StringComparer.OrdinalIgnoreCase);
 
-        public static List<Error> Validate<T>(IEnumerable<KeyValuePair<string, T>> metadata, string from)
+        public static List<Error> ValidateFileMetadata<T>(IEnumerable<KeyValuePair<string, T>> metadata, string from)
         {
             var errors = new List<Error>();
 
             foreach (var (key, token) in metadata)
             {
                 var lineInfo = token as IJsonLineInfo;
-                if (_reservedNames.Contains(key))
+                if (s_reservedNames.Contains(key))
                 {
                     errors.Add(Errors.ReservedMetadata(new Range(lineInfo?.LineNumber ?? 0, lineInfo?.LinePosition ?? 0), key, from));
+                }
+                else
+                {
+                    var type = s_fileMetadataTypes.GetOrAdd(
+                       key,
+                       new Lazy<Type>(() => typeof(FileMetadata).GetProperty(key, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance)?.PropertyType));
+                    if (type.Value is null)
+                        continue;
+                    var values = token as IEnumerable<KeyValuePair<string, JToken>>;
+                    foreach (var (glob, value) in values)
+                    {
+                        var nestedLineInfo = value as IJsonLineInfo;
+                        if (!type.Value.IsInstanceOfType(value))
+                        {
+                            errors.Add(Errors.ViolateSchema(new Range(nestedLineInfo?.LineNumber ?? 0, nestedLineInfo?.LinePosition ?? 0), $"Expected '{type.Value.Name}' for '{key}', but got '{value.Type}'", from));
+                        }
+                    }
                 }
             }
 
             return errors;
         }
 
-        public static List<Error> Validate(JObject metadata, string from)
-            => Validate((IEnumerable<KeyValuePair<string, JToken>>)metadata, from);
+        public static List<Error> ValidateGlobalMetadata(JObject metadata, string from)
+        {
+            var errors = new List<Error>();
+
+            foreach (var (key, token) in metadata)
+            {
+                var lineInfo = token as IJsonLineInfo;
+                if (s_reservedNames.Contains(key))
+                {
+                    errors.Add(Errors.ReservedMetadata(new Range(lineInfo?.LineNumber ?? 0, lineInfo?.LinePosition ?? 0), key, from));
+                }
+            }
+
+            if (!errors.Any())
+            {
+                var (schemaErrors, _) = JsonUtility.ToObjectWithSchemaValidation<FileMetadata>(metadata);
+                errors.AddRange(schemaErrors);
+            }
+            return errors;
+        }
 
         private static HashSet<string> GetReservedMetadata()
         {

@@ -32,7 +32,7 @@ namespace Microsoft.Docs.Build
             "at-uid-not-found", "empty-monikers", "circular-reference", "invalid-toc-href", "invalid-uid-moniker", "moniker-overlapping",
             "uid-conflict", "redirection-is-empty", "redirection-conflict", "invalid-locale", "unknown-field", "link-out-of-scope",
             "github-user-not-found", "invalid-redirection", "merge-conflict", "invalid-topic-href",
-            "redirected-id-conflict", "schema-not-found"
+            "redirected-id-conflict", "schema-not-found", "violate-schema"
         };
 
         private static readonly ConcurrentDictionary<string, (int ordinal, string spec)> s_mockRepos = new ConcurrentDictionary<string, (int ordinal, string spec)>();

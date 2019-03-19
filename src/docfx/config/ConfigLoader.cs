@@ -78,8 +78,8 @@ namespace Microsoft.Docs.Build
             errors.AddRange(deserializeErrors);
 
             // validate metadata
-            errors.AddRange(MetadataValidator.Validate(config.GlobalMetadata, "global metadata"));
-            errors.AddRange(MetadataValidator.Validate(config.FileMetadata, "file metadata"));
+            errors.AddRange(MetadataValidator.ValidateGlobalMetadata(config.GlobalMetadata, "global metadata"));
+            errors.AddRange(MetadataValidator.ValidateFileMetadata(config.FileMetadata, "file metadata"));
 
             config.ConfigFileName = !configExists
                 ? config.ConfigFileName
