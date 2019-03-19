@@ -60,6 +60,8 @@ namespace Microsoft.Docs.Build
             using (Log.BeginScope(options.Verbose))
             using (var report = new Report(options.Legacy))
             {
+                Log.Write($"Using docfx {GetDocfxVersion()}");
+
                 try
                 {
                     switch (command)
