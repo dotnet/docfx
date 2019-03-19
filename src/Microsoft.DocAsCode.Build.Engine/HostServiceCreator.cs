@@ -72,10 +72,12 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 Logger.LogDiagnostic($"Processor {processor.Name}, File {file.FullPath}: Loading...");
 
-                metadata = ApplyFileMetadata(file.FullPath, metadata, fileMetadata);
+                var fileMeta = NeedApplyMetadata()
+                    ? ApplyFileMetadata(file.FullPath, metadata, fileMetadata)
+                    : ImmutableDictionary<string, object>.Empty;
                 try
                 {
-                    return (processor.Load(file, metadata), true);
+                    return (processor.Load(file, fileMeta), true);
                 }
                 catch (Exception e)
                 {
@@ -84,6 +86,11 @@ namespace Microsoft.DocAsCode.Build.Engine
                         code: ErrorCodes.Build.InvalidInputFile);
                     return (null, false);
                 }
+            }
+
+            bool NeedApplyMetadata()
+            {
+                return file.Type != DocumentType.Resource;
             }
         }
 
