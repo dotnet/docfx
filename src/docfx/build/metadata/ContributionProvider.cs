@@ -218,7 +218,7 @@ namespace Microsoft.Docs.Build
                 return $"{{repo}}/blob/{{commit-ish}}/{pathToRepo}";
             }
 
-            if (VstsUtility.TryParse(remote, out _, out _))
+            if (AzureRepoUtility.TryParse(remote, out _, out _))
             {
                 return $"{{repo}}/?path={pathToRepo}&branch=GB{{commit-ish}}";
             }
