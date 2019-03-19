@@ -18,7 +18,7 @@ namespace Microsoft.Docs.Build
             var (error, profile) = await _github.GetUserByLogin(login);
 
             // skip check if the machine exceeds the GitHub API rate limit
-            if (error is null)
+            if (error?.Code != "github-api-failed")
             {
                 Assert.Equal(id, profile?.Id);
             }

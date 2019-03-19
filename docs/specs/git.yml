@@ -407,3 +407,56 @@ outputs:
       "original_content_git_url": "https://github.com/testowner/testrepo/blob/default-building-branch/docs/index.md",
       "gitcommit": "https://github.com/testowner/testrepo/blob/e662dbc7c5e582a14b863d6a6a82e495d6272f91/docs/index.md",
     }
+---
+# Show git contribution info for vsts repo
+repos:
+  https://docascode.visualstudio.com/contribution/_git/a:
+    - author: Charlie
+      email: charlie@contoso.com
+      files:
+        docs/index.md: |
+          ---
+          author: charlie
+          ---
+          Osmond creates this. Bob updates this. Charlie becomes author.
+    - author: Bob 
+      email: bob@contoso.com
+      files:
+        docs/index.md: |
+          Osmond creates this. Bob updates this.
+    - author: osmondjiang 
+      email: xinjiang@microsoft.com
+      files:
+        docs/index.md: |
+          Osmond creates this, without email
+inputs:
+  docfx.yml: |
+    gitHub:
+      userCache: user_profile.json
+      resolveUsers: true
+    contribution:
+      repository: https://github.com/docascode/contribution-test
+      gitCommitsTime: build_history.json
+  user_profile.json: |
+      { "users": [
+          {"name": "Alice", "login": "alice", "id": 1, "emails": ["alice@contoso.com"]},
+          {"name": "Bob", "login": "bob", "id": 2, "emails": ["bob@contoso.com"]},
+          {"name": "Charlie", "login": "charlie", "id": 3, "emails": ["charlie@contoso.com"]}
+        ]
+      }
+  build_history.json: |
+    { "commits": [
+        { "sha": "bc09224561ce6d13411cb48506b1900d6c6b94cb", "built_at": "2018-01-01" }
+      ]
+    }
+outputs:
+  docs/index.json: |
+    {
+      "author": 
+        { "name": "charlie", "profile_url": "https://github.com/charlie", "display_name": "Charlie", "id": "3" },
+      "contributors": [
+        { "name": "bob", "profile_url": "https://github.com/bob", "display_name": "Bob", "id": "2" },
+        { "name": "OsmondJiang", "profile_url": "https://github.com/OsmondJiang", "display_name": "osmondjiang", "id": "19990166" }
+      ],
+      "updated_at": "2018-01-01T00:00:00.0000000"
+    }

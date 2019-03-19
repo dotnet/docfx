@@ -144,9 +144,9 @@ namespace Microsoft.Docs.Build
             {
                 Telemetry.TrackCacheTotalCount(TelemetryName.GitHubUserCache);
                 var existingUser = TryGetByEmail(authorEmail);
-                if (existingUser != null)
+                if (existingUser != null || string.IsNullOrEmpty(repoOwner) || string.IsNullOrEmpty(repoName))
                 {
-                    if (existingUser.IsValid())
+                    if (existingUser?.IsValid() ?? false)
                         return (null, existingUser);
                     return default;
                 }
