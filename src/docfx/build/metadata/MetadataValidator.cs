@@ -16,16 +16,18 @@ namespace Microsoft.Docs.Build
         private static readonly HashSet<string> s_reservedNames = GetReservedMetadata();
         private static readonly ConcurrentDictionary<string, Lazy<Type>> s_fileMetadataTypes = new ConcurrentDictionary<string, Lazy<Type>>(StringComparer.OrdinalIgnoreCase);
 
-        public static List<Error> ValidateFileMetadata<T>(IEnumerable<KeyValuePair<string, T>> metadata, string from)
+        public static List<Error> ValidateFileMetadata(JObject metadata)
         {
             var errors = new List<Error>();
+            if (metadata is null)
+                return errors;
 
             foreach (var (key, token) in metadata)
             {
                 var lineInfo = token as IJsonLineInfo;
                 if (s_reservedNames.Contains(key))
                 {
-                    errors.Add(Errors.ReservedMetadata(new Range(lineInfo?.LineNumber ?? 0, lineInfo?.LinePosition ?? 0), key, from));
+                    errors.Add(Errors.ReservedMetadata(new Range(lineInfo?.LineNumber ?? 0, lineInfo?.LinePosition ?? 0), key, token.Path));
                 }
                 else
                 {
@@ -40,7 +42,7 @@ namespace Microsoft.Docs.Build
                         var nestedLineInfo = value as IJsonLineInfo;
                         if (!type.Value.IsInstanceOfType(value))
                         {
-                            errors.Add(Errors.ViolateSchema(new Range(nestedLineInfo?.LineNumber ?? 0, nestedLineInfo?.LinePosition ?? 0), $"For key '{key}' with glob '{glob}', expected '{type.Value.Name}' but got '{value.Type}'", from));
+                            errors.Add(Errors.ViolateSchema(new Range(nestedLineInfo?.LineNumber ?? 0, nestedLineInfo?.LinePosition ?? 0), $"Expected type {type.Value.Name}, please input string or type compatible with {type.Value.Name}.", value.Path));
                         }
                     }
                 }
@@ -49,16 +51,18 @@ namespace Microsoft.Docs.Build
             return errors;
         }
 
-        public static List<Error> ValidateGlobalMetadata(JObject metadata, string from)
+        public static List<Error> ValidateGlobalMetadata(JObject metadata)
         {
             var errors = new List<Error>();
+            if (metadata is null)
+                return errors;
 
             foreach (var (key, token) in metadata)
             {
                 var lineInfo = token as IJsonLineInfo;
                 if (s_reservedNames.Contains(key))
                 {
-                    errors.Add(Errors.ReservedMetadata(new Range(lineInfo?.LineNumber ?? 0, lineInfo?.LinePosition ?? 0), key, from));
+                    errors.Add(Errors.ReservedMetadata(new Range(lineInfo?.LineNumber ?? 0, lineInfo?.LinePosition ?? 0), key, token.Path));
                 }
             }
 

@@ -360,7 +360,7 @@ namespace Microsoft.Docs.Build
         {
             if (message.StartsWith("Error reading string. Unexpected token"))
             {
-                return "Expected type string, please input string or type compatible with string.";
+                return "Expected type String, please input String or type compatible with String.";
             }
             return message;
         }

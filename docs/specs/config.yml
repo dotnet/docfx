@@ -83,7 +83,7 @@ inputs:
   docs/b.md:
 outputs:
   build.log: |
-    ["error","violate-schema","Expected type string, please input string or type compatible with string.","docfx.yml","title"]
+    ["error","violate-schema","Expected type String, please input String or type compatible with String.","docfx.yml","globalMetadata.title",3,5]
 ---
 # File metadata of object form
 inputs:
@@ -406,7 +406,7 @@ inputs:
 outputs:
   a.json:
   build.log: |
-    ["warning","unknown-field","Could not find member 'locales: zh-cn' on object of type 'Config'.","docfx.yml","['locales: zh-cn']"]
+    ["warning","unknown-field","Could not find member 'locales: zh-cn' on object of type 'Config'.","docfx.yml","['locales: zh-cn']",4,1]
 ---
 # redirect to in config.redirections must start with '/'
 inputs:
@@ -437,4 +437,4 @@ inputs:
           - 2
 outputs:
   build.log: |
-    ["error","violate-schema","For key 'title' with glob 'docs/**', expected 'String' but got 'Array'","docfx.yml","file metadata"]
+    ["error","violate-schema","Expected type String, please input string or type compatible with String.","docfx.yml","fileMetadata.title['docs/**']",4,7]
