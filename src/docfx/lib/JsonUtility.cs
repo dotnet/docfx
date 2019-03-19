@@ -345,9 +345,24 @@ namespace Microsoft.Docs.Build
             if (match.Success)
             {
                 var range = new Range(int.Parse(match.Groups[3].Value), int.Parse(match.Groups[4].Value));
-                return (range, match.Groups[1].Value, match.Groups[2].Value);
+                return (range, RewriteErrorMessage(match.Groups[1].Value), match.Groups[2].Value);
             }
-            return (default, ex.Message, null);
+
+            match = Regex.Match(ex.Message, "^([\\s\\S]*)\\sPath '(.*)'.$");
+            if (match.Success)
+            {
+                return (default, RewriteErrorMessage(match.Groups[1].Value), match.Groups[2].Value);
+            }
+            return (default, RewriteErrorMessage(ex.Message), null);
+        }
+
+        private static string RewriteErrorMessage(string message)
+        {
+            if (message.StartsWith("Error reading string. Unexpected token"))
+            {
+                return "Expected type string, please input string or type compatible with string.";
+            }
+            return message;
         }
 
         private static bool IsNullOrUndefined(this JToken token)

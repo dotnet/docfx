@@ -83,7 +83,7 @@ inputs:
   docs/b.md:
 outputs:
   build.log: |
-    ["error","violate-schema","Error reading string. Unexpected token: StartArray. Path 'title'.","docfx.yml"]
+    ["error","violate-schema","Expected type string, please input string or type compatible with string.","docfx.yml","title"]
 ---
 # File metadata of object form
 inputs:
