@@ -100,7 +100,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Gets a value indicating whether the current document is schema data
         /// </summary>
-        public bool IsSchemaData => Schema != null && Schema.Attribute as PageSchemaAttribute == null;
+        public bool IsSchemaData => Schema != null && Schema.Attribute as PageSchemaAttribute is null;
 
         /// <summary>
         /// Gets the repository
@@ -192,7 +192,7 @@ namespace Microsoft.Docs.Build
 
         public bool Equals(Document other)
         {
-            if (other == null)
+            if (other is null)
             {
                 return false;
             }
@@ -276,7 +276,7 @@ namespace Microsoft.Docs.Build
             if (TryResolveDocset(docset, pathToDocset, out var resolvedDocset))
             {
                 var (error, file) = TryCreate(resolvedDocset, pathToDocset);
-                return error == null ? file : null;
+                return error is null ? file : null;
             }
 
             // resolve from dependent docsets
@@ -327,7 +327,7 @@ namespace Microsoft.Docs.Build
             switch (contentType)
             {
                 case ContentType.Page:
-                    if (schema == null || schema.Attribute is PageSchemaAttribute)
+                    if (schema is null || schema.Attribute is PageSchemaAttribute)
                     {
                         if (Path.GetFileNameWithoutExtension(path).Equals("index", PathUtility.PathComparison))
                         {
@@ -365,7 +365,7 @@ namespace Microsoft.Docs.Build
             switch (contentType)
             {
                 case ContentType.Page:
-                    if (schema == null || schema.Attribute is PageSchemaAttribute)
+                    if (schema is null || schema.Attribute is PageSchemaAttribute)
                     {
                         var fileName = Path.GetFileNameWithoutExtension(path);
                         if (fileName.Equals("index", PathUtility.PathComparison))

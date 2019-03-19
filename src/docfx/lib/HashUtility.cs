@@ -65,7 +65,7 @@ namespace Microsoft.Docs.Build
 
         public static string GetMd5HashShort(List<string> list, string separator = ",")
         {
-            if (list == null || list.Count == 0)
+            if (list is null || list.Count == 0)
             {
                 return null;
             }

@@ -81,9 +81,9 @@ namespace Microsoft.Docs.Build
                     }
 
                     List<string> monikers = null;
-                    if (item.Href == null || !hrefMap.TryGetValue(item.Href, out monikers))
+                    if (item.Href is null || !hrefMap.TryGetValue(item.Href, out monikers))
                     {
-                        if (item.TopicHref == null || !hrefMap.TryGetValue(item.TopicHref, out monikers))
+                        if (item.TopicHref is null || !hrefMap.TryGetValue(item.TopicHref, out monikers))
                         {
                             monikers = fileMonikers;
                         }

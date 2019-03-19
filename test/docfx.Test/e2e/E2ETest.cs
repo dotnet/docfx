@@ -59,7 +59,7 @@ namespace Microsoft.Docs.Build
         public static async Task Run(string name)
         {
             var (docsetPath, spec, mockedRepos) = await CreateDocset(name);
-            if (spec == null)
+            if (spec is null)
             {
                 return;
             }

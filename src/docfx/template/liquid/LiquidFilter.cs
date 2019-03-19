@@ -59,7 +59,7 @@ namespace Microsoft.Docs.Build
 
             var documentNode = htmlDocument.DocumentNode;
             var nodes = documentNode.SelectNodes(nodesXPath);
-            if (nodes == null || nodes.Count == 0)
+            if (nodes is null || nodes.Count == 0)
             {
                 return html;
             }
@@ -142,13 +142,13 @@ namespace Microsoft.Docs.Build
             // If query string already has the key, keep the original value.
             var query = HttpUtility.ParseQueryString(queryString);
             var originalQueriedValue = query.Get(queryKey);
-            if (originalQueriedValue == null)
+            if (originalQueriedValue is null)
             {
                 query[queryKey] = queryValue;
             }
             var result = $"{prefix}?{query}";
 
-            return bookmark == null ? result : $"{result}{bookmark}";
+            return bookmark is null ? result : $"{result}{bookmark}";
         }
     }
 }

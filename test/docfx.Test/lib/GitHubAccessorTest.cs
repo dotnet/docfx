@@ -18,24 +18,25 @@ namespace Microsoft.Docs.Build
             var (error, profile) = await _github.GetUserByLogin(login);
 
             // skip check if the machine exceeds the GitHub API rate limit
-            if (error == null)
+            if (error is null)
             {
                 Assert.Equal(id, profile?.Id);
             }
         }
 
         [Theory]
-        [InlineData("docascode", "docfx-test-dependencies", "c467c848311ccd2550fdb25a77ef26f9d8a33d00", null, "OsmondJiang")]
-        [InlineData("docascode", "docfx-test-dependencies", "deadbeefdeadbeefdeadbeefdeadbeefdeadbeef", null, null)]
-        [InlineData("docascode", "this-repo-does-not-exists", "deadbeefdeadbeefdeadbeefdeadbeefdeadbeef", null, null)]
-        public async Task GetLoginByCommit(string repoOwner, string repoName, string commit, string errorCode, string login)
+        [InlineData("docascode", "docfx-test-dependencies", "c467c848311ccd2550fdb25a77ef26f9d8a33d00", null, "OsmondJiang", 19990166)]
+        [InlineData("docascode", "docfx-test-dependencies", "deadbeefdeadbeefdeadbeefdeadbeefdeadbeef", null, null, null)]
+        [InlineData("docascode", "this-repo-does-not-exists", "deadbeefdeadbeefdeadbeefdeadbeefdeadbeef", null, null, null)]
+        public async Task GetUserByCommit(string repoOwner, string repoName, string commit, string errorCode, string login, int? id)
         {
-            var (error, name) = await _github.GetLoginByCommit(repoOwner, repoName, commit);
+            var (error, user) = await _github.GetUserByCommit(repoOwner, repoName, commit);
 
             // skip check if the machine exceeds the GitHub API rate limit
             if (error?.Code != "github-api-failed")
             {
-                Assert.Equal(login, name);
+                Assert.Equal(login, user?.Login);
+                Assert.Equal(id, user?.Id);
                 Assert.Equal(errorCode, error?.Code);
             }
         }

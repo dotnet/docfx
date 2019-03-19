@@ -41,7 +41,7 @@ namespace Microsoft.Docs.Build
         public void Configure(string docsetPath, Config config)
         {
             var outputPath = Path.Combine(docsetPath, config.Output.Path, "build.log");
-            Debug.Assert(_outputPath == null || _outputPath == outputPath, "Cannot change report output path");
+            Debug.Assert(_outputPath is null || _outputPath == outputPath, "Cannot change report output path");
 
             _config = config;
             _outputPath = outputPath;

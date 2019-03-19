@@ -97,7 +97,7 @@ namespace Microsoft.Docs.Build
                 return (Errors.IncludeIsRedirection(relativeTo, href), null, null);
             }
 
-            if (file == null && !string.IsNullOrEmpty(pathToDocset))
+            if (file is null && !string.IsNullOrEmpty(pathToDocset))
             {
                 var (errorFromHistory, content, fileFromHistory) = TryResolveContentFromHistory(_gitCommitProvider, relativeTo.Docset, pathToDocset);
                 if (errorFromHistory != null)
@@ -140,7 +140,7 @@ namespace Microsoft.Docs.Build
             }
 
             // Cannot resolve the file, leave href as is
-            if (file == null)
+            if (file is null)
             {
                 return (error, href, fragment, null);
             }
@@ -180,7 +180,7 @@ namespace Microsoft.Docs.Build
             }
 
             // Pages outside build scope, don't build the file, use relative href
-            if (error == null
+            if (error is null
                 && (file.ContentType == ContentType.Page || file.ContentType == ContentType.TableOfContents)
                 && !file.Docset.BuildScope.Contains(file))
             {
