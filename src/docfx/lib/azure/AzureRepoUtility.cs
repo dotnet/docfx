@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 
 namespace Microsoft.Docs.Build
 {
-    internal static class VstsUtility
+    internal static class AzureRepoUtility
     {
         private static readonly Regex s_vstsRepoUrlRegex =
             new Regex(

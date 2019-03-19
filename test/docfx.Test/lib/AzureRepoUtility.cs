@@ -5,7 +5,7 @@ using Xunit;
 
 namespace Microsoft.Docs.Build
 {
-    public class VstsUtilityTest
+    public class AzureRepoUtilityTest
     {
         [Theory]
         [InlineData("https://ceapex.visualstudio.com/", false, null, null)]
@@ -21,7 +21,7 @@ namespace Microsoft.Docs.Build
         [InlineData("https://ceapex.visualstudio.com/project/_git/repo#branch", true, "project", "repo")]
         public static void ParseVstsRemote(string remote, bool parsed, string expectedProject, string expectedName)
         {
-            if (VstsUtility.TryParse(remote, out var owner, out var name))
+            if (AzureRepoUtility.TryParse(remote, out var owner, out var name))
             {
                 Assert.True(parsed);
                 Assert.Equal(expectedProject, owner);
