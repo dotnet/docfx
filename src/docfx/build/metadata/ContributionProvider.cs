@@ -154,55 +154,34 @@ namespace Microsoft.Docs.Build
             if (repo is null)
                 return default;
 
-            var repoHost = GitHubUtility.TryParse(repo.Remote, out _, out _) ? GitHost.GitHub : GitHost.Unknown;
+            var contentGitUrlTemplate = GetContentCommittishUrlTemplate(repo.Remote, pathToRepo);
             var commit = commits.FirstOrDefault()?.Sha;
             if (string.IsNullOrEmpty(commit))
             {
                 commit = repo.Commit;
             }
 
-            var originalContentGitUrlTemplate = GetOriginalContentGitUrlTemplate();
-            var originalContentGitUrl = originalContentGitUrlTemplate?.Replace("{repo}", repo.Remote).Replace("{branch}", repo.Branch);
+            var contentGitCommitUrl = contentGitUrlTemplate?.Replace("{repo}", repo.Remote).Replace("{commit-ish}", commit);
+            var originalContentGitUrl = contentGitCommitUrl?.Replace(commit, repo.Branch);
+            var originalContentGitUrlTemplate = contentGitUrlTemplate?.Replace("{commit-ish}", "{branch}");
 
-            return (GetContentGitUrl(), originalContentGitUrl, originalContentGitUrlTemplate, GetGitCommit());
-
-            string GetGitCommit()
-            {
-                switch (repoHost)
-                {
-                    case GitHost.GitHub:
-                        return commit != null ? $"{repo.Remote}/blob/{commit}/{pathToRepo}" : null;
-                    default:
-                        return null;
-                }
-            }
-
-            string GetOriginalContentGitUrlTemplate()
-            {
-                switch (repoHost)
-                {
-                    case GitHost.GitHub:
-                        return $"{{repo}}/blob/{{branch}}/{pathToRepo}";
-                    default:
-                        return null;
-                }
-            }
+            return (GetContentGitUrl(), originalContentGitUrl, originalContentGitUrlTemplate, contentGitCommitUrl);
 
             string GetContentGitUrl()
             {
                 var (editRemote, editBranch) = (repo.Remote, repo.Branch);
 
-                if (LocalizationUtility.TryGetContributionBranch(editBranch, out var contributionBranch1))
+                if (LocalizationUtility.TryGetContributionBranch(editBranch, out var repoContributionBranch))
                 {
-                    editBranch = contributionBranch1;
+                    editBranch = repoContributionBranch;
                 }
 
                 if (!string.IsNullOrEmpty(document.Docset.Config.Contribution.Repository))
                 {
-                    var (contribRemote, contribBranch, hasRefSpec) = HrefUtility.SplitGitHref(document.Docset.Config.Contribution.Repository);
+                    var (contributionRemote, contributionBranch, hasRefSpec) = HrefUtility.SplitGitHref(document.Docset.Config.Contribution.Repository);
+                    contentGitUrlTemplate = GetContentCommittishUrlTemplate(contributionRemote, pathToRepo);
 
-                    (editRemote, editBranch) = (contribRemote, hasRefSpec ? contribBranch : editBranch);
-
+                    (editRemote, editBranch) = (contributionRemote, hasRefSpec ? contributionBranch : editBranch);
                     if (document.Docset.IsLocalized())
                     {
                         (editRemote, editBranch) = LocalizationUtility.GetLocalizedRepo(
@@ -215,13 +194,7 @@ namespace Microsoft.Docs.Build
                     }
                 }
 
-                // git edit url, only works for github repo
-                if (GitHubUtility.TryParse(editRemote, out _, out _))
-                {
-                    return $"{editRemote}/blob/{editBranch}/{pathToRepo}";
-                }
-
-                return null;
+                return contentGitUrlTemplate.Replace("{repo}", editRemote).Replace("{commit-ish}", editBranch);
             }
         }
 
@@ -242,6 +215,39 @@ namespace Microsoft.Docs.Build
         {
             Unknown,
             GitHub,
+            VSTS,
+        }
+
+        private GitHost ParseGitHost(string remote)
+        {
+            if (GitHubUtility.TryParse(remote, out _, out _))
+            {
+                return GitHost.GitHub;
+            }
+
+            if (VstsUtility.TryParse(remote, out _, out _))
+            {
+                return GitHost.VSTS;
+            }
+
+            return GitHost.Unknown;
+        }
+
+        private string GetContentCommittishUrlTemplate(string remote, string pathToRepo)
+        {
+            var gitHost = ParseGitHost(remote);
+
+            switch (gitHost)
+            {
+                case GitHost.GitHub:
+                    return $"{{repo}}/blob/{{commit-ish}}/{pathToRepo}";
+                case GitHost.VSTS:
+                    return $"{{repo}}/?path={pathToRepo}&branch=GB{{commit-ish}}";
+                case GitHost.Unknown:
+                    return default;
+            }
+
+            return default;
         }
     }
 }
