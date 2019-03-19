@@ -437,4 +437,4 @@ inputs:
           - 2
 outputs:
   build.log: |
-    ["error","violate-schema","Expected 'String' for 'title', but got 'Array'","docfx.yml","file metadata"]
+    ["error","violate-schema","For key 'title' with glob 'docs/**', expected 'String' but got 'Array'","docfx.yml","file metadata"]

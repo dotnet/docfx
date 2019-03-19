@@ -40,7 +40,7 @@ namespace Microsoft.Docs.Build
                         var nestedLineInfo = value as IJsonLineInfo;
                         if (!type.Value.IsInstanceOfType(value))
                         {
-                            errors.Add(Errors.ViolateSchema(new Range(nestedLineInfo?.LineNumber ?? 0, nestedLineInfo?.LinePosition ?? 0), $"Expected '{type.Value.Name}' for '{key}', but got '{value.Type}'", from));
+                            errors.Add(Errors.ViolateSchema(new Range(nestedLineInfo?.LineNumber ?? 0, nestedLineInfo?.LinePosition ?? 0), $"For key '{key}' with glob '{glob}', expected '{type.Value.Name}' but got '{value.Type}'", from));
                         }
                     }
                 }
