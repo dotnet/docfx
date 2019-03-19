@@ -157,20 +157,21 @@ namespace Microsoft.Docs.Build
             if (repo is null)
                 return default;
 
-            var contentGitUrlTemplate = GetContentCommittishUrlTemplate(repo.Remote, pathToRepo);
+            var contentBranchUrlTemplate = GetContentBranchUrlTemplate(repo.Remote, pathToRepo);
+            var contentCommitUrlTemplate = GetContentCommitUrlTemplate(repo.Remote, pathToRepo);
             var commit = commits.FirstOrDefault()?.Sha;
             if (string.IsNullOrEmpty(commit))
             {
                 commit = repo.Commit;
             }
 
-            var contentGitCommitUrl = contentGitUrlTemplate?.Replace("{repo}", repo.Remote).Replace("{commit-ish}", commit);
-            var originalContentGitUrl = contentGitCommitUrl?.Replace(commit, repo.Branch);
-            var originalContentGitUrlTemplate = contentGitUrlTemplate?.Replace("{commit-ish}", "{branch}");
+            var contentGitCommitUrl = contentCommitUrlTemplate?.Replace("{repo}", repo.Remote).Replace("{commit}", commit);
+            var originalContentGitUrlTemplate = contentBranchUrlTemplate;
+            var originalContentGitUrl = originalContentGitUrlTemplate?.Replace("{repo}", repo.Remote).Replace("{branch}", repo.Branch);
 
-            return (GetContentGitUrl(contentGitUrlTemplate), originalContentGitUrl, originalContentGitUrlTemplate, contentGitCommitUrl);
+            return (GetContentGitUrl(contentBranchUrlTemplate), originalContentGitUrl, originalContentGitUrlTemplate, contentGitCommitUrl);
 
-            string GetContentGitUrl(string urlTemplate)
+            string GetContentGitUrl(string branchUrlTemplate)
             {
                 var (editRemote, editBranch) = (repo.Remote, repo.Branch);
 
@@ -182,7 +183,7 @@ namespace Microsoft.Docs.Build
                 if (!string.IsNullOrEmpty(document.Docset.Config.Contribution.Repository))
                 {
                     var (contributionRemote, contributionBranch, hasRefSpec) = HrefUtility.SplitGitHref(document.Docset.Config.Contribution.Repository);
-                    urlTemplate = GetContentCommittishUrlTemplate(contributionRemote, pathToRepo);
+                    branchUrlTemplate = GetContentBranchUrlTemplate(contributionRemote, pathToRepo);
 
                     (editRemote, editBranch) = (contributionRemote, hasRefSpec ? contributionBranch : editBranch);
                     if (document.Docset.IsLocalized())
@@ -197,7 +198,7 @@ namespace Microsoft.Docs.Build
                     }
                 }
 
-                return urlTemplate?.Replace("{repo}", editRemote).Replace("{commit-ish}", editBranch);
+                return branchUrlTemplate?.Replace("{repo}", editRemote).Replace("{branch}", editBranch);
             }
         }
 
@@ -214,16 +215,31 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static string GetContentCommittishUrlTemplate(string remote, string pathToRepo)
+        private static string GetContentBranchUrlTemplate(string remote, string pathToRepo)
         {
             if (GitHubUtility.TryParse(remote, out _, out _))
             {
-                return $"{{repo}}/blob/{{commit-ish}}/{pathToRepo}";
+                return $"{{repo}}/blob/{{branch}}/{pathToRepo}";
             }
 
             if (AzureRepoUtility.TryParse(remote, out _, out _))
             {
-                return $"{{repo}}/?path={pathToRepo}&branch=GB{{commit-ish}}";
+                return $"{{repo}}/?path={pathToRepo}&version=GB{{branch}}";
+            }
+
+            return default;
+        }
+
+        private static string GetContentCommitUrlTemplate(string remote, string pathToRepo)
+        {
+            if (GitHubUtility.TryParse(remote, out _, out _))
+            {
+                return $"{{repo}}/blob/{{commit}}/{pathToRepo}";
+            }
+
+            if (AzureRepoUtility.TryParse(remote, out _, out _))
+            {
+                return $"{{repo}}/?path={pathToRepo}&version=GC{{commit}}";
             }
 
             return default;
