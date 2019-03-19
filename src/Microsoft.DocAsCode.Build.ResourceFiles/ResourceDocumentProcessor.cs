@@ -47,38 +47,16 @@ namespace Microsoft.DocAsCode.Build.ResourceFiles
 
         public override FileModel Load(FileAndType file, ImmutableDictionary<string, object> metadata)
         {
-            string uid = null;
-            Dictionary<string, object> content = null;
             var pp = EnvironmentContext.FileAbstractLayer.GetPhysicalPath(file.File);
             var metafile = pp.TrimEnd('.') + ".meta";
-            if (File.Exists(metafile))
-            {
-                content = YamlUtility.Deserialize<Dictionary<string, object>>(metafile);
-                if (content != null)
-                {
-                    foreach (var item in metadata)
-                    {
-                        if (!content.ContainsKey(item.Key))
-                        {
-                            content[item.Key] = item.Value;
-                        }
-                        if (item.Key == Constants.PropertyName.Uid)
-                        {
-                            uid = item.Value as string;
-                        }
-                    }
-                }
-            }
-            if (content == null)
-            {
-                content = metadata.ToDictionary(p => p.Key, p => p.Value);
-            }
-
+            var content = File.Exists(metafile)
+                ? YamlUtility.Deserialize<Dictionary<string, object>>(metafile)
+                : new Dictionary<string, object>();
             var localPathFromRoot = PathUtility.MakeRelativePath(EnvironmentContext.BaseDirectory, EnvironmentContext.FileAbstractLayer.GetPhysicalPath(file.File));
 
             return new FileModel(file, content)
             {
-                Uids = string.IsNullOrEmpty(uid) ? ImmutableArray<UidDefinition>.Empty : ImmutableArray<UidDefinition>.Empty.Add(new UidDefinition(uid, localPathFromRoot)),
+                Uids = ImmutableArray<UidDefinition>.Empty,
                 LocalPathFromRoot = localPathFromRoot
             };
         }
