@@ -28,10 +28,6 @@ jobs:
   condition: eq(variables['Build.Reason'], 'PullRequest')
   steps:
     - powershell: ./build.ps1
-    env:
-      GITHUB_BASIC_AUTH: $(GitHubBasicAuth)
-      SYSTEM_ACCESS_TOKEN: $(System.AccessToken)
-      GITHUB_ACCESS_TOKEN: $(GitHubAccessToken)
       
     # Publish test results
     - task: PublishTestResults@2
