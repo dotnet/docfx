@@ -108,7 +108,7 @@ namespace Microsoft.Docs.Build
             yield return new object[]
             {
                 "Get user by commit",
-                (Func<GitHubUserCache, Task>) ( async (cache) => await cache.GetByEmailOrCommit("alice@contoso.com", "owner", "name", "1")),
+                (Func<GitHubUserCache, Task>) ( async (cache) => await cache.GetByCommit("alice@contoso.com", "owner", "name", "1")),
                 "[]",
                 "[{'id':1,'login':'alice','name':'Alice','emails':['alice@contoso.com']}]",
                 1,
@@ -121,7 +121,7 @@ namespace Microsoft.Docs.Build
                 {
                     await ParallelUtility.ForEach(
                         Enumerable.Range(0, 20),
-                        async (i) => await cache.GetByEmailOrCommit("alice@contoso.com", "owner", "name", "1"));
+                        async (i) => await cache.GetByCommit("alice@contoso.com", "owner", "name", "1"));
                 }),
                 "[]",
                 "[{'id':1,'login':'alice','name':'Alice','emails':['alice@contoso.com']}]",
@@ -131,7 +131,7 @@ namespace Microsoft.Docs.Build
             yield return new object[]
             {
                 "Get user by commit from cache",
-                (Func<GitHubUserCache, Task>) ( async (cache) => await cache.GetByEmailOrCommit("alice@contoso.com", "owner", "name", "1")),
+                (Func<GitHubUserCache, Task>) ( async (cache) => await cache.GetByCommit("alice@contoso.com", "owner", "name", "1")),
                 "[{'id':1,'login':'alice','name':'Alice','emails':['alice@contoso.com']}]",
                 "[{'id':1,'login':'alice','name':'Alice','emails':['alice@contoso.com']}]",
                 0,
@@ -140,7 +140,7 @@ namespace Microsoft.Docs.Build
             yield return new object[]
             {
                 "Get user by commit from cache but cache expired",
-                (Func<GitHubUserCache, Task>) ( async (cache) => await cache.GetByEmailOrCommit("alice@contoso.com", "owner", "name", "1")),
+                (Func<GitHubUserCache, Task>) ( async (cache) => await cache.GetByCommit("alice@contoso.com", "owner", "name", "1")),
                 "[{'id':1,'login':'alice','name':'Obsolete name of Alice','emails':['alice@contoso.com'],'expiry':'2000-01-01'}]",
                 "[{'id':1,'login':'alice','name':'Alice','emails':['alice@contoso.com']}]",
                 1,
@@ -149,7 +149,7 @@ namespace Microsoft.Docs.Build
             yield return new object[]
             {
                 "Get user by commit with new email",
-                (Func<GitHubUserCache, Task>) ( async (cache) => await cache.GetByEmailOrCommit("alice_new@contoso.com", "owner", "name", "1")),
+                (Func<GitHubUserCache, Task>) ( async (cache) => await cache.GetByCommit("alice_new@contoso.com", "owner", "name", "1")),
                 "[]",
                 "[{'id':1,'login':'alice','name':'Alice','emails':['alice@contoso.com','alice_new@contoso.com']}]",
                 1,
@@ -158,7 +158,7 @@ namespace Microsoft.Docs.Build
             yield return new object[]
             {
                 "Get user by commit with new email can complete cache",
-                (Func<GitHubUserCache, Task>) ( async (cache) => await cache.GetByEmailOrCommit("alice_new@contoso.com", "owner", "name", "1")),
+                (Func<GitHubUserCache, Task>) ( async (cache) => await cache.GetByCommit("alice_new@contoso.com", "owner", "name", "1")),
                 "[{'id':1,'login':'alice','name':'Alice','emails':['alice@contoso.com']}]",
                 "[{'id':1,'login':'alice','name':'Alice','emails':['alice@contoso.com','alice_new@contoso.com']}]",
                 0,
@@ -188,7 +188,7 @@ namespace Microsoft.Docs.Build
                 (Func<GitHubUserCache, Task>)(async (cache) =>
                     {
                         await cache.GetByLogin("github-fail");
-                        await cache.GetByEmailOrCommit("github-fail@contoso.com", "owner", "name", "2");
+                        await cache.GetByCommit("github-fail@contoso.com", "owner", "name", "2");
                     }),
                 "[]",
                 "[]",

@@ -142,7 +142,7 @@ namespace Microsoft.Docs.Build
             return (null, TryGetByLogin(login));
         }
 
-        public async Task<(Error, GitHubUser)> GetByEmailOrCommit(string authorEmail, string repoOwner, string repoName, string commitSha)
+        public async Task<(Error, GitHubUser)> GetByCommit(string authorEmail, string repoOwner, string repoName, string commitSha)
         {
             if (string.IsNullOrEmpty(authorEmail))
                 return default;
