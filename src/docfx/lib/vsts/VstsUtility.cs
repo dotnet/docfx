@@ -10,16 +10,13 @@ namespace Microsoft.Docs.Build
         private static readonly Regex s_vstsRepoUrlRegex =
             new Regex(
                 @"^(https|http):\/\/(?<account>[^\/\s]+)\.visualstudio\.com\/(?<project>[^\/\s]+)\/_git\/(?<repository>[A-Za-z0-9_.-]+)((\/)?|(#(?<branch>\S+))?)$",
-                RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.RightToLeft);
+                RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         public static bool TryParse(string remote, out string project, out string repo)
         {
             project = repo = default;
 
             if (string.IsNullOrEmpty(remote))
-                return false;
-
-            if (!HrefUtility.IsHttpHref(remote))
                 return false;
 
             var match = s_vstsRepoUrlRegex.Match(remote);

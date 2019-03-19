@@ -211,40 +211,16 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private enum GitHost
-        {
-            Unknown,
-            GitHub,
-            VSTS,
-        }
-
-        private GitHost ParseGitHost(string remote)
+        private static string GetContentCommittishUrlTemplate(string remote, string pathToRepo)
         {
             if (GitHubUtility.TryParse(remote, out _, out _))
             {
-                return GitHost.GitHub;
+                return $"{{repo}}/blob/{{commit-ish}}/{pathToRepo}";
             }
 
             if (VstsUtility.TryParse(remote, out _, out _))
             {
-                return GitHost.VSTS;
-            }
-
-            return GitHost.Unknown;
-        }
-
-        private string GetContentCommittishUrlTemplate(string remote, string pathToRepo)
-        {
-            var gitHost = ParseGitHost(remote);
-
-            switch (gitHost)
-            {
-                case GitHost.GitHub:
-                    return $"{{repo}}/blob/{{commit-ish}}/{pathToRepo}";
-                case GitHost.VSTS:
-                    return $"{{repo}}/?path={pathToRepo}&branch=GB{{commit-ish}}";
-                case GitHost.Unknown:
-                    return default;
+                return $"{{repo}}/?path={pathToRepo}&branch=GB{{commit-ish}}";
             }
 
             return default;
