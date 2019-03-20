@@ -282,7 +282,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         public static HtmlNode ConvertXrefLinkNodeToXrefNode(HtmlNode node)
         {
             var href = node.GetAttributeValue("href", null);
-            if (node.Name != "a" || string.IsNullOrEmpty(href) || !href.StartsWith("xref:"))
+            if (node.Name != "a" || string.IsNullOrEmpty(href) || !href.StartsWith("xref:", StringComparison.OrdinalIgnoreCase))
             {
                 throw new NotSupportedException("Only anchor node with href started with \"xref:\" is supported!");
             }

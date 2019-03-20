@@ -42,11 +42,11 @@ namespace Microsoft.DocAsCode.YamlSerialization.ObjectDescriptors
                     {
                         scalarStyle = ScalarStyle.DoubleQuoted;
                     }
-                    else if (s.StartsWith("'"))
+                    else if (s.StartsWith("'", StringComparison.Ordinal))
                     {
                         scalarStyle = ScalarStyle.DoubleQuoted;
                     }
-                    else if (s.StartsWith("\""))
+                    else if (s.StartsWith("\"", StringComparison.Ordinal))
                     {
                         scalarStyle = ScalarStyle.DoubleQuoted;
                     }

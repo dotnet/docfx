@@ -139,7 +139,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             var requireAction = new Func<string, object>(
                 s =>
                 {
-                    if (!s.StartsWith(RequireRelativePathPrefix))
+                    if (!s.StartsWith(RequireRelativePathPrefix, StringComparison.Ordinal))
                     {
                         throw new ArgumentException($"Only relative path starting with `{RequireRelativePathPrefix}` is supported in require");
                     }

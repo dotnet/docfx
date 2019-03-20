@@ -317,7 +317,7 @@ namespace Microsoft.DocAsCode.Common
             {
                 return false;
             }
-            return NormalizePath(path).StartsWith(NormalizePath(folder) + Path.AltDirectorySeparatorChar);
+            return NormalizePath(path).StartsWith(NormalizePath(folder) + Path.AltDirectorySeparatorChar, StringComparison.Ordinal);
         }
 
         public static string NormalizePath(string path)

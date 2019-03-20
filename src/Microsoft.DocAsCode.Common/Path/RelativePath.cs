@@ -71,8 +71,8 @@ namespace Microsoft.DocAsCode.Common
                 return false;
             }
 
-            return path.StartsWith(NormalizedWorkingFolder)
-                || path.StartsWith(AltWorkingFolder);
+            return path.StartsWith(NormalizedWorkingFolder, StringComparison.Ordinal)
+                || path.StartsWith(AltWorkingFolder, StringComparison.Ordinal);
         }
 
         public static string GetPathWithoutWorkingFolderChar(string path)

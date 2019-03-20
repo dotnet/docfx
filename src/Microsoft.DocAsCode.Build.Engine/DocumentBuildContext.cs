@@ -67,7 +67,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             if (!string.IsNullOrEmpty(versionDir))
             {
                 versionDir = versionDir.Replace('\\', '/');
-                if (!versionDir.EndsWith("/"))
+                if (!versionDir.EndsWith("/", StringComparison.Ordinal))
                 {
                     versionDir += "/";
                 }
@@ -116,7 +116,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             if (!string.IsNullOrEmpty(versionFolder))
             {
                 versionFolder = versionFolder.Replace('\\', '/');
-                if (!versionFolder.EndsWith("/"))
+                if (!versionFolder.EndsWith("/", StringComparison.Ordinal))
                 {
                     versionFolder += "/";
                 }

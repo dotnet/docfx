@@ -22,12 +22,12 @@ namespace Microsoft.DocAsCode.Common
                 throw new ArgumentNullException(nameof(reader));
             }
             var line = reader.ReadLine();
-            if (line == null || !line.StartsWith("#"))
+            if (line == null || !line.StartsWith("#", StringComparison.Ordinal))
             {
                 return null;
             }
             var content = line.TrimStart('#').Trim(' ');
-            if (!content.StartsWith(YamlMimePrefix))
+            if (!content.StartsWith(YamlMimePrefix, StringComparison.Ordinal))
             {
                 return null;
             }
