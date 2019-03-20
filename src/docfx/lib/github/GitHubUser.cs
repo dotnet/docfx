@@ -18,7 +18,7 @@ namespace Microsoft.Docs.Build
 
         public DateTime? Expiry { get; set; }
 
-        public bool IsValid() => Id.HasValue;
+        public bool IsValid() => Id.HasValue && !IsExpired();
 
         public bool IsExpired() => Expiry != null && Expiry < DateTime.UtcNow;
 

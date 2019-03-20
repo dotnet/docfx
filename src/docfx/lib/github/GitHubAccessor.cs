@@ -2,7 +2,9 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Octokit;
@@ -12,10 +14,6 @@ namespace Microsoft.Docs.Build
     internal class GitHubAccessor
     {
         private readonly GitHubClient _client;
-
-        // Bypass GitHub abuse detection:
-        // https://developer.github.com/v3/guides/best-practices-for-integrators/#dealing-with-abuse-rate-limits
-        private static readonly SemaphoreSlim _semaphore = new SemaphoreSlim(10, 10);
 
         private static volatile Error _rateLimitError;
 
@@ -39,7 +37,7 @@ namespace Microsoft.Docs.Build
             try
             {
                 var user = await RetryUtility.Retry(
-                    () => UseResource(() => _client.User.Get(login)),
+                    () => _client.User.Get(login),
                     ex => ex is OperationCanceledException);
 
                 return (null, new GitHubUser
@@ -67,7 +65,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public async Task<(Error, GitHubUser)> GetUserByCommit(string repoOwner, string repoName, string commitSha)
+        public async Task<(Error, IEnumerable<GitHubUser>)> GetUsersByCommit(string repoOwner, string repoName, string commitSha)
         {
             Debug.Assert(!string.IsNullOrEmpty(repoOwner));
             Debug.Assert(!string.IsNullOrEmpty(repoName));
@@ -81,17 +79,15 @@ namespace Microsoft.Docs.Build
             var apiDetail = $"GET /repos/{repoOwner}/{repoName}/commits/{commitSha}";
             try
             {
-                var commit = await RetryUtility.Retry(
-                    () => UseResource(() => _client.Repository.Commit.Get(repoOwner, repoName, commitSha)),
+                var commits = await RetryUtility.Retry(
+                    () => _client.Repository.Commit.GetAll(
+                        repoOwner,
+                        repoName,
+                        new CommitRequest { Sha = commitSha },
+                        new ApiOptions { PageCount = 1, PageSize = 100 }),
                     ex => ex is OperationCanceledException);
 
-                return (null, new GitHubUser
-                {
-                    Id = commit.Author?.Id,
-                    Login = commit.Author?.Login,
-                    Name = commit.Commit.Author.Name,
-                    Emails = new[] { commit.Commit.Author.Email },
-                });
+                return (null, commits.Select(ToGitHubUser));
             }
             catch (NotFoundException)
             {
@@ -115,24 +111,22 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private void LogAbuseExceptionDetail(string api, Exception ex)
+        private static GitHubUser ToGitHubUser(GitHubCommit commit)
+        {
+            return new GitHubUser
+            {
+                Id = commit.Author?.Id,
+                Login = commit.Author?.Login,
+                Name = commit.Commit.Author.Name,
+                Emails = new[] { commit.Commit.Author.Email },
+            };
+        }
+
+        private static void LogAbuseExceptionDetail(string api, Exception ex)
         {
             if (ex is AbuseException aex)
             {
                 Log.Write($"Failed calling GitHub API '{api}', message: '{ex.Message}', retryAfterSeconds: '{aex.RetryAfterSeconds}'");
-            }
-        }
-
-        private async Task<T> UseResource<T>(Func<Task<T>> action)
-        {
-            await _semaphore.WaitAsync();
-            try
-            {
-                return await action();
-            }
-            finally
-            {
-                _semaphore.Release();
             }
         }
     }
