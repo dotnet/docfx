@@ -85,3 +85,18 @@ outputs:
   docs/index.json: |
     { "content": {"title":"REST API Documentation","abstract":{"menu":{"items":[{"href":"../b"}]}},"documentType":"LandingData"} }
   b.json:
+---
+# Produce deterministic result when redirection and file share the same publish url
+commands:
+  - build --legacy
+inputs:
+  docfx.yml: |
+    redirections:
+      docs/a.md: /asdf
+  docs/a.md:
+outputs:
+  build.log:
+  .manifest.json:
+  .dependency-map.json:
+  filemap.json:
+  op_aggregated_file_map_info.json:

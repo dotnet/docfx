@@ -106,7 +106,7 @@ namespace Microsoft.Docs.Build
 
                 ValidateBookmarks();
 
-                var (publishModel, fileManifests) = context.PublishModelBuilder.Build(context);
+                var (publishModel, fileManifests) = context.PublishModelBuilder.Build(context, docset.Legacy);
                 var dependencyMap = context.DependencyMapBuilder.Build();
 
                 await saveGitCommitCache;
