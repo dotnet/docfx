@@ -21,6 +21,8 @@ namespace Microsoft.Docs.Build
     {
         private static readonly NamingStrategy s_namingStrategy = new CamelCaseNamingStrategy();
         private static readonly JsonMergeSettings s_mergeSettings = new JsonMergeSettings { MergeArrayHandling = MergeArrayHandling.Replace };
+        private static readonly Action<JToken, int, int> s_setLineInfo =
+            ReflectionUtility.CreateInstanceMethod<JToken, Action<JToken, int, int>>("SetLineInfo", new[] { typeof(int), typeof(int) });
 
         private static readonly JsonSerializer s_serializer = new JsonSerializer
         {
@@ -266,6 +268,48 @@ namespace Microsoft.Docs.Build
         public static void Merge(JObject container, JObject overwrite)
         {
             container.Merge(overwrite, s_mergeSettings);
+
+            // set line info from overwrite to container
+            var lineInfos = new List<(List<string>, IJsonLineInfo)>();
+            BuildlineInfos(overwrite, new List<string>(), lineInfos);
+            foreach (var (paths, lineInfo) in lineInfos)
+            {
+                JToken existing = container;
+                foreach (var path in paths)
+                {
+                    if (existing is null)
+                    {
+                        break;
+                    }
+                    existing = existing[path];
+                }
+                if (existing != null)
+                {
+                    s_setLineInfo(existing, lineInfo.LineNumber, lineInfo.LinePosition);
+                }
+            }
+        }
+
+        private static void BuildlineInfos(JObject value, List<string> path, List<(List<string>, IJsonLineInfo)> lineInfos)
+        {
+            if (value is null)
+                return;
+
+            var temp = path.ToList();
+            foreach (KeyValuePair<string, JToken> contentItem in value)
+            {
+                path.Add(contentItem.Key);
+                var lineInfo = contentItem.Value as IJsonLineInfo;
+                if (lineInfo?.HasLineInfo() == true)
+                {
+                    lineInfos.Add((path.ToList(), lineInfo));
+                }
+                if (contentItem.Value is JObject)
+                {
+                    BuildlineInfos(contentItem.Value as JObject, path, lineInfos);
+                }
+                path = temp.ToList();
+            }
         }
 
         /// <summary>

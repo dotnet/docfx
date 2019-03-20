@@ -123,8 +123,8 @@ namespace Microsoft.Docs.Build
                 (errors, result) = LoadConfigObject(globalConfigPath, globalConfigPath);
             }
 
-            JsonUtility.Merge(config, result);
-            return (errors, config);
+            JsonUtility.Merge(result, config);
+            return (errors, result);
         }
 
         private static (List<Error>, JObject) ExtendConfigs(JObject config, string docsetPath)
@@ -146,8 +146,8 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            JsonUtility.Merge(config, result);
-            return (errors, config);
+            JsonUtility.Merge(result, config);
+            return (errors, result);
         }
 
         private static JObject OverwriteConfig(JObject config, string locale, string branch)
