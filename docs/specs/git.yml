@@ -434,7 +434,7 @@ inputs:
     gitHub:
       userCache: user_profile.json
       resolveUsers: true
-      auth: {GITHUB_ACCESS_TOKEN}
+      authToken: {GITHUB_ACCESS_TOKEN}
     contribution:
       repository: https://github.com/docascode/contribution-test
       gitCommitsTime: build_history.json
