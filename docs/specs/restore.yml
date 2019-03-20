@@ -20,7 +20,7 @@ outputs:
   docs/a.json: |
     {"content":"<p><a href=\"%7E/docfx-test-dependencies1/docs/a.md\">link to 1</a></p>\n<p>a1</p>\n"}
 ---
-# Restore vsts dependencies with their children
+# Restore dependencies azure repos with their children
 repos:
   https://docascode.visualstudio.com/project/_git/a:
     - files:
@@ -153,7 +153,7 @@ outputs:
       "content": "<p>for long file path test.</p>"
     }
 ---
-# Restore private vsts repos with dependencies
+# Restore private azure repos with dependencies
 inputs:
   docfx.yml: |
     dependencies:
@@ -261,7 +261,7 @@ outputs:
        "!downloads": null
     }
 ---
-# restore with vsts dependency lock
+# restore with azure repo dependency lock
 repos:
   https://docascode.visualstudio.com/lock/_git/a:
     - files:
