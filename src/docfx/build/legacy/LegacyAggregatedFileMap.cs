@@ -46,7 +46,7 @@ namespace Microsoft.Docs.Build
                         [docset.Config.Name] = new
                         {
                             docset_name = docset.Config.Name,
-                            docset_path_to_root = docset.Config.DocumentId.SourceBasePath,
+                            docset_path_to_root = docset.Config.DocumentId.SourceBasePath.TrimStart(new char[] { '.', '/', '\\'}),
                         },
                     },
                 }, "op_aggregated_file_map_info.json");
