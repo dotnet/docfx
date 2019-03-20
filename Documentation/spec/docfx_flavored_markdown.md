@@ -49,6 +49,8 @@ All will render to:
 
 If `link_text` is not specified, DocFX will extract the title from the target topic and use it as the link text.
 
+Do not use the `@uid` link in brackets (like this: `(@uid)`). DocFX cannot parse this link. The `@uid` link should be separated with white spaces. If you need to add a link in brackets, use `[](xref:uid)`.
+
 > [!Note]
 > Hashtag in `xref` is always treated as separator between file name and anchor name. That means if you have `#` in UID, it has
 > to be [encoded](https://en.wikipedia.org/wiki/Percent-encoding) to `%23`.
