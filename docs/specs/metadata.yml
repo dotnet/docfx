@@ -341,7 +341,7 @@ inputs:
     ---
 outputs:
   build.log: |
-    ["warning","reserved-metadata","Metadata 'redirect_url' is reserved by docfx, remove this metadata from yaml header","docs/a.md","",1,15]
+    ["warning","reserved-metadata","Metadata 'redirect_url' is reserved by docfx, remove this metadata from redirect_url","docs/a.md","",1,15]
     ["error","publish-url-conflict","Two or more files publish to the same url '/docs/a': 'docs/a.md', 'docs/a.md <redirection>'"]
 ---
 # redirection defined in file metadata is not supported
@@ -354,7 +354,7 @@ inputs:
 outputs:
   docs/a.json:
   build.log: |
-    ["warning","reserved-metadata","Metadata 'redirect_url' is reserved by docfx, remove this metadata from file metadata","docfx.yml","",3,5]
+    ["warning","reserved-metadata","Metadata 'redirect_url' is reserved by docfx, remove this metadata from fileMetadata.redirect_url","docfx.yml","",3,5]
 ---
 # redirection defined in global metadata is not supported
 inputs:
