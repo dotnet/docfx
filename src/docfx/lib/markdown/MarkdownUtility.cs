@@ -81,10 +81,7 @@ namespace Microsoft.Docs.Build
                     t_status.Value.Push(status);
 
                     var html = Markdown.ToHtml(markdown, s_markdownPipelines[(int)pipelineType]);
-                    if (pipelineType == MarkdownPipelineType.ConceptualMarkdown && !Result.HasTitle)
-                    {
-                        Result.Errors.Add(Errors.HeadingNotFound(file));
-                    }
+
                     return (html, Result);
                 }
                 finally
@@ -101,7 +98,6 @@ namespace Microsoft.Docs.Build
             return new MarkdownPipelineBuilder()
                 .UseYamlFrontMatter()
                 .UseDocfxExtensions(markdownContext)
-                .UseExtractTitle()
                 .UseResolveHtmlLinks(markdownContext)
                 .UseResolveXref(ResolveXref)
                 .UseMonikerZone(ParseMonikerRange)

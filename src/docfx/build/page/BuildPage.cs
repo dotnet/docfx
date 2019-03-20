@@ -125,20 +125,25 @@ namespace Microsoft.Docs.Build
             errors.AddRange(markup.Errors);
 
             var htmlDom = HtmlUtility.LoadHtml(html);
-            var htmlTitleDom = HtmlUtility.LoadHtml(markup.HtmlTitle);
+            var wordCount = HtmlUtility.CountWord(htmlDom);
+            var bookmarks = HtmlUtility.GetBookmarks(htmlDom);
+            var (titleDom, bodyDom) = HtmlUtility.SplitTitleAndBody(htmlDom);
+
+            if (titleDom == null)
+            {
+                errors.Add(Errors.HeadingNotFound(file));
+            }
 
             var model = new PageModel
             {
-                Content = HtmlPostProcess(file, htmlDom),
-                Title = yamlHeader.Value<string>("title") ?? HttpUtility.HtmlDecode(htmlTitleDom.InnerText),
-                RawTitle = markup.HtmlTitle,
-                WordCount = HtmlUtility.CountWord(htmlDom),
+                Content = HtmlPostProcess(file, bodyDom),
+                Title = yamlHeader.Value<string>("title") ?? HttpUtility.HtmlDecode(titleDom?.InnerText ?? ""),
+                RawTitle = titleDom?.OuterHtml,
+                WordCount = wordCount,
                 Monikers = monikers,
             };
 
-            var bookmarks = HtmlUtility.GetBookmarks(htmlDom).Concat(HtmlUtility.GetBookmarks(htmlTitleDom)).ToHashSet();
-
-            context.BookmarkValidator.AddBookmarks(file, bookmarks);
+            context.BookmarkValidator.AddBookmarks(file, bookmarks.ToHashSet());
 
             return (errors, Schema.Conceptual, model, fileMetadata);
         }

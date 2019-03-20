@@ -159,6 +159,27 @@ namespace Microsoft.Docs.Build
             return result.ToString();
         }
 
+        public static (HtmlNode titleNode, HtmlNode bodyNode) SplitTitleAndBody(HtmlNode node)
+        {
+            foreach (var child in node.ChildNodes)
+            {
+                if (child.NodeType == HtmlNodeType.Comment)
+                {
+                    continue;
+                }
+
+                if (child.NodeType == HtmlNodeType.Element && child.Name == "h1")
+                {
+                    child.Remove();
+                    return (child, node);
+                }
+
+                return (null, node);
+            }
+
+            return (null, node);
+        }
+
         private static void AddLinkType(this HtmlNode html, string tag, string attribute, string locale)
         {
             foreach (var node in html.Descendants(tag))
