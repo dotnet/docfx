@@ -157,8 +157,7 @@ namespace Microsoft.Docs.Build
             if (repo is null)
                 return default;
 
-            var contentBranchUrlTemplate = GetContentBranchUrlTemplate(repo.Remote, pathToRepo);
-            var contentCommitUrlTemplate = GetContentCommitUrlTemplate(repo.Remote, pathToRepo);
+            var (contentBranchUrlTemplate, contentCommitUrlTemplate) = GetContentGitUrlTemplate(repo.Remote, pathToRepo);
             var commit = commits.FirstOrDefault()?.Sha;
             if (string.IsNullOrEmpty(commit))
             {
@@ -183,7 +182,7 @@ namespace Microsoft.Docs.Build
                 if (!string.IsNullOrEmpty(document.Docset.Config.Contribution.Repository))
                 {
                     var (contributionRemote, contributionBranch, hasRefSpec) = HrefUtility.SplitGitHref(document.Docset.Config.Contribution.Repository);
-                    branchUrlTemplate = GetContentBranchUrlTemplate(contributionRemote, pathToRepo);
+                    (branchUrlTemplate, _) = GetContentGitUrlTemplate(contributionRemote, pathToRepo);
 
                     (editRemote, editBranch) = (contributionRemote, hasRefSpec ? contributionBranch : editBranch);
                     if (document.Docset.IsLocalized())
@@ -215,31 +214,16 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static string GetContentBranchUrlTemplate(string remote, string pathToRepo)
+        private static (string branchUrlTemplate, string commitUrlTemplate) GetContentGitUrlTemplate(string remote, string pathToRepo)
         {
             if (GitHubUtility.TryParse(remote, out _, out _))
             {
-                return $"{{repo}}/blob/{{branch}}/{pathToRepo}";
+                return ($"{{repo}}/blob/{{branch}}/{pathToRepo}", $"{{repo}}/blob/{{commit}}/{pathToRepo}");
             }
 
             if (AzureRepoUtility.TryParse(remote, out _, out _))
             {
-                return $"{{repo}}/?path={pathToRepo}&version=GB{{branch}}";
-            }
-
-            return default;
-        }
-
-        private static string GetContentCommitUrlTemplate(string remote, string pathToRepo)
-        {
-            if (GitHubUtility.TryParse(remote, out _, out _))
-            {
-                return $"{{repo}}/blob/{{commit}}/{pathToRepo}";
-            }
-
-            if (AzureRepoUtility.TryParse(remote, out _, out _))
-            {
-                return $"{{repo}}/?path={pathToRepo}&version=GC{{commit}}";
+                return ($"{{repo}}/?path={pathToRepo}&version=GB{{branch}}", $"{{repo}}/?path={pathToRepo}&version=GC{{commit}}");
             }
 
             return default;
