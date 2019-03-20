@@ -21,7 +21,7 @@ namespace Microsoft.Docs.Build
             var cache = new GitHubUserCache(users, "cache.json", 7 * 24);
             var accessor = new MockGitHubAccessor();
             cache._getUserByLoginFromGitHub = accessor.GetUserByLogin;
-            cache._getUserByCommitFromGitHub = accessor.GetUserByCommit;
+            cache._getUsersByCommitFromGitHub = accessor.GetUsersByCommit;
 
             // Act
             await testCase.Test(cache);
@@ -238,19 +238,19 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            public Task<(Error, GitHubUser)> GetUserByCommit(string repoOwner, string repoName, string commitSha)
+            public Task<(Error, IEnumerable<GitHubUser>)> GetUsersByCommit(string repoOwner, string repoName, string commitSha)
             {
                 Interlocked.Increment(ref _getLoginByCommitCallCount);
                 switch ($"{repoOwner}/{repoName}/{commitSha}")
                 {
                     case "owner/name/1":
-                        return Task.FromResult<(Error, GitHubUser)>((null, new GitHubUser { Id = 1, Login = "alice", Name = "Alice", Emails = new[] { "alice@contoso.com" } }));
+                        return Task.FromResult<(Error, IEnumerable<GitHubUser>)>((null, new[] { new GitHubUser { Id = 1, Login = "alice", Name = "Alice", Emails = new[] { "alice@contoso.com" } } }));
                     case "owner/name/2":
-                        return Task.FromResult<(Error, GitHubUser)>((Errors.GitHubApiFailed("API call failed for some reasons", new Exception()), null));
+                        return Task.FromResult<(Error, IEnumerable<GitHubUser>)>((Errors.GitHubApiFailed("API call failed for some reasons", new Exception()), null));
                     case "owner/name/3":
-                        return Task.FromResult<(Error, GitHubUser)>((null, new GitHubUser { Emails = new[] { "me@contoso.com" } }));
+                        return Task.FromResult<(Error, IEnumerable<GitHubUser>)>((null, new[] { new GitHubUser { Emails = new[] { "me@contoso.com" } } }));
                     default:
-                        return Task.FromResult<(Error, GitHubUser)>(default);
+                        return Task.FromResult<(Error, IEnumerable<GitHubUser>)>(default);
                 }
             }
         }
