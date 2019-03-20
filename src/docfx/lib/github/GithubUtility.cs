@@ -10,7 +10,7 @@ namespace Microsoft.Docs.Build
         private static readonly Regex s_gitHubRepoUrlRegex =
            new Regex(
                @"^((https|http):\/\/github\.com)\/(?<account>[^\/\s]+)\/(?<repository>[A-Za-z0-9_.-]+)((\/)?|(#(?<branch>\S+))?)$",
-               RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.RightToLeft);
+               RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         public static bool TryParse(string remote, out string owner, out string name)
         {
@@ -18,11 +18,6 @@ namespace Microsoft.Docs.Build
 
             if (string.IsNullOrEmpty(remote))
                 return false;
-
-            if (!HrefUtility.IsHttpHref(remote))
-            {
-                return false;
-            }
 
             var match = s_gitHubRepoUrlRegex.Match(remote);
             if (!match.Success)

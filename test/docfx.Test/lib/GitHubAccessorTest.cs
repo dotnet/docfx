@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -18,7 +19,7 @@ namespace Microsoft.Docs.Build
             var (error, profile) = await _github.GetUserByLogin(login);
 
             // skip check if the machine exceeds the GitHub API rate limit
-            if (error is null)
+            if (error?.Code != "github-api-failed")
             {
                 Assert.Equal(id, profile?.Id);
             }
@@ -30,11 +31,12 @@ namespace Microsoft.Docs.Build
         [InlineData("docascode", "this-repo-does-not-exists", "deadbeefdeadbeefdeadbeefdeadbeefdeadbeef", null, null, null)]
         public async Task GetUserByCommit(string repoOwner, string repoName, string commit, string errorCode, string login, int? id)
         {
-            var (error, user) = await _github.GetUserByCommit(repoOwner, repoName, commit);
+            var (error, users) = await _github.GetUsersByCommit(repoOwner, repoName, commit);
 
             // skip check if the machine exceeds the GitHub API rate limit
             if (error?.Code != "github-api-failed")
             {
+                var user = users?.FirstOrDefault();
                 Assert.Equal(login, user?.Login);
                 Assert.Equal(id, user?.Id);
                 Assert.Equal(errorCode, error?.Code);

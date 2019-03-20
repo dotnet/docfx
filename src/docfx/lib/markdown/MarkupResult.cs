@@ -9,8 +9,6 @@ namespace Microsoft.Docs.Build
     {
         public string HtmlTitle = "";
 
-        public bool HasHtml;
-
         public List<Error> Errors = new List<Error>();
 
         public bool FirstBlockIsInclusionBlock = false;

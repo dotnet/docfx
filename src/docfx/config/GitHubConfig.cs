@@ -24,7 +24,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Determines how long at most a user remains valid in cache.
         /// </summary>
-        public readonly int UserCacheExpirationInHours = 7 * 24;
+        public readonly int UserCacheExpirationInHours = 30 * 24;
 
         /// <summary>
         /// Determines whether to resolve git commit user and GitHub user.

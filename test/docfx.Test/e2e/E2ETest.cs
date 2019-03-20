@@ -227,9 +227,10 @@ namespace Microsoft.Docs.Build
 
             var spec = YamlUtility.Deserialize<E2ESpec>(yaml, false);
 
-            var skip = spec.Environments.Any(env => string.IsNullOrEmpty(Environment.GetEnvironmentVariable(env)));
-            if (skip)
+            var emptyEnvName = spec.Environments.FirstOrDefault(env => string.IsNullOrEmpty(Environment.GetEnvironmentVariable(env)));
+            if (!string.IsNullOrEmpty(emptyEnvName))
             {
+                Log.Write($"{specName} is skipped due to empty environment value: {emptyEnvName}");
                 return default;
             }
 
@@ -387,17 +388,20 @@ namespace Microsoft.Docs.Build
                     }
                     break;
                 case ".log":
-                    var expected = content.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).OrderBy(_ => _).ToArray();
-                    var actual = File.ReadAllLines(file).OrderBy(_ => _).ToArray();
-                    if (expected.Any(str => str.Contains("*")))
+                    if (!string.IsNullOrEmpty(content))
                     {
-                        Assert.Matches("^" + Regex.Escape(string.Join("\n", expected)).Replace("\\*", ".*") + "$", string.Join("\n", actual));
+                        var expected = content.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).OrderBy(_ => _).ToArray();
+                        var actual = File.ReadAllLines(file).OrderBy(_ => _).ToArray();
+                        if (expected.Any(str => str.Contains("*")))
+                        {
+                            Assert.Matches("^" + Regex.Escape(string.Join("\n", expected)).Replace("\\*", ".*") + "$", string.Join("\n", actual));
+                        }
+                        else
+                        {
+                            Assert.Equal(string.Join("\n", expected), string.Join("\n", actual));
+                        }
+                        VerifyLogsHasLineInfo(actual);
                     }
-                    else
-                    {
-                        Assert.Equal(string.Join("\n", expected), string.Join("\n", actual));
-                    }
-                    VerifyLogsHasLineInfo(actual);
                     break;
                 case ".html":
                     if (!string.IsNullOrEmpty(content))

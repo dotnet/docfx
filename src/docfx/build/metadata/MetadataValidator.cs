@@ -76,7 +76,7 @@ namespace Microsoft.Docs.Build
 
         private static HashSet<string> GetReservedMetadata()
         {
-            var blackList = new HashSet<string>(JsonUtility.GetPropertyNames(typeof(PageModel)), StringComparer.OrdinalIgnoreCase);
+            var blackList = new HashSet<string>(JsonUtility.GetPropertyNames(typeof(PageModel)));
 
             foreach (var name in JsonUtility.GetPropertyNames(typeof(FileMetadata)))
             {

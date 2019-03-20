@@ -225,7 +225,7 @@ namespace Microsoft.Docs.Build
 
             if (file.Docset.Legacy)
             {
-                if (isPage)
+                if (isPage && file.Docset.Template != null)
                 {
                     return TemplateTransform.Transform(model, file);
                 }
