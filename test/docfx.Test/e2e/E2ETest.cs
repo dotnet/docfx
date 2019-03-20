@@ -227,9 +227,10 @@ namespace Microsoft.Docs.Build
 
             var spec = YamlUtility.Deserialize<E2ESpec>(yaml, false);
 
-            var skip = spec.Environments.Any(env => string.IsNullOrEmpty(Environment.GetEnvironmentVariable(env)));
-            if (skip)
+            var emptyEnvName = spec.Environments.FirstOrDefault(env => string.IsNullOrEmpty(Environment.GetEnvironmentVariable(env)));
+            if (!string.IsNullOrEmpty(emptyEnvName))
             {
+                Log.Write($"{specName} is skipped due to empty environment value: {emptyEnvName}");
                 return default;
             }
 

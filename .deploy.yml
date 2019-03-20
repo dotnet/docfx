@@ -59,11 +59,16 @@ jobs:
       OP_BUILD_USER_TOKEN: $(OpBuildUserToken)
       GITHUB_BASIC_AUTH: $(GitHubBasicAuth)
       SYSTEM_ACCESS_TOKEN: $(System.AccessToken)
+      GITHUB_ACCESS_TOKEN: $(GitHubAccessToken)
     displayName: Impact Test
 
   # Build and test
   - powershell: ./build.ps1
     displayName: Build
+    env:
+      GITHUB_BASIC_AUTH: $(GitHubBasicAuth)
+      SYSTEM_ACCESS_TOKEN: $(System.AccessToken)
+      GITHUB_ACCESS_TOKEN: $(GitHubAccessToken)
 
   # Publish test results
   - task: PublishTestResults@2
