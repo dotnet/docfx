@@ -169,7 +169,7 @@ environments:
 outputs:
   docs/a.json:
   build.log: |
-    ["warning","link-is-dependency","File 'dep/README.md' referenced by link '~/dep/README.md' will not be built because it is from a dependency docset","docs/a.md"]
+    ["warning","link-is-dependency","File 'README.md' referenced by link '~/dep/README.md' will not be built because it is from a dependency docset","docs/a.md"]
 ---
 # Restored repo should be always retrieved
 repos:
