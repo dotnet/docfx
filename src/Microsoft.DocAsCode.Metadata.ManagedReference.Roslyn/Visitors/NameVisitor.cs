@@ -256,7 +256,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     }
                     break;
                 case MethodKind.UserDefinedOperator:
-                    if (symbol.Name.StartsWith("op_"))
+                    if (symbol.Name.StartsWith("op_", StringComparison.Ordinal))
                     {
                         Append(symbol.Name.Substring(3));
                     }

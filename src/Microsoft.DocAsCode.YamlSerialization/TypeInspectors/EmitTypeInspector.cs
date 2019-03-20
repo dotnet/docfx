@@ -57,7 +57,7 @@ namespace Microsoft.DocAsCode.YamlSerialization.TypeInspectors
                 return null;
             }
             return (from ep in item.ExtensibleProperies
-                    where name.StartsWith(ep.Prefix)
+                    where name.StartsWith(ep.Prefix, StringComparison.Ordinal)
                     select new ExtensiblePropertyDescriptor(ep, name, _resolver)).FirstOrDefault();
         }
 

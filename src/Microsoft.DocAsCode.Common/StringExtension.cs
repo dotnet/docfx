@@ -106,7 +106,7 @@ namespace Microsoft.DocAsCode.Common
                 return input;
             }
 
-            if (input.EndsWith(suffixToRemove))
+            if (input.EndsWith(suffixToRemove, StringComparison.Ordinal))
             {
                 return input.Substring(0, input.LastIndexOf(suffixToRemove));
             }

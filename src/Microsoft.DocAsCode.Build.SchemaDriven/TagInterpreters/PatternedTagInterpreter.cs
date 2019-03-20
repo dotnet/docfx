@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
 {
+    using System;
     using System.Composition;
     using System.Text.RegularExpressions;
 
@@ -20,7 +21,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
 
         public bool Matches(string tagName)
         {
-            return tagName.Length > Prefix.Length && tagName.StartsWith(Prefix);
+            return tagName.Length > Prefix.Length && tagName.StartsWith(Prefix, StringComparison.Ordinal);
         }
 
         public object Interpret(string tagName, BaseSchema schema, object value, IProcessContext context, string path)

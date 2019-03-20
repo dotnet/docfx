@@ -159,7 +159,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     {
                         if (oi.LinkToPath != null &&
                             oi.LinkToPath.Length > _increContext.CurrentBaseDir.Length &&
-                            oi.LinkToPath.StartsWith(_increContext.CurrentBaseDir) &&
+                            oi.LinkToPath.StartsWith(_increContext.CurrentBaseDir, StringComparison.Ordinal) &&
                             (oi.LinkToPath[_increContext.CurrentBaseDir.Length] == '\\' ||
                             oi.LinkToPath[_increContext.CurrentBaseDir.Length] == '/'))
                         {
@@ -201,7 +201,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 var itemsToBeCopied = from mi in increItems
                                       from oi in mi.OutputFiles.Values
-                                      where oi.LinkToPath != null && oi.LinkToPath.StartsWith(_increContext.LastBaseDir)
+                                      where oi.LinkToPath != null && oi.LinkToPath.StartsWith(_increContext.LastBaseDir, StringComparison.Ordinal)
                                       select oi;
                 Parallel.ForEach(
                     itemsToBeCopied,

@@ -3,6 +3,8 @@
 
 namespace Microsoft.DocAsCode.MarkdownLite
 {
+    using System;
+
     public class JsonTokenTreeRenderer
     {
         #region Block
@@ -287,7 +289,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         protected string TrimStringStart(string source, string target)
         {
-            if (source.StartsWith(target))
+            if (source.StartsWith(target, StringComparison.Ordinal))
             {
                 return source.Substring(target.Length, source.Length - target.Length);
             }
@@ -296,7 +298,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         protected string TrimStringEnd(string source, string target)
         {
-            if (source.EndsWith(target))
+            if (source.EndsWith(target, StringComparison.Ordinal))
             {
                 return source.Substring(0, source.Length - target.Length);
             }

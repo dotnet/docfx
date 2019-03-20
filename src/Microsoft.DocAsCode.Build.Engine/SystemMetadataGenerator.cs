@@ -152,7 +152,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private static string GetFileKey(string key)
         {
-            if (key.StartsWith(RelativePath.NormalizedWorkingFolder)) return key;
+            if (key.StartsWith(RelativePath.NormalizedWorkingFolder, StringComparison.Ordinal)) return key;
             return RelativePath.NormalizedWorkingFolder + key;
         }
 

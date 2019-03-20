@@ -28,7 +28,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             public MarkupResult Markup(string src, string path)
             {
                 var json = builder.CreateEngine(Renderer).Markup(src, path);
-                if (json.Length != 0 && json.EndsWith(","))
+                if (json.Length != 0 && json.EndsWith(",", StringComparison.Ordinal))
                 {
                     json = json.Remove(json.Length - 1);
                 }

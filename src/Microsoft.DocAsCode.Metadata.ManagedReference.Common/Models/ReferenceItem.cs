@@ -66,8 +66,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         private static string MergeCommentId(string source, string target)
         {
-            bool sourceIsNotError = source?.StartsWith("!:") == false;
-            bool targetIsNotError = target?.StartsWith("!:") == false;
+            bool sourceIsNotError = source?.StartsWith("!:", StringComparison.Ordinal) == false;
+            bool targetIsNotError = target?.StartsWith("!:", StringComparison.Ordinal) == false;
             if (sourceIsNotError && targetIsNotError)
             {
                 return Merge(source, target);
