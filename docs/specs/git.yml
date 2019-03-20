@@ -452,6 +452,7 @@ inputs:
     gitHub:
       userCache: user_profile.json
       resolveUsers: true
+      authToken: {GITHUB_ACCESS_TOKEN}
     contribution:
       repository: https://github.com/docascode/contribution-test
       gitCommitsTime: build_history.json
@@ -467,6 +468,8 @@ inputs:
         { "sha": "bc09224561ce6d13411cb48506b1900d6c6b94cb", "built_at": "2018-01-01" }
       ]
     }
+environments:
+  - GITHUB_ACCESS_TOKEN
 outputs:
   docs/index.json: |
     {
