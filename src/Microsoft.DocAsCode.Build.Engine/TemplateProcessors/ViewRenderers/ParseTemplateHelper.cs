@@ -75,7 +75,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 yield break;
             }
 
-            if (file.StartsWith("./"))
+            if (file.StartsWith("./", StringComparison.Ordinal))
             {
                 file = file.Substring(2);
             }

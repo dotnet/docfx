@@ -335,7 +335,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 {
                     if (ofi.LinkToPath != null &&
                         ofi.LinkToPath.Length > IncrementalContext.LastBaseDir.Length &&
-                        ofi.LinkToPath.StartsWith(IncrementalContext.LastBaseDir) &&
+                        ofi.LinkToPath.StartsWith(IncrementalContext.LastBaseDir, StringComparison.Ordinal) &&
                         (ofi.LinkToPath[IncrementalContext.LastBaseDir.Length] == '\\' || ofi.LinkToPath[IncrementalContext.LastBaseDir.Length] == '/'))
                     {
                         IncrementalUtility.RetryIO(() =>

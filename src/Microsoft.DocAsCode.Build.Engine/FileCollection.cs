@@ -46,7 +46,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             var rootedBaseDir = Path.Combine(DefaultBaseDir, baseDir ?? string.Empty);
             if (sourceDir != null && Path.IsPathRooted(sourceDir))
             {
-                if (sourceDir.StartsWith(rootedBaseDir))
+                if (sourceDir.StartsWith(rootedBaseDir, StringComparison.Ordinal))
                 {
                     sourceDir = sourceDir.Substring(rootedBaseDir.Length).TrimStart('/', '\\');
                 }
@@ -57,7 +57,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
             if (destinationDir != null && Path.IsPathRooted(destinationDir))
             {
-                if (destinationDir.StartsWith(rootedBaseDir))
+                if (destinationDir.StartsWith(rootedBaseDir, StringComparison.Ordinal))
                 {
                     destinationDir = sourceDir.Substring(rootedBaseDir.Length).TrimStart('/', '\\');
                 }
@@ -66,11 +66,11 @@ namespace Microsoft.DocAsCode.Build.Engine
                     throw new ArgumentException("DestinationDir must start with BaseDir, or relative path.", nameof(destinationDir));
                 }
             }
-            if (!string.IsNullOrEmpty(sourceDir) && !sourceDir.EndsWith("/"))
+            if (!string.IsNullOrEmpty(sourceDir) && !sourceDir.EndsWith("/", StringComparison.Ordinal))
             {
                 sourceDir += "/";
             }
-            if (!string.IsNullOrEmpty(destinationDir) && !destinationDir.EndsWith("/"))
+            if (!string.IsNullOrEmpty(destinationDir) && !destinationDir.EndsWith("/", StringComparison.Ordinal))
             {
                 destinationDir += "/";
             }
