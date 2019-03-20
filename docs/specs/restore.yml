@@ -283,6 +283,9 @@ repos:
                          "commit":"8720d784fb99abcbdfa922025b8bcc060f0f622a"
                       }
                    }
+                },
+                "https://docascode.visualstudio.com/lock/_git/c#master": {
+                  "commit": "c5969737496ff42854a019f982882d5fac486a56"
                 }
              }
           }
