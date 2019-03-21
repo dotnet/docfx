@@ -77,10 +77,6 @@ namespace Microsoft.Docs.Build
             (deserializeErrors, config) = JsonUtility.ToObjectWithSchemaValidation<Config>(configObject);
             errors.AddRange(deserializeErrors);
 
-            // validate metadata
-            errors.AddRange(MetadataValidator.ValidateGlobalMetadata(configObject["globalMetadata"] as JObject));
-            errors.AddRange(MetadataValidator.ValidateFileMetadata(configObject["fileMetadata"] as JObject));
-
             config.ConfigFileName = !configExists
                 ? config.ConfigFileName
                 : PathUtility.NormalizeFile(Path.GetRelativePath(docsetPath, configPath));
@@ -108,6 +104,18 @@ namespace Microsoft.Docs.Build
             else if (fileName.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
             {
                 (errors, config) = JsonUtility.DeserializeWithSchemaValidation<JObject>(content);
+            }
+
+            if (config is JObject)
+            {
+                if (config["globalMetadata"] != null)
+                {
+                    errors.AddRange(MetadataValidator.ValidateGlobalMetadata(config["globalMetadata"] as JObject));
+                }
+                else if (config["fileMetadata"] != null)
+                {
+                    errors.AddRange(MetadataValidator.ValidateFileMetadata(config["fileMetadata"] as JObject));
+                }
             }
             return (errors, Expand(config as JObject ?? new JObject()));
         }
