@@ -266,7 +266,7 @@ namespace Microsoft.Docs.Build
         public static void Merge(JObject container, JObject overwrite)
         {
             container.Merge(overwrite, s_mergeSettings);
-                    }
+        }
 
         /// <summary>
         /// Report warnings for all null or undefined nodes, remove nulls inside arrays.
