@@ -293,7 +293,7 @@ namespace Microsoft.Docs.Build
         /// Used docfx output model property which are not defined in input model.
         /// </summary>
         public static Error ReservedMetadata(in Range range, string name, string removeFrom)
-            => new Error(ErrorLevel.Warning, "reserved-metadata", $"Metadata '{name}' is reserved by docfx, remove this metadata from {removeFrom}", null, range);
+            => new Error(ErrorLevel.Warning, "reserved-metadata", $"Metadata '{name}' is reserved by docfx, remove this metadata: '{removeFrom}'", null, range);
 
         /// <summary>
         /// Failed to compute specific info of a commit.
