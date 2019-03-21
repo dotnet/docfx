@@ -112,9 +112,7 @@ inputs:
     hello
 outputs:
   docs/a.json: |
-    {
-      "raw_title": "",
-    }
+    { "!raw_title": null }
 ---
 # include another file
 inputs:
@@ -166,10 +164,26 @@ outputs:
   docs/a.json: |
     {
       "content": "<p>Hello</p><h1 id=\"heading-from-c\">Heading from C</h1>",
-      "raw_title": ""
+      "!raw_title": null
     }
   build.log: |
     ["warning","heading-not-found","The first visible block is not a heading block with `#`","docs/a.md"]
+---
+# Include in h1
+inputs:
+  docfx.yml:
+  docs/a.md: |
+    # [!INCLUDE[](b.md)] Overview
+    content
+  docs/b.md: |
+    Product Name
+outputs:
+  docs/a.json: |
+    {
+      "content": "<p>content</p>",
+      "raw_title": "<h1 id=\"-overview\">Product Name Overview</h1>"
+    }
+  docs/b.json:
 ---
 # note token text can be replaced by template
 repos:

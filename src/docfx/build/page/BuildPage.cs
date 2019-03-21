@@ -127,7 +127,7 @@ namespace Microsoft.Docs.Build
             var htmlDom = HtmlUtility.LoadHtml(html);
             var wordCount = HtmlUtility.CountWord(htmlDom);
             var bookmarks = HtmlUtility.GetBookmarks(htmlDom);
-            var (titleDom, bodyDom) = HtmlUtility.SplitTitleAndBody(htmlDom);
+            var titleDom = HtmlUtility.ExtractTitle(htmlDom);
 
             if (titleDom == null)
             {
@@ -136,14 +136,14 @@ namespace Microsoft.Docs.Build
 
             var model = new PageModel
             {
-                Content = HtmlPostProcess(file, bodyDom),
+                Content = HtmlPostProcess(file, htmlDom),
                 Title = yamlHeader.Value<string>("title") ?? HttpUtility.HtmlDecode(titleDom?.InnerText ?? ""),
                 RawTitle = titleDom?.OuterHtml,
                 WordCount = wordCount,
                 Monikers = monikers,
             };
 
-            context.BookmarkValidator.AddBookmarks(file, bookmarks.ToHashSet());
+            context.BookmarkValidator.AddBookmarks(file, bookmarks);
 
             return (errors, Schema.Conceptual, model, fileMetadata);
         }

@@ -93,21 +93,25 @@ namespace Microsoft.Docs.Build
             return html;
         }
 
-        public static IEnumerable<string> GetBookmarks(this HtmlNode html)
+        public static HashSet<string> GetBookmarks(this HtmlNode html)
         {
+            var result = new HashSet<string>();
+
             foreach (var node in html.DescendantsAndSelf())
             {
                 var id = node.GetAttributeValue("id", "");
                 if (!string.IsNullOrEmpty(id))
                 {
-                    yield return id;
+                    result.Add(id);
                 }
                 var name = node.GetAttributeValue("name", "");
                 if (!string.IsNullOrEmpty(name))
                 {
-                    yield return name;
+                    result.Add(name);
                 }
             }
+
+            return result;
         }
 
         public static string TransformLinks(string html, Func<string, string> transform)
@@ -159,7 +163,7 @@ namespace Microsoft.Docs.Build
             return result.ToString();
         }
 
-        public static (HtmlNode titleNode, HtmlNode bodyNode) SplitTitleAndBody(HtmlNode node)
+        public static HtmlNode ExtractTitle(HtmlNode node)
         {
             foreach (var child in node.ChildNodes)
             {
@@ -168,16 +172,21 @@ namespace Microsoft.Docs.Build
                     continue;
                 }
 
+                if (child.NodeType == HtmlNodeType.Text || string.IsNullOrWhiteSpace(child.OuterHtml))
+                {
+                    continue;
+                }
+
                 if (child.NodeType == HtmlNodeType.Element && child.Name == "h1")
                 {
                     child.Remove();
-                    return (child, node);
+                    return child;
                 }
 
-                return (null, node);
+                return null;
             }
 
-            return (null, node);
+            return null;
         }
 
         private static void AddLinkType(this HtmlNode html, string tag, string attribute, string locale)
