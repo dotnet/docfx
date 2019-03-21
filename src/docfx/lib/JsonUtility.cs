@@ -21,8 +21,6 @@ namespace Microsoft.Docs.Build
     {
         private static readonly NamingStrategy s_namingStrategy = new CamelCaseNamingStrategy();
         private static readonly JsonMergeSettings s_mergeSettings = new JsonMergeSettings { MergeArrayHandling = MergeArrayHandling.Replace };
-        private static readonly Action<JToken, int, int> s_setLineInfo =
-            ReflectionUtility.CreateInstanceMethod<JToken, Action<JToken, int, int>>("SetLineInfo", new[] { typeof(int), typeof(int) });
 
         private static readonly JsonSerializer s_serializer = new JsonSerializer
         {
