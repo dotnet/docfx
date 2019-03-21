@@ -172,7 +172,7 @@ namespace Microsoft.Docs.Build
                     continue;
                 }
 
-                if (child.NodeType == HtmlNodeType.Text || string.IsNullOrWhiteSpace(child.OuterHtml))
+                if (child.NodeType == HtmlNodeType.Text && string.IsNullOrWhiteSpace(child.OuterHtml))
                 {
                     continue;
                 }
