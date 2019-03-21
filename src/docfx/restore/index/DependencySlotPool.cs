@@ -14,10 +14,10 @@ namespace Microsoft.Docs.Build
     {
         private static int _defaultLockdownTimeInSecond = 10 * 60;
 
-        public static async Task<(string path, T slot)> TryGetSlot(string remote, Func<IReadOnlyList<T>, IReadOnlyList<T>> matchExistingSlots)
+        public static async Task<(string path, T slot)> TryGetSlot(string remote, Func<IReadOnlyList<T>, Task<IReadOnlyList<T>>> getOrderedFilteredSlots)
         {
             Debug.Assert(!string.IsNullOrEmpty(remote));
-            Debug.Assert(matchExistingSlots != null);
+            Debug.Assert(getOrderedFilteredSlots != null);
 
             var restoreDir = AppData.GetGitDir(remote);
 
@@ -29,10 +29,7 @@ namespace Microsoft.Docs.Build
                 {
                     var slots = GetSlots(restoreDir);
 
-                    var filteredSlots = matchExistingSlots(slots);
-
-                    // found latest restored slot
-                    foreach (var i in filteredSlots.OrderByDescending(i => i.LastAccessDate))
+                    foreach (var i in await getOrderedFilteredSlots(slots))
                     {
                         if (i.Restored /*restored successfully*/ &&
                         !await ProcessUtility.IsExclusiveLockHeld(GetLockKey(remote, i.Id)) /*not being used for restoring*/)
