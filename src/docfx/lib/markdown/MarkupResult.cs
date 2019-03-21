@@ -7,12 +7,7 @@ namespace Microsoft.Docs.Build
 {
     internal class MarkupResult
     {
-        public string HtmlTitle = "";
-
+        // TODO: remove this class
         public List<Error> Errors = new List<Error>();
-
-        public bool FirstBlockIsInclusionBlock = false;
-
-        public bool HasTitle => !string.IsNullOrEmpty(HtmlTitle);
     }
 }
