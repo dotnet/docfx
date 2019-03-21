@@ -211,7 +211,7 @@ namespace Microsoft.Docs.Build
                     var commits = Array.Empty<string>();
                     if (filteredGits.Count() > 1)
                     {
-                        commits = await GitUtility.GetCommits(restoreDir, branch, 1000/*top 100 should be enough for comparing*/);
+                        commits = await GitUtility.GetCommits(restoreDir, branch, 1000/*top 1000 should be enough for comparing*/);
                     }
 
                     return filteredGits.OrderBy(g => Array.IndexOf(commits, g.Commit)).ThenByDescending(g => g.LastAccessDate).ToList();
