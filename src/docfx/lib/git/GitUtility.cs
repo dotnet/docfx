@@ -124,9 +124,9 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Get a list of commits using git log
         /// </summary>
-        public static Task<string[]> GetCommits(string path, int top = 1)
+        public static Task<string[]> GetCommits(string path, string committish, int top = 1)
         {
-            return Execute(path, $"--no-pager log --pretty=format:\"%H\" -{top}", (stdout, stderr) =>
+            return Execute(path, $"--no-pager log {committish} --pretty=format:\"%H\" -{top}", (stdout, stderr) =>
             {
                 Debug.Assert(stdout != null);
 
