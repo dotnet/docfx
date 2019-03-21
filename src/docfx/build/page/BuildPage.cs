@@ -114,15 +114,15 @@ namespace Microsoft.Docs.Build
             errors.AddIfNotNull(error);
 
             // TODO: handle blank page
-            var (html, markup) = MarkdownUtility.ToHtml(
+            var (markupErrors, html) = MarkdownUtility.ToHtml(
                 content,
                 file,
                 context.DependencyResolver,
                 buildChild,
                 rangeString => context.MonikerProvider.GetZoneMonikers(rangeString, monikers, errors),
                 key => file.Docset.Template?.GetToken(key),
-                MarkdownPipelineType.ConceptualMarkdown);
-            errors.AddRange(markup.Errors);
+                MarkdownPipelineType.Markdown);
+            errors.AddRange(markupErrors);
 
             var htmlDom = HtmlUtility.LoadHtml(html);
             var wordCount = HtmlUtility.CountWord(htmlDom);

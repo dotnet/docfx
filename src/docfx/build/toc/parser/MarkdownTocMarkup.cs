@@ -19,8 +19,8 @@ namespace Microsoft.Docs.Build
         {
             var errors = new List<Error>();
             var headingBlocks = new List<HeadingBlock>();
-            var (ast, result) = MarkdownUtility.Parse(tocContent, MarkdownPipelineType.TocMarkdown);
-            errors.AddRange(result.Errors);
+            var (markupErrors, ast) = MarkdownUtility.Parse(tocContent, MarkdownPipelineType.TocMarkdown);
+            errors.AddRange(markupErrors);
 
             foreach (var block in ast)
             {
