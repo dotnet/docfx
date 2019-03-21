@@ -7,6 +7,7 @@ namespace Microsoft.Docs.Build
 {
     internal class MarkupResult
     {
+        // TODO: remove this class
         public List<Error> Errors = new List<Error>();
     }
 }
