@@ -12,6 +12,7 @@ namespace Microsoft.Docs.Build
     {
         [Theory]
         [InlineData("https://github.com/dotnet/docfx", "https://github.com/dotnet/docfx", "master")]
+        [InlineData("https://github.com/dotnet/docfx/", "https://github.com/dotnet/docfx", "master")]
         [InlineData("https://visualstudio.com/dotnet/docfx", "https://visualstudio.com/dotnet/docfx", "master")]
         [InlineData("https://github.com/dotnet/docfx#master", "https://github.com/dotnet/docfx", "master")]
         [InlineData("https://github.com/dotnet/docfx#live", "https://github.com/dotnet/docfx", "live")]

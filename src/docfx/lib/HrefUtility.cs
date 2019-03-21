@@ -86,6 +86,7 @@ namespace Microsoft.Docs.Build
 
             var (path, _, fragment) = SplitHref(remoteHref);
 
+            path = path.TrimEnd('/', '\\');
             var hasRefSpec = !string.IsNullOrEmpty(fragment) && fragment.Length > 1;
             var refspec = hasRefSpec ? fragment.Substring(1) : "master";
 
