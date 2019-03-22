@@ -57,7 +57,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
         private static string GetLink(string path, object relativeTo, object resultRelativeTo, MarkdownObject origin)
         {
-            if (InclusionContext.IsInclude && RelativePath.IsRelativePath(path) && PathUtility.IsRelativePath(path) && !RelativePath.IsPathFromWorkingFolder(path) && !path.StartsWith("#"))
+            if (InclusionContext.IsInclude && RelativePath.IsRelativePath(path) && PathUtility.IsRelativePath(path) && !RelativePath.IsPathFromWorkingFolder(path) && !path.StartsWith("#", StringComparison.Ordinal))
             {
                 return ((RelativePath)relativeTo + (RelativePath)path).GetPathFromWorkingFolder();
             }
