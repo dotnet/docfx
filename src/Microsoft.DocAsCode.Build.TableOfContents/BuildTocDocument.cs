@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.Build.TableOfContents
 {
+    using System;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Collections.Immutable;
@@ -52,7 +53,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
 
         private void ReportPreBuildDependency(List<FileModel> models, IHostService host, int parallelism)
         {
-            var nearest = new ConcurrentDictionary<string, Toc>(FilePathComparer.OSPlatformSensitiveStringComparer);
+            var nearest = new ConcurrentDictionary<string, RelativeInfo>(FilePathComparer.OSPlatformSensitiveStringComparer);
             models.RunAll(model =>
             {
                 var item = (TocItemViewModel)model.Content;
@@ -65,11 +66,11 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
 
             foreach (var item in nearest)
             {
-                host.ReportDependencyFrom(item.Value.Model, item.Key, DependencyTypeName.Metadata);
+                host.ReportDependencyFrom(item.Value.TocInfo.Model, item.Key, DependencyTypeName.Metadata);
             }
         }
 
-        private void UpdateNearestToc(IHostService host, TocItemViewModel item, FileModel toc, ConcurrentDictionary<string, Toc> nearest)
+        private void UpdateNearestToc(IHostService host, TocItemViewModel item, FileModel toc, ConcurrentDictionary<string, RelativeInfo> nearest)
         {
             var tocHref = item.TocHref;
             var type = Utility.GetHrefType(tocHref);
@@ -91,26 +92,20 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             }
         }
 
-        private void UpdateNearestTocForNotInTocItem(List<FileModel> models, IHostService host, ConcurrentDictionary<string, Toc> nearest, int parallelism)
+        private void UpdateNearestTocForNotInTocItem(List<FileModel> models, IHostService host, ConcurrentDictionary<string, RelativeInfo> nearest, int parallelism)
         {
             var allSourceFiles = host.SourceFiles;
-            var tocs = (from m in models
-                        select new Toc
-                        {
-                            Model = m,
-                            OutputPath = GetOutputPath(m.FileAndType),
-                        }).ToArray();
+            var tocInfos = models.Select(m => new TocInfo(m)).ToArray();
             Parallel.ForEach(
                 allSourceFiles.Keys.Except(nearest.Keys, FilePathComparer.OSPlatformSensitiveStringComparer).ToList(),
                 new ParallelOptions { MaxDegreeOfParallelism = parallelism },
                 item =>
                 {
-                    var itemOutputFile = GetOutputPath(allSourceFiles[item]);
-                    var near = (from toc in tocs
-                                let rel = toc.OutputPath.MakeRelativeTo(itemOutputFile)
-                                where rel.SubdirectoryCount == 0
-                                orderby rel.ParentDirectoryCount
-                                select toc).FirstOrDefault();
+                    var near = (from tocInfo in tocInfos
+                                let rel = new RelativeInfo(tocInfo, allSourceFiles[item])
+                                where rel.TocPathRelativeToArticle.SubdirectoryCount == 0
+                                orderby rel.TocPathRelativeToArticle.ParentDirectoryCount
+                                select rel).FirstOrDefault();
                     if (near != null)
                     {
                         nearest[item] = near;
@@ -118,26 +113,18 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
                 });
         }
 
-        private void UpdateNearestTocCore(IHostService host, string item, FileModel toc, ConcurrentDictionary<string, Toc> nearest)
+        private void UpdateNearestTocCore(IHostService host, string item, FileModel toc, ConcurrentDictionary<string, RelativeInfo> nearest)
         {
-            var allSourceFiles = host.SourceFiles;
-            var tocOutputFile = GetOutputPath(toc.FileAndType);
-            if (allSourceFiles.TryGetValue(item, out FileAndType itemSource))
+            if (!host.SourceFiles.TryGetValue(item, out var itemSource))
             {
-                var itemOutputFile = GetOutputPath(itemSource);
-                var relative = tocOutputFile.RemoveWorkingFolder() - itemOutputFile;
-                nearest.AddOrUpdate(
-                    item,
-                    k => new Toc { Model = toc, OutputPath = relative },
-                    (k, v) =>
-                    {
-                        if (CompareRelativePath(relative, v.OutputPath) < 0)
-                        {
-                            return new Toc { Model = toc, OutputPath = relative };
-                        }
-                        return v;
-                    });
+                return;
             }
+
+            var tocInfo = new RelativeInfo(toc, itemSource);
+            nearest.AddOrUpdate(
+                item,
+                k => tocInfo,
+                (k, v) => Compare(tocInfo, v) < 0 ? tocInfo : v);
         }
 
         private static RelativePath GetOutputPath(FileAndType file)
@@ -152,21 +139,66 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             }
         }
 
-        private static int CompareRelativePath(RelativePath a, RelativePath b)
+        private static int Compare(RelativeInfo infoA, RelativeInfo infoB)
         {
-            int res = a.SubdirectoryCount - b.SubdirectoryCount;
-            if (res != 0)
+            var relativePathA = infoA.TocPathRelativeToArticle;
+            var relativePathB = infoB.TocPathRelativeToArticle;
+
+            int subDirCompareResult = relativePathA.SubdirectoryCount - relativePathB.SubdirectoryCount;
+            if (subDirCompareResult != 0)
             {
-                return res;
+                return subDirCompareResult;
             }
-            return a.ParentDirectoryCount - b.ParentDirectoryCount;
+
+            int parentDirCompareResult = relativePathA.ParentDirectoryCount- relativePathB.ParentDirectoryCount;
+            if (parentDirCompareResult!= 0)
+            {
+                return parentDirCompareResult;
+            }
+
+            var tocA = infoA.TocInfo;
+            var tocB = infoB.TocInfo;
+
+            var outputPathCompareResult = StringComparer.OrdinalIgnoreCase.Compare(tocA.OutputPath, tocB.OutputPath);
+            if (outputPathCompareResult != 0)
+            {
+                return outputPathCompareResult;
+            }
+
+            return StringComparer.OrdinalIgnoreCase.Compare(tocA.FilePath, tocB.FilePath);
         }
 
-        private class Toc
+        private class TocInfo
         {
             public FileModel Model { get; set; }
 
+            public string FilePath { get; set; }
+
             public RelativePath OutputPath { get; set; }
+
+            public TocInfo(FileModel tocModel)
+            {
+                Model = tocModel;
+                FilePath = tocModel.FileAndType.File;
+                OutputPath = GetOutputPath(tocModel.FileAndType);
+            }
+
+        }
+
+        private class RelativeInfo
+        {
+            public TocInfo TocInfo { get; set; }
+
+            public RelativePath TocPathRelativeToArticle { get; set; }
+
+            public RelativeInfo(TocInfo tocInfo, FileAndType article)
+            {
+                TocInfo = tocInfo;
+                TocPathRelativeToArticle = tocInfo.OutputPath.RemoveWorkingFolder().MakeRelativeTo(GetOutputPath(article));
+            }
+
+            public RelativeInfo(FileModel tocModel, FileAndType article)
+                : this(new TocInfo(tocModel), article) { }
         }
 
         #endregion
