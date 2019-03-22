@@ -137,7 +137,7 @@ namespace Microsoft.DocAsCode.Glob
                 yield return parts[i] + "/";
             }
 
-            yield return path.EndsWith("/") ? parts[parts.Length - 1] + "/" : parts[parts.Length - 1];
+            yield return path.EndsWith("/", StringComparison.Ordinal) ? parts[parts.Length - 1] + "/" : parts[parts.Length - 1];
         }
 
         private string ConvertSingleGlob(IEnumerable<GlobRegexItem> regexItems)
@@ -148,7 +148,7 @@ namespace Microsoft.DocAsCode.Glob
 
         private bool IsFolderPath(string path)
         {
-            return path.EndsWith("/");
+            return path.EndsWith("/", StringComparison.Ordinal);
         }
 
         /// <summary>
@@ -410,7 +410,7 @@ namespace Microsoft.DocAsCode.Glob
         {
             if (filePart == "."
                 || filePart == ".."
-                || (!Options.HasFlag(GlobMatcherOptions.AllowDotMatch) && filePart.StartsWith(".")))
+                || (!Options.HasFlag(GlobMatcherOptions.AllowDotMatch) && filePart.StartsWith(".", StringComparison.Ordinal)))
             {
                 return true;
             }

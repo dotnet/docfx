@@ -149,12 +149,12 @@ namespace Microsoft.DocAsCode.Build.Engine
             var type = templateName.Substring(0, splitterIndex);
             var extension = templateName.Substring(splitterIndex);
             TemplateType templateType = TemplateType.Default;
-            if (extension.EndsWith(Primary))
+            if (extension.EndsWith(Primary, StringComparison.Ordinal))
             {
                 templateType = TemplateType.Primary;
                 extension = extension.Substring(0, extension.Length - Primary.Length);
             }
-            else if (extension.EndsWith(Auxiliary))
+            else if (extension.EndsWith(Auxiliary, StringComparison.Ordinal))
             {
                 templateType = TemplateType.Auxiliary;
                 extension = extension.Substring(0, extension.Length - Auxiliary.Length);

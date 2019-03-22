@@ -63,9 +63,9 @@ namespace AsyncGenerator.Internal
 
 		public static  bool IsMono => Type.GetType("Mono.Runtime") != null;
 
-		public static  bool IsNetCore => RuntimeInformation.FrameworkDescription.StartsWith(".NET Core"); // .NET Core 4.6.00001.0
+		public static  bool IsNetCore => RuntimeInformation.FrameworkDescription.StartsWith(".NET Core", StringComparison.Ordinal); // .NET Core 4.6.00001.0
 
-		public static  bool IsNetFramework => RuntimeInformation.FrameworkDescription.StartsWith(".NET Framework"); // .NET Framework 4.7.2115.0
+		public static  bool IsNetFramework => RuntimeInformation.FrameworkDescription.StartsWith(".NET Framework", StringComparison.Ordinal); // .NET Framework 4.7.2115.0
 
 		// On Mono RuntimeInformation.IsOSPlatform will always retrun true for Windows
 		public static bool IsWindows => Path.DirectorySeparatorChar == '\\';

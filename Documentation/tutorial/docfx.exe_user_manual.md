@@ -350,6 +350,7 @@ _disableAffix         | bool    | Indicate whether to show the affix bar on the 
 _disableContribution  | bool    | Indicate whether to show the `View Source` and `Improve this Doc` buttons.
 _gitContribute        | object  | Customize the `Improve this Doc` URL button for public contributors. Use `repo` to specify the contribution repository URL. Use `branch` to specify the contribution branch. Use `apiSpecFolder` to specify the folder for new overwrite files. If not set, the git URL and branch of the current git repository will be used.
 _gitUrlPattern        | string  | Choose the URL pattern of the generated link for `View Source` and `Improve this Doc`. Supports `github` and `vso` currently. If not set, DocFX will try speculating the pattern from domain name of the git URL.
+_noindex              | bool  | File(s) specified are not returned in search results
 
 #### 3.2.3 Separated metadata files for global metadata and file metadata
 
@@ -383,6 +384,9 @@ There're some metadata file examples:
         "keywords": {
             "obj/docfx/**": ["API", "Reference"],
             "spec/**.md": ["Spec", "Conceptual"]
+        },
+        _noindex: {
+            "articles/**/article.md": true
         }
     }
     ```

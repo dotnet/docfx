@@ -11,6 +11,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     using Markdig.Parsers;
     using Markdig.Renderers.Html;
     using Markdig.Syntax;
+    using System;
 
     public class CodeSnippet : LeafBlock
     {
@@ -58,7 +59,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 attributes.AddProperty("data-interactive", WebUtility.HtmlEncode(Language));
             }
 
-            if (GitUrl != null && GitUrl.StartsWith("https://github.com"))
+            if (GitUrl != null && GitUrl.StartsWith("https://github.com", StringComparison.OrdinalIgnoreCase))
             {
                 attributes.AddProperty("data-src", WebUtility.HtmlEncode(GitUrl));
             }

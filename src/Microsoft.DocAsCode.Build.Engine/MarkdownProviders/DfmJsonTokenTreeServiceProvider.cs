@@ -45,7 +45,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 var dependency = new HashSet<string>();
                 var json = _builder.CreateDfmEngine(new DfmJsonTokenTreeRender()).Markup(src, path, dependency);
-                if (json.Length != 0 && json.EndsWith(","))
+                if (json.Length != 0 && json.EndsWith(",", StringComparison.Ordinal))
                 {
                     json = json.Remove(json.Length - 1);
                 }

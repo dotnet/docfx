@@ -4,6 +4,7 @@
 namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
     using Markdig.Syntax;
+    using System;
 
     public abstract class InteractiveBaseRewriter : IMarkdownObjectRewriter
     {
@@ -26,7 +27,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             {
                 return null;
             }
-            if (language.EndsWith(InteractivePostfix))
+            if (language.EndsWith(InteractivePostfix, StringComparison.Ordinal))
             {
                 isInteractive = true;
                 return language.Remove(language.Length - InteractivePostfix.Length);

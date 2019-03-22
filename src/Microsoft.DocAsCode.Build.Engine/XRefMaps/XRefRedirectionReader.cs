@@ -63,7 +63,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             foreach (var r in current.GetRedirections().Reverse())
             {
                 if (r.UidPrefix == null ||
-                    uid.StartsWith(r.UidPrefix))
+                    uid.StartsWith(r.UidPrefix, StringComparison.Ordinal))
                 {
                     if (r.Href != null)
                     {

@@ -20,27 +20,32 @@ namespace Microsoft.DocAsCode
             {
                 return null;
             }
-
-            if (fileMapping.Expanded) return fileMapping;
+            if (fileMapping.Expanded)
+            {
+                return fileMapping;
+            }
 
             var expandedFileMapping = new FileMapping();
             foreach (var item in fileMapping.Items)
             {
-                // Use local variable to avoid different items influencing each other
                 var src = Path.Combine(baseDirectory, item.SourceFolder ?? string.Empty);
                 var options = GetMatchOptionsFromItem(item);
-                var files = FileGlob.GetFiles(src, item.Files, item.Exclude, options).ToArray();
-                if (files.Length == 0)
+                var fileItems = new FileItems(FileGlob.GetFiles(src, item.Files, item.Exclude, options));
+                if (fileItems.Count == 0)
                 {
                     var currentSrcFullPath = string.IsNullOrEmpty(src) ? Directory.GetCurrentDirectory() : Path.GetFullPath(src);
                     Logger.LogInfo($"No files are found with glob pattern {StringExtension.ToDelimitedString(item.Files) ?? "<none>"}, excluding {StringExtension.ToDelimitedString(item.Exclude) ?? "<none>"}, under directory \"{currentSrcFullPath}\"");
                     CheckPatterns(item.Files);
                 }
+                if (item.Exclude != null)
+                {
+                    CheckPatterns(item.Exclude);
+                }
                 expandedFileMapping.Add(
                     new FileMappingItem
                     {
                         SourceFolder = src,
-                        Files = new FileItems(files),
+                        Files = fileItems,
                         DestinationFolder = item.DestinationFolder
                     });
             }

@@ -722,16 +722,17 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             }
 
             var buildStrategy = canIncremental ? InfoCodes.Build.IsIncrementalBuild : InfoCodes.Build.IsFullBuild;
+            var groupDisplayName = string.IsNullOrEmpty(Version) ? "the default group" : $"group '{Version}'";
             if (canIncremental)
             {
                 IncrementalInfo.ReportStatus(true, IncrementalPhase.Build);
-                Logger.LogInfo($"Group {Version} will be built incrementally.", code: buildStrategy);
+                Logger.LogVerbose($"Building {groupDisplayName} incrementally.", code: buildStrategy);
             }
             else
             {
                 IncrementalInfo.ReportStatus(false, IncrementalPhase.Build, details, fullBuildReasonCode);
-                Logger.LogInfo($"Group {Version} will be built fully.", code: buildStrategy);
-                Logger.LogInfo($"The reason of full building under group {Version} is: {details}", code: fullBuildReasonCode);
+                Logger.LogVerbose($"Building {groupDisplayName} fully.", code: buildStrategy);
+                Logger.LogVerbose($"The reason of full building for {groupDisplayName} is: {details}", code: fullBuildReasonCode);
             }
 
             return canIncremental;
