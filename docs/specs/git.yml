@@ -285,7 +285,6 @@ inputs:
 outputs:
   docs/index.json: |
     {
-      "open_to_public_contributors": true,
       "content_git_url": "https://github.com/testowner/testrepo/blob/master-content-git-url/docs/index.md",
       "original_content_git_url": "https://github.com/testowner/testrepo/blob/master-content-git-url/docs/index.md",
       "original_content_git_url_template": "{repo}/blob/{branch}/docs/index.md",
