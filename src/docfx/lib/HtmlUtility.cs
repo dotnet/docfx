@@ -177,7 +177,7 @@ namespace Microsoft.Docs.Build
                     continue;
                 }
 
-                if (child.NodeType == HtmlNodeType.Element && child.Name == "h1")
+                if (child.NodeType == HtmlNodeType.Element && (child.Name == "h1" || child.Name == "h2" || child.Name == "h3"))
                 {
                     child.Remove();
                     return child;
