@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -18,9 +17,7 @@ namespace Microsoft.Docs.Build
 
         public DateTime? Expiry { get; set; }
 
-        public bool IsValid() => Id.HasValue && !IsExpired();
-
-        public bool IsExpired() => Expiry != null && Expiry < DateTime.UtcNow;
+        public bool IsValid() => Id.HasValue;
 
         public Contributor ToContributor()
         {
