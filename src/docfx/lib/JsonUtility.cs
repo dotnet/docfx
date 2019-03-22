@@ -319,7 +319,7 @@ namespace Microsoft.Docs.Build
             return false;
         }
 
-        private static Range ToRange(IJsonLineInfo lineInfo)
+        public static Range ToRange(IJsonLineInfo lineInfo)
         {
             return lineInfo.HasLineInfo() ? new Range(lineInfo.LineNumber, lineInfo.LinePosition) : default;
         }

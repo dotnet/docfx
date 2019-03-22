@@ -59,10 +59,9 @@ namespace Microsoft.Docs.Build
 
             foreach (var (key, token) in metadata)
             {
-                var lineInfo = token as IJsonLineInfo;
                 if (s_reservedNames.Contains(key))
                 {
-                    errors.Add(Errors.ReservedMetadata(new Range(lineInfo?.LineNumber ?? 0, lineInfo?.LinePosition ?? 0), key, token.Path));
+                    errors.Add(Errors.ReservedMetadata(JsonUtility.ToRange(token), key, token.Path));
                 }
             }
 

@@ -71,7 +71,7 @@ namespace Microsoft.Docs.Build
             }
 
             // apply overwrite
-            configObject = OverwriteConfig(configObject, locale ?? options.Locale, GetBranch());
+            OverwriteConfig(configObject, locale ?? options.Locale, GetBranch());
 
             var deserializeErrors = new List<Error>();
             (deserializeErrors, config) = JsonUtility.ToObjectWithSchemaValidation<Config>(configObject);
@@ -158,7 +158,7 @@ namespace Microsoft.Docs.Build
             return (errors, result);
         }
 
-        private static JObject OverwriteConfig(JObject config, string locale, string branch)
+        private static void OverwriteConfig(JObject config, string locale, string branch)
         {
             if (string.IsNullOrEmpty(locale))
             {
@@ -194,8 +194,6 @@ namespace Microsoft.Docs.Build
             {
                 config.Remove(overwriteConfigIdentifier);
             }
-
-            return config;
         }
 
         private static JObject Expand(JObject config)
