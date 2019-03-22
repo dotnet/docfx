@@ -53,7 +53,7 @@ namespace Microsoft.Docs.Build
 
             if (attribute is MarkdownAttribute)
             {
-                var (html, markup) = MarkdownUtility.ToHtml(
+                var (errors, html) = MarkdownUtility.ToHtml(
                     (string)value,
                     file,
                     context.DependencyResolver,
@@ -62,13 +62,13 @@ namespace Microsoft.Docs.Build
                     key => file.Docset.Template?.GetToken(key),
                     MarkdownPipelineType.Markdown);
 
-                context.Report.Write(file.ToString(), markup.Errors);
+                context.Report.Write(file.ToString(), errors);
                 return html;
             }
 
             if (attribute is InlineMarkdownAttribute)
             {
-                var (html, markup) = MarkdownUtility.ToHtml(
+                var (errors, html) = MarkdownUtility.ToHtml(
                     (string)value,
                     file,
                     context.DependencyResolver,
@@ -77,7 +77,7 @@ namespace Microsoft.Docs.Build
                     key => file.Docset.Template?.GetToken(key),
                     MarkdownPipelineType.InlineMarkdown);
 
-                context.Report.Write(file.ToString(), markup.Errors);
+                context.Report.Write(file.ToString(), errors);
                 return html;
             }
 
