@@ -59,7 +59,6 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
         {
             #region Prepare test data
             var resourceFile = Path.GetFileName(typeof(DocumentBuilderTest).Assembly.Location);
-            var resourceMetaFile = resourceFile + ".meta";
 
             CreateFile("conceptual.html.primary.tmpl", "{{{conceptual}}}", _templateFolder);
 
@@ -128,7 +127,6 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
                 },
                 _inputFolder);
 
-            File.WriteAllText(resourceMetaFile, @"{ abc: ""xyz"", uid: ""r1"" }");
             File.WriteAllText(MarkdownSytleConfig.MarkdownStyleFileName, @"{
 rules : [
     ""foo"",
@@ -289,18 +287,13 @@ tagRules : [
                     Assert.True(File.Exists(Path.Combine(_outputFolder, resourceFile)));
                     Assert.True(File.Exists(Path.Combine(_outputFolder, resourceFile + RawModelFileExtension)));
                     var meta = JsonUtility.Deserialize<Dictionary<string, object>>(Path.Combine(_outputFolder, resourceFile + RawModelFileExtension));
-                    Assert.Equal(3, meta.Count);
+                    Assert.Single(meta);
                     Assert.True(!meta.ContainsKey("meta"));
-                    Assert.True(meta.ContainsKey("abc"));
-                    Assert.Equal("xyz", meta["abc"]);
-                    Assert.True(meta.ContainsKey(Constants.PropertyName.Uid));
-                    Assert.Equal("r1", meta[Constants.PropertyName.Uid]);
                 }
             }
             finally
             {
                 CleanUp();
-                File.Delete(resourceMetaFile);
             }
         }
 
