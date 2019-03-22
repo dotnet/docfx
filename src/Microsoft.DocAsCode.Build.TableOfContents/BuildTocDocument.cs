@@ -150,8 +150,8 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
                 return subDirCompareResult;
             }
 
-            int parentDirCompareResult = relativePathA.ParentDirectoryCount- relativePathB.ParentDirectoryCount;
-            if (parentDirCompareResult!= 0)
+            int parentDirCompareResult = relativePathA.ParentDirectoryCount - relativePathB.ParentDirectoryCount;
+            if (parentDirCompareResult != 0)
             {
                 return parentDirCompareResult;
             }
@@ -182,7 +182,6 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
                 FilePath = tocModel.FileAndType.File;
                 OutputPath = GetOutputPath(tocModel.FileAndType);
             }
-
         }
 
         private class RelativeInfo
