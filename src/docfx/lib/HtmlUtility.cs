@@ -15,6 +15,8 @@ namespace Microsoft.Docs.Build
         private static readonly Func<HtmlAgilityPack.HtmlAttribute, int> s_getValueStartIndex =
             ReflectionUtility.CreateInstanceFieldGetter<HtmlAgilityPack.HtmlAttribute, int>("_valuestartindex");
 
+        private static readonly List<string> s_titleElementNames = new List<string> { "h1", "h2", "h3" };
+
         public static HtmlNode LoadHtml(string html)
         {
             var doc = new HtmlDocument();
@@ -177,7 +179,7 @@ namespace Microsoft.Docs.Build
                     continue;
                 }
 
-                if (child.NodeType == HtmlNodeType.Element && child.Name == "h1")
+                if (child.NodeType == HtmlNodeType.Element && s_titleElementNames.Contains(child.Name))
                 {
                     child.Remove();
                     return child;

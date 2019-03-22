@@ -221,7 +221,7 @@ namespace Microsoft.Docs.Build
         /// The fisrt tag in an article.md isn't h1 tag.
         /// </summary>
         public static Error HeadingNotFound(Document file)
-            => new Error(ErrorLevel.Warning, "heading-not-found", $"The first visible block is not a heading block with `#`", file.ToString());
+            => new Error(ErrorLevel.Info, "heading-not-found", $"The first visible block is not a heading block with `#`, `##` or `###`", file.ToString());
 
         /// <summary>
         /// Can't find a file referenced by configuration, or user writes a non-existing link.
