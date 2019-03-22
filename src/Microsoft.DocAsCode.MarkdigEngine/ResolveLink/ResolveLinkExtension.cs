@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
+    using System;
     using Markdig;
     using Markdig.Renderers;
     using Markdig.Syntax;
