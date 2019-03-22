@@ -252,20 +252,31 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(user != null);
 
-            if (user.IsExpired())
-                return;
-
-            if (user.Login != null &&
-                _usersByLogin.TryGetValue(user.Login, out var existingUser) &&
-                !existingUser.IsExpired())
+            // Ensure `_usersByXXX` only contains none expired users.
+            // User expiry is checked only once per application lifecycle.
+            if (user.Expiry != null && user.Expiry < DateTime.UtcNow)
             {
-                if (user.Id is null)
-                    user.Id = existingUser.Id;
-                if (user.Login is null)
-                    user.Login = existingUser.Login;
-                if (user.Name is null)
-                    user.Name = existingUser.Name;
-                user.Emails = user.Emails.Concat(existingUser.Emails).Distinct().ToArray();
+                return;
+            }
+
+            if (user.Login != null)
+            {
+                if (_usersByLogin.TryGetValue(user.Login, out var existingUser))
+                {
+                    MergeUser(user, existingUser);
+                }
+            }
+            else
+            {
+                // Trying to find a valid GitHub user through email
+                foreach (var email in user.Emails)
+                {
+                    if (_usersByEmail.TryGetValue(email, out var existingUser))
+                    {
+                        MergeUser(user, existingUser);
+                        break;
+                    }
+                }
             }
 
             if (user.Expiry is null)
@@ -278,6 +289,20 @@ namespace Microsoft.Docs.Build
                 _usersByEmail[email] = user;
 
             _updated = true;
+        }
+
+        private static void MergeUser(GitHubUser user, GitHubUser existingUser)
+        {
+            if (existingUser.IsValid())
+            {
+                if (user.Id is null)
+                    user.Id = existingUser.Id;
+                if (user.Login is null)
+                    user.Login = existingUser.Login;
+                if (user.Name is null)
+                    user.Name = existingUser.Name;
+                user.Emails = user.Emails.Concat(existingUser.Emails).Distinct().ToArray();
+            }
         }
 
         private void UpdateUsers(IEnumerable<GitHubUser> users)
