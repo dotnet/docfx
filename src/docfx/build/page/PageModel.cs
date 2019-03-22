@@ -39,8 +39,6 @@ namespace Microsoft.Docs.Build
 
         public DateTime UpdatedAt { get; set; }
 
-        public bool OpenToPublicContributors { get; set; }
-
         public string ContentGitUrl { get; set; }
 
         public string OriginalContentGitUrl { get; set; }

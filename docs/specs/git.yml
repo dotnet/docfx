@@ -285,7 +285,6 @@ inputs:
 outputs:
   docs/index.json: |
     {
-      "open_to_public_contributors": true,
       "content_git_url": "https://github.com/testowner/testrepo/blob/master-content-git-url/docs/index.md",
       "original_content_git_url": "https://github.com/testowner/testrepo/blob/master-content-git-url/docs/index.md",
       "original_content_git_url_template": "{repo}/blob/{branch}/docs/index.md",
@@ -307,22 +306,6 @@ outputs:
       "content_git_url": "https://github.com/contrib-owner/contrib-repo/blob/contrib-branch/docs/index.md",
       "original_content_git_url": "https://github.com/testowner/testrepo/blob/master-edit-link/docs/index.md",
       "gitcommit": "https://github.com/testowner/testrepo/blob/e662dbc7c5e582a14b863d6a6a82e495d6272f91/docs/index.md",
-    }
----
-# Don't load git commits when showContributors is set to false
-repos:
-  https://github.com/testowner/testrepo#master-no-load-commits:
-    - files:
-        docs/index.md: Alice creates this.
-inputs:
-  docfx.yml: |
-    contribution:
-      showContributors: false
-outputs:
-  docs/index.json: |
-    {
-      "gitcommit": "https://github.com/testowner/testrepo/blob/e662dbc7c5e582a14b863d6a6a82e495d6272f91/docs/index.md",
-      "!contributors": null
     }
 ---
 # Use commit's time when gitCommitsTime file not given

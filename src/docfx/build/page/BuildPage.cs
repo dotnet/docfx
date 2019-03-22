@@ -34,7 +34,6 @@ namespace Microsoft.Docs.Build
             model.SchemaType = schema.Name;
             model.Locale = file.Docset.Locale;
             model.Metadata = metadata;
-            model.OpenToPublicContributors = file.Docset.Config.Contribution.ShowEdit;
             model.TocRel = tocMap.FindTocRelativePath(file);
             model.CanonicalUrl = file.CanonicalUrl;
             model.Bilingual = file.Docset.Config.Localization.Bilingual;

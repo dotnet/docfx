@@ -4,12 +4,6 @@
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "showContributors": {
-          "type": "boolean"
-        },
-        "showEdit": {
-          "type": "boolean"
-        },
         "repository": {
           "type": "string"
         },
