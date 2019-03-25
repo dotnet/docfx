@@ -42,7 +42,10 @@ inputs:
     Link to [self](./b.md)
 outputs:
   docs/a.json: |
-    { "content": "<h2 id=\"hello-world\">Hello World</h2><p>Link to <a href=\"#hello-world\">bookmark</a></p>" }
+    { 
+      "raw_title": "<h2 id=\"hello-world\">Hello World</h2>",
+      "content": "<p>Link to <a href=\"#hello-world\">bookmark</a></p>" 
+    }
   docs/b.json: |
     { "content": "<p>Link to <a href=\"#\">self</a></p>" }
 ---

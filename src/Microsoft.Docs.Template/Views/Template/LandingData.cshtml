@@ -30,7 +30,10 @@ private void UpdateAbstract()
         @if (!string.IsNullOrEmpty(Model.Abstract?.Menu?.Title) || (Model.Abstract?.Menu?.Items != null && Model.Abstract.Menu.Items.Any()))
         {
             <div class="menu">
-                <div class="abstract-title">@Model.Abstract?.Menu?.Title</div>
+                if (!string.IsNullOrEmpty(Model.Abstract?.Menu?.Title))
+                {
+                    <div class="abstract-title">@Model.Abstract?.Menu?.Title</div>
+                }
                 <ul>
                     @foreach (var item in Model.Abstract.Menu.Items)
                     {

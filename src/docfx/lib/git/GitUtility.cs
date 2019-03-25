@@ -122,6 +122,19 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
+        /// Get a list of commits using git log
+        /// </summary>
+        public static Task<string[]> GetCommits(string path, string committish, int top = 1)
+        {
+            return Execute(path, $"--no-pager log {committish} --pretty=format:\"%H\" -{top}", (stdout, stderr) =>
+            {
+                Debug.Assert(stdout != null);
+
+                return stdout.Split('\n', StringSplitOptions.RemoveEmptyEntries);
+            });
+        }
+
+        /// <summary>
         /// List work trees for a given repo
         /// </summary>
         public static Task<List<string>> ListWorkTree(string repoPath)
@@ -281,6 +294,7 @@ namespace Microsoft.Docs.Build
             Telemetry.TrackCacheTotalCount(TelemetryName.GitRepositoryCache);
             if (git_remote_create(out var remote, repo, "origin", url) == 0)
             {
+                Log.Write($"Using existing repository '{path}' for '{url}'");
                 Telemetry.TrackCacheMissCount(TelemetryName.GitRepositoryCache);
                 git_remote_free(remote);
             }
@@ -336,7 +350,7 @@ namespace Microsoft.Docs.Build
 
         private static string GetGitCommandLineConfig(string url, Config config)
         {
-            if (config == null)
+            if (config is null)
             {
                 return "";
             }

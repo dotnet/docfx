@@ -56,7 +56,7 @@ namespace Microsoft.Docs.Build
                 case LocalizationMapping.Branch:
                     {
                         var repo = docset.Repository;
-                        if (repo == null)
+                        if (repo is null)
                         {
                             return false;
                         }
@@ -95,7 +95,7 @@ namespace Microsoft.Docs.Build
             sourceBranch = null;
             locale = null;
 
-            if (repository == null || string.IsNullOrEmpty(repository.Remote))
+            if (repository is null || string.IsNullOrEmpty(repository.Remote))
             {
                 return false;
             }
@@ -158,7 +158,7 @@ namespace Microsoft.Docs.Build
         {
             contributionBranch = null;
 
-            if (repository == null)
+            if (repository is null)
             {
                 return false;
             }

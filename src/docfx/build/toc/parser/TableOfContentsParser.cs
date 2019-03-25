@@ -38,14 +38,14 @@ namespace Microsoft.Docs.Build
 
             if (filePath.EndsWith(".yml", PathUtility.PathComparison))
             {
-                var (errors, tocToken) = content == null ? YamlUtility.Deserialize(file, context) : YamlUtility.Deserialize(content);
+                var (errors, tocToken) = content is null ? YamlUtility.Deserialize(file, context) : YamlUtility.Deserialize(content);
                 var (loadErrors, toc) = LoadTocModel(tocToken);
                 errors.AddRange(loadErrors);
                 return (errors, toc);
             }
             else if (filePath.EndsWith(".json", PathUtility.PathComparison))
             {
-                var (errors, tocToken) = content == null ? JsonUtility.Deserialize(file, context) : JsonUtility.Deserialize(content);
+                var (errors, tocToken) = content is null ? JsonUtility.Deserialize(file, context) : JsonUtility.Deserialize(content);
                 var (loadErrors, toc) = LoadTocModel(tocToken);
                 errors.AddRange(loadErrors);
                 return (errors, toc);
@@ -252,7 +252,7 @@ namespace Microsoft.Docs.Build
 
         private static TableOfContentsItem GetFirstItemWithHref(List<TableOfContentsItem> nestedTocItems)
         {
-            if (nestedTocItems == null || !nestedTocItems.Any())
+            if (nestedTocItems is null || !nestedTocItems.Any())
             {
                 return null;
             }

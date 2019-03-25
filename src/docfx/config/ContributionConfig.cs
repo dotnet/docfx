@@ -9,16 +9,6 @@ namespace Microsoft.Docs.Build
     internal sealed class ContributionConfig
     {
         /// <summary>
-        /// Determines whether to show contributors and update time based on commits.
-        /// </summary>
-        public readonly bool ShowContributors = true;
-
-        /// <summary>
-        /// Determines whether to show edit button for contribution.
-        /// </summary>
-        public readonly bool ShowEdit = true;
-
-        /// <summary>
         /// Specify the repository url for contribution:
         /// <protocol>://<hostname>[:<port>][:][/]<path>[#<branch>]
         /// Fallback to git origin if not set.

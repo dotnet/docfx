@@ -1300,3 +1300,106 @@ repos:
 outputs:
   docs/a.json: |
     content: <p>Learn c#&lrm;.</p>
+---
+# VSTS localized repo with folder mapping
+commands:
+  - build --locale zh-cn
+repos:
+  https://docascode.visualstudio.com/folder/_git/a:
+    - files:
+        docfx.yml: |
+          localization:
+            mapping: Folder
+        docs/b.md: |
+          [link in a](a.md)
+        localization/zh-cn/docs/a.md: |
+          [link in b](b.md)
+          [!include[](b.md)]
+outputs:
+  docs/a.json: |
+    { "content":"<p><a href=\"b\">link in b</a></p>\n<p><a href=\"a\">link in a</a></p>\n"}
+---
+# VSTS localized repo with branch mapping
+commands:
+  - build --locale zh-cn
+repos:
+  https://docascode.visualstudio.com/branch/_git/a#live:
+    - files:
+        docfx.yml: |
+          localization:
+            mapping: Branch
+        docs/b.md: |
+          [link in a](a.md)
+  https://docascode.visualstudio.com/branch/_git/a.loc#live.zh-cn:
+    - files:
+        docs/a.md: |
+          [link in b](b.md)
+          [!include[](b.md)]
+outputs:
+  docs/a.json: |
+    { "content":"<p><a href=\"b\">link in b</a></p>\n<p><a href=\"a\">link in a</a></p>\n"}
+---
+# VSTS localized repo with branch mapping & bilingual
+commands:
+  - build --locale zh-cn
+repos:
+  https://docascode.visualstudio.com/branch/_git/b#live:
+    - files:
+        docfx.yml: |
+          localization:
+            mapping: Branch
+            bilingual: true
+        docs/b.md: |
+          [link in a](a.md)
+  https://docascode.visualstudio.com/branch/_git/b.loc#live.zh-cn:
+    - files:
+        docs/a.md: "not used"
+  https://docascode.visualstudio.com/branch/_git/b.loc#live-sxs.zh-cn:
+    - files:
+        docs/a.md: |
+          [link in b](b.md)
+          [!include[](b.md)]
+outputs:
+  docs/a.json: |
+    { "content":"<p><a href=\"b\">link in b</a></p>\n<p><a href=\"a\">link in a</a></p>\n"}
+---
+# VSTS localized repo with repo mapping
+commands:
+  - build --locale zh-cn
+repos:
+  https://docascode.visualstudio.com/repo/_git/a#live:
+    - files:
+        docfx.yml:
+        docs/b.md: |
+          [link in a](a.md)
+  https://docascode.visualstudio.com/repo/_git/a.zh-cn#live:
+    - files:
+        docs/a.md: |
+          [link in b](b.md)
+          [!include[](b.md)]
+outputs:
+  docs/a.json: |
+    { "content":"<p><a href=\"b\">link in b</a></p>\n<p><a href=\"a\">link in a</a></p>\n"}
+---
+# VSTS localized repo with repo mapping & bilingual
+commands:
+  - build --locale zh-cn
+repos:
+  https://docascode.visualstudio.com/repo/_git/b#live:
+    - files:
+        docfx.yml: |
+          localization:
+            bilingual: true
+        docs/b.md: |
+          [link in a](a.md)
+  https://docascode.visualstudio.com/repo/_git/b.zh-cn#live:
+    - files:
+        docs/a.md: "not used"
+  https://docascode.visualstudio.com/repo/_git/b.zh-cn#live-sxs:
+    - files:
+        docs/a.md: |
+          [link in b](b.md)
+          [!include[](b.md)]
+outputs:
+  docs/a.json: |
+    { "content":"<p><a href=\"b\">link in b</a></p>\n<p><a href=\"a\">link in a</a></p>\n"}

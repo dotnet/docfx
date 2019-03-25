@@ -153,9 +153,6 @@ namespace Microsoft.Docs.Build
             if (pageModel.Bilingual)
                 rawMetadata["bilingual_type"] = "hover over";
 
-            rawMetadata["_op_openToPublicContributors"] = docset.Config.Contribution.ShowEdit;
-            rawMetadata["open_to_public_contributors"] = docset.Config.Contribution.ShowEdit;
-
             if (!string.IsNullOrEmpty(pageModel.ContentGitUrl))
                 rawMetadata["content_git_url"] = pageModel.ContentGitUrl;
             if (!string.IsNullOrEmpty(pageModel.Gitcommit))

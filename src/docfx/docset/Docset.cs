@@ -149,7 +149,7 @@ namespace Microsoft.Docs.Build
             Docset fallbackDocset = null,
             Docset localizedDocset = null)
         {
-            Debug.Assert(fallbackDocset == null || localizedDocset == null);
+            Debug.Assert(fallbackDocset is null || localizedDocset is null);
 
             _options = options;
             _report = report;
@@ -320,7 +320,7 @@ namespace Microsoft.Docs.Build
 
             foreach (var buildScope in new[] { docset.LocalizationDocset?.BuildScope, docset.BuildScope, docset.FallbackDocset?.BuildScope })
             {
-                if (buildScope == null)
+                if (buildScope is null)
                 {
                     continue;
                 }

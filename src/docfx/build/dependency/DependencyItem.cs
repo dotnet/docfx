@@ -35,7 +35,7 @@ namespace Microsoft.Docs.Build
 
         public bool Equals(DependencyItem other)
         {
-            if (other == null)
+            if (other is null)
             {
                 return false;
             }

@@ -28,7 +28,7 @@ namespace Microsoft.Docs.Build
             // These error codes are the ones we could have line info but haven't implement them yet:
             "external-bookmark-not-found", "internal-bookmark-not-found", "file-not-found", "uid-not-found", "committish-not-found",
             "invalid-toc-syntax", "yaml-header-not-object",
-            "reserved-metadata", "invalid-toc-level", "redirection-out-of-scope", "invalid-redirect-to", "moniker-config-missing",
+            "invalid-toc-level", "redirection-out-of-scope", "invalid-redirect-to", "moniker-config-missing",
             "at-uid-not-found", "empty-monikers", "circular-reference", "invalid-toc-href", "invalid-uid-moniker", "moniker-overlapping",
             "uid-conflict", "redirection-is-empty", "redirection-conflict", "invalid-locale", "unknown-field", "link-out-of-scope",
             "github-user-not-found", "invalid-redirection", "merge-conflict", "invalid-topic-href",
@@ -59,7 +59,7 @@ namespace Microsoft.Docs.Build
         public static async Task Run(string name)
         {
             var (docsetPath, spec, mockedRepos) = await CreateDocset(name);
-            if (spec == null)
+            if (spec is null)
             {
                 return;
             }
@@ -227,9 +227,10 @@ namespace Microsoft.Docs.Build
 
             var spec = YamlUtility.Deserialize<E2ESpec>(yaml, false);
 
-            var skip = spec.Environments.Any(env => string.IsNullOrEmpty(Environment.GetEnvironmentVariable(env)));
-            if (skip)
+            var emptyEnvName = spec.Environments.FirstOrDefault(env => string.IsNullOrEmpty(Environment.GetEnvironmentVariable(env)));
+            if (!string.IsNullOrEmpty(emptyEnvName))
             {
+                Log.Write($"{specName} is skipped due to empty environment value: {emptyEnvName}");
                 return default;
             }
 
@@ -387,17 +388,20 @@ namespace Microsoft.Docs.Build
                     }
                     break;
                 case ".log":
-                    var expected = content.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).OrderBy(_ => _).ToArray();
-                    var actual = File.ReadAllLines(file).OrderBy(_ => _).ToArray();
-                    if (expected.Any(str => str.Contains("*")))
+                    if (!string.IsNullOrEmpty(content))
                     {
-                        Assert.Matches("^" + Regex.Escape(string.Join("\n", expected)).Replace("\\*", ".*") + "$", string.Join("\n", actual));
+                        var expected = content.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).OrderBy(_ => _).ToArray();
+                        var actual = File.ReadAllLines(file).OrderBy(_ => _).ToArray();
+                        if (expected.Any(str => str.Contains("*")))
+                        {
+                            Assert.Matches("^" + Regex.Escape(string.Join("\n", expected)).Replace("\\*", ".*") + "$", string.Join("\n", actual));
+                        }
+                        else
+                        {
+                            Assert.Equal(string.Join("\n", expected), string.Join("\n", actual));
+                        }
+                        VerifyLogsHasLineInfo(actual);
                     }
-                    else
-                    {
-                        Assert.Equal(string.Join("\n", expected), string.Join("\n", actual));
-                    }
-                    VerifyLogsHasLineInfo(actual);
                     break;
                 case ".html":
                     if (!string.IsNullOrEmpty(content))

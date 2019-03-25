@@ -81,7 +81,7 @@ namespace Microsoft.Docs.Build
                 foreach (var branch in branches)
                 {
                     var gitVersion = dependencyLock?.GetGitLock(remote, branch);
-                    if (@implicit || string.IsNullOrEmpty(gitVersion?.Commit))
+                    if (@implicit || !string.IsNullOrEmpty(gitVersion?.Commit))
                     {
                         var (existingPath, git) = await RestoreMap.TryGetGitRestorePath(remote, branch, gitVersion?.Commit);
                         if (!string.IsNullOrEmpty(existingPath))
@@ -227,7 +227,7 @@ namespace Microsoft.Docs.Build
                 yield break;
             }
 
-            if (repo == null || string.IsNullOrEmpty(repo.Remote))
+            if (repo is null || string.IsNullOrEmpty(repo.Remote))
             {
                 yield break;
             }

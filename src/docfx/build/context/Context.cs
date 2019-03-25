@@ -84,6 +84,7 @@ namespace Microsoft.Docs.Build
         public void Dispose()
         {
             GitCommitProvider.Dispose();
+            GitHubUserCache.Dispose();
         }
     }
 }

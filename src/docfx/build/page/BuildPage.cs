@@ -34,7 +34,6 @@ namespace Microsoft.Docs.Build
             model.SchemaType = schema.Name;
             model.Locale = file.Docset.Locale;
             model.Metadata = metadata;
-            model.OpenToPublicContributors = file.Docset.Config.Contribution.ShowEdit;
             model.TocRel = tocMap.FindTocRelativePath(file);
             model.CanonicalUrl = file.CanonicalUrl;
             model.Bilingual = file.Docset.Config.Localization.Bilingual;
@@ -114,29 +113,34 @@ namespace Microsoft.Docs.Build
             errors.AddIfNotNull(error);
 
             // TODO: handle blank page
-            var (html, markup) = MarkdownUtility.ToHtml(
+            var (markupErrors, html) = MarkdownUtility.ToHtml(
                 content,
                 file,
                 context.DependencyResolver,
                 buildChild,
                 rangeString => context.MonikerProvider.GetZoneMonikers(rangeString, monikers, errors),
                 key => file.Docset.Template?.GetToken(key),
-                MarkdownPipelineType.ConceptualMarkdown);
-            errors.AddRange(markup.Errors);
+                MarkdownPipelineType.Markdown);
+            errors.AddRange(markupErrors);
 
             var htmlDom = HtmlUtility.LoadHtml(html);
-            var htmlTitleDom = HtmlUtility.LoadHtml(markup.HtmlTitle);
+            var wordCount = HtmlUtility.CountWord(htmlDom);
+            var bookmarks = HtmlUtility.GetBookmarks(htmlDom);
+            var titleDom = HtmlUtility.ExtractTitle(htmlDom);
+
+            if (titleDom == null)
+            {
+                errors.Add(Errors.HeadingNotFound(file));
+            }
 
             var model = new PageModel
             {
                 Content = HtmlPostProcess(file, htmlDom),
-                Title = yamlHeader.Value<string>("title") ?? HttpUtility.HtmlDecode(htmlTitleDom.InnerText),
-                RawTitle = markup.HtmlTitle,
-                WordCount = HtmlUtility.CountWord(htmlDom),
+                Title = yamlHeader.Value<string>("title") ?? HttpUtility.HtmlDecode(titleDom?.InnerText ?? ""),
+                RawTitle = titleDom?.OuterHtml,
+                WordCount = wordCount,
                 Monikers = monikers,
             };
-
-            var bookmarks = HtmlUtility.GetBookmarks(htmlDom).Concat(HtmlUtility.GetBookmarks(htmlTitleDom)).ToHashSet();
 
             context.BookmarkValidator.AddBookmarks(file, bookmarks);
 
@@ -166,7 +170,7 @@ namespace Microsoft.Docs.Build
             //       when everything is moved to SDP, we can refactor the mime check to Document.TryCreate
             var obj = token as JObject;
             var schema = file.Schema ?? Schema.GetSchema(obj?.Value<string>("documentType"));
-            if (schema == null)
+            if (schema is null)
             {
                 throw Errors.SchemaNotFound(file.Mime).ToException();
             }
@@ -208,7 +212,7 @@ namespace Microsoft.Docs.Build
                            .RemoveRerunCodepenIframes();
             }
 
-            if (string.IsNullOrEmpty(html.OuterHtml))
+            if (string.IsNullOrWhiteSpace(html.OuterHtml))
             {
                 return "<div></div>";
             }
@@ -225,7 +229,7 @@ namespace Microsoft.Docs.Build
 
             if (file.Docset.Legacy)
             {
-                if (isPage)
+                if (isPage && file.Docset.Template != null)
                 {
                     return TemplateTransform.Transform(model, file);
                 }

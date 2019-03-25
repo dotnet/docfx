@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -37,7 +38,7 @@ namespace Microsoft.Docs.Build
 
             var gitVersion = dependencyLock.GetGitLock(remote, branch);
 
-            if (gitVersion == null)
+            if (gitVersion is null)
             {
                 throw Errors.NeedRestore($"{remote}#{branch}").ToException();
             }
@@ -47,7 +48,7 @@ namespace Microsoft.Docs.Build
                 throw Errors.NeedRestore($"{remote}#{branch}").ToException();
             }
 
-            if (string.IsNullOrEmpty(gitInfo.path) || gitInfo.git == null)
+            if (string.IsNullOrEmpty(gitInfo.path) || gitInfo.git is null)
             {
                 throw Errors.NeedRestore($"{remote}#{branch}").ToException();
             }
@@ -148,7 +149,7 @@ namespace Microsoft.Docs.Build
             Debug.Assert(dependencyLock != null);
 
             RestoreMap gitPool = null;
-            var root = acquired == null;
+            var root = acquired is null;
             acquired = acquired ?? new Dictionary<(string remote, string branch, string commit), (string path, DependencyGit git)>();
 
             var successed = true;
@@ -193,17 +194,28 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static async Task<(string path, DependencyGit git)> TryGetGitRestorePath(string remote, string branch, string commit)
         {
-            var (path, slot) = await DependencySlotPool<DependencyGit>.TryGetSlot(remote, gits =>
-            {
-                var filteredGits = gits.Where(i => i.Branch == branch);
-                if (!string.IsNullOrEmpty(commit))
-                {
-                    // found commit matched slot
-                    filteredGits = filteredGits.Where(i => i.Commit == commit);
-                }
+            var restoreDir = AppData.GetGitDir(remote);
 
-                return filteredGits.ToList();
-            });
+            var (path, slot) = await DependencySlotPool<DependencyGit>.TryGetSlot(
+                remote,
+                async gits =>
+                {
+                    var filteredGits = gits.Where(i => i.Branch == branch);
+
+                    if (!string.IsNullOrEmpty(commit))
+                    {
+                        // found commit matched slot
+                        filteredGits = filteredGits.Where(i => i.Commit == commit);
+                    }
+
+                    var commits = Array.Empty<string>();
+                    if (filteredGits.Count() > 1)
+                    {
+                        commits = await GitUtility.GetCommits(restoreDir, branch, 1000/*top 1000 should be enough for comparing*/);
+                    }
+
+                    return filteredGits.OrderBy(g => Array.IndexOf(commits, g.Commit)).ThenByDescending(g => g.LastAccessDate).ToList();
+                });
 
             if (!string.IsNullOrEmpty(path))
                 path = Path.Combine(AppData.GetGitDir(remote), path);

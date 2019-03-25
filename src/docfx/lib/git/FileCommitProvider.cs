@@ -308,7 +308,7 @@ namespace Microsoft.Docs.Build
             for (var i = 0; i < pathSegments.Length; i++)
             {
                 var files = _trees.GetOrAdd(blob.a, _ => LoadTree(blob));
-                if (files == null || !files.TryGetValue(pathSegments[i], out blob))
+                if (files is null || !files.TryGetValue(pathSegments[i], out blob))
                 {
                     return default;
                 }
@@ -349,12 +349,13 @@ namespace Microsoft.Docs.Build
             LoadCommitCache(string cacheFilePath)
         {
             Telemetry.TrackCacheTotalCount(TelemetryName.GitCommitCache);
-            if (string.IsNullOrEmpty(cacheFilePath) || !File.Exists(cacheFilePath))
+            if (!File.Exists(cacheFilePath))
             {
+                Telemetry.TrackCacheMissCount(TelemetryName.GitCommitCache);
                 return new ConcurrentDictionary<string, Dictionary<(long commit, long blob), (long[] commitHistory, int lruOrder)>>();
             }
 
-            Telemetry.TrackCacheMissCount(TelemetryName.GitCommitCache);
+            Log.Write($"Using git commit history cache file: '{cacheFilePath}'");
             return await ProcessUtility.ReadFile(cacheFilePath, stream =>
             {
                 var result = new ConcurrentDictionary<string, Dictionary<(long commit, long blob), (long[] commitHistory, int lruOrder)>>();
