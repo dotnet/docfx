@@ -43,9 +43,11 @@ namespace Microsoft.Docs.Build
 
         private static object TransformContent(Context context, DataTypeAttribute attribute, object value, Document file, Action<Document> buildChild)
         {
+            var dependencyResolver = file.FilePath.EndsWith("index.yml") ? context.LandingPageDependencyResolver : context.DependencyResolver;
+
             if (attribute is HrefAttribute)
             {
-                var (error, link, _) = context.DependencyResolver.ResolveLink((string)value, file, file, buildChild, file.FilePath.EndsWith("index.yml"));
+                var (error, link, _) = dependencyResolver.ResolveLink((string)value, file, file, buildChild);
 
                 context.Report.Write(file.ToString(), error);
                 return link;
@@ -56,7 +58,7 @@ namespace Microsoft.Docs.Build
                 var (errors, html) = MarkdownUtility.ToHtml(
                     (string)value,
                     file,
-                    context.DependencyResolver,
+                    dependencyResolver,
                     buildChild,
                     null,
                     key => file.Docset.Template?.GetToken(key),
@@ -71,7 +73,7 @@ namespace Microsoft.Docs.Build
                 var (errors, html) = MarkdownUtility.ToHtml(
                     (string)value,
                     file,
-                    context.DependencyResolver,
+                    dependencyResolver,
                     buildChild,
                     null,
                     key => file.Docset.Template?.GetToken(key),
@@ -85,7 +87,7 @@ namespace Microsoft.Docs.Build
             {
                 var html = HtmlUtility.TransformLinks((string)value, href =>
                 {
-                    var (error, link, _) = context.DependencyResolver.ResolveLink(href, file, file, buildChild, file.FilePath.EndsWith("index.yml"));
+                    var (error, link, _) = dependencyResolver.ResolveLink(href, file, file, buildChild);
 
                     context.Report.Write(file.ToString(), error);
                     return link;
@@ -96,7 +98,7 @@ namespace Microsoft.Docs.Build
             if (attribute is XrefAttribute)
             {
                 // TODO: how to fill xref resolving data besides href
-                var (error, link, _, _) = context.DependencyResolver.ResolveXref((string)value, file, file);
+                var (error, link, _, _) = dependencyResolver.ResolveXref((string)value, file, file);
                 context.Report.Write(file.ToString(), error);
                 return link;
             }
