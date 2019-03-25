@@ -164,7 +164,7 @@ namespace Microsoft.Docs.Build
             return result.ToString();
         }
 
-        public static HtmlNode ExtractAndRemoveTitle(HtmlNode node)
+        public static HtmlNode RemoveTitle(HtmlNode node)
         {
             var titleNode = node.ChildNodes.FirstOrDefault(c => c.NodeType == HtmlNodeType.Element && (c.Name == "h1" || c.Name == "h2" || c.Name == "h3"));
 
