@@ -77,13 +77,14 @@ inputs:
     documentType: LandingData
     title: REST API Documentation
     abstract:
+      description: <a href="~/b">"b"</a>
       menu:
         items:
         - href: ~/b
   b.md: b
 outputs:
   docs/index.json: |
-    { "content": {"title":"REST API Documentation","abstract":{"menu":{"items":[{"href":"../b"}]}},"documentType":"LandingData"} }
+    { "content": {"title":"REST API Documentation","abstract":{"menu":{"items":[{"href":"../b"}]},"description": "<p><a href=\"../b\">&quot;b&quot;</a></p>\n",},"documentType":"LandingData"} }
   b.json:
 ---
 # Produce deterministic result when redirection and file share the same publish url

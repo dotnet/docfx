@@ -213,7 +213,7 @@ namespace Microsoft.Docs.Build
                            .RemoveRerunCodepenIframes();
             }
 
-            if (string.IsNullOrEmpty(html.OuterHtml))
+            if (string.IsNullOrWhiteSpace(html.OuterHtml))
             {
                 return "<div></div>";
             }
