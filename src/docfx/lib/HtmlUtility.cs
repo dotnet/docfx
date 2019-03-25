@@ -170,19 +170,19 @@ namespace Microsoft.Docs.Build
 
             if (titleNode != null)
             {
-                var previousSibling = titleNode.PreviousSibling;
-                while (previousSibling != null)
+                var previousVisibleNode = titleNode.PreviousSibling;
+                while (previousVisibleNode != null)
                 {
-                    if (previousSibling.NodeType == HtmlNodeType.Comment ||
-                        (previousSibling.NodeType == HtmlNodeType.Text && string.IsNullOrWhiteSpace(previousSibling.OuterHtml)))
+                    if (previousVisibleNode.NodeType == HtmlNodeType.Comment ||
+                        (previousVisibleNode.NodeType == HtmlNodeType.Text && string.IsNullOrWhiteSpace(previousVisibleNode.OuterHtml)))
                     {
-                        previousSibling = previousSibling.PreviousSibling;
+                        previousVisibleNode = previousVisibleNode.PreviousSibling;
                     }
 
                     break;
                 }
 
-                if (previousSibling == null)
+                if (previousVisibleNode == null)
                 {
                     titleNode.Remove();
                 }
