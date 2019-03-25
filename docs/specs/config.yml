@@ -72,6 +72,19 @@ outputs:
   docs/b.json: |
     { "metadata": { "key1": "value", "key2": 2 } }
 ---
+# Global metadata schema violation
+inputs:
+  docfx.yml: |
+    globalMetadata:
+      title: 
+        - 1
+        - 2
+  docs/a.md:
+  docs/b.md:
+outputs:
+  build.log: |
+    ["error","violate-schema","Expected type String, please input String or type compatible with String.","docfx.yml","globalMetadata.title",3,5]
+---
 # File metadata of object form
 inputs:
   docfx.yml: |
@@ -413,3 +426,15 @@ inputs:
       a.md: https://docs.microsoft.com/docfx/a
       b.md: a
 outputs:
+---
+# file metadata schema violation
+inputs:
+  docfx.yml: |  
+    fileMetadata:
+      title:
+        docs/**: 
+          - 1
+          - 2
+outputs:
+  build.log: |
+    ["error","violate-schema","Expected type String, please input string or type compatible with String.","docfx.yml","fileMetadata.title['docs/**']",4,7]

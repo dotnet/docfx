@@ -28,7 +28,7 @@ namespace Microsoft.Docs.Build
             // These error codes are the ones we could have line info but haven't implement them yet:
             "external-bookmark-not-found", "internal-bookmark-not-found", "file-not-found", "uid-not-found", "committish-not-found",
             "invalid-toc-syntax", "yaml-header-not-object",
-            "reserved-metadata", "invalid-toc-level", "redirection-out-of-scope", "invalid-redirect-to", "moniker-config-missing",
+            "invalid-toc-level", "redirection-out-of-scope", "invalid-redirect-to", "moniker-config-missing",
             "at-uid-not-found", "empty-monikers", "circular-reference", "invalid-toc-href", "invalid-uid-moniker", "moniker-overlapping",
             "uid-conflict", "redirection-is-empty", "redirection-conflict", "invalid-locale", "unknown-field", "link-out-of-scope",
             "github-user-not-found", "invalid-redirection", "merge-conflict", "invalid-topic-href",

@@ -71,15 +71,11 @@ namespace Microsoft.Docs.Build
             }
 
             // apply overwrite
-            configObject = OverwriteConfig(configObject, locale ?? options.Locale, GetBranch());
+            OverwriteConfig(configObject, locale ?? options.Locale, GetBranch());
 
             var deserializeErrors = new List<Error>();
             (deserializeErrors, config) = JsonUtility.ToObjectWithSchemaValidation<Config>(configObject);
             errors.AddRange(deserializeErrors);
-
-            // validate metadata
-            errors.AddRange(MetadataValidator.Validate(config.GlobalMetadata, "global metadata"));
-            errors.AddRange(MetadataValidator.Validate(config.FileMetadata, "file metadata"));
 
             config.ConfigFileName = !configExists
                 ? config.ConfigFileName
@@ -100,16 +96,28 @@ namespace Microsoft.Docs.Build
         private static (List<Error>, JObject) LoadConfigObjectContent(string fileName, string content)
         {
             var errors = new List<Error>();
-            JObject config = null;
+            JToken config = null;
             if (fileName.EndsWith(".yml", StringComparison.OrdinalIgnoreCase))
             {
-                (errors, config) = YamlUtility.DeserializeWithSchemaValidation<JObject>(content);
+                (errors, config) = YamlUtility.Deserialize(content);
             }
             else if (fileName.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
             {
                 (errors, config) = JsonUtility.DeserializeWithSchemaValidation<JObject>(content);
             }
-            return (errors, Expand(config ?? new JObject()));
+
+            if (config is JObject)
+            {
+                if (config["globalMetadata"] != null)
+                {
+                    errors.AddRange(MetadataValidator.ValidateGlobalMetadata(config["globalMetadata"] as JObject));
+                }
+                else if (config["fileMetadata"] != null)
+                {
+                    errors.AddRange(MetadataValidator.ValidateFileMetadata(config["fileMetadata"] as JObject));
+                }
+            }
+            return (errors, Expand(config as JObject ?? new JObject()));
         }
 
         private static (List<Error>, JObject) ApplyGlobalConfig(JObject config)
@@ -150,7 +158,7 @@ namespace Microsoft.Docs.Build
             return (errors, result);
         }
 
-        private static JObject OverwriteConfig(JObject config, string locale, string branch)
+        private static void OverwriteConfig(JObject config, string locale, string branch)
         {
             if (string.IsNullOrEmpty(locale))
             {
@@ -165,9 +173,7 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            var result = new JObject();
             var overwriteConfigIdentifiers = new List<string>();
-            JsonUtility.Merge(result, config);
             foreach (var (key, value) in config)
             {
                 if (OverwriteConfigIdentifier.TryMatch(key, out var identifier))
@@ -176,7 +182,7 @@ namespace Microsoft.Docs.Build
                         (identifier.Locales.Count == 0 || (!string.IsNullOrEmpty(locale) && identifier.Locales.Contains(locale))) &&
                         value is JObject overwriteConfig)
                     {
-                        JsonUtility.Merge(result, Expand(overwriteConfig));
+                        JsonUtility.Merge(config, Expand(overwriteConfig));
                     }
 
                     overwriteConfigIdentifiers.Add(key);
@@ -186,10 +192,8 @@ namespace Microsoft.Docs.Build
             // clean up overwrite configuration
             foreach (var overwriteConfigIdentifier in overwriteConfigIdentifiers)
             {
-                result.Remove(overwriteConfigIdentifier);
+                config.Remove(overwriteConfigIdentifier);
             }
-
-            return result;
         }
 
         private static JObject Expand(JObject config)
