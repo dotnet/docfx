@@ -299,7 +299,9 @@ namespace Microsoft.Docs.Build
                     user.Id = existingUser.Id;
                 if (user.Login is null)
                     user.Login = existingUser.Login;
-                if (user.Name is null || preferExistingName)
+                if (user.Name is null)
+                    user.Name = existingUser.Name;
+                if (preferExistingName && existingUser.Name != null)
                     user.Name = existingUser.Name;
                 user.Emails = user.Emails.Concat(existingUser.Emails).Distinct().ToArray();
             }
