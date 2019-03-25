@@ -196,6 +196,19 @@ namespace Microsoft.Docs.Build
                 1,
                 1
             };
+            yield return new object[]
+            {
+                "Prefer existing email name",
+                (Func<GitHubUserCache, Task>)(async (cache) =>
+                    {
+                        await cache.GetByCommit("bob1@contoso.com", "owner", "name", "4");
+                        await cache.GetByCommit("bob2@contoso.com", "owner", "name", "5");
+                    }),
+                "[]",
+                "[{'id':2,'login':'bob','name':'bob1','emails':['bob1@contoso.com','bob2@contoso.com']}]",
+                0,
+                2
+            };
         }
 
         private void AssertUsersEqual(GitHubUser[] expectedUsers, GitHubUser[] actualUsers)
@@ -249,6 +262,10 @@ namespace Microsoft.Docs.Build
                         return Task.FromResult<(Error, IEnumerable<GitHubUser>)>((Errors.GitHubApiFailed("API call failed for some reasons", new Exception()), null));
                     case "owner/name/3":
                         return Task.FromResult<(Error, IEnumerable<GitHubUser>)>((null, new[] { new GitHubUser { Emails = new[] { "me@contoso.com" } } }));
+                    case "owner/name/4":
+                        return Task.FromResult<(Error, IEnumerable<GitHubUser>)>((null, new[] { new GitHubUser { Id = 2, Login = "bob", Name = "bob1", Emails = new[] { "bob1@contoso.com" } } }));
+                    case "owner/name/5":
+                        return Task.FromResult<(Error, IEnumerable<GitHubUser>)>((null, new[] { new GitHubUser { Id = 2, Login = "bob", Name = "bob2", Emails = new[] { "bob2@contoso.com" } } }));
                     default:
                         return Task.FromResult<(Error, IEnumerable<GitHubUser>)>(default);
                 }

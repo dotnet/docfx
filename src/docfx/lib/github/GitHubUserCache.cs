@@ -155,7 +155,7 @@ namespace Microsoft.Docs.Build
                 // only mark the email as invalid when the user is not found
                 if (users != null)
                 {
-                    UpdateUsers(users);
+                    UpdateUsers(users, preferExistingName: true);
                 }
 
                 return (error, _usersByEmail.TryGetValue(authorEmail, out var user) && user.IsValid() ? user : null);
@@ -248,7 +248,7 @@ namespace Microsoft.Docs.Build
         /// 2. User missing with the specified login: { "login": "..." }
         /// 3. User missing with the specified email: { "emails": [ "..." ] }
         /// </summary>
-        private void UpdateUser(GitHubUser user)
+        private void UpdateUser(GitHubUser user, bool preferExistingName = false)
         {
             Debug.Assert(user != null);
 
@@ -263,7 +263,7 @@ namespace Microsoft.Docs.Build
             {
                 if (_usersByLogin.TryGetValue(user.Login, out var existingUser))
                 {
-                    MergeUser(user, existingUser);
+                    MergeUser(user, existingUser, preferExistingName);
                 }
             }
             else
@@ -273,7 +273,7 @@ namespace Microsoft.Docs.Build
                 {
                     if (_usersByEmail.TryGetValue(email, out var existingUser))
                     {
-                        MergeUser(user, existingUser);
+                        MergeUser(user, existingUser, preferExistingName);
                         break;
                     }
                 }
@@ -291,7 +291,7 @@ namespace Microsoft.Docs.Build
             _updated = true;
         }
 
-        private static void MergeUser(GitHubUser user, GitHubUser existingUser)
+        private static void MergeUser(GitHubUser user, GitHubUser existingUser, bool preferExistingName)
         {
             if (existingUser.IsValid())
             {
@@ -301,15 +301,17 @@ namespace Microsoft.Docs.Build
                     user.Login = existingUser.Login;
                 if (user.Name is null)
                     user.Name = existingUser.Name;
+                if (preferExistingName && existingUser.Name != null)
+                    user.Name = existingUser.Name;
                 user.Emails = user.Emails.Concat(existingUser.Emails).Distinct().ToArray();
             }
         }
 
-        private void UpdateUsers(IEnumerable<GitHubUser> users)
+        private void UpdateUsers(IEnumerable<GitHubUser> users, bool preferExistingName = false)
         {
             foreach (var user in users)
             {
-                UpdateUser(user);
+                UpdateUser(user, preferExistingName);
             }
         }
 
