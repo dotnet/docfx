@@ -21,8 +21,8 @@ outputs:
   docs/b.json: |
     { "content": "<p>Link to <a href=\"a?a=b&amp;c=d#e\">a</a></p>" }
   build.log: |
-    ["warning","external-bookmark-not-found","Cannot find bookmark '#e' in 'docs/a.md'","docs/b.md"]
-    ["warning","external-bookmark-not-found","Cannot find bookmark '#a?b=c' in 'docs/b.md'","docs/a.md"]
+    ["warning","external-bookmark-not-found","Cannot find bookmark '#e' in 'docs/a.md'","docs/b.md","",1,9]
+    ["warning","external-bookmark-not-found","Cannot find bookmark '#a?b=c' in 'docs/b.md'","docs/a.md","",1,9]
 ---
 # Links to URLs are preserved as is
 inputs:
@@ -206,7 +206,7 @@ outputs:
     {"content":"<p><a href=\"#self\"></a></p>"}
   build.log: |
     ["warning","link-out-of-scope","File 'c.md' referenced by link '../c.md' will not be built because it is not included in docfx.yml","docs/a.md","",1,9]
-    ["suggestion","internal-bookmark-not-found","Cannot find bookmark '#self' in 'c.md'","c.md"]
+    ["suggestion","internal-bookmark-not-found","Cannot find bookmark '#self' in 'c.md'","c.md","",1,1]
 ---
 # Don't show warning if link to a resource outside build scope
 inputs:

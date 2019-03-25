@@ -128,8 +128,9 @@ namespace Microsoft.Docs.Build
                 },
                 (file, href, resultRelativeTo) =>
                 {
+                    // TODO: get line info of TOC href for bookmark validation
                     // add to referenced document list
-                    var (error, link, buildItem) = context.DependencyResolver.ResolveLink(href, file, resultRelativeTo, null);
+                    var (error, link, buildItem) = context.DependencyResolver.ResolveLink(href, file, resultRelativeTo, null, new Range(0, 0));
                     errors.AddIfNotNull(error);
 
                     if (buildItem != null)

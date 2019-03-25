@@ -153,7 +153,7 @@ namespace Microsoft.Docs.Build
         private static string GetLink(string path, object relativeTo, object resultRelativeTo, MarkdownObject origin)
         {
             var status = t_status.Value.Peek();
-            var (error, link, _) = status.DependencyResolver.ResolveLink(path, (Document)relativeTo, (Document)resultRelativeTo, status.BuildChild);
+            var (error, link, _) = status.DependencyResolver.ResolveLink(path, (Document)relativeTo, (Document)resultRelativeTo, status.BuildChild, origin.ToRange());
             status.Errors.AddIfNotNull(error?.WithRange(origin.ToRange()));
             return link;
         }

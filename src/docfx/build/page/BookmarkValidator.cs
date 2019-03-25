@@ -10,9 +10,9 @@ namespace Microsoft.Docs.Build
     internal class BookmarkValidator
     {
         private readonly ConcurrentDictionary<Document, HashSet<string>> _bookmarksByFile = new ConcurrentDictionary<Document, HashSet<string>>();
-        private readonly ConcurrentBag<(Document file, Document dependency, string bookmark)> _references = new ConcurrentBag<(Document file, Document dependency, string bookmark)>();
+        private readonly ConcurrentBag<(Document file, Document dependency, string bookmark, Range range)> _references = new ConcurrentBag<(Document file, Document dependency, string bookmark, Range range)>();
 
-        public void AddBookmarkReference(Document file, Document reference, string fragment)
+        public void AddBookmarkReference(Document file, Document reference, string fragment, Range range)
         {
             Debug.Assert(string.IsNullOrEmpty(fragment) || fragment[0] == '#');
 
@@ -24,7 +24,7 @@ namespace Microsoft.Docs.Build
                 var bookmark = fragment.Substring(1).Trim();
                 if (!string.IsNullOrEmpty(bookmark))
                 {
-                    _references.Add((file, reference, bookmark));
+                    _references.Add((file, reference, bookmark, range));
                 }
             }
         }
@@ -38,14 +38,14 @@ namespace Microsoft.Docs.Build
         {
             var result = new List<(Error error, Document file)>();
 
-            foreach (var (file, reference, bookmark) in _references)
+            foreach (var (file, reference, bookmark, range) in _references)
             {
                 if (_bookmarksByFile.TryGetValue(reference, out var bookmarks) && bookmarks.Contains(bookmark))
                 {
                     continue;
                 }
-                result.Add(file == reference ? (Errors.InternalBookmarkNotFound(file, bookmark, bookmarks), file) :
-                                               (Errors.ExternalBookmarkNotFound(file, reference, bookmark, bookmarks), file));
+                result.Add(file == reference ? (Errors.InternalBookmarkNotFound(file, bookmark, bookmarks).WithRange(range), file) :
+                                               (Errors.ExternalBookmarkNotFound(file, reference, bookmark, bookmarks).WithRange(range), file));
             }
 
             return result;
