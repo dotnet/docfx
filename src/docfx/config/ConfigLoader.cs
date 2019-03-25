@@ -174,6 +174,7 @@ namespace Microsoft.Docs.Build
             }
 
             var overwriteConfigIdentifiers = new List<string>();
+            var expands = new List<JObject>();
             foreach (var (key, value) in config)
             {
                 if (OverwriteConfigIdentifier.TryMatch(key, out var identifier))
@@ -182,11 +183,16 @@ namespace Microsoft.Docs.Build
                         (identifier.Locales.Count == 0 || (!string.IsNullOrEmpty(locale) && identifier.Locales.Contains(locale))) &&
                         value is JObject overwriteConfig)
                     {
-                        JsonUtility.Merge(config, Expand(overwriteConfig));
+                        expands.Add(Expand(overwriteConfig));
                     }
 
                     overwriteConfigIdentifiers.Add(key);
                 }
+            }
+
+            foreach (var expand in expands)
+            {
+                JsonUtility.Merge(config, expand);
             }
 
             // clean up overwrite configuration
