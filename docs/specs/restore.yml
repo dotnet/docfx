@@ -191,7 +191,7 @@ outputs:
   docs/a.json:
 ---
 # restore with dependency lock
-# TODO: always get latest version for dependency without lock
+# [NOTE]: get latest version of dependency without lock
 repos:
   https://docs.com/lock1/a#master:
     - files:
@@ -204,18 +204,15 @@ repos:
           [!include[](~/dep1/docs/dep1.md)]
           [!include[](~/dep2/docs/dep2.md)]
         .lock.json: |
-          {  
-             "git":{  
-                "https://docs.com/lock1/b":{  
+          {
+             "git":{
+                "https://docs.com/lock1/b":{
                    "commit":"6a7b7f142f2de52a0b488309f4257d462956f59f",
-                   "git":{  
-                      "https://docs.com/lock1/c#master":{  
+                   "git":{
+                      "https://docs.com/lock1/c#master":{
                          "commit":"8720d784fb99abcbdfa922025b8bcc060f0f622a"
                       }
                    }
-                },
-                "https://docs.com/lock1/c#master": {
-                  "commit": "c5969737496ff42854a019f982882d5fac486a56"
                 }
              }
           }
