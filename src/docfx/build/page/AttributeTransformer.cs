@@ -45,7 +45,7 @@ namespace Microsoft.Docs.Build
         {
             if (attribute is HrefAttribute)
             {
-                var (error, link, _) = context.DependencyResolver.ResolveLink((string)value, file, file, buildChild, file.FilePath.EndsWith("index.yml"));
+                var (error, link, _) = GetDependencyResolver().ResolveLink((string)value, file, file, buildChild);
 
                 context.Report.Write(file.ToString(), error);
                 return link;
@@ -56,7 +56,7 @@ namespace Microsoft.Docs.Build
                 var (errors, html) = MarkdownUtility.ToHtml(
                     (string)value,
                     file,
-                    context.DependencyResolver,
+                    GetDependencyResolver(),
                     buildChild,
                     null,
                     key => file.Docset.Template?.GetToken(key),
@@ -71,7 +71,7 @@ namespace Microsoft.Docs.Build
                 var (errors, html) = MarkdownUtility.ToHtml(
                     (string)value,
                     file,
-                    context.DependencyResolver,
+                    GetDependencyResolver(),
                     buildChild,
                     null,
                     key => file.Docset.Template?.GetToken(key),
@@ -85,7 +85,7 @@ namespace Microsoft.Docs.Build
             {
                 var html = HtmlUtility.TransformLinks((string)value, href =>
                 {
-                    var (error, link, _) = context.DependencyResolver.ResolveLink(href, file, file, buildChild, file.FilePath.EndsWith("index.yml"));
+                    var (error, link, _) = GetDependencyResolver().ResolveLink(href, file, file, buildChild);
 
                     context.Report.Write(file.ToString(), error);
                     return link;
@@ -102,6 +102,9 @@ namespace Microsoft.Docs.Build
             }
 
             return value;
+
+            DependencyResolver GetDependencyResolver()
+                => file.FilePath.EndsWith("index.yml") ? context.LandingPageDependencyResolver : context.DependencyResolver;
         }
     }
 }
