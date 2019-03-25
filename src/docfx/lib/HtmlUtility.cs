@@ -166,29 +166,25 @@ namespace Microsoft.Docs.Build
 
         public static HtmlNode RemoveTitle(HtmlNode node)
         {
-            var titleNode = node.ChildNodes.FirstOrDefault(c => c.NodeType == HtmlNodeType.Element && (c.Name == "h1" || c.Name == "h2" || c.Name == "h3"));
-
-            if (titleNode != null)
+            var previousVisableNode = false;
+            foreach (var child in node.ChildNodes)
             {
-                var previousVisibleNode = titleNode.PreviousSibling;
-                while (previousVisibleNode != null)
+                if (child.NodeType != HtmlNodeType.Comment &&
+                    !(child.NodeType == HtmlNodeType.Text && string.IsNullOrWhiteSpace(child.OuterHtml)))
                 {
-                    if (previousVisibleNode.NodeType == HtmlNodeType.Comment ||
-                        (previousVisibleNode.NodeType == HtmlNodeType.Text && string.IsNullOrWhiteSpace(previousVisibleNode.OuterHtml)))
+                    if (child.NodeType == HtmlNodeType.Element && (child.Name == "h1" || child.Name == "h2" || child.Name == "h3"))
                     {
-                        previousVisibleNode = previousVisibleNode.PreviousSibling;
+                        if (!previousVisableNode)
+                            child.Remove();
+
+                        return child;
                     }
 
-                    break;
-                }
-
-                if (previousVisibleNode == null)
-                {
-                    titleNode.Remove();
+                    previousVisableNode = true;
                 }
             }
 
-            return titleNode;
+            return null;
         }
 
         private static void AddLinkType(this HtmlNode html, string tag, string attribute, string locale)
