@@ -350,6 +350,7 @@ inputs:
     files: a.md
     "locales: [zh-cn,de-de]":
       files: b.md
+      name: test
     localization:
       defaultLocale: "zh-cn"
   a.md:
