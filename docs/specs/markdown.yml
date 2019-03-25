@@ -95,16 +95,12 @@ inputs:
     welcome to docfx
     # h1 title
 outputs:
-  h1ToRemove.json: |
+  h1toremove.json: |
     {
-      "title": "h1 title",
-      "raw_title": "<h1 id=\"h1-title\">h1 title</h1>",
-      "content":"\n"
+      "content":"<div></div>"
     }
-  h1ToKeep.json: |
+  h1tokeep.json: |
     {
-      "title": "h1 title",
-      "raw_title": "<h1 id=\"h1-title\">h1 title</h1>",
       "content":"<p>welcome to docfx</p>\n<h1 id=\"h1-title\">h1 title</h1>\n"
     }
 ---
@@ -139,8 +135,6 @@ inputs:
     # Heading
 outputs:
   docs/a.json:
-  build.log: |
-    ["info","heading-not-found","The first visible block is not a heading block with `#`, `##` or `###`","docs/a.md"]
 ---
 # Include block before h1
 inputs:
@@ -154,7 +148,6 @@ outputs:
   docs/a.json: |
     { "content": "[!include[]()]<h1 id=\"heading\">Heading</h1>\n" }
   build.log: |
-    ["info","heading-not-found","The first visible block is not a heading block with `#`, `##` or `###`","docs/a.md"]
     ["warning","include-not-found","Cannot resolve '' relative to 'docs/a.md'.","docs/a.md","",1,1]
 ---
 # Comments between yaml header and H1
@@ -189,7 +182,7 @@ inputs:
     hello
 outputs:
   docs/a.json: |
-    { "!raw_title": null }
+    { "raw_title": "<h1 id=\"title-from-h1\">Title from H1</h1>" }
 ---
 # include another file
 inputs:
@@ -241,10 +234,8 @@ outputs:
   docs/a.json: |
     {
       "content": "<p>Hello</p><h1 id=\"heading-from-c\">Heading from C</h1>",
-      "!raw_title": null
+      "raw_title": "<h1 id=\"heading-from-c\">Heading from C</h1>",
     }
-  build.log: |
-    ["info","heading-not-found","The first visible block is not a heading block with `#`, `##` or `###`","docs/a.md"]
 ---
 # Include in h1
 inputs:
