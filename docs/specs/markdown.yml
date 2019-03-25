@@ -46,7 +46,7 @@ outputs:
       "metadata": { "title": "title from yaml header" }
     }
 ---
-# resolve raw_title from h1 to h3
+# extract raw_title from h1 to h3
 inputs:
   docfx.yml: |
     rules:
@@ -83,6 +83,30 @@ outputs:
     }
   build.log: |
     ["info","heading-not-found","The first visible block is not a heading block with `#`, `##` or `###`","h4.md"]
+---
+# remove title from html
+inputs:
+  docfx.yml: |
+    rules:
+      heading-not-found: info
+  h1ToRemove.md: |
+    # h1 title
+  h1ToKeep.md: |
+    welcome to docfx
+    # h1 title
+outputs:
+  h1ToRemove.json: |
+    {
+      "title": "h1 title",
+      "raw_title": "<h1 id=\"h1-title\">h1 title</h1>",
+      "content":"\n"
+    }
+  h1ToKeep.json: |
+    {
+      "title": "h1 title",
+      "raw_title": "<h1 id=\"h1-title\">h1 title</h1>",
+      "content":"<p>welcome to docfx</p>\n<h1 id=\"h1-title\">h1 title</h1>\n"
+    }
 ---
 # No H1
 inputs:

@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Text;
 using System.Web;
 using HtmlAgilityPack;
@@ -163,30 +164,31 @@ namespace Microsoft.Docs.Build
             return result.ToString();
         }
 
-        public static HtmlNode ExtractTitle(HtmlNode node)
+        public static HtmlNode ExtractAndRemoveTitle(HtmlNode node)
         {
-            foreach (var child in node.ChildNodes)
+            var titleNode = node.ChildNodes.FirstOrDefault(c => c.NodeType == HtmlNodeType.Element && (c.Name == "h1" || c.Name == "h2" || c.Name == "h3"));
+
+            if (titleNode != null)
             {
-                if (child.NodeType == HtmlNodeType.Comment)
+                var previousSibling = titleNode.PreviousSibling;
+                while (previousSibling != null)
                 {
-                    continue;
+                    if (previousSibling.NodeType == HtmlNodeType.Comment ||
+                        (previousSibling.NodeType == HtmlNodeType.Text && string.IsNullOrWhiteSpace(previousSibling.OuterHtml)))
+                    {
+                        previousSibling = previousSibling.PreviousSibling;
+                    }
+
+                    break;
                 }
 
-                if (child.NodeType == HtmlNodeType.Text && string.IsNullOrWhiteSpace(child.OuterHtml))
+                if (previousSibling == null)
                 {
-                    continue;
+                    titleNode.Remove();
                 }
-
-                if (child.NodeType == HtmlNodeType.Element && (child.Name == "h1" || child.Name == "h2" || child.Name == "h3"))
-                {
-                    child.Remove();
-                    return child;
-                }
-
-                return null;
             }
 
-            return null;
+            return titleNode;
         }
 
         private static void AddLinkType(this HtmlNode html, string tag, string attribute, string locale)
