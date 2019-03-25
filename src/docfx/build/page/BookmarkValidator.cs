@@ -12,7 +12,7 @@ namespace Microsoft.Docs.Build
         private readonly ConcurrentDictionary<Document, HashSet<string>> _bookmarksByFile = new ConcurrentDictionary<Document, HashSet<string>>();
         private readonly ConcurrentBag<(Document file, Document dependency, string bookmark, Range range)> _references = new ConcurrentBag<(Document file, Document dependency, string bookmark, Range range)>();
 
-        public void AddBookmarkReference(Document file, Document reference, string fragment, Range range)
+        public void AddBookmarkReference(Document file, Document reference, string fragment, in Range range)
         {
             Debug.Assert(string.IsNullOrEmpty(fragment) || fragment[0] == '#');
 

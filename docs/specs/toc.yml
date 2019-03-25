@@ -1070,26 +1070,6 @@ outputs:
   build.log: |
     ["error","output-path-conflict","Two or more files output to the same path 'docs/toc.json': 'docs/TOC.md', 'docs/TOC.yml'"]
 ---
-# validate bookmarks in toc
-inputs:
-  docfx.yml:
-  docs/a.md: |
-    # title 1
-  docs/TOC.md: |
-    # [link to title 1](a.md#title-1)
-    # [link to title 2](a.md#title-2)
-outputs:
-  docs/a.json:
-  docs/toc.json: |
-    {
-      "items": [
-        { "name": "link to title 1", "href": "a#title-1", "!monikers":null },
-        { "name": "link to title 2", "href": "a#title-2", "!monikers":null }
-      ]
-    }
-  build.log: |
-    ["warning","external-bookmark-not-found","Cannot find bookmark '#title-2' in 'docs/a.md', did you mean '#title-1'?","docs/TOC.md"]
----
 # reference uid within link
 inputs:
   docfx.yml:
