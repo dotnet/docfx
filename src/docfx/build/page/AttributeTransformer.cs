@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -44,10 +45,11 @@ namespace Microsoft.Docs.Build
         private static object TransformContent(Context context, DataTypeAttribute attribute, object value, Document file, Action<Document> buildChild)
         {
             var dependencyResolver = file.FilePath.EndsWith("index.yml") ? context.LandingPageDependencyResolver : context.DependencyResolver;
+            var range = JsonUtility.ToRange(value as IJsonLineInfo);
 
             if (attribute is HrefAttribute)
             {
-                var (error, link, _) = dependencyResolver.ResolveLink((string)value, file, file, buildChild);
+                var (error, link, _) = dependencyResolver.ResolveLink((string)value, file, file, buildChild, range);
 
                 context.Report.Write(file.ToString(), error);
                 return link;
@@ -87,7 +89,7 @@ namespace Microsoft.Docs.Build
             {
                 var html = HtmlUtility.TransformLinks((string)value, href =>
                 {
-                    var (error, link, _) = dependencyResolver.ResolveLink(href, file, file, buildChild);
+                    var (error, link, _) = dependencyResolver.ResolveLink(href, file, file, buildChild, range);
 
                     context.Report.Write(file.ToString(), error);
                     return link;

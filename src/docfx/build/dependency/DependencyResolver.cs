@@ -38,7 +38,7 @@ namespace Microsoft.Docs.Build
 
         // forLandingPage should not be used, it is a hack to handle some specific logic for landing page based on the user input for now
         // which needs to be removed once the user input is correct
-        public (Error error, string link, Document file) ResolveLink(string path, Document relativeTo, Document resultRelativeTo, Action<Document> buildChild)
+        public (Error error, string link, Document file) ResolveLink(string path, Document relativeTo, Document resultRelativeTo, Action<Document> buildChild, in Range range)
         {
             var (error, link, fragment, file) = TryResolveHref(relativeTo, path, resultRelativeTo);
 
@@ -48,7 +48,7 @@ namespace Microsoft.Docs.Build
             }
 
             _dependencyMapBuilder.AddDependencyItem(relativeTo, file, HrefUtility.FragmentToDependencyType(fragment));
-            _bookmarkValidator.AddBookmarkReference(relativeTo, file ?? relativeTo, fragment);
+            _bookmarkValidator.AddBookmarkReference(relativeTo, file ?? relativeTo, fragment, range);
 
             return (error, link, file);
         }

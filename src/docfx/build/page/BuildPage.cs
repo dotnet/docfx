@@ -26,7 +26,8 @@ namespace Microsoft.Docs.Build
 
             if (!string.IsNullOrEmpty(metadata.BreadcrumbPath))
             {
-                var (breadcrumbError, breadcrumbPath, _) = context.DependencyResolver.ResolveLink(metadata.BreadcrumbPath, file, file, buildChild);
+                // there is no bookmark validation for breadcrumb path, so no need of range here
+                var (breadcrumbError, breadcrumbPath, _) = context.DependencyResolver.ResolveLink(metadata.BreadcrumbPath, file, file, buildChild, default);
                 errors.AddIfNotNull(breadcrumbError);
                 metadata.BreadcrumbPath = breadcrumbPath;
             }
