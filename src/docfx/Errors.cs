@@ -318,14 +318,14 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Defined refrence with by #bookmark fragment between articles, which doesn't exist.
         /// </summary>
-        public static Error ExternalBookmarkNotFound(Document relativeTo, Document reference, string bookmark, IEnumerable<string> candidateBookmarks)
-            => new Error(ErrorLevel.Warning, "external-bookmark-not-found", $"Cannot find bookmark '#{bookmark}' in '{reference}'{(FindBestMatch(bookmark, candidateBookmarks, out string matchedBookmark) ? $", did you mean '#{matchedBookmark}'?" : null)}", relativeTo.ToString());
+        public static Error ExternalBookmarkNotFound(Document relativeTo, Document reference, string bookmark, IEnumerable<string> candidateBookmarks, Range range)
+            => new Error(ErrorLevel.Warning, "external-bookmark-not-found", $"Cannot find bookmark '#{bookmark}' in '{reference}'{(FindBestMatch(bookmark, candidateBookmarks, out string matchedBookmark) ? $", did you mean '#{matchedBookmark}'?" : null)}", relativeTo.ToString(), range);
 
         /// <summary>
         /// Defined refrence with by #bookmark fragment within articles, which doesn't exist.
         /// </summary>
-        public static Error InternalBookmarkNotFound(Document file, string bookmark, IEnumerable<string> candidateBookmarks)
-            => new Error(ErrorLevel.Suggestion, "internal-bookmark-not-found", $"Cannot find bookmark '#{bookmark}' in '{file}'{(FindBestMatch(bookmark, candidateBookmarks, out string matchedBookmark) ? $", did you mean '#{matchedBookmark}'?" : null)}", file.ToString());
+        public static Error InternalBookmarkNotFound(Document file, string bookmark, IEnumerable<string> candidateBookmarks, Range range)
+            => new Error(ErrorLevel.Suggestion, "internal-bookmark-not-found", $"Cannot find bookmark '#{bookmark}' in '{file}'{(FindBestMatch(bookmark, candidateBookmarks, out string matchedBookmark) ? $", did you mean '#{matchedBookmark}'?" : null)}", file.ToString(), range);
 
         /// <summary>
         /// Used null value in yaml header or schema documents.

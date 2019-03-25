@@ -44,8 +44,8 @@ namespace Microsoft.Docs.Build
                 {
                     continue;
                 }
-                result.Add(file == reference ? (Errors.InternalBookmarkNotFound(file, bookmark, bookmarks).WithRange(range), file) :
-                                               (Errors.ExternalBookmarkNotFound(file, reference, bookmark, bookmarks).WithRange(range), file));
+                result.Add(file == reference ? (Errors.InternalBookmarkNotFound(file, bookmark, bookmarks, range), file) :
+                                               (Errors.ExternalBookmarkNotFound(file, reference, bookmark, bookmarks, range), file));
             }
 
             return result;
