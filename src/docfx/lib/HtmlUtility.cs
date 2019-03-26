@@ -165,20 +165,20 @@ namespace Microsoft.Docs.Build
 
         public static HtmlNode RemoveTitle(HtmlNode node)
         {
-            var previousVisableNode = false;
+            var existVisibleNode = false;
             foreach (var child in node.ChildNodes)
             {
                 if (!IsInvisibleNode(child))
                 {
                     if (child.NodeType == HtmlNodeType.Element && (child.Name == "h1" || child.Name == "h2" || child.Name == "h3"))
                     {
-                        if (!previousVisableNode)
+                        if (!existVisibleNode)
                             child.Remove();
 
                         return child;
                     }
 
-                    previousVisableNode = true;
+                    existVisibleNode = true;
                 }
             }
 
