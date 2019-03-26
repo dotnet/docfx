@@ -163,30 +163,32 @@ namespace Microsoft.Docs.Build
             return result.ToString();
         }
 
-        public static HtmlNode ExtractTitle(HtmlNode node)
+        public static HtmlNode RemoveTitle(HtmlNode node)
         {
+            var existVisibleNode = false;
             foreach (var child in node.ChildNodes)
             {
-                if (child.NodeType == HtmlNodeType.Comment)
+                if (!IsInvisibleNode(child))
                 {
-                    continue;
-                }
+                    if (child.NodeType == HtmlNodeType.Element && (child.Name == "h1" || child.Name == "h2" || child.Name == "h3"))
+                    {
+                        if (!existVisibleNode)
+                            child.Remove();
 
-                if (child.NodeType == HtmlNodeType.Text && string.IsNullOrWhiteSpace(child.OuterHtml))
-                {
-                    continue;
-                }
+                        return child;
+                    }
 
-                if (child.NodeType == HtmlNodeType.Element && (child.Name == "h1" || child.Name == "h2" || child.Name == "h3"))
-                {
-                    child.Remove();
-                    return child;
+                    existVisibleNode = true;
                 }
-
-                return null;
             }
 
             return null;
+
+            bool IsInvisibleNode(HtmlNode n)
+            {
+                return n.NodeType == HtmlNodeType.Comment ||
+                    (n.NodeType == HtmlNodeType.Text && string.IsNullOrWhiteSpace(n.OuterHtml));
+            }
         }
 
         private static void AddLinkType(this HtmlNode html, string tag, string attribute, string locale)
