@@ -307,7 +307,7 @@ inputs:
       b.md: /absolute/path2
 outputs:
   build.log: |
-    ["warning","redirection-out-of-scope","Redirection file 'b.md' will not be built because it is not included in docfx.yml"]
+    ["info","redirection-out-of-scope","Redirection file 'b.md' will not be built because it is not included in docfx.yml"]
 ---
 # Multiple errors
 inputs:
