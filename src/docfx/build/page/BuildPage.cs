@@ -137,7 +137,7 @@ namespace Microsoft.Docs.Build
             var model = new PageModel
             {
                 Content = HtmlPostProcess(file, htmlDom),
-                Title = yamlHeader.Value<string>("title") ?? HttpUtility.HtmlDecode(titleDom?.InnerText ?? ""),
+                Title = yamlHeader.Value<string>("title") ?? (titleDom?.InnerText == null ? null : HttpUtility.HtmlDecode(titleDom.InnerText)),
                 RawTitle = titleDom?.OuterHtml,
                 WordCount = wordCount,
                 Monikers = monikers,
