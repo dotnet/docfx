@@ -97,6 +97,12 @@ namespace Microsoft.DocAsCode.Build.Engine
                      TargetLineNumber = node.Line
                  }).ToList();
             var anchors = GetNodeAttribute(document, "id").Concat(GetNodeAttribute(document, "name"));
+            if (manifestItem.Metadata.ContainsKey("rawTitle"))
+            {               
+                var rawTitle = new HtmlDocument();
+                rawTitle.LoadHtml(manifestItem.Metadata["rawTitle"].ToString());
+                anchors = anchors.Concat(GetNodeAttribute(rawTitle, "id"));
+            }
             _registeredBookmarks[outputFile] = new HashSet<string>(anchors);
         }
 
