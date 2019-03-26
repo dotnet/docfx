@@ -66,7 +66,7 @@ namespace Microsoft.Docs.Build
             var displayProperty = queries?["displayProperty"];
 
             // need to url decode uid from input content
-            var (error, resolvedHref, display, referencedFile) = _xrefMap.Value.Resolve(HttpUtility.UrlDecode(uid), href, displayProperty, relativeTo, rootFile, moniker);
+            var (error, resolvedHref, display, referencedFile) = _xrefMap.Value.Resolve(Uri.UnescapeDataString(uid), href, displayProperty, relativeTo, rootFile, moniker);
 
             if (referencedFile != null)
             {
@@ -125,7 +125,7 @@ namespace Microsoft.Docs.Build
                 return (uidError, uidHref, null, referencedFile);
             }
 
-            var decodedHref = HttpUtility.UrlDecode(href);
+            var decodedHref = Uri.UnescapeDataString(href);
             var (error, file, redirectTo, query, fragment, hrefType, _) = TryResolveFile(relativeTo, decodedHref);
 
             // Redirection
