@@ -49,6 +49,20 @@ outputs:
   docs/b.json: |
     { "content": "<p>Link to <a href=\"#\">self</a></p>" }
 ---
+# Links to self bookmarks in the included file
+inputs:
+  docfx.yml: |
+    files: docs/a.md
+  docs/a.md: |
+    # heading
+    [!INCLUDE[](includes/b.md)]
+  docs/includes/b.md: |
+    ## test
+    Link to [self](#test)
+outputs:
+  docs/a.json: |
+    { "content": "<h2 id=\"test\">test</h2>\n<p>Link to <a href=\"#test\">self</a></p>" }
+---
 # Support both / and \ as directory seperator
 inputs:
   docfx.yml:
