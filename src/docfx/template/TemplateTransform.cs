@@ -13,12 +13,12 @@ namespace Microsoft.Docs.Build
 {
     internal static class TemplateTransform
     {
-        private static readonly HashSet<string> s_metadataBlacklist = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        private static readonly HashSet<string> s_metadataBlacklist = new HashSet<string>()
         {
             "fileRelativePath",
         };
 
-        private static readonly HashSet<string> s_htmlMetaTagsBlacklist = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        private static readonly HashSet<string> s_htmlMetaTagsBlacklist = new HashSet<string>()
         {
             "absolutePath",
             "original_content_git_url_template",
@@ -55,7 +55,7 @@ namespace Microsoft.Docs.Build
             "is_hidden",
         };
 
-        private static Dictionary<string, string> s_displayNameMapping = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        private static Dictionary<string, string> s_displayNameMapping = new Dictionary<string, string>()
         {
             { "product", "Product" },
             { "topic_type", "TopicType" },
