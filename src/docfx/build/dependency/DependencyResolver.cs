@@ -48,7 +48,7 @@ namespace Microsoft.Docs.Build
             }
 
             _dependencyMapBuilder.AddDependencyItem(relativeTo, file, HrefUtility.FragmentToDependencyType(fragment));
-            _bookmarkValidator.AddBookmarkReference(relativeTo, hrefType == HrefType.SelfBookmark ? resultRelativeTo : file ?? relativeTo, fragment, range);
+            _bookmarkValidator.AddBookmarkReference(relativeTo, hrefType == HrefType.SelfBookmark ? resultRelativeTo : file ?? relativeTo, fragment, hrefType == HrefType.SelfBookmark, range);
 
             return (error, link, file);
         }
