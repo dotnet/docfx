@@ -293,17 +293,13 @@ inputs:
       excludedContributors:
         - alice
   user_profile.json: |
-      { "users": [
-          {"name": "Alice", "login": "alice", "id": 1, "emails": ["alice@contoso.com"]}
-        ]
-      }
+      { "users": [{"name": "Alice", "login": "alice", "id": 1, "emails": ["alice@contoso.com"]}] }
 outputs:
   docs/index.json: |
     {
       "!author": null,
       "!contributors": null
     }
----
 ---
 # Show content_git_url, original_content_git_url and gitcommit
 repos:
