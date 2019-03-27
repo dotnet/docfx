@@ -127,7 +127,7 @@ namespace Microsoft.Docs.Build
             var htmlDom = HtmlUtility.LoadHtml(html);
             var wordCount = HtmlUtility.CountWord(htmlDom);
             var bookmarks = HtmlUtility.GetBookmarks(htmlDom);
-            var (titleDom, titleRemoved) = HtmlUtility.RemoveTitle(htmlDom);
+            var (titleDom, titleRemoved) = HtmlUtility.ExtractTitle(htmlDom);
 
             if (titleDom == null)
             {

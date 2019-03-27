@@ -163,7 +163,10 @@ namespace Microsoft.Docs.Build
             return result.ToString();
         }
 
-        public static (HtmlNode headerNode, bool removed) RemoveTitle(HtmlNode node)
+        /// <summary>
+        /// Get title node and remove title node if all previous nodes are invisible
+        /// </summary>
+        public static (HtmlNode headerNode, bool removed) ExtractTitle(HtmlNode node)
         {
             var existVisibleNode = false;
             foreach (var child in node.ChildNodes)
