@@ -92,6 +92,11 @@ namespace Microsoft.Docs.Build
         {
             var (error, file, redirect, _, _, _, pathToDocset) = TryResolveFile(relativeTo, href);
 
+            if (redirect != null)
+            {
+                return default;
+            }
+
             if (file is null && !string.IsNullOrEmpty(pathToDocset))
             {
                 var (errorFromHistory, content, fileFromHistory) = TryResolveContentFromHistory(_gitCommitProvider, relativeTo.Docset, pathToDocset);
@@ -105,11 +110,7 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            if (file is null || (file.ContentType != ContentType.Page && file.ContentType != ContentType.TableOfContents))
-            {
-                return default;
-            }
-            return (error, file.ReadText(), file);
+            return file != null ? (error, file.ReadText(), file) : default;
         }
 
         private (Error error, string href, string fragment, Document file) TryResolveHref(Document relativeTo, string href, Document resultRelativeTo, bool forLandingPage)
