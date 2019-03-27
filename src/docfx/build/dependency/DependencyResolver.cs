@@ -159,13 +159,13 @@ namespace Microsoft.Docs.Build
                     }
                     var selfUrl = Document.PathToRelativeUrl(
                         Path.GetFileName(file.SitePath), file.ContentType, file.Schema, file.Docset.Config.Output.Json);
-                    return (error, selfUrl + query + fragment, fragment, hrefType, null);
+                    return (error, selfUrl + query + fragment, fragment, HrefType.SelfBookmark, null);
                 }
                 if (string.IsNullOrEmpty(fragment))
                 {
                     fragment = "#";
                 }
-                return (error, query + fragment, fragment, hrefType, null);
+                return (error, query + fragment, fragment, HrefType.SelfBookmark, null);
             }
 
             // Link to dependent repo, don't build the file, leave href as is
