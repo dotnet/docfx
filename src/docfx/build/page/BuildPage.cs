@@ -127,9 +127,8 @@ namespace Microsoft.Docs.Build
             var htmlDom = HtmlUtility.LoadHtml(html);
             var wordCount = HtmlUtility.CountWord(htmlDom);
             var bookmarks = HtmlUtility.GetBookmarks(htmlDom);
-            var (titleDom, titleRemoved) = HtmlUtility.ExtractTitle(htmlDom);
 
-            if (titleDom == null)
+            if (!HtmlUtility.TryExtractTitle(htmlDom, out var title, out var rawTitle))
             {
                 errors.Add(Errors.HeadingNotFound(file));
             }
@@ -137,8 +136,8 @@ namespace Microsoft.Docs.Build
             var model = new PageModel
             {
                 Content = HtmlPostProcess(file, htmlDom),
-                Title = yamlHeader.Value<string>("title") ?? (titleDom?.InnerText == null ? null : HttpUtility.HtmlDecode(titleDom.InnerText)),
-                RawTitle = titleRemoved ? titleDom?.OuterHtml : string.Empty,
+                Title = yamlHeader.Value<string>("title") ?? title,
+                RawTitle = rawTitle,
                 WordCount = wordCount,
                 Monikers = monikers,
             };
