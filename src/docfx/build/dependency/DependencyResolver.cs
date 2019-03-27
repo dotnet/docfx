@@ -96,7 +96,7 @@ namespace Microsoft.Docs.Build
 
             if (redirect != null)
             {
-                return (Errors.IncludeIsRedirection(relativeTo, href), null, null);
+                return default;
             }
 
             if (file is null && !string.IsNullOrEmpty(pathToDocset))
@@ -220,7 +220,7 @@ namespace Microsoft.Docs.Build
                         //
                         // TODO: In case of file rename, we should warn if the content is not inside build scope.
                         //       But we should not warn or do anything with absolute URLs.
-                        var (error, redirectFile) = Document.TryCreate(relativeTo.Docset, pathToDocset);
+                        var (error, redirectFile) = Document.TryCreate(relativeTo.Docset, pathToDocset, redirectTo);
                         return (error, redirectFile, redirectTo, query, fragment, HrefType.RelativePath, pathToDocset);
                     }
 
