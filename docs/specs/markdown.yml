@@ -78,7 +78,7 @@ outputs:
   h4.json: |
     {
       "!title": null,
-      "!raw_title": null,
+      "raw_title": "",
       "content": "<h4 id=\"h4-title\">h4 title</h4>",
     }
   build.log: |
@@ -97,11 +97,13 @@ inputs:
 outputs:
   h1toremove.json: |
     {
-      "content":"<div></div>"
+      "content":"<div></div>",
+      "raw_title": "<h1 id=\"h1-title\">h1 title</h1>"
     }
   h1tokeep.json: |
     {
-      "content":"<p>welcome to docfx</p>\n<h1 id=\"h1-title\">h1 title</h1>\n"
+      "content":"<p>welcome to docfx</p>\n<h1 id=\"h1-title\">h1 title</h1>\n",
+      "raw_title": ""
     }
 ---
 # No H1
@@ -182,7 +184,7 @@ inputs:
     hello
 outputs:
   docs/a.json: |
-    { "raw_title": "<h1 id=\"title-from-h1\">Title from H1</h1>" }
+    { "raw_title": "", "title": "Title from yaml header" }
 ---
 # include another file
 inputs:
@@ -234,7 +236,8 @@ outputs:
   docs/a.json: |
     {
       "content": "<p>Hello</p><h1 id=\"heading-from-c\">Heading from C</h1>",
-      "raw_title": "<h1 id=\"heading-from-c\">Heading from C</h1>",
+      "raw_title": "",
+      "title": "Heading from C"
     }
 ---
 # Include in h1

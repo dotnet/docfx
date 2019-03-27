@@ -163,26 +163,37 @@ namespace Microsoft.Docs.Build
             return result.ToString();
         }
 
-        public static HtmlNode RemoveTitle(HtmlNode node)
+        /// <summary>
+        /// Get title and raw title, remove title node if all previous nodes are invisible
+        /// </summary>
+        public static bool TryExtractTitle(HtmlNode node, out string title, out string rawTitle)
         {
             var existVisibleNode = false;
+
+            title = null;
+            rawTitle = string.Empty;
             foreach (var child in node.ChildNodes)
             {
                 if (!IsInvisibleNode(child))
                 {
                     if (child.NodeType == HtmlNodeType.Element && (child.Name == "h1" || child.Name == "h2" || child.Name == "h3"))
                     {
-                        if (!existVisibleNode)
-                            child.Remove();
+                        title = child.InnerText == null ? null : HttpUtility.HtmlDecode(child.InnerText);
 
-                        return child;
+                        if (!existVisibleNode)
+                        {
+                            rawTitle = child.OuterHtml;
+                            child.Remove();
+                        }
+
+                        return true;
                     }
 
                     existVisibleNode = true;
                 }
             }
 
-            return null;
+            return false;
 
             bool IsInvisibleNode(HtmlNode n)
             {
