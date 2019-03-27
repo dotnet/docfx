@@ -49,6 +49,26 @@ outputs:
   docs/b.json: |
     { "content": "<p>Link to <a href=\"#\">self</a></p>" }
 ---
+# Links to self bookmarks in the included file
+inputs:
+  docfx.yml: |
+    files: docs/a.md
+  docs/a.md: |
+    # heading
+    [!INCLUDE[](includes/b.md)]
+  docs/includes/b.md: |
+    ## test
+    Link to [valiad self](#test)
+    Link to [valiad parent](../a.md/#heading)
+    Link to [invalid self](#heading1)
+    Link to [invalid parent](../a.md/#heading2)
+outputs:
+  docs/a.json: |
+    { "content": "<h2 id=\"test\">test</h2>\n<p>Link to <a href=\"#test\">valiad self</a>\nLink to <a href=\"a#heading\">valiad parent</a>\nLink to <a href=\"#heading1\">invalid self</a>\nLink to <a href=\"a#heading2\">invalid parent</a></p>" }
+  build.log: |
+    ["suggestion","internal-bookmark-not-found","Cannot find bookmark '#heading2' in 'docs/includes/b.md', did you mean '#heading'?","docs/includes/b.md","",5,9]
+    ["suggestion","internal-bookmark-not-found","Cannot find bookmark '#heading1' in 'docs/includes/b.md', did you mean '#heading'?","docs/includes/b.md","",4,9]
+---
 # Support both / and \ as directory seperator
 inputs:
   docfx.yml:
