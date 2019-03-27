@@ -268,12 +268,6 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
-        /// Inclusion is a <see cref="Config.Redirections"/> entry like [!INCLUDE[](redirect.md)]
-        /// </summary>
-        public static Error IncludeIsRedirection(Document relativeTo, string path)
-            => new Error(ErrorLevel.Error, "include-is-redirection", $"Referenced inclusion {path} relative to '{relativeTo}' shouldn't belong to redirections", relativeTo.ToString());
-
-        /// <summary>
         /// More than one files are resolved to the same output path.
         /// Examples:
         ///   - in <see cref="Config.Redirections"/> section, defined an entry key that's also a file in build scope

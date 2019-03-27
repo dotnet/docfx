@@ -92,11 +92,6 @@ namespace Microsoft.Docs.Build
         {
             var (error, file, redirect, _, _, _, pathToDocset) = TryResolveFile(relativeTo, href);
 
-            if (redirect != null)
-            {
-                return (Errors.IncludeIsRedirection(relativeTo, href), null, null);
-            }
-
             if (file is null && !string.IsNullOrEmpty(pathToDocset))
             {
                 var (errorFromHistory, content, fileFromHistory) = TryResolveContentFromHistory(_gitCommitProvider, relativeTo.Docset, pathToDocset);
@@ -110,7 +105,11 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            return file != null ? (error, file.ReadText(), file) : default;
+            if (file is null || (file.ContentType != ContentType.Page && file.ContentType != ContentType.TableOfContents))
+            {
+                return default;
+            }
+            return (error, file.ReadText(), file);
         }
 
         private (Error error, string href, string fragment, Document file) TryResolveHref(Document relativeTo, string href, Document resultRelativeTo, bool forLandingPage)
@@ -218,7 +217,7 @@ namespace Microsoft.Docs.Build
                         //
                         // TODO: In case of file rename, we should warn if the content is not inside build scope.
                         //       But we should not warn or do anything with absolute URLs.
-                        var (error, redirectFile) = Document.TryCreate(relativeTo.Docset, pathToDocset);
+                        var (error, redirectFile) = Document.TryCreate(relativeTo.Docset, pathToDocset, redirectTo);
                         return (error, redirectFile, redirectTo, query, fragment, HrefType.RelativePath, pathToDocset);
                     }
 
