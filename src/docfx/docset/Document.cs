@@ -365,6 +365,7 @@ namespace Microsoft.Docs.Build
 
             switch (contentType)
             {
+                case ContentType.Redirection:
                 case ContentType.Page:
                     if (schema is null || schema.Attribute is PageSchemaAttribute)
                     {
