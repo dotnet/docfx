@@ -127,7 +127,7 @@ namespace Microsoft.Docs.Build
             var htmlDom = HtmlUtility.LoadHtml(html);
             var wordCount = HtmlUtility.CountWord(htmlDom);
             var bookmarks = HtmlUtility.GetBookmarks(htmlDom);
-            var titleDom = HtmlUtility.RemoveTitle(htmlDom);
+            var (titleDom, titleRemoved) = HtmlUtility.RemoveTitle(htmlDom);
 
             if (titleDom == null)
             {
@@ -138,7 +138,7 @@ namespace Microsoft.Docs.Build
             {
                 Content = HtmlPostProcess(file, htmlDom),
                 Title = yamlHeader.Value<string>("title") ?? (titleDom?.InnerText == null ? null : HttpUtility.HtmlDecode(titleDom.InnerText)),
-                RawTitle = titleDom?.OuterHtml,
+                RawTitle = titleRemoved ? titleDom?.OuterHtml : string.Empty,
                 WordCount = wordCount,
                 Monikers = monikers,
             };

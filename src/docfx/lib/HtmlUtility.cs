@@ -163,7 +163,7 @@ namespace Microsoft.Docs.Build
             return result.ToString();
         }
 
-        public static HtmlNode RemoveTitle(HtmlNode node)
+        public static (HtmlNode headerNode, bool removed) RemoveTitle(HtmlNode node)
         {
             var existVisibleNode = false;
             foreach (var child in node.ChildNodes)
@@ -175,14 +175,14 @@ namespace Microsoft.Docs.Build
                         if (!existVisibleNode)
                             child.Remove();
 
-                        return child;
+                        return (child, !existVisibleNode);
                     }
 
                     existVisibleNode = true;
                 }
             }
 
-            return null;
+            return default;
 
             bool IsInvisibleNode(HtmlNode n)
             {
