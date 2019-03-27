@@ -4,6 +4,7 @@
 namespace Microsoft.DocAsCode.Build.Engine.Tests
 {
     using System;
+    using System.Collections.Generic;
     using System.IO;
     using System.Linq;
 
@@ -48,7 +49,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
                     new ManifestItem { SourceRelativePath = "e.md", OutputFiles = { { ".html", new OutputFileInfo { RelativePath = "e.html" } } } },
                     new ManifestItem { SourceRelativePath = "f.md", OutputFiles = { { ".html", new OutputFileInfo { RelativePath = "Dir/f.html" } } } },
                     new ManifestItem { SourceRelativePath = "g.md", OutputFiles = { { ".html", new OutputFileInfo { RelativePath = "g.html" } } } },
-                    new ManifestItem { SourceRelativePath = "h.md", OutputFiles = { { ".html", new OutputFileInfo { RelativePath = "h.html" } } }, Metadata =  new System.Collections.Generic.Dictionary<string, object> { { "rawTitle", "<h1 id=\"welcome\">Welcome</h1>" } } },
+                    new ManifestItem { SourceRelativePath = "h.md", OutputFiles = { { ".html", new OutputFileInfo { RelativePath = "h.html" } } }, Metadata =  new Dictionary<string, object> { { "rawTitle", "<h1 id=\"welcome\">Welcome</h1>" } } },
                 }
             };
 
@@ -59,7 +60,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             File.WriteAllText(Path.Combine(_outputFolder, "e.html"), @"<a href='illegal_path_%3Fillegal character.html#b1'>Test illegal link path with wildchar ?</a>");
             File.WriteAllText(Path.Combine(_outputFolder, "Dir/f.html"), @"<a href='#b1'>Test local link</a>");
             File.WriteAllText(Path.Combine(_outputFolder, "g.html"), @"<a href='#b3' data-raw-source='[local link in token file](#b3)' sourceFile='token.md' sourceStartLineNumber='1'>local link in token file</a>");
-            File.WriteAllText(Path.Combine(_outputFolder, "h.html"), @"<p><a href=""#welcome"">Test if raw title can be loaded as bookmard from metadata of manifest item</a></p>");
+            File.WriteAllText(Path.Combine(_outputFolder, "h.html"), @"<p><a href=""#welcome"">Test if raw title can be loaded as bookmark from metadata of manifest item</a></p>");
 
             Logger.RegisterListener(_listener);
             try
