@@ -9,9 +9,11 @@ repos:
         [a&amp;b.md](a&amp;b.md)
         [a&amp;amp;b.md](a&amp;amp;b.md)
         [http://foo%20b&auml;](http://foo%20b&auml;)
+        [a++.png](a++.png)
       'a b.md':
       a&b.md:
       a&amp;b.md:
+      a++.png:
 outputs:
   links.json: |
     content: |
@@ -21,6 +23,7 @@ outputs:
         <a href="a&amp;b">a&amp;b.md</a>
         <a href="a&amp;amp;b">a&amp;amp;b.md</a>
         <a href="http://foo%20b%C3%A4">http://foo%20bä</a>
+        <a href="a++.png">a++.png</a>
       </p>
   .publish.json: |
     files:
@@ -30,26 +33,29 @@ outputs:
       path: a&amp;b.json
     - url: /a&b
       path: a&b.json
+    - url: /a++.png
+      path: a++.png
     - url: /links
       path: links.json
   'a b.json': |
     canonical_url: https://docs.com/en-us/a b
-    gitcommit: https://github.com/escape/markdown/blob/45a321cc85de6b430b5e1cb1c6f7399d34550939/a b.md
+    gitcommit: https://github.com/escape/markdown/blob/26230e1514a57bfe4231dfe1e0a7b00307b5f6a9/a b.md
     content_git_url: https://github.com/escape/markdown/blob/master/a b.md
     original_content_git_url: https://github.com/escape/markdown/blob/master/a b.md
     original_content_git_url_template: '{repo}/blob/{branch}/a b.md'
   a&b.json: |
     canonical_url: https://docs.com/en-us/a&b
-    gitcommit: https://github.com/escape/markdown/blob/45a321cc85de6b430b5e1cb1c6f7399d34550939/a&b.md
+    gitcommit: https://github.com/escape/markdown/blob/26230e1514a57bfe4231dfe1e0a7b00307b5f6a9/a&b.md
     content_git_url: https://github.com/escape/markdown/blob/master/a&b.md
     original_content_git_url: https://github.com/escape/markdown/blob/master/a&b.md
     original_content_git_url_template: '{repo}/blob/{branch}/a&b.md'
   a&amp;b.json: |
     canonical_url: https://docs.com/en-us/a&amp;b
-    gitcommit: https://github.com/escape/markdown/blob/45a321cc85de6b430b5e1cb1c6f7399d34550939/a&amp;b.md
+    gitcommit: https://github.com/escape/markdown/blob/26230e1514a57bfe4231dfe1e0a7b00307b5f6a9/a&amp;b.md
     content_git_url: https://github.com/escape/markdown/blob/master/a&amp;b.md
     original_content_git_url: https://github.com/escape/markdown/blob/master/a&amp;b.md
     original_content_git_url_template: '{repo}/blob/{branch}/a&amp;b.md'
+  a++.png:
 ---
 # Handle encoding for html links
 inputs:
@@ -60,9 +66,11 @@ inputs:
     <a href='a&amp;b.md'>a&amp;b.md</a>
     <a href='a&amp;amp;b.md'>a&amp;amp;b.md</a>
     <a href='http://foo%20b&auml;'>http://foo%20b&auml;</a>
+    <a href='a++.png'>a++.png</a>
   'a b.md':
   a&b.md:
   a&amp;b.md:
+  a++.png:
 outputs:
   html-links.json: |
     content: |
@@ -72,10 +80,12 @@ outputs:
         <a href="a&amp;b">a&amp;b.md</a>
         <a href="a&amp;amp;b">a&amp;amp;b.md</a>
         <a href="http://foo%20b&#228;">http://foo%20bä</a>
+        <a href="a++.png">a++.png</a>
       </p>
   'a b.json':
   a&b.json:
   a&amp;b.json:
+  a++.png:
   .publish.json:
 ---
 # Don't handle encoding for includes at the moment
