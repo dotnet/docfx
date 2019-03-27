@@ -38,6 +38,10 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
             model.Properties.IsUserDefinedTitle = false;
             content[Constants.PropertyName.Title] = htmlInfo.Title;
             content["rawTitle"] = htmlInfo.RawTitle;
+            if (!string.IsNullOrEmpty(htmlInfo.RawTitle))
+            {
+                model.ManifestProperties.rawTitle = htmlInfo.RawTitle;
+            }
             content[ConceptualKey] = htmlInfo.Content;
 
             if (result.YamlHeader?.Count > 0)
