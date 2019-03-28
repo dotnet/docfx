@@ -24,6 +24,7 @@ namespace Microsoft.Docs.Build
         public readonly GitHubUserCache GitHubUserCache;
         public readonly ContributionProvider ContributionProvider;
         public readonly PublishModelBuilder PublishModelBuilder;
+        public readonly TemplateEngine Template;
 
         public Context(
             Report report,
@@ -38,7 +39,8 @@ namespace Microsoft.Docs.Build
             DependencyResolver landingPageDependencyResolver,
             GitHubUserCache gitHubUserCache,
             ContributionProvider contributionProvider,
-            PublishModelBuilder publishModelBuilder)
+            PublishModelBuilder publishModelBuilder,
+            TemplateEngine template)
         {
             Report = report;
             Output = output;
@@ -53,6 +55,7 @@ namespace Microsoft.Docs.Build
             GitHubUserCache = gitHubUserCache;
             ContributionProvider = contributionProvider;
             PublishModelBuilder = publishModelBuilder;
+            Template = template;
         }
 
         public static async Task<Context> Create(string outputPath, Report report, Docset docset, Func<XrefMap> xrefMap)
@@ -69,6 +72,7 @@ namespace Microsoft.Docs.Build
             var landingPageDependencyResolver = new DependencyResolver(gitCommitProvider, bookmarkValidator, dependencyMapBuilder, new Lazy<XrefMap>(xrefMap), forLandingPage: true);
             var contributionProvider = await ContributionProvider.Create(docset, gitHubUserCache, gitCommitProvider);
             var publishModelBuilder = new PublishModelBuilder();
+            var template = TemplateEngine.Create(docset);
 
             return new Context(
                 report,
@@ -83,7 +87,8 @@ namespace Microsoft.Docs.Build
                 landingPageDependencyResolver,
                 gitHubUserCache,
                 contributionProvider,
-                publishModelBuilder);
+                publishModelBuilder,
+                template);
         }
 
         public void Dispose()

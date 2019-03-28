@@ -72,6 +72,11 @@ namespace Microsoft.Docs.Build
         public DependencyLockModel DependencyLock { get; }
 
         /// <summary>
+        /// Gets the dependency repos/file mappings
+        /// </summary>
+        public RestoreMap RestoreMap { get; }
+
+        /// <summary>
         /// Gets the dependent docsets
         /// </summary>
         public IReadOnlyDictionary<string, Docset> DependencyDocsets => _dependencyDocsets.Value;
@@ -91,16 +96,12 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public HashSet<Document> ScanScope => _scanScope.Value;
 
-        public TemplateEngine Template => _template.Value;
-
         private readonly CommandLineOptions _options;
         private readonly Report _report;
-        private readonly RestoreMap _restoreMap;
         private readonly ConcurrentDictionary<string, Lazy<Repository>> _repositories;
         private readonly Lazy<HashSet<Document>> _buildScope;
         private readonly Lazy<HashSet<Document>> _scanScope;
         private readonly Lazy<RedirectionMap> _redirections;
-        private readonly Lazy<TemplateEngine> _template;
         private readonly Lazy<IReadOnlyDictionary<string, Docset>> _dependencyDocsets;
 
         public Docset(
@@ -127,12 +128,12 @@ namespace Microsoft.Docs.Build
                 if (LocalizationUtility.TryGetSourceDocsetPath(this, restoreMap, out var sourceDocsetPath, out var sourceBranch, out _))
                 {
                     var repo = Repository.Create(sourceDocsetPath, sourceBranch);
-                    FallbackDocset = new Docset(_report, sourceDocsetPath, Locale, Config, _options, DependencyLock, _restoreMap, repo, localizedDocset: this, isDependency: true);
+                    FallbackDocset = new Docset(_report, sourceDocsetPath, Locale, Config, _options, DependencyLock, RestoreMap, repo, localizedDocset: this, isDependency: true);
                 }
                 else if (LocalizationUtility.TryGetLocalizedDocsetPath(this, restoreMap, Config, Locale, out var localizationDocsetPath, out var localizationBranch, out var localizationDependencyLock))
                 {
                     var repo = Repository.Create(localizationDocsetPath, localizationBranch);
-                    LocalizationDocset = new Docset(_report, localizationDocsetPath, Locale, Config, _options, DependencyLock, _restoreMap, repo, fallbackDocset: this, isDependency: true);
+                    LocalizationDocset = new Docset(_report, localizationDocsetPath, Locale, Config, _options, DependencyLock, RestoreMap, repo, fallbackDocset: this, isDependency: true);
                 }
             }
         }
@@ -153,7 +154,7 @@ namespace Microsoft.Docs.Build
 
             _options = options;
             _report = report;
-            _restoreMap = restoreMap;
+            RestoreMap = restoreMap;
             Config = config;
             DocsetPath = PathUtility.NormalizeFolder(Path.GetFullPath(docsetPath));
             Locale = locale.ToLowerInvariant();
@@ -176,23 +177,9 @@ namespace Microsoft.Docs.Build
             });
             _scanScope = new Lazy<HashSet<Document>>(() => GetScanScope(this));
 
-            _template = new Lazy<TemplateEngine>(() =>
-            {
-                if (string.IsNullOrEmpty(Config.Theme))
-                {
-                    return null;
-                }
-
-                var (themeRemote, themeBranch) = LocalizationUtility.GetLocalizedTheme(Config.Theme, Locale, Config.Localization.DefaultLocale);
-                var (themePath, themeLock) = _restoreMap.GetGitRestorePath($"{themeRemote}#{themeBranch}", DependencyLock);
-                Log.Write($"Using theme '{themeRemote}#{themeLock.Commit}' at '{themePath}'");
-
-                return new TemplateEngine(themePath, Locale);
-            });
-
             _dependencyDocsets = new Lazy<IReadOnlyDictionary<string, Docset>>(() =>
             {
-                var (errors, dependencies) = LoadDependencies(_report, Config, Locale, DependencyLock, _restoreMap, _options);
+                var (errors, dependencies) = LoadDependencies(_report, Config, Locale, DependencyLock, RestoreMap, _options);
                 _report.Write(Config.ConfigFileName, errors);
                 return dependencies;
             });

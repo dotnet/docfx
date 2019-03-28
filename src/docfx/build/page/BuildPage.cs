@@ -49,7 +49,7 @@ namespace Microsoft.Docs.Build
 
             var isPage = schema.Attribute is PageSchemaAttribute;
             var outputPath = file.GetOutputPath(model.Monikers, isPage);
-            var (output, extensionData) = ApplyTemplate(file, model, isPage);
+            var (output, extensionData) = ApplyTemplate(context, file, model, isPage);
 
             var publishItem = new PublishItem
             {
@@ -120,7 +120,7 @@ namespace Microsoft.Docs.Build
                 context.DependencyResolver,
                 buildChild,
                 rangeString => context.MonikerProvider.GetZoneMonikers(rangeString, monikers, errors),
-                key => file.Docset.Template?.GetToken(key),
+                key => context.Template?.GetToken(key),
                 MarkdownPipelineType.Markdown);
             errors.AddRange(markupErrors);
 
@@ -220,18 +220,18 @@ namespace Microsoft.Docs.Build
             return LocalizationUtility.AddLeftToRightMarker(file.Docset, html.OuterHtml);
         }
 
-        private static (object output, JObject extensionData) ApplyTemplate(Document file, PageModel model, bool isPage)
+        private static (object output, JObject extensionData) ApplyTemplate(Context context, Document file, PageModel model, bool isPage)
         {
-            if (!file.Docset.Config.Output.Json && file.Docset.Template != null)
+            if (!file.Docset.Config.Output.Json && context.Template != null)
             {
-                return (file.Docset.Template.Render(model, file), null);
+                return (context.Template.Render(model, file), null);
             }
 
             if (file.Docset.Legacy)
             {
-                if (isPage && file.Docset.Template != null)
+                if (isPage && context.Template != null)
                 {
-                    return TemplateTransform.Transform(model, file);
+                    return TemplateTransform.Transform(context.Template, model, file);
                 }
 
                 return (model, null);
