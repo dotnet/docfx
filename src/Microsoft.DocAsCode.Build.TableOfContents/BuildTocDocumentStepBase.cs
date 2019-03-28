@@ -87,7 +87,6 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
 
             void UpdateDependencies(HashSet<string> linkTos, Dictionary<string, ImmutableList<LinkSourceInfo>> linkSources, string link)
             {
-                // var path = UriUtility.GetPath(link);
                 var path = HttpUtility.UrlDecode(UriUtility.GetPath(link));
                 var anchor = UriUtility.GetFragment(link);
                 linkTos.Add(path);
