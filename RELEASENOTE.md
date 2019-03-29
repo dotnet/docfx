@@ -1,7 +1,10 @@
-Version Notes (Current Version: v2.41)
+Version Notes (Current Version: v2.42)
 =======================================
 
-v2.41(Pre-release)
+v2.42(Pre-release)
+-----------
+
+v2.41
 -----------
 1. Performance improvement:
     1. **[Breaking Change]** Abandon metadata on resource files, including global/file metadata, and paired `.meta` files.
