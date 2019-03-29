@@ -131,7 +131,7 @@ namespace Microsoft.Docs.Build
                 (errors, result) = LoadConfigObject(globalConfigPath, globalConfigPath);
             }
 
-            result = JsonUtility.MergeWithLineInfoFromOverwrite(result, config);
+            result = MergeWithLineInfoFromOverwrite(result, config);
             return (errors, result);
         }
 
@@ -154,8 +154,20 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            result = JsonUtility.MergeWithLineInfoFromOverwrite(result, config);
+            result = MergeWithLineInfoFromOverwrite(result, config);
             return (errors, result);
+        }
+
+        /// <summary>
+        /// Merge overwrite into container
+        /// And keep the line info of properties in overwrite which are not in container
+        /// </summary>
+        private static JObject MergeWithLineInfoFromOverwrite(JObject container, JObject overwrite)
+        {
+            var original = overwrite.DeepClone() as JObject;
+            JsonUtility.Merge(overwrite, container);
+            JsonUtility.Merge(overwrite, original);
+            return overwrite;
         }
 
         private static void OverwriteConfig(JObject config, string locale, string branch)
