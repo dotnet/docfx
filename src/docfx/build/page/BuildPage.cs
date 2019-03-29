@@ -4,9 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Threading.Tasks;
-using System.Web;
 using HtmlAgilityPack;
 using Newtonsoft.Json.Linq;
 
@@ -231,7 +229,7 @@ namespace Microsoft.Docs.Build
             {
                 if (isPage && context.Template != null)
                 {
-                    return TemplateTransform.Transform(context.Template, model, file);
+                    return context.Template.Transform(model, file);
                 }
 
                 return (model, null);
