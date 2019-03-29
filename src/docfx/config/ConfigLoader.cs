@@ -131,8 +131,8 @@ namespace Microsoft.Docs.Build
                 (errors, result) = LoadConfigObject(globalConfigPath, globalConfigPath);
             }
 
-            JsonUtility.MergeWithLineInfo(result, config);
-            return (errors, config);
+            result = JsonUtility.MergeWithLineInfoFromOverwrite(result, config);
+            return (errors, result);
         }
 
         private static (List<Error>, JObject) ExtendConfigs(JObject config, string docsetPath)
@@ -154,8 +154,8 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            JsonUtility.MergeWithLineInfo(result, config);
-            return (errors, config);
+            result = JsonUtility.MergeWithLineInfoFromOverwrite(result, config);
+            return (errors, result);
         }
 
         private static void OverwriteConfig(JObject config, string locale, string branch)

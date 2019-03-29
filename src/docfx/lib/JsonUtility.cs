@@ -272,11 +272,12 @@ namespace Microsoft.Docs.Build
         /// Merge overwrite into container
         /// And keep the line info of properties in overwrite which are not in container
         /// </summary>
-        public static void MergeWithLineInfo(JObject container, JObject overwrite)
+        public static JObject MergeWithLineInfoFromOverwrite(JObject container, JObject overwrite)
         {
             var original = overwrite.DeepClone() as JObject;
             Merge(overwrite, container);
             Merge(overwrite, original);
+            return overwrite;
         }
 
         /// <summary>
