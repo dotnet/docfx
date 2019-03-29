@@ -19,16 +19,16 @@ namespace Microsoft.Docs.Build
             Telemetry.SetRepository(repository?.Remote, repository?.Branch);
 
             var locale = LocalizationUtility.GetLocale(repository, options);
-            var dependencyLock = await LoadBuildDependencyLock(docsetPath, locale, repository, options);
+            var dependencyLock = LoadBuildDependencyLock(docsetPath, locale, repository, options);
 
-            var restoreMap = await RestoreMap.Create(dependencyLock);
+            var restoreMap = RestoreMap.Create(dependencyLock);
             try
             {
                 await Run(docsetPath, repository, locale, options, report, dependencyLock, restoreMap);
             }
             finally
             {
-                await restoreMap.Release();
+                restoreMap.Release();
             }
         }
 
@@ -46,9 +46,9 @@ namespace Microsoft.Docs.Build
             var docset = GetBuildDocset(new Docset(report, docsetPath, locale, config, options, dependencyLock, restoreMap, repository));
             var outputPath = Path.Combine(docsetPath, config.Output.Path);
 
-            using (var context = await Context.Create(outputPath, report, docset, () => xrefMap))
+            using (var context = Context.Create(outputPath, report, docset, () => xrefMap))
             {
-                xrefMap = await XrefMap.Create(context, docset);
+                xrefMap = XrefMap.Create(context, docset);
                 var tocMap = TableOfContentsMap.Create(context, docset);
 
                 var (publishManifest, fileManifests, sourceDependencies) = await BuildFiles(context, docset, tocMap);
@@ -102,14 +102,12 @@ namespace Microsoft.Docs.Build
                     ShouldBuildTocFile,
                     Progress.Update);
 
-                var saveGitCommitCache = context.GitCommitProvider.SaveGitCommitCache();
+                context.GitCommitProvider.SaveGitCommitCache();
 
                 ValidateBookmarks();
 
                 var (publishModel, fileManifests) = context.PublishModelBuilder.Build(context, docset.Legacy);
                 var dependencyMap = context.DependencyMapBuilder.Build();
-
-                await saveGitCommitCache;
 
                 return (publishModel, fileManifests, dependencyMap);
 
@@ -192,13 +190,13 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static async Task<DependencyLockModel> LoadBuildDependencyLock(string docset, string locale, Repository repository, CommandLineOptions commandLineOptions)
+        private static DependencyLockModel LoadBuildDependencyLock(string docset, string locale, Repository repository, CommandLineOptions commandLineOptions)
         {
             Debug.Assert(!string.IsNullOrEmpty(docset));
 
             var (errors, config) = ConfigLoader.TryLoad(docset, commandLineOptions);
 
-            var dependencyLock = await DependencyLock.Load(docset, string.IsNullOrEmpty(config.DependencyLock) ? AppData.GetDependencyLockFile(docset, locale) : config.DependencyLock);
+            var dependencyLock = DependencyLock.Load(docset, string.IsNullOrEmpty(config.DependencyLock) ? AppData.GetDependencyLockFile(docset, locale) : config.DependencyLock);
 
             if (LocalizationUtility.TryGetSourceRepository(repository, out var sourceRemote, out var sourceBranch, out _) && !ConfigLoader.TryGetConfigPath(docset, out _))
             {

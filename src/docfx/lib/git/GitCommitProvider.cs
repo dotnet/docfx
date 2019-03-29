@@ -4,8 +4,6 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
 {
@@ -13,16 +11,16 @@ namespace Microsoft.Docs.Build
     {
         private readonly ConcurrentDictionary<string, FileCommitProvider> _fileCommitProvidersByRepoPath = new ConcurrentDictionary<string, FileCommitProvider>();
 
-        public Task<(Repository repo, string pathToRepo, List<GitCommit> commits)> GetCommitHistory(Document document, string committish = null)
+        public (Repository repo, string pathToRepo, List<GitCommit> commits) GetCommitHistory(Document document, string committish = null)
            => GetCommitHistory(Path.Combine(document.Docset.DocsetPath, document.FilePath), document.Repository, committish);
 
-        public async Task<(Repository repo, string pathToRepo, List<GitCommit> commits)> GetCommitHistory(string fullPath, Repository repo, string committish = null)
+        public (Repository repo, string pathToRepo, List<GitCommit> commits) GetCommitHistory(string fullPath, Repository repo, string committish = null)
         {
             if (repo is null)
                 return default;
 
             var pathToRepo = PathUtility.NormalizeFile(Path.GetRelativePath(repo.Path, fullPath));
-            return (repo, pathToRepo, await GetCommitProvider(repo).GetCommitHistory(pathToRepo, committish));
+            return (repo, pathToRepo, GetCommitProvider(repo).GetCommitHistory(pathToRepo, committish));
         }
 
         public (Repository repo, string pathToRepo, List<GitCommit> commits) GetCommitHistoryNoCache(Docset docset, string filePath, int top, string committish = null)
@@ -37,9 +35,12 @@ namespace Microsoft.Docs.Build
             return (repo, pathToRepo, GetCommitProvider(repo).GetCommitHistoryNoCache(pathToRepo, top, committish));
         }
 
-        public Task SaveGitCommitCache()
+        public void SaveGitCommitCache()
         {
-            return Task.WhenAll(_fileCommitProvidersByRepoPath.Values.Select(provider => provider.SaveCache()));
+            foreach (var p in _fileCommitProvidersByRepoPath.Values)
+            {
+                p.SaveCache();
+            }
         }
 
         public void Dispose()

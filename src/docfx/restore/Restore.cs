@@ -78,7 +78,7 @@ namespace Microsoft.Docs.Build
                     await RestoreFile.Restore(extendedConfig.DependencyLock, extendedConfig, @implicit);
 
                 if (root)
-                    dependencyLock = await DependencyLock.Load(docset, extendedConfig.DependencyLock);
+                    dependencyLock = DependencyLock.Load(docset, extendedConfig.DependencyLock);
 
                 // restore git repos includes dependency repos, theme repo and loc repos
                 var gitVersions = await RestoreGit.Restore(extendedConfig, restoreChild, locale, @implicit, rootRepository, dependencyLock);
@@ -96,7 +96,7 @@ namespace Microsoft.Docs.Build
                 if (root)
                 {
                     var dependencyLockFilePath = string.IsNullOrEmpty(extendedConfig.DependencyLock) ? AppData.GetDependencyLockFile(docset, locale) : extendedConfig.DependencyLock;
-                    await DependencyLock.Save(docset, dependencyLockFilePath, generatedLock);
+                    DependencyLock.Save(docset, dependencyLockFilePath, generatedLock);
                 }
 
                 return generatedLock;
