@@ -24,23 +24,28 @@ namespace DocFx.SandcastleRefMapper
         {
             RootCommand rootCommand = new RootCommand()
             {
-                Handler = CommandHandler.Create(new Action<FileInfo, Uri, FileInfo>(Execute))
+                Handler = CommandHandler.Create(new Action<string, Uri, FileInfo>(Execute))
             };
-            rootCommand.Argument = new Argument<FileInfo>()
+            rootCommand.Argument = new Argument<string>()
             {
                 Name = "inputAssemblyPath",
                 Description = "Assembly to create Xref Map for"
-            }.ExistingOnly();
+            }.LegalFilePathsOnly();
+            rootCommand.Argument.AddValidator(symbol =>
+                                              symbol.Arguments
+                                                    .Where(filePath => !File.Exists(filePath))
+                                                    .Select(symbol.ValidationMessages.FileDoesNotExist)
+                                                    .FirstOrDefault());
             rootCommand.AddOption(new Option("--baseUrl", "", new Argument<Uri>()));
-            rootCommand.AddOption(new Option("--outputYamlPath", "", new Argument<FileInfo>().ExistingOnly()));
+            rootCommand.AddOption(new Option("--outputYamlPath", "", new Argument<FileInfo>().LegalFilePathsOnly()));
             return rootCommand.InvokeAsync(args);
         }
 
-        private static void Execute(FileInfo inputAssemblyPath, Uri baseUrl, FileInfo outputYamlPath)
+        private static void Execute(string inputAssemblyPath, Uri baseUrl, FileInfo outputYamlPath)
         {
             ExtractMetadataOptions options = new ExtractMetadataOptions();
-            AssemblyFileInputParameters parameters = new AssemblyFileInputParameters(options, inputAssemblyPath.FullName);
-            string[] assemblyPaths = Enumerable.Repeat(inputAssemblyPath.FullName, 1).ToArray();
+            AssemblyFileInputParameters parameters = new AssemblyFileInputParameters(options, inputAssemblyPath);
+            string[] assemblyPaths = Enumerable.Repeat(inputAssemblyPath, 1).ToArray();
             Compilation compilation = CreateCompilationFromAssembly(assemblyPaths);
             (_, IAssemblySymbol assembly) = GetAssemblyFromAssemblyComplation(compilation, assemblyPaths).First();
             RoslynSourceFileBuildController controller = new RoslynSourceFileBuildController(compilation, assembly);
