@@ -193,7 +193,7 @@ namespace Microsoft.Docs.Build
             return (error, relativeUrl + query + fragment, fragment, hrefType, file);
         }
 
-        private (Error error, Document file, string redirectTo, string query, string fragment, HrefType? hrefType, string pathToDocset) TryResolveFile(Document relativeTo, string href, Range range)
+        private (Error error, Document file, string redirectTo, string query, string fragment, HrefType? hrefType, string pathToDocset) TryResolveFile(Document relativeTo, string href, in Range range)
         {
             if (string.IsNullOrEmpty(href))
             {
