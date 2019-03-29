@@ -103,7 +103,7 @@ namespace Microsoft.Docs.Build
             }
             else if (fileName.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
             {
-                (errors, config) = JsonUtility.DeserializeWithSchemaValidation<JObject>(content);
+                (errors, config) = JsonUtility.Deserialize(content);
             }
 
             if (config is JObject)
@@ -131,8 +131,11 @@ namespace Microsoft.Docs.Build
                 (errors, result) = LoadConfigObject(globalConfigPath, globalConfigPath);
             }
 
-            JsonUtility.Merge(result, config);
-            return (errors, result);
+            // to keep the line info of config
+            var original = config.DeepClone() as JObject;
+            JsonUtility.Merge(config, result);
+            JsonUtility.Merge(config, original);
+            return (errors, config);
         }
 
         private static (List<Error>, JObject) ExtendConfigs(JObject config, string docsetPath)
@@ -154,8 +157,11 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            JsonUtility.Merge(result, config);
-            return (errors, result);
+            // to keep the line info of config
+            var original = config.DeepClone() as JObject;
+            JsonUtility.Merge(config, result);
+            JsonUtility.Merge(config, original);
+            return (errors, config);
         }
 
         private static void OverwriteConfig(JObject config, string locale, string branch)
