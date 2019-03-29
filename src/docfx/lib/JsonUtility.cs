@@ -152,7 +152,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// De-serialize a user input string to an object, return error list at the same time
         /// </summary>
-        public static (List<Error> errors, T model) DeserializeWithSchemaValidation<T>(string json)
+        public static (List<Error> errors, T model) Deserialize<T>(string json)
         {
             var (errors, token) = Deserialize(json);
             var (mismatchingErrors, result) = ToObjectWithSchemaValidation<T>(token);
@@ -164,7 +164,7 @@ namespace Microsoft.Docs.Build
         /// De-serialize a data string, which is not user input, to an object
         /// schema validation errors will be ignored, syntax errors and type mismatching will be thrown
         /// </summary>
-        public static T Deserialize<T>(string json)
+        public static T DeserializeData<T>(string json)
         {
             using (var stringReader = new StringReader(json))
             using (var reader = new JsonTextReader(stringReader))

@@ -58,9 +58,9 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Deserialize from yaml string, return error list at the same time
         /// </summary>
-        public static (List<Error>, T) DeserializeWithSchemaValidation<T>(string input, bool nullValidation = true)
+        public static (List<Error>, T) Deserialize<T>(string input)
         {
-            var (errors, token) = Deserialize(input, nullValidation);
+            var (errors, token) = Deserialize(input);
             var (mismatchingErrors, result) = JsonUtility.ToObjectWithSchemaValidation<T>(token);
             errors.AddRange(mismatchingErrors);
             return (errors, result);
@@ -70,9 +70,9 @@ namespace Microsoft.Docs.Build
         /// De-serialize from yaml string, which is not user input
         /// schema validation errors will be ignored, syntax errors and type mismatching will be thrown
         /// </summary>
-        public static T Deserialize<T>(string input, bool nullValidation = true)
+        public static T DeserializeData<T>(string input)
         {
-            var (_, token) = Deserialize(input, nullValidation);
+            var (_, token) = Deserialize(input);
             return JsonUtility.ToObject<T>(token);
         }
 
@@ -84,7 +84,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Deserialize to JToken from string
         /// </summary>
-        public static (List<Error>, JToken) Deserialize(string input, bool nullValidation = true)
+        public static (List<Error>, JToken) Deserialize(string input)
         {
             Match match = null;
 
@@ -121,17 +121,9 @@ namespace Microsoft.Docs.Build
                 throw new NotSupportedException("Does not support mutiple YAML documents");
             }
 
-            if (nullValidation)
-            {
-                var (nullErrors, token) = ToJson(stream.Documents[0].RootNode).RemoveNulls();
-                errors.AddRange(nullErrors);
-                return (errors, token);
-            }
-            else
-            {
-                var token = ToJson(stream.Documents[0].RootNode);
-                return (errors, token);
-            }
+            var (nullErrors, token) = ToJson(stream.Documents[0].RootNode).RemoveNulls();
+            errors.AddRange(nullErrors);
+            return (errors, token);
         }
 
         private static JToken ToJson(YamlNode node)

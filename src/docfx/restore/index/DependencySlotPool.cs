@@ -182,7 +182,7 @@ namespace Microsoft.Docs.Build
             var slotsFile = Path.Combine(restoreDir, "index.json");
             var content = File.Exists(slotsFile) ? File.ReadAllText(slotsFile) : string.Empty;
 
-            return (JsonUtility.Deserialize<SlotInfo>(content) ?? new SlotInfo()).Slots;
+            return (JsonUtility.DeserializeData<SlotInfo>(content) ?? new SlotInfo()).Slots;
         }
 
         public static void WriteSlots(string restoreDir, List<T> slots)

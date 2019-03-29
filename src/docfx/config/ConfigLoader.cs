@@ -103,7 +103,7 @@ namespace Microsoft.Docs.Build
             }
             else if (fileName.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
             {
-                (errors, config) = JsonUtility.DeserializeWithSchemaValidation<JObject>(content);
+                (errors, config) = JsonUtility.Deserialize(content);
             }
 
             if (config is JObject)

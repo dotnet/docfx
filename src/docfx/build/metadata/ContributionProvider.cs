@@ -207,7 +207,7 @@ namespace Microsoft.Docs.Build
             {
                 var (_, content, _) = await RestoreMap.GetRestoredFileContent(docset, docset.Config.Contribution.GitCommitsTime);
 
-                foreach (var commit in JsonUtility.Deserialize<GitCommitsTime>(content).Commits)
+                foreach (var commit in JsonUtility.DeserializeData<GitCommitsTime>(content).Commits)
                 {
                     _updateTimeByCommit.Add(commit.Sha, commit.BuiltAt);
                 }

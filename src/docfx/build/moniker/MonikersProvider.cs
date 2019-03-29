@@ -33,7 +33,7 @@ namespace Microsoft.Docs.Build
             if (!string.IsNullOrEmpty(docset.Config.MonikerDefinition))
             {
                 var (_, content, _) = await RestoreMap.GetRestoredFileContent(docset, docset.Config.MonikerDefinition);
-                monikerDefinition = JsonUtility.Deserialize<MonikerDefinitionModel>(content);
+                monikerDefinition = JsonUtility.DeserializeData<MonikerDefinitionModel>(content);
             }
 
             return new MonikerProvider(docset, monikerDefinition);
