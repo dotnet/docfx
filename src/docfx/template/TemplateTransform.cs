@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -66,9 +67,11 @@ namespace Microsoft.Docs.Build
             { "target_os", "TargetOS" },
         };
 
-        public static (TemplateModel model, JObject metadata) Transform(PageModel pageModel, Document file)
+        public static (TemplateModel model, JObject metadata) Transform(TemplateEngine template, PageModel pageModel, Document file)
         {
-            var rawMetadata = CreateRawMetadata(pageModel, file);
+            Debug.Assert(template != null);
+
+            var rawMetadata = CreateRawMetadata(template, pageModel, file);
             var metadata = CreateMetadata(rawMetadata);
             var pageMetadata = CreateHtmlMetaTags(metadata);
 
@@ -83,7 +86,7 @@ namespace Microsoft.Docs.Build
             return (model, metadata);
         }
 
-        private static JObject CreateRawMetadata(PageModel pageModel, Document file)
+        private static JObject CreateRawMetadata(TemplateEngine template, PageModel pageModel, Document file)
         {
             var docset = file.Docset;
             var rawMetadata = pageModel.Metadata != null ? JsonUtility.ToJObject(pageModel.Metadata) : new JObject();
@@ -96,7 +99,7 @@ namespace Microsoft.Docs.Build
             rawMetadata["locale"] = docset.Locale;
             rawMetadata["site_name"] = "Docs";
 
-            rawMetadata["__global"] = docset.Template.Global;
+            rawMetadata["__global"] = template.Global;
             rawMetadata["conceptual"] = pageModel.Content as string;
 
             var path = PathUtility.NormalizeFile(Path.GetRelativePath(file.Docset.Config.DocumentId.SiteBasePath, file.SitePath));
@@ -164,7 +167,7 @@ namespace Microsoft.Docs.Build
 
             return RemoveUpdatedAtDateTime(
                 TransformSchema(
-                    docset.Template.TransformMetadata("Conceptual.mta.json.js", rawMetadata), pageModel));
+                    template.TransformMetadata("Conceptual.mta.json.js", rawMetadata), pageModel));
         }
 
         private static JObject TransformSchema(JObject metadata, PageModel model)

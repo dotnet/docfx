@@ -59,7 +59,7 @@ namespace Microsoft.Docs.Build
             {
                 if (file.Docset.Legacy)
                 {
-                    var output = file.Docset.Template.TransformMetadata("toc.json.js", JsonUtility.ToJObject(model));
+                    var output = context.Template.TransformMetadata("toc.json.js", JsonUtility.ToJObject(model));
                     publishItem.Hash = context.Output.WriteJsonWithHash(output, outputPath);
                     context.Output.WriteJson(model.Metadata, Path.ChangeExtension(outputPath, ".mta.json"));
                 }
