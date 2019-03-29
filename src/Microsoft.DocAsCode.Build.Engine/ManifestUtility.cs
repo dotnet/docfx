@@ -29,9 +29,10 @@ namespace Microsoft.DocAsCode.Common
                               .Where(g => g.Count() > 1))
             {
                 // TODO: plan to change this warning to error, add error code to analyze the impact.
-                Logger.LogWarning(
-                    $"Multiple input files would generate to the same output path overwriting each other. Please rename at least {duplicates.Count() - 1} of following input files to ensure that there will be only one file to generate to the output path: \"{string.Join(", ", duplicates.Select(duplicate => duplicate.item.SourceRelativePath))}\".",
-                    code: WarningCodes.Build.DuplicateOutputFiles);
+                var message = $"Multiple input files generate to the same output {duplicates} overwriting each other. " +
+                    $"Please rename at least {duplicates.Count() - 1} of following files to resolve conflict: " +
+                    string.Join(", ", duplicates.Select(i => $"{{file:'{i.item.SourceRelativePath}', group:'{i.item.Group}'}}"));
+                Logger.LogWarning(message, code: WarningCodes.Build.DuplicateOutputFiles);
                 itemsToRemove.UnionWith(duplicates.Skip(1).Select(duplicate => duplicate.item.SourceRelativePath));
             }
             manifestItems.RemoveAll(m => itemsToRemove.Contains(m.SourceRelativePath));
