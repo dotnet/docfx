@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using Newtonsoft.Json.Linq;
 using System;
 using System.IO;
 using Xunit;
@@ -14,6 +15,7 @@ namespace Microsoft.Docs.Build
             Directory.GetCurrentDirectory(),
             "en-us",
             JsonUtility.Deserialize<Config>("{'output': { 'json': true } }".Replace('\'', '\"')),
+            new JObject(),
             new CommandLineOptions(),
             new DependencyLockModel(),
             new RestoreMap(null));

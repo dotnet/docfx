@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -35,7 +36,7 @@ namespace Microsoft.Docs.Build
         private static async Task Run(string docsetPath, Repository repository, string locale, CommandLineOptions options, Report report, DependencyLockModel dependencyLock, RestoreMap restoreMap)
         {
             XrefMap xrefMap = null;
-            var (configErrors, config) = GetBuildConfig(docsetPath, repository, options, dependencyLock, restoreMap);
+            var (configErrors, config, configObject) = GetBuildConfig(docsetPath, repository, options, dependencyLock, restoreMap);
             report.Configure(docsetPath, config);
 
             // just return if config loading has errors
@@ -43,7 +44,7 @@ namespace Microsoft.Docs.Build
                 return;
 
             var errors = new List<Error>();
-            var docset = GetBuildDocset(new Docset(report, docsetPath, locale, config, options, dependencyLock, restoreMap, repository));
+            var docset = GetBuildDocset(new Docset(report, docsetPath, locale, config, configObject, options, dependencyLock, restoreMap, repository));
             var outputPath = Path.Combine(docsetPath, config.Output.Path);
 
             using (var context = await Context.Create(outputPath, report, docset, () => xrefMap))
@@ -196,9 +197,12 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(!string.IsNullOrEmpty(docset));
 
-            var (errors, config) = ConfigLoader.TryLoad(docset, commandLineOptions);
+            var (errors, config, configObject) = ConfigLoader.TryLoad(docset, commandLineOptions);
 
-            var dependencyLock = await DependencyLock.Load(docset, string.IsNullOrEmpty(config.DependencyLock) ? AppData.GetDependencyLockFile(docset, locale) : config.DependencyLock);
+            var dependencyLock = await DependencyLock.Load(
+                docset,
+                string.IsNullOrEmpty(config.DependencyLock) ? AppData.GetDependencyLockFile(docset, locale) : config.DependencyLock,
+                string.IsNullOrEmpty(config.DependencyLock) ? default : JsonUtility.ToRange(configObject["dependencyLock"]));
 
             if (LocalizationUtility.TryGetSourceRepository(repository, out var sourceRemote, out var sourceBranch, out _) && !ConfigLoader.TryGetConfigPath(docset, out _))
             {
@@ -217,7 +221,7 @@ namespace Microsoft.Docs.Build
             return dependencyLock ?? new DependencyLockModel();
         }
 
-        private static (List<Error> errors, Config config) GetBuildConfig(string docset, Repository repository, CommandLineOptions options, DependencyLockModel dependencyLock, RestoreMap restoreMap)
+        private static (List<Error> errors, Config config, JObject configObject) GetBuildConfig(string docset, Repository repository, CommandLineOptions options, DependencyLockModel dependencyLock, RestoreMap restoreMap)
         {
             if (ConfigLoader.TryGetConfigPath(docset, out _) || !LocalizationUtility.TryGetSourceRepository(repository, out var sourceRemote, out var sourceBranch, out var locale))
             {

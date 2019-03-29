@@ -257,7 +257,7 @@ outputs:
   docs/a.json: |
     { "content": "<p><a href=\"b.md\">b</a></p>" }
 ---
-# log with default log level when docfx crashes, even the corresponding rule is turned off
+# [only]log with default log level when docfx crashes, even the corresponding rule is turned off
 inputs:
   docfx.yml: |
     rules:

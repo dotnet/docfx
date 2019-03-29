@@ -27,9 +27,9 @@ namespace Microsoft.Docs.Build
             _forLandingPage = forLandingPage;
         }
 
-        public (Error error, string content, Document file) ResolveContent(string path, Document relativeTo, DependencyType dependencyType = DependencyType.Inclusion)
+        public (Error error, string content, Document file) ResolveContent(string path, Document relativeTo, in Range range, DependencyType dependencyType = DependencyType.Inclusion)
         {
-            var (error, content, child) = TryResolveContent(relativeTo, path);
+            var (error, content, child) = TryResolveContent(relativeTo, path, range);
 
             _dependencyMapBuilder.AddDependencyItem(relativeTo, child, dependencyType);
 
@@ -40,7 +40,7 @@ namespace Microsoft.Docs.Build
         // which needs to be removed once the user input is correct
         public (Error error, string link, Document file) ResolveLink(string path, Document relativeTo, Document resultRelativeTo, Action<Document> buildChild, in Range range)
         {
-            var (error, link, fragment, hrefType, file) = TryResolveHref(relativeTo, path, resultRelativeTo);
+            var (error, link, fragment, hrefType, file) = TryResolveHref(relativeTo, path, resultRelativeTo, range);
 
             if (file != null && buildChild != null)
             {
@@ -91,9 +91,9 @@ namespace Microsoft.Docs.Build
             return Document.PathToRelativeUrl(relativePath, file.ContentType, file.Schema, file.Docset.Config.Output.Json);
         }
 
-        private (Error error, string content, Document file) TryResolveContent(Document relativeTo, string href)
+        private (Error error, string content, Document file) TryResolveContent(Document relativeTo, string href, in Range range)
         {
-            var (error, file, redirect, _, _, _, pathToDocset) = TryResolveFile(relativeTo, href);
+            var (error, file, redirect, _, _, _, pathToDocset) = TryResolveFile(relativeTo, href, range);
 
             if (redirect != null)
             {
@@ -116,7 +116,7 @@ namespace Microsoft.Docs.Build
             return file != null ? (error, file.ReadText(), file) : default;
         }
 
-        private (Error error, string href, string fragment, HrefType? hrefType, Document file) TryResolveHref(Document relativeTo, string href, Document resultRelativeTo)
+        private (Error error, string href, string fragment, HrefType? hrefType, Document file) TryResolveHref(Document relativeTo, string href, Document resultRelativeTo, in Range range)
         {
             Debug.Assert(resultRelativeTo != null);
 
@@ -127,7 +127,7 @@ namespace Microsoft.Docs.Build
             }
 
             var decodedHref = Uri.UnescapeDataString(href);
-            var (error, file, redirectTo, query, fragment, hrefType, _) = TryResolveFile(relativeTo, decodedHref);
+            var (error, file, redirectTo, query, fragment, hrefType, _) = TryResolveFile(relativeTo, decodedHref, range);
 
             // Redirection
             // follow redirections
@@ -193,7 +193,7 @@ namespace Microsoft.Docs.Build
             return (error, relativeUrl + query + fragment, fragment, hrefType, file);
         }
 
-        private (Error error, Document file, string redirectTo, string query, string fragment, HrefType? hrefType, string pathToDocset) TryResolveFile(Document relativeTo, string href)
+        private (Error error, Document file, string redirectTo, string query, string fragment, HrefType? hrefType, string pathToDocset) TryResolveFile(Document relativeTo, string href, Range range)
         {
             if (string.IsNullOrEmpty(href))
             {
@@ -234,7 +234,7 @@ namespace Microsoft.Docs.Build
                         file = Document.TryCreateFromFile(relativeTo.Docset, pathToDocset);
                     }
 
-                    return (file != null ? null : (_forLandingPage ? null : Errors.FileNotFound(relativeTo.ToString(), path)), file, null, query, fragment, null, pathToDocset);
+                    return (file != null ? null : (_forLandingPage ? null : Errors.FileNotFound(relativeTo.ToString(), path, range)), file, null, query, fragment, null, pathToDocset);
 
                 default:
                     return default;

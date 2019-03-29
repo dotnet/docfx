@@ -34,7 +34,7 @@ namespace Microsoft.Docs.Build
             return dependencyLock.Git.ContainsKey(href) || dependencyLock.Git.Keys.Any(g => g.StartsWith($"{href}#"));
         }
 
-        public static async Task<DependencyLockModel> Load(string docset, string dependencyLockPath)
+        public static async Task<DependencyLockModel> Load(string docset, string dependencyLockPath, Range range)
         {
             Debug.Assert(!string.IsNullOrEmpty(docset));
 
@@ -52,7 +52,7 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            var (_, content, _) = await RestoreMap.GetRestoredFileContent(docset, dependencyLockPath);
+            var (_, content, _) = await RestoreMap.GetRestoredFileContent(docset, dependencyLockPath, range);
 
             if (string.IsNullOrEmpty(content))
             {

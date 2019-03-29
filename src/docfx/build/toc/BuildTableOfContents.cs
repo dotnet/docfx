@@ -117,7 +117,7 @@ namespace Microsoft.Docs.Build
                 fileToBuild,
                 (file, href, isInclude) =>
                 {
-                    var (error, referencedTocContent, referencedToc) = context.DependencyResolver.ResolveContent(href, file, DependencyType.TocInclusion);
+                    var (error, referencedTocContent, referencedToc) = context.DependencyResolver.ResolveContent(href, file, default, DependencyType.TocInclusion);
                     errors.AddIfNotNull(error);
                     if (referencedToc != null && isInclude)
                     {

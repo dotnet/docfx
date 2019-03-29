@@ -145,7 +145,7 @@ namespace Microsoft.Docs.Build
         private static (string content, object file) ReadFile(string path, object relativeTo, MarkdownObject origin)
         {
             var status = t_status.Value.Peek();
-            var (error, content, file) = status.DependencyResolver.ResolveContent(path, (Document)relativeTo);
+            var (error, content, file) = status.DependencyResolver.ResolveContent(path, (Document)relativeTo, origin.ToRange());
             status.Errors.AddIfNotNull(error?.WithRange(origin.ToRange()));
             return (content, file);
         }

@@ -72,12 +72,12 @@ namespace Microsoft.Docs.Build
             return released;
         }
 
-        public static Task<(string localPath, string content, string etag)> GetRestoredFileContent(Docset docset, string url)
+        public static Task<(string localPath, string content, string etag)> GetRestoredFileContent(Docset docset, string url, Range range)
         {
-            return GetRestoredFileContent(docset.DocsetPath, url, docset.FallbackDocset?.DocsetPath);
+            return GetRestoredFileContent(docset.DocsetPath, url, range, docset.FallbackDocset?.DocsetPath);
         }
 
-        public static async Task<(string localPath, string content, string etag)> GetRestoredFileContent(string docsetPath, string url, string fallbackDocset = null)
+        public static async Task<(string localPath, string content, string etag)> GetRestoredFileContent(string docsetPath, string url, Range range, string fallbackDocset = null)
         {
             var fromUrl = HrefUtility.IsHttpHref(url);
             if (!fromUrl)
@@ -91,10 +91,10 @@ namespace Microsoft.Docs.Build
 
                 if (!string.IsNullOrEmpty(fallbackDocset))
                 {
-                    return await GetRestoredFileContent(fallbackDocset, url);
+                    return await GetRestoredFileContent(fallbackDocset, url, range);
                 }
 
-                throw Errors.FileNotFound(docsetPath, url).ToException();
+                throw Errors.FileNotFound(docsetPath, url, range).ToException();
             }
 
             var (content, etag) = await TryGetRestoredFileContent(url);
