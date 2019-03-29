@@ -134,7 +134,7 @@ inputs:
       gitCommitsTime: a.json
 outputs:
   build.log: |
-    ["error","file-not-found","*"]
+    ["error","file-not-found","*",2,19]
 ---
 # Restore longpath repo
 inputs:

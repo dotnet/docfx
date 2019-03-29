@@ -257,7 +257,7 @@ outputs:
   docs/a.json: |
     { "content": "<p><a href=\"b.md\">b</a></p>" }
 ---
-# [only]log with default log level when docfx crashes, even the corresponding rule is turned off
+# log with default log level when docfx crashes, even the corresponding rule is turned off
 inputs:
   docfx.yml: |
     rules:
@@ -266,7 +266,7 @@ inputs:
       userCache: user_profile.json
 outputs:
   build.log: |
-    ["error","file-not-found","Cannot find file 'user_profile.json' relative to '*'","*"]
+    ["error","file-not-found","Cannot find file 'user_profile.json' relative to '*'","*",4,14]
 ---
 # Treat warnings as errors
 inputs:
@@ -407,7 +407,7 @@ inputs:
 outputs:
   a.json:
   build.log: |
-    ["warning","unknown-field","Could not find member 'locales: zh-cn' on object of type 'Config'.","docfx.yml","['locales: zh-cn']"]
+    ["warning","unknown-field","Could not find member 'locales: zh-cn' on object of type 'Config'.","docfx.yml","['locales: zh-cn']",4,1]
 ---
 # redirect to in config.redirections must start with '/'
 inputs:
