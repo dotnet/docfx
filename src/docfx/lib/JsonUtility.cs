@@ -269,6 +269,17 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
+        /// Merge overwrite into container
+        /// And keep the line info of properties in overwrite which are not in container
+        /// </summary>
+        public static void MergeWithLineInfo(JObject container, JObject overwrite)
+        {
+            var original = overwrite.DeepClone() as JObject;
+            Merge(overwrite, container);
+            Merge(overwrite, original);
+        }
+
+        /// <summary>
         /// Report warnings for all null or undefined nodes, remove nulls inside arrays.
         /// </summary>
         public static (List<Error>, JToken) RemoveNulls(this JToken token)

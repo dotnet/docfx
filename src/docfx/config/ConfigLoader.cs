@@ -131,10 +131,7 @@ namespace Microsoft.Docs.Build
                 (errors, result) = LoadConfigObject(globalConfigPath, globalConfigPath);
             }
 
-            // to keep the line info of config
-            var original = config.DeepClone() as JObject;
-            JsonUtility.Merge(config, result);
-            JsonUtility.Merge(config, original);
+            JsonUtility.MergeWithLineInfo(result, config);
             return (errors, config);
         }
 
@@ -157,10 +154,7 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            // to keep the line info of config
-            var original = config.DeepClone() as JObject;
-            JsonUtility.Merge(config, result);
-            JsonUtility.Merge(config, original);
+            JsonUtility.MergeWithLineInfo(result, config);
             return (errors, config);
         }
 
