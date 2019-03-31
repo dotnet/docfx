@@ -130,7 +130,7 @@ namespace Microsoft.DocAsCode.HtmlToPdf
                         {
                             RemoveQueryStringAndBookmarkTransformer(tocPageFilePath);
                             AbsolutePathInTocPageFileTransformer(tocPageFilePath);
-                            htmlModels.Insert(0, new HtmlModel { Title = "Cover Page", HtmlFilePath = tocPageFilePath });
+                            htmlModels.Insert(0, new HtmlModel { Title = _pdfOptions.TocTitle, HtmlFilePath = tocPageFilePath });
                         }
                         if (_pdfOptions.ExcludeTocs == null || _pdfOptions.ExcludeTocs.All(p => NormalizeFilePath(p) != tocFilePath))
                         {
