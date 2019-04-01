@@ -43,6 +43,7 @@ namespace Microsoft.Docs.Build
                     fileMetadata[key] = value;
                 }
             }
+            errors.AddRange(MetadataValidator.ValidateGlobalMetadata(yamlHeader));
             JsonUtility.Merge(result, fileMetadata);
 
             if (yamlHeader != null)
