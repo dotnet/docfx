@@ -788,7 +788,7 @@ outputs:
   build.log: |
     ["error","yaml-duplicate-key","Key 'topicHref' is already defined, remove the duplicate key.","docs/TOC.yml","",3,3]
 ---
-# The included TOC's errors/warning should be assigned to itself, not its parent
+# [only]The included TOC's errors/warning should be assigned to itself, not its parent
 inputs:
   docfx.yml: |
     files: docs/TOC.md

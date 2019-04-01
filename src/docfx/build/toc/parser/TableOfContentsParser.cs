@@ -15,7 +15,7 @@ namespace Microsoft.Docs.Build
         private static readonly string[] s_tocFileNames = new[] { "TOC.md", "TOC.json", "TOC.yml" };
         private static readonly string[] s_experimentalTocFileNames = new[] { "TOC.experimental.md", "TOC.experimental.json", "TOC.experimental.yml" };
 
-        public delegate (string resolvedTopicHref, Document file) ResolveHref(Document relativeTo, string href, Document resultRelativeTo);
+        public delegate (string resolvedTopicHref, Document file) ResolveHref(Document relativeTo, string href, Document resultRelativeTo, Range range);
 
         public delegate (string resolvedTopicHref, string resolvedTopicName, Document file) ResolveXref(Document relativeTo, string uid);
 
@@ -27,7 +27,7 @@ namespace Microsoft.Docs.Build
             return LoadInternal(context, file, file, resolveContent, resolveHref, resolveXref, new List<Document>());
         }
 
-        private static (List<Error> errors, TableOfContentsModel tocModel) LoadTocModel(Context context, Document file, string content = null)
+        private static (List<Error> errors, TableOfContentsModel tocModel, Dictionary<string, Range> hrefLineInfoMap) LoadTocModel(Context context, Document file, string content = null)
         {
             var filePath = file.FilePath;
 
@@ -41,23 +41,49 @@ namespace Microsoft.Docs.Build
                 var (errors, tocToken) = content is null ? YamlUtility.Deserialize(file, context) : YamlUtility.Deserialize(content);
                 var (loadErrors, toc) = LoadTocModel(tocToken);
                 errors.AddRange(loadErrors);
-                return (errors, toc);
+                var hrefLineInfoMap = new Dictionary<string, Range>();
+                BuildLineInfoMap(tocToken, hrefLineInfoMap);
+                return (errors, toc, hrefLineInfoMap);
             }
             else if (filePath.EndsWith(".json", PathUtility.PathComparison))
             {
                 var (errors, tocToken) = content is null ? JsonUtility.Deserialize(file, context) : JsonUtility.Deserialize(content);
                 var (loadErrors, toc) = LoadTocModel(tocToken);
                 errors.AddRange(loadErrors);
-                return (errors, toc);
+                var hrefLineInfoMap = new Dictionary<string, Range>();
+                BuildLineInfoMap(tocToken, hrefLineInfoMap);
+                return (errors, toc, hrefLineInfoMap);
             }
             else if (filePath.EndsWith(".md", PathUtility.PathComparison))
             {
                 content = content ?? file.ReadText();
                 GitUtility.CheckMergeConflictMarker(content, file.FilePath);
-                return MarkdownTocMarkup.LoadMdTocModel(content, file, context);
+                var (errors, toc) = MarkdownTocMarkup.LoadMdTocModel(content, file, context);
+
+                // TODO: build href line info map for toc.md
+                return (errors, toc, new Dictionary<string, Range>());
             }
 
             throw new NotSupportedException($"{filePath} is an unknown TOC file");
+        }
+
+        private static void BuildLineInfoMap(JToken tocToken, Dictionary<string, Range> hrefLineInfoMap)
+        {
+            if (tocToken is JArray array)
+            {
+                foreach (var item in tocToken.Children())
+                {
+                    BuildLineInfoMap(item, hrefLineInfoMap);
+                }
+            }
+            else if (tocToken is JObject obj)
+            {
+                foreach (var item in tocToken.Children())
+                {
+                    var prop = item as JProperty;
+                    hrefLineInfoMap.Add(item.Path, JsonUtility.ToRange(prop));
+                }
+            }
         }
 
         private static (List<Error>, TableOfContentsModel) LoadTocModel(JToken tocToken)
@@ -96,12 +122,12 @@ namespace Microsoft.Docs.Build
                 throw Errors.CircularReference(parents).ToException();
             }
 
-            var (errors, model) = LoadTocModel(context, file, content);
+            var (errors, model, lineInfoMap) = LoadTocModel(context, file, content);
 
             if (model.Items.Count > 0)
             {
                 parents.Add(file);
-                errors.AddRange(ResolveTocModelItems(context, model.Items, parents, file, rootPath, resolveContent, resolveHref, resolveXref));
+                errors.AddRange(ResolveTocModelItems(context, model.Items, parents, file, rootPath, resolveContent, resolveHref, resolveXref, lineInfoMap));
                 parents.RemoveAt(parents.Count - 1);
             }
 
@@ -116,14 +142,15 @@ namespace Microsoft.Docs.Build
             Document rootPath,
             ResolveContent resolveContent,
             ResolveHref resolveHref,
-            ResolveXref resolveXref)
+            ResolveXref resolveXref,
+            Dictionary<string, Range> lineInfoMap)
         {
             var errors = new List<Error>();
             foreach (var tocModelItem in tocModelItems)
             {
                 if (tocModelItem.Items != null && tocModelItem.Items.Any())
                 {
-                    errors.AddRange(ResolveTocModelItems(context, tocModelItem.Items, parents, filePath, rootPath, resolveContent, resolveHref, resolveXref));
+                    errors.AddRange(ResolveTocModelItems(context, tocModelItem.Items, parents, filePath, rootPath, resolveContent, resolveHref, resolveXref, lineInfoMap));
                 }
 
                 var tocHref = GetTocHref(tocModelItem);
@@ -245,7 +272,8 @@ namespace Microsoft.Docs.Build
                 var topicHrefType = GetHrefType(topicHref);
                 Debug.Assert(topicHrefType == TocHrefType.AbsolutePath || !IsIncludeHref(topicHrefType));
 
-                var (resolvedTopicHref, file) = resolveHref.Invoke(filePath, topicHref, rootPath);
+                // TODO: get range for topicHref
+                var (resolvedTopicHref, file) = resolveHref.Invoke(filePath, topicHref, rootPath, default);
                 return (resolvedTopicHref, null, file);
             }
         }

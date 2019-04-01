@@ -126,7 +126,7 @@ namespace Microsoft.Docs.Build
                     }
                     return (referencedTocContent, referencedToc);
                 },
-                (file, href, resultRelativeTo) =>
+                (file, href, resultRelativeTo, range) =>
                 {
                     // TODO: get line info of TOC href for bookmark validation
                     // add to referenced document list
