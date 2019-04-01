@@ -817,6 +817,57 @@ items:
             Assert.Equal("~/included/toc.yml", listener.Items[1].File);
         }
 
+        [Fact]
+        public void UrlDecodeHrefInYamlToc()
+        {
+            // Arrange
+            var tocContent = @"
+- name: NAME
+  href: a%20b.md";
+            var files = new FileCollection(_inputFolder);
+            var tocFile = _fileCreator.CreateFile(tocContent, FileType.YamlToc);
+            var markdownFile = _fileCreator.CreateFile(string.Empty, FileType.MarkdownContent, fileNameWithoutExtension:"a b");
+            files.Add(DocumentType.Article, new[] { tocFile, markdownFile });
+
+            // Act
+            var listener = TestLoggerListener.CreateLoggerListenerWithCodesFilter(
+                new List<string> { WarningCodes.Build.InvalidFileLink });
+            Logger.RegisterListener(listener);
+            using (new LoggerPhaseScope(nameof(TocDocumentProcessorTest)))
+            {
+                BuildDocument(files);
+            }
+            Logger.UnregisterListener(listener);
+
+            // Assert
+            Assert.NotNull(listener.Items);
+            Assert.Empty(listener.Items);
+        }
+
+        [Fact]
+        public void UrlDecodeHrefInMarkdownToc()
+        {
+            // Arrange
+            var tocContent = @"# [NAME](a%20b.md)";
+            var files = new FileCollection(_inputFolder);
+            var tocFile = _fileCreator.CreateFile(tocContent, FileType.MarkdownToc);
+            var markdownFile = _fileCreator.CreateFile(string.Empty, FileType.MarkdownContent, fileNameWithoutExtension: "a b");
+            files.Add(DocumentType.Article, new[] { tocFile, markdownFile });
+
+            // Act
+            var listener = TestLoggerListener.CreateLoggerListenerWithCodesFilter(
+                new List<string> { WarningCodes.Build.InvalidFileLink });
+            Logger.RegisterListener(listener);
+            using (new LoggerPhaseScope(nameof(TocDocumentProcessorTest)))
+            {
+                BuildDocument(files);
+            }
+            Logger.UnregisterListener(listener);
+
+            // Assert
+            Assert.NotNull(listener.Items);
+            Assert.Empty(listener.Items);
+        }
         #region Helper methods
 
         private enum FileType
