@@ -375,12 +375,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        /// <summary>
-        /// Create a file mutex to lock a resource/action
-        /// </summary>
-        /// <param name="mutexName">A globbaly unique mutext name</param>
-        /// <param name="action">The action/resource you want to lock</param>
-        /// TODO: remove this method if possible
+        // TODO: remove this method if possible
         public static Task RunInsideMutexAsync(string mutexName, Func<Task> action)
         {
             RunInsideMutex(mutexName, () => action().GetAwaiter().GetResult());

@@ -23,6 +23,7 @@ namespace Microsoft.Docs.Build
             return (repo, pathToRepo, GetCommitProvider(repo).GetCommitHistory(pathToRepo, committish));
         }
 
+        // TODO: remove this method if possible
         public (Repository repo, string pathToRepo, List<GitCommit> commits) GetCommitHistoryNoCache(Docset docset, string filePath, int top, string committish = null)
         {
             var repo = docset.GetRepository(filePath);
