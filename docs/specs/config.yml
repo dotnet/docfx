@@ -407,7 +407,7 @@ inputs:
 outputs:
   a.json:
   build.log: |
-    ["warning","unknown-field","Could not find member 'locales: zh-cn' on object of type 'Config'.","docfx.yml","['locales: zh-cn']"]
+    ["warning","unknown-field","Could not find member 'locales: zh-cn' on object of type 'Config'.","docfx.yml","['locales: zh-cn']",4,1]
 ---
 # redirect to in config.redirections must start with '/'
 inputs:
