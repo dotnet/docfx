@@ -376,10 +376,40 @@ namespace Microsoft.Docs.Build
         }
 
         // TODO: remove this method if possible
-        public static Task RunInsideMutexAsync(string mutexName, Func<Task> action)
+        public static async Task RunInsideMutexAsync(string mutexName, Func<Task> action)
         {
-            RunInsideMutex(mutexName, () => action().GetAwaiter().GetResult());
-            return Task.CompletedTask;
+            Debug.Assert(!string.IsNullOrEmpty(mutexName));
+            var lockPath = Path.Combine(AppData.MutexRoot, HashUtility.GetMd5Hash(mutexName));
+
+            // avoid the RunInsideMutex to be nested used with same mutex name
+            t_innerCall.Value = t_innerCall.Value ?? ImmutableStack<string>.Empty;
+            if (t_innerCall.Value.Contains(lockPath))
+            {
+                throw new ApplicationException($"Nested call to RunInsideMutex is detected, mutex name: {mutexName}");
+            }
+            t_innerCall.Value = t_innerCall.Value.Push(lockPath);
+
+            try
+            {
+                Directory.CreateDirectory(AppData.MutexRoot);
+
+                using (RetryUntilSucceed(mutexName, IsFileAlreadyExistsException, CreateFile))
+                {
+                    await action();
+                }
+
+                FileStream CreateFile() => new FileStream(
+                    lockPath,
+                    FileMode.CreateNew,
+                    FileAccess.ReadWrite,
+                    FileShare.None,
+                    1,
+                    FileOptions.DeleteOnClose);
+            }
+            finally
+            {
+                t_innerCall.Value = t_innerCall.Value.Pop();
+            }
         }
 
         /// <summary>
