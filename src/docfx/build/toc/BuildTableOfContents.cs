@@ -115,8 +115,9 @@ namespace Microsoft.Docs.Build
             var (loadErrors, model) = TableOfContentsParser.Load(
                 context,
                 fileToBuild,
-                (file, href, isInclude) =>
+                (file, href, isInclude, ranges) =>
                 {
+                    // TODO: pass line info into ResolveContent
                     var (error, referencedTocContent, referencedToc) = context.DependencyResolver.ResolveContent(href, file, DependencyType.TocInclusion);
                     errors.AddIfNotNull(error);
                     if (referencedToc != null && isInclude)
@@ -126,11 +127,11 @@ namespace Microsoft.Docs.Build
                     }
                     return (referencedTocContent, referencedToc);
                 },
-                (file, href, resultRelativeTo, range) =>
+                (file, href, resultRelativeTo, ranges) =>
                 {
                     // TODO: get line info of TOC href for bookmark validation
                     // add to referenced document list
-                    var (error, link, buildItem) = context.DependencyResolver.ResolveLink(href, file, resultRelativeTo, null, default);
+                    var (error, link, buildItem) = context.DependencyResolver.ResolveLink(href, file, resultRelativeTo, null, ranges);
                     errors.AddIfNotNull(error);
 
                     if (buildItem != null)
@@ -139,9 +140,10 @@ namespace Microsoft.Docs.Build
                     }
                     return (link, buildItem);
                 },
-                (file, uid) =>
+                (file, uid, ranges) =>
                 {
                     // add to referenced document list
+                    // TODO: pass line info into ResolveXref
                     var (error, link, display, buildItem) = context.DependencyResolver.ResolveXref(uid, file, file);
                     errors.AddIfNotNull(error);
 
