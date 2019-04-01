@@ -29,7 +29,6 @@ namespace Microsoft.Docs.Build
                     errors.AddRange(yamlErrors);
                     if (yamlHeaderObj is JObject obj)
                     {
-                        errors.AddRange(MetadataValidator.ValidateGlobalMetadata(obj));
                         return (errors, obj);
                     }
 
