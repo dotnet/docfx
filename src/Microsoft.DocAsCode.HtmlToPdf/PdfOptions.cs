@@ -3,9 +3,6 @@
 
 namespace Microsoft.DocAsCode.HtmlToPdf
 {
-    using System;
-    using System.IO;
-
     public class PdfOptions
     {
         public string SourceDirectory { get; set; }
@@ -40,6 +37,11 @@ namespace Microsoft.DocAsCode.HtmlToPdf
         /// Specify additional command line arguments that should be passed to the pdf command.
         /// </summary>
         public string AdditionalPdfCommandArgs { get; set; }
+
+        /// <summary>
+        /// Gets or sets the "Table of Contents" bookmark title.
+        /// </summary>
+        public string TocTitle { get; set; } = "Cover Page";
 
         /// <summary>
         /// If the path only with '/' or null or empty, will skip and return empty. Others will trim and return with as 'a/'

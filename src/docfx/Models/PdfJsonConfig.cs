@@ -52,5 +52,11 @@ namespace Microsoft.DocAsCode
         /// </summary>
         [JsonProperty("wkhtmltopdf")]
         public WkhtmltopdfJsonConfig Wkhtmltopdf { get; set; }
+
+        /// <summary>
+        /// Gets or sets the "Table of Contents" bookmark title.
+        /// </summary>
+        [JsonProperty("tocTitle")]
+        public string TocTitle { get; set; } = "Cover Page";
     }
 }

@@ -63,7 +63,8 @@ namespace Microsoft.DocAsCode.SubCommands
                 ExcludeTocs = _config.ExcludedTocs?.ToArray(),
                 KeepRawFiles = _config.KeepRawFiles,
                 LoadErrorHandling = _config.LoadErrorHandling,
-                AdditionalPdfCommandArgs = _config.Wkhtmltopdf?.AdditionalArguments
+                AdditionalPdfCommandArgs = _config.Wkhtmltopdf?.AdditionalArguments,
+                TocTitle = _config.TocTitle
             };
 
             // 1. call BuildCommand to generate html files first
