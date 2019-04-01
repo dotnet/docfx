@@ -17,7 +17,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
     {
         #region Fields
 
-        private static readonly ImmutableList<DependencyType> _defaultTypes = ImmutableList.Create<DependencyType>(
+        private static readonly ImmutableList<DependencyType> _defaultTypes = ImmutableList.Create(
             new DependencyType
             {
                 Name = DependencyTypeName.Include,
@@ -58,7 +58,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             {
                 Name = DependencyTypeName.Metadata,
                 Phase = BuildPhase.Link,
-                Transitivity = DependencyTransitivity.None,
+                Transitivity = DependencyTransitivity.Never,
             });
 
         private readonly HashSet<DependencyItem> _dependencyItems;
