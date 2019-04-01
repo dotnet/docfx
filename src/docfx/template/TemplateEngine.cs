@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
@@ -18,7 +19,7 @@ namespace Microsoft.Docs.Build
 
         public JObject Global { get; }
 
-        public TemplateEngine(string templateDir, string locale)
+        private TemplateEngine(string templateDir, string locale)
         {
             var contentTemplateDir = Path.Combine(templateDir, "ContentTemplate");
 
@@ -29,11 +30,27 @@ namespace Microsoft.Docs.Build
             Global = LoadGlobalTokens(templateDir, _locale);
         }
 
+        public static TemplateEngine Create(Docset docset)
+        {
+            Debug.Assert(docset != null);
+
+            if (string.IsNullOrEmpty(docset.Config.Theme))
+            {
+                return null;
+            }
+
+            var (themeRemote, themeBranch) = LocalizationUtility.GetLocalizedTheme(docset.Config.Theme, docset.Locale, docset.Config.Localization.DefaultLocale);
+            var (themePath, themeLock) = docset.RestoreMap.GetGitRestorePath($"{themeRemote}#{themeBranch}", docset.DependencyLock);
+            Log.Write($"Using theme '{themeRemote}#{themeLock.Commit}' at '{themePath}'");
+
+            return new TemplateEngine(themePath, docset.Locale);
+        }
+
         public string Render(PageModel model, Document file)
         {
             // TODO: only works for conceptual
             var content = model.Content.ToString();
-            var (templateModel, metadata) = TemplateTransform.Transform(model, file);
+            var (templateModel, metadata) = TemplateTransform.Transform(this, model, file);
 
             var layout = templateModel.RawMetadata.Value<string>("layout");
             var themeRelativePath = PathUtility.GetRelativePathToFile(file.SitePath, "_themes");

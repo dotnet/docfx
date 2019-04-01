@@ -6,3 +6,5 @@ rules:
   resolve-commit-failed: off
 output:
   json: true
+gitHub:
+  userCacheExpirationInHours: 876000

@@ -163,30 +163,43 @@ namespace Microsoft.Docs.Build
             return result.ToString();
         }
 
-        public static HtmlNode ExtractTitle(HtmlNode node)
+        /// <summary>
+        /// Get title and raw title, remove title node if all previous nodes are invisible
+        /// </summary>
+        public static bool TryExtractTitle(HtmlNode node, out string title, out string rawTitle)
         {
+            var existVisibleNode = false;
+
+            title = null;
+            rawTitle = string.Empty;
             foreach (var child in node.ChildNodes)
             {
-                if (child.NodeType == HtmlNodeType.Comment)
+                if (!IsInvisibleNode(child))
                 {
-                    continue;
-                }
+                    if (child.NodeType == HtmlNodeType.Element && (child.Name == "h1" || child.Name == "h2" || child.Name == "h3"))
+                    {
+                        title = child.InnerText == null ? null : HttpUtility.HtmlDecode(child.InnerText);
 
-                if (child.NodeType == HtmlNodeType.Text && string.IsNullOrWhiteSpace(child.OuterHtml))
-                {
-                    continue;
-                }
+                        if (!existVisibleNode)
+                        {
+                            rawTitle = child.OuterHtml;
+                            child.Remove();
+                        }
 
-                if (child.NodeType == HtmlNodeType.Element && (child.Name == "h1" || child.Name == "h2" || child.Name == "h3"))
-                {
-                    child.Remove();
-                    return child;
-                }
+                        return true;
+                    }
 
-                return null;
+                    existVisibleNode = true;
+                }
             }
 
-            return null;
+            return false;
+
+            bool IsInvisibleNode(HtmlNode n)
+            {
+                return n.NodeType == HtmlNodeType.Comment ||
+                    (n.NodeType == HtmlNodeType.Text && string.IsNullOrWhiteSpace(n.OuterHtml));
+            }
         }
 
         private static void AddLinkType(this HtmlNode html, string tag, string attribute, string locale)

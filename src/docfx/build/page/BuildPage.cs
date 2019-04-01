@@ -26,7 +26,8 @@ namespace Microsoft.Docs.Build
 
             if (!string.IsNullOrEmpty(metadata.BreadcrumbPath))
             {
-                var (breadcrumbError, breadcrumbPath, _) = context.DependencyResolver.ResolveLink(metadata.BreadcrumbPath, file, file, buildChild);
+                // there is no bookmark validation for breadcrumb path, so no need of range here
+                var (breadcrumbError, breadcrumbPath, _) = context.DependencyResolver.ResolveLink(metadata.BreadcrumbPath, file, file, buildChild, default);
                 errors.AddIfNotNull(breadcrumbError);
                 metadata.BreadcrumbPath = breadcrumbPath;
             }
@@ -48,7 +49,7 @@ namespace Microsoft.Docs.Build
 
             var isPage = schema.Attribute is PageSchemaAttribute;
             var outputPath = file.GetOutputPath(model.Monikers, isPage);
-            var (output, extensionData) = ApplyTemplate(file, model, isPage);
+            var (output, extensionData) = ApplyTemplate(context, file, model, isPage);
 
             var publishItem = new PublishItem
             {
@@ -119,16 +120,15 @@ namespace Microsoft.Docs.Build
                 context.DependencyResolver,
                 buildChild,
                 rangeString => context.MonikerProvider.GetZoneMonikers(rangeString, monikers, errors),
-                key => file.Docset.Template?.GetToken(key),
+                key => context.Template?.GetToken(key),
                 MarkdownPipelineType.Markdown);
             errors.AddRange(markupErrors);
 
             var htmlDom = HtmlUtility.LoadHtml(html);
             var wordCount = HtmlUtility.CountWord(htmlDom);
             var bookmarks = HtmlUtility.GetBookmarks(htmlDom);
-            var titleDom = HtmlUtility.ExtractTitle(htmlDom);
 
-            if (titleDom == null)
+            if (!HtmlUtility.TryExtractTitle(htmlDom, out var title, out var rawTitle))
             {
                 errors.Add(Errors.HeadingNotFound(file));
             }
@@ -136,8 +136,8 @@ namespace Microsoft.Docs.Build
             var model = new PageModel
             {
                 Content = HtmlPostProcess(file, htmlDom),
-                Title = yamlHeader.Value<string>("title") ?? HttpUtility.HtmlDecode(titleDom?.InnerText ?? ""),
-                RawTitle = titleDom?.OuterHtml,
+                Title = yamlHeader.Value<string>("title") ?? title,
+                RawTitle = rawTitle,
                 WordCount = wordCount,
                 Monikers = monikers,
             };
@@ -220,18 +220,18 @@ namespace Microsoft.Docs.Build
             return LocalizationUtility.AddLeftToRightMarker(file.Docset, html.OuterHtml);
         }
 
-        private static (object output, JObject extensionData) ApplyTemplate(Document file, PageModel model, bool isPage)
+        private static (object output, JObject extensionData) ApplyTemplate(Context context, Document file, PageModel model, bool isPage)
         {
-            if (!file.Docset.Config.Output.Json && file.Docset.Template != null)
+            if (!file.Docset.Config.Output.Json && context.Template != null)
             {
-                return (file.Docset.Template.Render(model, file), null);
+                return (context.Template.Render(model, file), null);
             }
 
             if (file.Docset.Legacy)
             {
-                if (isPage && file.Docset.Template != null)
+                if (isPage && context.Template != null)
                 {
-                    return TemplateTransform.Transform(model, file);
+                    return TemplateTransform.Transform(context.Template, model, file);
                 }
 
                 return (model, null);

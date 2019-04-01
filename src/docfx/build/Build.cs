@@ -68,7 +68,7 @@ namespace Microsoft.Docs.Build
                     }
                     else
                     {
-                        docset.Template.CopyTo(outputPath);
+                        context.Template.CopyTo(outputPath);
                     }
                 }
 

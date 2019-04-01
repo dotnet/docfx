@@ -321,7 +321,7 @@ namespace Microsoft.Docs.Build
 
         public static Range ToRange(IJsonLineInfo lineInfo)
         {
-            return lineInfo.HasLineInfo() ? new Range(lineInfo.LineNumber, lineInfo.LinePosition) : default;
+            return lineInfo != null && lineInfo.HasLineInfo() ? new Range(lineInfo.LineNumber, lineInfo.LinePosition) : default;
         }
 
         private static void HandleError(object sender, Newtonsoft.Json.Serialization.ErrorEventArgs args)

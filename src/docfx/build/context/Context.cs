@@ -20,9 +20,11 @@ namespace Microsoft.Docs.Build
         public readonly BookmarkValidator BookmarkValidator;
         public readonly DependencyMapBuilder DependencyMapBuilder;
         public readonly DependencyResolver DependencyResolver;
+        public readonly DependencyResolver LandingPageDependencyResolver;
         public readonly GitHubUserCache GitHubUserCache;
         public readonly ContributionProvider ContributionProvider;
         public readonly PublishModelBuilder PublishModelBuilder;
+        public readonly TemplateEngine Template;
 
         public Context(
             Report report,
@@ -34,9 +36,11 @@ namespace Microsoft.Docs.Build
             BookmarkValidator bookmarkValidator,
             DependencyMapBuilder dependencyMapBuilder,
             DependencyResolver dependencyResolver,
+            DependencyResolver landingPageDependencyResolver,
             GitHubUserCache gitHubUserCache,
             ContributionProvider contributionProvider,
-            PublishModelBuilder publishModelBuilder)
+            PublishModelBuilder publishModelBuilder,
+            TemplateEngine template)
         {
             Report = report;
             Output = output;
@@ -46,10 +50,12 @@ namespace Microsoft.Docs.Build
             GitCommitProvider = gitCommitProvider;
             BookmarkValidator = bookmarkValidator;
             DependencyMapBuilder = dependencyMapBuilder;
+            LandingPageDependencyResolver = landingPageDependencyResolver;
             DependencyResolver = dependencyResolver;
             GitHubUserCache = gitHubUserCache;
             ContributionProvider = contributionProvider;
             PublishModelBuilder = publishModelBuilder;
+            Template = template;
         }
 
         public static async Task<Context> Create(string outputPath, Report report, Docset docset, Func<XrefMap> xrefMap)
@@ -63,8 +69,10 @@ namespace Microsoft.Docs.Build
             var bookmarkValidator = new BookmarkValidator();
             var dependencyMapBuilder = new DependencyMapBuilder();
             var dependencyResolver = new DependencyResolver(gitCommitProvider, bookmarkValidator, dependencyMapBuilder, new Lazy<XrefMap>(xrefMap));
+            var landingPageDependencyResolver = new DependencyResolver(gitCommitProvider, bookmarkValidator, dependencyMapBuilder, new Lazy<XrefMap>(xrefMap), forLandingPage: true);
             var contributionProvider = await ContributionProvider.Create(docset, gitHubUserCache, gitCommitProvider);
             var publishModelBuilder = new PublishModelBuilder();
+            var template = TemplateEngine.Create(docset);
 
             return new Context(
                 report,
@@ -76,9 +84,11 @@ namespace Microsoft.Docs.Build
                 bookmarkValidator,
                 dependencyMapBuilder,
                 dependencyResolver,
+                landingPageDependencyResolver,
                 gitHubUserCache,
                 contributionProvider,
-                publishModelBuilder);
+                publishModelBuilder,
+                template);
         }
 
         public void Dispose()

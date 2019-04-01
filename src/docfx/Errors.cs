@@ -201,7 +201,7 @@ namespace Microsoft.Docs.Build
         /// Defined a redirection entry that's not matched by config's files glob patterns.
         /// </summary>
         public static Error RedirectionOutOfScope(Document redirection, string configFile)
-            => new Error(ErrorLevel.Warning, "redirection-out-of-scope", $"Redirection file '{redirection}' will not be built because it is not included in {configFile}");
+            => new Error(ErrorLevel.Info, "redirection-out-of-scope", $"Redirection file '{redirection}' will not be built because it is not included in {configFile}");
 
         /// <summary>
         /// Link which's resolved to a file in dependency repo won't be built.
@@ -268,12 +268,6 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
-        /// Inclusion is a <see cref="Config.Redirections"/> entry like [!INCLUDE[](redirect.md)]
-        /// </summary>
-        public static Error IncludeIsRedirection(Document relativeTo, string path)
-            => new Error(ErrorLevel.Error, "include-is-redirection", $"Referenced inclusion {path} relative to '{relativeTo}' shouldn't belong to redirections", relativeTo.ToString());
-
-        /// <summary>
         /// More than one files are resolved to the same output path.
         /// Examples:
         ///   - in <see cref="Config.Redirections"/> section, defined an entry key that's also a file in build scope
@@ -318,14 +312,14 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Defined refrence with by #bookmark fragment between articles, which doesn't exist.
         /// </summary>
-        public static Error ExternalBookmarkNotFound(Document relativeTo, Document reference, string bookmark, IEnumerable<string> candidateBookmarks)
-            => new Error(ErrorLevel.Warning, "external-bookmark-not-found", $"Cannot find bookmark '#{bookmark}' in '{reference}'{(FindBestMatch(bookmark, candidateBookmarks, out string matchedBookmark) ? $", did you mean '#{matchedBookmark}'?" : null)}", relativeTo.ToString());
+        public static Error ExternalBookmarkNotFound(Document relativeTo, Document reference, string bookmark, IEnumerable<string> candidateBookmarks, Range range)
+            => new Error(ErrorLevel.Warning, "external-bookmark-not-found", $"Cannot find bookmark '#{bookmark}' in '{reference}'{(FindBestMatch(bookmark, candidateBookmarks, out string matchedBookmark) ? $", did you mean '#{matchedBookmark}'?" : null)}", relativeTo.ToString(), range);
 
         /// <summary>
         /// Defined refrence with by #bookmark fragment within articles, which doesn't exist.
         /// </summary>
-        public static Error InternalBookmarkNotFound(Document file, string bookmark, IEnumerable<string> candidateBookmarks)
-            => new Error(ErrorLevel.Suggestion, "internal-bookmark-not-found", $"Cannot find bookmark '#{bookmark}' in '{file}'{(FindBestMatch(bookmark, candidateBookmarks, out string matchedBookmark) ? $", did you mean '#{matchedBookmark}'?" : null)}", file.ToString());
+        public static Error InternalBookmarkNotFound(Document file, string bookmark, IEnumerable<string> candidateBookmarks, Range range)
+            => new Error(ErrorLevel.Suggestion, "internal-bookmark-not-found", $"Cannot find bookmark '#{bookmark}' in '{file}'{(FindBestMatch(bookmark, candidateBookmarks, out string matchedBookmark) ? $", did you mean '#{matchedBookmark}'?" : null)}", file.ToString(), range);
 
         /// <summary>
         /// Used null value in yaml header or schema documents.

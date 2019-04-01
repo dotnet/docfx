@@ -55,7 +55,7 @@ outputs:
     {
       "files": [
         { "url": "/c", "!hash": null },
-        { "url": "/a", "hash": "03e8df11acafdb65be70e2ce72d8ad2b751a6b80" },
+        { "url": "/a", "hash": "db2c931f20f08792b4bd374ac0587399fdef018f" },
         { "url": "/b.png", "hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709" },
         { "url": "/toc.json", "hash": "ad75fac1a867d604c1df88742ed36d56aecd1926" }
       ]

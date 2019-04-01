@@ -194,7 +194,7 @@ outputs:
   docs/index.json: |
     {
       "author": 
-        { "name": "charlie", "profile_url": "https://github.com/charlie", "display_name": "Charlie", "id": "3", "!monikers": null },
+        { "name": "charlie", "profile_url": "https://github.com/charlie", "display_name": "Charlie", "id": "3" },
       "!contributors": null
     }
 ---
@@ -229,9 +229,9 @@ outputs:
         { "name": "alice", "profile_url": "https://github.com/alice", "display_name": "Alice", "id": "1" },
     }
 ---
-# Author can be excluded, it's case insensitive
+# Author can NOT be excluded if explicitly specified in YAML header, it's case insensitive
 repos:
-  https://github.com/testowner/testrepo#master-autho-case-insensitive:
+  https://github.com/testowner/testrepo#master-exclude-author-from-yaml-heaer:
     - author: Charlie
       email: charlie@contoso.com
       files:
@@ -268,11 +268,37 @@ inputs:
 outputs:
   docs/index.json: |
     {
-      "!author": null,
+      "author":
+        { "name": "charlie", "profile_url": "https://github.com/charlie", "display_name": "Charlie", "id": "3" },
       "contributors": [
         { "name": "bob", "profile_url": "https://github.com/bob", "display_name": "Bob", "id": "2" },
         { "name": "alice", "profile_url": "https://github.com/alice", "display_name": "Alice", "id": "1" }
       ],
+    }
+---
+# Author CAN be excluded if implicitly extracted from commit history
+repos:
+  https://github.com/testowner/testrepo#master-exclude-author-from-commit-history:
+    - author: Alice
+      email: alice@contoso.com
+      files:
+        docs/index.md: |
+          Alice creates this.
+inputs:
+  docfx.yml: |
+    gitHub:
+      userCache: user_profile.json
+      resolveUsers: true
+    contribution:
+      excludedContributors:
+        - alice
+  user_profile.json: |
+      { "users": [{"name": "Alice", "login": "alice", "id": 1, "emails": ["alice@contoso.com"]}] }
+outputs:
+  docs/index.json: |
+    {
+      "!author": null,
+      "!contributors": null
     }
 ---
 # Show content_git_url, original_content_git_url and gitcommit

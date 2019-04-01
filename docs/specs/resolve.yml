@@ -21,8 +21,8 @@ outputs:
   docs/b.json: |
     { "content": "<p>Link to <a href=\"a?a=b&amp;c=d#e\">a</a></p>" }
   build.log: |
-    ["warning","external-bookmark-not-found","Cannot find bookmark '#e' in 'docs/a.md'","docs/b.md"]
-    ["warning","external-bookmark-not-found","Cannot find bookmark '#a?b=c' in 'docs/b.md'","docs/a.md"]
+    ["warning","external-bookmark-not-found","Cannot find bookmark '#e' in 'docs/a.md'","docs/b.md","",1,9]
+    ["warning","external-bookmark-not-found","Cannot find bookmark '#a?b=c' in 'docs/b.md'","docs/a.md","",1,9]
 ---
 # Links to URLs are preserved as is
 inputs:
@@ -48,6 +48,28 @@ outputs:
     }
   docs/b.json: |
     { "content": "<p>Link to <a href=\"#\">self</a></p>" }
+---
+# Links to self bookmarks in the included file
+inputs:
+  docfx.yml: |
+    files: docs/a.md
+  docs/a.md: |
+    # heading
+    [!INCLUDE[](includes/b.md)]
+    Link to [invalid self](./a.md#heading3)
+  docs/includes/b.md: |
+    ## test
+    Link to [valid self](#test)
+    Link to [valid parent](../a.md/#heading)
+    Link to [invalid self](#heading1)
+    Link to [invalid parent](../a.md/#heading2)
+outputs:
+  docs/a.json: |
+    { "content": "<h2 id=\"test\">test</h2>\n<p>Link to <a href=\"#test\">valid self</a>\nLink to <a href=\"a#heading\">valid parent</a>\nLink to <a href=\"#heading1\">invalid self</a>\nLink to <a href=\"a#heading2\">invalid parent</a></p>\n\n<p>Link to <a href=\"#heading3\">invalid self</a></p>" }
+  build.log: |
+    ["suggestion","internal-bookmark-not-found","Cannot find bookmark '#heading3' in 'docs/a.md', did you mean '#heading'?","docs/a.md","",3,9]
+    ["suggestion","internal-bookmark-not-found","Cannot find bookmark '#heading2' in 'docs/includes/b.md', did you mean '#heading'?","docs/includes/b.md","",5,9]
+    ["suggestion","internal-bookmark-not-found","Cannot find bookmark '#heading1' in 'docs/includes/b.md', did you mean '#heading'?","docs/includes/b.md","",4,9]
 ---
 # Support both / and \ as directory seperator
 inputs:
@@ -178,8 +200,9 @@ inputs:
   docs/a.md: |
     Link to [!INCLUDE[](redirect.md)]
 outputs:
+  docs/a.json: |
+    {"content":"<p>Link to [!include[](redirect.md)]</p>"}
   build.log: |
-    ["error","include-is-redirection","Referenced inclusion redirect.md relative to 'docs/a.md' shouldn't belong to redirections","docs/a.md","",1,9]
     ["warning","include-not-found","Cannot resolve 'redirect.md' relative to 'docs/a.md'.","docs/a.md","",1,9]
 ---
 # Show warning if redirection file conflicts with existing file
@@ -206,7 +229,7 @@ outputs:
     {"content":"<p><a href=\"#self\"></a></p>"}
   build.log: |
     ["warning","link-out-of-scope","File 'c.md' referenced by link '../c.md' will not be built because it is not included in docfx.yml","docs/a.md","",1,9]
-    ["suggestion","internal-bookmark-not-found","Cannot find bookmark '#self' in 'c.md'","c.md"]
+    ["suggestion","internal-bookmark-not-found","Cannot find bookmark '#self' in 'c.md'","c.md","",1,1]
 ---
 # Don't show warning if link to a resource outside build scope
 inputs:

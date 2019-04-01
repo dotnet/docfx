@@ -77,13 +77,14 @@ inputs:
     documentType: LandingData
     title: REST API Documentation
     abstract:
+      description: <a href="~/b">"b"</a>
       menu:
         items:
         - href: ~/b
   b.md: b
 outputs:
   docs/index.json: |
-    { "content": {"title":"REST API Documentation","abstract":{"menu":{"items":[{"href":"../b"}]}},"documentType":"LandingData"} }
+    { "content": {"title":"REST API Documentation","abstract":{"menu":{"items":[{"href":"../b"}]},"description": "<p><a href=\"../b\">&quot;b&quot;</a></p>\n",},"documentType":"LandingData"} }
   b.json:
 ---
 # Produce deterministic result when redirection and file share the same publish url
@@ -100,3 +101,24 @@ outputs:
   .dependency-map.json:
   filemap.json:
   op_aggregated_file_map_info.json:
+---
+# Redirection file href shouldn't have extension
+commands:
+  - build --legacy
+inputs:
+  docfx.yml: |
+    redirections:
+      redirect.md: /redirect/to
+  a.md: |
+    [link](redirect.md)
+outputs:
+  a.raw.page.json: |
+    { "content": "<p>\n<a data-linktype=\"relative-path\" href=\"redirect\">link</a></p>" }
+  redirect.mta.json:
+  redirect.raw.page.json:
+  .manifest.json:
+  .dependency-map.json:
+  filemap.json:
+  op_aggregated_file_map_info.json:
+  .publish.json:
+  xrefmap.json:
