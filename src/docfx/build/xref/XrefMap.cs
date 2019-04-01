@@ -151,12 +151,12 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public static async Task<XrefMap> Create(Context context, Docset docset)
+        public static XrefMap Create(Context context, Docset docset)
         {
             Dictionary<string, XrefSpec> map = new Dictionary<string, XrefSpec>();
             foreach (var url in docset.Config.Xref)
             {
-                var (_, content, _) = await RestoreMap.GetRestoredFileContent(docset, url);
+                var (_, content, _) = RestoreMap.GetRestoredFileContent(docset, url);
                 XrefMapModel xrefMap = new XrefMapModel();
                 if (url.EndsWith(".yml", StringComparison.OrdinalIgnoreCase))
                 {

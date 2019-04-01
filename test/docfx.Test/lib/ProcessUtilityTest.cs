@@ -38,21 +38,21 @@ namespace Microsoft.Docs.Build
         }
 
         [Fact]
-        public static async Task FileMutexTest()
+        public static void FileMutexTest()
         {
             var concurrencyLevel = 0;
             var fileName = $"process-test/{Guid.NewGuid()}";
 
             try
             {
-                await ParallelUtility.ForEach(
+                Parallel.ForEach(
                     Enumerable.Range(0, 5),
                     i => ProcessUtility.RunInsideMutex(
                         fileName,
-                        async () =>
+                        () =>
                         {
                             Assert.Equal(1, Interlocked.Increment(ref concurrencyLevel));
-                            await Task.Delay(100);
+                            Thread.Sleep(100);
                             Assert.Equal(0, Interlocked.Decrement(ref concurrencyLevel));
                         }));
             }
@@ -63,37 +63,37 @@ namespace Microsoft.Docs.Build
         }
 
         [Fact]
-        public static async Task NestedRunInMutexWithDifferentNameTest()
+        public static void NestedRunInMutexWithDifferentNameTest()
         {
             // nested run works for different names
-            await ProcessUtility.RunInsideMutex($"process-test/{Guid.NewGuid()}",
-                async () =>
+            ProcessUtility.RunInsideMutex($"process-test/{Guid.NewGuid()}",
+                () =>
                 {
-                    await ProcessUtility.RunInsideMutex($"process-test/{Guid.NewGuid()}",
-                        async () =>
+                    ProcessUtility.RunInsideMutex($"process-test/{Guid.NewGuid()}",
+                        () =>
                         {
-                            await Task.Delay(100);
+                            // do nothing
                         });
                 });
         }
 
         [Fact]
-        public static async Task NestedRunInMutexWithSameNameTest()
+        public static void NestedRunInMutexWithSameNameTest()
         {
             // nested run doesn't work for sanme lock name
-            await Assert.ThrowsAnyAsync<Exception>(async () =>
+            Assert.ThrowsAny<Exception>(() =>
             {
                 var name = Guid.NewGuid().ToString();
-                await ProcessUtility.RunInsideMutex($"process-test/{name}",
-                    async () =>
+                ProcessUtility.RunInsideMutex($"process-test/{name}",
+                    () =>
                     {
-                        await ProcessUtility.RunInsideMutex($"process-test/{Guid.NewGuid()}",
-                            async () =>
+                        ProcessUtility.RunInsideMutex($"process-test/{Guid.NewGuid()}",
+                            () =>
                             {
-                                await ProcessUtility.RunInsideMutex($"process-test/{name}",
-                                    async () =>
+                                ProcessUtility.RunInsideMutex($"process-test/{name}",
+                                    () =>
                                     {
-                                        await Task.Delay(100);
+                                        // do nothing
                                     });
                             });
                     });
@@ -101,18 +101,18 @@ namespace Microsoft.Docs.Build
         }
 
         [Fact]
-        public static async Task ParallelNestedRunInMutexWithSameNameTest()
+        public static void ParallelNestedRunInMutexWithSameNameTest()
         {
             var name = Guid.NewGuid().ToString();
 
-            await ProcessUtility.RunInsideMutex($"process-test/123", async () =>
+            ProcessUtility.RunInsideMutex($"process-test/123", () =>
             {
-                await ParallelUtility.ForEach(new[] { 1, 2, 3, 4, 5 }, async i =>
+                Parallel.ForEach(new[] { 1, 2, 3, 4, 5 }, i =>
                 {
-                    await ProcessUtility.RunInsideMutex($"process-test/{name}",
+                    ProcessUtility.RunInsideMutex($"process-test/{name}",
                         () =>
                         {
-                            return Task.CompletedTask;
+                            // do nothing
                         });
                 });
             });
@@ -166,7 +166,7 @@ namespace Microsoft.Docs.Build
                 switch (parts[0])
                 {
                     case "a-s": // acquire shared lock
-                        (acquired, acquirer) = await ProcessUtility.AcquireSharedLock(guid + parts[1]);
+                        (acquired, acquirer) = ProcessUtility.AcquireSharedLock(guid + parts[1]);
                         Debug.Assert(acquired == results[i], $"{i}");
                         if (acquired)
                         {
@@ -179,7 +179,7 @@ namespace Microsoft.Docs.Build
                         }
                         break;
                     case "a-e": // acquire exclusive lock
-                        (acquired, acquirer) = await ProcessUtility.AcquireExclusiveLock(guid + parts[1]);
+                        (acquired, acquirer) = ProcessUtility.AcquireExclusiveLock(guid + parts[1]);
                         Debug.Assert(acquired == results[i], $"{i}");
                         if (acquired)
                         {
@@ -205,7 +205,7 @@ namespace Microsoft.Docs.Build
                                 acquirers.Remove("s" + parts[1]);
                             }
                         }
-                        var sharedReleased = await ProcessUtility.ReleaseSharedLock(guid + parts[1], sharedAcquirer ?? "not exists");
+                        var sharedReleased = ProcessUtility.ReleaseSharedLock(guid + parts[1], sharedAcquirer ?? "not exists");
                         Debug.Assert(sharedReleased == results[i], $"{i}");
                         break;
                     case "r-e": // release exclusive lock
@@ -218,8 +218,8 @@ namespace Microsoft.Docs.Build
                             acquirers.Remove("e" + parts[1]);
                         }
                         if (!string.IsNullOrEmpty(exclusiveAcquirer))
-                            Assert.True(await ProcessUtility.IsExclusiveLockHeld(guid + parts[1]));
-                        var exclusivedReleased = await ProcessUtility.ReleaseExclusiveLock(guid + parts[1], exclusiveAcquirer ?? "not exists");
+                            Assert.True(ProcessUtility.IsExclusiveLockHeld(guid + parts[1]));
+                        var exclusivedReleased = ProcessUtility.ReleaseExclusiveLock(guid + parts[1], exclusiveAcquirer ?? "not exists");
                         Debug.Assert(exclusivedReleased == results[i], $"{i}");
                         break;
                 }

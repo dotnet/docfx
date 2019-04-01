@@ -58,19 +58,19 @@ namespace Microsoft.Docs.Build
             Template = template;
         }
 
-        public static async Task<Context> Create(string outputPath, Report report, Docset docset, Func<XrefMap> xrefMap)
+        public static Context Create(string outputPath, Report report, Docset docset, Func<XrefMap> xrefMap)
         {
             var output = new Output(outputPath);
             var cache = new Cache();
             var metadataProvider = new MetadataProvider(docset.Config);
-            var monikerProvider = await MonikerProvider.Create(docset);
-            var gitHubUserCache = await GitHubUserCache.Create(docset);
+            var monikerProvider = new MonikerProvider(docset);
+            var gitHubUserCache = GitHubUserCache.Create(docset);
             var gitCommitProvider = new GitCommitProvider();
             var bookmarkValidator = new BookmarkValidator();
             var dependencyMapBuilder = new DependencyMapBuilder();
             var dependencyResolver = new DependencyResolver(gitCommitProvider, bookmarkValidator, dependencyMapBuilder, new Lazy<XrefMap>(xrefMap));
             var landingPageDependencyResolver = new DependencyResolver(gitCommitProvider, bookmarkValidator, dependencyMapBuilder, new Lazy<XrefMap>(xrefMap), forLandingPage: true);
-            var contributionProvider = await ContributionProvider.Create(docset, gitHubUserCache, gitCommitProvider);
+            var contributionProvider = new ContributionProvider(docset, gitHubUserCache, gitCommitProvider);
             var publishModelBuilder = new PublishModelBuilder();
             var template = TemplateEngine.Create(docset);
 
