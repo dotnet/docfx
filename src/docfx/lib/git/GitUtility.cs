@@ -330,7 +330,7 @@ namespace Microsoft.Docs.Build
             return Execute(cwd, commandLineArgs, (a, b) => 0, stdout: false, stderr: stderr);
         }
 
-        private static async Task<T> Execute<T>(string cwd, string commandLineArgs, Func<string, string, T> parser, bool stdout = true, bool stderr = true)
+        private static async Task<T> Execute<T>(string cwd, string commandLineArgs, Func<string, string, T> parser, bool stdout = true)
         {
             if (!Directory.Exists(cwd))
             {
@@ -339,7 +339,7 @@ namespace Microsoft.Docs.Build
 
             try
             {
-                var (output, error) = await ProcessUtility.Execute("git", commandLineArgs, cwd, stdout, stderr);
+                var stdout = await ProcessUtility.Execute("git", commandLineArgs, cwd, stdout, stderr);
                 return parser(output, error);
             }
             catch (Win32Exception ex) when (ProcessUtility.IsExeNotFoundException(ex))
