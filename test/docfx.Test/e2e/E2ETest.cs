@@ -187,7 +187,7 @@ namespace Microsoft.Docs.Build
 #endif
                     if (Path.GetFileNameWithoutExtension(file).Contains("localization"))
                     {
-                        var spec = YamlUtility.DeserializeData<E2ESpec>(yaml);
+                        var spec = YamlUtility.Deserialize<E2ESpec>(yaml);
                         if (spec.Commands != null && spec.Commands.Any(c => c != null && c.Contains("--locale"))
                             && spec.Repos.Count() > 1 && !spec.Inputs.Any() && string.IsNullOrEmpty(spec.Repo))
                         {
@@ -225,7 +225,7 @@ namespace Microsoft.Docs.Build
             var yamlHash = HashUtility.GetMd5Hash(yaml).Substring(0, 5);
             var name = ToSafePathString(specName).Substring(0, Math.Min(30, specName.Length)) + "-" + yamlHash;
 
-            var spec = YamlUtility.DeserializeData<E2ESpec>(yaml);
+            var spec = YamlUtility.Deserialize<E2ESpec>(yaml);
 
             var emptyEnvName = spec.Environments.FirstOrDefault(env => string.IsNullOrEmpty(Environment.GetEnvironmentVariable(env)));
             if (!string.IsNullOrEmpty(emptyEnvName))

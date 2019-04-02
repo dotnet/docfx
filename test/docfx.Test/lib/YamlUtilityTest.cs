@@ -28,7 +28,7 @@ namespace Microsoft.Docs.Build
         public void TestObjectWithStringProperty(string input)
         {
             var yaml = $"c: \"{input}\"";
-            var (errors, value) = YamlUtility.Deserialize<BasicClass>(yaml);
+            var (errors, value) = Deserialize<BasicClass>(yaml);
             Assert.Empty(errors);
             Assert.NotNull(value);
             Assert.Equal(input, value.C);
@@ -63,7 +63,7 @@ namespace Microsoft.Docs.Build
         public void TestObjectWithMultiLinesStringProperty(string input, string expected)
         {
             var yaml = $"c: {input}";
-            var (errors, value) = YamlUtility.Deserialize<BasicClass>(yaml);
+            var (errors, value) = Deserialize<BasicClass>(yaml);
             Assert.Empty(errors);
             Assert.NotNull(value);
             Assert.Equal(expected.Replace("\r\n", "\n"), value.C.Replace("\r\n", "\n"));
@@ -78,7 +78,7 @@ namespace Microsoft.Docs.Build
 - 9223372036854775807
 - 18446744073709551615
 ";
-            var (errors, value) = YamlUtility.Deserialize<object[]>(yaml);
+            var (errors, value) = Deserialize<object[]>(yaml);
             Assert.Empty(errors);
             Assert.NotNull(value);
             Assert.Equal(4, value.Length);
@@ -108,7 +108,7 @@ namespace Microsoft.Docs.Build
 a: &anchor test
 b: *anchor
 ";
-            var (errors, value) = YamlUtility.Deserialize<Dictionary<string, string>>(yaml);
+            var (errors, value) = Deserialize<Dictionary<string, string>>(yaml);
             Assert.Empty(errors);
             Assert.NotNull(value);
             Assert.Equal("test", value["a"]);
@@ -123,7 +123,7 @@ b: 1
 c: Good!
 d: true
 ";
-            var (errors, value) = YamlUtility.Deserialize<BasicClass>(yaml);
+            var (errors, value) = Deserialize<BasicClass>(yaml);
             Assert.Empty(errors);
             Assert.NotNull(value);
             Assert.Equal(1, value.B);
@@ -138,7 +138,7 @@ d: true
 - true
 - false
 ";
-            var (errors1, value) = YamlUtility.Deserialize<object[]>(yaml);
+            var (errors1, value) = Deserialize<object[]>(yaml);
             Assert.Empty(errors1);
             Assert.NotNull(value);
             Assert.Equal(2, value.Count());
@@ -164,7 +164,7 @@ d: true
         [InlineData("NULL")]
         public void TestNull(string yaml)
         {
-            var (errors, value) = YamlUtility.Deserialize<object>(yaml);
+            var (errors, value) = Deserialize<object>(yaml);
             Assert.Empty(errors);
             Assert.Null(value);
         }
@@ -175,7 +175,7 @@ d: true
         [InlineData("NaN", double.NaN)]
         public void TestSpecialDouble(string yaml, double expected)
         {
-            var (errors, value) = YamlUtility.Deserialize<double>(yaml);
+            var (errors, value) = Deserialize<double>(yaml);
             Assert.Empty(errors);
             Assert.Equal(value, expected);
         }
@@ -223,7 +223,7 @@ d: true
   c: Good9!
   d: true
 ";
-            var (errors, values) = YamlUtility.Deserialize<List<BasicClass>>(yaml);
+            var (errors, values) = Deserialize<List<BasicClass>>(yaml);
             Assert.Empty(errors);
             Assert.NotNull(values);
             Assert.Equal(10, values.Count);
@@ -239,7 +239,7 @@ d: true
         public void TestClassWithReadOnlyField()
         {
             var yaml = $"b: test";
-            var (errors, value) = YamlUtility.Deserialize<ClassWithReadOnlyField>(yaml);
+            var (errors, value) = Deserialize<ClassWithReadOnlyField>(yaml);
             Assert.Empty(errors);
             Assert.NotNull(value);
             Assert.Equal("test", value.B);
@@ -266,7 +266,7 @@ valueBasic:
   d: false
 valueRequired: a
 ";
-            var (errors, value) = YamlUtility.Deserialize<ClassWithMoreMembers>(yaml);
+            var (errors, value) = Deserialize<ClassWithMoreMembers>(yaml);
             Assert.Empty(errors.Where(error => error.Level == ErrorLevel.Error));
             Assert.NotNull(value);
             Assert.Equal(1, value.B);
@@ -288,7 +288,7 @@ valueRequired: a
         public void TestStringEmpty()
         {
             var yaml = String.Empty;
-            var (errors, value) = YamlUtility.Deserialize<ClassWithMoreMembers>(yaml);
+            var (errors, value) = Deserialize<ClassWithMoreMembers>(yaml);
             Assert.Empty(errors);
             Assert.Null(value);
         }
@@ -325,7 +325,19 @@ items:
         [InlineData(@"b: not number")]
         public void ThrowWithoutSchemaValidation(string yaml)
         {
-            Assert.ThrowsAny<Exception>(() => YamlUtility.DeserializeData<BasicClass>(yaml));
+            Assert.ThrowsAny<Exception>(() => YamlUtility.Deserialize<BasicClass>(yaml));
+        }
+
+
+        /// <summary>
+        /// De-serialize a user input string to an object, return error list at the same time
+        /// </summary>
+        private static (List<Error> errors, T model) Deserialize<T>(string json)
+        {
+            var (errors, token) = YamlUtility.Parse(json);
+            var (mismatchingErrors, result) = JsonUtility.ToObject<T>(token);
+            errors.AddRange(mismatchingErrors);
+            return (errors, result);
         }
 
         public class BasicClass

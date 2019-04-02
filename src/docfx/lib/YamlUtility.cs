@@ -56,21 +56,10 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
-        /// Deserialize from yaml string, return error list at the same time
-        /// </summary>
-        public static (List<Error>, T) Deserialize<T>(string input)
-        {
-            var (errors, token) = Parse(input);
-            var (mismatchingErrors, result) = JsonUtility.ToObject<T>(token);
-            errors.AddRange(mismatchingErrors);
-            return (errors, result);
-        }
-
-        /// <summary>
         /// De-serialize from yaml string, which is not user input
         /// schema validation errors will be ignored, syntax errors and type mismatching will be thrown
         /// </summary>
-        public static T DeserializeData<T>(string input)
+        public static T Deserialize<T>(string input)
         {
             var token = ParseAsJToken(input);
             return token.ToObject<T>(JsonUtility.s_serializer);

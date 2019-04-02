@@ -160,11 +160,11 @@ namespace Microsoft.Docs.Build
                 XrefMapModel xrefMap = new XrefMapModel();
                 if (url.EndsWith(".yml", StringComparison.OrdinalIgnoreCase))
                 {
-                    xrefMap = YamlUtility.DeserializeData<XrefMapModel>(content);
+                    xrefMap = YamlUtility.Deserialize<XrefMapModel>(content);
                 }
                 else
                 {
-                    xrefMap = JsonUtility.DeserializeData<XrefMapModel>(content);
+                    xrefMap = JsonUtility.Deserialize<XrefMapModel>(content);
                 }
                 foreach (var spec in xrefMap.References)
                 {

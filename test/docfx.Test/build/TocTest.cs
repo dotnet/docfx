@@ -13,7 +13,7 @@ namespace Microsoft.Docs.Build
             new Report(),
             Directory.GetCurrentDirectory(),
             "en-us",
-            JsonUtility.DeserializeData<Config>("{'output': { 'json': true } }".Replace('\'', '\"')),
+            JsonUtility.Deserialize<Config>("{'output': { 'json': true } }".Replace('\'', '\"')),
             new CommandLineOptions(),
             new DependencyLockModel(),
             new RestoreMap(null));
