@@ -278,6 +278,11 @@ namespace Microsoft.Docs.Build
                     }
                 }
 
+                foreach (var g in result.GroupBy(r => r.ContentType))
+                {
+                    Telemetry.TrackBuildItemCount(TelemetryName.BuildItems, g.Key, g.Count());
+                }
+
                 return result;
             }
         }
