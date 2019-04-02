@@ -188,6 +188,11 @@ namespace Microsoft.Docs.Build
                 context.PublishModelBuilder.MarkError(file);
                 return new List<string>();
             }
+            catch
+            {
+                Console.WriteLine($"Build {file.FilePath} failed");
+                throw;
+            }
         }
 
         private static DependencyLockModel LoadBuildDependencyLock(string docset, string locale, Repository repository, CommandLineOptions commandLineOptions)
