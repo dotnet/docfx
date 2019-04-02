@@ -182,15 +182,14 @@ namespace Microsoft.Docs.Build
 
                 return publishItem.Monikers;
             }
-            catch (Exception ex)
+            catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
             {
-                if (DocfxException.IsDocfxException(ex, out var dex))
-                {
-                    context.Report.Write(file.ToString(), dex.Error);
-                    context.PublishModelBuilder.MarkError(file);
-                    return new List<string>();
-                }
-
+                context.Report.Write(file.ToString(), dex.Error);
+                context.PublishModelBuilder.MarkError(file);
+                return new List<string>();
+            }
+            catch
+            {
                 Console.WriteLine($"Build {file.FilePath} failed");
                 throw;
             }
