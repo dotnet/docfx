@@ -67,7 +67,7 @@ namespace Microsoft.Docs.Build
 
             if (!errors.Any())
             {
-                var (schemaErrors, _) = JsonUtility.ToObjectWithSchemaValidation<FileMetadata>(metadata);
+                var (schemaErrors, _) = JsonUtility.ToObject<FileMetadata>(metadata);
                 errors.AddRange(schemaErrors);
             }
             return errors;

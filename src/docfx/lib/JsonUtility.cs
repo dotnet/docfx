@@ -54,6 +54,8 @@ namespace Microsoft.Docs.Build
 
         private static readonly List<JsonProperty> s_emptyPropertyList = new List<JsonProperty>();
 
+        internal static JsonSerializer Serializer => s_serializer;
+
         static JsonUtility()
         {
             s_schemaValidationSerializer.Error += HandleError;
@@ -150,17 +152,6 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
-        /// De-serialize a user input string to an object, return error list at the same time
-        /// </summary>
-        public static (List<Error> errors, T model) DeserializeWithSchemaValidation<T>(string json)
-        {
-            var (errors, token) = Deserialize(json);
-            var (mismatchingErrors, result) = ToObjectWithSchemaValidation<T>(token);
-            errors.AddRange(mismatchingErrors);
-            return (errors, result);
-        }
-
-        /// <summary>
         /// De-serialize a data string, which is not user input, to an object
         /// schema validation errors will be ignored, syntax errors and type mismatching will be thrown
         /// </summary>
@@ -192,31 +183,13 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Creates an instance of the specified .NET type from the JToken with schema validation
         /// </summary>
-        public static (List<Error>, T) ToObjectWithSchemaValidation<T>(JToken token)
+        public static (List<Error>, T) ToObject<T>(JToken token)
         {
-            var (errors, obj) = ToObjectWithSchemaValidation(token, typeof(T));
+            var (errors, obj) = ToObject(token, typeof(T));
             return (errors, (T)obj);
         }
 
-        /// <summary>
-        /// Creates an instance of the specified .NET type from the JToken
-        /// Schema validation errors will be ignored, type mismatch and syntax errors will be thrown
-        /// </summary>
-        public static T ToObject<T>(JToken token)
-        {
-            try
-            {
-                var obj = token.ToObject(typeof(T), JsonUtility.s_serializer);
-                return (T)obj;
-            }
-            catch (JsonReaderException ex)
-            {
-                var (range, message, path) = ParseException(ex);
-                throw Errors.JsonSyntaxError(range, message, path).ToException(ex);
-            }
-        }
-
-        public static (List<Error>, object) ToObjectWithSchemaValidation(
+        public static (List<Error>, object) ToObject(
             JToken token,
             Type type,
             Func<IEnumerable<DataTypeAttribute>, object, string, object> transform = null)
@@ -243,13 +216,13 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Deserialize from JSON file, get from or add to cache
         /// </summary>
-        public static (List<Error>, JToken) Deserialize(Document file, Context context) => context.Cache.LoadJsonFile(file);
+        public static (List<Error>, JToken) Parse(Document file, Context context) => context.Cache.LoadJsonFile(file);
 
         /// <summary>
         /// Parse a string to JToken.
         /// Validate null value during the process.
         /// </summary>
-        public static (List<Error>, JToken) Deserialize(string json)
+        public static (List<Error>, JToken) Parse(string json)
         {
             try
             {

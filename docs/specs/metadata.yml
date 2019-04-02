@@ -26,6 +26,17 @@ outputs:
   build.log: |
     ["info","null-value","'ms.custom-metadata' contains null value","docs/a.md","['ms.custom-metadata']",1,1]
 ---
+# Report error for invalid yaml header value type
+inputs:
+  docfx.yml:
+  docs/a.md: |
+    ---
+    locale: {}
+    ---
+outputs:
+  build.log: |
+    ["error","violate-schema","Expected type String, please input String or type compatible with String.","docs/a.md","locale",1,9]
+---
 # generate normal document id and version id
 # backward compatible to docs.com
 # document id = md5("Win.sccm|mdt/release-notes.md")

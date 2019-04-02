@@ -163,6 +163,17 @@ outputs:
     ["warning","file-not-found","Cannot find file '../no-existing.md' relative to 'docs/TOC.md'","docs/TOC.md"]
     ["warning","file-not-found","Cannot find file '~/docs/no-existing.md' relative to 'docs/TOC.md'","docs/TOC.md"]
 ---
+# Invalid markdown TOC metadata
+inputs:
+  docfx.yml:
+  docs/TOC.md: |
+    ---
+    monikerRange: []
+    ---
+outputs:
+  build.log: |
+    ["error","violate-schema","Expected type String, please input String or type compatible with String.","docs/TOC.md","monikerRange",1,15]
+---
 # Absolute file reference
 inputs:
   docfx.yml:
