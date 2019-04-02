@@ -51,9 +51,7 @@ namespace Microsoft.Docs.Build
                 JsonUtility.Merge(result, yamlHeader);
             }
 
-            var (schemaErrors, obj) = JsonUtility.ToObjectWithSchemaValidation<T>(result);
-            errors.AddRange(schemaErrors);
-
+            var obj = JsonUtility.ToObject<T>(result);
             return (errors, obj);
         }
     }

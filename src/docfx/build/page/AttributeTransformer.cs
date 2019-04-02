@@ -63,7 +63,7 @@ namespace Microsoft.Docs.Build
                     dependencyResolver,
                     buildChild,
                     null,
-                    key => file.Docset.Template?.GetToken(key),
+                    key => context.Template?.GetToken(key),
                     MarkdownPipelineType.Markdown);
 
                 context.Report.Write(file.ToString(), errors);
@@ -78,7 +78,7 @@ namespace Microsoft.Docs.Build
                     dependencyResolver,
                     buildChild,
                     null,
-                    key => file.Docset.Template?.GetToken(key),
+                    key => context.Template?.GetToken(key),
                     MarkdownPipelineType.InlineMarkdown);
 
                 context.Report.Write(file.ToString(), errors);

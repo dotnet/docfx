@@ -22,20 +22,20 @@ namespace Microsoft.Docs.Build
         private const int _defaultLockExpireTimeInSecond = 60 * 60 * 6; /*six hours*/
         private static AsyncLocal<ImmutableStack<string>> t_innerCall = new AsyncLocal<ImmutableStack<string>>();
 
-        public static async Task<bool> IsExclusiveLockHeld(string lockName)
+        public static bool IsExclusiveLockHeld(string lockName)
         {
             Debug.Assert(!string.IsNullOrEmpty(lockName));
 
             var lockPath = GetLockFilePath(lockName);
             var held = false;
-            await ReadAndWriteFile<LockInfo>(lockPath, lockInfo =>
+            ReadAndWriteFile<LockInfo>(lockPath, lockInfo =>
             {
                 lockInfo = lockInfo ?? new LockInfo();
                 lockInfo = FilterExpiredAcquirers(lockInfo);
 
                 held = lockInfo.Type == LockType.Exclusive;
 
-                return Task.FromResult(lockInfo);
+                return lockInfo;
             });
 
             return held;
@@ -45,7 +45,7 @@ namespace Microsoft.Docs.Build
         /// Acquire a shared lock for input lock name
         /// The returned `acquirer` are used for tracking the acquired lock, instead of thread info, since the thread info may change in asynchronous programming model
         /// </summary>
-        public static async Task<(bool acquired, string acquirer)> AcquireSharedLock(string lockName)
+        public static (bool acquired, string acquirer) AcquireSharedLock(string lockName)
         {
             Debug.Assert(!string.IsNullOrEmpty(lockName));
 
@@ -53,27 +53,27 @@ namespace Microsoft.Docs.Build
             var acquirer = (string)null;
             var lockPath = GetLockFilePath(lockName);
 
-            await ReadAndWriteFile<LockInfo>(lockPath, lockInfo =>
+            ReadAndWriteFile<LockInfo>(lockPath, lockInfo =>
             {
                 lockInfo = lockInfo ?? new LockInfo();
                 lockInfo = FilterExpiredAcquirers(lockInfo);
 
                 if (lockInfo.Type == LockType.Exclusive)
                 {
-                    return Task.FromResult(lockInfo);
+                    return lockInfo;
                 }
 
                 acquired = true;
                 acquirer = Guid.NewGuid().ToString();
                 lockInfo.Type = LockType.Shared;
                 lockInfo.AcquiredBy.Add(new Acquirer { Id = acquirer, Date = DateTime.UtcNow });
-                return Task.FromResult(lockInfo);
+                return lockInfo;
             });
 
             return (acquired, acquirer);
         }
 
-        public static async Task<bool> ReleaseSharedLock(string lockName, string acquirer)
+        public static bool ReleaseSharedLock(string lockName, string acquirer)
         {
             Debug.Assert(!string.IsNullOrEmpty(lockName));
             Debug.Assert(!string.IsNullOrEmpty(acquirer));
@@ -81,13 +81,13 @@ namespace Microsoft.Docs.Build
             var released = false;
             var lockPath = GetLockFilePath(lockName);
 
-            await ReadAndWriteFile<LockInfo>(lockPath, lockInfo =>
+            ReadAndWriteFile<LockInfo>(lockPath, lockInfo =>
             {
                 lockInfo = lockInfo ?? new LockInfo();
 
                 if (lockInfo.Type != LockType.Shared)
                 {
-                    return Task.FromResult(lockInfo);
+                    return lockInfo;
                 }
 
                 var removed = lockInfo.AcquiredBy.RemoveAll(i => i.Id == acquirer);
@@ -95,7 +95,7 @@ namespace Microsoft.Docs.Build
 
                 if (removed <= 0)
                 {
-                    return Task.FromResult(lockInfo);
+                    return lockInfo;
                 }
 
                 if (!lockInfo.AcquiredBy.Any())
@@ -104,7 +104,7 @@ namespace Microsoft.Docs.Build
                 }
 
                 released = true;
-                return Task.FromResult(lockInfo);
+                return lockInfo;
             });
 
             return released;
@@ -114,7 +114,7 @@ namespace Microsoft.Docs.Build
         /// Acquire a exclusive lock for input lock name
         /// The returned `acquirer` are used for tracking the acquired lock, instead of thread info, since the thread info may change in asynchronous programming model
         /// </summary>
-        public static async Task<(bool acquired, string acquirer)> AcquireExclusiveLock(string lockName)
+        public static (bool acquired, string acquirer) AcquireExclusiveLock(string lockName)
         {
             Debug.Assert(!string.IsNullOrEmpty(lockName));
 
@@ -122,27 +122,27 @@ namespace Microsoft.Docs.Build
             var acquirer = (string)null;
             var lockPath = GetLockFilePath(lockName);
 
-            await ReadAndWriteFile<LockInfo>(lockPath, lockInfo =>
+            ReadAndWriteFile<LockInfo>(lockPath, lockInfo =>
             {
                 lockInfo = lockInfo ?? new LockInfo();
                 lockInfo = FilterExpiredAcquirers(lockInfo);
 
                 if (lockInfo.Type != LockType.None)
                 {
-                    return Task.FromResult(lockInfo);
+                    return lockInfo;
                 }
 
                 acquirer = Guid.NewGuid().ToString();
                 acquired = true;
                 lockInfo.Type = LockType.Exclusive;
                 lockInfo.AcquiredBy = new List<Acquirer> { new Acquirer { Id = acquirer, Date = DateTime.UtcNow } };
-                return Task.FromResult(lockInfo);
+                return lockInfo;
             });
 
             return (acquired, acquirer);
         }
 
-        public static async Task<bool> ReleaseExclusiveLock(string lockName, string acquirer)
+        public static bool ReleaseExclusiveLock(string lockName, string acquirer)
         {
             Debug.Assert(!string.IsNullOrEmpty(lockName));
             Debug.Assert(!string.IsNullOrEmpty(acquirer));
@@ -150,13 +150,13 @@ namespace Microsoft.Docs.Build
             var released = false;
             var lockPath = GetLockFilePath(lockName);
 
-            await ReadAndWriteFile<LockInfo>(lockPath, lockInfo =>
+            ReadAndWriteFile<LockInfo>(lockPath, lockInfo =>
             {
                 lockInfo = lockInfo ?? new LockInfo();
 
                 if (lockInfo.Type != LockType.Exclusive)
                 {
-                    return Task.FromResult(lockInfo);
+                    return lockInfo;
                 }
 
                 Debug.Assert(lockInfo.AcquiredBy.Count == 1);
@@ -165,7 +165,7 @@ namespace Microsoft.Docs.Build
 
                 if (removed <= 0)
                 {
-                    return Task.FromResult(lockInfo);
+                    return lockInfo;
                 }
 
                 if (!lockInfo.AcquiredBy.Any())
@@ -174,7 +174,7 @@ namespace Microsoft.Docs.Build
                 }
 
                 released = true;
-                return Task.FromResult(lockInfo);
+                return lockInfo;
             });
 
             return released;
@@ -261,9 +261,9 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Reads the content of a file, update content and write back to file in one atomic operation
         /// </summary>
-        public static async Task ReadAndWriteFile<T>(string path, Func<T, Task<T>> update)
+        public static void ReadAndWriteFile<T>(string path, Func<T, T> update)
         {
-            await RunInsideMutex(path, async () =>
+            RunInsideMutex(path, () =>
             {
                 using (var file = File.Open(path, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None))
                 {
@@ -271,7 +271,7 @@ namespace Microsoft.Docs.Build
                     var result = JsonUtility.DeserializeData<T>(streamReader.ReadToEnd());
 
                     file.SetLength(0);
-                    var updatedResult = await update(result);
+                    var updatedResult = update(result);
                     var steamWriter = new StreamWriter(file);
                     steamWriter.Write(JsonUtility.Serialize(updatedResult));
                     steamWriter.Close();
@@ -283,26 +283,24 @@ namespace Microsoft.Docs.Build
         /// Reads the content of a file.
         /// When used together with <see cref="WriteFile(string,string)"/>, provides inter-process synchronized access to the file.
         /// </summary>
-        public static async Task<string> ReadFile(string path)
+        public static string ReadFile(string path)
         {
             string result = null;
-            await RunInsideMutex(path, () =>
+            RunInsideMutex(path, () =>
             {
                 result = File.ReadAllText(path);
-                return Task.CompletedTask;
             });
             return result;
         }
 
-        public static async Task<T> ReadFile<T>(string path, Func<Stream, T> read)
+        public static T ReadFile<T>(string path, Func<Stream, T> read)
         {
             T result = default;
-            await RunInsideMutex(path, () =>
+            RunInsideMutex(path, () =>
             {
                 using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read, 1024, FileOptions.SequentialScan))
                 {
                     result = read(fs);
-                    return Task.CompletedTask;
                 }
             });
             return result;
@@ -312,28 +310,26 @@ namespace Microsoft.Docs.Build
         /// Reads the content of a file.
         /// When used together with <see cref="ReadFile(string)"/>, provides inter-process synchronized access to the file.
         /// </summary>
-        public static Task WriteFile(string path, string content)
+        public static void WriteFile(string path, string content)
         {
-            return RunInsideMutex(path, () =>
+            RunInsideMutex(path, () =>
             {
                 using (var fs = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None, 1024, FileOptions.SequentialScan))
                 using (var writer = new StreamWriter(fs))
                 {
                     writer.Write(content);
                 }
-                return Task.CompletedTask;
             });
         }
 
-        public static Task WriteFile(string path, Action<Stream> write)
+        public static void WriteFile(string path, Action<Stream> write)
         {
-            return RunInsideMutex(path, () =>
+            RunInsideMutex(path, () =>
             {
                 using (var fs = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None, 1024, FileOptions.SequentialScan))
                 {
                     write(fs);
                 }
-                return Task.CompletedTask;
             });
         }
 
@@ -342,7 +338,8 @@ namespace Microsoft.Docs.Build
         /// </summary>
         /// <param name="mutexName">A globbaly unique mutext name</param>
         /// <param name="action">The action/resource you want to lock</param>
-        public static async Task RunInsideMutex(string mutexName, Func<Task> action)
+        /// TODO: implement this with system mutex
+        public static void RunInsideMutex(string mutexName, Action action)
         {
             Debug.Assert(!string.IsNullOrEmpty(mutexName));
             var lockPath = Path.Combine(AppData.MutexRoot, HashUtility.GetMd5Hash(mutexName));
@@ -359,7 +356,44 @@ namespace Microsoft.Docs.Build
             {
                 Directory.CreateDirectory(AppData.MutexRoot);
 
-                using (await RetryUntilSucceed(mutexName, IsFileAlreadyExistsException, CreateFile))
+                using (RetryUntilSucceed(mutexName, IsFileAlreadyExistsException, CreateFile))
+                {
+                    action();
+                }
+
+                FileStream CreateFile() => new FileStream(
+                    lockPath,
+                    FileMode.CreateNew,
+                    FileAccess.ReadWrite,
+                    FileShare.None,
+                    1,
+                    FileOptions.DeleteOnClose);
+            }
+            finally
+            {
+                t_innerCall.Value = t_innerCall.Value.Pop();
+            }
+        }
+
+        // TODO: remove this method if possible
+        public static async Task RunInsideMutexAsync(string mutexName, Func<Task> action)
+        {
+            Debug.Assert(!string.IsNullOrEmpty(mutexName));
+            var lockPath = Path.Combine(AppData.MutexRoot, HashUtility.GetMd5Hash(mutexName));
+
+            // avoid the RunInsideMutex to be nested used with same mutex name
+            t_innerCall.Value = t_innerCall.Value ?? ImmutableStack<string>.Empty;
+            if (t_innerCall.Value.Contains(lockPath))
+            {
+                throw new ApplicationException($"Nested call to RunInsideMutex is detected, mutex name: {mutexName}");
+            }
+            t_innerCall.Value = t_innerCall.Value.Push(lockPath);
+
+            try
+            {
+                Directory.CreateDirectory(AppData.MutexRoot);
+
+                using (RetryUntilSucceed(mutexName, IsFileAlreadyExistsException, CreateFile))
                 {
                     await action();
                 }
@@ -400,7 +434,7 @@ namespace Microsoft.Docs.Build
             return ex is UnauthorizedAccessException;
         }
 
-        private static async Task<T> RetryUntilSucceed<T>(string name, Func<Exception, bool> expectException, Func<T> action)
+        private static T RetryUntilSucceed<T>(string name, Func<Exception, bool> expectException, Func<T> action)
         {
             var retryDelay = 100;
             var lastWait = DateTime.UtcNow;
@@ -426,7 +460,7 @@ namespace Microsoft.Docs.Build
                         }
                     }
 
-                    await Task.Delay(retryDelay);
+                    Thread.Sleep(retryDelay);
                     retryDelay = Math.Min(retryDelay + 100, 1000);
                 }
             }

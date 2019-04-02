@@ -72,13 +72,13 @@ namespace Microsoft.Docs.Build
             _etag = new EntityTagHeaderValue(etag);
         }
 
-        public static async Task<GitHubUserCache> Create(Docset docset)
+        public static GitHubUserCache Create(Docset docset)
         {
-            var result = await Create();
-            await result.ReadCacheFiles();
+            var result = Create();
+            result.ReadCacheFiles();
             return result;
 
-            async Task<GitHubUserCache> Create()
+            GitHubUserCache Create()
             {
                 var path = docset.Config.GitHub.UserCache;
                 if (string.IsNullOrEmpty(path))
@@ -86,7 +86,7 @@ namespace Microsoft.Docs.Build
                     return new GitHubUserCache(docset, AppData.DefaultGitHubUserCachePath);
                 }
 
-                var (localPath, content, etag) = await RestoreMap.GetRestoredFileContent(docset, path);
+                var (localPath, content, etag) = RestoreMap.GetRestoredFileContent(docset, path);
                 if (string.IsNullOrEmpty(localPath))
                 {
                     return new GitHubUserCache(docset, path, content, etag, AppData.GetGitHubUserCachePath(path));
@@ -203,17 +203,17 @@ namespace Microsoft.Docs.Build
         {
             var file = JsonUtility.Serialize(new GitHubUserCacheFile { Users = Users.ToArray() });
 
-            await SaveLocal(file);
+            SaveLocal(file);
             if (config.GitHub.UpdateRemoteUserCache && _url != null)
             {
                 return await SaveRemote(file);
             }
             return default;
 
-            async Task SaveLocal(string content)
+            void SaveLocal(string content)
             {
                 PathUtility.CreateDirectoryFromFilePath(_cachePath);
-                await ProcessUtility.WriteFile(_cachePath, content);
+                ProcessUtility.WriteFile(_cachePath, content);
             }
 
             async Task<(Error error, bool collide)> SaveRemote(string content)
@@ -318,20 +318,20 @@ namespace Microsoft.Docs.Build
         private DateTime NextExpiry()
             => DateTime.UtcNow.AddHours((_expirationInHours / 2) + (t_random.Value.NextDouble() * _expirationInHours / 2));
 
-        private async Task ReadCacheFiles()
+        private void ReadCacheFiles()
         {
-            await ReadCacheFile(_cachePath);
+            ReadCacheFile(_cachePath);
 
             if (!string.IsNullOrEmpty(_content))
             {
                 ReadCache(_content);
             }
 
-            async Task ReadCacheFile(string path)
+            void ReadCacheFile(string path)
             {
                 if (path != null && File.Exists(path))
                 {
-                    var content = await ProcessUtility.ReadFile(path);
+                    var content = ProcessUtility.ReadFile(path);
                     ReadCache(content);
                 }
             }

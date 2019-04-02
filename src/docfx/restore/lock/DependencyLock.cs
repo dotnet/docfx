@@ -4,7 +4,6 @@
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
 {
@@ -34,7 +33,7 @@ namespace Microsoft.Docs.Build
             return dependencyLock.Git.ContainsKey(href) || dependencyLock.Git.Keys.Any(g => g.StartsWith($"{href}#"));
         }
 
-        public static async Task<DependencyLockModel> Load(string docset, string dependencyLockPath)
+        public static DependencyLockModel Load(string docset, string dependencyLockPath)
         {
             Debug.Assert(!string.IsNullOrEmpty(docset));
 
@@ -52,7 +51,7 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            var (_, content, _) = await RestoreMap.GetRestoredFileContent(docset, dependencyLockPath);
+            var (_, content, _) = RestoreMap.GetRestoredFileContent(docset, dependencyLockPath);
 
             if (string.IsNullOrEmpty(content))
             {
@@ -62,7 +61,7 @@ namespace Microsoft.Docs.Build
             return JsonUtility.DeserializeData<DependencyLockModel>(content);
         }
 
-        public static async Task Save(string docset, string dependencyLockPath, DependencyLockModel dependencyLock)
+        public static void Save(string docset, string dependencyLockPath, DependencyLockModel dependencyLock)
         {
             Debug.Assert(!string.IsNullOrEmpty(docset));
             Debug.Assert(!string.IsNullOrEmpty(dependencyLockPath));
@@ -73,7 +72,7 @@ namespace Microsoft.Docs.Build
             {
                 var path = Path.Combine(docset, dependencyLockPath);
                 Directory.CreateDirectory(Path.GetDirectoryName(path));
-                await ProcessUtility.WriteFile(path, content);
+                ProcessUtility.WriteFile(path, content);
             }
 
             // todo: upload to remote file directly
