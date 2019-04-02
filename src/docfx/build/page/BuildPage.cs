@@ -222,25 +222,22 @@ namespace Microsoft.Docs.Build
 
         private static (object output, JObject extensionData) ApplyTemplate(Context context, Document file, PageModel model, bool isPage)
         {
-            using (Telemetry.TrackingOperationTime(TelemetryName.ApplyTemplate))
+            if (!file.Docset.Config.Output.Json && context.Template != null)
             {
-                if (!file.Docset.Config.Output.Json && context.Template != null)
-                {
-                    return (context.Template.Render(model, file), null);
-                }
-
-                if (file.Docset.Legacy)
-                {
-                    if (isPage && context.Template != null)
-                    {
-                        return TemplateTransform.Transform(context.Template, model, file);
-                    }
-
-                    return (model, null);
-                }
-
-                return (model, isPage ? JsonUtility.ToJObject(model.Metadata) : null);
+                return (context.Template.Render(model, file), null);
             }
+
+            if (file.Docset.Legacy)
+            {
+                if (isPage && context.Template != null)
+                {
+                    return TemplateTransform.Transform(context.Template, model, file);
+                }
+
+                return (model, null);
+            }
+
+            return (model, isPage ? JsonUtility.ToJObject(model.Metadata) : null);
         }
     }
 }
