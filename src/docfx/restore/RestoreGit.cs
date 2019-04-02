@@ -100,7 +100,7 @@ namespace Microsoft.Docs.Build
                 var repoPath = Path.GetFullPath(Path.Combine(AppData.GetGitDir(remote), ".git"));
                 var childRepos = new List<string>();
 
-                await ProcessUtility.RunInsideMutex(
+                await ProcessUtility.RunInsideMutexAsync(
                     remote,
                     async () =>
                     {
@@ -141,7 +141,7 @@ namespace Microsoft.Docs.Build
                         var gitDependencyLock = dependencyLock?.GetGitLock(remote, branch);
                         headCommit = gitDependencyLock?.Commit ?? headCommit;
 
-                        var (workTreePath, gitSlot) = await RestoreMap.AcquireExclusiveGit(remote, branch, headCommit);
+                        var (workTreePath, gitSlot) = RestoreMap.AcquireExclusiveGit(remote, branch, headCommit);
                         workTreePath = Path.GetFullPath(workTreePath).Replace('\\', '/');
                         var restored = true;
 
@@ -173,7 +173,7 @@ namespace Microsoft.Docs.Build
                         }
                         finally
                         {
-                            await RestoreMap.ReleaseGit(gitSlot, LockType.Exclusive, restored);
+                            RestoreMap.ReleaseGit(gitSlot, LockType.Exclusive, restored);
                         }
 
                         subChildren.Add(new RestoreChild(workTreePath, remote, branch, gitDependencyLock, headCommit));

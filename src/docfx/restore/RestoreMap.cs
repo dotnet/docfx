@@ -59,12 +59,12 @@ namespace Microsoft.Docs.Build
             return (path, gitVersion);
         }
 
-        public async Task<bool> Release()
+        public bool Release()
         {
             var released = true;
             foreach (var (k, v) in _acquiredGits)
             {
-                released &= await ReleaseGit(v.git, LockType.Shared);
+                released &= ReleaseGit(v.git, LockType.Shared);
             }
 
             Debug.Assert(released);
@@ -72,12 +72,12 @@ namespace Microsoft.Docs.Build
             return released;
         }
 
-        public static Task<(string localPath, string content, string etag)> GetRestoredFileContent(Docset docset, string url)
+        public static (string localPath, string content, string etag) GetRestoredFileContent(Docset docset, string url)
         {
             return GetRestoredFileContent(docset.DocsetPath, url, docset.FallbackDocset?.DocsetPath);
         }
 
-        public static async Task<(string localPath, string content, string etag)> GetRestoredFileContent(string docsetPath, string url, string fallbackDocset = null)
+        public static (string localPath, string content, string etag) GetRestoredFileContent(string docsetPath, string url, string fallbackDocset = null)
         {
             var fromUrl = HrefUtility.IsHttpHref(url);
             if (!fromUrl)
@@ -91,13 +91,13 @@ namespace Microsoft.Docs.Build
 
                 if (!string.IsNullOrEmpty(fallbackDocset))
                 {
-                    return await GetRestoredFileContent(fallbackDocset, url);
+                    return GetRestoredFileContent(fallbackDocset, url);
                 }
 
                 throw Errors.FileNotFound(docsetPath, url).ToException();
             }
 
-            var (content, etag) = await TryGetRestoredFileContent(url);
+            var (content, etag) = TryGetRestoredFileContent(url);
             if (string.IsNullOrEmpty(content))
             {
                 throw Errors.NeedRestore(url).ToException();
@@ -106,7 +106,7 @@ namespace Microsoft.Docs.Build
             return (null, content, etag);
         }
 
-        public static async Task<(string content, string etag)> TryGetRestoredFileContent(string url)
+        public static (string content, string etag) TryGetRestoredFileContent(string url)
         {
             Debug.Assert(!string.IsNullOrEmpty(url));
             Debug.Assert(HrefUtility.IsHttpHref(url));
@@ -116,12 +116,10 @@ namespace Microsoft.Docs.Build
             string etag = null;
             string content = null;
 
-            await ProcessUtility.RunInsideMutex(filePath, () =>
+            ProcessUtility.RunInsideMutex(filePath, () =>
             {
                 content = GetFileContentIfExists(filePath);
                 etag = GetFileContentIfExists(etagPath);
-
-                return Task.CompletedTask;
 
                 string GetFileContentIfExists(string file)
                 {
@@ -141,7 +139,7 @@ namespace Microsoft.Docs.Build
         /// Acquired all shared git based on dependency lock
         /// The dependency lock must be loaded before using this method
         /// </summary>
-        public static async Task<RestoreMap>
+        public static RestoreMap
             Create(
             DependencyLockModel dependencyLock,
             Dictionary<(string remote, string branch, string commit), (string path, DependencyGit git)> acquired = null)
@@ -160,11 +158,11 @@ namespace Microsoft.Docs.Build
                     var (remote, branch, _) = HrefUtility.SplitGitHref(gitVersion.Key);
                     if (!acquired.ContainsKey((remote, branch, gitVersion.Value.Commit/*commit*/)))
                     {
-                        var (path, git) = await AcquireGit(remote, branch, gitVersion.Value.Commit, LockType.Shared);
+                        var (path, git) = AcquireGit(remote, branch, gitVersion.Value.Commit, LockType.Shared);
                         acquired[(remote, branch, gitVersion.Value.Commit/*commit*/)] = (path, git);
                     }
 
-                    await Create(gitVersion.Value, acquired);
+                    Create(gitVersion.Value, acquired);
                 }
 
                 gitPool = new RestoreMap(acquired);
@@ -181,7 +179,7 @@ namespace Microsoft.Docs.Build
                 {
                     foreach (var (k, v) in acquired)
                     {
-                        await ReleaseGit(v.git, LockType.Shared, false);
+                        ReleaseGit(v.git, LockType.Shared, false);
                     }
                 }
             }
@@ -223,9 +221,9 @@ namespace Microsoft.Docs.Build
             return !Directory.Exists(path) ? default : (path, slot);
         }
 
-        public static async Task<(string path, DependencyGit git)> AcquireExclusiveGit(string remote, string branch, string commit)
+        public static (string path, DependencyGit git) AcquireExclusiveGit(string remote, string branch, string commit)
         {
-            var (path, git) = await AcquireGit(remote, branch, commit, LockType.Exclusive);
+            var (path, git) = AcquireGit(remote, branch, commit, LockType.Exclusive);
 
             Debug.Assert(path != null && git != null);
             path = Path.Combine(AppData.GetGitDir(remote), path);
@@ -233,10 +231,10 @@ namespace Microsoft.Docs.Build
             return (path, git);
         }
 
-        public static Task<bool> ReleaseGit(DependencyGit git, LockType lockType, bool successed = true)
+        public static bool ReleaseGit(DependencyGit git, LockType lockType, bool successed = true)
             => DependencySlotPool<DependencyGit>.ReleaseSlot(git, lockType, successed);
 
-        private static Task<(string path, DependencyGit git)> AcquireGit(string remote, string branch, string commit, LockType type)
+        private static (string path, DependencyGit git) AcquireGit(string remote, string branch, string commit, LockType type)
         {
             Debug.Assert(!string.IsNullOrEmpty(branch));
             Debug.Assert(!string.IsNullOrEmpty(commit));
