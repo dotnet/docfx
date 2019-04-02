@@ -22,7 +22,7 @@ namespace Microsoft.Docs.Build
         private static readonly NamingStrategy s_namingStrategy = new CamelCaseNamingStrategy();
         private static readonly JsonMergeSettings s_mergeSettings = new JsonMergeSettings { MergeArrayHandling = MergeArrayHandling.Replace };
 
-        internal static readonly JsonSerializer s_serializer = new JsonSerializer
+        private static readonly JsonSerializer s_serializer = new JsonSerializer
         {
             NullValueHandling = NullValueHandling.Ignore,
             ContractResolver = new JsonContractResolver { NamingStrategy = s_namingStrategy },
@@ -53,6 +53,8 @@ namespace Microsoft.Docs.Build
             ReflectionUtility.CreateInstanceFieldSetter<JsonPropertyCollection, List<JsonProperty>>("_list");
 
         private static readonly List<JsonProperty> s_emptyPropertyList = new List<JsonProperty>();
+
+        internal static JsonSerializer Serializer => s_serializer;
 
         static JsonUtility()
         {

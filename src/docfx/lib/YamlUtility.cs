@@ -62,7 +62,7 @@ namespace Microsoft.Docs.Build
         public static T Deserialize<T>(string input)
         {
             var token = ParseAsJToken(input);
-            return token.ToObject<T>(JsonUtility.s_serializer);
+            return token.ToObject<T>(JsonUtility.Serializer);
         }
 
         /// <summary>
