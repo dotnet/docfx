@@ -28,7 +28,7 @@ namespace Microsoft.Docs.Build
 
         [Theory]
         [InlineData("README.md")]
-        public static async Task GetCommitsSameAsGitExe(string file)
+        public static void GetCommitsSameAsGitExe(string file)
         {
             Assert.False(GitUtility.IsRepo(Path.GetFullPath(file)));
 
@@ -41,7 +41,7 @@ namespace Microsoft.Docs.Build
 
                 // current branch
                 var exe = Exec("git", $"--no-pager log --format=\"%H|%cI|%an|%ae\" -- \"{pathToRepo}\"", repo.Path);
-                var (_, _, lib) = await gitCommitProvider.GetCommitHistory(Path.Combine(repo.Path, pathToRepo), repo);
+                var (_, _, lib) = gitCommitProvider.GetCommitHistory(Path.Combine(repo.Path, pathToRepo), repo);
 
                 Assert.Equal(
                     exe.Replace("\r", ""),
@@ -49,13 +49,13 @@ namespace Microsoft.Docs.Build
 
                 // another branch
                 exe = Exec("git", $"--no-pager log --format=\"%H|%cI|%an|%ae\" a050eaf -- \"{pathToRepo}\"", repo.Path);
-                (_, _, lib) = await gitCommitProvider.GetCommitHistory(Path.Combine(repo.Path, pathToRepo), repo, "a050eaf");
+                (_, _, lib) = gitCommitProvider.GetCommitHistory(Path.Combine(repo.Path, pathToRepo), repo, "a050eaf");
 
                 Assert.Equal(
                     exe.Replace("\r", ""),
                     string.Join("\n", lib.Select(c => $"{c.Sha}|{c.Time.ToString("s")}{c.Time.ToString("zzz")}|{c.AuthorName}|{c.AuthorEmail}")));
 
-                await gitCommitProvider.SaveGitCommitCache();
+                gitCommitProvider.SaveGitCommitCache();
             }
 
         }

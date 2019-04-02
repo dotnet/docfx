@@ -263,7 +263,7 @@ namespace Microsoft.Docs.Build
             var fallbackDocset = GetFallbackDocset();
             if (fallbackDocset != null)
             {
-                var (repo, pathToRepo, commits) = gitCommitProvider.GetCommitHistoryNoCache(fallbackDocset, pathToDocset, 2);
+                var (repo, pathToRepo, commits) = gitCommitProvider.GetCommitHistory(fallbackDocset, pathToDocset);
                 if (repo != null)
                 {
                     var repoPath = PathUtility.NormalizeFolder(repo.Path);

@@ -38,7 +38,7 @@ namespace Microsoft.Docs.Build
         // Commit history LRU cache per file. Key is the file path relative to repository root.
         // Value is a dictionary of git commit history for a particular commit hash and file blob hash.
         // Only the last N = MaxCommitCacheCountPerFile commit histories are cached for a file, they are selected by least recently used order (lruOrder).
-        private readonly Lazy<Task<ConcurrentDictionary<string, Dictionary<(long commit, long blob), (long[] commitHistory, int lruOrder)>>>> _commitCache;
+        private readonly Lazy<ConcurrentDictionary<string, Dictionary<(long commit, long blob), (long[] commitHistory, int lruOrder)>>> _commitCache;
 
         private int _nextLruOrder;
         private int _nextStringId;
@@ -54,52 +54,19 @@ namespace Microsoft.Docs.Build
             _repoPath = repoPath;
             _cacheFilePath = cacheFilePath;
             _commits = new ConcurrentDictionary<string, Lazy<(List<Commit>, Dictionary<long, Commit>)>>();
-            _commitCache = new Lazy<Task<ConcurrentDictionary<string, Dictionary<(long commit, long blob), (long[] commitHistory, int lruOrder)>>>>(
+            _commitCache = new Lazy<ConcurrentDictionary<string, Dictionary<(long commit, long blob), (long[] commitHistory, int lruOrder)>>>(
                 () => LoadCommitCache(_cacheFilePath));
         }
 
-        public async Task<List<GitCommit>> GetCommitHistory(string file, string committish = null)
-        {
-            var commitCache = await _commitCache.Value;
-            var fileCommitCache = commitCache.GetOrAdd(file, _ => new Dictionary<(long, long), (long[], int)>());
-
-            return GetCommitHistory(file, int.MaxValue, committish, fileCommitCache);
-        }
-
-        public List<GitCommit> GetCommitHistoryNoCache(string file, int top, string committish = null)
-        {
-            return GetCommitHistory(file, top, committish, new Dictionary<(long, long), (long[], int)>());
-        }
-
-        public Task SaveCache()
-        {
-            return SaveCacheCore();
-        }
-
-        public void Dispose()
-        {
-            var repo = Interlocked.Exchange(ref _repo, IntPtr.Zero);
-            if (repo != IntPtr.Zero)
-            {
-                git_repository_free(_repo);
-                GC.SuppressFinalize(this);
-            }
-        }
-
-        ~FileCommitProvider()
-        {
-            Dispose();
-        }
-
-        private List<GitCommit> GetCommitHistory(
+        public List<GitCommit> GetCommitHistory(
             string file,
-            int top,
-            string committish,
-            Dictionary<(long commit, long blob), (long[] commitHistory, int lruOrder)> commitCache)
+            string committish)
         {
             Debug.Assert(!file.Contains('\\'));
 
             const int MaxParentBlob = 32;
+
+            var commitCache = _commitCache.Value.GetOrAdd(file, _ => new Dictionary<(long, long), (long[], int)>());
 
             var (commits, commitsBySha) = _commits.GetOrAdd(
                 committish ?? "",
@@ -164,15 +131,10 @@ namespace Microsoft.Docs.Build
                 if ((parentCount == 0 && blob != 0) || (parentCount > 0 && !singleParent))
                 {
                     result.Add(commit);
-
-                    if (result.Count >= top)
-                    {
-                        break;
-                    }
                 }
             }
 
-            if (updateCache && top == int.MaxValue)
+            if (updateCache)
             {
                 lock (commitCache)
                 {
@@ -219,6 +181,26 @@ namespace Microsoft.Docs.Build
                     return false;
                 }
             }
+        }
+
+        public void SaveCache()
+        {
+            SaveCacheCore();
+        }
+
+        public void Dispose()
+        {
+            var repo = Interlocked.Exchange(ref _repo, IntPtr.Zero);
+            if (repo != IntPtr.Zero)
+            {
+                git_repository_free(_repo);
+                GC.SuppressFinalize(this);
+            }
+        }
+
+        ~FileCommitProvider()
+        {
+            Dispose();
         }
 
         private unsafe (List<Commit>, Dictionary<long, Commit>) LoadCommits(string committish = null)
@@ -345,7 +327,7 @@ namespace Microsoft.Docs.Build
             return _stringPool.GetOrAdd(value, _ => Interlocked.Increment(ref _nextStringId));
         }
 
-        private static async Task<ConcurrentDictionary<string, Dictionary<(long commit, long blob), (long[] commitHistory, int lruOrder)>>>
+        private static ConcurrentDictionary<string, Dictionary<(long commit, long blob), (long[] commitHistory, int lruOrder)>>
             LoadCommitCache(string cacheFilePath)
         {
             Telemetry.TrackCacheTotalCount(TelemetryName.GitCommitCache);
@@ -356,7 +338,7 @@ namespace Microsoft.Docs.Build
             }
 
             Log.Write($"Using git commit history cache file: '{cacheFilePath}'");
-            return await ProcessUtility.ReadFile(cacheFilePath, stream =>
+            return ProcessUtility.ReadFile(cacheFilePath, stream =>
             {
                 var result = new ConcurrentDictionary<string, Dictionary<(long commit, long blob), (long[] commitHistory, int lruOrder)>>();
                 using (var reader = new BinaryReader(stream))
@@ -387,16 +369,16 @@ namespace Microsoft.Docs.Build
             });
         }
 
-        private Task SaveCacheCore()
+        private void SaveCacheCore()
         {
-            if (!_cacheUpdated || string.IsNullOrEmpty(_cacheFilePath) || !_commitCache.IsValueCreated || !_commitCache.Value.IsCompletedSuccessfully)
+            if (!_cacheUpdated || string.IsNullOrEmpty(_cacheFilePath) || !_commitCache.IsValueCreated)
             {
-                return Task.CompletedTask;
+                return;
             }
 
             PathUtility.CreateDirectoryFromFilePath(_cacheFilePath);
 
-            return ProcessUtility.WriteFile(_cacheFilePath, stream =>
+            ProcessUtility.WriteFile(_cacheFilePath, stream =>
             {
                 using (var writer = new BinaryWriter(stream))
                 {
@@ -404,7 +386,7 @@ namespace Microsoft.Docs.Build
                     //
                     // There is a race condition in Linq ToList() method, use ConcurrentDictionary.ToArray() to create a snapshot
                     // https://stackoverflow.com/questions/11692389/getting-argument-exception-in-concurrent-dictionary-when-sorting-and-displaying
-                    var commitCache = _commitCache.Value.Result.ToArray();
+                    var commitCache = _commitCache.Value.ToArray();
 
                     writer.Write(commitCache.Length);
                     foreach (var (file, value) in commitCache)

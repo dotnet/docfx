@@ -4,9 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Threading.Tasks;
-using System.Web;
 using HtmlAgilityPack;
 using Newtonsoft.Json.Linq;
 
@@ -40,7 +38,7 @@ namespace Microsoft.Docs.Build
             model.Bilingual = file.Docset.Config.Localization.Bilingual;
 
             (model.DocumentId, model.DocumentVersionIndependentId) = file.Docset.Redirections.TryGetDocumentId(file, out var docId) ? docId : file.Id;
-            (model.ContentGitUrl, model.OriginalContentGitUrl, model.OriginalContentGitUrlTemplate, model.Gitcommit) = await context.ContributionProvider.GetGitUrls(file);
+            (model.ContentGitUrl, model.OriginalContentGitUrl, model.OriginalContentGitUrlTemplate, model.Gitcommit) = context.ContributionProvider.GetGitUrls(file);
 
             List<Error> contributorErrors;
             (contributorErrors, model.Author, model.Contributors, model.UpdatedAt) = await context.ContributionProvider.GetAuthorAndContributors(file, metadata.Author);
@@ -231,7 +229,7 @@ namespace Microsoft.Docs.Build
             {
                 if (isPage && context.Template != null)
                 {
-                    return TemplateTransform.Transform(context.Template, model, file);
+                    return context.Template.Transform(model, file);
                 }
 
                 return (model, null);
