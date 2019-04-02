@@ -4,6 +4,7 @@ Version Notes (Current Version: v2.42)
 v2.42(Pre-release)
 -----------
 1. Added the ability to change the default "Cover Page" bookmark for the TOC in the PDF. (#4278)
+2. Prevent adding duplicate HTML files when generating a PDF
 
 v2.41
 -----------

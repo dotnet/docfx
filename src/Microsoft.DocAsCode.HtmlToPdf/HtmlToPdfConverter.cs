@@ -251,7 +251,8 @@ namespace Microsoft.DocAsCode.HtmlToPdf
                     if (!string.IsNullOrEmpty(htmlModel.HtmlFilePath))
                     {
                         string filePath = GetFilePath(htmlModel.HtmlFilePath);
-                        if (File.Exists(NormalizePath(filePath)))
+                        if ((!_htmlFilePaths.Contains(filePath))
+                            && File.Exists(NormalizePath(filePath)))
                         {
                             _htmlFilePaths.Add(filePath);
                         }
