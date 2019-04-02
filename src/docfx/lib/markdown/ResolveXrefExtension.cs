@@ -11,7 +11,7 @@ using Microsoft.DocAsCode.MarkdigEngine.Extensions;
 
 namespace Microsoft.Docs.Build
 {
-    internal static class ResolveXref
+    internal static class ResolveXrefExtension
     {
         public static MarkdownPipelineBuilder UseResolveXref(
             this MarkdownPipelineBuilder builder,
