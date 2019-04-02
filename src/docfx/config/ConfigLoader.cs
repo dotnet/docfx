@@ -106,6 +106,8 @@ namespace Microsoft.Docs.Build
                 (errors, config) = JsonUtility.DeserializeWithSchemaValidation<JObject>(content);
             }
 
+            JsonUtility.TrimStringValues(config);
+
             if (config is JObject)
             {
                 if (config["globalMetadata"] != null)
