@@ -118,7 +118,7 @@ namespace Microsoft.Docs.Build
                 (file, href, isInclude, ranges) =>
                 {
                     // TODO: pass line info into ResolveContent
-                    var (error, referencedTocContent, referencedToc) = context.DependencyResolver.ResolveContent(href, file, DependencyType.TocInclusion);
+                    var (error, referencedTocContent, referencedToc) = context.DependencyResolver.ResolveContent(href, file, ranges is null ? default : ranges.FirstOrDefault(), DependencyType.TocInclusion);
                     errors.AddIfNotNull(error);
                     if (referencedToc != null && isInclude)
                     {
@@ -129,9 +129,10 @@ namespace Microsoft.Docs.Build
                 },
                 (file, href, resultRelativeTo, ranges) =>
                 {
-                    // TODO: get line info of TOC href for bookmark validation
                     // add to referenced document list
-                    var (error, link, buildItem) = context.DependencyResolver.ResolveLink(href, file, resultRelativeTo, null, ranges);
+                    var (error, link, buildItem) = context.DependencyResolver.ResolveLink(href, file, resultRelativeTo, null, ranges is null ? default : ranges.FirstOrDefault());
+
+                    // TODO: throw error for all ranges with the same href
                     errors.AddIfNotNull(error);
 
                     if (buildItem != null)

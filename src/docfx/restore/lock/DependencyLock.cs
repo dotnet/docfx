@@ -52,7 +52,8 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            var (_, content, _) = await RestoreMap.GetRestoredFileContent(docset, dependencyLockPath);
+            // TODO: range needed here?
+            var (_, content, _) = await RestoreMap.GetRestoredFileContent(docset, dependencyLockPath, default);
 
             if (string.IsNullOrEmpty(content))
             {

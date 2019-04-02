@@ -788,7 +788,7 @@ outputs:
   build.log: |
     ["error","yaml-duplicate-key","Key 'topicHref' is already defined, remove the duplicate key.","docs/TOC.yml","",3,3]
 ---
-# [only]The included TOC's errors/warning should be assigned to itself, not its parent
+# The included TOC's errors/warning should be assigned to itself, not its parent
 inputs:
   docfx.yml: |
     files: docs/TOC.md
@@ -801,7 +801,7 @@ inputs:
       tocHref: index.md
 outputs:
   build.log: |
-    ["warning","file-not-found","Cannot find file 'index.md' relative to 'docs/f1/TOC.yml'","docs/f1/TOC.yml"]
+    ["warning","file-not-found","Cannot find file 'index.md' relative to 'docs/f1/TOC.yml'","docs/f1/TOC.yml","",2,3]
     ["error","invalid-toc-href","The toc href 'index.md' can only reference to a local TOC file, folder or absolute path","docs/f1/TOC.yml"]
 ---
 # Individual experimental TOC should be built

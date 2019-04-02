@@ -229,8 +229,8 @@ namespace Microsoft.Docs.Build
         ///   - define user_profile.json file in config, while the file doesn't exist
         ///   - href referencing a non-existing file
         /// </summary>
-        public static Error FileNotFound(string relativeTo, string path)
-            => new Error(ErrorLevel.Warning, "file-not-found", $"Cannot find file '{path}' relative to '{relativeTo}'", relativeTo);
+        public static Error FileNotFound(string relativeTo, string path, Range range)
+            => new Error(ErrorLevel.Warning, "file-not-found", $"Cannot find file '{path}' relative to '{relativeTo}'", relativeTo, range);
 
         /// <summary>
         /// Failed to resolve uid defined by [link](xref:uid) or <xref:uid> syntax.
