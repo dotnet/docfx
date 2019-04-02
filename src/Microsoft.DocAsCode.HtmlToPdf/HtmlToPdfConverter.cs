@@ -238,7 +238,7 @@ namespace Microsoft.DocAsCode.HtmlToPdf
                 case OutlineOption.DefaultOutline:
                     return ConvertOutlines();
                 default:
-                    return ConvertOutlines();
+                    return null;
             }
         }
 
@@ -282,7 +282,10 @@ namespace Microsoft.DocAsCode.HtmlToPdf
                     {
                         using (var pdfStamper = new PdfStamper(pdfReader, stream))
                         {
-                            pdfStamper.Outlines = outlines;
+                            if (outlines != null)
+                            {
+                                pdfStamper.Outlines = outlines;
+                            }
                         }
                     }
                 }

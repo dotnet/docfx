@@ -44,6 +44,11 @@ namespace Microsoft.DocAsCode.HtmlToPdf
         public string TocTitle { get; set; } = "Cover Page";
 
         /// <summary>
+        /// Gets or sets the outline option.
+        /// </summary>
+        public OutlineOption OutlineOption { get; set; } = OutlineOption.DefaultOutline;
+
+        /// <summary>
         /// If the path only with '/' or null or empty, will skip and return empty. Others will trim and return with as 'a/'
         /// </summary>
         /// <param name="path">the path</param>
