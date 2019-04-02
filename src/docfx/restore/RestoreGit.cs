@@ -38,11 +38,11 @@ namespace Microsoft.Docs.Build
             var children = new ConcurrentBag<RestoreChild>();
 
             // restore first level children
-            await ParallelUtility.ForEach(
+            ParallelUtility.ForEach(
                 gitDependencies,
-                async group =>
+                group =>
                 {
-                    foreach (var child in await RestoreGitRepo(group))
+                    foreach (var child in RestoreGitRepo(group))
                     {
                         children.Add(child);
                     }
@@ -52,7 +52,7 @@ namespace Microsoft.Docs.Build
             // fetch contribution branch
             if (rootRepository != null && LocalizationUtility.TryGetContributionBranch(rootRepository, out var contributionBranch))
             {
-                await GitUtility.Fetch(rootRepository.Path, rootRepository.Remote, contributionBranch, config);
+                GitUtility.Fetch(rootRepository.Path, rootRepository.Remote, contributionBranch, config);
             }
 
             // restore sub-level children
@@ -70,7 +70,7 @@ namespace Microsoft.Docs.Build
 
             return gitVersions;
 
-            async Task<ConcurrentBag<RestoreChild>> RestoreGitRepo(IGrouping<string, (string branch, GitFlags flags)> group)
+            ConcurrentBag<RestoreChild> RestoreGitRepo(IGrouping<string, (string branch, GitFlags flags)> group)
             {
                 var subChildren = new ConcurrentBag<RestoreChild>();
                 var remote = group.Key;
@@ -83,7 +83,7 @@ namespace Microsoft.Docs.Build
                     var gitVersion = dependencyLock?.GetGitLock(remote, branch);
                     if (@implicit || !string.IsNullOrEmpty(gitVersion?.Commit))
                     {
-                        var (existingPath, git) = await RestoreMap.TryGetGitRestorePath(remote, branch, gitVersion?.Commit);
+                        var (existingPath, git) = RestoreMap.TryGetGitRestorePath(remote, branch, gitVersion?.Commit);
                         if (!string.IsNullOrEmpty(existingPath))
                         {
                             branchesToFetch.Remove(branch);
@@ -100,31 +100,31 @@ namespace Microsoft.Docs.Build
                 var repoPath = Path.GetFullPath(Path.Combine(AppData.GetGitDir(remote), ".git"));
                 var childRepos = new List<string>();
 
-                await ProcessUtility.RunInsideMutexAsync(
+                ProcessUtility.RunInsideMutex(
                     remote,
-                    async () =>
+                    () =>
                     {
                         if (branchesToFetch.Count > 0)
                         {
                             try
                             {
-                                await GitUtility.CloneOrUpdateBare(repoPath, remote, branchesToFetch, depthOne, config);
+                                GitUtility.CloneOrUpdateBare(repoPath, remote, branchesToFetch, depthOne, config);
                             }
                             catch (Exception ex)
                             {
                                 throw Errors.GitCloneFailed(remote, branches).ToException(ex);
                             }
-                            await AddWorkTrees();
+                            AddWorkTrees();
                         }
                     });
 
                 return subChildren;
 
-                async Task AddWorkTrees()
+                void AddWorkTrees()
                 {
-                    var existingWorkTreePath = new ConcurrentHashSet<string>(await GitUtility.ListWorkTree(repoPath));
+                    var existingWorkTreePath = new ConcurrentHashSet<string>(GitUtility.ListWorkTree(repoPath));
 
-                    await ParallelUtility.ForEach(branchesToFetch, async branch =>
+                    ParallelUtility.ForEach(branchesToFetch, branch =>
                     {
                         var nocheckout = group.Where(g => g.branch == branch).All(g => (g.flags & GitFlags.NoCheckout) != 0);
                         if (nocheckout)
@@ -152,7 +152,7 @@ namespace Microsoft.Docs.Build
                                 // create new worktree
                                 try
                                 {
-                                    await GitUtility.AddWorkTree(repoPath, headCommit, workTreePath);
+                                    GitUtility.AddWorkTree(repoPath, headCommit, workTreePath);
                                 }
                                 catch (Exception ex)
                                 {
@@ -163,7 +163,7 @@ namespace Microsoft.Docs.Build
                             {
                                 // worktree already exists
                                 // checkout to {headCommit}, no need to fetch
-                                await GitUtility.Checkout(workTreePath, headCommit);
+                                GitUtility.Checkout(workTreePath, headCommit);
                             }
                         }
                         catch

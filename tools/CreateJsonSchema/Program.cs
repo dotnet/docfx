@@ -36,20 +36,20 @@ class Program
 
         if (skip + take >= schemas.Count)
         {
-            var diff = await ProcessUtility.Execute("git", "diff --ignore-all-space --ignore-blank-lines schemas");
-            if (!string.IsNullOrEmpty(diff.stdout))
+            var diff = ProcessUtility.Execute("git", "diff --ignore-all-space --ignore-blank-lines schemas");
+            if (!string.IsNullOrEmpty(diff))
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("Json schema change detected. Run ./build.ps1 locally and commit these json schema changes:");
                 Console.ResetColor();
                 Console.WriteLine("");
-                Console.WriteLine(diff.stdout);
+                Console.WriteLine(diff);
                 return 1;
             }
         }
         else
         {
-            await ProcessUtility.Execute("dotnet", $"run -p tools/CreateJsonSchema --no-build --no-restore -- {skip + take}", stdout: false, stderr: false);
+            ProcessUtility.Execute("dotnet", $"run -p tools/CreateJsonSchema --no-build --no-restore -- {skip + take}", stdout: false);
         }
         return 0;
     }

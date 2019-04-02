@@ -14,7 +14,7 @@ namespace Microsoft.Docs.Build
     {
         private static int _defaultLockdownTimeInSecond = 10 * 60;
 
-        public static async Task<(string path, T slot)> TryGetSlot(string remote, Func<IReadOnlyList<T>, Task<IReadOnlyList<T>>> getOrderedFilteredSlots)
+        public static (string path, T slot) TryGetSlot(string remote, Func<IReadOnlyList<T>, IReadOnlyList<T>> getOrderedFilteredSlots)
         {
             Debug.Assert(!string.IsNullOrEmpty(remote));
             Debug.Assert(getOrderedFilteredSlots != null);
@@ -23,13 +23,13 @@ namespace Microsoft.Docs.Build
 
             string path = null;
             T slot = null;
-            await ProcessUtility.RunInsideMutexAsync(
+            ProcessUtility.RunInsideMutex(
                 remote + "/index.json",
-                async () =>
+                () =>
                 {
                     var slots = GetSlots(restoreDir);
 
-                    foreach (var i in await getOrderedFilteredSlots(slots))
+                    foreach (var i in getOrderedFilteredSlots(slots))
                     {
                         if (i.Restored /*restored successfully*/ &&
                         !ProcessUtility.IsExclusiveLockHeld(GetLockKey(remote, i.Id)) /*not being used for restoring*/)

@@ -9,7 +9,6 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading.Tasks;
 
 using static Microsoft.Docs.Build.LibGit2;
 
@@ -93,55 +92,51 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// checkout existing git repository to specificed committish
         /// </summary>
-        public static Task Checkout(string path, string committish)
+        public static void Checkout(string path, string committish)
             => ExecuteNonQuery(path, $"-c core.longpaths=true checkout --force --progress {committish}");
 
         /// <summary>
         /// Clones or update a git repository to the latest version.
         /// </summary>
-        public static async Task CloneOrUpdate(string path, string url, string committish, Config config = null)
+        public static void CloneOrUpdate(string path, string url, string committish, Config config = null)
         {
-            await CloneOrUpdate(path, url, new[] { committish }, bare: false, depthOne: false, prune: true, config);
-            await ExecuteNonQuery(path, $"-c core.longpaths=true checkout --force --progress {committish}");
+            CloneOrUpdate(path, url, new[] { committish }, bare: false, depthOne: false, prune: true, config);
+            ExecuteNonQuery(path, $"-c core.longpaths=true checkout --force --progress {committish}");
         }
 
         /// <summary>
         /// Clones or update a git bare repository to the latest version.
         /// </summary>
-        public static Task CloneOrUpdateBare(string path, string url, IEnumerable<string> committishes, bool depthOne, Config config = null)
+        public static void CloneOrUpdateBare(string path, string url, IEnumerable<string> committishes, bool depthOne, Config config = null)
         {
-            return CloneOrUpdate(path, url, committishes, bare: true, depthOne, prune: true, config);
+            CloneOrUpdate(path, url, committishes, bare: true, depthOne, prune: true, config);
         }
 
         /// <summary>
         /// Fetch a git repository's updates
         /// </summary>
-        public static Task Fetch(string path, string url, string committish, Config config = null)
+        public static void Fetch(string path, string url, string committish, Config config = null)
         {
-            return CloneOrUpdate(path, url, new[] { committish }, bare: false, depthOne: false, prune: false, config);
+            CloneOrUpdate(path, url, new[] { committish }, bare: false, depthOne: false, prune: false, config);
         }
 
         /// <summary>
         /// Get a list of commits using git log
         /// </summary>
-        public static Task<string[]> GetCommits(string path, string committish, int top = 1)
+        public static string[] GetCommits(string path, string committish, int top = 1)
         {
-            return Execute(path, $"--no-pager log {committish} --pretty=format:\"%H\" -{top}", (stdout, stderr) =>
-            {
-                Debug.Assert(stdout != null);
-
-                return stdout.Split('\n', StringSplitOptions.RemoveEmptyEntries);
-            });
+            return Execute(path, $"--no-pager log {committish} --pretty=format:\"%H\" -{top}")
+                    .Split('\n', StringSplitOptions.RemoveEmptyEntries);
         }
 
         /// <summary>
         /// List work trees for a given repo
         /// </summary>
-        public static Task<List<string>> ListWorkTree(string repoPath)
+        public static List<string> ListWorkTree(string repoPath)
         {
-            return Execute(repoPath, $"worktree list --porcelain", ParseWorkTreeList);
+            return ParseWorkTreeList(Execute(repoPath, $"worktree list --porcelain"));
 
-            List<string> ParseWorkTreeList(string stdout, string stderr)
+            List<string> ParseWorkTreeList(string stdout)
             {
                 Debug.Assert(stdout != null);
 
@@ -178,19 +173,21 @@ namespace Microsoft.Docs.Build
         /// <param name="cwd">The current working directory</param>
         /// <param name="committish">The commit hash, branch or tag used to create a work tree</param>
         /// <param name="path">The work tree path</param>
-        public static Task AddWorkTree(string cwd, string committish, string path)
+        public static void AddWorkTree(string cwd, string committish, string path)
         {
             // By default, add refuses to create a new working tree when <commit-ish> is a branch name and is already checked out by another working tree and remove refuses to remove an unclean working tree.
             // -f/ --force overrides these safeguards.
-            return ExecuteNonQuery(cwd, $"-c core.longpaths=true worktree add {path} {committish} --force");
+            ExecuteNonQuery(cwd, $"-c core.longpaths=true worktree add {path} {committish} --force");
         }
 
         /// <summary>
         /// Prune work trees which are not connected with an given repo
         /// </summary>
         /// <param name="cwd">The current working directory</param>
-        public static Task PruneWorkTrees(string cwd)
-            => ExecuteNonQuery(cwd, $"worktree prune");
+        public static void PruneWorkTrees(string cwd)
+        {
+            ExecuteNonQuery(cwd, $"worktree prune");
+        }
 
         /// <summary>
         /// Retrieve git head version
@@ -277,7 +274,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Clones or update a git repository to the latest version.
         /// </summary>
-        private static async Task CloneOrUpdate(string path, string url, IEnumerable<string> committishes, bool bare, bool depthOne, bool prune, Config config)
+        private static void CloneOrUpdate(string path, string url, IEnumerable<string> committishes, bool bare, bool depthOne, bool prune, Config config)
         {
             // Unifies clone and fetch using a single flow:
             // - git init
@@ -314,23 +311,23 @@ namespace Microsoft.Docs.Build
 
             try
             {
-                await ExecuteNonQuery(path, $"{httpConfig} fetch --tags --progress --update-head-ok {pruneSwitch} {depth} \"{url}\" {refspecs}", stderr: true);
+                ExecuteNonQuery(path, $"{httpConfig} fetch --tags --progress --update-head-ok {pruneSwitch} {depth} \"{url}\" {refspecs}");
             }
-            catch (InvalidOperationException ex) when (committishes.Any(rev => ex.Message.Contains(rev)))
+            catch (InvalidOperationException)
             {
                 // Fallback to fetch all branches and tags if the input committish is not supported by fetch
                 depth = "--depth 9999999999";
                 refspecs = "+refs/heads/*:refs/heads/* +refs/tags/*:refs/tags/*";
-                await ExecuteNonQuery(path, $"{httpConfig} fetch --tags --progress --update-head-ok {pruneSwitch} {depth} \"{url}\" {refspecs}");
+                ExecuteNonQuery(path, $"{httpConfig} fetch --tags --progress --update-head-ok {pruneSwitch} {depth} \"{url}\" {refspecs}");
             }
         }
 
-        private static Task ExecuteNonQuery(string cwd, string commandLineArgs, bool stderr = false)
+        private static void ExecuteNonQuery(string cwd, string commandLineArgs)
         {
-            return Execute(cwd, commandLineArgs, (a, b) => 0, stdout: false, stderr: stderr);
+            Execute(cwd, commandLineArgs, stdout: false);
         }
 
-        private static async Task<T> Execute<T>(string cwd, string commandLineArgs, Func<string, string, T> parser, bool stdout = true)
+        private static string Execute(string cwd, string commandLineArgs, bool stdout = true)
         {
             if (!Directory.Exists(cwd))
             {
@@ -339,8 +336,7 @@ namespace Microsoft.Docs.Build
 
             try
             {
-                var stdout = await ProcessUtility.Execute("git", commandLineArgs, cwd, stdout, stderr);
-                return parser(output, error);
+                return ProcessUtility.Execute("git", commandLineArgs, cwd, stdout);
             }
             catch (Win32Exception ex) when (ProcessUtility.IsExeNotFoundException(ex))
             {
