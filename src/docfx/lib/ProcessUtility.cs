@@ -8,9 +8,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
 {
@@ -196,7 +194,7 @@ namespace Microsoft.Docs.Build
             };
 
             var process = Process.Start(psi);
-            var result = process.StandardOutput.ReadToEnd();
+            var result = stdout ? process.StandardOutput.ReadToEnd() : null;
             process.WaitForExit();
 
             if (process.ExitCode != 0)
