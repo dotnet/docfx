@@ -28,7 +28,7 @@ namespace Microsoft.Docs.Build
         public void TestObjectWithStringProperty(string input)
         {
             var yaml = $"c: \"{input}\"";
-            var (errors, value) = YamlUtility.Deserialize<BasicClass>(yaml);
+            var (errors, value) = YamlUtility.DeserializeWithValidation<BasicClass>(yaml);
             Assert.Empty(errors);
             Assert.NotNull(value);
             Assert.Equal(input, value.C);
@@ -63,7 +63,7 @@ namespace Microsoft.Docs.Build
         public void TestObjectWithMultiLinesStringProperty(string input, string expected)
         {
             var yaml = $"c: {input}";
-            var (errors, value) = YamlUtility.Deserialize<BasicClass>(yaml);
+            var (errors, value) = YamlUtility.DeserializeWithValidation<BasicClass>(yaml);
             Assert.Empty(errors);
             Assert.NotNull(value);
             Assert.Equal(expected.Replace("\r\n", "\n"), value.C.Replace("\r\n", "\n"));
@@ -78,7 +78,7 @@ namespace Microsoft.Docs.Build
 - 9223372036854775807
 - 18446744073709551615
 ";
-            var (errors, value) = YamlUtility.Deserialize<object[]>(yaml);
+            var (errors, value) = YamlUtility.DeserializeWithValidation<object[]>(yaml);
             Assert.Empty(errors);
             Assert.NotNull(value);
             Assert.Equal(4, value.Length);
@@ -96,7 +96,7 @@ namespace Microsoft.Docs.Build
   - item2
 : value
 ";
-            var exception = Assert.Throws<NotSupportedException>(() => YamlUtility.Deserialize(yaml));
+            var exception = Assert.Throws<NotSupportedException>(() => YamlUtility.ParseWithValidation(yaml));
 
             Assert.Equal("Not Supported: [ item1, item2 ] is not a primitive type", exception.Message);
         }
@@ -108,7 +108,7 @@ namespace Microsoft.Docs.Build
 a: &anchor test
 b: *anchor
 ";
-            var (errors, value) = YamlUtility.Deserialize<Dictionary<string, string>>(yaml);
+            var (errors, value) = YamlUtility.DeserializeWithValidation<Dictionary<string, string>>(yaml);
             Assert.Empty(errors);
             Assert.NotNull(value);
             Assert.Equal("test", value["a"]);
@@ -123,7 +123,7 @@ b: 1
 c: Good!
 d: true
 ";
-            var (errors, value) = YamlUtility.Deserialize<BasicClass>(yaml);
+            var (errors, value) = YamlUtility.DeserializeWithValidation<BasicClass>(yaml);
             Assert.Empty(errors);
             Assert.NotNull(value);
             Assert.Equal(1, value.B);
@@ -138,13 +138,13 @@ d: true
 - true
 - false
 ";
-            var (errors1, value) = YamlUtility.Deserialize<object[]>(yaml);
+            var (errors1, value) = YamlUtility.DeserializeWithValidation<object[]>(yaml);
             Assert.Empty(errors1);
             Assert.NotNull(value);
             Assert.Equal(2, value.Count());
             Assert.True((bool)value[0]);
             Assert.False((bool)value[1]);
-            var (errors2, value2) = YamlUtility.Deserialize(@"
+            var (errors2, value2) = YamlUtility.ParseWithValidation(@"
 - true
 - True
 - TRUE
@@ -164,7 +164,7 @@ d: true
         [InlineData("NULL")]
         public void TestNull(string yaml)
         {
-            var (errors, value) = YamlUtility.Deserialize<object>(yaml);
+            var (errors, value) = YamlUtility.DeserializeWithValidation<object>(yaml);
             Assert.Empty(errors);
             Assert.Null(value);
         }
@@ -175,7 +175,7 @@ d: true
         [InlineData("NaN", double.NaN)]
         public void TestSpecialDouble(string yaml, double expected)
         {
-            var (errors, value) = YamlUtility.Deserialize<double>(yaml);
+            var (errors, value) = YamlUtility.DeserializeWithValidation<double>(yaml);
             Assert.Empty(errors);
             Assert.Equal(value, expected);
         }
@@ -223,7 +223,7 @@ d: true
   c: Good9!
   d: true
 ";
-            var (errors, values) = YamlUtility.Deserialize<List<BasicClass>>(yaml);
+            var (errors, values) = YamlUtility.DeserializeWithValidation<List<BasicClass>>(yaml);
             Assert.Empty(errors);
             Assert.NotNull(values);
             Assert.Equal(10, values.Count);
@@ -239,7 +239,7 @@ d: true
         public void TestClassWithReadOnlyField()
         {
             var yaml = $"b: test";
-            var (errors, value) = YamlUtility.Deserialize<ClassWithReadOnlyField>(yaml);
+            var (errors, value) = YamlUtility.DeserializeWithValidation<ClassWithReadOnlyField>(yaml);
             Assert.Empty(errors);
             Assert.NotNull(value);
             Assert.Equal("test", value.B);
@@ -266,7 +266,7 @@ valueBasic:
   d: false
 valueRequired: a
 ";
-            var (errors, value) = YamlUtility.Deserialize<ClassWithMoreMembers>(yaml);
+            var (errors, value) = YamlUtility.DeserializeWithValidation<ClassWithMoreMembers>(yaml);
             Assert.Empty(errors.Where(error => error.Level == ErrorLevel.Error));
             Assert.NotNull(value);
             Assert.Equal(1, value.B);
@@ -288,7 +288,7 @@ valueRequired: a
         public void TestStringEmpty()
         {
             var yaml = String.Empty;
-            var (errors, value) = YamlUtility.Deserialize<ClassWithMoreMembers>(yaml);
+            var (errors, value) = YamlUtility.DeserializeWithValidation<ClassWithMoreMembers>(yaml);
             Assert.Empty(errors);
             Assert.Null(value);
         }
@@ -300,7 +300,7 @@ valueRequired: a
 Key1: 0
 Key1: 0
 ";
-            var exception = Assert.Throws<DocfxException>(() => YamlUtility.Deserialize(yaml));
+            var exception = Assert.Throws<DocfxException>(() => YamlUtility.ParseWithValidation(yaml));
             Assert.Contains("Key 'Key1' is already defined, remove the duplicate key", exception.Message);
         }
 
@@ -312,7 +312,7 @@ items:
  - name: 1", 3, 2)]
         public void TestParsedJTokenHasLineInfo(string yaml, int expectedLine, int expectedColumn)
         {
-            var (errors, value) = YamlUtility.Deserialize(yaml);
+            var (errors, value) = YamlUtility.ParseWithValidation(yaml);
             Assert.Empty(errors);
 
             // Get the first JValue of the first JProperty if any
@@ -323,11 +323,9 @@ items:
 
         [Theory]
         [InlineData(@"b: not number")]
-        public void SyntaxErrorShouldBeThrownWithoutSchemaValidation(string yaml)
+        public void ThrowWithoutSchemaValidation(string yaml)
         {
-            var exception = Assert.Throws<DocfxException>(() => YamlUtility.DeserializeData<BasicClass>(yaml));
-            Assert.Equal("json-syntax-error", exception.Error.Code);
-            Assert.Equal(ErrorLevel.Error, exception.Error.Level);
+            Assert.ThrowsAny<Exception>(() => YamlUtility.Deserialize<BasicClass>(yaml));
         }
 
         public class BasicClass

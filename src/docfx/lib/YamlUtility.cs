@@ -58,10 +58,10 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Deserialize from yaml string, return error list at the same time
         /// </summary>
-        public static (List<Error>, T) Deserialize<T>(string input)
+        public static (List<Error>, T) DeserializeWithValidation<T>(string input)
         {
-            var (errors, token) = Deserialize(input);
-            var (mismatchingErrors, result) = JsonUtility.ToObjectWithSchemaValidation<T>(token);
+            var (errors, token) = ParseWithValidation(input);
+            var (mismatchingErrors, result) = JsonUtility.ToObjectWithValidation<T>(token);
             errors.AddRange(mismatchingErrors);
             return (errors, result);
         }
@@ -70,21 +70,26 @@ namespace Microsoft.Docs.Build
         /// De-serialize from yaml string, which is not user input
         /// schema validation errors will be ignored, syntax errors and type mismatching will be thrown
         /// </summary>
-        public static T DeserializeData<T>(string input)
+        public static T Deserialize<T>(string input)
         {
-            var (_, token) = Deserialize(input);
+            var token = ParseAsJToken(input);
             return JsonUtility.ToObject<T>(token);
         }
 
         /// <summary>
         /// Deserialize from a YAML file, get from or add to cache
         /// </summary>
-        public static (List<Error>, JToken) Deserialize(Document file, Context context) => context.Cache.LoadYamlFile(file);
+        public static (List<Error>, JToken) ParseWithValidation(Document file, Context context) => context.Cache.LoadYamlFile(file);
 
         /// <summary>
         /// Deserialize to JToken from string
         /// </summary>
-        public static (List<Error>, JToken) Deserialize(string input)
+        public static (List<Error>, JToken) ParseWithValidation(string input)
+        {
+            return ParseAsJToken(input).RemoveNulls();
+        }
+
+        private static JToken ParseAsJToken(string input)
         {
             Match match = null;
 
@@ -113,7 +118,7 @@ namespace Microsoft.Docs.Build
 
             if (stream.Documents.Count == 0)
             {
-                return (errors, JValue.CreateNull());
+                return JValue.CreateNull();
             }
 
             if (stream.Documents.Count != 1)
@@ -121,9 +126,7 @@ namespace Microsoft.Docs.Build
                 throw new NotSupportedException("Does not support mutiple YAML documents");
             }
 
-            var (nullErrors, token) = ToJson(stream.Documents[0].RootNode).RemoveNulls();
-            errors.AddRange(nullErrors);
-            return (errors, token);
+            return ToJson(stream.Documents[0].RootNode);
         }
 
         private static JToken ToJson(YamlNode node)

@@ -58,7 +58,7 @@ namespace Microsoft.Docs.Build
                 return null;
             }
 
-            return JsonUtility.DeserializeData<DependencyLockModel>(content);
+            return JsonUtility.Deserialize<DependencyLockModel>(content);
         }
 
         public static void Save(string docset, string dependencyLockPath, DependencyLockModel dependencyLock)

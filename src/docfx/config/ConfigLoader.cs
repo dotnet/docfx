@@ -74,7 +74,7 @@ namespace Microsoft.Docs.Build
             OverwriteConfig(configObject, locale ?? options.Locale, GetBranch());
 
             var deserializeErrors = new List<Error>();
-            (deserializeErrors, config) = JsonUtility.ToObjectWithSchemaValidation<Config>(configObject);
+            (deserializeErrors, config) = JsonUtility.ToObjectWithValidation<Config>(configObject);
             errors.AddRange(deserializeErrors);
 
             config.ConfigFileName = !configExists
@@ -99,11 +99,11 @@ namespace Microsoft.Docs.Build
             JToken config = null;
             if (fileName.EndsWith(".yml", StringComparison.OrdinalIgnoreCase))
             {
-                (errors, config) = YamlUtility.Deserialize(content);
+                (errors, config) = YamlUtility.ParseWithValidation(content);
             }
             else if (fileName.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
             {
-                (errors, config) = JsonUtility.Deserialize(content);
+                (errors, config) = JsonUtility.ParseWithValidation(content);
             }
 
             if (config is JObject)
