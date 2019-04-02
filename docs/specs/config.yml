@@ -116,6 +116,22 @@ outputs:
   docs/a.json: |
     { "metadata": { "key": "another value" } }
 ---
+# String values are trimmed in config
+inputs:
+  docfx.yml: |
+    globalMetadata:
+      key: ' value   '
+    redirections:
+      docs/redirect.md: '/absolute/path '
+  docs/a.md: |
+    [redirect](redirect.md?a#b)
+outputs:
+  docs/a.json: |
+    {
+      "metadata": { "key": "value" },
+      "content": "<p><a href=\"/absolute/path?a#b\">redirect</a></p>"
+    }
+---
 # routes
 inputs:
   docfx.yml: |
