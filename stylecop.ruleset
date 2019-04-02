@@ -41,8 +41,6 @@
     <Rule Id="SA1618" Action="None" />
     <!-- SA1642ConstructorSummaryDocumentationMustBeginWithStandardText -->
     <Rule Id="SA1642" Action="None" />
-    <!-- SA1649FileNameMustMatchTypeName -->
-    <Rule Id="SA1649" Action="None" />
     <!-- SA1652EnableXMLDocumentOutput -->
     <Rule Id="SA1652" Action="None" />
   </Rules>
