@@ -20,6 +20,7 @@ namespace Microsoft.Docs.Build
         private static readonly Metric s_errorCountMetric = s_telemetryClient.GetMetric(new MetricIdentifier(null, $"error", "code", "level", "os", "version", "repo", "branch"));
         private static readonly Metric s_cacheCountMetric = s_telemetryClient.GetMetric(new MetricIdentifier(null, $"cache", "name", "state", "os", "version", "repo", "branch"));
         private static readonly Metric s_buildItemCountMetric = s_telemetryClient.GetMetric(new MetricIdentifier(null, $"item", "name", "type", "os", "version", "repo", "branch"));
+        private static readonly Metric s_commitCountMetric = s_telemetryClient.GetMetric(new MetricIdentifier(null, $"commit", "name", "os", "version", "repo", "branch"));
 
         private static readonly string s_version = typeof(Telemetry).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ?? "<null>";
         private static readonly string s_os = RuntimeInformation.OSDescription ?? "<null>";
@@ -58,9 +59,14 @@ namespace Microsoft.Docs.Build
             s_cacheCountMetric.TrackValue(1, name.ToString(), "miss", s_os, s_version, s_repo, s_branch);
         }
 
-        public static void TrackBuildItemCount(TelemetryName name, ContentType contentType, int count)
+        public static void TrackBuildItemCount(ContentType contentType, int count)
         {
-            s_buildItemCountMetric.TrackValue(count, name.ToString(), contentType.ToString(), s_os, s_version, s_repo, s_branch);
+            s_buildItemCountMetric.TrackValue(count, TelemetryName.BuildItems.ToString(), contentType.ToString(), s_os, s_version, s_repo, s_branch);
+        }
+
+        public static void TrackBuildCommitCount(int count)
+        {
+            s_buildItemCountMetric.TrackValue(count, TelemetryName.BuildCommits.ToString(), s_os, s_version, s_repo, s_branch);
         }
 
         public static void TrackException(Exception ex)
