@@ -186,7 +186,8 @@ namespace Microsoft.DocAsCode.HtmlToPdf
                 {
                     PdfOutline outline = new PdfOutline()
                     {
-                        Title = htmlModel.Title
+                        Title = htmlModel.Title,
+                        Opened = true
                     };
 
                     if (!string.IsNullOrEmpty(htmlModel.ExternalLink))
