@@ -66,7 +66,7 @@ namespace Microsoft.Docs.Build
 
         public static void TrackBuildCommitCount(int count)
         {
-            s_buildItemCountMetric.TrackValue(count, TelemetryName.BuildCommits.ToString(), s_os, s_version, s_repo, s_branch);
+            s_commitCountMetric.TrackValue(count, TelemetryName.BuildCommits.ToString(), s_os, s_version, s_repo, s_branch);
         }
 
         public static void TrackException(Exception ex)
