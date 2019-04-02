@@ -769,7 +769,8 @@ outputs:
   docs/f1/toc.json:
   docs/f1/a.json:
   build.log: |
-    ["error","invalid-toc-href","The toc href 'f1/a.md' can only reference to a local TOC file, folder or absolute path","docs/TOC.yml"]
+    ["error","invalid-toc-href","The toc href 'f1/a.md' can only reference to a local TOC file, folder or absolute path","docs/TOC.yml","",2,3]
+    ["error","invalid-toc-href","The toc href 'f1/a.md' can only reference to a local TOC file, folder or absolute path","docs/TOC.yml","",4,3]
 ---
 # Toc syntax error with duplicated keys
 inputs:
@@ -802,7 +803,25 @@ inputs:
 outputs:
   build.log: |
     ["warning","file-not-found","Cannot find file 'index.md' relative to 'docs/f1/TOC.yml'","docs/f1/TOC.yml","",2,3]
-    ["error","invalid-toc-href","The toc href 'index.md' can only reference to a local TOC file, folder or absolute path","docs/f1/TOC.yml"]
+    ["error","invalid-toc-href","The toc href 'index.md' can only reference to a local TOC file, folder or absolute path","docs/f1/TOC.yml","",4,3]
+---
+# TOC includes same href at different levels
+inputs:
+  docfx.yml:
+  docs/TOC.yml: |
+    - name: level 1
+      tocHref: index.md
+      href: index.md
+      items:
+        - name: level 2
+          tocHref: index.md
+          href: index.md
+outputs:
+  build.log: |
+    ["warning","file-not-found","Cannot find file 'index.md' relative to 'docs/TOC.yml'","docs/TOC.yml","",3,3]
+    ["warning","file-not-found","Cannot find file 'index.md' relative to 'docs/TOC.yml'","docs/TOC.yml","",7,7]
+    ["error","invalid-toc-href","The toc href 'index.md' can only reference to a local TOC file, folder or absolute path","docs/TOC.yml","",2,3]
+    ["error","invalid-toc-href","The toc href 'index.md' can only reference to a local TOC file, folder or absolute path","docs/TOC.yml","",6,7]
 ---
 # Individual experimental TOC should be built
 inputs:

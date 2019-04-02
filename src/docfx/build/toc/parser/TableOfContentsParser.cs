@@ -69,7 +69,7 @@ namespace Microsoft.Docs.Build
 
         private static void BuildLineInfoMap(JToken tocToken, Dictionary<string, List<Range>> hrefLineInfoMap)
         {
-            if (tocToken is JArray array)
+            if (tocToken is JArray)
             {
                 foreach (var item in tocToken.Children())
                 {
@@ -89,6 +89,13 @@ namespace Microsoft.Docs.Build
                     else
                     {
                         hrefLineInfoMap.Add(key, new List<Range> { JsonUtility.ToRange(prop) });
+                    }
+                    if (prop.Value is JArray)
+                    {
+                        foreach (var i in prop.Value.Children())
+                        {
+                            BuildLineInfoMap(i, hrefLineInfoMap);
+                        }
                     }
                 }
             }
@@ -179,6 +186,9 @@ namespace Microsoft.Docs.Build
 
             string GetTocHref(TableOfContentsItem tocInputModel)
             {
+                var key = $"{nameof(tocInputModel.TocHref).ToLowerInvariant()}+{tocInputModel.TocHref}";
+                lineInfoMap.TryGetValue(key, out var ranges);
+
                 if (!string.IsNullOrEmpty(tocInputModel.TocHref))
                 {
                     var tocHrefType = GetHrefType(tocInputModel.TocHref);
@@ -188,7 +198,17 @@ namespace Microsoft.Docs.Build
                     }
                     else
                     {
-                        errors.Add(Errors.InvalidTocHref(filePath, tocInputModel.TocHref));
+                        if (ranges != null)
+                        {
+                            foreach (var range in ranges)
+                            {
+                                errors.Add(Errors.InvalidTocHref(filePath, tocInputModel.TocHref, range));
+                            }
+                        }
+                        else
+                        {
+                            errors.Add(Errors.InvalidTocHref(filePath, tocInputModel.TocHref, default));
+                        }
                     }
                 }
 

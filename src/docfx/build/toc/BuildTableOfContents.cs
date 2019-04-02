@@ -117,29 +117,61 @@ namespace Microsoft.Docs.Build
                 fileToBuild,
                 (file, href, isInclude, ranges) =>
                 {
-                    // TODO: pass line info into ResolveContent
-                    var (error, referencedTocContent, referencedToc) = context.DependencyResolver.ResolveContent(href, file, ranges is null ? default : ranges.FirstOrDefault(), DependencyType.TocInclusion);
-                    errors.AddIfNotNull(error);
-                    if (referencedToc != null && isInclude)
+                    string content = null;
+                    Document toc = null;
+                    if (ranges != null)
+                    {
+                        foreach (var range in ranges)
+                        {
+                            var (error, referencedTocContent, referencedToc) = context.DependencyResolver.ResolveContent(href, file, range, DependencyType.TocInclusion);
+                            errors.AddIfNotNull(error);
+                            content = referencedTocContent;
+                            toc = referencedToc;
+                        }
+                    }
+                    else
+                    {
+                        var (error, referencedTocContent, referencedToc) = context.DependencyResolver.ResolveContent(href, file, default, DependencyType.TocInclusion);
+                        errors.AddIfNotNull(error);
+                        content = referencedTocContent;
+                        toc = referencedToc;
+                    }
+
+                    if (toc != null && isInclude)
                     {
                         // add to referenced toc list
-                        referencedTocs.Add(referencedToc);
+                        referencedTocs.Add(toc);
                     }
-                    return (referencedTocContent, referencedToc);
+                    return (content, toc);
                 },
                 (file, href, resultRelativeTo, ranges) =>
                 {
-                    // add to referenced document list
-                    var (error, link, buildItem) = context.DependencyResolver.ResolveLink(href, file, resultRelativeTo, null, ranges is null ? default : ranges.FirstOrDefault());
-
-                    // TODO: throw error for all ranges with the same href
-                    errors.AddIfNotNull(error);
-
-                    if (buildItem != null)
+                    string resolvedLink = null;
+                    Document item = null;
+                    if (ranges != null)
                     {
-                        referencedDocuments.Add((buildItem, link));
+                        foreach (var range in ranges)
+                        {
+                            var (error, link, buildItem) = context.DependencyResolver.ResolveLink(href, file, resultRelativeTo, null, range);
+                            errors.AddIfNotNull(error);
+                            resolvedLink = link;
+                            item = buildItem;
+                        }
                     }
-                    return (link, buildItem);
+                    else
+                    {
+                        var (error, link, buildItem) = context.DependencyResolver.ResolveLink(href, file, resultRelativeTo, null, default);
+                        errors.AddIfNotNull(error);
+                        resolvedLink = link;
+                        item = buildItem;
+                    }
+
+                    if (item != null)
+                    {
+                        // add to referenced document list
+                        referencedDocuments.Add((item, resolvedLink));
+                    }
+                    return (resolvedLink, item);
                 },
                 (file, uid, ranges) =>
                 {
