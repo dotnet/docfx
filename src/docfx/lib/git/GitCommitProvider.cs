@@ -19,8 +19,11 @@ namespace Microsoft.Docs.Build
             if (repo is null)
                 return default;
 
-            var pathToRepo = PathUtility.NormalizeFile(Path.GetRelativePath(repo.Path, fullPath));
-            return (repo, pathToRepo, GetCommitProvider(repo).GetCommitHistory(pathToRepo, committish));
+            using (Telemetry.TrackingOperationTime(TelemetryName.LoadCommitHistory))
+            {
+                var pathToRepo = PathUtility.NormalizeFile(Path.GetRelativePath(repo.Path, fullPath));
+                return (repo, pathToRepo, GetCommitProvider(repo).GetCommitHistory(pathToRepo, committish));
+            }
         }
 
         // TODO: remove this method if possible

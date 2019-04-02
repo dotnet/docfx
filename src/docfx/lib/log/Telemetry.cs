@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
@@ -36,6 +37,11 @@ namespace Microsoft.Docs.Build
             s_operationTimeMetric.TrackValue(duration.TotalMilliseconds, name, s_os, s_version, s_repo, s_branch);
         }
 
+        public static IDisposable TrackingOperationTime(TelemetryName name)
+        {
+            return new PerfScope(name.ToString());
+        }
+
         public static void TrackErrorCount(string code, ErrorLevel level)
         {
             s_errorCountMetric.TrackValue(1, code, level.ToString(), s_os, s_version, s_repo, s_branch);
@@ -67,6 +73,23 @@ namespace Microsoft.Docs.Build
             // Default timeout of TelemetryClient.Flush is 100 seconds,
             // but we only want to wait for 2 seconds at most.
             Task.WaitAny(Task.Run(s_telemetryClient.Flush), Task.Delay(2000));
+        }
+
+        private class PerfScope : IDisposable
+        {
+            private readonly string _name;
+            private Stopwatch _stopwatch;
+
+            public PerfScope(string name)
+            {
+                _name = name;
+                _stopwatch = Stopwatch.StartNew();
+            }
+
+            public void Dispose()
+            {
+                TrackOperationTime(_name, _stopwatch.Elapsed);
+            }
         }
     }
 }
