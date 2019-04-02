@@ -35,7 +35,7 @@ inputs:
     ---
 outputs:
   build.log: |
-    ["error","json-syntax-error","Expected type String, please input String or type compatible with String.","docs/a.md","locale"]
+    ["error","violate-schema","Expected type String, please input String or type compatible with String.","docs/a.md","locale",1,9]
 ---
 # generate normal document id and version id
 # backward compatible to docs.com

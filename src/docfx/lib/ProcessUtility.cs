@@ -268,7 +268,7 @@ namespace Microsoft.Docs.Build
                 using (var file = File.Open(path, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None))
                 {
                     var streamReader = new StreamReader(file);
-                    var result = JsonUtility.Deserialize<T>(streamReader.ReadToEnd());
+                    var result = JsonUtility.DeserializeData<T>(streamReader.ReadToEnd());
 
                     file.SetLength(0);
                     var updatedResult = update(result);

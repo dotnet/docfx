@@ -41,7 +41,7 @@ namespace Microsoft.Docs.Build
             var (metaErrors, metadata) = ExtractYamlHeader.Extract(file, context);
             errors.AddRange(metaErrors);
 
-            var (validationErrors, tocMetadata) = JsonUtility.ToObjectWithValidation<TableOfContentsMetadata>(metadata);
+            var (validationErrors, tocMetadata) = JsonUtility.ToObject<TableOfContentsMetadata>(metadata);
             errors.AddRange(validationErrors);
 
             var tocModel = new TableOfContentsModel { Metadata = tocMetadata };

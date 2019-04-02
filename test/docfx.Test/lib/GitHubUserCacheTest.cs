@@ -17,7 +17,7 @@ namespace Microsoft.Docs.Build
         {
             // Arrange
             var testCase = TestCases[name];
-            var users = JsonUtility.Deserialize<GitHubUser[]>(testCase.CacheUsersJson.Replace("\'", "\""));
+            var users = JsonUtility.DeserializeData<GitHubUser[]>(testCase.CacheUsersJson.Replace("\'", "\""));
             var cache = new GitHubUserCache(users, "cache.json", 7 * 24);
             var accessor = new MockGitHubAccessor();
             cache._getUserByLoginFromGitHub = accessor.GetUserByLogin;
@@ -29,7 +29,7 @@ namespace Microsoft.Docs.Build
             // Assert
             Assert.Equal(testCase.ExpectedGetUserByLoginCall, accessor.GetUserByLoginCallCount);
             Assert.Equal(testCase.ExpectedGetLoginByCommitCall, accessor.GetLoginByCommitCallCount);
-            var expectedUsers = JsonUtility.Deserialize<GitHubUser[]>(testCase.ExpectedOutputCacheUsersJson.Replace("\'", "\""));
+            var expectedUsers = JsonUtility.DeserializeData<GitHubUser[]>(testCase.ExpectedOutputCacheUsersJson.Replace("\'", "\""));
             AssertUsersEqual(expectedUsers, cache.Users.ToArray());
         }
 

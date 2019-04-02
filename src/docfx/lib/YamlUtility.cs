@@ -58,10 +58,10 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Deserialize from yaml string, return error list at the same time
         /// </summary>
-        public static (List<Error>, T) DeserializeWithValidation<T>(string input)
+        public static (List<Error>, T) Deserialize<T>(string input)
         {
-            var (errors, token) = ParseWithValidation(input);
-            var (mismatchingErrors, result) = JsonUtility.ToObjectWithValidation<T>(token);
+            var (errors, token) = Parse(input);
+            var (mismatchingErrors, result) = JsonUtility.ToObject<T>(token);
             errors.AddRange(mismatchingErrors);
             return (errors, result);
         }
@@ -70,21 +70,21 @@ namespace Microsoft.Docs.Build
         /// De-serialize from yaml string, which is not user input
         /// schema validation errors will be ignored, syntax errors and type mismatching will be thrown
         /// </summary>
-        public static T Deserialize<T>(string input)
+        public static T DeserializeData<T>(string input)
         {
             var token = ParseAsJToken(input);
-            return JsonUtility.ToObject<T>(token);
+            return token.ToObject<T>(JsonUtility.s_serializer);
         }
 
         /// <summary>
         /// Deserialize from a YAML file, get from or add to cache
         /// </summary>
-        public static (List<Error>, JToken) ParseWithValidation(Document file, Context context) => context.Cache.LoadYamlFile(file);
+        public static (List<Error>, JToken) Parse(Document file, Context context) => context.Cache.LoadYamlFile(file);
 
         /// <summary>
         /// Deserialize to JToken from string
         /// </summary>
-        public static (List<Error>, JToken) ParseWithValidation(string input)
+        public static (List<Error>, JToken) Parse(string input)
         {
             return ParseAsJToken(input).RemoveNulls();
         }

@@ -160,11 +160,11 @@ namespace Microsoft.Docs.Build
                 XrefMapModel xrefMap = new XrefMapModel();
                 if (url.EndsWith(".yml", StringComparison.OrdinalIgnoreCase))
                 {
-                    xrefMap = YamlUtility.Deserialize<XrefMapModel>(content);
+                    xrefMap = YamlUtility.DeserializeData<XrefMapModel>(content);
                 }
                 else
                 {
-                    xrefMap = JsonUtility.Deserialize<XrefMapModel>(content);
+                    xrefMap = JsonUtility.DeserializeData<XrefMapModel>(content);
                 }
                 foreach (var spec in xrefMap.References)
                 {
@@ -302,7 +302,7 @@ namespace Microsoft.Docs.Build
                 }
                 else if (file.FilePath.EndsWith(".yml", PathUtility.PathComparison))
                 {
-                    var (yamlErrors, token) = YamlUtility.ParseWithValidation(file, context);
+                    var (yamlErrors, token) = YamlUtility.Parse(file, context);
                     errors.AddRange(yamlErrors);
                     var (schemaErrors, specs) = LoadSchemaDocument(context, token as JObject, file);
                     errors.AddRange(schemaErrors);
@@ -313,7 +313,7 @@ namespace Microsoft.Docs.Build
                 }
                 else if (file.FilePath.EndsWith(".json", PathUtility.PathComparison))
                 {
-                    var (jsonErrors, token) = JsonUtility.ParseWithValidation(file, context);
+                    var (jsonErrors, token) = JsonUtility.Parse(file, context);
                     errors.AddRange(jsonErrors);
                     var (schemaErrors, specs) = LoadSchemaDocument(context, token as JObject, file);
                     errors.AddRange(schemaErrors);
@@ -368,7 +368,7 @@ namespace Microsoft.Docs.Build
             }
 
             var errors = new List<Error>();
-            var (schemaErrors, _) = JsonUtility.ToObjectWithValidation(
+            var (schemaErrors, _) = JsonUtility.ToObject(
                 obj,
                 schema.Type,
                 transform: AttributeTransformer.TransformXref(context, file, null, extensionData));

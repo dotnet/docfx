@@ -38,14 +38,14 @@ namespace Microsoft.Docs.Build
 
             if (filePath.EndsWith(".yml", PathUtility.PathComparison))
             {
-                var (errors, tocToken) = content is null ? YamlUtility.ParseWithValidation(file, context) : YamlUtility.ParseWithValidation(content);
+                var (errors, tocToken) = content is null ? YamlUtility.Parse(file, context) : YamlUtility.Parse(content);
                 var (loadErrors, toc) = LoadTocModel(tocToken);
                 errors.AddRange(loadErrors);
                 return (errors, toc);
             }
             else if (filePath.EndsWith(".json", PathUtility.PathComparison))
             {
-                var (errors, tocToken) = content is null ? JsonUtility.ParseWithValidation(file, context) : JsonUtility.ParseWithValidation(content);
+                var (errors, tocToken) = content is null ? JsonUtility.Parse(file, context) : JsonUtility.Parse(content);
                 var (loadErrors, toc) = LoadTocModel(tocToken);
                 errors.AddRange(loadErrors);
                 return (errors, toc);
@@ -65,7 +65,7 @@ namespace Microsoft.Docs.Build
             if (tocToken is JArray tocArray)
             {
                 // toc model
-                var (errors, items) = JsonUtility.ToObjectWithValidation<List<TableOfContentsItem>>(tocArray);
+                var (errors, items) = JsonUtility.ToObject<List<TableOfContentsItem>>(tocArray);
                 return (errors, new TableOfContentsModel
                 {
                     Items = items,
@@ -74,7 +74,7 @@ namespace Microsoft.Docs.Build
             else if (tocToken is JObject tocObject)
             {
                 // toc root model
-                return JsonUtility.ToObjectWithValidation<TableOfContentsModel>(tocToken);
+                return JsonUtility.ToObject<TableOfContentsModel>(tocToken);
             }
             return (new List<Error>(), new TableOfContentsModel());
         }

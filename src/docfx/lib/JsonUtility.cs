@@ -22,7 +22,7 @@ namespace Microsoft.Docs.Build
         private static readonly NamingStrategy s_namingStrategy = new CamelCaseNamingStrategy();
         private static readonly JsonMergeSettings s_mergeSettings = new JsonMergeSettings { MergeArrayHandling = MergeArrayHandling.Replace };
 
-        private static readonly JsonSerializer s_serializer = new JsonSerializer
+        internal static readonly JsonSerializer s_serializer = new JsonSerializer
         {
             NullValueHandling = NullValueHandling.Ignore,
             ContractResolver = new JsonContractResolver { NamingStrategy = s_namingStrategy },
@@ -152,10 +152,10 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// De-serialize a user input string to an object, return error list at the same time
         /// </summary>
-        public static (List<Error> errors, T model) DeserializeWithValidation<T>(string json)
+        public static (List<Error> errors, T model) Deserialize<T>(string json)
         {
-            var (errors, token) = ParseWithValidation(json);
-            var (mismatchingErrors, result) = ToObjectWithValidation<T>(token);
+            var (errors, token) = Parse(json);
+            var (mismatchingErrors, result) = ToObject<T>(token);
             errors.AddRange(mismatchingErrors);
             return (errors, result);
         }
@@ -164,7 +164,7 @@ namespace Microsoft.Docs.Build
         /// De-serialize a data string, which is not user input, to an object
         /// schema validation errors will be ignored, syntax errors and type mismatching will be thrown
         /// </summary>
-        public static T Deserialize<T>(string json)
+        public static T DeserializeData<T>(string json)
         {
             using (var stringReader = new StringReader(json))
             using (var reader = new JsonTextReader(stringReader))
@@ -190,33 +190,15 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
-        /// Creates an instance of the specified .NET type from the JToken
-        /// Schema validation errors will be ignored, type mismatch and syntax errors will be thrown
-        /// </summary>
-        public static T ToObject<T>(JToken token)
-        {
-            try
-            {
-                var obj = token.ToObject(typeof(T), JsonUtility.s_serializer);
-                return (T)obj;
-            }
-            catch (JsonReaderException ex)
-            {
-                var (range, message, path) = ParseException(ex);
-                throw Errors.JsonSyntaxError(range, message, path).ToException(ex);
-            }
-        }
-
-        /// <summary>
         /// Creates an instance of the specified .NET type from the JToken with schema validation
         /// </summary>
-        public static (List<Error>, T) ToObjectWithValidation<T>(JToken token)
+        public static (List<Error>, T) ToObject<T>(JToken token)
         {
-            var (errors, obj) = ToObjectWithValidation(token, typeof(T));
+            var (errors, obj) = ToObject(token, typeof(T));
             return (errors, (T)obj);
         }
 
-        public static (List<Error>, object) ToObjectWithValidation(
+        public static (List<Error>, object) ToObject(
             JToken token,
             Type type,
             Func<IEnumerable<DataTypeAttribute>, object, string, object> transform = null)
@@ -243,13 +225,13 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Deserialize from JSON file, get from or add to cache
         /// </summary>
-        public static (List<Error>, JToken) ParseWithValidation(Document file, Context context) => context.Cache.LoadJsonFile(file);
+        public static (List<Error>, JToken) Parse(Document file, Context context) => context.Cache.LoadJsonFile(file);
 
         /// <summary>
         /// Parse a string to JToken.
         /// Validate null value during the process.
         /// </summary>
-        public static (List<Error>, JToken) ParseWithValidation(string json)
+        public static (List<Error>, JToken) Parse(string json)
         {
             try
             {
