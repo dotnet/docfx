@@ -14,6 +14,15 @@ namespace Microsoft.Docs.Build
         public (Repository repo, string pathToRepo, List<GitCommit> commits) GetCommitHistory(Document document, string committish = null)
            => GetCommitHistory(Path.Combine(document.Docset.DocsetPath, document.FilePath), document.Repository, committish);
 
+        public (Repository repo, string pathToRepo, List<GitCommit> commits) GetCommitHistory(Docset docset, string filePath, string committish = null)
+        {
+            var repo = docset.GetRepository(filePath);
+            if (repo is null)
+                return default;
+
+            return GetCommitHistory(Path.Combine(docset.DocsetPath, filePath), repo, committish);
+        }
+
         public (Repository repo, string pathToRepo, List<GitCommit> commits) GetCommitHistory(string fullPath, Repository repo, string committish = null)
         {
             if (repo is null)
@@ -24,19 +33,6 @@ namespace Microsoft.Docs.Build
                 var pathToRepo = PathUtility.NormalizeFile(Path.GetRelativePath(repo.Path, fullPath));
                 return (repo, pathToRepo, GetCommitProvider(repo).GetCommitHistory(pathToRepo, committish));
             }
-        }
-
-        // TODO: remove this method if possible
-        public (Repository repo, string pathToRepo, List<GitCommit> commits) GetCommitHistoryNoCache(Docset docset, string filePath, int top, string committish = null)
-        {
-            var repo = docset.GetRepository(filePath);
-            if (repo is null)
-                return default;
-
-            var fullPath = Path.Combine(docset.DocsetPath, filePath);
-            var pathToRepo = PathUtility.NormalizeFile(Path.GetRelativePath(repo.Path, fullPath));
-
-            return (repo, pathToRepo, GetCommitProvider(repo).GetCommitHistoryNoCache(pathToRepo, top, committish));
         }
 
         public void SaveGitCommitCache()

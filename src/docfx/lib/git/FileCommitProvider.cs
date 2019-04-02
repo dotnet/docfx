@@ -58,48 +58,15 @@ namespace Microsoft.Docs.Build
                 () => LoadCommitCache(_cacheFilePath));
         }
 
-        public List<GitCommit> GetCommitHistory(string file, string committish = null)
-        {
-            var commitCache = _commitCache.Value;
-            var fileCommitCache = commitCache.GetOrAdd(file, _ => new Dictionary<(long, long), (long[], int)>());
-
-            return GetCommitHistory(file, int.MaxValue, committish, fileCommitCache);
-        }
-
-        public List<GitCommit> GetCommitHistoryNoCache(string file, int top, string committish = null)
-        {
-            return GetCommitHistory(file, top, committish, new Dictionary<(long, long), (long[], int)>());
-        }
-
-        public void SaveCache()
-        {
-            SaveCacheCore();
-        }
-
-        public void Dispose()
-        {
-            var repo = Interlocked.Exchange(ref _repo, IntPtr.Zero);
-            if (repo != IntPtr.Zero)
-            {
-                git_repository_free(_repo);
-                GC.SuppressFinalize(this);
-            }
-        }
-
-        ~FileCommitProvider()
-        {
-            Dispose();
-        }
-
-        private List<GitCommit> GetCommitHistory(
+        public List<GitCommit> GetCommitHistory(
             string file,
-            int top,
-            string committish,
-            Dictionary<(long commit, long blob), (long[] commitHistory, int lruOrder)> commitCache)
+            string committish)
         {
             Debug.Assert(!file.Contains('\\'));
 
             const int MaxParentBlob = 32;
+
+            var commitCache = _commitCache.Value.GetOrAdd(file, _ => new Dictionary<(long, long), (long[], int)>());
 
             var (commits, commitsBySha) = _commits.GetOrAdd(
                 committish ?? "",
@@ -164,15 +131,10 @@ namespace Microsoft.Docs.Build
                 if ((parentCount == 0 && blob != 0) || (parentCount > 0 && !singleParent))
                 {
                     result.Add(commit);
-
-                    if (result.Count >= top)
-                    {
-                        break;
-                    }
                 }
             }
 
-            if (updateCache && top == int.MaxValue)
+            if (updateCache)
             {
                 lock (commitCache)
                 {
@@ -219,6 +181,26 @@ namespace Microsoft.Docs.Build
                     return false;
                 }
             }
+        }
+
+        public void SaveCache()
+        {
+            SaveCacheCore();
+        }
+
+        public void Dispose()
+        {
+            var repo = Interlocked.Exchange(ref _repo, IntPtr.Zero);
+            if (repo != IntPtr.Zero)
+            {
+                git_repository_free(_repo);
+                GC.SuppressFinalize(this);
+            }
+        }
+
+        ~FileCommitProvider()
+        {
+            Dispose();
         }
 
         private unsafe (List<Commit>, Dictionary<long, Commit>) LoadCommits(string committish = null)
