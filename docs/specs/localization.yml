@@ -1403,3 +1403,25 @@ repos:
 outputs:
   docs/a.json: |
     { "content":"<p><a href=\"b\">link in b</a></p>\n<p><a href=\"a\">link in a</a></p>\n"}
+---
+# fallback to never existing token in multiple files
+commands:
+  - build --locale zh-cn
+repos:
+  https://github.com/neverexist/a:
+    - files:
+        docfx.yml:
+      author: a
+  https://github.com/neverexist/a.zh-cn:
+    - files:
+        docs/1.md: |
+          [!include[include deleted tokena](tokenx.md)
+        docs/2.md: |
+          [!include[include deleted tokena](tokenx.md)
+        docs/3.md: |
+          [!include[include deleted tokena](tokenx.md)
+outputs:
+  docs/1.json:
+  docs/2.json:
+  docs/3.json:
+  build.log:
