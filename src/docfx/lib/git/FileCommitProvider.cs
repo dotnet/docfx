@@ -139,7 +139,7 @@ namespace Microsoft.Docs.Build
                 lock (commitCache)
                 {
                     _cacheUpdated = true;
-                    commitCache.Add((headCommit.Sha.a, headBlob), (result.Select(c => c.Sha.a).ToArray(), 0));
+                    commitCache[(headCommit.Sha.a, headBlob)] = (result.Select(c => c.Sha.a).ToArray(), 0);
                 }
             }
 
