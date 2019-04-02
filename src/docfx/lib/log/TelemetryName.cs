@@ -8,5 +8,6 @@ namespace Microsoft.Docs.Build
         GitCommitCache,
         GitRepositoryCache,
         GitHubUserCache,
+        LoadCommitHistory,
     }
 }
