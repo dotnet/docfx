@@ -540,6 +540,7 @@ namespace Microsoft.Docs.Build
             Assert.Equal("json-syntax-error", exception.Error.Code);
             Assert.Equal(ErrorLevel.Error, exception.Error.Level);
         }
+
         [Fact]
         public void OmitEmptyEnumerableValue()
         {
@@ -547,6 +548,23 @@ namespace Microsoft.Docs.Build
             Assert.Equal("{\"a\":\"\"}", content);
         }
 
+        [Theory]
+        [InlineData("{'a':null}", "{'a':1}", "{'a':1}")]
+        [InlineData("{'a':1}", "{'a':null}", "{'a':1}")]
+        [InlineData("{}", "{'a':1}", "{'a':1}")]
+        [InlineData("{}", "{'a':null}", "{'a':null}")]
+        [InlineData("{'a':1}", "{}", "{'a':1}")]
+        [InlineData("{'a':null}", "{}", "{'a':null}")]
+        [InlineData("{'a':1}", "{'a':[]}", "{'a':[]}")]
+        [InlineData("{'a':[1]}", "{'a':[2]}", "{'a':[2]}")]
+        [InlineData("{'a':{'b':1}}", "{'a':{'b':{}}}", "{'a':{'b':{}}}")]
+        [InlineData("{'a':{'b':1}}", "{'a':{'b':2}}", "{'a':{'b':2}}")]
+        public void TestJsonMerge(string a, string b, string result)
+        {
+            var container = JObject.Parse(a.Replace('\'', '\"'));
+            JsonUtility.Merge(container, JObject.Parse(b.Replace('\'', '\"')));
+            Assert.Equal(result.Replace('\'', '\"'), container.ToString(Formatting.None));
+        }
 
         /// <summary>
         /// Deserialize from yaml string, return error list at the same time

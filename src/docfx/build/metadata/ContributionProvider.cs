@@ -30,7 +30,7 @@ namespace Microsoft.Docs.Build
 
         public async Task<(List<Error> error, Contributor author, List<Contributor> contributors, DateTime updatedAt)> GetAuthorAndContributors(
             Document document,
-            string authorName)
+            SourceInfo<string> authorName)
         {
             Debug.Assert(document != null);
             var (repo, pathToRepo, commits) = _gitCommitProvider.GetCommitHistory(document);
@@ -99,7 +99,7 @@ namespace Microsoft.Docs.Build
                     {
                         // Remove author from contributors if author name is specified
                         var (error, result) = await _gitHubUserCache.GetByLogin(authorName);
-                        errors.AddIfNotNull(error);
+                        errors.AddIfNotNull(error?.WithRange(authorName?.Range ?? default));
                         return result?.ToContributor();
                     }
                 }
