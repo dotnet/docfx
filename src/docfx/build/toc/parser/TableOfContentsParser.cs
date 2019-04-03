@@ -38,7 +38,7 @@ namespace Microsoft.Docs.Build
 
             if (filePath.EndsWith(".yml", PathUtility.PathComparison))
             {
-                var (errors, tocToken) = content is null ? YamlUtility.Deserialize(file, context) : YamlUtility.Deserialize(content);
+                var (errors, tocToken) = content is null ? YamlUtility.Parse(file, context) : YamlUtility.Parse(content);
                 var (loadErrors, toc) = LoadTocModel(tocToken);
                 errors.AddRange(loadErrors);
                 var hrefLineInfoMap = BuildLineInfoMap(tocToken);
@@ -46,7 +46,7 @@ namespace Microsoft.Docs.Build
             }
             else if (filePath.EndsWith(".json", PathUtility.PathComparison))
             {
-                var (errors, tocToken) = content is null ? JsonUtility.Deserialize(file, context) : JsonUtility.Deserialize(content);
+                var (errors, tocToken) = content is null ? JsonUtility.Parse(file, context) : JsonUtility.Parse(content);
                 var (loadErrors, toc) = LoadTocModel(tocToken);
                 errors.AddRange(loadErrors);
                 var hrefLineInfoMap = BuildLineInfoMap(tocToken);
@@ -117,7 +117,7 @@ namespace Microsoft.Docs.Build
             if (tocToken is JArray tocArray)
             {
                 // toc model
-                var (errors, items) = JsonUtility.ToObjectWithSchemaValidation<List<TableOfContentsItem>>(tocArray);
+                var (errors, items) = JsonUtility.ToObject<List<TableOfContentsItem>>(tocArray);
                 return (errors, new TableOfContentsModel
                 {
                     Items = items,
@@ -126,7 +126,7 @@ namespace Microsoft.Docs.Build
             else if (tocToken is JObject tocObject)
             {
                 // toc root model
-                return JsonUtility.ToObjectWithSchemaValidation<TableOfContentsModel>(tocToken);
+                return JsonUtility.ToObject<TableOfContentsModel>(tocToken);
             }
             return (new List<Error>(), new TableOfContentsModel());
         }

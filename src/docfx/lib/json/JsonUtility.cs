@@ -20,29 +20,33 @@ namespace Microsoft.Docs.Build
     internal static class JsonUtility
     {
         private static readonly NamingStrategy s_namingStrategy = new CamelCaseNamingStrategy();
-        private static readonly JsonMergeSettings s_mergeSettings = new JsonMergeSettings { MergeArrayHandling = MergeArrayHandling.Replace };
+        private static readonly JsonConverter[] s_jsonConverters =
+        {
+            new StringEnumConverter { NamingStrategy = s_namingStrategy },
+            new SourceInfoJsonConverter { },
+        };
 
-        private static readonly JsonSerializer s_serializer = new JsonSerializer
+        private static readonly JsonSerializer s_serializer = JsonSerializer.Create(new JsonSerializerSettings
         {
             NullValueHandling = NullValueHandling.Ignore,
+            Converters = s_jsonConverters,
             ContractResolver = new JsonContractResolver { NamingStrategy = s_namingStrategy },
-            Converters = { new StringEnumConverter { NamingStrategy = s_namingStrategy } },
-        };
+        });
 
-        private static readonly JsonSerializer s_schemaValidationSerializer = new JsonSerializer
+        private static readonly JsonSerializer s_schemaValidationSerializer = JsonSerializer.Create(new JsonSerializerSettings
         {
             NullValueHandling = NullValueHandling.Ignore,
+            Converters = s_jsonConverters,
             ContractResolver = new SchemaValidationContractResolver { NamingStrategy = s_namingStrategy },
-            Converters = { new StringEnumConverter { NamingStrategy = s_namingStrategy } },
-        };
+        });
 
-        private static readonly JsonSerializer s_indentSerializer = new JsonSerializer
+        private static readonly JsonSerializer s_indentSerializer = JsonSerializer.Create(new JsonSerializerSettings
         {
             Formatting = Formatting.Indented,
             NullValueHandling = NullValueHandling.Ignore,
+            Converters = s_jsonConverters,
             ContractResolver = new JsonContractResolver { NamingStrategy = s_namingStrategy },
-            Converters = { new StringEnumConverter { NamingStrategy = s_namingStrategy } },
-        };
+        });
 
         private static readonly ThreadLocal<Stack<Status>> t_status = new ThreadLocal<Stack<Status>>(() => new Stack<Status>());
 
@@ -53,6 +57,11 @@ namespace Microsoft.Docs.Build
             ReflectionUtility.CreateInstanceFieldSetter<JsonPropertyCollection, List<JsonProperty>>("_list");
 
         private static readonly List<JsonProperty> s_emptyPropertyList = new List<JsonProperty>();
+
+        private static readonly Action<JToken, int, int> s_setLineInfo =
+            ReflectionUtility.CreateInstanceMethod<JToken, Action<JToken, int, int>>("SetLineInfo", new[] { typeof(int), typeof(int) });
+
+        internal static JsonSerializer Serializer => s_serializer;
 
         static JsonUtility()
         {
@@ -150,17 +159,6 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
-        /// De-serialize a user input string to an object, return error list at the same time
-        /// </summary>
-        public static (List<Error> errors, T model) DeserializeWithSchemaValidation<T>(string json)
-        {
-            var (errors, token) = Deserialize(json);
-            var (mismatchingErrors, result) = ToObjectWithSchemaValidation<T>(token);
-            errors.AddRange(mismatchingErrors);
-            return (errors, result);
-        }
-
-        /// <summary>
         /// De-serialize a data string, which is not user input, to an object
         /// schema validation errors will be ignored, syntax errors and type mismatching will be thrown
         /// </summary>
@@ -192,31 +190,13 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Creates an instance of the specified .NET type from the JToken with schema validation
         /// </summary>
-        public static (List<Error>, T) ToObjectWithSchemaValidation<T>(JToken token)
+        public static (List<Error>, T) ToObject<T>(JToken token)
         {
-            var (errors, obj) = ToObjectWithSchemaValidation(token, typeof(T));
+            var (errors, obj) = ToObject(token, typeof(T));
             return (errors, (T)obj);
         }
 
-        /// <summary>
-        /// Creates an instance of the specified .NET type from the JToken
-        /// Schema validation errors will be ignored, type mismatch and syntax errors will be thrown
-        /// </summary>
-        public static T ToObject<T>(JToken token)
-        {
-            try
-            {
-                var obj = token.ToObject(typeof(T), JsonUtility.s_serializer);
-                return (T)obj;
-            }
-            catch (JsonReaderException ex)
-            {
-                var (range, message, path) = ParseException(ex);
-                throw Errors.JsonSyntaxError(range, message, path).ToException(ex);
-            }
-        }
-
-        public static (List<Error>, object) ToObjectWithSchemaValidation(
+        public static (List<Error>, object) ToObject(
             JToken token,
             Type type,
             Func<IEnumerable<DataTypeAttribute>, object, string, object> transform = null)
@@ -243,13 +223,13 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Deserialize from JSON file, get from or add to cache
         /// </summary>
-        public static (List<Error>, JToken) Deserialize(Document file, Context context) => context.Cache.LoadJsonFile(file);
+        public static (List<Error>, JToken) Parse(Document file, Context context) => context.Cache.LoadJsonFile(file);
 
         /// <summary>
         /// Parse a string to JToken.
         /// Validate null value during the process.
         /// </summary>
-        public static (List<Error>, JToken) Deserialize(string json)
+        public static (List<Error>, JToken) Parse(string json)
         {
             try
             {
@@ -265,7 +245,50 @@ namespace Microsoft.Docs.Build
 
         public static void Merge(JObject container, JObject overwrite)
         {
-            container.Merge(overwrite, s_mergeSettings);
+            foreach (var property in overwrite.Properties())
+            {
+                var key = property.Name;
+                var value = property.Value;
+
+                if (container[key] is JObject containerObj && value is JObject overwriteObj)
+                {
+                    Merge(containerObj, overwriteObj);
+                }
+                else if (IsNullOrUndefined(container[key]) || !IsNullOrUndefined(value))
+                {
+                    var valueLineInfo = (IJsonLineInfo)value;
+                    var keyLineInfo = (IJsonLineInfo)property;
+                    container[key] = SetLineInfo(value.DeepClone(), valueLineInfo.LineNumber, valueLineInfo.LinePosition);
+                    SetLineInfo(container.Property(key), keyLineInfo.LineNumber, keyLineInfo.LinePosition);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Trims all string values
+        /// </summary>
+        public static void TrimStringValues(JToken token)
+        {
+            switch (token)
+            {
+                case JValue scalar when scalar.Value is string str:
+                    scalar.Value = str.Trim();
+                    break;
+
+                case JArray array:
+                    foreach (var item in array)
+                    {
+                        TrimStringValues(item);
+                    }
+                    break;
+
+                case JObject map:
+                    foreach (var (key, value) in map)
+                    {
+                        TrimStringValues(value);
+                    }
+                    break;
+            }
         }
 
         /// <summary>
@@ -324,26 +347,10 @@ namespace Microsoft.Docs.Build
             return lineInfo != null && lineInfo.HasLineInfo() ? new Range(lineInfo.LineNumber, lineInfo.LinePosition) : default;
         }
 
-        public static List<Error> IncludeAll(List<Range> ranges, Error error)
+        internal static JToken SetLineInfo(JToken token, int line, int column)
         {
-            var errors = new List<Error>();
-            if (error is null)
-            {
-                return errors;
-            }
-            if (ranges != null)
-            {
-                foreach (var range in ranges)
-                {
-                    var clone = error.Clone().WithRange(range);
-                    errors.AddIfNotNull(clone);
-                }
-            }
-            else
-            {
-                errors.AddIfNotNull(error);
-            }
-            return errors;
+            s_setLineInfo(token, line, column);
+            return token;
         }
 
         private static void HandleError(object sender, Newtonsoft.Json.Serialization.ErrorEventArgs args)

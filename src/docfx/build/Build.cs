@@ -180,6 +180,7 @@ namespace Microsoft.Docs.Build
                     context.PublishModelBuilder.MarkError(file);
                 }
 
+                Telemetry.TrackBuildItemCount(file.ContentType);
                 return publishItem.Monikers;
             }
             catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
