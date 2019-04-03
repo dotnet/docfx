@@ -3,7 +3,7 @@
 
 namespace Microsoft.Docs.Build
 {
-    internal readonly struct Range
+    public readonly struct Range
     {
         /// <summary>
         /// A one based start line value.

@@ -148,7 +148,7 @@ namespace Microsoft.Docs.Build
         private static async Task<(List<Error> errors, Schema schema, PageModel model, FileMetadata metadata)>
             LoadYaml(Context context, Document file, Action<Document> buildChild)
         {
-            var (errors, token) = YamlUtility.Deserialize(file, context);
+            var (errors, token) = YamlUtility.Parse(file, context);
 
             return await LoadSchemaDocument(context, errors, token, file, buildChild);
         }
@@ -156,7 +156,7 @@ namespace Microsoft.Docs.Build
         private static async Task<(List<Error> errors, Schema schema, PageModel model, FileMetadata metadata)>
             LoadJson(Context context, Document file, Action<Document> buildChild)
         {
-            var (errors, token) = JsonUtility.Deserialize(file, context);
+            var (errors, token) = JsonUtility.Parse(file, context);
 
             return await LoadSchemaDocument(context, errors, token, file, buildChild);
         }
@@ -173,7 +173,7 @@ namespace Microsoft.Docs.Build
                 throw Errors.SchemaNotFound(file.Mime).ToException();
             }
 
-            var (schemaViolationErrors, content) = JsonUtility.ToObjectWithSchemaValidation(token, schema.Type, transform: AttributeTransformer.TransformSDP(context, file, buildChild));
+            var (schemaViolationErrors, content) = JsonUtility.ToObject(token, schema.Type, transform: AttributeTransformer.TransformSDP(context, file, buildChild));
             errors.AddRange(schemaViolationErrors);
 
             if (file.Docset.Legacy && schema.Attribute is PageSchemaAttribute)

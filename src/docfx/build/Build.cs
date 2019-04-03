@@ -180,6 +180,7 @@ namespace Microsoft.Docs.Build
                     context.PublishModelBuilder.MarkError(file);
                 }
 
+                Telemetry.TrackBuildItemCount(file.ContentType);
                 return publishItem.Monikers;
             }
             catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
@@ -187,6 +188,11 @@ namespace Microsoft.Docs.Build
                 context.Report.Write(file.ToString(), dex.Error);
                 context.PublishModelBuilder.MarkError(file);
                 return new List<string>();
+            }
+            catch
+            {
+                Console.WriteLine($"Build {file.FilePath} failed");
+                throw;
             }
         }
 

@@ -74,7 +74,7 @@ namespace Microsoft.Docs.Build
             OverwriteConfig(configObject, locale ?? options.Locale, GetBranch());
 
             var deserializeErrors = new List<Error>();
-            (deserializeErrors, config) = JsonUtility.ToObjectWithSchemaValidation<Config>(configObject);
+            (deserializeErrors, config) = JsonUtility.ToObject<Config>(configObject);
             errors.AddRange(deserializeErrors);
 
             config.ConfigFileName = !configExists
@@ -99,12 +99,14 @@ namespace Microsoft.Docs.Build
             JToken config = null;
             if (fileName.EndsWith(".yml", StringComparison.OrdinalIgnoreCase))
             {
-                (errors, config) = YamlUtility.Deserialize(content);
+                (errors, config) = YamlUtility.Parse(content);
             }
             else if (fileName.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
             {
-                (errors, config) = JsonUtility.Deserialize(content);
+                (errors, config) = JsonUtility.Parse(content);
             }
+
+            JsonUtility.TrimStringValues(config);
 
             if (config is JObject)
             {
@@ -131,7 +133,7 @@ namespace Microsoft.Docs.Build
                 (errors, result) = LoadConfigObject(globalConfigPath, globalConfigPath);
             }
 
-            result = MergeWithLineInfoFromOverwrite(result, config);
+            JsonUtility.Merge(result, config);
             return (errors, result);
         }
 
@@ -154,20 +156,8 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            result = MergeWithLineInfoFromOverwrite(result, config);
+            JsonUtility.Merge(result, config);
             return (errors, result);
-        }
-
-        /// <summary>
-        /// Merge overwrite into container
-        /// And keep the line info of properties in overwrite which are not in container
-        /// </summary>
-        private static JObject MergeWithLineInfoFromOverwrite(JObject container, JObject overwrite)
-        {
-            var original = overwrite.DeepClone() as JObject;
-            JsonUtility.Merge(overwrite, container);
-            JsonUtility.Merge(overwrite, original);
-            return overwrite;
         }
 
         private static void OverwriteConfig(JObject config, string locale, string branch)

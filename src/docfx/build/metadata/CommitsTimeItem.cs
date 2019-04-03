@@ -4,11 +4,14 @@
 using System;
 using Newtonsoft.Json;
 
-internal class CommitsTimeItem
+namespace Microsoft.Docs.Build
 {
-    [JsonProperty("sha")]
-    public string Sha { get; set; }
+    internal class CommitsTimeItem
+    {
+        [JsonProperty("sha")]
+        public string Sha { get; set; }
 
-    [JsonProperty("built_at")]
-    public DateTime BuiltAt { get; set; }
+        [JsonProperty("built_at")]
+        public DateTime BuiltAt { get; set; }
+    }
 }
