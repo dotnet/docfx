@@ -8,9 +8,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
 {
@@ -181,17 +179,10 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
-        /// Start a new process and wait for its execution asynchroniously
+        /// Start a new process and wait for its execution to complete
         /// </summary>
-        public static Task<(string stdout, string stderr)> Execute(
-            string fileName, string commandLineArgs, string cwd = null, bool stdout = true, bool stderr = true)
+        public static string Execute(string fileName, string commandLineArgs, string cwd = null, bool stdout = true)
         {
-            Debug.Assert(!string.IsNullOrEmpty(fileName));
-
-            var tcs = new TaskCompletionSource<(string, string)>();
-
-            var error = new StringBuilder();
-            var output = new StringBuilder();
             var psi = new ProcessStartInfo
             {
                 FileName = fileName,
@@ -199,63 +190,19 @@ namespace Microsoft.Docs.Build
                 Arguments = commandLineArgs,
                 UseShellExecute = false,
                 RedirectStandardOutput = stdout,
-                RedirectStandardError = stderr,
+                RedirectStandardError = false,
             };
 
-            var process = new Process
-            {
-                EnableRaisingEvents = true,
-                StartInfo = psi,
-            };
+            var process = Process.Start(psi);
+            var result = stdout ? process.StandardOutput.ReadToEnd() : null;
+            process.WaitForExit();
 
-            if (stdout)
+            if (process.ExitCode != 0)
             {
-                process.OutputDataReceived += (sender, e) => output.AppendLine(e.Data);
-            }
-            if (stderr)
-            {
-                process.ErrorDataReceived += (sender, e) => error.AppendLine(e.Data);
+                throw new InvalidOperationException($"'\"{fileName}\" {commandLineArgs}' failed in directory '{cwd}' with exit code {process.ExitCode}: \nSTDOUT:'{result}'");
             }
 
-            var processExited = new object();
-            process.Exited += (a, b) =>
-            {
-                lock (processExited)
-                {
-                    // Wait for exit here to ensure the standard output/error is flushed.
-                    process.WaitForExit();
-                }
-
-                if (process.ExitCode == 0)
-                {
-                    tcs.TrySetResult((output.ToString().Trim(), error.ToString().Trim()));
-                }
-                else
-                {
-                    var message = $"'\"{fileName}\" {commandLineArgs}' failed in directory '{cwd}' with exit code {process.ExitCode}: \nSTDOUT:'{output}'\nSTDERR:\n'{error}'";
-
-                    tcs.TrySetException(new InvalidOperationException(message));
-                }
-            };
-
-            lock (processExited)
-            {
-                process.Start();
-
-                if (stdout)
-                {
-                    // Thread.Sleep(10000);
-                    // BeginOutputReadLine() and Exited event handler may have competition issue, above code can easily reproduce this problem
-                    // Add lock to ensure the locked area code can be always exected before exited event
-                    process.BeginOutputReadLine();
-                }
-                if (stderr)
-                {
-                    process.BeginErrorReadLine();
-                }
-            }
-
-            return tcs.Task;
+            return result;
         }
 
         /// <summary>
@@ -359,43 +306,6 @@ namespace Microsoft.Docs.Build
                 using (RetryUntilSucceed(mutexName, IsFileAlreadyExistsException, CreateFile))
                 {
                     action();
-                }
-
-                FileStream CreateFile() => new FileStream(
-                    lockPath,
-                    FileMode.CreateNew,
-                    FileAccess.ReadWrite,
-                    FileShare.None,
-                    1,
-                    FileOptions.DeleteOnClose);
-            }
-            finally
-            {
-                t_innerCall.Value = t_innerCall.Value.Pop();
-            }
-        }
-
-        // TODO: remove this method if possible
-        public static async Task RunInsideMutexAsync(string mutexName, Func<Task> action)
-        {
-            Debug.Assert(!string.IsNullOrEmpty(mutexName));
-            var lockPath = Path.Combine(AppData.MutexRoot, HashUtility.GetMd5Hash(mutexName));
-
-            // avoid the RunInsideMutex to be nested used with same mutex name
-            t_innerCall.Value = t_innerCall.Value ?? ImmutableStack<string>.Empty;
-            if (t_innerCall.Value.Contains(lockPath))
-            {
-                throw new ApplicationException($"Nested call to RunInsideMutex is detected, mutex name: {mutexName}");
-            }
-            t_innerCall.Value = t_innerCall.Value.Push(lockPath);
-
-            try
-            {
-                Directory.CreateDirectory(AppData.MutexRoot);
-
-                using (RetryUntilSucceed(mutexName, IsFileAlreadyExistsException, CreateFile))
-                {
-                    await action();
                 }
 
                 FileStream CreateFile() => new FileStream(

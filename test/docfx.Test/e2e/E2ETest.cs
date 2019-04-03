@@ -58,7 +58,7 @@ namespace Microsoft.Docs.Build
         [MemberData(nameof(Specs))]
         public static async Task Run(string name)
         {
-            var (docsetPath, spec, mockedRepos) = await CreateDocset(name);
+            var (docsetPath, spec, mockedRepos) = CreateDocset(name);
             if (spec is null)
             {
                 return;
@@ -211,8 +211,7 @@ namespace Microsoft.Docs.Build
             return result;
         }
 
-        private static async Task<(string docsetPath, E2ESpec spec, IReadOnlyDictionary<string, string> mockedRepos)>
-            CreateDocset(string specName)
+        private static (string docsetPath, E2ESpec spec, IReadOnlyDictionary<string, string> mockedRepos) CreateDocset(string specName)
         {
             var match = Regex.Match(specName, "^(.+?)/(\\d+). (\\[from loc\\] )?(.*)");
             var specPath = match.Groups[1].Value + ".yml";
@@ -258,7 +257,7 @@ namespace Microsoft.Docs.Build
                         t_mockedRepos.Value = mockedRepos;
 
                         var (remote, refspec, _) = HrefUtility.SplitGitHref(inputRepo);
-                        await GitUtility.CloneOrUpdate(inputFolder, remote, refspec);
+                        GitUtility.CloneOrUpdate(inputFolder, remote, refspec);
                         Process.Start(new ProcessStartInfo("git", "submodule update --init") { WorkingDirectory = inputFolder }).WaitForExit();
                     }
                     finally

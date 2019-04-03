@@ -21,13 +21,11 @@ namespace Microsoft.Docs.Build
         }
 
         [Fact]
-        public static async Task RunCommandsInParallel()
+        public static void RunCommandsInParallel()
         {
             var cwd = GitUtility.FindRepo(Path.GetFullPath("README.md"));
 
-            var results = await Task.WhenAll(Enumerable.Range(0, 10).AsParallel().Select(i => ProcessUtility.Execute("git", "rev-parse HEAD", cwd)));
-
-            Assert.True(results.All(r => !string.IsNullOrEmpty(r.stdout)));
+            Parallel.For(0, 10, i => Assert.NotEmpty(ProcessUtility.Execute("git", "rev-parse HEAD", cwd)));
         }
 
         [Fact]

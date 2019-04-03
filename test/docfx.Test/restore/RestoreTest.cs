@@ -49,7 +49,7 @@ dependencies:
 
             // run restroe and check the work trees
             await Program.Run(new[] { "restore", docsetPath });
-            var workTreeList = await GitUtility.ListWorkTree(restorePath);
+            var workTreeList = GitUtility.ListWorkTree(restorePath);
             Assert.Equal(2, workTreeList.Count);
 
             File.WriteAllText(Path.Combine(docsetPath, "docfx.yml"), $@"
@@ -60,7 +60,7 @@ dependencies:
             await Program.Run(new[] { "restore", docsetPath });
 
             // since the lockdown time works, new slot will be created
-            workTreeList = await GitUtility.ListWorkTree(restorePath);
+            workTreeList = GitUtility.ListWorkTree(restorePath);
             Assert.Equal(3, workTreeList.Count);
 
             File.WriteAllText(Path.Combine(docsetPath, "docfx.yml"), $@"
@@ -79,7 +79,7 @@ dependencies:
             await Program.Run(new[] { "restore", docsetPath });
 
             // will create a new slot and find an available slot
-            workTreeList = await GitUtility.ListWorkTree(restorePath);
+            workTreeList = GitUtility.ListWorkTree(restorePath);
             Assert.Equal(4, workTreeList.Count);
         }
 
