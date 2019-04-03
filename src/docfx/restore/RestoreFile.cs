@@ -16,11 +16,8 @@ namespace Microsoft.Docs.Build
         public static Task Restore(List<string> urls, Config config, bool @implicit = false)
         {
             return ParallelUtility.ForEach(
-                   urls,
-                   restoreUrl =>
-                   {
-                       return Restore(restoreUrl, config, @implicit);
-                   });
+                urls,
+                restoreUrl => Restore(restoreUrl, config, @implicit));
         }
 
         public static async Task Restore(string url, Config config, bool @implicit = false)
