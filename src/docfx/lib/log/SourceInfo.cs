@@ -22,5 +22,10 @@ namespace Microsoft.Docs.Build
             File = file;
             Range = range;
         }
+
+        public static implicit operator T(SourceInfo<T> value)
+        {
+            return value != null ? value.Value : default;
+        }
     }
 }

@@ -93,12 +93,12 @@ namespace Microsoft.Docs.Build
 
             async Task<Contributor> GetAuthor()
             {
-                if (!string.IsNullOrEmpty(authorName?.Value))
+                if (!string.IsNullOrEmpty(authorName))
                 {
                     if (resolveGitHubUsers)
                     {
                         // Remove author from contributors if author name is specified
-                        var (error, result) = await _gitHubUserCache.GetByLogin(authorName?.Value);
+                        var (error, result) = await _gitHubUserCache.GetByLogin(authorName);
                         errors.AddIfNotNull(error?.WithRange(authorName?.Range ?? default));
                         return result?.ToContributor();
                     }
