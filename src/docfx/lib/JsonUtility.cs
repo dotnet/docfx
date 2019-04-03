@@ -166,8 +166,8 @@ namespace Microsoft.Docs.Build
                 }
                 catch (JsonReaderException ex)
                 {
-                    var (range, message, path) = ParseException(ex);
-                    throw Errors.JsonSyntaxError(range, message, path).ToException(ex);
+                    var (range, message) = ParseException(ex);
+                    throw Errors.JsonSyntaxError(range, message).ToException(ex);
                 }
             }
         }
@@ -231,8 +231,8 @@ namespace Microsoft.Docs.Build
             }
             catch (JsonReaderException ex)
             {
-                var (range, message, path) = ParseException(ex);
-                throw Errors.JsonSyntaxError(range, message, path).ToException(ex);
+                var (range, message) = ParseException(ex);
+                throw Errors.JsonSyntaxError(range, message).ToException(ex);
             }
         }
 
@@ -282,13 +282,13 @@ namespace Microsoft.Docs.Build
             foreach (var node in nullNodes)
             {
                 var (lineInfo, name) = Parse(node);
-                errors.Add(Errors.NullValue(ToRange(node), name, node.Path));
+                errors.Add(Errors.NullValue(ToRange(node), name));
             }
 
             foreach (var node in nullArrayNodes)
             {
                 var (lineInfo, name) = Parse(node);
-                errors.Add(Errors.NullArrayValue(new Range(lineInfo.LineNumber, lineInfo.LinePosition), name, node.Path));
+                errors.Add(Errors.NullArrayValue(new Range(lineInfo.LineNumber, lineInfo.LinePosition), name));
                 node.Remove();
             }
 
@@ -331,29 +331,29 @@ namespace Microsoft.Docs.Build
             {
                 if (args.ErrorContext.Error is JsonReaderException || args.ErrorContext.Error is JsonSerializationException jse)
                 {
-                    var (range, message, path) = ParseException(args.ErrorContext.Error);
-                    t_status.Value.Peek().Errors.Add(Errors.ViolateSchema(range, message, path));
+                    var (range, message) = ParseException(args.ErrorContext.Error);
+                    t_status.Value.Peek().Errors.Add(Errors.ViolateSchema(range, message));
                     args.ErrorContext.Handled = true;
                 }
             }
         }
 
-        private static (Range, string message, string path) ParseException(Exception ex)
+        private static (Range, string message) ParseException(Exception ex)
         {
             // TODO: Json.NET type conversion error message is developer friendly but not writer friendly.
             var match = Regex.Match(ex.Message, "^([\\s\\S]*)\\sPath '(.*)', line (\\d+), position (\\d+).$");
             if (match.Success)
             {
                 var range = new Range(int.Parse(match.Groups[3].Value), int.Parse(match.Groups[4].Value));
-                return (range, RewriteErrorMessage(match.Groups[1].Value), match.Groups[2].Value);
+                return (range, RewriteErrorMessage(match.Groups[1].Value));
             }
 
             match = Regex.Match(ex.Message, "^([\\s\\S]*)\\sPath '(.*)'.$");
             if (match.Success)
             {
-                return (default, RewriteErrorMessage(match.Groups[1].Value), match.Groups[2].Value);
+                return (default, RewriteErrorMessage(match.Groups[1].Value));
             }
-            return (default, RewriteErrorMessage(ex.Message), null);
+            return (default, RewriteErrorMessage(ex.Message));
         }
 
         private static string RewriteErrorMessage(string message)
@@ -466,7 +466,7 @@ namespace Microsoft.Docs.Build
                 var matchingProperty = objectContract.Properties.GetClosestMatchProperty(prop.Name);
                 if (matchingProperty is null && type.IsSealed)
                 {
-                    errors.Add(Errors.UnknownField(ToRange(prop), prop.Name, type.Name, prop.Path));
+                    errors.Add(Errors.UnknownField(ToRange(prop), prop.Name, type.Name));
                 }
                 return matchingProperty?.PropertyType;
             }
@@ -603,7 +603,7 @@ namespace Microsoft.Docs.Build
                     }
                     catch (Exception e)
                     {
-                        t_status.Value.Peek().Errors.Add(Errors.ViolateSchema(range, e.Message, reader.Path));
+                        t_status.Value.Peek().Errors.Add(Errors.ViolateSchema(range, e.Message));
                     }
                 }
 

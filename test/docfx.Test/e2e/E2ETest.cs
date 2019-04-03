@@ -429,7 +429,7 @@ namespace Microsoft.Docs.Build
         {
             foreach (var log in Array.ConvertAll(logs, JArray.Parse))
             {
-                if (!s_errorCodesWithoutLineInfo.Contains(log[1].ToString()) && log.Count < 6)
+                if (!s_errorCodesWithoutLineInfo.Contains(log[1].ToString()) && log.Count < 5)
                 {
                     Assert.True(false, $"Error code {log[1].ToString()} must have line info");
                 }
