@@ -19,7 +19,7 @@ namespace Microsoft.Docs.Build
                 {
                     if (node is LinkInline link)
                     {
-                        link.Url = MarkdownUtility.GetLink(link.Url, InclusionContext.File, InclusionContext.RootFile, link);
+                        link.Url = MarkdownUtility.GetLink(link.Url, InclusionContext.File, InclusionContext.RootFile, link) ?? link.Url;
                     }
                     else if (node is HtmlBlock block)
                     {

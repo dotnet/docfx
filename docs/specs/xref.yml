@@ -436,7 +436,7 @@ inputs:
 outputs:
   docs/a.json:
   docs/b.json: |
-    { "content": "<p>Link to <a href=\"\">title</a></p>" }
+    { "content": "<p>Link to <a href=\"xref:c#bookmark\">title</a></p>" }
   build.log: |
     ["warning","uid-not-found","Cannot find uid 'c' using xref 'c#bookmark'","docs/b.md","",1,9]
 ---
