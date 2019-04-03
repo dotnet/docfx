@@ -146,7 +146,6 @@ namespace Microsoft.Docs.Build
         {
             var status = t_status.Value.Peek();
             var (error, content, file) = status.DependencyResolver.ResolveContent(path, (Document)relativeTo, origin.ToRange());
-            status.Errors.AddIfNotNull(error?.WithRange(origin.ToRange()));
             return (content, file);
         }
 
