@@ -8,11 +8,11 @@ namespace Microsoft.Docs.Build
     [DebuggerDisplay("{Value}")]
     public class SourceInfo<T> : ISourceInfo
     {
-        public T Value { get; }
+        public readonly T Value;
 
-        public string File { get; }
+        public readonly string File;
 
-        public Range Range { get; }
+        public readonly Range Range;
 
         object ISourceInfo.Value => Value;
 

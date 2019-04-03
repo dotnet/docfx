@@ -52,6 +52,8 @@
     <Rule Id="CA1032" Action="None" />
     <Rule Id="CA1033" Action="Warning" />
     <Rule Id="CA1049" Action="Warning" />
+    <!-- CA1051: Do not declare visible instance fields -->
+    <Rule Id="CA1051" Action="None" />
     <!-- CA1056: URI properties should not be strings -->
     <Rule Id="CA1056" Action="None" />
     <!-- CA1060: Move pinvokes to native methods class -->
@@ -78,6 +80,8 @@
     <!-- CA1806DoNotIgnoreMethodResults -->
     <Rule Id="CA1806" Action="None" />
     <Rule Id="CA1814" Action="None" />
+    <!-- CA1815: should override Equals -->
+    <Rule Id="CA1815" Action="None" />
     <Rule Id="CA1821" Action="Warning" />
     <Rule Id="CA1822" Action="None" />
     <Rule Id="CA1900" Action="Warning" />
