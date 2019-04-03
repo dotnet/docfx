@@ -111,7 +111,7 @@ inputs:
 outputs:
   docs/index.json:
   build.log: |
-    ["warning","github-user-not-found","Cannot find user 'invalid_user' on GitHub","docs/index.md","",1,9]
+    ["warning","github-user-not-found","Cannot find user 'invalid_user' on GitHub","docs/index.md","",2,9]
 ---
 # Author should NOT exist in contributors. Author can have no contribution to the file before.
 repos:
