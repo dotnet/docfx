@@ -6,7 +6,7 @@ using System.Diagnostics;
 namespace Microsoft.Docs.Build
 {
     [DebuggerDisplay("{Value}")]
-    public class SourceInfo<T> : ISourceInfo
+    public sealed class SourceInfo<T> : ISourceInfo
     {
         public readonly T Value;
 
