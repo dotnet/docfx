@@ -48,7 +48,7 @@ namespace Microsoft.Docs.Build
             return true;
         }
 
-        public (PublishModel, Dictionary<Document, PublishItem>) Build(Context context)
+        public (PublishModel, Dictionary<Document, PublishItem>) Build(Context context, bool legacy)
         {
             // Handle publish url conflicts
             // TODO: Report more detail info for url conflict
@@ -68,7 +68,7 @@ namespace Microsoft.Docs.Build
                     {
                         if (_publishItems.TryRemove(conflictingFile, out var item) && item.Path != null)
                         {
-                            context.Output.Delete(item.Path);
+                            context.Output.Delete(item.Path, legacy);
                         }
                     }
                 }
@@ -95,7 +95,7 @@ namespace Microsoft.Docs.Build
                 {
                     if (_publishItems.TryRemove(conflictingFile, out var item) && item.Path != null)
                     {
-                        context.Output.Delete(item.Path);
+                        context.Output.Delete(item.Path, legacy);
                     }
                 }
             }
@@ -107,7 +107,7 @@ namespace Microsoft.Docs.Build
                 {
                     if (_publishItems.TryRemove(file, out var item) && item.Path != null)
                     {
-                        context.Output.Delete(item.Path);
+                        context.Output.Delete(item.Path, legacy);
                     }
                 }
             }

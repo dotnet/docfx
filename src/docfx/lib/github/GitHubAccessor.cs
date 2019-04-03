@@ -2,7 +2,9 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using Octokit;
 
@@ -57,11 +59,12 @@ namespace Microsoft.Docs.Build
             }
             catch (Exception ex)
             {
+                LogAbuseExceptionDetail(apiDetail, ex);
                 return (Errors.GitHubApiFailed(apiDetail, ex), null);
             }
         }
 
-        public async Task<(Error, string login)> GetLoginByCommit(string repoOwner, string repoName, string commitSha)
+        public async Task<(Error, IEnumerable<GitHubUser>)> GetUsersByCommit(string repoOwner, string repoName, string commitSha)
         {
             Debug.Assert(!string.IsNullOrEmpty(repoOwner));
             Debug.Assert(!string.IsNullOrEmpty(repoName));
@@ -75,10 +78,15 @@ namespace Microsoft.Docs.Build
             var apiDetail = $"GET /repos/{repoOwner}/{repoName}/commits/{commitSha}";
             try
             {
-                var commit = await RetryUtility.Retry(
-                    () => _client.Repository.Commit.Get(repoOwner, repoName, commitSha),
+                var commits = await RetryUtility.Retry(
+                    () => _client.Repository.Commit.GetAll(
+                        repoOwner,
+                        repoName,
+                        new CommitRequest { Sha = commitSha },
+                        new ApiOptions { PageCount = 1, PageSize = 100 }),
                     ex => ex is OperationCanceledException);
-                return (null, commit.Author?.Login);
+
+                return (null, commits.Select(ToGitHubUser));
             }
             catch (NotFoundException)
             {
@@ -97,7 +105,27 @@ namespace Microsoft.Docs.Build
             }
             catch (Exception ex)
             {
+                LogAbuseExceptionDetail(apiDetail, ex);
                 return (Errors.GitHubApiFailed(apiDetail, ex), null);
+            }
+        }
+
+        private static GitHubUser ToGitHubUser(GitHubCommit commit)
+        {
+            return new GitHubUser
+            {
+                Id = commit.Author?.Id,
+                Login = commit.Author?.Login,
+                Name = commit.Commit.Author.Name,
+                Emails = new[] { commit.Commit.Author.Email },
+            };
+        }
+
+        private static void LogAbuseExceptionDetail(string api, Exception ex)
+        {
+            if (ex is AbuseException aex)
+            {
+                Log.Write($"Failed calling GitHub API '{api}', message: '{ex.Message}', retryAfterSeconds: '{aex.RetryAfterSeconds}'");
             }
         }
     }

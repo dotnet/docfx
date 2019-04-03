@@ -22,6 +22,7 @@ namespace Microsoft.Docs.Build
 
         private int _errorCount;
         private int _warningCount;
+        private int _suggestionCount;
         private int _infoCount;
 
         private int _maxExceeded;
@@ -29,6 +30,8 @@ namespace Microsoft.Docs.Build
         public int ErrorCount => _errorCount;
 
         public int WarningCount => _warningCount;
+
+        public int SuggestionCount => _suggestionCount;
 
         public Report(bool legacy = false)
         {
@@ -38,7 +41,7 @@ namespace Microsoft.Docs.Build
         public void Configure(string docsetPath, Config config)
         {
             var outputPath = Path.Combine(docsetPath, config.Output.Path, "build.log");
-            Debug.Assert(_outputPath == null || _outputPath == outputPath, "Cannot change report output path");
+            Debug.Assert(_outputPath is null || _outputPath == outputPath, "Cannot change report output path");
 
             _config = config;
             _outputPath = outputPath;
@@ -116,6 +119,8 @@ namespace Microsoft.Docs.Build
                         return Volatile.Read(ref _errorCount) >= maxErrors;
                     case ErrorLevel.Warning:
                         return Volatile.Read(ref _warningCount) >= maxErrors;
+                    case ErrorLevel.Suggestion:
+                        return Volatile.Read(ref _suggestionCount) >= maxErrors;
                     default:
                         return Volatile.Read(ref _infoCount) >= maxErrors;
                 }
@@ -129,6 +134,8 @@ namespace Microsoft.Docs.Build
                         return Interlocked.Increment(ref _errorCount) > maxErrors;
                     case ErrorLevel.Warning:
                         return Interlocked.Increment(ref _warningCount) > maxErrors;
+                    case ErrorLevel.Suggestion:
+                        return Interlocked.Increment(ref _suggestionCount) > maxErrors;
                     default:
                         return Interlocked.Increment(ref _infoCount) > maxErrors;
                 }
@@ -199,6 +206,8 @@ namespace Microsoft.Docs.Build
                     return ConsoleColor.Red;
                 case ErrorLevel.Warning:
                     return ConsoleColor.Yellow;
+                case ErrorLevel.Suggestion:
+                    return ConsoleColor.Magenta;
                 default:
                     return ConsoleColor.Cyan;
             }

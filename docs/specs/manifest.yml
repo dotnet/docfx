@@ -55,7 +55,7 @@ outputs:
     {
       "files": [
         { "url": "/c", "!hash": null },
-        { "url": "/a", "hash": "cc98fe5ff90ff67265c7d6f3f7ed70298d2f19a7" },
+        { "url": "/a", "hash": "db2c931f20f08792b4bd374ac0587399fdef018f" },
         { "url": "/b.png", "hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709" },
         { "url": "/toc.json", "hash": "ad75fac1a867d604c1df88742ed36d56aecd1926" }
       ]
@@ -222,9 +222,9 @@ outputs:
 inputs:
   docfx.yml:
   docs/a.md: |
-    a [!INCLUDE[](b.md)
+    one [!INCLUDE[](b.md)
   docs/b.md: |
-    b [!INCLUDE[](a.md)
+    another [!INCLUDE[](a.md)
 outputs:
   docs/a.json:
   docs/b.json:
@@ -254,8 +254,8 @@ outputs:
        }
     }
   build.log: |
-    ["warning","circular-reference","Found circular reference: docs/b.md --> docs/a.md --> docs/b.md","docs/b.md"]
-    ["warning","circular-reference","Found circular reference: docs/a.md --> docs/b.md --> docs/a.md","docs/a.md"]
+    ["warning","circular-reference","Found circular reference: docs/b.md --> docs/a.md --> docs/b.md","docs/a.md","",1,5]
+    ["warning","circular-reference","Found circular reference: docs/a.md --> docs/b.md --> docs/a.md","docs/b.md","",1,9]
 ---
 # Manifest link circular reference
 inputs:
@@ -319,7 +319,7 @@ outputs:
   .publish.json: |
     { "!files": null }
   build.log: |
-    ["error","link-is-empty","Link is empty","docs/a.md"]
+    ["error","link-is-empty","Link is empty","docs/a.md","",1,3]
 ---
 # inclusion chain
 inputs:

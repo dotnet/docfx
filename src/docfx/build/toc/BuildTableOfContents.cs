@@ -59,7 +59,7 @@ namespace Microsoft.Docs.Build
             {
                 if (file.Docset.Legacy)
                 {
-                    var output = file.Docset.Template.TransformMetadata("toc.json.js", JsonUtility.ToJObject(model));
+                    var output = context.Template.TransformMetadata("toc.json.js", JsonUtility.ToJObject(model));
                     publishItem.Hash = context.Output.WriteJsonWithHash(output, outputPath);
                     context.Output.WriteJson(model.Metadata, Path.ChangeExtension(outputPath, ".mta.json"));
                 }
@@ -81,9 +81,9 @@ namespace Microsoft.Docs.Build
                     }
 
                     List<string> monikers = null;
-                    if (item.Href == null || !hrefMap.TryGetValue(item.Href, out monikers))
+                    if (item.Href is null || !hrefMap.TryGetValue(item.Href, out monikers))
                     {
-                        if (item.TopicHref == null || !hrefMap.TryGetValue(item.TopicHref, out monikers))
+                        if (item.TopicHref is null || !hrefMap.TryGetValue(item.TopicHref, out monikers))
                         {
                             monikers = fileMonikers;
                         }
@@ -128,8 +128,9 @@ namespace Microsoft.Docs.Build
                 },
                 (file, href, resultRelativeTo) =>
                 {
+                    // TODO: get line info of TOC href for bookmark validation
                     // add to referenced document list
-                    var (error, link, buildItem) = context.DependencyResolver.ResolveLink(href, file, resultRelativeTo, null);
+                    var (error, link, buildItem) = context.DependencyResolver.ResolveLink(href, file, resultRelativeTo, null, default);
                     errors.AddIfNotNull(error);
 
                     if (buildItem != null)

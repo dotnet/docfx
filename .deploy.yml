@@ -3,6 +3,7 @@ trigger:
   branches:
     include:
       - v3
+      - v3-release
       - feature/*
 pr:
 - v3
@@ -58,11 +59,16 @@ jobs:
       OP_BUILD_USER_TOKEN: $(OpBuildUserToken)
       GITHUB_BASIC_AUTH: $(GitHubBasicAuth)
       SYSTEM_ACCESS_TOKEN: $(System.AccessToken)
+      GITHUB_ACCESS_TOKEN: $(GitHubAccessToken)
     displayName: Impact Test
 
   # Build and test
   - powershell: ./build.ps1
     displayName: Build
+    env:
+      GITHUB_BASIC_AUTH: $(GitHubBasicAuth)
+      SYSTEM_ACCESS_TOKEN: $(System.AccessToken)
+      GITHUB_ACCESS_TOKEN: $(GitHubAccessToken)
 
   # Publish test results
   - task: PublishTestResults@2
@@ -80,6 +86,7 @@ jobs:
 
   # Push to sandbox MyGet feed
   - task: NuGetCommand@2
+    condition: and(succeeded(), ne(variables['Build.SourceBranch'], 'refs/heads/v3-release'))
     displayName: Push to Sandbox MyGet Feed
     inputs:
       command: push
@@ -89,7 +96,7 @@ jobs:
 
   # Push to production MyGet feed
   - task: NuGetCommand@2
-    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/v3'))
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/v3-release'))
     displayName: Push to Production MyGet Feed
     inputs:
       command: push

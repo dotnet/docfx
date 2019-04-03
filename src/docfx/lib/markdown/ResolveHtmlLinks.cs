@@ -19,21 +19,21 @@ namespace Microsoft.Docs.Build
                 {
                     if (node is HtmlBlock block)
                     {
-                        block.Lines = new StringLineGroup(ResolveLinks(block.Lines.ToString()));
-                        MarkdownUtility.Result.HasHtml = true;
+                        block.Lines = new StringLineGroup(ResolveLinks(block.Lines.ToString(), block));
                     }
                     else if (node is HtmlInline inline)
                     {
-                        inline.Tag = ResolveLinks(inline.Tag);
-                        MarkdownUtility.Result.HasHtml = true;
+                        inline.Tag = ResolveLinks(inline.Tag, inline);
                     }
                     return false;
                 });
             });
 
-            string ResolveLinks(string html)
+            string ResolveLinks(string html, MarkdownObject block)
             {
-                return HtmlUtility.TransformLinks(html, href => context.GetLink(href, InclusionContext.File, InclusionContext.RootFile));
+                return HtmlUtility.TransformLinks(
+                    html,
+                    href => context.GetLink(href, InclusionContext.File, InclusionContext.RootFile, block));
             }
         }
     }

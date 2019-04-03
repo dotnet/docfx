@@ -47,13 +47,12 @@ namespace Microsoft.Docs.Build
 
             if (yamlHeader != null)
             {
-                errors.AddRange(MetadataValidator.Validate(yamlHeader, "yaml header"));
+                errors.AddRange(MetadataValidator.ValidateGlobalMetadata(yamlHeader));
                 JsonUtility.Merge(result, yamlHeader);
             }
 
-            var (schemaErrors, obj) = JsonUtility.ToObjectWithSchemaValidation<T>(result);
-            errors.AddRange(schemaErrors);
-
+            // We are validating against the merged JObject so discard the validation result here.
+            var (_, obj) = JsonUtility.ToObject<T>(result);
             return (errors, obj);
         }
     }

@@ -4,8 +4,8 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
-using System.Reflection;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json.Linq;
 
@@ -21,13 +21,6 @@ namespace Microsoft.Docs.Build
     {
         public const string YamlMimePrefix = "YamlMime:";
 
-        private static readonly MethodInfo s_setLineInfo = typeof(JToken).GetMethod(
-            "SetLineInfo",
-            BindingFlags.NonPublic | BindingFlags.Instance,
-            null,
-            new[] { typeof(int), typeof(int) },
-            null);
-
         public static string ReadMime(TextReader reader)
         {
             return ReadMime(reader.ReadLine());
@@ -39,7 +32,7 @@ namespace Microsoft.Docs.Build
         public static string ReadMime(string yaml)
         {
             var header = ReadHeader(yaml);
-            if (header == null || !header.StartsWith(YamlMimePrefix, StringComparison.OrdinalIgnoreCase))
+            if (header is null || !header.StartsWith(YamlMimePrefix, StringComparison.OrdinalIgnoreCase))
             {
                 return null;
             }
@@ -60,35 +53,29 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
-        /// Deserialize from yaml string, return error list at the same time
-        /// </summary>
-        public static (List<Error>, T) DeserializeWithSchemaValidation<T>(string input, bool nullValidation = true)
-        {
-            var (errors, token) = Deserialize(input, nullValidation);
-            var (mismatchingErrors, result) = JsonUtility.ToObjectWithSchemaValidation<T>(token);
-            errors.AddRange(mismatchingErrors);
-            return (errors, result);
-        }
-
-        /// <summary>
         /// De-serialize from yaml string, which is not user input
         /// schema validation errors will be ignored, syntax errors and type mismatching will be thrown
         /// </summary>
-        public static T Deserialize<T>(string input, bool nullValidation = true)
+        public static T Deserialize<T>(string input)
         {
-            var (_, token) = Deserialize(input, nullValidation);
-            return JsonUtility.ToObject<T>(token);
+            var token = ParseAsJToken(input);
+            return token.ToObject<T>(JsonUtility.Serializer);
         }
 
         /// <summary>
         /// Deserialize from a YAML file, get from or add to cache
         /// </summary>
-        public static (List<Error>, JToken) Deserialize(Document file, Context context) => context.Cache.LoadYamlFile(file);
+        public static (List<Error>, JToken) Parse(Document file, Context context) => context.Cache.LoadYamlFile(file);
 
         /// <summary>
         /// Deserialize to JToken from string
         /// </summary>
-        public static (List<Error>, JToken) Deserialize(string input, bool nullValidation = true)
+        public static (List<Error>, JToken) Parse(string input)
+        {
+            return ParseAsJToken(input).RemoveNulls();
+        }
+
+        private static JToken ParseAsJToken(string input)
         {
             Match match = null;
 
@@ -117,7 +104,7 @@ namespace Microsoft.Docs.Build
 
             if (stream.Documents.Count == 0)
             {
-                return (errors, JValue.CreateNull());
+                return JValue.CreateNull();
             }
 
             if (stream.Documents.Count != 1)
@@ -125,17 +112,7 @@ namespace Microsoft.Docs.Build
                 throw new NotSupportedException("Does not support mutiple YAML documents");
             }
 
-            if (nullValidation)
-            {
-                var (nullErrors, token) = ToJson(stream.Documents[0].RootNode).RemoveNulls();
-                errors.AddRange(nullErrors);
-                return (errors, token);
-            }
-            else
-            {
-                var token = ToJson(stream.Documents[0].RootNode);
-                return (errors, token);
-            }
+            return ToJson(stream.Documents[0].RootNode);
         }
 
         private static JToken ToJson(YamlNode node)
@@ -144,28 +121,26 @@ namespace Microsoft.Docs.Build
             {
                 if (scalar.Style == ScalarStyle.Plain)
                 {
-                    if (string.IsNullOrWhiteSpace(scalar.Value))
+                    if (string.IsNullOrWhiteSpace(scalar.Value) ||
+                        scalar.Value == "~" ||
+                        string.Equals(scalar.Value, "null", StringComparison.OrdinalIgnoreCase))
                     {
-                        return PopulateLineInfoToJToken(JValue.CreateNull(), node);
-                    }
-                    if (scalar.Value == "~")
-                    {
-                        return PopulateLineInfoToJToken(JValue.CreateNull(), node);
+                        return SetLineInfo(JValue.CreateNull(), node);
                     }
                     if (long.TryParse(scalar.Value, out var n))
                     {
-                        return PopulateLineInfoToJToken(new JValue(n), node);
+                        return SetLineInfo(new JValue(n), node);
                     }
-                    if (double.TryParse(scalar.Value, out var d))
+                    if (double.TryParse(scalar.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out var d))
                     {
-                        return PopulateLineInfoToJToken(new JValue(d), node);
+                        return SetLineInfo(new JValue(d), node);
                     }
                     if (bool.TryParse(scalar.Value, out var b))
                     {
-                        return PopulateLineInfoToJToken(new JValue(b), node);
+                        return SetLineInfo(new JValue(b), node);
                     }
                 }
-                return PopulateLineInfoToJToken(new JValue(scalar.Value), node);
+                return SetLineInfo(new JValue(scalar.Value), node);
             }
             if (node is YamlMappingNode map)
             {
@@ -175,7 +150,7 @@ namespace Microsoft.Docs.Build
                     if (key is YamlScalarNode scalarKey)
                     {
                         var token = ToJson(value);
-                        var prop = PopulateLineInfoToJToken(new JProperty(scalarKey.Value, token), key);
+                        var prop = SetLineInfo(new JProperty(scalarKey.Value, token), key);
                         obj.Add(prop);
                     }
                     else
@@ -184,7 +159,7 @@ namespace Microsoft.Docs.Build
                     }
                 }
 
-                return PopulateLineInfoToJToken(obj, node);
+                return SetLineInfo(obj, node);
             }
             if (node is YamlSequenceNode seq)
             {
@@ -193,16 +168,14 @@ namespace Microsoft.Docs.Build
                 {
                     arr.Add(ToJson(item));
                 }
-                return PopulateLineInfoToJToken(arr, node);
+                return SetLineInfo(arr, node);
             }
             throw new NotSupportedException($"Unknown yaml node type {node.GetType()}");
         }
 
-        private static JToken PopulateLineInfoToJToken(JToken token, YamlNode node)
+        private static JToken SetLineInfo(JToken token, YamlNode node)
         {
-            Debug.Assert(token != null);
-            s_setLineInfo.Invoke(token, new object[] { node.Start.Line, node.Start.Column });
-            return token;
+            return JsonUtility.SetLineInfo(token, node.Start.Line, node.Start.Column);
         }
     }
 }

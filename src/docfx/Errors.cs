@@ -175,9 +175,6 @@ namespace Microsoft.Docs.Build
         public static Error YamlDuplicateKey(in Range range, string key)
             => new Error(ErrorLevel.Error, "yaml-duplicate-key", $"Key '{key}' is already defined, remove the duplicate key.", range: range);
 
-        public static Error InvalidYamlHeader(Document file, Exception ex)
-            => new Error(ErrorLevel.Warning, "invalid-yaml-header", ex.Message, file.ToString());
-
         /// <summary>
         /// Syntax error in json file.
         /// Examples:
@@ -204,7 +201,7 @@ namespace Microsoft.Docs.Build
         /// Defined a redirection entry that's not matched by config's files glob patterns.
         /// </summary>
         public static Error RedirectionOutOfScope(Document redirection, string configFile)
-            => new Error(ErrorLevel.Warning, "redirection-out-of-scope", $"Redirection file '{redirection}' will not be built because it is not included in {configFile}");
+            => new Error(ErrorLevel.Info, "redirection-out-of-scope", $"Redirection file '{redirection}' will not be built because it is not included in {configFile}");
 
         /// <summary>
         /// Link which's resolved to a file in dependency repo won't be built.
@@ -224,7 +221,7 @@ namespace Microsoft.Docs.Build
         /// The fisrt tag in an article.md isn't h1 tag.
         /// </summary>
         public static Error HeadingNotFound(Document file)
-            => new Error(ErrorLevel.Warning, "heading-not-found", $"The first visible block is not a heading block with `#`", file.ToString());
+            => new Error(ErrorLevel.Info, "heading-not-found", $"The first visible block is not a heading block with `#`, `##` or `###`", file.ToString());
 
         /// <summary>
         /// Can't find a file referenced by configuration, or user writes a non-existing link.
@@ -271,12 +268,6 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
-        /// Inclusion is a <see cref="Config.Redirections"/> entry like [!INCLUDE[](redirect.md)]
-        /// </summary>
-        public static Error IncludeRedirection(Document relativeTo, string path)
-            => new Error(ErrorLevel.Warning, "include-is-redirection", $"Referenced inclusion {path} relative to '{relativeTo}' shouldn't belong to redirections", relativeTo.ToString());
-
-        /// <summary>
         /// More than one files are resolved to the same output path.
         /// Examples:
         ///   - in <see cref="Config.Redirections"/> section, defined an entry key that's also a file in build scope
@@ -296,13 +287,13 @@ namespace Microsoft.Docs.Build
         /// Used docfx output model property which are not defined in input model.
         /// </summary>
         public static Error ReservedMetadata(in Range range, string name, string removeFrom)
-            => new Error(ErrorLevel.Warning, "reserved-metadata", $"Metadata '{name}' is reserved by docfx, remove this metadata from {removeFrom}", null, range);
+            => new Error(ErrorLevel.Warning, "reserved-metadata", $"Metadata '{name}' is reserved by docfx, remove this metadata: '{removeFrom}'", null, range);
 
         /// <summary>
         /// Failed to compute specific info of a commit.
         /// </summary>
         public static Error GitLogError(string repoPath, int errorCode)
-            => new Error(ErrorLevel.Error, "git-log-error", $"Error computing git log [{errorCode}] for '{repoPath}', did you used a shadow clone?");
+            => new Error(ErrorLevel.Error, "git-log-error", $"Error computing git log [{errorCode}] for '{repoPath}', did you use a shallow clone?");
 
         /// <summary>
         /// Git.exe isn't installed.
@@ -319,10 +310,16 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Error, "committish-not-found", $"Cannot find branch, tag or commit '{committish}' for repo '{repo}'.");
 
         /// <summary>
-        /// Defined refrence with by #bookmark fragment within/between articles, which doesn't exist.
+        /// Defined refrence with by #bookmark fragment between articles, which doesn't exist.
         /// </summary>
-        public static Error BookmarkNotFound(Document relativeTo, Document reference, string bookmark, IEnumerable<string> candidateBookmarks)
-            => new Error(ErrorLevel.Warning, "bookmark-not-found", $"Cannot find bookmark '#{bookmark}' in '{reference}'{(FindBestMatch(bookmark, candidateBookmarks, out string matchedBookmark) ? $", did you mean '#{matchedBookmark}'?" : null)}", relativeTo.ToString());
+        public static Error ExternalBookmarkNotFound(Document relativeTo, Document reference, string bookmark, IEnumerable<string> candidateBookmarks, Range range)
+            => new Error(ErrorLevel.Warning, "external-bookmark-not-found", $"Cannot find bookmark '#{bookmark}' in '{reference}'{(FindBestMatch(bookmark, candidateBookmarks, out string matchedBookmark) ? $", did you mean '#{matchedBookmark}'?" : null)}", relativeTo.ToString(), range);
+
+        /// <summary>
+        /// Defined refrence with by #bookmark fragment within articles, which doesn't exist.
+        /// </summary>
+        public static Error InternalBookmarkNotFound(Document file, string bookmark, IEnumerable<string> candidateBookmarks, Range range)
+            => new Error(ErrorLevel.Suggestion, "internal-bookmark-not-found", $"Cannot find bookmark '#{bookmark}' in '{file}'{(FindBestMatch(bookmark, candidateBookmarks, out string matchedBookmark) ? $", did you mean '#{matchedBookmark}'?" : null)}", file.ToString(), range);
 
         /// <summary>
         /// Used null value in yaml header or schema documents.
@@ -332,6 +329,9 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static Error NullValue(in Range range, string name, string path)
             => new Error(ErrorLevel.Info, "null-value", $"'{name}' contains null value", range: range, jsonPath: path);
+
+        public static Error NullArrayValue(in Range range, string name, string path)
+            => new Error(ErrorLevel.Warning, "null-array-value", $"'{name}' contains null value, the null value has been removed", range: range, jsonPath: path);
 
         /// <summary>
         /// Defined extra field(s) in input model in schema document(json, yml).

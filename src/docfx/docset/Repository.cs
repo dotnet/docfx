@@ -42,7 +42,7 @@ namespace Microsoft.Docs.Build
 
             var repoPath = GitUtility.FindRepo(path);
 
-            if (repoPath == null)
+            if (repoPath is null)
                 return null;
 
             var (remote, repoBranch, commit) = GitUtility.GetRepoInfo(repoPath);

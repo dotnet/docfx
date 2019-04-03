@@ -14,28 +14,25 @@ namespace Microsoft.Docs.Build
     {
         private static int _defaultLockdownTimeInSecond = 10 * 60;
 
-        public static async Task<(string path, T slot)> TryGetSlot(string remote, Func<IReadOnlyList<T>, IReadOnlyList<T>> matchExistingSlots)
+        public static (string path, T slot) TryGetSlot(string remote, Func<IReadOnlyList<T>, IReadOnlyList<T>> getOrderedFilteredSlots)
         {
             Debug.Assert(!string.IsNullOrEmpty(remote));
-            Debug.Assert(matchExistingSlots != null);
+            Debug.Assert(getOrderedFilteredSlots != null);
 
             var restoreDir = AppData.GetGitDir(remote);
 
             string path = null;
             T slot = null;
-            await ProcessUtility.RunInsideMutex(
+            ProcessUtility.RunInsideMutex(
                 remote + "/index.json",
-                async () =>
+                () =>
                 {
                     var slots = GetSlots(restoreDir);
 
-                    var filteredSlots = matchExistingSlots(slots);
-
-                    // found latest restored slot
-                    foreach (var i in filteredSlots.OrderByDescending(i => i.LastAccessDate))
+                    foreach (var i in getOrderedFilteredSlots(slots))
                     {
                         if (i.Restored /*restored successfully*/ &&
-                        !await ProcessUtility.IsExclusiveLockHeld(GetLockKey(remote, i.Id)) /*not being used for restoring*/)
+                        !ProcessUtility.IsExclusiveLockHeld(GetLockKey(remote, i.Id)) /*not being used for restoring*/)
                         {
                             slot = i;
                             break;
@@ -54,7 +51,7 @@ namespace Microsoft.Docs.Build
             return (path, slot);
         }
 
-        public static async Task<bool> ReleaseSlot(T slot, LockType lockType, bool successed = true)
+        public static bool ReleaseSlot(T slot, LockType lockType, bool successed = true)
         {
             Debug.Assert(slot != null);
             Debug.Assert(!string.IsNullOrEmpty(slot.Url));
@@ -64,9 +61,9 @@ namespace Microsoft.Docs.Build
             var restoreDir = AppData.GetGitDir(url);
 
             var released = false;
-            await ProcessUtility.RunInsideMutex(
+            ProcessUtility.RunInsideMutex(
                 url + "/index.json",
-                async () =>
+                () =>
                 {
                     var slots = GetSlots(restoreDir);
                     var slotToRelease = slots.Single(i => i.Id == slot.Id);
@@ -78,10 +75,10 @@ namespace Microsoft.Docs.Build
                         case LockType.Exclusive:
                             slotToRelease.LastAccessDate = DateTime.UtcNow;
                             slotToRelease.Restored = successed;
-                            released = await ProcessUtility.ReleaseExclusiveLock(GetLockKey(url, slot.Id), slot.Acquirer);
+                            released = ProcessUtility.ReleaseExclusiveLock(GetLockKey(url, slot.Id), slot.Acquirer);
                             break;
                         case LockType.Shared:
-                            released = await ProcessUtility.ReleaseSharedLock(GetLockKey(url, slot.Id), slot.Acquirer);
+                            released = ProcessUtility.ReleaseSharedLock(GetLockKey(url, slot.Id), slot.Acquirer);
                             break;
                     }
 
@@ -93,7 +90,7 @@ namespace Microsoft.Docs.Build
             return released;
         }
 
-        public static async Task<(string path, T slot)> AcquireSlot(string url, LockType type, Func<T, T> updateExistingSlot, Func<T, bool> matchExistingSlot)
+        public static (string path, T slot) AcquireSlot(string url, LockType type, Func<T, T> updateExistingSlot, Func<T, bool> matchExistingSlot)
         {
             Debug.Assert(!string.IsNullOrEmpty(url));
 
@@ -102,9 +99,9 @@ namespace Microsoft.Docs.Build
             T slot = null;
             bool acquired = false;
             string acquirer = null;
-            await ProcessUtility.RunInsideMutex(
+            ProcessUtility.RunInsideMutex(
                 url + "/index.json",
-                async () =>
+                () =>
                 {
                     var slots = GetSlots(restoreDir);
 
@@ -116,7 +113,7 @@ namespace Microsoft.Docs.Build
                             {
                                 if (DateTime.UtcNow - i.LastAccessDate > TimeSpan.FromSeconds(_defaultLockdownTimeInSecond))
                                 {
-                                    (acquired, acquirer) = await ProcessUtility.AcquireExclusiveLock(GetLockKey(url, i.Id));
+                                    (acquired, acquirer) = ProcessUtility.AcquireExclusiveLock(GetLockKey(url, i.Id));
                                     if (acquired)
                                     {
                                         existed = true;
@@ -126,9 +123,9 @@ namespace Microsoft.Docs.Build
                                 }
                             }
 
-                            if (slot == null)
+                            if (slot is null)
                             {
-                                (acquired, acquirer) = await ProcessUtility.AcquireExclusiveLock(GetLockKey(url, $"{slots.Count + 1}"));
+                                (acquired, acquirer) = ProcessUtility.AcquireExclusiveLock(GetLockKey(url, $"{slots.Count + 1}"));
                                 if (acquired)
                                 {
                                     slot = new T() { Id = $"{slots.Count + 1}" };
@@ -152,7 +149,7 @@ namespace Microsoft.Docs.Build
                             {
                                 if (matchExistingSlot(i) && i.Restored)
                                 {
-                                    (acquired, acquirer) = await ProcessUtility.AcquireSharedLock(GetLockKey(url, i.Id));
+                                    (acquired, acquirer) = ProcessUtility.AcquireSharedLock(GetLockKey(url, i.Id));
                                     if (acquired)
                                     {
                                         slot = i;
@@ -175,7 +172,7 @@ namespace Microsoft.Docs.Build
                 Debug.Assert(!string.IsNullOrEmpty(slot.Acquirer));
             }
 
-            return slot == null ? default : ($"{slot.Id}", slot);
+            return slot is null ? default : ($"{slot.Id}", slot);
         }
 
         public static List<T> GetSlots(string restoreDir)

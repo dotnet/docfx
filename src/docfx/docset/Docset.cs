@@ -8,7 +8,6 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
 {
@@ -73,6 +72,11 @@ namespace Microsoft.Docs.Build
         public DependencyLockModel DependencyLock { get; }
 
         /// <summary>
+        /// Gets the dependency repos/file mappings
+        /// </summary>
+        public RestoreMap RestoreMap { get; }
+
+        /// <summary>
         /// Gets the dependent docsets
         /// </summary>
         public IReadOnlyDictionary<string, Docset> DependencyDocsets => _dependencyDocsets.Value;
@@ -92,16 +96,12 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public HashSet<Document> ScanScope => _scanScope.Value;
 
-        public TemplateEngine Template => _template.Value;
-
         private readonly CommandLineOptions _options;
         private readonly Report _report;
-        private readonly DependencyGitPool _dependencyGitPool;
         private readonly ConcurrentDictionary<string, Lazy<Repository>> _repositories;
         private readonly Lazy<HashSet<Document>> _buildScope;
         private readonly Lazy<HashSet<Document>> _scanScope;
         private readonly Lazy<RedirectionMap> _redirections;
-        private readonly Lazy<TemplateEngine> _template;
         private readonly Lazy<IReadOnlyDictionary<string, Docset>> _dependencyDocsets;
 
         public Docset(
@@ -111,29 +111,29 @@ namespace Microsoft.Docs.Build
             Config config,
             CommandLineOptions options,
             DependencyLockModel dependencyLock,
-            DependencyGitPool dependencyGitPool,
+            RestoreMap restoreMap,
             Repository repository = null,
             Docset localizedDocset = null,
             Docset fallbackDocset = null,
             bool isDependency = false)
-            : this(report, docsetPath, !string.IsNullOrEmpty(locale) ? locale : config.Localization.DefaultLocale, config, options, dependencyLock, dependencyGitPool, repository, fallbackDocset, localizedDocset)
+            : this(report, docsetPath, !string.IsNullOrEmpty(locale) ? locale : config.Localization.DefaultLocale, config, options, dependencyLock, restoreMap, repository, fallbackDocset, localizedDocset)
         {
             Debug.Assert(dependencyLock != null);
-            Debug.Assert(dependencyGitPool != null);
+            Debug.Assert(restoreMap != null);
 
             if (!isDependency && !string.Equals(Locale, Config.Localization.DefaultLocale, StringComparison.OrdinalIgnoreCase))
             {
                 // localization/fallback docset will share the same context, config, build locale and options with source docset
                 // source docset configuration will be overwritten by build locale overwrite configuration
-                if (LocalizationUtility.TryGetSourceDocsetPath(this, dependencyGitPool, out var sourceDocsetPath, out var sourceBranch, out _))
+                if (LocalizationUtility.TryGetSourceDocsetPath(this, restoreMap, out var sourceDocsetPath, out var sourceBranch, out _))
                 {
                     var repo = Repository.Create(sourceDocsetPath, sourceBranch);
-                    FallbackDocset = new Docset(_report, sourceDocsetPath, Locale, Config, _options, DependencyLock, _dependencyGitPool, repo, localizedDocset: this, isDependency: true);
+                    FallbackDocset = new Docset(_report, sourceDocsetPath, Locale, Config, _options, DependencyLock, RestoreMap, repo, localizedDocset: this, isDependency: true);
                 }
-                else if (LocalizationUtility.TryGetLocalizedDocsetPath(this, dependencyGitPool, Config, Locale, out var localizationDocsetPath, out var localizationBranch, out var localizationDependencyLock))
+                else if (LocalizationUtility.TryGetLocalizedDocsetPath(this, restoreMap, Config, Locale, out var localizationDocsetPath, out var localizationBranch, out var localizationDependencyLock))
                 {
                     var repo = Repository.Create(localizationDocsetPath, localizationBranch);
-                    LocalizationDocset = new Docset(_report, localizationDocsetPath, Locale, Config, _options, DependencyLock, _dependencyGitPool, repo, fallbackDocset: this, isDependency: true);
+                    LocalizationDocset = new Docset(_report, localizationDocsetPath, Locale, Config, _options, DependencyLock, RestoreMap, repo, fallbackDocset: this, isDependency: true);
                 }
             }
         }
@@ -145,16 +145,16 @@ namespace Microsoft.Docs.Build
             Config config,
             CommandLineOptions options,
             DependencyLockModel dependencyLock,
-            DependencyGitPool dependencyGitPool,
+            RestoreMap restoreMap,
             Repository repository = null,
             Docset fallbackDocset = null,
             Docset localizedDocset = null)
         {
-            Debug.Assert(fallbackDocset == null || localizedDocset == null);
+            Debug.Assert(fallbackDocset is null || localizedDocset is null);
 
             _options = options;
             _report = report;
-            _dependencyGitPool = dependencyGitPool;
+            RestoreMap = restoreMap;
             Config = config;
             DocsetPath = PathUtility.NormalizeFolder(Path.GetFullPath(docsetPath));
             Locale = locale.ToLowerInvariant();
@@ -177,23 +177,9 @@ namespace Microsoft.Docs.Build
             });
             _scanScope = new Lazy<HashSet<Document>>(() => GetScanScope(this));
 
-            _template = new Lazy<TemplateEngine>(() =>
-            {
-                if (string.IsNullOrEmpty(Config.Theme))
-                {
-                    return null;
-                }
-
-                var (themeRemote, themeBranch) = LocalizationUtility.GetLocalizedTheme(Config.Theme, Locale, Config.Localization.DefaultLocale);
-                var (themePath, themeLock) = _dependencyGitPool.GetGitRestorePath($"{themeRemote}#{themeBranch}", DependencyLock);
-                Log.Write($"Using theme '{themeRemote}#{themeLock.Commit}' at '{themePath}'");
-
-                return new TemplateEngine(themePath, Locale);
-            });
-
             _dependencyDocsets = new Lazy<IReadOnlyDictionary<string, Docset>>(() =>
             {
-                var (errors, dependencies) = LoadDependencies(_report, Config, Locale, DependencyLock, _dependencyGitPool, _options);
+                var (errors, dependencies) = LoadDependencies(_report, Config, Locale, DependencyLock, RestoreMap, _options);
                 _report.Write(Config.ConfigFileName, errors);
                 return dependencies;
             });
@@ -296,20 +282,20 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static (List<Error>, Dictionary<string, Docset>) LoadDependencies(Report report, Config config, string locale, DependencyLockModel dependencyLock, DependencyGitPool dependencyGitPool, CommandLineOptions options)
+        private static (List<Error>, Dictionary<string, Docset>) LoadDependencies(Report report, Config config, string locale, DependencyLockModel dependencyLock, RestoreMap restoreMap, CommandLineOptions options)
         {
             var errors = new List<Error>();
             var result = new Dictionary<string, Docset>(config.Dependencies.Count, PathUtility.PathComparer);
             foreach (var (name, url) in config.Dependencies)
             {
-                var (dir, subLock) = dependencyGitPool.GetGitRestorePath(url, dependencyLock);
+                var (dir, subLock) = restoreMap.GetGitRestorePath(url, dependencyLock);
 
                 // get dependent docset config or default config
                 // todo: what parent config should be pass on its children
                 var (loadErrors, subConfig) = ConfigLoader.TryLoad(dir, options, locale);
                 errors.AddRange(loadErrors);
 
-                result.TryAdd(PathUtility.NormalizeFolder(name), new Docset(report, dir, locale, subConfig, options, subLock, dependencyGitPool, isDependency: true));
+                result.TryAdd(PathUtility.NormalizeFolder(name), new Docset(report, dir, locale, subConfig, options, subLock, restoreMap, isDependency: true));
             }
             return (errors, result);
         }
@@ -321,7 +307,7 @@ namespace Microsoft.Docs.Build
 
             foreach (var buildScope in new[] { docset.LocalizationDocset?.BuildScope, docset.BuildScope, docset.FallbackDocset?.BuildScope })
             {
-                if (buildScope == null)
+                if (buildScope is null)
                 {
                     continue;
                 }

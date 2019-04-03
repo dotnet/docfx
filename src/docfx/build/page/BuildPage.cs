@@ -4,9 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Threading.Tasks;
-using System.Web;
 using HtmlAgilityPack;
 using Newtonsoft.Json.Linq;
 
@@ -26,7 +24,8 @@ namespace Microsoft.Docs.Build
 
             if (!string.IsNullOrEmpty(metadata.BreadcrumbPath))
             {
-                var (breadcrumbError, breadcrumbPath, _) = context.DependencyResolver.ResolveLink(metadata.BreadcrumbPath, file, file, buildChild);
+                // there is no bookmark validation for breadcrumb path, so no need of range here
+                var (breadcrumbError, breadcrumbPath, _) = context.DependencyResolver.ResolveLink(metadata.BreadcrumbPath, file, file, buildChild, default);
                 errors.AddIfNotNull(breadcrumbError);
                 metadata.BreadcrumbPath = breadcrumbPath;
             }
@@ -34,13 +33,12 @@ namespace Microsoft.Docs.Build
             model.SchemaType = schema.Name;
             model.Locale = file.Docset.Locale;
             model.Metadata = metadata;
-            model.OpenToPublicContributors = file.Docset.Config.Contribution.ShowEdit;
             model.TocRel = tocMap.FindTocRelativePath(file);
             model.CanonicalUrl = file.CanonicalUrl;
             model.Bilingual = file.Docset.Config.Localization.Bilingual;
 
             (model.DocumentId, model.DocumentVersionIndependentId) = file.Docset.Redirections.TryGetDocumentId(file, out var docId) ? docId : file.Id;
-            (model.ContentGitUrl, model.OriginalContentGitUrl, model.OriginalContentGitUrlTemplate, model.Gitcommit) = await context.ContributionProvider.GetGitUrls(file);
+            (model.ContentGitUrl, model.OriginalContentGitUrl, model.OriginalContentGitUrlTemplate, model.Gitcommit) = context.ContributionProvider.GetGitUrls(file);
 
             List<Error> contributorErrors;
             (contributorErrors, model.Author, model.Contributors, model.UpdatedAt) = await context.ContributionProvider.GetAuthorAndContributors(file, metadata.Author);
@@ -49,7 +47,7 @@ namespace Microsoft.Docs.Build
 
             var isPage = schema.Attribute is PageSchemaAttribute;
             var outputPath = file.GetOutputPath(model.Monikers, isPage);
-            var (output, extensionData) = ApplyTemplate(file, model, isPage);
+            var (output, extensionData) = ApplyTemplate(context, file, model, isPage);
 
             var publishItem = new PublishItem
             {
@@ -114,29 +112,33 @@ namespace Microsoft.Docs.Build
             errors.AddIfNotNull(error);
 
             // TODO: handle blank page
-            var (html, markup) = MarkdownUtility.ToHtml(
+            var (markupErrors, html) = MarkdownUtility.ToHtml(
                 content,
                 file,
                 context.DependencyResolver,
                 buildChild,
                 rangeString => context.MonikerProvider.GetZoneMonikers(rangeString, monikers, errors),
-                key => file.Docset.Template?.GetToken(key),
-                MarkdownPipelineType.ConceptualMarkdown);
-            errors.AddRange(markup.Errors);
+                key => context.Template?.GetToken(key),
+                MarkdownPipelineType.Markdown);
+            errors.AddRange(markupErrors);
 
             var htmlDom = HtmlUtility.LoadHtml(html);
-            var htmlTitleDom = HtmlUtility.LoadHtml(markup.HtmlTitle);
+            var wordCount = HtmlUtility.CountWord(htmlDom);
+            var bookmarks = HtmlUtility.GetBookmarks(htmlDom);
+
+            if (!HtmlUtility.TryExtractTitle(htmlDom, out var title, out var rawTitle))
+            {
+                errors.Add(Errors.HeadingNotFound(file));
+            }
 
             var model = new PageModel
             {
                 Content = HtmlPostProcess(file, htmlDom),
-                Title = yamlHeader.Value<string>("title") ?? HttpUtility.HtmlDecode(htmlTitleDom.InnerText),
-                RawTitle = markup.HtmlTitle,
-                WordCount = HtmlUtility.CountWord(htmlDom),
+                Title = yamlHeader.Value<string>("title") ?? title,
+                RawTitle = rawTitle,
+                WordCount = wordCount,
                 Monikers = monikers,
             };
-
-            var bookmarks = HtmlUtility.GetBookmarks(htmlDom).Concat(HtmlUtility.GetBookmarks(htmlTitleDom)).ToHashSet();
 
             context.BookmarkValidator.AddBookmarks(file, bookmarks);
 
@@ -146,7 +148,7 @@ namespace Microsoft.Docs.Build
         private static async Task<(List<Error> errors, Schema schema, PageModel model, FileMetadata metadata)>
             LoadYaml(Context context, Document file, Action<Document> buildChild)
         {
-            var (errors, token) = YamlUtility.Deserialize(file, context);
+            var (errors, token) = YamlUtility.Parse(file, context);
 
             return await LoadSchemaDocument(context, errors, token, file, buildChild);
         }
@@ -154,7 +156,7 @@ namespace Microsoft.Docs.Build
         private static async Task<(List<Error> errors, Schema schema, PageModel model, FileMetadata metadata)>
             LoadJson(Context context, Document file, Action<Document> buildChild)
         {
-            var (errors, token) = JsonUtility.Deserialize(file, context);
+            var (errors, token) = JsonUtility.Parse(file, context);
 
             return await LoadSchemaDocument(context, errors, token, file, buildChild);
         }
@@ -166,12 +168,12 @@ namespace Microsoft.Docs.Build
             //       when everything is moved to SDP, we can refactor the mime check to Document.TryCreate
             var obj = token as JObject;
             var schema = file.Schema ?? Schema.GetSchema(obj?.Value<string>("documentType"));
-            if (schema == null)
+            if (schema is null)
             {
                 throw Errors.SchemaNotFound(file.Mime).ToException();
             }
 
-            var (schemaViolationErrors, content) = JsonUtility.ToObjectWithSchemaValidation(token, schema.Type, transform: AttributeTransformer.TransformSDP(context, file, buildChild));
+            var (schemaViolationErrors, content) = JsonUtility.ToObject(token, schema.Type, transform: AttributeTransformer.TransformSDP(context, file, buildChild));
             errors.AddRange(schemaViolationErrors);
 
             if (file.Docset.Legacy && schema.Attribute is PageSchemaAttribute)
@@ -208,7 +210,7 @@ namespace Microsoft.Docs.Build
                            .RemoveRerunCodepenIframes();
             }
 
-            if (string.IsNullOrEmpty(html.OuterHtml))
+            if (string.IsNullOrWhiteSpace(html.OuterHtml))
             {
                 return "<div></div>";
             }
@@ -216,18 +218,18 @@ namespace Microsoft.Docs.Build
             return LocalizationUtility.AddLeftToRightMarker(file.Docset, html.OuterHtml);
         }
 
-        private static (object output, JObject extensionData) ApplyTemplate(Document file, PageModel model, bool isPage)
+        private static (object output, JObject extensionData) ApplyTemplate(Context context, Document file, PageModel model, bool isPage)
         {
-            if (!file.Docset.Config.Output.Json && file.Docset.Template != null)
+            if (!file.Docset.Config.Output.Json && context.Template != null)
             {
-                return (file.Docset.Template.Render(model, file), null);
+                return (context.Template.Render(model, file), null);
             }
 
             if (file.Docset.Legacy)
             {
-                if (isPage)
+                if (isPage && context.Template != null)
                 {
-                    return TemplateTransform.Transform(model, file);
+                    return context.Template.Transform(model, file);
                 }
 
                 return (model, null);

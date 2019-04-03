@@ -1,8 +1,5 @@
-using Newtonsoft.Json.Linq;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -24,7 +21,7 @@ namespace Microsoft.Docs.Build
             var cache = new GitHubUserCache(users, "cache.json", 7 * 24);
             var accessor = new MockGitHubAccessor();
             cache._getUserByLoginFromGitHub = accessor.GetUserByLogin;
-            cache._getLoginByCommitFromGitHub = accessor.GetLoginByCommit;
+            cache._getUsersByCommitFromGitHub = accessor.GetUsersByCommit;
 
             // Act
             await testCase.Test(cache);
@@ -111,7 +108,7 @@ namespace Microsoft.Docs.Build
                 (Func<GitHubUserCache, Task>) ( async (cache) => await cache.GetByCommit("alice@contoso.com", "owner", "name", "1")),
                 "[]",
                 "[{'id':1,'login':'alice','name':'Alice','emails':['alice@contoso.com']}]",
-                1,
+                0,
                 1
             };
             yield return new object[]
@@ -125,7 +122,29 @@ namespace Microsoft.Docs.Build
                 }),
                 "[]",
                 "[{'id':1,'login':'alice','name':'Alice','emails':['alice@contoso.com']}]",
-                1,
+                0,
+                1
+            };
+            yield return new object[]
+            {
+                "Get user by commit does not return user not found error",
+                (Func<GitHubUserCache, Task>) ( async (cache) =>
+                {
+                    Assert.Null((await cache.GetByCommit("me@contoso.com", "owner", "name", "3")).error);
+                    Assert.Null((await cache.GetByCommit("me@contoso.com", "owner", "name", "3")).error);
+                }),
+                "[]",
+                "[{'emails':['me@contoso.com']}]",
+                0,
+                1
+            };
+            yield return new object[]
+            {
+                "Get user by commit does not cache email when commit is not resolved",
+                (Func<GitHubUserCache, Task>) ( async (cache) => await cache.GetByCommit("me2@contoso.com", "not-exist", "not-eixts", "") ),
+                "[]",
+                "[]",
+                0,
                 1
             };
             yield return new object[]
@@ -143,24 +162,6 @@ namespace Microsoft.Docs.Build
                 (Func<GitHubUserCache, Task>) ( async (cache) => await cache.GetByCommit("alice@contoso.com", "owner", "name", "1")),
                 "[{'id':1,'login':'alice','name':'Obsolete name of Alice','emails':['alice@contoso.com'],'expiry':'2000-01-01'}]",
                 "[{'id':1,'login':'alice','name':'Alice','emails':['alice@contoso.com']}]",
-                1,
-                1
-            };
-            yield return new object[]
-            {
-                "Get user by commit with new email",
-                (Func<GitHubUserCache, Task>) ( async (cache) => await cache.GetByCommit("alice_new@contoso.com", "owner", "name", "1")),
-                "[]",
-                "[{'id':1,'login':'alice','name':'Alice','emails':['alice@contoso.com','alice_new@contoso.com']}]",
-                1,
-                1
-            };
-            yield return new object[]
-            {
-                "Get user by commit with new email can complete cache",
-                (Func<GitHubUserCache, Task>) ( async (cache) => await cache.GetByCommit("alice_new@contoso.com", "owner", "name", "1")),
-                "[{'id':1,'login':'alice','name':'Alice','emails':['alice@contoso.com']}]",
-                "[{'id':1,'login':'alice','name':'Alice','emails':['alice@contoso.com','alice_new@contoso.com']}]",
                 0,
                 1
             };
@@ -194,6 +195,19 @@ namespace Microsoft.Docs.Build
                 "[]",
                 1,
                 1
+            };
+            yield return new object[]
+            {
+                "Prefer existing email name",
+                (Func<GitHubUserCache, Task>)(async (cache) =>
+                    {
+                        await cache.GetByCommit("bob1@contoso.com", "owner", "name", "4");
+                        await cache.GetByCommit("bob2@contoso.com", "owner", "name", "5");
+                    }),
+                "[]",
+                "[{'id':2,'login':'bob','name':'bob1','emails':['bob1@contoso.com','bob2@contoso.com']}]",
+                0,
+                2
             };
         }
 
@@ -229,7 +243,7 @@ namespace Microsoft.Docs.Build
                 switch (login)
                 {
                     case "alice":
-                        return Task.FromResult<(Error, GitHubUser)>((null, new GitHubUser() { Id = 1, Login = "alice", Name = "Alice", Emails = new[] { "alice@contoso.com" } }));
+                        return Task.FromResult<(Error, GitHubUser)>((null, new GitHubUser { Id = 1, Login = "alice", Name = "Alice", Emails = new[] { "alice@contoso.com" } }));
                     case "github-fail":
                         return Task.FromResult<(Error, GitHubUser)>((Errors.GitHubApiFailed("API call failed for some reasons", new Exception()), null));
                     default:
@@ -237,17 +251,23 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            public Task<(Error, string logiin)> GetLoginByCommit(string repoOwner, string repoName, string commitSha)
+            public Task<(Error, IEnumerable<GitHubUser>)> GetUsersByCommit(string repoOwner, string repoName, string commitSha)
             {
                 Interlocked.Increment(ref _getLoginByCommitCallCount);
                 switch ($"{repoOwner}/{repoName}/{commitSha}")
                 {
                     case "owner/name/1":
-                        return Task.FromResult<(Error, string)>((null, "alice"));
+                        return Task.FromResult<(Error, IEnumerable<GitHubUser>)>((null, new[] { new GitHubUser { Id = 1, Login = "alice", Name = "Alice", Emails = new[] { "alice@contoso.com" } } }));
                     case "owner/name/2":
-                        return Task.FromResult<(Error, string)>((Errors.GitHubApiFailed("API call failed for some reasons", new Exception()), null));
+                        return Task.FromResult<(Error, IEnumerable<GitHubUser>)>((Errors.GitHubApiFailed("API call failed for some reasons", new Exception()), null));
+                    case "owner/name/3":
+                        return Task.FromResult<(Error, IEnumerable<GitHubUser>)>((null, new[] { new GitHubUser { Emails = new[] { "me@contoso.com" } } }));
+                    case "owner/name/4":
+                        return Task.FromResult<(Error, IEnumerable<GitHubUser>)>((null, new[] { new GitHubUser { Id = 2, Login = "bob", Name = "bob1", Emails = new[] { "bob1@contoso.com" } } }));
+                    case "owner/name/5":
+                        return Task.FromResult<(Error, IEnumerable<GitHubUser>)>((null, new[] { new GitHubUser { Id = 2, Login = "bob", Name = "bob2", Emails = new[] { "bob2@contoso.com" } } }));
                     default:
-                        return Task.FromResult<(Error, string)>(default);
+                        return Task.FromResult<(Error, IEnumerable<GitHubUser>)>(default);
                 }
             }
         }

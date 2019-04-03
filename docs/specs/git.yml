@@ -111,7 +111,7 @@ inputs:
 outputs:
   docs/index.json:
   build.log: |
-    ["warning","github-user-not-found","Cannot find user 'invalid_user' on GitHub","docs/index.md"]
+    ["warning","github-user-not-found","Cannot find user 'invalid_user' on GitHub","docs/index.md","",2,9]
 ---
 # Author should NOT exist in contributors. Author can have no contribution to the file before.
 repos:
@@ -194,7 +194,7 @@ outputs:
   docs/index.json: |
     {
       "author": 
-        { "name": "charlie", "profile_url": "https://github.com/charlie", "display_name": "Charlie", "id": "3", "!monikers": null },
+        { "name": "charlie", "profile_url": "https://github.com/charlie", "display_name": "Charlie", "id": "3" },
       "!contributors": null
     }
 ---
@@ -229,9 +229,9 @@ outputs:
         { "name": "alice", "profile_url": "https://github.com/alice", "display_name": "Alice", "id": "1" },
     }
 ---
-# Author can be excluded, it's case insensitive
+# Author can NOT be excluded if explicitly specified in YAML header, it's case insensitive
 repos:
-  https://github.com/testowner/testrepo#master-autho-case-insensitive:
+  https://github.com/testowner/testrepo#master-exclude-author-from-yaml-heaer:
     - author: Charlie
       email: charlie@contoso.com
       files:
@@ -268,11 +268,37 @@ inputs:
 outputs:
   docs/index.json: |
     {
-      "!author": null,
+      "author":
+        { "name": "charlie", "profile_url": "https://github.com/charlie", "display_name": "Charlie", "id": "3" },
       "contributors": [
         { "name": "bob", "profile_url": "https://github.com/bob", "display_name": "Bob", "id": "2" },
         { "name": "alice", "profile_url": "https://github.com/alice", "display_name": "Alice", "id": "1" }
       ],
+    }
+---
+# Author CAN be excluded if implicitly extracted from commit history
+repos:
+  https://github.com/testowner/testrepo#master-exclude-author-from-commit-history:
+    - author: Alice
+      email: alice@contoso.com
+      files:
+        docs/index.md: |
+          Alice creates this.
+inputs:
+  docfx.yml: |
+    gitHub:
+      userCache: user_profile.json
+      resolveUsers: true
+    contribution:
+      excludedContributors:
+        - alice
+  user_profile.json: |
+      { "users": [{"name": "Alice", "login": "alice", "id": 1, "emails": ["alice@contoso.com"]}] }
+outputs:
+  docs/index.json: |
+    {
+      "!author": null,
+      "!contributors": null
     }
 ---
 # Show content_git_url, original_content_git_url and gitcommit
@@ -285,7 +311,6 @@ inputs:
 outputs:
   docs/index.json: |
     {
-      "open_to_public_contributors": true,
       "content_git_url": "https://github.com/testowner/testrepo/blob/master-content-git-url/docs/index.md",
       "original_content_git_url": "https://github.com/testowner/testrepo/blob/master-content-git-url/docs/index.md",
       "original_content_git_url_template": "{repo}/blob/{branch}/docs/index.md",
@@ -307,22 +332,6 @@ outputs:
       "content_git_url": "https://github.com/contrib-owner/contrib-repo/blob/contrib-branch/docs/index.md",
       "original_content_git_url": "https://github.com/testowner/testrepo/blob/master-edit-link/docs/index.md",
       "gitcommit": "https://github.com/testowner/testrepo/blob/e662dbc7c5e582a14b863d6a6a82e495d6272f91/docs/index.md",
-    }
----
-# Don't load git commits when showContributors is set to false
-repos:
-  https://github.com/testowner/testrepo#master-no-load-commits:
-    - files:
-        docs/index.md: Alice creates this.
-inputs:
-  docfx.yml: |
-    contribution:
-      showContributors: false
-outputs:
-  docs/index.json: |
-    {
-      "gitcommit": "https://github.com/testowner/testrepo/blob/e662dbc7c5e582a14b863d6a6a82e495d6272f91/docs/index.md",
-      "!contributors": null
     }
 ---
 # Use commit's time when gitCommitsTime file not given
@@ -406,4 +415,78 @@ outputs:
       "content_git_url": "https://github.com/contrib-owner/contrib-repo/blob/default-building-branch/docs/index.md",
       "original_content_git_url": "https://github.com/testowner/testrepo/blob/default-building-branch/docs/index.md",
       "gitcommit": "https://github.com/testowner/testrepo/blob/e662dbc7c5e582a14b863d6a6a82e495d6272f91/docs/index.md",
+    }
+---
+# Show (original) content git (branch/commit) url for azure repos
+repos:
+  https://docascode.visualstudio.com/git-url/_git/a:
+    - files:
+        docs/index.md:
+inputs:
+  docfx.yml: |
+    contribution:
+      repository: https://github.com/docascode/git-url
+outputs:
+  docs/index.json: |
+    {
+      "content_git_url":"https://github.com/docascode/git-url/blob/master/docs/index.md",
+      "original_content_git_url":"https://docascode.visualstudio.com/git-url/_git/a/?path=docs/index.md&version=GBmaster",
+      "original_content_git_url_template":"{repo}/?path=docs/index.md&version=GB{branch}",
+      "gitcommit":"https://docascode.visualstudio.com/git-url/_git/a/?path=docs/index.md&version=GC73d1bc95f9df03e553c39cf8c685df09af8d5297"
+    }
+---
+# Show git contribution info for azure repo
+repos:
+  https://docascode.visualstudio.com/contribution/_git/a:
+    - author: Charlie
+      email: charlie@contoso.com
+      files:
+        docs/index.md: |
+          ---
+          author: charlie
+          ---
+          Osmond creates this. Bob updates this. Charlie becomes author.
+    - author: Bob 
+      email: bob@contoso.com
+      files:
+        docs/index.md: |
+          Osmond creates this. Bob updates this.
+    - author: osmondjiang 
+      email: xinjiang@microsoft.com
+      files:
+        docs/index.md: |
+          Osmond creates this, without email
+inputs:
+  docfx.yml: |
+    gitHub:
+      userCache: user_profile.json
+      resolveUsers: true
+      authToken: {GITHUB_ACCESS_TOKEN}
+    contribution:
+      repository: https://github.com/docascode/contribution-test
+      gitCommitsTime: build_history.json
+  user_profile.json: |
+      { "users": [
+          {"name": "Alice", "login": "alice", "id": 1, "emails": ["alice@contoso.com"]},
+          {"name": "Bob", "login": "bob", "id": 2, "emails": ["bob@contoso.com"]},
+          {"name": "Charlie", "login": "charlie", "id": 3, "emails": ["charlie@contoso.com"]}
+        ]
+      }
+  build_history.json: |
+    { "commits": [
+        { "sha": "bc09224561ce6d13411cb48506b1900d6c6b94cb", "built_at": "2018-01-01" }
+      ]
+    }
+environments:
+  - GITHUB_ACCESS_TOKEN
+outputs:
+  docs/index.json: |
+    {
+      "author": 
+        { "name": "charlie", "profile_url": "https://github.com/charlie", "display_name": "Charlie", "id": "3" },
+      "contributors": [
+        { "name": "bob", "profile_url": "https://github.com/bob", "display_name": "Bob", "id": "2" },
+        { "name": "OsmondJiang", "profile_url": "https://github.com/OsmondJiang", "display_name": "osmondjiang", "id": "19990166" }
+      ],
+      "updated_at": "2018-01-01T00:00:00.0000000"
     }

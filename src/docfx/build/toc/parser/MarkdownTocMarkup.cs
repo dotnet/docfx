@@ -19,8 +19,8 @@ namespace Microsoft.Docs.Build
         {
             var errors = new List<Error>();
             var headingBlocks = new List<HeadingBlock>();
-            var (ast, result) = MarkdownUtility.Parse(tocContent, MarkdownPipelineType.TocMarkdown);
-            errors.AddRange(result.Errors);
+            var (markupErrors, ast) = MarkdownUtility.Parse(tocContent, MarkdownPipelineType.TocMarkdown);
+            errors.AddRange(markupErrors);
 
             foreach (var block in ast)
             {
@@ -41,10 +41,10 @@ namespace Microsoft.Docs.Build
             var (metaErrors, metadata) = ExtractYamlHeader.Extract(file, context);
             errors.AddRange(metaErrors);
 
-            var tocModel = new TableOfContentsModel
-            {
-                Metadata = JsonUtility.ToObject<TableOfContentsMetadata>(metadata),
-            };
+            var (validationErrors, tocMetadata) = JsonUtility.ToObject<TableOfContentsMetadata>(metadata);
+            errors.AddRange(validationErrors);
+
+            var tocModel = new TableOfContentsModel { Metadata = tocMetadata };
 
             try
             {
@@ -100,7 +100,7 @@ namespace Microsoft.Docs.Build
             TableOfContentsItem GetItem(HeadingBlock block)
             {
                 var currentItem = new TableOfContentsItem();
-                if (block.Inline == null || !block.Inline.Any())
+                if (block.Inline is null || !block.Inline.Any())
                 {
                     errors.Add(Errors.MissingTocHead(new Range(block.Line, block.Column), filePath));
                     return currentItem;

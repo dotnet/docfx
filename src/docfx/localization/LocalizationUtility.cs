@@ -41,7 +41,7 @@ namespace Microsoft.Docs.Build
             return (newRemote, newBranch);
         }
 
-        public static bool TryGetLocalizedDocsetPath(Docset docset, DependencyGitPool dependencyGitPool, Config config, string locale, out string localizationDocsetPath, out string localizationBranch, out DependencyLockModel subDependencyLock)
+        public static bool TryGetLocalizedDocsetPath(Docset docset, RestoreMap restoreMap, Config config, string locale, out string localizationDocsetPath, out string localizationBranch, out DependencyLockModel subDependencyLock)
         {
             Debug.Assert(docset != null);
             Debug.Assert(!string.IsNullOrEmpty(locale));
@@ -56,7 +56,7 @@ namespace Microsoft.Docs.Build
                 case LocalizationMapping.Branch:
                     {
                         var repo = docset.Repository;
-                        if (repo == null)
+                        if (repo is null)
                         {
                             return false;
                         }
@@ -67,7 +67,7 @@ namespace Microsoft.Docs.Build
                             repo.Branch,
                             locale,
                             config.Localization.DefaultLocale);
-                        (localizationDocsetPath, subDependencyLock) = dependencyGitPool.GetGitRestorePath(locRemote, locBranch, docset.DependencyLock);
+                        (localizationDocsetPath, subDependencyLock) = restoreMap.GetGitRestorePath(locRemote, locBranch, docset.DependencyLock);
                         localizationBranch = locBranch;
                         break;
                     }
@@ -95,7 +95,7 @@ namespace Microsoft.Docs.Build
             sourceBranch = null;
             locale = null;
 
-            if (repository == null || string.IsNullOrEmpty(repository.Remote))
+            if (repository is null || string.IsNullOrEmpty(repository.Remote))
             {
                 return false;
             }
@@ -136,10 +136,10 @@ namespace Microsoft.Docs.Build
             return locale != null;
         }
 
-        public static bool TryGetSourceDocsetPath(Docset docset, DependencyGitPool dependencyGitPool, out string sourceDocsetPath, out string sourceBranch, out DependencyLockModel dependencyLock)
+        public static bool TryGetSourceDocsetPath(Docset docset, RestoreMap restoreMap, out string sourceDocsetPath, out string sourceBranch, out DependencyLockModel dependencyLock)
         {
             Debug.Assert(docset != null);
-            Debug.Assert(dependencyGitPool != null);
+            Debug.Assert(restoreMap != null);
 
             sourceDocsetPath = null;
             sourceBranch = null;
@@ -147,7 +147,7 @@ namespace Microsoft.Docs.Build
 
             if (TryGetSourceRepository(docset.Repository, out var sourceRemote, out sourceBranch, out var locale))
             {
-                (sourceDocsetPath, dependencyLock) = dependencyGitPool.GetGitRestorePath(sourceRemote, sourceBranch, docset.DependencyLock);
+                (sourceDocsetPath, dependencyLock) = restoreMap.GetGitRestorePath(sourceRemote, sourceBranch, docset.DependencyLock);
                 return true;
             }
 
@@ -158,7 +158,7 @@ namespace Microsoft.Docs.Build
         {
             contributionBranch = null;
 
-            if (repository == null)
+            if (repository is null)
             {
                 return false;
             }

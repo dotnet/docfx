@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Web;
 using HtmlAgilityPack;
 
@@ -13,6 +12,9 @@ namespace Microsoft.Docs.Build
 {
     internal static class HtmlUtility
     {
+        private static readonly Func<HtmlAgilityPack.HtmlAttribute, int> s_getValueStartIndex =
+            ReflectionUtility.CreateInstanceFieldGetter<HtmlAgilityPack.HtmlAttribute, int>("_valuestartindex");
+
         public static HtmlNode LoadHtml(string html)
         {
             var doc = new HtmlDocument();
@@ -91,21 +93,25 @@ namespace Microsoft.Docs.Build
             return html;
         }
 
-        public static IEnumerable<string> GetBookmarks(this HtmlNode html)
+        public static HashSet<string> GetBookmarks(this HtmlNode html)
         {
+            var result = new HashSet<string>();
+
             foreach (var node in html.DescendantsAndSelf())
             {
                 var id = node.GetAttributeValue("id", "");
                 if (!string.IsNullOrEmpty(id))
                 {
-                    yield return id;
+                    result.Add(id);
                 }
                 var name = node.GetAttributeValue("name", "");
                 if (!string.IsNullOrEmpty(name))
                 {
-                    yield return name;
+                    result.Add(name);
                 }
             }
+
+            return result;
         }
 
         public static string TransformLinks(string html, Func<string, string> transform)
@@ -132,20 +138,22 @@ namespace Microsoft.Docs.Build
                          : node.Name == "img" ? node.Attributes["src"]
                          : null;
 
-                if (link == null)
+                if (link is null)
                 {
                     continue;
                 }
-                if (link.ValueStartIndex > pos)
+
+                var valueStartIndex = s_getValueStartIndex(link);
+                if (valueStartIndex > pos)
                 {
-                    result.Append(html, pos, link.ValueStartIndex - pos);
+                    result.Append(html, pos, valueStartIndex - pos);
                 }
                 var transformed = transform(HttpUtility.HtmlDecode(link.Value));
                 if (!string.IsNullOrEmpty(transformed))
                 {
                     result.Append(HttpUtility.HtmlEncode(transformed));
                 }
-                pos = link.ValueStartIndex + link.ValueLength;
+                pos = valueStartIndex + link.Value.Length;
             }
 
             if (html.Length > pos)
@@ -153,6 +161,45 @@ namespace Microsoft.Docs.Build
                 result.Append(html, pos, html.Length - pos);
             }
             return result.ToString();
+        }
+
+        /// <summary>
+        /// Get title and raw title, remove title node if all previous nodes are invisible
+        /// </summary>
+        public static bool TryExtractTitle(HtmlNode node, out string title, out string rawTitle)
+        {
+            var existVisibleNode = false;
+
+            title = null;
+            rawTitle = string.Empty;
+            foreach (var child in node.ChildNodes)
+            {
+                if (!IsInvisibleNode(child))
+                {
+                    if (child.NodeType == HtmlNodeType.Element && (child.Name == "h1" || child.Name == "h2" || child.Name == "h3"))
+                    {
+                        title = child.InnerText == null ? null : HttpUtility.HtmlDecode(child.InnerText);
+
+                        if (!existVisibleNode)
+                        {
+                            rawTitle = child.OuterHtml;
+                            child.Remove();
+                        }
+
+                        return true;
+                    }
+
+                    existVisibleNode = true;
+                }
+            }
+
+            return false;
+
+            bool IsInvisibleNode(HtmlNode n)
+            {
+                return n.NodeType == HtmlNodeType.Comment ||
+                    (n.NodeType == HtmlNodeType.Text && string.IsNullOrWhiteSpace(n.OuterHtml));
+            }
         }
 
         private static void AddLinkType(this HtmlNode html, string tag, string attribute, string locale)
@@ -168,7 +215,7 @@ namespace Microsoft.Docs.Build
 
                 switch (HrefUtility.GetHrefType(href))
                 {
-                    case HrefType.Bookmark:
+                    case HrefType.SelfBookmark:
                         node.SetAttributeValue("data-linktype", "self-bookmark");
                         break;
                     case HrefType.AbsolutePath:

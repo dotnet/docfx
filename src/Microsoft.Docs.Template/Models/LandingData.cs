@@ -37,6 +37,7 @@ namespace Microsoft.Docs.Build
 
         public string Width { get; set; }
 
+        [Href]
         public string Href { get; set; }
 
         public LandingDataImage Image { get; set; }
@@ -44,6 +45,7 @@ namespace Microsoft.Docs.Build
 
     public sealed class LandingDataImage
     {
+        [Href]
         public string Href { get; set; }
 
         [Href]
@@ -67,6 +69,7 @@ namespace Microsoft.Docs.Build
 
     public sealed class LandingDataMenuItem
     {
+        [Href]
         public string Href { get; set; }
 
         public string Text { get; set; }
@@ -131,6 +134,7 @@ namespace Microsoft.Docs.Build
 
     public sealed class LandingDataRowValue
     {
+        [Href]
         public string Href { get; set; }
     }
 
@@ -146,6 +150,7 @@ namespace Microsoft.Docs.Build
         [Html]
         public string Html { get; set; }
 
+        [Href]
         public string Href { get; set; }
 
         public LandingDataImage Image { get; set; }

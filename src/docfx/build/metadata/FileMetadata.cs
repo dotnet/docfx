@@ -16,9 +16,7 @@ namespace Microsoft.Docs.Build
 
         public string Title { get; set; }
 
-        public string Author { get; set; }
-
-        public string Robots { get; set; }
+        public SourceInfo<string> Author { get; set; }
 
         public string BreadcrumbPath { get; set; }
 

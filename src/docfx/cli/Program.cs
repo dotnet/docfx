@@ -60,6 +60,8 @@ namespace Microsoft.Docs.Build
             using (Log.BeginScope(options.Verbose))
             using (var report = new Report(options.Legacy))
             {
+                Log.Write($"Using docfx {GetDocfxVersion()}");
+
                 try
                 {
                     switch (command)
@@ -143,11 +145,13 @@ namespace Microsoft.Docs.Build
                 Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine($"{char.ToUpperInvariant(command[0])}{command.Substring(1)} done in {Progress.FormatTimeSpan(duration)}");
 
-                if (report.ErrorCount > 0 || report.WarningCount > 0)
+                if (report.ErrorCount > 0 || report.WarningCount > 0 || report.SuggestionCount > 0)
                 {
-                    Console.ForegroundColor = report.ErrorCount > 0 ? ConsoleColor.Red : ConsoleColor.Yellow;
+                    Console.ForegroundColor = report.ErrorCount > 0 ? ConsoleColor.Red
+                                            : report.WarningCount > 0 ? ConsoleColor.Yellow
+                                            : ConsoleColor.Magenta;
                     Console.WriteLine();
-                    Console.WriteLine($"  {report.ErrorCount} Error(s), {report.WarningCount} Warning(s)");
+                    Console.WriteLine($"  {report.ErrorCount} Error(s), {report.WarningCount} Warning(s), {report.SuggestionCount} Suggestion(s)");
                 }
 
                 Console.ResetColor();

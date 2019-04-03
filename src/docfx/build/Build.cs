@@ -19,23 +19,23 @@ namespace Microsoft.Docs.Build
             Telemetry.SetRepository(repository?.Remote, repository?.Branch);
 
             var locale = LocalizationUtility.GetLocale(repository, options);
-            var dependencyLock = await LoadBuildDependencyLock(docsetPath, locale, repository, options);
+            var dependencyLock = LoadBuildDependencyLock(docsetPath, locale, repository, options);
 
-            var dependencyGitPool = await DependencyGitPool.Create(dependencyLock);
+            var restoreMap = RestoreMap.Create(dependencyLock);
             try
             {
-                await Run(docsetPath, repository, locale, options, report, dependencyLock, dependencyGitPool);
+                await Run(docsetPath, repository, locale, options, report, dependencyLock, restoreMap);
             }
             finally
             {
-                await dependencyGitPool.Release();
+                restoreMap.Release();
             }
         }
 
-        private static async Task Run(string docsetPath, Repository repository, string locale, CommandLineOptions options, Report report, DependencyLockModel dependencyLock, DependencyGitPool dependencyGitPool)
+        private static async Task Run(string docsetPath, Repository repository, string locale, CommandLineOptions options, Report report, DependencyLockModel dependencyLock, RestoreMap restoreMap)
         {
             XrefMap xrefMap = null;
-            var (configErrors, config) = GetBuildConfig(docsetPath, repository, options, dependencyLock, dependencyGitPool);
+            var (configErrors, config) = GetBuildConfig(docsetPath, repository, options, dependencyLock, restoreMap);
             report.Configure(docsetPath, config);
 
             // just return if config loading has errors
@@ -43,12 +43,12 @@ namespace Microsoft.Docs.Build
                 return;
 
             var errors = new List<Error>();
-            var docset = GetBuildDocset(new Docset(report, docsetPath, locale, config, options, dependencyLock, dependencyGitPool, repository));
+            var docset = GetBuildDocset(new Docset(report, docsetPath, locale, config, options, dependencyLock, restoreMap, repository));
             var outputPath = Path.Combine(docsetPath, config.Output.Path);
 
-            using (var context = await Context.Create(outputPath, report, docset, () => xrefMap))
+            using (var context = Context.Create(outputPath, report, docset, () => xrefMap))
             {
-                xrefMap = await XrefMap.Create(context, docset);
+                xrefMap = XrefMap.Create(context, docset);
                 var tocMap = TableOfContentsMap.Create(context, docset);
 
                 var (publishManifest, fileManifests, sourceDependencies) = await BuildFiles(context, docset, tocMap);
@@ -68,7 +68,7 @@ namespace Microsoft.Docs.Build
                     }
                     else
                     {
-                        docset.Template.CopyTo(outputPath);
+                        context.Template.CopyTo(outputPath);
                     }
                 }
 
@@ -102,14 +102,12 @@ namespace Microsoft.Docs.Build
                     ShouldBuildTocFile,
                     Progress.Update);
 
-                var saveGitCommitCache = context.GitCommitProvider.SaveGitCommitCache();
+                context.GitCommitProvider.SaveGitCommitCache();
 
                 ValidateBookmarks();
 
-                var (publishModel, fileManifests) = context.PublishModelBuilder.Build(context);
+                var (publishModel, fileManifests) = context.PublishModelBuilder.Build(context, docset.Legacy);
                 var dependencyMap = context.DependencyMapBuilder.Build();
-
-                await saveGitCommitCache;
 
                 return (publishModel, fileManifests, dependencyMap);
 
@@ -182,6 +180,7 @@ namespace Microsoft.Docs.Build
                     context.PublishModelBuilder.MarkError(file);
                 }
 
+                Telemetry.TrackBuildItemCount(file.ContentType);
                 return publishItem.Monikers;
             }
             catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
@@ -190,22 +189,27 @@ namespace Microsoft.Docs.Build
                 context.PublishModelBuilder.MarkError(file);
                 return new List<string>();
             }
+            catch
+            {
+                Console.WriteLine($"Build {file.FilePath} failed");
+                throw;
+            }
         }
 
-        private static async Task<DependencyLockModel> LoadBuildDependencyLock(string docset, string locale, Repository repository, CommandLineOptions commandLineOptions)
+        private static DependencyLockModel LoadBuildDependencyLock(string docset, string locale, Repository repository, CommandLineOptions commandLineOptions)
         {
             Debug.Assert(!string.IsNullOrEmpty(docset));
 
             var (errors, config) = ConfigLoader.TryLoad(docset, commandLineOptions);
 
-            var dependencyLock = await DependencyLock.Load(docset, string.IsNullOrEmpty(config.DependencyLock) ? AppData.GetDependencyLockFile(docset, locale) : config.DependencyLock);
+            var dependencyLock = DependencyLock.Load(docset, string.IsNullOrEmpty(config.DependencyLock) ? AppData.GetDependencyLockFile(docset, locale) : config.DependencyLock);
 
             if (LocalizationUtility.TryGetSourceRepository(repository, out var sourceRemote, out var sourceBranch, out _) && !ConfigLoader.TryGetConfigPath(docset, out _))
             {
                 // build from loc repo directly with overwrite config
                 // which means it's using source repo's dependency lock
                 var sourceDependencyLock = dependencyLock.GetGitLock(sourceRemote, sourceBranch);
-                dependencyLock = sourceDependencyLock == null
+                dependencyLock = sourceDependencyLock is null
                     ? null
                     : new DependencyLockModel
                     {
@@ -217,7 +221,7 @@ namespace Microsoft.Docs.Build
             return dependencyLock ?? new DependencyLockModel();
         }
 
-        private static (List<Error> errors, Config config) GetBuildConfig(string docset, Repository repository, CommandLineOptions options, DependencyLockModel dependencyLock, DependencyGitPool dependencyGitPool)
+        private static (List<Error> errors, Config config) GetBuildConfig(string docset, Repository repository, CommandLineOptions options, DependencyLockModel dependencyLock, RestoreMap restoreMap)
         {
             if (ConfigLoader.TryGetConfigPath(docset, out _) || !LocalizationUtility.TryGetSourceRepository(repository, out var sourceRemote, out var sourceBranch, out var locale))
             {
@@ -225,7 +229,7 @@ namespace Microsoft.Docs.Build
             }
 
             Debug.Assert(dependencyLock != null);
-            var (sourceDocsetPath, _) = dependencyGitPool.GetGitRestorePath(sourceRemote, sourceBranch, dependencyLock);
+            var (sourceDocsetPath, _) = restoreMap.GetGitRestorePath(sourceRemote, sourceBranch, dependencyLock);
             return ConfigLoader.Load(sourceDocsetPath, options, locale);
         }
 

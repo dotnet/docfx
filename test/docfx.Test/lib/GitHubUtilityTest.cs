@@ -8,7 +8,7 @@ namespace Microsoft.Docs.Build
     public class GitHubUtilityTest
     {
         [Theory]
-        [InlineData("http://github.com/", false,null, null)]
+        [InlineData("http://github.com/", false, null, null)]
         [InlineData("http://github.com/org", false, null, null)]
         [InlineData("http://github.com/org/name/unknown", false, null, null)]
         [InlineData("http://github.com/org/name#", false, null, null)]

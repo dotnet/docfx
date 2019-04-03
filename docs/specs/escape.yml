@@ -1,24 +1,29 @@
 # Handle encoding for markdown links
-inputs:
-  docfx.yml:
-  links.md: |
-    [a%20b.md](a%20b.md)
-    [a&b.md](a&b.md)
-    [a&amp;b.md](a&amp;b.md)
-    [a&amp;amp;b.md](a&amp;amp;b.md)
-    [http://foo%20b&auml;](http://foo%20b&auml;)
-  'a b.md':
-  a&b.md:
-  a&amp;b.md:
+repos:
+  https://github.com/escape/markdown:
+  - files:
+      docfx.yml:
+      links.md: |
+        [a%20b.md](a%20b.md)
+        [a&b.md](a&b.md)
+        [a&amp;b.md](a&amp;b.md)
+        [a&amp;amp;b.md](a&amp;amp;b.md)
+        [http://foo%20b&auml;](http://foo%20b&auml;)
+        [a++.png](a++.png)
+      'a b.md':
+      a&b.md:
+      a&amp;b.md:
+      a++.png:
 outputs:
   links.json: |
     content: |
       <p>
         <a href="a%20b">a%20b.md</a>
-        <a href="a%26b">a&amp;b.md</a>
-        <a href="a%26b">a&amp;b.md</a>
-        <a href="a%26amp%3Bb">a&amp;amp;b.md</a>
+        <a href="a&amp;b">a&amp;b.md</a>
+        <a href="a&amp;b">a&amp;b.md</a>
+        <a href="a&amp;amp;b">a&amp;amp;b.md</a>
         <a href="http://foo%20b%C3%A4">http://foo%20bä</a>
+        <a href="a++.png">a++.png</a>
       </p>
   .publish.json: |
     files:
@@ -28,11 +33,29 @@ outputs:
       path: a&amp;b.json
     - url: /a&b
       path: a&b.json
+    - url: /a++.png
+      path: a++.png
     - url: /links
       path: links.json
-  'a b.json':
-  a&b.json:
-  a&amp;b.json:
+  'a b.json': |
+    canonical_url: https://docs.com/en-us/a b
+    gitcommit: https://github.com/escape/markdown/blob/26230e1514a57bfe4231dfe1e0a7b00307b5f6a9/a b.md
+    content_git_url: https://github.com/escape/markdown/blob/master/a b.md
+    original_content_git_url: https://github.com/escape/markdown/blob/master/a b.md
+    original_content_git_url_template: '{repo}/blob/{branch}/a b.md'
+  a&b.json: |
+    canonical_url: https://docs.com/en-us/a&b
+    gitcommit: https://github.com/escape/markdown/blob/26230e1514a57bfe4231dfe1e0a7b00307b5f6a9/a&b.md
+    content_git_url: https://github.com/escape/markdown/blob/master/a&b.md
+    original_content_git_url: https://github.com/escape/markdown/blob/master/a&b.md
+    original_content_git_url_template: '{repo}/blob/{branch}/a&b.md'
+  a&amp;b.json: |
+    canonical_url: https://docs.com/en-us/a&amp;b
+    gitcommit: https://github.com/escape/markdown/blob/26230e1514a57bfe4231dfe1e0a7b00307b5f6a9/a&amp;b.md
+    content_git_url: https://github.com/escape/markdown/blob/master/a&amp;b.md
+    original_content_git_url: https://github.com/escape/markdown/blob/master/a&amp;b.md
+    original_content_git_url_template: '{repo}/blob/{branch}/a&amp;b.md'
+  a++.png:
 ---
 # Handle encoding for html links
 inputs:
@@ -43,22 +66,26 @@ inputs:
     <a href='a&amp;b.md'>a&amp;b.md</a>
     <a href='a&amp;amp;b.md'>a&amp;amp;b.md</a>
     <a href='http://foo%20b&auml;'>http://foo%20b&auml;</a>
+    <a href='a++.png'>a++.png</a>
   'a b.md':
   a&b.md:
   a&amp;b.md:
+  a++.png:
 outputs:
   html-links.json: |
     content: |
       <p>
-        <a href="a%20b">a%20b.md</a>
-        <a href="a%26b">a&amp;b.md</a>
-        <a href="a%26b">a&amp;b.md</a>
-        <a href="a%26amp%3Bb">a&amp;amp;b.md</a>
+        <a href="a b">a%20b.md</a>
+        <a href="a&amp;b">a&amp;b.md</a>
+        <a href="a&amp;b">a&amp;b.md</a>
+        <a href="a&amp;amp;b">a&amp;amp;b.md</a>
         <a href="http://foo%20b&#228;">http://foo%20bä</a>
+        <a href="a++.png">a++.png</a>
       </p>
   'a b.json':
   a&b.json:
   a&amp;b.json:
+  a++.png:
   .publish.json:
 ---
 # Don't handle encoding for includes at the moment
@@ -78,7 +105,7 @@ outputs:
   a&b.json:
   a&amp;b.json:
   build.log: |
-    ["warning","include-not-found","Cannot resolve 'a%20b.md' relative to 'includes.md'.","includes.md"]
-    ["warning","include-not-found","Cannot resolve 'a&amp;amp;b.md' relative to 'includes.md'.","includes.md"]
+    ["warning","include-not-found","Cannot resolve 'a%20b.md' relative to 'includes.md'.","includes.md","",1,1]
+    ["warning","include-not-found","Cannot resolve 'a&amp;amp;b.md' relative to 'includes.md'.","includes.md","",4,1]
   .publish.json:
 ---

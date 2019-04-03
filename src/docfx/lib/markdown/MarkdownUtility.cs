@@ -2,11 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Resources;
 using System.Threading;
 using Markdig;
 using Markdig.Parsers;
@@ -16,39 +12,28 @@ using Microsoft.DocAsCode.MarkdigEngine.Extensions;
 
 namespace Microsoft.Docs.Build
 {
-    public enum MarkdownPipelineType
-    {
-        ConceptualMarkdown,
-        InlineMarkdown,
-        TocMarkdown,
-        Markdown,
-    }
-
     internal static class MarkdownUtility
     {
         private static readonly MarkdownPipeline[] s_markdownPipelines = new[]
         {
-            CreateConceptualMarkdownPipeline(),
+            CreateMarkdownPipeline(),
             CreateInlineMarkdownPipeline(),
             CreateTocMarkdownPipeline(),
-            CreateMarkdownPipeline(),
         };
 
         private static readonly ThreadLocal<Stack<Status>> t_status = new ThreadLocal<Stack<Status>>(() => new Stack<Status>());
 
-        public static MarkupResult Result => t_status.Value.Peek().Result;
-
-        public static (MarkdownDocument ast, MarkupResult result) Parse(string content, MarkdownPipelineType piplineType)
+        public static (List<Error> errors, MarkdownDocument ast) Parse(string content, MarkdownPipelineType piplineType)
         {
             try
             {
-                var status = new Status { Result = new MarkupResult() };
+                var status = new Status { Errors = new List<Error>() };
 
                 t_status.Value.Push(status);
 
                 var ast = Markdown.Parse(content, s_markdownPipelines[(int)piplineType]);
 
-                return (ast, Result);
+                return (status.Errors, ast);
             }
             finally
             {
@@ -56,7 +41,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public static (string html, MarkupResult result) ToHtml(
+        public static (List<Error> errors, string html) ToHtml(
             string markdown,
             Document file,
             DependencyResolver dependencyResolver,
@@ -71,7 +56,7 @@ namespace Microsoft.Docs.Build
                 {
                     var status = new Status
                     {
-                        Result = new MarkupResult(),
+                        Errors = new List<Error>(),
                         DependencyResolver = dependencyResolver,
                         ParseMonikerRangeDelegate = parseMonikerRange,
                         GetToken = getToken,
@@ -81,11 +66,8 @@ namespace Microsoft.Docs.Build
                     t_status.Value.Push(status);
 
                     var html = Markdown.ToHtml(markdown, s_markdownPipelines[(int)pipelineType]);
-                    if (pipelineType == MarkdownPipelineType.ConceptualMarkdown && !Result.HasTitle)
-                    {
-                        Result.Errors.Add(Errors.HeadingNotFound(file));
-                    }
-                    return (html, Result);
+
+                    return (status.Errors, html);
                 }
                 finally
                 {
@@ -94,18 +76,9 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static MarkdownPipeline CreateConceptualMarkdownPipeline()
+        public static void LogError(Error error)
         {
-            var markdownContext = new MarkdownContext(GetToken, LogWarning, LogError, ReadFile, GetLink);
-
-            return new MarkdownPipelineBuilder()
-                .UseYamlFrontMatter()
-                .UseDocfxExtensions(markdownContext)
-                .UseExtractTitle()
-                .UseResolveHtmlLinks(markdownContext)
-                .UseResolveXref(ResolveXref)
-                .UseMonikerZone(ParseMonikerRange)
-                .Build();
+            t_status.Value.Peek().Errors.Add(error);
         }
 
         private static MarkdownPipeline CreateMarkdownPipeline()
@@ -117,6 +90,7 @@ namespace Microsoft.Docs.Build
                 .UseDocfxExtensions(markdownContext)
                 .UseResolveHtmlLinks(markdownContext)
                 .UseResolveXref(ResolveXref)
+                .UseMonikerZone(ParseMonikerRange)
                 .Build();
         }
 
@@ -129,6 +103,7 @@ namespace Microsoft.Docs.Build
                 .UseDocfxExtensions(markdownContext)
                 .UseResolveHtmlLinks(markdownContext)
                 .UseResolveXref(ResolveXref)
+                .UseMonikerZone(ParseMonikerRange)
                 .UseInlineOnly()
                 .Build();
         }
@@ -157,42 +132,45 @@ namespace Microsoft.Docs.Build
             return t_status.Value.Peek().GetToken(key);
         }
 
-        private static void LogError(string code, string message, string doc, int line)
+        private static void LogError(string code, string message, MarkdownObject origin, int? line)
         {
-            Result.Errors.Add(new Error(ErrorLevel.Error, code, message, doc, new Range(line, 0)));
+            t_status.Value.Peek().Errors.Add(new Error(ErrorLevel.Error, code, message, InclusionContext.File.ToString(), origin.ToRange(line)));
         }
 
-        private static void LogWarning(string code, string message, string doc, int line)
+        private static void LogWarning(string code, string message, MarkdownObject origin, int? line)
         {
-            Result.Errors.Add(new Error(ErrorLevel.Warning, code, message, doc, new Range(line, 0)));
+            t_status.Value.Peek().Errors.Add(new Error(ErrorLevel.Warning, code, message, InclusionContext.File.ToString(), origin.ToRange(line)));
         }
 
-        private static (string content, object file) ReadFile(string path, object relativeTo)
+        private static (string content, object file) ReadFile(string path, object relativeTo, MarkdownObject origin)
         {
-            var (error, content, file) = t_status.Value.Peek().DependencyResolver.ResolveContent(path, (Document)relativeTo);
-            Result.Errors.AddIfNotNull(error);
+            var status = t_status.Value.Peek();
+            var (error, content, file) = status.DependencyResolver.ResolveContent(path, (Document)relativeTo);
+            status.Errors.AddIfNotNull(error?.WithRange(origin.ToRange()));
             return (content, file);
         }
 
-        private static string GetLink(string path, object relativeTo, object resultRelativeTo)
+        private static string GetLink(string path, object relativeTo, object resultRelativeTo, MarkdownObject origin)
         {
-            var peek = t_status.Value.Peek();
-            var (error, link, _) = peek.DependencyResolver.ResolveLink(path, (Document)relativeTo, (Document)resultRelativeTo, peek.BuildChild);
-            Result.Errors.AddIfNotNull(error);
+            var status = t_status.Value.Peek();
+            var (error, link, _) = status.DependencyResolver.ResolveLink(path, (Document)relativeTo, (Document)resultRelativeTo, status.BuildChild, origin.ToRange());
+            status.Errors.AddIfNotNull(error?.WithRange(origin.ToRange()));
             return link;
         }
 
-        private static (Error error, string href, string display, Document file) ResolveXref(string href)
+        private static (Error error, string href, string display, Document file) ResolveXref(string href, MarkdownObject origin)
         {
             // TODO: now markdig engine combines all kinds of reference with inclusion, we need to split them out
-            return t_status.Value.Peek().DependencyResolver.ResolveXref(href, (Document)InclusionContext.File, (Document)InclusionContext.RootFile);
+            var result = t_status.Value.Peek().DependencyResolver.ResolveXref(href, (Document)InclusionContext.File, (Document)InclusionContext.RootFile);
+            result.error = result.error?.WithRange(origin.ToRange());
+            return result;
         }
 
         private static List<string> ParseMonikerRange(string monikerRange) => t_status.Value.Peek().ParseMonikerRangeDelegate(monikerRange);
 
         private sealed class Status
         {
-            public MarkupResult Result;
+            public List<Error> Errors;
 
             public DependencyResolver DependencyResolver;
 
