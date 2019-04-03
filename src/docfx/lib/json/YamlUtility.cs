@@ -21,9 +21,6 @@ namespace Microsoft.Docs.Build
     {
         public const string YamlMimePrefix = "YamlMime:";
 
-        private static readonly Action<JToken, int, int> s_setLineInfo =
-            ReflectionUtility.CreateInstanceMethod<JToken, Action<JToken, int, int>>("SetLineInfo", new[] { typeof(int), typeof(int) });
-
         public static string ReadMime(TextReader reader)
         {
             return ReadMime(reader.ReadLine());
@@ -128,22 +125,22 @@ namespace Microsoft.Docs.Build
                         scalar.Value == "~" ||
                         string.Equals(scalar.Value, "null", StringComparison.OrdinalIgnoreCase))
                     {
-                        return PopulateLineInfoToJToken(JValue.CreateNull(), node);
+                        return SetLineInfo(JValue.CreateNull(), node);
                     }
                     if (long.TryParse(scalar.Value, out var n))
                     {
-                        return PopulateLineInfoToJToken(new JValue(n), node);
+                        return SetLineInfo(new JValue(n), node);
                     }
                     if (double.TryParse(scalar.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out var d))
                     {
-                        return PopulateLineInfoToJToken(new JValue(d), node);
+                        return SetLineInfo(new JValue(d), node);
                     }
                     if (bool.TryParse(scalar.Value, out var b))
                     {
-                        return PopulateLineInfoToJToken(new JValue(b), node);
+                        return SetLineInfo(new JValue(b), node);
                     }
                 }
-                return PopulateLineInfoToJToken(new JValue(scalar.Value), node);
+                return SetLineInfo(new JValue(scalar.Value), node);
             }
             if (node is YamlMappingNode map)
             {
@@ -153,7 +150,7 @@ namespace Microsoft.Docs.Build
                     if (key is YamlScalarNode scalarKey)
                     {
                         var token = ToJson(value);
-                        var prop = PopulateLineInfoToJToken(new JProperty(scalarKey.Value, token), key);
+                        var prop = SetLineInfo(new JProperty(scalarKey.Value, token), key);
                         obj.Add(prop);
                     }
                     else
@@ -162,7 +159,7 @@ namespace Microsoft.Docs.Build
                     }
                 }
 
-                return PopulateLineInfoToJToken(obj, node);
+                return SetLineInfo(obj, node);
             }
             if (node is YamlSequenceNode seq)
             {
@@ -171,16 +168,14 @@ namespace Microsoft.Docs.Build
                 {
                     arr.Add(ToJson(item));
                 }
-                return PopulateLineInfoToJToken(arr, node);
+                return SetLineInfo(arr, node);
             }
             throw new NotSupportedException($"Unknown yaml node type {node.GetType()}");
         }
 
-        private static JToken PopulateLineInfoToJToken(JToken token, YamlNode node)
+        private static JToken SetLineInfo(JToken token, YamlNode node)
         {
-            Debug.Assert(token != null);
-            s_setLineInfo(token, node.Start.Line, node.Start.Column);
-            return token;
+            return JsonUtility.SetLineInfo(token, node.Start.Line, node.Start.Column);
         }
     }
 }
