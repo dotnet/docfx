@@ -12,7 +12,7 @@ namespace Microsoft.Docs.Build
     {
         public static (List<Error> errors, JObject metadata) Extract(TextReader reader)
         {
-            var builder = new StringBuilder();
+            var builder = new StringBuilder("\n");
             var errors = new List<Error>();
             if (reader.ReadLine()?.TrimEnd() != "---")
             {
@@ -25,7 +25,7 @@ namespace Microsoft.Docs.Build
                 var trimEnd = line.TrimEnd();
                 if (trimEnd == "---" || trimEnd == "...")
                 {
-                    var (yamlErrors, yamlHeaderObj) = YamlUtility.Deserialize(builder.ToString());
+                    var (yamlErrors, yamlHeaderObj) = YamlUtility.Parse(builder.ToString());
                     errors.AddRange(yamlErrors);
                     if (yamlHeaderObj is JObject obj)
                     {
