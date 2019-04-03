@@ -245,16 +245,21 @@ namespace Microsoft.Docs.Build
 
         public static void Merge(JObject container, JObject overwrite)
         {
-            foreach (var (key, value) in overwrite)
+            foreach (var property in overwrite.Properties())
             {
+                var key = property.Name;
+                var value = property.Value;
+
                 if (container[key] is JObject containerObj && value is JObject overwriteObj)
                 {
                     Merge(containerObj, overwriteObj);
                 }
                 else if (IsNullOrUndefined(container[key]) || !IsNullOrUndefined(value))
                 {
-                    var lineInfo = (IJsonLineInfo)value;
-                    container[key] = SetLineInfo(value.DeepClone(), lineInfo.LineNumber, lineInfo.LinePosition);
+                    var valueLineInfo = (IJsonLineInfo)value;
+                    var keyLineInfo = (IJsonLineInfo)property;
+                    container[key] = SetLineInfo(value.DeepClone(), valueLineInfo.LineNumber, valueLineInfo.LinePosition);
+                    SetLineInfo(container.Property(key), keyLineInfo.LineNumber, keyLineInfo.LinePosition);
                 }
             }
         }
