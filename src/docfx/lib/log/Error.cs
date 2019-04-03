@@ -65,6 +65,9 @@ namespace Microsoft.Docs.Build
             return JsonUtility.Serialize(payload.Take(i + 1));
         }
 
+        public Error Clone()
+            => new Error(Level, Code, Message, File, Range, JsonPath);
+
         public DocfxException ToException(Exception innerException = null)
         {
             Level = ErrorLevel.Error;

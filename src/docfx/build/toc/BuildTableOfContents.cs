@@ -117,61 +117,27 @@ namespace Microsoft.Docs.Build
                 fileToBuild,
                 (file, href, isInclude, ranges) =>
                 {
-                    string content = null;
-                    Document toc = null;
-                    if (ranges != null)
-                    {
-                        foreach (var range in ranges)
-                        {
-                            var (error, referencedTocContent, referencedToc) = context.DependencyResolver.ResolveContent(href, file, range, DependencyType.TocInclusion);
-                            errors.AddIfNotNull(error);
-                            content = referencedTocContent;
-                            toc = referencedToc;
-                        }
-                    }
-                    else
-                    {
-                        var (error, referencedTocContent, referencedToc) = context.DependencyResolver.ResolveContent(href, file, default, DependencyType.TocInclusion);
-                        errors.AddIfNotNull(error);
-                        content = referencedTocContent;
-                        toc = referencedToc;
-                    }
+                    var (error, referencedTocContent, referencedToc) = context.DependencyResolver.ResolveContent(href, file, default, DependencyType.TocInclusion);
+                    errors.AddRange(IncludeAll(ranges, error));
 
-                    if (toc != null && isInclude)
+                    if (referencedToc != null && isInclude)
                     {
                         // add to referenced toc list
-                        referencedTocs.Add(toc);
+                        referencedTocs.Add(referencedToc);
                     }
-                    return (content, toc);
+                    return (referencedTocContent, referencedToc);
                 },
                 (file, href, resultRelativeTo, ranges) =>
                 {
-                    string resolvedLink = null;
-                    Document item = null;
-                    if (ranges != null)
-                    {
-                        foreach (var range in ranges)
-                        {
-                            var (error, link, buildItem) = context.DependencyResolver.ResolveLink(href, file, resultRelativeTo, null, range);
-                            errors.AddIfNotNull(error);
-                            resolvedLink = link;
-                            item = buildItem;
-                        }
-                    }
-                    else
-                    {
-                        var (error, link, buildItem) = context.DependencyResolver.ResolveLink(href, file, resultRelativeTo, null, default);
-                        errors.AddIfNotNull(error);
-                        resolvedLink = link;
-                        item = buildItem;
-                    }
+                    var (error, link, buildItem) = context.DependencyResolver.ResolveLink(href, file, resultRelativeTo, null, default);
+                    errors.AddRange(IncludeAll(ranges, error));
 
-                    if (item != null)
+                    if (buildItem != null)
                     {
                         // add to referenced document list
-                        referencedDocuments.Add((item, resolvedLink));
+                        referencedDocuments.Add((buildItem, link));
                     }
-                    return (resolvedLink, item);
+                    return (link, buildItem);
                 },
                 (file, uid, ranges) =>
                 {
@@ -191,6 +157,29 @@ namespace Microsoft.Docs.Build
             errors.AddRange(loadErrors);
 
             return (errors, model, referencedDocuments, referencedTocs);
+        }
+
+        // TODO: redesign TOC build pipeline to get rid of this hack
+        private static List<Error> IncludeAll(List<Range> ranges, Error error)
+        {
+            var errors = new List<Error>();
+            if (error is null)
+            {
+                return errors;
+            }
+            if (ranges != null)
+            {
+                foreach (var range in ranges)
+                {
+                    var clone = error.Clone().WithRange(range);
+                    errors.AddIfNotNull(clone);
+                }
+            }
+            else
+            {
+                errors.AddIfNotNull(error);
+            }
+            return errors;
         }
     }
 }
