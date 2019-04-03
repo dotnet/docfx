@@ -31,7 +31,7 @@ namespace Microsoft.Docs.Build
             "invalid-toc-level", "redirection-out-of-scope", "invalid-redirect-to", "moniker-config-missing",
             "at-uid-not-found", "empty-monikers", "circular-reference", "invalid-toc-href", "invalid-uid-moniker", "moniker-overlapping",
             "uid-conflict", "redirection-is-empty", "redirection-conflict", "invalid-locale", "link-out-of-scope",
-            "github-user-not-found", "invalid-redirection", "merge-conflict", "invalid-topic-href",
+            "invalid-redirection", "merge-conflict", "invalid-topic-href",
             "redirected-id-conflict", "schema-not-found"
         };
 

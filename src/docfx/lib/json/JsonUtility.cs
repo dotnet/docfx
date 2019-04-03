@@ -20,29 +20,33 @@ namespace Microsoft.Docs.Build
     internal static class JsonUtility
     {
         private static readonly NamingStrategy s_namingStrategy = new CamelCaseNamingStrategy();
-        private static readonly JsonMergeSettings s_mergeSettings = new JsonMergeSettings { MergeArrayHandling = MergeArrayHandling.Replace };
+        private static readonly JsonConverter[] s_jsonConverters =
+        {
+            new StringEnumConverter { NamingStrategy = s_namingStrategy },
+            new SourceInfoJsonConverter { },
+        };
 
-        private static readonly JsonSerializer s_serializer = new JsonSerializer
+        private static readonly JsonSerializer s_serializer = JsonSerializer.Create(new JsonSerializerSettings
         {
             NullValueHandling = NullValueHandling.Ignore,
+            Converters = s_jsonConverters,
             ContractResolver = new JsonContractResolver { NamingStrategy = s_namingStrategy },
-            Converters = { new StringEnumConverter { NamingStrategy = s_namingStrategy } },
-        };
+        });
 
-        private static readonly JsonSerializer s_schemaValidationSerializer = new JsonSerializer
+        private static readonly JsonSerializer s_schemaValidationSerializer = JsonSerializer.Create(new JsonSerializerSettings
         {
             NullValueHandling = NullValueHandling.Ignore,
+            Converters = s_jsonConverters,
             ContractResolver = new SchemaValidationContractResolver { NamingStrategy = s_namingStrategy },
-            Converters = { new StringEnumConverter { NamingStrategy = s_namingStrategy } },
-        };
+        });
 
-        private static readonly JsonSerializer s_indentSerializer = new JsonSerializer
+        private static readonly JsonSerializer s_indentSerializer = JsonSerializer.Create(new JsonSerializerSettings
         {
             Formatting = Formatting.Indented,
             NullValueHandling = NullValueHandling.Ignore,
+            Converters = s_jsonConverters,
             ContractResolver = new JsonContractResolver { NamingStrategy = s_namingStrategy },
-            Converters = { new StringEnumConverter { NamingStrategy = s_namingStrategy } },
-        };
+        });
 
         private static readonly ThreadLocal<Stack<Status>> t_status = new ThreadLocal<Stack<Status>>(() => new Stack<Status>());
 
@@ -53,6 +57,9 @@ namespace Microsoft.Docs.Build
             ReflectionUtility.CreateInstanceFieldSetter<JsonPropertyCollection, List<JsonProperty>>("_list");
 
         private static readonly List<JsonProperty> s_emptyPropertyList = new List<JsonProperty>();
+
+        private static readonly Action<JToken, int, int> s_setLineInfo =
+            ReflectionUtility.CreateInstanceMethod<JToken, Action<JToken, int, int>>("SetLineInfo", new[] { typeof(int), typeof(int) });
 
         internal static JsonSerializer Serializer => s_serializer;
 
@@ -238,7 +245,18 @@ namespace Microsoft.Docs.Build
 
         public static void Merge(JObject container, JObject overwrite)
         {
-            container.Merge(overwrite, s_mergeSettings);
+            foreach (var (key, value) in overwrite)
+            {
+                if (container[key] is JObject containerObj && value is JObject overwriteObj)
+                {
+                    Merge(containerObj, overwriteObj);
+                }
+                else if (IsNullOrUndefined(container[key]) || !IsNullOrUndefined(value))
+                {
+                    var lineInfo = (IJsonLineInfo)value;
+                    container[key] = SetLineInfo(value.DeepClone(), lineInfo.LineNumber, lineInfo.LinePosition);
+                }
+            }
         }
 
         /// <summary>
@@ -322,6 +340,12 @@ namespace Microsoft.Docs.Build
         public static Range ToRange(IJsonLineInfo lineInfo)
         {
             return lineInfo != null && lineInfo.HasLineInfo() ? new Range(lineInfo.LineNumber, lineInfo.LinePosition) : default;
+        }
+
+        internal static JToken SetLineInfo(JToken token, int line, int column)
+        {
+            s_setLineInfo(token, line, column);
+            return token;
         }
 
         private static void HandleError(object sender, Newtonsoft.Json.Serialization.ErrorEventArgs args)
