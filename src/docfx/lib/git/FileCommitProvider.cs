@@ -186,15 +186,6 @@ namespace Microsoft.Docs.Build
         public void SaveCache()
         {
             SaveCacheCore();
-
-            if (_commits != null)
-            {
-                var commits = _commits.FirstOrDefault(c => c.Value.IsValueCreated && (string.IsNullOrEmpty(c.Key) || c.Key.Equals("HEAD")));
-                if (commits.Value != null)
-                {
-                    Telemetry.TrackBuildCommitCount(commits.Value.Value.Item1.Count());
-                }
-            }
         }
 
         public void Dispose()
@@ -288,6 +279,11 @@ namespace Microsoft.Docs.Build
                 }
                 commit.ParentShas = null;
             });
+
+            if (committish.Equals("HEAD"))
+            {
+                Telemetry.TrackBuildCommitCount(commits.Count());
+            }
 
             return (commits, commitsBySha);
         }
