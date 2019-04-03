@@ -41,8 +41,7 @@ namespace Microsoft.Docs.Build
                 var (errors, tocToken) = content is null ? YamlUtility.Deserialize(file, context) : YamlUtility.Deserialize(content);
                 var (loadErrors, toc) = LoadTocModel(tocToken);
                 errors.AddRange(loadErrors);
-                var hrefLineInfoMap = new Dictionary<string, List<Range>>();
-                BuildLineInfoMap(tocToken, hrefLineInfoMap);
+                var hrefLineInfoMap = BuildLineInfoMap(tocToken);
                 return (errors, toc, hrefLineInfoMap);
             }
             else if (filePath.EndsWith(".json", PathUtility.PathComparison))
@@ -50,8 +49,7 @@ namespace Microsoft.Docs.Build
                 var (errors, tocToken) = content is null ? JsonUtility.Deserialize(file, context) : JsonUtility.Deserialize(content);
                 var (loadErrors, toc) = LoadTocModel(tocToken);
                 errors.AddRange(loadErrors);
-                var hrefLineInfoMap = new Dictionary<string, List<Range>>();
-                BuildLineInfoMap(tocToken, hrefLineInfoMap);
+                var hrefLineInfoMap = BuildLineInfoMap(tocToken);
                 return (errors, toc, hrefLineInfoMap);
             }
             else if (filePath.EndsWith(".md", PathUtility.PathComparison))
@@ -67,8 +65,13 @@ namespace Microsoft.Docs.Build
             throw new NotSupportedException($"{filePath} is an unknown TOC file");
         }
 
-        private static void BuildLineInfoMap(JToken tocToken, Dictionary<string, List<Range>> hrefLineInfoMap)
+        private static Dictionary<string, List<Range>> BuildLineInfoMap(JToken tocToken, Dictionary<string, List<Range>> hrefLineInfoMap = null)
         {
+            if (hrefLineInfoMap is null)
+            {
+                hrefLineInfoMap = new Dictionary<string, List<Range>>();
+            }
+
             if (tocToken is JArray)
             {
                 foreach (var item in tocToken.Children())
@@ -81,24 +84,32 @@ namespace Microsoft.Docs.Build
                 foreach (var item in tocToken.Children())
                 {
                     var prop = item as JProperty;
-                    var key = $"{prop.Name.ToLowerInvariant()}+{prop.Value}";
-                    if (hrefLineInfoMap.TryGetValue(key, out var value))
+                    if (prop.Value is JObject)
                     {
-                        value.Add(JsonUtility.ToRange(prop));
+                        BuildLineInfoMap(prop.Value, hrefLineInfoMap);
                     }
-                    else
-                    {
-                        hrefLineInfoMap.Add(key, new List<Range> { JsonUtility.ToRange(prop) });
-                    }
-                    if (prop.Value is JArray)
+                    else if (prop.Value is JArray)
                     {
                         foreach (var i in prop.Value.Children())
                         {
                             BuildLineInfoMap(i, hrefLineInfoMap);
                         }
                     }
+                    else if (prop.Value is JValue)
+                    {
+                        var key = $"{prop.Name.ToLowerInvariant()}+{prop.Value}";
+                        if (hrefLineInfoMap.TryGetValue(key, out var value))
+                        {
+                            value.Add(JsonUtility.ToRange(prop));
+                        }
+                        else
+                        {
+                            hrefLineInfoMap.Add(key, new List<Range> { JsonUtility.ToRange(prop) });
+                        }
+                    }
                 }
             }
+            return hrefLineInfoMap;
         }
 
         private static (List<Error>, TableOfContentsModel) LoadTocModel(JToken tocToken)
@@ -198,17 +209,7 @@ namespace Microsoft.Docs.Build
                     }
                     else
                     {
-                        if (ranges != null)
-                        {
-                            foreach (var range in ranges)
-                            {
-                                errors.Add(Errors.InvalidTocHref(filePath, tocInputModel.TocHref, range));
-                            }
-                        }
-                        else
-                        {
-                            errors.Add(Errors.InvalidTocHref(filePath, tocInputModel.TocHref, default));
-                        }
+                        errors.AddRange(JsonUtility.IncludeAll(ranges, Errors.InvalidTocHref(filePath, tocInputModel.TocHref, default)));
                     }
                 }
 

@@ -324,6 +324,28 @@ namespace Microsoft.Docs.Build
             return lineInfo != null && lineInfo.HasLineInfo() ? new Range(lineInfo.LineNumber, lineInfo.LinePosition) : default;
         }
 
+        public static List<Error> IncludeAll(List<Range> ranges, Error error)
+        {
+            var errors = new List<Error>();
+            if (error is null)
+            {
+                return errors;
+            }
+            if (ranges != null)
+            {
+                foreach (var range in ranges)
+                {
+                    var clone = error.Clone().WithRange(range);
+                    errors.AddIfNotNull(clone);
+                }
+            }
+            else
+            {
+                errors.AddIfNotNull(error);
+            }
+            return errors;
+        }
+
         private static void HandleError(object sender, Newtonsoft.Json.Serialization.ErrorEventArgs args)
         {
             // only log an error once

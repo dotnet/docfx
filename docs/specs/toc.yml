@@ -816,12 +816,18 @@ inputs:
         - name: level 2
           tocHref: index.md
           href: index.md
+          items:
+            - name: level 3
+              tocHref: index.md
+              href: index.md
 outputs:
   build.log: |
     ["warning","file-not-found","Cannot find file 'index.md' relative to 'docs/TOC.yml'","docs/TOC.yml","",3,3]
     ["warning","file-not-found","Cannot find file 'index.md' relative to 'docs/TOC.yml'","docs/TOC.yml","",7,7]
+    ["warning","file-not-found","Cannot find file 'index.md' relative to 'docs/TOC.yml'","docs/TOC.yml","",11,11]
     ["error","invalid-toc-href","The toc href 'index.md' can only reference to a local TOC file, folder or absolute path","docs/TOC.yml","",2,3]
     ["error","invalid-toc-href","The toc href 'index.md' can only reference to a local TOC file, folder or absolute path","docs/TOC.yml","",6,7]
+    ["error","invalid-toc-href","The toc href 'index.md' can only reference to a local TOC file, folder or absolute path","docs/TOC.yml","",10,11]
 ---
 # Individual experimental TOC should be built
 inputs:

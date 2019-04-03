@@ -118,7 +118,7 @@ namespace Microsoft.Docs.Build
                 (file, href, isInclude, ranges) =>
                 {
                     var (error, referencedTocContent, referencedToc) = context.DependencyResolver.ResolveContent(href, file, default, DependencyType.TocInclusion);
-                    errors.AddRange(IncludeAll(ranges, error));
+                    errors.AddRange(JsonUtility.IncludeAll(ranges, error));
 
                     if (referencedToc != null && isInclude)
                     {
@@ -130,7 +130,7 @@ namespace Microsoft.Docs.Build
                 (file, href, resultRelativeTo, ranges) =>
                 {
                     var (error, link, buildItem) = context.DependencyResolver.ResolveLink(href, file, resultRelativeTo, null, default);
-                    errors.AddRange(IncludeAll(ranges, error));
+                    errors.AddRange(JsonUtility.IncludeAll(ranges, error));
 
                     if (buildItem != null)
                     {
@@ -157,29 +157,6 @@ namespace Microsoft.Docs.Build
             errors.AddRange(loadErrors);
 
             return (errors, model, referencedDocuments, referencedTocs);
-        }
-
-        // TODO: redesign TOC build pipeline to get rid of this hack
-        private static List<Error> IncludeAll(List<Range> ranges, Error error)
-        {
-            var errors = new List<Error>();
-            if (error is null)
-            {
-                return errors;
-            }
-            if (ranges != null)
-            {
-                foreach (var range in ranges)
-                {
-                    var clone = error.Clone().WithRange(range);
-                    errors.AddIfNotNull(clone);
-                }
-            }
-            else
-            {
-                errors.AddIfNotNull(error);
-            }
-            return errors;
         }
     }
 }
