@@ -280,6 +280,11 @@ namespace Microsoft.Docs.Build
                 commit.ParentShas = null;
             });
 
+            if (committish.Equals("HEAD"))
+            {
+                Telemetry.TrackBuildCommitCount(commits.Count());
+            }
+
             return (commits, commitsBySha);
         }
 

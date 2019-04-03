@@ -12,7 +12,7 @@ namespace Microsoft.Docs.Build
     {
         public static (List<Error> errors, JObject metadata) Extract(TextReader reader)
         {
-            var builder = new StringBuilder();
+            var builder = new StringBuilder("\n");
             var errors = new List<Error>();
             if (reader.ReadLine()?.TrimEnd() != "---")
             {
