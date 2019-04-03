@@ -99,7 +99,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// In markdown-format toc, link(treated as inclusion) CAN ONLY be toc file, folder or absolute path.
         /// </summary>
-        public static Error InvalidTocHref(Document relativeTo, string tocHref, Range range)
+        public static Error InvalidTocHref(Document relativeTo, string tocHref, in Range range)
             => new Error(ErrorLevel.Error, "invalid-toc-href", $"The toc href '{tocHref}' can only reference to a local TOC file, folder or absolute path", relativeTo.ToString(), range);
 
         /// <summary>
