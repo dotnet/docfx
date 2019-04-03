@@ -77,7 +77,7 @@ namespace Microsoft.Docs.Build
             return GetRestoredFileContent(docset.DocsetPath, url, default, docset.FallbackDocset?.DocsetPath);
         }
 
-        public static (string localPath, string content, string etag) GetRestoredFileContent(string docsetPath, string url, Range range, string fallbackDocset = null)
+        public static (string localPath, string content, string etag) GetRestoredFileContent(string docsetPath, string url, in Range range, string fallbackDocset = null)
         {
             var fromUrl = HrefUtility.IsHttpHref(url);
             if (!fromUrl)

@@ -27,7 +27,7 @@ namespace Microsoft.Docs.Build
             _forLandingPage = forLandingPage;
         }
 
-        public (Error error, string content, Document file) ResolveContent(string path, Document relativeTo, Range range, DependencyType dependencyType = DependencyType.Inclusion)
+        public (Error error, string content, Document file) ResolveContent(string path, Document relativeTo, in Range range, DependencyType dependencyType = DependencyType.Inclusion)
         {
             var (error, content, child) = TryResolveContent(relativeTo, path, range);
 
@@ -91,7 +91,7 @@ namespace Microsoft.Docs.Build
             return Document.PathToRelativeUrl(relativePath, file.ContentType, file.Schema, file.Docset.Config.Output.Json);
         }
 
-        private (Error error, string content, Document file) TryResolveContent(Document relativeTo, string href, Range range)
+        private (Error error, string content, Document file) TryResolveContent(Document relativeTo, string href, in Range range)
         {
             var (error, file, redirect, _, _, _, pathToDocset) = TryResolveFile(relativeTo, href, range);
 
@@ -116,7 +116,7 @@ namespace Microsoft.Docs.Build
             return file != null ? (error, file.ReadText(), file) : default;
         }
 
-        private (Error error, string href, string fragment, HrefType? hrefType, Document file) TryResolveHref(Document relativeTo, string href, Document resultRelativeTo, Range range)
+        private (Error error, string href, string fragment, HrefType? hrefType, Document file) TryResolveHref(Document relativeTo, string href, Document resultRelativeTo, in Range range)
         {
             Debug.Assert(resultRelativeTo != null);
 
@@ -193,7 +193,7 @@ namespace Microsoft.Docs.Build
             return (error, relativeUrl + query + fragment, fragment, hrefType, file);
         }
 
-        private (Error error, Document file, string redirectTo, string query, string fragment, HrefType? hrefType, string pathToDocset) TryResolveFile(Document relativeTo, string href, Range range)
+        private (Error error, Document file, string redirectTo, string query, string fragment, HrefType? hrefType, string pathToDocset) TryResolveFile(Document relativeTo, string href, in Range range)
         {
             if (string.IsNullOrEmpty(href))
             {
