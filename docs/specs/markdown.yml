@@ -26,7 +26,7 @@ inputs:
 outputs:
   docs/a.json:
   build.log: |
-    ["info","null-value","'title' contains null value","docs/a.md","title",1,1]
+    ["info","null-value","'title' contains null value","docs/a.md","title",2,1]
 ---
 # title metadata overrides h1
 inputs:
@@ -304,7 +304,7 @@ inputs:
 outputs:
   docs/b.json:
   build.log: |
-    ["error","yaml-duplicate-key","Key 'a' is already defined, remove the duplicate key.","docs/a.md","",2,1]
+    ["error","yaml-duplicate-key","Key 'a' is already defined, remove the duplicate key.","docs/a.md","",3,1]
 ---
 # do not allow custom js, styles and css
 inputs:
