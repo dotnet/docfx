@@ -19,6 +19,10 @@ namespace Microsoft.Docs.Build
         [InlineData("http://ceapex.visualstudio.com/project/_git/repo", true, "project", "repo")]
         [InlineData("http://ceapex.visualstudio.com/project/_git/repo#branch", true, "project", "repo")]
         [InlineData("https://ceapex.visualstudio.com/project/_git/repo#branch", true, "project", "repo")]
+        [InlineData("https://ceapex.visualstudio.com/DefaultCollection/project/_git/repo", true, "project", "repo")]
+        [InlineData("http://ceapex.visualstudio.com/DefaultCollection/project/_git/repo/", true, "project", "repo")]
+        [InlineData("https://ceapex.visualstudio.com/DefaultCollection/project/_git/repo#branch", true, "project", "repo")]
+        [InlineData("http://ceapex.visualstudio.com/DefaultCollection/project/_git/repo#branch", true, "project", "repo")]
         public static void ParseAzureRepoRemote(string remote, bool parsed, string expectedProject, string expectedName)
         {
             if (AzureRepoUtility.TryParse(remote, out var owner, out var name))
