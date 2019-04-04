@@ -191,7 +191,7 @@ function getPatternName(repo, gitUrlPattern) {
 
 function getOverrideFolder(path) {
     if (!path) return "";
-    path = path.replace('\\', '/');
+    path = path.replace(/\\/g, '/');
     if (path.charAt(path.length - 1) == '/') path = path.substring(0, path.length - 1);
     return path;
 }
