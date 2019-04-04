@@ -398,6 +398,35 @@ outputs:
     ["warning","external-bookmark-not-found","Cannot find bookmark '#b-has-no-bookmark' in 'docs/b.md'","docs/c.md","",2,1]
     ["warning","external-bookmark-not-found","Cannot find bookmark '#bookmark123456' in 'docs/c.md'","docs/d.md","",1,1]
 ---
+# Do not validate bookmark for tabbed contents
+inputs:
+  docfx.yml:
+  docs/a.md: |
+    # [a](#tab/a)
+    a
+
+    # [b](#tab/b)
+    b
+outputs:
+  docs/a.json: |
+    content: |
+      <div class="tabGroup" id="tabgroup_CeZOj-G++Q">
+        <ul role="tablist">
+          <li role="presentation">
+            <a href="#tabpanel_CeZOj-G++Q_a" role="tab" aria-controls="tabpanel_CeZOj-G++Q_a" data-tab="a" tabindex="0" aria-selected="true">a</a>
+          </li>
+          <li role="presentation">
+            <a href="#tabpanel_CeZOj-G++Q_b" role="tab" aria-controls="tabpanel_CeZOj-G++Q_b" data-tab="b" tabindex="-1">b</a>
+          </li>
+        </ul>
+        <section id="tabpanel_CeZOj-G++Q_a" role="tabpanel" data-tab="a">
+          <p>a</p>
+        </section>
+        <section id="tabpanel_CeZOj-G++Q_b" role="tabpanel" data-tab="b" aria-hidden="true" hidden="hidden">
+          <p>b</p>
+        </section>
+      </div>
+---
 # experimental pairs
 inputs:
   docfx.yml:
