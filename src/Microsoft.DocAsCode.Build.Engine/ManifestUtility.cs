@@ -32,7 +32,7 @@ namespace Microsoft.DocAsCode.Common
                 var message = $"Multiple input files generate to the same output {duplicates} overwriting each other. " +
                     $"Please rename at least {duplicates.Count() - 1} of following files to resolve conflict: " +
                     string.Join(", ", duplicates.Select(i => $"{{file:'{i.item.SourceRelativePath}', group:'{i.item.Group}'}}"));
-                Logger.LogWarning(message, code: WarningCodes.Build.DuplicateOutputFiles);
+                Logger.LogError(message, code: ErrorCodes.Build.DuplicateOutputFiles);
                 itemsToRemove.UnionWith(duplicates.Skip(1).Select(duplicate => duplicate.item.SourceRelativePath));
             }
             manifestItems.RemoveAll(m => itemsToRemove.Contains(m.SourceRelativePath));
