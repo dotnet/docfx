@@ -60,7 +60,7 @@ docfx metadata [<projects>] [--property <n1>=<v1>;<n2>=<v2>]
 1. From a supported file or file list
    Supported file extensions include `.csproj`, `.vbproj`, `.sln`, `project.json`, `dll` assembly file, `.cs` source file and `.vb` source file.
 
-   Multiple files are seperated by whitespace, e.g. `docfx metadata Class1.cs a.csproj`
+   Multiple files are separated by whitespace, e.g. `docfx metadata Class1.cs a.csproj`
 
    > [!Note]
    > Glob pattern is **NOT** supported in command line options.
