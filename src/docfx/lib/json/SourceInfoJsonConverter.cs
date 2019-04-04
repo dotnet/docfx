@@ -15,7 +15,7 @@ namespace Microsoft.Docs.Build
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            var range = JsonUtility.ToRange((IJsonLineInfo)reader);
+            var range = JsonUtility.ToSourceInfo((IJsonLineInfo)reader);
             var valueType = objectType.GenericTypeArguments[0];
             var value = serializer.Deserialize(reader, valueType);
 
@@ -25,7 +25,7 @@ namespace Microsoft.Docs.Build
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
-            serializer.Serialize(writer, ((ISourceInfo)value)?.Value);
+            serializer.Serialize(writer, ((SourceInfo)value)?.GetValue());
         }
     }
 }

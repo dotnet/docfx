@@ -45,7 +45,7 @@ namespace Microsoft.Docs.Build
         private static object TransformContent(Context context, DataTypeAttribute attribute, object value, Document file, Action<Document> buildChild)
         {
             var dependencyResolver = file.FilePath.EndsWith("index.yml") ? context.LandingPageDependencyResolver : context.DependencyResolver;
-            var range = JsonUtility.ToRange(value as IJsonLineInfo);
+            var range = JsonUtility.ToSourceInfo(value as IJsonLineInfo);
 
             if (attribute is HrefAttribute)
             {

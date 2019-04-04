@@ -105,7 +105,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// In markdown-format toc, defined an empty node(# ) with no content.
         /// </summary>
-        public static Error MissingTocHead(in Range range, string filePath)
+        public static Error MissingTocHead(SourceInfo range, string filePath)
             => new Error(ErrorLevel.Error, "missing-toc-head", $"The toc head name is missing", filePath, range);
 
         /// <summary>
@@ -115,7 +115,7 @@ namespace Microsoft.Docs.Build
         ///     the opening sequence of, characters must be followed by a space or by the end of line
         ///   - The toc syntax '# @b abc' is invalid, multiple inlines in one heading block is not allowed
         /// </summary>
-        public static Error InvalidTocSyntax(in Range range, string filePath, string syntax = null, string hint = null)
+        public static Error InvalidTocSyntax(SourceInfo range, string filePath, string syntax = null, string hint = null)
             => new Error(ErrorLevel.Error, "invalid-toc-syntax", $"The toc syntax '{syntax}' is invalid, {hint ?? "the opening sequence of # characters must be followed by a space or by the end of line"}. Refer to [ATX heading](https://spec.commonmark.org/0.28/#atx-heading) to fix it", filePath, range);
 
         /// <summary>
@@ -166,22 +166,22 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Syntax error in yaml file(not duplicate key).
         /// </summary>
-        public static Error YamlSyntaxError(in Range range, string message)
-            => new Error(ErrorLevel.Error, "yaml-syntax-error", message, range: range);
+        public static Error YamlSyntaxError(SourceInfo range, string message)
+            => new Error(ErrorLevel.Error, "yaml-syntax-error", message, sourceInfo: range);
 
         /// <summary>
         /// Used duplicate yaml key in markdown yml header or schema document(yml).
         /// </summary>
-        public static Error YamlDuplicateKey(in Range range, string key)
-            => new Error(ErrorLevel.Error, "yaml-duplicate-key", $"Key '{key}' is already defined, remove the duplicate key.", range: range);
+        public static Error YamlDuplicateKey(SourceInfo range, string key)
+            => new Error(ErrorLevel.Error, "yaml-duplicate-key", $"Key '{key}' is already defined, remove the duplicate key.", sourceInfo: range);
 
         /// <summary>
         /// Syntax error in json file.
         /// Examples:
         ///   - unclosed ([{
         /// </summary>
-        public static Error JsonSyntaxError(in Range range, string message, string path)
-            => new Error(ErrorLevel.Error, "json-syntax-error", $"{message}", range: range, jsonPath: path);
+        public static Error JsonSyntaxError(SourceInfo range, string message, string path)
+            => new Error(ErrorLevel.Error, "json-syntax-error", $"{message}", sourceInfo: range, jsonPath: path);
 
         /// <summary>
         /// Used empty link in article.md.
@@ -286,7 +286,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Used docfx output model property which are not defined in input model.
         /// </summary>
-        public static Error ReservedMetadata(in Range range, string name, string removeFrom)
+        public static Error ReservedMetadata(SourceInfo range, string name, string removeFrom)
             => new Error(ErrorLevel.Warning, "reserved-metadata", $"Metadata '{name}' is reserved by docfx, remove this metadata: '{removeFrom}'", null, range);
 
         /// <summary>
@@ -312,13 +312,13 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Defined refrence with by #bookmark fragment between articles, which doesn't exist.
         /// </summary>
-        public static Error ExternalBookmarkNotFound(Document relativeTo, Document reference, string bookmark, IEnumerable<string> candidateBookmarks, Range range)
+        public static Error ExternalBookmarkNotFound(Document relativeTo, Document reference, string bookmark, IEnumerable<string> candidateBookmarks, SourceInfo range)
             => new Error(ErrorLevel.Warning, "external-bookmark-not-found", $"Cannot find bookmark '#{bookmark}' in '{reference}'{(FindBestMatch(bookmark, candidateBookmarks, out string matchedBookmark) ? $", did you mean '#{matchedBookmark}'?" : null)}", relativeTo.ToString(), range);
 
         /// <summary>
         /// Defined refrence with by #bookmark fragment within articles, which doesn't exist.
         /// </summary>
-        public static Error InternalBookmarkNotFound(Document file, string bookmark, IEnumerable<string> candidateBookmarks, Range range)
+        public static Error InternalBookmarkNotFound(Document file, string bookmark, IEnumerable<string> candidateBookmarks, SourceInfo range)
             => new Error(ErrorLevel.Suggestion, "internal-bookmark-not-found", $"Cannot find bookmark '#{bookmark}' in '{file}'{(FindBestMatch(bookmark, candidateBookmarks, out string matchedBookmark) ? $", did you mean '#{matchedBookmark}'?" : null)}", file.ToString(), range);
 
         /// <summary>
@@ -327,23 +327,23 @@ namespace Microsoft.Docs.Build
         ///   - article.md has null-valued yaml header property
         ///   - toc.yml has node with null-value property
         /// </summary>
-        public static Error NullValue(in Range range, string name, string path)
-            => new Error(ErrorLevel.Info, "null-value", $"'{name}' contains null value", range: range, jsonPath: path);
+        public static Error NullValue(SourceInfo range, string name, string path)
+            => new Error(ErrorLevel.Info, "null-value", $"'{name}' contains null value", sourceInfo: range, jsonPath: path);
 
-        public static Error NullArrayValue(in Range range, string name, string path)
-            => new Error(ErrorLevel.Warning, "null-array-value", $"'{name}' contains null value, the null value has been removed", range: range, jsonPath: path);
+        public static Error NullArrayValue(SourceInfo range, string name, string path)
+            => new Error(ErrorLevel.Warning, "null-array-value", $"'{name}' contains null value, the null value has been removed", sourceInfo: range, jsonPath: path);
 
         /// <summary>
         /// Defined extra field(s) in input model in schema document(json, yml).
         /// </summary>
-        public static Error UnknownField(in Range range, string propName, string typeName, string path)
-            => new Error(ErrorLevel.Warning, "unknown-field", $"Could not find member '{propName}' on object of type '{typeName}'.", range: range, jsonPath: path);
+        public static Error UnknownField(SourceInfo range, string propName, string typeName, string path)
+            => new Error(ErrorLevel.Warning, "unknown-field", $"Could not find member '{propName}' on object of type '{typeName}'.", sourceInfo: range, jsonPath: path);
 
         /// <summary>
         /// Schema document with violate content type/value against predefined models(not syntax error).
         /// </summary>
-        public static Error ViolateSchema(in Range range, string message, string path)
-            => new Error(ErrorLevel.Error, "violate-schema", $"{message}", range: range, jsonPath: path);
+        public static Error ViolateSchema(SourceInfo range, string message, string path)
+            => new Error(ErrorLevel.Error, "violate-schema", $"{message}", sourceInfo: range, jsonPath: path);
 
         /// <summary>
         /// Used unknown YamlMime.

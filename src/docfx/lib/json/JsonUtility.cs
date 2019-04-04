@@ -296,13 +296,13 @@ namespace Microsoft.Docs.Build
             foreach (var node in nullNodes)
             {
                 var (lineInfo, name) = Parse(node);
-                errors.Add(Errors.NullValue(ToRange(node), name, node.Path));
+                errors.Add(Errors.NullValue(ToSourceInfo(node), name, node.Path));
             }
 
             foreach (var node in nullArrayNodes)
             {
                 var (lineInfo, name) = Parse(node);
-                errors.Add(Errors.NullArrayValue(new Range(lineInfo.LineNumber, lineInfo.LinePosition), name, node.Path));
+                errors.Add(Errors.NullArrayValue(new SourceInfo(null, lineInfo.LineNumber, lineInfo.LinePosition), name, node.Path));
                 node.Remove();
             }
 
@@ -333,9 +333,9 @@ namespace Microsoft.Docs.Build
             return false;
         }
 
-        public static Range ToRange(IJsonLineInfo lineInfo)
+        public static SourceInfo ToSourceInfo(IJsonLineInfo lineInfo)
         {
-            return lineInfo != null && lineInfo.HasLineInfo() ? new Range(lineInfo.LineNumber, lineInfo.LinePosition) : default;
+            return lineInfo != null && lineInfo.HasLineInfo() ? new SourceInfo(null, lineInfo.LineNumber, lineInfo.LinePosition) : default;
         }
 
         internal static JToken SetLineInfo(JToken token, int line, int column)
@@ -358,13 +358,13 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static (Range, string message, string path) ParseException(Exception ex)
+        private static (SourceInfo, string message, string path) ParseException(Exception ex)
         {
             // TODO: Json.NET type conversion error message is developer friendly but not writer friendly.
             var match = Regex.Match(ex.Message, "^([\\s\\S]*)\\sPath '(.*)', line (\\d+), position (\\d+).$");
             if (match.Success)
             {
-                var range = new Range(int.Parse(match.Groups[3].Value), int.Parse(match.Groups[4].Value));
+                var range = new SourceInfo(null, int.Parse(match.Groups[3].Value), int.Parse(match.Groups[4].Value));
                 return (range, RewriteErrorMessage(match.Groups[1].Value), match.Groups[2].Value);
             }
 
@@ -486,7 +486,7 @@ namespace Microsoft.Docs.Build
                 var matchingProperty = objectContract.Properties.GetClosestMatchProperty(prop.Name);
                 if (matchingProperty is null && type.IsSealed)
                 {
-                    errors.Add(Errors.UnknownField(ToRange(prop), prop.Name, type.Name, prop.Path));
+                    errors.Add(Errors.UnknownField(ToSourceInfo(prop), prop.Name, type.Name, prop.Path));
                 }
                 return matchingProperty?.PropertyType;
             }

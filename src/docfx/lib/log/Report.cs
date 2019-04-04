@@ -77,7 +77,7 @@ namespace Microsoft.Docs.Build
 
             return Write(file == error.File || !string.IsNullOrEmpty(error.File)
                     ? error
-                    : new Error(error.Level, error.Code, error.Message, file, error.Range, error.JsonPath));
+                    : new Error(error.Level, error.Code, error.Message, file, error.SourceInfo, error.JsonPath));
         }
 
         public bool Write(Error error, bool force = false)

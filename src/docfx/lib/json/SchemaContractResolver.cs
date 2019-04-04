@@ -55,7 +55,7 @@ namespace Microsoft.Docs.Build
 
             public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
             {
-                var range = JsonUtility.ToRange((IJsonLineInfo)reader);
+                var range = JsonUtility.ToSourceInfo((IJsonLineInfo)reader);
                 var value = serializer.Deserialize(reader, objectType);
                 if (value is null)
                 {

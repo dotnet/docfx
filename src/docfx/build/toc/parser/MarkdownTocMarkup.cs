@@ -33,7 +33,7 @@ namespace Microsoft.Docs.Build
                     case HtmlBlock htmlBlock when htmlBlock.Type == HtmlBlockType.Comment:
                         break;
                     default:
-                        errors.Add(Errors.InvalidTocSyntax(new Range(block.Line, block.Column), file.FilePath, tocContent.Substring(block.Span.Start, block.Span.Length)));
+                        errors.Add(Errors.InvalidTocSyntax(new SourceInfo(null, block.Line, block.Column), file.FilePath, tocContent.Substring(block.Span.Start, block.Span.Length)));
                         break;
                 }
             }
@@ -102,13 +102,13 @@ namespace Microsoft.Docs.Build
                 var currentItem = new TableOfContentsItem();
                 if (block.Inline is null || !block.Inline.Any())
                 {
-                    errors.Add(Errors.MissingTocHead(new Range(block.Line, block.Column), filePath));
+                    errors.Add(Errors.MissingTocHead(new SourceInfo(null, block.Line, block.Column), filePath));
                     return currentItem;
                 }
 
                 if (block.Inline.Count() > 1 && block.Inline.Any(l => l is XrefInline || l is LinkInline))
                 {
-                    errors.Add(Errors.InvalidTocSyntax(new Range(block.Line, block.Column), filePath, tocContent.Substring(block.Span.Start, block.Span.Length), "multiple inlines in one heading block is not allowed"));
+                    errors.Add(Errors.InvalidTocSyntax(new SourceInfo(null, block.Line, block.Column), filePath, tocContent.Substring(block.Span.Start, block.Span.Length), "multiple inlines in one heading block is not allowed"));
                     return currentItem;
                 }
 
@@ -144,7 +144,7 @@ namespace Microsoft.Docs.Build
                 {
                     if (!(child is LiteralInline literal))
                     {
-                        errors.Add(Errors.InvalidTocSyntax(new Range(inline.Line, inline.Column), filePath));
+                        errors.Add(Errors.InvalidTocSyntax(new SourceInfo(null, inline.Line, inline.Column), filePath));
                         return null;
                     }
 

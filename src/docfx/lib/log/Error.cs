@@ -21,20 +21,17 @@ namespace Microsoft.Docs.Build
 
         public string File { get; }
 
-        public Range Range { get; }
-
         public string JsonPath { get; }
 
-        public int Line => Range.StartLine;
+        public int Line { get; }
 
-        public int Column => Range.StartColumn;
+        public int Column { get; }
 
         public Error(
             ErrorLevel level,
             string code,
             string message,
-            string file = null,
-            in Range range = default,
+            SourceInfo sourceInfo = null,
             string jsonPath = "")
         {
             Debug.Assert(!string.IsNullOrEmpty(code));
@@ -45,11 +42,12 @@ namespace Microsoft.Docs.Build
             Level = level;
             Code = code;
             Message = message;
-            File = file;
-            Range = range;
+            File = sourceInfo?.File;
+            Line = sourceInfo?.StartLine ?? 0;
+            Column = sourceInfo?.StartColumn ?? 0;
         }
 
-        public Error WithRange(in Range range) => new Error(Level, Code, Message, File, range, JsonPath);
+        public Error WithSourceInfo(SourceInfo sourceInfo) => new Error(Level, Code, Message, sourceInfo, JsonPath);
 
         public override string ToString() => ToString(Level);
 
@@ -79,10 +77,8 @@ namespace Microsoft.Docs.Build
                        x.Code == y.Code &&
                        x.Message == y.Message &&
                        x.File == y.File &&
-                       x.Range.StartLine == y.Range.StartLine &&
-                       x.Range.StartColumn == y.Range.StartColumn &&
-                       x.Range.EndLine == y.Range.EndLine &&
-                       x.Range.EndColumn == y.Range.EndColumn &&
+                       x.Line == y.Line &&
+                       x.Column == y.Column &&
                        x.JsonPath == y.JsonPath;
             }
 
@@ -93,10 +89,8 @@ namespace Microsoft.Docs.Build
                     obj.Code,
                     obj.Message,
                     obj.File,
-                    obj.Range.StartLine,
-                    obj.Range.StartColumn,
-                    obj.Range.EndLine,
-                    obj.Range.EndColumn);
+                    obj.Line,
+                    obj.Column);
             }
         }
     }
