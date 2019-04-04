@@ -25,7 +25,7 @@ namespace Microsoft.Docs.Build
 
         public int Column { get; }
 
-        public Error(ErrorLevel level, string code, string message, SourceInfo source, string jsonPath = "")
+        public Error(ErrorLevel level, string code, string message, SourceInfo source)
             : this(level, code, message, source?.File, source?.StartLine ?? 0, source?.StartColumn ?? 0)
         { }
 

@@ -24,7 +24,7 @@ namespace Microsoft.Docs.Build
                 var bookmark = fragment.Substring(1).Trim();
                 if (!string.IsNullOrEmpty(bookmark))
                 {
-                    _references.Add((file, reference, bookmark, isSelfBookmark, range));
+                    _references.Add((file, reference, bookmark, isSelfBookmark, source));
                 }
             }
         }
@@ -38,14 +38,14 @@ namespace Microsoft.Docs.Build
         {
             var result = new List<(Error error, Document file)>();
 
-            foreach (var (file, reference, bookmark, isSelfBookmark, range) in _references)
+            foreach (var (file, reference, bookmark, isSelfBookmark, source) in _references)
             {
                 if (_bookmarksByFile.TryGetValue(reference, out var bookmarks) && bookmarks.Contains(bookmark))
                 {
                     continue;
                 }
-                result.Add(isSelfBookmark ? (Errors.InternalBookmarkNotFound(file, bookmark, bookmarks, range), file) :
-                                            (Errors.ExternalBookmarkNotFound(file, reference, bookmark, bookmarks, range), file));
+                result.Add(isSelfBookmark ? (Errors.InternalBookmarkNotFound(source, reference, bookmark, bookmarks), file) :
+                                            (Errors.ExternalBookmarkNotFound(source, reference, bookmark, bookmarks), file));
             }
 
             return result;

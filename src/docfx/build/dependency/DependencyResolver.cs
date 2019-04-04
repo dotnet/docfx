@@ -49,7 +49,7 @@ namespace Microsoft.Docs.Build
 
             var isSelfBookmark = hrefType == HrefType.SelfBookmark || resultRelativeTo == file;
             _dependencyMapBuilder.AddDependencyItem(relativeTo, file, HrefUtility.FragmentToDependencyType(fragment));
-            _bookmarkValidator.AddBookmarkReference(relativeTo, isSelfBookmark ? resultRelativeTo : file ?? relativeTo, fragment, isSelfBookmark, range);
+            _bookmarkValidator.AddBookmarkReference(relativeTo, isSelfBookmark ? resultRelativeTo : file ?? relativeTo, fragment, isSelfBookmark, source);
 
             return (error, link, file);
         }
