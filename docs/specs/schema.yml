@@ -109,7 +109,7 @@ outputs:
   toc.json:
   docs/toc.json:
   build.log: |
-    ["error","violate-schema","Cannot deserialize the current JSON object * into type 'System.String' because the type requires a JSON primitive value *","docs/a.yml","breadcrumb_path",3,18]
+    ["error","violate-schema","Cannot deserialize the current JSON object * into type 'System.String' because the type requires a JSON primitive value *","docs/a.yml",3,18]
 ---
 # Schema documents with Href content referencing resource file, the resouce file should be outputed
 inputs:
@@ -145,7 +145,7 @@ outputs:
   docs/a.json: |
     { "content": {} }
   build.log: |
-    ["info","null-value","'description' contains null value","docs/a.yml","description",2,1]
+    ["info","null-value","'description' contains null value","docs/a.yml",2,1]
 ---
 # Support schema documents with inline markdown content
 inputs:
@@ -230,6 +230,6 @@ inputs:
     {
 outputs:
   build.log: |
-    ["error","yaml-syntax-error","Mapping values are not allowed in this context.","docs/a.yml","",2,5]
-    ["error","json-syntax-error","Error reading JObject from JsonReader.","docs/b.json","",2]
+    ["error","yaml-syntax-error","Mapping values are not allowed in this context.","docs/a.yml",2,5]
+    ["error","json-syntax-error","Error reading JObject from JsonReader.","docs/b.json",2]
 ---

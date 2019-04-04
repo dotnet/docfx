@@ -180,8 +180,8 @@ namespace Microsoft.Docs.Build
         /// Examples:
         ///   - unclosed ([{
         /// </summary>
-        public static Error JsonSyntaxError(SourceInfo source, string message, string path)
-            => new Error(ErrorLevel.Error, "json-syntax-error", $"{message}", source, jsonPath: path);
+        public static Error JsonSyntaxError(SourceInfo source, string message)
+            => new Error(ErrorLevel.Error, "json-syntax-error", $"{message}", source);
 
         /// <summary>
         /// Used empty link in article.md.
@@ -327,23 +327,23 @@ namespace Microsoft.Docs.Build
         ///   - article.md has null-valued yaml header property
         ///   - toc.yml has node with null-value property
         /// </summary>
-        public static Error NullValue(SourceInfo source, string name, string path)
-            => new Error(ErrorLevel.Info, "null-value", $"'{name}' contains null value", source, jsonPath: path);
+        public static Error NullValue(SourceInfo source, string name)
+            => new Error(ErrorLevel.Info, "null-value", $"'{name}' contains null value", source);
 
-        public static Error NullArrayValue(SourceInfo source, string name, string path)
-            => new Error(ErrorLevel.Warning, "null-array-value", $"'{name}' contains null value, the null value has been removed", source, jsonPath: path);
+        public static Error NullArrayValue(SourceInfo source, string name)
+            => new Error(ErrorLevel.Warning, "null-array-value", $"'{name}' contains null value, the null value has been removed", source);
 
         /// <summary>
         /// Defined extra field(s) in input model in schema document(json, yml).
         /// </summary>
-        public static Error UnknownField(SourceInfo source, string propName, string typeName, string path)
-            => new Error(ErrorLevel.Warning, "unknown-field", $"Could not find member '{propName}' on object of type '{typeName}'.", source, jsonPath: path);
+        public static Error UnknownField(SourceInfo source, string propName, string typeName)
+            => new Error(ErrorLevel.Warning, "unknown-field", $"Could not find member '{propName}' on object of type '{typeName}'.", source);
 
         /// <summary>
         /// Schema document with violate content type/value against predefined models(not syntax error).
         /// </summary>
-        public static Error ViolateSchema(SourceInfo source, string message, string path)
-            => new Error(ErrorLevel.Error, "violate-schema", $"{message}", source, jsonPath: path);
+        public static Error ViolateSchema(SourceInfo source, string message)
+            => new Error(ErrorLevel.Error, "violate-schema", $"{message}", source);
 
         /// <summary>
         /// Used unknown YamlMime.

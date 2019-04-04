@@ -21,23 +21,20 @@ namespace Microsoft.Docs.Build
 
         public string File { get; }
 
-        public string JsonPath { get; }
-
         public int Line { get; }
 
         public int Column { get; }
 
         public Error(ErrorLevel level, string code, string message, SourceInfo source, string jsonPath = "")
-            : this(level, code, message, source?.File, source?.StartLine ?? 0, source?.StartColumn ?? 0, jsonPath)
+            : this(level, code, message, source?.File, source?.StartLine ?? 0, source?.StartColumn ?? 0)
         { }
 
-        public Error(ErrorLevel level, string code, string message, string file = null, int line = 0, int column = 0, string jsonPath = "")
+        public Error(ErrorLevel level, string code, string message, string file = null, int line = 0, int column = 0)
         {
             Debug.Assert(!string.IsNullOrEmpty(code));
             Debug.Assert(Regex.IsMatch(code, "^[a-z0-9-]{5,32}$"), "Error code should only contain dash and letters in lowercase");
             Debug.Assert(!string.IsNullOrEmpty(message));
 
-            JsonPath = jsonPath;
             Level = level;
             Code = code;
             Message = message;
@@ -46,13 +43,13 @@ namespace Microsoft.Docs.Build
             Column = column;
         }
 
-        public Error WithSourceInfo(SourceInfo source) => new Error(Level, Code, Message, source, JsonPath);
+        public Error WithSourceInfo(SourceInfo source) => new Error(Level, Code, Message, source);
 
         public override string ToString() => ToString(Level);
 
         public string ToString(ErrorLevel level)
         {
-            object[] payload = { level, Code, Message, File, JsonPath, Line, Column };
+            object[] payload = { level, Code, Message, File, Line, Column };
 
             var i = payload.Length - 1;
             while (i >= 0 && (Equals(payload[i], null) || Equals(payload[i], "") || Equals(payload[i], 0)))
@@ -77,8 +74,7 @@ namespace Microsoft.Docs.Build
                        x.Message == y.Message &&
                        x.File == y.File &&
                        x.Line == y.Line &&
-                       x.Column == y.Column &&
-                       x.JsonPath == y.JsonPath;
+                       x.Column == y.Column;
             }
 
             public int GetHashCode(Error obj)

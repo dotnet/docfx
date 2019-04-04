@@ -105,7 +105,7 @@ outputs:
   a&b.json:
   a&amp;b.json:
   build.log: |
-    ["warning","include-not-found","Cannot resolve 'a%20b.md' relative to 'includes.md'.","includes.md","",1,1]
-    ["warning","include-not-found","Cannot resolve 'a&amp;amp;b.md' relative to 'includes.md'.","includes.md","",4,1]
+    ["warning","include-not-found","Cannot resolve 'a%20b.md' relative to 'includes.md'.","includes.md",1,1]
+    ["warning","include-not-found","Cannot resolve 'a&amp;amp;b.md' relative to 'includes.md'.","includes.md",4,1]
   .publish.json:
 ---

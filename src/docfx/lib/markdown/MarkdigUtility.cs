@@ -26,42 +26,34 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
-        /// Traverse the markdown object graph, returns true to stop the traversal.
+        /// Traverse the markdown object graph, returns true to skip the current node.
         /// </summary>
-        public static bool Visit(this MarkdownObject obj, Func<MarkdownObject, bool> action)
+        public static void Visit(this MarkdownObject obj, Func<MarkdownObject, bool> action)
         {
             if (obj is null)
-                return true;
+                return;
 
             if (action(obj))
-                return true;
+                return;
 
             if (obj is ContainerBlock block)
             {
                 foreach (var child in block)
                 {
-                    if (Visit(child, action))
-                    {
-                        return true;
-                    }
+                    Visit(child, action);
                 }
             }
             else if (obj is ContainerInline inline)
             {
                 foreach (var child in inline)
                 {
-                    if (Visit(child, action))
-                    {
-                        return true;
-                    }
+                    Visit(child, action);
                 }
             }
             else if (obj is LeafBlock leaf)
             {
                 Visit(leaf.Inline, action);
             }
-
-            return false;
         }
 
         /// <summary>

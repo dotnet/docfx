@@ -17,7 +17,11 @@ namespace Microsoft.Docs.Build
             {
                 document.Visit(node =>
                 {
-                    if (node is LinkInline link)
+                    if (node is TabTitleBlock)
+                    {
+                        return true;
+                    }
+                    else if (node is LinkInline link && !link.IsAutoLink)
                     {
                         link.Url = MarkdownUtility.GetLink(link.Url, InclusionContext.File, InclusionContext.RootFile, link) ?? link.Url;
                     }
