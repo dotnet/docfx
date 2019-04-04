@@ -17,7 +17,6 @@ namespace Microsoft.DocAsCode.Common
             public const string InvalidExternalBookmark = "InvalidExternalBookmark";
             public const string InvalidFileLink = "InvalidFileLink";
             public const string DuplicateUids = "DuplicateUids";
-            public const string DuplicateOutputFiles = "DuplicateOutputFiles";
             public const string UnknownUriTemplatePipeline = "UnknownUriTemplatePipeline";
             public const string EmptyTocItemNode = "EmptyTocItemNode";
             public const string EmptyTocItemName = "EmptyTocItemName";
