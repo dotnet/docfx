@@ -45,11 +45,11 @@ namespace Microsoft.Docs.Build
         private static object TransformContent(Context context, DataTypeAttribute attribute, object value, Document file, Action<Document> buildChild)
         {
             var dependencyResolver = file.FilePath.EndsWith("index.yml") ? context.LandingPageDependencyResolver : context.DependencyResolver;
-            var range = JsonUtility.ToSourceInfo(value as IJsonLineInfo);
+            var source = JsonUtility.ToSourceInfo(value as IJsonLineInfo);
 
             if (attribute is HrefAttribute)
             {
-                var (error, link, _) = dependencyResolver.ResolveLink((string)value, file, file, buildChild, range);
+                var (error, link, _) = dependencyResolver.ResolveLink((string)value, file, file, buildChild, source);
 
                 context.Report.Write(file.ToString(), error);
                 return link;
@@ -89,7 +89,7 @@ namespace Microsoft.Docs.Build
             {
                 var html = HtmlUtility.TransformLinks((string)value, href =>
                 {
-                    var (error, link, _) = dependencyResolver.ResolveLink(href, file, file, buildChild, range);
+                    var (error, link, _) = dependencyResolver.ResolveLink(href, file, file, buildChild, source);
 
                     context.Report.Write(file.ToString(), error);
                     return link;

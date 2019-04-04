@@ -164,8 +164,8 @@ namespace Microsoft.Docs.Build
                 }
                 catch (JsonReaderException ex)
                 {
-                    var (range, message) = ParseException(ex);
-                    throw Errors.JsonSyntaxError(range, message).ToException(ex);
+                    var (source, message) = ParseException(ex);
+                    throw Errors.JsonSyntaxError(source, message).ToException(ex);
                 }
             }
         }
@@ -229,8 +229,8 @@ namespace Microsoft.Docs.Build
             }
             catch (JsonReaderException ex)
             {
-                var (range, message) = ParseException(ex);
-                throw Errors.JsonSyntaxError(range, message).ToException(ex);
+                var (source, message) = ParseException(ex);
+                throw Errors.JsonSyntaxError(source, message).ToException(ex);
             }
         }
 
@@ -351,8 +351,8 @@ namespace Microsoft.Docs.Build
             {
                 if (args.ErrorContext.Error is JsonReaderException || args.ErrorContext.Error is JsonSerializationException jse)
                 {
-                    var (range, message) = ParseException(args.ErrorContext.Error);
-                    t_status.Value.Peek().Errors.Add(Errors.ViolateSchema(range, message));
+                    var (source, message) = ParseException(args.ErrorContext.Error);
+                    t_status.Value.Peek().Errors.Add(Errors.ViolateSchema(source, message));
                     args.ErrorContext.Handled = true;
                 }
             }
@@ -364,8 +364,8 @@ namespace Microsoft.Docs.Build
             var match = Regex.Match(ex.Message, "^([\\s\\S]*)\\sPath '(.*)', line (\\d+), position (\\d+).$");
             if (match.Success)
             {
-                var range = new SourceInfo(null, int.Parse(match.Groups[3].Value), int.Parse(match.Groups[4].Value));
-                return (range, RewriteErrorMessage(match.Groups[1].Value));
+                var source = new SourceInfo(null, int.Parse(match.Groups[3].Value), int.Parse(match.Groups[4].Value));
+                return (source, RewriteErrorMessage(match.Groups[1].Value));
             }
 
             match = Regex.Match(ex.Message, "^([\\s\\S]*)\\sPath '(.*)'.$");

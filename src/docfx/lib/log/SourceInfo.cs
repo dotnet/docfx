@@ -5,8 +5,6 @@ namespace Microsoft.Docs.Build
 {
     public class SourceInfo
     {
-        public static readonly SourceInfo Empty = new SourceInfo(null, 0, 0);
-
         /// <summary>
         /// Path to the source file.
         /// </summary>
@@ -15,12 +13,12 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// A one based start line value.
         /// </summary>
-        public readonly int StartLine;
+        public readonly int Line;
 
         /// <summary>
         /// A one based start column value.
         /// </summary>
-        public readonly int StartColumn;
+        public readonly int Column;
 
         /// <summary>
         /// A one based end line value.
@@ -35,8 +33,8 @@ namespace Microsoft.Docs.Build
         public SourceInfo(string file, int line, int column)
         {
             File = file;
-            StartLine = line;
-            StartColumn = column;
+            Line = line;
+            Column = column;
             EndLine = line;
             EndColumn = column;
         }
@@ -44,8 +42,8 @@ namespace Microsoft.Docs.Build
         public SourceInfo(string file, int startLine, int startColumn, int endLine, int endColumn)
         {
             File = file;
-            StartLine = startLine;
-            StartColumn = startColumn;
+            Line = startLine;
+            Column = startColumn;
             EndLine = endLine;
             EndColumn = endColumn;
         }

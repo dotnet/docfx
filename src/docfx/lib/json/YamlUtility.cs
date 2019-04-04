@@ -90,16 +90,16 @@ namespace Microsoft.Docs.Build
                 ex.InnerException is ArgumentException aex &&
                 (match = Regex.Match(aex.Message, "(.*?)\\. Key: (.*)$")).Success)
             {
-                var range = new SourceInfo(null, ex.Start.Line, ex.Start.Column, ex.End.Line, ex.End.Column);
+                var source = new SourceInfo(null, ex.Start.Line, ex.Start.Column, ex.End.Line, ex.End.Column);
 
-                throw Errors.YamlDuplicateKey(range, match.Groups[2].Value).ToException(ex);
+                throw Errors.YamlDuplicateKey(source, match.Groups[2].Value).ToException(ex);
             }
             catch (YamlException ex)
             {
-                var range = new SourceInfo(null, ex.Start.Line, ex.Start.Column, ex.End.Line, ex.End.Column);
+                var source = new SourceInfo(null, ex.Start.Line, ex.Start.Column, ex.End.Line, ex.End.Column);
                 var message = Regex.Replace(ex.Message, "^\\(.*?\\) - \\(.*?\\):\\s*", "");
 
-                throw Errors.YamlSyntaxError(range, message).ToException(ex);
+                throw Errors.YamlSyntaxError(source, message).ToException(ex);
             }
 
             if (stream.Documents.Count == 0)

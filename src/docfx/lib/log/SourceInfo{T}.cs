@@ -12,8 +12,8 @@ namespace Microsoft.Docs.Build
 
         internal override object GetValue() => Value;
 
-        public SourceInfo(T value, string file, int startLine, int startColumn, int endLine, int endColumn)
-            : base(file, startLine, startColumn, endLine, endColumn)
+        public SourceInfo(T value, SourceInfo source)
+            : base(source?.File, source?.Line ?? 0, source?.Column ?? 0, source?.EndLine ?? 0, source?.EndColumn ?? 0)
         {
             Value = value;
         }

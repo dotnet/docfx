@@ -26,7 +26,7 @@ namespace Microsoft.Docs.Build
         public int Column { get; }
 
         public Error(ErrorLevel level, string code, string message, SourceInfo source)
-            : this(level, code, message, source?.File, source?.StartLine ?? 0, source?.StartColumn ?? 0)
+            : this(level, code, message, source?.File, source?.Line ?? 0, source?.Column ?? 0)
         { }
 
         public Error(ErrorLevel level, string code, string message, string file = null, int line = 0, int column = 0)
