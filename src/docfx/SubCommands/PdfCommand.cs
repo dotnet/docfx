@@ -64,7 +64,8 @@ namespace Microsoft.DocAsCode.SubCommands
                 KeepRawFiles = _config.KeepRawFiles,
                 LoadErrorHandling = _config.LoadErrorHandling,
                 AdditionalPdfCommandArgs = _config.Wkhtmltopdf?.AdditionalArguments,
-                TocTitle = _config.TocTitle
+                TocTitle = _config.TocTitle,
+                OutlineOption = _config.OutlineOption
             };
 
             // 1. call BuildCommand to generate html files first
