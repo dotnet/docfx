@@ -70,7 +70,7 @@ namespace Microsoft.Docs.Build
                     }
                     catch (Exception e)
                     {
-                        JsonUtility.State.Errors.Add(Errors.ViolateSchema(range, e.Message, reader.Path));
+                        JsonUtility.State.Errors.Add(Errors.ViolateSchema(range, e.Message));
                     }
                 }
 
