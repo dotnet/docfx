@@ -44,7 +44,7 @@ namespace Microsoft.Docs.Build
                 {
                     continue;
                 }
-                result.Add(isSelfBookmark ? (Errors.InternalBookmarkNotFound(source, reference, bookmark, bookmarks), file) :
+                result.Add(isSelfBookmark ? (Errors.InternalBookmarkNotFound(source, file, bookmark, bookmarks), file) :
                                             (Errors.ExternalBookmarkNotFound(source, reference, bookmark, bookmarks), file));
             }
 

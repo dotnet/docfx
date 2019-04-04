@@ -33,7 +33,7 @@ namespace Microsoft.Docs.Build
                     case HtmlBlock htmlBlock when htmlBlock.Type == HtmlBlockType.Comment:
                         break;
                     default:
-                        errors.Add(Errors.InvalidTocSyntax(new SourceInfo(null, block.Line, block.Column), file.FilePath, tocContent.Substring(block.Span.Start, block.Span.Length)));
+                        errors.Add(Errors.InvalidTocSyntax(new SourceInfo(file.FilePath, block.Line, block.Column), tocContent.Substring(block.Span.Start, block.Span.Length)));
                         break;
                 }
             }
@@ -144,7 +144,7 @@ namespace Microsoft.Docs.Build
                 {
                     if (!(child is LiteralInline literal))
                     {
-                        errors.Add(Errors.InvalidTocSyntax(new SourceInfo(null, inline.Line, inline.Column), filePath));
+                        errors.Add(Errors.InvalidTocSyntax(new SourceInfo(filePath, inline.Line, inline.Column)));
                         return null;
                     }
 
