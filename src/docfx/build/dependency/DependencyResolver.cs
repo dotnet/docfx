@@ -38,7 +38,7 @@ namespace Microsoft.Docs.Build
 
         // forLandingPage should not be used, it is a hack to handle some specific logic for landing page based on the user input for now
         // which needs to be removed once the user input is correct
-        public (Error error, string link, Document file) ResolveLink(string path, Document relativeTo, Document resultRelativeTo, Action<Document> buildChild, SourceInfo range)
+        public (Error error, string link, Document file) ResolveLink(string path, Document relativeTo, Document resultRelativeTo, Action<Document> buildChild, SourceInfo source)
         {
             var (error, link, fragment, hrefType, file) = TryResolveHref(relativeTo, path, resultRelativeTo);
 

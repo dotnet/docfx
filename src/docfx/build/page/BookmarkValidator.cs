@@ -10,9 +10,9 @@ namespace Microsoft.Docs.Build
     internal class BookmarkValidator
     {
         private readonly ConcurrentDictionary<Document, HashSet<string>> _bookmarksByFile = new ConcurrentDictionary<Document, HashSet<string>>();
-        private readonly ConcurrentBag<(Document file, Document dependency, string bookmark, bool isSelfBookmark, SourceInfo range)> _references = new ConcurrentBag<(Document file, Document dependency, string bookmark, bool isSelfBookmark, SourceInfo range)>();
+        private readonly ConcurrentBag<(Document file, Document dependency, string bookmark, bool isSelfBookmark, SourceInfo source)> _references = new ConcurrentBag<(Document file, Document dependency, string bookmark, bool isSelfBookmark, SourceInfo source)>();
 
-        public void AddBookmarkReference(Document file, Document reference, string fragment, bool isSelfBookmark, SourceInfo range)
+        public void AddBookmarkReference(Document file, Document reference, string fragment, bool isSelfBookmark, SourceInfo source)
         {
             Debug.Assert(string.IsNullOrEmpty(fragment) || fragment[0] == '#');
 

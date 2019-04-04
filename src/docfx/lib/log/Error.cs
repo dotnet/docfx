@@ -27,12 +27,11 @@ namespace Microsoft.Docs.Build
 
         public int Column { get; }
 
-        public Error(
-            ErrorLevel level,
-            string code,
-            string message,
-            SourceInfo sourceInfo = null,
-            string jsonPath = "")
+        public Error(ErrorLevel level, string code, string message, SourceInfo source, string jsonPath = "")
+            : this(level, code, message, source?.File, source?.StartLine ?? 0, source?.StartColumn ?? 0, jsonPath)
+        { }
+
+        public Error(ErrorLevel level, string code, string message, string file = null, int line = 0, int column = 0, string jsonPath = "")
         {
             Debug.Assert(!string.IsNullOrEmpty(code));
             Debug.Assert(Regex.IsMatch(code, "^[a-z0-9-]{5,32}$"), "Error code should only contain dash and letters in lowercase");
@@ -42,12 +41,12 @@ namespace Microsoft.Docs.Build
             Level = level;
             Code = code;
             Message = message;
-            File = sourceInfo?.File;
-            Line = sourceInfo?.StartLine ?? 0;
-            Column = sourceInfo?.StartColumn ?? 0;
+            File = file;
+            Line = line;
+            Column = column;
         }
 
-        public Error WithSourceInfo(SourceInfo sourceInfo) => new Error(Level, Code, Message, sourceInfo, JsonPath);
+        public Error WithSourceInfo(SourceInfo source) => new Error(Level, Code, Message, source, JsonPath);
 
         public override string ToString() => ToString(Level);
 
