@@ -15,7 +15,6 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals.Outputs
         private HashSet<ExpandedDependencyItem> _dps;
         private OSPlatformSensitiveDictionary<HashSet<ExpandedDependencyItem>> _index = new OSPlatformSensitiveDictionary<HashSet<ExpandedDependencyItem>>();
         private OSPlatformSensitiveDictionary<HashSet<ExpandedDependencyItem>> _inverseIndex = new OSPlatformSensitiveDictionary<HashSet<ExpandedDependencyItem>>();
-        private static ExpandedDependencyMap _empty = new ExpandedDependencyMap(Enumerable.Empty<ExpandedDependencyItem>());
 
         private ExpandedDependencyMap(IEnumerable<ExpandedDependencyItem> dps)
         {
@@ -23,10 +22,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals.Outputs
             BuildIndex();
         }
 
-        public static ExpandedDependencyMap Empty
-        {
-            get { return _empty; }
-        }
+        public static ExpandedDependencyMap Empty { get; } = new ExpandedDependencyMap(Enumerable.Empty<ExpandedDependencyItem>());
 
         public void Save(TextWriter writer)
         {

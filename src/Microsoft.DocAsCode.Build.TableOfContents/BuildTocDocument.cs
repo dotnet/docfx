@@ -28,9 +28,6 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
         /// 1. Expand the TOC reference
         /// 2. Resolve homepage
         /// </summary>
-        /// <param name="models"></param>
-        /// <param name="host"></param>
-        /// <returns></returns>
         public override IEnumerable<FileModel> Prebuild(ImmutableList<FileModel> models, IHostService host)
         {
             var resolvedModels = TocHelper.Resolve(models, host).ToList();
@@ -97,7 +94,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             var allSourceFiles = host.SourceFiles;
             var tocInfos = models.Select(m => new TocInfo(m)).ToArray();
             Parallel.ForEach(
-                allSourceFiles.Keys.Except(nearest.Keys, FilePathComparer.OSPlatformSensitiveStringComparer).ToList(),
+                EnumerateNotInTocArticles(),
                 new ParallelOptions { MaxDegreeOfParallelism = parallelism },
                 item =>
                 {
@@ -111,6 +108,13 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
                         nearest[item] = near;
                     }
                 });
+
+            IEnumerable<string> EnumerateNotInTocArticles()
+            {
+                return from pair in allSourceFiles
+                       where pair.Value.Type == DocumentType.Article && !nearest.ContainsKey(pair.Key)
+                       select pair.Key;
+            }
         }
 
         private void UpdateNearestTocCore(IHostService host, string item, FileModel toc, ConcurrentDictionary<string, RelativeInfo> nearest)
