@@ -7,6 +7,7 @@ v2.42(Pre-release)
 2. Prevent adding duplicate HTML files when generating a PDF
 3. Added the ability to specify the type of outline to use when generating a PDF.
 4. Replaced iTextSharp with PdfSharp (#4250)
+5. Removed support for OutlineOption.CustomOutline when generating a PDF.
 
 v2.41
 -----------

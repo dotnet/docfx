@@ -16,15 +16,12 @@ namespace Microsoft.DocAsCode.HtmlToPdf
     using Microsoft.DocAsCode.Plugins;
 
     using PdfSharp.Pdf;
-    using PdfSharp.Pdf.Actions;
-    using PdfSharp.Pdf.Advanced;
     using PdfSharp.Pdf.IO;
 
     public class HtmlToPdfConverter
     {
         #region Fields
 
-        private const string OutLineKidsName = "Kids";
         private const int TimeoutInMilliseconds = 60 * 1000;
 
         private readonly HtmlToPdfOptions _htmlToPdfOptions;
@@ -32,8 +29,6 @@ namespace Microsoft.DocAsCode.HtmlToPdf
         private readonly IList<string> _htmlFilePaths;
 
         private int _currentNumberOfPages;
-
-        public IList<Dictionary<string, object>> CustomOutlines { get; set; }
 
         #endregion
 
@@ -79,7 +74,6 @@ namespace Microsoft.DocAsCode.HtmlToPdf
         {
             Guard.ArgumentNotNullOrEmpty(outputFileName, nameof(outputFileName));
             Guard.ArgumentNotNullOrEmpty(Path.GetFileName(outputFileName), $"There is no file name {nameof(outputFileName)}.");
-            GuardCustomOutlinesNotNull();
 
             string directoryName = Path.GetDirectoryName(outputFileName);
             if (!string.IsNullOrEmpty(directoryName))
@@ -109,15 +103,6 @@ namespace Microsoft.DocAsCode.HtmlToPdf
             Guard.ArgumentNotNullOrEmpty(path, nameof(path));
 
             return $"\"{NormalizePath(path)}\"";
-        }
-
-        private void GuardCustomOutlinesNotNull()
-        {
-            if (_htmlToPdfOptions.OutlineOption == OutlineOption.CustomOutline)
-            {
-                Guard.ArgumentNotNull(CustomOutlines, nameof(CustomOutlines));
-                Guard.Argument(() => CustomOutlines.All(p => p != null), nameof(CustomOutlines), $"{nameof(CustomOutlines)} cannot contain null outline.");
-            }
         }
 
         private void ConvertToStreamCore(string arguments, Stream stream)
@@ -229,13 +214,14 @@ namespace Microsoft.DocAsCode.HtmlToPdf
         {
             switch (_htmlToPdfOptions.OutlineOption)
             {
-                case OutlineOption.CustomOutline:
-                    throw new NotImplementedException();
+                case OutlineOption.NoOutline:
+                case OutlineOption.WkDefaultOutline:
+                    break;
                 case OutlineOption.DefaultOutline:
                     AddOutlines(pdfDocument);
                     break;
                 default:
-                    return;
+                    throw new NotSupportedException(_htmlToPdfOptions.OutlineOption.ToString());
             }
         }
 
