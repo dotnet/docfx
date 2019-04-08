@@ -18,33 +18,28 @@ namespace Microsoft.Docs.Build
 
         private readonly GitCommitProvider _gitCommitProvider;
 
-        private ContributionProvider(GitHubUserCache gitHubUserCache, GitCommitProvider gitCommitProvider)
+        public ContributionProvider(Docset docset, GitHubUserCache gitHubUserCache, GitCommitProvider gitCommitProvider)
         {
             Debug.Assert(gitCommitProvider != null);
 
             _gitHubUserCache = gitHubUserCache;
             _gitCommitProvider = gitCommitProvider;
-        }
 
-        public static async Task<ContributionProvider> Create(Docset docset, GitHubUserCache cache, GitCommitProvider gitCommitProvider)
-        {
-            var result = new ContributionProvider(cache, gitCommitProvider);
-            await result.LoadCommitsTime(docset);
-            return result;
+            LoadCommitsTime(docset);
         }
 
         public async Task<(List<Error> error, Contributor author, List<Contributor> contributors, DateTime updatedAt)> GetAuthorAndContributors(
             Document document,
-            string authorName)
+            SourceInfo<string> authorName)
         {
             Debug.Assert(document != null);
-            var (repo, pathToRepo, commits) = await _gitCommitProvider.GetCommitHistory(document);
+            var (repo, pathToRepo, commits) = _gitCommitProvider.GetCommitHistory(document);
             if (repo is null)
             {
                 return default;
             }
 
-            var contributionCommits = await GetContributionCommits();
+            var contributionCommits = GetContributionCommits();
 
             var excludes = document.Docset.Config.Contribution.ExcludedContributors;
 
@@ -104,7 +99,7 @@ namespace Microsoft.Docs.Build
                     {
                         // Remove author from contributors if author name is specified
                         var (error, result) = await _gitHubUserCache.GetByLogin(authorName);
-                        errors.AddIfNotNull(error);
+                        errors.AddIfNotNull(error?.WithRange(authorName?.Range ?? default));
                         return result?.ToContributor();
                     }
                 }
@@ -123,14 +118,14 @@ namespace Microsoft.Docs.Build
                 return null;
             }
 
-            async Task<List<GitCommit>> GetContributionCommits()
+            List<GitCommit> GetContributionCommits()
             {
                 var result = commits;
                 var bilingual = document.Docset.IsLocalized() && document.Docset.Config.Localization.Bilingual;
                 var contributionBranch = bilingual && LocalizationUtility.TryGetContributionBranch(repo.Branch, out var cBranch) ? cBranch : null;
                 if (!string.IsNullOrEmpty(contributionBranch))
                 {
-                    (_, _, result) = await _gitCommitProvider.GetCommitHistory(document, contributionBranch);
+                    (_, _, result) = _gitCommitProvider.GetCommitHistory(document, contributionBranch);
                 }
 
                 return result;
@@ -148,12 +143,12 @@ namespace Microsoft.Docs.Build
             return File.GetLastWriteTimeUtc(Path.Combine(document.Docset.DocsetPath, document.FilePath));
         }
 
-        public async Task<(string contentGitUrl, string originalContentGitUrl, string originalContentGitUrlTemplate, string gitCommit)>
+        public (string contentGitUrl, string originalContentGitUrl, string originalContentGitUrlTemplate, string gitCommit)
             GetGitUrls(Document document)
         {
             Debug.Assert(document != null);
 
-            var (repo, pathToRepo, commits) = await _gitCommitProvider.GetCommitHistory(document);
+            var (repo, pathToRepo, commits) = _gitCommitProvider.GetCommitHistory(document);
             if (repo is null)
                 return default;
 
@@ -201,11 +196,11 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private async Task LoadCommitsTime(Docset docset)
+        private void LoadCommitsTime(Docset docset)
         {
             if (!string.IsNullOrEmpty(docset.Config.Contribution.GitCommitsTime))
             {
-                var (_, content, _) = await RestoreMap.GetRestoredFileContent(docset, docset.Config.Contribution.GitCommitsTime);
+                var (_, content, _) = RestoreMap.GetRestoredFileContent(docset, docset.Config.Contribution.GitCommitsTime);
 
                 foreach (var commit in JsonUtility.Deserialize<GitCommitsTime>(content).Commits)
                 {

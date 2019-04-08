@@ -74,7 +74,7 @@ namespace Microsoft.Docs.Build
             OverwriteConfig(configObject, locale ?? options.Locale, GetBranch());
 
             var deserializeErrors = new List<Error>();
-            (deserializeErrors, config) = JsonUtility.ToObjectWithSchemaValidation<Config>(configObject);
+            (deserializeErrors, config) = JsonUtility.ToObject<Config>(configObject);
             errors.AddRange(deserializeErrors);
 
             config.ConfigFileName = !configExists
@@ -99,12 +99,14 @@ namespace Microsoft.Docs.Build
             JToken config = null;
             if (fileName.EndsWith(".yml", StringComparison.OrdinalIgnoreCase))
             {
-                (errors, config) = YamlUtility.Deserialize(content);
+                (errors, config) = YamlUtility.Parse(content);
             }
             else if (fileName.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
             {
-                (errors, config) = JsonUtility.DeserializeWithSchemaValidation<JObject>(content);
+                (errors, config) = JsonUtility.Parse(content);
             }
+
+            JsonUtility.TrimStringValues(config);
 
             if (config is JObject)
             {
@@ -146,7 +148,7 @@ namespace Microsoft.Docs.Build
                 {
                     if (extend is JValue value && value.Value is string str)
                     {
-                        var (_, content, _) = RestoreMap.GetRestoredFileContent(docsetPath, str).GetAwaiter().GetResult(); /*todo: remove GetResult()*/
+                        var (_, content, _) = RestoreMap.GetRestoredFileContent(docsetPath, str);
                         var (extendErros, extendConfigObject) = LoadConfigObjectContent(str, content);
                         errors.AddRange(extendErros);
                         JsonUtility.Merge(result, extendConfigObject);

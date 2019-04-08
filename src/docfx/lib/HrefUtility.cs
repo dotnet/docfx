@@ -111,6 +111,10 @@ namespace Microsoft.Docs.Build
 
             if (ch == '/' || ch == '\\')
             {
+                if (href.Length > 1 && (href[1] == '/' || href[1] == '\\'))
+                {
+                    return HrefType.External;
+                }
                 return HrefType.AbsolutePath;
             }
 

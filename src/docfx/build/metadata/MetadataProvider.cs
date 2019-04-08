@@ -51,9 +51,8 @@ namespace Microsoft.Docs.Build
                 JsonUtility.Merge(result, yamlHeader);
             }
 
-            var (schemaErrors, obj) = JsonUtility.ToObjectWithSchemaValidation<T>(result);
-            errors.AddRange(schemaErrors);
-
+            // We are validating against the merged JObject so discard the validation result here.
+            var (_, obj) = JsonUtility.ToObject<T>(result);
             return (errors, obj);
         }
     }

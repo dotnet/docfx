@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
@@ -18,6 +19,7 @@ namespace Microsoft.Docs.Build
         private static readonly Metric s_operationTimeMetric = s_telemetryClient.GetMetric(new MetricIdentifier(null, $"time", "name", "os", "version", "repo", "branch"));
         private static readonly Metric s_errorCountMetric = s_telemetryClient.GetMetric(new MetricIdentifier(null, $"error", "code", "level", "os", "version", "repo", "branch"));
         private static readonly Metric s_cacheCountMetric = s_telemetryClient.GetMetric(new MetricIdentifier(null, $"cache", "name", "state", "os", "version", "repo", "branch"));
+        private static readonly Metric s_buildItemCountMetric = s_telemetryClient.GetMetric(new MetricIdentifier(null, $"count", "name", "os", "version", "repo", "branch"));
 
         private static readonly string s_version = typeof(Telemetry).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ?? "<null>";
         private static readonly string s_os = RuntimeInformation.OSDescription ?? "<null>";
@@ -36,6 +38,11 @@ namespace Microsoft.Docs.Build
             s_operationTimeMetric.TrackValue(duration.TotalMilliseconds, name, s_os, s_version, s_repo, s_branch);
         }
 
+        public static IDisposable TrackingOperationTime(TelemetryName name)
+        {
+            return new PerfScope(name.ToString());
+        }
+
         public static void TrackErrorCount(string code, ErrorLevel level)
         {
             s_errorCountMetric.TrackValue(1, code, level.ToString(), s_os, s_version, s_repo, s_branch);
@@ -49,6 +56,16 @@ namespace Microsoft.Docs.Build
         public static void TrackCacheMissCount(TelemetryName name)
         {
             s_cacheCountMetric.TrackValue(1, name.ToString(), "miss", s_os, s_version, s_repo, s_branch);
+        }
+
+        public static void TrackBuildItemCount(ContentType contentType)
+        {
+            s_buildItemCountMetric.TrackValue(1, $"{TelemetryName.BuildItems}-{contentType}", s_os, s_version, s_repo, s_branch);
+        }
+
+        public static void TrackBuildCommitCount(int count)
+        {
+            s_buildItemCountMetric.TrackValue(count, TelemetryName.BuildCommits.ToString(), s_os, s_version, s_repo, s_branch);
         }
 
         public static void TrackException(Exception ex)
@@ -67,6 +84,23 @@ namespace Microsoft.Docs.Build
             // Default timeout of TelemetryClient.Flush is 100 seconds,
             // but we only want to wait for 2 seconds at most.
             Task.WaitAny(Task.Run(s_telemetryClient.Flush), Task.Delay(2000));
+        }
+
+        private class PerfScope : IDisposable
+        {
+            private readonly string _name;
+            private Stopwatch _stopwatch;
+
+            public PerfScope(string name)
+            {
+                _name = name;
+                _stopwatch = Stopwatch.StartNew();
+            }
+
+            public void Dispose()
+            {
+                TrackOperationTime(_name, _stopwatch.Elapsed);
+            }
         }
     }
 }

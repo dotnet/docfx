@@ -16,18 +16,15 @@ namespace Microsoft.Docs.Build
         public static Task Restore(List<string> urls, Config config, bool @implicit = false)
         {
             return ParallelUtility.ForEach(
-                   urls,
-                   restoreUrl =>
-                   {
-                       return Restore(restoreUrl, config, @implicit);
-                   });
+                urls,
+                restoreUrl => Restore(restoreUrl, config, @implicit));
         }
 
         public static async Task Restore(string url, Config config, bool @implicit = false)
         {
             var filePath = GetRestoreContentPath(url);
 
-            var (existingContent, existingEtagContent) = await RestoreMap.TryGetRestoredFileContent(url);
+            var (existingContent, existingEtagContent) = RestoreMap.TryGetRestoredFileContent(url);
             if (!string.IsNullOrEmpty(existingContent) && @implicit)
                 return;
 
@@ -40,7 +37,7 @@ namespace Microsoft.Docs.Build
                 return;
             }
 
-            await ProcessUtility.RunInsideMutex(filePath, () =>
+            ProcessUtility.RunInsideMutex(filePath, () =>
             {
                 if (!File.Exists(filePath))
                 {
@@ -53,8 +50,6 @@ namespace Microsoft.Docs.Build
                 }
 
                 File.WriteAllText(GetRestoreEtagPath(url), etag?.ToString());
-
-                return Task.CompletedTask;
             });
         }
 

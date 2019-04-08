@@ -42,7 +42,9 @@ namespace Microsoft.Docs.Build
                         var nestedLineInfo = value as IJsonLineInfo;
                         if (!type.Value.IsInstanceOfType(value))
                         {
-                            errors.Add(Errors.ViolateSchema(new Range(nestedLineInfo?.LineNumber ?? 0, nestedLineInfo?.LinePosition ?? 0), $"Expected type {type.Value.Name}, please input string or type compatible with {type.Value.Name}.", value.Path));
+                            errors.Add(Errors.ViolateSchema(
+                                new Range(nestedLineInfo?.LineNumber ?? 0, nestedLineInfo?.LinePosition ?? 0),
+                                $"Expected type {type.Value.Name}, please input string or type compatible with {type.Value.Name}."));
                         }
                     }
                 }
@@ -67,7 +69,7 @@ namespace Microsoft.Docs.Build
 
             if (!errors.Any())
             {
-                var (schemaErrors, _) = JsonUtility.ToObjectWithSchemaValidation<FileMetadata>(metadata);
+                var (schemaErrors, _) = JsonUtility.ToObject<FileMetadata>(metadata);
                 errors.AddRange(schemaErrors);
             }
             return errors;

@@ -15,8 +15,15 @@ namespace Microsoft.Docs.Build
 
         public MonikerComparer Comparer { get; }
 
-        private MonikerProvider(Docset docset, MonikerDefinitionModel monikerDefinition)
+        public MonikerProvider(Docset docset)
         {
+            var monikerDefinition = new MonikerDefinitionModel();
+            if (!string.IsNullOrEmpty(docset.Config.MonikerDefinition))
+            {
+                var (_, content, _) = RestoreMap.GetRestoredFileContent(docset, docset.Config.MonikerDefinition);
+                monikerDefinition = JsonUtility.Deserialize<MonikerDefinitionModel>(content);
+            }
+
             foreach (var (key, monikerRange) in docset.Config.MonikerRange)
             {
                 _rules.Add((GlobUtility.CreateGlobMatcher(key), monikerRange));
@@ -25,18 +32,6 @@ namespace Microsoft.Docs.Build
 
             _rangeParser = new MonikerRangeParser(monikerDefinition);
             Comparer = new MonikerComparer(monikerDefinition);
-        }
-
-        public static async Task<MonikerProvider> Create(Docset docset)
-        {
-            var monikerDefinition = new MonikerDefinitionModel();
-            if (!string.IsNullOrEmpty(docset.Config.MonikerDefinition))
-            {
-                var (_, content, _) = await RestoreMap.GetRestoredFileContent(docset, docset.Config.MonikerDefinition);
-                monikerDefinition = JsonUtility.Deserialize<MonikerDefinitionModel>(content);
-            }
-
-            return new MonikerProvider(docset, monikerDefinition);
         }
 
         public (List<Error> errors, List<string> monikers) GetFileLevelMonikers(Document file, MetadataProvider metadataProvider)

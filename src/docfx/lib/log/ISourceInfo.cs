@@ -3,13 +3,8 @@
 
 namespace Microsoft.Docs.Build
 {
-    internal enum TelemetryName
+    internal interface ISourceInfo
     {
-        GitCommitCache,
-        GitRepositoryCache,
-        GitHubUserCache,
-        LoadCommitHistory,
-        BuildItems,
-        BuildCommits,
+        object Value { get; }
     }
 }
