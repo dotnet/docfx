@@ -26,10 +26,6 @@ function runTests() {
     }
 }
 
-function checkSchema() {
-    exec "dotnet run -p tools/CreateJsonSchema"
-}
-
 function createNuGetPackage() {
     # Create NuGet package
     $commitSha = & { git describe --always }
@@ -46,5 +42,4 @@ function createNuGetPackage() {
 }
 
 runTests
-checkSchema
 createNuGetPackage

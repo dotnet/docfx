@@ -76,19 +76,27 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public static void LogError(Error error)
+        internal static void LogError(Error error)
         {
             t_status.Value.Peek().Errors.Add(error);
         }
 
+        internal static string GetLink(string path, object relativeTo, object resultRelativeTo, MarkdownObject origin)
+        {
+            var status = t_status.Value.Peek();
+            var (error, link, _) = status.DependencyResolver.ResolveLink(path, (Document)relativeTo, (Document)resultRelativeTo, status.BuildChild, origin.ToRange());
+            status.Errors.AddIfNotNull(error?.WithRange(origin.ToRange()));
+            return link;
+        }
+
         private static MarkdownPipeline CreateMarkdownPipeline()
         {
-            var markdownContext = new MarkdownContext(GetToken, LogWarning, LogError, ReadFile, GetLink);
+            var markdownContext = new MarkdownContext(GetToken, LogWarning, LogError, ReadFile);
 
             return new MarkdownPipelineBuilder()
                 .UseYamlFrontMatter()
                 .UseDocfxExtensions(markdownContext)
-                .UseResolveHtmlLinks(markdownContext)
+                .UseResolveLink()
                 .UseResolveXref(ResolveXref)
                 .UseMonikerZone(ParseMonikerRange)
                 .Build();
@@ -96,12 +104,12 @@ namespace Microsoft.Docs.Build
 
         private static MarkdownPipeline CreateInlineMarkdownPipeline()
         {
-            var markdownContext = new MarkdownContext(GetToken, LogWarning, LogError, ReadFile, GetLink);
+            var markdownContext = new MarkdownContext(GetToken, LogWarning, LogError, ReadFile);
 
             return new MarkdownPipelineBuilder()
                 .UseYamlFrontMatter()
                 .UseDocfxExtensions(markdownContext)
-                .UseResolveHtmlLinks(markdownContext)
+                .UseResolveLink()
                 .UseResolveXref(ResolveXref)
                 .UseMonikerZone(ParseMonikerRange)
                 .UseInlineOnly()
@@ -148,14 +156,6 @@ namespace Microsoft.Docs.Build
             var (error, content, file) = status.DependencyResolver.ResolveContent(path, (Document)relativeTo, origin.ToRange());
             status.Errors.AddIfNotNull(error?.WithRange(origin.ToRange()));
             return (content, file);
-        }
-
-        private static string GetLink(string path, object relativeTo, object resultRelativeTo, MarkdownObject origin)
-        {
-            var status = t_status.Value.Peek();
-            var (error, link, _) = status.DependencyResolver.ResolveLink(path, (Document)relativeTo, (Document)resultRelativeTo, status.BuildChild, origin.ToRange());
-            status.Errors.AddIfNotNull(error?.WithRange(origin.ToRange()));
-            return link;
         }
 
         private static (Error error, string href, string display, Document file) ResolveXref(string href, MarkdownObject origin)

@@ -9,15 +9,23 @@ using Microsoft.DocAsCode.MarkdigEngine.Extensions;
 
 namespace Microsoft.Docs.Build
 {
-    internal static class ResolveHtmlLinks
+    internal static class ResolveLinkExtension
     {
-        public static MarkdownPipelineBuilder UseResolveHtmlLinks(this MarkdownPipelineBuilder builder, MarkdownContext context)
+        public static MarkdownPipelineBuilder UseResolveLink(this MarkdownPipelineBuilder builder)
         {
             return builder.Use(document =>
             {
                 document.Visit(node =>
                 {
-                    if (node is HtmlBlock block)
+                    if (node is TabTitleBlock)
+                    {
+                        return true;
+                    }
+                    else if (node is LinkInline link && !link.IsAutoLink)
+                    {
+                        link.Url = MarkdownUtility.GetLink(link.Url, InclusionContext.File, InclusionContext.RootFile, link) ?? link.Url;
+                    }
+                    else if (node is HtmlBlock block)
                     {
                         block.Lines = new StringLineGroup(ResolveLinks(block.Lines.ToString(), block));
                     }
@@ -33,7 +41,7 @@ namespace Microsoft.Docs.Build
             {
                 return HtmlUtility.TransformLinks(
                     html,
-                    href => context.GetLink(href, InclusionContext.File, InclusionContext.RootFile, block));
+                    href => MarkdownUtility.GetLink(href, InclusionContext.File, InclusionContext.RootFile, block));
             }
         }
     }

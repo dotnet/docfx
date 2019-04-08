@@ -83,7 +83,7 @@ inputs:
   docs/b.md:
 outputs:
   build.log: |
-    ["error","violate-schema","Expected type String, please input String or type compatible with String.","docfx.yml","globalMetadata.title",3,5]
+    ["error","violate-schema","Expected type String, please input String or type compatible with String.","docfx.yml",3,5]
 ---
 # File metadata of object form
 inputs:
@@ -115,6 +115,22 @@ inputs:
 outputs:
   docs/a.json: |
     { "metadata": { "key": "another value" } }
+---
+# String values are trimmed in config
+inputs:
+  docfx.yml: |
+    globalMetadata:
+      key: ' value   '
+    redirections:
+      docs/redirect.md: '/absolute/path '
+  docs/a.md: |
+    [redirect](redirect.md?a#b)
+outputs:
+  docs/a.json: |
+    {
+      "metadata": { "key": "value" },
+      "content": "<p><a href=\"/absolute/path?a#b\">redirect</a></p>"
+    }
 ---
 # routes
 inputs:
@@ -276,7 +292,7 @@ inputs:
     [b](b.md)
 outputs:
   build.log: |
-    ["error","file-not-found","Cannot find file 'b.md' relative to 'docs/a.md'","docs/a.md","",1,1]
+    ["error","file-not-found","Cannot find file 'b.md' relative to 'docs/a.md'","docs/a.md",1,1]
 ---
 # Invalid redirection file
 inputs:
@@ -407,7 +423,7 @@ inputs:
 outputs:
   a.json:
   build.log: |
-    ["warning","unknown-field","Could not find member 'locales: zh-cn' on object of type 'Config'.","docfx.yml","['locales: zh-cn']",4,1]
+    ["warning","unknown-field","Could not find member 'locales: zh-cn' on object of type 'Config'.","docfx.yml",4,1]
 ---
 # redirect to in config.redirections must start with '/'
 inputs:
@@ -438,4 +454,4 @@ inputs:
           - 2
 outputs:
   build.log: |
-    ["error","violate-schema","Expected type String, please input string or type compatible with String.","docfx.yml","fileMetadata.title['docs/**']",4,7]
+    ["error","violate-schema","Expected type String, please input string or type compatible with String.","docfx.yml",4,7]

@@ -4,9 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Threading.Tasks;
-using System.Web;
 using HtmlAgilityPack;
 using Newtonsoft.Json.Linq;
 
@@ -40,7 +38,7 @@ namespace Microsoft.Docs.Build
             model.Bilingual = file.Docset.Config.Localization.Bilingual;
 
             (model.DocumentId, model.DocumentVersionIndependentId) = file.Docset.Redirections.TryGetDocumentId(file, out var docId) ? docId : file.Id;
-            (model.ContentGitUrl, model.OriginalContentGitUrl, model.OriginalContentGitUrlTemplate, model.Gitcommit) = await context.ContributionProvider.GetGitUrls(file);
+            (model.ContentGitUrl, model.OriginalContentGitUrl, model.OriginalContentGitUrlTemplate, model.Gitcommit) = context.ContributionProvider.GetGitUrls(file);
 
             List<Error> contributorErrors;
             (contributorErrors, model.Author, model.Contributors, model.UpdatedAt) = await context.ContributionProvider.GetAuthorAndContributors(file, metadata.Author);
@@ -150,7 +148,7 @@ namespace Microsoft.Docs.Build
         private static async Task<(List<Error> errors, Schema schema, PageModel model, FileMetadata metadata)>
             LoadYaml(Context context, Document file, Action<Document> buildChild)
         {
-            var (errors, token) = YamlUtility.Deserialize(file, context);
+            var (errors, token) = YamlUtility.Parse(file, context);
 
             return await LoadSchemaDocument(context, errors, token, file, buildChild);
         }
@@ -158,7 +156,7 @@ namespace Microsoft.Docs.Build
         private static async Task<(List<Error> errors, Schema schema, PageModel model, FileMetadata metadata)>
             LoadJson(Context context, Document file, Action<Document> buildChild)
         {
-            var (errors, token) = JsonUtility.Deserialize(file, context);
+            var (errors, token) = JsonUtility.Parse(file, context);
 
             return await LoadSchemaDocument(context, errors, token, file, buildChild);
         }
@@ -175,7 +173,7 @@ namespace Microsoft.Docs.Build
                 throw Errors.SchemaNotFound(file.Mime).ToException();
             }
 
-            var (schemaViolationErrors, content) = JsonUtility.ToObjectWithSchemaValidation(token, schema.Type, transform: AttributeTransformer.TransformSDP(context, file, buildChild));
+            var (schemaViolationErrors, content) = JsonUtility.ToObject(token, schema.Type, transform: AttributeTransformer.TransformSDP(context, file, buildChild));
             errors.AddRange(schemaViolationErrors);
 
             if (file.Docset.Legacy && schema.Attribute is PageSchemaAttribute)
@@ -231,7 +229,7 @@ namespace Microsoft.Docs.Build
             {
                 if (isPage && context.Template != null)
                 {
-                    return TemplateTransform.Transform(context.Template, model, file);
+                    return context.Template.Transform(model, file);
                 }
 
                 return (model, null);
