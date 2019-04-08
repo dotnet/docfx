@@ -289,9 +289,10 @@ namespace Microsoft.Docs.Build
                 if (file.FilePath.EndsWith(".md", PathUtility.PathComparison))
                 {
                     var (yamlHeaderErrors, yamlHeader) = ExtractYamlHeader.Extract(file, context);
+                    errors.AddRange(yamlHeaderErrors);
 
                     var (fileMetaErrors, fileMetadata) = context.MetadataProvider.GetMetadata<FileMetadata>(file, yamlHeader);
-                    errors.AddRange(yamlHeaderErrors);
+                    errors.AddRange(fileMetaErrors);
 
                     if (!string.IsNullOrEmpty(fileMetadata.Uid))
                     {
@@ -327,6 +328,11 @@ namespace Microsoft.Docs.Build
             catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
             {
                 context.Report.Write(file.ToString(), dex.Error);
+            }
+            catch
+            {
+                Console.WriteLine($"Load {file.FilePath} xref failed");
+                throw;
             }
         }
 
