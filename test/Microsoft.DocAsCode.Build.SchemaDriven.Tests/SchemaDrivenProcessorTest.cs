@@ -271,7 +271,7 @@ File.ReadAllLines(outputFilePath).Where(s => !string.IsNullOrWhiteSpace(s)).Sele
                 Assert.True(File.Exists(outputFilePath));
                 var outputFileContent = File.ReadAllLines(outputFilePath);
                 Assert.Equal($@"
-eat:<p>eat event of cat. Every cat must implement this event.</p>
+eat:<p>eat event of cat. Every cat must implement this event.
 This method is within <a class=""xref"" href=""CatLibrary.ICat.html"">ICat</a></p>
 ".Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None),
                     outputFileContent);
