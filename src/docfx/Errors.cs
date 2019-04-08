@@ -180,8 +180,8 @@ namespace Microsoft.Docs.Build
         /// Examples:
         ///   - unclosed ([{
         /// </summary>
-        public static Error JsonSyntaxError(in Range range, string message, string path)
-            => new Error(ErrorLevel.Error, "json-syntax-error", $"{message}", range: range, jsonPath: path);
+        public static Error JsonSyntaxError(in Range range, string message)
+            => new Error(ErrorLevel.Error, "json-syntax-error", $"{message}", range: range);
 
         /// <summary>
         /// Used empty link in article.md.
@@ -327,23 +327,23 @@ namespace Microsoft.Docs.Build
         ///   - article.md has null-valued yaml header property
         ///   - toc.yml has node with null-value property
         /// </summary>
-        public static Error NullValue(in Range range, string name, string path)
-            => new Error(ErrorLevel.Info, "null-value", $"'{name}' contains null value", range: range, jsonPath: path);
+        public static Error NullValue(in Range range, string name)
+            => new Error(ErrorLevel.Info, "null-value", $"'{name}' contains null value", range: range);
 
-        public static Error NullArrayValue(in Range range, string name, string path)
-            => new Error(ErrorLevel.Warning, "null-array-value", $"'{name}' contains null value, the null value has been removed", range: range, jsonPath: path);
+        public static Error NullArrayValue(in Range range, string name)
+            => new Error(ErrorLevel.Warning, "null-array-value", $"'{name}' contains null value, the null value has been removed", range: range);
 
         /// <summary>
         /// Defined extra field(s) in input model in schema document(json, yml).
         /// </summary>
-        public static Error UnknownField(in Range range, string propName, string typeName, string path)
-            => new Error(ErrorLevel.Warning, "unknown-field", $"Could not find member '{propName}' on object of type '{typeName}'.", range: range, jsonPath: path);
+        public static Error UnknownField(in Range range, string propName, string typeName)
+            => new Error(ErrorLevel.Warning, "unknown-field", $"Could not find member '{propName}' on object of type '{typeName}'.", range: range);
 
         /// <summary>
         /// Schema document with violate content type/value against predefined models(not syntax error).
         /// </summary>
-        public static Error ViolateSchema(in Range range, string message, string path)
-            => new Error(ErrorLevel.Error, "violate-schema", $"{message}", range: range, jsonPath: path);
+        public static Error ViolateSchema(in Range range, string message)
+            => new Error(ErrorLevel.Error, "violate-schema", $"{message}", range: range);
 
         /// <summary>
         /// Used unknown YamlMime.

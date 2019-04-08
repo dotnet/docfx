@@ -9,7 +9,7 @@ namespace Microsoft.Docs.Build
     {
         private static readonly Regex s_azureRepoUrlRegex =
             new Regex(
-                @"^(https|http):\/\/(?<account>[^\/\s]+)\.visualstudio\.com\/(?<project>[^\/\s]+)\/_git\/(?<repository>[A-Za-z0-9_.-]+)((\/)?|(#(?<branch>\S+))?)$",
+                @"^(https|http):\/\/(?<account>[^\/\s]+)\.visualstudio\.com\/(?<collection>[^\/\s]+\/)?(?<project>[^\/\s]+)\/_git\/(?<repository>[A-Za-z0-9_.-]+)((\/)?|(#(?<branch>\S+))?)$",
                 RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         public static bool TryParse(string remote, out string project, out string repo)

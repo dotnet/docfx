@@ -21,8 +21,9 @@ namespace Microsoft.Docs.Build
 
         public static bool IsDocfxException(Exception ex, out DocfxException docfxException)
         {
-            docfxException = ex as DocfxException ?? ex.InnerException as DocfxException;
-            return docfxException != null;
+            docfxException = ex as DocfxException;
+
+            return docfxException != null ? true : IsDocfxException(ex.InnerException, out docfxException);
         }
     }
 }

@@ -8,9 +8,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
 {
@@ -19,8 +17,8 @@ namespace Microsoft.Docs.Build
     /// </summary>
     internal static class ProcessUtility
     {
-        private const int _defaultLockExpireTimeInSecond = 60 * 60 * 6; /*six hours*/
-        private static AsyncLocal<ImmutableStack<string>> t_innerCall = new AsyncLocal<ImmutableStack<string>>();
+        private static readonly TimeSpan s_defaultLockExpireTime = TimeSpan.FromHours(6);
+        private static readonly AsyncLocal<ImmutableStack<string>> t_mutexRecursionStack = new AsyncLocal<ImmutableStack<string>>();
 
         public static bool IsExclusiveLockHeld(string lockName)
         {
@@ -181,17 +179,10 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
-        /// Start a new process and wait for its execution asynchroniously
+        /// Start a new process and wait for its execution to complete
         /// </summary>
-        public static Task<(string stdout, string stderr)> Execute(
-            string fileName, string commandLineArgs, string cwd = null, bool stdout = true, bool stderr = true)
+        public static string Execute(string fileName, string commandLineArgs, string cwd = null, bool stdout = true)
         {
-            Debug.Assert(!string.IsNullOrEmpty(fileName));
-
-            var tcs = new TaskCompletionSource<(string, string)>();
-
-            var error = new StringBuilder();
-            var output = new StringBuilder();
             var psi = new ProcessStartInfo
             {
                 FileName = fileName,
@@ -199,63 +190,19 @@ namespace Microsoft.Docs.Build
                 Arguments = commandLineArgs,
                 UseShellExecute = false,
                 RedirectStandardOutput = stdout,
-                RedirectStandardError = stderr,
+                RedirectStandardError = false,
             };
 
-            var process = new Process
-            {
-                EnableRaisingEvents = true,
-                StartInfo = psi,
-            };
+            var process = Process.Start(psi);
+            var result = stdout ? process.StandardOutput.ReadToEnd() : null;
+            process.WaitForExit();
 
-            if (stdout)
+            if (process.ExitCode != 0)
             {
-                process.OutputDataReceived += (sender, e) => output.AppendLine(e.Data);
-            }
-            if (stderr)
-            {
-                process.ErrorDataReceived += (sender, e) => error.AppendLine(e.Data);
+                throw new InvalidOperationException($"'\"{fileName}\" {commandLineArgs}' failed in directory '{cwd}' with exit code {process.ExitCode}: \nSTDOUT:'{result}'");
             }
 
-            var processExited = new object();
-            process.Exited += (a, b) =>
-            {
-                lock (processExited)
-                {
-                    // Wait for exit here to ensure the standard output/error is flushed.
-                    process.WaitForExit();
-                }
-
-                if (process.ExitCode == 0)
-                {
-                    tcs.TrySetResult((output.ToString().Trim(), error.ToString().Trim()));
-                }
-                else
-                {
-                    var message = $"'\"{fileName}\" {commandLineArgs}' failed in directory '{cwd}' with exit code {process.ExitCode}: \nSTDOUT:'{output}'\nSTDERR:\n'{error}'";
-
-                    tcs.TrySetException(new InvalidOperationException(message));
-                }
-            };
-
-            lock (processExited)
-            {
-                process.Start();
-
-                if (stdout)
-                {
-                    // Thread.Sleep(10000);
-                    // BeginOutputReadLine() and Exited event handler may have competition issue, above code can easily reproduce this problem
-                    // Add lock to ensure the locked area code can be always exected before exited event
-                    process.BeginOutputReadLine();
-                }
-                if (stderr)
-                {
-                    process.BeginErrorReadLine();
-                }
-            }
-
-            return tcs.Task;
+            return result;
         }
 
         /// <summary>
@@ -338,77 +285,39 @@ namespace Microsoft.Docs.Build
         /// </summary>
         /// <param name="mutexName">A globbaly unique mutext name</param>
         /// <param name="action">The action/resource you want to lock</param>
-        /// TODO: implement this with system mutex
         public static void RunInsideMutex(string mutexName, Action action)
         {
-            Debug.Assert(!string.IsNullOrEmpty(mutexName));
-            var lockPath = Path.Combine(AppData.MutexRoot, HashUtility.GetMd5Hash(mutexName));
-
-            // avoid the RunInsideMutex to be nested used with same mutex name
-            t_innerCall.Value = t_innerCall.Value ?? ImmutableStack<string>.Empty;
-            if (t_innerCall.Value.Contains(lockPath))
+            using (var mutex = new Mutex(initiallyOwned: false, $"Global\\{HashUtility.GetMd5Hash(mutexName)}"))
             {
-                throw new ApplicationException($"Nested call to RunInsideMutex is detected, mutex name: {mutexName}");
-            }
-            t_innerCall.Value = t_innerCall.Value.Push(lockPath);
+                while (!mutex.WaitOne(TimeSpan.FromSeconds(30)))
+                {
+#pragma warning disable CA2002 // Do not lock on objects with weak identity
+                    lock (Console.Out)
+#pragma warning restore CA2002
+                    {
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        Console.WriteLine($"Waiting for another process to access '{mutexName}'");
+                        Console.ResetColor();
+                    }
+                }
 
-            try
-            {
-                Directory.CreateDirectory(AppData.MutexRoot);
+                // avoid nested calls to RunInsideMutex with same mutex name
+                t_mutexRecursionStack.Value = t_mutexRecursionStack.Value ?? ImmutableStack<string>.Empty;
+                if (t_mutexRecursionStack.Value.Contains(mutexName))
+                {
+                    throw new ApplicationException($"Nested call to RunInsideMutex is detected, mutex name: {mutexName}");
+                }
+                t_mutexRecursionStack.Value = t_mutexRecursionStack.Value.Push(mutexName);
 
-                using (RetryUntilSucceed(mutexName, IsFileAlreadyExistsException, CreateFile))
+                try
                 {
                     action();
                 }
-
-                FileStream CreateFile() => new FileStream(
-                    lockPath,
-                    FileMode.CreateNew,
-                    FileAccess.ReadWrite,
-                    FileShare.None,
-                    1,
-                    FileOptions.DeleteOnClose);
-            }
-            finally
-            {
-                t_innerCall.Value = t_innerCall.Value.Pop();
-            }
-        }
-
-        // TODO: remove this method if possible
-        public static async Task RunInsideMutexAsync(string mutexName, Func<Task> action)
-        {
-            Debug.Assert(!string.IsNullOrEmpty(mutexName));
-            var lockPath = Path.Combine(AppData.MutexRoot, HashUtility.GetMd5Hash(mutexName));
-
-            // avoid the RunInsideMutex to be nested used with same mutex name
-            t_innerCall.Value = t_innerCall.Value ?? ImmutableStack<string>.Empty;
-            if (t_innerCall.Value.Contains(lockPath))
-            {
-                throw new ApplicationException($"Nested call to RunInsideMutex is detected, mutex name: {mutexName}");
-            }
-            t_innerCall.Value = t_innerCall.Value.Push(lockPath);
-
-            try
-            {
-                Directory.CreateDirectory(AppData.MutexRoot);
-
-                using (RetryUntilSucceed(mutexName, IsFileAlreadyExistsException, CreateFile))
+                finally
                 {
-                    await action();
+                    t_mutexRecursionStack.Value = t_mutexRecursionStack.Value.Pop();
+                    mutex.ReleaseMutex();
                 }
-
-                FileStream CreateFile() => new FileStream(
-                    lockPath,
-                    FileMode.CreateNew,
-                    FileAccess.ReadWrite,
-                    FileShare.None,
-                    1,
-                    FileOptions.DeleteOnClose);
-            }
-            finally
-            {
-                t_innerCall.Value = t_innerCall.Value.Pop();
             }
         }
 
@@ -419,51 +328,6 @@ namespace Microsoft.Docs.Build
         {
             return ex.ErrorCode == -2147467259 // Error_ENOENT = 0x1002D, No such file or directory
                 || ex.ErrorCode == 2; // ERROR_FILE_NOT_FOUND = 0x2, The system cannot find the file specified
-        }
-
-        /// <summary>
-        /// Checks if the exception thrown by new FileStream is caused by another process holding the file lock.
-        /// </summary>
-        public static bool IsFileAlreadyExistsException(Exception ex)
-        {
-            if (ex is IOException ioe)
-            {
-                return ex.HResult == 17 // Mac
-                    || ex.HResult == -2147024816; // Windows
-            }
-            return ex is UnauthorizedAccessException;
-        }
-
-        private static T RetryUntilSucceed<T>(string name, Func<Exception, bool> expectException, Func<T> action)
-        {
-            var retryDelay = 100;
-            var lastWait = DateTime.UtcNow;
-
-            while (true)
-            {
-                try
-                {
-                    return action();
-                }
-                catch (Exception ex) when (expectException(ex))
-                {
-                    if (DateTime.UtcNow - lastWait > TimeSpan.FromSeconds(30))
-                    {
-                        lastWait = DateTime.UtcNow;
-#pragma warning disable CA2002 // Do not lock on objects with weak identity
-                        lock (Console.Out)
-#pragma warning restore CA2002
-                        {
-                            Console.ForegroundColor = ConsoleColor.Yellow;
-                            Console.WriteLine($"Waiting for another process to access '{name}'");
-                            Console.ResetColor();
-                        }
-                    }
-
-                    Thread.Sleep(retryDelay);
-                    retryDelay = Math.Min(retryDelay + 100, 1000);
-                }
-            }
         }
 
         private static string GetLockFilePath(string lockName)
@@ -477,7 +341,7 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(lockInfo != null);
 
-            lockInfo.AcquiredBy.RemoveAll(r => DateTime.UtcNow - r.Date > TimeSpan.FromSeconds(_defaultLockExpireTimeInSecond));
+            lockInfo.AcquiredBy.RemoveAll(r => DateTime.UtcNow - r.Date > s_defaultLockExpireTime);
 
             if (!lockInfo.AcquiredBy.Any())
             {

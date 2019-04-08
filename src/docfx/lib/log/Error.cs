@@ -23,8 +23,6 @@ namespace Microsoft.Docs.Build
 
         public Range Range { get; }
 
-        public string JsonPath { get; }
-
         public int Line => Range.StartLine;
 
         public int Column => Range.StartColumn;
@@ -34,14 +32,12 @@ namespace Microsoft.Docs.Build
             string code,
             string message,
             string file = null,
-            in Range range = default,
-            string jsonPath = "")
+            in Range range = default)
         {
             Debug.Assert(!string.IsNullOrEmpty(code));
             Debug.Assert(Regex.IsMatch(code, "^[a-z0-9-]{5,32}$"), "Error code should only contain dash and letters in lowercase");
             Debug.Assert(!string.IsNullOrEmpty(message));
 
-            JsonPath = jsonPath;
             Level = level;
             Code = code;
             Message = message;
@@ -49,13 +45,13 @@ namespace Microsoft.Docs.Build
             Range = range;
         }
 
-        public Error WithRange(in Range range) => new Error(Level, Code, Message, File, range, JsonPath);
+        public Error WithRange(in Range range) => new Error(Level, Code, Message, File, range);
 
         public override string ToString() => ToString(Level);
 
         public string ToString(ErrorLevel level)
         {
-            object[] payload = { level, Code, Message, File, JsonPath, Line, Column };
+            object[] payload = { level, Code, Message, File, Line, Column };
 
             var i = payload.Length - 1;
             while (i >= 0 && (Equals(payload[i], null) || Equals(payload[i], "") || Equals(payload[i], 0)))
@@ -85,8 +81,7 @@ namespace Microsoft.Docs.Build
                        x.Range.StartLine == y.Range.StartLine &&
                        x.Range.StartColumn == y.Range.StartColumn &&
                        x.Range.EndLine == y.Range.EndLine &&
-                       x.Range.EndColumn == y.Range.EndColumn &&
-                       x.JsonPath == y.JsonPath;
+                       x.Range.EndColumn == y.Range.EndColumn;
             }
 
             public int GetHashCode(Error obj)

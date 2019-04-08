@@ -190,13 +190,13 @@ namespace Microsoft.Docs.Build
         /// If the dependency version is null, get the latest one(order by last write time).
         /// If the dependency version is not null, get the one matched with the version(commit).
         /// </summary>
-        public static async Task<(string path, DependencyGit git)> TryGetGitRestorePath(string remote, string branch, string commit)
+        public static (string path, DependencyGit git) TryGetGitRestorePath(string remote, string branch, string commit)
         {
             var restoreDir = AppData.GetGitDir(remote);
 
-            var (path, slot) = await DependencySlotPool<DependencyGit>.TryGetSlot(
+            var (path, slot) = DependencySlotPool<DependencyGit>.TryGetSlot(
                 remote,
-                async gits =>
+                gits =>
                 {
                     var filteredGits = gits.Where(i => i.Branch == branch);
 
@@ -209,7 +209,7 @@ namespace Microsoft.Docs.Build
                     var commits = Array.Empty<string>();
                     if (filteredGits.Count() > 1)
                     {
-                        commits = await GitUtility.GetCommits(restoreDir, branch, 1000/*top 1000 should be enough for comparing*/);
+                        commits = GitUtility.GetCommits(restoreDir, branch, 1000/*top 1000 should be enough for comparing*/);
                     }
 
                     return filteredGits.OrderBy(g => Array.IndexOf(commits, g.Commit)).ThenByDescending(g => g.LastAccessDate).ToList();
