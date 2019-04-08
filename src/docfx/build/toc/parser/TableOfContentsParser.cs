@@ -140,7 +140,7 @@ namespace Microsoft.Docs.Build
 
                 if (resolvedTocHref?.Value != null)
                 {
-                    tocModelItem.TocHref = new SourceInfo<string>(resolvedTocHref, null, tocModelItem.TocHref?.Range ?? default);
+                    tocModelItem.TocHref = resolvedTocHref;
                 }
                 tocModelItem.Name = tocModelItem.Name ?? resolvedTopicName;
                 tocModelItem.Items = subChildren?.Items ?? tocModelItem.Items;
