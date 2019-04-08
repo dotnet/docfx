@@ -8,7 +8,6 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
