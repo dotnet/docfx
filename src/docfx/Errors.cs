@@ -194,7 +194,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Link which's resolved to a file out of build scope.
         /// </summary>
-        public static Error LinkOutOfScope(Document relativeTo, Document file, string href, string configFile, Range range)
+        public static Error LinkOutOfScope(Document relativeTo, Document file, string href, string configFile, in Range range)
             => new Error(ErrorLevel.Warning, "link-out-of-scope", $"File '{file}' referenced by link '{href}' will not be built because it is not included in {configFile}", relativeTo.ToString(), range);
 
         /// <summary>
