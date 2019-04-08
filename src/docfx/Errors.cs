@@ -229,7 +229,7 @@ namespace Microsoft.Docs.Build
         ///   - define user_profile.json file in config, while the file doesn't exist
         ///   - href referencing a non-existing file
         /// </summary>
-        public static Error FileNotFound(string relativeTo, string path, Range range)
+        public static Error FileNotFound(string relativeTo, string path, in Range range)
             => new Error(ErrorLevel.Warning, "file-not-found", $"Cannot find file '{path}' relative to '{relativeTo}'", relativeTo, range);
 
         /// <summary>

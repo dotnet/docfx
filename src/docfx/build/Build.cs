@@ -36,7 +36,7 @@ namespace Microsoft.Docs.Build
         private static async Task Run(string docsetPath, Repository repository, string locale, CommandLineOptions options, Report report, DependencyLockModel dependencyLock, RestoreMap restoreMap)
         {
             XrefMap xrefMap = null;
-            var (configErrors, config, configObject) = GetBuildConfig(docsetPath, repository, options, dependencyLock, restoreMap);
+            var (configErrors, config) = GetBuildConfig(docsetPath, repository, options, dependencyLock, restoreMap);
             report.Configure(docsetPath, config);
 
             // just return if config loading has errors
@@ -201,7 +201,7 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(!string.IsNullOrEmpty(docset));
 
-            var (errors, config, configObject) = ConfigLoader.TryLoad(docset, commandLineOptions);
+            var (errors, config) = ConfigLoader.TryLoad(docset, commandLineOptions);
 
             var dependencyLock = DependencyLock.Load(docset, string.IsNullOrEmpty(config.DependencyLock) ? AppData.GetDependencyLockFile(docset, locale) : config.DependencyLock, config.DependencyLock.Range);
 
@@ -222,7 +222,7 @@ namespace Microsoft.Docs.Build
             return dependencyLock ?? new DependencyLockModel();
         }
 
-        private static (List<Error> errors, Config config, JObject configObject) GetBuildConfig(string docset, Repository repository, CommandLineOptions options, DependencyLockModel dependencyLock, RestoreMap restoreMap)
+        private static (List<Error> errors, Config config) GetBuildConfig(string docset, Repository repository, CommandLineOptions options, DependencyLockModel dependencyLock, RestoreMap restoreMap)
         {
             if (ConfigLoader.TryGetConfigPath(docset, out _) || !LocalizationUtility.TryGetSourceRepository(repository, out var sourceRemote, out var sourceBranch, out var locale))
             {

@@ -293,7 +293,7 @@ namespace Microsoft.Docs.Build
 
                 // get dependent docset config or default config
                 // todo: what parent config should be pass on its children
-                var (loadErrors, subConfig, subConfigObject) = ConfigLoader.TryLoad(dir, options, locale);
+                var (loadErrors, subConfig) = ConfigLoader.TryLoad(dir, options, locale);
                 errors.AddRange(loadErrors);
 
                 result.TryAdd(PathUtility.NormalizeFolder(name), new Docset(report, dir, locale, subConfig, options, subLock, restoreMap, isDependency: true));

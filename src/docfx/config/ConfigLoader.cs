@@ -19,7 +19,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Load the config under <paramref name="docsetPath"/>
         /// </summary>
-        public static (List<Error> errors, Config config, JObject configObject) Load(string docsetPath, CommandLineOptions options, string locale = null, bool extend = true)
+        public static (List<Error> errors, Config config) Load(string docsetPath, CommandLineOptions options, string locale = null, bool extend = true)
         {
             var configPath = PathUtility.FindYamlOrJson(Path.Combine(docsetPath, "docfx"));
             if (configPath is null)
@@ -33,7 +33,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Load the config if it exists under <paramref name="docsetPath"/> or return default config
         /// </summary>
-        public static (List<Error> errors, Config config, JObject configObject) TryLoad(string docsetPath, CommandLineOptions options, string locale = null, bool extend = true)
+        public static (List<Error> errors, Config config) TryLoad(string docsetPath, CommandLineOptions options, string locale = null, bool extend = true)
             => LoadCore(docsetPath, options, locale, extend);
 
         public static bool TryGetConfigPath(string docset, out string configPath)
@@ -43,7 +43,7 @@ namespace Microsoft.Docs.Build
             return !string.IsNullOrEmpty(configPath);
         }
 
-        private static (List<Error>, Config, JObject) LoadCore(string docsetPath, CommandLineOptions options, string locale,  bool extend)
+        private static (List<Error>, Config) LoadCore(string docsetPath, CommandLineOptions options, string locale,  bool extend)
         {
             var errors = new List<Error>();
             Config config = null;
@@ -80,7 +80,7 @@ namespace Microsoft.Docs.Build
             config.ConfigFileName = !configExists
                 ? config.ConfigFileName
                 : PathUtility.NormalizeFile(Path.GetRelativePath(docsetPath, configPath));
-            return (errors, config, configObject);
+            return (errors, config);
 
             string GetBranch()
             {

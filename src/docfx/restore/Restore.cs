@@ -33,7 +33,7 @@ namespace Microsoft.Docs.Build
                 {
                     return restoredDocsets.GetOrAdd(docset + dependencyLock?.Commit, async k =>
                     {
-                        var (errors, config, _) = ConfigLoader.TryLoad(docset, options, localeToRestore, extend: false);
+                        var (errors, config) = ConfigLoader.TryLoad(docset, options, localeToRestore, extend: false);
 
                         if (root)
                         {
@@ -70,7 +70,7 @@ namespace Microsoft.Docs.Build
                     restoreUrl => RestoreFile.Restore(restoreUrl, config, @implicit));
 
                 // extend the config before loading
-                var (errors, extendedConfig, extendedConfigObject) = ConfigLoader.TryLoad(docset, options, locale, extend: true);
+                var (errors, extendedConfig) = ConfigLoader.TryLoad(docset, options, locale, extend: true);
                 report.Write(extendedConfig.ConfigFileName, errors);
 
                 // restore and load dependency lock if need
