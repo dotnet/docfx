@@ -124,6 +124,7 @@ namespace Microsoft.Docs.Build
                 {
                     if (!string.IsNullOrEmpty(linkInline.Url))
                     {
+                        // TODO: check why line starts from 0
                         // TODO: check why column info is missing
                         currentItem.Href = new SourceInfo<string>(linkInline.Url, filePath, new Range(block.Line, block.Column));
                     }
