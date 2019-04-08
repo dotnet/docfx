@@ -1,5 +1,12 @@
-Version Notes (Current Version: v2.41)
+Version Notes (Current Version: v2.42)
 =======================================
+
+v2.42(Pre-release)
+-----------
+1. Added the ability to change the default "Cover Page" bookmark for the TOC in the PDF. (#4278)
+2. Prevent adding duplicate HTML files when generating a PDF
+3. Added the ability to specify the type of outline to use when generating a PDF.
+4. Replaced iTextSharp with PdfSharp (#4250)
 
 v2.41
 -----------

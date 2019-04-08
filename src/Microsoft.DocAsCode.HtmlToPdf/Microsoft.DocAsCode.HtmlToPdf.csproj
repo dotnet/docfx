@@ -6,9 +6,8 @@
     <Compile Remove="ManifestItemType.cs" />
     <Compile Remove="ManifestItemWithAssetId.cs" />
   </ItemGroup>
-
   <ItemGroup>
-    <PackageReference Include="iTextSharp" Version="5.5.11" />
+    <PackageReference Include="PDFsharp" Version="1.50.5147" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Microsoft.DocAsCode.Build.Common\Microsoft.DocAsCode.Build.Common.csproj" />

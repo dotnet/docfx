@@ -12,10 +12,13 @@ namespace Microsoft.DocAsCode.HtmlToPdf
     using System.Threading.Tasks;
     using System.Web;
 
-    using iTextSharp.text.pdf;
-
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
+
+    using PdfSharp.Pdf;
+    using PdfSharp.Pdf.Actions;
+    using PdfSharp.Pdf.Advanced;
+    using PdfSharp.Pdf.IO;
 
     public class HtmlToPdfConverter
     {
@@ -65,7 +68,7 @@ namespace Microsoft.DocAsCode.HtmlToPdf
                 new ParallelOptions { MaxDegreeOfParallelism = _htmlToPdfOptions.MaxDegreeOfParallelism },
                 htmlFilePath =>
                 {
-                    var numberOfPages = Convert($"{WrapQuoteToPath(htmlFilePath)} -", reader => reader.NumberOfPages);
+                    var numberOfPages = Convert($"{WrapQuoteToPath(htmlFilePath)} -", reader => reader.PageCount);
                     pdfFileNumberOfPages.TryAdd(htmlFilePath, numberOfPages);
                 });
 
@@ -175,29 +178,28 @@ namespace Microsoft.DocAsCode.HtmlToPdf
             }
         }
 
-        private void CreateOutlines(Dictionary<string, object> rootOutline, IList<HtmlModel> htmlModels, IDictionary<string, int> pdfFileNumberOfPages)
+        private void CreateOutlines(PdfOutlineCollection outlineCollection, IList<HtmlModel> htmlModels, IDictionary<string, int> pdfFileNumberOfPages)
         {
             if (htmlModels?.Count > 0)
             {
                 foreach (var htmlModel in htmlModels)
                 {
-                    var outline = new Dictionary<string, object>
+                    PdfOutline outline = new PdfOutline()
                     {
-                        { "Title", htmlModel.Title },
-                        { OutLineKidsName, new List<Dictionary<string, object>>() }
+                        Title = htmlModel.Title,
+                        Opened = true
                     };
 
                     if (!string.IsNullOrEmpty(htmlModel.ExternalLink))
                     {
-                        outline.Add("Action", "URI");
-                        outline.Add("URI", htmlModel.ExternalLink);
+                        outline.Elements.Add("/Type", new PdfString("/Action"));
+                        outline.Elements.Add("/Subtype", new PdfString("/Link"));
+                        outline.Elements.Add("/A", new PdfLiteral($"<</S/URI/URI({htmlModel.ExternalLink})>>"));
                     }
                     else
                     {
-                        outline.Add("Action", "GoTo");
-
-                        // please go to http://api.itextpdf.com/itext/com/itextpdf/text/pdf/PdfDestination.html to find the detail.
-                        outline.Add("Page", $"{_currentNumberOfPages} FitH");
+                        outline.DestinationPage = outlineCollection.Owner.Pages[_currentNumberOfPages - 1];
+                        outline.PageDestinationType = PdfPageDestinationType.FitH;
 
                         if (!string.IsNullOrEmpty(htmlModel.HtmlFilePath))
                         {
@@ -209,36 +211,31 @@ namespace Microsoft.DocAsCode.HtmlToPdf
                         }
                     }
 
-                    ((List<Dictionary<string, object>>)rootOutline[OutLineKidsName]).Add(outline);
-                    CreateOutlines(outline, htmlModel.Children, pdfFileNumberOfPages);
+                    outlineCollection.Add(outline);
+                    CreateOutlines(outline.Outlines, htmlModel.Children, pdfFileNumberOfPages);
                 }
             }
         }
 
-        private List<Dictionary<string, object>> ConvertOutlines()
+        private void AddOutlines(PdfDocument pdfDocument)
         {
             var pdfFileNumberOfPages = GetHtmlToPdfNumberOfPages(new List<string>(_htmlFilePaths));
             _currentNumberOfPages = 1;
 
-            var rootOutline = new Dictionary<string, object>
-            {
-                { OutLineKidsName, new List<Dictionary<string, object>>() }
-            };
-
-            CreateOutlines(rootOutline, _htmlModels, pdfFileNumberOfPages);
-            return (List<Dictionary<string, object>>)rootOutline[OutLineKidsName];
+            CreateOutlines(pdfDocument.Outlines, _htmlModels, pdfFileNumberOfPages);
         }
 
-        private IList<Dictionary<string, object>> GetOutlines()
+        private void CreateOutlines(PdfDocument pdfDocument)
         {
             switch (_htmlToPdfOptions.OutlineOption)
             {
                 case OutlineOption.CustomOutline:
-                    return CustomOutlines;
+                    throw new NotImplementedException();
                 case OutlineOption.DefaultOutline:
-                    return ConvertOutlines();
+                    AddOutlines(pdfDocument);
+                    break;
                 default:
-                    return ConvertOutlines();
+                    return;
             }
         }
 
@@ -251,7 +248,8 @@ namespace Microsoft.DocAsCode.HtmlToPdf
                     if (!string.IsNullOrEmpty(htmlModel.HtmlFilePath))
                     {
                         string filePath = GetFilePath(htmlModel.HtmlFilePath);
-                        if (File.Exists(NormalizePath(filePath)))
+                        if ((!_htmlFilePaths.Contains(filePath))
+                            && File.Exists(NormalizePath(filePath)))
                         {
                             _htmlFilePaths.Add(filePath);
                         }
@@ -271,33 +269,31 @@ namespace Microsoft.DocAsCode.HtmlToPdf
         {
             if (_htmlFilePaths.Count > 0)
             {
-                var outlines = GetOutlines();
                 using (var pdfStream = new MemoryStream())
                 {
                     ConvertToStream($"{string.Join(" ", _htmlFilePaths.Select(WrapQuoteToPath))} -", pdfStream);
                     pdfStream.Position = 0;
 
-                    using (var pdfReader = new PdfReader(pdfStream))
+                    using (var pdfDocument = PdfReader.Open(pdfStream))
                     {
-                        using (var pdfStamper = new PdfStamper(pdfReader, stream))
-                        {
-                            pdfStamper.Outlines = outlines;
-                        }
+                        CreateOutlines(pdfDocument);
+
+                        pdfDocument.Save(stream);
                     }
                 }
             }
         }
 
-        private T Convert<T>(string arguments, Func<PdfReader, T> readerFunc)
+        private T Convert<T>(string arguments, Func<PdfDocument, T> readerFunc)
         {
             using (var pdfStream = new MemoryStream())
             {
                 ConvertToStream(arguments, pdfStream);
                 pdfStream.Position = 0;
 
-                using (var pdfReader = new PdfReader(pdfStream))
+                using (var pdfDocument = PdfReader.Open(pdfStream))
                 {
-                    return readerFunc(pdfReader);
+                    return readerFunc(pdfDocument);
                 }
             }
         }
