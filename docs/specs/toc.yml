@@ -158,10 +158,10 @@ outputs:
       ]
     }
   build.log: |
-    ["warning","file-not-found","Cannot find file 'no-existing.md' relative to 'docs/TOC.md'","docs/TOC.md"]
-    ["warning","file-not-found","Cannot find file 'no-existing.system.md' relative to 'docs/TOC.md'","docs/TOC.md"]
-    ["warning","file-not-found","Cannot find file '../no-existing.md' relative to 'docs/TOC.md'","docs/TOC.md"]
-    ["warning","file-not-found","Cannot find file '~/docs/no-existing.md' relative to 'docs/TOC.md'","docs/TOC.md"]
+    ["warning","file-not-found","Cannot find file 'no-existing.md' relative to 'docs/TOC.md'","docs/TOC.md","",2]
+    ["warning","file-not-found","Cannot find file 'no-existing.system.md' relative to 'docs/TOC.md'","docs/TOC.md","",3]
+    ["warning","file-not-found","Cannot find file '../no-existing.md' relative to 'docs/TOC.md'","docs/TOC.md","",4]
+    ["warning","file-not-found","Cannot find file '~/docs/no-existing.md' relative to 'docs/TOC.md'","docs/TOC.md","",5]
 ---
 # Invalid markdown TOC metadata
 inputs:
@@ -485,7 +485,7 @@ outputs:
   docs/f1/toc.json:
   docs/f2/toc.json:
   build.log: |
-    ["warning","file-not-found","Cannot find file 'b.md' relative to 'docs/f2/TOC.md'","docs/f2/TOC.md"]
+    ["warning","file-not-found","Cannot find file 'b.md' relative to 'docs/f2/TOC.md'","docs/f2/TOC.md","",2]
 ---
 # Topic href can replace href
 inputs:
@@ -632,7 +632,7 @@ outputs:
        ]
     }
   build.log: |
-    ["warning","link-out-of-scope","File 'docs/f1/n2.md' referenced by link '~/docs/f1/n2.md' will not be built because it is not included in docfx.yml","docs/f1/TOC.yml","",3,3]
+    ["warning","link-out-of-scope","File 'docs/f1/n2.md' referenced by link '~/docs/f1/n2.md' will not be built because it is not included in docfx.yml","docs/f1/TOC.yml","",3,14]
 ---
 # Combine topic href and href(toc) => href + items
 # replace href finally
@@ -669,7 +669,7 @@ outputs:
        ]
     }
   build.log: |
-    ["warning","link-out-of-scope","File 'docs/f1/f11/n1.md' referenced by link 'f11/n1.md' will not be built because it is not included in docfx.yml","docs/f1/TOC.yml","",3,3]
+    ["warning","link-out-of-scope","File 'docs/f1/f11/n1.md' referenced by link 'f11/n1.md' will not be built because it is not included in docfx.yml","docs/f1/TOC.yml","",3,14]
     ["warning","link-out-of-scope","File 'docs/f1/f11/n1.md' referenced by link 'n1.md' will not be built because it is not included in docfx.yml","docs/f1/f11/TOC.md"]
 ---
 # Combine topic href and toc href(folder) -> topic href > toc href(folder)
@@ -780,8 +780,8 @@ outputs:
   docs/f1/toc.json:
   docs/f1/a.json:
   build.log: |
-    ["error","invalid-toc-href","The toc href 'f1/a.md' can only reference to a local TOC file, folder or absolute path","docs/TOC.yml","",2,3]
-    ["error","invalid-toc-href","The toc href 'f1/a.md' can only reference to a local TOC file, folder or absolute path","docs/TOC.yml","",4,3]
+    ["error","invalid-toc-href","The toc href 'f1/a.md' can only reference to a local TOC file, folder or absolute path","docs/TOC.yml","",2,12]
+    ["error","invalid-toc-href","The toc href 'f1/a.md' can only reference to a local TOC file, folder or absolute path","docs/TOC.yml","",4,12]
 ---
 # Toc syntax error with duplicated keys
 inputs:
@@ -813,8 +813,8 @@ inputs:
       tocHref: index.md
 outputs:
   build.log: |
-    ["warning","file-not-found","Cannot find file 'index.md' relative to 'docs/f1/TOC.yml'","docs/f1/TOC.yml","",2,3]
-    ["error","invalid-toc-href","The toc href 'index.md' can only reference to a local TOC file, folder or absolute path","docs/f1/TOC.yml","",4,3]
+    ["warning","file-not-found","Cannot find file 'index.md' relative to 'docs/f1/TOC.yml'","docs/f1/TOC.yml","",2,9]
+    ["error","invalid-toc-href","The toc href 'index.md' can only reference to a local TOC file, folder or absolute path","docs/f1/TOC.yml","",4,12]
 ---
 # TOC includes same href at different levels
 inputs:
@@ -833,12 +833,12 @@ inputs:
               href: index.md
 outputs:
   build.log: |
-    ["warning","file-not-found","Cannot find file 'index.md' relative to 'docs/TOC.yml'","docs/TOC.yml","",3,3]
-    ["warning","file-not-found","Cannot find file 'index.md' relative to 'docs/TOC.yml'","docs/TOC.yml","",7,7]
-    ["warning","file-not-found","Cannot find file 'index.md' relative to 'docs/TOC.yml'","docs/TOC.yml","",11,11]
-    ["error","invalid-toc-href","The toc href 'index.md' can only reference to a local TOC file, folder or absolute path","docs/TOC.yml","",2,3]
-    ["error","invalid-toc-href","The toc href 'index.md' can only reference to a local TOC file, folder or absolute path","docs/TOC.yml","",6,7]
-    ["error","invalid-toc-href","The toc href 'index.md' can only reference to a local TOC file, folder or absolute path","docs/TOC.yml","",10,11]
+    ["warning","file-not-found","Cannot find file 'index.md' relative to 'docs/TOC.yml'","docs/TOC.yml","",3,9]
+    ["warning","file-not-found","Cannot find file 'index.md' relative to 'docs/TOC.yml'","docs/TOC.yml","",7,13]
+    ["warning","file-not-found","Cannot find file 'index.md' relative to 'docs/TOC.yml'","docs/TOC.yml","",11,17]
+    ["error","invalid-toc-href","The toc href 'index.md' can only reference to a local TOC file, folder or absolute path","docs/TOC.yml","",2,12]
+    ["error","invalid-toc-href","The toc href 'index.md' can only reference to a local TOC file, folder or absolute path","docs/TOC.yml","",6,16]
+    ["error","invalid-toc-href","The toc href 'index.md' can only reference to a local TOC file, folder or absolute path","docs/TOC.yml","",10,20]
 ---
 # Individual experimental TOC should be built
 inputs:

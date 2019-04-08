@@ -187,7 +187,7 @@ namespace Microsoft.Docs.Build
                 && (file.ContentType == ContentType.Page || file.ContentType == ContentType.TableOfContents)
                 && !file.Docset.BuildScope.Contains(file))
             {
-                return (Errors.LinkOutOfScope(relativeTo, file, href, file.Docset.Config.ConfigFileName), relativeUrl + query + fragment, fragment, hrefType, null);
+                return (Errors.LinkOutOfScope(relativeTo, file, href, file.Docset.Config.ConfigFileName, range), relativeUrl + query + fragment, fragment, hrefType, null);
             }
 
             return (error, relativeUrl + query + fragment, fragment, hrefType, file);

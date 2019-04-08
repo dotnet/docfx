@@ -194,8 +194,8 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Link which's resolved to a file out of build scope.
         /// </summary>
-        public static Error LinkOutOfScope(Document relativeTo, Document file, string href, string configFile)
-            => new Error(ErrorLevel.Warning, "link-out-of-scope", $"File '{file}' referenced by link '{href}' will not be built because it is not included in {configFile}", relativeTo.ToString());
+        public static Error LinkOutOfScope(Document relativeTo, Document file, string href, string configFile, Range range)
+            => new Error(ErrorLevel.Warning, "link-out-of-scope", $"File '{file}' referenced by link '{href}' will not be built because it is not included in {configFile}", relativeTo.ToString(), range);
 
         /// <summary>
         /// Defined a redirection entry that's not matched by config's files glob patterns.

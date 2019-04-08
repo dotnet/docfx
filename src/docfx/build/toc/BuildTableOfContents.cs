@@ -81,7 +81,7 @@ namespace Microsoft.Docs.Build
                     }
 
                     List<string> monikers = null;
-                    if (item.Href is null || !hrefMap.TryGetValue(item.Href, out monikers))
+                    if (item.Href?.Value is null || !hrefMap.TryGetValue(item.Href, out monikers))
                     {
                         if (item.TopicHref is null || !hrefMap.TryGetValue(item.TopicHref, out monikers))
                         {
@@ -115,10 +115,10 @@ namespace Microsoft.Docs.Build
             var (loadErrors, model) = TableOfContentsParser.Load(
                 context,
                 fileToBuild,
-                (file, href, isInclude, ranges) =>
+                (file, href, isInclude) =>
                 {
-                    var (error, referencedTocContent, referencedToc) = context.DependencyResolver.ResolveContent(href, file, default, DependencyType.TocInclusion);
-                    errors.AddRange(JsonUtility.IncludeAll(ranges, error));
+                    var (error, referencedTocContent, referencedToc) = context.DependencyResolver.ResolveContent(href, file, href?.Range ?? default, DependencyType.TocInclusion);
+                    errors.AddIfNotNull(error);
 
                     if (referencedToc != null && isInclude)
                     {
@@ -127,10 +127,10 @@ namespace Microsoft.Docs.Build
                     }
                     return (referencedTocContent, referencedToc);
                 },
-                (file, href, resultRelativeTo, ranges) =>
+                (file, href, resultRelativeTo) =>
                 {
-                    var (error, link, buildItem) = context.DependencyResolver.ResolveLink(href, file, resultRelativeTo, null, default);
-                    errors.AddRange(JsonUtility.IncludeAll(ranges, error));
+                    var (error, link, buildItem) = context.DependencyResolver.ResolveLink(href, file, resultRelativeTo, null, href?.Range ?? default);
+                    errors.AddIfNotNull(error);
 
                     if (buildItem != null)
                     {
@@ -139,7 +139,7 @@ namespace Microsoft.Docs.Build
                     }
                     return (link, buildItem);
                 },
-                (file, uid, ranges) =>
+                (file, uid) =>
                 {
                     // add to referenced document list
                     // TODO: pass line info into ResolveXref

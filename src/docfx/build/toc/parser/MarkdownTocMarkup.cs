@@ -115,7 +115,7 @@ namespace Microsoft.Docs.Build
                 var xrefLink = block.Inline.FirstOrDefault(l => l is XrefInline);
                 if (xrefLink != null && xrefLink is XrefInline xrefInline && !string.IsNullOrEmpty(xrefInline.Href))
                 {
-                    currentItem.Uid = xrefInline.Href;
+                    currentItem.Uid = new SourceInfo<string>(xrefInline.Href, filePath, new Range(block.Line, block.Column));
                     return currentItem;
                 }
 
@@ -123,7 +123,10 @@ namespace Microsoft.Docs.Build
                 if (link != null && link is LinkInline linkInline)
                 {
                     if (!string.IsNullOrEmpty(linkInline.Url))
-                        currentItem.Href = linkInline.Url;
+                    {
+                        // TODO: check why column info is missing
+                        currentItem.Href = new SourceInfo<string>(linkInline.Url, filePath, new Range(block.Line, block.Column));
+                    }
                     if (!string.IsNullOrEmpty(linkInline.Title))
                         currentItem.DisplayName = linkInline.Title;
 

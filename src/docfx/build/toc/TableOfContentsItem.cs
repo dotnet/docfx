@@ -15,13 +15,13 @@ namespace Microsoft.Docs.Build
 
         public string DisplayName { get; set; }
 
-        public string Href { get; set; }
+        public SourceInfo<string> Href { get; set; }
 
-        public string TopicHref { get; set; }
+        public SourceInfo<string> TopicHref { get; set; }
 
-        public string TocHref { get; set; }
+        public SourceInfo<string> TocHref { get; set; }
 
-        public string Uid { get; set; }
+        public SourceInfo<string> Uid { get; set; }
 
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
         public bool Expanded { get; set; }
