@@ -165,8 +165,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                             Logger.LogWarning(message, code: WarningCodes.Build.EmptyOutputFiles);
                         }
 
-                        List<XRefDetails> invalidXRefs;
-                        TransformDocument(result ?? string.Empty, extension, _context, outputFile, manifestItem, out invalidXRefs);
+                        TransformDocument(result ?? string.Empty, extension, _context, outputFile, manifestItem, out List<XRefDetails> invalidXRefs);
                         unresolvedXRefs.AddRange(invalidXRefs);
                         Logger.LogDiagnostic($"Transformed model \"{item.LocalPathFromRoot}\" to \"{outputFile}\".");
                     }
@@ -326,15 +325,16 @@ namespace Microsoft.DocAsCode.Build.Engine
             HtmlDocument document = new HtmlDocument();
             document.LoadHtml(html);
 
-            TransformHtmlCore(context, sourceFilePath, destFilePath, document, out unresolvedXRefs);
+            unresolvedXRefs = new List<XRefDetails>();
+            TransformXrefInHtml(context, sourceFilePath, destFilePath, document.DocumentNode, unresolvedXRefs);
+            TransformLinkInHtml(context, sourceFilePath, destFilePath, document.DocumentNode);
 
             document.Save(outputWriter);
         }
 
-        private void TransformHtmlCore(IDocumentBuildContext context, string sourceFilePath, string destFilePath, HtmlDocument html, out List<XRefDetails> unresolvedXRefs)
+        private void TransformXrefInHtml(IDocumentBuildContext context, string sourceFilePath, string destFilePath, HtmlNode node, List<XRefDetails> unresolvedXRefs)
         {
-            unresolvedXRefs = new List<XRefDetails>();
-            var xrefLinkNodes = html.DocumentNode.SelectNodes("//a[starts-with(@href, 'xref:')]");
+            var xrefLinkNodes = node.SelectNodes("//a[starts-with(@href, 'xref:')]");
             if (xrefLinkNodes != null)
             {
                 foreach (var xref in xrefLinkNodes)
@@ -343,20 +343,31 @@ namespace Microsoft.DocAsCode.Build.Engine
                 }
             }
 
-            var xrefNodes = html.DocumentNode.SelectNodes("//xref");
+            var xrefNodes = node.SelectNodes("//xref");
+            var hasResolved = false;
             if (xrefNodes != null)
             {
                 foreach (var xref in xrefNodes)
                 {
-                    var resolved = UpdateXref(xref, context, Constants.DefaultLanguage, out var xrefDetails);
-                    if (!resolved)
+                    var (resolved, warn) = UpdateXref(xref, context, Constants.DefaultLanguage, out var xrefDetails);
+                    if (warn)
                     {
                         unresolvedXRefs.Add(xrefDetails);
                     }
+                    hasResolved = hasResolved || resolved;
                 }
             }
 
-            var srcNodes = html.DocumentNode.SelectNodes("//*/@src");
+            if (hasResolved)
+            {
+                // transform again as the resolved content may also contain xref to resolve
+                TransformXrefInHtml(context, sourceFilePath, destFilePath, node, unresolvedXRefs);
+            }
+        }
+
+        private void TransformLinkInHtml(IDocumentBuildContext context, string sourceFilePath, string destFilePath, HtmlNode node)
+        {
+            var srcNodes = node.SelectNodes("//*/@src");
             if (srcNodes != null)
             {
                 foreach (var link in srcNodes)
@@ -365,7 +376,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 }
             }
 
-            var hrefNodes = html.DocumentNode.SelectNodes("//*/@href");
+            var hrefNodes = node.SelectNodes("//*/@href");
             if (hrefNodes != null)
             {
                 foreach (var link in hrefNodes)
@@ -381,7 +392,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             node.ParentNode.ReplaceChild(convertedNode, node);
         }
 
-        private bool UpdateXref(HtmlNode node, IDocumentBuildContext context, string language, out XRefDetails xref)
+        private (bool resolved, bool warn) UpdateXref(HtmlNode node, IDocumentBuildContext context, string language, out XRefDetails xref)
         {
             xref = XRefDetails.From(node);
             XRefSpec xrefSpec = null;
@@ -396,12 +407,9 @@ namespace Microsoft.DocAsCode.Build.Engine
             var renderer = xref.TemplatePath == null ? null : _rendererLoader.Load(xref.TemplatePath);
             var convertedNode = xref.ConvertToHtmlNode(language, renderer);
             node.ParentNode.ReplaceChild(convertedNode, node);
-            if (xrefSpec == null && xref.ThrowIfNotResolved == true)
-            {
-                return false;
-            }
-
-            return true;
+            var resolved = xrefSpec != null;
+            var warn = xrefSpec == null && xref.ThrowIfNotResolved;
+            return (resolved, warn);
         }
 
         private void UpdateHref(HtmlNode link, string attribute, IDocumentBuildContext context, string sourceFilePath, string destFilePath)

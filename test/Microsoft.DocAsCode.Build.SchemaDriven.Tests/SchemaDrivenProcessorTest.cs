@@ -224,7 +224,7 @@ items:
 <p><strong>outside</strong></p>
 "
                     .Split(new string[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries),
-File.ReadAllLines(outputFilePath).Where(s => !string.IsNullOrWhiteSpace(s)).Select(s=>s.Trim()).ToArray());
+File.ReadAllLines(outputFilePath).Where(s => !string.IsNullOrWhiteSpace(s)).Select(s => s.Trim()).ToArray());
             }
         }
 
@@ -233,6 +233,7 @@ File.ReadAllLines(outputFilePath).Where(s => !string.IsNullOrWhiteSpace(s)).Sele
         {
             using (var listener = new TestListenerScope("TestXrefResolver"))
             {
+                // arrange
                 var schemaFile = CreateFile("template/schemas/mref.test.schema.json", File.ReadAllText("TestData/schemas/mref.test.schema.json"), _templateFolder);
                 var templateXref = CreateFile("template/partials/overview.tmpl", @"{{name}}:{{{summary}}}", _templateFolder);
                 var templateFile = CreateFile("template/ManagedReference.html.tmpl", @"
@@ -246,8 +247,11 @@ File.ReadAllLines(outputFilePath).Where(s => !string.IsNullOrWhiteSpace(s)).Sele
                 var inputFile = CreateFile(inputFileName, File.ReadAllText("TestData/inputs/CatLibrary.ICat.yml"), _inputFolder);
                 FileCollection files = new FileCollection(_defaultFiles);
                 files.Add(DocumentType.Article, new[] { inputFile }, _inputFolder);
+
+                // act
                 BuildDocument(files);
 
+                // assert
                 Assert.Single(listener.Items);
                 listener.Items.Clear();
 
@@ -265,12 +269,12 @@ File.ReadAllLines(outputFilePath).Where(s => !string.IsNullOrWhiteSpace(s)).Sele
 
                 var outputFilePath = Path.Combine(_outputFolder, outputFileName);
                 Assert.True(File.Exists(outputFilePath));
-
+                var outputFileContent = File.ReadAllLines(outputFilePath);
                 Assert.Equal($@"
-eat:<p>eat event of cat. Every cat must implement this event.</p>
-"
-                    .Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None),
-File.ReadAllLines(outputFilePath));
+eat:<p>eat event of cat. Every cat must implement this event.
+This method is within <a class=""xref"" href=""CatLibrary.ICat.html"">ICat</a></p>
+".Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None),
+                    outputFileContent);
             }
         }
 
@@ -316,7 +320,7 @@ searchScope:
   - .NET
 ", _inputFolder);
                 var dependentMarkdown = CreateFile("toc.md", "# Hello", _inputFolder);
-                
+
                 var inputFileName2 = "page2.yml";
                 var inputFile2 = CreateFile(inputFileName2, @"### YamlMime:MetadataReferenceTest
 title: Web Apps Documentation
@@ -395,7 +399,7 @@ title: Web Apps Documentation
 ", _templateFolder);
 
                 var inputFiles = Enumerable.Range(0, 1)
-                    .Select(s => 
+                    .Select(s =>
                     CreateFile($"normal{s}.yml", @"### YamlMime:MetadataReferenceTest
 metadata: Web Apps Documentation
 ", _inputFolder)).ToArray();
@@ -688,7 +692,7 @@ searchScope:
 
             public void Postbuild(ImmutableList<FileModel> models, IHostService host)
             {
-                foreach(var model in models)
+                foreach (var model in models)
                 {
                     if (Path.GetFileNameWithoutExtension(model.File) == "page1")
                     {
