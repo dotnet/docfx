@@ -136,10 +136,8 @@ namespace Microsoft.Docs.Build
                 var (resolvedTopicHref, resolvedTopicName, document) = ProcessTopicItem(topicUid, topicHref);
 
                 // set resolved href back
-                // TODO: populate file
                 tocModelItem.Href = resolvedTocHref ?? resolvedTopicHref ?? resolvedTopicItemFromTocHref?.Href;
 
-                // TODO: populate line info
                 if (resolvedTocHref?.Value != null)
                 {
                     tocModelItem.TocHref = new SourceInfo<string>(resolvedTocHref, null, tocModelItem.TocHref?.Range ?? default);
