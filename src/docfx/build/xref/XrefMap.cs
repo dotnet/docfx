@@ -156,9 +156,9 @@ namespace Microsoft.Docs.Build
             Dictionary<string, XrefSpec> map = new Dictionary<string, XrefSpec>();
             foreach (var url in docset.Config.Xref)
             {
-                var (_, content, _) = RestoreMap.GetRestoredFileContent(docset, url);
+                var (_, content, _) = RestoreMap.GetRestoredFileContent(docset, url, url.Range);
                 XrefMapModel xrefMap = new XrefMapModel();
-                if (url.EndsWith(".yml", StringComparison.OrdinalIgnoreCase))
+                if (url?.Value.EndsWith(".yml", StringComparison.OrdinalIgnoreCase) != false)
                 {
                     xrefMap = YamlUtility.Deserialize<XrefMapModel>(content);
                 }

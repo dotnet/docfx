@@ -200,7 +200,7 @@ namespace Microsoft.Docs.Build
         {
             if (!string.IsNullOrEmpty(docset.Config.Contribution.GitCommitsTime))
             {
-                var (_, content, _) = RestoreMap.GetRestoredFileContent(docset, docset.Config.Contribution.GitCommitsTime);
+                var (_, content, _) = RestoreMap.GetRestoredFileContent(docset, docset.Config.Contribution.GitCommitsTime, docset.Config.Contribution.GitCommitsTime.Range);
 
                 foreach (var commit in JsonUtility.Deserialize<GitCommitsTime>(content).Commits)
                 {

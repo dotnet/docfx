@@ -15,7 +15,6 @@ namespace Microsoft.Docs.Build
             Directory.GetCurrentDirectory(),
             "en-us",
             JsonUtility.Deserialize<Config>("{'output': { 'json': true } }".Replace('\'', '\"')),
-            new JObject(),
             new CommandLineOptions(),
             new DependencyLockModel(),
             new RestoreMap(null));

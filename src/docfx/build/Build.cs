@@ -44,7 +44,7 @@ namespace Microsoft.Docs.Build
                 return;
 
             var errors = new List<Error>();
-            var docset = GetBuildDocset(new Docset(report, docsetPath, locale, config, configObject, options, dependencyLock, restoreMap, repository));
+            var docset = GetBuildDocset(new Docset(report, docsetPath, locale, config, options, dependencyLock, restoreMap, repository));
             var outputPath = Path.Combine(docsetPath, config.Output.Path);
 
             using (var context = Context.Create(outputPath, report, docset, () => xrefMap))
@@ -203,7 +203,7 @@ namespace Microsoft.Docs.Build
 
             var (errors, config, configObject) = ConfigLoader.TryLoad(docset, commandLineOptions);
 
-            var dependencyLock = DependencyLock.Load(docset, string.IsNullOrEmpty(config.DependencyLock) ? AppData.GetDependencyLockFile(docset, locale) : config.DependencyLock);
+            var dependencyLock = DependencyLock.Load(docset, string.IsNullOrEmpty(config.DependencyLock) ? AppData.GetDependencyLockFile(docset, locale) : config.DependencyLock, config.DependencyLock.Range);
 
             if (LocalizationUtility.TryGetSourceRepository(repository, out var sourceRemote, out var sourceBranch, out _) && !ConfigLoader.TryGetConfigPath(docset, out _))
             {

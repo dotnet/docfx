@@ -28,11 +28,6 @@ namespace Microsoft.Docs.Build
         public Config Config { get; }
 
         /// <summary>
-        /// Gets the config as JObject to be able to fetch the line infos
-        /// </summary>
-        public JObject ConfigObject { get; }
-
-        /// <summary>
         /// Gets the culture computed from <see cref="Locale"/>/>.
         /// </summary>
         public CultureInfo Culture { get; }
@@ -115,7 +110,6 @@ namespace Microsoft.Docs.Build
             string docsetPath,
             string locale,
             Config config,
-            JObject configJObject,
             CommandLineOptions options,
             DependencyLockModel dependencyLock,
             RestoreMap restoreMap,
@@ -123,7 +117,7 @@ namespace Microsoft.Docs.Build
             Docset localizedDocset = null,
             Docset fallbackDocset = null,
             bool isDependency = false)
-            : this(report, docsetPath, !string.IsNullOrEmpty(locale) ? locale : config.Localization.DefaultLocale, config, configJObject, options, dependencyLock, restoreMap, repository, fallbackDocset, localizedDocset)
+            : this(report, docsetPath, !string.IsNullOrEmpty(locale) ? locale : config.Localization.DefaultLocale, config, options, dependencyLock, restoreMap, repository, fallbackDocset, localizedDocset)
         {
             Debug.Assert(dependencyLock != null);
             Debug.Assert(restoreMap != null);
@@ -135,12 +129,12 @@ namespace Microsoft.Docs.Build
                 if (LocalizationUtility.TryGetSourceDocsetPath(this, restoreMap, out var sourceDocsetPath, out var sourceBranch, out _))
                 {
                     var repo = Repository.Create(sourceDocsetPath, sourceBranch);
-                    FallbackDocset = new Docset(_report, sourceDocsetPath, Locale, Config, ConfigObject, _options, DependencyLock, RestoreMap, repo, localizedDocset: this, isDependency: true);
+                    FallbackDocset = new Docset(_report, sourceDocsetPath, Locale, Config, _options, DependencyLock, RestoreMap, repo, localizedDocset: this, isDependency: true);
                 }
                 else if (LocalizationUtility.TryGetLocalizedDocsetPath(this, restoreMap, Config, Locale, out var localizationDocsetPath, out var localizationBranch, out var localizationDependencyLock))
                 {
                     var repo = Repository.Create(localizationDocsetPath, localizationBranch);
-                    LocalizationDocset = new Docset(_report, localizationDocsetPath, Locale, Config, ConfigObject, _options, DependencyLock, RestoreMap, repo, fallbackDocset: this, isDependency: true);
+                    LocalizationDocset = new Docset(_report, localizationDocsetPath, Locale, Config, _options, DependencyLock, RestoreMap, repo, fallbackDocset: this, isDependency: true);
                 }
             }
         }
@@ -150,7 +144,6 @@ namespace Microsoft.Docs.Build
             string docsetPath,
             string locale,
             Config config,
-            JObject configObject,
             CommandLineOptions options,
             DependencyLockModel dependencyLock,
             RestoreMap restoreMap,
@@ -164,7 +157,6 @@ namespace Microsoft.Docs.Build
             _report = report;
             RestoreMap = restoreMap;
             Config = config;
-            ConfigObject = configObject;
             DocsetPath = PathUtility.NormalizeFolder(Path.GetFullPath(docsetPath));
             Locale = locale.ToLowerInvariant();
             Routes = NormalizeRoutes(config.Routes);
@@ -304,7 +296,7 @@ namespace Microsoft.Docs.Build
                 var (loadErrors, subConfig, subConfigObject) = ConfigLoader.TryLoad(dir, options, locale);
                 errors.AddRange(loadErrors);
 
-                result.TryAdd(PathUtility.NormalizeFolder(name), new Docset(report, dir, locale, subConfig, subConfigObject, options, subLock, restoreMap, isDependency: true));
+                result.TryAdd(PathUtility.NormalizeFolder(name), new Docset(report, dir, locale, subConfig, options, subLock, restoreMap, isDependency: true));
             }
             return (errors, result);
         }
