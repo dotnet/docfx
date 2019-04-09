@@ -33,7 +33,7 @@ namespace Microsoft.Docs.Build
             return dependencyLock.Git.ContainsKey(href) || dependencyLock.Git.Keys.Any(g => g.StartsWith($"{href}#"));
         }
 
-        public static DependencyLockModel Load(string docset, string dependencyLockPath)
+        public static DependencyLockModel Load(string docset, SourceInfo<string> dependencyLockPath)
         {
             Debug.Assert(!string.IsNullOrEmpty(docset));
 
