@@ -52,37 +52,43 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
                             model.Uids = new[] { new UidDefinition(uid, model.LocalPathFromRoot) }.ToImmutableArray();
                             content[Constants.PropertyName.Uid] = item.Value;
                         }
+                        continue;
                     }
-                    else
+
+                    if (item.Key == Constants.PropertyName.Title)
                     {
-                        content[item.Key] = item.Value;
-                        if (item.Key == DocumentTypeKey)
-                        {
-                            model.DocumentType = item.Value as string;
-                        }
-                        else if (item.Key == Constants.PropertyName.Title)
+                        var title = item.Value as string;
+                        if (!string.IsNullOrEmpty(title))
                         {
                             model.Properties.IsUserDefinedTitle = true;
+                            content[Constants.PropertyName.Title] = item.Value;
                         }
-                        else if (item.Key == Constants.PropertyName.OutputFileName)
+                        continue;
+                    }
+
+                    content[item.Key] = item.Value;
+                    if (item.Key == DocumentTypeKey)
+                    {
+                        model.DocumentType = item.Value as string;
+                    }
+                    else if (item.Key == Constants.PropertyName.OutputFileName)
+                    {
+                        var outputFileName = item.Value as string;
+                        if (!string.IsNullOrWhiteSpace(outputFileName))
                         {
-                            var outputFileName = item.Value as string;
-                            if (!string.IsNullOrWhiteSpace(outputFileName))
+                            string fn = null;
+                            try
                             {
-                                string fn = null;
-                                try
-                                {
-                                    fn = Path.GetFileName(outputFileName);
-                                }
-                                catch (ArgumentException) { }
-                                if (fn == outputFileName)
-                                {
-                                    model.File = (RelativePath)model.File + (RelativePath)outputFileName;
-                                }
-                                else
-                                {
-                                    Logger.LogWarning($"Invalid output file name in yaml header: {outputFileName}, skip rename output file.");
-                                }
+                                fn = Path.GetFileName(outputFileName);
+                            }
+                            catch (ArgumentException) { }
+                            if (fn == outputFileName)
+                            {
+                                model.File = (RelativePath)model.File + (RelativePath)outputFileName;
+                            }
+                            else
+                            {
+                                Logger.LogWarning($"Invalid output file name in yaml header: {outputFileName}, skip rename output file.");
                             }
                         }
                     }
