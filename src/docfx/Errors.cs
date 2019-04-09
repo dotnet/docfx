@@ -99,8 +99,8 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// In markdown-format toc, link(treated as inclusion) CAN ONLY be toc file, folder or absolute path.
         /// </summary>
-        public static Error InvalidTocHref(Document relativeTo, string tocHref)
-            => new Error(ErrorLevel.Error, "invalid-toc-href", $"The toc href '{tocHref}' can only reference to a local TOC file, folder or absolute path", relativeTo.ToString());
+        public static Error InvalidTocHref(Document relativeTo, string tocHref, in Range range)
+            => new Error(ErrorLevel.Error, "invalid-toc-href", $"The toc href '{tocHref}' can only reference to a local TOC file, folder or absolute path", relativeTo.ToString(), range);
 
         /// <summary>
         /// In markdown-format toc, defined an empty node(# ) with no content.
@@ -194,8 +194,8 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Link which's resolved to a file out of build scope.
         /// </summary>
-        public static Error LinkOutOfScope(Document relativeTo, Document file, string href, string configFile)
-            => new Error(ErrorLevel.Warning, "link-out-of-scope", $"File '{file}' referenced by link '{href}' will not be built because it is not included in {configFile}", relativeTo.ToString());
+        public static Error LinkOutOfScope(Document relativeTo, Document file, string href, string configFile, in Range range)
+            => new Error(ErrorLevel.Warning, "link-out-of-scope", $"File '{file}' referenced by link '{href}' will not be built because it is not included in {configFile}", relativeTo.ToString(), range);
 
         /// <summary>
         /// Defined a redirection entry that's not matched by config's files glob patterns.
@@ -229,8 +229,8 @@ namespace Microsoft.Docs.Build
         ///   - define user_profile.json file in config, while the file doesn't exist
         ///   - href referencing a non-existing file
         /// </summary>
-        public static Error FileNotFound(string relativeTo, string path)
-            => new Error(ErrorLevel.Warning, "file-not-found", $"Cannot find file '{path}' relative to '{relativeTo}'", relativeTo);
+        public static Error FileNotFound(string relativeTo, string path, in Range range)
+            => new Error(ErrorLevel.Warning, "file-not-found", $"Cannot find file '{path}' relative to '{relativeTo}'", relativeTo, range);
 
         /// <summary>
         /// Failed to resolve uid defined by [link](xref:uid) or <xref:uid> syntax.

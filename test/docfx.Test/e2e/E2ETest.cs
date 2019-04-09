@@ -29,7 +29,7 @@ namespace Microsoft.Docs.Build
             "file-not-found", "uid-not-found", "committish-not-found",
             "invalid-toc-syntax", "yaml-header-not-object",
             "invalid-toc-level", "redirection-out-of-scope", "invalid-redirect-to", "moniker-config-missing",
-            "at-uid-not-found", "empty-monikers", "circular-reference", "invalid-toc-href", "invalid-uid-moniker", "moniker-overlapping",
+            "at-uid-not-found", "empty-monikers", "circular-reference", "invalid-uid-moniker", "moniker-overlapping",
             "uid-conflict", "redirection-is-empty", "redirection-conflict", "invalid-locale", "link-out-of-scope",
             "invalid-redirection", "merge-conflict", "invalid-topic-href",
             "redirected-id-conflict", "schema-not-found"

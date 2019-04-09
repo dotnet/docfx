@@ -81,7 +81,7 @@ namespace Microsoft.Docs.Build
                     }
 
                     List<string> monikers = null;
-                    if (item.Href is null || !hrefMap.TryGetValue(item.Href, out monikers))
+                    if (item.Href?.Value is null || !hrefMap.TryGetValue(item.Href, out monikers))
                     {
                         if (item.TopicHref is null || !hrefMap.TryGetValue(item.TopicHref, out monikers))
                         {
@@ -117,8 +117,9 @@ namespace Microsoft.Docs.Build
                 fileToBuild,
                 (file, href, isInclude) =>
                 {
-                    var (error, referencedTocContent, referencedToc) = context.DependencyResolver.ResolveContent(href, file, DependencyType.TocInclusion);
+                    var (error, referencedTocContent, referencedToc) = context.DependencyResolver.ResolveContent(href, file, href?.Range ?? default, DependencyType.TocInclusion);
                     errors.AddIfNotNull(error);
+
                     if (referencedToc != null && isInclude)
                     {
                         // add to referenced toc list
@@ -128,13 +129,12 @@ namespace Microsoft.Docs.Build
                 },
                 (file, href, resultRelativeTo) =>
                 {
-                    // TODO: get line info of TOC href for bookmark validation
-                    // add to referenced document list
-                    var (error, link, buildItem) = context.DependencyResolver.ResolveLink(href, file, resultRelativeTo, null, default);
+                    var (error, link, buildItem) = context.DependencyResolver.ResolveLink(href, file, resultRelativeTo, null, href?.Range ?? default);
                     errors.AddIfNotNull(error);
 
                     if (buildItem != null)
                     {
+                        // add to referenced document list
                         referencedDocuments.Add((buildItem, link));
                     }
                     return (link, buildItem);
@@ -142,6 +142,7 @@ namespace Microsoft.Docs.Build
                 (file, uid) =>
                 {
                     // add to referenced document list
+                    // TODO: pass line info into ResolveXref
                     var (error, link, display, buildItem) = context.DependencyResolver.ResolveXref(uid, file, file);
                     errors.AddIfNotNull(error);
 

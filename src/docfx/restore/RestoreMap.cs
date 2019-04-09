@@ -94,7 +94,7 @@ namespace Microsoft.Docs.Build
                     return GetRestoredFileContent(fallbackDocset, url);
                 }
 
-                throw Errors.FileNotFound(docsetPath, url).ToException();
+                throw Errors.FileNotFound(docsetPath, url, default).ToException();
             }
 
             var (content, etag) = TryGetRestoredFileContent(url);
