@@ -15,7 +15,7 @@ namespace Microsoft.Docs.Build
         [MinLength(1)]
         public List<TableOfContentsItem> Items { get; set; } = new List<TableOfContentsItem>();
 
-        [JsonExtensionData]
-        public JObject ExtensionData { get { return null; } set { /*do nothing*/ } }
+        [JsonExtensionData(WriteData = false)]
+        public JObject ExtensionData { get; set; }
     }
 }
