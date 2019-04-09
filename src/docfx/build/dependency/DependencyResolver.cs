@@ -24,6 +24,9 @@ namespace Microsoft.Docs.Build
             _dependencyMapBuilder = dependencyMapBuilder;
             _gitCommitProvider = gitCommitProvider;
             _xrefMap = xrefMap;
+
+            // forLandingPage should not be used, it is a hack to handle some specific logic for landing page based on the user input for now
+            // which needs to be removed once the user input is correct
             _forLandingPage = forLandingPage;
         }
 
@@ -36,8 +39,6 @@ namespace Microsoft.Docs.Build
             return (error, content, child);
         }
 
-        // forLandingPage should not be used, it is a hack to handle some specific logic for landing page based on the user input for now
-        // which needs to be removed once the user input is correct
         public (Error error, string link, Document file) ResolveLink(string path, Document relativeTo, Document resultRelativeTo, Action<Document> buildChild, in Range range)
         {
             var (error, link, fragment, hrefType, file) = TryResolveHref(relativeTo, path, resultRelativeTo, range);
@@ -127,7 +128,7 @@ namespace Microsoft.Docs.Build
             }
 
             var decodedHref = Uri.UnescapeDataString(href);
-            var (error, file, redirectTo, query, fragment, hrefType, _) = TryResolveFile(relativeTo, decodedHref, range);
+            var (error, file, redirectTo, query, fragment, hrefType, pathToDocset) = TryResolveFile(relativeTo, decodedHref, range);
 
             // Redirection
             // follow redirections
@@ -145,7 +146,20 @@ namespace Microsoft.Docs.Build
             // Cannot resolve the file, leave href as is
             if (file is null)
             {
-                return (error, href, fragment, hrefType, null);
+                if (string.IsNullOrEmpty(pathToDocset))
+                {
+                    return (error, href, fragment, hrefType, null);
+                }
+
+                var (errorFromHistory, resourceFromHistory) = TryResolveResourceFromHistory(_gitCommitProvider, relativeTo.Docset, pathToDocset);
+                if (errorFromHistory != null || resourceFromHistory == null)
+                {
+                    return (errorFromHistory ?? error, href, fragment, hrefType, null);
+                }
+
+                // set file to resource got from histroy, reset the error
+                file = resourceFromHistory;
+                error = null;
             }
 
             // Self reference, don't build the file, leave href as is
@@ -257,10 +271,26 @@ namespace Microsoft.Docs.Build
             return docsetRelativePath;
         }
 
+        private static (Error error, Document file) TryResolveResourceFromHistory(GitCommitProvider gitCommitProvider, Docset docset, string pathToDocset)
+        {
+            // try to resolve from source repo's git history
+            var fallbackDocset = GetFallbackDocset(docset);
+            if (fallbackDocset != null && Document.GetContentType(pathToDocset) == ContentType.Resource)
+            {
+                var (repo, pathToRepo, commits) = gitCommitProvider.GetCommitHistory(fallbackDocset, pathToDocset);
+                if (repo != null && commits.Count > 0)
+                {
+                    return Document.TryCreate(fallbackDocset, pathToDocset, isFromHistory: true);
+                }
+            }
+
+            return default;
+        }
+
         private static (Error error, string content, Document file) TryResolveContentFromHistory(GitCommitProvider gitCommitProvider, Docset docset, string pathToDocset)
         {
             // try to resolve from source repo's git history
-            var fallbackDocset = GetFallbackDocset();
+            var fallbackDocset = GetFallbackDocset(docset);
             if (fallbackDocset != null)
             {
                 var (repo, pathToRepo, commits) = gitCommitProvider.GetCommitHistory(fallbackDocset, pathToDocset);
@@ -280,24 +310,24 @@ namespace Microsoft.Docs.Build
             }
 
             return default;
+        }
 
-            Docset GetFallbackDocset()
+        private static Docset GetFallbackDocset(Docset docset)
+        {
+            if (docset.LocalizationDocset != null)
             {
-                if (docset.LocalizationDocset != null)
-                {
-                    // source docset in loc build
-                    return docset;
-                }
-
-                if (docset.FallbackDocset != null)
-                {
-                    // localized docset in loc build
-                    return docset.FallbackDocset;
-                }
-
-                // source docset in source build
-                return null;
+                // source docset in loc build
+                return docset;
             }
+
+            if (docset.FallbackDocset != null)
+            {
+                // localized docset in loc build
+                return docset.FallbackDocset;
+            }
+
+            // source docset in source build
+            return null;
         }
     }
 }
