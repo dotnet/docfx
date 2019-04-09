@@ -27,9 +27,9 @@ namespace Microsoft.Docs.Build
             _forLandingPage = forLandingPage;
         }
 
-        public (Error error, string content, Document file) ResolveContent(string path, Document relativeTo, in Range range, DependencyType dependencyType = DependencyType.Inclusion)
+        public (Error error, string content, Document file) ResolveContent(SourceInfo<string> path, Document relativeTo, DependencyType dependencyType = DependencyType.Inclusion)
         {
-            var (error, content, child) = TryResolveContent(relativeTo, path, range);
+            var (error, content, child) = TryResolveContent(relativeTo, path);
 
             _dependencyMapBuilder.AddDependencyItem(relativeTo, child, dependencyType);
 
@@ -38,9 +38,9 @@ namespace Microsoft.Docs.Build
 
         // forLandingPage should not be used, it is a hack to handle some specific logic for landing page based on the user input for now
         // which needs to be removed once the user input is correct
-        public (Error error, string link, Document file) ResolveLink(string path, Document relativeTo, Document resultRelativeTo, Action<Document> buildChild, in Range range)
+        public (Error error, string link, Document file) ResolveLink(SourceInfo<string> path, Document relativeTo, Document resultRelativeTo, Action<Document> buildChild)
         {
-            var (error, link, fragment, hrefType, file) = TryResolveHref(relativeTo, path, resultRelativeTo, range);
+            var (error, link, fragment, hrefType, file) = TryResolveHref(relativeTo, path, resultRelativeTo);
 
             if (file != null && buildChild != null)
             {
@@ -49,12 +49,12 @@ namespace Microsoft.Docs.Build
 
             var isSelfBookmark = hrefType == HrefType.SelfBookmark || resultRelativeTo == file;
             _dependencyMapBuilder.AddDependencyItem(relativeTo, file, HrefUtility.FragmentToDependencyType(fragment));
-            _bookmarkValidator.AddBookmarkReference(relativeTo, isSelfBookmark ? resultRelativeTo : file ?? relativeTo, fragment, isSelfBookmark, range);
+            _bookmarkValidator.AddBookmarkReference(relativeTo, isSelfBookmark ? resultRelativeTo : file ?? relativeTo, fragment, isSelfBookmark, path);
 
             return (error, link, file);
         }
 
-        public (Error error, string href, string display, Document file) ResolveXref(string href, Document relativeTo, Document rootFile)
+        public (Error error, string href, string display, Document file) ResolveXref(SourceInfo<string> href, Document relativeTo, Document rootFile)
         {
             var (uid, query, fragment) = HrefUtility.SplitHref(href);
             string moniker = null;
@@ -91,9 +91,9 @@ namespace Microsoft.Docs.Build
             return Document.PathToRelativeUrl(relativePath, file.ContentType, file.Schema, file.Docset.Config.Output.Json);
         }
 
-        private (Error error, string content, Document file) TryResolveContent(Document relativeTo, string href, in Range range)
+        private (Error error, string content, Document file) TryResolveContent(Document relativeTo, SourceInfo<string> href)
         {
-            var (error, file, redirect, _, _, _, pathToDocset) = TryResolveFile(relativeTo, href, range);
+            var (error, file, redirect, _, _, _, pathToDocset) = TryResolveFile(relativeTo, href);
 
             if (redirect != null)
             {
@@ -116,18 +116,18 @@ namespace Microsoft.Docs.Build
             return file != null ? (error, file.ReadText(), file) : default;
         }
 
-        private (Error error, string href, string fragment, HrefType? hrefType, Document file) TryResolveHref(Document relativeTo, string href, Document resultRelativeTo, in Range range)
+        private (Error error, string href, string fragment, HrefType? hrefType, Document file) TryResolveHref(Document relativeTo, SourceInfo<string> href, Document resultRelativeTo)
         {
             Debug.Assert(resultRelativeTo != null);
 
-            if (href.StartsWith("xref:"))
+            if (href?.Value.StartsWith("xref:") != false)
             {
-                var (uidError, uidHref, _, referencedFile) = ResolveXref(href.Substring("xref:".Length), relativeTo, resultRelativeTo);
+                var (uidError, uidHref, _, referencedFile) = ResolveXref(href.WithValue(href?.Value.Substring("xref:".Length)), relativeTo, resultRelativeTo);
                 return (uidError, uidHref, null, null, referencedFile);
             }
 
             var decodedHref = Uri.UnescapeDataString(href);
-            var (error, file, redirectTo, query, fragment, hrefType, _) = TryResolveFile(relativeTo, decodedHref, range);
+            var (error, file, redirectTo, query, fragment, hrefType, _) = TryResolveFile(relativeTo, href.WithValue(decodedHref));
 
             // Redirection
             // follow redirections
@@ -187,13 +187,13 @@ namespace Microsoft.Docs.Build
                 && (file.ContentType == ContentType.Page || file.ContentType == ContentType.TableOfContents)
                 && !file.Docset.BuildScope.Contains(file))
             {
-                return (Errors.LinkOutOfScope(relativeTo, file, href, file.Docset.Config.ConfigFileName, range), relativeUrl + query + fragment, fragment, hrefType, null);
+                return (Errors.LinkOutOfScope(relativeTo, file, href, file.Docset.Config.ConfigFileName), relativeUrl + query + fragment, fragment, hrefType, null);
             }
 
             return (error, relativeUrl + query + fragment, fragment, hrefType, file);
         }
 
-        private (Error error, Document file, string redirectTo, string query, string fragment, HrefType? hrefType, string pathToDocset) TryResolveFile(Document relativeTo, string href, in Range range)
+        private (Error error, Document file, string redirectTo, string query, string fragment, HrefType? hrefType, string pathToDocset) TryResolveFile(Document relativeTo, SourceInfo<string> href)
         {
             if (string.IsNullOrEmpty(href))
             {
@@ -234,7 +234,7 @@ namespace Microsoft.Docs.Build
                         file = Document.TryCreateFromFile(relativeTo.Docset, pathToDocset);
                     }
 
-                    return (file != null ? null : (_forLandingPage ? null : Errors.FileNotFound(relativeTo.ToString(), path, range)), file, null, query, fragment, null, pathToDocset);
+                    return (file != null ? null : (_forLandingPage ? null : Errors.FileNotFound(relativeTo.ToString(), new SourceInfo<string>(path, href.Range))), file, null, query, fragment, null, pathToDocset);
 
                 default:
                     return default;

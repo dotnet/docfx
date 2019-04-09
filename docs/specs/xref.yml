@@ -7,7 +7,7 @@ outputs:
   docs/a.json: |
     { "content": "<p>Link to &lt;xref:a&gt;</p>" }
   build.log: |
-    ["warning","uid-not-found","Cannot find uid 'a' using xref '<xref:a>'","docs/a.md"]
+    ["warning","uid-not-found","Cannot find uid 'a' using xref '<xref:a>'","docs/a.md",1,9]
 ---
 # Unknown xrefs using @ syntax are output as is with a informational message
 inputs:
@@ -17,7 +17,7 @@ outputs:
   docs/a.json: |
     { "content": "<p>Link to @a</p>" }
   build.log: |
-    ["info","at-uid-not-found","Cannot find uid 'a' using xref '@a'","docs/a.md"]
+    ["info","at-uid-not-found","Cannot find uid 'a' using xref '@a'","docs/a.md",1,10]
 ---
 # Restore xref map from configured url and use the map for resolving
 # hostname should be removed if docset sharing the same one
@@ -159,7 +159,7 @@ outputs:
     {"content":"<p>Link to @a</p>\n"}
   build.log: |
     ["error","uid-conflict","Two or more documents have defined the same Uid 'a': docs/a.yml,docs/b.json"]
-    ["info","at-uid-not-found","Cannot find uid 'a' using xref '@a'","docs/c.md"]
+    ["info","at-uid-not-found","Cannot find uid 'a' using xref '@a'","docs/c.md",1,10]
   xrefmap.json: | 
     {"!references":null}
 ---
@@ -220,7 +220,7 @@ outputs:
     { "content": {"!xref": null}}
   build.log: |
     ["error","json-syntax-error","Unexpected character encountered while parsing value: }.","docs/a.json",7]
-    ["warning","uid-not-found","Cannot find uid 'a' using xref 'a'","docs/b.json"]
+    ["warning","uid-not-found","Cannot find uid 'a' using xref 'a'","docs/b.json",3,13]
   xrefmap.json: | 
     {"!references":null}
 ---

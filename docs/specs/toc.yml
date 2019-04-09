@@ -1192,7 +1192,7 @@ outputs:
       ]
     }
   build.log: |
-    ["warning","uid-not-found","Cannot find uid 'c' using xref 'c'","docs/TOC.yml"]
+    ["warning","uid-not-found","Cannot find uid 'c' using xref 'c'","docs/TOC.yml",5,8]
 ---
 # uid reference with monikers in yaml toc
 inputs:

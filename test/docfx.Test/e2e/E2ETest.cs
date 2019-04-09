@@ -23,14 +23,15 @@ namespace Microsoft.Docs.Build
     {
         private static readonly string[] s_errorCodesWithoutLineInfo =
         {
-            "need-restore", "publish-url-conflict", "output-path-conflict", "download-failed", "heading-not-found", "config-not-found",
+            "need-restore", "publish-url-conflict", "output-path-conflict", "uid-conflict", "redirection-conflict",
+            "download-failed", "heading-not-found", "config-not-found", 
 
             // These error codes are the ones we could have line info but haven't implement them yet:
-            "file-not-found", "uid-not-found", "committish-not-found",
+            "file-not-found", "committish-not-found",
             "invalid-toc-syntax", "yaml-header-not-object",
             "invalid-toc-level", "redirection-out-of-scope", "invalid-redirect-to", "moniker-config-missing",
-            "at-uid-not-found", "empty-monikers", "circular-reference", "invalid-uid-moniker", "moniker-overlapping",
-            "uid-conflict", "redirection-is-empty", "redirection-conflict", "invalid-locale", "link-out-of-scope",
+            "empty-monikers", "circular-reference", "moniker-overlapping",
+            "redirection-is-empty", "invalid-locale", "link-out-of-scope",
             "invalid-redirection", "merge-conflict", "invalid-topic-href",
             "redirected-id-conflict", "schema-not-found"
         };

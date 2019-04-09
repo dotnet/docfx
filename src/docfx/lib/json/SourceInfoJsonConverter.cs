@@ -20,7 +20,7 @@ namespace Microsoft.Docs.Build
             var value = serializer.Deserialize(reader, valueType);
 
             // TODO: populate file info
-            return Activator.CreateInstance(objectType, value, null, range);
+            return Activator.CreateInstance(objectType, value, range, null);
         }
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)

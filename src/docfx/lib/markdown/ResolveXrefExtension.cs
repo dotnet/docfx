@@ -26,8 +26,8 @@ namespace Microsoft.Docs.Build
                          var (_, href, display, _) = resolveXref(xref.Href, xref);
                          if (href is null)
                          {
-                             var raw = xref.GetAttributes().Properties.First(p => p.Key == "data-raw-source").Value;
-                             var error = raw.StartsWith("@")
+                             var raw = new SourceInfo<string>(xref.GetAttributes().Properties.First(p => p.Key == "data-raw-source").Value, node.ToRange());
+                             var error = raw.Value.StartsWith("@")
                                  ? Errors.AtUidNotFound((Document)InclusionContext.File, xref.Href, raw)
                                  : Errors.UidNotFound((Document)InclusionContext.File, xref.Href, raw);
 

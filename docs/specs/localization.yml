@@ -649,7 +649,7 @@ repos:
           link to @c
 outputs:
   build.log: |
-    ["info","at-uid-not-found","Cannot find uid 'c' using xref '@c'","docs/b.md"]
+    ["info","at-uid-not-found","Cannot find uid 'c' using xref '@c'","docs/b.md",1,10]
   docs/a.json:
   docs/b.json:
 ---
@@ -671,7 +671,7 @@ inputs:
   localization/zh-cn/docs/b.md: link to @c
 outputs:
   build.log: |
-    ["info","at-uid-not-found","Cannot find uid 'c' using xref '@c'","docs/b.md"]
+    ["info","at-uid-not-found","Cannot find uid 'c' using xref '@c'","docs/b.md",1,10]
   docs/a.json:
   docs/b.json:
 ---

@@ -16,7 +16,7 @@ namespace Microsoft.Docs.Build
 
         object ISourceInfo.Value => Value;
 
-        public SourceInfo(T value, string file, Range range)
+        public SourceInfo(T value, Range range = default, string file = null)
         {
             Value = value;
             File = file;
@@ -28,12 +28,15 @@ namespace Microsoft.Docs.Build
             if (value == default)
                 return null;
 
-            return new SourceInfo<T>(value, File, Range);
+            return new SourceInfo<T>(value, Range, File);
         }
 
         public static implicit operator T(SourceInfo<T> value)
         {
             return value != null ? value.Value : default;
         }
+
+        public override string ToString()
+            => Value.ToString();
     }
 }
