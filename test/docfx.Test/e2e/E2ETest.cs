@@ -27,7 +27,7 @@ namespace Microsoft.Docs.Build
             "download-failed", "heading-not-found", "config-not-found", 
 
             // These error codes are the ones we could have line info but haven't implement them yet:
-            "file-not-found", "committish-not-found",
+            "committish-not-found",
             "invalid-toc-syntax", "yaml-header-not-object",
             "invalid-toc-level", "redirection-out-of-scope", "invalid-redirect-to", "moniker-config-missing",
             "empty-monikers", "circular-reference", "moniker-overlapping",

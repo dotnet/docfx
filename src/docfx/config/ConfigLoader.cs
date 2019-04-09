@@ -148,7 +148,7 @@ namespace Microsoft.Docs.Build
                 {
                     if (extend is JValue value && value.Value is string str)
                     {
-                        var (_, content, _) = RestoreMap.GetRestoredFileContent(docsetPath, str, default);
+                        var (_, content, _) = RestoreMap.GetRestoredFileContent(docsetPath, new SourceInfo<string>(str, null, JsonUtility.ToRange(value)));
                         var (extendErros, extendConfigObject) = LoadConfigObjectContent(str, content);
                         errors.AddRange(extendErros);
                         JsonUtility.Merge(result, extendConfigObject);

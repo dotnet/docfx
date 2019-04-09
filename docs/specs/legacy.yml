@@ -122,3 +122,19 @@ outputs:
   op_aggregated_file_map_info.json:
   .publish.json:
   xrefmap.json:
+---
+# Legacy metadata black list
+inputs:
+  docfx.yml: |
+    fileMetadata:
+      content_type:
+        docs/a.md: json
+  docs/a.md: |
+    ---
+    ms.contentlang: 'C#'
+    ---
+outputs:
+  docs/a.json:
+  build.log: |
+    ["warning","reserved-metadata","Metadata 'content_type' is reserved by docfx, remove this metadata: 'fileMetadata.content_type'","docfx.yml",3,5]
+    ["warning","reserved-metadata","Metadata 'ms.contentlang' is reserved by docfx, remove this metadata: '['ms.contentlang']'","docs/a.md",2,17]

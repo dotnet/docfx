@@ -72,12 +72,12 @@ namespace Microsoft.Docs.Build
             return released;
         }
 
-        public static (string localPath, string content, string etag) GetRestoredFileContent(Docset docset, string url)
+        public static (string localPath, string content, string etag) GetRestoredFileContent(Docset docset, SourceInfo<string> url)
         {
             return GetRestoredFileContent(docset.DocsetPath, url, docset.FallbackDocset?.DocsetPath);
         }
 
-        public static (string localPath, string content, string etag) GetRestoredFileContent(string docsetPath, string url, string fallbackDocset = null)
+        public static (string localPath, string content, string etag) GetRestoredFileContent(string docsetPath, SourceInfo<string> url, string fallbackDocset = null)
         {
             var fromUrl = HrefUtility.IsHttpHref(url);
             if (!fromUrl)

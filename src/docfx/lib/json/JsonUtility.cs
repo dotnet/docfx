@@ -249,9 +249,39 @@ namespace Microsoft.Docs.Build
                 {
                     var valueLineInfo = (IJsonLineInfo)value;
                     var keyLineInfo = (IJsonLineInfo)property;
-                    container[key] = SetLineInfo(value.DeepClone(), valueLineInfo.LineNumber, valueLineInfo.LinePosition);
+                    container[key] = SetLineInfo(DeepClone(value), valueLineInfo.LineNumber, valueLineInfo.LinePosition);
                     SetLineInfo(container.Property(key), keyLineInfo.LineNumber, keyLineInfo.LinePosition);
                 }
+            }
+
+            JToken DeepClone(JToken token)
+            {
+                if (token is JValue v)
+                {
+                    var lineInfo = token as IJsonLineInfo;
+                    var result = new JValue(v);
+                    SetLineInfo(result, lineInfo.LineNumber, lineInfo.LinePosition);
+                    return result;
+                }
+                else if (token is JObject obj)
+                {
+                    var result = new JObject();
+                    foreach (var prop in obj.Properties())
+                    {
+                        result[prop.Name] = DeepClone(prop.Value);
+                    }
+                    return result;
+                }
+                else if (token is JArray array)
+                {
+                    var result = new JArray();
+                    foreach (var item in array)
+                    {
+                        result.Add(DeepClone(item));
+                    }
+                    return result;
+                }
+                return default;
             }
         }
 
