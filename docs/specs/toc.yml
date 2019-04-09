@@ -1340,4 +1340,18 @@ outputs:
   docs/toc.json: |
     {"items":[{"name":"19 leading count","href":"a","items":[{"name":"20 leading count","href":"a","!monikers":null}]}]}
   docs/a.json:
-
+---
+# toc with some unknown fields
+inputs:
+  docfx.yml:
+  docs/TOC.yml: |
+    items:
+      - name: test
+        href: a.md
+    ms.contentlocale: ja-jp
+    ms.translationtype: HT
+  docs/a.md:
+outputs:
+  docs/toc.json: |
+    {"items":[{"name":"test","href":"a"}],"!ms.contentlocale":null,"!ms.translationtype":null }
+  docs/a.json:
