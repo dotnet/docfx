@@ -48,48 +48,7 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
             {
                 foreach (var item in result.YamlHeader)
                 {
-                    if (item.Key == Constants.PropertyName.Uid)
-                    {
-                        var uid = item.Value as string;
-                        if (!string.IsNullOrWhiteSpace(uid))
-                        {
-                            model.Uids = new[] { new UidDefinition(uid, model.LocalPathFromRoot) }.ToImmutableArray();
-                            content[Constants.PropertyName.Uid] = item.Value;
-                        }
-                    }
-                    else
-                    {
-                        content[item.Key] = item.Value;
-                        if (item.Key == DocumentTypeKey)
-                        {
-                            model.DocumentType = item.Value as string;
-                        }
-                        else if (item.Key == Constants.PropertyName.Title)
-                        {
-                            model.Properties.IsUserDefinedTitle = true;
-                        }
-                        else if (item.Key == Constants.PropertyName.OutputFileName)
-                        {
-                            var outputFileName = item.Value as string;
-                            if (!string.IsNullOrWhiteSpace(outputFileName))
-                            {
-                                string fn = null;
-                                try
-                                {
-                                    fn = Path.GetFileName(outputFileName);
-                                }
-                                catch (ArgumentException) { }
-                                if (fn == outputFileName)
-                                {
-                                    model.File = (RelativePath)model.File + (RelativePath)outputFileName;
-                                }
-                                else
-                                {
-                                    Logger.LogWarning($"Invalid output file name in yaml header: {outputFileName}, skip rename output file.");
-                                }
-                            }
-                        }
-                    }
+                    HandleKeyValuePair(item.Key, item.Value);
                 }
             }
             model.LinkToFiles = result.LinkToFiles.ToImmutableHashSet();
@@ -110,6 +69,55 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
             foreach (var d in result.Dependency)
             {
                 host.ReportDependencyTo(model, d, DependencyTypeName.Include);
+            }
+
+            void HandleKeyValuePair(string key, object value)
+            {
+                switch (key)
+                {
+                    case Constants.PropertyName.Uid:
+                        var uid = value as string;
+                        if (!string.IsNullOrWhiteSpace(uid))
+                        {
+                            model.Uids = new[] { new UidDefinition(uid, model.LocalPathFromRoot) }.ToImmutableArray();
+                            content[Constants.PropertyName.Uid] = value;
+                        }
+                        break;
+                    case DocumentTypeKey:
+                        content[key] = value;
+                        model.DocumentType = value as string;
+                        break;
+                    case Constants.PropertyName.Title:
+                        if (!string.IsNullOrEmpty((string)value))
+                        {
+                            content[key] = value;
+                            model.Properties.IsUserDefinedTitle = true;
+                        }
+                        break;
+                    case Constants.PropertyName.OutputFileName:
+                        content[key] = value;
+                        var outputFileName = value as string;
+                        if (!string.IsNullOrWhiteSpace(outputFileName))
+                        {
+                            string fn = null;
+                            try
+                            {
+                                fn = Path.GetFileName(outputFileName);
+                            }
+                            catch (ArgumentException) { }
+                            if (fn == outputFileName)
+                            {
+                                model.File = (RelativePath)model.File + (RelativePath)outputFileName;
+                            }
+                            else
+                            {
+                                Logger.LogWarning($"Invalid output file name in yaml header: {outputFileName}, skip rename output file.");
+                            }
+                        }
+                        break;
+                    default:
+                        break;
+                }
             }
         }
 
