@@ -23,7 +23,7 @@ namespace Microsoft.Docs.Build
             Range = range;
         }
 
-        public SourceInfo<T> Update(T value)
+        public SourceInfo<T> WithValue(T value)
         {
             if (value == default)
                 return null;
