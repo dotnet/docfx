@@ -41,12 +41,17 @@ namespace Microsoft.DocAsCode.HtmlToPdf
         /// <summary>
         /// Gets or sets the "Table of Contents" bookmark title.
         /// </summary>
-        public string TocTitle { get; set; } = "Cover Page";
+        public string TocTitle { get; set; } = "Table of Contents";
 
         /// <summary>
         /// Gets or sets the outline option.
         /// </summary>
         public OutlineOption OutlineOption { get; set; } = OutlineOption.DefaultOutline;
+
+        /// <summary>
+        /// Gets or sets the cover page title.
+        /// </summary>
+        public string CoverPageTitle { get; set; } = "Cover Page";
 
         /// <summary>
         /// If the path only with '/' or null or empty, will skip and return empty. Others will trim and return with as 'a/'

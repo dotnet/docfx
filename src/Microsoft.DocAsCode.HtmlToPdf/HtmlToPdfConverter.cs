@@ -51,12 +51,12 @@ namespace Microsoft.DocAsCode.HtmlToPdf
 
         #region Public Methods
 
-        public IDictionary<string, int> GetHtmlToPdfNumberOfPages(IList<string> htmlFilePaths)
+        public IList<PartialPdfModel> GetHtmlToPdfNumberOfPages(IList<string> htmlFilePaths)
         {
             Guard.ArgumentNotNull(htmlFilePaths, nameof(htmlFilePaths));
             Guard.Argument(() => htmlFilePaths.All(p => !string.IsNullOrEmpty(p)), nameof(htmlFilePaths), $"{nameof(htmlFilePaths)} cannot contain null or empty html file path.");
 
-            var pdfFileNumberOfPages = new ConcurrentDictionary<string, int>();
+            var pdfFileNumberOfPages = new ConcurrentBag<PartialPdfModel>();
 
             Parallel.ForEach(
                 htmlFilePaths,
@@ -64,10 +64,17 @@ namespace Microsoft.DocAsCode.HtmlToPdf
                 htmlFilePath =>
                 {
                     var numberOfPages = Convert($"{WrapQuoteToPath(htmlFilePath)} -", reader => reader.PageCount);
-                    pdfFileNumberOfPages.TryAdd(htmlFilePath, numberOfPages);
+
+                    PartialPdfModel pdfModel = new PartialPdfModel
+                    {
+                        FilePath = htmlFilePath,
+                        NumberOfPages = numberOfPages
+                    };
+
+                    pdfFileNumberOfPages.Add(pdfModel);
                 });
 
-            return pdfFileNumberOfPages;
+            return pdfFileNumberOfPages.ToArray();
         }
 
         public void Save(string outputFileName)
@@ -163,7 +170,7 @@ namespace Microsoft.DocAsCode.HtmlToPdf
             }
         }
 
-        private void CreateOutlines(PdfOutlineCollection outlineCollection, IList<HtmlModel> htmlModels, IDictionary<string, int> pdfFileNumberOfPages)
+        private void CreateOutlines(PdfOutlineCollection outlineCollection, IList<HtmlModel> htmlModels, IList<PartialPdfModel> pdfPages)
         {
             if (htmlModels?.Count > 0)
             {
@@ -183,21 +190,28 @@ namespace Microsoft.DocAsCode.HtmlToPdf
                     }
                     else
                     {
-                        outline.DestinationPage = outlineCollection.Owner.Pages[_currentNumberOfPages - 1];
-                        outline.PageDestinationType = PdfPageDestinationType.FitH;
-
                         if (!string.IsNullOrEmpty(htmlModel.HtmlFilePath))
                         {
                             string filePath = GetFilePath(htmlModel.HtmlFilePath);
-                            if (pdfFileNumberOfPages.ContainsKey(filePath))
+
+                            if (pdfPages.Any(x => x.FilePath == filePath))
                             {
-                                _currentNumberOfPages += pdfFileNumberOfPages[filePath];
+                                PartialPdfModel pdfModel = pdfPages.Single(x => x.FilePath == filePath);
+
+                                if (!pdfModel.PageNumber.HasValue)
+                                {
+                                    pdfModel.PageNumber = _currentNumberOfPages - 1;
+                                    _currentNumberOfPages += pdfModel.NumberOfPages;
+                                }
+
+                                outline.DestinationPage = outlineCollection.Owner.Pages[pdfModel.PageNumber.Value];
+                                outline.PageDestinationType = PdfPageDestinationType.FitH;
                             }
                         }
                     }
 
                     outlineCollection.Add(outline);
-                    CreateOutlines(outline.Outlines, htmlModel.Children, pdfFileNumberOfPages);
+                    CreateOutlines(outline.Outlines, htmlModel.Children, pdfPages);
                 }
             }
         }

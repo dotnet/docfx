@@ -116,14 +116,14 @@ namespace Microsoft.DocAsCode.HtmlToPdf
                         var tocPageFilePath = Path.Combine(basePath, Path.GetDirectoryName(tocFilePath), TocPageFileName);
                         var tocModels = LoadTocModels(basePath, tocFile) ?? new List<TocModel>();
 
-                        var crruentTocHtmls = new ConcurrentBag<string>();
-                        var htmlModels = BuildHtmlModels(basePath, tocModels, crruentTocHtmls);
+                        var currentTocHtmls = new ConcurrentBag<string>();
+                        var htmlModels = BuildHtmlModels(basePath, tocModels, currentTocHtmls);
 
-                        HtmlNotInTocTransformer(basePath, manifestUrlCache, crruentTocHtmls);
+                        HtmlNotInTocTransformer(basePath, manifestUrlCache, currentTocHtmls);
 
                         if (_pdfOptions.GenerateAppendices)
                         {
-                            crruentTocHtmls.AsParallel().ForAll(tocHtmls.Add);
+                            currentTocHtmls.AsParallel().ForAll(tocHtmls.Add);
                         }
 
                         if (File.Exists(tocPageFilePath))
@@ -132,6 +132,19 @@ namespace Microsoft.DocAsCode.HtmlToPdf
                             AbsolutePathInTocPageFileTransformer(tocPageFilePath);
                             htmlModels.Insert(0, new HtmlModel { Title = _pdfOptions.TocTitle, HtmlFilePath = tocPageFilePath });
                         }
+
+                        var coverPages = FindCoverPagesInManifest(manifest);
+                        foreach (ManifestItem coverPage in coverPages)
+                        {
+                            var coverPageFilePath = Path.Combine(basePath, coverPage.SourceRelativePath);
+                            var coverPageHtmlFileName = $"{Path.GetFileNameWithoutExtension(coverPageFilePath)}.html";
+                            var coverPageHtmlFilePath = Path.Combine(Path.GetDirectoryName(coverPageFilePath), coverPageHtmlFileName);
+                            if (File.Exists(coverPageHtmlFilePath))
+                            {
+                                htmlModels.Insert(0, new HtmlModel { Title = _pdfOptions.CoverPageTitle, HtmlFilePath = coverPageHtmlFilePath });
+                            }
+                        }
+
                         if (_pdfOptions.ExcludeTocs == null || _pdfOptions.ExcludeTocs.All(p => NormalizeFilePath(p) != tocFilePath))
                         {
                             var pdfNameFragments = new List<string> { _pdfOptions.PdfDocsetName };
@@ -218,6 +231,11 @@ namespace Microsoft.DocAsCode.HtmlToPdf
         private IList<ManifestItem> FindTocInManifest(Manifest manifest)
         {
             return manifest.Files.Where(f => IsType(f, ManifestItemType.Toc)).ToList();
+        }
+
+        private IList<ManifestItem> FindCoverPagesInManifest(Manifest manifest)
+        {
+            return manifest.Files.Where(f => string.Compare("cover.md", Path.GetFileName(f.SourceRelativePath), true) == 0).ToList();
         }
 
         private void HtmlTransformer(string fullPath)
