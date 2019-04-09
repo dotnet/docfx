@@ -72,12 +72,12 @@ namespace Microsoft.Docs.Build
             return released;
         }
 
-        public static (string localPath, string content, string etag) GetRestoredFileContent(Docset docset, string url, in Range range)
+        public static (string localPath, string content, string etag) GetRestoredFileContent(Docset docset, SourceInfo<string> url)
         {
-            return GetRestoredFileContent(docset.DocsetPath, url, range, docset.FallbackDocset?.DocsetPath);
+            return GetRestoredFileContent(docset.DocsetPath, url, docset.FallbackDocset?.DocsetPath);
         }
 
-        public static (string localPath, string content, string etag) GetRestoredFileContent(string docsetPath, string url, in Range range, string fallbackDocset = null)
+        public static (string localPath, string content, string etag) GetRestoredFileContent(string docsetPath, SourceInfo<string> url, string fallbackDocset = null)
         {
             var fromUrl = HrefUtility.IsHttpHref(url);
             if (!fromUrl)
@@ -91,10 +91,10 @@ namespace Microsoft.Docs.Build
 
                 if (!string.IsNullOrEmpty(fallbackDocset))
                 {
-                    return GetRestoredFileContent(fallbackDocset, url, range);
+                    return GetRestoredFileContent(fallbackDocset, url);
                 }
 
-                throw Errors.FileNotFound(docsetPath, url, range).ToException();
+                throw Errors.FileNotFound(docsetPath, url, url?.Range ?? default).ToException();
             }
 
             var (content, etag) = TryGetRestoredFileContent(url);
