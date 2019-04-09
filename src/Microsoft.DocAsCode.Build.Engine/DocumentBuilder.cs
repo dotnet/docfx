@@ -94,7 +94,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 Logger.LogError($"Unable to find markdown engine: {parameters[0].MarkdownEngineName}");
                 throw new DocfxException($"Unable to find markdown engine: {parameters[0].MarkdownEngineName}");
             }
-            Logger.LogInfo($"Markdown engine is {parameters[0].MarkdownEngineName}");
+            Logger.LogInfo($"Markdown engine is {parameters[0].MarkdownEngineName}", code: InfoCodes.Build.MarkdownEngineName);
 
             var logCodesLogListener = new LogCodesLogListener();
             Logger.RegisterListener(logCodesLogListener);
