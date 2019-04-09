@@ -23,6 +23,14 @@ namespace Microsoft.Docs.Build
             Range = range;
         }
 
+        public SourceInfo<T> Update(T value)
+        {
+            if (value == default)
+                return null;
+
+            return new SourceInfo<T>(value, File, Range);
+        }
+
         public static implicit operator T(SourceInfo<T> value)
         {
             return value != null ? value.Value : default;

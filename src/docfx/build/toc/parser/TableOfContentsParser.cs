@@ -54,9 +54,7 @@ namespace Microsoft.Docs.Build
             {
                 content = content ?? file.ReadText();
                 GitUtility.CheckMergeConflictMarker(content, file.FilePath);
-                var (errors, toc) = MarkdownTocMarkup.LoadMdTocModel(content, file, context);
-
-                return (errors, toc);
+                return MarkdownTocMarkup.LoadMdTocModel(content, file, context);
             }
 
             throw new NotSupportedException($"{filePath} is an unknown TOC file");
@@ -137,11 +135,7 @@ namespace Microsoft.Docs.Build
 
                 // set resolved href back
                 tocModelItem.Href = resolvedTocHref ?? resolvedTopicHref ?? resolvedTopicItemFromTocHref?.Href;
-
-                if (resolvedTocHref?.Value != null)
-                {
-                    tocModelItem.TocHref = resolvedTocHref;
-                }
+                tocModelItem.TocHref = resolvedTocHref;
                 tocModelItem.Name = tocModelItem.Name ?? resolvedTopicName;
                 tocModelItem.Items = subChildren?.Items ?? tocModelItem.Items;
             }
@@ -210,7 +204,7 @@ namespace Microsoft.Docs.Build
                 }
 
                 var (hrefPath, fragment, query) = HrefUtility.SplitHref(tocHref);
-                tocHref = new SourceInfo<string>(hrefPath, tocHref.File, tocHref.Range);
+                tocHref = tocHref.Update(hrefPath);
 
                 var (referencedTocContent, referenceTocFilePath) = ResolveTocHrefContent(tocHrefType, tocHref, filePath, resolveContent);
                 if (referencedTocContent != null)
@@ -238,7 +232,7 @@ namespace Microsoft.Docs.Build
                     var (uidHref, uidDisplayName, uidFile) = resolveXref.Invoke(rootPath, uid);
                     if (!string.IsNullOrEmpty(uidHref))
                     {
-                        uid = new SourceInfo<string>(uidHref, uid.File, uid.Range);
+                        uid = uid.Update(uidHref);
                         return (uid, uidDisplayName, uidFile);
                     }
                 }
@@ -253,7 +247,7 @@ namespace Microsoft.Docs.Build
                 Debug.Assert(topicHrefType == TocHrefType.AbsolutePath || !IsIncludeHref(topicHrefType));
 
                 var (resolvedTopicHref, file) = resolveHref.Invoke(filePath, topicHref, rootPath);
-                topicHref = new SourceInfo<string>(resolvedTopicHref, topicHref.File, topicHref.Range);
+                topicHref = topicHref.Update(resolvedTopicHref);
                 return (topicHref, null, file);
             }
         }
@@ -313,7 +307,7 @@ namespace Microsoft.Docs.Build
 
             (string content, Document filePath)? Resolve(string name)
             {
-                var content = resolveContent(filePath, new SourceInfo<string>(Path.Combine(href, name), href.File, href.Range), isInclusion: false);
+                var content = resolveContent(filePath, href.Update(Path.Combine(href, name)), isInclusion: false);
                 if (content.file != null)
                 {
                     return content;
