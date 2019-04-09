@@ -989,6 +989,8 @@ outputs:
     {"content":"<p><a href=\"resource.png\">link to deleted resource</a>\n<a href=\"b.md\">link to deleted markdown doesnt work</a></p>\n"}
   build.log: |
     ["warning","file-not-found","Cannot find file 'b.md' relative to 'docs/a.md'","docs/a.md",2,1]
+  .dependencymap.json: |
+    {"dependencies":{"docs/a.md":[{"source":"docs/resource.png","type":"link"}]}}
 ---
 # fallback to deleted toc
 commands:
