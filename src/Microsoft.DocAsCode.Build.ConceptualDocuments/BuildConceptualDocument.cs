@@ -58,10 +58,11 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
             model.Properties.XrefSpec = null;
             if (model.Uids.Length > 0)
             {
+                var title = content[Constants.PropertyName.Title] as string;
                 model.Properties.XrefSpec = new XRefSpec
                 {
                     Uid = model.Uids[0].Name,
-                    Name = content[Constants.PropertyName.Title] as string ?? model.Uids[0].Name,
+                    Name = string.IsNullOrEmpty(title) ? model.Uids[0].Name : title,
                     Href = ((RelativePath)model.File).GetPathFromWorkingFolder()
                 };
             }
