@@ -105,7 +105,9 @@ inputs:
     [link](redirect.md)
 outputs:
   a.raw.page.json: |
-    { "content": "<p>\n<a data-linktype=\"relative-path\" href=\"redirect\">link</a></p>" }
+    { "content": "<p>\n<a data-linktype=\"relative-path\" href=\"redirect\">link</a></p>" }  
+  redirect.mta.json:
+  redirect.raw.page.json:
 ---
 # Legacy metadata black list
 inputs:
