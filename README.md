@@ -26,7 +26,7 @@ For more information, please refer to [Getting Started](http://dotnet.github.io/
 
 ## How to Contribute
 
-For new comers, you can start with issues with **[`help-wanted`](https://github.com/dotnet/docfx/labels/help-wanted)**. Check out the [contributing](CONTRIBUTING.md) page to see the best places to log issues and start discussions.
+For new comers, you can start with issues with **[`help-wanted`](https://github.com/dotnet/docfx/labels/help-wanted)**. Check out the [contributing](.github/CONTRIBUTING.md) page to see the best places to log issues and start discussions.
 
 This project has adopted the code of conduct defined by the [Contributor Covenant](http://contributor-covenant.org/) to clarify expected behavior in our community.
 For more information see the [.NET Foundation Code of Conduct](http://www.dotnetfoundation.org/code-of-conduct).
