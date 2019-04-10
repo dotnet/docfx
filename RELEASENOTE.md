@@ -8,6 +8,7 @@ v2.42(Pre-release)
 3. Added the ability to specify the type of outline to use when generating a PDF.
 4. Replaced iTextSharp with PdfSharp (#4250)
 5. Removed support for OutlineOption.CustomOutline when generating a PDF.
+6. Added support for a cover page when generating a PDF (#2004)
 
 v2.41
 -----------
