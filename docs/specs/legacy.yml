@@ -140,6 +140,8 @@ outputs:
     ["warning","reserved-metadata","Metadata 'ms.contentlang' is reserved by docfx, remove this metadata: '['ms.contentlang']'","docs/a.md",2,17]
 ---
 # Support metadata at root level for landing data
+commands:
+  - build --legacy
 inputs:
   docfx.yml:
   docs/a.yml: |
@@ -149,8 +151,11 @@ inputs:
     metadata:
       key2: value2
 outputs:
-  docs/a.json: |
-    {
-      "content": { "title": "my title" },
-      "metadata": { "key1": "value1", "key2": "value2" }
-    }
+  docs/a.raw.page.json: |
+    {"metadata":{"key1":"value1","key2":"value2"}}
+  .manifest.json:
+  .dependency-map.json:
+  filemap.json:
+  op_aggregated_file_map_info.json:
+  .publish.json:
+  xrefmap.json:

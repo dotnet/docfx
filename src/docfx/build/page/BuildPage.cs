@@ -180,10 +180,10 @@ namespace Microsoft.Docs.Build
             var yamlHeader = obj?.Value<JObject>("metadata") ?? new JObject();
             if (file.Docset.Legacy && schema.Type == typeof(LandingData))
             {
-                // merge extension data to metadata
+                // merge extension data to metadata in legacy model
                 var landingData = (LandingData)content;
                 var mergedMetadata = new JObject();
-                JsonUtility.Merge(mergedMetadata, landingData.ExtensionData);
+                JsonUtility.Merge(mergedMetadata, landingData.ExtensionData ?? new JObject());
                 JsonUtility.Merge(mergedMetadata, yamlHeader);
                 yamlHeader = mergedMetadata;
             }
