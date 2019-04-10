@@ -101,7 +101,7 @@ namespace Microsoft.Docs.Build
                 return default;
             }
 
-            if (file is null && !string.IsNullOrEmpty(pathToDocset))
+            if (file is null)
             {
                 var (errorFromHistory, content, fileFromHistory) = TryResolveContentFromHistory(_gitCommitProvider, relativeTo.Docset, pathToDocset);
                 if (errorFromHistory != null)
@@ -146,16 +146,15 @@ namespace Microsoft.Docs.Build
             // Cannot resolve the file, leave href as is
             if (file is null)
             {
-                if (string.IsNullOrEmpty(pathToDocset))
+                var (errorFromHistory, resourceFromHistory) = TryResolveResourceFromHistory(_gitCommitProvider, relativeTo.Docset, pathToDocset);
+                if (errorFromHistory != null || resourceFromHistory == null)
                 {
-                    return (error, href, fragment, hrefType, null);
+                    return (errorFromHistory ?? error, href, fragment, hrefType, null);
                 }
 
-                (error, file) = TryResolveResourceFromHistory(_gitCommitProvider, relativeTo.Docset, pathToDocset);
-                if (error != null || file is null)
-                {
-                    return (error, href, fragment, hrefType, null);
-                }
+                // set file to resource got from histroy, reset the error
+                file = resourceFromHistory;
+                error = null;
             }
 
             // Self reference, don't build the file, leave href as is
@@ -269,6 +268,11 @@ namespace Microsoft.Docs.Build
 
         private static (Error error, Document file) TryResolveResourceFromHistory(GitCommitProvider gitCommitProvider, Docset docset, string pathToDocset)
         {
+            if (string.IsNullOrEmpty(pathToDocset))
+            {
+                return default;
+            }
+
             // try to resolve from source repo's git history
             var fallbackDocset = GetFallbackDocset(docset);
             if (fallbackDocset != null && Document.GetContentType(pathToDocset) == ContentType.Resource)
@@ -285,6 +289,11 @@ namespace Microsoft.Docs.Build
 
         private static (Error error, string content, Document file) TryResolveContentFromHistory(GitCommitProvider gitCommitProvider, Docset docset, string pathToDocset)
         {
+            if (string.IsNullOrEmpty(pathToDocset))
+            {
+                return default;
+            }
+
             // try to resolve from source repo's git history
             var fallbackDocset = GetFallbackDocset(docset);
             if (fallbackDocset != null)
