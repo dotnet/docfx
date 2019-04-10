@@ -190,7 +190,7 @@ namespace Microsoft.Docs.Build
         public static (List<Error>, object) ToObject(
             JToken token,
             Type type,
-            Func<IEnumerable<DataTypeAttribute>, object, string, Range, object> transform = null)
+            Func<IEnumerable<DataTypeAttribute>, SourceInfo<object>, string, object> transform = null)
         {
             try
             {
@@ -544,7 +544,7 @@ namespace Microsoft.Docs.Build
         {
             public List<Error> Errors { get; set; }
 
-            public Func<IEnumerable<DataTypeAttribute>, object, string, Range, object> Transform { get; set; }
+            public Func<IEnumerable<DataTypeAttribute>, SourceInfo<object>, string, object> Transform { get; set; }
         }
     }
 }
