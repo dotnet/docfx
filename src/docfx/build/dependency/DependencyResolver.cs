@@ -152,7 +152,7 @@ namespace Microsoft.Docs.Build
                 }
 
                 (error, file) = TryResolveResourceFromHistory(_gitCommitProvider, relativeTo.Docset, pathToDocset);
-                if (error != null || file == null)
+                if (error != null || file is null)
                 {
                     return (error, href, fragment, hrefType, null);
                 }
