@@ -148,7 +148,7 @@ namespace Microsoft.Docs.Build
         /// Get the definition of monikers
         /// It should be absolute url or relative path
         /// </summary>
-        public readonly SourceInfo<string> MonikerDefinition = new SourceInfo<string>(string.Empty, null, default);
+        public readonly SourceInfo<string> MonikerDefinition = new SourceInfo<string>(string.Empty);
 
         /// <summary>
         /// Get the theme repo url like https://github.com/docs/theme#master
@@ -160,7 +160,7 @@ namespace Microsoft.Docs.Build
         /// Gets the dependency lock file path
         /// It should be absolute url or absolute/relative path
         /// </summary>
-        public readonly SourceInfo<string> DependencyLock = new SourceInfo<string>(string.Empty, null, default);
+        public readonly SourceInfo<string> DependencyLock = new SourceInfo<string>(string.Empty);
 
         /// <summary>
         /// Gets the config file name.
