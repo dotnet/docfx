@@ -138,3 +138,19 @@ outputs:
   build.log: |
     ["warning","reserved-metadata","Metadata 'content_type' is reserved by docfx, remove this metadata: 'fileMetadata.content_type'","docfx.yml",3,5]
     ["warning","reserved-metadata","Metadata 'ms.contentlang' is reserved by docfx, remove this metadata: '['ms.contentlang']'","docs/a.md",2,17]
+---
+# Support metadata at root level for landing data
+inputs:
+  docfx.yml:
+  docs/a.yml: |
+    #YamlMime:LandingData
+    title: my title
+    key1: value1
+    metadata:
+      key2: value2
+outputs:
+  docs/a.json: |
+    {
+      "content": { "title": "my title" },
+      "metadata": { "key1": "value1", "key2": "value2" }
+    }
