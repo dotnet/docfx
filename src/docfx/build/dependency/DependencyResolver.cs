@@ -151,15 +151,11 @@ namespace Microsoft.Docs.Build
                     return (error, href, fragment, hrefType, null);
                 }
 
-                var (errorFromHistory, resourceFromHistory) = TryResolveResourceFromHistory(_gitCommitProvider, relativeTo.Docset, pathToDocset);
-                if (errorFromHistory != null || resourceFromHistory == null)
+                (error, file) = TryResolveResourceFromHistory(_gitCommitProvider, relativeTo.Docset, pathToDocset);
+                if (error != null || file == null)
                 {
-                    return (errorFromHistory ?? error, href, fragment, hrefType, null);
+                    return (error, href, fragment, hrefType, null);
                 }
-
-                // set file to resource got from histroy, reset the error
-                file = resourceFromHistory;
-                error = null;
             }
 
             // Self reference, don't build the file, leave href as is
