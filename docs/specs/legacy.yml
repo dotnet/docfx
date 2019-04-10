@@ -145,9 +145,3 @@ inputs:
 outputs:
   docs/a.raw.page.json: |
     {"metadata":{"key1":"value1","key2":"value2"}}
-  .manifest.json:
-  .dependency-map.json:
-  filemap.json:
-  op_aggregated_file_map_info.json:
-  .publish.json:
-  xrefmap.json:

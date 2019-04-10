@@ -238,6 +238,7 @@ namespace Microsoft.Docs.Build
         {
             if (overwrite is null)
                 return;
+
             foreach (var property in overwrite.Properties())
             {
                 var key = property.Name;

@@ -18,6 +18,7 @@ namespace Microsoft.Docs.Build
             var range = JsonUtility.ToRange((IJsonLineInfo)reader);
             var valueType = objectType.GenericTypeArguments[0];
             var value = serializer.Deserialize(reader, valueType);
+
             if (value is null)
                 return null;
 
