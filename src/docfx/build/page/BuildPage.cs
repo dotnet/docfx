@@ -173,6 +173,7 @@ namespace Microsoft.Docs.Build
                 throw Errors.SchemaNotFound(file.Mime).ToException();
             }
 
+            // todo: why not directly use strong model here?
             var (schemaViolationErrors, content) = JsonUtility.ToObject(token, schema.Type, transform: AttributeTransformer.TransformSDP(context, file, buildChild));
             errors.AddRange(schemaViolationErrors);
 
@@ -187,7 +188,6 @@ namespace Microsoft.Docs.Build
                 JsonUtility.Merge(mergedMetadata, yamlHeader);
                 yamlHeader = mergedMetadata;
             }
-
             var title = yamlHeader.Value<string>("title") ?? obj?.Value<string>("title");
 
             if (file.Docset.Legacy && schema.Attribute is PageSchemaAttribute)
