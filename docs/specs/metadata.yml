@@ -37,6 +37,17 @@ outputs:
   build.log: |
     ["error","violate-schema","Expected type String, please input String or type compatible with String.","docs/a.md",2,9]
 ---
+# Report error for invalid yaml header value type as array
+inputs:
+  docfx.yml:
+  docs/a.md: |
+    ---
+    author: []
+    ---
+outputs:
+  build.log: |
+    ["error","violate-schema","Cannot deserialize the current JSON array *","docs/a.md",2,9]
+---
 # generate normal document id and version id
 # backward compatible to docs.com
 # document id = md5("Win.sccm|mdt/release-notes.md")
