@@ -88,9 +88,9 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
                         model.DocumentType = value as string;
                         break;
                     case Constants.PropertyName.Title:
-                        if (!string.IsNullOrEmpty((string)value))
+                        if (value is string str && !string.IsNullOrEmpty(str))
                         {
-                            content[key] = value;
+                            content[key] = str;
                             model.Properties.IsUserDefinedTitle = true;
                         }
                         break;
