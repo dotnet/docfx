@@ -42,11 +42,13 @@ inputs:
   docfx.yml:
   docs/a.md: |
     ---
-    author: []
+    author:
+      - a
+      - b
     ---
 outputs:
   build.log: |
-    ["error","violate-schema","Cannot deserialize the current JSON array *","docs/a.md",2,9]
+    ["error","violate-schema","Cannot deserialize the current JSON array *","docs/a.md",3,3]
 ---
 # generate normal document id and version id
 # backward compatible to docs.com
