@@ -116,6 +116,7 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
                         }
                         break;
                     default:
+                        content[key] = value;
                         break;
                 }
             }
