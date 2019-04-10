@@ -21,7 +21,9 @@ namespace Microsoft.Docs.Build
 
         public readonly string[] Environments = Array.Empty<string>();
 
-        public readonly string[] SkippableOutputs = new[] { "xrefmap.json", ".publish.json", ".dependencymap.json" };
+        public readonly string[] SkippableOutputs = new[] { "xrefmap.json", ".publish.json", ".dependencymap.json",
+                                                            // legacy
+                                                            ".manifest.json", ".dependency-map.json", "filemap.json", "op_aggregated_file_map_info.json", ".publish.json", "xrefmap.json" };
 
         public readonly Dictionary<string, E2ECommit[]> Repos = new Dictionary<string, E2ECommit[]>();
 
