@@ -64,10 +64,6 @@ outputs:
     { "locale": "en-us", "ms.author": "yufeih", "is_dynamic_rendering": true }
   toc.json:
   toc.mta.json:
-  .manifest.json:
-  .dependency-map.json:
-  filemap.json:
-  op_aggregated_file_map_info.json:
 ---
 # Resolve link for landing page
 inputs:
@@ -97,10 +93,6 @@ inputs:
   docs/a.md:
 outputs:
   build.log:
-  .manifest.json:
-  .dependency-map.json:
-  filemap.json:
-  op_aggregated_file_map_info.json:
 ---
 # Redirection file href shouldn't have extension
 commands:
@@ -114,14 +106,6 @@ inputs:
 outputs:
   a.raw.page.json: |
     { "content": "<p>\n<a data-linktype=\"relative-path\" href=\"redirect\">link</a></p>" }
-  redirect.mta.json:
-  redirect.raw.page.json:
-  .manifest.json:
-  .dependency-map.json:
-  filemap.json:
-  op_aggregated_file_map_info.json:
-  .publish.json:
-  xrefmap.json:
 ---
 # Legacy metadata black list
 inputs:
