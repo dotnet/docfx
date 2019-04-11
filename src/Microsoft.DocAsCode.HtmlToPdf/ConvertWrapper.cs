@@ -236,8 +236,8 @@ namespace Microsoft.DocAsCode.HtmlToPdf
         {
             return manifest.Files.SingleOrDefault(f =>
             {
-                return Path.GetDirectoryName(f.SourceRelativePath).StartsWith(Path.GetDirectoryName(tocFile.SourceRelativePath))
-                    && (string.Compare("cover.md", Path.GetFileName(f.SourceRelativePath), true) == 0);
+                return FilePathComparer.OSPlatformSensitiveRelativePathComparer.Equals(Path.GetDirectoryName(f.SourceRelativePath), Path.GetDirectoryName(tocFile.SourceRelativePath))
+                    && (string.Compare("cover.md", Path.GetFileName(f.SourceRelativePath), ignoreCase: true) == 0);
             });
         }
 

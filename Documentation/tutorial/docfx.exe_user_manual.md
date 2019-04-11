@@ -537,7 +537,7 @@ generatesAppendices      | If specified, an `appendices.pdf` file is generated c
 keepRawFiles             | If specified, the intermediate html files used to generate the PDF are not deleted after the PDF has been generated.
 wkhtmltopdf              | Contains additional options specific to wkhtmltopdf which is used internally to generate the PDF files.
 coverTitle               | The name of the bookmark to use for the cover page. If omitted, "Cover Page" will be used.
-tocTitle                 | The name of the bookmark to use for the "Table of Contents". If omitted, "Cover Page" will be used.
+tocTitle                 | The name of the bookmark to use for the "Table of Contents". If omitted, "Table of Contents" will be used.
 outline                  | The type of outline to use. Valid values are `NoOutline`, `DefaultOutline`, `WkDefaultOutline`. If not specified, the default value is `DefaultOutline`. If `WkDefaultOutline` is specified, `--outline` is passed to wkhtmltopdf; otherwise `--no-outline` is passed to wkhtmltopdf.
 
 #### 3.3.1 Properties for the `wkhtmltopdf` Key

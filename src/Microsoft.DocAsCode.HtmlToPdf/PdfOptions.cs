@@ -41,7 +41,7 @@ namespace Microsoft.DocAsCode.HtmlToPdf
         /// <summary>
         /// Gets or sets the "Table of Contents" bookmark title.
         /// </summary>
-        public string TocTitle { get; set; } = "Cover Page";
+        public string TocTitle { get; set; } = "Table of Contents";
 
         /// <summary>
         /// Gets or sets the outline option.
