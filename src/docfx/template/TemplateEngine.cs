@@ -272,7 +272,6 @@ namespace Microsoft.Docs.Build
                     break;
 
                 case "Conceptual":
-                case "ContextObject":
                     break;
 
                 default:
