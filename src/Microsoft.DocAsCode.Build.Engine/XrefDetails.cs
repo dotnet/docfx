@@ -153,10 +153,6 @@ namespace Microsoft.DocAsCode.Build.Engine
                 if (Spec != null)
                 {
                     var converted = renderer.Render(Spec);
-                    if (string.IsNullOrWhiteSpace(converted))
-                    {
-                        Logger.LogWarning($"{Spec.Uid} is rendered to empty with template {TemplatePath} for {Raw ?? RawSource}.");
-                    }
                     var node = new HtmlDocument();
                     node.LoadHtml(converted);
                     return node.DocumentNode;
