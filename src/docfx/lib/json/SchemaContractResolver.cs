@@ -55,7 +55,7 @@ namespace Microsoft.Docs.Build
 
             public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
             {
-                var range = JsonUtility.ToRange((IJsonLineInfo)reader);
+                var source = JsonUtility.ToSourceInfo((IJsonLineInfo)reader);
                 var value = serializer.Deserialize(reader, objectType);
                 if (value is null)
                 {
@@ -70,12 +70,12 @@ namespace Microsoft.Docs.Build
                     }
                     catch (Exception e)
                     {
-                        JsonUtility.State.Errors.Add(Errors.ViolateSchema(range, e.Message));
+                        JsonUtility.State.Errors.Add(Errors.ViolateSchema(source, e.Message));
                     }
                 }
 
                 var transform = JsonUtility.State.Transform;
-                return transform != null ? transform(_attributes, new SourceInfo<object>(value, range), reader.Path) : value;
+                return transform != null ? transform(_attributes, new SourceInfo<object>(value, source), reader.Path) : value;
             }
         }
     }

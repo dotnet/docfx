@@ -99,14 +99,14 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// In markdown-format toc, link(treated as inclusion) CAN ONLY be toc file, folder or absolute path.
         /// </summary>
-        public static Error InvalidTocHref(Document relativeTo, string tocHref, in Range range)
-            => new Error(ErrorLevel.Error, "invalid-toc-href", $"The toc href '{tocHref}' can only reference to a local TOC file, folder or absolute path", relativeTo.ToString(), range);
+        public static Error InvalidTocHref(Document relativeTo, SourceInfo<string> source)
+            => new Error(ErrorLevel.Error, "invalid-toc-href", $"The toc href '{source}' can only reference to a local TOC file, folder or absolute path", relativeTo.ToString(), source);
 
         /// <summary>
         /// In markdown-format toc, defined an empty node(# ) with no content.
         /// </summary>
-        public static Error MissingTocHead(in Range range, string filePath)
-            => new Error(ErrorLevel.Error, "missing-toc-head", $"The toc head name is missing", filePath, range);
+        public static Error MissingTocHead(SourceInfo source)
+            => new Error(ErrorLevel.Error, "missing-toc-head", $"The toc head name is missing", source);
 
         /// <summary>
         /// In markdown-format toc, used wrong toc syntax.
@@ -115,8 +115,8 @@ namespace Microsoft.Docs.Build
         ///     the opening sequence of, characters must be followed by a space or by the end of line
         ///   - The toc syntax '# @b abc' is invalid, multiple inlines in one heading block is not allowed
         /// </summary>
-        public static Error InvalidTocSyntax(in Range range, string filePath, string syntax = null, string hint = null)
-            => new Error(ErrorLevel.Error, "invalid-toc-syntax", $"The toc syntax '{syntax}' is invalid, {hint ?? "the opening sequence of # characters must be followed by a space or by the end of line"}. Refer to [ATX heading](https://spec.commonmark.org/0.28/#atx-heading) to fix it", filePath, range);
+        public static Error InvalidTocSyntax(SourceInfo source, string syntax = null, string hint = null)
+            => new Error(ErrorLevel.Error, "invalid-toc-syntax", $"The toc syntax '{syntax}' is invalid, {hint ?? "the opening sequence of # characters must be followed by a space or by the end of line"}. Refer to [ATX heading](https://spec.commonmark.org/0.28/#atx-heading) to fix it", source);
 
         /// <summary>
         /// In markdown-format toc, header level should be continuous, it shouldn't skip a level.
@@ -166,22 +166,22 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Syntax error in yaml file(not duplicate key).
         /// </summary>
-        public static Error YamlSyntaxError(in Range range, string message)
-            => new Error(ErrorLevel.Error, "yaml-syntax-error", message, range: range);
+        public static Error YamlSyntaxError(SourceInfo source, string message)
+            => new Error(ErrorLevel.Error, "yaml-syntax-error", message, source);
 
         /// <summary>
         /// Used duplicate yaml key in markdown yml header or schema document(yml).
         /// </summary>
-        public static Error YamlDuplicateKey(in Range range, string key)
-            => new Error(ErrorLevel.Error, "yaml-duplicate-key", $"Key '{key}' is already defined, remove the duplicate key.", range: range);
+        public static Error YamlDuplicateKey(SourceInfo source, string key)
+            => new Error(ErrorLevel.Error, "yaml-duplicate-key", $"Key '{key}' is already defined, remove the duplicate key.", source);
 
         /// <summary>
         /// Syntax error in json file.
         /// Examples:
         ///   - unclosed ([{
         /// </summary>
-        public static Error JsonSyntaxError(in Range range, string message)
-            => new Error(ErrorLevel.Error, "json-syntax-error", $"{message}", range: range);
+        public static Error JsonSyntaxError(SourceInfo source, string message)
+            => new Error(ErrorLevel.Error, "json-syntax-error", $"{message}", source);
 
         /// <summary>
         /// Used empty link in article.md.
@@ -194,8 +194,8 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Link which's resolved to a file out of build scope.
         /// </summary>
-        public static Error LinkOutOfScope(Document relativeTo, Document file, SourceInfo<string> href, string configFile)
-            => new Error(ErrorLevel.Warning, "link-out-of-scope", $"File '{file}' referenced by link '{href}' will not be built because it is not included in {configFile}", relativeTo.ToString(), href.Range);
+        public static Error LinkOutOfScope(Document relativeTo, Document file, SourceInfo<string> source, string configFile)
+            => new Error(ErrorLevel.Warning, "link-out-of-scope", $"File '{file}' referenced by link '{source}' will not be built because it is not included in {configFile}", relativeTo.ToString(), source);
 
         /// <summary>
         /// Defined a redirection entry that's not matched by config's files glob patterns.
@@ -229,14 +229,14 @@ namespace Microsoft.Docs.Build
         ///   - define user_profile.json file in config, while the file doesn't exist
         ///   - href referencing a non-existing file
         /// </summary>
-        public static Error FileNotFound(string relativeTo, SourceInfo<string> path)
-            => new Error(ErrorLevel.Warning, "file-not-found", $"Cannot find file '{path}' relative to '{relativeTo}'", relativeTo, path.Range);
+        public static Error FileNotFound(string relativeTo, SourceInfo<string> source)
+            => new Error(ErrorLevel.Warning, "file-not-found", $"Cannot find file '{source}' relative to '{relativeTo}'", relativeTo, source);
 
         /// <summary>
         /// Failed to resolve uid defined by [link](xref:uid) or <xref:uid> syntax.
         /// </summary>
-        public static Error UidNotFound(Document file, string uid, SourceInfo<string> rawXref)
-            => new Error(ErrorLevel.Warning, "uid-not-found", $"Cannot find uid '{uid}' using xref '{rawXref}'", file.ToString(), rawXref.Range);
+        public static Error UidNotFound(Document file, string uid, SourceInfo<string> source)
+            => new Error(ErrorLevel.Warning, "uid-not-found", $"Cannot find uid '{uid}' using xref '{source}'", file.ToString(), source);
 
         /// <summary>
         /// File contains git merge conflict.
@@ -255,8 +255,8 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Failed to resolve uid defined by @ syntax.
         /// </summary>
-        public static Error AtUidNotFound(Document file, string uid, SourceInfo<string> rawXref)
-            => new Error(ErrorLevel.Info, "at-uid-not-found", $"Cannot find uid '{uid}' using xref '{rawXref}'", file.ToString(), rawXref.Range);
+        public static Error AtUidNotFound(Document file, string uid, SourceInfo<string> source)
+            => new Error(ErrorLevel.Info, "at-uid-not-found", $"Cannot find uid '{uid}' using xref '{source}'", file.ToString(), source);
 
         /// <summary>
         /// Files published to the same url have no monikers or share common monikers.
@@ -286,8 +286,8 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Used docfx output model property which are not defined in input model.
         /// </summary>
-        public static Error ReservedMetadata(in Range range, string name, string removeFrom)
-            => new Error(ErrorLevel.Warning, "reserved-metadata", $"Metadata '{name}' is reserved by docfx, remove this metadata: '{removeFrom}'", null, range);
+        public static Error ReservedMetadata(SourceInfo source, string name, string removeFrom)
+            => new Error(ErrorLevel.Warning, "reserved-metadata", $"Metadata '{name}' is reserved by docfx, remove this metadata: '{removeFrom}'", source);
 
         /// <summary>
         /// Failed to compute specific info of a commit.
@@ -312,14 +312,14 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Defined refrence with by #bookmark fragment between articles, which doesn't exist.
         /// </summary>
-        public static Error ExternalBookmarkNotFound(Document relativeTo, Document reference, string bookmark, IEnumerable<string> candidateBookmarks, Range range)
-            => new Error(ErrorLevel.Warning, "external-bookmark-not-found", $"Cannot find bookmark '#{bookmark}' in '{reference}'{(FindBestMatch(bookmark, candidateBookmarks, out string matchedBookmark) ? $", did you mean '#{matchedBookmark}'?" : null)}", relativeTo.ToString(), range);
+        public static Error ExternalBookmarkNotFound(SourceInfo source, Document reference, string bookmark, IEnumerable<string> candidateBookmarks)
+            => new Error(ErrorLevel.Warning, "external-bookmark-not-found", $"Cannot find bookmark '#{bookmark}' in '{reference}'{(FindBestMatch(bookmark, candidateBookmarks, out string matchedBookmark) ? $", did you mean '#{matchedBookmark}'?" : null)}", source);
 
         /// <summary>
         /// Defined refrence with by #bookmark fragment within articles, which doesn't exist.
         /// </summary>
-        public static Error InternalBookmarkNotFound(Document file, string bookmark, IEnumerable<string> candidateBookmarks, Range range)
-            => new Error(ErrorLevel.Suggestion, "internal-bookmark-not-found", $"Cannot find bookmark '#{bookmark}' in '{file}'{(FindBestMatch(bookmark, candidateBookmarks, out string matchedBookmark) ? $", did you mean '#{matchedBookmark}'?" : null)}", file.ToString(), range);
+        public static Error InternalBookmarkNotFound(SourceInfo source, Document reference, string bookmark, IEnumerable<string> candidateBookmarks)
+            => new Error(ErrorLevel.Suggestion, "internal-bookmark-not-found", $"Cannot find bookmark '#{bookmark}' in '{reference}'{(FindBestMatch(bookmark, candidateBookmarks, out string matchedBookmark) ? $", did you mean '#{matchedBookmark}'?" : null)}", source);
 
         /// <summary>
         /// Used null value in yaml header or schema documents.
@@ -327,23 +327,23 @@ namespace Microsoft.Docs.Build
         ///   - article.md has null-valued yaml header property
         ///   - toc.yml has node with null-value property
         /// </summary>
-        public static Error NullValue(in Range range, string name)
-            => new Error(ErrorLevel.Info, "null-value", $"'{name}' contains null value", range: range);
+        public static Error NullValue(SourceInfo source, string name)
+            => new Error(ErrorLevel.Info, "null-value", $"'{name}' contains null value", source);
 
-        public static Error NullArrayValue(in Range range, string name)
-            => new Error(ErrorLevel.Warning, "null-array-value", $"'{name}' contains null value, the null value has been removed", range: range);
+        public static Error NullArrayValue(SourceInfo source, string name)
+            => new Error(ErrorLevel.Warning, "null-array-value", $"'{name}' contains null value, the null value has been removed", source);
 
         /// <summary>
         /// Defined extra field(s) in input model in schema document(json, yml).
         /// </summary>
-        public static Error UnknownField(in Range range, string propName, string typeName)
-            => new Error(ErrorLevel.Warning, "unknown-field", $"Could not find member '{propName}' on object of type '{typeName}'.", range: range);
+        public static Error UnknownField(SourceInfo source, string propName, string typeName)
+            => new Error(ErrorLevel.Warning, "unknown-field", $"Could not find member '{propName}' on object of type '{typeName}'.", source);
 
         /// <summary>
         /// Schema document with violate content type/value against predefined models(not syntax error).
         /// </summary>
-        public static Error ViolateSchema(in Range range, string message)
-            => new Error(ErrorLevel.Error, "violate-schema", $"{message}", range: range);
+        public static Error ViolateSchema(SourceInfo source, string message)
+            => new Error(ErrorLevel.Error, "violate-schema", $"{message}", source);
 
         /// <summary>
         /// Used unknown YamlMime.
@@ -414,8 +414,8 @@ namespace Microsoft.Docs.Build
         /// Examples:
         ///   - article with uid `a` has only netcore-1.0 & netcore-1.1 version, but get referenced with @a?view=netcore-2.0
         /// </summary>
-        public static Error InvalidUidMoniker(string moniker, string uid, string file, SourceInfo<string> href)
-            => new Error(ErrorLevel.Warning, "invalid-uid-moniker", $"Moniker '{moniker}' is not defined with uid '{uid}'", file, href.Range);
+        public static Error InvalidUidMoniker(string moniker, string uid, string file, SourceInfo<string> source)
+            => new Error(ErrorLevel.Warning, "invalid-uid-moniker", $"Moniker '{moniker}' is not defined with uid '{uid}'", file, source);
 
         private static string Join<T>(IEnumerable<T> source, Func<T, string> selector = null)
             => string.Join(", ", source.Select(item => $"{selector?.Invoke(item) ?? item.ToString()}").OrderBy(_ => _, StringComparer.Ordinal).Select(_ => $"'{_}'").Take(5));

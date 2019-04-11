@@ -1,42 +1,53 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Diagnostics;
-
 namespace Microsoft.Docs.Build
 {
-    [DebuggerDisplay("{Value}")]
-    public sealed class SourceInfo<T> : ISourceInfo
+    public class SourceInfo
     {
-        public readonly T Value;
-
+        /// <summary>
+        /// Path to the source file.
+        /// </summary>
         public readonly string File;
 
-        public readonly Range Range;
+        /// <summary>
+        /// A one based start line value.
+        /// </summary>
+        public readonly int Line;
 
-        object ISourceInfo.Value => Value;
+        /// <summary>
+        /// A one based start column value.
+        /// </summary>
+        public readonly int Column;
 
-        public SourceInfo(T value, Range range = default, string file = null)
+        /// <summary>
+        /// A one based end line value.
+        /// </summary>
+        public readonly int EndLine;
+
+        /// <summary>
+        /// A one based end column value.
+        /// </summary>
+        public readonly int EndColumn;
+
+        public SourceInfo(string file, int line, int column)
         {
-            Value = value;
             File = file;
-            Range = range;
+            Line = line;
+            Column = column;
+            EndLine = line;
+            EndColumn = column;
         }
 
-        public SourceInfo<T> WithValue(T value)
+        public SourceInfo(string file, int startLine, int startColumn, int endLine, int endColumn)
         {
-            if (value == default)
-                return null;
-
-            return new SourceInfo<T>(value, Range, File);
+            File = file;
+            Line = startLine;
+            Column = startColumn;
+            EndLine = endLine;
+            EndColumn = endColumn;
         }
 
-        public static implicit operator T(SourceInfo<T> value)
-        {
-            return value != null ? value.Value : default;
-        }
-
-        public override string ToString()
-            => Value.ToString();
+        internal virtual object GetValue() => null;
     }
 }
