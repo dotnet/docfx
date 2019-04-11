@@ -24,7 +24,7 @@ We leverage [wkhtmltopdf](https://wkhtmltopdf.org/) to generate PDF. [Download w
 
 Step1. Add a toc.yml specific for PDF
 ---------------------------
-Current design is that each TOC file generates a corresponding PDF file, TOC is also used as the cover page of the PDF, so we create a `toc.yml` file specific for PDF under a new folder `pdf`, using [TOC Include](http://dotnet.github.io/docfx/tutorial/intro_toc.html?q=toc%20inclu#link-to-another-toc-file) to include content from other TOC files.
+Current design is that each TOC file generates a corresponding PDF file, TOC is also used as the table of contents page of the PDF, so we create a `toc.yml` file specific for PDF under a new folder `pdf`, using [TOC Include](http://dotnet.github.io/docfx/tutorial/intro_toc.html?q=toc%20inclu#link-to-another-toc-file) to include content from other TOC files.
 ```yml
 - name: Articles
   href: ../articles/toc.yml
@@ -115,7 +115,7 @@ If you wish to use plugins with pdf as well, you need to add a `template` node t
 
 Conclusion
 ---------
-In this walkthrough, we build a PDF file according to the TOC file under `pdf` folder. Note that TOC plays an important role in PDF generation, it not only determines the files included in the PDF, but also the cover page for this PDF file. One TOC file generates one PDF file, so don't forget to exclude TOC files you don't want from docfx.json.
+In this walkthrough, we build a PDF file according to the TOC file under `pdf` folder. Note that TOC plays an important role in PDF generation, it not only determines the files included in the PDF, but also the table of contents page for this PDF file. One TOC file generates one PDF file, so don't forget to exclude TOC files you don't want from docfx.json.
 
 Read more
 ---------

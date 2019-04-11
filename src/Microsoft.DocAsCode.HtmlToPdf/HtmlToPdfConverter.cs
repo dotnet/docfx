@@ -51,12 +51,12 @@ namespace Microsoft.DocAsCode.HtmlToPdf
 
         #region Public Methods
 
-        public IList<PartialPdfModel> GetHtmlToPdfNumberOfPages(IList<string> htmlFilePaths)
+        public IDictionary<string, PartialPdfModel> GetPartialPdfModels(IList<string> htmlFilePaths)
         {
             Guard.ArgumentNotNull(htmlFilePaths, nameof(htmlFilePaths));
             Guard.Argument(() => htmlFilePaths.All(p => !string.IsNullOrEmpty(p)), nameof(htmlFilePaths), $"{nameof(htmlFilePaths)} cannot contain null or empty html file path.");
 
-            var pdfFileNumberOfPages = new ConcurrentBag<PartialPdfModel>();
+            var pdfFileNumberOfPages = new ConcurrentDictionary<string, PartialPdfModel>();
 
             Parallel.ForEach(
                 htmlFilePaths,
@@ -71,10 +71,10 @@ namespace Microsoft.DocAsCode.HtmlToPdf
                         NumberOfPages = numberOfPages
                     };
 
-                    pdfFileNumberOfPages.Add(pdfModel);
+                    pdfFileNumberOfPages.TryAdd(htmlFilePath, pdfModel);
                 });
 
-            return pdfFileNumberOfPages.ToArray();
+            return pdfFileNumberOfPages;
         }
 
         public void Save(string outputFileName)
@@ -170,7 +170,7 @@ namespace Microsoft.DocAsCode.HtmlToPdf
             }
         }
 
-        private void CreateOutlines(PdfOutlineCollection outlineCollection, IList<HtmlModel> htmlModels, IList<PartialPdfModel> pdfPages)
+        private void CreateOutlines(PdfOutlineCollection outlineCollection, IList<HtmlModel> htmlModels, IDictionary<string, PartialPdfModel> pdfPages)
         {
             if (htmlModels?.Count > 0)
             {
@@ -194,9 +194,9 @@ namespace Microsoft.DocAsCode.HtmlToPdf
                         {
                             string filePath = GetFilePath(htmlModel.HtmlFilePath);
 
-                            if (pdfPages.Any(x => x.FilePath == filePath))
+                            if (pdfPages.ContainsKey(filePath))
                             {
-                                PartialPdfModel pdfModel = pdfPages.Single(x => x.FilePath == filePath);
+                                PartialPdfModel pdfModel = pdfPages[filePath];
 
                                 if (!pdfModel.PageNumber.HasValue)
                                 {
@@ -218,7 +218,7 @@ namespace Microsoft.DocAsCode.HtmlToPdf
 
         private void AddOutlines(PdfDocument pdfDocument)
         {
-            var pdfFileNumberOfPages = GetHtmlToPdfNumberOfPages(new List<string>(_htmlFilePaths));
+            var pdfFileNumberOfPages = GetPartialPdfModels(new List<string>(_htmlFilePaths));
             _currentNumberOfPages = 1;
 
             CreateOutlines(pdfDocument.Outlines, _htmlModels, pdfFileNumberOfPages);

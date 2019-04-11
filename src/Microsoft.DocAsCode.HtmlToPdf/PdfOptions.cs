@@ -39,9 +39,9 @@ namespace Microsoft.DocAsCode.HtmlToPdf
         public string AdditionalPdfCommandArgs { get; set; }
 
         /// <summary>
-        /// Gets or sets the "Table of Contents" bookmark title.
+        /// Gets or sets the "Cover Page" bookmark title.
         /// </summary>
-        public string TocTitle { get; set; } = "Table of Contents";
+        public string TocTitle { get; set; } = "Cover Page";
 
         /// <summary>
         /// Gets or sets the outline option.

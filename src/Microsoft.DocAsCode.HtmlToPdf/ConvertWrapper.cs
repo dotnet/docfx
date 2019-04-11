@@ -133,12 +133,11 @@ namespace Microsoft.DocAsCode.HtmlToPdf
                             htmlModels.Insert(0, new HtmlModel { Title = _pdfOptions.TocTitle, HtmlFilePath = tocPageFilePath });
                         }
 
-                        var coverPages = FindCoverPagesInManifest(manifest);
-                        foreach (ManifestItem coverPage in coverPages)
+                        var coverPage = FindCoverPageInManifest(manifest);
+                        if (coverPage != null)
                         {
-                            var coverPageFilePath = Path.Combine(basePath, coverPage.SourceRelativePath);
-                            var coverPageHtmlFileName = $"{Path.GetFileNameWithoutExtension(coverPageFilePath)}.html";
-                            var coverPageHtmlFilePath = Path.Combine(Path.GetDirectoryName(coverPageFilePath), coverPageHtmlFileName);
+                            var coverPageHtmlRelativeFilePath = coverPage.OutputFiles[".html"].RelativePath;
+                            var coverPageHtmlFilePath = Path.Combine(basePath, coverPageHtmlRelativeFilePath);
                             if (File.Exists(coverPageHtmlFilePath))
                             {
                                 htmlModels.Insert(0, new HtmlModel { Title = _pdfOptions.CoverPageTitle, HtmlFilePath = coverPageHtmlFilePath });
@@ -185,7 +184,7 @@ namespace Microsoft.DocAsCode.HtmlToPdf
                     }
                     catch (Exception ex)
                     {
-                        Logger.LogError($"Error happen when converting {tocJson} to Pdf. Details: {ex.Message}");
+                        Logger.LogError($"Error happen when converting {tocJson} to Pdf. Details: {ex.ToString()}");
                     }
                 });
 
@@ -233,9 +232,9 @@ namespace Microsoft.DocAsCode.HtmlToPdf
             return manifest.Files.Where(f => IsType(f, ManifestItemType.Toc)).ToList();
         }
 
-        private IList<ManifestItem> FindCoverPagesInManifest(Manifest manifest)
+        private ManifestItem FindCoverPageInManifest(Manifest manifest)
         {
-            return manifest.Files.Where(f => string.Compare("cover.md", Path.GetFileName(f.SourceRelativePath), true) == 0).ToList();
+            return manifest.Files.SingleOrDefault(f => string.Compare("cover.md", Path.GetFileName(f.SourceRelativePath), true) == 0);
         }
 
         private void HtmlTransformer(string fullPath)
