@@ -670,7 +670,7 @@ outputs:
     }
   build.log: |
     ["warning","link-out-of-scope","File 'docs/f1/f11/n1.md' referenced by link 'f11/n1.md' will not be built because it is not included in docfx.yml","docs/f1/TOC.yml",3,14]
-    ["warning","link-out-of-scope","File 'docs/f1/f11/n1.md' referenced by link 'n1.md' will not be built because it is not included in docfx.yml","docs/f1/f11/TOC.md"]
+    ["warning","link-out-of-scope","File 'docs/f1/f11/n1.md' referenced by link 'n1.md' will not be built because it is not included in docfx.yml","docs/f1/f11/TOC.md",1,1]
 ---
 # Combine topic href and toc href(folder) -> topic href > toc href(folder)
 inputs:
