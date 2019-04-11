@@ -5,7 +5,6 @@ using System.Diagnostics;
 
 namespace Microsoft.Docs.Build
 {
-    [DebuggerDisplay("{Value}")]
     public sealed class SourceInfo<T> : SourceInfo
     {
         public T Value { get; set; }
@@ -27,7 +26,7 @@ namespace Microsoft.Docs.Build
         }
 
         public override string ToString()
-            => Value.ToString();
+            => Value?.ToString();
 
         public static implicit operator T(SourceInfo<T> value)
         {
