@@ -26,9 +26,9 @@ namespace Microsoft.Docs.Build
 
         public int Column { get; }
 
-        public int EndLine { get; set; }
+        public int EndLine { get; }
 
-        public int EndColumn { get; set; }
+        public int EndColumn { get; }
 
         public Error(ErrorLevel level, string code, string message, SourceInfo source)
             : this(level, code, message, source?.File, source?.Line ?? 0, source?.Column ?? 0, source?.EndLine ?? 0, source?.EndColumn ?? 0)
@@ -50,6 +50,8 @@ namespace Microsoft.Docs.Build
             File = file;
             Line = line;
             Column = column;
+            EndLine = endLine;
+            EndColumn = endColumn;
         }
 
         public Error WithSourceInfo(SourceInfo source) => new Error(Level, Code, Message, source);
