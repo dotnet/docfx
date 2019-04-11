@@ -50,7 +50,25 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            return (path, query, fragment);
+            return (path, query, TrimStart(fragment));
+
+            // TODO: this is to support a legacy behavior
+            // we will remove it once we want to expose this error
+            string TrimStart(string fragmentToTrim)
+            {
+                var lastFragmentIndex = -1;
+                foreach (var ch in fragmentToTrim)
+                {
+                    if (ch == '#')
+                    {
+                        lastFragmentIndex++;
+                        continue;
+                    }
+
+                    break;
+                }
+                return fragmentToTrim.Substring(lastFragmentIndex < 0 ? 0 : lastFragmentIndex);
+            }
         }
 
         /// <summary>
