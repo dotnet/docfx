@@ -120,10 +120,11 @@ namespace Microsoft.Docs.Build
         private (Error error, string href, string fragment, HrefType? hrefType, Document file) TryResolveHref(Document relativeTo, SourceInfo<string> href, Document resultRelativeTo)
         {
             Debug.Assert(resultRelativeTo != null);
+            Debug.Assert(href != null);
 
-            if (href?.Value.StartsWith("xref:") != false)
+            if (href.Value.StartsWith("xref:") != false)
             {
-                var (uidError, uidHref, _, referencedFile) = ResolveXref(href.WithValue(href?.Value.Substring("xref:".Length)), relativeTo, resultRelativeTo);
+                var (uidError, uidHref, _, referencedFile) = ResolveXref(href.WithValue(href.Value.Substring("xref:".Length)), relativeTo, resultRelativeTo);
                 return (uidError, uidHref, null, null, referencedFile);
             }
 
