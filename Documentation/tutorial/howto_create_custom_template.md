@@ -115,4 +115,4 @@ exports.postTransform = function (model) {
   return model;
 }
 ```
-Compared with modifying `ManagedReference.html.primary.js` directely, you needn't worry about merging your custom templates with DocFX's embedded templates when DocFX updates.
+Compared with modifying `ManagedReference.html.primary.js` directly, you needn't worry about merging your custom templates with DocFX's embedded templates when DocFX updates.
