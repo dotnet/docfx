@@ -115,7 +115,7 @@ namespace Microsoft.Docs.Build
                 var xrefLink = block.Inline.FirstOrDefault(l => l is XrefInline);
                 if (xrefLink != null && xrefLink is XrefInline xrefInline && !string.IsNullOrEmpty(xrefInline.Href))
                 {
-                    currentItem.Uid = new SourceInfo<string>(xrefInline.Href, new Range(block.Line, block.Column));
+                    currentItem.Uid = new SourceInfo<string>(xrefInline.Href, new Range(xrefInline.Line + 1, xrefInline.Column));
                     return currentItem;
                 }
 
