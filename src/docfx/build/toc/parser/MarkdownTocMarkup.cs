@@ -33,7 +33,7 @@ namespace Microsoft.Docs.Build
                     case HtmlBlock htmlBlock when htmlBlock.Type == HtmlBlockType.Comment:
                         break;
                     default:
-                        errors.Add(Errors.InvalidTocSyntax(new Range(block.Line, block.Column), file.FilePath, tocContent.Substring(block.Span.Start, block.Span.Length)));
+                        errors.Add(Errors.InvalidTocSyntax(new SourceInfo(file.FilePath, block.Line, block.Column), tocContent.Substring(block.Span.Start, block.Span.Length)));
                         break;
                 }
             }
@@ -102,20 +102,20 @@ namespace Microsoft.Docs.Build
                 var currentItem = new TableOfContentsItem();
                 if (block.Inline is null || !block.Inline.Any())
                 {
-                    errors.Add(Errors.MissingTocHead(new Range(block.Line, block.Column), filePath));
+                    errors.Add(Errors.MissingTocHead(new SourceInfo(filePath, block.Line, block.Column)));
                     return currentItem;
                 }
 
                 if (block.Inline.Count() > 1 && block.Inline.Any(l => l is XrefInline || l is LinkInline))
                 {
-                    errors.Add(Errors.InvalidTocSyntax(new Range(block.Line, block.Column), filePath, tocContent.Substring(block.Span.Start, block.Span.Length), "multiple inlines in one heading block is not allowed"));
+                    errors.Add(Errors.InvalidTocSyntax(new SourceInfo(filePath, block.Line, block.Column), tocContent.Substring(block.Span.Start, block.Span.Length), "multiple inlines in one heading block is not allowed"));
                     return currentItem;
                 }
 
                 var xrefLink = block.Inline.FirstOrDefault(l => l is XrefInline);
                 if (xrefLink != null && xrefLink is XrefInline xrefInline && !string.IsNullOrEmpty(xrefInline.Href))
                 {
-                    currentItem.Uid = new SourceInfo<string>(xrefInline.Href, new Range(block.Line, block.Column));
+                    currentItem.Uid = new SourceInfo<string>(xrefInline.Href, new SourceInfo(filePath, block.Line, block.Column));
                     return currentItem;
                 }
 
@@ -126,7 +126,7 @@ namespace Microsoft.Docs.Build
                     {
                         // TODO: check why line starts from 0
                         // TODO: check why column info is missing
-                        currentItem.Href = new SourceInfo<string>(linkInline.Url, new Range(block.Line, block.Column));
+                        currentItem.Href = new SourceInfo<string>(linkInline.Url, new SourceInfo(filePath, block.Line, block.Column));
                     }
                     if (!string.IsNullOrEmpty(linkInline.Title))
                         currentItem.DisplayName = linkInline.Title;
@@ -148,7 +148,7 @@ namespace Microsoft.Docs.Build
                 {
                     if (!(child is LiteralInline literal))
                     {
-                        errors.Add(Errors.InvalidTocSyntax(new Range(inline.Line, inline.Column), filePath));
+                        errors.Add(Errors.InvalidTocSyntax(new SourceInfo(filePath, inline.Line, inline.Column)));
                         return null;
                     }
 

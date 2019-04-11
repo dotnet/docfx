@@ -27,7 +27,7 @@ namespace Microsoft.Docs.Build
                 var lineInfo = token as IJsonLineInfo;
                 if (s_reservedNames.Contains(key))
                 {
-                    errors.Add(Errors.ReservedMetadata(new Range(lineInfo?.LineNumber ?? 0, lineInfo?.LinePosition ?? 0), key, token.Path));
+                    errors.Add(Errors.ReservedMetadata(new SourceInfo(null, lineInfo?.LineNumber ?? 0, lineInfo?.LinePosition ?? 0), key, token.Path));
                 }
                 else
                 {
@@ -43,7 +43,7 @@ namespace Microsoft.Docs.Build
                         if (!type.Value.IsInstanceOfType(value))
                         {
                             errors.Add(Errors.ViolateSchema(
-                                new Range(nestedLineInfo?.LineNumber ?? 0, nestedLineInfo?.LinePosition ?? 0),
+                                new SourceInfo(null, nestedLineInfo?.LineNumber ?? 0, nestedLineInfo?.LinePosition ?? 0),
                                 $"Expected type {type.Value.Name}, please input string or type compatible with {type.Value.Name}."));
                         }
                     }
@@ -63,7 +63,7 @@ namespace Microsoft.Docs.Build
             {
                 if (s_reservedNames.Contains(key))
                 {
-                    errors.Add(Errors.ReservedMetadata(JsonUtility.ToRange(token), key, token.Path));
+                    errors.Add(Errors.ReservedMetadata(JsonUtility.ToSourceInfo(token), key, token.Path));
                 }
             }
 

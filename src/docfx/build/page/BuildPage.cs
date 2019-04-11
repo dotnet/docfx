@@ -26,7 +26,7 @@ namespace Microsoft.Docs.Build
             {
                 var (breadcrumbError, breadcrumbPath, _) = context.DependencyResolver.ResolveLink(metadata.BreadcrumbPath, file, file, buildChild);
                 errors.AddIfNotNull(breadcrumbError);
-                metadata.BreadcrumbPath = metadata.BreadcrumbPath.WithValue(breadcrumbPath);
+                metadata.BreadcrumbPath.Value = breadcrumbPath;
             }
 
             model.SchemaType = schema.Name;

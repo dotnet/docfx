@@ -47,7 +47,7 @@ namespace Microsoft.Docs.Build
 
             if (attribute is HrefAttribute)
             {
-                var (error, link, _) = dependencyResolver.ResolveLink(new SourceInfo<string>((string)value, value.Range), file, file, buildChild);
+                var (error, link, _) = dependencyResolver.ResolveLink(new SourceInfo<string>((string)value, value), file, file, buildChild);
 
                 context.Report.Write(file.ToString(), error);
                 return link;
@@ -87,7 +87,7 @@ namespace Microsoft.Docs.Build
             {
                 var html = HtmlUtility.TransformLinks((string)value, href =>
                 {
-                    var (error, link, _) = dependencyResolver.ResolveLink(new SourceInfo<string>(href, value.Range), file, file, buildChild);
+                    var (error, link, _) = dependencyResolver.ResolveLink(new SourceInfo<string>(href, value), file, file, buildChild);
 
                     context.Report.Write(file.ToString(), error);
                     return link;
@@ -98,7 +98,7 @@ namespace Microsoft.Docs.Build
             if (attribute is XrefAttribute)
             {
                 // TODO: how to fill xref resolving data besides href
-                var (error, link, _, _) = dependencyResolver.ResolveXref(new SourceInfo<string>((string)value, value.Range), file, file);
+                var (error, link, _, _) = dependencyResolver.ResolveXref(new SourceInfo<string>((string)value, value), file, file);
                 context.Report.Write(file.ToString(), error);
                 return link;
             }

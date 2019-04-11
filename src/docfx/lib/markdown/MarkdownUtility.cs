@@ -84,8 +84,8 @@ namespace Microsoft.Docs.Build
         internal static string GetLink(string path, object relativeTo, object resultRelativeTo, MarkdownObject origin)
         {
             var status = t_status.Value.Peek();
-            var (error, link, _) = status.DependencyResolver.ResolveLink(new SourceInfo<string>(path, origin.ToRange()), (Document)relativeTo, (Document)resultRelativeTo, status.BuildChild);
-            status.Errors.AddIfNotNull(error?.WithRange(origin.ToRange()));
+            var (error, link, _) = status.DependencyResolver.ResolveLink(new SourceInfo<string>(path, origin.ToSourceInfo()), (Document)relativeTo, (Document)resultRelativeTo, status.BuildChild);
+            status.Errors.AddIfNotNull(error?.WithSourceInfo(origin.ToSourceInfo()));
             return link;
         }
 
@@ -142,26 +142,27 @@ namespace Microsoft.Docs.Build
 
         private static void LogError(string code, string message, MarkdownObject origin, int? line)
         {
-            t_status.Value.Peek().Errors.Add(new Error(ErrorLevel.Error, code, message, InclusionContext.File.ToString(), origin.ToRange(line)));
+            t_status.Value.Peek().Errors.Add(new Error(ErrorLevel.Error, code, message, origin.ToSourceInfo(line)));
         }
 
         private static void LogWarning(string code, string message, MarkdownObject origin, int? line)
         {
-            t_status.Value.Peek().Errors.Add(new Error(ErrorLevel.Warning, code, message, InclusionContext.File.ToString(), origin.ToRange(line)));
+            t_status.Value.Peek().Errors.Add(new Error(ErrorLevel.Warning, code, message, origin.ToSourceInfo(line)));
         }
 
         private static (string content, object file) ReadFile(string path, object relativeTo, MarkdownObject origin)
         {
             var status = t_status.Value.Peek();
-            var (error, content, file) = status.DependencyResolver.ResolveContent(new SourceInfo<string>(path, origin.ToRange()), (Document)relativeTo);
+            var (error, content, file) = status.DependencyResolver.ResolveContent(new SourceInfo<string>(path, origin.ToSourceInfo()), (Document)relativeTo);
+            status.Errors.AddIfNotNull(error?.WithSourceInfo(origin.ToSourceInfo()));
             return (content, file);
         }
 
         private static (Error error, string href, string display, Document file) ResolveXref(string href, MarkdownObject origin)
         {
             // TODO: now markdig engine combines all kinds of reference with inclusion, we need to split them out
-            var result = t_status.Value.Peek().DependencyResolver.ResolveXref(new SourceInfo<string>(href, origin.ToRange()), (Document)InclusionContext.File, (Document)InclusionContext.RootFile);
-            result.error = result.error?.WithRange(origin.ToRange());
+            var result = t_status.Value.Peek().DependencyResolver.ResolveXref(new SourceInfo<string>(href, origin.ToSourceInfo()), (Document)InclusionContext.File, (Document)InclusionContext.RootFile);
+            result.error = result.error?.WithSourceInfo(origin.ToSourceInfo());
             return result;
         }
 

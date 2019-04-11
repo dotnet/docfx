@@ -7,19 +7,20 @@ using Markdig.Parsers;
 using Markdig.Renderers;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
+using Microsoft.DocAsCode.MarkdigEngine.Extensions;
 
 namespace Microsoft.Docs.Build
 {
     internal static class MarkdigUtility
     {
-        public static Range ToRange(this MarkdownObject obj, int? line = null)
+        public static SourceInfo ToSourceInfo(this MarkdownObject obj, int? line = null)
         {
             // Line info in markdown object is zero based, turn it into one based.
             if (obj != null)
-                return new Range(obj.Line + 1, obj.Column + 1);
+                return new SourceInfo(InclusionContext.File.ToString(), obj.Line + 1, obj.Column + 1);
 
             if (line != null)
-                return new Range(line.Value + 1, 0);
+                return new SourceInfo(InclusionContext.File.ToString(), line.Value + 1, 0);
 
             return default;
         }
