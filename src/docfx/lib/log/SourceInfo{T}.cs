@@ -17,14 +17,6 @@ namespace Microsoft.Docs.Build
             Value = value;
         }
 
-        public SourceInfo<T> WithValue(T value)
-        {
-            if (value == default)
-                return null;
-
-            return new SourceInfo<T>(value, this);
-        }
-
         public override string ToString()
             => Value?.ToString();
 
