@@ -136,6 +136,7 @@ namespace Microsoft.Docs.Build
                 {
                     foreach (var (error, file) in context.BookmarkValidator.Validate())
                     {
+                        // TODO: clean up Report.Write inputting file, should take file from Error
                         if (context.Report.Write(file.FilePath, new List<Error> { error }))
                         {
                             context.PublishModelBuilder.MarkError(file);
