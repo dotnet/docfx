@@ -220,6 +220,7 @@ namespace Microsoft.Docs.Build
         /// Parse a string to JToken.
         /// Validate null value during the process.
         /// </summary>
+        // TODO: Pass in file to be filled into SourceInfo
         public static (List<Error>, JToken) Parse(string json)
         {
             try
