@@ -124,12 +124,13 @@ namespace Microsoft.Docs.Build
 
             if (href.Value.StartsWith("xref:") != false)
             {
-                var (uidError, uidHref, _, referencedFile) = ResolveXref(href.WithValue(href.Value.Substring("xref:".Length)), relativeTo, resultRelativeTo);
+                href.Value = href.Value.Substring("xref:".Length);
+                var (uidError, uidHref, _, referencedFile) = ResolveXref(href, relativeTo, resultRelativeTo);
                 return (uidError, uidHref, null, null, referencedFile);
             }
 
-            var decodedHref = Uri.UnescapeDataString(href);
-            var (error, file, redirectTo, query, fragment, hrefType, pathToDocset) = TryResolveFile(relativeTo, href.WithValue(decodedHref));
+            var decodedHref = new SourceInfo<string>(Uri.UnescapeDataString(href), href);
+            var (error, file, redirectTo, query, fragment, hrefType, pathToDocset) = TryResolveFile(relativeTo, decodedHref);
 
             // Redirection
             // follow redirections

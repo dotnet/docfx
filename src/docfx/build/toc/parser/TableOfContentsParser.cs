@@ -204,7 +204,7 @@ namespace Microsoft.Docs.Build
                 }
 
                 var (hrefPath, fragment, query) = HrefUtility.SplitHref(tocHref);
-                tocHref = tocHref.WithValue(hrefPath);
+                tocHref.Value = hrefPath;
 
                 var (referencedTocContent, referenceTocFilePath) = ResolveTocHrefContent(tocHrefType, tocHref, filePath, resolveContent);
                 if (referencedTocContent != null)
@@ -232,7 +232,7 @@ namespace Microsoft.Docs.Build
                     var (uidHref, uidDisplayName, uidFile) = resolveXref.Invoke(rootPath, uid);
                     if (!string.IsNullOrEmpty(uidHref))
                     {
-                        uid = uid.WithValue(uidHref);
+                        uid.Value = uidHref;
                         return (uid, uidDisplayName, uidFile);
                     }
                 }
@@ -247,7 +247,7 @@ namespace Microsoft.Docs.Build
                 Debug.Assert(topicHrefType == TocHrefType.AbsolutePath || !IsIncludeHref(topicHrefType));
 
                 var (resolvedTopicHref, file) = resolveHref.Invoke(filePath, topicHref, rootPath);
-                topicHref = topicHref.WithValue(resolvedTopicHref);
+                topicHref.Value = resolvedTopicHref;
                 return (topicHref, null, file);
             }
         }
@@ -307,7 +307,7 @@ namespace Microsoft.Docs.Build
 
             (string content, Document filePath)? Resolve(string name)
             {
-                var content = resolveContent(filePath, href.WithValue(Path.Combine(href, name)), isInclusion: false);
+                var content = resolveContent(filePath, new SourceInfo<string>(Path.Combine(href, name), href), isInclusion: false);
                 if (content.file != null)
                 {
                     return content;

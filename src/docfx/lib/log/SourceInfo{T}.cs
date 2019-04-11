@@ -8,7 +8,7 @@ namespace Microsoft.Docs.Build
     [DebuggerDisplay("{Value}")]
     public sealed class SourceInfo<T> : SourceInfo
     {
-        public readonly T Value;
+        public T Value { get; set; }
 
         internal override object GetValue() => Value;
 
