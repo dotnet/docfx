@@ -282,7 +282,7 @@ inputs:
       userCache: user_profile.json
 outputs:
   build.log: |
-    ["error","file-not-found","Cannot find file 'user_profile.json' relative to '*'","*"]
+    ["error","file-not-found","Cannot find file 'user_profile.json' relative to '*'","*",4,14]
 ---
 # Treat warnings as errors
 inputs:

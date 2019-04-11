@@ -19,7 +19,7 @@ namespace Microsoft.Docs.Build
         /// The address of commit time history file, which contains the time each commit being pushed.
         /// It should be an absolute url or a relative path
         /// </summary>
-        public readonly string GitCommitsTime = string.Empty;
+        public readonly SourceInfo<string> GitCommitsTime = new SourceInfo<string>(string.Empty);
 
         /// <summary>
         /// The excluded contributors which you don't want to show
