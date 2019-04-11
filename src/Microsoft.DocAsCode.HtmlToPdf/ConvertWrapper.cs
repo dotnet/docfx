@@ -133,7 +133,7 @@ namespace Microsoft.DocAsCode.HtmlToPdf
                             htmlModels.Insert(0, new HtmlModel { Title = _pdfOptions.TocTitle, HtmlFilePath = tocPageFilePath });
                         }
 
-                        var coverPage = FindCoverPageInManifest(manifest);
+                        var coverPage = FindSiblingCoverPageInManifest(manifest, tocFile);
                         if (coverPage != null)
                         {
                             var coverPageHtmlRelativeFilePath = coverPage.OutputFiles[".html"].RelativePath;
@@ -232,9 +232,13 @@ namespace Microsoft.DocAsCode.HtmlToPdf
             return manifest.Files.Where(f => IsType(f, ManifestItemType.Toc)).ToList();
         }
 
-        private ManifestItem FindCoverPageInManifest(Manifest manifest)
+        private ManifestItem FindSiblingCoverPageInManifest(Manifest manifest, ManifestItem tocFile)
         {
-            return manifest.Files.SingleOrDefault(f => string.Compare("cover.md", Path.GetFileName(f.SourceRelativePath), true) == 0);
+            return manifest.Files.SingleOrDefault(f =>
+            {
+                return Path.GetDirectoryName(f.SourceRelativePath).StartsWith(Path.GetDirectoryName(tocFile.SourceRelativePath))
+                    && (string.Compare("cover.md", Path.GetFileName(f.SourceRelativePath), true) == 0);
+            });
         }
 
         private void HtmlTransformer(string fullPath)
