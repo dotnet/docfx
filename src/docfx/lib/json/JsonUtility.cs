@@ -260,9 +260,9 @@ namespace Microsoft.Docs.Build
 
             JToken DeepClone(JToken token)
             {
+                var lineInfo = (IJsonLineInfo)token;
                 if (token is JValue v)
                 {
-                    var lineInfo = token as IJsonLineInfo;
                     var result = new JValue(v);
                     SetLineInfo(result, lineInfo.LineNumber, lineInfo.LinePosition);
                     return result;
@@ -272,7 +272,9 @@ namespace Microsoft.Docs.Build
                     var result = new JObject();
                     foreach (var prop in obj.Properties())
                     {
-                        result[prop.Name] = DeepClone(prop.Value);
+                        var value = DeepClone(prop.Value);
+                        SetLineInfo(value, lineInfo.LineNumber, lineInfo.LinePosition);
+                        result[prop.Name] = value;
                     }
                     return result;
                 }
@@ -281,7 +283,9 @@ namespace Microsoft.Docs.Build
                     var result = new JArray();
                     foreach (var item in array)
                     {
-                        result.Add(DeepClone(item));
+                        var value = DeepClone(item);
+                        SetLineInfo(value, lineInfo.LineNumber, lineInfo.LinePosition);
+                        result.Add(value);
                     }
                     return result;
                 }

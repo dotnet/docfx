@@ -130,7 +130,8 @@ namespace Microsoft.Docs.Build
             builder.BlockParsers.Find<HeadingBlockParser>().MaxLeadingCount = int.MaxValue;
 
             builder.UseYamlFrontMatter()
-                   .UseXref();
+                   .UseXref()
+                   .UsePreciseSourceLocation();
 
             return builder.Build();
         }

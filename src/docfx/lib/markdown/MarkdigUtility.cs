@@ -17,10 +17,10 @@ namespace Microsoft.Docs.Build
         {
             // Line info in markdown object is zero based, turn it into one based.
             if (obj != null)
-                return new SourceInfo(InclusionContext.File.ToString(), obj.Line + 1, obj.Column + 1);
+                return new SourceInfo(InclusionContext.File?.ToString(), obj.Line + 1, obj.Column + 1);
 
             if (line != null)
-                return new SourceInfo(InclusionContext.File.ToString(), line.Value + 1, 0);
+                return new SourceInfo(InclusionContext.File?.ToString(), line.Value + 1, 0);
 
             return default;
         }
