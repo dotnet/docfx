@@ -130,7 +130,7 @@ namespace Microsoft.DocAsCode.HtmlToPdf
                         {
                             RemoveQueryStringAndBookmarkTransformer(tocPageFilePath);
                             AbsolutePathInTocPageFileTransformer(tocPageFilePath);
-                            htmlModels.Insert(0, new HtmlModel { Title = "Cover Page", HtmlFilePath = tocPageFilePath });
+                            htmlModels.Insert(0, new HtmlModel { Title = _pdfOptions.TocTitle, HtmlFilePath = tocPageFilePath });
                         }
                         if (_pdfOptions.ExcludeTocs == null || _pdfOptions.ExcludeTocs.All(p => NormalizeFilePath(p) != tocFilePath))
                         {
@@ -172,7 +172,7 @@ namespace Microsoft.DocAsCode.HtmlToPdf
                     }
                     catch (Exception ex)
                     {
-                        Logger.LogWarning($"Error happen when converting {tocJson} to Pdf. Details: {ex.Message}");
+                        Logger.LogError($"Error happen when converting {tocJson} to Pdf. Details: {ex.Message}");
                     }
                 });
 
@@ -314,7 +314,8 @@ namespace Microsoft.DocAsCode.HtmlToPdf
                     BasePath = basePath,
                     UserStyleSheet = _pdfOptions.CssFilePath,
                     LoadErrorHandling = _pdfOptions.LoadErrorHandling,
-                    AdditionalArguments = _pdfOptions.AdditionalPdfCommandArgs
+                    AdditionalArguments = _pdfOptions.AdditionalPdfCommandArgs,
+                    OutlineOption = _pdfOptions.OutlineOption
                 });
 
             converter.Save(Path.Combine(_pdfOptions.DestDirectory, pdfFileName));

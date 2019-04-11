@@ -109,6 +109,23 @@ items:
       init: "git clone https://github.com/ovasquez/docfx-material.git material"
       command: "-t default, material/material"
       config: '"template":["default","material/material"]'
+  - name: darkFX
+    description: A dark theme for DocFX .
+    type: External
+    author: Steffen Wilke
+    version: 1.0
+    engines:
+      docfx: ">=2.40.0"
+    thumbnail: ~/templates-and-plugins/images/darkfx.screenshot.png
+    homepage: https://steffen-wilke.github.io/darkfx/
+    repository:
+      type: git
+      url: "https://github.com/steffen-wilke/darkfx.git"
+    license: MIT
+    usage:
+      init: "git clone https://github.com/steffen-wilke/darkfx.git darkfx"
+      command: "-t default, templates/darkfx"
+      config: '"template":["default","templates/darkfx"]'
 description: |
   # Dashboard for Templates
   The templates listed here mainly focus on the layout and themes of the generated website. Add your own customized templates here for others to view and use!

@@ -9,6 +9,7 @@ namespace Microsoft.DocAsCode.Common
         {
             public const string IsFullBuild = "IsFullBuild";
             public const string IsIncrementalBuild = "IsIncrementalBuild";
+            public const string MarkdownEngineName = "MarkdownEngineName";
         }
         public static class FullBuildReason
         {

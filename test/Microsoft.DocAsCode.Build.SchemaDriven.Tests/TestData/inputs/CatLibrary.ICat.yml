@@ -68,7 +68,7 @@ items:
   assemblies:
   - CatLibrary
   namespace: CatLibrary
-  summary: "\neat event of cat. Every cat must implement this event.\n"
+  summary: "\neat event of cat. Every cat must implement this event.\nThis method is within @CatLibrary.ICat"
   example: []
   syntax:
     content: event EventHandler eat
