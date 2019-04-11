@@ -75,7 +75,7 @@ namespace Microsoft.Docs.Build
                 }
 
                 var transform = JsonUtility.State.Transform;
-                return transform != null ? transform(_attributes, new SourceInfo<object>(value, range), reader.Path) : value;
+                return transform != null ? transform(_attributes, new SourceInfo<object>(value, source), reader.Path) : value;
             }
         }
     }

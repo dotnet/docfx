@@ -153,7 +153,7 @@ namespace Microsoft.Docs.Build
                     }
                     else
                     {
-                        errors.AddIfNotNull(Errors.InvalidTocHref(filePath, tocInputModel.TocHref, tocInputModel.TocHref?.Range ?? default));
+                        errors.AddIfNotNull(Errors.InvalidTocHref(filePath, tocInputModel.TocHref));
                     }
                 }
 

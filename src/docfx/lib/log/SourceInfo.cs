@@ -39,14 +39,6 @@ namespace Microsoft.Docs.Build
             EndColumn = column;
         }
 
-        public SourceInfo<T> WithValue(T value)
-        {
-            if (value == default)
-                return null;
-
-            return new SourceInfo<T>(value, Range, File);
-        }
-
         public SourceInfo(string file, int startLine, int startColumn, int endLine, int endColumn)
         {
             File = file;
@@ -55,9 +47,6 @@ namespace Microsoft.Docs.Build
             EndLine = endLine;
             EndColumn = endColumn;
         }
-
-        public override string ToString()
-            => Value.ToString();
 
         internal virtual object GetValue() => null;
     }

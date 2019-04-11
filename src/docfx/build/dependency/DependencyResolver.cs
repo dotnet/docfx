@@ -50,7 +50,7 @@ namespace Microsoft.Docs.Build
 
             var isSelfBookmark = hrefType == HrefType.SelfBookmark || resultRelativeTo == file;
             _dependencyMapBuilder.AddDependencyItem(relativeTo, file, HrefUtility.FragmentToDependencyType(fragment));
-            _bookmarkValidator.AddBookmarkReference(relativeTo, isSelfBookmark ? resultRelativeTo : file ?? relativeTo, fragment, isSelfBookmark, source);
+            _bookmarkValidator.AddBookmarkReference(relativeTo, isSelfBookmark ? resultRelativeTo : file ?? relativeTo, fragment, isSelfBookmark, path);
 
             return (error, link, file);
         }
@@ -244,7 +244,7 @@ namespace Microsoft.Docs.Build
                         file = Document.TryCreateFromFile(relativeTo.Docset, pathToDocset);
                     }
 
-                    return (file != null ? null : (_forLandingPage ? null : Errors.FileNotFound(relativeTo.ToString(), new SourceInfo<string>(path, href.Range))), file, null, query, fragment, null, pathToDocset);
+                    return (file != null ? null : (_forLandingPage ? null : Errors.FileNotFound(relativeTo.ToString(), new SourceInfo<string>(path, href))), file, null, query, fragment, null, pathToDocset);
 
                 default:
                     return default;
