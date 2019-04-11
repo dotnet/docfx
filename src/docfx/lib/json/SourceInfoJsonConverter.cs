@@ -23,7 +23,7 @@ namespace Microsoft.Docs.Build
                 return null;
 
             // TODO: populate file info
-            return Activator.CreateInstance(objectType, value, null, range);
+            return Activator.CreateInstance(objectType, value, range, null);
         }
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)

@@ -22,7 +22,7 @@ namespace Microsoft.Docs.Build
 
         private static ThreadLocal<Stack<(string uid, string propertyName, Document parent)>> t_recursionDetector = new ThreadLocal<Stack<(string, string, Document)>>(() => new Stack<(string, string, Document)>());
 
-        public (Error error, string href, string display, Document referencedFile) Resolve(string uid, string href, string displayPropertyName, Document relativeTo, Document rootFile, string moniker = null)
+        public (Error error, string href, string display, Document referencedFile) Resolve(string uid, SourceInfo<string> href, string displayPropertyName, Document relativeTo, Document rootFile, string moniker = null)
         {
             if (t_recursionDetector.Value.Contains((uid, displayPropertyName, relativeTo)))
             {
@@ -44,13 +44,13 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private (Error error, string href, string display, Document referencedFile) ResolveCore(string uid, string href, string displayPropertyName, Document rootFile, string moniker = null)
+        private (Error error, string href, string display, Document referencedFile) ResolveCore(string uid, SourceInfo<string> href, string displayPropertyName, Document rootFile, string moniker = null)
         {
             string name = null;
             string displayPropertyValue = null;
             string resolvedHref = null;
 
-            if (TryResolveFromInternal(uid, moniker, out var internalXrefSpec, out var referencedFile))
+            if (TryResolveFromInternal(uid, href, rootFile.FilePath, moniker, out var internalXrefSpec, out var referencedFile))
             {
                 var (_, query, fragment) = HrefUtility.SplitHref(internalXrefSpec.Href);
                 resolvedHref = HrefUtility.MergeHref(RebaseResolvedHref(rootFile, referencedFile), query, fragment.Length == 0 ? "" : fragment.Substring(1));
@@ -87,13 +87,13 @@ namespace Microsoft.Docs.Build
         private string RebaseResolvedHref(Document rootFile, Document referencedFile)
             => _context.DependencyResolver.GetRelativeUrl(rootFile, referencedFile);
 
-        private bool TryResolveFromInternal(string uid, string moniker, out InternalXrefSpec internalXrefSpec, out Document referencedFile)
+        private bool TryResolveFromInternal(string uid, SourceInfo<string> href, string file, string moniker, out InternalXrefSpec internalXrefSpec, out Document referencedFile)
         {
             internalXrefSpec = null;
             referencedFile = null;
             if (_internalXrefMap.TryGetValue(uid, out var internalSpecs))
             {
-                (internalXrefSpec, referencedFile) = GetInternalSpec(uid, moniker, internalSpecs);
+                (internalXrefSpec, referencedFile) = GetInternalSpec(uid, href, file, moniker, internalSpecs);
                 if (internalXrefSpec is null)
                 {
                     return false;
@@ -112,7 +112,7 @@ namespace Microsoft.Docs.Build
             return false;
         }
 
-        private (InternalXrefSpec internalSpec, Document referencedFile) GetInternalSpec(string uid, string moniker, List<(InternalXrefSpec, Document)> internalSpecs)
+        private (InternalXrefSpec internalSpec, Document referencedFile) GetInternalSpec(string uid, SourceInfo<string> href, string file, string moniker, List<(InternalXrefSpec, Document)> internalSpecs)
         {
             if (!TryGetValidXrefSpecs(uid, internalSpecs, out var validInternalSpecs))
                 return default;
@@ -129,7 +129,7 @@ namespace Microsoft.Docs.Build
 
                 // if the moniker is not defined with the uid
                 // log a warning and take the one with latest version
-                _context.Report.Write(Errors.InvalidUidMoniker(moniker, uid));
+                _context.Report.Write(Errors.InvalidUidMoniker(moniker, uid, file, href));
                 return GetLatestInternalXrefMap(validInternalSpecs);
             }
 

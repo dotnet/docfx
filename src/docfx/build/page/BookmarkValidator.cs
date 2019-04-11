@@ -12,7 +12,7 @@ namespace Microsoft.Docs.Build
         private readonly ConcurrentDictionary<Document, HashSet<string>> _bookmarksByFile = new ConcurrentDictionary<Document, HashSet<string>>();
         private readonly ConcurrentBag<(Document file, Document dependency, string bookmark, bool isSelfBookmark, Range range)> _references = new ConcurrentBag<(Document file, Document dependency, string bookmark, bool isSelfBookmark, Range range)>();
 
-        public void AddBookmarkReference(Document file, Document reference, string fragment, bool isSelfBookmark, in Range range)
+        public void AddBookmarkReference(Document file, Document reference, string fragment, bool isSelfBookmark, SourceInfo<string> href)
         {
             Debug.Assert(string.IsNullOrEmpty(fragment) || fragment[0] == '#');
 
@@ -24,7 +24,7 @@ namespace Microsoft.Docs.Build
                 var bookmark = fragment.Substring(1).Trim();
                 if (!string.IsNullOrEmpty(bookmark))
                 {
-                    _references.Add((file, reference, bookmark, isSelfBookmark, range));
+                    _references.Add((file, reference, bookmark, isSelfBookmark, href.Range));
                 }
             }
         }

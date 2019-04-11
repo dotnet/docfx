@@ -24,10 +24,9 @@ namespace Microsoft.Docs.Build
 
             if (!string.IsNullOrEmpty(metadata.BreadcrumbPath))
             {
-                // there is no bookmark validation for breadcrumb path, so no need of range here
-                var (breadcrumbError, breadcrumbPath, _) = context.DependencyResolver.ResolveLink(metadata.BreadcrumbPath, file, file, buildChild, default);
+                var (breadcrumbError, breadcrumbPath, _) = context.DependencyResolver.ResolveLink(metadata.BreadcrumbPath, file, file, buildChild);
                 errors.AddIfNotNull(breadcrumbError);
-                metadata.BreadcrumbPath = breadcrumbPath;
+                metadata.BreadcrumbPath = metadata.BreadcrumbPath.WithValue(breadcrumbPath);
             }
 
             model.SchemaType = schema.Name;

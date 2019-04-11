@@ -117,7 +117,7 @@ namespace Microsoft.Docs.Build
                 fileToBuild,
                 (file, href, isInclude) =>
                 {
-                    var (error, referencedTocContent, referencedToc) = context.DependencyResolver.ResolveContent(href, file, href?.Range ?? default, DependencyType.TocInclusion);
+                    var (error, referencedTocContent, referencedToc) = context.DependencyResolver.ResolveContent(href, file, DependencyType.TocInclusion);
                     errors.AddIfNotNull(error);
 
                     if (referencedToc != null && isInclude)
@@ -129,7 +129,7 @@ namespace Microsoft.Docs.Build
                 },
                 (file, href, resultRelativeTo) =>
                 {
-                    var (error, link, buildItem) = context.DependencyResolver.ResolveLink(href, file, resultRelativeTo, null, href?.Range ?? default);
+                    var (error, link, buildItem) = context.DependencyResolver.ResolveLink(href, file, resultRelativeTo, null);
                     errors.AddIfNotNull(error);
 
                     if (buildItem != null)
