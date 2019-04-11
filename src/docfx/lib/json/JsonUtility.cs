@@ -259,7 +259,7 @@ namespace Microsoft.Docs.Build
 
             JToken DeepClone(JToken token)
             {
-                var lineInfo = token as IJsonLineInfo;
+                var lineInfo = (IJsonLineInfo)token;
                 if (token is JValue v)
                 {
                     var result = new JValue(v);
