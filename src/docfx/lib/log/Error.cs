@@ -19,7 +19,6 @@ namespace Microsoft.Docs.Build
 
         public string Message { get; }
 
-
         // TODO: can be removed while file always filled in SourceInfo
         public string File { get; }
 
