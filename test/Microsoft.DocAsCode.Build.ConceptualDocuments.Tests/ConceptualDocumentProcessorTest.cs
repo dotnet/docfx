@@ -192,6 +192,114 @@ content);
             }
         }
 
+        [Fact]
+        public void ExtractTitle()
+        {
+            // arrange
+            var fileName = "title.md";
+            var content = @"# This is title
+
+Some content";
+            var file = _fileCreator.CreateFile(content, fileName);
+            var files = new FileCollection(_defaultFiles);
+            files.Add(DocumentType.Article, new[] { file });
+
+            // act
+            BuildDocument(files);
+
+            // assert
+            var outputRawModelPath = GetRawModelFilePath(file);
+            Assert.True(File.Exists(outputRawModelPath));
+            var model = JsonUtility.Deserialize<Dictionary<string, object>>(outputRawModelPath);
+            Assert.True(model.TryGetValue("title", out var title));
+            Assert.Equal("This is title", title);
+            Assert.True(model.TryGetValue("rawTitle", out var rawTitle));
+            Assert.Equal(
+                "<h1 id=\"this-is-title\" sourcefile=\"title.md\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">This is title</h1>",
+                rawTitle);
+        }
+
+        [Fact]
+        public void ExtractTitleFromYamlHeader()
+        {
+            // arrange
+            var fileName = "title.md";
+            var content = @"---
+title: Overwrite title
+---
+
+# This is title
+
+Some content";
+            var file = _fileCreator.CreateFile(content, fileName);
+            var files = new FileCollection(_defaultFiles);
+            files.Add(DocumentType.Article, new[] { file });
+
+            // act
+            BuildDocument(files);
+
+            // assert
+            var outputRawModelPath = GetRawModelFilePath(file);
+            Assert.True(File.Exists(outputRawModelPath));
+            var model = JsonUtility.Deserialize<Dictionary<string, object>>(outputRawModelPath);
+            Assert.True(model.TryGetValue("title", out var title));
+            Assert.Equal("Overwrite title", title);
+        }
+
+        [Fact]
+        public void ExtractTitleFromH1IfItIsNullInYamlHeader()
+        {
+            // arrange
+            var fileName = "title.md";
+            var content = @"---
+title:
+---
+
+# This is title
+
+Some content";
+            var file = _fileCreator.CreateFile(content, fileName);
+            var files = new FileCollection(_defaultFiles);
+            files.Add(DocumentType.Article, new[] { file });
+
+            // act
+            BuildDocument(files);
+
+            // assert
+            var outputRawModelPath = GetRawModelFilePath(file);
+            Assert.True(File.Exists(outputRawModelPath));
+            var model = JsonUtility.Deserialize<Dictionary<string, object>>(outputRawModelPath);
+            Assert.True(model.TryGetValue("title", out var title));
+            Assert.Equal("This is title", title);
+        }
+
+        [Fact]
+        public void ExtractTitleFromH1IfItIsEmptyInYamlHeader()
+        {
+            // arrange
+            var fileName = "title.md";
+            var content = @"---
+title: ''
+---
+
+# This is title
+
+Some content";
+            var file = _fileCreator.CreateFile(content, fileName);
+            var files = new FileCollection(_defaultFiles);
+            files.Add(DocumentType.Article, new[] { file });
+
+            // act
+            BuildDocument(files);
+
+            // assert
+            var outputRawModelPath = GetRawModelFilePath(file);
+            Assert.True(File.Exists(outputRawModelPath));
+            var model = JsonUtility.Deserialize<Dictionary<string, object>>(outputRawModelPath);
+            Assert.True(model.TryGetValue("title", out var title));
+            Assert.Equal("This is title", title);
+        }
+
         #region Private Helpers
         private string GetRawModelFilePath(string fileName)
         {
