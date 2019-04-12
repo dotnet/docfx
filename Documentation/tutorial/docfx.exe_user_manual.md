@@ -158,6 +158,8 @@ docfx pdf [<config_file_path>] [-o:<output_path>]
 
 Current design is that each TOC file generates a corresponding PDF file. Walk through [Walkthrough: Generate PDF Files](walkthrough/walkthrough_generate_pdf.md) to get start.
 
+If `cover.md` is found in a folder, it will be rendered as the cover page.
+
 ## 3. `docfx.json` Format
 
 Top level `docfx.json` structure is key-value pair. `key` is the name of the subcommand, current supported subcommands are `metadata` and `build`.
@@ -534,7 +536,8 @@ name                     | Specifies the prefix of the generated PDF files, e.g.
 generatesAppendices      | If specified, an `appendices.pdf` file is generated containing all the not-in-TOC articles.
 keepRawFiles             | If specified, the intermediate html files used to generate the PDF are not deleted after the PDF has been generated.
 wkhtmltopdf              | Contains additional options specific to wkhtmltopdf which is used internally to generate the PDF files.
-tocTitle                 | The name of the bookmark to use for the "Table of Contents". If omitted, "Cover Page" will be used.
+coverTitle               | The name of the bookmark to use for the cover page. If omitted, "Cover Page" will be used.
+tocTitle                 | The name of the bookmark to use for the "Table of Contents". If omitted, "Table of Contents" will be used.
 outline                  | The type of outline to use. Valid values are `NoOutline`, `DefaultOutline`, `WkDefaultOutline`. If not specified, the default value is `DefaultOutline`. If `WkDefaultOutline` is specified, `--outline` is passed to wkhtmltopdf; otherwise `--no-outline` is passed to wkhtmltopdf.
 
 #### 3.3.1 Properties for the `wkhtmltopdf` Key

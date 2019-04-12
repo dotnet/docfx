@@ -65,7 +65,8 @@ namespace Microsoft.DocAsCode.SubCommands
                 LoadErrorHandling = _config.LoadErrorHandling,
                 AdditionalPdfCommandArgs = _config.Wkhtmltopdf?.AdditionalArguments,
                 TocTitle = _config.TocTitle,
-                OutlineOption = _config.OutlineOption
+                OutlineOption = _config.OutlineOption,
+                CoverPageTitle = _config.CoverPageTitle
             };
 
             // 1. call BuildCommand to generate html files first
