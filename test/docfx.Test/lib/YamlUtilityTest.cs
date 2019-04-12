@@ -316,9 +316,9 @@ items:
             Assert.Empty(errors);
 
             // Get the first JValue of the first JProperty if any
-            var lineInfo = (value.Children().Any() ? value.Children().First().Children().First() : value) as IJsonLineInfo;
-            Assert.Equal(expectedLine, lineInfo.LineNumber);
-            Assert.Equal(expectedColumn, lineInfo.LinePosition);
+            var source = JsonUtility.GetSourceInfo((value.Children().Any() ? value.Children().First().Children().First() : value));
+            Assert.Equal(expectedLine, source.Line);
+            Assert.Equal(expectedColumn, source.Column);
         }
 
         [Theory]
