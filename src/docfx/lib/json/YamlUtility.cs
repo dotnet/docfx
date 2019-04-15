@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Text.RegularExpressions;
@@ -58,7 +57,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static T Deserialize<T>(string input)
         {
-            var token = ParseAsJToken(input);
+            var token = ParseAsJToken(input, file: null);
             return token.ToObject<T>(JsonUtility.Serializer);
         }
 
@@ -70,16 +69,15 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Deserialize to JToken from string
         /// </summary>
-        public static (List<Error>, JToken) Parse(string input)
+        public static (List<Error>, JToken) Parse(string input, string file)
         {
-            return ParseAsJToken(input).RemoveNulls();
+            return ParseAsJToken(input, file).RemoveNulls();
         }
 
-        private static JToken ParseAsJToken(string input)
+        private static JToken ParseAsJToken(string input, string file)
         {
-            Match match = null;
+            Match match;
 
-            var errors = new List<Error>();
             var stream = new YamlStream();
 
             try
@@ -90,13 +88,13 @@ namespace Microsoft.Docs.Build
                 ex.InnerException is ArgumentException aex &&
                 (match = Regex.Match(aex.Message, "(.*?)\\. Key: (.*)$")).Success)
             {
-                var source = new SourceInfo(null, ex.Start.Line, ex.Start.Column, ex.End.Line, ex.End.Column);
+                var source = new SourceInfo(file, ex.Start.Line, ex.Start.Column, ex.End.Line, ex.End.Column);
 
                 throw Errors.YamlDuplicateKey(source, match.Groups[2].Value).ToException(ex);
             }
             catch (YamlException ex)
             {
-                var source = new SourceInfo(null, ex.Start.Line, ex.Start.Column, ex.End.Line, ex.End.Column);
+                var source = new SourceInfo(file, ex.Start.Line, ex.Start.Column, ex.End.Line, ex.End.Column);
                 var message = Regex.Replace(ex.Message, "^\\(.*?\\) - \\(.*?\\):\\s*", "");
 
                 throw Errors.YamlSyntaxError(source, message).ToException(ex);
@@ -112,10 +110,10 @@ namespace Microsoft.Docs.Build
                 throw new NotSupportedException("Does not support mutiple YAML documents");
             }
 
-            return ToJson(stream.Documents[0].RootNode);
+            return ToJson(stream.Documents[0].RootNode, file);
         }
 
-        private static JToken ToJson(YamlNode node)
+        private static JToken ToJson(YamlNode node, string file)
         {
             if (node is YamlScalarNode scalar)
             {
@@ -125,22 +123,22 @@ namespace Microsoft.Docs.Build
                         scalar.Value == "~" ||
                         string.Equals(scalar.Value, "null", StringComparison.OrdinalIgnoreCase))
                     {
-                        return SetLineInfo(JValue.CreateNull(), node);
+                        return SetSourceInfo(JValue.CreateNull(), node, file);
                     }
                     if (long.TryParse(scalar.Value, out var n))
                     {
-                        return SetLineInfo(new JValue(n), node);
+                        return SetSourceInfo(new JValue(n), node, file);
                     }
                     if (double.TryParse(scalar.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out var d))
                     {
-                        return SetLineInfo(new JValue(d), node);
+                        return SetSourceInfo(new JValue(d), node, file);
                     }
                     if (bool.TryParse(scalar.Value, out var b))
                     {
-                        return SetLineInfo(new JValue(b), node);
+                        return SetSourceInfo(new JValue(b), node, file);
                     }
                 }
-                return SetLineInfo(new JValue(scalar.Value), node);
+                return SetSourceInfo(new JValue(scalar.Value), node, file);
             }
             if (node is YamlMappingNode map)
             {
@@ -149,8 +147,8 @@ namespace Microsoft.Docs.Build
                 {
                     if (key is YamlScalarNode scalarKey)
                     {
-                        var token = ToJson(value);
-                        var prop = SetLineInfo(new JProperty(scalarKey.Value, token), key);
+                        var token = ToJson(value, file);
+                        var prop = SetSourceInfo(new JProperty(scalarKey.Value, token), key, file);
                         obj.Add(prop);
                     }
                     else
@@ -159,23 +157,25 @@ namespace Microsoft.Docs.Build
                     }
                 }
 
-                return SetLineInfo(obj, node);
+                return SetSourceInfo(obj, node, file);
             }
             if (node is YamlSequenceNode seq)
             {
                 var arr = new JArray();
                 foreach (var item in seq)
                 {
-                    arr.Add(ToJson(item));
+                    arr.Add(ToJson(item, file));
                 }
-                return SetLineInfo(arr, node);
+                return SetSourceInfo(arr, node, file);
             }
             throw new NotSupportedException($"Unknown yaml node type {node.GetType()}");
         }
 
-        private static JToken SetLineInfo(JToken token, YamlNode node)
+        private static JToken SetSourceInfo(JToken token, YamlNode node, string file)
         {
-            return JsonUtility.SetLineInfo(token, node.Start.Line, node.Start.Column);
+            return JsonUtility.SetSourceInfo(
+                token,
+                new SourceInfo(file, node.Start.Line, node.Start.Column, node.End.Line, node.End.Column));
         }
     }
 }

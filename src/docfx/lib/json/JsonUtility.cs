@@ -220,13 +220,11 @@ namespace Microsoft.Docs.Build
         /// Parse a string to JToken.
         /// Validate null value during the process.
         /// </summary>
-        // TODO: Pass in file to be filled into SourceInfo
-        public static (List<Error>, JToken) Parse(string json)
+        public static (List<Error>, JToken) Parse(string json, string file)
         {
             try
             {
-                var (errors, token) = JToken.Parse(json).RemoveNulls();
-                return (errors, token ?? JValue.CreateNull());
+                return SetSourceInfo(JToken.Parse(json), file).RemoveNulls();
             }
             catch (JsonReaderException ex)
             {
@@ -251,45 +249,40 @@ namespace Microsoft.Docs.Build
                 }
                 else if (IsNullOrUndefined(container[key]) || !IsNullOrUndefined(value))
                 {
-                    var valueLineInfo = (IJsonLineInfo)value;
-                    var keyLineInfo = (IJsonLineInfo)property;
-                    container[key] = SetLineInfo(DeepClone(value), valueLineInfo.LineNumber, valueLineInfo.LinePosition);
-                    SetLineInfo(container.Property(key), keyLineInfo.LineNumber, keyLineInfo.LinePosition);
+                    container[key] = SetSourceInfo(DeepClone(value), value.Annotation<SourceInfo>());
+                    SetSourceInfo(container.Property(key), property.Annotation<SourceInfo>());
                 }
             }
 
             JToken DeepClone(JToken token)
             {
-                var lineInfo = (IJsonLineInfo)token;
                 if (token is JValue v)
                 {
-                    var result = new JValue(v);
-                    SetLineInfo(result, lineInfo.LineNumber, lineInfo.LinePosition);
-                    return result;
+                    return SetSourceInfo(new JValue(v), token.Annotation<SourceInfo>());
                 }
-                else if (token is JObject obj)
+
+                if (token is JObject obj)
                 {
                     var result = new JObject();
                     foreach (var prop in obj.Properties())
                     {
-                        var value = DeepClone(prop.Value);
-                        SetLineInfo(value, lineInfo.LineNumber, lineInfo.LinePosition);
-                        result[prop.Name] = value;
+                        result[prop.Name] = SetSourceInfo(DeepClone(prop.Value), prop.Value.Annotation<SourceInfo>());
+                        SetSourceInfo(result.Property(prop.Name), prop.Annotation<SourceInfo>());
                     }
-                    return result;
+                    return SetSourceInfo(result, token.Annotation<SourceInfo>());
                 }
-                else if (token is JArray array)
+
+                if (token is JArray array)
                 {
                     var result = new JArray();
                     foreach (var item in array)
                     {
-                        var value = DeepClone(item);
-                        SetLineInfo(value, lineInfo.LineNumber, lineInfo.LinePosition);
-                        result.Add(value);
+                        result.Add(SetSourceInfo(DeepClone(item), item.Annotation<SourceInfo>()));
                     }
-                    return result;
+                    return SetSourceInfo(result, token.Annotation<SourceInfo>());
                 }
-                return default;
+
+                throw new NotSupportedException();
             }
         }
 
@@ -334,7 +327,7 @@ namespace Microsoft.Docs.Build
             foreach (var node in nullNodes)
             {
                 var (lineInfo, name) = Parse(node);
-                errors.Add(Errors.NullValue(ToSourceInfo(node), name));
+                errors.Add(Errors.NullValue(GetSourceInfo(node), name));
             }
 
             foreach (var node in nullArrayNodes)
@@ -371,14 +364,47 @@ namespace Microsoft.Docs.Build
             return false;
         }
 
-        public static SourceInfo ToSourceInfo(IJsonLineInfo lineInfo)
+        public static SourceInfo GetSourceInfo(JToken token)
         {
-            return lineInfo != null && lineInfo.HasLineInfo() ? new SourceInfo(null, lineInfo.LineNumber, lineInfo.LinePosition) : default;
+            return token.Annotation<SourceInfo>();
         }
 
-        internal static JToken SetLineInfo(JToken token, int line, int column)
+        internal static JToken SetSourceInfo(JToken token, SourceInfo source)
         {
-            s_setLineInfo(token, line, column);
+            token.AddAnnotation(source ?? SourceInfo.Empty);
+            if (source != null)
+            {
+                s_setLineInfo(token, source.Line, source.Column);
+            }
+            return token;
+        }
+
+        private static JToken SetSourceInfo(JToken token, string file)
+        {
+            var lineInfo = (IJsonLineInfo)token;
+            token.AddAnnotation(new SourceInfo(file, lineInfo.LineNumber, lineInfo.LinePosition));
+
+            switch (token)
+            {
+                case JProperty prop:
+                    SetSourceInfo(prop.Value, file);
+                    break;
+
+                case JArray arr:
+                    foreach (var item in arr)
+                    {
+                        SetSourceInfo(item, file);
+                    }
+                    break;
+
+                case JObject obj:
+                    foreach (var prop in obj.Properties())
+                    {
+                        SetSourceInfo(prop, file);
+                    }
+                    break;
+            }
+
             return token;
         }
 
@@ -524,7 +550,7 @@ namespace Microsoft.Docs.Build
                 var matchingProperty = objectContract.Properties.GetClosestMatchProperty(prop.Name);
                 if (matchingProperty is null && type.IsSealed)
                 {
-                    errors.Add(Errors.UnknownField(ToSourceInfo(prop), prop.Name, type.Name));
+                    errors.Add(Errors.UnknownField(GetSourceInfo(prop), prop.Name, type.Name));
                 }
                 return matchingProperty?.PropertyType;
             }
