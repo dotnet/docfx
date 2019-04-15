@@ -130,6 +130,12 @@ namespace Microsoft.Docs.Build
                 {
                     sourceBranch = contributionBranch;
                 }
+
+                if (sourceBranch != "live")
+                {
+                    // always fallback to master branch for non-live branches
+                    sourceBranch = "master";
+                }
                 return true;
             }
 

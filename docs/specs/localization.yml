@@ -3,15 +3,15 @@
 commands:
   - build --locale zh-cn
 repos:
-  https://docs.com/a#master1:
+  https://docs.com/restore1#master:
     - files:
         docfx.yml: |
           dependencies:
-            restore-child: https://docs.com/a#child1
-  https://docs.com/a#child1:
+            restore-child: https://docs.com/restore1#child
+  https://docs.com/restore1#child:
     - files:
         docs/child.md:
-  https://docs.com/a.zh-cn#master1:
+  https://docs.com/restore1.zh-cn#master:
     - files:
         docs/loc.md: |
           [link to restore-child](~/restore-child/docs/child.md)
@@ -25,21 +25,21 @@ outputs:
 commands:
   - build --locale zh-cn
 repos:
-  https://docs.com/ss#master:
+  https://docs.com/restore2#master:
     - files:
         docfx.yml: |
           localization:
             bilingual: true
           dependencies:
-            restore-child: https://docs.com/ss#child
-  https://docs.com/ss.zh-cn#master-sxs:
+            restore-child: https://docs.com/restore2#child
+  https://docs.com/restore2.zh-cn#master-sxs:
     - files:
         docs/loc.md: |
           [link to restore-child](~/restore-child/docs/child.md)
-  https://docs.com/ss.zh-cn#master:
+  https://docs.com/restore2.zh-cn#master:
     - files:
         docs/loc.md:
-  https://docs.com/ss#child:
+  https://docs.com/restore2#child:
     - files:
         docs/child.md:
 outputs:
@@ -52,12 +52,12 @@ outputs:
 commands:
   - build --locale zh-cn
 repos:
-  https://docs.com/b#master3:
+  https://docs.com/restore3#master:
     - files:
         docfx.yml: |
           localization:
             mapping: Branch
-  https://docs.com/b.loc#master3.zh-cn:
+  https://docs.com/restore3.loc#master.zh-cn:
     - files:
         docs/dep.md: loc-DEP
 outputs:
@@ -68,16 +68,16 @@ outputs:
 commands:
   - build --locale zh-cn
 repos:
-  https://docs.com/ssb#master:
+  https://docs.com/restore4#master:
     - files:
         docfx.yml: |
           localization:
             mapping: Branch
             bilingual: true
-  https://docs.com/ssb.loc#master-sxs.zh-cn:
+  https://docs.com/restore4.loc#master-sxs.zh-cn:
     - files:
         docs/dep.md: loc-DEP-sxs
-  https://docs.com/ssb.loc#master.zh-cn:
+  https://docs.com/restore4.loc#master.zh-cn:
     - files:
         docs/dep.md: loc-DEP
 outputs:
@@ -89,14 +89,14 @@ outputs:
 commands:
   - build --locale zh-cn
 repos:
-  https://github.com/docascode/c#share-restore1:
+  https://github.com/d/restore5#master:
     - files:
         docfx.yml: |
           gitHub:
             userCache: github-user.json
             resolveUsers: true
           dependencies:
-            child1: https://docs.com/docascode/d1
+            child1: https://docs.com/d/restore5
         github-user.json: |
           {
             "users": [
@@ -131,7 +131,7 @@ repos:
               }
             ]
           }
-  https://github.com/docascode/c.zh-cn#share-restore1:
+  https://github.com/d/restore5.zh-cn#master:
     - files:
         docs/a.md: |
           [!include[](~/child1/docs/d.md)]
@@ -141,7 +141,7 @@ repos:
         docs/a.md: a
       author: OsmondJiang
       email: xinjiang@microsoft.com
-  https://docs.com/docascode/d1:
+  https://docs.com/d/restore5:
     - files:
         docs/d.md: d
 outputs:
@@ -153,7 +153,7 @@ outputs:
 commands:
   - build --locale zh-cn
 repos:
-  https://github.com/docascode/c#share-restore2:
+  https://github.com/d/restore6#master:
     - files:
         docfx.yml: |
           localization:
@@ -163,7 +163,7 @@ repos:
             userCache: github-user.json
             resolveUsers: true
           dependencies:
-            child1: https://docs.com/docascode/d2
+            child1: https://docs.com/d/restore6
         github-user.json: |
           {
             "users": [
@@ -198,11 +198,11 @@ repos:
               }
             ]
           }
-  https://github.com/docascode/c.loc#share-restore2-sxs.zh-cn:
+  https://github.com/d/restore6.loc#master-sxs.zh-cn:
     - files:
         docs/a.md: |
           [!include[](~/child1/docs/d.md)]
-  https://github.com/docascode/c.loc#share-restore2.zh-cn:
+  https://github.com/d/restore6.loc#master.zh-cn:
     - files:
         docs/a.md: |
           [!include[](~/child1/docs/d.md)]
@@ -212,7 +212,7 @@ repos:
         docs/a.md: a
       author: OsmondJiang
       email: xinjiang@microsoft.com
-  https://docs.com/docascode/d2:
+  https://docs.com/d/restore6:
     - files:
         docs/d.md: d
 outputs:
@@ -224,53 +224,53 @@ outputs:
 commands:
   - build --locale zh-cn
 repos: 
-  https://docfx.com/abc#edit-url1:
+  https://docfx.com/edit-url1#live:
     - files:
         docfx.yml: |
           contribution:
             repository: https://github.com/dotnet/docfx
-  https://docfx.com/abc.zh-cn#edit-url1:
+  https://docfx.com/edit-url1.zh-cn#live:
     - files:
         docs/a.md:
 outputs:
   docs/a.json: |
-    { "content_git_url": "*dotnet/docfx.zh-cn/blob/edit-url1/*"}
+    { "content_git_url": "*dotnet/docfx.zh-cn/blob/live/*"}
 ---
 # edit url convention without source locale 2
 # [branch mapping]
 commands:
   - build --locale zh-cn
 repos: 
-  https://docfx.com/abc#edit-url2:
+  https://docfx.com/edit-url2#live:
     - files:
         docfx.yml: |
           localization:
             mapping: Branch
           contribution:
             repository: https://github.com/dotnet/docfx
-  https://docfx.com/abc.loc#edit-url2.zh-cn:
+  https://docfx.com/edit-url2.loc#live.zh-cn:
     - files:
         docs/a.md:
 outputs:
   docs/a.json: |
-    { "content_git_url": "*dotnet/docfx.loc/blob/edit-url2.zh-cn*"}
+    { "content_git_url": "*dotnet/docfx.loc/blob/live.zh-cn*"}
 ---
 # edit url convention with source locale 1
 # [repository mapping]
 commands:
   - build --locale zh-cn
 repos: 
-  https://docfx.com/abc#edit-url3:
+  https://docfx.com/edit-url3#live:
     - files:
         docfx.yml: |
           contribution:
             repository: https://github.com/dotnet/docfx.en-us
-  https://docfx.com/abc.zh-cn#edit-url3:
+  https://docfx.com/edit-url3.zh-cn#live:
     - files:
         docs/a.md:
 outputs:
   docs/a.json: |
-    { "content_git_url": "*dotnet/docfx.en-us.zh-cn/blob/edit-url3/*"}
+    { "content_git_url": "*dotnet/docfx.en-us.zh-cn/blob/live/*"}
 ---
 # edit url convention with source locale 2
 # all loc files are in one repo under different branch
@@ -278,19 +278,19 @@ outputs:
 commands:
   - build --locale zh-cn
 repos: 
-  https://docfx.com/abc#edit-url4:
+  https://docfx.com/edit-url4#live:
     - files:
         docfx.yml: |
           contribution:
             repository: https://github.com/dotnet/docfx
           localization:
             mapping: Branch
-  https://docfx.com/abc.loc#edit-url4.zh-cn:
+  https://docfx.com/edit-url4.loc#live.zh-cn:
     - files:
         docs/a.md:
 outputs:
   docs/a.json: |
-    { "content_git_url": "*dotnet/docfx.loc/blob/edit-url4.zh-cn/docs/*"}
+    { "content_git_url": "*dotnet/docfx.loc/blob/live.zh-cn/docs/*"}
 ---
 # edit url convention with source locale 3
 # all loc files are in source repo under different locale folder
@@ -317,37 +317,37 @@ outputs:
 commands:
   - build --locale zh-cn
 repos:
-  https://docfx.com/abc#edit-url5:
+  https://docfx.com/edit-url5#live:
     - files:
         docfx.yml: |
           contribution:
-            repository: https://github.com/dotnet/docfx#live
+            repository: https://github.com/dotnet/docfx#master
           localization:
             mapping: Branch
-  https://docfx.com/abc.loc#edit-url5-sxs.zh-cn:
+  https://docfx.com/edit-url5.loc#live-sxs.zh-cn:
     - files:
         docs/a.md:
-  https://docfx.com/abc.loc#edit-url5.zh-cn:
+  https://docfx.com/edit-url5.loc#live.zh-cn:
     - files:
         docs/a.md:
 outputs:
   docs/a.json: |
-    { "content_git_url": "*dotnet/docfx.loc/blob/live.zh-cn/docs/*"}
+    { "content_git_url": "*dotnet/docfx.loc/blob/master.zh-cn/docs/*"}
 ---
 # loc file contributor info 1
 # [repository mapping]
 commands:
   - build --locale zh-cn
 repos: 
-  https://github.com/contribution/abc#master1:
+  https://github.com/c/contribution1#master:
     - files:
         docfx.yml:
-  https://github.com/contribution/abc.zh-cn#master1:
+  https://github.com/c/contribution1.zh-cn#master:
     - files:
         docs/a.md:
 outputs:
   docs/a.json: |
-    { "content_git_url":"https://github.com/contribution/abc.zh-cn/blob/master1/docs/a.md","original_content_git_url":"https://github.com/contribution/abc.zh-cn/blob/master1/docs/a.md", "gitcommit":"https://github.com/contribution/abc.zh-cn/blob/f35b220adadfe88d1d4f1b043c8dc55db491c83e/docs/a.md"}
+    { "content_git_url":"https://github.com/c/contribution1.zh-cn/blob/master/docs/a.md","original_content_git_url":"https://github.com/c/contribution1.zh-cn/blob/master/docs/a.md", "gitcommit":"https://github.com/c/contribution1.zh-cn/blob/f35b220adadfe88d1d4f1b043c8dc55db491c83e/docs/a.md"}
 ---
 # loc file contributor info 2
 # [folder mapping]
@@ -369,70 +369,70 @@ outputs:
 commands:
   - build --locale zh-cn
 repos: 
-  https://github.com/contribution/abc#master4:
+  https://github.com/c/contribution3#master:
     - files:
         docfx.yml: |
           localization:
             mapping: Branch
-  https://github.com/contribution/abc.loc#master4.zh-cn:
+  https://github.com/c/contribution3.loc#master.zh-cn:
     - files:
         docs/a.md:
 outputs:
   docs/a.json: |
-    { "content_git_url":"https://github.com/contribution/abc.loc/blob/master4.zh-cn/docs/a.md","original_content_git_url":"https://github.com/contribution/abc.loc/blob/master4.zh-cn/docs/a.md", "gitcommit":"https://github.com/contribution/abc.loc/blob/f35b220adadfe88d1d4f1b043c8dc55db491c83e/docs/a.md"}
+    { "content_git_url":"https://github.com/c/contribution3.loc/blob/master.zh-cn/docs/a.md","original_content_git_url":"https://github.com/c/contribution3.loc/blob/master.zh-cn/docs/a.md", "gitcommit":"https://github.com/c/contribution3.loc/blob/f35b220adadfe88d1d4f1b043c8dc55db491c83e/docs/a.md"}
 ---
 # loc file contributor info 4
 # [repository mapping] & bilingual
 commands:
   - build --locale zh-cn
 repos: 
-  https://github.com/contribution/abc#master5:
+  https://github.com/c/contribution4#master:
     - files:
         docfx.yml: |
           localization:
             bilingual: true
-  https://github.com/contribution/abc.zh-cn#master5:
+  https://github.com/c/contribution4.zh-cn#master:
     - files:
         docs/a.md:
-  https://github.com/contribution/abc.zh-cn#master5-sxs:
+  https://github.com/c/contribution4.zh-cn#master-sxs:
     - files:
         docs/a.md:
 outputs:
   docs/a.json: |
-    { "content_git_url":"https://github.com/contribution/abc.zh-cn/blob/master5/docs/a.md","original_content_git_url":"https://github.com/contribution/abc.zh-cn/blob/master5-sxs/docs/a.md", "gitcommit":"https://github.com/contribution/abc.zh-cn/blob/f35b220adadfe88d1d4f1b043c8dc55db491c83e/docs/a.md"}
+    { "content_git_url":"https://github.com/c/contribution4.zh-cn/blob/master/docs/a.md","original_content_git_url":"https://github.com/c/contribution4.zh-cn/blob/master-sxs/docs/a.md", "gitcommit":"https://github.com/c/contribution4.zh-cn/blob/f35b220adadfe88d1d4f1b043c8dc55db491c83e/docs/a.md"}
 ---
 # loc file contributor info 5
 # [branch mapping] & bilingual
 commands:
   - build --locale zh-cn
 repos: 
-  https://github.com/contribution/abc#master6:
+  https://github.com/c/contribution5#master:
     - files:
         docfx.yml: |
           localization:
             bilingual: true
             mapping: Branch
-  https://github.com/contribution/abc.loc#master6.zh-cn:
+  https://github.com/c/contribution5.loc#master.zh-cn:
     - files:
         docs/a.md:
-  https://github.com/contribution/abc.loc#master6-sxs.zh-cn:
+  https://github.com/c/contribution5.loc#master-sxs.zh-cn:
     - files:
         docs/a.md:
 outputs:
   docs/a.json: |
-    { "content_git_url":"https://github.com/contribution/abc.loc/blob/master6.zh-cn/docs/a.md","original_content_git_url":"https://github.com/contribution/abc.loc/blob/master6-sxs.zh-cn/docs/a.md", "gitcommit":"https://github.com/contribution/abc.loc/blob/f35b220adadfe88d1d4f1b043c8dc55db491c83e/docs/a.md"}
+    { "content_git_url":"https://github.com/c/contribution5.loc/blob/master.zh-cn/docs/a.md","original_content_git_url":"https://github.com/c/contribution5.loc/blob/master-sxs.zh-cn/docs/a.md", "gitcommit":"https://github.com/c/contribution5.loc/blob/f35b220adadfe88d1d4f1b043c8dc55db491c83e/docs/a.md"}
 ---
 # loc page link and content fallback 1
 # [repository mapping]
 commands:
   - build --locale zh-cn
 repos:
-  https://docs.com/test#page-fallback1:
+  https://docs.com/page-fallback1#master:
     - files:
         docfx.yml:
         docs/b.md: |
           [link in a](a.md)
-  https://docs.com/test.zh-cn#page-fallback1:
+  https://docs.com/page-fallback1.zh-cn#master:
     - files:
         docs/a.md: |
           [link in b](b.md)
@@ -446,14 +446,14 @@ outputs:
 commands:
   - build --locale zh-cn
 repos:
-  https://docs.com/test#page-fallback2:
+  https://docs.com/page-fallback2#master:
     - files:
         docfx.yml: |
           localization:
             mapping: Branch
         docs/b.md: |
           [link in a](a.md)
-  https://docs.com/test.loc#page-fallback2.zh-cn:
+  https://docs.com/page-fallback2.loc#master.zh-cn:
     - files:
         docs/a.md: |
           [link in b](b.md)
@@ -467,7 +467,7 @@ outputs:
 commands:
   - build --locale zh-cn
 repos:
-  https://docs.com/test#page-fallback3:
+  https://docs.com/page-fallback3#master:
     - files:
         docfx.yml: |
           localization:
@@ -475,10 +475,10 @@ repos:
             bilingual: true
         docs/b.md: |
           [link in a](a.md)
-  https://docs.com/test.loc#page-fallback3.zh-cn:
+  https://docs.com/page-fallback3.loc#master.zh-cn:
     - files:
         docs/a.md:
-  https://docs.com/test.loc#page-fallback3-sxs.zh-cn:
+  https://docs.com/page-fallback3.loc#master-sxs.zh-cn:
     - files:
         docs/a.md: |
           [link in b](b.md)
@@ -492,11 +492,11 @@ outputs:
 commands:
   - build --locale zh-cn
 repos:
-  https://docs.com/test#resource-fallback1:
+  https://docs.com/resource-fallback1#master:
     - files:
         docs/b.png:
         docfx.yml:
-  https://docs.com/test.zh-cn#resource-fallback1:
+  https://docs.com/resource-fallback1.zh-cn#master:
     - files:
         docs/a.md: |
           [link to b](b.png)
@@ -509,13 +509,13 @@ outputs:
 commands:
   - build --locale zh-cn
 repos:
-  https://docs.com/test#resource-fallback2:
+  https://docs.com/resource-fallback2#live:
     - files:
         docs/b.png:
         docfx.yml: |
           localization:
             mapping: Branch
-  https://docs.com/test.loc#resource-fallback2.zh-cn:
+  https://docs.com/resource-fallback2.loc#live.zh-cn:
     - files:
         docs/a.md: |
           [link to b](b.png)
@@ -528,16 +528,16 @@ outputs:
 commands:
   - build --locale zh-cn
 repos:
-  https://docs.com/test#resource-fallback3:
+  https://docs.com/resource-fallback3#master:
     - files:
         docs/b.png:
         docfx.yml: |
           localization:
             bilingual: true
-  https://docs.com/test.zh-cn#resource-fallback3:
+  https://docs.com/resource-fallback3.zh-cn#master:
     - files:
         docs/a.md:
-  https://docs.com/test.zh-cn#resource-fallback3-sxs:
+  https://docs.com/resource-fallback3.zh-cn#master-sxs:
     - files:
         docs/a.md: |
           [link to b](b.png)
@@ -566,14 +566,14 @@ outputs:
 commands:
   - build --locale zh-cn
 repos:
-  https://docs.com/test#toc1:
+  https://docs.com/toc1#master:
     - files:
         docs/TOC.md: |
           # [reference a](a.md)
         docs/b/TOC.md: |
           # [reference b](../b.md)
         docfx.yml:
-  https://docs.com/test.zh-cn#toc1:
+  https://docs.com/toc1.zh-cn#master:
     - files:
         docs/a.md:
         docs/b.md:
@@ -592,13 +592,13 @@ outputs:
 commands:
   - build --locale zh-cn
 repos:
-  https://docs.com/test#toc2:
+  https://docs.com/toc2#master:
     - files:
         docs/a/a.md:
         docs/b/TOC.md: |
           # [reference b](b.md)
         docfx.yml:
-  https://docs.com/test.zh-cn#toc2:
+  https://docs.com/toc2.zh-cn#master:
     - files:
         docs/a/TOC.md: |
           # [reference a](a.md)
@@ -632,14 +632,14 @@ outputs:
 commands:
   - build --locale zh-cn
 repos:
-  https://docs.com/test#xref1:
+  https://docs.com/xref1#master:
     - files:
         docs/a.md: |
           ---
           uid: c
           ---
         docfx.yml:
-  https://docs.com/test.zh-cn#xref1:
+  https://docs.com/xref1.zh-cn#master:
     - files:
         docs/a.md: |
           ---
@@ -679,14 +679,14 @@ outputs:
 commands:
   - build --locale zh-cn
 repos:
-  https://docs.com/test#xref2:
+  https://docs.com/xref2#master:
     - files:
         docs/c.md: |
           ---
           uid: c
           ---
         docfx.yml:
-  https://docs.com/test.zh-cn#xref2:
+  https://docs.com/xref2.zh-cn#master:
     - files:
         docs/a.md: |
           ---
@@ -733,11 +733,11 @@ outputs:
 commands:
   - build --locale zh-cn
 repos:
-  https://docs.com/test#metadata1:
+  https://docs.com/metadata1#master:
     - files:
         docfx.yml: |
           baseUrl: https://docs.microsoft.com
-  https://docs.com/test.zh-cn#metadata1:
+  https://docs.com/metadata1.zh-cn#master:
     - files:
         docs/a.md:
 outputs:
@@ -749,13 +749,13 @@ outputs:
 commands:
   - build --locale zh-cn
 repos:
-  https://docs.com/test#metadata2:
+  https://docs.com/metadata2#live:
     - files:
         docfx.yml: |
           baseUrl: https://docs.microsoft.com
           localization:
             mapping: Branch
-  https://docs.com/test.loc#metadata2.zh-cn:
+  https://docs.com/metadata2.loc#live.zh-cn:
     - files:
         docs/a.md:
 outputs:
@@ -782,17 +782,17 @@ outputs:
 commands:
   - build --locale zh-cn
 repos:
-  https://docs.com/test#metadata4:
+  https://docs.com/metadata4#master:
     - files:
         docfx.yml: |
           baseUrl: https://docs.microsoft.com
           localization:
             mapping: Branch
             bilingual: true
-  https://docs.com/test.loc#metadata4.zh-cn:
+  https://docs.com/metadata4.loc#master.zh-cn:
     - files:
         docs/a.md:
-  https://docs.com/test.loc#metadata4-sxs.zh-cn:
+  https://docs.com/metadata4.loc#master-sxs.zh-cn:
     - files:
         docs/a.md:
 outputs:
@@ -1319,10 +1319,10 @@ outputs:
 commands:
   - build --locale ar-sa
 repos:
-  https://docs.com/test#lrm:
+  https://docs.com/lrm#master:
     - files:
         docfx.yml:
-  https://docs.com/test.ar-sa#lrm:
+  https://docs.com/lrm.ar-sa#master:
     - files:
         docs/a.md: |
           Learn c#.
