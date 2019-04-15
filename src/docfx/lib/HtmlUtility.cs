@@ -164,7 +164,7 @@ namespace Microsoft.Docs.Build
             return result.ToString();
         }
 
-        public static (List<(string uid, int line, int column)>, string) TransformXrefs(string html, Func<string, (Error error, string href, string display, Document file)> transform)
+        public static (List<(string uid, int line, int column)>, string) TransformXrefs(string html, int startLine, Func<string, (Error error, string href, string display, Document file)> transform)
         {
             var errors = new List<(string uid, int line, int column)>();
 
@@ -178,9 +178,14 @@ namespace Microsoft.Docs.Build
             doc.LoadHtml(html);
 
             var result = new StringBuilder(html.Length + 64);
-
-            foreach (var node in doc.DocumentNode.Descendants().Where(x => x.Name == "xref"))
+            var currentLine = startLine;
+            foreach (var node in doc.DocumentNode.Descendants())
             {
+                if (node.Name != "xref")
+                {
+                    continue;
+                }
+
                 var xref = node.Attributes["href"];
                 if (xref is null)
                 {
@@ -193,13 +198,14 @@ namespace Microsoft.Docs.Build
                 var (_, resolvedHref, display, _) = transform(xref.Value);
                 if (string.IsNullOrEmpty(resolvedHref))
                 {
+                    errors.Add((xref.Value, currentLine, s_getValueStartIndex(xref)));
                     result.Append($"@{raw}");
                 }
                 else
                 {
-                    errors.Add((xref.Value, node.Line + 1, s_getValueStartIndex(xref)));
                     result.Append($"<a href='{resolvedHref}'>{display}</a>");
                 }
+                currentLine += 1;
             }
             return (errors, result.ToString());
         }
