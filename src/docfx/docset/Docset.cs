@@ -260,7 +260,7 @@ namespace Microsoft.Docs.Build
                         var relativePath = Path.GetRelativePath(DocsetPath, file);
                         if (glob(relativePath))
                         {
-                            files.Add(Document.TryCreateFromFile(this, relativePath));
+                            files.Add(Document.CreateFromFile(this, relativePath));
                         }
                     });
 

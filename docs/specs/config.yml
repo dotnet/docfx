@@ -301,7 +301,7 @@ inputs:
       docs/TOC.md: /absolute/path
 outputs:
   build.log: |
-    ["error","invalid-redirection","The 'docs/TOC.md' shouldn't belong to redirections since it's a TableOfContents","docfx.yml"]
+    ["error","invalid-redirection","The 'docs/TOC.md' shouldn't belong to redirections since it's a TableOfContents","docfx.yml",2,16]
 ---
 # Conflicted redirection file
 inputs:
@@ -325,7 +325,7 @@ outputs:
   build.log: |
     ["info","redirection-out-of-scope","Redirection file 'b.md' will not be built because it is not included in docfx.yml"]
 ---
-# Multiple errors
+# Multiple redirection errors
 inputs:
   docfx.yml: |
     redirections:
@@ -335,7 +335,7 @@ inputs:
       docs/a.md: /absolute/path2
 outputs:
   build.log: |
-    ["error","invalid-redirection","The 'docs/TOC.md' shouldn't belong to redirections since it's a TableOfContents","docfx.yml"]
+    ["error","invalid-redirection","The 'docs/TOC.md' shouldn't belong to redirections since it's a TableOfContents","docfx.yml",2,16]
     ["error","redirection-conflict","The 'docs/a.md' appears twice or more in the redirection mappings","docfx.yml"]
 ---
 # Wrong locale
@@ -433,8 +433,8 @@ inputs:
       b.md: a
 outputs:
   build.log: |
-    ["warning","invalid-redirect-to","The redirect dest 'https://docs.microsoft.com/docfx/a' isn't allowed for entry 'a.md' in redirections, redirect dest must start with '/'","docfx.yml"]
-    ["warning","invalid-redirect-to","The redirect dest 'a' isn't allowed for entry 'b.md' in redirections, redirect dest must start with '/'","docfx.yml"]
+    ["warning","invalid-redirect-to","The redirect url 'https://docs.microsoft.com/docfx/a' must start with '/'","docfx.yml",2,9]
+    ["warning","invalid-redirect-to","The redirect url 'a' must start with '/'","docfx.yml",3,9]
 ---
 # redirect to not starting with '/' is allowed in config.redirectionWithoutIds
 inputs:

@@ -103,11 +103,7 @@ namespace Microsoft.Docs.Build
 
             if (file is null)
             {
-                var (errorFromHistory, content, fileFromHistory) = TryResolveContentFromHistory(_gitCommitProvider, relativeTo.Docset, pathToDocset);
-                if (errorFromHistory != null)
-                {
-                    return (error, null, null);
-                }
+                var (content, fileFromHistory) = TryResolveContentFromHistory(_gitCommitProvider, relativeTo.Docset, pathToDocset);
                 if (fileFromHistory != null)
                 {
                     return (null, content, fileFromHistory);
@@ -148,14 +144,13 @@ namespace Microsoft.Docs.Build
             // Cannot resolve the file, leave href as is
             if (file is null)
             {
-                var (errorFromHistory, resourceFromHistory) = TryResolveResourceFromHistory(_gitCommitProvider, relativeTo.Docset, pathToDocset);
-                if (errorFromHistory != null || resourceFromHistory == null)
+                file = TryResolveResourceFromHistory(_gitCommitProvider, relativeTo.Docset, pathToDocset);
+                if (file is null)
                 {
-                    return (errorFromHistory ?? error, href, fragment, hrefType, null);
+                    return (error, href, fragment, hrefType, null);
                 }
 
                 // set file to resource got from histroy, reset the error
-                file = resourceFromHistory;
                 error = null;
             }
 
@@ -232,17 +227,17 @@ namespace Microsoft.Docs.Build
                         //
                         // TODO: In case of file rename, we should warn if the content is not inside build scope.
                         //       But we should not warn or do anything with absolute URLs.
-                        var (error, redirectFile) = Document.TryCreate(relativeTo.Docset, pathToDocset, redirectTo);
-                        return (error, redirectFile, redirectTo, query, fragment, HrefType.RelativePath, pathToDocset);
+                        var redirectFile = Document.Create(relativeTo.Docset, pathToDocset, redirectTo);
+                        return (null, redirectFile, redirectTo, query, fragment, HrefType.RelativePath, pathToDocset);
                     }
 
-                    var file = Document.TryCreateFromFile(relativeTo.Docset, pathToDocset);
+                    var file = Document.CreateFromFile(relativeTo.Docset, pathToDocset);
 
                     // try to resolve with .md for landing page
                     if (file is null && _forLandingPage)
                     {
                         pathToDocset = ResolveToDocsetRelativePath($"{path}.md", relativeTo);
-                        file = Document.TryCreateFromFile(relativeTo.Docset, pathToDocset);
+                        file = Document.CreateFromFile(relativeTo.Docset, pathToDocset);
                     }
 
                     return (file != null ? null : (_forLandingPage ? null : Errors.FileNotFound(relativeTo.ToString(), new SourceInfo<string>(path, href))), file, null, query, fragment, null, pathToDocset);
@@ -268,7 +263,7 @@ namespace Microsoft.Docs.Build
             return docsetRelativePath;
         }
 
-        private static (Error error, Document file) TryResolveResourceFromHistory(GitCommitProvider gitCommitProvider, Docset docset, string pathToDocset)
+        private static Document TryResolveResourceFromHistory(GitCommitProvider gitCommitProvider, Docset docset, string pathToDocset)
         {
             if (string.IsNullOrEmpty(pathToDocset))
             {
@@ -282,14 +277,14 @@ namespace Microsoft.Docs.Build
                 var (repo, pathToRepo, commits) = gitCommitProvider.GetCommitHistory(fallbackDocset, pathToDocset);
                 if (repo != null && commits.Count > 0)
                 {
-                    return Document.TryCreate(fallbackDocset, pathToDocset, isFromHistory: true);
+                    return Document.Create(fallbackDocset, pathToDocset, isFromHistory: true);
                 }
             }
 
             return default;
         }
 
-        private static (Error error, string content, Document file) TryResolveContentFromHistory(GitCommitProvider gitCommitProvider, Docset docset, string pathToDocset)
+        private static (string content, Document file) TryResolveContentFromHistory(GitCommitProvider gitCommitProvider, Docset docset, string pathToDocset)
         {
             if (string.IsNullOrEmpty(pathToDocset))
             {
@@ -309,8 +304,7 @@ namespace Microsoft.Docs.Build
                         // the latest commit would be deleting it from repo
                         if (GitUtility.TryGetContentFromHistory(repoPath, pathToRepo, commits[1].Sha, out var content))
                         {
-                            var (error, doc) = Document.TryCreate(fallbackDocset, pathToDocset, isFromHistory: true);
-                            return (error, content, doc);
+                            return (content, Document.Create(fallbackDocset, pathToDocset, isFromHistory: true));
                         }
                     }
                 }
