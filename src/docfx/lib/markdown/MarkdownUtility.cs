@@ -91,6 +91,7 @@ namespace Microsoft.Docs.Build
 
         internal static (Error error, string href, string display, Document file) ResolveXref(string href, MarkdownObject origin)
         {
+            // TODO: now markdig engine combines all kinds of reference with inclusion, we need to split them out
             var result = t_status.Value.Peek().DependencyResolver.ResolveXref(new SourceInfo<string>(href, origin.ToSourceInfo()), (Document)InclusionContext.File, (Document)InclusionContext.RootFile);
             result.error = result.error?.WithSourceInfo(origin.ToSourceInfo());
             return result;
