@@ -96,7 +96,7 @@ namespace Microsoft.Docs.Build
   - item2
 : value
 ";
-            var exception = Assert.Throws<NotSupportedException>(() => YamlUtility.Parse(yaml));
+            var exception = Assert.Throws<NotSupportedException>(() => YamlUtility.Parse(yaml, null));
 
             Assert.Equal("Not Supported: [ item1, item2 ] is not a primitive type", exception.Message);
         }
@@ -151,7 +151,7 @@ d: true
 - false
 - False
 - FALSE
-");
+", null);
             Assert.Empty(errors2);
             Assert.NotNull(value2);
             Assert.Equal(new[] { true, true, true, false, false, false }, value2.Select(j => (bool)j).ToArray());
@@ -300,7 +300,7 @@ valueRequired: a
 Key1: 0
 Key1: 0
 ";
-            var exception = Assert.Throws<DocfxException>(() => YamlUtility.Parse(yaml));
+            var exception = Assert.Throws<DocfxException>(() => YamlUtility.Parse(yaml, null));
             Assert.Contains("Key 'Key1' is already defined, remove the duplicate key", exception.Message);
         }
 
@@ -312,13 +312,13 @@ items:
  - name: 1", 3, 2)]
         public void TestParsedJTokenHasLineInfo(string yaml, int expectedLine, int expectedColumn)
         {
-            var (errors, value) = YamlUtility.Parse(yaml);
+            var (errors, value) = YamlUtility.Parse(yaml, null);
             Assert.Empty(errors);
 
             // Get the first JValue of the first JProperty if any
-            var lineInfo = (value.Children().Any() ? value.Children().First().Children().First() : value) as IJsonLineInfo;
-            Assert.Equal(expectedLine, lineInfo.LineNumber);
-            Assert.Equal(expectedColumn, lineInfo.LinePosition);
+            var source = JsonUtility.GetSourceInfo((value.Children().Any() ? value.Children().First().Children().First() : value));
+            Assert.Equal(expectedLine, source.Line);
+            Assert.Equal(expectedColumn, source.Column);
         }
 
         [Theory]
@@ -334,7 +334,7 @@ items:
         /// </summary>
         private static (List<Error> errors, T model) DeserializeWithValidation<T>(string json)
         {
-            var (errors, token) = YamlUtility.Parse(json);
+            var (errors, token) = YamlUtility.Parse(json, null);
             var (mismatchingErrors, result) = JsonUtility.ToObject<T>(token);
             errors.AddRange(mismatchingErrors);
             return (errors, result);

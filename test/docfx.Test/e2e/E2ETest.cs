@@ -383,7 +383,7 @@ namespace Microsoft.Docs.Build
                     {
                         TestUtility.VerifyJsonContainEquals(
                             // Test expectation can use YAML for readability
-                            content.StartsWith("{") ? JToken.Parse(content) : YamlUtility.Parse(content).Item2,
+                            content.StartsWith("{") ? JToken.Parse(content) : YamlUtility.Parse(content, null).Item2,
                             JToken.Parse(File.ReadAllText(file)));
                     }
                     break;

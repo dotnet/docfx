@@ -63,7 +63,7 @@ namespace Microsoft.Docs.Build
             {
                 if (s_reservedNames.Contains(key))
                 {
-                    errors.Add(Errors.ReservedMetadata(JsonUtility.ToSourceInfo(token), key, token.Path));
+                    errors.Add(Errors.ReservedMetadata(JsonUtility.GetSourceInfo(token), key, token.Path));
                 }
             }
 

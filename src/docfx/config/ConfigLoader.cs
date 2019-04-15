@@ -45,17 +45,18 @@ namespace Microsoft.Docs.Build
 
         private static (List<Error>, Config) LoadCore(string docsetPath, CommandLineOptions options, string locale,  bool extend)
         {
-            var errors = new List<Error>();
-            Config config = null;
+            if (!TryGetConfigPath(docsetPath, out var configPath))
+            {
+                return (new List<Error>(), new Config());
+            }
 
-            var configExists = TryGetConfigPath(docsetPath, out var configPath);
-            var (loadErrors, configObject) = !configExists ? (errors, new JObject()) : LoadConfigObject(configPath, configPath);
+            var configFileName = PathUtility.NormalizeFile(Path.GetRelativePath(docsetPath, configPath));
+            var (errors, configObject) = LoadConfigObject(configFileName, File.ReadAllText(configPath));
 
             // apply options
             var optionConfigObject = Expand(options?.ToJObject());
 
             JsonUtility.Merge(configObject, optionConfigObject);
-            errors.AddRange(loadErrors);
 
             // apply global config
             var globalErrors = new List<Error>();
@@ -73,13 +74,10 @@ namespace Microsoft.Docs.Build
             // apply overwrite
             OverwriteConfig(configObject, locale ?? options.Locale, GetBranch());
 
-            var deserializeErrors = new List<Error>();
-            (deserializeErrors, config) = JsonUtility.ToObject<Config>(configObject);
+            var (deserializeErrors, config) = JsonUtility.ToObject<Config>(configObject);
             errors.AddRange(deserializeErrors);
 
-            config.ConfigFileName = !configExists
-                ? config.ConfigFileName
-                : PathUtility.NormalizeFile(Path.GetRelativePath(docsetPath, configPath));
+            config.ConfigFileName = configFileName;
             return (errors, config);
 
             string GetBranch()
@@ -90,20 +88,17 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static (List<Error>, JObject) LoadConfigObject(string fileName, string file)
-            => LoadConfigObjectContent(fileName, File.ReadAllText(file));
-
-        private static (List<Error>, JObject) LoadConfigObjectContent(string fileName, string content)
+        private static (List<Error>, JObject) LoadConfigObject(string fileName, string content)
         {
             var errors = new List<Error>();
             JToken config = null;
             if (fileName.EndsWith(".yml", StringComparison.OrdinalIgnoreCase))
             {
-                (errors, config) = YamlUtility.Parse(content);
+                (errors, config) = YamlUtility.Parse(content, fileName);
             }
             else if (fileName.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
             {
-                (errors, config) = JsonUtility.Parse(content);
+                (errors, config) = JsonUtility.Parse(content, fileName);
             }
 
             JsonUtility.TrimStringValues(config);
@@ -130,7 +125,7 @@ namespace Microsoft.Docs.Build
             var globalConfigPath = AppData.GlobalConfigPath;
             if (File.Exists(globalConfigPath))
             {
-                (errors, result) = LoadConfigObject(globalConfigPath, globalConfigPath);
+                (errors, result) = LoadConfigObject(globalConfigPath, File.ReadAllText(globalConfigPath));
             }
 
             JsonUtility.Merge(result, config);
@@ -148,9 +143,9 @@ namespace Microsoft.Docs.Build
                 {
                     if (extend is JValue value && value.Value is string str)
                     {
-                        var (_, content, _) = RestoreMap.GetRestoredFileContent(docsetPath, new SourceInfo<string>(str, JsonUtility.ToSourceInfo(value)));
-                        var (extendErros, extendConfigObject) = LoadConfigObjectContent(str, content);
-                        errors.AddRange(extendErros);
+                        var (_, content, _) = RestoreMap.GetRestoredFileContent(docsetPath, new SourceInfo<string>(str, JsonUtility.GetSourceInfo(value)));
+                        var (extendErrors, extendConfigObject) = LoadConfigObject(str, content);
+                        errors.AddRange(extendErrors);
                         JsonUtility.Merge(result, extendConfigObject);
                     }
                 }

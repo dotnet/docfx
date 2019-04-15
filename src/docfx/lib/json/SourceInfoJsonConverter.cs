@@ -3,6 +3,7 @@
 
 using System;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -15,14 +16,13 @@ namespace Microsoft.Docs.Build
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            var source = JsonUtility.ToSourceInfo((IJsonLineInfo)reader);
+            var source = reader is JTokenReader tokenReader ? JsonUtility.GetSourceInfo(tokenReader.CurrentToken) : null;
             var valueType = objectType.GenericTypeArguments[0];
             var value = serializer.Deserialize(reader, valueType);
 
             if (value is null)
                 return null;
 
-            // TODO: populate file info
             return Activator.CreateInstance(objectType, value, source);
         }
 

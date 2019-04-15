@@ -48,7 +48,7 @@ namespace Microsoft.Docs.Build
         private static readonly ThreadLocal<Stack<Status>> t_status = new ThreadLocal<Stack<Status>>(() => new Stack<Status>());
 
         private static readonly Action<JToken, int, int> s_setLineInfo =
-            ReflectionUtility.CreateInstanceMethod<JToken, Action<JToken, int, int>>("SetLineInfo", new[] { typeof(int), typeof(int) });
+           ReflectionUtility.CreateInstanceMethod<JToken, Action<JToken, int, int>>("SetLineInfo", new[] { typeof(int), typeof(int) });
 
         internal static JsonSerializer Serializer => s_serializer;
 
@@ -220,13 +220,11 @@ namespace Microsoft.Docs.Build
         /// Parse a string to JToken.
         /// Validate null value during the process.
         /// </summary>
-        // TODO: Pass in file to be filled into SourceInfo
-        public static (List<Error>, JToken) Parse(string json)
+        public static (List<Error>, JToken) Parse(string json, string file)
         {
             try
             {
-                var (errors, token) = JToken.Parse(json).RemoveNulls();
-                return (errors, token ?? JValue.CreateNull());
+                return SetSourceInfo(JToken.Parse(json), file).RemoveNulls();
             }
             catch (JsonReaderException ex)
             {
@@ -251,45 +249,40 @@ namespace Microsoft.Docs.Build
                 }
                 else if (IsNullOrUndefined(container[key]) || !IsNullOrUndefined(value))
                 {
-                    var valueLineInfo = (IJsonLineInfo)value;
-                    var keyLineInfo = (IJsonLineInfo)property;
-                    container[key] = SetLineInfo(DeepClone(value), valueLineInfo.LineNumber, valueLineInfo.LinePosition);
-                    SetLineInfo(container.Property(key), keyLineInfo.LineNumber, keyLineInfo.LinePosition);
+                    container[key] = SetSourceInfo(DeepClone(value), value.Annotation<SourceInfo>());
+                    SetSourceInfo(container.Property(key), property.Annotation<SourceInfo>());
                 }
             }
 
             JToken DeepClone(JToken token)
             {
-                var lineInfo = (IJsonLineInfo)token;
                 if (token is JValue v)
                 {
-                    var result = new JValue(v);
-                    SetLineInfo(result, lineInfo.LineNumber, lineInfo.LinePosition);
-                    return result;
+                    return SetSourceInfo(new JValue(v), token.Annotation<SourceInfo>());
                 }
-                else if (token is JObject obj)
+
+                if (token is JObject obj)
                 {
                     var result = new JObject();
                     foreach (var prop in obj.Properties())
                     {
-                        var value = DeepClone(prop.Value);
-                        SetLineInfo(value, lineInfo.LineNumber, lineInfo.LinePosition);
-                        result[prop.Name] = value;
+                        result[prop.Name] = SetSourceInfo(DeepClone(prop.Value), prop.Value.Annotation<SourceInfo>());
+                        SetSourceInfo(result.Property(prop.Name), prop.Annotation<SourceInfo>());
                     }
-                    return result;
+                    return SetSourceInfo(result, token.Annotation<SourceInfo>());
                 }
-                else if (token is JArray array)
+
+                if (token is JArray array)
                 {
                     var result = new JArray();
                     foreach (var item in array)
                     {
-                        var value = DeepClone(item);
-                        SetLineInfo(value, lineInfo.LineNumber, lineInfo.LinePosition);
-                        result.Add(value);
+                        result.Add(SetSourceInfo(DeepClone(item), item.Annotation<SourceInfo>()));
                     }
-                    return result;
+                    return SetSourceInfo(result, token.Annotation<SourceInfo>());
                 }
-                return default;
+
+                throw new NotSupportedException();
             }
         }
 
@@ -323,34 +316,57 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Report warnings for all null or undefined nodes, remove nulls inside arrays.
         /// </summary>
-        public static (List<Error>, JToken) RemoveNulls(this JToken token)
+        public static (List<Error>, JToken) RemoveNulls(this JToken root)
         {
             var errors = new List<Error>();
-            var nullNodes = new List<JToken>();
-            var nullArrayNodes = new List<JToken>();
+            var nullNodes = new List<(JToken, string)>();
+            var nullArrayNodes = new List<(JToken, string)>();
 
-            RemoveNullsCore(token, errors, nullNodes, nullArrayNodes);
+            RemoveNullsCore(root, null);
 
-            foreach (var node in nullNodes)
+            foreach (var (node, name) in nullNodes)
             {
-                var (lineInfo, name) = Parse(node);
-                errors.Add(Errors.NullValue(ToSourceInfo(node), name));
+                errors.Add(Errors.NullValue(GetSourceInfo(node), name));
             }
 
-            foreach (var node in nullArrayNodes)
+            foreach (var (node, name) in nullArrayNodes)
             {
-                var (lineInfo, name) = Parse(node);
-                errors.Add(Errors.NullArrayValue(new SourceInfo(null, lineInfo.LineNumber, lineInfo.LinePosition), name));
+                errors.Add(Errors.NullArrayValue(GetSourceInfo(node), name));
                 node.Remove();
             }
 
-            return (errors, token);
+            return (errors, root);
 
-            (IJsonLineInfo lineInfo, string name) Parse(JToken node)
+            void RemoveNullsCore(JToken token, string name)
             {
-                var lineInfo = (IJsonLineInfo)node;
-                var name = node is JProperty prop ? prop.Name : (node.Parent?.Parent is JProperty p ? p.Name : node.Path);
-                return (lineInfo, name);
+                if (token is JArray array)
+                {
+                    foreach (var item in array)
+                    {
+                        if (item.IsNullOrUndefined())
+                        {
+                            nullArrayNodes.Add((item, name ?? item.Path));
+                        }
+                        else
+                        {
+                            RemoveNullsCore(item, name);
+                        }
+                    }
+                }
+                else if (token is JObject obj)
+                {
+                    foreach (var prop in obj.Properties())
+                    {
+                        if (prop.Value.IsNullOrUndefined())
+                        {
+                            nullNodes.Add((prop, prop.Name));
+                        }
+                        else
+                        {
+                            RemoveNullsCore(prop.Value, prop.Name);
+                        }
+                    }
+                }
             }
         }
 
@@ -371,14 +387,47 @@ namespace Microsoft.Docs.Build
             return false;
         }
 
-        public static SourceInfo ToSourceInfo(IJsonLineInfo lineInfo)
+        public static SourceInfo GetSourceInfo(JToken token)
         {
-            return lineInfo != null && lineInfo.HasLineInfo() ? new SourceInfo(null, lineInfo.LineNumber, lineInfo.LinePosition) : default;
+            return token.Annotation<SourceInfo>();
         }
 
-        internal static JToken SetLineInfo(JToken token, int line, int column)
+        internal static JToken SetSourceInfo(JToken token, SourceInfo source)
         {
-            s_setLineInfo(token, line, column);
+            token.AddAnnotation(source ?? SourceInfo.Empty);
+            if (source != null)
+            {
+                s_setLineInfo(token, source.Line, source.Column);
+            }
+            return token;
+        }
+
+        private static JToken SetSourceInfo(JToken token, string file)
+        {
+            var lineInfo = (IJsonLineInfo)token;
+            token.AddAnnotation(new SourceInfo(file, lineInfo.LineNumber, lineInfo.LinePosition));
+
+            switch (token)
+            {
+                case JProperty prop:
+                    SetSourceInfo(prop.Value, file);
+                    break;
+
+                case JArray arr:
+                    foreach (var item in arr)
+                    {
+                        SetSourceInfo(item, file);
+                    }
+                    break;
+
+                case JObject obj:
+                    foreach (var prop in obj.Properties())
+                    {
+                        SetSourceInfo(prop, file);
+                    }
+                    break;
+            }
+
             return token;
         }
 
@@ -431,55 +480,20 @@ namespace Microsoft.Docs.Build
                 (token.Type == JTokenType.Undefined);
         }
 
-        private static void RemoveNullsCore(JToken token, List<Error> errors, List<JToken> nullNodes, List<JToken> nullArrayNodes)
-        {
-            if (token is JArray array)
-            {
-                foreach (var item in token.Children())
-                {
-                    if (item.IsNullOrUndefined())
-                    {
-                        nullArrayNodes.Add(item);
-                    }
-                    else
-                    {
-                        RemoveNullsCore(item, errors, nullNodes, nullArrayNodes);
-                    }
-                }
-            }
-            else if (token is JObject obj)
-            {
-                foreach (var item in token.Children())
-                {
-                    var prop = item as JProperty;
-                    if (prop.Value.IsNullOrUndefined())
-                    {
-                        nullNodes.Add(item);
-                    }
-                    else
-                    {
-                        RemoveNullsCore(prop.Value, errors, nullNodes, nullArrayNodes);
-                    }
-                }
-            }
-        }
-
         private static void ReportUnknownFields(this JToken token, List<Error> errors, Type type)
         {
             if (token is JArray array)
             {
                 var itemType = GetCollectionItemTypeIfArrayType(type);
-                foreach (var item in token.Children())
+                foreach (var item in array)
                 {
                     item.ReportUnknownFields(errors, itemType);
                 }
             }
             else if (token is JObject obj)
             {
-                foreach (var item in token.Children())
+                foreach (var prop in obj.Properties())
                 {
-                    var prop = item as JProperty;
-
                     // skip the special property
                     if (prop.Name == "$schema")
                         continue;
@@ -524,7 +538,7 @@ namespace Microsoft.Docs.Build
                 var matchingProperty = objectContract.Properties.GetClosestMatchProperty(prop.Name);
                 if (matchingProperty is null && type.IsSealed)
                 {
-                    errors.Add(Errors.UnknownField(ToSourceInfo(prop), prop.Name, type.Name));
+                    errors.Add(Errors.UnknownField(GetSourceInfo(prop), prop.Name, type.Name));
                 }
                 return matchingProperty?.PropertyType;
             }
