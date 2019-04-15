@@ -71,6 +71,67 @@ outputs:
   .publish.json:
   xrefmap.json:
 ---
+# Raw model generated for template
+repos:
+  https://docs.com/rawModel:
+  - files:
+      docfx.yml: |
+        theme: https://docs.com/template
+        redirections:
+          a.md: /b
+      c.md: |
+        ---
+        api_name:
+          - "API Name"
+        ms.author: yufeih
+        ---
+        # Title
+        [d](d.png)
+      d.png:
+      TOC.md: |
+        # [c](c.md)
+  https://docs.com/template:
+  - files:
+      readme.md:
+outputs:
+  c.json:
+  d.png:
+  toc.json:
+  .publish.json: |
+    {"files": [
+      {"url": "/a"}, 
+      {
+        "url": "/c",
+        "locale": "en-us",
+        "api_name": ["API Name"],
+        "ms.author": "yufeih",
+        "depot_name": ".",
+        "site_name": "Docs",
+        "__global": {},
+        "conceptual": "<p><a href=\"d.png\">d</a></p>\n",
+        "_path": "c.json",
+        "toc_rel": "toc.json",
+        "word_count": 2,
+        "wordCount": 2,
+       "title": "Title",
+        "rawTitle": "<h1 id=\"title\">Title</h1>",
+        "_op_canonicalUrlPrefix": "https://docs.com/en-us/./",
+        "layout": "Conceptual",
+        "document_id": "fdb5a0d7-b68e-c465-9c5e-54a5cda94902",
+        "document_version_independent_id": "92a5a770-f05f-b8bb-81c9-a8d786a9e608",
+        "_op_gitContributorInformation": {
+          "contributors": [],
+          "author": {
+            "display_name": "docfx",
+            "id": "docfx@microsoft.com",
+            "profile_url": null
+          }
+        },
+      },
+      {"url": "/d.png"}, 
+      { "url": "/toc.json"}]
+    }
+---
 # Resolve link for landing page
 inputs:
   docfx.yml:

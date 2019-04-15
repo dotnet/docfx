@@ -104,19 +104,20 @@ namespace Microsoft.Docs.Build
             return new TemplateEngine(themePath, docset.Locale);
         }
 
-        public string Render(PageModel model, Document file)
+        public string Render(PageModel model, Document file, JObject rawMetadata)
         {
             // TODO: only works for conceptual
             var content = model.Content.ToString();
-            var (templateModel, metadata) = Transform(model, file);
+            rawMetadata = TransformPageMetadata(rawMetadata, model);
+            var metadata = CreateMetadata(rawMetadata);
 
-            var layout = templateModel.RawMetadata.Value<string>("layout");
+            var layout = rawMetadata.Value<string>("layout");
             var themeRelativePath = PathUtility.GetRelativePathToFile(file.SitePath, "_themes");
 
             var liquidModel = new JObject
             {
                 ["content"] = content,
-                ["page"] = templateModel.RawMetadata,
+                ["page"] = rawMetadata,
                 ["metadata"] = metadata,
                 ["theme_rel"] = themeRelativePath,
             };
@@ -124,9 +125,9 @@ namespace Microsoft.Docs.Build
             return _liquid.Render(layout, liquidModel);
         }
 
-        public (TemplateModel model, JObject metadata) Transform(PageModel pageModel, Document file)
+        public (TemplateModel model, JObject metadata) Transform(PageModel pageModel, JObject rawMetadata)
         {
-            var rawMetadata = CreateRawMetadata(pageModel, file);
+            rawMetadata = TransformPageMetadata(rawMetadata, pageModel);
             var metadata = CreateMetadata(rawMetadata);
             var pageMetadata = CreateHtmlMetaTags(metadata);
 
@@ -139,11 +140,6 @@ namespace Microsoft.Docs.Build
             };
 
             return (model, metadata);
-        }
-
-        public JObject TransformMetadata(string scriptPath, JObject model)
-        {
-            return JObject.Parse(((JObject)_js.Run(scriptPath, "transform", model)).Value<string>("content"));
         }
 
         public void CopyTo(string outputPath)
@@ -168,13 +164,7 @@ namespace Microsoft.Docs.Build
             return Global[key]?.ToString();
         }
 
-        private JObject LoadGlobalTokens(string templateDir, string locale)
-        {
-            var path = Path.Combine(templateDir, $"LocalizedTokens/docs({locale}).html/tokens.json");
-            return File.Exists(path) ? JObject.Parse(File.ReadAllText(path)) : new JObject();
-        }
-
-        private JObject CreateRawMetadata(PageModel pageModel, Document file)
+        public JObject CreateRawMetadata(PageModel pageModel, Document file)
         {
             var docset = file.Docset;
             var rawMetadata = pageModel.Metadata != null ? JsonUtility.ToJObject(pageModel.Metadata) : new JObject();
@@ -253,9 +243,28 @@ namespace Microsoft.Docs.Build
             if (!string.IsNullOrEmpty(pageModel.OriginalContentGitUrlTemplate))
                 rawMetadata["original_content_git_url_template"] = pageModel.OriginalContentGitUrlTemplate;
 
+            return rawMetadata;
+        }
+
+        public JObject TransformTocMetadata(object model)
+            => TransformMetadata("toc.json.js", JsonUtility.ToJObject(model));
+
+        private JObject TransformPageMetadata(JObject rawMetadata, PageModel pageModel)
+        {
             return RemoveUpdatedAtDateTime(
                 TransformSchema(
                     TransformMetadata("Conceptual.mta.json.js", rawMetadata), pageModel));
+        }
+
+        private JObject LoadGlobalTokens(string templateDir, string locale)
+        {
+            var path = Path.Combine(templateDir, $"LocalizedTokens/docs({locale}).html/tokens.json");
+            return File.Exists(path) ? JObject.Parse(File.ReadAllText(path)) : new JObject();
+        }
+
+        private JObject TransformMetadata(string scriptPath, JObject model)
+        {
+            return JObject.Parse(((JObject)_js.Run(scriptPath, "transform", model)).Value<string>("content"));
         }
 
         private static JObject TransformSchema(JObject metadata, PageModel model)
