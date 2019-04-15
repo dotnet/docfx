@@ -113,7 +113,7 @@ outputs:
         "toc_rel": "toc.json",
         "word_count": 2,
         "wordCount": 2,
-       "title": "Title",
+        "title": "Title",
         "rawTitle": "<h1 id=\"title\">Title</h1>",
         "_op_canonicalUrlPrefix": "https://docs.com/en-us/./",
         "layout": "Conceptual",
