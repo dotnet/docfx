@@ -47,6 +47,9 @@ namespace Microsoft.Docs.Build
 
         private static readonly ThreadLocal<Stack<Status>> t_status = new ThreadLocal<Stack<Status>>(() => new Stack<Status>());
 
+        private static readonly Action<JToken, int, int> s_setLineInfo =
+           ReflectionUtility.CreateInstanceMethod<JToken, Action<JToken, int, int>>("SetLineInfo", new[] { typeof(int), typeof(int) });
+
         internal static JsonSerializer Serializer => s_serializer;
 
         internal static Status State => t_status.Value.Peek();
