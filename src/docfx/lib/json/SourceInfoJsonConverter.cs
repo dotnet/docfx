@@ -15,17 +15,20 @@ namespace Microsoft.Docs.Build
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            var range = JsonUtility.ToRange((IJsonLineInfo)reader);
+            var source = JsonUtility.ToSourceInfo((IJsonLineInfo)reader);
             var valueType = objectType.GenericTypeArguments[0];
             var value = serializer.Deserialize(reader, valueType);
 
+            if (value is null)
+                return null;
+
             // TODO: populate file info
-            return Activator.CreateInstance(objectType, value, null, range);
+            return Activator.CreateInstance(objectType, value, source);
         }
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
-            serializer.Serialize(writer, ((ISourceInfo)value)?.Value);
+            serializer.Serialize(writer, ((SourceInfo)value)?.GetValue());
         }
     }
 }

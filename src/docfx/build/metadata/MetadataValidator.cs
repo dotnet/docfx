@@ -27,7 +27,7 @@ namespace Microsoft.Docs.Build
                 var lineInfo = token as IJsonLineInfo;
                 if (s_reservedNames.Contains(key))
                 {
-                    errors.Add(Errors.ReservedMetadata(new Range(lineInfo?.LineNumber ?? 0, lineInfo?.LinePosition ?? 0), key, token.Path));
+                    errors.Add(Errors.ReservedMetadata(new SourceInfo(null, lineInfo?.LineNumber ?? 0, lineInfo?.LinePosition ?? 0), key, token.Path));
                 }
                 else
                 {
@@ -43,7 +43,7 @@ namespace Microsoft.Docs.Build
                         if (!type.Value.IsInstanceOfType(value))
                         {
                             errors.Add(Errors.ViolateSchema(
-                                new Range(nestedLineInfo?.LineNumber ?? 0, nestedLineInfo?.LinePosition ?? 0),
+                                new SourceInfo(null, nestedLineInfo?.LineNumber ?? 0, nestedLineInfo?.LinePosition ?? 0),
                                 $"Expected type {type.Value.Name}, please input string or type compatible with {type.Value.Name}."));
                         }
                     }
@@ -63,7 +63,7 @@ namespace Microsoft.Docs.Build
             {
                 if (s_reservedNames.Contains(key))
                 {
-                    errors.Add(Errors.ReservedMetadata(JsonUtility.ToRange(token), key, token.Path));
+                    errors.Add(Errors.ReservedMetadata(JsonUtility.ToSourceInfo(token), key, token.Path));
                 }
             }
 
@@ -77,7 +77,18 @@ namespace Microsoft.Docs.Build
 
         private static HashSet<string> GetReservedMetadata()
         {
-            var blackList = new HashSet<string>(JsonUtility.GetPropertyNames(typeof(PageModel)));
+            var legacyBlackList = new[]
+            {
+                "content_type", "document_id", "ms.documentid", "internal_document_id", "locale", "ms.contentlang", "ms.locale", "product_family", "product_version",
+                "search.ms_sitename", "search.ms_product", "search.ms_docsetname", "updated_at", "ms.publishtime", "toc_asset_id", "original_content_git_url", "ms.giturl",
+                "original_ref_skeleton_git_url", "ms.gitsourceurl", "toc_rel", "site_name", "ms.sitename", "area", "theme", "theme_branch", "theme_url", "is_active",
+                "gitcommit", "ms.gitcommit", "ref_skeleton_gitcommit", "ms.gitsourcecommit", "Product", "TopicType", "APIType", "APILocation", "APIName", "APIExtraInfo",
+                "TargetOS", "sitemap_priority", "AmbientContext", "MN", "ms.auth", "ms.lang", "ms.loc", "ms.prodver", "ms.puidhash", "ms.contentsource", "depot_name",
+                "ms.depotname", "pagetype", "ms.opspagetype", "word_count", "content_uri", "publish_version", "canonical_url", "relative_path_to_theme_resources",
+                "is_dynamic_rendering", "need_preview_pull_request", "moniker_type", "is_significant_update", "document_version_independent_id", "serviceData", "is_hidden",
+            };
+
+            var blackList = new HashSet<string>(JsonUtility.GetPropertyNames(typeof(PageModel)).Concat(legacyBlackList));
 
             foreach (var name in JsonUtility.GetPropertyNames(typeof(FileMetadata)))
             {

@@ -136,7 +136,8 @@ namespace Microsoft.Docs.Build
                 {
                     foreach (var (error, file) in context.BookmarkValidator.Validate())
                     {
-                        if (context.Report.Write(error))
+                        // TODO: clean up Report.Write inputting file, should take file from Error
+                        if (context.Report.Write(file.FilePath, new List<Error> { error }))
                         {
                             context.PublishModelBuilder.MarkError(file);
                         }
@@ -202,7 +203,7 @@ namespace Microsoft.Docs.Build
 
             var (errors, config) = ConfigLoader.TryLoad(docset, commandLineOptions);
 
-            var dependencyLock = DependencyLock.Load(docset, string.IsNullOrEmpty(config.DependencyLock) ? AppData.GetDependencyLockFile(docset, locale) : config.DependencyLock);
+            var dependencyLock = DependencyLock.Load(docset, string.IsNullOrEmpty(config.DependencyLock) ? new SourceInfo<string>(AppData.GetDependencyLockFile(docset, locale)) : config.DependencyLock);
 
             if (LocalizationUtility.TryGetSourceRepository(repository, out var sourceRemote, out var sourceBranch, out _) && !ConfigLoader.TryGetConfigPath(docset, out _))
             {

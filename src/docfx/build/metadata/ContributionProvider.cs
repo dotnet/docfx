@@ -99,7 +99,7 @@ namespace Microsoft.Docs.Build
                     {
                         // Remove author from contributors if author name is specified
                         var (error, result) = await _gitHubUserCache.GetByLogin(authorName);
-                        errors.AddIfNotNull(error?.WithRange(authorName?.Range ?? default));
+                        errors.AddIfNotNull(error?.WithSourceInfo(authorName));
                         return result?.ToContributor();
                     }
                 }

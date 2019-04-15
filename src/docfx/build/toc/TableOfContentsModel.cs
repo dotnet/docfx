@@ -3,14 +3,19 @@
 
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
-    public sealed class TableOfContentsModel
+    public class TableOfContentsModel
     {
         public TableOfContentsMetadata Metadata { get; set; } = new TableOfContentsMetadata();
 
         [MinLength(1)]
         public List<TableOfContentsItem> Items { get; set; } = new List<TableOfContentsItem>();
+
+        [JsonExtensionData(WriteData = false)]
+        public JObject ExtensionData { get; set; }
     }
 }

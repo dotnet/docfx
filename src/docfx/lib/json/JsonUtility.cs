@@ -164,8 +164,8 @@ namespace Microsoft.Docs.Build
                 }
                 catch (JsonReaderException ex)
                 {
-                    var (range, message) = ParseException(ex);
-                    throw Errors.JsonSyntaxError(range, message).ToException(ex);
+                    var (source, message) = ParseException(ex);
+                    throw Errors.JsonSyntaxError(source, message).ToException(ex);
                 }
             }
         }
@@ -190,7 +190,7 @@ namespace Microsoft.Docs.Build
         public static (List<Error>, object) ToObject(
             JToken token,
             Type type,
-            Func<IEnumerable<DataTypeAttribute>, object, string, object> transform = null)
+            Func<IEnumerable<DataTypeAttribute>, SourceInfo<object>, string, object> transform = null)
         {
             try
             {
@@ -220,6 +220,7 @@ namespace Microsoft.Docs.Build
         /// Parse a string to JToken.
         /// Validate null value during the process.
         /// </summary>
+        // TODO: Pass in file to be filled into SourceInfo
         public static (List<Error>, JToken) Parse(string json)
         {
             try
@@ -229,13 +230,16 @@ namespace Microsoft.Docs.Build
             }
             catch (JsonReaderException ex)
             {
-                var (range, message) = ParseException(ex);
-                throw Errors.JsonSyntaxError(range, message).ToException(ex);
+                var (source, message) = ParseException(ex);
+                throw Errors.JsonSyntaxError(source, message).ToException(ex);
             }
         }
 
         public static void Merge(JObject container, JObject overwrite)
         {
+            if (overwrite is null)
+                return;
+
             foreach (var property in overwrite.Properties())
             {
                 var key = property.Name;
@@ -249,9 +253,43 @@ namespace Microsoft.Docs.Build
                 {
                     var valueLineInfo = (IJsonLineInfo)value;
                     var keyLineInfo = (IJsonLineInfo)property;
-                    container[key] = SetLineInfo(value.DeepClone(), valueLineInfo.LineNumber, valueLineInfo.LinePosition);
+                    container[key] = SetLineInfo(DeepClone(value), valueLineInfo.LineNumber, valueLineInfo.LinePosition);
                     SetLineInfo(container.Property(key), keyLineInfo.LineNumber, keyLineInfo.LinePosition);
                 }
+            }
+
+            JToken DeepClone(JToken token)
+            {
+                var lineInfo = (IJsonLineInfo)token;
+                if (token is JValue v)
+                {
+                    var result = new JValue(v);
+                    SetLineInfo(result, lineInfo.LineNumber, lineInfo.LinePosition);
+                    return result;
+                }
+                else if (token is JObject obj)
+                {
+                    var result = new JObject();
+                    foreach (var prop in obj.Properties())
+                    {
+                        var value = DeepClone(prop.Value);
+                        SetLineInfo(value, lineInfo.LineNumber, lineInfo.LinePosition);
+                        result[prop.Name] = value;
+                    }
+                    return result;
+                }
+                else if (token is JArray array)
+                {
+                    var result = new JArray();
+                    foreach (var item in array)
+                    {
+                        var value = DeepClone(item);
+                        SetLineInfo(value, lineInfo.LineNumber, lineInfo.LinePosition);
+                        result.Add(value);
+                    }
+                    return result;
+                }
+                return default;
             }
         }
 
@@ -296,13 +334,13 @@ namespace Microsoft.Docs.Build
             foreach (var node in nullNodes)
             {
                 var (lineInfo, name) = Parse(node);
-                errors.Add(Errors.NullValue(ToRange(node), name));
+                errors.Add(Errors.NullValue(ToSourceInfo(node), name));
             }
 
             foreach (var node in nullArrayNodes)
             {
                 var (lineInfo, name) = Parse(node);
-                errors.Add(Errors.NullArrayValue(new Range(lineInfo.LineNumber, lineInfo.LinePosition), name));
+                errors.Add(Errors.NullArrayValue(new SourceInfo(null, lineInfo.LineNumber, lineInfo.LinePosition), name));
                 node.Remove();
             }
 
@@ -333,9 +371,9 @@ namespace Microsoft.Docs.Build
             return false;
         }
 
-        public static Range ToRange(IJsonLineInfo lineInfo)
+        public static SourceInfo ToSourceInfo(IJsonLineInfo lineInfo)
         {
-            return lineInfo != null && lineInfo.HasLineInfo() ? new Range(lineInfo.LineNumber, lineInfo.LinePosition) : default;
+            return lineInfo != null && lineInfo.HasLineInfo() ? new SourceInfo(null, lineInfo.LineNumber, lineInfo.LinePosition) : default;
         }
 
         internal static JToken SetLineInfo(JToken token, int line, int column)
@@ -351,21 +389,21 @@ namespace Microsoft.Docs.Build
             {
                 if (args.ErrorContext.Error is JsonReaderException || args.ErrorContext.Error is JsonSerializationException jse)
                 {
-                    var (range, message) = ParseException(args.ErrorContext.Error);
-                    t_status.Value.Peek().Errors.Add(Errors.ViolateSchema(range, message));
+                    var (source, message) = ParseException(args.ErrorContext.Error);
+                    t_status.Value.Peek().Errors.Add(Errors.ViolateSchema(source, message));
                     args.ErrorContext.Handled = true;
                 }
             }
         }
 
-        private static (Range, string message) ParseException(Exception ex)
+        private static (SourceInfo, string message) ParseException(Exception ex)
         {
             // TODO: Json.NET type conversion error message is developer friendly but not writer friendly.
             var match = Regex.Match(ex.Message, "^([\\s\\S]*)\\sPath '(.*)', line (\\d+), position (\\d+).$");
             if (match.Success)
             {
-                var range = new Range(int.Parse(match.Groups[3].Value), int.Parse(match.Groups[4].Value));
-                return (range, RewriteErrorMessage(match.Groups[1].Value));
+                var source = new SourceInfo(null, int.Parse(match.Groups[3].Value), int.Parse(match.Groups[4].Value));
+                return (source, RewriteErrorMessage(match.Groups[1].Value));
             }
 
             match = Regex.Match(ex.Message, "^([\\s\\S]*)\\sPath '(.*)'.$");
@@ -486,7 +524,7 @@ namespace Microsoft.Docs.Build
                 var matchingProperty = objectContract.Properties.GetClosestMatchProperty(prop.Name);
                 if (matchingProperty is null && type.IsSealed)
                 {
-                    errors.Add(Errors.UnknownField(ToRange(prop), prop.Name, type.Name));
+                    errors.Add(Errors.UnknownField(ToSourceInfo(prop), prop.Name, type.Name));
                 }
                 return matchingProperty?.PropertyType;
             }
@@ -514,7 +552,7 @@ namespace Microsoft.Docs.Build
         {
             public List<Error> Errors { get; set; }
 
-            public Func<IEnumerable<DataTypeAttribute>, object, string, object> Transform { get; set; }
+            public Func<IEnumerable<DataTypeAttribute>, SourceInfo<object>, string, object> Transform { get; set; }
         }
     }
 }

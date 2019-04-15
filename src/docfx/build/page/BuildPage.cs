@@ -24,10 +24,9 @@ namespace Microsoft.Docs.Build
 
             if (!string.IsNullOrEmpty(metadata.BreadcrumbPath))
             {
-                // there is no bookmark validation for breadcrumb path, so no need of range here
-                var (breadcrumbError, breadcrumbPath, _) = context.DependencyResolver.ResolveLink(metadata.BreadcrumbPath, file, file, buildChild, default);
+                var (breadcrumbError, breadcrumbPath, _) = context.DependencyResolver.ResolveLink(metadata.BreadcrumbPath, file, file, buildChild);
                 errors.AddIfNotNull(breadcrumbError);
-                metadata.BreadcrumbPath = breadcrumbPath;
+                metadata.BreadcrumbPath.Value = breadcrumbPath;
             }
 
             model.SchemaType = schema.Name;
@@ -173,18 +172,28 @@ namespace Microsoft.Docs.Build
                 throw Errors.SchemaNotFound(file.Mime).ToException();
             }
 
+            // todo: why not directly use strong model here?
             var (schemaViolationErrors, content) = JsonUtility.ToObject(token, schema.Type, transform: AttributeTransformer.TransformSDP(context, file, buildChild));
             errors.AddRange(schemaViolationErrors);
+
+            // TODO: add check before to avoid case failure
+            var yamlHeader = obj?.Value<JObject>("metadata") ?? new JObject();
+            if (file.Docset.Legacy && schema.Type == typeof(LandingData))
+            {
+                // merge extension data to metadata in legacy model
+                var landingData = (LandingData)content;
+                var mergedMetadata = new JObject();
+                JsonUtility.Merge(mergedMetadata, landingData.ExtensionData);
+                JsonUtility.Merge(mergedMetadata, yamlHeader);
+                yamlHeader = mergedMetadata;
+            }
+            var title = yamlHeader.Value<string>("title") ?? obj?.Value<string>("title");
 
             if (file.Docset.Legacy && schema.Attribute is PageSchemaAttribute)
             {
                 var html = await RazorTemplate.Render(schema.Name, content);
                 content = HtmlPostProcess(file, HtmlUtility.LoadHtml(html));
             }
-
-            // TODO: add check before to avoid case failure
-            var yamlHeader = obj?.Value<JObject>("metadata") ?? new JObject();
-            var title = yamlHeader.Value<string>("title") ?? obj?.Value<string>("title");
 
             var (metaErrors, fileMetadata) = context.MetadataProvider.GetMetadata<FileMetadata>(file, yamlHeader);
             errors.AddRange(metaErrors);

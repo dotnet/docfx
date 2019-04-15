@@ -339,12 +339,14 @@ inputs:
     [link to title 3](#title-3)
     [link to html title](#html-title)
     [link to yaml](c.yml#no-such-bookmark) does not warn, only validate against markdown files
+    [link to title 2 again](####title-2)
     ## title 2
     <h2 id="html-title">title</h2>
     [!include[](d.md)]
   docs/b.md: |
     [link to title 2](a.md#title-2)
     [link to title 3](a.md#title-3)
+    [link to title 2 again](a.md##title-2)
   docs/c.yml: |
     #YamlMime:LandingData
     title: test

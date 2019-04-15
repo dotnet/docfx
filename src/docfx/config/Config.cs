@@ -87,7 +87,7 @@ namespace Microsoft.Docs.Build
         /// Gets the map from resolve alias to relative path relatived to `docfx.yml` file
         /// Default will be `~: .`
         /// </summary>
-        public readonly Dictionary<string, string> ResolveAlias = new Dictionary<string, string>(PathUtility.PathComparer) { { "~",  "." } };
+        public readonly Dictionary<string, string> ResolveAlias = new Dictionary<string, string>(PathUtility.PathComparer) { { "~", "." } };
 
         /// <summary>
         /// Gets the redirection mappings
@@ -132,7 +132,7 @@ namespace Microsoft.Docs.Build
         /// The addresses of xref map files, used for resolving xref.
         /// They should be absolute url or relative path
         /// </summary>
-        public readonly string[] Xref = Array.Empty<string>();
+        public readonly SourceInfo<string>[] Xref = Array.Empty<SourceInfo<string>>();
 
         /// <summary>
         /// The configurations for localization build
@@ -148,7 +148,7 @@ namespace Microsoft.Docs.Build
         /// Get the definition of monikers
         /// It should be absolute url or relative path
         /// </summary>
-        public readonly string MonikerDefinition = string.Empty;
+        public readonly SourceInfo<string> MonikerDefinition = new SourceInfo<string>(string.Empty);
 
         /// <summary>
         /// Get the theme repo url like https://github.com/docs/theme#master
@@ -160,7 +160,7 @@ namespace Microsoft.Docs.Build
         /// Gets the dependency lock file path
         /// It should be absolute url or absolute/relative path
         /// </summary>
-        public readonly string DependencyLock = string.Empty;
+        public readonly SourceInfo<string> DependencyLock = new SourceInfo<string>(string.Empty);
 
         /// <summary>
         /// Gets the config file name.
