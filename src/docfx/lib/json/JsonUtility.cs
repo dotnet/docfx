@@ -316,34 +316,57 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Report warnings for all null or undefined nodes, remove nulls inside arrays.
         /// </summary>
-        public static (List<Error>, JToken) RemoveNulls(this JToken token)
+        public static (List<Error>, JToken) RemoveNulls(this JToken root)
         {
             var errors = new List<Error>();
-            var nullNodes = new List<JToken>();
-            var nullArrayNodes = new List<JToken>();
+            var nullNodes = new List<(JToken, string)>();
+            var nullArrayNodes = new List<(JToken, string)>();
 
-            RemoveNullsCore(token, errors, nullNodes, nullArrayNodes);
+            RemoveNullsCore(root, null);
 
-            foreach (var node in nullNodes)
+            foreach (var (node, name) in nullNodes)
             {
-                var (lineInfo, name) = Parse(node);
                 errors.Add(Errors.NullValue(GetSourceInfo(node), name));
             }
 
-            foreach (var node in nullArrayNodes)
+            foreach (var (node, name) in nullArrayNodes)
             {
-                var (lineInfo, name) = Parse(node);
-                errors.Add(Errors.NullArrayValue(new SourceInfo(null, lineInfo.LineNumber, lineInfo.LinePosition), name));
+                errors.Add(Errors.NullArrayValue(GetSourceInfo(node), name));
                 node.Remove();
             }
 
-            return (errors, token);
+            return (errors, root);
 
-            (IJsonLineInfo lineInfo, string name) Parse(JToken node)
+            void RemoveNullsCore(JToken token, string name)
             {
-                var lineInfo = (IJsonLineInfo)node;
-                var name = node is JProperty prop ? prop.Name : (node.Parent?.Parent is JProperty p ? p.Name : node.Path);
-                return (lineInfo, name);
+                if (token is JArray array)
+                {
+                    foreach (var item in array)
+                    {
+                        if (item.IsNullOrUndefined())
+                        {
+                            nullArrayNodes.Add((item, name ?? item.Path));
+                        }
+                        else
+                        {
+                            RemoveNullsCore(item, name);
+                        }
+                    }
+                }
+                else if (token is JObject obj)
+                {
+                    foreach (var prop in obj.Properties())
+                    {
+                        if (prop.Value.IsNullOrUndefined())
+                        {
+                            nullNodes.Add((prop, prop.Name));
+                        }
+                        else
+                        {
+                            RemoveNullsCore(prop.Value, prop.Name);
+                        }
+                    }
+                }
             }
         }
 
@@ -457,55 +480,20 @@ namespace Microsoft.Docs.Build
                 (token.Type == JTokenType.Undefined);
         }
 
-        private static void RemoveNullsCore(JToken token, List<Error> errors, List<JToken> nullNodes, List<JToken> nullArrayNodes)
-        {
-            if (token is JArray array)
-            {
-                foreach (var item in token.Children())
-                {
-                    if (item.IsNullOrUndefined())
-                    {
-                        nullArrayNodes.Add(item);
-                    }
-                    else
-                    {
-                        RemoveNullsCore(item, errors, nullNodes, nullArrayNodes);
-                    }
-                }
-            }
-            else if (token is JObject obj)
-            {
-                foreach (var item in token.Children())
-                {
-                    var prop = item as JProperty;
-                    if (prop.Value.IsNullOrUndefined())
-                    {
-                        nullNodes.Add(item);
-                    }
-                    else
-                    {
-                        RemoveNullsCore(prop.Value, errors, nullNodes, nullArrayNodes);
-                    }
-                }
-            }
-        }
-
         private static void ReportUnknownFields(this JToken token, List<Error> errors, Type type)
         {
             if (token is JArray array)
             {
                 var itemType = GetCollectionItemTypeIfArrayType(type);
-                foreach (var item in token.Children())
+                foreach (var item in array)
                 {
                     item.ReportUnknownFields(errors, itemType);
                 }
             }
             else if (token is JObject obj)
             {
-                foreach (var item in token.Children())
+                foreach (var prop in obj.Properties())
                 {
-                    var prop = item as JProperty;
-
                     // skip the special property
                     if (prop.Name == "$schema")
                         continue;
