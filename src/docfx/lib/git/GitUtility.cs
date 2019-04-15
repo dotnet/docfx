@@ -222,7 +222,16 @@ namespace Microsoft.Docs.Build
                 content.Contains("\n>>>>>>>") &&
                 content.Contains("\n======="))
             {
-                throw Errors.MergeConflict(file).ToException();
+                var start = content.IndexOf("<<<<<<<");
+                var line = 1;
+                for (var i = 0; i < start; i++)
+                {
+                    if (content[i] == '\n')
+                        line++;
+                }
+
+                var source = new SourceInfo(file, line, 1);
+                throw Errors.MergeConflict(source).ToException();
             }
         }
 
