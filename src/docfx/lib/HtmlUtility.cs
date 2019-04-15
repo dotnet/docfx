@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Text;
 using System.Web;
 using HtmlAgilityPack;
@@ -161,6 +162,46 @@ namespace Microsoft.Docs.Build
                 result.Append(html, pos, html.Length - pos);
             }
             return result.ToString();
+        }
+
+        public static (List<(string uid, int line, int column)>, string) TransformXrefs(string html, Func<string, (Error error, string href, string display, Document file)> transform)
+        {
+            var errors = new List<(string uid, int line, int column)>();
+
+            // Fast pass it does not have <xref> tag
+            if (!(html.Contains("<xref", StringComparison.OrdinalIgnoreCase) && html.Contains("href", StringComparison.OrdinalIgnoreCase)))
+            {
+                return (errors, html);
+            }
+
+            var doc = new HtmlDocument();
+            doc.LoadHtml(html);
+
+            var result = new StringBuilder(html.Length + 64);
+
+            foreach (var node in doc.DocumentNode.Descendants().Where(x => x.Name == "xref"))
+            {
+                var xref = node.Attributes["href"];
+                if (xref is null)
+                {
+                    continue;
+                }
+
+                var rawSource = node.GetAttributeValue("data-raw-source", null);
+                var rawHtml = node.GetAttributeValue("data-raw-html", null);
+                var raw = HttpUtility.HtmlDecode(!string.IsNullOrEmpty(rawHtml) ? rawHtml : rawSource) ?? xref.Value;
+                var (_, resolvedHref, display, _) = transform(xref.Value);
+                if (string.IsNullOrEmpty(resolvedHref))
+                {
+                    result.Append($"@{raw}");
+                }
+                else
+                {
+                    errors.Add((xref.Value, node.Line + 1, s_getValueStartIndex(xref)));
+                    result.Append($"<a href='{resolvedHref}'>{display}</a>");
+                }
+            }
+            return (errors, result.ToString());
         }
 
         /// <summary>

@@ -70,6 +70,19 @@ namespace Microsoft.Docs.Build
         }
 
         [Theory]
+        [InlineData("", "a", "a", "")]
+        [InlineData("<a href='hello'>", "a", "a", "<a href='hello'>")]
+        [InlineData("<xref href='hello'>", "a", "b", "<a href='a'>b</a>")]
+        [InlineData(@"<xref href='hello' data-raw-html='higher&amp;' data-raw-source='lower'>", "", "", @"@higher&")]
+        [InlineData(@"<xref href='hello' data-raw-source='lower&amp;'>", "", "", @"@lower&")]
+        [InlineData(@"<xref href='hello'>", "", "", @"@hello")]
+        public void TransformXrefs(string input, string xref, string display, string output)
+        {
+            var (_, result) = HtmlUtility.TransformXrefs(input, _ => (default, xref, display, default));
+            Assert.Equal(output, result);
+        }
+
+        [Theory]
         [InlineData("", 0)]
         [InlineData("a", 1)]
         [InlineData("a b", 2)]

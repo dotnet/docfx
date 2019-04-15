@@ -654,3 +654,21 @@ inputs:
 outputs:
   build.log: |
     ["error","schema-not-found","Unknown schema ''","docs/a.json"]
+---
+# support <xref href="uid"></xref>
+inputs:
+  docfx.yml:
+  docs/a.md: |
+    str <xref href="c"></xref>
+    str <xref href="d" data-raw-source="mention"></xref>
+  docs/c.md: |
+    ---
+    title: Title from yaml header c
+    uid: c
+    ---
+outputs:
+  docs/a.json: |
+    {"content":"<p>str <a href='c'>Title from yaml header c</a>\nstr @mention</p>\n"}
+  docs/c.json:
+  build.log: |
+    ["warning","uid-not-found","Cannot find uid 'c' using xref '<xref href=\"c\">'","docs/a.md",2,12]
