@@ -60,7 +60,7 @@ namespace Microsoft.Docs.Build
 
         public JObject GetPageMetadata(FileMetadata fileMetadata)
         {
-            var metadata = JsonUtility.ToJObject(fileMetadata);
+            var metadata = JsonUtility.ToJObject(fileMetadata ?? new FileMetadata());
 
             foreach (var key in _pageMetadataKeys)
             {
