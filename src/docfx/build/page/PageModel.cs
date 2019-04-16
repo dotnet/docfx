@@ -23,6 +23,7 @@ namespace Microsoft.Docs.Build
 
         public string Title { get; set; }
 
+        [JsonProperty(PropertyName = "rawTitle")]
         public string RawTitle { get; set; }
 
         public string CanonicalUrl { get; set; }

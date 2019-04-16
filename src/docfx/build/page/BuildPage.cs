@@ -229,7 +229,7 @@ namespace Microsoft.Docs.Build
 
         private static (object output, JObject extensionData) ApplyTemplate(Context context, Document file, PageModel model, bool isPage)
         {
-            var rawMetadata = context.Template is null ? JsonUtility.ToJObject(model) : context.Template.CreateRawMetadata(model, file);
+            var rawMetadata = context.Template is null ? JsonUtility.ToJObject(model.Metadata) : context.Template.CreateRawMetadata(model, file);
 
             if (!file.Docset.Config.Output.Json && context.Template != null)
             {

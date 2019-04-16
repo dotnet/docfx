@@ -167,28 +167,26 @@ namespace Microsoft.Docs.Build
         public JObject CreateRawMetadata(PageModel pageModel, Document file)
         {
             var docset = file.Docset;
-            var rawMetadata = pageModel.Metadata != null ? JsonUtility.ToJObject(pageModel.Metadata) : new JObject();
+            var rawMetadata = JsonUtility.ToJObject(pageModel);
+            JsonUtility.Merge(rawMetadata, JsonUtility.ToJObject(pageModel.Metadata ?? new FileMetadata()));
+
             rawMetadata["depot_name"] = $"{docset.Config.Product}.{docset.Config.Name}";
 
             rawMetadata["search.ms_docsetname"] = docset.Config.Name;
             rawMetadata["search.ms_product"] = docset.Config.Product;
             rawMetadata["search.ms_sitename"] = "Docs";
 
-            rawMetadata["locale"] = docset.Locale;
             rawMetadata["site_name"] = "Docs";
 
             rawMetadata["__global"] = Global;
             rawMetadata["conceptual"] = pageModel.Content as string;
+            rawMetadata.Remove("content");
 
-            var path = PathUtility.NormalizeFile(Path.GetRelativePath(file.Docset.Config.DocumentId.SiteBasePath, file.SitePath));
+            var siteBasePath = file.Docset.Config.Output.LowerCaseUrl ? file.Docset.Config.DocumentId.SiteBasePath.ToLowerInvariant() : file.Docset.Config.DocumentId.SiteBasePath;
+            var path = PathUtility.NormalizeFile(Path.GetRelativePath(siteBasePath, file.SitePath));
 
             rawMetadata["_path"] = path;
-            rawMetadata["toc_rel"] = pageModel.TocRel;
-
-            rawMetadata["wordCount"] = rawMetadata["word_count"] = pageModel.WordCount;
-
-            rawMetadata["title"] = pageModel.Title;
-            rawMetadata["rawTitle"] = pageModel.RawTitle ?? "";
+            rawMetadata["wordCount"] = pageModel.WordCount;
 
             rawMetadata["_op_canonicalUrlPrefix"] = $"{docset.Config.BaseUrl}/{docset.Locale}/{docset.Config.DocumentId.SiteBasePath}/";
 
@@ -203,14 +201,7 @@ namespace Microsoft.Docs.Build
             }
 
             rawMetadata["layout"] = rawMetadata.TryGetValue("layout", out JToken layout) ? layout : "Conceptual";
-
-            rawMetadata["document_id"] = pageModel.DocumentId;
-            rawMetadata["document_version_independent_id"] = pageModel.DocumentVersionIndependentId;
-
-            if (!string.IsNullOrEmpty(pageModel.RedirectUrl))
-            {
-                rawMetadata["redirect_url"] = pageModel.RedirectUrl;
-            }
+            rawMetadata.Remove("schema_type");
 
             if (pageModel.UpdatedAt != default)
             {
@@ -229,19 +220,13 @@ namespace Microsoft.Docs.Build
             }
             if (!string.IsNullOrEmpty(pageModel.Author?.Name))
                 rawMetadata["author"] = pageModel.Author?.Name;
+
             if (pageModel.UpdatedAt != default)
                 rawMetadata["updated_at"] = pageModel.UpdatedAt.ToString("yyyy-MM-dd hh:mm tt");
+
             if (pageModel.Bilingual)
                 rawMetadata["bilingual_type"] = "hover over";
-
-            if (!string.IsNullOrEmpty(pageModel.ContentGitUrl))
-                rawMetadata["content_git_url"] = pageModel.ContentGitUrl;
-            if (!string.IsNullOrEmpty(pageModel.Gitcommit))
-                rawMetadata["gitcommit"] = pageModel.Gitcommit;
-            if (!string.IsNullOrEmpty(pageModel.OriginalContentGitUrl))
-                rawMetadata["original_content_git_url"] = pageModel.OriginalContentGitUrl;
-            if (!string.IsNullOrEmpty(pageModel.OriginalContentGitUrlTemplate))
-                rawMetadata["original_content_git_url_template"] = pageModel.OriginalContentGitUrlTemplate;
+            rawMetadata.Remove("bilingual");
 
             return rawMetadata;
         }
@@ -310,7 +295,7 @@ namespace Microsoft.Docs.Build
 
         private static string CreateHtmlMetaTags(JObject metadata)
         {
-            var result = new StringBuilder();
+            var meta = new List<string>();
 
             foreach (var (key, value) in metadata)
             {
@@ -328,7 +313,7 @@ namespace Microsoft.Docs.Build
                     {
                         if (v is JValue)
                         {
-                            result.AppendLine($"<meta name=\"{HttpUtility.HtmlEncode(name)}\" content=\"{HttpUtility.HtmlEncode(v)}\" />");
+                            meta.Add($"<meta name=\"{HttpUtility.HtmlEncode(name)}\" content=\"{HttpUtility.HtmlEncode(v)}\" />");
                         }
                     }
                     continue;
@@ -342,7 +327,13 @@ namespace Microsoft.Docs.Build
                     content = value.ToString();
                 }
 
-                result.AppendLine($"<meta name=\"{HttpUtility.HtmlEncode(name)}\" content=\"{HttpUtility.HtmlEncode(content)}\" />");
+                meta.Add($"<meta name=\"{HttpUtility.HtmlEncode(name)}\" content=\"{HttpUtility.HtmlEncode(content)}\" />");
+            }
+
+            var result = new StringBuilder();
+            foreach (var m in meta.OrderBy(r => r))
+            {
+                result.AppendLine(m);
             }
 
             return result.ToString();

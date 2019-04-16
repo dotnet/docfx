@@ -42,23 +42,23 @@ outputs:
       "rawMetadata": { "ms.author": "yufeih", "!robots": null, "api_name": ["API Name"] },
       "themesRelativePathToOutputRoot": "_themes/",
       "pageMetadata": "
+        <meta name=\"_path\" content=\"c.json\" />
         <meta name=\"APIName\" content=\"API Name\" />
-        <meta name=\"ms.author\" content=\"yufeih\" />
+        <meta name=\"conceptual\" content=\"&lt;p&gt;&lt;a href=&quot;d.png&quot; data-linktype=&quot;relative-path&quot;&gt;d&lt;/a&gt;&lt;/p&gt;\n\" />
         <meta name=\"depot_name\" content=\".\" />
+        <meta name=\"document_id\" content=\"fdb5a0d7-b68e-c465-9c5e-54a5cda94902\" />
+        <meta name=\"document_version_independent_id\" content=\"92a5a770-f05f-b8bb-81c9-a8d786a9e608\" />
+        <meta name=\"locale\" content=\"en-us\" />
+        <meta name=\"ms.author\" content=\"yufeih\" />
+        <meta name=\"rawTitle\" content=\"\" />
         <meta name=\"search.ms_docsetname\" content=\"\" />
         <meta name=\"search.ms_product\" content=\"\" />
         <meta name=\"search.ms_sitename\" content=\"Docs\" />
-        <meta name=\"locale\" content=\"en-us\" />
         <meta name=\"site_name\" content=\"Docs\" />
-        <meta name=\"conceptual\" content=\"&lt;p&gt;&lt;a href=&quot;d.png&quot; data-linktype=&quot;relative-path&quot;&gt;d&lt;/a&gt;&lt;/p&gt;\n\" />
-        <meta name=\"_path\" content=\"c.json\" />
         <meta name=\"toc_rel\" content=\"toc.json\" />
+        <meta name=\"updated_at\" content=\"2018-10-30 12:00 AM\" />
         <meta name=\"word_count\" content=\"1\" />
-        <meta name=\"wordCount\" content=\"1\" />
-        <meta name=\"rawTitle\" content=\"\" />
-        <meta name=\"document_id\" content=\"fdb5a0d7-b68e-c465-9c5e-54a5cda94902\" />
-        <meta name=\"document_version_independent_id\" content=\"92a5a770-f05f-b8bb-81c9-a8d786a9e608\" />
-        <meta name=\"updated_at\" content=\"2018-10-30 12:00 AM\" />"
+        <meta name=\"wordCount\" content=\"1\" />"
     }
   c.mta.json: |
     { "locale": "en-us", "ms.author": "yufeih", "is_dynamic_rendering": true }
@@ -71,14 +71,19 @@ outputs:
   .publish.json:
   xrefmap.json:
 ---
-# Raw model generated for template
+# Raw metadata generated for template
+# todo: remove this test and make raw model as our page model
 repos:
-  https://docs.com/rawModel:
+  https://github.com/a/rawMetadata:
   - files:
       docfx.yml: |
-        theme: https://docs.com/template
+        theme: https://docs.com/template1
         redirections:
           a.md: /b
+        documentId:
+          siteBasePath: rawMetadata
+        routes:
+          /: rawMetadata
       c.md: |
         ---
         api_name:
@@ -90,32 +95,39 @@ repos:
       d.png:
       TOC.md: |
         # [c](c.md)
-  https://docs.com/template:
+  https://docs.com/template1:
   - files:
       readme.md:
 outputs:
-  c.json:
-  d.png:
-  toc.json:
+  rawmetadata/c.json:
+  rawmetadata/d.png:
+  rawmetadata/toc.json:
   .publish.json: |
     {"files": [
-      {"url": "/a"}, 
       {
-        "url": "/c",
-        "locale": "en-us",
+        "url": "/rawmetadata/a",
+        "redirect_url": "/b"
+      }, 
+      {
+        "url": "/rawmetadata/c",
         "api_name": ["API Name"],
         "ms.author": "yufeih",
         "depot_name": ".",
+        "search.ms_docsetname": "",
+        "search.ms_product": "",
+        "search.ms_sitename": "Docs",
+        "locale": "en-us",
         "site_name": "Docs",
-        "__global": {},
-        "conceptual": "<p><a href=\"d.png\">d</a></p>\n",
+        "__global": {
+        },
+        "conceptual": "\n<p><a href=\"d.png\">d</a></p>\n",
         "_path": "c.json",
         "toc_rel": "toc.json",
         "word_count": 2,
         "wordCount": 2,
         "title": "Title",
         "rawTitle": "<h1 id=\"title\">Title</h1>",
-        "_op_canonicalUrlPrefix": "https://docs.com/en-us/./",
+        "_op_canonicalUrlPrefix": "https://docs.com/en-us/rawMetadata/",
         "layout": "Conceptual",
         "document_id": "fdb5a0d7-b68e-c465-9c5e-54a5cda94902",
         "document_version_independent_id": "92a5a770-f05f-b8bb-81c9-a8d786a9e608",
@@ -127,9 +139,17 @@ outputs:
             "profile_url": null
           }
         },
+        "content_git_url": "https://github.com/a/rawMetadata/blob/master/c.md",
+        "gitcommit": "https://github.com/a/rawMetadata/blob/5424293396b829b4f9d4b540a3db0f60335c3eaf/c.md",
+        "original_content_git_url": "https://github.com/a/rawMetadata/blob/master/c.md",
+        "original_content_git_url_template": "{repo}/blob/{branch}/c.md"
       },
-      {"url": "/d.png"}, 
-      { "url": "/toc.json"}]
+      {
+        "url": "/rawmetadata/d.png"
+      }, 
+      {
+        "url": "/rawmetadata/toc.json"
+      }]
     }
 ---
 # Resolve link for landing page
