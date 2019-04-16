@@ -192,13 +192,17 @@ namespace Microsoft.Docs.Build
                     continue;
                 }
 
+                var logWarning = node.GetAttributeValue("data-throw-if-not-resolved", null);
                 var rawSource = node.GetAttributeValue("data-raw-source", null);
                 var rawHtml = node.GetAttributeValue("data-raw-html", null);
                 var raw = HttpUtility.HtmlDecode(!string.IsNullOrEmpty(rawHtml) ? rawHtml : rawSource) ?? xref.Value;
                 var (_, resolvedHref, display, _) = transform(xref.Value);
                 if (string.IsNullOrEmpty(resolvedHref))
                 {
-                    errors.Add((xref.Value, currentLine, s_getValueStartIndex(xref)));
+                    if (string.Compare(logWarning, "False", StringComparison.OrdinalIgnoreCase) != 0)
+                    {
+                        errors.Add((xref.Value, currentLine, s_getValueStartIndex(xref)));
+                    }
                     result.Append($"@{raw}");
                 }
                 else
