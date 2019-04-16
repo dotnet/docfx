@@ -65,7 +65,7 @@ namespace Microsoft.Docs.Build
             }
             else
             {
-                return (Errors.UidNotFound(rootFile, uid, href), null, null, null);
+                return (Errors.UidNotFound(rootFile.FilePath, uid, href), null, null, null);
             }
 
             // fallback order:

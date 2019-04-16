@@ -235,8 +235,8 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Failed to resolve uid defined by [link](xref:uid) or <xref:uid> syntax.
         /// </summary>
-        public static Error UidNotFound(Document file, string uid, SourceInfo<string> source)
-            => new Error(ErrorLevel.Warning, "uid-not-found", $"Cannot find uid '{uid}' using xref '{source}'", file.ToString(), source);
+        public static Error UidNotFound(string file, string uid, SourceInfo<string> source)
+            => new Error(ErrorLevel.Warning, "uid-not-found", $"Cannot find uid '{uid}' using xref '{source}'", file, source);
 
         /// <summary>
         /// File contains git merge conflict.
@@ -255,8 +255,8 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Failed to resolve uid defined by @ syntax.
         /// </summary>
-        public static Error AtUidNotFound(Document file, string uid, SourceInfo<string> source)
-            => new Error(ErrorLevel.Info, "at-uid-not-found", $"Cannot find uid '{uid}' using xref '{source}'", file.ToString(), source);
+        public static Error AtUidNotFound(string file, string uid, SourceInfo<string> source)
+            => new Error(ErrorLevel.Info, "at-uid-not-found", $"Cannot find uid '{uid}' using xref '{source}'", file, source);
 
         /// <summary>
         /// Files published to the same url have no monikers or share common monikers.
