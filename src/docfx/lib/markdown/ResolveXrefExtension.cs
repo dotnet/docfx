@@ -23,7 +23,7 @@ namespace Microsoft.Docs.Build
              {
                  document.Replace(node =>
                  {
-                     var file = (Document)InclusionContext.File;
+                     var file = ((Document)InclusionContext.File).FilePath;
                      if (node is XrefInline xref)
                      {
                          var (_, href, display, _) = resolveXref(xref.Href, xref);
@@ -41,37 +41,22 @@ namespace Microsoft.Docs.Build
                      }
                      else if (node is HtmlBlock block)
                      {
-                         var (errors, result) = ResolveXref(block.Lines.ToString(), block.ToSourceInfo().Line, block);
-                         LogErrors(errors, file, block.Lines.ToString());
+                         var (errors, result) = ResolveXref(block.Lines.ToString(), block.ToSourceInfo().Line, file, block);
+                         errors.ForEach(e => MarkdownUtility.LogError(e));
                          block.Lines = new StringLineGroup(result);
                      }
                      else if (node is HtmlInline inline)
                      {
-                         var (errors, result) = ResolveXref(inline.Tag, inline.ToSourceInfo().Line, inline);
-                         LogErrors(errors, file, inline.Tag);
+                         var (errors, result) = ResolveXref(inline.Tag, inline.ToSourceInfo().Line, file, inline);
+                         errors.ForEach(e => MarkdownUtility.LogError(e));
                          inline.Tag = result;
                      }
                      return node;
                  });
              });
 
-            void LogErrors(List<(string uid, int line, int column, string errorCode)> errors, Document file, string html)
-            {
-                foreach (var (uid, line, column, errorCode) in errors)
-                {
-                    if (string.Compare(errorCode, nameof(Errors.UidNotFound), StringComparison.Ordinal) == 0)
-                    {
-                        MarkdownUtility.LogError(Errors.UidNotFound(file, uid, new SourceInfo<string>(html, new SourceInfo(file.FilePath, line, column))));
-                    }
-                    else if (string.Compare(errorCode, nameof(Errors.AtUidNotFound), StringComparison.Ordinal) == 0)
-                    {
-                        MarkdownUtility.LogError(Errors.AtUidNotFound(file, uid, new SourceInfo<string>(html, new SourceInfo(file.FilePath, line, column))));
-                    }
-                }
-            }
-
-            (List<(string uid, int line, int column, string errorCode)>, string) ResolveXref(string html, int startLine, MarkdownObject block)
-                => HtmlUtility.TransformXref(html, startLine, href => MarkdownUtility.ResolveXref(href, block));
+            (List<Error>, string) ResolveXref(string html, int startLine, string file, MarkdownObject block)
+                => HtmlUtility.TransformXref(html, startLine, file, href => MarkdownUtility.ResolveXref(href, block));
         }
     }
 }

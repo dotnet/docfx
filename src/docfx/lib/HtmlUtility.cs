@@ -164,9 +164,9 @@ namespace Microsoft.Docs.Build
             return result.ToString();
         }
 
-        public static (List<(string uid, int line, int column, string errorType)>, string) TransformXref(string html, int lineNumber, Func<string, (Error error, string href, string display, Document file)> transform)
+        public static (List<Error>, string) TransformXref(string html, int lineNumber, string file, Func<string, (Error error, string href, string display, Document file)> transform)
         {
-            var errors = new List<(string uid, int line, int column, string errorType)>();
+            var errors = new List<Error>();
 
             // Fast pass it does not have <xref> tag
             if (!(html.Contains("<xref", StringComparison.OrdinalIgnoreCase) && html.Contains("href", StringComparison.OrdinalIgnoreCase)))
@@ -201,7 +201,14 @@ namespace Microsoft.Docs.Build
                 var resolvedNode = new HtmlDocument();
                 if (string.IsNullOrEmpty(resolvedHref))
                 {
-                    errors.Add((xref.Value, lineNumber, s_getValueStartIndex(xref), raw.StartsWith("@") ? nameof(Errors.AtUidNotFound) : nameof(Errors.UidNotFound)));
+                    if (raw.StartsWith("@"))
+                    {
+                        errors.Add(Errors.AtUidNotFound(file, xref.Value, new SourceInfo<string>(html, new SourceInfo(file, lineNumber, s_getValueStartIndex(xref)))));
+                    }
+                    else
+                    {
+                        errors.Add(Errors.UidNotFound(file, xref.Value, new SourceInfo<string>(html, new SourceInfo(file, lineNumber, s_getValueStartIndex(xref)))));
+                    }
                     resolvedNode.LoadHtml(raw);
                 }
                 else
