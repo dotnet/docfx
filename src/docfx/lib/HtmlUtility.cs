@@ -164,9 +164,9 @@ namespace Microsoft.Docs.Build
             return result.ToString();
         }
 
-        public static (List<(string uid, int line, int column)>, string) TransformXref(string html, int lineNumber, Func<string, (Error error, string href, string display, Document file)> transform)
+        public static (List<(string uid, int line, int column, string errorType)>, string) TransformXref(string html, int lineNumber, Func<string, (Error error, string href, string display, Document file)> transform)
         {
-            var errors = new List<(string uid, int line, int column)>();
+            var errors = new List<(string uid, int line, int column, string errorType)>();
 
             // Fast pass it does not have <xref> tag
             if (!(html.Contains("<xref", StringComparison.OrdinalIgnoreCase) && html.Contains("href", StringComparison.OrdinalIgnoreCase)))
@@ -177,6 +177,7 @@ namespace Microsoft.Docs.Build
             var doc = new HtmlDocument();
             doc.LoadHtml(html);
 
+            // TODO: get accurate line and column for HTML block lasting several lines and multiple nodes in the same line
             var replacingNodes = new List<(HtmlNode, HtmlNode)>();
             foreach (var node in doc.DocumentNode.Descendants())
             {
@@ -191,24 +192,24 @@ namespace Microsoft.Docs.Build
                     continue;
                 }
 
-                var logWarning = node.GetAttributeValue("data-throw-if-not-resolved", null);
+                // data-throw-if-not-resolved from v2 is not needed any more since we can decide if warning throw by checking raw
                 var rawSource = node.GetAttributeValue("data-raw-source", null);
                 var rawHtml = node.GetAttributeValue("data-raw-html", null);
                 var raw = HttpUtility.HtmlDecode(!string.IsNullOrEmpty(rawHtml) ? rawHtml : rawSource);
-                var (_, resolvedHref, display, _) = transform(xref.Value);
+                var (_, resolvedHref, display, _) = transform(HttpUtility.HtmlDecode(xref.Value));
 
                 var resolvedNode = new HtmlDocument();
                 if (string.IsNullOrEmpty(resolvedHref))
                 {
                     if (string.Compare(logWarning, "False", StringComparison.OrdinalIgnoreCase) != 0)
                     {
-                        errors.Add((xref.Value, lineNumber, s_getValueStartIndex(xref)));
+                        errors.Add((xref.Value, lineNumber, s_getValueStartIndex(xref), raw.StartsWith("@") ? nameof(Errors.AtUidNotFound) : nameof(Errors.UidNotFound)));
                     }
-                    resolvedNode.LoadHtml($"{raw}");
+                    resolvedNode.LoadHtml(raw);
                 }
                 else
                 {
-                    resolvedNode.LoadHtml($"<a href='{resolvedHref}'>{display}</a>");
+                    resolvedNode.LoadHtml($"<a href='{HttpUtility.HtmlEncode(resolvedHref)}'>{display}</a>");
                 }
                 replacingNodes.Add((node, resolvedNode.DocumentNode));
             }

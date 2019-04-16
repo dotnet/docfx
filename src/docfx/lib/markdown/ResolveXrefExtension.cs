@@ -39,29 +39,39 @@ namespace Microsoft.Docs.Build
                          }
                          return new LinkInline(href, null).AppendChild(new LiteralInline(display));
                      }
-                     if (node is HtmlBlock block)
+                     else if (node is HtmlBlock block)
                      {
                          var (errors, result) = ResolveXref(block.Lines.ToString(), block.ToSourceInfo().Line, block);
-                         foreach (var (uid, line, column) in errors)
-                         {
-                             MarkdownUtility.LogError(Errors.UidNotFound(file, uid, new SourceInfo<string>(block.Lines.ToString(), new SourceInfo(file.FilePath, line, column))));
-                         }
+                         LogErrors(errors, file, block.Lines.ToString());
                          block.Lines = new StringLineGroup(result);
                      }
                      else if (node is HtmlInline inline)
                      {
                          var (errors, result) = ResolveXref(inline.Tag, inline.ToSourceInfo().Line, inline);
-                         foreach (var (uid, line, column) in errors)
-                         {
-                             MarkdownUtility.LogError(Errors.UidNotFound(file, uid, new SourceInfo<string>(inline.Tag, new SourceInfo(file.FilePath, line, column))));
-                         }
+                         LogErrors(errors, file, inline.Tag);
                          inline.Tag = result;
                      }
                      return node;
                  });
              });
 
-            (List<(string uid, int line, int column)>, string) ResolveXref(string html, int startLine, MarkdownObject block)
+            void LogErrors(List<(string uid, int line, int column, string errorCode)> errors, Document file, string html)
+            {
+                foreach (var (uid, line, column, errorCode) in errors)
+                {
+                    if (string.Compare(errorCode, nameof(Errors.UidNotFound), StringComparison.Ordinal) == 0)
+                    {
+                        MarkdownUtility.LogError(Errors.UidNotFound(file, uid, new SourceInfo<string>(html, new SourceInfo(file.FilePath, line, column))));
+                    }
+                    else if (string.Compare(errorCode, nameof(Errors.AtUidNotFound), StringComparison.Ordinal) == 0)
+                    {
+                        MarkdownUtility.LogError(Errors.AtUidNotFound(file, uid, new SourceInfo<string>(html, new SourceInfo(file.FilePath, line, column))));
+                    }
+                }
+            }
+
+
+            (List<(string uid, int line, int column, string errorCode)>, string) ResolveXref(string html, int startLine, MarkdownObject block)
                 => HtmlUtility.TransformXref(html, startLine, href => MarkdownUtility.ResolveXref(href, block));
         }
     }
