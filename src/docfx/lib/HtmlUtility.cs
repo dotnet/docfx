@@ -164,7 +164,7 @@ namespace Microsoft.Docs.Build
             return result.ToString();
         }
 
-        public static (List<(string uid, int line, int column)>, string) TransformXrefs(string html, int startLine, Func<string, (Error error, string href, string display, Document file)> transform)
+        public static (List<(string uid, int line, int column)>, string) TransformXref(string html, int lineNumber, Func<string, (Error error, string href, string display, Document file)> transform)
         {
             var errors = new List<(string uid, int line, int column)>();
 
@@ -178,38 +178,35 @@ namespace Microsoft.Docs.Build
             doc.LoadHtml(html);
 
             var result = new StringBuilder(html.Length + 64);
-            var currentLine = startLine;
-            foreach (var node in doc.DocumentNode.Descendants())
+            var node = doc.DocumentNode.Descendants().Single();
+
+            if (node.Name != "xref")
             {
-                if (node.Name != "xref")
-                {
-                    continue;
-                }
+                return (errors, html);
+            }
 
-                var xref = node.Attributes["href"];
-                if (xref is null)
-                {
-                    continue;
-                }
+            var xref = node.Attributes["href"];
+            if (xref is null)
+            {
+                return (errors, html);
+            }
 
-                var logWarning = node.GetAttributeValue("data-throw-if-not-resolved", null);
-                var rawSource = node.GetAttributeValue("data-raw-source", null);
-                var rawHtml = node.GetAttributeValue("data-raw-html", null);
-                var raw = HttpUtility.HtmlDecode(!string.IsNullOrEmpty(rawHtml) ? rawHtml : rawSource);
-                var (_, resolvedHref, display, _) = transform(xref.Value);
-                if (string.IsNullOrEmpty(resolvedHref))
+            var logWarning = node.GetAttributeValue("data-throw-if-not-resolved", null);
+            var rawSource = node.GetAttributeValue("data-raw-source", null);
+            var rawHtml = node.GetAttributeValue("data-raw-html", null);
+            var raw = HttpUtility.HtmlDecode(!string.IsNullOrEmpty(rawHtml) ? rawHtml : rawSource);
+            var (_, resolvedHref, display, _) = transform(xref.Value);
+            if (string.IsNullOrEmpty(resolvedHref))
+            {
+                if (string.Compare(logWarning, "False", StringComparison.OrdinalIgnoreCase) != 0)
                 {
-                    if (string.Compare(logWarning, "False", StringComparison.OrdinalIgnoreCase) != 0)
-                    {
-                        errors.Add((xref.Value, currentLine, s_getValueStartIndex(xref)));
-                    }
-                    result.Append($"{raw}");
+                    errors.Add((xref.Value, lineNumber, s_getValueStartIndex(xref)));
                 }
-                else
-                {
-                    result.Append($"<a href='{resolvedHref}'>{display}</a>");
-                }
-                currentLine += 1;
+                result.Append($"{raw}");
+            }
+            else
+            {
+                result.Append($"<a href='{resolvedHref}'>{display}</a>");
             }
             return (errors, result.ToString());
         }

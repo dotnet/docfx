@@ -41,7 +41,7 @@ namespace Microsoft.Docs.Build
                      }
                      if (node is HtmlBlock block)
                      {
-                         var (errors, result) = ResolveXrefs(block.Lines.ToString(), block.ToSourceInfo().Line, block);
+                         var (errors, result) = ResolveXref(block.Lines.ToString(), block.ToSourceInfo().Line, block);
                          foreach (var (uid, line, column) in errors)
                          {
                              MarkdownUtility.LogError(Errors.UidNotFound(file, uid, new SourceInfo<string>(block.Lines.ToString(), new SourceInfo(file.FilePath, line, column))));
@@ -50,7 +50,7 @@ namespace Microsoft.Docs.Build
                      }
                      else if (node is HtmlInline inline)
                      {
-                         var (errors, result) = ResolveXrefs(inline.Tag, inline.ToSourceInfo().Line, inline);
+                         var (errors, result) = ResolveXref(inline.Tag, inline.ToSourceInfo().Line, inline);
                          foreach (var (uid, line, column) in errors)
                          {
                              MarkdownUtility.LogError(Errors.UidNotFound(file, uid, new SourceInfo<string>(inline.Tag, new SourceInfo(file.FilePath, line, column))));
@@ -61,8 +61,8 @@ namespace Microsoft.Docs.Build
                  });
              });
 
-            (List<(string uid, int line, int column)>, string) ResolveXrefs(string html, int startLine, MarkdownObject block)
-                => HtmlUtility.TransformXrefs(html, startLine, href => MarkdownUtility.ResolveXref(href, block));
+            (List<(string uid, int line, int column)>, string) ResolveXref(string html, int startLine, MarkdownObject block)
+                => HtmlUtility.TransformXref(html, startLine, href => MarkdownUtility.ResolveXref(href, block));
         }
     }
 }
