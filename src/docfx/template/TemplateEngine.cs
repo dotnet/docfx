@@ -167,9 +167,10 @@ namespace Microsoft.Docs.Build
         public JObject CreateRawMetadata(PageModel pageModel, Document file)
         {
             var docset = file.Docset;
-            var rawMetadata = JsonUtility.ToJObject(pageModel);
-
+            var rawMetadata = new JObject();
             JsonUtility.Merge(rawMetadata, JsonUtility.ToJObject(pageModel.Metadata ?? new FileMetadata()));
+            JsonUtility.Merge(rawMetadata, JsonUtility.ToJObject(pageModel));
+
             rawMetadata.Remove("metadata");
 
             rawMetadata["depot_name"] = $"{docset.Config.Product}.{docset.Config.Name}";
