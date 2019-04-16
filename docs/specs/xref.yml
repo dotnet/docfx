@@ -660,10 +660,10 @@ inputs:
   docfx.yml:
   docs/a.md: |
     str <xref href="c"></xref>
-    str <xref href="d" data-raw-source="mention"></xref>
-    str <xref href="d" data-raw-html="higher" data-raw-source="mention"></xref>
+    str <xref href="d" data-raw-source="@mention"></xref>
+    str <xref href="d" data-raw-html="@higher" data-raw-source="@mention"></xref>
     str <xref href="d" />
-    str <xref href="d" data-throw-if-not-resolved="False" data-raw-html="higher" data-raw-source="mention"></xref>
+    str <xref href="d" data-throw-if-not-resolved="False" data-raw-html="@higher" data-raw-source="@mention"></xref>
   docs/c.md: |
     ---
     title: Title from yaml header c
@@ -674,6 +674,6 @@ outputs:
     {"content" : "<p>str <a href='c'>Title from yaml header c</a>\nstr @mention\nstr @higher\nstr @d\nstr @higher</p>\n"}
   docs/c.json:
   build.log: |
-    ["warning","uid-not-found","Cannot find uid 'd' using xref '<xref href=\"d\" data-raw-source=\"mention\">'","docs/a.md",2,12]
-    ["warning","uid-not-found","Cannot find uid 'd' using xref '<xref href=\"d\" data-raw-html=\"higher\" data-raw-source=\"mention\">'","docs/a.md",3,12]
+    ["warning","uid-not-found","Cannot find uid 'd' using xref '<xref href=\"d\" data-raw-source=\"@mention\">'","docs/a.md",2,12]
+    ["warning","uid-not-found","Cannot find uid 'd' using xref '<xref href=\"d\" data-raw-html=\"@higher\" data-raw-source=\"@mention\">'","docs/a.md",3,12]
     ["warning","uid-not-found","Cannot find uid 'd' using xref '<xref href=\"d\" />'","docs/a.md",4,12]
