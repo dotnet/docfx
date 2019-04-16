@@ -37,7 +37,7 @@ namespace Microsoft.Docs.Build
         public (List<Error> errors, List<string> monikers) GetFileLevelMonikers(Document file, MetadataProvider metadataProvider)
         {
             var errors = new List<Error>();
-            var (metaErrors, metadata) = metadataProvider.GetMetadata<FileMetadata>(file, null);
+            var (metaErrors, metadata) = metadataProvider.GetMetadata(file, null);
             errors.AddRange(metaErrors);
 
             var (monikerError, monikers) = GetFileLevelMonikers(file, metadata.MonikerRange);
