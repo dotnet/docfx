@@ -195,7 +195,7 @@ namespace Microsoft.Docs.Build
                 var logWarning = node.GetAttributeValue("data-throw-if-not-resolved", null);
                 var rawSource = node.GetAttributeValue("data-raw-source", null);
                 var rawHtml = node.GetAttributeValue("data-raw-html", null);
-                var raw = HttpUtility.HtmlDecode(!string.IsNullOrEmpty(rawHtml) ? rawHtml : rawSource) ?? $"@{xref.Value}";
+                var raw = HttpUtility.HtmlDecode(!string.IsNullOrEmpty(rawHtml) ? rawHtml : rawSource);
                 var (_, resolvedHref, display, _) = transform(xref.Value);
                 if (string.IsNullOrEmpty(resolvedHref))
                 {
