@@ -184,7 +184,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
             if (_files.TryGetValue(FileType.ProjectJsonProject, out var pjp))
             {
-                Logger.LogWarning("DocFX will no long support project.json after 5/31/2019. Please move to MSBuild/csproj format. See: https://github.com/dotnet/docfx/issues/4354");
+                Logger.LogWarning("DocFX will no longer support project.json after 5/31/2019. Please move to MSBuild/csproj format. See: https://github.com/dotnet/docfx/issues/4354");
                 await pjp.Select(s => s.NormalizedPath).ForEachInParallelAsync(path =>
                 {
                     projectCache.GetOrAdd(path, s => new RoslynProject(GetProjectJsonProject(s)));
