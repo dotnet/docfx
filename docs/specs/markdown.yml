@@ -342,9 +342,11 @@ inputs:
     ## title 2
     <h2 id="html-title">title</h2>
     [!include[](d.md)]
+    <a id="##special-chars"></a>### title with custom id
   docs/b.md: |
     [link to title 2](a.md#title-2)
     [link to title 3](a.md#title-3)
+    [link to title with custom id](a.md###special-chars)
   docs/c.yml: |
     #YamlMime:LandingData
     title: test
