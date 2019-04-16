@@ -42,8 +42,7 @@ outputs:
     {
       "content": "<p>hello</p>\n",
       "rawTitle": "<h1 id=\"title-from-h1\">Title from H1</h1>",
-      "title": "title from yaml header",
-      "metadata": { "title": "title from yaml header" }
+      "title": "title from yaml header"
     }
 ---
 # extract rawTitle from h1 to h3
@@ -289,7 +288,7 @@ outputs:
       "content": "<p>body</p>",
       "title": "This is a title &",
       "rawTitle": "<h1 id=\"this-is-a-title-\">This is <em>a</em> title &amp;</h1>",
-      "metadata": { "metaKey": "metaValue" }
+      "metaKey": "metaValue"
     }
 ---
 # Errors from one file does not affect another file

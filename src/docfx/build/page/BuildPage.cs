@@ -31,7 +31,7 @@ namespace Microsoft.Docs.Build
 
             model.SchemaType = schema.Name;
             model.Locale = file.Docset.Locale;
-            model.Metadata = metadata;
+            model.Metadata = JsonUtility.ToJObject(metadata);
             model.TocRel = tocMap.FindTocRelativePath(file);
             model.CanonicalUrl = file.CanonicalUrl;
             model.Bilingual = file.Docset.Config.Localization.Bilingual;
@@ -40,7 +40,7 @@ namespace Microsoft.Docs.Build
             (model.ContentGitUrl, model.OriginalContentGitUrl, model.OriginalContentGitUrlTemplate, model.Gitcommit) = context.ContributionProvider.GetGitUrls(file);
 
             List<Error> contributorErrors;
-            (contributorErrors, model.Author, model.Contributors, model.UpdatedAt) = await context.ContributionProvider.GetAuthorAndContributors(file, metadata.Author);
+            (contributorErrors, model.AuthorInfo, model.Contributors, model.UpdatedAt) = await context.ContributionProvider.GetAuthorAndContributors(file, metadata.Author);
             if (contributorErrors != null)
                 errors.AddRange(contributorErrors);
 
@@ -229,7 +229,7 @@ namespace Microsoft.Docs.Build
 
         private static (object output, JObject extensionData) ApplyTemplate(Context context, Document file, PageModel model, bool isPage)
         {
-            var rawMetadata = context.Template is null ? JsonUtility.ToJObject(model.Metadata) : context.Template.CreateRawMetadata(model, file);
+            var rawMetadata = context.Template is null ? model.Metadata : context.Template.CreateRawMetadata(model, file);
 
             if (!file.Docset.Config.Output.Json && context.Template != null)
             {

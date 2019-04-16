@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 
 namespace Microsoft.Docs.Build
@@ -34,7 +35,7 @@ namespace Microsoft.Docs.Build
 
         public string DocumentVersionIndependentId { get; set; }
 
-        public Contributor Author { get; set; }
+        public Contributor AuthorInfo { get; set; }
 
         public List<Contributor> Contributors { get; set; }
 
@@ -48,10 +49,11 @@ namespace Microsoft.Docs.Build
 
         public string Gitcommit { get; set; }
 
-        public FileMetadata Metadata { get; set; }
-
         public bool Bilingual { get; set; }
 
         public List<string> Monikers { get; set; }
+
+        [JsonExtensionData]
+        public JObject Metadata { get; set; }
     }
 }
