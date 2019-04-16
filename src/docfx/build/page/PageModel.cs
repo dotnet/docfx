@@ -35,7 +35,7 @@ namespace Microsoft.Docs.Build
 
         public string DocumentVersionIndependentId { get; set; }
 
-        public Contributor AuthorInfo { get; set; }
+        public Contributor Author { get; set; }
 
         public List<Contributor> Contributors { get; set; }
 

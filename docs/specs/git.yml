@@ -30,7 +30,7 @@ inputs:
 outputs:
   docs/index.json: |
     {
-      "author_info": 
+      "author": 
         { "name": "charlie", "profile_url": "https://github.com/charlie", "display_name": "Charlie", "id": "3" },
       "contributors": [
         { "name": "bob", "profile_url": "https://github.com/bob", "display_name": "Bob", "id": "2" },
@@ -82,7 +82,7 @@ inputs:
 outputs:
   docs/index.json: |
     {
-      "author_info": 
+      "author": 
         { "name": "charlie", "profile_url": "https://github.com/charlie", "display_name": "Charlie", "id": "3" },
       "contributors": [
         { "name": "bob", "profile_url": "https://github.com/bob", "display_name": "Bob", "id": "2" },
@@ -144,7 +144,7 @@ inputs:
 outputs:
   docs/index.json: |
     {
-      "author_info": 
+      "author": 
         { "name": "charlie", "profile_url": "https://github.com/charlie", "display_name": "Charlie", "id": "3" },
       "contributors": [
         { "name": "bob", "profile_url": "https://github.com/bob", "display_name": "Bob", "id": "2" },
@@ -193,7 +193,7 @@ inputs:
 outputs:
   docs/index.json: |
     {
-      "author_info": 
+      "author": 
         { "name": "charlie", "profile_url": "https://github.com/charlie", "display_name": "Charlie", "id": "3" },
       "!contributors": null
     }
@@ -225,7 +225,7 @@ inputs:
 outputs:
   docs/index.json: |
     {
-      "author_info": 
+      "author": 
         { "name": "alice", "profile_url": "https://github.com/alice", "display_name": "Alice", "id": "1" },
     }
 ---
@@ -268,7 +268,7 @@ inputs:
 outputs:
   docs/index.json: |
     {
-      "author_info":
+      "author":
         { "name": "charlie", "profile_url": "https://github.com/charlie", "display_name": "Charlie", "id": "3" },
       "contributors": [
         { "name": "bob", "profile_url": "https://github.com/bob", "display_name": "Bob", "id": "2" },
@@ -482,7 +482,7 @@ environments:
 outputs:
   docs/index.json: |
     {
-      "author_info": 
+      "author": 
         { "name": "charlie", "profile_url": "https://github.com/charlie", "display_name": "Charlie", "id": "3" },
       "contributors": [
         { "name": "bob", "profile_url": "https://github.com/bob", "display_name": "Bob", "id": "2" },

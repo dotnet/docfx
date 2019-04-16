@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -12,6 +13,7 @@ namespace Microsoft.Docs.Build
     {
         private readonly Config _config;
         private readonly List<(Func<string, bool> glob, string key, JToken value)> _rules = new List<(Func<string, bool> glob, string key, JToken value)>();
+        private readonly List<string> _pageMetadataKeys = JsonUtility.GetPropertyNames(typeof(PageModel)).ToList();
 
         public MetadataProvider(Config config)
         {
@@ -54,6 +56,18 @@ namespace Microsoft.Docs.Build
             // We are validating against the merged JObject so discard the validation result here.
             var (_, obj) = JsonUtility.ToObject<T>(result);
             return (errors, obj);
+        }
+
+        public JObject GetPageMetadata(FileMetadata fileMetadata)
+        {
+            var metadata = JsonUtility.ToJObject(fileMetadata);
+
+            foreach (var key in _pageMetadataKeys)
+            {
+                metadata.Remove(key);
+            }
+
+            return metadata;
         }
     }
 }

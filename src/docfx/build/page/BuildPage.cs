@@ -20,18 +20,18 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(file.ContentType == ContentType.Page);
 
-            var (errors, schema, model, metadata) = await Load(context, file, buildChild);
+            var (errors, schema, model, fileMetadata) = await Load(context, file, buildChild);
 
-            if (!string.IsNullOrEmpty(metadata.BreadcrumbPath))
+            if (!string.IsNullOrEmpty(fileMetadata.BreadcrumbPath))
             {
-                var (breadcrumbError, breadcrumbPath, _) = context.DependencyResolver.ResolveLink(metadata.BreadcrumbPath, file, file, buildChild);
+                var (breadcrumbError, breadcrumbPath, _) = context.DependencyResolver.ResolveLink(fileMetadata.BreadcrumbPath, file, file, buildChild);
                 errors.AddIfNotNull(breadcrumbError);
-                metadata.BreadcrumbPath.Value = breadcrumbPath;
+                fileMetadata.BreadcrumbPath.Value = breadcrumbPath;
             }
 
             model.SchemaType = schema.Name;
             model.Locale = file.Docset.Locale;
-            model.Metadata = JsonUtility.ToJObject(metadata);
+            model.Metadata = context.MetadataProvider.GetPageMetadata(fileMetadata);
             model.TocRel = tocMap.FindTocRelativePath(file);
             model.CanonicalUrl = file.CanonicalUrl;
             model.Bilingual = file.Docset.Config.Localization.Bilingual;
@@ -40,7 +40,7 @@ namespace Microsoft.Docs.Build
             (model.ContentGitUrl, model.OriginalContentGitUrl, model.OriginalContentGitUrlTemplate, model.Gitcommit) = context.ContributionProvider.GetGitUrls(file);
 
             List<Error> contributorErrors;
-            (contributorErrors, model.AuthorInfo, model.Contributors, model.UpdatedAt) = await context.ContributionProvider.GetAuthorAndContributors(file, metadata.Author);
+            (contributorErrors, model.Author, model.Contributors, model.UpdatedAt) = await context.ContributionProvider.GetAuthorAndContributors(file, fileMetadata.Author);
             if (contributorErrors != null)
                 errors.AddRange(contributorErrors);
 
