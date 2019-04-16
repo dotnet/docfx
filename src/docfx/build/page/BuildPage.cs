@@ -229,22 +229,24 @@ namespace Microsoft.Docs.Build
 
         private static (object output, JObject extensionData) ApplyTemplate(Context context, Document file, PageModel model, bool isPage)
         {
+            var rawMetadata = context.Template is null ? JsonUtility.ToJObject(model.Metadata) : context.Template.CreateRawMetadata(model, file);
+
             if (!file.Docset.Config.Output.Json && context.Template != null)
             {
-                return (context.Template.Render(model, file), null);
+                return (context.Template.Render(model, file, rawMetadata), null);
             }
 
             if (file.Docset.Legacy)
             {
                 if (isPage && context.Template != null)
                 {
-                    return context.Template.Transform(model, file);
+                    return context.Template.Transform(model, rawMetadata);
                 }
 
                 return (model, null);
             }
 
-            return (model, isPage ? JsonUtility.ToJObject(model.Metadata) : null);
+            return (model, isPage ? rawMetadata : null);
         }
     }
 }

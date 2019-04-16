@@ -41,12 +41,12 @@ outputs:
   docs/a.json: |
     {
       "content": "<p>hello</p>\n",
-      "raw_title": "<h1 id=\"title-from-h1\">Title from H1</h1>",
+      "rawTitle": "<h1 id=\"title-from-h1\">Title from H1</h1>",
       "title": "title from yaml header",
       "metadata": { "title": "title from yaml header" }
     }
 ---
-# extract raw_title from h1 to h3
+# extract rawTitle from h1 to h3
 inputs:
   docfx.yml: |
     rules:
@@ -63,22 +63,22 @@ outputs:
   h1.json: |
     {
       "title": "h1 title",
-      "raw_title": "<h1 id=\"h1-title\">h1 title</h1>"
+      "rawTitle": "<h1 id=\"h1-title\">h1 title</h1>"
     }
   h2.json: |
     {
       "title": "h2 title",
-      "raw_title": "<h2 id=\"h2-title\">h2 title</h2>"
+      "rawTitle": "<h2 id=\"h2-title\">h2 title</h2>"
     }
   h3.json: |
     {
       "title": "h3 title",
-      "raw_title": "<h3 id=\"h3-title\">h3 title</h3>"
+      "rawTitle": "<h3 id=\"h3-title\">h3 title</h3>"
     }
   h4.json: |
     {
       "!title": null,
-      "raw_title": "",
+      "rawTitle": "",
       "content": "<h4 id=\"h4-title\">h4 title</h4>",
     }
   build.log: |
@@ -98,12 +98,12 @@ outputs:
   h1toremove.json: |
     {
       "content":"<div></div>",
-      "raw_title": "<h1 id=\"h1-title\">h1 title</h1>"
+      "rawTitle": "<h1 id=\"h1-title\">h1 title</h1>"
     }
   h1tokeep.json: |
     {
       "content":"<p>welcome to docfx</p>\n<h1 id=\"h1-title\">h1 title</h1>\n",
-      "raw_title": ""
+      "rawTitle": ""
     }
 ---
 # No H1
@@ -167,7 +167,7 @@ inputs:
 outputs:
   docs/a.json: |
     {
-      "raw_title": "<h1 id=\"title-from-h1\">Title from H1</h1>",
+      "rawTitle": "<h1 id=\"title-from-h1\">Title from H1</h1>",
     }
 ---
 # Markdown block between yaml header and H1
@@ -184,7 +184,7 @@ inputs:
     hello
 outputs:
   docs/a.json: |
-    { "raw_title": "", "title": "Title from yaml header" }
+    { "rawTitle": "", "title": "Title from yaml header" }
 ---
 # include another file
 inputs:
@@ -216,7 +216,7 @@ outputs:
   docs/a.json: |
     {
       "content": "<h1 id=\"heading-from-c\">Heading from C</h1>",
-      "raw_title": "<h1 id=\"heading-from-d\">Heading from D</h1>"
+      "rawTitle": "<h1 id=\"heading-from-d\">Heading from D</h1>"
     }
 ---
 # No heading in include file
@@ -236,7 +236,7 @@ outputs:
   docs/a.json: |
     {
       "content": "<p>Hello</p><h1 id=\"heading-from-c\">Heading from C</h1>",
-      "raw_title": "",
+      "rawTitle": "",
       "title": "Heading from C"
     }
 ---
@@ -252,7 +252,7 @@ outputs:
   docs/a.json: |
     {
       "content": "<p>content</p>",
-      "raw_title": "<h1 id=\"-overview\">Product Name Overview</h1>"
+      "rawTitle": "<h1 id=\"-overview\">Product Name Overview</h1>"
     }
   docs/b.json:
 ---
@@ -288,7 +288,7 @@ outputs:
     {
       "content": "<p>body</p>",
       "title": "This is a title &",
-      "raw_title": "<h1 id=\"this-is-a-title-\">This is <em>a</em> title &amp;</h1>",
+      "rawTitle": "<h1 id=\"this-is-a-title-\">This is <em>a</em> title &amp;</h1>",
       "metadata": { "metaKey": "metaValue" }
     }
 ---

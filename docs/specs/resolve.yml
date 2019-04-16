@@ -43,7 +43,7 @@ inputs:
 outputs:
   docs/a.json: |
     { 
-      "raw_title": "<h2 id=\"hello-world\">Hello World</h2>",
+      "rawTitle": "<h2 id=\"hello-world\">Hello World</h2>",
       "content": "<p>Link to <a href=\"#hello-world\">bookmark</a></p>" 
     }
   docs/b.json: |
