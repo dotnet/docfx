@@ -221,11 +221,6 @@ namespace Microsoft.Docs.Build
             return (errors, doc.DocumentNode.WriteTo());
         }
 
-        private static object List<T>()
-        {
-            throw new NotImplementedException();
-        }
-
         /// <summary>
         /// Get title and raw title, remove title node if all previous nodes are invisible
         /// </summary>
