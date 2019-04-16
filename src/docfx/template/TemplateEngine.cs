@@ -295,10 +295,12 @@ namespace Microsoft.Docs.Build
 
         private static string CreateHtmlMetaTags(JObject metadata)
         {
-            var meta = new List<string>();
+            var result = new StringBuilder();
 
-            foreach (var (key, value) in metadata)
+            foreach (var property in metadata.Properties().OrderBy(p => p.Name))
             {
+                var key = property.Name;
+                var value = property.Value;
                 if (value is JObject || s_htmlMetaTagsBlacklist.Contains(key))
                 {
                     continue;
@@ -313,7 +315,7 @@ namespace Microsoft.Docs.Build
                     {
                         if (v is JValue)
                         {
-                            meta.Add($"<meta name=\"{HttpUtility.HtmlEncode(name)}\" content=\"{HttpUtility.HtmlEncode(v)}\" />");
+                            result.AppendLine($"<meta name=\"{HttpUtility.HtmlEncode(name)}\" content=\"{HttpUtility.HtmlEncode(v)}\" />");
                         }
                     }
                     continue;
@@ -327,13 +329,7 @@ namespace Microsoft.Docs.Build
                     content = value.ToString();
                 }
 
-                meta.Add($"<meta name=\"{HttpUtility.HtmlEncode(name)}\" content=\"{HttpUtility.HtmlEncode(content)}\" />");
-            }
-
-            var result = new StringBuilder();
-            foreach (var m in meta.OrderBy(r => r))
-            {
-                result.AppendLine(m);
+                result.AppendLine($"<meta name=\"{HttpUtility.HtmlEncode(name)}\" content=\"{HttpUtility.HtmlEncode(content)}\" />");
             }
 
             return result.ToString();
