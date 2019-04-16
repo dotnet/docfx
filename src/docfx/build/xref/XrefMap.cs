@@ -291,7 +291,7 @@ namespace Microsoft.Docs.Build
                     var (yamlHeaderErrors, yamlHeader) = ExtractYamlHeader.Extract(file, context);
                     errors.AddRange(yamlHeaderErrors);
 
-                    var (fileMetaErrors, fileMetadata) = context.MetadataProvider.GetMetadata(file, yamlHeader);
+                    var (fileMetaErrors, fileMetadata) = context.MetadataProvider.GetFileMetadata(file, yamlHeader);
                     errors.AddRange(fileMetaErrors);
 
                     if (!string.IsNullOrEmpty(fileMetadata.Uid))

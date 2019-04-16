@@ -26,7 +26,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public (List<Error> errors, FileMetadata metadata) GetMetadata(Document file, JObject yamlHeader = null)
+        public (List<Error> errors, FileMetadata metadata) GetFileMetadata(Document file, JObject yamlHeader = null)
         {
             Debug.Assert(file != null);
 
