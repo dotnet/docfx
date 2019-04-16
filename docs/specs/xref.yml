@@ -661,7 +661,6 @@ inputs:
   docs/a.md: |
     str <xref href="c"></xref>
     str <xref href="d" data-raw-source="@mention"></xref>
-    str <xref href="d" data-throw-if-not-resolved="False" data-raw-html="@higher" data-raw-source="@mention"></xref>
     some text
     str <xref href="d" data-raw-html="@higher" data-raw-source="@mention"></xref>
     multiple xref <xref href="e" data-raw-source="@mentione"></xref> some text <xref href="f" data-raw-source="@mentionf"></xref>
@@ -677,12 +676,12 @@ inputs:
     ---
 outputs:
   docs/a.json: |
-    {"content" : "<p>str <a href='c'>Title from yaml header c</a>\nstr @mention\nstr @higher\nsome text\nstr @higher\nmultiple xref @mentione some text @mentionf</p>\n<p>\n  @mentione\n  some text\n  mentionf\n</p>\n"}
+    {"content" : "<p>str <a href='c'>Title from yaml header c</a>\nstr @mention\nsome text\nstr @higher\nmultiple xref @mentione some text @mentionf</p>\n<p>\n  @mentione\n  some text\n  mentionf\n</p>\n"}
   docs/c.json:
   build.log: |
     ["info","at-uid-not-found","Cannot find uid 'd' using xref '<xref href=\"d\" data-raw-source=\"@mention\">'","docs/a.md",2,12]
-    ["info","at-uid-not-found","Cannot find uid 'd' using xref '<xref href=\"d\" data-raw-html=\"@higher\" data-raw-source=\"@mention\">'","docs/a.md",5,12]
-    ["info","at-uid-not-found","Cannot find uid 'e' using xref '<xref href=\"e\" data-raw-source=\"@mentione\">'","docs/a.md",6,12]
-    ["info","at-uid-not-found","Cannot find uid 'f' using xref '<xref href=\"f\" data-raw-source=\"@mentionf\">'","docs/a.md",6,12]
-    ["info","at-uid-not-found","Cannot find uid 'e' using xref '<p>\n  <xref href=\"e\" data-raw-source=\"@mentione\" />\n  some text\n  <xref href=\"f\" data-raw-source=\"mentionf\" />\n</p>'","docs/a.md",7,18]
-    ["warning","uid-not-found","Cannot find uid 'f' using xref '<p>\n  <xref href=\"e\" data-raw-source=\"@mentione\" />\n  some text\n  <xref href=\"f\" data-raw-source=\"mentionf\" />\n</p>'","docs/a.md",7,78]
+    ["info","at-uid-not-found","Cannot find uid 'd' using xref '<xref href=\"d\" data-raw-html=\"@higher\" data-raw-source=\"@mention\">'","docs/a.md",4,12]
+    ["info","at-uid-not-found","Cannot find uid 'e' using xref '<xref href=\"e\" data-raw-source=\"@mentione\">'","docs/a.md",5,12]
+    ["info","at-uid-not-found","Cannot find uid 'f' using xref '<xref href=\"f\" data-raw-source=\"@mentionf\">'","docs/a.md",5,12]
+    ["info","at-uid-not-found","Cannot find uid 'e' using xref '<p>\n  <xref href=\"e\" data-raw-source=\"@mentione\" />\n  some text\n  <xref href=\"f\" data-raw-source=\"mentionf\" />\n</p>'","docs/a.md",6,18]
+    ["warning","uid-not-found","Cannot find uid 'f' using xref '<p>\n  <xref href=\"e\" data-raw-source=\"@mentione\" />\n  some text\n  <xref href=\"f\" data-raw-source=\"mentionf\" />\n</p>'","docs/a.md",6,78]

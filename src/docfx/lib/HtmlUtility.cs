@@ -201,10 +201,7 @@ namespace Microsoft.Docs.Build
                 var resolvedNode = new HtmlDocument();
                 if (string.IsNullOrEmpty(resolvedHref))
                 {
-                    if (string.Compare(logWarning, "False", StringComparison.OrdinalIgnoreCase) != 0)
-                    {
-                        errors.Add((xref.Value, lineNumber, s_getValueStartIndex(xref), raw.StartsWith("@") ? nameof(Errors.AtUidNotFound) : nameof(Errors.UidNotFound)));
-                    }
+                    errors.Add((xref.Value, lineNumber, s_getValueStartIndex(xref), raw.StartsWith("@") ? nameof(Errors.AtUidNotFound) : nameof(Errors.UidNotFound)));
                     resolvedNode.LoadHtml(raw);
                 }
                 else
