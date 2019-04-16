@@ -70,7 +70,6 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-
             (List<(string uid, int line, int column, string errorCode)>, string) ResolveXref(string html, int startLine, MarkdownObject block)
                 => HtmlUtility.TransformXref(html, startLine, href => MarkdownUtility.ResolveXref(href, block));
         }
