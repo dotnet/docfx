@@ -177,38 +177,53 @@ namespace Microsoft.Docs.Build
             var doc = new HtmlDocument();
             doc.LoadHtml(html);
 
-            var result = new StringBuilder(html.Length + 64);
-            var node = doc.DocumentNode.Descendants().Single();
-
-            if (node.Name != "xref")
+            var replacingNodes = new List<(HtmlNode, HtmlNode)>();
+            foreach (var node in doc.DocumentNode.Descendants())
             {
-                return (errors, html);
-            }
-
-            var xref = node.Attributes["href"];
-            if (xref is null)
-            {
-                return (errors, html);
-            }
-
-            var logWarning = node.GetAttributeValue("data-throw-if-not-resolved", null);
-            var rawSource = node.GetAttributeValue("data-raw-source", null);
-            var rawHtml = node.GetAttributeValue("data-raw-html", null);
-            var raw = HttpUtility.HtmlDecode(!string.IsNullOrEmpty(rawHtml) ? rawHtml : rawSource);
-            var (_, resolvedHref, display, _) = transform(xref.Value);
-            if (string.IsNullOrEmpty(resolvedHref))
-            {
-                if (string.Compare(logWarning, "False", StringComparison.OrdinalIgnoreCase) != 0)
+                if (node.Name != "xref")
                 {
-                    errors.Add((xref.Value, lineNumber, s_getValueStartIndex(xref)));
+                    continue;
                 }
-                result.Append($"{raw}");
+
+                var xref = node.Attributes["href"];
+                if (xref is null)
+                {
+                    continue;
+                }
+
+                var logWarning = node.GetAttributeValue("data-throw-if-not-resolved", null);
+                var rawSource = node.GetAttributeValue("data-raw-source", null);
+                var rawHtml = node.GetAttributeValue("data-raw-html", null);
+                var raw = HttpUtility.HtmlDecode(!string.IsNullOrEmpty(rawHtml) ? rawHtml : rawSource);
+                var (_, resolvedHref, display, _) = transform(xref.Value);
+
+                var resolvedNode = new HtmlDocument();
+                if (string.IsNullOrEmpty(resolvedHref))
+                {
+                    if (string.Compare(logWarning, "False", StringComparison.OrdinalIgnoreCase) != 0)
+                    {
+                        errors.Add((xref.Value, lineNumber, s_getValueStartIndex(xref)));
+                    }
+                    resolvedNode.LoadHtml($"{raw}");
+                }
+                else
+                {
+                    resolvedNode.LoadHtml($"<a href='{resolvedHref}'>{display}</a>");
+                }
+                replacingNodes.Add((node, resolvedNode.DocumentNode));
             }
-            else
+
+            foreach (var (node, resolvedNode) in replacingNodes)
             {
-                result.Append($"<a href='{resolvedHref}'>{display}</a>");
+                node.ParentNode.ReplaceChild(resolvedNode, node);
             }
-            return (errors, result.ToString());
+
+            return (errors, doc.DocumentNode.WriteTo());
+        }
+
+        private static object List<T>()
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>
