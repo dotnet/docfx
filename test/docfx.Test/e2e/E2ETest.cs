@@ -32,7 +32,7 @@ namespace Microsoft.Docs.Build
             "invalid-toc-level", "redirection-out-of-scope", "invalid-redirect-to", "moniker-config-missing",
             "empty-monikers", "circular-reference", "moniker-overlapping",
             "redirection-is-empty", "invalid-locale", "link-out-of-scope",
-            "invalid-redirection", "merge-conflict", "invalid-topic-href",
+            "invalid-redirection", "invalid-topic-href",
             "redirected-id-conflict", "schema-not-found"
         };
 

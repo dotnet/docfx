@@ -249,8 +249,8 @@ namespace Microsoft.Docs.Build
         ///     >>>>>>> refs/heads/branch
         /// ]]>
         /// </summary>
-        public static Error MergeConflict(string file)
-            => new Error(ErrorLevel.Error, "merge-conflict", "File contains merge conflict", file);
+        public static Error MergeConflict(SourceInfo source)
+            => new Error(ErrorLevel.Error, "merge-conflict", "File contains merge conflict", source);
 
         /// <summary>
         /// Failed to resolve uid defined by @ syntax.
