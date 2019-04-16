@@ -471,8 +471,7 @@ namespace Microsoft.Docs.Build
             // get set path from site path
             // site path doesn't contain version info according to the output spec
             var sitePathWithoutExtension = Path.Combine(Path.GetDirectoryName(SitePath), Path.GetFileNameWithoutExtension(SitePath));
-            var siteBasePath = Docset.Config.Output.LowerCaseUrl ? Docset.Config.DocumentId.SiteBasePath.ToLowerInvariant() : Docset.Config.DocumentId.SiteBasePath;
-            var sitePath = PathUtility.NormalizeFile(Path.GetRelativePath(siteBasePath, sitePathWithoutExtension));
+            var sitePath = PathUtility.NormalizeFile(Path.GetRelativePath(Docset.Config.DocumentId.SiteBasePath, sitePathWithoutExtension));
 
             return (
                 HashUtility.GetMd5Guid($"{depotName}|{sourcePath.ToLowerInvariant()}").ToString(),

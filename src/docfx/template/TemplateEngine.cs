@@ -184,8 +184,7 @@ namespace Microsoft.Docs.Build
             rawMetadata["conceptual"] = pageModel.Content as string;
             rawMetadata.Remove("content");
 
-            var siteBasePath = file.Docset.Config.Output.LowerCaseUrl ? file.Docset.Config.DocumentId.SiteBasePath.ToLowerInvariant() : file.Docset.Config.DocumentId.SiteBasePath;
-            var path = PathUtility.NormalizeFile(Path.GetRelativePath(siteBasePath, file.SitePath));
+            var path = PathUtility.NormalizeFile(Path.GetRelativePath(file.Docset.Config.DocumentId.SiteBasePath, file.SitePath));
 
             rawMetadata["_path"] = path;
             rawMetadata["wordCount"] = pageModel.WordCount;

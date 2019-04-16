@@ -74,16 +74,16 @@ outputs:
 # Raw metadata generated for template
 # todo: remove this test and make raw model as our page model
 repos:
-  https://github.com/a/rawMetadata:
+  https://github.com/a/rawmetadata:
   - files:
       docfx.yml: |
         theme: https://docs.com/template1
         redirections:
           a.md: /b
         documentId:
-          siteBasePath: rawMetadata
+          siteBasePath: rawmetadata
         routes:
-          /: rawMetadata
+          /: rawmetadata
       c.md: |
         ---
         api_name:
@@ -127,7 +127,7 @@ outputs:
         "wordCount": 2,
         "title": "Title",
         "rawTitle": "<h1 id=\"title\">Title</h1>",
-        "_op_canonicalUrlPrefix": "https://docs.com/en-us/rawMetadata/",
+        "_op_canonicalUrlPrefix": "https://docs.com/en-us/rawmetadata/",
         "layout": "Conceptual",
         "document_id": "fdb5a0d7-b68e-c465-9c5e-54a5cda94902",
         "document_version_independent_id": "92a5a770-f05f-b8bb-81c9-a8d786a9e608",
@@ -139,9 +139,9 @@ outputs:
             "profile_url": null
           }
         },
-        "content_git_url": "https://github.com/a/rawMetadata/blob/master/c.md",
-        "gitcommit": "https://github.com/a/rawMetadata/blob/5424293396b829b4f9d4b540a3db0f60335c3eaf/c.md",
-        "original_content_git_url": "https://github.com/a/rawMetadata/blob/master/c.md",
+        "content_git_url": "https://github.com/a/rawmetadata/blob/master/c.md",
+        "gitcommit": "https://github.com/a/rawmetadata/blob/46bdeaedc9aa13db3b990a3a5e2af35fa24930ac/c.md",
+        "original_content_git_url": "https://github.com/a/rawmetadata/blob/master/c.md",
         "original_content_git_url_template": "{repo}/blob/{branch}/c.md",
         "!metadata": null,
         "!contributors": null,
