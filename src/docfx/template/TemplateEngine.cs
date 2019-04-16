@@ -168,7 +168,9 @@ namespace Microsoft.Docs.Build
         {
             var docset = file.Docset;
             var rawMetadata = JsonUtility.ToJObject(pageModel);
+
             JsonUtility.Merge(rawMetadata, JsonUtility.ToJObject(pageModel.Metadata ?? new FileMetadata()));
+            rawMetadata.Remove("metadata");
 
             rawMetadata["depot_name"] = $"{docset.Config.Product}.{docset.Config.Name}";
 
@@ -218,8 +220,10 @@ namespace Microsoft.Docs.Build
                     rawMetadata["_op_gitContributorInformation"]["author"] = ToJObject(pageModel.Author);
                 }
             }
+
             if (!string.IsNullOrEmpty(pageModel.Author?.Name))
                 rawMetadata["author"] = pageModel.Author?.Name;
+            rawMetadata.Remove("contributors");
 
             if (pageModel.UpdatedAt != default)
                 rawMetadata["updated_at"] = pageModel.UpdatedAt.ToString("yyyy-MM-dd hh:mm tt");

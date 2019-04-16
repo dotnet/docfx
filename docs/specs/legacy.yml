@@ -142,7 +142,12 @@ outputs:
         "content_git_url": "https://github.com/a/rawMetadata/blob/master/c.md",
         "gitcommit": "https://github.com/a/rawMetadata/blob/5424293396b829b4f9d4b540a3db0f60335c3eaf/c.md",
         "original_content_git_url": "https://github.com/a/rawMetadata/blob/master/c.md",
-        "original_content_git_url_template": "{repo}/blob/{branch}/c.md"
+        "original_content_git_url_template": "{repo}/blob/{branch}/c.md",
+        "!metadata": null,
+        "!contributors": null,
+        "!bilingual": null,
+        "!content": null,
+        "!schema_type": null,
       },
       {
         "url": "/rawmetadata/d.png"
