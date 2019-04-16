@@ -190,7 +190,7 @@ inputs:
     [redirect](redirect.md?a#b)
 outputs:
   docs/a.json: |
-    {"content":"<p><a href=\"/absolute/path?a#b\">redirect</a></p>"}
+    {"content":"<p><a href=\"redirect?a#b\">redirect</a></p>"}
 ---
 # Show error if inclusion is a redirection file
 inputs:

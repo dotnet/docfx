@@ -129,7 +129,7 @@ outputs:
   docs/a.json: |
     {
       "metadata": { "key": "value" },
-      "content": "<p><a href=\"/absolute/path?a#b\">redirect</a></p>"
+      "content": "<p><a href=\"redirect?a#b\">redirect</a></p>"
     }
 ---
 # routes
