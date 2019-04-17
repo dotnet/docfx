@@ -10,7 +10,7 @@ using Newtonsoft.Json.Serialization;
 namespace Microsoft.Docs.Build
 {
     [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
-    public class PageModel
+    public class OutputPageModel : InputMetadata
     {
         public string SchemaType { get; set; }
 
@@ -18,11 +18,7 @@ namespace Microsoft.Docs.Build
 
         public long WordCount { get; set; }
 
-        public string Locale { get; set; }
-
         public string TocRel { get; set; }
-
-        public string Title { get; set; }
 
         [JsonProperty(PropertyName = "rawTitle")]
         public string RawTitle { get; set; }
@@ -35,7 +31,7 @@ namespace Microsoft.Docs.Build
 
         public string DocumentVersionIndependentId { get; set; }
 
-        public Contributor Author { get; set; }
+        public Contributor AuthorInfo { get; set; }
 
         public List<Contributor> Contributors { get; set; }
 
@@ -52,8 +48,5 @@ namespace Microsoft.Docs.Build
         public bool Bilingual { get; set; }
 
         public List<string> Monikers { get; set; }
-
-        [JsonExtensionData]
-        public JObject Metadata { get; set; }
     }
 }

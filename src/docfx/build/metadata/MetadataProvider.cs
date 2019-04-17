@@ -13,7 +13,6 @@ namespace Microsoft.Docs.Build
     {
         private readonly Config _config;
         private readonly List<(Func<string, bool> glob, string key, JToken value)> _rules = new List<(Func<string, bool> glob, string key, JToken value)>();
-        private readonly List<string> _pageMetadataKeys = JsonUtility.GetPropertyNames(typeof(PageModel)).ToList();
 
         public MetadataProvider(Config config)
         {
@@ -28,7 +27,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public (List<Error> errors, T metadata) GetMetadata<T>(Document file, JObject yamlHeader = null)
+        public (List<Error> errors, T metadata) GetInputMetadata<T>(Document file, JObject yamlHeader = null) where T : InputMetadata
         {
             Debug.Assert(file != null);
 
@@ -56,18 +55,6 @@ namespace Microsoft.Docs.Build
             // We are validating against the merged JObject so discard the validation result here.
             var (_, obj) = JsonUtility.ToObject<T>(result);
             return (errors, obj);
-        }
-
-        public JObject GetPageMetadata(FileMetadata fileMetadata)
-        {
-            var metadata = JsonUtility.ToJObject(fileMetadata ?? new FileMetadata());
-
-            foreach (var key in _pageMetadataKeys)
-            {
-                metadata.Remove(key);
-            }
-
-            return metadata;
         }
     }
 }

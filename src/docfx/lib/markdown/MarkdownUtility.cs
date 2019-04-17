@@ -89,6 +89,14 @@ namespace Microsoft.Docs.Build
             return link;
         }
 
+        internal static (Error error, string href, string display, Document file) ResolveXref(string href, MarkdownObject origin)
+        {
+            // TODO: now markdig engine combines all kinds of reference with inclusion, we need to split them out
+            var result = t_status.Value.Peek().DependencyResolver.ResolveXref(new SourceInfo<string>(href, origin.ToSourceInfo()), (Document)InclusionContext.File, (Document)InclusionContext.RootFile);
+            result.error = result.error?.WithSourceInfo(origin.ToSourceInfo());
+            return result;
+        }
+
         private static MarkdownPipeline CreateMarkdownPipeline()
         {
             var markdownContext = new MarkdownContext(GetToken, LogWarning, LogError, ReadFile);
@@ -157,14 +165,6 @@ namespace Microsoft.Docs.Build
             var (error, content, file) = status.DependencyResolver.ResolveContent(new SourceInfo<string>(path, origin.ToSourceInfo()), (Document)relativeTo);
             status.Errors.AddIfNotNull(error?.WithSourceInfo(origin.ToSourceInfo()));
             return (content, file);
-        }
-
-        private static (Error error, string href, string display, Document file) ResolveXref(string href, MarkdownObject origin)
-        {
-            // TODO: now markdig engine combines all kinds of reference with inclusion, we need to split them out
-            var result = t_status.Value.Peek().DependencyResolver.ResolveXref(new SourceInfo<string>(href, origin.ToSourceInfo()), (Document)InclusionContext.File, (Document)InclusionContext.RootFile);
-            result.error = result.error?.WithSourceInfo(origin.ToSourceInfo());
-            return result;
         }
 
         private static List<string> ParseMonikerRange(string monikerRange) => t_status.Value.Peek().ParseMonikerRangeDelegate(monikerRange);

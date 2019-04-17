@@ -104,7 +104,7 @@ namespace Microsoft.Docs.Build
             return new TemplateEngine(themePath, docset.Locale);
         }
 
-        public string Render(PageModel model, Document file, JObject rawMetadata)
+        public string Render(OutputPageModel model, Document file, JObject rawMetadata)
         {
             // TODO: only works for conceptual
             var content = model.Content.ToString();
@@ -125,7 +125,7 @@ namespace Microsoft.Docs.Build
             return _liquid.Render(layout, liquidModel);
         }
 
-        public (TemplateModel model, JObject metadata) Transform(PageModel pageModel, JObject rawMetadata)
+        public (TemplateModel model, JObject metadata) Transform(OutputPageModel pageModel, JObject rawMetadata)
         {
             rawMetadata = TransformPageMetadata(rawMetadata, pageModel);
             var metadata = CreateMetadata(rawMetadata);
@@ -164,7 +164,7 @@ namespace Microsoft.Docs.Build
             return Global[key]?.ToString();
         }
 
-        public JObject CreateRawMetadata(PageModel pageModel, Document file)
+        public JObject CreateRawMetadata(OutputPageModel pageModel, Document file)
         {
             var docset = file.Docset;
             var rawMetadata = JsonUtility.ToJObject(pageModel);
@@ -181,8 +181,7 @@ namespace Microsoft.Docs.Build
             rawMetadata["conceptual"] = pageModel.Content as string;
             rawMetadata.Remove("content");
 
-            var siteBasePath = file.Docset.Config.Output.LowerCaseUrl ? file.Docset.Config.DocumentId.SiteBasePath.ToLowerInvariant() : file.Docset.Config.DocumentId.SiteBasePath;
-            var path = PathUtility.NormalizeFile(Path.GetRelativePath(siteBasePath, file.SitePath));
+            var path = PathUtility.NormalizeFile(Path.GetRelativePath(file.Docset.Config.DocumentId.SiteBasePath, file.SitePath));
 
             rawMetadata["_path"] = path;
             rawMetadata["wordCount"] = pageModel.WordCount;
@@ -212,14 +211,14 @@ namespace Microsoft.Docs.Build
                     ["update_at"] = pageModel.UpdatedAt.ToString(docset.Culture.DateTimeFormat.ShortDatePattern),
                     ["updated_at_date_time"] = pageModel.UpdatedAt,
                 };
-                if (pageModel.Author != null)
+                if (pageModel.AuthorInfo != null)
                 {
-                    rawMetadata["_op_gitContributorInformation"]["author"] = ToJObject(pageModel.Author);
+                    rawMetadata["_op_gitContributorInformation"]["author"] = ToJObject(pageModel.AuthorInfo);
                 }
             }
 
-            if (!string.IsNullOrEmpty(pageModel.Author?.Name))
-                rawMetadata["author"] = pageModel.Author?.Name;
+            if (!string.IsNullOrEmpty(pageModel.AuthorInfo?.Name))
+                rawMetadata["author"] = pageModel.AuthorInfo?.Name;
             rawMetadata.Remove("contributors");
 
             if (pageModel.UpdatedAt != default)
@@ -235,7 +234,7 @@ namespace Microsoft.Docs.Build
         public JObject TransformTocMetadata(object model)
             => TransformMetadata("toc.json.js", JsonUtility.ToJObject(model));
 
-        private JObject TransformPageMetadata(JObject rawMetadata, PageModel pageModel)
+        private JObject TransformPageMetadata(JObject rawMetadata, OutputPageModel pageModel)
         {
             return RemoveUpdatedAtDateTime(
                 TransformSchema(
@@ -253,7 +252,7 @@ namespace Microsoft.Docs.Build
             return JObject.Parse(((JObject)_js.Run(scriptPath, "transform", model)).Value<string>("content"));
         }
 
-        private static JObject TransformSchema(JObject metadata, PageModel model)
+        private static JObject TransformSchema(JObject metadata, OutputPageModel model)
         {
             switch (model.SchemaType)
             {
