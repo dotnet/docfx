@@ -26,7 +26,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public (List<Error> errors, T metadata) GetMetadata<T>(Document file, JObject yamlHeader = null)
+        public (List<Error> errors, FileMetadata metadata) GetFileMetadata(Document file, JObject yamlHeader = null)
         {
             Debug.Assert(file != null);
 
@@ -52,7 +52,7 @@ namespace Microsoft.Docs.Build
             }
 
             // We are validating against the merged JObject so discard the validation result here.
-            var (_, obj) = JsonUtility.ToObject<T>(result);
+            var (_, obj) = JsonUtility.ToObject<FileMetadata>(result);
             return (errors, obj);
         }
     }
