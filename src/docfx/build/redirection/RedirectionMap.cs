@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -44,7 +45,7 @@ namespace Microsoft.Docs.Build
             return false;
         }
 
-        public static (List<Error> errors, RedirectionMap map) Create(Docset docset)
+        public static (List<Error> errors, RedirectionMap map) Create(Docset docset, Func<string, bool> glob)
         {
             var errors = new List<Error>();
             var redirections = new HashSet<Document>();
@@ -92,9 +93,16 @@ namespace Microsoft.Docs.Build
                     }
                     else
                     {
-                        if (!redirections.Add(document))
+                        if (glob(document.FilePath))
                         {
-                            errors.Add(Errors.RedirectionConflict(pathToDocset));
+                            if (!redirections.Add(document))
+                            {
+                                errors.Add(Errors.RedirectionConflict(pathToDocset));
+                            }
+                        }
+                        else
+                        {
+                            errors.Add(Errors.RedirectionOutOfScope(document, docset.Config.ConfigFileName));
                         }
                     }
                 }
