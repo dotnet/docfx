@@ -10,7 +10,7 @@ using Newtonsoft.Json.Serialization;
 namespace Microsoft.Docs.Build
 {
     [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
-    public class OutputPageModel : InputMetadata
+    public class OutputModel : InputMetadata
     {
         public string SchemaType { get; set; }
 

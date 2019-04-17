@@ -104,7 +104,7 @@ namespace Microsoft.Docs.Build
             return new TemplateEngine(themePath, docset.Locale);
         }
 
-        public string Render(OutputPageModel model, Document file, JObject rawMetadata)
+        public string Render(OutputModel model, Document file, JObject rawMetadata)
         {
             // TODO: only works for conceptual
             var content = model.Content.ToString();
@@ -125,7 +125,7 @@ namespace Microsoft.Docs.Build
             return _liquid.Render(layout, liquidModel);
         }
 
-        public (TemplateModel model, JObject metadata) Transform(OutputPageModel pageModel, JObject rawMetadata)
+        public (TemplateModel model, JObject metadata) Transform(OutputModel pageModel, JObject rawMetadata)
         {
             rawMetadata = TransformPageMetadata(rawMetadata, pageModel);
             var metadata = CreateMetadata(rawMetadata);
@@ -164,7 +164,7 @@ namespace Microsoft.Docs.Build
             return Global[key]?.ToString();
         }
 
-        public JObject CreateRawMetadata(OutputPageModel pageModel, Document file)
+        public JObject CreateRawMetadata(OutputModel pageModel, Document file)
         {
             var docset = file.Docset;
             var rawMetadata = JsonUtility.ToJObject(pageModel);
@@ -216,6 +216,7 @@ namespace Microsoft.Docs.Build
                     rawMetadata["_op_gitContributorInformation"]["author"] = ToJObject(pageModel.AuthorInfo);
                 }
             }
+            rawMetadata.Remove("author_info");
 
             if (!string.IsNullOrEmpty(pageModel.AuthorInfo?.Name))
                 rawMetadata["author"] = pageModel.AuthorInfo?.Name;
@@ -234,7 +235,7 @@ namespace Microsoft.Docs.Build
         public JObject TransformTocMetadata(object model)
             => TransformMetadata("toc.json.js", JsonUtility.ToJObject(model));
 
-        private JObject TransformPageMetadata(JObject rawMetadata, OutputPageModel pageModel)
+        private JObject TransformPageMetadata(JObject rawMetadata, OutputModel pageModel)
         {
             return RemoveUpdatedAtDateTime(
                 TransformSchema(
@@ -252,7 +253,7 @@ namespace Microsoft.Docs.Build
             return JObject.Parse(((JObject)_js.Run(scriptPath, "transform", model)).Value<string>("content"));
         }
 
-        private static JObject TransformSchema(JObject metadata, OutputPageModel model)
+        private static JObject TransformSchema(JObject metadata, OutputModel model)
         {
             switch (model.SchemaType)
             {

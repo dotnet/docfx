@@ -77,7 +77,7 @@ namespace Microsoft.Docs.Build
             return (errors, publishItem);
         }
 
-        private static async Task<(List<Error> errors, Schema schema, OutputPageModel model)>
+        private static async Task<(List<Error> errors, Schema schema, OutputModel model)>
             Load(Context context, Document file, Action<Document> buildChild)
         {
             if (file.FilePath.EndsWith(".md", PathUtility.PathComparison))
@@ -93,7 +93,7 @@ namespace Microsoft.Docs.Build
             return await LoadJson(context, file, buildChild);
         }
 
-        private static (List<Error> errors, Schema schema, OutputPageModel model)
+        private static (List<Error> errors, Schema schema, OutputModel model)
             LoadMarkdown(Context context, Document file, Action<Document> buildChild)
         {
             var errors = new List<Error>();
@@ -103,7 +103,7 @@ namespace Microsoft.Docs.Build
             var (yamlHeaderErrors, yamlHeader) = ExtractYamlHeader.Extract(file, context);
             errors.AddRange(yamlHeaderErrors);
 
-            var (metaErrors, pageModel) = context.MetadataProvider.GetInputMetadata<OutputPageModel>(file, yamlHeader);
+            var (metaErrors, pageModel) = context.MetadataProvider.GetInputMetadata<OutputModel>(file, yamlHeader);
             errors.AddRange(metaErrors);
 
             var (error, monikers) = context.MonikerProvider.GetFileLevelMonikers(file, pageModel.MonikerRange);
@@ -140,7 +140,7 @@ namespace Microsoft.Docs.Build
             return (errors, Schema.Conceptual, pageModel);
         }
 
-        private static async Task<(List<Error> errors, Schema schema, OutputPageModel model)>
+        private static async Task<(List<Error> errors, Schema schema, OutputModel model)>
             LoadYaml(Context context, Document file, Action<Document> buildChild)
         {
             var (errors, token) = YamlUtility.Parse(file, context);
@@ -148,7 +148,7 @@ namespace Microsoft.Docs.Build
             return await LoadSchemaDocument(context, errors, token, file, buildChild);
         }
 
-        private static async Task<(List<Error> errors, Schema schema, OutputPageModel model)>
+        private static async Task<(List<Error> errors, Schema schema, OutputModel model)>
             LoadJson(Context context, Document file, Action<Document> buildChild)
         {
             var (errors, token) = JsonUtility.Parse(file, context);
@@ -156,7 +156,7 @@ namespace Microsoft.Docs.Build
             return await LoadSchemaDocument(context, errors, token, file, buildChild);
         }
 
-        private static async Task<(List<Error> errors, Schema schema, OutputPageModel model)>
+        private static async Task<(List<Error> errors, Schema schema, OutputModel model)>
             LoadSchemaDocument(Context context, List<Error> errors, JToken token, Document file, Action<Document> buildChild)
         {
             // TODO: for backward compatibility, when #YamlMime:YamlDocument, documentType is used to determine schema.
@@ -191,7 +191,7 @@ namespace Microsoft.Docs.Build
                 content = HtmlPostProcess(file, HtmlUtility.LoadHtml(html));
             }
 
-            var (metaErrors, pageModel) = context.MetadataProvider.GetInputMetadata<OutputPageModel>(file, yamlHeader);
+            var (metaErrors, pageModel) = context.MetadataProvider.GetInputMetadata<OutputModel>(file, yamlHeader);
             errors.AddRange(metaErrors);
 
             pageModel.Content = content;
@@ -220,7 +220,7 @@ namespace Microsoft.Docs.Build
             return LocalizationUtility.AddLeftToRightMarker(file.Docset, html.OuterHtml);
         }
 
-        private static (object output, JObject extensionData) ApplyTemplate(Context context, Document file, OutputPageModel model, bool isPage)
+        private static (object output, JObject extensionData) ApplyTemplate(Context context, Document file, OutputModel model, bool isPage)
         {
             var rawMetadata = context.Template is null ? model.ExtensionData : context.Template.CreateRawMetadata(model, file);
 

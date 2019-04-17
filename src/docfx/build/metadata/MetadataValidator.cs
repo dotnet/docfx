@@ -88,7 +88,7 @@ namespace Microsoft.Docs.Build
                 "is_dynamic_rendering", "need_preview_pull_request", "moniker_type", "is_significant_update", "document_version_independent_id", "serviceData", "is_hidden",
             };
 
-            var blackList = new HashSet<string>(JsonUtility.GetPropertyNames(typeof(OutputPageModel)).Concat(legacyBlackList));
+            var blackList = new HashSet<string>(JsonUtility.GetPropertyNames(typeof(OutputModel)).Concat(legacyBlackList));
 
             foreach (var name in JsonUtility.GetPropertyNames(typeof(InputMetadata)))
             {

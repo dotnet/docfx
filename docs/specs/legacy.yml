@@ -154,6 +154,7 @@ outputs:
         "!bilingual": null,
         "!content": null,
         "!schema_type": null,
+        "!author_info": null
       },
       {
         "url": "/rawmetadata/d.png"
