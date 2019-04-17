@@ -28,7 +28,22 @@ namespace Microsoft.Docs.Build
             LoadCommitsTime(docset);
         }
 
-        public async Task<(List<Error> error, Contributor author, List<Contributor> contributors, DateTime updatedAt)> GetAuthorAndContributors(
+        public async Task<(List<Error> errors, ContributionInfo contributionInfo)> GetContributionInfo(Document document, SourceInfo<string> authorName)
+        {
+            var (errors, author, contributors, updatedAt) = await GetAuthorAndContributors(document, authorName);
+
+            return (errors, updatedAt != default
+                ? new ContributionInfo
+                {
+                    Contributors = contributors ?? new List<Contributor>(),
+                    UpdateAt = updatedAt.ToString(document.Docset.Culture.DateTimeFormat.ShortDatePattern),
+                    UpdatedAtDateTime = updatedAt,
+                    Author = author,
+                }
+                : null);
+        }
+
+        private async Task<(List<Error> error, Contributor author, List<Contributor> contributors, DateTime updatedAt)> GetAuthorAndContributors(
             Document document,
             SourceInfo<string> authorName)
         {

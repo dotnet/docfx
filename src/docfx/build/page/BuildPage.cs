@@ -33,13 +33,17 @@ namespace Microsoft.Docs.Build
             model.Locale = file.Docset.Locale;
             model.TocRel = tocMap.FindTocRelativePath(file);
             model.CanonicalUrl = file.CanonicalUrl;
-            model.Bilingual = file.Docset.Config.Localization.Bilingual;
+            model.EnableLocSxs = file.Docset.Config.Localization.Bilingual;
+            model.SiteName = file.Docset.Config.SiteName;
 
             (model.DocumentId, model.DocumentVersionIndependentId) = file.Docset.Redirections.TryGetDocumentId(file, out var docId) ? docId : file.Id;
             (model.ContentGitUrl, model.OriginalContentGitUrl, model.OriginalContentGitUrlTemplate, model.Gitcommit) = context.ContributionProvider.GetGitUrls(file);
 
             List<Error> contributorErrors;
-            (contributorErrors, model.AuthorInfo, model.Contributors, model.UpdatedAt) = await context.ContributionProvider.GetAuthorAndContributors(file, model.Author);
+            (contributorErrors, model.ContributionInfo) = await context.ContributionProvider.GetContributionInfo(file, model.Author);
+            model.Author = model.ContributionInfo?.Author?.Name == null ? null : new SourceInfo<string>(model.ContributionInfo?.Author?.Name, model.Author);
+            model.UpdatedAt = model.ContributionInfo?.UpdatedAtDateTime.ToString("yyyy-MM-dd hh:mm tt");
+
             if (contributorErrors != null)
                 errors.AddRange(contributorErrors);
 
