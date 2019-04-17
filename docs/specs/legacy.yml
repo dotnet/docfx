@@ -95,6 +95,11 @@ repos:
       d.png:
       TOC.md: |
         # [c](c.md)
+      index.yml: |
+        ### YamlMime:YamlDocument
+        documentType: LandingData
+        metadata:
+          document_id: abc
   https://docs.com/template1:
   - files:
       readme.md:
@@ -102,6 +107,7 @@ outputs:
   rawmetadata/c.json:
   rawmetadata/d.png:
   rawmetadata/toc.json:
+  rawmetadata/index.json:
   .publish.json: |
     {"files": [
       {
@@ -140,7 +146,7 @@ outputs:
           }
         },
         "content_git_url": "https://github.com/a/rawmetadata/blob/master/c.md",
-        "gitcommit": "https://github.com/a/rawmetadata/blob/46bdeaedc9aa13db3b990a3a5e2af35fa24930ac/c.md",
+        "gitcommit": "https://github.com/a/rawmetadata/blob/ff3949c8ae50dd622cd7c67952c8b020c93636a6/c.md",
         "original_content_git_url": "https://github.com/a/rawmetadata/blob/master/c.md",
         "original_content_git_url_template": "{repo}/blob/{branch}/c.md",
         "!metadata": null,
@@ -151,11 +157,17 @@ outputs:
       },
       {
         "url": "/rawmetadata/d.png"
-      }, 
+      },
+      {
+        "url": "/rawmetadata/",
+        "document_id": "b3c1f04b-5bdb-1c10-5237-024cf382b4cc",
+        "_path": "index.json"
+      },
       {
         "url": "/rawmetadata/toc.json"
       }]
     }
+  build.log:
 ---
 # Resolve link for landing page
 inputs:
