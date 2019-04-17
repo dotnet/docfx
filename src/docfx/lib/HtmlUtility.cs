@@ -201,7 +201,7 @@ namespace Microsoft.Docs.Build
                 var resolvedNode = new HtmlDocument();
                 if (string.IsNullOrEmpty(resolvedHref))
                 {
-                    if (raw.StartsWith("@"))
+                    if (raw?.StartsWith("@") != false)
                     {
                         errors.Add(Errors.AtUidNotFound(file, xref.Value, new SourceInfo<string>(html, new SourceInfo(file, lineNumber, s_getValueStartIndex(xref)))));
                     }
@@ -213,7 +213,7 @@ namespace Microsoft.Docs.Build
                 }
                 else
                 {
-                    resolvedNode.LoadHtml($"<a href='{HttpUtility.HtmlEncode(resolvedHref)}'>{display}</a>");
+                    resolvedNode.LoadHtml($"<a href='{HttpUtility.HtmlEncode(resolvedHref)}'>{HttpUtility.HtmlEncode(display)}</a>");
                 }
                 replacingNodes.Add((node, resolvedNode.DocumentNode));
             }
