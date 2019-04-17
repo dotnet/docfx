@@ -54,9 +54,9 @@ inputs:
   docs/b.md:
 outputs:
   docs/a.json: |
-    { "metadata": { "key": "value" } }
+    { "key": "value" }
   docs/b.json: |
-    { "metadata": { "key": "value" } }
+    { "key": "value"}
 ---
 # Global metadata multiple keys
 inputs:
@@ -68,9 +68,9 @@ inputs:
   docs/b.md:
 outputs:
   docs/a.json: |
-    { "metadata": { "key1": "value", "key2": 2 } }
+    { "key1": "value", "key2": 2 }
   docs/b.json: |
-    { "metadata": { "key1": "value", "key2": 2 } }
+    { "key1": "value", "key2": 2 }
 ---
 # Global metadata schema violation
 inputs:
@@ -97,11 +97,11 @@ inputs:
   docs/index.md:
 outputs:
   docs/a.json: |
-    { "metadata": { "key": "value" } }
+    { "key": "value" }
   docs/b.json: |
-    { "metadata": { "key": "value" } }
+    { "key": "value" }
   docs/index.json: |
-    { "metadata": { "key": "another value" } }
+    { "key": "another value" }
 ---
 # File metadata overwrite global metadata
 inputs:
@@ -114,7 +114,7 @@ inputs:
   docs/a.md:
 outputs:
   docs/a.json: |
-    { "metadata": { "key": "another value" } }
+    { "key": "another value" }
 ---
 # String values are trimmed in config
 inputs:
@@ -128,7 +128,7 @@ inputs:
 outputs:
   docs/a.json: |
     {
-      "metadata": { "key": "value" },
+      "key": "value",
       "content": "<p><a href=\"/absolute/path?a#b\">redirect</a></p>"
     }
 ---

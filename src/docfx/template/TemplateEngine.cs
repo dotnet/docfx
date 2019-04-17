@@ -104,7 +104,7 @@ namespace Microsoft.Docs.Build
             return new TemplateEngine(themePath, docset.Locale);
         }
 
-        public string Render(PageModel model, Document file, JObject rawMetadata)
+        public string Render(OutputModel model, Document file, JObject rawMetadata)
         {
             // TODO: only works for conceptual
             var content = model.Content.ToString();
@@ -125,7 +125,7 @@ namespace Microsoft.Docs.Build
             return _liquid.Render(layout, liquidModel);
         }
 
-        public (TemplateModel model, JObject metadata) Transform(PageModel pageModel, JObject rawMetadata)
+        public (TemplateModel model, JObject metadata) Transform(OutputModel pageModel, JObject rawMetadata)
         {
             rawMetadata = TransformPageMetadata(rawMetadata, pageModel);
             var metadata = CreateMetadata(rawMetadata);
@@ -164,14 +164,10 @@ namespace Microsoft.Docs.Build
             return Global[key]?.ToString();
         }
 
-        public JObject CreateRawMetadata(PageModel pageModel, Document file)
+        public JObject CreateRawMetadata(OutputModel pageModel, Document file)
         {
             var docset = file.Docset;
-            var rawMetadata = new JObject();
-            JsonUtility.Merge(rawMetadata, JsonUtility.ToJObject(pageModel.Metadata ?? new FileMetadata()));
-            JsonUtility.Merge(rawMetadata, JsonUtility.ToJObject(pageModel));
-
-            rawMetadata.Remove("metadata");
+            var rawMetadata = JsonUtility.ToJObject(pageModel);
 
             rawMetadata["depot_name"] = $"{docset.Config.Product}.{docset.Config.Name}";
 
@@ -215,14 +211,15 @@ namespace Microsoft.Docs.Build
                     ["update_at"] = pageModel.UpdatedAt.ToString(docset.Culture.DateTimeFormat.ShortDatePattern),
                     ["updated_at_date_time"] = pageModel.UpdatedAt,
                 };
-                if (pageModel.Author != null)
+                if (pageModel.AuthorInfo != null)
                 {
-                    rawMetadata["_op_gitContributorInformation"]["author"] = ToJObject(pageModel.Author);
+                    rawMetadata["_op_gitContributorInformation"]["author"] = ToJObject(pageModel.AuthorInfo);
                 }
             }
+            rawMetadata.Remove("author_info");
 
-            if (!string.IsNullOrEmpty(pageModel.Author?.Name))
-                rawMetadata["author"] = pageModel.Author?.Name;
+            if (!string.IsNullOrEmpty(pageModel.AuthorInfo?.Name))
+                rawMetadata["author"] = pageModel.AuthorInfo?.Name;
             rawMetadata.Remove("contributors");
 
             if (pageModel.UpdatedAt != default)
@@ -238,7 +235,7 @@ namespace Microsoft.Docs.Build
         public JObject TransformTocMetadata(object model)
             => TransformMetadata("toc.json.js", JsonUtility.ToJObject(model));
 
-        private JObject TransformPageMetadata(JObject rawMetadata, PageModel pageModel)
+        private JObject TransformPageMetadata(JObject rawMetadata, OutputModel pageModel)
         {
             return RemoveUpdatedAtDateTime(
                 TransformSchema(
@@ -256,7 +253,7 @@ namespace Microsoft.Docs.Build
             return JObject.Parse(((JObject)_js.Run(scriptPath, "transform", model)).Value<string>("content"));
         }
 
-        private static JObject TransformSchema(JObject metadata, PageModel model)
+        private static JObject TransformSchema(JObject metadata, OutputModel model)
         {
             switch (model.SchemaType)
             {

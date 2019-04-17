@@ -20,18 +20,17 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(file.ContentType == ContentType.Page);
 
-            var (errors, schema, model, metadata) = await Load(context, file, buildChild);
+            var (errors, schema, model) = await Load(context, file, buildChild);
 
-            if (!string.IsNullOrEmpty(metadata.BreadcrumbPath))
+            if (!string.IsNullOrEmpty(model.BreadcrumbPath))
             {
-                var (breadcrumbError, breadcrumbPath, _) = context.DependencyResolver.ResolveLink(metadata.BreadcrumbPath, file, file, buildChild);
+                var (breadcrumbError, breadcrumbPath, _) = context.DependencyResolver.ResolveLink(model.BreadcrumbPath, file, file, buildChild);
                 errors.AddIfNotNull(breadcrumbError);
-                metadata.BreadcrumbPath.Value = breadcrumbPath;
+                model.BreadcrumbPath.Value = breadcrumbPath;
             }
 
             model.SchemaType = schema.Name;
             model.Locale = file.Docset.Locale;
-            model.Metadata = metadata;
             model.TocRel = tocMap.FindTocRelativePath(file);
             model.CanonicalUrl = file.CanonicalUrl;
             model.Bilingual = file.Docset.Config.Localization.Bilingual;
@@ -40,7 +39,7 @@ namespace Microsoft.Docs.Build
             (model.ContentGitUrl, model.OriginalContentGitUrl, model.OriginalContentGitUrlTemplate, model.Gitcommit) = context.ContributionProvider.GetGitUrls(file);
 
             List<Error> contributorErrors;
-            (contributorErrors, model.Author, model.Contributors, model.UpdatedAt) = await context.ContributionProvider.GetAuthorAndContributors(file, metadata.Author);
+            (contributorErrors, model.AuthorInfo, model.Contributors, model.UpdatedAt) = await context.ContributionProvider.GetAuthorAndContributors(file, model.Author);
             if (contributorErrors != null)
                 errors.AddRange(contributorErrors);
 
@@ -78,7 +77,7 @@ namespace Microsoft.Docs.Build
             return (errors, publishItem);
         }
 
-        private static async Task<(List<Error> errors, Schema schema, PageModel model, FileMetadata metadata)>
+        private static async Task<(List<Error> errors, Schema schema, OutputModel model)>
             Load(Context context, Document file, Action<Document> buildChild)
         {
             if (file.FilePath.EndsWith(".md", PathUtility.PathComparison))
@@ -94,7 +93,7 @@ namespace Microsoft.Docs.Build
             return await LoadJson(context, file, buildChild);
         }
 
-        private static (List<Error> errors, Schema schema, PageModel model, FileMetadata metadata)
+        private static (List<Error> errors, Schema schema, OutputModel model)
             LoadMarkdown(Context context, Document file, Action<Document> buildChild)
         {
             var errors = new List<Error>();
@@ -104,10 +103,10 @@ namespace Microsoft.Docs.Build
             var (yamlHeaderErrors, yamlHeader) = ExtractYamlHeader.Extract(file, context);
             errors.AddRange(yamlHeaderErrors);
 
-            var (metaErrors, fileMetadata) = context.MetadataProvider.GetFileMetadata(file, yamlHeader);
+            var (metaErrors, pageModel) = context.MetadataProvider.GetInputMetadata<OutputModel>(file, yamlHeader);
             errors.AddRange(metaErrors);
 
-            var (error, monikers) = context.MonikerProvider.GetFileLevelMonikers(file, fileMetadata.MonikerRange);
+            var (error, monikers) = context.MonikerProvider.GetFileLevelMonikers(file, pageModel.MonikerRange);
             errors.AddIfNotNull(error);
 
             // TODO: handle blank page
@@ -130,21 +129,18 @@ namespace Microsoft.Docs.Build
                 errors.Add(Errors.HeadingNotFound(file));
             }
 
-            var model = new PageModel
-            {
-                Content = HtmlPostProcess(file, htmlDom),
-                Title = yamlHeader.Value<string>("title") ?? title,
-                RawTitle = rawTitle,
-                WordCount = wordCount,
-                Monikers = monikers,
-            };
+            pageModel.Content = HtmlPostProcess(file, htmlDom);
+            pageModel.Title = yamlHeader.Value<string>("title") ?? title;
+            pageModel.RawTitle = rawTitle;
+            pageModel.WordCount = wordCount;
+            pageModel.Monikers = monikers;
 
             context.BookmarkValidator.AddBookmarks(file, bookmarks);
 
-            return (errors, Schema.Conceptual, model, fileMetadata);
+            return (errors, Schema.Conceptual, pageModel);
         }
 
-        private static async Task<(List<Error> errors, Schema schema, PageModel model, FileMetadata metadata)>
+        private static async Task<(List<Error> errors, Schema schema, OutputModel model)>
             LoadYaml(Context context, Document file, Action<Document> buildChild)
         {
             var (errors, token) = YamlUtility.Parse(file, context);
@@ -152,7 +148,7 @@ namespace Microsoft.Docs.Build
             return await LoadSchemaDocument(context, errors, token, file, buildChild);
         }
 
-        private static async Task<(List<Error> errors, Schema schema, PageModel model, FileMetadata metadata)>
+        private static async Task<(List<Error> errors, Schema schema, OutputModel model)>
             LoadJson(Context context, Document file, Action<Document> buildChild)
         {
             var (errors, token) = JsonUtility.Parse(file, context);
@@ -160,7 +156,7 @@ namespace Microsoft.Docs.Build
             return await LoadSchemaDocument(context, errors, token, file, buildChild);
         }
 
-        private static async Task<(List<Error> errors, Schema schema, PageModel model, FileMetadata metadata)>
+        private static async Task<(List<Error> errors, Schema schema, OutputModel model)>
             LoadSchemaDocument(Context context, List<Error> errors, JToken token, Document file, Action<Document> buildChild)
         {
             // TODO: for backward compatibility, when #YamlMime:YamlDocument, documentType is used to determine schema.
@@ -195,18 +191,15 @@ namespace Microsoft.Docs.Build
                 content = HtmlPostProcess(file, HtmlUtility.LoadHtml(html));
             }
 
-            var (metaErrors, fileMetadata) = context.MetadataProvider.GetFileMetadata(file, yamlHeader);
+            var (metaErrors, pageModel) = context.MetadataProvider.GetInputMetadata<OutputModel>(file, yamlHeader);
             errors.AddRange(metaErrors);
 
-            var model = new PageModel
-            {
-                Content = content,
-                Title = title,
-                RawTitle = file.Docset.Legacy ? $"<h1>{obj?.Value<string>("title")}</h1>" : null,
-                Monikers = new List<string>(),
-            };
+            pageModel.Content = content;
+            pageModel.Title = title;
+            pageModel.RawTitle = file.Docset.Legacy ? $"<h1>{obj?.Value<string>("title")}</h1>" : null;
+            pageModel.Monikers = new List<string>();
 
-            return (errors, schema, model, fileMetadata);
+            return (errors, schema, pageModel);
         }
 
         private static string HtmlPostProcess(Document file, HtmlNode html)
@@ -227,9 +220,9 @@ namespace Microsoft.Docs.Build
             return LocalizationUtility.AddLeftToRightMarker(file.Docset, html.OuterHtml);
         }
 
-        private static (object output, JObject extensionData) ApplyTemplate(Context context, Document file, PageModel model, bool isPage)
+        private static (object output, JObject extensionData) ApplyTemplate(Context context, Document file, OutputModel model, bool isPage)
         {
-            var rawMetadata = context.Template is null ? JsonUtility.ToJObject(model.Metadata) : context.Template.CreateRawMetadata(model, file);
+            var rawMetadata = context.Template is null ? model.ExtensionData : context.Template.CreateRawMetadata(model, file);
 
             if (!file.Docset.Config.Output.Json && context.Template != null)
             {

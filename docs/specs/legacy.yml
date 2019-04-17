@@ -154,6 +154,7 @@ outputs:
         "!bilingual": null,
         "!content": null,
         "!schema_type": null,
+        "!author_info": null
       },
       {
         "url": "/rawmetadata/d.png"
@@ -242,7 +243,7 @@ inputs:
       key2: value2
 outputs:
   docs/a.raw.page.json: |
-    {"metadata":{"key1":"value1","key2":"value2"}}
+    {"key1":"value1","key2":"value2"}
 ---
 # Context object type is TOC
 commands:

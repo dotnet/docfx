@@ -11,7 +11,7 @@ inputs:
     ---
 outputs:
   docs/a.json: |
-    { "metadata": { "key": "header", "KEY": "HEADER" } }
+    { "key": "header", "KEY": "HEADER" }
 ---
 # Preserve null custom metadata
 inputs:
@@ -22,7 +22,7 @@ inputs:
     ---
 outputs:
   docs/a.json: |
-    { "metadata": { "ms.custom-metadata": null } }
+    { "ms.custom-metadata": null }
   build.log: |
     ["info","null-value","'ms.custom-metadata' contains null value","docs/a.md",2,1]
 ---
@@ -416,6 +416,5 @@ inputs:
   breadcrumbs/TOC.json: '{}'
 outputs:
   a.json: |
-    metadata:
-      breadcrumb_path: breadcrumbs/toc.json
+    breadcrumb_path: breadcrumbs/toc.json
   breadcrumbs/toc.json:

@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -26,7 +27,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public (List<Error> errors, FileMetadata metadata) GetFileMetadata(Document file, JObject yamlHeader = null)
+        public (List<Error> errors, T metadata) GetInputMetadata<T>(Document file, JObject yamlHeader = null) where T : InputMetadata
         {
             Debug.Assert(file != null);
 
@@ -52,7 +53,7 @@ namespace Microsoft.Docs.Build
             }
 
             // We are validating against the merged JObject so discard the validation result here.
-            var (_, obj) = JsonUtility.ToObject<FileMetadata>(result);
+            var (_, obj) = JsonUtility.ToObject<T>(result);
             return (errors, obj);
         }
     }
