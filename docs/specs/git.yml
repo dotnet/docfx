@@ -30,13 +30,16 @@ inputs:
 outputs:
   docs/index.json: |
     {
-      "author_info": 
-        { "name": "charlie", "profile_url": "https://github.com/charlie", "display_name": "Charlie", "id": "3" },
-      "contributors": [
-        { "name": "bob", "profile_url": "https://github.com/bob", "display_name": "Bob", "id": "2" },
-        { "name": "alice", "profile_url": "https://github.com/alice", "display_name": "Alice", "id": "1" }
-      ],
-      "updated_at": "2018-01-01T00:00:00.0000000"
+      "_op_gitContributorInformation":
+      {
+        "author":
+          { "name": "charlie", "profile_url": "https://github.com/charlie", "display_name": "Charlie", "id": "3" },
+        "contributors": [
+          { "name": "bob", "profile_url": "https://github.com/bob", "display_name": "Bob", "id": "2" },
+          { "name": "alice", "profile_url": "https://github.com/alice", "display_name": "Alice", "id": "1" }
+        ]
+      },
+      "updated_at": "2018-01-01 12:00 AM"
     }
 ---
 # Show git contribution info when userProfile & commitsTime is set to relative file path
@@ -82,13 +85,16 @@ inputs:
 outputs:
   docs/index.json: |
     {
-      "author_info": 
-        { "name": "charlie", "profile_url": "https://github.com/charlie", "display_name": "Charlie", "id": "3" },
-      "contributors": [
-        { "name": "bob", "profile_url": "https://github.com/bob", "display_name": "Bob", "id": "2" },
-        { "name": "alice", "profile_url": "https://github.com/alice", "display_name": "Alice", "id": "1" }
-      ],
-      "updated_at": "2018-01-01T00:00:00.0000000"
+      "_op_gitContributorInformation":
+      {
+        "author":
+          { "name": "charlie", "profile_url": "https://github.com/charlie", "display_name": "Charlie", "id": "3" },
+        "contributors": [
+          { "name": "bob", "profile_url": "https://github.com/bob", "display_name": "Bob", "id": "2" },
+          { "name": "alice", "profile_url": "https://github.com/alice", "display_name": "Alice", "id": "1" }
+        ]
+      },
+      "updated_at": "2018-01-01 12:00 AM"
     }
 ---
 # Specify invalid author in YAML header should log warning
@@ -144,12 +150,15 @@ inputs:
 outputs:
   docs/index.json: |
     {
-      "author_info": 
-        { "name": "charlie", "profile_url": "https://github.com/charlie", "display_name": "Charlie", "id": "3" },
-      "contributors": [
-        { "name": "bob", "profile_url": "https://github.com/bob", "display_name": "Bob", "id": "2" },
-        { "name": "alice", "profile_url": "https://github.com/alice", "display_name": "Alice", "id": "1" }
-      ]
+      "_op_gitContributorInformation":
+      {
+        "author": 
+          { "name": "charlie", "profile_url": "https://github.com/charlie", "display_name": "Charlie", "id": "3" },
+        "contributors": [
+          { "name": "bob", "profile_url": "https://github.com/bob", "display_name": "Bob", "id": "2" },
+          { "name": "alice", "profile_url": "https://github.com/alice", "display_name": "Alice", "id": "1" }
+        ]
+      }
     }
 ---
 # Author is case-insensitive
@@ -193,9 +202,12 @@ inputs:
 outputs:
   docs/index.json: |
     {
-      "author_info": 
-        { "name": "charlie", "profile_url": "https://github.com/charlie", "display_name": "Charlie", "id": "3" },
-      "!contributors": null
+      "_op_gitContributorInformation":
+      {
+        "author": 
+          { "name": "charlie", "profile_url": "https://github.com/charlie", "display_name": "Charlie", "id": "3" },
+        "!contributors": null
+      }
     }
 ---
 # Use the earliest contributor as author if author not specified in YAML header
@@ -225,8 +237,11 @@ inputs:
 outputs:
   docs/index.json: |
     {
-      "author_info": 
-        { "name": "alice", "profile_url": "https://github.com/alice", "display_name": "Alice", "id": "1" },
+      "_op_gitContributorInformation":
+      {
+        "author": 
+          { "name": "alice", "profile_url": "https://github.com/alice", "display_name": "Alice", "id": "1" },
+      }
     }
 ---
 # Author can NOT be excluded if explicitly specified in YAML header, it's case insensitive
@@ -268,12 +283,15 @@ inputs:
 outputs:
   docs/index.json: |
     {
-      "author_info":
-        { "name": "charlie", "profile_url": "https://github.com/charlie", "display_name": "Charlie", "id": "3" },
-      "contributors": [
-        { "name": "bob", "profile_url": "https://github.com/bob", "display_name": "Bob", "id": "2" },
-        { "name": "alice", "profile_url": "https://github.com/alice", "display_name": "Alice", "id": "1" }
-      ],
+      "_op_gitContributorInformation":
+      {
+        "author":
+          { "name": "charlie", "profile_url": "https://github.com/charlie", "display_name": "Charlie", "id": "3" },
+        "contributors": [
+          { "name": "bob", "profile_url": "https://github.com/bob", "display_name": "Bob", "id": "2" },
+          { "name": "alice", "profile_url": "https://github.com/alice", "display_name": "Alice", "id": "1" }
+        ]
+      },
     }
 ---
 # Author CAN be excluded if implicitly extracted from commit history
@@ -345,7 +363,7 @@ inputs:
 outputs:
   docs/index.json: |
     {
-      "updated_at": "2018-01-01T00:00:00Z",
+      "updated_at": "2018-01-01 12:00 AM",
     }
 ---
 # Support git submodule
@@ -354,12 +372,12 @@ outputs:
   readme.json: |
     {
       "gitcommit": "https://github.com/docascode/docfx-test-dependencies/blob/c467c848311ccd2550fdb25a77ef26f9d8a33d00/README.md",
-      "updated_at": "2018-04-23T03:23:37Z"
+      "updated_at": "2018-04-23 03:23 AM"
     }
   docfx-test-submodule/readme.json: |
     {
       "gitcommit": "https://github.com/docascode/docfx-test-submodule/blob/b6601c200859547c7fcd44a44788f77a08576505/README.md",
-      "updated_at": "2018-07-18T05:03:26Z"
+      "updated_at": "2018-07-18 05:03 AM"
     }
 ---
 # Throw committish-not-found when try to resolve commit id by none-existing branch name
@@ -482,11 +500,14 @@ environments:
 outputs:
   docs/index.json: |
     {
-      "author_info": 
-        { "name": "charlie", "profile_url": "https://github.com/charlie", "display_name": "Charlie", "id": "3" },
-      "contributors": [
-        { "name": "bob", "profile_url": "https://github.com/bob", "display_name": "Bob", "id": "2" },
-        { "name": "OsmondJiang", "profile_url": "https://github.com/OsmondJiang", "display_name": "osmondjiang", "id": "19990166" }
-      ],
-      "updated_at": "2018-01-01T00:00:00.0000000"
+      "_op_gitContributorInformation":
+      {
+        "author": 
+          { "name": "charlie", "profile_url": "https://github.com/charlie", "display_name": "Charlie", "id": "3" },
+        "contributors": [
+          { "name": "bob", "profile_url": "https://github.com/bob", "display_name": "Bob", "id": "2" },
+          { "name": "OsmondJiang", "profile_url": "https://github.com/OsmondJiang", "display_name": "osmondjiang", "id": "19990166" }
+        ]
+      },
+      "updated_at": "2018-01-01 12:00 AM"
     }
