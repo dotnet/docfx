@@ -29,6 +29,9 @@ namespace Microsoft.Docs.Build
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
             serializer.Serialize(writer, ((SourceInfo)value)?.GetValue());
+            //if (((SourceInfo)value)?.GetValue() != null)
+            //{
+            //}
         }
     }
 }
