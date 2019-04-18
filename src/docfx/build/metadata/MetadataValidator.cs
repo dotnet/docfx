@@ -33,7 +33,7 @@ namespace Microsoft.Docs.Build
                 {
                     var type = s_fileMetadataTypes.GetOrAdd(
                        key,
-                       new Lazy<Type>(() => typeof(FileMetadata).GetProperty(key, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance)?.PropertyType));
+                       new Lazy<Type>(() => typeof(InputMetadata).GetProperty(key, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance)?.PropertyType));
                     if (type.Value is null)
                         continue;
                     var values = token as IEnumerable<KeyValuePair<string, JToken>>;
@@ -63,13 +63,13 @@ namespace Microsoft.Docs.Build
             {
                 if (s_reservedNames.Contains(key))
                 {
-                    errors.Add(Errors.ReservedMetadata(JsonUtility.ToSourceInfo(token), key, token.Path));
+                    errors.Add(Errors.ReservedMetadata(JsonUtility.GetSourceInfo(token), key, token.Path));
                 }
             }
 
             if (!errors.Any())
             {
-                var (schemaErrors, _) = JsonUtility.ToObject<FileMetadata>(metadata);
+                var (schemaErrors, _) = JsonUtility.ToObject<InputMetadata>(metadata);
                 errors.AddRange(schemaErrors);
             }
             return errors;
@@ -88,9 +88,9 @@ namespace Microsoft.Docs.Build
                 "is_dynamic_rendering", "need_preview_pull_request", "moniker_type", "is_significant_update", "document_version_independent_id", "serviceData", "is_hidden",
             };
 
-            var blackList = new HashSet<string>(JsonUtility.GetPropertyNames(typeof(PageModel)).Concat(legacyBlackList));
+            var blackList = new HashSet<string>(JsonUtility.GetPropertyNames(typeof(OutputModel)).Concat(legacyBlackList));
 
-            foreach (var name in JsonUtility.GetPropertyNames(typeof(FileMetadata)))
+            foreach (var name in JsonUtility.GetPropertyNames(typeof(InputMetadata)))
             {
                 blackList.Remove(name);
             }

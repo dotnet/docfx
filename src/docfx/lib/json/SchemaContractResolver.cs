@@ -7,6 +7,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 
 namespace Microsoft.Docs.Build
@@ -55,7 +56,7 @@ namespace Microsoft.Docs.Build
 
             public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
             {
-                var source = JsonUtility.ToSourceInfo((IJsonLineInfo)reader);
+                var source = reader is JTokenReader tokenReader ? JsonUtility.GetSourceInfo(tokenReader.CurrentToken) : null;
                 var value = serializer.Deserialize(reader, objectType);
                 if (value is null)
                 {

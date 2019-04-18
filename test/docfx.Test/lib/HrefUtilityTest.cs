@@ -17,10 +17,6 @@ namespace Microsoft.Docs.Build
         [InlineData("a#b?c=d", "a", "", "#b?c=d")]
         [InlineData("a?b#c?d=e", "a", "?b", "#c?d=e")]
         [InlineData("a?b#c#d", "a", "?b", "#c#d")]
-        [InlineData("a####b", "a", "", "#b")]
-        [InlineData("a?b###c#d", "a", "?b", "#c#d")]
-        [InlineData("a?b##d", "a", "?b", "#d")]
-        [InlineData("a###b?c=d", "a", "", "#b?c=d")]
         public static void SplitHref(string href, string path, string query, string fragment)
         {
             var (apath, aquery, afragment) = HrefUtility.SplitHref(href);

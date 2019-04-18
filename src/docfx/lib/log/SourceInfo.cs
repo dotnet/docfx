@@ -5,6 +5,8 @@ namespace Microsoft.Docs.Build
 {
     public class SourceInfo
     {
+        public static readonly SourceInfo Empty = new SourceInfo(null, 0, 0);
+
         /// <summary>
         /// Path to the source file.
         /// </summary>

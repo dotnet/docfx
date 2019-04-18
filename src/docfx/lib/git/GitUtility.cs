@@ -218,11 +218,18 @@ namespace Microsoft.Docs.Build
 
         public static void CheckMergeConflictMarker(string content, string file)
         {
-            if ((content.StartsWith("<<<<<<<") || content.Contains("\n<<<<<<<")) &&
-                content.Contains("\n>>>>>>>") &&
-                content.Contains("\n======="))
+            var start = content.StartsWith("<<<<<<<") ? 0 : content.IndexOf("\n<<<<<<<");
+            if (start >= 0 && content.Contains("\n>>>>>>>") && content.Contains("\n======="))
             {
-                throw Errors.MergeConflict(file).ToException();
+                var line = 1;
+                for (var i = 0; i <= start; i++)
+                {
+                    if (content[i] == '\n')
+                        line++;
+                }
+
+                var source = new SourceInfo(file, line, 1);
+                throw Errors.MergeConflict(source).ToException();
             }
         }
 

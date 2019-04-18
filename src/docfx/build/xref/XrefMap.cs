@@ -65,7 +65,7 @@ namespace Microsoft.Docs.Build
             }
             else
             {
-                return (Errors.UidNotFound(rootFile, uid, href), null, null, null);
+                return (Errors.UidNotFound(rootFile.FilePath, uid, href), null, null, null);
             }
 
             // fallback order:
@@ -291,7 +291,7 @@ namespace Microsoft.Docs.Build
                     var (yamlHeaderErrors, yamlHeader) = ExtractYamlHeader.Extract(file, context);
                     errors.AddRange(yamlHeaderErrors);
 
-                    var (fileMetaErrors, fileMetadata) = context.MetadataProvider.GetMetadata<FileMetadata>(file, yamlHeader);
+                    var (fileMetaErrors, fileMetadata) = context.MetadataProvider.GetInputMetadata<InputMetadata>(file, yamlHeader);
                     errors.AddRange(fileMetaErrors);
 
                     if (!string.IsNullOrEmpty(fileMetadata.Uid))
@@ -336,7 +336,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static (Error error, InternalXrefSpec spec, Document doc) LoadMarkdown(Context context, FileMetadata metadata, Document file)
+        private static (Error error, InternalXrefSpec spec, Document doc) LoadMarkdown(Context context, InputMetadata metadata, Document file)
         {
             var xref = new InternalXrefSpec
             {

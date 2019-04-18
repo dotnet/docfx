@@ -32,7 +32,7 @@ namespace Microsoft.Docs.Build
             "invalid-toc-level", "redirection-out-of-scope", "moniker-config-missing",
             "empty-monikers", "circular-reference", "moniker-overlapping",
             "redirection-is-empty", "invalid-locale", "link-out-of-scope",
-            "merge-conflict", "invalid-topic-href",
+            "invalid-topic-href",
             "redirected-id-conflict", "schema-not-found"
         };
 
@@ -383,7 +383,7 @@ namespace Microsoft.Docs.Build
                     {
                         TestUtility.VerifyJsonContainEquals(
                             // Test expectation can use YAML for readability
-                            content.StartsWith("{") ? JToken.Parse(content) : YamlUtility.Parse(content).Item2,
+                            content.StartsWith("{") ? JToken.Parse(content) : YamlUtility.Parse(content, null).Item2,
                             JToken.Parse(File.ReadAllText(file)));
                     }
                     break;

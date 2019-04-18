@@ -246,7 +246,7 @@ namespace Microsoft.Docs.Build
         public void TestEmptyString()
         {
             var json = string.Empty;
-            var exception = Assert.Throws<DocfxException>(() => JsonUtility.Parse(json));
+            var exception = Assert.Throws<DocfxException>(() => JsonUtility.Parse(json, null));
         }
 
         [Theory]
@@ -283,7 +283,7 @@ namespace Microsoft.Docs.Build
 ""nestedSealedMember"": {""unknown"": 1}}]", 5, 33, ErrorLevel.Warning, "unknown-field", typeof(List<NotSealedClass>))]
         internal void TestUnknownFieldType(string json, int expectedLine, int expectedColumn, ErrorLevel expectedErrorLevel, string expectedErrorCode, Type type)
         {
-            var (_, token) = JsonUtility.Parse(json);
+            var (_, token) = JsonUtility.Parse(json, null);
             var (errors, result) = JsonUtility.ToObject(token, type);
             Assert.Collection(errors, error =>
             {
@@ -361,7 +361,7 @@ namespace Microsoft.Docs.Build
 ""e"": ""e""}]", typeof(List<NotSealedClass>))]
         public void TestObjectTypeWithNotSealedType(string json, Type type)
         {
-            var (_, token) = JsonUtility.Parse(json);
+            var (_, token) = JsonUtility.Parse(json, null);
             var (errors, value) = JsonUtility.ToObject(token, type);
             Assert.Empty(errors);
         }
@@ -571,7 +571,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         private static (List<Error>, T) DeserializeWithValidation<T>(string input)
         {
-            var (errors, token) = JsonUtility.Parse(input);
+            var (errors, token) = JsonUtility.Parse(input, null);
             var (mismatchingErrors, result) = JsonUtility.ToObject<T>(token);
             errors.AddRange(mismatchingErrors);
             return (errors, result);
