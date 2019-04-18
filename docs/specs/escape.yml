@@ -109,3 +109,35 @@ outputs:
     ["warning","include-not-found","Cannot resolve 'a&amp;amp;b.md' relative to 'includes.md'.","includes.md",4,1]
   .publish.json:
 ---
+# Handle encoding in xref resolving
+inputs:
+  docfx.yml:
+  a.json: |
+    {
+      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
+      "uid": "a&b",
+      "name": "test",
+      "fullName": "test.test",
+      "summary": "<some text &>"
+    }
+  html-xref.md: |
+    Link to [text](xref:a&b?displayProperty=summary)
+    Link to <xref href="a&b?displayProperty=summary" />
+    Link to <xref:a&b?displayProperty=summary>
+    Link to @a&b?displayProperty=summary
+    Link to @a&c
+outputs:
+  a.json:
+  html-xref.json: |
+    {"content":
+        "
+          <p>
+            Link to <a href=\"a.json\">text</a>
+            Link to <a href='a.json'>&lt;p&gt;&amp;lt;some text &amp;amp;&amp;gt;&lt;/p&gt;\n</a>
+            Link to <a href=\"a.json\">&lt;p&gt;&amp;lt;some text &amp;amp;&amp;gt;&lt;/p&gt;\n</a>
+            Link to <a href=\"a.json\">&lt;p&gt;&amp;lt;some text &amp;amp;&amp;gt;&lt;/p&gt;\n</a>
+            Link to @a&amp;c
+          </p>
+        "}
+  build.log: |
+    ["info","at-uid-not-found","Cannot find uid 'a&c' using xref '@a&c'","html-xref.md",5,10]
