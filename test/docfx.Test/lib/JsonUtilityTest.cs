@@ -557,9 +557,9 @@ namespace Microsoft.Docs.Build
         [Fact]
         public void TestSerializeSourceInfoWithNullValue()
         {
-            var contributionInfo = new ContributionConfig
+            var basic = new BasicClass { B = 1, Property = new SourceInfo<string>(null, new SourceInfo(string.Empty, 0, 0)) };
             var result = JsonUtility.Serialize(basic);
-            Assert.Equal("", result);
+            Assert.Equal("{\"b\":1,\"d\":false}", result);
         }
 
         /// <summary>
@@ -591,6 +591,8 @@ namespace Microsoft.Docs.Build
             public int B { get; set; }
 
             public bool D { get; set; }
+
+            public SourceInfo<string> Property { get; set; }
         }
 
         public sealed class AnotherBasicClass

@@ -30,13 +30,21 @@ namespace Microsoft.Docs.Build
         protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
         {
             var prop = base.CreateProperty(member, memberSerialization);
-            ShouldNotSerializeEmptyArray();
+            ShouldNotSerialize();
             SetFieldWritable();
             return prop;
 
-            void ShouldNotSerializeEmptyArray()
+            void ShouldNotSerialize()
             {
-                if (typeof(IEnumerable).IsAssignableFrom(prop.PropertyType) && !(prop.PropertyType == typeof(string)))
+                // SourceInfo with null value
+                if (prop.PropertyType.IsGenericType && prop.PropertyType.GetGenericTypeDefinition() == typeof(SourceInfo<>))
+                {
+                    prop.ShouldSerialize =
+                        target => ((SourceInfo)prop.ValueProvider.GetValue(target))?.GetValue() != null;
+                }
+
+                // Empty array
+                else if (typeof(IEnumerable).IsAssignableFrom(prop.PropertyType) && !(prop.PropertyType == typeof(string)))
                 {
                     prop.ShouldSerialize =
                     target =>
