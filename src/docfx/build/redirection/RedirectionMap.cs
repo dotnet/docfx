@@ -85,19 +85,13 @@ namespace Microsoft.Docs.Build
                     {
                         errors.Add(Errors.InvalidRedirection(redirectTo, path, type));
                     }
+                    else if (!glob(pathToDocset))
+                    {
+                        errors.Add(Errors.RedirectionOutOfScope(redirectTo, pathToDocset));
+                    }
                     else if (!redirections.Add(Document.Create(docset, pathToDocset, redirectTo)))
                     {
-                        if (glob(document.FilePath))
-                        {
-                            if (!redirections.Add(document))
-                            {
-                                errors.Add(Errors.RedirectionConflict(pathToDocset));
-                            }
-                        }
-                        else
-                        {
-                            errors.Add(Errors.RedirectionOutOfScope(document, docset.Config.ConfigFileName));
-                        }
+                        errors.Add(Errors.RedirectionConflict(pathToDocset));
                     }
                 }
             }

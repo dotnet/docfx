@@ -200,8 +200,8 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Defined a redirection entry that's not matched by config's files glob patterns.
         /// </summary>
-        public static Error RedirectionOutOfScope(Document redirection, string configFile)
-            => new Error(ErrorLevel.Info, "redirection-out-of-scope", $"Redirection file '{redirection}' will not be built because it is not included in {configFile}");
+        public static Error RedirectionOutOfScope(SourceInfo source, string redirection)
+            => new Error(ErrorLevel.Info, "redirection-out-of-scope", $"Redirection file '{redirection}' will not be built because it is not included in build scope", source);
 
         /// <summary>
         /// Link which's resolved to a file in dependency repo won't be built.

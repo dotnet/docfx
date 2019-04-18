@@ -29,7 +29,7 @@ namespace Microsoft.Docs.Build
             // These error codes are the ones we could have line info but haven't implement them yet:
             "committish-not-found",
             "invalid-toc-syntax", "yaml-header-not-object",
-            "invalid-toc-level", "redirection-out-of-scope", "moniker-config-missing",
+            "invalid-toc-level", "moniker-config-missing",
             "empty-monikers", "circular-reference", "moniker-overlapping",
             "redirection-is-empty", "invalid-locale", "link-out-of-scope",
             "invalid-topic-href",
