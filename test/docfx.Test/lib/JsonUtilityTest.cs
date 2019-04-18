@@ -557,7 +557,13 @@ namespace Microsoft.Docs.Build
         [Fact]
         public void TestSerializeSourceInfoWithNullValue()
         {
-            var basic = new BasicClass { B = 1, Property = new SourceInfo<string>(null, new SourceInfo(string.Empty, 0, 0)) };
+            var basic = new BasicClass
+            {
+                B = 1,
+                Property = new SourceInfo<string>(null, new SourceInfo(string.Empty, 0, 0)),
+                Array = new SourceInfo<string[]>(new string[]{ }, new SourceInfo(string.Empty, 0, 0)),
+                GenericArray = new SourceInfo<List<string>>(new List<string>(), new SourceInfo(string.Empty, 0, 0))
+            };
             var result = JsonUtility.Serialize(basic);
             Assert.Equal("{\"b\":1,\"d\":false}", result);
         }
@@ -593,6 +599,10 @@ namespace Microsoft.Docs.Build
             public bool D { get; set; }
 
             public SourceInfo<string> Property { get; set; }
+
+            public SourceInfo<List<string>> GenericArray { get; set; }
+
+            public string[] Array { get; set; }
         }
 
         public sealed class AnotherBasicClass

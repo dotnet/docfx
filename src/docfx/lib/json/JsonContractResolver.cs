@@ -47,7 +47,9 @@ namespace Microsoft.Docs.Build
                             if (((SourceInfo)value)?.GetValue() is null)
                                 return false;
 
-                            if (IsEmptyArray(value))
+                            if (prop.PropertyType.IsGenericType
+                                && prop.PropertyType.GetGenericTypeDefinition() == typeof(SourceInfo<>)
+                                && IsEmptyArray(((SourceInfo)value).GetValue()))
                             {
                                 return false;
                             }
