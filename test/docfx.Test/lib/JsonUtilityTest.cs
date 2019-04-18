@@ -602,7 +602,7 @@ namespace Microsoft.Docs.Build
 
             public SourceInfo<List<string>> GenericArray { get; set; }
 
-            public string[] Array { get; set; }
+            public SourceInfo<string[]> Array { get; set; }
         }
 
         public sealed class AnotherBasicClass
