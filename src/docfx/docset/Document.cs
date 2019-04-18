@@ -112,7 +112,7 @@ namespace Microsoft.Docs.Build
         private readonly Lazy<Repository> _repository;
 
         /// <summary>
-        /// Intentionally left as private. Use <see cref="Document.TryCreateFromFile(Docset, string)"/> instead.
+        /// Intentionally left as private. Use <see cref="Document.CreateFromFile(Docset, string)"/> instead.
         /// </summary>
         private Document(
             Docset docset,
@@ -228,7 +228,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         /// <param name="docset">The current docset</param>
         /// <param name="path">The path relative to docset root</param>
-        public static (Error error, Document doc) TryCreate(Docset docset, string path, string redirectionUrl = null, bool isFromHistory = false)
+        public static Document Create(Docset docset, string path, string redirectionUrl = null, bool isFromHistory = false)
         {
             Debug.Assert(docset != null);
             Debug.Assert(!string.IsNullOrEmpty(path));
@@ -252,12 +252,7 @@ namespace Microsoft.Docs.Build
             var canonicalUrl = GetCanonicalUrl(siteUrl, sitePath, docset, isExperimental, contentType, schema);
             var canonicalUrlWithoutLocale = GetCanonicalUrl(siteUrl, sitePath, docset, isExperimental, contentType, schema, false);
 
-            if (contentType == ContentType.Redirection && type != ContentType.Page)
-            {
-                return (Errors.InvalidRedirection(filePath, type), null);
-            }
-
-            return (null, new Document(docset, filePath, sitePath, siteUrl, canonicalUrlWithoutLocale, canonicalUrl, contentType, mime, schema, isExperimental, redirectionUrl, isFromHistory));
+            return new Document(docset, filePath, sitePath, siteUrl, canonicalUrlWithoutLocale, canonicalUrl, contentType, mime, schema, isExperimental, redirectionUrl, isFromHistory);
         }
 
         /// <summary>
@@ -266,7 +261,7 @@ namespace Microsoft.Docs.Build
         /// <param name="docset">The current docset</param>
         /// <param name="pathToDocset">The path relative to docset root</param>
         /// <returns>A new document, or null if not found</returns>
-        public static Document TryCreateFromFile(Docset docset, string pathToDocset)
+        public static Document CreateFromFile(Docset docset, string pathToDocset)
         {
             Debug.Assert(docset != null);
             Debug.Assert(!string.IsNullOrEmpty(pathToDocset));
@@ -276,8 +271,7 @@ namespace Microsoft.Docs.Build
 
             if (TryResolveDocset(docset, pathToDocset, out var resolvedDocset))
             {
-                var (error, file) = TryCreate(resolvedDocset, pathToDocset);
-                return error is null ? file : null;
+                return Create(resolvedDocset, pathToDocset);
             }
 
             // resolve from dependent docsets
@@ -291,7 +285,7 @@ namespace Microsoft.Docs.Build
                     continue;
                 }
 
-                var dependencyFile = TryCreateFromFile(dependentDocset, pathToDocset.Substring(dependencyName.Length));
+                var dependencyFile = CreateFromFile(dependentDocset, pathToDocset.Substring(dependencyName.Length));
                 if (dependencyFile != null)
                 {
                     return dependencyFile;

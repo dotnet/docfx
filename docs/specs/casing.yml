@@ -29,7 +29,7 @@ inputs:
     [redirect](REDIRECT.md)
 outputs:
   docs/a.json: |
-    {"content":"<p><a href=\"/path\">redirect</a></p>"}
+    {"content":"<p><a href=\"redirect\">redirect</a></p>"}
 ---
 # Dependency resolve is case insensitive on windows and mac
 os: windows, osx
