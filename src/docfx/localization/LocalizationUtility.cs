@@ -131,11 +131,12 @@ namespace Microsoft.Docs.Build
                     sourceBranch = contributionBranch;
                 }
 
-                if (sourceBranch != "live")
+                if (sourceBranch != "master" &&
+                    !GitUtility.RemoteBranchExists(sourceRemote, sourceBranch))
                 {
-                    // always fallback to master branch for non-live branches
                     sourceBranch = "master";
                 }
+
                 return true;
             }
 
