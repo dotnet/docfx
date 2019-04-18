@@ -43,6 +43,70 @@ namespace Microsoft.Docs.Build
                 : null);
         }
 
+        public DateTime GetUpdatedAt(Document document, List<GitCommit> fileCommits)
+        {
+            if (fileCommits?.Count > 0)
+            {
+                return _updateTimeByCommit.TryGetValue(fileCommits[0].Sha, out var timeFromHistory)
+                    ? timeFromHistory
+                    : fileCommits[0].Time.UtcDateTime;
+            }
+            return File.GetLastWriteTimeUtc(Path.Combine(document.Docset.DocsetPath, document.FilePath));
+        }
+
+        public (string contentGitUrl, string originalContentGitUrl, string originalContentGitUrlTemplate, string gitCommit)
+            GetGitUrls(Document document)
+        {
+            Debug.Assert(document != null);
+
+            var (repo, pathToRepo, commits) = _gitCommitProvider.GetCommitHistory(document);
+            if (repo is null)
+                return default;
+
+            var (contentBranchUrlTemplate, contentCommitUrlTemplate) = GetContentGitUrlTemplate(repo.Remote, pathToRepo);
+            var commit = commits.FirstOrDefault()?.Sha;
+            if (string.IsNullOrEmpty(commit))
+            {
+                commit = repo.Commit;
+            }
+
+            var contentGitCommitUrl = contentCommitUrlTemplate?.Replace("{repo}", repo.Remote).Replace("{commit}", commit);
+            var originalContentGitUrlTemplate = contentBranchUrlTemplate;
+            var originalContentGitUrl = originalContentGitUrlTemplate?.Replace("{repo}", repo.Remote).Replace("{branch}", repo.Branch);
+
+            return (GetContentGitUrl(contentBranchUrlTemplate), originalContentGitUrl, originalContentGitUrlTemplate, contentGitCommitUrl);
+
+            string GetContentGitUrl(string branchUrlTemplate)
+            {
+                var (editRemote, editBranch) = (repo.Remote, repo.Branch);
+
+                if (LocalizationUtility.TryGetContributionBranch(editBranch, out var repoContributionBranch))
+                {
+                    editBranch = repoContributionBranch;
+                }
+
+                if (!string.IsNullOrEmpty(document.Docset.Config.Contribution.Repository))
+                {
+                    var (contributionRemote, contributionBranch, hasRefSpec) = HrefUtility.SplitGitHref(document.Docset.Config.Contribution.Repository);
+                    (branchUrlTemplate, _) = GetContentGitUrlTemplate(contributionRemote, pathToRepo);
+
+                    (editRemote, editBranch) = (contributionRemote, hasRefSpec ? contributionBranch : editBranch);
+                    if (document.Docset.IsLocalized())
+                    {
+                        (editRemote, editBranch) = LocalizationUtility.GetLocalizedRepo(
+                                                    document.Docset.Config.Localization.Mapping,
+                                                    false,
+                                                    editRemote,
+                                                    editBranch,
+                                                    document.Docset.Locale,
+                                                    document.Docset.Config.Localization.DefaultLocale);
+                    }
+                }
+
+                return branchUrlTemplate?.Replace("{repo}", editRemote).Replace("{branch}", editBranch);
+            }
+        }
+
         private async Task<(List<Error> error, Contributor author, List<Contributor> contributors, DateTime updatedAt)> GetAuthorAndContributors(
             Document document,
             SourceInfo<string> authorName)
@@ -144,70 +208,6 @@ namespace Microsoft.Docs.Build
                 }
 
                 return result;
-            }
-        }
-
-        public DateTime GetUpdatedAt(Document document, List<GitCommit> fileCommits)
-        {
-            if (fileCommits?.Count > 0)
-            {
-                return _updateTimeByCommit.TryGetValue(fileCommits[0].Sha, out var timeFromHistory)
-                    ? timeFromHistory
-                    : fileCommits[0].Time.UtcDateTime;
-            }
-            return File.GetLastWriteTimeUtc(Path.Combine(document.Docset.DocsetPath, document.FilePath));
-        }
-
-        public (string contentGitUrl, string originalContentGitUrl, string originalContentGitUrlTemplate, string gitCommit)
-            GetGitUrls(Document document)
-        {
-            Debug.Assert(document != null);
-
-            var (repo, pathToRepo, commits) = _gitCommitProvider.GetCommitHistory(document);
-            if (repo is null)
-                return default;
-
-            var (contentBranchUrlTemplate, contentCommitUrlTemplate) = GetContentGitUrlTemplate(repo.Remote, pathToRepo);
-            var commit = commits.FirstOrDefault()?.Sha;
-            if (string.IsNullOrEmpty(commit))
-            {
-                commit = repo.Commit;
-            }
-
-            var contentGitCommitUrl = contentCommitUrlTemplate?.Replace("{repo}", repo.Remote).Replace("{commit}", commit);
-            var originalContentGitUrlTemplate = contentBranchUrlTemplate;
-            var originalContentGitUrl = originalContentGitUrlTemplate?.Replace("{repo}", repo.Remote).Replace("{branch}", repo.Branch);
-
-            return (GetContentGitUrl(contentBranchUrlTemplate), originalContentGitUrl, originalContentGitUrlTemplate, contentGitCommitUrl);
-
-            string GetContentGitUrl(string branchUrlTemplate)
-            {
-                var (editRemote, editBranch) = (repo.Remote, repo.Branch);
-
-                if (LocalizationUtility.TryGetContributionBranch(editBranch, out var repoContributionBranch))
-                {
-                    editBranch = repoContributionBranch;
-                }
-
-                if (!string.IsNullOrEmpty(document.Docset.Config.Contribution.Repository))
-                {
-                    var (contributionRemote, contributionBranch, hasRefSpec) = HrefUtility.SplitGitHref(document.Docset.Config.Contribution.Repository);
-                    (branchUrlTemplate, _) = GetContentGitUrlTemplate(contributionRemote, pathToRepo);
-
-                    (editRemote, editBranch) = (contributionRemote, hasRefSpec ? contributionBranch : editBranch);
-                    if (document.Docset.IsLocalized())
-                    {
-                        (editRemote, editBranch) = LocalizationUtility.GetLocalizedRepo(
-                                                    document.Docset.Config.Localization.Mapping,
-                                                    false,
-                                                    editRemote,
-                                                    editBranch,
-                                                    document.Docset.Locale,
-                                                    document.Docset.Config.Localization.DefaultLocale);
-                    }
-                }
-
-                return branchUrlTemplate?.Replace("{repo}", editRemote).Replace("{branch}", editBranch);
             }
         }
 
