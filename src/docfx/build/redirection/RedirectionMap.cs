@@ -73,6 +73,7 @@ namespace Microsoft.Docs.Build
                         continue;
                     }
 
+                    // TODO: ensure `SourceInfo<T>` is always not null
                     if (checkRedirectTo && !redirectTo.Value.StartsWith('/'))
                     {
                         errors.Add(Errors.InvalidRedirectTo(redirectTo));
