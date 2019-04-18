@@ -36,7 +36,8 @@ namespace Microsoft.Docs.Build
                 ? new ContributionInfo
                 {
                     Contributors = contributors ?? new List<Contributor>(),
-                    UpdateAt = updatedAt.ToString(document.Docset.Culture.DateTimeFormat.ShortDatePattern),
+                    /*it's a workaround to produce stable `update_at` in different platform for en-us content*/
+                    UpdateAt = updatedAt.ToString(document.Docset.Locale == "en-us" ? "MM/dd/yyyy" : document.Docset.Culture.DateTimeFormat.ShortDatePattern),
                     UpdatedAtDateTime = updatedAt,
                     Author = author,
                 }
