@@ -30,35 +30,48 @@ namespace Microsoft.Docs.Build
         protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
         {
             var prop = base.CreateProperty(member, memberSerialization);
-            ShouldNotSerialize();
+            ShouldNotSerializeEmptySourceInfo();
+            ShouldNotSerializeEmptyArray();
             SetFieldWritable();
             return prop;
 
-            void ShouldNotSerialize()
+            // For SourceInfo<>, with value of empty array or null should not be serialized
+            void ShouldNotSerializeEmptySourceInfo()
             {
-                // SourceInfo with null value
                 if (prop.PropertyType.IsGenericType && prop.PropertyType.GetGenericTypeDefinition() == typeof(SourceInfo<>))
                 {
                     prop.ShouldSerialize =
-                        target => ((SourceInfo)prop.ValueProvider.GetValue(target))?.GetValue() != null;
-                }
+                        target =>
+                        {
+                            var value = prop.ValueProvider.GetValue(target);
+                            if (((SourceInfo)value)?.GetValue() is null)
+                                return false;
 
-                // Empty array
-                else if (typeof(IEnumerable).IsAssignableFrom(prop.PropertyType) && !(prop.PropertyType == typeof(string)))
+                            if (IsEmptyArray(value))
+                            {
+                                return false;
+                            }
+                            return true;
+                        };
+                }
+            }
+
+            void ShouldNotSerializeEmptyArray()
+            {
+                if (typeof(IEnumerable).IsAssignableFrom(prop.PropertyType) && !(prop.PropertyType == typeof(string)))
                 {
                     prop.ShouldSerialize =
-                    target =>
-                    {
-                        var value = prop.ValueProvider.GetValue(target);
-
-                        if (value is IEnumerable enumer && !enumer.GetEnumerator().MoveNext())
-                        {
-                            return false;
-                        }
-
-                        return true;
-                    };
+                        target => !IsEmptyArray(prop.ValueProvider.GetValue(target));
                 }
+            }
+
+            bool IsEmptyArray(object value)
+            {
+                if (value is IEnumerable enumer && !enumer.GetEnumerator().MoveNext())
+                {
+                    return true;
+                }
+                return false;
             }
 
             void SetFieldWritable()
