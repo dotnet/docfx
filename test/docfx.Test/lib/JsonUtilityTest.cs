@@ -555,7 +555,7 @@ namespace Microsoft.Docs.Build
         }
 
         [Fact]
-        public void TestSerializeSourceInfoWithNullValue()
+        public void TestSerializeSourceInfoWithEmptyValue()
         {
             var basic = new BasicClass
             {
