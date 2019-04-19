@@ -335,7 +335,8 @@ namespace Microsoft.Docs.Build
                 node.Remove();
             }
 
-            return (errors, root);
+            // treat null JToken as empty JObject since it is from user input
+            return (errors, IsNullOrUndefined(root) ? new JObject() : root);
 
             void RemoveNullsCore(JToken token, string name)
             {
@@ -402,7 +403,7 @@ namespace Microsoft.Docs.Build
             return token;
         }
 
-        internal static bool IsNullOrUndefined(this JToken token)
+        private static bool IsNullOrUndefined(this JToken token)
         {
             return
                 (token is null) ||
