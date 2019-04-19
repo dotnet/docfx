@@ -7,7 +7,7 @@ using Newtonsoft.Json.Linq;
 namespace Microsoft.Docs.Build
 {
     [PageSchema]
-    public class LandingData
+    public class LandingData : ClassWithExtensionData
     {
         public string Title { get; set; }
 
@@ -20,12 +20,9 @@ namespace Microsoft.Docs.Build
         public LandingDataSection[] Sections { get; set; }
 
         public string DocumentType { get; set; }
-
-        [JsonExtensionData(WriteData = false)]
-        public JObject ExtensionData { get; set; }
     }
 
-    public sealed class LandingDataAbstract
+    public sealed class LandingDataAbstract : ClassWithExtensionData
     {
         [Markdown]
         public string Description { get; set; }
@@ -35,7 +32,7 @@ namespace Microsoft.Docs.Build
         public LandingDataMenu Menu { get; set; }
     }
 
-    public sealed class LandingDataAside
+    public sealed class LandingDataAside : ClassWithExtensionData
     {
         public string Title { get; set; }
 
@@ -47,7 +44,7 @@ namespace Microsoft.Docs.Build
         public LandingDataImage Image { get; set; }
     }
 
-    public sealed class LandingDataImage
+    public sealed class LandingDataImage : ClassWithExtensionData
     {
         [Href]
         public string Href { get; set; }
@@ -64,14 +61,14 @@ namespace Microsoft.Docs.Build
         public string Role { get; set; }
     }
 
-    public sealed class LandingDataMenu
+    public sealed class LandingDataMenu : ClassWithExtensionData
     {
         public string Title { get; set; }
 
         public LandingDataMenuItem[] Items { get; set; }
     }
 
-    public sealed class LandingDataMenuItem
+    public sealed class LandingDataMenuItem : ClassWithExtensionData
     {
         [Href]
         public string Href { get; set; }
@@ -88,7 +85,7 @@ namespace Microsoft.Docs.Build
         Text,
     }
 
-    public sealed class LandingDataSection
+    public sealed class LandingDataSection : ClassWithExtensionData
     {
         public string Title { get; set; }
 
@@ -99,7 +96,7 @@ namespace Microsoft.Docs.Build
         public LandingDataItem[] Items { get; set; }
     }
 
-    public sealed class LandingDataItem
+    public sealed class LandingDataItem : ClassWithExtensionData
     {
         public LandingDataType Type { get; set; }
 
@@ -120,7 +117,7 @@ namespace Microsoft.Docs.Build
         public string Html { get; set; }
     }
 
-    public sealed class LandingDataColumn
+    public sealed class LandingDataColumn : ClassWithExtensionData
     {
         public LandingDataImage Image { get; set; }
 
@@ -129,20 +126,20 @@ namespace Microsoft.Docs.Build
         public string Text { get; set; }
     }
 
-    public sealed class LandingDataRow
+    public sealed class LandingDataRow : ClassWithExtensionData
     {
         public string Title { get; set; }
 
         public LandingDataRowValue[] Values { get; set; }
     }
 
-    public sealed class LandingDataRowValue
+    public sealed class LandingDataRowValue : ClassWithExtensionData
     {
         [Href]
         public string Href { get; set; }
     }
 
-    public sealed class LandingDataListItem
+    public sealed class LandingDataListItem : ClassWithExtensionData
     {
         public string Text { get; set; }
 
@@ -160,4 +157,9 @@ namespace Microsoft.Docs.Build
         public LandingDataImage Image { get; set; }
     }
 
+    public class ClassWithExtensionData
+    {
+        [JsonExtensionData(WriteData = false)]
+        public JObject ExtensionData { get; set; }
+    }
 }
