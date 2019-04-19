@@ -27,6 +27,11 @@ namespace Microsoft.Docs.Build
                 {
                     var (yamlErrors, yamlHeaderObj) = YamlUtility.Parse(builder.ToString(), file);
                     errors.AddRange(yamlErrors);
+                    if (JsonUtility.IsNullOrUndefined(yamlHeaderObj))
+                    {
+                        return (errors, new JObject());
+                    }
+
                     if (yamlHeaderObj is JObject obj)
                     {
                         return (errors, obj);

@@ -402,6 +402,14 @@ namespace Microsoft.Docs.Build
             return token;
         }
 
+        internal static bool IsNullOrUndefined(this JToken token)
+        {
+            return
+                (token is null) ||
+                (token.Type == JTokenType.Null) ||
+                (token.Type == JTokenType.Undefined);
+        }
+
         private static JToken SetSourceInfo(JToken token, string file)
         {
             var lineInfo = (IJsonLineInfo)token;
@@ -470,14 +478,6 @@ namespace Microsoft.Docs.Build
                 return "Expected type String, please input String or type compatible with String.";
             }
             return message;
-        }
-
-        private static bool IsNullOrUndefined(this JToken token)
-        {
-            return
-                (token is null) ||
-                (token.Type == JTokenType.Null) ||
-                (token.Type == JTokenType.Undefined);
         }
 
         private static void ReportUnknownFields(this JToken token, List<Error> errors, Type type)
