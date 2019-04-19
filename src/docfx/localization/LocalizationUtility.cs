@@ -105,9 +105,9 @@ namespace Microsoft.Docs.Build
 
         public static string GetLocale(string remote, string branch, CommandLineOptions options)
         {
-            return TryRemoveLocale(branch, out _, out var branchLocale)
+            return options.Locale ?? (TryRemoveLocale(branch, out _, out var branchLocale)
                 ? branchLocale : TryRemoveLocale(remote, out _, out var remoteLocale)
-                ? remoteLocale : options.Locale;
+                ? remoteLocale : default);
         }
 
         public static bool TryGetContributionBranch(Repository repository, out string contributionBranch)
