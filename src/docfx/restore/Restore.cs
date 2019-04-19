@@ -25,9 +25,7 @@ namespace Microsoft.Docs.Build
                 Telemetry.SetRepository(repository?.Remote, repository?.Branch);
 
                 var restoredDocsets = new ConcurrentDictionary<string, Task<DependencyLockModel>>(PathUtility.PathComparer);
-                var localeToRestore = LocalizationUtility.TryRemoveLocale(repository?.Branch, out _, out var locale)
-                    ? locale : LocalizationUtility.TryRemoveLocale(repository?.Remote, out _, out locale)
-                    ? locale : options.Locale;
+                var localeToRestore = LocalizationUtility.GetLocale(repository?.Remote, repository?.Branch, options);
 
                 await RestoreDocset(docsetPath, rootRepository: repository);
 

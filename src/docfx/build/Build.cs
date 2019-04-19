@@ -18,12 +18,10 @@ namespace Microsoft.Docs.Build
             var repository = Repository.Create(docsetPath);
             Telemetry.SetRepository(repository?.Remote, repository?.Branch);
 
-            var sourceRepoInfo = LocalizationUtility.TryGetSourceRepository(repository, out var remote, out string branch, out var locale) ? (remote, branch) : default;
+            var locale = LocalizationUtility.GetLocale(repository?.Remote, repository?.Branch, options);
+            var (dependencyLock, sourceRepoInfo) = LoadBuildDependencyLock(docsetPath, locale, repository, options);
 
-            locale = locale ?? options.Locale;
-            var dependencyLock = LoadBuildDependencyLock(docsetPath, locale, options, sourceRepoInfo);
             var restoreMap = RestoreMap.Create(dependencyLock);
-
             var sourceRepo = sourceRepoInfo != default
                 ? Repository.Create(restoreMap.GetGitRestorePath(sourceRepoInfo.remote, sourceRepoInfo.branch, dependencyLock).path, sourceRepoInfo.branch, sourceRepoInfo.remote)
                 : default;
@@ -211,16 +209,17 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static DependencyLockModel LoadBuildDependencyLock(
+        private static (DependencyLockModel dependencyLock, (string remote, string branch) sourceRepoInfo) LoadBuildDependencyLock(
             string docset,
             string locale,
-            CommandLineOptions commandLineOptions,
-            (string remote, string branch) sourceRepo = default)
+            Repository repository,
+            CommandLineOptions commandLineOptions)
         {
             Debug.Assert(!string.IsNullOrEmpty(docset));
 
             var (_, config) = ConfigLoader.TryLoad(docset, commandLineOptions);
 
+            var sourceRepo = LocalizationUtility.TryGetSourceRepository(repository, out var remote, out string branch, out _) ? (remote, branch) : default;
             var dependencyLock = DependencyLock.Load(docset, string.IsNullOrEmpty(config.DependencyLock) ? new SourceInfo<string>(AppData.GetDependencyLockFile(docset, locale)) : config.DependencyLock);
 
             if (sourceRepo != default && !ConfigLoader.TryGetConfigPath(docset, out _))
@@ -237,7 +236,7 @@ namespace Microsoft.Docs.Build
                     };
             }
 
-            return dependencyLock ?? new DependencyLockModel();
+            return (dependencyLock ?? new DependencyLockModel(), sourceRepo);
         }
 
         private static (List<Error> errors, Config config) GetBuildConfig(

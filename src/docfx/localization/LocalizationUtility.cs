@@ -103,6 +103,13 @@ namespace Microsoft.Docs.Build
             return TryGetSourceRepository(repository.Remote, repository.Branch, out sourceRemote, out sourceBranch, out locale);
         }
 
+        public static string GetLocale(string remote, string branch, CommandLineOptions options)
+        {
+            return TryRemoveLocale(branch, out _, out var branchLocale)
+                ? branchLocale : TryRemoveLocale(remote, out _, out var remoteLocale)
+                ? remoteLocale : options.Locale;
+        }
+
         public static bool TryGetContributionBranch(Repository repository, out string contributionBranch)
         {
             contributionBranch = null;
