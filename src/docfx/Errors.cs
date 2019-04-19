@@ -286,8 +286,14 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Used docfx output model property which are not defined in input model.
         /// </summary>
-        public static Error ReservedMetadata(SourceInfo source, string name, string removeFrom)
-            => new Error(ErrorLevel.Warning, "reserved-metadata", $"Metadata '{name}' is reserved by docfx, remove this metadata: '{removeFrom}'", source);
+        public static Error ReservedMetadata(SourceInfo source, string name)
+            => new Error(ErrorLevel.Warning, "reserved-metadata", $"Metadata '{name}' is reserved by docfx, remove this metadata", source);
+
+        /// <summary>
+        /// Metadata value must be scalar or arrays of scalars.
+        /// </summary>
+        public static Error InvalidMetadataType(SourceInfo source, string name)
+            => new Error(ErrorLevel.Error, "invalid-metadata-type", $"Metadata '{name}' can only be a scalar value or string array", source);
 
         /// <summary>
         /// Failed to compute specific info of a commit.

@@ -77,8 +77,8 @@ inputs:
   docfx.yml: |
     globalMetadata:
       title: 
-        - 1
-        - 2
+        - "1"
+        - "2"
   docs/a.md:
   docs/b.md:
 outputs:
@@ -462,8 +462,8 @@ inputs:
     fileMetadata:
       title:
         docs/**: 
-          - 1
-          - 2
+          - "1"
+          - "2"
 outputs:
   build.log: |
     ["error","violate-schema","Expected type String, please input string or type compatible with String.","docfx.yml",4,7]

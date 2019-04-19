@@ -109,7 +109,7 @@ namespace Microsoft.Docs.Build
                 {
                     errors.AddRange(MetadataValidator.ValidateGlobalMetadata(config["globalMetadata"] as JObject));
                 }
-                else if (config["fileMetadata"] != null)
+                if (config["fileMetadata"] != null)
                 {
                     errors.AddRange(MetadataValidator.ValidateFileMetadata(config["fileMetadata"] as JObject));
                 }
