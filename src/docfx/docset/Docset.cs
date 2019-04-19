@@ -113,7 +113,7 @@ namespace Microsoft.Docs.Build
             DependencyLockModel dependencyLock,
             RestoreMap restoreMap,
             Repository repository = null,
-            (string remote, string branch) sourceRepo = default,
+            Repository sourceRepo = default,
             Docset localizedDocset = null,
             Docset fallbackDocset = null,
             bool isDependency = false)
@@ -128,10 +128,7 @@ namespace Microsoft.Docs.Build
                 // source docset configuration will be overwritten by build locale overwrite configuration
                 if (sourceRepo != default)
                 {
-                    var (sourceDocsetPath, _) = restoreMap.GetGitRestorePath(sourceRepo.remote, sourceRepo.branch, DependencyLock);
-                    var repo = Repository.Create(sourceDocsetPath, sourceRepo.branch);
-
-                    FallbackDocset = new Docset(_report, sourceDocsetPath, Locale, Config, _options, DependencyLock, RestoreMap, repo, localizedDocset: this, isDependency: true);
+                    FallbackDocset = new Docset(_report, sourceRepo.Path, Locale, Config, _options, DependencyLock, RestoreMap, sourceRepo, localizedDocset: this, isDependency: true);
                 }
                 else if (LocalizationUtility.TryGetLocalizedDocsetPath(this, restoreMap, Config, Locale, out var localizationDocsetPath, out var localizationBranch, out _))
                 {
