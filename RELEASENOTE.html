@@ -5,10 +5,10 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>Version Notes (Current Version: v2.41) | DocFX website </title>
+    <title>Version Notes (Current Version: v2.42) | DocFX website </title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content="Version Notes (Current Version: v2.41) | DocFX website ">
-    <meta name="generator" content="docfx 2.41.0.0">
+    <meta name="title" content="Version Notes (Current Version: v2.42) | DocFX website ">
+    <meta name="generator" content="docfx 2.42.0.0">
     
     <link rel="shortcut icon" href="favicon.ico">
     <link rel="stylesheet" href="styles/docfx.vendor.css">
@@ -70,8 +70,28 @@
         <div class="article row grid">
           <div class="col-md-10">
             <article class="content wrap" id="_content" data-uid="">
-<h1 id="version-notes-current-version-v241">Version Notes (Current Version: v2.41)</h1>
+<h1 id="version-notes-current-version-v242">Version Notes (Current Version: v2.42)</h1>
 
+<h2 id="v242">v2.42</h2>
+<ol>
+<li>PDF features:
+<ol>
+<li>Added support for a cover page when generating a PDF. (#2004)</li>
+<li>Added the ability to change the default &quot;Cover Page&quot; bookmark for the TOC in the PDF. (#4278)</li>
+<li>Added the ability to specify the type of outline to use when generating a PDF.</li>
+</ol>
+</li>
+<li>Replaced iTextSharp with PdfSharp (#4250).
+<ol>
+<li><strong>[Breaking change]</strong> Removed support for OutlineOption.CustomOutline when generating a PDF.</li>
+</ol>
+</li>
+<li>Bug fix:
+<ol>
+<li>Prevent adding duplicate HTML files when generating a PDF.</li>
+</ol>
+</li>
+</ol>
 <h2 id="v241">v2.41</h2>
 <ol>
 <li>Performance improvement:

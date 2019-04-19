@@ -33162,35 +33162,22 @@ references:
   isSpec: "True"
   fullName: Microsoft.DocAsCode.HtmlToPdf.HtmlToPdfConverter.HtmlToPdfConverter
   nameWithType: HtmlToPdfConverter.HtmlToPdfConverter
-- uid: Microsoft.DocAsCode.HtmlToPdf.HtmlToPdfConverter.CustomOutlines
-  name: CustomOutlines
-  href: api/Microsoft.DocAsCode.HtmlToPdf.HtmlToPdfConverter.html#Microsoft_DocAsCode_HtmlToPdf_HtmlToPdfConverter_CustomOutlines
-  commentId: P:Microsoft.DocAsCode.HtmlToPdf.HtmlToPdfConverter.CustomOutlines
-  fullName: Microsoft.DocAsCode.HtmlToPdf.HtmlToPdfConverter.CustomOutlines
-  nameWithType: HtmlToPdfConverter.CustomOutlines
-- uid: Microsoft.DocAsCode.HtmlToPdf.HtmlToPdfConverter.CustomOutlines*
-  name: CustomOutlines
-  href: api/Microsoft.DocAsCode.HtmlToPdf.HtmlToPdfConverter.html#Microsoft_DocAsCode_HtmlToPdf_HtmlToPdfConverter_CustomOutlines_
-  commentId: Overload:Microsoft.DocAsCode.HtmlToPdf.HtmlToPdfConverter.CustomOutlines
+- uid: Microsoft.DocAsCode.HtmlToPdf.HtmlToPdfConverter.GetPartialPdfModels(System.Collections.Generic.IList{System.String})
+  name: GetPartialPdfModels(IList<String>)
+  href: api/Microsoft.DocAsCode.HtmlToPdf.HtmlToPdfConverter.html#Microsoft_DocAsCode_HtmlToPdf_HtmlToPdfConverter_GetPartialPdfModels_System_Collections_Generic_IList_System_String__
+  commentId: M:Microsoft.DocAsCode.HtmlToPdf.HtmlToPdfConverter.GetPartialPdfModels(System.Collections.Generic.IList{System.String})
+  name.vb: GetPartialPdfModels(IList(Of String))
+  fullName: Microsoft.DocAsCode.HtmlToPdf.HtmlToPdfConverter.GetPartialPdfModels(System.Collections.Generic.IList<System.String>)
+  fullName.vb: Microsoft.DocAsCode.HtmlToPdf.HtmlToPdfConverter.GetPartialPdfModels(System.Collections.Generic.IList(Of System.String))
+  nameWithType: HtmlToPdfConverter.GetPartialPdfModels(IList<String>)
+  nameWithType.vb: HtmlToPdfConverter.GetPartialPdfModels(IList(Of String))
+- uid: Microsoft.DocAsCode.HtmlToPdf.HtmlToPdfConverter.GetPartialPdfModels*
+  name: GetPartialPdfModels
+  href: api/Microsoft.DocAsCode.HtmlToPdf.HtmlToPdfConverter.html#Microsoft_DocAsCode_HtmlToPdf_HtmlToPdfConverter_GetPartialPdfModels_
+  commentId: Overload:Microsoft.DocAsCode.HtmlToPdf.HtmlToPdfConverter.GetPartialPdfModels
   isSpec: "True"
-  fullName: Microsoft.DocAsCode.HtmlToPdf.HtmlToPdfConverter.CustomOutlines
-  nameWithType: HtmlToPdfConverter.CustomOutlines
-- uid: Microsoft.DocAsCode.HtmlToPdf.HtmlToPdfConverter.GetHtmlToPdfNumberOfPages(System.Collections.Generic.IList{System.String})
-  name: GetHtmlToPdfNumberOfPages(IList<String>)
-  href: api/Microsoft.DocAsCode.HtmlToPdf.HtmlToPdfConverter.html#Microsoft_DocAsCode_HtmlToPdf_HtmlToPdfConverter_GetHtmlToPdfNumberOfPages_System_Collections_Generic_IList_System_String__
-  commentId: M:Microsoft.DocAsCode.HtmlToPdf.HtmlToPdfConverter.GetHtmlToPdfNumberOfPages(System.Collections.Generic.IList{System.String})
-  name.vb: GetHtmlToPdfNumberOfPages(IList(Of String))
-  fullName: Microsoft.DocAsCode.HtmlToPdf.HtmlToPdfConverter.GetHtmlToPdfNumberOfPages(System.Collections.Generic.IList<System.String>)
-  fullName.vb: Microsoft.DocAsCode.HtmlToPdf.HtmlToPdfConverter.GetHtmlToPdfNumberOfPages(System.Collections.Generic.IList(Of System.String))
-  nameWithType: HtmlToPdfConverter.GetHtmlToPdfNumberOfPages(IList<String>)
-  nameWithType.vb: HtmlToPdfConverter.GetHtmlToPdfNumberOfPages(IList(Of String))
-- uid: Microsoft.DocAsCode.HtmlToPdf.HtmlToPdfConverter.GetHtmlToPdfNumberOfPages*
-  name: GetHtmlToPdfNumberOfPages
-  href: api/Microsoft.DocAsCode.HtmlToPdf.HtmlToPdfConverter.html#Microsoft_DocAsCode_HtmlToPdf_HtmlToPdfConverter_GetHtmlToPdfNumberOfPages_
-  commentId: Overload:Microsoft.DocAsCode.HtmlToPdf.HtmlToPdfConverter.GetHtmlToPdfNumberOfPages
-  isSpec: "True"
-  fullName: Microsoft.DocAsCode.HtmlToPdf.HtmlToPdfConverter.GetHtmlToPdfNumberOfPages
-  nameWithType: HtmlToPdfConverter.GetHtmlToPdfNumberOfPages
+  fullName: Microsoft.DocAsCode.HtmlToPdf.HtmlToPdfConverter.GetPartialPdfModels
+  nameWithType: HtmlToPdfConverter.GetPartialPdfModels
 - uid: Microsoft.DocAsCode.HtmlToPdf.HtmlToPdfConverter.Save(System.String)
   name: Save(String)
   href: api/Microsoft.DocAsCode.HtmlToPdf.HtmlToPdfConverter.html#Microsoft_DocAsCode_HtmlToPdf_HtmlToPdfConverter_Save_System_String_
@@ -33467,12 +33454,6 @@ references:
   commentId: T:Microsoft.DocAsCode.HtmlToPdf.OutlineOption
   fullName: Microsoft.DocAsCode.HtmlToPdf.OutlineOption
   nameWithType: OutlineOption
-- uid: Microsoft.DocAsCode.HtmlToPdf.OutlineOption.CustomOutline
-  name: CustomOutline
-  href: api/Microsoft.DocAsCode.HtmlToPdf.OutlineOption.html#Microsoft_DocAsCode_HtmlToPdf_OutlineOption_CustomOutline
-  commentId: F:Microsoft.DocAsCode.HtmlToPdf.OutlineOption.CustomOutline
-  fullName: Microsoft.DocAsCode.HtmlToPdf.OutlineOption.CustomOutline
-  nameWithType: OutlineOption.CustomOutline
 - uid: Microsoft.DocAsCode.HtmlToPdf.OutlineOption.DefaultOutline
   name: DefaultOutline
   href: api/Microsoft.DocAsCode.HtmlToPdf.OutlineOption.html#Microsoft_DocAsCode_HtmlToPdf_OutlineOption_DefaultOutline
@@ -33521,6 +33502,51 @@ references:
   commentId: F:Microsoft.DocAsCode.HtmlToPdf.OutputType.TocJson
   fullName: Microsoft.DocAsCode.HtmlToPdf.OutputType.TocJson
   nameWithType: OutputType.TocJson
+- uid: Microsoft.DocAsCode.HtmlToPdf.PartialPdfModel
+  name: PartialPdfModel
+  href: api/Microsoft.DocAsCode.HtmlToPdf.PartialPdfModel.html
+  commentId: T:Microsoft.DocAsCode.HtmlToPdf.PartialPdfModel
+  fullName: Microsoft.DocAsCode.HtmlToPdf.PartialPdfModel
+  nameWithType: PartialPdfModel
+- uid: Microsoft.DocAsCode.HtmlToPdf.PartialPdfModel.FilePath
+  name: FilePath
+  href: api/Microsoft.DocAsCode.HtmlToPdf.PartialPdfModel.html#Microsoft_DocAsCode_HtmlToPdf_PartialPdfModel_FilePath
+  commentId: P:Microsoft.DocAsCode.HtmlToPdf.PartialPdfModel.FilePath
+  fullName: Microsoft.DocAsCode.HtmlToPdf.PartialPdfModel.FilePath
+  nameWithType: PartialPdfModel.FilePath
+- uid: Microsoft.DocAsCode.HtmlToPdf.PartialPdfModel.FilePath*
+  name: FilePath
+  href: api/Microsoft.DocAsCode.HtmlToPdf.PartialPdfModel.html#Microsoft_DocAsCode_HtmlToPdf_PartialPdfModel_FilePath_
+  commentId: Overload:Microsoft.DocAsCode.HtmlToPdf.PartialPdfModel.FilePath
+  isSpec: "True"
+  fullName: Microsoft.DocAsCode.HtmlToPdf.PartialPdfModel.FilePath
+  nameWithType: PartialPdfModel.FilePath
+- uid: Microsoft.DocAsCode.HtmlToPdf.PartialPdfModel.NumberOfPages
+  name: NumberOfPages
+  href: api/Microsoft.DocAsCode.HtmlToPdf.PartialPdfModel.html#Microsoft_DocAsCode_HtmlToPdf_PartialPdfModel_NumberOfPages
+  commentId: P:Microsoft.DocAsCode.HtmlToPdf.PartialPdfModel.NumberOfPages
+  fullName: Microsoft.DocAsCode.HtmlToPdf.PartialPdfModel.NumberOfPages
+  nameWithType: PartialPdfModel.NumberOfPages
+- uid: Microsoft.DocAsCode.HtmlToPdf.PartialPdfModel.NumberOfPages*
+  name: NumberOfPages
+  href: api/Microsoft.DocAsCode.HtmlToPdf.PartialPdfModel.html#Microsoft_DocAsCode_HtmlToPdf_PartialPdfModel_NumberOfPages_
+  commentId: Overload:Microsoft.DocAsCode.HtmlToPdf.PartialPdfModel.NumberOfPages
+  isSpec: "True"
+  fullName: Microsoft.DocAsCode.HtmlToPdf.PartialPdfModel.NumberOfPages
+  nameWithType: PartialPdfModel.NumberOfPages
+- uid: Microsoft.DocAsCode.HtmlToPdf.PartialPdfModel.PageNumber
+  name: PageNumber
+  href: api/Microsoft.DocAsCode.HtmlToPdf.PartialPdfModel.html#Microsoft_DocAsCode_HtmlToPdf_PartialPdfModel_PageNumber
+  commentId: P:Microsoft.DocAsCode.HtmlToPdf.PartialPdfModel.PageNumber
+  fullName: Microsoft.DocAsCode.HtmlToPdf.PartialPdfModel.PageNumber
+  nameWithType: PartialPdfModel.PageNumber
+- uid: Microsoft.DocAsCode.HtmlToPdf.PartialPdfModel.PageNumber*
+  name: PageNumber
+  href: api/Microsoft.DocAsCode.HtmlToPdf.PartialPdfModel.html#Microsoft_DocAsCode_HtmlToPdf_PartialPdfModel_PageNumber_
+  commentId: Overload:Microsoft.DocAsCode.HtmlToPdf.PartialPdfModel.PageNumber
+  isSpec: "True"
+  fullName: Microsoft.DocAsCode.HtmlToPdf.PartialPdfModel.PageNumber
+  nameWithType: PartialPdfModel.PageNumber
 - uid: Microsoft.DocAsCode.HtmlToPdf.PdfHelper
   name: PdfHelper
   href: api/Microsoft.DocAsCode.HtmlToPdf.PdfHelper.html
@@ -33669,6 +33695,19 @@ references:
   isSpec: "True"
   fullName: Microsoft.DocAsCode.HtmlToPdf.PdfOptions.BasePath
   nameWithType: PdfOptions.BasePath
+- uid: Microsoft.DocAsCode.HtmlToPdf.PdfOptions.CoverPageTitle
+  name: CoverPageTitle
+  href: api/Microsoft.DocAsCode.HtmlToPdf.PdfOptions.html#Microsoft_DocAsCode_HtmlToPdf_PdfOptions_CoverPageTitle
+  commentId: P:Microsoft.DocAsCode.HtmlToPdf.PdfOptions.CoverPageTitle
+  fullName: Microsoft.DocAsCode.HtmlToPdf.PdfOptions.CoverPageTitle
+  nameWithType: PdfOptions.CoverPageTitle
+- uid: Microsoft.DocAsCode.HtmlToPdf.PdfOptions.CoverPageTitle*
+  name: CoverPageTitle
+  href: api/Microsoft.DocAsCode.HtmlToPdf.PdfOptions.html#Microsoft_DocAsCode_HtmlToPdf_PdfOptions_CoverPageTitle_
+  commentId: Overload:Microsoft.DocAsCode.HtmlToPdf.PdfOptions.CoverPageTitle
+  isSpec: "True"
+  fullName: Microsoft.DocAsCode.HtmlToPdf.PdfOptions.CoverPageTitle
+  nameWithType: PdfOptions.CoverPageTitle
 - uid: Microsoft.DocAsCode.HtmlToPdf.PdfOptions.CssFilePath
   name: CssFilePath
   href: api/Microsoft.DocAsCode.HtmlToPdf.PdfOptions.html#Microsoft_DocAsCode_HtmlToPdf_PdfOptions_CssFilePath
@@ -33799,6 +33838,19 @@ references:
   isSpec: "True"
   fullName: Microsoft.DocAsCode.HtmlToPdf.PdfOptions.NeedGeneratePdfExternalLink
   nameWithType: PdfOptions.NeedGeneratePdfExternalLink
+- uid: Microsoft.DocAsCode.HtmlToPdf.PdfOptions.OutlineOption
+  name: OutlineOption
+  href: api/Microsoft.DocAsCode.HtmlToPdf.PdfOptions.html#Microsoft_DocAsCode_HtmlToPdf_PdfOptions_OutlineOption
+  commentId: P:Microsoft.DocAsCode.HtmlToPdf.PdfOptions.OutlineOption
+  fullName: Microsoft.DocAsCode.HtmlToPdf.PdfOptions.OutlineOption
+  nameWithType: PdfOptions.OutlineOption
+- uid: Microsoft.DocAsCode.HtmlToPdf.PdfOptions.OutlineOption*
+  name: OutlineOption
+  href: api/Microsoft.DocAsCode.HtmlToPdf.PdfOptions.html#Microsoft_DocAsCode_HtmlToPdf_PdfOptions_OutlineOption_
+  commentId: Overload:Microsoft.DocAsCode.HtmlToPdf.PdfOptions.OutlineOption
+  isSpec: "True"
+  fullName: Microsoft.DocAsCode.HtmlToPdf.PdfOptions.OutlineOption
+  nameWithType: PdfOptions.OutlineOption
 - uid: Microsoft.DocAsCode.HtmlToPdf.PdfOptions.PdfConvertParallelism
   name: PdfConvertParallelism
   href: api/Microsoft.DocAsCode.HtmlToPdf.PdfOptions.html#Microsoft_DocAsCode_HtmlToPdf_PdfOptions_PdfConvertParallelism
@@ -33838,6 +33890,19 @@ references:
   isSpec: "True"
   fullName: Microsoft.DocAsCode.HtmlToPdf.PdfOptions.SourceDirectory
   nameWithType: PdfOptions.SourceDirectory
+- uid: Microsoft.DocAsCode.HtmlToPdf.PdfOptions.TocTitle
+  name: TocTitle
+  href: api/Microsoft.DocAsCode.HtmlToPdf.PdfOptions.html#Microsoft_DocAsCode_HtmlToPdf_PdfOptions_TocTitle
+  commentId: P:Microsoft.DocAsCode.HtmlToPdf.PdfOptions.TocTitle
+  fullName: Microsoft.DocAsCode.HtmlToPdf.PdfOptions.TocTitle
+  nameWithType: PdfOptions.TocTitle
+- uid: Microsoft.DocAsCode.HtmlToPdf.PdfOptions.TocTitle*
+  name: TocTitle
+  href: api/Microsoft.DocAsCode.HtmlToPdf.PdfOptions.html#Microsoft_DocAsCode_HtmlToPdf_PdfOptions_TocTitle_
+  commentId: Overload:Microsoft.DocAsCode.HtmlToPdf.PdfOptions.TocTitle
+  isSpec: "True"
+  fullName: Microsoft.DocAsCode.HtmlToPdf.PdfOptions.TocTitle
+  nameWithType: PdfOptions.TocTitle
 - uid: Microsoft.DocAsCode.HtmlToPdf.SelfCleaningFolder
   name: SelfCleaningFolder
   href: api/Microsoft.DocAsCode.HtmlToPdf.SelfCleaningFolder.html
@@ -40579,6 +40644,19 @@ references:
   isSpec: "True"
   fullName: Microsoft.DocAsCode.PdfJsonConfig.BasePath
   nameWithType: PdfJsonConfig.BasePath
+- uid: Microsoft.DocAsCode.PdfJsonConfig.CoverPageTitle
+  name: CoverPageTitle
+  href: api/Microsoft.DocAsCode.PdfJsonConfig.html#Microsoft_DocAsCode_PdfJsonConfig_CoverPageTitle
+  commentId: P:Microsoft.DocAsCode.PdfJsonConfig.CoverPageTitle
+  fullName: Microsoft.DocAsCode.PdfJsonConfig.CoverPageTitle
+  nameWithType: PdfJsonConfig.CoverPageTitle
+- uid: Microsoft.DocAsCode.PdfJsonConfig.CoverPageTitle*
+  name: CoverPageTitle
+  href: api/Microsoft.DocAsCode.PdfJsonConfig.html#Microsoft_DocAsCode_PdfJsonConfig_CoverPageTitle_
+  commentId: Overload:Microsoft.DocAsCode.PdfJsonConfig.CoverPageTitle
+  isSpec: "True"
+  fullName: Microsoft.DocAsCode.PdfJsonConfig.CoverPageTitle
+  nameWithType: PdfJsonConfig.CoverPageTitle
 - uid: Microsoft.DocAsCode.PdfJsonConfig.CssFilePath
   name: CssFilePath
   href: api/Microsoft.DocAsCode.PdfJsonConfig.html#Microsoft_DocAsCode_PdfJsonConfig_CssFilePath
@@ -40696,6 +40774,19 @@ references:
   isSpec: "True"
   fullName: Microsoft.DocAsCode.PdfJsonConfig.Name
   nameWithType: PdfJsonConfig.Name
+- uid: Microsoft.DocAsCode.PdfJsonConfig.OutlineOption
+  name: OutlineOption
+  href: api/Microsoft.DocAsCode.PdfJsonConfig.html#Microsoft_DocAsCode_PdfJsonConfig_OutlineOption
+  commentId: P:Microsoft.DocAsCode.PdfJsonConfig.OutlineOption
+  fullName: Microsoft.DocAsCode.PdfJsonConfig.OutlineOption
+  nameWithType: PdfJsonConfig.OutlineOption
+- uid: Microsoft.DocAsCode.PdfJsonConfig.OutlineOption*
+  name: OutlineOption
+  href: api/Microsoft.DocAsCode.PdfJsonConfig.html#Microsoft_DocAsCode_PdfJsonConfig_OutlineOption_
+  commentId: Overload:Microsoft.DocAsCode.PdfJsonConfig.OutlineOption
+  isSpec: "True"
+  fullName: Microsoft.DocAsCode.PdfJsonConfig.OutlineOption
+  nameWithType: PdfJsonConfig.OutlineOption
 - uid: Microsoft.DocAsCode.PdfJsonConfig.RawOutputFolder
   name: RawOutputFolder
   href: api/Microsoft.DocAsCode.PdfJsonConfig.html#Microsoft_DocAsCode_PdfJsonConfig_RawOutputFolder
@@ -40709,6 +40800,19 @@ references:
   isSpec: "True"
   fullName: Microsoft.DocAsCode.PdfJsonConfig.RawOutputFolder
   nameWithType: PdfJsonConfig.RawOutputFolder
+- uid: Microsoft.DocAsCode.PdfJsonConfig.TocTitle
+  name: TocTitle
+  href: api/Microsoft.DocAsCode.PdfJsonConfig.html#Microsoft_DocAsCode_PdfJsonConfig_TocTitle
+  commentId: P:Microsoft.DocAsCode.PdfJsonConfig.TocTitle
+  fullName: Microsoft.DocAsCode.PdfJsonConfig.TocTitle
+  nameWithType: PdfJsonConfig.TocTitle
+- uid: Microsoft.DocAsCode.PdfJsonConfig.TocTitle*
+  name: TocTitle
+  href: api/Microsoft.DocAsCode.PdfJsonConfig.html#Microsoft_DocAsCode_PdfJsonConfig_TocTitle_
+  commentId: Overload:Microsoft.DocAsCode.PdfJsonConfig.TocTitle
+  isSpec: "True"
+  fullName: Microsoft.DocAsCode.PdfJsonConfig.TocTitle
+  nameWithType: PdfJsonConfig.TocTitle
 - uid: Microsoft.DocAsCode.PdfJsonConfig.Wkhtmltopdf
   name: Wkhtmltopdf
   href: api/Microsoft.DocAsCode.PdfJsonConfig.html#Microsoft_DocAsCode_PdfJsonConfig_Wkhtmltopdf

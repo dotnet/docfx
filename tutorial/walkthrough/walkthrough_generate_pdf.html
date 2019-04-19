@@ -8,7 +8,7 @@
     <title>Walkthrough Part III: Generate PDF Documentation | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Walkthrough Part III: Generate PDF Documentation | DocFX website ">
-    <meta name="generator" content="docfx 2.41.0.0">
+    <meta name="generator" content="docfx 2.42.0.0">
     
     <link rel="shortcut icon" href="../../favicon.ico">
     <link rel="stylesheet" href="../../styles/docfx.vendor.css">
@@ -96,7 +96,7 @@
 <p>Alternativeley you can install wkhtmltopdf via <a href="https://chocolatey.org/">chocolatey</a> with <code>choco install wkhtmltopdf</code>. This will also add the executable folder to <strong>%PATH%</strong> during installation.</p>
 </div>
 <h2 id="step1-add-a-tocyml-specific-for-pdf">Step1. Add a toc.yml specific for PDF</h2>
-<p>Current design is that each TOC file generates a corresponding PDF file, TOC is also used as the cover page of the PDF, so we create a <code>toc.yml</code> file specific for PDF under a new folder <code>pdf</code>, using <a href="http://dotnet.github.io/docfx/tutorial/intro_toc.html?q=toc%20inclu#link-to-another-toc-file">TOC Include</a> to include content from other TOC files.</p>
+<p>Current design is that each TOC file generates a corresponding PDF file, TOC is also used as the table of contents page of the PDF, so we create a <code>toc.yml</code> file specific for PDF under a new folder <code>pdf</code>, using <a href="http://dotnet.github.io/docfx/tutorial/intro_toc.html?q=toc%20inclu#link-to-another-toc-file">TOC Include</a> to include content from other TOC files.</p>
 <pre><code class="lang-yml">- name: Articles
   href: ../articles/toc.yml
 - name: Api Documentation
@@ -176,7 +176,7 @@
 ],
 </code></pre>
 <h2 id="conclusion">Conclusion</h2>
-<p>In this walkthrough, we build a PDF file according to the TOC file under <code>pdf</code> folder. Note that TOC plays an important role in PDF generation, it not only determines the files included in the PDF, but also the cover page for this PDF file. One TOC file generates one PDF file, so don't forget to exclude TOC files you don't want from docfx.json.</p>
+<p>In this walkthrough, we build a PDF file according to the TOC file under <code>pdf</code> folder. Note that TOC plays an important role in PDF generation, it not only determines the files included in the PDF, but also the table of contents page for this PDF file. One TOC file generates one PDF file, so don't forget to exclude TOC files you don't want from docfx.json.</p>
 <h2 id="read-more">Read more</h2>
 <ul>
 <li><p><a href="walkthrough_create_a_docfx_project.html">Walkthrough Part I: Generate a Simple Documentation Website</a></p>
