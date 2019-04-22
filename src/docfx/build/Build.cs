@@ -214,15 +214,15 @@ namespace Microsoft.Docs.Build
 
             var (_, config) = ConfigLoader.TryLoad(docset, commandLineOptions);
 
-            var dependencyLock = DependencyLock.Load(docset, string.IsNullOrEmpty(config.DependencyLock) ? new SourceInfo<string>(AppData.GetDependencyLockFile(docset, locale)) : config.DependencyLock);
-            var restoreMap = RestoreMap.Create(dependencyLock ?? new DependencyLockModel());
+            var dependencyLock = DependencyLock.Load(docset, string.IsNullOrEmpty(config.DependencyLock) ? new SourceInfo<string>(AppData.GetDependencyLockFile(docset, locale)) : config.DependencyLock) ?? new DependencyLockModel();
+            var restoreMap = RestoreMap.Create(dependencyLock);
 
             if (LocalizationUtility.TryGetSourceRepository(repository, out var remote, out string branch, out _))
             {
                 if (dependencyLock.GetGitLock(remote, branch) == null && dependencyLock.GetGitLock(remote, "master") != null)
                 {
                     // fallback to master branch
-                    remote = "master";
+                    branch = "master";
                 }
 
                 var (fallbackRepoPath, fallbackDependencyLock) = restoreMap.GetGitRestorePath(remote, branch, dependencyLock);
