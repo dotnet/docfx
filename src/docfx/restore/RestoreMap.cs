@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
 {
@@ -146,7 +145,6 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(dependencyLock != null);
 
-            RestoreMap gitPool = null;
             var root = acquired is null;
             acquired = acquired ?? new Dictionary<(string remote, string branch, string commit), (string path, DependencyGit git)>();
 
@@ -165,8 +163,7 @@ namespace Microsoft.Docs.Build
                     Create(gitVersion.Value, acquired);
                 }
 
-                gitPool = new RestoreMap(acquired);
-                return gitPool;
+                return new RestoreMap(acquired);
             }
             catch
             {

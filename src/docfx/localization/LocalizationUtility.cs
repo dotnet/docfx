@@ -207,12 +207,6 @@ namespace Microsoft.Docs.Build
                     sourceBranch = contributionBranch;
                 }
 
-                if (sourceBranch != "master" &&
-                    !GitUtility.RemoteBranchExists(sourceRemote, sourceBranch))
-                {
-                    sourceBranch = "master";
-                }
-
                 return true;
             }
 
