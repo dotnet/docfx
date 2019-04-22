@@ -41,7 +41,7 @@ namespace Microsoft.Docs.Build
 
             List<Error> contributorErrors;
             (contributorErrors, model.ContributionInfo) = await context.ContributionProvider.GetContributionInfo(file, model.Author);
-            model.Author = model.ContributionInfo?.Author?.Name == null ? null : new SourceInfo<string>(model.ContributionInfo?.Author?.Name, model.Author);
+            model.Author = new SourceInfo<string>(model.ContributionInfo?.Author?.Name, model.Author);
             model.UpdatedAt = model.ContributionInfo?.UpdatedAtDateTime.ToString("yyyy-MM-dd hh:mm tt");
 
             if (contributorErrors != null)
