@@ -166,7 +166,6 @@ d: true
         {
             var (errors, value) = DeserializeWithValidation<object>(yaml);
             Assert.Empty(errors);
-            Assert.Null(value);
         }
 
         [Theory]
@@ -290,7 +289,6 @@ valueRequired: a
             var yaml = String.Empty;
             var (errors, value) = DeserializeWithValidation<ClassWithMoreMembers>(yaml);
             Assert.Empty(errors);
-            Assert.Null(value);
         }
 
         [Fact]

@@ -510,3 +510,20 @@ outputs:
         </li>
       </ol>
       <h2 id="c">c</h2>
+---
+# Empty YAML header
+inputs:
+  docfx.yml:
+  docs/a.md: |
+    ---
+    # some text
+    ---
+    a
+  docs/b.md: |
+    ---
+    ---
+    b
+outputs:
+  docs/a.json:
+  docs/b.json:
+

@@ -335,7 +335,8 @@ namespace Microsoft.Docs.Build
                 node.Remove();
             }
 
-            return (errors, root);
+            // treat null JToken as empty JObject since it is from user input
+            return (errors, IsNullOrUndefined(root) ? new JObject() : root);
 
             void RemoveNullsCore(JToken token, string name)
             {
@@ -400,6 +401,14 @@ namespace Microsoft.Docs.Build
                 s_setLineInfo(token, source.Line, source.Column);
             }
             return token;
+        }
+
+        private static bool IsNullOrUndefined(this JToken token)
+        {
+            return
+                (token is null) ||
+                (token.Type == JTokenType.Null) ||
+                (token.Type == JTokenType.Undefined);
         }
 
         private static JToken SetSourceInfo(JToken token, string file)
@@ -470,14 +479,6 @@ namespace Microsoft.Docs.Build
                 return "Expected type String, please input String or type compatible with String.";
             }
             return message;
-        }
-
-        private static bool IsNullOrUndefined(this JToken token)
-        {
-            return
-                (token is null) ||
-                (token.Type == JTokenType.Null) ||
-                (token.Type == JTokenType.Undefined);
         }
 
         private static void ReportUnknownFields(this JToken token, List<Error> errors, Type type)
