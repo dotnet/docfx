@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.IO;
 using Xunit;
 
 namespace Microsoft.Docs.Build
@@ -95,7 +96,8 @@ namespace Microsoft.Docs.Build
         [InlineData("https://github.com/docs.loc", "test-sxs.zh-cn", "https://github.com/docs", "master", "zh-cn")]
         public static void LocConfigConventionSourceRepo(string remote, string branch, string expectedSourceRemote, string expectedSourceBranch, string expectedLocale)
         {
-            LocalizationUtility.TryGetSourceRepository(remote, branch, out var sourceRemote, out var sourceBranch, out var locale);
+            LocalizationUtility.TryGetSourceRepository(
+                Repository.Create(Directory.GetCurrentDirectory(), branch, remote), out var sourceRemote, out var sourceBranch, out var locale);
 
             Assert.Equal(expectedSourceRemote, sourceRemote);
             Assert.Equal(expectedSourceBranch, sourceBranch);

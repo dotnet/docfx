@@ -182,7 +182,7 @@ namespace Microsoft.Docs.Build
             return false;
         }
 
-        internal static bool TryGetSourceRepository(string remote, string branch, out string sourceRemote, out string sourceBranch, out string locale)
+        private static bool TryGetSourceRepository(string remote, string branch, out string sourceRemote, out string sourceBranch, out string locale)
         {
             sourceRemote = null;
             sourceBranch = null;

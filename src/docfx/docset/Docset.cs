@@ -113,7 +113,7 @@ namespace Microsoft.Docs.Build
             DependencyLockModel dependencyLock,
             RestoreMap restoreMap,
             Repository repository = null,
-            Repository sourceRepo = default,
+            Repository fallbackRepo = default,
             Docset localizedDocset = null,
             Docset fallbackDocset = null,
             bool isDependency = false)
@@ -126,9 +126,9 @@ namespace Microsoft.Docs.Build
             {
                 // localization/fallback docset will share the same context, config, build locale and options with source docset
                 // source docset configuration will be overwritten by build locale overwrite configuration
-                if (sourceRepo != default)
+                if (fallbackRepo != default)
                 {
-                    FallbackDocset = new Docset(_report, sourceRepo.Path, Locale, Config, _options, DependencyLock, RestoreMap, sourceRepo, localizedDocset: this, isDependency: true);
+                    FallbackDocset = new Docset(_report, fallbackRepo.Path, Locale, Config, _options, DependencyLock, RestoreMap, fallbackRepo, localizedDocset: this, isDependency: true);
                 }
                 else if (LocalizationUtility.TryGetLocalizedDocsetPath(this, restoreMap, Config, Locale, out var localizationDocsetPath, out var localizationBranch, out _))
                 {
