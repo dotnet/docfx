@@ -227,10 +227,10 @@ gulp.task("syncBranchCore", () => {
 });
 gulp.task("test", gulp.series("clean", "build", "e2eTest", "publish:myget-test"));
 gulp.task("dev", gulp.series("clean", "build", "e2eTest"));
-gulp.task("stable", gulp.series("clean", "build", "e2eTest", "publish:myget-dev"));
+gulp.task("stable", gulp.series("clean", "build", "e2eTest", "publish:myget-dev")); // `stable` branch is obsolete. Run this task directly against `dev` branch
 
 gulp.task("master:build", gulp.series("clean", "build:release", "e2eTest", "updateGhPage"));
 gulp.task("master:release", gulp.series("packAssetZip", "publish:myget-master", "publish:gh-release", "publish:chocolatey"));
 
-gulp.task("syncBranch", gulp.series("syncBranchCore"));
+gulp.task("syncBranch", gulp.series("syncBranchCore")); // `stable` branch is obsolete. This task is of no use now.
 gulp.task("default", gulp.series("dev"));
