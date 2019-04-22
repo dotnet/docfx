@@ -46,6 +46,11 @@ namespace Microsoft.Docs.Build
             return Path.Combine(CacheRoot, "commits", HashUtility.GetMd5Hash(remote));
         }
 
+        public static string GetCommitBuildTimePath(string remote, string branch)
+        {
+            return Path.Combine(CacheRoot, "history", $"build_history_{HashUtility.GetMd5Guid(remote)}_{HashUtility.GetMd5Guid(branch)}.json");
+        }
+
         public static string GetGitHubUserCachePath(string url)
         {
             return Path.Combine(CacheRoot, "github-users", PathUtility.UrlToShortName(url));

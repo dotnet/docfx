@@ -54,7 +54,6 @@ namespace Microsoft.Docs.Build
             if (report.Write(config.ConfigFileName, configErrors))
                 return;
 
-            var errors = new List<Error>();
             var docset = GetBuildDocset(new Docset(report, docsetPath, locale, config, options, dependencyLock, restoreMap, repository, fallbackRepo));
             var outputPath = Path.Combine(docsetPath, config.Output.Path);
 
@@ -84,8 +83,9 @@ namespace Microsoft.Docs.Build
                     }
                 }
 
-                errors.AddIfNotNull(await saveGitHubUserCache);
-                errors.ForEach(e => context.Report.Write(e));
+                context.Report.Write(await saveGitHubUserCache);
+
+                context.ContributionProvider.UpdateCommitBuildTime();
             }
         }
 

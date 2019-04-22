@@ -163,6 +163,12 @@ namespace Microsoft.Docs.Build
         public readonly SourceInfo<string> DependencyLock = new SourceInfo<string>(string.Empty);
 
         /// <summary>
+        /// When enabled, updated_at for each document will be the last build time
+        /// for the latest commit that touches that document.
+        /// </summary>
+        public readonly bool UpdateTimeAsCommitBuildTime = false;
+
+        /// <summary>
         /// Gets the config file name.
         /// </summary>
         [JsonIgnore]
