@@ -24,8 +24,8 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// The key or value of redirection is null or empty.
         /// </summary>
-        public static Error RedirectionIsNullOrEmpty(string from, string to)
-            => new Error(ErrorLevel.Error, "redirection-is-empty", $"The key or value of redirection '{from}: {to}' is null or empty");
+        public static Error RedirectionIsNullOrEmpty(string from, SourceInfo<string> source)
+            => new Error(ErrorLevel.Error, "redirection-is-empty", $"The key or value of redirection '{from}: {source}' is null or empty", source);
 
         /// <summary>
         /// Defined redirect dest not starting with '\' in <see cref="Config.Redirections"/>.
@@ -93,8 +93,8 @@ namespace Microsoft.Docs.Build
         /// In yaml-format toc, topicHref SHOULD reference an article,
         /// rather than relative path or another toc file.
         /// </summary>
-        public static Error InvalidTopicHref(Document relativeTo, string topicHref)
-            => new Error(ErrorLevel.Error, "invalid-topic-href", $"The topic href '{topicHref}' can only reference to a local file or absolute path", relativeTo.ToString());
+        public static Error InvalidTopicHref(Document relativeTo, SourceInfo<string> source)
+            => new Error(ErrorLevel.Error, "invalid-topic-href", $"The topic href '{source}' can only reference to a local file or absolute path", relativeTo.ToString(), source);
 
         /// <summary>
         /// In markdown-format toc, link(treated as inclusion) CAN ONLY be toc file, folder or absolute path.
@@ -121,8 +121,8 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// In markdown-format toc, header level should be continuous, it shouldn't skip a level.
         /// </summary>
-        public static Error InvalidTocLevel(string filePath, int from, int to)
-            => new Error(ErrorLevel.Error, "invalid-toc-level", $"The toc level can't be skipped from {from} to {to}", filePath);
+        public static Error InvalidTocLevel(string filePath, int from, int to, SourceInfo source)
+            => new Error(ErrorLevel.Error, "invalid-toc-level", $"The toc level can't be skipped from {from} to {to}", filePath, source);
 
         /// <summary>
         /// Used invalid locale name(can't be resolved by <see cref="System.Globalization.CultureInfo"/>).

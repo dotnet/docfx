@@ -762,8 +762,9 @@ inputs:
 outputs:
   docs/f1/toc.json:
   build.log: |
-    ["error","invalid-topic-href","The topic href 'f1/' can only reference to a local file or absolute path","docs/TOC.yml"]
-    ["error","invalid-topic-href","The topic href 'f1/TOC.md' can only reference to a local file or absolute path","docs/TOC.yml"]
+    ["error","invalid-topic-href","The topic href 'f1/' can only reference to a local file or absolute path","docs/TOC.yml",2,14]
+    ["error","invalid-topic-href","The topic href 'f1/TOC.md' can only reference to a local file or absolute path","docs/TOC.yml",4,14]
+    ["error","invalid-topic-href","The topic href 'f1/TOC.md' can only reference to a local file or absolute path","docs/TOC.yml",6,14]
 ---
 # Toc href cannot reference a local file
 inputs:
@@ -1052,7 +1053,7 @@ inputs:
     ### level 3
 outputs:
   build.log: |
-    ["error","invalid-toc-level","The toc level can't be skipped from 1 to 3","docs/TOC.md"]
+    ["error","invalid-toc-level","The toc level can't be skipped from 1 to 3","docs/TOC.md",2,1]
 ---
 # Missing TOC head name
 inputs:
