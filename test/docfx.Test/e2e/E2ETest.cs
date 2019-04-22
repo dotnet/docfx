@@ -23,13 +23,20 @@ namespace Microsoft.Docs.Build
     {
         private static readonly string[] s_errorCodesWithoutLineInfo =
         {
-            "need-restore", "publish-url-conflict", "output-path-conflict", "uid-conflict", "redirection-conflict",
-            "download-failed", "heading-not-found", "config-not-found", "invalid-locale", "moniker-overlapping",
-            "moniker-config-missing", "empty-monikers", "circular-reference", "committish-not-found",
-            "redirected-id-conflict",
+            "need-restore", "heading-not-found", "config-not-found", "committish-not-found",
 
-            // Do not need line info since they should be at the top of the file
-            "yaml-header-not-object", "schema-not-found"
+            // can be removed
+            "moniker-config-missing",
+
+            // should have, maybe sometimes not
+            "download-failed", "invalid-locale",
+
+            // add line info for the actual start
+            "yaml-header-not-object", "schema-not-found",
+
+            // show multiple errors with line info
+            "publish-url-conflict", "output-path-conflict", "uid-conflict", "redirection-conflict",
+            "redirected-id-conflict", "circular-reference", "moniker-overlapping", "empty-monikers",
         };
 
         private static readonly ConcurrentDictionary<string, (int ordinal, string spec)> s_mockRepos = new ConcurrentDictionary<string, (int ordinal, string spec)>();
