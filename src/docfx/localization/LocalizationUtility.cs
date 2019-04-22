@@ -103,62 +103,11 @@ namespace Microsoft.Docs.Build
             return TryGetSourceRepository(repository.Remote, repository.Branch, out sourceRemote, out sourceBranch, out locale);
         }
 
-        /// <summary>
-        /// Get the source repo's remote and branch from loc repo based on <see cref="LocalizationMapping"/>
-        /// </summary>
-        public static bool TryGetSourceRepository(string remote, string branch, out string sourceRemote, out string sourceBranch, out string locale)
+        public static string GetLocale(string remote, string branch, CommandLineOptions options)
         {
-            sourceRemote = null;
-            sourceBranch = null;
-            locale = null;
-
-            if (string.IsNullOrEmpty(remote) || string.IsNullOrEmpty(branch))
-            {
-                return false;
-            }
-
-            if (TryRemoveLocale(remote, out sourceRemote, out locale))
-            {
-                sourceBranch = branch;
-                if (TryRemoveLocale(branch, out var branchWithoutLocale, out var branchLocale))
-                {
-                    sourceBranch = branchWithoutLocale;
-                    locale = branchLocale;
-                }
-
-                if (TryGetContributionBranch(sourceBranch, out var contributionBranch))
-                {
-                    sourceBranch = contributionBranch;
-                }
-
-                if (sourceBranch != "master" &&
-                    !GitUtility.RemoteBranchExists(sourceRemote, sourceBranch))
-                {
-                    sourceBranch = "master";
-                }
-
-                return true;
-            }
-
-            return locale != null;
-        }
-
-        public static bool TryGetSourceDocsetPath(Docset docset, RestoreMap restoreMap, out string sourceDocsetPath, out string sourceBranch, out DependencyLockModel dependencyLock)
-        {
-            Debug.Assert(docset != null);
-            Debug.Assert(restoreMap != null);
-
-            sourceDocsetPath = null;
-            sourceBranch = null;
-            dependencyLock = null;
-
-            if (TryGetSourceRepository(docset.Repository, out var sourceRemote, out sourceBranch, out var locale))
-            {
-                (sourceDocsetPath, dependencyLock) = restoreMap.GetGitRestorePath(sourceRemote, sourceBranch, docset.DependencyLock);
-                return true;
-            }
-
-            return false;
+            return options.Locale ?? (TryRemoveLocale(branch, out _, out var branchLocale)
+                ? branchLocale : TryRemoveLocale(remote, out _, out var remoteLocale)
+                ? remoteLocale : default);
         }
 
         public static bool TryGetContributionBranch(Repository repository, out string contributionBranch)
@@ -200,11 +149,6 @@ namespace Microsoft.Docs.Build
             return false;
         }
 
-        public static string GetLocale(Repository repository, CommandLineOptions options)
-        {
-            return TryGetSourceRepository(repository, out _, out _, out var locale) ? locale : options.Locale;
-        }
-
         public static bool IsLocalized(this Docset docset) => docset.FallbackDocset != null;
 
         public static bool IsLocalizedBuild(this Docset docset) => docset.FallbackDocset != null || docset.LocalizationDocset != null;
@@ -236,6 +180,43 @@ namespace Microsoft.Docs.Build
             }
 
             return false;
+        }
+
+        private static bool TryGetSourceRepository(string remote, string branch, out string sourceRemote, out string sourceBranch, out string locale)
+        {
+            sourceRemote = null;
+            sourceBranch = null;
+            locale = null;
+
+            if (string.IsNullOrEmpty(remote) || string.IsNullOrEmpty(branch))
+            {
+                return false;
+            }
+
+            if (TryRemoveLocale(remote, out sourceRemote, out locale))
+            {
+                sourceBranch = branch;
+                if (TryRemoveLocale(branch, out var branchWithoutLocale, out var branchLocale))
+                {
+                    sourceBranch = branchWithoutLocale;
+                    locale = branchLocale;
+                }
+
+                if (TryGetContributionBranch(sourceBranch, out var contributionBranch))
+                {
+                    sourceBranch = contributionBranch;
+                }
+
+                if (sourceBranch != "master" &&
+                    !GitUtility.RemoteBranchExists(sourceRemote, sourceBranch))
+                {
+                    sourceBranch = "master";
+                }
+
+                return true;
+            }
+
+            return locale != null;
         }
 
         private static string GetBilingualBranch(LocalizationMapping mapping, string branch)
