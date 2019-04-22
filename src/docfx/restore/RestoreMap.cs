@@ -55,7 +55,7 @@ namespace Microsoft.Docs.Build
             var path = Path.Combine(AppData.GetGitDir(remote), gitInfo.path);
             Debug.Assert(Directory.Exists(path));
 
-            return (path, new RestoreMap (_acquiredGits) { DependencyLock = gitVersion });
+            return (path, new RestoreMap(_acquiredGits) { DependencyLock = gitVersion });
         }
 
         public bool Release()
