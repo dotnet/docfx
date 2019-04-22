@@ -143,7 +143,7 @@ namespace Microsoft.Docs.Build
 
                 return Execute(".", $"ls-remote --heads \"{remote}\" {branch}").Split('\n', StringSplitOptions.RemoveEmptyEntries).Any();
             }
-            catch
+            catch (InvalidOperationException)
             {
                 return false;
             }
