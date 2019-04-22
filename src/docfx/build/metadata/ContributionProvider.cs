@@ -30,18 +30,113 @@ namespace Microsoft.Docs.Build
 
         public async Task<(List<Error> errors, ContributionInfo contributionInfo)> GetContributionInfo(Document document, SourceInfo<string> authorName)
         {
-            var (errors, author, contributors, updatedAt) = await GetAuthorAndContributors(document, authorName);
+            Debug.Assert(document != null);
+            var (repo, pathToRepo, commits) = _gitCommitProvider.GetCommitHistory(document);
+            if (repo is null)
+            {
+                return default;
+            }
 
-            return (errors, updatedAt != default
+            var contributionCommits = GetContributionCommits();
+
+            var excludes = document.Docset.Config.Contribution.ExcludedContributors;
+
+            var contributors = new List<Contributor>();
+            var errors = new List<Error>();
+            var emails = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            var userIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            var updatedDateTime = GetUpdatedAt(document, commits);
+
+            var resolveGitHubUsers =
+                (GitHubUtility.TryParse(repo?.Remote, out var gitHubOwner, out var gitHubRepoName) ||
+                GitHubUtility.TryParse(document.Docset.Config.Contribution.Repository, out gitHubOwner, out gitHubRepoName)) &&
+                document.Docset.Config.GitHub.ResolveUsers;
+
+            // Resolve contributors from commits
+            if (contributionCommits != null)
+            {
+                foreach (var commit in contributionCommits)
+                {
+                    if (!emails.Add(commit.AuthorEmail))
+                        continue;
+
+                    var contributor = await GetContributor(commit);
+                    if (contributor != null && !excludes.Contains(contributor.Name) && userIds.Add(contributor.Id))
+                    {
+                        contributors.Add(contributor);
+                    }
+                }
+            }
+
+            var author = await GetAuthor();
+            if (author != null)
+            {
+                contributors.RemoveAll(c => c.Id == author.Id);
+            }
+
+            return (errors, updatedDateTime != default
                 ? new ContributionInfo
                 {
-                    Contributors = contributors ?? new List<Contributor>(),
-                    /*it's a workaround to produce stable `update_at` in different platform for en-us content*/
-                    UpdateAt = updatedAt.ToString(document.Docset.Locale == "en-us" ? "MM/dd/yyyy" : document.Docset.Culture.DateTimeFormat.ShortDatePattern),
-                    UpdatedAtDateTime = updatedAt,
+                    Contributors = contributors,
+                    /* it's a workaround to produce stable `update_at` in different platform for en-us content */
+                    UpdateAt = updatedDateTime.ToString(document.Docset.Locale == "en-us" ? "MM/dd/yyyy" : document.Docset.Culture.DateTimeFormat.ShortDatePattern),
+                    UpdatedAtDateTime = updatedDateTime,
                     Author = author,
                 }
                 : null);
+
+            async Task<Contributor> GetContributor(GitCommit commit)
+            {
+                if (!resolveGitHubUsers)
+                {
+                    return new Contributor { DisplayName = commit.AuthorName, Id = commit.AuthorEmail };
+                }
+
+                var (error, user) = await _gitHubUserCache.GetByCommit(commit.AuthorEmail, gitHubOwner, gitHubRepoName, commit.Sha);
+                errors.AddIfNotNull(error);
+
+                return user?.ToContributor();
+            }
+
+            async Task<Contributor> GetAuthor()
+            {
+                if (!string.IsNullOrEmpty(authorName))
+                {
+                    if (resolveGitHubUsers)
+                    {
+                        // Remove author from contributors if author name is specified
+                        var (error, result) = await _gitHubUserCache.GetByLogin(authorName);
+                        errors.AddIfNotNull(error?.WithSourceInfo(authorName));
+                        return result?.ToContributor();
+                    }
+                }
+                else if (contributors.Count > 0)
+                {
+                    // When author name is not specified, last contributor is author
+                    for (var i = contributionCommits.Count - 1; i >= 0; i--)
+                    {
+                        var user = await GetContributor(contributionCommits[i]);
+                        if (user != null)
+                        {
+                            return user;
+                        }
+                    }
+                }
+                return null;
+            }
+
+            List<GitCommit> GetContributionCommits()
+            {
+                var result = commits;
+                var bilingual = document.Docset.IsLocalized() && document.Docset.Config.Localization.Bilingual;
+                var contributionBranch = bilingual && LocalizationUtility.TryGetContributionBranch(repo.Branch, out var cBranch) ? cBranch : null;
+                if (!string.IsNullOrEmpty(contributionBranch))
+                {
+                    (_, _, result) = _gitCommitProvider.GetCommitHistory(document, contributionBranch);
+                }
+
+                return result;
+            }
         }
 
         public DateTime GetUpdatedAt(Document document, List<GitCommit> fileCommits)
@@ -105,110 +200,6 @@ namespace Microsoft.Docs.Build
                 }
 
                 return branchUrlTemplate?.Replace("{repo}", editRemote).Replace("{branch}", editBranch);
-            }
-        }
-
-        private async Task<(List<Error> error, Contributor author, List<Contributor> contributors, DateTime updatedAt)> GetAuthorAndContributors(
-            Document document,
-            SourceInfo<string> authorName)
-        {
-            Debug.Assert(document != null);
-            var (repo, pathToRepo, commits) = _gitCommitProvider.GetCommitHistory(document);
-            if (repo is null)
-            {
-                return default;
-            }
-
-            var contributionCommits = GetContributionCommits();
-
-            var excludes = document.Docset.Config.Contribution.ExcludedContributors;
-
-            var contributors = new List<Contributor>();
-            var errors = new List<Error>();
-            var emails = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-            var userIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-            var updatedDateTime = GetUpdatedAt(document, commits);
-
-            var resolveGitHubUsers =
-                (GitHubUtility.TryParse(repo?.Remote, out var gitHubOwner, out var gitHubRepoName) ||
-                GitHubUtility.TryParse(document.Docset.Config.Contribution.Repository, out gitHubOwner, out gitHubRepoName)) &&
-                document.Docset.Config.GitHub.ResolveUsers;
-
-            // Resolve contributors from commits
-            if (contributionCommits != null)
-            {
-                foreach (var commit in contributionCommits)
-                {
-                    if (!emails.Add(commit.AuthorEmail))
-                        continue;
-
-                    var contributor = await GetContributor(commit);
-                    if (contributor != null && !excludes.Contains(contributor.Name) && userIds.Add(contributor.Id))
-                    {
-                        contributors.Add(contributor);
-                    }
-                }
-            }
-
-            var author = await GetAuthor();
-            if (author != null)
-            {
-                contributors.RemoveAll(c => c.Id == author.Id);
-            }
-
-            return (errors, author, contributors, updatedDateTime);
-
-            async Task<Contributor> GetContributor(GitCommit commit)
-            {
-                if (!resolveGitHubUsers)
-                {
-                    return new Contributor { DisplayName = commit.AuthorName, Id = commit.AuthorEmail };
-                }
-
-                var (error, user) = await _gitHubUserCache.GetByCommit(commit.AuthorEmail, gitHubOwner, gitHubRepoName, commit.Sha);
-                errors.AddIfNotNull(error);
-
-                return user?.ToContributor();
-            }
-
-            async Task<Contributor> GetAuthor()
-            {
-                if (!string.IsNullOrEmpty(authorName))
-                {
-                    if (resolveGitHubUsers)
-                    {
-                        // Remove author from contributors if author name is specified
-                        var (error, result) = await _gitHubUserCache.GetByLogin(authorName);
-                        errors.AddIfNotNull(error?.WithSourceInfo(authorName));
-                        return result?.ToContributor();
-                    }
-                }
-                else if (contributors.Count > 0)
-                {
-                    // When author name is not specified, last contributor is author
-                    for (var i = contributionCommits.Count - 1; i >= 0; i--)
-                    {
-                        var user = await GetContributor(contributionCommits[i]);
-                        if (user != null)
-                        {
-                            return user;
-                        }
-                    }
-                }
-                return null;
-            }
-
-            List<GitCommit> GetContributionCommits()
-            {
-                var result = commits;
-                var bilingual = document.Docset.IsLocalized() && document.Docset.Config.Localization.Bilingual;
-                var contributionBranch = bilingual && LocalizationUtility.TryGetContributionBranch(repo.Branch, out var cBranch) ? cBranch : null;
-                if (!string.IsNullOrEmpty(contributionBranch))
-                {
-                    (_, _, result) = _gitCommitProvider.GetCommitHistory(document, contributionBranch);
-                }
-
-                return result;
             }
         }
 

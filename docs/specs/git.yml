@@ -37,7 +37,9 @@ outputs:
         "contributors": [
           { "name": "bob", "profile_url": "https://github.com/bob", "display_name": "Bob", "id": "2" },
           { "name": "alice", "profile_url": "https://github.com/alice", "display_name": "Alice", "id": "1" }
-        ]
+        ],
+        "update_at": "01/01/2018",
+        "updated_at_date_time": "2018-01-01T00:00:00"
       },
       "updated_at": "2018-01-01 12:00 AM"
     }

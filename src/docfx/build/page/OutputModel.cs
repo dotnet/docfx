@@ -29,7 +29,7 @@ namespace Microsoft.Docs.Build
 
         public string DocumentVersionIndependentId { get; set; }
 
-        [JsonProperty("_op_gitContributorInformation"/*legacy name*/)]
+        [JsonProperty("_op_gitContributorInformation")]
         public ContributionInfo ContributionInfo { get; set; }
 
         public string UpdatedAt { get; set; }
