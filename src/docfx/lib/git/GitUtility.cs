@@ -130,6 +130,26 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
+        /// Check if remote branch exists
+        /// </summary>
+        public static bool RemoteBranchExists(string remote, string branch)
+        {
+            try
+            {
+                if (GitRemoteProxy != null)
+                {
+                    remote = GitRemoteProxy(remote);
+                }
+
+                return Execute(".", $"ls-remote --heads \"{remote}\" {branch}").Split('\n', StringSplitOptions.RemoveEmptyEntries).Any();
+            }
+            catch (InvalidOperationException)
+            {
+                return false;
+            }
+       }
+
+        /// <summary>
         /// List work trees for a given repo
         /// </summary>
         public static List<string> ListWorkTree(string repoPath)
