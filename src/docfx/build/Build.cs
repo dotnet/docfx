@@ -23,12 +23,12 @@ namespace Microsoft.Docs.Build
 
             var restoreMap = RestoreMap.Create(dependencyLock);
             var fallbackRepo = fallbackRepoInfo != default
-                ? Repository.Create(restoreMap.GetGitRestorePath(fallbackRepoInfo.remote, fallbackRepoInfo.branch, dependencyLock).path, fallbackRepoInfo.branch, fallbackRepoInfo.remote)
+                ? Repository.Create(restoreMap.GetGitRestorePath(fallbackRepoInfo.remote, fallbackRepoInfo.branch).path, fallbackRepoInfo.branch, fallbackRepoInfo.remote)
                 : default;
 
             try
             {
-                await Run(docsetPath, repository, locale, options, report, dependencyLock, restoreMap, fallbackRepo);
+                await Run(docsetPath, repository, locale, options, report, restoreMap, fallbackRepo);
             }
             finally
             {
@@ -42,12 +42,11 @@ namespace Microsoft.Docs.Build
             string locale,
             CommandLineOptions options,
             Report report,
-            DependencyLockModel dependencyLock,
             RestoreMap restoreMap,
             Repository fallbackRepo = null)
         {
             XrefMap xrefMap = null;
-            var (configErrors, config) = GetBuildConfig(docsetPath, options, dependencyLock, locale, fallbackRepo);
+            var (configErrors, config) = GetBuildConfig(docsetPath, options, locale, fallbackRepo);
             report.Configure(docsetPath, config);
 
             // just return if config loading has errors
@@ -55,7 +54,7 @@ namespace Microsoft.Docs.Build
                 return;
 
             var errors = new List<Error>();
-            var docset = GetBuildDocset(new Docset(report, docsetPath, locale, config, options, dependencyLock, restoreMap, repository, fallbackRepo));
+            var docset = GetBuildDocset(new Docset(report, docsetPath, locale, config, options, restoreMap, repository, fallbackRepo));
             var outputPath = Path.Combine(docsetPath, config.Output.Path);
 
             using (var context = Context.Create(outputPath, report, docset, () => xrefMap))
@@ -242,7 +241,6 @@ namespace Microsoft.Docs.Build
         private static (List<Error> errors, Config config) GetBuildConfig(
             string docset,
             CommandLineOptions options,
-            DependencyLockModel dependencyLock,
             string locale,
             Repository fallbackRepo = null)
         {
@@ -251,7 +249,6 @@ namespace Microsoft.Docs.Build
                 return ConfigLoader.Load(docset, options, locale);
             }
 
-            Debug.Assert(dependencyLock != null);
             return ConfigLoader.Load(fallbackRepo.Path, options, locale);
         }
 

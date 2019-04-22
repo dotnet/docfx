@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
 {
@@ -14,7 +13,9 @@ namespace Microsoft.Docs.Build
     {
         private IReadOnlyDictionary<(string remote, string branch, string commit), (string path, DependencyGit git)> _acquiredGits;
 
-        public RestoreMap(IReadOnlyDictionary<(string remote, string branch, string commit), (string path, DependencyGit git)> acquiredGits)
+        public DependencyLockModel DependencyLock { get; private set; }
+
+        public RestoreMap(IReadOnlyDictionary<(string remote, string branch, string commit), (string path, DependencyGit git)> acquiredGits = null)
         {
             _acquiredGits = acquiredGits ?? new Dictionary<(string remote, string branch, string commit), (string path, DependencyGit git)>();
         }
@@ -23,20 +24,18 @@ namespace Microsoft.Docs.Build
         /// Acquire restored git repository path, dependencyLock and git slot with url and dependency lock
         /// The dependency lock must be loaded before using this method
         /// </summary>
-        public (string path, DependencyLockModel subDependencyLock) GetGitRestorePath(string url, DependencyLockModel dependencyLock)
+        public (string path, RestoreMap subRestoreMap) GetGitRestorePath(string url)
         {
             var (remote, branch, _) = HrefUtility.SplitGitHref(url);
-            return GetGitRestorePath(remote, branch, dependencyLock);
+            return GetGitRestorePath(remote, branch);
         }
 
         /// <summary>
         /// The dependency lock must be loaded before using this method
         /// </summary>
-        public (string path, DependencyLockModel subDependencyLock) GetGitRestorePath(string remote, string branch, DependencyLockModel dependencyLock)
+        public (string path, RestoreMap subRestoreMap) GetGitRestorePath(string remote, string branch)
         {
-            Debug.Assert(dependencyLock != null);
-
-            var gitVersion = dependencyLock.GetGitLock(remote, branch);
+            var gitVersion = DependencyLock.GetGitLock(remote, branch);
 
             if (gitVersion is null)
             {
@@ -56,7 +55,7 @@ namespace Microsoft.Docs.Build
             var path = Path.Combine(AppData.GetGitDir(remote), gitInfo.path);
             Debug.Assert(Directory.Exists(path));
 
-            return (path, gitVersion);
+            return (path, new RestoreMap { DependencyLock = gitVersion });
         }
 
         public bool Release()
@@ -146,7 +145,6 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(dependencyLock != null);
 
-            RestoreMap gitPool = null;
             var root = acquired is null;
             acquired = acquired ?? new Dictionary<(string remote, string branch, string commit), (string path, DependencyGit git)>();
 
@@ -165,8 +163,10 @@ namespace Microsoft.Docs.Build
                     Create(gitVersion.Value, acquired);
                 }
 
-                gitPool = new RestoreMap(acquired);
-                return gitPool;
+                return new RestoreMap(acquired)
+                {
+                    DependencyLock = dependencyLock,
+                };
             }
             catch
             {
