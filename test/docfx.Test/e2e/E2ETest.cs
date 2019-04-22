@@ -190,7 +190,7 @@ namespace Microsoft.Docs.Build
                     {
                         var spec = YamlUtility.Deserialize<E2ESpec>(yaml);
                         if (spec.Commands != null && spec.Commands.Any(c => c != null && c.Contains("--locale"))
-                            && spec.Repos.Count() > 1 && !spec.Inputs.Any() && string.IsNullOrEmpty(spec.Repo))
+                            && spec.Repos.Count() > 1 && !spec.Inputs.Any() && string.IsNullOrEmpty(spec.Repo) && !header.Contains("[from loc]"))
                         {
                             specNames.Add(($"{Path.GetFileNameWithoutExtension(file)}/{i:D2}. [from loc] {header}", only));
                         }
@@ -220,7 +220,7 @@ namespace Microsoft.Docs.Build
             var sections = File.ReadAllText(Path.Combine("specs", specPath)).Split("\n---", StringSplitOptions.RemoveEmptyEntries);
             var yaml = sections[ordinal].Trim('\r', '\n', '-');
             var fromLoc = !string.IsNullOrEmpty(match.Groups[3].Value);
-            Assert.StartsWith($"# {match.Groups[4].Value}", yaml);
+            Assert.True(yaml.StartsWith($"# {match.Groups[4].Value}") || yaml.StartsWith($"# {match.Groups[3].Value}{match.Groups[4].Value}"));
 
             var yamlHash = HashUtility.GetMd5Hash(yaml).Substring(0, 5);
             var name = ToSafePathString(specName).Substring(0, Math.Min(30, specName.Length)) + "-" + yamlHash;

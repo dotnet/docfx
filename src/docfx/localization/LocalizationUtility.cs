@@ -205,11 +205,6 @@ namespace Microsoft.Docs.Build
                     sourceBranch = contributionBranch;
                 }
 
-                if (sourceBranch != "live")
-                {
-                    sourceBranch = "master";
-                }
-
                 return true;
             }
 
