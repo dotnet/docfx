@@ -18,8 +18,8 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Redirection entry isn't a conceptual article(*.{md,json,yml}).
         /// </summary>
-        public static Error InvalidRedirection(string path, ContentType contentType)
-            => new Error(ErrorLevel.Error, "invalid-redirection", $"The '{path}' shouldn't belong to redirections since it's a {contentType}");
+        public static Error InvalidRedirection(SourceInfo source, string path, ContentType contentType)
+            => new Error(ErrorLevel.Error, "invalid-redirection", $"The '{path}' shouldn't belong to redirections since it's a {contentType}", source);
 
         /// <summary>
         /// The key or value of redirection is null or empty.
@@ -30,8 +30,8 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Defined redirect dest not starting with '\' in <see cref="Config.Redirections"/>.
         /// </summary>
-        public static Error InvalidRedirectTo(string path, string redirectTo)
-            => new Error(ErrorLevel.Warning, "invalid-redirect-to", $"The redirect dest '{redirectTo}' isn't allowed for entry '{path}' in redirections, redirect dest must start with '/'");
+        public static Error InvalidRedirectTo(SourceInfo<string> source)
+            => new Error(ErrorLevel.Warning, "invalid-redirect-to", $"The redirect url '{source}' must start with '/'", source);
 
         /// <summary>
         /// Used invalid glob pattern in configuration.
@@ -200,8 +200,8 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Defined a redirection entry that's not matched by config's files glob patterns.
         /// </summary>
-        public static Error RedirectionOutOfScope(Document redirection, string configFile)
-            => new Error(ErrorLevel.Info, "redirection-out-of-scope", $"Redirection file '{redirection}' will not be built because it is not included in {configFile}");
+        public static Error RedirectionOutOfScope(SourceInfo source, string redirection)
+            => new Error(ErrorLevel.Info, "redirection-out-of-scope", $"Redirection file '{redirection}' will not be built because it is not included in build scope", source);
 
         /// <summary>
         /// Link which's resolved to a file in dependency repo won't be built.
@@ -235,8 +235,8 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Failed to resolve uid defined by [link](xref:uid) or <xref:uid> syntax.
         /// </summary>
-        public static Error UidNotFound(Document file, string uid, SourceInfo<string> source)
-            => new Error(ErrorLevel.Warning, "uid-not-found", $"Cannot find uid '{uid}' using xref '{source}'", file.ToString(), source);
+        public static Error UidNotFound(string file, string uid, SourceInfo<string> source)
+            => new Error(ErrorLevel.Warning, "uid-not-found", $"Cannot find uid '{uid}' using xref '{source}'", file, source);
 
         /// <summary>
         /// File contains git merge conflict.
@@ -249,14 +249,14 @@ namespace Microsoft.Docs.Build
         ///     >>>>>>> refs/heads/branch
         /// ]]>
         /// </summary>
-        public static Error MergeConflict(string file)
-            => new Error(ErrorLevel.Error, "merge-conflict", "File contains merge conflict", file);
+        public static Error MergeConflict(SourceInfo source)
+            => new Error(ErrorLevel.Error, "merge-conflict", "File contains merge conflict", source);
 
         /// <summary>
         /// Failed to resolve uid defined by @ syntax.
         /// </summary>
-        public static Error AtUidNotFound(Document file, string uid, SourceInfo<string> source)
-            => new Error(ErrorLevel.Info, "at-uid-not-found", $"Cannot find uid '{uid}' using xref '{source}'", file.ToString(), source);
+        public static Error AtUidNotFound(string file, string uid, SourceInfo<string> source)
+            => new Error(ErrorLevel.Info, "at-uid-not-found", $"Cannot find uid '{uid}' using xref '{source}'", file, source);
 
         /// <summary>
         /// Files published to the same url have no monikers or share common monikers.

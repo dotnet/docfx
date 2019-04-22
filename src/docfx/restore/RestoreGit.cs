@@ -232,7 +232,7 @@ namespace Microsoft.Docs.Build
                 yield break;
             }
 
-            if (LocalizationUtility.TryGetSourceRepository(repo.Remote, repo.Branch, out var sourceRemote, out var sourceBranch, out var l))
+            if (LocalizationUtility.TryGetSourceRepository(repo.Remote, repo.Branch, out var sourceRemote, out var sourceBranch, out _))
             {
                 yield return (sourceRemote, sourceBranch, GitFlags.None);
                 yield break; // no need to find localized repo anymore

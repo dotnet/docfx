@@ -8,7 +8,7 @@ using Newtonsoft.Json.Serialization;
 namespace Microsoft.Docs.Build
 {
     [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
-    public class FileMetadata
+    public class InputMetadata
     {
         public string Layout { get; set; }
 

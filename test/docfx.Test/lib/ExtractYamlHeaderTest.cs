@@ -44,7 +44,7 @@ this: is a frontmatter
         {
             using (var reader = new StringReader(content))
             {
-                var (errors, metadata) = ExtractYamlHeader.Extract(reader);
+                var (errors, metadata) = ExtractYamlHeader.Extract(reader, null);
                 Assert.Empty(errors);
                 Assert.Equal(expectedMetadata.Replace('\'', '"'), JsonUtility.Serialize(metadata));
             }
@@ -64,7 +64,7 @@ hello
         {
             using (var reader = new StringReader(content))
             {
-                var (errors, metadata) = ExtractYamlHeader.Extract(reader);
+                var (errors, metadata) = ExtractYamlHeader.Extract(reader, null);
                 Assert.Collection(errors, error =>
                 {
                     Assert.Equal(expectedErrorCode, error.Code);

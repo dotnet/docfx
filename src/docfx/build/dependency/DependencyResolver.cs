@@ -94,20 +94,16 @@ namespace Microsoft.Docs.Build
 
         private (Error error, string content, Document file) TryResolveContent(Document relativeTo, SourceInfo<string> href)
         {
-            var (error, file, redirect, _, _, _, pathToDocset) = TryResolveFile(relativeTo, href);
+            var (error, file, _, _, _, pathToDocset) = TryResolveFile(relativeTo, href);
 
-            if (redirect != null)
+            if (file?.RedirectionUrl != null)
             {
                 return default;
             }
 
             if (file is null)
             {
-                var (errorFromHistory, content, fileFromHistory) = TryResolveContentFromHistory(_gitCommitProvider, relativeTo.Docset, pathToDocset);
-                if (errorFromHistory != null)
-                {
-                    return (error, null, null);
-                }
+                var (content, fileFromHistory) = TryResolveContentFromHistory(_gitCommitProvider, relativeTo.Docset, pathToDocset);
                 if (fileFromHistory != null)
                 {
                     return (null, content, fileFromHistory);
@@ -130,15 +126,7 @@ namespace Microsoft.Docs.Build
             }
 
             var decodedHref = new SourceInfo<string>(Uri.UnescapeDataString(href), href);
-            var (error, file, redirectTo, query, fragment, hrefType, pathToDocset) = TryResolveFile(relativeTo, decodedHref);
-
-            // Redirection
-            // follow redirections
-            if (redirectTo != null && !relativeTo.Docset.Legacy)
-            {
-                // TODO: append query and fragment to an absolute url with query and fragments may cause problems
-                return (error, redirectTo + query + fragment, null, hrefType, null);
-            }
+            var (error, file, query, fragment, hrefType, pathToDocset) = TryResolveFile(relativeTo, decodedHref);
 
             if (hrefType == HrefType.WindowsAbsolutePath)
             {
@@ -148,14 +136,13 @@ namespace Microsoft.Docs.Build
             // Cannot resolve the file, leave href as is
             if (file is null)
             {
-                var (errorFromHistory, resourceFromHistory) = TryResolveResourceFromHistory(_gitCommitProvider, relativeTo.Docset, pathToDocset);
-                if (errorFromHistory != null || resourceFromHistory == null)
+                file = TryResolveResourceFromHistory(_gitCommitProvider, relativeTo.Docset, pathToDocset);
+                if (file is null)
                 {
-                    return (errorFromHistory ?? error, href, fragment, hrefType, null);
+                    return (error, href, fragment, hrefType, null);
                 }
 
                 // set file to resource got from histroy, reset the error
-                file = resourceFromHistory;
                 error = null;
             }
 
@@ -188,9 +175,9 @@ namespace Microsoft.Docs.Build
             // Make result relative to `resultRelativeTo`
             var relativeUrl = GetRelativeUrl(resultRelativeTo, file);
 
-            if (redirectTo != null)
+            if (file?.RedirectionUrl != null)
             {
-                return (error, relativeUrl + query + fragment, fragment, hrefType, null);
+                return (error, relativeUrl + query + fragment, null, hrefType, null);
             }
 
             // Pages outside build scope, don't build the file, use relative href
@@ -204,11 +191,11 @@ namespace Microsoft.Docs.Build
             return (error, relativeUrl + query + fragment, fragment, hrefType, file);
         }
 
-        private (Error error, Document file, string redirectTo, string query, string fragment, HrefType? hrefType, string pathToDocset) TryResolveFile(Document relativeTo, SourceInfo<string> href)
+        private (Error error, Document file, string query, string fragment, HrefType? hrefType, string pathToDocset) TryResolveFile(Document relativeTo, SourceInfo<string> href)
         {
             if (string.IsNullOrEmpty(href))
             {
-                return (Errors.LinkIsEmpty(relativeTo), null, null, null, null, null, null);
+                return (Errors.LinkIsEmpty(relativeTo), null, null, null, null, null);
             }
 
             var (path, query, fragment) = HrefUtility.SplitHref(href);
@@ -216,36 +203,31 @@ namespace Microsoft.Docs.Build
             switch (HrefUtility.GetHrefType(href))
             {
                 case HrefType.SelfBookmark:
-                    return (null, relativeTo, null, query, fragment, HrefType.SelfBookmark, null);
+                    return (null, relativeTo, query, fragment, HrefType.SelfBookmark, null);
 
                 case HrefType.WindowsAbsolutePath:
-                    return (Errors.AbsoluteFilePath(relativeTo, path), null, null, null, null, HrefType.WindowsAbsolutePath, null);
+                    return (Errors.AbsoluteFilePath(relativeTo, path), null, null, null, HrefType.WindowsAbsolutePath, null);
 
                 case HrefType.RelativePath:
                     // Resolve path relative to docset
                     var pathToDocset = ResolveToDocsetRelativePath(path, relativeTo);
 
                     // resolve from redirection files
-                    if (relativeTo.Docset.Redirections.TryGetRedirectionUrl(pathToDocset, out var redirectTo))
+                    if (relativeTo.Docset.Redirections.TryGetRedirection(pathToDocset, out var redirectFile))
                     {
-                        // redirectTo always is absolute href
-                        //
-                        // TODO: In case of file rename, we should warn if the content is not inside build scope.
-                        //       But we should not warn or do anything with absolute URLs.
-                        var (error, redirectFile) = Document.TryCreate(relativeTo.Docset, pathToDocset, redirectTo);
-                        return (error, redirectFile, redirectTo, query, fragment, HrefType.RelativePath, pathToDocset);
+                        return (null, redirectFile, query, fragment, HrefType.RelativePath, pathToDocset);
                     }
 
-                    var file = Document.TryCreateFromFile(relativeTo.Docset, pathToDocset);
+                    var file = Document.CreateFromFile(relativeTo.Docset, pathToDocset);
 
                     // try to resolve with .md for landing page
                     if (file is null && _forLandingPage)
                     {
                         pathToDocset = ResolveToDocsetRelativePath($"{path}.md", relativeTo);
-                        file = Document.TryCreateFromFile(relativeTo.Docset, pathToDocset);
+                        file = Document.CreateFromFile(relativeTo.Docset, pathToDocset);
                     }
 
-                    return (file != null ? null : (_forLandingPage ? null : Errors.FileNotFound(relativeTo.ToString(), new SourceInfo<string>(path, href))), file, null, query, fragment, null, pathToDocset);
+                    return (file != null ? null : (_forLandingPage ? null : Errors.FileNotFound(relativeTo.ToString(), new SourceInfo<string>(path, href))), file, query, fragment, null, pathToDocset);
 
                 default:
                     return default;
@@ -268,7 +250,7 @@ namespace Microsoft.Docs.Build
             return docsetRelativePath;
         }
 
-        private static (Error error, Document file) TryResolveResourceFromHistory(GitCommitProvider gitCommitProvider, Docset docset, string pathToDocset)
+        private static Document TryResolveResourceFromHistory(GitCommitProvider gitCommitProvider, Docset docset, string pathToDocset)
         {
             if (string.IsNullOrEmpty(pathToDocset))
             {
@@ -282,14 +264,14 @@ namespace Microsoft.Docs.Build
                 var (repo, pathToRepo, commits) = gitCommitProvider.GetCommitHistory(fallbackDocset, pathToDocset);
                 if (repo != null && commits.Count > 0)
                 {
-                    return Document.TryCreate(fallbackDocset, pathToDocset, isFromHistory: true);
+                    return Document.Create(fallbackDocset, pathToDocset, isFromHistory: true);
                 }
             }
 
             return default;
         }
 
-        private static (Error error, string content, Document file) TryResolveContentFromHistory(GitCommitProvider gitCommitProvider, Docset docset, string pathToDocset)
+        private static (string content, Document file) TryResolveContentFromHistory(GitCommitProvider gitCommitProvider, Docset docset, string pathToDocset)
         {
             if (string.IsNullOrEmpty(pathToDocset))
             {
@@ -309,8 +291,7 @@ namespace Microsoft.Docs.Build
                         // the latest commit would be deleting it from repo
                         if (GitUtility.TryGetContentFromHistory(repoPath, pathToRepo, commits[1].Sha, out var content))
                         {
-                            var (error, doc) = Document.TryCreate(fallbackDocset, pathToDocset, isFromHistory: true);
-                            return (error, content, doc);
+                            return (content, Document.Create(fallbackDocset, pathToDocset, isFromHistory: true));
                         }
                     }
                 }

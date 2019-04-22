@@ -10,7 +10,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class ExtractYamlHeader
     {
-        public static (List<Error> errors, JObject metadata) Extract(TextReader reader)
+        public static (List<Error> errors, JObject metadata) Extract(TextReader reader, string file)
         {
             var builder = new StringBuilder("\n");
             var errors = new List<Error>();
@@ -25,7 +25,7 @@ namespace Microsoft.Docs.Build
                 var trimEnd = line.TrimEnd();
                 if (trimEnd == "---" || trimEnd == "...")
                 {
-                    var (yamlErrors, yamlHeaderObj) = YamlUtility.Parse(builder.ToString());
+                    var (yamlErrors, yamlHeaderObj) = YamlUtility.Parse(builder.ToString(), file);
                     errors.AddRange(yamlErrors);
                     if (yamlHeaderObj is JObject obj)
                     {
