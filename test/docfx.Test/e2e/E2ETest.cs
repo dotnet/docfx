@@ -26,10 +26,10 @@ namespace Microsoft.Docs.Build
             "need-restore", "publish-url-conflict", "output-path-conflict", "uid-conflict", "redirection-conflict",
             "download-failed", "heading-not-found", "config-not-found", "invalid-locale", "moniker-overlapping",
             "moniker-config-missing", "empty-monikers", "circular-reference", "committish-not-found",
-            "redirected-id-conflict", "yaml-header-not-object",
+            "redirected-id-conflict",
 
-            // These error codes are the ones we could have line info but haven't implement them yet:
-            "schema-not-found"
+            // Do not need line info since they should be at the top of the file
+            "yaml-header-not-object", "schema-not-found"
         };
 
         private static readonly ConcurrentDictionary<string, (int ordinal, string spec)> s_mockRepos = new ConcurrentDictionary<string, (int ordinal, string spec)>();
