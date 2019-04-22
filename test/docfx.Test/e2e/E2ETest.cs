@@ -24,16 +24,12 @@ namespace Microsoft.Docs.Build
         private static readonly string[] s_errorCodesWithoutLineInfo =
         {
             "need-restore", "publish-url-conflict", "output-path-conflict", "uid-conflict", "redirection-conflict",
-            "download-failed", "heading-not-found", "config-not-found", 
+            "download-failed", "heading-not-found", "config-not-found", "invalid-locale", "moniker-overlapping",
+            "moniker-config-missing", "empty-monikers", "circular-reference", "committish-not-found",
+            "redirected-id-conflict", "yaml-header-not-object",
 
             // These error codes are the ones we could have line info but haven't implement them yet:
-            "committish-not-found",
-            "invalid-toc-syntax", "yaml-header-not-object",
-            "invalid-toc-level", "moniker-config-missing",
-            "empty-monikers", "circular-reference", "moniker-overlapping",
-            "redirection-is-empty", "invalid-locale", "link-out-of-scope",
-            "invalid-topic-href",
-            "redirected-id-conflict", "schema-not-found"
+            "schema-not-found"
         };
 
         private static readonly ConcurrentDictionary<string, (int ordinal, string spec)> s_mockRepos = new ConcurrentDictionary<string, (int ordinal, string spec)>();
