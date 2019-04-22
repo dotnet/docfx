@@ -121,7 +121,7 @@ outputs:
   sccm/mdm/understand/hybrid-mobile-device-management.json: |
     { "document_id": "7412621b-4920-dc7e-bed6-1f1ea774f7dd", "document_version_independent_id": "de5d1641-2c0e-1158-7611-e52a22d96a5e" }
   build.log: |
-    ["info","redirection-out-of-scope","Redirection file 'sccm/mdm/index.md' will not be built because it is not included in docfx.yml","docfx.yml"]
+    ["info","redirection-out-of-scope","Redirection file 'sccm/mdm/index.md' will not be built because it is not included in build scope","docfx.yml",8,22]
 ---
 # generate different document id and version id with 'redirection without document id'
 inputs:
