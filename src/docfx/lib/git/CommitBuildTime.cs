@@ -7,8 +7,6 @@ namespace Microsoft.Docs.Build
 {
     internal class CommitBuildTime
     {
-        public string LastBuildCommitId { get; set; }
-
         public List<CommitBuildTimeItem> Commits { get; set; } = new List<CommitBuildTimeItem>();
     }
 }

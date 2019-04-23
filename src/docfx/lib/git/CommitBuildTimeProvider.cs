@@ -12,7 +12,6 @@ namespace Microsoft.Docs.Build
     {
         private readonly Repository _repo;
         private readonly string _commitBuildTimePath;
-        private readonly string _lastBuildCommit;
         private readonly IReadOnlyDictionary<string, DateTime> _buildTimeByCommit;
 
         public CommitBuildTimeProvider(Repository repo)
@@ -24,7 +23,6 @@ namespace Microsoft.Docs.Build
                 ? JsonUtility.Deserialize<CommitBuildTime>(ProcessUtility.ReadFile(_commitBuildTimePath))
                 : new CommitBuildTime();
 
-            _lastBuildCommit = commitBuildTime.LastBuildCommitId;
             _buildTimeByCommit = commitBuildTime.Commits.ToDictionary(item => item.Sha, item => item.BuiltAt);
         }
 
@@ -35,14 +33,11 @@ namespace Microsoft.Docs.Build
 
         public void UpdateAndSaveCache()
         {
-            // Get diff commits between last commit id and current commit id
-            // TODO: retrive git log from `FileCommitProvider` since it should already be there.
-            var diffCommits = GitUtility.GetCommits(_repo.Path, _lastBuildCommit != null ? $"{_lastBuildCommit}..{_repo.Commit}" : _repo.Commit);
-
             var now = DateTime.UtcNow;
             var commits = _buildTimeByCommit.Select(item => new CommitBuildTimeItem { Sha = item.Key, BuiltAt = item.Value }).ToList();
 
-            foreach (var diffCommit in diffCommits)
+            // TODO: retrive git log from `FileCommitProvider` since it should already be there.
+            foreach (var diffCommit in GitUtility.GetCommits(_repo.Path, _repo.Commit))
             {
                 if (!_buildTimeByCommit.ContainsKey(diffCommit))
                 {
@@ -53,7 +48,7 @@ namespace Microsoft.Docs.Build
             PathUtility.CreateDirectoryFromFilePath(_commitBuildTimePath);
             File.WriteAllText(
                 _commitBuildTimePath,
-                JsonUtility.Serialize(new CommitBuildTime { LastBuildCommitId = _repo.Commit, Commits = commits }));
+                JsonUtility.Serialize(new CommitBuildTime { Commits = commits }));
         }
     }
 }
