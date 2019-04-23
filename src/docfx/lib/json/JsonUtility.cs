@@ -233,7 +233,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public static void Merge(JObject container, JObject overwrite)
+        public static void Merge(JObject container, JObject overwrite, bool overwriteWithNull = false)
         {
             if (overwrite is null)
                 return;
@@ -245,9 +245,9 @@ namespace Microsoft.Docs.Build
 
                 if (container[key] is JObject containerObj && value is JObject overwriteObj)
                 {
-                    Merge(containerObj, overwriteObj);
+                    Merge(containerObj, overwriteObj, overwriteWithNull);
                 }
-                else if (IsNullOrUndefined(container[key]) || !IsNullOrUndefined(value))
+                else if (overwriteWithNull || IsNullOrUndefined(container[key]) || !IsNullOrUndefined(value))
                 {
                     container[key] = SetSourceInfo(DeepClone(value), value.Annotation<SourceInfo>());
                     SetSourceInfo(container.Property(key), property.Annotation<SourceInfo>());

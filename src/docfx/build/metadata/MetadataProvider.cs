@@ -49,7 +49,7 @@ namespace Microsoft.Docs.Build
             if (yamlHeader != null)
             {
                 errors.AddRange(MetadataValidator.ValidateGlobalMetadata(yamlHeader));
-                JsonUtility.Merge(result, yamlHeader);
+                JsonUtility.Merge(result, yamlHeader, overwriteWithNull: true);
             }
 
             // We are validating against the merged JObject so discard the validation result here.
