@@ -56,7 +56,7 @@ namespace Microsoft.Docs.Build
             // apply options
             var optionConfigObject = Expand(options?.ToJObject());
 
-            JsonUtility.Merge(configObject, optionConfigObject, overwriteWithNull: false);
+            JsonUtility.Merge(configObject, optionConfigObject);
 
             // apply global config
             var globalErrors = new List<Error>();
@@ -128,7 +128,7 @@ namespace Microsoft.Docs.Build
                 (errors, result) = LoadConfigObject(globalConfigPath, File.ReadAllText(globalConfigPath));
             }
 
-            JsonUtility.Merge(result, config, overwriteWithNull: false);
+            JsonUtility.Merge(result, config);
             return (errors, result);
         }
 

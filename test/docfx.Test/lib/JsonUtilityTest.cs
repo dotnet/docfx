@@ -539,7 +539,6 @@ namespace Microsoft.Docs.Build
             "{\"key1\":\"value1\",\"key2\":\"value2\"}")]
         [InlineData("{'a':null}", "{'a':1}", "{'a':1}")]
         [InlineData("{'a':1}", "{'a':null}", "{'a':null}")]
-        [InlineData("{'a':1}", "{'a':null}", "{'a':1}", false)]
         [InlineData("{}", "{'a':1}", "{'a':1}")]
         [InlineData("{}", "{'a':null}", "{'a':null}")]
         [InlineData("{'a':1}", "{}", "{'a':1}")]
@@ -548,10 +547,10 @@ namespace Microsoft.Docs.Build
         [InlineData("{'a':[1]}", "{'a':[2]}", "{'a':[2]}")]
         [InlineData("{'a':{'b':1}}", "{'a':{'b':{}}}", "{'a':{'b':{}}}")]
         [InlineData("{'a':{'b':1}}", "{'a':{'b':2}}", "{'a':{'b':2}}")]
-        public void TestJsonMerge(string a, string b, string result, bool overwriteWithNull = true)
+        public void TestJsonMerge(string a, string b, string result)
         {
             var container = JObject.Parse(a.Replace('\'', '\"'));
-            JsonUtility.Merge(container, JObject.Parse(b.Replace('\'', '\"')), overwriteWithNull);
+            JsonUtility.Merge(container, JObject.Parse(b.Replace('\'', '\"')));
             Assert.Equal(result.Replace('\'', '\"'), container.ToString(Formatting.None));
         }
 
