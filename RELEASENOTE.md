@@ -4,6 +4,10 @@ Version Notes (Current Version: v2.43)
 v2.43(Pre-Release)
 -----------
 
+v2.42.1
+-----------
+1. fix NullReferenceException in dependency command.
+
 v2.42
 -----------
 1. PDF features:
