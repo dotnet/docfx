@@ -64,7 +64,7 @@ namespace Microsoft.Docs.Build
             }
             else
             {
-                return (Errors.UidNotFound(rootFile.FilePath, uid, href), null, null, null);
+                return (Errors.UidNotFound(uid, href), null, null, null);
             }
 
             // fallback order:
@@ -128,7 +128,7 @@ namespace Microsoft.Docs.Build
 
                 // if the moniker is not defined with the uid
                 // log a warning and take the one with latest version
-                _context.Report.Write(Errors.InvalidUidMoniker(moniker, uid, file, href));
+                _context.Report.Write(Errors.InvalidUidMoniker(moniker, uid, href));
                 return GetLatestInternalXrefMap(validInternalSpecs);
             }
 
