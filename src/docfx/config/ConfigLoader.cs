@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using Newtonsoft.Json.Linq;
 
@@ -10,11 +11,10 @@ namespace Microsoft.Docs.Build
 {
     internal static class ConfigLoader
     {
-        private const string Files = "files";
-        private const string Exclude = "exclude";
         private const string Extend = "extend";
         private const string DefaultLocale = "defaultLocale";
         private const string Localization = "localization";
+        private static readonly string[] KeysToExpand = new string[] { "files", "exclude", "extend" };
 
         /// <summary>
         /// Load the config under <paramref name="docsetPath"/>
@@ -56,7 +56,7 @@ namespace Microsoft.Docs.Build
             // apply options
             var optionConfigObject = Expand(options?.ToJObject());
 
-            JsonUtility.Merge(configObject, optionConfigObject);
+            JsonUtility.Merge(configObject, optionConfigObject, overwriteWithNull: false);
 
             // apply global config
             var globalErrors = new List<Error>();
@@ -128,7 +128,7 @@ namespace Microsoft.Docs.Build
                 (errors, result) = LoadConfigObject(globalConfigPath, File.ReadAllText(globalConfigPath));
             }
 
-            JsonUtility.Merge(result, config);
+            JsonUtility.Merge(result, config, overwriteWithNull: false);
             return (errors, result);
         }
 
@@ -201,16 +201,18 @@ namespace Microsoft.Docs.Build
 
         private static JObject Expand(JObject config)
         {
-            config[Files] = ExpandStringArray(config[Files]);
-            config[Exclude] = ExpandStringArray(config[Exclude]);
-            config[Extend] = ExpandStringArray(config[Extend]);
+            foreach ( var key in KeysToExpand)
+            {
+                if (!(config[key] is null))
+                    config[key] = ExpandStringArray(config[key]);
+            }
             return config;
         }
 
         private static JArray ExpandStringArray(JToken e)
         {
-            if (e is null)
-                return null;
+            Debug.Assert(!(e is null));
+
             if (e is JValue str)
                 return new JArray(e);
             if (e is JArray arr)

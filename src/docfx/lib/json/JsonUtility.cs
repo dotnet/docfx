@@ -233,7 +233,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public static void Merge(JObject container, JObject overwrite, bool overwriteWithNull = false)
+        public static void Merge(JObject container, JObject overwrite, bool overwriteWithNull = true)
         {
             if (overwrite is null)
                 return;
