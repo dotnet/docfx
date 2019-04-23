@@ -33,6 +33,11 @@ namespace Microsoft.Docs.Build
 
         public void UpdateAndSaveCache()
         {
+            if (_buildTimeByCommit.ContainsKey(_repo.Commit))
+            {
+                return;
+            }
+
             var now = DateTime.UtcNow;
             var commits = _buildTimeByCommit.Select(item => new CommitBuildTimeItem { Sha = item.Key, BuiltAt = item.Value }).ToList();
 
