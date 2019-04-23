@@ -1,5 +1,9 @@
-Version Notes (Current Version: v2.42)
+Version Notes (Current Version: v2.42.1)
 =======================================
+
+v2.42.1
+-----------
+1. fix NullReferenceException in dependency command.
 
 v2.42
 -----------
