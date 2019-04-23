@@ -242,7 +242,7 @@ namespace Microsoft.Docs.Build
                 {
                     Merge(containerObj, overwriteObj);
                 }
-                else if (IsNullOrUndefined(container[key]) || !IsNullOrUndefined(value))
+                else
                 {
                     container[key] = SetSourceInfo(DeepClone(value), value.Annotation<SourceInfo>());
                     SetSourceInfo(container.Property(key), property.Annotation<SourceInfo>());
@@ -330,7 +330,8 @@ namespace Microsoft.Docs.Build
                 node.Remove();
             }
 
-            return (errors, root);
+            // treat null JToken as empty JObject since it is from user input
+            return (errors, IsNullOrUndefined(root) ? new JObject() : root);
 
             void RemoveNullsCore(JToken token, string name)
             {
@@ -394,6 +395,14 @@ namespace Microsoft.Docs.Build
             return token;
         }
 
+        private static bool IsNullOrUndefined(this JToken token)
+        {
+            return
+                (token is null) ||
+                (token.Type == JTokenType.Null) ||
+                (token.Type == JTokenType.Undefined);
+        }
+
         private static JToken SetSourceInfo(JToken token, string file)
         {
             var lineInfo = (IJsonLineInfo)token;
@@ -444,14 +453,6 @@ namespace Microsoft.Docs.Build
                 return "Expected type String, please input String or type compatible with String.";
             }
             return message;
-        }
-
-        private static bool IsNullOrUndefined(this JToken token)
-        {
-            return
-                (token is null) ||
-                (token.Type == JTokenType.Null) ||
-                (token.Type == JTokenType.Undefined);
         }
 
         private static void ReportUnknownFields(this JToken token, List<Error> errors, Type type)

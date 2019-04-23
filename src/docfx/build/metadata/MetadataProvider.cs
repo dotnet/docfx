@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -26,7 +27,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public (List<Error> errors, T metadata) GetMetadata<T>(Document file, JObject yamlHeader = null)
+        public (List<Error> errors, T metadata) GetInputMetadata<T>(Document file, JObject yamlHeader = null) where T : InputMetadata
         {
             Debug.Assert(file != null);
 

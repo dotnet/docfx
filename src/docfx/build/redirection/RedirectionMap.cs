@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -21,15 +22,9 @@ namespace Microsoft.Docs.Build
             _redirectionsByRedirectionUrl = redirectionsByRedirectionUrl;
         }
 
-        public bool TryGetRedirectionUrl(string sourcePath, out string redirectionUrl)
+        public bool TryGetRedirection(string sourcePath, out Document file)
         {
-            if (_redirectionsBySourcePath.TryGetValue(sourcePath, out var file))
-            {
-                redirectionUrl = file.RedirectionUrl;
-                return true;
-            }
-            redirectionUrl = null;
-            return false;
+            return _redirectionsBySourcePath.TryGetValue(sourcePath, out file);
         }
 
         public bool TryGetDocumentId(Document file, out (string id, string versionIndependentId) id)
@@ -44,7 +39,7 @@ namespace Microsoft.Docs.Build
             return false;
         }
 
-        public static (List<Error> errors, RedirectionMap map) Create(Docset docset)
+        public static (List<Error> errors, RedirectionMap map) Create(Docset docset, Func<string, bool> glob)
         {
             var errors = new List<Error>();
             var redirections = new HashSet<Document>();
@@ -68,34 +63,36 @@ namespace Microsoft.Docs.Build
 
             return (errors, new RedirectionMap(redirectionsBySourcePath, redirectionsByRedirectionUrl));
 
-            void AddRedirections(Dictionary<string, string> items, bool checkRedirectTo = false)
+            void AddRedirections(Dictionary<string, SourceInfo<string>> items, bool checkRedirectTo = false)
             {
                 foreach (var (path, redirectTo) in items)
                 {
                     if (string.IsNullOrEmpty(path) || string.IsNullOrEmpty(redirectTo))
                     {
-                        errors.Add(Errors.RedirectionIsNullOrEmpty(path, redirectTo));
+                        errors.Add(Errors.RedirectionIsNullOrEmpty(redirectTo, path));
                         continue;
                     }
 
-                    if (checkRedirectTo && !redirectTo.StartsWith('/'))
+                    // TODO: ensure `SourceInfo<T>` is always not null
+                    if (checkRedirectTo && !redirectTo.Value.StartsWith('/'))
                     {
-                        errors.Add(Errors.InvalidRedirectTo(path, redirectTo));
+                        errors.Add(Errors.InvalidRedirectTo(redirectTo));
                         continue;
                     }
 
                     var pathToDocset = PathUtility.NormalizeFile(path);
-                    var (error, document) = Document.TryCreate(docset, pathToDocset, redirectTo);
-                    if (error != null)
+                    var type = Document.GetContentType(pathToDocset);
+                    if (type != ContentType.Page)
                     {
-                        errors.Add(error);
+                        errors.Add(Errors.InvalidRedirection(redirectTo, path, type));
                     }
-                    else
+                    else if (!glob(pathToDocset))
                     {
-                        if (!redirections.Add(document))
-                        {
-                            errors.Add(Errors.RedirectionConflict(pathToDocset));
-                        }
+                        errors.Add(Errors.RedirectionOutOfScope(redirectTo, pathToDocset));
+                    }
+                    else if (!redirections.Add(Document.Create(docset, pathToDocset, redirectTo)))
+                    {
+                        errors.Add(Errors.RedirectionConflict(pathToDocset));
                     }
                 }
             }

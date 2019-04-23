@@ -6,7 +6,7 @@ function exec([string] $cmd) {
     }
 }
 
-function runTests() {
+function test() {
     try {
         pushd test/docfx.Test
 
@@ -26,9 +26,9 @@ function runTests() {
     }
 }
 
-function createNuGetPackage() {
+function publish() {
     # Create NuGet package
-    $commitSha = & { git describe --always }
+    $commitSha = & { git rev-parse --short HEAD }
     $commitCount = & { git rev-list --count HEAD }
     $revision = $commitCount.ToString().PadLeft(5, '0')
 
@@ -37,9 +37,14 @@ function createNuGetPackage() {
 
     Remove-Item ./drop -Force -Recurse -ErrorAction Ignore
     exec "dotnet pack src\docfx -c Release -o $PSScriptRoot\drop /p:Version=$version /p:InformationalVersion=$version"
-    exec "dotnet tool install docfx --version 3.0.0-* --add-source drop --tool-path drop"
-    exec ".\drop\docfx --version"
+    exec "dotnet publish src\docfx -c Release -o $PSScriptRoot\drop\docfx /p:Version=$version /p:InformationalVersion=$version"
+    exec "dotnet drop\docfx\docfx.dll --version"
 }
 
-runTests
-createNuGetPackage
+try {
+    pushd $PSScriptRoot
+    test
+    publish
+} finally {
+    popd
+}

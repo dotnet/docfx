@@ -4,12 +4,13 @@
 using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 
 namespace Microsoft.Docs.Build
 {
     [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
-    public class PageModel
+    public class OutputModel : InputMetadata
     {
         public string SchemaType { get; set; }
 
@@ -17,12 +18,9 @@ namespace Microsoft.Docs.Build
 
         public long WordCount { get; set; }
 
-        public string Locale { get; set; }
-
         public string TocRel { get; set; }
 
-        public string Title { get; set; }
-
+        [JsonProperty(PropertyName = "rawTitle")]
         public string RawTitle { get; set; }
 
         public string CanonicalUrl { get; set; }
@@ -33,7 +31,7 @@ namespace Microsoft.Docs.Build
 
         public string DocumentVersionIndependentId { get; set; }
 
-        public Contributor Author { get; set; }
+        public Contributor AuthorInfo { get; set; }
 
         public List<Contributor> Contributors { get; set; }
 
@@ -46,8 +44,6 @@ namespace Microsoft.Docs.Build
         public string OriginalContentGitUrlTemplate { get; set; }
 
         public string Gitcommit { get; set; }
-
-        public FileMetadata Metadata { get; set; }
 
         public bool Bilingual { get; set; }
 

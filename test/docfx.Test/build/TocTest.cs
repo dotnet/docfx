@@ -15,8 +15,7 @@ namespace Microsoft.Docs.Build
             "en-us",
             JsonUtility.Deserialize<Config>("{'output': { 'json': true } }".Replace('\'', '\"')),
             new CommandLineOptions(),
-            new DependencyLockModel(),
-            new RestoreMap(null));
+            new RestoreMap());
 
         [Theory]
         // same level
@@ -52,12 +51,12 @@ namespace Microsoft.Docs.Build
         public static void FindTocRelativePath(string[] tocFiles, string file, string expectedTocPath, string expectedOrphanTocPath)
         {
             var builder = new TableOfContentsMapBuilder();
-            var (_, document) = Document.TryCreate(s_docset, file);
+            var document = Document.Create(s_docset, file);
 
             // test multiple reference case
             foreach (var tocFile in tocFiles)
             {
-                var (_, toc) = Document.TryCreate(s_docset, tocFile);
+                var toc = Document.Create(s_docset, tocFile);
                 builder.Add(toc, new[] { document }, Array.Empty<Document>());
             }
 
@@ -68,7 +67,7 @@ namespace Microsoft.Docs.Build
             builder = new TableOfContentsMapBuilder();
             foreach (var tocFile in tocFiles)
             {
-                var (_, toc) = Document.TryCreate(s_docset, tocFile);
+                var toc = Document.Create(s_docset, tocFile);
                 builder.Add(toc, Array.Empty<Document>(), Array.Empty<Document>());
             }
             tocMap = builder.Build();

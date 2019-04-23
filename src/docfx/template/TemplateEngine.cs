@@ -98,25 +98,26 @@ namespace Microsoft.Docs.Build
             }
 
             var (themeRemote, themeBranch) = LocalizationUtility.GetLocalizedTheme(docset.Config.Theme, docset.Locale, docset.Config.Localization.DefaultLocale);
-            var (themePath, themeLock) = docset.RestoreMap.GetGitRestorePath($"{themeRemote}#{themeBranch}", docset.DependencyLock);
-            Log.Write($"Using theme '{themeRemote}#{themeLock.Commit}' at '{themePath}'");
+            var (themePath, themeRestoreMap) = docset.RestoreMap.GetGitRestorePath($"{themeRemote}#{themeBranch}");
+            Log.Write($"Using theme '{themeRemote}#{themeRestoreMap.DependencyLock.Commit}' at '{themePath}'");
 
             return new TemplateEngine(themePath, docset.Locale);
         }
 
-        public string Render(PageModel model, Document file)
+        public string Render(OutputModel model, Document file, JObject rawMetadata)
         {
             // TODO: only works for conceptual
             var content = model.Content.ToString();
-            var (templateModel, metadata) = Transform(model, file);
+            rawMetadata = TransformPageMetadata(rawMetadata, model);
+            var metadata = CreateMetadata(rawMetadata);
 
-            var layout = templateModel.RawMetadata.Value<string>("layout");
+            var layout = rawMetadata.Value<string>("layout");
             var themeRelativePath = PathUtility.GetRelativePathToFile(file.SitePath, "_themes");
 
             var liquidModel = new JObject
             {
                 ["content"] = content,
-                ["page"] = templateModel.RawMetadata,
+                ["page"] = rawMetadata,
                 ["metadata"] = metadata,
                 ["theme_rel"] = themeRelativePath,
             };
@@ -124,9 +125,9 @@ namespace Microsoft.Docs.Build
             return _liquid.Render(layout, liquidModel);
         }
 
-        public (TemplateModel model, JObject metadata) Transform(PageModel pageModel, Document file)
+        public (TemplateModel model, JObject metadata) Transform(OutputModel pageModel, JObject rawMetadata)
         {
-            var rawMetadata = CreateRawMetadata(pageModel, file);
+            rawMetadata = TransformPageMetadata(rawMetadata, pageModel);
             var metadata = CreateMetadata(rawMetadata);
             var pageMetadata = CreateHtmlMetaTags(metadata);
 
@@ -139,11 +140,6 @@ namespace Microsoft.Docs.Build
             };
 
             return (model, metadata);
-        }
-
-        public JObject TransformMetadata(string scriptPath, JObject model)
-        {
-            return JObject.Parse(((JObject)_js.Run(scriptPath, "transform", model)).Value<string>("content"));
         }
 
         public void CopyTo(string outputPath)
@@ -168,37 +164,27 @@ namespace Microsoft.Docs.Build
             return Global[key]?.ToString();
         }
 
-        private JObject LoadGlobalTokens(string templateDir, string locale)
-        {
-            var path = Path.Combine(templateDir, $"LocalizedTokens/docs({locale}).html/tokens.json");
-            return File.Exists(path) ? JObject.Parse(File.ReadAllText(path)) : new JObject();
-        }
-
-        private JObject CreateRawMetadata(PageModel pageModel, Document file)
+        public JObject CreateRawMetadata(OutputModel pageModel, Document file)
         {
             var docset = file.Docset;
-            var rawMetadata = pageModel.Metadata != null ? JsonUtility.ToJObject(pageModel.Metadata) : new JObject();
+            var rawMetadata = JsonUtility.ToJObject(pageModel);
+
             rawMetadata["depot_name"] = $"{docset.Config.Product}.{docset.Config.Name}";
 
             rawMetadata["search.ms_docsetname"] = docset.Config.Name;
             rawMetadata["search.ms_product"] = docset.Config.Product;
             rawMetadata["search.ms_sitename"] = "Docs";
 
-            rawMetadata["locale"] = docset.Locale;
             rawMetadata["site_name"] = "Docs";
 
             rawMetadata["__global"] = Global;
             rawMetadata["conceptual"] = pageModel.Content as string;
+            rawMetadata.Remove("content");
 
             var path = PathUtility.NormalizeFile(Path.GetRelativePath(file.Docset.Config.DocumentId.SiteBasePath, file.SitePath));
 
             rawMetadata["_path"] = path;
-            rawMetadata["toc_rel"] = pageModel.TocRel;
-
-            rawMetadata["wordCount"] = rawMetadata["word_count"] = pageModel.WordCount;
-
-            rawMetadata["title"] = pageModel.Title;
-            rawMetadata["rawTitle"] = pageModel.RawTitle ?? "";
+            rawMetadata["wordCount"] = pageModel.WordCount;
 
             rawMetadata["_op_canonicalUrlPrefix"] = $"{docset.Config.BaseUrl}/{docset.Locale}/{docset.Config.DocumentId.SiteBasePath}/";
 
@@ -213,14 +199,7 @@ namespace Microsoft.Docs.Build
             }
 
             rawMetadata["layout"] = rawMetadata.TryGetValue("layout", out JToken layout) ? layout : "Conceptual";
-
-            rawMetadata["document_id"] = pageModel.DocumentId;
-            rawMetadata["document_version_independent_id"] = pageModel.DocumentVersionIndependentId;
-
-            if (!string.IsNullOrEmpty(pageModel.RedirectUrl))
-            {
-                rawMetadata["redirect_url"] = pageModel.RedirectUrl;
-            }
+            rawMetadata.Remove("schema_type");
 
             if (pageModel.UpdatedAt != default)
             {
@@ -232,33 +211,49 @@ namespace Microsoft.Docs.Build
                     ["update_at"] = pageModel.UpdatedAt.ToString(docset.Culture.DateTimeFormat.ShortDatePattern),
                     ["updated_at_date_time"] = pageModel.UpdatedAt,
                 };
-                if (pageModel.Author != null)
+                if (pageModel.AuthorInfo != null)
                 {
-                    rawMetadata["_op_gitContributorInformation"]["author"] = ToJObject(pageModel.Author);
+                    rawMetadata["_op_gitContributorInformation"]["author"] = ToJObject(pageModel.AuthorInfo);
                 }
             }
-            if (!string.IsNullOrEmpty(pageModel.Author?.Name))
-                rawMetadata["author"] = pageModel.Author?.Name;
+            rawMetadata.Remove("author_info");
+
+            if (!string.IsNullOrEmpty(pageModel.AuthorInfo?.Name))
+                rawMetadata["author"] = pageModel.AuthorInfo?.Name;
+            rawMetadata.Remove("contributors");
+
             if (pageModel.UpdatedAt != default)
                 rawMetadata["updated_at"] = pageModel.UpdatedAt.ToString("yyyy-MM-dd hh:mm tt");
+
             if (pageModel.Bilingual)
                 rawMetadata["bilingual_type"] = "hover over";
+            rawMetadata.Remove("bilingual");
 
-            if (!string.IsNullOrEmpty(pageModel.ContentGitUrl))
-                rawMetadata["content_git_url"] = pageModel.ContentGitUrl;
-            if (!string.IsNullOrEmpty(pageModel.Gitcommit))
-                rawMetadata["gitcommit"] = pageModel.Gitcommit;
-            if (!string.IsNullOrEmpty(pageModel.OriginalContentGitUrl))
-                rawMetadata["original_content_git_url"] = pageModel.OriginalContentGitUrl;
-            if (!string.IsNullOrEmpty(pageModel.OriginalContentGitUrlTemplate))
-                rawMetadata["original_content_git_url_template"] = pageModel.OriginalContentGitUrlTemplate;
+            return rawMetadata;
+        }
 
+        public JObject TransformTocMetadata(object model)
+            => TransformMetadata("toc.json.js", JsonUtility.ToJObject(model));
+
+        private JObject TransformPageMetadata(JObject rawMetadata, OutputModel pageModel)
+        {
             return RemoveUpdatedAtDateTime(
                 TransformSchema(
                     TransformMetadata("Conceptual.mta.json.js", rawMetadata), pageModel));
         }
 
-        private static JObject TransformSchema(JObject metadata, PageModel model)
+        private JObject LoadGlobalTokens(string templateDir, string locale)
+        {
+            var path = Path.Combine(templateDir, $"LocalizedTokens/docs({locale}).html/tokens.json");
+            return File.Exists(path) ? JObject.Parse(File.ReadAllText(path)) : new JObject();
+        }
+
+        private JObject TransformMetadata(string scriptPath, JObject model)
+        {
+            return JObject.Parse(((JObject)_js.Run(scriptPath, "transform", model)).Value<string>("content"));
+        }
+
+        private static JObject TransformSchema(JObject metadata, OutputModel model)
         {
             switch (model.SchemaType)
             {
@@ -303,8 +298,10 @@ namespace Microsoft.Docs.Build
         {
             var result = new StringBuilder();
 
-            foreach (var (key, value) in metadata)
+            foreach (var property in metadata.Properties().OrderBy(p => p.Name))
             {
+                var key = property.Name;
+                var value = property.Value;
                 if (value is JObject || s_htmlMetaTagsBlacklist.Contains(key))
                 {
                     continue;

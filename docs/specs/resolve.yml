@@ -43,7 +43,7 @@ inputs:
 outputs:
   docs/a.json: |
     { 
-      "raw_title": "<h2 id=\"hello-world\">Hello World</h2>",
+      "rawTitle": "<h2 id=\"hello-world\">Hello World</h2>",
       "content": "<p>Link to <a href=\"#hello-world\">bookmark</a></p>" 
     }
   docs/b.json: |
@@ -190,7 +190,7 @@ inputs:
     [redirect](redirect.md?a#b)
 outputs:
   docs/a.json: |
-    {"content":"<p><a href=\"/absolute/path?a#b\">redirect</a></p>"}
+    {"content":"<p><a href=\"redirect?a#b\">redirect</a></p>"}
 ---
 # Show error if inclusion is a redirection file
 inputs:

@@ -11,7 +11,7 @@ inputs:
     ---
 outputs:
   docs/a.json: |
-    { "metadata": { "key": "header", "KEY": "HEADER" } }
+    { "key": "header", "KEY": "HEADER" }
 ---
 # Preserve null custom metadata
 inputs:
@@ -22,9 +22,24 @@ inputs:
     ---
 outputs:
   docs/a.json: |
-    { "metadata": { "ms.custom-metadata": null } }
+    { "ms.custom-metadata": null }
   build.log: |
     ["info","null-value","'ms.custom-metadata' contains null value","docs/a.md",2,1]
+---
+# Overwrite global metadata with null in yaml header
+inputs:
+  docfx.yml: |
+    globalMetadata:
+      ms.custom-metadata: not-null
+  a.md: |
+    ---
+    ms.custom-metadata:
+    ---
+outputs:
+  a.json: |
+    { "ms.custom-metadata": null }
+  build.log: |
+    ["info","null-value","'ms.custom-metadata' contains null value","a.md",2,1]
 ---
 # Report error for invalid yaml header value type
 inputs:
@@ -104,8 +119,8 @@ outputs:
   sccm/mdm/understand/hybrid-mobile-device-management.json: |
     { "document_id": "1c42a151-6248-df0c-15e6-3b1158d7bee3", "document_version_independent_id": "beb14a44-b076-14b8-b9c5-b42f9e36b973" }
 ---
-# generate same document id and version id with 'redirection with document id' even it's out of build scope
-# A => B, A is out of build scope, B's ids should be same with A's
+# generate different document id and version id with 'redirection with document id' when it's out of build scope
+# A => B, A is out of build scope, B's ids should be different with A's
 inputs:
   docfx.yml: |
     documentId:
@@ -119,9 +134,9 @@ inputs:
   sccm/mdm/understand/hybrid-mobile-device-management.md:
 outputs:
   sccm/mdm/understand/hybrid-mobile-device-management.json: |
-    { "document_id": "1c42a151-6248-df0c-15e6-3b1158d7bee3", "document_version_independent_id": "beb14a44-b076-14b8-b9c5-b42f9e36b973" }
+    { "document_id": "7412621b-4920-dc7e-bed6-1f1ea774f7dd", "document_version_independent_id": "de5d1641-2c0e-1158-7611-e52a22d96a5e" }
   build.log: |
-    ["info","redirection-out-of-scope","Redirection file 'sccm/mdm/index.md' will not be built because it is not included in docfx.yml"]
+    ["info","redirection-out-of-scope","Redirection file 'sccm/mdm/index.md' will not be built because it is not included in build scope","docfx.yml",8,22]
 ---
 # generate different document id and version id with 'redirection without document id'
 inputs:
@@ -166,8 +181,8 @@ inputs:
       "": /docfx/test
 outputs:
   build.log: |
-    ["error","redirection-is-empty","The key or value of redirection 'sccm/mdm/index.md: ' is null or empty","docfx.yml"]
-    ["error","redirection-is-empty","The key or value of redirection ': /docfx/test' is null or empty","docfx.yml"]
+    ["error","redirection-is-empty","The key or value of redirection 'sccm/mdm/index.md: ' is null or empty","docfx.yml",2,22]
+    ["error","redirection-is-empty","The key or value of redirection ': /docfx/test' is null or empty","docfx.yml",3,7]
 ---
 # generate document id with depot mapping and directory mapping
 # id = hash({mapped_depot_name}|{mapped_file_in_docset})
@@ -416,6 +431,5 @@ inputs:
   breadcrumbs/TOC.json: '{}'
 outputs:
   a.json: |
-    metadata:
-      breadcrumb_path: breadcrumbs/toc.json
+    breadcrumb_path: breadcrumbs/toc.json
   breadcrumbs/toc.json:

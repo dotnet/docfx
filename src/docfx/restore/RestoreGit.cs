@@ -232,8 +232,15 @@ namespace Microsoft.Docs.Build
                 yield break;
             }
 
-            if (LocalizationUtility.TryGetSourceRepository(repo.Remote, repo.Branch, out var sourceRemote, out var sourceBranch, out var l))
+            if (LocalizationUtility.TryGetSourceRepository(repo, out var sourceRemote, out var sourceBranch, out _))
             {
+                // fallback to master
+                if (sourceBranch != "master" &&
+                    !GitUtility.RemoteBranchExists(sourceRemote, sourceBranch))
+                {
+                    sourceBranch = "master";
+                }
+
                 yield return (sourceRemote, sourceBranch, GitFlags.None);
                 yield break; // no need to find localized repo anymore
             }
