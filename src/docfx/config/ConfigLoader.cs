@@ -201,7 +201,7 @@ namespace Microsoft.Docs.Build
 
         private static JObject Expand(JObject config)
         {
-            foreach ( var key in KeysToExpand)
+            foreach (var key in KeysToExpand)
             {
                 if (!(config[key] is null))
                     config[key] = ExpandStringArray(config[key]);
