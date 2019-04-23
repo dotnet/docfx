@@ -27,7 +27,7 @@ namespace Microsoft.Docs.Build
                 var lineInfo = token as IJsonLineInfo;
                 if (s_reservedNames.Contains(key))
                 {
-                    errors.Add(Errors.ReservedMetadata(new SourceInfo(null, lineInfo?.LineNumber ?? 0, lineInfo?.LinePosition ?? 0), key, token.Path));
+                    errors.Add(Errors.ReservedMetadata(new SourceInfo(null, lineInfo?.LineNumber ?? 0, lineInfo?.LinePosition ?? 0), key));
                 }
                 else
                 {
@@ -63,7 +63,7 @@ namespace Microsoft.Docs.Build
             {
                 if (s_reservedNames.Contains(key))
                 {
-                    errors.Add(Errors.ReservedMetadata(JsonUtility.GetSourceInfo(token), key, token.Path));
+                    errors.Add(Errors.ReservedMetadata(JsonUtility.GetSourceInfo(token), key));
                 }
             }
 
