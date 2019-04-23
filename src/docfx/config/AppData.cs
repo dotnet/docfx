@@ -73,7 +73,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         private static string GetAppDataRoot()
         {
-            return Path.GetFullPath(EnvironmentVariable.AppDataPath ?? Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".docfx");
+            return Path.GetFullPath(EnvironmentVariable.AppDataPath ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".docfx"));
         }
     }
 }
