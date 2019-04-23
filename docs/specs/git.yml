@@ -339,13 +339,13 @@ outputs:
 ---
 # Use commit build time as updated_at when `updateTimeAsCommitBuildTime` is true
 repos:
-  https://github.com/testowner/testrepo#master-time-from-commit-build-time:
+  https://github.com/MicrosoftDocs/edge-developer#master:
     - files:
         docfx.yml: |
           updateTimeAsCommitBuildTime: true
         docs/index.md: Alice creates this.
 cache:
-  history/build_history_a93ce489-81ae-9608-7e1e-025405220e04_84336cc2-4f45-2d2d-9299-07fb71136125.json: |
+  history/build_history_0ad81e11-d18b-a417-bd25-94364d004cae_17190aeb-6297-d34d-a48f-a681d3061212.json: |
     {
       "commits": [{ "sha": "7e6344c7275cccec2334ca04b73017bdeb7ecc2a", "built_at": "2019-04-23T00:00:00Z" }]
     }

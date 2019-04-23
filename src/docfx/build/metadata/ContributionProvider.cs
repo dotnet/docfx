@@ -14,6 +14,8 @@ namespace Microsoft.Docs.Build
     {
         private readonly GitHubUserCache _gitHubUserCache;
 
+        // TODO: support CRR and multiple repositories
+        // TODO: support live SXS branch
         private readonly CommitBuildTimeProvider _commitBuildTimeProvider;
 
         private readonly GitCommitProvider _gitCommitProvider;
