@@ -130,7 +130,7 @@ namespace Microsoft.Docs.Build
 
             if (hrefType == HrefType.WindowsAbsolutePath)
             {
-                return (error, "", fragment, hrefType,  null);
+                return (error, "", fragment, hrefType, null);
             }
 
             // Cannot resolve the file, leave href as is
@@ -185,7 +185,7 @@ namespace Microsoft.Docs.Build
                 && (file.ContentType == ContentType.Page || file.ContentType == ContentType.TableOfContents)
                 && !file.Docset.BuildScope.Contains(file))
             {
-                return (Errors.LinkOutOfScope(relativeTo, file, href, file.Docset.Config.ConfigFileName), relativeUrl + query + fragment, fragment, hrefType, null);
+                return (Errors.LinkOutOfScope(href, file, file.Docset.Config.ConfigFileName), relativeUrl + query + fragment, fragment, hrefType, null);
             }
 
             return (error, relativeUrl + query + fragment, fragment, hrefType, file);
@@ -227,7 +227,7 @@ namespace Microsoft.Docs.Build
                         file = Document.CreateFromFile(relativeTo.Docset, pathToDocset);
                     }
 
-                    return (file != null ? null : (_forLandingPage ? null : Errors.FileNotFound(relativeTo.ToString(), new SourceInfo<string>(path, href))), file, query, fragment, null, pathToDocset);
+                    return (file != null ? null : (_forLandingPage ? null : Errors.FileNotFound(new SourceInfo<string>(path, href))), file, query, fragment, null, pathToDocset);
 
                 default:
                     return default;
