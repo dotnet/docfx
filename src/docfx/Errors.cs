@@ -414,7 +414,7 @@ namespace Microsoft.Docs.Build
         /// Examples:
         ///   - article with uid `a` has only netcore-1.0 & netcore-1.1 version, but get referenced with @a?view=netcore-2.0
         /// </summary>
-        public static Error InvalidUidMoniker(string moniker, string uid, SourceInfo<string> source)
+        public static Error InvalidUidMoniker(string moniker, string uid, SourceInfo source)
             => new Error(ErrorLevel.Warning, "invalid-uid-moniker", $"Moniker '{moniker}' is not defined with uid '{uid}'", source);
 
         private static string Join<T>(IEnumerable<T> source, Func<T, string> selector = null)
