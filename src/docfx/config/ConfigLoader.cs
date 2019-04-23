@@ -14,7 +14,7 @@ namespace Microsoft.Docs.Build
         private const string Extend = "extend";
         private const string DefaultLocale = "defaultLocale";
         private const string Localization = "localization";
-        private static readonly string[] KeysToExpand = new string[] { "files", "exclude", "extend" };
+        private static readonly string[] s_keysToExpand = new string[] { "files", "exclude", Extend };
 
         /// <summary>
         /// Load the config under <paramref name="docsetPath"/>
@@ -201,9 +201,9 @@ namespace Microsoft.Docs.Build
 
         private static JObject Expand(JObject config)
         {
-            foreach (var key in KeysToExpand)
+            foreach (var key in s_keysToExpand)
             {
-                if (!(config[key] is null))
+                if (config[key] != null)
                     config[key] = ExpandStringArray(config[key]);
             }
             return config;
@@ -211,7 +211,7 @@ namespace Microsoft.Docs.Build
 
         private static JArray ExpandStringArray(JToken e)
         {
-            Debug.Assert(!(e is null));
+            Debug.Assert(e != null);
 
             if (e is JValue str)
                 return new JArray(e);

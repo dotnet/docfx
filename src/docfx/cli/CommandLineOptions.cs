@@ -16,10 +16,9 @@ namespace Microsoft.Docs.Build
 
         public JObject ToJObject()
         {
-            var output = new JObject
-            {
-                ["path"] = Output != null ? (JValue)Output : JValue.CreateNull(),
-            };
+            var output = new JObject();
+            if (Output != null)
+                output["path"] = Output;
 
             if (Legacy)
             {
