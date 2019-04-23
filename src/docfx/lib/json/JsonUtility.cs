@@ -247,7 +247,7 @@ namespace Microsoft.Docs.Build
                 {
                     Merge(containerObj, overwriteObj);
                 }
-                else if (IsNullOrUndefined(container[key]) || !IsNullOrUndefined(value))
+                else
                 {
                     container[key] = SetSourceInfo(DeepClone(value), value.Annotation<SourceInfo>());
                     SetSourceInfo(container.Property(key), property.Annotation<SourceInfo>());

@@ -538,7 +538,7 @@ namespace Microsoft.Docs.Build
             "{\"key2\":\"value2\"}",
             "{\"key1\":\"value1\",\"key2\":\"value2\"}")]
         [InlineData("{'a':null}", "{'a':1}", "{'a':1}")]
-        [InlineData("{'a':1}", "{'a':null}", "{'a':1}")]
+        [InlineData("{'a':1}", "{'a':null}", "{'a':null}")]
         [InlineData("{}", "{'a':1}", "{'a':1}")]
         [InlineData("{}", "{'a':null}", "{'a':null}")]
         [InlineData("{'a':1}", "{}", "{'a':1}")]
