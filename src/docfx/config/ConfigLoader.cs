@@ -14,7 +14,7 @@ namespace Microsoft.Docs.Build
         private const string Extend = "extend";
         private const string DefaultLocale = "defaultLocale";
         private const string Localization = "localization";
-        private static readonly string[] s_keysToExpand = new string[] { "files", "exclude", Extend };
+        private static readonly string[] s_keysToExpand = new string[] { "files", "exclude", "xref", Extend };
 
         /// <summary>
         /// Load the config under <paramref name="docsetPath"/>
