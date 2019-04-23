@@ -325,18 +325,34 @@ outputs:
       "gitcommit": "https://github.com/testowner/testrepo/blob/e662dbc7c5e582a14b863d6a6a82e495d6272f91/docs/index.md",
     }
 ---
-# Use commit's time as updated_at
+# Use commit's time as updated_at when `updateTimeAsCommitBuildTime` is false
 repos:
   https://github.com/testowner/testrepo#master-time-from-commit:
-    - time: 2018-01-01T00:00:00Z
-      files:
+    - files:
+        docfx.yml:
         docs/index.md: Alice creates this.
-inputs:
-  docfx.yml:
 outputs:
   docs/index.json: |
     {
-      "updated_at": "2018-01-01T00:00:00Z",
+      "updated_at": "2018-10-30T00:00:00Z",
+    }
+---
+# Use commit build time as updated_at when `updateTimeAsCommitBuildTime` is true
+repos:
+  https://github.com/testowner/testrepo#master-time-from-commit-build-time:
+    - files:
+        docfx.yml: |
+          updateTimeAsCommitBuildTime: true
+        docs/index.md: Alice creates this.
+cache:
+  history/build_history_a93ce489-81ae-9608-7e1e-025405220e04_84336cc2-4f45-2d2d-9299-07fb71136125.json: |
+    {
+      "commits": [{ "sha": "7e6344c7275cccec2334ca04b73017bdeb7ecc2a", "built_at": "2019-04-23T00:00:00Z" }]
+    }
+outputs:
+  docs/index.json: |
+    {
+      "updated_at": "2019-04-23T00:00:00Z",
     }
 ---
 # Support git submodule

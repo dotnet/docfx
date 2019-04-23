@@ -11,13 +11,16 @@ namespace Microsoft.Docs.Build
     {
         private static readonly string s_root = GetAppDataRoot();
 
+        // For testing purpose
+        internal static Func<string> GetCachePath;
+
         public static string GitRoot => Path.Combine(s_root, "git2");
 
         public static string DownloadsRoot => Path.Combine(s_root, "downloads2");
 
         public static string MutexRoot => Path.Combine(s_root, "mutex");
 
-        public static string CacheRoot => Path.Combine(s_root, "cache");
+        public static string CacheRoot => GetCachePath?.Invoke() ?? EnvironmentVariable.CachePath ?? Path.Combine(s_root, "cache");
 
         public static string DependencyLockRoot => Path.Combine(s_root, "lock");
 
@@ -61,9 +64,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         private static string GetGlobalConfigPath()
         {
-            var docfxGlobalConfig = EnvironmentVariable.GlobalConfigPath;
-            var configPath = PathUtility.FindYamlOrJson(Path.Combine(s_root, "docfx"));
-            return string.IsNullOrEmpty(docfxGlobalConfig) ? configPath : Path.GetFullPath(docfxGlobalConfig);
+            return Path.GetFullPath(EnvironmentVariable.GlobalConfigPath ?? PathUtility.FindYamlOrJson(Path.Combine(s_root, "docfx")));
         }
 
         /// <summary>
@@ -72,11 +73,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         private static string GetAppDataRoot()
         {
-            var docfxAppData = EnvironmentVariable.AppDataPath;
-
-            return string.IsNullOrEmpty(docfxAppData)
-                ? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".docfx")
-                : Path.GetFullPath(docfxAppData);
+            return Path.GetFullPath(EnvironmentVariable.AppDataPath ?? Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".docfx");
         }
     }
 }

@@ -41,9 +41,11 @@ namespace Microsoft.Docs.Build
         public static readonly TheoryData<string> Specs = FindTestSpecs();
 
         private static readonly AsyncLocal<IReadOnlyDictionary<string, string>> t_mockedRepos = new AsyncLocal<IReadOnlyDictionary<string, string>>();
+        private static readonly AsyncLocal<string> t_cachePath = new AsyncLocal<string>();
 
         static E2ETest()
         {
+            AppData.GetCachePath = () => t_cachePath.Value;
             GitUtility.GitRemoteProxy = remote =>
             {
                 var mockedRepos = t_mockedRepos.Value;
@@ -59,7 +61,7 @@ namespace Microsoft.Docs.Build
         [MemberData(nameof(Specs))]
         public static async Task Run(string name)
         {
-            var (docsetPath, spec, mockedRepos) = CreateDocset(name);
+            var (docsetPath, spec, mockedRepos, cachePath) = CreateDocset(name);
             if (spec is null)
             {
                 return;
@@ -68,6 +70,7 @@ namespace Microsoft.Docs.Build
             try
             {
                 t_mockedRepos.Value = mockedRepos;
+                t_cachePath.Value = cachePath;
 
                 var osMatches = string.IsNullOrEmpty(spec.OS) || spec.OS.Split(',').Any(
                     os => RuntimeInformation.IsOSPlatform(OSPlatform.Create(os.Trim().ToUpperInvariant())));
@@ -91,6 +94,7 @@ namespace Microsoft.Docs.Build
             finally
             {
                 t_mockedRepos.Value = null;
+                t_cachePath.Value = null;
             }
         }
 
@@ -212,7 +216,8 @@ namespace Microsoft.Docs.Build
             return result;
         }
 
-        private static (string docsetPath, E2ESpec spec, IReadOnlyDictionary<string, string> mockedRepos) CreateDocset(string specName)
+        private static (string docsetPath, E2ESpec spec, IReadOnlyDictionary<string, string> mockedRepos, string cachePath)
+            CreateDocset(string specName)
         {
             var match = Regex.Match(specName, "^(.+?)/(\\d+). (\\[from loc\\] )?(.*)");
             var specPath = match.Groups[1].Value + ".yml";
@@ -234,15 +239,11 @@ namespace Microsoft.Docs.Build
                 return default;
             }
 
-            var replaceEnvironments =
-                spec.Environments.Length > 0 &&
-                !spec.Environments.Any(env => string.IsNullOrEmpty(Environment.GetEnvironmentVariable(env)));
-
             var inputFolder = Path.Combine("specs-drop", name);
             var inputFolderCreatedFlag = Path.Combine("specs-flags", name);
             if (fromLoc)
             {
-                spec = new E2ESpec(spec.OS, spec.Repo, spec.Watch, new[] { "build" }, spec.Environments, spec.SkippableOutputs, spec.Repos, spec.Inputs, spec.Outputs, spec.Http);
+                spec.Commands = new[] { "build" };
             }
             var mockedRepos = MockGitRepos(specPath, ordinal, name, spec);
 
@@ -267,23 +268,16 @@ namespace Microsoft.Docs.Build
                     }
                 }
 
-                foreach (var (file, content) in spec.Inputs)
-                {
-                    var mutableContent = content;
-                    var filePath = Path.Combine(inputFolder, file);
-                    PathUtility.CreateDirectoryFromFilePath(filePath);
-                    if (replaceEnvironments && Path.GetFileNameWithoutExtension(file) == "docfx")
-                    {
-                        foreach (var env in spec.Environments)
-                        {
-                            mutableContent = content.Replace($"{{{env}}}", Environment.GetEnvironmentVariable(env));
-                        }
-                    }
-                    File.WriteAllText(filePath, mutableContent);
-                }
+                CreateFiles(spec.Inputs, inputFolder, spec.Environments);
 
                 PathUtility.CreateDirectoryFromFilePath(inputFolderCreatedFlag);
                 File.Create(inputFolderCreatedFlag);
+            }
+
+            var cachePath = spec.Cache.Count > 0 ? Path.Combine("specs-cache", Guid.NewGuid().ToString("N")) : null;
+            if (cachePath != null)
+            {
+                CreateFiles(spec.Cache, cachePath);
             }
 
             var docset = Path.Combine(inputFolder, spec.Cwd ?? string.Empty);
@@ -298,7 +292,31 @@ namespace Microsoft.Docs.Build
                 Directory.Delete(Path.Combine(docset, "_site"), recursive: true);
             }
 
-            return (docset, spec, mockedRepos);
+            return (docset, spec, mockedRepos, cachePath);
+        }
+
+        private static void CreateFiles(Dictionary<string, string> files, string targetFolder, string[] environmentVariables = null)
+        {
+            environmentVariables = environmentVariables ?? Array.Empty<string>();
+
+            var replaceEnvironments =
+                environmentVariables.Length > 0 &&
+                !environmentVariables.Any(env => string.IsNullOrEmpty(Environment.GetEnvironmentVariable(env)));
+
+            foreach (var (file, content) in files)
+            {
+                var mutableContent = content;
+                var filePath = Path.Combine(targetFolder, file);
+                PathUtility.CreateDirectoryFromFilePath(filePath);
+                if (replaceEnvironments && Path.GetFileNameWithoutExtension(file) == "docfx")
+                {
+                    foreach (var env in environmentVariables)
+                    {
+                        mutableContent = content.Replace($"{{{env}}}", Environment.GetEnvironmentVariable(env));
+                    }
+                }
+                File.WriteAllText(filePath, mutableContent);
+            }
         }
 
         private static string ToSafePathString(string value)
