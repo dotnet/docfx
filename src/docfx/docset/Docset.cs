@@ -110,16 +110,14 @@ namespace Microsoft.Docs.Build
             string locale,
             Config config,
             CommandLineOptions options,
-            DependencyLockModel dependencyLock,
             RestoreMap restoreMap,
             Repository repository = null,
             Repository fallbackRepo = default,
             Docset localizedDocset = null,
             Docset fallbackDocset = null,
             bool isDependency = false)
-            : this(report, docsetPath, !string.IsNullOrEmpty(locale) ? locale : config.Localization.DefaultLocale, config, options, dependencyLock, restoreMap, repository, fallbackDocset, localizedDocset)
+            : this(report, docsetPath, !string.IsNullOrEmpty(locale) ? locale : config.Localization.DefaultLocale, config, options, restoreMap, repository, fallbackDocset, localizedDocset)
         {
-            Debug.Assert(dependencyLock != null);
             Debug.Assert(restoreMap != null);
 
             if (!isDependency && !string.Equals(Locale, Config.Localization.DefaultLocale, StringComparison.OrdinalIgnoreCase))
@@ -128,12 +126,12 @@ namespace Microsoft.Docs.Build
                 // source docset configuration will be overwritten by build locale overwrite configuration
                 if (fallbackRepo != default)
                 {
-                    FallbackDocset = new Docset(_report, fallbackRepo.Path, Locale, Config, _options, DependencyLock, RestoreMap, fallbackRepo, localizedDocset: this, isDependency: true);
+                    FallbackDocset = new Docset(_report, fallbackRepo.Path, Locale, Config, _options, RestoreMap, fallbackRepo, localizedDocset: this, isDependency: true);
                 }
-                else if (LocalizationUtility.TryGetLocalizedDocsetPath(this, restoreMap, Config, Locale, out var localizationDocsetPath, out var localizationBranch, out _))
+                else if (LocalizationUtility.TryGetLocalizedDocsetPath(this, restoreMap, Config, Locale, out var localizationDocsetPath, out var localizationBranch))
                 {
                     var repo = Repository.Create(localizationDocsetPath, localizationBranch);
-                    LocalizationDocset = new Docset(_report, localizationDocsetPath, Locale, Config, _options, DependencyLock, RestoreMap, repo, fallbackDocset: this, isDependency: true);
+                    LocalizationDocset = new Docset(_report, localizationDocsetPath, Locale, Config, _options, RestoreMap, repo, fallbackDocset: this, isDependency: true);
                 }
             }
         }
@@ -144,7 +142,6 @@ namespace Microsoft.Docs.Build
             string locale,
             Config config,
             CommandLineOptions options,
-            DependencyLockModel dependencyLock,
             RestoreMap restoreMap,
             Repository repository = null,
             Docset fallbackDocset = null,
@@ -162,7 +159,6 @@ namespace Microsoft.Docs.Build
             Culture = CreateCultureInfo(locale);
             LocalizationDocset = localizedDocset;
             FallbackDocset = fallbackDocset;
-            DependencyLock = dependencyLock;
 
             ResolveAlias = LoadResolveAlias(Config);
             Repository = repository ?? Repository.Create(DocsetPath, branch: null);
@@ -180,7 +176,7 @@ namespace Microsoft.Docs.Build
 
             _dependencyDocsets = new Lazy<IReadOnlyDictionary<string, Docset>>(() =>
             {
-                var (errors, dependencies) = LoadDependencies(_report, Config, Locale, DependencyLock, RestoreMap, _options);
+                var (errors, dependencies) = LoadDependencies(_report, Config, Locale, RestoreMap, _options);
                 _report.Write(Config.ConfigFileName, errors);
                 return dependencies;
             });
@@ -268,20 +264,20 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static (List<Error>, Dictionary<string, Docset>) LoadDependencies(Report report, Config config, string locale, DependencyLockModel dependencyLock, RestoreMap restoreMap, CommandLineOptions options)
+        private static (List<Error>, Dictionary<string, Docset>) LoadDependencies(Report report, Config config, string locale, RestoreMap restoreMap, CommandLineOptions options)
         {
             var errors = new List<Error>();
             var result = new Dictionary<string, Docset>(config.Dependencies.Count, PathUtility.PathComparer);
             foreach (var (name, url) in config.Dependencies)
             {
-                var (dir, subLock) = restoreMap.GetGitRestorePath(url, dependencyLock);
+                var (dir, subRestoreMap) = restoreMap.GetGitRestorePath(url);
 
                 // get dependent docset config or default config
                 // todo: what parent config should be pass on its children
                 var (loadErrors, subConfig) = ConfigLoader.TryLoad(dir, options, locale);
                 errors.AddRange(loadErrors);
 
-                result.TryAdd(PathUtility.NormalizeFolder(name), new Docset(report, dir, locale, subConfig, options, subLock, restoreMap, isDependency: true));
+                result.TryAdd(PathUtility.NormalizeFolder(name), new Docset(report, dir, locale, subConfig, options, subRestoreMap, isDependency: true));
             }
             return (errors, result);
         }

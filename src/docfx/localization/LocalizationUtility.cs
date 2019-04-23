@@ -41,7 +41,7 @@ namespace Microsoft.Docs.Build
             return (newRemote, newBranch);
         }
 
-        public static bool TryGetLocalizedDocsetPath(Docset docset, RestoreMap restoreMap, Config config, string locale, out string localizationDocsetPath, out string localizationBranch, out DependencyLockModel subDependencyLock)
+        public static bool TryGetLocalizedDocsetPath(Docset docset, RestoreMap restoreMap, Config config, string locale, out string localizationDocsetPath, out string localizationBranch)
         {
             Debug.Assert(docset != null);
             Debug.Assert(!string.IsNullOrEmpty(locale));
@@ -49,7 +49,6 @@ namespace Microsoft.Docs.Build
 
             localizationDocsetPath = null;
             localizationBranch = null;
-            subDependencyLock = null;
             switch (config.Localization.Mapping)
             {
                 case LocalizationMapping.Repository:
@@ -67,7 +66,7 @@ namespace Microsoft.Docs.Build
                             repo.Branch,
                             locale,
                             config.Localization.DefaultLocale);
-                        (localizationDocsetPath, subDependencyLock) = restoreMap.GetGitRestorePath(locRemote, locBranch, docset.DependencyLock);
+                        (localizationDocsetPath, _) = restoreMap.GetGitRestorePath(locRemote, locBranch);
                         localizationBranch = locBranch;
                         break;
                     }
@@ -79,7 +78,6 @@ namespace Microsoft.Docs.Build
                         }
                         localizationDocsetPath = Path.Combine(docset.DocsetPath, "localization", locale);
                         localizationBranch = null;
-                        subDependencyLock = null;
                         break;
                     }
                 default:

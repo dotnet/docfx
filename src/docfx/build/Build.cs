@@ -19,11 +19,11 @@ namespace Microsoft.Docs.Build
             Telemetry.SetRepository(repository?.Remote, repository?.Branch);
 
             var locale = LocalizationUtility.GetLocale(repository?.Remote, repository?.Branch, options);
-            var (restoreMap, dependencyLock, fallbackRepo) = LoadRestoreMap(docsetPath, locale, repository, options);
+            var (restoreMap, fallbackRepo) = LoadRestoreMap(docsetPath, locale, repository, options);
 
             try
             {
-                await Run(docsetPath, repository, locale, options, report, dependencyLock, restoreMap, fallbackRepo);
+                await Run(docsetPath, repository, locale, options, report, restoreMap, fallbackRepo);
             }
             finally
             {
@@ -37,12 +37,11 @@ namespace Microsoft.Docs.Build
             string locale,
             CommandLineOptions options,
             Report report,
-            DependencyLockModel dependencyLock,
             RestoreMap restoreMap,
             Repository fallbackRepo = null)
         {
             XrefMap xrefMap = null;
-            var (configErrors, config) = GetBuildConfig(docsetPath, options, dependencyLock, locale, fallbackRepo);
+            var (configErrors, config) = GetBuildConfig(docsetPath, options, locale, fallbackRepo);
             report.Configure(docsetPath, config);
 
             // just return if config loading has errors
@@ -50,7 +49,7 @@ namespace Microsoft.Docs.Build
                 return;
 
             var errors = new List<Error>();
-            var docset = GetBuildDocset(new Docset(report, docsetPath, locale, config, options, dependencyLock, restoreMap, repository, fallbackRepo));
+            var docset = GetBuildDocset(new Docset(report, docsetPath, locale, config, options, restoreMap, repository, fallbackRepo));
             var outputPath = Path.Combine(docsetPath, config.Output.Path);
 
             using (var context = Context.Create(outputPath, report, docset, () => xrefMap))
@@ -204,7 +203,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static (RestoreMap restoreMap, DependencyLockModel dependencyLock, Repository fallbackRepository) LoadRestoreMap(
+        private static (RestoreMap restoreMap, Repository fallbackRepository) LoadRestoreMap(
             string docset,
             string locale,
             Repository repository,
@@ -225,26 +224,25 @@ namespace Microsoft.Docs.Build
                     branch = "master";
                 }
 
-                var (fallbackRepoPath, fallbackDependencyLock) = restoreMap.GetGitRestorePath(remote, branch, dependencyLock);
+                var (fallbackRepoPath, fallbackRestoreMap) = restoreMap.GetGitRestorePath(remote, branch);
                 var fallbackRepository = Repository.Create(fallbackRepoPath, branch, remote);
 
                 if (!ConfigLoader.TryGetConfigPath(docset, out _))
                 {
                     // build from loc repo directly with overwrite config
                     // which means it's using source repo's dependency loc;
-                    return (RestoreMap.Create(fallbackDependencyLock), fallbackDependencyLock, fallbackRepository);
+                    return (fallbackRestoreMap, fallbackRepository);
                 }
 
-                return (restoreMap, dependencyLock, fallbackRepository);
+                return (restoreMap, fallbackRepository);
             }
 
-            return (restoreMap, dependencyLock, null);
+            return (restoreMap, null);
         }
 
         private static (List<Error> errors, Config config) GetBuildConfig(
             string docset,
             CommandLineOptions options,
-            DependencyLockModel dependencyLock,
             string locale,
             Repository fallbackRepo = null)
         {
@@ -253,7 +251,6 @@ namespace Microsoft.Docs.Build
                 return ConfigLoader.Load(docset, options, locale);
             }
 
-            Debug.Assert(dependencyLock != null);
             return ConfigLoader.Load(fallbackRepo.Path, options, locale);
         }
 
