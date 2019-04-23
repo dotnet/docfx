@@ -49,7 +49,7 @@ namespace Microsoft.Docs.Build
             string displayPropertyValue = null;
             string resolvedHref = null;
 
-            if (TryResolveFromInternal(uid, href, rootFile.FilePath, moniker, out var internalXrefSpec, out var referencedFile))
+            if (TryResolveFromInternal(uid, href, moniker, out var internalXrefSpec, out var referencedFile))
             {
                 var (_, query, fragment) = HrefUtility.SplitHref(internalXrefSpec.Href);
                 resolvedHref = HrefUtility.MergeHref(RebaseResolvedHref(rootFile, referencedFile), query, fragment.Length == 0 ? "" : fragment.Substring(1));
@@ -64,7 +64,7 @@ namespace Microsoft.Docs.Build
             }
             else
             {
-                return (Errors.UidNotFound(uid, href), null, null, null);
+                return (Errors.UidNotFound(href, uid), null, null, null);
             }
 
             // fallback order:
@@ -86,13 +86,13 @@ namespace Microsoft.Docs.Build
         private string RebaseResolvedHref(Document rootFile, Document referencedFile)
             => _context.DependencyResolver.GetRelativeUrl(rootFile, referencedFile);
 
-        private bool TryResolveFromInternal(string uid, SourceInfo<string> href, string file, string moniker, out InternalXrefSpec internalXrefSpec, out Document referencedFile)
+        private bool TryResolveFromInternal(string uid, SourceInfo<string> href, string moniker, out InternalXrefSpec internalXrefSpec, out Document referencedFile)
         {
             internalXrefSpec = null;
             referencedFile = null;
             if (_internalXrefMap.TryGetValue(uid, out var internalSpecs))
             {
-                (internalXrefSpec, referencedFile) = GetInternalSpec(uid, href, file, moniker, internalSpecs);
+                (internalXrefSpec, referencedFile) = GetInternalSpec(uid, href, moniker, internalSpecs);
                 if (internalXrefSpec is null)
                 {
                     return false;
@@ -111,7 +111,7 @@ namespace Microsoft.Docs.Build
             return false;
         }
 
-        private (InternalXrefSpec internalSpec, Document referencedFile) GetInternalSpec(string uid, SourceInfo<string> href, string file, string moniker, List<(InternalXrefSpec, Document)> internalSpecs)
+        private (InternalXrefSpec internalSpec, Document referencedFile) GetInternalSpec(string uid, SourceInfo<string> href, string moniker, List<(InternalXrefSpec, Document)> internalSpecs)
         {
             if (!TryGetValidXrefSpecs(uid, internalSpecs, out var validInternalSpecs))
                 return default;
@@ -128,7 +128,7 @@ namespace Microsoft.Docs.Build
 
                 // if the moniker is not defined with the uid
                 // log a warning and take the one with latest version
-                _context.Report.Write(Errors.InvalidUidMoniker(moniker, uid, href));
+                _context.Report.Write(Errors.InvalidUidMoniker(href, moniker, uid));
                 return GetLatestInternalXrefMap(validInternalSpecs);
             }
 

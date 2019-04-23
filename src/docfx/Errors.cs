@@ -24,7 +24,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// The key or value of redirection is null or empty.
         /// </summary>
-        public static Error RedirectionIsNullOrEmpty(string from, SourceInfo<string> source)
+        public static Error RedirectionIsNullOrEmpty(SourceInfo<string> source, string from)
             => new Error(ErrorLevel.Error, "redirection-is-empty", $"The key or value of redirection '{from}: {source}' is null or empty", source);
 
         /// <summary>
@@ -121,7 +121,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// In markdown-format toc, header level should be continuous, it shouldn't skip a level.
         /// </summary>
-        public static Error InvalidTocLevel(int from, int to, SourceInfo source)
+        public static Error InvalidTocLevel(SourceInfo source, int from, int to)
             => new Error(ErrorLevel.Error, "invalid-toc-level", $"The toc level can't be skipped from {from} to {to}", source);
 
         /// <summary>
@@ -194,7 +194,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Link which's resolved to a file out of build scope.
         /// </summary>
-        public static Error LinkOutOfScope(Document file, SourceInfo<string> source, string configFile)
+        public static Error LinkOutOfScope(SourceInfo<string> source, Document file, string configFile)
             => new Error(ErrorLevel.Warning, "link-out-of-scope", $"File '{file}' referenced by link '{source}' will not be built because it is not included in {configFile}", source);
 
         /// <summary>
@@ -235,7 +235,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Failed to resolve uid defined by [link](xref:uid) or <xref:uid> syntax.
         /// </summary>
-        public static Error UidNotFound(string uid, SourceInfo<string> source)
+        public static Error UidNotFound(SourceInfo<string> source, string uid)
             => new Error(ErrorLevel.Warning, "uid-not-found", $"Cannot find uid '{uid}' using xref '{source}'", source);
 
         /// <summary>
@@ -255,7 +255,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Failed to resolve uid defined by @ syntax.
         /// </summary>
-        public static Error AtUidNotFound(string uid, SourceInfo<string> source)
+        public static Error AtUidNotFound(SourceInfo<string> source, string uid)
             => new Error(ErrorLevel.Info, "at-uid-not-found", $"Cannot find uid '{uid}' using xref '{source}'", source);
 
         /// <summary>
@@ -414,7 +414,7 @@ namespace Microsoft.Docs.Build
         /// Examples:
         ///   - article with uid `a` has only netcore-1.0 & netcore-1.1 version, but get referenced with @a?view=netcore-2.0
         /// </summary>
-        public static Error InvalidUidMoniker(string moniker, string uid, SourceInfo source)
+        public static Error InvalidUidMoniker(SourceInfo source, string moniker, string uid)
             => new Error(ErrorLevel.Warning, "invalid-uid-moniker", $"Moniker '{moniker}' is not defined with uid '{uid}'", source);
 
         private static string Join<T>(IEnumerable<T> source, Func<T, string> selector = null)

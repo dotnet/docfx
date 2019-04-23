@@ -203,11 +203,11 @@ namespace Microsoft.Docs.Build
                 {
                     if (raw?.StartsWith("@") != false)
                     {
-                        errors.Add(Errors.AtUidNotFound(xref.Value, new SourceInfo<string>(html, new SourceInfo(file, lineNumber, s_getValueStartIndex(xref)))));
+                        errors.Add(Errors.AtUidNotFound(new SourceInfo<string>(html, new SourceInfo(file, lineNumber, s_getValueStartIndex(xref))), xref.Value));
                     }
                     else
                     {
-                        errors.Add(Errors.UidNotFound(xref.Value, new SourceInfo<string>(html, new SourceInfo(file, lineNumber, s_getValueStartIndex(xref)))));
+                        errors.Add(Errors.UidNotFound(new SourceInfo<string>(html, new SourceInfo(file, lineNumber, s_getValueStartIndex(xref))), xref.Value));
                     }
                     resolvedNode.LoadHtml(raw);
                 }
