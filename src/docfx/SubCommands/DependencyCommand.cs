@@ -60,12 +60,13 @@ namespace Microsoft.DocAsCode.SubCommands
             var buildInfo = JsonUtility.Deserialize<BuildInfo>(buildInfoFile);
             if (buildInfo == null)
             {
-                LogErrorAndThrow($"Cache files in the folder {intermediateFolder} are corrupted!", null);
+                LogErrorAndThrow($"Cache files in the folder '{intermediateFolder}' are corrupted!", null);
             }
             var versionInfo = buildInfo.Versions.FirstOrDefault(v => v.VersionName == versionName);
             if (versionInfo == null)
             {
-                Logger.LogInfo($"Cache files for version {versionName} is not found!", null);
+                Logger.LogInfo($"Cache files for version '{versionName}' is not found!", null);
+                return null;
             }
             var dependencyFile = Path.Combine(expandedBaseFolder, buildInfo.DirectoryName, versionInfo.DependencyFile);
             return IncrementalUtility.LoadDependency(dependencyFile);
