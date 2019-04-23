@@ -103,17 +103,6 @@ namespace Microsoft.Docs.Build
 
             JsonUtility.TrimStringValues(config);
 
-            if (config is JObject)
-            {
-                if (config["globalMetadata"] != null)
-                {
-                    errors.AddRange(MetadataValidator.ValidateGlobalMetadata(config["globalMetadata"] as JObject));
-                }
-                else if (config["fileMetadata"] != null)
-                {
-                    errors.AddRange(MetadataValidator.ValidateFileMetadata(config["fileMetadata"] as JObject));
-                }
-            }
             return (errors, Expand(config as JObject ?? new JObject()));
         }
 

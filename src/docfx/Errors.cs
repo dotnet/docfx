@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Newtonsoft.Json;
 
 namespace Microsoft.Docs.Build
 {
@@ -180,8 +181,8 @@ namespace Microsoft.Docs.Build
         /// Examples:
         ///   - unclosed ([{
         /// </summary>
-        public static Error JsonSyntaxError(SourceInfo source, string message)
-            => new Error(ErrorLevel.Error, "json-syntax-error", $"{message}", source);
+        public static Error JsonSyntaxError(JsonReaderException ex, string file = null)
+            => new Error(ErrorLevel.Error, "json-syntax-error", ex.Message, file);
 
         /// <summary>
         /// Used empty link in article.md.
@@ -286,8 +287,8 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Used docfx output model property which are not defined in input model.
         /// </summary>
-        public static Error ReservedMetadata(SourceInfo source, string name, string removeFrom)
-            => new Error(ErrorLevel.Warning, "reserved-metadata", $"Metadata '{name}' is reserved by docfx, remove this metadata: '{removeFrom}'", source);
+        public static Error ReservedMetadata(SourceInfo source, string name)
+            => new Error(ErrorLevel.Warning, "reserved-metadata", $"Metadata '{name}' is reserved by docfx, remove this metadata", source);
 
         /// <summary>
         /// Failed to compute specific info of a commit.
@@ -343,7 +344,7 @@ namespace Microsoft.Docs.Build
         /// Schema document with violate content type/value against predefined models(not syntax error).
         /// </summary>
         public static Error ViolateSchema(SourceInfo source, string message)
-            => new Error(ErrorLevel.Error, "violate-schema", $"{message}", source);
+            => new Error(ErrorLevel.Error, "violate-schema", message, source);
 
         /// <summary>
         /// Used unknown YamlMime.

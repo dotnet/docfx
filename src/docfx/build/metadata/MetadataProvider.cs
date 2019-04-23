@@ -30,7 +30,6 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(file != null);
 
-            var errors = new List<Error>();
             var result = new JObject();
 
             JsonUtility.Merge(result, _config.GlobalMetadata);
@@ -47,13 +46,11 @@ namespace Microsoft.Docs.Build
 
             if (yamlHeader != null)
             {
-                errors.AddRange(MetadataValidator.ValidateGlobalMetadata(yamlHeader));
                 JsonUtility.Merge(result, yamlHeader);
             }
 
             // We are validating against the merged JObject so discard the validation result here.
-            var (_, obj) = JsonUtility.ToObject<T>(result);
-            return (errors, obj);
+            return JsonUtility.ToObject<T>(result);
         }
     }
 }
