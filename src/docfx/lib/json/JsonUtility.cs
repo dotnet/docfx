@@ -449,16 +449,20 @@ namespace Microsoft.Docs.Build
 
         private static Error ToError(JsonReaderException ex, string file = null)
         {
-            // TODO: Json.NET type conversion error message is developer friendly but not writer friendly.
             var source = new SourceInfo(file, ex.LineNumber, ex.LinePosition);
-            var match = Regex.Match(ex.Message, "^([\\s\\S]*)\\sPath (.*).$");
-            var message = match.Success ? match.Groups[1].Value : ex.Message;
 
-            return Errors.JsonSyntaxError(source, RewriteErrorMessage(message));
+            return Errors.JsonSyntaxError(source, RewriteErrorMessage(ex.Message));
         }
 
         private static string RewriteErrorMessage(string message)
         {
+            // TODO: Json.NET type conversion error message is developer friendly but not writer friendly.
+            var match = Regex.Match(message, "^([\\s\\S]*)\\sPath (.*).$");
+            if (match.Success)
+            {
+                message = match.Groups[1].Value;
+            }
+
             if (message.StartsWith("Error reading string. Unexpected token"))
             {
                 return "Expected type String, please input String or type compatible with String.";
