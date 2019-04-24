@@ -79,7 +79,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Fast pass to read the value of $schema specified in JSON.
         /// $schema must be the first attribute in the root object.
-        /// Assume input is a valid JSON. Bad input will be process though Json.NET
+        /// Assume input is a valid JSON. Bad input will be processed through Json.NET
         /// </summary>
         public static (int line, int column, string schema) ReadSchema(TextReader reader)
         {
@@ -119,13 +119,13 @@ namespace Microsoft.Docs.Build
                 while (true)
                 {
                     var ch = reader.Peek();
-                    if (ch == ' ' || ch == '\t')
+                    if (ch == ' ' || ch == '\t' || ch == '\r')
                     {
                         column += 1;
                         reader.Read();
                         continue;
                     }
-                    else if (ch == '\r' || ch == '\n')
+                    else if (ch == '\n')
                     {
                         column = 1;
                         line += 1;
