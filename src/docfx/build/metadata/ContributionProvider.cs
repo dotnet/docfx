@@ -51,10 +51,12 @@ namespace Microsoft.Docs.Build
             var userIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             var updatedDateTime = GetUpdatedAt(document, commits);
 
-            var resolveGitHubUsers =
-                (GitHubUtility.TryParse(repo?.Remote, out var gitHubOwner, out var gitHubRepoName) ||
-                GitHubUtility.TryParse(document.Docset.Config.Contribution.Repository, out gitHubOwner, out gitHubRepoName)) &&
-                document.Docset.Config.GitHub.ResolveUsers;
+            if (!(GitHubUtility.TryParse(repo?.Remote, out var gitHubOwner, out var gitHubRepoName) ||
+                GitHubUtility.TryParse(document.Docset.Config.Contribution.Repository, out gitHubOwner, out gitHubRepoName)) ||
+                !document.Docset.Config.GitHub.ResolveUsers)
+            {
+                return (errors, null, contributors, updatedDateTime);
+            }
 
             // Resolve contributors from commits
             if (contributionCommits != null)
@@ -82,11 +84,6 @@ namespace Microsoft.Docs.Build
 
             async Task<Contributor> GetContributor(GitCommit commit)
             {
-                if (!resolveGitHubUsers)
-                {
-                    return new Contributor { DisplayName = commit.AuthorName, Id = commit.AuthorEmail };
-                }
-
                 var (error, user) = await _gitHubUserCache.GetByCommit(commit.AuthorEmail, gitHubOwner, gitHubRepoName, commit.Sha);
                 errors.AddIfNotNull(error);
 
@@ -97,13 +94,10 @@ namespace Microsoft.Docs.Build
             {
                 if (!string.IsNullOrEmpty(authorName))
                 {
-                    if (resolveGitHubUsers)
-                    {
-                        // Remove author from contributors if author name is specified
-                        var (error, result) = await _gitHubUserCache.GetByLogin(authorName);
-                        errors.AddIfNotNull(error?.WithSourceInfo(authorName));
-                        return result?.ToContributor();
-                    }
+                    // Remove author from contributors if author name is specified
+                    var (error, result) = await _gitHubUserCache.GetByLogin(authorName);
+                    errors.AddIfNotNull(error?.WithSourceInfo(authorName));
+                    return result?.ToContributor();
                 }
                 else if (contributors.Count > 0)
                 {
