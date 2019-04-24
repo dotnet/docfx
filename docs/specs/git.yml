@@ -490,3 +490,44 @@ outputs:
         { "name": "OsmondJiang", "profile_url": "https://github.com/OsmondJiang", "display_name": "osmondjiang", "id": "19990166" }
       ]
     }
+---
+# Author and contributors will not be resolved when `github.resolveUsers` == false
+repos:
+  https://github.com/testowner/testrepo#not-resolve:
+    - author: Charlie
+      email: charlie@contoso.com
+      files:
+        docs/index.md: |
+          ---
+          author: charlie
+          ---
+          Alice creates this. Bob updates this. Charlie becomes author.
+    - author: Bob 
+      email: bob@contoso.com
+      files:
+        docs/index.md: |
+          Alice creates this. Bob updates this.
+    - author: Alice 
+      email: alice@contoso.com
+      files:
+        docs/index.md: |
+          Alice creates this.
+inputs:
+  docfx.yml: |
+    gitHub:
+      userCache: user_profile.json
+      resolveUsers: false
+  user_profile.json: |
+      { "users": [
+          {"name": "Alice", "login": "alice", "id": 1, "emails": ["alice@contoso.com"]},
+          {"name": "Bob", "login": "bob", "id": 2, "emails": ["bob@contoso.com"]},
+          {"name": "Charlie", "login": "charlie", "id": 3, "emails": ["charlie@contoso.com"]}
+        ]
+      }
+outputs:
+  docs/index.json: |
+    {
+      "!author_info": null,
+      "!contributors": null,
+      "updated_at": "2018-10-30T00:00:00Z"
+    }
