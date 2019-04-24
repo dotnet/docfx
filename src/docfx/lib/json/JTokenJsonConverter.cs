@@ -16,7 +16,13 @@ namespace Microsoft.Docs.Build
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            return reader is JTokenReader tokenReader ? JsonUtility.DeepClone(tokenReader.CurrentToken) : JToken.ReadFrom(reader);
+            if (reader is JTokenReader tokenReader)
+            {
+                var result = JsonUtility.DeepClone(tokenReader.CurrentToken);
+                reader.Skip();
+                return result;
+            }
+            return JToken.ReadFrom(reader);
         }
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
