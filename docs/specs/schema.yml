@@ -37,7 +37,7 @@ inputs:
     title: my title
 outputs:
   build.log: |
-   ["error","schema-not-found","Unknown schema ''","docs/a.yml",1]
+   ["error","schema-not-found","Unknown schema ''","docs/a.yml",1,1]
 ---
 # Fallback to documentType when yaml mime is YamlDocument
 inputs:
@@ -62,10 +62,13 @@ inputs:
     {
       "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/SchemaNotExisting.json",
     }
+  docs/c.json: |
+    { "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/SchemaNotExisting.json"}
 outputs:
   build.log: |
-   ["error","schema-not-found","Unknown schema 'SchemaNotExisting', object model is missing.","docs/a.yml",1]
-   ["error","schema-not-found","Unknown schema 'SchemaNotExisting', object model is missing.","docs/b.json",2]
+   ["error","schema-not-found","Unknown schema 'SchemaNotExisting', object model is missing.","docs/a.yml",1,1]
+   ["error","schema-not-found","Unknown schema 'SchemaNotExisting', object model is missing.","docs/b.json",2,15]
+   ["error","schema-not-found","Unknown schema 'SchemaNotExisting', object model is missing.","docs/c.json",1,15]
 ---
 # Support schema documents with Href content
 inputs:

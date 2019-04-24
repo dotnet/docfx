@@ -45,8 +45,8 @@ namespace Microsoft.Docs.Build
                 {
                     using (var reader = new StreamReader(filePath))
                     {
-                        var mimeContent = JsonUtility.ReadMime(reader);
-                        mime = new SourceInfo<string>(mimeContent, new SourceInfo(pathToDocset, mimeContent is null ? 1 : 2, 0));
+                        var (line, column, mimeContent) = JsonUtility.ReadMime(reader);
+                        mime = new SourceInfo<string>(mimeContent, new SourceInfo(pathToDocset, line, column));
                     }
                 }
             }
@@ -56,7 +56,7 @@ namespace Microsoft.Docs.Build
                 {
                     using (var reader = new StreamReader(filePath))
                     {
-                        mime = new SourceInfo<string>(YamlUtility.ReadMime(reader), new SourceInfo(pathToDocset, 1, 0));
+                        mime = new SourceInfo<string>(YamlUtility.ReadMime(reader), new SourceInfo(pathToDocset, 1, 1));
                     }
                 }
             }

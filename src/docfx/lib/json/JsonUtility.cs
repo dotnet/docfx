@@ -62,18 +62,18 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Fast pass to read MIME from $schema attribute.
         /// </summary>
-        public static string ReadMime(TextReader reader)
+        public static (int line, int column, string mime) ReadMime(TextReader reader)
         {
-            var schema = ReadSchema(reader);
+            var (line, column, schema) = ReadSchema(reader);
             if (schema is null)
-                return null;
+                return (line, column, null);
 
             // TODO: be more strict
             var mime = schema.Split('/').LastOrDefault();
             if (mime != null)
-                return Path.GetFileNameWithoutExtension(schema);
+                return (line, column, Path.GetFileNameWithoutExtension(schema));
 
-            return null;
+            return (line, column, null);
         }
 
         /// <summary>
@@ -81,43 +81,58 @@ namespace Microsoft.Docs.Build
         /// $schema must be the first attribute in the root object.
         /// Assume input is a valid JSON. Bad input will be process though Json.NET
         /// </summary>
-        public static string ReadSchema(TextReader reader)
+        public static (int line, int column, string schema) ReadSchema(TextReader reader)
         {
+            int line = 1;
+            int column = 1;
             SkipSpaces();
 
             if (reader.Read() != '{')
-                return null;
+                return (line, column, null);
+            column += 1;
 
             SkipSpaces();
 
             foreach (var expect in "\"$schema\"")
             {
                 if (reader.Read() != expect)
-                    return null;
+                    return (line, column, null);
             }
+            column += "\"$schema\"".Length;
 
             SkipSpaces();
 
             if (reader.Read() != ':')
-                return null;
+                return (line, column, null);
+            column += 1;
 
             SkipSpaces();
 
             if (reader.Peek() != '\"')
-                return null;
+                return (line, column, null);
+            column += 1;
 
-            return new JsonTextReader(reader).ReadAsString();
+            return (line, column, new JsonTextReader(reader).ReadAsString());
 
             void SkipSpaces()
             {
                 while (true)
                 {
                     var ch = reader.Peek();
-                    if (ch == ' ' || ch == '\r' || ch == '\n' || ch == '\t')
+                    if (ch == ' ' || ch == '\t')
                     {
+                        column += 1;
                         reader.Read();
                         continue;
                     }
+                    else if (ch == '\r' || ch == '\n')
+                    {
+                        column = 1;
+                        line += 1;
+                        reader.Read();
+                        continue;
+                    }
+
                     break;
                 }
             }

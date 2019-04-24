@@ -652,7 +652,7 @@ inputs:
     1
 outputs:
   build.log: |
-    ["error","schema-not-found","Unknown schema ''","docs/a.json",1]
+    ["error","schema-not-found","Unknown schema ''","docs/a.json",1,1]
 ---
 # support <xref href="uid"></xref>
 inputs:

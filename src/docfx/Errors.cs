@@ -162,7 +162,7 @@ namespace Microsoft.Docs.Build
         /// The line should always be 2 since the file should always start with "---"
         /// </summary>
         public static Error YamlHeaderNotObject(bool isArray, string file)
-            => new Error(ErrorLevel.Warning, "yaml-header-not-object", $"Expect yaml header to be an object, but got {(isArray ? "an array" : "a scalar")}", new SourceInfo(file, 2, 0));
+            => new Error(ErrorLevel.Warning, "yaml-header-not-object", $"Expect yaml header to be an object, but got {(isArray ? "an array" : "a scalar")}", new SourceInfo(file, 2, 1));
 
         /// <summary>
         /// Syntax error in yaml file(not duplicate key).
