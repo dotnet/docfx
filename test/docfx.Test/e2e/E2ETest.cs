@@ -23,17 +23,20 @@ namespace Microsoft.Docs.Build
     {
         private static readonly string[] s_errorCodesWithoutLineInfo =
         {
-            "need-restore", "publish-url-conflict", "output-path-conflict", "uid-conflict", "redirection-conflict",
-            "download-failed", "heading-not-found", "config-not-found", 
+            "need-restore", "heading-not-found", "config-not-found", "committish-not-found",
 
-            // These error codes are the ones we could have line info but haven't implement them yet:
-            "committish-not-found",
-            "invalid-toc-syntax", "yaml-header-not-object",
-            "invalid-toc-level", "moniker-config-missing",
-            "empty-monikers", "circular-reference", "moniker-overlapping",
-            "redirection-is-empty", "invalid-locale", "link-out-of-scope",
-            "invalid-topic-href",
-            "redirected-id-conflict", "schema-not-found"
+            // can be removed
+            "moniker-config-missing",
+
+            // should have, maybe sometimes not
+            "download-failed", "invalid-locale",
+
+            // add line info for the actual start
+            "yaml-header-not-object", "schema-not-found",
+
+            // show multiple errors with line info
+            "publish-url-conflict", "output-path-conflict", "uid-conflict", "redirection-conflict",
+            "redirected-id-conflict", "circular-reference", "moniker-overlapping", "empty-monikers",
         };
 
         private static readonly ConcurrentDictionary<string, (int ordinal, string spec)> s_mockRepos = new ConcurrentDictionary<string, (int ordinal, string spec)>();
@@ -190,7 +193,7 @@ namespace Microsoft.Docs.Build
                     {
                         var spec = YamlUtility.Deserialize<E2ESpec>(yaml);
                         if (spec.Commands != null && spec.Commands.Any(c => c != null && c.Contains("--locale"))
-                            && spec.Repos.Count() > 1 && !spec.Inputs.Any() && string.IsNullOrEmpty(spec.Repo))
+                            && spec.Repos.Count() > 1 && !spec.Inputs.Any() && string.IsNullOrEmpty(spec.Repo) && !header.Contains("[from loc]"))
                         {
                             specNames.Add(($"{Path.GetFileNameWithoutExtension(file)}/{i:D2}. [from loc] {header}", only));
                         }
@@ -220,7 +223,7 @@ namespace Microsoft.Docs.Build
             var sections = File.ReadAllText(Path.Combine("specs", specPath)).Split("\n---", StringSplitOptions.RemoveEmptyEntries);
             var yaml = sections[ordinal].Trim('\r', '\n', '-');
             var fromLoc = !string.IsNullOrEmpty(match.Groups[3].Value);
-            Assert.StartsWith($"# {match.Groups[4].Value}", yaml);
+            Assert.True(yaml.StartsWith($"# {match.Groups[4].Value}") || yaml.StartsWith($"# {match.Groups[3].Value}{match.Groups[4].Value}"));
 
             var yamlHash = HashUtility.GetMd5Hash(yaml).Substring(0, 5);
             var name = ToSafePathString(specName).Substring(0, Math.Min(30, specName.Length)) + "-" + yamlHash;

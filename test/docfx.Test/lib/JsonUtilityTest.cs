@@ -204,30 +204,6 @@ namespace Microsoft.Docs.Build
         }
 
         [Theory]
-        [InlineData(
-            "{\"key\":\"original\"}",
-            "{\"key\":\"overwrite\"}",
-            "{\"key\":\"overwrite\"}")]
-        [InlineData(
-            "{\"key\":[1,2,3]}",
-            "{\"key\":[4,5,6]}",
-            "{\"key\":[4,5,6]}")]
-        [InlineData(
-            "{\"key1\":\"value1\"}",
-            "{\"key2\":\"value2\"}",
-            "{\"key1\":\"value1\",\"key2\":\"value2\"}")]
-        public void TestMerge(string target, string source, string result)
-        {
-            var targetJson = JsonUtility.Deserialize<JObject>(target);
-            var sourceJson = JsonUtility.Deserialize<JObject>(source);
-            var resultJson = new JObject();
-            JsonUtility.Merge(resultJson, targetJson);
-            JsonUtility.Merge(resultJson, sourceJson);
-            var resultJsonString = JsonUtility.Serialize(resultJson);
-            Assert.Equal(result, resultJsonString);
-        }
-
-        [Theory]
         [InlineData("{'name':'title','items':[,{'name':'1'}]}", "'items' contains null value, the null value has been removed", "null-array-value", ErrorLevel.Warning)]
         [InlineData("{'name':'title','items':[{'name':,'displayName':'1'}]}", "'name' contains null value", "null-value", ErrorLevel.Info)]
         [InlineData("[1,,1,1]", "'[1]' contains null value, the null value has been removed", "null-array-value", ErrorLevel.Warning)]
@@ -549,8 +525,20 @@ namespace Microsoft.Docs.Build
         }
 
         [Theory]
+        [InlineData(
+            "{\"key\":\"original\"}",
+            "{\"key\":\"overwrite\"}",
+            "{\"key\":\"overwrite\"}")]
+        [InlineData(
+            "{\"key\":[1,2,3]}",
+            "{\"key\":[4,5,6]}",
+            "{\"key\":[4,5,6]}")]
+        [InlineData(
+            "{\"key1\":\"value1\"}",
+            "{\"key2\":\"value2\"}",
+            "{\"key1\":\"value1\",\"key2\":\"value2\"}")]
         [InlineData("{'a':null}", "{'a':1}", "{'a':1}")]
-        [InlineData("{'a':1}", "{'a':null}", "{'a':1}")]
+        [InlineData("{'a':1}", "{'a':null}", "{'a':null}")]
         [InlineData("{}", "{'a':1}", "{'a':1}")]
         [InlineData("{}", "{'a':null}", "{'a':null}")]
         [InlineData("{'a':1}", "{}", "{'a':1}")]
@@ -564,6 +552,20 @@ namespace Microsoft.Docs.Build
             var container = JObject.Parse(a.Replace('\'', '\"'));
             JsonUtility.Merge(container, JObject.Parse(b.Replace('\'', '\"')));
             Assert.Equal(result.Replace('\'', '\"'), container.ToString(Formatting.None));
+        }
+
+        [Fact]
+        public void TestSerializeSourceInfoWithEmptyValue()
+        {
+            var basic = new BasicClass
+            {
+                B = 1,
+                Property = new SourceInfo<string>(null, new SourceInfo(string.Empty, 0, 0)),
+                Array = new SourceInfo<string[]>(new string[]{ }, new SourceInfo(string.Empty, 0, 0)),
+                GenericArray = new SourceInfo<List<string>>(new List<string>(), new SourceInfo(string.Empty, 0, 0))
+            };
+            var result = JsonUtility.Serialize(basic);
+            Assert.Equal("{\"b\":1,\"d\":false}", result);
         }
 
         /// <summary>
@@ -595,6 +597,12 @@ namespace Microsoft.Docs.Build
             public int B { get; set; }
 
             public bool D { get; set; }
+
+            public SourceInfo<string> Property { get; set; }
+
+            public SourceInfo<List<string>> GenericArray { get; set; }
+
+            public SourceInfo<string[]> Array { get; set; }
         }
 
         public sealed class AnotherBasicClass

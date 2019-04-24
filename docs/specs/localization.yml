@@ -298,7 +298,7 @@ outputs:
 commands:
   - build --locale zh-cn
 repos:
-  https://github.com/dotnet/docfx.en-us#folder-mapping:
+  https://github.com/folder-maping/a:
   - files:
       docfx.yml: |
         contribution:
@@ -309,7 +309,7 @@ repos:
       docs/a.md:
 outputs:
   docs/a.json: |
-    { "content_git_url": "*dotnet/docfx.en-us/blob/folder-mapping/*"}
+    { "content_git_url": "*dotnet/docfx.en-us/blob/master/*"}
 ---
 # edit url convention with branch
 # all loc files are in one repo under different branch
@@ -1454,3 +1454,74 @@ outputs:
   docs/2.json:
   docs/3.json:
   build.log:
+---
+# fallback to corresponding source branch 1
+# [repo mapping]
+commands:
+  - build --locale zh-cn
+repos:
+  https://docs.com/branch-fallback1#test:
+    - files:
+        docfx.yml:
+        docs/b.md: |
+          test
+  https://docs.com/branch-fallback1#master:
+    - files:
+        docfx.yml:
+        docs/b.md: |
+          master
+  https://docs.com/branch-fallback1.zh-cn#test:
+    - files:
+        docs/a.md: |
+          [!include[](b.md)]
+outputs:
+  docs/a.json: |
+    { "content":"<p>test</p>"}
+---
+# fallback to corresponding source branch 2
+# [repo mapping & bilingual]
+commands:
+  - build --locale zh-cn
+repos:
+  https://docs.com/branch-fallback2#test:
+    - files:
+        docfx.yml: |
+          localization:
+            bilingual: true
+        docs/b.md: |
+          test
+  https://docs.com/branch-fallback2#master:
+    - files:
+        docfx.yml:
+        docs/b.md: |
+          master
+  https://docs.com/branch-fallback2.zh-cn#test:
+    - files:
+        docs/a.md:
+  https://docs.com/branch-fallback2.zh-cn#test-sxs:
+    - files:
+        docs/a.md: |
+          [!include[](b.md)]
+outputs:
+  docs/a.json: |
+    { "content":"<p>test</p>"}
+---
+# [from loc] fallback to master if corresponding source branch doesn't exists
+# [branch mapping]
+commands:
+  - build --locale zh-cn
+repos:
+  https://docs.com/branch-fallback3#master:
+    - files:
+        docfx.yml: |
+          localization:
+            mapping: Branch
+        docs/b.md: |
+          master
+  https://docs.com/branch-fallback3.loc#test.zh-cn:
+    - files:
+        docs/a.md: |
+          [!include[](b.md)]
+outputs:
+  docs/a.json: |
+    { "content":"<p>master</p>"}

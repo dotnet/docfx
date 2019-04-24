@@ -26,6 +26,21 @@ outputs:
   build.log: |
     ["info","null-value","'ms.custom-metadata' contains null value","docs/a.md",2,1]
 ---
+# Overwrite global metadata with null in yaml header
+inputs:
+  docfx.yml: |
+    globalMetadata:
+      ms.custom-metadata: not-null
+  a.md: |
+    ---
+    ms.custom-metadata:
+    ---
+outputs:
+  a.json: |
+    { "ms.custom-metadata": null }
+  build.log: |
+    ["info","null-value","'ms.custom-metadata' contains null value","a.md",2,1]
+---
 # Report error for invalid yaml header value type
 inputs:
   docfx.yml:
@@ -167,8 +182,8 @@ inputs:
       "": /docfx/test
 outputs:
   build.log: |
-    ["error","redirection-is-empty","The key or value of redirection 'sccm/mdm/index.md: ' is null or empty","docfx.yml"]
-    ["error","redirection-is-empty","The key or value of redirection ': /docfx/test' is null or empty","docfx.yml"]
+    ["error","redirection-is-empty","The key or value of redirection 'sccm/mdm/index.md: ' is null or empty","docfx.yml",2,22]
+    ["error","redirection-is-empty","The key or value of redirection ': /docfx/test' is null or empty","docfx.yml",3,7]
 ---
 # generate document id with depot mapping and directory mapping
 # id = hash({mapped_depot_name}|{mapped_file_in_docset})

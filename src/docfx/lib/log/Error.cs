@@ -34,10 +34,6 @@ namespace Microsoft.Docs.Build
             : this(level, code, message, source?.File, source?.Line ?? 0, source?.Column ?? 0, source?.EndLine ?? 0, source?.EndColumn ?? 0)
         { }
 
-        public Error(ErrorLevel level, string code, string message, string file, SourceInfo source)
-            : this(level, code, message, file, source.Line, source.Column, source.EndLine, source.EndColumn)
-        { }
-
         public Error(ErrorLevel level, string code, string message, string file = null, int line = 0, int column = 0, int endLine = 0, int endColumn = 0)
         {
             Debug.Assert(!string.IsNullOrEmpty(code));

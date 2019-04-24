@@ -18,13 +18,12 @@ namespace Microsoft.Docs.Build
             var repository = Repository.Create(docsetPath);
             Telemetry.SetRepository(repository?.Remote, repository?.Branch);
 
-            var locale = LocalizationUtility.GetLocale(repository, options);
-            var dependencyLock = LoadBuildDependencyLock(docsetPath, locale, repository, options);
+            var locale = LocalizationUtility.GetLocale(repository?.Remote, repository?.Branch, options);
+            var (restoreMap, fallbackRepo) = LoadRestoreMap(docsetPath, locale, repository, options);
 
-            var restoreMap = RestoreMap.Create(dependencyLock);
             try
             {
-                await Run(docsetPath, repository, locale, options, report, dependencyLock, restoreMap);
+                await Run(docsetPath, repository, locale, options, report, restoreMap, fallbackRepo);
             }
             finally
             {
@@ -32,10 +31,17 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static async Task Run(string docsetPath, Repository repository, string locale, CommandLineOptions options, Report report, DependencyLockModel dependencyLock, RestoreMap restoreMap)
+        private static async Task Run(
+            string docsetPath,
+            Repository repository,
+            string locale,
+            CommandLineOptions options,
+            Report report,
+            RestoreMap restoreMap,
+            Repository fallbackRepo = null)
         {
             XrefMap xrefMap = null;
-            var (configErrors, config) = GetBuildConfig(docsetPath, repository, options, dependencyLock, restoreMap);
+            var (configErrors, config) = GetBuildConfig(docsetPath, options, locale, fallbackRepo);
             report.Configure(docsetPath, config);
 
             // just return if config loading has errors
@@ -43,7 +49,7 @@ namespace Microsoft.Docs.Build
                 return;
 
             var errors = new List<Error>();
-            var docset = GetBuildDocset(new Docset(report, docsetPath, locale, config, options, dependencyLock, restoreMap, repository));
+            var docset = GetBuildDocset(new Docset(report, docsetPath, locale, config, options, restoreMap, repository, fallbackRepo));
             var outputPath = Path.Combine(docsetPath, config.Output.Path);
 
             using (var context = Context.Create(outputPath, report, docset, () => xrefMap))
@@ -197,41 +203,55 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static DependencyLockModel LoadBuildDependencyLock(string docset, string locale, Repository repository, CommandLineOptions commandLineOptions)
+        private static (RestoreMap restoreMap, Repository fallbackRepository) LoadRestoreMap(
+            string docset,
+            string locale,
+            Repository repository,
+            CommandLineOptions commandLineOptions)
         {
             Debug.Assert(!string.IsNullOrEmpty(docset));
 
-            var (errors, config) = ConfigLoader.TryLoad(docset, commandLineOptions);
+            var (_, config) = ConfigLoader.TryLoad(docset, commandLineOptions);
 
-            var dependencyLock = DependencyLock.Load(docset, string.IsNullOrEmpty(config.DependencyLock) ? new SourceInfo<string>(AppData.GetDependencyLockFile(docset, locale)) : config.DependencyLock);
+            var dependencyLock = DependencyLock.Load(docset, string.IsNullOrEmpty(config.DependencyLock) ? new SourceInfo<string>(AppData.GetDependencyLockFile(docset, locale)) : config.DependencyLock) ?? new DependencyLockModel();
+            var restoreMap = RestoreMap.Create(dependencyLock);
 
-            if (LocalizationUtility.TryGetSourceRepository(repository, out var sourceRemote, out var sourceBranch, out _) && !ConfigLoader.TryGetConfigPath(docset, out _))
+            if (LocalizationUtility.TryGetSourceRepository(repository, out var remote, out string branch, out _))
             {
-                // build from loc repo directly with overwrite config
-                // which means it's using source repo's dependency lock
-                var sourceDependencyLock = dependencyLock.GetGitLock(sourceRemote, sourceBranch);
-                dependencyLock = sourceDependencyLock is null
-                    ? null
-                    : new DependencyLockModel
-                    {
-                        Commit = sourceDependencyLock.Commit,
-                        Git = new Dictionary<string, DependencyLockModel>(sourceDependencyLock.Git.Concat(new[] { KeyValuePair.Create($"{sourceRemote}#{sourceBranch}", sourceDependencyLock) })),
-                    };
+                if (dependencyLock.GetGitLock(remote, branch) == null && dependencyLock.GetGitLock(remote, "master") != null)
+                {
+                    // fallback to master branch
+                    branch = "master";
+                }
+
+                var (fallbackRepoPath, fallbackRestoreMap) = restoreMap.GetGitRestorePath(remote, branch);
+                var fallbackRepository = Repository.Create(fallbackRepoPath, branch, remote);
+
+                if (!ConfigLoader.TryGetConfigPath(docset, out _))
+                {
+                    // build from loc repo directly with overwrite config
+                    // which means it's using source repo's dependency loc;
+                    return (fallbackRestoreMap, fallbackRepository);
+                }
+
+                return (restoreMap, fallbackRepository);
             }
 
-            return dependencyLock ?? new DependencyLockModel();
+            return (restoreMap, null);
         }
 
-        private static (List<Error> errors, Config config) GetBuildConfig(string docset, Repository repository, CommandLineOptions options, DependencyLockModel dependencyLock, RestoreMap restoreMap)
+        private static (List<Error> errors, Config config) GetBuildConfig(
+            string docset,
+            CommandLineOptions options,
+            string locale,
+            Repository fallbackRepo = null)
         {
-            if (ConfigLoader.TryGetConfigPath(docset, out _) || !LocalizationUtility.TryGetSourceRepository(repository, out var sourceRemote, out var sourceBranch, out var locale))
+            if (ConfigLoader.TryGetConfigPath(docset, out _) || fallbackRepo is null)
             {
-                return ConfigLoader.Load(docset, options);
+                return ConfigLoader.Load(docset, options, locale);
             }
 
-            Debug.Assert(dependencyLock != null);
-            var (sourceDocsetPath, _) = restoreMap.GetGitRestorePath(sourceRemote, sourceBranch, dependencyLock);
-            return ConfigLoader.Load(sourceDocsetPath, options, locale);
+            return ConfigLoader.Load(fallbackRepo.Path, options, locale);
         }
 
         private static Docset GetBuildDocset(Docset sourceDocset)

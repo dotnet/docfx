@@ -16,14 +16,19 @@ namespace Microsoft.Docs.Build
 
         public JObject ToJObject()
         {
+            var output = new JObject();
+            if (Output != null)
+                output["path"] = Output;
+
+            if (Legacy)
+            {
+                output["json"] = true;
+                output["copyResources"] = false;
+            }
+
             return new JObject
             {
-                ["output"] = new JObject
-                {
-                    ["path"] = Output != null ? (JValue)Output : JValue.CreateNull(),
-                    ["json"] = Legacy ? (JValue)true : JValue.CreateNull(),
-                    ["copyResources"] = Legacy ? (JValue)false : JValue.CreateNull(),
-                },
+                ["output"] = output,
             };
         }
     }
