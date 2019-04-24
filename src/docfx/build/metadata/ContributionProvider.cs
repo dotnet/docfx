@@ -218,7 +218,7 @@ namespace Microsoft.Docs.Build
 
             if (AzureRepoUtility.TryParse(remote, out _, out _))
             {
-                return ($"{{repo}}/?path={pathToRepo}&version=GB{{branch}}", $"{{repo}}/?path={pathToRepo}&version=GC{{commit}}");
+                return ($"{{repo}}/?path={pathToRepo}&version=GB{{branch}}&_a=contents", $"{{repo}}/commit/{{commit}}?path={pathToRepo}&_a=contents");
             }
 
             return default;
