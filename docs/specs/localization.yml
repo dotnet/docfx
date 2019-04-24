@@ -1098,14 +1098,10 @@ repos:
   https://github.com/buildhistory/a:
     - files:
         docfx.yml: |
-          contribution:
-            gitCommitsTime: build_history.json
+          monikerDefinition: monikers.json
         docs/a.md:
-        build_history.json: |
-          { "commits": [
-              { "sha": "6547e91b51bb7cd49d8fbf71f7c61d14f6a49937", "built_at": "2018-01-01" }
-            ]
-          }
+        monikers.json: |
+          {}
   https://github.com/buildhistory/a.zh-cn:
     - files:
         docs/a.md:

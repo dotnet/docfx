@@ -14,7 +14,9 @@ namespace Microsoft.Docs.Build
     {
         private readonly GitHubUserCache _gitHubUserCache;
 
-        private readonly Dictionary<string, DateTime> _updateTimeByCommit = new Dictionary<string, DateTime>();
+        // TODO: support CRR and multiple repositories
+        // TODO: support live SXS branch
+        private readonly CommitBuildTimeProvider _commitBuildTimeProvider;
 
         private readonly GitCommitProvider _gitCommitProvider;
 
@@ -24,8 +26,8 @@ namespace Microsoft.Docs.Build
 
             _gitHubUserCache = gitHubUserCache;
             _gitCommitProvider = gitCommitProvider;
-
-            LoadCommitsTime(docset);
+            _commitBuildTimeProvider = docset.Repository != null && docset.Config.UpdateTimeAsCommitBuildTime
+                ? new CommitBuildTimeProvider(docset.Repository) : null;
         }
 
         public async Task<(List<Error> error, Contributor author, List<Contributor> contributors, DateTime updatedAt)> GetAuthorAndContributors(
@@ -136,7 +138,7 @@ namespace Microsoft.Docs.Build
         {
             if (fileCommits?.Count > 0)
             {
-                return _updateTimeByCommit.TryGetValue(fileCommits[0].Sha, out var timeFromHistory)
+                return _commitBuildTimeProvider != null && _commitBuildTimeProvider.TryGetCommitBuildTime(fileCommits[0].Sha, out var timeFromHistory)
                     ? timeFromHistory
                     : fileCommits[0].Time.UtcDateTime;
             }
@@ -196,16 +198,11 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private void LoadCommitsTime(Docset docset)
+        public void UpdateCommitBuildTime()
         {
-            if (!string.IsNullOrEmpty(docset.Config.Contribution.GitCommitsTime))
+            if (_commitBuildTimeProvider != null)
             {
-                var (_, content, _) = RestoreMap.GetRestoredFileContent(docset, docset.Config.Contribution.GitCommitsTime);
-
-                foreach (var commit in JsonUtility.Deserialize<GitCommitsTime>(content).Commits)
-                {
-                    _updateTimeByCommit.Add(commit.Sha, commit.BuiltAt);
-                }
+                _commitBuildTimeProvider.UpdateAndSaveCache();
             }
         }
 

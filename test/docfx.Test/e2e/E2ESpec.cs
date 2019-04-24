@@ -17,7 +17,7 @@ namespace Microsoft.Docs.Build
 
         public readonly bool Watch;
 
-        public readonly string[] Commands = new[] { "build" };
+        public string[] Commands = new[] { "build" };
 
         public readonly string[] Environments = Array.Empty<string>();
 
@@ -29,35 +29,11 @@ namespace Microsoft.Docs.Build
 
         public readonly Dictionary<string, string> Inputs = new Dictionary<string, string>();
 
+        public readonly Dictionary<string, string> Cache = new Dictionary<string, string>();
+
         public readonly Dictionary<string, string> Outputs = new Dictionary<string, string>();
 
         public readonly Dictionary<string, JToken> Http = new Dictionary<string, JToken>();
-
-        public E2ESpec() { }
-
-        public E2ESpec(
-            string os,
-            string repo,
-            bool watch,
-            string[] commands,
-            string[] environments,
-            string[] skippableOutputs,
-            Dictionary<string, E2ECommit[]> repos,
-            Dictionary<string, string> inputs,
-            Dictionary<string, string> outputs,
-            Dictionary<string, JToken> http)
-        {
-            OS = os;
-            Repo = repo;
-            Watch = watch;
-            Commands = commands ?? Commands;
-            Environments = environments ?? Environments;
-            SkippableOutputs = skippableOutputs ?? SkippableOutputs;
-            Repos = repos ?? Repos;
-            Inputs = inputs ?? Inputs;
-            Outputs = outputs ?? Outputs;
-            Http = http ?? Http;
-        }
 
         public class E2ECommit
         {

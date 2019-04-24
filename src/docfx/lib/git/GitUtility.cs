@@ -123,9 +123,10 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Get a list of commits using git log
         /// </summary>
-        public static string[] GetCommits(string path, string committish, int top = 1)
+        public static string[] GetCommits(string path, string committish, int top = 0)
         {
-            return Execute(path, $"--no-pager log {committish} --pretty=format:\"%H\" -{top}")
+            var topParam = top > 0 ? $"-{top}" : "";
+            return Execute(path, $"--no-pager log --pretty=format:\"%H\" {topParam} {committish}")
                     .Split('\n', StringSplitOptions.RemoveEmptyEntries);
         }
 
