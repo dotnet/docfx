@@ -25,7 +25,7 @@ namespace Microsoft.Docs.Build
             {
                 if (s_reservedNames.Contains(key))
                 {
-                    errors.Add(Errors.ReservedMetadata(JsonUtility.GetSourceInfo(token), key));
+                    errors.Add(Errors.ReservedMetadata(JsonUtility.GetSourceInfo(token), key, token.Path));
                 }
                 else
                 {
@@ -62,7 +62,7 @@ namespace Microsoft.Docs.Build
             {
                 if (s_reservedNames.Contains(key))
                 {
-                    errors.Add(Errors.ReservedMetadata(JsonUtility.GetSourceInfo(token), key));
+                    errors.Add(Errors.ReservedMetadata(JsonUtility.GetSourceInfo(token), key, token.Path));
                 }
                 else if (!IsValidMetadataType(token))
                 {
