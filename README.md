@@ -41,7 +41,7 @@ For more information see the [.NET Foundation Code of Conduct](http://www.dotnet
 
 ## DocFX Project
 
-Apart from `dev` branch, `stable` branch builds daily, and `master` branch is the release branch.
+`dev` is the default branch accepting Pull Requests. It releases a package daily. `master` branch is the release branch.
 
 ### How to build from source code
 
@@ -57,13 +57,18 @@ Apart from `dev` branch, `stable` branch builds daily, and `master` branch is th
 
 ### Build Status
 
-|            | Build Status  |  Package   |  Chocolatey |
-| ---------- | ------------- | ---------- | ----------- |
-| **master** |[![Master status](https://mseng.visualstudio.com/VSChina/_apis/build/status/docfx/docfx-master-ci)](https://mseng.visualstudio.com/VSChina/_build/latest?definitionId=6822) |[![NuGet](https://img.shields.io/nuget/v/docfx.svg)](http://www.nuget.org/packages/docfx/) |[![Chocolatey](https://img.shields.io/chocolatey/v/docfx.svg)](https://chocolatey.org/packages/docfx)
-| **stable** |[![Build Status](https://mseng.visualstudio.com/VSChina/_apis/build/status/docfx/v2/docfx-nightly-build)](https://mseng.visualstudio.com/VSChina/_build/latest?definitionId=7829) |[![MyGet](https://img.shields.io/myget/docfx-dev/v/docfx.svg?label=myget)](https://www.myget.org/feed/Packages/docfx-dev)
+master | dev
+- | -
+[![Master status](https://mseng.visualstudio.com/VSChina/_apis/build/status/docfx/docfx-master-ci)](https://mseng.visualstudio.com/VSChina/_build/latest?definitionId=6822) | [![Build Status](https://mseng.visualstudio.com/VSChina/_apis/build/status/docfx/v2/docfx-nightly-build)](https://mseng.visualstudio.com/VSChina/_build/latest?definitionId=7829)
 
-* Running Status
+### Packages
 
-| Running Status| Windows with .NET Core v2.0.3 | Windows with VS2017 | Ubuntu Linux with Mono
+Chocolatey | Nuget | Nightly Build
+- | - | -
+[![Chocolatey](https://img.shields.io/chocolatey/v/docfx.svg)](https://chocolatey.org/packages/docfx) | [![NuGet](https://img.shields.io/nuget/v/docfx.svg)](http://www.nuget.org/packages/docfx/) | [![MyGet](https://img.shields.io/myget/docfx-dev/v/docfx.svg?label=myget)](https://www.myget.org/feed/Packages/docfx-dev)
+
+### Running Status
+
+ Windows with .NET Core v2.0.3 | Windows with VS2017 | Ubuntu Linux with Mono
 | ---------- | ------------- |---------- | ------------- 
-| [![NuGet](https://img.shields.io/nuget/v/docfx.svg)](http://www.nuget.org/packages/docfx/)|[![.NET CORE](https://docascode.visualstudio.com/_apis/public/build/definitions/c8f1f4cb-74cb-4c89-a2db-6c3438796b0a/1/badge)](https://docascode.visualstudio.com/docfx/_build/index?context=mine&path=%5C&definitionId=1&_a=completed)|[![VS](https://docascode.visualstudio.com/_apis/public/build/definitions/c8f1f4cb-74cb-4c89-a2db-6c3438796b0a/2/badge)](https://docascode.visualstudio.com/docfx/_build/index?context=mine&path=%5C&definitionId=2&_a=completed)|[![Ubuntu](https://travis-ci.org/docascode/docfx.test.svg?branch=master)](https://travis-ci.org/docascode/docfx.test)
+[![.NET CORE](https://docascode.visualstudio.com/_apis/public/build/definitions/c8f1f4cb-74cb-4c89-a2db-6c3438796b0a/1/badge)](https://docascode.visualstudio.com/docfx/_build/index?context=mine&path=%5C&definitionId=1&_a=completed)|[![VS](https://docascode.visualstudio.com/_apis/public/build/definitions/c8f1f4cb-74cb-4c89-a2db-6c3438796b0a/2/badge)](https://docascode.visualstudio.com/docfx/_build/index?context=mine&path=%5C&definitionId=2&_a=completed)|[![Ubuntu](https://travis-ci.org/docascode/docfx.test.svg?branch=master)](https://travis-ci.org/docascode/docfx.test)

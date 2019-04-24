@@ -1,0 +1,37 @@
+pool:
+  name: Hosted VS2017
+steps:
+- task: NodeTool@0
+  displayName: 'Use Node 8.x'
+  inputs:
+    versionSpec: 8.x
+
+- task: NuGetToolInstaller@0
+  displayName: 'Use NuGet 4.3.0'
+
+- task: CmdLine@1
+  displayName: 'npm install'
+  inputs:
+    filename: npm
+    arguments: install
+    workingFolder: tools/Deployment
+
+- task: CmdLine@1
+  displayName: 'tsc compile'
+  inputs:
+    filename: node
+    arguments: '.\node_modules\typescript\bin\tsc'
+    workingFolder: tools/Deployment
+
+- task: CmdLine@1
+  displayName: 'gulp build'
+  inputs:
+    filename: node
+    arguments: '.\node_modules\gulp\bin\gulp.js dev'
+    workingFolder: tools/Deployment
+
+- task: PublishBuildArtifacts@1
+  condition: always()
+  inputs:
+    pathtoPublish: 'target\Release\docfx'
+    artifactName: target
