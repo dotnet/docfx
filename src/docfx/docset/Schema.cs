@@ -35,9 +35,9 @@ namespace Microsoft.Docs.Build
             return mime != null && s_schemas.TryGetValue(mime, out var result) ? result : null;
         }
 
-        public static (string mime, Schema schema) ReadFromFile(string filePath)
+        public static (SourceInfo<string> mime, Schema schema) ReadFromFile(string pathToDocset, string filePath)
         {
-            string mime = null;
+            SourceInfo<string> mime = null;
 
             if (filePath.EndsWith(".json", PathUtility.PathComparison))
             {
@@ -45,7 +45,8 @@ namespace Microsoft.Docs.Build
                 {
                     using (var reader = new StreamReader(filePath))
                     {
-                        mime = JsonUtility.ReadMime(reader);
+                        var mimeContent = JsonUtility.ReadMime(reader);
+                        mime = new SourceInfo<string>(mimeContent, new SourceInfo(pathToDocset, mimeContent is null ? 1 : 2, 0));
                     }
                 }
             }
@@ -55,12 +56,12 @@ namespace Microsoft.Docs.Build
                 {
                     using (var reader = new StreamReader(filePath))
                     {
-                        mime = YamlUtility.ReadMime(reader);
+                        mime = new SourceInfo<string>(YamlUtility.ReadMime(reader), new SourceInfo(pathToDocset, 1, 0));
                     }
                 }
             }
 
-            if (mime != null && s_schemas.TryGetValue(mime, out var schema))
+            if (mime?.Value != null && s_schemas.TryGetValue(mime, out var schema))
             {
                 return (mime, schema);
             }
