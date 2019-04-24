@@ -109,6 +109,7 @@ namespace Microsoft.Docs.Build
                 syntax.DefineCommand("restore", ref command, "Restores dependencies before build.");
                 syntax.DefineOption("locale", ref options.Locale, "The locale of the docset to build");
                 syntax.DefineOption("o|output", ref options.Output, "Output directory in which to place restore log.");
+                syntax.DefineOption("legacy", ref options.Legacy, "Enable legacy output for backward compatibility.");
                 syntax.DefineOption("v|verbose", ref options.Verbose, "Enable diagnostics console output.");
                 syntax.DefineParameter("docset", ref docset, "Docset directory that contains docfx.yml/docfx.json.");
 
