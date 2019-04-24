@@ -1,8 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json.Linq;
@@ -12,20 +10,19 @@ namespace Microsoft.Docs.Build
     internal static class MetadataValidator
     {
         private static readonly HashSet<string> s_reservedNames = GetReservedMetadata();
-        private static readonly ConcurrentDictionary<string, Lazy<Type>> s_fileMetadataTypes = new ConcurrentDictionary<string, Lazy<Type>>(StringComparer.OrdinalIgnoreCase);
 
         public static List<Error> Validate(JObject metadata)
         {
             var errors = new List<Error>();
-            foreach (var (key, token) in metadata)
+            foreach (var (key, value) in metadata)
             {
                 if (s_reservedNames.Contains(key))
                 {
-                    errors.Add(Errors.ReservedMetadata(JsonUtility.GetSourceInfo(token), key, token.Path));
+                    errors.Add(Errors.ReservedMetadata(JsonUtility.GetSourceInfo(value), key));
                 }
-                else if (!IsValidMetadataType(token))
+                else if (!IsValidMetadataType(value))
                 {
-                    errors.Add(Errors.InvalidMetadataType(JsonUtility.GetSourceInfo(token), key));
+                    errors.Add(Errors.InvalidMetadataType(JsonUtility.GetSourceInfo(value), key));
                 }
             }
             return errors;

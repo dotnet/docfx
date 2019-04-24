@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
@@ -161,7 +162,7 @@ namespace Microsoft.Docs.Build
                 }
                 catch (JsonReaderException ex)
                 {
-                    throw Errors.JsonSyntaxError(ex).ToException(ex);
+                    throw ToError(ex).ToException(ex);
                 }
             }
         }
@@ -224,7 +225,7 @@ namespace Microsoft.Docs.Build
             }
             catch (JsonReaderException ex)
             {
-                throw Errors.JsonSyntaxError(ex, file).ToException(ex);
+                throw ToError(ex, file).ToException(ex);
             }
         }
 
@@ -444,6 +445,16 @@ namespace Microsoft.Docs.Build
                     args.ErrorContext.Handled = true;
                 }
             }
+        }
+
+        private static Error ToError(JsonReaderException ex, string file = null)
+        {
+            // TODO: Json.NET type conversion error message is developer friendly but not writer friendly.
+            var source = new SourceInfo(file, ex.LineNumber, ex.LinePosition);
+            var match = Regex.Match(ex.Message, "^([\\s\\S]*)\\sPath (.*).$");
+            var message = match.Success ? match.Groups[1].Value : ex.Message;
+
+            return Errors.JsonSyntaxError(source, RewriteErrorMessage(message));
         }
 
         private static string RewriteErrorMessage(string message)

@@ -39,7 +39,7 @@ namespace Microsoft.Docs.Build
             {
                 if (glob(file.FilePath))
                 {
-                    fileMetadata[key] = value;
+                    fileMetadata[key] = JsonUtility.DeepClone(value);
                 }
             }
             JsonUtility.Merge(result, fileMetadata);
