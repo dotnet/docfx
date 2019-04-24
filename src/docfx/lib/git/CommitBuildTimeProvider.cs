@@ -19,12 +19,12 @@ namespace Microsoft.Docs.Build
             _repo = repo;
             _commitBuildTimePath = AppData.GetCommitBuildTimePath(repo.Remote, repo.Branch);
 
-            var commitBuildTime = new CommitBuildTime();
-            if (File.Exists(_commitBuildTimePath))
-            {
-                Log.Write($"Using git commit build time cache file: '{_commitBuildTimePath}'");
-                commitBuildTime = JsonUtility.Deserialize<CommitBuildTime>(ProcessUtility.ReadFile(_commitBuildTimePath));
-            }
+            var exists = File.Exists(_commitBuildTimePath);
+            Log.Write($"{(exists ? "Using" : "Missing")} git commit build time cache file: '{_commitBuildTimePath}'");
+
+            var commitBuildTime = exists
+                ? JsonUtility.Deserialize<CommitBuildTime>(ProcessUtility.ReadFile(_commitBuildTimePath))
+                : new CommitBuildTime();
 
             _buildTimeByCommit = commitBuildTime.Commits.ToDictionary(item => item.Sha, item => item.BuiltAt);
         }
