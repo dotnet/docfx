@@ -488,6 +488,7 @@ inputs:
         docs/**: 
           - 1
           - 2
+  docs/a.md:
 outputs:
   build.log: |
     ["error","violate-schema","Expected type String, please input string or type compatible with String.","docfx.yml",4,7]

@@ -19,7 +19,7 @@ namespace Microsoft.Docs.Build
             if (reader is JTokenReader tokenReader)
             {
                 var result = JsonUtility.DeepClone(tokenReader.CurrentToken);
-                reader.Skip();
+                SkipToken(reader);
                 return result;
             }
             return JToken.ReadFrom(reader);
@@ -28,6 +28,19 @@ namespace Microsoft.Docs.Build
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
             ((JToken)value).WriteTo(writer);
+        }
+
+        private static void SkipToken(JsonReader reader)
+        {
+            var currentDepth = reader.Depth;
+            reader.Skip();
+            while (reader.Depth > currentDepth)
+            {
+                if (!reader.Read())
+                {
+                    break;
+                }
+            }
         }
     }
 }
