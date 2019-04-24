@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -50,8 +49,9 @@ namespace Microsoft.Docs.Build
                 JsonUtility.Merge(result, yamlHeader);
             }
 
-            // We are validating against the merged JObject so discard the validation result here.
-            return JsonUtility.ToObject<T>(result);
+            var (errors, metadata) = JsonUtility.ToObject<T>(result);
+            errors.AddRange(MetadataValidator.Validate(result));
+            return (errors, metadata);
         }
     }
 }
