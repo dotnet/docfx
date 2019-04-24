@@ -475,7 +475,7 @@ inputs:
 outputs:
   docs/a.json:
   build.log: |
-    ["warning","yaml-header-not-object","Expect yaml header to be an object, but got an array","docs/a.md"]
+    ["warning","yaml-header-not-object","Expect yaml header to be an object, but got an array","docs/a.md",2]
 ---
 # yaml header shouldn't be scalar
 inputs:
@@ -488,7 +488,7 @@ inputs:
 outputs:
   docs/a.json:
   build.log: |
-    ["warning","yaml-header-not-object","Expect yaml header to be an object, but got a scalar","docs/a.md"]
+    ["warning","yaml-header-not-object","Expect yaml header to be an object, but got a scalar","docs/a.md",2]
 ---
 # Handling malformed HTML tags using HtmlAgilityPack 1.4.9
 inputs:

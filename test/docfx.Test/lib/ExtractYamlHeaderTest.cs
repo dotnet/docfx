@@ -40,6 +40,11 @@ this: is a frontmatter
 @"----
 this: is a frontmatter
 ---", "{}")]
+        [InlineData(
+@"some text
+---
+this: is a frontmatter
+---", "{}")]
         public void TestExtract(string content, string expectedMetadata)
         {
             using (var reader = new StringReader(content))
