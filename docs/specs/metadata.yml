@@ -51,6 +51,7 @@ inputs:
 outputs:
   build.log: |
     ["error","violate-schema","Expected type String, please input String or type compatible with String.","docs/a.md",2,9]
+    ["info","invalid-metadata-type","Metadata 'locale' can only be a scalar value or string array","docs/a.md",2,9]
 ---
 # Report error for invalid yaml header value type as array
 inputs:
@@ -433,4 +434,17 @@ outputs:
   a.json: |
     breadcrumb_path: breadcrumbs/toc.json
   breadcrumbs/toc.json:
-  
+---
+# Metadata value must be scalar or scalar array
+inputs:
+  docfx.yml: |
+    globalMetadata:
+      key1: {}
+    fileMetadata:
+      key2:
+        '**/*':
+          - a: 1
+outputs:
+  build.log: |
+    ["info","invalid-metadata-type","Metadata 'key1' can only be a scalar value or string array","docfx.yml",2,9]
+    ["info","invalid-metadata-type","Metadata 'key2' can only be a scalar value or string array","docfx.yml",5,5]

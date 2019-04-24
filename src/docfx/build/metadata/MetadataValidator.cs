@@ -23,6 +23,10 @@ namespace Microsoft.Docs.Build
                 {
                     errors.Add(Errors.ReservedMetadata(JsonUtility.GetSourceInfo(token), key, token.Path));
                 }
+                else if (!IsValidMetadataType(token))
+                {
+                    errors.Add(Errors.InvalidMetadataType(JsonUtility.GetSourceInfo(token), key));
+                }
             }
             return errors;
         }
@@ -48,6 +52,21 @@ namespace Microsoft.Docs.Build
             }
 
             return blackList;
+        }
+
+        private static bool IsValidMetadataType(JToken token)
+        {
+            if (token is JObject)
+            {
+                return false;
+            }
+
+            if (token is JArray array && !array.All(item => item is JValue))
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }
