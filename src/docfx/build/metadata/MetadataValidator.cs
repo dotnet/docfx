@@ -6,7 +6,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -24,26 +23,26 @@ namespace Microsoft.Docs.Build
 
             foreach (var (key, token) in metadata)
             {
-                var lineInfo = token as IJsonLineInfo;
                 if (s_reservedNames.Contains(key))
                 {
-                    errors.Add(Errors.ReservedMetadata(new SourceInfo(null, lineInfo?.LineNumber ?? 0, lineInfo?.LinePosition ?? 0), key, token.Path));
+                    errors.Add(Errors.ReservedMetadata(JsonUtility.GetSourceInfo(token), key, token.Path));
                 }
                 else
                 {
                     var type = s_fileMetadataTypes.GetOrAdd(
                        key,
                        new Lazy<Type>(() => typeof(InputMetadata).GetProperty(key, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance)?.PropertyType));
-                    if (type.Value is null)
-                        continue;
                     var values = token as IEnumerable<KeyValuePair<string, JToken>>;
                     foreach (var (glob, value) in values)
                     {
-                        var nestedLineInfo = value as IJsonLineInfo;
-                        if (!type.Value.IsInstanceOfType(value))
+                        if (!IsValidMetadataType(value))
+                        {
+                            errors.Add(Errors.InvalidMetadataType(JsonUtility.GetSourceInfo(token), key));
+                        }
+                        if (type.Value != null && !type.Value.IsInstanceOfType(value))
                         {
                             errors.Add(Errors.ViolateSchema(
-                                new SourceInfo(null, nestedLineInfo?.LineNumber ?? 0, nestedLineInfo?.LinePosition ?? 0),
+                                JsonUtility.GetSourceInfo(value),
                                 $"Expected type {type.Value.Name}, please input string or type compatible with {type.Value.Name}."));
                         }
                     }
@@ -65,13 +64,14 @@ namespace Microsoft.Docs.Build
                 {
                     errors.Add(Errors.ReservedMetadata(JsonUtility.GetSourceInfo(token), key, token.Path));
                 }
+                else if (!IsValidMetadataType(token))
+                {
+                    errors.Add(Errors.InvalidMetadataType(JsonUtility.GetSourceInfo(token), key));
+                }
             }
 
-            if (!errors.Any())
-            {
-                var (schemaErrors, _) = JsonUtility.ToObject<InputMetadata>(metadata);
-                errors.AddRange(schemaErrors);
-            }
+            var (schemaErrors, _) = JsonUtility.ToObject<InputMetadata>(metadata);
+            errors.AddRange(schemaErrors);
             return errors;
         }
 
@@ -96,6 +96,21 @@ namespace Microsoft.Docs.Build
             }
 
             return blackList;
+        }
+
+        private static bool IsValidMetadataType(JToken token)
+        {
+            if (token is JObject)
+            {
+                return false;
+            }
+
+            if (token is JArray array && !array.All(item => item is JValue))
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }
