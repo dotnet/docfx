@@ -354,6 +354,12 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Schema document with violate content type/value against predefined models(not syntax error).
         /// </summary>
+        public static Error UnexpectedType(SourceInfo source, string expectedType, string actualType)
+            => new Error(ErrorLevel.Error, "unexpected-type", $"Expect type '{expectedType}' but got '{actualType}'", source);
+
+        /// <summary>
+        /// The input value is not defined in a valid value list.
+        /// </summary>
         public static Error UndefinedValue(SourceInfo source, object value, IEnumerable<object> validValues)
             => new Error(ErrorLevel.Error, "undefined-value", $"Value '{value}' is not accepted. Valid values: {Join(validValues)}", source);
 

@@ -19,9 +19,7 @@ namespace Microsoft.Docs.Build
         {
             if (!TypeMatches(schema.Type, token.Type))
             {
-                errors.Add(Errors.ViolateSchema(
-                    JsonUtility.GetSourceInfo(token),
-                    $"Expected type {schema.Type}, please input {schema.Type} or type compatible with {schema.Type}."));
+                errors.Add(Errors.UnexpectedType(JsonUtility.GetSourceInfo(token), schema.Type.ToString(), token.Type.ToString()));
                 return;
             }
 
