@@ -477,3 +477,13 @@ outputs:
     ["error","violate-schema","Expected type String, please input String or type compatible with String.","docfx.yml",3,9]
     ["error","undefined-value","Value 'XNAGameStudio' is not accepted. Valid values: 'MSDN', 'VS'","docfx.yml",6,13]
     ["error","violate-schema","Expected type Integer, please input Integer or type compatible with Integer.","a.md",2,7]
+---
+# Metadata should work for fields marked with SourceInfo<T>
+inputs:
+  docfx.yml: |
+    fileMetadata:
+      author:
+        '**/*': name
+  a.md:
+outputs:
+  a.json:

@@ -242,11 +242,8 @@ inputs:
       - docs/b.yml
     gitHub:
       userCache: docs/d.json
-    contribution:
-      gitCommitsTime: docs/c.json
   docs/a.yml:
   docs/b.yml:
-  docs/c.json: '{}'
   docs/d.json: '{}'
 outputs:
 ---

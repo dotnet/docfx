@@ -60,7 +60,6 @@ namespace Microsoft.Docs.Build
                 yield return url;
             }
 
-            yield return config.Contribution.GitCommitsTime;
             yield return config.GitHub.UserCache;
             yield return config.MonikerDefinition;
             yield return config.MetadataSchema;
