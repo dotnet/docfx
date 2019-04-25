@@ -53,6 +53,11 @@ items:
   langs:
   - csharp
   - vb
+  intProperty: 666
+  boolProperty: true
+  monikers:
+  - net48
+  - netstandard2_0
   name: eat
   nameWithType: ICat.eat
   fullName: CatLibrary.ICat.eat

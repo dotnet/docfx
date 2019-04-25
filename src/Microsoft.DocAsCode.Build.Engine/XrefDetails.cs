@@ -18,14 +18,6 @@ namespace Microsoft.DocAsCode.Build.Engine
     [Serializable]
     public sealed class XRefDetails
     {
-        /// <summary>
-        /// TODO: completely move into template
-        /// Must be consistent with template input.replace(/\W/g, '_');
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        private static Regex HtmlEncodeRegex = new Regex(@"\W", RegexOptions.Compiled);
-
         public string Uid { get; private set; }
         public string Anchor { get; private set; }
         public string Title { get; private set; }
@@ -263,11 +255,11 @@ namespace Microsoft.DocAsCode.Build.Engine
             foreach (var key in keyInFallbackOrder)
             {
                 var keyWithSuffix = key + suffix;
-                if (spec.TryGetValue(keyWithSuffix, out string value))
+                if (spec.TryGetStringValue(keyWithSuffix, out var suffixedValue))
                 {
-                    return value;
+                    return suffixedValue;
                 }
-                if (spec.TryGetValue(key, out value))
+                if (spec.TryGetStringValue(key, out var value))
                 {
                     return value;
                 }
