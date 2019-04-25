@@ -42,6 +42,7 @@ namespace Microsoft.Docs.Build
                     // Assign a JToken to a property erases line info, so clone here.
                     // See https://github.com/JamesNK/Newtonsoft.Json/issues/2055
                     fileMetadata[key] = JsonUtility.DeepClone(value);
+                    JsonUtility.SetSourceInfo(fileMetadata.Property(key), JsonUtility.GetSourceInfo(value));
                 }
             }
             JsonUtility.Merge(result, fileMetadata);

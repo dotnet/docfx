@@ -14,15 +14,15 @@ namespace Microsoft.Docs.Build
         public static List<Error> Validate(JObject metadata)
         {
             var errors = new List<Error>();
-            foreach (var (key, value) in metadata)
+            foreach (var property in metadata.Properties())
             {
-                if (s_reservedNames.Contains(key))
+                if (s_reservedNames.Contains(property.Name))
                 {
-                    errors.Add(Errors.ReservedMetadata(JsonUtility.GetSourceInfo(value), key));
+                    errors.Add(Errors.ReservedMetadata(JsonUtility.GetSourceInfo(property), property.Name));
                 }
-                else if (!IsValidMetadataType(value))
+                else if (!IsValidMetadataType(property.Value))
                 {
-                    errors.Add(Errors.InvalidMetadataType(JsonUtility.GetSourceInfo(value), key));
+                    errors.Add(Errors.InvalidMetadataType(JsonUtility.GetSourceInfo(property.Value), property.Name));
                 }
             }
             return errors;

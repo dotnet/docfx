@@ -381,7 +381,7 @@ inputs:
     ---
 outputs:
   build.log: |
-    ["warning","reserved-metadata","Metadata 'redirect_url' is reserved by docfx, remove this metadata","docs/a.md",2,15]
+    ["warning","reserved-metadata","Metadata 'redirect_url' is reserved by docfx, remove this metadata","docs/a.md",2,1]
     ["error","publish-url-conflict","Two or more files publish to the same url '/docs/a': 'docs/a.md', 'docs/a.md <redirection>'"]
 ---
 # redirection defined in file metadata is not supported
@@ -410,7 +410,7 @@ outputs:
   docs/a.json:
   docs/index.json:
   build.log: |
-    ["warning","reserved-metadata","Metadata 'document_id' is reserved by docfx, remove this metadata","docs/index.yml",5,16]
+    ["warning","reserved-metadata","Metadata 'document_id' is reserved by docfx, remove this metadata","docs/index.yml",5,3]
 ---
 # redirection defined in global metadata is not supported
 inputs:
@@ -421,7 +421,7 @@ inputs:
 outputs:
   docs/a.json:
   build.log: |
-    ["warning","reserved-metadata","Metadata 'redirect_url' is reserved by docfx, remove this metadata","docfx.yml",2,17]
+    ["warning","reserved-metadata","Metadata 'redirect_url' is reserved by docfx, remove this metadata","docfx.yml",2,3]
 ---
 # resolve breadcrumb_path
 inputs:

@@ -245,7 +245,7 @@ namespace Microsoft.Docs.Build
                 }
                 else
                 {
-                    container[key] = SetSourceInfo(DeepClone(value), value.Annotation<SourceInfo>());
+                    container[key] = DeepClone(value);
                     SetSourceInfo(container.Property(key), property.Annotation<SourceInfo>());
                 }
             }
@@ -263,7 +263,7 @@ namespace Microsoft.Docs.Build
                 var result = new JObject();
                 foreach (var prop in obj.Properties())
                 {
-                    result[prop.Name] = SetSourceInfo(DeepClone(prop.Value), prop.Value.Annotation<SourceInfo>());
+                    result[prop.Name] = DeepClone(prop.Value);
                     SetSourceInfo(result.Property(prop.Name), prop.Annotation<SourceInfo>());
                 }
                 return SetSourceInfo(result, token.Annotation<SourceInfo>());
@@ -274,7 +274,7 @@ namespace Microsoft.Docs.Build
                 var result = new JArray();
                 foreach (var item in array)
                 {
-                    result.Add(SetSourceInfo(DeepClone(item), item.Annotation<SourceInfo>()));
+                    result.Add(DeepClone(item));
                 }
                 return SetSourceInfo(result, token.Annotation<SourceInfo>());
             }

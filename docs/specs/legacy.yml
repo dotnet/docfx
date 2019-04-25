@@ -228,7 +228,7 @@ outputs:
   docs/a.json:
   build.log: |
     ["warning","reserved-metadata","Metadata 'content_type' is reserved by docfx, remove this metadata","docfx.yml",3,16]
-    ["warning","reserved-metadata","Metadata 'ms.contentlang' is reserved by docfx, remove this metadata","docs/a.md",2,17]
+    ["warning","reserved-metadata","Metadata 'ms.contentlang' is reserved by docfx, remove this metadata","docs/a.md",2,1]
 ---
 # Support metadata at root level for landing data
 commands:
