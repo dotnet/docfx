@@ -62,18 +62,18 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Fast pass to read MIME from $schema attribute.
         /// </summary>
-        public static (int line, int column, string mime) ReadMime(TextReader reader)
+        public static (IJsonLineInfo lineInfo, string mime) ReadMime(TextReader reader)
         {
-            var (line, column, schema) = ReadSchema(reader);
+            var (lineInfo, schema) = ReadSchema(reader);
             if (schema is null)
-                return (line, column, null);
+                return (lineInfo, null);
 
             // TODO: be more strict
             var mime = schema.Split('/').LastOrDefault();
             if (mime != null)
-                return (line, column, Path.GetFileNameWithoutExtension(schema));
+                return (lineInfo, Path.GetFileNameWithoutExtension(schema));
 
-            return (line, column, null);
+            return (lineInfo, null);
         }
 
         /// <summary>
@@ -81,61 +81,20 @@ namespace Microsoft.Docs.Build
         /// $schema must be the first attribute in the root object.
         /// Assume input is a valid JSON. Bad input will be processed through Json.NET
         /// </summary>
-        public static (int line, int column, string schema) ReadSchema(TextReader reader)
+        public static (IJsonLineInfo lineInfo, string schema) ReadSchema(TextReader reader)
         {
-            int line = 1;
-            int column = 1;
-            SkipSpaces();
-
-            if (reader.Read() != '{')
-                return (line, column, null);
-            column += 1;
-
-            SkipSpaces();
-
-            foreach (var expect in "\"$schema\"")
+            var json = new JsonTextReader(reader);
+            while (json.Read())
             {
-                if (reader.Read() != expect)
-                    return (line, column, null);
-            }
-            column += "\"$schema\"".Length;
-
-            SkipSpaces();
-
-            if (reader.Read() != ':')
-                return (line, column, null);
-            column += 1;
-
-            SkipSpaces();
-
-            if (reader.Peek() != '\"')
-                return (line, column, null);
-            column += 1;
-
-            return (line, column, new JsonTextReader(reader).ReadAsString());
-
-            void SkipSpaces()
-            {
-                while (true)
+                if (json.Value is string str && str == "$schema")
                 {
-                    var ch = reader.Peek();
-                    if (ch == ' ' || ch == '\t' || ch == '\r')
+                    if (json.Read() && json.Value is string schema)
                     {
-                        column += 1;
-                        reader.Read();
-                        continue;
+                        return (json, schema);
                     }
-                    else if (ch == '\n')
-                    {
-                        column = 1;
-                        line += 1;
-                        reader.Read();
-                        continue;
-                    }
-
-                    break;
                 }
             }
+            return default;
         }
 
         public static IEnumerable<string> GetPropertyNames(Type type)

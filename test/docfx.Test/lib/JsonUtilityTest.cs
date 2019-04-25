@@ -26,7 +26,7 @@ namespace Microsoft.Docs.Build
         [InlineData(" { \"$schema\" : \"https://a.com/b.json\" }", "b")]
         public void TestReadMime(string input, string schema)
         {
-            var (_, _, result) = JsonUtility.ReadMime(new StringReader(input));
+            var (_, result) = JsonUtility.ReadMime(new StringReader(input));
             Assert.Equal(schema, result);
         }
 
