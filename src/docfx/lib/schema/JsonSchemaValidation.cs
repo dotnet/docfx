@@ -17,9 +17,11 @@ namespace Microsoft.Docs.Build
 
         private static void ValidateCore(JsonSchema schema, JToken token, List<Error> errors)
         {
-            if (schema.Type != token.Type)
+            if (!TypeMatches(schema.Type, token.Type))
             {
-                errors.Add(Errors.ViolateSchema(JsonUtility.GetSourceInfo(token), ""));
+                errors.Add(Errors.ViolateSchema(
+                    JsonUtility.GetSourceInfo(token),
+                    $"Expected type {schema.Type}, please input {schema.Type} or type compatible with {schema.Type}."));
                 return;
             }
 
@@ -48,6 +50,32 @@ namespace Microsoft.Docs.Build
                         }
                     }
                     break;
+            }
+        }
+
+        private static bool TypeMatches(JsonSchemaType schemaType, JTokenType tokenType)
+        {
+            switch (schemaType)
+            {
+                case JsonSchemaType.Array:
+                    return tokenType == JTokenType.Array;
+                case JsonSchemaType.Boolean:
+                    return tokenType == JTokenType.Boolean;
+                case JsonSchemaType.Integer:
+                    return tokenType == JTokenType.Integer;
+                case JsonSchemaType.None:
+                    return tokenType == JTokenType.None;
+                case JsonSchemaType.Null:
+                    return tokenType == JTokenType.Null;
+                case JsonSchemaType.Number:
+                    return tokenType == JTokenType.Integer || tokenType == JTokenType.Float;
+                case JsonSchemaType.Object:
+                    return tokenType == JTokenType.Object;
+                case JsonSchemaType.String:
+                    return tokenType == JTokenType.String || tokenType == JTokenType.Uri ||
+                           tokenType == JTokenType.Date || tokenType == JTokenType.TimeSpan;
+                default:
+                    return false;
             }
         }
     }

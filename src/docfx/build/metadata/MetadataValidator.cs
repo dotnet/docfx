@@ -24,10 +24,6 @@ namespace Microsoft.Docs.Build
                 {
                     errors.Add(Errors.InvalidMetadataType(JsonUtility.GetSourceInfo(property.Value), property.Name));
                 }
-                else if (!IsValidMetadataType(token))
-                {
-                    errors.Add(Errors.InvalidMetadataType(JsonUtility.GetSourceInfo(token), key));
-                }
             }
             return errors;
         }

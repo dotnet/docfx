@@ -296,12 +296,6 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Info, "invalid-metadata-type", $"Metadata '{name}' can only be a scalar value or string array", source);
 
         /// <summary>
-        /// Metadata value must be scalar or arrays of scalars.
-        /// </summary>
-        public static Error InvalidMetadataType(SourceInfo source, string name)
-            => new Error(ErrorLevel.Info, "invalid-metadata-type", $"Metadata '{name}' can only be a scalar value or string array", source);
-
-        /// <summary>
         /// Failed to compute specific info of a commit.
         /// </summary>
         public static Error GitLogError(string repoPath, int errorCode)
