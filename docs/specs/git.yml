@@ -36,10 +36,10 @@ outputs:
           { "name": "bob", "profile_url": "https://github.com/bob", "display_name": "Bob", "id": "2" },
           { "name": "alice", "profile_url": "https://github.com/alice", "display_name": "Alice", "id": "1" }
         ],
-        "update_at": "01/01/2018",
-        "updated_at_date_time": "2018-01-01T00:00:00"
+        "update_at": "10/30/2018",
+        "updated_at_date_time": "2018-10-30T00:00:00"
       },
-      "updated_at": "2018-01-01 12:00 AM"
+      "updated_at": "2018-10-30 12:00 AM"
     }
 ---
 # Show git contribution info when userProfile is set to relative file path
@@ -87,7 +87,7 @@ outputs:
           { "name": "alice", "profile_url": "https://github.com/alice", "display_name": "Alice", "id": "1" }
         ]
       },
-      "updated_at": "2018-01-01 12:00 AM"
+      "updated_at": "2018-10-30 12:00 AM"
     }
 ---
 # Specify invalid author in YAML header should log warning
@@ -354,7 +354,7 @@ repos:
 outputs:
   docs/index.json: |
     {
-      "updated_at": "2018-01-01 12:00 AM",
+      "updated_at": "2018-10-30 12:00 AM",
     }
 ---
 # Use commit build time as updated_at when `updateTimeAsCommitBuildTime` is true
@@ -372,7 +372,7 @@ cache:
 outputs:
   docs/index.json: |
     {
-      "updated_at": "2019-04-23T00:00:00Z",
+      "updated_at": "2019-04-23 12:00 AM",
     }
 ---
 # Support git submodule
@@ -512,7 +512,7 @@ outputs:
           { "name": "OsmondJiang", "profile_url": "https://github.com/OsmondJiang", "display_name": "osmondjiang", "id": "19990166" }
         ]
       },
-      "updated_at": "2018-01-01 12:00 AM"
+      "updated_at": "2018-10-30 12:00 AM"
     }
 ---
 # Author and contributors will not be resolved when `github.resolveUsers` == false
@@ -556,5 +556,5 @@ outputs:
         "!author_info": null,
         "!contributors": null,
       },
-      "updated_at": "2018-01-01 12:00 AM"
+      "updated_at": "2018-10-30 12:00 AM"
     }
