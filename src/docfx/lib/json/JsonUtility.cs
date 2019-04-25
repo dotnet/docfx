@@ -87,28 +87,19 @@ namespace Microsoft.Docs.Build
         public static SourceInfo<string> ReadSchema(TextReader reader, string file)
         {
             var json = new JsonTextReader(reader);
-            SkipNull();
 
-            if (json.Value is string str && str == "$schema")
+            if (json.Read() && json.TokenType == JsonToken.StartObject)
             {
-                if (json.Read() && json.Value is string schema)
+                if (json.Read() && json.TokenType == JsonToken.PropertyName && json.Value is string str && str == "$schema")
                 {
-                    var lineInfo = (IJsonLineInfo)json;
-                    return new SourceInfo<string>(schema, new SourceInfo(file, lineInfo.LineNumber, lineInfo.LinePosition));
+                    if (json.Read() && json.Value is string schema)
+                    {
+                        var lineInfo = (IJsonLineInfo)json;
+                        return new SourceInfo<string>(schema, new SourceInfo(file, lineInfo.LineNumber, lineInfo.LinePosition));
+                    }
                 }
             }
-            else
-            {
-                return new SourceInfo<string>(null, new SourceInfo(file, ((IJsonLineInfo)json).LineNumber, ((IJsonLineInfo)json).LinePosition));
-            }
-            return default;
-
-            void SkipNull()
-            {
-                while (json.Value is null && json.Read())
-                {
-                }
-            }
+            return new SourceInfo<string>(null, new SourceInfo(file, 1, 1));
         }
 
         public static IEnumerable<string> GetPropertyNames(Type type)
