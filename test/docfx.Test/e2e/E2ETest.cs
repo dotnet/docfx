@@ -31,9 +31,6 @@ namespace Microsoft.Docs.Build
             // should have, maybe sometimes not
             "download-failed", "invalid-locale",
 
-            // add line info for the actual start
-            "yaml-header-not-object", "schema-not-found",
-
             // show multiple errors with line info
             "publish-url-conflict", "output-path-conflict", "uid-conflict", "redirection-conflict",
             "redirected-id-conflict", "circular-reference", "moniker-overlapping", "empty-monikers",
