@@ -450,3 +450,30 @@ outputs:
   build.log: |
     ["info","invalid-metadata-type","Metadata 'key1' can only be a scalar value or string array","docfx.yml",2,9]
     ["info","invalid-metadata-type","Metadata 'key2' can only be a scalar value or string array","docfx.yml",6,7]
+---
+# Additional metadata validation from external JSON schema
+inputs:
+  docfx.yml: |
+    metadataSchema: schema.json
+    globalMetadata:
+      key1: []
+    fileMetadata:
+      key2:
+        '**/*': XNAGameStudio
+  schema.json: |
+    {
+      "properties":{
+        "key1": { "type": "string" },
+        "key2": { "type": "string", "enum": ["VS", "MSDN"] },
+        "key3": { "type": "integer" }
+      }
+    }
+  a.md: |
+    ---
+    key3: net462
+    ---
+outputs:
+  build.log: |
+    ["error","violate-schema","Expected type String, please input String or type compatible with String.","docfx.yml",3,9]
+    ["error","undefined-value","Value 'XNAGameStudio' is not accepted. Valid values: 'MSDN', 'VS'","docfx.yml",6,13]
+    ["error","violate-schema","Expected type Integer, please input Integer or type compatible with Integer.","a.md",2,7]
