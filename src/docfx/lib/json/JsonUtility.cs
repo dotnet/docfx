@@ -392,7 +392,10 @@ namespace Microsoft.Docs.Build
         internal static JToken SetSourceInfo(JToken token, SourceInfo source)
         {
             token.RemoveAnnotations<SourceInfo>();
-            token.AddAnnotation(source ?? SourceInfo.Empty);
+            if (source != null)
+            {
+                token.AddAnnotation(source);
+            }
             return token;
         }
 
