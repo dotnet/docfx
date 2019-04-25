@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -31,7 +30,6 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(file != null);
 
-            var errors = new List<Error>();
             var result = new JObject();
 
             JsonUtility.Merge(result, _config.GlobalMetadata);
@@ -41,20 +39,22 @@ namespace Microsoft.Docs.Build
             {
                 if (glob(file.FilePath))
                 {
-                    fileMetadata[key] = value;
+                    // Assign a JToken to a property erases line info, so clone here.
+                    // See https://github.com/JamesNK/Newtonsoft.Json/issues/2055
+                    fileMetadata[key] = JsonUtility.DeepClone(value);
+                    JsonUtility.SetSourceInfo(fileMetadata.Property(key), JsonUtility.GetSourceInfo(value));
                 }
             }
             JsonUtility.Merge(result, fileMetadata);
 
             if (yamlHeader != null)
             {
-                errors.AddRange(MetadataValidator.ValidateGlobalMetadata(yamlHeader));
                 JsonUtility.Merge(result, yamlHeader);
             }
 
-            // We are validating against the merged JObject so discard the validation result here.
-            var (_, obj) = JsonUtility.ToObject<T>(result);
-            return (errors, obj);
+            var (errors, metadata) = JsonUtility.ToObject<T>(result);
+            errors.AddRange(MetadataValidator.Validate(result));
+            return (errors, metadata);
         }
     }
 }

@@ -1,11 +1,8 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -13,65 +10,25 @@ namespace Microsoft.Docs.Build
     internal static class MetadataValidator
     {
         private static readonly HashSet<string> s_reservedNames = GetReservedMetadata();
-        private static readonly ConcurrentDictionary<string, Lazy<Type>> s_fileMetadataTypes = new ConcurrentDictionary<string, Lazy<Type>>(StringComparer.OrdinalIgnoreCase);
 
-        public static List<Error> ValidateFileMetadata(JObject metadata)
+        public static List<Error> Validate(JObject metadata)
         {
             var errors = new List<Error>();
-            if (metadata is null)
-                return errors;
-
-            foreach (var (key, token) in metadata)
+            foreach (var property in metadata.Properties())
             {
-                if (s_reservedNames.Contains(key))
+                if (s_reservedNames.Contains(property.Name))
                 {
-                    errors.Add(Errors.ReservedMetadata(JsonUtility.GetSourceInfo(token), key, token.Path));
+                    errors.Add(Errors.ReservedMetadata(JsonUtility.GetSourceInfo(property), property.Name));
                 }
-                else
+                else if (!IsValidMetadataType(property.Value))
                 {
-                    var type = s_fileMetadataTypes.GetOrAdd(
-                       key,
-                       new Lazy<Type>(() => typeof(InputMetadata).GetProperty(key, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance)?.PropertyType));
-                    var values = token as IEnumerable<KeyValuePair<string, JToken>>;
-                    foreach (var (glob, value) in values)
-                    {
-                        if (!IsValidMetadataType(value))
-                        {
-                            errors.Add(Errors.InvalidMetadataType(JsonUtility.GetSourceInfo(token), key));
-                        }
-                        if (type.Value != null && !type.Value.IsInstanceOfType(value))
-                        {
-                            errors.Add(Errors.ViolateSchema(
-                                JsonUtility.GetSourceInfo(value),
-                                $"Expected type {type.Value.Name}, please input string or type compatible with {type.Value.Name}."));
-                        }
-                    }
-                }
-            }
-
-            return errors;
-        }
-
-        public static List<Error> ValidateGlobalMetadata(JObject metadata)
-        {
-            var errors = new List<Error>();
-            if (metadata is null)
-                return errors;
-
-            foreach (var (key, token) in metadata)
-            {
-                if (s_reservedNames.Contains(key))
-                {
-                    errors.Add(Errors.ReservedMetadata(JsonUtility.GetSourceInfo(token), key, token.Path));
+                    errors.Add(Errors.InvalidMetadataType(JsonUtility.GetSourceInfo(property.Value), property.Name));
                 }
                 else if (!IsValidMetadataType(token))
                 {
                     errors.Add(Errors.InvalidMetadataType(JsonUtility.GetSourceInfo(token), key));
                 }
             }
-
-            var (schemaErrors, _) = JsonUtility.ToObject<InputMetadata>(metadata);
-            errors.AddRange(schemaErrors);
             return errors;
         }
 
