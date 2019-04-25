@@ -41,13 +41,16 @@ namespace Microsoft.Docs.Build
 
         // array validation
         [InlineData("{'items': {'type': 'string'}}", "['a','b']", "")]
-        [InlineData("{'items': {'type': 'boolean'}}", "['a','b']", "")]
-        public void TestJsonSchemaValidation(string schema, string json, string expected)
+        [InlineData("{'items': {'type': 'boolean'}}", "['a','b']",
+            @"['error','violate-schema','Expected type Boolean, please input Boolean or type compatible with Boolean.','file',1,4]
+              ['error','violate-schema','Expected type Boolean, please input Boolean or type compatible with Boolean.','file',1,8]")]
+        public void TestJsonSchemaValidation(string schema, string json, string expectedErrors)
         {
             var errors = JsonSchemaValidation.Validate(
                 JsonUtility.Deserialize<JsonSchema>(schema.Replace('\'', '"')),
                 JsonUtility.Parse(json.Replace('\'', '"'), "file").Item2);
 
+            var expected = string.Join('\n', expectedErrors.Split('\n').Select(err => err.Trim()));
             var actual = string.Join('\n', errors.Select(err => err.ToString()).OrderBy(err => err).ToArray()).Replace('"', '\'');
             Assert.Equal(expected, actual);
         }

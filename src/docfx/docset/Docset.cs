@@ -251,8 +251,12 @@ namespace Microsoft.Docs.Build
 
         private JsonSchema LoadMetadataSchema(Config config)
         {
-            var (_, content, _) = RestoreMap.GetRestoredFileContent(this, config.MetadataSchema);
-            return JsonUtility.Deserialize<JsonSchema>(content);
+            if (!string.IsNullOrEmpty(config.MetadataSchema))
+            {
+                var (_, content, _) = RestoreMap.GetRestoredFileContent(this, config.MetadataSchema);
+                return JsonUtility.Deserialize<JsonSchema>(content);
+            }
+            return new JsonSchema();
         }
 
         private HashSet<Document> CreateBuildScope(IEnumerable<Document> redirections, Func<string, bool> glob)
