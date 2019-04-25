@@ -450,3 +450,13 @@ outputs:
   build.log: |
     ["info","invalid-metadata-type","Metadata 'key1' can only be a scalar value or string array","docfx.yml",2,9]
     ["info","invalid-metadata-type","Metadata 'key2' can only be a scalar value or string array","docfx.yml",6,7]
+---
+# Metadata should work for fields marked with SourceInfo<T>
+inputs:
+  docfx.yml: |
+    fileMetadata:
+      author:
+        '**/*': name
+  a.md:
+outputs:
+  a.json:
