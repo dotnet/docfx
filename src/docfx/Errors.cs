@@ -352,6 +352,12 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Error, "violate-schema", message, source);
 
         /// <summary>
+        /// Schema document with violate content type/value against predefined models(not syntax error).
+        /// </summary>
+        public static Error UndefinedValue(SourceInfo source, object value, IEnumerable<object> validValues)
+            => new Error(ErrorLevel.Error, "undefined-value", $"Value '{value}' is not accepted. Valid values: {Join(validValues)}", source);
+
+        /// <summary>
         /// Used unknown YamlMime.
         /// Examples:
         ///   - forgot to define schema in schema document(yml)

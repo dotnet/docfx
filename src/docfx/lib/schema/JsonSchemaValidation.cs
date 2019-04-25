@@ -30,14 +30,17 @@ namespace Microsoft.Docs.Build
                 case JValue scalar:
                     if (schema.Enum.Count > 0 && !schema.Enum.Contains(scalar))
                     {
-                        errors.Add(Errors.ViolateSchema(JsonUtility.GetSourceInfo(token), ""));
+                        errors.Add(Errors.UndefinedValue(JsonUtility.GetSourceInfo(token), scalar, schema.Enum));
                     }
                     break;
 
                 case JArray array:
-                    foreach (var item in array)
+                    if (schema.Items != null)
                     {
-                        ValidateCore(schema.Items, token, errors);
+                        foreach (var item in array)
+                        {
+                            ValidateCore(schema.Items, item, errors);
+                        }
                     }
                     break;
 
@@ -63,8 +66,6 @@ namespace Microsoft.Docs.Build
                     return tokenType == JTokenType.Boolean;
                 case JsonSchemaType.Integer:
                     return tokenType == JTokenType.Integer;
-                case JsonSchemaType.None:
-                    return tokenType == JTokenType.None;
                 case JsonSchemaType.Null:
                     return tokenType == JTokenType.Null;
                 case JsonSchemaType.Number:
@@ -75,7 +76,7 @@ namespace Microsoft.Docs.Build
                     return tokenType == JTokenType.String || tokenType == JTokenType.Uri ||
                            tokenType == JTokenType.Date || tokenType == JTokenType.TimeSpan;
                 default:
-                    return false;
+                    return true;
             }
         }
     }
