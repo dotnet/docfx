@@ -133,8 +133,7 @@ commands:
   - build --no-restore
 inputs:
   docfx.yml: |
-    contribution:
-      gitCommitsTime: https://docs.microsoft.com/bad-url
+    monikerDefinition: https://docs.microsoft.com/bad-url
 outputs:
   build.log: |
     ["error","need-restore","Cannot find dependency 'https://docs.microsoft.com/bad-url', did you forget to run `docfx restore`?"]
@@ -142,11 +141,10 @@ outputs:
 # Show error when dependent file can't be found
 inputs:
   docfx.yml: |
-    contribution:
-      gitCommitsTime: a.json
+    monikerDefinition: a.json
 outputs:
   build.log: |
-    ["error","file-not-found","*",2,19]
+    ["error","file-not-found","*",1,20]
 ---
 # Restore longpath repo
 inputs:

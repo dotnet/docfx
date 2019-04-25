@@ -82,6 +82,9 @@ namespace Microsoft.Docs.Build
 
         public bool Write(Error error, bool force = false)
         {
+            if (error is null)
+                return false;
+
             var level = !force && _config != null && _config.Rules.TryGetValue(error.Code, out var overrideLevel)
                 ? overrideLevel
                 : error.Level;

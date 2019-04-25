@@ -242,11 +242,8 @@ inputs:
       - docs/b.yml
     gitHub:
       userCache: docs/d.json
-    contribution:
-      gitCommitsTime: docs/c.json
   docs/a.yml:
   docs/b.yml:
-  docs/c.json: '{}'
   docs/d.json: '{}'
 outputs:
 ---
@@ -420,6 +417,30 @@ inputs:
   a.md:
 outputs:
   a.json:
+---
+# branch & locale overwrite with null
+commands:
+  - build --locale zh-cn
+repo: https://github.com/docascode/docfx-test-dependencies#master
+inputs:
+  docfx.yml: |
+    files:
+      - a.md
+      - b.png
+    output:
+      copyResources: false
+    localization:
+      defaultLocale: "zh-cn"
+    "locales: [zh-cn]":
+      output:
+        copyResources:
+  a.md:
+  b.png:
+outputs:
+  a.json:
+  b.png:
+  build.log: |
+    ["info","null-value","'copyResources' contains null value","docfx.yml",10,5]
 ---
 # invalid overwrite config
 commands:

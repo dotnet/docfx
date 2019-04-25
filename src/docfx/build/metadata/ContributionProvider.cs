@@ -14,7 +14,9 @@ namespace Microsoft.Docs.Build
     {
         private readonly GitHubUserCache _gitHubUserCache;
 
-        private readonly Dictionary<string, DateTime> _updateTimeByCommit = new Dictionary<string, DateTime>();
+        // TODO: support CRR and multiple repositories
+        // TODO: support live SXS branch
+        private readonly CommitBuildTimeProvider _commitBuildTimeProvider;
 
         private readonly GitCommitProvider _gitCommitProvider;
 
@@ -24,8 +26,8 @@ namespace Microsoft.Docs.Build
 
             _gitHubUserCache = gitHubUserCache;
             _gitCommitProvider = gitCommitProvider;
-
-            LoadCommitsTime(docset);
+            _commitBuildTimeProvider = docset.Repository != null && docset.Config.UpdateTimeAsCommitBuildTime
+                ? new CommitBuildTimeProvider(docset.Repository) : null;
         }
 
         public async Task<(List<Error> errors, ContributionInfo contributionInfo)> GetContributionInfo(Document document, SourceInfo<string> authorName)
@@ -46,11 +48,21 @@ namespace Microsoft.Docs.Build
             var emails = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             var userIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             var updatedDateTime = GetUpdatedAt(document, commits);
+            var contributionInfo = updatedDateTime != default
+                ? new ContributionInfo
+                {
+                    Contributors = contributors,
+                    UpdateAt = updatedDateTime.ToString(document.Docset.Locale == "en-us" ? "MM/dd/yyyy" : document.Docset.Culture.DateTimeFormat.ShortDatePattern),
+                    UpdatedAtDateTime = updatedDateTime,
+                }
+                : null;
 
-            var resolveGitHubUsers =
-                (GitHubUtility.TryParse(repo?.Remote, out var gitHubOwner, out var gitHubRepoName) ||
-                GitHubUtility.TryParse(document.Docset.Config.Contribution.Repository, out gitHubOwner, out gitHubRepoName)) &&
-                document.Docset.Config.GitHub.ResolveUsers;
+            if (!(GitHubUtility.TryParse(repo?.Remote, out var gitHubOwner, out var gitHubRepoName) ||
+                GitHubUtility.TryParse(document.Docset.Config.Contribution.Repository, out gitHubOwner, out gitHubRepoName)) ||
+                !document.Docset.Config.GitHub.ResolveUsers)
+            {
+                return (errors, contributionInfo);
+            }
 
             // Resolve contributors from commits
             if (contributionCommits != null)
@@ -74,24 +86,16 @@ namespace Microsoft.Docs.Build
                 contributors.RemoveAll(c => c.Id == author.Id);
             }
 
-            return (errors, updatedDateTime != default
-                ? new ContributionInfo
-                {
-                    Contributors = contributors,
-                    /* it's a workaround to produce stable `update_at` in different platform for en-us content */
-                    UpdateAt = updatedDateTime.ToString(document.Docset.Locale == "en-us" ? "MM/dd/yyyy" : document.Docset.Culture.DateTimeFormat.ShortDatePattern),
-                    UpdatedAtDateTime = updatedDateTime,
-                    Author = author,
-                }
-                : null);
+            if (contributionInfo != null)
+            {
+                contributionInfo.Author = author;
+                contributionInfo.Contributors = contributors;
+            }
+
+            return (errors, contributionInfo);
 
             async Task<Contributor> GetContributor(GitCommit commit)
             {
-                if (!resolveGitHubUsers)
-                {
-                    return new Contributor { DisplayName = commit.AuthorName, Id = commit.AuthorEmail };
-                }
-
                 var (error, user) = await _gitHubUserCache.GetByCommit(commit.AuthorEmail, gitHubOwner, gitHubRepoName, commit.Sha);
                 errors.AddIfNotNull(error);
 
@@ -102,13 +106,10 @@ namespace Microsoft.Docs.Build
             {
                 if (!string.IsNullOrEmpty(authorName))
                 {
-                    if (resolveGitHubUsers)
-                    {
-                        // Remove author from contributors if author name is specified
-                        var (error, result) = await _gitHubUserCache.GetByLogin(authorName);
-                        errors.AddIfNotNull(error?.WithSourceInfo(authorName));
-                        return result?.ToContributor();
-                    }
+                    // Remove author from contributors if author name is specified
+                    var (error, result) = await _gitHubUserCache.GetByLogin(authorName);
+                    errors.AddIfNotNull(error?.WithSourceInfo(authorName));
+                    return result?.ToContributor();
                 }
                 else if (contributors.Count > 0)
                 {
@@ -143,7 +144,7 @@ namespace Microsoft.Docs.Build
         {
             if (fileCommits?.Count > 0)
             {
-                return _updateTimeByCommit.TryGetValue(fileCommits[0].Sha, out var timeFromHistory)
+                return _commitBuildTimeProvider != null && _commitBuildTimeProvider.TryGetCommitBuildTime(fileCommits[0].Sha, out var timeFromHistory)
                     ? timeFromHistory
                     : fileCommits[0].Time.UtcDateTime;
             }
@@ -203,16 +204,11 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private void LoadCommitsTime(Docset docset)
+        public void UpdateCommitBuildTime()
         {
-            if (!string.IsNullOrEmpty(docset.Config.Contribution.GitCommitsTime))
+            if (_commitBuildTimeProvider != null)
             {
-                var (_, content, _) = RestoreMap.GetRestoredFileContent(docset, docset.Config.Contribution.GitCommitsTime);
-
-                foreach (var commit in JsonUtility.Deserialize<GitCommitsTime>(content).Commits)
-                {
-                    _updateTimeByCommit.Add(commit.Sha, commit.BuiltAt);
-                }
+                _commitBuildTimeProvider.UpdateAndSaveCache();
             }
         }
 
@@ -225,7 +221,7 @@ namespace Microsoft.Docs.Build
 
             if (AzureRepoUtility.TryParse(remote, out _, out _))
             {
-                return ($"{{repo}}/?path={pathToRepo}&version=GB{{branch}}", $"{{repo}}/?path={pathToRepo}&version=GC{{commit}}");
+                return ($"{{repo}}/?path={pathToRepo}&version=GB{{branch}}&_a=contents", $"{{repo}}/commit/{{commit}}?path={pathToRepo}&_a=contents");
             }
 
             return default;

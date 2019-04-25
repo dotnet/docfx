@@ -11,13 +11,16 @@ namespace Microsoft.Docs.Build
     {
         private static readonly string s_root = GetAppDataRoot();
 
+        // For testing purpose
+        internal static Func<string> GetCachePath;
+
         public static string GitRoot => Path.Combine(s_root, "git2");
 
         public static string DownloadsRoot => Path.Combine(s_root, "downloads2");
 
         public static string MutexRoot => Path.Combine(s_root, "mutex");
 
-        public static string CacheRoot => Path.Combine(s_root, "cache");
+        public static string CacheRoot => GetCachePath?.Invoke() ?? EnvironmentVariable.CachePath ?? Path.Combine(s_root, "cache");
 
         public static string DependencyLockRoot => Path.Combine(s_root, "lock");
 
@@ -46,6 +49,11 @@ namespace Microsoft.Docs.Build
             return Path.Combine(CacheRoot, "commits", HashUtility.GetMd5Hash(remote));
         }
 
+        public static string GetCommitBuildTimePath(string remote, string branch)
+        {
+            return Path.Combine(CacheRoot, "history", $"build_history_{HashUtility.GetMd5Guid(remote)}_{HashUtility.GetMd5Guid(branch)}.json");
+        }
+
         public static string GetGitHubUserCachePath(string url)
         {
             return Path.Combine(CacheRoot, "github-users", PathUtility.UrlToShortName(url));
@@ -56,9 +64,9 @@ namespace Microsoft.Docs.Build
         /// </summary>
         private static string GetGlobalConfigPath()
         {
-            var docfxGlobalConfig = EnvironmentVariable.GlobalConfigPath;
-            var configPath = PathUtility.FindYamlOrJson(Path.Combine(s_root, "docfx"));
-            return string.IsNullOrEmpty(docfxGlobalConfig) ? configPath : Path.GetFullPath(docfxGlobalConfig);
+            return EnvironmentVariable.GlobalConfigPath != null
+                ? Path.GetFullPath(EnvironmentVariable.GlobalConfigPath)
+                : PathUtility.FindYamlOrJson(Path.Combine(s_root, "docfx"));
         }
 
         /// <summary>
@@ -67,11 +75,9 @@ namespace Microsoft.Docs.Build
         /// </summary>
         private static string GetAppDataRoot()
         {
-            var docfxAppData = EnvironmentVariable.AppDataPath;
-
-            return string.IsNullOrEmpty(docfxAppData)
-                ? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".docfx")
-                : Path.GetFullPath(docfxAppData);
+            return EnvironmentVariable.AppDataPath != null
+                ? Path.GetFullPath(EnvironmentVariable.AppDataPath)
+                : Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".docfx");
         }
     }
 }

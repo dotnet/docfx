@@ -1,5 +1,5 @@
 ---
-# Show git contribution info when userProfile & commitsTime is set to URL
+# Show git contribution info when userProfile is set to URL
 repos:
   https://github.com/testowner/testrepo#master-url-cache:
     - author: Charlie
@@ -25,8 +25,6 @@ inputs:
     gitHub:
       userCache: https://raw.githubusercontent.com/docascode/docfx-test-dependencies/master/user_profile.json
       resolveUsers: true
-    contribution:
-      gitCommitsTime: https://raw.githubusercontent.com/docascode/docfx-test-dependencies/master/build_history.json
 outputs:
   docs/index.json: |
     {
@@ -44,7 +42,7 @@ outputs:
       "updated_at": "2018-01-01 12:00 AM"
     }
 ---
-# Show git contribution info when userProfile & commitsTime is set to relative file path
+# Show git contribution info when userProfile is set to relative file path
 repos:
   https://github.com/testowner/testrepo#master-file-cache:
     - author: Charlie
@@ -70,8 +68,6 @@ inputs:
     gitHub:
       userCache: user_profile.json
       resolveUsers: true
-    contribution:
-      gitCommitsTime: build_history.json
   user_profile.json: |
       { "users": [
           {"name": "Alice", "login": "alice", "id": 1, "emails": ["alice@contoso.com"]},
@@ -79,11 +75,6 @@ inputs:
           {"name": "Charlie", "login": "charlie", "id": 3, "emails": ["charlie@contoso.com"]}
         ]
       }
-  build_history.json: |
-    { "commits": [
-        { "sha": "6547e91b51bb7cd49d8fbf71f7c61d14f6a49937", "built_at": "2018-01-01" }
-      ]
-    }
 outputs:
   docs/index.json: |
     {
@@ -354,18 +345,34 @@ outputs:
       "gitcommit": "https://github.com/testowner/testrepo/blob/e662dbc7c5e582a14b863d6a6a82e495d6272f91/docs/index.md",
     }
 ---
-# Use commit's time when gitCommitsTime file not given
+# Use commit's time as updated_at when `updateTimeAsCommitBuildTime` is false
 repos:
   https://github.com/testowner/testrepo#master-time-from-commit:
-    - time: 2018-01-01T00:00:00Z
-      files:
+    - files:
+        docfx.yml:
         docs/index.md: Alice creates this.
-inputs:
-  docfx.yml:
 outputs:
   docs/index.json: |
     {
       "updated_at": "2018-01-01 12:00 AM",
+    }
+---
+# Use commit build time as updated_at when `updateTimeAsCommitBuildTime` is true
+repos:
+  https://github.com/MicrosoftDocs/edge-developer#master:
+    - files:
+        docfx.yml: |
+          updateTimeAsCommitBuildTime: true
+        docs/index.md: Alice creates this.
+cache:
+  history/build_history_0ad81e11-d18b-a417-bd25-94364d004cae_17190aeb-6297-d34d-a48f-a681d3061212.json: |
+    {
+      "commits": [{ "sha": "7e6344c7275cccec2334ca04b73017bdeb7ecc2a", "built_at": "2019-04-23T00:00:00Z" }]
+    }
+outputs:
+  docs/index.json: |
+    {
+      "updated_at": "2019-04-23T00:00:00Z",
     }
 ---
 # Support git submodule
@@ -450,9 +457,9 @@ outputs:
   docs/index.json: |
     {
       "content_git_url":"https://github.com/docascode/git-url/blob/master/docs/index.md",
-      "original_content_git_url":"https://docascode.visualstudio.com/git-url/_git/a/?path=docs/index.md&version=GBmaster",
-      "original_content_git_url_template":"{repo}/?path=docs/index.md&version=GB{branch}",
-      "gitcommit":"https://docascode.visualstudio.com/git-url/_git/a/?path=docs/index.md&version=GC73d1bc95f9df03e553c39cf8c685df09af8d5297"
+      "original_content_git_url":"https://docascode.visualstudio.com/git-url/_git/a/?path=docs/index.md&version=GBmaster&_a=contents",
+      "original_content_git_url_template":"{repo}/?path=docs/index.md&version=GB{branch}&_a=contents",
+      "gitcommit":"https://docascode.visualstudio.com/git-url/_git/a/commit/73d1bc95f9df03e553c39cf8c685df09af8d5297?path=docs/index.md&_a=contents"
     }
 ---
 # Show git contribution info for azure repo
@@ -484,7 +491,6 @@ inputs:
       authToken: {GITHUB_ACCESS_TOKEN}
     contribution:
       repository: https://github.com/docascode/contribution-test
-      gitCommitsTime: build_history.json
   user_profile.json: |
       { "users": [
           {"name": "Alice", "login": "alice", "id": 1, "emails": ["alice@contoso.com"]},
@@ -492,11 +498,6 @@ inputs:
           {"name": "Charlie", "login": "charlie", "id": 3, "emails": ["charlie@contoso.com"]}
         ]
       }
-  build_history.json: |
-    { "commits": [
-        { "sha": "bc09224561ce6d13411cb48506b1900d6c6b94cb", "built_at": "2018-01-01" }
-      ]
-    }
 environments:
   - GITHUB_ACCESS_TOKEN
 outputs:
@@ -510,6 +511,50 @@ outputs:
           { "name": "bob", "profile_url": "https://github.com/bob", "display_name": "Bob", "id": "2" },
           { "name": "OsmondJiang", "profile_url": "https://github.com/OsmondJiang", "display_name": "osmondjiang", "id": "19990166" }
         ]
+      },
+      "updated_at": "2018-01-01 12:00 AM"
+    }
+---
+# Author and contributors will not be resolved when `github.resolveUsers` == false
+repos:
+  https://github.com/testowner/testrepo#not-resolve:
+    - author: Charlie
+      email: charlie@contoso.com
+      files:
+        docs/index.md: |
+          ---
+          author: charlie
+          ---
+          Alice creates this. Bob updates this. Charlie becomes author.
+    - author: Bob 
+      email: bob@contoso.com
+      files:
+        docs/index.md: |
+          Alice creates this. Bob updates this.
+    - author: Alice 
+      email: alice@contoso.com
+      files:
+        docs/index.md: |
+          Alice creates this.
+inputs:
+  docfx.yml: |
+    gitHub:
+      userCache: user_profile.json
+      resolveUsers: false
+  user_profile.json: |
+      { "users": [
+          {"name": "Alice", "login": "alice", "id": 1, "emails": ["alice@contoso.com"]},
+          {"name": "Bob", "login": "bob", "id": 2, "emails": ["bob@contoso.com"]},
+          {"name": "Charlie", "login": "charlie", "id": 3, "emails": ["charlie@contoso.com"]}
+        ]
+      }
+outputs:
+  docs/index.json: |
+    {
+      "_op_gitContributorInformation": 
+      {
+        "!author_info": null,
+        "!contributors": null,
       },
       "updated_at": "2018-01-01 12:00 AM"
     }

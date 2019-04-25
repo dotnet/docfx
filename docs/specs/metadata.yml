@@ -26,6 +26,21 @@ outputs:
   build.log: |
     ["info","null-value","'ms.custom-metadata' contains null value","docs/a.md",2,1]
 ---
+# Overwrite global metadata with null in yaml header
+inputs:
+  docfx.yml: |
+    globalMetadata:
+      ms.custom-metadata: not-null
+  a.md: |
+    ---
+    ms.custom-metadata:
+    ---
+outputs:
+  a.json: |
+    { "ms.custom-metadata": null }
+  build.log: |
+    ["info","null-value","'ms.custom-metadata' contains null value","a.md",2,1]
+---
 # Report error for invalid yaml header value type
 inputs:
   docfx.yml:
@@ -36,6 +51,7 @@ inputs:
 outputs:
   build.log: |
     ["error","violate-schema","Expected type String, please input String or type compatible with String.","docs/a.md",2,9]
+    ["info","invalid-metadata-type","Metadata 'locale' can only be a scalar value or string array","docs/a.md",2,9]
 ---
 # Report error for invalid yaml header value type as array
 inputs:
@@ -166,8 +182,8 @@ inputs:
       "": /docfx/test
 outputs:
   build.log: |
-    ["error","redirection-is-empty","The key or value of redirection 'sccm/mdm/index.md: ' is null or empty","docfx.yml"]
-    ["error","redirection-is-empty","The key or value of redirection ': /docfx/test' is null or empty","docfx.yml"]
+    ["error","redirection-is-empty","The key or value of redirection 'sccm/mdm/index.md: ' is null or empty","docfx.yml",2,22]
+    ["error","redirection-is-empty","The key or value of redirection ': /docfx/test' is null or empty","docfx.yml",3,7]
 ---
 # generate document id with depot mapping and directory mapping
 # id = hash({mapped_depot_name}|{mapped_file_in_docset})
@@ -418,3 +434,17 @@ outputs:
   a.json: |
     breadcrumb_path: breadcrumbs/toc.json
   breadcrumbs/toc.json:
+---
+# Metadata value must be scalar or scalar array
+inputs:
+  docfx.yml: |
+    globalMetadata:
+      key1: {}
+    fileMetadata:
+      key2:
+        '**/*':
+          - a: 1
+outputs:
+  build.log: |
+    ["info","invalid-metadata-type","Metadata 'key1' can only be a scalar value or string array","docfx.yml",2,9]
+    ["info","invalid-metadata-type","Metadata 'key2' can only be a scalar value or string array","docfx.yml",5,5]
