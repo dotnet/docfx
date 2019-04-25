@@ -62,18 +62,23 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Fast pass to read MIME from $schema attribute.
         /// </summary>
-        public static (IJsonLineInfo lineInfo, string mime) ReadMime(TextReader reader)
+        public static SourceInfo<string> ReadMime(TextReader reader, string file)
         {
-            var (lineInfo, schema) = ReadSchema(reader);
-            if (schema is null)
-                return (lineInfo, null);
+            var schema = ReadSchema(reader, file);
+            if (schema?.Value is null)
+                return schema;
 
             // TODO: be more strict
-            var mime = schema.Split('/').LastOrDefault();
+            var mime = schema.Value.Split('/').LastOrDefault();
             if (mime != null)
-                return (lineInfo, Path.GetFileNameWithoutExtension(schema));
-
-            return (lineInfo, null);
+            {
+                schema.Value = Path.GetFileNameWithoutExtension(schema);
+            }
+            else
+            {
+                schema.Value = null;
+            }
+            return schema;
         }
 
         /// <summary>
@@ -81,20 +86,31 @@ namespace Microsoft.Docs.Build
         /// $schema must be the first attribute in the root object.
         /// Assume input is a valid JSON. Bad input will be processed through Json.NET
         /// </summary>
-        public static (IJsonLineInfo lineInfo, string schema) ReadSchema(TextReader reader)
+        public static SourceInfo<string> ReadSchema(TextReader reader, string file)
         {
             var json = new JsonTextReader(reader);
-            while (json.Read())
+            SkipNull();
+
+            if (json.Value is string str && str == "$schema")
             {
-                if (json.Value is string str && str == "$schema")
+                if (json.Read() && json.Value is string schema)
                 {
-                    if (json.Read() && json.Value is string schema)
-                    {
-                        return (json, schema);
-                    }
+                    var lineInfo = (IJsonLineInfo)json;
+                    return new SourceInfo<string>(schema, new SourceInfo(file, lineInfo.LineNumber, lineInfo.LinePosition));
                 }
             }
+            else
+            {
+                return new SourceInfo<string>(null, new SourceInfo(file, ((IJsonLineInfo)json).LineNumber, ((IJsonLineInfo)json).LinePosition));
+            }
             return default;
+
+            void SkipNull()
+            {
+                while (json.Value is null && json.Read())
+                {
+                }
+            }
         }
 
         public static IEnumerable<string> GetPropertyNames(Type type)

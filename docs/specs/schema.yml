@@ -35,9 +35,15 @@ inputs:
   docfx.yml:
   docs/a.yml: |
     title: my title
+  docs/b.json: |
+    {
+      "a": 1,
+      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/LandingData.json"
+    }
 outputs:
   build.log: |
    ["error","schema-not-found","Unknown schema ''","docs/a.yml",1,1]
+   ["error","schema-not-found","Unknown schema ''","docs/b.json",2,6]
 ---
 # Fallback to documentType when yaml mime is YamlDocument
 inputs:
