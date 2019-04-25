@@ -139,11 +139,7 @@ outputs:
         "document_version_independent_id": "92a5a770-f05f-b8bb-81c9-a8d786a9e608",
         "_op_gitContributorInformation": {
           "contributors": [],
-          "author": {
-            "display_name": "docfx",
-            "id": "docfx@microsoft.com",
-            "profile_url": null
-          }
+          "updated_at_date_time": "2018-10-30T00:00:00Z"
         },
         "content_git_url": "https://github.com/a/rawmetadata/blob/master/c.md",
         "gitcommit": "https://github.com/a/rawmetadata/blob/ff3949c8ae50dd622cd7c67952c8b020c93636a6/c.md",
@@ -227,8 +223,8 @@ inputs:
 outputs:
   docs/a.json:
   build.log: |
-    ["warning","reserved-metadata","Metadata 'content_type' is reserved by docfx, remove this metadata: 'fileMetadata.content_type'","docfx.yml",3,5]
-    ["warning","reserved-metadata","Metadata 'ms.contentlang' is reserved by docfx, remove this metadata: '['ms.contentlang']'","docs/a.md",2,17]
+    ["warning","reserved-metadata","Metadata 'content_type' is reserved by docfx, remove this metadata","docfx.yml",3,16]
+    ["warning","reserved-metadata","Metadata 'ms.contentlang' is reserved by docfx, remove this metadata","docs/a.md",2,1]
 ---
 # Support metadata at root level for landing data
 commands:

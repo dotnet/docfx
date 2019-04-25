@@ -242,11 +242,8 @@ inputs:
       - docs/b.yml
     gitHub:
       userCache: docs/d.json
-    contribution:
-      gitCommitsTime: docs/c.json
   docs/a.yml:
   docs/b.yml:
-  docs/c.json: '{}'
   docs/d.json: '{}'
 outputs:
 ---
@@ -488,6 +485,7 @@ inputs:
         docs/**: 
           - 1
           - 2
+  docs/a.md:
 outputs:
   build.log: |
-    ["error","violate-schema","Expected type String, please input string or type compatible with String.","docfx.yml",4,7]
+    ["error","violate-schema","Expected type String, please input String or type compatible with String.","docfx.yml",4,7]

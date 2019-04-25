@@ -852,7 +852,7 @@ outputs:
   docs/a.json: |
     {"content":"<p>sxs content\n<a href=\"b\">link to b</a></p>\n<p><a href=\"a\">link to a</a></p>\n", "bilingual": true}
 ---
-# bilingual page's contributor info is extracted from non-sxs branch 
+# bilingual page's contributor info is extracted from non-sxs branch
 # loc repo:
 #   loc-bilingual branch(sxs branch):
 #     zh-cn/docs/a.md(modified by A and B)
@@ -870,6 +870,7 @@ repos:
             bilingual: true
           gitHub:
             userCache: github-user.json
+            resolveUsers: true
         github-user.json: |
           { "users": [
               {"name": "Alice", "login": "alice", "id": 1, "emails": ["alice@contoso.com"]},
@@ -893,7 +894,7 @@ repos:
       email: terry@contoso.com
 outputs:
   docs/a.json: |
-    {"author_info":{"display_name":"Terry","id": "terry@contoso.com"},"contributors":[{"display_name":"Bob","id":"bob@contoso.com"}],"bilingual": true}
+    {"author_info":{"display_name":"Terry","id": "3"},"contributors":[{"display_name":"Bob","id":"2"}],"bilingual": true}
 ---
 # bilingual page's `gitcommit` url follows sxs content's commit history
 commands:
@@ -1098,14 +1099,10 @@ repos:
   https://github.com/buildhistory/a:
     - files:
         docfx.yml: |
-          contribution:
-            gitCommitsTime: build_history.json
+          monikerDefinition: monikers.json
         docs/a.md:
-        build_history.json: |
-          { "commits": [
-              { "sha": "6547e91b51bb7cd49d8fbf71f7c61d14f6a49937", "built_at": "2018-01-01" }
-            ]
-          }
+        monikers.json: |
+          {}
   https://github.com/buildhistory/a.zh-cn:
     - files:
         docs/a.md:
