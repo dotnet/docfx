@@ -62,7 +62,7 @@ namespace Microsoft.Docs.Build
         {
             var output = new Output(outputPath);
             var cache = new Cache();
-            var metadataProvider = new MetadataProvider(docset.Config);
+            var metadataProvider = new MetadataProvider(docset);
             var monikerProvider = new MonikerProvider(docset);
             var gitHubUserCache = GitHubUserCache.Create(docset);
             var gitCommitProvider = new GitCommitProvider();
