@@ -28,15 +28,15 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Tests
     public class SchemaDrivenProcessorTest : TestBase
     {
         private const string SpecPath = @"TestData\specs\docfx_document_schema.md";
-        private static Regex InputMatcher = new Regex(@"```(yml|yaml)\s*(### YamlMime:[\s\S]*?)\s*```", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-        private static Regex SchemaMatcher = new Regex(@"```json\s*(\{\s*""\$schema""[\s\S]*?)\s*```", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex InputMatcher = new Regex(@"```(yml|yaml)\s*(### YamlMime:[\s\S]*?)\s*```", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex SchemaMatcher = new Regex(@"```json\s*(\{\s*""\$schema""[\s\S]*?)\s*```", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-        private string _outputFolder;
-        private string _inputFolder;
-        private string _templateFolder;
-        private FileCollection _defaultFiles;
-        private ApplyTemplateSettings _applyTemplateSettings;
-        private TemplateManager _templateManager;
+        private readonly string _outputFolder;
+        private readonly string _inputFolder;
+        private readonly string _templateFolder;
+        private readonly FileCollection _defaultFiles;
+        private readonly ApplyTemplateSettings _applyTemplateSettings;
+        private readonly TemplateManager _templateManager;
 
         private const string RawModelFileExtension = ".raw.json";
 
@@ -235,7 +235,9 @@ File.ReadAllLines(outputFilePath).Where(s => !string.IsNullOrWhiteSpace(s)).Sele
             {
                 // arrange
                 var schemaFile = CreateFile("template/schemas/mref.test.schema.json", File.ReadAllText("TestData/schemas/mref.test.schema.json"), _templateFolder);
-                var templateXref = CreateFile("template/partials/overview.tmpl", @"{{name}}:{{{summary}}}", _templateFolder);
+                var templateXref = CreateFile(
+                    "template/partials/overview.tmpl", @"{{name}}:{{{summary}}}|{{#boolProperty}}{{intProperty}}{{/boolProperty}}|{{#monikers}}<span>{{.}}</span>{{/monikers}}", 
+                    _templateFolder);
                 var templateFile = CreateFile("template/ManagedReference.html.tmpl", @"
 {{#items}}
 {{#children}}
@@ -259,7 +261,7 @@ File.ReadAllLines(outputFilePath).Where(s => !string.IsNullOrWhiteSpace(s)).Sele
                 var xrefmap = YamlUtility.Deserialize<XRefMap>(xrefspec);
                 Assert.Equal(2, xrefmap.References.Count);
                 Assert.Equal(8, xrefmap.References[0].Keys.Count);
-                Assert.Equal(7, xrefmap.References[1].Keys.Count);
+                Assert.Equal(10, xrefmap.References[1].Keys.Count);
 
                 Assert.Equal("ICat", xrefmap.References[0].Name);
                 Assert.Equal("CatLibrary.ICat.CatLibrary.ICatExtension.Sleep(System.Int64)", xrefmap.References[0]["extensionMethods/0"]);
@@ -273,7 +275,7 @@ File.ReadAllLines(outputFilePath).Where(s => !string.IsNullOrWhiteSpace(s)).Sele
                 Assert.Equal($@"
 eat:<p>eat event of cat. Every cat must implement this event.
 This method is within <a class=""xref"" href=""CatLibrary.ICat.html"">ICat</a></p>
-".Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None),
+|666|<span>net48</span><span>netstandard2_0</span>".Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None),
                     outputFileContent);
             }
         }
