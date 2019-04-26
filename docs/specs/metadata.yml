@@ -435,49 +435,6 @@ outputs:
     breadcrumb_path: breadcrumbs/toc.json
   breadcrumbs/toc.json:
 ---
-# Metadata value must be scalar or scalar array
-inputs:
-  docfx.yml: |
-    globalMetadata:
-      key1: {}
-    fileMetadata:
-      key2:
-        '**/*':
-          - a: 1
-  a.md:
-outputs:
-  a.json:
-  build.log: |
-    ["info","invalid-metadata-type","Metadata 'key1' can only be a scalar value or string array","docfx.yml",2,9]
-    ["info","invalid-metadata-type","Metadata 'key2' can only be a scalar value or string array","docfx.yml",6,7]
----
-# Additional metadata validation from external JSON schema
-inputs:
-  docfx.yml: |
-    metadataSchema: schema.json
-    globalMetadata:
-      key1: []
-    fileMetadata:
-      key2:
-        '**/*': XNAGameStudio
-  schema.json: |
-    {
-      "properties":{
-        "key1": { "type": "string" },
-        "key2": { "type": "string", "enum": ["VS", "MSDN"] },
-        "key3": { "type": "integer" }
-      }
-    }
-  a.md: |
-    ---
-    key3: net462
-    ---
-outputs:
-  build.log: |
-    ["error","unexpected-type","Expect type 'String' but got 'Array'","docfx.yml",3,9]
-    ["error","undefined-value","Value 'XNAGameStudio' is not accepted. Valid values: 'MSDN', 'VS'","docfx.yml",6,13]
-    ["error","unexpected-type","Expect type 'Integer' but got 'String'","a.md",2,7]
----
 # Metadata should work for fields marked with SourceInfo<T>
 inputs:
   docfx.yml: |
