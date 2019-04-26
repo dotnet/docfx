@@ -5,7 +5,6 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
 {
     using System.Collections.Immutable;
     using System.IO;
-    using System.Web;
 
     using Microsoft.DocAsCode.Build.Common;
     using Microsoft.DocAsCode.Common;
@@ -13,11 +12,6 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
     using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.Plugins;
 
-    using Newtonsoft.Json;
-
-    /// <summary>
-    /// Base document processor for table of contents.
-    /// </summary>
     public abstract class TocDocumentProcessorBase : DisposableDocumentProcessor
     {
         private static readonly char[] QueryStringOrAnchor = new[] { '#', '?' };
@@ -137,11 +131,11 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
                         item.Name = xref.Name;
                     }
 
-                    if (string.IsNullOrEmpty(item.NameForCSharp) && xref.TryGetValue("name.csharp", out string nameForCSharp))
+                    if (string.IsNullOrEmpty(item.NameForCSharp) && xref.TryGetStringValue("name.csharp", out var nameForCSharp))
                     {
                         item.NameForCSharp = nameForCSharp;
                     }
-                    if (string.IsNullOrEmpty(item.NameForVB) && xref.TryGetValue("name.vb", out string nameForVB))
+                    if (string.IsNullOrEmpty(item.NameForVB) && xref.TryGetStringValue("name.vb", out var nameForVB))
                     {
                         item.NameForVB = nameForVB;
                     }
