@@ -22,7 +22,7 @@ repos:
       schema.json: |
         {
           "properties": {
-            "api_name": { "htmlMetadataName": "APIName" }
+            "api_name": { "htmlMetadataName": "APIName" },
             "conceptual": { "htmlMetadata": false }
           }
         }

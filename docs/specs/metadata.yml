@@ -446,7 +446,6 @@ inputs:
           - a: 1
   a.md:
 outputs:
-  a.json:
   build.log: |
     ["error","invalid-metadata-type","Metadata 'key1' can only be a scalar value or string array","docfx.yml",2,9]
     ["error","invalid-metadata-type","Metadata 'key2' can only be a scalar value or string array","docfx.yml",6,7]
