@@ -111,7 +111,6 @@ With this setting in place, during the OPS build we will loop throug the list an
 After getting all the urls, we will extend the DocFX config with them into `xref` settings, the one in the beginning of this section. Then, DocFX may restore the xref files as usual.
 
 #### Migration
-
 For the existing repositories using DocFX v2, we need to add the xref settings into configuration during the migration to v3.
 - Get the external UIDs used in the repository:
     - v2 help output the list of external UIDs during the build to prepare for v3
@@ -120,6 +119,9 @@ For the existing repositories using DocFX v2, we need to add the xref settings i
       For instance, given `System.String`, by calling `https://xref.docs.microsoft.com/query?uid=System.String`, we can get `"href":"https://docs.microsoft.com/dotnet/api/system.string"`. The first segment after the host will be the base path, which is `dotnet`. 
       > shall we always call xref service in production here?
     - Put the list of unique base paths from the previous step into `xrefBathPath` of `docfx.yml`
+
+#### New users or new uids
+Although the users of the existing respositories do not need to take action on the `xref` configuration, but if they need to use new external UIDs not covered by `xrefBasePath` after the migration to v3, they still need to add the related base path by following the steps under [migration](#migration). And the new users of DocFX v3 should always set the `xrefBasePath` by following the steps under [migration](#migration)
 
 ## Resolve xref
 ### Using `xref` to reference a uid in markdown
