@@ -109,6 +109,7 @@ User should be able to set a string instead of array, DocFX will expand it to an
 With this setting in place, during the OPS build we will loop throug the list and get the urls of all `.xrefmap.json` files under each base path via calling DHS APIs. The reason to do so is, the public URL for each base path only contains 1 file of 1 depot with the highest priority, and there are many depots under 1 base path. These urls should only be valid for a short time.\
 \
 After getting all the urls, we will extend the DocFX config with them into `xref` settings, the one in the beginning of this section. Then, DocFX may restore the xref files as usual.
+> The urls should exclude the current depot of the current buiding repository. Bucause this will be handled as internal UIDs.
 
 #### Migration
 For the existing repositories using DocFX v2, we need to add the xref settings into configuration during the migration to v3.
@@ -122,6 +123,9 @@ For the existing repositories using DocFX v2, we need to add the xref settings i
 
 #### New users or new uids
 Although the users of the existing respositories do not need to take action on the `xref` configuration, but if they need to use new external UIDs not covered by `xrefBasePath` after the migration to v3, they still need to add the related base path by following the steps under [migration](#migration). And the new users of DocFX v3 should always set the `xrefBasePath` by following the steps under [migration](#migration)
+
+#### Localization
+During the loc build, we should take configuration from the source repository.
 
 ## Resolve xref
 ### Using `xref` to reference a uid in markdown
