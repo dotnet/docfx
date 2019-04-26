@@ -91,7 +91,35 @@ xref:
   - http://url1/.xrefmap.json
   - http://url2/.xrefmap.json
 ```
+User should be able to set a string instead of array, docfx will expand it to an array during the build.\
 During `docfx restore`, all the JSON files will be restored and merged.
+
+#### Xref base path
+Since we do not have a clear picture how we are going to support the local build, we will focus on OPS build firstly.\
+Unlike DocFX v2, the user of v3 needs to set where to get the `.xrefmap.json` files in `docfx.yml`.
+```yml
+xrefBasePath:
+    - dotnet
+    - powershell
+    ...
+```
+User should be able to set a string instead of array, DocFX will expand it to an array during the build.
+
+#### OPS build
+With this setting in place, during the OPS build we will loop throug the list and get the urls of all `.xrefmap.json` files under each base path via calling DHS APIs. The reason to do so is, the public URL for each base path only contains 1 file of 1 depot with the highest priority, and there are many depots under 1 base path. These urls should only be valid for a short time.\
+\
+After getting all the urls, we will extend the DocFX config with them into `xref` settings, the one in the beginning of this section. Then, DocFX may restore the xref files as usual.
+
+#### Migration
+
+For the existing repositories using DocFX v2, we need to add the xref settings into configuration during the migration to v3.
+- Get the external UIDs used in the repository:
+    - v2 help output the list of external UIDs during the build to prepare for v3
+- Get the base path of each external UID
+    - by calling xref service, we can get the href of each UID.
+      For instance, given `System.String`, by calling `https://xref.docs.microsoft.com/query?uid=System.String`, we can get `"href":"https://docs.microsoft.com/dotnet/api/system.string"`. The first segment after the host will be the base path, which is `dotnet`. 
+      > shall we always call xref service in production here?
+    - Put the list of unique base paths from the previous step into `xrefBathPath` of `docfx.yml`
 
 ## Resolve xref
 ### Using `xref` to reference a uid in markdown
