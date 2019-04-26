@@ -14,7 +14,7 @@ Our current focus is conceptual document parity with https://docs.microsoft.com,
 ```powershell
 dotnet tool install -g docfx --version 3.0.0-* --add-source https://www.myget.org/F/docfx-v3/api/v2
 ```
-- Create a directory with a `docfx.yml` config file, markdown files and other contents.
+- Create a directory with a `docfx.yml` config file, markdown files and other contents. See examples in our [specification](https://github.com/dotnet/docfx/tree/v3/docs/specs).
 - Run `docfx build` to build your docset.
 
 ## Contributing
