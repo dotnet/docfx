@@ -7,6 +7,9 @@ using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
+    /// <summary>
+    /// A JsonConverter that propagates line info to JToken.
+    /// </summary>
     internal class JTokenJsonConverter : JsonConverter
     {
         public override bool CanConvert(Type objectType)
