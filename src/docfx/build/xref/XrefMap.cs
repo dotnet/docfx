@@ -153,8 +153,8 @@ namespace Microsoft.Docs.Build
 
         public static XrefMap Create(Context context, Docset docset)
         {
-            Dictionary<string, XrefSpec> map = new Dictionary<string, XrefSpec>();
-            foreach (var url in docset.Config.Xref)
+            ConcurrentDictionary<string, XrefSpec> map = new ConcurrentDictionary<string, XrefSpec>();
+            ParallelUtility.ForEach(docset.Config.Xref, url =>
             {
                 var (_, content, _) = RestoreMap.GetRestoredFileContent(docset, url);
                 XrefMapModel xrefMap = new XrefMapModel();
@@ -173,7 +173,27 @@ namespace Microsoft.Docs.Build
                 {
                     map[spec.Uid] = spec;
                 }
-            }
+            });
+            //foreach (var url in docset.Config.Xref)
+            //{
+            //    var (_, content, _) = RestoreMap.GetRestoredFileContent(docset, url);
+            //    XrefMapModel xrefMap = new XrefMapModel();
+            //    if (url?.Value.EndsWith(".yml", StringComparison.OrdinalIgnoreCase) != false)
+            //    {
+            //        xrefMap = YamlUtility.Deserialize<XrefMapModel>(content);
+            //    }
+            //    else
+            //    {
+            //        var watch = Stopwatch.StartNew();
+            //        var token = JToken.Parse(content);
+            //        xrefMap = token.ToObject<XrefMapModel>();
+            //        var elapsed = watch.Elapsed.TotalMilliseconds;
+            //    }
+            //    foreach (var spec in xrefMap.References)
+            //    {
+            //        map[spec.Uid] = spec;
+            //    }
+            //}
             return new XrefMap(context, map, CreateInternalXrefMap(context, docset.ScanScope));
         }
 
