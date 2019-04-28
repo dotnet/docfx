@@ -159,10 +159,8 @@ namespace Microsoft.Docs.Build
         private static async Task<(List<Error> errors, Schema schema, OutputModel model)>
             LoadSchemaDocument(Context context, List<Error> errors, JToken token, Document file, Action<Document> buildChild)
         {
-            // TODO: for backward compatibility, when #YamlMime:YamlDocument, documentType is used to determine schema.
-            //       when everything is moved to SDP, we can refactor the mime check to Document.TryCreate
             var obj = token as JObject;
-            var schema = file.Schema ?? Schema.GetSchema(obj?.Value<string>("documentType"));
+            var schema = file.Schema;
             if (schema is null)
             {
                 throw Errors.SchemaNotFound(file.Mime).ToException();
