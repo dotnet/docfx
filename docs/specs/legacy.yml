@@ -172,6 +172,7 @@ inputs:
   docs/index.yml: |
     ### YamlMime:YamlDocument
     title: REST API Documentation
+
     documentType: LandingData
     abstract:
       description: <a href="~/b">"b"</a>
