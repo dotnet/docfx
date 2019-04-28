@@ -175,10 +175,7 @@ namespace Microsoft.Docs.Build
             rawMetadata["search.ms_product"] = docset.Config.Product;
             rawMetadata["search.ms_sitename"] = "Docs";
 
-            rawMetadata["site_name"] = "Docs";
-
             rawMetadata["__global"] = Global;
-            rawMetadata["conceptual"] = pageModel.Content as string;
             rawMetadata.Remove("content");
 
             var path = PathUtility.NormalizeFile(Path.GetRelativePath(file.Docset.Config.DocumentId.SiteBasePath, file.SitePath));
@@ -188,46 +185,12 @@ namespace Microsoft.Docs.Build
 
             rawMetadata["_op_canonicalUrlPrefix"] = $"{docset.Config.BaseUrl}/{docset.Locale}/{docset.Config.DocumentId.SiteBasePath}/";
 
-            if (pageModel?.Monikers?.Count > 0)
-            {
-                rawMetadata["monikers"] = new JArray(pageModel.Monikers);
-            }
-
             if (docset.Config.Output.Pdf)
             {
                 rawMetadata["_op_pdfUrlPrefixTemplate"] = $"{docset.Config.BaseUrl}/pdfstore/{pageModel.Locale}/{docset.Config.Product}.{docset.Config.Name}/{{branchName}}";
             }
 
-            rawMetadata["layout"] = rawMetadata.TryGetValue("layout", out JToken layout) ? layout : "Conceptual";
             rawMetadata.Remove("schema_type");
-
-            if (pageModel.UpdatedAt != default)
-            {
-                rawMetadata["_op_gitContributorInformation"] = new JObject
-                {
-                    ["contributors"] = pageModel.Contributors != null
-                        ? new JArray(pageModel.Contributors.Select(ToJObject))
-                        : new JArray(),
-                    ["update_at"] = pageModel.UpdatedAt.ToString(docset.Culture.DateTimeFormat.ShortDatePattern),
-                    ["updated_at_date_time"] = pageModel.UpdatedAt,
-                };
-                if (pageModel.AuthorInfo != null)
-                {
-                    rawMetadata["_op_gitContributorInformation"]["author"] = ToJObject(pageModel.AuthorInfo);
-                }
-            }
-            rawMetadata.Remove("author_info");
-
-            if (!string.IsNullOrEmpty(pageModel.AuthorInfo?.Name))
-                rawMetadata["author"] = pageModel.AuthorInfo?.Name;
-            rawMetadata.Remove("contributors");
-
-            if (pageModel.UpdatedAt != default)
-                rawMetadata["updated_at"] = pageModel.UpdatedAt.ToString("yyyy-MM-dd hh:mm tt");
-
-            if (pageModel.Bilingual)
-                rawMetadata["bilingual_type"] = "hover over";
-            rawMetadata.Remove("bilingual");
 
             return rawMetadata;
         }

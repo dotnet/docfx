@@ -75,7 +75,9 @@ outputs:
 # todo: remove this test and make raw model as our page model
 repos:
   https://github.com/a/rawmetadata:
-  - files:
+  - author: Charlie
+    email: charlie@contoso.com
+    files:
       docfx.yml: |
         theme: https://docs.com/template1
         redirections:
@@ -84,11 +86,15 @@ repos:
           siteBasePath: rawmetadata
         routes:
           /: rawmetadata
+        gitHub:
+          userCache: user_profile.json
+          resolveUsers: true
       c.md: |
         ---
         api_name:
           - "API Name"
-        ms.author: yufeih
+        ms.author: bob
+        author: bob
         ---
         # Title
         [d](d.png)
@@ -100,6 +106,12 @@ repos:
         documentType: LandingData
         metadata:
           document_id: abc
+      user_profile.json: |
+        { "users": [
+            {"name": "Bob", "login": "bob", "id": 2, "emails": ["bob@contoso.com"]},
+            {"name": "Charlie", "login": "charlie", "id": 3, "emails": ["charlie@contoso.com"]}
+          ]
+        }
   https://docs.com/template1:
   - files:
       readme.md:
@@ -117,7 +129,7 @@ outputs:
       {
         "url": "/rawmetadata/c",
         "api_name": ["API Name"],
-        "ms.author": "yufeih",
+        "ms.author": "bob",
         "depot_name": ".",
         "search.ms_docsetname": "",
         "search.ms_product": "",
@@ -134,23 +146,32 @@ outputs:
         "title": "Title",
         "rawTitle": "<h1 id=\"title\">Title</h1>",
         "_op_canonicalUrlPrefix": "https://docs.com/en-us/rawmetadata/",
-        "layout": "Conceptual",
         "document_id": "fdb5a0d7-b68e-c465-9c5e-54a5cda94902",
         "document_version_independent_id": "92a5a770-f05f-b8bb-81c9-a8d786a9e608",
         "_op_gitContributorInformation": {
-          "contributors": [],
-          "updated_at_date_time": "2018-10-30T00:00:00Z"
+        "update_at": "10/30/2018",
+        "updated_at_date_time": "2018-10-30T00:00:00Z",
+          "contributors": [{
+            "display_name": "Charlie",
+            "id": "3"
+          }],
+          "author": {
+            "display_name": "Bob",
+            "id": "2",
+          }
         },
+        "updated_at": "2018-10-30 12:00 AM",
         "content_git_url": "https://github.com/a/rawmetadata/blob/master/c.md",
-        "gitcommit": "https://github.com/a/rawmetadata/blob/ff3949c8ae50dd622cd7c67952c8b020c93636a6/c.md",
+        "gitcommit": "https://github.com/a/rawmetadata/blob/760e36bf5dcf238e28e1eced0c98a6e9d9e444a8/c.md",
         "original_content_git_url": "https://github.com/a/rawmetadata/blob/master/c.md",
         "original_content_git_url_template": "{repo}/blob/{branch}/c.md",
         "!metadata": null,
         "!contributors": null,
-        "!bilingual": null,
+        "!enable_loc_sxs": null,
         "!content": null,
         "!schema_type": null,
-        "!author_info": null
+        "!author_info": null,
+        "!monikers": null,
       },
       {
         "url": "/rawmetadata/d.png"
@@ -158,7 +179,18 @@ outputs:
       {
         "url": "/rawmetadata/",
         "document_id": "b3c1f04b-5bdb-1c10-5237-024cf382b4cc",
-        "_path": "index.json"
+        "_path": "index.json",
+        "_op_gitContributorInformation": {
+          "update_at": "10/30/2018",
+          "updated_at_date_time": "2018-10-30T00:00:00Z",
+          "author": {
+            "name": "charlie",
+            "profile_url": "https://github.com/charlie",
+            "display_name": "Charlie",
+            "id": "3"
+          },
+          "!contributors": null
+      },
       },
       {
         "url": "/rawmetadata/toc.json"

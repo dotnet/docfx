@@ -1,10 +1,8 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 
 namespace Microsoft.Docs.Build
@@ -31,11 +29,10 @@ namespace Microsoft.Docs.Build
 
         public string DocumentVersionIndependentId { get; set; }
 
-        public Contributor AuthorInfo { get; set; }
+        [JsonProperty("_op_gitContributorInformation")]
+        public ContributionInfo ContributionInfo { get; set; }
 
-        public List<Contributor> Contributors { get; set; }
-
-        public DateTime UpdatedAt { get; set; }
+        public string UpdatedAt { get; set; }
 
         public string ContentGitUrl { get; set; }
 
@@ -45,8 +42,16 @@ namespace Microsoft.Docs.Build
 
         public string Gitcommit { get; set; }
 
-        public bool Bilingual { get; set; }
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
+        public bool EnableLocSxs { get; set; }
 
         public List<string> Monikers { get; set; }
+
+        public string SiteName { get; set; }
+
+        public string Conceptual => Content as string;
+
+        // todo: remove this if `enable_loc_sxs` works well
+        public string BilingualType => EnableLocSxs ? "hover over" : null;
     }
 }
