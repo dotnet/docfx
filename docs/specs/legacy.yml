@@ -171,8 +171,8 @@ inputs:
   docfx.yml:
   docs/index.yml: |
     ### YamlMime:YamlDocument
-    documentType: LandingData
     title: REST API Documentation
+    documentType: LandingData
     abstract:
       description: <a href="~/b">"b"</a>
       menu:

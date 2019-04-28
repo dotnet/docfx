@@ -364,8 +364,7 @@ namespace Microsoft.Docs.Build
             }
             var extensionData = new Dictionary<string, Lazy<JValue>>();
 
-            var schema = file.Schema;
-            if (schema is null)
+            if (file.Schema is null)
             {
                 throw Errors.SchemaNotFound(file.Mime).ToException();
             }
@@ -373,7 +372,7 @@ namespace Microsoft.Docs.Build
             var errors = new List<Error>();
             var (schemaErrors, _) = JsonUtility.ToObject(
                 obj,
-                schema.Type,
+                file.Schema.Type,
                 transform: AttributeTransformer.TransformXref(context, file, null, extensionData));
 
             errors.AddRange(schemaErrors);
