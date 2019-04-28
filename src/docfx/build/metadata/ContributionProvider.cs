@@ -52,7 +52,7 @@ namespace Microsoft.Docs.Build
                 ? new ContributionInfo
                 {
                     Contributors = contributors,
-                    UpdateAt = updatedDateTime.ToString(document.Docset.Locale == "en-us" ? "MM/dd/yyyy" : document.Docset.Culture.DateTimeFormat.ShortDatePattern),
+                    UpdateAt = updatedDateTime.ToString(document.Docset.Locale == "en-us" ? "M/d/yyyy" : document.Docset.Culture.DateTimeFormat.ShortDatePattern),
                     UpdatedAtDateTime = updatedDateTime,
                 }
                 : null;
