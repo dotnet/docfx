@@ -5,6 +5,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -164,37 +165,63 @@ namespace Microsoft.Docs.Build
                 }
                 else
                 {
-                    var watch = Stopwatch.StartNew();
-                    var token = JToken.Parse(content);
-                    xrefMap = token.ToObject<XrefMapModel>();
-                    var elapsed = watch.Elapsed.TotalMilliseconds;
-                }
-                foreach (var spec in xrefMap.References)
-                {
-                    map[spec.Uid] = spec;
+                    DeserializeAndCreateXrefMap(map, content);
                 }
             });
-            //foreach (var url in docset.Config.Xref)
-            //{
-            //    var (_, content, _) = RestoreMap.GetRestoredFileContent(docset, url);
-            //    XrefMapModel xrefMap = new XrefMapModel();
-            //    if (url?.Value.EndsWith(".yml", StringComparison.OrdinalIgnoreCase) != false)
-            //    {
-            //        xrefMap = YamlUtility.Deserialize<XrefMapModel>(content);
-            //    }
-            //    else
-            //    {
-            //        var watch = Stopwatch.StartNew();
-            //        var token = JToken.Parse(content);
-            //        xrefMap = token.ToObject<XrefMapModel>();
-            //        var elapsed = watch.Elapsed.TotalMilliseconds;
-            //    }
-            //    foreach (var spec in xrefMap.References)
-            //    {
-            //        map[spec.Uid] = spec;
-            //    }
-            //}
+
+
             return new XrefMap(context, map, CreateInternalXrefMap(context, docset.ScanScope));
+        }
+
+        private static void DeserializeAndCreateXrefMap(ConcurrentDictionary<string, XrefSpec> map, string content)
+        {
+            using (var reader = new JsonTextReader(new StringReader(content)))
+            {
+                var currentProperty = string.Empty;
+                XrefSpec spec = new XrefSpec();
+                string uid = string.Empty;
+                while (reader.Read())
+                {
+                    if (reader.Value != null)
+                    {
+                        if (reader.TokenType == JsonToken.PropertyName)
+                            currentProperty = reader.Value.ToString();
+
+                        if (reader.TokenType == JsonToken.String && currentProperty == "uid")
+                        {
+                            spec = new XrefSpec();
+                            uid = reader.Value.ToString();
+                            spec.Uid = uid;
+                        }
+
+                        if (reader.TokenType == JsonToken.String && currentProperty == "href")
+                        {
+                            spec.Href = reader.Value.ToString();
+                        }
+
+                        if (reader.TokenType == JsonToken.String && currentProperty == "name")
+                        {
+                            spec.ExtensionData["name"] = reader.Value.ToString();
+                        }
+
+                        if (reader.TokenType == JsonToken.String && currentProperty == "commentId")
+                        {
+                            spec.ExtensionData["commentId"] = reader.Value.ToString();
+                        }
+
+                        if (reader.TokenType == JsonToken.String && currentProperty == "fullName")
+                        {
+                            spec.ExtensionData["fullName"] = reader.Value.ToString();
+                        }
+
+                        if (reader.TokenType == JsonToken.String && currentProperty == "nameWithType")
+                        {
+                            spec.ExtensionData["nameWithType"] = reader.Value.ToString();
+                            map[uid] = spec;
+                        }
+                    }
+                }
+            }
         }
 
         public void OutputXrefMap(Context context)

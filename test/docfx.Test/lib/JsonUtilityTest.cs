@@ -570,19 +570,6 @@ namespace Microsoft.Docs.Build
             Assert.Equal("{\"b\":1,\"d\":false}", result);
         }
 
-        [Fact]
-        public void TestDeserializeXrefMap()
-        {
-            var watch = Stopwatch.StartNew();
-            for (var i = 0; i < 10; i++)
-            {
-                var json = File.ReadAllText(@"D:\Downloads\content");
-                var token = JToken.Parse(json);
-                var obj = token.ToObject<XrefMapModel>();
-            }
-            var elasped = watch.ElapsedMilliseconds;
-        }
-
         /// <summary>
         /// Deserialize from yaml string, return error list at the same time
         /// </summary>
