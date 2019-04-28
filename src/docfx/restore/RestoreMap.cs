@@ -212,11 +212,16 @@ namespace Microsoft.Docs.Build
                         commits = GitUtility.GetCommits(restoreDir, branch, 1000/*top 1000 should be enough for comparing*/);
                     }
 
-                    return filteredGits.OrderBy(g => Array.IndexOf(commits, g.Commit)).ThenByDescending(g => g.LastAccessDate).ToList();
+                    return filteredGits.OrderBy(
+                    g =>
+                    {
+                        var index = Array.IndexOf(commits, g.Commit);
+                        return index < 0 ? int.MaxValue : index;
+                    }).ThenByDescending(g => g.LastAccessDate).ToList();
                 });
 
             if (!string.IsNullOrEmpty(path))
-                path = Path.Combine(AppData.GetGitDir(remote), path);
+                path = Path.Combine(restoreDir, path);
 
             return !Directory.Exists(path) ? default : (path, slot);
         }
