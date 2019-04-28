@@ -206,7 +206,7 @@ namespace Microsoft.Docs.Build
                     return (null, relativeTo, query, fragment, HrefType.SelfBookmark, null);
 
                 case HrefType.WindowsAbsolutePath:
-                    return (Errors.AbsoluteFilePath(relativeTo, path), null, null, null, HrefType.WindowsAbsolutePath, null);
+                    return (Errors.LocalFilePath(relativeTo, path), null, null, null, HrefType.WindowsAbsolutePath, null);
 
                 case HrefType.RelativePath:
                     // Resolve path relative to docset
