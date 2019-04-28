@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -163,7 +164,9 @@ namespace Microsoft.Docs.Build
                 }
                 else
                 {
-                    xrefMap = JsonUtility.Deserialize<XrefMapModel>(content);
+                    var watch = Stopwatch.StartNew();
+                    xrefMap = JsonConvert.DeserializeObject<XrefMapModel>(content);
+                    var elapsed = watch.Elapsed.TotalMilliseconds;
                 }
                 foreach (var spec in xrefMap.References)
                 {

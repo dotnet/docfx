@@ -684,3 +684,14 @@ outputs:
     ["info","at-uid-not-found","Cannot find uid 'f' using xref '<xref href=\"f\" data-raw-source=\"@mentionf\">'","docs/a.md",5,12]
     ["info","at-uid-not-found","Cannot find uid 'e' using xref '<p>\n  <xref href=\"e\" data-raw-source=\"@mentione\" />\n  some text\n  <xref href=\"f\" data-raw-source=\"mentionf\" />\n</p>'","docs/a.md",6,18]
     ["warning","uid-not-found","Cannot find uid 'f' using xref '<p>\n  <xref href=\"e\" data-raw-source=\"@mentione\" />\n  some text\n  <xref href=\"f\" data-raw-source=\"mentionf\" />\n</p>'","docs/a.md",6,78]
+---
+# [only]restore xrefmap.json
+inputs:
+  docfx.yml: |
+    xref:
+      - https://opdhsblobprod03.blob.core.windows.net/contents/9e91aaced6794685851e249147f1956e/a20c0a5f397f50eace87d0ee0fc54231?sv=2015-04-05&sr=b&sig=XR8ZH618qptvmN1z%2BgJvSXYKDEx7sCXL3F4zpSw4sjY%3D&st=2019-04-26T06%3A33%3A32Z&se=2019-04-27T06%3A43%3A32Z&sp=r
+      - https://opdhsblobprod02.blob.core.windows.net/contents/c6aea4f5457448ee818b7292ba695982/a65c6e7087e0e4444dafc87f0bd27bb6?sv=2015-04-05&sr=b&sig=UqQ%2BmenXz5M44UL%2BWHBjtzZdkmRiQxdhh0z8zZDXfOM%3D&st=2019-04-26T06%3A34%3A25Z&se=2019-04-27T06%3A44%3A25Z&sp=r
+  docs/a.md: |
+    Link to @_GUID
+outputs:
+  docs/a.json:

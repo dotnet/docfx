@@ -4,9 +4,10 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
-
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Xunit;
@@ -567,6 +568,19 @@ namespace Microsoft.Docs.Build
             };
             var result = JsonUtility.Serialize(basic);
             Assert.Equal("{\"b\":1,\"d\":false}", result);
+        }
+
+        [Fact]
+        public void TestDeserializeXrefMap()
+        {
+            var watch = Stopwatch.StartNew();
+            for (var i = 0; i < 10; i++)
+            {
+                var json = File.ReadAllText(@"D:\Downloads\content");
+                var token = JToken.Parse(json);
+                var obj = token.ToObject<XrefMapModel>();
+            }
+            var elasped = watch.ElapsedMilliseconds;
         }
 
         /// <summary>

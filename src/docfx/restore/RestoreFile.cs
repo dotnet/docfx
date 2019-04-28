@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Compression;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
@@ -99,7 +100,18 @@ namespace Microsoft.Docs.Build
                 using (var stream = await response.EnsureSuccessStatusCode().Content.ReadAsStreamAsync())
                 using (var file = new FileStream(tempFile, FileMode.Create, FileAccess.Write, FileShare.None))
                 {
-                    await stream.CopyToAsync(file);
+                    string contentEncoding = response.Content.Headers.ContentEncoding.ToString();
+                    if (contentEncoding == "gzip")
+                    {
+                        using (var decompressedFileStream = new GZipStream(stream, CompressionMode.Decompress))
+                        {
+                            await decompressedFileStream.CopyToAsync(file);
+                        }
+                    }
+                    else
+                    {
+                        await stream.CopyToAsync(file);
+                    }
                 }
                 return (tempFile, response.Headers.ETag);
             }
