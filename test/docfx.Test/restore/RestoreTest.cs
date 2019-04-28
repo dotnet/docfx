@@ -81,6 +81,12 @@ dependencies:
             // will create a new slot and find an available slot
             workTreeList = GitUtility.ListWorkTree(restorePath);
             Assert.Equal(4, workTreeList.Count);
+
+            // restore again to use existing worktree
+            await Program.Run(new[] { "restore", docsetPath });
+
+            workTreeList = GitUtility.ListWorkTree(restorePath);
+            Assert.Equal(4, workTreeList.Count);
         }
 
         [Fact]
