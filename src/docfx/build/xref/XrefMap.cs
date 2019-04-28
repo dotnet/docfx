@@ -165,7 +165,8 @@ namespace Microsoft.Docs.Build
                 else
                 {
                     var watch = Stopwatch.StartNew();
-                    xrefMap = JsonConvert.DeserializeObject<XrefMapModel>(content);
+                    var token = JToken.Parse(content);
+                    xrefMap = token.ToObject<XrefMapModel>();
                     var elapsed = watch.Elapsed.TotalMilliseconds;
                 }
                 foreach (var spec in xrefMap.References)
