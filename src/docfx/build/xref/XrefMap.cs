@@ -154,7 +154,9 @@ namespace Microsoft.Docs.Build
 
         public static XrefMap Create(Context context, Docset docset)
         {
-            ConcurrentDictionary<string, XrefSpec> map = new ConcurrentDictionary<string, XrefSpec>();
+            // https://github.com/dotnet/corefx/issues/12067
+            // Prefer Dictionary with manual lock to ConcurrentDictionary while only adding
+            Dictionary<string, XrefSpec> map = new Dictionary<string, XrefSpec>();
             ParallelUtility.ForEach(docset.Config.Xref, url =>
             {
                 var (_, content, _) = RestoreMap.GetRestoredFileContent(docset, url);
@@ -169,17 +171,15 @@ namespace Microsoft.Docs.Build
                 }
             });
 
-
             return new XrefMap(context, map, CreateInternalXrefMap(context, docset.ScanScope));
         }
 
-        private static void DeserializeAndCreateXrefMap(ConcurrentDictionary<string, XrefSpec> map, string content)
+        private static void DeserializeAndCreateXrefMap(Dictionary<string, XrefSpec> map, string content)
         {
             using (var reader = new JsonTextReader(new StringReader(content)))
             {
                 var currentProperty = string.Empty;
                 XrefSpec spec = new XrefSpec();
-                string uid = string.Empty;
                 while (reader.Read())
                 {
                     if (reader.Value != null)
@@ -189,9 +189,10 @@ namespace Microsoft.Docs.Build
 
                         if (reader.TokenType == JsonToken.String && currentProperty == "uid")
                         {
-                            spec = new XrefSpec();
-                            uid = reader.Value.ToString();
-                            spec.Uid = uid;
+                            spec = new XrefSpec
+                            {
+                                Uid = reader.Value.ToString(),
+                            };
                         }
 
                         if (reader.TokenType == JsonToken.String && currentProperty == "href")
@@ -217,7 +218,10 @@ namespace Microsoft.Docs.Build
                         if (reader.TokenType == JsonToken.String && currentProperty == "nameWithType")
                         {
                             spec.ExtensionData["nameWithType"] = reader.Value.ToString();
-                            map[uid] = spec;
+                            lock (map)
+                            {
+                                map[spec.Uid] = spec;
+                            }
                         }
                     }
                 }
