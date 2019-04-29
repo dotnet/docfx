@@ -415,10 +415,7 @@ namespace Microsoft.Docs.Build
             }
             var extensionData = new Dictionary<string, Lazy<JValue>>();
 
-            // TODO: for backward compatibility, when #YamlMime:YamlDocument, documentType is used to determine schema.
-            //       when everything is moved to SDP, we can refactor the mime check to Document.TryCreate
-            var schema = file.Schema ?? Schema.GetSchema(obj?.Value<string>("documentType"));
-            if (schema is null)
+            if (file.Schema is null)
             {
                 throw Errors.SchemaNotFound(file.Mime).ToException();
             }
@@ -426,7 +423,7 @@ namespace Microsoft.Docs.Build
             var errors = new List<Error>();
             var (schemaErrors, _) = JsonUtility.ToObject(
                 obj,
-                schema.Type,
+                file.Schema.Type,
                 transform: AttributeTransformer.TransformXref(context, file, null, extensionData));
 
             errors.AddRange(schemaErrors);

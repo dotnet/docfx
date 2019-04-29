@@ -53,7 +53,10 @@ namespace Microsoft.Docs.Build
             }
 
             var (errors, metadata) = JsonUtility.ToObject<T>(result);
+
             errors.AddRange(MetadataValidator.Validate(result));
+            errors.AddRange(JsonSchemaValidation.Validate(file.Docset.MetadataSchema, result));
+
             return (errors, metadata);
         }
     }

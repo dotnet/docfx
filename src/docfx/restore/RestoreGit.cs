@@ -141,41 +141,46 @@ namespace Microsoft.Docs.Build
                         var gitDependencyLock = dependencyLock?.GetGitLock(remote, branch);
                         headCommit = gitDependencyLock?.Commit ?? headCommit;
 
-                        var (workTreePath, gitSlot) = RestoreMap.AcquireExclusiveGit(remote, branch, headCommit);
-                        workTreePath = Path.GetFullPath(workTreePath).Replace('\\', '/');
-                        var restored = true;
-
-                        try
+                        var (workTreePath, gitSlot) = RestoreMap.TryGetGitRestorePath(remote, branch, headCommit);
+                        if (workTreePath is null)
                         {
-                            if (existingWorkTreePath.TryAdd(workTreePath))
+                            (workTreePath, gitSlot) = RestoreMap.AcquireExclusiveGit(remote, branch, headCommit);
+                            workTreePath = Path.GetFullPath(workTreePath).Replace('\\', '/');
+                            var restored = true;
+
+                            try
                             {
-                                // create new worktree
-                                try
+                                if (existingWorkTreePath.TryAdd(workTreePath))
                                 {
-                                    GitUtility.AddWorkTree(repoPath, headCommit, workTreePath);
+                                    // create new worktree
+                                    try
+                                    {
+                                        GitUtility.AddWorkTree(repoPath, headCommit, workTreePath);
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        throw Errors.GitCloneFailed(remote, branches).ToException(ex);
+                                    }
                                 }
-                                catch (Exception ex)
+                                else
                                 {
-                                    throw Errors.GitCloneFailed(remote, branches).ToException(ex);
+                                    // worktree already exists
+                                    // checkout to {headCommit}, no need to fetch
+                                    GitUtility.Checkout(workTreePath, headCommit);
                                 }
                             }
-                            else
+                            catch
                             {
-                                // worktree already exists
-                                // checkout to {headCommit}, no need to fetch
-                                GitUtility.Checkout(workTreePath, headCommit);
+                                restored = false;
+                                throw;
+                            }
+                            finally
+                            {
+                                RestoreMap.ReleaseGit(gitSlot, LockType.Exclusive, restored);
                             }
                         }
-                        catch
-                        {
-                            restored = false;
-                            throw;
-                        }
-                        finally
-                        {
-                            RestoreMap.ReleaseGit(gitSlot, LockType.Exclusive, restored);
-                        }
 
+                        Debug.Assert(workTreePath != null);
                         subChildren.Add(new RestoreChild(workTreePath, remote, branch, gitDependencyLock, headCommit));
                     });
                 }

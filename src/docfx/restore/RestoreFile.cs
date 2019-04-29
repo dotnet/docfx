@@ -63,6 +63,7 @@ namespace Microsoft.Docs.Build
 
             yield return config.GitHub.UserCache;
             yield return config.MonikerDefinition;
+            yield return config.MetadataSchema;
         }
 
         public static string GetRestoreContentPath(string url)

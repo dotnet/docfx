@@ -33,13 +33,17 @@ namespace Microsoft.Docs.Build
             model.Locale = file.Docset.Locale;
             model.TocRel = tocMap.FindTocRelativePath(file);
             model.CanonicalUrl = file.CanonicalUrl;
-            model.Bilingual = file.Docset.Config.Localization.Bilingual;
+            model.EnableLocSxs = file.Docset.Config.Localization.Bilingual;
+            model.SiteName = file.Docset.Config.SiteName;
 
             (model.DocumentId, model.DocumentVersionIndependentId) = file.Docset.Redirections.TryGetDocumentId(file, out var docId) ? docId : file.Id;
             (model.ContentGitUrl, model.OriginalContentGitUrl, model.OriginalContentGitUrlTemplate, model.Gitcommit) = context.ContributionProvider.GetGitUrls(file);
 
             List<Error> contributorErrors;
-            (contributorErrors, model.AuthorInfo, model.Contributors, model.UpdatedAt) = await context.ContributionProvider.GetAuthorAndContributors(file, model.Author);
+            (contributorErrors, model.ContributionInfo) = await context.ContributionProvider.GetContributionInfo(file, model.Author);
+            model.Author = new SourceInfo<string>(model.ContributionInfo?.Author?.Name, model.Author);
+            model.UpdatedAt = model.ContributionInfo?.UpdatedAtDateTime.ToString("yyyy-MM-dd hh:mm tt");
+
             if (contributorErrors != null)
                 errors.AddRange(contributorErrors);
 
@@ -159,22 +163,19 @@ namespace Microsoft.Docs.Build
         private static async Task<(List<Error> errors, Schema schema, OutputModel model)>
             LoadSchemaDocument(Context context, List<Error> errors, JToken token, Document file, Action<Document> buildChild)
         {
-            // TODO: for backward compatibility, when #YamlMime:YamlDocument, documentType is used to determine schema.
-            //       when everything is moved to SDP, we can refactor the mime check to Document.TryCreate
             var obj = token as JObject;
-            var schema = file.Schema ?? Schema.GetSchema(obj?.Value<string>("documentType"));
-            if (schema is null)
+            if (file.Schema is null)
             {
                 throw Errors.SchemaNotFound(file.Mime).ToException();
             }
 
             // todo: why not directly use strong model here?
-            var (schemaViolationErrors, content) = JsonUtility.ToObject(token, schema.Type, transform: AttributeTransformer.TransformSDP(context, file, buildChild));
+            var (schemaViolationErrors, content) = JsonUtility.ToObject(token, file.Schema.Type, transform: AttributeTransformer.TransformSDP(context, file, buildChild));
             errors.AddRange(schemaViolationErrors);
 
             // TODO: add check before to avoid case failure
             var yamlHeader = obj?.Value<JObject>("metadata") ?? new JObject();
-            if (file.Docset.Legacy && schema.Type == typeof(LandingData))
+            if (file.Docset.Legacy && file.Schema.Type == typeof(LandingData))
             {
                 // merge extension data to metadata in legacy model
                 var landingData = (LandingData)content;
@@ -185,9 +186,9 @@ namespace Microsoft.Docs.Build
             }
             var title = yamlHeader.Value<string>("title") ?? obj?.Value<string>("title");
 
-            if (file.Docset.Legacy && schema.Attribute is PageSchemaAttribute)
+            if (file.Docset.Legacy && file.Schema.Attribute is PageSchemaAttribute)
             {
-                var html = await RazorTemplate.Render(schema.Name, content);
+                var html = await RazorTemplate.Render(file.Schema.Name, content);
                 content = HtmlPostProcess(file, HtmlUtility.LoadHtml(html));
             }
 
@@ -199,7 +200,7 @@ namespace Microsoft.Docs.Build
             pageModel.RawTitle = file.Docset.Legacy ? $"<h1>{obj?.Value<string>("title")}</h1>" : null;
             pageModel.Monikers = new List<string>();
 
-            return (errors, schema, pageModel);
+            return (errors, file.Schema, pageModel);
         }
 
         private static string HtmlPostProcess(Document file, HtmlNode html)

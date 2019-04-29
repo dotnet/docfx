@@ -12,7 +12,6 @@ namespace Microsoft.Docs.Build
     {
         public TableOfContentsMetadata Metadata { get; set; } = new TableOfContentsMetadata();
 
-        [MinLength(1)]
         public List<TableOfContentsItem> Items { get; set; } = new List<TableOfContentsItem>();
 
         [JsonExtensionData(WriteData = false)]
