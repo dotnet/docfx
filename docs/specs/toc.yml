@@ -986,7 +986,6 @@ inputs:
       tocHref: 
       href: f1/b.md
       additionalProperty: a
-      items: []
   docs/f1/a.md:
   docs/f1/b.md:
 outputs:
@@ -995,7 +994,6 @@ outputs:
   build.log: |
     ["info","null-value","'tocHref' contains null value","docs/TOC.yml",2,3]
     ["error","violate-schema","Required property 'name' not found in JSON.","docs/TOC.yml",1,3]
-    ["error","violate-schema","The field Items must be a string or array type with a minimum length of '1'.","docs/TOC.yml",5,10]
 ---
 # Orphan file(not explicitly referenced in toc file)'s toc, only look up parent folder toc files
 inputs:
