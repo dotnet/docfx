@@ -21,7 +21,6 @@ outputs:
 ---
 # Restore xref map from configured url and use the map for resolving
 # hostname should be removed if docset sharing the same one
-# the xref map file should be in 1 line
 inputs:
   docfx.yml: |
     baseUrl: https://docs.microsoft.com
@@ -29,12 +28,12 @@ inputs:
   docs/a.md: Link to @System.String
   xrefmap.json: |
     {
-      "references":[{	
-          "uid": "System.String",	
-          "name": "String",	
-          "fullName": "System.String",	
-          "href": "https://docs.microsoft.com/en-us/dotnet/api/system.string",	
-          "nameWithType": "System.String"	
+      "references":[{
+          "uid": "System.String",
+          "name": "String",
+          "fullName": "System.String",
+          "href": "https://docs.microsoft.com/en-us/dotnet/api/system.string",
+          "nameWithType": "System.String"
       }]	
     }
 outputs:
@@ -78,19 +77,19 @@ outputs:
   docs/a.json:
   docs/b.json:
   xrefmap.json: | 
-    { 
-      "references":[	
-        {	
-          "uid": "a",	
-          "href": "https://docs.com/docs/a",	
+    {
+      "references":[
+        {
+          "uid": "a",
+          "href": "https://docs.com/docs/a",
           "name": "Title from yaml header a"	
-        },	
-        {	
-          "uid": "b",	
-          "href": "https://docs.com/docs/b",	
+        },
+        {
+          "uid": "b",
+          "href": "https://docs.com/docs/b",
           "name": "Title from yaml header b"	
-        }	
-      ]	
+        }
+      ]
     }
   .dependencymap.json: |
     {

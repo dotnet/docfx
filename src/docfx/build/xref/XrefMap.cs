@@ -181,6 +181,13 @@ namespace Microsoft.Docs.Build
             return new XrefMap(context, map, CreateInternalXrefMap(context, docset.ScanScope));
         }
 
+        public void OutputXrefMap(Context context)
+        {
+            var models = new XrefMapModel();
+            models.References.AddRange(ExpandInternalXrefSpecs());
+            context.Output.WriteJson(models, "xrefmap.json");
+        }
+
         private static void DeserializeAndCreateXrefMap(Dictionary<string, Lazy<XrefSpec>> map, string content)
         {
             using (var reader = new StringReader(content))
@@ -248,13 +255,6 @@ namespace Microsoft.Docs.Build
                 currentColumn += 1;
             }
             return result.ToString();
-        }
-
-        public void OutputXrefMap(Context context)
-        {
-            var models = new XrefMapModel();
-            models.References.AddRange(ExpandInternalXrefSpecs());
-            context.Output.WriteJson(models, "xrefmap.json");
         }
 
         private IEnumerable<XrefSpec> ExpandInternalXrefSpecs()
