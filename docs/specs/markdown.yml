@@ -365,21 +365,11 @@ outputs:
 inputs:
   docfx.yml:
   docs/a.md: |
-    # title 1
-    [link to self existed bookmark](#title-1)
-    [link to self non-existed bookmark](#title-2)
-    [link to existed bookmark in another existed file](b.md#title-1)
-    [link to non-existed bookmark in another existed file](b.md#title-2)
     [link to bookmark in another non-existed file](c.md#title-2)
-  docs/b.md: |
-    # title 1
 outputs:
   docs/a.json:
-  docs/b.json:
   build.log: |
-    ["warning","file-not-found","Cannot find file 'c.md' relative to 'docs/a.md'","docs/a.md",6,1]
-    ["warning","external-bookmark-not-found","Cannot find bookmark '#title-2' in 'docs/b.md', did you mean '#title-1'?","docs/a.md",5,1]
-    ["suggestion","internal-bookmark-not-found","Cannot find bookmark '#title-2' in 'docs/a.md', did you mean '#title-1'?","docs/a.md",3,1]
+    ["warning","file-not-found","Cannot find file 'c.md' relative to 'docs/a.md'","docs/a.md",1,1]
 ---
 # do not output file if external-bookmark-not-found is treated as error
 inputs:
