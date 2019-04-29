@@ -986,6 +986,7 @@ inputs:
       tocHref: 
       href: f1/b.md
       additionalProperty: a
+      items: []
   docs/f1/a.md:
   docs/f1/b.md:
 outputs:
