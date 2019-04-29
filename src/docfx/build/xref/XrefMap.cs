@@ -169,12 +169,22 @@ namespace Microsoft.Docs.Build
                     xrefMap = YamlUtility.Deserialize<XrefMapModel>(content);
                     foreach (var spec in xrefMap.References)
                     {
-                        map[spec.Uid] = new Lazy<XrefSpec>(() => spec);
+                        lock (map)
+                        {
+                            map[spec.Uid] = new Lazy<XrefSpec>(() => spec);
+                        }
                     }
                 }
                 else
                 {
-                    DeserializeAndCreateXrefMap(map, content);
+                    DeserializeAndPopulateXrefMap(
+                    (uid, spec) =>
+                    {
+                        lock (map)
+                        {
+                            map[uid] = spec;
+                        }
+                    }, content);
                 }
             });
 
@@ -188,7 +198,7 @@ namespace Microsoft.Docs.Build
             context.Output.WriteJson(models, "xrefmap.json");
         }
 
-        private static void DeserializeAndCreateXrefMap(Dictionary<string, Lazy<XrefSpec>> map, string content)
+        private static void DeserializeAndPopulateXrefMap(Action<string, Lazy<XrefSpec>> populate, string content)
         {
             using (var reader = new StringReader(content))
             using (var json = new JsonTextReader(reader))
@@ -224,7 +234,7 @@ namespace Microsoft.Docs.Build
                             endColumn = json.LinePosition;
                             if (uid != null)
                             {
-                                map[uid] = new Lazy<XrefSpec>(() => JsonUtility.Deserialize<XrefSpec>(GetSubstringFromContent(content, startLine, startColumn, endLine, endColumn)));
+                                populate(uid, new Lazy<XrefSpec>(() => JsonUtility.Deserialize<XrefSpec>(GetSubstringFromContent(content, startLine, startColumn, endLine, endColumn))));
                                 uid = null;
                             }
                         }
