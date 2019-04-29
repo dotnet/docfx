@@ -22,10 +22,9 @@ repos:
       schema.json: |
         {
           "properties": {
-            "api_name": { "htmlMetadataName": "APIName" },
-            "conceptual": { "htmlMetadata": false },
-            "is_dynamic_rendering": { "htmlMetadata": false }
-          }
+            "api_name": { "htmlMetaName": "APIName" }
+          },
+          "htmlMetaHidden": ["conceptual", "is_dynamic_rendering", "canonical_url"]
         }
   https://docs.com/template:
   - files:
@@ -52,7 +51,6 @@ outputs:
       "themesRelativePathToOutputRoot": "_themes/",
       "pageMetadata": "
         <meta name=\"APIName\" content=\"API Name\" />
-        <meta name=\"canonical_url\" content=\"https://docs.com/en-us/c\" />
         <meta name=\"depot_name\" content=\".\" />
         <meta name=\"document_id\" content=\"fdb5a0d7-b68e-c465-9c5e-54a5cda94902\" />
         <meta name=\"document_version_independent_id\" content=\"92a5a770-f05f-b8bb-81c9-a8d786a9e608\" />

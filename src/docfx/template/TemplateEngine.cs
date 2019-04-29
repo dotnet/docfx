@@ -21,7 +21,7 @@ namespace Microsoft.Docs.Build
         private readonly string _locale;
         private readonly LiquidTemplate _liquid;
         private readonly JavascriptEngine _js;
-        private readonly HashSet<string> _htmlMetaExcludes;
+        private readonly HashSet<string> _htmlMetaHidden;
         private readonly Dictionary<string, string> _htmlMetaNames;
 
         public JObject Global { get; }
@@ -36,14 +36,10 @@ namespace Microsoft.Docs.Build
             _js = new JavascriptEngine(contentTemplateDir);
             Global = LoadGlobalTokens(templateDir, _locale);
 
-            _htmlMetaExcludes = metadataSchema.Properties
-                .Where(prop => !prop.Value.HtmlMetadata)
-                .Select(prop => prop.Key)
-                .ToHashSet();
-
+            _htmlMetaHidden = metadataSchema.HtmlMetaHidden.ToHashSet();
             _htmlMetaNames = metadataSchema.Properties
-                .Where(prop => !string.IsNullOrEmpty(prop.Value.HtmlMetadataName))
-                .ToDictionary(prop => prop.Key, prop => prop.Value.HtmlMetadataName);
+                .Where(prop => !string.IsNullOrEmpty(prop.Value.HtmlMetaName))
+                .ToDictionary(prop => prop.Key, prop => prop.Value.HtmlMetaName);
         }
 
         public static TemplateEngine Create(Docset docset)
@@ -223,7 +219,7 @@ namespace Microsoft.Docs.Build
             {
                 var key = property.Name;
                 var value = property.Value;
-                if (value is JObject || _htmlMetaExcludes.Contains(key))
+                if (value is JObject || _htmlMetaHidden.Contains(key))
                 {
                     continue;
                 }

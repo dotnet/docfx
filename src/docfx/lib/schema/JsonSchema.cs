@@ -36,14 +36,14 @@ namespace Microsoft.Docs.Build
         //-------------------------------------------
 
         /// <summary>
-        /// Whether this metadata should show in output HTML <meta> tag. The default value is true.
-        /// </summary>
-        public bool HtmlMetadata { get; set; } = true;
-
-        /// <summary>
         /// Alternative name used in output HTML <meta> tag. If not set, the original metadata name is used.
         /// </summary>
-        public string HtmlMetadataName { get; set; }
+        public string HtmlMetaName { get; set; }
+
+        /// <summary>
+        /// Properties that are hidden in output HTML <meta> tag.
+        /// </summary>
+        public string[] HtmlMetaHidden { get; set; } = Array.Empty<string>();
 
         /// <summary>
         /// Properties that are reserved by the system.
