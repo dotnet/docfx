@@ -34,7 +34,7 @@ inputs:
           "fullName": "System.String",
           "href": "https://docs.microsoft.com/en-us/dotnet/api/system.string",
           "nameWithType": "System.String"
-      }]	
+      }]
     }
 outputs:
   docs/a.json: |
@@ -82,12 +82,12 @@ outputs:
         {
           "uid": "a",
           "href": "https://docs.com/docs/a",
-          "name": "Title from yaml header a"	
+          "name": "Title from yaml header a"
         },
         {
           "uid": "b",
           "href": "https://docs.com/docs/b",
-          "name": "Title from yaml header b"	
+          "name": "Title from yaml header b"
         }
       ]
     }
@@ -684,4 +684,3 @@ outputs:
     ["info","at-uid-not-found","Cannot find uid 'f' using xref '<xref href=\"f\" data-raw-source=\"@mentionf\">'","docs/a.md",5,12]
     ["info","at-uid-not-found","Cannot find uid 'e' using xref '<p>\n  <xref href=\"e\" data-raw-source=\"@mentione\" />\n  some text\n  <xref href=\"f\" data-raw-source=\"mentionf\" />\n</p>'","docs/a.md",6,18]
     ["warning","uid-not-found","Cannot find uid 'f' using xref '<p>\n  <xref href=\"e\" data-raw-source=\"@mentione\" />\n  some text\n  <xref href=\"f\" data-raw-source=\"mentionf\" />\n</p>'","docs/a.md",6,78]
----
