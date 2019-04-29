@@ -156,7 +156,7 @@ namespace Microsoft.Docs.Build
 
         public static XrefMap Create(Context context, Docset docset)
         {
-            // TODO: not considering same uid with multiple spec, it will be Dictionary<string, List<string>>
+            // TODO: not considering same uid with multiple specs, it will be Dictionary<string, List<T>>
             // https://github.com/dotnet/corefx/issues/12067
             // Prefer Dictionary with manual lock to ConcurrentDictionary while only adding
             Dictionary<string, Lazy<XrefSpec>> map = new Dictionary<string, Lazy<XrefSpec>>();
