@@ -50,7 +50,7 @@ namespace Microsoft.Docs.Build
         ///     nor source repo root
         /// </summary>
         public static Error ConfigNotFound(string docsetPath)
-            => new Error(ErrorLevel.Error, "config-not-found", $"Can't find config file 'docfx.yml' or 'docfx.json' at {docsetPath}");
+            => new Error(ErrorLevel.Error, "config-not-found", $"Can't find config file 'docfx.yml/docfx.json' at {docsetPath}.");
 
         /// <summary>
         /// Two files include each other.
@@ -257,7 +257,7 @@ namespace Microsoft.Docs.Build
         /// Failed to resolve uid defined by @ syntax.
         /// </summary>
         public static Error XrefNotFound(SourceInfo<string> source, string uid)
-            => new Error(ErrorLevel.Warning, "xref-not-found", $"Cross reference not found: '@{uid}'", source);
+            => new Error(ErrorLevel.Warning, "xref-not-found", $"Cross reference not found: '@{uid}'.", source);
 
         /// <summary>
         /// Files published to the same url have no monikers or share common monikers.
@@ -314,7 +314,7 @@ namespace Microsoft.Docs.Build
         ///   - resolve contributors or authors on a locale-sxs branch while the corresponding locale branch doesn't exist
         /// </summary>
         public static Error CommittishNotFound(string repo, string committish)
-            => new Error(ErrorLevel.Error, "committish-not-found", $"Can't find branch, tag, or commit '{committish}' for repo {repo}");
+            => new Error(ErrorLevel.Error, "committish-not-found", $"Can't find branch, tag, or commit '{committish}' for repo {repo}.");
 
         /// <summary>
         /// Defined refrence with by #bookmark fragment between articles, which doesn't exist.
@@ -349,7 +349,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Schema document with violate content type/value against predefined models(not syntax error).
         /// </summary>
-        public static Error ViolateSchema(SourceInfo source, string message)
+        public static Error SchemaError(SourceInfo source, string message)
             => new Error(ErrorLevel.Error, "schema-error", message, source);
 
         /// <summary>

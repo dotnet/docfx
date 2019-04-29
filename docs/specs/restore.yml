@@ -113,7 +113,7 @@ inputs:
       error: https://github.com/docascode/docfx-test-dependencies#bad-branch
 outputs:
   build.log: |
-    ["error","committish-not-found","Can't find branch, tag, or commit 'bad-branch' for repo https://github.com/docascode/docfx-test-dependencies"]
+    ["error","committish-not-found","Can't find branch, tag, or commit 'bad-branch' for repo https://github.com/docascode/docfx-test-dependencies."]
 ---
 # Show error when dependent repo can't be found
 commands:
