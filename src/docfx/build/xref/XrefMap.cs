@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using Newtonsoft.Json;
@@ -47,10 +48,9 @@ namespace Microsoft.Docs.Build
 
         private (Error error, string href, string display, Document referencedFile) ResolveCore(string uid, SourceInfo<string> href, string displayPropertyName, Document rootFile, string moniker = null)
         {
-            string name = null;
-            string displayPropertyValue = null;
-            string resolvedHref = null;
-
+            string resolvedHref;
+            string displayPropertyValue;
+            string name;
             if (TryResolveFromInternal(uid, href, moniker, out var internalXrefSpec, out var referencedFile))
             {
                 var (_, query, fragment) = HrefUtility.SplitHref(internalXrefSpec.Href);
@@ -181,7 +181,6 @@ namespace Microsoft.Docs.Build
             return new XrefMap(context, map, CreateInternalXrefMap(context, docset.ScanScope));
         }
 
-        // Assume the input content is 1 line for now since it is what we get from DHS
         private static void DeserializeAndCreateXrefMap(Dictionary<string, Lazy<XrefSpec>> map, string content)
         {
             using (var reader = new StringReader(content))
@@ -189,8 +188,10 @@ namespace Microsoft.Docs.Build
             {
                 var currentProperty = string.Empty;
                 string uid = null;
-                var startPosition = 1;
-                var endPosition = 1;
+                var startLine = 1;
+                var endLine = 1;
+                var startColumn = 1;
+                var endColumn = 1;
                 while (json.Read())
                 {
                     if (json.Value != null)
@@ -207,20 +208,46 @@ namespace Microsoft.Docs.Build
                     {
                         if (json.TokenType == JsonToken.StartObject)
                         {
-                            startPosition = json.LinePosition;
+                            startLine = json.LineNumber;
+                            startColumn = json.LinePosition;
                         }
                         else if (json.TokenType == JsonToken.EndObject)
                         {
-                            endPosition = json.LinePosition;
+                            endLine = json.LineNumber;
+                            endColumn = json.LinePosition;
                             if (uid != null)
                             {
-                                map[uid] = new Lazy<XrefSpec>(() => JsonUtility.Deserialize<XrefSpec>(content.Substring(startPosition - 1, endPosition - startPosition + 1)));
+                                map[uid] = new Lazy<XrefSpec>(() => JsonUtility.Deserialize<XrefSpec>(GetSubstringFromContent(content, startLine, startColumn, endLine, endColumn)));
                                 uid = null;
                             }
                         }
                     }
                 }
             }
+        }
+
+        private static string GetSubstringFromContent(string content, int startLine, int startColumn, int endLine, int endColumn)
+        {
+            var result = new StringBuilder();
+            var currentLine = 1;
+            var currentColumn = 1;
+            foreach (var ch in content)
+            {
+                if (ch == '\n')
+                {
+                    currentLine += 1;
+                    currentColumn = 1;
+                }
+
+                if ((currentLine == startLine && currentColumn > startColumn)
+                    || (currentLine == endLine && currentColumn < endColumn)
+                    || (currentLine > startLine && currentLine < endLine))
+                {
+                    result.Append(ch);
+                }
+                currentColumn += 1;
+            }
+            return result.ToString();
         }
 
         public void OutputXrefMap(Context context)

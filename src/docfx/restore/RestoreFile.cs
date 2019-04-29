@@ -101,18 +101,7 @@ namespace Microsoft.Docs.Build
                 using (var stream = await response.EnsureSuccessStatusCode().Content.ReadAsStreamAsync())
                 using (var file = new FileStream(tempFile, FileMode.Create, FileAccess.Write, FileShare.None))
                 {
-                    string contentEncoding = response.Content.Headers.ContentEncoding.ToString();
-                    if (contentEncoding == "gzip")
-                    {
-                        using (var decompressedFileStream = new GZipStream(stream, CompressionMode.Decompress))
-                        {
-                            await decompressedFileStream.CopyToAsync(file);
-                        }
-                    }
-                    else
-                    {
-                        await stream.CopyToAsync(file);
-                    }
+                    await stream.CopyToAsync(file);
                 }
                 return (tempFile, response.Headers.ETag);
             }
