@@ -18,7 +18,7 @@ namespace Microsoft.Docs.Build
     {
         // TODO: key could be uid+moniker+locale
         private readonly IReadOnlyDictionary<string, List<(InternalXrefSpec specs, Document file)>> _internalXrefMap;
-        private readonly IReadOnlyDictionary<string, XrefSpec> _externalXrefMap;
+        private readonly IReadOnlyDictionary<string, Lazy<XrefSpec>> _externalXrefMap;
         private readonly Context _context;
 
         private static ThreadLocal<Stack<(string uid, string propertyName, Document parent)>> t_recursionDetector = new ThreadLocal<Stack<(string, string, Document)>>(() => new Stack<(string, string, Document)>());
@@ -106,10 +106,12 @@ namespace Microsoft.Docs.Build
 
         private bool TryResolveFromExternal(string uid, out XrefSpec spec)
         {
-            if (_externalXrefMap.TryGetValue(uid, out spec) && spec != null)
+            if (_externalXrefMap.TryGetValue(uid, out var value) && value != null)
             {
+                spec = value.Value;
                 return true;
             }
+            spec = null;
             return false;
         }
 
@@ -154,9 +156,10 @@ namespace Microsoft.Docs.Build
 
         public static XrefMap Create(Context context, Docset docset)
         {
+            // TODO: not considering same uid with multiple spec, it will be Dictionary<string, List<string>>
             // https://github.com/dotnet/corefx/issues/12067
             // Prefer Dictionary with manual lock to ConcurrentDictionary while only adding
-            Dictionary<string, XrefSpec> map = new Dictionary<string, XrefSpec>();
+            Dictionary<string, Lazy<XrefSpec>> map = new Dictionary<string, Lazy<XrefSpec>>();
             ParallelUtility.ForEach(docset.Config.Xref, url =>
             {
                 var (_, content, _) = RestoreMap.GetRestoredFileContent(docset, url);
@@ -164,6 +167,10 @@ namespace Microsoft.Docs.Build
                 if (url?.Value.EndsWith(".yml", StringComparison.OrdinalIgnoreCase) != false)
                 {
                     xrefMap = YamlUtility.Deserialize<XrefMapModel>(content);
+                    foreach (var spec in xrefMap.References)
+                    {
+                        map[spec.Uid] = new Lazy<XrefSpec>(() => spec);
+                    }
                 }
                 else
                 {
@@ -174,53 +181,42 @@ namespace Microsoft.Docs.Build
             return new XrefMap(context, map, CreateInternalXrefMap(context, docset.ScanScope));
         }
 
-        private static void DeserializeAndCreateXrefMap(Dictionary<string, XrefSpec> map, string content)
+        // Assume the input content is 1 line for now since it is what we get from DHS
+        private static void DeserializeAndCreateXrefMap(Dictionary<string, Lazy<XrefSpec>> map, string content)
         {
-            using (var reader = new JsonTextReader(new StringReader(content)))
+            using (var reader = new StringReader(content))
+            using (var json = new JsonTextReader(reader))
             {
                 var currentProperty = string.Empty;
                 XrefSpec spec = new XrefSpec();
-                while (reader.Read())
+                string uid = null;
+                var startPosition = 1;
+                var endPosition = 1;
+                while (json.Read())
                 {
-                    if (reader.Value != null)
+                    if (json.Value != null)
                     {
-                        if (reader.TokenType == JsonToken.PropertyName)
-                            currentProperty = reader.Value.ToString();
+                        if (json.TokenType == JsonToken.PropertyName)
+                            currentProperty = json.Value.ToString();
 
-                        if (reader.TokenType == JsonToken.String && currentProperty == "uid")
+                        if (json.TokenType == JsonToken.String && currentProperty == "uid")
                         {
-                            spec = new XrefSpec
+                            uid = json.Value.ToString();
+                        }
+                    }
+                    else
+                    {
+                        if (json.TokenType == JsonToken.StartObject)
+                        {
+                            startPosition = json.LinePosition;
+                        }
+                        else if (json.TokenType == JsonToken.EndObject)
+                        {
+                            endPosition = json.LinePosition;
+                            if (uid != null)
                             {
-                                Uid = reader.Value.ToString(),
-                            };
-                        }
-
-                        if (reader.TokenType == JsonToken.String && currentProperty == "href")
-                        {
-                            spec.Href = reader.Value.ToString();
-                        }
-
-                        if (reader.TokenType == JsonToken.String && currentProperty == "name")
-                        {
-                            spec.ExtensionData["name"] = reader.Value.ToString();
-                        }
-
-                        if (reader.TokenType == JsonToken.String && currentProperty == "commentId")
-                        {
-                            spec.ExtensionData["commentId"] = reader.Value.ToString();
-                        }
-
-                        if (reader.TokenType == JsonToken.String && currentProperty == "fullName")
-                        {
-                            spec.ExtensionData["fullName"] = reader.Value.ToString();
-                        }
-
-                        if (reader.TokenType == JsonToken.String && currentProperty == "nameWithType")
-                        {
-                            spec.ExtensionData["nameWithType"] = reader.Value.ToString();
-                            lock (map)
-                            {
-                                map[spec.Uid] = spec;
+                                map[uid] = new Lazy<XrefSpec>(() => JsonUtility.Deserialize<XrefSpec>(content.Substring(startPosition - 1, endPosition - startPosition + 1)));
+                                uid = null;
                             }
                         }
                     }
@@ -323,7 +319,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private XrefMap(Context context, IReadOnlyDictionary<string, XrefSpec> externalXrefMap, IReadOnlyDictionary<string, List<(InternalXrefSpec, Document)>> internalXrefMap)
+        private XrefMap(Context context, IReadOnlyDictionary<string, Lazy<XrefSpec>> externalXrefMap, IReadOnlyDictionary<string, List<(InternalXrefSpec, Document)>> internalXrefMap)
         {
             _context = context;
             _externalXrefMap = externalXrefMap;
