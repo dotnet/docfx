@@ -156,6 +156,11 @@ namespace Microsoft.Docs.Build
         public readonly SourceInfo<string> MonikerDefinition = new SourceInfo<string>(string.Empty);
 
         /// <summary>
+        /// Get the metadata JSON schema file path.
+        /// </summary>
+        public readonly SourceInfo<string> MetadataSchema = new SourceInfo<string>(string.Empty);
+
+        /// <summary>
         /// Get the theme repo url like https://github.com/docs/theme#master
         /// It's used for legacy doc(docs.com) sites build
         /// </summary>
