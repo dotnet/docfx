@@ -188,7 +188,6 @@ namespace Microsoft.Docs.Build
             using (var json = new JsonTextReader(reader))
             {
                 var currentProperty = string.Empty;
-                XrefSpec spec = new XrefSpec();
                 string uid = null;
                 var startPosition = 1;
                 var endPosition = 1;
