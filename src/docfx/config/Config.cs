@@ -19,6 +19,11 @@ namespace Microsoft.Docs.Build
         private static readonly string[] s_defaultInclude = new[] { "**/*.{md,yml,json}" };
 
         /// <summary>
+        /// Gets the default site name
+        /// </summary>
+        public readonly string SiteName = "Docs";
+
+        /// <summary>
         /// Gets the default product name
         /// </summary>
         public readonly string Product = string.Empty;
@@ -161,6 +166,12 @@ namespace Microsoft.Docs.Build
         /// It should be absolute url or absolute/relative path
         /// </summary>
         public readonly SourceInfo<string> DependencyLock = new SourceInfo<string>(string.Empty);
+
+        /// <summary>
+        /// When enabled, updated_at for each document will be the last build time
+        /// for the latest commit that touches that document.
+        /// </summary>
+        public readonly bool UpdateTimeAsCommitBuildTime = false;
 
         /// <summary>
         /// Gets the config file name.

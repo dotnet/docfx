@@ -27,12 +27,13 @@ namespace Microsoft.Docs.Build
                 {
                     var (yamlErrors, yamlHeaderObj) = YamlUtility.Parse(builder.ToString(), file);
                     errors.AddRange(yamlErrors);
+
                     if (yamlHeaderObj is JObject obj)
                     {
                         return (errors, obj);
                     }
 
-                    errors.Add(Errors.YamlHeaderNotObject(isArray: yamlHeaderObj is JArray));
+                    errors.Add(Errors.YamlHeaderNotObject(isArray: yamlHeaderObj is JArray, file));
                     break;
                 }
                 builder.Append(line).Append("\n");

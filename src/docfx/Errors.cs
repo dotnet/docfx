@@ -24,8 +24,8 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// The key or value of redirection is null or empty.
         /// </summary>
-        public static Error RedirectionIsNullOrEmpty(string from, string to)
-            => new Error(ErrorLevel.Error, "redirection-is-empty", $"The key or value of redirection '{from}: {to}' is null or empty");
+        public static Error RedirectionIsNullOrEmpty(SourceInfo<string> source, string from)
+            => new Error(ErrorLevel.Error, "redirection-is-empty", $"The key or value of redirection '{from}: {source}' is null or empty", source);
 
         /// <summary>
         /// Defined redirect dest not starting with '\' in <see cref="Config.Redirections"/>.
@@ -93,20 +93,20 @@ namespace Microsoft.Docs.Build
         /// In yaml-format toc, topicHref SHOULD reference an article,
         /// rather than relative path or another toc file.
         /// </summary>
-        public static Error InvalidTopicHref(Document relativeTo, string topicHref)
-            => new Error(ErrorLevel.Error, "invalid-topic-href", $"The topic href '{topicHref}' can only reference to a local file or absolute path", relativeTo.ToString());
+        public static Error InvalidTopicHref(SourceInfo<string> source)
+            => new Error(ErrorLevel.Error, "invalid-topic-href", $"The topic href '{source}' can only reference to a local file or absolute path", source);
 
         /// <summary>
         /// In markdown-format toc, link(treated as inclusion) CAN ONLY be toc file, folder or absolute path.
         /// </summary>
-        public static Error InvalidTocHref(Document relativeTo, SourceInfo<string> source)
-            => new Error(ErrorLevel.Error, "invalid-toc-href", $"The toc href '{source}' can only reference to a local TOC file, folder or absolute path", relativeTo.ToString(), source);
+        public static Error InvalidTocHref(SourceInfo<string> source)
+            => new Error(ErrorLevel.Error, "invalid-toc-href", $"The toc href '{source}' can only reference to a local TOC file, folder or absolute path", source);
 
         /// <summary>
         /// In markdown-format toc, defined an empty node(# ) with no content.
         /// </summary>
-        public static Error MissingTocHead(SourceInfo source)
-            => new Error(ErrorLevel.Error, "missing-toc-head", $"The toc head name is missing", source);
+        public static Error MissingTocHead(SourceInfo<string> source)
+            => new Error(ErrorLevel.Error, "missing-toc-head", $"The toc head name is missing in '{source}'", source);
 
         /// <summary>
         /// In markdown-format toc, used wrong toc syntax.
@@ -115,14 +115,14 @@ namespace Microsoft.Docs.Build
         ///     the opening sequence of, characters must be followed by a space or by the end of line
         ///   - The toc syntax '# @b abc' is invalid, multiple inlines in one heading block is not allowed
         /// </summary>
-        public static Error InvalidTocSyntax(SourceInfo source, string syntax = null, string hint = null)
-            => new Error(ErrorLevel.Error, "invalid-toc-syntax", $"The toc syntax '{syntax}' is invalid, {hint ?? "the opening sequence of # characters must be followed by a space or by the end of line"}. Refer to [ATX heading](https://spec.commonmark.org/0.28/#atx-heading) to fix it", source);
+        public static Error InvalidTocSyntax(SourceInfo<string> source, string hint = null)
+            => new Error(ErrorLevel.Error, "invalid-toc-syntax", $"The toc syntax '{source}' is invalid, {hint ?? "the opening sequence of # characters must be followed by a space or by the end of line"}. Refer to [ATX heading](https://spec.commonmark.org/0.28/#atx-heading) to fix it", source);
 
         /// <summary>
         /// In markdown-format toc, header level should be continuous, it shouldn't skip a level.
         /// </summary>
-        public static Error InvalidTocLevel(string filePath, int from, int to)
-            => new Error(ErrorLevel.Error, "invalid-toc-level", $"The toc level can't be skipped from {from} to {to}", filePath);
+        public static Error InvalidTocLevel(SourceInfo source, int from, int to)
+            => new Error(ErrorLevel.Error, "invalid-toc-level", $"The toc level can't be skipped from {from} to {to}", source);
 
         /// <summary>
         /// Used invalid locale name(can't be resolved by <see cref="System.Globalization.CultureInfo"/>).
@@ -159,9 +159,10 @@ namespace Microsoft.Docs.Build
 
         /// <summary>
         /// Yaml header defined in article.md isn't an object.
+        /// The line should always be 2 since the file should always start with "---"
         /// </summary>
-        public static Error YamlHeaderNotObject(bool isArray)
-            => new Error(ErrorLevel.Warning, "yaml-header-not-object", $"Expect yaml header to be an object, but got {(isArray ? "an array" : "a scalar")}");
+        public static Error YamlHeaderNotObject(bool isArray, string file)
+            => new Error(ErrorLevel.Warning, "yaml-header-not-object", $"Expect yaml header to be an object, but got {(isArray ? "an array" : "a scalar")}", new SourceInfo(file, 2, 1));
 
         /// <summary>
         /// Syntax error in yaml file(not duplicate key).
@@ -181,7 +182,7 @@ namespace Microsoft.Docs.Build
         ///   - unclosed ([{
         /// </summary>
         public static Error JsonSyntaxError(SourceInfo source, string message)
-            => new Error(ErrorLevel.Error, "json-syntax-error", $"{message}", source);
+            => new Error(ErrorLevel.Error, "json-syntax-error", message, source);
 
         /// <summary>
         /// Used empty link in article.md.
@@ -194,8 +195,8 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Link which's resolved to a file out of build scope.
         /// </summary>
-        public static Error LinkOutOfScope(Document relativeTo, Document file, SourceInfo<string> source, string configFile)
-            => new Error(ErrorLevel.Warning, "link-out-of-scope", $"File '{file}' referenced by link '{source}' will not be built because it is not included in {configFile}", relativeTo.ToString(), source);
+        public static Error LinkOutOfScope(SourceInfo<string> source, Document file, string configFile)
+            => new Error(ErrorLevel.Warning, "link-out-of-scope", $"File '{file}' referenced by link '{source}' will not be built because it is not included in {configFile}", source);
 
         /// <summary>
         /// Defined a redirection entry that's not matched by config's files glob patterns.
@@ -229,14 +230,14 @@ namespace Microsoft.Docs.Build
         ///   - define user_profile.json file in config, while the file doesn't exist
         ///   - href referencing a non-existing file
         /// </summary>
-        public static Error FileNotFound(string relativeTo, SourceInfo<string> source)
-            => new Error(ErrorLevel.Warning, "file-not-found", $"Cannot find file '{source}' relative to '{relativeTo}'", relativeTo, source);
+        public static Error FileNotFound(SourceInfo<string> source)
+            => new Error(ErrorLevel.Warning, "file-not-found", $"Cannot find file '{source}' relative to '{source.File}'", source);
 
         /// <summary>
         /// Failed to resolve uid defined by [link](xref:uid) or <xref:uid> syntax.
         /// </summary>
-        public static Error UidNotFound(string file, string uid, SourceInfo<string> source)
-            => new Error(ErrorLevel.Warning, "uid-not-found", $"Cannot find uid '{uid}' using xref '{source}'", file, source);
+        public static Error UidNotFound(SourceInfo<string> source, string uid)
+            => new Error(ErrorLevel.Warning, "uid-not-found", $"Cannot find uid '{uid}' using xref '{source}'", source);
 
         /// <summary>
         /// File contains git merge conflict.
@@ -255,8 +256,8 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Failed to resolve uid defined by @ syntax.
         /// </summary>
-        public static Error AtUidNotFound(string file, string uid, SourceInfo<string> source)
-            => new Error(ErrorLevel.Info, "at-uid-not-found", $"Cannot find uid '{uid}' using xref '{source}'", file, source);
+        public static Error AtUidNotFound(SourceInfo<string> source, string uid)
+            => new Error(ErrorLevel.Info, "at-uid-not-found", $"Cannot find uid '{uid}' using xref '{source}'", source);
 
         /// <summary>
         /// Files published to the same url have no monikers or share common monikers.
@@ -286,8 +287,14 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Used docfx output model property which are not defined in input model.
         /// </summary>
-        public static Error ReservedMetadata(SourceInfo source, string name, string removeFrom)
-            => new Error(ErrorLevel.Warning, "reserved-metadata", $"Metadata '{name}' is reserved by docfx, remove this metadata: '{removeFrom}'", source);
+        public static Error ReservedMetadata(SourceInfo source, string name)
+            => new Error(ErrorLevel.Warning, "reserved-metadata", $"Metadata '{name}' is reserved by docfx, remove this metadata", source);
+
+        /// <summary>
+        /// Metadata value must be scalar or arrays of scalars.
+        /// </summary>
+        public static Error InvalidMetadataType(SourceInfo source, string name)
+            => new Error(ErrorLevel.Info, "invalid-metadata-type", $"Metadata '{name}' can only be a scalar value or string array", source);
 
         /// <summary>
         /// Failed to compute specific info of a commit.
@@ -343,7 +350,7 @@ namespace Microsoft.Docs.Build
         /// Schema document with violate content type/value against predefined models(not syntax error).
         /// </summary>
         public static Error ViolateSchema(SourceInfo source, string message)
-            => new Error(ErrorLevel.Error, "violate-schema", $"{message}", source);
+            => new Error(ErrorLevel.Error, "violate-schema", message, source);
 
         /// <summary>
         /// Used unknown YamlMime.
@@ -351,8 +358,8 @@ namespace Microsoft.Docs.Build
         ///   - forgot to define schema in schema document(yml)
         ///   - defined a an unknown schema type(other than conceptual, contextObject, landingData)
         /// </summary>
-        public static Error SchemaNotFound(string schema)
-            => new Error(ErrorLevel.Error, "schema-not-found", !string.IsNullOrEmpty(schema) ? $"Unknown schema '{schema}', object model is missing." : $"Unknown schema '{schema}'");
+        public static Error SchemaNotFound(SourceInfo<string> source)
+            => new Error(ErrorLevel.Error, "schema-not-found", !string.IsNullOrEmpty(source) ? $"Unknown schema '{source}', object model is missing." : $"Unknown schema '{source}'", source);
 
         /// <summary>
         /// Build errors is larger than <see cref="OutputConfig.MaxErrors"/>.
@@ -414,8 +421,8 @@ namespace Microsoft.Docs.Build
         /// Examples:
         ///   - article with uid `a` has only netcore-1.0 & netcore-1.1 version, but get referenced with @a?view=netcore-2.0
         /// </summary>
-        public static Error InvalidUidMoniker(string moniker, string uid, string file, SourceInfo<string> source)
-            => new Error(ErrorLevel.Warning, "invalid-uid-moniker", $"Moniker '{moniker}' is not defined with uid '{uid}'", file, source);
+        public static Error InvalidUidMoniker(SourceInfo source, string moniker, string uid)
+            => new Error(ErrorLevel.Warning, "invalid-uid-moniker", $"Moniker '{moniker}' is not defined with uid '{uid}'", source);
 
         private static string Join<T>(IEnumerable<T> source, Func<T, string> selector = null)
             => string.Join(", ", source.Select(item => $"{selector?.Invoke(item) ?? item.ToString()}").OrderBy(_ => _, StringComparer.Ordinal).Select(_ => $"'{_}'").Take(5));

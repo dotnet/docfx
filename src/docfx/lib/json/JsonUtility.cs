@@ -21,6 +21,7 @@ namespace Microsoft.Docs.Build
         {
             new StringEnumConverter { NamingStrategy = s_namingStrategy },
             new SourceInfoJsonConverter { },
+            new JTokenJsonConverter { },
         };
 
         private static readonly JsonSerializer s_serializer = JsonSerializer.Create(new JsonSerializerSettings
@@ -47,9 +48,6 @@ namespace Microsoft.Docs.Build
 
         private static readonly ThreadLocal<Stack<Status>> t_status = new ThreadLocal<Stack<Status>>(() => new Stack<Status>());
 
-        private static readonly Action<JToken, int, int> s_setLineInfo =
-           ReflectionUtility.CreateInstanceMethod<JToken, Action<JToken, int, int>>("SetLineInfo", new[] { typeof(int), typeof(int) });
-
         internal static JsonSerializer Serializer => s_serializer;
 
         internal static Status State => t_status.Value.Peek();
@@ -62,65 +60,46 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Fast pass to read MIME from $schema attribute.
         /// </summary>
-        public static string ReadMime(TextReader reader)
+        public static SourceInfo<string> ReadMime(TextReader reader, string file)
         {
-            var schema = ReadSchema(reader);
-            if (schema is null)
-                return null;
+            var schema = ReadSchema(reader, file);
+            if (schema?.Value is null)
+                return schema;
 
             // TODO: be more strict
-            var mime = schema.Split('/').LastOrDefault();
+            var mime = schema.Value.Split('/').LastOrDefault();
             if (mime != null)
-                return Path.GetFileNameWithoutExtension(schema);
-
-            return null;
+            {
+                schema.Value = Path.GetFileNameWithoutExtension(schema);
+            }
+            else
+            {
+                schema.Value = null;
+            }
+            return schema;
         }
 
         /// <summary>
         /// Fast pass to read the value of $schema specified in JSON.
         /// $schema must be the first attribute in the root object.
-        /// Assume input is a valid JSON. Bad input will be process though Json.NET
+        /// Assume input is a valid JSON. Bad input will be processed through Json.NET
         /// </summary>
-        public static string ReadSchema(TextReader reader)
+        public static SourceInfo<string> ReadSchema(TextReader reader, string file)
         {
-            SkipSpaces();
+            var json = new JsonTextReader(reader);
 
-            if (reader.Read() != '{')
-                return null;
-
-            SkipSpaces();
-
-            foreach (var expect in "\"$schema\"")
+            if (json.Read() && json.TokenType == JsonToken.StartObject)
             {
-                if (reader.Read() != expect)
-                    return null;
-            }
-
-            SkipSpaces();
-
-            if (reader.Read() != ':')
-                return null;
-
-            SkipSpaces();
-
-            if (reader.Peek() != '\"')
-                return null;
-
-            return new JsonTextReader(reader).ReadAsString();
-
-            void SkipSpaces()
-            {
-                while (true)
+                if (json.Read() && json.TokenType == JsonToken.PropertyName && json.Value is string str && str == "$schema")
                 {
-                    var ch = reader.Peek();
-                    if (ch == ' ' || ch == '\r' || ch == '\n' || ch == '\t')
+                    if (json.Read() && json.Value is string schema)
                     {
-                        reader.Read();
-                        continue;
+                        var lineInfo = (IJsonLineInfo)json;
+                        return new SourceInfo<string>(schema, new SourceInfo(file, lineInfo.LineNumber, lineInfo.LinePosition));
                     }
-                    break;
                 }
             }
+            return new SourceInfo<string>(null, new SourceInfo(file, 1, 1));
         }
 
         public static IEnumerable<string> GetPropertyNames(Type type)
@@ -164,8 +143,7 @@ namespace Microsoft.Docs.Build
                 }
                 catch (JsonReaderException ex)
                 {
-                    var (source, message) = ParseException(ex);
-                    throw Errors.JsonSyntaxError(source, message).ToException(ex);
+                    throw ToError(ex).ToException(ex);
                 }
             }
         }
@@ -195,13 +173,13 @@ namespace Microsoft.Docs.Build
             try
             {
                 var errors = new List<Error>();
-                var status = new Status { Errors = errors, Transform = transform };
+                var status = new Status { Errors = errors, Transform = transform, Reader = new JTokenReader(token) };
 
                 t_status.Value.Push(status);
 
                 token.ReportUnknownFields(errors, type);
 
-                var value = token.ToObject(type, s_schemaValidationSerializer);
+                var value = s_schemaValidationSerializer.Deserialize(status.Reader, type);
 
                 return (errors, value);
             }
@@ -228,8 +206,7 @@ namespace Microsoft.Docs.Build
             }
             catch (JsonReaderException ex)
             {
-                var (source, message) = ParseException(ex);
-                throw Errors.JsonSyntaxError(source, message).ToException(ex);
+                throw ToError(ex, file).ToException(ex);
             }
         }
 
@@ -247,43 +224,43 @@ namespace Microsoft.Docs.Build
                 {
                     Merge(containerObj, overwriteObj);
                 }
-                else if (IsNullOrUndefined(container[key]) || !IsNullOrUndefined(value))
+                else
                 {
-                    container[key] = SetSourceInfo(DeepClone(value), value.Annotation<SourceInfo>());
+                    container[key] = DeepClone(value);
                     SetSourceInfo(container.Property(key), property.Annotation<SourceInfo>());
                 }
             }
+        }
 
-            JToken DeepClone(JToken token)
+        public static JToken DeepClone(JToken token)
+        {
+            if (token is JValue v)
             {
-                if (token is JValue v)
-                {
-                    return SetSourceInfo(new JValue(v), token.Annotation<SourceInfo>());
-                }
-
-                if (token is JObject obj)
-                {
-                    var result = new JObject();
-                    foreach (var prop in obj.Properties())
-                    {
-                        result[prop.Name] = SetSourceInfo(DeepClone(prop.Value), prop.Value.Annotation<SourceInfo>());
-                        SetSourceInfo(result.Property(prop.Name), prop.Annotation<SourceInfo>());
-                    }
-                    return SetSourceInfo(result, token.Annotation<SourceInfo>());
-                }
-
-                if (token is JArray array)
-                {
-                    var result = new JArray();
-                    foreach (var item in array)
-                    {
-                        result.Add(SetSourceInfo(DeepClone(item), item.Annotation<SourceInfo>()));
-                    }
-                    return SetSourceInfo(result, token.Annotation<SourceInfo>());
-                }
-
-                throw new NotSupportedException();
+                return SetSourceInfo(new JValue(v), token.Annotation<SourceInfo>());
             }
+
+            if (token is JObject obj)
+            {
+                var result = new JObject();
+                foreach (var prop in obj.Properties())
+                {
+                    result[prop.Name] = DeepClone(prop.Value);
+                    SetSourceInfo(result.Property(prop.Name), prop.Annotation<SourceInfo>());
+                }
+                return SetSourceInfo(result, token.Annotation<SourceInfo>());
+            }
+
+            if (token is JArray array)
+            {
+                var result = new JArray();
+                foreach (var item in array)
+                {
+                    result.Add(DeepClone(item));
+                }
+                return SetSourceInfo(result, token.Annotation<SourceInfo>());
+            }
+
+            throw new NotSupportedException();
         }
 
         /// <summary>
@@ -335,7 +312,8 @@ namespace Microsoft.Docs.Build
                 node.Remove();
             }
 
-            return (errors, root);
+            // treat null JToken as empty JObject since it is from user input
+            return (errors, IsNullOrUndefined(root) ? new JObject() : root);
 
             void RemoveNullsCore(JToken token, string name)
             {
@@ -394,18 +372,26 @@ namespace Microsoft.Docs.Build
 
         internal static JToken SetSourceInfo(JToken token, SourceInfo source)
         {
-            token.AddAnnotation(source ?? SourceInfo.Empty);
+            token.RemoveAnnotations<SourceInfo>();
             if (source != null)
             {
-                s_setLineInfo(token, source.Line, source.Column);
+                token.AddAnnotation(source);
             }
             return token;
+        }
+
+        private static bool IsNullOrUndefined(this JToken token)
+        {
+            return
+                (token is null) ||
+                (token.Type == JTokenType.Null) ||
+                (token.Type == JTokenType.Undefined);
         }
 
         private static JToken SetSourceInfo(JToken token, string file)
         {
             var lineInfo = (IJsonLineInfo)token;
-            token.AddAnnotation(new SourceInfo(file, lineInfo.LineNumber, lineInfo.LinePosition));
+            SetSourceInfo(token, new SourceInfo(file, lineInfo.LineNumber, lineInfo.LinePosition));
 
             switch (token)
             {
@@ -436,48 +422,36 @@ namespace Microsoft.Docs.Build
             // only log an error once
             if (args.CurrentObject == args.ErrorContext.OriginalObject)
             {
-                if (args.ErrorContext.Error is JsonReaderException || args.ErrorContext.Error is JsonSerializationException jse)
+                if (args.ErrorContext.Error is JsonReaderException || args.ErrorContext.Error is JsonSerializationException)
                 {
-                    var (source, message) = ParseException(args.ErrorContext.Error);
-                    t_status.Value.Peek().Errors.Add(Errors.ViolateSchema(source, message));
+                    var state = t_status.Value.Peek();
+                    state.Errors.Add(Errors.ViolateSchema(GetSourceInfo(state.Reader.CurrentToken), RewriteErrorMessage(args.ErrorContext.Error.Message)));
                     args.ErrorContext.Handled = true;
                 }
             }
         }
 
-        private static (SourceInfo, string message) ParseException(Exception ex)
+        private static Error ToError(JsonReaderException ex, string file = null)
         {
-            // TODO: Json.NET type conversion error message is developer friendly but not writer friendly.
-            var match = Regex.Match(ex.Message, "^([\\s\\S]*)\\sPath '(.*)', line (\\d+), position (\\d+).$");
-            if (match.Success)
-            {
-                var source = new SourceInfo(null, int.Parse(match.Groups[3].Value), int.Parse(match.Groups[4].Value));
-                return (source, RewriteErrorMessage(match.Groups[1].Value));
-            }
+            var source = new SourceInfo(file, ex.LineNumber, ex.LinePosition);
 
-            match = Regex.Match(ex.Message, "^([\\s\\S]*)\\sPath '(.*)'.$");
-            if (match.Success)
-            {
-                return (default, RewriteErrorMessage(match.Groups[1].Value));
-            }
-            return (default, RewriteErrorMessage(ex.Message));
+            return Errors.JsonSyntaxError(source, RewriteErrorMessage(ex.Message));
         }
 
         private static string RewriteErrorMessage(string message)
         {
+            // TODO: Json.NET type conversion error message is developer friendly but not writer friendly.
+            var match = Regex.Match(message, "^([\\s\\S]*)\\sPath (.*).$");
+            if (match.Success)
+            {
+                message = match.Groups[1].Value;
+            }
+
             if (message.StartsWith("Error reading string. Unexpected token"))
             {
                 return "Expected type String, please input String or type compatible with String.";
             }
             return message;
-        }
-
-        private static bool IsNullOrUndefined(this JToken token)
-        {
-            return
-                (token is null) ||
-                (token.Type == JTokenType.Null) ||
-                (token.Type == JTokenType.Undefined);
         }
 
         private static void ReportUnknownFields(this JToken token, List<Error> errors, Type type)
@@ -564,6 +538,8 @@ namespace Microsoft.Docs.Build
 
         internal class Status
         {
+            public JTokenReader Reader { get; set; }
+
             public List<Error> Errors { get; set; }
 
             public Func<IEnumerable<DataTypeAttribute>, SourceInfo<object>, string, object> Transform { get; set; }

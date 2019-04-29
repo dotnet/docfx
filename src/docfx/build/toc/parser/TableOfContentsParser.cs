@@ -153,7 +153,7 @@ namespace Microsoft.Docs.Build
                     }
                     else
                     {
-                        errors.AddIfNotNull(Errors.InvalidTocHref(filePath, tocInputModel.TocHref));
+                        errors.AddIfNotNull(Errors.InvalidTocHref(tocInputModel.TocHref));
                     }
                 }
 
@@ -172,7 +172,7 @@ namespace Microsoft.Docs.Build
                     var topicHrefType = GetHrefType(tocInputModel.TopicHref);
                     if (IsIncludeHref(topicHrefType))
                     {
-                        errors.Add(Errors.InvalidTopicHref(filePath, tocInputModel.TopicHref));
+                        errors.Add(Errors.InvalidTopicHref(tocInputModel.TopicHref));
                     }
                     else
                     {
