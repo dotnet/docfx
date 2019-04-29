@@ -1,13 +1,102 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.IO;
 using System.Linq;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Xunit;
 
 namespace Microsoft.Docs.Build
 {
     public class JsonSchemaTest
     {
+        // Test against a subset of JSON schema test suite: https://github.com/json-schema-org/JSON-Schema-Test-Suite
+        private static readonly string[] s_notSupportedSuites =
+        {
+            "additionalItems",
+            "additionalProperties",
+            "allOf",
+            "anyOf",
+            "boolean_schema",
+            "const",
+            "contains",
+            "definitions",
+            "dependencies",
+            "exclusiveMaximum",
+            "exclusiveMinimum",
+            "if-then-else",
+            "maximum",
+            "maxItems",
+            "maxLength",
+            "maxProperties",
+            "minimum",
+            "minItems",
+            "minLength",
+            "minProperties",
+            "multipleOf",
+            "not",
+            "oneOf",
+            "pattern",
+            "patternProperties",
+            "propertyNames",
+            "ref",
+            "refRemote",
+            "uniqueItems"
+        };
+
+        private static readonly string[] s_notSupportedTests =
+        {
+            "heterogeneous enum validation",
+            "an array of schemas for items",
+            "items and subitems",
+            "with boolean schema",
+            "patternProperties",
+            "multiple types can be specified in an array",
+            "type as array",
+            "type: array or object",
+            "type: array, object or null"
+        };
+
+        public static TheoryData<string, string, string> GetJsonSchemaTestSuite()
+        {
+            var result = new TheoryData<string, string, string>();
+            foreach (var file in Directory.GetFiles("data/jschema/draft7"))
+            {
+                var suite = Path.GetFileNameWithoutExtension(file);
+                if (s_notSupportedSuites.Contains(suite))
+                {
+                    continue;
+                }
+
+                foreach (var schema in JArray.Parse(File.ReadAllText(file)))
+                {
+                    var schemaText = schema["schema"].ToString();
+                    foreach (var test in schema["tests"])
+                    {
+                        var description = $"{(schema["description"])}/{(test["description"])}";
+                        if (s_notSupportedTests.Any(text => description.Contains(text)))
+                        {
+                            continue;
+                        }
+                        result.Add($"{suite}/{description}", schemaText, test.ToString());
+                    }
+                }
+            }
+            return result;
+        }
+
+        [Theory]
+        [MemberData(nameof(GetJsonSchemaTestSuite))]
+        public void TestJsonSchemaConfirmance(string description, string schemaText, string testText)
+        {
+            var schema = JsonConvert.DeserializeObject<JsonSchema>(schemaText);
+            var test = JObject.Parse(testText);
+            var errors = JsonSchemaValidation.Validate(schema, test["data"]);
+
+            Assert.Equal(test.Value<bool>("valid"), errors.Count == 0);
+        }
+
         [Theory]
 
         // type validation
