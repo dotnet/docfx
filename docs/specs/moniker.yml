@@ -726,7 +726,7 @@ outputs:
   xrefmap.json: | 
     {"!references":null}
   build.log: |
-    ["error","uid-conflict","Two or more documents have defined the same Uid 'a': docs/a.md,docs/b.md"]
+    ["error","uid-conflict","UID 'a' is defined in more than one file: docs/a.md,docs/b.md"]
     ["warning","xref-not-found","Cross reference not found: '@a'","docs/c.md",1,10]
 ---
 # Build toc with monikers info

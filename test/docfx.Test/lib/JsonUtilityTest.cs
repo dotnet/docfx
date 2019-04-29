@@ -301,9 +301,9 @@ namespace Microsoft.Docs.Build
         [InlineData(@"{
 'numberList':
   [1, 'a'],
-'valueRequired': 'a'}", ErrorLevel.Error, "violate-schema", 3, 9)]
-        [InlineData(@"{'b' : 'b', 'valueRequired': 'a'}", ErrorLevel.Error, "violate-schema", 1, 10)]
-        [InlineData(@"{'valueEnum':'Four', 'valueRequired': 'a'}", ErrorLevel.Error, "violate-schema", 1, 19)]
+'valueRequired': 'a'}", ErrorLevel.Error, "schema-error", 3, 9)]
+        [InlineData(@"{'b' : 'b', 'valueRequired': 'a'}", ErrorLevel.Error, "schema-error", 1, 10)]
+        [InlineData(@"{'valueEnum':'Four', 'valueRequired': 'a'}", ErrorLevel.Error, "schema-error", 1, 19)]
         internal void TestMismatchingPrimitiveFieldType(string json, ErrorLevel expectedErrorLevel, string expectedErrorCode,
             int expectedErrorLine, int expectedErrorColumn)
         {
@@ -362,13 +362,13 @@ namespace Microsoft.Docs.Build
         }
 
         [Theory]
-        [InlineData(@"{""regPatternValue"":""3"", ""valueRequired"": ""a""}", ErrorLevel.Error, "violate-schema", 1, 22)]
-        [InlineData(@"{""valueWithLengthRestriction"":""a"", ""valueRequired"": ""a""}", ErrorLevel.Error, "violate-schema", 1, 33)]
-        [InlineData(@"{""valueWithLengthRestriction"":""abcd"", ""valueRequired"": ""a""}", ErrorLevel.Error, "violate-schema", 1, 36)]
-        [InlineData(@"{""listValueWithLengthRestriction"":[], ""valueRequired"": ""a""}", ErrorLevel.Error, "violate-schema", 1, 35)]
-        [InlineData(@"{""listValueWithLengthRestriction"":[""a"", ""b"", ""c"", ""d""], ""valueRequired"": ""a""}", ErrorLevel.Error, "violate-schema", 1, 35)]
-        [InlineData(@"{""nestedMember"": {""valueWithLengthRestriction"":""abcd""}, ""valueRequired"": ""a""}", ErrorLevel.Error, "violate-schema", 1, 53)]
-        [InlineData(@"{""b"": 1}", ErrorLevel.Error, "violate-schema", 1, 1)]
+        [InlineData(@"{""regPatternValue"":""3"", ""valueRequired"": ""a""}", ErrorLevel.Error, "schema-error", 1, 22)]
+        [InlineData(@"{""valueWithLengthRestriction"":""a"", ""valueRequired"": ""a""}", ErrorLevel.Error, "schema-error", 1, 33)]
+        [InlineData(@"{""valueWithLengthRestriction"":""abcd"", ""valueRequired"": ""a""}", ErrorLevel.Error, "schema-error", 1, 36)]
+        [InlineData(@"{""listValueWithLengthRestriction"":[], ""valueRequired"": ""a""}", ErrorLevel.Error, "schema-error", 1, 35)]
+        [InlineData(@"{""listValueWithLengthRestriction"":[""a"", ""b"", ""c"", ""d""], ""valueRequired"": ""a""}", ErrorLevel.Error, "schema-error", 1, 35)]
+        [InlineData(@"{""nestedMember"": {""valueWithLengthRestriction"":""abcd""}, ""valueRequired"": ""a""}", ErrorLevel.Error, "schema-error", 1, 53)]
+        [InlineData(@"{""b"": 1}", ErrorLevel.Error, "schema-error", 1, 1)]
         internal void TestSchemaViolation(string json, ErrorLevel expectedErrorLevel, string expectedErrorCode,
             int expectedErrorLine, int expectedErrorColumn)
         {
@@ -395,21 +395,21 @@ namespace Microsoft.Docs.Build
             error =>
             {
                 Assert.Equal(ErrorLevel.Error, error.Level);
-                Assert.Equal("violate-schema", error.Code);
+                Assert.Equal("schema-error", error.Code);
                 Assert.Equal(2, error.Line);
                 Assert.Equal(21, error.Column);
             },
             error =>
             {
                 Assert.Equal(ErrorLevel.Error, error.Level);
-                Assert.Equal("violate-schema", error.Code);
+                Assert.Equal("schema-error", error.Code);
                 Assert.Equal(3, error.Line);
                 Assert.Equal(9, error.Column);
             },
             error =>
             {
                 Assert.Equal(ErrorLevel.Error, error.Level);
-                Assert.Equal("violate-schema", error.Code);
+                Assert.Equal("schema-error", error.Code);
                 Assert.Equal(4, error.Line);
                 Assert.Equal(18, error.Column);
             });
@@ -428,40 +428,40 @@ namespace Microsoft.Docs.Build
             Assert.Collection(errors, error =>
             {
                 Assert.Equal(ErrorLevel.Error, error.Level);
-                Assert.Equal("violate-schema", error.Code);
+                Assert.Equal("schema-error", error.Code);
                 Assert.Equal(2, error.Line);
                 Assert.Equal(21, error.Column);
             }, error =>
             {
                 Assert.Equal(ErrorLevel.Error, error.Level);
-                Assert.Equal("violate-schema", error.Code);
+                Assert.Equal("schema-error", error.Code);
                 Assert.Equal(3, error.Line);
                 Assert.Equal(32, error.Column);
                 Assert.Equal("The field ValueWithLengthRestriction must be a string or array type with a minimum length of '2'.", error.Message);
             }, error =>
             {
                 Assert.Equal(ErrorLevel.Error, error.Level);
-                Assert.Equal("violate-schema", error.Code);
+                Assert.Equal("schema-error", error.Code);
                 Assert.Equal(4, error.Line);
                 Assert.Equal(34, error.Column);
                 Assert.Equal("The field ListValueWithLengthRestriction must be a string or array type with a minimum length of '1'.", error.Message);
             }, error =>
             {
                 Assert.Equal(ErrorLevel.Error, error.Level);
-                Assert.Equal("violate-schema", error.Code);
+                Assert.Equal("schema-error", error.Code);
                 Assert.Equal(5, error.Line);
                 Assert.Equal(52, error.Column);
             }, error =>
             {
                 Assert.Equal(ErrorLevel.Error, error.Level);
-                Assert.Equal("violate-schema", error.Code);
+                Assert.Equal("schema-error", error.Code);
                 Assert.Equal(6, error.Line);
                 Assert.Equal(19, error.Column);
                 Assert.Equal("Error converting value \"notArray\" to type 'System.Collections.Generic.List`1[Microsoft.Docs.Build.JsonUtilityTest+BasicClass]'.", error.Message);
             }, error =>
             {
                 Assert.Equal(ErrorLevel.Error, error.Level);
-                Assert.Equal("violate-schema", error.Code);
+                Assert.Equal("schema-error", error.Code);
                 Assert.Equal(1, error.Line);
                 Assert.Equal(1, error.Column);
                 Assert.Equal("Required property 'valueRequired' not found in JSON.", error.Message);

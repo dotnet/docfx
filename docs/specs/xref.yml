@@ -157,7 +157,7 @@ outputs:
   docs/c.json: |
     {"content":"<p>Link to @a</p>\n"}
   build.log: |
-    ["error","uid-conflict","Two or more documents have defined the same Uid 'a': docs/a.yml,docs/b.json"]
+    ["error","uid-conflict","UID 'a' is defined in more than one file: docs/a.yml,docs/b.json"]
     ["warning","xref-not-found","Cross reference not found: '@a'","docs/c.md",1,10]
   xrefmap.json: | 
     {"!references":null}
@@ -322,7 +322,7 @@ outputs:
   docs/a.json:
   docs/b.json:
   build.log: |
-    ["error","uid-conflict","Two or more documents have defined the same Uid 'b': docs/a.json,docs/b.json"]
+    ["error","uid-conflict","UID 'b' is defined in more than one file: docs/a.json,docs/b.json"]
   xrefmap.json: |
     {"references":[{"uid":"a","href":"https://docs.com/docs/a.json"}]}
 ---
@@ -678,9 +678,9 @@ outputs:
     {"content" : "<p>str <a href='c'>Title from yaml header c</a>\nstr @mention\nsome text\nstr @higher\nmultiple xref @mentione some text @mentionf</p>\n<p>\n  @mentione\n  some text\n  mentionf\n</p>\n"}
   docs/c.json:
   build.log: |
-    ["warning","xref-not-found","Cross reference not found: '<xref href=\"d\" data-raw-source=\"@mention\">'","docs/a.md",2,12]
-    ["warning","xref-not-found","Cross reference not found: '<xref href=\"d\" data-raw-html=\"@higher\" data-raw-source=\"@mention\">'","docs/a.md",4,12]
-    ["warning","xref-not-found","Cross reference not found: '<xref href=\"e\" data-raw-source=\"@mentione\">'","docs/a.md",5,12]
-    ["warning","xref-not-found","Cross reference not found: '<xref href=\"f\" data-raw-source=\"@mentionf\">'","docs/a.md",5,12]
-    ["warning","xref-not-found","Cross reference not found: '<p>\n  <xref href=\"e\" data-raw-source=\"@mentione\" />\n  some text\n  <xref href=\"f\" data-raw-source=\"mentionf\" />\n</p>'","docs/a.md",6,18]
+    ["warning","xref-not-found","Cross reference not found: '@d'","docs/a.md",2,12]
+    ["warning","xref-not-found","Cross reference not found: '@d'","docs/a.md",4,12]
+    ["warning","xref-not-found","Cross reference not found: '@e'","docs/a.md",5,12]
+    ["warning","xref-not-found","Cross reference not found: '@f'","docs/a.md",5,12]
+    ["warning","xref-not-found","Cross reference not found: '@e'","docs/a.md",6,18]
     ["warning","uid-not-found","Cannot find uid 'f' using xref '<p>\n  <xref href=\"e\" data-raw-source=\"@mentione\" />\n  some text\n  <xref href=\"f\" data-raw-source=\"mentionf\" />\n</p>'","docs/a.md",6,78]

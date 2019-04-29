@@ -1,7 +1,7 @@
 # default config for specs in docfx
 baseUrl: https://docs.com
 rules:
-  heading-not-found: off
+  h1-missing: off
   resolve-author-failed: off
   resolve-commit-failed: off
 output:

@@ -130,7 +130,7 @@ namespace Microsoft.Docs.Build
 
             if (!HtmlUtility.TryExtractTitle(htmlDom, out var title, out var rawTitle))
             {
-                errors.Add(Errors.HeadingNotFound(file));
+                errors.Add(Errors.H1Missing(file));
             }
 
             pageModel.Content = HtmlPostProcess(file, htmlDom);

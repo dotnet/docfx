@@ -18,7 +18,7 @@ namespace Microsoft.Docs.Build
             {
                 if (s_reservedNames.Contains(property.Name))
                 {
-                    errors.Add(Errors.ReservedMetadata(JsonUtility.GetSourceInfo(property), property.Name));
+                    errors.Add(Errors.AttributeReserved(JsonUtility.GetSourceInfo(property), property.Name));
                 }
                 else if (!IsValidMetadataType(property.Value))
                 {

@@ -23,13 +23,13 @@ namespace Microsoft.Docs.Build
     {
         private static readonly string[] s_errorCodesWithoutLineInfo =
         {
-            "need-restore", "heading-not-found", "config-not-found", "committish-not-found",
+            "need-restore", "h1-missing", "config-not-found", "committish-not-found",
 
             // can be removed
             "moniker-config-missing",
 
             // should have, maybe sometimes not
-            "download-failed", "invalid-locale",
+            "download-failed", "locale-invalid",
 
             // show multiple errors with line info
             "publish-url-conflict", "output-path-conflict", "uid-conflict", "redirection-conflict",

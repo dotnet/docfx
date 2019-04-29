@@ -158,10 +158,10 @@ outputs:
       ]
     }
   build.log: |
-    ["warning","file-not-found","Cannot find file 'no-existing.md' relative to 'docs/TOC.md'","docs/TOC.md",3,5]
-    ["warning","file-not-found","Cannot find file 'no-existing.system.md' relative to 'docs/TOC.md'","docs/TOC.md",4,5]
-    ["warning","file-not-found","Cannot find file '../no-existing.md' relative to 'docs/TOC.md'","docs/TOC.md",5,5]
-    ["warning","file-not-found","Cannot find file '~/docs/no-existing.md' relative to 'docs/TOC.md'","docs/TOC.md",6,5]
+    ["warning","file-not-found","Invalid file link: 'no-existing.md'","docs/TOC.md",3,5]
+    ["warning","file-not-found","Invalid file link: 'no-existing.system.md'","docs/TOC.md",4,5]
+    ["warning","file-not-found","Invalid file link: '../no-existing.md'","docs/TOC.md",5,5]
+    ["warning","file-not-found","Invalid file link: '~/docs/no-existing.md'","docs/TOC.md",6,5]
 ---
 # Invalid markdown TOC metadata
 inputs:
@@ -172,7 +172,7 @@ inputs:
     ---
 outputs:
   build.log: |
-    ["error","violate-schema","Expected type String, please input String or type compatible with String.","docs/TOC.md",2,15]
+    ["error","schema-error","Expected type String, please input String or type compatible with String.","docs/TOC.md",2,15]
 ---
 # Absolute file reference
 inputs:
@@ -485,7 +485,7 @@ outputs:
   docs/f1/toc.json:
   docs/f2/toc.json:
   build.log: |
-    ["warning","file-not-found","Cannot find file 'b.md' relative to 'docs/f2/TOC.md'","docs/f2/TOC.md",3,4]
+    ["warning","file-not-found","Invalid file link: 'b.md'","docs/f2/TOC.md",3,4]
 ---
 # Topic href can replace href
 inputs:
@@ -814,7 +814,7 @@ inputs:
       tocHref: index.md
 outputs:
   build.log: |
-    ["warning","file-not-found","Cannot find file 'index.md' relative to 'docs/f1/TOC.yml'","docs/f1/TOC.yml",2,9]
+    ["warning","file-not-found","Invalid file link: 'index.md'","docs/f1/TOC.yml",2,9]
     ["error","invalid-toc-href","The toc href 'index.md' can only reference to a local TOC file, folder or absolute path","docs/f1/TOC.yml",4,12]
 ---
 # TOC includes same href at different levels
@@ -834,9 +834,9 @@ inputs:
               href: index.md
 outputs:
   build.log: |
-    ["warning","file-not-found","Cannot find file 'index.md' relative to 'docs/TOC.yml'","docs/TOC.yml",3,9]
-    ["warning","file-not-found","Cannot find file 'index.md' relative to 'docs/TOC.yml'","docs/TOC.yml",7,13]
-    ["warning","file-not-found","Cannot find file 'index.md' relative to 'docs/TOC.yml'","docs/TOC.yml",11,17]
+    ["warning","file-not-found","Invalid file link: 'index.md'","docs/TOC.yml",3,9]
+    ["warning","file-not-found","Invalid file link: 'index.md'","docs/TOC.yml",7,13]
+    ["warning","file-not-found","Invalid file link: 'index.md'","docs/TOC.yml",11,17]
     ["error","invalid-toc-href","The toc href 'index.md' can only reference to a local TOC file, folder or absolute path","docs/TOC.yml",2,12]
     ["error","invalid-toc-href","The toc href 'index.md' can only reference to a local TOC file, folder or absolute path","docs/TOC.yml",6,16]
     ["error","invalid-toc-href","The toc href 'index.md' can only reference to a local TOC file, folder or absolute path","docs/TOC.yml",10,20]
@@ -994,8 +994,8 @@ outputs:
   docs/f1/b.json:
   build.log: |
     ["info","null-value","'tocHref' contains null value","docs/TOC.yml",2,3]
-    ["error","violate-schema","Required property 'name' not found in JSON.","docs/TOC.yml",1,3]
-    ["error","violate-schema","The field Items must be a string or array type with a minimum length of '1'.","docs/TOC.yml",5,10]
+    ["error","schema-error","Required property 'name' not found in JSON.","docs/TOC.yml",1,3]
+    ["error","schema-error","The field Items must be a string or array type with a minimum length of '1'.","docs/TOC.yml",5,10]
 ---
 # Orphan file(not explicitly referenced in toc file)'s toc, only look up parent folder toc files
 inputs:

@@ -72,9 +72,9 @@ inputs:
     { "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/SchemaNotExisting.json"}
 outputs:
   build.log: |
-   ["error","schema-not-found","Unknown schema 'SchemaNotExisting', object model is missing.","docs/a.yml",1,1]
-   ["error","schema-not-found","Unknown schema 'SchemaNotExisting', object model is missing.","docs/b.json",2,95]
-   ["error","schema-not-found","Unknown schema 'SchemaNotExisting', object model is missing.","docs/c.json",1,95]
+   ["error","schema-not-found","System: Schema 'SchemaNotExisting' not found","docs/a.yml",1,1]
+   ["error","schema-not-found","System: Schema 'SchemaNotExisting' not found","docs/b.json",2,95]
+   ["error","schema-not-found","System: Schema 'SchemaNotExisting' not found","docs/c.json",1,95]
 ---
 # Support schema documents with Href content
 inputs:
@@ -123,7 +123,7 @@ outputs:
   toc.json:
   docs/toc.json:
   build.log: |
-    ["error","violate-schema","Cannot deserialize the current JSON object * into type 'System.String' because the type requires a JSON primitive value *","docs/a.yml",3,18]
+    ["error","schema-error","Cannot deserialize the current JSON object * into type 'System.String' because the type requires a JSON primitive value *","docs/a.yml",3,18]
 ---
 # Schema documents with Href content referencing resource file, the resouce file should be outputed
 inputs:
@@ -165,7 +165,7 @@ outputs:
 inputs:
   docfx.yml: |
     rules:
-      heading-not-found: error
+      h1-missing: error
   docs/a.yml: |
     #YamlMime:TestPage
     inlineDescription: >

@@ -110,7 +110,7 @@ inputs:
 outputs:
   docs/index.json:
   build.log: |
-    ["warning","github-user-not-found","Cannot find user 'invalid_user' on GitHub","docs/index.md",2,9]
+    ["warning","author-not-found","Invalid value for author: 'invalid_user' is not a valid GitHub ID","docs/index.md",2,9]
 ---
 # Author should NOT exist in contributors. Author can have no contribution to the file before.
 repos:
@@ -406,7 +406,7 @@ repos:
         a.md:
 outputs:
   build.log: |
-    ["error","committish-not-found","Cannot find branch, tag or commit 'live' for repo '*github.com+git+repo.zh-cn*","a.md"]
+    ["error","committish-not-found","Can't find branch, tag, or commit 'live' for repo *github.com+git+repo.zh-cn*","a.md"]
 ---
 # Use current repo's branch when edit branch isn't specified in contribution config,
 # and contribution config's repository equals to current repo's

@@ -104,7 +104,7 @@ inputs:
     extend: https://this-url-does-not-exit.com/this-is-a-bad-url
 outputs:
   build.log: |
-    ["error","download-failed","Download 'https://this-url-does-not-exit.com/this-is-a-bad-url' failed: *"]
+    ["error","download-failed","System: Download failed for file 'https://this-url-does-not-exit.com/this-is-a-bad-url'. Try closing and reopening the PR. If you get this Error again, file an issue."]
 ---
 # Show error when git clone failed
 inputs:
@@ -113,7 +113,7 @@ inputs:
       error: https://github.com/docascode/docfx-test-dependencies#bad-branch
 outputs:
   build.log: |
-    ["error","committish-not-found","Cannot find branch, tag or commit 'bad-branch' for repo 'https://github.com/docascode/docfx-test-dependencies'."]
+    ["error","committish-not-found","Can't find branch, tag, or commit 'bad-branch' for repo https://github.com/docascode/docfx-test-dependencies"]
 ---
 # Show error when dependent repo can't be found
 commands:

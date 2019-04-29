@@ -18,8 +18,8 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Redirection entry isn't a conceptual article(*.{md,json,yml}).
         /// </summary>
-        public static Error InvalidRedirection(SourceInfo source, string path, ContentType contentType)
-            => new Error(ErrorLevel.Error, "invalid-redirection", $"The '{path}' shouldn't belong to redirections since it's a {contentType}", source);
+        public static Error InvalidRedirection(SourceInfo source, string path)
+            => new Error(ErrorLevel.Warning, "redirection-invalid", $"File '{path}' is redirected to '{source}'. Only content files can be redirected", source);
 
         /// <summary>
         /// The key or value of redirection is null or empty.
@@ -39,8 +39,8 @@ namespace Microsoft.Docs.Build
         ///   - in build scope include/exclude files
         ///   - in file metadata glob
         /// </summary>
-        public static Error InvalidGlobPattern(string pattern, Exception ex)
-            => new Error(ErrorLevel.Error, "invalid-glob-pattern", $"The glob pattern '{pattern}' is invalid: {ex.Message}");
+        public static Error GlobPatternInvalid(string pattern, Exception ex)
+            => new Error(ErrorLevel.Error, "glob-pattern-invalid", $"System: Glob pattern '{pattern}' is invalid: {ex.Message} Try closing and reopening the PR. If you get this Error again, file an issue");
 
         /// <summary>
         /// Docfx.yml/docfx.json doesn't exist at the repo root.
@@ -50,7 +50,7 @@ namespace Microsoft.Docs.Build
         ///     nor source repo root
         /// </summary>
         public static Error ConfigNotFound(string docsetPath)
-            => new Error(ErrorLevel.Error, "config-not-found", $"Cannot find 'docfx.yml/docfx.json' at '{docsetPath}'");
+            => new Error(ErrorLevel.Error, "config-not-found", $"Can't find config file 'docfx.yml' or 'docfx.json' at {docsetPath}");
 
         /// <summary>
         /// Two files include each other.
@@ -77,8 +77,8 @@ namespace Microsoft.Docs.Build
         /// Examples:
         ///   - defined a non-existent author
         /// </summary>
-        public static Error GitHubUserNotFound(string login)
-            => new Error(ErrorLevel.Warning, "github-user-not-found", $"Cannot find user '{login}' on GitHub");
+        public static Error AuthorNotFound(string login)
+            => new Error(ErrorLevel.Warning, "author-not-found", $"Invalid value for author: '{login}' is not a valid GitHub ID");
 
         /// <summary>
         /// Failed to call a github api, e.g. GET /users/login.
@@ -87,7 +87,7 @@ namespace Microsoft.Docs.Build
         ///   - using invalid access token(more detailed info in ex.Message)
         /// </summary>
         public static Error GitHubApiFailed(string api, Exception ex)
-            => new Error(ErrorLevel.Warning, "github-api-failed", $"Failed calling GitHub API '{api}': {ex.Message}");
+            => new Error(ErrorLevel.Warning, "github-api-failed", $"System: Call to GitHub API '{api}' failed: {ex.Message} Try closing and reopening the PR. If you get this Error again, file an issue.");
 
         /// <summary>
         /// In yaml-format toc, topicHref SHOULD reference an article,
@@ -127,8 +127,8 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Used invalid locale name(can't be resolved by <see cref="System.Globalization.CultureInfo"/>).
         /// </summary>
-        public static Error InvalidLocale(string locale)
-            => new Error(ErrorLevel.Error, "invalid-locale", $"Locale '{locale}' is not supported.");
+        public static Error LocaleInvalid(string locale)
+            => new Error(ErrorLevel.Error, "locale-invalid", $"Invalid locale: '{locale}'");
 
         /// <summary>
         /// Failed to download any file defined with url.
@@ -137,8 +137,8 @@ namespace Microsoft.Docs.Build
         ///   - failed to download due to bad network
         ///   - when update user profile cache fails, need to download verify etag
         /// </summary>
-        public static Error DownloadFailed(string url, string message)
-            => new Error(ErrorLevel.Error, "download-failed", $"Download '{url}' failed: {message}");
+        public static Error DownloadFailed(string url)
+            => new Error(ErrorLevel.Error, "download-failed", $"System: Download failed for file '{url}'. Try closing and reopening the PR. If you get this Error again, file an issue.");
 
         /// <summary>
         /// Failed to update user profile cache file.
@@ -147,7 +147,7 @@ namespace Microsoft.Docs.Build
         ///     update the file cache with put request
         /// </summary>
         public static Error UploadFailed(string url, string message)
-            => new Error(ErrorLevel.Warning, "upload-failed", $"Upload '{url}' failed: {message}");
+            => new Error(ErrorLevel.Warning, "upload-failed", $"System: Upload failed for '{url}': {message} Try closing and reopening the PR. If you get this Error again, file an issue");
 
         /// <summary>
         /// Failed to run `git fetch` or `git worktree add`.
@@ -221,8 +221,8 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// The fisrt tag in an article.md isn't h1 tag.
         /// </summary>
-        public static Error HeadingNotFound(Document file)
-            => new Error(ErrorLevel.Info, "heading-not-found", $"The first visible block is not a heading block with `#`, `##` or `###`", file.ToString());
+        public static Error H1Missing(Document file)
+            => new Error(ErrorLevel.Info, "h1-missing", $"The first visible block is not a heading block with `#`", file.ToString());
 
         /// <summary>
         /// Can't find a file referenced by configuration, or user writes a non-existing link.
@@ -231,7 +231,7 @@ namespace Microsoft.Docs.Build
         ///   - href referencing a non-existing file
         /// </summary>
         public static Error FileNotFound(SourceInfo<string> source)
-            => new Error(ErrorLevel.Warning, "file-not-found", $"Cannot find file '{source}' relative to '{source.File}'", source);
+            => new Error(ErrorLevel.Warning, "file-not-found", $"Invalid file link: '{source}'", source);
 
         /// <summary>
         /// Failed to resolve uid defined by [link](xref:uid) or <xref:uid> syntax.
@@ -257,7 +257,7 @@ namespace Microsoft.Docs.Build
         /// Failed to resolve uid defined by @ syntax.
         /// </summary>
         public static Error XrefNotFound(SourceInfo<string> source, string uid)
-            => new Error(ErrorLevel.Warning, "xref-not-found", $"Cross reference not found: '{source}'", source);
+            => new Error(ErrorLevel.Warning, "xref-not-found", $"Cross reference not found: '@{uid}'", source);
 
         /// <summary>
         /// Files published to the same url have no monikers or share common monikers.
@@ -287,8 +287,8 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Used docfx output model property which are not defined in input model.
         /// </summary>
-        public static Error ReservedMetadata(SourceInfo source, string name)
-            => new Error(ErrorLevel.Warning, "reserved-metadata", $"Metadata '{name}' is reserved by docfx, remove this metadata", source);
+        public static Error AttributeReserved(SourceInfo source, string name)
+            => new Error(ErrorLevel.Warning, "attribute-reserved", $"Attribute {name} is reserved for use by Docs. Remove it from your file metadata", source);
 
         /// <summary>
         /// Metadata value must be scalar or arrays of scalars.
@@ -300,13 +300,13 @@ namespace Microsoft.Docs.Build
         /// Failed to compute specific info of a commit.
         /// </summary>
         public static Error GitLogError(string repoPath, int errorCode)
-            => new Error(ErrorLevel.Error, "git-log-error", $"Error computing git log [{errorCode}] for '{repoPath}', did you use a shallow clone?");
+            => new Error(ErrorLevel.Error, "git-log-error", $"System: Error computing git log '{errorCode}' for '{repoPath}'. Try closing and reopening the PR. If you get this Error again, file an issue.");
 
         /// <summary>
         /// Git.exe isn't installed.
         /// </summary>
         public static Error GitNotFound()
-            => new Error(ErrorLevel.Error, "git-not-found", $"Cannot find git, install git https://git-scm.com/");
+            => new Error(ErrorLevel.Error, "git-not-found", $"System: Git isn't installed on the target machine. Try closing and reopening the PR. If you get this Error again, file an issue");
 
         /// <summary>
         /// Failed to invoke `git revparse`(resolve commit history of a file on a non-existent branch).
@@ -314,7 +314,7 @@ namespace Microsoft.Docs.Build
         ///   - resolve contributors or authors on a locale-sxs branch while the corresponding locale branch doesn't exist
         /// </summary>
         public static Error CommittishNotFound(string repo, string committish)
-            => new Error(ErrorLevel.Error, "committish-not-found", $"Cannot find branch, tag or commit '{committish}' for repo '{repo}'.");
+            => new Error(ErrorLevel.Error, "committish-not-found", $"Can't find branch, tag, or commit '{committish}' for repo {repo}");
 
         /// <summary>
         /// Defined refrence with by #bookmark fragment between articles, which doesn't exist.
@@ -350,7 +350,7 @@ namespace Microsoft.Docs.Build
         /// Schema document with violate content type/value against predefined models(not syntax error).
         /// </summary>
         public static Error ViolateSchema(SourceInfo source, string message)
-            => new Error(ErrorLevel.Error, "violate-schema", message, source);
+            => new Error(ErrorLevel.Error, "schema-error", message, source);
 
         /// <summary>
         /// Used unknown YamlMime.
@@ -359,7 +359,7 @@ namespace Microsoft.Docs.Build
         ///   - defined a an unknown schema type(other than conceptual, contextObject, landingData)
         /// </summary>
         public static Error SchemaNotFound(SourceInfo<string> source)
-            => new Error(ErrorLevel.Error, "schema-not-found", !string.IsNullOrEmpty(source) ? $"Unknown schema '{source}', object model is missing." : $"Unknown schema '{source}'", source);
+            => new Error(ErrorLevel.Error, "schema-not-found", !string.IsNullOrEmpty(source) ? $"System: Schema '{source}' not found" : $"Unknown schema '{source}'", source);
 
         /// <summary>
         /// Build errors is larger than <see cref="OutputConfig.MaxErrors"/>.
@@ -380,7 +380,7 @@ namespace Microsoft.Docs.Build
             }
 
             var hint = conflicts.Count() > 5 ? "(Only 5 duplicates displayed)" : "";
-            return new Error(ErrorLevel.Error, "uid-conflict", $"Two or more documents have defined the same Uid '{uid}': {string.Join(',', conflicts.Take(5))}{hint}");
+            return new Error(ErrorLevel.Error, "uid-conflict", $"UID '{uid}' is defined in more than one file: {string.Join(',', conflicts.Take(5))}{hint}");
         }
 
         /// <summary>
@@ -399,8 +399,8 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Failed to parse moniker string.
         /// </summary>
-        public static Error InvalidMonikerRange(string monikerRange, string message)
-            => new Error(ErrorLevel.Error, "invalid-moniker-range", $"MonikerRange `{monikerRange}` is invalid: {message}");
+        public static Error MonikerRangeInvalid(string monikerRange, string message)
+            => new Error(ErrorLevel.Error, "moniker-range-invalid", $"Invalid moniker range: `{monikerRange}`: {message}");
 
         /// <summary>
         /// MonikerRange is not defined in docfx.yml or doesn't match an article.md,
