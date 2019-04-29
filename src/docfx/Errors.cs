@@ -353,7 +353,7 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Error, "violate-schema", message, source);
 
         /// <summary>
-        /// Schema document with violate content type/value against predefined models(not syntax error).
+        /// The input value type does not match expected value type.
         /// </summary>
         public static Error UnexpectedType(SourceInfo source, string expectedType, string actualType)
             => new Error(ErrorLevel.Error, "unexpected-type", $"Expect type '{expectedType}' but got '{actualType}'", source);
@@ -363,6 +363,12 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static Error UndefinedValue(SourceInfo source, object value, IEnumerable<object> validValues)
             => new Error(ErrorLevel.Error, "undefined-value", $"Value '{value}' is not accepted. Valid values: {Join(validValues)}", source);
+
+        /// <summary>
+        /// A required field is missing.
+        /// </summary>
+        public static Error FieldRequired(SourceInfo source, string name)
+            => new Error(ErrorLevel.Error, "field-required", $"Missing required field '{name}'", source);
 
         /// <summary>
         /// Used unknown YamlMime.

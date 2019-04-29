@@ -133,6 +133,12 @@ namespace Microsoft.Docs.Build
         [InlineData("{'items': {'type': 'boolean'}}", "['a','b']",
             @"['error','unexpected-type','Expect type 'Boolean' but got 'String'','file',1,4]
               ['error','unexpected-type','Expect type 'Boolean' but got 'String'','file',1,8]")]
+
+        // required validation
+        [InlineData("{'required': []}", "{}", "")]
+        [InlineData("{'required': ['a']}", "{'a': 1}", "")]
+        [InlineData("{'required': ['a']}", "{'b': 1}",
+            "['error','field-required','Missing required field 'a'','file',1,1]")]
         public void TestJsonSchemaValidation(string schema, string json, string expectedErrors)
         {
             var errors = JsonSchemaValidation.Validate(

@@ -47,7 +47,7 @@ namespace Microsoft.Docs.Build
                     {
                         if (!map.ContainsKey(key))
                         {
-                            errors.Add(Errors.GitNotFound());
+                            errors.Add(Errors.FieldRequired(JsonUtility.GetSourceInfo(token), key));
                         }
                     }
 
