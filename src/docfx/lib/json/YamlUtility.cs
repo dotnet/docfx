@@ -22,7 +22,12 @@ namespace Microsoft.Docs.Build
 
         public static string ReadMime(TextReader reader)
         {
-            return ReadMime(reader.ReadLine());
+            var mime = ReadMime(reader.ReadLine());
+            if (string.Compare(mime, "YamlDocument", StringComparison.OrdinalIgnoreCase) == 0)
+            {
+                return ReadDocumentType(reader);
+            }
+            return mime;
         }
 
         /// <summary>
@@ -72,6 +77,19 @@ namespace Microsoft.Docs.Build
         public static (List<Error>, JToken) Parse(string input, string file)
         {
             return ParseAsJToken(input, file).RemoveNulls();
+        }
+
+        private static string ReadDocumentType(TextReader reader)
+        {
+            string line;
+            while ((line = reader.ReadLine()) != null)
+            {
+                if (line.StartsWith("documentType:"))
+                {
+                    return line.Substring("documentType:".Length).Trim();
+                }
+            }
+            return null;
         }
 
         private static JToken ParseAsJToken(string input, string file)

@@ -47,7 +47,7 @@ namespace Microsoft.Docs.Build
             }
 
             return PathUtility.NormalizeFile(
-                Path.GetFileNameWithoutExtension(doc.FilePath).Equals("index", PathUtility.PathComparison)
+                Path.GetFileNameWithoutExtension(doc.FilePath).Equals("index", PathUtility.PathComparison) && doc.ContentType != ContentType.Resource
                 ? $"{legacySiteUrlRelativeToSiteBasePath}/index"
                 : legacySiteUrlRelativeToSiteBasePath);
         }

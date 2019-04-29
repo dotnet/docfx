@@ -159,9 +159,10 @@ namespace Microsoft.Docs.Build
 
         /// <summary>
         /// Yaml header defined in article.md isn't an object.
+        /// The line should always be 2 since the file should always start with "---"
         /// </summary>
-        public static Error YamlHeaderNotObject(bool isArray)
-            => new Error(ErrorLevel.Warning, "yaml-header-not-object", $"Expect yaml header to be an object, but got {(isArray ? "an array" : "a scalar")}");
+        public static Error YamlHeaderNotObject(bool isArray, string file)
+            => new Error(ErrorLevel.Warning, "yaml-header-not-object", $"Expect yaml header to be an object, but got {(isArray ? "an array" : "a scalar")}", new SourceInfo(file, 2, 1));
 
         /// <summary>
         /// Syntax error in yaml file(not duplicate key).
@@ -369,8 +370,8 @@ namespace Microsoft.Docs.Build
         ///   - forgot to define schema in schema document(yml)
         ///   - defined a an unknown schema type(other than conceptual, contextObject, landingData)
         /// </summary>
-        public static Error SchemaNotFound(string schema)
-            => new Error(ErrorLevel.Error, "schema-not-found", !string.IsNullOrEmpty(schema) ? $"Unknown schema '{schema}', object model is missing." : $"Unknown schema '{schema}'");
+        public static Error SchemaNotFound(SourceInfo<string> source)
+            => new Error(ErrorLevel.Error, "schema-not-found", !string.IsNullOrEmpty(source) ? $"Unknown schema '{source}', object model is missing." : $"Unknown schema '{source}'", source);
 
         /// <summary>
         /// Build errors is larger than <see cref="OutputConfig.MaxErrors"/>.

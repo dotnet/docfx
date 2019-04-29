@@ -43,7 +43,7 @@ namespace Microsoft.Docs.Build
 
         private static object TransformContent(Context context, DataTypeAttribute attribute, SourceInfo<object> value, Document file, Action<Document> buildChild)
         {
-            var dependencyResolver = file.FilePath.EndsWith("index.yml") ? context.LandingPageDependencyResolver : context.DependencyResolver;
+            var dependencyResolver = file.Schema.Type == typeof(LandingData) ? context.LandingPageDependencyResolver : context.DependencyResolver;
 
             if (attribute is HrefAttribute)
             {

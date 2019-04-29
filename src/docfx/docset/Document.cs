@@ -25,7 +25,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Gets the MIME type specifed in YAML header or JSON $schema.
         /// </summary>
-        public string Mime { get; }
+        public SourceInfo<string> Mime { get; }
 
         /// <summary>
         /// Gets the schema identified by <see cref="Mime"/>.
@@ -122,7 +122,7 @@ namespace Microsoft.Docs.Build
             string canonicalUrlWithoutLocale,
             string canonicalUrl,
             ContentType contentType,
-            string mime,
+            SourceInfo<string> mime,
             Schema schema,
             bool isExperimental,
             string redirectionUrl = null,
@@ -237,7 +237,7 @@ namespace Microsoft.Docs.Build
             var filePath = PathUtility.NormalizeFile(path);
             var isConfigReference = docset.Config.Extend.Concat(docset.Config.GetFileReferences()).Contains(filePath, PathUtility.PathComparer);
             var type = isConfigReference ? ContentType.Unknown : GetContentType(filePath);
-            var (mime, schema) = type == ContentType.Page ? Schema.ReadFromFile(Path.Combine(docset.DocsetPath, filePath)) : default;
+            var (mime, schema) = type == ContentType.Page ? Schema.ReadFromFile(filePath, Path.Combine(docset.DocsetPath, filePath)) : default;
             var isExperimental = Path.GetFileNameWithoutExtension(filePath).EndsWith(".experimental", PathUtility.PathComparison);
             var routedFilePath = ApplyRoutes(filePath, docset.Routes);
 

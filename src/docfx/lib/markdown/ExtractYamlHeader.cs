@@ -33,7 +33,7 @@ namespace Microsoft.Docs.Build
                         return (errors, obj);
                     }
 
-                    errors.Add(Errors.YamlHeaderNotObject(isArray: yamlHeaderObj is JArray));
+                    errors.Add(Errors.YamlHeaderNotObject(isArray: yamlHeaderObj is JArray, file));
                     break;
                 }
                 builder.Append(line).Append("\n");
