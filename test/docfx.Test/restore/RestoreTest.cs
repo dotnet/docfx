@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -41,7 +42,6 @@ namespace Microsoft.Docs.Build
             var restoreDir = AppData.GetGitDir(gitUrl);
             DeleteDir(restoreDir);
 
-            var restorePath = PathUtility.NormalizeFolder(Path.Combine(restoreDir, ".git"));
             File.WriteAllText(Path.Combine(docsetPath, "docfx.yml"), $@"
 dependencies:
   dep5: {gitUrl}#master
@@ -49,8 +49,7 @@ dependencies:
 
             // run restroe and check the work trees
             await Program.Run(new[] { "restore", docsetPath });
-            var workTreeList = GitUtility.ListWorkTree(restorePath);
-            Assert.Equal(2, workTreeList.Count);
+            Assert.Equal(2, GetWorkTreeFolderCount());
 
             File.WriteAllText(Path.Combine(docsetPath, "docfx.yml"), $@"
 dependencies:
@@ -60,8 +59,7 @@ dependencies:
             await Program.Run(new[] { "restore", docsetPath });
 
             // since the lockdown time works, new slot will be created
-            workTreeList = GitUtility.ListWorkTree(restorePath);
-            Assert.Equal(3, workTreeList.Count);
+            Assert.Equal(3, GetWorkTreeFolderCount());
 
             File.WriteAllText(Path.Combine(docsetPath, "docfx.yml"), $@"
 dependencies:
@@ -76,17 +74,28 @@ dependencies:
             DependencySlotPool<DependencyGit>.WriteSlots(AppData.GetGitDir(gitUrl), slots);
 
             // run restore again
-            await Program.Run(new[] { "restore", docsetPath });
-
             // will create a new slot and find an available slot
-            workTreeList = GitUtility.ListWorkTree(restorePath);
-            Assert.Equal(4, workTreeList.Count);
+            await Program.Run(new[] { "restore", docsetPath });
+            Assert.Equal(4, GetWorkTreeFolderCount());
 
             // restore again to use existing worktree
             await Program.Run(new[] { "restore", docsetPath });
+            Assert.Equal(4, GetWorkTreeFolderCount());
 
-            workTreeList = GitUtility.ListWorkTree(restorePath);
-            Assert.Equal(4, workTreeList.Count);
+            // make worktree not synced with slots
+            Exec("git", "worktree add 5", restoreDir);
+            File.WriteAllText(Path.Combine(docsetPath, "docfx.yml"), $@"
+dependencies:
+  dep1: {gitUrl}#test-4-clean");
+
+            // run restore again
+            // will create a new slot and find an available slot
+            await Program.Run(new[] { "restore", docsetPath });
+            Assert.Equal(5, GetWorkTreeFolderCount());
+
+            int GetWorkTreeFolderCount()
+                => Directory.EnumerateDirectories(restoreDir, "*", SearchOption.TopDirectoryOnly)
+                    .Where(c => Path.GetFileName(c) != ".git").Count();
         }
 
         [Fact]
@@ -144,6 +153,12 @@ gitHub:
                     file.Attributes = FileAttributes.Normal;
                 }
             }
+        }
+
+        private static string Exec(string name, string args, string cwd)
+        {
+            var p = Process.Start(new ProcessStartInfo { FileName = name, Arguments = args, WorkingDirectory = cwd, RedirectStandardOutput = true });
+            return p.StandardOutput.ReadToEnd().Trim();
         }
     }
 }

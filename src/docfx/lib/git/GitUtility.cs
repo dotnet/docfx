@@ -151,44 +151,6 @@ namespace Microsoft.Docs.Build
        }
 
         /// <summary>
-        /// List work trees for a given repo
-        /// </summary>
-        public static List<string> ListWorkTree(string repoPath)
-        {
-            return ParseWorkTreeList(Execute(repoPath, $"worktree list --porcelain"));
-
-            List<string> ParseWorkTreeList(string stdout)
-            {
-                Debug.Assert(stdout != null);
-
-                // https://git-scm.com/docs/git-worktree#_porcelain_format
-                var result = new List<string>();
-                var isMain = true;
-                foreach (var property in stdout.Split('\n', StringSplitOptions.RemoveEmptyEntries))
-                {
-                    var i = property.IndexOf(' ');
-                    if (i > 0)
-                    {
-                        var key = property.Substring(0, i);
-                        if (key == "worktree")
-                        {
-                            if (isMain)
-                            {
-                                // The main worktree is listed first, followed by each of the linked worktrees.
-                                isMain = false;
-                            }
-                            else
-                            {
-                                result.Add(property.Substring(i + 1).Trim());
-                            }
-                        }
-                    }
-                }
-                return result;
-            }
-        }
-
-        /// <summary>
         /// Create a work tree for a given repo
         /// </summary>
         /// <param name="cwd">The current working directory</param>
@@ -199,15 +161,6 @@ namespace Microsoft.Docs.Build
             // By default, add refuses to create a new working tree when <commit-ish> is a branch name and is already checked out by another working tree and remove refuses to remove an unclean working tree.
             // -f/ --force overrides these safeguards.
             ExecuteNonQuery(cwd, $"-c core.longpaths=true worktree add {path} {committish} --force");
-        }
-
-        /// <summary>
-        /// Prune work trees which are not connected with an given repo
-        /// </summary>
-        /// <param name="cwd">The current working directory</param>
-        public static void PruneWorkTrees(string cwd)
-        {
-            ExecuteNonQuery(cwd, $"worktree prune");
         }
 
         /// <summary>
