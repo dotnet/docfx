@@ -49,8 +49,11 @@ namespace Microsoft.Docs.Build
             }
 
             var isSelfBookmark = hrefType == HrefType.SelfBookmark || resultRelativeTo == file;
-            _dependencyMapBuilder.AddDependencyItem(relativeTo, file, HrefUtility.FragmentToDependencyType(fragment));
-            _bookmarkValidator.AddBookmarkReference(relativeTo, isSelfBookmark ? resultRelativeTo : file ?? relativeTo, fragment, isSelfBookmark, path);
+            if (isSelfBookmark || file != null)
+            {
+                _dependencyMapBuilder.AddDependencyItem(relativeTo, file, HrefUtility.FragmentToDependencyType(fragment));
+                _bookmarkValidator.AddBookmarkReference(relativeTo, isSelfBookmark ? resultRelativeTo : file, fragment, isSelfBookmark, path);
+            }
 
             return (error, link, file);
         }
