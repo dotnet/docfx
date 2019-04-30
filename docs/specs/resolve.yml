@@ -47,7 +47,7 @@ outputs:
       "content": "<p>Link to <a href=\"#hello-world\">bookmark</a></p>" 
     }
   docs/b.json: |
-    { "content": "<p>Link to <a href=\"#\">self</a></p>" }
+    { "content": "<p>Link to <a href=\"b\">self</a></p>" }
 ---
 # Links to self bookmarks in the included file
 inputs:
@@ -65,7 +65,15 @@ inputs:
     Link to [invalid parent](../a.md/#heading2)
 outputs:
   docs/a.json: |
-    { "content": "<h2 id=\"test\">test</h2>\n<p>Link to <a href=\"#test\">valid self</a>\nLink to <a href=\"a#heading\">valid parent</a>\nLink to <a href=\"#heading1\">invalid self</a>\nLink to <a href=\"a#heading2\">invalid parent</a></p>\n\n<p>Link to <a href=\"#heading3\">invalid self</a></p>" }
+    {
+      "content": "
+        <h2 id=\"test\">test</h2>
+        <p>Link to <a href=\"#test\">valid self</a>
+        Link to <a href=\"a#heading\">valid parent</a>
+        Link to <a href=\"#heading1\">invalid self</a>
+        Link to <a href=\"a#heading2\">invalid parent</a></p>
+        <p>Link to <a href=\"a#heading3\">invalid self</a></p>"
+    }
   build.log: |
     ["suggestion","internal-bookmark-not-found","Cannot find bookmark '#heading3' in 'docs/a.md', did you mean '#heading'?","docs/a.md",3,9]
     ["suggestion","internal-bookmark-not-found","Cannot find bookmark '#heading2' in 'docs/includes/b.md', did you mean '#heading'?","docs/includes/b.md",5,9]

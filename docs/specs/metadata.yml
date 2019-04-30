@@ -317,11 +317,11 @@ outputs:
   azure/active-directory/saas-apps/splunkenterpriseandsplunkcloud-tutorial.json: |
     {"document_id":"b1cdf77e-673b-8b3a-3232-78f3d2b225dd","document_version_independent_id":"bde2976d-40d3-f729-128d-0caa664da662"}
 ---
-# index.yml is treated as index.md when calculating document id
+# landing page is treated as *.md when calculating document id
 # id: 
-#   new Guid(md5.ComputeHash(new MemoryStream(Encoding.UTF8.GetBytes("Azure.azure-documents|articles/active-directory-b2c/index.md")))).ToString()
+#   new Guid(md5.ComputeHash(new MemoryStream(Encoding.UTF8.GetBytes("Azure.azure-documents|articles/active-directory-b2c/*.md")))).ToString()
 # document_version_independent_id : 
-#   new Guid(md5.ComputeHash(new MemoryStream(Encoding.UTF8.GetBytes("Azure.azure-documents|active-directory-b2c/index")))).ToString()
+#   new Guid(md5.ComputeHash(new MemoryStream(Encoding.UTF8.GetBytes("Azure.azure-documents|active-directory-b2c/*")))).ToString()
 inputs:
   docfx.yml: |
     product: Azure
@@ -332,9 +332,14 @@ inputs:
   articles/active-directory-b2c/index.yml : |
     ### YamlMime:YamlDocument
     documentType: LandingData
+  articles/active-directory-b2c/test.yml : |
+    ### YamlMime:YamlDocument
+    documentType: LandingData
 outputs:
   articles/active-directory-b2c/index.json: |
     { "document_id": "4b5e7225-dae6-053e-4657-c4731dbd7d64", "document_version_independent_id": "fdf17736-63c4-6c9f-825b-393312bbd63a"}
+  articles/active-directory-b2c/test.json: |
+    { "document_id": "89987066-1e32-4f92-1957-329cfa9de0a0", "document_version_independent_id": "8f254336-d196-b36f-649e-dec30465941b"}
 ---
 # index.yml's document id also follows the redirection rules
 inputs:

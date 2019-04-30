@@ -69,7 +69,7 @@ namespace Microsoft.Docs.Build
 
             _url = url;
             _content = content;
-            _etag = new EntityTagHeaderValue(etag);
+            _etag = EntityTagHeaderValue.Parse(etag);
         }
 
         public static GitHubUserCache Create(Docset docset)
