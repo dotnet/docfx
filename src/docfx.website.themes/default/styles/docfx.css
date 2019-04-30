@@ -633,17 +633,11 @@ body .toc{
   height: calc(100% - 100px);
   margin-right: -20px;
 }
-.affix ul > li > a:before {
-  color: #cccccc;
-  position: absolute;
-}
 .affix ul > li > a:hover {
   background: none;
   color: #666666;
-}
-.affix ul > li.active > a,
-.affix ul > li.active > a:before {
-  color: #337ab7;
+  border-left: 3px solid #cccccc;
+  padding-left: 9px;
 }
 .affix ul > li > a {
   padding: 5px 12px;
@@ -652,16 +646,12 @@ body .toc{
 .affix > ul > li.active:last-child {
   margin-bottom: 50px;
 }
-.affix > ul > li > a:before {
-  content: "|";
-  font-size: 16px;
-  top: 1px;
-  left: 0;
-}
-.affix > ul > li.active > a,
-.affix > ul > li.active > a:before {
+.affix > ul > li.active > a {
   color: #337ab7;
   font-weight: bold;
+}
+.affix > ul > li.active > a:hover {
+  border-color: #337ab7;
 }
 .affix ul ul > li > a {
   padding: 2px 15px;
@@ -672,7 +662,6 @@ body .toc{
   top: -1px;
   left: 5px;
 }
-.affix ul > li > a:before,
 .affix ul ul {
   display: none;
 }
