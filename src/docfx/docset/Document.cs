@@ -457,7 +457,7 @@ namespace Microsoft.Docs.Build
                 : mappedSourcePath;
 
             // if source is landing page, change it to *.md
-            if (Schema.Type == typeof(LandingData))
+            if (Schema?.Type == typeof(LandingData))
             {
                 sourcePath = Path.ChangeExtension(sourcePath, ".md");
             }
