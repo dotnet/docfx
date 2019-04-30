@@ -262,6 +262,12 @@ namespace Microsoft.Docs.Build
             // - git remote set url
             // - git fetch
             // - git checkout (if not a bar repo)
+            if (GitRemoteProxy != null && GitRemoteProxy(url) != url && Directory.Exists(path))
+            {
+                // optimize for test fetching
+                return;
+            }
+
             Directory.CreateDirectory(path);
 
             if (git_repository_init(out var repo, path, is_bare: bare ? 1 : 0) != 0)
