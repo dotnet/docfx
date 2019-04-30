@@ -22,7 +22,6 @@ namespace Microsoft.Docs.Build
             new StringEnumConverter { NamingStrategy = s_namingStrategy },
             new SourceInfoJsonConverter { },
             new JTokenJsonConverter { },
-            new ArrayShorthandJsonConverter { },
         };
 
         private static readonly JsonSerializer s_serializer = JsonSerializer.Create(new JsonSerializerSettings

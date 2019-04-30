@@ -33,6 +33,7 @@ namespace Microsoft.Docs.Build
             ShouldNotSerializeEmptySourceInfo();
             ShouldNotSerializeEmptyArray();
             SetFieldWritable();
+            AutoExpandArrays();
             return prop;
 
             // For SourceInfo<>, with value of empty array or null should not be serialized
@@ -82,6 +83,14 @@ namespace Microsoft.Docs.Build
                     {
                         prop.Writable = true;
                     }
+                }
+            }
+
+            void AutoExpandArrays()
+            {
+                if (prop.Converter == null && prop.PropertyType.IsArray)
+                {
+                    // prop.Converter = new ExpandArrayJsonConverter();
                 }
             }
         }
