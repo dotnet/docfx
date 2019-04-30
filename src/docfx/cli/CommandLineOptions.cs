@@ -10,6 +10,7 @@ namespace Microsoft.Docs.Build
         public string Output;
         public bool Legacy;
         public bool Verbose;
+        public bool Restore;
         public string Locale;
         public int Port;
 
