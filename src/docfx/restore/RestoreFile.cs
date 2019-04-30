@@ -13,21 +13,18 @@ namespace Microsoft.Docs.Build
 {
     internal static class RestoreFile
     {
-        public static Task Restore(List<string> urls, Config config, bool @implicit = false)
+        public static Task Restore(List<string> urls, Config config)
         {
             return ParallelUtility.ForEach(
                 urls,
-                restoreUrl => Restore(restoreUrl, config, @implicit));
+                restoreUrl => Restore(restoreUrl, config));
         }
 
-        public static async Task Restore(string url, Config config, bool @implicit = false)
+        public static async Task Restore(string url, Config config)
         {
             var filePath = GetRestoreContentPath(url);
 
-            var (existingContent, existingEtagContent) = RestoreMap.TryGetRestoredFileContent(url);
-            if (!string.IsNullOrEmpty(existingContent) && @implicit)
-                return;
-
+            var (_, existingEtagContent) = RestoreMap.TryGetRestoredFileContent(url);
             var existingEtag = !string.IsNullOrEmpty(existingEtagContent) ? new EntityTagHeaderValue(existingEtagContent) : null;
 
             var (tempFile, etag) = await DownloadToTempFile(url, config, existingEtag);

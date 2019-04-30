@@ -25,7 +25,6 @@ namespace Microsoft.Docs.Build
             Config config,
             Func<string, DependencyLockModel, Task<DependencyLockModel>> restoreChild,
             string locale,
-            bool @implicit,
             Repository rootRepository,
             DependencyLockModel dependencyLock)
         {
@@ -77,25 +76,6 @@ namespace Microsoft.Docs.Build
                 var branches = group.Select(g => g.branch).ToArray();
                 var depthOne = group.All(g => (g.flags & GitFlags.DepthOne) != 0) && !(dependencyLock?.ContainsGitLock(remote) ?? false);
                 var branchesToFetch = new HashSet<string>(branches);
-
-                foreach (var branch in branches)
-                {
-                    var gitVersion = dependencyLock?.GetGitLock(remote, branch);
-                    if (@implicit || !string.IsNullOrEmpty(gitVersion?.Commit))
-                    {
-                        var (existingPath, git) = RestoreMap.TryGetGitRestorePath(remote, branch, gitVersion?.Commit);
-                        if (!string.IsNullOrEmpty(existingPath))
-                        {
-                            branchesToFetch.Remove(branch);
-                            subChildren.Add(new RestoreChild(
-                                existingPath,
-                                remote,
-                                branch,
-                                gitVersion,
-                                git.Commit));
-                        }
-                    }
-                }
 
                 var repoDir = AppData.GetGitDir(remote);
                 var repoPath = Path.GetFullPath(Path.Combine(repoDir, ".git"));
