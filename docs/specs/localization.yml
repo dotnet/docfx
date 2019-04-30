@@ -1338,7 +1338,7 @@ outputs:
 ---
 # Apply &lrm; for right to left languages
 commands:
-  - build --locale ar-sa -restore
+  - build --locale ar-sa --restore
 repos:
   https://docs.com/lrm#master:
     - files:
