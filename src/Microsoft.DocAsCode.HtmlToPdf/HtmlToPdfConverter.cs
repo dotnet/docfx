@@ -12,16 +12,16 @@ namespace Microsoft.DocAsCode.HtmlToPdf
     using System.Threading.Tasks;
     using System.Web;
 
+    using iTextSharp.text.pdf;
+
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
-
-    using PdfSharp.Pdf;
-    using PdfSharp.Pdf.IO;
 
     public class HtmlToPdfConverter
     {
         #region Fields
 
+        private const string OutLineKidsName = "Kids";
         private const int TimeoutInMilliseconds = 60 * 1000;
 
         private readonly HtmlToPdfOptions _htmlToPdfOptions;
@@ -63,7 +63,7 @@ namespace Microsoft.DocAsCode.HtmlToPdf
                 new ParallelOptions { MaxDegreeOfParallelism = _htmlToPdfOptions.MaxDegreeOfParallelism },
                 htmlFilePath =>
                 {
-                    var numberOfPages = Convert($"{WrapQuoteToPath(htmlFilePath)} -", reader => reader.PageCount);
+                    var numberOfPages = Convert($"{WrapQuoteToPath(htmlFilePath)} -", reader => reader.NumberOfPages);
 
                     PartialPdfModel pdfModel = new PartialPdfModel
                     {
@@ -170,23 +170,22 @@ namespace Microsoft.DocAsCode.HtmlToPdf
             }
         }
 
-        private void CreateOutlines(PdfOutlineCollection outlineCollection, IList<HtmlModel> htmlModels, IDictionary<string, PartialPdfModel> pdfPages)
+        private void CreateOutlines(Dictionary<string, object> rootOutline, IList<HtmlModel> htmlModels, IDictionary<string, PartialPdfModel> pdfPages)
         {
             if (htmlModels?.Count > 0)
             {
                 foreach (var htmlModel in htmlModels)
                 {
-                    PdfOutline outline = new PdfOutline()
+                    var outline = new Dictionary<string, object>
                     {
-                        Title = htmlModel.Title,
-                        Opened = true
+                        { "Title", htmlModel.Title },
+                        { OutLineKidsName, new List<Dictionary<string, object>>() }
                     };
 
                     if (!string.IsNullOrEmpty(htmlModel.ExternalLink))
                     {
-                        outline.Elements.Add("/Type", new PdfString("/Action"));
-                        outline.Elements.Add("/Subtype", new PdfString("/Link"));
-                        outline.Elements.Add("/A", new PdfLiteral($"<</S/URI/URI({htmlModel.ExternalLink})>>"));
+                        outline.Add("Action", "URI");
+                        outline.Add("URI", htmlModel.ExternalLink);
                     }
                     else
                     {
@@ -204,36 +203,43 @@ namespace Microsoft.DocAsCode.HtmlToPdf
                                     _currentNumberOfPages += pdfModel.NumberOfPages;
                                 }
 
-                                outline.DestinationPage = outlineCollection.Owner.Pages[pdfModel.PageNumber.Value];
-                                outline.PageDestinationType = PdfPageDestinationType.FitH;
+                                outline.Add("Action", "GoTo");
+
+                                // please go to http://api.itextpdf.com/itext/com/itextpdf/text/pdf/PdfDestination.html to find the detail.
+                                outline.Add("Page", $"{pdfModel.PageNumber.Value} FitH");
                             }
                         }
                     }
 
-                    outlineCollection.Add(outline);
-                    CreateOutlines(outline.Outlines, htmlModel.Children, pdfPages);
+                    ((List<Dictionary<string, object>>)rootOutline[OutLineKidsName]).Add(outline);
+                    CreateOutlines(outline, htmlModel.Children, pdfPages);
                 }
             }
         }
 
-        private void AddOutlines(PdfDocument pdfDocument)
+        private List<Dictionary<string, object>> ConvertOutlines()
         {
             var pdfFileNumberOfPages = GetPartialPdfModels(new List<string>(_htmlFilePaths));
             _currentNumberOfPages = 1;
 
-            CreateOutlines(pdfDocument.Outlines, _htmlModels, pdfFileNumberOfPages);
+            var rootOutline = new Dictionary<string, object>
+            {
+                { OutLineKidsName, new List<Dictionary<string, object>>() }
+            };
+
+            CreateOutlines(rootOutline, _htmlModels, pdfFileNumberOfPages);
+            return (List<Dictionary<string, object>>)rootOutline[OutLineKidsName];
         }
 
-        private void CreateOutlines(PdfDocument pdfDocument)
+        private IList<Dictionary<string, object>> GetOutlines()
         {
             switch (_htmlToPdfOptions.OutlineOption)
             {
                 case OutlineOption.NoOutline:
                 case OutlineOption.WkDefaultOutline:
-                    break;
+                    return null;
                 case OutlineOption.DefaultOutline:
-                    AddOutlines(pdfDocument);
-                    break;
+                    return ConvertOutlines();
                 default:
                     throw new NotSupportedException(_htmlToPdfOptions.OutlineOption.ToString());
             }
@@ -269,31 +275,33 @@ namespace Microsoft.DocAsCode.HtmlToPdf
         {
             if (_htmlFilePaths.Count > 0)
             {
+                var outlines = GetOutlines();
                 using (var pdfStream = new MemoryStream())
                 {
                     ConvertToStream($"{string.Join(" ", _htmlFilePaths.Select(WrapQuoteToPath))} -", pdfStream);
                     pdfStream.Position = 0;
 
-                    using (var pdfDocument = PdfReader.Open(pdfStream))
+                    using (var pdfReader = new PdfReader(pdfStream))
                     {
-                        CreateOutlines(pdfDocument);
-
-                        pdfDocument.Save(stream);
+                        using (var pdfStamper = new PdfStamper(pdfReader, stream))
+                        {
+                            pdfStamper.Outlines = outlines;
+                        }
                     }
                 }
             }
         }
 
-        private T Convert<T>(string arguments, Func<PdfDocument, T> readerFunc)
+        private T Convert<T>(string arguments, Func<PdfReader, T> readerFunc)
         {
             using (var pdfStream = new MemoryStream())
             {
                 ConvertToStream(arguments, pdfStream);
                 pdfStream.Position = 0;
 
-                using (var pdfDocument = PdfReader.Open(pdfStream))
+                using (var pdfReader = new PdfReader(pdfStream))
                 {
-                    return readerFunc(pdfDocument);
+                    return readerFunc(pdfReader);
                 }
             }
         }
