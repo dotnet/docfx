@@ -19,6 +19,11 @@ namespace Microsoft.Docs.Build
         private static readonly string[] s_defaultInclude = new[] { "**/*.{md,yml,json}" };
 
         /// <summary>
+        /// Gets the default site name
+        /// </summary>
+        public readonly string SiteName = "Docs";
+
+        /// <summary>
         /// Gets the default product name
         /// </summary>
         public readonly string Product = string.Empty;
@@ -149,6 +154,11 @@ namespace Microsoft.Docs.Build
         /// It should be absolute url or relative path
         /// </summary>
         public readonly SourceInfo<string> MonikerDefinition = new SourceInfo<string>(string.Empty);
+
+        /// <summary>
+        /// Get the metadata JSON schema file path.
+        /// </summary>
+        public readonly SourceInfo<string> MetadataSchema = new SourceInfo<string>(string.Empty);
 
         /// <summary>
         /// Get the theme repo url like https://github.com/docs/theme#master

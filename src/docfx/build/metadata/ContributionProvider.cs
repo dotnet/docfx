@@ -30,9 +30,7 @@ namespace Microsoft.Docs.Build
                 ? new CommitBuildTimeProvider(docset.Repository) : null;
         }
 
-        public async Task<(List<Error> error, Contributor author, List<Contributor> contributors, DateTime updatedAt)> GetAuthorAndContributors(
-            Document document,
-            SourceInfo<string> authorName)
+        public async Task<(List<Error> errors, ContributionInfo contributionInfo)> GetContributionInfo(Document document, SourceInfo<string> authorName)
         {
             Debug.Assert(document != null);
             var (repo, pathToRepo, commits) = _gitCommitProvider.GetCommitHistory(document);
@@ -50,12 +48,20 @@ namespace Microsoft.Docs.Build
             var emails = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             var userIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             var updatedDateTime = GetUpdatedAt(document, commits);
+            var contributionInfo = updatedDateTime != default
+                ? new ContributionInfo
+                {
+                    Contributors = contributors,
+                    UpdateAt = updatedDateTime.ToString(document.Docset.Locale == "en-us" ? "M/d/yyyy" : document.Docset.Culture.DateTimeFormat.ShortDatePattern),
+                    UpdatedAtDateTime = updatedDateTime,
+                }
+                : null;
 
             if (!(GitHubUtility.TryParse(repo?.Remote, out var gitHubOwner, out var gitHubRepoName) ||
                 GitHubUtility.TryParse(document.Docset.Config.Contribution.Repository, out gitHubOwner, out gitHubRepoName)) ||
                 !document.Docset.Config.GitHub.ResolveUsers)
             {
-                return (errors, null, contributors, updatedDateTime);
+                return (errors, contributionInfo);
             }
 
             // Resolve contributors from commits
@@ -80,7 +86,13 @@ namespace Microsoft.Docs.Build
                 contributors.RemoveAll(c => c.Id == author.Id);
             }
 
-            return (errors, author, contributors, updatedDateTime);
+            if (contributionInfo != null)
+            {
+                contributionInfo.Author = author;
+                contributionInfo.Contributors = contributors;
+            }
+
+            return (errors, contributionInfo);
 
             async Task<Contributor> GetContributor(GitCommit commit)
             {

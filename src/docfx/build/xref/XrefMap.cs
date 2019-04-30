@@ -5,9 +5,12 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -16,7 +19,7 @@ namespace Microsoft.Docs.Build
     {
         // TODO: key could be uid+moniker+locale
         private readonly IReadOnlyDictionary<string, List<(InternalXrefSpec specs, Document file)>> _internalXrefMap;
-        private readonly IReadOnlyDictionary<string, XrefSpec> _externalXrefMap;
+        private readonly IReadOnlyDictionary<string, Lazy<XrefSpec>> _externalXrefMap;
         private readonly Context _context;
 
         private static ThreadLocal<Stack<(string uid, string propertyName, Document parent)>> t_recursionDetector = new ThreadLocal<Stack<(string, string, Document)>>(() => new Stack<(string, string, Document)>());
@@ -45,10 +48,9 @@ namespace Microsoft.Docs.Build
 
         private (Error error, string href, string display, Document referencedFile) ResolveCore(string uid, SourceInfo<string> href, string displayPropertyName, Document rootFile, string moniker = null)
         {
-            string name = null;
-            string displayPropertyValue = null;
-            string resolvedHref = null;
-
+            string resolvedHref;
+            string displayPropertyValue;
+            string name;
             if (TryResolveFromInternal(uid, href, moniker, out var internalXrefSpec, out var referencedFile))
             {
                 var (_, query, fragment) = HrefUtility.SplitHref(internalXrefSpec.Href);
@@ -104,10 +106,12 @@ namespace Microsoft.Docs.Build
 
         private bool TryResolveFromExternal(string uid, out XrefSpec spec)
         {
-            if (_externalXrefMap.TryGetValue(uid, out spec) && spec != null)
+            if (_externalXrefMap.TryGetValue(uid, out var value) && value != null)
             {
+                spec = value.Value;
                 return true;
             }
+            spec = null;
             return false;
         }
 
@@ -152,24 +156,38 @@ namespace Microsoft.Docs.Build
 
         public static XrefMap Create(Context context, Docset docset)
         {
-            Dictionary<string, XrefSpec> map = new Dictionary<string, XrefSpec>();
-            foreach (var url in docset.Config.Xref)
+            // TODO: not considering same uid with multiple specs, it will be Dictionary<string, List<T>>
+            // https://github.com/dotnet/corefx/issues/12067
+            // Prefer Dictionary with manual lock to ConcurrentDictionary while only adding
+            Dictionary<string, Lazy<XrefSpec>> map = new Dictionary<string, Lazy<XrefSpec>>();
+            ParallelUtility.ForEach(docset.Config.Xref, url =>
             {
                 var (_, content, _) = RestoreMap.GetRestoredFileContent(docset, url);
                 XrefMapModel xrefMap = new XrefMapModel();
                 if (url?.Value.EndsWith(".yml", StringComparison.OrdinalIgnoreCase) != false)
                 {
                     xrefMap = YamlUtility.Deserialize<XrefMapModel>(content);
+                    foreach (var spec in xrefMap.References)
+                    {
+                        lock (map)
+                        {
+                            map[spec.Uid] = new Lazy<XrefSpec>(() => spec);
+                        }
+                    }
                 }
                 else
                 {
-                    xrefMap = JsonUtility.Deserialize<XrefMapModel>(content);
+                    DeserializeAndPopulateXrefMap(
+                    (uid, spec) =>
+                    {
+                        lock (map)
+                        {
+                            map[uid] = spec;
+                        }
+                    }, content);
                 }
-                foreach (var spec in xrefMap.References)
-                {
-                    map[spec.Uid] = spec;
-                }
-            }
+            });
+
             return new XrefMap(context, map, CreateInternalXrefMap(context, docset.ScanScope));
         }
 
@@ -178,6 +196,75 @@ namespace Microsoft.Docs.Build
             var models = new XrefMapModel();
             models.References.AddRange(ExpandInternalXrefSpecs());
             context.Output.WriteJson(models, "xrefmap.json");
+        }
+
+        private static void DeserializeAndPopulateXrefMap(Action<string, Lazy<XrefSpec>> populate, string content)
+        {
+            using (var reader = new StringReader(content))
+            using (var json = new JsonTextReader(reader))
+            {
+                var currentProperty = string.Empty;
+                string uid = null;
+                var startLine = 1;
+                var endLine = 1;
+                var startColumn = 1;
+                var endColumn = 1;
+                while (json.Read())
+                {
+                    if (json.Value != null)
+                    {
+                        if (json.TokenType == JsonToken.PropertyName)
+                            currentProperty = json.Value.ToString();
+
+                        if (json.TokenType == JsonToken.String && currentProperty == "uid")
+                        {
+                            uid = json.Value.ToString();
+                        }
+                    }
+                    else
+                    {
+                        if (json.TokenType == JsonToken.StartObject)
+                        {
+                            startLine = json.LineNumber;
+                            startColumn = json.LinePosition;
+                        }
+                        else if (json.TokenType == JsonToken.EndObject)
+                        {
+                            endLine = json.LineNumber;
+                            endColumn = json.LinePosition;
+                            if (uid != null)
+                            {
+                                populate(uid, new Lazy<XrefSpec>(() => JsonUtility.Deserialize<XrefSpec>(GetSubstringFromContent(content, startLine, startColumn, endLine, endColumn))));
+                                uid = null;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        private static string GetSubstringFromContent(string content, int startLine, int startColumn, int endLine, int endColumn)
+        {
+            var result = new StringBuilder();
+            var currentLine = 1;
+            var currentColumn = 1;
+            foreach (var ch in content)
+            {
+                if (ch == '\n')
+                {
+                    currentLine += 1;
+                    currentColumn = 1;
+                }
+
+                if ((currentLine == startLine && currentColumn > startColumn)
+                    || (currentLine == endLine && currentColumn < endColumn)
+                    || (currentLine > startLine && currentLine < endLine))
+                {
+                    result.Append(ch);
+                }
+                currentColumn += 1;
+            }
+            return result.ToString();
         }
 
         private IEnumerable<XrefSpec> ExpandInternalXrefSpecs()
@@ -268,7 +355,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private XrefMap(Context context, IReadOnlyDictionary<string, XrefSpec> externalXrefMap, IReadOnlyDictionary<string, List<(InternalXrefSpec, Document)>> internalXrefMap)
+        private XrefMap(Context context, IReadOnlyDictionary<string, Lazy<XrefSpec>> externalXrefMap, IReadOnlyDictionary<string, List<(InternalXrefSpec, Document)>> internalXrefMap)
         {
             _context = context;
             _externalXrefMap = externalXrefMap;
@@ -364,10 +451,7 @@ namespace Microsoft.Docs.Build
             }
             var extensionData = new Dictionary<string, Lazy<JValue>>();
 
-            // TODO: for backward compatibility, when #YamlMime:YamlDocument, documentType is used to determine schema.
-            //       when everything is moved to SDP, we can refactor the mime check to Document.TryCreate
-            var schema = file.Schema ?? Schema.GetSchema(obj?.Value<string>("documentType"));
-            if (schema is null)
+            if (file.Schema is null)
             {
                 throw Errors.SchemaNotFound(file.Mime).ToException();
             }
@@ -375,7 +459,7 @@ namespace Microsoft.Docs.Build
             var errors = new List<Error>();
             var (schemaErrors, _) = JsonUtility.ToObject(
                 obj,
-                schema.Type,
+                file.Schema.Type,
                 transform: AttributeTransformer.TransformXref(context, file, null, extensionData));
 
             errors.AddRange(schemaErrors);

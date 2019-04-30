@@ -49,8 +49,11 @@ namespace Microsoft.Docs.Build
             }
 
             var isSelfBookmark = hrefType == HrefType.SelfBookmark || resultRelativeTo == file;
-            _dependencyMapBuilder.AddDependencyItem(relativeTo, file, HrefUtility.FragmentToDependencyType(fragment));
-            _bookmarkValidator.AddBookmarkReference(relativeTo, isSelfBookmark ? resultRelativeTo : file ?? relativeTo, fragment, isSelfBookmark, path);
+            if (isSelfBookmark || file != null)
+            {
+                _dependencyMapBuilder.AddDependencyItem(relativeTo, file, HrefUtility.FragmentToDependencyType(fragment));
+                _bookmarkValidator.AddBookmarkReference(relativeTo, isSelfBookmark ? resultRelativeTo : file, fragment, isSelfBookmark, path);
+            }
 
             return (error, link, file);
         }
@@ -149,21 +152,13 @@ namespace Microsoft.Docs.Build
             // Self reference, don't build the file, leave href as is
             if (file == relativeTo)
             {
-                if (relativeTo.Docset.Legacy)
+                if (hrefType == HrefType.SelfBookmark)
                 {
-                    if (hrefType == HrefType.SelfBookmark)
-                    {
-                        return (error, query + fragment, fragment, hrefType, null);
-                    }
-                    var selfUrl = Document.PathToRelativeUrl(
-                        Path.GetFileName(file.SitePath), file.ContentType, file.Schema, file.Docset.Config.Output.Json);
-                    return (error, selfUrl + query + fragment, fragment, HrefType.SelfBookmark, null);
+                    return (error, query + fragment, fragment, hrefType, null);
                 }
-                if (string.IsNullOrEmpty(fragment))
-                {
-                    fragment = "#";
-                }
-                return (error, query + fragment, fragment, HrefType.SelfBookmark, null);
+                var selfUrl = Document.PathToRelativeUrl(
+                    Path.GetFileName(file.SitePath), file.ContentType, file.Schema, file.Docset.Config.Output.Json);
+                return (error, selfUrl + query + fragment, fragment, HrefType.SelfBookmark, null);
             }
 
             // Link to dependent repo, don't build the file, leave href as is
