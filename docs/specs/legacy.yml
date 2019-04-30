@@ -1,6 +1,7 @@
 # Build with --legacy
 commands:
-  - build --legacy --restore
+  - restore --legacy
+  - build --legacy
 repos:
   https://docs.com/legacy:
   - files:
@@ -219,7 +220,8 @@ outputs:
 ---
 # Produce deterministic result when redirection and file share the same publish url
 commands:
-  - build --legacy --restore
+  - restore --legacy
+  - build --legacy
 inputs:
   docfx.yml: |
     redirections:
@@ -230,7 +232,8 @@ outputs:
 ---
 # Redirection file href shouldn't have extension
 commands:
-  - build --legacy --restore
+  - restore --legacy
+  - build --legacy
 inputs:
   docfx.yml: |
     redirections:
@@ -261,7 +264,8 @@ outputs:
 ---
 # Support metadata at root level for landing data
 commands:
-  - build --legacy --restore
+  - restore --legacy
+  - build --legacy
 inputs:
   docfx.yml:
   docs/a.yml: |
@@ -276,7 +280,8 @@ outputs:
 ---
 # Context object type is TOC
 commands:
-  - build --legacy --restore
+  - restore --legacy
+  - build --legacy
 inputs:
   docfx.yml:
   docs/a.yml: |

@@ -391,7 +391,8 @@ outputs:
 ---
 # Throw committish-not-found when try to resolve commit id by none-existing branch name
 commands:
-  - build --locale zh-cn --restore
+  - restore --locale zh-cn
+  - build --locale zh-cn
 repos: 
   https://github.com/git/repo#live:
     - files:
