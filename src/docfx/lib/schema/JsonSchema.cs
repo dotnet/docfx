@@ -32,6 +32,11 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public List<JValue> Enum { get; set; } = new List<JValue>();
 
+        /// <summary>
+        /// Properties that are required to be present.
+        /// </summary>
+        public string[] Required { get; set; } = Array.Empty<string>();
+
         // JSON schema custom extensions
         //-------------------------------------------
 

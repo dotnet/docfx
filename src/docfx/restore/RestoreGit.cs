@@ -97,7 +97,8 @@ namespace Microsoft.Docs.Build
                     }
                 }
 
-                var repoPath = Path.GetFullPath(Path.Combine(AppData.GetGitDir(remote), ".git"));
+                var repoDir = AppData.GetGitDir(remote);
+                var repoPath = Path.GetFullPath(Path.Combine(repoDir, ".git"));
                 var childRepos = new List<string>();
 
                 ProcessUtility.RunInsideMutex(
@@ -122,8 +123,7 @@ namespace Microsoft.Docs.Build
 
                 void AddWorkTrees()
                 {
-                    var existingWorkTreePath = new ConcurrentHashSet<string>(GitUtility.ListWorkTree(repoPath));
-
+                    var existingWorkTreeFolders = new ConcurrentHashSet<string>(Directory.EnumerateDirectories(repoDir));
                     ParallelUtility.ForEach(branchesToFetch, branch =>
                     {
                         var nocheckout = group.Where(g => g.branch == branch).All(g => (g.flags & GitFlags.NoCheckout) != 0);
@@ -150,7 +150,7 @@ namespace Microsoft.Docs.Build
 
                             try
                             {
-                                if (existingWorkTreePath.TryAdd(workTreePath))
+                                if (existingWorkTreeFolders.TryAdd(workTreePath))
                                 {
                                     // create new worktree
                                     try

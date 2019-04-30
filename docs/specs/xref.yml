@@ -27,7 +27,7 @@ inputs:
     xref: xrefmap.json
   docs/a.md: Link to @System.String
   xrefmap.json: |
-    { 
+    {
       "references":[{
           "uid": "System.String",
           "name": "String",
