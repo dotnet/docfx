@@ -90,7 +90,7 @@ namespace Microsoft.Docs.Build
             {
                 if (prop.Converter == null && prop.PropertyType.IsArray)
                 {
-                    // prop.Converter = new ExpandArrayJsonConverter();
+                    prop.Converter = new ExpandArrayJsonConverter();
                 }
             }
         }
