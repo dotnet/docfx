@@ -13,11 +13,14 @@ namespace Microsoft.Docs.Build
         private readonly ConcurrentDictionary<string, ConcurrentDictionary<Document, List<string>>> _filesBySiteUrl = new ConcurrentDictionary<string, ConcurrentDictionary<Document, List<string>>>(PathUtility.PathComparer);
         private readonly ConcurrentDictionary<string, Document> _filesByOutputPath = new ConcurrentDictionary<string, Document>(PathUtility.PathComparer);
         private readonly ConcurrentDictionary<Document, PublishItem> _publishItems = new ConcurrentDictionary<Document, PublishItem>();
-        private readonly ConcurrentBag<Document> _filesWithErrors = new ConcurrentBag<Document>();
+        private readonly List<Document> _filesWithErrors = new List<Document>();
 
         public void MarkError(Document file)
         {
-            _filesWithErrors.Add(file);
+            lock (_filesWithErrors)
+            {
+                _filesWithErrors.Add(file);
+            }
         }
 
         public bool TryAdd(Document file, PublishItem item)

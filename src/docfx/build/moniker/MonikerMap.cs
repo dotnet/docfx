@@ -13,7 +13,7 @@ namespace Microsoft.Docs.Build
     {
         private readonly IReadOnlyDictionary<Document, List<string>> _documentToMonikers;
 
-        public MonikerMap(ConcurrentDictionary<Document, List<string>> monikerMap)
+        public MonikerMap(IReadOnlyDictionary<Document, List<string>> monikerMap)
         {
             _documentToMonikers = monikerMap;
         }

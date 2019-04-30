@@ -21,7 +21,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Mappings between toc and a collection of document
         /// </summary>
-        private readonly ConcurrentDictionary<Document, IEnumerable<Document>> _tocToDocuments = new ConcurrentDictionary<Document, IEnumerable<Document>>();
+        private readonly Dictionary<Document, IEnumerable<Document>> _tocToDocuments = new Dictionary<Document, IEnumerable<Document>>();
 
         /// <summary>
         /// Add toc files and toc mappings
@@ -31,7 +31,10 @@ namespace Microsoft.Docs.Build
         /// <param name="referencedTocs">The toc files which are referenced by the toc file being built</param>
         public void Add(Document tocFile, IEnumerable<Document> referencedDocuments, IEnumerable<Document> referencedTocs)
         {
-            _tocToDocuments.TryAdd(tocFile, referencedDocuments);
+            lock (_tocToDocuments)
+            {
+                _tocToDocuments.TryAdd(tocFile, referencedDocuments);
+            }
 
             if (referencedTocs != null)
             {

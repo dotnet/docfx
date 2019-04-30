@@ -8,11 +8,14 @@ namespace Microsoft.Docs.Build
 {
     internal class MonikerMapBuilder
     {
-        private readonly ConcurrentDictionary<Document, List<string>> _documentToMonikers = new ConcurrentDictionary<Document, List<string>>();
+        private readonly Dictionary<Document, List<string>> _documentToMonikers = new Dictionary<Document, List<string>>();
 
         public void Add(Document file, List<string> monikers)
         {
-            _documentToMonikers.TryAdd(file, monikers);
+            lock (_documentToMonikers)
+            {
+                _documentToMonikers.TryAdd(file, monikers);
+            }
         }
 
         public MonikerMap Build()

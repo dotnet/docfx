@@ -73,7 +73,7 @@ namespace Microsoft.Docs.Build
             protected async override Task<RunSummary> RunTestCollectionsAsync(IMessageBus messageBus, CancellationTokenSource cancellationTokenSource)
             {
                 var summary = new RunSummary();
-                var times = new ConcurrentBag<decimal>();
+                var times = new List<decimal>();
 
                 await ParallelUtility.ForEach(TestCases, async testCase =>
                 {
@@ -81,7 +81,10 @@ namespace Microsoft.Docs.Build
                     Interlocked.Add(ref summary.Total, runSummary.Total);
                     Interlocked.Add(ref summary.Failed, runSummary.Failed);
                     Interlocked.Add(ref summary.Skipped, runSummary.Skipped);
-                    times.Add(runSummary.Time);
+                    lock (times)
+                    {
+                        times.Add(runSummary.Time);
+                    }
                 });
 
                 summary.Time = times.Max();
