@@ -51,7 +51,7 @@ namespace Microsoft.Docs.Build
 
         public void Configure(Config config)
         {
-            Debug.Assert(_config.Output.Path == config.Output.Path, "Cannot change report output path");
+            Debug.Assert(!_output.IsValueCreated || _config.Output.Path == config.Output.Path, "Cannot change report output path");
 
             _config = config;
         }
