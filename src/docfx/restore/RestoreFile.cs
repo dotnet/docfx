@@ -25,7 +25,7 @@ namespace Microsoft.Docs.Build
             var filePath = GetRestoreContentPath(url);
 
             var (_, existingEtagContent) = RestoreMap.TryGetRestoredFileContent(url);
-            var existingEtag = !string.IsNullOrEmpty(existingEtagContent) ? new EntityTagHeaderValue(existingEtagContent) : null;
+            var existingEtag = !string.IsNullOrEmpty(existingEtagContent) ? EntityTagHeaderValue.Parse(existingEtagContent) : null;
 
             var (tempFile, etag) = await DownloadToTempFile(url, config, existingEtag);
             if (tempFile is null)
