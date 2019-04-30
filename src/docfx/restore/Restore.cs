@@ -37,7 +37,7 @@ namespace Microsoft.Docs.Build
 
                         if (root)
                         {
-                            report.Configure(docsetPath, config);
+                            report.Configure(config);
                         }
                         report.Write(config.ConfigFileName, errors);
 

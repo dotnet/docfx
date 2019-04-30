@@ -16,7 +16,7 @@ namespace Microsoft.Docs.Build
         private readonly object _outputLock = new object();
         private readonly ConcurrentHashSet<Error> _errors = new ConcurrentHashSet<Error>(Error.Comparer);
 
-        private volatile string _outputPath;
+        private readonly string _docsetPath;
         private Lazy<TextWriter> _output;
         private Config _config;
 
@@ -33,28 +33,27 @@ namespace Microsoft.Docs.Build
 
         public int SuggestionCount => _suggestionCount;
 
-        public Report(bool legacy = false)
+        public Report(string docset = ".", bool legacy = false)
         {
+            _docsetPath = docset;
             _legacy = legacy;
+            _config = new Config();
+            _output = new Lazy<TextWriter>(() =>
+            {
+                // add default build log file output path
+                var outputFilePath = Path.GetFullPath(Path.Combine(_docsetPath, _config.Output.Path, "build.log"));
+
+                PathUtility.CreateDirectoryFromFilePath(outputFilePath);
+
+                return File.CreateText(outputFilePath);
+            });
         }
 
-        public void Configure(string docsetPath, Config config)
+        public void Configure(Config config)
         {
-            var outputPath = Path.Combine(docsetPath, config.Output.Path, "build.log");
-            Debug.Assert(_outputPath is null || _outputPath == outputPath, "Cannot change report output path");
+            Debug.Assert(_config.Output.Path == config.Output.Path, "Cannot change report output path");
 
             _config = config;
-            _outputPath = outputPath;
-            _output = _output != null && _output.IsValueCreated
-                ? _output
-                : new Lazy<TextWriter>(() =>
-                  {
-                      var outputFilePath = Path.GetFullPath(_outputPath);
-
-                      PathUtility.CreateDirectoryFromFilePath(outputFilePath);
-
-                      return File.CreateText(outputFilePath);
-                  });
         }
 
         public bool Write(string file, IEnumerable<Error> errors)
