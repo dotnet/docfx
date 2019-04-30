@@ -158,7 +158,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Get the metadata JSON schema file path.
         /// </summary>
-        public readonly SourceInfo<string> MetadataSchema = new SourceInfo<string>(string.Empty);
+        public readonly SourceInfo<string>[] MetadataSchema = Array.Empty<SourceInfo<string>>();
 
         /// <summary>
         /// Get the theme repo url like https://github.com/docs/theme#master

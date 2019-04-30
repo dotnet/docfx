@@ -63,3 +63,22 @@ outputs:
     ["error","undefined-value","Value 'XNAGameStudio' is not accepted. Valid values: 'MSDN', 'VS'","docfx.yml",6,13]
     ["error","unexpected-type","Expect type 'Integer' but got 'String'","a.md",2,7]
 ---
+# Allow multiple metadata schema definitions
+inputs:
+  docfx.yml: |
+    metadataSchema:
+      - schema1.json
+      - schema2.json
+  schema1.json: |
+    { "required": ["a"] }
+  schema2.json: |
+    { "properties": { "key": { "type": "string" } } }
+  a.md: |
+    ---
+    key: []
+    ---
+outputs:
+  build.log: |
+    ["error","field-required","Missing required field 'a'","a.md",2,1]
+    ["error","unexpected-type","Expect type 'String' but got 'Array'","a.md",2,6]
+---

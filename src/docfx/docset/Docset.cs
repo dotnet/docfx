@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -251,12 +252,13 @@ namespace Microsoft.Docs.Build
 
         private JsonSchema LoadMetadataSchema(Config config)
         {
-            if (!string.IsNullOrEmpty(config.MetadataSchema))
+            var token = new JObject();
+            foreach (var metadataSchema in config.MetadataSchema)
             {
-                var (_, content, _) = RestoreMap.GetRestoredFileContent(this, config.MetadataSchema);
-                return JsonUtility.Deserialize<JsonSchema>(content);
+                var (_, content, _) = RestoreMap.GetRestoredFileContent(this, metadataSchema);
+                JsonUtility.Merge(token, (JObject)JsonUtility.Parse(content, metadataSchema).value);
             }
-            return new JsonSchema();
+            return JsonUtility.ToObject<JsonSchema>(token).value;
         }
 
         private HashSet<Document> CreateBuildScope(IEnumerable<Document> redirections, Func<string, bool> glob)

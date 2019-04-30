@@ -159,13 +159,13 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Creates an instance of the specified .NET type from the JToken with schema validation
         /// </summary>
-        public static (List<Error>, T) ToObject<T>(JToken token)
+        public static (List<Error> errors, T value) ToObject<T>(JToken token)
         {
             var (errors, obj) = ToObject(token, typeof(T));
             return (errors, (T)obj);
         }
 
-        public static (List<Error>, object) ToObject(
+        public static (List<Error> errors, object value) ToObject(
             JToken token,
             Type type,
             Func<IEnumerable<DataTypeAttribute>, SourceInfo<object>, string, object> transform = null)
@@ -198,7 +198,7 @@ namespace Microsoft.Docs.Build
         /// Parse a string to JToken.
         /// Validate null value during the process.
         /// </summary>
-        public static (List<Error>, JToken) Parse(string json, string file)
+        public static (List<Error> errors, JToken value) Parse(string json, string file)
         {
             try
             {
