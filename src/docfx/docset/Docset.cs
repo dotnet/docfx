@@ -263,7 +263,7 @@ namespace Microsoft.Docs.Build
         {
             using (Progress.Start("Globbing files"))
             {
-                var files = new List<Document>();
+                var files = new ArrayBuilder<Document>();
 
                 ParallelUtility.ForEach(
                     Directory.EnumerateFiles(DocsetPath, "*.*", SearchOption.AllDirectories),
@@ -272,10 +272,7 @@ namespace Microsoft.Docs.Build
                         var relativePath = Path.GetRelativePath(DocsetPath, file);
                         if (glob(relativePath))
                         {
-                            lock (files)
-                            {
-                                files.Add(Document.CreateFromFile(this, relativePath));
-                            }
+                            files.Add(Document.CreateFromFile(this, relativePath));
                         }
                     });
 

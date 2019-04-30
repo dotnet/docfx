@@ -335,7 +335,7 @@ namespace Microsoft.Docs.Build
 
         private static IReadOnlyDictionary<string, string> MockGitRepos(string file, int ordinal, string name, E2ESpec spec)
         {
-            var result = new Dictionary<string, string>();
+            var result = new ConcurrentDictionary<string, string>();
             var repos =
                 from pair in spec.Repos
                 let info = HrefUtility.SplitGitHref(pair.Key)
@@ -346,10 +346,7 @@ namespace Microsoft.Docs.Build
             {
                 var remote = repoInfo.Key;
                 var repoPath = Path.Combine("repos", name, ToSafePathString(remote));
-                lock (result)
-                {
-                    result[remote] = Path.GetFullPath(repoPath);
-                }
+                result[remote] = Path.GetFullPath(repoPath);
                 if (Directory.Exists(repoPath))
                 {
                     return;

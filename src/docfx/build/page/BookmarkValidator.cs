@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 
@@ -8,8 +9,8 @@ namespace Microsoft.Docs.Build
 {
     internal class BookmarkValidator
     {
-        private readonly Dictionary<Document, HashSet<string>> _bookmarksByFile = new Dictionary<Document, HashSet<string>>();
-        private readonly List<(Document file, Document dependency, string bookmark, bool isSelfBookmark, SourceInfo source)> _references = new List<(Document file, Document dependency, string bookmark, bool isSelfBookmark, SourceInfo source)>();
+        private readonly DictionaryBuilder<Document, HashSet<string>> _bookmarksByFile = new DictionaryBuilder<Document, HashSet<string>>();
+        private readonly ArrayBuilder<(Document file, Document dependency, string bookmark, bool isSelfBookmark, SourceInfo source)> _references = new ArrayBuilder<(Document file, Document dependency, string bookmark, bool isSelfBookmark, SourceInfo source)>();
 
         public void AddBookmarkReference(Document file, Document reference, string fragment, bool isSelfBookmark, SourceInfo source)
         {
@@ -23,20 +24,14 @@ namespace Microsoft.Docs.Build
                 var bookmark = fragment.Substring(1).Trim();
                 if (!string.IsNullOrEmpty(bookmark))
                 {
-                    lock (_references)
-                    {
-                        _references.Add((file, reference, bookmark, isSelfBookmark, source));
-                    }
+                    _references.Add((file, reference, bookmark, isSelfBookmark, source));
                 }
             }
         }
 
         public void AddBookmarks(Document file, HashSet<string> bookmarks)
         {
-            lock (_bookmarksByFile)
-            {
-                _bookmarksByFile.TryAdd(file, bookmarks);
-            }
+            _bookmarksByFile.TryAdd(file, bookmarks);
         }
 
         public List<(Error error, Document file)> Validate()

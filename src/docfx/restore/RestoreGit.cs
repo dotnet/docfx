@@ -35,7 +35,7 @@ namespace Microsoft.Docs.Build
                 group (git.branch, git.flags)
                 by git.remote;
 
-            var children = new List<RestoreChild>();
+            var children = new ArrayBuilder<RestoreChild>();
 
             // restore first level children
             ParallelUtility.ForEach(
@@ -44,10 +44,7 @@ namespace Microsoft.Docs.Build
                 {
                     foreach (var child in RestoreGitRepo(group))
                     {
-                        lock (children)
-                        {
-                            children.Add(child);
-                        }
+                        children.Add(child);
                     }
                 },
                 Progress.Update);
@@ -73,9 +70,9 @@ namespace Microsoft.Docs.Build
 
             return gitVersions;
 
-            List<RestoreChild> RestoreGitRepo(IGrouping<string, (string branch, GitFlags flags)> group)
+            IEnumerable<RestoreChild> RestoreGitRepo(IGrouping<string, (string branch, GitFlags flags)> group)
             {
-                var subChildren = new List<RestoreChild>();
+                var subChildren = new ArrayBuilder<RestoreChild>();
                 var remote = group.Key;
                 var branches = group.Select(g => g.branch).ToArray();
                 var depthOne = group.All(g => (g.flags & GitFlags.DepthOne) != 0) && !(dependencyLock?.ContainsGitLock(remote) ?? false);
@@ -90,15 +87,12 @@ namespace Microsoft.Docs.Build
                         if (!string.IsNullOrEmpty(existingPath))
                         {
                             branchesToFetch.Remove(branch);
-                            lock (subChildren)
-                            {
-                                subChildren.Add(new RestoreChild(
-                                    existingPath,
-                                    remote,
-                                    branch,
-                                    gitVersion,
-                                    git.Commit));
-                            }
+                            subChildren.Add(new RestoreChild(
+                                existingPath,
+                                remote,
+                                branch,
+                                gitVersion,
+                                git.Commit));
                         }
                     }
                 }

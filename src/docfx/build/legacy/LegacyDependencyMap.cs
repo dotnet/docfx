@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -15,7 +16,7 @@ namespace Microsoft.Docs.Build
         {
             using (Progress.Start("Convert Legacy Dependency Map"))
             {
-                var legacyDependencyMap = new List<LegacyDependencyMapItem>();
+                var legacyDependencyMap = new ArrayBuilder<LegacyDependencyMapItem>();
 
                 // process toc map
                 Parallel.ForEach(
@@ -32,15 +33,12 @@ namespace Microsoft.Docs.Build
                         var toc = tocMap.GetNearestToc(document);
                         if (toc != null)
                         {
-                            lock (legacyDependencyMap)
+                            legacyDependencyMap.Add(new LegacyDependencyMapItem
                             {
-                                legacyDependencyMap.Add(new LegacyDependencyMapItem
-                                {
-                                    From = $"~/{document.ToLegacyPathRelativeToBasePath(docset)}",
-                                    To = $"~/{toc.ToLegacyPathRelativeToBasePath(docset)}",
-                                    Type = LegacyDependencyMapType.Metadata,
-                                });
-                            }
+                                From = $"~/{document.ToLegacyPathRelativeToBasePath(docset)}",
+                                To = $"~/{toc.ToLegacyPathRelativeToBasePath(docset)}",
+                                Type = LegacyDependencyMapType.Metadata,
+                            });
                         }
                     });
 
@@ -53,15 +51,12 @@ namespace Microsoft.Docs.Build
                             continue;
                         }
 
-                        lock (legacyDependencyMap)
+                        legacyDependencyMap.Add(new LegacyDependencyMapItem
                         {
-                            legacyDependencyMap.Add(new LegacyDependencyMapItem
-                            {
-                                From = $"~/{source.ToLegacyPathRelativeToBasePath(docset)}",
-                                To = $"~/{dependencyItem.To.ToLegacyPathRelativeToBasePath(docset)}",
-                                Type = dependencyItem.Type.ToLegacyDependencyMapType(),
-                            });
-                        }
+                            From = $"~/{source.ToLegacyPathRelativeToBasePath(docset)}",
+                            To = $"~/{dependencyItem.To.ToLegacyPathRelativeToBasePath(docset)}",
+                            Type = dependencyItem.Type.ToLegacyDependencyMapType(),
+                        });
                     }
                 }
 

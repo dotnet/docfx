@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -14,7 +15,7 @@ namespace Microsoft.Docs.Build
         {
             using (Progress.Start("Convert Legacy File Map"))
             {
-                var fileMapItems = new List<(string legacyFilePathRelativeToBaseFolder, LegacyFileMapItem fileMapItem)>();
+                var fileMapItems = new ArrayBuilder<(string legacyFilePathRelativeToBaseFolder, LegacyFileMapItem fileMapItem)>();
                 Parallel.ForEach(
                     documents,
                     document =>
@@ -28,10 +29,7 @@ namespace Microsoft.Docs.Build
                         var fileItem = LegacyFileMapItem.Instance(legacyOutputFilePathRelativeToSiteBasePath, document.ContentType);
                         if (fileItem != null)
                         {
-                            lock (fileMapItems)
-                            {
-                                fileMapItems.Add((document.ToLegacyPathRelativeToBasePath(docset), fileItem));
-                            }
+                            fileMapItems.Add((document.ToLegacyPathRelativeToBasePath(docset), fileItem));
                         }
                     });
 
