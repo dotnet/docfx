@@ -116,7 +116,7 @@ namespace Microsoft.Docs.Build
                 context.Output.WriteJson(
                 new
                 {
-                    groups = monikerGroups.Count > 0 ? monikerGroups.Select(item => new
+                    groups = monikerGroups.Any() ? monikerGroups.Select(item => new
                     {
                         group = item.Key,
                         monikers = item.Value,

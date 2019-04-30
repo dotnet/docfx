@@ -12,7 +12,8 @@ namespace System.Collections.Concurrent
         public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
             => _dictionary.GetEnumerator();
 
-        public int Count => _dictionary.Count;
+        IEnumerator IEnumerable.GetEnumerator()
+            => _dictionary.GetEnumerator();
 
         public bool TryAdd(TKey key, TValue value)
         {
@@ -22,13 +23,7 @@ namespace System.Collections.Concurrent
             }
         }
 
-        IEnumerator IEnumerable.GetEnumerator()
-            => _dictionary.GetEnumerator();
-
         public IReadOnlyDictionary<TKey, TValue> ToDictionary()
             => _dictionary;
-
-        public bool TryGetValue(TKey key, out TValue value)
-            => _dictionary.TryGetValue(key, out value);
     }
 }

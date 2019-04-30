@@ -40,7 +40,7 @@ namespace Microsoft.Docs.Build
 
             foreach (var (file, reference, bookmark, isSelfBookmark, source) in _references)
             {
-                if (_bookmarksByFile.TryGetValue(reference, out var bookmarks) && bookmarks.Contains(bookmark))
+                if (_bookmarksByFile.ToDictionary().TryGetValue(reference, out var bookmarks) && bookmarks.Contains(bookmark))
                 {
                     continue;
                 }
