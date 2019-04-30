@@ -596,7 +596,6 @@ body .toc{
   margin-top: 50px;
   font-size: 12px;
   max-height: 100%;
-  overflow: hidden;
   top: 100px;
   bottom: 10px;
   position: fixed;
@@ -629,7 +628,7 @@ body .toc{
   font-size: 12px;
 }
 .affix > ul.level1 {
-  overflow: hidden;
+  width: 100%;
   padding-bottom: 10px;
   height: calc(100% - 100px);
   margin-right: -20px;
