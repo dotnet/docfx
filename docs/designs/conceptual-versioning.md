@@ -34,7 +34,7 @@ This document specifies Docfx vnext versioning dev design.
 
 1. Not support version validation on reference, including link and xref.
 
-    In phase 1, we will not check whether the version is existed on the referenced file.
+    In phase 1, we will not check whether the version exists on the referenced file.
 
     1. If user reference another file by link/Uid without query string `?view={moniker}`, we will not check whether the referenced file have the same monikerRange with current file. So if the referenced file have different monikerRange, the final view page is not guaranteed.
 
@@ -54,7 +54,7 @@ This document specifies Docfx vnext versioning dev design.
         the content of `config.yml` is
         ```yml
         name: dotnet
-        content: "articles/**/*.md"
+        files: "articles/**/*.md"
         monikerRange:
             "articles/folder1/**/*.md": "netcore-1.0"
             "articles/folder2/**/*.md": "netcore-1.0"
@@ -86,7 +86,7 @@ This document specifies Docfx vnext versioning dev design.
         the content of `config.yml` is
         ```yml
         name: dotnet
-        content: "articles/**/*.md"
+        files: "articles/**/*.md"
         monikerRange:
             "articles/folder1/**/*.md": "netcore-1.0"
             "articles/folder2/**/*.md": "netcore-1.0"
@@ -130,7 +130,7 @@ This document specifies Docfx vnext versioning dev design.
 
 ```yml
 name: dotnet
-content: "articles/**/*.md"
+files: "articles/**/*.md"
 monikerRange:
     "articles/v1.0/**/*.md": "netcore-1.0"
     "articles/v1.0/**/*.md": "netcore-1.1"
@@ -242,11 +242,11 @@ There are several scenarios:
 |Reference type                                                                 |Resolve result             |Validation                 |
 |-------------------------------------------------------------------------------|---------------------------|---------------------------|
 |relative link without verison query - `[B](b.md)` |href without query - `<a href="b">` |file existed check, do not check whether monikerRange of target file is same with current file |
-|relative link with verison query - `[B](b.md?view=netcore-1.0)` |href with original query - `<a href="b?view=netcore-1.0">` |file existed check, do not check whether version is existed in target file |
+|relative link with verison query - `[B](b.md?view=netcore-1.0)` |href with original query - `<a href="b?view=netcore-1.0">` |file existed check, do not check whether version exists in target file |
 |absolute link/external link without verison query - `[B](/b.md)` |href without query - `<a href="/b">` |no validation |
 |absolute link/external link with verison query - `[B](/b.md?view=netcore-1.0)` |href with original query - `<a href="/b?view=netcore-1.0">` |no validation |
 |internal/external xref without verison query - `<xref: b>` |href without query - `<a href="b">` |uid existed check, do not check whether monikerRange of uid is same with current file |
-|internal/external xref with verison query - `<xref: b?view=netcore-1.0>` |href with original query - `<a href="b?view=netcore-1.0">` |uid existed check, and check whether the specific uid version is existed |
+|internal/external xref with verison query - `<xref: b?view=netcore-1.0>` |href with original query - `<a href="b?view=netcore-1.0">` |uid existed check, and check whether the specific uid version exists |
 
 #### 2.3 Moniker Definition File
 
@@ -411,7 +411,7 @@ Then content of `config.yml` is:
 
 ```yml
 name: dotnet
-content: "articles/**/*.md"
+files: "articles/**/*.md"
 monikerRange:
     "articles/v1.0/**/*.md": "netcore-1.0 || netcore-1.1"
     "articles/v2.0/**/*.md": "netcore-2.0"
