@@ -101,7 +101,7 @@ namespace Microsoft.Docs.Build
             }
 
             // Handle files with errors
-            foreach (var file in _filesWithErrors.ToList())
+            foreach (var file in _filesWithErrors)
             {
                 if (_filesBySiteUrl.TryRemove(file.SiteUrl, out _))
                 {
