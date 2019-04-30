@@ -50,7 +50,7 @@ namespace Microsoft.Docs.Build
         ///     nor source repo root
         /// </summary>
         public static Error ConfigNotFound(string docsetPath)
-            => new Error(ErrorLevel.Error, "config-not-found", $"Can't find config file 'docfx.yml/docfx.json' at {docsetPath}.");
+            => new Error(ErrorLevel.Error, "config-not-found", $"Can't find config file 'docfx.yml/docfx.json' at {docsetPath}");
 
         /// <summary>
         /// Two files include each other.
@@ -87,7 +87,7 @@ namespace Microsoft.Docs.Build
         ///   - using invalid access token(more detailed info in ex.Message)
         /// </summary>
         public static Error GitHubApiFailed(string api, Exception ex)
-            => new Error(ErrorLevel.Warning, "github-api-failed", $"System: Call to GitHub API '{api}' failed: {ex.Message} Try closing and reopening the PR. If you get this Error again, file an issue.");
+            => new Error(ErrorLevel.Warning, "github-api-failed", $"System: Call to GitHub API '{api}' failed: {ex.Message} Try closing and reopening the PR. If you get this Error again, file an issue");
 
         /// <summary>
         /// In yaml-format toc, topicHref SHOULD reference an article,
@@ -138,7 +138,7 @@ namespace Microsoft.Docs.Build
         ///   - when update user profile cache fails, need to download verify etag
         /// </summary>
         public static Error DownloadFailed(string url)
-            => new Error(ErrorLevel.Error, "download-failed", $"System: Download failed for file '{url}'. Try closing and reopening the PR. If you get this Error again, file an issue.");
+            => new Error(ErrorLevel.Error, "download-failed", $"System: Download failed for file '{url}'. Try closing and reopening the PR. If you get this Error again, file an issue");
 
         /// <summary>
         /// Failed to update user profile cache file.
@@ -216,7 +216,7 @@ namespace Microsoft.Docs.Build
         ///   - [Absolute](C:/a.md)
         /// </summary>
         public static Error LocalFilePath(Document relativeTo, string path)
-            => new Error(ErrorLevel.Warning, "local-file-path", $"Link '{path}' points to a local file. Use a relative path instead.", relativeTo.ToString());
+            => new Error(ErrorLevel.Warning, "local-file-path", $"Link '{path}' points to a local file. Use a relative path instead", relativeTo.ToString());
 
         /// <summary>
         /// The fisrt tag in an article.md isn't h1 tag.
@@ -257,7 +257,7 @@ namespace Microsoft.Docs.Build
         /// Failed to resolve uid defined by @ syntax.
         /// </summary>
         public static Error XrefNotFound(SourceInfo<string> source, string uid)
-            => new Error(ErrorLevel.Warning, "xref-not-found", $"Cross reference not found: '@{uid}'.", source);
+            => new Error(ErrorLevel.Warning, "xref-not-found", $"Cross reference not found: '@{uid}'", source);
 
         /// <summary>
         /// Files published to the same url have no monikers or share common monikers.
@@ -300,7 +300,7 @@ namespace Microsoft.Docs.Build
         /// Failed to compute specific info of a commit.
         /// </summary>
         public static Error GitLogError(string repoPath, int errorCode)
-            => new Error(ErrorLevel.Error, "git-log-error", $"System: Error computing git log '{errorCode}' for '{repoPath}'. Try closing and reopening the PR. If you get this Error again, file an issue.");
+            => new Error(ErrorLevel.Error, "git-log-error", $"System: Error computing git log '{errorCode}' for '{repoPath}'. Try closing and reopening the PR. If you get this Error again, file an issue");
 
         /// <summary>
         /// Git.exe isn't installed.
@@ -314,7 +314,7 @@ namespace Microsoft.Docs.Build
         ///   - resolve contributors or authors on a locale-sxs branch while the corresponding locale branch doesn't exist
         /// </summary>
         public static Error CommittishNotFound(string repo, string committish)
-            => new Error(ErrorLevel.Error, "committish-not-found", $"Can't find branch, tag, or commit '{committish}' for repo {repo}.");
+            => new Error(ErrorLevel.Error, "committish-not-found", $"Can't find branch, tag, or commit '{committish}' for repo {repo}");
 
         /// <summary>
         /// Defined refrence with by #bookmark fragment between articles, which doesn't exist.

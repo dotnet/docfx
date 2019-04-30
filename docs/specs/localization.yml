@@ -667,7 +667,7 @@ repos:
           link to @c
 outputs:
   build.log: |
-    ["warning","xref-not-found","Cross reference not found: '@c'.","docs/b.md",1,10]
+    ["warning","xref-not-found","Cross reference not found: '@c'","docs/b.md",1,10]
   docs/a.json:
   docs/b.json:
 ---
@@ -689,7 +689,7 @@ inputs:
   localization/zh-cn/docs/b.md: link to @c
 outputs:
   build.log: |
-    ["warning","xref-not-found","Cross reference not found: '@c'.","docs/b.md",1,10]
+    ["warning","xref-not-found","Cross reference not found: '@c'","docs/b.md",1,10]
   docs/a.json:
   docs/b.json:
 ---
@@ -1144,7 +1144,7 @@ repos:
         localization/zh-cn/docs/a/a.md:
 outputs:
   build.log: |
-    ["error","config-not-found","Can't find config file 'docfx.yml/docfx.json' at *."]
+    ["error","config-not-found","Can't find config file 'docfx.yml/docfx.json' at *"]
 ---
 # loc build gets docfx config 1
 # from current docset firstly, then from fallback docset
