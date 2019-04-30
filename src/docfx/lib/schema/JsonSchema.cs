@@ -3,19 +3,21 @@
 
 using System;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
     internal class JsonSchema
     {
-        public JsonSchemaType Type { get; set; }
+        [JsonConverter(typeof(OneOrManyConverter))]
+        public JsonSchemaType[] Type { get; set; }
 
         public Dictionary<string, JsonSchema> Properties { get; } = new Dictionary<string, JsonSchema>();
 
         public JsonSchema Items { get; set; }
 
-        public List<JValue> Enum { get; set; } = new List<JValue>();
+        public JValue[] Enum { get; set; }
 
         public string[] Required { get; set; } = Array.Empty<string>();
     }
