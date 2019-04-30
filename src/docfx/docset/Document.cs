@@ -456,8 +456,8 @@ namespace Microsoft.Docs.Build
                 ? sourcePath
                 : mappedSourcePath;
 
-            // if source ends with index.yml, change it to index.md
-            if ("index.yml".Equals(Path.GetFileName(sourcePath).ToLowerInvariant()))
+            // if source is landing page and not resource, change it to *.md
+            if (Schema.Type == typeof(LandingData) && ContentType != ContentType.Resource)
             {
                 sourcePath = Path.ChangeExtension(sourcePath, ".md");
             }
