@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace System.Collections.Concurrent
 {
-    internal class ArrayBuilder<T> : IEnumerable<T>
+    internal class ListBuilder<T>
     {
         private readonly List<T> _array = new List<T>();
 
@@ -17,10 +17,6 @@ namespace System.Collections.Concurrent
             }
         }
 
-        public IEnumerator<T> GetEnumerator()
-            => _array.GetEnumerator();
-
-        IEnumerator IEnumerable.GetEnumerator()
-            => _array.GetEnumerator();
+        public List<T> ToList() => _array;
     }
 }

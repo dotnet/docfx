@@ -5,15 +5,9 @@ using System.Collections.Generic;
 
 namespace System.Collections.Concurrent
 {
-    internal class DictionaryBuilder<TKey, TValue> : IEnumerable<KeyValuePair<TKey, TValue>>
+    internal class DictionaryBuilder<TKey, TValue>
     {
         private readonly Dictionary<TKey, TValue> _dictionary = new Dictionary<TKey, TValue>();
-
-        public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
-            => _dictionary.GetEnumerator();
-
-        IEnumerator IEnumerable.GetEnumerator()
-            => _dictionary.GetEnumerator();
 
         public bool TryAdd(TKey key, TValue value)
         {

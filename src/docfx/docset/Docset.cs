@@ -263,7 +263,7 @@ namespace Microsoft.Docs.Build
         {
             using (Progress.Start("Globbing files"))
             {
-                var files = new ArrayBuilder<Document>();
+                var files = new ListBuilder<Document>();
 
                 ParallelUtility.ForEach(
                     Directory.EnumerateFiles(DocsetPath, "*.*", SearchOption.AllDirectories),
@@ -276,7 +276,7 @@ namespace Microsoft.Docs.Build
                         }
                     });
 
-                return new HashSet<Document>(files.Concat(redirections));
+                return new HashSet<Document>(files.ToList().Concat(redirections));
             }
         }
 

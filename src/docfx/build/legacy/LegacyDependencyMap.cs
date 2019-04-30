@@ -16,7 +16,7 @@ namespace Microsoft.Docs.Build
         {
             using (Progress.Start("Convert Legacy Dependency Map"))
             {
-                var legacyDependencyMap = new ArrayBuilder<LegacyDependencyMapItem>();
+                var legacyDependencyMap = new ListBuilder<LegacyDependencyMapItem>();
 
                 // process toc map
                 Parallel.ForEach(
@@ -60,7 +60,7 @@ namespace Microsoft.Docs.Build
                     }
                 }
 
-                var sorted = from d in legacyDependencyMap
+                var sorted = from d in legacyDependencyMap.ToList()
                              orderby d.From, d.To, d.Type
                              select d;
                 context.Output.WriteJson(sorted, Path.Combine(docset.Config.DocumentId.SiteBasePath, ".dependency-map.json"));

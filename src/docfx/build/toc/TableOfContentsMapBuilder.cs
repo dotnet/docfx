@@ -63,7 +63,7 @@ namespace Microsoft.Docs.Build
             var experimentalTocs = new List<Document>();
             var referencedTocs = new HashSet<Document>(_referencedTocs.Keys);
 
-            foreach (var (toc, documents) in _tocToDocuments)
+            foreach (var (toc, documents) in _tocToDocuments.ToDictionary())
             {
                 if (referencedTocs.Contains(toc))
                 {
