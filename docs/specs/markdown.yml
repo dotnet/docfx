@@ -369,7 +369,7 @@ inputs:
 outputs:
   docs/a.json:
   build.log: |
-    ["warning","file-not-found","Cannot find file 'c.md' relative to 'docs/a.md'","docs/a.md",1,1]
+    ["warning","file-not-found","Invalid file link 'c.md'.","docs/a.md",1,1]
 ---
 # do not output file if external-bookmark-not-found is treated as error
 inputs:

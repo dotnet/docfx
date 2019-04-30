@@ -994,7 +994,7 @@ outputs:
   docs/f1/b.json:
   build.log: |
     ["info","null-value","'tocHref' contains null value","docs/TOC.yml",2,3]
-    ["error","violate-schema","Required property 'name' not found in JSON.","docs/TOC.yml",1,3]
+    ["error","schema-error","Required property 'name' not found in JSON.","docs/TOC.yml",1,3]
 ---
 # Orphan file(not explicitly referenced in toc file)'s toc, only look up parent folder toc files
 inputs:
