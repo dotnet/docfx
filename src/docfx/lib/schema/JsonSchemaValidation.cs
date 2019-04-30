@@ -43,6 +43,14 @@ namespace Microsoft.Docs.Build
                     break;
 
                 case JObject map:
+                    foreach (var key in schema.Required)
+                    {
+                        if (!map.ContainsKey(key))
+                        {
+                            errors.Add(Errors.FieldRequired(JsonUtility.GetSourceInfo(token), key));
+                        }
+                    }
+
                     foreach (var (key, value) in map)
                     {
                         if (schema.Properties.TryGetValue(key, out var propertySchema))
