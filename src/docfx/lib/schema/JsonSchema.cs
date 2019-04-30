@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -15,7 +16,8 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Type of the current value.
         /// </summary>
-        public JsonSchemaType Type { get; set; }
+        [JsonConverter(typeof(OneOrManyConverter))]
+        public JsonSchemaType[] Type { get; set; }
 
         /// <summary>
         /// The JSON schema that applies to each property if the currnet value is object.
@@ -30,7 +32,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// An array of valid values for the current value.
         /// </summary>
-        public List<JValue> Enum { get; set; } = new List<JValue>();
+        public JValue[] Enum { get; set; }
 
         /// <summary>
         /// Properties that are required to be present.

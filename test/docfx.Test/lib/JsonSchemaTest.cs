@@ -52,10 +52,6 @@ namespace Microsoft.Docs.Build
             "items and subitems",
             "with boolean schema",
             "patternProperties",
-            "multiple types can be specified in an array",
-            "type as array",
-            "type: array or object",
-            "type: array, object or null"
         };
 
         public static TheoryData<string, string, string> GetJsonSchemaTestSuite()
@@ -94,7 +90,7 @@ namespace Microsoft.Docs.Build
             var test = JObject.Parse(testText);
             var errors = JsonSchemaValidation.Validate(schema, test["data"]);
 
-            Assert.Equal(test.Value<bool>("valid"), errors.Count == 0);
+            Assert.True(test.Value<bool>("valid") == (errors.Count == 0), description);
         }
 
         [Theory]
@@ -114,8 +110,16 @@ namespace Microsoft.Docs.Build
         [InlineData("{'type': 'string'}", "1",
             "['error','unexpected-type','Expect type 'String' but got 'Integer'','file',1,1]")]
 
+        // union type validation
+        [InlineData("{'type': ['string', 'null']}", "'a'", "")]
+        [InlineData("{'properties': {'a': {'type': ['string', 'null']}}}", "{'a': null}", "")]
+        [InlineData("{'type': ['string', 'null']}", "1",
+            "['error','unexpected-type','Expect type 'String, Null' but got 'Integer'','file',1,1]")]
+
         // enum validation
         [InlineData("{'type': 'string', 'enum': ['a', 'b']}", "'a'", "")]
+        [InlineData("{'type': 'string', 'enum': []}", "'unknown'",
+            "['error','undefined-value','Value 'unknown' is not accepted. Valid values: ','file',1,9]")]
         [InlineData("{'type': 'string', 'enum': ['a', 'b']}", "'unknown'",
             "['error','undefined-value','Value 'unknown' is not accepted. Valid values: 'a', 'b'','file',1,9]")]
 
