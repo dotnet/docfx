@@ -16,6 +16,7 @@ namespace Microsoft.Docs.Build
         private readonly object _outputLock = new object();
         private readonly ConcurrentHashSet<Error> _errors = new ConcurrentHashSet<Error>(Error.Comparer);
 
+        private readonly string _docsetPath;
         private volatile string _outputPath;
         private Lazy<TextWriter> _output;
         private Config _config;
@@ -33,14 +34,25 @@ namespace Microsoft.Docs.Build
 
         public int SuggestionCount => _suggestionCount;
 
-        public Report(bool legacy = false)
+        public Report(string docsetPath = ".", bool legacy = false)
         {
             _legacy = legacy;
+            _docsetPath = docsetPath;
+
+            // add default output path
+            _output = new Lazy<TextWriter>(() =>
+                {
+                    var outputFilePath = Path.GetFullPath(Path.Combine(_docsetPath, new Config().Output.Path, "build.log"));
+
+                    PathUtility.CreateDirectoryFromFilePath(outputFilePath);
+
+                    return File.CreateText(outputFilePath);
+                });
         }
 
-        public void Configure(string docsetPath, Config config)
+        public void Configure(Config config)
         {
-            var outputPath = Path.Combine(docsetPath, config.Output.Path, "build.log");
+            var outputPath = Path.Combine(_docsetPath, config.Output.Path, "build.log");
             Debug.Assert(_outputPath is null || _outputPath == outputPath, "Cannot change report output path");
 
             _config = config;

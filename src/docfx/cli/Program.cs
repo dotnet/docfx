@@ -58,7 +58,7 @@ namespace Microsoft.Docs.Build
             var (command, docset, options) = ParseCommandLineOptions(args);
 
             using (Log.BeginScope(options.Verbose))
-            using (var report = new Report(options.Legacy))
+            using (var report = new Report(docset, options.Legacy))
             {
                 Log.Write($"Using docfx {GetDocfxVersion()}");
 
