@@ -9,6 +9,7 @@ using System.Text.RegularExpressions;
 using Newtonsoft.Json.Linq;
 
 using YamlDotNet.Core;
+using YamlDotNet.Core.Events;
 using YamlDotNet.RepresentationModel;
 
 namespace Microsoft.Docs.Build
@@ -94,21 +95,18 @@ namespace Microsoft.Docs.Build
 
         private static JToken ParseAsJToken(string input, string file)
         {
-            Match match;
-
-            var stream = new YamlStream();
-
             try
             {
-                stream.Load(new StringReader(input));
-            }
-            catch (YamlException ex) when (
-                ex.InnerException is ArgumentException aex &&
-                (match = Regex.Match(aex.Message, "(.*?)\\. Key: (.*)$")).Success)
-            {
-                var source = new SourceInfo(file, ex.Start.Line, ex.Start.Column, ex.End.Line, ex.End.Column);
+                var parser = new Parser(new StringReader(input));
+                parser.Expect<StreamStart>();
+                parser.Expect<DocumentStart>();
+                
+                var result = ParseAsJToken(parser, file);
 
-                throw Errors.YamlDuplicateKey(source, match.Groups[2].Value).ToException(ex);
+                parser.Expect<DocumentEnd>();
+                parser.Expect<StreamEnd>();
+
+                return result;
             }
             catch (YamlException ex)
             {
@@ -117,79 +115,63 @@ namespace Microsoft.Docs.Build
 
                 throw Errors.YamlSyntaxError(source, message).ToException(ex);
             }
-
-            if (stream.Documents.Count == 0)
-            {
-                return JValue.CreateNull();
-            }
-
-            if (stream.Documents.Count != 1)
-            {
-                throw new NotSupportedException("Does not support mutiple YAML documents");
-            }
-
-            return ToJson(stream.Documents[0].RootNode, file);
         }
 
-        private static JToken ToJson(YamlNode node, string file)
+        private static JToken ParseAsJToken(IParser parser, string file)
         {
-            if (node is YamlScalarNode scalar)
+            switch (parser.Current)
             {
-                if (scalar.Style == ScalarStyle.Plain)
-                {
-                    if (string.IsNullOrWhiteSpace(scalar.Value) ||
-                        scalar.Value == "~" ||
-                        string.Equals(scalar.Value, "null", StringComparison.OrdinalIgnoreCase))
+                case Scalar scalar:
+                    if (scalar.Style == ScalarStyle.Plain)
                     {
-                        return SetSourceInfo(JValue.CreateNull(), node, file);
+                        if (string.IsNullOrWhiteSpace(scalar.Value) ||
+                            scalar.Value == "~" ||
+                            string.Equals(scalar.Value, "null", StringComparison.OrdinalIgnoreCase))
+                        {
+                            return SetSourceInfo(JValue.CreateNull(), scalar, file);
+                        }
+                        if (long.TryParse(scalar.Value, out var n))
+                        {
+                            return SetSourceInfo(new JValue(n), scalar, file);
+                        }
+                        if (double.TryParse(scalar.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out var d))
+                        {
+                            return SetSourceInfo(new JValue(d), scalar, file);
+                        }
+                        if (bool.TryParse(scalar.Value, out var b))
+                        {
+                            return SetSourceInfo(new JValue(b), scalar, file);
+                        }
                     }
-                    if (long.TryParse(scalar.Value, out var n))
+                    return SetSourceInfo(new JValue(scalar.Value), scalar, file);
+                
+                case SequenceStart seq:
+                    var array = new JArray();
+                    while (!parser.Accept<SequenceEnd>())
                     {
-                        return SetSourceInfo(new JValue(n), node, file);
+                        array.Add(ParseAsJToken(parser, file));
                     }
-                    if (double.TryParse(scalar.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out var d))
+                    parser.Expect<SequenceEnd>();
+                    return SetSourceInfo(array, seq, file);
+
+                case MappingStart map:
+                    var obj = new JObject();
+                    while (!parser.Accept<MappingEnd>())
                     {
-                        return SetSourceInfo(new JValue(d), node, file);
-                    }
-                    if (bool.TryParse(scalar.Value, out var b))
-                    {
-                        return SetSourceInfo(new JValue(b), node, file);
-                    }
-                }
-                return SetSourceInfo(new JValue(scalar.Value), node, file);
-            }
-            if (node is YamlMappingNode map)
-            {
-                var obj = new JObject();
-                foreach (var (key, value) in map)
-                {
-                    if (key is YamlScalarNode scalarKey)
-                    {
-                        var token = ToJson(value, file);
-                        var prop = SetSourceInfo(new JProperty(scalarKey.Value, token), key, file);
+                        var key = parser.Expect<Scalar>();
+                        var value = ParseAsJToken(parser, file);
+                        var prop = SetSourceInfo(new JProperty(key.Value, value), key, file);
                         obj.Add(prop);
                     }
-                    else
-                    {
-                        throw new NotSupportedException($"Not Supported: {key} is not a primitive type");
-                    }
-                }
+                    parser.Expect<MappingEnd>();
+                    return SetSourceInfo(obj, map, file);
 
-                return SetSourceInfo(obj, node, file);
+                default:
+                    throw new NotSupportedException($"Yaml node '{parser.Current.GetType().Name}' is not supported");
             }
-            if (node is YamlSequenceNode seq)
-            {
-                var arr = new JArray();
-                foreach (var item in seq)
-                {
-                    arr.Add(ToJson(item, file));
-                }
-                return SetSourceInfo(arr, node, file);
-            }
-            throw new NotSupportedException($"Unknown yaml node type {node.GetType()}");
         }
 
-        private static JToken SetSourceInfo(JToken token, YamlNode node, string file)
+        private static JToken SetSourceInfo(JToken token, ParsingEvent node, string file)
         {
             return JsonUtility.SetSourceInfo(
                 token,
