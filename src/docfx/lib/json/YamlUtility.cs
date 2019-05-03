@@ -63,7 +63,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static T Deserialize<T>(string input)
         {
-            var token = ParseAsJToken(input, file: null);
+            var (_, token) = ParseAsJToken(input, file: null);
             return token.ToObject<T>(JsonUtility.Serializer);
         }
 
@@ -77,7 +77,10 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static (List<Error>, JToken) Parse(string input, string file)
         {
-            return ParseAsJToken(input, file).RemoveNulls();
+            var (errors, token) = ParseAsJToken(input, file);
+            var (nullErrors, result) = token.RemoveNulls();
+            errors.AddRange(nullErrors);
+            return (errors, result);
         }
 
         private static string ReadDocumentType(TextReader reader)
@@ -93,20 +96,21 @@ namespace Microsoft.Docs.Build
             return null;
         }
 
-        private static JToken ParseAsJToken(string input, string file)
+        private static (List<Error>, JToken) ParseAsJToken(string input, string file)
         {
             try
             {
+                var errors = new List<Error>();
                 var parser = new Parser(new StringReader(input));
                 parser.Expect<StreamStart>();
                 parser.Expect<DocumentStart>();
                 
-                var result = ParseAsJToken(parser, file);
+                var result = ParseAsJToken(parser, file, errors);
 
                 parser.Expect<DocumentEnd>();
                 parser.Expect<StreamEnd>();
 
-                return result;
+                return (errors, result);
             }
             catch (YamlException ex)
             {
@@ -117,7 +121,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static JToken ParseAsJToken(IParser parser, string file)
+        private static JToken ParseAsJToken(IParser parser, string file, List<Error> errors)
         {
             switch (parser.Current)
             {
@@ -149,7 +153,7 @@ namespace Microsoft.Docs.Build
                     var array = new JArray();
                     while (!parser.Accept<SequenceEnd>())
                     {
-                        array.Add(ParseAsJToken(parser, file));
+                        array.Add(ParseAsJToken(parser, file, errors));
                     }
                     parser.Expect<SequenceEnd>();
                     return SetSourceInfo(array, seq, file);
@@ -159,7 +163,13 @@ namespace Microsoft.Docs.Build
                     while (!parser.Accept<MappingEnd>())
                     {
                         var key = parser.Expect<Scalar>();
-                        var value = ParseAsJToken(parser, file);
+                        if (obj.ContainsKey(key.Value))
+                        {
+                            var source = new SourceInfo(file, key.Start.Line, key.Start.Column, key.End.Line, key.End.Column);
+                            errors.Add(Errors.YamlDuplicateKey(source, key.Value));
+                        }
+
+                        var value = ParseAsJToken(parser, file, errors);
                         var prop = SetSourceInfo(new JProperty(key.Value, value), key, file);
                         obj.Add(prop);
                     }
