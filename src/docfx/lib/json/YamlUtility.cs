@@ -100,14 +100,17 @@ namespace Microsoft.Docs.Build
         {
             try
             {
+                JToken result = null;
+
                 var errors = new List<Error>();
                 var parser = new Parser(new StringReader(input));
                 parser.Expect<StreamStart>();
-                parser.Expect<DocumentStart>();
-                
-                var result = ParseAsJToken(parser, file, errors);
-
-                parser.Expect<DocumentEnd>();
+                if (!parser.Accept<StreamEnd>())
+                {
+                    parser.Expect<DocumentStart>();
+                    result = ParseAsJToken(parser, file, errors);
+                    parser.Expect<DocumentEnd>();
+                }
                 parser.Expect<StreamEnd>();
 
                 return (errors, result);
@@ -123,7 +126,7 @@ namespace Microsoft.Docs.Build
 
         private static JToken ParseAsJToken(IParser parser, string file, List<Error> errors)
         {
-            switch (parser.Current)
+            switch (parser.Expect<NodeEvent>())
             {
                 case Scalar scalar:
                     if (scalar.Style == ScalarStyle.Plain)
@@ -148,7 +151,7 @@ namespace Microsoft.Docs.Build
                         }
                     }
                     return SetSourceInfo(new JValue(scalar.Value), scalar, file);
-                
+
                 case SequenceStart seq:
                     var array = new JArray();
                     while (!parser.Accept<SequenceEnd>())
@@ -163,15 +166,16 @@ namespace Microsoft.Docs.Build
                     while (!parser.Accept<MappingEnd>())
                     {
                         var key = parser.Expect<Scalar>();
+                        var value = ParseAsJToken(parser, file, errors);
+
                         if (obj.ContainsKey(key.Value))
                         {
                             var source = new SourceInfo(file, key.Start.Line, key.Start.Column, key.End.Line, key.End.Column);
                             errors.Add(Errors.YamlDuplicateKey(source, key.Value));
                         }
 
-                        var value = ParseAsJToken(parser, file, errors);
-                        var prop = SetSourceInfo(new JProperty(key.Value, value), key, file);
-                        obj.Add(prop);
+                        obj[key.Value] = value;
+                        SetSourceInfo(obj.Property(key.Value), key, file);
                     }
                     parser.Expect<MappingEnd>();
                     return SetSourceInfo(obj, map, file);
