@@ -37,7 +37,7 @@ namespace Microsoft.Docs.Build
             ResolveItemMonikers(model.Items);
 
             // enable pdf
-            var outputPath = file.GetOutputPath(model.Metadata.Monikers);
+            var outputPath = file.GetOutputPath(model.Metadata.Monikers, file.Docset.Config.DocumentId.SiteBasePath);
 
             if (file.Docset.Config.Output.Pdf)
             {

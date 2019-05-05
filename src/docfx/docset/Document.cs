@@ -179,9 +179,12 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public string GetOutputPath(List<string> monikers, bool rawPage = false)
+        public string GetOutputPath(List<string> monikers, string siteBasePath, bool rawPage = false)
         {
-            var outputPath = PathUtility.NormalizeFile(Path.Combine($"{HashUtility.GetMd5HashShort(monikers)}", SitePath));
+            var outputPath = PathUtility.NormalizeFile(Path.Combine(
+                siteBasePath,
+                $"{HashUtility.GetMd5HashShort(monikers)}",
+                Path.GetRelativePath(siteBasePath, SitePath)));
 
             return Docset.Legacy && rawPage ? Path.ChangeExtension(outputPath, ".raw.page.json") : outputPath;
         }
