@@ -256,7 +256,7 @@ namespace Microsoft.Docs.Build
                     currentColumn = 1;
                 }
 
-                // text in 1 line
+                // start and end in the same line
                 if (currentLine == startLine && currentLine == endLine)
                 {
                     if (currentColumn >= startColumn && currentColumn <= endColumn)
@@ -264,6 +264,8 @@ namespace Microsoft.Docs.Build
                         result.Append(ch);
                     }
                 }
+
+                // start and end in multiple lines
                 else
                 {
                     if ((currentLine == startLine && currentColumn >= startColumn)
