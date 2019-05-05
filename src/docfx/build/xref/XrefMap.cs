@@ -256,11 +256,20 @@ namespace Microsoft.Docs.Build
                     currentColumn = 1;
                 }
 
-                if ((currentLine == startLine && currentColumn > startColumn)
-                    || (currentLine == endLine && currentColumn < endColumn)
-                    || (currentLine > startLine && currentLine < endLine))
+                // text in 1 line
+                if (currentLine == startLine && currentLine == endLine)
                 {
-                    result.Append(ch);
+                    if (currentColumn >= startColumn && currentColumn <= endColumn)
+                    {
+                        result.Append(ch);
+                    }
+                }
+                else
+                {
+                    if ((currentLine == startLine && currentColumn >= startColumn)
+                    || (currentLine == endLine && currentColumn <= endColumn)
+                    || (currentLine > startLine && currentLine < endLine))
+                            result.Append(ch);
                 }
                 currentColumn += 1;
             }
