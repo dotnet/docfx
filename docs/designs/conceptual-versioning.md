@@ -283,7 +283,7 @@ An **ordered** moniker list is provided by moniker definition file restored from
 
 For dynamic, the output path shares the same schema:
 
-`{output-dir}/{siteBasePath}/{monikerListHash}?/{site-path'}`
+`{output-dir}/{siteBasePath}/{monikerListHash}?/{path-to-site-base-path}`
 
 ```txt
   siteBasePath monikerListHash    site-path'
@@ -291,9 +291,9 @@ For dynamic, the output path shares the same schema:
 _site/dotnet/01ddf122/api/system.string/index.html
 ```
 
-> `?` means optional. When the file have no version, the output path will be `{output-dir}/{siteBasePath}/{site-path}`  
+> `?` means optional. When the file have no version, the output path will be `{output-dir}/{siteBasePath}/{path-to-site-base-path}`  
 > `monikerListHash` is the first 8 characters of the hash of this file's final moniker list, joined by whitespace.  
-> `site-path'` means the relative path of sitePath related to siteBasePath
+> `path-to-site-base-path` means the relative path of sitePath related to siteBasePath
 
 #### 3.2 Output content
 
