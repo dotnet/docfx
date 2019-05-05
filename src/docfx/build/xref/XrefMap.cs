@@ -178,11 +178,15 @@ namespace Microsoft.Docs.Build
                 else
                 {
                     DeserializeAndPopulateXrefMap(
-                    (uid, spec) =>
+                    (uid, startLine, startColumn, endLine, endColumn) =>
                     {
                         lock (map)
                         {
-                            map[uid] = spec;
+                            map[uid] = new Lazy<XrefSpec>(() =>
+                            {
+                                var str = GetSubstringFromContent(content, startLine, endLine, startColumn, endColumn);
+                                return JsonUtility.Deserialize<XrefSpec>(str);
+                            });
                         }
                     }, content);
                 }
@@ -198,7 +202,7 @@ namespace Microsoft.Docs.Build
             context.Output.WriteJson(models, "xrefmap.json");
         }
 
-        private static void DeserializeAndPopulateXrefMap(Action<string, Lazy<XrefSpec>> populate, string content)
+        private static void DeserializeAndPopulateXrefMap(Action<string, int, int, int, int> populate, string content)
         {
             using (var reader = new StringReader(content))
             using (var json = new JsonTextReader(reader))
@@ -234,7 +238,7 @@ namespace Microsoft.Docs.Build
                             endColumn = json.LinePosition;
                             if (uid != null)
                             {
-                                populate(uid, new Lazy<XrefSpec>(() => JsonUtility.Deserialize<XrefSpec>(GetSubstringFromContent(content, startLine, startColumn, endLine, endColumn))));
+                                populate(uid, startLine, endLine, startColumn, endColumn);
                                 uid = null;
                             }
                         }
