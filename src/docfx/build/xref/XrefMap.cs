@@ -252,6 +252,13 @@ namespace Microsoft.Docs.Build
             var result = new StringBuilder();
             var currentLine = 1;
             var currentColumn = 1;
+
+            // for better performance by accessing index when content is 1 line
+            if (currentLine == startLine && currentLine == endLine)
+            {
+                return content.Substring(startColumn - 1, endColumn - startColumn + 1);
+            }
+
             foreach (var ch in content)
             {
                 if (ch == '\n')
@@ -273,10 +280,13 @@ namespace Microsoft.Docs.Build
                 else
                 {
                     if ((currentLine == startLine && currentColumn >= startColumn)
-                    || (currentLine == endLine && currentColumn <= endColumn)
-                    || (currentLine > startLine && currentLine < endLine))
-                            result.Append(ch);
+                        || (currentLine == endLine && currentColumn <= endColumn)
+                        || (currentLine > startLine && currentLine < endLine))
+                    {
+                        result.Append(ch);
+                    }
                 }
+
                 currentColumn += 1;
             }
             return result.ToString();
