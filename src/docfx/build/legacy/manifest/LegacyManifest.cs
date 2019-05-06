@@ -95,9 +95,9 @@ namespace Microsoft.Docs.Build
                         }
                         var file = new LegacyManifestItem
                         {
-                            SiteUrlRelativeToSiteBasePath = legacySiteUrlRelativeToBaseSitePath,
-                            FilePath = document.FilePath,
-                            FilePathRelativeToSourceBasePath = document.ToLegacyPathRelativeToBasePath(docset),
+                            AssetId = legacySiteUrlRelativeToBaseSitePath,
+                            Original = document.FilePath,
+                            SourceRelativePath = document.ToLegacyPathRelativeToBasePath(docset),
                             OriginalType = GetOriginalType(document.ContentType),
                             Type = GetType(document.ContentType, document.Schema),
                             Output = output,
@@ -127,7 +127,7 @@ namespace Microsoft.Docs.Build
                         version_folder = string.Empty,
                         xref_map = "xrefmap.yml",
                     },
-                    files = convertedItems.Select(f => f.manifestItem),
+                    files = convertedItems.OrderBy(f => f.manifestItem.AssetId).Select(f => f.manifestItem),
                     is_already_processed = true,
                     source_base_path = docset.Config.DocumentId.SourceBasePath,
                     version_info = new { },
