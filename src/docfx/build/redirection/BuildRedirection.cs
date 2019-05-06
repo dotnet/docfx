@@ -24,7 +24,7 @@ namespace Microsoft.Docs.Build
 
             if (context.PublishModelBuilder.TryAdd(file, publishItem) && file.Docset.Legacy)
             {
-                var outputPath = file.GetOutputPath(monikers, rawPage: true);
+                var outputPath = file.GetOutputPath(monikers, file.Docset.SiteBasePath, rawPage: true);
                 var metadataPath = outputPath.Substring(0, outputPath.Length - ".raw.page.json".Length) + ".mta.json";
                 var metadata = new
                 {

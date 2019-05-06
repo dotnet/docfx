@@ -76,7 +76,7 @@ namespace Microsoft.Docs.Build
 
             string RemoveHostnameIfSharingTheSameOne(string input)
             {
-                var hostname = rootFile.Docset.Config.BaseUrl;
+                var hostname = rootFile.Docset.HostName;
                 if (input.StartsWith(hostname, StringComparison.OrdinalIgnoreCase))
                 {
                     return input.Substring(hostname.Length);
@@ -178,11 +178,15 @@ namespace Microsoft.Docs.Build
                 else
                 {
                     DeserializeAndPopulateXrefMap(
-                    (uid, spec) =>
+                    (uid, startLine, startColumn, endLine, endColumn) =>
                     {
                         lock (map)
                         {
-                            map[uid] = spec;
+                            map[uid] = new Lazy<XrefSpec>(() =>
+                            {
+                                var str = GetSubstringFromContent(content, startLine, endLine, startColumn, endColumn);
+                                return JsonUtility.Deserialize<XrefSpec>(str);
+                            });
                         }
                     }, content);
                 }
@@ -198,7 +202,7 @@ namespace Microsoft.Docs.Build
             context.Output.WriteJson(models, "xrefmap.json");
         }
 
-        private static void DeserializeAndPopulateXrefMap(Action<string, Lazy<XrefSpec>> populate, string content)
+        private static void DeserializeAndPopulateXrefMap(Action<string, int, int, int, int> populate, string content)
         {
             using (var reader = new StringReader(content))
             using (var json = new JsonTextReader(reader))
@@ -234,7 +238,7 @@ namespace Microsoft.Docs.Build
                             endColumn = json.LinePosition;
                             if (uid != null)
                             {
-                                populate(uid, new Lazy<XrefSpec>(() => JsonUtility.Deserialize<XrefSpec>(GetSubstringFromContent(content, startLine, startColumn, endLine, endColumn))));
+                                populate(uid, startLine, endLine, startColumn, endColumn);
                                 uid = null;
                             }
                         }
@@ -248,6 +252,13 @@ namespace Microsoft.Docs.Build
             var result = new StringBuilder();
             var currentLine = 1;
             var currentColumn = 1;
+
+            // for better performance by accessing index when content is 1 line
+            if (currentLine == startLine && currentLine == endLine)
+            {
+                return content.Substring(startColumn - 1, endColumn - startColumn + 1);
+            }
+
             foreach (var ch in content)
             {
                 if (ch == '\n')
@@ -256,12 +267,26 @@ namespace Microsoft.Docs.Build
                     currentColumn = 1;
                 }
 
-                if ((currentLine == startLine && currentColumn > startColumn)
-                    || (currentLine == endLine && currentColumn < endColumn)
-                    || (currentLine > startLine && currentLine < endLine))
+                // start and end in the same line
+                if (currentLine == startLine && currentLine == endLine)
                 {
-                    result.Append(ch);
+                    if (currentColumn >= startColumn && currentColumn <= endColumn)
+                    {
+                        result.Append(ch);
+                    }
                 }
+
+                // start and end in multiple lines
+                else
+                {
+                    if ((currentLine == startLine && currentColumn >= startColumn)
+                        || (currentLine == endLine && currentColumn <= endColumn)
+                        || (currentLine > startLine && currentLine < endLine))
+                    {
+                        result.Append(ch);
+                    }
+                }
+
                 currentColumn += 1;
             }
             return result.ToString();
