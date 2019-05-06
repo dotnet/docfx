@@ -247,3 +247,14 @@ outputs:
     ["error","yaml-syntax-error","Mapping values are not allowed in this context.","docs/a.yml",2,5]
     ["error","json-syntax-error","Error reading JObject from JsonReader.","docs/b.json",2]
 ---
+# Invalid JSON
+inputs:
+  docfx.yml:
+  docs/a.json: |
+    {a}/{b}/{c}
+  docs/b.yml: |
+    #YamlMime:TestData
+outputs:
+  docs/b.json:
+  build.log: |
+    ["error","json-syntax-error","Invalid JavaScript property identifier character: }.","docs/a.json",1,2]

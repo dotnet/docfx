@@ -5,6 +5,7 @@ inputs:
     monikerRange:
       'docs/v1/**': '< netcore-2.0'
       'docs/v2/**': '>= netcore-2.0'
+    baseUrl: https://docs.com/docs
     routes:
       docs/v1/: docs/
       docs/v2/: docs/
@@ -25,13 +26,13 @@ inputs:
       ]
     }
 outputs:
-  9d4e15fd/docs/a.json: |
+  docs/9d4e15fd/a.json: |
     {
       "content": "<p>Moniker: netcore-1.0, netcore-1.1</p>",
       "monikers": ["netcore-1.0", "netcore-1.1"],
       "!monikerRange": null
     }
-  23d205a5/docs/a.json: |
+  docs/23d205a5/a.json: |
     {
       "content": "<p>Moniker: netcore-2.0, netcore-2.1</p>",
       "monikers": ["netcore-2.0", "netcore-2.1"]

@@ -21,8 +21,8 @@ namespace Microsoft.Docs.Build
                     new LegacyItemToPublish { RelativePath = ".dependency-map.json", Type = "unknown" },
                 };
 
-                var monikerGroups = new ConcurrentDictionary<string, List<string>>();
-                var convertedItems = new ConcurrentBag<(LegacyManifestItem manifestItem, Document doc, List<string> monikers)>();
+                var dictionaryBuilder = new DictionaryBuilder<string, List<string>>();
+                var listBuilder = new ListBuilder<(LegacyManifestItem manifestItem, Document doc, List<string> monikers)>();
                 Parallel.ForEach(
                     fileManifests,
                     fileManifest =>
@@ -95,9 +95,9 @@ namespace Microsoft.Docs.Build
                         }
                         var file = new LegacyManifestItem
                         {
-                            SiteUrlRelativeToSiteBasePath = legacySiteUrlRelativeToBaseSitePath,
-                            FilePath = document.FilePath,
-                            FilePathRelativeToSourceBasePath = document.ToLegacyPathRelativeToBasePath(docset),
+                            AssetId = legacySiteUrlRelativeToBaseSitePath,
+                            Original = document.FilePath,
+                            SourceRelativePath = document.ToLegacyPathRelativeToBasePath(docset),
                             OriginalType = GetOriginalType(document.ContentType),
                             Type = GetType(document.ContentType, document.Schema),
                             Output = output,
@@ -106,17 +106,19 @@ namespace Microsoft.Docs.Build
                             Group = groupId,
                         };
 
-                        convertedItems.Add((file, document, fileManifest.Value.Monikers));
+                        listBuilder.Add((file, document, fileManifest.Value.Monikers));
                         if (groupId != null)
                         {
-                            monikerGroups.TryAdd(groupId, fileManifest.Value.Monikers);
+                            dictionaryBuilder.TryAdd(groupId, fileManifest.Value.Monikers);
                         }
                     });
 
+                var monikerGroups = dictionaryBuilder.ToDictionary();
+                var convertedItems = listBuilder.ToList();
                 context.Output.WriteJson(
                 new
                 {
-                    groups = monikerGroups.Count > 0 ? monikerGroups.Select(item => new
+                    groups = monikerGroups.Any() ? monikerGroups.Select(item => new
                     {
                         group = item.Key,
                         monikers = item.Value,
@@ -127,13 +129,13 @@ namespace Microsoft.Docs.Build
                         version_folder = string.Empty,
                         xref_map = "xrefmap.yml",
                     },
-                    files = convertedItems.Select(f => f.manifestItem),
+                    files = convertedItems.OrderBy(f => f.manifestItem.AssetId).Select(f => f.manifestItem),
                     is_already_processed = true,
                     source_base_path = docset.Config.DocumentId.SourceBasePath,
                     version_info = new { },
                     items_to_publish = itemsToPublish,
                 },
-                Path.Combine(docset.Config.DocumentId.SiteBasePath, ".manifest.json"));
+                Path.Combine(docset.SiteBasePath, ".manifest.json"));
             }
         }
 

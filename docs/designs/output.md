@@ -28,24 +28,24 @@ https://docs.microsoft.com/en-us/dotnet/api/system.string?view=netstandard-2.0#I
 
 ### Static rendering URL schema
 
-`https://{host}/{locale?}/{moniker?}/{site-url}`
+`https://{host}/{locale?}/{site-url}`
 
 #### Static rendering with pretty URL
 
 ```
-             host          locale    moniker            site-url
-        |------^---------| |-^-| |------^------||----------^-------------|
-https://docs.microsoft.com/en-us/netstandard-2.0/dotnet/api/system.string/#Instantiation
+             host          locale        site-url
+        |------^---------| |-^-| |----------^-------------|
+https://docs.microsoft.com/en-us/dotnet/api/system.string/#Instantiation
 ```
 
 #### Static rendering with ugly URL
 
-`https://{host}/{locale?}/{moniker?}/{site-url}`
+`https://{host}/{locale?}/{site-url}`
 
 ```
-             host          locale    moniker            site-url         
-        |------^---------| |-^-| |------^------||----------^-----------------|
-https://docs.microsoft.com/en-us/netstandard-2.0/dotnet/api/system.string.html#Instantiation
+             host          locale               site-url
+        |------^---------| |-^-| |----------^-----------------|
+https://docs.microsoft.com/en-us/dotnet/api/system.string.html#Instantiation
 ```
 
 > `?` means optional.
@@ -56,12 +56,12 @@ https://docs.microsoft.com/en-us/netstandard-2.0/dotnet/api/system.string.html#I
 
 Each input file transforms to zero or more output files depending on its content type. `docfx` places output files in `output-path` relative to output directory. **Regardless of static rendering or dynamic rendering, output path shares the same schema**:
 
-`{output-dir}/{locale?}/{moniker?}/{site-path}`
+`{output-dir}/{siteBasePath}/{monikerListHash}?/{site-path-relative-to-base-path}`
 
 ```
-      locale    moniker                 site-path
-      |-^-| |------^------| |----------------^----------------|
-_site/en-us/netstandard-2.0/dotnet/api/system.string/index.html
+  siteBasePath monikerListHash    site-path-relative-to-base-path
+      |--^-| |--^--| |----------------^----------|
+_site/dotnet/01ddf122/api/system.string/index.html
 ```
 
 Different files can share the same `{site-url}` or `{site-path}` due to versioning and localization.
@@ -76,43 +76,44 @@ Different files can share the same `{site-url}` or `{site-path}` due to versioni
     | `url` | https://docs.microsoft.com/en-us/dotnet/api/system.string?view=netstandard-2.0 |
     | `site-url` | /dotnet/api/system.string |
     | `site-path` | dotnet/api/system.string.json |
-    | `output-path` | en-us/netstandard-2.0/dotnet/api/system.string.json |
+    | `site-path-relative-to-base-path` | api/system.string.json |
+    | `output-path` | dotnet/01ddf122/api/system.string.json |
 
 - Content for static rendering using pretty url
 
     | | |
     |------ |----|
-    | `url` | https://docs.microsoft.com/en-us/netstandard-2.0/dotnet/api/system.string/ |
+    | `url` | https://docs.microsoft.com/en-us/dotnet/api/system.string/ |
     | `site-url` | /dotnet/api/system.string/ |
     | `site-path` | dotnet/api/system.string/index.html |
-    | `output-path` | en-us/netstandard-2.0/dotnet/api/system.string/index.html |
+    | `output-path` | dotnet/api/system.string/index.html |
 
 - Content for static rendering using ugly url
 
     | | |
     |------ |----|
-    | `url` | https://docs.microsoft.com/en-us/netstandard-2.0/dotnet/api/system.string.html |
+    | `url` | https://docs.microsoft.com/en-us/dotnet/api/system.string.html |
     | `site-url` | /dotnet/api/system.string.html |
     | `site-path` | dotnet/api/system.string.html |
-    | `output-path` | en-us/netstandard-2.0/dotnet/api/system.string.html |
+    | `output-path` | dotnet/api/system.string.html |
 
 - Table of Contents
 
     | | |
     |------ |----|
-    | `url` | https://docs.microsoft.com/en-us/netstandard-2.0/dotnet/api/TOC.json |
+    | `url` | https://docs.microsoft.com/en-us/dotnet/api/TOC.json |
     | `site-url` | /dotnet/api/TOC.json |
     | `site-path` | dotnet/api/TOC.json |
-    | `output-path` | en-us/netstandard-2.0/dotnet/api/TOC.json |
+    | `output-path` | dotnet/api/TOC.json |
 
 - Image
 
     | | |
     |------ |----|
-    | `url` | https://docs.microsoft.com/en-us/netstandard-2.0/dotnet/api/thumbnail.png |
+    | `url` | https://docs.microsoft.com/en-us/dotnet/api/thumbnail.png |
     | `site-url` | /dotnet/api/thumbnail.png |
     | `site-path` | dotnet/api/thumbnail.png |
-    | `output-path` | en-us/netstandard-2.0/dotnet/api/thumbnail.png |
+    | `output-path` | dotnet/api/thumbnail.png |
 
 ## System Generated Outputs
 
