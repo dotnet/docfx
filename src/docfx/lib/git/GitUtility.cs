@@ -21,7 +21,6 @@ namespace Microsoft.Docs.Build
     internal static partial class GitUtility
     {
         internal static Func<string, string> GitRemoteProxy;
-        private static ConcurrentDictionary<string, int> _mockedRepoBranches = new ConcurrentDictionary<string, int>();
 
         /// <summary>
         /// Find git repo directory
@@ -266,8 +265,7 @@ namespace Microsoft.Docs.Build
             // - git checkout (if not a bar repo)
             if (GitRemoteProxy != null &&
                 GitRemoteProxy(url) != url &&
-                Directory.Exists(path) &&
-                !_mockedRepoBranches.TryAdd(path + string.Join(",", committishes) + depthOne, 1))
+                Directory.Exists(path))
             {
                 // optimize for test fetching
                 return;
@@ -290,17 +288,19 @@ namespace Microsoft.Docs.Build
 
             git_repository_free(repo);
 
-            // Allow test to proxy remotes to local folder
-            if (GitRemoteProxy != null)
-            {
-                url = GitRemoteProxy(url);
-            }
-
-            var httpConfig = GetGitCommandLineConfig(url, config);
             var refspecs = string.Join(' ', committishes.Select(rev => $"+{rev}:{rev}"));
             var depth = depthOne ? "--depth 1" : "--depth 9999999999";
             var pruneSwitch = prune ? "--prune" : "";
 
+            // Allow test to proxy remotes to local folder
+            if (GitRemoteProxy != null)
+            {
+                url = GitRemoteProxy(url);
+                refspecs = "+refs/heads/*:refs/heads/* +refs/tags/*:refs/tags/*";
+                depth = "--depth 9999999999";
+            }
+
+            var httpConfig = GetGitCommandLineConfig(url, config);
             try
             {
                 ExecuteNonQuery(path, $"{httpConfig} fetch --tags --progress --update-head-ok {pruneSwitch} {depth} \"{url}\" {refspecs}");
