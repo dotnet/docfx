@@ -79,29 +79,6 @@ namespace Microsoft.Docs.Build
             return schema;
         }
 
-        /// <summary>
-        /// Fast pass to read the value of $schema specified in JSON.
-        /// $schema must be the first attribute in the root object.
-        /// Assume input is a valid JSON. Bad input will be processed through Json.NET
-        /// </summary>
-        public static SourceInfo<string> ReadSchema(TextReader reader, string file)
-        {
-            var json = new JsonTextReader(reader);
-
-            if (json.Read() && json.TokenType == JsonToken.StartObject)
-            {
-                if (json.Read() && json.TokenType == JsonToken.PropertyName && json.Value is string str && str == "$schema")
-                {
-                    if (json.Read() && json.Value is string schema)
-                    {
-                        var lineInfo = (IJsonLineInfo)json;
-                        return new SourceInfo<string>(schema, new SourceInfo(file, lineInfo.LineNumber, lineInfo.LinePosition));
-                    }
-                }
-            }
-            return new SourceInfo<string>(null, new SourceInfo(file, 1, 1));
-        }
-
         public static IEnumerable<string> GetPropertyNames(Type type)
         {
             return ((JsonObjectContract)s_serializer.ContractResolver.ResolveContract(type)).Properties.Select(prop => prop.PropertyName);
@@ -378,6 +355,36 @@ namespace Microsoft.Docs.Build
                 token.AddAnnotation(source);
             }
             return token;
+        }
+
+        /// <summary>
+        /// Fast pass to read the value of $schema specified in JSON.
+        /// $schema must be the first attribute in the root object.
+        /// Assume input is a valid JSON. Bad input will be processed through Json.NET
+        /// </summary>
+        private static SourceInfo<string> ReadSchema(TextReader reader, string file)
+        {
+            try
+            {
+                var json = new JsonTextReader(reader);
+
+                if (json.Read() && json.TokenType == JsonToken.StartObject)
+                {
+                    if (json.Read() && json.TokenType == JsonToken.PropertyName && json.Value is string str && str == "$schema")
+                    {
+                        if (json.Read() && json.Value is string schema)
+                        {
+                            var lineInfo = (IJsonLineInfo)json;
+                            return new SourceInfo<string>(schema, new SourceInfo(file, lineInfo.LineNumber, lineInfo.LinePosition));
+                        }
+                    }
+                }
+                return new SourceInfo<string>(null, new SourceInfo(file, 1, 1));
+            }
+            catch (JsonReaderException)
+            {
+                return null;
+            }
         }
 
         private static bool IsNullOrUndefined(this JToken token)
