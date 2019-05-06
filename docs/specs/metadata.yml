@@ -78,6 +78,8 @@ inputs:
     product: Win
     files: sccm/**/*
     baseUrl: https://docs.com/sccm
+    routes:
+      sccm/: "."
   sccm/mdt/release-notes.md:
 outputs:
   sccm/mdt/release-notes.json: |
@@ -95,6 +97,8 @@ inputs:
     product: Win
     files: "**/*"
     baseUrl: https://docs.com/sccm
+    routes:
+      sccm/: "."
   sccm/mdm/index.md:
   sccm/index.md:
 outputs:
@@ -113,6 +117,8 @@ inputs:
     product: Win
     files: "**/*"
     baseUrl: https://docs.com/sccm
+    routes:
+      sccm/: "."
     redirections:
       sccm/mdm/index.md: /sccm/mdm/understand/hybrid-mobile-device-management
   sccm/mdm/understand/hybrid-mobile-device-management.md:
@@ -132,6 +138,8 @@ inputs:
     baseUrl: https://docs.com/sccm
     redirections:
       sccm/mdm/index.md: /sccm/mdm/understand/hybrid-mobile-device-management
+    routes:
+      sccm/: "."
   sccm/mdm/understand/hybrid-mobile-device-management.md:
 outputs:
   sccm/mdm/understand/hybrid-mobile-device-management.json: |
@@ -148,6 +156,8 @@ inputs:
     product: Win
     files: "**/*"
     baseUrl: https://docs.com/sccm
+    routes:
+      sccm/: "."
     redirectionsWithoutId:
       sccm/mdm/index.md: /sccm/mdm/understand/hybrid-mobile-device-management
   sccm/mdm/understand/hybrid-mobile-device-management.md:
@@ -164,6 +174,8 @@ inputs:
     product: Win
     files: "**/*"
     baseUrl: https://docs.com/sccm
+    routes:
+      sccm/: "."
     redirections:
       sccm/mdm/index.md: /sccm/mdm/understand/hybrid-mobile-device-management
       sccm/mdm/index2.md: /sccm/mdm/understand/hybrid-mobile-device-management
@@ -201,7 +213,7 @@ inputs:
     files: "**/*"
     baseUrl: https://docs.com/azure
     routes:
-      articles/: "azure/"
+      articles/: "."
   articles/iot-central/concepts-architecture.md:
   articles/billing/billing-add-change-azure-subscription-administrator.md:
 outputs:
@@ -307,7 +319,7 @@ inputs:
     files: "**/*"
     baseUrl: https://docs.com/azure
     routes:
-      articles/: "azure/"
+      articles/: "."
     redirections:
       articles/active-directory/active-directory-saas-splunkenterpriseandsplunkcloud-tutorial.md: /azure/active-directory/saas-apps/splunkenterpriseandsplunkcloud-tutorial
       articles/active-directory/active-directory-saas-splunk-enterprise-and-splunk-cloud-tutorial.md: /azure/active-directory/active-directory-saas-splunkenterpriseandsplunkcloud-tutorial
@@ -327,6 +339,8 @@ inputs:
     name: azure-documents
     files: "**/*"
     baseUrl: https://docs.com/articles
+    routes:
+      articles/: "."
   articles/active-directory-b2c/index.yml : |
     ### YamlMime:YamlDocument
     documentType: LandingData
@@ -347,7 +361,7 @@ inputs:
     files: "**/*"
     baseUrl: https://docs.com/azure
     routes:
-      articles/: "azure/"
+      articles/: "."
     redirections:
       articles/virtual-machines/windows/classic/web-app-visual-studio.md: /azure/app-service/
   articles/app-service/index.yml : |
@@ -361,9 +375,9 @@ outputs:
 inputs:
   docfx.yml: |
     files: "**/*"
-    baseUrl: "https://docs.microsoft.com"
+    baseUrl: "https://docs.microsoft.com/azure"
     routes:
-      articles/: "azure/"
+      articles/: "."
   articles/app-service/index.md:
   articles/app-service/index.experimental.md:
 outputs:

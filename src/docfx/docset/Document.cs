@@ -244,7 +244,7 @@ namespace Microsoft.Docs.Build
             var isExperimental = Path.GetFileNameWithoutExtension(filePath).EndsWith(".experimental", PathUtility.PathComparison);
             var routedFilePath = ApplyRoutes(filePath, docset.Routes);
 
-            var sitePath = FilePathToSitePath(routedFilePath, type, schema, docset.Config.Output.Json, docset.Config.Output.UglifyUrl);
+            var sitePath = PathUtility.NormalizeFile(Path.Combine(docset.SiteBasePath, FilePathToSitePath(routedFilePath, type, schema, docset.Config.Output.Json, docset.Config.Output.UglifyUrl)));
             if (docset.Config.Output.LowerCaseUrl)
             {
                 sitePath = sitePath.ToLowerInvariant();
