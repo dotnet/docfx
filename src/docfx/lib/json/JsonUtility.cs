@@ -109,7 +109,7 @@ namespace Microsoft.Docs.Build
         /// De-serialize a data string, which is not user input, to an object
         /// schema validation errors will be ignored, syntax errors and type mismatching will be thrown
         /// </summary>
-        public static T Deserialize<T>(string json)
+        public static T Deserialize<T>(string json, string file)
         {
             using (var stringReader = new StringReader(json))
             using (var reader = new JsonTextReader(stringReader))
@@ -120,7 +120,7 @@ namespace Microsoft.Docs.Build
                 }
                 catch (JsonReaderException ex)
                 {
-                    throw ToError(ex).ToException(ex);
+                    throw ToError(ex, file).ToException(ex);
                 }
             }
         }
@@ -438,7 +438,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static Error ToError(JsonReaderException ex, string file = null)
+        private static Error ToError(JsonReaderException ex, string file)
         {
             var source = new SourceInfo(file, ex.LineNumber, ex.LinePosition);
 
