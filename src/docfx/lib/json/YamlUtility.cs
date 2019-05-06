@@ -10,13 +10,9 @@ using Newtonsoft.Json.Linq;
 
 using YamlDotNet.Core;
 using YamlDotNet.Core.Events;
-using YamlDotNet.RepresentationModel;
 
 namespace Microsoft.Docs.Build
 {
-    /// <summary>
-    /// Provide Utilities of Yaml
-    /// </summary>
     internal static class YamlUtility
     {
         public const string YamlMimePrefix = "YamlMime:";
