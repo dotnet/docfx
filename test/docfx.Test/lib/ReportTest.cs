@@ -10,7 +10,7 @@ namespace Microsoft.Docs.Build
         [Fact]
         public void DedupErrors()
         {
-            using (var report = new Report())
+            using (var report = new Report("DedupErrors"))
             {
                 report.Write(new Error(ErrorLevel.Error, "an-error-code", "message 1"));
                 report.Write(new Error(ErrorLevel.Error, "an-error-code", "message 1"));
@@ -24,7 +24,7 @@ namespace Microsoft.Docs.Build
         [Fact]
         public void MaxErrors()
         {
-            using (var report = new Report())
+            using (var report = new Report("MaxErrors"))
             {
                 for (var i = 0; i < OutputConfig.DefaultMaxErrors; i++)
                 {
