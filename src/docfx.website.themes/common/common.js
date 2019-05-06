@@ -106,6 +106,24 @@ var gitUrlPatternItems = {
         'generateNewFileUrl': function (gitInfo, uid) {
             return '';
         }
+    },
+    'bitbucket': {
+        // HTTPS form: https://{user}@bitbucket.org/{org}/{repo}.git
+        // SSH form: git@bitbucket.org:{org}/{repo}.git
+        // generate URL: https://bitbucket.org/{org}/{repo}/src/{branch}/{path}
+        'testRegex': /^(https?:\/\/)?(\S+\@)?(\S+\.)?bitbucket\.org(\/|:).*/i,
+        'generateUrl': function (gitInfo) {
+            var url = normalizeGitUrlToHttps(gitInfo.repo);
+            url = getRepoWithoutGitExtension(url);
+            url += '/src' + '/' + gitInfo.branch + '/' + gitInfo.path;
+            if (gitInfo.startLine && gitInfo.startLine > 0) {
+                url += '#lines-' + gitInfo.startLine;
+            }
+            return url;
+        },
+        'generateNewFileUrl': function (gitInfo, uid) {
+            return '';
+        }
     }
 }
 
@@ -191,7 +209,7 @@ function getPatternName(repo, gitUrlPattern) {
 
 function getOverrideFolder(path) {
     if (!path) return "";
-    path = path.replace('\\', '/');
+    path = path.replace(/\\/g, '/');
     if (path.charAt(path.length - 1) == '/') path = path.substring(0, path.length - 1);
     return path;
 }

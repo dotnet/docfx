@@ -1,8 +1,25 @@
-Version Notes (Current Version: v2.42)
+Version Notes (Current Version: v2.43)
 =======================================
 
-v2.42(Pre-release)
+v2.43(Pre-Release)
 -----------
+1. fix JavaScript error when clicking on "In This Article" links in the side navigation of the default website template. (#4419)
+2. Revert PDFSharp back to iTextSharp (#4407)
+
+v2.42.1
+-----------
+1. fix NullReferenceException in dependency command.
+
+v2.42
+-----------
+1. PDF features:
+    1. Added support for a cover page when generating a PDF. (#2004)
+    1. Added the ability to change the default "Cover Page" bookmark for the TOC in the PDF. (#4278)
+    3. Added the ability to specify the type of outline to use when generating a PDF.
+2. Replaced iTextSharp with PdfSharp (#4250).
+    1. **[Breaking change]** Removed support for OutlineOption.CustomOutline when generating a PDF.
+3. Bug fix:
+    1. Prevent adding duplicate HTML files when generating a PDF.
 
 v2.41
 -----------

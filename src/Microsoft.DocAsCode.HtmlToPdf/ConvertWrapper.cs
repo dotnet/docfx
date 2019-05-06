@@ -116,22 +116,34 @@ namespace Microsoft.DocAsCode.HtmlToPdf
                         var tocPageFilePath = Path.Combine(basePath, Path.GetDirectoryName(tocFilePath), TocPageFileName);
                         var tocModels = LoadTocModels(basePath, tocFile) ?? new List<TocModel>();
 
-                        var crruentTocHtmls = new ConcurrentBag<string>();
-                        var htmlModels = BuildHtmlModels(basePath, tocModels, crruentTocHtmls);
+                        var currentTocHtmls = new ConcurrentBag<string>();
+                        var htmlModels = BuildHtmlModels(basePath, tocModels, currentTocHtmls);
 
-                        HtmlNotInTocTransformer(basePath, manifestUrlCache, crruentTocHtmls);
+                        HtmlNotInTocTransformer(basePath, manifestUrlCache, currentTocHtmls);
 
                         if (_pdfOptions.GenerateAppendices)
                         {
-                            crruentTocHtmls.AsParallel().ForAll(tocHtmls.Add);
+                            currentTocHtmls.AsParallel().ForAll(tocHtmls.Add);
                         }
 
                         if (File.Exists(tocPageFilePath))
                         {
                             RemoveQueryStringAndBookmarkTransformer(tocPageFilePath);
                             AbsolutePathInTocPageFileTransformer(tocPageFilePath);
-                            htmlModels.Insert(0, new HtmlModel { Title = "Cover Page", HtmlFilePath = tocPageFilePath });
+                            htmlModels.Insert(0, new HtmlModel { Title = _pdfOptions.TocTitle, HtmlFilePath = tocPageFilePath });
                         }
+
+                        var coverPage = FindSiblingCoverPageInManifest(manifest, tocFile);
+                        if (coverPage != null)
+                        {
+                            var coverPageHtmlRelativeFilePath = coverPage.OutputFiles[".html"].RelativePath;
+                            var coverPageHtmlFilePath = Path.Combine(basePath, coverPageHtmlRelativeFilePath);
+                            if (File.Exists(coverPageHtmlFilePath))
+                            {
+                                htmlModels.Insert(0, new HtmlModel { Title = _pdfOptions.CoverPageTitle, HtmlFilePath = coverPageHtmlFilePath });
+                            }
+                        }
+
                         if (_pdfOptions.ExcludeTocs == null || _pdfOptions.ExcludeTocs.All(p => NormalizeFilePath(p) != tocFilePath))
                         {
                             var pdfNameFragments = new List<string> { _pdfOptions.PdfDocsetName };
@@ -172,7 +184,7 @@ namespace Microsoft.DocAsCode.HtmlToPdf
                     }
                     catch (Exception ex)
                     {
-                        Logger.LogWarning($"Error happen when converting {tocJson} to Pdf. Details: {ex.Message}");
+                        Logger.LogError($"Error happen when converting {tocJson} to Pdf. Details: {ex.ToString()}");
                     }
                 });
 
@@ -218,6 +230,15 @@ namespace Microsoft.DocAsCode.HtmlToPdf
         private IList<ManifestItem> FindTocInManifest(Manifest manifest)
         {
             return manifest.Files.Where(f => IsType(f, ManifestItemType.Toc)).ToList();
+        }
+
+        private ManifestItem FindSiblingCoverPageInManifest(Manifest manifest, ManifestItem tocFile)
+        {
+            return manifest.Files.SingleOrDefault(f =>
+            {
+                return FilePathComparer.OSPlatformSensitiveRelativePathComparer.Equals(Path.GetDirectoryName(f.SourceRelativePath), Path.GetDirectoryName(tocFile.SourceRelativePath))
+                    && (string.Compare("cover.md", Path.GetFileName(f.SourceRelativePath), ignoreCase: true) == 0);
+            });
         }
 
         private void HtmlTransformer(string fullPath)
@@ -314,7 +335,8 @@ namespace Microsoft.DocAsCode.HtmlToPdf
                     BasePath = basePath,
                     UserStyleSheet = _pdfOptions.CssFilePath,
                     LoadErrorHandling = _pdfOptions.LoadErrorHandling,
-                    AdditionalArguments = _pdfOptions.AdditionalPdfCommandArgs
+                    AdditionalArguments = _pdfOptions.AdditionalPdfCommandArgs,
+                    OutlineOption = _pdfOptions.OutlineOption
                 });
 
             converter.Save(Path.Combine(_pdfOptions.DestDirectory, pdfFileName));

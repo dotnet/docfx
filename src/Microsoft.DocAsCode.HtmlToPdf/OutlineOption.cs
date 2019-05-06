@@ -7,7 +7,6 @@ namespace Microsoft.DocAsCode.HtmlToPdf
     {
         NoOutline,
         WkDefaultOutline,
-        DefaultOutline,
-        CustomOutline
+        DefaultOutline
     }
 }

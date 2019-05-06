@@ -5,7 +5,7 @@ namespace Microsoft.DocAsCode
 {
     using System;
     using System.Collections.Generic;
-
+    using Microsoft.DocAsCode.HtmlToPdf;
     using Newtonsoft.Json;
 
     [Serializable]
@@ -52,5 +52,23 @@ namespace Microsoft.DocAsCode
         /// </summary>
         [JsonProperty("wkhtmltopdf")]
         public WkhtmltopdfJsonConfig Wkhtmltopdf { get; set; }
+
+        /// <summary>
+        /// Gets or sets the "Table of Contents" bookmark title.
+        /// </summary>
+        [JsonProperty("tocTitle")]
+        public string TocTitle { get; set; } = "Table of Contents";
+
+        /// <summary>
+        /// Gets or sets the outline option.
+        /// </summary>
+        [JsonProperty("outline")]
+        public OutlineOption OutlineOption { get; set; } = OutlineOption.DefaultOutline;
+
+        /// <summary>
+        /// Gets or sets the cover page title.
+        /// </summary>
+        [JsonProperty("coverTitle")]
+        public string CoverPageTitle { get; set; } = "Cover Page";
     }
 }
