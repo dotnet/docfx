@@ -38,6 +38,10 @@ namespace Microsoft.Docs.Build
             Debug.Assert(file != null);
 
             var result = new JObject();
+            if (yamlHeader != null)
+            {
+                JsonUtility.SetSourceInfo(result, JsonUtility.GetSourceInfo(yamlHeader));
+            }
 
             JsonUtility.Merge(result, _globalMetadata);
 
