@@ -174,7 +174,7 @@ namespace Microsoft.Docs.Build
         /// Used duplicate yaml key in markdown yml header or schema document(yml).
         /// </summary>
         public static Error YamlDuplicateKey(SourceInfo source, string key)
-            => new Error(ErrorLevel.Warning, "yaml-duplicate-key", $"Key '{key}' is already defined, remove the duplicate key.", source);
+            => new Error(ErrorLevel.Error, "yaml-duplicate-key", $"Key '{key}' is already defined, remove the duplicate key.", source);
 
         /// <summary>
         /// Syntax error in json file.
