@@ -54,7 +54,7 @@ namespace Microsoft.Docs.Build
         public readonly JObject GlobalMetadata = new JObject();
 
         /// <summary>
-        /// The hostname
+        /// {Schema}://{Hostname}/{SiteBasePath}: https://docs.microsoft.com/dotnet
         /// </summary>
         public readonly string BaseUrl = string.Empty;
 

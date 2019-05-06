@@ -43,15 +43,15 @@ namespace Microsoft.Docs.Build
             context.Output.WriteJson(
                 new
                 {
-                    host = docset.Config.BaseUrl,
+                    host = docset.HostName,
                     locale = docset.Locale,
-                    base_path = $"/{docset.Config.DocumentId.SiteBasePath}",
+                    base_path = $"/{docset.SiteBasePath}",
                     source_base_path = docset.Config.DocumentId.SourceBasePath,
                     version_info = new { },
                     file_mapping = items.ToDictionary(
                         key => PathUtility.NormalizeFile(key.legacyFilePathRelativeToBaseFolder), v => v.fileMapItem),
                 },
-                Path.Combine(docset.Config.DocumentId.SiteBasePath, "filemap.json"));
+                Path.Combine(docset.SiteBasePath, "filemap.json"));
         }
     }
 }

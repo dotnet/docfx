@@ -76,7 +76,7 @@ namespace Microsoft.Docs.Build
 
             string RemoveHostnameIfSharingTheSameOne(string input)
             {
-                var hostname = rootFile.Docset.Config.BaseUrl;
+                var hostname = rootFile.Docset.HostName;
                 if (input.StartsWith(hostname, StringComparison.OrdinalIgnoreCase))
                 {
                     return input.Substring(hostname.Length);
