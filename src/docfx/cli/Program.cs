@@ -145,7 +145,7 @@ namespace Microsoft.Docs.Build
             }
             catch (ArgumentSyntaxException ex)
             {
-                Log.Write(ex);
+                Console.Write(ex.Message);
                 return default;
             }
         }
