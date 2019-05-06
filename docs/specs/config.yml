@@ -358,8 +358,6 @@ outputs:
     ["error","invalid-locale","Locale 'wrong/wrong' is not supported."]
 ---
 # branch overwrite config
-commands:
-  - build
 repo: https://github.com/docascode/docfx-test-dependencies#master
 inputs:
   docfx.yml: |

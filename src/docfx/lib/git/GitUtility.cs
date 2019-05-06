@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -20,6 +21,7 @@ namespace Microsoft.Docs.Build
     internal static partial class GitUtility
     {
         internal static Func<string, string> GitRemoteProxy;
+        private static ConcurrentDictionary<string, int> _mockedRepoBranches = new ConcurrentDictionary<string, int>();
 
         /// <summary>
         /// Find git repo directory
@@ -262,7 +264,10 @@ namespace Microsoft.Docs.Build
             // - git remote set url
             // - git fetch
             // - git checkout (if not a bar repo)
-            if (GitRemoteProxy != null && GitRemoteProxy(url) != url && Directory.Exists(path))
+            if (GitRemoteProxy != null &&
+                GitRemoteProxy(url) != url &&
+                Directory.Exists(path) &&
+                !_mockedRepoBranches.TryAdd(path + string.Join(",", committishes) + depthOne, 1))
             {
                 // optimize for test fetching
                 return;

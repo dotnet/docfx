@@ -243,7 +243,7 @@ namespace Microsoft.Docs.Build
             var inputFolderCreatedFlag = Path.Combine("specs-flags", name);
             if (fromLoc)
             {
-                spec.Commands = new[] { "restore", "build" };
+                spec.Commands = new[] { "build" };
             }
             var mockedRepos = MockGitRepos(specPath, ordinal, name, spec);
 

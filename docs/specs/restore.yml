@@ -117,7 +117,7 @@ outputs:
 ---
 # Show error when dependent repo can't be found
 commands:
-  - build
+  - build --no-restore
 inputs:
   docfx.yml: |
     dependencies:
@@ -130,7 +130,7 @@ outputs:
 ---
 # Show error when dependent URL can't be found
 commands:
-  - build
+  - build --no-restore
 inputs:
   docfx.yml: |
     monikerDefinition: https://docs.microsoft.com/bad-url
