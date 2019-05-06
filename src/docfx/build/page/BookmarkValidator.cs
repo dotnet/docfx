@@ -9,8 +9,8 @@ namespace Microsoft.Docs.Build
 {
     internal class BookmarkValidator
     {
-        private readonly ConcurrentDictionary<Document, HashSet<string>> _bookmarksByFile = new ConcurrentDictionary<Document, HashSet<string>>();
-        private readonly ConcurrentBag<(Document file, Document dependency, string bookmark, bool isSelfBookmark, SourceInfo source)> _references = new ConcurrentBag<(Document file, Document dependency, string bookmark, bool isSelfBookmark, SourceInfo source)>();
+        private readonly DictionaryBuilder<Document, HashSet<string>> _bookmarksByFile = new DictionaryBuilder<Document, HashSet<string>>();
+        private readonly ListBuilder<(Document file, Document dependency, string bookmark, bool isSelfBookmark, SourceInfo source)> _references = new ListBuilder<(Document file, Document dependency, string bookmark, bool isSelfBookmark, SourceInfo source)>();
 
         public void AddBookmarkReference(Document file, Document reference, string fragment, bool isSelfBookmark, SourceInfo source)
         {
@@ -38,9 +38,9 @@ namespace Microsoft.Docs.Build
         {
             var result = new List<(Error error, Document file)>();
 
-            foreach (var (file, reference, bookmark, isSelfBookmark, source) in _references)
+            foreach (var (file, reference, bookmark, isSelfBookmark, source) in _references.ToList())
             {
-                if (_bookmarksByFile.TryGetValue(reference, out var bookmarks) && bookmarks.Contains(bookmark))
+                if (_bookmarksByFile.ToDictionary().TryGetValue(reference, out var bookmarks) && bookmarks.Contains(bookmark))
                 {
                     continue;
                 }

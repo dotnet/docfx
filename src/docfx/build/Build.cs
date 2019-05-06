@@ -42,7 +42,7 @@ namespace Microsoft.Docs.Build
         {
             XrefMap xrefMap = null;
             var (configErrors, config) = GetBuildConfig(docsetPath, options, locale, fallbackRepo);
-            report.Configure(docsetPath, config);
+            report.Configure(config);
 
             // just return if config loading has errors
             if (report.Write(config.ConfigFileName, configErrors))

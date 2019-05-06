@@ -27,15 +27,7 @@ inputs:
     xref: xrefmap.json
   docs/a.md: Link to @System.String
   xrefmap.json: |
-    {
-      "references":[{
-          "uid": "System.String",
-          "name": "String",
-          "fullName": "System.String",
-          "href": "https://docs.microsoft.com/en-us/dotnet/api/system.string",
-          "nameWithType": "System.String"
-      }]
-    }
+    { "references":[{"uid": "System.String", "name": "String", "fullName": "System.String", "href": "https://docs.microsoft.com/en-us/dotnet/api/system.string", "nameWithType": "System.String"}],"Others":{"properties":{"vendor":"dotnet-api-docs","tags":["/dotnet","public"]}},"IsEmbeddedRedirections":false}
 outputs:
   docs/a.json: |
     { "content": "<p>Link to <a href=\"/en-us/dotnet/api/system.string\">String</a></p>\n"}
