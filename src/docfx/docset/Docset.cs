@@ -82,6 +82,16 @@ namespace Microsoft.Docs.Build
         public RestoreMap RestoreMap { get; }
 
         /// <summary>
+        /// Gets the site base path
+        /// </summary>
+        public string SiteBasePath { get; }
+
+        /// <summary>
+        /// Gets the {Schema}://{HostName}
+        /// </summary>
+        public string HostName { get; }
+
+        /// <summary>
         /// Gets the dependent docsets
         /// </summary>
         public IReadOnlyDictionary<string, Docset> DependencyDocsets => _dependencyDocsets.Value;
@@ -164,6 +174,7 @@ namespace Microsoft.Docs.Build
             Culture = CreateCultureInfo(locale);
             LocalizationDocset = localizedDocset;
             FallbackDocset = fallbackDocset;
+            (HostName, SiteBasePath) = SplitBaseUrl(config.BaseUrl);
 
             MetadataSchema = LoadMetadataSchema(Config);
             ResolveAlias = LoadResolveAlias(Config);
@@ -263,7 +274,7 @@ namespace Microsoft.Docs.Build
         {
             using (Progress.Start("Globbing files"))
             {
-                var files = new ConcurrentBag<Document>();
+                var files = new ListBuilder<Document>();
 
                 ParallelUtility.ForEach(
                     Directory.EnumerateFiles(DocsetPath, "*.*", SearchOption.AllDirectories),
@@ -276,7 +287,7 @@ namespace Microsoft.Docs.Build
                         }
                     });
 
-                return new HashSet<Document>(files.Concat(redirections));
+                return new HashSet<Document>(files.ToList().Concat(redirections));
             }
         }
 
@@ -320,6 +331,22 @@ namespace Microsoft.Docs.Build
             }
 
             return scanScope;
+        }
+
+        private static (string hostName, string siteBasePath) SplitBaseUrl(string baseUrl)
+        {
+            string hostName = string.Empty;
+            string siteBasePath = ".";
+            if (!string.IsNullOrEmpty(baseUrl)
+                && Uri.TryCreate(baseUrl, UriKind.Absolute, out var uriResult))
+            {
+                if (uriResult.AbsolutePath != "/")
+                {
+                    siteBasePath = uriResult.AbsolutePath.Substring(1);
+                }
+                hostName = $"{uriResult.Scheme}://{uriResult.Host}";
+            }
+            return (hostName, siteBasePath);
         }
     }
 }

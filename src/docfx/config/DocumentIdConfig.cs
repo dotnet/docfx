@@ -15,12 +15,6 @@ namespace Microsoft.Docs.Build
         public readonly string SourceBasePath = ".";
 
         /// <summary>
-        /// For backward compatibility, the output site path prefix
-        /// Used for resolving versionIndependentId in <see cref="Document.LoadDocumentId()"/>
-        /// </summary>
-        public readonly string SiteBasePath = ".";
-
-        /// <summary>
         /// The mappings between depot and files/directory
         /// Used for backward compatibility
         /// </summary>
