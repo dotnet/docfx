@@ -381,9 +381,9 @@ namespace Microsoft.Docs.Build
                 }
                 return new SourceInfo<string>(null, new SourceInfo(file, 1, 1));
             }
-            catch (JsonReaderException ex)
+            catch (JsonReaderException)
             {
-                throw Errors.JsonSyntaxError(new SourceInfo(file, ex.LineNumber, ex.LinePosition), ex.Message).ToException();
+                return null;
             }
         }
 
