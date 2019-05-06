@@ -17,7 +17,6 @@ namespace Microsoft.Docs.Build
         private readonly ConcurrentHashSet<Error> _errors = new ConcurrentHashSet<Error>(Error.Comparer);
 
         private readonly string _docsetPath;
-        private volatile string _outputPath;
         private Lazy<TextWriter> _output;
         private Config _config;
 
@@ -34,39 +33,27 @@ namespace Microsoft.Docs.Build
 
         public int SuggestionCount => _suggestionCount;
 
-        public Report(string docsetPath = ".", bool legacy = false)
+        public Report(string docset = ".", bool legacy = false)
         {
+            _docsetPath = docset;
             _legacy = legacy;
-            _docsetPath = docsetPath;
-
-            // add default output path
+            _config = new Config();
             _output = new Lazy<TextWriter>(() =>
-                {
-                    var outputFilePath = Path.GetFullPath(Path.Combine(_docsetPath, new Config().Output.Path, "build.log"));
+            {
+                // add default build log file output path
+                var outputFilePath = Path.GetFullPath(Path.Combine(_docsetPath, _config.Output.Path, "build.log"));
 
-                    PathUtility.CreateDirectoryFromFilePath(outputFilePath);
+                PathUtility.CreateDirectoryFromFilePath(outputFilePath);
 
-                    return File.CreateText(outputFilePath);
-                });
+                return File.CreateText(outputFilePath);
+            });
         }
 
         public void Configure(Config config)
         {
-            var outputPath = Path.Combine(_docsetPath, config.Output.Path, "build.log");
-            Debug.Assert(_outputPath is null || _outputPath == outputPath, "Cannot change report output path");
+            Debug.Assert(!_output.IsValueCreated || _config.Output.Path == config.Output.Path, "Cannot change report output path");
 
             _config = config;
-            _outputPath = outputPath;
-            _output = _output != null && _output.IsValueCreated
-                ? _output
-                : new Lazy<TextWriter>(() =>
-                  {
-                      var outputFilePath = Path.GetFullPath(_outputPath);
-
-                      PathUtility.CreateDirectoryFromFilePath(outputFilePath);
-
-                      return File.CreateText(outputFilePath);
-                  });
         }
 
         public bool Write(string file, IEnumerable<Error> errors)

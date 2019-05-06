@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
+using System.Linq;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -11,54 +12,81 @@ namespace Microsoft.Docs.Build
         public static List<Error> Validate(JsonSchema schema, JToken token)
         {
             var errors = new List<Error>();
-            ValidateCore(schema, token, errors);
+            Validate(schema, token, errors);
             return errors;
         }
 
-        private static void ValidateCore(JsonSchema schema, JToken token, List<Error> errors)
+        private static void Validate(JsonSchema schema, JToken token, List<Error> errors)
         {
-            if (!TypeMatches(schema.Type, token.Type))
+            if (!ValidateType(schema, token, errors))
             {
-                errors.Add(Errors.UnexpectedType(JsonUtility.GetSourceInfo(token), schema.Type.ToString(), token.Type.ToString()));
                 return;
             }
 
             switch (token)
             {
                 case JValue scalar:
-                    if (schema.Enum.Count > 0 && !schema.Enum.Contains(scalar))
-                    {
-                        errors.Add(Errors.UndefinedValue(JsonUtility.GetSourceInfo(token), scalar, schema.Enum));
-                    }
+                    ValidateScalar(schema, token, errors, scalar);
                     break;
 
                 case JArray array:
-                    if (schema.Items != null)
-                    {
-                        foreach (var item in array)
-                        {
-                            ValidateCore(schema.Items, item, errors);
-                        }
-                    }
+                    ValidateArray(schema, errors, array);
                     break;
 
                 case JObject map:
-                    foreach (var key in schema.Required)
-                    {
-                        if (!map.ContainsKey(key))
-                        {
-                            errors.Add(Errors.FieldRequired(JsonUtility.GetSourceInfo(token), key));
-                        }
-                    }
-
-                    foreach (var (key, value) in map)
-                    {
-                        if (schema.Properties.TryGetValue(key, out var propertySchema))
-                        {
-                            ValidateCore(propertySchema, value, errors);
-                        }
-                    }
+                    ValidateObject(schema, token, errors, map);
                     break;
+            }
+        }
+
+        private static bool ValidateType(JsonSchema schema, JToken token, List<Error> errors)
+        {
+            if (schema.Type != null)
+            {
+                if (!schema.Type.Any(schemaType => TypeMatches(schemaType, token.Type)))
+                {
+                    errors.Add(Errors.UnexpectedType(JsonUtility.GetSourceInfo(token), string.Join(", ", schema.Type), token.Type.ToString()));
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        private static void ValidateScalar(JsonSchema schema, JToken token, List<Error> errors, JValue scalar)
+        {
+            if (schema.Enum != null && !schema.Enum.Contains(scalar))
+            {
+                errors.Add(Errors.UndefinedValue(JsonUtility.GetSourceInfo(token), scalar, schema.Enum));
+            }
+        }
+
+        private static void ValidateArray(JsonSchema schema, List<Error> errors, JArray array)
+        {
+            if (schema.Items != null)
+            {
+                foreach (var item in array)
+                {
+                    Validate(schema.Items, item, errors);
+                }
+            }
+        }
+
+        private static void ValidateObject(JsonSchema schema, JToken token, List<Error> errors, JObject map)
+        {
+            foreach (var key in schema.Required)
+            {
+                if (!map.ContainsKey(key))
+                {
+                    errors.Add(Errors.FieldRequired(JsonUtility.GetSourceInfo(token), key));
+                }
+            }
+
+            foreach (var (key, value) in map)
+            {
+                if (schema.Properties.TryGetValue(key, out var propertySchema))
+                {
+                    Validate(propertySchema, value, errors);
+                }
             }
         }
 

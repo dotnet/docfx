@@ -1179,6 +1179,8 @@ outputs:
   docs/a.json:
 ---
 # build from loc folder for folder mapping is not supported
+commands:
+  - build --no-restore
 cwd: localization/zh-cn/
 repos:
   https://github.com/buildfromlocfolder/a:
