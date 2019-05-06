@@ -43,12 +43,12 @@ namespace Microsoft.Docs.Build
         //-------------------------------------------
 
         /// <summary>
-        /// Alternative name used in output HTML <meta> tag. If not set, the original metadata name is used.
+        /// Alternative name used in output HTML <meta> tag. If not set, the original metadata name is used. Does not have effect in sub schemas.
         /// </summary>
         public string HtmlMetaName { get; set; }
 
         /// <summary>
-        /// Properties that are hidden in output HTML <meta> tag.
+        /// Properties that are hidden in output HTML <meta> tag. Does not have effect in sub schemas.
         /// </summary>
         public string[] HtmlMetaHidden { get; set; } = Array.Empty<string>();
 
