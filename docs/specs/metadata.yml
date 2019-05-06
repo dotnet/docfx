@@ -51,7 +51,7 @@ inputs:
 outputs:
   build.log: |
     ["error","violate-schema","Expected type String, please input String or type compatible with String.","docs/a.md",2,9]
-    ["info","invalid-metadata-type","Metadata 'locale' can only be a scalar value or string array","docs/a.md",2,9]
+    ["error","invalid-metadata-type","Metadata 'locale' can only be a scalar value or string array","docs/a.md",2,9]
 ---
 # Report error for invalid yaml header value type as array
 inputs:

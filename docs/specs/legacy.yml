@@ -8,6 +8,7 @@ repos:
         theme: https://docs.com/template
         redirections:
           a.md: /b
+        metadataSchema: schema.json
       c.md: |
         ---
         api_name:
@@ -18,6 +19,13 @@ repos:
       d.png:
       TOC.md: |
         # [c](c.md)
+      schema.json: |
+        {
+          "properties": {
+            "api_name": { "htmlMetaName": "APIName" }
+          },
+          "htmlMetaHidden": ["conceptual", "is_dynamic_rendering", "canonical_url"]
+        }
   https://docs.com/template:
   - files:
       ContentTemplate/Conceptual.mta.json.js: |
@@ -42,9 +50,7 @@ outputs:
       "rawMetadata": { "ms.author": "yufeih", "!robots": null, "api_name": ["API Name"] },
       "themesRelativePathToOutputRoot": "_themes/",
       "pageMetadata": "
-        <meta name=\"_path\" content=\"c.json\" />
         <meta name=\"APIName\" content=\"API Name\" />
-        <meta name=\"conceptual\" content=\"&lt;p&gt;&lt;a href=&quot;d.png&quot; data-linktype=&quot;relative-path&quot;&gt;d&lt;/a&gt;&lt;/p&gt;\n\" />
         <meta name=\"depot_name\" content=\".\" />
         <meta name=\"document_id\" content=\"fdb5a0d7-b68e-c465-9c5e-54a5cda94902\" />
         <meta name=\"document_version_independent_id\" content=\"92a5a770-f05f-b8bb-81c9-a8d786a9e608\" />
@@ -248,10 +254,13 @@ inputs:
     fileMetadata:
       content_type:
         docs/a.md: json
+    metadataSchema: schema.json
   docs/a.md: |
     ---
     ms.contentlang: 'C#'
     ---
+  schema.json: |
+    { "reserved": ["content_type", "ms.contentlang"] }
 outputs:
   docs/a.json:
   build.log: |
