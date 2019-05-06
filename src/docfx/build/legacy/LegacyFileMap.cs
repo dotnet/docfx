@@ -47,7 +47,7 @@ namespace Microsoft.Docs.Build
                     host = docset.HostName,
                     locale = docset.Locale,
                     base_path = $"/{docset.SiteBasePath}",
-                    source_base_path = docset.Config.DocumentId.SourceBasePath,
+                    source_base_path = docset.Config.SourceBasePath,
                     version_info = new { },
                     file_mapping = items.ToDictionary(
                         key => PathUtility.NormalizeFile(key.legacyFilePathRelativeToBaseFolder), v => v.fileMapItem),

@@ -26,7 +26,7 @@ namespace Microsoft.Docs.Build
                 var aggregatedFileMapItem = new
                 {
                     dependencies = dependencyMap.ContainsKey(legacyFilePathRelativeToBaseFolder)
-                                    ? dependencyMap[legacyFilePathRelativeToBaseFolder].Select(x => new DependencyItem { FromFilePath = PathUtility.NormalizeFile(Path.Combine(docset.Config.DocumentId.SourceBasePath, x.From)), ToFilePath = PathUtility.NormalizeFile(Path.Combine(docset.Config.DocumentId.SourceBasePath, x.To)), DependencyType = x.Type })
+                                    ? dependencyMap[legacyFilePathRelativeToBaseFolder].Select(x => new DependencyItem { FromFilePath = PathUtility.NormalizeFile(Path.Combine(docset.Config.SourceBasePath, x.From)), ToFilePath = PathUtility.NormalizeFile(Path.Combine(docset.Config.SourceBasePath, x.To)), DependencyType = x.Type })
                                     : new List<DependencyItem>(),
                     aggregated_monikers = Array.Empty<string>(), // todo
                     docset_names = new[] { docset.Config.Name },
@@ -34,7 +34,7 @@ namespace Microsoft.Docs.Build
                     type = fileMapItem.Type,
                 };
 
-                aggregatedFileMapItems.Add(PathUtility.NormalizeFile(Path.Combine(docset.Config.DocumentId.SourceBasePath, legacyFilePathRelativeToBaseFolder)), aggregatedFileMapItem);
+                aggregatedFileMapItems.Add(PathUtility.NormalizeFile(Path.Combine(docset.Config.SourceBasePath, legacyFilePathRelativeToBaseFolder)), aggregatedFileMapItem);
             }
 
             context.Output.WriteJson(
@@ -46,7 +46,7 @@ namespace Microsoft.Docs.Build
                         [docset.Config.Name] = new
                         {
                             docset_name = docset.Config.Name,
-                            docset_path_to_root = docset.Config.DocumentId.SourceBasePath.TrimStart(new char[] { '.', '/', '\\' }),
+                            docset_path_to_root = docset.Config.SourceBasePath.TrimStart(new char[] { '.', '/', '\\' }),
                         },
                     },
                 }, "op_aggregated_file_map_info.json");

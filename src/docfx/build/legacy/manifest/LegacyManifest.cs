@@ -131,7 +131,7 @@ namespace Microsoft.Docs.Build
                     },
                     files = convertedItems.Select(f => f.manifestItem),
                     is_already_processed = true,
-                    source_base_path = docset.Config.DocumentId.SourceBasePath,
+                    source_base_path = docset.Config.SourceBasePath,
                     version_info = new { },
                     items_to_publish = itemsToPublish,
                 },

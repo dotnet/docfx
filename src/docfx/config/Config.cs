@@ -59,6 +59,11 @@ namespace Microsoft.Docs.Build
         public readonly string BaseUrl = string.Empty;
 
         /// <summary>
+        /// Gets the source base path
+        /// </summary>
+        public readonly string SourceBasePath = ".";
+
+        /// <summary>
         /// The extend file addresses
         /// The addresses can be absolute url or relative path
         /// </summary>

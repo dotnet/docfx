@@ -6,8 +6,8 @@ inputs:
       'docs/v1/**': '< netcore-2.0'
       'docs/v2/**': '>= netcore-2.0'
     baseUrl: https://docs.com/docs
+    sourceBasePath: docs
     routes:
-      docs/: "."
       docs/v1/: "."
       docs/v2/: "."
     monikerDefinition: monikerDefinition.json

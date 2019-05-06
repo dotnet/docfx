@@ -443,7 +443,7 @@ namespace Microsoft.Docs.Build
 
         private (string docId, string versionIndependentId) LoadDocumentId()
         {
-            var sourcePath = PathUtility.NormalizeFile(Path.GetRelativePath(Docset.Config.DocumentId.SourceBasePath, FilePath));
+            var sourcePath = PathUtility.NormalizeFile(Path.GetRelativePath(Docset.Config.SourceBasePath, FilePath));
 
             var (mappedDepotName, mappedSourcePath) = Docset.Config.DocumentId.GetMapping(sourcePath);
 

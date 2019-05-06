@@ -170,11 +170,11 @@ namespace Microsoft.Docs.Build
             Config = config;
             DocsetPath = PathUtility.NormalizeFolder(Path.GetFullPath(docsetPath));
             Locale = locale.ToLowerInvariant();
-            Routes = NormalizeRoutes(config.Routes);
+            (HostName, SiteBasePath) = SplitBaseUrl(config.BaseUrl);
+            Routes = NormalizeRoutes(config.Routes,  config.SourceBasePath, SiteBasePath);
             Culture = CreateCultureInfo(locale);
             LocalizationDocset = localizedDocset;
             FallbackDocset = fallbackDocset;
-            (HostName, SiteBasePath) = SplitBaseUrl(config.BaseUrl);
 
             MetadataSchema = LoadMetadataSchema(Config);
             ResolveAlias = LoadResolveAlias(Config);
@@ -224,7 +224,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static IReadOnlyDictionary<string, string> NormalizeRoutes(Dictionary<string, string> routes)
+        private static IReadOnlyDictionary<string, string> NormalizeRoutes(Dictionary<string, string> routes, string sourceBasePath, string siteBasePath)
         {
             var result = new Dictionary<string, string>();
             foreach (var (key, value) in routes.Reverse())
@@ -232,6 +232,10 @@ namespace Microsoft.Docs.Build
                 result.Add(
                     key.EndsWith('/') || key.EndsWith('\\') ? PathUtility.NormalizeFolder(key) : PathUtility.NormalizeFile(key),
                     PathUtility.NormalizeFile(value));
+            }
+            if (siteBasePath != ".")
+            {
+                result.Add(sourceBasePath, ".");
             }
             return result;
         }
