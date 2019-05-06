@@ -48,7 +48,7 @@ namespace Microsoft.Docs.Build
                 errors.AddRange(contributorErrors);
 
             var isPage = schema.Attribute is PageSchemaAttribute;
-            var outputPath = file.GetOutputPath(model.Monikers, isPage);
+            var outputPath = file.GetOutputPath(model.Monikers, file.Docset.Config.DocumentId.SiteBasePath, isPage);
             var (output, extensionData) = ApplyTemplate(context, file, model, isPage);
 
             var publishItem = new PublishItem
