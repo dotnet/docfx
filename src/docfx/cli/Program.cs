@@ -56,6 +56,10 @@ namespace Microsoft.Docs.Build
 
             var stopwatch = Stopwatch.StartNew();
             var (command, docset, options) = ParseCommandLineOptions(args);
+            if (string.IsNullOrEmpty(command))
+            {
+                return 1;
+            }
 
             using (Log.BeginScope(options.Verbose))
             using (var report = new Report(docset, options.Legacy))
@@ -103,36 +107,47 @@ namespace Microsoft.Docs.Build
                 args = new[] { "--help" };
             }
 
-            ArgumentSyntax.Parse(args, syntax =>
+            try
             {
-                // Restore command
-                syntax.DefineCommand("restore", ref command, "Restores dependencies before build.");
-                syntax.DefineOption("locale", ref options.Locale, "The locale of the docset to build");
-                syntax.DefineOption("o|output", ref options.Output, "Output directory in which to place restore log.");
-                syntax.DefineOption("legacy", ref options.Legacy, "Enable legacy output for backward compatibility.");
-                syntax.DefineOption("v|verbose", ref options.Verbose, "Enable diagnostics console output.");
-                syntax.DefineParameter("docset", ref docset, "Docset directory that contains docfx.yml/docfx.json.");
+                ArgumentSyntax.Parse(args, syntax =>
+                {
+                    // Handle parse errors by us
+                    syntax.HandleErrors = false;
 
-                // Build command
-                syntax.DefineCommand("build", ref command, "Builds a docset.");
-                syntax.DefineOption("o|output", ref options.Output, "Output directory in which to place built artifacts.");
-                syntax.DefineOption("legacy", ref options.Legacy, "Enable legacy output for backward compatibility.");
-                syntax.DefineOption("locale", ref options.Locale, "The locale of the docset to build.");
-                syntax.DefineOption("no-restore", ref options.NoRestore, "Do not restore the docset before building.");
-                syntax.DefineOption("v|verbose", ref options.Verbose, "Enable diagnostics console output.");
-                syntax.DefineParameter("docset", ref docset, "Docset directory that contains docfx.yml/docfx.json.");
+                    // Restore command
+                    syntax.DefineCommand("restore", ref command, "Restores dependencies before build.");
+                    syntax.DefineOption("locale", ref options.Locale, "The locale of the docset to build");
+                    syntax.DefineOption("o|output", ref options.Output, "Output directory in which to place restore log.");
+                    syntax.DefineOption("legacy", ref options.Legacy, "Enable legacy output for backward compatibility.");
+                    syntax.DefineOption("v|verbose", ref options.Verbose, "Enable diagnostics console output.");
+                    syntax.DefineParameter("docset", ref docset, "Docset directory that contains docfx.yml/docfx.json.");
 
-                // Watch command
-                syntax.DefineCommand("watch", ref command, "Previews a docset and watch changes interactively.");
-                syntax.DefineOption("locale", ref options.Locale, "The locale of the docset to build.");
-                syntax.DefineOption("port", ref options.Port, "The port of the launched website.");
-                syntax.DefineOption("no-restore", ref options.NoRestore, "Do not restore the docset before building.");
-                syntax.DefineOption("v|verbose", ref options.Verbose, "Enable diagnostics console output.");
-                syntax.DefineParameter("docset", ref docset, "Docset directory that contains docfx.yml/docfx.json.");
-            });
+                    // Build command
+                    syntax.DefineCommand("build", ref command, "Builds a docset.");
+                    syntax.DefineOption("o|output", ref options.Output, "Output directory in which to place built artifacts.");
+                    syntax.DefineOption("legacy", ref options.Legacy, "Enable legacy output for backward compatibility.");
+                    syntax.DefineOption("locale", ref options.Locale, "The locale of the docset to build.");
+                    syntax.DefineOption("no-restore", ref options.NoRestore, "Do not restore the docset before building.");
+                    syntax.DefineOption("v|verbose", ref options.Verbose, "Enable diagnostics console output.");
+                    syntax.DefineParameter("docset", ref docset, "Docset directory that contains docfx.yml/docfx.json.");
 
-            options.Locale = options.Locale?.ToLowerInvariant();
-            return (command, docset, options);
+                    // Watch command
+                    syntax.DefineCommand("watch", ref command, "Previews a docset and watch changes interactively.");
+                    syntax.DefineOption("locale", ref options.Locale, "The locale of the docset to build.");
+                    syntax.DefineOption("port", ref options.Port, "The port of the launched website.");
+                    syntax.DefineOption("no-restore", ref options.NoRestore, "Do not restore the docset before building.");
+                    syntax.DefineOption("v|verbose", ref options.Verbose, "Enable diagnostics console output.");
+                    syntax.DefineParameter("docset", ref docset, "Docset directory that contains docfx.yml/docfx.json.");
+                });
+
+                options.Locale = options.Locale?.ToLowerInvariant();
+                return (command, docset, options);
+            }
+            catch (ArgumentSyntaxException ex)
+            {
+                Console.Write(ex.Message);
+                return default;
+            }
         }
 
         private static void Done(string command, TimeSpan duration, Report report)
