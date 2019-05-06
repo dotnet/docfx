@@ -394,7 +394,7 @@ namespace Microsoft.Docs.Build
                 siteUrl = Document.PathToAbsoluteUrl(sitePath, contentType, schema, config.Output.Json);
             }
 
-            return withLocale ? $"{config.BaseUrl}/{docset.Locale}{siteUrl}" : $"{config.BaseUrl}{siteUrl}";
+            return withLocale ? $"{docset.HostName}/{docset.Locale}{siteUrl}" : $"{config.BaseUrl}{siteUrl}";
 
             string ReplaceLast(string source, string find, string replace)
             {
@@ -468,7 +468,7 @@ namespace Microsoft.Docs.Build
             // get set path from site path
             // site path doesn't contain version info according to the output spec
             var sitePathWithoutExtension = Path.Combine(Path.GetDirectoryName(SitePath), Path.GetFileNameWithoutExtension(SitePath));
-            var sitePath = PathUtility.NormalizeFile(Path.GetRelativePath(Docset.Config.DocumentId.SiteBasePath, sitePathWithoutExtension));
+            var sitePath = PathUtility.NormalizeFile(Path.GetRelativePath(Docset.SiteBasePath, sitePathWithoutExtension));
 
             return (
                 HashUtility.GetMd5Guid($"{depotName}|{sourcePath.ToLowerInvariant()}").ToString(),

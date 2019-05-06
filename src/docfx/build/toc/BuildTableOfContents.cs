@@ -37,11 +37,11 @@ namespace Microsoft.Docs.Build
             ResolveItemMonikers(model.Items);
 
             // enable pdf
-            var outputPath = file.GetOutputPath(model.Metadata.Monikers, file.Docset.Config.DocumentId.SiteBasePath);
+            var outputPath = file.GetOutputPath(model.Metadata.Monikers, file.Docset.SiteBasePath);
 
             if (file.Docset.Config.Output.Pdf)
             {
-                var siteBasePath = file.Docset.Config.DocumentId.SiteBasePath;
+                var siteBasePath = file.Docset.SiteBasePath;
                 var relativePath = PathUtility.NormalizeFile(Path.GetRelativePath(siteBasePath, Path.ChangeExtension(outputPath, ".pdf")));
                 model.Metadata.PdfAbsolutePath = $"/{siteBasePath}/opbuildpdf/{relativePath}";
             }

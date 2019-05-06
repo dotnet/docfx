@@ -178,16 +178,16 @@ namespace Microsoft.Docs.Build
             rawMetadata["__global"] = Global;
             rawMetadata.Remove("content");
 
-            var path = PathUtility.NormalizeFile(Path.GetRelativePath(file.Docset.Config.DocumentId.SiteBasePath, file.SitePath));
+            var path = PathUtility.NormalizeFile(Path.GetRelativePath(file.Docset.SiteBasePath, file.SitePath));
 
             rawMetadata["_path"] = path;
             rawMetadata["wordCount"] = pageModel.WordCount;
 
-            rawMetadata["_op_canonicalUrlPrefix"] = $"{docset.Config.BaseUrl}/{docset.Locale}/{docset.Config.DocumentId.SiteBasePath}/";
+            rawMetadata["_op_canonicalUrlPrefix"] = $"{docset.HostName}/{docset.Locale}/{docset.SiteBasePath}/";
 
             if (docset.Config.Output.Pdf)
             {
-                rawMetadata["_op_pdfUrlPrefixTemplate"] = $"{docset.Config.BaseUrl}/pdfstore/{pageModel.Locale}/{docset.Config.Product}.{docset.Config.Name}/{{branchName}}";
+                rawMetadata["_op_pdfUrlPrefixTemplate"] = $"{docset.HostName}/pdfstore/{pageModel.Locale}/{docset.Config.Product}.{docset.Config.Name}/{{branchName}}";
             }
 
             rawMetadata.Remove("schema_type");

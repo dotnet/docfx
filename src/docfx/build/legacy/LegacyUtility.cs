@@ -30,9 +30,9 @@ namespace Microsoft.Docs.Build
         public static string ToLegacyOutputPathRelativeToBaseSitePath(this Document doc, Docset docset)
         {
             var legacyOutputFilePathRelativeToSiteBasePath = doc.SitePath;
-            if (legacyOutputFilePathRelativeToSiteBasePath.StartsWith(docset.Config.DocumentId.SiteBasePath, PathUtility.PathComparison))
+            if (legacyOutputFilePathRelativeToSiteBasePath.StartsWith(docset.SiteBasePath, PathUtility.PathComparison))
             {
-                legacyOutputFilePathRelativeToSiteBasePath = Path.GetRelativePath(docset.Config.DocumentId.SiteBasePath, legacyOutputFilePathRelativeToSiteBasePath);
+                legacyOutputFilePathRelativeToSiteBasePath = Path.GetRelativePath(docset.SiteBasePath, legacyOutputFilePathRelativeToSiteBasePath);
             }
 
             return PathUtility.NormalizeFile(legacyOutputFilePathRelativeToSiteBasePath);
@@ -41,9 +41,9 @@ namespace Microsoft.Docs.Build
         public static string ToLegacySiteUrlRelativeToBaseSitePath(this Document doc, Docset docset)
         {
             var legacySiteUrlRelativeToSiteBasePath = doc.SiteUrl;
-            if (legacySiteUrlRelativeToSiteBasePath.StartsWith($"/{docset.Config.DocumentId.SiteBasePath}", PathUtility.PathComparison))
+            if (legacySiteUrlRelativeToSiteBasePath.StartsWith($"/{docset.SiteBasePath}", PathUtility.PathComparison))
             {
-                legacySiteUrlRelativeToSiteBasePath = Path.GetRelativePath(docset.Config.DocumentId.SiteBasePath, legacySiteUrlRelativeToSiteBasePath.Substring(1));
+                legacySiteUrlRelativeToSiteBasePath = Path.GetRelativePath(docset.SiteBasePath, legacySiteUrlRelativeToSiteBasePath.Substring(1));
             }
 
             return PathUtility.NormalizeFile(
@@ -53,7 +53,7 @@ namespace Microsoft.Docs.Build
         }
 
         public static string ToLegacyOutputPath(this LegacyManifestOutputItem legacyManifestOutputItem, Docset docset, string groupId)
-            => Path.Combine(docset.Config.DocumentId.SiteBasePath, $"{groupId}", legacyManifestOutputItem.RelativePath);
+            => Path.Combine(docset.SiteBasePath, $"{groupId}", legacyManifestOutputItem.RelativePath);
 
         public static string GetAbsoluteOutputPathFromRelativePath(this Docset docset, string relativePath)
         {

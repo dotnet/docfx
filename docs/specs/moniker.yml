@@ -2,11 +2,10 @@
 # Apply moniker range setting in the config to markdown file's output path and output content
 inputs:
   docfx.yml: |
-    documentId:
-      siteBasePath: docs
     monikerRange:
       'docs/v1/**': '< netcore-2.0'
       'docs/v2/**': '>= netcore-2.0'
+    baseUrl: https://docs.com/docs
     routes:
       docs/v1/: docs/
       docs/v2/: docs/

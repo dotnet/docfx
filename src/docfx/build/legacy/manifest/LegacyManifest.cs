@@ -133,7 +133,7 @@ namespace Microsoft.Docs.Build
                     version_info = new { },
                     items_to_publish = itemsToPublish,
                 },
-                Path.Combine(docset.Config.DocumentId.SiteBasePath, ".manifest.json"));
+                Path.Combine(docset.SiteBasePath, ".manifest.json"));
             }
         }
 
