@@ -159,7 +159,7 @@ namespace Microsoft.Docs.Build
             // TODO: not considering same uid with multiple specs, it will be Dictionary<string, List<T>>
             // https://github.com/dotnet/corefx/issues/12067
             // Prefer Dictionary with manual lock to ConcurrentDictionary while only adding
-            Dictionary<string, Lazy<XrefSpec>> map = new Dictionary<string, Lazy<XrefSpec>>();
+            var map = new DictionaryBuilder<string, Lazy<XrefSpec>>();
             ParallelUtility.ForEach(docset.Config.Xref, url =>
             {
                 var (_, content, _) = RestoreMap.GetRestoredFileContent(docset, url);
@@ -169,10 +169,7 @@ namespace Microsoft.Docs.Build
                     xrefMap = YamlUtility.Deserialize<XrefMapModel>(content);
                     foreach (var spec in xrefMap.References)
                     {
-                        lock (map)
-                        {
-                            map[spec.Uid] = new Lazy<XrefSpec>(() => spec);
-                        }
+                        map.TryAdd(spec.Uid, new Lazy<XrefSpec>(() => spec));
                     }
                 }
                 else
@@ -180,19 +177,16 @@ namespace Microsoft.Docs.Build
                     DeserializeAndPopulateXrefMap(
                     (uid, startLine, startColumn, endLine, endColumn) =>
                     {
-                        lock (map)
+                        map.TryAdd(uid, new Lazy<XrefSpec>(() =>
                         {
-                            map[uid] = new Lazy<XrefSpec>(() =>
-                            {
-                                var str = GetSubstringFromContent(content, startLine, endLine, startColumn, endColumn);
-                                return JsonUtility.Deserialize<XrefSpec>(str);
-                            });
-                        }
+                            var str = GetSubstringFromContent(content, startLine, endLine, startColumn, endColumn);
+                            return JsonUtility.Deserialize<XrefSpec>(str);
+                        }));
                     }, content);
                 }
             });
 
-            return new XrefMap(context, map, CreateInternalXrefMap(context, docset.ScanScope));
+            return new XrefMap(context, map.ToDictionary(), CreateInternalXrefMap(context, docset.ScanScope));
         }
 
         public void OutputXrefMap(Context context)

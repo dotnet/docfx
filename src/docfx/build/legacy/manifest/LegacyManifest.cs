@@ -21,8 +21,8 @@ namespace Microsoft.Docs.Build
                     new LegacyItemToPublish { RelativePath = ".dependency-map.json", Type = "unknown" },
                 };
 
-                var monikerGroups = new ConcurrentDictionary<string, List<string>>();
-                var convertedItems = new ConcurrentBag<(LegacyManifestItem manifestItem, Document doc, List<string> monikers)>();
+                var dictionaryBuilder = new DictionaryBuilder<string, List<string>>();
+                var listBuilder = new ListBuilder<(LegacyManifestItem manifestItem, Document doc, List<string> monikers)>();
                 Parallel.ForEach(
                     fileManifests,
                     fileManifest =>
@@ -106,17 +106,19 @@ namespace Microsoft.Docs.Build
                             Group = groupId,
                         };
 
-                        convertedItems.Add((file, document, fileManifest.Value.Monikers));
+                        listBuilder.Add((file, document, fileManifest.Value.Monikers));
                         if (groupId != null)
                         {
-                            monikerGroups.TryAdd(groupId, fileManifest.Value.Monikers);
+                            dictionaryBuilder.TryAdd(groupId, fileManifest.Value.Monikers);
                         }
                     });
 
+                var monikerGroups = dictionaryBuilder.ToDictionary();
+                var convertedItems = listBuilder.ToList();
                 context.Output.WriteJson(
                 new
                 {
-                    groups = monikerGroups.Count > 0 ? monikerGroups.Select(item => new
+                    groups = monikerGroups.Any() ? monikerGroups.Select(item => new
                     {
                         group = item.Key,
                         monikers = item.Value,
