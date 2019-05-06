@@ -304,6 +304,7 @@ outputs:
   docs/b.json:
   build.log: |
     ["error","yaml-duplicate-key","Key 'a' is already defined, remove the duplicate key.","docs/a.md",3,1]
+    ["info","null-value","'a' contains null value","docs/a.md",3,1]
 ---
 # do not allow custom js, styles and css
 inputs:
