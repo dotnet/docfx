@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27130.0
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28803.352
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{6A65A769-DAC3-4E99-96F9-991F4CE8D164}"
 EndProject
@@ -226,7 +226,7 @@ Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Microsoft.DocAsCode.Metadat
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SandcastleRefMapper", "SandcastleRefMapper", "{8B98574E-E9DE-4EA5-90DE-65FF4088A634}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DocFx.SandcastleRefMapper", "tools\SandcastleRefMapper\DocFx.SandcastleRefMapper.csproj", "{433A15DB-10E0-4B1F-B203-DB76CFEEEFD7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SandcastleRefMapper", "tools\SandcastleRefMapper\SandcastleRefMapper.csproj", "{433A15DB-10E0-4B1F-B203-DB76CFEEEFD7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
