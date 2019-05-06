@@ -30,6 +30,7 @@ namespace Microsoft.Docs.Build
         [InlineData("", "", "", "")]
         [InlineData("", "b", "c", "")]
         [InlineData("a", "b=1", "c", "a?b=1#c")]
+        [InlineData("a", "", null, "a")]
         [InlineData("a?b=1#c", "b=2", "c1", "a?b=2#c1")]
         [InlineData("a?b=1#c", "b1=1", "", "a?b=1&b1=1#c")]
         [InlineData("a?b=1#c", "", "c1", "a?b=1#c1")]
