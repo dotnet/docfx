@@ -16,7 +16,7 @@ using Microsoft.DocAsCode.Metadata.ManagedReference;
 using Microsoft.DocAsCode.Plugins;
 using CS = Microsoft.CodeAnalysis.CSharp;
 
-namespace DocFx.SandcastleRefMapper
+namespace Microsoft.DocAsCode.Tools.SandcastleRefMapper
 {
     public static class Program
     {
