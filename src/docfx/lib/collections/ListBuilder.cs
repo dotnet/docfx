@@ -17,6 +17,6 @@ namespace System.Collections.Concurrent
             }
         }
 
-        public List<T> ToList() => _array;
+        public IReadOnlyList<T> ToList() => _array;
     }
 }
