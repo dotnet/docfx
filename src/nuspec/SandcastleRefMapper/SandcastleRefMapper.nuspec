@@ -9,7 +9,7 @@
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <licenseUrl>https://github.com/dotnet/docfx/blob/master/LICENSE</licenseUrl>
     <projectUrl>https://github.com/dotnet/docfx</projectUrl>
-    <description>This is a DocFX tool to convert Sandcastle documentation to refmaps.</description>
+    <description>This is a DocFX tool to generate cross reference map for Sandcastle documentation site.</description>
     <copyright>© Microsoft Corporation. All rights reserved.</copyright>
     <tags>Documentation API Metadata docascode docfx</tags>
   </metadata>
