@@ -76,6 +76,8 @@ outputs:
   op_aggregated_file_map_info.json:
   .publish.json:
   xrefmap.json:
+  server-side-dependent-list.txt:
+  full-dependent-list.txt:
 ---
 # Raw metadata generated for template
 # todo: remove this test and make raw model as our page model
