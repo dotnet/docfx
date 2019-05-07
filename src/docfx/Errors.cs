@@ -356,7 +356,7 @@ namespace Microsoft.Docs.Build
         /// The input value type does not match expected value type.
         /// </summary>
         public static Error UnexpectedType(SourceInfo source, string expectedType, string actualType)
-            => new Error(ErrorLevel.Error, "unexpected-type", $"Expect type '{expectedType}' but got '{actualType}'", source);
+            => new Error(ErrorLevel.Warning, "unexpected-type", $"Expect type '{expectedType}' but got '{actualType}'", source);
 
         /// <summary>
         /// The input value is not defined in a valid value list.

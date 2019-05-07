@@ -58,9 +58,9 @@ inputs:
     ---
 outputs:
   build.log: |
-    ["error","unexpected-type","Expect type 'String' but got 'Array'","docfx.yml",3,9]
+    ["warning","unexpected-type","Expect type 'String' but got 'Array'","docfx.yml",3,9]
     ["error","undefined-value","Value 'XNAGameStudio' is not accepted. Valid values: 'MSDN', 'VS'","docfx.yml",6,13]
-    ["error","unexpected-type","Expect type 'Integer' but got 'String'","a.md",2,7]
+    ["warning","unexpected-type","Expect type 'Integer' but got 'String'","a.md",2,7]
 ---
 # Allow multiple metadata schema definitions
 inputs:
@@ -79,5 +79,5 @@ inputs:
 outputs:
   build.log: |
     ["error","field-required","Missing required field 'a'","a.md",2,1]
-    ["error","unexpected-type","Expect type 'String' but got 'Array'","a.md",2,6]
+    ["warning","unexpected-type","Expect type 'String' but got 'Array'","a.md",2,6]
 ---

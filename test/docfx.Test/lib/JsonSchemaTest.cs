@@ -104,17 +104,17 @@ namespace Microsoft.Docs.Build
         [InlineData("{'type': 'number'}", "123.456", "")]
         [InlineData("{'type': 'number'}", "123", "")]
         [InlineData("{'type': 'boolean'}", "'string'",
-            "['error','unexpected-type','Expect type 'Boolean' but got 'String'','file',1,8]")]
+            "['warning','unexpected-type','Expect type 'Boolean' but got 'String'','file',1,8]")]
         [InlineData("{'type': 'object'}", "1",
-            "['error','unexpected-type','Expect type 'Object' but got 'Integer'','file',1,1]")]
+            "['warning','unexpected-type','Expect type 'Object' but got 'Integer'','file',1,1]")]
         [InlineData("{'type': 'string'}", "1",
-            "['error','unexpected-type','Expect type 'String' but got 'Integer'','file',1,1]")]
+            "['warning','unexpected-type','Expect type 'String' but got 'Integer'','file',1,1]")]
 
         // union type validation
         [InlineData("{'type': ['string', 'null']}", "'a'", "")]
         [InlineData("{'properties': {'a': {'type': ['string', 'null']}}}", "{'a': null}", "")]
         [InlineData("{'type': ['string', 'null']}", "1",
-            "['error','unexpected-type','Expect type 'String, Null' but got 'Integer'','file',1,1]")]
+            "['warning','unexpected-type','Expect type 'String, Null' but got 'Integer'','file',1,1]")]
 
         // enum validation
         [InlineData("{'type': 'string', 'enum': ['a', 'b']}", "'a'", "")]
@@ -130,13 +130,13 @@ namespace Microsoft.Docs.Build
         // properties validation
         [InlineData("{'properties': {'key': {'type': 'string'}}}", "{'key': 'value'}", "")]
         [InlineData("{'properties': {'key': {'type': 'string'}}}", "{'key': 1}",
-            "['error','unexpected-type','Expect type 'String' but got 'Integer'','file',1,9]")]
+            "['warning','unexpected-type','Expect type 'String' but got 'Integer'','file',1,9]")]
 
         // array validation
         [InlineData("{'items': {'type': 'string'}}", "['a','b']", "")]
         [InlineData("{'items': {'type': 'boolean'}}", "['a','b']",
-            @"['error','unexpected-type','Expect type 'Boolean' but got 'String'','file',1,4]
-              ['error','unexpected-type','Expect type 'Boolean' but got 'String'','file',1,8]")]
+            @"['warning','unexpected-type','Expect type 'Boolean' but got 'String'','file',1,4]
+              ['warning','unexpected-type','Expect type 'Boolean' but got 'String'','file',1,8]")]
 
         // required validation
         [InlineData("{'required': []}", "{}", "")]
