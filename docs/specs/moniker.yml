@@ -8,8 +8,8 @@ inputs:
     baseUrl: https://docs.com/docs
     sourceBasePath: docs
     routes:
-      docs/v1/: "."
-      docs/v2/: "."
+      v1/: "."
+      v2/: "."
     monikerDefinition: monikerDefinition.json
   docs/v1/a.md: |
     Moniker: netcore-1.0, netcore-1.1

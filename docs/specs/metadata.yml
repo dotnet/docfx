@@ -199,9 +199,9 @@ inputs:
   articles/billing/billing-add-change-azure-subscription-administrator.md:
 outputs:
   azure/iot-central/concepts-architecture.json: |
-    {"document_id":"7e13132e-7847-dc4f-90d5-32a233d1c81a","document_version_independent_id":"d9cc5ab8-926a-8a5a-312c-10ca36619bad"}
+    {"document_id":"57901a4c-fd14-9bd5-0dc2-fbd965db5287","document_version_independent_id":"7d7a36da-9cce-c2dd-3e04-ce9ae5e197e5"}
   azure/billing/billing-add-change-azure-subscription-administrator.json: |
-    {"document_id":"f5624f3e-5fbf-6f0f-93cf-a4d5aa93ccf8","document_version_independent_id":"9ca6d22b-e684-4e65-cab3-c272189a3ddc"}
+    {"document_id":"a65d84f2-4798-fefb-0807-e826c3a87c27","document_version_independent_id":"9ca6d22b-e684-4e65-cab3-c272189a3ddc"}
 ---
 # yaml&json toc metadata
 inputs:
@@ -306,7 +306,7 @@ inputs:
   articles/active-directory/saas-apps/splunkenterpriseandsplunkcloud-tutorial.md:
 outputs:
   azure/active-directory/saas-apps/splunkenterpriseandsplunkcloud-tutorial.json: |
-    {"document_id":"b1cdf77e-673b-8b3a-3232-78f3d2b225dd","document_version_independent_id":"bde2976d-40d3-f729-128d-0caa664da662"}
+    {"document_id":"1c9608e1-d7c4-94fc-7d93-1d385ded3bfe","document_version_independent_id":"bde2976d-40d3-f729-128d-0caa664da662"}
 ---
 # landing page is treated as *.md when calculating document id
 # id: 
@@ -318,8 +318,7 @@ inputs:
     product: Azure
     name: azure-documents
     files: "**/*"
-    baseUrl: https://docs.com/articles
-    sourceBasePath: articles
+    baseUrl: https://docs.com/
   articles/active-directory-b2c/index.yml : |
     ### YamlMime:YamlDocument
     documentType: LandingData
@@ -328,9 +327,9 @@ inputs:
     documentType: LandingData
 outputs:
   articles/active-directory-b2c/index.json: |
-    { "document_id": "4b5e7225-dae6-053e-4657-c4731dbd7d64", "document_version_independent_id": "fdf17736-63c4-6c9f-825b-393312bbd63a"}
+    { "document_id": "4b5e7225-dae6-053e-4657-c4731dbd7d64", "document_version_independent_id": "da03d18a-be1e-ee56-ab5d-9840981b1e5e"}
   articles/active-directory-b2c/test.json: |
-    { "document_id": "89987066-1e32-4f92-1957-329cfa9de0a0", "document_version_independent_id": "8f254336-d196-b36f-649e-dec30465941b"}
+    { "document_id": "89987066-1e32-4f92-1957-329cfa9de0a0", "document_version_independent_id": "cb8e2015-2d28-0c2d-b21d-69561e659ad8"}
 ---
 # index.yml's document id also follows the redirection rules
 inputs:
@@ -347,14 +346,15 @@ inputs:
     documentType: LandingData
 outputs:
   azure/app-service/index.json: |
-    { "document_id": "a0e220f7-d5b9-6cca-580c-3d49fe3b478f", "document_version_independent_id": "41d29d50-009e-41b4-ab51-371ed5bba821"}
+    { "document_id": "2a607c5f-2bfb-c62f-244a-2e13d87fc4c4", "document_version_independent_id": "41d29d50-009e-41b4-ab51-371ed5bba821"}
 ---
 # Generate canonical URL
 inputs:
   docfx.yml: |
     files: "**/*"
-    baseUrl: "https://docs.microsoft.com/azure"
-    sourceBasePath: articles
+    baseUrl: "https://docs.microsoft.com/"
+    routes:
+      articles/: "azure/"
   articles/app-service/index.md:
   articles/app-service/index.experimental.md:
 outputs:
