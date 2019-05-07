@@ -29,7 +29,7 @@ namespace Microsoft.DocAsCode.Common
                               .Where(g => g.Count() > 1))
             {
                 // TODO: plan to change this warning to error, add error code to analyze the impact.
-                var message = $"Multiple input files generate to the same output {duplicates} overwriting each other. " +
+                var message = $"Multiple input files generate to the same output '{duplicates.Key}' overwriting each other. " +
                     $"Please rename at least {duplicates.Count() - 1} of following files to resolve conflict: " +
                     string.Join(", ", duplicates.Select(i => $"{{file:'{i.item.SourceRelativePath}', group:'{i.item.Group}'}}"));
                 Logger.LogWarning(message, code: WarningCodes.Build.DuplicateOutputFiles);
