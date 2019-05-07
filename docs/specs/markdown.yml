@@ -5,7 +5,7 @@ inputs:
   docs/a.md: Hello `docfx`!
 outputs:
   docs/a.json: |
-    { "conceptual": "<p>Hello <code>docfx</code>!</p>" }
+    { "conceptual": "<p>Hello <code>docfx</code>!</p>", "wordCount": 2, "_op_canonicalUrlPrefix": "https://docs.com/en-us/./", "_path": "docs/a.json"}
 ---
 # Basic markdown syntax
 inputs:

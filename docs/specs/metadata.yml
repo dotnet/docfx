@@ -81,7 +81,7 @@ inputs:
   sccm/mdt/release-notes.md:
 outputs:
   sccm/mdt/release-notes.json: |
-    { "conceptual": "<div></div>", "document_id": "0b1c8a5d-b639-d555-0850-b98a9010023c", "document_version_independent_id": "b20fdb1c-8d40-c3b2-2265-779a3f2dfe98" }
+    { "conceptual": "<div></div>", "document_id": "0b1c8a5d-b639-d555-0850-b98a9010023c", "document_version_independent_id": "b20fdb1c-8d40-c3b2-2265-779a3f2dfe98", "depot_name": "Win.sccm" }
 ---
 # generate index document id and version id
 # backward compatible to docs.com
