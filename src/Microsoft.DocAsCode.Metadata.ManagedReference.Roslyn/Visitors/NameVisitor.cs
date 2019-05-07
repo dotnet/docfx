@@ -125,7 +125,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
             else if ((Options & NameOptions.WithNamespace) == NameOptions.WithNamespace)
             {
-                if (!symbol.ContainingNamespace.IsGlobalNamespace)
+                if (!VisitorHelper.InGlobalNamespace(symbol))
                 {
                     symbol.ContainingNamespace.Accept(this);
                     Append(".");
@@ -555,7 +555,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
             else if ((Options & NameOptions.WithNamespace) == NameOptions.WithNamespace)
             {
-                if (!symbol.ContainingNamespace.IsGlobalNamespace)
+                if (!VisitorHelper.InGlobalNamespace(symbol))
                 {
                     symbol.ContainingNamespace.Accept(this);
                     Append(".");
