@@ -362,13 +362,13 @@ namespace Microsoft.Docs.Build
         /// The input value is not defined in a valid value list.
         /// </summary>
         public static Error UndefinedValue(SourceInfo source, object value, IEnumerable<object> validValues)
-            => new Error(ErrorLevel.Error, "undefined-value", $"Value '{value}' is not accepted. Valid values: {Join(validValues)}", source);
+            => new Error(ErrorLevel.Warning, "undefined-value", $"Value '{value}' is not accepted. Valid values: {Join(validValues)}", source);
 
         /// <summary>
         /// A required field is missing.
         /// </summary>
         public static Error FieldRequired(SourceInfo source, string name)
-            => new Error(ErrorLevel.Error, "field-required", $"Missing required field '{name}'", source);
+            => new Error(ErrorLevel.Warning, "field-required", $"Missing required field '{name}'", source);
 
         /// <summary>
         /// Used unknown YamlMime.

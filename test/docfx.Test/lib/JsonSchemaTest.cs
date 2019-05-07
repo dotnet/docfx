@@ -119,13 +119,13 @@ namespace Microsoft.Docs.Build
         // enum validation
         [InlineData("{'type': 'string', 'enum': ['a', 'b']}", "'a'", "")]
         [InlineData("{'type': 'string', 'enum': []}", "'unknown'",
-            "['error','undefined-value','Value 'unknown' is not accepted. Valid values: ','file',1,9]")]
+            "['warning','undefined-value','Value 'unknown' is not accepted. Valid values: ','file',1,9]")]
         [InlineData("{'type': 'string', 'enum': ['a', 'b']}", "'unknown'",
-            "['error','undefined-value','Value 'unknown' is not accepted. Valid values: 'a', 'b'','file',1,9]")]
+            "['warning','undefined-value','Value 'unknown' is not accepted. Valid values: 'a', 'b'','file',1,9]")]
 
         [InlineData("{'type': 'number', 'enum': [1, 2]}", "1", "")]
         [InlineData("{'type': 'number', 'enum': [1, 2]}", "3",
-            "['error','undefined-value','Value '3' is not accepted. Valid values: '1', '2'','file',1,1]")]
+            "['warning','undefined-value','Value '3' is not accepted. Valid values: '1', '2'','file',1,1]")]
 
         // properties validation
         [InlineData("{'properties': {'key': {'type': 'string'}}}", "{'key': 'value'}", "")]
@@ -142,7 +142,7 @@ namespace Microsoft.Docs.Build
         [InlineData("{'required': []}", "{}", "")]
         [InlineData("{'required': ['a']}", "{'a': 1}", "")]
         [InlineData("{'required': ['a']}", "{'b': 1}",
-            "['error','field-required','Missing required field 'a'','file',1,1]")]
+            "['warning','field-required','Missing required field 'a'','file',1,1]")]
         public void TestJsonSchemaValidation(string schema, string json, string expectedErrors)
         {
             var errors = JsonSchemaValidation.Validate(
