@@ -57,7 +57,12 @@ inputs:
     key3: net462
     ---
 outputs:
-  a.json:
+  a.json: |
+    {
+      "key1": [],
+      "key2": "XNAGameStudio",
+      "key3": "net462"
+    }
   build.log: |
     ["warning","unexpected-type","Expect type 'String' but got 'Array'","docfx.yml",3,9]
     ["warning","undefined-value","Value 'XNAGameStudio' is not accepted. Valid values: 'MSDN', 'VS'","docfx.yml",6,13]
