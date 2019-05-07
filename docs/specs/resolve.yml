@@ -260,11 +260,16 @@ outputs:
     {"content":"<p>b</p>"}
 ---
 # Show warning if link to a file in dependency repo
-inputs:
-  docfx.yml: |
-    dependencies:
-      dep: https://github.com/docascode/docfx-test-dependencies
-  docs/a.md: 'Link to [dep](../dep/logo.svg)'
+repos:
+  https://github.com/dep-file/root:
+    - files:
+        docfx.yml: |
+          dependencies:
+            dep: https://github.com/dep-file/dep
+        docs/a.md: 'Link to [dep](../dep/logo.svg)'
+  https://github.com/dep-file/dep:
+    - files:
+        logo.svg:
 outputs:
   docs/a.json: |
     {"content":"<p>Link to <a href=\"../dep/logo.svg\">dep</a></p>"}
@@ -272,11 +277,16 @@ outputs:
     ["warning","link-is-dependency","File 'logo.svg' referenced by link '../dep/logo.svg' will not be built because it is from a dependency docset","docs/a.md",1,9]
 ---
 # Don't show warning if include a file from dependency repo
-inputs:
-  docfx.yml: |
-    dependencies:
-      dep: https://github.com/docascode/docfx-test-dependencies
-  docs/a.md: '[!include[dep](~/dep/dep.md)]'
+repos:
+  https://github.com/dep-include/root:
+    - files:
+        docfx.yml: |
+          dependencies:
+            dep: https://github.com/dep-include/dep
+        docs/a.md: '[!include[dep](~/dep/dep.md)]'
+  https://github.com/dep-include/dep:
+    - files:
+        dep.md: DEP
 outputs:
   docs/a.json: |
     {"content":"<p>DEP</p>"}

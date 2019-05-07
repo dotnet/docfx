@@ -33,11 +33,16 @@ outputs:
 ---
 # Dependency resolve is case insensitive on windows and mac
 os: windows, osx
-inputs:
-  docfx.yml: |
-    dependencies:
-      dep: https://github.com/docascode/docfx-test-dependencies
-  docs/a.md: '[!include[dep](~/DEP/dep.md)]'
+repos:
+  https://github.com/dep-resolver/case-in:
+    - files:
+        docfx.yml: |
+          dependencies:
+            dep: https://github.com/dep-resolver/dep
+        docs/a.md: '[!include[dep](~/DEP/dep.md)]'
+  https://github.com/dep-resolver/dep:
+    - files:
+        dep.md: DEP
 outputs:
   docs/a.json: |
     {"content":"<p>DEP</p>"}

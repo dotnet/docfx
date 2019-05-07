@@ -75,12 +75,14 @@ namespace Microsoft.Docs.Build
                             Done(command, stopwatch.Elapsed, report);
                             break;
                         case "build":
-                            await Restore.Run(docset, options, report, @implicit: true);
+                            if (!options.NoRestore)
+                                await Restore.Run(docset, options, report);
                             await Build.Run(docset, options, report);
                             Done(command, stopwatch.Elapsed, report);
                             break;
                         case "watch":
-                            await Restore.Run(docset, options, report, @implicit: true);
+                            if (!options.NoRestore)
+                                await Restore.Run(docset, options, report);
                             await Watch.Run(docset, options);
                             break;
                     }
