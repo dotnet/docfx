@@ -171,7 +171,7 @@ namespace Microsoft.Docs.Build
             DocsetPath = PathUtility.NormalizeFolder(Path.GetFullPath(docsetPath));
             Locale = locale.ToLowerInvariant();
             (HostName, SiteBasePath) = SplitBaseUrl(config.BaseUrl);
-            Routes = NormalizeRoutes(config.Routes,  config.SourceBasePath, SiteBasePath);
+            Routes = NormalizeRoutes(config.Routes, config.SourceBasePath, SiteBasePath);
             Culture = CreateCultureInfo(locale);
             LocalizationDocset = localizedDocset;
             FallbackDocset = fallbackDocset;
