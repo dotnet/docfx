@@ -57,10 +57,16 @@ inputs:
     key3: net462
     ---
 outputs:
+  a.json: |
+    {
+      "key1": [],
+      "key2": "XNAGameStudio",
+      "key3": "net462"
+    }
   build.log: |
-    ["error","unexpected-type","Expect type 'String' but got 'Array'","docfx.yml",3,9]
-    ["error","undefined-value","Value 'XNAGameStudio' is not accepted. Valid values: 'MSDN', 'VS'","docfx.yml",6,13]
-    ["error","unexpected-type","Expect type 'Integer' but got 'String'","a.md",2,7]
+    ["warning","unexpected-type","Expect type 'String' but got 'Array'","docfx.yml",3,9]
+    ["warning","undefined-value","Value 'XNAGameStudio' is not accepted. Valid values: 'MSDN', 'VS'","docfx.yml",6,13]
+    ["warning","unexpected-type","Expect type 'Integer' but got 'String'","a.md",2,7]
 ---
 # Allow multiple metadata schema definitions
 inputs:
@@ -77,7 +83,8 @@ inputs:
     key: []
     ---
 outputs:
+  a.json:
   build.log: |
-    ["error","field-required","Missing required field 'a'","a.md",2,1]
-    ["error","unexpected-type","Expect type 'String' but got 'Array'","a.md",2,6]
+    ["warning","field-required","Missing required field 'a'","a.md",2,1]
+    ["warning","unexpected-type","Expect type 'String' but got 'Array'","a.md",2,6]
 ---
