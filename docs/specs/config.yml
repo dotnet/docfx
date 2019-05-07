@@ -129,7 +129,7 @@ outputs:
   docs/a.json: |
     {
       "key": "value",
-      "content": "<p><a href=\"redirect?a#b\">redirect</a></p>"
+      "conceptual": "<p><a href=\"redirect?a#b\">redirect</a></p>"
     }
 ---
 # routes
@@ -268,7 +268,7 @@ inputs:
     [b](b.md)
 outputs:
   docs/a.json: |
-    { "content": "<p><a href=\"b.md\">b</a></p>" }
+    { "conceptual": "<p><a href=\"b.md\">b</a></p>" }
 ---
 # log with default log level when docfx crashes, even the corresponding rule is turned off
 inputs:

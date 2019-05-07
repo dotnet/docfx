@@ -28,18 +28,18 @@ inputs:
 outputs:
   docs/9d4e15fd/a.json: |
     {
-      "content": "<p>Moniker: netcore-1.0, netcore-1.1</p>",
+      "conceptual": "<p>Moniker: netcore-1.0, netcore-1.1</p>",
       "monikers": ["netcore-1.0", "netcore-1.1"],
       "!monikerRange": null
     }
   docs/23d205a5/a.json: |
     {
-      "content": "<p>Moniker: netcore-2.0, netcore-2.1</p>",
+      "conceptual": "<p>Moniker: netcore-2.0, netcore-2.1</p>",
       "monikers": ["netcore-2.0", "netcore-2.1"]
     }
   docs/a.json: |
     {
-      "content": "<p>No version</p>",
+      "conceptual": "<p>No version</p>",
       "!monikers": null
     }
 ---
@@ -62,7 +62,7 @@ inputs:
 outputs:
   218c13d0/docs/v1/a.json: |
     {
-      "content": "<p>Moniker: netcore-1.1</p>",
+      "conceptual": "<p>Moniker: netcore-1.1</p>",
       "monikers": ["netcore-1.1"]
     }
 ---
@@ -100,17 +100,17 @@ inputs:
 outputs:
   docs/a.json: |
     {
-      "content": "<p>No version</p>",
+      "conceptual": "<p>No version</p>",
       "!monikers": null
     }
   218c13d0/docs/a.json: |
     {
-      "content": "<p>Moniker: netcore-1.1</p>",
+      "conceptual": "<p>Moniker: netcore-1.1</p>",
       "monikers": ["netcore-1.1"]
     }
   4667fedf/docs/a.json: |
     {
-      "content": "<p>Moniker: netcore-2.0</p>",
+      "conceptual": "<p>Moniker: netcore-2.0</p>",
       "monikers": ["netcore-2.0"]
     }
   .publish.json: |
@@ -146,7 +146,7 @@ inputs:
 outputs:
   2420f88b/docs/a.json: |
     {
-      "content": "<p>Moniker: netcore-1.0, netcore-1.1, netcore-1.2</p><div data-moniker=\"netcore-1.0 netcore-1.1\"><p>Moniker: netcore-1.0, netcore-1.1</p></div>",
+      "conceptual": "<p>Moniker: netcore-1.0, netcore-1.1, netcore-1.2</p><div data-moniker=\"netcore-1.0 netcore-1.1\"><p>Moniker: netcore-1.0, netcore-1.1</p></div>",
       "monikers": ["netcore-1.0", "netcore-1.1", "netcore-1.2"]
     }
 ---
@@ -181,13 +181,13 @@ outputs:
   9d4e15fd/docs/a.json: |
     {
       "document_id": "e6bc2b27-51df-e84a-768d-3008b0540975",
-      "content": "<p>Moniker: netcore-1.0, netcore-1.1</p>",
+      "conceptual": "<p>Moniker: netcore-1.0, netcore-1.1</p>",
       "monikers": ["netcore-1.0", "netcore-1.1"]
     }
   f961cd88/docs/a.json: |
     {
       "document_id": "977a62e2-6380-388e-e785-819686caac32",
-      "content": "<p>Moniker: netcore-1.2, netcore-1.3</p>",
+      "conceptual": "<p>Moniker: netcore-1.2, netcore-1.3</p>",
       "monikers": ["netcore-1.2", "netcore-1.3"]
     }
   .publish.json: |
@@ -232,12 +232,12 @@ inputs:
 outputs:
   9d4e15fd/docs/a.json: |
     {
-      "content": "<p>Moniker: netcore-1.0, netcore-1.1</p>",
+      "conceptual": "<p>Moniker: netcore-1.0, netcore-1.1</p>",
       "monikers": ["netcore-1.0", "netcore-1.1"]
     }
   b201e604/docs/a.json: |
     {
-      "content": "<p>Moniker: netcore-1.2</p>",
+      "conceptual": "<p>Moniker: netcore-1.2</p>",
       "monikers": ["netcore-1.2"]
     }
   build.log: |
@@ -407,22 +407,22 @@ inputs:
 outputs:
   docs/b.json: |
     {
-      "content": "<p>Link to <a href=\"a?view=netcore-1.1\">netcore-1.1</a></p>",
+      "conceptual": "<p>Link to <a href=\"a?view=netcore-1.1\">netcore-1.1</a></p>",
       "!monikers": null
     }
   docs/a.json: |
     {
-      "content": "<p>No version</p>",
+      "conceptual": "<p>No version</p>",
       "!monikers": null
     }
   218c13d0/docs/a.json: |
     {
-      "content": "<p>Moniker: netcore-1.1</p>",
+      "conceptual": "<p>Moniker: netcore-1.1</p>",
       "monikers": ["netcore-1.1"]
     }
   4667fedf/docs/a.json: |
     {
-      "content": "<p>Moniker: netcore-2.0</p>",
+      "conceptual": "<p>Moniker: netcore-2.0</p>",
       "monikers": ["netcore-2.0"]
     }
   xrefmap.json: | 
@@ -469,22 +469,22 @@ inputs:
 outputs:
   docs/b.json: |
     {
-      "content": "<p>Link to <a href=\"a\">netcore-2.0</a></p>",
+      "conceptual": "<p>Link to <a href=\"a\">netcore-2.0</a></p>",
       "!monikers": null
     }
   docs/a.json: |
     {
-      "content": "<p>No version</p>",
+      "conceptual": "<p>No version</p>",
       "!monikers": null
     }
   218c13d0/docs/a.json: |
     {
-      "content": "<p>Moniker: netcore-1.1</p>",
+      "conceptual": "<p>Moniker: netcore-1.1</p>",
       "monikers": ["netcore-1.1"]
     }
   4667fedf/docs/a.json: |
     {
-      "content": "<p>Moniker: netcore-2.0</p>",
+      "conceptual": "<p>Moniker: netcore-2.0</p>",
       "monikers": ["netcore-2.0"]
     }
   xrefmap.json: | 
@@ -525,7 +525,7 @@ inputs:
     }
 outputs:
   docs/c.json: |
-    {"content":"<p>Link to @a</p>"}
+    {"conceptual":"<p>Link to @a</p>"}
   build.log: |
     ["error","moniker-overlapping","Two or more documents have defined overlapping moniker: 'netcore-2.0'"]
     ["info","at-uid-not-found","Cannot find uid 'a' using xref '@a'","docs/c.md",1,10]
@@ -571,17 +571,17 @@ inputs:
 outputs:
   docs/b.json: |
     {
-      "content": "<p>Link <a href=\"a?view=netcore-1.0\">netcore-2.0</a></p>",
+      "conceptual": "<p>Link <a href=\"a?view=netcore-1.0\">netcore-2.0</a></p>",
       "!monikers": null
     }
   218c13d0/docs/a.json: |
     {
-      "content": "<p>Moniker: netcore-1.1</p>",
+      "conceptual": "<p>Moniker: netcore-1.1</p>",
       "monikers": ["netcore-1.1"]
     }
   4667fedf/docs/a.json: |
     {
-      "content": "<p>Moniker: netcore-2.0</p>",
+      "conceptual": "<p>Moniker: netcore-2.0</p>",
       "monikers": ["netcore-2.0"]
     }
   xrefmap.json: | 
@@ -634,22 +634,22 @@ inputs:
 outputs:
   docs/b.json: |
     {
-      "content": "<p>Link to <a href=\"a\">no version</a></p>",
+      "conceptual": "<p>Link to <a href=\"a\">no version</a></p>",
       "!monikers": null
     }
   docs/a.json: |
     {
-      "content": "<p>No version</p>",
+      "conceptual": "<p>No version</p>",
       "!monikers": null
     }
   218c13d0/docs/a.json: |
     {
-      "content": "<p>Moniker: netcore-1.1</p>",
+      "conceptual": "<p>Moniker: netcore-1.1</p>",
       "monikers": ["netcore-1.1"]
     }
   4667fedf/docs/a.json: |
     {
-      "content": "<p>Moniker: netcore-2.0</p>",
+      "conceptual": "<p>Moniker: netcore-2.0</p>",
       "monikers": ["netcore-2.0"]
     }
   xrefmap.json: | 
@@ -706,22 +706,22 @@ outputs:
   docs/b.json:
   docs/c.json: |
     {
-      "content": "<p>Link to @a</p>",
+      "conceptual": "<p>Link to @a</p>",
       "!monikers": null
     }
   docs/a.json: |
     {
-      "content": "<p>No version</p>",
+      "conceptual": "<p>No version</p>",
       "!monikers": null
     }
   218c13d0/docs/a.json: |
     {
-      "content": "<p>Moniker: netcore-1.1</p>",
+      "conceptual": "<p>Moniker: netcore-1.1</p>",
       "monikers": ["netcore-1.1"]
     }
   4667fedf/docs/a.json: |
     {
-      "content": "<p>Moniker: netcore-2.0</p>",
+      "conceptual": "<p>Moniker: netcore-2.0</p>",
       "monikers": ["netcore-2.0"]
     }
   xrefmap.json: | 
@@ -771,12 +771,12 @@ inputs:
 outputs:
   9d4e15fd/docs/a.json: |
     {
-      "content": "<p>Moniker: netcore-1.0, netcore-1.1</p>",
+      "conceptual": "<p>Moniker: netcore-1.0, netcore-1.1</p>",
       "monikers": ["netcore-1.0", "netcore-1.1"]
     }
   e300a7df/docs/b.json: |
     {
-      "content": "<p>Moniker: netcore-1.1, netcore-1.2</p>",
+      "conceptual": "<p>Moniker: netcore-1.1, netcore-1.2</p>",
       "monikers": ["netcore-1.1", "netcore-1.2"]
     }
   8169d1ea/docs/toc.json: |

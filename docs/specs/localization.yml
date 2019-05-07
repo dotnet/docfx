@@ -82,7 +82,7 @@ repos:
         docs/dep.md: loc-DEP
 outputs:
   docs/dep.json: |
-    {"content": "<p>loc-DEP-sxs</p>"}
+    {"conceptual": "<p>loc-DEP-sxs</p>"}
 ---
 # loc docset share the source docset's restore map 1
 # [repository mapping]
@@ -147,7 +147,7 @@ repos:
 outputs:
   docs/a.json: |
     {
-      "content":"<p>d</p>\n",
+      "conceptual":"<p>d</p>\n",
       "_op_gitContributorInformation":
       {
         "author":
@@ -227,7 +227,7 @@ repos:
 outputs:
   docs/a.json: |
     {
-      "content":"<p>d</p>\n",
+      "conceptual":"<p>d</p>\n",
       "_op_gitContributorInformation":
       {
         "author":
@@ -457,7 +457,7 @@ repos:
           [!include[](b.md)]
 outputs:
   docs/a.json: |
-    { "content":"<p><a href=\"b\">link in b</a></p>\n<p><a href=\"a\">link in a</a></p>\n"}
+    { "conceptual":"<p><a href=\"b\">link in b</a></p>\n<p><a href=\"a\">link in a</a></p>\n"}
 ---
 # loc page link and content fallback 2
 # [branch mapping]
@@ -478,7 +478,7 @@ repos:
           [!include[](b.md)]
 outputs:
   docs/a.json: |
-    { "content":"<p><a href=\"b\">link in b</a></p>\n<p><a href=\"a\">link in a</a></p>\n"}
+    { "conceptual":"<p><a href=\"b\">link in b</a></p>\n<p><a href=\"a\">link in a</a></p>\n"}
 ---
 # loc page link and content fallback 3
 # [branch mapping] & bilingual
@@ -503,7 +503,7 @@ repos:
           [!include[](b.md)]
 outputs:
   docs/a.json: |
-    { "content":"<p><a href=\"b\">link in b</a></p>\n<p><a href=\"a\">link in a</a></p>\n"}
+    { "conceptual":"<p><a href=\"b\">link in b</a></p>\n<p><a href=\"a\">link in a</a></p>\n"}
 ---
 # loc resource fallback 1
 # [repository mapping]
@@ -520,7 +520,7 @@ repos:
           [link to b](b.png)
 outputs:
   docs/a.json: |
-    { "content":"<p><a href=\"b.png\">link to b</a></p>"}
+    { "conceptual":"<p><a href=\"b.png\">link to b</a></p>"}
 ---
 # loc resource fallback 2
 # [branch mapping]
@@ -539,7 +539,7 @@ repos:
           [link to b](b.png)
 outputs:
   docs/a.json: |
-    { "content":"<p><a href=\"b.png\">link to b</a></p>"}
+    { "conceptual":"<p><a href=\"b.png\">link to b</a></p>"}
 ---
 # loc resource fallback 3
 # [repository mapping] & bilingual
@@ -561,7 +561,7 @@ repos:
           [link to b](b.png)
 outputs:
   docs/a.json: |
-    { "content":"<p><a href=\"b.png\">link to b</a></p>"}
+    { "conceptual":"<p><a href=\"b.png\">link to b</a></p>"}
 ---
 # loc token fallback, all loc files are in source repo under different locale folder
 commands:
@@ -578,7 +578,7 @@ inputs:
     [!include[include b](b.md)
 outputs:
   docs/a.json: |
-    { "content":"<p><a href=\"b\">link to b</a></p>\n<p><a href=\"a\">link to a</a></p>\n"}
+    { "conceptual":"<p><a href=\"b\">link to b</a></p>\n<p><a href=\"a\">link to a</a></p>\n"}
 ---
 # loc build with TOC map, loc TOC has higher priority
 commands:
@@ -716,7 +716,7 @@ repos:
 outputs:
   docs/a.json:
   docs/b.json: |
-    {"content":"<p>link to <a href=\"a\">a</a>\nlink to <a href=\"c\">c</a></p>\n"}
+    {"conceptual":"<p>link to <a href=\"a\">a</a>\nlink to <a href=\"c\">c</a></p>\n"}
   xrefmap.json: |
     {"references":[{"uid":"a","href":"https://docs.com/docs/a","name":"a"},{"uid":"c","href":"https://docs.com/docs/c","name":"c"}]}
 ---
@@ -841,7 +841,7 @@ repos:
         docs/a.md:
 outputs:
   docs/a.json: |
-    {"content":"<p>sxs content\n<a href=\"b\">link to b</a></p>\n<p><a href=\"a\">link to a</a></p>\n", "enable_loc_sxs": true}
+    {"conceptual":"<p>sxs content\n<a href=\"b\">link to b</a></p>\n<p><a href=\"a\">link to a</a></p>\n", "enable_loc_sxs": true}
 ---
 # bilingual build 2
 # [branch mapping]
@@ -868,7 +868,7 @@ repos:
         docs/a.md: a
 outputs:
   docs/a.json: |
-    {"content":"<p>sxs content\n<a href=\"b\">link to b</a></p>\n<p><a href=\"a\">link to a</a></p>\n", "enable_loc_sxs": true}
+    {"conceptual":"<p>sxs content\n<a href=\"b\">link to b</a></p>\n<p><a href=\"a\">link to a</a></p>\n", "enable_loc_sxs": true}
 ---
 # bilingual page's contributor info is extracted from non-sxs branch
 # loc repo:
@@ -987,7 +987,7 @@ repos:
           [!include[include deleted tokena](tokena.md)
 outputs:
   docs/a.json: |
-    {"content":"<p>b</p>\n<pre><code class=\"lang-csharp\" name=\"Main\"></code></pre>"}
+    {"conceptual":"<p>b</p>\n<pre><code class=\"lang-csharp\" name=\"Main\"></code></pre>"}
   .dependencymap.json: |
     {"dependencies": {"!docs/tokena.md": null}}
 ---
@@ -1011,7 +1011,7 @@ repos:
           [link to deleted markdown doesnt work](b.md)
 outputs:
   docs/a.json: |
-    {"content":"<p><a href=\"resource.png\">link to deleted resource</a>\n<a href=\"b.md\">link to deleted markdown doesnt work</a></p>\n"}
+    {"conceptual":"<p><a href=\"resource.png\">link to deleted resource</a>\n<a href=\"b.md\">link to deleted markdown doesnt work</a></p>\n"}
   build.log: |
     ["warning","file-not-found","Cannot find file 'b.md' relative to 'docs/a.md'","docs/a.md",2,1]
   .dependencymap.json: |
@@ -1294,7 +1294,7 @@ repos:
           master branch
 outputs:
   docs/a.json: |
-    { "content": "<p>live branch</p>\n" }
+    { "conceptual": "<p>live branch</p>\n" }
 ---
 # loc build with different dependency git repository 2
 # [branch mapping] & bilingual
@@ -1336,7 +1336,7 @@ repos:
           master branch
 outputs:
   docs/a.json: |
-    { "content": "<p>live branch</p>\n" }
+    { "conceptual": "<p>live branch</p>\n" }
 ---
 # Apply &lrm; for right to left languages
 commands:
@@ -1351,7 +1351,7 @@ repos:
           Learn c#.
 outputs:
   docs/a.json: |
-    content: <p>Learn c#&lrm;.</p>
+    conceptual: <p>Learn c#&lrm;.</p>
 ---
 # VSTS localized repo with folder mapping
 commands:
@@ -1369,7 +1369,7 @@ repos:
           [!include[](b.md)]
 outputs:
   docs/a.json: |
-    { "content":"<p><a href=\"b\">link in b</a></p>\n<p><a href=\"a\">link in a</a></p>\n"}
+    { "conceptual":"<p><a href=\"b\">link in b</a></p>\n<p><a href=\"a\">link in a</a></p>\n"}
 ---
 # VSTS localized repo with branch mapping
 commands:
@@ -1389,7 +1389,7 @@ repos:
           [!include[](b.md)]
 outputs:
   docs/a.json: |
-    { "content":"<p><a href=\"b\">link in b</a></p>\n<p><a href=\"a\">link in a</a></p>\n"}
+    { "conceptual":"<p><a href=\"b\">link in b</a></p>\n<p><a href=\"a\">link in a</a></p>\n"}
 ---
 # VSTS localized repo with branch mapping & bilingual
 commands:
@@ -1413,7 +1413,7 @@ repos:
           [!include[](b.md)]
 outputs:
   docs/a.json: |
-    { "content":"<p><a href=\"b\">link in b</a></p>\n<p><a href=\"a\">link in a</a></p>\n"}
+    { "conceptual":"<p><a href=\"b\">link in b</a></p>\n<p><a href=\"a\">link in a</a></p>\n"}
 ---
 # VSTS localized repo with repo mapping
 commands:
@@ -1431,7 +1431,7 @@ repos:
           [!include[](b.md)]
 outputs:
   docs/a.json: |
-    { "content":"<p><a href=\"b\">link in b</a></p>\n<p><a href=\"a\">link in a</a></p>\n"}
+    { "conceptual":"<p><a href=\"b\">link in b</a></p>\n<p><a href=\"a\">link in a</a></p>\n"}
 ---
 # VSTS localized repo with repo mapping & bilingual
 commands:
@@ -1454,7 +1454,7 @@ repos:
           [!include[](b.md)]
 outputs:
   docs/a.json: |
-    { "content":"<p><a href=\"b\">link in b</a></p>\n<p><a href=\"a\">link in a</a></p>\n"}
+    { "conceptual":"<p><a href=\"b\">link in b</a></p>\n<p><a href=\"a\">link in a</a></p>\n"}
 ---
 # fallback to never existing token in multiple files
 commands:
@@ -1499,7 +1499,7 @@ repos:
           [!include[](b.md)]
 outputs:
   docs/a.json: |
-    { "content":"<p>test</p>"}
+    { "conceptual":"<p>test</p>"}
 ---
 # fallback to corresponding source branch 2
 # [repo mapping & bilingual]
@@ -1527,7 +1527,7 @@ repos:
           [!include[](b.md)]
 outputs:
   docs/a.json: |
-    { "content":"<p>test</p>"}
+    { "conceptual":"<p>test</p>"}
 ---
 # [from loc] fallback to master if corresponding source branch doesn't exists
 # [branch mapping]
@@ -1547,4 +1547,4 @@ repos:
           [!include[](b.md)]
 outputs:
   docs/a.json: |
-    { "content":"<p>master</p>"}
+    { "conceptual":"<p>master</p>"}

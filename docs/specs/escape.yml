@@ -16,7 +16,7 @@ repos:
       a++.png:
 outputs:
   links.json: |
-    content: |
+    conceptual: |
       <p>
         <a href="a%20b">a%20b.md</a>
         <a href="a&amp;b">a&amp;b.md</a>
@@ -73,7 +73,7 @@ inputs:
   a++.png:
 outputs:
   html-links.json: |
-    content: |
+    conceptual: |
       <p>
         <a href="a b">a%20b.md</a>
         <a href="a&amp;b">a&amp;b.md</a>
@@ -129,7 +129,7 @@ inputs:
 outputs:
   a.json:
   html-xref.json: |
-    {"content":
+    {"conceptual":
         "
           <p>
             Link to <a href=\"a.json\">text</a>
