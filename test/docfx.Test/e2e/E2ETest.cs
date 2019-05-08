@@ -117,10 +117,10 @@ namespace Microsoft.Docs.Build
             var outputs = Directory.GetFiles(docsetOutputPath, "*", SearchOption.AllDirectories);
             var outputFileNames = outputs.Select(file => file.Substring(docsetOutputPath.Length + 1).Replace('\\', '/')).ToList();
 
-            // Show build.log content if actual output has errors or warnings.
-            if (failed && outputFileNames.Contains("build.log"))
+            // Show .errors.log content if actual output has errors or warnings.
+            if (failed && outputFileNames.Contains(".errors.log"))
             {
-                Console.WriteLine($"{Path.GetFileName(docsetPath)}: {File.ReadAllText(Path.Combine(docsetOutputPath, "build.log"))}");
+                Console.WriteLine($"{Path.GetFileName(docsetPath)}: {File.ReadAllText(Path.Combine(docsetOutputPath, ".errors.log"))}");
             }
 
             // These files output mostly contains empty content which e2e tests are not intrested in

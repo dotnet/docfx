@@ -203,7 +203,7 @@ outputs:
         "url": "/rawmetadata/toc.json"
       }]
     }
-  build.log:
+  .errors.log:
 ---
 # Resolve link for landing page
 inputs:
@@ -233,7 +233,7 @@ inputs:
       docs/a.md: /asdf
   docs/a.md:
 outputs:
-  build.log:
+  .errors.log:
 ---
 # Redirection file href shouldn't have extension
 commands:
@@ -265,7 +265,7 @@ inputs:
     { "reserved": ["content_type", "ms.contentlang"] }
 outputs:
   docs/a.json:
-  build.log: |
+  .errors.log: |
     ["warning","reserved-metadata","Metadata 'content_type' is reserved by docfx, remove this metadata","docfx.yml",3,16]
     ["warning","reserved-metadata","Metadata 'ms.contentlang' is reserved by docfx, remove this metadata","docs/a.md",2,1]
 ---

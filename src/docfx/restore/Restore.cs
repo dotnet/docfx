@@ -10,7 +10,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class Restore
     {
-        public static async Task Run(string docsetPath, CommandLineOptions options, Report report)
+        public static async Task Run(string docsetPath, CommandLineOptions options, ErrorLog errorLog)
         {
             // Restore has to use Config directly, it cannot depend on Docset,
             // because Docset assumes the repo to physically exist on disk.
@@ -32,9 +32,9 @@ namespace Microsoft.Docs.Build
 
                         if (root)
                         {
-                            report.Configure(config);
+                            errorLog.Configure(config);
                         }
-                        report.Write(config.ConfigFileName, errors);
+                        errorLog.Write(config.ConfigFileName, errors);
 
                         // no need to restore child docsets' loc repository
                         return await RestoreOneDocset(
@@ -66,7 +66,7 @@ namespace Microsoft.Docs.Build
 
                 // extend the config before loading
                 var (errors, extendedConfig) = ConfigLoader.TryLoad(docset, options, locale, extend: true);
-                report.Write(extendedConfig.ConfigFileName, errors);
+                errorLog.Write(extendedConfig.ConfigFileName, errors);
 
                 // restore and load dependency lock if need
                 if (HrefUtility.IsHttpHref(extendedConfig.DependencyLock))
