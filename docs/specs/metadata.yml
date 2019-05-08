@@ -473,4 +473,4 @@ outputs:
   docs/a.json: |
     {"!a": null, "title": "B"}
   build.log: |
-    ["warning","yaml-syntax-error","Mapping values are not allowed in this context.","docs/a.md",2,5]
+    ["warning","yaml-header-syntax-error","Mapping values are not allowed in this context.","docs/a.md",2,5]

@@ -167,8 +167,14 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Syntax error in yaml file(not duplicate key).
         /// </summary>
-        public static Error YamlSyntaxError(SourceInfo source, string message, ErrorLevel level = ErrorLevel.Error)
-            => new Error(level, "yaml-syntax-error", message, source);
+        public static Error YamlSyntaxError(SourceInfo source, string message)
+            => new Error(ErrorLevel.Error, "yaml-syntax-error", message, source);
+
+        /// <summary>
+        /// Syntax error in yaml header(not duplicate key).
+        /// </summary>
+        public static Error YamlHeaderSyntaxError(Error error)
+            => new Error(ErrorLevel.Warning, "yaml-header-syntax-error", error.Message, error.File, error.Line, error.Column, error.EndLine, error.EndColumn);
 
         /// <summary>
         /// Used duplicate yaml key in markdown yml header or schema document(yml).
