@@ -71,9 +71,9 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Deserialize to JToken from string
         /// </summary>
-        public static (List<Error>, JToken) Parse(string input, string file)
+        public static (List<Error>, JToken) Parse(string input, string file, bool throwOnSyntaxError = true)
         {
-            var (errors, token) = ParseAsJToken(input, file);
+            var (errors, token) = ParseAsJToken(input, file, throwOnSyntaxError);
             var (nullErrors, result) = token.RemoveNulls();
             errors.AddRange(nullErrors);
             return (errors, result);
@@ -92,13 +92,13 @@ namespace Microsoft.Docs.Build
             return null;
         }
 
-        private static (List<Error>, JToken) ParseAsJToken(string input, string file)
+        private static (List<Error>, JToken) ParseAsJToken(string input, string file, bool throwOnSyntaxError = true)
         {
+            JToken result = new JObject();
+
+            var errors = new List<Error>();
             try
             {
-                JToken result = null;
-
-                var errors = new List<Error>();
                 var parser = new Parser(new StringReader(input));
                 parser.Expect<StreamStart>();
                 if (!parser.Accept<StreamEnd>())
@@ -108,16 +108,19 @@ namespace Microsoft.Docs.Build
                     parser.Expect<DocumentEnd>();
                 }
                 parser.Expect<StreamEnd>();
-
-                return (errors, result);
             }
             catch (YamlException ex)
             {
                 var source = new SourceInfo(file, ex.Start.Line, ex.Start.Column, ex.End.Line, ex.End.Column);
                 var message = Regex.Replace(ex.Message, "^\\(.*?\\) - \\(.*?\\):\\s*", "");
 
-                throw Errors.YamlSyntaxError(source, message).ToException(ex);
+                if (throwOnSyntaxError)
+                    throw Errors.YamlSyntaxError(source, message).ToException(ex);
+
+                errors.Add(Errors.YamlSyntaxError(source, message, ErrorLevel.Warning));
             }
+
+            return (errors, result);
         }
 
         private static JToken ParseAsJToken(IParser parser, string file, List<Error> errors)

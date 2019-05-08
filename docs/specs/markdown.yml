@@ -294,17 +294,13 @@ outputs:
 # Errors from one file does not affect another file
 inputs:
   docfx.yml:
-  docs/a.md: |
-    ---
-    a:
-    a:
-    ---
+  docs/toc.md: |
+    #[bad](b.md)
   docs/b.md:
 outputs:
   docs/b.json:
   build.log: |
-    ["error","yaml-duplicate-key","Key 'a' is already defined, remove the duplicate key.","docs/a.md",3,1]
-    ["info","null-value","'a' contains null value","docs/a.md",3,1]
+    ["error","invalid-toc-syntax","The toc syntax '#[bad](b.md)' is invalid, the opening sequence of # characters must be followed by a space or by the end of line. Refer to [ATX heading](https://spec.commonmark.org/0.28/#atx-heading) to fix it","docs/toc.md",1,1]
 ---
 # do not allow custom js, styles and css
 inputs:

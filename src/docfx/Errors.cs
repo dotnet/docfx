@@ -167,14 +167,14 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Syntax error in yaml file(not duplicate key).
         /// </summary>
-        public static Error YamlSyntaxError(SourceInfo source, string message)
-            => new Error(ErrorLevel.Error, "yaml-syntax-error", message, source);
+        public static Error YamlSyntaxError(SourceInfo source, string message, ErrorLevel level = ErrorLevel.Error)
+            => new Error(level, "yaml-syntax-error", message, source);
 
         /// <summary>
         /// Used duplicate yaml key in markdown yml header or schema document(yml).
         /// </summary>
         public static Error YamlDuplicateKey(SourceInfo source, string key)
-            => new Error(ErrorLevel.Error, "yaml-duplicate-key", $"Key '{key}' is already defined, remove the duplicate key.", source);
+            => new Error(ErrorLevel.Warning, "yaml-duplicate-key", $"Key '{key}' is already defined, remove the duplicate key.", source);
 
         /// <summary>
         /// Syntax error in json file.

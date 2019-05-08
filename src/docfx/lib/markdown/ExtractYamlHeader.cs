@@ -25,7 +25,7 @@ namespace Microsoft.Docs.Build
                 var trimEnd = line.TrimEnd();
                 if (trimEnd == "---" || trimEnd == "...")
                 {
-                    var (yamlErrors, yamlHeaderObj) = YamlUtility.Parse(builder.ToString(), file);
+                    var (yamlErrors, yamlHeaderObj) = YamlUtility.Parse(builder.ToString(), file, throwOnSyntaxError: false);
                     errors.AddRange(yamlErrors);
 
                     if (yamlHeaderObj is JObject obj)
