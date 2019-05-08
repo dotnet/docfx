@@ -203,7 +203,7 @@ namespace Microsoft.Docs.Build
                 {
                     if (raw?.StartsWith("@") != false)
                     {
-                        errors.Add(Errors.AtUidNotFound(new SourceInfo<string>(html, new SourceInfo(file, lineNumber, s_getValueStartIndex(xref))), xref.Value));
+                        errors.Add(Errors.XrefNotFound(new SourceInfo<string>(html, new SourceInfo(file, lineNumber, s_getValueStartIndex(xref)))));
                     }
                     else
                     {
