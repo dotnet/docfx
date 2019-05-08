@@ -166,7 +166,7 @@ namespace Microsoft.Docs.Build
                 XrefMapModel xrefMap = new XrefMapModel();
                 if (url?.Value.EndsWith(".yml", StringComparison.OrdinalIgnoreCase) != false)
                 {
-                    xrefMap = YamlUtility.Deserialize<XrefMapModel>(content);
+                    xrefMap = YamlUtility.Deserialize<XrefMapModel>(content, url);
                     foreach (var spec in xrefMap.References)
                     {
                         map.TryAdd(spec.Uid, new Lazy<XrefSpec>(() => spec));
@@ -180,7 +180,7 @@ namespace Microsoft.Docs.Build
                         map.TryAdd(uid, new Lazy<XrefSpec>(() =>
                         {
                             var str = GetSubstringFromContent(content, startLine, endLine, startColumn, endColumn);
-                            return JsonUtility.Deserialize<XrefSpec>(str);
+                            return JsonUtility.Deserialize<XrefSpec>(str, url);
                         }));
                     }, content);
                 }

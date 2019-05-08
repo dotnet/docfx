@@ -993,3 +993,14 @@ outputs:
     }
   build.log: |
     ["error","publish-url-conflict","Two or more files of the same version('netcore-1.1') publish to the same url '/docs/c.png': 'docs/v1/c.png', 'docs/v2/c.png'"]
+---
+# Invalid moniker definition
+inputs:
+  docfx.yml: |
+    monikerDefinition: monikerDefinition.json
+  a.md:
+  monikerDefinition.json: |
+    { "monikers": [
+outputs:
+  build.log: |
+    ["error","json-syntax-error","Unexpected end when deserializing array.","monikerDefinition.json",2]
