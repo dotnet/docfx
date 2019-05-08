@@ -96,7 +96,7 @@ namespace Microsoft.Docs.Build
         {
             try
             {
-                JToken result = new JObject();
+                JToken result = null;
 
                 var errors = new List<Error>();
                 var parser = new Parser(new StringReader(input));
