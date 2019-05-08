@@ -24,7 +24,7 @@ namespace Microsoft.Docs.Build
         public static void SplitGitHref(string remote, string expectedUrl, string expectedRev)
         {
             // Act
-            var (url, rev, _) = HrefUtility.SplitGitHref(remote);
+            var (url, rev, _) = LinkUtility.SplitGitLink(remote);
 
             // Assert
             Assert.Equal(expectedUrl, url);

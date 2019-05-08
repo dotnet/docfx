@@ -61,7 +61,7 @@ namespace Microsoft.Docs.Build
             {
                 if (requestUri.StartsWith(baseUrl))
                 {
-                    message.RequestUri = new Uri(HrefUtility.MergeHref(requestUri, rule.Query, null));
+                    message.RequestUri = new Uri(LinkUtility.MergeLink(requestUri, rule.Query, null));
                     foreach (var header in rule.Headers)
                     {
                         message.Headers.Add(header.Key, header.Value);

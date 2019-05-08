@@ -57,8 +57,8 @@ namespace Microsoft.Docs.Build
                 }
                 : null;
 
-            if (!(GitHubUtility.TryParse(repo?.Remote, out var gitHubOwner, out var gitHubRepoName) ||
-                GitHubUtility.TryParse(document.Docset.Config.Contribution.Repository, out gitHubOwner, out gitHubRepoName)) ||
+            if (!(LinkUtility.TryParseGitHubLink(repo?.Remote, out var gitHubOwner, out var gitHubRepoName) ||
+                LinkUtility.TryParseGitHubLink(document.Docset.Config.Contribution.Repository, out gitHubOwner, out gitHubRepoName)) ||
                 !document.Docset.Config.GitHub.ResolveUsers)
             {
                 return (errors, contributionInfo);
@@ -184,7 +184,7 @@ namespace Microsoft.Docs.Build
 
                 if (!string.IsNullOrEmpty(document.Docset.Config.Contribution.Repository))
                 {
-                    var (contributionRemote, contributionBranch, hasRefSpec) = HrefUtility.SplitGitHref(document.Docset.Config.Contribution.Repository);
+                    var (contributionRemote, contributionBranch, hasRefSpec) = LinkUtility.SplitGitLink(document.Docset.Config.Contribution.Repository);
                     (branchUrlTemplate, _) = GetContentGitUrlTemplate(contributionRemote, pathToRepo);
 
                     (editRemote, editBranch) = (contributionRemote, hasRefSpec ? contributionBranch : editBranch);
@@ -214,12 +214,12 @@ namespace Microsoft.Docs.Build
 
         private static (string branchUrlTemplate, string commitUrlTemplate) GetContentGitUrlTemplate(string remote, string pathToRepo)
         {
-            if (GitHubUtility.TryParse(remote, out _, out _))
+            if (LinkUtility.TryParseGitHubLink(remote, out _, out _))
             {
                 return ($"{{repo}}/blob/{{branch}}/{pathToRepo}", $"{{repo}}/blob/{{commit}}/{pathToRepo}");
             }
 
-            if (AzureRepoUtility.TryParse(remote, out _, out _))
+            if (LinkUtility.TryParseAzureReposLink(remote, out _, out _))
             {
                 return ($"{{repo}}?path=/{pathToRepo}&version=GB{{branch}}&_a=contents", $"{{repo}}/commit/{{commit}}?path=/{pathToRepo}&_a=contents");
             }

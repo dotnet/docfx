@@ -154,7 +154,7 @@ namespace Microsoft.Docs.Build
         public static (string remote, string branch) GetLocalizedTheme(string theme, string locale, string defaultLocale)
         {
             Debug.Assert(!string.IsNullOrEmpty(theme));
-            var (remote, branch, _) = HrefUtility.SplitGitHref(theme);
+            var (remote, branch, _) = LinkUtility.SplitGitLink(theme);
 
             return (GetLocalizationName(LocalizationMapping.Repository, remote, locale, defaultLocale), branch);
         }

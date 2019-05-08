@@ -64,7 +64,7 @@ namespace Microsoft.Docs.Build
         ///  - Normalized using <see cref="PathUtility.NormalizeFile(string)"/>
         ///  - Always start with '/'
         ///  - May end with '/' if it is index.html
-        ///  - Does not escape with <see cref="HrefUtility.EscapeUrl(string)"/>
+        ///  - Does not escape with <see cref="LinkUtility.EscapeUrl(string)"/>
         /// </summary>
         public string SiteUrl { get; }
 
