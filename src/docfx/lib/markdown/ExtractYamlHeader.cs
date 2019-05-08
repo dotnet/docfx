@@ -37,7 +37,7 @@ namespace Microsoft.Docs.Build
 
                         errors.Add(Errors.YamlHeaderNotObject(isArray: yamlHeaderObj is JArray, file));
                     }
-                    catch (DocfxException ex) when(ex.Error.Code == "yaml-syntax-error")
+                    catch (DocfxException ex) when (ex.Error.Code == "yaml-syntax-error")
                     {
                         errors.Add(Errors.YamlHeaderSyntaxError(ex.Error));
                     }
