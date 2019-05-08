@@ -66,7 +66,7 @@ namespace Microsoft.Docs.Build
             }
             else
             {
-                return (Errors.UidNotFound(href, uid), null, null, null);
+                return (Errors.XrefNotFound(href), null, null, null);
             }
 
             // fallback order:

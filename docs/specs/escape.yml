@@ -140,4 +140,4 @@ outputs:
           </p>
         "}
   build.log: |
-    ["warning","xref-not-found","Cross reference not found: '@a&c'","html-xref.md",5,10]
+    ["info","at-xref-not-found","Cross reference not found: '@a&c'","html-xref.md",5,10]

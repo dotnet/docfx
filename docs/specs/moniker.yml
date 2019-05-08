@@ -528,7 +528,7 @@ outputs:
     {"content":"<p>Link to @a</p>"}
   build.log: |
     ["error","moniker-overlapping","Two or more documents have defined overlapping moniker: 'netcore-2.0'"]
-    ["warning","xref-not-found","Cross reference not found: '@a'","docs/c.md",1,10]
+    ["info","at-xref-not-found","Cross reference not found: '@a'","docs/c.md",1,10]
     ["error","publish-url-conflict","Two or more files of the same version('netcore-2.0') publish to the same url '/docs/a': 'docs/v1/a.md', 'docs/v2/a.md'"]
   xrefmap.json: | 
     {"!references":null}
@@ -728,7 +728,7 @@ outputs:
     {"!references":null}
   build.log: |
     ["error","uid-conflict","Two or more documents have defined the same Uid 'a': docs/a.md,docs/b.md"]
-    ["warning","xref-not-found","Cross reference not found: '@a'","docs/c.md",1,10]
+    ["info","at-xref-not-found","Cross reference not found: '@a'","docs/c.md",1,10]
 ---
 # Build toc with monikers info
 inputs:

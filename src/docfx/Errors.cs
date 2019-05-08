@@ -234,12 +234,6 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Warning, "file-not-found", $"Cannot find file '{source}' relative to '{source.File}'", source);
 
         /// <summary>
-        /// Failed to resolve uid defined by [link](xref:uid) or <xref:uid> syntax.
-        /// </summary>
-        public static Error UidNotFound(SourceInfo<string> source, string uid)
-            => new Error(ErrorLevel.Warning, "uid-not-found", $"Cannot find uid '{uid}' using xref '{source}'", source);
-
-        /// <summary>
         /// File contains git merge conflict.
         /// Examples:
         ///   - <![CDATA[
@@ -255,6 +249,12 @@ namespace Microsoft.Docs.Build
 
         /// <summary>
         /// Failed to resolve uid defined by @ syntax.
+        /// </summary>
+        public static Error AtXrefNotFound(SourceInfo<string> source)
+            => new Error(ErrorLevel.Info, "at-xref-not-found", $"Cross reference not found: '{source}'", source);
+
+        /// <summary>
+        /// Failed to resolve uid defined by [link](xref:uid) or <xref:uid> syntax.
         /// </summary>
         public static Error XrefNotFound(SourceInfo<string> source)
             => new Error(ErrorLevel.Warning, "xref-not-found", $"Cross reference not found: '{source}'", source);

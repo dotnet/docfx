@@ -31,8 +31,8 @@ namespace Microsoft.Docs.Build
                          {
                              var raw = new SourceInfo<string>(xref.GetAttributes().Properties.First(p => p.Key == "data-raw-source").Value, node.ToSourceInfo());
                              var error = raw.Value.StartsWith("@")
-                                 ? Errors.XrefNotFound(raw)
-                                 : Errors.UidNotFound(raw, xref.Href);
+                                 ? Errors.AtXrefNotFound(raw)
+                                 : Errors.XrefNotFound(raw);
 
                              MarkdownUtility.LogError(error);
                              return new LiteralInline(raw);
