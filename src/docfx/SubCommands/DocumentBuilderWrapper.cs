@@ -139,7 +139,7 @@ namespace Microsoft.DocAsCode.SubCommands
             }
 
             using (var builder = new DocumentBuilder(assemblies, postProcessorNames, templateManager?.GetTemplatesHash(), config.IntermediateFolder, changeList?.From, changeList?.To, config.CleanupCacheHistory))
-            using (new PerformanceScope("Building documents", LogLevel.Info))
+            using (new PerformanceScope("building documents", LogLevel.Info))
             {
                 var parameters = ConfigToParameter(config, templateManager, changeList, baseDirectory, outputDirectory, templateDirectory);
                 builder.Build(parameters, outputDirectory);

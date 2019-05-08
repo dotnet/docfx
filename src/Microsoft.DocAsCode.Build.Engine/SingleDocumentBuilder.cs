@@ -86,8 +86,6 @@ namespace Microsoft.DocAsCode.Build.Engine
 
                 var context = new DocumentBuildContext(parameters);
 
-                Logger.LogVerbose("Start building document...");
-
                 // Start building document...
                 List<HostService> hostServices = null;
                 IHostServiceCreator hostServiceCreator = null;
