@@ -137,8 +137,8 @@ namespace Microsoft.Docs.Build
         ///   - failed to download due to bad network
         ///   - when update user profile cache fails, need to download verify etag
         /// </summary>
-        public static Error DownloadFailed(string url, string message)
-            => new Error(ErrorLevel.Error, "download-failed", $"Download '{url}' failed: {message}");
+        public static Error DownloadFailed(string url)
+            => new Error(ErrorLevel.Error, "download-failed", $"System: Download failed for file '{url}'. Try closing and reopening the PR. If you get this Error again, file an issue.");
 
         /// <summary>
         /// Failed to update user profile cache file.

@@ -184,7 +184,7 @@ namespace Microsoft.Docs.Build
                     }
                     catch (Exception ex)
                     {
-                        throw Errors.DownloadFailed(_url, ex.Message).ToException(ex);
+                        throw Errors.DownloadFailed(_url).ToException(ex);
                     }
                     var content = await response.EnsureSuccessStatusCode().Content.ReadAsStringAsync();
                     ReadCache(content);
