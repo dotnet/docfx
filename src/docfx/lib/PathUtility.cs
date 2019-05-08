@@ -26,7 +26,7 @@ namespace Microsoft.Docs.Build
 
         private static readonly HashSet<char> s_invalidPathChars = Path.GetInvalidPathChars().Concat(Path.GetInvalidFileNameChars()).Distinct().ToHashSet();
 
-        private static readonly Regex s_blobUrl = new Regex(@"^https:\/\/\w+.blob.core.windows.net(/\w+)*\?(.*)$", RegexOptions.IgnoreCase);
+        private static readonly Regex s_blobUrl = new Regex(@"^https:\/\/.+?.blob.core.windows.net\/.*?\?(.*)$", RegexOptions.IgnoreCase);
 
         /// <summary>
         /// Check if the file is the same as matcher or is inside the directory specified by matcher.
