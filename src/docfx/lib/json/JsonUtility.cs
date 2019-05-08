@@ -122,6 +122,10 @@ namespace Microsoft.Docs.Build
                 {
                     throw ToError(ex, file).ToException(ex);
                 }
+                catch (JsonSerializationException ex)
+                {
+                    throw ToError(ex, file).ToException(ex);
+                }
             }
         }
 
@@ -432,28 +436,35 @@ namespace Microsoft.Docs.Build
                 if (args.ErrorContext.Error is JsonReaderException || args.ErrorContext.Error is JsonSerializationException)
                 {
                     var state = t_status.Value.Peek();
-                    state.Errors.Add(Errors.ViolateSchema(GetSourceInfo(state.Reader.CurrentToken), RewriteErrorMessage(args.ErrorContext.Error.Message)));
+                    state.Errors.Add(Errors.ViolateSchema(GetSourceInfo(state.Reader.CurrentToken), ParseException(args.ErrorContext.Error).message));
                     args.ErrorContext.Handled = true;
                 }
             }
         }
 
-        private static Error ToError(JsonReaderException ex, string file)
+        private static Error ToError(Exception ex, string file)
         {
-            var source = new SourceInfo(file, ex.LineNumber, ex.LinePosition);
+            var (message, line, column) = ParseException(ex);
 
-            return Errors.JsonSyntaxError(source, RewriteErrorMessage(ex.Message));
+            return Errors.JsonSyntaxError(new SourceInfo(file, line, column), message);
+        }
+
+        private static (string message, int line, int column) ParseException(Exception ex)
+        {
+            // TODO: Json.NET type conversion error message is developer friendly but not writer friendly.
+            var match = Regex.Match(ex.Message, "^([\\s\\S]*)\\sPath '(.*)', line (\\d+), position (\\d+).$");
+            if (match.Success)
+            {
+                return (RewriteErrorMessage(match.Groups[1].Value), int.Parse(match.Groups[3].Value), int.Parse(match.Groups[4].Value));
+            }
+
+            match = Regex.Match(ex.Message, "^([\\s\\S]*)\\sPath '(.*)'.$");
+
+            return (RewriteErrorMessage(match.Success ? match.Groups[1].Value : ex.Message), 0, 0);
         }
 
         private static string RewriteErrorMessage(string message)
         {
-            // TODO: Json.NET type conversion error message is developer friendly but not writer friendly.
-            var match = Regex.Match(message, "^([\\s\\S]*)\\sPath (.*).$");
-            if (match.Success)
-            {
-                message = match.Groups[1].Value;
-            }
-
             if (message.StartsWith("Error reading string. Unexpected token"))
             {
                 return "Expected type String, please input String or type compatible with String.";
