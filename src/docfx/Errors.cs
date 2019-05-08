@@ -50,7 +50,7 @@ namespace Microsoft.Docs.Build
         ///     nor source repo root
         /// </summary>
         public static Error ConfigNotFound(string docsetPath)
-            => new Error(ErrorLevel.Error, "config-not-found", $"Cannot find 'docfx.yml/docfx.json' at '{docsetPath}'");
+            => new Error(ErrorLevel.Error, "config-not-found", $"Can't find config file 'docfx.yml/docfx.json' at {docsetPath}");
 
         /// <summary>
         /// Two files include each other.
