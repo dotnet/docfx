@@ -4,20 +4,27 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
     internal class MetadataProvider
     {
-        private readonly Config _config;
+        private readonly JObject _globalMetadata;
+        private readonly HashSet<string> _reservedMetadata;
         private readonly List<(Func<string, bool> glob, string key, JToken value)> _rules = new List<(Func<string, bool> glob, string key, JToken value)>();
 
-        public MetadataProvider(Config config)
+        public MetadataProvider(Docset docset)
         {
-            _config = config;
+            _globalMetadata = docset.Config.GlobalMetadata;
 
-            foreach (var (key, item) in config.FileMetadata)
+            _reservedMetadata = JsonUtility.GetPropertyNames(typeof(OutputModel))
+                .Concat(docset.MetadataSchema.Reserved)
+                .Except(JsonUtility.GetPropertyNames(typeof(InputMetadata)))
+                .ToHashSet();
+
+            foreach (var (key, item) in docset.Config.FileMetadata)
             {
                 foreach (var (glob, value) in item)
                 {
@@ -31,8 +38,12 @@ namespace Microsoft.Docs.Build
             Debug.Assert(file != null);
 
             var result = new JObject();
+            if (yamlHeader != null)
+            {
+                JsonUtility.SetSourceInfo(result, JsonUtility.GetSourceInfo(yamlHeader));
+            }
 
-            JsonUtility.Merge(result, _config.GlobalMetadata);
+            JsonUtility.Merge(result, _globalMetadata);
 
             var fileMetadata = new JObject();
             foreach (var (glob, key, value) in _rules)
@@ -54,10 +65,36 @@ namespace Microsoft.Docs.Build
 
             var (errors, metadata) = JsonUtility.ToObject<T>(result);
 
-            errors.AddRange(MetadataValidator.Validate(result));
+            foreach (var property in result.Properties())
+            {
+                if (_reservedMetadata.Contains(property.Name))
+                {
+                    errors.Add(Errors.ReservedMetadata(JsonUtility.GetSourceInfo(property), property.Name));
+                }
+                else if (!IsValidMetadataType(property.Value))
+                {
+                    errors.Add(Errors.InvalidMetadataType(JsonUtility.GetSourceInfo(property.Value), property.Name));
+                }
+            }
+
             errors.AddRange(JsonSchemaValidation.Validate(file.Docset.MetadataSchema, result));
 
             return (errors, metadata);
+        }
+
+        private static bool IsValidMetadataType(JToken token)
+        {
+            if (token is JObject)
+            {
+                return false;
+            }
+
+            if (token is JArray array && !array.All(item => item is JValue))
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }

@@ -21,7 +21,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Mappings between toc and a collection of document
         /// </summary>
-        private readonly ConcurrentDictionary<Document, IEnumerable<Document>> _tocToDocuments = new ConcurrentDictionary<Document, IEnumerable<Document>>();
+        private readonly DictionaryBuilder<Document, IEnumerable<Document>> _tocToDocuments = new DictionaryBuilder<Document, IEnumerable<Document>>();
 
         /// <summary>
         /// Add toc files and toc mappings
@@ -63,7 +63,7 @@ namespace Microsoft.Docs.Build
             var experimentalTocs = new List<Document>();
             var referencedTocs = new HashSet<Document>(_referencedTocs.Keys);
 
-            foreach (var (toc, documents) in _tocToDocuments)
+            foreach (var (toc, documents) in _tocToDocuments.ToDictionary())
             {
                 if (referencedTocs.Contains(toc))
                 {

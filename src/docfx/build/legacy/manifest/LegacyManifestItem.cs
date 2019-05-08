@@ -2,40 +2,33 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace Microsoft.Docs.Build
 {
+    [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
     internal class LegacyManifestItem
     {
         // published url relative to site base path
-        [JsonProperty("asset_id")]
-        public string SiteUrlRelativeToSiteBasePath { get; set; }
+        public string AssetId { get; set; }
 
         // rource path relative to source repo root
-        [JsonProperty("original")]
-        public string FilePath { get; set; }
+        public string Original { get; set; }
 
         // source path relative to source base path
-        [JsonProperty("source_relative_path")]
-        public string FilePathRelativeToSourceBasePath { get; set; }
+        public string SourceRelativePath { get; set; }
 
-        [JsonProperty("original_type")]
         public string OriginalType { get; set; }
 
-        [JsonProperty("type")]
         public string Type { get; set; }
 
-        [JsonProperty("output")]
         public LegacyManifestOutput Output { get; set; }
 
         // tell ops to use plugin for normalization
-        [JsonProperty("skip_normalization")]
         public bool SkipNormalization { get; set; }
 
-        [JsonProperty("skip_schema_check")]
         public bool SkipSchemaCheck { get; set; }
 
-        [JsonProperty("group")]
         public string Group { get; set; }
     }
 }

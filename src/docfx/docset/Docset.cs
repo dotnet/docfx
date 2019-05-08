@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -80,6 +81,16 @@ namespace Microsoft.Docs.Build
         /// Gets the dependency repos/file mappings
         /// </summary>
         public RestoreMap RestoreMap { get; }
+
+        /// <summary>
+        /// Gets the site base path
+        /// </summary>
+        public string SiteBasePath { get; }
+
+        /// <summary>
+        /// Gets the {Schema}://{HostName}
+        /// </summary>
+        public string HostName { get; }
 
         /// <summary>
         /// Gets the dependent docsets
@@ -164,6 +175,7 @@ namespace Microsoft.Docs.Build
             Culture = CreateCultureInfo(locale);
             LocalizationDocset = localizedDocset;
             FallbackDocset = fallbackDocset;
+            (HostName, SiteBasePath) = SplitBaseUrl(config.BaseUrl);
 
             MetadataSchema = LoadMetadataSchema(Config);
             ResolveAlias = LoadResolveAlias(Config);
@@ -251,19 +263,20 @@ namespace Microsoft.Docs.Build
 
         private JsonSchema LoadMetadataSchema(Config config)
         {
-            if (!string.IsNullOrEmpty(config.MetadataSchema))
+            var token = new JObject();
+            foreach (var metadataSchema in config.MetadataSchema)
             {
-                var (_, content, _) = RestoreMap.GetRestoredFileContent(this, config.MetadataSchema);
-                return JsonUtility.Deserialize<JsonSchema>(content);
+                var (_, content, _) = RestoreMap.GetRestoredFileContent(this, metadataSchema);
+                JsonUtility.Merge(token, JsonUtility.Parse(content, metadataSchema).value as JObject);
             }
-            return new JsonSchema();
+            return JsonUtility.ToObject<JsonSchema>(token).value;
         }
 
         private HashSet<Document> CreateBuildScope(IEnumerable<Document> redirections, Func<string, bool> glob)
         {
             using (Progress.Start("Globbing files"))
             {
-                var files = new ConcurrentBag<Document>();
+                var files = new ListBuilder<Document>();
 
                 ParallelUtility.ForEach(
                     Directory.EnumerateFiles(DocsetPath, "*.*", SearchOption.AllDirectories),
@@ -276,7 +289,7 @@ namespace Microsoft.Docs.Build
                         }
                     });
 
-                return new HashSet<Document>(files.Concat(redirections));
+                return new HashSet<Document>(files.ToList().Concat(redirections));
             }
         }
 
@@ -320,6 +333,22 @@ namespace Microsoft.Docs.Build
             }
 
             return scanScope;
+        }
+
+        private static (string hostName, string siteBasePath) SplitBaseUrl(string baseUrl)
+        {
+            string hostName = string.Empty;
+            string siteBasePath = ".";
+            if (!string.IsNullOrEmpty(baseUrl)
+                && Uri.TryCreate(baseUrl, UriKind.Absolute, out var uriResult))
+            {
+                if (uriResult.AbsolutePath != "/")
+                {
+                    siteBasePath = uriResult.AbsolutePath.Substring(1);
+                }
+                hostName = $"{uriResult.Scheme}://{uriResult.Host}";
+            }
+            return (hostName, siteBasePath);
         }
     }
 }

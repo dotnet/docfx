@@ -51,7 +51,7 @@ inputs:
 outputs:
   build.log: |
     ["error","violate-schema","Expected type String, please input String or type compatible with String.","docs/a.md",2,9]
-    ["info","invalid-metadata-type","Metadata 'locale' can only be a scalar value or string array","docs/a.md",2,9]
+    ["error","invalid-metadata-type","Metadata 'locale' can only be a scalar value or string array","docs/a.md",2,9]
 ---
 # Report error for invalid yaml header value type as array
 inputs:
@@ -74,10 +74,10 @@ inputs:
   docfx.yml: |
     documentId:
       sourceBasePath: sccm
-      siteBasePath: sccm
     name: sccm
     product: Win
     files: sccm/**/*
+    baseUrl: https://docs.com/sccm
   sccm/mdt/release-notes.md:
 outputs:
   sccm/mdt/release-notes.json: |
@@ -91,10 +91,10 @@ inputs:
   docfx.yml: |
     documentId:
       sourceBasePath: sccm
-      siteBasePath: sccm
     name: sccm
     product: Win
     files: "**/*"
+    baseUrl: https://docs.com/sccm
   sccm/mdm/index.md:
   sccm/index.md:
 outputs:
@@ -109,10 +109,10 @@ inputs:
   docfx.yml: |
     documentId:
       sourceBasePath: sccm
-      siteBasePath: sccm
     name: sccm
     product: Win
     files: "**/*"
+    baseUrl: https://docs.com/sccm
     redirections:
       sccm/mdm/index.md: /sccm/mdm/understand/hybrid-mobile-device-management
   sccm/mdm/understand/hybrid-mobile-device-management.md:
@@ -126,10 +126,10 @@ inputs:
   docfx.yml: |
     documentId:
       sourceBasePath: sccm
-      siteBasePath: sccm
     name: sccm
     product: Win
     files: "sccm/mdm/understand/hybrid-mobile-device-management.md"
+    baseUrl: https://docs.com/sccm
     redirections:
       sccm/mdm/index.md: /sccm/mdm/understand/hybrid-mobile-device-management
   sccm/mdm/understand/hybrid-mobile-device-management.md:
@@ -144,10 +144,10 @@ inputs:
   docfx.yml: |
     documentId:
       sourceBasePath: sccm
-      siteBasePath: sccm
     name: sccm
     product: Win
     files: "**/*"
+    baseUrl: https://docs.com/sccm
     redirectionsWithoutId:
       sccm/mdm/index.md: /sccm/mdm/understand/hybrid-mobile-device-management
   sccm/mdm/understand/hybrid-mobile-device-management.md:
@@ -160,10 +160,10 @@ inputs:
   docfx.yml: |
     documentId:
       sourceBasePath: sccm
-      siteBasePath: sccm
     name: sccm
     product: Win
     files: "**/*"
+    baseUrl: https://docs.com/sccm
     redirections:
       sccm/mdm/index.md: /sccm/mdm/understand/hybrid-mobile-device-management
       sccm/mdm/index2.md: /sccm/mdm/understand/hybrid-mobile-device-management
@@ -191,7 +191,6 @@ outputs:
 inputs:
   docfx.yml: |
     documentId:
-      siteBasePath: azure
       depotMappings:
         articles/iot-central/: MSDN.microsoft-iot-central
       directoryMappings:
@@ -200,6 +199,7 @@ inputs:
     name: azure-documents
     product: Azure
     files: "**/*"
+    baseUrl: https://docs.com/azure
     routes:
       articles/: "azure/"
   articles/iot-central/concepts-architecture.md:
@@ -302,11 +302,10 @@ outputs:
 # redirect to redirect
 inputs:
   docfx.yml: |
-    documentId:
-      siteBasePath: azure
     name: azure-documents
     product: Azure
     files: "**/*"
+    baseUrl: https://docs.com/azure
     routes:
       articles/: "azure/"
     redirections:
@@ -326,9 +325,8 @@ inputs:
   docfx.yml: |
     product: Azure
     name: azure-documents
-    documentId:
-      siteBasePath: articles
     files: "**/*"
+    baseUrl: https://docs.com/articles
   articles/active-directory-b2c/index.yml : |
     ### YamlMime:YamlDocument
     documentType: LandingData
@@ -346,9 +344,8 @@ inputs:
   docfx.yml: |
     product: Azure
     name: azure-documents
-    documentId:
-      siteBasePath: azure
     files: "**/*"
+    baseUrl: https://docs.com/azure
     routes:
       articles/: "azure/"
     redirections:

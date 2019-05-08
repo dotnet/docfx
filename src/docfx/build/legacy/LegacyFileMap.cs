@@ -15,7 +15,7 @@ namespace Microsoft.Docs.Build
         {
             using (Progress.Start("Convert Legacy File Map"))
             {
-                var fileMapItems = new ConcurrentBag<(string legacyFilePathRelativeToBaseFolder, LegacyFileMapItem fileMapItem)>();
+                var listBuilder = new ListBuilder<(string legacyFilePathRelativeToBaseFolder, LegacyFileMapItem fileMapItem)>();
                 Parallel.ForEach(
                     documents,
                     document =>
@@ -29,10 +29,11 @@ namespace Microsoft.Docs.Build
                         var fileItem = LegacyFileMapItem.Instance(legacyOutputFilePathRelativeToSiteBasePath, document.ContentType);
                         if (fileItem != null)
                         {
-                            fileMapItems.Add((document.ToLegacyPathRelativeToBasePath(docset), fileItem));
+                            listBuilder.Add((document.ToLegacyPathRelativeToBasePath(docset), fileItem));
                         }
                     });
 
+                var fileMapItems = listBuilder.ToList();
                 Convert(docset, context, fileMapItems);
                 LegacyAggregatedFileMap.Convert(docset, context, fileMapItems, dependencyMap);
             }
@@ -43,15 +44,15 @@ namespace Microsoft.Docs.Build
             context.Output.WriteJson(
                 new
                 {
-                    host = docset.Config.BaseUrl,
+                    host = docset.HostName,
                     locale = docset.Locale,
-                    base_path = $"/{docset.Config.DocumentId.SiteBasePath}",
+                    base_path = $"/{docset.SiteBasePath}",
                     source_base_path = docset.Config.DocumentId.SourceBasePath,
                     version_info = new { },
                     file_mapping = items.ToDictionary(
                         key => PathUtility.NormalizeFile(key.legacyFilePathRelativeToBaseFolder), v => v.fileMapItem),
                 },
-                Path.Combine(docset.Config.DocumentId.SiteBasePath, "filemap.json"));
+                Path.Combine(docset.SiteBasePath, "filemap.json"));
         }
     }
 }

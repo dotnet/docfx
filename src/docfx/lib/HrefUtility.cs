@@ -71,7 +71,7 @@ namespace Microsoft.Docs.Build
             }
 
             var query = targetQueryParameters.HasKeys() ? "?" + targetQueryParameters.ToString() : string.Empty;
-            var fragment = sourceFragment?.Length == 0 ? targetFragment : "#" + sourceFragment;
+            var fragment = (sourceFragment == null || sourceFragment.Length == 0) ? targetFragment : "#" + sourceFragment;
 
             return targetPath + query + fragment;
         }

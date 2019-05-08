@@ -13,7 +13,7 @@ namespace Microsoft.Docs.Build
         private readonly ConcurrentDictionary<string, ConcurrentDictionary<Document, List<string>>> _filesBySiteUrl = new ConcurrentDictionary<string, ConcurrentDictionary<Document, List<string>>>(PathUtility.PathComparer);
         private readonly ConcurrentDictionary<string, Document> _filesByOutputPath = new ConcurrentDictionary<string, Document>(PathUtility.PathComparer);
         private readonly ConcurrentDictionary<Document, PublishItem> _publishItems = new ConcurrentDictionary<Document, PublishItem>();
-        private readonly ConcurrentBag<Document> _filesWithErrors = new ConcurrentBag<Document>();
+        private readonly ListBuilder<Document> _filesWithErrors = new ListBuilder<Document>();
 
         public void MarkError(Document file)
         {
@@ -101,7 +101,7 @@ namespace Microsoft.Docs.Build
             }
 
             // Handle files with errors
-            foreach (var file in _filesWithErrors)
+            foreach (var file in _filesWithErrors.ToList())
             {
                 if (_filesBySiteUrl.TryRemove(file.SiteUrl, out _))
                 {

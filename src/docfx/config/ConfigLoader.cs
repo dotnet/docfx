@@ -20,8 +20,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static (List<Error> errors, Config config) Load(string docsetPath, CommandLineOptions options, string locale = null, bool extend = true)
         {
-            var configPath = PathUtility.FindYamlOrJson(Path.Combine(docsetPath, "docfx"));
-            if (configPath is null)
+            if (!TryGetConfigPath(docsetPath, out _))
             {
                 throw Errors.ConfigNotFound(docsetPath).ToException();
             }

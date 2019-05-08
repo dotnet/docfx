@@ -10,13 +10,8 @@ namespace Microsoft.Docs.Build
 {
     internal static class Restore
     {
-        public static async Task Run(string docsetPath, CommandLineOptions options, Report report, bool @implicit = false)
+        public static async Task Run(string docsetPath, CommandLineOptions options, Report report)
         {
-            if (@implicit && options.NoRestore)
-            {
-                return;
-            }
-
             // Restore has to use Config directly, it cannot depend on Docset,
             // because Docset assumes the repo to physically exist on disk.
             using (Progress.Start("Restore dependencies"))
@@ -37,7 +32,7 @@ namespace Microsoft.Docs.Build
 
                         if (root)
                         {
-                            report.Configure(docsetPath, config);
+                            report.Configure(config);
                         }
                         report.Write(config.ConfigFileName, errors);
 
@@ -67,7 +62,7 @@ namespace Microsoft.Docs.Build
                 // no need to extend config
                 await ParallelUtility.ForEach(
                     config.Extend.Where(HrefUtility.IsHttpHref),
-                    restoreUrl => RestoreFile.Restore(restoreUrl, config, @implicit));
+                    restoreUrl => RestoreFile.Restore(restoreUrl, config));
 
                 // extend the config before loading
                 var (errors, extendedConfig) = ConfigLoader.TryLoad(docset, options, locale, extend: true);
@@ -75,17 +70,17 @@ namespace Microsoft.Docs.Build
 
                 // restore and load dependency lock if need
                 if (HrefUtility.IsHttpHref(extendedConfig.DependencyLock))
-                    await RestoreFile.Restore(extendedConfig.DependencyLock, extendedConfig, @implicit);
+                    await RestoreFile.Restore(extendedConfig.DependencyLock, extendedConfig);
 
                 if (root)
                     dependencyLock = DependencyLock.Load(docset, extendedConfig.DependencyLock);
 
                 // restore git repos includes dependency repos, theme repo and loc repos
-                var gitVersions = await RestoreGit.Restore(extendedConfig, restoreChild, locale, @implicit, rootRepository, dependencyLock);
+                var gitVersions = await RestoreGit.Restore(extendedConfig, restoreChild, locale, rootRepository, dependencyLock);
 
                 // restore urls except extend url
                 var restoreUrls = extendedConfig.GetFileReferences().Where(HrefUtility.IsHttpHref).ToList();
-                await RestoreFile.Restore(restoreUrls, extendedConfig, @implicit);
+                await RestoreFile.Restore(restoreUrls, extendedConfig);
 
                 var generatedLock = new DependencyLockModel
                 {

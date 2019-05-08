@@ -1,3 +1,5 @@
+param ([switch]$noTest = $false)
+
 function exec([string] $cmd) {
     Write-Host $cmd -ForegroundColor Green
     & ([scriptblock]::Create($cmd))
@@ -7,6 +9,10 @@ function exec([string] $cmd) {
 }
 
 function test() {
+    if ($noTest) {
+        return
+    }
+
     try {
         pushd test/docfx.Test
 
