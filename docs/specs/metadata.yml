@@ -456,7 +456,8 @@ inputs:
     a: b
     ---
 outputs:
-  docs/a.json:
+  docs/a.json: |
+    {"a": "b"}
   build.log: |
     ["warning","yaml-duplicate-key","Key 'a' is already defined, remove the duplicate key.","docs/a.md",3,1]
 ---
