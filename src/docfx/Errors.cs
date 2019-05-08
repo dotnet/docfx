@@ -127,8 +127,8 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Used invalid locale name(can't be resolved by <see cref="System.Globalization.CultureInfo"/>).
         /// </summary>
-        public static Error InvalidLocale(string locale)
-            => new Error(ErrorLevel.Error, "invalid-locale", $"Locale '{locale}' is not supported.");
+        public static Error LocaleInvalid(string locale)
+            => new Error(ErrorLevel.Error, "locale-invalid", $"Invalid locale: '{locale}'.");
 
         /// <summary>
         /// Failed to download any file defined with url.

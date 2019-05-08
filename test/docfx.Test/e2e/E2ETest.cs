@@ -29,7 +29,7 @@ namespace Microsoft.Docs.Build
             "moniker-config-missing",
 
             // should have, maybe sometimes not
-            "download-failed", "invalid-locale",
+            "download-failed", "locale-invalid",
 
             // show multiple errors with line info
             "publish-url-conflict", "output-path-conflict", "uid-conflict", "redirection-conflict",

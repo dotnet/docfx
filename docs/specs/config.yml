@@ -355,7 +355,7 @@ inputs:
       defaultLocale: wrong/wrong
 outputs:
   build.log: |
-    ["error","invalid-locale","Locale 'wrong/wrong' is not supported."]
+    ["error","locale-invalid","Invalid locale: 'wrong/wrong'."]
 ---
 # branch overwrite config
 repo: https://github.com/docascode/docfx-test-dependencies#master
