@@ -142,8 +142,8 @@ outputs:
     { "content": "<p><a href=\"\">Empty</a><a href=\"a%3C%3Eb.md\">Invalid</a><a href=\"c.md\">Missing</a></p>" }
   build.log: |
     ["info","link-is-empty","Link is empty","docs/a.md",1,1]
-    ["warning","file-not-found","Cannot find file 'a<>b.md' relative to 'docs/a.md'","docs/a.md",1,11]
-    ["warning","file-not-found","Cannot find file 'c.md' relative to 'b.md'","b.md",1,1]
+    ["warning","file-not-found","Invalid file link: 'a<>b.md'.","docs/a.md",1,11]
+    ["warning","file-not-found","Invalid file link: 'c.md'.","b.md",1,1]
 ---
 # Show warning if the link points to absolute file path
 inputs:
@@ -304,8 +304,8 @@ outputs:
     { "content": "<p>Link to <a href=\"%7E/b.md\">B1</a>Link to <a href=\"b\">B2</a>Link to <a href=\"%7Edocs/b.md\">B3</a></p>" }
   docs/b.json:
   build.log: |
-    ["warning","file-not-found","Cannot find file '~/b.md' relative to 'docs/a.md'","docs/a.md",1,9]
-    ["warning","file-not-found","Cannot find file '~docs/b.md' relative to 'docs/a.md'","docs/a.md",3,9]
+    ["warning","file-not-found","Invalid file link: '~/b.md'.","docs/a.md",1,9]
+    ["warning","file-not-found","Invalid file link: '~docs/b.md'.","docs/a.md",3,9]
 ---
 # Link or Image with resolve alias
 inputs:
@@ -326,7 +326,7 @@ outputs:
   docs/b.json:
   docs/c.png:
   build.log: |
-    ["warning","file-not-found","Cannot find file '~/docs/b.md' relative to 'docs/a.md'","docs/a.md",3,9]
+    ["warning","file-not-found","Invalid file link: '~/docs/b.md'.","docs/a.md",3,9]
 ---
 # Multiple matched alias, use the last one
 inputs:
