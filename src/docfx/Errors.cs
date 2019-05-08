@@ -314,7 +314,7 @@ namespace Microsoft.Docs.Build
         ///   - resolve contributors or authors on a locale-sxs branch while the corresponding locale branch doesn't exist
         /// </summary>
         public static Error CommittishNotFound(string repo, string committish)
-            => new Error(ErrorLevel.Error, "committish-not-found", $"Cannot find branch, tag or commit '{committish}' for repo '{repo}'.");
+            => new Error(ErrorLevel.Error, "committish-not-found", $"Can't find branch, tag, or commit '{committish}' for repo {repo}.");
 
         /// <summary>
         /// Defined refrence with by #bookmark fragment between articles, which doesn't exist.

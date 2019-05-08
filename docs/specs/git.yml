@@ -406,7 +406,7 @@ repos:
         a.md:
 outputs:
   build.log: |
-    ["error","committish-not-found","Cannot find branch, tag or commit 'live' for repo '*github.com+git+repo.zh-cn*","a.md"]
+    ["error","committish-not-found","Can't find branch, tag, or commit 'live' for repo *github.com+git+repo.zh-cn*.","a.md"]
 ---
 # Use current repo's branch when edit branch isn't specified in contribution config,
 # and contribution config's repository equals to current repo's
