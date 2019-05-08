@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using Newtonsoft.Json.Linq;
 
@@ -41,7 +40,7 @@ namespace Microsoft.Docs.Build
             return !string.IsNullOrEmpty(configPath);
         }
 
-        private static (List<Error>, Config) LoadCore(string docsetPath, CommandLineOptions options, string locale,  bool extend)
+        private static (List<Error>, Config) LoadCore(string docsetPath, CommandLineOptions options, string locale, bool extend)
         {
             if (!TryGetConfigPath(docsetPath, out var configPath))
             {
@@ -123,18 +122,16 @@ namespace Microsoft.Docs.Build
         {
             var result = new JObject();
             var errors = new List<Error>();
+            var extends = config[Extend] is JArray arr ? arr : new JArray(config[Extend]);
 
-            if (config[Extend] is JArray extends)
+            foreach (var extend in extends)
             {
-                foreach (var extend in extends)
+                if (extend is JValue value && value.Value is string str)
                 {
-                    if (extend is JValue value && value.Value is string str)
-                    {
-                        var (_, content, _) = RestoreMap.GetRestoredFileContent(docsetPath, new SourceInfo<string>(str, JsonUtility.GetSourceInfo(value)));
-                        var (extendErrors, extendConfigObject) = LoadConfigObject(str, content);
-                        errors.AddRange(extendErrors);
-                        JsonUtility.Merge(result, extendConfigObject);
-                    }
+                    var (_, content, _) = RestoreMap.GetRestoredFileContent(docsetPath, new SourceInfo<string>(str, JsonUtility.GetSourceInfo(value)));
+                    var (extendErrors, extendConfigObject) = LoadConfigObject(str, content);
+                    errors.AddRange(extendErrors);
+                    JsonUtility.Merge(result, extendConfigObject);
                 }
             }
 

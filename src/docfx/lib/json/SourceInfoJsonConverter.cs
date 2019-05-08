@@ -7,9 +7,6 @@ using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
-    /// <summary>
-    /// A JsonConverter that adds file and line info to types marked as SourceInfo<>.
-    /// </summary>
     internal class SourceInfoJsonConverter : JsonConverter
     {
         public override bool CanConvert(Type objectType)

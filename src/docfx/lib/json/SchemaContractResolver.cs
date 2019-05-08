@@ -12,9 +12,6 @@ using Newtonsoft.Json.Serialization;
 
 namespace Microsoft.Docs.Build
 {
-    /// <summary>
-    /// A JsonConverter that runs DataAnnotation and custom schema validation.
-    /// </summary>
     internal class SchemaContractResolver : JsonContractResolver
     {
         protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
