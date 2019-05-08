@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Microsoft.Docs.Build
 {
@@ -24,6 +25,8 @@ namespace Microsoft.Docs.Build
         public static readonly StringComparison PathComparison = IsCaseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase;
 
         private static readonly HashSet<char> s_invalidPathChars = Path.GetInvalidPathChars().Concat(Path.GetInvalidFileNameChars()).Distinct().ToHashSet();
+
+        private static readonly Regex s_blobUrl = new Regex(@"^https:\/\/\w+.blob.core.windows.net(/\w+)*\?(.*)$", RegexOptions.IgnoreCase);
 
         /// <summary>
         /// Check if the file is the same as matcher or is inside the directory specified by matcher.
@@ -156,6 +159,8 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static string UrlToShortName(string url)
         {
+            url = RemoveQueryForBlobUrl(url);
+
             var hash = HashUtility.GetMd5HashShort(url);
 
             // Trim https://
@@ -200,6 +205,18 @@ namespace Microsoft.Docs.Build
 
             result.Append(hash);
             return result.ToString();
+        }
+
+        // For azure blob url, url without sas token should identify if the content has changed
+        // https://docs.microsoft.com/en-us/azure/storage/common/storage-dotnet-shared-access-signature-part-1#how-a-shared-access-signature-works
+        private static string RemoveQueryForBlobUrl(string url)
+        {
+            var match = s_blobUrl.Match(url);
+            if (match.Success && match.Groups.Count > 2)
+            {
+                return url.Substring(0, url.Length - match.Groups[2].Length);
+            }
+            return url;
         }
 
         private static string Normalize(string path)
