@@ -337,13 +337,16 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public void Dispose()
         {
-            foreach (var processor in Processors)
+            using (new PerformanceScope("DisposeDocumentProcessors"))
             {
-                Logger.LogVerbose($"Disposing processor {processor.Name} ...");
-                (processor as IDisposable)?.Dispose();
+                foreach (var processor in Processors)
+                {
+                    Logger.LogVerbose($"Disposing processor {processor.Name} ...");
+                    (processor as IDisposable)?.Dispose();
+                }
+                (MarkdownService as IDisposable)?.Dispose();
+                MarkdownService = null;
             }
-            (MarkdownService as IDisposable)?.Dispose();
-            MarkdownService = null;
         }
     }
 }
