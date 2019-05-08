@@ -26,8 +26,6 @@ namespace Microsoft.Docs.Build
 
         private static readonly HashSet<char> s_invalidPathChars = Path.GetInvalidPathChars().Concat(Path.GetInvalidFileNameChars()).Distinct().ToHashSet();
 
-        private static readonly Regex s_blobUrl = new Regex(@"^https:\/\/.+?.blob.core.windows.net\/.*?\?(.*)$", RegexOptions.IgnoreCase);
-
         /// <summary>
         /// Check if the file is the same as matcher or is inside the directory specified by matcher.
         /// Both path should be normalized
@@ -211,12 +209,7 @@ namespace Microsoft.Docs.Build
         // https://docs.microsoft.com/en-us/azure/storage/common/storage-dotnet-shared-access-signature-part-1#how-a-shared-access-signature-works
         private static string RemoveQueryForBlobUrl(string url)
         {
-            var match = s_blobUrl.Match(url);
-            if (match.Success && match.Groups.Count > 2)
-            {
-                return url.Substring(0, url.Length - match.Groups[2].Length);
-            }
-            return url;
+            return Regex.Replace(url, @"^(https:\/\/.+?.blob.core.windows.net\/)(.*)\?(.*)$", match => $"{match.Groups[1]}{match.Groups[2]}");
         }
 
         private static string Normalize(string path)

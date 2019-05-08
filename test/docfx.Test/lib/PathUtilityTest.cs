@@ -88,7 +88,7 @@ namespace Microsoft.Docs.Build
         [InlineData("https://github.com/1/2/3/4/5/6/7/8/9/10/11/12/13/14", "github.com+1+2+3+11+12+13+14+b5f1b5a8")]
         [InlineData("https://github.com/crazy-crazy-crazy-crazy-long-repo.zh-cn", "github.com+crazy-cr..po.zh-cn+791b3f68")]
         [InlineData("https://a.com?b=c#d", "a.com+b=c+d+2183540f")]
-        [InlineData("https://abc.blob.core.windows.net/a/b/c/d?sv=d&sr=e&sig=f&st=2019-05-07&se=2019-05-08&sp=r", "abc.blob..dows.net+a+b+c+d+84d63a4b")]
+        [InlineData("https://ab-c.blob.core.windows.net/a/b/c/d?sv=d&sr=e&sig=f&st=2019-05-07&se=2019-05-08&sp=r", "ab-c.blo..dows.net+a+b+c+d+9e69c8e7")]
         public static void UrlToFolderName(string url, string folderName)
         {
             var result = PathUtility.UrlToShortName(url);
