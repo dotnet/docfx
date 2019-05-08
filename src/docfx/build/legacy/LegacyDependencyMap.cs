@@ -68,7 +68,7 @@ namespace Microsoft.Docs.Build
                 var dependencyList =
                     from d in sorted
                     group d by d.To into g
-                    let first = g.FirstOrDefault()
+                    let first = g.OrderBy(_ => _.From).FirstOrDefault()
                     where first != null
                     select JsonUtility.Serialize(new
                     {
