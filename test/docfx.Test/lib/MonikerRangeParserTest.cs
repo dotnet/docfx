@@ -14,33 +14,33 @@ namespace Microsoft.Docs.Build
             {
                 new Moniker
                 {
-                    Name = "netcore-1.0",
-                    Product = ".NET Core",
+                    MonikerName = "netcore-1.0",
+                    ProductName = ".NET Core",
                 },
                 new Moniker
                 {
-                    Name = "netcore-2.0",
-                    Product = ".NET Core",
+                    MonikerName = "netcore-2.0",
+                    ProductName = ".NET Core",
                 },
                 new Moniker
                 {
-                    Name = "netcore-3.0",
-                    Product = ".NET Core",
+                    MonikerName = "netcore-3.0",
+                    ProductName = ".NET Core",
                 },
                 new Moniker
                 {
-                    Name = "dotnet-1.0",
-                    Product = ".NET Framework",
+                    MonikerName = "dotnet-1.0",
+                    ProductName = ".NET Framework",
                 },
                 new Moniker
                 {
-                    Name = "dotnet-2.0",
-                    Product = ".NET Framework",
+                    MonikerName = "dotnet-2.0",
+                    ProductName = ".NET Framework",
                 },
                 new Moniker
                 {
-                    Name = "dotnet-3.0",
-                    Product = ".NET Framework",
+                    MonikerName = "dotnet-3.0",
+                    ProductName = ".NET Framework",
                 },
             }
         };
@@ -117,18 +117,18 @@ namespace Microsoft.Docs.Build
                 {
                     new Moniker
                     {
-                        Name = "netcore-1.0",
-                        Product = ".NET Core",
+                        MonikerName = "netcore-1.0",
+                        ProductName = ".NET Core",
                     },
                     new Moniker
                     {
-                        Name = "netcore-1.0",
-                        Product = ".NET Core",
+                        MonikerName = "netcore-1.0",
+                        ProductName = ".NET Core",
                     },
                    new Moniker
                     {
-                        Name = "netcore-2.0",
-                        Product = ".NET Core",
+                        MonikerName = "netcore-2.0",
+                        ProductName = ".NET Core",
                     },
                 }
             };

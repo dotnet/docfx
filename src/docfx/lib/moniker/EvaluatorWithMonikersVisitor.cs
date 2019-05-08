@@ -70,18 +70,18 @@ namespace Microsoft.Docs.Build
 
             foreach (var moniker in monikers)
             {
-                if (!monikerNameList.Add(moniker.Name))
+                if (!monikerNameList.Add(moniker.MonikerName))
                 {
-                    throw Errors.MonikerNameConflict(moniker.Name).ToException();
+                    throw Errors.MonikerNameConflict(moniker.MonikerName).ToException();
                 }
 
-                if (productNameDictionary.TryGetValue(moniker.Product, out List<string> list))
+                if (productNameDictionary.TryGetValue(moniker.ProductName, out List<string> list))
                 {
-                    list.Add(moniker.Name);
+                    list.Add(moniker.MonikerName);
                 }
                 else
                 {
-                    productNameDictionary[moniker.Product] = new List<string> { moniker.Name };
+                    productNameDictionary[moniker.ProductName] = new List<string> { moniker.MonikerName };
                 }
             }
 

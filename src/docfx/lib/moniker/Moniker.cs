@@ -3,16 +3,16 @@
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Serialization;
 
 namespace Microsoft.Docs.Build
 {
+    [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
     internal class Moniker
     {
-        [JsonProperty(PropertyName = "moniker_name")]
-        public string Name { get; set; } = string.Empty;
+        public string MonikerName { get; set; } = string.Empty;
 
-        [JsonProperty(PropertyName = "product_name")]
-        public string Product { get; set; } = string.Empty;
+        public string ProductName { get; set; } = string.Empty;
 
         [JsonExtensionData]
         public JObject ExtensionData { get; } = new JObject();
