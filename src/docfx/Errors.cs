@@ -215,8 +215,8 @@ namespace Microsoft.Docs.Build
         /// Examples:
         ///   - [Absolute](C:/a.md)
         /// </summary>
-        public static Error AbsoluteFilePath(Document relativeTo, string path)
-            => new Error(ErrorLevel.Warning, "absolute-file-path", $"File path cannot be absolute: '{path}'", relativeTo.ToString());
+        public static Error LocalFilePath(Document relativeTo, string path)
+            => new Error(ErrorLevel.Warning, "local-file-path", $"Link '{path}' points to a local file. Use a relative path instead", relativeTo.ToString());
 
         /// <summary>
         /// The fisrt tag in an article.md isn't h1 tag.
