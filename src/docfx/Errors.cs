@@ -77,8 +77,8 @@ namespace Microsoft.Docs.Build
         /// Examples:
         ///   - defined a non-existent author
         /// </summary>
-        public static Error GitHubUserNotFound(string login)
-            => new Error(ErrorLevel.Warning, "github-user-not-found", $"Cannot find user '{login}' on GitHub");
+        public static Error AuthorUserNotFound(string login)
+            => new Error(ErrorLevel.Warning, "author-not-found", $"Invalid value for author: '{login}' is not a valid GitHub ID");
 
         /// <summary>
         /// Failed to call a github api, e.g. GET /users/login.

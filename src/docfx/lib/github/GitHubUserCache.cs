@@ -111,7 +111,7 @@ namespace Microsoft.Docs.Build
                 {
                     if (existingUser.IsValid())
                         return (null, existingUser);
-                    return (Errors.GitHubUserNotFound(login), null);
+                    return (Errors.AuthorUserNotFound(login), null);
                 }
 
                 Log.Write($"Calling GitHub user API to resolve {login}");
@@ -121,7 +121,7 @@ namespace Microsoft.Docs.Build
                 if (error is null)
                 {
                     if (user is null)
-                        error = Errors.GitHubUserNotFound(login);
+                        error = Errors.AuthorUserNotFound(login);
                     UpdateUser(user ?? new GitHubUser { Login = login });
                 }
                 return (error, user);
