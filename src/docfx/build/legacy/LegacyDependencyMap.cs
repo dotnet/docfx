@@ -60,10 +60,29 @@ namespace Microsoft.Docs.Build
                     }
                 }
 
-                var sorted = from d in legacyDependencyMap.ToList()
-                             orderby d.From, d.To, d.Type
-                             select d;
+                var sorted = (
+                    from d in legacyDependencyMap.ToList()
+                    orderby d.From, d.To, d.Type
+                    select d).ToArray();
+
+                var dependencyList =
+                    from d in sorted
+                    group d by d.To into g
+                    let first = g.FirstOrDefault()
+                    where first != null
+                    select JsonUtility.Serialize(new
+                    {
+                        dependency_type = first.Type,
+                        from_file_path = Path.GetFullPath(Path.Combine(docset.DocsetPath, first.From.Substring(2))),
+                        to_file_path = Path.GetFullPath(Path.Combine(docset.DocsetPath, first.To.Substring(2))),
+                    });
+
+                var dependencyListText = string.Join('\n', dependencyList);
+
+                context.Output.WriteText(dependencyListText, "full-dependent-list.txt");
+                context.Output.WriteText(dependencyListText, "server-side-dependent-list.txt");
                 context.Output.WriteJson(sorted, Path.Combine(docset.SiteBasePath, ".dependency-map.json"));
+
                 return sorted.Select(x => new LegacyDependencyMapItem { From = x.From.Substring(2), To = x.To.Substring(2), Type = x.Type })
                     .GroupBy(x => x.From).ToDictionary(g => g.Key, g => g.ToList());
             }

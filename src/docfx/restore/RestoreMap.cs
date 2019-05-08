@@ -192,33 +192,13 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static (string path, DependencyGit git) TryGetGitRestorePath(string remote, string branch, string commit)
         {
+            Debug.Assert(!string.IsNullOrEmpty(remote));
+            Debug.Assert(!string.IsNullOrEmpty(branch));
+            Debug.Assert(!string.IsNullOrEmpty(commit));
+
             var restoreDir = AppData.GetGitDir(remote);
 
-            var (path, slot) = DependencySlotPool<DependencyGit>.TryGetSlot(
-                remote,
-                gits =>
-                {
-                    var filteredGits = gits.Where(i => i.Branch == branch);
-
-                    if (!string.IsNullOrEmpty(commit))
-                    {
-                        // found commit matched slot
-                        filteredGits = filteredGits.Where(i => i.Commit == commit);
-                    }
-
-                    var commits = Array.Empty<string>();
-                    if (filteredGits.Count() > 1)
-                    {
-                        commits = GitUtility.GetCommits(restoreDir, branch, 1000/*top 1000 should be enough for comparing*/);
-                    }
-
-                    return filteredGits.OrderBy(
-                    g =>
-                    {
-                        var index = Array.IndexOf(commits, g.Commit);
-                        return index < 0 ? int.MaxValue : index;
-                    }).ThenByDescending(g => g.LastAccessDate).ToList();
-                });
+            var (path, slot) = DependencySlotPool<DependencyGit>.TryGetSlot(remote, gits => gits.Where(i => i.Branch == branch && i.Commit == commit).OrderByDescending(g => g.LastAccessDate).ToList());
 
             if (!string.IsNullOrEmpty(path))
                 path = Path.Combine(restoreDir, path);
