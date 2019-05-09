@@ -445,6 +445,7 @@ outputs:
   b.png:
   .errors.log: |
     ["info","null-value","'copyResources' contains null value","docfx.yml",10,5]
+    ["info","null-value","'copyResources' contains null value","docfx.yml",10,5]
 ---
 # invalid overwrite config
 commands:
@@ -461,6 +462,7 @@ inputs:
 outputs:
   a.json:
   .errors.log: |
+    ["warning","unknown-field","Could not find member 'locales: zh-cn' on object of type 'Config'.","docfx.yml",4,1]
     ["warning","unknown-field","Could not find member 'locales: zh-cn' on object of type 'Config'.","docfx.yml",4,1]
 ---
 # redirect to in config.redirections must start with '/'
