@@ -447,20 +447,20 @@ outputs:
 ---
 # Show (original) content git (branch/commit) url for azure repos
 repos:
-  https://docascode.visualstudio.com/git-url/_git/a:
+  https://dev.azure.com/docascode/project/_git/a:
     - files:
         docs/index.md:
 inputs:
   docfx.yml: |
     contribution:
-      repository: https://github.com/docascode/git-url
+      repository: https://github.com/docascode/a
 outputs:
   docs/index.json: |
     {
-      "content_git_url":"https://github.com/docascode/git-url/blob/master/docs/index.md",
-      "original_content_git_url":"https://docascode.visualstudio.com/git-url/_git/a?path=/docs/index.md&version=GBmaster&_a=contents",
+      "content_git_url":"https://github.com/docascode/a/blob/master/docs/index.md",
+      "original_content_git_url":"https://dev.azure.com/docascode/project/_git/a?path=/docs/index.md&version=GBmaster&_a=contents",
       "original_content_git_url_template":"{repo}?path=/docs/index.md&version=GB{branch}&_a=contents",
-      "gitcommit":"https://docascode.visualstudio.com/git-url/_git/a/commit/73d1bc95f9df03e553c39cf8c685df09af8d5297?path=/docs/index.md&_a=contents"
+      "gitcommit":"https://dev.azure.com/docascode/project/_git/a/commit/73d1bc95f9df03e553c39cf8c685df09af8d5297?path=/docs/index.md&_a=contents"
     }
 ---
 # Show git contribution info for azure repo
