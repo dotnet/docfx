@@ -87,7 +87,7 @@ namespace Microsoft.Docs.Build
         ///   - using invalid access token(more detailed info in ex.Message)
         /// </summary>
         public static Error GitHubApiFailed(string api, Exception ex)
-            => new Error(ErrorLevel.Warning, "github-api-failed", $"System: Call to GitHub API '{api}' failed: {ex.Message} Try closing and reopening the PR. If you get this Error again, file an issue.");
+            => new Error(ErrorLevel.Warning, "github-api-failed", $"Call to GitHub API '{api}' failed: {ex.Message} Try closing and reopening the PR. If you get this Error again, file an issue.");
 
         /// <summary>
         /// In yaml-format toc, topicHref SHOULD reference an article,
