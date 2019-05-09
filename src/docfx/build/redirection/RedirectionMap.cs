@@ -84,7 +84,7 @@ namespace Microsoft.Docs.Build
                     var type = Document.GetContentType(pathToDocset);
                     if (type != ContentType.Page)
                     {
-                        errors.Add(Errors.InvalidRedirection(redirectTo, path, type));
+                        errors.Add(Errors.RedirectionInvalid(redirectTo, path));
                     }
                     else if (!glob(pathToDocset))
                     {
