@@ -167,7 +167,7 @@ outputs:
 inputs:
   docfx.yml: |
     dependencies:
-      dep: https://ceapex.visualstudio.com/Engineering/_git/docs-host-vnext#c9c018c
+      dep: https://dev.azure.com/ceapex/Engineering/_git/docs-host-vnext#c9c018c
     http:
       https://ceapex.visualstudio.com:
         headers:
