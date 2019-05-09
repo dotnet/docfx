@@ -19,8 +19,17 @@ namespace Microsoft.DocAsCode.Common
             {
                 throw new ArgumentNullException(nameof(manifestItems));
             }
+            var items = new List<ManifestItem>();
+            foreach (var uniques in (from m in manifestItems
+                                     from output in m.OutputFiles.Values
+                                     let relativePath = output?.RelativePath
+                                     select new { item = m, relativePath })
+                                        .GroupBy(obj => obj.relativePath, FilePathComparer.OSPlatformSensitiveStringComparer)
+                                        .Where(g => g.Count() == 1))
+            {
+                items.Add(uniques.First().item);
+            }
 
-            var itemsToRemove = new HashSet<string>();
             foreach (var duplicates in (from m in manifestItems
                                         from output in m.OutputFiles.Values
                                         let relativePath = output?.RelativePath
@@ -29,13 +38,12 @@ namespace Microsoft.DocAsCode.Common
                               .Where(g => g.Count() > 1))
             {
                 // TODO: plan to change this warning to error, add error code to analyze the impact.
-                var message = $"Multiple input files generate to the same output '{duplicates.Key}' overwriting each other. " +
-                    $"Please rename at least {duplicates.Count() - 1} of following files to resolve conflict: " +
-                    string.Join(", ", duplicates.Select(i => $"{{file:'{i.item.SourceRelativePath}', group:'{i.item.Group}'}}"));
-                Logger.LogWarning(message, code: WarningCodes.Build.DuplicateOutputFiles);
-                itemsToRemove.UnionWith(duplicates.Skip(1).Select(duplicate => duplicate.item.SourceRelativePath));
+                Logger.LogWarning(
+                    $"Multiple input files would generate to the same output path overwriting each other. Please rename at least {duplicates.Count() - 1} of following input files to ensure that there will be only one file to generate to the output path: \"{string.Join(", ", duplicates.Select(duplicate => duplicate.item.SourceRelativePath))}\".",
+                    code: WarningCodes.Build.DuplicateOutputFiles);
+                items.Add(duplicates.First().item);
             }
-            manifestItems.RemoveAll(m => itemsToRemove.Contains(m.SourceRelativePath));
+            manifestItems = new ManifestItemCollection(items);
         }
 
         public static Manifest MergeManifest(List<Manifest> manifests)
