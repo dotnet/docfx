@@ -169,7 +169,7 @@ inputs:
     dependencies:
       dep: https://ceapex.visualstudio.com/Engineering/_git/docs-host-vnext#c9c018c
     http:
-      https://dev.azure.com:
+      https://dev.azure.com/ceapex:
         headers:
           Authorization: Bearer {SYSTEM_ACCESS_TOKEN}
   docs/a.md: |
