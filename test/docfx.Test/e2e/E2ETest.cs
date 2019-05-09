@@ -29,7 +29,7 @@ namespace Microsoft.Docs.Build
             "moniker-config-missing",
 
             // should have, maybe sometimes not
-            "download-failed", "invalid-locale",
+            "download-failed", "locale-invalid",
 
             // show multiple errors with line info
             "publish-url-conflict", "output-path-conflict", "uid-conflict", "redirection-conflict",
@@ -250,15 +250,15 @@ namespace Microsoft.Docs.Build
             if (!File.Exists(inputFolderCreatedFlag))
             {
                 var inputRepo = spec.Repo
-                    ?? spec.Repos.Select(r => r.Key).FirstOrDefault(r => !fromLoc || LocalizationUtility.TryGetContributionBranch(HrefUtility.SplitGitHref(r).refspec, out _))
-                    ?? spec.Repos.Select(r => r.Key).FirstOrDefault(r => !fromLoc || LocalizationUtility.TryRemoveLocale(HrefUtility.SplitGitHref(r).remote.Split(new char[] { '\\', '/' }).Last(), out _, out _));
+                    ?? spec.Repos.Select(r => r.Key).FirstOrDefault(r => !fromLoc || LocalizationUtility.TryGetContributionBranch(UrlUtility.SplitGitUrl(r).refspec, out _))
+                    ?? spec.Repos.Select(r => r.Key).FirstOrDefault(r => !fromLoc || LocalizationUtility.TryRemoveLocale(UrlUtility.SplitGitUrl(r).remote.Split(new char[] { '\\', '/' }).Last(), out _, out _));
                 if (!string.IsNullOrEmpty(inputRepo))
                 {
                     try
                     {
                         t_mockedRepos.Value = mockedRepos;
 
-                        var (remote, refspec, _) = HrefUtility.SplitGitHref(inputRepo);
+                        var (remote, refspec, _) = UrlUtility.SplitGitUrl(inputRepo);
                         GitUtility.CloneOrUpdate(inputFolder, remote, refspec);
                         Process.Start(new ProcessStartInfo("git", "submodule update --init") { WorkingDirectory = inputFolder }).WaitForExit();
                     }
@@ -338,7 +338,7 @@ namespace Microsoft.Docs.Build
             var result = new ConcurrentDictionary<string, string>();
             var repos =
                 from pair in spec.Repos
-                let info = HrefUtility.SplitGitHref(pair.Key)
+                let info = UrlUtility.SplitGitUrl(pair.Key)
                 group (info.refspec, pair.Value)
                 by info.remote;
 

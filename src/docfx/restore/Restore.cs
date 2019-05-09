@@ -61,7 +61,7 @@ namespace Microsoft.Docs.Build
                 // restore extend url firstly
                 // no need to extend config
                 await ParallelUtility.ForEach(
-                    config.Extend.Where(HrefUtility.IsHttpHref),
+                    config.Extend.Where(UrlUtility.IsHttp),
                     restoreUrl => RestoreFile.Restore(restoreUrl, config));
 
                 // extend the config before loading
@@ -69,7 +69,7 @@ namespace Microsoft.Docs.Build
                 errorLog.Write(extendedConfig.ConfigFileName, errors);
 
                 // restore and load dependency lock if need
-                if (HrefUtility.IsHttpHref(extendedConfig.DependencyLock))
+                if (UrlUtility.IsHttp(extendedConfig.DependencyLock))
                     await RestoreFile.Restore(extendedConfig.DependencyLock, extendedConfig);
 
                 if (root)
@@ -79,7 +79,7 @@ namespace Microsoft.Docs.Build
                 var gitVersions = await RestoreGit.Restore(extendedConfig, restoreChild, locale, rootRepository, dependencyLock);
 
                 // restore urls except extend url
-                var restoreUrls = extendedConfig.GetFileReferences().Where(HrefUtility.IsHttpHref).ToList();
+                var restoreUrls = extendedConfig.GetFileReferences().Where(UrlUtility.IsHttp).ToList();
                 await RestoreFile.Restore(restoreUrls, extendedConfig);
 
                 var generatedLock = new DependencyLockModel
