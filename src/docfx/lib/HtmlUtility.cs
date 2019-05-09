@@ -276,20 +276,20 @@ namespace Microsoft.Docs.Build
                     continue;
                 }
 
-                switch (HrefUtility.GetHrefType(href))
+                switch (UrlUtility.GetLinkType(href))
                 {
-                    case HrefType.SelfBookmark:
+                    case LinkType.SelfBookmark:
                         node.SetAttributeValue("data-linktype", "self-bookmark");
                         break;
-                    case HrefType.AbsolutePath:
-                    case HrefType.WindowsAbsolutePath:
+                    case LinkType.AbsolutePath:
+                    case LinkType.WindowsAbsolutePath:
                         node.SetAttributeValue("data-linktype", "absolute-path");
                         node.SetAttributeValue(attribute, AddLocaleIfMissing(href, locale));
                         break;
-                    case HrefType.RelativePath:
+                    case LinkType.RelativePath:
                         node.SetAttributeValue("data-linktype", "relative-path");
                         break;
-                    case HrefType.External:
+                    case LinkType.External:
                         node.SetAttributeValue("data-linktype", "external");
                         break;
                 }

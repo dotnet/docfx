@@ -3,7 +3,7 @@
 
 namespace Microsoft.Docs.Build
 {
-    public enum HrefType
+    public enum LinkType
     {
         /// <summary>
         /// The link points to an external URL, e.g. https://docs.com

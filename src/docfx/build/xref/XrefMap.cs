@@ -53,8 +53,8 @@ namespace Microsoft.Docs.Build
             string name;
             if (TryResolveFromInternal(uid, href, moniker, out var internalXrefSpec, out var referencedFile))
             {
-                var (_, query, fragment) = HrefUtility.SplitHref(internalXrefSpec.Href);
-                resolvedHref = HrefUtility.MergeHref(RebaseResolvedHref(rootFile, referencedFile), query, fragment.Length == 0 ? "" : fragment.Substring(1));
+                var (_, query, fragment) = UrlUtility.SplitUrl(internalXrefSpec.Href);
+                resolvedHref = UrlUtility.MergeUrl(RebaseResolvedHref(rootFile, referencedFile), query, fragment.Length == 0 ? "" : fragment.Substring(1));
                 name = internalXrefSpec.GetName();
                 displayPropertyValue = internalXrefSpec.GetXrefPropertyValue(displayPropertyName);
             }
