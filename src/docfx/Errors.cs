@@ -77,8 +77,8 @@ namespace Microsoft.Docs.Build
         /// Examples:
         ///   - defined a non-existent author
         /// </summary>
-        public static Error GitHubUserNotFound(string login)
-            => new Error(ErrorLevel.Warning, "github-user-not-found", $"Cannot find user '{login}' on GitHub");
+        public static Error AuthorNotFound(string login)
+            => new Error(ErrorLevel.Warning, "author-not-found", $"Invalid value for author: '{login}' is not a valid GitHub ID");
 
         /// <summary>
         /// Failed to call a github api, e.g. GET /users/login.
@@ -127,8 +127,8 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Used invalid locale name(can't be resolved by <see cref="System.Globalization.CultureInfo"/>).
         /// </summary>
-        public static Error InvalidLocale(string locale)
-            => new Error(ErrorLevel.Error, "invalid-locale", $"Locale '{locale}' is not supported.");
+        public static Error LocaleInvalid(string locale)
+            => new Error(ErrorLevel.Error, "locale-invalid", $"Invalid locale: '{locale}'.");
 
         /// <summary>
         /// Failed to download any file defined with url.
