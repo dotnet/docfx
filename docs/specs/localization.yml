@@ -1191,7 +1191,7 @@ repos:
         localization/zh-cn/docs/a/a.md:
 outputs:
   build.log: |
-    ["error","config-not-found","Cannot find 'docfx.yml/docfx.json' at *"]
+    ["error","config-not-found","Can't find config file 'docfx.yml/docfx.json' at *"]
 ---
 # loc build gets docfx config 1
 # from current docset firstly, then from fallback docset

@@ -50,7 +50,7 @@ namespace Microsoft.Docs.Build
         ///     nor source repo root
         /// </summary>
         public static Error ConfigNotFound(string docsetPath)
-            => new Error(ErrorLevel.Error, "config-not-found", $"Cannot find 'docfx.yml/docfx.json' at '{docsetPath}'");
+            => new Error(ErrorLevel.Error, "config-not-found", $"Can't find config file 'docfx.yml/docfx.json' at {docsetPath}");
 
         /// <summary>
         /// Two files include each other.
@@ -137,8 +137,8 @@ namespace Microsoft.Docs.Build
         ///   - failed to download due to bad network
         ///   - when update user profile cache fails, need to download verify etag
         /// </summary>
-        public static Error DownloadFailed(string url, string message)
-            => new Error(ErrorLevel.Error, "download-failed", $"Download '{url}' failed: {message}");
+        public static Error DownloadFailed(string url)
+            => new Error(ErrorLevel.Error, "download-failed", $"Download failed for file '{url}'. Try closing and reopening the PR. If you get this Error again, file an issue.");
 
         /// <summary>
         /// Failed to update user profile cache file.
