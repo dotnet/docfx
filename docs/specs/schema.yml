@@ -72,9 +72,9 @@ inputs:
     { "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/SchemaNotExisting.json"}
 outputs:
   build.log: |
-   ["error","schema-not-found","Unknown schema 'SchemaNotExisting', object model is missing.","docs/a.yml",1,1]
-   ["error","schema-not-found","Unknown schema 'SchemaNotExisting', object model is missing.","docs/b.json",2,95]
-   ["error","schema-not-found","Unknown schema 'SchemaNotExisting', object model is missing.","docs/c.json",1,95]
+   ["error","schema-not-found","Schema 'SchemaNotExisting' not found.","docs/a.yml",1,1]
+   ["error","schema-not-found","Schema 'SchemaNotExisting' not found.","docs/b.json",2,95]
+   ["error","schema-not-found","Schema 'SchemaNotExisting' not found.","docs/c.json",1,95]
 ---
 # Support schema documents with Href content
 inputs:
