@@ -20,7 +20,7 @@ namespace Microsoft.Docs.Build
             if (!string.IsNullOrEmpty(docset.Config.MonikerDefinition))
             {
                 var (_, content, _) = RestoreMap.GetRestoredFileContent(docset, docset.Config.MonikerDefinition);
-                monikerDefinition = JsonUtility.Deserialize<MonikerDefinitionModel>(content);
+                monikerDefinition = JsonUtility.Deserialize<MonikerDefinitionModel>(content, docset.Config.MonikerDefinition);
             }
 
             foreach (var (key, monikerRange) in docset.Config.MonikerRange)

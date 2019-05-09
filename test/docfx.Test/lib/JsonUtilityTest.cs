@@ -513,7 +513,7 @@ namespace Microsoft.Docs.Build
         [InlineData(@"{'b': 'not number'}")]
         public void SyntaxErrorShouldBeThrownWithoutSchemaValidation(string json)
         {
-            var exception = Assert.Throws<DocfxException>(() => JsonUtility.Deserialize<BasicClass>(json.Replace('\'', '\"')));
+            var exception = Assert.Throws<DocfxException>(() => JsonUtility.Deserialize<BasicClass>(json.Replace('\'', '\"'), null));
             Assert.Equal("json-syntax-error", exception.Error.Code);
             Assert.Equal(ErrorLevel.Error, exception.Error.Level);
         }

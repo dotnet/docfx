@@ -339,7 +339,8 @@ namespace Microsoft.Docs.Build
 
         private void ReadCache(string content)
         {
-            var users = JsonUtility.Deserialize<GitHubUserCacheFile>(content).Users;
+            // TODO: populate file to JsonUtility.Deserialize
+            var users = JsonUtility.Deserialize<GitHubUserCacheFile>(content, "").Users;
             if (users != null)
             {
                 UpdateUsers(users);

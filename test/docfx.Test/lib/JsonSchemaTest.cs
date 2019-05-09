@@ -146,7 +146,7 @@ namespace Microsoft.Docs.Build
         public void TestJsonSchemaValidation(string schema, string json, string expectedErrors)
         {
             var errors = JsonSchemaValidation.Validate(
-                JsonUtility.Deserialize<JsonSchema>(schema.Replace('\'', '"')),
+                JsonUtility.Deserialize<JsonSchema>(schema.Replace('\'', '"'), null),
                 JsonUtility.Parse(json.Replace('\'', '"'), "file").Item2);
 
             var expected = string.Join('\n', expectedErrors.Split('\n').Select(err => err.Trim()));
