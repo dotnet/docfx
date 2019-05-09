@@ -458,7 +458,7 @@ inputs:
 outputs:
   docs/a.json: |
     {"a": "b"}
-  build.log: |
+  .errors.log: |
     ["warning","yaml-duplicate-key","Key 'a' is already defined, remove the duplicate key.","docs/a.md",3,1]
 ---
 # Invalid yaml syntax in yaml header
@@ -473,5 +473,5 @@ inputs:
 outputs:
   docs/a.json: |
     {"!a": null, "title": "B"}
-  build.log: |
+  .errors.log: |
     ["warning","yaml-header-syntax-error","Mapping values are not allowed in this context.","docs/a.md",2,5]

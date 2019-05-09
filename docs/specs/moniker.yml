@@ -1002,5 +1002,5 @@ inputs:
   monikerDefinition.json: |
     { "monikers": [
 outputs:
-  build.log: |
+  .errors.log: |
     ["error","json-syntax-error","Unexpected end when deserializing array.","monikerDefinition.json",2]
