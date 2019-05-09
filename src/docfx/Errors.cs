@@ -293,8 +293,8 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Used docfx output model property which are not defined in input model.
         /// </summary>
-        public static Error ReservedMetadata(SourceInfo source, string name)
-            => new Error(ErrorLevel.Warning, "reserved-metadata", $"Metadata '{name}' is reserved by docfx, remove this metadata", source);
+        public static Error AttributeReserved(SourceInfo source, string name)
+            => new Error(ErrorLevel.Warning, "attribute-reserved", $"Attribute {name} is reserved for use by Docs. Remove it from your file metadata.", source);
 
         /// <summary>
         /// Metadata value must be scalar or arrays of scalars.
