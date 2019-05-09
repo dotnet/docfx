@@ -45,7 +45,7 @@ namespace Microsoft.Docs.Build
 
                 PathUtility.CreateDirectoryFromFilePath(outputFilePath);
 
-                return File.CreateText(outputFilePath);
+                return File.AppendText(outputFilePath);
             });
         }
 
