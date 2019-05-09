@@ -221,8 +221,8 @@ namespace Microsoft.Docs.Build
         /// Examples:
         ///   - [Absolute](C:/a.md)
         /// </summary>
-        public static Error AbsoluteFilePath(Document relativeTo, string path)
-            => new Error(ErrorLevel.Warning, "absolute-file-path", $"File path cannot be absolute: '{path}'", relativeTo.ToString());
+        public static Error LocalFilePath(Document relativeTo, string path)
+            => new Error(ErrorLevel.Warning, "local-file-path", $"Link '{path}' points to a local file. Use a relative path instead", relativeTo.ToString());
 
         /// <summary>
         /// The fisrt tag in an article.md isn't h1 tag.
@@ -320,7 +320,7 @@ namespace Microsoft.Docs.Build
         ///   - resolve contributors or authors on a locale-sxs branch while the corresponding locale branch doesn't exist
         /// </summary>
         public static Error CommittishNotFound(string repo, string committish)
-            => new Error(ErrorLevel.Error, "committish-not-found", $"Cannot find branch, tag or commit '{committish}' for repo '{repo}'.");
+            => new Error(ErrorLevel.Error, "committish-not-found", $"Can't find branch, tag, or commit '{committish}' for repo {repo}.");
 
         /// <summary>
         /// Defined refrence with by #bookmark fragment between articles, which doesn't exist.
