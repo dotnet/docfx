@@ -50,7 +50,7 @@ namespace Microsoft.Docs.Build
         ///     nor source repo root
         /// </summary>
         public static Error ConfigNotFound(string docsetPath)
-            => new Error(ErrorLevel.Error, "config-not-found", $"Cannot find 'docfx.yml/docfx.json' at '{docsetPath}'");
+            => new Error(ErrorLevel.Error, "config-not-found", $"Can't find config file 'docfx.yml/docfx.json' at {docsetPath}");
 
         /// <summary>
         /// Two files include each other.
@@ -137,8 +137,8 @@ namespace Microsoft.Docs.Build
         ///   - failed to download due to bad network
         ///   - when update user profile cache fails, need to download verify etag
         /// </summary>
-        public static Error DownloadFailed(string url, string message)
-            => new Error(ErrorLevel.Error, "download-failed", $"Download '{url}' failed: {message}");
+        public static Error DownloadFailed(string url)
+            => new Error(ErrorLevel.Error, "download-failed", $"Download failed for file '{url}'. Try closing and reopening the PR. If you get this Error again, file an issue.");
 
         /// <summary>
         /// Failed to update user profile cache file.
@@ -171,10 +171,16 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Error, "yaml-syntax-error", message, source);
 
         /// <summary>
+        /// Syntax error in yaml header(not duplicate key).
+        /// </summary>
+        public static Error YamlHeaderSyntaxError(Error error)
+            => new Error(ErrorLevel.Warning, "yaml-header-syntax-error", error.Message, error.File, error.Line, error.Column, error.EndLine, error.EndColumn);
+
+        /// <summary>
         /// Used duplicate yaml key in markdown yml header or schema document(yml).
         /// </summary>
         public static Error YamlDuplicateKey(SourceInfo source, string key)
-            => new Error(ErrorLevel.Error, "yaml-duplicate-key", $"Key '{key}' is already defined, remove the duplicate key.", source);
+            => new Error(ErrorLevel.Warning, "yaml-duplicate-key", $"Key '{key}' is already defined, remove the duplicate key.", source);
 
         /// <summary>
         /// Syntax error in json file.
@@ -215,8 +221,8 @@ namespace Microsoft.Docs.Build
         /// Examples:
         ///   - [Absolute](C:/a.md)
         /// </summary>
-        public static Error AbsoluteFilePath(Document relativeTo, string path)
-            => new Error(ErrorLevel.Warning, "absolute-file-path", $"File path cannot be absolute: '{path}'", relativeTo.ToString());
+        public static Error LocalFilePath(Document relativeTo, string path)
+            => new Error(ErrorLevel.Warning, "local-file-path", $"Link '{path}' points to a local file. Use a relative path instead", relativeTo.ToString());
 
         /// <summary>
         /// The fisrt tag in an article.md isn't h1 tag.
@@ -314,7 +320,7 @@ namespace Microsoft.Docs.Build
         ///   - resolve contributors or authors on a locale-sxs branch while the corresponding locale branch doesn't exist
         /// </summary>
         public static Error CommittishNotFound(string repo, string committish)
-            => new Error(ErrorLevel.Error, "committish-not-found", $"Cannot find branch, tag or commit '{committish}' for repo '{repo}'.");
+            => new Error(ErrorLevel.Error, "committish-not-found", $"Can't find branch, tag, or commit '{committish}' for repo {repo}.");
 
         /// <summary>
         /// Defined refrence with by #bookmark fragment between articles, which doesn't exist.

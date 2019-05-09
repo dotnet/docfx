@@ -107,7 +107,7 @@ namespace Microsoft.Docs.Build
             }
             catch (Exception ex)
             {
-                throw Errors.DownloadFailed(url, ex.Message).ToException(ex);
+                throw Errors.DownloadFailed(url).ToException(ex);
             }
         }
     }
