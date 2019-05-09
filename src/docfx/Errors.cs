@@ -40,7 +40,7 @@ namespace Microsoft.Docs.Build
         ///   - in file metadata glob
         /// </summary>
         public static Error GlobPatternInvalid(string pattern, Exception ex)
-            => new Error(ErrorLevel.Error, "glob-pattern-invalid", $"Glob pattern '{pattern}' is invalid: {ex.Message} Try closing and reopening the PR. If you get this Error again, file an issue.");
+            => new Error(ErrorLevel.Error, "glob-pattern-invalid", $"Glob pattern '{pattern}' is invalid: {ex.Message}");
 
         /// <summary>
         /// Docfx.yml/docfx.json doesn't exist at the repo root.
