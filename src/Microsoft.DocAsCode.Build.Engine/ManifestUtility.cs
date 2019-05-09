@@ -20,29 +20,24 @@ namespace Microsoft.DocAsCode.Common
                 throw new ArgumentNullException(nameof(manifestItems));
             }
             var items = new List<ManifestItem>();
-            foreach (var uniques in (from m in manifestItems
-                                     from output in m.OutputFiles.Values
-                                     let relativePath = output?.RelativePath
-                                     select new { item = m, relativePath })
-                                        .GroupBy(obj => obj.relativePath, FilePathComparer.OSPlatformSensitiveStringComparer)
-                                        .Where(g => g.Count() == 1))
+
+            var manifestItemGroups = (from m in manifestItems
+                          from output in m.OutputFiles.Values
+                          let relativePath = output?.RelativePath
+                          select new { item = m, relativePath }).GroupBy(obj => obj.relativePath, FilePathComparer.OSPlatformSensitiveStringComparer);
+
+            foreach (var manifestItemGroup in manifestItemGroups)
             {
-                items.Add(uniques.First().item);
+                if (manifestItemGroup.Count() > 1)
+                {
+                    // TODO: plan to change this warning to error, add error code to analyze the impact.
+                    Logger.LogWarning(
+                        $"Multiple input files would generate to the same output path overwriting each other. Please rename at least {manifestItemGroup.Count() - 1} of following input files to ensure that there will be only one file to generate to the output path: \"{string.Join(", ", manifestItemGroup.Select(duplicate => duplicate.item.SourceRelativePath))}\".",
+                        code: WarningCodes.Build.DuplicateOutputFiles);
+                }
+                items.Add(manifestItemGroup.First().item);
             }
 
-            foreach (var duplicates in (from m in manifestItems
-                                        from output in m.OutputFiles.Values
-                                        let relativePath = output?.RelativePath
-                                        select new { item = m, relativePath })
-                              .GroupBy(obj => obj.relativePath, FilePathComparer.OSPlatformSensitiveStringComparer)
-                              .Where(g => g.Count() > 1))
-            {
-                // TODO: plan to change this warning to error, add error code to analyze the impact.
-                Logger.LogWarning(
-                    $"Multiple input files would generate to the same output path overwriting each other. Please rename at least {duplicates.Count() - 1} of following input files to ensure that there will be only one file to generate to the output path: \"{string.Join(", ", duplicates.Select(duplicate => duplicate.item.SourceRelativePath))}\".",
-                    code: WarningCodes.Build.DuplicateOutputFiles);
-                items.Add(duplicates.First().item);
-            }
             manifestItems = new ManifestItemCollection(items);
         }
 
