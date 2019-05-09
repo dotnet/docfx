@@ -16,7 +16,7 @@ inputs:
     bar
     >>>>>>> cb1abc6bd98cfc84317f8aa95a7662815417802d
 outputs:
-  build.log: |
+  .errors.log: |
     ["error","merge-conflict","File contains merge conflict","docs/toc.md",1,1]
     ["error","merge-conflict","File contains merge conflict","docs/a.md",2,1]
 ---
@@ -31,7 +31,7 @@ inputs:
           - a: 1
   a.md:
 outputs:
-  build.log: |
+  .errors.log: |
     ["error","invalid-metadata-type","Metadata 'key1' can only be a scalar value or string array","docfx.yml",2,9]
     ["error","invalid-metadata-type","Metadata 'key2' can only be a scalar value or string array","docfx.yml",6,7]
 ---
@@ -63,7 +63,7 @@ outputs:
       "key2": "XNAGameStudio",
       "key3": "net462"
     }
-  build.log: |
+  .errors.log: |
     ["warning","unexpected-type","Expect type 'String' but got 'Array'","docfx.yml",3,9]
     ["warning","undefined-value","Value 'XNAGameStudio' is not accepted. Valid values: 'MSDN', 'VS'","docfx.yml",6,13]
     ["warning","unexpected-type","Expect type 'Integer' but got 'String'","a.md",2,7]
@@ -84,7 +84,7 @@ inputs:
     ---
 outputs:
   a.json:
-  build.log: |
+  .errors.log: |
     ["warning","field-required","Missing required field 'a'","a.md",2,1]
     ["warning","unexpected-type","Expect type 'String' but got 'Array'","a.md",2,6]
 ---

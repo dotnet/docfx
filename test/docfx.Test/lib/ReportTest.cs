@@ -10,31 +10,31 @@ namespace Microsoft.Docs.Build
         [Fact]
         public void DedupErrors()
         {
-            using (var report = new Report("DedupErrors"))
+            using (var errorLog = new ErrorLog("DedupErrors"))
             {
-                report.Write(new Error(ErrorLevel.Error, "an-error-code", "message 1"));
-                report.Write(new Error(ErrorLevel.Error, "an-error-code", "message 1"));
-                report.Write(new Error(ErrorLevel.Warning, "an-error-code", "message 2"));
+                errorLog.Write(new Error(ErrorLevel.Error, "an-error-code", "message 1"));
+                errorLog.Write(new Error(ErrorLevel.Error, "an-error-code", "message 1"));
+                errorLog.Write(new Error(ErrorLevel.Warning, "an-error-code", "message 2"));
 
-                Assert.Equal(1, report.ErrorCount);
-                Assert.Equal(1, report.WarningCount);
+                Assert.Equal(1, errorLog.ErrorCount);
+                Assert.Equal(1, errorLog.WarningCount);
             }
         }
 
         [Fact]
         public void MaxErrors()
         {
-            using (var report = new Report("MaxErrors"))
+            using (var errorLog = new ErrorLog("MaxErrors"))
             {
                 for (var i = 0; i < OutputConfig.DefaultMaxErrors; i++)
                 {
-                    report.Write(new Error(ErrorLevel.Error, "an-error-code", i.ToString()));
+                    errorLog.Write(new Error(ErrorLevel.Error, "an-error-code", i.ToString()));
                 }
 
-                Assert.Equal(OutputConfig.DefaultMaxErrors, report.ErrorCount);
+                Assert.Equal(OutputConfig.DefaultMaxErrors, errorLog.ErrorCount);
 
-                report.Write(new Error(ErrorLevel.Error, "an-error-code", "another message"));
-                Assert.Equal(OutputConfig.DefaultMaxErrors, report.ErrorCount);
+                errorLog.Write(new Error(ErrorLevel.Error, "an-error-code", "another message"));
+                Assert.Equal(OutputConfig.DefaultMaxErrors, errorLog.ErrorCount);
             }
         }
     }
