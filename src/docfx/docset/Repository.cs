@@ -47,14 +47,9 @@ namespace Microsoft.Docs.Build
                 return null;
 
             var (remote, repoBranch, commit) = GitUtility.GetRepoInfo(repoPath);
-            var gitIndex = remote.IndexOf(".git");
-            if (gitIndex >= 0)
-            {
-                remote = remote.Remove(gitIndex);
-            }
 
-            // remove user name and token from url like https://xxxxx@dev.azure.com/xxxx
-            remote = Regex.Replace(repoUrl ?? remote, @"^((http|https):\/\/)?([^\/\s]+@)+([\S]+)+", "$1$43");
+            // remove user name, token and .git from url like https://xxxxx@dev.azure.com/xxxx.git
+            remote = Regex.Replace(repoUrl ?? remote, @"^((http|https):\/\/)?([^\/\s]+@)?([\S]+?)(\.git)?$", "$1$4");
 
             return new Repository(repoUrl ?? remote, branch ?? repoBranch, commit, PathUtility.NormalizeFolder(repoPath));
         }
