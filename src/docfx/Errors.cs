@@ -147,7 +147,7 @@ namespace Microsoft.Docs.Build
         ///     update the file cache with put request
         /// </summary>
         public static Error UploadFailed(string url, string message)
-            => new Error(ErrorLevel.Warning, "upload-failed", $"Upload '{url}' failed: {message}");
+            => new Error(ErrorLevel.Warning, "upload-failed", $"Upload failed for '{url}': {message} Try closing and reopening the PR. If you get this Error again, file an issue.");
 
         /// <summary>
         /// Failed to run `git fetch` or `git worktree add`.
