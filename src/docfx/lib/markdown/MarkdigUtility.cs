@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Concurrent;
 using Markdig;
 using Markdig.Parsers;
 using Markdig.Renderers;
@@ -14,28 +13,11 @@ namespace Microsoft.Docs.Build
 {
     internal static class MarkdigUtility
     {
-        private static readonly ConcurrentDictionary<MarkdownObject, int> s_htmlBlockSources = new ConcurrentDictionary<MarkdownObject, int>();
-
-        public static SourceInfo ToSourceInfo(this MarkdownObject obj, int? line = null, string file = null)
+        public static SourceInfo ToSourceInfo(this MarkdownObject obj, int? line = null, string file = null, int columnOffset = 0)
         {
-            var column = obj.Column;
-
-            // TODO: remove this hack while we have accurate line info for link in HTML block
-            if (obj is HtmlBlock)
-            {
-                if (s_htmlBlockSources.TryGetValue(obj, out var value))
-                {
-                    column = value + 1;
-                }
-                else
-                {
-                    s_htmlBlockSources.TryAdd(obj, obj.Column);
-                }
-            }
-
             // Line info in markdown object is zero based, turn it into one based.
             if (obj != null)
-                return new SourceInfo(file ?? InclusionContext.File?.ToString(), obj.Line + 1, column + 1);
+                return new SourceInfo(file ?? InclusionContext.File?.ToString(), obj.Line + 1, obj.Column + columnOffset + 1);
 
             if (line != null)
                 return new SourceInfo(file ?? InclusionContext.File?.ToString(), line.Value + 1, 0);

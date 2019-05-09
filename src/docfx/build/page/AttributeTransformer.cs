@@ -85,7 +85,7 @@ namespace Microsoft.Docs.Build
 
             if (attribute is HtmlAttribute)
             {
-                var html = HtmlUtility.TransformLinks((string)value, href =>
+                var html = HtmlUtility.TransformLinks((string)value, (href, _) =>
                 {
                     var (error, link, _) = dependencyResolver.ResolveLink(new SourceInfo<string>(href, value), file, file, buildChild);
 
