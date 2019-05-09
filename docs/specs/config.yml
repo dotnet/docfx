@@ -369,6 +369,7 @@ outputs:
 ---
 # locale overwrite config
 commands:
+  - restore --locale zh-cn
   - build --locale zh-cn
 inputs:
   docfx.yml: |
@@ -383,6 +384,7 @@ outputs:
 ---
 # branch | locale overwrite config
 commands:
+  - restore --locale zh-cn
   - build --locale zh-cn
 repo: https://github.com/docascode/docfx-test-dependencies#master
 inputs:
@@ -405,6 +407,7 @@ outputs:
 ---
 # branch & locale overwrite config
 commands:
+  - restore --locale zh-cn
   - build --locale zh-cn
 repo: https://github.com/docascode/docfx-test-dependencies#master
 inputs:
@@ -420,6 +423,7 @@ outputs:
 ---
 # branch & locale overwrite with null
 commands:
+  - restore --locale zh-cn
   - build --locale zh-cn
 repo: https://github.com/docascode/docfx-test-dependencies#master
 inputs:
@@ -444,6 +448,7 @@ outputs:
 ---
 # invalid overwrite config
 commands:
+  - restore --locale zh-cn
   - build --locale zh-cn
 inputs:
   docfx.yml: |

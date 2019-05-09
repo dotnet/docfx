@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using Newtonsoft.Json.Linq;
 
@@ -14,8 +13,6 @@ namespace Microsoft.Docs.Build
         private const string Extend = "extend";
         private const string DefaultLocale = "defaultLocale";
         private const string Localization = "localization";
-
-        private static readonly string[] s_keysToExpand = { "files", "exclude", "xref", "extend", "metadataSchema" };
 
         /// <summary>
         /// Load the config under <paramref name="docsetPath"/>
@@ -43,7 +40,7 @@ namespace Microsoft.Docs.Build
             return !string.IsNullOrEmpty(configPath);
         }
 
-        private static (List<Error>, Config) LoadCore(string docsetPath, CommandLineOptions options, string locale,  bool extend)
+        private static (List<Error>, Config) LoadCore(string docsetPath, CommandLineOptions options, string locale, bool extend)
         {
             if (!TryGetConfigPath(docsetPath, out var configPath))
             {
@@ -54,7 +51,7 @@ namespace Microsoft.Docs.Build
             var (errors, configObject) = LoadConfigObject(configFileName, File.ReadAllText(configPath));
 
             // apply options
-            var optionConfigObject = Expand(options?.ToJObject());
+            var optionConfigObject = options?.ToJObject();
 
             JsonUtility.Merge(configObject, optionConfigObject);
 
@@ -103,7 +100,7 @@ namespace Microsoft.Docs.Build
 
             JsonUtility.TrimStringValues(config);
 
-            return (errors, Expand(config as JObject ?? new JObject()));
+            return (errors, config as JObject ?? new JObject());
         }
 
         private static (List<Error>, JObject) ApplyGlobalConfig(JObject config)
@@ -125,18 +122,16 @@ namespace Microsoft.Docs.Build
         {
             var result = new JObject();
             var errors = new List<Error>();
+            var extends = config[Extend] is JArray arr ? arr : new JArray(config[Extend]);
 
-            if (config[Extend] is JArray extends)
+            foreach (var extend in extends)
             {
-                foreach (var extend in extends)
+                if (extend is JValue value && value.Value is string str)
                 {
-                    if (extend is JValue value && value.Value is string str)
-                    {
-                        var (_, content, _) = RestoreMap.GetRestoredFileContent(docsetPath, new SourceInfo<string>(str, JsonUtility.GetSourceInfo(value)));
-                        var (extendErrors, extendConfigObject) = LoadConfigObject(str, content);
-                        errors.AddRange(extendErrors);
-                        JsonUtility.Merge(result, extendConfigObject);
-                    }
+                    var (_, content, _) = RestoreMap.GetRestoredFileContent(docsetPath, new SourceInfo<string>(str, JsonUtility.GetSourceInfo(value)));
+                    var (extendErrors, extendConfigObject) = LoadConfigObject(str, content);
+                    errors.AddRange(extendErrors);
+                    JsonUtility.Merge(result, extendConfigObject);
                 }
             }
 
@@ -169,7 +164,7 @@ namespace Microsoft.Docs.Build
                         (identifier.Locales.Count == 0 || (!string.IsNullOrEmpty(locale) && identifier.Locales.Contains(locale))) &&
                         value is JObject overwriteConfig)
                     {
-                        expands.Add(Expand(overwriteConfig));
+                        expands.Add(overwriteConfig);
                     }
 
                     overwriteConfigIdentifiers.Add(key);
@@ -186,27 +181,6 @@ namespace Microsoft.Docs.Build
             {
                 config.Remove(overwriteConfigIdentifier);
             }
-        }
-
-        private static JObject Expand(JObject config)
-        {
-            foreach (var key in s_keysToExpand)
-            {
-                if (config[key] != null)
-                    config[key] = ExpandStringArray(config[key]);
-            }
-            return config;
-        }
-
-        private static JArray ExpandStringArray(JToken e)
-        {
-            Debug.Assert(e != null);
-
-            if (e is JValue str)
-                return new JArray(e);
-            if (e is JArray arr)
-                return arr;
-            return null;
         }
     }
 }

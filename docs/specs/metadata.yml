@@ -446,3 +446,32 @@ inputs:
   a.md:
 outputs:
   a.json:
+---
+# Duplicated metadata
+inputs:
+  docfx.yml:
+  docs/a.md: |
+    ---
+    a: a
+    a: b
+    ---
+outputs:
+  docs/a.json: |
+    {"a": "b"}
+  build.log: |
+    ["warning","yaml-duplicate-key","Key 'a' is already defined, remove the duplicate key.","docs/a.md",3,1]
+---
+# Invalid yaml syntax in yaml header
+inputs:
+  docfx.yml:
+  docs/a.md: |
+    ---
+    a: a: b
+    title: A
+    ---
+    # B
+outputs:
+  docs/a.json: |
+    {"!a": null, "title": "B"}
+  build.log: |
+    ["warning","yaml-header-syntax-error","Mapping values are not allowed in this context.","docs/a.md",2,5]

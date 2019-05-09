@@ -104,7 +104,7 @@ inputs:
     extend: https://this-url-does-not-exit.com/this-is-a-bad-url
 outputs:
   .errors.log: |
-    ["error","download-failed","Download 'https://this-url-does-not-exit.com/this-is-a-bad-url' failed: *"]
+    ["error","download-failed","Download failed for file 'https://this-url-does-not-exit.com/this-is-a-bad-url'. Try closing and reopening the PR. If you get this Error again, file an issue."]
 ---
 # Show error when git clone failed
 inputs:
@@ -113,11 +113,11 @@ inputs:
       error: https://github.com/docascode/docfx-test-dependencies#bad-branch
 outputs:
   .errors.log: |
-    ["error","committish-not-found","Cannot find branch, tag or commit 'bad-branch' for repo 'https://github.com/docascode/docfx-test-dependencies'."]
+    ["error","committish-not-found","Can't find branch, tag, or commit 'bad-branch' for repo https://github.com/docascode/docfx-test-dependencies."]
 ---
 # Show error when dependent repo can't be found
 commands:
-  - build --no-restore
+  - build
 inputs:
   docfx.yml: |
     dependencies:
@@ -130,7 +130,7 @@ outputs:
 ---
 # Show error when dependent URL can't be found
 commands:
-  - build --no-restore
+  - build
 inputs:
   docfx.yml: |
     monikerDefinition: https://docs.microsoft.com/bad-url
@@ -167,9 +167,9 @@ outputs:
 inputs:
   docfx.yml: |
     dependencies:
-      dep: https://ceapex.visualstudio.com/Engineering/_git/docs-host-vnext#c9c018c
+      dep: https://dev.azure.com/ceapex/Engineering/_git/docs-host-vnext#c9c018c
     http:
-      https://ceapex.visualstudio.com:
+      https://dev.azure.com/ceapex:
         headers:
           Authorization: Bearer {SYSTEM_ACCESS_TOKEN}
   docs/a.md: |

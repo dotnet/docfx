@@ -1,5 +1,6 @@
 # Build with --legacy
 commands:
+  - restore --legacy
   - build --legacy
 repos:
   https://docs.com/legacy:

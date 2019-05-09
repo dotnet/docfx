@@ -184,7 +184,7 @@ namespace Microsoft.Docs.Build
                     }
                     catch (Exception ex)
                     {
-                        throw Errors.DownloadFailed(_url, ex.Message).ToException(ex);
+                        throw Errors.DownloadFailed(_url).ToException(ex);
                     }
                     var content = await response.EnsureSuccessStatusCode().Content.ReadAsStringAsync();
                     ReadCache(content);
@@ -339,7 +339,8 @@ namespace Microsoft.Docs.Build
 
         private void ReadCache(string content)
         {
-            var users = JsonUtility.Deserialize<GitHubUserCacheFile>(content).Users;
+            // TODO: populate file to JsonUtility.Deserialize
+            var users = JsonUtility.Deserialize<GitHubUserCacheFile>(content, "").Users;
             if (users != null)
             {
                 UpdateUsers(users);

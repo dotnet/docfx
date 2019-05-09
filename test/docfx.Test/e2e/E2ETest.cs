@@ -192,7 +192,7 @@ namespace Microsoft.Docs.Build
 #endif
                     if (Path.GetFileNameWithoutExtension(file).Contains("localization"))
                     {
-                        var spec = YamlUtility.Deserialize<E2ESpec>(yaml);
+                        var spec = YamlUtility.Deserialize<E2ESpec>(yaml, null);
                         if (spec.Commands != null && spec.Commands.Any(c => c != null && c.Contains("--locale"))
                             && spec.Repos.Count() > 1 && !spec.Inputs.Any() && string.IsNullOrEmpty(spec.Repo) && !header.Contains("[from loc]"))
                         {
@@ -230,7 +230,7 @@ namespace Microsoft.Docs.Build
             var yamlHash = HashUtility.GetMd5Hash(yaml).Substring(0, 5);
             var name = ToSafePathString(specName).Substring(0, Math.Min(30, specName.Length)) + "-" + yamlHash;
 
-            var spec = YamlUtility.Deserialize<E2ESpec>(yaml);
+            var spec = YamlUtility.Deserialize<E2ESpec>(yaml, null);
 
             var emptyEnvName = spec.Environments.FirstOrDefault(env => string.IsNullOrEmpty(Environment.GetEnvironmentVariable(env)));
             if (!string.IsNullOrEmpty(emptyEnvName))
@@ -243,7 +243,7 @@ namespace Microsoft.Docs.Build
             var inputFolderCreatedFlag = Path.Combine("specs-flags", name);
             if (fromLoc)
             {
-                spec.Commands = new[] { "build" };
+                spec.Commands = new[] { "restore", "build" };
             }
             var mockedRepos = MockGitRepos(specPath, ordinal, name, spec);
 

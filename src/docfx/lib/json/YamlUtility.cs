@@ -57,9 +57,9 @@ namespace Microsoft.Docs.Build
         /// De-serialize from yaml string, which is not user input
         /// schema validation errors will be ignored, syntax errors and type mismatching will be thrown
         /// </summary>
-        public static T Deserialize<T>(string input)
+        public static T Deserialize<T>(string input, string file)
         {
-            var (_, token) = ParseAsJToken(input, file: null);
+            var (_, token) = ParseAsJToken(input, file);
             return token.ToObject<T>(JsonUtility.Serializer);
         }
 
