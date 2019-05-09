@@ -423,8 +423,8 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Failed to parse moniker string.
         /// </summary>
-        public static Error InvalidMonikerRange(string monikerRange, string message)
-            => new Error(ErrorLevel.Error, "invalid-moniker-range", $"MonikerRange `{monikerRange}` is invalid: {message}");
+        public static Error MonikerRangeInvalid(string monikerRange, string message)
+            => new Error(ErrorLevel.Error, "moniker-range-invalid", $"Invalid moniker range: '{monikerRange}': {message}");
 
         /// <summary>
         /// MonikerRange is not defined in docfx.yml or doesn't match an article.md,
