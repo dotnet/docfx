@@ -404,7 +404,7 @@ namespace Microsoft.Docs.Build
             }
 
             var hint = conflicts.Count() > 5 ? "(Only 5 duplicates displayed)" : "";
-            return new Error(ErrorLevel.Error, "uid-conflict", $"Two or more documents have defined the same Uid '{uid}': {string.Join(',', conflicts.Take(5))}{hint}");
+            return new Error(ErrorLevel.Error, "uid-conflict", $"UID '{uid}' is defined in more than one file: {string.Join(',', conflicts.Take(5))}{hint}");
         }
 
         /// <summary>

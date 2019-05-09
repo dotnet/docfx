@@ -149,7 +149,7 @@ outputs:
   docs/c.json: |
     {"content":"<p>Link to @a</p>\n"}
   build.log: |
-    ["error","uid-conflict","Two or more documents have defined the same Uid 'a': docs/a.yml,docs/b.json"]
+    ["error","uid-conflict","UID 'a' is defined in more than one file: docs/a.yml,docs/b.json"]
     ["info","at-uid-not-found","Cannot find uid 'a' using xref '@a'","docs/c.md",1,10]
   xrefmap.json: | 
     {"!references":null}
@@ -314,7 +314,7 @@ outputs:
   docs/a.json:
   docs/b.json:
   build.log: |
-    ["error","uid-conflict","Two or more documents have defined the same Uid 'b': docs/a.json,docs/b.json"]
+    ["error","uid-conflict","UID 'b' is defined in more than one file: docs/a.json,docs/b.json"]
   xrefmap.json: |
     {"references":[{"uid":"a","href":"https://docs.com/docs/a.json"}]}
 ---
