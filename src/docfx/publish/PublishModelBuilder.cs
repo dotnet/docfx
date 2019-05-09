@@ -66,7 +66,7 @@ namespace Microsoft.Docs.Build
 
                     foreach (var conflictingFile in files.Keys)
                     {
-                        if (_publishItems.TryRemove(conflictingFile, out var item) && item.Path != null)
+                        if (_publishItems.TryRemove(conflictingFile, out var item) && item.Path != null && (conflictingFile.ContentType != ContentType.Resource || conflictingFile.Docset.Config.Output.CopyResources))
                         {
                             context.Output.Delete(item.Path, legacy);
                         }
@@ -93,7 +93,7 @@ namespace Microsoft.Docs.Build
 
                 foreach (var conflictingFile in conflictingFiles)
                 {
-                    if (_publishItems.TryRemove(conflictingFile, out var item) && item.Path != null)
+                    if (_publishItems.TryRemove(conflictingFile, out var item) && item.Path != null && (conflictingFile.ContentType != ContentType.Resource || conflictingFile.Docset.Config.Output.CopyResources))
                     {
                         context.Output.Delete(item.Path, legacy);
                     }
@@ -105,7 +105,7 @@ namespace Microsoft.Docs.Build
             {
                 if (_filesBySiteUrl.TryRemove(file.SiteUrl, out _))
                 {
-                    if (_publishItems.TryRemove(file, out var item) && item.Path != null)
+                    if (_publishItems.TryRemove(file, out var item) && item.Path != null && (file.ContentType != ContentType.Resource || file.Docset.Config.Output.CopyResources))
                     {
                         context.Output.Delete(item.Path, legacy);
                     }
