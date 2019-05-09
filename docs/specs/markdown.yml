@@ -533,4 +533,18 @@ inputs:
 outputs:
   docs/a.json:
   docs/b.json:
-
+---
+# resolve link in html block
+inputs:
+  docfx.yml:
+  docs/a.md: |
+    some text
+    <div>
+      <p>Link to <a href="#bookmark">text</a></p>
+      <p>Link to <a href="#bookmark">some other text</a></p>
+    </div>
+outputs:
+  docs/a.json:
+  build.log: |
+    ["suggestion","internal-bookmark-not-found","Cannot find bookmark '#bookmark' in 'docs/a.md'","docs/a.md",2,1]
+    ["suggestion","internal-bookmark-not-found","Cannot find bookmark '#bookmark' in 'docs/a.md'","docs/a.md",2,2]
