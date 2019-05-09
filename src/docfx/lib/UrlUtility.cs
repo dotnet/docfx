@@ -17,7 +17,7 @@ namespace Microsoft.Docs.Build
 
         private static readonly Regex s_azureReposUrlRegex =
             new Regex(
-                @"^(https|http):\/\/(?<account>[^\/\s]+)\.visualstudio\.com\/(?<collection>[^\/\s]+\/)?(?<project>[^\/\s]+)\/_git\/(?<repository>[A-Za-z0-9_.-]+)((\/)?|(#(?<branch>\S+))?)$",
+                @"^(https|http):\/\/((?<account1>[^\/\s]+)\.visualstudio\.com\/(?<collection>[^\/\s]+\/)?|dev\.azure\.com\/(?<account2>[^\/\s]+)\/)+(?<project>[^\/\s]+)\/_git\/(?<repository>[A-Za-z0-9_.-]+)((\/)?|(#(?<branch>\S+))?)$",
                 RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         /// <summary>
