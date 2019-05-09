@@ -171,10 +171,16 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Error, "yaml-syntax-error", message, source);
 
         /// <summary>
+        /// Syntax error in yaml header(not duplicate key).
+        /// </summary>
+        public static Error YamlHeaderSyntaxError(Error error)
+            => new Error(ErrorLevel.Warning, "yaml-header-syntax-error", error.Message, error.File, error.Line, error.Column, error.EndLine, error.EndColumn);
+
+        /// <summary>
         /// Used duplicate yaml key in markdown yml header or schema document(yml).
         /// </summary>
         public static Error YamlDuplicateKey(SourceInfo source, string key)
-            => new Error(ErrorLevel.Error, "yaml-duplicate-key", $"Key '{key}' is already defined, remove the duplicate key.", source);
+            => new Error(ErrorLevel.Warning, "yaml-duplicate-key", $"Key '{key}' is already defined, remove the duplicate key.", source);
 
         /// <summary>
         /// Syntax error in json file.
