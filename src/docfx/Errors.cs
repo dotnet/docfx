@@ -306,7 +306,7 @@ namespace Microsoft.Docs.Build
         /// Git.exe isn't installed.
         /// </summary>
         public static Error GitNotFound()
-            => new Error(ErrorLevel.Error, "git-not-found", $"Cannot find git, install git https://git-scm.com/");
+            => new Error(ErrorLevel.Error, "git-not-found", $"Git isn't installed on the target machine. Try closing and reopening the PR. If you get this Error again, file an issue.");
 
         /// <summary>
         /// Failed to invoke `git revparse`(resolve commit history of a file on a non-existent branch).
