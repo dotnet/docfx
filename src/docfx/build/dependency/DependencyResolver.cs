@@ -51,7 +51,7 @@ namespace Microsoft.Docs.Build
             var isSelfBookmark = linkType == LinkType.SelfBookmark || resultRelativeTo == file;
             if (isSelfBookmark || file != null)
             {
-                _dependencyMapBuilder.AddDependencyItem(relativeTo, file, LinkUtility.FragmentToDependencyType(fragment));
+                _dependencyMapBuilder.AddDependencyItem(relativeTo, file, UrlUtility.FragmentToDependencyType(fragment));
                 _bookmarkValidator.AddBookmarkReference(relativeTo, isSelfBookmark ? resultRelativeTo : file, fragment, isSelfBookmark, path);
             }
 
@@ -60,7 +60,7 @@ namespace Microsoft.Docs.Build
 
         public (Error error, string href, string display, Document file) ResolveXref(SourceInfo<string> href, Document relativeTo, Document rootFile)
         {
-            var (uid, query, fragment) = LinkUtility.SplitLink(href);
+            var (uid, query, fragment) = UrlUtility.SplitUrl(href);
             string moniker = null;
             NameValueCollection queries = null;
             if (!string.IsNullOrEmpty(query))
@@ -81,7 +81,7 @@ namespace Microsoft.Docs.Build
             if (!string.IsNullOrEmpty(resolvedHref))
             {
                 var monikerQuery = !string.IsNullOrEmpty(moniker) ? $"view={moniker}" : "";
-                resolvedHref = LinkUtility.MergeLink(resolvedHref, monikerQuery, fragment.Length == 0 ? "" : fragment.Substring(1));
+                resolvedHref = UrlUtility.MergeUrl(resolvedHref, monikerQuery, fragment.Length == 0 ? "" : fragment.Substring(1));
             }
             return (error, resolvedHref, display, referencedFile);
         }
@@ -193,9 +193,9 @@ namespace Microsoft.Docs.Build
                 return (Errors.LinkIsEmpty(relativeTo), null, null, null, null, null);
             }
 
-            var (path, query, fragment) = LinkUtility.SplitLink(href);
+            var (path, query, fragment) = UrlUtility.SplitUrl(href);
 
-            switch (LinkUtility.GetLinkType(href))
+            switch (UrlUtility.GetLinkType(href))
             {
                 case LinkType.SelfBookmark:
                     return (null, relativeTo, query, fragment, LinkType.SelfBookmark, null);

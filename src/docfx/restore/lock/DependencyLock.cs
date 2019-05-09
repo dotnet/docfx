@@ -43,7 +43,7 @@ namespace Microsoft.Docs.Build
             }
 
             // dependency lock path can be a place holder for saving usage
-            if (!LinkUtility.IsHttp(dependencyLockPath))
+            if (!UrlUtility.IsHttp(dependencyLockPath))
             {
                 if (!File.Exists(Path.Combine(docset, dependencyLockPath)))
                 {
@@ -68,7 +68,7 @@ namespace Microsoft.Docs.Build
 
             var content = JsonUtility.Serialize(dependencyLock, indent: true);
 
-            if (!LinkUtility.IsHttp(dependencyLockPath))
+            if (!UrlUtility.IsHttp(dependencyLockPath))
             {
                 var path = Path.Combine(docset, dependencyLockPath);
                 Directory.CreateDirectory(Path.GetDirectoryName(path));

@@ -8,7 +8,7 @@ using System.Web;
 
 namespace Microsoft.Docs.Build
 {
-    internal static class LinkUtility
+    internal static class UrlUtility
     {
         private static readonly Regex s_gitHubUrlRegex =
            new Regex(
@@ -23,40 +23,40 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Split href to path, fragement and query
         /// </summary>
-        /// <param name="href">The href</param>
+        /// <param name="url">The href</param>
         /// <returns>The splited path, query and fragment</returns>
-        public static (string path, string query, string fragment) SplitLink(string href)
+        public static (string path, string query, string fragment) SplitUrl(string url)
         {
             var path = "";
             var query = "";
             var fragment = "";
 
-            var fragmentIndex = href.IndexOf('#');
+            var fragmentIndex = url.IndexOf('#');
             if (fragmentIndex >= 0)
             {
-                fragment = href.Substring(fragmentIndex);
-                var queryIndex = href.IndexOf('?', 0, fragmentIndex);
+                fragment = url.Substring(fragmentIndex);
+                var queryIndex = url.IndexOf('?', 0, fragmentIndex);
                 if (queryIndex >= 0)
                 {
-                    query = href.Substring(queryIndex, fragmentIndex - queryIndex);
-                    path = href.Substring(0, queryIndex);
+                    query = url.Substring(queryIndex, fragmentIndex - queryIndex);
+                    path = url.Substring(0, queryIndex);
                 }
                 else
                 {
-                    path = href.Substring(0, fragmentIndex);
+                    path = url.Substring(0, fragmentIndex);
                 }
             }
             else
             {
-                var queryIndex = href.IndexOf('?');
+                var queryIndex = url.IndexOf('?');
                 if (queryIndex >= 0)
                 {
-                    query = href.Substring(queryIndex);
-                    path = href.Substring(0, queryIndex);
+                    query = url.Substring(queryIndex);
+                    path = url.Substring(0, queryIndex);
                 }
                 else
                 {
-                    path = href;
+                    path = url;
                 }
             }
 
@@ -64,13 +64,13 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
-        /// <paramref name="sourceQuery"/> and <paramref name="sourceFragment"/> will overwrite the ones in <paramref name="targetHref"/>
+        /// <paramref name="sourceQuery"/> and <paramref name="sourceFragment"/> will overwrite the ones in <paramref name="targetUrl"/>
         /// </summary>
-        public static string MergeLink(string targetHref, string sourceQuery, string sourceFragment)
+        public static string MergeUrl(string targetUrl, string sourceQuery, string sourceFragment)
         {
-            var (targetPath, targetQuery, targetFragment) = SplitLink(targetHref);
+            var (targetPath, targetQuery, targetFragment) = SplitUrl(targetUrl);
             if (string.IsNullOrEmpty(targetPath))
-                return targetHref;
+                return targetUrl;
 
             var targetQueryParameters = HttpUtility.ParseQueryString(targetQuery.Length == 0 ? "" : targetQuery.Substring(1));
             var sourceQueryParameters = HttpUtility.ParseQueryString(sourceQuery);
@@ -89,12 +89,12 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Get the git remote information from remote href
         /// </summary>
-        /// <param name="remoteLink">The git remote href like https://github.com/dotnet/docfx#master</param>
-        public static (string remote, string refspec, bool hasRefSpec) SplitGitLink(string remoteLink)
+        /// <param name="remoteUrl">The git remote href like https://github.com/dotnet/docfx#master</param>
+        public static (string remote, string refspec, bool hasRefSpec) SplitGitUrl(string remoteUrl)
         {
-            Debug.Assert(!string.IsNullOrEmpty(remoteLink));
+            Debug.Assert(!string.IsNullOrEmpty(remoteUrl));
 
-            var (path, _, fragment) = SplitLink(remoteLink);
+            var (path, _, fragment) = SplitUrl(remoteUrl);
 
             path = path.TrimEnd('/', '\\');
             var hasRefSpec = !string.IsNullOrEmpty(fragment) && fragment.Length > 1;
@@ -160,14 +160,14 @@ namespace Microsoft.Docs.Build
                 && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
         }
 
-        public static bool TryParseGitHubLink(string remote, out string owner, out string name)
+        public static bool TryParseGitHubUrl(string remoteUrl, out string owner, out string name)
         {
             owner = name = default;
 
-            if (string.IsNullOrEmpty(remote))
+            if (string.IsNullOrEmpty(remoteUrl))
                 return false;
 
-            var match = s_gitHubUrlRegex.Match(remote);
+            var match = s_gitHubUrlRegex.Match(remoteUrl);
             if (!match.Success)
             {
                 return false;
@@ -179,14 +179,14 @@ namespace Microsoft.Docs.Build
             return true;
         }
 
-        public static bool TryParseAzureReposLink(string remote, out string project, out string repo)
+        public static bool TryParseAzureReposUrl(string remoteUrl, out string project, out string repo)
         {
             project = repo = default;
 
-            if (string.IsNullOrEmpty(remote))
+            if (string.IsNullOrEmpty(remoteUrl))
                 return false;
 
-            var match = s_azureReposUrlRegex.Match(remote);
+            var match = s_azureReposUrlRegex.Match(remoteUrl);
             if (!match.Success)
                 return false;
 

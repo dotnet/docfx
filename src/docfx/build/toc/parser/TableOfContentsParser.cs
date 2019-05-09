@@ -203,7 +203,7 @@ namespace Microsoft.Docs.Build
                     return (tocHref, default, default);
                 }
 
-                var (hrefPath, fragment, query) = LinkUtility.SplitLink(tocHref);
+                var (hrefPath, fragment, query) = UrlUtility.SplitUrl(tocHref);
                 tocHref.Value = hrefPath;
 
                 var (referencedTocContent, referenceTocFilePath) = ResolveTocHrefContent(tocHrefType, tocHref, filePath, resolveContent);
@@ -318,13 +318,13 @@ namespace Microsoft.Docs.Build
 
         private static TocHrefType GetHrefType(string href)
         {
-            var linkType = LinkUtility.GetLinkType(href);
+            var linkType = UrlUtility.GetLinkType(href);
             if (linkType == LinkType.AbsolutePath || linkType == LinkType.External)
             {
                 return TocHrefType.AbsolutePath;
             }
 
-            var (path, _, _) = LinkUtility.SplitLink(href);
+            var (path, _, _) = UrlUtility.SplitUrl(href);
             if (path.EndsWith('/') || path.EndsWith('\\'))
             {
                 return TocHrefType.RelativeFolder;

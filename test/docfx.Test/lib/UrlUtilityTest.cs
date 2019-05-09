@@ -5,7 +5,7 @@ using Xunit;
 
 namespace Microsoft.Docs.Build
 {
-    public static class LinkUtilityTest
+    public static class UrlUtilityTest
     {
         [Theory]
         [InlineData("", "", "", "")]
@@ -17,9 +17,9 @@ namespace Microsoft.Docs.Build
         [InlineData("a#b?c=d", "a", "", "#b?c=d")]
         [InlineData("a?b#c?d=e", "a", "?b", "#c?d=e")]
         [InlineData("a?b#c#d", "a", "?b", "#c#d")]
-        public static void SplitLink(string href, string path, string query, string fragment)
+        public static void SplitUrl(string url, string path, string query, string fragment)
         {
-            var (apath, aquery, afragment) = LinkUtility.SplitLink(href);
+            var (apath, aquery, afragment) = UrlUtility.SplitUrl(url);
 
             Assert.Equal(path, apath);
             Assert.Equal(query, aquery);
@@ -34,9 +34,9 @@ namespace Microsoft.Docs.Build
         [InlineData("a?b=1#c", "b=2", "c1", "a?b=2#c1")]
         [InlineData("a?b=1#c", "b1=1", "", "a?b=1&b1=1#c")]
         [InlineData("a?b=1#c", "", "c1", "a?b=1#c1")]
-        public static void MergeLink(string href, string query, string fragment, string expected)
+        public static void MergeUrl(string url, string query, string fragment, string expected)
         {
-            var result = LinkUtility.MergeLink(href, query, fragment);
+            var result = UrlUtility.MergeUrl(url, query, fragment);
 
             Assert.Equal(expected, result);
         }
@@ -58,9 +58,9 @@ namespace Microsoft.Docs.Build
         [InlineData(@"feedback-url:?query=a", LinkType.External)]
         [InlineData(@"c:/a", LinkType.WindowsAbsolutePath)]
         [InlineData(@"c:\a", LinkType.WindowsAbsolutePath)]
-        public static void GetLinkType(string href, LinkType expected)
+        public static void GetLinkType(string url, LinkType expected)
         {
-            Assert.Equal(expected, LinkUtility.GetLinkType(href));
+            Assert.Equal(expected, UrlUtility.GetLinkType(url));
         }
 
         [Theory]
@@ -77,8 +77,8 @@ namespace Microsoft.Docs.Build
         [InlineData("https://a.com", true)]
         [InlineData("https://a.com#b", true)]
         [InlineData("https://////a.com", false)]
-        public static void IsHttp(string href, bool expected)
-            => Assert.Equal(expected, LinkUtility.IsHttp(href));
+        public static void IsHttp(string url, bool expected)
+            => Assert.Equal(expected, UrlUtility.IsHttp(url));
 
         [Theory]
         [InlineData("http://github.com/", false, null, null)]
@@ -89,9 +89,9 @@ namespace Microsoft.Docs.Build
         [InlineData("http://github.com/org/name", true, "org", "name")]
         [InlineData("http://github.com/org/name#branch", true, "org", "name")]
         [InlineData("https://github.com/org/name#branch", true, "org", "name")]
-        public static void ParseGithubLink(string remote, bool parsed, string expectedOwner, string expectedName)
+        public static void ParseGithubUrl(string remote, bool parsed, string expectedOwner, string expectedName)
         {
-            if (LinkUtility.TryParseGitHubLink(remote, out var owner, out var name))
+            if (UrlUtility.TryParseGitHubUrl(remote, out var owner, out var name))
             {
                 Assert.True(parsed);
                 Assert.Equal(expectedOwner, owner);
@@ -118,9 +118,9 @@ namespace Microsoft.Docs.Build
         [InlineData("http://ceapex.visualstudio.com/DefaultCollection/project/_git/repo/", true, "project", "repo")]
         [InlineData("https://ceapex.visualstudio.com/DefaultCollection/project/_git/repo#branch", true, "project", "repo")]
         [InlineData("http://ceapex.visualstudio.com/DefaultCollection/project/_git/repo#branch", true, "project", "repo")]
-        public static void ParseAzureReposLink(string remote, bool parsed, string expectedProject, string expectedName)
+        public static void ParseAzureReposUrl(string remote, bool parsed, string expectedProject, string expectedName)
         {
-            if (LinkUtility.TryParseAzureReposLink(remote, out var owner, out var name))
+            if (UrlUtility.TryParseAzureReposUrl(remote, out var owner, out var name))
             {
                 Assert.True(parsed);
                 Assert.Equal(expectedProject, owner);

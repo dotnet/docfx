@@ -276,7 +276,7 @@ namespace Microsoft.Docs.Build
                     continue;
                 }
 
-                switch (LinkUtility.GetLinkType(href))
+                switch (UrlUtility.GetLinkType(href))
                 {
                     case LinkType.SelfBookmark:
                         node.SetAttributeValue("data-linktype", "self-bookmark");

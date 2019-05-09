@@ -171,7 +171,7 @@ namespace Microsoft.Docs.Build
         {
             var dependencies = config.Dependencies.Values.Select(url =>
             {
-                var (remote, branch, _) = LinkUtility.SplitGitLink(url);
+                var (remote, branch, _) = UrlUtility.SplitGitUrl(url);
                 return (remote, branch, GitFlags.DepthOne);
             });
 

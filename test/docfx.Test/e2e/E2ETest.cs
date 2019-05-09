@@ -250,15 +250,15 @@ namespace Microsoft.Docs.Build
             if (!File.Exists(inputFolderCreatedFlag))
             {
                 var inputRepo = spec.Repo
-                    ?? spec.Repos.Select(r => r.Key).FirstOrDefault(r => !fromLoc || LocalizationUtility.TryGetContributionBranch(LinkUtility.SplitGitLink(r).refspec, out _))
-                    ?? spec.Repos.Select(r => r.Key).FirstOrDefault(r => !fromLoc || LocalizationUtility.TryRemoveLocale(LinkUtility.SplitGitLink(r).remote.Split(new char[] { '\\', '/' }).Last(), out _, out _));
+                    ?? spec.Repos.Select(r => r.Key).FirstOrDefault(r => !fromLoc || LocalizationUtility.TryGetContributionBranch(UrlUtility.SplitGitUrl(r).refspec, out _))
+                    ?? spec.Repos.Select(r => r.Key).FirstOrDefault(r => !fromLoc || LocalizationUtility.TryRemoveLocale(UrlUtility.SplitGitUrl(r).remote.Split(new char[] { '\\', '/' }).Last(), out _, out _));
                 if (!string.IsNullOrEmpty(inputRepo))
                 {
                     try
                     {
                         t_mockedRepos.Value = mockedRepos;
 
-                        var (remote, refspec, _) = LinkUtility.SplitGitLink(inputRepo);
+                        var (remote, refspec, _) = UrlUtility.SplitGitUrl(inputRepo);
                         GitUtility.CloneOrUpdate(inputFolder, remote, refspec);
                         Process.Start(new ProcessStartInfo("git", "submodule update --init") { WorkingDirectory = inputFolder }).WaitForExit();
                     }
@@ -338,7 +338,7 @@ namespace Microsoft.Docs.Build
             var result = new ConcurrentDictionary<string, string>();
             var repos =
                 from pair in spec.Repos
-                let info = LinkUtility.SplitGitLink(pair.Key)
+                let info = UrlUtility.SplitGitUrl(pair.Key)
                 group (info.refspec, pair.Value)
                 by info.remote;
 

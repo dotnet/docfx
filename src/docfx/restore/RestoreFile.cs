@@ -69,7 +69,7 @@ namespace Microsoft.Docs.Build
         public static string GetRestoreContentPath(string url)
         {
             Debug.Assert(!string.IsNullOrEmpty(url));
-            Debug.Assert(LinkUtility.IsHttp(url));
+            Debug.Assert(UrlUtility.IsHttp(url));
 
             return PathUtility.NormalizeFile(Path.Combine(AppData.GetFileDownloadDir(url), "content"));
         }
@@ -77,7 +77,7 @@ namespace Microsoft.Docs.Build
         public static string GetRestoreEtagPath(string url)
         {
             Debug.Assert(!string.IsNullOrEmpty(url));
-            Debug.Assert(LinkUtility.IsHttp(url));
+            Debug.Assert(UrlUtility.IsHttp(url));
 
             return PathUtility.NormalizeFile(Path.Combine(AppData.GetFileDownloadDir(url), "etag"));
         }
