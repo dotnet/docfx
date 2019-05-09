@@ -403,8 +403,7 @@ namespace Microsoft.Docs.Build
                 return new Error(ErrorLevel.Error, "uid-conflict", $"The same Uid '{uid}' has been defined multiple times in the same file");
             }
 
-            var hint = conflicts.Count() > 5 ? "(Only 5 duplicates displayed)" : "";
-            return new Error(ErrorLevel.Error, "uid-conflict", $"UID '{uid}' is defined in more than one file: {string.Join(',', conflicts.Take(5))}{hint}");
+            return new Error(ErrorLevel.Error, "uid-conflict", $"UID '{uid}' is defined in more than one file: {Join(conflicts)}");
         }
 
         /// <summary>
