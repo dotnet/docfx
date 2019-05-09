@@ -300,7 +300,7 @@ namespace Microsoft.Docs.Build
         /// Failed to compute specific info of a commit.
         /// </summary>
         public static Error GitLogError(string repoPath, int errorCode)
-            => new Error(ErrorLevel.Error, "git-log-error", $"Error computing git log [{errorCode}] for '{repoPath}', did you use a shallow clone?");
+            => new Error(ErrorLevel.Error, "git-log-error", $"Error computing git log '{errorCode}' for '{repoPath}'. Try closing and reopening the PR. If you get this Error again, file an issue.");
 
         /// <summary>
         /// Git.exe isn't installed.
