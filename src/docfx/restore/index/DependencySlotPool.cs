@@ -90,7 +90,7 @@ namespace Microsoft.Docs.Build
             return released;
         }
 
-        public static (string path, T slot) AcquireSlot(string url, LockType type, Func<T, T> updateExistingSlot, Func<T, bool> matchExistingSlot)
+        public static (string path, T slot, bool restored) AcquireSlot(string url, LockType type, Func<T, T> updateExistingSlot, Func<T, bool> matchExistingSlot)
         {
             Debug.Assert(!string.IsNullOrEmpty(url));
 
@@ -98,6 +98,7 @@ namespace Microsoft.Docs.Build
 
             T slot = null;
             bool acquired = false;
+            bool restored = false;
             string acquirer = null;
             ProcessUtility.RunInsideMutex(
                 url + "/index.json",
@@ -139,6 +140,7 @@ namespace Microsoft.Docs.Build
                             slot.Restored = false;
                             slot.LastAccessDate = DateTime.MinValue;
                             slot.Acquirer = acquirer;
+                            restored = slot.Restored;
 
                             slot = updateExistingSlot(slot);
                             if (!existed)
@@ -152,6 +154,7 @@ namespace Microsoft.Docs.Build
                                     (acquired, acquirer) = ProcessUtility.AcquireSharedLock(GetLockKey(url, i.Id));
                                     if (acquired)
                                     {
+                                        restored = true;
                                         slot = i;
                                         slot.Url = url;
                                         slot.Acquirer = acquirer;
@@ -172,7 +175,7 @@ namespace Microsoft.Docs.Build
                 Debug.Assert(!string.IsNullOrEmpty(slot.Acquirer));
             }
 
-            return slot is null ? default : ($"{slot.Id}", slot);
+            return slot is null ? default : ($"{slot.Id}", slot, restored);
         }
 
         public static List<T> GetSlots(string restoreDir)

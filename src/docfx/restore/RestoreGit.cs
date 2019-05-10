@@ -103,7 +103,6 @@ namespace Microsoft.Docs.Build
 
                 void AddWorkTrees()
                 {
-                    var existingWorkTreeFolders = new ConcurrentHashSet<string>(Directory.EnumerateDirectories(repoDir));
                     ParallelUtility.ForEach(branchesToFetch, branch =>
                     {
                         var nocheckout = group.Where(g => g.branch == branch).All(g => (g.flags & GitFlags.NoCheckout) != 0);
@@ -124,17 +123,28 @@ namespace Microsoft.Docs.Build
                         var (workTreePath, gitSlot) = RestoreMap.TryGetGitRestorePath(remote, branch, headCommit);
                         if (workTreePath is null)
                         {
-                            (workTreePath, gitSlot) = RestoreMap.AcquireExclusiveGit(remote, branch, headCommit);
+                            bool restored = false;
+                            (workTreePath, gitSlot, restored) = RestoreMap.AcquireExclusiveGit(remote, branch, headCommit);
                             workTreePath = Path.GetFullPath(workTreePath).Replace('\\', '/');
-                            var restored = true;
+                            var success = true;
 
                             try
                             {
-                                if (existingWorkTreeFolders.TryAdd(workTreePath))
+                                if (restored)
+                                {
+                                    // worktree already exists
+                                    // checkout to {headCommit}, no need to fetch
+                                    Debug.Assert(Directory.Exists(workTreePath) && !GitUtility.IsDirty(workTreePath));
+                                    GitUtility.Checkout(workTreePath, headCommit);
+                                }
+                                else
                                 {
                                     // create new worktree
                                     try
                                     {
+                                        // firstly clean
+                                        if (Directory.Exists(workTreePath))
+                                            Directory.Delete(workTreePath, true);
                                         GitUtility.AddWorkTree(repoPath, headCommit, workTreePath);
                                     }
                                     catch (Exception ex)
@@ -142,21 +152,15 @@ namespace Microsoft.Docs.Build
                                         throw Errors.GitCloneFailed(remote, branches).ToException(ex);
                                     }
                                 }
-                                else
-                                {
-                                    // worktree already exists
-                                    // checkout to {headCommit}, no need to fetch
-                                    GitUtility.Checkout(workTreePath, headCommit);
-                                }
                             }
                             catch
                             {
-                                restored = false;
+                                success = false;
                                 throw;
                             }
                             finally
                             {
-                                RestoreMap.ReleaseGit(gitSlot, LockType.Exclusive, restored);
+                                RestoreMap.ReleaseGit(gitSlot, LockType.Exclusive, success);
                             }
                         }
 

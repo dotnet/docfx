@@ -156,7 +156,7 @@ namespace Microsoft.Docs.Build
                     var (remote, branch, _) = UrlUtility.SplitGitUrl(gitVersion.Key);
                     if (!acquired.ContainsKey((remote, branch, gitVersion.Value.Commit/*commit*/)))
                     {
-                        var (path, git) = AcquireGit(remote, branch, gitVersion.Value.Commit, LockType.Shared);
+                        var (path, git, _) = AcquireGit(remote, branch, gitVersion.Value.Commit, LockType.Shared);
                         acquired[(remote, branch, gitVersion.Value.Commit/*commit*/)] = (path, git);
                     }
 
@@ -206,20 +206,20 @@ namespace Microsoft.Docs.Build
             return !Directory.Exists(path) ? default : (path, slot);
         }
 
-        public static (string path, DependencyGit git) AcquireExclusiveGit(string remote, string branch, string commit)
+        public static (string path, DependencyGit git, bool restored) AcquireExclusiveGit(string remote, string branch, string commit)
         {
-            var (path, git) = AcquireGit(remote, branch, commit, LockType.Exclusive);
+            var (path, git, restored) = AcquireGit(remote, branch, commit, LockType.Exclusive);
 
             Debug.Assert(path != null && git != null);
             path = Path.Combine(AppData.GetGitDir(remote), path);
 
-            return (path, git);
+            return (path, git, restored && Directory.Exists(path));
         }
 
         public static bool ReleaseGit(DependencyGit git, LockType lockType, bool successed = true)
             => DependencySlotPool<DependencyGit>.ReleaseSlot(git, lockType, successed);
 
-        private static (string path, DependencyGit git) AcquireGit(string remote, string branch, string commit, LockType type)
+        private static (string path, DependencyGit git, bool restored) AcquireGit(string remote, string branch, string commit, LockType type)
         {
             Debug.Assert(!string.IsNullOrEmpty(branch));
             Debug.Assert(!string.IsNullOrEmpty(commit));
