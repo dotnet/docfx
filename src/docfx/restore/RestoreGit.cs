@@ -123,18 +123,17 @@ namespace Microsoft.Docs.Build
                         var (workTreePath, gitSlot) = RestoreMap.TryGetGitRestorePath(remote, branch, headCommit);
                         if (workTreePath is null)
                         {
-                            bool restored = false;
-                            (workTreePath, gitSlot, restored) = RestoreMap.AcquireExclusiveGit(remote, branch, headCommit);
+                            (workTreePath, gitSlot) = RestoreMap.AcquireExclusiveGit(remote, branch, headCommit);
                             workTreePath = Path.GetFullPath(workTreePath).Replace('\\', '/');
                             var success = true;
 
                             try
                             {
-                                if (restored)
+                                if (gitSlot.Restored && Directory.Exists(workTreePath))
                                 {
-                                    // worktree already exists
+                                    // re-use existing work tree
                                     // checkout to {headCommit}, no need to fetch
-                                    Debug.Assert(Directory.Exists(workTreePath) && !GitUtility.IsDirty(workTreePath));
+                                    Debug.Assert(!GitUtility.IsDirty(workTreePath));
                                     GitUtility.Checkout(workTreePath, headCommit);
                                 }
                                 else
@@ -142,7 +141,8 @@ namespace Microsoft.Docs.Build
                                     // create new worktree
                                     try
                                     {
-                                        // firstly clean
+                                        // clean existing work tree folder
+                                        // it may be dirty caused by last failed restore action
                                         if (Directory.Exists(workTreePath))
                                             Directory.Delete(workTreePath, true);
                                         GitUtility.AddWorkTree(repoPath, headCommit, workTreePath);
