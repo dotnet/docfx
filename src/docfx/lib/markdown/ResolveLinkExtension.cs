@@ -41,7 +41,7 @@ namespace Microsoft.Docs.Build
             {
                 return HtmlUtility.TransformLinks(
                     html,
-                    href => MarkdownUtility.GetLink(href, InclusionContext.File, InclusionContext.RootFile, block));
+                    (href, columnOffset) => MarkdownUtility.GetLink(href, InclusionContext.File, InclusionContext.RootFile, block, columnOffset));
             }
         }
     }

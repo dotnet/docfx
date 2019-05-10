@@ -109,7 +109,7 @@ inputs:
     }
 outputs:
   docs/index.json:
-  build.log: |
+  .errors.log: |
     ["warning","author-not-found","Invalid value for author: 'invalid_user' is not a valid GitHub ID","docs/index.md",2,9]
 ---
 # Author should NOT exist in contributors. Author can have no contribution to the file before.
@@ -314,7 +314,7 @@ outputs:
 ---
 # Show content_git_url, original_content_git_url and gitcommit
 repos:
-  https://github.com/testowner/testrepo#master-content-git-url:
+  https://docascode@github.com/testowner/testrepo#master-content-git-url.git:
     - files:
         docs/index.md: Alice creates this.
 inputs:
@@ -406,7 +406,7 @@ repos:
     - files:
         a.md:
 outputs:
-  build.log: |
+  .errors.log: |
     ["error","committish-not-found","Can't find branch, tag, or commit 'live' for repo *github.com+git+repo.zh-cn*.","a.md"]
 ---
 # Use current repo's branch when edit branch isn't specified in contribution config,

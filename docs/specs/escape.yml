@@ -104,7 +104,7 @@ outputs:
   'a b.json':
   a&b.json:
   a&amp;b.json:
-  build.log: |
+  .errors.log: |
     ["warning","include-not-found","Cannot resolve 'a%20b.md' relative to 'includes.md'.","includes.md",1,1]
     ["warning","include-not-found","Cannot resolve 'a&amp;amp;b.md' relative to 'includes.md'.","includes.md",4,1]
   .publish.json:
@@ -139,5 +139,5 @@ outputs:
             Link to @a&amp;c
           </p>
         "}
-  build.log: |
+  .errors.log: |
     ["info","at-uid-not-found","Cannot find uid 'a&c' using xref '@a&c'","html-xref.md",5,10]
