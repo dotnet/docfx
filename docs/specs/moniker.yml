@@ -727,7 +727,7 @@ outputs:
   xrefmap.json: | 
     {"!references":null}
   .errors.log: |
-    ["error","uid-conflict","Two or more documents have defined the same Uid 'a': docs/a.md,docs/b.md"]
+    ["error","uid-conflict","UID 'a' is defined in more than one file: 'docs/a.md', 'docs/b.md'"]
     ["info","at-uid-not-found","Cannot find uid 'a' using xref '@a'","docs/c.md",1,10]
 ---
 # Build toc with monikers info
