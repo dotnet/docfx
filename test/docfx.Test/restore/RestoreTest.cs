@@ -46,7 +46,7 @@ namespace Microsoft.Docs.Build
 dependencies:
   dep: {gitUrl}#master");
 
-            // acquire slot lock firestly
+            // acquire slot lock firstly
             ProcessUtility.AcquireExclusiveLock($"{gitUrl}/1", true);
 
             // run restroe and check the work trees
