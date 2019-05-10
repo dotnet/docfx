@@ -314,7 +314,7 @@ outputs:
 ---
 # Show content_git_url, original_content_git_url and gitcommit
 repos:
-  https://docascode@github.com/testowner/testrepo#master-content-git-url.git:
+  https://docascode@github.com/testowner/testrepo.git#master-content-git-url:
     - files:
         docs/index.md: Alice creates this.
 inputs:
