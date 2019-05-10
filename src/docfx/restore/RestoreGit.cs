@@ -125,7 +125,7 @@ namespace Microsoft.Docs.Build
                         {
                             (workTreePath, gitSlot) = RestoreMap.AcquireExclusiveGit(remote, branch, headCommit);
                             workTreePath = Path.GetFullPath(workTreePath).Replace('\\', '/');
-                            var success = true;
+                            var restored = true;
 
                             try
                             {
@@ -155,12 +155,12 @@ namespace Microsoft.Docs.Build
                             }
                             catch
                             {
-                                success = false;
+                                restored = false;
                                 throw;
                             }
                             finally
                             {
-                                RestoreMap.ReleaseGit(gitSlot, LockType.Exclusive, success);
+                                RestoreMap.ReleaseGit(gitSlot, LockType.Exclusive, restored);
                             }
                         }
 
