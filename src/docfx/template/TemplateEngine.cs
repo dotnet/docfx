@@ -87,7 +87,7 @@ namespace Microsoft.Docs.Build
 
             var model = new TemplateModel
             {
-                Content = pageModel.Content as string,
+                Content = pageModel.Conceptual,
                 RawMetadata = rawMetadata,
                 PageMetadata = pageMetadata,
                 ThemesRelativePathToOutputRoot = "_themes/",

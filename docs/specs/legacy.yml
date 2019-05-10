@@ -47,6 +47,7 @@ outputs:
     { "locale": "en-us", "redirect_url": "/b" }
   c.raw.page.json: |
     {
+      "content": "<p><a href=\"d.png\" data-linktype=\"relative-path\">d</a></p>",
       "rawMetadata": { "conceptual": "<p><a href=\"d.png\" data-linktype=\"relative-path\">d</a></p>\n", "ms.author": "yufeih", "!robots": null, "api_name": ["API Name"] },
       "themesRelativePathToOutputRoot": "_themes/",
       "pageMetadata": "
