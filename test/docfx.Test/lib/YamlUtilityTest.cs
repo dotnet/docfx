@@ -163,12 +163,15 @@ d: true
         }
 
         [Theory]
-        [InlineData("Infinity", double.PositiveInfinity)]
-        [InlineData("-Infinity", double.NegativeInfinity)]
-        [InlineData("NaN", double.NaN)]
-        public void TestSpecialDouble(string yaml, double expected)
+        [InlineData("Infinity", "Infinity")]
+        [InlineData("-Infinity", "-Infinity")]
+        [InlineData("NaN", "NaN")]
+        [InlineData(".inf", double.PositiveInfinity)]
+        [InlineData("-.inf", double.NegativeInfinity)]
+        [InlineData(".nan", double.NaN)]
+        public void TestSpecialDouble(string yaml, object expected)
         {
-            var (errors, value) = DeserializeWithValidation<double>(yaml);
+            var (errors, value) = DeserializeWithValidation<object>(yaml);
             Assert.Empty(errors);
             Assert.Equal(value, expected);
         }
