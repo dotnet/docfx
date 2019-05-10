@@ -40116,6 +40116,19 @@ references:
   isSpec: "True"
   fullName: Microsoft.DocAsCode.Metadata.ManagedReference.VisitorHelper.GlobalNamespaceId
   nameWithType: VisitorHelper.GlobalNamespaceId
+- uid: Microsoft.DocAsCode.Metadata.ManagedReference.VisitorHelper.InGlobalNamespace(Microsoft.CodeAnalysis.ISymbol)
+  name: InGlobalNamespace(ISymbol)
+  href: api/Microsoft.DocAsCode.Metadata.ManagedReference.VisitorHelper.html#Microsoft_DocAsCode_Metadata_ManagedReference_VisitorHelper_InGlobalNamespace_Microsoft_CodeAnalysis_ISymbol_
+  commentId: M:Microsoft.DocAsCode.Metadata.ManagedReference.VisitorHelper.InGlobalNamespace(Microsoft.CodeAnalysis.ISymbol)
+  fullName: Microsoft.DocAsCode.Metadata.ManagedReference.VisitorHelper.InGlobalNamespace(Microsoft.CodeAnalysis.ISymbol)
+  nameWithType: VisitorHelper.InGlobalNamespace(ISymbol)
+- uid: Microsoft.DocAsCode.Metadata.ManagedReference.VisitorHelper.InGlobalNamespace*
+  name: InGlobalNamespace
+  href: api/Microsoft.DocAsCode.Metadata.ManagedReference.VisitorHelper.html#Microsoft_DocAsCode_Metadata_ManagedReference_VisitorHelper_InGlobalNamespace_
+  commentId: Overload:Microsoft.DocAsCode.Metadata.ManagedReference.VisitorHelper.InGlobalNamespace
+  isSpec: "True"
+  fullName: Microsoft.DocAsCode.Metadata.ManagedReference.VisitorHelper.InGlobalNamespace
+  nameWithType: VisitorHelper.InGlobalNamespace
 - uid: Microsoft.DocAsCode.Metadata.ManagedReference.YamlMetadataResolver
   name: YamlMetadataResolver
   href: api/Microsoft.DocAsCode.Metadata.ManagedReference.YamlMetadataResolver.html
