@@ -1,7 +1,7 @@
-Version Notes (Current Version: v2.43)
+Version Notes (Current Version: v2.42.2)
 =======================================
 
-v2.43(Pre-Release)
+v2.42.2
 -----------
 1. fix JavaScript error when clicking on "In This Article" links in the side navigation of the default website template. (#4419)
 2. Revert PDFSharp back to iTextSharp (#4407)
