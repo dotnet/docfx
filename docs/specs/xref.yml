@@ -6,7 +6,7 @@ inputs:
 outputs:
   docs/a.json: |
     { "conceptual": "<p>Link to &lt;xref:a&gt;</p>" }
-  build.log: |
+  .errors.log: |
     ["warning","uid-not-found","Cannot find uid 'a' using xref '<xref:a>'","docs/a.md",1,9]
 ---
 # Unknown xrefs using @ syntax are output as is with a informational message
@@ -16,7 +16,7 @@ inputs:
 outputs:
   docs/a.json: |
     { "conceptual": "<p>Link to @a</p>" }
-  build.log: |
+  .errors.log: |
     ["info","at-uid-not-found","Cannot find uid 'a' using xref '@a'","docs/a.md",1,10]
 ---
 # Restore xref map from configured url and use the map for resolving
@@ -148,7 +148,7 @@ outputs:
   docs/b.json: 
   docs/c.json: |
     {"conceptual":"<p>Link to @a</p>\n"}
-  build.log: |
+  .errors.log: |
     ["error","uid-conflict","Two or more documents have defined the same Uid 'a': docs/a.yml,docs/b.json"]
     ["info","at-uid-not-found","Cannot find uid 'a' using xref '@a'","docs/c.md",1,10]
   xrefmap.json: | 
@@ -209,7 +209,7 @@ inputs:
 outputs:
   docs/b.json: | 
     { "content": {"!xref": null}}
-  build.log: |
+  .errors.log: |
     ["error","json-syntax-error","Unexpected character encountered while parsing value: }.","docs/a.json",7]
     ["warning","uid-not-found","Cannot find uid 'a' using xref 'a'","docs/b.json",3,13]
   xrefmap.json: | 
@@ -288,7 +288,7 @@ inputs:
     }
 outputs:
   docs/a.json:
-  build.log: |
+  .errors.log: |
     ["error","uid-conflict","The same Uid 'a' has been defined multiple times in the same file","docs/a.json"]
   xrefmap.json: |
     {"references":[{"uid":"a","href":"https://docs.com/docs/a.json"}]}
@@ -313,7 +313,7 @@ inputs:
 outputs:
   docs/a.json:
   docs/b.json:
-  build.log: |
+  .errors.log: |
     ["error","uid-conflict","Two or more documents have defined the same Uid 'b': docs/a.json,docs/b.json"]
   xrefmap.json: |
     {"references":[{"uid":"a","href":"https://docs.com/docs/a.json"}]}
@@ -428,7 +428,7 @@ outputs:
   docs/a.json:
   docs/b.json: |
     { "conceptual": "<p>Link to <a href=\"xref:c#bookmark\">title</a></p>" }
-  build.log: |
+  .errors.log: |
     ["warning","uid-not-found","Cannot find uid 'c' using xref 'c#bookmark'","docs/b.md",1,9]
 ---
 # Markdown inclusion with xref reference
@@ -561,7 +561,7 @@ inputs:
 outputs:
   docs/c.json: |
     {"content":{"name":"name for c","summary":"<p>Link to <a href=\"a.json\">name for a</a></p>\n","inlineDescription":"description for c","uid":"c"}}
-  build.log: |
+  .errors.log: |
     ["error","circular-reference","Found circular reference: 'docs/a.json' --> 'docs/b.json' --> 'docs/a.json'","docs/a.json"]
     ["error","circular-reference","Found circular reference: 'docs/b.json' --> 'docs/a.json' --> 'docs/b.json'","docs/b.json"]
 ---
@@ -594,7 +594,7 @@ inputs:
       "summary": "Link to @b?displayProperty=summary",
     }
 outputs:
-  build.log: | 
+  .errors.log: | 
     ["error","circular-reference","Found circular reference: 'docs/c.json' --> 'docs/b.json' --> 'docs/c.json'","docs/c.json"]
     ["error","circular-reference","Found circular reference: 'docs/b.json' --> 'docs/c.json' --> 'docs/b.json'","docs/b.json"]
     ["error","circular-reference","Found circular reference: 'docs/a.json' --> 'docs/b.json' --> 'docs/c.json' --> 'docs/b.json'","docs/a.json"]
@@ -611,7 +611,7 @@ inputs:
       "summary": "Link to @a?displayProperty=summary",
     }
 outputs:
-  build.log: |
+  .errors.log: |
     ["error","circular-reference","Found circular reference: 'docs/a.json' --> 'docs/a.json'","docs/a.json"]
 ---
 # SDP non-cyclic xref reference, whose property references can be resolved
@@ -643,7 +643,7 @@ inputs:
   docs/a.json: |
     1
 outputs:
-  build.log: |
+  .errors.log: |
     ["error","schema-not-found","Unknown schema ''","docs/a.json",1,1]
 ---
 # support <xref href="uid"></xref>
@@ -669,7 +669,7 @@ outputs:
   docs/a.json: |
     {"conceptual" : "<p>str <a href='c'>Title from yaml header c</a>\nstr @mention\nsome text\nstr @higher\nmultiple xref @mentione some text @mentionf</p>\n<p>\n  @mentione\n  some text\n  mentionf\n</p>\n"}
   docs/c.json:
-  build.log: |
+  .errors.log: |
     ["info","at-uid-not-found","Cannot find uid 'd' using xref '<xref href=\"d\" data-raw-source=\"@mention\">'","docs/a.md",2,12]
     ["info","at-uid-not-found","Cannot find uid 'd' using xref '<xref href=\"d\" data-raw-html=\"@higher\" data-raw-source=\"@mention\">'","docs/a.md",4,12]
     ["info","at-uid-not-found","Cannot find uid 'e' using xref '<xref href=\"e\" data-raw-source=\"@mentione\">'","docs/a.md",5,12]

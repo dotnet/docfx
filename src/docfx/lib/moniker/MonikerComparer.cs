@@ -51,7 +51,7 @@ namespace Microsoft.Docs.Build
             var result = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
             for (int i = 0; i < monikers.Count; i++)
             {
-                result[monikers[i].Name] = i;
+                result[monikers[i].MonikerName] = i;
             }
             return result;
         }

@@ -29,7 +29,7 @@ namespace Microsoft.Docs.Build
             "moniker-config-missing",
 
             // should have, maybe sometimes not
-            "download-failed", "invalid-locale",
+            "download-failed", "locale-invalid",
 
             // show multiple errors with line info
             "publish-url-conflict", "output-path-conflict", "uid-conflict", "redirection-conflict",
@@ -117,10 +117,10 @@ namespace Microsoft.Docs.Build
             var outputs = Directory.GetFiles(docsetOutputPath, "*", SearchOption.AllDirectories);
             var outputFileNames = outputs.Select(file => file.Substring(docsetOutputPath.Length + 1).Replace('\\', '/')).ToList();
 
-            // Show build.log content if actual output has errors or warnings.
-            if (failed && outputFileNames.Contains("build.log"))
+            // Show .errors.log content if actual output has errors or warnings.
+            if (failed && outputFileNames.Contains(".errors.log"))
             {
-                Console.WriteLine($"{Path.GetFileName(docsetPath)}: {File.ReadAllText(Path.Combine(docsetOutputPath, "build.log"))}");
+                Console.WriteLine($"{Path.GetFileName(docsetPath)}: {File.ReadAllText(Path.Combine(docsetOutputPath, ".errors.log"))}");
             }
 
             // These files output mostly contains empty content which e2e tests are not intrested in
@@ -192,7 +192,7 @@ namespace Microsoft.Docs.Build
 #endif
                     if (Path.GetFileNameWithoutExtension(file).Contains("localization"))
                     {
-                        var spec = YamlUtility.Deserialize<E2ESpec>(yaml);
+                        var spec = YamlUtility.Deserialize<E2ESpec>(yaml, null);
                         if (spec.Commands != null && spec.Commands.Any(c => c != null && c.Contains("--locale"))
                             && spec.Repos.Count() > 1 && !spec.Inputs.Any() && string.IsNullOrEmpty(spec.Repo) && !header.Contains("[from loc]"))
                         {
@@ -230,7 +230,7 @@ namespace Microsoft.Docs.Build
             var yamlHash = HashUtility.GetMd5Hash(yaml).Substring(0, 5);
             var name = ToSafePathString(specName).Substring(0, Math.Min(30, specName.Length)) + "-" + yamlHash;
 
-            var spec = YamlUtility.Deserialize<E2ESpec>(yaml);
+            var spec = YamlUtility.Deserialize<E2ESpec>(yaml, null);
 
             var emptyEnvName = spec.Environments.FirstOrDefault(env => string.IsNullOrEmpty(Environment.GetEnvironmentVariable(env)));
             if (!string.IsNullOrEmpty(emptyEnvName))
@@ -243,22 +243,22 @@ namespace Microsoft.Docs.Build
             var inputFolderCreatedFlag = Path.Combine("specs-flags", name);
             if (fromLoc)
             {
-                spec.Commands = new[] { "build" };
+                spec.Commands = new[] { "restore", "build" };
             }
             var mockedRepos = MockGitRepos(specPath, ordinal, name, spec);
 
             if (!File.Exists(inputFolderCreatedFlag))
             {
                 var inputRepo = spec.Repo
-                    ?? spec.Repos.Select(r => r.Key).FirstOrDefault(r => !fromLoc || LocalizationUtility.TryGetContributionBranch(HrefUtility.SplitGitHref(r).refspec, out _))
-                    ?? spec.Repos.Select(r => r.Key).FirstOrDefault(r => !fromLoc || LocalizationUtility.TryRemoveLocale(HrefUtility.SplitGitHref(r).remote.Split(new char[] { '\\', '/' }).Last(), out _, out _));
+                    ?? spec.Repos.Select(r => r.Key).FirstOrDefault(r => !fromLoc || LocalizationUtility.TryGetContributionBranch(UrlUtility.SplitGitUrl(r).refspec, out _))
+                    ?? spec.Repos.Select(r => r.Key).FirstOrDefault(r => !fromLoc || LocalizationUtility.TryRemoveLocale(UrlUtility.SplitGitUrl(r).remote.Split(new char[] { '\\', '/' }).Last(), out _, out _));
                 if (!string.IsNullOrEmpty(inputRepo))
                 {
                     try
                     {
                         t_mockedRepos.Value = mockedRepos;
 
-                        var (remote, refspec, _) = HrefUtility.SplitGitHref(inputRepo);
+                        var (remote, refspec, _) = UrlUtility.SplitGitUrl(inputRepo);
                         GitUtility.CloneOrUpdate(inputFolder, remote, refspec);
                         Process.Start(new ProcessStartInfo("git", "submodule update --init") { WorkingDirectory = inputFolder }).WaitForExit();
                     }
@@ -338,7 +338,7 @@ namespace Microsoft.Docs.Build
             var result = new ConcurrentDictionary<string, string>();
             var repos =
                 from pair in spec.Repos
-                let info = HrefUtility.SplitGitHref(pair.Key)
+                let info = UrlUtility.SplitGitUrl(pair.Key)
                 group (info.refspec, pair.Value)
                 by info.remote;
 

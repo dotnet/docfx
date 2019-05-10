@@ -1,6 +1,7 @@
 # restore loc repo with dependencies 1
 # [repository mapping] 
 commands:
+  - restore --locale zh-cn
   - build --locale zh-cn
 repos:
   https://docs.com/restore1#master:
@@ -17,12 +18,13 @@ repos:
           [link to restore-child](~/restore-child/docs/child.md)
 outputs:
   docs/loc.json:
-  build.log: |
+  .errors.log: |
     ["warning","link-is-dependency","File 'docs/child.md' referenced by link '~/restore-child/docs/child.md' will not be built because it is from a dependency docset","docs/loc.md",1,1]
 ---
 # restore loc repo with dependencies 2
 # [repository mapping & bilingual]
 commands:
+  - restore --locale zh-cn
   - build --locale zh-cn
 repos:
   https://docs.com/restore2#master:
@@ -44,12 +46,13 @@ repos:
         docs/child.md:
 outputs:
   docs/loc.json:
-  build.log: |
+  .errors.log: |
     ["warning","link-is-dependency","File 'docs/child.md' referenced by link '~/restore-child/docs/child.md' will not be built because it is from a dependency docset","docs/loc.md",1,1]
 ---
 # restore loc repo without dependencies 1
 # [branch mapping]
 commands:
+  - restore --locale zh-cn
   - build --locale zh-cn
 repos:
   https://docs.com/restore3#master:
@@ -66,6 +69,7 @@ outputs:
 # restore loc repo  without dependencies 2
 # [branch mapping & bilingual]
 commands:
+  - restore --locale zh-cn
   - build --locale zh-cn
 repos:
   https://docs.com/restore4#master:
@@ -87,6 +91,7 @@ outputs:
 # loc docset share the source docset's restore map 1
 # [repository mapping]
 commands:
+  - restore --locale zh-cn
   - build --locale zh-cn
 repos:
   https://github.com/d/restore5#master:
@@ -160,6 +165,7 @@ outputs:
 # loc docset share the source docset's restore map 2
 # [branch mapping] & bilingual
 commands:
+  - restore --locale zh-cn
   - build --locale zh-cn
 repos:
   https://github.com/d/restore6#master:
@@ -240,6 +246,7 @@ outputs:
 # edit url convention without source locale 1
 # [repository mapping] 
 commands:
+  - restore --locale zh-cn
   - build --locale zh-cn
 repos: 
   https://docfx.com/edit-url1#live:
@@ -257,6 +264,7 @@ outputs:
 # edit url convention without source locale 2
 # [branch mapping]
 commands:
+  - restore --locale zh-cn
   - build --locale zh-cn
 repos: 
   https://docfx.com/edit-url2#live:
@@ -276,6 +284,7 @@ outputs:
 # edit url convention with source locale 1
 # [repository mapping]
 commands:
+  - restore --locale zh-cn
   - build --locale zh-cn
 repos: 
   https://docfx.com/edit-url3#live:
@@ -294,6 +303,7 @@ outputs:
 # all loc files are in one repo under different branch
 # [branch mapping]
 commands:
+  - restore --locale zh-cn
   - build --locale zh-cn
 repos: 
   https://docfx.com/edit-url4#live:
@@ -314,6 +324,7 @@ outputs:
 # all loc files are in source repo under different locale folder
 # [folder mapping]
 commands:
+  - restore --locale zh-cn
   - build --locale zh-cn
 repos:
   https://github.com/folder-maping/a:
@@ -333,6 +344,7 @@ outputs:
 # all loc files are in one repo under different branch
 # [branch mapping] & bilingual
 commands:
+  - restore --locale zh-cn
   - build --locale zh-cn
 repos:
   https://docfx.com/edit-url5#live:
@@ -355,6 +367,7 @@ outputs:
 # loc file contributor info 1
 # [repository mapping]
 commands:
+  - restore --locale zh-cn
   - build --locale zh-cn
 repos: 
   https://github.com/c/contribution1#master:
@@ -370,6 +383,7 @@ outputs:
 # loc file contributor info 2
 # [folder mapping]
 commands:
+  - restore --locale zh-cn
   - build --locale zh-cn
 repos:
   https://github.com/contribution/a#master3:
@@ -385,6 +399,7 @@ outputs:
 # loc file contributor info 3
 # [branch mapping]
 commands:
+  - restore --locale zh-cn
   - build --locale zh-cn
 repos: 
   https://github.com/c/contribution3#master:
@@ -402,6 +417,7 @@ outputs:
 # loc file contributor info 4
 # [repository mapping] & bilingual
 commands:
+  - restore --locale zh-cn
   - build --locale zh-cn
 repos: 
   https://github.com/c/contribution4#master:
@@ -422,6 +438,7 @@ outputs:
 # loc file contributor info 5
 # [branch mapping] & bilingual
 commands:
+  - restore --locale zh-cn
   - build --locale zh-cn
 repos: 
   https://github.com/c/contribution5#master:
@@ -443,6 +460,7 @@ outputs:
 # loc page link and content fallback 1
 # [repository mapping]
 commands:
+  - restore --locale zh-cn
   - build --locale zh-cn
 repos:
   https://docs.com/page-fallback1#master:
@@ -462,6 +480,7 @@ outputs:
 # loc page link and content fallback 2
 # [branch mapping]
 commands:
+  - restore --locale zh-cn
   - build --locale zh-cn
 repos:
   https://docs.com/page-fallback2#master:
@@ -483,6 +502,7 @@ outputs:
 # loc page link and content fallback 3
 # [branch mapping] & bilingual
 commands:
+  - restore --locale zh-cn
   - build --locale zh-cn
 repos:
   https://docs.com/page-fallback3#master:
@@ -508,6 +528,7 @@ outputs:
 # loc resource fallback 1
 # [repository mapping]
 commands:
+  - restore --locale zh-cn
   - build --locale zh-cn
 repos:
   https://docs.com/resource-fallback1#master:
@@ -525,6 +546,7 @@ outputs:
 # loc resource fallback 2
 # [branch mapping]
 commands:
+  - restore --locale zh-cn
   - build --locale zh-cn
 repos:
   https://docs.com/resource-fallback2#live:
@@ -544,6 +566,7 @@ outputs:
 # loc resource fallback 3
 # [repository mapping] & bilingual
 commands:
+  - restore --locale zh-cn
   - build --locale zh-cn
 repos:
   https://docs.com/resource-fallback3#master:
@@ -565,6 +588,7 @@ outputs:
 ---
 # loc token fallback, all loc files are in source repo under different locale folder
 commands:
+  - restore --locale zh-cn
   - build --locale zh-cn
 inputs:
   docfx.yml: |
@@ -582,6 +606,7 @@ outputs:
 ---
 # loc build with TOC map, loc TOC has higher priority
 commands:
+  - restore --locale zh-cn
   - build --locale zh-cn
 repos:
   https://docs.com/toc1#master:
@@ -608,6 +633,7 @@ outputs:
 ---
 # loc build with mixed toc map
 commands:
+  - restore --locale zh-cn
   - build --locale zh-cn
 repos:
   https://docs.com/toc2#master:
@@ -629,6 +655,7 @@ outputs:
 ---
 # loc build with mixed toc map, all loc files are in source repo under different locale folder
 commands:
+  - restore --locale zh-cn
   - build --locale zh-cn
 inputs:
   docfx.yml: |
@@ -648,6 +675,7 @@ outputs:
 ---
 # loc build with xref map, loc file has higher priority
 commands:
+  - restore --locale zh-cn
   - build --locale zh-cn
 repos:
   https://docs.com/xref1#master:
@@ -666,13 +694,14 @@ repos:
         docs/b.md: |
           link to @c
 outputs:
-  build.log: |
+  .errors.log: |
     ["info","at-uid-not-found","Cannot find uid 'c' using xref '@c'","docs/b.md",1,10]
   docs/a.json:
   docs/b.json:
 ---
 # loc build with xref map, all locale files are in source repo under different locale folder, loc file has higher priority
 commands:
+  - restore --locale zh-cn
   - build --locale zh-cn
 inputs:
   docfx.yml: |
@@ -688,13 +717,14 @@ inputs:
     ---
   localization/zh-cn/docs/b.md: link to @c
 outputs:
-  build.log: |
+  .errors.log: |
     ["info","at-uid-not-found","Cannot find uid 'c' using xref '@c'","docs/b.md",1,10]
   docs/a.json:
   docs/b.json:
 ---
 # loc build with mixed xref map
 commands:
+  - restore --locale zh-cn
   - build --locale zh-cn
 repos:
   https://docs.com/xref2#master:
@@ -722,6 +752,7 @@ outputs:
 ---
 # loc folder should be excluded from source docset during loc docset build
 commands:
+  - restore --locale zh-cn
   - build --locale zh-cn
 inputs:
   docfx.yml: |
@@ -733,7 +764,7 @@ inputs:
     [link to a](~/docs/a.md)
 outputs:
   docs/a.json:
-  build.log: |
+  .errors.log: |
     ["warning","link-out-of-scope","File 'localization/zh-cn/docs/a.md' referenced by link '~/localization/zh-cn/docs/a.md' will not be built because it is not included in docfx.yml","docs/a.md",1,1]
 ---
 # loc folder should be excluded from source docset during source docset build
@@ -749,6 +780,7 @@ outputs:
 ---
 # built metadata for loc files 1
 commands:
+  - restore --locale zh-cn
   - build --locale zh-cn
 repos:
   https://docs.com/metadata1#master:
@@ -765,6 +797,7 @@ outputs:
 # built metadata for loc files 2
 # all loc files are in same repo under different branch
 commands:
+  - restore --locale zh-cn
   - build --locale zh-cn
 repos:
   https://docs.com/metadata2#live:
@@ -783,6 +816,7 @@ outputs:
 # built metadata for loc files 3
 # all loc files are in source repo under different locale folder
 commands:
+  - restore --locale zh-cn
   - build --locale zh-cn
 inputs:
   docfx.yml: |
@@ -798,6 +832,7 @@ outputs:
 # all loc files are in same repo under different branch
 # bilingual
 commands:
+  - restore --locale zh-cn
   - build --locale zh-cn
 repos:
   https://docs.com/metadata4#master:
@@ -820,6 +855,7 @@ outputs:
 # bilingual build 1
 # [repository mapping]
 commands:
+  - restore --locale zh-cn
   - build --locale zh-cn
 repos:
   https://github.com/ss/c:
@@ -846,6 +882,7 @@ outputs:
 # bilingual build 2
 # [branch mapping]
 commands:
+  - restore --locale zh-cn
   - build --locale zh-cn
 repos:
   https://github.com/ss/a:
@@ -878,6 +915,7 @@ outputs:
 #     zh-cn/docs/a.md(modified by B and C)
 # for above case, the a.md's contributors are A and B
 commands:
+  - restore --locale zh-cn
   - build --locale zh-cn
 repos:
   https://github.com/ss/b:
@@ -922,6 +960,7 @@ outputs:
 ---
 # bilingual page's `gitcommit` url follows sxs content's commit history
 commands:
+  - restore --locale zh-cn
   - build --locale zh-cn
 repos:
   https://github.com/bilingual/a:
@@ -946,6 +985,7 @@ outputs:
 # 1. should not report warning
 # 2. `toc_rel` should be resolved to loc toc
 commands:
+  - restore --locale zh-cn
   - build --locale zh-cn
 repos:
   https://github.com/conflictedtoc/a:
@@ -967,6 +1007,7 @@ outputs:
 ---
 # fallback to deleted token/codesnippet
 commands:
+  - restore --locale zh-cn
   - build --locale zh-cn
 repos:
   https://github.com/deletedtoken/a:
@@ -993,6 +1034,7 @@ outputs:
 ---
 # fallback to deleted resource
 commands:
+  - restore --locale zh-cn
   - build --locale zh-cn
 repos:
   https://github.com/deletedres/a:
@@ -1012,13 +1054,14 @@ repos:
 outputs:
   docs/a.json: |
     {"conceptual":"<p><a href=\"resource.png\">link to deleted resource</a>\n<a href=\"b.md\">link to deleted markdown doesnt work</a></p>\n"}
-  build.log: |
+  .errors.log: |
     ["warning","file-not-found","Cannot find file 'b.md' relative to 'docs/a.md'","docs/a.md",2,1]
   .dependencymap.json: |
     {"dependencies":{"docs/a.md":[{"source":"docs/resource.png","type":"link"}]}}
 ---
 # fallback to deleted toc
 commands:
+  - restore --locale zh-cn
   - build --locale zh-cn
 repos:
   https://github.com/deletedtoc/a:
@@ -1085,12 +1128,13 @@ repos:
         docs/resource.png:
 outputs:
   docs/a.json:
-  build.log: |
+  .errors.log: |
     ["warning","file-not-found","Cannot find file 'resource.png' relative to 'docs/a.md'","docs/a.md",2,1]
     ["warning","include-not-found","Cannot resolve 'tokena.md' relative to 'docs/a.md'.","docs/a.md",1,1]
 ---
 # fallback to inclusion parent toc
 commands:
+  - restore --locale zh-cn
   - build --locale zh-cn
 repos:
   https://github.com/inclusiontoc/a:
@@ -1118,6 +1162,7 @@ outputs:
 # loc build gets restored files
 # from current docset firestly, then from fallback docset if has
 commands:
+  - restore --locale zh-cn
   - build --locale zh-cn
 repos:
   https://github.com/buildhistory/a:
@@ -1135,7 +1180,7 @@ outputs:
 ---
 # build from loc folder for folder mapping is not supported
 commands:
-  - build --no-restore
+  - build
 cwd: localization/zh-cn/
 repos:
   https://github.com/buildfromlocfolder/a:
@@ -1145,13 +1190,14 @@ repos:
             mapping: Folder
         localization/zh-cn/docs/a/a.md:
 outputs:
-  build.log: |
-    ["error","config-not-found","Cannot find 'docfx.yml/docfx.json' at *"]
+  .errors.log: |
+    ["error","config-not-found","Can't find config file 'docfx.yml/docfx.json' at *"]
 ---
 # loc build gets docfx config 1
 # from current docset firstly, then from fallback docset
 # [repo mapping]
 commands:
+  - restore --locale zh-cn
   - build --locale zh-cn
 repos:
   https://github.com/locconfig/a:
@@ -1174,6 +1220,7 @@ outputs:
 # from current docset firstly, then from fallback docset
 # [branch mapping]
 commands:
+  - restore --locale zh-cn
   - build --locale zh-cn
 repos:
   https://github.com/locconfig/b:
@@ -1200,6 +1247,7 @@ outputs:
 # from current docset firstly, then from fallback docset
 # [repo mapping] & bilingual
 commands:
+  - restore --locale zh-cn
   - build --locale zh-cn
 repos:
   https://github.com/locconfig/c:
@@ -1229,6 +1277,7 @@ outputs:
 # from current docset firstly, then from fallback docset
 # [branch mapping] & bilingual
 commands:
+  - restore --locale zh-cn
   - build --locale zh-cn
 repos:
   https://github.com/locconfig/d:
@@ -1259,6 +1308,7 @@ outputs:
 # loc build with different dependency git repository 1
 # [repo mapping] & bilingual
 commands:
+  - restore --locale zh-cn
   - build --locale zh-cn
 repos:
   https://github.com/locconfig2/c:
@@ -1299,6 +1349,7 @@ outputs:
 # loc build with different dependency git repository 2
 # [branch mapping] & bilingual
 commands:
+  - restore --locale zh-cn
   - build --locale zh-cn
 repos:
   https://github.com/locconfig3/c:
@@ -1340,6 +1391,7 @@ outputs:
 ---
 # Apply &lrm; for right to left languages
 commands:
+  - restore --locale ar-sa
   - build --locale ar-sa
 repos:
   https://docs.com/lrm#master:
@@ -1355,6 +1407,7 @@ outputs:
 ---
 # VSTS localized repo with folder mapping
 commands:
+  - restore --locale zh-cn
   - build --locale zh-cn
 repos:
   https://docascode.visualstudio.com/folder/_git/a:
@@ -1373,6 +1426,7 @@ outputs:
 ---
 # VSTS localized repo with branch mapping
 commands:
+  - restore --locale zh-cn
   - build --locale zh-cn
 repos:
   https://docascode.visualstudio.com/branch/_git/a#live:
@@ -1393,6 +1447,7 @@ outputs:
 ---
 # VSTS localized repo with branch mapping & bilingual
 commands:
+  - restore --locale zh-cn
   - build --locale zh-cn
 repos:
   https://docascode.visualstudio.com/branch/_git/b#live:
@@ -1417,6 +1472,7 @@ outputs:
 ---
 # VSTS localized repo with repo mapping
 commands:
+  - restore --locale zh-cn
   - build --locale zh-cn
 repos:
   https://docascode.visualstudio.com/repo/_git/a#live:
@@ -1435,6 +1491,7 @@ outputs:
 ---
 # VSTS localized repo with repo mapping & bilingual
 commands:
+  - restore --locale zh-cn
   - build --locale zh-cn
 repos:
   https://docascode.visualstudio.com/repo/_git/b#live:
@@ -1458,6 +1515,7 @@ outputs:
 ---
 # fallback to never existing token in multiple files
 commands:
+  - restore --locale zh-cn
   - build --locale zh-cn
 repos:
   https://github.com/neverexist/a:
@@ -1476,11 +1534,12 @@ outputs:
   docs/1.json:
   docs/2.json:
   docs/3.json:
-  build.log:
+  .errors.log:
 ---
 # fallback to corresponding source branch 1
 # [repo mapping]
 commands:
+  - restore --locale zh-cn
   - build --locale zh-cn
 repos:
   https://docs.com/branch-fallback1#test:
@@ -1504,6 +1563,7 @@ outputs:
 # fallback to corresponding source branch 2
 # [repo mapping & bilingual]
 commands:
+  - restore --locale zh-cn
   - build --locale zh-cn
 repos:
   https://docs.com/branch-fallback2#test:
@@ -1532,6 +1592,7 @@ outputs:
 # [from loc] fallback to master if corresponding source branch doesn't exists
 # [branch mapping]
 commands:
+  - restore --locale zh-cn
   - build --locale zh-cn
 repos:
   https://docs.com/branch-fallback3#master:

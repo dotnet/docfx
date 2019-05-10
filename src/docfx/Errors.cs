@@ -39,8 +39,8 @@ namespace Microsoft.Docs.Build
         ///   - in build scope include/exclude files
         ///   - in file metadata glob
         /// </summary>
-        public static Error InvalidGlobPattern(string pattern, Exception ex)
-            => new Error(ErrorLevel.Error, "invalid-glob-pattern", $"The glob pattern '{pattern}' is invalid: {ex.Message}");
+        public static Error GlobPatternInvalid(string pattern, Exception ex)
+            => new Error(ErrorLevel.Error, "glob-pattern-invalid", $"Glob pattern '{pattern}' is invalid: {ex.Message}");
 
         /// <summary>
         /// Docfx.yml/docfx.json doesn't exist at the repo root.
@@ -50,7 +50,7 @@ namespace Microsoft.Docs.Build
         ///     nor source repo root
         /// </summary>
         public static Error ConfigNotFound(string docsetPath)
-            => new Error(ErrorLevel.Error, "config-not-found", $"Cannot find 'docfx.yml/docfx.json' at '{docsetPath}'");
+            => new Error(ErrorLevel.Error, "config-not-found", $"Can't find config file 'docfx.yml/docfx.json' at {docsetPath}");
 
         /// <summary>
         /// Two files include each other.
@@ -77,8 +77,8 @@ namespace Microsoft.Docs.Build
         /// Examples:
         ///   - defined a non-existent author
         /// </summary>
-        public static Error GitHubUserNotFound(string login)
-            => new Error(ErrorLevel.Warning, "github-user-not-found", $"Cannot find user '{login}' on GitHub");
+        public static Error AuthorNotFound(string login)
+            => new Error(ErrorLevel.Warning, "author-not-found", $"Invalid value for author: '{login}' is not a valid GitHub ID");
 
         /// <summary>
         /// Failed to call a github api, e.g. GET /users/login.
@@ -127,8 +127,8 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Used invalid locale name(can't be resolved by <see cref="System.Globalization.CultureInfo"/>).
         /// </summary>
-        public static Error InvalidLocale(string locale)
-            => new Error(ErrorLevel.Error, "invalid-locale", $"Locale '{locale}' is not supported.");
+        public static Error LocaleInvalid(string locale)
+            => new Error(ErrorLevel.Error, "locale-invalid", $"Invalid locale: '{locale}'.");
 
         /// <summary>
         /// Failed to download any file defined with url.
@@ -137,8 +137,8 @@ namespace Microsoft.Docs.Build
         ///   - failed to download due to bad network
         ///   - when update user profile cache fails, need to download verify etag
         /// </summary>
-        public static Error DownloadFailed(string url, string message)
-            => new Error(ErrorLevel.Error, "download-failed", $"Download '{url}' failed: {message}");
+        public static Error DownloadFailed(string url)
+            => new Error(ErrorLevel.Error, "download-failed", $"Download failed for file '{url}'. Try closing and reopening the PR. If you get this Error again, file an issue.");
 
         /// <summary>
         /// Failed to update user profile cache file.
@@ -171,10 +171,16 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Error, "yaml-syntax-error", message, source);
 
         /// <summary>
+        /// Syntax error in yaml header(not duplicate key).
+        /// </summary>
+        public static Error YamlHeaderSyntaxError(Error error)
+            => new Error(ErrorLevel.Warning, "yaml-header-syntax-error", error.Message, error.File, error.Line, error.Column, error.EndLine, error.EndColumn);
+
+        /// <summary>
         /// Used duplicate yaml key in markdown yml header or schema document(yml).
         /// </summary>
         public static Error YamlDuplicateKey(SourceInfo source, string key)
-            => new Error(ErrorLevel.Error, "yaml-duplicate-key", $"Key '{key}' is already defined, remove the duplicate key.", source);
+            => new Error(ErrorLevel.Warning, "yaml-duplicate-key", $"Key '{key}' is already defined, remove the duplicate key.", source);
 
         /// <summary>
         /// Syntax error in json file.
@@ -215,8 +221,8 @@ namespace Microsoft.Docs.Build
         /// Examples:
         ///   - [Absolute](C:/a.md)
         /// </summary>
-        public static Error AbsoluteFilePath(Document relativeTo, string path)
-            => new Error(ErrorLevel.Warning, "absolute-file-path", $"File path cannot be absolute: '{path}'", relativeTo.ToString());
+        public static Error LocalFilePath(Document relativeTo, string path)
+            => new Error(ErrorLevel.Warning, "local-file-path", $"Link '{path}' points to a local file. Use a relative path instead", relativeTo.ToString());
 
         /// <summary>
         /// The fisrt tag in an article.md isn't h1 tag.
@@ -314,7 +320,7 @@ namespace Microsoft.Docs.Build
         ///   - resolve contributors or authors on a locale-sxs branch while the corresponding locale branch doesn't exist
         /// </summary>
         public static Error CommittishNotFound(string repo, string committish)
-            => new Error(ErrorLevel.Error, "committish-not-found", $"Cannot find branch, tag or commit '{committish}' for repo '{repo}'.");
+            => new Error(ErrorLevel.Error, "committish-not-found", $"Can't find branch, tag, or commit '{committish}' for repo {repo}.");
 
         /// <summary>
         /// Defined refrence with by #bookmark fragment between articles, which doesn't exist.
@@ -417,8 +423,8 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Failed to parse moniker string.
         /// </summary>
-        public static Error InvalidMonikerRange(string monikerRange, string message)
-            => new Error(ErrorLevel.Error, "invalid-moniker-range", $"MonikerRange `{monikerRange}` is invalid: {message}");
+        public static Error MonikerRangeInvalid(string monikerRange, string message)
+            => new Error(ErrorLevel.Error, "moniker-range-invalid", $"Invalid moniker range: '{monikerRange}': {message}");
 
         /// <summary>
         /// MonikerRange is not defined in docfx.yml or doesn't match an article.md,

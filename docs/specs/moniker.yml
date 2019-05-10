@@ -19,10 +19,10 @@ inputs:
   monikerDefinition.json: |
     {
       "monikers": [
-        { "name": "netcore-1.0", "product": ".NET Core" },
-        { "name": "netcore-1.1", "product": ".NET Core" },
-        { "name": "netcore-2.0", "product": ".NET Core" },
-        { "name": "netcore-2.1", "product": ".NET Core" }
+        { "moniker_name": "netcore-1.0", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-1.1", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-2.0", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-2.1", "product_name": ".NET Core" }
       ]
     }
 outputs:
@@ -55,8 +55,8 @@ inputs:
   monikerDefinition.json: |
     {
       "monikers": [
-        { "name": "netcore-1.0", "product": ".NET Core" },
-        { "name": "netcore-1.1", "product": ".NET Core" },
+        { "moniker_name": "netcore-1.0", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-1.1", "product_name": ".NET Core" },
       ]
     }
 outputs:
@@ -91,10 +91,10 @@ inputs:
   monikerDefinition.json: |
     {
       "monikers": [
-        { "name": "netcore-1.0", "product": ".NET Core" },
-        { "name": "netcore-1.1", "product": ".NET Core" },
-        { "name": "netcore-2.0", "product": ".NET Core" },
-        { "name": "netcore-2.1", "product": ".NET Core" }
+        { "moniker_name": "netcore-1.0", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-1.1", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-2.0", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-2.1", "product_name": ".NET Core" }
       ]
     }
 outputs:
@@ -138,9 +138,9 @@ inputs:
   monikerDefinition.json: |
     {
       "monikers": [
-        { "name": "netcore-1.0", "product": ".NET Core" },
-        { "name": "netcore-1.1", "product": ".NET Core" },
-        { "name": "netcore-1.2", "product": ".NET Core" },
+        { "moniker_name": "netcore-1.0", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-1.1", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-1.2", "product_name": ".NET Core" },
       ]
     }
 outputs:
@@ -171,10 +171,10 @@ inputs:
   monikerDefinition.json: |
     {
       "monikers": [
-        { "name": "netcore-1.0", "product": ".NET Core" },
-        { "name": "netcore-1.1", "product": ".NET Core" },
-        { "name": "netcore-1.2", "product": ".NET Core" },
-        { "name": "netcore-1.3", "product": ".NET Core" },
+        { "moniker_name": "netcore-1.0", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-1.1", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-1.2", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-1.3", "product_name": ".NET Core" },
       ]
     }
 outputs:
@@ -224,9 +224,9 @@ inputs:
   monikerDefinition.json: |
     {
       "monikers": [
-        { "name": "netcore-1.0", "product": ".NET Core" },
-        { "name": "netcore-1.1", "product": ".NET Core" },
-        { "name": "netcore-1.2", "product": ".NET Core" },
+        { "moniker_name": "netcore-1.0", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-1.1", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-1.2", "product_name": ".NET Core" },
       ]
     }
 outputs:
@@ -240,7 +240,7 @@ outputs:
       "conceptual": "<p>Moniker: netcore-1.2</p>",
       "monikers": ["netcore-1.2"]
     }
-  build.log: |
+  .errors.log: |
     ["error","publish-url-conflict","Two or more files of the same version('netcore-1.1') publish to the same url '/docs/a-old': 'docs/v1/a-old.md <redirection>', 'docs/v2/a-old.md <redirection>'"]
 ---
 # Two or more documents which don't have moniker or the moniker range is not mutually exclusive from others, publish to the same url
@@ -262,14 +262,14 @@ inputs:
   monikerDefinition.json: |
     {
       "monikers": [
-        { "name": "netcore-1.0", "product": ".NET Core" },
-        { "name": "netcore-1.1", "product": ".NET Core" },
-        { "name": "netcore-2.0", "product": ".NET Core" },
-        { "name": "netcore-2.1", "product": ".NET Core" }
+        { "moniker_name": "netcore-1.0", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-1.1", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-2.0", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-2.1", "product_name": ".NET Core" }
       ]
     }
 outputs:
-  build.log: |
+  .errors.log: |
     ["error","publish-url-conflict","Two or more files of the same version('netcore-2.0') publish to the same url '/docs/a': 'docs/a.md', 'docs/v1/a.md', 'docs/v2/a.md'"]
 ---
 # With moniker range not defined in config, user should not define it in file metadata
@@ -284,15 +284,15 @@ inputs:
   monikerDefinition.json: |
     {
       "monikers": [
-        { "name": "netcore-1.0", "product": ".NET Core" },
-        { "name": "netcore-1.1", "product": ".NET Core" },
-        { "name": "netcore-2.0", "product": ".NET Core" },
-        { "name": "netcore-2.1", "product": ".NET Core" }
+        { "moniker_name": "netcore-1.0", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-1.1", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-2.0", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-2.1", "product_name": ".NET Core" }
       ]
     }
 outputs:
   docs/v1/a.json:
-  build.log: |
+  .errors.log: |
     ["warning","moniker-config-missing","Moniker range missing in docfx.yml/docfx.json, user should not define it in file metadata or moniker zone.","docs/v1/a.md"]
 ---
 # With moniker range not defined in config, user should not define it in moniker zone
@@ -306,12 +306,12 @@ inputs:
   monikerDefinition.json: |
     {
       "monikers": [
-        { "name": "netcore-1.0", "product": ".NET Core" }
+        { "moniker_name": "netcore-1.0", "product_name": ".NET Core" }
       ]
     }
 outputs:
   docs/v1/a.json:
-  build.log: |
+  .errors.log: |
     ["warning","moniker-config-missing","Moniker range missing in docfx.yml/docfx.json, user should not define it in file metadata or moniker zone.","docs/v1/a.md"]
 ---
 # No intersection of config monikers and file monikers
@@ -330,15 +330,15 @@ inputs:
   monikerDefinition.json: |
     {
       "monikers": [
-        { "name": "netcore-1.0", "product": ".NET Core" },
-        { "name": "netcore-1.1", "product": ".NET Core" },
-        { "name": "netcore-2.0", "product": ".NET Core" },
-        { "name": "netcore-2.1", "product": ".NET Core" }
+        { "moniker_name": "netcore-1.0", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-1.1", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-2.0", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-2.1", "product_name": ".NET Core" }
       ]
     }
 outputs:
   docs/a.json:
-  build.log: |
+  .errors.log: |
     ["warning","empty-monikers","No moniker intersection between docfx.yml/docfx.json and file metadata. Config moniker range '< netcore-2.0' is 'netcore-1.0,netcore-1.1', while file moniker range '> netcore-2.0' is 'netcore-2.1'","docs/v1/a.md"]
 ---
 # No intersection of file level monikers and zone monikers
@@ -357,14 +357,14 @@ inputs:
   monikerDefinition.json: |
     {
       "monikers": [
-        { "name": "netcore-1.0", "product": ".NET Core" },
-        { "name": "netcore-1.1", "product": ".NET Core" },
-        { "name": "netcore-1.2", "product": ".NET Core" },
+        { "moniker_name": "netcore-1.0", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-1.1", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-1.2", "product_name": ".NET Core" },
       ]
     }
 outputs:
   9d4e15fd/docs/a.json:
-  build.log: |
+  .errors.log: |
     ["warning","empty-monikers","No intersection between zone and file level monikers. The result of zone level range string 'netcore-1.2' is 'netcore-1.2', while file level monikers is 'netcore-1.0,netcore-1.1'.","docs/v1/a.md"]
 ---
 # Define uid with moniker range, refer to it with valid moniker in the same docset
@@ -398,10 +398,10 @@ inputs:
   monikerDefinition.json: |
     {
       "monikers": [
-        { "name": "netcore-1.0", "product": ".NET Core" },
-        { "name": "netcore-1.1", "product": ".NET Core" },
-        { "name": "netcore-2.0", "product": ".NET Core" },
-        { "name": "netcore-2.1", "product": ".NET Core" }
+        { "moniker_name": "netcore-1.0", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-1.1", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-2.0", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-2.1", "product_name": ".NET Core" }
       ]
     }
 outputs:
@@ -460,10 +460,10 @@ inputs:
   monikerDefinition.json: |
     {
       "monikers": [
-        { "name": "netcore-1.0", "product": ".NET Core" },
-        { "name": "netcore-1.1", "product": ".NET Core" },
-        { "name": "netcore-2.0", "product": ".NET Core" },
-        { "name": "netcore-2.1", "product": ".NET Core" }
+        { "moniker_name": "netcore-1.0", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-1.1", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-2.0", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-2.1", "product_name": ".NET Core" }
       ]
     }
 outputs:
@@ -517,16 +517,16 @@ inputs:
   monikerDefinition.json: |
     {
       "monikers": [
-        { "name": "netcore-1.0", "product": ".NET Core" },
-        { "name": "netcore-1.1", "product": ".NET Core" },
-        { "name": "netcore-2.0", "product": ".NET Core" },
-        { "name": "netcore-2.1", "product": ".NET Core" }
+        { "moniker_name": "netcore-1.0", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-1.1", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-2.0", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-2.1", "product_name": ".NET Core" }
       ]
     }
 outputs:
   docs/c.json: |
     {"conceptual":"<p>Link to @a</p>"}
-  build.log: |
+  .errors.log: |
     ["error","moniker-overlapping","Two or more documents have defined overlapping moniker: 'netcore-2.0'"]
     ["info","at-uid-not-found","Cannot find uid 'a' using xref '@a'","docs/c.md",1,10]
     ["error","publish-url-conflict","Two or more files of the same version('netcore-2.0') publish to the same url '/docs/a': 'docs/v1/a.md', 'docs/v2/a.md'"]
@@ -562,10 +562,10 @@ inputs:
   monikerDefinition.json: |
     {
       "monikers": [
-        { "name": "netcore-1.0", "product": ".NET Core" },
-        { "name": "netcore-1.1", "product": ".NET Core" },
-        { "name": "netcore-2.0", "product": ".NET Core" },
-        { "name": "netcore-2.1", "product": ".NET Core" }
+        { "moniker_name": "netcore-1.0", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-1.1", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-2.0", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-2.1", "product_name": ".NET Core" }
       ]
     }
 outputs:
@@ -586,7 +586,7 @@ outputs:
     }
   xrefmap.json: | 
     {"references":[{"uid":"a","href":"https://docs.com/docs/a","name":"netcore-2.0"}]}
-  build.log: |
+  .errors.log: |
     ["warning","invalid-uid-moniker","Moniker 'netcore-1.0' is not defined with uid 'a'","docs/b.md",1,7]
 ---
 # Define same uid with and without moniker range
@@ -625,10 +625,10 @@ inputs:
   monikerDefinition.json: |
     {
       "monikers": [
-        { "name": "netcore-1.0", "product": ".NET Core" },
-        { "name": "netcore-1.1", "product": ".NET Core" },
-        { "name": "netcore-2.0", "product": ".NET Core" },
-        { "name": "netcore-2.1", "product": ".NET Core" }
+        { "moniker_name": "netcore-1.0", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-1.1", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-2.0", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-2.1", "product_name": ".NET Core" }
       ]
     }
 outputs:
@@ -696,10 +696,10 @@ inputs:
   monikerDefinition.json: |
     {
       "monikers": [
-        { "name": "netcore-1.0", "product": ".NET Core" },
-        { "name": "netcore-1.1", "product": ".NET Core" },
-        { "name": "netcore-2.0", "product": ".NET Core" },
-        { "name": "netcore-2.1", "product": ".NET Core" }
+        { "moniker_name": "netcore-1.0", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-1.1", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-2.0", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-2.1", "product_name": ".NET Core" }
       ]
     }
 outputs:
@@ -726,7 +726,7 @@ outputs:
     }
   xrefmap.json: | 
     {"!references":null}
-  build.log: |
+  .errors.log: |
     ["error","uid-conflict","Two or more documents have defined the same Uid 'a': docs/a.md,docs/b.md"]
     ["info","at-uid-not-found","Cannot find uid 'a' using xref '@a'","docs/c.md",1,10]
 ---
@@ -762,10 +762,10 @@ inputs:
   monikerDefinition.json: |
     {
       "monikers": [
-        { "name": "netcore-1.0", "product": ".NET Core" },
-        { "name": "netcore-1.1", "product": ".NET Core" },
-        { "name": "netcore-1.2", "product": ".NET Core" },
-        { "name": "netcore-1.3", "product": ".NET Core" }
+        { "moniker_name": "netcore-1.0", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-1.1", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-1.2", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-1.3", "product_name": ".NET Core" }
       ]
     }
 outputs:
@@ -834,10 +834,10 @@ inputs:
   monikerDefinition.json: |
     {
       "monikers": [
-        { "name": "netcore-1.0", "product": ".NET Core" },
-        { "name": "netcore-1.1", "product": ".NET Core" },
-        { "name": "netcore-1.2", "product": ".NET Core" },
-        { "name": "netcore-1.3", "product": ".NET Core" }
+        { "moniker_name": "netcore-1.0", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-1.1", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-1.2", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-1.3", "product_name": ".NET Core" }
       ]
     }
 outputs:
@@ -875,12 +875,12 @@ inputs:
   monikerDefinition.json: |
     {
       "monikers": [
-        { "name": "netcore-1.0", "product": ".NET Core" },
-        { "name": "netcore-2.0", "product": ".NET Core" },
+        { "moniker_name": "netcore-1.0", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-2.0", "product_name": ".NET Core" },
       ]
     }
 outputs:
-  build.log: |
+  .errors.log: |
     ["error","publish-url-conflict","Two or more files of the same version('netcore-2.0') publish to the same url '/docs/toc.json': 'docs/v1/TOC.md', 'docs/v2/TOC.md'"]
 ---
 # No intersection of config monikers and file monikers of TOC file
@@ -899,13 +899,13 @@ inputs:
   monikerDefinition.json: |
     {
       "monikers": [
-        { "name": "netcore-1.0", "product": ".NET Core" },
-        { "name": "netcore-2.0", "product": ".NET Core" },
+        { "moniker_name": "netcore-1.0", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-2.0", "product_name": ".NET Core" },
       ]
     }
 outputs:
   docs/toc.json:
-  build.log: |
+  .errors.log: |
     ["warning","empty-monikers","No moniker intersection between docfx.yml/docfx.json and file metadata. Config moniker range '>= netcore-2.0' is 'netcore-2.0', while file moniker range 'netcore-1.0' is 'netcore-1.0'","docs/v1/TOC.md"]
 ---
 # Build resource file with moniker
@@ -931,8 +931,8 @@ inputs:
   monikerDefinition.json: |
     {
       "monikers": [
-        { "name": "netcore-1.0", "product": ".NET Core" },
-        { "name": "netcore-1.1", "product": ".NET Core" },
+        { "moniker_name": "netcore-1.0", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-1.1", "product_name": ".NET Core" },
       ]
     }
 outputs:
@@ -976,9 +976,9 @@ inputs:
   monikerDefinition.json: |
     {
       "monikers": [
-        { "name": "netcore-1.0", "product": ".NET Core" },
-        { "name": "netcore-1.1", "product": ".NET Core" },
-        { "name": "netcore-1.2", "product": ".NET Core" }
+        { "moniker_name": "netcore-1.0", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-1.1", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-1.2", "product_name": ".NET Core" }
       ]
     }
 outputs:
@@ -991,5 +991,16 @@ outputs:
           { "url": "/docs/a" }
       ]
     }
-  build.log: |
+  .errors.log: |
     ["error","publish-url-conflict","Two or more files of the same version('netcore-1.1') publish to the same url '/docs/c.png': 'docs/v1/c.png', 'docs/v2/c.png'"]
+---
+# Invalid moniker definition
+inputs:
+  docfx.yml: |
+    monikerDefinition: monikerDefinition.json
+  a.md:
+  monikerDefinition.json: |
+    { "monikers": [
+outputs:
+  .errors.log: |
+    ["error","json-syntax-error","Unexpected end when deserializing array.","monikerDefinition.json",2]
