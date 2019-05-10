@@ -214,7 +214,7 @@ inputs:
     #YamlMime:TestPage
 outputs:
   docs/a.json: |
-    { "content": "<p>link to <a href=\"data.json\"> data</a> or <a href=\"page\"> page</a></p>" }
+    { "conceptual": "<p>link to <a href=\"data.json\"> data</a> or <a href=\"page\"> page</a></p>" }
   docs/data.json:
   docs/page.json:
 ---
