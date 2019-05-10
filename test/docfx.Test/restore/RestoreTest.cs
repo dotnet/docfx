@@ -49,7 +49,7 @@ dependencies:
             // acquire slot lock firstly
             ProcessUtility.AcquireExclusiveLock($"{gitUrl}/1", true);
 
-            // run restroe and check the work trees
+            // run restore and check the work trees
             await Program.Run(new[] { "restore", docsetPath });
             Assert.Equal(1, GetWorkTreeFolderCount(restoreDir));
         }
@@ -70,7 +70,7 @@ dependencies:
   dep5: {gitUrl}#master
   dep6: {gitUrl}#chi");
 
-            // run restroe and check the work trees
+            // run restore and check the work trees
             await Program.Run(new[] { "restore", docsetPath });
             Assert.Equal(2, GetWorkTreeFolderCount(restoreDir));
 
