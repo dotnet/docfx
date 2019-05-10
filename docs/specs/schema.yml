@@ -41,7 +41,7 @@ inputs:
       "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/LandingData.json"
     }
 outputs:
-  build.log: |
+  .errors.log: |
    ["error","schema-not-found","Unknown schema ''","docs/a.yml",1,1]
    ["error","schema-not-found","Unknown schema ''","docs/b.json",1,1]
 ---
@@ -71,7 +71,7 @@ inputs:
   docs/c.json: |
     { "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/SchemaNotExisting.json"}
 outputs:
-  build.log: |
+  .errors.log: |
    ["error","schema-not-found","Schema 'SchemaNotExisting' not found.","docs/a.yml",1,1]
    ["error","schema-not-found","Schema 'SchemaNotExisting' not found.","docs/b.json",2,95]
    ["error","schema-not-found","Schema 'SchemaNotExisting' not found.","docs/c.json",1,95]
@@ -122,7 +122,7 @@ inputs:
 outputs:
   toc.json:
   docs/toc.json:
-  build.log: |
+  .errors.log: |
     ["error","violate-schema","Cannot deserialize the current JSON object * into type 'System.String' because the type requires a JSON primitive value *","docs/a.yml",3,18]
 ---
 # Schema documents with Href content referencing resource file, the resouce file should be outputed
@@ -158,7 +158,7 @@ inputs:
 outputs:
   docs/a.json: |
     { "content": {} }
-  build.log: |
+  .errors.log: |
     ["info","null-value","'description' contains null value","docs/a.yml",2,1]
 ---
 # Support schema documents with inline markdown content
@@ -243,7 +243,7 @@ inputs:
   docs/b.json: |
     {
 outputs:
-  build.log: |
+  .errors.log: |
     ["error","yaml-syntax-error","Mapping values are not allowed in this context.","docs/a.yml",2,5]
     ["error","json-syntax-error","Error reading JObject from JsonReader.","docs/b.json",2]
 ---
@@ -256,5 +256,5 @@ inputs:
     #YamlMime:TestData
 outputs:
   docs/b.json:
-  build.log: |
+  .errors.log: |
     ["error","json-syntax-error","Invalid JavaScript property identifier character: }.","docs/a.json",1,2]
