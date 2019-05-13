@@ -87,7 +87,7 @@ namespace Microsoft.Docs.Build
         ///   - using invalid access token(more detailed info in ex.Message)
         /// </summary>
         public static Error GitHubApiFailed(string api, Exception ex)
-            => new Error(ErrorLevel.Warning, "github-api-failed", $"Failed calling GitHub API '{api}': {ex.Message}");
+            => new Error(ErrorLevel.Warning, "github-api-failed", $"Call to GitHub API '{api}' failed: {ex.Message} Try closing and reopening the PR. If you get this Error again, file an issue.");
 
         /// <summary>
         /// In yaml-format toc, topicHref SHOULD reference an article,
@@ -303,16 +303,10 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Error, "invalid-metadata-type", $"Metadata '{name}' can only be a scalar value or string array", source);
 
         /// <summary>
-        /// Failed to compute specific info of a commit.
-        /// </summary>
-        public static Error GitLogError(string repoPath, int errorCode)
-            => new Error(ErrorLevel.Error, "git-log-error", $"Error computing git log [{errorCode}] for '{repoPath}', did you use a shallow clone?");
-
-        /// <summary>
         /// Git.exe isn't installed.
         /// </summary>
         public static Error GitNotFound()
-            => new Error(ErrorLevel.Error, "git-not-found", $"Cannot find git, install git https://git-scm.com/");
+            => new Error(ErrorLevel.Error, "git-not-found", $"Git isn't installed on the target machine. Try closing and reopening the PR. If you get this Error again, file an issue.");
 
         /// <summary>
         /// Failed to invoke `git revparse`(resolve commit history of a file on a non-existent branch).
