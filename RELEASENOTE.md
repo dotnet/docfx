@@ -1,8 +1,9 @@
-Version Notes (Current Version: v2.43)
+Version Notes (Current Version: v2.42.3)
 =======================================
 
-v2.43(Pre-Release)
+v2.42.3
 -----------
+1. Bug fix: use remove instead of add to remove duplicate items.
 
 v2.42.2
 -----------
