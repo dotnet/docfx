@@ -13,7 +13,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class Build
     {
-        public static async Task Run(string docsetPath, CommandLineOptions options, Report report)
+        public static async Task Run(string docsetPath, CommandLineOptions options, ErrorLog errorLog)
         {
             var repository = Repository.Create(docsetPath);
             Telemetry.SetRepository(repository?.Remote, repository?.Branch);
@@ -23,7 +23,7 @@ namespace Microsoft.Docs.Build
 
             try
             {
-                await Run(docsetPath, repository, locale, options, report, restoreMap, fallbackRepo);
+                await Run(docsetPath, repository, locale, options, errorLog, restoreMap, fallbackRepo);
             }
             finally
             {
@@ -36,22 +36,22 @@ namespace Microsoft.Docs.Build
             Repository repository,
             string locale,
             CommandLineOptions options,
-            Report report,
+            ErrorLog errorLog,
             RestoreMap restoreMap,
             Repository fallbackRepo = null)
         {
             XrefMap xrefMap = null;
             var (configErrors, config) = GetBuildConfig(docsetPath, options, locale, fallbackRepo);
-            report.Configure(config);
+            errorLog.Configure(config);
 
             // just return if config loading has errors
-            if (report.Write(config.ConfigFileName, configErrors))
+            if (errorLog.Write(config.ConfigFileName, configErrors))
                 return;
 
-            var docset = GetBuildDocset(new Docset(report, docsetPath, locale, config, options, restoreMap, repository, fallbackRepo));
+            var docset = GetBuildDocset(new Docset(errorLog, docsetPath, locale, config, options, restoreMap, repository, fallbackRepo));
             var outputPath = Path.Combine(docsetPath, config.Output.Path);
 
-            using (var context = Context.Create(outputPath, report, docset, () => xrefMap))
+            using (var context = Context.Create(outputPath, errorLog, docset, () => xrefMap))
             {
                 xrefMap = XrefMap.Create(context, docset);
                 var tocMap = TableOfContentsMap.Create(context, docset);
@@ -77,7 +77,7 @@ namespace Microsoft.Docs.Build
                     }
                 }
 
-                context.Report.Write(await saveGitHubUserCache);
+                context.ErrorLog.Write(await saveGitHubUserCache);
 
                 context.ContributionProvider.UpdateCommitBuildTime();
             }
@@ -142,8 +142,8 @@ namespace Microsoft.Docs.Build
                 {
                     foreach (var (error, file) in context.BookmarkValidator.Validate())
                     {
-                        // TODO: clean up Report.Write inputting file, should take file from Error
-                        if (context.Report.Write(file.FilePath, new List<Error> { error }))
+                        // TODO: clean up ErrorLog.Write inputting file, should take file from Error
+                        if (context.ErrorLog.Write(file.FilePath, new List<Error> { error }))
                         {
                             context.PublishModelBuilder.MarkError(file);
                         }
@@ -181,7 +181,7 @@ namespace Microsoft.Docs.Build
                         break;
                 }
 
-                var hasErrors = context.Report.Write(file.ToString(), errors);
+                var hasErrors = context.ErrorLog.Write(file.ToString(), errors);
                 if (hasErrors)
                 {
                     context.PublishModelBuilder.MarkError(file);
@@ -192,7 +192,7 @@ namespace Microsoft.Docs.Build
             }
             catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
             {
-                context.Report.Write(file.ToString(), dex.Error);
+                context.ErrorLog.Write(file.ToString(), dex.Error);
                 context.PublishModelBuilder.MarkError(file);
                 return new List<string>();
             }

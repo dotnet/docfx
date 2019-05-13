@@ -4,7 +4,7 @@ inputs:
   docfx.yml: |
     files: docs/**/*.md
   docfx.json: |
-    { "files": "ignore.md" }  
+    { "files": "ignore.md" }
   ignore.md:
   docs/index.md:
 outputs:
@@ -82,7 +82,7 @@ inputs:
   docs/a.md:
   docs/b.md:
 outputs:
-  build.log: |
+  .errors.log: |
     ["error","violate-schema","Expected type String, please input String or type compatible with String.","docfx.yml",3,5]
 ---
 # File metadata of object form
@@ -129,7 +129,7 @@ outputs:
   docs/a.json: |
     {
       "key": "value",
-      "content": "<p><a href=\"redirect?a#b\">redirect</a></p>"
+      "conceptual": "<p><a href=\"redirect?a#b\">redirect</a></p>"
     }
 ---
 # routes
@@ -268,7 +268,7 @@ inputs:
     [b](b.md)
 outputs:
   docs/a.json: |
-    { "content": "<p><a href=\"b.md\">b</a></p>" }
+    { "conceptual": "<p><a href=\"b.md\">b</a></p>" }
 ---
 # log with default log level when docfx crashes, even the corresponding rule is turned off
 inputs:
@@ -278,7 +278,7 @@ inputs:
     gitHub:
       userCache: user_profile.json
 outputs:
-  build.log: |
+  .errors.log: |
     ["error","file-not-found","Invalid file link: 'user_profile.json'.","*",4,14]
 ---
 # Treat warnings as errors
@@ -288,7 +288,7 @@ inputs:
   docs/a.md: |
     [b](b.md)
 outputs:
-  build.log: |
+  .errors.log: |
     ["error","file-not-found","Invalid file link: 'b.md'.","docs/a.md",1,1]
 ---
 # Invalid redirection file
@@ -297,7 +297,7 @@ inputs:
     redirections:
       docs/TOC.md: /absolute/path
 outputs:
-  build.log: |
+  .errors.log: |
     ["error","invalid-redirection","The 'docs/TOC.md' shouldn't belong to redirections since it's a TableOfContents","docfx.yml",2,16]
 ---
 # Conflicted redirection file
@@ -308,7 +308,7 @@ inputs:
     redirectionsWithoutId:
       docs/a.md: /absolute/path2
 outputs:
-  build.log: |
+  .errors.log: |
     ["error","redirection-conflict","The 'docs/a.md' appears twice or more in the redirection mappings","docfx.yml"]
 ---
 # Out of scope redirection file
@@ -319,7 +319,7 @@ inputs:
       docs/a.md: /absolute/path1
       b.md: /absolute/path2
 outputs:
-  build.log: |
+  .errors.log: |
     ["info","redirection-out-of-scope","Redirection file 'b.md' will not be built because it is not included in build scope","docfx.yml",4,9]
 ---
 # Out of scope file with conflicted id
@@ -330,7 +330,7 @@ inputs:
       a.md: /absolute/path1
       b.md: /absolute/path1
 outputs:
-  build.log: |
+  .errors.log: |
     ["info","redirection-out-of-scope","Redirection file 'a.md' will not be built because it is not included in build scope","docfx.yml",3,9]
     ["info","redirection-out-of-scope","Redirection file 'b.md' will not be built because it is not included in build scope","docfx.yml",4,9]
 ---
@@ -343,7 +343,7 @@ inputs:
     redirectionsWithoutId:
       docs/a.md: /absolute/path2
 outputs:
-  build.log: |
+  .errors.log: |
     ["error","invalid-redirection","The 'docs/TOC.md' shouldn't belong to redirections since it's a TableOfContents","docfx.yml",2,16]
     ["error","redirection-conflict","The 'docs/a.md' appears twice or more in the redirection mappings","docfx.yml"]
 ---
@@ -354,8 +354,8 @@ inputs:
     localization:
       defaultLocale: wrong/wrong
 outputs:
-  build.log: |
-    ["error","invalid-locale","Locale 'wrong/wrong' is not supported."]
+  .errors.log: |
+    ["error","locale-invalid","Invalid locale: 'wrong/wrong'."]
 ---
 # branch overwrite config
 repo: https://github.com/docascode/docfx-test-dependencies#master
@@ -369,6 +369,7 @@ outputs:
 ---
 # locale overwrite config
 commands:
+  - restore --locale zh-cn
   - build --locale zh-cn
 inputs:
   docfx.yml: |
@@ -439,7 +440,7 @@ inputs:
 outputs:
   a.json:
   b.png:
-  build.log: |
+  .errors.log: |
     ["info","null-value","'copyResources' contains null value","docfx.yml",10,5]
 ---
 # invalid overwrite config
@@ -455,7 +456,7 @@ inputs:
   a.md:
 outputs:
   a.json:
-  build.log: |
+  .errors.log: |
     ["warning","unknown-field","Could not find member 'locales: zh-cn' on object of type 'Config'.","docfx.yml",4,1]
 ---
 # redirect to in config.redirections must start with '/'
@@ -465,7 +466,7 @@ inputs:
       a.md: https://docs.microsoft.com/docfx/a
       b.md: a
 outputs:
-  build.log: |
+  .errors.log: |
     ["warning","invalid-redirect-to","The redirect url 'https://docs.microsoft.com/docfx/a' must start with '/'","docfx.yml",2,9]
     ["warning","invalid-redirect-to","The redirect url 'a' must start with '/'","docfx.yml",3,9]
 ---
@@ -487,5 +488,5 @@ inputs:
           - 2
   docs/a.md:
 outputs:
-  build.log: |
+  .errors.log: |
     ["error","violate-schema","Expected type String, please input String or type compatible with String.","docfx.yml",4,7]

@@ -72,7 +72,7 @@ inputs:
   docs/TOC.json: |
     [{ "name": "title" ]
 outputs:
-  build.log: |
+  .errors.log: |
     ["error","json-syntax-error","JsonToken EndArray is not valid for closing JsonType Object.","docs/TOC.json",1,20]
 ---
 # Probe TOC in JSON format
@@ -157,7 +157,7 @@ outputs:
           }
       ]
     }
-  build.log: |
+  .errors.log: |
     ["warning","file-not-found","Invalid file link: 'no-existing.md'.","docs/TOC.md",3,5]
     ["warning","file-not-found","Invalid file link: 'no-existing.system.md'.","docs/TOC.md",4,5]
     ["warning","file-not-found","Invalid file link: '../no-existing.md'.","docs/TOC.md",5,5]
@@ -171,7 +171,7 @@ inputs:
     monikerRange: []
     ---
 outputs:
-  build.log: |
+  .errors.log: |
     ["error","violate-schema","Expected type String, please input String or type compatible with String.","docs/TOC.md",2,15]
 ---
 # Absolute file reference
@@ -369,7 +369,7 @@ inputs:
     ## [Reference TOC back](../TOC.md)
   docs/index.md:
 outputs:
-  build.log: |
+  .errors.log: |
     ["error","circular-reference","Found circular reference: 'docs/TOC.md' --> 'docs/f1/TOC.md' --> 'docs/f2/TOC.md' --> 'docs/TOC.md'","docs/TOC.md"]
 ---
 # Circle toc referenceing 2
@@ -381,7 +381,7 @@ inputs:
     ## [Reference itself](TOC.md)
   docs/index.md:
 outputs:
-  build.log: |
+  .errors.log: |
     ["error","circular-reference","Found circular reference: 'docs/TOC.md' --> 'docs/TOC.md'","docs/TOC.md"]
 ---
 # Reference to a folder, basic usages
@@ -484,7 +484,7 @@ outputs:
     }
   docs/f1/toc.json:
   docs/f2/toc.json:
-  build.log: |
+  .errors.log: |
     ["warning","file-not-found","Invalid file link: 'b.md'.","docs/f2/TOC.md",3,4]
 ---
 # Topic href can replace href
@@ -631,7 +631,7 @@ outputs:
           }
        ]
     }
-  build.log: |
+  .errors.log: |
     ["warning","link-out-of-scope","File 'docs/f1/n2.md' referenced by link '~/docs/f1/n2.md' will not be built because it is not included in docfx.yml","docs/f1/TOC.yml",3,14]
 ---
 # Combine topic href and href(toc) => href + items
@@ -668,7 +668,7 @@ outputs:
           }
        ]
     }
-  build.log: |
+  .errors.log: |
     ["warning","link-out-of-scope","File 'docs/f1/f11/n1.md' referenced by link 'f11/n1.md' will not be built because it is not included in docfx.yml","docs/f1/TOC.yml",3,14]
     ["warning","link-out-of-scope","File 'docs/f1/f11/n1.md' referenced by link 'n1.md' will not be built because it is not included in docfx.yml","docs/f1/f11/TOC.md",1,3]
 ---
@@ -761,7 +761,7 @@ inputs:
   docs/f1/TOC.md:
 outputs:
   docs/f1/toc.json:
-  build.log: |
+  .errors.log: |
     ["error","invalid-topic-href","The topic href 'f1/' can only reference to a local file or absolute path","docs/TOC.yml",2,14]
     ["error","invalid-topic-href","The topic href 'f1/TOC.md' can only reference to a local file or absolute path","docs/TOC.yml",4,14]
     ["error","invalid-topic-href","The topic href 'f1/TOC.md' can only reference to a local file or absolute path","docs/TOC.yml",6,14]
@@ -780,7 +780,7 @@ inputs:
 outputs:
   docs/f1/toc.json:
   docs/f1/a.json:
-  build.log: |
+  .errors.log: |
     ["error","invalid-toc-href","The toc href 'f1/a.md' can only reference to a local TOC file, folder or absolute path","docs/TOC.yml",2,12]
     ["error","invalid-toc-href","The toc href 'f1/a.md' can only reference to a local TOC file, folder or absolute path","docs/TOC.yml",4,12]
 ---
@@ -790,7 +790,7 @@ inputs:
   docs/TOC.yml: |
     - name: Duplicated keys
       topicHref: f1/a.md
-      topicHref: f1/a.md
+      topicHref: f1/b.md
       tocHref: f1/
       href: f1/b.md
   docs/f1/a.md:
@@ -798,8 +798,10 @@ inputs:
 outputs:
   docs/f1/a.json:
   docs/f1/b.json:
-  build.log: |
-    ["error","yaml-duplicate-key","Key 'topicHref' is already defined, remove the duplicate key.","docs/TOC.yml",3,3]
+  docs/toc.json: |
+    {"items":[{"name":"Duplicated keys","href":"f1/b"}]}
+  .errors.log: |
+    ["warning","yaml-duplicate-key","Key 'topicHref' is already defined, remove the duplicate key.","docs/TOC.yml",3,3]
 ---
 # The included TOC's errors/warning should be assigned to itself, not its parent
 inputs:
@@ -813,7 +815,7 @@ inputs:
     - name: Invalid TocHref Reference
       tocHref: index.md
 outputs:
-  build.log: |
+  .errors.log: |
     ["warning","file-not-found","Invalid file link: 'index.md'.","docs/f1/TOC.yml",2,9]
     ["error","invalid-toc-href","The toc href 'index.md' can only reference to a local TOC file, folder or absolute path","docs/f1/TOC.yml",4,12]
 ---
@@ -833,7 +835,7 @@ inputs:
               tocHref: index.md
               href: index.md
 outputs:
-  build.log: |
+  .errors.log: |
     ["warning","file-not-found","Invalid file link: 'index.md'.","docs/TOC.yml",3,9]
     ["warning","file-not-found","Invalid file link: 'index.md'.","docs/TOC.yml",7,13]
     ["warning","file-not-found","Invalid file link: 'index.md'.","docs/TOC.yml",11,17]
@@ -975,7 +977,7 @@ outputs:
   docs/f1/b.json:
   docs/toc.json: |
     { "items":[{ "!tocHref": null }] }
-  build.log: |
+  .errors.log: |
     ["info","null-value","'tocHref' contains null value","docs/TOC.yml",3,3]
 ---
 # Toc with schema violation
@@ -992,7 +994,7 @@ inputs:
 outputs:
   docs/f1/a.json:
   docs/f1/b.json:
-  build.log: |
+  .errors.log: |
     ["info","null-value","'tocHref' contains null value","docs/TOC.yml",2,3]
     ["error","violate-schema","Required property 'name' not found in JSON.","docs/TOC.yml",1,3]
 ---
@@ -1041,7 +1043,7 @@ inputs:
   docs/test.md:
 outputs:
   docs/test.json:
-  build.log: |
+  .errors.log: |
     ["error","invalid-toc-syntax","The toc syntax '[bad1]()\n#[bad2](test.md)\n>_<\n#bad4' is invalid, the opening sequence of # characters must be followed by a space or by the end of line. Refer to [ATX heading](https://spec.commonmark.org/0.28/#atx-heading) to fix it","docs/TOC.md",2,1]
 ---
 # Skip-level Toc markdown
@@ -1051,7 +1053,7 @@ inputs:
     # level 1
     ### level 3
 outputs:
-  build.log: |
+  .errors.log: |
     ["error","invalid-toc-level","The toc level can't be skipped from 1 to 3","docs/TOC.md",2,1]
 ---
 # Missing TOC head name
@@ -1061,7 +1063,7 @@ inputs:
     # Title
     ##
 outputs:
-  build.log: |
+  .errors.log: |
     ["error","missing-toc-head","The toc head name is missing in '##'","docs/TOC.md",2,1]
 ---
 # Multiple leaf inlines in toc title
@@ -1103,7 +1105,7 @@ inputs:
 outputs:
   docs/a.json: |
     {"toc_rel": "toc.json"}
-  build.log: |
+  .errors.log: |
     ["error","output-path-conflict","Two or more files output to the same path 'docs/toc.json': 'docs/TOC.md', 'docs/TOC.yml'"]
 ---
 # validate bookmarks in toc
@@ -1123,7 +1125,7 @@ outputs:
         { "name": "link to title 2", "href": "a#title-2", "!monikers":null }
       ]
     }
-  build.log: |
+  .errors.log: |
     ["warning","external-bookmark-not-found","Cannot find bookmark '#title-2' in 'docs/a.md', did you mean '#title-1'?","docs/TOC.md",2,3]
 ---
 # reference uid within link
@@ -1191,7 +1193,7 @@ outputs:
         { "name":"Uid Not Found","href":"b","!monikers":null }
       ]
     }
-  build.log: |
+  .errors.log: |
     ["warning","uid-not-found","Cannot find uid 'c' using xref 'c'","docs/TOC.yml",5,8]
 ---
 # uid reference with monikers in yaml toc
@@ -1323,7 +1325,7 @@ inputs:
 outputs:
   docs/a.json:
   docs/b.json:
-  build.log: |
+  .errors.log: |
     ["error","invalid-toc-syntax","The toc syntax '# @b abc' is invalid, multiple inlines in one heading block is not allowed. Refer to [ATX heading](https://spec.commonmark.org/0.28/#atx-heading) to fix it","docs/TOC.md",1,1]
     ["error","invalid-toc-syntax","The toc syntax '# @b @a' is invalid, multiple inlines in one heading block is not allowed. Refer to [ATX heading](https://spec.commonmark.org/0.28/#atx-heading) to fix it","docs/TOC.md",2,1]
     ["error","invalid-toc-syntax","The toc syntax '# [Title X](a.md) bcd' is invalid, multiple inlines in one heading block is not allowed. Refer to [ATX heading](https://spec.commonmark.org/0.28/#atx-heading) to fix it","docs/TOC.md",3,1]

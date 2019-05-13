@@ -10,10 +10,14 @@ namespace Microsoft.Docs.Build
     [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
     public class OutputModel : InputMetadata
     {
+        [JsonIgnore]
         public string SchemaType { get; set; }
 
         public object Content { get; set; }
 
+        public string Conceptual { get; set; }
+
+        [JsonProperty("wordCount")]
         public long WordCount { get; set; }
 
         public string TocRel { get; set; }
@@ -49,7 +53,16 @@ namespace Microsoft.Docs.Build
 
         public string SiteName { get; set; }
 
-        public string Conceptual => Content as string;
+        public string DepotName { get; set; }
+
+        [JsonProperty("_path")]
+        public string Path { get; set; }
+
+        [JsonProperty("_op_canonicalUrlPrefix")]
+        public string CanonicalUrlPrefix { get; set; }
+
+        [JsonProperty("_op_pdfUrlPrefixTemplate")]
+        public string PdfUrlPrefixTemplate { get; set; }
 
         // todo: remove this if `enable_loc_sxs` works well
         public string BilingualType => EnableLocSxs ? "hover over" : null;
