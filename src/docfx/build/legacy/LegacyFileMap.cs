@@ -29,7 +29,7 @@ namespace Microsoft.Docs.Build
                         var fileItem = LegacyFileMapItem.Instance(legacyOutputFilePathRelativeToSiteBasePath, document.ContentType);
                         if (fileItem != null)
                         {
-                            listBuilder.Add((document.ToLegacyPathRelativeToBasePath(docset), fileItem));
+                            listBuilder.Add((PathUtility.NormalizeFile(document.ToLegacyPathRelativeToBasePath(docset)), fileItem));
                         }
                     });
 
@@ -39,7 +39,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public static void Convert(Docset docset, Context context, IEnumerable<(string legacyFilePathRelativeToBaseFolder, LegacyFileMapItem fileMapItem)> items)
+        public static void Convert(Docset docset, Context context, IEnumerable<(string path, LegacyFileMapItem fileMapItem)> items)
         {
             context.Output.WriteJson(
                 new
@@ -49,8 +49,7 @@ namespace Microsoft.Docs.Build
                     base_path = $"/{docset.SiteBasePath}",
                     source_base_path = docset.Config.DocumentId.SourceBasePath,
                     version_info = new { },
-                    file_mapping = items.ToDictionary(
-                        key => PathUtility.NormalizeFile(key.legacyFilePathRelativeToBaseFolder), v => v.fileMapItem),
+                    file_mapping = items.OrderBy(item => item.path).ToDictionary(item => item.path, item => item.fileMapItem),
                 },
                 Path.Combine(docset.SiteBasePath, "filemap.json"));
         }
