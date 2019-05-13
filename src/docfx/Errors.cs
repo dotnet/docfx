@@ -39,8 +39,8 @@ namespace Microsoft.Docs.Build
         ///   - in build scope include/exclude files
         ///   - in file metadata glob
         /// </summary>
-        public static Error InvalidGlobPattern(string pattern, Exception ex)
-            => new Error(ErrorLevel.Error, "invalid-glob-pattern", $"The glob pattern '{pattern}' is invalid: {ex.Message}");
+        public static Error GlobPatternInvalid(string pattern, Exception ex)
+            => new Error(ErrorLevel.Error, "glob-pattern-invalid", $"Glob pattern '{pattern}' is invalid: {ex.Message}");
 
         /// <summary>
         /// Docfx.yml/docfx.json doesn't exist at the repo root.
@@ -383,7 +383,7 @@ namespace Microsoft.Docs.Build
         ///   - defined a an unknown schema type(other than conceptual, contextObject, landingData)
         /// </summary>
         public static Error SchemaNotFound(SourceInfo<string> source)
-            => new Error(ErrorLevel.Error, "schema-not-found", !string.IsNullOrEmpty(source) ? $"Unknown schema '{source}', object model is missing." : $"Unknown schema '{source}'", source);
+            => new Error(ErrorLevel.Error, "schema-not-found", !string.IsNullOrEmpty(source) ? $"Schema '{source}' not found." : $"Unknown schema '{source}'", source);
 
         /// <summary>
         /// Build errors is larger than <see cref="OutputConfig.MaxErrors"/>.
@@ -403,8 +403,7 @@ namespace Microsoft.Docs.Build
                 return new Error(ErrorLevel.Error, "uid-conflict", $"The same Uid '{uid}' has been defined multiple times in the same file");
             }
 
-            var hint = conflicts.Count() > 5 ? "(Only 5 duplicates displayed)" : "";
-            return new Error(ErrorLevel.Error, "uid-conflict", $"Two or more documents have defined the same Uid '{uid}': {string.Join(',', conflicts.Take(5))}{hint}");
+            return new Error(ErrorLevel.Error, "uid-conflict", $"UID '{uid}' is defined in more than one file: {Join(conflicts)}");
         }
 
         /// <summary>
@@ -423,8 +422,8 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Failed to parse moniker string.
         /// </summary>
-        public static Error InvalidMonikerRange(string monikerRange, string message)
-            => new Error(ErrorLevel.Error, "invalid-moniker-range", $"MonikerRange `{monikerRange}` is invalid: {message}");
+        public static Error MonikerRangeInvalid(string monikerRange, string message)
+            => new Error(ErrorLevel.Error, "moniker-range-invalid", $"Invalid moniker range: '{monikerRange}': {message}");
 
         /// <summary>
         /// MonikerRange is not defined in docfx.yml or doesn't match an article.md,

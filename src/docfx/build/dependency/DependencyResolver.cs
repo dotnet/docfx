@@ -41,17 +41,17 @@ namespace Microsoft.Docs.Build
 
         public (Error error, string link, Document file) ResolveLink(SourceInfo<string> path, Document relativeTo, Document resultRelativeTo, Action<Document> buildChild)
         {
-            var (error, link, fragment, hrefType, file) = TryResolveHref(relativeTo, path, resultRelativeTo);
+            var (error, link, fragment, linkType, file) = TryResolveHref(relativeTo, path, resultRelativeTo);
 
             if (file != null && buildChild != null)
             {
                 buildChild(file);
             }
 
-            var isSelfBookmark = hrefType == HrefType.SelfBookmark || resultRelativeTo == file;
+            var isSelfBookmark = linkType == LinkType.SelfBookmark || resultRelativeTo == file;
             if (isSelfBookmark || file != null)
             {
-                _dependencyMapBuilder.AddDependencyItem(relativeTo, file, HrefUtility.FragmentToDependencyType(fragment));
+                _dependencyMapBuilder.AddDependencyItem(relativeTo, file, UrlUtility.FragmentToDependencyType(fragment));
                 _bookmarkValidator.AddBookmarkReference(relativeTo, isSelfBookmark ? resultRelativeTo : file, fragment, isSelfBookmark, path);
             }
 
@@ -60,7 +60,7 @@ namespace Microsoft.Docs.Build
 
         public (Error error, string href, string display, Document file) ResolveXref(SourceInfo<string> href, Document relativeTo, Document rootFile)
         {
-            var (uid, query, fragment) = HrefUtility.SplitHref(href);
+            var (uid, query, fragment) = UrlUtility.SplitUrl(href);
             string moniker = null;
             NameValueCollection queries = null;
             if (!string.IsNullOrEmpty(query))
@@ -81,7 +81,7 @@ namespace Microsoft.Docs.Build
             if (!string.IsNullOrEmpty(resolvedHref))
             {
                 var monikerQuery = !string.IsNullOrEmpty(moniker) ? $"view={moniker}" : "";
-                resolvedHref = HrefUtility.MergeHref(resolvedHref, monikerQuery, fragment.Length == 0 ? "" : fragment.Substring(1));
+                resolvedHref = UrlUtility.MergeUrl(resolvedHref, monikerQuery, fragment.Length == 0 ? "" : fragment.Substring(1));
             }
             return (error, resolvedHref, display, referencedFile);
         }
@@ -116,7 +116,7 @@ namespace Microsoft.Docs.Build
             return file != null ? (error, file.ReadText(), file) : default;
         }
 
-        private (Error error, string href, string fragment, HrefType? hrefType, Document file) TryResolveHref(Document relativeTo, SourceInfo<string> href, Document resultRelativeTo)
+        private (Error error, string href, string fragment, LinkType? linkType, Document file) TryResolveHref(Document relativeTo, SourceInfo<string> href, Document resultRelativeTo)
         {
             Debug.Assert(resultRelativeTo != null);
             Debug.Assert(href != null);
@@ -129,11 +129,11 @@ namespace Microsoft.Docs.Build
             }
 
             var decodedHref = new SourceInfo<string>(Uri.UnescapeDataString(href), href);
-            var (error, file, query, fragment, hrefType, pathToDocset) = TryResolveFile(relativeTo, decodedHref);
+            var (error, file, query, fragment, linkType, pathToDocset) = TryResolveFile(relativeTo, decodedHref);
 
-            if (hrefType == HrefType.WindowsAbsolutePath)
+            if (linkType == LinkType.WindowsAbsolutePath)
             {
-                return (error, "", fragment, hrefType, null);
+                return (error, "", fragment, linkType, null);
             }
 
             // Cannot resolve the file, leave href as is
@@ -142,7 +142,7 @@ namespace Microsoft.Docs.Build
                 file = TryResolveResourceFromHistory(_gitCommitProvider, relativeTo.Docset, pathToDocset);
                 if (file is null)
                 {
-                    return (error, href, fragment, hrefType, null);
+                    return (error, href, fragment, linkType, null);
                 }
 
                 // set file to resource got from histroy, reset the error
@@ -152,19 +152,19 @@ namespace Microsoft.Docs.Build
             // Self reference, don't build the file, leave href as is
             if (file == relativeTo)
             {
-                if (hrefType == HrefType.SelfBookmark)
+                if (linkType == LinkType.SelfBookmark)
                 {
-                    return (error, query + fragment, fragment, hrefType, null);
+                    return (error, query + fragment, fragment, linkType, null);
                 }
                 var selfUrl = Document.PathToRelativeUrl(
                     Path.GetFileName(file.SitePath), file.ContentType, file.Schema, file.Docset.Config.Output.Json);
-                return (error, selfUrl + query + fragment, fragment, HrefType.SelfBookmark, null);
+                return (error, selfUrl + query + fragment, fragment, LinkType.SelfBookmark, null);
             }
 
             // Link to dependent repo, don't build the file, leave href as is
             if (relativeTo.Docset.DependencyDocsets.Values.Any(v => file.Docset == v))
             {
-                return (Errors.LinkIsDependency(relativeTo, file, href), href, fragment, hrefType, null);
+                return (Errors.LinkIsDependency(relativeTo, file, href), href, fragment, linkType, null);
             }
 
             // Make result relative to `resultRelativeTo`
@@ -172,7 +172,7 @@ namespace Microsoft.Docs.Build
 
             if (file?.RedirectionUrl != null)
             {
-                return (error, relativeUrl + query + fragment, null, hrefType, null);
+                return (error, relativeUrl + query + fragment, null, linkType, null);
             }
 
             // Pages outside build scope, don't build the file, use relative href
@@ -180,37 +180,37 @@ namespace Microsoft.Docs.Build
                 && (file.ContentType == ContentType.Page || file.ContentType == ContentType.TableOfContents)
                 && !file.Docset.BuildScope.Contains(file))
             {
-                return (Errors.LinkOutOfScope(href, file, file.Docset.Config.ConfigFileName), relativeUrl + query + fragment, fragment, hrefType, null);
+                return (Errors.LinkOutOfScope(href, file, file.Docset.Config.ConfigFileName), relativeUrl + query + fragment, fragment, linkType, null);
             }
 
-            return (error, relativeUrl + query + fragment, fragment, hrefType, file);
+            return (error, relativeUrl + query + fragment, fragment, linkType, file);
         }
 
-        private (Error error, Document file, string query, string fragment, HrefType? hrefType, string pathToDocset) TryResolveFile(Document relativeTo, SourceInfo<string> href)
+        private (Error error, Document file, string query, string fragment, LinkType? linkType, string pathToDocset) TryResolveFile(Document relativeTo, SourceInfo<string> href)
         {
             if (string.IsNullOrEmpty(href))
             {
                 return (Errors.LinkIsEmpty(relativeTo), null, null, null, null, null);
             }
 
-            var (path, query, fragment) = HrefUtility.SplitHref(href);
+            var (path, query, fragment) = UrlUtility.SplitUrl(href);
 
-            switch (HrefUtility.GetHrefType(href))
+            switch (UrlUtility.GetLinkType(href))
             {
-                case HrefType.SelfBookmark:
-                    return (null, relativeTo, query, fragment, HrefType.SelfBookmark, null);
+                case LinkType.SelfBookmark:
+                    return (null, relativeTo, query, fragment, LinkType.SelfBookmark, null);
 
-                case HrefType.WindowsAbsolutePath:
-                    return (Errors.LocalFilePath(relativeTo, path), null, null, null, HrefType.WindowsAbsolutePath, null);
+                case LinkType.WindowsAbsolutePath:
+                    return (Errors.LocalFilePath(relativeTo, path), null, null, null, LinkType.WindowsAbsolutePath, null);
 
-                case HrefType.RelativePath:
+                case LinkType.RelativePath:
                     // Resolve path relative to docset
                     var pathToDocset = ResolveToDocsetRelativePath(path, relativeTo);
 
                     // resolve from redirection files
                     if (relativeTo.Docset.Redirections.TryGetRedirection(pathToDocset, out var redirectFile))
                     {
-                        return (null, redirectFile, query, fragment, HrefType.RelativePath, pathToDocset);
+                        return (null, redirectFile, query, fragment, LinkType.RelativePath, pathToDocset);
                     }
 
                     var file = Document.CreateFromFile(relativeTo.Docset, pathToDocset);

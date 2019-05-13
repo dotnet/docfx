@@ -47,8 +47,8 @@ outputs:
     { "locale": "en-us", "redirect_url": "/b" }
   c.raw.page.json: |
     {
-      "content": "<p><a href=\"d.png\" data-linktype=\"relative-path\">d</a></p>\n",
-      "rawMetadata": { "ms.author": "yufeih", "!robots": null, "api_name": ["API Name"] },
+      "content": "<p><a href=\"d.png\" data-linktype=\"relative-path\">d</a></p>",
+      "rawMetadata": { "conceptual": "<p><a href=\"d.png\" data-linktype=\"relative-path\">d</a></p>\n", "ms.author": "yufeih", "!robots": null, "api_name": ["API Name"] },
       "themesRelativePathToOutputRoot": "_themes/",
       "pageMetadata": "
         <meta name=\"APIName\" content=\"API Name\" />
@@ -64,7 +64,6 @@ outputs:
         <meta name=\"site_name\" content=\"Docs\" />
         <meta name=\"toc_rel\" content=\"toc.json\" />
         <meta name=\"updated_at\" content=\"2018-10-30 12:00 AM\" />
-        <meta name=\"word_count\" content=\"1\" />
         <meta name=\"wordCount\" content=\"1\" />"
     }
   c.mta.json: |
@@ -149,7 +148,6 @@ outputs:
         "conceptual": "\n<p><a href=\"d.png\">d</a></p>\n",
         "_path": "c.json",
         "toc_rel": "toc.json",
-        "word_count": 2,
         "wordCount": 2,
         "title": "Title",
         "rawTitle": "<h1 id=\"title\">Title</h1>",
@@ -204,7 +202,7 @@ outputs:
         "url": "/rawmetadata/toc.json"
       }]
     }
-  build.log:
+  .errors.log:
 ---
 # Resolve link for landing page
 inputs:
@@ -222,7 +220,22 @@ inputs:
   b.md: b
 outputs:
   docs/index.json: |
-    { "content": {"title":"REST API Documentation","abstract":{"menu":{"items":[{"href":"../b"}]},"description": "<p><a href=\"../b\">&quot;b&quot;</a></p>\n",},"documentType":"LandingData"} }
+    {
+      "content": {
+        "title": "REST API Documentation",
+        "abstract": {
+            "description": "<p><a href=\"../b\">&quot;b&quot;</a></p>\n",
+            "menu": {
+                "items": [
+                    {
+                        "href": "../b"
+                    }
+                ]
+            }
+        },
+        "documentType": "LandingData"
+      }
+    }
   b.json:
 ---
 # Produce deterministic result when redirection and file share the same publish url
@@ -234,7 +247,7 @@ inputs:
       docs/a.md: /asdf
   docs/a.md:
 outputs:
-  build.log:
+  .errors.log:
 ---
 # Redirection file href shouldn't have extension
 commands:
@@ -247,7 +260,7 @@ inputs:
     [link](redirect.md)
 outputs:
   a.raw.page.json: |
-    { "content": "<p>\n<a data-linktype=\"relative-path\" href=\"redirect\">link</a></p>" }
+    { "conceptual": "<p>\n<a data-linktype=\"relative-path\" href=\"redirect\">link</a></p>" }
   redirect.mta.json:
   redirect.raw.page.json:
 ---
@@ -266,7 +279,7 @@ inputs:
     { "reserved": ["content_type", "ms.contentlang"] }
 outputs:
   docs/a.json:
-  build.log: |
+  .errors.log: |
     ["warning","attribute-reserved","Attribute content_type is reserved for use by Docs. Remove it from your file metadata.","docfx.yml",3,16]
     ["warning","attribute-reserved","Attribute ms.contentlang is reserved for use by Docs. Remove it from your file metadata.","docs/a.md",2,1]
 ---

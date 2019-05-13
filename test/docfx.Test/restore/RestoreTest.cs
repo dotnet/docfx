@@ -24,11 +24,34 @@ namespace Microsoft.Docs.Build
         public static void SplitGitHref(string remote, string expectedUrl, string expectedRev)
         {
             // Act
-            var (url, rev, _) = HrefUtility.SplitGitHref(remote);
+            var (url, rev, _) = UrlUtility.SplitGitUrl(remote);
 
             // Assert
             Assert.Equal(expectedUrl, url);
             Assert.Equal(expectedRev, rev);
+        }
+
+        [Fact]
+        public static async Task ForceAcquireNewWorkTree()
+        {
+            var docsetPath = "force-acquire-work-tree";
+            var gitUrl = "https://github.com/docascode/docfx.test";
+
+            Directory.CreateDirectory(docsetPath);
+
+            var restoreDir = AppData.GetGitDir(gitUrl);
+            DeleteDir(restoreDir);
+
+            File.WriteAllText(Path.Combine(docsetPath, "docfx.yml"), $@"
+dependencies:
+  dep: {gitUrl}#master");
+
+            // acquire slot lock firstly
+            ProcessUtility.AcquireExclusiveLock($"{gitUrl}/1", true);
+
+            // run restore and check the work trees
+            await Program.Run(new[] { "restore", docsetPath });
+            Assert.Equal(1, GetWorkTreeFolderCount(restoreDir));
         }
 
         [Fact]
@@ -47,9 +70,9 @@ dependencies:
   dep5: {gitUrl}#master
   dep6: {gitUrl}#chi");
 
-            // run restroe and check the work trees
+            // run restore and check the work trees
             await Program.Run(new[] { "restore", docsetPath });
-            Assert.Equal(2, GetWorkTreeFolderCount());
+            Assert.Equal(2, GetWorkTreeFolderCount(restoreDir));
 
             File.WriteAllText(Path.Combine(docsetPath, "docfx.yml"), $@"
 dependencies:
@@ -59,7 +82,7 @@ dependencies:
             await Program.Run(new[] { "restore", docsetPath });
 
             // since the lockdown time works, new slot will be created
-            Assert.Equal(3, GetWorkTreeFolderCount());
+            Assert.Equal(3, GetWorkTreeFolderCount(restoreDir));
 
             File.WriteAllText(Path.Combine(docsetPath, "docfx.yml"), $@"
 dependencies:
@@ -76,11 +99,11 @@ dependencies:
             // run restore again
             // will create a new slot and find an available slot
             await Program.Run(new[] { "restore", docsetPath });
-            Assert.Equal(4, GetWorkTreeFolderCount());
+            Assert.Equal(4, GetWorkTreeFolderCount(restoreDir));
 
             // restore again to use existing worktree
             await Program.Run(new[] { "restore", docsetPath });
-            Assert.Equal(4, GetWorkTreeFolderCount());
+            Assert.Equal(4, GetWorkTreeFolderCount(restoreDir));
 
             // make worktree not synced with slots
             Exec("git", "worktree add 5", restoreDir);
@@ -91,11 +114,7 @@ dependencies:
             // run restore again
             // will create a new slot and find an available slot
             await Program.Run(new[] { "restore", docsetPath });
-            Assert.Equal(5, GetWorkTreeFolderCount());
-
-            int GetWorkTreeFolderCount()
-                => Directory.EnumerateDirectories(restoreDir, "*", SearchOption.TopDirectoryOnly)
-                    .Where(c => Path.GetFileName(c) != ".git").Count();
+            Assert.Equal(5, GetWorkTreeFolderCount(restoreDir));
         }
 
         [Fact]
@@ -125,6 +144,10 @@ gitHub:
 
             Assert.Equal(2, Directory.EnumerateFiles(restoreDir, "*").Count());
         }
+
+        private static int GetWorkTreeFolderCount(string path)
+        => Directory.EnumerateDirectories(path, "*", SearchOption.TopDirectoryOnly)
+            .Where(c => Path.GetFileName(c) != ".git").Count();
 
         private static void DeleteDir(string root)
         {

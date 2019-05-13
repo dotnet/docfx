@@ -10,7 +10,7 @@ using System.Threading;
 
 namespace Microsoft.Docs.Build
 {
-    internal sealed class Report : IDisposable
+    internal sealed class ErrorLog : IDisposable
     {
         private readonly bool _legacy;
         private readonly object _outputLock = new object();
@@ -33,7 +33,7 @@ namespace Microsoft.Docs.Build
 
         public int SuggestionCount => _suggestionCount;
 
-        public Report(string docset = ".", bool legacy = false)
+        public ErrorLog(string docset = ".", bool legacy = false)
         {
             _docsetPath = docset;
             _legacy = legacy;
@@ -41,11 +41,11 @@ namespace Microsoft.Docs.Build
             _output = new Lazy<TextWriter>(() =>
             {
                 // add default build log file output path
-                var outputFilePath = Path.GetFullPath(Path.Combine(_docsetPath, _config.Output.Path, "build.log"));
+                var outputFilePath = Path.GetFullPath(Path.Combine(_docsetPath, _config.Output.Path, ".errors.log"));
 
                 PathUtility.CreateDirectoryFromFilePath(outputFilePath);
 
-                return File.CreateText(outputFilePath);
+                return File.AppendText(outputFilePath);
             });
         }
 

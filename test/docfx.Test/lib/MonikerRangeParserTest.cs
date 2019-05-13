@@ -104,8 +104,8 @@ namespace Microsoft.Docs.Build
         public void InvalidMonikerRange(string rangeString, string errorMessage)
         {
             var exception = Assert.Throws<DocfxException>(() => _monikerRangeParser.Parse(rangeString));
-            Assert.Equal("invalid-moniker-range", exception.Error.Code);
-            Assert.Equal(errorMessage, exception.Error.Message.Substring($"MonikerRange `{rangeString}` is invalid: ".Length));
+            Assert.Equal("moniker-range-invalid", exception.Error.Code);
+            Assert.Equal(errorMessage, exception.Error.Message.Substring($"Invalid moniker range: '{rangeString}': ".Length));
         }
 
         [Fact]
@@ -143,8 +143,8 @@ namespace Microsoft.Docs.Build
         {
             var monikerRangeParser = new MonikerRangeParser(new MonikerDefinitionModel());
             var exception = Assert.Throws<DocfxException>(() => monikerRangeParser.Parse("netcore-1.0"));
-            Assert.Equal("invalid-moniker-range", exception.Error.Code);
-            Assert.Equal("MonikerRange `netcore-1.0` is invalid: Moniker `netcore-1.0` is not defined", exception.Error.Message);
+            Assert.Equal("moniker-range-invalid", exception.Error.Code);
+            Assert.Equal("Invalid moniker range: 'netcore-1.0': Moniker `netcore-1.0` is not defined", exception.Error.Message);
         }
     }
 }

@@ -5,7 +5,7 @@ inputs:
   docs/a.md: Hello `docfx`!
 outputs:
   docs/a.json: |
-    { "content": "<p>Hello <code>docfx</code>!</p>" }
+    { "conceptual": "<p>Hello <code>docfx</code>!</p>", "wordCount": 2, "_op_canonicalUrlPrefix": "https://docs.com/en-us/./", "_path": "docs/a.json"}
 ---
 # Basic markdown syntax
 inputs:
@@ -13,7 +13,7 @@ inputs:
   docs/a.md: _this_ *is* an ***inline*** `markdown` **test**
 outputs:
   docs/a.json: |
-    { "content": "<p><em>this</em> <em>is</em> an <em><strong>inline</strong></em> <code>markdown</code> <strong>test</strong></p>" }
+    { "conceptual": "<p><em>this</em> <em>is</em> an <em><strong>inline</strong></em> <code>markdown</code> <strong>test</strong></p>" }
 ---
 # Report warning when Yaml header has null value
 inputs:
@@ -25,7 +25,7 @@ inputs:
     hello
 outputs:
   docs/a.json:
-  build.log: |
+  .errors.log: |
     ["info","null-value","'title' contains null value","docs/a.md",2,1]
 ---
 # title metadata overrides h1
@@ -40,7 +40,7 @@ inputs:
 outputs:
   docs/a.json: |
     {
-      "content": "<p>hello</p>\n",
+      "conceptual": "<p>hello</p>\n",
       "rawTitle": "<h1 id=\"title-from-h1\">Title from H1</h1>",
       "title": "title from yaml header"
     }
@@ -78,9 +78,9 @@ outputs:
     {
       "!title": null,
       "rawTitle": "",
-      "content": "<h4 id=\"h4-title\">h4 title</h4>",
+      "conceptual": "<h4 id=\"h4-title\">h4 title</h4>",
     }
-  build.log: |
+  .errors.log: |
     ["info","heading-not-found","The first visible block is not a heading block with `#`, `##` or `###`","h4.md"]
 ---
 # remove title from html
@@ -96,12 +96,12 @@ inputs:
 outputs:
   h1toremove.json: |
     {
-      "content":"<div></div>",
+      "conceptual":"<div></div>",
       "rawTitle": "<h1 id=\"h1-title\">h1 title</h1>"
     }
   h1tokeep.json: |
     {
-      "content":"<p>welcome to docfx</p>\n<h1 id=\"h1-title\">h1 title</h1>\n",
+      "conceptual":"<p>welcome to docfx</p>\n<h1 id=\"h1-title\">h1 title</h1>\n",
       "rawTitle": ""
     }
 ---
@@ -118,7 +118,7 @@ inputs:
     hello
 outputs:
   docs/a.json:
-  build.log: |
+  .errors.log: |
     ["info","heading-not-found","The first visible block is not a heading block with `#`, `##` or `###`","docs/a.md"]
 ---
 # Non-comments block between yaml-header and H1
@@ -147,8 +147,8 @@ inputs:
     # Heading
 outputs:
   docs/a.json: |
-    { "content": "[!include[]()]<h1 id=\"heading\">Heading</h1>\n" }
-  build.log: |
+    { "conceptual": "[!include[]()]<h1 id=\"heading\">Heading</h1>\n" }
+  .errors.log: |
     ["warning","include-not-found","Cannot resolve '' relative to 'docs/a.md'.","docs/a.md",1,1]
 ---
 # Comments between yaml header and H1
@@ -192,9 +192,9 @@ inputs:
   docs/b.md: b
 outputs:
   docs/a.json: |
-    { "content": "<p>a b</p>" }
+    { "conceptual": "<p>a b</p>" }
   docs/b.json: |
-    { "content": "<p>b</p>" }
+    { "conceptual": "<p>b</p>" }
 ---
 # heading in included file
 inputs:
@@ -214,7 +214,7 @@ inputs:
 outputs:
   docs/a.json: |
     {
-      "content": "<h1 id=\"heading-from-c\">Heading from C</h1>",
+      "conceptual": "<h1 id=\"heading-from-c\">Heading from C</h1>",
       "rawTitle": "<h1 id=\"heading-from-d\">Heading from D</h1>"
     }
 ---
@@ -234,7 +234,7 @@ inputs:
 outputs:
   docs/a.json: |
     {
-      "content": "<p>Hello</p><h1 id=\"heading-from-c\">Heading from C</h1>",
+      "conceptual": "<p>Hello</p><h1 id=\"heading-from-c\">Heading from C</h1>",
       "rawTitle": "",
       "title": "Heading from C"
     }
@@ -250,7 +250,7 @@ inputs:
 outputs:
   docs/a.json: |
     {
-      "content": "<p>content</p>",
+      "conceptual": "<p>content</p>",
       "rawTitle": "<h1 id=\"-overview\">Product Name Overview</h1>"
     }
   docs/b.json:
@@ -270,7 +270,7 @@ repos:
         { "note": "<p>my note</p>" }
 outputs:
   docs/a.json: |
-    { "content": "<div class=\"NOTE\"><p>my note</p><p>note</p></div>" }
+    { "conceptual": "<div class=\"NOTE\"><p>my note</p><p>note</p></div>" }
 ---
 # title
 inputs:
@@ -285,7 +285,7 @@ inputs:
 outputs:
   docs/a.json: |
     {
-      "content": "<p>body</p>",
+      "conceptual": "<p>body</p>",
       "title": "This is a title &",
       "rawTitle": "<h1 id=\"this-is-a-title-\">This is <em>a</em> title &amp;</h1>",
       "metaKey": "metaValue"
@@ -299,7 +299,7 @@ inputs:
   docs/b.md:
 outputs:
   docs/b.json:
-  build.log: |
+  .errors.log: |
     ["error","invalid-toc-syntax","The toc syntax '#[bad](b.md)' is invalid, the opening sequence of # characters must be followed by a space or by the end of line. Refer to [ATX heading](https://spec.commonmark.org/0.28/#atx-heading) to fix it","docs/TOC.md",1,1]
 ---
 # do not allow custom js, styles and css
@@ -314,7 +314,7 @@ inputs:
     body
 outputs:
   docs/a.json: |
-    { "content": "<div></div><p>body</p>" }
+    { "conceptual": "<div></div><p>body</p>" }
 ---
 # do not process auto links
 inputs:
@@ -323,7 +323,7 @@ inputs:
     http://*.windowsupdate.microsoft.com
 outputs:
   docs/a.json: |
-    { "content": "<p>http://*.windowsupdate.microsoft.com</p>" }
+    { "conceptual": "<p>http://*.windowsupdate.microsoft.com</p>" }
 ---
 # validate internal/external bookmarks in markdown documents
 inputs:
@@ -353,7 +353,7 @@ outputs:
   docs/b.json:
   docs/c.json:
   docs/d.json:
-  build.log: |
+  .errors.log: |
     ["warning","external-bookmark-not-found","Cannot find bookmark '#title-3' in 'docs/a.md', did you mean '#title-1'?","docs/b.md",2,1]
     ["suggestion","internal-bookmark-not-found","Cannot find bookmark '#title-3' in 'docs/a.md', did you mean '#title-1'?","docs/a.md",4,1]
     ["warning","external-bookmark-not-found","Cannot find bookmark '#title-3' in 'docs/a.md', did you mean '#title-1'?","docs/d.md",1,1]
@@ -365,7 +365,7 @@ inputs:
     [link to bookmark in another non-existed file](c.md#title-2)
 outputs:
   docs/a.json:
-  build.log: |
+  .errors.log: |
     ["warning","file-not-found","Cannot find file 'c.md' relative to 'docs/a.md'","docs/a.md",1,1]
 ---
 # do not output file if external-bookmark-not-found is treated as error
@@ -378,7 +378,7 @@ inputs:
   docs/b.md:
 outputs:
   docs/b.json:
-  build.log: |
+  .errors.log: |
     ["error","external-bookmark-not-found","Cannot find bookmark '#bookmark' in 'docs/b.md'","docs/a.md",1,1]
 ---
 # Bookmark suggestion and validation
@@ -401,7 +401,7 @@ outputs:
   docs/b.json:
   docs/c.json:
   docs/d.json:
-  build.log: |
+  .errors.log: |
     ["warning","external-bookmark-not-found","Cannot find bookmark '#some-bookmark' in 'docs/a.md', did you mean '#a-bookmark'?","docs/b.md",1,1]
     ["warning","external-bookmark-not-found","Cannot find bookmark '#b-has-no-bookmark' in 'docs/b.md'","docs/c.md",2,1]
     ["warning","external-bookmark-not-found","Cannot find bookmark '#bookmark123456' in 'docs/c.md'","docs/d.md",1,1]
@@ -417,7 +417,7 @@ inputs:
     b
 outputs:
   docs/a.json: |
-    content: |
+    conceptual: |
       <div class="tabGroup" id="tabgroup_CeZOj-G++Q">
         <ul role="tablist">
           <li role="presentation">
@@ -464,11 +464,11 @@ inputs:
     <a style="cursor:pointer" onclick='javascript:window.open("https://shell.azure.com", "_blank", "toolbar=no,scrollbars=yes,resizable=yes,menubar=no,location=no,status=no")'><image src="https://shell.azure.com/images/launchcloudshell.png" /></a>
 outputs:
   docs/a.json: |
-    { "content": "<a href='javascript:window.open(&quot;https://shell.azure.com&quot;, &quot;_blank&quot;, &quot;toolbar=no,scrollbars=yes,resizable=yes,menubar=no,location=no,status=no&quot;)'>"}
+    { "conceptual": "<a href='javascript:window.open(&quot;https://shell.azure.com&quot;, &quot;_blank&quot;, &quot;toolbar=no,scrollbars=yes,resizable=yes,menubar=no,location=no,status=no&quot;)'>"}
   docs/b.json: |
-    { "content": "<p><a onclick=\"javascript:window.open('https://shell.azure.com', '_blank', 'toolbar=no,scrollbars=yes,resizable=yes,menubar=no,location=no,status=no')\"><image src='https://shell.azure.com/images/launchcloudshell.png'></image></a></p>\n" }
+    { "conceptual": "<p><a onclick=\"javascript:window.open('https://shell.azure.com', '_blank', 'toolbar=no,scrollbars=yes,resizable=yes,menubar=no,location=no,status=no')\"><image src='https://shell.azure.com/images/launchcloudshell.png'></image></a></p>\n" }
   docs/c.json: |
-    { "content": "<p><a onclick='javascript:window.open(\"https://shell.azure.com\", \"_blank\", \"toolbar=no,scrollbars=yes,resizable=yes,menubar=no,location=no,status=no\")'><image src=\"https://shell.azure.com/images/launchcloudshell.png\"></image></a></p>\n" }
+    { "conceptual": "<p><a onclick='javascript:window.open(\"https://shell.azure.com\", \"_blank\", \"toolbar=no,scrollbars=yes,resizable=yes,menubar=no,location=no,status=no\")'><image src=\"https://shell.azure.com/images/launchcloudshell.png\"></image></a></p>\n" }
 ---
 # yaml header shouldn't be array
 inputs:
@@ -481,7 +481,7 @@ inputs:
     # Title title
 outputs:
   docs/a.json:
-  build.log: |
+  .errors.log: |
     ["warning","yaml-header-not-object","Expect yaml header to be an object, but got an array","docs/a.md",2,1]
 ---
 # yaml header shouldn't be scalar
@@ -494,7 +494,7 @@ inputs:
     # Title title
 outputs:
   docs/a.json:
-  build.log: |
+  .errors.log: |
     ["warning","yaml-header-not-object","Expect yaml header to be an object, but got a scalar","docs/a.md",2,1]
 ---
 # Handling malformed HTML tags using HtmlAgilityPack 1.4.9
@@ -508,7 +508,7 @@ inputs:
     ## c
 outputs:
   docs/a.json: |
-    content: |
+    conceptual: |
       <ol>
         <li>a
           <ul><li><li></li></li></ul>
@@ -533,4 +533,18 @@ inputs:
 outputs:
   docs/a.json:
   docs/b.json:
-
+---
+# resolve link in html block
+inputs:
+  docfx.yml:
+  docs/a.md: |
+    some text
+    <div>
+      <p>Link to <a href="#bookmark">text</a></p>
+      <p>Link to <a href="#bookmark">some other text</a></p>
+    </div>
+outputs:
+  docs/a.json:
+  .errors.log: |
+    ["suggestion","internal-bookmark-not-found","Cannot find bookmark '#bookmark' in 'docs/a.md'","docs/a.md",2,1]
+    ["suggestion","internal-bookmark-not-found","Cannot find bookmark '#bookmark' in 'docs/a.md'","docs/a.md",2,2]

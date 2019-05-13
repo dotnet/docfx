@@ -115,7 +115,7 @@ namespace Microsoft.Docs.Build
             return result;
         }
 
-        public static string TransformLinks(string html, Func<string, string> transform)
+        public static string TransformLinks(string html, Func<string, int, string> transform)
         {
             // Fast pass it does not have <a> tag or <img> tag
             if (!((html.Contains("<a", StringComparison.OrdinalIgnoreCase) && html.Contains("href", StringComparison.OrdinalIgnoreCase)) ||
@@ -133,6 +133,8 @@ namespace Microsoft.Docs.Build
             var pos = 0;
             var result = new StringBuilder(html.Length + 64);
 
+            // TODO: remove this column offset hack while we have accurate line info for link in HTML block
+            var columnOffset = 0;
             foreach (var node in doc.DocumentNode.Descendants())
             {
                 var link = node.Name == "a" ? node.Attributes["href"]
@@ -149,12 +151,13 @@ namespace Microsoft.Docs.Build
                 {
                     result.Append(html, pos, valueStartIndex - pos);
                 }
-                var transformed = transform(HttpUtility.HtmlDecode(link.Value));
+                var transformed = transform(HttpUtility.HtmlDecode(link.Value), columnOffset);
                 if (!string.IsNullOrEmpty(transformed))
                 {
                     result.Append(HttpUtility.HtmlEncode(transformed));
                 }
                 pos = valueStartIndex + link.Value.Length;
+                columnOffset += 1;
             }
 
             if (html.Length > pos)
@@ -276,20 +279,20 @@ namespace Microsoft.Docs.Build
                     continue;
                 }
 
-                switch (HrefUtility.GetHrefType(href))
+                switch (UrlUtility.GetLinkType(href))
                 {
-                    case HrefType.SelfBookmark:
+                    case LinkType.SelfBookmark:
                         node.SetAttributeValue("data-linktype", "self-bookmark");
                         break;
-                    case HrefType.AbsolutePath:
-                    case HrefType.WindowsAbsolutePath:
+                    case LinkType.AbsolutePath:
+                    case LinkType.WindowsAbsolutePath:
                         node.SetAttributeValue("data-linktype", "absolute-path");
                         node.SetAttributeValue(attribute, AddLocaleIfMissing(href, locale));
                         break;
-                    case HrefType.RelativePath:
+                    case LinkType.RelativePath:
                         node.SetAttributeValue("data-linktype", "relative-path");
                         break;
-                    case HrefType.External:
+                    case LinkType.External:
                         node.SetAttributeValue("data-linktype", "external");
                         break;
                 }
