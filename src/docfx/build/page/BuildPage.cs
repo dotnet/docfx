@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
 using Newtonsoft.Json.Linq;
@@ -44,11 +45,18 @@ namespace Microsoft.Docs.Build
             model.Author = new SourceInfo<string>(model.ContributionInfo?.Author?.Name, model.Author);
             model.UpdatedAt = model.ContributionInfo?.UpdatedAtDateTime.ToString("yyyy-MM-dd hh:mm tt");
 
+            model.DepotName = $"{file.Docset.Config.Product}.{file.Docset.Config.Name}";
+            model.Path = PathUtility.NormalizeFile(Path.GetRelativePath(file.Docset.SiteBasePath, file.SitePath));
+            model.CanonicalUrlPrefix = $"{file.Docset.HostName}/{file.Docset.Locale}/{file.Docset.SiteBasePath}/";
+
+            if (file.Docset.Config.Output.Pdf)
+                model.PdfUrlPrefixTemplate = $"{file.Docset.HostName}/pdfstore/{model.Locale}/{file.Docset.Config.Product}.{file.Docset.Config.Name}/{{branchName}}";
+
             if (contributorErrors != null)
                 errors.AddRange(contributorErrors);
 
             var isPage = schema.Attribute is PageSchemaAttribute;
-            var outputPath = file.GetOutputPath(model.Monikers, isPage);
+            var outputPath = file.GetOutputPath(model.Monikers, file.Docset.SiteBasePath, isPage);
             var (output, extensionData) = ApplyTemplate(context, file, model, isPage);
 
             var publishItem = new PublishItem
@@ -133,7 +141,7 @@ namespace Microsoft.Docs.Build
                 errors.Add(Errors.HeadingNotFound(file));
             }
 
-            pageModel.Content = HtmlPostProcess(file, htmlDom);
+            pageModel.Conceptual = HtmlPostProcess(file, htmlDom);
             pageModel.Title = yamlHeader.Value<string>("title") ?? title;
             pageModel.RawTitle = rawTitle;
             pageModel.WordCount = wordCount;
@@ -163,22 +171,19 @@ namespace Microsoft.Docs.Build
         private static async Task<(List<Error> errors, Schema schema, OutputModel model)>
             LoadSchemaDocument(Context context, List<Error> errors, JToken token, Document file, Action<Document> buildChild)
         {
-            // TODO: for backward compatibility, when #YamlMime:YamlDocument, documentType is used to determine schema.
-            //       when everything is moved to SDP, we can refactor the mime check to Document.TryCreate
             var obj = token as JObject;
-            var schema = file.Schema ?? Schema.GetSchema(obj?.Value<string>("documentType"));
-            if (schema is null)
+            if (file.Schema is null)
             {
                 throw Errors.SchemaNotFound(file.Mime).ToException();
             }
 
             // todo: why not directly use strong model here?
-            var (schemaViolationErrors, content) = JsonUtility.ToObject(token, schema.Type, transform: AttributeTransformer.TransformSDP(context, file, buildChild));
+            var (schemaViolationErrors, content) = JsonUtility.ToObject(token, file.Schema.Type, transform: AttributeTransformer.TransformSDP(context, file, buildChild));
             errors.AddRange(schemaViolationErrors);
 
             // TODO: add check before to avoid case failure
             var yamlHeader = obj?.Value<JObject>("metadata") ?? new JObject();
-            if (file.Docset.Legacy && schema.Type == typeof(LandingData))
+            if (file.Docset.Legacy && file.Schema.Type == typeof(LandingData))
             {
                 // merge extension data to metadata in legacy model
                 var landingData = (LandingData)content;
@@ -189,21 +194,24 @@ namespace Microsoft.Docs.Build
             }
             var title = yamlHeader.Value<string>("title") ?? obj?.Value<string>("title");
 
-            if (file.Docset.Legacy && schema.Attribute is PageSchemaAttribute)
-            {
-                var html = await RazorTemplate.Render(schema.Name, content);
-                content = HtmlPostProcess(file, HtmlUtility.LoadHtml(html));
-            }
-
             var (metaErrors, pageModel) = context.MetadataProvider.GetInputMetadata<OutputModel>(file, yamlHeader);
             errors.AddRange(metaErrors);
 
-            pageModel.Content = content;
+            if (file.Docset.Legacy && file.Schema.Attribute is PageSchemaAttribute)
+            {
+                var html = await RazorTemplate.Render(file.Schema.Name, content);
+                pageModel.Conceptual = HtmlPostProcess(file, HtmlUtility.LoadHtml(html));
+            }
+            else
+            {
+                pageModel.Content = content;
+            }
+
             pageModel.Title = title;
             pageModel.RawTitle = file.Docset.Legacy ? $"<h1>{obj?.Value<string>("title")}</h1>" : null;
             pageModel.Monikers = new List<string>();
 
-            return (errors, schema, pageModel);
+            return (errors, file.Schema, pageModel);
         }
 
         private static string HtmlPostProcess(Document file, HtmlNode html)

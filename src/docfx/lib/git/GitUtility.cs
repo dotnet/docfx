@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -151,44 +152,6 @@ namespace Microsoft.Docs.Build
        }
 
         /// <summary>
-        /// List work trees for a given repo
-        /// </summary>
-        public static List<string> ListWorkTree(string repoPath)
-        {
-            return ParseWorkTreeList(Execute(repoPath, $"worktree list --porcelain"));
-
-            List<string> ParseWorkTreeList(string stdout)
-            {
-                Debug.Assert(stdout != null);
-
-                // https://git-scm.com/docs/git-worktree#_porcelain_format
-                var result = new List<string>();
-                var isMain = true;
-                foreach (var property in stdout.Split('\n', StringSplitOptions.RemoveEmptyEntries))
-                {
-                    var i = property.IndexOf(' ');
-                    if (i > 0)
-                    {
-                        var key = property.Substring(0, i);
-                        if (key == "worktree")
-                        {
-                            if (isMain)
-                            {
-                                // The main worktree is listed first, followed by each of the linked worktrees.
-                                isMain = false;
-                            }
-                            else
-                            {
-                                result.Add(property.Substring(i + 1).Trim());
-                            }
-                        }
-                    }
-                }
-                return result;
-            }
-        }
-
-        /// <summary>
         /// Create a work tree for a given repo
         /// </summary>
         /// <param name="cwd">The current working directory</param>
@@ -199,15 +162,6 @@ namespace Microsoft.Docs.Build
             // By default, add refuses to create a new working tree when <commit-ish> is a branch name and is already checked out by another working tree and remove refuses to remove an unclean working tree.
             // -f/ --force overrides these safeguards.
             ExecuteNonQuery(cwd, $"-c core.longpaths=true worktree add {path} {committish} --force");
-        }
-
-        /// <summary>
-        /// Prune work trees which are not connected with an given repo
-        /// </summary>
-        /// <param name="cwd">The current working directory</param>
-        public static void PruneWorkTrees(string cwd)
-        {
-            ExecuteNonQuery(cwd, $"worktree prune");
         }
 
         /// <summary>
@@ -309,6 +263,14 @@ namespace Microsoft.Docs.Build
             // - git remote set url
             // - git fetch
             // - git checkout (if not a bar repo)
+            if (GitRemoteProxy != null &&
+                GitRemoteProxy(url) != url &&
+                Directory.Exists(path))
+            {
+                // optimize for test fetching
+                return;
+            }
+
             Directory.CreateDirectory(path);
 
             if (git_repository_init(out var repo, path, is_bare: bare ? 1 : 0) != 0)
@@ -326,17 +288,19 @@ namespace Microsoft.Docs.Build
 
             git_repository_free(repo);
 
-            // Allow test to proxy remotes to local folder
-            if (GitRemoteProxy != null)
-            {
-                url = GitRemoteProxy(url);
-            }
-
-            var httpConfig = GetGitCommandLineConfig(url, config);
             var refspecs = string.Join(' ', committishes.Select(rev => $"+{rev}:{rev}"));
             var depth = depthOne ? "--depth 1" : "--depth 9999999999";
             var pruneSwitch = prune ? "--prune" : "";
 
+            // Allow test to proxy remotes to local folder
+            if (GitRemoteProxy != null)
+            {
+                url = GitRemoteProxy(url);
+                refspecs = "+refs/heads/*:refs/heads/* +refs/tags/*:refs/tags/*";
+                depth = "--depth 9999999999";
+            }
+
+            var httpConfig = GetGitCommandLineConfig(url, config);
             try
             {
                 ExecuteNonQuery(path, $"{httpConfig} fetch --tags --progress --update-head-ok {pruneSwitch} {depth} \"{url}\" {refspecs}");

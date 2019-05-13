@@ -2,7 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Diagnostics;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
@@ -11,7 +11,10 @@ namespace Microsoft.Docs.Build
 {
     internal static class HttpClientUtility
     {
-        private static readonly HttpClient s_httpClient = new HttpClient();
+        private static readonly HttpClient s_httpClient = new HttpClient(new HttpClientHandler()
+        {
+            AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate,
+        });
 
         public static async Task<HttpResponseMessage> GetAsync(string requestUri, Config config, EntityTagHeaderValue etag = null)
         {
@@ -58,7 +61,7 @@ namespace Microsoft.Docs.Build
             {
                 if (requestUri.StartsWith(baseUrl))
                 {
-                    message.RequestUri = new Uri(HrefUtility.MergeHref(requestUri, rule.Query, null));
+                    message.RequestUri = new Uri(UrlUtility.MergeUrl(requestUri, rule.Query, null));
                     foreach (var header in rule.Headers)
                     {
                         message.Headers.Add(header.Key, header.Value);

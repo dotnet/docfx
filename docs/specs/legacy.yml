@@ -1,5 +1,6 @@
 # Build with --legacy
 commands:
+  - restore --legacy
   - build --legacy
 repos:
   https://docs.com/legacy:
@@ -8,6 +9,7 @@ repos:
         theme: https://docs.com/template
         redirections:
           a.md: /b
+        metadataSchema: schema.json
       c.md: |
         ---
         api_name:
@@ -18,6 +20,13 @@ repos:
       d.png:
       TOC.md: |
         # [c](c.md)
+      schema.json: |
+        {
+          "properties": {
+            "api_name": { "htmlMetaName": "APIName" }
+          },
+          "htmlMetaHidden": ["conceptual", "is_dynamic_rendering", "canonical_url"]
+        }
   https://docs.com/template:
   - files:
       ContentTemplate/Conceptual.mta.json.js: |
@@ -38,13 +47,11 @@ outputs:
     { "locale": "en-us", "redirect_url": "/b" }
   c.raw.page.json: |
     {
-      "content": "<p><a href=\"d.png\" data-linktype=\"relative-path\">d</a></p>\n",
-      "rawMetadata": { "ms.author": "yufeih", "!robots": null, "api_name": ["API Name"] },
+      "content": "<p><a href=\"d.png\" data-linktype=\"relative-path\">d</a></p>",
+      "rawMetadata": { "conceptual": "<p><a href=\"d.png\" data-linktype=\"relative-path\">d</a></p>\n", "ms.author": "yufeih", "!robots": null, "api_name": ["API Name"] },
       "themesRelativePathToOutputRoot": "_themes/",
       "pageMetadata": "
-        <meta name=\"_path\" content=\"c.json\" />
         <meta name=\"APIName\" content=\"API Name\" />
-        <meta name=\"conceptual\" content=\"&lt;p&gt;&lt;a href=&quot;d.png&quot; data-linktype=&quot;relative-path&quot;&gt;d&lt;/a&gt;&lt;/p&gt;\n\" />
         <meta name=\"depot_name\" content=\".\" />
         <meta name=\"document_id\" content=\"fdb5a0d7-b68e-c465-9c5e-54a5cda94902\" />
         <meta name=\"document_version_independent_id\" content=\"92a5a770-f05f-b8bb-81c9-a8d786a9e608\" />
@@ -57,7 +64,6 @@ outputs:
         <meta name=\"site_name\" content=\"Docs\" />
         <meta name=\"toc_rel\" content=\"toc.json\" />
         <meta name=\"updated_at\" content=\"2018-10-30 12:00 AM\" />
-        <meta name=\"word_count\" content=\"1\" />
         <meta name=\"wordCount\" content=\"1\" />"
     }
   c.mta.json: |
@@ -70,6 +76,8 @@ outputs:
   op_aggregated_file_map_info.json:
   .publish.json:
   xrefmap.json:
+  server-side-dependent-list.txt:
+  full-dependent-list.txt:
 ---
 # Raw metadata generated for template
 # todo: remove this test and make raw model as our page model
@@ -82,13 +90,12 @@ repos:
         theme: https://docs.com/template1
         redirections:
           a.md: /b
-        documentId:
-          siteBasePath: rawmetadata
         routes:
           /: rawmetadata
         gitHub:
           userCache: user_profile.json
           resolveUsers: true
+        baseUrl: https://docs.com/rawmetadata
       c.md: |
         ---
         api_name:
@@ -141,7 +148,6 @@ outputs:
         "conceptual": "\n<p><a href=\"d.png\">d</a></p>\n",
         "_path": "c.json",
         "toc_rel": "toc.json",
-        "word_count": 2,
         "wordCount": 2,
         "title": "Title",
         "rawTitle": "<h1 id=\"title\">Title</h1>",
@@ -162,7 +168,7 @@ outputs:
         },
         "updated_at": "2018-10-30 12:00 AM",
         "content_git_url": "https://github.com/a/rawmetadata/blob/master/c.md",
-        "gitcommit": "https://github.com/a/rawmetadata/blob/760e36bf5dcf238e28e1eced0c98a6e9d9e444a8/c.md",
+        "gitcommit": "https://github.com/a/rawmetadata/blob/799a3349a544536618e29e38515f68f273955151/c.md",
         "original_content_git_url": "https://github.com/a/rawmetadata/blob/master/c.md",
         "original_content_git_url_template": "{repo}/blob/{branch}/c.md",
         "!metadata": null,
@@ -196,15 +202,16 @@ outputs:
         "url": "/rawmetadata/toc.json"
       }]
     }
-  build.log:
+  .errors.log:
 ---
 # Resolve link for landing page
 inputs:
   docfx.yml:
   docs/index.yml: |
     ### YamlMime:YamlDocument
-    documentType: LandingData
     title: REST API Documentation
+
+    documentType: LandingData
     abstract:
       description: <a href="~/b">"b"</a>
       menu:
@@ -213,7 +220,22 @@ inputs:
   b.md: b
 outputs:
   docs/index.json: |
-    { "content": {"title":"REST API Documentation","abstract":{"menu":{"items":[{"href":"../b"}]},"description": "<p><a href=\"../b\">&quot;b&quot;</a></p>\n",},"documentType":"LandingData"} }
+    {
+      "content": {
+        "title": "REST API Documentation",
+        "abstract": {
+            "description": "<p><a href=\"../b\">&quot;b&quot;</a></p>\n",
+            "menu": {
+                "items": [
+                    {
+                        "href": "../b"
+                    }
+                ]
+            }
+        },
+        "documentType": "LandingData"
+      }
+    }
   b.json:
 ---
 # Produce deterministic result when redirection and file share the same publish url
@@ -225,7 +247,7 @@ inputs:
       docs/a.md: /asdf
   docs/a.md:
 outputs:
-  build.log:
+  .errors.log:
 ---
 # Redirection file href shouldn't have extension
 commands:
@@ -238,7 +260,7 @@ inputs:
     [link](redirect.md)
 outputs:
   a.raw.page.json: |
-    { "content": "<p>\n<a data-linktype=\"relative-path\" href=\"redirect\">link</a></p>" }
+    { "conceptual": "<p>\n<a data-linktype=\"relative-path\" href=\"redirect\">link</a></p>" }
   redirect.mta.json:
   redirect.raw.page.json:
 ---
@@ -248,13 +270,16 @@ inputs:
     fileMetadata:
       content_type:
         docs/a.md: json
+    metadataSchema: schema.json
   docs/a.md: |
     ---
     ms.contentlang: 'C#'
     ---
+  schema.json: |
+    { "reserved": ["content_type", "ms.contentlang"] }
 outputs:
   docs/a.json:
-  build.log: |
+  .errors.log: |
     ["warning","reserved-metadata","Metadata 'content_type' is reserved by docfx, remove this metadata","docfx.yml",3,16]
     ["warning","reserved-metadata","Metadata 'ms.contentlang' is reserved by docfx, remove this metadata","docs/a.md",2,1]
 ---

@@ -6,7 +6,7 @@ inputs:
   docs/b.md:
 outputs:
   docs/a.json: |
-    { "content": "<p>Link to <a href=\"b\">b</a></p>" }
+    { "conceptual": "<p>Link to <a href=\"b\">b</a></p>" }
   docs/b.json:
 ---
 # URL is case insensitive on windows and mac
@@ -15,7 +15,7 @@ inputs:
   docs/A.png.md: '![](a.png)'
   docs/a.png:
 outputs:
-  build.log: |
+  .errors.log: |
     ["error","publish-url-conflict","Two or more files publish to the same url '/docs/a.png': 'docs/A.png.md', 'docs/a.png'"]
 ---
 # Redirection config is case insensitive on windows and mac
@@ -29,18 +29,23 @@ inputs:
     [redirect](REDIRECT.md)
 outputs:
   docs/a.json: |
-    {"content":"<p><a href=\"redirect\">redirect</a></p>"}
+    {"conceptual":"<p><a href=\"redirect\">redirect</a></p>"}
 ---
 # Dependency resolve is case insensitive on windows and mac
 os: windows, osx
-inputs:
-  docfx.yml: |
-    dependencies:
-      dep: https://github.com/docascode/docfx-test-dependencies
-  docs/a.md: '[!include[dep](~/DEP/dep.md)]'
+repos:
+  https://github.com/dep-resolver/case-in:
+    - files:
+        docfx.yml: |
+          dependencies:
+            dep: https://github.com/dep-resolver/dep
+        docs/a.md: '[!include[dep](~/DEP/dep.md)]'
+  https://github.com/dep-resolver/dep:
+    - files:
+        dep.md: DEP
 outputs:
   docs/a.json: |
-    {"content":"<p>DEP</p>"}
+    {"conceptual":"<p>DEP</p>"}
 ---
 # Route config is case insensitive on windows and mac
 os: windows, osx
@@ -64,9 +69,9 @@ inputs:
   docs/IMAGE.PNG:
 outputs:
   docs/a.json: |
-    {"content":"<p><img src=\"image.png\" alt=\"\" /></p>"}
+    {"conceptual":"<p><img src=\"image.png\" alt=\"\" /></p>"}
   docs/b.json: |
-    {"content":"<p><img src=\"image.png\" alt=\"\" /></p>"}
+    {"conceptual":"<p><img src=\"image.png\" alt=\"\" /></p>"}
   docs/image.png:
 ---
 # Preserve URL casing when lowerCaseUrl is false
@@ -78,5 +83,5 @@ inputs:
   docs/B.md:
 outputs:
   docs/A.json: |
-    {"content":"<p><a href=\"B\"></a></p>"}
+    {"conceptual":"<p><a href=\"B\"></a></p>"}
   docs/B.json:

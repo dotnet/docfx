@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 
 namespace Microsoft.Docs.Build
 {
@@ -17,7 +16,7 @@ namespace Microsoft.Docs.Build
         {
             using (Progress.Start("Convert Legacy Dependency Map"))
             {
-                var legacyDependencyMap = new ConcurrentBag<LegacyDependencyMapItem>();
+                var legacyDependencyMap = new ListBuilder<LegacyDependencyMapItem>();
 
                 // process toc map
                 Parallel.ForEach(
@@ -61,10 +60,29 @@ namespace Microsoft.Docs.Build
                     }
                 }
 
-                var sorted = from d in legacyDependencyMap
-                             orderby d.From, d.To, d.Type
-                             select d;
-                context.Output.WriteJson(sorted, Path.Combine(docset.Config.DocumentId.SiteBasePath, ".dependency-map.json"));
+                var sorted = (
+                    from d in legacyDependencyMap.ToList()
+                    orderby d.From, d.To, d.Type
+                    select d).ToArray();
+
+                var dependencyList =
+                    from d in sorted
+                    group d by d.To into g
+                    let first = g.OrderBy(_ => _.From).FirstOrDefault()
+                    where first != null
+                    select JsonUtility.Serialize(new
+                    {
+                        dependency_type = first.Type,
+                        from_file_path = Path.GetFullPath(Path.Combine(docset.DocsetPath, first.From.Substring(2))),
+                        to_file_path = Path.GetFullPath(Path.Combine(docset.DocsetPath, first.To.Substring(2))),
+                    });
+
+                var dependencyListText = string.Join('\n', dependencyList);
+
+                context.Output.WriteText(dependencyListText, "full-dependent-list.txt");
+                context.Output.WriteText(dependencyListText, "server-side-dependent-list.txt");
+                context.Output.WriteJson(sorted, Path.Combine(docset.SiteBasePath, ".dependency-map.json"));
+
                 return sorted.Select(x => new LegacyDependencyMapItem { From = x.From.Substring(2), To = x.To.Substring(2), Type = x.Type })
                     .GroupBy(x => x.From).ToDictionary(g => g.Key, g => g.ToList());
             }

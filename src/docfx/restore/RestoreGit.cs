@@ -25,7 +25,6 @@ namespace Microsoft.Docs.Build
             Config config,
             Func<string, DependencyLockModel, Task<DependencyLockModel>> restoreChild,
             string locale,
-            bool @implicit,
             Repository rootRepository,
             DependencyLockModel dependencyLock)
         {
@@ -35,7 +34,7 @@ namespace Microsoft.Docs.Build
                 group (git.branch, git.flags)
                 by git.remote;
 
-            var children = new ConcurrentBag<RestoreChild>();
+            var children = new ListBuilder<RestoreChild>();
 
             // restore first level children
             ParallelUtility.ForEach(
@@ -56,7 +55,7 @@ namespace Microsoft.Docs.Build
             }
 
             // restore sub-level children
-            foreach (var child in children)
+            foreach (var child in children.ToList())
             {
                 var childDependencyLock = await restoreChild(child.ToRestore.path, child.ToRestore.dependencyLock);
                 gitVersions.TryAdd(
@@ -70,34 +69,16 @@ namespace Microsoft.Docs.Build
 
             return gitVersions;
 
-            ConcurrentBag<RestoreChild> RestoreGitRepo(IGrouping<string, (string branch, GitFlags flags)> group)
+            IReadOnlyList<RestoreChild> RestoreGitRepo(IGrouping<string, (string branch, GitFlags flags)> group)
             {
-                var subChildren = new ConcurrentBag<RestoreChild>();
+                var subChildren = new ListBuilder<RestoreChild>();
                 var remote = group.Key;
                 var branches = group.Select(g => g.branch).ToArray();
                 var depthOne = group.All(g => (g.flags & GitFlags.DepthOne) != 0) && !(dependencyLock?.ContainsGitLock(remote) ?? false);
                 var branchesToFetch = new HashSet<string>(branches);
 
-                foreach (var branch in branches)
-                {
-                    var gitVersion = dependencyLock?.GetGitLock(remote, branch);
-                    if (@implicit || !string.IsNullOrEmpty(gitVersion?.Commit))
-                    {
-                        var (existingPath, git) = RestoreMap.TryGetGitRestorePath(remote, branch, gitVersion?.Commit);
-                        if (!string.IsNullOrEmpty(existingPath))
-                        {
-                            branchesToFetch.Remove(branch);
-                            subChildren.Add(new RestoreChild(
-                                existingPath,
-                                remote,
-                                branch,
-                                gitVersion,
-                                git.Commit));
-                        }
-                    }
-                }
-
-                var repoPath = Path.GetFullPath(Path.Combine(AppData.GetGitDir(remote), ".git"));
+                var repoDir = AppData.GetGitDir(remote);
+                var repoPath = Path.GetFullPath(Path.Combine(repoDir, ".git"));
                 var childRepos = new List<string>();
 
                 ProcessUtility.RunInsideMutex(
@@ -118,12 +99,11 @@ namespace Microsoft.Docs.Build
                         }
                     });
 
-                return subChildren;
+                return subChildren.ToList();
 
                 void AddWorkTrees()
                 {
-                    var existingWorkTreePath = new ConcurrentHashSet<string>(GitUtility.ListWorkTree(repoPath));
-
+                    var existingWorkTreeFolders = new ConcurrentHashSet<string>(Directory.EnumerateDirectories(repoDir));
                     ParallelUtility.ForEach(branchesToFetch, branch =>
                     {
                         var nocheckout = group.Where(g => g.branch == branch).All(g => (g.flags & GitFlags.NoCheckout) != 0);
@@ -150,7 +130,7 @@ namespace Microsoft.Docs.Build
 
                             try
                             {
-                                if (existingWorkTreePath.TryAdd(workTreePath))
+                                if (existingWorkTreeFolders.TryAdd(workTreePath))
                                 {
                                     // create new worktree
                                     try
@@ -191,7 +171,7 @@ namespace Microsoft.Docs.Build
         {
             var dependencies = config.Dependencies.Values.Select(url =>
             {
-                var (remote, branch, _) = HrefUtility.SplitGitHref(url);
+                var (remote, branch, _) = UrlUtility.SplitGitUrl(url);
                 return (remote, branch, GitFlags.DepthOne);
             });
 

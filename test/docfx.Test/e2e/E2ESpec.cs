@@ -17,13 +17,17 @@ namespace Microsoft.Docs.Build
 
         public readonly bool Watch;
 
-        public string[] Commands = new[] { "build" };
+        public string[] Commands = new[] { "restore", "build" };
 
         public readonly string[] Environments = Array.Empty<string>();
 
-        public readonly string[] SkippableOutputs = new[] { "xrefmap.json", ".publish.json", ".dependencymap.json",
-                                                            // legacy
-                                                            ".manifest.json", ".dependency-map.json", "filemap.json", "op_aggregated_file_map_info.json", ".publish.json", "xrefmap.json" };
+        public readonly string[] SkippableOutputs =
+        {
+            "xrefmap.json", ".publish.json", ".dependencymap.json",
+            // legacy
+            ".manifest.json", ".dependency-map.json", "filemap.json", "op_aggregated_file_map_info.json",
+            "server-side-dependent-list.txt", "full-dependent-list.txt"
+        };
 
         public readonly Dictionary<string, E2ECommit[]> Repos = new Dictionary<string, E2ECommit[]>();
 

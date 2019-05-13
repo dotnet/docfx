@@ -63,7 +63,7 @@ namespace Microsoft.Docs.Build
             }
             catch (Exception ex)
             {
-                throw Errors.InvalidGlobPattern(pattern, ex).ToException(ex);
+                throw Errors.GlobPatternInvalid(pattern, ex).ToException(ex);
             }
         }
     }

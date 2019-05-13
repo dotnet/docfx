@@ -96,9 +96,7 @@ namespace Microsoft.Docs.Build
   - item2
 : value
 ";
-            var exception = Assert.Throws<NotSupportedException>(() => YamlUtility.Parse(yaml, null));
-
-            Assert.Equal("Not Supported: [ item1, item2 ] is not a primitive type", exception.Message);
+            var exception = Assert.Throws<DocfxException>(() => YamlUtility.Parse(yaml, null));
         }
 
         [Fact]
@@ -108,11 +106,7 @@ namespace Microsoft.Docs.Build
 a: &anchor test
 b: *anchor
 ";
-            var (errors, value) = DeserializeWithValidation<Dictionary<string, string>>(yaml);
-            Assert.Empty(errors);
-            Assert.NotNull(value);
-            Assert.Equal("test", value["a"]);
-            Assert.Equal("test", value["b"]);
+            Assert.Throws<DocfxException>(() => DeserializeWithValidation<Dictionary<string, string>>(yaml));
         }
 
         [Fact]
@@ -296,10 +290,13 @@ valueRequired: a
         {
             var yaml = @"
 Key1: 0
-Key1: 0
+Key1: 1
 ";
-            var exception = Assert.Throws<DocfxException>(() => YamlUtility.Parse(yaml, null));
-            Assert.Contains("Key 'Key1' is already defined, remove the duplicate key", exception.Message);
+            var (errors, result) = YamlUtility.Parse(yaml, null);
+            Assert.Collection(
+                errors,
+                e => Assert.Equal("Key 'Key1' is already defined, remove the duplicate key.", e.Message));
+            Assert.Equal("1", result.Value<string>("Key1"));
         }
 
         [Theory]
@@ -323,7 +320,7 @@ items:
         [InlineData(@"b: not number")]
         public void ThrowWithoutSchemaValidation(string yaml)
         {
-            Assert.ThrowsAny<Exception>(() => YamlUtility.Deserialize<BasicClass>(yaml));
+            Assert.ThrowsAny<Exception>(() => YamlUtility.Deserialize<BasicClass>(yaml, null));
         }
 
 

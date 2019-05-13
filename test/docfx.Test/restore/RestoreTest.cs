@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -23,11 +24,34 @@ namespace Microsoft.Docs.Build
         public static void SplitGitHref(string remote, string expectedUrl, string expectedRev)
         {
             // Act
-            var (url, rev, _) = HrefUtility.SplitGitHref(remote);
+            var (url, rev, _) = UrlUtility.SplitGitUrl(remote);
 
             // Assert
             Assert.Equal(expectedUrl, url);
             Assert.Equal(expectedRev, rev);
+        }
+
+        [Fact]
+        public static async Task ForceAcquireNewWorkTree()
+        {
+            var docsetPath = "force-acquire-work-tree";
+            var gitUrl = "https://github.com/docascode/docfx.test";
+
+            Directory.CreateDirectory(docsetPath);
+
+            var restoreDir = AppData.GetGitDir(gitUrl);
+            DeleteDir(restoreDir);
+
+            File.WriteAllText(Path.Combine(docsetPath, "docfx.yml"), $@"
+dependencies:
+  dep: {gitUrl}#master");
+
+            // acquire slot lock firstly
+            ProcessUtility.AcquireExclusiveLock($"{gitUrl}/1", true);
+
+            // run restore and check the work trees
+            await Program.Run(new[] { "restore", docsetPath });
+            Assert.Equal(1, GetWorkTreeFolderCount(restoreDir));
         }
 
         [Fact]
@@ -41,16 +65,14 @@ namespace Microsoft.Docs.Build
             var restoreDir = AppData.GetGitDir(gitUrl);
             DeleteDir(restoreDir);
 
-            var restorePath = PathUtility.NormalizeFolder(Path.Combine(restoreDir, ".git"));
             File.WriteAllText(Path.Combine(docsetPath, "docfx.yml"), $@"
 dependencies:
   dep5: {gitUrl}#master
   dep6: {gitUrl}#chi");
 
-            // run restroe and check the work trees
+            // run restore and check the work trees
             await Program.Run(new[] { "restore", docsetPath });
-            var workTreeList = GitUtility.ListWorkTree(restorePath);
-            Assert.Equal(2, workTreeList.Count);
+            Assert.Equal(2, GetWorkTreeFolderCount(restoreDir));
 
             File.WriteAllText(Path.Combine(docsetPath, "docfx.yml"), $@"
 dependencies:
@@ -60,8 +82,7 @@ dependencies:
             await Program.Run(new[] { "restore", docsetPath });
 
             // since the lockdown time works, new slot will be created
-            workTreeList = GitUtility.ListWorkTree(restorePath);
-            Assert.Equal(3, workTreeList.Count);
+            Assert.Equal(3, GetWorkTreeFolderCount(restoreDir));
 
             File.WriteAllText(Path.Combine(docsetPath, "docfx.yml"), $@"
 dependencies:
@@ -76,17 +97,24 @@ dependencies:
             DependencySlotPool<DependencyGit>.WriteSlots(AppData.GetGitDir(gitUrl), slots);
 
             // run restore again
-            await Program.Run(new[] { "restore", docsetPath });
-
             // will create a new slot and find an available slot
-            workTreeList = GitUtility.ListWorkTree(restorePath);
-            Assert.Equal(4, workTreeList.Count);
+            await Program.Run(new[] { "restore", docsetPath });
+            Assert.Equal(4, GetWorkTreeFolderCount(restoreDir));
 
             // restore again to use existing worktree
             await Program.Run(new[] { "restore", docsetPath });
+            Assert.Equal(4, GetWorkTreeFolderCount(restoreDir));
 
-            workTreeList = GitUtility.ListWorkTree(restorePath);
-            Assert.Equal(4, workTreeList.Count);
+            // make worktree not synced with slots
+            Exec("git", "worktree add 5", restoreDir);
+            File.WriteAllText(Path.Combine(docsetPath, "docfx.yml"), $@"
+dependencies:
+  dep1: {gitUrl}#test-4-clean");
+
+            // run restore again
+            // will create a new slot and find an available slot
+            await Program.Run(new[] { "restore", docsetPath });
+            Assert.Equal(5, GetWorkTreeFolderCount(restoreDir));
         }
 
         [Fact]
@@ -117,6 +145,10 @@ gitHub:
             Assert.Equal(2, Directory.EnumerateFiles(restoreDir, "*").Count());
         }
 
+        private static int GetWorkTreeFolderCount(string path)
+        => Directory.EnumerateDirectories(path, "*", SearchOption.TopDirectoryOnly)
+            .Where(c => Path.GetFileName(c) != ".git").Count();
+
         private static void DeleteDir(string root)
         {
             if (!Directory.Exists(root))
@@ -144,6 +176,12 @@ gitHub:
                     file.Attributes = FileAttributes.Normal;
                 }
             }
+        }
+
+        private static string Exec(string name, string args, string cwd)
+        {
+            var p = Process.Start(new ProcessStartInfo { FileName = name, Arguments = args, WorkingDirectory = cwd, RedirectStandardOutput = true });
+            return p.StandardOutput.ReadToEnd().Trim();
         }
     }
 }

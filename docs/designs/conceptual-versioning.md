@@ -34,7 +34,7 @@ This document specifies Docfx vnext versioning dev design.
 
 1. Not support version validation on reference, including link and xref.
 
-    In phase 1, we will not check whether the version is existed on the referenced file.
+    In phase 1, we will not check whether the version exists on the referenced file.
 
     1. If user reference another file by link/Uid without query string `?view={moniker}`, we will not check whether the referenced file have the same monikerRange with current file. So if the referenced file have different monikerRange, the final view page is not guaranteed.
 
@@ -54,7 +54,7 @@ This document specifies Docfx vnext versioning dev design.
         the content of `config.yml` is
         ```yml
         name: dotnet
-        content: "articles/**/*.md"
+        files: "articles/**/*.md"
         monikerRange:
             "articles/folder1/**/*.md": "netcore-1.0"
             "articles/folder2/**/*.md": "netcore-1.0"
@@ -86,7 +86,7 @@ This document specifies Docfx vnext versioning dev design.
         the content of `config.yml` is
         ```yml
         name: dotnet
-        content: "articles/**/*.md"
+        files: "articles/**/*.md"
         monikerRange:
             "articles/folder1/**/*.md": "netcore-1.0"
             "articles/folder2/**/*.md": "netcore-1.0"
@@ -130,7 +130,7 @@ This document specifies Docfx vnext versioning dev design.
 
 ```yml
 name: dotnet
-content: "articles/**/*.md"
+files: "articles/**/*.md"
 monikerRange:
     "articles/v1.0/**/*.md": "netcore-1.0"
     "articles/v1.0/**/*.md": "netcore-1.1"
@@ -242,11 +242,11 @@ There are several scenarios:
 |Reference type                                                                 |Resolve result             |Validation                 |
 |-------------------------------------------------------------------------------|---------------------------|---------------------------|
 |relative link without verison query - `[B](b.md)` |href without query - `<a href="b">` |file existed check, do not check whether monikerRange of target file is same with current file |
-|relative link with verison query - `[B](b.md?view=netcore-1.0)` |href with original query - `<a href="b?view=netcore-1.0">` |file existed check, do not check whether version is existed in target file |
+|relative link with verison query - `[B](b.md?view=netcore-1.0)` |href with original query - `<a href="b?view=netcore-1.0">` |file existed check, do not check whether version exists in target file |
 |absolute link/external link without verison query - `[B](/b.md)` |href without query - `<a href="/b">` |no validation |
 |absolute link/external link with verison query - `[B](/b.md?view=netcore-1.0)` |href with original query - `<a href="/b?view=netcore-1.0">` |no validation |
 |internal/external xref without verison query - `<xref: b>` |href without query - `<a href="b">` |uid existed check, do not check whether monikerRange of uid is same with current file |
-|internal/external xref with verison query - `<xref: b?view=netcore-1.0>` |href with original query - `<a href="b?view=netcore-1.0">` |uid existed check, do not check whether version is existed in uid |
+|internal/external xref with verison query - `<xref: b?view=netcore-1.0>` |href with original query - `<a href="b?view=netcore-1.0">` |uid existed check, and check whether the specific uid version exists |
 
 #### 2.3 Moniker Definition File
 
@@ -283,16 +283,17 @@ An **ordered** moniker list is provided by moniker definition file restored from
 
 For dynamic, the output path shares the same schema:
 
-`{output-dir}/{locale}?/{group-{monikerListHash}}?/{site-path}`
+`{output-dir}/{siteBasePath}/{monikerListHash}?/{site-path-relative-to-base-path}`
 
 ```txt
-      locale monikerListHash           site-path
-      |-^-| |------^-----| |----------------^----------------|
-_site/en-us/group-01ddf122/dotnet/api/system.string/index.html
+  siteBasePath monikerListHash  site-path-relative-to-base-path
+      |--^-| |--^--| |----------------^----------|
+_site/dotnet/01ddf122/api/system.string/index.html
 ```
 
-> `?` means optional. When the file have no version, the output path will be `{output-dir}/{locale}?/{site-path}`  
-> `monikerListHash` is the first 8 characters of the hash of this file's final moniker list, joined by whitespace.
+> `?` means optional. When the file have no version, the output path will be `{output-dir}/{siteBasePath}/{site-path-relative-to-base-path}`  
+> `monikerListHash` is the first 8 characters of the hash of this file's final moniker list, joined by whitespace.  
+> `site-path-relative-to-base-path` means the relative path of sitePath related to siteBasePath
 
 #### 3.2 Output content
 
@@ -366,48 +367,30 @@ _site/en-us/group-01ddf122/dotnet/api/system.string/index.html
 
 - Content for `.manifest.json`
 
-    ##### Ideal output
-
-    ```json
-    {
-        "files":[
-            {
-                "siteUrl": "/{SitePath}",
-                "outputPath": "{outputPath}",
-                "sourcePath": "{sourcePath}",
-                "monikers": [
-                    "moniker1",
-                    ...
-                ]
-            },
-        ]
-    }
-    ```
-
-    ##### Legacy output
-
-    ```json
-    {
-        "groups":[
-            "group": "{groupId}",
+```json
+{
+    "groups":{
+        "{groupId}": {
             "monikers": [
                 "moniker1",
                 ...
             ],
             ...
-        ],
-        "files":[
-            {
-                "siteUrl": "{SitePath}",
-                "outputPath": "{outputPath}",
-                "sourcePath": "{sourcePath}",
-                "group": "{groupId}"
-            },
-        ]
-    }
-    ```
+        },
+        ...
+    },
+    "files":[
+        {
+            "siteUrl": "{SitePath}",
+            "outputPath": "{outputPath}",
+            "sourcePath": "{sourcePath}",
+            "group": "{groupId}"
+        },
+    ]
+}
+```
 
-    > `groupid` is the first 8 characters of the hash of the monikers joined by `,`.
+> `groupid` is the first 8 characters of the hash of the monikers joined by `,`.
 
 ### 4 Feature supported
 
@@ -428,7 +411,7 @@ Then content of `config.yml` is:
 
 ```yml
 name: dotnet
-content: "articles/**/*.md"
+files: "articles/**/*.md"
 monikerRange:
     "articles/v1.0/**/*.md": "netcore-1.0 || netcore-1.1"
     "articles/v2.0/**/*.md": "netcore-2.0"
@@ -526,10 +509,19 @@ In phase 1, when resolving the `toc_rel` of each file, we still take the nearest
 
 For redirection file, the output file also contains `monikers` information.
 
+#### 5.5 Config migration
+
+To support versioning, config migration tool have to:
+
+1. Generate `monikerRange` config item according to the original group config in the `docfx.json`.
+2. Generate `routes` config item according to the original group config in the `docfx.json`
+
 #### 6. Dependencies
 
-1. Support publishing with overlapping monikerRange in DHS.
-2. API to get moniker definition file.
+1. Support publishing to with overlapping monikerRange.
+2. Add moniker definition API and token to global config so it can be restored.
+3. Generate publish manifest file according to the new data contract.
+4. Support migrating repository with versioning in migration tool.
 
 #### 7. Open questions
 
@@ -543,13 +535,15 @@ For redirection file, the output file also contains `monikers` information.
 
 In phase2, we are going to support:
 
-1. Cross version reference
+1. Cross version reference validation
 
     User can reference to a file/Uid with specific version, and a warning should be reported if the file/Uid does not contains this version.
 
-2. Bookmark validation with moniker info.
+2. External uid reference with version.
 
-## Scenarios supported
+3. Bookmark validation with moniker info.
+
+## Scenarios to support
 
 - Be able to link to a file in the same group by relative path with query `?view={moniker}`, a warning should be reported if the file does not contains this moniker.  
 - Be able to link to a file in different group by relative path with query `?view={moniker}`, a warning should be reported if the file does not contains this moniker.  

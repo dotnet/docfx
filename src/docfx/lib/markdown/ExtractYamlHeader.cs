@@ -25,15 +25,22 @@ namespace Microsoft.Docs.Build
                 var trimEnd = line.TrimEnd();
                 if (trimEnd == "---" || trimEnd == "...")
                 {
-                    var (yamlErrors, yamlHeaderObj) = YamlUtility.Parse(builder.ToString(), file);
-                    errors.AddRange(yamlErrors);
-
-                    if (yamlHeaderObj is JObject obj)
+                    try
                     {
-                        return (errors, obj);
-                    }
+                        var (yamlErrors, yamlHeaderObj) = YamlUtility.Parse(builder.ToString(), file);
+                        errors.AddRange(yamlErrors);
 
-                    errors.Add(Errors.YamlHeaderNotObject(isArray: yamlHeaderObj is JArray, file));
+                        if (yamlHeaderObj is JObject obj)
+                        {
+                            return (errors, obj);
+                        }
+
+                        errors.Add(Errors.YamlHeaderNotObject(isArray: yamlHeaderObj is JArray, file));
+                    }
+                    catch (DocfxException ex) when (ex.Error.Code == "yaml-syntax-error")
+                    {
+                        errors.Add(Errors.YamlHeaderSyntaxError(ex.Error));
+                    }
                     break;
                 }
                 builder.Append(line).Append("\n");

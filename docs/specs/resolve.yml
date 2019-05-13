@@ -6,9 +6,9 @@ inputs:
   docs/b.md: Link to [a](./a.md)
 outputs:
   docs/a.json: |
-    { "content": "<p>Link to <a href=\"b\">b</a></p>" }
+    { "conceptual": "<p>Link to <a href=\"b\">b</a></p>" }
   docs/b.json: |
-    { "content": "<p>Link to <a href=\"a\">a</a></p>" }
+    { "conceptual": "<p>Link to <a href=\"a\">a</a></p>" }
 ---
 # Preserve query and fragment for links to files
 inputs:
@@ -17,10 +17,10 @@ inputs:
   docs/b.md: Link to [a](./a.md?a=b&c=d#e)
 outputs:
   docs/a.json: |
-    { "content": "<p>Link to <a href=\"b#a?b=c\">b</a></p>" }
+    { "conceptual": "<p>Link to <a href=\"b#a?b=c\">b</a></p>" }
   docs/b.json: |
-    { "content": "<p>Link to <a href=\"a?a=b&amp;c=d#e\">a</a></p>" }
-  build.log: |
+    { "conceptual": "<p>Link to <a href=\"a?a=b&amp;c=d#e\">a</a></p>" }
+  .errors.log: |
     ["warning","external-bookmark-not-found","Cannot find bookmark '#e' in 'docs/a.md'","docs/b.md",1,9]
     ["warning","external-bookmark-not-found","Cannot find bookmark '#a?b=c' in 'docs/b.md'","docs/a.md",1,9]
 ---
@@ -30,7 +30,7 @@ inputs:
   docs/a.md: Link to [docs](https://docs.microsoft.com)
 outputs:
   docs/a.json: |
-    { "content": "<p>Link to <a href=\"https://docs.microsoft.com\">docs</a></p>" }
+    { "conceptual": "<p>Link to <a href=\"https://docs.microsoft.com\">docs</a></p>" }
 ---
 # Links to bookmarks in the same article
 inputs:
@@ -44,10 +44,10 @@ outputs:
   docs/a.json: |
     { 
       "rawTitle": "<h2 id=\"hello-world\">Hello World</h2>",
-      "content": "<p>Link to <a href=\"#hello-world\">bookmark</a></p>" 
+      "conceptual": "<p>Link to <a href=\"#hello-world\">bookmark</a></p>" 
     }
   docs/b.json: |
-    { "content": "<p>Link to <a href=\"#\">self</a></p>" }
+    { "conceptual": "<p>Link to <a href=\"b\">self</a></p>" }
 ---
 # Links to self bookmarks in the included file
 inputs:
@@ -65,8 +65,16 @@ inputs:
     Link to [invalid parent](../a.md/#heading2)
 outputs:
   docs/a.json: |
-    { "content": "<h2 id=\"test\">test</h2>\n<p>Link to <a href=\"#test\">valid self</a>\nLink to <a href=\"a#heading\">valid parent</a>\nLink to <a href=\"#heading1\">invalid self</a>\nLink to <a href=\"a#heading2\">invalid parent</a></p>\n\n<p>Link to <a href=\"#heading3\">invalid self</a></p>" }
-  build.log: |
+    {
+      "conceptual": "
+        <h2 id=\"test\">test</h2>
+        <p>Link to <a href=\"#test\">valid self</a>
+        Link to <a href=\"a#heading\">valid parent</a>
+        Link to <a href=\"#heading1\">invalid self</a>
+        Link to <a href=\"a#heading2\">invalid parent</a></p>
+        <p>Link to <a href=\"a#heading3\">invalid self</a></p>"
+    }
+  .errors.log: |
     ["suggestion","internal-bookmark-not-found","Cannot find bookmark '#heading3' in 'docs/a.md', did you mean '#heading'?","docs/a.md",3,9]
     ["suggestion","internal-bookmark-not-found","Cannot find bookmark '#heading2' in 'docs/includes/b.md', did you mean '#heading'?","docs/includes/b.md",5,9]
     ["suggestion","internal-bookmark-not-found","Cannot find bookmark '#heading1' in 'docs/includes/b.md', did you mean '#heading'?","docs/includes/b.md",4,9]
@@ -78,9 +86,9 @@ inputs:
   docs/dir-b/b.md: Link to [a](../dir-a\a.md)
 outputs:
   docs/dir-a/a.json: |
-    { "content": "<p>Link to <a href=\"../dir-b/b\">b</a></p>" }
+    { "conceptual": "<p>Link to <a href=\"../dir-b/b\">b</a></p>" }
   docs/dir-b/b.json: |
-    { "content": "<p>Link to <a href=\"../dir-a/a\">a</a></p>" }
+    { "conceptual": "<p>Link to <a href=\"../dir-a/a\">a</a></p>" }
 ---
 # Links in include files are resolved relative to the include file
 inputs:
@@ -90,9 +98,9 @@ inputs:
   docs/dir/c.md:
 outputs:
   docs/a.json: |
-    { "content": "<p>Link to <a href=\"dir/c\">c</a></p>" }
+    { "conceptual": "<p>Link to <a href=\"dir/c\">c</a></p>" }
   docs/dir/b.json: |
-    { "content": "<p><a href=\"c\">c</a></p>" }
+    { "conceptual": "<p><a href=\"c\">c</a></p>" }
   docs/dir/c.json:
 ---
 # Resolve <a> and <img> tags embeded inside markdown
@@ -103,9 +111,9 @@ inputs:
   docs/c.png:
 outputs:
   docs/a.json: |
-    { "content": "<p>Link to <a href=\"b\" target=\"_blank\"><em>b</em></a></p>" }
+    { "conceptual": "<p>Link to <a href=\"b\" target=\"_blank\"><em>b</em></a></p>" }
   docs/b.json: |
-    { "content": "<div>Link to <img src=\"c.png\" /></div>" }
+    { "conceptual": "<div>Link to <img src=\"c.png\" /></div>" }
   docs/c.png:
 ---
 # Html links in include files are resolved relative to the include file
@@ -116,9 +124,9 @@ inputs:
   docs/dir/c.md:
 outputs:
   docs/a.json: |
-    { "content": "<p>Link to <a target=\"_blank\" href=\"dir/c\">c</a></p>" }
+    { "conceptual": "<p>Link to <a target=\"_blank\" href=\"dir/c\">c</a></p>" }
   docs/dir/b.json: |
-    { "content": "<p><a target=\"_blank\" href=\"c\">c</a></p>" }
+    { "conceptual": "<p><a target=\"_blank\" href=\"c\">c</a></p>" }
   docs/dir/c.json:
 ---
 # Show warning if the link is empty, missing
@@ -131,8 +139,8 @@ inputs:
     [Missing](c.md)
 outputs:
   docs/a.json: |
-    { "content": "<p><a href=\"\">Empty</a><a href=\"a%3C%3Eb.md\">Invalid</a><a href=\"c.md\">Missing</a></p>" }
-  build.log: |
+    { "conceptual": "<p><a href=\"\">Empty</a><a href=\"a%3C%3Eb.md\">Invalid</a><a href=\"c.md\">Missing</a></p>" }
+  .errors.log: |
     ["info","link-is-empty","Link is empty","docs/a.md",1,1]
     ["warning","file-not-found","Cannot find file 'a<>b.md' relative to 'docs/a.md'","docs/a.md",1,11]
     ["warning","file-not-found","Cannot find file 'c.md' relative to 'b.md'","b.md",1,1]
@@ -144,9 +152,9 @@ inputs:
     [Absolute](C:/a.md)
 outputs:
   docs/a.json: |
-    { "content": "<p><a href=\"\">Absolute</a></p>" }
-  build.log: |
-    ["warning","absolute-file-path","File path cannot be absolute: 'C:/a.md'","docs/a.md",1,1]
+    { "conceptual": "<p><a href=\"\">Absolute</a></p>" }
+  .errors.log: |
+    ["warning","local-file-path","Link 'C:/a.md' points to a local file. Use a relative path instead","docs/a.md",1,1]
 ---
 # Show warning if two files share the same site url
 inputs:
@@ -154,7 +162,7 @@ inputs:
   docs/a.png.md: '![](a.png)'
   docs/a.png:
 outputs:
-  build.log: |
+  .errors.log: |
     ["error","publish-url-conflict","Two or more files publish to the same url '/docs/a.png': 'docs/a.png', 'docs/a.png.md'"]
 ---
 # Prefer relative url to file when there is a matching folder name
@@ -165,11 +173,11 @@ inputs:
   docs/a.md: Link to [index](a/index.md)
 outputs:
   docs/a/index.json: |
-    { "content": "<p>Link to <a href=\"../a\">1</a> <a href=\"a\">2</a></p>" }
+    { "conceptual": "<p>Link to <a href=\"../a\">1</a> <a href=\"a\">2</a></p>" }
   docs/a/a.json: |
-    { "content": "<p>Link to <a href=\"./\">index</a></p>" }
+    { "conceptual": "<p>Link to <a href=\"./\">index</a></p>" }
   docs/a.json: |
-    { "content": "<p>Link to <a href=\"a/\">index</a></p>" }
+    { "conceptual": "<p>Link to <a href=\"a/\">index</a></p>" }
 ---
 # HTML encode special charactors in path
 inputs:
@@ -178,7 +186,7 @@ inputs:
   docs/b&/c~.md:
 outputs:
   docs/a.json: |
-    { "content": "<p>Link to <a href=\"b&amp;/c%7E\">b</a></p>" }
+    { "conceptual": "<p>Link to <a href=\"b&amp;/c%7E\">b</a></p>" }
   docs/b&/c~.json:
 ---
 # Files redirected to an aboslute URL
@@ -190,7 +198,7 @@ inputs:
     [redirect](redirect.md?a#b)
 outputs:
   docs/a.json: |
-    {"content":"<p><a href=\"redirect?a#b\">redirect</a></p>"}
+    {"conceptual":"<p><a href=\"redirect?a#b\">redirect</a></p>"}
 ---
 # Show error if inclusion is a redirection file
 inputs:
@@ -201,8 +209,8 @@ inputs:
     Link to [!INCLUDE[](redirect.md)]
 outputs:
   docs/a.json: |
-    {"content":"<p>Link to [!include[](redirect.md)]</p>"}
-  build.log: |
+    {"conceptual":"<p>Link to [!include[](redirect.md)]</p>"}
+  .errors.log: |
     ["warning","include-not-found","Cannot resolve 'redirect.md' relative to 'docs/a.md'.","docs/a.md",1,9]
 ---
 # Show warning if redirection file conflicts with existing file
@@ -212,7 +220,7 @@ inputs:
       docs/redirect.md: /absolute/path
   docs/redirect.md:
 outputs:
-  build.log: |
+  .errors.log: |
     ["error","publish-url-conflict","Two or more files publish to the same url '/docs/redirect': 'docs/redirect.md', 'docs/redirect.md <redirection>'"]
 ---
 # Show warning if link to a page outside build scope
@@ -224,10 +232,10 @@ inputs:
   c.md: '[](#self)'
 outputs:
   docs/a.json: |
-    {"content":"<p>Link to <a href=\"../c\">c</a></p>"}
+    {"conceptual":"<p>Link to <a href=\"../c\">c</a></p>"}
   docs/b.json: |
-    {"content":"<p><a href=\"#self\"></a></p>"}
-  build.log: |
+    {"conceptual":"<p><a href=\"#self\"></a></p>"}
+  .errors.log: |
     ["warning","link-out-of-scope","File 'c.md' referenced by link '../c.md' will not be built because it is not included in docfx.yml","docs/a.md",1,9]
     ["suggestion","internal-bookmark-not-found","Cannot find bookmark '#self' in 'c.md'","c.md",1,1]
 ---
@@ -238,7 +246,7 @@ inputs:
   b.png:
 outputs:
   docs/a.json: |
-    {"content":"<p><a href=\"../b.png\">a</a></p>"}
+    {"conceptual":"<p><a href=\"../b.png\">a</a></p>"}
   b.png:
 ---
 # Don't show warning if include a page outside build scope
@@ -249,29 +257,39 @@ inputs:
   b.md: b
 outputs:
   docs/a.json: |
-    {"content":"<p>b</p>"}
+    {"conceptual":"<p>b</p>"}
 ---
 # Show warning if link to a file in dependency repo
-inputs:
-  docfx.yml: |
-    dependencies:
-      dep: https://github.com/docascode/docfx-test-dependencies
-  docs/a.md: 'Link to [dep](../dep/logo.svg)'
+repos:
+  https://github.com/dep-file/root:
+    - files:
+        docfx.yml: |
+          dependencies:
+            dep: https://github.com/dep-file/dep
+        docs/a.md: 'Link to [dep](../dep/logo.svg)'
+  https://github.com/dep-file/dep:
+    - files:
+        logo.svg:
 outputs:
   docs/a.json: |
-    {"content":"<p>Link to <a href=\"../dep/logo.svg\">dep</a></p>"}
-  build.log: |
+    {"conceptual":"<p>Link to <a href=\"../dep/logo.svg\">dep</a></p>"}
+  .errors.log: |
     ["warning","link-is-dependency","File 'logo.svg' referenced by link '../dep/logo.svg' will not be built because it is from a dependency docset","docs/a.md",1,9]
 ---
 # Don't show warning if include a file from dependency repo
-inputs:
-  docfx.yml: |
-    dependencies:
-      dep: https://github.com/docascode/docfx-test-dependencies
-  docs/a.md: '[!include[dep](~/dep/dep.md)]'
+repos:
+  https://github.com/dep-include/root:
+    - files:
+        docfx.yml: |
+          dependencies:
+            dep: https://github.com/dep-include/dep
+        docs/a.md: '[!include[dep](~/dep/dep.md)]'
+  https://github.com/dep-include/dep:
+    - files:
+        dep.md: DEP
 outputs:
   docs/a.json: |
-    {"content":"<p>DEP</p>"}
+    {"conceptual":"<p>DEP</p>"}
 ---
 # Link with `~` - default resolveAlias config
 inputs:
@@ -283,9 +301,9 @@ inputs:
   docs/b.md:
 outputs:
   docs/a.json: |
-    { "content": "<p>Link to <a href=\"%7E/b.md\">B1</a>Link to <a href=\"b\">B2</a>Link to <a href=\"%7Edocs/b.md\">B3</a></p>" }
+    { "conceptual": "<p>Link to <a href=\"%7E/b.md\">B1</a>Link to <a href=\"b\">B2</a>Link to <a href=\"%7Edocs/b.md\">B3</a></p>" }
   docs/b.json:
-  build.log: |
+  .errors.log: |
     ["warning","file-not-found","Cannot find file '~/b.md' relative to 'docs/a.md'","docs/a.md",1,9]
     ["warning","file-not-found","Cannot find file '~docs/b.md' relative to 'docs/a.md'","docs/a.md",3,9]
 ---
@@ -304,10 +322,10 @@ inputs:
   docs/c.png:
 outputs:
   docs/a.json: |
-    { "content": "<p>Link to <a href=\"b\">B1</a>\nLink to <a href=\"b\">B2</a>\nLink to <a href=\"%7E/docs/b.md\">B3</a>\n<img src=\"c.png\" alt=\"C\"></p>\n" }
+    { "conceptual": "<p>Link to <a href=\"b\">B1</a>\nLink to <a href=\"b\">B2</a>\nLink to <a href=\"%7E/docs/b.md\">B3</a>\n<img src=\"c.png\" alt=\"C\"></p>\n" }
   docs/b.json:
   docs/c.png:
-  build.log: |
+  .errors.log: |
     ["warning","file-not-found","Cannot find file '~/docs/b.md' relative to 'docs/a.md'","docs/a.md",3,9]
 ---
 # Multiple matched alias, use the last one
@@ -322,7 +340,7 @@ inputs:
   docs/b.md:
 outputs:
   docs/a.json: |
-    { "content": "<p>Link to <a href=\"b\">B1</a>\nLink to <a href=\"b\">B2</a></p>\n" }
+    { "conceptual": "<p>Link to <a href=\"b\">B1</a>\nLink to <a href=\"b\">B2</a></p>\n" }
   docs/b.json:
 ---
 # If the alias is conflict with the physical path, peek the physical path
@@ -338,7 +356,7 @@ inputs:
   docs/test-test/c.md:
 outputs:
   docs/a.json: |
-    { "content": "<p>Link to <a href=\"test/b\">B</a>\nLink to <a href=\"test-test/c\">C</a></p>\n" }
+    { "conceptual": "<p>Link to <a href=\"test/b\">B</a>\nLink to <a href=\"test-test/c\">C</a></p>\n" }
   docs/test/b.json:
   docs/test-test/b.json:
   docs/test-test/c.json:
@@ -355,7 +373,7 @@ inputs:
   docs/c.png:
 outputs:
   docs/a.json: |
-    { "content": "<p>Link to <a href=\"b\">b</a></p>\n<div>Link to <img src=\"c.png\"></div>\n" }
+    { "conceptual": "<p>Link to <a href=\"b\">b</a></p>\n<div>Link to <img src=\"c.png\"></div>\n" }
   docs/b.json:
   docs/c.png:
 ---
@@ -371,6 +389,6 @@ inputs:
   b.md: Token
 outputs:
   docs/a.json: |
-    { "content": "[!include[B1](~/b.md)]<p>Token</p>\n" }
-  build.log: |
+    { "conceptual": "[!include[B1](~/b.md)]<p>Token</p>\n" }
+  .errors.log: |
     ["warning","include-not-found","Cannot resolve '~/b.md' relative to 'docs/a.md'.","docs/a.md",1,1]

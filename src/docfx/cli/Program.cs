@@ -56,9 +56,13 @@ namespace Microsoft.Docs.Build
 
             var stopwatch = Stopwatch.StartNew();
             var (command, docset, options) = ParseCommandLineOptions(args);
+            if (string.IsNullOrEmpty(command))
+            {
+                return 1;
+            }
 
             using (Log.BeginScope(options.Verbose))
-            using (var report = new Report(options.Legacy))
+            using (var errorLog = new ErrorLog(docset, options.Legacy))
             {
                 Log.Write($"Using docfx {GetDocfxVersion()}");
 
@@ -67,16 +71,14 @@ namespace Microsoft.Docs.Build
                     switch (command)
                     {
                         case "restore":
-                            await Restore.Run(docset, options, report);
-                            Done(command, stopwatch.Elapsed, report);
+                            await Restore.Run(docset, options, errorLog);
+                            Done(command, stopwatch.Elapsed, errorLog);
                             break;
                         case "build":
-                            await Restore.Run(docset, options, report, @implicit: true);
-                            await Build.Run(docset, options, report);
-                            Done(command, stopwatch.Elapsed, report);
+                            await Build.Run(docset, options, errorLog);
+                            Done(command, stopwatch.Elapsed, errorLog);
                             break;
                         case "watch":
-                            await Restore.Run(docset, options, report, @implicit: true);
                             await Watch.Run(docset, options);
                             break;
                     }
@@ -85,7 +87,7 @@ namespace Microsoft.Docs.Build
                 catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
                 {
                     Log.Write(dex);
-                    report.Write(dex.Error, true);
+                    errorLog.Write(dex.Error, true);
                     return 1;
                 }
             }
@@ -103,39 +105,48 @@ namespace Microsoft.Docs.Build
                 args = new[] { "--help" };
             }
 
-            ArgumentSyntax.Parse(args, syntax =>
+            try
             {
-                // Restore command
-                syntax.DefineCommand("restore", ref command, "Restores dependencies before build.");
-                syntax.DefineOption("locale", ref options.Locale, "The locale of the docset to build");
-                syntax.DefineOption("o|output", ref options.Output, "Output directory in which to place restore log.");
-                syntax.DefineOption("legacy", ref options.Legacy, "Enable legacy output for backward compatibility.");
-                syntax.DefineOption("v|verbose", ref options.Verbose, "Enable diagnostics console output.");
-                syntax.DefineParameter("docset", ref docset, "Docset directory that contains docfx.yml/docfx.json.");
+                ArgumentSyntax.Parse(args, syntax =>
+                {
+                    // Handle parse errors by us
+                    syntax.HandleErrors = false;
 
-                // Build command
-                syntax.DefineCommand("build", ref command, "Builds a docset.");
-                syntax.DefineOption("o|output", ref options.Output, "Output directory in which to place built artifacts.");
-                syntax.DefineOption("legacy", ref options.Legacy, "Enable legacy output for backward compatibility.");
-                syntax.DefineOption("locale", ref options.Locale, "The locale of the docset to build.");
-                syntax.DefineOption("no-restore", ref options.NoRestore, "Do not restore the docset before building.");
-                syntax.DefineOption("v|verbose", ref options.Verbose, "Enable diagnostics console output.");
-                syntax.DefineParameter("docset", ref docset, "Docset directory that contains docfx.yml/docfx.json.");
+                    // Restore command
+                    syntax.DefineCommand("restore", ref command, "Restores dependencies before build.");
+                    syntax.DefineOption("locale", ref options.Locale, "The locale of the docset to build");
+                    syntax.DefineOption("o|output", ref options.Output, "Output directory in which to place restore log.");
+                    syntax.DefineOption("legacy", ref options.Legacy, "Enable legacy output for backward compatibility.");
+                    syntax.DefineOption("v|verbose", ref options.Verbose, "Enable diagnostics console output.");
+                    syntax.DefineParameter("docset", ref docset, "Docset directory that contains docfx.yml/docfx.json.");
 
-                // Watch command
-                syntax.DefineCommand("watch", ref command, "Previews a docset and watch changes interactively.");
-                syntax.DefineOption("locale", ref options.Locale, "The locale of the docset to build.");
-                syntax.DefineOption("port", ref options.Port, "The port of the launched website.");
-                syntax.DefineOption("no-restore", ref options.NoRestore, "Do not restore the docset before building.");
-                syntax.DefineOption("v|verbose", ref options.Verbose, "Enable diagnostics console output.");
-                syntax.DefineParameter("docset", ref docset, "Docset directory that contains docfx.yml/docfx.json.");
-            });
+                    // Build command
+                    syntax.DefineCommand("build", ref command, "Builds a docset.");
+                    syntax.DefineOption("o|output", ref options.Output, "Output directory in which to place built artifacts.");
+                    syntax.DefineOption("legacy", ref options.Legacy, "Enable legacy output for backward compatibility.");
+                    syntax.DefineOption("locale", ref options.Locale, "The locale of the docset to build.");
+                    syntax.DefineOption("v|verbose", ref options.Verbose, "Enable diagnostics console output.");
+                    syntax.DefineParameter("docset", ref docset, "Docset directory that contains docfx.yml/docfx.json.");
 
-            options.Locale = options.Locale?.ToLowerInvariant();
-            return (command, docset, options);
+                    // Watch command
+                    syntax.DefineCommand("watch", ref command, "Previews a docset and watch changes interactively.");
+                    syntax.DefineOption("locale", ref options.Locale, "The locale of the docset to build.");
+                    syntax.DefineOption("port", ref options.Port, "The port of the launched website.");
+                    syntax.DefineOption("v|verbose", ref options.Verbose, "Enable diagnostics console output.");
+                    syntax.DefineParameter("docset", ref docset, "Docset directory that contains docfx.yml/docfx.json.");
+                });
+
+                options.Locale = options.Locale?.ToLowerInvariant();
+                return (command, docset, options);
+            }
+            catch (ArgumentSyntaxException ex)
+            {
+                Console.Write(ex.Message);
+                return default;
+            }
         }
 
-        private static void Done(string command, TimeSpan duration, Report report)
+        private static void Done(string command, TimeSpan duration, ErrorLog errorLog)
         {
             Telemetry.TrackOperationTime(command, duration);
 
@@ -147,13 +158,13 @@ namespace Microsoft.Docs.Build
                 Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine($"{char.ToUpperInvariant(command[0])}{command.Substring(1)} done in {Progress.FormatTimeSpan(duration)}");
 
-                if (report.ErrorCount > 0 || report.WarningCount > 0 || report.SuggestionCount > 0)
+                if (errorLog.ErrorCount > 0 || errorLog.WarningCount > 0 || errorLog.SuggestionCount > 0)
                 {
-                    Console.ForegroundColor = report.ErrorCount > 0 ? ConsoleColor.Red
-                                            : report.WarningCount > 0 ? ConsoleColor.Yellow
+                    Console.ForegroundColor = errorLog.ErrorCount > 0 ? ConsoleColor.Red
+                                            : errorLog.WarningCount > 0 ? ConsoleColor.Yellow
                                             : ConsoleColor.Magenta;
                     Console.WriteLine();
-                    Console.WriteLine($"  {report.ErrorCount} Error(s), {report.WarningCount} Warning(s), {report.SuggestionCount} Suggestion(s)");
+                    Console.WriteLine($"  {errorLog.ErrorCount} Error(s), {errorLog.WarningCount} Warning(s), {errorLog.SuggestionCount} Suggestion(s)");
                 }
 
                 Console.ResetColor();

@@ -26,7 +26,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public (string path, RestoreMap subRestoreMap) GetGitRestorePath(string url)
         {
-            var (remote, branch, _) = HrefUtility.SplitGitHref(url);
+            var (remote, branch, _) = UrlUtility.SplitGitUrl(url);
             return GetGitRestorePath(remote, branch);
         }
 
@@ -78,7 +78,7 @@ namespace Microsoft.Docs.Build
 
         public static (string localPath, string content, string etag) GetRestoredFileContent(string docsetPath, SourceInfo<string> url, string fallbackDocset = null)
         {
-            var fromUrl = HrefUtility.IsHttpHref(url);
+            var fromUrl = UrlUtility.IsHttp(url);
             if (!fromUrl)
             {
                 // directly return the relative path
@@ -108,7 +108,7 @@ namespace Microsoft.Docs.Build
         public static (string content, string etag) TryGetRestoredFileContent(string url)
         {
             Debug.Assert(!string.IsNullOrEmpty(url));
-            Debug.Assert(HrefUtility.IsHttpHref(url));
+            Debug.Assert(UrlUtility.IsHttp(url));
 
             var filePath = RestoreFile.GetRestoreContentPath(url);
             var etagPath = RestoreFile.GetRestoreEtagPath(url);
@@ -153,7 +153,7 @@ namespace Microsoft.Docs.Build
             {
                 foreach (var gitVersion in dependencyLock.Git)
                 {
-                    var (remote, branch, _) = HrefUtility.SplitGitHref(gitVersion.Key);
+                    var (remote, branch, _) = UrlUtility.SplitGitUrl(gitVersion.Key);
                     if (!acquired.ContainsKey((remote, branch, gitVersion.Value.Commit/*commit*/)))
                     {
                         var (path, git) = AcquireGit(remote, branch, gitVersion.Value.Commit, LockType.Shared);
@@ -192,33 +192,13 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static (string path, DependencyGit git) TryGetGitRestorePath(string remote, string branch, string commit)
         {
+            Debug.Assert(!string.IsNullOrEmpty(remote));
+            Debug.Assert(!string.IsNullOrEmpty(branch));
+            Debug.Assert(!string.IsNullOrEmpty(commit));
+
             var restoreDir = AppData.GetGitDir(remote);
 
-            var (path, slot) = DependencySlotPool<DependencyGit>.TryGetSlot(
-                remote,
-                gits =>
-                {
-                    var filteredGits = gits.Where(i => i.Branch == branch);
-
-                    if (!string.IsNullOrEmpty(commit))
-                    {
-                        // found commit matched slot
-                        filteredGits = filteredGits.Where(i => i.Commit == commit);
-                    }
-
-                    var commits = Array.Empty<string>();
-                    if (filteredGits.Count() > 1)
-                    {
-                        commits = GitUtility.GetCommits(restoreDir, branch, 1000/*top 1000 should be enough for comparing*/);
-                    }
-
-                    return filteredGits.OrderBy(
-                    g =>
-                    {
-                        var index = Array.IndexOf(commits, g.Commit);
-                        return index < 0 ? int.MaxValue : index;
-                    }).ThenByDescending(g => g.LastAccessDate).ToList();
-                });
+            var (path, slot) = DependencySlotPool<DependencyGit>.TryGetSlot(remote, gits => gits.Where(i => i.Branch == branch && i.Commit == commit).OrderByDescending(g => g.LastAccessDate).ToList());
 
             if (!string.IsNullOrEmpty(path))
                 path = Path.Combine(restoreDir, path);

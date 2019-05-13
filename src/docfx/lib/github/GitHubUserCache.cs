@@ -69,7 +69,7 @@ namespace Microsoft.Docs.Build
 
             _url = url;
             _content = content;
-            _etag = new EntityTagHeaderValue(etag);
+            _etag = EntityTagHeaderValue.Parse(etag);
         }
 
         public static GitHubUserCache Create(Docset docset)
@@ -111,7 +111,7 @@ namespace Microsoft.Docs.Build
                 {
                     if (existingUser.IsValid())
                         return (null, existingUser);
-                    return (Errors.GitHubUserNotFound(login), null);
+                    return (Errors.AuthorNotFound(login), null);
                 }
 
                 Log.Write($"Calling GitHub user API to resolve {login}");
@@ -121,7 +121,7 @@ namespace Microsoft.Docs.Build
                 if (error is null)
                 {
                     if (user is null)
-                        error = Errors.GitHubUserNotFound(login);
+                        error = Errors.AuthorNotFound(login);
                     UpdateUser(user ?? new GitHubUser { Login = login });
                 }
                 return (error, user);
@@ -184,7 +184,7 @@ namespace Microsoft.Docs.Build
                     }
                     catch (Exception ex)
                     {
-                        throw Errors.DownloadFailed(_url, ex.Message).ToException(ex);
+                        throw Errors.DownloadFailed(_url).ToException(ex);
                     }
                     var content = await response.EnsureSuccessStatusCode().Content.ReadAsStringAsync();
                     ReadCache(content);
@@ -339,7 +339,8 @@ namespace Microsoft.Docs.Build
 
         private void ReadCache(string content)
         {
-            var users = JsonUtility.Deserialize<GitHubUserCacheFile>(content).Users;
+            // TODO: populate file to JsonUtility.Deserialize
+            var users = JsonUtility.Deserialize<GitHubUserCacheFile>(content, "").Users;
             if (users != null)
             {
                 UpdateUsers(users);

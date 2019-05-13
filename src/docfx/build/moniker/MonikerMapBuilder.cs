@@ -8,7 +8,7 @@ namespace Microsoft.Docs.Build
 {
     internal class MonikerMapBuilder
     {
-        private readonly ConcurrentDictionary<Document, List<string>> _documentToMonikers = new ConcurrentDictionary<Document, List<string>>();
+        private readonly DictionaryBuilder<Document, List<string>> _documentToMonikers = new DictionaryBuilder<Document, List<string>>();
 
         public void Add(Document file, List<string> monikers)
         {
@@ -17,7 +17,7 @@ namespace Microsoft.Docs.Build
 
         public MonikerMap Build()
         {
-            return new MonikerMap(_documentToMonikers);
+            return new MonikerMap(_documentToMonikers.ToDictionary());
         }
     }
 }
