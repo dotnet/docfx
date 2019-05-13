@@ -188,10 +188,6 @@ namespace Microsoft.Docs.Build
             {
                 return new JValue(b);
             }
-            if (int.TryParse(value, out var n))
-            {
-                return new JValue(n);
-            }
             if (long.TryParse(value, out var l))
             {
                 return new JValue(l);
