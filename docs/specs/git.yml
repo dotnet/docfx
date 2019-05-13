@@ -314,7 +314,7 @@ outputs:
 ---
 # Show content_git_url, original_content_git_url and gitcommit
 repos:
-  https://github.com/testowner/testrepo#master-content-git-url:
+  https://docascode@github.com/testowner/testrepo.git#master-content-git-url:
     - files:
         docs/index.md: Alice creates this.
 inputs:
@@ -447,7 +447,7 @@ outputs:
 ---
 # Show (original) content git (branch/commit) url for azure repos
 repos:
-  https://dev.azure.com/docascode/project/_git/a:
+  https://docascode:token@dev.azure.com/docascode/project/_git/a.git:
     - files:
         docs/index.md:
 inputs:
