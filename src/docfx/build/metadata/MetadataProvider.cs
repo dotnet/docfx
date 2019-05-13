@@ -69,7 +69,7 @@ namespace Microsoft.Docs.Build
             {
                 if (_reservedMetadata.Contains(property.Name))
                 {
-                    errors.Add(Errors.ReservedMetadata(JsonUtility.GetSourceInfo(property), property.Name));
+                    errors.Add(Errors.AttributeReserved(JsonUtility.GetSourceInfo(property), property.Name));
                 }
                 else if (!IsValidMetadataType(property.Value))
                 {

@@ -18,8 +18,8 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Redirection entry isn't a conceptual article(*.{md,json,yml}).
         /// </summary>
-        public static Error InvalidRedirection(SourceInfo source, string path, ContentType contentType)
-            => new Error(ErrorLevel.Error, "invalid-redirection", $"The '{path}' shouldn't belong to redirections since it's a {contentType}", source);
+        public static Error RedirectionInvalid(SourceInfo source, string path)
+            => new Error(ErrorLevel.Error, "redirection-invalid", $"File '{path}' is redirected to '{source}'. Only content files can be redirected.", source);
 
         /// <summary>
         /// The key or value of redirection is null or empty.
@@ -147,7 +147,7 @@ namespace Microsoft.Docs.Build
         ///     update the file cache with put request
         /// </summary>
         public static Error UploadFailed(string url, string message)
-            => new Error(ErrorLevel.Warning, "upload-failed", $"Upload '{url}' failed: {message}");
+            => new Error(ErrorLevel.Warning, "upload-failed", $"Upload failed for '{url}': {message} Try closing and reopening the PR. If you get this Error again, file an issue.");
 
         /// <summary>
         /// Failed to run `git fetch` or `git worktree add`.
@@ -293,8 +293,8 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Used docfx output model property which are not defined in input model.
         /// </summary>
-        public static Error ReservedMetadata(SourceInfo source, string name)
-            => new Error(ErrorLevel.Warning, "reserved-metadata", $"Metadata '{name}' is reserved by docfx, remove this metadata", source);
+        public static Error AttributeReserved(SourceInfo source, string name)
+            => new Error(ErrorLevel.Warning, "attribute-reserved", $"Attribute {name} is reserved for use by Docs. Remove it from your file metadata.", source);
 
         /// <summary>
         /// Metadata value must be scalar or arrays of scalars.
