@@ -266,7 +266,7 @@ repos:
         >note
   https://docs.com/template/token:
   - files:
-      LocalizedTokens/docs(en-us).html/tokens.json: |
+      ContentTemplate/token.json: |
         { "note": "<p>my note</p>" }
 outputs:
   docs/a.json: |
