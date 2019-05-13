@@ -125,7 +125,8 @@ namespace Microsoft.Docs.Build
 
                             if (slot is null)
                             {
-                                (acquired, acquirer) = ProcessUtility.AcquireExclusiveLock(GetLockKey(url, $"{slots.Count + 1}"));
+                                // force to acquire new slot
+                                (acquired, acquirer) = ProcessUtility.AcquireExclusiveLock(GetLockKey(url, $"{slots.Count + 1}"), force: true);
                                 if (acquired)
                                 {
                                     slot = new T() { Id = $"{slots.Count + 1}" };
@@ -182,7 +183,7 @@ namespace Microsoft.Docs.Build
             var slotsFile = Path.Combine(restoreDir, "index.json");
             var content = File.Exists(slotsFile) ? File.ReadAllText(slotsFile) : string.Empty;
 
-            return (JsonUtility.Deserialize<SlotInfo>(content) ?? new SlotInfo()).Slots;
+            return (JsonUtility.Deserialize<SlotInfo>(content, slotsFile) ?? new SlotInfo()).Slots;
         }
 
         public static void WriteSlots(string restoreDir, List<T> slots)

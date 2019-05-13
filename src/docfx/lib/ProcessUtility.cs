@@ -112,13 +112,15 @@ namespace Microsoft.Docs.Build
         /// Acquire a exclusive lock for input lock name
         /// The returned `acquirer` are used for tracking the acquired lock, instead of thread info, since the thread info may change in asynchronous programming model
         /// </summary>
-        public static (bool acquired, string acquirer) AcquireExclusiveLock(string lockName)
+        public static (bool acquired, string acquirer) AcquireExclusiveLock(string lockName, bool force = false)
         {
             Debug.Assert(!string.IsNullOrEmpty(lockName));
 
             var acquired = false;
             var acquirer = (string)null;
             var lockPath = GetLockFilePath(lockName);
+            if (force)
+                File.Delete(lockPath);
 
             ReadAndWriteFile<LockInfo>(lockPath, lockInfo =>
             {
@@ -215,7 +217,7 @@ namespace Microsoft.Docs.Build
                 using (var file = File.Open(path, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None))
                 {
                     var streamReader = new StreamReader(file);
-                    var result = JsonUtility.Deserialize<T>(streamReader.ReadToEnd());
+                    var result = JsonUtility.Deserialize<T>(streamReader.ReadToEnd(), path);
 
                     file.SetLength(0);
                     var updatedResult = update(result);

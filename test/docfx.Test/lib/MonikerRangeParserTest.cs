@@ -14,33 +14,33 @@ namespace Microsoft.Docs.Build
             {
                 new Moniker
                 {
-                    Name = "netcore-1.0",
-                    Product = ".NET Core",
+                    MonikerName = "netcore-1.0",
+                    ProductName = ".NET Core",
                 },
                 new Moniker
                 {
-                    Name = "netcore-2.0",
-                    Product = ".NET Core",
+                    MonikerName = "netcore-2.0",
+                    ProductName = ".NET Core",
                 },
                 new Moniker
                 {
-                    Name = "netcore-3.0",
-                    Product = ".NET Core",
+                    MonikerName = "netcore-3.0",
+                    ProductName = ".NET Core",
                 },
                 new Moniker
                 {
-                    Name = "dotnet-1.0",
-                    Product = ".NET Framework",
+                    MonikerName = "dotnet-1.0",
+                    ProductName = ".NET Framework",
                 },
                 new Moniker
                 {
-                    Name = "dotnet-2.0",
-                    Product = ".NET Framework",
+                    MonikerName = "dotnet-2.0",
+                    ProductName = ".NET Framework",
                 },
                 new Moniker
                 {
-                    Name = "dotnet-3.0",
-                    Product = ".NET Framework",
+                    MonikerName = "dotnet-3.0",
+                    ProductName = ".NET Framework",
                 },
             }
         };
@@ -104,8 +104,8 @@ namespace Microsoft.Docs.Build
         public void InvalidMonikerRange(string rangeString, string errorMessage)
         {
             var exception = Assert.Throws<DocfxException>(() => _monikerRangeParser.Parse(rangeString));
-            Assert.Equal("invalid-moniker-range", exception.Error.Code);
-            Assert.Equal(errorMessage, exception.Error.Message.Substring($"MonikerRange `{rangeString}` is invalid: ".Length));
+            Assert.Equal("moniker-range-invalid", exception.Error.Code);
+            Assert.Equal(errorMessage, exception.Error.Message.Substring($"Invalid moniker range: '{rangeString}': ".Length));
         }
 
         [Fact]
@@ -117,18 +117,18 @@ namespace Microsoft.Docs.Build
                 {
                     new Moniker
                     {
-                        Name = "netcore-1.0",
-                        Product = ".NET Core",
+                        MonikerName = "netcore-1.0",
+                        ProductName = ".NET Core",
                     },
                     new Moniker
                     {
-                        Name = "netcore-1.0",
-                        Product = ".NET Core",
+                        MonikerName = "netcore-1.0",
+                        ProductName = ".NET Core",
                     },
                    new Moniker
                     {
-                        Name = "netcore-2.0",
-                        Product = ".NET Core",
+                        MonikerName = "netcore-2.0",
+                        ProductName = ".NET Core",
                     },
                 }
             };
@@ -143,8 +143,8 @@ namespace Microsoft.Docs.Build
         {
             var monikerRangeParser = new MonikerRangeParser(new MonikerDefinitionModel());
             var exception = Assert.Throws<DocfxException>(() => monikerRangeParser.Parse("netcore-1.0"));
-            Assert.Equal("invalid-moniker-range", exception.Error.Code);
-            Assert.Equal("MonikerRange `netcore-1.0` is invalid: Moniker `netcore-1.0` is not defined", exception.Error.Message);
+            Assert.Equal("moniker-range-invalid", exception.Error.Code);
+            Assert.Equal("Invalid moniker range: 'netcore-1.0': Moniker `netcore-1.0` is not defined", exception.Error.Message);
         }
     }
 }

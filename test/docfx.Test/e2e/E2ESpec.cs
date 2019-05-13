@@ -17,7 +17,7 @@ namespace Microsoft.Docs.Build
 
         public readonly bool Watch;
 
-        public string[] Commands = new[] { "build" };
+        public string[] Commands = new[] { "restore", "build" };
 
         public readonly string[] Environments = Array.Empty<string>();
 

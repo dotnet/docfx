@@ -16,7 +16,7 @@ repos:
       a++.png:
 outputs:
   links.json: |
-    content: |
+    conceptual: |
       <p>
         <a href="a%20b">a%20b.md</a>
         <a href="a&amp;b">a&amp;b.md</a>
@@ -73,7 +73,7 @@ inputs:
   a++.png:
 outputs:
   html-links.json: |
-    content: |
+    conceptual: |
       <p>
         <a href="a b">a%20b.md</a>
         <a href="a&amp;b">a&amp;b.md</a>
@@ -104,7 +104,7 @@ outputs:
   'a b.json':
   a&b.json:
   a&amp;b.json:
-  build.log: |
+  .errors.log: |
     ["warning","include-not-found","Cannot resolve 'a%20b.md' relative to 'includes.md'.","includes.md",1,1]
     ["warning","include-not-found","Cannot resolve 'a&amp;amp;b.md' relative to 'includes.md'.","includes.md",4,1]
   .publish.json:
@@ -129,7 +129,7 @@ inputs:
 outputs:
   a.json:
   html-xref.json: |
-    {"content":
+    {"conceptual":
         "
           <p>
             Link to <a href=\"a.json\">text</a>
@@ -139,5 +139,5 @@ outputs:
             Link to @a&amp;c
           </p>
         "}
-  build.log: |
+  .errors.log: |
     ["info","at-xref-not-found","Cross reference not found: '@a&c'","html-xref.md",5,10]

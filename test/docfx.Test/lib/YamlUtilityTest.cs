@@ -320,7 +320,7 @@ items:
         [InlineData(@"b: not number")]
         public void ThrowWithoutSchemaValidation(string yaml)
         {
-            Assert.ThrowsAny<Exception>(() => YamlUtility.Deserialize<BasicClass>(yaml));
+            Assert.ThrowsAny<Exception>(() => YamlUtility.Deserialize<BasicClass>(yaml, null));
         }
 
 

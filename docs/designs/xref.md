@@ -131,7 +131,7 @@ inputs:
 outputs:
   docs/a.json: |
     { "content": "<p>Link to &lt;xref:a&gt;</p>" }
-  build.log: |
+  .errors.log: |
     ["warning","uid-not-found","Cannot find uid 'a' using xref '<xref:a>'","docs/a.md"]
 ```
   - User can also define which property to display for the referenced uid

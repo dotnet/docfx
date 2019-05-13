@@ -23,7 +23,7 @@ inputs:
 outputs:
   docs/a.json: |
     { "ms.custom-metadata": null }
-  build.log: |
+  .errors.log: |
     ["info","null-value","'ms.custom-metadata' contains null value","docs/a.md",2,1]
 ---
 # Overwrite global metadata with null in yaml header
@@ -38,7 +38,7 @@ inputs:
 outputs:
   a.json: |
     { "ms.custom-metadata": null }
-  build.log: |
+  .errors.log: |
     ["info","null-value","'ms.custom-metadata' contains null value","a.md",2,1]
 ---
 # Report error for invalid yaml header value type
@@ -49,7 +49,7 @@ inputs:
     locale: {}
     ---
 outputs:
-  build.log: |
+  .errors.log: |
     ["error","violate-schema","Expected type String, please input String or type compatible with String.","docs/a.md",2,9]
     ["error","invalid-metadata-type","Metadata 'locale' can only be a scalar value or string array","docs/a.md",2,9]
 ---
@@ -63,7 +63,7 @@ inputs:
       - b
     ---
 outputs:
-  build.log: |
+  .errors.log: |
     ["error","violate-schema","Cannot deserialize the current JSON array *","docs/a.md",3,3]
 ---
 # generate normal document id and version id
@@ -81,7 +81,7 @@ inputs:
   sccm/mdt/release-notes.md:
 outputs:
   sccm/mdt/release-notes.json: |
-    { "content": "<div></div>", "document_id": "0b1c8a5d-b639-d555-0850-b98a9010023c", "document_version_independent_id": "b20fdb1c-8d40-c3b2-2265-779a3f2dfe98" }
+    { "conceptual": "<div></div>", "document_id": "0b1c8a5d-b639-d555-0850-b98a9010023c", "document_version_independent_id": "b20fdb1c-8d40-c3b2-2265-779a3f2dfe98", "depot_name": "Win.sccm" }
 ---
 # generate index document id and version id
 # backward compatible to docs.com
@@ -99,9 +99,9 @@ inputs:
   sccm/index.md:
 outputs:
   sccm/index.json: |
-    { "content": "<div></div>", "document_id": "29602e3e-439e-865c-f1c9-2eb706f97b31", "document_version_independent_id": "34196fc5-28d6-b496-a21f-8661876802c7" }
+    { "conceptual": "<div></div>", "document_id": "29602e3e-439e-865c-f1c9-2eb706f97b31", "document_version_independent_id": "34196fc5-28d6-b496-a21f-8661876802c7" }
   sccm/mdm/index.json: |
-    { "content": "<div></div>", "document_id": "1c42a151-6248-df0c-15e6-3b1158d7bee3", "document_version_independent_id": "beb14a44-b076-14b8-b9c5-b42f9e36b973" }
+    { "conceptual": "<div></div>", "document_id": "1c42a151-6248-df0c-15e6-3b1158d7bee3", "document_version_independent_id": "beb14a44-b076-14b8-b9c5-b42f9e36b973" }
 ---
 # generate same document id and version id with 'redirection with document id'
 # A => B, B's ids should be same with A's
@@ -136,7 +136,7 @@ inputs:
 outputs:
   sccm/mdm/understand/hybrid-mobile-device-management.json: |
     { "document_id": "7412621b-4920-dc7e-bed6-1f1ea774f7dd", "document_version_independent_id": "de5d1641-2c0e-1158-7611-e52a22d96a5e" }
-  build.log: |
+  .errors.log: |
     ["info","redirection-out-of-scope","Redirection file 'sccm/mdm/index.md' will not be built because it is not included in build scope","docfx.yml",8,22]
 ---
 # generate different document id and version id with 'redirection without document id'
@@ -171,7 +171,7 @@ inputs:
 outputs:
   sccm/mdm/understand/hybrid-mobile-device-management.json: |
     { "document_id": "1c42a151-6248-df0c-15e6-3b1158d7bee3", "document_version_independent_id": "beb14a44-b076-14b8-b9c5-b42f9e36b973" }
-  build.log: |
+  .errors.log: |
     ["warning","redirected-id-conflict","Multiple documents redirected to '/sccm/mdm/understand/hybrid-mobile-device-management' with document id: 'sccm/mdm/index.md', 'sccm/mdm/index2.md'","docfx.yml"]
 ---
 # redirect to empty URL
@@ -181,7 +181,7 @@ inputs:
       sccm/mdm/index.md: ""
       "": /docfx/test
 outputs:
-  build.log: |
+  .errors.log: |
     ["error","redirection-is-empty","The key or value of redirection 'sccm/mdm/index.md: ' is null or empty","docfx.yml",2,22]
     ["error","redirection-is-empty","The key or value of redirection ': /docfx/test' is null or empty","docfx.yml",3,7]
 ---
@@ -382,7 +382,7 @@ inputs:
     redirect_url: https://docfx.com/b
     ---
 outputs:
-  build.log: |
+  .errors.log: |
     ["warning","reserved-metadata","Metadata 'redirect_url' is reserved by docfx, remove this metadata","docs/a.md",2,1]
     ["error","publish-url-conflict","Two or more files publish to the same url '/docs/a': 'docs/a.md', 'docs/a.md <redirection>'"]
 ---
@@ -395,7 +395,7 @@ inputs:
   docs/a.md:
 outputs:
   docs/a.json:
-  build.log: |
+  .errors.log: |
     ["warning","reserved-metadata","Metadata 'redirect_url' is reserved by docfx, remove this metadata","docfx.yml",3,16]
 ---
 # document_id defined in YAML file metadata is not supported
@@ -411,7 +411,7 @@ inputs:
 outputs:
   docs/a.json:
   docs/index.json:
-  build.log: |
+  .errors.log: |
     ["warning","reserved-metadata","Metadata 'document_id' is reserved by docfx, remove this metadata","docs/index.yml",5,3]
 ---
 # redirection defined in global metadata is not supported
@@ -422,7 +422,7 @@ inputs:
   docs/a.md:
 outputs:
   docs/a.json:
-  build.log: |
+  .errors.log: |
     ["warning","reserved-metadata","Metadata 'redirect_url' is reserved by docfx, remove this metadata","docfx.yml",2,3]
 ---
 # resolve breadcrumb_path
@@ -446,3 +446,32 @@ inputs:
   a.md:
 outputs:
   a.json:
+---
+# Duplicated metadata
+inputs:
+  docfx.yml:
+  docs/a.md: |
+    ---
+    a: a
+    a: b
+    ---
+outputs:
+  docs/a.json: |
+    {"a": "b"}
+  .errors.log: |
+    ["warning","yaml-duplicate-key","Key 'a' is already defined, remove the duplicate key.","docs/a.md",3,1]
+---
+# Invalid yaml syntax in yaml header
+inputs:
+  docfx.yml:
+  docs/a.md: |
+    ---
+    a: a: b
+    title: A
+    ---
+    # B
+outputs:
+  docs/a.json: |
+    {"!a": null, "title": "B"}
+  .errors.log: |
+    ["warning","yaml-header-syntax-error","Mapping values are not allowed in this context.","docs/a.md",2,5]
