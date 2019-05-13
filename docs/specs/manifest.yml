@@ -139,10 +139,7 @@ outputs:
     {  
        "dependencies":{  
           "docs/a.md":[  
-             {  
-                "source":"docs/b.md",
-                "type":"link"
-             }
+             { "source":"docs/b.md", "type":"link" }
           ]
        }
     }
@@ -162,29 +159,14 @@ outputs:
   .dependencymap.json: |
     {  
        "dependencies":{  
-          "docs/a.md":[  
-             {  
-                "source":"docs/c.md",
-                "type":"inclusion"
-             },
-             {  
-                "source":"docs/c.md",
-                "type":"link"
-             },
-             {  
-                "source":"docs/b.md",
-                "type":"inclusion"
-             }
+          "docs/a.md":[
+             { "source":"docs/b.md", "type":"inclusion" },
+             { "source":"docs/c.md", "type":"link" },
+             { "source":"docs/c.md", "type":"inclusion" }
           ],
           "docs/b.md":[  
-             {  
-                "source":"docs/c.md",
-                "type":"inclusion"
-             },
-             {  
-                "source":"docs/c.md",
-                "type":"link"
-             }
+             { "source":"docs/c.md", "type":"link", }
+             { "source":"docs/c.md", "type":"inclusion" }
           ]
        }
     }
@@ -204,16 +186,10 @@ outputs:
     {  
        "dependencies":{
           "docs/TOC.md":[
-             {  
-                "source":"docs/a/TOC.md",
-                "type":"tocInclusion"
-             }
+             { "source":"docs/a/TOC.md", "type":"tocInclusion" }
           ],
           "docs/a/TOC.md":[  
-             {  
-                "source":"docs/a/b.md",
-                "type":"link"
-             }
+             { "source":"docs/a/b.md", "type":"link" }
           ]
        }
     }
@@ -232,24 +208,12 @@ outputs:
     {  
        "dependencies":{  
           "docs/b.md":[  
-             {  
-                "source":"docs/b.md",
-                "type":"inclusion"
-             },
-             {  
-                "source":"docs/a.md",
-                "type":"inclusion"
-             }
+             { "source":"docs/a.md", "type":"inclusion" },
+             { "source":"docs/b.md", "type":"inclusion" }
           ],
           "docs/a.md":[  
-             {  
-                "source":"docs/b.md",
-                "type":"inclusion"
-             },
-             {  
-                "source":"docs/a.md",
-                "type":"inclusion"
-             }
+             { "source":"docs/a.md", "type":"inclusion" },
+             { "source":"docs/b.md", "type":"inclusion" }
           ]
        }
     }
@@ -272,16 +236,10 @@ outputs:
     {  
        "dependencies":{  
           "docs/a.md":[  
-             {  
-                "source":"docs/b.md",
-                "type":"link"
-             }
+             { "source":"docs/b.md", "type":"link" }
           ],
           "docs/b.md":[  
-             {  
-                "source":"docs/a.md",
-                "type":"bookmark"
-             }
+             { "source":"docs/a.md", "type":"bookmark" }
           ]
        }
     }
@@ -300,10 +258,7 @@ outputs:
     {  
        "dependencies":{  
           "docs/a.md":[  
-             {  
-                "source":"docs/b.md",
-                "type":"link"
-             }
+             { "source":"docs/b.md", "type":"link" }
           ]
        }
     }
@@ -338,20 +293,11 @@ outputs:
    {
     "dependencies": {
       "docs/b.md": [
-        {
-          "source": "docs/c.md",
-          "type": "inclusion"
-        }
+        { "source": "docs/c.md", "type": "inclusion" }
       ],
       "docs/a.md": [
-        {
-          "source": "docs/c.md",
-          "type": "inclusion"
-        },
-        {
-          "source": "docs/b.md",
-          "type": "inclusion"
-        }
+        { "source": "docs/c.md", "type": "inclusion" },
+        { "source": "docs/b.md", "type": "inclusion" }
       ]
     }
    }
@@ -371,16 +317,10 @@ outputs:
    {
     "dependencies": {
       "docs/b.md": [
-        {
-          "source": "docs/c.md",
-          "type": "link"
-        }
+        { "source": "docs/c.md", "type": "link" }
       ],
       "docs/a.md": [
-        {
-          "source": "docs/b.md",
-          "type": "link"
-        }
+        { "source": "docs/b.md", "type": "link" }
       ]
     }
    }
@@ -400,20 +340,11 @@ outputs:
    {
     "dependencies": {
       "docs/b.md": [
-        {
-          "source": "docs/c.md",
-          "type": "link"
-        }
+        { "source": "docs/c.md", "type": "link" }
       ],
       "docs/a.md": [
-        {
-          "source": "docs/c.md",
-          "type": "link"
-        },
-        {
-          "source": "docs/b.md",
-          "type": "inclusion"
-        }
+        { "source": "docs/b.md", "type": "inclusion" },
+        { "source": "docs/c.md", "type": "link" }
       ]
     }
    }
@@ -433,16 +364,10 @@ outputs:
    {
     "dependencies": {
       "docs/b.md": [
-        {
-          "source": "docs/c.md",
-          "type": "inclusion"
-        }
+        { "source": "docs/c.md", "type": "inclusion" }
       ],
       "docs/a.md": [
-        {
-          "source": "docs/b.md",
-          "type": "link"
-        }
+        { "source": "docs/b.md", "type": "link" }
       ]
     }
    }
@@ -459,20 +384,11 @@ outputs:
    {
     "dependencies": {
       "docs/b.md": [
-        {
-          "source": "docs/a.md",
-          "type": "link"
-        }
+        { "source": "docs/a.md", "type": "link" }
       ],
       "docs/a.md": [
-        {
-          "source": "docs/b.md",
-          "type": "inclusion"
-        },
-        {
-          "source": "docs/a.md",
-          "type": "link"
-        }
+        { "source": "docs/a.md", "type": "link" },
+        { "source": "docs/b.md", "type": "inclusion" }
       ]
     }
    }
@@ -495,24 +411,24 @@ outputs:
         - source: docs/b.md
           type: link
       docs/c.md:
-        - source: docs/d.md
-          type: inclusion
         - source: docs/b.md
           type: link
+        - source: docs/d.md
+          type: inclusion
       docs/b.md:
-        - source: docs/d.md
-          type: inclusion
-        - source: docs/c.md
-          type: inclusion
         - source: docs/b.md
           type: link
+        - source: docs/c.md
+          type: inclusion
+        - source: docs/d.md
+          type: inclusion
       docs/a.md:
-        - source: docs/d.md
+        - source: docs/b.md
+          type: link
+        - source: docs/b.md
           type: inclusion
         - source: docs/c.md
           type: inclusion
-        - source: docs/b.md
+        - source: docs/d.md
           type: inclusion
-        - source: docs/b.md
-          type: link
 ---
