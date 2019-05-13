@@ -165,7 +165,7 @@ outputs:
              { "source":"docs/c.md", "type":"inclusion" }
           ],
           "docs/b.md":[  
-             { "source":"docs/c.md", "type":"link", }
+             { "source":"docs/c.md", "type":"link" },
              { "source":"docs/c.md", "type":"inclusion" }
           ]
        }
@@ -296,8 +296,8 @@ outputs:
         { "source": "docs/c.md", "type": "inclusion" }
       ],
       "docs/a.md": [
-        { "source": "docs/c.md", "type": "inclusion" },
-        { "source": "docs/b.md", "type": "inclusion" }
+        { "source": "docs/b.md", "type": "inclusion" },
+        { "source": "docs/c.md", "type": "inclusion" }
       ]
     }
    }
