@@ -19,12 +19,11 @@ namespace Microsoft.DocAsCode.Common
             {
                 throw new ArgumentNullException(nameof(manifestItems));
             }
-            var items = new List<ManifestItem>();
 
-            var manifestItemGroups = (from m in manifestItems
-                          from output in m.OutputFiles.Values
-                          let relativePath = output?.RelativePath
-                          select new { item = m, relativePath }).GroupBy(obj => obj.relativePath, FilePathComparer.OSPlatformSensitiveStringComparer);
+            var manifestItemGroups = (from item in manifestItems
+                                      from output in item.OutputFiles.Values
+                                      let relativePath = output?.RelativePath
+                                      select new { item, relativePath }).GroupBy(obj => obj.relativePath, FilePathComparer.OSPlatformSensitiveStringComparer);
 
             foreach (var manifestItemGroup in manifestItemGroups)
             {
@@ -34,11 +33,13 @@ namespace Microsoft.DocAsCode.Common
                     Logger.LogWarning(
                         $"Multiple input files would generate to the same output path overwriting each other. Please rename at least {manifestItemGroup.Count() - 1} of following input files to ensure that there will be only one file to generate to the output path: \"{string.Join(", ", manifestItemGroup.Select(duplicate => duplicate.item.SourceRelativePath))}\".",
                         code: WarningCodes.Build.DuplicateOutputFiles);
-                }
-                items.Add(manifestItemGroup.First().item);
-            }
 
-            manifestItems = new ManifestItemCollection(items);
+                    foreach (var itemToRemove in manifestItemGroup.Skip(1))
+                    {
+                        manifestItems.Remove(itemToRemove.item);
+                    }
+                }
+            }
         }
 
         public static Manifest MergeManifest(List<Manifest> manifests)
