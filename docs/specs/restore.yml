@@ -167,9 +167,9 @@ outputs:
 inputs:
   docfx.yml: |
     dependencies:
-      dep: https://dev.azure.com/ceapex/Engineering/_git/docs-host-vnext#c9c018c
+      dep: https://ceapex.visualstudio.com/Engineering/_git/docs-host-vnext#c9c018c
     http:
-      https://dev.azure.com/ceapex:
+      https://ceapex.visualstudio.com:
         headers:
           Authorization: Bearer {SYSTEM_ACCESS_TOKEN}
   docs/a.md: |
