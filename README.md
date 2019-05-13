@@ -47,8 +47,8 @@ For more information see the [.NET Foundation Code of Conduct](http://www.dotnet
 
 #### Prerequisites
 
-1. [Visual Studio 2017](https://www.visualstudio.com/downloads/), minimum installation is enough.
-1. [Node.js](https://nodejs.org), for building templates.
+1. [Visual Studio 2017](https://www.visualstudio.com/vs/) with *.NET Core cross-platform development* toolset
+2. [Node.js](https://nodejs.org)
 
 #### Steps
 
