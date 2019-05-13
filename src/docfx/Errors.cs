@@ -297,12 +297,6 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Error, "invalid-metadata-type", $"Metadata '{name}' can only be a scalar value or string array", source);
 
         /// <summary>
-        /// Failed to compute specific info of a commit.
-        /// </summary>
-        public static Error GitLogError(string repoPath, int errorCode)
-            => new Error(ErrorLevel.Error, "git-log-error", $"Error computing git log '{errorCode}' for '{repoPath}'. Try closing and reopening the PR. If you get this Error again, file an issue.");
-
-        /// <summary>
         /// Git.exe isn't installed.
         /// </summary>
         public static Error GitNotFound()
