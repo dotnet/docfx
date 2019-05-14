@@ -90,7 +90,7 @@ namespace Microsoft.Docs.Build
             }
             catch (NotFoundException)
             {
-                // repository doesn't exist or unauthorized
+                // owner/repo doesn't exist or you don't have access to the repo
                 _unknownRepos.TryAdd((repoOwner, repoName));
                 return default;
             }
