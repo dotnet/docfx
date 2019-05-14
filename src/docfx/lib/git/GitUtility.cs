@@ -340,7 +340,7 @@ namespace Microsoft.Docs.Build
         {
             if (config is null)
             {
-                return ("", Array.Empty<string>());
+                return default;
             }
 
             var gitConfigs = (
