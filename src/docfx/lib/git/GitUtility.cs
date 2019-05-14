@@ -168,6 +168,15 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
+        /// Prune work trees which are not connected with an given repo
+        /// </summary>
+        /// <param name="cwd">The current working directory</param>
+        public static void PruneWorkTrees(string cwd)
+        {
+            ExecuteNonQuery(cwd, $"worktree prune");
+        }
+
+        /// <summary>
         /// Retrieve git head version
         /// </summary>
         public static unsafe string RevParse(string repoPath, string committish = null)

@@ -142,7 +142,11 @@ namespace Microsoft.Docs.Build
                                         // clean existing work tree folder
                                         // it may be dirty caused by last failed restore action
                                         if (Directory.Exists(workTreePath))
+                                        {
                                             Directory.Delete(workTreePath, true);
+                                            GitUtility.PruneWorkTrees(repoPath);
+                                        }
+
                                         GitUtility.AddWorkTree(repoPath, headCommit, workTreePath);
                                     }
                                     catch (Exception ex)
