@@ -35,7 +35,6 @@ namespace Microsoft.Docs.Build
             if (!_buildTimeByCommit.TryGetValue(commitId, out time))
             {
                 time = _buildTime;
-                return false;
             }
             return true;
         }
