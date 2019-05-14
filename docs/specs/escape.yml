@@ -140,4 +140,4 @@ outputs:
           </p>
         "}
   .errors.log: |
-    ["info","at-uid-not-found","Cannot find uid 'a&c' using xref '@a&c'","html-xref.md",5,10]
+    ["info","at-xref-not-found","Cross reference not found: '@a&c'","html-xref.md",5,10]

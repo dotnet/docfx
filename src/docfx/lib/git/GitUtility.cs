@@ -96,6 +96,9 @@ namespace Microsoft.Docs.Build
         public static void Checkout(string path, string committish)
             => ExecuteNonQuery(path, $"-c core.longpaths=true checkout --force --progress {committish}");
 
+        public static bool IsDirty(string path)
+            => Execute(path, $"-c core.longpaths=true status --porcelain").Split('\n', StringSplitOptions.RemoveEmptyEntries).Any();
+
         /// <summary>
         /// Clones or update a git repository to the latest version.
         /// </summary>

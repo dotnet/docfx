@@ -280,8 +280,8 @@ inputs:
 outputs:
   docs/a.json:
   .errors.log: |
-    ["warning","reserved-metadata","Metadata 'content_type' is reserved by docfx, remove this metadata","docfx.yml",3,16]
-    ["warning","reserved-metadata","Metadata 'ms.contentlang' is reserved by docfx, remove this metadata","docs/a.md",2,1]
+    ["warning","attribute-reserved","Attribute content_type is reserved for use by Docs. Remove it from your file metadata.","docfx.yml",3,16]
+    ["warning","attribute-reserved","Attribute ms.contentlang is reserved for use by Docs. Remove it from your file metadata.","docs/a.md",2,1]
 ---
 # Support metadata at root level for landing data
 commands:

@@ -298,7 +298,7 @@ inputs:
       docs/TOC.md: /absolute/path
 outputs:
   .errors.log: |
-    ["error","invalid-redirection","The 'docs/TOC.md' shouldn't belong to redirections since it's a TableOfContents","docfx.yml",2,16]
+    ["error","redirection-invalid","File 'docs/TOC.md' is redirected to '/absolute/path'. Only content files can be redirected.","docfx.yml",2,16]
 ---
 # Conflicted redirection file
 inputs:
@@ -344,7 +344,7 @@ inputs:
       docs/a.md: /absolute/path2
 outputs:
   .errors.log: |
-    ["error","invalid-redirection","The 'docs/TOC.md' shouldn't belong to redirections since it's a TableOfContents","docfx.yml",2,16]
+    ["error","redirection-invalid","File 'docs/TOC.md' is redirected to '/absolute/path'. Only content files can be redirected.","docfx.yml",2,16]
     ["error","redirection-conflict","The 'docs/a.md' appears twice or more in the redirection mappings","docfx.yml"]
 ---
 # Wrong locale
