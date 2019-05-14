@@ -62,7 +62,7 @@ namespace Microsoft.Docs.Build
 
                 if (conflictMoniker.Count() > 0)
                 {
-                    context.Report.Write(Errors.PublishUrlConflict(siteUrl, files.Keys, conflictMoniker));
+                    context.ErrorLog.Write(Errors.PublishUrlConflict(siteUrl, files.Keys, conflictMoniker));
 
                     foreach (var conflictingFile in files.Keys)
                     {
@@ -89,7 +89,7 @@ namespace Microsoft.Docs.Build
                     conflictingFiles.Add(removed);
                 }
 
-                context.Report.Write(Errors.OutputPathConflict(outputPath, conflictingFiles));
+                context.ErrorLog.Write(Errors.OutputPathConflict(outputPath, conflictingFiles));
 
                 foreach (var conflictingFile in conflictingFiles)
                 {

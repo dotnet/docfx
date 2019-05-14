@@ -125,7 +125,8 @@ namespace Microsoft.Docs.Build
 
                             if (slot is null)
                             {
-                                (acquired, acquirer) = ProcessUtility.AcquireExclusiveLock(GetLockKey(url, $"{slots.Count + 1}"));
+                                // force to acquire new slot
+                                (acquired, acquirer) = ProcessUtility.AcquireExclusiveLock(GetLockKey(url, $"{slots.Count + 1}"), force: true);
                                 if (acquired)
                                 {
                                     slot = new T() { Id = $"{slots.Count + 1}" };

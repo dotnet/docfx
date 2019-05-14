@@ -66,7 +66,7 @@ namespace Microsoft.Docs.Build
         [InlineData("<div><img src='a/b.png' /><a href='hello'></div>", "666", "<div><img src='666' /><a href='666'></div>")]
         public void TransformLinks(string input, string link, string output)
         {
-            Assert.Equal(output, HtmlUtility.TransformLinks(input, _ => link));
+            Assert.Equal(output, HtmlUtility.TransformLinks(input, (href, _) => link));
         }
 
         [Theory]

@@ -15,10 +15,10 @@ inputs:
     [link to 1](~/docfx-test-dependencies1/docs/a.md)
     [!include[include to 2](~/docfx-test-dependencies2/docs/a.md)
 outputs:
-  build.log: |
+  .errors.log: |
     ["warning","link-is-dependency","File 'docs/a.md' referenced by link '~/docfx-test-dependencies1/docs/a.md' will not be built because it is from a dependency docset","docs/a.md",1,1]
   docs/a.json: |
-    {"content":"<p><a href=\"%7E/docfx-test-dependencies1/docs/a.md\">link to 1</a></p>\n<p>a1</p>\n"}
+    {"conceptual":"<p><a href=\"%7E/docfx-test-dependencies1/docs/a.md\">link to 1</a></p>\n<p>a1</p>\n"}
 ---
 # Restore dependencies azure repos with their children
 repos:
@@ -36,10 +36,10 @@ inputs:
     [link to 1](~/docfx-test-dependencies1/docs/a.md)
     [!include[include to 2](~/docfx-test-dependencies2/docs/a.md)
 outputs:
-  build.log: |
+  .errors.log: |
     ["warning","link-is-dependency","File 'docs/a.md' referenced by link '~/docfx-test-dependencies1/docs/a.md' will not be built because it is from a dependency docset","docs/a.md",1,1]
   docs/a.json: |
-    {"content":"<p><a href=\"%7E/docfx-test-dependencies1/docs/a.md\">link to 1</a></p>\n<p>a1</p>\n"}
+    {"conceptual":"<p><a href=\"%7E/docfx-test-dependencies1/docs/a.md\">link to 1</a></p>\n<p>a1</p>\n"}
 ---
 # Restore urls
 repos:
@@ -93,17 +93,17 @@ inputs:
     [link to 1](~/docfx-test-dependencies1/docs/a.md)
     [!include[include to 2](~/docfx-test-dependencies2/docs/a.md)
 outputs:
-  build.log: |
+  .errors.log: |
     ["warning","link-is-dependency","File 'docs/a.md' referenced by link '~/docfx-test-dependencies1/docs/a.md' will not be built because it is from a dependency docset","docs/a.md",1,1]
   docs/a.json: |
-    {"content":"<p><a href=\"%7E/docfx-test-dependencies1/docs/a.md\">link to 1</a></p>\n<p>d</p>\n"}
+    {"conceptual":"<p><a href=\"%7E/docfx-test-dependencies1/docs/a.md\">link to 1</a></p>\n<p>d</p>\n"}
 ---
 # Show error when download failed
 inputs:
   docfx.yml: |
     extend: https://this-url-does-not-exit.com/this-is-a-bad-url
 outputs:
-  build.log: |
+  .errors.log: |
     ["error","download-failed","Download failed for file 'https://this-url-does-not-exit.com/this-is-a-bad-url'. Try closing and reopening the PR. If you get this Error again, file an issue."]
 ---
 # Show error when git clone failed
@@ -112,7 +112,7 @@ inputs:
     dependencies:
       error: https://github.com/docascode/docfx-test-dependencies#bad-branch
 outputs:
-  build.log: |
+  .errors.log: |
     ["error","committish-not-found","Can't find branch, tag, or commit 'bad-branch' for repo https://github.com/docascode/docfx-test-dependencies."]
 ---
 # Show error when dependent repo can't be found
@@ -125,7 +125,7 @@ inputs:
   docs/a.md: |
     [test](dep/abc)
 outputs:
-  build.log: |
+  .errors.log: |
     ["error","need-restore","Cannot find dependency 'https://github.com/docascode/docfx-test-dependencies#bad-branch', did you forget to run `docfx restore`?","docs/a.md"]
 ---
 # Show error when dependent URL can't be found
@@ -135,7 +135,7 @@ inputs:
   docfx.yml: |
     monikerDefinition: https://docs.microsoft.com/bad-url
 outputs:
-  build.log: |
+  .errors.log: |
     ["error","need-restore","Cannot find dependency 'https://docs.microsoft.com/bad-url', did you forget to run `docfx restore`?"]
 ---
 # Show error when dependent file can't be found
@@ -143,7 +143,7 @@ inputs:
   docfx.yml: |
     monikerDefinition: a.json
 outputs:
-  build.log: |
+  .errors.log: |
     ["error","file-not-found","*",1,20]
 ---
 # Restore longpath repo
@@ -160,16 +160,16 @@ inputs:
 outputs:
   docs/test.json: |
     {
-      "content": "<p>for long file path test.</p>"
+      "conceptual": "<p>for long file path test.</p>"
     }
 ---
 # Restore private azure repos with dependencies
 inputs:
   docfx.yml: |
     dependencies:
-      dep: https://dev.azure.com/ceapex/Engineering/_git/docs-host-vnext#c9c018c
+      dep: https://ceapex.visualstudio.com/Engineering/_git/docs-host-vnext#c9c018c
     http:
-      https://dev.azure.com/ceapex:
+      https://ceapex.visualstudio.com:
         headers:
           Authorization: Bearer {SYSTEM_ACCESS_TOKEN}
   docs/a.md: |
@@ -178,7 +178,7 @@ environments:
   - SYSTEM_ACCESS_TOKEN
 outputs:
   docs/a.json:
-  build.log: |
+  .errors.log: |
     ["warning","link-is-dependency","File 'README.md' referenced by link '~/dep/README.md' will not be built because it is from a dependency docset","docs/a.md",1,1]
 ---
 # Restored repo should be always retrieved
@@ -248,7 +248,7 @@ repos:
         docs/dep2.md: "233333"
 outputs:
   docs/a.json: |
-    {"content":"<p>&quot;def&quot;</p>\n<p>233333</p>\n<p>2333</p>\n"}
+    {"conceptual":"<p>&quot;def&quot;</p>\n<p>233333</p>\n<p>2333</p>\n"}
   ~/.lock.json: |
     {
        "git":{
@@ -267,6 +267,31 @@ outputs:
        },
        "!downloads": null
     }
+---
+# restore with wrong dependency version
+repos:
+  https://docs.com/wrong/a#master:
+    - files:
+        docfx.yml: |
+          dependencies:
+            dep1: https://docs.com/wrong/b#master
+          dependencyLock: .lock.json
+        docs/a.md:
+        .lock.json: |
+          {
+             "git":{
+                "https://docs.com/wrong/b":{
+                   "commit":"missing-commit-id",
+                   }
+                }
+             }
+          }
+  https://docs.com/wrong/b:
+    - files:
+        docs/dep1.md:
+outputs:
+  .errors.log: |
+    ["error","committish-not-found","Can't find branch, tag, or commit 'missing-commit-id' for repo https://docs.com/wrong/b."]
 ---
 # restore with azure repo dependency lock
 repos:
@@ -318,7 +343,7 @@ repos:
         docs/dep2.md: "233333"
 outputs:
   docs/a.json: |
-    {"content":"<p>&quot;def&quot;</p>\n<p>233333</p>\n<p>2333</p>\n"}
+    {"conceptual":"<p>&quot;def&quot;</p>\n<p>233333</p>\n<p>2333</p>\n"}
   ~/.lock.json: |
     {
        "git":{
@@ -379,7 +404,7 @@ repos:
         docs/dep2.md: "233333"
 outputs:
   docs/a.json: |
-    {"content":"<p>&quot;abc&quot;</p>\n<p>2333</p>"}
+    {"conceptual":"<p>&quot;abc&quot;</p>\n<p>2333</p>"}
   ~/.non-exist.json: |
     {
       "git": {
@@ -449,7 +474,7 @@ repos:
         docs/dep2.md: "233333"
 outputs:
   docs/a.json: |
-    {"content":"<p>&quot;abc&quot;</p>\n<p>2333</p>"}
+    {"conceptual":"<p>&quot;abc&quot;</p>\n<p>2333</p>"}
   ~/.lock.json: |
     {
       "git": {

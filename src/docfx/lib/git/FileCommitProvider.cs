@@ -238,7 +238,7 @@ namespace Microsoft.Docs.Build
                 if (error != 0 /* GIT_ENOTFOUND */)
                 {
                     git_revwalk_free(walk);
-                    throw Errors.GitLogError(_repoPath, error).ToException();
+                    throw new NotSupportedException($"Error computing git log '{error}' for '{_repoPath}'");
                 }
 
                 git_object_lookup(out var commit, _repo, &commitId, 1 /* GIT_OBJ_COMMIT */);

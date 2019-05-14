@@ -18,7 +18,6 @@ namespace Microsoft.Docs.Build
         private static readonly string[] s_resourceFolders = new[] { "global", "css", "fonts" };
 
         private readonly string _templateDir;
-        private readonly string _locale;
         private readonly LiquidTemplate _liquid;
         private readonly JavascriptEngine _js;
         private readonly HashSet<string> _htmlMetaHidden;
@@ -26,15 +25,14 @@ namespace Microsoft.Docs.Build
 
         public JObject Global { get; }
 
-        private TemplateEngine(string templateDir, string locale, JsonSchema metadataSchema)
+        private TemplateEngine(string templateDir, JsonSchema metadataSchema)
         {
             var contentTemplateDir = Path.Combine(templateDir, "ContentTemplate");
 
             _templateDir = templateDir;
-            _locale = locale.ToLowerInvariant();
             _liquid = new LiquidTemplate(templateDir);
             _js = new JavascriptEngine(contentTemplateDir);
-            Global = LoadGlobalTokens(templateDir, _locale);
+            Global = LoadGlobalTokens(contentTemplateDir);
 
             _htmlMetaHidden = metadataSchema.HtmlMetaHidden.ToHashSet();
             _htmlMetaNames = metadataSchema.Properties
@@ -55,7 +53,7 @@ namespace Microsoft.Docs.Build
             var (themePath, themeRestoreMap) = docset.RestoreMap.GetGitRestorePath($"{themeRemote}#{themeBranch}");
             Log.Write($"Using theme '{themeRemote}#{themeRestoreMap.DependencyLock.Commit}' at '{themePath}'");
 
-            return new TemplateEngine(themePath, docset.Locale, docset.MetadataSchema);
+            return new TemplateEngine(themePath, docset.MetadataSchema);
         }
 
         public string Render(OutputModel model, Document file, JObject rawMetadata)
@@ -87,7 +85,7 @@ namespace Microsoft.Docs.Build
 
             var model = new TemplateModel
             {
-                Content = pageModel.Content as string,
+                Content = pageModel.Conceptual,
                 RawMetadata = rawMetadata,
                 PageMetadata = pageMetadata,
                 ThemesRelativePathToOutputRoot = "_themes/",
@@ -123,28 +121,11 @@ namespace Microsoft.Docs.Build
             var docset = file.Docset;
             var rawMetadata = JsonUtility.ToJObject(pageModel);
 
-            rawMetadata["depot_name"] = $"{docset.Config.Product}.{docset.Config.Name}";
-
             rawMetadata["search.ms_docsetname"] = docset.Config.Name;
             rawMetadata["search.ms_product"] = docset.Config.Product;
             rawMetadata["search.ms_sitename"] = "Docs";
 
             rawMetadata["__global"] = Global;
-            rawMetadata.Remove("content");
-
-            var path = PathUtility.NormalizeFile(Path.GetRelativePath(file.Docset.SiteBasePath, file.SitePath));
-
-            rawMetadata["_path"] = path;
-            rawMetadata["wordCount"] = pageModel.WordCount;
-
-            rawMetadata["_op_canonicalUrlPrefix"] = $"{docset.HostName}/{docset.Locale}/{docset.SiteBasePath}/";
-
-            if (docset.Config.Output.Pdf)
-            {
-                rawMetadata["_op_pdfUrlPrefixTemplate"] = $"{docset.HostName}/pdfstore/{pageModel.Locale}/{docset.Config.Product}.{docset.Config.Name}/{{branchName}}";
-            }
-
-            rawMetadata.Remove("schema_type");
 
             return rawMetadata;
         }
@@ -159,9 +140,9 @@ namespace Microsoft.Docs.Build
                     TransformMetadata("Conceptual.mta.json.js", rawMetadata), pageModel));
         }
 
-        private JObject LoadGlobalTokens(string templateDir, string locale)
+        private JObject LoadGlobalTokens(string contentTemplateDir)
         {
-            var path = Path.Combine(templateDir, $"LocalizedTokens/docs({locale}).html/tokens.json");
+            var path = Path.Combine(contentTemplateDir, "token.json");
             return File.Exists(path) ? JObject.Parse(File.ReadAllText(path)) : new JObject();
         }
 

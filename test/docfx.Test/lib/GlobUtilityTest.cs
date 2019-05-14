@@ -79,7 +79,7 @@ namespace Microsoft.Docs.Build
         public void InvalidGlobPattern(string pattern)
         {
             Assert.Equal(
-                "invalid-glob-pattern",
+                "glob-pattern-invalid",
                 Assert.Throws<DocfxException>(() => GlobUtility.CreateGlobMatcher(pattern)).Error.Code);
         }
     }
