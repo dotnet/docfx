@@ -180,7 +180,7 @@ namespace Microsoft.Docs.Build
                 {
                     var yaml = section.Trim('\r', '\n', '-');
                     var header = YamlUtility.ReadHeader(yaml) ?? "";
-                    if (string.IsNullOrEmpty(header))
+                    if (string.IsNullOrEmpty(header) || header.Contains("[Skip]"))
                     {
                         i++;
                         continue;
@@ -219,11 +219,6 @@ namespace Microsoft.Docs.Build
         private static (string docsetPath, E2ESpec spec, IReadOnlyDictionary<string, string> mockedRepos, string cachePath)
             CreateDocset(string specName)
         {
-            if (specName.Contains("[Skip]"))
-            {
-                return default;
-            }
-
             var match = Regex.Match(specName, "^(.+?)/(\\d+). (\\[from loc\\] )?(.*)");
             var specPath = match.Groups[1].Value + ".yml";
             var ordinal = int.Parse(match.Groups[2].Value);
