@@ -111,14 +111,12 @@ namespace Microsoft.Docs.Build
                             return;
                         }
 
-                        var headCommit = GitUtility.RevParse(repoPath, branch);
+                        var gitDependencyLock = dependencyLock?.GetGitLock(remote, branch);
+                        var headCommit = GitUtility.RevParse(repoPath, gitDependencyLock?.Commit ?? branch);
                         if (string.IsNullOrEmpty(headCommit))
                         {
-                            throw Errors.CommittishNotFound(remote, branch).ToException();
+                            throw Errors.CommittishNotFound(remote, gitDependencyLock?.Commit ?? branch).ToException();
                         }
-
-                        var gitDependencyLock = dependencyLock?.GetGitLock(remote, branch);
-                        headCommit = gitDependencyLock?.Commit ?? headCommit;
 
                         var (workTreePath, gitSlot) = RestoreMap.TryGetGitRestorePath(remote, branch, headCommit);
                         if (workTreePath is null)
