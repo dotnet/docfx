@@ -40,7 +40,7 @@ namespace Microsoft.Docs.Build
                                 IsRawPage = false,
                                 RelativePath = document.ContentType == ContentType.Resource
                                 ? legacyOutputPathRelativeToBaseSitePath + ".mta.json"
-                                : Path.ChangeExtension(legacyOutputPathRelativeToBaseSitePath, ".mta.json"),
+                                : ChangeExtension(legacyOutputPathRelativeToBaseSitePath, ".mta.json"),
                             },
                         };
 
@@ -83,7 +83,7 @@ namespace Microsoft.Docs.Build
                                 output.PageOutput = new LegacyManifestOutputItem
                                 {
                                     IsRawPage = false,
-                                    RelativePath = Path.ChangeExtension(legacyOutputPathRelativeToBaseSitePath, ".raw.page.json"),
+                                    RelativePath = ChangeExtension(legacyOutputPathRelativeToBaseSitePath, ".raw.page.json"),
                                 };
                             }
                         }
@@ -137,6 +137,15 @@ namespace Microsoft.Docs.Build
                 },
                 Path.Combine(docset.SiteBasePath, ".manifest.json"));
             }
+        }
+
+        private static string ChangeExtension(string filePath, string extension)
+        {
+            if (filePath.EndsWith("raw.page.json"))
+            {
+                return Path.ChangeExtension(filePath.Substring(0, filePath.Length - "raw.page.json".Length), extension);
+            }
+            return Path.ChangeExtension(filePath, extension);
         }
 
         private static string GetOriginalType(ContentType type)
