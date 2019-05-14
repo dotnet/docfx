@@ -309,7 +309,6 @@ namespace Microsoft.Docs.Build
                     var urlLocale = href.Substring(1, pos - 1);
                     if (urlLocale.Contains("-"))
                     {
-                        CultureInfo.GetCultureInfo(urlLocale);
                         return href;
                     }
                 }

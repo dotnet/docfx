@@ -90,7 +90,7 @@ namespace Microsoft.Docs.Build
             }
             catch (NotFoundException)
             {
-                // owner/repo doesn't exist
+                // owner/repo doesn't exist or you don't have access to the repo
                 return default;
             }
             catch (ApiValidationException)
