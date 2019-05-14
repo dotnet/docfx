@@ -18,7 +18,7 @@ namespace Microsoft.Docs.Build
         [JsonProperty(PropertyName = "asset_id")]
         public string AssetId { get; set; }
 
-        public LegacyFileMapItem(string legacyOutputFilePathRelativeToSiteBasePath, ContentType contentType)
+        public LegacyFileMapItem(string legacyOutputFilePathRelativeToSiteBasePath, string legacySiteUrlRelativeToBaseSitePath, ContentType contentType)
         {
             switch (contentType)
             {
@@ -26,11 +26,12 @@ namespace Microsoft.Docs.Build
                 case ContentType.Redirection:
                     Type = "Content";
                     OutputRelativePath = PathUtility.NormalizeFile(Path.ChangeExtension(legacyOutputFilePathRelativeToSiteBasePath, ".html"));
-                    AssetId = PathUtility.NormalizeFile(RemoveExtension(legacyOutputFilePathRelativeToSiteBasePath));
+                    AssetId = legacySiteUrlRelativeToBaseSitePath;
                     break;
                 case ContentType.Resource:
                     Type = "Resource";
-                    OutputRelativePath = AssetId = PathUtility.NormalizeFile(legacyOutputFilePathRelativeToSiteBasePath);
+                    OutputRelativePath = PathUtility.NormalizeFile(legacyOutputFilePathRelativeToSiteBasePath);
+                    AssetId = legacySiteUrlRelativeToBaseSitePath;
                     break;
                 case ContentType.TableOfContents:
                 default:
@@ -38,14 +39,14 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public static LegacyFileMapItem Instance(string legacyOutputFilePathRelativeToSiteBasePath, ContentType contentType)
+        public static LegacyFileMapItem Instance(string legacyOutputFilePathRelativeToSiteBasePath, string legacySiteUrlRelativeToBaseSitePath, ContentType contentType)
         {
             if (contentType == ContentType.TableOfContents || contentType == ContentType.Unknown)
             {
                 return null;
             }
 
-            return new LegacyFileMapItem(legacyOutputFilePathRelativeToSiteBasePath, contentType);
+            return new LegacyFileMapItem(legacyOutputFilePathRelativeToSiteBasePath, legacySiteUrlRelativeToBaseSitePath, contentType);
         }
 
         private static string RemoveExtension(string path)

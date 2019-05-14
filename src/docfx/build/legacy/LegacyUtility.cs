@@ -27,9 +27,9 @@ namespace Microsoft.Docs.Build
             return PathUtility.NormalizeFile(Path.GetRelativePath(docset.Config.DocumentId.SourceBasePath, doc.FilePath));
         }
 
-        public static string ToLegacyOutputPathRelativeToBaseSitePath(this Document doc, Docset docset)
+        public static string ToLegacyOutputPathRelativeToBaseSitePath(this Document doc, Docset docset, string outputFilePathRelativeToSiteBasePath)
         {
-            var legacyOutputFilePathRelativeToSiteBasePath = doc.SitePath;
+            var legacyOutputFilePathRelativeToSiteBasePath = outputFilePathRelativeToSiteBasePath;
             if (legacyOutputFilePathRelativeToSiteBasePath.StartsWith(docset.SiteBasePath, PathUtility.PathComparison))
             {
                 legacyOutputFilePathRelativeToSiteBasePath = Path.GetRelativePath(docset.SiteBasePath, legacyOutputFilePathRelativeToSiteBasePath);
