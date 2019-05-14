@@ -375,6 +375,19 @@ outputs:
       "updated_at": "2019-04-23 12:00 AM",
     }
 ---
+# Use now as updated_at when `updateTimeAsCommitBuildTime` is true and the commit is not found
+repos:
+  https://github.com/MicrosoftDocs/edge-developer#master:
+    - files:
+        docfx.yml: |
+          updateTimeAsCommitBuildTime: true
+        docs/index.md: Alice creates this.
+outputs:
+  docs/index.json: |
+    {
+      "updated_at": "!2018-10-30 12:00 AM"
+    }
+---
 # Support git submodule
 repo: https://github.com/docascode/docfx-test-dependencies#c70a63e
 outputs:
