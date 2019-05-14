@@ -81,10 +81,10 @@ namespace Microsoft.Docs.Build
             t_status.Value.Peek().Errors.Add(error);
         }
 
-        internal static string GetLink(string path, object relativeTo, object resultRelativeTo, MarkdownObject origin)
+        internal static string GetLink(string path, object relativeTo, object resultRelativeTo, MarkdownObject origin, int columnOffset = 0)
         {
             var status = t_status.Value.Peek();
-            var (error, link, _) = status.DependencyResolver.ResolveLink(new SourceInfo<string>(path, origin.ToSourceInfo()), (Document)relativeTo, (Document)resultRelativeTo, status.BuildChild);
+            var (error, link, _) = status.DependencyResolver.ResolveLink(new SourceInfo<string>(path, origin.ToSourceInfo(columnOffset: columnOffset)), (Document)relativeTo, (Document)resultRelativeTo, status.BuildChild);
             status.Errors.AddIfNotNull(error?.WithSourceInfo(origin.ToSourceInfo()));
             return link;
         }

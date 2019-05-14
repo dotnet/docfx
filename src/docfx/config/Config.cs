@@ -36,11 +36,13 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Gets the file glob patterns included by the docset.
         /// </summary>
+        [JsonConverter(typeof(OneOrManyConverter))]
         public readonly string[] Files = s_defaultInclude;
 
         /// <summary>
         /// Gets the file glob patterns excluded from this docset.
         /// </summary>
+        [JsonConverter(typeof(OneOrManyConverter))]
         public readonly string[] Exclude = Array.Empty<string>();
 
         /// <summary>
@@ -67,6 +69,7 @@ namespace Microsoft.Docs.Build
         /// The extend file addresses
         /// The addresses can be absolute url or relative path
         /// </summary>
+        [JsonConverter(typeof(OneOrManyConverter))]
         public readonly string[] Extend = Array.Empty<string>();
 
         /// <summary>
@@ -142,6 +145,7 @@ namespace Microsoft.Docs.Build
         /// The addresses of xref map files, used for resolving xref.
         /// They should be absolute url or relative path
         /// </summary>
+        [JsonConverter(typeof(OneOrManyConverter))]
         public readonly SourceInfo<string>[] Xref = Array.Empty<SourceInfo<string>>();
 
         /// <summary>
@@ -163,7 +167,8 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Get the metadata JSON schema file path.
         /// </summary>
-        public readonly SourceInfo<string> MetadataSchema = new SourceInfo<string>(string.Empty);
+        [JsonConverter(typeof(OneOrManyConverter))]
+        public readonly SourceInfo<string>[] MetadataSchema = Array.Empty<SourceInfo<string>>();
 
         /// <summary>
         /// Get the theme repo url like https://github.com/docs/theme#master

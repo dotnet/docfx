@@ -9,13 +9,10 @@ using System.Text.RegularExpressions;
 using Newtonsoft.Json.Linq;
 
 using YamlDotNet.Core;
-using YamlDotNet.RepresentationModel;
+using YamlDotNet.Core.Events;
 
 namespace Microsoft.Docs.Build
 {
-    /// <summary>
-    /// Provide Utilities of Yaml
-    /// </summary>
     internal static class YamlUtility
     {
         public const string YamlMimePrefix = "YamlMime:";
@@ -60,9 +57,9 @@ namespace Microsoft.Docs.Build
         /// De-serialize from yaml string, which is not user input
         /// schema validation errors will be ignored, syntax errors and type mismatching will be thrown
         /// </summary>
-        public static T Deserialize<T>(string input)
+        public static T Deserialize<T>(string input, string file)
         {
-            var token = ParseAsJToken(input, file: null);
+            var (_, token) = ParseAsJToken(input, file);
             return token.ToObject<T>(JsonUtility.Serializer);
         }
 
@@ -76,7 +73,10 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static (List<Error>, JToken) Parse(string input, string file)
         {
-            return ParseAsJToken(input, file).RemoveNulls();
+            var (errors, token) = ParseAsJToken(input, file);
+            var (nullErrors, result) = token.RemoveNulls();
+            errors.AddRange(nullErrors);
+            return (errors, result);
         }
 
         private static string ReadDocumentType(TextReader reader)
@@ -92,23 +92,24 @@ namespace Microsoft.Docs.Build
             return null;
         }
 
-        private static JToken ParseAsJToken(string input, string file)
+        private static (List<Error>, JToken) ParseAsJToken(string input, string file)
         {
-            Match match;
-
-            var stream = new YamlStream();
-
             try
             {
-                stream.Load(new StringReader(input));
-            }
-            catch (YamlException ex) when (
-                ex.InnerException is ArgumentException aex &&
-                (match = Regex.Match(aex.Message, "(.*?)\\. Key: (.*)$")).Success)
-            {
-                var source = new SourceInfo(file, ex.Start.Line, ex.Start.Column, ex.End.Line, ex.End.Column);
+                JToken result = null;
 
-                throw Errors.YamlDuplicateKey(source, match.Groups[2].Value).ToException(ex);
+                var errors = new List<Error>();
+                var parser = new Parser(new StringReader(input));
+                parser.Expect<StreamStart>();
+                if (!parser.Accept<StreamEnd>())
+                {
+                    parser.Expect<DocumentStart>();
+                    result = ParseAsJToken(parser, file, errors);
+                    parser.Expect<DocumentEnd>();
+                }
+                parser.Expect<StreamEnd>();
+
+                return (errors, result);
             }
             catch (YamlException ex)
             {
@@ -117,79 +118,101 @@ namespace Microsoft.Docs.Build
 
                 throw Errors.YamlSyntaxError(source, message).ToException(ex);
             }
+        }
 
-            if (stream.Documents.Count == 0)
+        private static JToken ParseAsJToken(IParser parser, string file, List<Error> errors)
+        {
+            switch (parser.Expect<NodeEvent>())
+            {
+                case Scalar scalar:
+                    if (scalar.Style == ScalarStyle.Plain)
+                    {
+                        return SetSourceInfo(ParseScalar(scalar.Value), scalar, file);
+                    }
+                    return SetSourceInfo(new JValue(scalar.Value), scalar, file);
+
+                case SequenceStart seq:
+                    var array = new JArray();
+                    while (!parser.Accept<SequenceEnd>())
+                    {
+                        array.Add(ParseAsJToken(parser, file, errors));
+                    }
+                    parser.Expect<SequenceEnd>();
+                    return SetSourceInfo(array, seq, file);
+
+                case MappingStart map:
+                    var obj = new JObject();
+                    while (!parser.Accept<MappingEnd>())
+                    {
+                        var key = parser.Expect<Scalar>();
+                        var value = ParseAsJToken(parser, file, errors);
+
+                        if (obj.ContainsKey(key.Value))
+                        {
+                            var source = new SourceInfo(file, key.Start.Line, key.Start.Column, key.End.Line, key.End.Column);
+                            errors.Add(Errors.YamlDuplicateKey(source, key.Value));
+                        }
+
+                        obj[key.Value] = value;
+                        SetSourceInfo(obj.Property(key.Value), key, file);
+                    }
+                    parser.Expect<MappingEnd>();
+                    return SetSourceInfo(obj, map, file);
+
+                default:
+                    throw new NotSupportedException($"Yaml node '{parser.Current.GetType().Name}' is not supported");
+            }
+        }
+
+        private static JToken ParseScalar(string value)
+        {
+            // https://yaml.org/spec/1.2/2009-07-21/spec.html
+            //
+            //  Regular expression       Resolved to tag
+            //
+            //    null | Null | NULL | ~                          tag:yaml.org,2002:null
+            //    /* Empty */                                     tag:yaml.org,2002:null
+            //    true | True | TRUE | false | False | FALSE      tag:yaml.org,2002:bool
+            //    [-+]?[0 - 9]+                                   tag:yaml.org,2002:int(Base 10)
+            //    0o[0 - 7] +                                     tag:yaml.org,2002:int(Base 8)
+            //    0x[0 - 9a - fA - F] +                           tag:yaml.org,2002:int(Base 16)
+            //    [-+] ? ( \. [0-9]+ | [0-9]+ ( \. [0-9]* )? ) ( [eE][-+]?[0 - 9]+ )?   tag:yaml.org,2002:float (Number)
+            //    [-+]? ( \.inf | \.Inf | \.INF )                 tag:yaml.org,2002:float (Infinity)
+            //    \.nan | \.NaN | \.NAN                           tag:yaml.org,2002:float (Not a number)
+            //    *                                               tag:yaml.org,2002:str(Default)
+            if (string.IsNullOrEmpty(value) || value == "~" || value.Equals("null", StringComparison.OrdinalIgnoreCase))
             {
                 return JValue.CreateNull();
             }
-
-            if (stream.Documents.Count != 1)
+            if (bool.TryParse(value, out var b))
             {
-                throw new NotSupportedException("Does not support mutiple YAML documents");
+                return new JValue(b);
             }
-
-            return ToJson(stream.Documents[0].RootNode, file);
+            if (long.TryParse(value, out var l))
+            {
+                return new JValue(l);
+            }
+            if (double.TryParse(value, NumberStyles.Number, CultureInfo.InvariantCulture, out var d) &&
+                !double.IsNaN(d) && !double.IsPositiveInfinity(d) && !double.IsNegativeInfinity(d))
+            {
+                return new JValue(d);
+            }
+            if (value.Equals(".nan", StringComparison.OrdinalIgnoreCase))
+            {
+                return new JValue(double.NaN);
+            }
+            if (value.Equals(".inf", StringComparison.OrdinalIgnoreCase) || value.Equals("+.inf", StringComparison.OrdinalIgnoreCase))
+            {
+                return new JValue(double.PositiveInfinity);
+            }
+            if (value.Equals("-.inf", StringComparison.OrdinalIgnoreCase))
+            {
+                return new JValue(double.NegativeInfinity);
+            }
+            return new JValue(value);
         }
 
-        private static JToken ToJson(YamlNode node, string file)
-        {
-            if (node is YamlScalarNode scalar)
-            {
-                if (scalar.Style == ScalarStyle.Plain)
-                {
-                    if (string.IsNullOrWhiteSpace(scalar.Value) ||
-                        scalar.Value == "~" ||
-                        string.Equals(scalar.Value, "null", StringComparison.OrdinalIgnoreCase))
-                    {
-                        return SetSourceInfo(JValue.CreateNull(), node, file);
-                    }
-                    if (long.TryParse(scalar.Value, out var n))
-                    {
-                        return SetSourceInfo(new JValue(n), node, file);
-                    }
-                    if (double.TryParse(scalar.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out var d))
-                    {
-                        return SetSourceInfo(new JValue(d), node, file);
-                    }
-                    if (bool.TryParse(scalar.Value, out var b))
-                    {
-                        return SetSourceInfo(new JValue(b), node, file);
-                    }
-                }
-                return SetSourceInfo(new JValue(scalar.Value), node, file);
-            }
-            if (node is YamlMappingNode map)
-            {
-                var obj = new JObject();
-                foreach (var (key, value) in map)
-                {
-                    if (key is YamlScalarNode scalarKey)
-                    {
-                        var token = ToJson(value, file);
-                        var prop = SetSourceInfo(new JProperty(scalarKey.Value, token), key, file);
-                        obj.Add(prop);
-                    }
-                    else
-                    {
-                        throw new NotSupportedException($"Not Supported: {key} is not a primitive type");
-                    }
-                }
-
-                return SetSourceInfo(obj, node, file);
-            }
-            if (node is YamlSequenceNode seq)
-            {
-                var arr = new JArray();
-                foreach (var item in seq)
-                {
-                    arr.Add(ToJson(item, file));
-                }
-                return SetSourceInfo(arr, node, file);
-            }
-            throw new NotSupportedException($"Unknown yaml node type {node.GetType()}");
-        }
-
-        private static JToken SetSourceInfo(JToken token, YamlNode node, string file)
+        private static JToken SetSourceInfo(JToken token, ParsingEvent node, string file)
         {
             return JsonUtility.SetSourceInfo(
                 token,

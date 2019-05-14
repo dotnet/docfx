@@ -16,7 +16,7 @@ inputs:
     bar
     >>>>>>> cb1abc6bd98cfc84317f8aa95a7662815417802d
 outputs:
-  build.log: |
+  .errors.log: |
     ["error","merge-conflict","File contains merge conflict","docs/toc.md",1,1]
     ["error","merge-conflict","File contains merge conflict","docs/a.md",2,1]
 ---
@@ -31,10 +31,9 @@ inputs:
           - a: 1
   a.md:
 outputs:
-  a.json:
-  build.log: |
-    ["info","invalid-metadata-type","Metadata 'key1' can only be a scalar value or string array","docfx.yml",2,9]
-    ["info","invalid-metadata-type","Metadata 'key2' can only be a scalar value or string array","docfx.yml",6,7]
+  .errors.log: |
+    ["error","invalid-metadata-type","Metadata 'key1' can only be a scalar value or string array","docfx.yml",2,9]
+    ["error","invalid-metadata-type","Metadata 'key2' can only be a scalar value or string array","docfx.yml",6,7]
 ---
 # Additional metadata validation from external JSON schema
 inputs:
@@ -58,8 +57,34 @@ inputs:
     key3: net462
     ---
 outputs:
-  build.log: |
-    ["error","unexpected-type","Expect type 'String' but got 'Array'","docfx.yml",3,9]
-    ["error","undefined-value","Value 'XNAGameStudio' is not accepted. Valid values: 'MSDN', 'VS'","docfx.yml",6,13]
-    ["error","unexpected-type","Expect type 'Integer' but got 'String'","a.md",2,7]
+  a.json: |
+    {
+      "key1": [],
+      "key2": "XNAGameStudio",
+      "key3": "net462"
+    }
+  .errors.log: |
+    ["warning","unexpected-type","Expect type 'String' but got 'Array'","docfx.yml",3,9]
+    ["warning","undefined-value","Value 'XNAGameStudio' is not accepted. Valid values: 'MSDN', 'VS'","docfx.yml",6,13]
+    ["warning","unexpected-type","Expect type 'Integer' but got 'String'","a.md",2,7]
+---
+# Allow multiple metadata schema definitions
+inputs:
+  docfx.yml: |
+    metadataSchema:
+      - schema1.json
+      - schema2.json
+  schema1.json: |
+    { "required": ["a"] }
+  schema2.json: |
+    { "properties": { "key": { "type": "string" } } }
+  a.md: |
+    ---
+    key: []
+    ---
+outputs:
+  a.json:
+  .errors.log: |
+    ["warning","field-required","Missing required field 'a'","a.md",2,1]
+    ["warning","unexpected-type","Expect type 'String' but got 'Array'","a.md",2,6]
 ---

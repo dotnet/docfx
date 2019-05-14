@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -94,6 +95,9 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static void Checkout(string path, string committish)
             => ExecuteNonQuery(path, $"-c core.longpaths=true checkout --force --progress {committish}");
+
+        public static bool IsDirty(string path)
+            => Execute(path, $"-c core.longpaths=true status --porcelain").Split('\n', StringSplitOptions.RemoveEmptyEntries).Any();
 
         /// <summary>
         /// Clones or update a git repository to the latest version.
@@ -262,6 +266,14 @@ namespace Microsoft.Docs.Build
             // - git remote set url
             // - git fetch
             // - git checkout (if not a bar repo)
+            if (GitRemoteProxy != null &&
+                GitRemoteProxy(url) != url &&
+                Directory.Exists(path))
+            {
+                // optimize for test fetching
+                return;
+            }
+
             Directory.CreateDirectory(path);
 
             if (git_repository_init(out var repo, path, is_bare: bare ? 1 : 0) != 0)
@@ -279,17 +291,19 @@ namespace Microsoft.Docs.Build
 
             git_repository_free(repo);
 
-            // Allow test to proxy remotes to local folder
-            if (GitRemoteProxy != null)
-            {
-                url = GitRemoteProxy(url);
-            }
-
-            var httpConfig = GetGitCommandLineConfig(url, config);
             var refspecs = string.Join(' ', committishes.Select(rev => $"+{rev}:{rev}"));
             var depth = depthOne ? "--depth 1" : "--depth 9999999999";
             var pruneSwitch = prune ? "--prune" : "";
 
+            // Allow test to proxy remotes to local folder
+            if (GitRemoteProxy != null)
+            {
+                url = GitRemoteProxy(url);
+                refspecs = "+refs/heads/*:refs/heads/* +refs/tags/*:refs/tags/*";
+                depth = "--depth 9999999999";
+            }
+
+            var httpConfig = GetGitCommandLineConfig(url, config);
             try
             {
                 ExecuteNonQuery(path, $"{httpConfig} fetch --tags --progress --update-head-ok {pruneSwitch} {depth} \"{url}\" {refspecs}");

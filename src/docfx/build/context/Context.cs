@@ -11,7 +11,7 @@ namespace Microsoft.Docs.Build
     /// </summary>
     internal sealed class Context : IDisposable
     {
-        public readonly Report Report;
+        public readonly ErrorLog ErrorLog;
         public readonly Cache Cache;
         public readonly Output Output;
         public readonly MetadataProvider MetadataProvider;
@@ -27,7 +27,7 @@ namespace Microsoft.Docs.Build
         public readonly TemplateEngine Template;
 
         public Context(
-            Report report,
+            ErrorLog errorLog,
             Output output,
             Cache cache,
             MetadataProvider metadataProvider,
@@ -42,7 +42,7 @@ namespace Microsoft.Docs.Build
             PublishModelBuilder publishModelBuilder,
             TemplateEngine template)
         {
-            Report = report;
+            ErrorLog = errorLog;
             Output = output;
             Cache = cache;
             MetadataProvider = metadataProvider;
@@ -58,11 +58,11 @@ namespace Microsoft.Docs.Build
             Template = template;
         }
 
-        public static Context Create(string outputPath, Report report, Docset docset, Func<XrefMap> xrefMap)
+        public static Context Create(string outputPath, ErrorLog errorLog, Docset docset, Func<XrefMap> xrefMap)
         {
             var output = new Output(outputPath);
             var cache = new Cache();
-            var metadataProvider = new MetadataProvider(docset.Config);
+            var metadataProvider = new MetadataProvider(docset);
             var monikerProvider = new MonikerProvider(docset);
             var gitHubUserCache = GitHubUserCache.Create(docset);
             var gitCommitProvider = new GitCommitProvider();
@@ -75,7 +75,7 @@ namespace Microsoft.Docs.Build
             var template = TemplateEngine.Create(docset);
 
             return new Context(
-                report,
+                errorLog,
                 output,
                 cache,
                 metadataProvider,

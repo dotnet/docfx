@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
 using Newtonsoft.Json.Linq;
@@ -43,6 +44,13 @@ namespace Microsoft.Docs.Build
             (contributorErrors, model.ContributionInfo) = await context.ContributionProvider.GetContributionInfo(file, model.Author);
             model.Author = new SourceInfo<string>(model.ContributionInfo?.Author?.Name, model.Author);
             model.UpdatedAt = model.ContributionInfo?.UpdatedAtDateTime.ToString("yyyy-MM-dd hh:mm tt");
+
+            model.DepotName = $"{file.Docset.Config.Product}.{file.Docset.Config.Name}";
+            model.Path = PathUtility.NormalizeFile(Path.GetRelativePath(file.Docset.SiteBasePath, file.SitePath));
+            model.CanonicalUrlPrefix = $"{file.Docset.HostName}/{file.Docset.Locale}/{file.Docset.SiteBasePath}/";
+
+            if (file.Docset.Config.Output.Pdf)
+                model.PdfUrlPrefixTemplate = $"{file.Docset.HostName}/pdfstore/{model.Locale}/{file.Docset.Config.Product}.{file.Docset.Config.Name}/{{branchName}}";
 
             if (contributorErrors != null)
                 errors.AddRange(contributorErrors);
@@ -133,7 +141,7 @@ namespace Microsoft.Docs.Build
                 errors.Add(Errors.HeadingNotFound(file));
             }
 
-            pageModel.Content = HtmlPostProcess(file, htmlDom);
+            pageModel.Conceptual = HtmlPostProcess(file, htmlDom);
             pageModel.Title = yamlHeader.Value<string>("title") ?? title;
             pageModel.RawTitle = rawTitle;
             pageModel.WordCount = wordCount;
@@ -186,16 +194,19 @@ namespace Microsoft.Docs.Build
             }
             var title = yamlHeader.Value<string>("title") ?? obj?.Value<string>("title");
 
-            if (file.Docset.Legacy && file.Schema.Attribute is PageSchemaAttribute)
-            {
-                var html = await RazorTemplate.Render(file.Schema.Name, content);
-                content = HtmlPostProcess(file, HtmlUtility.LoadHtml(html));
-            }
-
             var (metaErrors, pageModel) = context.MetadataProvider.GetInputMetadata<OutputModel>(file, yamlHeader);
             errors.AddRange(metaErrors);
 
-            pageModel.Content = content;
+            if (file.Docset.Legacy && file.Schema.Attribute is PageSchemaAttribute)
+            {
+                var html = await RazorTemplate.Render(file.Schema.Name, content);
+                pageModel.Conceptual = HtmlPostProcess(file, HtmlUtility.LoadHtml(html));
+            }
+            else
+            {
+                pageModel.Content = content;
+            }
+
             pageModel.Title = title;
             pageModel.RawTitle = file.Docset.Legacy ? $"<h1>{obj?.Value<string>("title")}</h1>" : null;
             pageModel.Monikers = new List<string>();

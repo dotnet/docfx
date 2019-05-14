@@ -53,8 +53,8 @@ namespace Microsoft.Docs.Build
             string name;
             if (TryResolveFromInternal(uid, href, moniker, out var internalXrefSpec, out var referencedFile))
             {
-                var (_, query, fragment) = HrefUtility.SplitHref(internalXrefSpec.Href);
-                resolvedHref = HrefUtility.MergeHref(RebaseResolvedHref(rootFile, referencedFile), query, fragment.Length == 0 ? "" : fragment.Substring(1));
+                var (_, query, fragment) = UrlUtility.SplitUrl(internalXrefSpec.Href);
+                resolvedHref = UrlUtility.MergeUrl(RebaseResolvedHref(rootFile, referencedFile), query, fragment.Length == 0 ? "" : fragment.Substring(1));
                 name = internalXrefSpec.GetName();
                 displayPropertyValue = internalXrefSpec.GetXrefPropertyValue(displayPropertyName);
             }
@@ -66,7 +66,7 @@ namespace Microsoft.Docs.Build
             }
             else
             {
-                return (Errors.UidNotFound(href, uid), null, null, null);
+                return (Errors.XrefNotFound(href), null, null, null);
             }
 
             // fallback order:
@@ -132,7 +132,7 @@ namespace Microsoft.Docs.Build
 
                 // if the moniker is not defined with the uid
                 // log a warning and take the one with latest version
-                _context.Report.Write(Errors.InvalidUidMoniker(href, moniker, uid));
+                _context.ErrorLog.Write(Errors.InvalidUidMoniker(href, moniker, uid));
                 return GetLatestInternalXrefMap(validInternalSpecs);
             }
 
@@ -166,7 +166,7 @@ namespace Microsoft.Docs.Build
                 XrefMapModel xrefMap = new XrefMapModel();
                 if (url?.Value.EndsWith(".yml", StringComparison.OrdinalIgnoreCase) != false)
                 {
-                    xrefMap = YamlUtility.Deserialize<XrefMapModel>(content);
+                    xrefMap = YamlUtility.Deserialize<XrefMapModel>(content, url);
                     foreach (var spec in xrefMap.References)
                     {
                         map.TryAdd(spec.Uid, new Lazy<XrefSpec>(() => spec));
@@ -180,7 +180,7 @@ namespace Microsoft.Docs.Build
                         map.TryAdd(uid, new Lazy<XrefSpec>(() =>
                         {
                             var str = GetSubstringFromContent(content, startLine, endLine, startColumn, endColumn);
-                            return JsonUtility.Deserialize<XrefSpec>(str);
+                            return JsonUtility.Deserialize<XrefSpec>(str, url);
                         }));
                     }, content);
                 }
@@ -319,7 +319,7 @@ namespace Microsoft.Docs.Build
             if (conflictsWithoutMoniker.Count() > 1)
             {
                 var orderedConflict = conflictsWithoutMoniker.OrderBy(item => item.spec.Href);
-                _context.Report.Write(Errors.UidConflict(uid, orderedConflict.Select(x => x.file.FilePath)));
+                _context.ErrorLog.Write(Errors.UidConflict(uid, orderedConflict.Select(x => x.file.FilePath)));
                 return false;
             }
             else if (conflictsWithoutMoniker.Count() == 1)
@@ -331,7 +331,7 @@ namespace Microsoft.Docs.Build
             var conflictsWithMoniker = specsWithSameUid.Where(x => x.spec.Monikers.Count > 0);
             if (CheckOverlappingMonikers(specsWithSameUid.Select(x => x.spec), out var overlappingMonikers))
             {
-                _context.Report.Write(Errors.MonikerOverlapping(overlappingMonikers));
+                _context.ErrorLog.Write(Errors.MonikerOverlapping(overlappingMonikers));
                 return false;
             }
 
@@ -428,11 +428,11 @@ namespace Microsoft.Docs.Build
                         TryAddXref(xrefsByUid, spec.Uid, file, spec);
                     }
                 }
-                context.Report.Write(file.ToString(), errors);
+                context.ErrorLog.Write(file.ToString(), errors);
             }
             catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
             {
-                context.Report.Write(file.ToString(), dex.Error);
+                context.ErrorLog.Write(file.ToString(), dex.Error);
             }
             catch
             {
@@ -548,7 +548,7 @@ namespace Microsoft.Docs.Build
             {
                 if (!uidToJsonPath.TryAdd(str, token.Path))
                 {
-                    context.Report.Write(filePath, Errors.UidConflict(str));
+                    context.ErrorLog.Write(filePath, Errors.UidConflict(str));
                 }
                 else
                 {

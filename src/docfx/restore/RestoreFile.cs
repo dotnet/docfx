@@ -13,21 +13,18 @@ namespace Microsoft.Docs.Build
 {
     internal static class RestoreFile
     {
-        public static Task Restore(List<string> urls, Config config, bool @implicit = false)
+        public static Task Restore(List<string> urls, Config config)
         {
             return ParallelUtility.ForEach(
                 urls,
-                restoreUrl => Restore(restoreUrl, config, @implicit));
+                restoreUrl => Restore(restoreUrl, config));
         }
 
-        public static async Task Restore(string url, Config config, bool @implicit = false)
+        public static async Task Restore(string url, Config config)
         {
             var filePath = GetRestoreContentPath(url);
 
-            var (existingContent, existingEtagContent) = RestoreMap.TryGetRestoredFileContent(url);
-            if (!string.IsNullOrEmpty(existingContent) && @implicit)
-                return;
-
+            var (_, existingEtagContent) = RestoreMap.TryGetRestoredFileContent(url);
             var existingEtag = !string.IsNullOrEmpty(existingEtagContent) ? EntityTagHeaderValue.Parse(existingEtagContent) : null;
 
             var (tempFile, etag) = await DownloadToTempFile(url, config, existingEtag);
@@ -62,13 +59,17 @@ namespace Microsoft.Docs.Build
 
             yield return config.GitHub.UserCache;
             yield return config.MonikerDefinition;
-            yield return config.MetadataSchema;
+
+            foreach (var metadataSchema in config.MetadataSchema)
+            {
+                yield return metadataSchema;
+            }
         }
 
         public static string GetRestoreContentPath(string url)
         {
             Debug.Assert(!string.IsNullOrEmpty(url));
-            Debug.Assert(HrefUtility.IsHttpHref(url));
+            Debug.Assert(UrlUtility.IsHttp(url));
 
             return PathUtility.NormalizeFile(Path.Combine(AppData.GetFileDownloadDir(url), "content"));
         }
@@ -76,7 +77,7 @@ namespace Microsoft.Docs.Build
         public static string GetRestoreEtagPath(string url)
         {
             Debug.Assert(!string.IsNullOrEmpty(url));
-            Debug.Assert(HrefUtility.IsHttpHref(url));
+            Debug.Assert(UrlUtility.IsHttp(url));
 
             return PathUtility.NormalizeFile(Path.Combine(AppData.GetFileDownloadDir(url), "etag"));
         }
@@ -106,7 +107,7 @@ namespace Microsoft.Docs.Build
             }
             catch (Exception ex)
             {
-                throw Errors.DownloadFailed(url, ex.Message).ToException(ex);
+                throw Errors.DownloadFailed(url).ToException(ex);
             }
         }
     }

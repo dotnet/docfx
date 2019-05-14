@@ -17,75 +17,27 @@ namespace Microsoft.Docs.Build
     {
         private static readonly string[] s_resourceFolders = new[] { "global", "css", "fonts" };
 
-        private static readonly HashSet<string> s_metadataBlacklist = new HashSet<string>()
-        {
-            "fileRelativePath",
-        };
-
-        private static readonly HashSet<string> s_htmlMetaTagsBlacklist = new HashSet<string>()
-        {
-            "absolutePath",
-            "original_content_git_url_template",
-            "fileRelativePath",
-            "title",
-            "internal_document_id",
-            "product_family",
-            "product_version",
-            "redirect_url",
-            "redirect_document_id",
-            "toc_asset_id",
-            "content_git_url",
-            "open_to_public_contributors",
-            "area",
-            "theme",
-            "theme_branch",
-            "theme_url",
-            "layout",
-            "is_active",
-            "api_scan",
-            "publish_version",
-            "canonical_url",
-            "f1_keywords",
-            "dev_langs",
-            "is_dynamic_rendering",
-            "helpviewer_keywords",
-            "need_preview_pull_request",
-            "contributors_to_exclude",
-            "titleSuffix",
-            "moniker_type",
-            "is_significant_update",
-            "archive_url",
-            "serviceData",
-            "is_hidden",
-        };
-
-        private static readonly Dictionary<string, string> s_displayNameMapping = new Dictionary<string, string>()
-        {
-            { "product", "Product" },
-            { "topic_type", "TopicType" },
-            { "api_type", "APIType" },
-            { "api_location", "APILocation" },
-            { "api_name", "APIName" },
-            { "api_extra_info", "APIExtraInfo" },
-            { "target_os", "TargetOS" },
-        };
-
         private readonly string _templateDir;
-        private readonly string _locale;
         private readonly LiquidTemplate _liquid;
         private readonly JavascriptEngine _js;
+        private readonly HashSet<string> _htmlMetaHidden;
+        private readonly Dictionary<string, string> _htmlMetaNames;
 
         public JObject Global { get; }
 
-        private TemplateEngine(string templateDir, string locale)
+        private TemplateEngine(string templateDir, JsonSchema metadataSchema)
         {
             var contentTemplateDir = Path.Combine(templateDir, "ContentTemplate");
 
             _templateDir = templateDir;
-            _locale = locale.ToLowerInvariant();
             _liquid = new LiquidTemplate(templateDir);
             _js = new JavascriptEngine(contentTemplateDir);
-            Global = LoadGlobalTokens(templateDir, _locale);
+            Global = LoadGlobalTokens(contentTemplateDir);
+
+            _htmlMetaHidden = metadataSchema.HtmlMetaHidden.ToHashSet();
+            _htmlMetaNames = metadataSchema.Properties
+                .Where(prop => !string.IsNullOrEmpty(prop.Value.HtmlMetaName))
+                .ToDictionary(prop => prop.Key, prop => prop.Value.HtmlMetaName);
         }
 
         public static TemplateEngine Create(Docset docset)
@@ -101,7 +53,7 @@ namespace Microsoft.Docs.Build
             var (themePath, themeRestoreMap) = docset.RestoreMap.GetGitRestorePath($"{themeRemote}#{themeBranch}");
             Log.Write($"Using theme '{themeRemote}#{themeRestoreMap.DependencyLock.Commit}' at '{themePath}'");
 
-            return new TemplateEngine(themePath, docset.Locale);
+            return new TemplateEngine(themePath, docset.MetadataSchema);
         }
 
         public string Render(OutputModel model, Document file, JObject rawMetadata)
@@ -133,7 +85,7 @@ namespace Microsoft.Docs.Build
 
             var model = new TemplateModel
             {
-                Content = pageModel.Content as string,
+                Content = pageModel.Conceptual,
                 RawMetadata = rawMetadata,
                 PageMetadata = pageMetadata,
                 ThemesRelativePathToOutputRoot = "_themes/",
@@ -169,28 +121,11 @@ namespace Microsoft.Docs.Build
             var docset = file.Docset;
             var rawMetadata = JsonUtility.ToJObject(pageModel);
 
-            rawMetadata["depot_name"] = $"{docset.Config.Product}.{docset.Config.Name}";
-
             rawMetadata["search.ms_docsetname"] = docset.Config.Name;
             rawMetadata["search.ms_product"] = docset.Config.Product;
             rawMetadata["search.ms_sitename"] = "Docs";
 
             rawMetadata["__global"] = Global;
-            rawMetadata.Remove("content");
-
-            var path = PathUtility.NormalizeFile(Path.GetRelativePath(file.Docset.SiteBasePath, file.SitePath));
-
-            rawMetadata["_path"] = path;
-            rawMetadata["wordCount"] = pageModel.WordCount;
-
-            rawMetadata["_op_canonicalUrlPrefix"] = $"{docset.HostName}/{docset.Locale}/{docset.SiteBasePath}/";
-
-            if (docset.Config.Output.Pdf)
-            {
-                rawMetadata["_op_pdfUrlPrefixTemplate"] = $"{docset.HostName}/pdfstore/{pageModel.Locale}/{docset.Config.Product}.{docset.Config.Name}/{{branchName}}";
-            }
-
-            rawMetadata.Remove("schema_type");
 
             return rawMetadata;
         }
@@ -205,9 +140,9 @@ namespace Microsoft.Docs.Build
                     TransformMetadata("Conceptual.mta.json.js", rawMetadata), pageModel));
         }
 
-        private JObject LoadGlobalTokens(string templateDir, string locale)
+        private JObject LoadGlobalTokens(string contentTemplateDir)
         {
-            var path = Path.Combine(templateDir, $"LocalizedTokens/docs({locale}).html/tokens.json");
+            var path = Path.Combine(contentTemplateDir, "token.json");
             return File.Exists(path) ? JObject.Parse(File.ReadAllText(path)) : new JObject();
         }
 
@@ -246,7 +181,7 @@ namespace Microsoft.Docs.Build
 
             foreach (var (key, value) in rawMetadata)
             {
-                if (!key.StartsWith("_op_") && !s_metadataBlacklist.Contains(key))
+                if (!key.StartsWith("_"))
                 {
                     metadata[key] = value;
                 }
@@ -257,7 +192,7 @@ namespace Microsoft.Docs.Build
             return metadata;
         }
 
-        private static string CreateHtmlMetaTags(JObject metadata)
+        private string CreateHtmlMetaTags(JObject metadata)
         {
             var result = new StringBuilder();
 
@@ -265,14 +200,14 @@ namespace Microsoft.Docs.Build
             {
                 var key = property.Name;
                 var value = property.Value;
-                if (value is JObject || s_htmlMetaTagsBlacklist.Contains(key))
+                if (value is JObject || _htmlMetaHidden.Contains(key))
                 {
                     continue;
                 }
 
-                var name = s_displayNameMapping.TryGetValue(key, out var diplayName) ? diplayName : key;
-
                 var content = "";
+                var name = _htmlMetaNames.TryGetValue(key, out var diplayName) ? diplayName : key;
+
                 if (value is JArray arr)
                 {
                     foreach (var v in value)

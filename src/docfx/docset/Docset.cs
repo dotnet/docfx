@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -112,7 +113,7 @@ namespace Microsoft.Docs.Build
         public HashSet<Document> ScanScope => _scanScope.Value;
 
         private readonly CommandLineOptions _options;
-        private readonly Report _report;
+        private readonly ErrorLog _errorLog;
         private readonly ConcurrentDictionary<string, Lazy<Repository>> _repositories;
         private readonly Lazy<HashSet<Document>> _buildScope;
         private readonly Lazy<HashSet<Document>> _scanScope;
@@ -120,7 +121,7 @@ namespace Microsoft.Docs.Build
         private readonly Lazy<IReadOnlyDictionary<string, Docset>> _dependencyDocsets;
 
         public Docset(
-            Report report,
+            ErrorLog errorLog,
             string docsetPath,
             string locale,
             Config config,
@@ -131,7 +132,7 @@ namespace Microsoft.Docs.Build
             Docset localizedDocset = null,
             Docset fallbackDocset = null,
             bool isDependency = false)
-            : this(report, docsetPath, !string.IsNullOrEmpty(locale) ? locale : config.Localization.DefaultLocale, config, options, restoreMap, repository, fallbackDocset, localizedDocset)
+            : this(errorLog, docsetPath, !string.IsNullOrEmpty(locale) ? locale : config.Localization.DefaultLocale, config, options, restoreMap, repository, fallbackDocset, localizedDocset)
         {
             Debug.Assert(restoreMap != null);
 
@@ -141,18 +142,18 @@ namespace Microsoft.Docs.Build
                 // source docset configuration will be overwritten by build locale overwrite configuration
                 if (fallbackRepo != default)
                 {
-                    FallbackDocset = new Docset(_report, fallbackRepo.Path, Locale, Config, _options, RestoreMap, fallbackRepo, localizedDocset: this, isDependency: true);
+                    FallbackDocset = new Docset(_errorLog, fallbackRepo.Path, Locale, Config, _options, RestoreMap, fallbackRepo, localizedDocset: this, isDependency: true);
                 }
                 else if (LocalizationUtility.TryGetLocalizedDocsetPath(this, restoreMap, Config, Locale, out var localizationDocsetPath, out var localizationBranch))
                 {
                     var repo = Repository.Create(localizationDocsetPath, localizationBranch);
-                    LocalizationDocset = new Docset(_report, localizationDocsetPath, Locale, Config, _options, RestoreMap, repo, fallbackDocset: this, isDependency: true);
+                    LocalizationDocset = new Docset(_errorLog, localizationDocsetPath, Locale, Config, _options, RestoreMap, repo, fallbackDocset: this, isDependency: true);
                 }
             }
         }
 
         private Docset(
-            Report report,
+            ErrorLog errorLog,
             string docsetPath,
             string locale,
             Config config,
@@ -165,7 +166,7 @@ namespace Microsoft.Docs.Build
             Debug.Assert(fallbackDocset is null || localizedDocset is null);
 
             _options = options;
-            _report = report;
+            _errorLog = errorLog;
             RestoreMap = restoreMap;
             Config = config;
             DocsetPath = PathUtility.NormalizeFolder(Path.GetFullPath(docsetPath));
@@ -186,15 +187,15 @@ namespace Microsoft.Docs.Build
             _redirections = new Lazy<RedirectionMap>(() =>
             {
                 var (errors, map) = RedirectionMap.Create(this, glob);
-                report.Write(Config.ConfigFileName, errors);
+                errorLog.Write(Config.ConfigFileName, errors);
                 return map;
             });
             _scanScope = new Lazy<HashSet<Document>>(() => GetScanScope(this));
 
             _dependencyDocsets = new Lazy<IReadOnlyDictionary<string, Docset>>(() =>
             {
-                var (errors, dependencies) = LoadDependencies(_report, Config, Locale, RestoreMap, _options);
-                _report.Write(Config.ConfigFileName, errors);
+                var (errors, dependencies) = LoadDependencies(_errorLog, Config, Locale, RestoreMap, _options);
+                _errorLog.Write(Config.ConfigFileName, errors);
                 return dependencies;
             });
 
@@ -253,7 +254,7 @@ namespace Microsoft.Docs.Build
             }
             catch (CultureNotFoundException)
             {
-                throw Errors.InvalidLocale(locale).ToException();
+                throw Errors.LocaleInvalid(locale).ToException();
             }
         }
 
@@ -271,12 +272,13 @@ namespace Microsoft.Docs.Build
 
         private JsonSchema LoadMetadataSchema(Config config)
         {
-            if (!string.IsNullOrEmpty(config.MetadataSchema))
+            var token = new JObject();
+            foreach (var metadataSchema in config.MetadataSchema)
             {
-                var (_, content, _) = RestoreMap.GetRestoredFileContent(this, config.MetadataSchema);
-                return JsonUtility.Deserialize<JsonSchema>(content);
+                var (_, content, _) = RestoreMap.GetRestoredFileContent(this, metadataSchema);
+                JsonUtility.Merge(token, JsonUtility.Parse(content, metadataSchema).value as JObject);
             }
-            return new JsonSchema();
+            return JsonUtility.ToObject<JsonSchema>(token).value;
         }
 
         private HashSet<Document> CreateBuildScope(IEnumerable<Document> redirections, Func<string, bool> glob)
@@ -300,7 +302,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static (List<Error>, Dictionary<string, Docset>) LoadDependencies(Report report, Config config, string locale, RestoreMap restoreMap, CommandLineOptions options)
+        private static (List<Error>, Dictionary<string, Docset>) LoadDependencies(ErrorLog errorLog, Config config, string locale, RestoreMap restoreMap, CommandLineOptions options)
         {
             var errors = new List<Error>();
             var result = new Dictionary<string, Docset>(config.Dependencies.Count, PathUtility.PathComparer);
@@ -313,7 +315,7 @@ namespace Microsoft.Docs.Build
                 var (loadErrors, subConfig) = ConfigLoader.TryLoad(dir, options, locale);
                 errors.AddRange(loadErrors);
 
-                result.TryAdd(PathUtility.NormalizeFolder(name), new Docset(report, dir, locale, subConfig, options, subRestoreMap, isDependency: true));
+                result.TryAdd(PathUtility.NormalizeFolder(name), new Docset(errorLog, dir, locale, subConfig, options, subRestoreMap, isDependency: true));
             }
             return (errors, result);
         }

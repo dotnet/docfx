@@ -104,49 +104,49 @@ namespace Microsoft.Docs.Build
         [InlineData("{'type': 'number'}", "123.456", "")]
         [InlineData("{'type': 'number'}", "123", "")]
         [InlineData("{'type': 'boolean'}", "'string'",
-            "['error','unexpected-type','Expect type 'Boolean' but got 'String'','file',1,8]")]
+            "['warning','unexpected-type','Expect type 'Boolean' but got 'String'','file',1,8]")]
         [InlineData("{'type': 'object'}", "1",
-            "['error','unexpected-type','Expect type 'Object' but got 'Integer'','file',1,1]")]
+            "['warning','unexpected-type','Expect type 'Object' but got 'Integer'','file',1,1]")]
         [InlineData("{'type': 'string'}", "1",
-            "['error','unexpected-type','Expect type 'String' but got 'Integer'','file',1,1]")]
+            "['warning','unexpected-type','Expect type 'String' but got 'Integer'','file',1,1]")]
 
         // union type validation
         [InlineData("{'type': ['string', 'null']}", "'a'", "")]
         [InlineData("{'properties': {'a': {'type': ['string', 'null']}}}", "{'a': null}", "")]
         [InlineData("{'type': ['string', 'null']}", "1",
-            "['error','unexpected-type','Expect type 'String, Null' but got 'Integer'','file',1,1]")]
+            "['warning','unexpected-type','Expect type 'String, Null' but got 'Integer'','file',1,1]")]
 
         // enum validation
         [InlineData("{'type': 'string', 'enum': ['a', 'b']}", "'a'", "")]
         [InlineData("{'type': 'string', 'enum': []}", "'unknown'",
-            "['error','undefined-value','Value 'unknown' is not accepted. Valid values: ','file',1,9]")]
+            "['warning','undefined-value','Value 'unknown' is not accepted. Valid values: ','file',1,9]")]
         [InlineData("{'type': 'string', 'enum': ['a', 'b']}", "'unknown'",
-            "['error','undefined-value','Value 'unknown' is not accepted. Valid values: 'a', 'b'','file',1,9]")]
+            "['warning','undefined-value','Value 'unknown' is not accepted. Valid values: 'a', 'b'','file',1,9]")]
 
         [InlineData("{'type': 'number', 'enum': [1, 2]}", "1", "")]
         [InlineData("{'type': 'number', 'enum': [1, 2]}", "3",
-            "['error','undefined-value','Value '3' is not accepted. Valid values: '1', '2'','file',1,1]")]
+            "['warning','undefined-value','Value '3' is not accepted. Valid values: '1', '2'','file',1,1]")]
 
         // properties validation
         [InlineData("{'properties': {'key': {'type': 'string'}}}", "{'key': 'value'}", "")]
         [InlineData("{'properties': {'key': {'type': 'string'}}}", "{'key': 1}",
-            "['error','unexpected-type','Expect type 'String' but got 'Integer'','file',1,9]")]
+            "['warning','unexpected-type','Expect type 'String' but got 'Integer'','file',1,9]")]
 
         // array validation
         [InlineData("{'items': {'type': 'string'}}", "['a','b']", "")]
         [InlineData("{'items': {'type': 'boolean'}}", "['a','b']",
-            @"['error','unexpected-type','Expect type 'Boolean' but got 'String'','file',1,4]
-              ['error','unexpected-type','Expect type 'Boolean' but got 'String'','file',1,8]")]
+            @"['warning','unexpected-type','Expect type 'Boolean' but got 'String'','file',1,4]
+              ['warning','unexpected-type','Expect type 'Boolean' but got 'String'','file',1,8]")]
 
         // required validation
         [InlineData("{'required': []}", "{}", "")]
         [InlineData("{'required': ['a']}", "{'a': 1}", "")]
         [InlineData("{'required': ['a']}", "{'b': 1}",
-            "['error','field-required','Missing required field 'a'','file',1,1]")]
+            "['warning','field-required','Missing required field 'a'','file',1,1]")]
         public void TestJsonSchemaValidation(string schema, string json, string expectedErrors)
         {
             var errors = JsonSchemaValidation.Validate(
-                JsonUtility.Deserialize<JsonSchema>(schema.Replace('\'', '"')),
+                JsonUtility.Deserialize<JsonSchema>(schema.Replace('\'', '"'), null),
                 JsonUtility.Parse(json.Replace('\'', '"'), "file").Item2);
 
             var expected = string.Join('\n', expectedErrors.Split('\n').Select(err => err.Trim()));

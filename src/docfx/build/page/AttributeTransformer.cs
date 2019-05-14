@@ -49,7 +49,7 @@ namespace Microsoft.Docs.Build
             {
                 var (error, link, _) = dependencyResolver.ResolveLink(new SourceInfo<string>((string)value, value), file, file, buildChild);
 
-                context.Report.Write(file.ToString(), error);
+                context.ErrorLog.Write(file.ToString(), error);
                 return link;
             }
 
@@ -64,7 +64,7 @@ namespace Microsoft.Docs.Build
                     key => context.Template?.GetToken(key),
                     MarkdownPipelineType.Markdown);
 
-                context.Report.Write(file.ToString(), errors);
+                context.ErrorLog.Write(file.ToString(), errors);
                 return html;
             }
 
@@ -79,17 +79,17 @@ namespace Microsoft.Docs.Build
                     key => context.Template?.GetToken(key),
                     MarkdownPipelineType.InlineMarkdown);
 
-                context.Report.Write(file.ToString(), errors);
+                context.ErrorLog.Write(file.ToString(), errors);
                 return html;
             }
 
             if (attribute is HtmlAttribute)
             {
-                var html = HtmlUtility.TransformLinks((string)value, href =>
+                var html = HtmlUtility.TransformLinks((string)value, (href, _) =>
                 {
                     var (error, link, _) = dependencyResolver.ResolveLink(new SourceInfo<string>(href, value), file, file, buildChild);
 
-                    context.Report.Write(file.ToString(), error);
+                    context.ErrorLog.Write(file.ToString(), error);
                     return link;
                 });
                 return HtmlUtility.StripTags(HtmlUtility.LoadHtml(html)).OuterHtml;
@@ -99,7 +99,7 @@ namespace Microsoft.Docs.Build
             {
                 // TODO: how to fill xref resolving data besides href
                 var (error, link, _, _) = dependencyResolver.ResolveXref(new SourceInfo<string>((string)value, value), file, file);
-                context.Report.Write(file.ToString(), error);
+                context.ErrorLog.Write(file.ToString(), error);
                 return link;
             }
 

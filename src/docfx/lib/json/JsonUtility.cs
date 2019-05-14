@@ -109,7 +109,7 @@ namespace Microsoft.Docs.Build
         /// De-serialize a data string, which is not user input, to an object
         /// schema validation errors will be ignored, syntax errors and type mismatching will be thrown
         /// </summary>
-        public static T Deserialize<T>(string json)
+        public static T Deserialize<T>(string json, string file)
         {
             using (var stringReader = new StringReader(json))
             using (var reader = new JsonTextReader(stringReader))
@@ -120,7 +120,11 @@ namespace Microsoft.Docs.Build
                 }
                 catch (JsonReaderException ex)
                 {
-                    throw ToError(ex).ToException(ex);
+                    throw ToError(ex, file).ToException(ex);
+                }
+                catch (JsonSerializationException ex)
+                {
+                    throw ToError(ex, file).ToException(ex);
                 }
             }
         }
@@ -136,13 +140,13 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Creates an instance of the specified .NET type from the JToken with schema validation
         /// </summary>
-        public static (List<Error>, T) ToObject<T>(JToken token)
+        public static (List<Error> errors, T value) ToObject<T>(JToken token)
         {
             var (errors, obj) = ToObject(token, typeof(T));
             return (errors, (T)obj);
         }
 
-        public static (List<Error>, object) ToObject(
+        public static (List<Error> errors, object value) ToObject(
             JToken token,
             Type type,
             Func<IEnumerable<DataTypeAttribute>, SourceInfo<object>, string, object> transform = null)
@@ -175,7 +179,7 @@ namespace Microsoft.Docs.Build
         /// Parse a string to JToken.
         /// Validate null value during the process.
         /// </summary>
-        public static (List<Error>, JToken) Parse(string json, string file)
+        public static (List<Error> errors, JToken value) Parse(string json, string file)
         {
             try
             {
@@ -432,28 +436,35 @@ namespace Microsoft.Docs.Build
                 if (args.ErrorContext.Error is JsonReaderException || args.ErrorContext.Error is JsonSerializationException)
                 {
                     var state = t_status.Value.Peek();
-                    state.Errors.Add(Errors.ViolateSchema(GetSourceInfo(state.Reader.CurrentToken), RewriteErrorMessage(args.ErrorContext.Error.Message)));
+                    state.Errors.Add(Errors.ViolateSchema(GetSourceInfo(state.Reader.CurrentToken), ParseException(args.ErrorContext.Error).message));
                     args.ErrorContext.Handled = true;
                 }
             }
         }
 
-        private static Error ToError(JsonReaderException ex, string file = null)
+        private static Error ToError(Exception ex, string file)
         {
-            var source = new SourceInfo(file, ex.LineNumber, ex.LinePosition);
+            var (message, line, column) = ParseException(ex);
 
-            return Errors.JsonSyntaxError(source, RewriteErrorMessage(ex.Message));
+            return Errors.JsonSyntaxError(new SourceInfo(file, line, column), message);
+        }
+
+        private static (string message, int line, int column) ParseException(Exception ex)
+        {
+            // TODO: Json.NET type conversion error message is developer friendly but not writer friendly.
+            var match = Regex.Match(ex.Message, "^([\\s\\S]*)\\sPath '(.*)', line (\\d+), position (\\d+).$");
+            if (match.Success)
+            {
+                return (RewriteErrorMessage(match.Groups[1].Value), int.Parse(match.Groups[3].Value), int.Parse(match.Groups[4].Value));
+            }
+
+            match = Regex.Match(ex.Message, "^([\\s\\S]*)\\sPath '(.*)'.$");
+
+            return (RewriteErrorMessage(match.Success ? match.Groups[1].Value : ex.Message), 0, 0);
         }
 
         private static string RewriteErrorMessage(string message)
         {
-            // TODO: Json.NET type conversion error message is developer friendly but not writer friendly.
-            var match = Regex.Match(message, "^([\\s\\S]*)\\sPath (.*).$");
-            if (match.Success)
-            {
-                message = match.Groups[1].Value;
-            }
-
             if (message.StartsWith("Error reading string. Unexpected token"))
             {
                 return "Expected type String, please input String or type compatible with String.";
