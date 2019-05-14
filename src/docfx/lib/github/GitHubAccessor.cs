@@ -2,8 +2,8 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Octokit;
@@ -13,8 +13,9 @@ namespace Microsoft.Docs.Build
     internal class GitHubAccessor
     {
         private readonly GitHubClient _client;
+        private readonly ConcurrentHashSet<(string owner, string name)> _unknownRepos = new ConcurrentHashSet<(string owner, string name)>();
 
-        private static volatile Error _rateLimitError;
+        private volatile Error _rateLimitError;
 
         public GitHubAccessor(string token = null)
         {
@@ -25,8 +26,6 @@ namespace Microsoft.Docs.Build
 
         public async Task<(Error, GitHubUser)> GetUserByLogin(string login)
         {
-            Debug.Assert(!string.IsNullOrEmpty(login));
-
             if (_rateLimitError != null)
             {
                 return (_rateLimitError, null);
@@ -66,13 +65,14 @@ namespace Microsoft.Docs.Build
 
         public async Task<(Error, IEnumerable<GitHubUser>)> GetUsersByCommit(string repoOwner, string repoName, string commitSha)
         {
-            Debug.Assert(!string.IsNullOrEmpty(repoOwner));
-            Debug.Assert(!string.IsNullOrEmpty(repoName));
-            Debug.Assert(!string.IsNullOrEmpty(commitSha));
-
             if (_rateLimitError != null)
             {
                 return (_rateLimitError, null);
+            }
+
+            if (_unknownRepos.Contains((repoOwner, repoName)))
+            {
+                return default;
             }
 
             var apiDetail = $"GET /repos/{repoOwner}/{repoName}/commits/{commitSha}";
@@ -91,6 +91,7 @@ namespace Microsoft.Docs.Build
             catch (NotFoundException)
             {
                 // owner/repo doesn't exist or you don't have access to the repo
+                _unknownRepos.TryAdd((repoOwner, repoName));
                 return default;
             }
             catch (ApiValidationException)
