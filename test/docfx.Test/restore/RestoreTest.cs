@@ -71,7 +71,7 @@ dependencies:
   dep6: {gitUrl}#chi");
 
             // run restore and check the work trees
-            await Program.Run(new[] { "restore", docsetPath });
+            Assert.Equal(0, await Program.Run(new[] { "restore", docsetPath }));
             Assert.Equal(2, GetWorkTreeFolderCount(restoreDir));
 
             File.WriteAllText(Path.Combine(docsetPath, "docfx.yml"), $@"
@@ -79,7 +79,7 @@ dependencies:
   dep1: {gitUrl}#test-1-clean");
 
             // run restore again
-            await Program.Run(new[] { "restore", docsetPath });
+            Assert.Equal(0, await Program.Run(new[] { "restore", docsetPath }));
 
             // since the lockdown time works, new slot will be created
             Assert.Equal(3, GetWorkTreeFolderCount(restoreDir));
@@ -98,11 +98,11 @@ dependencies:
 
             // run restore again
             // will create a new slot and find an available slot
-            await Program.Run(new[] { "restore", docsetPath });
+            Assert.Equal(0, await Program.Run(new[] { "restore", docsetPath }));
             Assert.Equal(4, GetWorkTreeFolderCount(restoreDir));
 
             // restore again to use existing worktree
-            await Program.Run(new[] { "restore", docsetPath });
+            Assert.Equal(0, await Program.Run(new[] { "restore", docsetPath }));
             Assert.Equal(4, GetWorkTreeFolderCount(restoreDir));
 
             // make worktree not synced with slots
@@ -113,7 +113,7 @@ dependencies:
 
             // run restore again
             // will create a new slot and find an available slot
-            await Program.Run(new[] { "restore", docsetPath });
+            Assert.Equal(0, await Program.Run(new[] { "restore", docsetPath }));
             Assert.Equal(5, GetWorkTreeFolderCount(restoreDir));
         }
 

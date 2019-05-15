@@ -143,6 +143,9 @@ namespace Microsoft.Docs.Build
                                         // it may be dirty caused by last failed restore action
                                         if (Directory.Exists(workTreePath))
                                             Directory.Delete(workTreePath, true);
+
+                                        // https://stackoverflow.com/questions/24265481/after-directory-delete-the-directory-exists-returning-true-sometimes
+                                        Debug.Assert(!Directory.Exists(workTreePath));
                                         GitUtility.AddWorkTree(repoPath, headCommit, workTreePath);
                                     }
                                     catch (Exception ex)
