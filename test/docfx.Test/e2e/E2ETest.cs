@@ -180,7 +180,7 @@ namespace Microsoft.Docs.Build
                 {
                     var yaml = section.Trim('\r', '\n', '-');
                     var header = YamlUtility.ReadHeader(yaml) ?? "";
-                    if (string.IsNullOrEmpty(header))
+                    if (string.IsNullOrEmpty(header) || header.Contains("[Skip]"))
                     {
                         i++;
                         continue;

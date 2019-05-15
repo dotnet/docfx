@@ -111,7 +111,7 @@ namespace Microsoft.Docs.Build
                             var existed = false;
                             foreach (var i in slots)
                             {
-                                if (DateTime.UtcNow - i.LastAccessDate > TimeSpan.FromSeconds(_defaultLockdownTimeInSecond))
+                                if (!i.Restored || DateTime.UtcNow - i.LastAccessDate > TimeSpan.FromSeconds(_defaultLockdownTimeInSecond))
                                 {
                                     (acquired, acquirer) = ProcessUtility.AcquireExclusiveLock(GetLockKey(url, i.Id));
                                     if (acquired)
@@ -137,7 +137,6 @@ namespace Microsoft.Docs.Build
 
                             // reset every property of rented slot
                             slot.Url = url;
-                            slot.Restored = false;
                             slot.LastAccessDate = DateTime.MinValue;
                             slot.Acquirer = acquirer;
 

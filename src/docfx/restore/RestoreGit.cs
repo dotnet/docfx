@@ -111,14 +111,12 @@ namespace Microsoft.Docs.Build
                             return;
                         }
 
-                        var headCommit = GitUtility.RevParse(repoPath, branch);
+                        var gitDependencyLock = dependencyLock?.GetGitLock(remote, branch);
+                        var headCommit = GitUtility.RevParse(repoPath, gitDependencyLock?.Commit ?? branch);
                         if (string.IsNullOrEmpty(headCommit))
                         {
-                            throw Errors.CommittishNotFound(remote, branch).ToException();
+                            throw Errors.CommittishNotFound(remote, gitDependencyLock?.Commit ?? branch).ToException();
                         }
-
-                        var gitDependencyLock = dependencyLock?.GetGitLock(remote, branch);
-                        headCommit = gitDependencyLock?.Commit ?? headCommit;
 
                         var (workTreePath, gitSlot) = RestoreMap.TryGetGitRestorePath(remote, branch, headCommit);
                         if (workTreePath is null)
@@ -145,6 +143,9 @@ namespace Microsoft.Docs.Build
                                         // it may be dirty caused by last failed restore action
                                         if (Directory.Exists(workTreePath))
                                             Directory.Delete(workTreePath, true);
+
+                                        // https://stackoverflow.com/questions/24265481/after-directory-delete-the-directory-exists-returning-true-sometimes
+                                        Debug.Assert(!Directory.Exists(workTreePath));
                                         GitUtility.AddWorkTree(repoPath, headCommit, workTreePath);
                                     }
                                     catch (Exception ex)
