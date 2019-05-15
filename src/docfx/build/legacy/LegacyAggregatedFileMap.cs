@@ -34,7 +34,7 @@ namespace Microsoft.Docs.Build
                     type = fileMapItem.Type,
                 };
 
-                aggregatedFileMapItems.Add(PathUtility.NormalizeFile(Path.Combine(docset.Config.SourceBasePath, legacyFilePathRelativeToBaseFolder)), aggregatedFileMapItem);
+                aggregatedFileMapItems.Add((PathUtility.NormalizeFile(Path.Combine(docset.Config.SourceBasePath, legacyFilePathRelativeToBaseFolder)), aggregatedFileMapItem));
             }
 
             context.Output.WriteJson(
