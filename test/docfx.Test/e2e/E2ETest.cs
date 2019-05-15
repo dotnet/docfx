@@ -103,7 +103,7 @@ namespace Microsoft.Docs.Build
             bool failed = false;
             foreach (var command in spec.Commands)
             {
-                if (await Program.Run(command.Split(" ").Concat(new[] { docsetPath }).ToArray()) != 0)
+                if (await Docfx.Run(command.Split(" ").Concat(new[] { docsetPath }).ToArray()) != 0)
                 {
                     failed = true;
                     break;
