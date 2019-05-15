@@ -27,11 +27,11 @@ namespace Microsoft.Docs.Build
 
         private int _maxExceeded;
 
-        public int ErrorCount => _errorCount;
+        public int ErrorCount => Count(_errorCount);
 
-        public int WarningCount => _warningCount;
+        public int WarningCount => Count(_warningCount);
 
-        public int SuggestionCount => _suggestionCount;
+        public int SuggestionCount => Count(_suggestionCount);
 
         public ErrorLog(string docset = ".", bool legacy = false)
         {
@@ -98,9 +98,18 @@ namespace Microsoft.Docs.Build
                 level = ErrorLevel.Error;
             }
 
+            if (!_errors.TryAdd(error))
+            {
+                return level == ErrorLevel.Error;
+            }
+
             Telemetry.TrackErrorCount(error.Code, level);
-            var maxErrors = (_config?.Output.MaxErrors ?? OutputConfig.DefaultMaxErrors) + 1;
-            if (_errors.TryAdd(error) && !IncrementExceedMaxErrors())
+            var maxErrors = _config.Output.MaxErrors;
+            if (!IncrementExceedMaxErrors())
+            {
+                WriteCore(error, level);
+            }
+            else
             {
                 if (Interlocked.Exchange(ref _maxExceeded, 1) == 0)
                 {
@@ -108,10 +117,6 @@ namespace Microsoft.Docs.Build
                     Telemetry.TrackErrorCount(exceedMaxErrors.Code, level);
                     WriteCore(exceedMaxErrors, level);
                 }
-            }
-            else
-            {
-                WriteCore(error, level);
             }
 
             return level == ErrorLevel.Error;
@@ -200,5 +205,8 @@ namespace Microsoft.Docs.Build
                     return ConsoleColor.Cyan;
             }
         }
+
+        private int Count(int errorCount)
+            => _maxExceeded == 1 ? _config.Output.MaxErrors : errorCount;
     }
 }
