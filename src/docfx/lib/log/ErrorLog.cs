@@ -98,35 +98,23 @@ namespace Microsoft.Docs.Build
                 level = ErrorLevel.Error;
             }
 
-            var maxErrors = _config?.Output.MaxErrors ?? OutputConfig.DefaultMaxErrors;
-            if (ReachMaxErrors())
+            Telemetry.TrackErrorCount(error.Code, level);
+            var maxErrors = (_config?.Output.MaxErrors ?? OutputConfig.DefaultMaxErrors) + 1;
+            if (_errors.TryAdd(error) && !IncrementExceedMaxErrors())
             {
                 if (Interlocked.Exchange(ref _maxExceeded, 1) == 0)
                 {
-                    WriteCore(Errors.ExceedMaxErrors(maxErrors, level), level);
+                    var exceedMaxErrors = Errors.ExceedMaxErrors(maxErrors, level);
+                    Telemetry.TrackErrorCount(exceedMaxErrors.Code, level);
+                    WriteCore(exceedMaxErrors, level);
                 }
             }
-            else if (_errors.TryAdd(error) && !IncrementExceedMaxErrors())
+            else
             {
                 WriteCore(error, level);
             }
 
             return level == ErrorLevel.Error;
-
-            bool ReachMaxErrors()
-            {
-                switch (level)
-                {
-                    case ErrorLevel.Error:
-                        return Volatile.Read(ref _errorCount) >= maxErrors;
-                    case ErrorLevel.Warning:
-                        return Volatile.Read(ref _warningCount) >= maxErrors;
-                    case ErrorLevel.Suggestion:
-                        return Volatile.Read(ref _suggestionCount) >= maxErrors;
-                    default:
-                        return Volatile.Read(ref _infoCount) >= maxErrors;
-                }
-            }
 
             bool IncrementExceedMaxErrors()
             {
@@ -157,8 +145,6 @@ namespace Microsoft.Docs.Build
 
         private void WriteCore(Error error, ErrorLevel level)
         {
-            Telemetry.TrackErrorCount(error.Code, level);
-
             if (_output != null)
             {
                 var line = _legacy ? LegacyReport(error, level) : error.ToString(level);
