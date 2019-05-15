@@ -31,9 +31,9 @@ namespace Microsoft.Docs.Build
                         }
                         fileManifests.TryGetValue(document, out var publishItem);
                         var legacyOutputFilePathRelativeToSiteBasePath = document.ToLegacyOutputPathRelativeToSiteBasePath(docset, publishItem.Path);
-                        var legacySiteUrlRelativeToBaseSitePath = document.ToLegacySiteUrlRelativeToSiteBasePath(docset);
+                        var legacySiteUrlRelativeToSiteBasePath = document.ToLegacySiteUrlRelativeToSiteBasePath(docset);
 
-                        var fileItem = LegacyFileMapItem.Instance(legacyOutputFilePathRelativeToSiteBasePath, legacySiteUrlRelativeToBaseSitePath, document.ContentType);
+                        var fileItem = LegacyFileMapItem.Instance(legacyOutputFilePathRelativeToSiteBasePath, legacySiteUrlRelativeToSiteBasePath, document.ContentType);
                         if (fileItem != null)
                         {
                             listBuilder.Add((PathUtility.NormalizeFile(document.ToLegacyPathRelativeToBasePath(docset)), fileItem));
