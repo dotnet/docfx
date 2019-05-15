@@ -141,7 +141,8 @@ namespace Microsoft.DocAsCode.SubCommands
             using (var builder = new DocumentBuilder(assemblies, postProcessorNames, templateManager?.GetTemplatesHash(), config.IntermediateFolder, changeList?.From, changeList?.To, config.CleanupCacheHistory))
             using (new PerformanceScope("building documents", LogLevel.Info))
             {
-                builder.Build(ConfigToParameter(config, templateManager, changeList, baseDirectory, outputDirectory, templateDirectory).ToList(), outputDirectory);
+                var parameters = ConfigToParameter(config, templateManager, changeList, baseDirectory, outputDirectory, templateDirectory);
+                builder.Build(parameters, outputDirectory);
             }
         }
 
@@ -215,154 +216,161 @@ namespace Microsoft.DocAsCode.SubCommands
             }
         }
 
-        private static IEnumerable<DocumentBuildParameters> ConfigToParameter(BuildJsonConfig config, TemplateManager templateManager, ChangeList changeList, string baseDirectory, string outputDirectory, string templateDir)
+        private static List<DocumentBuildParameters> ConfigToParameter(BuildJsonConfig config, TemplateManager templateManager, ChangeList changeList, string baseDirectory, string outputDirectory, string templateDir)
         {
-            var parameters = new DocumentBuildParameters
+            using (new PerformanceScope("GenerateParameters"))
             {
-                OutputBaseDir = outputDirectory,
-                ForceRebuild = config.Force ?? false,
-                ForcePostProcess = config.ForcePostProcess ?? false,
-                SitemapOptions = config.SitemapOptions,
-                FALName = config.FALName,
-                DisableGitFeatures = config.DisableGitFeatures,
-                SchemaLicense = config.SchemaLicense,
-                TagParameters = config.TagParameters
-            };
-            if (config.GlobalMetadata != null)
-            {
-                parameters.Metadata = config.GlobalMetadata.ToImmutableDictionary();
-            }
-            if (config.FileMetadata != null)
-            {
-                parameters.FileMetadata = ConvertToFileMetadataItem(baseDirectory, config.FileMetadata);
-            }
-            if (config.PostProcessors != null)
-            {
-                parameters.PostProcessors = config.PostProcessors.ToImmutableArray();
-            }
-            if (config.XRefMaps != null)
-            {
-                parameters.XRefMaps = config.XRefMaps.ToImmutableArray();
-            }
-            if (config.XRefServiceUrls != null)
-            {
-                parameters.XRefServiceUrls = config.XRefServiceUrls.ToImmutableArray();
-            }
-            if (!config.NoLangKeyword)
-            {
-                parameters.XRefMaps = parameters.XRefMaps.Add("embedded:docfx/langwordMapping.yml");
-            }
+                var result = new List<DocumentBuildParameters>();
 
-            string outputFolderForDebugFiles = null;
-            if (!string.IsNullOrEmpty(config.OutputFolderForDebugFiles))
-            {
-                outputFolderForDebugFiles = Path.Combine(baseDirectory, config.OutputFolderForDebugFiles);
-            }
-
-            var applyTemplateSettings = new ApplyTemplateSettings(baseDirectory, outputDirectory, outputFolderForDebugFiles, config.EnableDebugMode ?? false)
-            {
-                TransformDocument = config.DryRun != true,
-            };
-
-            applyTemplateSettings.RawModelExportSettings.Export = config.ExportRawModel == true;
-            if (!string.IsNullOrEmpty(config.RawModelOutputFolder))
-            {
-                applyTemplateSettings.RawModelExportSettings.OutputFolder = Path.Combine(baseDirectory, config.RawModelOutputFolder);
-            }
-
-            applyTemplateSettings.ViewModelExportSettings.Export = config.ExportViewModel == true;
-            if (!string.IsNullOrEmpty(config.ViewModelOutputFolder))
-            {
-                applyTemplateSettings.ViewModelExportSettings.OutputFolder = Path.Combine(baseDirectory, config.ViewModelOutputFolder);
-            }
-
-            parameters.ApplyTemplateSettings = applyTemplateSettings;
-            parameters.TemplateManager = templateManager;
-
-            if (config.MaxParallelism == null || config.MaxParallelism.Value <= 0)
-            {
-                parameters.MaxParallelism = Environment.ProcessorCount;
-            }
-            else
-            {
-                parameters.MaxParallelism = config.MaxParallelism.Value;
-                ThreadPool.GetMinThreads(out int wt, out int cpt);
-                if (wt < parameters.MaxParallelism)
+                var parameters = new DocumentBuildParameters
                 {
-                    ThreadPool.SetMinThreads(parameters.MaxParallelism, cpt);
+                    OutputBaseDir = outputDirectory,
+                    ForceRebuild = config.Force ?? false,
+                    ForcePostProcess = config.ForcePostProcess ?? false,
+                    SitemapOptions = config.SitemapOptions,
+                    FALName = config.FALName,
+                    DisableGitFeatures = config.DisableGitFeatures,
+                    SchemaLicense = config.SchemaLicense,
+                    TagParameters = config.TagParameters
+                };
+                if (config.GlobalMetadata != null)
+                {
+                    parameters.Metadata = config.GlobalMetadata.ToImmutableDictionary();
                 }
-            }
-
-            parameters.MaxHttpParallelism = Math.Max(64, parameters.MaxParallelism * 2);
-            ServicePointManager.DefaultConnectionLimit = parameters.MaxHttpParallelism;
-
-            if (config.MarkdownEngineName != null)
-            {
-                parameters.MarkdownEngineName = config.MarkdownEngineName;
-            }
-            if (config.MarkdownEngineProperties != null)
-            {
-                parameters.MarkdownEngineParameters = config.MarkdownEngineProperties.ToImmutableDictionary();
-            }
-            if (config.CustomLinkResolver != null)
-            {
-                parameters.CustomLinkResolver = config.CustomLinkResolver;
-            }
-
-            parameters.TemplateDir = templateDir;
-
-            var fileMappingParametersDictionary = GroupFileMappings(config.Content, config.Overwrite, config.Resource);
-
-            if (config.LruSize == null)
-            {
-                parameters.LruSize = Environment.Is64BitProcess ? 0x2000 : 0xC00;
-            }
-            else
-            {
-                parameters.LruSize = Math.Max(0, config.LruSize.Value);
-            }
-
-            if (config.KeepFileLink)
-            {
-                parameters.KeepFileLink = true;
-            }
-
-            if (config.Pairing != null)
-            {
-                parameters.OverwriteFragmentsRedirectionRules = config.Pairing.Select(i => new FolderRedirectionRule(i.ContentFolder, i.OverwriteFragmentsFolder)).ToImmutableArray();
-            }
-
-            parameters.XRefTags = config.XrefTags;
-
-            foreach (var pair in fileMappingParametersDictionary)
-            {
-                var p = parameters.Clone();
-                if (!string.IsNullOrEmpty(pair.Key))
+                if (config.FileMetadata != null)
                 {
-                    p.GroupInfo = new GroupInfo()
+                    parameters.FileMetadata = ConvertToFileMetadataItem(baseDirectory, config.FileMetadata);
+                }
+                if (config.PostProcessors != null)
+                {
+                    parameters.PostProcessors = config.PostProcessors.ToImmutableArray();
+                }
+                if (config.XRefMaps != null)
+                {
+                    parameters.XRefMaps = config.XRefMaps.ToImmutableArray();
+                }
+                if (config.XRefServiceUrls != null)
+                {
+                    parameters.XRefServiceUrls = config.XRefServiceUrls.ToImmutableArray();
+                }
+                if (!config.NoLangKeyword)
+                {
+                    parameters.XRefMaps = parameters.XRefMaps.Add("embedded:docfx/langwordMapping.yml");
+                }
+
+                string outputFolderForDebugFiles = null;
+                if (!string.IsNullOrEmpty(config.OutputFolderForDebugFiles))
+                {
+                    outputFolderForDebugFiles = Path.Combine(baseDirectory, config.OutputFolderForDebugFiles);
+                }
+
+                var applyTemplateSettings = new ApplyTemplateSettings(baseDirectory, outputDirectory, outputFolderForDebugFiles, config.EnableDebugMode ?? false)
+                {
+                    TransformDocument = config.DryRun != true,
+                };
+
+                applyTemplateSettings.RawModelExportSettings.Export = config.ExportRawModel == true;
+                if (!string.IsNullOrEmpty(config.RawModelOutputFolder))
+                {
+                    applyTemplateSettings.RawModelExportSettings.OutputFolder = Path.Combine(baseDirectory, config.RawModelOutputFolder);
+                }
+
+                applyTemplateSettings.ViewModelExportSettings.Export = config.ExportViewModel == true;
+                if (!string.IsNullOrEmpty(config.ViewModelOutputFolder))
+                {
+                    applyTemplateSettings.ViewModelExportSettings.OutputFolder = Path.Combine(baseDirectory, config.ViewModelOutputFolder);
+                }
+
+                parameters.ApplyTemplateSettings = applyTemplateSettings;
+                parameters.TemplateManager = templateManager;
+
+                if (config.MaxParallelism == null || config.MaxParallelism.Value <= 0)
+                {
+                    parameters.MaxParallelism = Environment.ProcessorCount;
+                }
+                else
+                {
+                    parameters.MaxParallelism = config.MaxParallelism.Value;
+                    ThreadPool.GetMinThreads(out int wt, out int cpt);
+                    if (wt < parameters.MaxParallelism)
                     {
-                        Name = pair.Key,
-                    };
-                    if (config.Groups != null && config.Groups.TryGetValue(pair.Key, out GroupConfig gi))
-                    {
-                        p.GroupInfo.Destination = gi.Destination;
-                        p.GroupInfo.XRefTags = gi.XrefTags ?? new List<string>();
-                        p.GroupInfo.Metadata = gi.Metadata;
-                        if (!string.IsNullOrEmpty(gi.Destination))
-                        {
-                            p.VersionDir = gi.Destination;
-                        }
+                        ThreadPool.SetMinThreads(parameters.MaxParallelism, cpt);
                     }
                 }
-                p.Files = GetFileCollectionFromFileMapping(
-                    baseDirectory,
-                    GlobUtility.ExpandFileMapping(baseDirectory, pair.Value.GetFileMapping(FileMappingType.Content)),
-                    GlobUtility.ExpandFileMapping(baseDirectory, pair.Value.GetFileMapping(FileMappingType.Overwrite)),
-                    GlobUtility.ExpandFileMapping(baseDirectory, pair.Value.GetFileMapping(FileMappingType.Resource)));
-                p.VersionName = pair.Key;
-                p.Changes = GetIntersectChanges(p.Files, changeList);
-                p.RootTocPath = pair.Value.RootTocPath;
-                yield return p;
+
+                parameters.MaxHttpParallelism = Math.Max(64, parameters.MaxParallelism * 2);
+                ServicePointManager.DefaultConnectionLimit = parameters.MaxHttpParallelism;
+
+                if (config.MarkdownEngineName != null)
+                {
+                    parameters.MarkdownEngineName = config.MarkdownEngineName;
+                }
+                if (config.MarkdownEngineProperties != null)
+                {
+                    parameters.MarkdownEngineParameters = config.MarkdownEngineProperties.ToImmutableDictionary();
+                }
+                if (config.CustomLinkResolver != null)
+                {
+                    parameters.CustomLinkResolver = config.CustomLinkResolver;
+                }
+
+                parameters.TemplateDir = templateDir;
+
+                var fileMappingParametersDictionary = GroupFileMappings(config.Content, config.Overwrite, config.Resource);
+
+                if (config.LruSize == null)
+                {
+                    parameters.LruSize = Environment.Is64BitProcess ? 0x2000 : 0xC00;
+                }
+                else
+                {
+                    parameters.LruSize = Math.Max(0, config.LruSize.Value);
+                }
+
+                if (config.KeepFileLink)
+                {
+                    parameters.KeepFileLink = true;
+                }
+
+                if (config.Pairing != null)
+                {
+                    parameters.OverwriteFragmentsRedirectionRules = config.Pairing.Select(i => new FolderRedirectionRule(i.ContentFolder, i.OverwriteFragmentsFolder)).ToImmutableArray();
+                }
+
+                parameters.XRefTags = config.XrefTags;
+
+                foreach (var pair in fileMappingParametersDictionary)
+                {
+                    var p = parameters.Clone();
+                    if (!string.IsNullOrEmpty(pair.Key))
+                    {
+                        p.GroupInfo = new GroupInfo()
+                        {
+                            Name = pair.Key,
+                        };
+                        if (config.Groups != null && config.Groups.TryGetValue(pair.Key, out GroupConfig gi))
+                        {
+                            p.GroupInfo.Destination = gi.Destination;
+                            p.GroupInfo.XRefTags = gi.XrefTags ?? new List<string>();
+                            p.GroupInfo.Metadata = gi.Metadata;
+                            if (!string.IsNullOrEmpty(gi.Destination))
+                            {
+                                p.VersionDir = gi.Destination;
+                            }
+                        }
+                    }
+                    p.Files = GetFileCollectionFromFileMapping(
+                        baseDirectory,
+                        GlobUtility.ExpandFileMapping(baseDirectory, pair.Value.GetFileMapping(FileMappingType.Content)),
+                        GlobUtility.ExpandFileMapping(baseDirectory, pair.Value.GetFileMapping(FileMappingType.Overwrite)),
+                        GlobUtility.ExpandFileMapping(baseDirectory, pair.Value.GetFileMapping(FileMappingType.Resource)));
+                    p.VersionName = pair.Key;
+                    p.Changes = GetIntersectChanges(p.Files, changeList);
+                    p.RootTocPath = pair.Value.RootTocPath;
+                    result.Add(p);
+                }
+
+                return result;
             }
         }
 

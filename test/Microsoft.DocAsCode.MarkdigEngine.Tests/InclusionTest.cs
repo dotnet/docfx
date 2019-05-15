@@ -729,24 +729,12 @@ body";
 
         [Fact]
         [Trait("Related", "Inclusion")]
-        public void TestBlockInclude_Does_Not_Replace_AutoLink()
-        {
-            var root = "https://docs.microsoft.com";
-            var context = new MarkdownContext(getLink: (path, relativeTo, resultRelativeTo) => "REPLACE IT");
-            var pipeline = new MarkdownPipelineBuilder().UseDocfxExtensions(context).Build();
-            var result = Markdown.ToHtml(root, pipeline);
-
-            Assert.Equal("<p><a href=\"https://docs.microsoft.com\">https://docs.microsoft.com</a></p>", result.Trim());
-        }
-
-        [Fact]
-        [Trait("Related", "Inclusion")]
         public void TestInclusionContext_CurrentFile_RootFile()
         {
             var root = "[!include[](embed)]";
 
             var context = new MarkdownContext(
-                readFile: (path, relativeTo) =>
+                readFile: (path, relativeTo, _) =>
                 {
                     Assert.Equal("embed", path);
                     Assert.Equal("root", relativeTo);
@@ -755,17 +743,6 @@ body";
                     Assert.Equal("root", InclusionContext.File);
 
                     return ("embed [content](c.md)", "embed");
-                },
-                getLink: (path, relativeTo, resultRelativeTo) =>
-                {
-                    Assert.Equal("c.md", path);
-                    Assert.Equal("embed", relativeTo);
-                    Assert.Equal("root", resultRelativeTo);
-
-                    Assert.Equal("root", InclusionContext.RootFile);
-                    Assert.Equal("embed", InclusionContext.File);
-
-                    return "2333";
                 });
 
             var pipeline = new MarkdownPipelineBuilder().UseDocfxExtensions(context).Build();
@@ -780,7 +757,7 @@ body";
 
                 var result = Markdown.ToHtml(root, pipeline);
 
-                Assert.Equal("<p>embed <a href=\"2333\">content</a></p>", result.Trim());
+                Assert.Equal("<p>embed <a href=\"c.md\">content</a></p>", result.Trim());
                 Assert.Equal("root", InclusionContext.RootFile);
                 Assert.Equal("root", InclusionContext.File);
             }

@@ -67,6 +67,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                         slice.End = codeSnippetEnd;
                         codeSnippet.Raw = slice.ToString();
                         codeSnippet.Column = processor.Column;
+                        codeSnippet.Line = processor.LineIndex;
 
                         processor.NewBlocks.Push(codeSnippet);
                         return BlockState.BreakDiscard;

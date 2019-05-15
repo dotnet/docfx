@@ -126,7 +126,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 
             public void WriteLine(ILogItem item)
             {
-                if (item.LogLevel >= LogLevel.Warning)
+                if (item.LogLevel >= LogLevel.Suggestion)
                 {
                     _bmi.WriteLine(item);
                 }

@@ -32,10 +32,9 @@ namespace Microsoft.DocAsCode.MarkdigEngine
             _mvb = MarkdownValidatorBuilder.Create(parameters, container);
             _context = new MarkdownContext(
                 key => _parameters.Tokens.TryGetValue(key, out var value) ? value : null,
-                (code, message, file, line) => Logger.LogWarning(message, null, file, line.ToString(), code),
-                (code, message, file, line) => Logger.LogError(message, null, file, line.ToString(), code),
-                ReadFile,
-                GetLink);
+                (code, message, origin, line) => Logger.LogWarning(message, null, InclusionContext.File.ToString(), (line ?? 0).ToString(), code),
+                (code, message, origin, line) => Logger.LogError(message, null, InclusionContext.File.ToString(), (line ?? 0).ToString(), code),
+                ReadFile);
         }
 
         public MarkupResult Markup(string content, string filePath)
@@ -143,6 +142,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine
 
             builder.UseDocfxExtensions(_context);
             builder.Extensions.Insert(0, new YamlHeaderExtension(_context));
+            builder.Extensions.Add(new ResolveLinkExtension());
 
             if (enableSourceInfo)
             {
@@ -162,16 +162,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine
             return builder.Build();
         }
 
-        private static string GetLink(string path, object relativeTo, object resultRelativeTo)
-        {
-            if (InclusionContext.IsInclude && RelativePath.IsRelativePath(path) && PathUtility.IsRelativePath(path) && !RelativePath.IsPathFromWorkingFolder(path) && !path.StartsWith("#"))
-            {
-                return ((RelativePath)relativeTo + (RelativePath)path).GetPathFromWorkingFolder();
-            }
-            return path;
-        }
-
-        private (string content, object file) ReadFile(string path, object relativeTo)
+        private (string content, object file) ReadFile(string path, object relativeTo, MarkdownObject origin)
         {
             if (!PathUtility.IsRelativePath(path))
             {

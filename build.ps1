@@ -160,7 +160,7 @@ namespace AssemblyInfo
 [<assembly: System.Reflection.AssemblyInformationalVersionAttribute(""$assemblyFileVersion"")>]
 do ()
     " | Out-File -FilePath $versionFsFilePath
-    Write-Host "Version file saved to $versionFsFilePath" -ForegroundColor Green    
+    Write-Host "Version file saved to $versionFsFilePath" -ForegroundColor Green
 }
 
 Write-Host "Using package version $packageVersion, and assembly version $assemblyVersion, assembly file version $assemblyFileVersion"
@@ -177,7 +177,7 @@ foreach ($sln in (Get-ChildItem *.sln)) {
     }
  else {
         & msbuild $sln.FullName /p:Configuration=$configuration /verbosity:n /m:1
-        ProcessLastExitCode $lastexitcode "msbuild $($sln.FullName) /p:Configuration=$configuration /verbosity:n /m:1"        
+        ProcessLastExitCode $lastexitcode "msbuild $($sln.FullName) /p:Configuration=$configuration /verbosity:n /m:1"
     }
 }
 
@@ -257,6 +257,10 @@ $packages = @{
         "proj"    = $null;
         "nuspecs" = @("src/nuspec/YamlSplitter/YamlSplitter.nuspec");
     };
+	"SandcastleRefMapper"       = @{
+		"proj"    = $null;
+		"nuspecs" = @("src/nuspec/SandcastleRefMapper/SandcastleRefMapper.nuspec")
+	};
 }
 
 # Pack plugins and tools

@@ -86,7 +86,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             if (string.IsNullOrEmpty(xml)) return null;
 
             // Quick turnaround for badly formed XML comment
-            if (xml.StartsWith("<!-- Badly formed XML comment ignored for member "))
+            if (xml.StartsWith("<!-- Badly formed XML comment ignored for member ", StringComparison.Ordinal))
             {
                 Logger.LogWarning($"Invalid triple slash comment is ignored: {xml}");
                 return null;

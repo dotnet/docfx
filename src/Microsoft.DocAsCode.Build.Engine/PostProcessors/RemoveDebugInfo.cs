@@ -34,6 +34,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     }
                 }
             }
+            manifestItem.Metadata.Remove("rawTitle");
         }
     }
 }

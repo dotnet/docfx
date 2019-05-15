@@ -111,7 +111,7 @@ namespace Microsoft.DocAsCode.Dfm
             foreach (var pair in GetHrefNodes(html))
             {
                 var link = pair.Attr;
-                if (PathUtility.IsRelativePath(link.Value) && !RelativePath.IsPathFromWorkingFolder(link.Value) && !link.Value.StartsWith("#"))
+                if (PathUtility.IsRelativePath(link.Value) && !RelativePath.IsPathFromWorkingFolder(link.Value) && !link.Value.StartsWith("#", StringComparison.Ordinal))
                 {
                     link.Value = ((RelativePath)filePath + (RelativePath)link.Value).GetPathFromWorkingFolder();
                 }

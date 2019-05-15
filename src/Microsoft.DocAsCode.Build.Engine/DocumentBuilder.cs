@@ -88,25 +88,12 @@ namespace Microsoft.DocAsCode.Build.Engine
                 throw new ArgumentException("Parameters are empty.", nameof(parameters));
             }
 
-            var markdownServiceProvider = CompositionContainer.GetExport<IMarkdownServiceProvider>(_container, parameters[0].MarkdownEngineName);
-            if (markdownServiceProvider == null)
-            {
-                Logger.LogError($"Unable to find markdown engine: {parameters[0].MarkdownEngineName}");
-                throw new DocfxException($"Unable to find markdown engine: {parameters[0].MarkdownEngineName}");
-            }
-            Logger.LogInfo($"Markdown engine is {parameters[0].MarkdownEngineName}");
-
+            var markdownServiceProvider = GetMarkdownServiceProvider();
             var logCodesLogListener = new LogCodesLogListener();
             Logger.RegisterListener(logCodesLogListener);
 
             // Load schema driven processor from template
             var sdps = LoadSchemaDrivenDocumentProcessors(parameters[0]).ToList();
-
-            if (sdps.Count > 0)
-            {
-                Logger.LogInfo($"{sdps.Count()} schema driven document processor plug-in(s) loaded.");
-                Processors = Processors.Union(sdps);
-            }
 
             BuildInfo lastBuildInfo = null;
             var currentBuildInfo =
@@ -118,24 +105,11 @@ namespace Microsoft.DocAsCode.Build.Engine
 
             try
             {
-                lastBuildInfo = BuildInfo.Load(_intermediateFolder, true);
-
-                currentBuildInfo.CommitFromSHA = _commitFromSHA;
-                currentBuildInfo.CommitToSHA = _commitToSHA;
-                if (_intermediateFolder != null)
+                using (new PerformanceScope("LoadLastBuildInfo"))
                 {
-                    currentBuildInfo.PluginHash = ComputePluginHash(_assemblyList);
-                    currentBuildInfo.TemplateHash = _templateHash;
-                    if (!_cleanupCacheHistory && lastBuildInfo != null)
-                    {
-                        // Reuse the directory for last incremental if cleanup is disabled
-                        currentBuildInfo.DirectoryName = lastBuildInfo.DirectoryName;
-                    }
-                    else
-                    {
-                        currentBuildInfo.DirectoryName = IncrementalUtility.CreateRandomDirectory(Environment.ExpandEnvironmentVariables(_intermediateFolder));
-                    }
+                    lastBuildInfo = BuildInfo.Load(_intermediateFolder, true);
                 }
+                EnrichCurrentBuildInfo(currentBuildInfo, lastBuildInfo);
 
                 _postProcessorsManager.IncrementalInitialize(_intermediateFolder, currentBuildInfo, lastBuildInfo, parameters[0].ForcePostProcess, parameters[0].MaxParallelism);
 
@@ -338,6 +312,41 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 Logger.UnregisterListener(logCodesLogListener);
             }
+
+            IMarkdownServiceProvider GetMarkdownServiceProvider()
+            {
+                using (new PerformanceScope(nameof(GetMarkdownServiceProvider)))
+                {
+                    var result = CompositionContainer.GetExport<IMarkdownServiceProvider>(_container, parameters[0].MarkdownEngineName);
+                    if (result == null)
+                    {
+                        Logger.LogError($"Unable to find markdown engine: {parameters[0].MarkdownEngineName}");
+                        throw new DocfxException($"Unable to find markdown engine: {parameters[0].MarkdownEngineName}");
+                    }
+                    Logger.LogInfo($"Markdown engine is {parameters[0].MarkdownEngineName}", code: InfoCodes.Build.MarkdownEngineName);
+                    return result;
+                }
+            }
+
+            void EnrichCurrentBuildInfo(BuildInfo current, BuildInfo last)
+            {
+                current.CommitFromSHA = _commitFromSHA;
+                current.CommitToSHA = _commitToSHA;
+                if (_intermediateFolder != null)
+                {
+                    current.PluginHash = ComputePluginHash(_assemblyList);
+                    current.TemplateHash = _templateHash;
+                    if (!_cleanupCacheHistory && last != null)
+                    {
+                        // Reuse the directory for last incremental if cleanup is disabled
+                        current.DirectoryName = last.DirectoryName;
+                    }
+                    else
+                    {
+                        current.DirectoryName = IncrementalUtility.CreateRandomDirectory(Environment.ExpandEnvironmentVariables(_intermediateFolder));
+                    }
+                }
+            }
         }
 
         internal Manifest BuildCore(DocumentBuildParameters parameter, IMarkdownServiceProvider markdownServiceProvider, BuildInfo currentBuildInfo, BuildInfo lastBuildInfo)
@@ -356,47 +365,59 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
-        private IEnumerable<IDocumentProcessor> LoadSchemaDrivenDocumentProcessors(DocumentBuildParameters parameter)
+        private List<IDocumentProcessor> LoadSchemaDrivenDocumentProcessors(DocumentBuildParameters parameter)
         {
-            SchemaValidateService.RegisterLicense(parameter.SchemaLicense);
-            using (var resource = parameter?.TemplateManager?.CreateTemplateResource())
+            using (new LoggerPhaseScope(nameof(LoadSchemaDrivenDocumentProcessors)))
             {
-                if (resource == null || resource.IsEmpty)
-                {
-                    yield break;
-                }
+                var result = new List<IDocumentProcessor>();
 
-                var markdigMarkdownService = CreateMarkdigMarkdownService(parameter);
-                foreach (var pair in resource.GetResourceStreams(@"^schemas/.*\.schema\.json"))
+                SchemaValidateService.RegisterLicense(parameter.SchemaLicense);
+                using (var resource = parameter?.TemplateManager?.CreateTemplateResource())
                 {
-                    var fileName = Path.GetFileName(pair.Key);
-                    using (new LoggerFileScope(fileName))
+                    if (resource == null || resource.IsEmpty)
                     {
-                        using (var stream = pair.Value)
+                        return result;
+                    }
+
+                    var markdigMarkdownService = CreateMarkdigMarkdownService(parameter);
+                    foreach (var pair in resource.GetResourceStreams(@"^schemas/.*\.schema\.json"))
+                    {
+                        var fileName = Path.GetFileName(pair.Key);
+                        using (new LoggerFileScope(fileName))
                         {
-                            using (var sr = new StreamReader(stream))
+                            using (var stream = pair.Value)
                             {
-                                DocumentSchema schema;
-                                try
+                                using (var sr = new StreamReader(stream))
                                 {
-                                    schema = DocumentSchema.Load(sr, fileName.Remove(fileName.Length - ".schema.json".Length));
+                                    DocumentSchema schema;
+                                    try
+                                    {
+                                        schema = DocumentSchema.Load(sr, fileName.Remove(fileName.Length - ".schema.json".Length));
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        Logger.LogError(e.Message);
+                                        throw;
+                                    }
+                                    var sdp = new SchemaDrivenDocumentProcessor(
+                                        schema,
+                                        new CompositionContainer(CompositionContainer.DefaultContainer),
+                                        markdigMarkdownService,
+                                        new FolderRedirectionManager(parameter.OverwriteFragmentsRedirectionRules));
+                                    Logger.LogVerbose($"\t{sdp.Name} with build steps ({string.Join(", ", from bs in sdp.BuildSteps orderby bs.BuildOrder select bs.Name)})");
+                                    result.Add(sdp);
                                 }
-                                catch (Exception e)
-                                {
-                                    Logger.LogError(e.Message);
-                                    throw;
-                                }
-                                var sdp = new SchemaDrivenDocumentProcessor(
-                                    schema,
-                                    new CompositionContainer(CompositionContainer.DefaultContainer),
-                                    markdigMarkdownService,
-                                    new FolderRedirectionManager(parameter.OverwriteFragmentsRedirectionRules));
-                                Logger.LogVerbose($"\t{sdp.Name} with build steps ({string.Join(", ", from bs in sdp.BuildSteps orderby bs.BuildOrder select bs.Name)})");
-                                yield return sdp;
                             }
                         }
                     }
                 }
+
+                if (result.Count > 0)
+                {
+                    Logger.LogInfo($"{result.Count} schema driven document processor plug-in(s) loaded.");
+                    Processors = Processors.Union(result);
+                }
+                return result;
             }
         }
 

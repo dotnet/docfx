@@ -1,8 +1,49 @@
-Version Notes (Current Version: v2.41)
+Version Notes (Current Version: v2.43)
 =======================================
 
-v2.41(Pre-release)
+v2.43(Pre-Release)
 -----------
+
+v2.42.3
+-----------
+1. Bug fix: use remove instead of add to remove duplicate items.
+
+v2.42.2
+-----------
+1. fix JavaScript error when clicking on "In This Article" links in the side navigation of the default website template. (#4419)
+2. Revert PDFSharp back to iTextSharp (#4407)
+
+v2.42.1
+-----------
+1. fix NullReferenceException in dependency command.
+
+v2.42
+-----------
+1. PDF features:
+    1. Added support for a cover page when generating a PDF. (#2004)
+    1. Added the ability to change the default "Cover Page" bookmark for the TOC in the PDF. (#4278)
+    3. Added the ability to specify the type of outline to use when generating a PDF.
+2. Replaced iTextSharp with PdfSharp (#4250).
+    1. **[Breaking change]** Removed support for OutlineOption.CustomOutline when generating a PDF.
+3. Bug fix:
+    1. Prevent adding duplicate HTML files when generating a PDF.
+
+v2.41
+-----------
+1. Performance improvement:
+    1. **[Breaking Change]** Abandon metadata on resource files, including global/file metadata, and paired `.meta` files.
+    2. Fix several performance issues.
+2. Improve warnings when configuration contains invalid glob pattern in `exclude` section.
+3. Stablize result if multiple TOC links to the same file.
+4. Bug fix:
+    1. Search bar not showing in `statictoc` template. (#3109)
+    2. false invalid bookmark warnings when linking to H1 heading. (#4155)
+
+v2.40.12
+-----------
+1. Improve performance in Markdig Markdown engine. (#4048)
+1. Bug fix:
+    1. DocFX fails when runs under Mono on Linux/MacOS. (#3389 #3746)
 
 v2.40.11
 -----------

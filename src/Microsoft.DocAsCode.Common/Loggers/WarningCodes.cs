@@ -28,6 +28,7 @@ namespace Microsoft.DocAsCode.Common
             public const string InvalidTaggedPropertyType = "InvalidTaggedPropertyType";
             // todo : add uid not found in SDP.
             public const string UidNotFound = "UidNotFound";
+            public const string ReferencedXrefPropertyNotString = "ReferencedXrefPropertyNotString";
             public const string UnknownContentType = "UnknownContentType";
             public const string UnknownContentTypeForTemplate = "UnknownContentTypeForTemplate";
         }

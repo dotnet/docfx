@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27130.0
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28803.352
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{6A65A769-DAC3-4E99-96F9-991F4CE8D164}"
 EndProject
@@ -223,6 +223,10 @@ EndProject
 Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Microsoft.DocAsCode.Metadata.ManagedReference.FSharp", "src\Microsoft.DocAsCode.Metadata.ManagedReference.FSharp\Microsoft.DocAsCode.Metadata.ManagedReference.FSharp.fsproj", "{98610813-2DD7-4FB7-8F82-272EF3C40E89}"
 EndProject
 Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Microsoft.DocAsCode.Metadata.ManagedReference.FSharp.Tests", "test\Microsoft.DocAsCode.Metadata.ManagedReference.FSharp.Tests\Microsoft.DocAsCode.Metadata.ManagedReference.FSharp.Tests.fsproj", "{42D47E04-64AA-4828-9555-8C644F42A665}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SandcastleRefMapper", "SandcastleRefMapper", "{8B98574E-E9DE-4EA5-90DE-65FF4088A634}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SandcastleRefMapper", "tools\SandcastleRefMapper\SandcastleRefMapper.csproj", "{433A15DB-10E0-4B1F-B203-DB76CFEEEFD7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -1074,6 +1078,18 @@ Global
 		{42D47E04-64AA-4828-9555-8C644F42A665}.Release|x64.Build.0 = Release|Any CPU
 		{42D47E04-64AA-4828-9555-8C644F42A665}.Release|x86.ActiveCfg = Release|Any CPU
 		{42D47E04-64AA-4828-9555-8C644F42A665}.Release|x86.Build.0 = Release|Any CPU
+		{433A15DB-10E0-4B1F-B203-DB76CFEEEFD7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{433A15DB-10E0-4B1F-B203-DB76CFEEEFD7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{433A15DB-10E0-4B1F-B203-DB76CFEEEFD7}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{433A15DB-10E0-4B1F-B203-DB76CFEEEFD7}.Debug|x64.Build.0 = Debug|Any CPU
+		{433A15DB-10E0-4B1F-B203-DB76CFEEEFD7}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{433A15DB-10E0-4B1F-B203-DB76CFEEEFD7}.Debug|x86.Build.0 = Debug|Any CPU
+		{433A15DB-10E0-4B1F-B203-DB76CFEEEFD7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{433A15DB-10E0-4B1F-B203-DB76CFEEEFD7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{433A15DB-10E0-4B1F-B203-DB76CFEEEFD7}.Release|x64.ActiveCfg = Release|Any CPU
+		{433A15DB-10E0-4B1F-B203-DB76CFEEEFD7}.Release|x64.Build.0 = Release|Any CPU
+		{433A15DB-10E0-4B1F-B203-DB76CFEEEFD7}.Release|x86.ActiveCfg = Release|Any CPU
+		{433A15DB-10E0-4B1F-B203-DB76CFEEEFD7}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1182,6 +1198,8 @@ Global
 		{BD35FD90-4F00-4A19-9530-2279A6A15EE8} = {6A65A769-DAC3-4E99-96F9-991F4CE8D164}
 		{98610813-2DD7-4FB7-8F82-272EF3C40E89} = {3A6BE380-986B-40E9-A048-C9A9AE424D90}
 		{42D47E04-64AA-4828-9555-8C644F42A665} = {926A0726-B806-4215-82EF-AF8E22D0FACF}
+		{8B98574E-E9DE-4EA5-90DE-65FF4088A634} = {5AED685E-6E0F-451D-AD5E-F88B0BE74ACD}
+		{433A15DB-10E0-4B1F-B203-DB76CFEEEFD7} = {8B98574E-E9DE-4EA5-90DE-65FF4088A634}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6C12271F-8093-4D5D-8BEE-3318BFE40E23}

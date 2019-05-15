@@ -23,12 +23,10 @@ For detailed description about DFM, please refer to [DFM](../spec/docfx_flavored
 
 ## 2. Use *DocFX* as a command-line tool
 
-*Step1.* DocFX ships as a [chocolatey package](https://chocolatey.org/packages/docfx).
-Install docfx through [Chocolatey](https://chocolatey.org/install) by calling `choco install docfx -y`.
-
-DocFX also ships as a [Homebrew package](https://formulae.brew.sh/formula/docfx) owned by community users, install with `brew install docfx`.
-
-Alternatively, you can download and unzip *docfx.zip* from https://github.com/dotnet/docfx/releases, extract it to a local folder, and add it to PATH so you can run it anywhere.
+*Step1.* Install DocFX. Choose from one of the following sources:
+* **[Chocolatey](https://chocolatey.org/packages/docfx)**: `choco install docfx -y`.
+* **[Homebrew](https://formulae.brew.sh/formula/docfx)** (owned by community): `brew install docfx`.
+* **GitHub**: download and unzip `docfx.zip` from https://github.com/dotnet/docfx/releases, extract it to a local folder, and add it to PATH so you can run it anywhere.
 
 *Step2.* Create a sample project
 ```
@@ -43,6 +41,12 @@ docfx docfx_project\docfx.json --serve
 ```
 
 Now you can view the generated website on http://localhost:8080.
+
+> [!Important]
+>
+> For macOS/Linux users: Use [Mono](https://www.mono-project.com/) version >= 5.10.
+>
+> For macOS users: **DO NOT** Install Mono from Homebrew, but rather from the [Mono download page](https://www.mono-project.com/download/stable/#download-mac).
 
 ## 3. Use *DocFX* integrated with Visual Studio
 
@@ -85,6 +89,8 @@ Consider a typical scenario: I want to set up a job on a CI service (e.g. [Azure
 > [!NOTE]
 > These steps give an overall impression of what to do. You can adjust them depending on actual scenario.
 
+[docfx-seed](https://github.com/docascode/docfx-seed/blob/master/appveyor.yml) project provides a sample integrating with AppVeyor.
+
 ## 4.2 Set branch name
 
 Most build systems do not checkout the branch that is being built, but use a `detached head` for the specific commit.  DocFX needs the branch name to implement the `View Source` link in the API documentation.
@@ -103,22 +109,7 @@ Setting the environment variable `DOCFX_SOURCE_BRANCH_NAME` tells DocFX which br
 > [!NOTE]
 > *Known issue in AppVeyor*: Currently `platform: Any CPU` in *appveyor.yml* causes `docfx metadata` failure. https://github.com/dotnet/docfx/issues/1078
 
-## 5. Build from source code
-
-As a prerequisite, you need:
-- [Visual Studio 2017](https://www.visualstudio.com/vs/) with *.NET Core cross-platform development* toolset
-- [Node.js](https://nodejs.org)
-
-*Step1.* `git clone https://github.com/dotnet/docfx.git` to get the latest code.
-
-*Step2.* Run `build.cmd` under root folder.
-
-*Step3.* Add `artifacts` folder to nuget source by in IDE:
-  > Tools > NuGet Package Manager > Package Manager Settings > Package Sources
-
-*Step4.* Follow steps in #2, #3, #4 to use *DocFX* in command-line, IDE or .NET Core.
-
-## 6. A seed project to play with *DocFX*
+## 5. A seed project to play with *DocFX*
 
 Here is a seed project: https://github.com/docascode/docfx-seed. It contains
 
@@ -131,7 +122,7 @@ Here is a seed project: https://github.com/docascode/docfx-seed. It contains
 > [!Tip]
 > It's good practice to separate files with different types into different folders.
 
-## 7. Q&A
+## 6. Q&A
 
 1. Q: How do I quickly reference APIs from other APIs or conceptual files?
    A: Use `@uid` syntax.

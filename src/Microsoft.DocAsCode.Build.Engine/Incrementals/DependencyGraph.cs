@@ -17,7 +17,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
     {
         #region Fields
 
-        private static readonly ImmutableList<DependencyType> _defaultTypes = ImmutableList.Create<DependencyType>(
+        private static readonly ImmutableList<DependencyType> _defaultTypes = ImmutableList.Create(
             new DependencyType
             {
                 Name = DependencyTypeName.Include,
@@ -58,7 +58,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             {
                 Name = DependencyTypeName.Metadata,
                 Phase = BuildPhase.Link,
-                Transitivity = DependencyTransitivity.None,
+                Transitivity = DependencyTransitivity.Never,
             });
 
         private readonly HashSet<DependencyItem> _dependencyItems;
@@ -71,6 +71,8 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         private readonly OSPlatformSensitiveDictionary<HashSet<DependencyItem>> _indexOnReportedBy = new OSPlatformSensitiveDictionary<HashSet<DependencyItem>>();
         private readonly OSPlatformSensitiveDictionary<HashSet<ReferenceItem>> _indexOnReferenceReportedBy = new OSPlatformSensitiveDictionary<HashSet<ReferenceItem>>();
         private ImmutableDictionary<string, DependencyType> _types;
+        private Dictionary<(string fromDependencyType, string toDependencyType), bool> _couldTransit
+            = new Dictionary<(string fromDependencyType, string toDependencyType), bool>();
         private bool _isResolved = false;
 
         #endregion
@@ -286,7 +288,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             {
                 if (_types.TryGetValue(dt.Name, out DependencyType stored))
                 {
-                    if (stored.Transitivity != dt.Transitivity || stored.Phase !=  dt.Phase)
+                    if (stored.Transitivity != dt.Transitivity || stored.Phase != dt.Phase)
                     {
                         Logger.LogError($"Dependency type {JsonUtility.Serialize(dt)} isn't registered successfully because a different type with name {dt.Name} is already registered. Already registered one: {JsonUtility.Serialize(stored)}.");
                         throw new InvalidDataException($"A different dependency type with name {dt.Name} is already registered");
@@ -483,7 +485,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                 var current = queue.Dequeue();
                 foreach (var item in GetDependencyFromNoLock(current.To.Value))
                 {
-                    if (_types[current.Type].CouldTransit(_types[item.Type]) && result.Add(item))
+                    if (CouldTransitNoLock(current.Type, item.Type) && result.Add(item))
                     {
                         queue.Enqueue(item);
                     }
@@ -503,13 +505,28 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                 var current = queue.Dequeue();
                 foreach (var item in GetDependencyToNoLock(current.From.Value))
                 {
-                    if (_types[item.Type].CouldTransit(_types[current.Type]) && result.Add(item))
+                    if (CouldTransitNoLock(item.Type, current.Type) && result.Add(item))
                     {
                         queue.Enqueue(item);
                     }
                 }
             }
             return result;
+        }
+
+        private bool CouldTransitNoLock(string fromDependencyType, string toDependencyType)
+        {
+            var key = (fromDependencyType, toDependencyType);
+            if (_couldTransit.TryGetValue(key, out var result))
+            {
+                return result;
+            }
+            else
+            {
+                result = _types[fromDependencyType].CouldTransit(_types[toDependencyType]);
+                _couldTransit[key] = result;
+                return result;
+            }
         }
 
         private HashSet<string> GetAllDependentNodesNoLock()

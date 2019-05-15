@@ -41,57 +41,6 @@ items:
       init: "git clone https://github.com/MathewSachin/docfx-tmpl.git mathew"
       command: "-t default,mathew/src"
       config: '"template":["default","mathew/src"]'
-  - name: docfx-lightbox-plugin (Featherlight)
-    description: A template which adds a lightbox to each image, using the jquery plugin Featherlight.
-    type: External
-    author: roel4ez
-    version: 1.0.0
-    engines:
-      docfx: ">=2.20.0"
-    thumbnail: ~/templates-and-plugins/images/roel4ez-feather.screenshot.png
-    homepage: https://github.com/roel4ez/docfx-lightbox-plugin
-    repository:
-      type: git
-      url: "https://github.com/roel4ez/docfx-lightbox-plugin.git"
-    license: MIT
-    usage:
-      init: "git clone https://github.com/roel4ez/docfx-lightbox-plugin.git docfx-lightbox-plugin"
-      command: "-t default,docfx-lightbox-plugin/templates/lightbox-featherlight"
-      config: '"template":["default","docfx-lightbox-plugin/templates/lightbox-featherlight"]'
-  - name: docfx-lightbox-plugin (Bootstrap Modal)
-    description: A template which adds a lightbox to each image, using the Modal window from Bootstrap.
-    type: External
-    author: roel4ez
-    version: 1.0.0
-    engines:
-      docfx: ">=2.20.0"
-    thumbnail: ~/templates-and-plugins/images/roel4ez-modal.screenshot.png
-    homepage: https://github.com/roel4ez/docfx-lightbox-plugin
-    repository:
-      type: git
-      url: "https://github.com/roel4ez/docfx-lightbox-plugin.git"
-    license: MIT
-    usage:
-      init: "git clone https://github.com/roel4ez/docfx-lightbox-plugin.git docfx-lightbox-plugin"
-      command: "-t default,docfx-lightbox-plugin/templates/bootstrap-modal"
-      config: '"template":["default","docfx-lightbox-plugin/templates/bootstrap-modal"]'
-  - name: DocFx.Plugins.PlantUml
-    description: A template to render PlantUml diagrams from markdown code blocks.
-    type: External
-    author: KevReed
-    version: 1.0.13
-    engines:
-      docfx: ">=2.35.4"
-    thumbnail: ~/templates-and-plugins/images/docfx.plantuml.plugin.screenshot.png
-    homepage: https://github.com/KevReed/DocFx.Plugins.PlantUml
-    repository:
-      type: git
-      url: "https://github.com/KevReed/DocFx.Plugins.PlantUml.git"
-    license: MIT
-    usage:
-      init: "nuget install DocFx.Plugins.PlantUml -ExcludeVersion -OutputDirectory ."
-      command: "-t default,DocFx.Plugins.PlantUml/template"
-      config: '"template":["default","DocFx.Plugins.PlantUml/template"]'
   - name: DocFX Material
     description: A simple material theme for DocFX
     type: External
@@ -109,6 +58,23 @@ items:
       init: "git clone https://github.com/ovasquez/docfx-material.git material"
       command: "-t default, material/material"
       config: '"template":["default","material/material"]'
+  - name: darkFX
+    description: A dark theme for DocFX .
+    type: External
+    author: Steffen Wilke
+    version: 1.0
+    engines:
+      docfx: ">=2.40.0"
+    thumbnail: ~/templates-and-plugins/images/darkfx.screenshot.png
+    homepage: https://steffen-wilke.github.io/darkfx/
+    repository:
+      type: git
+      url: "https://github.com/steffen-wilke/darkfx.git"
+    license: MIT
+    usage:
+      init: "git clone https://github.com/steffen-wilke/darkfx.git darkfx"
+      command: "-t default, templates/darkfx"
+      config: '"template":["default","templates/darkfx"]'
 description: |
   # Dashboard for Templates
   The templates listed here mainly focus on the layout and themes of the generated website. Add your own customized templates here for others to view and use!

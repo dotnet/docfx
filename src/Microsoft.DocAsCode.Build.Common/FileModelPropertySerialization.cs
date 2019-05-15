@@ -59,26 +59,28 @@ namespace Microsoft.DocAsCode.Build.Common
                 content,
                 JsonUtility.Deserialize<FileAndType>(new StringReader((string)basicProperties[nameof(FileModel.OriginalFileAndType)])),
                 formatter,
-                (string)basicProperties[nameof(FileModel.Key)]);
-
-            // Deserialize basic properties.
-            result.LocalPathFromRoot = (string)basicProperties[nameof(FileModel.LocalPathFromRoot)];
-            result.LinkToFiles = ((object[])basicProperties[nameof(FileModel.LinkToFiles)]).OfType<string>().ToImmutableHashSet();
-            result.LinkToUids = ((object[])basicProperties[nameof(FileModel.LinkToUids)]).OfType<string>().ToImmutableHashSet();
-            result.FileLinkSources =
+                (string)basicProperties[nameof(FileModel.Key)])
+            {
+                // Deserialize basic properties.
+                LocalPathFromRoot = (string)basicProperties[nameof(FileModel.LocalPathFromRoot)],
+                LinkToFiles = ((object[])basicProperties[nameof(FileModel.LinkToFiles)]).OfType<string>().ToImmutableHashSet(),
+                LinkToUids = ((object[])basicProperties[nameof(FileModel.LinkToUids)]).OfType<string>().ToImmutableHashSet(),
+                FileLinkSources =
                 JsonUtility.Deserialize<Dictionary<string, List<LinkSourceInfo>>>(
                     new StringReader((string)basicProperties[nameof(FileModel.FileLinkSources)]))
                 .ToImmutableDictionary(
                     pair => pair.Key,
-                    pair => pair.Value.ToImmutableList());
-            result.UidLinkSources =
+                    pair => pair.Value.ToImmutableList()),
+                UidLinkSources =
                 JsonUtility.Deserialize<Dictionary<string, List<LinkSourceInfo>>>(
                     new StringReader((string)basicProperties[nameof(FileModel.UidLinkSources)]))
                 .ToImmutableDictionary(
                     pair => pair.Key,
-                    pair => pair.Value.ToImmutableList());
-            result.Uids = JsonUtility.Deserialize<List<UidDefinition>>(
-                new StringReader((string)basicProperties[nameof(FileModel.Uids)])).ToImmutableArray();
+                    pair => pair.Value.ToImmutableList()),
+                Uids = JsonUtility.Deserialize<List<UidDefinition>>(
+                new StringReader((string)basicProperties[nameof(FileModel.Uids)])).ToImmutableArray(),
+                DocumentType = (string)basicProperties[nameof(FileModel.DocumentType)]
+            };
 
             var manifestProperties = (IDictionary<string, object>)result.ManifestProperties;
             foreach (var pair in
@@ -119,7 +121,7 @@ namespace Microsoft.DocAsCode.Build.Common
                 Model = model;
             }
 
-            public int Count => 10;
+            public int Count => 11;
 
             public IEnumerator<KeyValuePair<string, object>> GetEnumerator()
             {
@@ -133,6 +135,7 @@ namespace Microsoft.DocAsCode.Build.Common
                 yield return new KeyValuePair<string, object>(nameof(Model.UidLinkSources), JsonUtility.ToJsonString(Model.UidLinkSources));
                 yield return new KeyValuePair<string, object>(nameof(Model.Uids), JsonUtility.ToJsonString(Model.Uids));
                 yield return new KeyValuePair<string, object>(nameof(Model.ManifestProperties), JsonUtility.ToJsonString(new Dictionary<string, object>((IDictionary<string, object>)Model.ManifestProperties)));
+                yield return new KeyValuePair<string, object>(nameof(Model.DocumentType), Model.DocumentType);
             }
 
             IEnumerator IEnumerable.GetEnumerator()

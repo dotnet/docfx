@@ -30,8 +30,6 @@ namespace Microsoft.DocAsCode.HtmlToPdf
 
         private int _currentNumberOfPages;
 
-        public IList<Dictionary<string, object>> CustomOutlines { get; set; }
-
         #endregion
 
         #region Constructor
@@ -53,12 +51,12 @@ namespace Microsoft.DocAsCode.HtmlToPdf
 
         #region Public Methods
 
-        public IDictionary<string, int> GetHtmlToPdfNumberOfPages(IList<string> htmlFilePaths)
+        public IDictionary<string, PartialPdfModel> GetPartialPdfModels(IList<string> htmlFilePaths)
         {
             Guard.ArgumentNotNull(htmlFilePaths, nameof(htmlFilePaths));
             Guard.Argument(() => htmlFilePaths.All(p => !string.IsNullOrEmpty(p)), nameof(htmlFilePaths), $"{nameof(htmlFilePaths)} cannot contain null or empty html file path.");
 
-            var pdfFileNumberOfPages = new ConcurrentDictionary<string, int>();
+            var pdfFileNumberOfPages = new ConcurrentDictionary<string, PartialPdfModel>();
 
             Parallel.ForEach(
                 htmlFilePaths,
@@ -66,7 +64,14 @@ namespace Microsoft.DocAsCode.HtmlToPdf
                 htmlFilePath =>
                 {
                     var numberOfPages = Convert($"{WrapQuoteToPath(htmlFilePath)} -", reader => reader.NumberOfPages);
-                    pdfFileNumberOfPages.TryAdd(htmlFilePath, numberOfPages);
+
+                    PartialPdfModel pdfModel = new PartialPdfModel
+                    {
+                        FilePath = htmlFilePath,
+                        NumberOfPages = numberOfPages
+                    };
+
+                    pdfFileNumberOfPages.TryAdd(htmlFilePath, pdfModel);
                 });
 
             return pdfFileNumberOfPages;
@@ -76,7 +81,6 @@ namespace Microsoft.DocAsCode.HtmlToPdf
         {
             Guard.ArgumentNotNullOrEmpty(outputFileName, nameof(outputFileName));
             Guard.ArgumentNotNullOrEmpty(Path.GetFileName(outputFileName), $"There is no file name {nameof(outputFileName)}.");
-            GuardCustomOutlinesNotNull();
 
             string directoryName = Path.GetDirectoryName(outputFileName);
             if (!string.IsNullOrEmpty(directoryName))
@@ -106,15 +110,6 @@ namespace Microsoft.DocAsCode.HtmlToPdf
             Guard.ArgumentNotNullOrEmpty(path, nameof(path));
 
             return $"\"{NormalizePath(path)}\"";
-        }
-
-        private void GuardCustomOutlinesNotNull()
-        {
-            if (_htmlToPdfOptions.OutlineOption == OutlineOption.CustomOutline)
-            {
-                Guard.ArgumentNotNull(CustomOutlines, nameof(CustomOutlines));
-                Guard.Argument(() => CustomOutlines.All(p => p != null), nameof(CustomOutlines), $"{nameof(CustomOutlines)} cannot contain null outline.");
-            }
         }
 
         private void ConvertToStreamCore(string arguments, Stream stream)
@@ -175,7 +170,7 @@ namespace Microsoft.DocAsCode.HtmlToPdf
             }
         }
 
-        private void CreateOutlines(Dictionary<string, object> rootOutline, IList<HtmlModel> htmlModels, IDictionary<string, int> pdfFileNumberOfPages)
+        private void CreateOutlines(Dictionary<string, object> rootOutline, IList<HtmlModel> htmlModels, IDictionary<string, PartialPdfModel> pdfPages)
         {
             if (htmlModels?.Count > 0)
             {
@@ -194,30 +189,37 @@ namespace Microsoft.DocAsCode.HtmlToPdf
                     }
                     else
                     {
-                        outline.Add("Action", "GoTo");
-
-                        // please go to http://api.itextpdf.com/itext/com/itextpdf/text/pdf/PdfDestination.html to find the detail.
-                        outline.Add("Page", $"{_currentNumberOfPages} FitH");
-
                         if (!string.IsNullOrEmpty(htmlModel.HtmlFilePath))
                         {
                             string filePath = GetFilePath(htmlModel.HtmlFilePath);
-                            if (pdfFileNumberOfPages.ContainsKey(filePath))
+
+                            if (pdfPages.ContainsKey(filePath))
                             {
-                                _currentNumberOfPages += pdfFileNumberOfPages[filePath];
+                                PartialPdfModel pdfModel = pdfPages[filePath];
+
+                                if (!pdfModel.PageNumber.HasValue)
+                                {
+                                    pdfModel.PageNumber = _currentNumberOfPages - 1;
+                                    _currentNumberOfPages += pdfModel.NumberOfPages;
+                                }
+
+                                outline.Add("Action", "GoTo");
+
+                                // please go to http://api.itextpdf.com/itext/com/itextpdf/text/pdf/PdfDestination.html to find the detail.
+                                outline.Add("Page", $"{pdfModel.PageNumber.Value} FitH");
                             }
                         }
                     }
 
                     ((List<Dictionary<string, object>>)rootOutline[OutLineKidsName]).Add(outline);
-                    CreateOutlines(outline, htmlModel.Children, pdfFileNumberOfPages);
+                    CreateOutlines(outline, htmlModel.Children, pdfPages);
                 }
             }
         }
 
         private List<Dictionary<string, object>> ConvertOutlines()
         {
-            var pdfFileNumberOfPages = GetHtmlToPdfNumberOfPages(new List<string>(_htmlFilePaths));
+            var pdfFileNumberOfPages = GetPartialPdfModels(new List<string>(_htmlFilePaths));
             _currentNumberOfPages = 1;
 
             var rootOutline = new Dictionary<string, object>
@@ -233,12 +235,13 @@ namespace Microsoft.DocAsCode.HtmlToPdf
         {
             switch (_htmlToPdfOptions.OutlineOption)
             {
-                case OutlineOption.CustomOutline:
-                    return CustomOutlines;
+                case OutlineOption.NoOutline:
+                case OutlineOption.WkDefaultOutline:
+                    return null;
                 case OutlineOption.DefaultOutline:
                     return ConvertOutlines();
                 default:
-                    return ConvertOutlines();
+                    throw new NotSupportedException(_htmlToPdfOptions.OutlineOption.ToString());
             }
         }
 
@@ -251,7 +254,8 @@ namespace Microsoft.DocAsCode.HtmlToPdf
                     if (!string.IsNullOrEmpty(htmlModel.HtmlFilePath))
                     {
                         string filePath = GetFilePath(htmlModel.HtmlFilePath);
-                        if (File.Exists(NormalizePath(filePath)))
+                        if ((!_htmlFilePaths.Contains(filePath))
+                            && File.Exists(NormalizePath(filePath)))
                         {
                             _htmlFilePaths.Add(filePath);
                         }

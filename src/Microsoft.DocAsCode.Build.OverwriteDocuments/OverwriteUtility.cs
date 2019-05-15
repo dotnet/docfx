@@ -27,7 +27,7 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments
                 throw new ArgumentException("OPathString cannot be null or empty.", nameof(OPathString));
             }
 
-            if (OPathString.EndsWith("/"))
+            if (OPathString.EndsWith("/", StringComparison.Ordinal))
             {
                 throw new ArgumentException($"{OPathString} is not a valid OPath");
             }
@@ -43,7 +43,7 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments
                     throw new ArgumentException($"{OPathString} is not a valid OPath");
                 }
 
-                if (!match.Value.EndsWith("/") && match.Groups["key"].Success)
+                if (!match.Value.EndsWith("/", StringComparison.Ordinal) && match.Groups["key"].Success)
                 {
                     throw new ArgumentException($"{OPathString} is not a valid OPath");
                 }
