@@ -340,8 +340,8 @@ outputs:
   docs/.manifest.json: |
     {
       "files":[
-        {"asset_id":"a","original":"docs/v1/a.md","source_relative_path":"docs/v1/a.md","output":{".mta.json":{"relative_path":"9d4e15fd/a.mta.json"},".raw.page.json":{"relative_path":"9d4e15fd/a.raw.page.json"}},"group":"9d4e15fd"},
-        {"asset_id":"a","original":"docs/a.md","source_relative_path":"docs/a.md","output":{".mta.json":{"relative_path":"a.mta.json"},".raw.page.json":{"relative_path":"a.raw.page.json"}}}
+        {"asset_id":"a","original":"docs/a.md","source_relative_path":"docs/a.md","output":{".mta.json":{"relative_path":"a.mta.json"},".raw.page.json":{"relative_path":"a.raw.page.json"}}},
+        {"asset_id":"a","original":"docs/v1/a.md","source_relative_path":"docs/v1/a.md","output":{".mta.json":{"relative_path":"9d4e15fd/a.mta.json"},".raw.page.json":{"relative_path":"9d4e15fd/a.raw.page.json"}},"group":"9d4e15fd"}
       ],
       "groups":[{"group":"9d4e15fd","monikers":["netcore-1.0","netcore-1.1"]}]
     }

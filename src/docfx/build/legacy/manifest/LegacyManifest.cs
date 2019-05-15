@@ -129,7 +129,7 @@ namespace Microsoft.Docs.Build
                         version_folder = string.Empty,
                         xref_map = "xrefmap.yml",
                     },
-                    files = convertedItems.OrderBy(f => f.manifestItem.AssetId).Select(f => f.manifestItem),
+                    files = convertedItems.OrderBy(f => f.manifestItem.AssetId + f.manifestItem.SourceRelativePath).Select(f => f.manifestItem),
                     is_already_processed = true,
                     source_base_path = docset.Config.DocumentId.SourceBasePath,
                     version_info = new { },
