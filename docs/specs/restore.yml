@@ -163,7 +163,8 @@ outputs:
       "conceptual": "<p>for long file path test.</p>"
     }
 ---
-# Restore private azure repos with dependencies
+# [Skip] Restore private azure repos with dependencies
+# VSTS recently are not really stable, so skip this test for now
 inputs:
   docfx.yml: |
     dependencies:
