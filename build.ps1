@@ -229,10 +229,6 @@ $packages = @{
         "proj"    = $null;
         "nuspecs" = @("src/nuspec/docfx.console/docfx.console.nuspec");
     };
-    "AzureMarkdownRewriterTool" = @{
-        "proj"    = $null;
-        "nuspecs" = @("src/nuspec/AzureMarkdownRewriterTool/AzureMarkdownRewriterTool.nuspec");
-    };
     "DfmHttpService"            = @{
         "proj"    = $null;
         "nuspecs" = @("src/nuspec/DfmHttpService/DfmHttpService.nuspec");
