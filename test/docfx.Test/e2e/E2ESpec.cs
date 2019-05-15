@@ -29,6 +29,13 @@ namespace Microsoft.Docs.Build
             "server-side-dependent-list.txt", "full-dependent-list.txt"
         };
 
+        public readonly string[] SkippableInputs =
+        {
+            "user_profile.json",
+            "github-user.json",
+            ".lock.json",
+        };
+
         public readonly Dictionary<string, E2ECommit[]> Repos = new Dictionary<string, E2ECommit[]>();
 
         public readonly Dictionary<string, string> Inputs = new Dictionary<string, string>();

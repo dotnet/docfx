@@ -100,6 +100,9 @@ namespace Microsoft.Docs.Build
 
         private static async Task RunCore(string docsetPath, E2ESpec spec)
         {
+            var dir = new DirectoryInfo(docsetPath);
+            FileInfo[] inputFiles = dir.GetFiles("*", SearchOption.AllDirectories);
+
             bool failed = false;
             foreach (var command in spec.Commands)
             {
@@ -145,6 +148,8 @@ namespace Microsoft.Docs.Build
                 }
                 VerifyFile(Path.GetFullPath(Path.Combine(docsetOutputPath, filename)), content);
             }
+
+            VerifyNoChangesOnInputFiles(inputFiles, spec.SkippableInputs);
         }
 
         private static async Task RunWatchCore(string docsetPath, E2ESpec spec)
@@ -451,6 +456,19 @@ namespace Microsoft.Docs.Build
                 {
                     Assert.True(false, $"Error code {log[1].ToString()} must have line info");
                 }
+            }
+        }
+
+        private static void VerifyNoChangesOnInputFiles(FileInfo[] inputFiles, string[] skippableInputs)
+        {
+            foreach(var file in inputFiles)
+            {
+                if (skippableInputs.Contains(file.Name))
+                {
+                    continue;
+                }
+                Assert.True(File.Exists(file.FullName), $"Input file {file.Name} has been deleted");
+                Assert.True(file.LastWriteTime == new FileInfo(file.FullName).LastWriteTime, $"Input file {file.Name} has been changed");
             }
         }
     }
