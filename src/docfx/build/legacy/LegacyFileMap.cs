@@ -30,8 +30,8 @@ namespace Microsoft.Docs.Build
                             return;
                         }
                         fileManifests.TryGetValue(document, out var publishItem);
-                        var legacyOutputFilePathRelativeToSiteBasePath = document.ToLegacyOutputPathRelativeToBaseSitePath(docset, publishItem.Path);
-                        var legacySiteUrlRelativeToBaseSitePath = document.ToLegacySiteUrlRelativeToBaseSitePath(docset);
+                        var legacyOutputFilePathRelativeToSiteBasePath = document.ToLegacyOutputPathRelativeToSiteBasePath(docset, publishItem.Path);
+                        var legacySiteUrlRelativeToBaseSitePath = document.ToLegacySiteUrlRelativeToSiteBasePath(docset);
 
                         var fileItem = LegacyFileMapItem.Instance(legacyOutputFilePathRelativeToSiteBasePath, legacySiteUrlRelativeToBaseSitePath, document.ContentType);
                         if (fileItem != null)
