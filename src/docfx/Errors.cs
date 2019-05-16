@@ -441,6 +441,14 @@ namespace Microsoft.Docs.Build
         public static Error InvalidUidMoniker(SourceInfo source, string moniker, string uid)
             => new Error(ErrorLevel.Warning, "invalid-uid-moniker", $"Moniker '{moniker}' is not defined with uid '{uid}'", source);
 
+        /// <summary>
+        /// Customized 404 page is not supported
+        /// Example:
+        ///   - user want their 404.md to be built and shown as their 404 page of the website.
+        /// </summary>
+        public static Error Customized404Page(string file)
+            => new Error(ErrorLevel.Warning, "customized-404-page", $"customized 404 page is not supported", file);
+
         private static string Join<T>(IEnumerable<T> source, Func<T, string> selector = null)
             => string.Join(", ", source.Select(item => $"{selector?.Invoke(item) ?? item.ToString()}").OrderBy(_ => _, StringComparer.Ordinal).Select(_ => $"'{_}'").Take(5));
 

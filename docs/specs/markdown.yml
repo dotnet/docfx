@@ -548,3 +548,13 @@ outputs:
   .errors.log: |
     ["suggestion","internal-bookmark-not-found","Cannot find bookmark '#bookmark' in 'docs/a.md'","docs/a.md",2,1]
     ["suggestion","internal-bookmark-not-found","Cannot find bookmark '#bookmark' in 'docs/a.md'","docs/a.md",2,2]
+---
+# customized 404 page is not supported
+inputs:
+  docfx.yml:
+  docs/404.md:
+outputs:
+  docs/404.json:
+  .errors.log: |
+    ["warning","customized-404-page","customized 404 page is not supported","docs/404.md"]
+
