@@ -309,3 +309,46 @@ outputs:
   docs/a.json:
   .manifest.json: |
     {"files":[{"asset_id":"/docs/a.json","original":"docs/a.yml","source_relative_path":"docs/a.yml","original_type":"Conceptual","type":"Toc"}]}
+---
+# Build versioning repository
+commands:
+  - build --legacy
+inputs:
+  docfx.yml: |
+    monikerRange:
+      'docs/v1/**': '< netcore-2.0'
+    baseUrl: https://docs.com/docs
+    routes:
+      docs/v1/: docs/
+      docs/v2/: docs/
+    monikerDefinition: monikerDefinition.json
+  docs/v1/a.md: |
+  docs/a.md: |
+    No version
+  monikerDefinition.json: |
+    {
+      "monikers": [
+        { "moniker_name": "netcore-1.0", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-1.1", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-2.0", "product_name": ".NET Core" },
+      ]
+    }
+outputs:
+  docs/a.raw.page.json:
+  docs/9d4e15fd/a.raw.page.json:
+  docs/.dependency-map.json:
+  docs/.manifest.json: |
+    {
+      "files":[
+        {"asset_id":"a","original":"docs/a.md","source_relative_path":"docs/a.md","output":{".mta.json":{"relative_path":"a.mta.json"},".raw.page.json":{"relative_path":"a.raw.page.json"}}},
+        {"asset_id":"a","original":"docs/v1/a.md","source_relative_path":"docs/v1/a.md","output":{".mta.json":{"relative_path":"9d4e15fd/a.mta.json"},".raw.page.json":{"relative_path":"9d4e15fd/a.raw.page.json"}},"group":"9d4e15fd"}
+      ],
+      "groups":[{"group":"9d4e15fd","monikers":["netcore-1.0","netcore-1.1"]}]
+    }
+  docs/filemap.json: |
+    {
+      "file_mapping":{
+        "docs/a.md":{"type":"Content","output_relative_path":"a.raw.page.html","asset_id":"a"},
+        "docs/v1/a.md":{"type":"Content","output_relative_path":"9d4e15fd/a.raw.page.html","asset_id":"a"}
+      }
+    }

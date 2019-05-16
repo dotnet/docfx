@@ -27,9 +27,9 @@ namespace Microsoft.Docs.Build
             return PathUtility.NormalizeFile(Path.GetRelativePath(docset.Config.DocumentId.SourceBasePath, doc.FilePath));
         }
 
-        public static string ToLegacyOutputPathRelativeToBaseSitePath(this Document doc, Docset docset)
+        public static string ToLegacyOutputPathRelativeToSiteBasePath(this Document doc, Docset docset, string outputFilePath)
         {
-            var legacyOutputFilePathRelativeToSiteBasePath = doc.SitePath;
+            var legacyOutputFilePathRelativeToSiteBasePath = outputFilePath;
             if (legacyOutputFilePathRelativeToSiteBasePath.StartsWith(docset.SiteBasePath, PathUtility.PathComparison))
             {
                 legacyOutputFilePathRelativeToSiteBasePath = Path.GetRelativePath(docset.SiteBasePath, legacyOutputFilePathRelativeToSiteBasePath);
@@ -38,7 +38,7 @@ namespace Microsoft.Docs.Build
             return PathUtility.NormalizeFile(legacyOutputFilePathRelativeToSiteBasePath);
         }
 
-        public static string ToLegacySiteUrlRelativeToBaseSitePath(this Document doc, Docset docset)
+        public static string ToLegacySiteUrlRelativeToSiteBasePath(this Document doc, Docset docset)
         {
             var legacySiteUrlRelativeToSiteBasePath = doc.SiteUrl;
             if (legacySiteUrlRelativeToSiteBasePath.StartsWith($"/{docset.SiteBasePath}", PathUtility.PathComparison))
