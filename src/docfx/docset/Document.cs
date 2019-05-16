@@ -186,7 +186,7 @@ namespace Microsoft.Docs.Build
                 $"{HashUtility.GetMd5HashShort(monikers)}",
                 Path.GetRelativePath(siteBasePath, SitePath)));
 
-            return Docset.Legacy && rawPage ? Path.ChangeExtension(outputPath, ".raw.page.json") : outputPath;
+            return Docset.Legacy && rawPage ? LegacyUtility.ChangeExtension(outputPath, ".raw.page.json") : outputPath;
         }
 
         public override int GetHashCode()

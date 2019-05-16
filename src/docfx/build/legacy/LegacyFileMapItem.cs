@@ -25,7 +25,7 @@ namespace Microsoft.Docs.Build
                 case ContentType.Page:
                 case ContentType.Redirection:
                     Type = "Content";
-                    OutputRelativePath = PathUtility.NormalizeFile(Path.ChangeExtension(legacyOutputFilePathRelativeToSiteBasePath, ".html"));
+                    OutputRelativePath = PathUtility.NormalizeFile(LegacyUtility.ChangeExtension(legacyOutputFilePathRelativeToSiteBasePath, ".html"));
                     AssetId = legacySiteUrlRelativeToSiteBasePath;
                     break;
                 case ContentType.Resource:
