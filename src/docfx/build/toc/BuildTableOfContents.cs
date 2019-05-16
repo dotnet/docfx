@@ -42,7 +42,7 @@ namespace Microsoft.Docs.Build
             if (file.Docset.Config.Output.Pdf)
             {
                 var siteBasePath = file.Docset.SiteBasePath;
-                var relativePath = PathUtility.NormalizeFile(Path.GetRelativePath(siteBasePath, Path.ChangeExtension(outputPath, ".pdf")));
+                var relativePath = PathUtility.NormalizeFile(Path.GetRelativePath(siteBasePath, LegacyUtility.ChangeExtension(outputPath, ".pdf")));
                 model.Metadata.PdfAbsolutePath = $"/{siteBasePath}/opbuildpdf/{relativePath}";
             }
 
@@ -61,7 +61,7 @@ namespace Microsoft.Docs.Build
                 {
                     var output = context.Template.TransformTocMetadata(JsonUtility.ToJObject(model));
                     publishItem.Hash = context.Output.WriteJsonWithHash(output, outputPath);
-                    context.Output.WriteJson(model.Metadata, PathUtility.ChangeExtension(outputPath, ".mta.json"));
+                    context.Output.WriteJson(model.Metadata, LegacyUtility.ChangeExtension(outputPath, ".mta.json"));
                 }
                 else
                 {

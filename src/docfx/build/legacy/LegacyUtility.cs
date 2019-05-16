@@ -3,6 +3,7 @@
 
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -29,11 +30,7 @@ namespace Microsoft.Docs.Build
 
         public static string ToLegacyOutputPathRelativeToSiteBasePath(this Document doc, Docset docset, string outputFilePath)
         {
-            var legacyOutputFilePathRelativeToSiteBasePath = outputFilePath;
-            if (legacyOutputFilePathRelativeToSiteBasePath.StartsWith(docset.SiteBasePath, PathUtility.PathComparison))
-            {
-                legacyOutputFilePathRelativeToSiteBasePath = Path.GetRelativePath(docset.SiteBasePath, legacyOutputFilePathRelativeToSiteBasePath);
-            }
+            var legacyOutputFilePathRelativeToSiteBasePath = Path.GetRelativePath(docset.SiteBasePath, outputFilePath);
 
             return PathUtility.NormalizeFile(legacyOutputFilePathRelativeToSiteBasePath);
         }
@@ -58,6 +55,24 @@ namespace Microsoft.Docs.Build
         public static string GetAbsoluteOutputPathFromRelativePath(this Docset docset, string relativePath)
         {
             return Path.Combine(docset.DocsetPath, docset.Config.Output.Path, relativePath);
+        }
+
+        public static string ChangeExtension(string filePath, string extension, string[] acceptableExtension = null)
+        {
+            acceptableExtension = acceptableExtension ?? new string[] { "raw.page.json", "mta.json" };
+            if (!acceptableExtension.Any(ext =>
+            {
+                if (filePath.EndsWith(ext))
+                {
+                    filePath = Path.ChangeExtension(filePath.Substring(0, filePath.Length - ext.Length), extension);
+                    return true;
+                }
+                return false;
+            }))
+            {
+                filePath = Path.ChangeExtension(filePath, extension);
+            }
+            return filePath;
         }
     }
 }
