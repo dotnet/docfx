@@ -61,7 +61,7 @@ namespace Microsoft.Docs.Build
                 {
                     var output = context.Template.TransformTocMetadata(JsonUtility.ToJObject(model));
                     publishItem.Hash = context.Output.WriteJsonWithHash(output, outputPath);
-                    context.Output.WriteJson(model.Metadata, Path.ChangeExtension(outputPath, ".mta.json"));
+                    context.Output.WriteJson(model.Metadata, PathUtility.ChangeExtension(outputPath, ".mta.json"));
                 }
                 else
                 {

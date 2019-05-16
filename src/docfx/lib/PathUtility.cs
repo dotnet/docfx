@@ -205,6 +205,24 @@ namespace Microsoft.Docs.Build
             return result.ToString();
         }
 
+        public static string ChangeExtension(string filePath, string extension, string[] acceptableExtension = null)
+        {
+            acceptableExtension = acceptableExtension ?? new string[] { "raw.page.json", "mta.json" };
+            if (!acceptableExtension.Any(ext =>
+             {
+                 if (filePath.EndsWith(ext))
+                 {
+                     filePath = Path.ChangeExtension(filePath.Substring(0, filePath.Length - ext.Length), extension);
+                     return true;
+                 }
+                 return false;
+             }))
+            {
+                filePath = Path.ChangeExtension(filePath, extension);
+            }
+            return filePath;
+        }
+
         // For azure blob url, url without sas token should identify if the content has changed
         // https://docs.microsoft.com/en-us/azure/storage/common/storage-dotnet-shared-access-signature-part-1#how-a-shared-access-signature-works
         private static string RemoveQueryForBlobUrl(string url)
