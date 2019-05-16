@@ -348,7 +348,7 @@ outputs:
   docs/filemap.json: |
     {
       "file_mapping":{
-        "docs/a.md":{"type":"Content","output_relative_path":"a.raw.page.html","asset_id":"a"},
-        "docs/v1/a.md":{"type":"Content","output_relative_path":"9d4e15fd/a.raw.page.html","asset_id":"a"}
+        "docs/a.md":{"type":"Content","output_relative_path":"a.html","asset_id":"a"},
+        "docs/v1/a.md":{"type":"Content","output_relative_path":"9d4e15fd/a.html","asset_id":"a"}
       }
     }
