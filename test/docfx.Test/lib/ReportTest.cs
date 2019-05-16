@@ -33,8 +33,10 @@ namespace Microsoft.Docs.Build
 
                 Assert.Equal(OutputConfig.DefaultMaxErrors, errorLog.ErrorCount);
 
-                errorLog.Write(new Error(ErrorLevel.Error, "an-error-code", "another message"));
-                Assert.Equal(OutputConfig.DefaultMaxErrors + 1, errorLog.ErrorCount);
+                Assert.Throws<DocfxException>(() =>
+                {
+                    errorLog.Write(new Error(ErrorLevel.Error, "an-error-code", "another message"));
+                });
             }
         }
     }

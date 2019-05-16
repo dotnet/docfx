@@ -113,9 +113,7 @@ namespace Microsoft.Docs.Build
             {
                 if (Interlocked.Exchange(ref _maxExceeded, 1) == 0)
                 {
-                    var exceedMaxErrors = Errors.ExceedMaxErrors(maxErrors, level);
-                    Telemetry.TrackErrorCount(exceedMaxErrors.Code, level);
-                    WriteCore(exceedMaxErrors, level);
+                    throw Errors.ExceedMaxErrors(maxErrors, level).ToException();
                 }
             }
 
