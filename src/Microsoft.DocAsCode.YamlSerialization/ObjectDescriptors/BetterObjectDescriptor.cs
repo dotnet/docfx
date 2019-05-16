@@ -22,41 +22,21 @@ namespace Microsoft.DocAsCode.YamlSerialization.ObjectDescriptors
             Value = value;
             Type = type;
             StaticType = staticType;
-            if (scalarStyle == ScalarStyle.Any)
+            ScalarStyle = scalarStyle == ScalarStyle.Any && NeedQuote(value) ? ScalarStyle.DoubleQuoted : scalarStyle;
+
+            bool NeedQuote(object val)
             {
-                if (value is string s)
-                {
-                    if (Regexes.BooleanLike.IsMatch(s))
-                    {
-                        scalarStyle = ScalarStyle.DoubleQuoted;
-                    }
-                    else if (Regexes.NullLike.IsMatch(s))
-                    {
-                        scalarStyle = ScalarStyle.DoubleQuoted;
-                    }
-                    else if (Regexes.IntegerLike.IsMatch(s))
-                    {
-                        scalarStyle = ScalarStyle.DoubleQuoted;
-                    }
-                    else if (Regexes.DoubleLike.IsMatch(s))
-                    {
-                        scalarStyle = ScalarStyle.DoubleQuoted;
-                    }
-                    else if (s.StartsWith("'", StringComparison.Ordinal))
-                    {
-                        scalarStyle = ScalarStyle.DoubleQuoted;
-                    }
-                    else if (s.StartsWith("\"", StringComparison.Ordinal))
-                    {
-                        scalarStyle = ScalarStyle.DoubleQuoted;
-                    }
-                    else if (s.Length > 0 && char.IsWhiteSpace(s[0]))
-                    {
-                        scalarStyle = ScalarStyle.DoubleQuoted;
-                    }
-                }
+                if (!(val is string s))
+                    return false;
+
+                return Regexes.BooleanLike.IsMatch(s)
+                    || Regexes.NullLike.IsMatch(s)
+                    || Regexes.IntegerLike.IsMatch(s)
+                    || Regexes.FloatLike.IsMatch(s)
+                    || s.StartsWith("'", StringComparison.Ordinal)
+                    || s.StartsWith("\"", StringComparison.Ordinal)
+                    || s.Length > 0 && char.IsWhiteSpace(s[0]);
             }
-            ScalarStyle = scalarStyle;
         }
 
         public ScalarStyle ScalarStyle { get; }
