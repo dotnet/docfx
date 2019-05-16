@@ -41,6 +41,24 @@ namespace Microsoft.DocAsCode.Common.Tests
             Assert.Equal(input, value.C);
         }
 
+        [Theory]
+        [InlineData("123")]
+        [InlineData("1.23")]
+        [InlineData("0.123")]
+        [InlineData(".123")]
+        [InlineData("0.")]
+        [InlineData("-0.0")]
+        [InlineData(".5")]
+        [InlineData("+12e03")]
+        [InlineData("-2E+05")]
+        public void TestScalarLikeStringValueNeedDoubleQuoted(string input)
+        {
+            var sw = new StringWriter();
+            YamlUtility.Serialize(sw, input);
+            var yaml = sw.ToString();
+            Assert.Equal($"\"{input}\"", yaml.Trim());
+        }
+
         [Fact]
         public void TestNotWorkInYamlDotNet39()
         {
