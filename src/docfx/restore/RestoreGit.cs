@@ -145,9 +145,9 @@ namespace Microsoft.Docs.Build
                                         if (Directory.Exists(workTreePath))
                                         {
                                             // https://stackoverflow.com/questions/24265481/after-directory-delete-the-directory-exists-returning-true-sometimes
-                                            var dir = new DirectoryInfo(workTreePath);
-                                            dir.Delete(true);
-                                            dir.Refresh();
+                                            Directory.Delete(workTreePath, true);
+                                            while (Directory.Exists(workTreePath))
+                                                Thread.Sleep(1);
                                         }
 
                                         Debug.Assert(!Directory.Exists(workTreePath));
