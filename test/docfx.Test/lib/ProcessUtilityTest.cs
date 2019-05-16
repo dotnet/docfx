@@ -36,6 +36,16 @@ namespace Microsoft.Docs.Build
         }
 
         [Fact]
+        public static void SanitizeErrorMessage()
+        {
+            var ex = Assert.Throws<InvalidOperationException>(
+                () => ProcessUtility.Execute("git", "rev-pa", secrets: new[] { "rev" }));
+
+            Assert.DoesNotContain("rev", ex.Message);
+            Assert.Contains("***", ex.Message);
+        }
+
+        [Fact]
         public static void FileMutexTest()
         {
             var concurrencyLevel = 0;

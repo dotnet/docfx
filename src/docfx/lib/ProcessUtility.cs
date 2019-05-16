@@ -201,7 +201,7 @@ namespace Microsoft.Docs.Build
 
             if (process.ExitCode != 0)
             {
-                var sanitizedCommandLineArgs = secrets != null ? secrets.Aggregate(commandLineArgs, (secret, arg) => arg.Replace(secret, "***")) : commandLineArgs;
+                var sanitizedCommandLineArgs = secrets != null ? secrets.Aggregate(commandLineArgs, (arg, secret) => arg.Replace(secret, "***")) : commandLineArgs;
                 throw new InvalidOperationException($"'\"{fileName}\" {sanitizedCommandLineArgs}' failed in directory '{cwd}' with exit code {process.ExitCode}: \nSTDOUT:'{result}'");
             }
 
