@@ -8,8 +8,8 @@
 
     public class NolocParser : InlineParser
     {
-        // syntax => :::noloc text="{content}":::
-        private const string StartString = ":::noloc text=\"";
+        // syntax => :::no-loc text="{content}":::
+        private const string StartString = ":::no-loc text=\"";
         private const string EndString = "\":::";
 
         public NolocParser()
