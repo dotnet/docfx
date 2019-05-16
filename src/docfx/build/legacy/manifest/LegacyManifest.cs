@@ -28,8 +28,8 @@ namespace Microsoft.Docs.Build
                     fileManifest =>
                     {
                         var document = fileManifest.Key;
-                        var legacyOutputPathRelativeToBaseSitePath = document.ToLegacyOutputPathRelativeToBaseSitePath(docset);
-                        var legacySiteUrlRelativeToBaseSitePath = document.ToLegacySiteUrlRelativeToBaseSitePath(docset);
+                        var legacyOutputPathRelativeToSiteBasePath = document.ToLegacyOutputPathRelativeToSiteBasePath(docset, fileManifest.Value.Path);
+                        var legacySiteUrlRelativeToSiteBasePath = document.ToLegacySiteUrlRelativeToSiteBasePath(docset);
 
                         var output = new LegacyManifestOutput
                         {
@@ -39,8 +39,8 @@ namespace Microsoft.Docs.Build
                             {
                                 IsRawPage = false,
                                 RelativePath = document.ContentType == ContentType.Resource
-                                ? legacyOutputPathRelativeToBaseSitePath + ".mta.json"
-                                : Path.ChangeExtension(legacyOutputPathRelativeToBaseSitePath, ".mta.json"),
+                                ? legacyOutputPathRelativeToSiteBasePath + ".mta.json"
+                                : LegacyUtility.ChangeExtension(legacyOutputPathRelativeToSiteBasePath, ".mta.json"),
                             },
                         };
 
@@ -48,7 +48,7 @@ namespace Microsoft.Docs.Build
                         {
                             var resourceOutput = new LegacyManifestOutputItem
                             {
-                                RelativePath = legacyOutputPathRelativeToBaseSitePath,
+                                RelativePath = legacyOutputPathRelativeToSiteBasePath,
                                 IsRawPage = false,
                             };
                             if (!docset.Config.Output.CopyResources)
@@ -63,7 +63,7 @@ namespace Microsoft.Docs.Build
                             output.TocOutput = new LegacyManifestOutputItem
                             {
                                 IsRawPage = false,
-                                RelativePath = legacyOutputPathRelativeToBaseSitePath,
+                                RelativePath = legacyOutputPathRelativeToSiteBasePath,
                             };
                         }
 
@@ -75,7 +75,7 @@ namespace Microsoft.Docs.Build
                                 output.TocOutput = new LegacyManifestOutputItem
                                 {
                                     IsRawPage = false,
-                                    RelativePath = legacyOutputPathRelativeToBaseSitePath,
+                                    RelativePath = legacyOutputPathRelativeToSiteBasePath,
                                 };
                             }
                             else
@@ -83,7 +83,7 @@ namespace Microsoft.Docs.Build
                                 output.PageOutput = new LegacyManifestOutputItem
                                 {
                                     IsRawPage = false,
-                                    RelativePath = Path.ChangeExtension(legacyOutputPathRelativeToBaseSitePath, ".raw.page.json"),
+                                    RelativePath = LegacyUtility.ChangeExtension(legacyOutputPathRelativeToSiteBasePath, ".raw.page.json"),
                                 };
                             }
                         }
@@ -95,7 +95,7 @@ namespace Microsoft.Docs.Build
                         }
                         var file = new LegacyManifestItem
                         {
-                            AssetId = legacySiteUrlRelativeToBaseSitePath,
+                            AssetId = legacySiteUrlRelativeToSiteBasePath,
                             Original = document.FilePath,
                             SourceRelativePath = document.ToLegacyPathRelativeToBasePath(docset),
                             OriginalType = GetOriginalType(document.ContentType),
@@ -129,7 +129,7 @@ namespace Microsoft.Docs.Build
                         version_folder = string.Empty,
                         xref_map = "xrefmap.yml",
                     },
-                    files = convertedItems.OrderBy(f => f.manifestItem.AssetId).Select(f => f.manifestItem),
+                    files = convertedItems.OrderBy(f => f.manifestItem.AssetId + f.manifestItem.SourceRelativePath).Select(f => f.manifestItem),
                     is_already_processed = true,
                     source_base_path = docset.Config.DocumentId.SourceBasePath,
                     version_info = new { },

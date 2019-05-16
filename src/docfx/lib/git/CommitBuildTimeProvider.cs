@@ -10,6 +10,7 @@ namespace Microsoft.Docs.Build
 {
     internal class CommitBuildTimeProvider
     {
+        private readonly DateTime _buildTime = DateTime.UtcNow;
         private readonly Repository _repo;
         private readonly string _commitBuildTimePath;
         private readonly IReadOnlyDictionary<string, DateTime> _buildTimeByCommit;
@@ -31,7 +32,11 @@ namespace Microsoft.Docs.Build
 
         public bool TryGetCommitBuildTime(string commitId, out DateTime time)
         {
-            return _buildTimeByCommit.TryGetValue(commitId, out time);
+            if (!_buildTimeByCommit.TryGetValue(commitId, out time))
+            {
+                time = _buildTime;
+            }
+            return true;
         }
 
         public void UpdateAndSaveCache()
@@ -41,7 +46,6 @@ namespace Microsoft.Docs.Build
                 return;
             }
 
-            var now = DateTime.UtcNow;
             var commits = _buildTimeByCommit.Select(item => new CommitBuildTimeItem { Sha = item.Key, BuiltAt = item.Value }).ToList();
 
             // TODO: retrive git log from `FileCommitProvider` since it should already be there.
@@ -49,7 +53,7 @@ namespace Microsoft.Docs.Build
             {
                 if (!_buildTimeByCommit.ContainsKey(diffCommit))
                 {
-                    commits.Add(new CommitBuildTimeItem { Sha = diffCommit, BuiltAt = now });
+                    commits.Add(new CommitBuildTimeItem { Sha = diffCommit, BuiltAt = _buildTime });
                 }
             }
 

@@ -103,7 +103,7 @@ namespace Microsoft.Docs.Build
             bool failed = false;
             foreach (var command in spec.Commands)
             {
-                if (await Program.Run(command.Split(" ").Concat(new[] { docsetPath }).ToArray()) != 0)
+                if (await Docfx.Run(command.Split(" ").Concat(new[] { docsetPath }).ToArray()) != 0)
                 {
                     failed = true;
                     break;
@@ -180,7 +180,7 @@ namespace Microsoft.Docs.Build
                 {
                     var yaml = section.Trim('\r', '\n', '-');
                     var header = YamlUtility.ReadHeader(yaml) ?? "";
-                    if (string.IsNullOrEmpty(header))
+                    if (string.IsNullOrEmpty(header) || header.Contains("[Skip]"))
                     {
                         i++;
                         continue;

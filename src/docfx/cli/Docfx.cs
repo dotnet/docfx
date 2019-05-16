@@ -13,9 +13,9 @@ using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
 {
-    internal static class Program
+    public static class Docfx
     {
-        internal static async Task<int> Main(string[] args)
+        public static async Task<int> Main(params string[] args)
         {
             try
             {
@@ -234,7 +234,7 @@ git: `{GetGitVersion()}`
         {
             try
             {
-                return typeof(Program).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
+                return typeof(Docfx).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
             }
             catch (Exception ex)
             {

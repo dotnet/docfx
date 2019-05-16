@@ -98,7 +98,7 @@ namespace Microsoft.Docs.Build
 
             if (legacy)
             {
-                var mtaJsonPath = Path.ChangeExtension(destinationPath.Replace(".raw.page.json", ".json"), "mta.json");
+                var mtaJsonPath = LegacyUtility.ChangeExtension(destinationPath, "mta.json");
                 if (File.Exists(mtaJsonPath))
                 {
                     File.Delete(mtaJsonPath);

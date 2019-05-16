@@ -21,7 +21,7 @@ namespace Microsoft.Docs.Build
 
                 LegacyManifest.Convert(docset, context, fileManifests);
                 var legacyDependencyMap = LegacyDependencyMap.Convert(docset, context, files, dependencyMap, tocMap);
-                LegacyFileMap.Convert(docset, context, files, legacyDependencyMap);
+                LegacyFileMap.Convert(docset, context, files, legacyDependencyMap, fileManifests);
             }
         }
     }
