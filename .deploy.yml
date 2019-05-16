@@ -29,12 +29,6 @@ jobs:
   steps:
     - powershell: ./build.ps1
 
-    # Publish test results
-    - task: PublishTestResults@2
-      inputs:
-        testResultsFormat: 'VSTest'
-        testResultsFiles: '**/*.trx'
-
     # Publish code coverage results
     - task: PublishCodeCoverageResults@1
       inputs:
@@ -42,8 +36,6 @@ jobs:
         summaryFileLocation: '**/coverage.cobertura.xml'
         reportDirectory: '**/TestResults/cobertura'
         failIfCoverageEmpty: true
-
-    # todo: conditional PR deploy, check myget limits
 
 # Deploy commits
 - job: Deploy
