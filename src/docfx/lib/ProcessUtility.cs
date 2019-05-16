@@ -192,12 +192,17 @@ namespace Microsoft.Docs.Build
                 Arguments = commandLineArgs,
                 UseShellExecute = false,
                 RedirectStandardOutput = stdout,
-                RedirectStandardError = true,
+                RedirectStandardError = !Environment.UserInteractive,
             };
 
             var process = Process.Start(psi);
             var result = stdout ? process.StandardOutput.ReadToEnd() : null;
-            Log.Write(process.StandardError.ReadToEnd(), ConsoleColor.DarkRed);
+
+            if (!Environment.UserInteractive)
+            {
+                Log.Write(process.StandardError.ReadToEnd(), ConsoleColor.DarkRed);
+            }
+
             process.WaitForExit();
 
             if (process.ExitCode != 0)
