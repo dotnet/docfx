@@ -556,5 +556,5 @@ inputs:
 outputs:
   docs/404.json:
   .errors.log: |
-    ["warning","customized-404-page","customized 404 page is not supported","docs/404.md"]
+    ["warning","customized-404-page","Customized 404 page is not supported","docs/404.md"]
 

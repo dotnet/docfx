@@ -447,7 +447,7 @@ namespace Microsoft.Docs.Build
         ///   - user want their 404.md to be built and shown as their 404 page of the website.
         /// </summary>
         public static Error Customized404Page(string file)
-            => new Error(ErrorLevel.Warning, "customized-404-page", $"customized 404 page is not supported", file);
+            => new Error(ErrorLevel.Warning, "customized-404-page", $"Customized 404 page is not supported", file);
 
         private static string Join<T>(IEnumerable<T> source, Func<T, string> selector = null)
             => string.Join(", ", source.Select(item => $"{selector?.Invoke(item) ?? item.ToString()}").OrderBy(_ => _, StringComparer.Ordinal).Select(_ => $"'{_}'").Take(5));
