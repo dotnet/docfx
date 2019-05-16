@@ -55,8 +55,6 @@ namespace Microsoft.Docs.Build
                 }
                 return remote;
             };
-
-            Console.Error.WriteLine("That's a TEST output to stderr");
         }
 
         [Theory]
