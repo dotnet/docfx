@@ -13,8 +13,12 @@ namespace Microsoft.DocAsCode.YamlSerialization.Helpers
         // |null|Null|NULL|~
         // |on|On|ON|off|Off|OFF
         public static readonly Regex BooleanLike = new Regex(@"^(true|True|TRUE|false|False|FALSE)$", RegexOptions.Compiled);
+
         public static readonly Regex NullLike = new Regex(@"^(null|Null|NULL|~)$", RegexOptions.Compiled);
+
         public static readonly Regex IntegerLike = new Regex(@"^-?(0|[1-9][0-9]*)$", RegexOptions.Compiled);
-        public static readonly Regex DoubleLike = new Regex(@"^-?(0|[1-9][0-9]*)(\.[0-9]*)?([eE][-+]?[0-9]+)?$", RegexOptions.Compiled);
+
+        // https://yaml.org/spec/1.2/spec.html#id2805071
+        public static readonly Regex FloatLike = new Regex(@"^[-+]?(\.[0-9]+|[0-9]+(\.[0-9]*)?)([eE][-+]?[0-9]+)?$", RegexOptions.Compiled);
     }
 }
