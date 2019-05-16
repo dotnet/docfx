@@ -359,7 +359,7 @@ outputs:
 ---
 # Use commit build time as updated_at when `updateTimeAsCommitBuildTime` is true
 repos:
-  https://github.com/MicrosoftDocs/edge-developer#master:
+  https://docs.com/update_time_as_commit_build_time:
     - files:
         docfx.yml: |
           updateTimeAsCommitBuildTime: true
@@ -377,7 +377,7 @@ outputs:
 ---
 # Use now as updated_at when `updateTimeAsCommitBuildTime` is true and the commit is not found
 repos:
-  https://github.com/MicrosoftDocs/edge-developer#master:
+  https://docs.com/update_time_as_commit_build_time#commit-not-found:
     - files:
         docfx.yml: |
           updateTimeAsCommitBuildTime: true
