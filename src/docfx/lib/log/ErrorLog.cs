@@ -27,11 +27,11 @@ namespace Microsoft.Docs.Build
 
         private int _maxExceeded;
 
-        public int ErrorCount => Count(_errorCount);
+        public int ErrorCount => _errorCount;
 
-        public int WarningCount => Count(_warningCount);
+        public int WarningCount => _warningCount;
 
-        public int SuggestionCount => Count(_suggestionCount);
+        public int SuggestionCount => _suggestionCount;
 
         public ErrorLog(string docset = ".", bool legacy = false)
         {
@@ -205,8 +205,5 @@ namespace Microsoft.Docs.Build
                     return ConsoleColor.Cyan;
             }
         }
-
-        private int Count(int errorCount)
-            => _maxExceeded == 1 ? _config.Output.MaxErrors : errorCount;
     }
 }
