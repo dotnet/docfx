@@ -28,7 +28,7 @@ namespace Microsoft.Docs.Build
                     fileManifest =>
                     {
                         var document = fileManifest.Key;
-                        var legacyOutputPathRelativeToSiteBasePath = document.ToLegacyOutputPathRelativeToSiteBasePath(docset, fileManifest.Value.Path);
+                        var legacyOutputPathRelativeToSiteBasePath = document.ToLegacyOutputPathRelativeToSiteBasePath(docset, fileManifest.Value);
                         var legacySiteUrlRelativeToSiteBasePath = document.ToLegacySiteUrlRelativeToSiteBasePath(docset);
 
                         var output = new LegacyManifestOutput

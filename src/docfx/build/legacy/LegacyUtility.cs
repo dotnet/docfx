@@ -28,9 +28,14 @@ namespace Microsoft.Docs.Build
             return PathUtility.NormalizeFile(Path.GetRelativePath(docset.Config.DocumentId.SourceBasePath, doc.FilePath));
         }
 
-        public static string ToLegacyOutputPathRelativeToSiteBasePath(this Document doc, Docset docset, string outputFilePath)
+        public static string ToLegacyOutputPathRelativeToSiteBasePath(this Document doc, Docset docset, PublishItem manifestItem)
         {
-            var legacyOutputFilePathRelativeToSiteBasePath = Path.GetRelativePath(docset.SiteBasePath, outputFilePath);
+            var outputPath = manifestItem.Path;
+            if (doc.ContentType == ContentType.Resource && !doc.Docset.Config.Output.CopyResources)
+            {
+                outputPath = doc.GetOutputPath(manifestItem.Monikers, docset.SiteBasePath);
+            }
+            var legacyOutputFilePathRelativeToSiteBasePath = Path.GetRelativePath(docset.SiteBasePath, outputPath);
 
             return PathUtility.NormalizeFile(legacyOutputFilePathRelativeToSiteBasePath);
         }
