@@ -12,7 +12,7 @@ namespace Microsoft.Docs.Build
         public static List<Error> Validate(JsonSchema schema, JToken token)
         {
             var errors = new List<Error>();
-            Validate(schema, token, errors);
+            TravelJsonSchema.Travel(schema, token, (s, t) => Validate(s, t, errors), null);
             return errors;
         }
 
@@ -27,10 +27,6 @@ namespace Microsoft.Docs.Build
             {
                 case JValue scalar:
                     ValidateScalar(schema, token, errors, scalar);
-                    break;
-
-                case JArray array:
-                    ValidateArray(schema, errors, array);
                     break;
 
                 case JObject map:
@@ -60,17 +56,6 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static void ValidateArray(JsonSchema schema, List<Error> errors, JArray array)
-        {
-            if (schema.Items != null)
-            {
-                foreach (var item in array)
-                {
-                    Validate(schema.Items, item, errors);
-                }
-            }
-        }
-
         private static void ValidateObject(JsonSchema schema, JToken token, List<Error> errors, JObject map)
         {
             foreach (var key in schema.Required)
@@ -78,14 +63,6 @@ namespace Microsoft.Docs.Build
                 if (!map.ContainsKey(key))
                 {
                     errors.Add(Errors.FieldRequired(JsonUtility.GetSourceInfo(token), key));
-                }
-            }
-
-            foreach (var (key, value) in map)
-            {
-                if (schema.Properties.TryGetValue(key, out var propertySchema))
-                {
-                    Validate(propertySchema, value, errors);
                 }
             }
         }
