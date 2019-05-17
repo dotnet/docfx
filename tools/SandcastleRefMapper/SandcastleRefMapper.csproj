@@ -1,13 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\..\src\Shared\base.props" />
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net462</TargetFramework>
-    <Copyright>© Microsoft Corporation. All rights reserved.</Copyright>
-    <Product>SandcastleRefMapper</Product>
-    <Company>Microsoft</Company>
-    <Authors>Microsoft</Authors>
-    <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
