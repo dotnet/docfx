@@ -5,23 +5,29 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
 using Octokit;
 
 namespace Microsoft.Docs.Build
 {
     internal class GitHubAccessor
     {
+        private readonly Config _config;
+        private readonly string _url;
         private readonly GitHubClient _client;
         private readonly ConcurrentHashSet<(string owner, string name)> _unknownRepos = new ConcurrentHashSet<(string owner, string name)>();
 
         private volatile Error _rateLimitError;
 
-        public GitHubAccessor(string token = null)
+        public GitHubAccessor(Config config = null)
         {
+            _config = config;
             _client = new GitHubClient(new ProductHeaderValue("DocFX"));
-            if (!string.IsNullOrEmpty(token))
-                _client.Credentials = new Credentials(token);
+            _url = "https://api.github.com/graphql";
+            if (!string.IsNullOrEmpty(_config.GitHub.AuthToken))
+                _client.Credentials = new Credentials(_config.GitHub.AuthToken);
         }
 
         public async Task<(Error, GitHubUser)> GetUserByLogin(string login)
@@ -53,13 +59,13 @@ namespace Microsoft.Docs.Build
             }
             catch (RateLimitExceededException ex)
             {
-                _rateLimitError = Errors.GitHubApiFailed(apiDetail, ex);
+                _rateLimitError = Errors.GitHubApiFailed(apiDetail, ex.Message);
                 return (_rateLimitError, null);
             }
             catch (Exception ex)
             {
                 LogAbuseExceptionDetail(apiDetail, ex);
-                return (Errors.GitHubApiFailed(apiDetail, ex), null);
+                return (Errors.GitHubApiFailed(apiDetail, ex.Message), null);
             }
         }
 
@@ -75,51 +81,100 @@ namespace Microsoft.Docs.Build
                 return default;
             }
 
-            var apiDetail = $"GET /repos/{repoOwner}/{repoName}/commits/{commitSha}";
+            var queryStr = @"
+query ($owner: String!, $name: String!, $commit: String!) {
+  repository(owner: $owner, name: $name) {
+    object(expression: $commit) {
+      ... on Commit {
+        history(first: 100) {
+          nodes {
+            author {
+              email
+              user {
+                databaseId
+                name
+                login
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}";
+
+            var request = new
+            {
+                query = queryStr,
+                variables = new
+                {
+                    owner = repoOwner,
+                    name = repoName,
+                    commit = commitSha,
+                },
+            };
+
             try
             {
-                var commits = await RetryUtility.Retry(
-                    () => _client.Repository.Commit.GetAll(
-                        repoOwner,
-                        repoName,
-                        new CommitRequest { Sha = commitSha },
-                        new ApiOptions { PageCount = 1, PageSize = 100 }),
+                var response = await RetryUtility.Retry(
+                    () => HttpClientUtility.PostAsync(
+                        _url,
+                        new StringContent(JsonUtility.Serialize(request), System.Text.Encoding.UTF8, "application/json"),
+                        _config,
+                        new Dictionary<string, string>
+                        {
+                            { "User-Agent", repoOwner },
+                        }),
                     ex => ex is OperationCanceledException);
 
-                return (null, commits.Select(ToGitHubUser));
-            }
-            catch (NotFoundException)
-            {
-                // owner/repo doesn't exist or you don't have access to the repo
-                _unknownRepos.TryAdd((repoOwner, repoName));
-                return default;
-            }
-            catch (ApiValidationException)
-            {
-                // commit does not exist
-                return default;
+                var githubUsers = new List<GitHubUser>();
+                if (response.IsSuccessStatusCode)
+                {
+                    var grahpApiResponse = JsonUtility.Deserialize<GithubGraphApiResponse<JObject>>(await response.Content.ReadAsStringAsync(), null);
+                    if (grahpApiResponse.Errors != null && grahpApiResponse.Errors.Any())
+                    {
+                        return (Errors.GitHubApiFailed(_url, grahpApiResponse.Errors.First().Message), null);
+                    }
+
+                    if (grahpApiResponse.Data.TryGetValue("repository", out var r) && r is JObject repo &&
+                        repo.TryGetValue("object", out var o) && o is JObject obj &&
+                        obj.TryGetValue("history", out var h) && h is JObject history &&
+                        history.TryGetValue("nodes", out var n) && n is JArray nodes)
+                    {
+                        foreach (var node in nodes)
+                        {
+                            if (node is JObject nodeObj && nodeObj.TryGetValue("author", out var a) && a is JObject)
+                            {
+                                var (_, author) = JsonUtility.ToObject<GithubGraphApAuthor>(a);
+                                githubUsers.Add(ToGitHubUser(author));
+                            }
+                        }
+                    }
+                }
+
+                return (null/*TODO*/, githubUsers);
             }
             catch (RateLimitExceededException ex)
             {
-                _rateLimitError = Errors.GitHubApiFailed(apiDetail, ex);
+                _rateLimitError = Errors.GitHubApiFailed(_url, ex.Message);
                 return (_rateLimitError, null);
             }
             catch (Exception ex)
             {
-                LogAbuseExceptionDetail(apiDetail, ex);
-                return (Errors.GitHubApiFailed(apiDetail, ex), null);
+                LogAbuseExceptionDetail(_url, ex);
+                return (Errors.GitHubApiFailed(_url, ex.Message), null);
             }
-        }
 
-        private static GitHubUser ToGitHubUser(GitHubCommit commit)
-        {
-            return new GitHubUser
+            GitHubUser ToGitHubUser(GithubGraphApAuthor author)
             {
-                Id = commit.Author?.Id,
-                Login = commit.Author?.Login,
-                Name = commit.Commit.Author.Name,
-                Emails = new[] { commit.Commit.Author.Email },
-            };
+                return new GitHubUser
+                {
+                    Id = author.User?.DatabaseId,
+                    Login = author.User?.Login,
+                    Name = author.User?.Name,
+                    Emails = new[] { author.Email },
+                };
+            }
         }
 
         private static void LogAbuseExceptionDetail(string api, Exception ex)
@@ -128,6 +183,34 @@ namespace Microsoft.Docs.Build
             {
                 Log.Write($"Failed calling GitHub API '{api}', message: '{ex.Message}', retryAfterSeconds: '{aex.RetryAfterSeconds}'");
             }
+        }
+
+        private class GithubGraphApAuthor
+        {
+            public string Email { get; set; }
+
+            public GithubGraphApUser User { get; set; }
+        }
+
+        private class GithubGraphApUser
+        {
+            public int? DatabaseId { get; set; }
+
+            public string Name { get; set; }
+
+            public string Login { get; set; }
+        }
+
+        private class GithubGraphApiResponse<T>
+        {
+            public List<GitHubGraphApiError> Errors { get; set; }
+
+            public T Data { get; set; }
+        }
+
+        private class GitHubGraphApiError
+        {
+            public string Message { get; set; }
         }
     }
 }

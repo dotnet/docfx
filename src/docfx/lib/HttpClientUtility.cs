@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -53,9 +54,25 @@ namespace Microsoft.Docs.Build
             return s_httpClient.SendAsync(message);
         }
 
-        private static HttpRequestMessage CreateHttpRequestMessage(string requestUri, Config config)
+        public static Task<HttpResponseMessage> PostAsync(string requestUri, HttpContent content, Config config, Dictionary<string, string> headers = null)
+        {
+            var message = CreateHttpRequestMessage(requestUri, config, headers);
+            message.Method = HttpMethod.Post;
+            message.Content = content;
+            return s_httpClient.SendAsync(message);
+        }
+
+        private static HttpRequestMessage CreateHttpRequestMessage(string requestUri, Config config, Dictionary<string, string> headers = null)
         {
             var message = new HttpRequestMessage();
+
+            if (headers != null)
+            {
+                foreach (var header in headers)
+                {
+                    message.Headers.Add(header.Key, header.Value);
+                }
+            }
 
             foreach (var (baseUrl, rule) in config.Http)
             {

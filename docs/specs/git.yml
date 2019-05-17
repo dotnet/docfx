@@ -502,7 +502,10 @@ inputs:
     gitHub:
       userCache: user_profile.json
       resolveUsers: true
-      authToken: {GITHUB_ACCESS_TOKEN}
+    http:
+      https://api.github.com:
+        headers:
+          Authorization: bearer {GITHUB_ACCESS_TOKEN}
     contribution:
       repository: https://github.com/docascode/contribution-test
   user_profile.json: |
