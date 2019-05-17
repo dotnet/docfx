@@ -53,7 +53,7 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(!string.IsNullOrEmpty(cachePath));
 
-            var github = new GitHubAccessor(docset.Config);
+            var github = new GitHubAccessor(docset.Config.GitHub.AuthToken);
             _getUserByLoginFromGitHub = github.GetUserByLogin;
             _getUsersByCommitFromGitHub = github.GetUsersByCommit;
             _expirationInHours = docset.Config.GitHub.UserCacheExpirationInHours;
