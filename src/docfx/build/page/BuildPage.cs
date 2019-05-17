@@ -86,6 +86,12 @@ namespace Microsoft.Docs.Build
                 }
             }
 
+            if (Path.GetFileNameWithoutExtension(file.FilePath).Equals("404", PathUtility.PathComparison))
+            {
+                // custom 404 page is not supported
+                errors.Add(Errors.Custom404Page(file.FilePath));
+            }
+
             return (errors, publishItem);
         }
 

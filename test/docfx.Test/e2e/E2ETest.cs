@@ -23,7 +23,7 @@ namespace Microsoft.Docs.Build
     {
         private static readonly string[] s_errorCodesWithoutLineInfo =
         {
-            "need-restore", "heading-not-found", "config-not-found", "committish-not-found",
+            "need-restore", "heading-not-found", "config-not-found", "committish-not-found", "custom-404-page",
 
             // can be removed
             "moniker-config-missing",
