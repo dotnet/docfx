@@ -3,7 +3,6 @@
 
 namespace Microsoft.DocAsCode.Metadata.ManagedReference
 {
-    using System;
     using System.IO;
 
     using Microsoft.DocAsCode.Common;
@@ -45,11 +44,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         private static FileType GetFileType(string filePath)
         {
             var extension = Path.GetExtension(filePath);
-            var fileName = Path.GetFileName(filePath);
-            if (fileName.Equals("project.json", StringComparison.OrdinalIgnoreCase))
-            {
-                return FileType.ProjectJsonProject;
-            }
 
             switch (extension.ToLowerInvariant())
             {
