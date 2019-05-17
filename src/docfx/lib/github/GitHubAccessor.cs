@@ -127,32 +127,35 @@ query ($owner: String!, $name: String!, $commit: String!) {
                         }),
                     ex => ex is OperationCanceledException);
 
-                var githubUsers = new List<GitHubUser>();
-                if (response.IsSuccessStatusCode)
+                if (!response.IsSuccessStatusCode)
                 {
-                    var grahpApiResponse = JsonUtility.Deserialize<GithubGraphApiResponse<JObject>>(await response.Content.ReadAsStringAsync(), null);
-                    if (grahpApiResponse.Errors != null && grahpApiResponse.Errors.Any())
-                    {
-                        return (Errors.GitHubApiFailed(_url, grahpApiResponse.Errors.First().Message), null);
-                    }
+                    var message = await response.Content.ReadAsStringAsync();
+                    return (Errors.GitHubApiFailed(_url, message), null);
+                }
 
-                    if (grahpApiResponse.Data.TryGetValue("repository", out var r) && r is JObject repo &&
-                        repo.TryGetValue("object", out var o) && o is JObject obj &&
-                        obj.TryGetValue("history", out var h) && h is JObject history &&
-                        history.TryGetValue("nodes", out var n) && n is JArray nodes)
+                var grahpApiResponse = JsonUtility.Deserialize<GithubGraphApiResponse<JObject>>(await response.Content.ReadAsStringAsync(), null);
+                if (grahpApiResponse.Errors != null && grahpApiResponse.Errors.Any())
+                {
+                    return (Errors.GitHubApiFailed(_url, grahpApiResponse.Errors.First().Message), null);
+                }
+
+                var githubUsers = new List<GitHubUser>();
+                if (grahpApiResponse.Data.TryGetValue("repository", out var r) && r is JObject repo &&
+                    repo.TryGetValue("object", out var o) && o is JObject obj &&
+                    obj.TryGetValue("history", out var h) && h is JObject history &&
+                    history.TryGetValue("nodes", out var n) && n is JArray nodes)
+                {
+                    foreach (var node in nodes)
                     {
-                        foreach (var node in nodes)
+                        if (node is JObject nodeObj && nodeObj.TryGetValue("author", out var a) && a is JObject)
                         {
-                            if (node is JObject nodeObj && nodeObj.TryGetValue("author", out var a) && a is JObject)
-                            {
-                                var (_, author) = JsonUtility.ToObject<GithubGraphApAuthor>(a);
-                                githubUsers.Add(ToGitHubUser(author));
-                            }
+                            var (_, author) = JsonUtility.ToObject<GithubGraphApAuthor>(a);
+                            githubUsers.Add(ToGitHubUser(author));
                         }
                     }
                 }
 
-                return (null/*TODO*/, githubUsers);
+                return (null, githubUsers);
             }
             catch (RateLimitExceededException ex)
             {
