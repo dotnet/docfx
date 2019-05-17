@@ -1,16 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
-#if NET461 || NET462
+#if NET462 || NET472
 using Microsoft.Build.Locator;
 #endif
 
-#if NETCOREAPP2_0 || NET461 || NET462
+#if NETCOREAPP2_0 || NET462 || NET472
 
 /// <summary>
 /// From https://github.com/maca88/AsyncGenerator/blob/04e7369176890b433071ea27c7037c6d68252b3d/Source/AsyncGenerator/Internal/EnvironmentHelper.cs
@@ -28,7 +25,7 @@ namespace AsyncGenerator.Internal
 			SetupMsBuildPath(GetNetCoreMsBuildPath);
 #endif
 
-#if NET461 || NET462
+#if NET462 || NET472
 			if (IsMono)
 			{
 				SetupMsBuildPath(() =>

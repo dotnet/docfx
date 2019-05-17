@@ -56,7 +56,7 @@ items:
   intProperty: 666
   boolProperty: true
   monikers:
-  - net48
+  - net472
   - netstandard2_0
   name: eat
   nameWithType: ICat.eat

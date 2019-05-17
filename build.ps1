@@ -18,7 +18,7 @@ $ErrorActionPreference = 'Stop'
 $releaseBranch = "master"
 $dotnetCommand = "dotnet"
 $gitCommand = "git"
-$framework = "net462"
+$framework = "net472"
 $packageVersion = "1.0.0"
 $assemblyVersion = "1.0.0.0"
 
