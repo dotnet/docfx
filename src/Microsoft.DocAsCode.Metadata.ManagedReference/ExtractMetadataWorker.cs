@@ -13,7 +13,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.MSBuild;
-    using Microsoft.DotNet.ProjectModel.Workspaces;
 
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.DataContracts.Common;
@@ -159,7 +158,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                                 var projectFile = new FileInformation(project.FilePath);
 
                                 // If the project is supported, add to project dictionary, otherwise, ignore
-                                if (projectFile.IsSupportedProject())
+                                if (projectFile.Type == FileType.Project)
                                 {
                                     projectCache.GetOrAdd(projectFile.NormalizedPath, 
                                                           s => _loader.Load(projectFile.NormalizedPath));
@@ -180,16 +179,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 {
                     GetProject(projectCache, pp.NormalizedPath);
                 }
-            }
-
-            if (_files.TryGetValue(FileType.ProjectJsonProject, out var pjp))
-            {
-                Logger.LogWarning("DocFX will no longer support project.json after 5/31/2019. Please move to MSBuild/csproj format. See: https://github.com/dotnet/docfx/issues/4354");
-                await pjp.Select(s => s.NormalizedPath).ForEachInParallelAsync(path =>
-                {
-                    projectCache.GetOrAdd(path, s => new RoslynProject(GetProjectJsonProject(s)));
-                    return Task.CompletedTask;
-                }, 60);
             }
 
             foreach (var item in projectCache)
@@ -805,26 +794,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     }
                 }
             });
-        }
-
-        private Project GetProjectJsonProject(string path)
-        {
-            using (new LoggerFileScope(path))
-            {
-                try
-                {
-                    Logger.LogVerbose("Loading project...");
-                    var workspace = new ProjectJsonWorkspace(path);
-                    var result = workspace.CurrentSolution.Projects.FirstOrDefault(p => p.FilePath == Path.GetFullPath(path));
-                    Logger.LogVerbose($"Project {result.FilePath} loaded.");
-                    return result;
-                }
-                catch (Exception e)
-                {
-                    Logger.Log(LogLevel.Warning, $"Error opening project {path}: {e.Message}. Ignored.");
-                    return null;
-                }
-            }
         }
 
         /// <summary>
