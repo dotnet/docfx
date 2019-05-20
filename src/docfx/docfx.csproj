@@ -41,4 +41,19 @@
     <ProjectReference Include="../Microsoft.Docs.Template/Microsoft.Docs.Template.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="data\ContextObject.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="data\LandingData.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="data\TestData.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="data\TestPage.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

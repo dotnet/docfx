@@ -76,14 +76,4 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public JsonSchemaContentType ContentType { get; set; }
     }
-
-    public enum JsonSchemaContentType
-    {
-        None,
-        Href,
-        Markdown,
-        InlineMarkdown,
-        Html,
-        Xref,
-    }
 }
