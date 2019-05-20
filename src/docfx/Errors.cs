@@ -61,7 +61,7 @@ namespace Microsoft.Docs.Build
         ///   - a.md references b.json's property with xref syntax, and b.json includes a.md reversely
         /// </summary>
         public static Error CircularReference<T>(IEnumerable<T> dependencyChain)
-            => new Error(ErrorLevel.Error, "circular-reference", $"Found circular reference: {string.Join(" --> ", dependencyChain.Select(file => $"'{file}'"))}");
+            => new Error(ErrorLevel.Error, "circular-reference", $"Build has identified file(s) referencing each other: {string.Join(" --> ", dependencyChain.Select(file => $"'{file}'"))}");
 
         /// <summary>
         /// Didn't run `docfx restore` before running `docfx build`.
