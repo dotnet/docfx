@@ -100,6 +100,9 @@ namespace Microsoft.Docs.Build
 
         private static async Task RunCore(string docsetPath, E2ESpec spec)
         {
+            var dir = new DirectoryInfo(docsetPath);
+            var inputFiles = dir.GetFiles("*", SearchOption.AllDirectories).ToDictionary(file => file.FullName, file => file.LastWriteTime);
+
             bool failed = false;
             foreach (var command in spec.Commands)
             {
@@ -145,6 +148,8 @@ namespace Microsoft.Docs.Build
                 }
                 VerifyFile(Path.GetFullPath(Path.Combine(docsetOutputPath, filename)), content);
             }
+
+            VerifyNoChangesOnInputFiles(inputFiles, spec.SkippableInputs, docsetPath);
         }
 
         private static async Task RunWatchCore(string docsetPath, E2ESpec spec)
@@ -452,6 +457,27 @@ namespace Microsoft.Docs.Build
                     Assert.True(false, $"Error code {log[1].ToString()} must have line info");
                 }
             }
+        }
+
+        private static void VerifyNoChangesOnInputFiles(Dictionary<string, DateTime> inputFiles, string[] skippableInputs, string docsetPath)
+        {
+            var dir = new DirectoryInfo(docsetPath);
+            var currentFiles = dir.GetFiles("*", SearchOption.AllDirectories)
+                                .Where(file => !skippableInputs.Contains(file.Name))
+                                .Select(file => file.FullName)
+                                .Except(dir.GetFiles($"_site/*", SearchOption.AllDirectories).Select(file => file.FullName)).ToList();
+            foreach (var (file, lastModifyTime) in inputFiles)
+            {
+                var currentFile = new FileInfo(file);
+                if (skippableInputs.Contains(currentFile.Name))
+                {
+                    continue;
+                }
+                Assert.True(currentFile.Exists, $"Input file {currentFile.Name} has been deleted");
+                Assert.True(lastModifyTime == currentFile.LastWriteTime, $"Input file {currentFile.Name} has been changed");
+                currentFiles.Remove(file);
+            }
+            Assert.True(currentFiles.Count == 0, $"New files {string.Join(",", currentFiles.Count > 3 ? currentFiles.SkipLast(currentFiles.Count-3) : currentFiles)} has been generated in input folder");
         }
     }
 }

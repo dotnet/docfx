@@ -490,3 +490,18 @@ inputs:
 outputs:
   .errors.log: |
     ["error","violate-schema","Expected type String, please input String or type compatible with String.","docfx.yml",4,7]
+---
+# Should not change files out of outputFolder
+inputs:
+  docfx.yml: |
+    files: '**'
+    output:
+      copyResources: false
+    routes:
+      docs/: .
+  a.png:
+  docs/a.png:
+outputs:
+  .publish.json: |
+  .errors.log: |
+      ["error","publish-url-conflict","Two or more files publish to the same url '/a.png': 'a.png', 'docs/a.png'"]
