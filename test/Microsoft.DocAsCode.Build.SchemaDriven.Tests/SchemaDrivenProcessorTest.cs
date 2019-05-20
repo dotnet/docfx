@@ -275,7 +275,7 @@ File.ReadAllLines(outputFilePath).Where(s => !string.IsNullOrWhiteSpace(s)).Sele
                 Assert.Equal($@"
 eat:<p>eat event of cat. Every cat must implement this event.
 This method is within <a class=""xref"" href=""CatLibrary.ICat.html"">ICat</a></p>
-|666|<span>net48</span><span>netstandard2_0</span>".Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None),
+|666|<span>net472</span><span>netstandard2_0</span>".Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None),
                     outputFileContent);
             }
         }
