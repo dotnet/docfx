@@ -51,6 +51,11 @@ namespace Microsoft.Docs.Build
 
         private static JValue TransformScalar(Document file, Context context, JsonSchema schema, JValue value, List<Error> errors, Action<Document> buildChild)
         {
+            if (value.Type == JTokenType.Null)
+            {
+                return value;
+            }
+
             var dependencyResolver = file.Schema.Type == typeof(LandingData) ? context.LandingPageDependencyResolver : context.DependencyResolver;
             var sourceInfo = JsonUtility.GetSourceInfo(value);
             var content = new SourceInfo<string>(value.Value<string>(), sourceInfo);
