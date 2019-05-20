@@ -132,6 +132,19 @@ namespace Microsoft.Docs.Build
         [InlineData("{'properties': {'key': {'type': 'string'}}}", "{'key': 1}",
             "['warning','unexpected-type','Expect type 'String' but got 'Integer'','file',1,9]")]
 
+        // additional properties validation
+        // AdditionalProperty is enabled with explicit false(can be named additionalProperties or additionProperties)
+        [InlineData("{'properties': {'key': {'type': 'string'}}, 'additionalProperties': {}}", "{'key': 'value', 'key1': 'value1'}", "")]
+        [InlineData("{'properties': {'key': {'type': 'string'}}, 'additionalProperties': false}", "{'key': 'value', 'key1': 'value1'}",
+            "['warning','additional-property','Additional property name 'key1' is not allowed','file',1,33]")]
+        [InlineData("{'properties': {'key': {'type': 'string'}}, 'additionProperties': false}", "{'key': 'value', 'key1': 'value1'}",
+            "['warning','additional-property','Additional property name 'key1' is not allowed','file',1,33]")]
+        [InlineData("{'properties': {'key': {'type': 'string'}}, 'additionalProperties': {'type': 'number'}}", "{'key': 'value', 'key1': 'value1'}",
+            "['warning','unexpected-type','Expect type 'Number' but got 'String'','file',1,33]")]
+        [InlineData("{'properties': {'key': {'type': 'string'}}, 'additionalProperties': {'type': 'string', 'enum': ['a']}}", "{'key': 'value', 'key1': 'value1'}",
+            "['warning','undefined-value','Value 'value1' is not accepted. Valid values: 'a'','file',1,33]")]
+
+
         // array validation
         [InlineData("{'items': {'type': 'string'}}", "['a','b']", "")]
         [InlineData("{'items': {'type': 'boolean'}}", "['a','b']",

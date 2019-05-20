@@ -35,6 +35,14 @@ namespace Microsoft.Docs.Build
         public JValue[] Enum { get; set; }
 
         /// <summary>
+        /// An object can have extra keys not defined in properties.
+        /// This can be:
+        ///     - boolean: allow/disallow additional properties
+        ///     - object: the schema for the additional properties
+        /// </summary>
+        public JToken AdditionalProperties { get; set; }
+
+        /// <summary>
         /// Properties that are required to be present.
         /// </summary>
         public string[] Required { get; set; } = Array.Empty<string>();
@@ -56,5 +64,18 @@ namespace Microsoft.Docs.Build
         /// Properties that are reserved by the system.
         /// </summary>
         public string[] Reserved { get; set; } = Array.Empty<string>();
+
+        /// <summary>
+        /// Alias for <see cref="AdditionalProperties"/>.
+        /// </summary>
+        [JsonProperty("additionProperties")]
+        private JToken AdditionProperties
+        {
+            set
+            {
+                if (value != null && AdditionalProperties == null)
+                    AdditionalProperties = value;
+            }
+        }
     }
 }
