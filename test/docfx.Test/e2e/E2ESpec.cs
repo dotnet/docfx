@@ -34,6 +34,7 @@ namespace Microsoft.Docs.Build
             "user_profile.json",
             "github-user.json",
             ".lock.json",
+            ".non-exist.json",
         };
 
         public readonly Dictionary<string, E2ECommit[]> Repos = new Dictionary<string, E2ECommit[]>();
