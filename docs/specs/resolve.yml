@@ -135,7 +135,7 @@ inputs:
   a.md: Link to [absolute path](/a)
 outputs:
   a.json: |
-    { "conceptual": "<p>Link to <a href=\"/en-us/a\">absolute-path</a></p>" }
+    { "conceptual": "<p>Link to <a href=\"/en-us/a\">absolute path</a></p>" }
 ---
 # Show warning if the link is empty, missing
 inputs:
