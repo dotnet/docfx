@@ -69,7 +69,6 @@ namespace Microsoft.Docs.Build
 
                 try
                 {
-                    throw new InvalidCastException();
                     switch (command)
                     {
                         case "restore":
