@@ -218,8 +218,8 @@ outputs:
        }
     }
   .errors.log: |
-    ["warning","circular-reference","Build has identified file(s) referencing each other: docs/b.md --> docs/a.md --> docs/b.md","docs/a.md",1,5]
-    ["warning","circular-reference","Build has identified file(s) referencing each other: docs/a.md --> docs/b.md --> docs/a.md","docs/b.md",1,9]
+    ["warning","circular-reference","Found circular reference: docs/b.md --> docs/a.md --> docs/b.md","docs/a.md",1,5]
+    ["warning","circular-reference","Found circular reference: docs/a.md --> docs/b.md --> docs/a.md","docs/b.md",1,9]
 ---
 # Manifest link circular reference
 inputs:
