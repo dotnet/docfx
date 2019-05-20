@@ -279,7 +279,7 @@ inputs:
       userCache: user_profile.json
 outputs:
   .errors.log: |
-    ["error","file-not-found","Cannot find file 'user_profile.json' relative to '*'","*",4,14]
+    ["error","file-not-found","Invalid file link: 'user_profile.json'.","*",4,14]
 ---
 # Treat warnings as errors
 inputs:
@@ -289,7 +289,7 @@ inputs:
     [b](b.md)
 outputs:
   .errors.log: |
-    ["error","file-not-found","Cannot find file 'b.md' relative to 'docs/a.md'","docs/a.md",1,1]
+    ["error","file-not-found","Invalid file link: 'b.md'.","docs/a.md",1,1]
 ---
 # Invalid redirection file
 inputs:
