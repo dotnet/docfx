@@ -14,6 +14,7 @@ namespace Microsoft.Docs.Build
         [InlineData("\\a", "a", false)]
         [InlineData("a*", "a abc abd abe", true)]
         [InlineData("**/a/*/b.cs", "b/a/a/a/b.cs", true)]
+        [InlineData("a b.md", "a b.md", true)]
 
         // ** is a shortcut for **/*
         [InlineData("**", "a a/b", true)]
