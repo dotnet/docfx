@@ -136,6 +136,8 @@ query ($owner: String!, $name: String!, $commit: String!) {
                     {
                         new
                         {
+                            type = "",
+                            path = Array.Empty<string>(),
                             message = "",
                         },
                     },
@@ -171,7 +173,20 @@ query ($owner: String!, $name: String!, $commit: String!) {
 
                 if (grahpApiResponse.errors != null && grahpApiResponse.errors.Any())
                 {
-                    return (Errors.GitHubApiFailed(_url, grahpApiResponse.errors.First().message), null);
+                    var notFoundError = grahpApiResponse.errors.FirstOrDefault(e => e.type == "NOT_FOUND" && e.path.Contains("repository"));
+                    if (notFoundError != null)
+                    {
+                        // owner/repo doesn't exist or you don't have access to the repo
+                        _unknownRepos.TryAdd((repoOwner, repoName));
+                    }
+
+                    var rateLimitError = grahpApiResponse.errors.FirstOrDefault(e => e.type == "MAX_NODE_LIMIT_EXCEEDED" || e.type == "RATE_LIMITED");
+                    if (rateLimitError != null)
+                    {
+                        _rateLimitError = Errors.GitHubApiFailed(_url, rateLimitError.message);
+                    }
+
+                    return (Errors.GitHubApiFailed(_url, notFoundError?.message ?? rateLimitError?.message ?? grahpApiResponse.errors.First().message), null);
                 }
 
                 var githubUsers = new List<GitHubUser>();
@@ -194,14 +209,8 @@ query ($owner: String!, $name: String!, $commit: String!) {
 
                 return (null, githubUsers);
             }
-            catch (RateLimitExceededException ex)
-            {
-                _rateLimitError = Errors.GitHubApiFailed(_url, ex.Message);
-                return (_rateLimitError, null);
-            }
             catch (Exception ex)
             {
-                LogAbuseExceptionDetail(_url, ex);
                 return (Errors.GitHubApiFailed(_url, ex.Message), null);
             }
 
