@@ -237,7 +237,7 @@ namespace Microsoft.Docs.Build
         ///   - href referencing a non-existing file
         /// </summary>
         public static Error FileNotFound(SourceInfo<string> source)
-            => new Error(ErrorLevel.Warning, "file-not-found", $"Cannot find file '{source}' relative to '{source.File}'", source);
+            => new Error(ErrorLevel.Warning, "file-not-found", $"Invalid file link: '{source}'.", source);
 
         /// <summary>
         /// File contains git merge conflict.
