@@ -1,0 +1,25 @@
+{
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "description": {
+        "type": "string",
+        "contentType": "Markdown"
+      },
+      "inlineDescription": {
+        "type": "string",
+        "contentType": "InlineMarkdown"
+      },
+      "html": {
+        "type": "string",
+        "contentType": "Html"
+      },
+      "href": {
+        "type": "string",
+        "contentType": "Href"
+      },
+      "$schema": {
+        "type": "string"
+      }
+    }
+  }

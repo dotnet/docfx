@@ -178,14 +178,20 @@ namespace Microsoft.Docs.Build
             LoadSchemaDocument(Context context, List<Error> errors, JToken token, Document file, Action<Document> buildChild)
         {
             var obj = token as JObject;
-            if (file.Schema is null)
+            var schemaFilePath = $"../schemas/{file.Schema.Type}.json";
+            if (file.Schema is null || !File.Exists(schemaFilePath))
             {
                 throw Errors.SchemaNotFound(file.Mime).ToException();
             }
 
-            // todo: why not directly use strong model here?
-            var (schemaViolationErrors, content) = JsonUtility.ToObject(token, file.Schema.Type, transform: AttributeTransformer.TransformSDP(context, file, buildChild));
-            errors.AddRange(schemaViolationErrors);
+            var jsonSchema = JsonUtility.Deserialize<JsonSchema>(File.ReadAllText(schemaFilePath), schemaFilePath);
+            var schemaValidationErrors = JsonSchemaValidation.Validate(jsonSchema, token);
+            errors.AddRange(schemaValidationErrors);
+
+            var (schemaTransformError, transformedToken) = JsonSchemaTransform.Transform(file, context, jsonSchema, token, buildChild);
+            errors.AddRange(schemaTransformError);
+
+            var (_, content) = JsonUtility.ToObject(transformedToken, file.Schema.Type);
 
             // TODO: add check before to avoid case failure
             var yamlHeader = obj?.Value<JObject>("metadata") ?? new JObject();

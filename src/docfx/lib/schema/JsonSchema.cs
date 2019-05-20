@@ -14,6 +14,17 @@ namespace Microsoft.Docs.Build
         //-------------------------------------------
 
         /// <summary>
+        /// The json schema definitions
+        /// </summary>
+        public Dictionary<string, JsonSchema> Definitions { get; set; } = new Dictionary<string, JsonSchema>();
+
+        /// <summary>
+        /// The json schema definition ref string
+        /// </summary>
+        [JsonProperty("$ref")]
+        public string Ref { get; set; }
+
+        /// <summary>
         /// Type of the current value.
         /// </summary>
         [JsonConverter(typeof(OneOrManyConverter))]
@@ -68,6 +79,7 @@ namespace Microsoft.Docs.Build
 
     public enum JsonSchemaContentType
     {
+        None,
         Href,
         Markdown,
         InlineMarkdown,
