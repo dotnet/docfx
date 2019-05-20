@@ -1,23 +1,5 @@
 {
-    "$schema": "http://json-schema.org/draft-07/schema",
     "definitions": {
-        "LandingDataAbstract": {
-            "$id": "landingDataAbstract",
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-                "description": {
-                    "type": "string",
-                    "contentType": "Markdown"
-                },
-                "aside": {
-                    "$ref": "landingDataAside"
-                },
-                "menu": {
-                    "$ref": "landingDataMenu"
-                }
-            }
-        },
         "LandingDataAside": {
             "$id": "landingDataAside",
             "type": "object",
@@ -213,6 +195,23 @@
                     "items": {
                         "$ref": "landingDataItem"
                     }
+                }
+            }
+        },
+        "LandingDataAbstract": {
+            "$id": "landingDataAbstract",
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "description": {
+                    "type": "string",
+                    "contentType": "Markdown"
+                },
+                "aside": {
+                    "$ref": "landingDataAside"
+                },
+                "menu": {
+                    "$ref": "landingDataMenu"
                 }
             }
         }

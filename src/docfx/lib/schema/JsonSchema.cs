@@ -14,6 +14,11 @@ namespace Microsoft.Docs.Build
         //-------------------------------------------
 
         /// <summary>
+        /// Definitions of json schema
+        /// </summary>
+        public Dictionary<string, JsonSchema> Definitions { get; set; } = new Dictionary<string, JsonSchema>();
+
+        /// <summary>
         /// Type of the current value.
         /// </summary>
         [JsonConverter(typeof(OneOrManyConverter))]
