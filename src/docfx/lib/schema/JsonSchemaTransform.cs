@@ -14,9 +14,8 @@ namespace Microsoft.Docs.Build
         {
             var errors = new List<Error>();
 
-            var transformedToken = token.DeepClone();
-            Transform(file, context, schema, transformedToken, errors, buildChild);
-            return (errors, transformedToken);
+            Transform(file, context, schema, token, errors, buildChild);
+            return (errors, token);
         }
 
         private static void Transform(Document file, Context context, JsonSchema schema, JToken token, List<Error> errors, Action<Document> buildChild)
