@@ -31,6 +31,7 @@ namespace Microsoft.Docs.Build
                 Hash = HashUtility.GetFileSha1Hash(Path.Combine(file.Docset.DocsetPath, file.FilePath)),
                 Locale = file.Docset.Locale,
                 Monikers = monikers,
+                Group = HashUtility.GetMd5HashShort(monikers),
             };
 
             if (context.PublishModelBuilder.TryAdd(file, publishItem) && file.Docset.Config.Output.CopyResources)

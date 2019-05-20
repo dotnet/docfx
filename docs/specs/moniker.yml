@@ -42,6 +42,8 @@ outputs:
       "conceptual": "<p>No version</p>",
       "!monikers": null
     }
+  .publish.json: |
+    {"files":[{"url":"/docs/a","group":"23d205a5"},{"url":"/docs/a","group":"9d4e15fd"},{"url":"/docs/a","!group":null}],"groups":{"23d205a5":["netcore-2.0","netcore-2.1"],"9d4e15fd":["netcore-1.0","netcore-1.1"]}}
 ---
 # Multiple matched moniker range setting in the config, should use the last one
 inputs:

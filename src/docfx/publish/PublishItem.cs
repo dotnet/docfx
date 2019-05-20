@@ -15,12 +15,15 @@ namespace Microsoft.Docs.Build
 
         public string Path { get; set; }
 
+        public string Group { get; set; }
+
         public string Hash { get; set; }
 
         public string Locale { get; set; }
 
         public string RedirectUrl { get; set; }
 
+        [JsonIgnore]
         public List<string> Monikers { get; set; }
 
         [JsonExtensionData]

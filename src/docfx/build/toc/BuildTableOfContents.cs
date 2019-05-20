@@ -53,6 +53,7 @@ namespace Microsoft.Docs.Build
                 Path = outputPath,
                 Locale = file.Docset.Locale,
                 Monikers = model.Metadata.Monikers,
+                Group = HashUtility.GetMd5HashShort(model.Metadata.Monikers),
             };
 
             if (context.PublishModelBuilder.TryAdd(file, publishItem))
