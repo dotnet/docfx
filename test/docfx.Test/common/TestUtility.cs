@@ -104,7 +104,10 @@ namespace Microsoft.Docs.Build
                         sb.Append(node.Name);
                         foreach (var attr in node.Attributes.OrderBy(a => a.Name))
                         {
-                            sb.Append($" {attr.Name}=\"{TrimWhiteSpace(attr.Value)}\"");
+                            if (attr.Name != "data-linktype")
+                            {
+                                sb.Append($" {attr.Name}=\"{TrimWhiteSpace(attr.Value)}\"");
+                            }
                         }
                         sb.Append(">\n");
 
