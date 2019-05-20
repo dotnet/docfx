@@ -12,17 +12,12 @@ namespace Microsoft.Docs.Build
         public static List<Error> Validate(JsonSchema schema, JToken token)
         {
             var errors = new List<Error>();
-            Validate(schema, token, errors, schema);
+            Validate(schema, token, errors);
             return errors;
         }
 
-        private static void Validate(JsonSchema schema, JToken token, List<Error> errors, JsonSchema root)
+        private static void Validate(JsonSchema schema, JToken token, List<Error> errors)
         {
-            if (!string.IsNullOrEmpty(schema.Ref))
-            {
-                schema = JsonSchemaUtility.GetRefDefinition(root, schema.Ref);
-            }
-
             if (!ValidateType(schema, token, errors))
             {
                 return;
@@ -35,11 +30,11 @@ namespace Microsoft.Docs.Build
                     break;
 
                 case JArray array:
-                    ValidateArray(schema, errors, array, root);
+                    ValidateArray(schema, errors, array);
                     break;
 
                 case JObject map:
-                    ValidateObject(schema, token, errors, map, root);
+                    ValidateObject(schema, token, errors, map);
                     break;
             }
         }
@@ -65,18 +60,18 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static void ValidateArray(JsonSchema schema, List<Error> errors, JArray array, JsonSchema root)
+        private static void ValidateArray(JsonSchema schema, List<Error> errors, JArray array)
         {
             if (schema.Items != null)
             {
                 foreach (var item in array)
                 {
-                    Validate(schema.Items, item, errors, root);
+                    Validate(schema.Items, item, errors);
                 }
             }
         }
 
-        private static void ValidateObject(JsonSchema schema, JToken token, List<Error> errors, JObject map, JsonSchema root)
+        private static void ValidateObject(JsonSchema schema, JToken token, List<Error> errors, JObject map)
         {
             foreach (var key in schema.Required)
             {
@@ -90,7 +85,7 @@ namespace Microsoft.Docs.Build
             {
                 if (schema.Properties.TryGetValue(key, out var propertySchema))
                 {
-                    Validate(propertySchema, value, errors, root);
+                    Validate(propertySchema, value, errors);
                 }
             }
         }

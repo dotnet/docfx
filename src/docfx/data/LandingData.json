@@ -1,235 +1,246 @@
 {
-  "definitions": {
-    "LandingDataAbstract": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "description": {
-          "type": "string",
-          "contentType": "Markdown"
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "definitions": {
+        "LandingDataAbstract": {
+            "$id": "landingDataAbstract",
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "description": {
+                    "type": "string",
+                    "contentType": "Markdown"
+                },
+                "aside": {
+                    "$ref": "landingDataAside"
+                },
+                "menu": {
+                    "$ref": "landingDataMenu"
+                }
+            }
         },
-        "aside": {
-          "$ref": "#/definitions/LandingDataAside"
+        "LandingDataAside": {
+            "$id": "landingDataAside",
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "title": {
+                    "type": "string"
+                },
+                "width": {
+                    "type": "string"
+                },
+                "href": {
+                    "type": "string",
+                    "contentType": "Href"
+                },
+                "image": {
+                    "$ref": "landingDataImage"
+                }
+            }
         },
-        "menu": {
-          "$ref": "#/definitions/LandingDataMenu"
+        "LandingDataImage": {
+            "$id": "landingDataImage",
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "href": {
+                    "type": "string",
+                    "contentType": "Href"
+                },
+                "src": {
+                    "type": "string",
+                    "contentType": "Href"
+                },
+                "alt": {
+                    "type": "string"
+                },
+                "height": {
+                    "type": "string"
+                },
+                "width": {
+                    "type": "string"
+                },
+                "role": {
+                    "type": "string"
+                }
+            }
+        },
+        "LandingDataItem": {
+            "$id": "landingDataItem",
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "enum": [
+                        "paragraph",
+                        "list",
+                        "table",
+                        "markdown",
+                        "text"
+                    ]
+                },
+                "text": {
+                    "type": "string",
+                    "contentType": "Markdown"
+                },
+                "style": {
+                    "type": "string"
+                },
+                "className": {
+                    "type": "string"
+                },
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "landingDataListItem"
+                    }
+                },
+                "columns": {},
+                "rows": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "landingDataRow"
+                    }
+                },
+                "html": {
+                    "type": "string",
+                    "contentType": "Html"
+                }
+            }
+        },
+        "LandingDataListItem": {
+            "$id": "landingDataListItem",
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "text": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "content": {
+                    "type": "string",
+                    "contentType": "Markdown"
+                },
+                "html": {
+                    "type": "string",
+                    "contentType": "Html"
+                },
+                "href": {
+                    "type": "string",
+                    "contentType": "Href"
+                },
+                "image": {
+                    "$ref": "landingDataImage"
+                }
+            }
+        },
+        "LandingDataMenu": {
+            "$id": "landingDataMenu",
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "title": {
+                    "type": "string"
+                },
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "landingDataMenuItem"
+                    }
+                }
+            }
+        },
+        "LandingDataMenuItem": {
+            "$id": "landingDataMenuItem",
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "href": {
+                    "type": "string",
+                    "contentType": "Href"
+                },
+                "text": {
+                    "type": "string"
+                }
+            }
+        },
+        "LandingDataRow": {
+            "$id": "landingDataRow",
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "title": {
+                    "type": "string"
+                },
+                "values": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "landingDataRowValue"
+                    }
+                }
+            }
+        },
+        "LandingDataRowValue": {
+            "$id": "landingDataRowValue",
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "href": {
+                    "type": "string",
+                    "contentType": "Href"
+                }
+            }
+        },
+        "LandingDataSection": {
+            "$id": "landingDataSection",
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "title": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                },
+                "text": {
+                    "type": "string"
+                },
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "landingDataItem"
+                    }
+                }
+            }
         }
-      }
     },
-    "LandingDataAside": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
         "title": {
-          "type": "string"
+            "type": "string"
         },
-        "width": {
-          "type": "string"
+        "titleSuffix": {
+            "type": "string"
         },
-        "href": {
-          "type": "string",
-          "contentType": "Href"
+        "metadata": {},
+        "abstract": {
+            "$ref": "landingDataAbstract"
         },
-        "image": {
-          "$ref": "#/definitions/LandingDataImage"
+        "sections": {
+            "type": "array",
+            "items": {
+                "$ref": "landingDataSection"
+            }
+        },
+        "documentType": {
+            "type": "string"
+        },
+        "$schema": {
+            "type": "string"
         }
-      }
-    },
-    "LandingDataImage": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "href": {
-          "type": "string",
-          "contentType": "Href"
-        },
-        "src": {
-          "type": "string",
-          "contentType": "Href"
-        },
-        "alt": {
-          "type": "string"
-        },
-        "height": {
-          "type": "string"
-        },
-        "width": {
-          "type": "string"
-        },
-        "role": {
-          "type": "string"
-        }
-      }
-    },
-    "LandingDataItem": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "type": {
-          "type": "string",
-          "enum": [
-            "paragraph",
-            "list",
-            "table",
-            "markdown",
-            "text"
-          ]
-        },
-        "text": {
-          "type": "string",
-          "contentType": "Markdown"
-        },
-        "style": {
-          "type": "string"
-        },
-        "className": {
-          "type": "string"
-        },
-        "items": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/LandingDataListItem"
-          }
-        },
-        "columns": {},
-        "rows": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/LandingDataRow"
-          }
-        },
-        "html": {
-          "type": "string",
-          "contentType": "Html"
-        }
-      }
-    },
-    "LandingDataListItem": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "text": {
-          "type": "string"
-        },
-        "title": {
-          "type": "string"
-        },
-        "content": {
-          "type": "string",
-          "contentType": "Markdown"
-        },
-        "html": {
-          "type": "string",
-          "contentType": "Html"
-        },
-        "href": {
-          "type": "string",
-          "contentType": "Href"
-        },
-        "image": {
-          "$ref": "#/definitions/LandingDataImage"
-        }
-      }
-    },
-    "LandingDataMenu": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "title": {
-          "type": "string"
-        },
-        "items": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/LandingDataMenuItem"
-          }
-        }
-      }
-    },
-    "LandingDataMenuItem": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "href": {
-          "type": "string",
-          "contentType": "Href"
-        },
-        "text": {
-          "type": "string"
-        }
-      }
-    },
-    "LandingDataRow": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "title": {
-          "type": "string"
-        },
-        "values": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/LandingDataRowValue"
-          }
-        }
-      }
-    },
-    "LandingDataRowValue": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "href": {
-          "type": "string",
-          "contentType": "Href"
-        }
-      }
-    },
-    "LandingDataSection": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "title": {
-          "type": "string"
-        },
-        "type": {
-          "type": "string"
-        },
-        "text": {
-          "type": "string"
-        },
-        "items": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/LandingDataItem"
-          }
-        }
-      }
     }
-  },
-  "type": "object",
-  "additionalProperties": false,
-  "properties": {
-    "title": {
-      "type": "string"
-    },
-    "titleSuffix": {
-      "type": "string"
-    },
-    "metadata": {},
-    "abstract": {
-      "$ref": "#/definitions/LandingDataAbstract"
-    },
-    "sections": {
-      "type": "array",
-      "items": {
-        "$ref": "#/definitions/LandingDataSection"
-      }
-    },
-    "documentType": {
-      "type": "string"
-    },
-    "$schema": {
-      "type": "string"
-    }
-  }
 }

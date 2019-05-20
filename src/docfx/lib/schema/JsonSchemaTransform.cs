@@ -15,17 +15,12 @@ namespace Microsoft.Docs.Build
             var errors = new List<Error>();
 
             var transformedToken = token.DeepClone();
-            Transform(file, context, schema, transformedToken, errors, buildChild, schema);
+            Transform(file, context, schema, transformedToken, errors, buildChild);
             return (errors, transformedToken);
         }
 
-        private static void Transform(Document file, Context context, JsonSchema schema, JToken token, List<Error> errors, Action<Document> buildChild, JsonSchema root)
+        private static void Transform(Document file, Context context, JsonSchema schema, JToken token, List<Error> errors, Action<Document> buildChild)
         {
-            if (!string.IsNullOrEmpty(schema.Ref))
-            {
-                schema = JsonSchemaUtility.GetRefDefinition(root, schema.Ref);
-            }
-
             switch (token)
             {
                 case JValue scalar:
@@ -34,7 +29,7 @@ namespace Microsoft.Docs.Build
                 case JArray array:
                     foreach (var a in array)
                     {
-                        Transform(file, context, schema, a, errors, buildChild, root);
+                        Transform(file, context, schema, a, errors, buildChild);
                     }
                     break;
                 case JObject obj:
@@ -42,7 +37,7 @@ namespace Microsoft.Docs.Build
                     {
                         if (schema.Properties.TryGetValue(key, out var propertySchema))
                         {
-                            Transform(file, context, propertySchema, value, errors, buildChild, root);
+                            Transform(file, context, propertySchema, value, errors, buildChild);
                         }
                     }
                     break;
