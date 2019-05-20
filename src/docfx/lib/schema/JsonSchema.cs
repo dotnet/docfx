@@ -39,7 +39,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public string[] Required { get; set; } = Array.Empty<string>();
 
-        // JSON schema custom extensions
+        // JSON schema custom validation extensions
         //-------------------------------------------
 
         /// <summary>
@@ -56,5 +56,22 @@ namespace Microsoft.Docs.Build
         /// Properties that are reserved by the system.
         /// </summary>
         public string[] Reserved { get; set; } = Array.Empty<string>();
+
+        // JSON schema custom transform extensions
+        //--------------------------------------------
+
+        /// <summary>
+        /// Properties that are transformed using specified pipeline like 'markup'
+        /// </summary>
+        public JsonSchemaContentType ContentType { get; set; }
+    }
+
+    public enum JsonSchemaContentType
+    {
+        Href,
+        Markdown,
+        InlineMarkdown,
+        Html,
+        Xref,
     }
 }
