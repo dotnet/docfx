@@ -473,7 +473,7 @@ namespace Microsoft.Docs.Build
                 {
                     continue;
                 }
-                Assert.True(File.Exists(file), $"Input file {currentFile.Name} has been deleted");
+                Assert.True(currentFile.Exists, $"Input file {currentFile.Name} has been deleted");
                 Assert.True(lastModifyTime == currentFile.LastWriteTime, $"Input file {currentFile.Name} has been changed");
                 currentFiles.Remove(file);
             }
