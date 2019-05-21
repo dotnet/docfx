@@ -21,7 +21,6 @@ namespace Microsoft.Docs.Build
             "boolean_schema",
             "const",
             "contains",
-            "definitions",
             "dependencies",
             "exclusiveMaximum",
             "exclusiveMinimum",
@@ -40,7 +39,6 @@ namespace Microsoft.Docs.Build
             "pattern",
             "patternProperties",
             "propertyNames",
-            "ref",
             "refRemote",
             "uniqueItems"
         };
@@ -52,6 +50,19 @@ namespace Microsoft.Docs.Build
             "items and subitems",
             "with boolean schema",
             "patternProperties",
+            // ref
+            "relative pointer ref to object",
+            "relative pointer ref to array",
+            "escaped pointer ref",
+            "remote ref, containing refs itself",
+            "$ref to boolean schema true",
+            "$ref to boolean schema false",
+            "Recursive references between schemas",
+            "refs with quote",
+            "root pointer ref/mismatch", // additional properties
+            "root pointer ref/recursive mismatch",
+            // definition
+            "invalid definition/invalid definition schema" // schema's schema
         };
 
         public static TheoryData<string, string, string> GetJsonSchemaTestSuite()
@@ -86,7 +97,7 @@ namespace Microsoft.Docs.Build
         [MemberData(nameof(GetJsonSchemaTestSuite))]
         public void TestJsonSchemaConfirmance(string description, string schemaText, string testText)
         {
-            var schema = JsonConvert.DeserializeObject<JsonSchema>(schemaText);
+            var schema = JsonUtility.LoadJsonSchema(schemaText, "");
             var test = JObject.Parse(testText);
             var errors = JsonSchemaValidation.Validate(schema, test["data"]);
 

@@ -18,10 +18,7 @@ namespace Microsoft.Docs.Build
 
         private static void Validate(JsonSchema schema, JToken token, List<Error> errors, JsonSchema root)
         {
-            if (!string.IsNullOrEmpty(schema.Ref))
-            {
-                schema = JsonSchemaUtility.GetDefinition(schema.Ref, root);
-            }
+            schema = JsonSchemaUtility.GetDefinition(schema, root);
 
             if (!ValidateType(schema, token, errors))
             {
