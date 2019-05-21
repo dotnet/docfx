@@ -20,6 +20,7 @@ namespace Microsoft.Docs.Build
                 Locale = file.Docset.Locale,
                 RedirectUrl = file.RedirectionUrl,
                 Monikers = monikers,
+                MonikerGroup = MonikerUtility.GetGroup(monikers),
             };
 
             if (file.Docset.Legacy)

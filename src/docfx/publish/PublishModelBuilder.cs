@@ -121,6 +121,10 @@ namespace Microsoft.Docs.Build
                     .ThenBy(item => item.Url)
                     .ThenBy(item => item.RedirectUrl)
                     .ToArray(),
+                MonikerGroups = _publishItems.Values
+                    .Where(item => !string.IsNullOrEmpty(item.MonikerGroup))
+                    .GroupBy(item => item.MonikerGroup)
+                    .ToDictionary(g => g.Key, g => g.First().Monikers),
             };
 
             var fileManifests = _publishItems.ToDictionary(item => item.Key, item => item.Value);

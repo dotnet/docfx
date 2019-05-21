@@ -53,6 +53,7 @@ namespace Microsoft.Docs.Build
                 Path = outputPath,
                 Locale = file.Docset.Locale,
                 Monikers = model.Metadata.Monikers,
+                MonikerGroup = MonikerUtility.GetGroup(model.Metadata.Monikers),
             };
 
             if (context.PublishModelBuilder.TryAdd(file, publishItem))
