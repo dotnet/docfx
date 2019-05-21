@@ -178,14 +178,16 @@ namespace Microsoft.Docs.Build
             LoadSchemaDocument(Context context, List<Error> errors, JToken token, Document file, Action<Document> buildChild)
         {
             var obj = token as JObject;
-            if (file.Schema is null || !File.Exists($"data/{file.Schema.Type.Name}.json"))
+            if (file.Schema is null)
             {
                 throw Errors.SchemaNotFound(file.Mime).ToException();
             }
 
-            // TODO: load json schema from template
-            var schemaFilePath = $"data/{file.Schema.Type.Name}.json";
-            var jsonSchema = JsonUtility.Deserialize<JsonSchema>(File.ReadAllText(schemaFilePath), schemaFilePath);
+            var jsonSchema = context.JsonSchemaProvider.GetJsonSchema(file.Schema);
+            if (jsonSchema is null)
+            {
+                throw Errors.SchemaNotFound(file.Mime).ToException();
+            }
 
             // validate via json schema
             var schemaValidationErrors = JsonSchemaValidation.Validate(jsonSchema, token);
