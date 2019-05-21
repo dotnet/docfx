@@ -225,8 +225,8 @@ Run `{Environment.CommandLine}` in `{Directory.GetCurrentDirectory()}`
                 Console.WriteLine();
                 Console.ForegroundColor = ConsoleColor.Gray;
                 Console.WriteLine(body);
-                Console.ResetColor();
             }
+            Console.ResetColor();
         }
 
         private static string GetDocfxEnvironmentVariables()
