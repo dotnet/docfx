@@ -14,6 +14,14 @@ namespace Microsoft.Docs.Build
         //-------------------------------------------
 
         /// <summary>
+        /// Json schema defnitions
+        /// </summary>
+        public Dictionary<string, JsonSchema> Definitions { get; } = new Dictionary<string, JsonSchema>(StringComparer.OrdinalIgnoreCase);
+
+        [JsonProperty("$ref")]
+        public string Ref { get; set; }
+
+        /// <summary>
         /// Type of the current value.
         /// </summary>
         [JsonConverter(typeof(OneOrManyConverter))]

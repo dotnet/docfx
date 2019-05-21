@@ -24,6 +24,14 @@ namespace Microsoft.Docs.Build
             new JTokenJsonConverter { },
         };
 
+        private static readonly JsonSerializer s_jsonSchemaSerializer = JsonSerializer.Create(new JsonSerializerSettings
+        {
+            NullValueHandling = NullValueHandling.Ignore,
+            MetadataPropertyHandling = MetadataPropertyHandling.Ignore,
+            Converters = s_jsonConverters,
+            ContractResolver = new JsonContractResolver { NamingStrategy = s_namingStrategy },
+        });
+
         private static readonly JsonSerializer s_serializer = JsonSerializer.Create(new JsonSerializerSettings
         {
             NullValueHandling = NullValueHandling.Ignore,
@@ -103,6 +111,38 @@ namespace Microsoft.Docs.Build
                 Serialize(writer, graph, indent);
                 return writer.ToString();
             }
+        }
+
+        /// <summary>
+        /// Load json schema from file
+        /// </summary>
+        public static JsonSchema LoadJsonSchema(string json, string file)
+        {
+            using (var stringReader = new StringReader(json))
+            using (var reader = new JsonTextReader(stringReader))
+            {
+                try
+                {
+                    return s_jsonSchemaSerializer.Deserialize<JsonSchema>(reader);
+                }
+                catch (JsonReaderException ex)
+                {
+                    throw ToError(ex, file).ToException(ex);
+                }
+                catch (JsonSerializationException ex)
+                {
+                    throw ToError(ex, file).ToException(ex);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Creates an instance of the Json Schema from the JToken
+        /// </summary>
+        public static JsonSchema ToJsonSchema(JToken token)
+        {
+            var reader = new JTokenReader(token);
+            return s_jsonSchemaSerializer.Deserialize<JsonSchema>(reader);
         }
 
         /// <summary>
