@@ -40,8 +40,8 @@ namespace Microsoft.Docs.Build
         ///     - boolean: allow/disallow additional properties
         ///     - object: the schema for the additional properties
         /// </summary>
-        [JsonConverter(typeof(ValueOrObjectConverter<bool?, JsonSchema>))]
-        public (bool? additionalProperties, JsonSchema additionalPropertyJsonSchema) AdditionalProperties { get; set; }
+        [JsonConverter(typeof(ValueOrObjectConverter))]
+        public (bool additionalProperties, JsonSchema additionalPropertyJsonSchema) AdditionalProperties { get; set; } = (true, null);
 
         /// <summary>
         /// Properties that are required to be present.

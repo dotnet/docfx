@@ -371,12 +371,6 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Warning, "field-required", $"Missing required field '{name}'", source);
 
         /// <summary>
-        /// Additional keys are defined in given object
-        /// </summary>
-        public static Error AdditionalProperty(SourceInfo source, string propertyName)
-            => new Error(ErrorLevel.Warning, "additional-property", $"Additional property name '{propertyName}' is not allowed", source);
-
-        /// <summary>
         /// Used unknown YamlMime.
         /// Examples:
         ///   - forgot to define schema in schema document(yml)

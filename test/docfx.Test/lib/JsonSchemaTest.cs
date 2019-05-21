@@ -51,7 +51,7 @@ namespace Microsoft.Docs.Build
             "items and subitems",
             "with boolean schema",
             "patternProperties",
-            "non-ASCII pattern with additionalProperties",
+            "non-ASCII pattern with additionalProperties", // has patternProperties
         };
 
         public static TheoryData<string, string, string> GetJsonSchemaTestSuite()
@@ -135,13 +135,13 @@ namespace Microsoft.Docs.Build
         // additional properties validation
         // AdditionalProperty is enabled with explicit false
         [InlineData("{'properties': {'key': {'type': 'string'}}, 'additionalProperties': {}}", "{'key': 'value', 'key1': 'value1'}", "")]
+        [InlineData("{'properties': {'key': {'type': 'string'}}, 'additionalProperties': null}", "{'key': 'value', 'key1': 'value1'}", "")]
         [InlineData("{'properties': {'key': {'type': 'string'}}, 'additionalProperties': false}", "{'key': 'value', 'key1': 'value1'}",
-            "['warning','additional-property','Additional property name 'key1' is not allowed','file',1,33]")]
+            "['warning','unknown-field','Could not find member 'key1' on object of type 'String'.','file',1,33]")]
         [InlineData("{'properties': {'key': {'type': 'string'}}, 'additionalProperties': {'type': 'number'}}", "{'key': 'value', 'key1': 'value1'}",
             "['warning','unexpected-type','Expect type 'Number' but got 'String'','file',1,33]")]
         [InlineData("{'properties': {'key': {'type': 'string'}}, 'additionalProperties': {'type': 'string', 'enum': ['a']}}", "{'key': 'value', 'key1': 'value1'}",
             "['warning','undefined-value','Value 'value1' is not accepted. Valid values: 'a'','file',1,33]")]
-
 
         // array validation
         [InlineData("{'items': {'type': 'string'}}", "['a','b']", "")]
