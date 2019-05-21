@@ -15,7 +15,6 @@ namespace Microsoft.Docs.Build
         private static readonly string[] s_notSupportedSuites =
         {
             "additionalItems",
-            "additionalProperties",
             "allOf",
             "anyOf",
             "boolean_schema",
@@ -52,6 +51,7 @@ namespace Microsoft.Docs.Build
             "items and subitems",
             "with boolean schema",
             "patternProperties",
+            "non-ASCII pattern with additionalProperties",
         };
 
         public static TheoryData<string, string, string> GetJsonSchemaTestSuite()
