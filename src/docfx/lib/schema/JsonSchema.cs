@@ -15,6 +15,7 @@ namespace Microsoft.Docs.Build
 
         /// <summary>
         /// Definitions of json schema
+        /// TODO: support json schema definitions
         /// </summary>
         public Dictionary<string, JsonSchema> Definitions { get; set; } = new Dictionary<string, JsonSchema>();
 

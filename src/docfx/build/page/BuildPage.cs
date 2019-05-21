@@ -178,23 +178,25 @@ namespace Microsoft.Docs.Build
             LoadSchemaDocument(Context context, List<Error> errors, JToken token, Document file, Action<Document> buildChild)
         {
             var obj = token as JObject;
-            var schemaFilePath = $"data/{file.Schema?.Type.Name ?? ""}.json";
-            if (file.Schema is null || !File.Exists(schemaFilePath))
+            if (file.Schema is null || !File.Exists($"data/{file.Schema.Type.Name}.json"))
             {
                 throw Errors.SchemaNotFound(file.Mime).ToException();
             }
 
-            // todo: load json schema from template
+            // TODO: load json schema from template
+            var schemaFilePath = $"data/{file.Schema.Type.Name}.json";
             var jsonSchema = JsonUtility.Deserialize<JsonSchema>(File.ReadAllText(schemaFilePath), schemaFilePath);
+
+            // validate via json schema
             var schemaValidationErrors = JsonSchemaValidation.Validate(jsonSchema, token);
             errors.AddRange(schemaValidationErrors);
 
+            // transform via json schema
             var (schemaTransformError, transformedToken) = JsonSchemaTransform.Transform(file, context, jsonSchema, token, buildChild);
             errors.AddRange(schemaTransformError);
 
-            // todo: remove schema validation in ToObject
-            // todo: toObject<object> directly
-            var (_, content) = JsonUtility.ToObject(transformedToken, file.Schema.Type/*, transform: AttributeTransformer.TransformSDP(context, file, buildChild)*/);
+            // TODO: remove schema validation in ToObject
+            var (_, content) = JsonUtility.ToObject(transformedToken, file.Schema.Type);
 
             // TODO: add check before to avoid case failure
             var yamlHeader = obj?.Value<JObject>("metadata") ?? new JObject();
