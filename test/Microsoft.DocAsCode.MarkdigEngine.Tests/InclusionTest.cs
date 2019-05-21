@@ -182,7 +182,7 @@ This is a file A included by another file.
             }
             Logger.UnregisterListener(listener);
             Assert.Collection(listener.Items, log => Assert.Equal(
-                "Found circular reference: r/root.md --> ~/r/a.md --> ~/r/b.md --> ~/r/a.md",
+                "Build has identified file(s) referencing each other: r/root.md --> ~/r/a.md --> ~/r/b.md --> ~/r/a.md",
                 log.Message));
         }
 
