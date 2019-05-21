@@ -43,7 +43,17 @@ outputs:
       "!monikers": null
     }
   .publish.json: |
-    {"files":[{"url":"/docs/a","group":"23d205a5"},{"url":"/docs/a","group":"9d4e15fd"},{"url":"/docs/a","!group":null}],"groups":{"23d205a5":["netcore-2.0","netcore-2.1"],"9d4e15fd":["netcore-1.0","netcore-1.1"]}}
+    {
+      "files":[
+        {"url":"/docs/a","moniker_group":"23d205a5"},
+        {"url":"/docs/a","moniker_group":"9d4e15fd"},
+        {"url":"/docs/a","!moniker_group":null}
+      ],
+      "monikerGroups":{
+        "23d205a5":["netcore-2.0","netcore-2.1"],
+        "9d4e15fd":["netcore-1.0","netcore-1.1"]
+      }
+    }
 ---
 # Multiple matched moniker range setting in the config, should use the last one
 inputs:
@@ -118,10 +128,14 @@ outputs:
   .publish.json: |
     {
       "files": [
-          { "url": "/docs/a", "path": "218c13d0/docs/a.json", "monikers": [ "netcore-1.1" ] },
-          { "url": "/docs/a", "path": "4667fedf/docs/a.json", "monikers": [ "netcore-2.0" ] },
-          { "url": "/docs/a", "path": "docs/a.json", "!monikers": null },
-      ]
+          { "url": "/docs/a", "path": "218c13d0/docs/a.json", "moniker_group": "218c13d0" },
+          { "url": "/docs/a", "path": "4667fedf/docs/a.json", "moniker_group": "4667fedf" },
+          { "url": "/docs/a", "path": "docs/a.json", "!moniker_group": null },
+      ],
+      "monikerGroups":{
+        "218c13d0":["netcore-1.1"],
+        "4667fedf":["netcore-2.0"]
+      }
     }
 ---
 # Moniker Zone syntax
@@ -195,11 +209,15 @@ outputs:
   .publish.json: |
     {
       "files": [
-        { "url": "/docs/a-old", "redirect_url": "/docs/a1", "monikers": [ "netcore-1.0", "netcore-1.1" ] },
-        { "url": "/docs/a-old", "redirect_url": "/docs/a2", "monikers": [ "netcore-1.2", "netcore-1.3" ] },
-        { "url": "/docs/a", "monikers": [ "netcore-1.0", "netcore-1.1" ] },
-        { "url": "/docs/a", "monikers": [ "netcore-1.2", "netcore-1.3" ] },
-      ]
+        { "url": "/docs/a-old", "redirect_url": "/docs/a1", "moniker_group": "9d4e15fd" },
+        { "url": "/docs/a-old", "redirect_url": "/docs/a2", "moniker_group": "f961cd88" },
+        { "url": "/docs/a", "moniker_group": "9d4e15fd" },
+        { "url": "/docs/a", "moniker_group": "f961cd88" },
+      ],
+      "monikerGroups": {
+        "f961cd88": ["netcore-1.2","netcore-1.3"],
+        "9d4e15fd": ["netcore-1.0","netcore-1.1"]
+      }
     }
 ---
 # Redirection file with monikers range overlap
@@ -945,11 +963,15 @@ outputs:
   .publish.json: |
     {
       "files": [
-        { "url": "/docs/a", "path": "136a42ac/docs/a.json", "monikers": [ "netcore-1.0" ] },
-        { "url": "/docs/c.png", "path": "9d4e15fd/docs/c.png", "monikers": [ "netcore-1.0", "netcore-1.1" ] },
-        { "url": "/docs/a", "path": "docs/a.json", "!monikers": null },
-        { "url": "/docs/c.png", "path": "docs/c.png", "!monikers": null }
-      ]
+        { "url": "/docs/a", "path": "136a42ac/docs/a.json", "moniker_group": "136a42ac" },
+        { "url": "/docs/c.png", "path": "9d4e15fd/docs/c.png", "moniker_group": "9d4e15fd" },
+        { "url": "/docs/a", "path": "docs/a.json", "!moniker_group": null },
+        { "url": "/docs/c.png", "path": "docs/c.png", "!moniker_group": null }
+      ],
+      "monikerGroups": {
+        "136a42ac": ["netcore-1.0"],
+        "9d4e15fd": ["netcore-1.0","netcore-1.1"]
+      }
     }
 ---
 # Build resource file with moniker conflict

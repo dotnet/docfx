@@ -15,7 +15,7 @@ namespace Microsoft.Docs.Build
 
         public string Path { get; set; }
 
-        public string Group { get; set; }
+        public string MonikerGroup { get; set; }
 
         public string Hash { get; set; }
 
@@ -24,7 +24,7 @@ namespace Microsoft.Docs.Build
         public string RedirectUrl { get; set; }
 
         [JsonIgnore]
-        public List<string> Monikers { get; set; }
+        public List<string> Monikers { get; set; } = new List<string>();
 
         [JsonExtensionData]
         public JObject ExtensionData { get; set; }

@@ -98,13 +98,13 @@ namespace Microsoft.Docs.Build
                             Output = output,
                             SkipNormalization = !(document.ContentType == ContentType.Resource),
                             SkipSchemaCheck = !(document.ContentType == ContentType.Resource),
-                            Group = fileManifest.Value.Group,
+                            Group = fileManifest.Value.MonikerGroup,
                         };
 
                         listBuilder.Add((file, document, fileManifest.Value.Monikers));
-                        if (fileManifest.Value.Group != null)
+                        if (fileManifest.Value.MonikerGroup != null)
                         {
-                            dictionaryBuilder.TryAdd(fileManifest.Value.Group, fileManifest.Value.Monikers);
+                            dictionaryBuilder.TryAdd(fileManifest.Value.MonikerGroup, fileManifest.Value.Monikers);
                         }
                     });
 

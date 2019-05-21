@@ -65,7 +65,7 @@ namespace Microsoft.Docs.Build
                 Path = outputPath,
                 Locale = file.Docset.Locale,
                 Monikers = model.Monikers,
-                Group = HashUtility.GetMd5HashShort(model.Monikers),
+                MonikerGroup = MonikerUtility.GetGroup(model.Monikers),
                 ExtensionData = extensionData,
             };
 
