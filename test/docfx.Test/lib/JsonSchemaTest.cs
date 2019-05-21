@@ -133,11 +133,9 @@ namespace Microsoft.Docs.Build
             "['warning','unexpected-type','Expect type 'String' but got 'Integer'','file',1,9]")]
 
         // additional properties validation
-        // AdditionalProperty is enabled with explicit false(can be named additionalProperties or additionProperties)
+        // AdditionalProperty is enabled with explicit false
         [InlineData("{'properties': {'key': {'type': 'string'}}, 'additionalProperties': {}}", "{'key': 'value', 'key1': 'value1'}", "")]
         [InlineData("{'properties': {'key': {'type': 'string'}}, 'additionalProperties': false}", "{'key': 'value', 'key1': 'value1'}",
-            "['warning','additional-property','Additional property name 'key1' is not allowed','file',1,33]")]
-        [InlineData("{'properties': {'key': {'type': 'string'}}, 'additionProperties': false}", "{'key': 'value', 'key1': 'value1'}",
             "['warning','additional-property','Additional property name 'key1' is not allowed','file',1,33]")]
         [InlineData("{'properties': {'key': {'type': 'string'}}, 'additionalProperties': {'type': 'number'}}", "{'key': 'value', 'key1': 'value1'}",
             "['warning','unexpected-type','Expect type 'Number' but got 'String'','file',1,33]")]

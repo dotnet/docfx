@@ -40,7 +40,8 @@ namespace Microsoft.Docs.Build
         ///     - boolean: allow/disallow additional properties
         ///     - object: the schema for the additional properties
         /// </summary>
-        public JToken AdditionalProperties { get; set; }
+        [JsonConverter(typeof(ValueOrObjectConverter<bool?, JsonSchema>))]
+        public (bool? additionalProperties, JsonSchema additionalPropertyJsonSchema) AdditionalProperties { get; set; }
 
         /// <summary>
         /// Properties that are required to be present.
@@ -64,18 +65,5 @@ namespace Microsoft.Docs.Build
         /// Properties that are reserved by the system.
         /// </summary>
         public string[] Reserved { get; set; } = Array.Empty<string>();
-
-        /// <summary>
-        /// Alias for <see cref="AdditionalProperties"/>.
-        /// </summary>
-        [JsonProperty("additionProperties")]
-        private JToken AdditionProperties
-        {
-            set
-            {
-                if (value != null && AdditionalProperties == null)
-                    AdditionalProperties = value;
-            }
-        }
     }
 }

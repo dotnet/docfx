@@ -73,7 +73,7 @@ namespace Microsoft.Docs.Build
 
         private static void ValidateObject(JsonSchema schema, JToken token, List<Error> errors, JObject map)
         {
-            if (schema.AdditionalProperties is JValue boolValue && boolValue.Type == JTokenType.Boolean && !(bool)boolValue)
+            if (schema.AdditionalProperties.additionalProperties.HasValue && !schema.AdditionalProperties.additionalProperties.Value)
             {
                 foreach (var (key, _) in map)
                 {
@@ -83,14 +83,13 @@ namespace Microsoft.Docs.Build
                     }
                 }
             }
-            else if (schema.AdditionalProperties is JObject additionalPropertyToken && additionalPropertyToken != null)
+            else if (schema.AdditionalProperties.additionalPropertyJsonSchema != null)
             {
-                var (_, additionalPropertySchema) = JsonUtility.ToObject<JsonSchema>(additionalPropertyToken);
                 foreach (var (key, _) in map)
                 {
                     if (!schema.Properties.Keys.Contains(key))
                     {
-                        Validate(additionalPropertySchema, token[key], errors);
+                        Validate(schema.AdditionalProperties.additionalPropertyJsonSchema, token[key], errors);
                     }
                 }
             }
