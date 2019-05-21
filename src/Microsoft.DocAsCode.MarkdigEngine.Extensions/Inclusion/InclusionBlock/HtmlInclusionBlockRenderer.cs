@@ -6,6 +6,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     using Markdig;
     using Markdig.Renderers;
     using Markdig.Renderers.Html;
+    using System.Linq;
 
     public class HtmlInclusionBlockRenderer : HtmlObjectRenderer<InclusionBlock>
     {
@@ -31,7 +32,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             if (InclusionContext.IsCircularReference(includeFilePath, out var dependencyChain))
             {
-                _context.LogWarning("circular-reference", $"Build has identified file(s) referencing each other: {string.Join(" --> ", dependencyChain)} --> {includeFilePath}", inclusion);
+                _context.LogWarning("circular-reference", $"Build has identified file(s) referencing each other: {string.Join(" --> ", dependencyChain.Select(file => $"'{file}'"))} --> '{includeFilePath}'", inclusion);
                 renderer.Write(inclusion.GetRawToken());
                 return;
             }
