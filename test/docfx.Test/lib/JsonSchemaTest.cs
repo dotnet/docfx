@@ -26,11 +26,9 @@ namespace Microsoft.Docs.Build
             "exclusiveMinimum",
             "if-then-else",
             "maximum",
-            "maxItems",
             "maxLength",
             "maxProperties",
             "minimum",
-            "minItems",
             "minLength",
             "minProperties",
             "multipleOf",
@@ -148,6 +146,15 @@ namespace Microsoft.Docs.Build
         [InlineData("{'items': {'type': 'boolean'}}", "['a','b']",
             @"['warning','unexpected-type','Expect type 'Boolean' but got 'String'','file',1,4]
               ['warning','unexpected-type','Expect type 'Boolean' but got 'String'','file',1,8]")]
+
+        [InlineData("{'maxItems': 3, 'minItems': 1}", "['a','b']", "")]
+        [InlineData("{'properties': {'arr': {'maxItems': 3, 'minItems': 1}}}", "{'arr': ['a','b','c','d']}",
+            "['warning','array-length-invalid','Array 'arr' length should be <= 3','file',1,9]")]
+        [InlineData("{'maxItems': 3, 'minItems': 1}", "[]",
+            "['warning','array-length-invalid','Array length should be >= 1','file',1,1]")]
+        [InlineData("{'maxItems': 2, 'minItems': 4}", "['a','b','c']",
+            @"['warning','array-length-invalid','Array length should be <= 2','file',1,1]
+              ['warning','array-length-invalid','Array length should be >= 4','file',1,1]")]
 
         // required validation
         [InlineData("{'required': []}", "{}", "")]

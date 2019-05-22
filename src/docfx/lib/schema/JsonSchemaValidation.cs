@@ -69,6 +69,12 @@ namespace Microsoft.Docs.Build
                     Validate(schema.Items, item, errors);
                 }
             }
+
+            if (schema.MaxItems.HasValue && array.Count > schema.MaxItems.Value)
+                errors.Add(Errors.ArrayLengthInvalid(JsonUtility.GetSourceInfo(array), array.Path, maxItems: schema.MaxItems));
+
+            if (schema.MinItems.HasValue && array.Count < schema.MinItems.Value)
+                errors.Add(Errors.ArrayLengthInvalid(JsonUtility.GetSourceInfo(array), array.Path, minItems: schema.MinItems));
         }
 
         private static void ValidateObject(JsonSchema schema, List<Error> errors, JObject map)
