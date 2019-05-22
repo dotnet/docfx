@@ -4,74 +4,44 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
 namespace Microsoft.Docs.Build
 {
     internal class JsonSchemaValidationContext
     {
-        public JsonSchema Root { get; private set; }
+        private readonly JsonSchema _root;
+        private readonly Dictionary<string, JsonSchema> _definitions;
 
         public JsonSchemaValidationContext(JsonSchema root)
         {
             Debug.Assert(root != null);
 
-            Root = root;
+            _root = root;
+            _definitions = _root.Definitions.ToDictionary(k => $"#/definitions/{k.Key}", v => v.Value);
+            _definitions.Add("#", root);
         }
 
-        public JsonSchema GetDefinition(JsonSchema jsonSchema, HashSet<string> recursion = null, string key = "root")
+        public JsonSchema GetDefinition(JsonSchema jsonSchema, HashSet<string> recursions = null, string key = "#")
         {
-            recursion = recursion ?? new HashSet<string>();
+            recursions = recursions ?? new HashSet<string>();
 
-            if (recursion.Add(key) && jsonSchema != null && !jsonSchema.Properties.TryGetValue("$ref", out _) && !string.IsNullOrEmpty(jsonSchema.Ref))
+            if (recursions.Add(key) && jsonSchema != null && !jsonSchema.Properties.TryGetValue("$ref", out _) && !string.IsNullOrEmpty(jsonSchema.Ref))
             {
                 var (subKey, sub) = GetDefinitionCore(jsonSchema.Ref);
-                return GetDefinition(sub, recursion, subKey ?? "root");
+                return GetDefinition(sub, recursions, subKey);
             }
 
             return jsonSchema;
         }
 
-        private (string key, JsonSchema schema) GetDefinitionCore(string @ref)
+        private (string key, JsonSchema schema) GetDefinitionCore(SourceInfo<string> @ref)
         {
             Debug.Assert(!string.IsNullOrEmpty(@ref));
 
-            var (path, _, fragment) = UrlUtility.SplitUrl(@ref);
-
-            Debug.Assert(!string.IsNullOrEmpty(fragment));
-
-            if (!string.IsNullOrEmpty(path))
-            {
-                // not supported
-                throw new NotSupportedException("Schema definition file is not supported");
-            }
-
-            string jsonPointer = fragment.TrimStart(new char[] { '#', '/' });
-            if (string.IsNullOrWhiteSpace(jsonPointer))
-            {
-                // root pointer ref
-                return (null, Root);
-            }
-
-            if (!jsonPointer.StartsWith("definitions", StringComparison.OrdinalIgnoreCase))
-            {
-                // not supported
-                throw new NotSupportedException("Schema id is not supported");
-            }
-
-            var parts = jsonPointer.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
-            if (parts.Length != 2)
-            {
-                // not supported
-                throw new NotSupportedException("Non-root level schema definition is not supported");
-            }
-
-            if (Root.Definitions.TryGetValue(parts[1], out var schema))
-            {
-                // definition ref
-                return (parts[1], schema);
-            }
-
-            return default;
+            return _definitions.TryGetValue(@ref, out var schema)
+                ? (@ref, schema)
+                : throw Errors.SchemaDefinitionNotFound(@ref).ToException();
         }
     }
 }

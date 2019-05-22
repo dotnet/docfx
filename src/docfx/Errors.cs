@@ -353,6 +353,12 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Error, "violate-schema", message, source);
 
         /// <summary>
+        /// Schema definition not foun
+        /// </summary>
+        public static Error SchemaDefinitionNotFound(SourceInfo<string> @ref)
+            => new Error(ErrorLevel.Error, "schema-definition-not-found", $"Could not find schema definition {@ref}", @ref);
+
+        /// <summary>
         /// The input value type does not match expected value type.
         /// </summary>
         public static Error UnexpectedType(SourceInfo source, string expectedType, string actualType)
