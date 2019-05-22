@@ -364,6 +364,9 @@ namespace Microsoft.Docs.Build
         public static Error UndefinedValue(SourceInfo source, object value, IEnumerable<object> validValues)
             => new Error(ErrorLevel.Warning, "undefined-value", $"Value '{value}' is not accepted. Valid values: {Join(validValues)}", source);
 
+        public static Error ArrayLengthInvalid(SourceInfo source, string propName, int? minItems = null, int? maxItems = null)
+            => new Error(ErrorLevel.Warning, "array-length-invalid", $"Array {(string.IsNullOrEmpty(propName) ? "" : $"'{propName}' ")}should be {(minItems.HasValue ? $">= {minItems.Value}" : $"<= {maxItems.Value}")}", source);
+
         /// <summary>
         /// A required field is missing.
         /// </summary>

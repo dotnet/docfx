@@ -12,11 +12,11 @@ namespace Microsoft.Docs.Build
         public static List<Error> Validate(JsonSchema schema, JToken token)
         {
             var errors = new List<Error>();
-            Validate(schema, token, errors);
+            Validate(schema, token, errors, null);
             return errors;
         }
 
-        private static void Validate(JsonSchema schema, JToken token, List<Error> errors)
+        private static void Validate(JsonSchema schema, JToken token, List<Error> errors, string name)
         {
             if (!ValidateType(schema, token, errors))
             {
@@ -30,7 +30,7 @@ namespace Microsoft.Docs.Build
                     break;
 
                 case JArray array:
-                    ValidateArray(schema, errors, array);
+                    ValidateArray(schema, errors, array, name);
                     break;
 
                 case JObject map:
@@ -60,15 +60,21 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static void ValidateArray(JsonSchema schema, List<Error> errors, JArray array)
+        private static void ValidateArray(JsonSchema schema, List<Error> errors, JArray array, string name)
         {
             if (schema.Items != null)
             {
                 foreach (var item in array)
                 {
-                    Validate(schema.Items, item, errors);
+                    Validate(schema.Items, item, errors, name);
                 }
             }
+
+            if (schema.MaxItems.HasValue && array.Count > schema.MaxItems.Value)
+                errors.Add(Errors.ArrayLengthInvalid(JsonUtility.GetSourceInfo(array), name ?? array.Path, maxItems: schema.MaxItems));
+
+            if (schema.MinItems.HasValue && array.Count < schema.MinItems.Value)
+                errors.Add(Errors.ArrayLengthInvalid(JsonUtility.GetSourceInfo(array), name ?? array.Path, minItems: schema.MinItems));
         }
 
         private static void ValidateObject(JsonSchema schema, List<Error> errors, JObject map)
@@ -79,7 +85,7 @@ namespace Microsoft.Docs.Build
                 {
                     if (!schema.Properties.Keys.Contains(key))
                     {
-                        Validate(schema.AdditionalProperties.additionalPropertyJsonSchema, value, errors);
+                        Validate(schema.AdditionalProperties.additionalPropertyJsonSchema, value, errors, key);
                     }
                 }
             }
@@ -106,7 +112,7 @@ namespace Microsoft.Docs.Build
             {
                 if (schema.Properties.TryGetValue(key, out var propertySchema))
                 {
-                    Validate(propertySchema, value, errors);
+                    Validate(propertySchema, value, errors, key);
                 }
             }
         }

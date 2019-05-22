@@ -30,6 +30,16 @@ namespace Microsoft.Docs.Build
         public JsonSchema Items { get; set; }
 
         /// <summary>
+        /// The maximum item count that an array can hold.
+        /// </summary>
+        public int? MaxItems { get; set; }
+
+        /// <summary>
+        /// The minimum item count that an array can hold.
+        /// </summary>
+        public int? MinItems { get; set; }
+
+        /// <summary>
         /// An array of valid values for the current value.
         /// </summary>
         public JValue[] Enum { get; set; }
