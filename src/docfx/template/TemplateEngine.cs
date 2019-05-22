@@ -17,13 +17,13 @@ namespace Microsoft.Docs.Build
     internal class TemplateEngine
     {
         private static readonly string[] s_resourceFolders = new[] { "global", "css", "fonts" };
+        private static readonly ConcurrentDictionary<string, JsonSchema> _jsonSchemas = new ConcurrentDictionary<string, JsonSchema>();
 
         private readonly string _templateDir;
         private readonly LiquidTemplate _liquid;
         private readonly JavascriptEngine _js;
         private readonly HashSet<string> _htmlMetaHidden;
         private readonly Dictionary<string, string> _htmlMetaNames;
-        private readonly ConcurrentDictionary<string, JsonSchema> _jsonSchemas = new ConcurrentDictionary<string, JsonSchema>();
 
         public JObject Global { get; }
 
@@ -42,6 +42,20 @@ namespace Microsoft.Docs.Build
                 .ToDictionary(prop => prop.Key, prop => prop.Value.HtmlMetaName);
         }
 
+        public static JsonSchema GetJsonSchema(Schema schema)
+        {
+            if (schema == null)
+            {
+                return null;
+            }
+
+            // TODO: get schema from template
+            var schemaFilePath = $"data/{schema.Type.Name}.json";
+            return _jsonSchemas.GetOrAdd(
+                schema.Type.Name,
+                File.Exists(schemaFilePath) ? JsonUtility.Deserialize<JsonSchema>(File.ReadAllText(schemaFilePath), schemaFilePath) : null);
+        }
+
         public static TemplateEngine Create(Docset docset)
         {
             Debug.Assert(docset != null);
@@ -56,20 +70,6 @@ namespace Microsoft.Docs.Build
             Log.Write($"Using theme '{themeRemote}#{themeRestoreMap.DependencyLock.Commit}' at '{themePath}'");
 
             return new TemplateEngine(themePath, docset.MetadataSchema);
-        }
-
-        public JsonSchema GetJsonSchema(Schema schema)
-        {
-            if (schema == null)
-            {
-                return null;
-            }
-
-            // TODO: get schema from template
-            var schemaFilePath = $"data/{schema.Type.Name}.json";
-            return _jsonSchemas.GetOrAdd(
-                schema.Type.Name,
-                File.Exists(schemaFilePath) ? JsonUtility.Deserialize<JsonSchema>(File.ReadAllText(schemaFilePath), schemaFilePath) : null);
         }
 
         public string Render(OutputModel model, Document file, JObject rawMetadata)

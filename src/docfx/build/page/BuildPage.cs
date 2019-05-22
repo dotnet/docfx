@@ -184,7 +184,7 @@ namespace Microsoft.Docs.Build
                 throw Errors.SchemaNotFound(file.Mime).ToException();
             }
 
-            var jsonSchema = context.Template.GetJsonSchema(file.Schema);
+            var jsonSchema = TemplateEngine.GetJsonSchema(file.Schema);
             if (jsonSchema is null)
             {
                 throw Errors.SchemaNotFound(file.Mime).ToException();

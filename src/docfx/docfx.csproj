@@ -39,11 +39,7 @@
 
   <ItemGroup>
     <ProjectReference Include="../Microsoft.Docs.Template/Microsoft.Docs.Template.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Update="data/*.json">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    <None Include="data/**/*" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
 </Project>
