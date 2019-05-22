@@ -23,14 +23,11 @@ namespace Microsoft.Docs.Build
         }
 
         public JsonSchema GetDefinition(JsonSchema jsonSchema)
-            => GetDefinitionCore(jsonSchema);
+            => GetDefinitionCore(jsonSchema, new HashSet<string>());
 
-        private JsonSchema GetDefinitionCore(JsonSchema jsonSchema, HashSet<string> recursions = null)
+        private JsonSchema GetDefinitionCore(JsonSchema jsonSchema, HashSet<string> recursions)
         {
-            recursions = recursions ?? new HashSet<string>();
-
             if (jsonSchema != null &&
-                !jsonSchema.Properties.TryGetValue("$ref", out _) &&
                 !string.IsNullOrEmpty(jsonSchema.Ref) &&
                 recursions.Add(jsonSchema.Ref))
             {
