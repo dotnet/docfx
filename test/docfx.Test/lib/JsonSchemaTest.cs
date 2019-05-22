@@ -60,7 +60,6 @@ namespace Microsoft.Docs.Build
             "$ref to boolean schema false",
             "Recursive references between schemas",
             "refs with quote",
-            "root pointer ref/recursive mismatch",
 
             // additional properties
             "non-ASCII pattern with additionalProperties", // has patternProperties
