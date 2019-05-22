@@ -10,6 +10,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace Microsoft.Docs.Build
 {
@@ -184,21 +185,18 @@ namespace Microsoft.Docs.Build
             Console.Write("docfx has crashed");
             if (showEmoji)
                 Console.Write(" 🚘💥🚗");
+            Console.WriteLine();
 
-            Console.WriteLine();
-            Console.WriteLine("Help us improve by creating an issue at https://github.com/dotnet/docfx:");
-            Console.WriteLine();
-            Console.ForegroundColor = ConsoleColor.Gray;
-            Console.WriteLine($@"
+            var body = $@"
 # docfx crash report: {exception.GetType()}
 
 docfx: `{GetDocfxVersion()}`
 x64: `{Environment.Is64BitProcess}`
-cmd: `{Environment.CommandLine}`
-cwd: `{Directory.GetCurrentDirectory()}`
 git: `{GetGitVersion()}`
 {GetDocfxEnvironmentVariables()}
 ## repro steps
+
+Run `{Environment.CommandLine}` in `{Directory.GetCurrentDirectory()}`
 
 ## callstack
 
@@ -211,7 +209,23 @@ git: `{GetGitVersion()}`
 ```
 {GetDotnetInfo()}
 ```
-");
+";
+
+            if (Environment.UserInteractive)
+            {
+                var title = $"docfx crash report: {exception.GetType()}";
+                var issueUrl = $"https://github.com/dotnet/docfx/issues/new?title={HttpUtility.UrlEncode(title)}&body={HttpUtility.UrlEncode(body)}";
+
+                Console.WriteLine("Creating an issue for https://github.com/dotnet/docfx");
+                Process.Start(new ProcessStartInfo { FileName = issueUrl, UseShellExecute = true });
+            }
+            else
+            {
+                Console.WriteLine("Help us improve by creating an issue at https://github.com/dotnet/docfx:");
+                Console.WriteLine();
+                Console.ForegroundColor = ConsoleColor.Gray;
+                Console.WriteLine(body);
+            }
             Console.ResetColor();
         }
 

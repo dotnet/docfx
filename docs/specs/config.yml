@@ -279,7 +279,7 @@ inputs:
       userCache: user_profile.json
 outputs:
   .errors.log: |
-    ["error","file-not-found","Cannot find file 'user_profile.json' relative to '*'","*",4,14]
+    ["error","file-not-found","Invalid file link: 'user_profile.json'.","*",4,14]
 ---
 # Treat warnings as errors
 inputs:
@@ -289,7 +289,7 @@ inputs:
     [b](b.md)
 outputs:
   .errors.log: |
-    ["error","file-not-found","Cannot find file 'b.md' relative to 'docs/a.md'","docs/a.md",1,1]
+    ["error","file-not-found","Invalid file link: 'b.md'.","docs/a.md",1,1]
 ---
 # Invalid redirection file
 inputs:
@@ -490,3 +490,18 @@ inputs:
 outputs:
   .errors.log: |
     ["error","violate-schema","Expected type String, please input String or type compatible with String.","docfx.yml",4,7]
+---
+# Should not change files out of outputFolder
+inputs:
+  docfx.yml: |
+    files: '**'
+    output:
+      copyResources: false
+    routes:
+      docs/: .
+  a.png:
+  docs/a.png:
+outputs:
+  .publish.json: |
+  .errors.log: |
+      ["error","publish-url-conflict","Two or more files publish to the same url '/a.png': 'a.png', 'docs/a.png'"]

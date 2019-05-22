@@ -183,7 +183,7 @@ namespace Microsoft.Docs.Build
         {
             var outputPath = PathUtility.NormalizeFile(Path.Combine(
                 siteBasePath,
-                $"{HashUtility.GetMd5HashShort(monikers)}",
+                $"{MonikerUtility.GetGroup(monikers)}",
                 Path.GetRelativePath(siteBasePath, SitePath)));
 
             return Docset.Legacy && rawPage ? LegacyUtility.ChangeExtension(outputPath, ".raw.page.json") : outputPath;

@@ -65,6 +65,7 @@ namespace Microsoft.Docs.Build
                 Path = outputPath,
                 Locale = file.Docset.Locale,
                 Monikers = model.Monikers,
+                MonikerGroup = MonikerUtility.GetGroup(model.Monikers),
                 ExtensionData = extensionData,
             };
 
@@ -72,11 +73,11 @@ namespace Microsoft.Docs.Build
             {
                 if (output is string str)
                 {
-                    publishItem.Hash = context.Output.WriteTextWithHash(str, publishItem.Path);
+                    context.Output.WriteText(str, publishItem.Path);
                 }
                 else
                 {
-                    publishItem.Hash = context.Output.WriteJsonWithHash(output, publishItem.Path);
+                    context.Output.WriteJson(output, publishItem.Path);
                 }
 
                 if (file.Docset.Legacy && extensionData != null)
@@ -84,6 +85,12 @@ namespace Microsoft.Docs.Build
                     var metadataPath = outputPath.Substring(0, outputPath.Length - ".raw.page.json".Length) + ".mta.json";
                     context.Output.WriteJson(extensionData, metadataPath);
                 }
+            }
+
+            if (Path.GetFileNameWithoutExtension(file.FilePath).Equals("404", PathUtility.PathComparison))
+            {
+                // custom 404 page is not supported
+                errors.Add(Errors.Custom404Page(file.FilePath));
             }
 
             return (errors, publishItem);
@@ -177,9 +184,22 @@ namespace Microsoft.Docs.Build
                 throw Errors.SchemaNotFound(file.Mime).ToException();
             }
 
-            // todo: why not directly use strong model here?
-            var (schemaViolationErrors, content) = JsonUtility.ToObject(token, file.Schema.Type, transform: AttributeTransformer.TransformSDP(context, file, buildChild));
-            errors.AddRange(schemaViolationErrors);
+            var jsonSchema = TemplateEngine.GetJsonSchema(file.Schema);
+            if (jsonSchema is null)
+            {
+                throw Errors.SchemaNotFound(file.Mime).ToException();
+            }
+
+            // validate via json schema
+            var schemaValidationErrors = JsonSchemaValidation.Validate(jsonSchema, token);
+            errors.AddRange(schemaValidationErrors);
+
+            // transform via json schema
+            var (schemaTransformError, transformedToken) = JsonSchemaTransform.Transform(file, context, jsonSchema, token, buildChild);
+            errors.AddRange(schemaTransformError);
+
+            // TODO: remove schema validation in ToObject
+            var (_, content) = JsonUtility.ToObject(transformedToken, file.Schema.Type);
 
             // TODO: add check before to avoid case failure
             var yamlHeader = obj?.Value<JObject>("metadata") ?? new JObject();

@@ -28,7 +28,7 @@ namespace Microsoft.Docs.Build
                     fileManifest =>
                     {
                         var document = fileManifest.Key;
-                        var legacyOutputPathRelativeToSiteBasePath = document.ToLegacyOutputPathRelativeToSiteBasePath(docset, fileManifest.Value.Path);
+                        var legacyOutputPathRelativeToSiteBasePath = document.ToLegacyOutputPathRelativeToSiteBasePath(docset, fileManifest.Value);
                         var legacySiteUrlRelativeToSiteBasePath = document.ToLegacySiteUrlRelativeToSiteBasePath(docset);
 
                         var output = new LegacyManifestOutput
@@ -88,11 +88,6 @@ namespace Microsoft.Docs.Build
                             }
                         }
 
-                        string groupId = null;
-                        if (fileManifest.Value.Monikers.Count > 0)
-                        {
-                            groupId = HashUtility.GetMd5HashShort(fileManifest.Value.Monikers);
-                        }
                         var file = new LegacyManifestItem
                         {
                             AssetId = legacySiteUrlRelativeToSiteBasePath,
@@ -103,13 +98,13 @@ namespace Microsoft.Docs.Build
                             Output = output,
                             SkipNormalization = !(document.ContentType == ContentType.Resource),
                             SkipSchemaCheck = !(document.ContentType == ContentType.Resource),
-                            Group = groupId,
+                            Group = fileManifest.Value.MonikerGroup,
                         };
 
                         listBuilder.Add((file, document, fileManifest.Value.Monikers));
-                        if (groupId != null)
+                        if (fileManifest.Value.MonikerGroup != null)
                         {
-                            dictionaryBuilder.TryAdd(groupId, fileManifest.Value.Monikers);
+                            dictionaryBuilder.TryAdd(fileManifest.Value.MonikerGroup, fileManifest.Value.Monikers);
                         }
                     });
 

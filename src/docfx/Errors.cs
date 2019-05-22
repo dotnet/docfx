@@ -61,7 +61,7 @@ namespace Microsoft.Docs.Build
         ///   - a.md references b.json's property with xref syntax, and b.json includes a.md reversely
         /// </summary>
         public static Error CircularReference<T>(IEnumerable<T> dependencyChain)
-            => new Error(ErrorLevel.Error, "circular-reference", $"Found circular reference: {string.Join(" --> ", dependencyChain.Select(file => $"'{file}'"))}");
+            => new Error(ErrorLevel.Error, "circular-reference", $"Build has identified file(s) referencing each other: {string.Join(" --> ", dependencyChain.Select(file => $"'{file}'"))}");
 
         /// <summary>
         /// Didn't run `docfx restore` before running `docfx build`.
@@ -86,8 +86,8 @@ namespace Microsoft.Docs.Build
         ///   - the api call reach github limit
         ///   - using invalid access token(more detailed info in ex.Message)
         /// </summary>
-        public static Error GitHubApiFailed(string api, Exception ex)
-            => new Error(ErrorLevel.Warning, "github-api-failed", $"Call to GitHub API '{api}' failed: {ex.Message} Try closing and reopening the PR. If you get this Error again, file an issue.");
+        public static Error GitHubApiFailed(string api, string exMessage)
+            => new Error(ErrorLevel.Warning, "github-api-failed", $"Call to GitHub API '{api}' failed: {exMessage} Try closing and reopening the PR. If you get this Error again, file an issue.");
 
         /// <summary>
         /// In yaml-format toc, topicHref SHOULD reference an article,
@@ -237,7 +237,7 @@ namespace Microsoft.Docs.Build
         ///   - href referencing a non-existing file
         /// </summary>
         public static Error FileNotFound(SourceInfo<string> source)
-            => new Error(ErrorLevel.Warning, "file-not-found", $"Cannot find file '{source}' relative to '{source.File}'", source);
+            => new Error(ErrorLevel.Warning, "file-not-found", $"Invalid file link: '{source}'.", source);
 
         /// <summary>
         /// File contains git merge conflict.
@@ -364,6 +364,9 @@ namespace Microsoft.Docs.Build
         public static Error UndefinedValue(SourceInfo source, object value, IEnumerable<object> validValues)
             => new Error(ErrorLevel.Warning, "undefined-value", $"Value '{value}' is not accepted. Valid values: {Join(validValues)}", source);
 
+        public static Error ArrayLengthInvalid(SourceInfo source, string propName, int? minItems = null, int? maxItems = null)
+            => new Error(ErrorLevel.Warning, "array-length-invalid", $"Array {(string.IsNullOrEmpty(propName) ? "" : $"'{propName}' ")}length should be {(minItems.HasValue ? $">= {minItems.Value}" : $"<= {maxItems.Value}")}", source);
+
         /// <summary>
         /// A required field is missing.
         /// </summary>
@@ -440,6 +443,14 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static Error InvalidUidMoniker(SourceInfo source, string moniker, string uid)
             => new Error(ErrorLevel.Warning, "invalid-uid-moniker", $"Moniker '{moniker}' is not defined with uid '{uid}'", source);
+
+        /// <summary>
+        /// Custom 404 page is not supported
+        /// Example:
+        ///   - user want their 404.md to be built and shown as their 404 page of the website.
+        /// </summary>
+        public static Error Custom404Page(string file)
+            => new Error(ErrorLevel.Warning, "custom-404-page", $"Custom 404 page is not supported", file);
 
         private static string Join<T>(IEnumerable<T> source, Func<T, string> selector = null)
             => string.Join(", ", source.Select(item => $"{selector?.Invoke(item) ?? item.ToString()}").OrderBy(_ => _, StringComparer.Ordinal).Select(_ => $"'{_}'").Take(5));

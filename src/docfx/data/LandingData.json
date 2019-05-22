@@ -1,0 +1,224 @@
+{
+    "definitions": {
+        "LandingDataAside": {
+            "type": "object",
+            "properties": {
+                "title": {
+                    "type": "string"
+                },
+                "width": {
+                    "type": "string"
+                },
+                "href": {
+                    "type": "string",
+                    "contentType": "Href"
+                },
+                "image": {
+                    "$ref": "#/definitions/LandingDataImage"
+                }
+            }
+        },
+        "LandingDataImage": {
+            "type": "object",
+            "properties": {
+                "href": {
+                    "type": "string",
+                    "contentType": "Href"
+                },
+                "src": {
+                    "type": "string",
+                    "contentType": "Href"
+                },
+                "alt": {
+                    "type": "string"
+                },
+                "height": {
+                    "type": "string"
+                },
+                "width": {
+                    "type": "string"
+                },
+                "role": {
+                    "type": "string"
+                }
+            }
+        },
+        "LandingDataItem": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "enum": [
+                        "paragraph",
+                        "list",
+                        "table",
+                        "markdown",
+                        "text"
+                    ]
+                },
+                "text": {
+                    "type": "string",
+                    "contentType": "Markdown"
+                },
+                "style": {
+                    "type": "string"
+                },
+                "className": {
+                    "type": "string"
+                },
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/LandingDataListItem"
+                    }
+                },
+                "columns": {},
+                "rows": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/LandingDataRow"
+                    }
+                },
+                "html": {
+                    "type": "string",
+                    "contentType": "Html"
+                }
+            }
+        },
+        "LandingDataListItem": {
+            "type": "object",
+            "properties": {
+                "text": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "content": {
+                    "type": "string",
+                    "contentType": "Markdown"
+                },
+                "html": {
+                    "type": "string",
+                    "contentType": "Html"
+                },
+                "href": {
+                    "type": "string",
+                    "contentType": "Href"
+                },
+                "image": {
+                    "$ref": "#/definitions/LandingDataImage"
+                }
+            }
+        },
+        "LandingDataMenu": {
+            "type": "object",
+            "properties": {
+                "title": {
+                    "type": "string"
+                },
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/LandingDataMenuItem"
+                    }
+                }
+            }
+        },
+        "LandingDataMenuItem": {
+            "type": "object",
+            "properties": {
+                "href": {
+                    "type": "string",
+                    "contentType": "Href"
+                },
+                "text": {
+                    "type": "string"
+                }
+            }
+        },
+        "LandingDataRow": {
+            "type": "object",
+            "properties": {
+                "title": {
+                    "type": "string"
+                },
+                "values": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/LandingDataRowValue"
+                    }
+                }
+            }
+        },
+        "LandingDataRowValue": {
+            "type": "object",
+            "properties": {
+                "href": {
+                    "type": "string",
+                    "contentType": "Href"
+                }
+            }
+        },
+        "LandingDataSection": {
+            "type": "object",
+            "properties": {
+                "title": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                },
+                "text": {
+                    "type": "string"
+                },
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/LandingDataItem"
+                    }
+                }
+            }
+        },
+        "LandingDataAbstract": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string",
+                    "contentType": "Markdown"
+                },
+                "aside": {
+                    "$ref": "#/definitions/LandingDataAside"
+                },
+                "menu": {
+                    "$ref": "#/definitions/LandingDataMenu"
+                }
+            }
+        }
+    },
+    "type": "object",
+    "properties": {
+        "title": {
+            "type": "string"
+        },
+        "titleSuffix": {
+            "type": "string"
+        },
+        "metadata": {},
+        "abstract": {
+            "$ref": "#/definitions/LandingDataAbstract"
+        },
+        "sections": {
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/LandingDataSection"
+            }
+        },
+        "documentType": {
+            "type": "string"
+        },
+        "$schema": {
+            "type": "string"
+        }
+    }
+}

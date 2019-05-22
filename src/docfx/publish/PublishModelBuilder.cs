@@ -3,6 +3,7 @@
 
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace Microsoft.Docs.Build
@@ -66,7 +67,7 @@ namespace Microsoft.Docs.Build
 
                     foreach (var conflictingFile in files.Keys)
                     {
-                        if (_publishItems.TryRemove(conflictingFile, out var item) && item.Path != null)
+                        if (_publishItems.TryRemove(conflictingFile, out var item) && item.Path != null && IsInsideOutputFolder(item, conflictingFile.Docset))
                         {
                             context.Output.Delete(item.Path, legacy);
                         }
@@ -93,7 +94,7 @@ namespace Microsoft.Docs.Build
 
                 foreach (var conflictingFile in conflictingFiles)
                 {
-                    if (_publishItems.TryRemove(conflictingFile, out var item) && item.Path != null)
+                    if (_publishItems.TryRemove(conflictingFile, out var item) && item.Path != null && IsInsideOutputFolder(item, conflictingFile.Docset))
                     {
                         context.Output.Delete(item.Path, legacy);
                     }
@@ -105,7 +106,7 @@ namespace Microsoft.Docs.Build
             {
                 if (_filesBySiteUrl.TryRemove(file.SiteUrl, out _))
                 {
-                    if (_publishItems.TryRemove(file, out var item) && item.Path != null)
+                    if (_publishItems.TryRemove(file, out var item) && item.Path != null && IsInsideOutputFolder(item, file.Docset))
                     {
                         context.Output.Delete(item.Path, legacy);
                     }
@@ -120,11 +121,22 @@ namespace Microsoft.Docs.Build
                     .ThenBy(item => item.Url)
                     .ThenBy(item => item.RedirectUrl)
                     .ToArray(),
+                MonikerGroups = _publishItems.Values
+                    .Where(item => !string.IsNullOrEmpty(item.MonikerGroup))
+                    .GroupBy(item => item.MonikerGroup)
+                    .ToDictionary(g => g.Key, g => g.First().Monikers),
             };
 
             var fileManifests = _publishItems.ToDictionary(item => item.Key, item => item.Value);
 
             return (model, fileManifests);
+        }
+
+        private bool IsInsideOutputFolder(PublishItem item, Docset docset)
+        {
+            var outputFilePath = PathUtility.NormalizeFolder(Path.Combine(docset.DocsetPath, docset.Config.Output.Path, item.Path));
+            var outputFolderPath = PathUtility.NormalizeFolder(Path.Combine(docset.DocsetPath, docset.Config.Output.Path));
+            return outputFilePath.StartsWith(outputFolderPath);
         }
     }
 }
