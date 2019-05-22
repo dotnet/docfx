@@ -9,7 +9,7 @@ namespace Microsoft.Docs.Build
 {
     internal class MonikerProvider
     {
-        private readonly List<(Func<string, bool> glob, string monikerRange)> _rules = new List<(Func<string, bool>, string)>();
+        private readonly List<(Func<string, bool> glob, (string monikerRange, IEnumerable<string> monikers))> _rules = new List<(Func<string, bool>, (string, IEnumerable<string>))>();
         private readonly MonikerRangeParser _rangeParser;
 
         public MonikerComparer Comparer { get; }
@@ -22,15 +22,14 @@ namespace Microsoft.Docs.Build
                 var (_, content, _) = RestoreMap.GetRestoredFileContent(docset, docset.Config.MonikerDefinition);
                 monikerDefinition = JsonUtility.Deserialize<MonikerDefinitionModel>(content, docset.Config.MonikerDefinition);
             }
+            _rangeParser = new MonikerRangeParser(monikerDefinition);
+            Comparer = new MonikerComparer(monikerDefinition);
 
             foreach (var (key, monikerRange) in docset.Config.MonikerRange)
             {
-                _rules.Add((GlobUtility.CreateGlobMatcher(key), monikerRange));
+                _rules.Add((GlobUtility.CreateGlobMatcher(key), (monikerRange, _rangeParser.Parse(monikerRange))));
             }
             _rules.Reverse();
-
-            _rangeParser = new MonikerRangeParser(monikerDefinition);
-            Comparer = new MonikerComparer(monikerDefinition);
         }
 
         public (List<Error> errors, List<string> monikers) GetFileLevelMonikers(Document file, MetadataProvider metadataProvider)
@@ -50,12 +49,12 @@ namespace Microsoft.Docs.Build
             Error error = null;
             string configMonikerRange = null;
             var configMonikers = new List<string>();
-            foreach (var (glob, monikerRange) in _rules)
+            foreach (var (glob, (monikerRange, monikers)) in _rules)
             {
                 if (glob(file.FilePath))
                 {
                     configMonikerRange = monikerRange;
-                    configMonikers.AddRange(_rangeParser.Parse(monikerRange));
+                    configMonikers.AddRange(monikers);
                     break;
                 }
             }

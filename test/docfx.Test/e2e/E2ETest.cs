@@ -33,7 +33,7 @@ namespace Microsoft.Docs.Build
 
             // show multiple errors with line info
             "publish-url-conflict", "output-path-conflict", "uid-conflict", "redirection-conflict",
-            "redirected-id-conflict", "circular-reference", "moniker-overlapping", "empty-monikers",
+            "redirected-id-conflict", "circular-reference", "moniker-overlapping", "empty-monikers", "moniker-range-invalid"
         };
 
         private static readonly ConcurrentDictionary<string, (int ordinal, string spec)> s_mockRepos = new ConcurrentDictionary<string, (int ordinal, string spec)>();
