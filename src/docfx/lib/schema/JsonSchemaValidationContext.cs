@@ -22,26 +22,27 @@ namespace Microsoft.Docs.Build
             _definitions.Add("#", root);
         }
 
-        public JsonSchema GetDefinition(JsonSchema jsonSchema, HashSet<string> recursions = null, string key = "#")
+        public JsonSchema GetDefinition(JsonSchema jsonSchema)
+            => GetDefinitionCore(jsonSchema);
+
+        private JsonSchema GetDefinitionCore(JsonSchema jsonSchema, HashSet<string> recursions = null)
         {
             recursions = recursions ?? new HashSet<string>();
 
-            if (recursions.Add(key) && jsonSchema != null && !jsonSchema.Properties.TryGetValue("$ref", out _) && !string.IsNullOrEmpty(jsonSchema.Ref))
+            if (jsonSchema != null &&
+                !jsonSchema.Properties.TryGetValue("$ref", out _) &&
+                !string.IsNullOrEmpty(jsonSchema.Ref) &&
+                recursions.Add(jsonSchema.Ref))
             {
-                var (subKey, sub) = GetDefinitionCore(jsonSchema.Ref);
-                return GetDefinition(sub, recursions, subKey);
+                if (_definitions.TryGetValue(jsonSchema.Ref, out var schema))
+                {
+                    return GetDefinitionCore(schema, recursions);
+                }
+
+                throw new ApplicationException($"Could not found `{jsonSchema.Ref}` schema definition");
             }
 
             return jsonSchema;
-        }
-
-        private (string key, JsonSchema schema) GetDefinitionCore(SourceInfo<string> @ref)
-        {
-            Debug.Assert(!string.IsNullOrEmpty(@ref));
-
-            return _definitions.TryGetValue(@ref, out var schema)
-                ? (@ref, schema)
-                : throw Errors.SchemaDefinitionNotFound(@ref).ToException();
         }
     }
 }
