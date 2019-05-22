@@ -19,6 +19,11 @@ namespace Microsoft.Docs.Build
             _monikerProductInfoDictionary = InitializeMonikers(monikerDefinition.Monikers);
         }
 
+        public List<string> GetSortedMonikerNameList()
+        {
+            return _monikerProductInfoDictionary.Keys.ToList();
+        }
+
         public IEnumerable<string> Visit(ComparatorExpression expression)
         {
             Debug.Assert(expression.Operand != null);
@@ -66,7 +71,7 @@ namespace Microsoft.Docs.Build
         private static Dictionary<string, MonikerProductInfo> InitializeMonikers(IEnumerable<Moniker> monikers)
         {
             var monikerNameList = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-            var productNameDictionary = new Dictionary<string, List<string>>(StringComparer.OrdinalIgnoreCase);
+            var productNameDictionary = new SortedDictionary<string, List<Moniker>>(StringComparer.OrdinalIgnoreCase);
 
             foreach (var moniker in monikers)
             {
@@ -75,25 +80,28 @@ namespace Microsoft.Docs.Build
                     throw Errors.MonikerNameConflict(moniker.MonikerName).ToException();
                 }
 
-                if (productNameDictionary.TryGetValue(moniker.ProductName, out List<string> list))
+                if (productNameDictionary.TryGetValue(moniker.ProductName, out List<Moniker> list))
                 {
-                    list.Add(moniker.MonikerName);
+                    list.Add(moniker);
                 }
                 else
                 {
-                    productNameDictionary[moniker.ProductName] = new List<string> { moniker.MonikerName };
+                    productNameDictionary[moniker.ProductName] = new List<Moniker> { moniker };
                 }
             }
 
             var result = new Dictionary<string, MonikerProductInfo>(StringComparer.OrdinalIgnoreCase);
             foreach (var productMonikerList in productNameDictionary.Values)
             {
-                for (var i = 0; i < productMonikerList.Count(); i++)
+                var sortedMonikerNameList = productMonikerList.OrderBy(moniker => moniker.Order)
+                                                              .Select(moniker => moniker.MonikerName)
+                                                              .ToList();
+                for (var i = 0; i < sortedMonikerNameList.Count(); i++)
                 {
-                    result[productMonikerList[i]] = new MonikerProductInfo
+                    result[sortedMonikerNameList[i]] = new MonikerProductInfo
                     {
                         Index = i,
-                        OrderedProductMonikerNames = productMonikerList,
+                        OrderedProductMonikerNames = sortedMonikerNameList,
                     };
                 }
             }
