@@ -562,8 +562,8 @@ outputs:
   docs/c.json: |
     {"content":{"name":"name for c","summary":"<p>Link to <a href=\"a.json\">name for a</a></p>\n","inlineDescription":"description for c","uid":"c"}}
   .errors.log: |
-    ["error","circular-reference","Found circular reference: 'docs/a.json' --> 'docs/b.json' --> 'docs/a.json'","docs/a.json"]
-    ["error","circular-reference","Found circular reference: 'docs/b.json' --> 'docs/a.json' --> 'docs/b.json'","docs/b.json"]
+    ["error","circular-reference","Build has identified file(s) referencing each other: 'docs/a.json' --> 'docs/b.json' --> 'docs/a.json'","docs/a.json"]
+    ["error","circular-reference","Build has identified file(s) referencing each other: 'docs/b.json' --> 'docs/a.json' --> 'docs/b.json'","docs/b.json"]
 ---
 # SDP cyclic xref reference whose display properties referring to another uid
 # b.json -> c.json -> b.json && b.json -> c.json -> b.json && c.json -> b.json -> c.json
@@ -595,9 +595,9 @@ inputs:
     }
 outputs:
   .errors.log: | 
-    ["error","circular-reference","Found circular reference: 'docs/c.json' --> 'docs/b.json' --> 'docs/c.json'","docs/c.json"]
-    ["error","circular-reference","Found circular reference: 'docs/b.json' --> 'docs/c.json' --> 'docs/b.json'","docs/b.json"]
-    ["error","circular-reference","Found circular reference: 'docs/a.json' --> 'docs/b.json' --> 'docs/c.json' --> 'docs/b.json'","docs/a.json"]
+    ["error","circular-reference","Build has identified file(s) referencing each other: 'docs/c.json' --> 'docs/b.json' --> 'docs/c.json'","docs/c.json"]
+    ["error","circular-reference","Build has identified file(s) referencing each other: 'docs/b.json' --> 'docs/c.json' --> 'docs/b.json'","docs/b.json"]
+    ["error","circular-reference","Build has identified file(s) referencing each other: 'docs/a.json' --> 'docs/b.json' --> 'docs/c.json' --> 'docs/b.json'","docs/a.json"]
 ---
 # SDP cyclic xref reference to itself
 inputs:
@@ -612,7 +612,7 @@ inputs:
     }
 outputs:
   .errors.log: |
-    ["error","circular-reference","Found circular reference: 'docs/a.json' --> 'docs/a.json'","docs/a.json"]
+    ["error","circular-reference","Build has identified file(s) referencing each other: 'docs/a.json' --> 'docs/a.json'","docs/a.json"]
 ---
 # SDP non-cyclic xref reference, whose property references can be resolved
 inputs:
