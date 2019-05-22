@@ -14,6 +14,12 @@ namespace Microsoft.Docs.Build
         //-------------------------------------------
 
         /// <summary>
+        /// Definitions of json schema
+        /// TODO: support json schema definitions
+        /// </summary>
+        public Dictionary<string, JsonSchema> Definitions { get; set; } = new Dictionary<string, JsonSchema>();
+
+        /// <summary>
         /// Type of the current value.
         /// </summary>
         [JsonConverter(typeof(OneOrManyConverter))]
@@ -48,7 +54,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public string[] Required { get; set; } = Array.Empty<string>();
 
-        // JSON schema custom extensions
+        // JSON schema custom validation extensions
         //-------------------------------------------
 
         /// <summary>
@@ -65,5 +71,13 @@ namespace Microsoft.Docs.Build
         /// Properties that are reserved by the system.
         /// </summary>
         public string[] Reserved { get; set; } = Array.Empty<string>();
+
+        // JSON schema custom transform extensions
+        //--------------------------------------------
+
+        /// <summary>
+        /// Properties that are transformed using specified pipeline like 'markup'
+        /// </summary>
+        public JsonSchemaContentType ContentType { get; set; }
     }
 }

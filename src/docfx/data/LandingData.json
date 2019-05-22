@@ -1,0 +1,234 @@
+{
+    "definitions": {
+        "LandingDataAside": {
+            "$id": "landingDataAside",
+            "type": "object",
+            "properties": {
+                "title": {
+                    "type": "string"
+                },
+                "width": {
+                    "type": "string"
+                },
+                "href": {
+                    "type": "string",
+                    "contentType": "Href"
+                },
+                "image": {
+                    "$ref": "landingDataImage"
+                }
+            }
+        },
+        "LandingDataImage": {
+            "$id": "landingDataImage",
+            "type": "object",
+            "properties": {
+                "href": {
+                    "type": "string",
+                    "contentType": "Href"
+                },
+                "src": {
+                    "type": "string",
+                    "contentType": "Href"
+                },
+                "alt": {
+                    "type": "string"
+                },
+                "height": {
+                    "type": "string"
+                },
+                "width": {
+                    "type": "string"
+                },
+                "role": {
+                    "type": "string"
+                }
+            }
+        },
+        "LandingDataItem": {
+            "$id": "landingDataItem",
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "enum": [
+                        "paragraph",
+                        "list",
+                        "table",
+                        "markdown",
+                        "text"
+                    ]
+                },
+                "text": {
+                    "type": "string",
+                    "contentType": "Markdown"
+                },
+                "style": {
+                    "type": "string"
+                },
+                "className": {
+                    "type": "string"
+                },
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "landingDataListItem"
+                    }
+                },
+                "columns": {},
+                "rows": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "landingDataRow"
+                    }
+                },
+                "html": {
+                    "type": "string",
+                    "contentType": "Html"
+                }
+            }
+        },
+        "LandingDataListItem": {
+            "$id": "landingDataListItem",
+            "type": "object",
+            "properties": {
+                "text": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "content": {
+                    "type": "string",
+                    "contentType": "Markdown"
+                },
+                "html": {
+                    "type": "string",
+                    "contentType": "Html"
+                },
+                "href": {
+                    "type": "string",
+                    "contentType": "Href"
+                },
+                "image": {
+                    "$ref": "landingDataImage"
+                }
+            }
+        },
+        "LandingDataMenu": {
+            "$id": "landingDataMenu",
+            "type": "object",
+            "properties": {
+                "title": {
+                    "type": "string"
+                },
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "landingDataMenuItem"
+                    }
+                }
+            }
+        },
+        "LandingDataMenuItem": {
+            "$id": "landingDataMenuItem",
+            "type": "object",
+            "properties": {
+                "href": {
+                    "type": "string",
+                    "contentType": "Href"
+                },
+                "text": {
+                    "type": "string"
+                }
+            }
+        },
+        "LandingDataRow": {
+            "$id": "landingDataRow",
+            "type": "object",
+            "properties": {
+                "title": {
+                    "type": "string"
+                },
+                "values": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "landingDataRowValue"
+                    }
+                }
+            }
+        },
+        "LandingDataRowValue": {
+            "$id": "landingDataRowValue",
+            "type": "object",
+            "properties": {
+                "href": {
+                    "type": "string",
+                    "contentType": "Href"
+                }
+            }
+        },
+        "LandingDataSection": {
+            "$id": "landingDataSection",
+            "type": "object",
+            "properties": {
+                "title": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                },
+                "text": {
+                    "type": "string"
+                },
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "landingDataItem"
+                    }
+                }
+            }
+        },
+        "LandingDataAbstract": {
+            "$id": "landingDataAbstract",
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string",
+                    "contentType": "Markdown"
+                },
+                "aside": {
+                    "$ref": "landingDataAside"
+                },
+                "menu": {
+                    "$ref": "landingDataMenu"
+                }
+            }
+        }
+    },
+    "type": "object",
+    "properties": {
+        "title": {
+            "type": "string"
+        },
+        "titleSuffix": {
+            "type": "string"
+        },
+        "metadata": {},
+        "abstract": {
+            "$ref": "landingDataAbstract"
+        },
+        "sections": {
+            "type": "array",
+            "items": {
+                "$ref": "landingDataSection"
+            }
+        },
+        "documentType": {
+            "type": "string"
+        },
+        "$schema": {
+            "type": "string"
+        }
+    }
+}
