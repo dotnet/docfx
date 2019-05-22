@@ -12,11 +12,11 @@ namespace Microsoft.Docs.Build
         public static List<Error> Validate(JsonSchema schema, JToken token)
         {
             var errors = new List<Error>();
-            Validate(schema, token, errors, null);
+            Validate(schema, token, errors);
             return errors;
         }
 
-        private static void Validate(JsonSchema schema, JToken token, List<Error> errors, string name)
+        private static void Validate(JsonSchema schema, JToken token, List<Error> errors)
         {
             if (!ValidateType(schema, token, errors))
             {
@@ -30,7 +30,7 @@ namespace Microsoft.Docs.Build
                     break;
 
                 case JArray array:
-                    ValidateArray(schema, errors, array, name);
+                    ValidateArray(schema, errors, array);
                     break;
 
                 case JObject map:
@@ -60,21 +60,21 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static void ValidateArray(JsonSchema schema, List<Error> errors, JArray array, string name)
+        private static void ValidateArray(JsonSchema schema, List<Error> errors, JArray array)
         {
             if (schema.Items != null)
             {
                 foreach (var item in array)
                 {
-                    Validate(schema.Items, item, errors, name);
+                    Validate(schema.Items, item, errors);
                 }
             }
 
             if (schema.MaxItems.HasValue && array.Count > schema.MaxItems.Value)
-                errors.Add(Errors.ArrayLengthInvalid(JsonUtility.GetSourceInfo(array), name ?? array.Path, maxItems: schema.MaxItems));
+                errors.Add(Errors.ArrayLengthInvalid(JsonUtility.GetSourceInfo(array), array.Path, maxItems: schema.MaxItems));
 
             if (schema.MinItems.HasValue && array.Count < schema.MinItems.Value)
-                errors.Add(Errors.ArrayLengthInvalid(JsonUtility.GetSourceInfo(array), name ?? array.Path, minItems: schema.MinItems));
+                errors.Add(Errors.ArrayLengthInvalid(JsonUtility.GetSourceInfo(array), array.Path, minItems: schema.MinItems));
         }
 
         private static void ValidateObject(JsonSchema schema, List<Error> errors, JObject map)
@@ -85,7 +85,7 @@ namespace Microsoft.Docs.Build
                 {
                     if (!schema.Properties.Keys.Contains(key))
                     {
-                        Validate(schema.AdditionalProperties.additionalPropertyJsonSchema, value, errors, key);
+                        Validate(schema.AdditionalProperties.additionalPropertyJsonSchema, value, errors);
                     }
                 }
             }
@@ -112,7 +112,7 @@ namespace Microsoft.Docs.Build
             {
                 if (schema.Properties.TryGetValue(key, out var propertySchema))
                 {
-                    Validate(propertySchema, value, errors, key);
+                    Validate(propertySchema, value, errors);
                 }
             }
         }
