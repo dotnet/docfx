@@ -211,7 +211,7 @@ Run `{Environment.CommandLine}` in `{Directory.GetCurrentDirectory()}`
 ```
 ";
 
-            if (Environment.UserInteractive)
+            if (ProcessUtility.UserInteractive)
             {
                 var title = $"docfx crash report: {exception.GetType()}";
                 var issueUrl = $"https://github.com/dotnet/docfx/issues/new?title={HttpUtility.UrlEncode(title)}&body={HttpUtility.UrlEncode(body)}";
