@@ -1,0 +1,42 @@
+{
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+        "name": {
+            "type": "string"
+        },
+        "fullName": {
+            "type": "string"
+        },
+        "description": {
+            "type": "string"
+        },
+        "summary": {
+            "type": "string",
+            "contentType": "Markdown"
+        },
+        "inlineDescription": {
+            "type": "string",
+            "contentType": "InlineMarkdown"
+        },
+        "uid": {
+            "type": "string"
+        },
+        "xref": {
+            "type": "string",
+            "contentType": "Xref"
+        },
+        "data": {
+            "$ref": "#"
+        },
+        "array": {
+            "type": "array",
+            "items": {
+                "$ref": "#"
+            }
+        },
+        "$schema": {
+            "type": "string"
+        }
+    }
+}

@@ -36,7 +36,7 @@ namespace Microsoft.Docs.Build
                     return GetDefinitionCore(schema, recursions);
                 }
 
-                throw new ApplicationException($"Could not found `{jsonSchema.Ref}` schema definition");
+                throw new ApplicationException($"Could not find `{jsonSchema.Ref}` schema definition");
             }
 
             return jsonSchema;
