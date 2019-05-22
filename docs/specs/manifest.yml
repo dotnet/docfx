@@ -36,31 +36,6 @@ outputs:
       ]
     }
 ---
-# Publish manifest output contains file hash
-repos:
-  https://docs.com/output-hash:
-  - files:
-      docfx.yml: |
-        files: '**'
-        redirections:
-          c.md: "/"
-      a.md:
-      b.png:
-      TOC.md:
-outputs:
-  a.json:
-  b.png:
-  toc.json:
-  .publish.json: |
-    {
-      "files": [
-        { "url": "/c", "!hash": null },
-        { "url": "/a", "hash": "b027022eedc0b168a566347362e3c918cf28b699" },
-        { "url": "/b.png", "hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709" },
-        { "url": "/toc.json", "hash": "ad75fac1a867d604c1df88742ed36d56aecd1926" }
-      ]
-    }
----
 # Redirections outputs redirect_url to .publish.json, but does not have output file
 inputs:
   docfx.yml: |

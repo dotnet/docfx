@@ -61,12 +61,12 @@ namespace Microsoft.Docs.Build
                 if (file.Docset.Legacy)
                 {
                     var output = context.Template.TransformTocMetadata(JsonUtility.ToJObject(model));
-                    publishItem.Hash = context.Output.WriteJsonWithHash(output, outputPath);
+                    context.Output.WriteJson(output, outputPath);
                     context.Output.WriteJson(model.Metadata, LegacyUtility.ChangeExtension(outputPath, ".mta.json"));
                 }
                 else
                 {
-                    publishItem.Hash = context.Output.WriteJsonWithHash(model, outputPath);
+                    context.Output.WriteJson(model, outputPath);
                 }
             }
 

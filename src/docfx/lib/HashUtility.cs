@@ -54,15 +54,6 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public static string GetFileSha1Hash(string fileName)
-        {
-            using (var stream = File.OpenRead(fileName))
-            using (var sha1 = new SHA1CryptoServiceProvider())
-            {
-                return ToHexString(sha1.ComputeHash(stream));
-            }
-        }
-
         private static string ToHexString(byte[] bytes, int digits = 0)
         {
             var formatted = new StringBuilder(2 * bytes.Length);

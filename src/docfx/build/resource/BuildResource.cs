@@ -28,7 +28,6 @@ namespace Microsoft.Docs.Build
             {
                 Url = file.SiteUrl,
                 Path = publishPath,
-                Hash = HashUtility.GetFileSha1Hash(Path.Combine(file.Docset.DocsetPath, file.FilePath)),
                 Locale = file.Docset.Locale,
                 Monikers = monikers,
                 MonikerGroup = MonikerUtility.GetGroup(monikers),
