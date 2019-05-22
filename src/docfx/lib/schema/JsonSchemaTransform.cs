@@ -28,9 +28,12 @@ namespace Microsoft.Docs.Build
                     token.Replace(TransformScalar(file, context, schema, scalar, errors, buildChild));
                     break;
                 case JArray array:
-                    foreach (var a in array)
+                    if (schema.Items != null)
                     {
-                        Transform(jsonSchemaContext, file, context, schema, a, errors, buildChild);
+                        foreach (var item in array)
+                        {
+                            Transform(jsonSchemaContext, file, context, schema.Items, item, errors, buildChild);
+                        }
                     }
                     break;
                 case JObject obj:
@@ -100,7 +103,7 @@ namespace Microsoft.Docs.Build
                         return htmlLink;
                     });
 
-                    content = new SourceInfo<string>(htmlWithLinks, content);
+                    content = new SourceInfo<string>(HtmlUtility.StripTags(HtmlUtility.LoadHtml(htmlWithLinks)).OuterHtml, content);
                     break;
 
                 case JsonSchemaContentType.Xref:
