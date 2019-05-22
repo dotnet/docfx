@@ -7,23 +7,31 @@ using System.Diagnostics;
 
 namespace Microsoft.Docs.Build
 {
-    internal static class JsonSchemaUtility
+    internal class JsonSchemaValidationContext
     {
-        public static JsonSchema GetDefinition(JsonSchema jsonSchema, JsonSchema root, HashSet<string> recursion = null, string key = "root")
+        public JsonSchema Root { get; private set; }
+
+        public JsonSchemaValidationContext(JsonSchema root)
         {
             Debug.Assert(root != null);
+
+            Root = root;
+        }
+
+        public JsonSchema GetDefinition(JsonSchema jsonSchema, HashSet<string> recursion = null, string key = "root")
+        {
             recursion = recursion ?? new HashSet<string>();
 
             if (recursion.Add(key) && jsonSchema != null && !jsonSchema.Properties.TryGetValue("$ref", out _) && !string.IsNullOrEmpty(jsonSchema.Ref))
             {
-                var (subKey, sub) = GetDefinitionCore(jsonSchema.Ref, root);
-                return GetDefinition(sub, root, recursion, subKey ?? "root");
+                var (subKey, sub) = GetDefinitionCore(jsonSchema.Ref);
+                return GetDefinition(sub, recursion, subKey ?? "root");
             }
 
             return jsonSchema;
         }
 
-        private static (string key, JsonSchema schema) GetDefinitionCore(string @ref, JsonSchema root)
+        private (string key, JsonSchema schema) GetDefinitionCore(string @ref)
         {
             Debug.Assert(!string.IsNullOrEmpty(@ref));
 
@@ -41,7 +49,7 @@ namespace Microsoft.Docs.Build
             if (string.IsNullOrWhiteSpace(jsonPointer))
             {
                 // root pointer ref
-                return (null, root);
+                return (null, Root);
             }
 
             if (!jsonPointer.StartsWith("definitions", StringComparison.OrdinalIgnoreCase))
@@ -57,7 +65,7 @@ namespace Microsoft.Docs.Build
                 throw new NotSupportedException("Non-root level schema definition is not supported");
             }
 
-            if (root.Definitions.TryGetValue(parts[1], out var schema))
+            if (Root.Definitions.TryGetValue(parts[1], out var schema))
             {
                 // definition ref
                 return (parts[1], schema);
