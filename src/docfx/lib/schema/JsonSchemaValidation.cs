@@ -12,11 +12,11 @@ namespace Microsoft.Docs.Build
         public static List<Error> Validate(JsonSchema schema, JToken token)
         {
             var errors = new List<Error>();
-            Validate(new JsonSchemaValidationContext(schema), schema, token, errors);
+            Validate(new JsonSchemaContext(schema), schema, token, errors);
             return errors;
         }
 
-        private static void Validate(JsonSchemaValidationContext context, JsonSchema schema, JToken token, List<Error> errors)
+        private static void Validate(JsonSchemaContext context, JsonSchema schema, JToken token, List<Error> errors)
         {
             schema = context.GetDefinition(schema);
 
@@ -62,7 +62,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static void ValidateArray(JsonSchemaValidationContext context, JsonSchema schema, List<Error> errors, JArray array)
+        private static void ValidateArray(JsonSchemaContext context, JsonSchema schema, List<Error> errors, JArray array)
         {
             if (schema.Items != null)
             {
@@ -73,7 +73,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static void ValidateObject(JsonSchemaValidationContext context, JsonSchema schema, List<Error> errors, JObject map)
+        private static void ValidateObject(JsonSchemaContext context, JsonSchema schema, List<Error> errors, JObject map)
         {
             if (schema.AdditionalProperties.additionalPropertyJsonSchema != null)
             {

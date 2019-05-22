@@ -14,12 +14,14 @@ namespace Microsoft.Docs.Build
         {
             var errors = new List<Error>();
 
-            Transform(file, context, schema, token, errors, buildChild);
+            Transform(new JsonSchemaContext(schema), file, context, schema, token, errors, buildChild);
             return (errors, token);
         }
 
-        private static void Transform(Document file, Context context, JsonSchema schema, JToken token, List<Error> errors, Action<Document> buildChild)
+        private static void Transform(JsonSchemaContext jsonSchemaContext, Document file, Context context, JsonSchema schema, JToken token, List<Error> errors, Action<Document> buildChild)
         {
+            schema = jsonSchemaContext.GetDefinition(schema);
+
             switch (token)
             {
                 case JValue scalar:
@@ -28,7 +30,7 @@ namespace Microsoft.Docs.Build
                 case JArray array:
                     foreach (var a in array)
                     {
-                        Transform(file, context, schema, a, errors, buildChild);
+                        Transform(jsonSchemaContext, file, context, schema, a, errors, buildChild);
                     }
                     break;
                 case JObject obj:
@@ -36,7 +38,7 @@ namespace Microsoft.Docs.Build
                     {
                         if (schema.Properties.TryGetValue(key, out var propertySchema))
                         {
-                            Transform(file, context, propertySchema, value, errors, buildChild);
+                            Transform(jsonSchemaContext, file, context, propertySchema, value, errors, buildChild);
                         }
                     }
                     break;

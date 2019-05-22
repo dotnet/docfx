@@ -8,12 +8,12 @@ using System.Linq;
 
 namespace Microsoft.Docs.Build
 {
-    internal class JsonSchemaValidationContext
+    internal class JsonSchemaContext
     {
         private readonly JsonSchema _root;
         private readonly Dictionary<string, JsonSchema> _definitions;
 
-        public JsonSchemaValidationContext(JsonSchema root)
+        public JsonSchemaContext(JsonSchema root)
         {
             Debug.Assert(root != null);
 
