@@ -100,7 +100,7 @@ namespace Microsoft.Docs.Build
                         return htmlLink;
                     });
 
-                    content = new SourceInfo<string>(htmlWithLinks, content);
+                    content = new SourceInfo<string>(HtmlUtility.StripTags(HtmlUtility.LoadHtml(htmlWithLinks)).OuterHtml, content);
                     break;
 
                 case JsonSchemaContentType.Xref:
