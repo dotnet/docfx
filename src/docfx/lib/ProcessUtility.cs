@@ -20,8 +20,6 @@ namespace Microsoft.Docs.Build
         private static readonly TimeSpan s_defaultLockExpireTime = TimeSpan.FromHours(6);
         private static readonly AsyncLocal<ImmutableStack<string>> t_mutexRecursionStack = new AsyncLocal<ImmutableStack<string>>();
 
-        public static bool UserInteractive => false;
-
         public static bool IsExclusiveLockHeld(string lockName)
         {
             Debug.Assert(!string.IsNullOrEmpty(lockName));
