@@ -1,5 +1,4 @@
 {
-    "$id": "testData",
     "type": "object",
     "additionalProperties": false,
     "properties": {
@@ -28,12 +27,12 @@
             "contentType": "Xref"
         },
         "data": {
-            "$ref": "testData"
+            "$ref": "#"
         },
         "array": {
             "type": "array",
             "items": {
-                "$ref": "testData"
+                "$ref": "#"
             }
         },
         "$schema": {

@@ -14,10 +14,15 @@ namespace Microsoft.Docs.Build
         //-------------------------------------------
 
         /// <summary>
-        /// Definitions of json schema
-        /// TODO: support json schema definitions
+        /// Json schema defnitions
         /// </summary>
-        public Dictionary<string, JsonSchema> Definitions { get; set; } = new Dictionary<string, JsonSchema>();
+        public Dictionary<string, JsonSchema> Definitions { get; } = new Dictionary<string, JsonSchema>(StringComparer.OrdinalIgnoreCase);
+
+        /// <summary>
+        /// Json schema ref pointer
+        /// </summary>
+        [JsonProperty("$ref")]
+        public string Ref { get; set; }
 
         /// <summary>
         /// Type of the current value.

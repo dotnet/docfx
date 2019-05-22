@@ -27,6 +27,7 @@ namespace Microsoft.Docs.Build
         private static readonly JsonSerializer s_serializer = JsonSerializer.Create(new JsonSerializerSettings
         {
             NullValueHandling = NullValueHandling.Ignore,
+            MetadataPropertyHandling = MetadataPropertyHandling.Ignore,
             Converters = s_jsonConverters,
             ContractResolver = new JsonContractResolver { NamingStrategy = s_namingStrategy },
         });
@@ -34,6 +35,7 @@ namespace Microsoft.Docs.Build
         private static readonly JsonSerializer s_schemaValidationSerializer = JsonSerializer.Create(new JsonSerializerSettings
         {
             NullValueHandling = NullValueHandling.Ignore,
+            MetadataPropertyHandling = MetadataPropertyHandling.Ignore,
             Converters = s_jsonConverters,
             ContractResolver = new SchemaContractResolver { NamingStrategy = s_namingStrategy },
         });
@@ -42,6 +44,7 @@ namespace Microsoft.Docs.Build
         {
             Formatting = Formatting.Indented,
             NullValueHandling = NullValueHandling.Ignore,
+            MetadataPropertyHandling = MetadataPropertyHandling.Ignore,
             Converters = s_jsonConverters,
             ContractResolver = new JsonContractResolver { NamingStrategy = s_namingStrategy },
         });

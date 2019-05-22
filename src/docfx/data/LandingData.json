@@ -1,7 +1,6 @@
 {
     "definitions": {
         "LandingDataAside": {
-            "$id": "landingDataAside",
             "type": "object",
             "properties": {
                 "title": {
@@ -15,12 +14,11 @@
                     "contentType": "Href"
                 },
                 "image": {
-                    "$ref": "landingDataImage"
+                    "$ref": "#/definitions/LandingDataImage"
                 }
             }
         },
         "LandingDataImage": {
-            "$id": "landingDataImage",
             "type": "object",
             "properties": {
                 "href": {
@@ -46,7 +44,6 @@
             }
         },
         "LandingDataItem": {
-            "$id": "landingDataItem",
             "type": "object",
             "properties": {
                 "type": {
@@ -72,14 +69,14 @@
                 "items": {
                     "type": "array",
                     "items": {
-                        "$ref": "landingDataListItem"
+                        "$ref": "#/definitions/LandingDataListItem"
                     }
                 },
                 "columns": {},
                 "rows": {
                     "type": "array",
                     "items": {
-                        "$ref": "landingDataRow"
+                        "$ref": "#/definitions/LandingDataRow"
                     }
                 },
                 "html": {
@@ -89,7 +86,6 @@
             }
         },
         "LandingDataListItem": {
-            "$id": "landingDataListItem",
             "type": "object",
             "properties": {
                 "text": {
@@ -111,12 +107,11 @@
                     "contentType": "Href"
                 },
                 "image": {
-                    "$ref": "landingDataImage"
+                    "$ref": "#/definitions/LandingDataImage"
                 }
             }
         },
         "LandingDataMenu": {
-            "$id": "landingDataMenu",
             "type": "object",
             "properties": {
                 "title": {
@@ -125,13 +120,12 @@
                 "items": {
                     "type": "array",
                     "items": {
-                        "$ref": "landingDataMenuItem"
+                        "$ref": "#/definitions/LandingDataMenuItem"
                     }
                 }
             }
         },
         "LandingDataMenuItem": {
-            "$id": "landingDataMenuItem",
             "type": "object",
             "properties": {
                 "href": {
@@ -144,7 +138,6 @@
             }
         },
         "LandingDataRow": {
-            "$id": "landingDataRow",
             "type": "object",
             "properties": {
                 "title": {
@@ -153,13 +146,12 @@
                 "values": {
                     "type": "array",
                     "items": {
-                        "$ref": "landingDataRowValue"
+                        "$ref": "#/definitions/LandingDataRowValue"
                     }
                 }
             }
         },
         "LandingDataRowValue": {
-            "$id": "landingDataRowValue",
             "type": "object",
             "properties": {
                 "href": {
@@ -169,7 +161,6 @@
             }
         },
         "LandingDataSection": {
-            "$id": "landingDataSection",
             "type": "object",
             "properties": {
                 "title": {
@@ -184,13 +175,12 @@
                 "items": {
                     "type": "array",
                     "items": {
-                        "$ref": "landingDataItem"
+                        "$ref": "#/definitions/LandingDataItem"
                     }
                 }
             }
         },
         "LandingDataAbstract": {
-            "$id": "landingDataAbstract",
             "type": "object",
             "properties": {
                 "description": {
@@ -198,10 +188,10 @@
                     "contentType": "Markdown"
                 },
                 "aside": {
-                    "$ref": "landingDataAside"
+                    "$ref": "#/definitions/LandingDataAside"
                 },
                 "menu": {
-                    "$ref": "landingDataMenu"
+                    "$ref": "#/definitions/LandingDataMenu"
                 }
             }
         }
@@ -216,12 +206,12 @@
         },
         "metadata": {},
         "abstract": {
-            "$ref": "landingDataAbstract"
+            "$ref": "#/definitions/LandingDataAbstract"
         },
         "sections": {
             "type": "array",
             "items": {
-                "$ref": "landingDataSection"
+                "$ref": "#/definitions/LandingDataSection"
             }
         },
         "documentType": {
