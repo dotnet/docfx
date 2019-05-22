@@ -29,8 +29,9 @@ namespace Microsoft.Docs.Build
             }
             _rules.Reverse();
 
-            _rangeParser = new MonikerRangeParser(monikerDefinition);
-            Comparer = new MonikerComparer(monikerDefinition);
+            var monikersEvaluator = new EvaluatorWithMonikersVisitor(monikerDefinition);
+            _rangeParser = new MonikerRangeParser(monikersEvaluator);
+            Comparer = new MonikerComparer(monikersEvaluator.GetSortedMonikerNameList());
         }
 
         public (List<Error> errors, List<string> monikers) GetFileLevelMonikers(Document file, MetadataProvider metadataProvider)
