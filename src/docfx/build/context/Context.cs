@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
 {
@@ -25,7 +24,6 @@ namespace Microsoft.Docs.Build
         public readonly ContributionProvider ContributionProvider;
         public readonly PublishModelBuilder PublishModelBuilder;
         public readonly TemplateEngine Template;
-        public readonly JsonSchemaProvider JsonSchemaProvider;
 
         public Context(
             ErrorLog errorLog,
@@ -41,8 +39,7 @@ namespace Microsoft.Docs.Build
             GitHubUserCache gitHubUserCache,
             ContributionProvider contributionProvider,
             PublishModelBuilder publishModelBuilder,
-            TemplateEngine template,
-            JsonSchemaProvider jsonSchemaProvider)
+            TemplateEngine template)
         {
             ErrorLog = errorLog;
             Output = output;
@@ -58,7 +55,6 @@ namespace Microsoft.Docs.Build
             ContributionProvider = contributionProvider;
             PublishModelBuilder = publishModelBuilder;
             Template = template;
-            JsonSchemaProvider = jsonSchemaProvider;
         }
 
         public static Context Create(string outputPath, ErrorLog errorLog, Docset docset, Func<XrefMap> xrefMap)
@@ -76,7 +72,6 @@ namespace Microsoft.Docs.Build
             var contributionProvider = new ContributionProvider(docset, gitHubUserCache, gitCommitProvider);
             var publishModelBuilder = new PublishModelBuilder();
             var template = TemplateEngine.Create(docset);
-            var jsonSchemaProvider = new JsonSchemaProvider();
 
             return new Context(
                 errorLog,
@@ -92,8 +87,7 @@ namespace Microsoft.Docs.Build
                 gitHubUserCache,
                 contributionProvider,
                 publishModelBuilder,
-                template,
-                jsonSchemaProvider);
+                template);
         }
 
         public void Dispose()

@@ -14,9 +14,8 @@ namespace Microsoft.Docs.Build
         {
             var errors = new List<Error>();
 
-            var transformedToken = JsonUtility.DeepClone(token);
-            Transform(file, context, schema, transformedToken, errors, buildChild);
-            return (errors, transformedToken);
+            Transform(file, context, schema, token, errors, buildChild);
+            return (errors, token);
         }
 
         private static void Transform(Document file, Context context, JsonSchema schema, JToken token, List<Error> errors, Action<Document> buildChild)
@@ -65,13 +64,13 @@ namespace Microsoft.Docs.Build
 
                 case JsonSchemaContentType.Markdown:
                     var (markupErrors, html) = MarkdownUtility.ToHtml(
-                    content,
-                    file,
-                    dependencyResolver,
-                    buildChild,
-                    null,
-                    key => context.Template?.GetToken(key),
-                    MarkdownPipelineType.Markdown);
+                        content,
+                        file,
+                        dependencyResolver,
+                        buildChild,
+                        null,
+                        key => context.Template?.GetToken(key),
+                        MarkdownPipelineType.Markdown);
 
                     errors.AddRange(markupErrors);
                     content = new SourceInfo<string>(html, content);
@@ -79,13 +78,13 @@ namespace Microsoft.Docs.Build
 
                 case JsonSchemaContentType.InlineMarkdown:
                     var (inlineMarkupErrors, inlineHtml) = MarkdownUtility.ToHtml(
-                    content,
-                    file,
-                    dependencyResolver,
-                    buildChild,
-                    null,
-                    key => context.Template?.GetToken(key),
-                    MarkdownPipelineType.InlineMarkdown);
+                        content,
+                        file,
+                        dependencyResolver,
+                        buildChild,
+                        null,
+                        key => context.Template?.GetToken(key),
+                        MarkdownPipelineType.InlineMarkdown);
 
                     errors.AddRange(inlineMarkupErrors);
                     content = new SourceInfo<string>(inlineHtml, content);

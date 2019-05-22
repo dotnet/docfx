@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -22,6 +23,7 @@ namespace Microsoft.Docs.Build
         private readonly JavascriptEngine _js;
         private readonly HashSet<string> _htmlMetaHidden;
         private readonly Dictionary<string, string> _htmlMetaNames;
+        private readonly ConcurrentDictionary<string, JsonSchema> _jsonSchemas = new ConcurrentDictionary<string, JsonSchema>();
 
         public JObject Global { get; }
 
@@ -54,6 +56,20 @@ namespace Microsoft.Docs.Build
             Log.Write($"Using theme '{themeRemote}#{themeRestoreMap.DependencyLock.Commit}' at '{themePath}'");
 
             return new TemplateEngine(themePath, docset.MetadataSchema);
+        }
+
+        public JsonSchema GetJsonSchema(Schema schema)
+        {
+            if (schema == null)
+            {
+                return null;
+            }
+
+            // TODO: get schema from template
+            var schemaFilePath = $"data/{schema.Type.Name}.json";
+            return _jsonSchemas.GetOrAdd(
+                schema.Type.Name,
+                File.Exists(schemaFilePath) ? JsonUtility.Deserialize<JsonSchema>(File.ReadAllText(schemaFilePath), schemaFilePath) : null);
         }
 
         public string Render(OutputModel model, Document file, JObject rawMetadata)
