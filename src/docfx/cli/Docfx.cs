@@ -187,6 +187,7 @@ namespace Microsoft.Docs.Build
                 Console.Write(" 🚘💥🚗");
             Console.WriteLine();
 
+            var title = $"docfx crash report: {exception.GetType()}";
             var body = $@"
 # docfx crash report: {exception.GetType()}
 
@@ -210,22 +211,20 @@ Run `{Environment.CommandLine}` in `{Directory.GetCurrentDirectory()}`
 {GetDotnetInfo()}
 ```
 ";
-
-            if (ProcessUtility.UserInteractive)
+            try
             {
-                var title = $"docfx crash report: {exception.GetType()}";
                 var issueUrl = $"https://github.com/dotnet/docfx/issues/new?title={HttpUtility.UrlEncode(title)}&body={HttpUtility.UrlEncode(body)}";
 
-                Console.WriteLine("Creating an issue for https://github.com/dotnet/docfx");
                 Process.Start(new ProcessStartInfo { FileName = issueUrl, UseShellExecute = true });
             }
-            else
+            catch
             {
                 Console.WriteLine("Help us improve by creating an issue at https://github.com/dotnet/docfx:");
-                Console.WriteLine();
-                Console.ForegroundColor = ConsoleColor.Gray;
-                Console.WriteLine(body);
             }
+
+            Console.WriteLine();
+            Console.ForegroundColor = ConsoleColor.Gray;
+            Console.WriteLine(body);
             Console.ResetColor();
         }
 
