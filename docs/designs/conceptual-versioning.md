@@ -252,7 +252,7 @@ There are several scenarios:
 
 In **Restore** step, moniker definition file will be restored to local storage, which will be used to evaluate monikerRange expression.
 
-An **ordered** moniker list is provided by moniker definition file restored from `monikerDefinition`, the file structure should be:
+An moniker list is provided by moniker definition file restored from `monikerDefinition`, the file structure should be:
 
 ```json
 {
@@ -260,6 +260,7 @@ An **ordered** moniker list is provided by moniker definition file restored from
         {
             "moniker": "{monikerName}",
             "product": "{productName}",
+            "order": "{order}",
             "product_family": "{productFamilyName}",
             "platform": "{platform}",
             "display_name": "{displayName}"
@@ -272,6 +273,8 @@ An **ordered** moniker list is provided by moniker definition file restored from
 1. `moniker` is an unique identifier of this moniker. If two moniker define the same `monikerName`, an error throws.
 
 2. `product` defines the product this moniker belongs to, and the operators in monikerRange will be interpreted inside the product it belongs to.
+
+3. `order` defines the moniker order inside the current product, higher number takes the precedence, default value is 0.
 
 3. `product_family` and `platform` is the attributes of this product, which is used by portal to manage the monikers.
 

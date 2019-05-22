@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -16,6 +17,7 @@ namespace Microsoft.Docs.Build
     internal class TemplateEngine
     {
         private static readonly string[] s_resourceFolders = new[] { "global", "css", "fonts" };
+        private static readonly ConcurrentDictionary<string, JsonSchema> _jsonSchemas = new ConcurrentDictionary<string, JsonSchema>();
 
         private readonly string _templateDir;
         private readonly LiquidTemplate _liquid;
@@ -38,6 +40,20 @@ namespace Microsoft.Docs.Build
             _htmlMetaNames = metadataSchema.Properties
                 .Where(prop => !string.IsNullOrEmpty(prop.Value.HtmlMetaName))
                 .ToDictionary(prop => prop.Key, prop => prop.Value.HtmlMetaName);
+        }
+
+        public static JsonSchema GetJsonSchema(Schema schema)
+        {
+            if (schema == null)
+            {
+                return null;
+            }
+
+            // TODO: get schema from template
+            var schemaFilePath = Path.Combine(AppContext.BaseDirectory, $"data/{schema.Type.Name}.json");
+            return _jsonSchemas.GetOrAdd(
+                schema.Type.Name,
+                File.Exists(schemaFilePath) ? JsonUtility.Deserialize<JsonSchema>(File.ReadAllText(schemaFilePath), schemaFilePath) : null);
         }
 
         public static TemplateEngine Create(Docset docset)

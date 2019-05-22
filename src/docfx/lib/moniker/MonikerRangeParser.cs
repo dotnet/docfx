@@ -13,9 +13,9 @@ namespace Microsoft.Docs.Build
         private readonly ConcurrentDictionary<string, Lazy<IReadOnlyList<string>>> _cache = new ConcurrentDictionary<string, Lazy<IReadOnlyList<string>>>();
         private readonly EvaluatorWithMonikersVisitor _monikersEvaluator;
 
-        public MonikerRangeParser(MonikerDefinitionModel monikerDefinition)
+        public MonikerRangeParser(EvaluatorWithMonikersVisitor monikersEvaluator)
         {
-            _monikersEvaluator = new EvaluatorWithMonikersVisitor(monikerDefinition);
+            _monikersEvaluator = monikersEvaluator;
         }
 
         public IReadOnlyList<string> Parse(string rangeString)

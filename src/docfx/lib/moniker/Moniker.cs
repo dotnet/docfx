@@ -14,6 +14,8 @@ namespace Microsoft.Docs.Build
 
         public string ProductName { get; set; } = string.Empty;
 
+        public int Order { get; set; } = 0;
+
         [JsonExtensionData]
         public JObject ExtensionData { get; } = new JObject();
     }

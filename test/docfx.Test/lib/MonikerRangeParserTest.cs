@@ -14,18 +14,9 @@ namespace Microsoft.Docs.Build
             {
                 new Moniker
                 {
-                    MonikerName = "netcore-1.0",
-                    ProductName = ".NET Core",
-                },
-                new Moniker
-                {
-                    MonikerName = "netcore-2.0",
-                    ProductName = ".NET Core",
-                },
-                new Moniker
-                {
-                    MonikerName = "netcore-3.0",
-                    ProductName = ".NET Core",
+                    MonikerName = "dotnet-3.0",
+                    ProductName = ".NET Framework",
+                    Order = 1,
                 },
                 new Moniker
                 {
@@ -39,8 +30,21 @@ namespace Microsoft.Docs.Build
                 },
                 new Moniker
                 {
-                    MonikerName = "dotnet-3.0",
-                    ProductName = ".NET Framework",
+                    MonikerName = "netcore-1.0",
+                    ProductName = ".NET Core",
+                    Order = 1,
+                },
+                new Moniker
+                {
+                    MonikerName = "netcore-3.0",
+                    ProductName = ".NET Core",
+                    Order = 3
+                },
+                new Moniker
+                {
+                    MonikerName = "netcore-2.0",
+                    ProductName = ".NET Core",
+                    Order = 2
                 },
             }
         };
@@ -50,8 +54,9 @@ namespace Microsoft.Docs.Build
 
         public MonikerRangeParserTest()
         {
-            _monikerRangeParser = new MonikerRangeParser(_monikerDefinition);
-            _monikerComparer = new MonikerComparer(_monikerDefinition);
+            var monikersEvaluator = new EvaluatorWithMonikersVisitor(_monikerDefinition);
+            _monikerRangeParser = new MonikerRangeParser(monikersEvaluator);
+            _monikerComparer = new MonikerComparer(monikersEvaluator.GetSortedMonikerNameList());
         }
 
         [Theory]
@@ -133,7 +138,7 @@ namespace Microsoft.Docs.Build
                 }
             };
 
-            var exception = Assert.Throws<DocfxException>(() => new MonikerRangeParser(monikerDefinition));
+            var exception = Assert.Throws<DocfxException>(() => new MonikerRangeParser(new EvaluatorWithMonikersVisitor(monikerDefinition)));
             Assert.Equal("moniker-name-conflict", exception.Error.Code);
             Assert.Equal("Two or more moniker definitions have the same monikerName `netcore-1.0`", exception.Error.Message);
         }
@@ -141,7 +146,7 @@ namespace Microsoft.Docs.Build
         [Fact]
         public void TestNullDefinitionShouldFail()
         {
-            var monikerRangeParser = new MonikerRangeParser(new MonikerDefinitionModel());
+            var monikerRangeParser = new MonikerRangeParser(new EvaluatorWithMonikersVisitor(new MonikerDefinitionModel()));
             var exception = Assert.Throws<DocfxException>(() => monikerRangeParser.Parse("netcore-1.0"));
             Assert.Equal("moniker-range-invalid", exception.Error.Code);
             Assert.Equal("Invalid moniker range: 'netcore-1.0': Moniker `netcore-1.0` is not defined", exception.Error.Message);

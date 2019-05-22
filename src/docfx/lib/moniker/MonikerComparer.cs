@@ -10,9 +10,9 @@ namespace Microsoft.Docs.Build
     {
         private readonly Dictionary<string, int> _monikerOrder;
 
-        public MonikerComparer(MonikerDefinitionModel monikerDefinition)
+        public MonikerComparer(List<string> monikers)
         {
-            _monikerOrder = GetMoninkerOrder(monikerDefinition.Monikers);
+            _monikerOrder = GetMoninkerOrder(monikers);
         }
 
         public int Compare(string x, string y)
@@ -46,12 +46,12 @@ namespace Microsoft.Docs.Build
         private bool TryGetMonikerOrderFromDefinition(string moniker, out int order)
             => _monikerOrder.TryGetValue(moniker, out order);
 
-        private Dictionary<string, int> GetMoninkerOrder(List<Moniker> monikers)
+        private Dictionary<string, int> GetMoninkerOrder(List<string> monikers)
         {
             var result = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
             for (int i = 0; i < monikers.Count; i++)
             {
-                result[monikers[i].MonikerName] = i;
+                result[monikers[i]] = i;
             }
             return result;
         }

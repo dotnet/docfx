@@ -114,10 +114,11 @@ inputs:
     breadcrumb_path: {}
     toc_rel: ../TOC.yml
 outputs:
+  docs/a.json:
   toc.json:
   docs/toc.json:
   .errors.log: |
-    ["error","violate-schema","Cannot deserialize the current JSON object * into type 'System.String' because the type requires a JSON primitive value *","docs/a.yml",3,18]
+    ["warning","unexpected-type","Expect type 'String' but got 'Object'","docs/a.yml",3,18]
 ---
 # Schema documents with Href content referencing resource file, the resouce file should be outputed
 inputs:
@@ -154,6 +155,7 @@ outputs:
     { "content": {} }
   .errors.log: |
     ["info","null-value","'description' contains null value","docs/a.yml",2,1]
+    ["warning","unexpected-type","Expect type 'String' but got 'Null'","docs/a.yml",2,13]
 ---
 # Support schema documents with inline markdown content
 inputs:
