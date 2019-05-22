@@ -28,7 +28,7 @@ namespace Microsoft.Docs.Build
             switch (token)
             {
                 case JValue scalar:
-                    ValidateScalar(schema, token, errors, scalar);
+                    ValidateScalar(schema, errors, scalar);
                     break;
 
                 case JArray array:
@@ -36,7 +36,7 @@ namespace Microsoft.Docs.Build
                     break;
 
                 case JObject map:
-                    ValidateObject(context, schema, token, errors, map);
+                    ValidateObject(context, schema, errors, map);
                     break;
             }
         }
@@ -54,11 +54,11 @@ namespace Microsoft.Docs.Build
             return true;
         }
 
-        private static void ValidateScalar(JsonSchema schema, JToken token, List<Error> errors, JValue scalar)
+        private static void ValidateScalar(JsonSchema schema, List<Error> errors, JValue scalar)
         {
             if (schema.Enum != null && !schema.Enum.Contains(scalar))
             {
-                errors.Add(Errors.UndefinedValue(JsonUtility.GetSourceInfo(token), scalar, schema.Enum));
+                errors.Add(Errors.UndefinedValue(JsonUtility.GetSourceInfo(scalar), scalar, schema.Enum));
             }
         }
 
@@ -73,13 +73,34 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static void ValidateObject(JsonSchemaValidationContext context, JsonSchema schema, JToken token, List<Error> errors, JObject map)
+        private static void ValidateObject(JsonSchemaValidationContext context, JsonSchema schema, List<Error> errors, JObject map)
         {
+            if (schema.AdditionalProperties.additionalPropertyJsonSchema != null)
+            {
+                foreach (var (key, value) in map)
+                {
+                    if (!schema.Properties.Keys.Contains(key))
+                    {
+                        Validate(context, schema.AdditionalProperties.additionalPropertyJsonSchema, value, errors);
+                    }
+                }
+            }
+            else if (!schema.AdditionalProperties.additionalProperties)
+            {
+                foreach (var (key, value) in map)
+                {
+                    if (!schema.Properties.Keys.Contains(key))
+                    {
+                        errors.Add(Errors.UnknownField(JsonUtility.GetSourceInfo(value), key, value.Type.ToString()));
+                    }
+                }
+            }
+
             foreach (var key in schema.Required)
             {
                 if (!map.ContainsKey(key))
                 {
-                    errors.Add(Errors.FieldRequired(JsonUtility.GetSourceInfo(token), key));
+                    errors.Add(Errors.FieldRequired(JsonUtility.GetSourceInfo(map), key));
                 }
             }
 

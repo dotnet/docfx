@@ -15,7 +15,6 @@ namespace Microsoft.Docs.Build
         private static readonly string[] s_notSupportedSuites =
         {
             "additionalItems",
-            "additionalProperties",
             "allOf",
             "anyOf",
             "boolean_schema",
@@ -61,8 +60,10 @@ namespace Microsoft.Docs.Build
             "$ref to boolean schema false",
             "Recursive references between schemas",
             "refs with quote",
-            "root pointer ref/mismatch", // additional properties
             "root pointer ref/recursive mismatch",
+
+            // additional properties
+            "non-ASCII pattern with additionalProperties", // has patternProperties
         };
 
         public static TheoryData<string, string, string> GetJsonSchemaTestSuite()
@@ -142,6 +143,17 @@ namespace Microsoft.Docs.Build
         [InlineData("{'properties': {'key': {'type': 'string'}}}", "{'key': 'value'}", "")]
         [InlineData("{'properties': {'key': {'type': 'string'}}}", "{'key': 1}",
             "['warning','unexpected-type','Expect type 'String' but got 'Integer'','file',1,9]")]
+
+        // additional properties validation
+        // AdditionalProperty is enabled with explicit false
+        [InlineData("{'properties': {'key': {'type': 'string'}}, 'additionalProperties': {}}", "{'key': 'value', 'key1': 'value1'}", "")]
+        [InlineData("{'properties': {'key': {'type': 'string'}}, 'additionalProperties': null}", "{'key': 'value', 'key1': 'value1'}", "")]
+        [InlineData("{'properties': {'key': {'type': 'string'}}, 'additionalProperties': false}", "{'key': 'value', 'key1': 'value1'}",
+            "['warning','unknown-field','Could not find member 'key1' on object of type 'String'.','file',1,33]")]
+        [InlineData("{'properties': {'key': {'type': 'string'}}, 'additionalProperties': {'type': 'number'}}", "{'key': 'value', 'key1': 'value1'}",
+            "['warning','unexpected-type','Expect type 'Number' but got 'String'','file',1,33]")]
+        [InlineData("{'properties': {'key': {'type': 'string'}}, 'additionalProperties': {'type': 'string', 'enum': ['a']}}", "{'key': 'value', 'key1': 'value1'}",
+            "['warning','undefined-value','Value 'value1' is not accepted. Valid values: 'a'','file',1,33]")]
 
         // array validation
         [InlineData("{'items': {'type': 'string'}}", "['a','b']", "")]

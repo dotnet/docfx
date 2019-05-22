@@ -54,25 +54,6 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public static string GetFileSha1Hash(string fileName)
-        {
-            using (var stream = File.OpenRead(fileName))
-            using (var sha1 = new SHA1CryptoServiceProvider())
-            {
-                return ToHexString(sha1.ComputeHash(stream));
-            }
-        }
-
-        public static string GetMd5HashShort(List<string> list, string separator = ",")
-        {
-            if (list is null || list.Count == 0)
-            {
-                return null;
-            }
-
-            return GetMd5HashShort(string.Join(separator, list));
-        }
-
         private static string ToHexString(byte[] bytes, int digits = 0)
         {
             var formatted = new StringBuilder(2 * bytes.Length);

@@ -245,7 +245,7 @@ namespace Microsoft.Docs.Build
                     case "alice":
                         return Task.FromResult<(Error, GitHubUser)>((null, new GitHubUser { Id = 1, Login = "alice", Name = "Alice", Emails = new[] { "alice@contoso.com" } }));
                     case "github-fail":
-                        return Task.FromResult<(Error, GitHubUser)>((Errors.GitHubApiFailed("API call failed for some reasons", new Exception()), null));
+                        return Task.FromResult<(Error, GitHubUser)>((Errors.GitHubApiFailed("API call failed for some reasons", ""), null));
                     default:
                         return Task.FromResult<(Error, GitHubUser)>(default);
                 }
@@ -259,7 +259,7 @@ namespace Microsoft.Docs.Build
                     case "owner/name/1":
                         return Task.FromResult<(Error, IEnumerable<GitHubUser>)>((null, new[] { new GitHubUser { Id = 1, Login = "alice", Name = "Alice", Emails = new[] { "alice@contoso.com" } } }));
                     case "owner/name/2":
-                        return Task.FromResult<(Error, IEnumerable<GitHubUser>)>((Errors.GitHubApiFailed("API call failed for some reasons", new Exception()), null));
+                        return Task.FromResult<(Error, IEnumerable<GitHubUser>)>((Errors.GitHubApiFailed("API call failed for some reasons", ""), null));
                     case "owner/name/3":
                         return Task.FromResult<(Error, IEnumerable<GitHubUser>)>((null, new[] { new GitHubUser { Emails = new[] { "me@contoso.com" } } }));
                     case "owner/name/4":
