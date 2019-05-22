@@ -17,8 +17,6 @@ namespace Microsoft.Docs.Build
 
         public string MonikerGroup { get; set; }
 
-        public string Hash { get; set; }
-
         public string Locale { get; set; }
 
         public string RedirectUrl { get; set; }

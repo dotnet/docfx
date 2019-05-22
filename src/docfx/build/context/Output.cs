@@ -29,49 +29,12 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
-        /// Computes the SHA1 hash of the input object as json and write it to an output file.
-        /// Throws if multiple threads trying to write to the same destination concurrently.
-        /// </summary>
-        public string WriteJsonWithHash(object graph, string destRelativePath)
-        {
-            using (var ms = new MemoryStream())
-            {
-                using (var writer = new StreamWriter(ms, Encoding.UTF8, 1024, leaveOpen: true))
-                {
-                    JsonUtility.Serialize(writer, graph);
-                }
-
-                ms.Seek(0, SeekOrigin.Begin);
-                var hash = HashUtility.GetSha1Hash(ms);
-
-                ms.Seek(0, SeekOrigin.Begin);
-                using (var output = File.Create(GetDestinationPath(destRelativePath)))
-                {
-                    ms.CopyTo(output);
-                }
-
-                return hash;
-            }
-        }
-
-        /// <summary>
         /// Writes the input text to an output file.
         /// Throws if multiple threads trying to write to the same destination concurrently.
         /// </summary>
         public void WriteText(string text, string destRelativePath)
         {
             File.WriteAllText(GetDestinationPath(destRelativePath), text);
-        }
-
-        /// <summary>
-        /// Computes the SHA1 hash of the input text and write it to an output file.
-        /// Throws if multiple threads trying to write to the same destination concurrently.
-        /// </summary>
-        public string WriteTextWithHash(string text, string destRelativePath)
-        {
-            File.WriteAllText(GetDestinationPath(destRelativePath), text);
-
-            return HashUtility.GetMd5Hash(text);
         }
 
         /// <summary>

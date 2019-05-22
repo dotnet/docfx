@@ -73,11 +73,11 @@ namespace Microsoft.Docs.Build
             {
                 if (output is string str)
                 {
-                    publishItem.Hash = context.Output.WriteTextWithHash(str, publishItem.Path);
+                    context.Output.WriteText(str, publishItem.Path);
                 }
                 else
                 {
-                    publishItem.Hash = context.Output.WriteJsonWithHash(output, publishItem.Path);
+                    context.Output.WriteJson(output, publishItem.Path);
                 }
 
                 if (file.Docset.Legacy && extensionData != null)
