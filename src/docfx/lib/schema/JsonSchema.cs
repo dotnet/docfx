@@ -19,7 +19,7 @@ namespace Microsoft.Docs.Build
         public Dictionary<string, JsonSchema> Definitions { get; } = new Dictionary<string, JsonSchema>(StringComparer.OrdinalIgnoreCase);
 
         [JsonProperty("$ref")]
-        public SourceInfo<string> Ref { get; set; }
+        public string Ref { get; set; }
 
         /// <summary>
         /// Type of the current value.
