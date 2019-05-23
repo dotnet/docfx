@@ -168,11 +168,11 @@ inputs:
   docfx.yml:
   docs/TOC.md: |
     ---
-    monikerRange: []
+    pdf_absolute_path: []
     ---
 outputs:
   .errors.log: |
-    ["error","violate-schema","Expected type String, please input String or type compatible with String.","docs/TOC.md",2,15]
+    ["error","violate-schema","Expected type String, please input String or type compatible with String.","docs/TOC.md",2,20]
 ---
 # Absolute file reference
 inputs:

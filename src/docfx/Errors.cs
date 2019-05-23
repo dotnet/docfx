@@ -411,16 +411,10 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Error, "moniker-overlapping", $"Two or more documents have defined overlapping moniker: {Join(overlappingmonikers)}");
 
         /// <summary>
-        /// Defined duplicate monikers in moniker definition file.
-        /// </summary>
-        public static Error MonikerNameConflict(string monikerName)
-            => new Error(ErrorLevel.Error, "moniker-name-conflict", $"Two or more moniker definitions have the same monikerName `{monikerName}`");
-
-        /// <summary>
         /// Failed to parse moniker string.
         /// </summary>
-        public static Error MonikerRangeInvalid(string monikerRange, string message)
-            => new Error(ErrorLevel.Error, "moniker-range-invalid", $"Invalid moniker range: '{monikerRange}': {message}");
+        public static Error MonikerRangeInvalid(SourceInfo<string> source, string message)
+            => new Error(ErrorLevel.Error, "moniker-range-invalid", $"Invalid moniker range: '{source}': {message}", source);
 
         /// <summary>
         /// MonikerRange is not defined in docfx.yml or doesn't match an article.md,
@@ -442,7 +436,7 @@ namespace Microsoft.Docs.Build
         ///   - article with uid `a` has only netcore-1.0 & netcore-1.1 version, but get referenced with @a?view=netcore-2.0
         /// </summary>
         public static Error InvalidUidMoniker(SourceInfo source, string moniker, string uid)
-            => new Error(ErrorLevel.Warning, "invalid-uid-moniker", $"Moniker '{moniker}' is not defined with uid '{uid}'", source);
+            => new Error(ErrorLevel.Info, "invalid-uid-moniker", $"Moniker '{moniker}' is not defined with uid '{uid}'", source);
 
         /// <summary>
         /// Custom 404 page is not supported

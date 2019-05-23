@@ -14,7 +14,7 @@ namespace Microsoft.Docs.Build
         public List<string> Monikers { get; set; }
 
         [JsonProperty(PropertyName = "monikerRange")]
-        public string MonikerRange { get; set; }
+        public SourceInfo<string> MonikerRange { get; set; }
 
         public string PdfAbsolutePath { get; set; }
 
