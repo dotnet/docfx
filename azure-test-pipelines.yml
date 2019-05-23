@@ -59,7 +59,7 @@ jobs:
       SYSTEM_ACCESS_TOKEN: $(System.AccessToken)
 
   # Build
-  - powershell: ../Docs.Build/build.ps1 -ci -noTest
+  - powershell: ../Docs.Build/build.ps1 -noTest
     displayName: Build
     env:
       BUILD_REASON: $(Build.Reason)
