@@ -303,14 +303,13 @@ namespace Microsoft.Docs.Build
 
         private (InternalXrefSpec spec, Document referencedFile) GetLatestInternalXrefMap(List<(InternalXrefSpec spec, Document referencedFile)> specs, List<string> monikers = null)
         {
-            var orderedSpecs = specs.OrderByDescending(x => x.spec.Monikers.FirstOrDefault(), _context.MonikerProvider.Comparer);
             if (monikers?.Any() != true)
             {
-                return orderedSpecs.FirstOrDefault();
+                return specs.FirstOrDefault();
             }
             else
             {
-                var spec = orderedSpecs.FirstOrDefault(x => x.spec.Monikers.Intersect(monikers).Any());
+                var spec = specs.FirstOrDefault(x => x.spec.Monikers.Intersect(monikers).Any());
                 return spec;
             }
         }
@@ -382,7 +381,7 @@ namespace Microsoft.Docs.Build
             using (Progress.Start("Building Xref map"))
             {
                 ParallelUtility.ForEach(files.Where(f => f.ContentType == ContentType.Page), file => Load(context, xrefsByUid, file), Progress.Update);
-                return xrefsByUid.ToList().OrderBy(item => item.Key).ToDictionary(item => item.Key, item => item.Value.ToList());
+                return xrefsByUid.ToList().OrderBy(item => item.Key).ToDictionary(item => item.Key, item => item.Value.OrderByDescending(x => x.Item1.Monikers.FirstOrDefault(), context.MonikerProvider.Comparer).ToList());
             }
         }
 
