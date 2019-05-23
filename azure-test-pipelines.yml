@@ -30,13 +30,13 @@ jobs:
           Write-Host $cmd -ForegroundColor Green
           & ([scriptblock]::Create($cmd))
           if ($lastexitcode -ne 0) {
-              throw ("Error: " + $cmd)
+              throw ("Error")
           }
       }
 
       $branch = & { git rev-parse --abbrev-ref HEAD }
       $docsBuildBranch = if ($branch -eq 'master') { 'v3-release' } else { 'v3' }
-      $auth = "-c http.https://ceapex.visualstudio.com.extraheader=""AUTHORIZATION: bearer $env:SYSTEM_ACCESS_TOKEN"""
+      $auth = "-c http.https://dev.azure.com.extraheader=""AUTHORIZATION: bearer $env:SYSTEM_ACCESS_TOKEN"""
 
       if (-Not (Test-Path -Path ../docfx)) {
           # Clone Docs.Build if not exists
