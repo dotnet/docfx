@@ -40,7 +40,7 @@ namespace Microsoft.Docs.Build
             {
                 if (prop.PropertyType.IsGenericType && prop.PropertyType.GetGenericTypeDefinition() == typeof(SourceInfo<>))
                 {
-                    var originalShouldSerialize = prop.ShouldSerialize;
+                    var originalShouldSerialize = prop.ShouldSerialize ?? (_ => { return true; });
                     prop.ShouldSerialize =
                         target =>
                         {
