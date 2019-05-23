@@ -149,7 +149,7 @@ namespace Microsoft.Docs.Build
                                             while (Directory.Exists(workTreePath))
                                             {
                                                 Log.Write($"Wait for the {workTreePath} to be deleted");
-                                                Thread.Sleep(1);
+                                                Thread.Sleep(TimeSpan.FromSeconds(1));
                                             }
                                         }
 
