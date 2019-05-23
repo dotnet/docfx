@@ -1,5 +1,5 @@
 pool:
-  name: Hosted VS2017
+  name: Hosted Windows 2019 with VS2019
 steps:
 - task: NodeTool@0
   displayName: 'Use Node 8.x'
