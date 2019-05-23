@@ -411,14 +411,9 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Error, "moniker-overlapping", $"Two or more documents have defined overlapping moniker: {Join(overlappingmonikers)}");
 
         /// <summary>
-        /// Defined duplicate monikers in moniker definition file.
-        /// </summary>
-        public static Error MonikerNameConflict(string monikerName)
-            => new Error(ErrorLevel.Info, "moniker-name-conflict", $"Two or more moniker definitions have the same monikerName `{monikerName}`");
-
-        /// <summary>
         /// Failed to parse moniker string.
         /// </summary>
+        /// TODO: Add sourceInfo
         public static Error MonikerRangeInvalid(string monikerRange, string message)
             => new Error(ErrorLevel.Error, "moniker-range-invalid", $"Invalid moniker range: '{monikerRange}': {message}");
 

@@ -1034,16 +1034,10 @@ inputs:
   docfx.yml: |
     monikerRange:
       'docs/v1/**': '>= netcore-2.0'
-    routes:
-      docs/v1/: docs/
     monikerDefinition: monikerDefinition.json
   docs/v1/a.md:
   monikerDefinition.json: |
-    {
-      "monikers": [
-        { "moniker_name": "netcore-1.0", "product_name": ".NET Core" }
-      ]
-    }
+    {}
 outputs:
   .errors.log: |
     ["error","moniker-range-invalid","Invalid moniker range: '>= netcore-2.0': Moniker `netcore-2.0` is not defined"]
@@ -1053,8 +1047,6 @@ inputs:
   docfx.yml: |
     monikerRange:
       'docs/v1/**': '>= netcore-1.0'
-    routes:
-      docs/v1/: docs/
     monikerDefinition: monikerDefinition.json
   docs/v1/a.md: |
     ---

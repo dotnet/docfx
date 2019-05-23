@@ -75,10 +75,7 @@ namespace Microsoft.Docs.Build
 
             foreach (var moniker in monikers)
             {
-                if (!monikerNameList.Add(moniker.MonikerName))
-                {
-                    throw Errors.MonikerNameConflict(moniker.MonikerName).ToException();
-                }
+                monikerNameList.Add(moniker.MonikerName);
 
                 if (productNameDictionary.TryGetValue(moniker.ProductName, out List<Moniker> list))
                 {
