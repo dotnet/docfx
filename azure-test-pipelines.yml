@@ -64,10 +64,10 @@ jobs:
     env:
       BUILD_REASON: $(Build.Reason)
 
-  # Run regression tests
+  # Run integration tests
   - powershell: dotnet run -p ../Docs.Build/test/integration-test -c Release
     condition: ne(variables['Build.SourceBranch'], 'refs/heads/master')
-    displayName: Run regression tests
+    displayName: Run integration tests
     env:
       BUILD_REASON: $(Build.Reason)
       DOCFX_APPDATA_PATH: D:/appdata
