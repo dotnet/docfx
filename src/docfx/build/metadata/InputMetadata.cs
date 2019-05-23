@@ -21,7 +21,7 @@ namespace Microsoft.Docs.Build
         public SourceInfo<string> BreadcrumbPath { get; set; }
 
         [JsonProperty("monikerRange")]
-        public string MonikerRange { get; set; }
+        public SourceInfo<string> MonikerRange { get; set; }
 
         public string Uid { get; set; }
 

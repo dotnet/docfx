@@ -9,7 +9,7 @@ namespace Microsoft.Docs.Build
 {
     internal class MonikerProvider
     {
-        private readonly List<(Func<string, bool> glob, string monikerRange)> _rules = new List<(Func<string, bool>, string)>();
+        private readonly List<(Func<string, bool> glob, (string monikerRange, IEnumerable<string> monikers))> _rules = new List<(Func<string, bool>, (string, IEnumerable<string>))>();
         private readonly MonikerRangeParser _rangeParser;
 
         public MonikerComparer Comparer { get; }
@@ -22,16 +22,15 @@ namespace Microsoft.Docs.Build
                 var (_, content, _) = RestoreMap.GetRestoredFileContent(docset, docset.Config.MonikerDefinition);
                 monikerDefinition = JsonUtility.Deserialize<MonikerDefinitionModel>(content, docset.Config.MonikerDefinition);
             }
-
-            foreach (var (key, monikerRange) in docset.Config.MonikerRange)
-            {
-                _rules.Add((GlobUtility.CreateGlobMatcher(key), monikerRange));
-            }
-            _rules.Reverse();
-
             var monikersEvaluator = new EvaluatorWithMonikersVisitor(monikerDefinition);
             _rangeParser = new MonikerRangeParser(monikersEvaluator);
             Comparer = new MonikerComparer(monikersEvaluator.GetSortedMonikerNameList());
+
+            foreach (var (key, monikerRange) in docset.Config.MonikerRange)
+            {
+                _rules.Add((GlobUtility.CreateGlobMatcher(key), (monikerRange, _rangeParser.Parse(monikerRange))));
+            }
+            _rules.Reverse();
         }
 
         public (List<Error> errors, List<string> monikers) GetFileLevelMonikers(Document file, MetadataProvider metadataProvider)
@@ -46,17 +45,17 @@ namespace Microsoft.Docs.Build
             return (errors, monikers);
         }
 
-        public (Error, List<string>) GetFileLevelMonikers(Document file, string fileMonikerRange = null)
+        public (Error, List<string>) GetFileLevelMonikers(Document file, SourceInfo<string> fileMonikerRange = null)
         {
             Error error = null;
             string configMonikerRange = null;
             var configMonikers = new List<string>();
-            foreach (var (glob, monikerRange) in _rules)
+            foreach (var (glob, (monikerRange, monikers)) in _rules)
             {
                 if (glob(file.FilePath))
                 {
                     configMonikerRange = monikerRange;
-                    configMonikers.AddRange(_rangeParser.Parse(monikerRange));
+                    configMonikers.AddRange(monikers);
                     break;
                 }
             }
@@ -88,7 +87,7 @@ namespace Microsoft.Docs.Build
             return (error, configMonikers);
         }
 
-        public List<string> GetZoneMonikers(string rangeString, List<string> fileLevelMonikers, List<Error> errors)
+        public List<string> GetZoneMonikers(SourceInfo<string> rangeString, List<string> fileLevelMonikers, List<Error> errors)
         {
             var monikers = new List<string>();
 

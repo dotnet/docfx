@@ -11,7 +11,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class MonikerZone
     {
-        public static MarkdownPipelineBuilder UseMonikerZone(this MarkdownPipelineBuilder builder, Func<string, List<string>> parseMonikerRange)
+        public static MarkdownPipelineBuilder UseMonikerZone(this MarkdownPipelineBuilder builder, Func<SourceInfo<string>, List<string>> parseMonikerRange)
         {
             return builder.Use(document =>
             {
@@ -20,7 +20,9 @@ namespace Microsoft.Docs.Build
                     if (node is MonikerRangeBlock monikerRangeBlock)
                     {
                         monikerRangeBlock.GetAttributes().Properties.Remove(new KeyValuePair<string, string>("range", monikerRangeBlock.MonikerRange));
-                        monikerRangeBlock.GetAttributes().AddPropertyIfNotExist("data-moniker", string.Join(" ", parseMonikerRange(monikerRangeBlock.MonikerRange)));
+                        monikerRangeBlock.GetAttributes().AddPropertyIfNotExist("data-moniker", string.Join(
+                            " ",
+                            parseMonikerRange(new SourceInfo<string>(monikerRangeBlock.MonikerRange, monikerRangeBlock.ToSourceInfo()))));
                     }
                     return node;
                 });

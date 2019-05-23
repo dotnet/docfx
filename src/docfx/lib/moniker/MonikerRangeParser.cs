@@ -18,7 +18,7 @@ namespace Microsoft.Docs.Build
             _monikersEvaluator = monikersEvaluator;
         }
 
-        public IReadOnlyList<string> Parse(string rangeString)
+        public IReadOnlyList<string> Parse(SourceInfo<string> rangeString)
             => string.IsNullOrWhiteSpace(rangeString)
                 ? Array.Empty<string>()
                 : _cache.GetOrAdd(rangeString, new Lazy<IReadOnlyList<string>>(() =>
