@@ -45,7 +45,7 @@ jobs:
         try {
             # Update Docs.Build to latest
             pushd ../Docs.Build
-            exec "git fetch origin $docsBuildBranch"
+            exec "git $auth fetch origin $docsBuildBranch"
             exec "git checkout --force origin/$docsBuildBranch"
             exec "git clean -xdff"
         } finally {
@@ -57,6 +57,16 @@ jobs:
     env:
       BUILD_REASON: $(Build.Reason)
       SYSTEM_ACCESS_TOKEN: $(System.AccessToken)
+
+  # Restore nuget packages
+  - task: DotNetCoreCLI@2
+    displayName: Restore nuget packages
+    inputs:
+      command: restore
+      projects: '../Docs.Build/**/*.csproj'
+      feedsToUse: config 
+      nugetConfigPath: NuGet.config
+      externalFeedCredentials: OpenPublishingService
 
   # Build
   - powershell: ../Docs.Build/build.ps1 -ci -noTest
