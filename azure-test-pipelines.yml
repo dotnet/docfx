@@ -26,20 +26,28 @@ jobs:
 
   # Checkout Docs.Build
   - powershell: |
+      function exec([string] $cmd) {
+          Write-Host $cmd -ForegroundColor Green
+          & ([scriptblock]::Create($cmd))
+          if ($lastexitcode -ne 0) {
+              throw ("Error: " + $cmd)
+          }
+      }
+
       $branch = & { git rev-parse --abbrev-ref HEAD }
       $docsBuildBranch = if ($branch -eq 'master') { 'v3-release' } else { 'v3' }
       $auth = "-c http.https://ceapex.visualstudio.com.extraheader=""AUTHORIZATION: bearer $env:SYSTEM_ACCESS_TOKEN"""
 
       if (-Not (Test-Path -Path ../docfx)) {
           # Clone Docs.Build if not exists
-          git $auth clone https://dev.azure.com/ceapex/Engineering/_git/Docs.Build --depth 1 --branch $docsBuildBranch ../Docs.Build
+          exec "git $auth clone https://dev.azure.com/ceapex/Engineering/_git/Docs.Build --depth 1 --branch $docsBuildBranch ../Docs.Build"
       } else {
         try {
             # Update Docs.Build to latest
             pushd ../Docs.Build
-            git fetch origin $docsBuildBranch
-            git checkout --force origin/$docsBuildBranch
-            git clean -xdff
+            exec "git fetch origin $docsBuildBranch"
+            exec "git checkout --force origin/$docsBuildBranch"
+            exec "git clean -xdff"
         } finally {
             popd
         }
