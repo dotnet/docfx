@@ -4,13 +4,13 @@
             "type": "object",
             "properties": {
                 "title": {
-                    "type": "string"
+                    "type": [ "string", "null" ]
                 },
                 "width": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "href": {
-                    "type": "string",
+                    "type": [ "string", "null" ],
                     "contentType": "Href"
                 },
                 "image": {
@@ -22,24 +22,24 @@
             "type": "object",
             "properties": {
                 "href": {
-                    "type": "string",
+                    "type": [ "string", "null" ],
                     "contentType": "Href"
                 },
                 "src": {
-                    "type": "string",
+                    "type": [ "string", "null" ],
                     "contentType": "Href"
                 },
                 "alt": {
-                    "type": "string"
+                    "type": [ "string", "null" ]
                 },
                 "height": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "width": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "role": {
-                    "type": "string"
+                    "type": [ "string", "null" ]
                 }
             }
         },
@@ -47,7 +47,7 @@
             "type": "object",
             "properties": {
                 "type": {
-                    "type": "string",
+                    "type": [ "string", "null" ],
                     "enum": [
                         "paragraph",
                         "list",
@@ -57,14 +57,14 @@
                     ]
                 },
                 "text": {
-                    "type": "string",
+                    "type": [ "string", "null" ],
                     "contentType": "Markdown"
                 },
                 "style": {
-                    "type": "string"
+                    "type": [ "string", "null" ]
                 },
                 "className": {
-                    "type": "string"
+                    "type": [ "string", "null" ]
                 },
                 "items": {
                     "type": "array",
@@ -80,7 +80,7 @@
                     }
                 },
                 "html": {
-                    "type": "string",
+                    "type": [ "string", "null" ],
                     "contentType": "Html"
                 }
             }
@@ -89,21 +89,21 @@
             "type": "object",
             "properties": {
                 "text": {
-                    "type": "string"
+                    "type": [ "string", "null" ]
                 },
                 "title": {
-                    "type": "string"
+                    "type": [ "string", "null" ]
                 },
                 "content": {
-                    "type": "string",
+                    "type": [ "string", "null" ],
                     "contentType": "Markdown"
                 },
                 "html": {
-                    "type": "string",
+                    "type": [ "string", "null" ],
                     "contentType": "Html"
                 },
                 "href": {
-                    "type": "string",
+                    "type": [ "string", "null" ],
                     "contentType": "Href"
                 },
                 "image": {
@@ -115,7 +115,7 @@
             "type": "object",
             "properties": {
                 "title": {
-                    "type": "string"
+                    "type": [ "string", "null" ]
                 },
                 "items": {
                     "type": "array",
@@ -129,11 +129,11 @@
             "type": "object",
             "properties": {
                 "href": {
-                    "type": "string",
+                    "type": [ "string", "null" ],
                     "contentType": "Href"
                 },
                 "text": {
-                    "type": "string"
+                    "type": [ "string", "null" ]
                 }
             }
         },
@@ -141,7 +141,7 @@
             "type": "object",
             "properties": {
                 "title": {
-                    "type": "string"
+                    "type": [ "string", "null" ]
                 },
                 "values": {
                     "type": "array",
@@ -155,7 +155,7 @@
             "type": "object",
             "properties": {
                 "href": {
-                    "type": "string",
+                    "type": [ "string", "null" ],
                     "contentType": "Href"
                 }
             }
@@ -164,13 +164,13 @@
             "type": "object",
             "properties": {
                 "title": {
-                    "type": "string"
+                    "type": [ "string", "null" ]
                 },
                 "type": {
-                    "type": "string"
+                    "type": [ "string", "null" ]
                 },
                 "text": {
-                    "type": "string"
+                    "type": [ "string", "null" ]
                 },
                 "items": {
                     "type": "array",
@@ -184,7 +184,7 @@
             "type": "object",
             "properties": {
                 "description": {
-                    "type": "string",
+                    "type": [ "string", "null" ],
                     "contentType": "Markdown"
                 },
                 "aside": {
@@ -199,10 +199,10 @@
     "type": "object",
     "properties": {
         "title": {
-            "type": "string"
+            "type": [ "string", "null" ]
         },
         "titleSuffix": {
-            "type": "string"
+            "type": [ "string", "null" ]
         },
         "metadata": {},
         "abstract": {
@@ -215,7 +215,7 @@
             }
         },
         "documentType": {
-            "type": "string"
+            "type": [ "string", "null" ]
         },
         "$schema": {
             "type": "string"
