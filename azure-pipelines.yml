@@ -1,3 +1,13 @@
+trigger:
+  batch: true
+  branches:
+    include:
+    - dev
+    - master
+pr:
+- dev
+- master
+
 pool:
   name: Hosted VS2017
 steps:
