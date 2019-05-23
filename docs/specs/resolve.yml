@@ -129,6 +129,14 @@ outputs:
     { "conceptual": "<p><a target=\"_blank\" href=\"c\">c</a></p>" }
   docs/dir/c.json:
 ---
+# Add locale for absolute links
+inputs:
+  docfx.yml:
+  a.md: Link to [absolute path](/a)
+outputs:
+  a.json: |
+    { "conceptual": "<p>Link to <a href=\"/en-us/a\">absolute path</a></p>" }
+---
 # Show warning if the link is empty, missing
 inputs:
   docfx.yml: |

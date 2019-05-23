@@ -92,7 +92,7 @@ namespace Microsoft.Docs.Build
                     context.ErrorLog.Write(file.ToString(), error);
                     return link;
                 });
-                return HtmlUtility.StripTags(HtmlUtility.LoadHtml(html)).OuterHtml;
+                return HtmlUtility.HtmlPostProcess(html, file.Docset.Culture);
             }
 
             if (attribute is XrefAttribute)
