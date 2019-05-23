@@ -151,7 +151,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Gets the moniker range mapping
         /// </summary>
-        public readonly Dictionary<string, string> MonikerRange = new Dictionary<string, string>();
+        public readonly Dictionary<string, SourceInfo<string>> MonikerRange = new Dictionary<string, SourceInfo<string>>();
 
         /// <summary>
         /// Get the definition of monikers

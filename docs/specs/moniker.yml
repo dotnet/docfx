@@ -1040,7 +1040,7 @@ inputs:
     {}
 outputs:
   .errors.log: |
-    ["error","moniker-range-invalid","Invalid moniker range: '>= netcore-2.0': Moniker `netcore-2.0` is not defined"]
+    ["error","moniker-range-invalid","Invalid moniker range: '>= netcore-2.0': Moniker `netcore-2.0` is not defined","docfx.yml",2,17]
 ---
 # Invalid moniker range in file
 inputs:
@@ -1053,6 +1053,7 @@ inputs:
     monikerRange: netcore-1.2
     ---
   docs/v1/b.md: |
+    # Invalid Moniker range
     ::: moniker range="<= netcore-1.2"
     Invalid moniker Zone
     ::: moniker-end
@@ -1064,5 +1065,5 @@ inputs:
     }
 outputs:
   .errors.log: |
-    ["error","moniker-range-invalid","Invalid moniker range: 'netcore-1.2': Moniker `netcore-1.2` is not defined","docs/v1/a.md"]
-    ["error","moniker-range-invalid","Invalid moniker range: '<= netcore-1.2': Moniker `netcore-1.2` is not defined","docs/v1/b.md"]
+    ["error","moniker-range-invalid","Invalid moniker range: 'netcore-1.2': Moniker `netcore-1.2` is not defined","docs/v1/a.md",2,15]
+    ["error","moniker-range-invalid","Invalid moniker range: '<= netcore-1.2': Moniker `netcore-1.2` is not defined","docs/v1/b.md",2,1]

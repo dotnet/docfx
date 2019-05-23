@@ -45,7 +45,7 @@ namespace Microsoft.Docs.Build
             return (errors, monikers);
         }
 
-        public (Error, List<string>) GetFileLevelMonikers(Document file, string fileMonikerRange = null)
+        public (Error, List<string>) GetFileLevelMonikers(Document file, SourceInfo<string> fileMonikerRange = null)
         {
             Error error = null;
             string configMonikerRange = null;
@@ -87,7 +87,7 @@ namespace Microsoft.Docs.Build
             return (error, configMonikers);
         }
 
-        public List<string> GetZoneMonikers(string rangeString, List<string> fileLevelMonikers, List<Error> errors)
+        public List<string> GetZoneMonikers(SourceInfo<string> rangeString, List<string> fileLevelMonikers, List<Error> errors)
         {
             var monikers = new List<string>();
 
