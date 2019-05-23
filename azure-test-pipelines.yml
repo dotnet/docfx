@@ -35,7 +35,7 @@ jobs:
       }
 
       $branch = & { git rev-parse --abbrev-ref HEAD }
-      $docsBuildBranch = if ($branch -eq 'master') { 'v3-release' } else { 'v3' }
+      $docsBuildBranch = if ($branch -eq 'v3-release') { 'master' } else { 'develop' }
       $auth = "-c http.https://dev.azure.com.extraheader=""AUTHORIZATION: bearer $env:SYSTEM_ACCESS_TOKEN"""
 
       if (-Not (Test-Path -Path ../docfx)) {
