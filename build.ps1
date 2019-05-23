@@ -16,7 +16,6 @@ param(
 
 $ErrorActionPreference = 'Stop'
 $releaseBranch = "master"
-$dotnetCommand = "dotnet"
 $gitCommand = "git"
 $framework = "net472"
 $packageVersion = "1.0.0"
