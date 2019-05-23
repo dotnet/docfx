@@ -51,7 +51,8 @@ namespace Microsoft.Docs.Build
             string resolvedHref;
             string displayPropertyValue;
             string name;
-            if (TryResolveFromInternal(uid, href, moniker, out var internalXrefSpec, out var referencedFile))
+            var (_, rootFileMonikers) = _context.MonikerProvider.GetFileLevelMonikers(rootFile, _context.MetadataProvider);
+            if (TryResolveFromInternal(uid, href, moniker, rootFileMonikers, out var internalXrefSpec, out var referencedFile))
             {
                 var (_, query, fragment) = UrlUtility.SplitUrl(internalXrefSpec.Href);
                 resolvedHref = UrlUtility.MergeUrl(RebaseResolvedHref(rootFile, referencedFile), query, fragment.Length == 0 ? "" : fragment.Substring(1));
@@ -88,13 +89,13 @@ namespace Microsoft.Docs.Build
         private string RebaseResolvedHref(Document rootFile, Document referencedFile)
             => _context.DependencyResolver.GetRelativeUrl(rootFile, referencedFile);
 
-        private bool TryResolveFromInternal(string uid, SourceInfo<string> href, string moniker, out InternalXrefSpec internalXrefSpec, out Document referencedFile)
+        private bool TryResolveFromInternal(string uid, SourceInfo<string> href, string moniker, List<string> monikers, out InternalXrefSpec internalXrefSpec, out Document referencedFile)
         {
             internalXrefSpec = null;
             referencedFile = null;
             if (_internalXrefMap.TryGetValue(uid, out var internalSpecs))
             {
-                (internalXrefSpec, referencedFile) = GetInternalSpec(uid, href, moniker, internalSpecs);
+                (internalXrefSpec, referencedFile) = GetInternalSpec(uid, href, moniker, monikers, internalSpecs);
                 if (internalXrefSpec is null)
                 {
                     return false;
@@ -115,7 +116,7 @@ namespace Microsoft.Docs.Build
             return false;
         }
 
-        private (InternalXrefSpec internalSpec, Document referencedFile) GetInternalSpec(string uid, SourceInfo<string> href, string moniker, List<(InternalXrefSpec, Document)> internalSpecs)
+        private (InternalXrefSpec internalSpec, Document referencedFile) GetInternalSpec(string uid, SourceInfo<string> href, string moniker, List<string> monikers, List<(InternalXrefSpec, Document)> internalSpecs)
         {
             if (!TryGetValidXrefSpecs(uid, internalSpecs, out var validInternalSpecs))
                 return default;
@@ -146,7 +147,7 @@ namespace Microsoft.Docs.Build
             // For uid with moniker range, take the latest moniker if no moniker defined while resolving
             if (internalSpecs.Count > 1)
             {
-                return GetLatestInternalXrefMap(validInternalSpecs);
+                return GetLatestInternalXrefMap(validInternalSpecs, monikers);
             }
             else
             {
@@ -300,8 +301,19 @@ namespace Microsoft.Docs.Build
             return loadedInternalSpecs;
         }
 
-        private (InternalXrefSpec spec, Document referencedFile) GetLatestInternalXrefMap(List<(InternalXrefSpec spec, Document referencedFile)> specs)
-            => specs.OrderByDescending(item => item.spec.Monikers.FirstOrDefault(), _context.MonikerProvider.Comparer).FirstOrDefault();
+        private (InternalXrefSpec spec, Document referencedFile) GetLatestInternalXrefMap(List<(InternalXrefSpec spec, Document referencedFile)> specs, List<string> monikers = null)
+        {
+            var orderedSpecs = specs.OrderByDescending(x => x.spec.Monikers.FirstOrDefault(), _context.MonikerProvider.Comparer);
+            if (monikers?.Any() != true)
+            {
+                return orderedSpecs.FirstOrDefault();
+            }
+            else
+            {
+                var spec = orderedSpecs.FirstOrDefault(x => x.spec.Monikers.Intersect(monikers).Any());
+                return spec;
+            }
+        }
 
         private bool TryGetValidXrefSpecs(string uid, List<(InternalXrefSpec spec, Document file)> specsWithSameUid, out List<(InternalXrefSpec spec, Document file)> validSpecs)
         {
