@@ -281,6 +281,27 @@ This method is within <a class=""xref"" href=""CatLibrary.ICat.html"">ICat</a></
         }
 
         [Fact]
+        public void TestXrefResolverShouldWarnWithEmptyUidReference()
+        {
+            using (var listener = new TestListenerScope(nameof(TestXrefResolverShouldWarnWithEmptyUidReference)))
+            {
+                // arrange
+                var schemaFile = CreateFile("template/schemas/mref.test.schema.json", File.ReadAllText("TestData/schemas/mref.test.schema.json"), _templateFolder);
+                var inputFileName = "inputs/CatLibrary.ICat.yml";
+                var inputFile = CreateFile(inputFileName, File.ReadAllText("TestData/inputs/EmptyUidReference.yml"), _inputFolder);
+                FileCollection files = new FileCollection(_defaultFiles);
+                files.Add(DocumentType.Article, new[] { inputFile }, _inputFolder);
+
+                // act
+                BuildDocument(files);
+
+                // assert
+                Assert.NotEmpty(listener.Items);
+                Assert.Contains(listener.Items, i => i.Code == WarningCodes.Build.UidNotFound);
+            }
+        }
+
+        [Fact]
         public void TestValidMetadataReferenceWithIncremental()
         {
             using (var listener = new TestListenerScope("TestGeneralFeaturesInSDP"))

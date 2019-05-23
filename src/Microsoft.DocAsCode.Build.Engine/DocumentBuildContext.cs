@@ -520,7 +520,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public XRefSpec GetXrefSpec(string uid)
         {
-            if (string.IsNullOrEmpty(uid))
+            if (uid == null)
             {
                 throw new ArgumentNullException(nameof(uid));
             }
