@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -13,7 +14,7 @@ namespace Microsoft.Docs.Build
         {
             var errors = new List<Error>();
 
-            Travel(new JsonSchemaContext(schema), schema, token, (current, scalar) => current.Replace(TransformScalar(file, context, schema, scalar, errors, buildChild)));
+            Travel(new JsonSchemaContext(schema), schema, token, (jsonSchema, current, scalar) => current.Replace(TransformScalar(file, context, jsonSchema, scalar, errors, buildChild)));
             return (errors, token);
         }
 
@@ -21,18 +22,18 @@ namespace Microsoft.Docs.Build
         {
             var errors = new List<Error>();
             var extensions = new Dictionary<string, Lazy<JValue>>();
-            Travel(new JsonSchemaContext(schema), schema, token, (current, scalar) => extensions[current.Path] = new Lazy<JValue>(TransformScalar(file, context, schema, scalar, errors, buildChild: null)));
+            Travel(new JsonSchemaContext(schema), schema, token, (jsonSchema, current, scalar) => extensions[current.Path] = new Lazy<JValue>(() => TransformScalar(file, context, jsonSchema, scalar, errors, buildChild: null), LazyThreadSafetyMode.PublicationOnly));
             return (errors, extensions);
         }
 
-        private static void Travel(JsonSchemaContext jsonSchemaContext, JsonSchema schema, JToken token, Action<JToken, JValue> transformScalar)
+        private static void Travel(JsonSchemaContext jsonSchemaContext, JsonSchema schema, JToken token, Action<JsonSchema, JToken, JValue> transformScalar)
         {
             schema = jsonSchemaContext.GetDefinition(schema);
 
             switch (token)
             {
                 case JValue scalar:
-                    transformScalar(token, scalar);
+                    transformScalar(schema, token, scalar);
                     break;
                 case JArray array:
                     if (schema.Items != null)
