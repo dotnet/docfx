@@ -125,8 +125,7 @@ namespace Microsoft.Docs.Build
 
         // string length validation
         [InlineData("{'type': 'string', 'minLength': 1, 'maxLength': 5}", "'a'", "")]
-        [InlineData("{'properties': {'str': {'minLength': 1, 'maxLength': 5}}}", "{'str': null}",
-            "['warning','string-length-invalid','String 'str' length should be >= 1','file',1,12]")]
+        [InlineData("{'properties': {'str': {'minLength': 1, 'maxLength': 5}}}", "{'str': null}","")]
         [InlineData("{'type': 'string', 'minLength': 1}", "''",
             "['warning','string-length-invalid','String length should be >= 1','file',1,2]")]
         [InlineData("{'type': 'string', 'maxLength': 1}", "'ab'",
