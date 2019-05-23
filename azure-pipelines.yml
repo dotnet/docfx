@@ -2,9 +2,9 @@ trigger:
   batch: true
   branches:
     include:
-      - v3
-      - v3-release
-      - feature/*
+    - v3
+    - v3-release
+    - feature/*
 pr:
 - v3
 - feature/*
