@@ -3,11 +3,9 @@ trigger:
   branches:
     include:
     - dev
-    - stable
     - master
 pr:
 - dev
-- stable
 - master
 
 pool:
