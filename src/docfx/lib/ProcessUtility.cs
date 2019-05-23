@@ -9,6 +9,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
 {
@@ -192,16 +193,15 @@ namespace Microsoft.Docs.Build
                 Arguments = commandLineArgs,
                 UseShellExecute = false,
                 RedirectStandardOutput = stdout,
-                RedirectStandardError = !Environment.UserInteractive,
+                RedirectStandardError = true,
             };
 
             var process = Process.Start(psi);
-            var result = stdout ? process.StandardOutput.ReadToEnd() : null;
 
-            if (!Environment.UserInteractive)
-            {
-                Log.Write(process.StandardError.ReadToEnd(), ConsoleColor.DarkRed);
-            }
+            // Redirect stderr to stdout
+            Task.Run(() => process.StandardError.BaseStream.CopyTo(Console.OpenStandardOutput()));
+
+            var result = stdout ? process.StandardOutput.ReadToEnd() : null;
 
             process.WaitForExit();
 
