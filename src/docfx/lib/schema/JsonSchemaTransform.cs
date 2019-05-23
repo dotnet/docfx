@@ -103,7 +103,7 @@ namespace Microsoft.Docs.Build
                         return htmlLink;
                     });
 
-                    content = new SourceInfo<string>(HtmlUtility.StripTags(HtmlUtility.LoadHtml(htmlWithLinks)).OuterHtml, content);
+                    content = new SourceInfo<string>(HtmlUtility.HtmlPostProcess(htmlWithLinks, file.Docset.Culture), content);
                     break;
 
                 case JsonSchemaContentType.Xref:
