@@ -43,8 +43,6 @@ function publish() {
 
     Remove-Item ./drop -Force -Recurse -ErrorAction Ignore
     exec "dotnet pack src\docfx -c Release -o $PSScriptRoot\drop /p:Version=$version /p:InformationalVersion=$version"
-    exec "dotnet publish src\docfx -c Release -o $PSScriptRoot\drop\docfx /p:Version=$version /p:InformationalVersion=$version"
-    exec "dotnet drop\docfx\docfx.dll --version"
 }
 
 try {
