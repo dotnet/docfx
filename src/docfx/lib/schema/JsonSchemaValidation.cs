@@ -58,6 +58,24 @@ namespace Microsoft.Docs.Build
             {
                 errors.Add(Errors.UndefinedValue(JsonUtility.GetSourceInfo(scalar), scalar, schema.Enum));
             }
+
+            if ((schema.MaxLength.HasValue || schema.MinLength.HasValue) && CanTreatAsString())
+            {
+                var str = scalar.Value as string;
+                var unicodeLength = str == null ? 0 : str.Where(c => !char.IsLowSurrogate(c)).Count();
+                if (schema.MaxLength.HasValue && unicodeLength > schema.MaxLength.Value)
+                    errors.Add(Errors.StringLengthInvalid(JsonUtility.GetSourceInfo(scalar), scalar.Path, maxLength: schema.MaxLength));
+
+                if (schema.MinLength.HasValue && unicodeLength < schema.MinLength.Value)
+                    errors.Add(Errors.StringLengthInvalid(JsonUtility.GetSourceInfo(scalar), scalar.Path, minLength: schema.MinLength));
+            }
+
+            bool CanTreatAsString()
+            {
+                return (schema.Type != null && schema.Type.Contains(JsonSchemaType.String))
+                || TypeMatches(JsonSchemaType.String, scalar.Type)
+                || scalar.Type == JTokenType.Null;
+            }
         }
 
         private static void ValidateArray(JsonSchema schema, List<Error> errors, JArray array)
