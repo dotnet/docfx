@@ -309,8 +309,7 @@ namespace Microsoft.Docs.Build
             }
             else
             {
-                var spec = specs.FirstOrDefault(x => x.spec.Monikers.Intersect(monikers).Any());
-                return spec;
+                return specs.FirstOrDefault(x => x.spec.Monikers.Intersect(monikers).Any());
             }
         }
 
