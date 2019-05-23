@@ -113,17 +113,20 @@ outputs:
   docs/a.json: |
     {
       "conceptual": "<p>No version</p>",
-      "!monikers": null
+      "!monikers": null,
+      "!monikerRange": null,
     }
   218c13d0/docs/a.json: |
     {
       "conceptual": "<p>Moniker: netcore-1.1</p>",
-      "monikers": ["netcore-1.1"]
+      "monikers": ["netcore-1.1"],
+      "!monikerRange": null,
     }
   4667fedf/docs/a.json: |
     {
       "conceptual": "<p>Moniker: netcore-2.0</p>",
-      "monikers": ["netcore-2.0"]
+      "monikers": ["netcore-2.0"],
+      "!monikerRange": null,
     }
   .publish.json: |
     {
