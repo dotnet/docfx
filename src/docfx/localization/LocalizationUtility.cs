@@ -3,6 +3,7 @@
 
 using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Text.RegularExpressions;
 
@@ -13,9 +14,9 @@ namespace Microsoft.Docs.Build
         private static readonly Regex s_nameWithLocale = new Regex(@"^.+?(\.[a-z]{2,4}-[a-z]{2,4}(-[a-z]{2,4})?|\.loc)?$", RegexOptions.IgnoreCase);
         private static readonly Regex s_lrmAdjustment = new Regex(@"(^|\s|\>)(C#|F#|C\+\+)(\s*|[.!?;:]*)(\<|[\n\r]|$)", RegexOptions.IgnoreCase);
 
-        public static string AddLeftToRightMarker(Docset docset, string text)
+        public static string AddLeftToRightMarker(CultureInfo culture, string text)
         {
-            if (!docset.Culture.TextInfo.IsRightToLeft)
+            if (!culture.TextInfo.IsRightToLeft)
             {
                 return text;
             }
