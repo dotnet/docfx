@@ -56,6 +56,16 @@ namespace Microsoft.Docs.Build
         public JValue[] Enum { get; set; }
 
         /// <summary>
+        /// The maximum length of a string.
+        /// </summary>
+        public int? MaxLength { get; set; }
+
+        /// <summary>
+        /// The minimum length of a string.
+        /// </summary>
+        public int? MinLength { get; set; }
+
+        /// <summary>
         /// An object can have extra keys not defined in properties.
         /// This can be:
         ///     - boolean: allow/disallow additional properties
