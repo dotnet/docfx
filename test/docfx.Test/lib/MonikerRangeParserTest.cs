@@ -114,36 +114,6 @@ namespace Microsoft.Docs.Build
         }
 
         [Fact]
-        public void TestDuplicateMonikerNameShouldFail()
-        {
-            var monikerDefinition = new MonikerDefinitionModel
-            {
-                Monikers =
-                {
-                    new Moniker
-                    {
-                        MonikerName = "netcore-1.0",
-                        ProductName = ".NET Core",
-                    },
-                    new Moniker
-                    {
-                        MonikerName = "netcore-1.0",
-                        ProductName = ".NET Core",
-                    },
-                   new Moniker
-                    {
-                        MonikerName = "netcore-2.0",
-                        ProductName = ".NET Core",
-                    },
-                }
-            };
-
-            var exception = Assert.Throws<DocfxException>(() => new MonikerRangeParser(new EvaluatorWithMonikersVisitor(monikerDefinition)));
-            Assert.Equal("moniker-name-conflict", exception.Error.Code);
-            Assert.Equal("Two or more moniker definitions have the same monikerName `netcore-1.0`", exception.Error.Message);
-        }
-
-        [Fact]
         public void TestNullDefinitionShouldFail()
         {
             var monikerRangeParser = new MonikerRangeParser(new EvaluatorWithMonikersVisitor(new MonikerDefinitionModel()));
