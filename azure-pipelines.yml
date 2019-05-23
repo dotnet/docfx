@@ -5,48 +5,30 @@ trigger:
       - v3
       - v3-release
       - feature/*
-
 pr:
 - v3
 - feature/*
-
 jobs:
 
-# Test pull requests on windows, linux and mac
-- job: LinuxTest_ubuntu_16_04
+# Test pull requests on linux and mac
+- job: LinuxBuild
   pool:
     vmImage: 'ubuntu-16.04'
   condition: eq(variables['Build.Reason'], 'PullRequest')
   steps:
     - bash: ./build.sh
 
-- job: macOSTest_macOS_10_13
+- job: MaxBuild
   pool:
     vmImage: 'macOS-10.13'
   condition: eq(variables['Build.Reason'], 'PullRequest')
   steps:
     - bash: ./build.sh
 
-- job: WindowsTest_vs2017_win2016
+# Test and deploy on windows
+- job: WindowsBuild
   pool:
     vmImage: 'vs2017-win2016'
-  condition: eq(variables['Build.Reason'], 'PullRequest')
-  steps:
-    - powershell: ./build.ps1
-
-    # Publish code coverage results
-    - task: PublishCodeCoverageResults@1
-      inputs:
-        codeCoverageTool: 'cobertura'
-        summaryFileLocation: '**/coverage.cobertura.xml'
-        reportDirectory: '**/TestResults/cobertura'
-        failIfCoverageEmpty: true
-
-# Deploy commits
-- job: Deploy
-  pool:
-    name: DocFX
-  condition: ne(variables['Build.Reason'], 'PullRequest')
   steps:
 
   # Build and test
