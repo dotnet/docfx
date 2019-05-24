@@ -1,3 +1,13 @@
+trigger:
+  batch: true
+  branches:
+    include:
+    - dev
+    - master
+pr:
+- dev
+- master
+
 pool:
   name: Hosted Windows 2019 with VS2019
   vmImage: 'windows-2019'
