@@ -77,11 +77,6 @@ jobs:
     clean: true
     fetchDepth: 1
 
-  # Install .NET Core
-  - task: DotNetCoreInstaller@0
-    inputs:
-      version: '2.2.300'
-
   # Checkout Docs.Build
   - powershell: |
       function exec([string] $cmd) {
