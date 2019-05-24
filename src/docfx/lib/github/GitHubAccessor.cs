@@ -221,10 +221,6 @@ query ($owner: String!, $name: String!, $commit: String!) {
 
                 return (null, githubUsers);
             }
-            catch (HttpRequestException ex)
-            {
-                return (Errors.GitHubApiFailed(_url, ex.Message), null);
-            }
             catch (Exception ex)
             {
                 return (Errors.GitHubApiFailed(_url, ex.Message), null);
