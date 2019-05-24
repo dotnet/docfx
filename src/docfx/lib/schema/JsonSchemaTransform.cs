@@ -14,7 +14,7 @@ namespace Microsoft.Docs.Build
         {
             var errors = new List<Error>();
 
-            Travel(new JsonSchemaContext(schema), schema, token, (jsonSchema, current, scalar) => current.Replace(TransformScalar(file, context, jsonSchema, scalar, errors, buildChild)));
+            Travel(new JsonSchemaContext(schema), schema, token, (jsonSchema, scalar) => scalar.Replace(TransformScalar(file, context, jsonSchema, scalar, errors, buildChild)));
             return (errors, token);
         }
 
@@ -22,18 +22,18 @@ namespace Microsoft.Docs.Build
         {
             var errors = new List<Error>();
             var extensions = new Dictionary<string, Lazy<JValue>>();
-            Travel(new JsonSchemaContext(schema), schema, token, (jsonSchema, current, scalar) => extensions[current.Path] = new Lazy<JValue>(() => TransformScalar(file, context, jsonSchema, scalar, errors, buildChild: null), LazyThreadSafetyMode.PublicationOnly));
+            Travel(new JsonSchemaContext(schema), schema, token, (jsonSchema, scalar) => extensions[scalar.Path] = new Lazy<JValue>(() => TransformScalar(file, context, jsonSchema, scalar, errors, buildChild: null), LazyThreadSafetyMode.PublicationOnly));
             return (errors, extensions);
         }
 
-        private static void Travel(JsonSchemaContext jsonSchemaContext, JsonSchema schema, JToken token, Action<JsonSchema, JToken, JValue> transformScalar)
+        private static void Travel(JsonSchemaContext jsonSchemaContext, JsonSchema schema, JToken token, Action<JsonSchema, JValue> transformScalar)
         {
             schema = jsonSchemaContext.GetDefinition(schema);
 
             switch (token)
             {
                 case JValue scalar:
-                    transformScalar(schema, token, scalar);
+                    transformScalar(schema, scalar);
                     break;
                 case JArray array:
                     if (schema.Items != null)
