@@ -75,7 +75,7 @@ jobs:
   # Checkout
   - checkout: self
     clean: true
-    fetchDepth: 1
+    path: docfx
 
   # Checkout Docs.Build
   - powershell: |
