@@ -154,6 +154,7 @@ namespace Microsoft.Docs.Build
                                         }
 
                                         Debug.Assert(!Directory.Exists(workTreePath));
+                                        GitUtility.PruneWorkTree(repoPath);
                                         GitUtility.AddWorkTree(repoPath, headCommit, workTreePath);
                                     }
                                     catch (Exception ex)
