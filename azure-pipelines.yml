@@ -89,6 +89,11 @@ jobs:
 
       $auth = "-c http.https://dev.azure.com.extraheader=""AUTHORIZATION: bearer $env:SYSTEM_ACCESS_TOKEN"""
 
+      Write-Host '-----------'
+      Write-Host $env:SYSTEM_ACCESS_TOKEN
+      Write-Host $auth
+      Write-Host '-----------'
+
       if (-Not (Test-Path -Path ../Docs.Build)) {
           # Clone Docs.Build if not exists
           exec "git $auth clone https://dev.azure.com/ceapex/Engineering/_git/Docs.Build --depth 1 --branch develop ../Docs.Build"
