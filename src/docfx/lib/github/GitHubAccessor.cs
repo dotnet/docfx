@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Octokit;
@@ -128,7 +129,7 @@ query ($owner: String!, $name: String!, $commit: String!) {
                 var response = await RetryUtility.Retry(
                     () => s_httpClient.SendAsync(
                         CreateHttpRequest(
-                            new StringContent(JsonUtility.Serialize(request), System.Text.Encoding.UTF8, "application/json"))),
+                            new StringContent(JsonUtility.Serialize(request), Encoding.UTF8, "application/json"))),
                     ex => ex is OperationCanceledException);
 
                 if (!response.IsSuccessStatusCode)
