@@ -67,7 +67,7 @@ jobs:
 
 # Integration test
 - job: IntegrationTest
-  condition: and(eq(variables['Build.SourceBranch'], 'refs/heads/v3'))
+  condition: or(eq(variables['Build.SourceBranch'], 'refs/heads/v3'), eq(variables['System.PullRequest.TargetBranch'], 'refs/heads/v3'))
   pool:
     name: DocFX
   steps:
