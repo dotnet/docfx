@@ -129,7 +129,7 @@ query ($owner: String!, $name: String!, $commit: String!) {
                 var response = await RetryUtility.Retry(
                     () => s_httpClient.SendAsync(
                         CreateHttpRequest(
-                            new StringContent(JsonUtility.Serialize(request), System.Text.Encoding.UTF8, "application/json"))),
+                            new StringContent(JsonUtility.Serialize(request), Encoding.UTF8, "application/json"))),
                     ex => ex is OperationCanceledException);
 
                 if (!response.IsSuccessStatusCode)
@@ -232,7 +232,7 @@ query ($owner: String!, $name: String!, $commit: String!) {
                 var message = new HttpRequestMessage();
                 message.Headers.Add("User-Agent", "DocFX");
                 if (!string.IsNullOrEmpty(_token))
-                    message.Headers.Add("Authorization", $"basic {Convert.ToBase64String(Encoding.UTF8.GetBytes(_token))}");
+                    message.Headers.Add("Authorization", $"bearer {_token}");
 
                 message.RequestUri = new Uri(_url);
                 message.Content = content;
