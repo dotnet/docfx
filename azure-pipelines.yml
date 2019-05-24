@@ -17,7 +17,7 @@ jobs:
   - bash: ./build.sh
     env:
       SYSTEM_ACCESS_TOKEN: $(System.AccessToken)
-      DOCS_GITHUB_TOKEN: $(GitHubAccessToken)
+      DOCS_GITHUB_TOKEN: $(DOCS_GITHUB_TOKEN)
 
 - job: MacBuild
   pool:
@@ -27,7 +27,7 @@ jobs:
   - bash: ./build.sh
     env:
       SYSTEM_ACCESS_TOKEN: $(System.AccessToken)
-      DOCS_GITHUB_TOKEN: $(GitHubAccessToken)
+      DOCS_GITHUB_TOKEN: $(DOCS_GITHUB_TOKEN)
 
 # Test and deploy on windows
 - job: WindowsBuild
@@ -40,7 +40,7 @@ jobs:
     displayName: Build
     env:
       SYSTEM_ACCESS_TOKEN: $(System.AccessToken)
-      DOCS_GITHUB_TOKEN: $(GitHubAccessToken)
+      DOCS_GITHUB_TOKEN: $(DOCS_GITHUB_TOKEN)
 
   # Publish code coverage results
   - task: PublishCodeCoverageResults@1
