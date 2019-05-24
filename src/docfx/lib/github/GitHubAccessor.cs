@@ -5,6 +5,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -22,6 +23,7 @@ namespace Microsoft.Docs.Build
         private readonly ConcurrentHashSet<(string owner, string name)> _unknownRepos = new ConcurrentHashSet<(string owner, string name)>();
 
         private volatile Error _rateLimitError;
+        private volatile Error _unauthorizedError;
 
         public GitHubAccessor(string token = null)
         {
@@ -75,7 +77,12 @@ namespace Microsoft.Docs.Build
         {
             if (_rateLimitError != null)
             {
-                return (_rateLimitError, null);
+                return default;
+            }
+
+            if (_unauthorizedError != null)
+            {
+                return default;
             }
 
             if (_unknownRepos.Contains((repoOwner, repoName)))
@@ -127,6 +134,11 @@ query ($owner: String!, $name: String!, $commit: String!) {
                 if (!response.IsSuccessStatusCode)
                 {
                     var message = await response.Content.ReadAsStringAsync();
+
+                    if (response.StatusCode == (HttpStatusCode)401)
+                    {
+                        _unauthorizedError = Errors.GitHubApiFailed(_url, message);
+                    }
                     return (Errors.GitHubApiFailed(_url, message), null);
                 }
 
