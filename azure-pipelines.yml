@@ -83,7 +83,7 @@ jobs:
           Write-Host $cmd -ForegroundColor Green
           & ([scriptblock]::Create($cmd))
           if ($lastexitcode -ne 0) {
-              throw ("Error")
+              throw ("Error:" + $cmd)
           }
       }
 
