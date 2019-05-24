@@ -16,7 +16,7 @@ jobs:
   steps:
     - bash: ./build.sh
 
-- job: MaxBuild
+- job: MacBuild
   pool:
     vmImage: 'macOS-10.13'
   condition: eq(variables['Build.Reason'], 'PullRequest')
