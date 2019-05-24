@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Octokit;
@@ -231,7 +232,7 @@ query ($owner: String!, $name: String!, $commit: String!) {
                 var message = new HttpRequestMessage();
                 message.Headers.Add("User-Agent", "DocFX");
                 if (!string.IsNullOrEmpty(_token))
-                    message.Headers.Add("Authorization", $"bearer {_token}");
+                    message.Headers.Add("Authorization", $"basic {Convert.ToBase64String(Encoding.UTF8.GetBytes(_token))}");
 
                 message.RequestUri = new Uri(_url);
                 message.Content = content;
