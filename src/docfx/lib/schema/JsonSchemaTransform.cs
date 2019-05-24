@@ -14,7 +14,7 @@ namespace Microsoft.Docs.Build
         {
             var errors = new List<Error>();
 
-            Travel(new JsonSchemaContext(schema), schema, token, (jsonSchema, scalar) => scalar.Replace(TransformScalar(file, context, jsonSchema, scalar, errors, buildChild)));
+            Traverse(new JsonSchemaContext(schema), schema, token, (jsonSchema, scalar) => scalar.Replace(TransformScalar(file, context, jsonSchema, scalar, errors, buildChild)));
             return (errors, token);
         }
 
@@ -22,11 +22,11 @@ namespace Microsoft.Docs.Build
         {
             var errors = new List<Error>();
             var extensions = new Dictionary<string, Lazy<JValue>>();
-            Travel(new JsonSchemaContext(schema), schema, token, (jsonSchema, scalar) => extensions[scalar.Path] = new Lazy<JValue>(() => TransformScalar(file, context, jsonSchema, scalar, errors, buildChild: null), LazyThreadSafetyMode.PublicationOnly));
+            Traverse(new JsonSchemaContext(schema), schema, token, (jsonSchema, scalar) => extensions[scalar.Path] = new Lazy<JValue>(() => TransformScalar(file, context, jsonSchema, scalar, errors, buildChild: null), LazyThreadSafetyMode.PublicationOnly));
             return (errors, extensions);
         }
 
-        private static void Travel(JsonSchemaContext jsonSchemaContext, JsonSchema schema, JToken token, Action<JsonSchema, JValue> transformScalar)
+        private static void Traverse(JsonSchemaContext jsonSchemaContext, JsonSchema schema, JToken token, Action<JsonSchema, JValue> transformScalar)
         {
             schema = jsonSchemaContext.GetDefinition(schema);
 
@@ -40,7 +40,7 @@ namespace Microsoft.Docs.Build
                     {
                         foreach (var item in array)
                         {
-                            Travel(jsonSchemaContext, schema.Items, item, transformScalar);
+                            Traverse(jsonSchemaContext, schema.Items, item, transformScalar);
                         }
                     }
                     break;
@@ -49,7 +49,7 @@ namespace Microsoft.Docs.Build
                     {
                         if (schema.Properties.TryGetValue(key, out var propertySchema))
                         {
-                            Travel(jsonSchemaContext, propertySchema, value, transformScalar);
+                            Traverse(jsonSchemaContext, propertySchema, value, transformScalar);
                         }
                     }
                     break;

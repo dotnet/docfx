@@ -486,9 +486,9 @@ namespace Microsoft.Docs.Build
 
             var extensionDataByUid = new Dictionary<string, (bool isRoot, Dictionary<string, Lazy<JValue>> properties)>();
 
-            foreach (var (uid, jsnoPath) in uidToJsonPath)
+            foreach (var (uid, jsonPath) in uidToJsonPath)
             {
-                extensionDataByUid.Add(uid, (string.IsNullOrEmpty(jsnoPath), new Dictionary<string, Lazy<JValue>>()));
+                extensionDataByUid.Add(uid, (string.IsNullOrEmpty(jsonPath), new Dictionary<string, Lazy<JValue>>()));
             }
 
             foreach (var (jsonPath, xrefProperty) in extensionData)
