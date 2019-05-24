@@ -92,7 +92,7 @@ jobs:
           }
       }
 
-      Write-Host $env:SYSTEM_ACCESS_TOKEN
+      Write-Host "$env:SYSTEM_ACCESS_TOKEN".replace('a', '^^^')
 
       $auth = "-c http.https://dev.azure.com.extraheader=""AUTHORIZATION: bearer $env:SYSTEM_ACCESS_TOKEN"""
 
