@@ -490,13 +490,9 @@ inputs:
       - netcore-2.0
   docs/v2/b.md: |
     Link to @a with netcore-1.2, netcore-2.0
-  docs/v3/a.md: |
-    ---
-    uid: a
-    title: netcore-2.1
-    monikerRange: '<= netcore-2.1'
-    ---
-    Moniker: netcore-2.1
+  docs/v3/b.md: |
+    Link to @a with netcore-1.2, netcore-2.0
+
   monikerDefinition.json: |
     {
       "monikers": [
@@ -529,10 +525,9 @@ outputs:
       "conceptual": "<p>Link to <a href=\"a\">netcore-1.2, netcore-2.0</a> with netcore-1.2, netcore-2.0</p>\n",
       "monikers": ["netcore-1.2","netcore-2.0"]
     }
-  e277e62e/docs/a.json: |
-    {
-      "conceptual": "<p>Moniker: netcore-2.1</p>",
-      "monikers": ["netcore-2.1"]
+  60290917/docs/b.json: |
+    { "conceptual": "<p>Link to <a href=\"a\">netcore-1.2, netcore-2.0</a> with netcore-1.2, netcore-2.0</p>\n",
+      "monikers": ["netcore-2.1","netcore-2.2"]
     }
   xrefmap.json: | 
     {"references":[{"uid":"a","href":"https://docs.com/docs/a","name":"netcore-2.1"}]}

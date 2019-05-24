@@ -309,7 +309,14 @@ namespace Microsoft.Docs.Build
             }
             else
             {
-                return specs.FirstOrDefault(x => x.spec.Monikers.Intersect(monikers).Any());
+                // Firstly check if any spec has monikers intersecting with monikers of the root file
+                // If not, take the spec with highest version whose monikers are all lower than the lowest moniker of the root file
+                var (spec, referencedFile) = specs.FirstOrDefault(x => x.spec.Monikers.Intersect(monikers).Any());
+                if (spec is null)
+                {
+                    (spec, referencedFile) = specs.FirstOrDefault(x => x.spec.Monikers.All(moniker => _context.MonikerProvider.Comparer.Compare(moniker, monikers.FirstOrDefault()) < 0));
+                }
+                return (spec, referencedFile);
             }
         }
 
