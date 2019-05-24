@@ -218,7 +218,8 @@ namespace Microsoft.Docs.Build
 
             if (file.Docset.Legacy && file.Schema.Attribute is PageSchemaAttribute)
             {
-                pageModel.Conceptual = await RazorTemplate.Render(file.Schema.Name, content);
+                pageModel.Conceptual = HtmlUtility.HtmlPostProcess(
+                    await RazorTemplate.Render(file.Schema.Name, content), file.Docset.Culture);
             }
             else
             {

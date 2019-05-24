@@ -113,17 +113,20 @@ outputs:
   docs/a.json: |
     {
       "conceptual": "<p>No version</p>",
-      "!monikers": null
+      "!monikers": null,
+      "!monikerRange": null,
     }
   218c13d0/docs/a.json: |
     {
       "conceptual": "<p>Moniker: netcore-1.1</p>",
-      "monikers": ["netcore-1.1"]
+      "monikers": ["netcore-1.1"],
+      "!monikerRange": null,
     }
   4667fedf/docs/a.json: |
     {
       "conceptual": "<p>Moniker: netcore-2.0</p>",
-      "monikers": ["netcore-2.0"]
+      "monikers": ["netcore-2.0"],
+      "!monikerRange": null,
     }
   .publish.json: |
     {
@@ -607,7 +610,7 @@ outputs:
   xrefmap.json: | 
     {"references":[{"uid":"a","href":"https://docs.com/docs/a","name":"netcore-2.0"}]}
   .errors.log: |
-    ["warning","invalid-uid-moniker","Moniker 'netcore-1.0' is not defined with uid 'a'","docs/b.md",1,7]
+    ["info","invalid-uid-moniker","Moniker 'netcore-1.0' is not defined with uid 'a'","docs/b.md",1,7]
 ---
 # Define same uid with and without moniker range
 # while refer to it without moniker range, should pick the one without moniker range
@@ -1028,3 +1031,42 @@ inputs:
 outputs:
   .errors.log: |
     ["error","json-syntax-error","Unexpected end when deserializing array.","monikerDefinition.json",2]
+---
+# Invalid moniker range in config
+inputs:
+  docfx.yml: |
+    monikerRange:
+      'docs/v1/**': '>= netcore-2.0'
+    monikerDefinition: monikerDefinition.json
+  docs/v1/a.md:
+  monikerDefinition.json: |
+    {}
+outputs:
+  .errors.log: |
+    ["error","moniker-range-invalid","Invalid moniker range: '>= netcore-2.0': Moniker `netcore-2.0` is not defined","docfx.yml",2,17]
+---
+# Invalid moniker range in file
+inputs:
+  docfx.yml: |
+    monikerRange:
+      'docs/v1/**': '>= netcore-1.0'
+    monikerDefinition: monikerDefinition.json
+  docs/v1/a.md: |
+    ---
+    monikerRange: netcore-1.2
+    ---
+  docs/v1/b.md: |
+    # Invalid Moniker range
+    ::: moniker range="<= netcore-1.2"
+    Invalid moniker Zone
+    ::: moniker-end
+  monikerDefinition.json: |
+    {
+      "monikers": [
+        { "moniker_name": "netcore-1.0", "product_name": ".NET Core" }
+      ]
+    }
+outputs:
+  .errors.log: |
+    ["error","moniker-range-invalid","Invalid moniker range: 'netcore-1.2': Moniker `netcore-1.2` is not defined","docs/v1/a.md",2,15]
+    ["error","moniker-range-invalid","Invalid moniker range: '<= netcore-1.2': Moniker `netcore-1.2` is not defined","docs/v1/b.md",2,1]

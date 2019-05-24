@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
@@ -142,9 +143,16 @@ namespace Microsoft.Docs.Build
                                         // clean existing work tree folder
                                         // it may be dirty caused by last failed restore action
                                         if (Directory.Exists(workTreePath))
+                                        {
+                                            // https://stackoverflow.com/questions/24265481/after-directory-delete-the-directory-exists-returning-true-sometimes
                                             Directory.Delete(workTreePath, true);
+                                            while (Directory.Exists(workTreePath))
+                                            {
+                                                Log.Write($"Wait for the {workTreePath} to be deleted");
+                                                Thread.Sleep(TimeSpan.FromSeconds(1));
+                                            }
+                                        }
 
-                                        // https://stackoverflow.com/questions/24265481/after-directory-delete-the-directory-exists-returning-true-sometimes
                                         Debug.Assert(!Directory.Exists(workTreePath));
                                         GitUtility.AddWorkTree(repoPath, headCommit, workTreePath);
                                     }

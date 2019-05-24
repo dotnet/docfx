@@ -364,8 +364,17 @@ namespace Microsoft.Docs.Build
         public static Error UndefinedValue(SourceInfo source, object value, IEnumerable<object> validValues)
             => new Error(ErrorLevel.Warning, "undefined-value", $"Value '{value}' is not accepted. Valid values: {Join(validValues)}", source);
 
+        /// <summary>
+        /// Array length not within min and max.
+        /// </summary>
         public static Error ArrayLengthInvalid(SourceInfo source, string propName, int? minItems = null, int? maxItems = null)
             => new Error(ErrorLevel.Warning, "array-length-invalid", $"Array {(string.IsNullOrEmpty(propName) ? "" : $"'{propName}' ")}length should be {(minItems.HasValue ? $">= {minItems.Value}" : $"<= {maxItems.Value}")}", source);
+
+        /// <summary>
+        /// String length not within min and max.
+        /// </summary>
+        public static Error StringLengthInvalid(SourceInfo source, string propName, int? minLength = null, int? maxLength = null)
+            => new Error(ErrorLevel.Warning, "string-length-invalid", $"String {(string.IsNullOrEmpty(propName) ? "" : $"'{propName}' ")}length should be {(minLength.HasValue ? $">= {minLength.Value}" : $"<= {maxLength.Value}")}", source);
 
         /// <summary>
         /// A required field is missing.
@@ -411,16 +420,10 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Error, "moniker-overlapping", $"Two or more documents have defined overlapping moniker: {Join(overlappingmonikers)}");
 
         /// <summary>
-        /// Defined duplicate monikers in moniker definition file.
-        /// </summary>
-        public static Error MonikerNameConflict(string monikerName)
-            => new Error(ErrorLevel.Error, "moniker-name-conflict", $"Two or more moniker definitions have the same monikerName `{monikerName}`");
-
-        /// <summary>
         /// Failed to parse moniker string.
         /// </summary>
-        public static Error MonikerRangeInvalid(string monikerRange, string message)
-            => new Error(ErrorLevel.Error, "moniker-range-invalid", $"Invalid moniker range: '{monikerRange}': {message}");
+        public static Error MonikerRangeInvalid(SourceInfo<string> source, string message)
+            => new Error(ErrorLevel.Error, "moniker-range-invalid", $"Invalid moniker range: '{source}': {message}", source);
 
         /// <summary>
         /// MonikerRange is not defined in docfx.yml or doesn't match an article.md,
@@ -442,7 +445,7 @@ namespace Microsoft.Docs.Build
         ///   - article with uid `a` has only netcore-1.0 & netcore-1.1 version, but get referenced with @a?view=netcore-2.0
         /// </summary>
         public static Error InvalidUidMoniker(SourceInfo source, string moniker, string uid)
-            => new Error(ErrorLevel.Warning, "invalid-uid-moniker", $"Moniker '{moniker}' is not defined with uid '{uid}'", source);
+            => new Error(ErrorLevel.Info, "invalid-uid-moniker", $"Moniker '{moniker}' is not defined with uid '{uid}'", source);
 
         /// <summary>
         /// Custom 404 page is not supported

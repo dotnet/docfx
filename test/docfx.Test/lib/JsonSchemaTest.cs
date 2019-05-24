@@ -26,10 +26,8 @@ namespace Microsoft.Docs.Build
             "exclusiveMinimum",
             "if-then-else",
             "maximum",
-            "maxLength",
             "maxProperties",
             "minimum",
-            "minLength",
             "minProperties",
             "multipleOf",
             "not",
@@ -135,6 +133,17 @@ namespace Microsoft.Docs.Build
         [InlineData("{'type': 'number', 'enum': [1, 2]}", "1", "")]
         [InlineData("{'type': 'number', 'enum': [1, 2]}", "3",
             "['warning','undefined-value','Value '3' is not accepted. Valid values: '1', '2'','file',1,1]")]
+
+        // string length validation
+        [InlineData("{'type': 'string', 'minLength': 1, 'maxLength': 5}", "'a'", "")]
+        [InlineData("{'properties': {'str': {'minLength': 1, 'maxLength': 5}}}", "{'str': null}","")]
+        [InlineData("{'type': 'string', 'minLength': 1}", "''",
+            "['warning','string-length-invalid','String length should be >= 1','file',1,2]")]
+        [InlineData("{'type': 'string', 'maxLength': 1}", "'ab'",
+            "['warning','string-length-invalid','String length should be <= 1','file',1,4]")]
+        [InlineData("{'properties': {'str': {'maxLength': 2, 'minLength': 4}}}", "{'str': 'abc'}",
+            @"['warning','string-length-invalid','String 'str' length should be <= 2','file',1,13]
+              ['warning','string-length-invalid','String 'str' length should be >= 4','file',1,13]")]
 
         // properties validation
         [InlineData("{'properties': {'key': {'type': 'string'}}}", "{'key': 'value'}", "")]
