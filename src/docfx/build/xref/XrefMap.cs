@@ -314,6 +314,7 @@ namespace Microsoft.Docs.Build
                 var (spec, referencedFile) = specs.FirstOrDefault(x => x.spec.Monikers.Intersect(monikers).Any());
                 if (spec is null)
                 {
+                    // TODO: Need to cover when the root file level moniker belongs to different product other than uid moniker
                     (spec, referencedFile) = specs.FirstOrDefault(x => x.spec.Monikers.All(moniker => _context.MonikerProvider.Comparer.Compare(moniker, monikers.FirstOrDefault()) < 0));
                 }
                 return (spec, referencedFile);
