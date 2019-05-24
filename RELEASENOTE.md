@@ -1,7 +1,7 @@
-Version Notes (Current Version: v2.43)
+Version Notes (Current Version: v2.42.4)
 =======================================
 
-v2.43(Pre-Release)
+v2.42.4
 -----------
 1. Drop project.json support. (#4573)
 
