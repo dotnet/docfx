@@ -35,7 +35,7 @@ jobs:
     env:
       GITHUB_BASIC_AUTH: $(GitHubBasicAuth)
       SYSTEM_ACCESS_TOKEN: $(System.AccessToken)
-      GITHUB_ACCESS_TOKEN: $(GitHubAccessToken)
+      DOCS_GITHUB_TOKEN: $(GitHubAccessToken)
 
   # Publish code coverage results
   - task: PublishCodeCoverageResults@1
