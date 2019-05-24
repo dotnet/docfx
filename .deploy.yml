@@ -2,57 +2,32 @@ trigger:
   batch: true
   branches:
     include:
-      - v3
-      - v3-release
-      - feature/*
+    - v3
+    - v3-release
 pr:
 - v3
-- feature/*
 jobs:
-# Test pull requests on windows, linux and mac
-- job: LinuxTest_ubuntu_16_04
+
+# Test pull requests on linux and mac
+- job: LinuxBuild
   pool:
     vmImage: 'ubuntu-16.04'
   condition: eq(variables['Build.Reason'], 'PullRequest')
   steps:
     - bash: ./build.sh
-- job: macOSTest_macOS_10_13
+
+- job: MacBuild
   pool:
     vmImage: 'macOS-10.13'
   condition: eq(variables['Build.Reason'], 'PullRequest')
   steps:
     - bash: ./build.sh
-- job: WindowsTest_vs2017_win2016
+
+# Test and deploy on windows
+- job: WindowsBuild
   pool:
     vmImage: 'vs2017-win2016'
-  condition: eq(variables['Build.Reason'], 'PullRequest')
   steps:
-    - powershell: ./build.ps1
-
-    # Publish code coverage results
-    - task: PublishCodeCoverageResults@1
-      inputs:
-        codeCoverageTool: 'cobertura'
-        summaryFileLocation: '**/coverage.cobertura.xml'
-        reportDirectory: '**/TestResults/cobertura'
-        failIfCoverageEmpty: true
-
-# Deploy commits
-- job: Deploy
-  pool:
-    name: DocFX
-  condition: ne(variables['Build.Reason'], 'PullRequest')
-  steps:
-
-  # Run impact regression tests
-  - powershell: ./impact.ps1
-    condition: eq(variables['Build.SourceBranch'], 'refs/heads/v3')
-    env:
-      OP_BUILD_USER_TOKEN: $(OpBuildUserToken)
-      GITHUB_BASIC_AUTH: $(GitHubBasicAuth)
-      SYSTEM_ACCESS_TOKEN: $(System.AccessToken)
-      DOCS_GITHUB_TOKEN: $(GitHubAccessToken)
-    displayName: Impact Test
 
   # Build and test
   - powershell: ./build.ps1
@@ -61,12 +36,6 @@ jobs:
       GITHUB_BASIC_AUTH: $(GitHubBasicAuth)
       SYSTEM_ACCESS_TOKEN: $(System.AccessToken)
       DOCS_GITHUB_TOKEN: $(GitHubAccessToken)
-
-  # Publish test results
-  - task: PublishTestResults@2
-    inputs:
-      testResultsFormat: 'VSTest'
-      testResultsFiles: '**/*.trx'
 
   # Publish code coverage results
   - task: PublishCodeCoverageResults@1
@@ -95,3 +64,62 @@ jobs:
       packagesToPush: drop/**/*.nupkg
       nuGetFeedType: external
       publishFeedCredentials: myget.docfx-v3
+
+# Integration test
+- job: IntegrationTest
+  condition: or(eq(variables['Build.SourceBranch'], 'refs/heads/v3'), eq(variables['System.PullRequest.TargetBranch'], 'refs/heads/v3'))
+  pool:
+    name: DocFX
+  steps:
+
+  # Checkout
+  - checkout: self
+    clean: true
+    fetchDepth: 1
+
+  # Checkout Docs.Build
+  - powershell: |
+      function exec([string] $cmd) {
+          Write-Host $cmd -ForegroundColor Green
+          & ([scriptblock]::Create($cmd))
+          if ($lastexitcode -ne 0) {
+              throw ("Error")
+          }
+      }
+
+      $auth = "-c http.https://dev.azure.com.extraheader=""AUTHORIZATION: bearer $env:SYSTEM_ACCESS_TOKEN"""
+
+      if (-Not (Test-Path -Path ../Docs.Build)) {
+          # Clone Docs.Build if not exists
+          exec "git $auth clone https://dev.azure.com/ceapex/Engineering/_git/Docs.Build --depth 1 --branch develop ../Docs.Build"
+      } else {
+        try {
+            # Update Docs.Build to latest
+            pushd ../Docs.Build
+            exec "git $auth fetch origin develop"
+            exec "git checkout --force origin/develop"
+            exec "git clean -xdff"
+        } finally {
+            popd
+        }
+      }
+
+    displayName: Checkout Docs.Build
+    env:
+      SYSTEM_ACCESS_TOKEN: $(System.AccessToken)
+
+  # Build
+  - powershell: ../Docs.Build/build.ps1 -noTest
+    displayName: Build
+    env:
+      BUILD_REASON: $(Build.Reason)
+
+  # Run integration tests
+  - powershell: dotnet run -p ../Docs.Build/test/integration-test -c Release
+    displayName: Run integration tests
+    env:
+      BUILD_REASON: $(Build.Reason)
+      DOCFX_APPDATA_PATH: D:/appdata
+      DOCS_GITHUB_TOKEN: $(DOCS_GITHUB_TOKEN)
+      SYSTEM_ACCESS_TOKEN: $(System.AccessToken)
+      AzureServicesAuthConnectionString: $(AzureServicesAuthConnectionString)
