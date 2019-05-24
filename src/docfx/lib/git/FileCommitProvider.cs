@@ -223,7 +223,8 @@ namespace Microsoft.Docs.Build
                 throw Errors.CommittishNotFound(_repoPath, committish).ToException();
             }
 
-            git_revwalk_push(walk, git_object_id(headCommit));
+            var lastCommitId = *git_object_id(headCommit);
+            git_revwalk_push(walk, &lastCommitId);
             git_object_free(headCommit);
 
             while (true)
@@ -237,10 +238,11 @@ namespace Microsoft.Docs.Build
                 // https://github.com/libgit2/libgit2sharp/issues/1351
                 if (error != 0 /* GIT_ENOTFOUND */)
                 {
-                    git_revwalk_free(walk);
-                    throw new NotSupportedException($"Error computing git log '{error}' for '{_repoPath}'");
+                    Log.Warn($"Git repo '{_repoPath}' is a shallow clone, contributors and update time may not be accurate. ({error}, {lastCommitId})");
+                    break;
                 }
 
+                lastCommitId = commitId;
                 git_object_lookup(out var commit, _repo, &commitId, 1 /* GIT_OBJ_COMMIT */);
                 var author = git_commit_author(commit);
                 var parentCount = git_commit_parentcount(commit);

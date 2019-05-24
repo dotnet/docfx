@@ -300,14 +300,7 @@ namespace Microsoft.Docs.Build
             {
                 while (!mutex.WaitOne(TimeSpan.FromSeconds(30)))
                 {
-#pragma warning disable CA2002 // Do not lock on objects with weak identity
-                    lock (Console.Out)
-#pragma warning restore CA2002
-                    {
-                        Console.ForegroundColor = ConsoleColor.Yellow;
-                        Console.WriteLine($"Waiting for another process to access '{mutexName}'");
-                        Console.ResetColor();
-                    }
+                    Log.Warn($"Waiting for another process to access '{mutexName}'");
                 }
 
                 // avoid nested calls to RunInsideMutex with same mutex name

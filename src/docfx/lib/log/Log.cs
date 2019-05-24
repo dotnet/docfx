@@ -40,6 +40,18 @@ namespace Microsoft.Docs.Build
             }
         }
 
+        public static void Warn(string message)
+        {
+#pragma warning disable CA2002
+            lock (Console.Out)
+#pragma warning restore CA2002
+            {
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine(message);
+                Console.ResetColor();
+            }
+        }
+
         private class LogScope : IDisposable
         {
             private readonly Action _dispose;
