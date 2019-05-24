@@ -7,12 +7,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
 namespace Microsoft.Docs.Build
 {
-    internal class GitHubAccessor
+    internal sealed class GitHubAccessor
     {
         private static readonly HttpClient s_httpClient = new HttpClient();
 
@@ -22,12 +23,17 @@ namespace Microsoft.Docs.Build
         private volatile Error _rateLimitError;
         private volatile Error _unauthorizedError;
 
+        static GitHubAccessor()
+        {
+            s_httpClient.DefaultRequestHeaders.Add("User-Agent", "DocFX");
+        }
+
         public GitHubAccessor(string token = null)
         {
             _url = "https://api.github.com/graphql";
-            s_httpClient.DefaultRequestHeaders.Add("User-Agent", "DocFX");
+
             if (!string.IsNullOrEmpty(token))
-                s_httpClient.DefaultRequestHeaders.Add("Authorization", $"bearer {token}");
+                s_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", token);
         }
 
         public async Task<(Error, GitHubUser)> GetUserByLogin(string login)
