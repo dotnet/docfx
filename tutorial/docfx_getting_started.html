@@ -8,7 +8,7 @@
     <title>Getting Started with DocFX | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Getting Started with DocFX | DocFX website ">
-    <meta name="generator" content="docfx 2.42.3.0">
+    <meta name="generator" content="docfx 2.42.4.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -99,10 +99,12 @@ For detailed description about DFM, please refer to <a href="../spec/docfx_flavo
 <p><strong>Prerequisites</strong> <a href="https://www.visualstudio.com/downloads/">Visual Studio 2017</a> is needed for <code>docfx metadata</code> msbuild projects. It's not required when generating metadata directly from source code (<code>.cs</code>, <code>.vb</code>) or assemblies (<code>.dll</code>)</p>
 </div>
 <h2 id="2-use-docfx-as-a-command-line-tool">2. Use <em>DocFX</em> as a command-line tool</h2>
-<p><em>Step1.</em> DocFX ships as a <a href="https://chocolatey.org/packages/docfx">chocolatey package</a>.
-Install docfx through <a href="https://chocolatey.org/install">Chocolatey</a> by calling <code>choco install docfx -y</code>.</p>
-<p>DocFX also ships as a <a href="https://formulae.brew.sh/formula/docfx">Homebrew package</a> owned by community users, install with <code>brew install docfx</code>.</p>
-<p>Alternatively, you can download and unzip <em>docfx.zip</em> from <a href="https://github.com/dotnet/docfx/releases">https://github.com/dotnet/docfx/releases</a>, extract it to a local folder, and add it to PATH so you can run it anywhere.</p>
+<p><em>Step1.</em> Install DocFX. Choose from one of the following sources:</p>
+<ul>
+<li><strong><a href="https://chocolatey.org/packages/docfx">Chocolatey</a></strong>: <code>choco install docfx -y</code>.</li>
+<li><strong><a href="https://formulae.brew.sh/formula/docfx">Homebrew</a></strong> (owned by community): <code>brew install docfx</code>.</li>
+<li><strong>GitHub</strong>: download and unzip <code>docfx.zip</code> from <a href="https://github.com/dotnet/docfx/releases">https://github.com/dotnet/docfx/releases</a>, extract it to a local folder, and add it to PATH so you can run it anywhere.</li>
+</ul>
 <p><em>Step2.</em> Create a sample project</p>
 <pre><code>docfx init -q
 </code></pre>
@@ -111,6 +113,11 @@ Install docfx through <a href="https://chocolatey.org/install">Chocolatey</a> by
 <pre><code>docfx docfx_project\docfx.json --serve
 </code></pre>
 <p>Now you can view the generated website on http://localhost:8080.</p>
+<div class="IMPORTANT">
+<h5>Important</h5>
+<p>For macOS/Linux users: Use <a href="https://www.mono-project.com/">Mono</a> version &gt;= 5.10.</p>
+<p>For macOS users: <strong>DO NOT</strong> Install Mono from Homebrew, but rather from the <a href="https://www.mono-project.com/download/stable/#download-mac">Mono download page</a>.</p>
+</div>
 <h2 id="3-use-docfx-integrated-with-visual-studio">3. Use <em>DocFX</em> integrated with Visual Studio</h2>
 <p><em>Step1.</em> Create a <strong>Class Library (.NET Framework)</strong> project</p>
 <p><em>Step2.</em> Right click on the project and select <strong>Manage NuGet Package</strong></p>
@@ -164,20 +171,7 @@ Install docfx through <a href="https://chocolatey.org/install">Chocolatey</a> by
 <h5>Note</h5>
 <p><em>Known issue in AppVeyor</em>: Currently <code>platform: Any CPU</code> in <em>appveyor.yml</em> causes <code>docfx metadata</code> failure. <a href="https://github.com/dotnet/docfx/issues/1078">https://github.com/dotnet/docfx/issues/1078</a></p>
 </div>
-<h2 id="5-build-from-source-code">5. Build from source code</h2>
-<p>As a prerequisite, you need:</p>
-<ul>
-<li><a href="https://www.visualstudio.com/vs/">Visual Studio 2017</a> with <em>.NET Core cross-platform development</em> toolset</li>
-<li><a href="https://nodejs.org">Node.js</a></li>
-</ul>
-<p><em>Step1.</em> <code>git clone https://github.com/dotnet/docfx.git</code> to get the latest code.</p>
-<p><em>Step2.</em> Run <code>build.cmd</code> under root folder.</p>
-<p><em>Step3.</em> Add <code>artifacts</code> folder to nuget source by in IDE:</p>
-<blockquote>
-<p>Tools &gt; NuGet Package Manager &gt; Package Manager Settings &gt; Package Sources</p>
-</blockquote>
-<p><em>Step4.</em> Follow steps in #2, #3, #4 to use <em>DocFX</em> in command-line, IDE or .NET Core.</p>
-<h2 id="6-a-seed-project-to-play-with-docfx">6. A seed project to play with <em>DocFX</em></h2>
+<h2 id="5-a-seed-project-to-play-with-docfx">5. A seed project to play with <em>DocFX</em></h2>
 <p>Here is a seed project: <a href="https://github.com/docascode/docfx-seed">https://github.com/docascode/docfx-seed</a>. It contains</p>
 <ol>
 <li>A basic C# project under <code>src</code>.</li>
@@ -190,7 +184,7 @@ Install docfx through <a href="https://chocolatey.org/install">Chocolatey</a> by
 <h5>Tip</h5>
 <p>It's good practice to separate files with different types into different folders.</p>
 </div>
-<h2 id="7-qa">7. Q&amp;A</h2>
+<h2 id="6-qa">6. Q&amp;A</h2>
 <ol>
 <li>Q: How do I quickly reference APIs from other APIs or conceptual files?
 A: Use <code>@uid</code> syntax.</li>
