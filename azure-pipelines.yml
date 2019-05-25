@@ -16,7 +16,7 @@ jobs:
   steps:
   - bash: ./build.sh
     env:
-      SYSTEM_ACCESS_TOKEN: $(System.AccessToken)
+      AZURE_DEVOPS_TOKEN: $(AZURE_DEVOPS_TOKEN)
       DOCS_GITHUB_TOKEN: $(DOCS_GITHUB_TOKEN)
 
 - job: MacBuild
@@ -26,7 +26,7 @@ jobs:
   steps:
   - bash: ./build.sh
     env:
-      SYSTEM_ACCESS_TOKEN: $(System.AccessToken)
+      AZURE_DEVOPS_TOKEN: $(AZURE_DEVOPS_TOKEN)
       DOCS_GITHUB_TOKEN: $(DOCS_GITHUB_TOKEN)
 
 # Test and deploy on windows
@@ -39,7 +39,7 @@ jobs:
   - powershell: ./build.ps1
     displayName: Build
     env:
-      SYSTEM_ACCESS_TOKEN: $(System.AccessToken)
+      AZURE_DEVOPS_TOKEN: $(AZURE_DEVOPS_TOKEN)
       DOCS_GITHUB_TOKEN: $(DOCS_GITHUB_TOKEN)
 
   # Publish code coverage results
@@ -92,7 +92,7 @@ jobs:
           }
       }
 
-      $auth = "-c http.https://dev.azure.com.extraheader=""AUTHORIZATION: bearer $env:SYSTEM_ACCESS_TOKEN"""
+      $auth = "-c http.https://dev.azure.com.extraheader=""AUTHORIZATION: bearer $env:AZURE_DEVOPS_TOKEN"""
 
       if (-Not (Test-Path -Path ../Docs.Build)) {
           # Clone Docs.Build if not exists
@@ -111,7 +111,7 @@ jobs:
 
     displayName: Checkout Docs.Build
     env:
-      SYSTEM_ACCESS_TOKEN: $(System.AccessToken)
+      AZURE_DEVOPS_TOKEN: $(AZURE_DEVOPS_TOKEN)
 
   # Build
   - powershell: ../Docs.Build/build.ps1 -noTest
@@ -126,5 +126,5 @@ jobs:
       BUILD_REASON: $(Build.Reason)
       DOCFX_APPDATA_PATH: D:/appdata
       DOCS_GITHUB_TOKEN: $(DOCS_GITHUB_TOKEN)
-      SYSTEM_ACCESS_TOKEN: $(System.AccessToken)
+      AZURE_DEVOPS_TOKEN: $(AZURE_DEVOPS_TOKEN)
       AzureServicesAuthConnectionString: $(AzureServicesAuthConnectionString)
