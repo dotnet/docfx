@@ -104,7 +104,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     }
                     else
                     {
-                        Logger.LogWarning("Fail to find MSBuild >= 16.0 on machine. Please install Visual Studio 2019 with MSBuild >= 16.0 first.");
+                        Logger.LogWarning("Fail to find MSBuild >= 16.0 on machine. Please install Visual Studio 2019 with MSBuild >= 16.0: https://visualstudio.microsoft.com/vs/");
                     }
                 }
             }
