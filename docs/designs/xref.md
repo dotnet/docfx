@@ -182,22 +182,31 @@ There are some other UID reference formats supported in docfx V2, which are not 
 - multiple versioning with the same product name, 
 resolving uid `a` should take the one with the highest version and also respect the version of file `b`
 ```
-folder-1(1.0, 2.0):
-   - a.md(uid: a, title: A1)
-   - b.md(@a)
-folder-2(3.0,4.0):
-   - a.md(uid: a, title: A2)
-   - b.md(@a)
+inputs:
+    folder-1(1.0, 2.0):
+        - a.md(uid: a, title: A1)
+    folder-2(3.0,4.0):
+        - a.md(uid: a, title: A2)
+    folder-3(2.0):
+        - b.md(@a)
+outputs:
+    folder-3:
+        - b.md(<a href="url">A1</a>)
 ```
 - multiple versioning with different product names, take the one with highest product name alphabetically
 ```
-folder-1(a-1.0, a-2.0):
-    - a.md(uid:a, title: A1)
-folder-2(b-1.0, b-2.0):
-    - a.md(uid:a, title: A2)
-folder-3(c-1.0, c-2.0):
-    - b.md(@a)
+inputs:
+    folder-1(a-1.0, a-2.0):
+        - a.md(uid:a, title: A1)
+    folder-2(b-1.0, b-2.0):
+        - a.md(uid:a, title: A2)
+    folder-3(c-1.0, c-2.0):
+        - b.md(@a)
+outputs:
+    folder-3(c-1.0, c-2.0):
+        - b.md(<a href="url">A2</a>)
 ```
+
 ### External uid with multiple versioning
 The resolving logic for external uid is the same as internal uid, but how to consume `xrefmap` is different.
 v3 is consuming `xrefmap.json` of v2 output for now. And for multiple versioning, v2 would output multiple `xrefmap-versionxx.json` files. There are two options here:
