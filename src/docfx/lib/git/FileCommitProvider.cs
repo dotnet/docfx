@@ -241,7 +241,7 @@ namespace Microsoft.Docs.Build
                     git_revwalk_free(walk);
 
                     Log.Write($"Load git commit failed: {error} {lastCommitId}");
-                    throw Errors.GitCloneIncomplete(_repoPath);
+                    throw Errors.GitCloneIncomplete(_repoPath).ToException();
                 }
 
                 lastCommitId = commitId;
