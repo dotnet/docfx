@@ -468,7 +468,6 @@ namespace Microsoft.Docs.Build
             {
                 return (new List<Error>(), new List<InternalXrefSpec>());
             }
-            var extensionData = new Dictionary<string, Lazy<JValue>>();
 
             if (file.Schema is null)
             {
@@ -476,18 +475,20 @@ namespace Microsoft.Docs.Build
             }
 
             var errors = new List<Error>();
-            var (schemaErrors, _) = JsonUtility.ToObject(
-                obj,
-                file.Schema.Type,
-                transform: AttributeTransformer.TransformXref(context, file, null, extensionData));
+            var jsonSchema = TemplateEngine.GetJsonSchema(file.Schema);
+            if (jsonSchema is null)
+            {
+                throw Errors.SchemaNotFound(file.Mime).ToException();
+            }
 
+            var (schemaErrors, extensionData) = JsonSchemaTransform.TransformXref(file, context, jsonSchema, obj);
             errors.AddRange(schemaErrors);
 
             var extensionDataByUid = new Dictionary<string, (bool isRoot, Dictionary<string, Lazy<JValue>> properties)>();
 
-            foreach (var (uid, value) in uidToJsonPath)
+            foreach (var (uid, jsonPath) in uidToJsonPath)
             {
-                extensionDataByUid.Add(uid, (string.IsNullOrEmpty(value), new Dictionary<string, Lazy<JValue>>()));
+                extensionDataByUid.Add(uid, (string.IsNullOrEmpty(jsonPath), new Dictionary<string, Lazy<JValue>>()));
             }
 
             foreach (var (jsonPath, xrefProperty) in extensionData)
