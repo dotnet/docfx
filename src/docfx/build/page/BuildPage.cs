@@ -194,7 +194,7 @@ namespace Microsoft.Docs.Build
             errors.AddRange(schemaValidationErrors);
 
             // transform via json schema
-            var (schemaTransformError, transformedToken) = JsonSchemaTransform.Transform(file, context, jsonSchema, token, buildChild);
+            var (schemaTransformError, transformedToken) = JsonSchemaTransform.TransformContent(file, context, jsonSchema, token, buildChild);
             errors.AddRange(schemaTransformError);
 
             // TODO: remove schema validation in ToObject

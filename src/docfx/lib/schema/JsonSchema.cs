@@ -104,5 +104,10 @@ namespace Microsoft.Docs.Build
         /// Properties that are transformed using specified pipeline like 'markup'
         /// </summary>
         public JsonSchemaContentType ContentType { get; set; }
+
+        /// <summary>
+        /// Properties that are built into xref map
+        /// </summary>
+        public string[] XrefProperties { get; set; } = Array.Empty<string>();
     }
 }

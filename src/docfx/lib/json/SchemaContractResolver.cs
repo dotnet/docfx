@@ -26,24 +26,24 @@ namespace Microsoft.Docs.Build
             return prop;
         }
 
-        private SchemaValidationAndTransformConverter GetConverter(MemberInfo member)
+        private SchemaValidationConverter GetConverter(MemberInfo member)
         {
             var validators = member.GetCustomAttributes<ValidationAttribute>(false);
             var contentTypeAttributes = member.GetCustomAttributes<DataTypeAttribute>(false);
             if (contentTypeAttributes.Any() || validators.Any())
             {
-                return new SchemaValidationAndTransformConverter(contentTypeAttributes, validators, member.Name);
+                return new SchemaValidationConverter(contentTypeAttributes, validators, member.Name);
             }
             return null;
         }
 
-        private sealed class SchemaValidationAndTransformConverter : JsonConverter
+        private sealed class SchemaValidationConverter : JsonConverter
         {
             private readonly IEnumerable<ValidationAttribute> _validators;
             private readonly IEnumerable<DataTypeAttribute> _attributes;
             private readonly string _fieldName;
 
-            public SchemaValidationAndTransformConverter(IEnumerable<DataTypeAttribute> attributes, IEnumerable<ValidationAttribute> validators, string fieldName)
+            public SchemaValidationConverter(IEnumerable<DataTypeAttribute> attributes, IEnumerable<ValidationAttribute> validators, string fieldName)
             {
                 _attributes = attributes;
                 _validators = validators;
@@ -75,8 +75,7 @@ namespace Microsoft.Docs.Build
                     }
                 }
 
-                var transform = JsonUtility.State.Transform;
-                return transform != null ? transform(_attributes, new SourceInfo<object>(value, source), reader.Path) : value;
+                return value;
             }
         }
     }

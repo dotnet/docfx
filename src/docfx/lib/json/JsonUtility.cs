@@ -151,13 +151,12 @@ namespace Microsoft.Docs.Build
 
         public static (List<Error> errors, object value) ToObject(
             JToken token,
-            Type type,
-            Func<IEnumerable<DataTypeAttribute>, SourceInfo<object>, string, object> transform = null)
+            Type type)
         {
             try
             {
                 var errors = new List<Error>();
-                var status = new Status { Errors = errors, Transform = transform, Reader = new JTokenReader(token) };
+                var status = new Status { Errors = errors, Reader = new JTokenReader(token) };
 
                 t_status.Value.Push(status);
 
@@ -562,8 +561,6 @@ namespace Microsoft.Docs.Build
             public JTokenReader Reader { get; set; }
 
             public List<Error> Errors { get; set; }
-
-            public Func<IEnumerable<DataTypeAttribute>, SourceInfo<object>, string, object> Transform { get; set; }
-        }
+       }
     }
 }

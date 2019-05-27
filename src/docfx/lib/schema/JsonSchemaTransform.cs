@@ -3,36 +3,44 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Threading;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
     internal static class JsonSchemaTransform
     {
-        public static (List<Error> errors, JToken token) Transform(Document file, Context context, JsonSchema schema, JToken token, Action<Document> buildChild)
+        public static (List<Error> errors, JToken token) TransformContent(Document file, Context context, JsonSchema schema, JToken token, Action<Document> buildChild)
         {
             var errors = new List<Error>();
 
-            Transform(new JsonSchemaContext(schema), file, context, schema, token, errors, buildChild);
+            Traverse(new JsonSchemaContext(schema), schema, token, (jsonSchema, scalar) => scalar.Replace(TransformScalar(file, context, jsonSchema, scalar, errors, buildChild)));
             return (errors, token);
         }
 
-        private static void Transform(JsonSchemaContext jsonSchemaContext, Document file, Context context, JsonSchema schema, JToken token, List<Error> errors, Action<Document> buildChild)
+        public static (List<Error> errors, Dictionary<string, Lazy<JValue>>) TransformXref(Document file, Context context, JsonSchema schema, JToken token)
+        {
+            var errors = new List<Error>();
+            var extensions = new Dictionary<string, Lazy<JValue>>();
+            Traverse(new JsonSchemaContext(schema), schema, token, (jsonSchema, scalar) => extensions[scalar.Path] = new Lazy<JValue>(() => TransformScalar(file, context, jsonSchema, scalar, errors, buildChild: null), LazyThreadSafetyMode.PublicationOnly));
+            return (errors, extensions);
+        }
+
+        private static void Traverse(JsonSchemaContext jsonSchemaContext, JsonSchema schema, JToken token, Action<JsonSchema, JValue> transformScalar)
         {
             schema = jsonSchemaContext.GetDefinition(schema);
 
             switch (token)
             {
                 case JValue scalar:
-                    token.Replace(TransformScalar(file, context, schema, scalar, errors, buildChild));
+                    transformScalar(schema, scalar);
                     break;
                 case JArray array:
                     if (schema.Items != null)
                     {
                         foreach (var item in array)
                         {
-                            Transform(jsonSchemaContext, file, context, schema.Items, item, errors, buildChild);
+                            Traverse(jsonSchemaContext, schema.Items, item, transformScalar);
                         }
                     }
                     break;
@@ -41,7 +49,7 @@ namespace Microsoft.Docs.Build
                     {
                         if (schema.Properties.TryGetValue(key, out var propertySchema))
                         {
-                            Transform(jsonSchemaContext, file, context, propertySchema, value, errors, buildChild);
+                            Traverse(jsonSchemaContext, propertySchema, value, transformScalar);
                         }
                     }
                     break;
