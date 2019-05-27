@@ -91,7 +91,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 {
                     // workaround for https://github.com/dotnet/docfx/issues/1969
                     // FYI https://github.com/dotnet/roslyn/issues/21799#issuecomment-343695700
-                    var latest = instances.FirstOrDefault(a => a.Version.Major >= 15);
+                    var latest = instances.FirstOrDefault(a => a.Version.Major >= 16);
                     if (latest != null)
                     {
                         Logger.LogInfo($"Using msbuild {latest.MSBuildPath} as inner compiler.");
@@ -101,6 +101,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                             [VSInstallDirKey] = latest.VisualStudioRootPath,
                             ["VisualStudioVersion"] = latest.Version.ToString(2),
                         });
+                    }
+                    else
+                    {
+                        Logger.LogWarning("Fail to find MSBuild >= 16.0 on machine. Please install Visual Studio 2019 with MSBuild >= 16.0 first.");
                     }
                 }
             }

@@ -15,7 +15,7 @@ Goal and limitation
 
 Preparation
 -----------
-1.  Create a new C# class library project in `Visual Studio`, targets .NET Framework 4.6.1.
+1.  Create a new C# class library project in `Visual Studio`, targets .NET Framework 4.7.2.
 
 2.  Add nuget packages:  
     * `System.Collections.Immutable` with version 1.3.1
@@ -26,7 +26,7 @@ Preparation
     otherwise add the nuget packages with the same version as DocFX.
 
 4.  Add framework assembly references:
-    `PresentationCore`, `PresentationFramework`, `WindowsBase`. (This step is optional in Visual Studio 2017)
+    `PresentationCore`, `PresentationFramework`, `WindowsBase`. (This step is optional in Visual Studio 2017 or above)
 
 5.  Add a project for converting rtf to html:  
     Clone project [MarkupConverter](https://github.com/mmanela/MarkupConverter), and reference it.
