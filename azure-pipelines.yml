@@ -92,7 +92,8 @@ jobs:
           }
       }
 
-      $auth = "-c http.https://dev.azure.com.extraheader=""AUTHORIZATION: bearer $env:AZURE_DEVOPS_TOKEN"""
+      $basicAuth = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes("user:$env:AZURE_DEVOPS_TOKEN"))
+      $auth = "-c http.https://dev.azure.com.extraheader=""AUTHORIZATION: basic $basicAuth"""
 
       if (-Not (Test-Path -Path ../Docs.Build)) {
           # Clone Docs.Build if not exists
