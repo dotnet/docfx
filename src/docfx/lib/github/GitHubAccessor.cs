@@ -5,7 +5,9 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Octokit;
@@ -22,6 +24,7 @@ namespace Microsoft.Docs.Build
         private readonly ConcurrentHashSet<(string owner, string name)> _unknownRepos = new ConcurrentHashSet<(string owner, string name)>();
 
         private volatile Error _rateLimitError;
+        private volatile Error _unauthorizedError;
 
         public GitHubAccessor(string token = null)
         {
@@ -75,7 +78,12 @@ namespace Microsoft.Docs.Build
         {
             if (_rateLimitError != null)
             {
-                return (_rateLimitError, null);
+                return default;
+            }
+
+            if (_unauthorizedError != null)
+            {
+                return default;
             }
 
             if (_unknownRepos.Contains((repoOwner, repoName)))
@@ -121,12 +129,17 @@ query ($owner: String!, $name: String!, $commit: String!) {
                 var response = await RetryUtility.Retry(
                     () => s_httpClient.SendAsync(
                         CreateHttpRequest(
-                            new StringContent(JsonUtility.Serialize(request), System.Text.Encoding.UTF8, "application/json"))),
+                            new StringContent(JsonUtility.Serialize(request), Encoding.UTF8, "application/json"))),
                     ex => ex is OperationCanceledException);
 
                 if (!response.IsSuccessStatusCode)
                 {
                     var message = await response.Content.ReadAsStringAsync();
+
+                    if (response.StatusCode == (HttpStatusCode)401)
+                    {
+                        _unauthorizedError = Errors.GitHubApiFailed(_url, message);
+                    }
                     return (Errors.GitHubApiFailed(_url, message), null);
                 }
 
