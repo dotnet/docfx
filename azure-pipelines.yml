@@ -96,7 +96,8 @@ jobs:
 
       if (-Not (Test-Path -Path ../Docs.Build)) {
           # Clone Docs.Build if not exists
-          exec "git $auth clone https://dev.azure.com/ceapex/Engineering/_git/Docs.Build --depth 1 --branch develop ../Docs.Build"
+          ## !!!!!!!!!!!!!!!!!!!!!!!!
+          exec "git $auth clone https://dev.azure.com/ceapex/Engineering/_git/Docs.Build --depth 1 --branch vsts_auth_type ../Docs.Build"
       } else {
         try {
             # Update Docs.Build to latest
