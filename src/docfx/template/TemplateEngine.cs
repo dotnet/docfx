@@ -17,7 +17,8 @@ namespace Microsoft.Docs.Build
     internal class TemplateEngine
     {
         private static readonly string[] s_resourceFolders = new[] { "global", "css", "fonts" };
-        private static readonly ConcurrentDictionary<string, JsonSchema> _jsonSchemas = new ConcurrentDictionary<string, JsonSchema>();
+        private static readonly ConcurrentDictionary<string, Lazy<(JsonSchema, JsonSchemaValidator, JsonSchemaTransformer)>> _jsonSchemas
+                          = new ConcurrentDictionary<string, Lazy<(JsonSchema, JsonSchemaValidator, JsonSchemaTransformer)>>();
 
         private readonly string _templateDir;
         private readonly LiquidTemplate _liquid;
@@ -42,18 +43,27 @@ namespace Microsoft.Docs.Build
                 .ToDictionary(prop => prop.Key, prop => prop.Value.HtmlMetaName);
         }
 
-        public static JsonSchema GetJsonSchema(Schema schema)
+        public static (JsonSchema, JsonSchemaValidator, JsonSchemaTransformer) GetJsonSchema(Schema schema)
         {
-            if (schema == null)
+            if (schema is null)
             {
-                return null;
+                return default;
             }
 
             // TODO: get schema from template
             var schemaFilePath = Path.Combine(AppContext.BaseDirectory, $"data/{schema.Type.Name}.json");
-            return _jsonSchemas.GetOrAdd(
-                schema.Type.Name,
-                File.Exists(schemaFilePath) ? JsonUtility.Deserialize<JsonSchema>(File.ReadAllText(schemaFilePath), schemaFilePath) : null);
+            return _jsonSchemas.GetOrAdd(schema.Type.Name, new Lazy<(JsonSchema, JsonSchemaValidator, JsonSchemaTransformer)>(GetJsonSchemaCore)).Value;
+
+            (JsonSchema, JsonSchemaValidator, JsonSchemaTransformer) GetJsonSchemaCore()
+            {
+                if (!File.Exists(schemaFilePath))
+                {
+                    return default;
+                }
+
+                var jsonSchema = JsonUtility.Deserialize<JsonSchema>(File.ReadAllText(schemaFilePath), schemaFilePath);
+                return (jsonSchema, new JsonSchemaValidator(jsonSchema), new JsonSchemaTransformer(jsonSchema));
+            }
         }
 
         public static TemplateEngine Create(Docset docset)

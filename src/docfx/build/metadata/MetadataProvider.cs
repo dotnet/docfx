@@ -11,12 +11,14 @@ namespace Microsoft.Docs.Build
 {
     internal class MetadataProvider
     {
+        private readonly JsonSchemaValidator _schemaValidator;
         private readonly JObject _globalMetadata;
         private readonly HashSet<string> _reservedMetadata;
         private readonly List<(Func<string, bool> glob, string key, JToken value)> _rules = new List<(Func<string, bool> glob, string key, JToken value)>();
 
         public MetadataProvider(Docset docset)
         {
+            _schemaValidator = new JsonSchemaValidator(docset.MetadataSchema);
             _globalMetadata = docset.Config.GlobalMetadata;
 
             _reservedMetadata = JsonUtility.GetPropertyNames(typeof(OutputModel))
@@ -77,7 +79,7 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            errors.AddRange(JsonSchemaValidation.Validate(file.Docset.MetadataSchema, result));
+            errors.AddRange(_schemaValidator.Validate(result));
 
             return (errors, metadata);
         }

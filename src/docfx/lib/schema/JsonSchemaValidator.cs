@@ -7,18 +7,27 @@ using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
-    internal static class JsonSchemaValidation
+    internal class JsonSchemaValidator
     {
-        public static List<Error> Validate(JsonSchema schema, JToken token)
+        private readonly JsonSchema _schema;
+        private readonly JsonSchemaDefinition _definitions;
+
+        public JsonSchemaValidator(JsonSchema schema)
+        {
+            _schema = schema;
+            _definitions = new JsonSchemaDefinition(schema);
+        }
+
+        public List<Error> Validate(JToken token)
         {
             var errors = new List<Error>();
-            Validate(new JsonSchemaContext(schema), schema, token, errors);
+            Validate(_schema, token, errors);
             return errors;
         }
 
-        private static void Validate(JsonSchemaContext context, JsonSchema schema, JToken token, List<Error> errors)
+        private void Validate(JsonSchema subSchema, JToken token, List<Error> errors)
         {
-            schema = context.GetDefinition(schema);
+            var schema = _definitions.GetDefinition(subSchema);
 
             if (!ValidateType(schema, token, errors))
             {
@@ -32,11 +41,11 @@ namespace Microsoft.Docs.Build
                     break;
 
                 case JArray array:
-                    ValidateArray(context, schema, errors, array);
+                    ValidateArray(schema, errors, array);
                     break;
 
                 case JObject map:
-                    ValidateObject(context, schema, errors, map);
+                    ValidateObject(schema, errors, map);
                     break;
             }
         }
@@ -72,13 +81,13 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static void ValidateArray(JsonSchemaContext context, JsonSchema schema, List<Error> errors, JArray array)
+        private void ValidateArray(JsonSchema schema, List<Error> errors, JArray array)
         {
             if (schema.Items != null)
             {
                 foreach (var item in array)
                 {
-                    Validate(context, schema.Items, item, errors);
+                    Validate(schema.Items, item, errors);
                 }
             }
 
@@ -89,7 +98,7 @@ namespace Microsoft.Docs.Build
                 errors.Add(Errors.ArrayLengthInvalid(JsonUtility.GetSourceInfo(array), array.Path, minItems: schema.MinItems));
         }
 
-        private static void ValidateObject(JsonSchemaContext context, JsonSchema schema, List<Error> errors, JObject map)
+        private void ValidateObject(JsonSchema schema, List<Error> errors, JObject map)
         {
             if (schema.AdditionalProperties.additionalPropertyJsonSchema != null)
             {
@@ -97,7 +106,7 @@ namespace Microsoft.Docs.Build
                 {
                     if (!schema.Properties.Keys.Contains(key))
                     {
-                        Validate(context, schema.AdditionalProperties.additionalPropertyJsonSchema, value, errors);
+                        Validate(schema.AdditionalProperties.additionalPropertyJsonSchema, value, errors);
                     }
                 }
             }
@@ -124,7 +133,7 @@ namespace Microsoft.Docs.Build
             {
                 if (schema.Properties.TryGetValue(key, out var propertySchema))
                 {
-                    Validate(context, propertySchema, value, errors);
+                    Validate(propertySchema, value, errors);
                 }
             }
         }

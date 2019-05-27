@@ -475,13 +475,13 @@ namespace Microsoft.Docs.Build
             }
 
             var errors = new List<Error>();
-            var jsonSchema = TemplateEngine.GetJsonSchema(file.Schema);
-            if (jsonSchema is null)
+            var (schema, schemaValidator, schemaTransformer) = TemplateEngine.GetJsonSchema(file.Schema);
+            if (schema is null || schemaValidator is null || schemaTransformer is null)
             {
                 throw Errors.SchemaNotFound(file.Mime).ToException();
             }
 
-            var (schemaErrors, extensionData) = JsonSchemaTransform.TransformXref(file, context, jsonSchema, obj);
+            var (schemaErrors, extensionData) = schemaTransformer.TransformXref(file, context, obj);
             errors.AddRange(schemaErrors);
 
             var extensionDataByUid = new Dictionary<string, (bool isRoot, Dictionary<string, Lazy<JValue>> properties)>();

@@ -51,7 +51,7 @@ namespace Microsoft.Docs.Build
             var docset = GetBuildDocset(new Docset(errorLog, docsetPath, locale, config, options, restoreMap, repository, fallbackRepo));
             var outputPath = Path.Combine(docsetPath, config.Output.Path);
 
-            using (var context = Context.Create(outputPath, errorLog, docset, () => xrefMap))
+            using (var context = new Context(outputPath, errorLog, docset, () => xrefMap))
             {
                 xrefMap = XrefMap.Create(context, docset);
                 var tocMap = TableOfContentsMap.Create(context, docset);

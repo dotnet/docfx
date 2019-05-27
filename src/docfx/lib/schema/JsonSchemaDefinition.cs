@@ -8,12 +8,12 @@ using System.Linq;
 
 namespace Microsoft.Docs.Build
 {
-    internal class JsonSchemaContext
+    internal class JsonSchemaDefinition
     {
         private readonly JsonSchema _root;
         private readonly Dictionary<string, JsonSchema> _definitions;
 
-        public JsonSchemaContext(JsonSchema root)
+        public JsonSchemaDefinition(JsonSchema root)
         {
             Debug.Assert(root != null);
 
@@ -22,24 +22,24 @@ namespace Microsoft.Docs.Build
             _definitions.Add("#", root);
         }
 
-        public JsonSchema GetDefinition(JsonSchema jsonSchema)
-            => GetDefinitionCore(jsonSchema, new HashSet<string>());
+        public JsonSchema GetDefinition(JsonSchema subSchema)
+            => GetDefinitionCore(subSchema, new HashSet<string>());
 
-        private JsonSchema GetDefinitionCore(JsonSchema jsonSchema, HashSet<string> recursions)
+        private JsonSchema GetDefinitionCore(JsonSchema subSchema, HashSet<string> recursions)
         {
-            if (jsonSchema != null &&
-                !string.IsNullOrEmpty(jsonSchema.Ref) &&
-                recursions.Add(jsonSchema.Ref))
+            if (subSchema != null &&
+                !string.IsNullOrEmpty(subSchema.Ref) &&
+                recursions.Add(subSchema.Ref))
             {
-                if (_definitions.TryGetValue(jsonSchema.Ref, out var schema))
+                if (_definitions.TryGetValue(subSchema.Ref, out var schema))
                 {
                     return GetDefinitionCore(schema, recursions);
                 }
 
-                throw new ApplicationException($"Could not find `{jsonSchema.Ref}` schema definition");
+                throw new ApplicationException($"Could not find `{subSchema.Ref}` schema definition");
             }
 
-            return jsonSchema;
+            return subSchema;
         }
     }
 }

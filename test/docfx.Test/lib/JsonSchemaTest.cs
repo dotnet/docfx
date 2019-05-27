@@ -95,7 +95,7 @@ namespace Microsoft.Docs.Build
         {
             var schema = JsonUtility.Deserialize<JsonSchema>(schemaText, "");
             var test = JObject.Parse(testText);
-            var errors = JsonSchemaValidation.Validate(schema, test["data"]);
+            var errors = new JsonSchemaValidator(schema).Validate(test["data"]);
 
             Assert.True(test.Value<bool>("valid") == (errors.Count == 0), description);
         }
@@ -183,10 +183,9 @@ namespace Microsoft.Docs.Build
             "['warning','field-required','Missing required field 'a'','file',1,1]")]
         public void TestJsonSchemaValidation(string schema, string json, string expectedErrors)
         {
-            var errors = JsonSchemaValidation.Validate(
-                JsonUtility.Deserialize<JsonSchema>(schema.Replace('\'', '"'), null),
-                JsonUtility.Parse(json.Replace('\'', '"'), "file").Item2);
-
+            var jsonSchema = JsonUtility.Deserialize<JsonSchema>(schema.Replace('\'', '"'), null);
+            var (_, payload) = JsonUtility.Parse(json.Replace('\'', '"'), "file");
+            var errors = new JsonSchemaValidator(jsonSchema).Validate(payload);
             var expected = string.Join('\n', expectedErrors.Split('\n').Select(err => err.Trim()));
             var actual = string.Join('\n', errors.Select(err => err.ToString()).OrderBy(err => err).ToArray()).Replace('"', '\'');
             Assert.Equal(expected, actual);
