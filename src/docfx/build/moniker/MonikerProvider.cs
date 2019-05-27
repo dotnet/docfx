@@ -89,8 +89,6 @@ namespace Microsoft.Docs.Build
 
         public List<string> GetZoneMonikers(SourceInfo<string> rangeString, List<string> fileLevelMonikers, List<Error> errors)
         {
-            var monikers = new List<string>();
-
             // Moniker range not defined in docfx.yml/docfx.json,
             // User should not define it in moniker zone
             if (fileLevelMonikers.Count == 0)
@@ -100,7 +98,7 @@ namespace Microsoft.Docs.Build
             }
 
             var zoneLevelMonikers = _rangeParser.Parse(rangeString);
-            monikers = fileLevelMonikers.Intersect(zoneLevelMonikers, StringComparer.OrdinalIgnoreCase).ToList();
+            var monikers = fileLevelMonikers.Intersect(zoneLevelMonikers, StringComparer.OrdinalIgnoreCase).ToList();
 
             if (monikers.Count == 0)
             {
