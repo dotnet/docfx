@@ -25,9 +25,9 @@ namespace Microsoft.Docs.Build
             return errors;
         }
 
-        private void Validate(JsonSchema subSchema, JToken token, List<Error> errors)
+        private void Validate(JsonSchema schema, JToken token, List<Error> errors)
         {
-            var schema = _definitions.GetDefinition(subSchema);
+            schema = _definitions.GetDefinition(schema);
 
             if (!ValidateType(schema, token, errors))
             {

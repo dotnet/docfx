@@ -22,24 +22,24 @@ namespace Microsoft.Docs.Build
             _definitions.Add("#", root);
         }
 
-        public JsonSchema GetDefinition(JsonSchema subSchema)
-            => GetDefinitionCore(subSchema, new HashSet<string>());
+        public JsonSchema GetDefinition(JsonSchema schema)
+            => GetDefinitionCore(schema, new HashSet<string>());
 
-        private JsonSchema GetDefinitionCore(JsonSchema subSchema, HashSet<string> recursions)
+        private JsonSchema GetDefinitionCore(JsonSchema schema, HashSet<string> recursions)
         {
-            if (subSchema != null &&
-                !string.IsNullOrEmpty(subSchema.Ref) &&
-                recursions.Add(subSchema.Ref))
+            if (schema != null &&
+                !string.IsNullOrEmpty(schema.Ref) &&
+                recursions.Add(schema.Ref))
             {
-                if (_definitions.TryGetValue(subSchema.Ref, out var schema))
+                if (_definitions.TryGetValue(schema.Ref, out var schema))
                 {
                     return GetDefinitionCore(schema, recursions);
                 }
 
-                throw new ApplicationException($"Could not find `{subSchema.Ref}` schema definition");
+                throw new ApplicationException($"Could not find `{schema.Ref}` schema definition");
             }
 
-            return subSchema;
+            return schema;
         }
     }
 }

@@ -22,7 +22,7 @@ namespace Microsoft.Docs.Build
         public (List<Error> errors, JToken token) TransformContent(Document file, Context context, JToken token, Action<Document> buildChild)
         {
             var errors = new List<Error>();
-            Traverse(_schema, token, (schema, value) => value.Replace(TransformValue(schema, file, context, value, errors, buildChild)));
+            Traverse(_schema, token, (schema, value) => value.Replace(TransformScalar(schema, file, context, value, errors, buildChild)));
             return (errors, token);
         }
 
@@ -30,10 +30,10 @@ namespace Microsoft.Docs.Build
         {
             var errors = new List<Error>();
             var extensions = new Dictionary<string, Lazy<JValue>>();
-            Traverse(_schema, token, TransformXrefCore);
+            Traverse(_schema, token, TransformXrefScalar);
             return (errors, extensions);
 
-            void TransformXrefCore(JsonSchema schema, JValue value)
+            void TransformXrefScalar(JsonSchema schema, JValue value)
             {
                 extensions[value.Path] = new Lazy<JValue>(
                     () => TransformValue(schema, file, context, value, errors, buildChild: null),
@@ -41,14 +41,14 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private void Traverse(JsonSchema subSchema, JToken token, Action<JsonSchema, JValue> action)
+        private void Traverse(JsonSchema schema, JToken token, Action<JsonSchema, JValue> transformScalar)
         {
-            var schema = _definitions.GetDefinition(subSchema);
+            schema = _definitions.GetDefinition(schema);
 
             switch (token)
             {
                 case JValue scalar:
-                    action(schema, scalar);
+                    transformScalar(schema, scalar);
                     break;
 
                 case JArray array:
@@ -56,7 +56,7 @@ namespace Microsoft.Docs.Build
                     {
                         foreach (var item in array)
                         {
-                            Traverse(schema.Items, item, action);
+                            Traverse(schema.Items, item, transformScalar);
                         }
                     }
                     break;
@@ -66,14 +66,14 @@ namespace Microsoft.Docs.Build
                     {
                         if (schema.Properties.TryGetValue(key, out var propertySchema))
                         {
-                            Traverse(propertySchema, value, action);
+                            Traverse(propertySchema, value, transformScalar);
                         }
                     }
                     break;
             }
         }
 
-        private JValue TransformValue(JsonSchema schema, Document file, Context context, JValue value, List<Error> errors, Action<Document> buildChild)
+        private JValue TransformScalar(JsonSchema schema, Document file, Context context, JValue value, List<Error> errors, Action<Document> buildChild)
         {
             if (value.Type == JTokenType.Null)
             {
