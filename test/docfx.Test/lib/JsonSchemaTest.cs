@@ -181,6 +181,11 @@ namespace Microsoft.Docs.Build
         [InlineData("{'required': ['a']}", "{'a': 1}", "")]
         [InlineData("{'required': ['a']}", "{'b': 1}",
             "['warning','field-required','Missing required field 'a'','file',1,1]")]
+
+        // reserved validation
+        [InlineData("{'reserved': []}", "{'a':0}", "")]
+        [InlineData("{'reserved': ['a']}", "{'a':0}",
+            "['warning','attribute-reserved','Attribute 'a' is reserved for use by Docs. Remove it from your file metadata.','file',1,5]")]
         public void TestJsonSchemaValidation(string schema, string json, string expectedErrors)
         {
             var errors = JsonSchemaValidation.Validate(

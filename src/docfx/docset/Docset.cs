@@ -269,7 +269,12 @@ namespace Microsoft.Docs.Build
                 var (_, content, _) = RestoreMap.GetRestoredFileContent(this, metadataSchema);
                 JsonUtility.Merge(token, JsonUtility.Parse(content, metadataSchema).value as JObject);
             }
-            return JsonUtility.ToObject<JsonSchema>(token).value;
+
+            var schema = JsonUtility.ToObject<JsonSchema>(token).value;
+            schema.Reserved.AddRange(
+                JsonUtility.GetPropertyNames(typeof(OutputModel)).Except(
+                    JsonUtility.GetPropertyNames(typeof(InputMetadata))));
+            return schema;
         }
 
         private HashSet<Document> CreateBuildScope(IEnumerable<Document> redirections, Func<string, bool> glob)

@@ -22,5 +22,13 @@ namespace Microsoft.Docs.Build
                 dictionary.Add(key, value);
             }
         }
+
+        public static void AddRange<T>(this HashSet<T> hashset, IEnumerable<T> values)
+        {
+            foreach (var value in values)
+            {
+                hashset.Add(value);
+            }
+        }
     }
 }

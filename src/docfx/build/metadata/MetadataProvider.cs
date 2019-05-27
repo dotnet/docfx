@@ -12,17 +12,11 @@ namespace Microsoft.Docs.Build
     internal class MetadataProvider
     {
         private readonly JObject _globalMetadata;
-        private readonly HashSet<string> _reservedMetadata;
         private readonly List<(Func<string, bool> glob, string key, JToken value)> _rules = new List<(Func<string, bool> glob, string key, JToken value)>();
 
         public MetadataProvider(Docset docset)
         {
             _globalMetadata = docset.Config.GlobalMetadata;
-
-            _reservedMetadata = JsonUtility.GetPropertyNames(typeof(OutputModel))
-                .Concat(docset.MetadataSchema.Reserved)
-                .Except(JsonUtility.GetPropertyNames(typeof(InputMetadata)))
-                .ToHashSet();
 
             foreach (var (key, item) in docset.Config.FileMetadata)
             {
@@ -67,11 +61,7 @@ namespace Microsoft.Docs.Build
 
             foreach (var property in result.Properties())
             {
-                if (_reservedMetadata.Contains(property.Name))
-                {
-                    errors.Add(Errors.AttributeReserved(JsonUtility.GetSourceInfo(property), property.Name));
-                }
-                else if (!IsValidMetadataType(property.Value))
+                if (!IsValidMetadataType(property.Value))
                 {
                     errors.Add(Errors.InvalidMetadataType(JsonUtility.GetSourceInfo(property.Value), property.Name));
                 }

@@ -95,7 +95,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Properties that are reserved by the system.
         /// </summary>
-        public string[] Reserved { get; set; } = Array.Empty<string>();
+        public HashSet<string> Reserved { get; set; } = new HashSet<string>();
 
         // JSON schema custom transform extensions
         //--------------------------------------------

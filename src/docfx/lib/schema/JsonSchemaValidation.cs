@@ -120,11 +120,15 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            foreach (var (key, value) in map)
+            foreach (var property in map.Properties())
             {
-                if (schema.Properties.TryGetValue(key, out var propertySchema))
+                if (schema.Reserved.Contains(property.Name))
                 {
-                    Validate(context, propertySchema, value, errors);
+                    errors.Add(Errors.AttributeReserved(JsonUtility.GetSourceInfo(property), property.Name));
+                }
+                else if (schema.Properties.TryGetValue(property.Name, out var propertySchema))
+                {
+                    Validate(context, propertySchema, property.Value, errors);
                 }
             }
         }
