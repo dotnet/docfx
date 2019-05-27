@@ -26,6 +26,7 @@ namespace Microsoft.Docs.Build
 
         private static readonly JsonSerializer s_serializer = JsonSerializer.Create(new JsonSerializerSettings
         {
+            // todo: read should not ignore null value
             NullValueHandling = NullValueHandling.Ignore,
             MetadataPropertyHandling = MetadataPropertyHandling.Ignore,
             Converters = s_jsonConverters,
@@ -34,7 +35,6 @@ namespace Microsoft.Docs.Build
 
         private static readonly JsonSerializer s_schemaValidationSerializer = JsonSerializer.Create(new JsonSerializerSettings
         {
-            NullValueHandling = NullValueHandling.Ignore,
             MetadataPropertyHandling = MetadataPropertyHandling.Ignore,
             Converters = s_jsonConverters,
             ContractResolver = new SchemaContractResolver { NamingStrategy = s_namingStrategy },

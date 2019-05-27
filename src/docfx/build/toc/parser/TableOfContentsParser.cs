@@ -74,7 +74,7 @@ namespace Microsoft.Docs.Build
             else if (tocToken is JObject tocObject)
             {
                 // toc root model
-                return JsonUtility.ToObject<TableOfContentsModel>(tocToken);
+                return JsonUtility.ToObject<TableOfContentsModel>(tocObject);
             }
             return (new List<Error>(), new TableOfContentsModel());
         }
@@ -126,6 +126,13 @@ namespace Microsoft.Docs.Build
                     errors.AddRange(ResolveTocModelItems(context, tocModelItem.Items, parents, filePath, rootPath, resolveContent, resolveHref, resolveXref));
                 }
 
+                // validate
+                if (string.IsNullOrEmpty(tocModelItem.Name))
+                {
+                    errors.Add(Errors.MissingTocHead(tocModelItem.Name));
+                }
+
+                // process
                 var tocHref = GetTocHref(tocModelItem);
                 var topicHref = GetTopicHref(tocModelItem);
                 var topicUid = tocModelItem.Uid;
@@ -224,7 +231,7 @@ namespace Microsoft.Docs.Build
                 return default;
             }
 
-            (SourceInfo<string> resolvedTopicHref, string resolvedTopicName, Document file) ProcessTopicItem(SourceInfo<string> uid, SourceInfo<string> topicHref)
+            (SourceInfo<string> resolvedTopicHref, SourceInfo<string> resolvedTopicName, Document file) ProcessTopicItem(SourceInfo<string> uid, SourceInfo<string> topicHref)
             {
                 // process uid first
                 if (!string.IsNullOrEmpty(uid))
@@ -233,7 +240,7 @@ namespace Microsoft.Docs.Build
                     if (!string.IsNullOrEmpty(uidHref))
                     {
                         uid.Value = uidHref;
-                        return (uid, uidDisplayName, uidFile);
+                        return (uid, new SourceInfo<string>(uidDisplayName, uid), uidFile);
                     }
                 }
 
