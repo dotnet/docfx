@@ -31,9 +31,9 @@ namespace Microsoft.Docs.Build
                 !string.IsNullOrEmpty(schema.Ref) &&
                 recursions.Add(schema.Ref))
             {
-                if (_definitions.TryGetValue(schema.Ref, out var schema))
+                if (_definitions.TryGetValue(schema.Ref, out var resolvedSchema))
                 {
-                    return GetDefinitionCore(schema, recursions);
+                    return GetDefinitionCore(resolvedSchema, recursions);
                 }
 
                 throw new ApplicationException($"Could not find `{schema.Ref}` schema definition");

@@ -36,7 +36,7 @@ namespace Microsoft.Docs.Build
             void TransformXrefScalar(JsonSchema schema, JValue value)
             {
                 extensions[value.Path] = new Lazy<JValue>(
-                    () => TransformValue(schema, file, context, value, errors, buildChild: null),
+                    () => TransformScalar(schema, file, context, value, errors, buildChild: null),
                     LazyThreadSafetyMode.PublicationOnly);
             }
         }
