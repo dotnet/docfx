@@ -7,15 +7,17 @@ using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
-    public class XrefSpec
+    internal class ExternalXrefSpec : IXrefSpec
     {
         public string Uid { get; set; }
+
+        public string Href { get; set; }
+
+        public Document ReferencedFile { get; set; }
 
         // not into output for now
         [JsonIgnore]
         public HashSet<string> Monikers { get; set; } = new HashSet<string>();
-
-        public string Href { get; set; }
 
         [JsonExtensionData]
         public JObject ExtensionData { get; } = new JObject();

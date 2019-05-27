@@ -7,7 +7,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
-    internal class InternalXrefSpec
+    internal class InternalXrefSpec : IXrefSpec
     {
         public string Uid { get; set; }
 
@@ -29,9 +29,9 @@ namespace Microsoft.Docs.Build
 
         public string GetName() => GetXrefPropertyValue("name");
 
-        public XrefSpec ToExternalXrefSpec(Context context, Document file)
+        public ExternalXrefSpec ToExternalXrefSpec(Context context, Document file)
         {
-            var spec = new XrefSpec
+            var spec = new ExternalXrefSpec
             {
                 Uid = Uid,
                 Monikers = Monikers,
