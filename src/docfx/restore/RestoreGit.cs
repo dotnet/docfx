@@ -185,9 +185,9 @@ namespace Microsoft.Docs.Build
         {
             foreach (var (_, url) in config.Dependencies)
             {
+                var (remote, branch, _) = UrlUtility.SplitGitUrl(url);
                 if (UrlUtility.IsHttp(url))
                 {
-                    var (remote, branch, _) = UrlUtility.SplitGitUrl(url);
                     yield return (remote, branch, GitFlags.DepthOne);
                 }
             }

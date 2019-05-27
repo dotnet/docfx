@@ -33,9 +33,6 @@ namespace Microsoft.Docs.Build
                 }
 
                 // TODO: Intentionally don't fallback to fallbackDocset for git restore path,
-                //       file restore path currently have a fallback logic to make test happy,
-                //       it may not be a desired behavior.
-                //
                 // TODO: populate source info
                 throw Errors.FileNotFound(new SourceInfo<string>(remote)).ToException();
             }

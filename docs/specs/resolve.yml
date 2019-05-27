@@ -303,7 +303,7 @@ outputs:
 inputs:
   docfx.yml: |
     dependencies:
-      dep: dependencies
+      dep: dependencies#branch
   a.md: '[!include[dep](~/dep/dep.md)]'
   dependencies/dep.md: DEP
 outputs:
