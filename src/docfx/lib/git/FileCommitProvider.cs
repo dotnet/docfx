@@ -238,8 +238,10 @@ namespace Microsoft.Docs.Build
                 // https://github.com/libgit2/libgit2sharp/issues/1351
                 if (error != 0 /* GIT_ENOTFOUND */)
                 {
-                    Log.Warn($"Git repo '{_repoPath}' is a shallow clone, contributors and update time may not be accurate. ({error}, {lastCommitId})");
-                    break;
+                    git_revwalk_free(walk);
+
+                    Log.Write($"Load git commit failed: {error} {lastCommitId}");
+                    throw Errors.GitCloneIncomplete(_repoPath);
                 }
 
                 lastCommitId = commitId;

@@ -294,13 +294,19 @@ namespace Microsoft.Docs.Build
         /// Used docfx output model property which are not defined in input model.
         /// </summary>
         public static Error AttributeReserved(SourceInfo source, string name)
-            => new Error(ErrorLevel.Warning, "attribute-reserved", $"Attribute {name} is reserved for use by Docs. Remove it from your file metadata.", source);
+            => new Error(ErrorLevel.Warning, "attribute-reserved", $"Attribute '{name}' is reserved for use by Docs. Remove it from your file metadata.", source);
 
         /// <summary>
         /// Metadata value must be scalar or arrays of scalars.
         /// </summary>
         public static Error InvalidMetadataType(SourceInfo source, string name)
             => new Error(ErrorLevel.Error, "invalid-metadata-type", $"Metadata '{name}' can only be a scalar value or string array", source);
+
+         /// <summary>	
+        /// Failed to compute specific info of a commit.	
+        /// </summary>	
+        public static Error GitCloneIncomplete(string repoPath)	
+            => new Error(ErrorLevel.Error, "git-clone-incomplete", $"Git repository '{repoPath}' is an incomplete clone, GitHub contributor list may not be accurate.");
 
         /// <summary>
         /// Git.exe isn't installed.
