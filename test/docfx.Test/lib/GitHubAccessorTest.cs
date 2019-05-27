@@ -10,7 +10,7 @@ namespace Microsoft.Docs.Build
 {
     public class GitHubAccessorTest
     {
-        private readonly static string _token = Environment.GetEnvironmentVariable("GitHubAccessToken");
+        private readonly static string _token = Environment.GetEnvironmentVariable("DOCS_GITHUB_TOKEN");
         private readonly static GitHubAccessor _github = new GitHubAccessor(_token);
 
         [Theory]
