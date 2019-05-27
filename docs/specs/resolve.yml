@@ -299,6 +299,18 @@ outputs:
   docs/a.json: |
     {"conceptual":"<p>DEP</p>"}
 ---
+# Dependency can be a file system folder
+inputs:
+  docfx.yml: |
+    dependencies:
+      dep: dependencies
+  a.md: '[!include[dep](~/dep/dep.md)]'
+  dependencies/dep.md: DEP
+outputs:
+  a.json: |
+    {"conceptual":"<p>DEP</p>"}
+  dependencies/dep.json:
+---
 # Link with `~` - default resolveAlias config
 inputs:
   docfx.yml:
