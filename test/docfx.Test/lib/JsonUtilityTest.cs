@@ -206,7 +206,6 @@ namespace Microsoft.Docs.Build
 
         [Theory]
         [InlineData("{'name':'title','items':[,{'name':'1'}]}", "'items' contains null value, the null value has been removed", "null-array-value", ErrorLevel.Warning)]
-        [InlineData("{'name':'title','items':[{'name':,'displayName':'1'}]}", "'name' contains null value", "null-value", ErrorLevel.Info)]
         [InlineData("[1,,1,1]", "'[1]' contains null value, the null value has been removed", "null-array-value", ErrorLevel.Warning)]
         internal void TestNulllValue(string json, string message, string errorCode, ErrorLevel errorLevel)
         {

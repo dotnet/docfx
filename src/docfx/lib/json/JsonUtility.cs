@@ -284,11 +284,6 @@ namespace Microsoft.Docs.Build
 
             RemoveNullsCore(root, null);
 
-            foreach (var (node, name) in nullNodes)
-            {
-                errors.Add(Errors.NullValue(GetSourceInfo(node), name));
-            }
-
             foreach (var (node, name) in nullArrayNodes)
             {
                 errors.Add(Errors.NullArrayValue(GetSourceInfo(node), name));

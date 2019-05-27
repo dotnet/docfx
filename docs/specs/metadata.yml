@@ -23,8 +23,6 @@ inputs:
 outputs:
   docs/a.json: |
     { "ms.custom-metadata": null }
-  .errors.log: |
-    ["info","null-value","'ms.custom-metadata' contains null value","docs/a.md",2,1]
 ---
 # Overwrite global metadata with null in yaml header
 inputs:
@@ -38,8 +36,6 @@ inputs:
 outputs:
   a.json: |
     { "ms.custom-metadata": null }
-  .errors.log: |
-    ["info","null-value","'ms.custom-metadata' contains null value","a.md",2,1]
 ---
 # Report error for invalid yaml header value type
 inputs:
