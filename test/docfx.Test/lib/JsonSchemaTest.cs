@@ -148,7 +148,7 @@ namespace Microsoft.Docs.Build
         [InlineData("{'type': ['string'], 'format': 'date-time'}", "'1963-06-19T08:30:06Z'", "")]
         [InlineData("{'type': ['string'], 'format': 'unknow-type'}", "'pass'", "")]
         [InlineData("{'type': ['string'], 'format': 'date-time'}", "'invalid'",
-            "['warning','string-format-invalid','String 'invalid' is not a valid 'DateTime'','file',1,9]")]
+            "['warning','format-invalid','String 'invalid' is not a valid 'DateTime'','file',1,9]")]
 
         // properties validation
         [InlineData("{'properties': {'key': {'type': 'string'}}}", "{'key': 'value'}", "")]

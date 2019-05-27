@@ -72,18 +72,12 @@ namespace Microsoft.Docs.Build
                     errors.Add(Errors.StringLengthInvalid(JsonUtility.GetSourceInfo(scalar), scalar.Path, minLength: schema.MinLength));
             }
 
-            if (schema.Format.HasValue)
+            switch (schema.Format)
             {
-                switch (schema.Format.Value)
-                {
-                    case JsonSchemaStringFormat.DateTime:
-                        if (!DateTime.TryParse((string)scalar, out var _))
-                            errors.Add(Errors.StringFormatInvalid(JsonUtility.GetSourceInfo(scalar), (string)scalar, JsonSchemaStringFormat.DateTime));
-                        break;
-                    case JsonSchemaStringFormat.Uri:
-                    case JsonSchemaStringFormat.UriReference:
-                        throw new NotSupportedException();
-                }
+                case JsonSchemaStringFormat.DateTime:
+                    if (!DateTime.TryParse((string)scalar, out var _))
+                        errors.Add(Errors.FormatInvalid(JsonUtility.GetSourceInfo(scalar), (string)scalar, JsonSchemaStringFormat.DateTime));
+                    break;
             }
         }
 

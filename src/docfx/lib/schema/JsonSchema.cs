@@ -55,8 +55,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public JValue[] Enum { get; set; }
 
-        [JsonConverter(typeof(StringEnumDashConverter))]
-        public JsonSchemaStringFormat? Format { get; set; }
+        public JsonSchemaStringFormat Format { get; set; }
 
         /// <summary>
         /// The maximum length of a string.

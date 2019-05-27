@@ -367,8 +367,8 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// The string type's value doesn't match given format.
         /// </summary>
-        public static Error StringFormatInvalid(SourceInfo source, string value, JsonSchemaStringFormat type)
-            => new Error(ErrorLevel.Warning, "string-format-invalid", $"String '{value}' is not a valid '{type}'", source);
+        public static Error FormatInvalid(SourceInfo source, string value, JsonSchemaStringFormat type)
+            => new Error(ErrorLevel.Warning, "format-invalid", $"String '{value}' is not a valid '{type}'", source);
 
         /// <summary>
         /// Array length not within min and max.
