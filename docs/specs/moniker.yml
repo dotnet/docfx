@@ -535,8 +535,8 @@ outputs:
 inputs:
   docfx.yml: |
     monikerRange:
-      'docs/v1/**': '>= a-1.0 < a-4.0 >= b-3.0'
-      'docs/v2/**': '>= a-3.0 < b-3.0'
+      'docs/v1/**': '>= a-1.0 < a-4.0'
+      'docs/v2/**': '< b-3.0'
       'docs/v3/**': '>= c-2.0'
     routes:
       docs/v1/: docs/
@@ -546,22 +546,19 @@ inputs:
   docs/v1/a.md: |
     ---
     uid: a
-    title: a-1.0, a-2.0, a-3.0, b-3.0
-    monikerRange: '< b-4.0'
+    title: a-1.0, a-2.0
+    monikerRange: '< a-3.0'
     ---
     Moniker:
       - a-1.0
       - a-2.0
-      - a-3.0
-      - b-3.0
   docs/v2/a.md: |
     ---
     uid: a
-    title: a-3.0, b-1.0, b-2.0
-    monikerRange: '< a-4.0 < b-4.0'
+    title: b-1.0, b-2.0
+    monikerRange: '<= b-2.0'
     ---
     Moniker: 
-      - a-3.0
       - b-1.0
       - b-2.0
   docs/v3/b.md: |
@@ -569,21 +566,36 @@ inputs:
   monikerDefinition.json: |
     {
       "monikers": [
-        { "moniker_name": "a-1.0", "product_name": "a" },
-        { "moniker_name": "a-2.0", "product_name": "a" },
-        { "moniker_name": "a-3.0", "product_name": "a" },
-        { "moniker_name": "a-4.0", "product_name": "a" },
-        { "moniker_name": "b-1.0", "product_name": "b" },
-        { "moniker_name": "b-2.0", "product_name": "b" },
-        { "moniker_name": "b-3.0", "product_name": "b" },
-        { "moniker_name": "b-4.0", "product_name": "b" },
         { "moniker_name": "c-1.0", "product_name": "c" },
         { "moniker_name": "c-2.0", "product_name": "c" },
         { "moniker_name": "c-3.0", "product_name": "c" },
         { "moniker_name": "c-4.0", "product_name": "c" },
+        { "moniker_name": "b-1.0", "product_name": "b" },
+        { "moniker_name": "b-2.0", "product_name": "b" },
+        { "moniker_name": "b-3.0", "product_name": "b" },
+        { "moniker_name": "b-4.0", "product_name": "b" },
+        { "moniker_name": "a-1.0", "product_name": "a" },
+        { "moniker_name": "a-2.0", "product_name": "a" },
+        { "moniker_name": "a-3.0", "product_name": "a" },
+        { "moniker_name": "a-4.0", "product_name": "a" },
       ]
     }
 outputs:
+  a194b48e/docs/a.json: |
+    {
+      "conceptual": "<p>Moniker:</p>\n<ul>\n<li>a-1.0</li>\n<li>a-2.0</li>\n</ul>\n",
+      "monikers":["a-1.0","a-2.0"]
+    }
+  d1a7add6/docs/a.json: |
+    {
+      "conceptual": "<p>Moniker:</p>\n<ul>\n<li>b-1.0</li>\n<li>b-2.0</li>\n</ul>\n",
+      "monikers":["b-1.0","b-2.0"]
+    }
+  89bb347b/docs/b.json: |
+    {
+      "conceptual": "<p>Link to <a href=\"a\" data-linktype=\"relative-path\">b-1.0, b-2.0</a></p>\n",
+      "monikers":["c-2.0","c-3.0","c-4.0"]
+    }
 ---
 # Define same uid with overlapping moniker range
 inputs:
