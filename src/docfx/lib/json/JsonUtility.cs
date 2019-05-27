@@ -151,13 +151,12 @@ namespace Microsoft.Docs.Build
 
         public static (List<Error> errors, object value) ToObject(
             JToken token,
-            Type type,
-            Func<IEnumerable<DataTypeAttribute>, SourceInfo<object>, string, object> transform = null)
+            Type type)
         {
             try
             {
                 var errors = new List<Error>();
-                var status = new Status { Errors = errors, Transform = transform, Reader = new JTokenReader(token) };
+                var status = new Status { Errors = errors, Reader = new JTokenReader(token) };
 
                 t_status.Value.Push(status);
 
@@ -275,20 +274,14 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
-        /// Report warnings for all null or undefined nodes, remove nulls inside arrays.
+        /// Report warnings for null values inside arrays and remove nulls inside arrays.
         /// </summary>
         public static (List<Error>, JToken) RemoveNulls(this JToken root)
         {
             var errors = new List<Error>();
-            var nullNodes = new List<(JToken, string)>();
             var nullArrayNodes = new List<(JToken, string)>();
 
             RemoveNullsCore(root, null);
-
-            foreach (var (node, name) in nullNodes)
-            {
-                errors.Add(Errors.NullValue(GetSourceInfo(node), name));
-            }
 
             foreach (var (node, name) in nullArrayNodes)
             {
@@ -319,11 +312,7 @@ namespace Microsoft.Docs.Build
                 {
                     foreach (var prop in obj.Properties())
                     {
-                        if (prop.Value.IsNullOrUndefined())
-                        {
-                            nullNodes.Add((prop, prop.Name));
-                        }
-                        else
+                        if (!prop.Value.IsNullOrUndefined())
                         {
                             RemoveNullsCore(prop.Value, prop.Name);
                         }
@@ -562,8 +551,6 @@ namespace Microsoft.Docs.Build
             public JTokenReader Reader { get; set; }
 
             public List<Error> Errors { get; set; }
-
-            public Func<IEnumerable<DataTypeAttribute>, SourceInfo<object>, string, object> Transform { get; set; }
-        }
+       }
     }
 }

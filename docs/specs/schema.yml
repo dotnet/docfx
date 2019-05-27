@@ -154,7 +154,6 @@ outputs:
   docs/a.json: |
     { "content": {} }
   .errors.log: |
-    ["info","null-value","'description' contains null value","docs/a.yml",2,1]
     ["warning","unexpected-type","Expect type 'String' but got 'Null'","docs/a.yml",2,13]
 ---
 # Support schema documents with inline markdown content

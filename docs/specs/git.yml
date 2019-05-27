@@ -502,7 +502,7 @@ inputs:
     gitHub:
       userCache: user_profile.json
       resolveUsers: true
-      authToken: {GITHUB_ACCESS_TOKEN}
+      authToken: {DOCS_GITHUB_TOKEN}
     contribution:
       repository: https://github.com/docascode/contribution-test
   user_profile.json: |
@@ -513,7 +513,7 @@ inputs:
         ]
       }
 environments:
-  - GITHUB_ACCESS_TOKEN
+  - DOCS_GITHUB_TOKEN
 outputs:
   docs/index.json: |
     {

@@ -977,8 +977,6 @@ outputs:
   docs/f1/b.json:
   docs/toc.json: |
     { "items":[{ "!tocHref": null }] }
-  .errors.log: |
-    ["info","null-value","'tocHref' contains null value","docs/TOC.yml",3,3]
 ---
 # Toc with schema violation
 inputs:
@@ -995,7 +993,6 @@ outputs:
   docs/f1/a.json:
   docs/f1/b.json:
   .errors.log: |
-    ["info","null-value","'tocHref' contains null value","docs/TOC.yml",2,3]
     ["error","violate-schema","Required property 'name' not found in JSON.","docs/TOC.yml",1,3]
 ---
 # Orphan file(not explicitly referenced in toc file)'s toc, only look up parent folder toc files

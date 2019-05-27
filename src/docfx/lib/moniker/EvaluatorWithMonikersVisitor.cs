@@ -71,7 +71,7 @@ namespace Microsoft.Docs.Build
         private static Dictionary<string, MonikerProductInfo> InitializeMonikers(IEnumerable<Moniker> monikers)
         {
             var monikerNameList = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-            var productNameDictionary = new SortedDictionary<string, List<Moniker>>(StringComparer.OrdinalIgnoreCase);
+            var productNameDictionary = new Dictionary<string, List<Moniker>>(StringComparer.OrdinalIgnoreCase);
 
             foreach (var moniker in monikers)
             {
