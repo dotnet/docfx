@@ -492,7 +492,6 @@ inputs:
     Link to @a with netcore-1.2, netcore-2.0
   docs/v3/b.md: |
     Link to @a with netcore-1.2, netcore-2.0
-
   monikerDefinition.json: |
     {
       "monikers": [
@@ -532,6 +531,60 @@ outputs:
   xrefmap.json: | 
     {"references":[{"uid":"a","href":"https://docs.com/docs/a","name":"netcore-2.1"}]}
 ---
+# [only]Define same uid with different moniker ranges containing different products
+inputs:
+  docfx.yml: |
+    monikerRange:
+      'docs/v1/**': '>= a-1.0 < a-4.0 >= b-3.0'
+      'docs/v2/**': '>= a-3.0 < b-3.0'
+      'docs/v3/**': '>= c-2.0'
+    routes:
+      docs/v1/: docs/
+      docs/v2/: docs/
+      docs/v3/: docs/
+    monikerDefinition: monikerDefinition.json
+  docs/v1/a.md: |
+    ---
+    uid: a
+    title: a-1.0, a-2.0, a-3.0, b-3.0
+    monikerRange: '< b-4.0'
+    ---
+    Moniker:
+      - a-1.0
+      - a-2.0
+      - a-3.0
+      - b-3.0
+  docs/v2/a.md: |
+    ---
+    uid: a
+    title: a-3.0, b-1.0, b-2.0
+    monikerRange: '< a-4.0 < b-4.0'
+    ---
+    Moniker: 
+      - a-3.0
+      - b-1.0
+      - b-2.0
+  docs/v3/b.md: |
+    Link to @a
+  monikerDefinition.json: |
+    {
+      "monikers": [
+        { "moniker_name": "a-1.0", "product_name": "a" },
+        { "moniker_name": "a-2.0", "product_name": "a" },
+        { "moniker_name": "a-3.0", "product_name": "a" },
+        { "moniker_name": "a-4.0", "product_name": "a" },
+        { "moniker_name": "b-1.0", "product_name": "b" },
+        { "moniker_name": "b-2.0", "product_name": "b" },
+        { "moniker_name": "b-3.0", "product_name": "b" },
+        { "moniker_name": "b-4.0", "product_name": "b" },
+        { "moniker_name": "c-1.0", "product_name": "c" },
+        { "moniker_name": "c-2.0", "product_name": "c" },
+        { "moniker_name": "c-3.0", "product_name": "c" },
+        { "moniker_name": "c-4.0", "product_name": "c" },
+      ]
+    }
+outputs:
+---
 # Define same uid with overlapping moniker range
 inputs:
   docfx.yml: |
@@ -562,7 +615,7 @@ inputs:
         { "moniker_name": "netcore-1.0", "product_name": ".NET Core" },
         { "moniker_name": "netcore-1.1", "product_name": ".NET Core" },
         { "moniker_name": "netcore-2.0", "product_name": ".NET Core" },
-        { "moniker_name": "netcore-2.1", "product_name": ".NET Core" }
+        { "moniker_name": "netcore-2.1", "product_name": ".NET Core" },
       ]
     }
 outputs:
