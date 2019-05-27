@@ -127,24 +127,7 @@ namespace Microsoft.Docs.Build
                 case Scalar scalar:
                     if (scalar.Style == ScalarStyle.Plain)
                     {
-                        if (string.IsNullOrWhiteSpace(scalar.Value) ||
-                            scalar.Value == "~" ||
-                            string.Equals(scalar.Value, "null", StringComparison.OrdinalIgnoreCase))
-                        {
-                            return SetSourceInfo(JValue.CreateNull(), scalar, file);
-                        }
-                        if (long.TryParse(scalar.Value, out var n))
-                        {
-                            return SetSourceInfo(new JValue(n), scalar, file);
-                        }
-                        if (double.TryParse(scalar.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out var d))
-                        {
-                            return SetSourceInfo(new JValue(d), scalar, file);
-                        }
-                        if (bool.TryParse(scalar.Value, out var b))
-                        {
-                            return SetSourceInfo(new JValue(b), scalar, file);
-                        }
+                        return SetSourceInfo(ParseScalar(scalar.Value), scalar, file);
                     }
                     return SetSourceInfo(new JValue(scalar.Value), scalar, file);
 
@@ -179,6 +162,54 @@ namespace Microsoft.Docs.Build
                 default:
                     throw new NotSupportedException($"Yaml node '{parser.Current.GetType().Name}' is not supported");
             }
+        }
+
+        private static JToken ParseScalar(string value)
+        {
+            // https://yaml.org/spec/1.2/2009-07-21/spec.html
+            //
+            //  Regular expression       Resolved to tag
+            //
+            //    null | Null | NULL | ~                          tag:yaml.org,2002:null
+            //    /* Empty */                                     tag:yaml.org,2002:null
+            //    true | True | TRUE | false | False | FALSE      tag:yaml.org,2002:bool
+            //    [-+]?[0 - 9]+                                   tag:yaml.org,2002:int(Base 10)
+            //    0o[0 - 7] +                                     tag:yaml.org,2002:int(Base 8)
+            //    0x[0 - 9a - fA - F] +                           tag:yaml.org,2002:int(Base 16)
+            //    [-+] ? ( \. [0-9]+ | [0-9]+ ( \. [0-9]* )? ) ( [eE][-+]?[0 - 9]+ )?   tag:yaml.org,2002:float (Number)
+            //    [-+]? ( \.inf | \.Inf | \.INF )                 tag:yaml.org,2002:float (Infinity)
+            //    \.nan | \.NaN | \.NAN                           tag:yaml.org,2002:float (Not a number)
+            //    *                                               tag:yaml.org,2002:str(Default)
+            if (string.IsNullOrEmpty(value) || value == "~" || value.Equals("null", StringComparison.OrdinalIgnoreCase))
+            {
+                return JValue.CreateNull();
+            }
+            if (bool.TryParse(value, out var b))
+            {
+                return new JValue(b);
+            }
+            if (long.TryParse(value, out var l))
+            {
+                return new JValue(l);
+            }
+            if (double.TryParse(value, NumberStyles.Number, CultureInfo.InvariantCulture, out var d) &&
+                !double.IsNaN(d) && !double.IsPositiveInfinity(d) && !double.IsNegativeInfinity(d))
+            {
+                return new JValue(d);
+            }
+            if (value.Equals(".nan", StringComparison.OrdinalIgnoreCase))
+            {
+                return new JValue(double.NaN);
+            }
+            if (value.Equals(".inf", StringComparison.OrdinalIgnoreCase) || value.Equals("+.inf", StringComparison.OrdinalIgnoreCase))
+            {
+                return new JValue(double.PositiveInfinity);
+            }
+            if (value.Equals("-.inf", StringComparison.OrdinalIgnoreCase))
+            {
+                return new JValue(double.NegativeInfinity);
+            }
+            return new JValue(value);
         }
 
         private static JToken SetSourceInfo(JToken token, ParsingEvent node, string file)

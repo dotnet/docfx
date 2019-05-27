@@ -23,7 +23,7 @@ namespace Microsoft.Docs.Build
     {
         private static readonly string[] s_errorCodesWithoutLineInfo =
         {
-            "need-restore", "heading-not-found", "config-not-found", "committish-not-found",
+            "need-restore", "heading-not-found", "config-not-found", "committish-not-found", "custom-404-page",
 
             // can be removed
             "moniker-config-missing",
@@ -33,7 +33,7 @@ namespace Microsoft.Docs.Build
 
             // show multiple errors with line info
             "publish-url-conflict", "output-path-conflict", "uid-conflict", "redirection-conflict",
-            "redirected-id-conflict", "circular-reference", "moniker-overlapping", "empty-monikers",
+            "redirected-id-conflict", "circular-reference", "moniker-overlapping", "empty-monikers"
         };
 
         private static readonly ConcurrentDictionary<string, (int ordinal, string spec)> s_mockRepos = new ConcurrentDictionary<string, (int ordinal, string spec)>();
@@ -100,10 +100,13 @@ namespace Microsoft.Docs.Build
 
         private static async Task RunCore(string docsetPath, E2ESpec spec)
         {
+            var dir = new DirectoryInfo(docsetPath);
+            var inputFiles = dir.GetFiles("*", SearchOption.AllDirectories).ToDictionary(file => file.FullName, file => file.LastWriteTime);
+
             bool failed = false;
             foreach (var command in spec.Commands)
             {
-                if (await Program.Run(command.Split(" ").Concat(new[] { docsetPath }).ToArray()) != 0)
+                if (await Docfx.Run(command.Split(" ").Concat(new[] { docsetPath }).ToArray()) != 0)
                 {
                     failed = true;
                     break;
@@ -145,6 +148,8 @@ namespace Microsoft.Docs.Build
                 }
                 VerifyFile(Path.GetFullPath(Path.Combine(docsetOutputPath, filename)), content);
             }
+
+            VerifyNoChangesOnInputFiles(inputFiles, spec.SkippableInputs, docsetPath);
         }
 
         private static async Task RunWatchCore(string docsetPath, E2ESpec spec)
@@ -180,7 +185,7 @@ namespace Microsoft.Docs.Build
                 {
                     var yaml = section.Trim('\r', '\n', '-');
                     var header = YamlUtility.ReadHeader(yaml) ?? "";
-                    if (string.IsNullOrEmpty(header))
+                    if (string.IsNullOrEmpty(header) || header.Contains("[Skip]"))
                     {
                         i++;
                         continue;
@@ -452,6 +457,27 @@ namespace Microsoft.Docs.Build
                     Assert.True(false, $"Error code {log[1].ToString()} must have line info");
                 }
             }
+        }
+
+        private static void VerifyNoChangesOnInputFiles(Dictionary<string, DateTime> inputFiles, string[] skippableInputs, string docsetPath)
+        {
+            var dir = new DirectoryInfo(docsetPath);
+            var currentFiles = dir.GetFiles("*", SearchOption.AllDirectories)
+                                .Where(file => !skippableInputs.Contains(file.Name))
+                                .Select(file => file.FullName)
+                                .Except(dir.GetFiles($"_site/*", SearchOption.AllDirectories).Select(file => file.FullName)).ToList();
+            foreach (var (file, lastModifyTime) in inputFiles)
+            {
+                var currentFile = new FileInfo(file);
+                if (skippableInputs.Contains(currentFile.Name))
+                {
+                    continue;
+                }
+                Assert.True(currentFile.Exists, $"Input file {currentFile.Name} has been deleted");
+                Assert.True(lastModifyTime == currentFile.LastWriteTime, $"Input file {currentFile.Name} has been changed");
+                currentFiles.Remove(file);
+            }
+            Assert.True(currentFiles.Count == 0, $"New files {string.Join(",", currentFiles.Count > 3 ? currentFiles.SkipLast(currentFiles.Count-3) : currentFiles)} has been generated in input folder");
         }
     }
 }

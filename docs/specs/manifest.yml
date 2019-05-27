@@ -36,31 +36,6 @@ outputs:
       ]
     }
 ---
-# Publish manifest output contains file hash
-repos:
-  https://docs.com/output-hash:
-  - files:
-      docfx.yml: |
-        files: '**'
-        redirections:
-          c.md: "/"
-      a.md:
-      b.png:
-      TOC.md:
-outputs:
-  a.json:
-  b.png:
-  toc.json:
-  .publish.json: |
-    {
-      "files": [
-        { "url": "/c", "!hash": null },
-        { "url": "/a", "hash": "b027022eedc0b168a566347362e3c918cf28b699" },
-        { "url": "/b.png", "hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709" },
-        { "url": "/toc.json", "hash": "ad75fac1a867d604c1df88742ed36d56aecd1926" }
-      ]
-    }
----
 # Redirections outputs redirect_url to .publish.json, but does not have output file
 inputs:
   docfx.yml: |
@@ -139,10 +114,7 @@ outputs:
     {  
        "dependencies":{  
           "docs/a.md":[  
-             {  
-                "source":"docs/b.md",
-                "type":"link"
-             }
+             { "source":"docs/b.md", "type":"link" }
           ]
        }
     }
@@ -162,29 +134,14 @@ outputs:
   .dependencymap.json: |
     {  
        "dependencies":{  
-          "docs/a.md":[  
-             {  
-                "source":"docs/c.md",
-                "type":"inclusion"
-             },
-             {  
-                "source":"docs/c.md",
-                "type":"link"
-             },
-             {  
-                "source":"docs/b.md",
-                "type":"inclusion"
-             }
+          "docs/a.md":[
+             { "source":"docs/b.md", "type":"inclusion" },
+             { "source":"docs/c.md", "type":"link" },
+             { "source":"docs/c.md", "type":"inclusion" }
           ],
           "docs/b.md":[  
-             {  
-                "source":"docs/c.md",
-                "type":"inclusion"
-             },
-             {  
-                "source":"docs/c.md",
-                "type":"link"
-             }
+             { "source":"docs/c.md", "type":"link" },
+             { "source":"docs/c.md", "type":"inclusion" }
           ]
        }
     }
@@ -204,16 +161,10 @@ outputs:
     {  
        "dependencies":{
           "docs/TOC.md":[
-             {  
-                "source":"docs/a/TOC.md",
-                "type":"tocInclusion"
-             }
+             { "source":"docs/a/TOC.md", "type":"tocInclusion" }
           ],
           "docs/a/TOC.md":[  
-             {  
-                "source":"docs/a/b.md",
-                "type":"link"
-             }
+             { "source":"docs/a/b.md", "type":"link" }
           ]
        }
     }
@@ -232,30 +183,18 @@ outputs:
     {  
        "dependencies":{  
           "docs/b.md":[  
-             {  
-                "source":"docs/b.md",
-                "type":"inclusion"
-             },
-             {  
-                "source":"docs/a.md",
-                "type":"inclusion"
-             }
+             { "source":"docs/a.md", "type":"inclusion" },
+             { "source":"docs/b.md", "type":"inclusion" }
           ],
           "docs/a.md":[  
-             {  
-                "source":"docs/b.md",
-                "type":"inclusion"
-             },
-             {  
-                "source":"docs/a.md",
-                "type":"inclusion"
-             }
+             { "source":"docs/a.md", "type":"inclusion" },
+             { "source":"docs/b.md", "type":"inclusion" }
           ]
        }
     }
   .errors.log: |
-    ["warning","circular-reference","Found circular reference: docs/b.md --> docs/a.md --> docs/b.md","docs/a.md",1,5]
-    ["warning","circular-reference","Found circular reference: docs/a.md --> docs/b.md --> docs/a.md","docs/b.md",1,9]
+    ["warning","circular-reference","Build has identified file(s) referencing each other: 'docs/b.md' --> 'docs/a.md' --> 'docs/b.md'","docs/a.md",1,5]
+    ["warning","circular-reference","Build has identified file(s) referencing each other: 'docs/a.md' --> 'docs/b.md' --> 'docs/a.md'","docs/b.md",1,9]
 ---
 # Manifest link circular reference
 inputs:
@@ -272,16 +211,10 @@ outputs:
     {  
        "dependencies":{  
           "docs/a.md":[  
-             {  
-                "source":"docs/b.md",
-                "type":"link"
-             }
+             { "source":"docs/b.md", "type":"link" }
           ],
           "docs/b.md":[  
-             {  
-                "source":"docs/a.md",
-                "type":"bookmark"
-             }
+             { "source":"docs/a.md", "type":"bookmark" }
           ]
        }
     }
@@ -300,10 +233,7 @@ outputs:
     {  
        "dependencies":{  
           "docs/a.md":[  
-             {  
-                "source":"docs/b.md",
-                "type":"link"
-             }
+             { "source":"docs/b.md", "type":"link" }
           ]
        }
     }
@@ -338,20 +268,11 @@ outputs:
    {
     "dependencies": {
       "docs/b.md": [
-        {
-          "source": "docs/c.md",
-          "type": "inclusion"
-        }
+        { "source": "docs/c.md", "type": "inclusion" }
       ],
       "docs/a.md": [
-        {
-          "source": "docs/c.md",
-          "type": "inclusion"
-        },
-        {
-          "source": "docs/b.md",
-          "type": "inclusion"
-        }
+        { "source": "docs/b.md", "type": "inclusion" },
+        { "source": "docs/c.md", "type": "inclusion" }
       ]
     }
    }
@@ -371,16 +292,10 @@ outputs:
    {
     "dependencies": {
       "docs/b.md": [
-        {
-          "source": "docs/c.md",
-          "type": "link"
-        }
+        { "source": "docs/c.md", "type": "link" }
       ],
       "docs/a.md": [
-        {
-          "source": "docs/b.md",
-          "type": "link"
-        }
+        { "source": "docs/b.md", "type": "link" }
       ]
     }
    }
@@ -400,20 +315,11 @@ outputs:
    {
     "dependencies": {
       "docs/b.md": [
-        {
-          "source": "docs/c.md",
-          "type": "link"
-        }
+        { "source": "docs/c.md", "type": "link" }
       ],
       "docs/a.md": [
-        {
-          "source": "docs/c.md",
-          "type": "link"
-        },
-        {
-          "source": "docs/b.md",
-          "type": "inclusion"
-        }
+        { "source": "docs/b.md", "type": "inclusion" },
+        { "source": "docs/c.md", "type": "link" }
       ]
     }
    }
@@ -433,16 +339,10 @@ outputs:
    {
     "dependencies": {
       "docs/b.md": [
-        {
-          "source": "docs/c.md",
-          "type": "inclusion"
-        }
+        { "source": "docs/c.md", "type": "inclusion" }
       ],
       "docs/a.md": [
-        {
-          "source": "docs/b.md",
-          "type": "link"
-        }
+        { "source": "docs/b.md", "type": "link" }
       ]
     }
    }
@@ -459,20 +359,11 @@ outputs:
    {
     "dependencies": {
       "docs/b.md": [
-        {
-          "source": "docs/a.md",
-          "type": "link"
-        }
+        { "source": "docs/a.md", "type": "link" }
       ],
       "docs/a.md": [
-        {
-          "source": "docs/b.md",
-          "type": "inclusion"
-        },
-        {
-          "source": "docs/a.md",
-          "type": "link"
-        }
+        { "source": "docs/a.md", "type": "link" },
+        { "source": "docs/b.md", "type": "inclusion" }
       ]
     }
    }
@@ -495,24 +386,24 @@ outputs:
         - source: docs/b.md
           type: link
       docs/c.md:
-        - source: docs/d.md
-          type: inclusion
         - source: docs/b.md
           type: link
+        - source: docs/d.md
+          type: inclusion
       docs/b.md:
-        - source: docs/d.md
-          type: inclusion
-        - source: docs/c.md
-          type: inclusion
         - source: docs/b.md
           type: link
+        - source: docs/c.md
+          type: inclusion
+        - source: docs/d.md
+          type: inclusion
       docs/a.md:
-        - source: docs/d.md
+        - source: docs/b.md
+          type: link
+        - source: docs/b.md
           type: inclusion
         - source: docs/c.md
           type: inclusion
-        - source: docs/b.md
+        - source: docs/d.md
           type: inclusion
-        - source: docs/b.md
-          type: link
 ---

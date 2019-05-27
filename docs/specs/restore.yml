@@ -163,7 +163,8 @@ outputs:
       "conceptual": "<p>for long file path test.</p>"
     }
 ---
-# Restore private azure repos with dependencies
+# [Skip] Restore private azure repos with dependencies
+# VSTS recently are not really stable, so skip this test for now
 inputs:
   docfx.yml: |
     dependencies:
@@ -267,6 +268,31 @@ outputs:
        },
        "!downloads": null
     }
+---
+# restore with wrong dependency version
+repos:
+  https://docs.com/wrong/a#master:
+    - files:
+        docfx.yml: |
+          dependencies:
+            dep1: https://docs.com/wrong/b#master
+          dependencyLock: .lock.json
+        docs/a.md:
+        .lock.json: |
+          {
+             "git":{
+                "https://docs.com/wrong/b":{
+                   "commit":"missing-commit-id",
+                   }
+                }
+             }
+          }
+  https://docs.com/wrong/b:
+    - files:
+        docs/dep1.md:
+outputs:
+  .errors.log: |
+    ["error","committish-not-found","Can't find branch, tag, or commit 'missing-commit-id' for repo https://docs.com/wrong/b."]
 ---
 # restore with azure repo dependency lock
 repos:

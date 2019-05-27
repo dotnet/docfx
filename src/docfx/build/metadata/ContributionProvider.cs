@@ -57,9 +57,10 @@ namespace Microsoft.Docs.Build
                 }
                 : null;
 
-            if (!(UrlUtility.TryParseGitHubUrl(repo?.Remote, out var gitHubOwner, out var gitHubRepoName) ||
-                UrlUtility.TryParseGitHubUrl(document.Docset.Config.Contribution.Repository, out gitHubOwner, out gitHubRepoName)) ||
-                !document.Docset.Config.GitHub.ResolveUsers)
+            var isGitHubRepo = UrlUtility.TryParseGitHubUrl(repo?.Remote, out var gitHubOwner, out var gitHubRepoName) ||
+                UrlUtility.TryParseGitHubUrl(document.Docset.Config.Contribution.Repository, out gitHubOwner, out gitHubRepoName);
+
+            if (!document.Docset.Config.GitHub.ResolveUsers)
             {
                 return (errors, contributionInfo);
             }
@@ -96,10 +97,15 @@ namespace Microsoft.Docs.Build
 
             async Task<Contributor> GetContributor(GitCommit commit)
             {
-                var (error, user) = await _gitHubUserCache.GetByCommit(commit.AuthorEmail, gitHubOwner, gitHubRepoName, commit.Sha);
-                errors.AddIfNotNull(error);
+                if (isGitHubRepo)
+                {
+                    var (error, githubUser) = await _gitHubUserCache.GetByCommit(commit.AuthorEmail, gitHubOwner, gitHubRepoName, commit.Sha);
+                    errors.AddIfNotNull(error);
+                    return githubUser?.ToContributor();
+                }
 
-                return user?.ToContributor();
+                // directly resolve github user by commit email
+                return _gitHubUserCache.GetByEmail(commit.AuthorEmail, out var user) ? user?.ToContributor() : default;
             }
 
             async Task<Contributor> GetAuthor()

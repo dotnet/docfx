@@ -3,6 +3,7 @@
 
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -27,18 +28,19 @@ namespace Microsoft.Docs.Build
             return PathUtility.NormalizeFile(Path.GetRelativePath(docset.Config.DocumentId.SourceBasePath, doc.FilePath));
         }
 
-        public static string ToLegacyOutputPathRelativeToBaseSitePath(this Document doc, Docset docset)
+        public static string ToLegacyOutputPathRelativeToSiteBasePath(this Document doc, Docset docset, PublishItem manifestItem)
         {
-            var legacyOutputFilePathRelativeToSiteBasePath = doc.SitePath;
-            if (legacyOutputFilePathRelativeToSiteBasePath.StartsWith(docset.SiteBasePath, PathUtility.PathComparison))
+            var outputPath = manifestItem.Path;
+            if (doc.ContentType == ContentType.Resource && !doc.Docset.Config.Output.CopyResources)
             {
-                legacyOutputFilePathRelativeToSiteBasePath = Path.GetRelativePath(docset.SiteBasePath, legacyOutputFilePathRelativeToSiteBasePath);
+                outputPath = doc.GetOutputPath(manifestItem.Monikers, docset.SiteBasePath);
             }
+            var legacyOutputFilePathRelativeToSiteBasePath = Path.GetRelativePath(docset.SiteBasePath, outputPath);
 
             return PathUtility.NormalizeFile(legacyOutputFilePathRelativeToSiteBasePath);
         }
 
-        public static string ToLegacySiteUrlRelativeToBaseSitePath(this Document doc, Docset docset)
+        public static string ToLegacySiteUrlRelativeToSiteBasePath(this Document doc, Docset docset)
         {
             var legacySiteUrlRelativeToSiteBasePath = doc.SiteUrl;
             if (legacySiteUrlRelativeToSiteBasePath.StartsWith($"/{docset.SiteBasePath}", PathUtility.PathComparison))
@@ -58,6 +60,24 @@ namespace Microsoft.Docs.Build
         public static string GetAbsoluteOutputPathFromRelativePath(this Docset docset, string relativePath)
         {
             return Path.Combine(docset.DocsetPath, docset.Config.Output.Path, relativePath);
+        }
+
+        public static string ChangeExtension(string filePath, string extension, string[] acceptableExtension = null)
+        {
+            acceptableExtension = acceptableExtension ?? new string[] { "raw.page.json", "mta.json" };
+            if (!acceptableExtension.Any(ext =>
+            {
+                if (filePath.EndsWith(ext))
+                {
+                    filePath = Path.ChangeExtension(filePath.Substring(0, filePath.Length - ext.Length), extension);
+                    return true;
+                }
+                return false;
+            }))
+            {
+                filePath = Path.ChangeExtension(filePath, extension);
+            }
+            return filePath;
         }
     }
 }

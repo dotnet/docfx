@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Text;
 using System.Web;
 using HtmlAgilityPack;
@@ -16,25 +15,27 @@ namespace Microsoft.Docs.Build
         private static readonly Func<HtmlAgilityPack.HtmlAttribute, int> s_getValueStartIndex =
             ReflectionUtility.CreateInstanceFieldGetter<HtmlAgilityPack.HtmlAttribute, int>("_valuestartindex");
 
+        public static string HtmlPostProcess(string html, CultureInfo culture) => HtmlPostProcess(LoadHtml(html), culture);
+
+        public static string HtmlPostProcess(HtmlNode html, CultureInfo culture)
+        {
+            html = html.StripTags();
+            html = html.AddLinkType(culture.Name.ToLowerInvariant())
+                       .RemoveRerunCodepenIframes();
+
+            if (string.IsNullOrWhiteSpace(html.OuterHtml))
+            {
+                return "<div></div>";
+            }
+
+            return LocalizationUtility.AddLeftToRightMarker(culture, html.OuterHtml);
+        }
+
         public static HtmlNode LoadHtml(string html)
         {
             var doc = new HtmlDocument();
             doc.LoadHtml(html);
             return doc.DocumentNode;
-        }
-
-        public static string TransformHtml(string html, Func<HtmlNode, HtmlNode> transform)
-        {
-            HtmlDocument document = new HtmlDocument();
-            document.LoadHtml(html);
-            return transform(document.DocumentNode).OuterHtml;
-        }
-
-        public static HtmlNode AddLinkType(this HtmlNode html, string locale)
-        {
-            AddLinkType(html, "a", "href", locale);
-            AddLinkType(html, "img", "src", locale);
-            return html;
         }
 
         public static long CountWord(this HtmlNode node)
@@ -52,46 +53,6 @@ namespace Microsoft.Docs.Build
                 total += CountWord(child);
             }
             return total;
-        }
-
-        public static HtmlNode RemoveRerunCodepenIframes(this HtmlNode html)
-        {
-            // the rerun button on codepen iframes isn't accessibile.
-            // rather than get acc bugs or ban codepen, we're just hiding the rerun button using their iframe api
-            foreach (var node in html.Descendants("iframe"))
-            {
-                var src = node.GetAttributeValue("src", null);
-                if (src != null && src.Contains("codepen.io", StringComparison.OrdinalIgnoreCase))
-                {
-                    node.SetAttributeValue("src", src + "&rerun-position=hidden&");
-                }
-            }
-            return html;
-        }
-
-        public static HtmlNode StripTags(this HtmlNode html)
-        {
-            var nodesToRemove = new List<HtmlNode>();
-
-            foreach (var node in html.DescendantsAndSelf())
-            {
-                if (node.Name.Equals("script", StringComparison.OrdinalIgnoreCase) ||
-                    node.Name.Equals("link", StringComparison.OrdinalIgnoreCase) ||
-                    node.Name.Equals("style", StringComparison.OrdinalIgnoreCase))
-                {
-                    nodesToRemove.Add(node);
-                }
-                else
-                {
-                    node.Attributes.Remove("style");
-                }
-            }
-
-            foreach (var node in nodesToRemove)
-            {
-                node.Remove();
-            }
-            return html;
         }
 
         public static HashSet<string> GetBookmarks(this HtmlNode html)
@@ -206,11 +167,11 @@ namespace Microsoft.Docs.Build
                 {
                     if (raw?.StartsWith("@") != false)
                     {
-                        errors.Add(Errors.AtUidNotFound(new SourceInfo<string>(html, new SourceInfo(file, lineNumber, s_getValueStartIndex(xref))), xref.Value));
+                        errors.Add(Errors.AtXrefNotFound(new SourceInfo<string>(html, new SourceInfo(file, lineNumber, s_getValueStartIndex(xref)))));
                     }
                     else
                     {
-                        errors.Add(Errors.UidNotFound(new SourceInfo<string>(html, new SourceInfo(file, lineNumber, s_getValueStartIndex(xref))), xref.Value));
+                        errors.Add(Errors.XrefNotFound(new SourceInfo<string>(html, new SourceInfo(file, lineNumber, s_getValueStartIndex(xref)))));
                     }
                     resolvedNode.LoadHtml(raw);
                 }
@@ -268,6 +229,53 @@ namespace Microsoft.Docs.Build
             }
         }
 
+        private static HtmlNode AddLinkType(this HtmlNode html, string locale)
+        {
+            AddLinkType(html, "a", "href", locale);
+            AddLinkType(html, "img", "src", locale);
+            return html;
+        }
+
+        private static HtmlNode RemoveRerunCodepenIframes(this HtmlNode html)
+        {
+            // the rerun button on codepen iframes isn't accessibile.
+            // rather than get acc bugs or ban codepen, we're just hiding the rerun button using their iframe api
+            foreach (var node in html.Descendants("iframe"))
+            {
+                var src = node.GetAttributeValue("src", null);
+                if (src != null && src.Contains("codepen.io", StringComparison.OrdinalIgnoreCase))
+                {
+                    node.SetAttributeValue("src", src + "&rerun-position=hidden&");
+                }
+            }
+            return html;
+        }
+
+        private static HtmlNode StripTags(this HtmlNode html)
+        {
+            var nodesToRemove = new List<HtmlNode>();
+
+            foreach (var node in html.DescendantsAndSelf())
+            {
+                if (node.Name.Equals("script", StringComparison.OrdinalIgnoreCase) ||
+                    node.Name.Equals("link", StringComparison.OrdinalIgnoreCase) ||
+                    node.Name.Equals("style", StringComparison.OrdinalIgnoreCase))
+                {
+                    nodesToRemove.Add(node);
+                }
+                else
+                {
+                    node.Attributes.Remove("style");
+                }
+            }
+
+            foreach (var node in nodesToRemove)
+            {
+                node.Remove();
+            }
+            return html;
+        }
+
         private static void AddLinkType(this HtmlNode html, string tag, string attribute, string locale)
         {
             foreach (var node in html.Descendants(tag))
@@ -285,7 +293,6 @@ namespace Microsoft.Docs.Build
                         node.SetAttributeValue("data-linktype", "self-bookmark");
                         break;
                     case LinkType.AbsolutePath:
-                    case LinkType.WindowsAbsolutePath:
                         node.SetAttributeValue("data-linktype", "absolute-path");
                         node.SetAttributeValue(attribute, AddLocaleIfMissing(href, locale));
                         break;
@@ -309,7 +316,6 @@ namespace Microsoft.Docs.Build
                     var urlLocale = href.Substring(1, pos - 1);
                     if (urlLocale.Contains("-"))
                     {
-                        CultureInfo.GetCultureInfo(urlLocale);
                         return href;
                     }
                 }

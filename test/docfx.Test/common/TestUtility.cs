@@ -46,28 +46,25 @@ namespace Microsoft.Docs.Build
                 var expectedValue = ((JValue)expected).Value;
                 var actualValue = ((JValue)actual).Value;
 
-                if (expectedValue is string expectedHtml && actualValue is string actualHtml && IsHtmlLike(expectedHtml))
+                if (expectedValue is string expectedString && actualValue is string actualString)
                 {
-                    // Treat `content` as html if the expected value looks like: <blablabla>
-                    Assert.Equal(NormalizeHtml(expectedHtml), NormalizeHtml(actualHtml));
-                }
-                else if (
-                    expectedValue is string expectedStr && actualValue is string actualStr &&
-                    expectedStr.StartsWith("*") && expectedStr.EndsWith("*"))
-                {
-                    expectedStr = expectedStr.Trim(new[] { '*' });
-                    Assert.True(actualStr.Contains(expectedStr), $"{expectedStr} is not part of {actual}");
+                    expectedString = expectedString.Trim();
+
+                    // Treat value as html if it looks like: <blablabla>
+                    if (expectedString.StartsWith('<') && expectedString.EndsWith('>'))
+                    {
+                        Assert.Equal(NormalizeHtml(expectedString), NormalizeHtml(actualString));
+                    }
+                    // Treat value negate if it looks like: !blablabla
+                    else if (expectedString.StartsWith('!'))
+                    {
+                        Assert.NotEqual(expectedString, actualString);
+                    }
                 }
                 else
                 {
                     Assert.Equal(expectedValue, actualValue);
                 }
-            }
-
-            bool IsHtmlLike(string content)
-            {
-                var trimedContent = content.Trim();
-                return trimedContent.StartsWith('<') && trimedContent.EndsWith('>');
             }
         }
 
@@ -107,7 +104,10 @@ namespace Microsoft.Docs.Build
                         sb.Append(node.Name);
                         foreach (var attr in node.Attributes.OrderBy(a => a.Name))
                         {
-                            sb.Append($" {attr.Name}=\"{TrimWhiteSpace(attr.Value)}\"");
+                            if (attr.Name != "data-linktype")
+                            {
+                                sb.Append($" {attr.Name}=\"{TrimWhiteSpace(attr.Value)}\"");
+                            }
                         }
                         sb.Append(">\n");
 

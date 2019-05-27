@@ -18,8 +18,8 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Redirection entry isn't a conceptual article(*.{md,json,yml}).
         /// </summary>
-        public static Error InvalidRedirection(SourceInfo source, string path, ContentType contentType)
-            => new Error(ErrorLevel.Error, "invalid-redirection", $"The '{path}' shouldn't belong to redirections since it's a {contentType}", source);
+        public static Error RedirectionInvalid(SourceInfo source, string path)
+            => new Error(ErrorLevel.Error, "redirection-invalid", $"File '{path}' is redirected to '{source}'. Only content files can be redirected.", source);
 
         /// <summary>
         /// The key or value of redirection is null or empty.
@@ -61,7 +61,7 @@ namespace Microsoft.Docs.Build
         ///   - a.md references b.json's property with xref syntax, and b.json includes a.md reversely
         /// </summary>
         public static Error CircularReference<T>(IEnumerable<T> dependencyChain)
-            => new Error(ErrorLevel.Error, "circular-reference", $"Found circular reference: {string.Join(" --> ", dependencyChain.Select(file => $"'{file}'"))}");
+            => new Error(ErrorLevel.Error, "circular-reference", $"Build has identified file(s) referencing each other: {string.Join(" --> ", dependencyChain.Select(file => $"'{file}'"))}");
 
         /// <summary>
         /// Didn't run `docfx restore` before running `docfx build`.
@@ -86,8 +86,8 @@ namespace Microsoft.Docs.Build
         ///   - the api call reach github limit
         ///   - using invalid access token(more detailed info in ex.Message)
         /// </summary>
-        public static Error GitHubApiFailed(string api, Exception ex)
-            => new Error(ErrorLevel.Warning, "github-api-failed", $"Failed calling GitHub API '{api}': {ex.Message}");
+        public static Error GitHubApiFailed(string api, string exMessage)
+            => new Error(ErrorLevel.Warning, "github-api-failed", $"Call to GitHub API '{api}' failed: {exMessage} Try closing and reopening the PR. If you get this Error again, file an issue.");
 
         /// <summary>
         /// In yaml-format toc, topicHref SHOULD reference an article,
@@ -147,7 +147,7 @@ namespace Microsoft.Docs.Build
         ///     update the file cache with put request
         /// </summary>
         public static Error UploadFailed(string url, string message)
-            => new Error(ErrorLevel.Warning, "upload-failed", $"Upload '{url}' failed: {message}");
+            => new Error(ErrorLevel.Warning, "upload-failed", $"Upload failed for '{url}': {message} Try closing and reopening the PR. If you get this Error again, file an issue.");
 
         /// <summary>
         /// Failed to run `git fetch` or `git worktree add`.
@@ -237,13 +237,7 @@ namespace Microsoft.Docs.Build
         ///   - href referencing a non-existing file
         /// </summary>
         public static Error FileNotFound(SourceInfo<string> source)
-            => new Error(ErrorLevel.Warning, "file-not-found", $"Cannot find file '{source}' relative to '{source.File}'", source);
-
-        /// <summary>
-        /// Failed to resolve uid defined by [link](xref:uid) or <xref:uid> syntax.
-        /// </summary>
-        public static Error UidNotFound(SourceInfo<string> source, string uid)
-            => new Error(ErrorLevel.Warning, "uid-not-found", $"Cannot find uid '{uid}' using xref '{source}'", source);
+            => new Error(ErrorLevel.Warning, "file-not-found", $"Invalid file link: '{source}'.", source);
 
         /// <summary>
         /// File contains git merge conflict.
@@ -262,8 +256,14 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Failed to resolve uid defined by @ syntax.
         /// </summary>
-        public static Error AtUidNotFound(SourceInfo<string> source, string uid)
-            => new Error(ErrorLevel.Info, "at-uid-not-found", $"Cannot find uid '{uid}' using xref '{source}'", source);
+        public static Error AtXrefNotFound(SourceInfo<string> source)
+            => new Error(ErrorLevel.Info, "at-xref-not-found", $"Cross reference not found: '{source}'", source);
+
+        /// <summary>
+        /// Failed to resolve uid defined by [link](xref:uid) or <xref:uid> syntax.
+        /// </summary>
+        public static Error XrefNotFound(SourceInfo<string> source)
+            => new Error(ErrorLevel.Warning, "xref-not-found", $"Cross reference not found: '{source}'", source);
 
         /// <summary>
         /// Files published to the same url have no monikers or share common monikers.
@@ -293,8 +293,8 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Used docfx output model property which are not defined in input model.
         /// </summary>
-        public static Error ReservedMetadata(SourceInfo source, string name)
-            => new Error(ErrorLevel.Warning, "reserved-metadata", $"Metadata '{name}' is reserved by docfx, remove this metadata", source);
+        public static Error AttributeReserved(SourceInfo source, string name)
+            => new Error(ErrorLevel.Warning, "attribute-reserved", $"Attribute {name} is reserved for use by Docs. Remove it from your file metadata.", source);
 
         /// <summary>
         /// Metadata value must be scalar or arrays of scalars.
@@ -303,16 +303,10 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Error, "invalid-metadata-type", $"Metadata '{name}' can only be a scalar value or string array", source);
 
         /// <summary>
-        /// Failed to compute specific info of a commit.
-        /// </summary>
-        public static Error GitLogError(string repoPath, int errorCode)
-            => new Error(ErrorLevel.Error, "git-log-error", $"Error computing git log [{errorCode}] for '{repoPath}', did you use a shallow clone?");
-
-        /// <summary>
         /// Git.exe isn't installed.
         /// </summary>
         public static Error GitNotFound()
-            => new Error(ErrorLevel.Error, "git-not-found", $"Cannot find git, install git https://git-scm.com/");
+            => new Error(ErrorLevel.Error, "git-not-found", $"Git isn't installed on the target machine. Try closing and reopening the PR. If you get this Error again, file an issue.");
 
         /// <summary>
         /// Failed to invoke `git revparse`(resolve commit history of a file on a non-existent branch).
@@ -371,6 +365,18 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Warning, "undefined-value", $"Value '{value}' is not accepted. Valid values: {Join(validValues)}", source);
 
         /// <summary>
+        /// Array length not within min and max.
+        /// </summary>
+        public static Error ArrayLengthInvalid(SourceInfo source, string propName, int? minItems = null, int? maxItems = null)
+            => new Error(ErrorLevel.Warning, "array-length-invalid", $"Array {(string.IsNullOrEmpty(propName) ? "" : $"'{propName}' ")}length should be {(minItems.HasValue ? $">= {minItems.Value}" : $"<= {maxItems.Value}")}", source);
+
+        /// <summary>
+        /// String length not within min and max.
+        /// </summary>
+        public static Error StringLengthInvalid(SourceInfo source, string propName, int? minLength = null, int? maxLength = null)
+            => new Error(ErrorLevel.Warning, "string-length-invalid", $"String {(string.IsNullOrEmpty(propName) ? "" : $"'{propName}' ")}length should be {(minLength.HasValue ? $">= {minLength.Value}" : $"<= {maxLength.Value}")}", source);
+
+        /// <summary>
         /// A required field is missing.
         /// </summary>
         public static Error FieldRequired(SourceInfo source, string name)
@@ -414,16 +420,10 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Error, "moniker-overlapping", $"Two or more documents have defined overlapping moniker: {Join(overlappingmonikers)}");
 
         /// <summary>
-        /// Defined duplicate monikers in moniker definition file.
-        /// </summary>
-        public static Error MonikerNameConflict(string monikerName)
-            => new Error(ErrorLevel.Error, "moniker-name-conflict", $"Two or more moniker definitions have the same monikerName `{monikerName}`");
-
-        /// <summary>
         /// Failed to parse moniker string.
         /// </summary>
-        public static Error MonikerRangeInvalid(string monikerRange, string message)
-            => new Error(ErrorLevel.Error, "moniker-range-invalid", $"Invalid moniker range: '{monikerRange}': {message}");
+        public static Error MonikerRangeInvalid(SourceInfo<string> source, string message)
+            => new Error(ErrorLevel.Error, "moniker-range-invalid", $"Invalid moniker range: '{source}': {message}", source);
 
         /// <summary>
         /// MonikerRange is not defined in docfx.yml or doesn't match an article.md,
@@ -445,7 +445,15 @@ namespace Microsoft.Docs.Build
         ///   - article with uid `a` has only netcore-1.0 & netcore-1.1 version, but get referenced with @a?view=netcore-2.0
         /// </summary>
         public static Error InvalidUidMoniker(SourceInfo source, string moniker, string uid)
-            => new Error(ErrorLevel.Warning, "invalid-uid-moniker", $"Moniker '{moniker}' is not defined with uid '{uid}'", source);
+            => new Error(ErrorLevel.Info, "invalid-uid-moniker", $"Moniker '{moniker}' is not defined with uid '{uid}'", source);
+
+        /// <summary>
+        /// Custom 404 page is not supported
+        /// Example:
+        ///   - user want their 404.md to be built and shown as their 404 page of the website.
+        /// </summary>
+        public static Error Custom404Page(string file)
+            => new Error(ErrorLevel.Warning, "custom-404-page", $"Custom 404 page is not supported", file);
 
         private static string Join<T>(IEnumerable<T> source, Func<T, string> selector = null)
             => string.Join(", ", source.Select(item => $"{selector?.Invoke(item) ?? item.ToString()}").OrderBy(_ => _, StringComparer.Ordinal).Select(_ => $"'{_}'").Take(5));

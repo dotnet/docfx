@@ -266,7 +266,7 @@ repos:
         >note
   https://docs.com/template/token:
   - files:
-      LocalizedTokens/docs(en-us).html/tokens.json: |
+      ContentTemplate/token.json: |
         { "note": "<p>my note</p>" }
 outputs:
   docs/a.json: |
@@ -366,7 +366,7 @@ inputs:
 outputs:
   docs/a.json:
   .errors.log: |
-    ["warning","file-not-found","Cannot find file 'c.md' relative to 'docs/a.md'","docs/a.md",1,1]
+    ["warning","file-not-found","Invalid file link: 'c.md'.","docs/a.md",1,1]
 ---
 # do not output file if external-bookmark-not-found is treated as error
 inputs:
@@ -548,3 +548,13 @@ outputs:
   .errors.log: |
     ["suggestion","internal-bookmark-not-found","Cannot find bookmark '#bookmark' in 'docs/a.md'","docs/a.md",2,1]
     ["suggestion","internal-bookmark-not-found","Cannot find bookmark '#bookmark' in 'docs/a.md'","docs/a.md",2,2]
+---
+# custom 404 page is not supported
+inputs:
+  docfx.yml:
+  docs/404.md:
+outputs:
+  docs/404.json:
+  .errors.log: |
+    ["warning","custom-404-page","Custom 404 page is not supported","docs/404.md"]
+

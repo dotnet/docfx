@@ -183,10 +183,10 @@ namespace Microsoft.Docs.Build
         {
             var outputPath = PathUtility.NormalizeFile(Path.Combine(
                 siteBasePath,
-                $"{HashUtility.GetMd5HashShort(monikers)}",
+                $"{MonikerUtility.GetGroup(monikers)}",
                 Path.GetRelativePath(siteBasePath, SitePath)));
 
-            return Docset.Legacy && rawPage ? Path.ChangeExtension(outputPath, ".raw.page.json") : outputPath;
+            return Docset.Legacy && rawPage ? LegacyUtility.ChangeExtension(outputPath, ".raw.page.json") : outputPath;
         }
 
         public override int GetHashCode()

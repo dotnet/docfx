@@ -18,19 +18,20 @@ namespace Microsoft.Docs.Build
         [JsonProperty(PropertyName = "asset_id")]
         public string AssetId { get; set; }
 
-        public LegacyFileMapItem(string legacyOutputFilePathRelativeToSiteBasePath, ContentType contentType)
+        public LegacyFileMapItem(string legacyOutputFilePathRelativeToSiteBasePath, string legacySiteUrlRelativeToSiteBasePath, ContentType contentType)
         {
             switch (contentType)
             {
                 case ContentType.Page:
                 case ContentType.Redirection:
                     Type = "Content";
-                    OutputRelativePath = PathUtility.NormalizeFile(Path.ChangeExtension(legacyOutputFilePathRelativeToSiteBasePath, ".html"));
-                    AssetId = PathUtility.NormalizeFile(RemoveExtension(legacyOutputFilePathRelativeToSiteBasePath));
+                    OutputRelativePath = PathUtility.NormalizeFile(LegacyUtility.ChangeExtension(legacyOutputFilePathRelativeToSiteBasePath, ".html"));
+                    AssetId = legacySiteUrlRelativeToSiteBasePath;
                     break;
                 case ContentType.Resource:
                     Type = "Resource";
-                    OutputRelativePath = AssetId = PathUtility.NormalizeFile(legacyOutputFilePathRelativeToSiteBasePath);
+                    OutputRelativePath = PathUtility.NormalizeFile(legacyOutputFilePathRelativeToSiteBasePath);
+                    AssetId = legacySiteUrlRelativeToSiteBasePath;
                     break;
                 case ContentType.TableOfContents:
                 default:
@@ -38,14 +39,14 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public static LegacyFileMapItem Instance(string legacyOutputFilePathRelativeToSiteBasePath, ContentType contentType)
+        public static LegacyFileMapItem Instance(string legacyOutputFilePathRelativeToSiteBasePath, string legacySiteUrlRelativeToSiteBasePath, ContentType contentType)
         {
             if (contentType == ContentType.TableOfContents || contentType == ContentType.Unknown)
             {
                 return null;
             }
 
-            return new LegacyFileMapItem(legacyOutputFilePathRelativeToSiteBasePath, contentType);
+            return new LegacyFileMapItem(legacyOutputFilePathRelativeToSiteBasePath, legacySiteUrlRelativeToSiteBasePath, contentType);
         }
 
         private static string RemoveExtension(string path)

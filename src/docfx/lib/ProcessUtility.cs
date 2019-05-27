@@ -9,6 +9,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
 {
@@ -183,7 +184,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Start a new process and wait for its execution to complete
         /// </summary>
-        public static string Execute(string fileName, string commandLineArgs, string cwd = null, bool stdout = true)
+        public static string Execute(string fileName, string commandLineArgs, string cwd = null, bool stdout = true, string[] secrets = null)
         {
             var psi = new ProcessStartInfo
             {
@@ -192,16 +193,22 @@ namespace Microsoft.Docs.Build
                 Arguments = commandLineArgs,
                 UseShellExecute = false,
                 RedirectStandardOutput = stdout,
-                RedirectStandardError = false,
+                RedirectStandardError = true,
             };
 
             var process = Process.Start(psi);
+
+            // Redirect stderr to stdout
+            Task.Run(() => process.StandardError.BaseStream.CopyTo(Console.OpenStandardOutput()));
+
             var result = stdout ? process.StandardOutput.ReadToEnd() : null;
+
             process.WaitForExit();
 
             if (process.ExitCode != 0)
             {
-                throw new InvalidOperationException($"'\"{fileName}\" {commandLineArgs}' failed in directory '{cwd}' with exit code {process.ExitCode}: \nSTDOUT:'{result}'");
+                var sanitizedCommandLineArgs = secrets != null ? secrets.Aggregate(commandLineArgs, (arg, secret) => arg.Replace(secret, "***")) : commandLineArgs;
+                throw new InvalidOperationException($"'\"{fileName}\" {sanitizedCommandLineArgs}' failed in directory '{cwd}' with exit code {process.ExitCode}: \nSTDOUT:'{result}'");
             }
 
             return result;

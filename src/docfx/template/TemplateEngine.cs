@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -16,9 +17,9 @@ namespace Microsoft.Docs.Build
     internal class TemplateEngine
     {
         private static readonly string[] s_resourceFolders = new[] { "global", "css", "fonts" };
+        private static readonly ConcurrentDictionary<string, JsonSchema> _jsonSchemas = new ConcurrentDictionary<string, JsonSchema>();
 
         private readonly string _templateDir;
-        private readonly string _locale;
         private readonly LiquidTemplate _liquid;
         private readonly JavascriptEngine _js;
         private readonly HashSet<string> _htmlMetaHidden;
@@ -26,20 +27,33 @@ namespace Microsoft.Docs.Build
 
         public JObject Global { get; }
 
-        private TemplateEngine(string templateDir, string locale, JsonSchema metadataSchema)
+        private TemplateEngine(string templateDir, JsonSchema metadataSchema)
         {
             var contentTemplateDir = Path.Combine(templateDir, "ContentTemplate");
 
             _templateDir = templateDir;
-            _locale = locale.ToLowerInvariant();
             _liquid = new LiquidTemplate(templateDir);
             _js = new JavascriptEngine(contentTemplateDir);
-            Global = LoadGlobalTokens(templateDir, _locale);
+            Global = LoadGlobalTokens(contentTemplateDir);
 
             _htmlMetaHidden = metadataSchema.HtmlMetaHidden.ToHashSet();
             _htmlMetaNames = metadataSchema.Properties
                 .Where(prop => !string.IsNullOrEmpty(prop.Value.HtmlMetaName))
                 .ToDictionary(prop => prop.Key, prop => prop.Value.HtmlMetaName);
+        }
+
+        public static JsonSchema GetJsonSchema(Schema schema)
+        {
+            if (schema == null)
+            {
+                return null;
+            }
+
+            // TODO: get schema from template
+            var schemaFilePath = Path.Combine(AppContext.BaseDirectory, $"data/{schema.Type.Name}.json");
+            return _jsonSchemas.GetOrAdd(
+                schema.Type.Name,
+                File.Exists(schemaFilePath) ? JsonUtility.Deserialize<JsonSchema>(File.ReadAllText(schemaFilePath), schemaFilePath) : null);
         }
 
         public static TemplateEngine Create(Docset docset)
@@ -55,7 +69,7 @@ namespace Microsoft.Docs.Build
             var (themePath, themeRestoreMap) = docset.RestoreMap.GetGitRestorePath($"{themeRemote}#{themeBranch}");
             Log.Write($"Using theme '{themeRemote}#{themeRestoreMap.DependencyLock.Commit}' at '{themePath}'");
 
-            return new TemplateEngine(themePath, docset.Locale, docset.MetadataSchema);
+            return new TemplateEngine(themePath, docset.MetadataSchema);
         }
 
         public string Render(OutputModel model, Document file, JObject rawMetadata)
@@ -142,9 +156,9 @@ namespace Microsoft.Docs.Build
                     TransformMetadata("Conceptual.mta.json.js", rawMetadata), pageModel));
         }
 
-        private JObject LoadGlobalTokens(string templateDir, string locale)
+        private JObject LoadGlobalTokens(string contentTemplateDir)
         {
-            var path = Path.Combine(templateDir, $"LocalizedTokens/docs({locale}).html/tokens.json");
+            var path = Path.Combine(contentTemplateDir, "token.json");
             return File.Exists(path) ? JObject.Parse(File.ReadAllText(path)) : new JObject();
         }
 

@@ -17,7 +17,7 @@ namespace Microsoft.Docs.Build
             var outputPath = file.GetOutputPath(monikers, file.Docset.SiteBasePath);
 
             // Output path is source file path relative to output folder when copy resource is disabled
-            var publishPash = file.Docset.Config.Output.CopyResources
+            var publishPath = file.Docset.Config.Output.CopyResources
                 ? outputPath
                 : PathUtility.NormalizeFile(
                     Path.GetRelativePath(
@@ -27,10 +27,10 @@ namespace Microsoft.Docs.Build
             var publishItem = new PublishItem
             {
                 Url = file.SiteUrl,
-                Path = publishPash,
-                Hash = HashUtility.GetFileSha1Hash(Path.Combine(file.Docset.DocsetPath, file.FilePath)),
+                Path = publishPath,
                 Locale = file.Docset.Locale,
                 Monikers = monikers,
+                MonikerGroup = MonikerUtility.GetGroup(monikers),
             };
 
             if (context.PublishModelBuilder.TryAdd(file, publishItem) && file.Docset.Config.Output.CopyResources)

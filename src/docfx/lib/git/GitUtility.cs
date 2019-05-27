@@ -96,6 +96,9 @@ namespace Microsoft.Docs.Build
         public static void Checkout(string path, string committish)
             => ExecuteNonQuery(path, $"-c core.longpaths=true checkout --force --progress {committish}");
 
+        public static bool IsDirty(string path)
+            => Execute(path, $"-c core.longpaths=true status --porcelain").Split('\n', StringSplitOptions.RemoveEmptyEntries).Any();
+
         /// <summary>
         /// Clones or update a git repository to the latest version.
         /// </summary>
@@ -150,6 +153,12 @@ namespace Microsoft.Docs.Build
                 return false;
             }
        }
+
+        /// <summary>
+        /// Prune the worktree info
+        /// </summary>
+        public static void PruneWorkTree(string cwd)
+            => ExecuteNonQuery(cwd, $"-c core.longpaths=true worktree prune");
 
         /// <summary>
         /// Create a work tree for a given repo
@@ -300,26 +309,26 @@ namespace Microsoft.Docs.Build
                 depth = "--depth 9999999999";
             }
 
-            var httpConfig = GetGitCommandLineConfig(url, config);
+            var (httpConfig, secrets) = GetGitCommandLineConfig(url, config);
             try
             {
-                ExecuteNonQuery(path, $"{httpConfig} fetch --tags --progress --update-head-ok {pruneSwitch} {depth} \"{url}\" {refspecs}");
+                ExecuteNonQuery(path, $"{httpConfig} fetch --tags --progress --update-head-ok {pruneSwitch} {depth} \"{url}\" {refspecs}", secrets);
             }
             catch (InvalidOperationException)
             {
                 // Fallback to fetch all branches and tags if the input committish is not supported by fetch
                 depth = "--depth 9999999999";
                 refspecs = "+refs/heads/*:refs/heads/* +refs/tags/*:refs/tags/*";
-                ExecuteNonQuery(path, $"{httpConfig} fetch --tags --progress --update-head-ok {pruneSwitch} {depth} \"{url}\" {refspecs}");
+                ExecuteNonQuery(path, $"{httpConfig} fetch --tags --progress --update-head-ok {pruneSwitch} {depth} \"{url}\" {refspecs}", secrets);
             }
         }
 
-        private static void ExecuteNonQuery(string cwd, string commandLineArgs)
+        private static void ExecuteNonQuery(string cwd, string commandLineArgs, string[] secrets = null)
         {
-            Execute(cwd, commandLineArgs, stdout: false);
+            Execute(cwd, commandLineArgs, stdout: false, secrets);
         }
 
-        private static string Execute(string cwd, string commandLineArgs, bool stdout = true)
+        private static string Execute(string cwd, string commandLineArgs, bool stdout = true, string[] secrets = null)
         {
             if (!Directory.Exists(cwd))
             {
@@ -328,7 +337,7 @@ namespace Microsoft.Docs.Build
 
             try
             {
-                return ProcessUtility.Execute("git", commandLineArgs, cwd, stdout);
+                return ProcessUtility.Execute("git", commandLineArgs, cwd, stdout, secrets);
             }
             catch (Win32Exception ex) when (ProcessUtility.IsExeNotFoundException(ex))
             {
@@ -336,20 +345,20 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static string GetGitCommandLineConfig(string url, Config config)
+        private static (string cmd, string[] secrets) GetGitCommandLineConfig(string url, Config config)
         {
             if (config is null)
             {
-                return "";
+                return default;
             }
 
-            var gitConfigs =
+            var gitConfigs = (
                 from http in config.Http
                 where url.StartsWith(http.Key)
                 from header in http.Value.Headers
-                select $"-c http.{http.Key}.extraheader=\"{header.Key}: {header.Value}\"";
+                select (cmd: $"-c http.{http.Key}.extraheader=\"{header.Key}: {header.Value}\"", secret: header.Value)).ToArray();
 
-            return string.Join(' ', gitConfigs);
+            return (string.Join(' ', gitConfigs.Select(item => item.cmd)), gitConfigs.Select(item => item.secret).ToArray());
         }
     }
 }

@@ -280,8 +280,8 @@ inputs:
 outputs:
   docs/a.json:
   .errors.log: |
-    ["warning","reserved-metadata","Metadata 'content_type' is reserved by docfx, remove this metadata","docfx.yml",3,16]
-    ["warning","reserved-metadata","Metadata 'ms.contentlang' is reserved by docfx, remove this metadata","docs/a.md",2,1]
+    ["warning","attribute-reserved","Attribute content_type is reserved for use by Docs. Remove it from your file metadata.","docfx.yml",3,16]
+    ["warning","attribute-reserved","Attribute ms.contentlang is reserved for use by Docs. Remove it from your file metadata.","docs/a.md",2,1]
 ---
 # Support metadata at root level for landing data
 commands:
@@ -309,3 +309,61 @@ outputs:
   docs/a.json:
   .manifest.json: |
     {"files":[{"asset_id":"/docs/a.json","original":"docs/a.yml","source_relative_path":"docs/a.yml","original_type":"Conceptual","type":"Toc"}]}
+---
+# Do not copy resource when the copyResources is false
+commands:
+  - build --legacy
+inputs:
+  docfx.yml: |
+    files: a.png
+    output:
+      copyResources: false
+  a.png:
+outputs:
+  .publish.json: |
+    {"files":[{"url":"/a.png","path":"../a.png"}]}
+  .manifest.json: |
+    {"files":[{"asset_id":"/a.png","output":{"resource":{"is_raw_page":false,"relative_path":"a.png"}}}]}
+---
+# Build versioning repository
+commands:
+  - build --legacy
+inputs:
+  docfx.yml: |
+    monikerRange:
+      'docs/v1/**': '< netcore-2.0'
+    baseUrl: https://docs.com/docs
+    routes:
+      docs/v1/: docs/
+      docs/v2/: docs/
+    monikerDefinition: monikerDefinition.json
+  docs/v1/a.md: |
+  docs/a.md: |
+    No version
+  monikerDefinition.json: |
+    {
+      "monikers": [
+        { "moniker_name": "netcore-1.0", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-1.1", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-2.0", "product_name": ".NET Core" },
+      ]
+    }
+outputs:
+  docs/a.raw.page.json:
+  docs/9d4e15fd/a.raw.page.json:
+  docs/.dependency-map.json:
+  docs/.manifest.json: |
+    {
+      "files":[
+        {"asset_id":"a","original":"docs/a.md","source_relative_path":"docs/a.md","output":{".mta.json":{"relative_path":"a.mta.json"},".raw.page.json":{"relative_path":"a.raw.page.json"}}},
+        {"asset_id":"a","original":"docs/v1/a.md","source_relative_path":"docs/v1/a.md","output":{".mta.json":{"relative_path":"9d4e15fd/a.mta.json"},".raw.page.json":{"relative_path":"9d4e15fd/a.raw.page.json"}},"group":"9d4e15fd"}
+      ],
+      "groups":[{"group":"9d4e15fd","monikers":["netcore-1.0","netcore-1.1"]}]
+    }
+  docs/filemap.json: |
+    {
+      "file_mapping":{
+        "docs/a.md":{"type":"Content","output_relative_path":"a.html","asset_id":"a"},
+        "docs/v1/a.md":{"type":"Content","output_relative_path":"9d4e15fd/a.html","asset_id":"a"}
+      }
+    }

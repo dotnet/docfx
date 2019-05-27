@@ -18,8 +18,8 @@ function test() {
 
         Remove-Item ./TestResults -Force -Recurse -ErrorAction Ignore
 
-        exec "dotnet test -c Debug" 2>&1
-        exec "dotnet test -c Release --logger trx" 2>&1
+        exec "dotnet test -c Debug"
+        exec "dotnet test -c Release"
         exec "dotnet reportgenerator -reports:coverage.cobertura.xml -reporttypes:HtmlInline_AzurePipelines -targetdir:TestResults/cobertura"
 
         # Check test coverage
@@ -43,8 +43,8 @@ function publish() {
 
     Remove-Item ./drop -Force -Recurse -ErrorAction Ignore
     exec "dotnet pack src\docfx -c Release -o $PSScriptRoot\drop /p:Version=$version /p:InformationalVersion=$version"
-    exec "dotnet publish src\docfx -c Release -o $PSScriptRoot\drop\docfx /p:Version=$version /p:InformationalVersion=$version"
-    exec "dotnet drop\docfx\docfx.dll --version"
+    exec "dotnet tool install docfx --version $version --add-source drop --tool-path drop"
+    exec "drop\docfx --version"
 }
 
 try {

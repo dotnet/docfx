@@ -3,6 +3,7 @@
 
 using System;
 using System.Diagnostics;
+using System.Text.RegularExpressions;
 
 namespace Microsoft.Docs.Build
 {
@@ -46,12 +47,11 @@ namespace Microsoft.Docs.Build
                 return null;
 
             var (remote, repoBranch, commit) = GitUtility.GetRepoInfo(repoPath);
-            var gitIndex = remote.IndexOf(".git");
-            if (gitIndex >= 0)
-            {
-                remote = remote.Remove(gitIndex);
-            }
-            return new Repository(repoUrl ?? remote, branch ?? repoBranch, commit, PathUtility.NormalizeFolder(repoPath));
+
+            // remove user name, token and .git from url like https://xxxxx@dev.azure.com/xxxx.git
+            remote = Regex.Replace(repoUrl ?? remote, @"^((http|https):\/\/)?([^\/\s]+@)?([\S]+?)(\.git)?$", "$1$4");
+
+            return new Repository(remote, branch ?? repoBranch, commit, PathUtility.NormalizeFolder(repoPath));
         }
     }
 }
