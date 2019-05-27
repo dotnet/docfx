@@ -328,15 +328,6 @@ namespace Microsoft.Docs.Build
         public static Error InternalBookmarkNotFound(SourceInfo source, Document reference, string bookmark, IEnumerable<string> candidateBookmarks)
             => new Error(ErrorLevel.Suggestion, "internal-bookmark-not-found", $"Cannot find bookmark '#{bookmark}' in '{reference}'{(FindBestMatch(bookmark, candidateBookmarks, out string matchedBookmark) ? $", did you mean '#{matchedBookmark}'?" : null)}", source);
 
-        /// <summary>
-        /// Used null value in yaml header or schema documents.
-        /// Examples:
-        ///   - article.md has null-valued yaml header property
-        ///   - toc.yml has node with null-value property
-        /// </summary>
-        public static Error NullValue(SourceInfo source, string name)
-            => new Error(ErrorLevel.Info, "null-value", $"'{name}' contains null value", source);
-
         public static Error NullArrayValue(SourceInfo source, string name)
             => new Error(ErrorLevel.Warning, "null-array-value", $"'{name}' contains null value, the null value has been removed", source);
 
