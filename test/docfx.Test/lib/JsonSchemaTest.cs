@@ -146,7 +146,6 @@ namespace Microsoft.Docs.Build
 
         // string format validation
         [InlineData("{'type': ['string'], 'format': 'date-time'}", "'1963-06-19T08:30:06Z'", "")]
-        [InlineData("{'type': ['string'], 'format': 'unknow-type'}", "'pass'", "")]
         [InlineData("{'type': ['string'], 'format': 'date-time'}", "'invalid'",
             "['warning','format-invalid','String 'invalid' is not a valid 'DateTime'','file',1,9]")]
 
