@@ -14,7 +14,6 @@ namespace Microsoft.Docs.Build
         [Description("The brand to be used for the content. Depending on the brand, this may override the UHF header. Not required. Example: azure")]
         public string Brand { get; set; }
 
-        [Href]
         [JsonProperty("breadcrumb_path")]
         [Description("The absolute URL or relative location (relative to the context file) to use for the breadcrumb path file. Overrides the docset value. Example: ./powershell/breadcrumb.json")]
         public string BreadcrumbPath { get; set; }
@@ -27,7 +26,6 @@ namespace Microsoft.Docs.Build
         [Description("A list of the search scopes to use with the content.")]
         public string[] SearchScope { get; set; }
 
-        [Href]
         [JsonProperty("toc_rel")]
         [Description("The absolute URL or relative location (relative to the context file) to use for the table of contents file. Overrides the docset value. Example: ../toc.yml")]
         public string TocRel { get; set; }
