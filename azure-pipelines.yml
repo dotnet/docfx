@@ -122,6 +122,10 @@ jobs:
 
   # Run integration tests
   - powershell: dotnet run -p ../Docs.Build/test/integration-test -c Release
+
+    # Sometimes when docfx makes a breaking change, integration test will fail for sure,
+    # adding a [skip integration] prevents checkin of bad test expectations after PR merge,
+    condition: not(contains(variables['Build.SourceVersionMessage'], '[skip integration]'))
     displayName: Run integration tests
     env:
       BUILD_REASON: $(Build.Reason)

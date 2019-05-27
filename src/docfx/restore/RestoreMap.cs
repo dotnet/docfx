@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -11,7 +10,7 @@ namespace Microsoft.Docs.Build
 {
     internal class RestoreMap
     {
-        private IReadOnlyDictionary<(string remote, string branch, string commit), (string path, DependencyGit git)> _acquiredGits;
+        private readonly IReadOnlyDictionary<(string remote, string branch, string commit), (string path, DependencyGit git)> _acquiredGits;
 
         public DependencyLockModel DependencyLock { get; private set; }
 
@@ -21,20 +20,26 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
-        /// Acquire restored git repository path, dependencyLock and git slot with url and dependency lock
         /// The dependency lock must be loaded before using this method
         /// </summary>
-        public (string path, RestoreMap subRestoreMap) GetGitRestorePath(string url)
+        public (string path, RestoreMap subRestoreMap) GetGitRestorePath(string remote, string branch, string docsetPath)
         {
-            var (remote, branch, _) = UrlUtility.SplitGitUrl(url);
-            return GetGitRestorePath(remote, branch);
-        }
+            if (!UrlUtility.IsHttp(remote))
+            {
+                var fullPath = Path.Combine(docsetPath, remote);
+                if (Directory.Exists(fullPath))
+                {
+                    return (fullPath, new RestoreMap(_acquiredGits));
+                }
 
-        /// <summary>
-        /// The dependency lock must be loaded before using this method
-        /// </summary>
-        public (string path, RestoreMap subRestoreMap) GetGitRestorePath(string remote, string branch)
-        {
+                // TODO: Intentionally don't fallback to fallbackDocset for git restore path,
+                //       file restore path currently have a fallback logic to make test happy,
+                //       it may not be a desired behavior.
+                //
+                // TODO: populate source info
+                throw Errors.FileNotFound(new SourceInfo<string>(remote)).ToException();
+            }
+
             var gitVersion = DependencyLock.GetGitLock(remote, branch);
 
             if (gitVersion is null)
@@ -90,7 +95,11 @@ namespace Microsoft.Docs.Build
 
                 if (!string.IsNullOrEmpty(fallbackDocset))
                 {
-                    return GetRestoredFileContent(fallbackDocset, url);
+                    fullPath = Path.Combine(fallbackDocset, url);
+                    if (File.Exists(fullPath))
+                    {
+                        return (fullPath, File.ReadAllText(fullPath), null);
+                    }
                 }
 
                 throw Errors.FileNotFound(url).ToException();

@@ -166,10 +166,9 @@ namespace Microsoft.Docs.Build
         public readonly SourceInfo<string>[] MetadataSchema = Array.Empty<SourceInfo<string>>();
 
         /// <summary>
-        /// Get the theme repo url like https://github.com/docs/theme#master
-        /// It's used for legacy doc(docs.com) sites build
+        /// Get the template folder or git repository url (like https://github.com/docs/theme#master)
         /// </summary>
-        public readonly string Theme = string.Empty;
+        public readonly string Template = string.Empty;
 
         /// <summary>
         /// Gets the dependency lock file path

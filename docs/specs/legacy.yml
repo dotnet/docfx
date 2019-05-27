@@ -6,7 +6,7 @@ repos:
   https://docs.com/legacy:
   - files:
       docfx.yml: |
-        theme: https://docs.com/template
+        template: https://docs.com/template
         redirections:
           a.md: /b
         metadataSchema: schema.json
@@ -87,7 +87,7 @@ repos:
     email: charlie@contoso.com
     files:
       docfx.yml: |
-        theme: https://docs.com/template1
+        template: https://docs.com/template1
         redirections:
           a.md: /b
         routes:
