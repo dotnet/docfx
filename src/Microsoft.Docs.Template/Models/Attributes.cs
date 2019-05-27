@@ -22,16 +22,4 @@ namespace Microsoft.Docs.Build
     {
         public virtual Type TargetType => typeof(string);
     }
-
-    public class HrefAttribute : DataTypeAttribute { }
-
-    public class MarkdownAttribute : DataTypeAttribute { }
-
-    public class InlineMarkdownAttribute : DataTypeAttribute { }
-
-    public class HtmlAttribute : DataTypeAttribute { }
-
-    public class XrefAttribute : DataTypeAttribute { }
-
-    public class XrefPropertyAttribute : DataTypeAttribute { }
 }
