@@ -274,20 +274,14 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
-        /// Report warnings for all null or undefined nodes, remove nulls inside arrays.
+        /// Report warnings for null values inside arrays and remove nulls inside arrays.
         /// </summary>
         public static (List<Error>, JToken) RemoveNulls(this JToken root)
         {
             var errors = new List<Error>();
-            var nullNodes = new List<(JToken, string)>();
             var nullArrayNodes = new List<(JToken, string)>();
 
             RemoveNullsCore(root, null);
-
-            foreach (var (node, name) in nullNodes)
-            {
-                errors.Add(Errors.NullValue(GetSourceInfo(node), name));
-            }
 
             foreach (var (node, name) in nullArrayNodes)
             {
@@ -318,11 +312,7 @@ namespace Microsoft.Docs.Build
                 {
                     foreach (var prop in obj.Properties())
                     {
-                        if (prop.Value.IsNullOrUndefined())
-                        {
-                            nullNodes.Add((prop, prop.Name));
-                        }
-                        else
+                        if (!prop.Value.IsNullOrUndefined())
                         {
                             RemoveNullsCore(prop.Value, prop.Name);
                         }
