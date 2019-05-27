@@ -3,7 +3,6 @@
 
 using System.IO;
 using System.Linq;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Xunit;
 
@@ -64,7 +63,7 @@ namespace Microsoft.Docs.Build
         public static TheoryData<string, string, string> GetJsonSchemaTestSuite()
         {
             var result = new TheoryData<string, string, string>();
-            foreach (var file in Directory.GetFiles("data/jschema/draft7"))
+            foreach (var file in Directory.GetFiles("data/jschema/draft7", "*.json", SearchOption.AllDirectories))
             {
                 var suite = Path.GetFileNameWithoutExtension(file);
                 if (s_notSupportedSuites.Contains(suite))
@@ -144,6 +143,12 @@ namespace Microsoft.Docs.Build
         [InlineData("{'properties': {'str': {'maxLength': 2, 'minLength': 4}}}", "{'str': 'abc'}",
             @"['warning','string-length-invalid','String 'str' length should be <= 2','file',1,13]
               ['warning','string-length-invalid','String 'str' length should be >= 4','file',1,13]")]
+
+        // string format validation
+        [InlineData("{'type': ['string'], 'format': 'date-time'}", "'1963-06-19T08:30:06Z'", "")]
+        [InlineData("{'type': ['string'], 'format': 'unknow-type'}", "'pass'", "")]
+        [InlineData("{'type': ['string'], 'format': 'date-time'}", "'invalid'",
+            "['warning','string-format-invalid','String 'invalid' is not a valid 'DateTime'','file',1,9]")]
 
         // properties validation
         [InlineData("{'properties': {'key': {'type': 'string'}}}", "{'key': 'value'}", "")]

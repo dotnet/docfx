@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json.Linq;
@@ -69,6 +70,20 @@ namespace Microsoft.Docs.Build
 
                 if (schema.MinLength.HasValue && unicodeLength < schema.MinLength.Value)
                     errors.Add(Errors.StringLengthInvalid(JsonUtility.GetSourceInfo(scalar), scalar.Path, minLength: schema.MinLength));
+            }
+
+            if (schema.Format.HasValue)
+            {
+                switch (schema.Format.Value)
+                {
+                    case JsonSchemaStringFormat.DateTime:
+                        if (!DateTime.TryParse((string)scalar, out var _))
+                            errors.Add(Errors.StringFormatInvalid(JsonUtility.GetSourceInfo(scalar), (string)scalar, JsonSchemaStringFormat.DateTime));
+                        break;
+                    case JsonSchemaStringFormat.Uri:
+                    case JsonSchemaStringFormat.UriReference:
+                        throw new NotSupportedException();
+                }
             }
         }
 
