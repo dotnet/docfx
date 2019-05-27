@@ -20,9 +20,6 @@ namespace Microsoft.Docs.Build
             var valueType = objectType.GenericTypeArguments[0];
             var value = serializer.Deserialize(reader, valueType);
 
-            if (value is null)
-                return Activator.CreateInstance(objectType, null, source);
-
             return Activator.CreateInstance(objectType, value, source);
         }
 

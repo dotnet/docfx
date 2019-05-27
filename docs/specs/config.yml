@@ -438,8 +438,8 @@ inputs:
   a.md:
   b.png:
 outputs:
-  a.json:
-  b.png:
+  .errors.log: |
+    ["error","violate-schema","Error converting value {null} to type 'System.Boolean'.","docfx.yml",10,19]
 ---
 # invalid overwrite config
 commands:

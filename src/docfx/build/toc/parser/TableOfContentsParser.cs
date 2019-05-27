@@ -126,12 +126,6 @@ namespace Microsoft.Docs.Build
                     errors.AddRange(ResolveTocModelItems(context, tocModelItem.Items, parents, filePath, rootPath, resolveContent, resolveHref, resolveXref));
                 }
 
-                // validate
-                if (string.IsNullOrEmpty(tocModelItem.Name))
-                {
-                    errors.Add(Errors.MissingTocHead(tocModelItem.Name));
-                }
-
                 // process
                 var tocHref = GetTocHref(tocModelItem);
                 var topicHref = GetTopicHref(tocModelItem);
@@ -145,6 +139,12 @@ namespace Microsoft.Docs.Build
                 tocModelItem.TocHref = resolvedTocHref;
                 tocModelItem.Name = tocModelItem.Name ?? resolvedTopicName;
                 tocModelItem.Items = subChildren?.Items ?? tocModelItem.Items;
+
+                // validate
+                if (tocModelItem.Name != null && string.IsNullOrEmpty(tocModelItem.Name))
+                {
+                    errors.Add(Errors.MissingTocHead(tocModelItem.Name));
+                }
             }
 
             return errors;

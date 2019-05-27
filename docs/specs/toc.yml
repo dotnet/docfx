@@ -1065,7 +1065,7 @@ inputs:
     ##
 outputs:
   .errors.log: |
-    ["error","missing-toc-head","The toc head name is missing in '##'","docs/TOC.md",2,1]
+    ["error","missing-toc-head","The toc head name is missing","docs/TOC.md",2,1]
 ---
 # Multiple leaf inlines in toc title
 inputs:
