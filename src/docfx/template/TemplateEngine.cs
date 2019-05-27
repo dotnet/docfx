@@ -17,8 +17,8 @@ namespace Microsoft.Docs.Build
     internal class TemplateEngine
     {
         private static readonly string[] s_resourceFolders = new[] { "global", "css", "fonts" };
-        private static readonly ConcurrentDictionary<string, Lazy<(JsonSchema, JsonSchemaValidator, JsonSchemaTransformer)>> _jsonSchemas
-                          = new ConcurrentDictionary<string, Lazy<(JsonSchema, JsonSchemaValidator, JsonSchemaTransformer)>>();
+        private static readonly ConcurrentDictionary<string, Lazy<(JsonSchemaValidator, JsonSchemaTransformer)>> _jsonSchemas
+                          = new ConcurrentDictionary<string, Lazy<(JsonSchemaValidator, JsonSchemaTransformer)>>();
 
         private readonly string _templateDir;
         private readonly LiquidTemplate _liquid;
@@ -43,7 +43,7 @@ namespace Microsoft.Docs.Build
                 .ToDictionary(prop => prop.Key, prop => prop.Value.HtmlMetaName);
         }
 
-        public static (JsonSchema, JsonSchemaValidator, JsonSchemaTransformer) GetJsonSchema(Schema schema)
+        public static (JsonSchemaValidator, JsonSchemaTransformer) GetJsonSchema(Schema schema)
         {
             if (schema is null)
             {
@@ -52,9 +52,9 @@ namespace Microsoft.Docs.Build
 
             // TODO: get schema from template
             var schemaFilePath = Path.Combine(AppContext.BaseDirectory, $"data/{schema.Type.Name}.json");
-            return _jsonSchemas.GetOrAdd(schema.Type.Name, new Lazy<(JsonSchema, JsonSchemaValidator, JsonSchemaTransformer)>(GetJsonSchemaCore)).Value;
+            return _jsonSchemas.GetOrAdd(schema.Type.Name, new Lazy<(JsonSchemaValidator, JsonSchemaTransformer)>(GetJsonSchemaCore)).Value;
 
-            (JsonSchema, JsonSchemaValidator, JsonSchemaTransformer) GetJsonSchemaCore()
+            (JsonSchemaValidator, JsonSchemaTransformer) GetJsonSchemaCore()
             {
                 if (!File.Exists(schemaFilePath))
                 {
@@ -62,7 +62,7 @@ namespace Microsoft.Docs.Build
                 }
 
                 var jsonSchema = JsonUtility.Deserialize<JsonSchema>(File.ReadAllText(schemaFilePath), schemaFilePath);
-                return (jsonSchema, new JsonSchemaValidator(jsonSchema), new JsonSchemaTransformer(jsonSchema));
+                return (new JsonSchemaValidator(jsonSchema), new JsonSchemaTransformer(jsonSchema));
             }
         }
 

@@ -475,8 +475,8 @@ namespace Microsoft.Docs.Build
             }
 
             var errors = new List<Error>();
-            var (schema, schemaValidator, schemaTransformer) = TemplateEngine.GetJsonSchema(file.Schema);
-            if (schema is null || schemaValidator is null || schemaTransformer is null)
+            var (schemaValidator, schemaTransformer) = TemplateEngine.GetJsonSchema(file.Schema);
+            if (schemaValidator is null || schemaTransformer is null)
             {
                 throw Errors.SchemaNotFound(file.Mime).ToException();
             }
