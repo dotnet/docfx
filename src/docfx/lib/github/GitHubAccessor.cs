@@ -13,27 +13,27 @@ using Newtonsoft.Json;
 
 namespace Microsoft.Docs.Build
 {
-    internal sealed class GitHubAccessor
+    internal sealed class GitHubAccessor : IDisposable
     {
-        private static readonly HttpClient s_httpClient = new HttpClient();
-
         private readonly string _url;
+        private readonly HttpClient _httpClient = new HttpClient();
         private readonly ConcurrentHashSet<(string owner, string name)> _unknownRepos = new ConcurrentHashSet<(string owner, string name)>();
 
         private volatile Error _rateLimitError;
         private volatile Error _unauthorizedError;
 
-        static GitHubAccessor()
-        {
-            s_httpClient.DefaultRequestHeaders.Add("User-Agent", "DocFX");
-        }
-
         public GitHubAccessor(string token = null)
         {
             _url = "https://api.github.com/graphql";
 
+            _httpClient.DefaultRequestHeaders.Add("User-Agent", "DocFX");
             if (!string.IsNullOrEmpty(token))
-                s_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", token);
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", token);
+        }
+
+        public void Dispose()
+        {
+            _httpClient.Dispose();
         }
 
         public async Task<(Error, GitHubUser)> GetUserByLogin(string login)
@@ -92,7 +92,7 @@ query ($login: String!) {
                     },
                 });
 
-                if (grahpApiResponse.errors != null && grahpApiResponse.errors.Any())
+                if (grahpApiResponse.errors != null && grahpApiResponse.errors.Length != 0)
                 {
                     var notFoundError = grahpApiResponse.errors.FirstOrDefault(e => e.type == "NOT_FOUND" && e.path.Contains("user"));
                     if (notFoundError != null)
@@ -215,7 +215,7 @@ query ($owner: String!, $name: String!, $commit: String!) {
                     },
                 });
 
-                if (grahpApiResponse.errors != null && grahpApiResponse.errors.Any())
+                if (grahpApiResponse.errors != null && grahpApiResponse.errors.Length != 0)
                 {
                     var notFoundError = grahpApiResponse.errors.FirstOrDefault(e => e.type == "NOT_FOUND" && e.path.Contains("repository"));
                     if (notFoundError != null)
@@ -268,7 +268,7 @@ query ($owner: String!, $name: String!, $commit: String!) {
             };
 
             var response = await RetryUtility.Retry(
-                   () => s_httpClient.SendAsync(
+                   () => _httpClient.SendAsync(
                        new HttpRequestMessage
                        {
                            RequestUri = new Uri(_url),
