@@ -238,7 +238,7 @@ namespace Microsoft.Docs.Build
             {
                 Uid = metadata.Uid,
                 Href = file.CanonicalUrlWithoutLocale,
-                ReferencedFile = file,
+                DeclairingFile = file,
             };
             xref.ExtensionData["name"] = new Lazy<JValue>(() => new JValue(string.IsNullOrEmpty(metadata.Title) ? metadata.Uid : metadata.Title));
 
@@ -303,7 +303,7 @@ namespace Microsoft.Docs.Build
                 {
                     Uid = item.Key,
                     Href = isRoot ? file.CanonicalUrlWithoutLocale : $"{file.CanonicalUrlWithoutLocale}#{GetBookmarkFromUid(item.Key)}",
-                    ReferencedFile = file,
+                    DeclairingFile = file,
                 };
                 xref.ExtensionData.AddRange(properties);
                 return xref;

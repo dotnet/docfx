@@ -9,7 +9,7 @@ namespace Microsoft.Docs.Build
     {
         string Href { get; }
 
-        Document ReferencedFile { get; }
+        Document DeclairingFile { get; }
 
         HashSet<string> Monikers { get; }
 

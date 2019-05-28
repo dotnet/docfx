@@ -62,7 +62,7 @@ namespace Microsoft.Docs.Build
             if (TryResolve(uid, href, moniker, out var spec))
             {
                 var (_, query, fragment) = UrlUtility.SplitUrl(spec.Href);
-                resolvedHref = UrlUtility.MergeUrl(spec.ReferencedFile != null ? RebaseResolvedHref(rootFile, spec.ReferencedFile) : RemoveHostnameIfSharingTheSameOne(spec.Href), query, fragment.Length == 0 ? "" : fragment.Substring(1));
+                resolvedHref = UrlUtility.MergeUrl(spec.DeclairingFile != null ? RebaseResolvedHref(rootFile, spec.DeclairingFile) : RemoveHostnameIfSharingTheSameOne(spec.Href), query, fragment.Length == 0 ? "" : fragment.Substring(1));
                 name = spec.GetXrefPropertyValue("name");
                 displayPropertyValue = spec.GetXrefPropertyValue(displayPropertyName);
             }
@@ -74,7 +74,7 @@ namespace Microsoft.Docs.Build
             // fallback order:
             // xrefSpec.displayPropertyName -> xrefSpec.name -> uid
             string display = !string.IsNullOrEmpty(displayPropertyValue) ? displayPropertyValue : (!string.IsNullOrEmpty(name) ? name : uid);
-            return (null, resolvedHref, display, spec?.ReferencedFile);
+            return (null, resolvedHref, display, spec?.DeclairingFile);
 
             string RemoveHostnameIfSharingTheSameOne(string input)
             {
@@ -95,7 +95,7 @@ namespace Microsoft.Docs.Build
             spec = null;
             if (_map.TryGetValue(uid, out var specs))
             {
-                spec = GetSpec(uid, href, moniker, specs.Select(x => x.Value).ToList());
+                spec = GetXrefSpec(uid, href, moniker, specs.Select(x => x.Value).ToList());
 
                 if (spec is null)
                 {
@@ -106,7 +106,7 @@ namespace Microsoft.Docs.Build
             return false;
         }
 
-        private IXrefSpec GetSpec(string uid, SourceInfo<string> href, string moniker, List<IXrefSpec> specs)
+        private IXrefSpec GetXrefSpec(string uid, SourceInfo<string> href, string moniker, List<IXrefSpec> specs)
         {
             if (!TryGetValidXrefSpecs(uid, specs, out var validSpecs))
                 return default;
@@ -153,7 +153,7 @@ namespace Microsoft.Docs.Build
                 if (TryGetValidXrefSpecs(uid, specsWithSameUid.Select(x => x.Value).ToList(), out var validInternalSpecs))
                 {
                     var internalSpec = GetLatestInternalXrefMap(validInternalSpecs);
-                    loadedInternalSpecs.Add((internalSpec as InternalXrefSpec).ToExternalXrefSpec(_context, internalSpec.ReferencedFile));
+                    loadedInternalSpecs.Add((internalSpec as InternalXrefSpec).ToExternalXrefSpec(_context, internalSpec.DeclairingFile));
                 }
             }
             return loadedInternalSpecs;
@@ -169,7 +169,7 @@ namespace Microsoft.Docs.Build
             // no conflicts
             if (specsWithSameUid.Count() == 1)
             {
-                validSpecs.AddRange(specsWithSameUid.ToList());
+                validSpecs.AddRange(specsWithSameUid);
                 return true;
             }
 
@@ -178,7 +178,7 @@ namespace Microsoft.Docs.Build
             if (conflictsWithoutMoniker.Count() > 1)
             {
                 var orderedConflict = conflictsWithoutMoniker.OrderBy(item => item.Href);
-                _context.ErrorLog.Write(Errors.UidConflict(uid, orderedConflict.Select(x => x.ReferencedFile.FilePath)));
+                _context.ErrorLog.Write(Errors.UidConflict(uid, orderedConflict.Select(x => x.DeclairingFile.FilePath)));
                 return false;
             }
             else if (conflictsWithoutMoniker.Count() == 1)

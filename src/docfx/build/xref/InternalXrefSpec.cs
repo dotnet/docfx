@@ -13,7 +13,7 @@ namespace Microsoft.Docs.Build
 
         public string Href { get; set; }
 
-        public Document ReferencedFile { get; set; }
+        public Document DeclairingFile { get; set; }
 
         public HashSet<string> Monikers { get; set; } = new HashSet<string>();
 

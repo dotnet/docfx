@@ -13,7 +13,7 @@ namespace Microsoft.Docs.Build
 
         public string Href { get; set; }
 
-        public Document ReferencedFile { get; set; }
+        Document IXrefSpec.DeclairingFile => null;
 
         // not into output for now
         [JsonIgnore]
