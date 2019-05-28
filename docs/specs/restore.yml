@@ -41,6 +41,20 @@ outputs:
   docs/a.json: |
     {"conceptual":"<p><a href=\"%7E/docfx-test-dependencies1/docs/a.md\">link to 1</a></p>\n<p>a1</p>\n"}
 ---
+# Template could be a local folder
+inputs:
+  docfx.yml: |
+    files: '*'
+    theme: _template
+  a.md: |
+    >[!NOTE]
+    >note
+  _template/ContentTemplate/token.json: |
+    { "note": "<p>my note</p>" }
+outputs:
+  a.json: |
+    { "conceptual": "<div class=\"NOTE\"><p>my note</p><p>note</p></div>" }
+---
 # Restore urls
 repos:
   https://github.com/restore/b:
