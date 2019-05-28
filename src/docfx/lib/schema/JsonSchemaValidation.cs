@@ -75,7 +75,7 @@ namespace Microsoft.Docs.Build
             switch (schema.Format)
             {
                 case JsonSchemaStringFormat.DateTime:
-                    if (!DateTime.TryParse(scalar.Value<string>(), out var _))
+                    if ((str = scalar.Value as string) != null && !DateTime.TryParse(str, out var _))
                         errors.Add(Errors.FormatInvalid(JsonUtility.GetSourceInfo(scalar), scalar.Value<string>(), JsonSchemaStringFormat.DateTime));
                     break;
             }
