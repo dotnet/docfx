@@ -29,17 +29,21 @@ namespace Microsoft.Docs.Build
         }
 
         [Theory]
-        [InlineData("docascode", "docfx-test-dependencies", "c467c848311ccd2550fdb25a77ef26f9d8a33d00", "OsmondJiang", 19990166)]
-        [InlineData("docascode", "docfx-test-dependencies", "deadbeefdeadbeefdeadbeefdeadbeefdeadbeef", null, null)]
-        [InlineData("docascode", "this-repo-does-not-exists", "deadbeefdeadbeefdeadbeefdeadbeefdeadbeef", null, null)]
-        public async Task GetUserByCommit(string repoOwner, string repoName, string commit, string login, int? id)
+        [InlineData("docascode", "docfx-test-dependencies", "c467c848311ccd2550fdb25a77ef26f9d8a33d00", false, "OsmondJiang", 19990166)]
+        [InlineData("docascode", "docfx-test-dependencies", "deadbeefdeadbeefdeadbeefdeadbeefdeadbeef", false, null, null)]
+        [InlineData("docascode", "this-repo-does-not-exists", "deadbeefdeadbeefdeadbeefdeadbeefdeadbeef", true, null, null)]
+        public async Task GetUserByCommit(string repoOwner, string repoName, string commit, bool hasError, string login, int? id)
         {
             var (error, users) = await _github.GetUsersByCommit(repoOwner, repoName, commit);
 
             // skip check if the machine exceeds the GitHub API rate limit
             if (!string.IsNullOrEmpty(_token))
             {
-                Assert.Null(error?.Message);
+                if (hasError)
+                    Assert.NotNull(error?.Message);
+                else
+                    Assert.Null(error?.Message);
+
                 var user = users?.FirstOrDefault();
                 Assert.Equal(login, user?.Login);
                 Assert.Equal(id, user?.Id);
