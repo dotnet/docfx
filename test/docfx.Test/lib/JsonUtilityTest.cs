@@ -555,6 +555,18 @@ namespace Microsoft.Docs.Build
         }
 
         [Fact]
+        public void NullValueHasSourceInfo()
+        {
+            var (_, json) = JsonUtility.Parse("{\"a\": null}", "file");
+            var (_, obj) = JsonUtility.ToObject<ClassWithSourceInfo>(json);
+            Assert.NotNull(obj?.A);
+            Assert.Null(obj.A.Value);
+            Assert.Equal(1, obj.A.Line);
+            Assert.Equal(10, obj.A.Column);
+            Assert.Equal("file", obj.A.File);
+        }
+
+        [Fact]
         public void TestSerializeSourceInfoWithEmptyValue()
         {
             var basic = new BasicClass
@@ -577,6 +589,11 @@ namespace Microsoft.Docs.Build
             var (mismatchingErrors, result) = JsonUtility.ToObject<T>(token);
             errors.AddRange(mismatchingErrors);
             return (errors, result);
+        }
+
+        public class ClassWithSourceInfo
+        {
+            public SourceInfo<string> A { get; set; }
         }
 
         public class EmptyEnumerable
