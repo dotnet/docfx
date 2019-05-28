@@ -3,7 +3,6 @@
 
 using System.IO;
 using System.Linq;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Xunit;
 
@@ -64,7 +63,7 @@ namespace Microsoft.Docs.Build
         public static TheoryData<string, string, string> GetJsonSchemaTestSuite()
         {
             var result = new TheoryData<string, string, string>();
-            foreach (var file in Directory.GetFiles("data/jschema/draft7"))
+            foreach (var file in Directory.GetFiles("data/jschema/draft7", "*.json", SearchOption.AllDirectories))
             {
                 var suite = Path.GetFileNameWithoutExtension(file);
                 if (s_notSupportedSuites.Contains(suite))
@@ -136,6 +135,8 @@ namespace Microsoft.Docs.Build
 
         // string length validation
         [InlineData("{'type': 'string', 'minLength': 1, 'maxLength': 5}", "'a'", "")]
+        [InlineData("{'type': 'string', 'maxLength': 1}", "'1963-06-19T08:30:06Z'",
+            "['warning','string-length-invalid','String length should be <= 1','file',1,22]")]
         [InlineData("{'properties': {'str': {'minLength': 1, 'maxLength': 5}}}", "{'str': null}","")]
         [InlineData("{'type': 'string', 'minLength': 1}", "''",
             "['warning','string-length-invalid','String length should be >= 1','file',1,2]")]
@@ -144,6 +145,12 @@ namespace Microsoft.Docs.Build
         [InlineData("{'properties': {'str': {'maxLength': 2, 'minLength': 4}}}", "{'str': 'abc'}",
             @"['warning','string-length-invalid','String 'str' length should be <= 2','file',1,13]
               ['warning','string-length-invalid','String 'str' length should be >= 4','file',1,13]")]
+
+        // string format validation
+        [InlineData("{'type': ['string'], 'format': 'date-time'}", "'1963-06-19T08:30:06Z'", "")]
+        [InlineData("{'type': ['string', 'number'], 'format': 'date-time'}", "1", "")]
+        [InlineData("{'type': ['string'], 'format': 'date-time'}", "'invalid'",
+            "['warning','format-invalid','String 'invalid' is not a valid 'DateTime'','file',1,9]")]
 
         // properties validation
         [InlineData("{'properties': {'key': {'type': 'string'}}}", "{'key': 'value'}", "")]
