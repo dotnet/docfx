@@ -28,6 +28,7 @@ namespace Microsoft.Docs.Build
         {
             NullValueHandling = NullValueHandling.Ignore,
             MetadataPropertyHandling = MetadataPropertyHandling.Ignore,
+            DateParseHandling = DateParseHandling.None,
             Converters = s_jsonConverters,
             ContractResolver = new JsonContractResolver { NamingStrategy = s_namingStrategy },
         });
@@ -186,7 +187,11 @@ namespace Microsoft.Docs.Build
         {
             try
             {
-                return SetSourceInfo(JToken.Parse(json), file).RemoveNulls();
+                using (var stringReader = new StringReader(json))
+                using (var reader = new JsonTextReader(stringReader) { DateParseHandling = DateParseHandling.None })
+                {
+                    return SetSourceInfo(JToken.ReadFrom(reader), file).RemoveNulls();
+                }
             }
             catch (JsonReaderException ex)
             {

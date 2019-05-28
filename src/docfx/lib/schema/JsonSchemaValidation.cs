@@ -62,7 +62,6 @@ namespace Microsoft.Docs.Build
                 errors.Add(Errors.UndefinedValue(JsonUtility.GetSourceInfo(scalar), scalar, schema.Enum));
             }
 
-            // TODO: the default DateTimeHandling causes date string to escape the check
             if (scalar.Value is string str)
             {
                 if (schema.MaxLength.HasValue || schema.MinLength.HasValue)
@@ -159,8 +158,7 @@ namespace Microsoft.Docs.Build
                 case JsonSchemaType.Object:
                     return tokenType == JTokenType.Object;
                 case JsonSchemaType.String:
-                    return tokenType == JTokenType.String || tokenType == JTokenType.Uri ||
-                           tokenType == JTokenType.Date || tokenType == JTokenType.TimeSpan;
+                    return tokenType == JTokenType.String;
                 default:
                     return true;
             }
