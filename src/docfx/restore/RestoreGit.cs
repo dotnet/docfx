@@ -192,9 +192,9 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            if (UrlUtility.IsHttp(config.Template))
+            if (UrlUtility.IsHttp(config.Theme))
             {
-                var (remote, branch) = LocalizationUtility.GetLocalizedTheme(config.Template, locale, config.Localization.DefaultLocale);
+                var (remote, branch) = LocalizationUtility.GetLocalizedTheme(config.Theme, locale, config.Localization.DefaultLocale);
 
                 yield return (remote, branch, GitFlags.DepthOne);
             }

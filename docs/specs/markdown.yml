@@ -247,7 +247,7 @@ repos:
   https://docs.com/markdown-note:
   - files:
       docfx.yml: |
-        template: https://docs.com/template/token
+        theme: https://docs.com/template/token
       docs/a.md: |
         >[!NOTE]
         >note

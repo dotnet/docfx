@@ -6,7 +6,7 @@ repos:
   https://docs.com/legacy:
   - files:
       docfx.yml: |
-        template: https://docs.com/template
+        theme: https://docs.com/template
         redirections:
           a.md: /b
         metadataSchema: schema.json
@@ -27,7 +27,7 @@ repos:
           },
           "htmlMetaHidden": ["conceptual", "is_dynamic_rendering", "canonical_url"]
         }
-  https://docs.com/template:
+  https://docs.com/theme:
   - files:
       ContentTemplate/Conceptual.mta.json.js: |
         exports.transform = function (model) {
@@ -87,7 +87,7 @@ repos:
     email: charlie@contoso.com
     files:
       docfx.yml: |
-        template: https://docs.com/template1
+        theme: https://docs.com/template1
         redirections:
           a.md: /b
         routes:

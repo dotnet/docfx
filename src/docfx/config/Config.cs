@@ -168,7 +168,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Get the template folder or git repository url (like https://github.com/docs/theme#master)
         /// </summary>
-        public readonly string Template = string.Empty;
+        public readonly string Theme = string.Empty;
 
         /// <summary>
         /// Gets the dependency lock file path

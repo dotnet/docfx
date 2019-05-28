@@ -45,7 +45,7 @@ outputs:
 inputs:
   docfx.yml: |
     files: '*'
-    template: _template
+    theme: _template
   a.md: |
     >[!NOTE]
     >note
