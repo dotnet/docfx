@@ -62,22 +62,26 @@ namespace Microsoft.Docs.Build
                 errors.Add(Errors.UndefinedValue(JsonUtility.GetSourceInfo(scalar), scalar, schema.Enum));
             }
 
-            if ((schema.MaxLength.HasValue || schema.MinLength.HasValue) && scalar.Value is string str)
+            // TODO: the default DateTimeHandling causes date string to escape the check
+            if (scalar.Value is string str)
             {
-                var unicodeLength = str.Where(c => !char.IsLowSurrogate(c)).Count();
-                if (schema.MaxLength.HasValue && unicodeLength > schema.MaxLength.Value)
-                    errors.Add(Errors.StringLengthInvalid(JsonUtility.GetSourceInfo(scalar), scalar.Path, maxLength: schema.MaxLength));
+                if (schema.MaxLength.HasValue || schema.MinLength.HasValue)
+                {
+                    var unicodeLength = str.Where(c => !char.IsLowSurrogate(c)).Count();
+                    if (schema.MaxLength.HasValue && unicodeLength > schema.MaxLength.Value)
+                        errors.Add(Errors.StringLengthInvalid(JsonUtility.GetSourceInfo(scalar), scalar.Path, maxLength: schema.MaxLength));
 
-                if (schema.MinLength.HasValue && unicodeLength < schema.MinLength.Value)
-                    errors.Add(Errors.StringLengthInvalid(JsonUtility.GetSourceInfo(scalar), scalar.Path, minLength: schema.MinLength));
-            }
+                    if (schema.MinLength.HasValue && unicodeLength < schema.MinLength.Value)
+                        errors.Add(Errors.StringLengthInvalid(JsonUtility.GetSourceInfo(scalar), scalar.Path, minLength: schema.MinLength));
+                }
 
-            switch (schema.Format)
-            {
-                case JsonSchemaStringFormat.DateTime:
-                    if ((str = scalar.Value as string) != null && !DateTime.TryParse(str, out var _))
-                        errors.Add(Errors.FormatInvalid(JsonUtility.GetSourceInfo(scalar), scalar.Value<string>(), JsonSchemaStringFormat.DateTime));
-                    break;
+                switch (schema.Format)
+                {
+                    case JsonSchemaStringFormat.DateTime:
+                        if (!DateTime.TryParse(str, out var _))
+                            errors.Add(Errors.FormatInvalid(JsonUtility.GetSourceInfo(scalar), scalar.Value<string>(), JsonSchemaStringFormat.DateTime));
+                        break;
+                }
             }
         }
 
