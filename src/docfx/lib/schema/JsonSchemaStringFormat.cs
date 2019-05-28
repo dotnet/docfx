@@ -8,6 +8,7 @@ namespace Microsoft.Docs.Build
     internal enum JsonSchemaStringFormat
     {
         None,
+
         [EnumMember(Value = "date-time")]
         DateTime,
     }
