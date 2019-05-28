@@ -362,6 +362,12 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Warning, "undefined-value", $"Value '{value}' is not accepted. Valid values: {Join(validValues)}", source);
 
         /// <summary>
+        /// The string type's value doesn't match given format.
+        /// </summary>
+        public static Error FormatInvalid(SourceInfo source, string value, JsonSchemaStringFormat type)
+            => new Error(ErrorLevel.Warning, "format-invalid", $"String '{value}' is not a valid '{type}'", source);
+
+        /// <summary>
         /// Array length not within min and max.
         /// </summary>
         public static Error ArrayLengthInvalid(SourceInfo source, string propName, int? minItems = null, int? maxItems = null)
