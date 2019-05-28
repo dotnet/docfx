@@ -108,6 +108,9 @@ namespace Microsoft.Docs.Build
             }
         }
 
+        public static JToken FromObject(object obj)
+            => JToken.FromObject(obj, s_serializer);
+
         /// <summary>
         /// De-serialize a data string, which is not user input, to an object
         /// schema validation errors will be ignored, syntax errors and type mismatching will be thrown

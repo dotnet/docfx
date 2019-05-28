@@ -54,7 +54,10 @@ namespace Microsoft.Docs.Build
             {
                 content = content ?? file.ReadText();
                 GitUtility.CheckMergeConflictMarker(content, file.FilePath);
-                return MarkdownTocMarkup.LoadMdTocModel(content, file, context);
+                var (errors, tocToken) = MarkdownTocMarkup.LoadMdTocModel(content, file, context);
+                var (loadErrors, toc) = LoadTocModel(tocToken);
+                errors.AddRange(loadErrors);
+                return (errors, toc);
             }
 
             throw new NotSupportedException($"{filePath} is an unknown TOC file");
@@ -62,21 +65,28 @@ namespace Microsoft.Docs.Build
 
         private static (List<Error>, TableOfContentsModel) LoadTocModel(JToken tocToken)
         {
+            var errors = new List<Error>();
             if (tocToken is JArray tocArray)
             {
-                // toc model
-                var (errors, items) = JsonUtility.ToObject<List<TableOfContentsItem>>(tocArray);
-                return (errors, new TableOfContentsModel
+                tocToken = new JObject
                 {
-                    Items = items,
-                });
+                    ["items"] = tocArray,
+                };
             }
-            else if (tocToken is JObject tocObject)
+
+            if (tocToken is JObject tocObject)
             {
+                var tocSchema = TemplateEngine.GetJsonSchema("TableOfContent");
+                var validationErrors = JsonSchemaValidation.Validate(tocSchema, tocObject);
+                errors.AddRange(validationErrors);
+
                 // toc root model
-                return JsonUtility.ToObject<TableOfContentsModel>(tocToken);
+                var (loadErrors, model) = JsonUtility.ToObject<TableOfContentsModel>(tocToken);
+                errors.AddRange(loadErrors);
+                return (errors, model);
             }
-            return (new List<Error>(), new TableOfContentsModel());
+
+            return (errors, new TableOfContentsModel());
         }
 
         private static (List<Error> errors, TableOfContentsModel model) LoadInternal(
@@ -224,7 +234,7 @@ namespace Microsoft.Docs.Build
                 return default;
             }
 
-            (SourceInfo<string> resolvedTopicHref, string resolvedTopicName, Document file) ProcessTopicItem(SourceInfo<string> uid, SourceInfo<string> topicHref)
+            (SourceInfo<string> resolvedTopicHref, SourceInfo<string> resolvedTopicName, Document file) ProcessTopicItem(SourceInfo<string> uid, SourceInfo<string> topicHref)
             {
                 // process uid first
                 if (!string.IsNullOrEmpty(uid))
@@ -232,8 +242,8 @@ namespace Microsoft.Docs.Build
                     var (uidHref, uidDisplayName, uidFile) = resolveXref.Invoke(rootPath, uid);
                     if (!string.IsNullOrEmpty(uidHref))
                     {
-                        uid.Value = uidHref;
-                        return (uid, uidDisplayName, uidFile);
+                        // todo: get correct source info
+                        return (new SourceInfo<string>(uidHref, uid), new SourceInfo<string>(uidDisplayName, uid), uidFile);
                     }
                 }
 

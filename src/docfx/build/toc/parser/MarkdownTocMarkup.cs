@@ -10,12 +10,15 @@ using Markdig.Extensions.Yaml;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
 using Microsoft.DocAsCode.MarkdigEngine.Extensions;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Serialization;
 
 namespace Microsoft.Docs.Build
 {
     internal static class MarkdownTocMarkup
     {
-        public static (List<Error> errors, TableOfContentsModel model) LoadMdTocModel(string tocContent, Document file, Context context)
+        public static (List<Error> errors, JToken model) LoadMdTocModel(string tocContent, Document file, Context context)
         {
             var errors = new List<Error>();
             var headingBlocks = new List<HeadingBlock>();
@@ -55,7 +58,7 @@ namespace Microsoft.Docs.Build
                 errors.Add(dex.Error);
             }
 
-            return (errors, tocModel);
+            return (errors, JsonUtility.FromObject(tocModel));
         }
 
         private static (List<TableOfContentsItem> children, int count) ConvertTo(string tocContent, string filePath, HeadingBlock[] headingBlocks, List<Error> errors, int startIndex = 0)
@@ -102,7 +105,7 @@ namespace Microsoft.Docs.Build
                 var currentItem = new TableOfContentsItem();
                 if (block.Inline is null || !block.Inline.Any())
                 {
-                    errors.Add(Errors.MissingTocHead(new SourceInfo<string>(tocContent.Substring(block.Span.Start, block.Span.Length), block.ToSourceInfo(file: filePath))));
+                    currentItem.Name = new SourceInfo<string>(null, block.ToSourceInfo(file: filePath));
                     return currentItem;
                 }
 
@@ -138,7 +141,7 @@ namespace Microsoft.Docs.Build
                 return currentItem;
             }
 
-            string GetLiteral(ContainerInline inline)
+            SourceInfo<string> GetLiteral(ContainerInline inline)
             {
                 var result = new StringBuilder();
                 var child = inline.FirstChild;
@@ -156,7 +159,7 @@ namespace Microsoft.Docs.Build
                     child = child.NextSibling;
                 }
 
-                return result.ToString();
+                return new SourceInfo<string>(result.ToString(), inline.ToSourceInfo(file: filePath));
             }
         }
     }

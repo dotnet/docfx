@@ -1,0 +1,87 @@
+{
+    "$schema": "http://json-schema.org/schema#",
+    "title": "TOC",
+    "description": "The schema for table of contents (TOC) item in Yaml or JSON format",
+    "definitions": {
+        "tableOfContentItem": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "A string name that is displayed for the TOC item. The name cannot include a colon (:).",
+                    "minLength": 1
+                },
+                "displayName": {
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "description": "An additional string value that doesn’t get displayed (yes, it's a poor name) but is searched, as well as name, during TOC filtering."
+                },
+                "href": {
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "description": "The path the TOC item navigates to. Optional because items can exist just to parent other items. There are three-folded meanings for href: 1. href can specify the path the item navigates to. It can be either relative path, absolute path or external URL. 2. href can also point to another TOC file - this is the scenario called TOC include: all the items inside the included TOC file are considered and built into result as children of the current TOC item. 3. At last, href can point to a folder, indicating the navigation path be resolved to the first item in the TOC file under the root of that folder if both the TOC file and the item exist."
+                },
+                "topicHref": {
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "description": "Specifies the path the item navigates to (see #1 in href). It is useful when href points to another TOC file (see #2 in href) or points to a folder (see #3 in href), or tocHref is used."
+                },
+                "tocHref": {
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "description": "Specifies the TOC file to be included as children of the current item (see #2 in href), or specifies the folder path indicating the navigation path be resolved to the first item in the TOC file under the root of that folder (see #3 in href)."
+                },
+                "uid": {
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "description": "The uid the TOC item navigates to. Optional because items can exist just to parent other items."
+                },
+                "maintainContext": {
+                    "type": "boolean",
+                    "description": "This property specifies whether the navigation to this TOC item maintains the current TOC context. The default value is false."
+                },
+                "expanded": {
+                    "type": "boolean",
+                    "description": "This property specifies whether the item should be expanded by default when the TOC is loaded. Only one root-level item can be expanded on load. The default value is false, so only add this with value true if you want the item to be expanded."
+                },
+                "monikers": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/tableOfContentItem"
+                    }
+                }
+            },
+            "required": [
+                "name"
+            ]
+        }
+    },
+    "type": "object",
+    "properties": {
+        "items": {
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/tableOfContentItem"
+            }
+        },
+        "metadata": {
+            "type": "object"
+        }
+    }
+}

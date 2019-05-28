@@ -42,6 +42,15 @@ namespace Microsoft.Docs.Build
                 .ToDictionary(prop => prop.Key, prop => prop.Value.HtmlMetaName);
         }
 
+        public static JsonSchema GetJsonSchema(string typeName)
+        {
+            // TODO: get schema from template
+            var schemaFilePath = Path.Combine(AppContext.BaseDirectory, $"data/{typeName}.json");
+            return _jsonSchemas.GetOrAdd(
+                typeName,
+                File.Exists(schemaFilePath) ? JsonUtility.Deserialize<JsonSchema>(File.ReadAllText(schemaFilePath), schemaFilePath) : null);
+        }
+
         public static JsonSchema GetJsonSchema(Schema schema)
         {
             if (schema == null)
@@ -49,11 +58,7 @@ namespace Microsoft.Docs.Build
                 return null;
             }
 
-            // TODO: get schema from template
-            var schemaFilePath = Path.Combine(AppContext.BaseDirectory, $"data/{schema.Type.Name}.json");
-            return _jsonSchemas.GetOrAdd(
-                schema.Type.Name,
-                File.Exists(schemaFilePath) ? JsonUtility.Deserialize<JsonSchema>(File.ReadAllText(schemaFilePath), schemaFilePath) : null);
+            return GetJsonSchema(schema.Type.Name);
         }
 
         public static TemplateEngine Create(Docset docset)
