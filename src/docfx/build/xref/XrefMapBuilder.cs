@@ -58,11 +58,7 @@ namespace Microsoft.Docs.Build
 
             foreach (var (key, value) in externalXrefMap)
             {
-                if (map.TryGetValue(key, out var specs))
-                {
-                    specs.Add(value);
-                }
-                else
+                if (!map.TryGetValue(key, out var specs))
                 {
                     map[key] = new List<Lazy<IXrefSpec>> { value };
                 }
