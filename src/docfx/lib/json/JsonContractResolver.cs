@@ -45,10 +45,7 @@ namespace Microsoft.Docs.Build
                         target =>
                         {
                             var value = prop.ValueProvider.GetValue(target);
-                            if (((SourceInfo)value)?.GetValue() is null)
-                                return false;
-
-                            if (IsEmptyArray(((SourceInfo)value).GetValue()))
+                            if (IsEmptyArray(((SourceInfo)value)?.GetValue()))
                             {
                                 return false;
                             }

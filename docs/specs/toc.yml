@@ -996,7 +996,8 @@ outputs:
   docs/f1/b.json:
   docs/toc.json:
   .errors.log: |
-    ["warning","unexpected-type","Expect type 'String' but got 'Null'","docs/TOC.yml",5,8]
+    ["warning","field-required","Missing required field 'name'","docs/TOC.yml",1,3]
+    ["warning","unexpected-type","Expect type 'String' but got 'Null'","docs/f1/TOC.md"]
 ---
 # Orphan file(not explicitly referenced in toc file)'s toc, only look up parent folder toc files
 inputs:
