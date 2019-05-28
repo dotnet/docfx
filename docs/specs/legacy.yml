@@ -6,7 +6,7 @@ repos:
   https://docs.com/legacy:
   - files:
       docfx.yml: |
-        theme: https://docs.com/template
+        theme: https://docs.com/theme
         redirections:
           a.md: /b
         metadataSchema: schema.json
