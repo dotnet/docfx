@@ -302,6 +302,12 @@ namespace Microsoft.Docs.Build
         public static Error InvalidMetadataType(SourceInfo source, string name)
             => new Error(ErrorLevel.Error, "invalid-metadata-type", $"Metadata '{name}' can only be a scalar value or string array", source);
 
+         /// <summary>
+        /// Failed to compute specific info of a commit.
+        /// </summary>
+        public static Error GitCloneIncomplete(string repoPath)
+            => new Error(ErrorLevel.Error, "git-clone-incomplete", $"Git repository '{repoPath}' is an incomplete clone, GitHub contributor list may not be accurate.");
+
         /// <summary>
         /// Git.exe isn't installed.
         /// </summary>
