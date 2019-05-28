@@ -18,11 +18,12 @@ namespace Microsoft.Docs.Build
         [InlineData("N1o2t3E4x5i6s7t8N9a0m9e", null)]
         public async Task GetUserByLogin(string login, int? id)
         {
-            var (_, profile) = await _github.GetUserByLogin(login);
+            var (error, profile) = await _github.GetUserByLogin(login);
 
             // skip check if the machine exceeds the GitHub API rate limit
             if (!string.IsNullOrEmpty(_token))
             {
+                Assert.Null(error?.Message);
                 Assert.Equal(id, profile?.Id);
             }
         }
@@ -33,11 +34,12 @@ namespace Microsoft.Docs.Build
         [InlineData("docascode", "this-repo-does-not-exists", "deadbeefdeadbeefdeadbeefdeadbeefdeadbeef", null, null)]
         public async Task GetUserByCommit(string repoOwner, string repoName, string commit, string login, int? id)
         {
-            var (_, users) = await _github.GetUsersByCommit(repoOwner, repoName, commit);
+            var (error, users) = await _github.GetUsersByCommit(repoOwner, repoName, commit);
 
             // skip check if the machine exceeds the GitHub API rate limit
             if (!string.IsNullOrEmpty(_token))
             {
+                Assert.Null(error?.Message);
                 var user = users?.FirstOrDefault();
                 Assert.Equal(login, user?.Login);
                 Assert.Equal(id, user?.Id);
