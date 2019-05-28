@@ -373,7 +373,7 @@ inputs:
     files: "**/*"
     baseUrl: "https://docs.microsoft.com"
     routes:
-      articles/: .
+      articles/: azure/
   articles/app-service/index.md:
   articles/app-service/index.experimental.md:
 outputs:
