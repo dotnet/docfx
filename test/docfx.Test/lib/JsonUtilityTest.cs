@@ -574,6 +574,18 @@ namespace Microsoft.Docs.Build
         }
 
         [Fact]
+        public void JsonWithTypeErrorsHasCorrectSourceInfo()
+        {
+            var (_, json) = JsonUtility.Parse(
+                "{'next': {'a': ['a1','a2'],'b': 'b'}, 'c': 'c'}".Replace('\'', '"'), "file");
+            var (errors, obj) = JsonUtility.ToObject<ClassWithSourceInfo>(json);
+
+            Assert.Null(obj.Next.A.Value);
+            Assert.Equal("b", obj.Next.B);
+            Assert.Equal("c", obj.C);
+        }
+
+        [Fact]
         public void TestSerializeSourceInfoWithEmptyValue()
         {
             var basic = new BasicClass
@@ -602,6 +614,8 @@ namespace Microsoft.Docs.Build
         {
             public SourceInfo<string> A { get; set; }
             public SourceInfo<string> B { get; set; } = new SourceInfo<string>("b");
+            public ClassWithSourceInfo Next { get; set; }
+            public string C { get; set; }
         }
 
         public class EmptyEnumerable

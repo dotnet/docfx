@@ -77,7 +77,7 @@ namespace Microsoft.Docs.Build
                 // Allow source info propagation for null values
                 property.NullValueHandling = NullValueHandling.Include;
 
-                // Do not serialize empty array of null
+                // Do not serialize empty array or null
                 var originalShouldSerialize = property.ShouldSerialize;
 
                 property.ShouldSerialize = target =>
