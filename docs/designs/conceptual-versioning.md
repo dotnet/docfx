@@ -501,7 +501,7 @@ When build the toc file(including the toc file included in another), we have to 
 1. *Monikers* of every node in toc(We don't support setting monikers of node in toc file).
     1. If the node is a text node(`## Header`), the *monikers* of this node is the collection of its children's monikers.
     2. If the node is a relative link node(`## [Header](a.md)`), the *monikers* of this node is the collection of its children's monikers and the monikers of this node.
-    3. If the node is a absolute link node(`## [Header](/a)` or `## [Header](http://test)`), the *monikers* of this node is the collection of its children's monikers and the monikers of this toc file.
+    3. If the node is a absolute link node(`## [Header](/a)` or `## [Header](http://test)`), the *monikers* of this node is the monikers of this toc file, which means this node will always be displayed.
 1. *Monikers* of toc file - Intersection of the monikerRange setting in the config and file metadata(If the intersection is empty, a warning will be logged).
 
 > For now, if the monikers of the node is out of the moniker Range of this toc, we do not report warning.
