@@ -10,24 +10,22 @@ namespace Microsoft.Docs.Build
 {
     internal class EvaluatorWithMonikersVisitor
     {
-        private readonly Dictionary<string, MonikerProductInfo> _monikerProductInfoDictionary;
+        private readonly Dictionary<string, List<string>> _productMoniker;
 
         public EvaluatorWithMonikersVisitor(MonikerDefinitionModel monikerDefinition)
         {
             Debug.Assert(monikerDefinition != null);
 
-            _monikerProductInfoDictionary = InitializeMonikers(monikerDefinition.Monikers);
+            _productMoniker = monikerDefinition.Monikers.GroupBy(x => x.ProductName).ToDictionary(g => g.Key, g => g.OrderBy(x => x.Order).Select(x => x.MonikerName).ToList());
+            MonikerOrder = SetMonikerOrder();
         }
 
-        public List<string> GetSortedMonikerNameList()
-        {
-            return _monikerProductInfoDictionary.Keys.ToList();
-        }
+        public Dictionary<string, (string productName, int orderInProduct)> MonikerOrder { get; }
 
         public IEnumerable<string> Visit(ComparatorExpression expression)
         {
             Debug.Assert(expression.Operand != null);
-            if (!_monikerProductInfoDictionary.TryGetValue(expression.Operand, out var monikerProductInfo))
+            if (!MonikerOrder.TryGetValue(expression.Operand, out var moniker))
             {
                 throw new MonikerRangeException($"Moniker `{expression.Operand}` is not defined");
             }
@@ -37,13 +35,13 @@ namespace Microsoft.Docs.Build
                 case ComparatorOperatorType.EqualTo:
                     return new List<string> { expression.Operand };
                 case ComparatorOperatorType.GreaterThan:
-                    return monikerProductInfo.OrderedProductMonikerNames.Skip(monikerProductInfo.Index + 1);
+                    return _productMoniker[moniker.productName].Skip(moniker.orderInProduct + 1);
                 case ComparatorOperatorType.GreaterThanOrEqualTo:
-                    return monikerProductInfo.OrderedProductMonikerNames.Skip(monikerProductInfo.Index);
+                    return _productMoniker[moniker.productName].Skip(moniker.orderInProduct);
                 case ComparatorOperatorType.LessThan:
-                    return monikerProductInfo.OrderedProductMonikerNames.Take(monikerProductInfo.Index);
+                    return _productMoniker[moniker.productName].Take(moniker.orderInProduct);
                 case ComparatorOperatorType.LessThanOrEqualTo:
-                    return monikerProductInfo.OrderedProductMonikerNames.Take(monikerProductInfo.Index + 1);
+                    return _productMoniker[moniker.productName].Take(moniker.orderInProduct + 1);
                 default:
                     return Array.Empty<string>();
             }
@@ -68,49 +66,18 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static Dictionary<string, MonikerProductInfo> InitializeMonikers(IEnumerable<Moniker> monikers)
+        private Dictionary<string, (string, int)> SetMonikerOrder()
         {
-            var monikerNameList = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-            var productNameDictionary = new Dictionary<string, List<Moniker>>(StringComparer.OrdinalIgnoreCase);
-
-            foreach (var moniker in monikers)
+            var result = new Dictionary<string, (string, int)>(StringComparer.OrdinalIgnoreCase);
+            foreach (var (productName, productMonikerList) in _productMoniker)
             {
-                monikerNameList.Add(moniker.MonikerName);
-
-                if (productNameDictionary.TryGetValue(moniker.ProductName, out List<Moniker> list))
+                for (var i = 0; i < productMonikerList.Count(); i++)
                 {
-                    list.Add(moniker);
-                }
-                else
-                {
-                    productNameDictionary[moniker.ProductName] = new List<Moniker> { moniker };
-                }
-            }
-
-            var result = new Dictionary<string, MonikerProductInfo>(StringComparer.OrdinalIgnoreCase);
-            foreach (var productMonikerList in productNameDictionary.Values)
-            {
-                var sortedMonikerNameList = productMonikerList.OrderBy(moniker => moniker.Order)
-                                                              .Select(moniker => moniker.MonikerName)
-                                                              .ToList();
-                for (var i = 0; i < sortedMonikerNameList.Count(); i++)
-                {
-                    result[sortedMonikerNameList[i]] = new MonikerProductInfo
-                    {
-                        Index = i,
-                        OrderedProductMonikerNames = sortedMonikerNameList,
-                    };
+                    result[productMonikerList[i]] = (productName, i);
                 }
             }
 
             return result;
-        }
-
-        private class MonikerProductInfo
-        {
-            public int Index { get; set; }
-
-            public List<string> OrderedProductMonikerNames { get; set; }
         }
     }
 }

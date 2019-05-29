@@ -8,27 +8,32 @@ namespace Microsoft.Docs.Build
 {
     internal class MonikerComparer : IComparer<string>, IEqualityComparer<string>
     {
-        private readonly Dictionary<string, int> _monikerOrder;
+        private readonly Dictionary<string, (string productName, int orderInProduct)> _monikerOrder;
 
-        public MonikerComparer(List<string> monikers)
+        public MonikerComparer(Dictionary<string, (string, int)> monikerOrder)
         {
-            _monikerOrder = GetMoninkerOrder(monikers);
+            _monikerOrder = monikerOrder;
         }
 
         public int Compare(string x, string y)
         {
             int result;
-            if (x is null || !TryGetMonikerOrderFromDefinition(x, out var orderX))
+            if (x is null || !_monikerOrder.TryGetValue(x, out var orderX))
             {
                 result = -1;
             }
-            else if (y is null || !TryGetMonikerOrderFromDefinition(y, out var orderY))
+            else if (y is null || !_monikerOrder.TryGetValue(y, out var orderY))
             {
                 result = 1;
             }
+            else if (orderX.productName != orderY.productName)
+            {
+                // irrelevant comparison between different products
+                result = int.MinValue;
+            }
             else
             {
-                result = orderX.CompareTo(orderY);
+                result = orderX.orderInProduct.CompareTo(orderY.orderInProduct);
             }
             return result;
         }
@@ -41,19 +46,6 @@ namespace Microsoft.Docs.Build
         public int GetHashCode(string obj)
         {
             return obj.GetHashCode();
-        }
-
-        private bool TryGetMonikerOrderFromDefinition(string moniker, out int order)
-            => _monikerOrder.TryGetValue(moniker, out order);
-
-        private Dictionary<string, int> GetMoninkerOrder(List<string> monikers)
-        {
-            var result = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
-            for (int i = 0; i < monikers.Count; i++)
-            {
-                result[monikers[i]] = i;
-            }
-            return result;
         }
     }
 }

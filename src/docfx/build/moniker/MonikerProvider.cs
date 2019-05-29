@@ -24,7 +24,7 @@ namespace Microsoft.Docs.Build
             }
             var monikersEvaluator = new EvaluatorWithMonikersVisitor(monikerDefinition);
             _rangeParser = new MonikerRangeParser(monikersEvaluator);
-            Comparer = new MonikerComparer(monikersEvaluator.GetSortedMonikerNameList());
+            Comparer = new MonikerComparer(monikersEvaluator.MonikerOrder);
 
             foreach (var (key, monikerRange) in docset.Config.MonikerRange)
             {
