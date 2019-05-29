@@ -25,69 +25,22 @@ namespace Microsoft.Docs.Build
         public readonly PublishModelBuilder PublishModelBuilder;
         public readonly TemplateEngine Template;
 
-        public Context(
-            ErrorLog errorLog,
-            Output output,
-            Cache cache,
-            MetadataProvider metadataProvider,
-            MonikerProvider monikerProvider,
-            GitCommitProvider gitCommitProvider,
-            BookmarkValidator bookmarkValidator,
-            DependencyMapBuilder dependencyMapBuilder,
-            DependencyResolver dependencyResolver,
-            DependencyResolver landingPageDependencyResolver,
-            GitHubUserCache gitHubUserCache,
-            ContributionProvider contributionProvider,
-            PublishModelBuilder publishModelBuilder,
-            TemplateEngine template)
+        public Context(string outputPath, ErrorLog errorLog, Docset docset, Func<XrefMap> xrefMap)
         {
             ErrorLog = errorLog;
-            Output = output;
-            Cache = cache;
-            MetadataProvider = metadataProvider;
-            MonikerProvider = monikerProvider;
-            GitCommitProvider = gitCommitProvider;
-            BookmarkValidator = bookmarkValidator;
-            DependencyMapBuilder = dependencyMapBuilder;
-            LandingPageDependencyResolver = landingPageDependencyResolver;
-            DependencyResolver = dependencyResolver;
-            GitHubUserCache = gitHubUserCache;
-            ContributionProvider = contributionProvider;
-            PublishModelBuilder = publishModelBuilder;
-            Template = template;
-        }
-
-        public static Context Create(string outputPath, ErrorLog errorLog, Docset docset, Func<XrefMap> xrefMap)
-        {
-            var output = new Output(outputPath);
-            var cache = new Cache();
-            var metadataProvider = new MetadataProvider(docset);
-            var monikerProvider = new MonikerProvider(docset);
-            var gitHubUserCache = GitHubUserCache.Create(docset);
-            var gitCommitProvider = new GitCommitProvider();
-            var bookmarkValidator = new BookmarkValidator();
-            var dependencyMapBuilder = new DependencyMapBuilder();
-            var dependencyResolver = new DependencyResolver(gitCommitProvider, bookmarkValidator, dependencyMapBuilder, new Lazy<XrefMap>(xrefMap));
-            var landingPageDependencyResolver = new DependencyResolver(gitCommitProvider, bookmarkValidator, dependencyMapBuilder, new Lazy<XrefMap>(xrefMap), forLandingPage: true);
-            var contributionProvider = new ContributionProvider(docset, gitHubUserCache, gitCommitProvider);
-            var publishModelBuilder = new PublishModelBuilder();
-            var template = TemplateEngine.Create(docset);
-
-            return new Context(
-                errorLog,
-                output,
-                cache,
-                metadataProvider,
-                monikerProvider,
-                gitCommitProvider,
-                bookmarkValidator,
-                dependencyMapBuilder,
-                dependencyResolver,
-                landingPageDependencyResolver,
-                gitHubUserCache,
-                contributionProvider,
-                publishModelBuilder,
-                template);
+            Output = new Output(outputPath);
+            Cache = new Cache();
+            MetadataProvider = new MetadataProvider(docset);
+            MonikerProvider = new MonikerProvider(docset);
+            GitHubUserCache = GitHubUserCache.Create(docset);
+            GitCommitProvider = new GitCommitProvider();
+            BookmarkValidator = new BookmarkValidator();
+            DependencyMapBuilder = new DependencyMapBuilder();
+            DependencyResolver = new DependencyResolver(GitCommitProvider, BookmarkValidator, DependencyMapBuilder, new Lazy<XrefMap>(xrefMap));
+            LandingPageDependencyResolver = new DependencyResolver(GitCommitProvider, BookmarkValidator, DependencyMapBuilder, new Lazy<XrefMap>(xrefMap), forLandingPage: true);
+            ContributionProvider = new ContributionProvider(docset, GitHubUserCache, GitCommitProvider);
+            PublishModelBuilder = new PublishModelBuilder();
+            Template = TemplateEngine.Create(docset);
         }
 
         public void Dispose()
