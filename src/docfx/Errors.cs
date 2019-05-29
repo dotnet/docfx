@@ -185,6 +185,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Syntax error in yaml file(not duplicate key).
         /// </summary>
+        /// Behavior: ✔️ Message: ❌
         public static Error YamlSyntaxError(SourceInfo source, string message)
             => new Error(ErrorLevel.Error, "yaml-syntax-error", message, source);
 
@@ -198,6 +199,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Used duplicate yaml key in markdown yml header or schema document(yml).
         /// </summary>
+        /// Behavior: ✔️ Message: ❌
         public static Error YamlDuplicateKey(SourceInfo source, string key)
             => new Error(ErrorLevel.Warning, "yaml-duplicate-key", $"Key '{key}' is already defined, remove the duplicate key.", source);
 
