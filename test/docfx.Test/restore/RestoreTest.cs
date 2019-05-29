@@ -146,8 +146,7 @@ gitHub:
         }
 
         private static int GetWorkTreeFolderCount(string path)
-        => Directory.EnumerateDirectories(path, "*", SearchOption.TopDirectoryOnly)
-            .Where(c => Path.GetFileName(c) != ".git").Count();
+            => Exec("git", "worktree list", path).Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).Length - 1;
 
         private static void DeleteDir(string root)
         {
