@@ -92,6 +92,8 @@ jobs:
           }
       }
 
+      Write-Host $env:SOURCE_VERSION_MESSAGE
+
       $basicAuth = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes("user:$env:AZURE_DEVOPS_TOKEN"))
       $auth = "-c http.https://dev.azure.com.extraheader=""AUTHORIZATION: basic $basicAuth"""
 
@@ -113,6 +115,7 @@ jobs:
     displayName: Checkout Docs.Build
     env:
       AZURE_DEVOPS_TOKEN: $(AZURE_DEVOPS_TOKEN)
+      SOURCE_VERSION_MESSAGE: $(Build.SourceVersionMessage)
 
   # Build
   - powershell: ../Docs.Build/build.ps1 -noTest
