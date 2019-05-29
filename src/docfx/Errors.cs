@@ -386,6 +386,12 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Warning, "field-required", $"Missing required field '{name}'", source);
 
         /// <summary>
+        /// A field lacks the required dependency.
+        /// </summary>
+        public static Error LackDependency(SourceInfo source, string name, string otherKey)
+            => new Error(ErrorLevel.Warning, "lack-dependency", $"Missing field: '{otherKey}'. If you specify '{name}', you must also specify '{otherKey}'", source);
+
+        /// <summary>
         /// Used unknown YamlMime.
         /// Examples:
         ///   - forgot to define schema in schema document(yml)

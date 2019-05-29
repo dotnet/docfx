@@ -81,6 +81,11 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public string[] Required { get; set; } = Array.Empty<string>();
 
+        /// <summary>
+        /// Properties that are used to indicate the dependencies between fields
+        /// </summary>
+        public Dictionary<string, string[]> Dependencies { get; set; } = new Dictionary<string, string[]>();
+
         // JSON schema custom validation extensions
         //-------------------------------------------
 
@@ -111,5 +116,6 @@ namespace Microsoft.Docs.Build
         /// Properties that are built into xref map
         /// </summary>
         public string[] XrefProperties { get; set; } = Array.Empty<string>();
+
     }
 }
