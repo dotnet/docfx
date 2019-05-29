@@ -85,27 +85,30 @@ jobs:
   # Checkout Docs.Build
   - powershell: |
       function exec([string] $cmd) {
-          Write-Host $cmd -ForegroundColor Green
           & ([scriptblock]::Create($cmd))
           if ($lastexitcode -ne 0) {
               throw ("Error")
           }
       }
 
-      Write-Host $env:SOURCE_VERSION_MESSAGE
+      # Checkout to a specific Docs.Build branch if the change is breaking
+      $docsBuildBranch = $env:PULL_REQUEST_SOURCE_BRANCH -replace '^(.*)breaking/(.*)$', '$2'
+      if ($docsBuildBranch -eq $env:PULL_REQUEST_SOURCE_BRANCH) {
+        $docsBuildBranch = 'develop'
+      }
 
       $basicAuth = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes("user:$env:AZURE_DEVOPS_TOKEN"))
       $auth = "-c http.https://dev.azure.com.extraheader=""AUTHORIZATION: basic $basicAuth"""
 
       if (-Not (Test-Path -Path ../Docs.Build)) {
           # Clone Docs.Build if not exists
-          exec "git $auth clone https://dev.azure.com/ceapex/Engineering/_git/Docs.Build --depth 1 --branch develop ../Docs.Build"
+          exec "git $auth clone https://dev.azure.com/ceapex/Engineering/_git/Docs.Build ../Docs.Build"
       } else {
         try {
             # Update Docs.Build to latest
             pushd ../Docs.Build
-            exec "git $auth fetch origin develop"
-            exec "git checkout --force origin/develop"
+            exec "git $auth fetch origin"
+            exec "git checkout --force origin/$docsBuildBranch"
             exec "git clean -xdff"
         } finally {
             popd
@@ -115,7 +118,7 @@ jobs:
     displayName: Checkout Docs.Build
     env:
       AZURE_DEVOPS_TOKEN: $(AZURE_DEVOPS_TOKEN)
-      SOURCE_VERSION_MESSAGE: $(Build.SourceVersionMessage)
+      PULL_REQUEST_SOURCE_BRANCH: $(System.PullRequest.SourceBranch)
 
   # Build
   - powershell: ../Docs.Build/build.ps1 -noTest
