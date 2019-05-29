@@ -24,13 +24,16 @@ namespace Microsoft.Docs.Build
             {
                 Debug.Fail("Should not be here");
             }
-            var orderX = _monikerOrder[x];
-            var orderY = _monikerOrder[y];
-            if (orderX.productName != orderY.productName)
+
+            var (productNameX, orderXInProduct) = _monikerOrder[x];
+            var (productNameY, orderYInProduct) = _monikerOrder[y];
+            if (productNameX != productNameY)
             {
-                return string.Compare(orderX.productName, orderY.productName);
+                // compare moniker name from different product alphabetically on product name
+                return string.Compare(productNameX, productNameY);
             }
-            return _monikerOrder[x].orderInProduct.CompareTo(_monikerOrder[y].orderInProduct);
+
+            return orderXInProduct.CompareTo(orderYInProduct);
         }
     }
 }
