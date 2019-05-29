@@ -38,5 +38,12 @@
         "$schema": {
             "type": "string"
         }
-    }
+    },
+    "xrefProperties": [
+        "name",
+        "fullName",
+        "description",
+        "summary",
+        "inlineDescription"
+    ]
 }

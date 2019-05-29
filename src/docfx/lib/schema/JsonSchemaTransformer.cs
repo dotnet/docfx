@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using Newtonsoft.Json.Linq;
 
@@ -35,9 +36,12 @@ namespace Microsoft.Docs.Build
 
             void TransformXrefScalar(JsonSchema schema, JValue value)
             {
-                extensions[value.Path] = new Lazy<JValue>(
-                    () => TransformScalar(schema, file, context, value, errors, buildChild: null),
-                    LazyThreadSafetyMode.PublicationOnly);
+                if (schema.Parent?.XrefProperties.Contains(value.Path) ?? false)
+                {
+                    extensions[value.Path] = new Lazy<JValue>(
+                        () => TransformScalar(schema, file, context, value, errors, buildChild: null),
+                        LazyThreadSafetyMode.PublicationOnly);
+                }
             }
         }
 
@@ -56,6 +60,7 @@ namespace Microsoft.Docs.Build
                     {
                         foreach (var item in array)
                         {
+                            schema.Items.Parent = schema;
                             Traverse(schema.Items, item, transformScalar);
                         }
                     }
@@ -66,6 +71,7 @@ namespace Microsoft.Docs.Build
                     {
                         if (schema.Properties.TryGetValue(key, out var propertySchema))
                         {
+                            propertySchema.Parent = schema;
                             Traverse(propertySchema, value, transformScalar);
                         }
                     }
