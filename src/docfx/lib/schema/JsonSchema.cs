@@ -113,7 +113,7 @@ namespace Microsoft.Docs.Build
         public string[] XrefProperties { get; set; } = Array.Empty<string>();
 
         /// <summary>
-        /// The parent json schema
+        /// The parent json schema pointer
         /// </summary>
         public JsonSchema Parent { get; set; }
     }
