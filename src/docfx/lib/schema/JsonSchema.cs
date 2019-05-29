@@ -116,6 +116,5 @@ namespace Microsoft.Docs.Build
         /// Properties that are built into xref map
         /// </summary>
         public string[] XrefProperties { get; set; } = Array.Empty<string>();
-
     }
 }
