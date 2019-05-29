@@ -199,6 +199,9 @@ namespace Microsoft.Docs.Build
         [InlineData("{'dependencies': {'key1': ['key2']}}", "{}", "")]
         [InlineData("{'dependencies': {'key1': ['key2']}}", "{'key1' : 1}",
             "['warning','lack-dependency','Missing field: 'key2'. If you specify 'key1', you must also specify 'key2'','file',1,1]")]
+        [InlineData("{'properties': {'keys': {'dependencies': {'key1': ['key2']}}}}", "{'keys' : {'key1' : 1, 'key2': 2}}", "")]
+        [InlineData("{'properties': {'keys': {'dependencies': {'key1': ['key2']}}}}", "{'keys' : {'key1' : 1}}",
+            "['warning','lack-dependency','Missing field: 'key2'. If you specify 'key1', you must also specify 'key2'','file',1,11]")]
         public void TestJsonSchemaValidation(string schema, string json, string expectedErrors)
         {
             var jsonSchema = JsonUtility.Deserialize<JsonSchema>(schema.Replace('\'', '"'), null);
