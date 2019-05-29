@@ -88,26 +88,3 @@ outputs:
     ["warning","field-required","Missing required field 'a'","a.md",2,1]
     ["warning","unexpected-type","Expect type 'String' but got 'Array'","a.md",2,6]
 ---
-
-# JsonSchema dependencies rule
-inputs:
-  docfx.yml: |
-    metadataSchema:
-      - schema.json
-    globalMetadata:
-      key2: []
-  schema.json: |
-    {
-      "dependencies": {
-        "key1": ["key2", "key3"]
-      }
-    }
-  a.md: |
-    ---
-    key1: "test1"
-    ---
-outputs:
-  a.json:
-  .errors.log: |
-    ["warning","lack-dependency","Missing field: 'key3'. If you specify 'key1', you must also specify 'key3'","a.md",2,1]
----
