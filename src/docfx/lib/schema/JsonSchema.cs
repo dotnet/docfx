@@ -55,6 +55,8 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public JValue[] Enum { get; set; }
 
+        public JsonSchemaStringFormat Format { get; set; }
+
         /// <summary>
         /// The maximum length of a string.
         /// </summary>
@@ -78,6 +80,11 @@ namespace Microsoft.Docs.Build
         /// Properties that are required to be present.
         /// </summary>
         public string[] Required { get; set; } = Array.Empty<string>();
+
+        /// <summary>
+        /// Properties that are used to indicate the dependencies between fields
+        /// </summary>
+        public Dictionary<string, string[]> Dependencies { get; set; } = new Dictionary<string, string[]>();
 
         // JSON schema custom validation extensions
         //-------------------------------------------
