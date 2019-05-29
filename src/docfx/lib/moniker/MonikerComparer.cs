@@ -3,10 +3,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace Microsoft.Docs.Build
 {
-    internal class MonikerComparer : IComparer<string>, IEqualityComparer<string>
+    internal class MonikerComparer : IComparer<string>
     {
         private readonly Dictionary<string, (string productName, int orderInProduct)> _monikerOrder;
 
@@ -15,37 +16,21 @@ namespace Microsoft.Docs.Build
             _monikerOrder = monikerOrder;
         }
 
+        public object Assert { get; private set; }
+
         public int Compare(string x, string y)
         {
-            int result;
-            if (x is null || !_monikerOrder.TryGetValue(x, out var orderX))
+            if (x is null || y is null || !_monikerOrder.ContainsKey(x) || !_monikerOrder.ContainsKey(y))
             {
-                result = -1;
+                Debug.Fail("Should not be here");
             }
-            else if (y is null || !_monikerOrder.TryGetValue(y, out var orderY))
+            var orderX = _monikerOrder[x];
+            var orderY = _monikerOrder[y];
+            if (orderX.productName != orderY.productName)
             {
-                result = 1;
+                return string.Compare(orderX.productName, orderY.productName);
             }
-            else if (orderX.productName != orderY.productName)
-            {
-                // irrelevant comparison between different products
-                result = int.MinValue;
-            }
-            else
-            {
-                result = orderX.orderInProduct.CompareTo(orderY.orderInProduct);
-            }
-            return result;
-        }
-
-        public bool Equals(string x, string y)
-        {
-            return Compare(x, y) == 0;
-        }
-
-        public int GetHashCode(string obj)
-        {
-            return obj.GetHashCode();
+            return _monikerOrder[x].orderInProduct.CompareTo(_monikerOrder[y].orderInProduct);
         }
     }
 }

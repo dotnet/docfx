@@ -160,7 +160,8 @@ namespace Microsoft.Docs.Build
         }
 
         private IXrefSpec GetLatestInternalXrefMap(List<IXrefSpec> specs)
-            => specs.OrderByDescending(item => item.Monikers.FirstOrDefault(), _context.MonikerProvider.Comparer).FirstOrDefault();
+            => specs.SingleOrDefault(x => x.Monikers?.Any() != true)
+               ?? specs.Where(x => x.Monikers?.Any() != false).OrderByDescending(item => item.Monikers.FirstOrDefault(), _context.MonikerProvider.Comparer).FirstOrDefault();
 
         private bool TryGetValidXrefSpecs(string uid, List<IXrefSpec> specsWithSameUid, out List<IXrefSpec> validSpecs)
         {
