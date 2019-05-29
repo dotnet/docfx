@@ -156,7 +156,7 @@ namespace Microsoft.Docs.Build
                     child = child.NextSibling;
                 }
 
-                return new SourceInfo<string>(result.ToString(), new SourceInfo(filePath, inline.Line, inline.Column));
+                return new SourceInfo<string>(result.ToString(), inline.ToSourceInfo(file: filePath));
             }
         }
     }
