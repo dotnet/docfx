@@ -36,7 +36,8 @@ namespace Microsoft.Docs.Build
 
             void TransformXrefScalar(JsonSchema schema, JValue value)
             {
-                if (schema.Parent?.XrefProperties.Contains(value.Path) ?? false)
+                var name = value.Path.Split('.').Last();
+                if (schema.Parent?.XrefProperties.Contains(name) ?? false)
                 {
                     extensions[value.Path] = new Lazy<JValue>(
                         () => TransformScalar(schema, file, context, value, errors, buildChild: null),
@@ -47,7 +48,9 @@ namespace Microsoft.Docs.Build
 
         private void Traverse(JsonSchema schema, JToken token, Action<JsonSchema, JValue> transformScalar)
         {
+            var parent = schema.Parent;
             schema = _definitions.GetDefinition(schema);
+            schema.Parent = parent;
 
             switch (token)
             {
@@ -58,9 +61,9 @@ namespace Microsoft.Docs.Build
                 case JArray array:
                     if (schema.Items != null)
                     {
+                        schema.Items.Parent = schema.Parent;
                         foreach (var item in array)
                         {
-                            schema.Items.Parent = schema;
                             Traverse(schema.Items, item, transformScalar);
                         }
                     }
