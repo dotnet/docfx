@@ -10,7 +10,7 @@ namespace Microsoft.Docs.Build
 {
     internal class MonikerRangeParser
     {
-        private readonly ConcurrentDictionary<string, Lazy<IReadOnlyList<string>>> _cache = new ConcurrentDictionary<string, Lazy<IReadOnlyList<string>>>();
+        private readonly ConcurrentDictionary<string, Lazy<IReadOnlyList<Moniker>>> _cache = new ConcurrentDictionary<string, Lazy<IReadOnlyList<Moniker>>>();
         private readonly EvaluatorWithMonikersVisitor _monikersEvaluator;
 
         public MonikerRangeParser(EvaluatorWithMonikersVisitor monikersEvaluator)
@@ -19,24 +19,30 @@ namespace Microsoft.Docs.Build
         }
 
         public IReadOnlyList<string> Parse(SourceInfo<string> rangeString)
+        {
+            var monikerNames = ParseCore(rangeString).Select(x => x.MonikerName).ToList();
+            monikerNames.Sort(StringComparer.OrdinalIgnoreCase);
+            return monikerNames;
+        }
+
+        public IReadOnlyList<Moniker> ParseCore(SourceInfo<string> rangeString)
             => string.IsNullOrWhiteSpace(rangeString)
-                ? Array.Empty<string>()
-                : _cache.GetOrAdd(rangeString, new Lazy<IReadOnlyList<string>>(() =>
+                ? Array.Empty<Moniker>()
+                : _cache.GetOrAdd(rangeString, new Lazy<IReadOnlyList<Moniker>>(() =>
                 {
-                    List<string> monikerNames = new List<string>();
+                    List<Moniker> monikers = new List<Moniker>();
 
                     try
                     {
                         var expression = ExpressionCreator.Create(rangeString);
-                        monikerNames = expression.Accept(_monikersEvaluator).ToList();
-                        monikerNames.Sort(StringComparer.OrdinalIgnoreCase);
+                        monikers = expression.Accept(_monikersEvaluator).ToList();
                     }
                     catch (MonikerRangeException ex)
                     {
                         throw Errors.MonikerRangeInvalid(rangeString, ex.Message).ToException();
                     }
 
-                    return monikerNames;
+                    return monikers;
                 })).Value;
     }
 }

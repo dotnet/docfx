@@ -10,19 +10,21 @@ namespace Microsoft.Docs.Build
 {
     internal class EvaluatorWithMonikersVisitor
     {
-        private readonly Dictionary<string, List<string>> _productMoniker;
+        private readonly Dictionary<string, List<Moniker>> _productMoniker;
+        private readonly Dictionary<string, Moniker> _monikerMap;
 
         public EvaluatorWithMonikersVisitor(MonikerDefinitionModel monikerDefinition)
         {
             Debug.Assert(monikerDefinition != null);
 
-            _productMoniker = monikerDefinition.Monikers.GroupBy(x => x.ProductName).ToDictionary(g => g.Key, g => g.OrderBy(x => x.Order).Select(x => x.MonikerName).ToList());
+            _monikerMap = monikerDefinition.Monikers.ToDictionary(x => x.MonikerName);
+            _productMoniker = monikerDefinition.Monikers.GroupBy(x => x.ProductName).ToDictionary(g => g.Key, g => g.OrderBy(x => x.Order).ToList());
             MonikerOrder = SetMonikerOrder();
         }
 
         public Dictionary<string, (string productName, int orderInProduct)> MonikerOrder { get; }
 
-        public IEnumerable<string> Visit(ComparatorExpression expression)
+        public IEnumerable<Moniker> Visit(ComparatorExpression expression)
         {
             Debug.Assert(expression.Operand != null);
             if (!MonikerOrder.TryGetValue(expression.Operand, out var moniker))
@@ -33,7 +35,7 @@ namespace Microsoft.Docs.Build
             switch (expression.Operator)
             {
                 case ComparatorOperatorType.EqualTo:
-                    return new List<string> { expression.Operand };
+                    return new List<Moniker> { _monikerMap[expression.Operand] };
                 case ComparatorOperatorType.GreaterThan:
                     return _productMoniker[moniker.productName].Skip(moniker.orderInProduct + 1);
                 case ComparatorOperatorType.GreaterThanOrEqualTo:
@@ -43,11 +45,11 @@ namespace Microsoft.Docs.Build
                 case ComparatorOperatorType.LessThanOrEqualTo:
                     return _productMoniker[moniker.productName].Take(moniker.orderInProduct + 1);
                 default:
-                    return Array.Empty<string>();
+                    return Array.Empty<Moniker>();
             }
         }
 
-        public IEnumerable<string> Visit(LogicExpression expression)
+        public IEnumerable<Moniker> Visit(LogicExpression expression)
         {
             Debug.Assert(expression.Left != null);
             Debug.Assert(expression.Right != null);
@@ -62,7 +64,7 @@ namespace Microsoft.Docs.Build
                 case LogicOperatorType.Or:
                     return left.Union(right);
                 default:
-                    return Array.Empty<string>();
+                    return Array.Empty<Moniker>();
             }
         }
 
@@ -73,7 +75,7 @@ namespace Microsoft.Docs.Build
             {
                 for (var i = 0; i < productMonikerList.Count(); i++)
                 {
-                    result[productMonikerList[i]] = (productName, i);
+                    result[productMonikerList[i].MonikerName] = (productName, i);
                 }
             }
 
