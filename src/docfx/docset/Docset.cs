@@ -194,7 +194,7 @@ namespace Microsoft.Docs.Build
 
             _dependencyDocsets = new Lazy<IReadOnlyDictionary<string, Docset>>(() =>
             {
-                var (errors, dependencies) = LoadDependencies(_errorLog, Config, Locale, RestoreMap, _options);
+                var (errors, dependencies) = LoadDependencies(_errorLog, docsetPath, Config, Locale, RestoreMap, _options);
                 _errorLog.Write(Config.ConfigFileName, errors);
                 return dependencies;
             });
@@ -293,13 +293,15 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static (List<Error>, Dictionary<string, Docset>) LoadDependencies(ErrorLog errorLog, Config config, string locale, RestoreMap restoreMap, CommandLineOptions options)
+        private static (List<Error>, Dictionary<string, Docset>) LoadDependencies(
+            ErrorLog errorLog, string docsetPath, Config config, string locale, RestoreMap restoreMap, CommandLineOptions options)
         {
             var errors = new List<Error>();
             var result = new Dictionary<string, Docset>(config.Dependencies.Count, PathUtility.PathComparer);
             foreach (var (name, url) in config.Dependencies)
             {
-                var (dir, subRestoreMap) = restoreMap.GetGitRestorePath(url);
+                var (remote, branch, _) = UrlUtility.SplitGitUrl(url);
+                var (dir, subRestoreMap) = restoreMap.GetGitRestorePath(remote, branch, docsetPath);
 
                 // get dependent docset config or default config
                 // todo: what parent config should be pass on its children

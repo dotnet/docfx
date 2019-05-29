@@ -26,15 +26,16 @@ namespace Microsoft.Docs.Build
 
         private static readonly JsonSerializer s_serializer = JsonSerializer.Create(new JsonSerializerSettings
         {
-            // todo: read should not ignore null value
             NullValueHandling = NullValueHandling.Ignore,
             MetadataPropertyHandling = MetadataPropertyHandling.Ignore,
+            DateParseHandling = DateParseHandling.None,
             Converters = s_jsonConverters,
             ContractResolver = new JsonContractResolver { NamingStrategy = s_namingStrategy },
         });
 
         private static readonly JsonSerializer s_schemaValidationSerializer = JsonSerializer.Create(new JsonSerializerSettings
         {
+            NullValueHandling = NullValueHandling.Ignore,
             MetadataPropertyHandling = MetadataPropertyHandling.Ignore,
             Converters = s_jsonConverters,
             ContractResolver = new SchemaContractResolver { NamingStrategy = s_namingStrategy },
@@ -185,7 +186,11 @@ namespace Microsoft.Docs.Build
         {
             try
             {
-                return SetSourceInfo(JToken.Parse(json), file).RemoveNulls();
+                using (var stringReader = new StringReader(json))
+                using (var reader = new JsonTextReader(stringReader) { DateParseHandling = DateParseHandling.None })
+                {
+                    return SetSourceInfo(JToken.ReadFrom(reader), file).RemoveNulls();
+                }
             }
             catch (JsonReaderException ex)
             {
@@ -351,6 +356,19 @@ namespace Microsoft.Docs.Build
                 token.AddAnnotation(source);
             }
             return token;
+        }
+
+        internal static void SkipToken(JsonReader reader)
+        {
+            var currentDepth = reader.Depth;
+            reader.Skip();
+            while (reader.Depth > currentDepth)
+            {
+                if (!reader.Read())
+                {
+                    break;
+                }
+            }
         }
 
         /// <summary>

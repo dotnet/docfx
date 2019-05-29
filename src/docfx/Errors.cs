@@ -302,6 +302,12 @@ namespace Microsoft.Docs.Build
         public static Error InvalidMetadataType(SourceInfo source, string name)
             => new Error(ErrorLevel.Error, "invalid-metadata-type", $"Metadata '{name}' can only be a scalar value or string array", source);
 
+         /// <summary>
+        /// Failed to compute specific info of a commit.
+        /// </summary>
+        public static Error GitCloneIncomplete(string repoPath)
+            => new Error(ErrorLevel.Error, "git-clone-incomplete", $"Git repository '{repoPath}' is an incomplete clone, GitHub contributor list may not be accurate.");
+
         /// <summary>
         /// Git.exe isn't installed.
         /// </summary>
@@ -356,6 +362,12 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Warning, "undefined-value", $"Value '{value}' is not accepted. Valid values: {Join(validValues)}", source);
 
         /// <summary>
+        /// The string type's value doesn't match given format.
+        /// </summary>
+        public static Error FormatInvalid(SourceInfo source, string value, JsonSchemaStringFormat type)
+            => new Error(ErrorLevel.Warning, "format-invalid", $"String '{value}' is not a valid '{type}'", source);
+
+        /// <summary>
         /// Array length not within min and max.
         /// </summary>
         public static Error ArrayLengthInvalid(SourceInfo source, string propName, int? minItems = null, int? maxItems = null)
@@ -372,6 +384,12 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static Error FieldRequired(SourceInfo source, string name)
             => new Error(ErrorLevel.Warning, "field-required", $"Missing required field '{name}'", source);
+
+        /// <summary>
+        /// A field lacks the required dependency.
+        /// </summary>
+        public static Error LackDependency(SourceInfo source, string name, string otherKey)
+            => new Error(ErrorLevel.Warning, "lack-dependency", $"Missing field: '{otherKey}'. If you specify '{name}', you must also specify '{otherKey}'", source);
 
         /// <summary>
         /// Used unknown YamlMime.

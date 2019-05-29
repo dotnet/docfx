@@ -1,24 +1,34 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
-    internal static class JsonSchemaValidation
+    internal class JsonSchemaValidator
     {
-        public static List<Error> Validate(JsonSchema schema, JToken token)
+        private readonly JsonSchema _schema;
+        private readonly JsonSchemaDefinition _definitions;
+
+        public JsonSchemaValidator(JsonSchema schema)
+        {
+            _schema = schema;
+            _definitions = new JsonSchemaDefinition(schema);
+        }
+
+        public List<Error> Validate(JToken token)
         {
             var errors = new List<Error>();
-            Validate(new JsonSchemaContext(schema), schema, token, errors);
+            Validate(_schema, token, errors);
             return errors;
         }
 
-        private static void Validate(JsonSchemaContext context, JsonSchema schema, JToken token, List<Error> errors)
+        private void Validate(JsonSchema schema, JToken token, List<Error> errors)
         {
-            schema = context.GetDefinition(schema);
+            schema = _definitions.GetDefinition(schema);
 
             if (!ValidateType(schema, token, errors))
             {
@@ -32,11 +42,11 @@ namespace Microsoft.Docs.Build
                     break;
 
                 case JArray array:
-                    ValidateArray(context, schema, errors, array);
+                    ValidateArray(schema, errors, array);
                     break;
 
                 case JObject map:
-                    ValidateObject(context, schema, errors, map);
+                    ValidateObject(schema, errors, map);
                     break;
             }
         }
@@ -61,24 +71,35 @@ namespace Microsoft.Docs.Build
                 errors.Add(Errors.UndefinedValue(JsonUtility.GetSourceInfo(scalar), scalar, schema.Enum));
             }
 
-            if ((schema.MaxLength.HasValue || schema.MinLength.HasValue) && scalar.Value is string str)
+            if (scalar.Value is string str)
             {
-                var unicodeLength = str.Where(c => !char.IsLowSurrogate(c)).Count();
-                if (schema.MaxLength.HasValue && unicodeLength > schema.MaxLength.Value)
-                    errors.Add(Errors.StringLengthInvalid(JsonUtility.GetSourceInfo(scalar), scalar.Path, maxLength: schema.MaxLength));
+                if (schema.MaxLength.HasValue || schema.MinLength.HasValue)
+                {
+                    var unicodeLength = str.Where(c => !char.IsLowSurrogate(c)).Count();
+                    if (schema.MaxLength.HasValue && unicodeLength > schema.MaxLength.Value)
+                        errors.Add(Errors.StringLengthInvalid(JsonUtility.GetSourceInfo(scalar), scalar.Path, maxLength: schema.MaxLength));
 
-                if (schema.MinLength.HasValue && unicodeLength < schema.MinLength.Value)
-                    errors.Add(Errors.StringLengthInvalid(JsonUtility.GetSourceInfo(scalar), scalar.Path, minLength: schema.MinLength));
+                    if (schema.MinLength.HasValue && unicodeLength < schema.MinLength.Value)
+                        errors.Add(Errors.StringLengthInvalid(JsonUtility.GetSourceInfo(scalar), scalar.Path, minLength: schema.MinLength));
+                }
+
+                switch (schema.Format)
+                {
+                    case JsonSchemaStringFormat.DateTime:
+                        if (!DateTime.TryParse(str, out var _))
+                            errors.Add(Errors.FormatInvalid(JsonUtility.GetSourceInfo(scalar), scalar.Value<string>(), JsonSchemaStringFormat.DateTime));
+                        break;
+                }
             }
         }
 
-        private static void ValidateArray(JsonSchemaContext context, JsonSchema schema, List<Error> errors, JArray array)
+        private void ValidateArray(JsonSchema schema, List<Error> errors, JArray array)
         {
             if (schema.Items != null)
             {
                 foreach (var item in array)
                 {
-                    Validate(context, schema.Items, item, errors);
+                    Validate(schema.Items, item, errors);
                 }
             }
 
@@ -89,7 +110,7 @@ namespace Microsoft.Docs.Build
                 errors.Add(Errors.ArrayLengthInvalid(JsonUtility.GetSourceInfo(array), array.Path, minItems: schema.MinItems));
         }
 
-        private static void ValidateObject(JsonSchemaContext context, JsonSchema schema, List<Error> errors, JObject map)
+        private void ValidateObject(JsonSchema schema, List<Error> errors, JObject map)
         {
             if (schema.AdditionalProperties.additionalPropertyJsonSchema != null)
             {
@@ -97,7 +118,7 @@ namespace Microsoft.Docs.Build
                 {
                     if (!schema.Properties.Keys.Contains(key))
                     {
-                        Validate(context, schema.AdditionalProperties.additionalPropertyJsonSchema, value, errors);
+                        Validate(schema.AdditionalProperties.additionalPropertyJsonSchema, value, errors);
                     }
                 }
             }
@@ -120,11 +141,25 @@ namespace Microsoft.Docs.Build
                 }
             }
 
+            foreach (var (key, value) in schema.Dependencies)
+            {
+                if (map.ContainsKey(key))
+                {
+                    foreach (var otherKey in value)
+                    {
+                        if (!map.ContainsKey(otherKey))
+                        {
+                            errors.Add(Errors.LackDependency(JsonUtility.GetSourceInfo(map), key, otherKey));
+                        }
+                    }
+                }
+            }
+
             foreach (var (key, value) in map)
             {
                 if (schema.Properties.TryGetValue(key, out var propertySchema))
                 {
-                    Validate(context, propertySchema, value, errors);
+                    Validate(propertySchema, value, errors);
                 }
             }
         }
@@ -146,8 +181,7 @@ namespace Microsoft.Docs.Build
                 case JsonSchemaType.Object:
                     return tokenType == JTokenType.Object;
                 case JsonSchemaType.String:
-                    return tokenType == JTokenType.String || tokenType == JTokenType.Uri ||
-                           tokenType == JTokenType.Date || tokenType == JTokenType.TimeSpan;
+                    return tokenType == JTokenType.String;
                 default:
                     return true;
             }

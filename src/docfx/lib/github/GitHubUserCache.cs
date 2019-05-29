@@ -32,6 +32,7 @@ namespace Microsoft.Docs.Build
 
         private readonly SemaphoreSlim _syncRoot = new SemaphoreSlim(1, 1);
 
+        private readonly GitHubAccessor _githubAccessor = null;
         private readonly string _url = null;
         private readonly string _content = null;
         private readonly EntityTagHeaderValue _etag = null;
@@ -53,9 +54,9 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(!string.IsNullOrEmpty(cachePath));
 
-            var github = new GitHubAccessor(docset.Config.GitHub.AuthToken);
-            _getUserByLoginFromGitHub = github.GetUserByLogin;
-            _getUsersByCommitFromGitHub = github.GetUsersByCommit;
+            _githubAccessor = new GitHubAccessor(docset.Config.GitHub.AuthToken);
+            _getUserByLoginFromGitHub = _githubAccessor.GetUserByLogin;
+            _getUsersByCommitFromGitHub = _githubAccessor.GetUsersByCommit;
             _expirationInHours = docset.Config.GitHub.UserCacheExpirationInHours;
             _cachePath = cachePath;
         }
@@ -199,6 +200,7 @@ namespace Microsoft.Docs.Build
 
         public void Dispose()
         {
+            _githubAccessor.Dispose();
             _syncRoot.Dispose();
         }
 

@@ -141,6 +141,7 @@ namespace Microsoft.Docs.Build
                 tocModelItem.Items = subChildren?.Items ?? tocModelItem.Items;
 
                 // validate
+                // todo: how to do required validation in strong model
                 if (tocModelItem.Name != null && string.IsNullOrEmpty(tocModelItem.Name))
                 {
                     errors.Add(Errors.MissingTocHead(tocModelItem.Name));
@@ -239,8 +240,7 @@ namespace Microsoft.Docs.Build
                     var (uidHref, uidDisplayName, uidFile) = resolveXref.Invoke(rootPath, uid);
                     if (!string.IsNullOrEmpty(uidHref))
                     {
-                        uid.Value = uidHref;
-                        return (uid, new SourceInfo<string>(uidDisplayName, uid), uidFile);
+                        return (new SourceInfo<string>(uidHref, uid), new SourceInfo<string>(uidDisplayName, uid), uidFile);
                     }
                 }
 

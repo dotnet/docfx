@@ -5,8 +5,14 @@ using System.Collections.Generic;
 
 namespace Microsoft.Docs.Build
 {
-    internal class XrefMapModel
+    internal interface IXrefSpec
     {
-        public List<ExternalXrefSpec> References { get; } = new List<ExternalXrefSpec>();
+        string Href { get; }
+
+        Document DeclairingFile { get; }
+
+        HashSet<string> Monikers { get; }
+
+        string GetXrefPropertyValue(string propertyName);
     }
 }
