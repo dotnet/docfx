@@ -557,13 +557,20 @@ namespace Microsoft.Docs.Build
         [Fact]
         public void NullValueHasSourceInfo()
         {
-            var (_, json) = JsonUtility.Parse("{\"a\": null}", "file");
+            var (_, json) = JsonUtility.Parse("{'a': null,'b': null}".Replace('\'', '"'), "file");
             var (_, obj) = JsonUtility.ToObject<ClassWithSourceInfo>(json);
+
             Assert.NotNull(obj?.A);
+
             Assert.Null(obj.A.Value);
             Assert.Equal(1, obj.A.Line);
             Assert.Equal(10, obj.A.Column);
             Assert.Equal("file", obj.A.File);
+
+            Assert.Equal("b", obj.B.Value);
+            Assert.Equal(1, obj.B.Line);
+            Assert.Equal(20, obj.B.Column);
+            Assert.Equal("file", obj.B.File);
         }
 
         [Fact]
@@ -594,6 +601,7 @@ namespace Microsoft.Docs.Build
         public class ClassWithSourceInfo
         {
             public SourceInfo<string> A { get; set; }
+            public SourceInfo<string> B { get; set; } = new SourceInfo<string>("b");
         }
 
         public class EmptyEnumerable

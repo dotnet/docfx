@@ -23,6 +23,11 @@ namespace Microsoft.Docs.Build
             if (value is null)
             {
                 JsonUtility.SkipToken(reader);
+
+                if (existingValue is SourceInfo existingSourceInfo)
+                {
+                    value = existingSourceInfo.GetValue();
+                }
             }
 
             return Activator.CreateInstance(objectType, value, source);
