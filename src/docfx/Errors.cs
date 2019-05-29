@@ -12,8 +12,8 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Defined same redirection entry in both <see cref="Config.Redirections"/> and <see cref="Config.RedirectionsWithoutId"/>.
         /// </summary>
-        public static Error RedirectionConflict(string redirectFrom)
-            => new Error(ErrorLevel.Error, "redirection-conflict", $"The '{redirectFrom}' appears twice or more in the redirection mappings");
+        public static Error RedirectionConflict(SourceInfo source, string path)
+            => new Error(ErrorLevel.Error, "redirection-conflict", $"The '{path}' appears twice or more in the redirection mappings", source);
 
         /// <summary>
         /// Redirection entry isn't a conceptual article(*.{md,json,yml}).
@@ -30,8 +30,15 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Defined redirect dest not starting with '\' in <see cref="Config.Redirections"/>.
         /// </summary>
-        public static Error InvalidRedirectTo(SourceInfo<string> source)
-            => new Error(ErrorLevel.Warning, "invalid-redirect-to", $"The redirect url '{source}' must start with '/'", source);
+        public static Error RedirectionUrlInvalid(SourceInfo<string> source)
+            => new Error(ErrorLevel.Warning, "redirection-url-invalid", $"The redirect url '{source}' must start with '/'", source);
+
+        /// <summary>
+        /// Multiple files defined in <see cref="Config.Redirections"/> are redirected to the same url,
+        /// can't decide which entry to use when computing document id.
+        /// </summary>
+        public static Error RedirectionUrlConflict(SourceInfo<string> source)
+            => new Error(ErrorLevel.Warning, "redirection-url-conflict", $"The '{source}' appears twice or more in the redirection mappings", source);
 
         /// <summary>
         /// Used invalid glob pattern in configuration.
@@ -201,8 +208,8 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Link which's resolved to a file out of build scope.
         /// </summary>
-        public static Error LinkOutOfScope(SourceInfo<string> source, Document file, string configFile)
-            => new Error(ErrorLevel.Warning, "link-out-of-scope", $"File '{file}' referenced by link '{source}' will not be built because it is not included in {configFile}", source);
+        public static Error LinkOutOfScope(SourceInfo<string> source, Document file)
+            => new Error(ErrorLevel.Warning, "link-out-of-scope", $"File '{file}' referenced by link '{source}' will not be built because it is not included in build scope", source);
 
         /// <summary>
         /// Defined a redirection entry that's not matched by config's files glob patterns.
@@ -282,13 +289,6 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static Error OutputPathConflict(string path, IEnumerable<Document> files)
             => new Error(ErrorLevel.Error, "output-path-conflict", $"Two or more files output to the same path '{path}': {Join(files, file => file.ContentType == ContentType.Redirection ? $"{file} <redirection>" : file.ToString())}");
-
-        /// <summary>
-        /// Multiple files defined in <see cref="Config.Redirections"/> are redirected to the same url,
-        /// can't decide which entry to use when computing document id.
-        /// </summary>
-        public static Error RedirectionDocumentIdConflict(IEnumerable<Document> redirectFromDocs, string redirectTo)
-            => new Error(ErrorLevel.Warning, "redirected-id-conflict", $"Multiple documents redirected to '{redirectTo}' with document id: {Join(redirectFromDocs)}");
 
         /// <summary>
         /// Used docfx output model property which are not defined in input model.

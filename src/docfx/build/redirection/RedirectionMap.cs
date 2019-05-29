@@ -45,16 +45,11 @@ namespace Microsoft.Docs.Build
             var redirections = new HashSet<Document>();
 
             // load redirections with document id
-            AddRedirections(docset.Config.Redirections, checkRedirectTo: true);
+            AddRedirections(docset.Config.Redirections, checkRedirectUrl: true);
 
             var redirectionsByRedirectionUrl = redirections
                 .GroupBy(file => file.RedirectionUrl, PathUtility.PathComparer)
                 .ToDictionary(group => group.Key, group => group.First(), PathUtility.PathComparer);
-
-            errors.AddRange(redirections
-                .GroupBy(file => file.RedirectionUrl)
-                .Where(group => group.Count() > 1)
-                .Select(group => Errors.RedirectionDocumentIdConflict(group, group.Key)));
 
             // load redirections without document id
             AddRedirections(docset.Config.RedirectionsWithoutId);
@@ -63,20 +58,16 @@ namespace Microsoft.Docs.Build
 
             return (errors, new RedirectionMap(redirectionsBySourcePath, redirectionsByRedirectionUrl));
 
-            void AddRedirections(Dictionary<string, SourceInfo<string>> items, bool checkRedirectTo = false)
+            void AddRedirections(Dictionary<string, SourceInfo<string>> items, bool checkRedirectUrl = false)
             {
-                foreach (var (path, redirectTo) in items)
-                {
-                    if (string.IsNullOrEmpty(path) || string.IsNullOrEmpty(redirectTo))
-                    {
-                        errors.Add(Errors.RedirectionIsNullOrEmpty(redirectTo, path));
-                        continue;
-                    }
+                var redirectUrls = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
+                foreach (var (path, redirectUrl) in items)
+                {
                     // TODO: ensure `SourceInfo<T>` is always not null
-                    if (checkRedirectTo && !redirectTo.Value.StartsWith('/'))
+                    if (string.IsNullOrEmpty(path) || string.IsNullOrEmpty(redirectUrl))
                     {
-                        errors.Add(Errors.InvalidRedirectTo(redirectTo));
+                        errors.Add(Errors.RedirectionIsNullOrEmpty(redirectUrl, path));
                         continue;
                     }
 
@@ -84,15 +75,23 @@ namespace Microsoft.Docs.Build
                     var type = Document.GetContentType(pathToDocset);
                     if (type != ContentType.Page)
                     {
-                        errors.Add(Errors.RedirectionInvalid(redirectTo, path));
+                        errors.Add(Errors.RedirectionInvalid(redirectUrl, path));
                     }
                     else if (!glob(pathToDocset))
                     {
-                        errors.Add(Errors.RedirectionOutOfScope(redirectTo, pathToDocset));
+                        errors.Add(Errors.RedirectionOutOfScope(redirectUrl, pathToDocset));
                     }
-                    else if (!redirections.Add(Document.Create(docset, pathToDocset, redirectTo)))
+                    else if (checkRedirectUrl && !redirectUrl.Value.StartsWith('/'))
                     {
-                        errors.Add(Errors.RedirectionConflict(pathToDocset));
+                        errors.Add(Errors.RedirectionUrlInvalid(redirectUrl));
+                    }
+                    else if (checkRedirectUrl && !redirectUrls.Add(redirectUrl))
+                    {
+                        errors.Add(Errors.RedirectionUrlConflict(redirectUrl));
+                    }
+                    else if (!redirections.Add(Document.Create(docset, pathToDocset, redirectUrl)))
+                    {
+                        errors.Add(Errors.RedirectionConflict(redirectUrl, pathToDocset));
                     }
                 }
             }
