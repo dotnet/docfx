@@ -239,61 +239,6 @@ namespace Microsoft.Docs.Build
         }
 
         [Theory]
-        [InlineData(@"{""mismatchField"": ""name""}", 1, 17, ErrorLevel.Warning, "unknown-field", typeof(ClassWithMoreMembers))]
-        [InlineData(@"{
-""anotherItems"":
-  [{ ""f"": 1,
-    ""g"": ""c"",
-    ""e"": ""e""}]}", 5, 8, ErrorLevel.Warning, "unknown-field", typeof(ClassWithMoreMembers))]
-        [InlineData(@"{
-""nestedItems"":
-  [[{ ""f"": 1,
-    ""g"": ""c"",
-    ""e"": ""e""}]]}", 5, 8, ErrorLevel.Warning, "unknown-field", typeof(ClassWithMoreMembers))]
-        [InlineData(@"[{
-""b"": 1,
-""c"": ""c"",
-""e"": ""e"",
-""nestedSealedMember"": {""unknown"": 1}}]", 5, 33, ErrorLevel.Warning, "unknown-field", typeof(List<NotSealedClass>))]
-        internal void TestUnknownFieldType(string json, int expectedLine, int expectedColumn, ErrorLevel expectedErrorLevel, string expectedErrorCode, Type type)
-        {
-            var (_, token) = JsonUtility.Parse(json, null);
-            var (errors, result) = JsonUtility.ToObject(token, type);
-            Assert.Collection(errors, error =>
-            {
-                Assert.Equal(expectedErrorLevel, error.Level);
-                Assert.Equal(expectedErrorCode, error.Code);
-                Assert.Equal(expectedLine, error.Line);
-                Assert.Equal(expectedColumn, error.Column);
-            });
-        }
-
-        [Fact]
-        public void TestMultipleUnknownFieldType()
-        {
-            var json = @"{""mismatchField1"": ""name"",
-""mismatchField2"": ""name""}";
-            var (errors, result) = DeserializeWithValidation<ClassWithMoreMembers>(json);
-            Assert.Collection(errors,
-            error =>
-            {
-                Assert.Equal(ErrorLevel.Warning, error.Level);
-                Assert.Equal("unknown-field", error.Code);
-                Assert.Equal(1, error.Line);
-                Assert.Equal(18, error.Column);
-                Assert.Equal("Could not find member 'mismatchField1' on object of type 'ClassWithMoreMembers'.", error.Message);
-            },
-            error =>
-            {
-                Assert.Equal(ErrorLevel.Warning, error.Level);
-                Assert.Equal("unknown-field", error.Code);
-                Assert.Equal(2, error.Line);
-                Assert.Equal(17, error.Column);
-                Assert.Equal("Could not find member 'mismatchField2' on object of type 'ClassWithMoreMembers'.", error.Message);
-            });
-        }
-
-        [Theory]
         [InlineData(@"{
 'numberList':
   [1, 'a']}", ErrorLevel.Error, "violate-schema", 3, 9)]
@@ -336,24 +281,6 @@ namespace Microsoft.Docs.Build
             var (_, token) = JsonUtility.Parse(json, null);
             var (errors, value) = JsonUtility.ToObject(token, type);
             Assert.Empty(errors);
-        }
-
-        [Fact]
-        public void TestNestedObjectTypeWithNotSealedType()
-        {
-            var json = @"[{
-""b"": 1,
-""c"": ""c"",
-""e"": ""e"",
-""nestedSealedMember"": {""unknown"": 1}}]";
-            var (errors, value) = DeserializeWithValidation<List<NotSealedClass>>(json);
-            Assert.Collection(errors, error =>
-            {
-                Assert.Equal(ErrorLevel.Warning, error.Level);
-                Assert.Equal("unknown-field", error.Code);
-                Assert.Equal(5, error.Line);
-                Assert.Equal(33, error.Column);
-            });
         }
 
         [Fact]
