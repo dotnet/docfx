@@ -91,7 +91,6 @@ repos:
         redirections:
           a.md: /b
         gitHub:
-          userCache: user_profile.json
           resolveUsers: true
         baseUrl: https://docs.com/rawmetadata
       c.md: |
@@ -111,15 +110,16 @@ repos:
         documentType: LandingData
         metadata:
           document_id: abc
-      user_profile.json: |
-        { "users": [
-            {"name": "Bob", "login": "bob", "id": 2, "emails": ["bob@contoso.com"]},
-            {"name": "Charlie", "login": "charlie", "id": 3, "emails": ["charlie@contoso.com"]}
-          ]
-        }
   https://docs.com/template1:
   - files:
       readme.md:
+cache:
+  github-users.json: |
+    { "users": [
+        {"name": "Bob", "login": "bob", "id": 2, "emails": ["bob@contoso.com"]},
+        {"name": "Charlie", "login": "charlie", "id": 3, "emails": ["charlie@contoso.com"]}
+      ]
+    }
 outputs:
   rawmetadata/c.json:
   rawmetadata/d.png:

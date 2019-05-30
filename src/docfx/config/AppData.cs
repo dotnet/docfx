@@ -26,7 +26,7 @@ namespace Microsoft.Docs.Build
 
         public static string GlobalConfigPath => GetGlobalConfigPath();
 
-        public static string GitHubUserCachePath => Path.Combine(CacheRoot, "github-user-cache.json");
+        public static string GitHubUserCachePath => Path.Combine(CacheRoot, "github-users.json");
 
         public static string GetGitDir(string remote)
         {

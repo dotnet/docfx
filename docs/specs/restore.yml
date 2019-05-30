@@ -56,42 +56,22 @@ outputs:
     { "conceptual": "<div class=\"NOTE\"><p>my note</p><p>note</p></div>" }
 ---
 # Restore urls
-repos:
-  https://github.com/restore/b:
-    - files:
-        docs/a.md:
-        docfx.yml: |
-          monikerDefinition: https://raw.githubusercontent.com/docascode/docfx-test-dependencies/github-user-cache-file/user_profile.json
-      author: OsmondJiang
-      email: xinjiang@microsoft.com
+inputs:
+  docfx.yml: |
+    xref: https://raw.githubusercontent.com/docascode/docfx-test-dependencies/xref/xref.json
+  a.md: '@System.String'
 outputs:
-  docs/a.json: |
-    {
-      "_op_gitContributorInformation":
-      {
-        "author":
-          {"name":"OsmondJiang","profile_url":"https://github.com/OsmondJiang","display_name":"Osmond Jiang","id":"19990166"}
-      }
-    }
+  a.json: |
+    { "content": "" }
 ---
 # Restore urls with extends
-repos:
-  https://github.com/restore/c:
-    - files:
-        docs/a.md:
-        docfx.yml: |
-          extend: https://raw.githubusercontent.com/docascode/docfx-test-dependencies/extend-test-2/extend2.yml
-      author: OsmondJiang
-      email: xinjiang@microsoft.com
+inputs:
+  docfx.yml: |
+    extend: https://raw.githubusercontent.com/docascode/docfx-test-dependencies/extend-test-2/extend2.yml
+  a.md: '@System.String'
 outputs:
-  docs/a.json: |
-    {
-      "_op_gitContributorInformation":
-      {
-        "author":
-          {"name":"OsmondJiang","profile_url":"https://github.com/OsmondJiang","display_name":"Osmond Jiang","id":"19990166"}
-      }
-    }
+  a.json: |
+    { "content": "" }
 ---
 # Restore dependencies with extends
 repos:

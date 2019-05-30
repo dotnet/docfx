@@ -240,8 +240,7 @@ inputs:
     extend:
       - docs/a.yml
       - docs/b.yml
-    gitHub:
-      userCache: docs/d.json
+    xref: docs/d.json
   docs/a.yml:
   docs/b.yml:
   docs/d.json: '{}'
@@ -275,11 +274,11 @@ inputs:
   docfx.yml: |
     rules:
       file-not-found: off
-    gitHub:
-      userCache: user_profile.json
+    xref: xref.json
+  a.md: '@System.String'
 outputs:
   .errors.log: |
-    ["error","file-not-found","Invalid file link: 'user_profile.json'.","*",4,14]
+    ["error","file-not-found","Invalid file link: 'xref.json'.","*",3,7]
 ---
 # Treat warnings as errors
 inputs:

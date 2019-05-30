@@ -27,9 +27,9 @@ namespace Microsoft.Docs.Build
         private readonly Dictionary<string, GitHubUser> _usersByLogin = new Dictionary<string, GitHubUser>(StringComparer.OrdinalIgnoreCase);
         private readonly Dictionary<string, GitHubUser> _usersByEmail = new Dictionary<string, GitHubUser>(StringComparer.OrdinalIgnoreCase);
 
-        private readonly GitHubAccessor _githubAccessor;
         private readonly SemaphoreSlim _syncRoot = new SemaphoreSlim(1, 1);
 
+        private readonly GitHubAccessor _githubAccessor;
         private readonly string _cachePath;
         private readonly double _expirationInHours;
         private bool _updated = false;
