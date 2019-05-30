@@ -82,23 +82,21 @@ namespace Microsoft.Docs.Build
                 var repoPath = Path.GetFullPath(Path.Combine(repoDir, ".git"));
                 var childRepos = new List<string>();
 
-                ProcessUtility.RunInsideMutex(
-                    remote,
-                    () =>
+                using (InterProcessMutex.Lock(remote))
+                {
+                    if (branchesToFetch.Count > 0)
                     {
-                        if (branchesToFetch.Count > 0)
+                        try
                         {
-                            try
-                            {
-                                GitUtility.CloneOrUpdateBare(repoPath, remote, branchesToFetch, depthOne, config);
-                            }
-                            catch (Exception ex)
-                            {
-                                throw Errors.GitCloneFailed(remote, branches).ToException(ex);
-                            }
-                            AddWorkTrees();
+                            GitUtility.CloneOrUpdateBare(repoPath, remote, branchesToFetch, depthOne, config);
                         }
-                    });
+                        catch (Exception ex)
+                        {
+                            throw Errors.GitCloneFailed(remote, branches).ToException(ex);
+                        }
+                        AddWorkTrees();
+                    }
+                }
 
                 return subChildren.ToList();
 

@@ -118,13 +118,13 @@ namespace Microsoft.Docs.Build
 
             var filePath = RestoreFile.GetRestoreContentPath(url);
             var etagPath = RestoreFile.GetRestoreEtagPath(url);
-            string etag = null;
-            string content = null;
 
-            ProcessUtility.RunInsideMutex(filePath, () =>
+            using (InterProcessMutex.Lock(filePath))
             {
-                content = GetFileContentIfExists(filePath);
-                etag = GetFileContentIfExists(etagPath);
+                var content = GetFileContentIfExists(filePath);
+                var etag = GetFileContentIfExists(etagPath);
+
+                return (content, etag);
 
                 string GetFileContentIfExists(string file)
                 {
@@ -135,9 +135,7 @@ namespace Microsoft.Docs.Build
 
                     return null;
                 }
-            });
-
-            return (content, etag);
+            }
         }
 
         /// <summary>

@@ -34,7 +34,7 @@ namespace Microsoft.Docs.Build
                 return;
             }
 
-            ProcessUtility.RunInsideMutex(filePath, () =>
+            using (InterProcessMutex.Lock(filePath))
             {
                 if (!File.Exists(filePath))
                 {
@@ -47,7 +47,7 @@ namespace Microsoft.Docs.Build
                 }
 
                 File.WriteAllText(GetRestoreEtagPath(url), etag?.ToString());
-            });
+            }
         }
 
         public static IEnumerable<string> GetFileReferences(this Config config)

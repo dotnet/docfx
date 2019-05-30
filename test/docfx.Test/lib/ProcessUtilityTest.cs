@@ -46,23 +46,22 @@ namespace Microsoft.Docs.Build
         }
 
         [Fact]
-        public static void FileMutexTest()
+        public static void InterProcessMutexTest()
         {
             var concurrencyLevel = 0;
             var fileName = $"process-test/{Guid.NewGuid()}";
 
             try
             {
-                Parallel.ForEach(
-                    Enumerable.Range(0, 5),
-                    i => ProcessUtility.RunInsideMutex(
-                        fileName,
-                        () =>
-                        {
-                            Assert.Equal(1, Interlocked.Increment(ref concurrencyLevel));
-                            Thread.Sleep(100);
-                            Assert.Equal(0, Interlocked.Decrement(ref concurrencyLevel));
-                        }));
+                Parallel.ForEach(Enumerable.Range(0, 5), _ =>
+                {
+                    using (InterProcessMutex.Lock(fileName))
+                    {
+                        Assert.Equal(1, Interlocked.Increment(ref concurrencyLevel));
+                        Thread.Sleep(100);
+                        Assert.Equal(0, Interlocked.Decrement(ref concurrencyLevel));
+                    }
+                });
             }
             catch (Exception ex)
             {
@@ -74,15 +73,11 @@ namespace Microsoft.Docs.Build
         public static void NestedRunInMutexWithDifferentNameTest()
         {
             // nested run works for different names
-            ProcessUtility.RunInsideMutex($"process-test/{Guid.NewGuid()}",
-                () =>
-                {
-                    ProcessUtility.RunInsideMutex($"process-test/{Guid.NewGuid()}",
-                        () =>
-                        {
-                            // do nothing
-                        });
-                });
+            using (InterProcessMutex.Lock($"process-test/{Guid.NewGuid()}"))
+            using (InterProcessMutex.Lock($"process-test/{Guid.NewGuid()}"))
+            {
+                // do nothing
+            }
         }
 
         [Fact]
@@ -92,19 +87,12 @@ namespace Microsoft.Docs.Build
             Assert.ThrowsAny<Exception>(() =>
             {
                 var name = Guid.NewGuid().ToString();
-                ProcessUtility.RunInsideMutex($"process-test/{name}",
-                    () =>
-                    {
-                        ProcessUtility.RunInsideMutex($"process-test/{Guid.NewGuid()}",
-                            () =>
-                            {
-                                ProcessUtility.RunInsideMutex($"process-test/{name}",
-                                    () =>
-                                    {
-                                        // do nothing
-                                    });
-                            });
-                    });
+                using (InterProcessMutex.Lock($"process-test/{name}"))
+                using (InterProcessMutex.Lock($"process-test/{Guid.NewGuid()}"))
+                using (InterProcessMutex.Lock($"process-test/{name}"))
+                {
+                    // do nothing
+                }
             });
         }
 
@@ -113,17 +101,16 @@ namespace Microsoft.Docs.Build
         {
             var name = Guid.NewGuid().ToString();
 
-            ProcessUtility.RunInsideMutex($"process-test/123", () =>
+            using (InterProcessMutex.Lock($"process-test/123"))
             {
                 Parallel.ForEach(new[] { 1, 2, 3, 4, 5 }, i =>
                 {
-                    ProcessUtility.RunInsideMutex($"process-test/{name}",
-                        () =>
-                        {
-                            // do nothing
-                        });
+                    using (InterProcessMutex.Lock($"process-test/{name}"))
+                    {
+                        // do nothing
+                    }
                 });
-            });
+            }
         }
 
         [Theory]

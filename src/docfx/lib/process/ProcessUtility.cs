@@ -19,7 +19,6 @@ namespace Microsoft.Docs.Build
     internal static class ProcessUtility
     {
         private static readonly TimeSpan s_defaultLockExpireTime = TimeSpan.FromHours(6);
-        private static readonly AsyncLocal<ImmutableStack<string>> t_mutexRecursionStack = new AsyncLocal<ImmutableStack<string>>();
 
         public static bool IsExclusiveLockHeld(string lockName)
         {
@@ -219,7 +218,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static void ReadAndWriteFile<T>(string path, Func<T, T> update)
         {
-            RunInsideMutex(path, () =>
+            using (InterProcessMutex.Lock(path))
             {
                 using (var file = File.Open(path, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None))
                 {
@@ -232,7 +231,7 @@ namespace Microsoft.Docs.Build
                     steamWriter.Write(JsonUtility.Serialize(updatedResult));
                     steamWriter.Close();
                 }
-            });
+            }
         }
 
         /// <summary>
@@ -241,25 +240,19 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static string ReadFile(string path)
         {
-            string result = null;
-            RunInsideMutex(path, () =>
+            using (InterProcessMutex.Lock(path))
             {
-                result = File.ReadAllText(path);
-            });
-            return result;
+                return File.ReadAllText(path);
+            }
         }
 
         public static T ReadFile<T>(string path, Func<Stream, T> read)
         {
-            T result = default;
-            RunInsideMutex(path, () =>
+            using (InterProcessMutex.Lock(path))
+            using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read, 1024, FileOptions.SequentialScan))
             {
-                using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read, 1024, FileOptions.SequentialScan))
-                {
-                    result = read(fs);
-                }
-            });
-            return result;
+                return read(fs);
+            }
         }
 
         /// <summary>
@@ -268,65 +261,20 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static void WriteFile(string path, string content)
         {
-            RunInsideMutex(path, () =>
+            using (InterProcessMutex.Lock(path))
+            using (var fs = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None, 1024, FileOptions.SequentialScan))
+            using (var writer = new StreamWriter(fs))
             {
-                using (var fs = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None, 1024, FileOptions.SequentialScan))
-                using (var writer = new StreamWriter(fs))
-                {
-                    writer.Write(content);
-                }
-            });
+                writer.Write(content);
+            }
         }
 
         public static void WriteFile(string path, Action<Stream> write)
         {
-            RunInsideMutex(path, () =>
+            using (InterProcessMutex.Lock(path))
+            using (var fs = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None, 1024, FileOptions.SequentialScan))
             {
-                using (var fs = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None, 1024, FileOptions.SequentialScan))
-                {
-                    write(fs);
-                }
-            });
-        }
-
-        /// <summary>
-        /// Create a file mutex to lock a resource/action
-        /// </summary>
-        /// <param name="mutexName">A globbaly unique mutext name</param>
-        /// <param name="action">The action/resource you want to lock</param>
-        public static void RunInsideMutex(string mutexName, Action action)
-        {
-            using (var mutex = new Mutex(initiallyOwned: false, $"Global\\{HashUtility.GetMd5Hash(mutexName)}"))
-            {
-                while (!mutex.WaitOne(TimeSpan.FromSeconds(30)))
-                {
-#pragma warning disable CA2002 // Do not lock on objects with weak identity
-                    lock (Console.Out)
-#pragma warning restore CA2002
-                    {
-                        Console.ForegroundColor = ConsoleColor.Yellow;
-                        Console.WriteLine($"Waiting for another process to access '{mutexName}'");
-                        Console.ResetColor();
-                    }
-                }
-
-                // avoid nested calls to RunInsideMutex with same mutex name
-                t_mutexRecursionStack.Value = t_mutexRecursionStack.Value ?? ImmutableStack<string>.Empty;
-                if (t_mutexRecursionStack.Value.Contains(mutexName))
-                {
-                    throw new ApplicationException($"Nested call to RunInsideMutex is detected, mutex name: {mutexName}");
-                }
-                t_mutexRecursionStack.Value = t_mutexRecursionStack.Value.Push(mutexName);
-
-                try
-                {
-                    action();
-                }
-                finally
-                {
-                    t_mutexRecursionStack.Value = t_mutexRecursionStack.Value.Pop();
-                    mutex.ReleaseMutex();
-                }
+                write(fs);
             }
         }
 

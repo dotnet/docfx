@@ -23,30 +23,28 @@ namespace Microsoft.Docs.Build
 
             string path = null;
             T slot = null;
-            ProcessUtility.RunInsideMutex(
-                remote + "/index.json",
-                () =>
+            using (InterProcessMutex.Lock(remote + "/index.json"))
+            {
+                var slots = GetSlots(restoreDir);
+
+                foreach (var i in getOrderedFilteredSlots(slots))
                 {
-                    var slots = GetSlots(restoreDir);
-
-                    foreach (var i in getOrderedFilteredSlots(slots))
+                    if (i.Restored /*restored successfully*/ &&
+                    !ProcessUtility.IsExclusiveLockHeld(GetLockKey(remote, i.Id)) /*not being used for restoring*/)
                     {
-                        if (i.Restored /*restored successfully*/ &&
-                        !ProcessUtility.IsExclusiveLockHeld(GetLockKey(remote, i.Id)) /*not being used for restoring*/)
-                        {
-                            slot = i;
-                            break;
-                        }
+                        slot = i;
+                        break;
                     }
+                }
 
-                    if (slot != null)
-                    {
-                        slot.LastAccessDate = DateTime.UtcNow;
-                        path = $"{slot.Id}";
-                    }
+                if (slot != null)
+                {
+                    slot.LastAccessDate = DateTime.UtcNow;
+                    path = $"{slot.Id}";
+                }
 
-                    WriteSlots(restoreDir, slots.ToList());
-                });
+                WriteSlots(restoreDir, slots.ToList());
+            }
 
             return (path, slot);
         }
@@ -61,29 +59,27 @@ namespace Microsoft.Docs.Build
             var restoreDir = AppData.GetGitDir(url);
 
             var released = false;
-            ProcessUtility.RunInsideMutex(
-                url + "/index.json",
-                () =>
+            using (InterProcessMutex.Lock(url + "/index.json"))
+            {
+                var slots = GetSlots(restoreDir);
+                var slotToRelease = slots.Single(i => i.Id == slot.Id);
+
+                Debug.Assert(slotToRelease != null);
+
+                switch (lockType)
                 {
-                    var slots = GetSlots(restoreDir);
-                    var slotToRelease = slots.Single(i => i.Id == slot.Id);
+                    case LockType.Exclusive:
+                        slotToRelease.LastAccessDate = DateTime.UtcNow;
+                        slotToRelease.Restored = successed;
+                        released = ProcessUtility.ReleaseExclusiveLock(GetLockKey(url, slot.Id), slot.Acquirer);
+                        break;
+                    case LockType.Shared:
+                        released = ProcessUtility.ReleaseSharedLock(GetLockKey(url, slot.Id), slot.Acquirer);
+                        break;
+                }
 
-                    Debug.Assert(slotToRelease != null);
-
-                    switch (lockType)
-                    {
-                        case LockType.Exclusive:
-                            slotToRelease.LastAccessDate = DateTime.UtcNow;
-                            slotToRelease.Restored = successed;
-                            released = ProcessUtility.ReleaseExclusiveLock(GetLockKey(url, slot.Id), slot.Acquirer);
-                            break;
-                        case LockType.Shared:
-                            released = ProcessUtility.ReleaseSharedLock(GetLockKey(url, slot.Id), slot.Acquirer);
-                            break;
-                    }
-
-                    WriteSlots(restoreDir, slots);
-                });
+                WriteSlots(restoreDir, slots);
+            }
 
             Debug.Assert(released);
 
@@ -99,10 +95,8 @@ namespace Microsoft.Docs.Build
             T slot = null;
             bool acquired = false;
             string acquirer = null;
-            ProcessUtility.RunInsideMutex(
-                url + "/index.json",
-                () =>
-                {
+            using (InterProcessMutex.Lock(url + "/index.json"))
+            {
                     var slots = GetSlots(restoreDir);
 
                     switch (type)
@@ -165,7 +159,7 @@ namespace Microsoft.Docs.Build
                     }
 
                     WriteSlots(restoreDir, slots);
-                });
+                }
 
             if (slot != null)
             {
