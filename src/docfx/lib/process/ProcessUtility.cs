@@ -218,7 +218,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static void ReadAndWriteFile<T>(string path, Func<T, T> update)
         {
-            using (InterProcessMutex.Lock(path))
+            using (InterProcessMutex.Create(path))
             {
                 using (var file = File.Open(path, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None))
                 {
@@ -240,7 +240,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static string ReadFile(string path)
         {
-            using (InterProcessMutex.Lock(path))
+            using (InterProcessMutex.Create(path))
             {
                 return File.ReadAllText(path);
             }
@@ -248,7 +248,7 @@ namespace Microsoft.Docs.Build
 
         public static T ReadFile<T>(string path, Func<Stream, T> read)
         {
-            using (InterProcessMutex.Lock(path))
+            using (InterProcessMutex.Create(path))
             using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read, 1024, FileOptions.SequentialScan))
             {
                 return read(fs);
@@ -261,7 +261,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static void WriteFile(string path, string content)
         {
-            using (InterProcessMutex.Lock(path))
+            using (InterProcessMutex.Create(path))
             using (var fs = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None, 1024, FileOptions.SequentialScan))
             using (var writer = new StreamWriter(fs))
             {
@@ -271,7 +271,7 @@ namespace Microsoft.Docs.Build
 
         public static void WriteFile(string path, Action<Stream> write)
         {
-            using (InterProcessMutex.Lock(path))
+            using (InterProcessMutex.Create(path))
             using (var fs = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None, 1024, FileOptions.SequentialScan))
             {
                 write(fs);

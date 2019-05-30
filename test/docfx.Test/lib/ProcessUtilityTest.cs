@@ -55,7 +55,7 @@ namespace Microsoft.Docs.Build
             {
                 Parallel.ForEach(Enumerable.Range(0, 5), _ =>
                 {
-                    using (InterProcessMutex.Lock(fileName))
+                    using (InterProcessMutex.Create(fileName))
                     {
                         Assert.Equal(1, Interlocked.Increment(ref concurrencyLevel));
                         Thread.Sleep(100);
@@ -73,8 +73,8 @@ namespace Microsoft.Docs.Build
         public static void NestedRunInMutexWithDifferentNameTest()
         {
             // nested run works for different names
-            using (InterProcessMutex.Lock($"process-test/{Guid.NewGuid()}"))
-            using (InterProcessMutex.Lock($"process-test/{Guid.NewGuid()}"))
+            using (InterProcessMutex.Create($"process-test/{Guid.NewGuid()}"))
+            using (InterProcessMutex.Create($"process-test/{Guid.NewGuid()}"))
             {
                 // do nothing
             }
@@ -87,9 +87,9 @@ namespace Microsoft.Docs.Build
             Assert.ThrowsAny<Exception>(() =>
             {
                 var name = Guid.NewGuid().ToString();
-                using (InterProcessMutex.Lock($"process-test/{name}"))
-                using (InterProcessMutex.Lock($"process-test/{Guid.NewGuid()}"))
-                using (InterProcessMutex.Lock($"process-test/{name}"))
+                using (InterProcessMutex.Create($"process-test/{name}"))
+                using (InterProcessMutex.Create($"process-test/{Guid.NewGuid()}"))
+                using (InterProcessMutex.Create($"process-test/{name}"))
                 {
                     // do nothing
                 }
@@ -101,11 +101,11 @@ namespace Microsoft.Docs.Build
         {
             var name = Guid.NewGuid().ToString();
 
-            using (InterProcessMutex.Lock($"process-test/123"))
+            using (InterProcessMutex.Create($"process-test/123"))
             {
                 Parallel.ForEach(new[] { 1, 2, 3, 4, 5 }, i =>
                 {
-                    using (InterProcessMutex.Lock($"process-test/{name}"))
+                    using (InterProcessMutex.Create($"process-test/{name}"))
                     {
                         // do nothing
                     }

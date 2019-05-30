@@ -23,7 +23,7 @@ namespace Microsoft.Docs.Build
 
             string path = null;
             T slot = null;
-            using (InterProcessMutex.Lock(remote + "/index.json"))
+            using (InterProcessMutex.Create(remote + "/index.json"))
             {
                 var slots = GetSlots(restoreDir);
 
@@ -59,7 +59,7 @@ namespace Microsoft.Docs.Build
             var restoreDir = AppData.GetGitDir(url);
 
             var released = false;
-            using (InterProcessMutex.Lock(url + "/index.json"))
+            using (InterProcessMutex.Create(url + "/index.json"))
             {
                 var slots = GetSlots(restoreDir);
                 var slotToRelease = slots.Single(i => i.Id == slot.Id);
@@ -95,7 +95,7 @@ namespace Microsoft.Docs.Build
             T slot = null;
             bool acquired = false;
             string acquirer = null;
-            using (InterProcessMutex.Lock(url + "/index.json"))
+            using (InterProcessMutex.Create(url + "/index.json"))
             {
                     var slots = GetSlots(restoreDir);
 

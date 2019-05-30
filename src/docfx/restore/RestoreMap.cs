@@ -119,7 +119,7 @@ namespace Microsoft.Docs.Build
             var filePath = RestoreFile.GetRestoreContentPath(url);
             var etagPath = RestoreFile.GetRestoreEtagPath(url);
 
-            using (InterProcessMutex.Lock(filePath))
+            using (InterProcessMutex.Create(filePath))
             {
                 var content = GetFileContentIfExists(filePath);
                 var etag = GetFileContentIfExists(etagPath);

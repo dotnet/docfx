@@ -34,7 +34,7 @@ namespace Microsoft.Docs.Build
                 return;
             }
 
-            using (InterProcessMutex.Lock(filePath))
+            using (InterProcessMutex.Create(filePath))
             {
                 if (!File.Exists(filePath))
                 {

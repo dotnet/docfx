@@ -82,7 +82,7 @@ namespace Microsoft.Docs.Build
                 var repoPath = Path.GetFullPath(Path.Combine(repoDir, ".git"));
                 var childRepos = new List<string>();
 
-                using (InterProcessMutex.Lock(remote))
+                using (InterProcessMutex.Create(remote))
                 {
                     if (branchesToFetch.Count > 0)
                     {
