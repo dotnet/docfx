@@ -122,5 +122,18 @@ namespace Microsoft.Docs.Build
         /// </summary>
         [JsonIgnore]
         public JsonSchema Parent { get; set; }
+        
+	// JSON schema metadata validation extensions
+        //-------------------------------------------
+
+        /// <summary>
+        /// Properties that are used to realize either logic
+        /// </summary>
+        public string[][] Either { get; set; } = Array.Empty<string[]>();
+
+        /// <summary>
+        /// Properties that are used to realize precludes logic
+        /// </summary>
+        public string[][] Precludes { get; set; } = Array.Empty<string[]>();
     }
 }
