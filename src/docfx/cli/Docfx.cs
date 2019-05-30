@@ -63,8 +63,7 @@ namespace Microsoft.Docs.Build
                 return 1;
             }
 
-            CultureInfo.CurrentCulture = new CultureInfo("en-US", false);
-            CultureInfo.CurrentUICulture = new CultureInfo("en-US", false);
+            CultureInfo.CurrentCulture = CultureInfo.CurrentUICulture = new CultureInfo("en-US", false);
 
             using (Log.BeginScope(options.Verbose))
             using (var errorLog = new ErrorLog(docset, options.Legacy))
