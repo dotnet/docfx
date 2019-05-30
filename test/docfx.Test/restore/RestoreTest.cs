@@ -132,8 +132,7 @@ dependencies:
             var restoreDir = AppData.GetFileDownloadDir(url);
 
             File.WriteAllText(Path.Combine(docsetPath, "docfx.yml"), $@"
-gitHub:
-  userCache: https://raw.githubusercontent.com/docascode/docfx-test-dependencies-clean/master/README.md");
+monikerDefinition: https://raw.githubusercontent.com/docascode/docfx-test-dependencies-clean/master/README.md");
 
             // run restore
             await Docfx.Run(new[] { "restore", docsetPath });

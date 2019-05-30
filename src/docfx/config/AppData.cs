@@ -26,7 +26,7 @@ namespace Microsoft.Docs.Build
 
         public static string GlobalConfigPath => GetGlobalConfigPath();
 
-        public static string DefaultGitHubUserCachePath => Path.Combine(CacheRoot, "github-users.json");
+        public static string GitHubUserCachePath => Path.Combine(CacheRoot, "github-user-cache.json");
 
         public static string GetGitDir(string remote)
         {
@@ -52,11 +52,6 @@ namespace Microsoft.Docs.Build
         public static string GetCommitBuildTimePath(string remote, string branch)
         {
             return Path.Combine(CacheRoot, "history", $"build_history_{HashUtility.GetMd5Guid(remote)}_{HashUtility.GetMd5Guid(branch)}.json");
-        }
-
-        public static string GetGitHubUserCachePath(string url)
-        {
-            return Path.Combine(CacheRoot, "github-users", PathUtility.UrlToShortName(url));
         }
 
         /// <summary>

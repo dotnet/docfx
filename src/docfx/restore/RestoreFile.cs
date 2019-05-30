@@ -57,7 +57,6 @@ namespace Microsoft.Docs.Build
                 yield return url;
             }
 
-            yield return config.GitHub.UserCache;
             yield return config.MonikerDefinition;
 
             foreach (var metadataSchema in config.MetadataSchema)

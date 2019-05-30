@@ -39,7 +39,7 @@ namespace Microsoft.Docs.Build
             return true;
         }
 
-        public void UpdateAndSaveCache()
+        public void Save()
         {
             if (_buildTimeByCommit.ContainsKey(_repo.Commit))
             {

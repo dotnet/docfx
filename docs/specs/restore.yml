@@ -61,9 +61,7 @@ repos:
     - files:
         docs/a.md:
         docfx.yml: |
-          gitHub:
-            userCache: https://raw.githubusercontent.com/docascode/docfx-test-dependencies/github-user-cache-file/user_profile.json
-            resolveUsers: true
+          monikerDefinition: https://raw.githubusercontent.com/docascode/docfx-test-dependencies/github-user-cache-file/user_profile.json
       author: OsmondJiang
       email: xinjiang@microsoft.com
 outputs:

@@ -11,17 +11,6 @@ namespace Microsoft.Docs.Build
         public readonly string AuthToken = string.Empty;
 
         /// <summary>
-        /// The address of user profile cache, used for generating authoer and contributors.
-        /// It should be an absolute url or a relative path.
-        /// </summary>
-        public readonly SourceInfo<string> UserCache = new SourceInfo<string>(string.Empty);
-
-        /// <summary>
-        /// Whether upload the updated user cache to remote if it is set to a URL.
-        /// </summary>
-        public readonly bool UpdateRemoteUserCache = false;
-
-        /// <summary>
         /// Determines how long at most a user remains valid in cache.
         /// </summary>
         public readonly int UserCacheExpirationInHours = 30 * 24;

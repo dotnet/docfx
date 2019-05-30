@@ -58,8 +58,6 @@ namespace Microsoft.Docs.Build
 
                 var (publishManifest, fileManifests, sourceDependencies) = await BuildFiles(context, docset, tocMap);
 
-                var saveGitHubUserCache = context.GitHubUserCache.SaveChanges(config);
-
                 xrefMap.OutputXrefMap(context);
                 context.Output.WriteJson(publishManifest, ".publish.json");
                 context.Output.WriteJson(sourceDependencies.ToDependencyMapModel(), ".dependencymap.json");
@@ -77,9 +75,8 @@ namespace Microsoft.Docs.Build
                     }
                 }
 
-                context.ErrorLog.Write(await saveGitHubUserCache);
-
-                context.ContributionProvider.UpdateCommitBuildTime();
+                context.GitHubUserCache.Save();
+                context.ContributionProvider.Save();
             }
         }
 
