@@ -9,7 +9,7 @@ namespace Microsoft.Docs.Build
 {
     internal class MonikerProvider
     {
-        private readonly List<(Func<string, bool> glob, (string monikerRange, IEnumerable<string> monikers))> _rules = new List<(Func<string, bool>, (string, IEnumerable<string>))>();
+        private readonly List<(Func<string, bool> glob, (string monikerRange, IEnumerable<Moniker> monikers))> _rules = new List<(Func<string, bool>, (string, IEnumerable<Moniker>))>();
         private readonly MonikerRangeParser _rangeParser;
 
         public MonikerComparer Comparer { get; }
@@ -28,7 +28,7 @@ namespace Microsoft.Docs.Build
 
             foreach (var (key, monikerRange) in docset.Config.MonikerRange)
             {
-                _rules.Add((GlobUtility.CreateGlobMatcher(key), (monikerRange, _rangeParser.Parse(monikerRange))));
+                _rules.Add((GlobUtility.CreateGlobMatcher(key), (monikerRange, _rangeParser.ParseWithInfo(monikerRange))));
             }
             _rules.Reverse();
         }
@@ -45,11 +45,11 @@ namespace Microsoft.Docs.Build
             return (errors, monikers);
         }
 
-        public (Error, List<string>) GetFileLevelMonikers(Document file, SourceInfo<string> fileMonikerRange = null)
+        public (Error, List<Moniker>) GetFileLevelMonikersWithInfo(Document file, SourceInfo<string> fileMonikerRange = null)
         {
             Error error = null;
             string configMonikerRange = null;
-            var configMonikers = new List<string>();
+            var configMonikers = new List<Moniker>();
             foreach (var (glob, (monikerRange, monikers)) in _rules)
             {
                 if (glob(file.FilePath))
@@ -70,21 +70,27 @@ namespace Microsoft.Docs.Build
                     return (error, configMonikers);
                 }
 
-                var fileMonikers = _rangeParser.Parse(fileMonikerRange);
-                var intersection = configMonikers.Intersect(fileMonikers, StringComparer.OrdinalIgnoreCase).ToList();
+                var fileMonikers = _rangeParser.ParseWithInfo(fileMonikerRange);
+                var intersection = configMonikers.Intersect(fileMonikers).ToList();
 
                 // With non-empty config monikers,
                 // warn if no intersection of config monikers and file monikers
                 if (intersection.Count == 0)
                 {
-                    error = Errors.EmptyMonikers($"No moniker intersection between docfx.yml/docfx.json and file metadata. Config moniker range '{configMonikerRange}' is '{string.Join(',', configMonikers)}', while file moniker range '{fileMonikerRange}' is '{string.Join(',', fileMonikers)}'");
+                    error = Errors.EmptyMonikers($"No moniker intersection between docfx.yml/docfx.json and file metadata. Config moniker range '{configMonikerRange}' is '{string.Join(',', configMonikers.Select(x => x.MonikerName))}', while file moniker range '{fileMonikerRange}' is '{string.Join(',', fileMonikers.Select(x => x.MonikerName))}'");
                 }
-                intersection.Sort(Comparer);
+                intersection.OrderBy(x => x.MonikerName, Comparer);
                 return (error, intersection);
             }
 
-            configMonikers.Sort(Comparer);
+            configMonikers.OrderBy(x => x.MonikerName, Comparer);
             return (error, configMonikers);
+        }
+
+        public (Error, List<string>) GetFileLevelMonikers(Document file, SourceInfo<string> fileMonikerRange = null)
+        {
+            var (error, monikers) = GetFileLevelMonikersWithInfo(file, fileMonikerRange);
+            return (error, monikers.Select(x => x.MonikerName).ToList());
         }
 
         public List<string> GetZoneMonikers(SourceInfo<string> rangeString, List<string> fileLevelMonikers, List<Error> errors)

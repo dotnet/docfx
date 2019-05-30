@@ -20,12 +20,12 @@ namespace Microsoft.Docs.Build
 
         public IReadOnlyList<string> Parse(SourceInfo<string> rangeString)
         {
-            var monikerNames = ParseCore(rangeString).Select(x => x.MonikerName).ToList();
+            var monikerNames = ParseWithInfo(rangeString).Select(x => x.MonikerName).ToList();
             monikerNames.Sort(StringComparer.OrdinalIgnoreCase);
             return monikerNames;
         }
 
-        public IReadOnlyList<Moniker> ParseCore(SourceInfo<string> rangeString)
+        public IReadOnlyList<Moniker> ParseWithInfo(SourceInfo<string> rangeString)
             => string.IsNullOrWhiteSpace(rangeString)
                 ? Array.Empty<Moniker>()
                 : _cache.GetOrAdd(rangeString, new Lazy<IReadOnlyList<Moniker>>(() =>
