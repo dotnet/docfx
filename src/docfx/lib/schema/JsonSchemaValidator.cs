@@ -112,6 +112,23 @@ namespace Microsoft.Docs.Build
 
         private void ValidateObject(JsonSchema schema, List<Error> errors, JObject map)
         {
+            ValidateAdditionalProperties(schema, errors, map);
+            ValidateRequired(schema, errors, map);
+            ValidateDependencies(schema, errors, map);
+            ValidateEither(schema, errors, map);
+            ValidatePrecludes(schema, errors, map);
+
+            foreach (var (key, value) in map)
+            {
+                if (schema.Properties.TryGetValue(key, out var propertySchema))
+                {
+                    Validate(propertySchema, value, errors);
+                }
+            }
+        }
+
+        private void ValidateAdditionalProperties(JsonSchema schema, List<Error> errors, JObject map)
+        {
             if (schema.AdditionalProperties.additionalPropertyJsonSchema != null)
             {
                 foreach (var (key, value) in map)
@@ -132,15 +149,10 @@ namespace Microsoft.Docs.Build
                     }
                 }
             }
+        }
 
-            foreach (var key in schema.Required)
-            {
-                if (!map.ContainsKey(key))
-                {
-                    errors.Add(Errors.FieldRequired(JsonUtility.GetSourceInfo(map), key));
-                }
-            }
-
+        private void ValidateDependencies(JsonSchema schema, List<Error> errors, JObject map)
+        {
             foreach (var (key, value) in schema.Dependencies)
             {
                 if (map.ContainsKey(key))
@@ -154,58 +166,60 @@ namespace Microsoft.Docs.Build
                     }
                 }
             }
+        }
 
+        private void ValidateRequired(JsonSchema schema, List<Error> errors, JObject map)
+        {
+            foreach (var key in schema.Required)
+            {
+                if (!map.ContainsKey(key))
+                {
+                    errors.Add(Errors.FieldRequired(JsonUtility.GetSourceInfo(map), key));
+                }
+            }
+        }
+
+        private void ValidateEither(JsonSchema schema, List<Error> errors, JObject map)
+        {
+            bool result;
             foreach (var keys in schema.Either)
             {
-                if (!EitherLogic(keys, map))
+                result = false;
+                foreach (var key in keys)
+                {
+                    if (map.ContainsKey(key))
+                    {
+                        result = true;
+                        break;
+                    }
+                }
+
+                if (!result)
                 {
                     errors.Add(Errors.EitherLogicFailed(JsonUtility.GetSourceInfo(map), keys));
                 }
             }
+        }
 
+        private void ValidatePrecludes(JsonSchema schema, List<Error> errors, JObject map)
+        {
+            int existNum;
             foreach (var keys in schema.Precludes)
             {
-                if (!PrecludesLogic(keys, map))
+                existNum = 0;
+                foreach (var key in keys)
+                {
+                    if (map.ContainsKey(key))
+                    {
+                        existNum = existNum + 1;
+                    }
+                }
+
+                if (existNum >= 2)
                 {
                     errors.Add(Errors.PrecludesLogicFailed(JsonUtility.GetSourceInfo(map), keys));
                 }
             }
-
-            foreach (var (key, value) in map)
-            {
-                if (schema.Properties.TryGetValue(key, out var propertySchema))
-                {
-                    Validate(propertySchema, value, errors);
-                }
-            }
-        }
-
-        private static bool EitherLogic(string[] keys, JObject map)
-        {
-            foreach (var key in keys)
-            {
-                if (map.ContainsKey(key))
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        private static bool PrecludesLogic(string[] keys, JObject map)
-        {
-            var existNum = 0;
-
-            foreach (var key in keys)
-            {
-                if (map.ContainsKey(key))
-                {
-                    existNum = existNum + 1;
-                }
-            }
-
-            return existNum < 2;
         }
 
         private static bool TypeMatches(JsonSchemaType schemaType, JTokenType tokenType)
