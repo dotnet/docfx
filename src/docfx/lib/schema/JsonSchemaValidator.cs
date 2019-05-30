@@ -181,10 +181,9 @@ namespace Microsoft.Docs.Build
 
         private void ValidateEither(JsonSchema schema, List<Error> errors, JObject map)
         {
-            bool result;
             foreach (var keys in schema.Either)
             {
-                result = false;
+                var result = false;
                 foreach (var key in keys)
                 {
                     if (map.ContainsKey(key))
@@ -203,21 +202,16 @@ namespace Microsoft.Docs.Build
 
         private void ValidatePrecludes(JsonSchema schema, List<Error> errors, JObject map)
         {
-            int existNum;
             foreach (var keys in schema.Precludes)
             {
-                existNum = 0;
+                var existNum = 0;
                 foreach (var key in keys)
                 {
                     if (map.ContainsKey(key) && ++existNum > 1)
                     {
+                        errors.Add(Errors.PrecludesLogicFailed(JsonUtility.GetSourceInfo(map), keys));
                         break;
                     }
-                }
-
-                if (existNum >= 2)
-                {
-                    errors.Add(Errors.PrecludesLogicFailed(JsonUtility.GetSourceInfo(map), keys));
                 }
             }
         }
