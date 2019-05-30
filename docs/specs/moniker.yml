@@ -783,6 +783,9 @@ inputs:
     ## [C](/c)
     ## [D](http://test.com/test)
     ### [A](xref:a)
+    ## E
+    ### [A](a.md)
+    ### [B](b.md)
   monikerDefinition.json: |
     {
       "monikers": [
@@ -814,10 +817,18 @@ outputs:
             { "name": "C", "href": "/c", "monikers": ["netcore-1.1", "netcore-1.2", "netcore-1.3"] },
             { 
               "name": "D",
-              "href": "http://test.com/test", 
-              "monikers": ["netcore-1.0", "netcore-1.1", "netcore-1.2", "netcore-1.3"],
+              "href": "http://test.com/test",
+              "monikers": ["netcore-1.1", "netcore-1.2", "netcore-1.3"],
               "items": [
                 { "name": "A", "href": "a", "monikers": ["netcore-1.0", "netcore-1.1"] }
+              ]
+            },
+            {
+              "name": "E",
+              "monikers": [ "netcore-1.0", "netcore-1.1", "netcore-1.2" ],
+              "items": [
+                { "name": "A", "href": "a", "monikers": [ "netcore-1.0", "netcore-1.1" ] },
+                { "name": "B", "href": "b", "monikers": [ "netcore-1.1", "netcore-1.2"] },
               ]
             }
           ],
