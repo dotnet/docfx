@@ -358,6 +358,19 @@ namespace Microsoft.Docs.Build
             return token;
         }
 
+        internal static void SkipToken(JsonReader reader)
+        {
+            var currentDepth = reader.Depth;
+            reader.Skip();
+            while (reader.Depth > currentDepth)
+            {
+                if (!reader.Read())
+                {
+                    break;
+                }
+            }
+        }
+
         /// <summary>
         /// Fast pass to read the value of $schema specified in JSON.
         /// $schema must be the first attribute in the root object.
