@@ -155,6 +155,22 @@ namespace Microsoft.Docs.Build
                 }
             }
 
+            foreach (var keys in schema.Either)
+            {
+                if (!EitherLogic(keys, map))
+                {
+                    errors.Add(Errors.EitherLogicFailed(JsonUtility.GetSourceInfo(map), keys));
+                }
+            }
+
+            foreach (var keys in schema.Precludes)
+            {
+                if (!PrecludesLogic(keys, map))
+                {
+                    errors.Add(Errors.PrecludesLogicFailed(JsonUtility.GetSourceInfo(map), keys));
+                }
+            }
+
             foreach (var (key, value) in map)
             {
                 if (schema.Properties.TryGetValue(key, out var propertySchema))
@@ -162,6 +178,34 @@ namespace Microsoft.Docs.Build
                     Validate(propertySchema, value, errors);
                 }
             }
+        }
+
+        private static bool EitherLogic(string[] keys, JObject map)
+        {
+            foreach (var key in keys)
+            {
+                if (map.ContainsKey(key))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private static bool PrecludesLogic(string[] keys, JObject map)
+        {
+            var existNum = 0;
+
+            foreach (var key in keys)
+            {
+                if (map.ContainsKey(key))
+                {
+                    existNum = existNum + 1;
+                }
+            }
+
+            return existNum < 2;
         }
 
         private static bool TypeMatches(JsonSchemaType schemaType, JTokenType tokenType)

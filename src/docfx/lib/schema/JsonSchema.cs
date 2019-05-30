@@ -116,5 +116,18 @@ namespace Microsoft.Docs.Build
         /// Properties that are built into xref map
         /// </summary>
         public string[] XrefProperties { get; set; } = Array.Empty<string>();
+
+        // JSON schema metadata validation extensions
+        //-------------------------------------------
+
+        /// <summary>
+        /// Properties that are used to realize either logic
+        /// </summary>
+        public List<string[]> Either { get; set; } = new List<string[]>();
+
+        /// <summary>
+        /// Properties that are are used to realize precludes logic
+        /// </summary>
+        public List<string[]> Precludes { get; set; } = new List<string[]>();
     }
 }

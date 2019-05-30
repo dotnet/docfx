@@ -392,6 +392,18 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Warning, "lack-dependency", $"Missing field: '{otherKey}'. If you specify '{name}', you must also specify '{otherKey}'", source);
 
         /// <summary>
+        /// Fields do not meet the requirements of either logic.
+        /// </summary>
+        public static Error EitherLogicFailed(SourceInfo source, IEnumerable<object> fileds)
+            => new Error(ErrorLevel.Warning, "either-logic-failed", $"At least one of these fields: {Join(fileds)} exists", source);
+
+        /// <summary>
+        /// Fields do not meet the requirements of precludes logic.
+        /// </summary>
+        public static Error PrecludesLogicFailed(SourceInfo source, IEnumerable<object> fileds)
+            => new Error(ErrorLevel.Warning, "precludes-logic-failed", $"Only one of these fields: {Join(fileds)} can exist at most", source);
+
+        /// <summary>
         /// Used unknown YamlMime.
         /// Examples:
         ///   - forgot to define schema in schema document(yml)
