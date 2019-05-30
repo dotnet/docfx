@@ -117,8 +117,8 @@ namespace Microsoft.Docs.Build
         /// In markdown-format toc, defined an empty node(# ) with no content.
         /// </summary>
         /// Behavior: ✔️ Message: ❌
-        public static Error MissingTocHead(SourceInfo<string> source)
-            => new Error(ErrorLevel.Error, "missing-toc-head", $"The toc head name is missing in '{source}'", source);
+        public static Error MissingTocHead(SourceInfo source)
+            => new Error(ErrorLevel.Error, "missing-toc-head", $"The toc head name is missing", source);
 
         /// <summary>
         /// In markdown-format toc, used wrong toc syntax.
