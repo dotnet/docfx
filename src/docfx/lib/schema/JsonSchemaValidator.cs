@@ -141,6 +141,20 @@ namespace Microsoft.Docs.Build
                 }
             }
 
+            foreach (var (key, value) in schema.Dependencies)
+            {
+                if (map.ContainsKey(key))
+                {
+                    foreach (var otherKey in value)
+                    {
+                        if (!map.ContainsKey(otherKey))
+                        {
+                            errors.Add(Errors.LackDependency(JsonUtility.GetSourceInfo(map), key, otherKey));
+                        }
+                    }
+                }
+            }
+
             foreach (var property in map.Properties())
             {
                 if (schema.Reserved.Contains(property.Name))

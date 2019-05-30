@@ -70,12 +70,12 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(docset != null);
 
-            if (string.IsNullOrEmpty(docset.Config.Theme))
+            if (string.IsNullOrEmpty(docset.Config.Template))
             {
                 return null;
             }
 
-            var (themeRemote, themeBranch) = LocalizationUtility.GetLocalizedTheme(docset.Config.Theme, docset.Locale, docset.Config.Localization.DefaultLocale);
+            var (themeRemote, themeBranch) = LocalizationUtility.GetLocalizedTheme(docset.Config.Template, docset.Locale, docset.Config.Localization.DefaultLocale);
             var (themePath, themeRestoreMap) = docset.RestoreMap.GetGitRestorePath(themeRemote, themeBranch, docset.DocsetPath);
             Log.Write($"Using theme '{themeRemote}#{themeRestoreMap.DependencyLock?.Commit}' at '{themePath}'");
 

@@ -9,8 +9,7 @@ namespace Microsoft.Docs.Build
 {
     public class TableOfContentsItem
     {
-        [JsonRequired]
-        public string Name { get; set; }
+        public SourceInfo<string> Name { get; set; }
 
         public string DisplayName { get; set; }
 

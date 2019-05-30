@@ -38,7 +38,7 @@ namespace Microsoft.Docs.Build
             NullValueHandling = NullValueHandling.Ignore,
             MetadataPropertyHandling = MetadataPropertyHandling.Ignore,
             Converters = s_jsonConverters,
-            ContractResolver = new SchemaContractResolver { NamingStrategy = s_namingStrategy },
+            ContractResolver = new JsonContractResolver { NamingStrategy = s_namingStrategy },
         });
 
         private static readonly JsonSerializer s_indentSerializer = JsonSerializer.Create(new JsonSerializerSettings
@@ -356,6 +356,19 @@ namespace Microsoft.Docs.Build
                 token.AddAnnotation(source);
             }
             return token;
+        }
+
+        internal static void SkipToken(JsonReader reader)
+        {
+            var currentDepth = reader.Depth;
+            reader.Skip();
+            while (reader.Depth > currentDepth)
+            {
+                if (!reader.Read())
+                {
+                    break;
+                }
+            }
         }
 
         /// <summary>
