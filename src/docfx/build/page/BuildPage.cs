@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
 using System.IO;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
@@ -43,7 +42,7 @@ namespace Microsoft.Docs.Build
             List<Error> contributorErrors;
             (contributorErrors, model.ContributionInfo) = await context.ContributionProvider.GetContributionInfo(file, model.Author);
             model.Author = new SourceInfo<string>(model.ContributionInfo?.Author?.Name, model.Author);
-            model.UpdatedAt = model.ContributionInfo?.UpdatedAtDateTime.ToString("yyyy-MM-dd hh:mm tt", CultureInfo.InvariantCulture);
+            model.UpdatedAt = model.ContributionInfo?.UpdatedAtDateTime.ToString("yyyy-MM-dd hh:mm tt");
 
             model.DepotName = $"{file.Docset.Config.Product}.{file.Docset.Config.Name}";
             model.Path = PathUtility.NormalizeFile(Path.GetRelativePath(file.Docset.SiteBasePath, file.SitePath));
