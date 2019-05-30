@@ -94,12 +94,12 @@ namespace Microsoft.Docs.Build
                         if (json.TokenType == JsonToken.StartObject)
                         {
                             startLine = json.LineNumber;
-                            startColumn = json.LinePosition;
+                            startColumn = json.LinePosition + 1;
                         }
                         else if (json.TokenType == JsonToken.EndObject)
                         {
                             endLine = json.LineNumber;
-                            endColumn = json.LinePosition;
+                            endColumn = json.LinePosition + 1;
                             if (uid != null)
                             {
                                 populate(uid, startLine, endLine, startColumn, endColumn);

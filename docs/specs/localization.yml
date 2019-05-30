@@ -88,7 +88,7 @@ outputs:
   docs/dep.json: |
     {"conceptual": "<p>loc-DEP-sxs</p>"}
 ---
-# loc docset share the source docset's restore map 1
+# [only] loc docset share the source docset's restore map 1
 # [repository mapping]
 commands:
   - restore --locale zh-cn
@@ -102,17 +102,17 @@ repos:
             child1: https://docs.com/d/restore5
         xrefmap.json: |
           {
-            "references": [{ "uid": "System.String", "name": "String" }]
+            "references": [{ "uid": "System.String", "name": "String", "href": "//docs.com" }]
           }
   https://github.com/d/restore5.zh-cn#master:
     - files:
         a.md: '@System.String'
   https://docs.com/d/restore5:
     - files:
-        docs/d.md: d
+        d.md: d
 outputs:
-  docs/a.json: |
-    { "conceptual":"<p>d</p>\n" }
+  a.json: |
+    { "conceptual":"<p><a href=\"//docs.com\">String</a></p>" }
 ---
 # loc docset share the source docset's restore map 2
 # [branch mapping] & bilingual
