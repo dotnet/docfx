@@ -454,8 +454,6 @@ inputs:
   a.md:
 outputs:
   a.json:
-  .errors.log: |
-    ["warning","unknown-field","Could not find member 'locales: zh-cn' on object of type 'Config'.","docfx.yml",4,1]
 ---
 # redirect to in config.redirections must start with '/'
 inputs:
