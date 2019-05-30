@@ -1,47 +1,3 @@
----
-# Show git contribution info when userProfile is set to URL
-repos:
-  https://github.com/testowner/testrepo#master-url-cache:
-    - author: Charlie
-      email: charlie@contoso.com
-      files:
-        docs/index.md: |
-          ---
-          author: charlie
-          ---
-          Alice creates this. Bob updates this. Charlie becomes author.
-    - author: Bob 
-      email: bob@contoso.com
-      files:
-        docs/index.md: |
-          Alice creates this. Bob updates this.
-    - author: Alice 
-      email: alice@contoso.com
-      files:
-        docs/index.md: |
-          Alice creates this.
-inputs:
-  docfx.yml: |
-    gitHub:
-      userCache: https://raw.githubusercontent.com/docascode/docfx-test-dependencies/master/user_profile.json
-      resolveUsers: true
-outputs:
-  docs/index.json: |
-    {
-      "_op_gitContributorInformation":
-      {
-        "author":
-          { "name": "charlie", "profile_url": "https://github.com/charlie", "display_name": "Charlie", "id": "3" },
-        "contributors": [
-          { "name": "bob", "profile_url": "https://github.com/bob", "display_name": "Bob", "id": "2" },
-          { "name": "alice", "profile_url": "https://github.com/alice", "display_name": "Alice", "id": "1" }
-        ],
-        "update_at": "10/30/2018",
-        "updated_at_date_time": "2018-10-30T00:00:00"
-      },
-      "updated_at": "2018-10-30 12:00 AM"
-    }
----
 # Show git contribution info when userProfile is set to relative file path
 repos:
   https://github.com/testowner/testrepo#master-file-cache:
@@ -66,9 +22,9 @@ repos:
 inputs:
   docfx.yml: |
     gitHub:
-      userCache: user_profile.json
       resolveUsers: true
-  user_profile.json: |
+cache:
+  github-users.json: |
       { "users": [
           {"name": "Alice", "login": "alice", "id": 1, "emails": ["alice@contoso.com"]},
           {"name": "Bob", "login": "bob", "id": 2, "emails": ["bob@contoso.com"]},
@@ -99,9 +55,9 @@ inputs:
     # git-test
   docfx.yml: |
     gitHub:
-      userCache: user_profile.json
       resolveUsers: true
-  user_profile.json: |
+cache:
+  github-users.json: |
     {
       "users": [
         {"login": "invalid_user"},
@@ -131,9 +87,9 @@ repos:
 inputs:
   docfx.yml: |
     gitHub:
-      userCache: user_profile.json
       resolveUsers: true
-  user_profile.json: |
+cache:
+  github-users.json: |
       { "users": [
           {"name": "Alice", "login": "alice", "id": 1, "emails": ["alice@contoso.com"]},
           {"name": "Bob", "login": "bob", "id": 2, "emails": ["bob@contoso.com"]},
@@ -179,13 +135,13 @@ repos:
 inputs:
   docfx.yml: |
     gitHub:
-      userCache: user_profile.json
       resolveUsers: true
     contribution:
       excludedContributors:
         - AlIcE
         - BoB
-  user_profile.json: |
+cache:
+  github-users.json: |
       { "users": [
           {"name": "Alice", "login": "alice", "id": 1, "emails": ["alice@contoso.com"]},
           {"name": "Bob", "login": "bob", "id": 2, "emails": ["bob@contoso.com"]},
@@ -219,9 +175,9 @@ repos:
 inputs:
   docfx.yml: |
     gitHub:
-      userCache: user_profile.json
       resolveUsers: true
-  user_profile.json: |
+cache:
+  github-users.json: |
       { "users": [
           {"name": "Alice", "login": "alice", "id": 1, "emails": ["alice@contoso.com"]},
           {"name": "Bob", "login": "bob", "id": 2, "emails": ["bob@contoso.com"]},
@@ -261,12 +217,12 @@ repos:
 inputs:
   docfx.yml: |
     gitHub:
-      userCache: user_profile.json
       resolveUsers: true
     contribution:
       excludedContributors:
         - ChArLiE
-  user_profile.json: |
+cache:
+  github-users.json: |
       { "users": [
           {"name": "Alice", "login": "alice", "id": 1, "emails": ["alice@contoso.com"]},
           {"name": "Bob", "login": "bob", "id": 2, "emails": ["bob@contoso.com"]},
@@ -298,12 +254,12 @@ repos:
 inputs:
   docfx.yml: |
     gitHub:
-      userCache: user_profile.json
       resolveUsers: true
     contribution:
       excludedContributors:
         - alice
-  user_profile.json: |
+cache:
+  github-users.json: |
       { "users": [{"name": "Alice", "login": "alice", "id": 1, "emails": ["alice@contoso.com"]}] }
 outputs:
   docs/index.json: |
@@ -500,12 +456,12 @@ repos:
 inputs:
   docfx.yml: |
     gitHub:
-      userCache: user_profile.json
       resolveUsers: true
       authToken: {DOCS_GITHUB_TOKEN}
     contribution:
       repository: https://github.com/docascode/contribution-test
-  user_profile.json: |
+cache:
+  github-users.json: |
       { "users": [
           {"name": "Alice", "login": "alice", "id": 1, "emails": ["alice@contoso.com"]},
           {"name": "Bob", "login": "bob", "id": 2, "emails": ["bob@contoso.com"]},
@@ -554,11 +510,11 @@ repos:
 inputs:
   docfx.yml: |
     gitHub:
-      userCache: user_profile.json
       resolveUsers: true
     contribution:
       repository: https://docascode.visualstudio.com/contribution1/_git/a
-  user_profile.json: |
+cache:
+  github-users.json: |
       { "users": [
           {"name": "Alice", "login": "alice", "id": 1, "emails": ["alice@contoso.com"]},
           {"name": "Bob", "login": "bob", "id": 2, "emails": ["bob@contoso.com"]},
@@ -603,9 +559,9 @@ repos:
 inputs:
   docfx.yml: |
     gitHub:
-      userCache: user_profile.json
       resolveUsers: false
-  user_profile.json: |
+cache:
+  github-users.json: |
       { "users": [
           {"name": "Alice", "login": "alice", "id": 1, "emails": ["alice@contoso.com"]},
           {"name": "Bob", "login": "bob", "id": 2, "emails": ["bob@contoso.com"]},
