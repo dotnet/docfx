@@ -45,7 +45,7 @@ namespace Microsoft.Docs.Build
             return (errors, monikers);
         }
 
-        public (Error, List<string>) GetFileLevelMonikers(Document file, SourceInfo<string> fileMonikerRange = null)
+        public (Error, List<string>) GetFileLevelMonikers(Document file, SourceInfo<string> fileMonikerRange = default)
         {
             Error error = null;
             string configMonikerRange = null;

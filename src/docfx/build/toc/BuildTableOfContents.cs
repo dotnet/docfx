@@ -83,16 +83,16 @@ namespace Microsoft.Docs.Build
 
                     List<string> monikers = null;
 
-                    var linkType = UrlUtility.GetLinkType(item.Href?.Value);
+                    var linkType = UrlUtility.GetLinkType(item.Href.Value);
                     if (linkType == LinkType.External || linkType == LinkType.AbsolutePath)
                     {
                         item.Monikers = fileMonikers;
                         continue;
                     }
 
-                    if (item.Href?.Value is null || !hrefMap.TryGetValue(item.Href, out monikers))
+                    if (item.Href.Value is null || !hrefMap.TryGetValue(item.Href, out monikers))
                     {
-                        if (item.TopicHref is null || !hrefMap.TryGetValue(item.TopicHref, out monikers))
+                        if (item.TopicHref.Value is null || !hrefMap.TryGetValue(item.TopicHref, out monikers))
                         {
                             monikers = new List<string>();
                         }

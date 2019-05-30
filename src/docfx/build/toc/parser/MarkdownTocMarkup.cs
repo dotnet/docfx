@@ -133,7 +133,10 @@ namespace Microsoft.Docs.Build
                     currentItem.Name = GetLiteral(linkInline);
                 }
 
-                currentItem.Name = currentItem.Name ?? GetLiteral(block.Inline);
+                if (currentItem.Name.Value is null)
+                {
+                    currentItem.Name = GetLiteral(block.Inline);
+                }
 
                 return currentItem;
             }
@@ -148,7 +151,7 @@ namespace Microsoft.Docs.Build
                     if (!(child is LiteralInline literal))
                     {
                         errors.Add(Errors.InvalidTocSyntax(new SourceInfo<string>(tocContent.Substring(inline.Span.Start, inline.Span.Length), inline.ToSourceInfo(file: filePath))));
-                        return null;
+                        return default;
                     }
 
                     var content = literal.Content;

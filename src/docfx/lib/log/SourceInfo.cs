@@ -49,7 +49,5 @@ namespace Microsoft.Docs.Build
             EndLine = endLine;
             EndColumn = endColumn;
         }
-
-        internal virtual object GetValue() => null;
     }
 }

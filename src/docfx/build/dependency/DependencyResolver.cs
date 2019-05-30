@@ -123,7 +123,7 @@ namespace Microsoft.Docs.Build
 
             if (href.Value.StartsWith("xref:") != false)
             {
-                href.Value = href.Value.Substring("xref:".Length);
+                var uid = new SourceInfo<string>(href.Value.Substring("xref:".Length), href);
                 var (uidError, uidHref, _, referencedFile) = ResolveXref(href, relativeTo, resultRelativeTo);
                 return (uidError, uidHref, null, null, referencedFile);
             }

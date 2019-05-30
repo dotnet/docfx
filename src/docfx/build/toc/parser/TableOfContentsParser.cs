@@ -135,9 +135,9 @@ namespace Microsoft.Docs.Build
                 var (resolvedTopicHref, resolvedTopicName, document) = ProcessTopicItem(topicUid, topicHref);
 
                 // set resolved href back
-                tocModelItem.Href = resolvedTocHref ?? resolvedTopicHref ?? resolvedTopicItemFromTocHref?.Href;
+                tocModelItem.Href = resolvedTocHref.Or(resolvedTopicHref).Or(resolvedTopicItemFromTocHref.Href);
                 tocModelItem.TocHref = resolvedTocHref;
-                tocModelItem.Name = tocModelItem.Name ?? resolvedTopicName;
+                tocModelItem.Name = tocModelItem.Name.Or(resolvedTopicName);
                 tocModelItem.Items = subChildren?.Items ?? tocModelItem.Items;
 
                 // validate
@@ -212,9 +212,8 @@ namespace Microsoft.Docs.Build
                 }
 
                 var (hrefPath, fragment, query) = UrlUtility.SplitUrl(tocHref);
-                tocHref.Value = hrefPath;
 
-                var (referencedTocContent, referenceTocFilePath) = ResolveTocHrefContent(tocHrefType, tocHref, filePath, resolveContent);
+                var (referencedTocContent, referenceTocFilePath) = ResolveTocHrefContent(tocHrefType, new SourceInfo<string>(hrefPath, tocHref), filePath, resolveContent);
                 if (referencedTocContent != null)
                 {
                     var (subErrors, nestedToc) = LoadInternal(context, referenceTocFilePath, rootPath, resolveContent, resolveHref, resolveXref, parents, referencedTocContent);
@@ -247,15 +246,14 @@ namespace Microsoft.Docs.Build
                 // process topicHref then
                 if (string.IsNullOrEmpty(topicHref))
                 {
-                    return (topicHref, null, null);
+                    return (topicHref, default, default);
                 }
 
                 var topicHrefType = GetHrefType(topicHref);
                 Debug.Assert(topicHrefType == TocHrefType.AbsolutePath || !IsIncludeHref(topicHrefType));
 
                 var (resolvedTopicHref, file) = resolveHref.Invoke(filePath, topicHref, rootPath);
-                topicHref.Value = resolvedTopicHref;
-                return (topicHref, null, file);
+                return (new SourceInfo<string>(resolvedTopicHref, topicHref), default, file);
             }
         }
 
