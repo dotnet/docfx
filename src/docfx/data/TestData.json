@@ -1,6 +1,25 @@
 {
     "type": "object",
     "additionalProperties": false,
+    "definitions": {
+        "testChild": {
+            "type": "object",
+            "properties": {
+                "a": {
+                    "type": "string"
+                },
+                "b": {
+                    "type": "string"
+                },
+                "uid": {
+                    "type": "string"
+                }
+            },
+            "xrefProperties": [
+                "a"
+            ]
+        }
+    },
     "properties": {
         "name": {
             "type": "string"
@@ -33,6 +52,15 @@
             "type": "array",
             "items": {
                 "$ref": "#"
+            }
+        },
+        "child": {
+            "$ref": "#/definitions/testChild"
+        },
+        "children": {
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/testChild"
             }
         },
         "$schema": {

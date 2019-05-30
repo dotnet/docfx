@@ -703,3 +703,77 @@ outputs:
     ["info","at-xref-not-found","Cross reference not found: '<xref href=\"f\" data-raw-source=\"@mentionf\">'","docs/a.md",5,12]
     ["info","at-xref-not-found","Cross reference not found: '<p>\n  <xref href=\"e\" data-raw-source=\"@mentione\" />\n  some text\n  <xref href=\"f\" data-raw-source=\"mentionf\" />\n</p>'","docs/a.md",6,18]
     ["warning","xref-not-found","Cross reference not found: '<p>\n  <xref href=\"e\" data-raw-source=\"@mentione\" />\n  some text\n  <xref href=\"f\" data-raw-source=\"mentionf\" />\n</p>'","docs/a.md",6,78]
+---
+# support multiple uids with different xref properties
+inputs:
+  docfx.yml:
+  docs/a.yml: |
+    #YamlMime:TestData
+    uid: a
+    description: description for a
+    child:
+      uid: child
+      a: child aaaaa
+      b: child bbbbb
+    children:
+      - uid: children.a
+        b: children.a bbbbb
+      - uid: children.b
+        a: children.b aaaaa
+  docs/b.md: |
+    Link to @a?displayProperty=description
+    Link to @a?displayProperty=fullName
+    Link to @a?displayProperty=non-exist-property
+    Link to @child?displayProperty=a
+    Link to @child?displayProperty=b
+    Link to @child?displayProperty=non-exist-property
+    Link to @children.a?displayProperty=a
+    Link to @children.a?displayProperty=b
+    Link to @children.a?displayProperty=non-exist-property
+    Link to @children.b?displayProperty=a
+    Link to @children.b?displayProperty=b
+    Link to @children.b?displayProperty=non-exist-property
+outputs:
+  docs/a.json:
+  docs/b.json: |
+    {
+      "conceptual":
+        "<p>
+        Link to <a href=\"a.json\" data-linktype=\"relative-path\">description for a</a>
+        Link to <a href=\"a.json\" data-linktype=\"relative-path\">a</a>
+        Link to <a href=\"a.json\" data-linktype=\"relative-path\">a</a>
+        Link to <a href=\"a.json#child\" data-linktype=\"relative-path\">child aaaaa</a>
+        Link to <a href=\"a.json#child\" data-linktype=\"relative-path\">child</a>
+        Link to <a href=\"a.json#child\" data-linktype=\"relative-path\">child</a>
+        Link to <a href=\"a.json#children_a\" data-linktype=\"relative-path\">children.a</a>
+        Link to <a href=\"a.json#children_a\" data-linktype=\"relative-path\">children.a</a>
+        Link to <a href=\"a.json#children_a\" data-linktype=\"relative-path\">children.a</a>
+        Link to <a href=\"a.json#children_b\" data-linktype=\"relative-path\">children.b aaaaa</a>
+        Link to <a href=\"a.json#children_b\" data-linktype=\"relative-path\">children.b</a>
+        Link to <a href=\"a.json#children_b\" data-linktype=\"relative-path\">children.b</a>
+        </p>"
+    }
+  xrefmap.json: |
+    {
+       "references":[
+          {
+             "uid":"a",
+             "href":"https://docs.com/docs/a.json",
+             "description":"description for a"
+          },
+          {
+             "uid":"child",
+             "href":"https://docs.com/docs/a.json#child",
+             "a":"child aaaaa"
+          },
+          {
+             "uid":"children.a",
+             "href":"https://docs.com/docs/a.json#children_a"
+          },
+          {
+             "uid":"children.b",
+             "href":"https://docs.com/docs/a.json#children_b",
+             "a":"children.b aaaaa"
+          }
+       ]
+    }

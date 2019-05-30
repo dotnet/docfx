@@ -25,5 +25,19 @@ namespace Microsoft.Docs.Build
         public TestData Data { get; set; }
 
         public TestData[] Array { get; set; }
+
+        public TestChild Child { get; set; }
+
+        public TestChild[] Children { get; set; }
+    }
+
+    public sealed class TestChild
+    {
+        public string Uid { get; set; }
+
+        public string A { get; set; }
+
+        public string B { get; set; }
+
     }
 }
