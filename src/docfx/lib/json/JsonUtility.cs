@@ -38,7 +38,7 @@ namespace Microsoft.Docs.Build
             NullValueHandling = NullValueHandling.Ignore,
             MetadataPropertyHandling = MetadataPropertyHandling.Ignore,
             Converters = s_jsonConverters,
-            ContractResolver = new SchemaContractResolver { NamingStrategy = s_namingStrategy },
+            ContractResolver = new JsonContractResolver { NamingStrategy = s_namingStrategy },
         });
 
         private static readonly JsonSerializer s_indentSerializer = JsonSerializer.Create(new JsonSerializerSettings
@@ -160,8 +160,6 @@ namespace Microsoft.Docs.Build
                 var status = new Status { Errors = errors, Reader = new JTokenReader(token) };
 
                 t_status.Value.Push(status);
-
-                token.ReportUnknownFields(errors, type);
 
                 var value = s_schemaValidationSerializer.Deserialize(status.Reader, type);
 
@@ -358,6 +356,19 @@ namespace Microsoft.Docs.Build
             return token;
         }
 
+        internal static void SkipToken(JsonReader reader)
+        {
+            var currentDepth = reader.Depth;
+            reader.Skip();
+            while (reader.Depth > currentDepth)
+            {
+                if (!reader.Read())
+                {
+                    break;
+                }
+            }
+        }
+
         /// <summary>
         /// Fast pass to read the value of $schema specified in JSON.
         /// $schema must be the first attribute in the root object.
@@ -467,88 +478,6 @@ namespace Microsoft.Docs.Build
                 return "Expected type String, please input String or type compatible with String.";
             }
             return message;
-        }
-
-        private static void ReportUnknownFields(this JToken token, List<Error> errors, Type type)
-        {
-            if (token is JArray array)
-            {
-                var itemType = GetCollectionItemTypeIfArrayType(type);
-                foreach (var item in array)
-                {
-                    item.ReportUnknownFields(errors, itemType);
-                }
-            }
-            else if (token is JObject obj)
-            {
-                foreach (var prop in obj.Properties())
-                {
-                    // skip the special property
-                    if (prop.Name == "$schema")
-                        continue;
-
-                    var nestedType = GetNestedTypeAndCheckForUnknownField(type, prop, errors);
-                    if (nestedType != null)
-                    {
-                        prop.Value.ReportUnknownFields(errors, nestedType);
-                    }
-                }
-            }
-        }
-
-        private static Type GetCollectionItemTypeIfArrayType(Type type)
-        {
-            var contract = s_serializer.ContractResolver.ResolveContract(type);
-            if (contract is JsonObjectContract)
-            {
-                return type;
-            }
-            else if (contract is JsonArrayContract arrayContract)
-            {
-                var itemType = arrayContract.CollectionItemType;
-                if (itemType is null)
-                {
-                    return type;
-                }
-                else
-                {
-                    return itemType;
-                }
-            }
-            return type;
-        }
-
-        private static Type GetNestedTypeAndCheckForUnknownField(Type type, JProperty prop, List<Error> errors)
-        {
-            var contract = s_serializer.ContractResolver.ResolveContract(type);
-
-            if (contract is JsonObjectContract objectContract)
-            {
-                var matchingProperty = objectContract.Properties.GetClosestMatchProperty(prop.Name);
-                if (matchingProperty is null && type.IsSealed)
-                {
-                    errors.Add(Errors.UnknownField(GetSourceInfo(prop), prop.Name, type.Name));
-                }
-                return matchingProperty?.PropertyType;
-            }
-
-            if (contract is JsonArrayContract arrayContract)
-            {
-                var matchingProperty = GetPropertiesFromJsonArrayContract(arrayContract).GetClosestMatchProperty(prop.Name);
-                return matchingProperty?.PropertyType;
-            }
-
-            return null;
-        }
-
-        private static JsonPropertyCollection GetPropertiesFromJsonArrayContract(JsonArrayContract arrayContract)
-        {
-            var itemContract = s_serializer.ContractResolver.ResolveContract(arrayContract.CollectionItemType);
-            if (itemContract is JsonObjectContract objectContract)
-                return objectContract.Properties;
-            else if (itemContract is JsonArrayContract contract)
-                return GetPropertiesFromJsonArrayContract(contract);
-            return null;
         }
 
         internal class Status
