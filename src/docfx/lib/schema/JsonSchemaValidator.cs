@@ -209,9 +209,9 @@ namespace Microsoft.Docs.Build
                 existNum = 0;
                 foreach (var key in keys)
                 {
-                    if (map.ContainsKey(key))
+                    if (map.ContainsKey(key) && ++existNum > 1)
                     {
-                        existNum = existNum + 1;
+                        break;
                     }
                 }
 

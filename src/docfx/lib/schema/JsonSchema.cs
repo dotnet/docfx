@@ -123,11 +123,11 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Properties that are used to realize either logic
         /// </summary>
-        public List<string[]> Either { get; set; } = new List<string[]>();
+        public string[][] Either { get; set; } = Array.Empty<string[]>();
 
         /// <summary>
-        /// Properties that are are used to realize precludes logic
+        /// Properties that are used to realize precludes logic
         /// </summary>
-        public List<string[]> Precludes { get; set; } = new List<string[]>();
+        public string[][] Precludes { get; set; } = Array.Empty<string[]>();
     }
 }
