@@ -120,6 +120,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// The parent json schema pointer
         /// </summary>
+        [JsonIgnore]
         public JsonSchema Parent { get; set; }
     }
 }
