@@ -67,7 +67,7 @@ namespace Microsoft.Docs.Build
                 case JArray array:
                     if (schema.Items != null)
                     {
-                        schema.Items.Parent = schema.Parent;
+                        //schema.Items.Parent = schema.Parent;
                         foreach (var item in array)
                         {
                             Traverse(schema.Items, item, transformScalar);
