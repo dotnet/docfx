@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using Newtonsoft.Json.Linq;
@@ -36,7 +37,12 @@ namespace Microsoft.Docs.Build
 
             void TransformXrefScalar(JsonSchema schema, JValue value)
             {
-                var name = value.Path.Split('.').Last();
+                var name = value.Path;
+                if (!string.IsNullOrEmpty(value.Parent?.Parent?.Path))
+                {
+                    Debug.Assert(name.StartsWith(value.Parent.Parent.Path));
+                    name = name.Substring(value.Parent.Parent.Path.Length + 1).Trim(new char[] { '\'', ']', '[' });
+                }
                 if (schema.Parent?.XrefProperties.Contains(name) ?? false)
                 {
                     extensions[value.Path] = new Lazy<JValue>(

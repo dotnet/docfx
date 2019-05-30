@@ -13,10 +13,14 @@
                 },
                 "uid": {
                     "type": "string"
+                },
+                "child.c": {
+                    "type": "string"
                 }
             },
             "xrefProperties": [
-                "a"
+                "a",
+                "child.c"
             ]
         }
     },

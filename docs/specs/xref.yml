@@ -720,6 +720,8 @@ inputs:
         b: children.a bbbbb
       - uid: children.b
         a: children.b aaaaa
+      - uid: children.c
+        child.c: "children.c cccccc"
   docs/b.md: |
     Link to @a?displayProperty=description
     Link to @a?displayProperty=fullName
@@ -733,6 +735,7 @@ inputs:
     Link to @children.b?displayProperty=a
     Link to @children.b?displayProperty=b
     Link to @children.b?displayProperty=non-exist-property
+    Link to @children.c?displayProperty=child.c
 outputs:
   docs/a.json:
   docs/b.json: |
@@ -751,6 +754,7 @@ outputs:
         Link to <a href=\"a.json#children_b\" data-linktype=\"relative-path\">children.b aaaaa</a>
         Link to <a href=\"a.json#children_b\" data-linktype=\"relative-path\">children.b</a>
         Link to <a href=\"a.json#children_b\" data-linktype=\"relative-path\">children.b</a>
+        Link to <a href=\"a.json#children_c\" data-linktype=\"relative-path\">children.c cccccc</a>
         </p>"
     }
   xrefmap.json: |
@@ -774,6 +778,11 @@ outputs:
              "uid":"children.b",
              "href":"https://docs.com/docs/a.json#children_b",
              "a":"children.b aaaaa"
+          },
+          {
+             "uid":"children.c",
+             "href":"https://docs.com/docs/a.json#children_b",
+             "a":"children.c cccccc"
           }
        ]
     }
