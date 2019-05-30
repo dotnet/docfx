@@ -24,10 +24,22 @@ outputs:
 inputs:
   docfx.yml: |
     baseUrl: https://docs.microsoft.com
-    xref: xrefmap.json
+    xref: 
+      - 1.xrefmap.json
+      - 2.xrefmap.json
   docs/a.md: Link to @System.String
-  xrefmap.json: |
-    { "references":[{"uid": "System.String", "name": "String", "fullName": "System.String", "href": "https://docs.microsoft.com/en-us/dotnet/api/system.string", "nameWithType": "System.String"}],"Others":{"properties":{"vendor":"dotnet-api-docs","tags":["/dotnet","public"]}},"IsEmbeddedRedirections":false}
+  1.xrefmap.json: |
+    {
+      "references":[{
+          "uid": "System.String",
+          "name": "String",
+          "fullName": "System.String",
+          "href": "https://docs.microsoft.com/en-us/dotnet/api/system.string",
+          "nameWithType": "System.String"
+      }]
+    }
+  2.xrefmap.json: |
+    { "references":[{"uid": "a", "name": "a", "fullName": "a", "href": "https://docs.microsoft.com/en-us/a", "nameWithType": "a"}]}
 outputs:
   docs/a.json: |
     { "conceptual": "<p>Link to <a href=\"/en-us/dotnet/api/system.string\">String</a></p>\n"}
