@@ -73,10 +73,10 @@ namespace Microsoft.Docs.Build
                 errors.Add(Errors.UndefinedValue(JsonUtility.GetSourceInfo(scalar), scalar, schema.Enum));
             }
 
-            ValidateDateFormat(schema, scalar, errors);
-
             if (scalar.Value is string str)
             {
+                ValidateDateFormat(schema, scalar, str, errors);
+
                 if (schema.MaxLength.HasValue || schema.MinLength.HasValue)
                 {
                     var unicodeLength = str.Where(c => !char.IsLowSurrogate(c)).Count();
@@ -220,11 +220,11 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private void ValidateDateFormat(JsonSchema schema, JValue scalar, List<Error> errors)
+        private void ValidateDateFormat(JsonSchema schema, JValue scalar, string dateString, List<Error> errors)
         {
             if (!string.IsNullOrEmpty(schema.DateFormat))
             {
-                if (DateTime.TryParseExact(scalar.Value.ToString(), schema.DateFormat, null, System.Globalization.DateTimeStyles.None, out var date))
+                if (DateTime.TryParseExact(dateString, schema.DateFormat, null, System.Globalization.DateTimeStyles.None, out var date))
                 {
                     ValidateDateRange(schema, scalar, date, errors);
                 }
