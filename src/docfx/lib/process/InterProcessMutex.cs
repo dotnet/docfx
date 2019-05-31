@@ -14,7 +14,7 @@ namespace Microsoft.Docs.Build
 
         private Mutex _mutex;
 
-        public static InterProcessMutex Lock(string mutexName)
+        public static InterProcessMutex Create(string mutexName)
         {
             // avoid nested mutex with same mutex name
             t_mutexRecursionStack.Value = t_mutexRecursionStack.Value ?? ImmutableStack<string>.Empty;
