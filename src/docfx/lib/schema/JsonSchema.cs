@@ -129,5 +129,25 @@ namespace Microsoft.Docs.Build
         /// Properties that are used to realize precludes logic
         /// </summary>
         public string[][] Precludes { get; set; } = Array.Empty<string[]>();
+
+        /// <summary>
+        /// Properties that are used to validate date format
+        /// </summary>
+        public string DateFormat { get; set; }
+
+        /// <summary>
+        /// Properties that are used to set maximum time range
+        /// </summary>
+        public TimeSpan? RelativeMaxDate { get; set; }
+
+        /// <summary>
+        /// Properties that are used to set minimum time range
+        /// </summary>
+        public TimeSpan? RelativeMinDate { get; set; }
+
+        /// <summary>
+        /// Properties that are used to indicate the deprecated field
+        /// </summary>
+        public JValue ReplacedBy { get; set; }
     }
 }

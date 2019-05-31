@@ -451,6 +451,27 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Warning, "precludes-logic-failed", $"Only one of these fields: {Join(fileds)} can exist at most", source);
 
         /// <summary>
+        /// A field does't conform to date format.
+        /// </summary>
+        /// Behavior: ✔️ Message: ❌
+        public static Error DateFormatInvalid(SourceInfo source, string name, string format)
+            => new Error(ErrorLevel.Warning, "date-format-invalid", $"The '{name}' needs to meet the '{format}' format", source);
+
+        /// <summary>
+        /// Date out of range.
+        /// </summary>
+        /// Behavior: ✔️ Message: ❌
+        public static Error OverDateRange(SourceInfo source, string name, TimeSpan? relativeMinDate, TimeSpan? relativeMaxDate)
+            => new Error(ErrorLevel.Warning, "over-date-range", $"Based on the current time, '{name}' needs to be in this range: {(relativeMinDate.HasValue ? $"{relativeMinDate} <= " : "")}'{name}'{(relativeMaxDate.HasValue ? $" <= {relativeMaxDate}" : "")}", source);
+
+        /// <summary>
+        /// A field is deprecated.
+        /// </summary>
+        /// Behavior: ✔️ Message: ❌
+        public static Error FieldDeprecated(SourceInfo source, string name, string replacedBy)
+            => new Error(ErrorLevel.Warning, "field-deprecated", $"Deprecated field: '{name}'{(string.IsNullOrEmpty(replacedBy) ? "." : $", use '{replacedBy}' instead")}", source);
+
+        /// <summary>
         /// Used unknown YamlMime.
         /// Examples:
         ///   - forgot to define schema in schema document(yml)

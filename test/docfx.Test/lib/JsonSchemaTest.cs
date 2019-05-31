@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.IO;
 using System.Linq;
 using Newtonsoft.Json.Linq;
@@ -218,7 +219,7 @@ namespace Microsoft.Docs.Build
         [InlineData("{'properties': {'keys': {'either': [['key1', 'key2']]}}}", "{'keys' : {}}",
             "['warning','either-logic-failed','At least one of these fields: 'key1', 'key2' exists','file',1,11]")]
 
-        // precludes  validation
+        // precludes validation
         [InlineData("{'precludes': []}", "{}", "")]
         [InlineData("{'precludes': [['key1', 'key2']]}", "{}", "")]
         [InlineData("{'precludes': [['key1', 'key2']]}", "{'key1': 1}", "")]
@@ -232,6 +233,19 @@ namespace Microsoft.Docs.Build
         [InlineData("{'properties': {'keys': {'precludes': [['key1', 'key2']]}}}", "{'keys' : {'key1': 1}}", "")]
         [InlineData("{'properties': {'keys': {'precludes': [['key1', 'key2']]}}}", "{'keys' : {'key1': 1, 'key2': 2}}",
             "['warning','precludes-logic-failed','Only one of these fields: 'key1', 'key2' can exist at most','file',1,11]")]
+
+        // date format validation
+        [InlineData("{'properties': {'key1': {'dateFormat': 'M/d/yyyy'}}}", "{}", "")]
+        [InlineData("{'properties': {'key1': {'dateFormat': 'M/d/yyyy'}}}", "{'key1': '04/26/2019'}", "")]
+        [InlineData("{'properties': {'key1': {'dateFormat': 'M/d/yyyy'}}}", "{'key1': 'Dec 5 2018'}",
+            "['warning','date-format-invalid','The 'key1' needs to meet the 'M/d/yyyy' format','file',1,21]")]
+
+        // deprecated validation
+        [InlineData("{'properties': {'key1': {'replacedBy': 'key2'}}}", "{}", "")]
+        [InlineData("{'properties': {'key1': {'replacedBy': ''}}}", "{'key1': 1}",
+            "['warning','field-deprecated','Deprecated field: 'key1'.','file',1,10]")]
+        [InlineData("{'properties': {'key1': {'replacedBy': 'key2'}}}", "{'key1': 1}",
+            "['warning','field-deprecated','Deprecated field: 'key1', use 'key2' instead','file',1,10]")]
         public void TestJsonSchemaValidation(string schema, string json, string expectedErrors)
         {
             var jsonSchema = JsonUtility.Deserialize<JsonSchema>(schema.Replace('\'', '"'), null);
