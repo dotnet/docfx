@@ -116,11 +116,5 @@ namespace Microsoft.Docs.Build
         /// Properties that are built into xref map
         /// </summary>
         public string[] XrefProperties { get; set; } = Array.Empty<string>();
-
-        /// <summary>
-        /// The parent json schema pointer
-        /// </summary>
-        [JsonIgnore]
-        public JsonSchema Parent { get; set; }
     }
 }

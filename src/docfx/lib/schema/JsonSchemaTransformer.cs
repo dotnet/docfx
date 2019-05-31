@@ -24,7 +24,7 @@ namespace Microsoft.Docs.Build
         public (List<Error> errors, JToken token) TransformContent(Document file, Context context, JToken token, Action<Document> buildChild)
         {
             var errors = new List<Error>();
-            Traverse(_schema, token, (schema, value) => value.Replace(TransformScalar(schema, file, context, value, errors, buildChild)));
+            Traverse(_schema, token, (_, schema, value) => value.Replace(TransformScalar(schema, file, context, value, errors, buildChild)));
             return (errors, token);
         }
 
@@ -35,10 +35,10 @@ namespace Microsoft.Docs.Build
             Traverse(_schema, token, TransformXrefScalar);
             return (errors, extensions);
 
-            void TransformXrefScalar(JsonSchema schema, JValue value)
+            void TransformXrefScalar(JsonSchema parent, JsonSchema schema, JValue value)
             {
                 var (_, name) = JsonUtility.GetPropertyNameFromJsonPath(value.Path);
-                if (schema.Parent?.XrefProperties.Contains(name) ?? false)
+                if (parent?.XrefProperties.Contains(name) ?? false)
                 {
                     extensions[value.Path] = new Lazy<JValue>(
                         () => TransformScalar(schema, file, context, value, errors, buildChild: null),
@@ -47,25 +47,22 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private void Traverse(JsonSchema schema, JToken token, Action<JsonSchema, JValue> transformScalar)
+        private void Traverse(JsonSchema schema, JToken token, Action<JsonSchema, JsonSchema, JValue> transformScalar, JsonSchema parentSchema = null)
         {
-            var parent = schema.Parent;
             schema = _definitions.GetDefinition(schema);
-            schema.Parent = parent;
 
             switch (token)
             {
                 case JValue scalar:
-                    transformScalar(schema, scalar);
+                    transformScalar(parentSchema, schema, scalar);
                     break;
 
                 case JArray array:
                     if (schema.Items != null)
                     {
-                        schema.Items.Parent = schema.Parent;
                         foreach (var item in array)
                         {
-                            Traverse(schema.Items, item, transformScalar);
+                            Traverse(schema.Items, item, transformScalar, parentSchema);
                         }
                     }
                     break;
@@ -75,8 +72,7 @@ namespace Microsoft.Docs.Build
                     {
                         if (schema.Properties.TryGetValue(key, out var propertySchema))
                         {
-                            propertySchema.Parent = schema;
-                            Traverse(propertySchema, value, transformScalar);
+                            Traverse(propertySchema, value, transformScalar, schema);
                         }
                     }
                     break;
