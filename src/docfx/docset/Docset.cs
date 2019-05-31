@@ -187,7 +187,7 @@ namespace Microsoft.Docs.Build
             _redirections = new Lazy<RedirectionMap>(() =>
             {
                 var (errors, map) = RedirectionMap.Create(this, glob);
-                errorLog.Write(Config.ConfigFileName, errors);
+                errorLog.Write(errors);
                 return map;
             });
             _scanScope = new Lazy<HashSet<Document>>(() => GetScanScope(this));
@@ -195,7 +195,7 @@ namespace Microsoft.Docs.Build
             _dependencyDocsets = new Lazy<IReadOnlyDictionary<string, Docset>>(() =>
             {
                 var (errors, dependencies) = LoadDependencies(_errorLog, docsetPath, Config, Locale, RestoreMap, _options);
-                _errorLog.Write(Config.ConfigFileName, errors);
+                _errorLog.Write(errors);
                 return dependencies;
             });
 
