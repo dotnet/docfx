@@ -13,7 +13,7 @@ namespace Microsoft.Docs.Build
 
         public IExpression Right { get; set; }
 
-        public IEnumerable<string> Accept(EvaluatorWithMonikersVisitor visitor)
+        public IEnumerable<Moniker> Accept(EvaluatorWithMonikersVisitor visitor)
         {
             return visitor.Visit(this);
         }
