@@ -347,36 +347,6 @@ namespace Microsoft.Docs.Build
             return token.Annotation<SourceInfo>();
         }
 
-        public static (string parentPath, string propertyName) GetPropertyNameFromJsonPath(string jsonPath)
-        {
-            Debug.Assert(!string.IsNullOrEmpty(jsonPath));
-
-            string subString;
-            string name;
-            var index = jsonPath.LastIndexOf("[\'");
-            if (index != -1)
-            {
-                subString = jsonPath.Substring(0, index);
-                name = jsonPath.Substring(index + 2).TrimEnd(new char[] { ']', '\'' });
-            }
-            else
-            {
-                index = jsonPath.LastIndexOf('.');
-                if (index == -1)
-                {
-                    subString = string.Empty;
-                    name = jsonPath;
-                }
-                else
-                {
-                    subString = jsonPath.Substring(0, index);
-                    name = jsonPath.Substring(index + 1);
-                }
-            }
-
-            return (subString, name);
-        }
-
         internal static JToken SetSourceInfo(JToken token, SourceInfo source)
         {
             token.RemoveAnnotations<SourceInfo>();

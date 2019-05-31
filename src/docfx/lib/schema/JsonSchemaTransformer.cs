@@ -23,7 +23,7 @@ namespace Microsoft.Docs.Build
         public (List<Error> errors, JToken token) TransformContent(Document file, Context context, JToken token, Action<Document> buildChild)
         {
             var errors = new List<Error>();
-            Traverse(_schema, token, (_, schema, value) => value.Replace(TransformScalar(schema, file, context, value, errors, buildChild)));
+            Traverse(_schema, token, (_, schema, name, value) => value.Replace(TransformScalar(schema, file, context, value, errors, buildChild)));
             return (errors, token);
         }
 
@@ -36,10 +36,8 @@ namespace Microsoft.Docs.Build
             Traverse(_schema, token, TransformXrefScalar);
             return (errors, xrefPropertiesGroupByUid);
 
-            void TransformXrefScalar(JsonSchema parentSchema, JsonSchema schema, JValue value)
+            void TransformXrefScalar(JsonSchema parentSchema, JsonSchema schema, string name, JValue value)
             {
-                var (parent, name) = JsonUtility.GetPropertyNameFromJsonPath(value.Path);
-
                 if (value.Parent?.Parent is JObject parentObj &&
                     parentObj.TryGetValue("uid", out var uidValue) &&
                     uidValue is JValue uid &&
@@ -53,7 +51,7 @@ namespace Microsoft.Docs.Build
 
                     if (!xrefPropertiesGroupByUid.TryGetValue(uidStr, out var properties))
                     {
-                        properties = (string.IsNullOrEmpty(parent), new Dictionary<string, Lazy<JValue>>());
+                        properties = (value.Parent?.Parent?.Parent is null, new Dictionary<string, Lazy<JValue>>());
                     }
 
                     // todo: support non-leaf nodes
@@ -69,14 +67,14 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private void Traverse(JsonSchema schema, JToken token, Action<JsonSchema, JsonSchema, JValue> transformScalar, JsonSchema parentSchema = null)
+        private void Traverse(JsonSchema schema, JToken token, Action<JsonSchema, JsonSchema, string, JValue> transformScalar, JsonSchema parentSchema = null, string name = null)
         {
             schema = _definitions.GetDefinition(schema);
 
             switch (token)
             {
                 case JValue scalar:
-                    transformScalar(parentSchema, schema, scalar);
+                    transformScalar(parentSchema, schema, name, scalar);
                     break;
 
                 case JArray array:
@@ -84,7 +82,7 @@ namespace Microsoft.Docs.Build
                     {
                         foreach (var item in array)
                         {
-                            Traverse(schema.Items, item, transformScalar, parentSchema);
+                            Traverse(schema.Items, item, transformScalar, parentSchema, name);
                         }
                     }
                     break;
@@ -94,7 +92,7 @@ namespace Microsoft.Docs.Build
                     {
                         if (schema.Properties.TryGetValue(key, out var propertySchema))
                         {
-                            Traverse(propertySchema, value, transformScalar, schema);
+                            Traverse(propertySchema, value, transformScalar, schema, key);
                         }
                     }
                     break;
