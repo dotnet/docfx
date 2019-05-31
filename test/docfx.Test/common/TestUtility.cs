@@ -60,6 +60,10 @@ namespace Microsoft.Docs.Build
                     {
                         Assert.NotEqual(expectedString, actualString);
                     }
+                    else
+                    {
+                        Assert.Equal(expectedValue, actualValue);
+                    }
                 }
                 else
                 {

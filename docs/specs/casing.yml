@@ -85,3 +85,37 @@ outputs:
   docs/A.json: |
     {"conceptual":"<p><a href=\"B\"></a></p>"}
   docs/B.json:
+---
+# Use real file casing in manifest
+inputs:
+  docfx.yml: |
+    files: '*'
+  a.md: '[](media/ImAGe.PNG) [](MEdia/ImAGe.PNG)'
+  b.md: '[](MEdia/iMaGe.png) [](meDIa/ImAGe.PNG)'
+  c.md: '[](meDia/imAgE.pNg) [](MEDIA/ImAGe.PNG)'
+  media/imAge.png:
+outputs:
+  a.json: |
+    { "conceptual":"<p><a href=\"media/image.png\"></a><a href=\"media/image.png\"></a></p>" }
+  b.json: |
+    { "conceptual":"<p><a href=\"media/image.png\"></a><a href=\"media/image.png\"></a></p>" }
+  c.json: |
+    { "conceptual":"<p><a href=\"media/image.png\"></a><a href=\"media/image.png\"></a></p>" }
+  media/image.png:
+  .publish.json: |
+    {
+      "files":[
+        { "url": "/a", "path": "a.json" },
+        { "url": "/b", "path": "b.json" },
+        { "url": "/c", "path": "c.json" },
+        { "url": "/media/image.png", "path": "media/image.png" }
+      ]
+    }
+  .dependencymap.json: |
+    {
+      "dependencies": {
+          "a.md": [{ "source": "media/image.png", "type": "link" }],
+          "b.md": [{ "source": "media/image.png", "type": "link" }],
+          "c.md": [{ "source": "media/image.png", "type": "link" }]
+      }
+    }

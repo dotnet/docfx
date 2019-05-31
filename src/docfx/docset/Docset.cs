@@ -103,6 +103,13 @@ namespace Microsoft.Docs.Build
         public RedirectionMap Redirections => _redirections.Value;
 
         /// <summary>
+        /// On a case insensitive system, cannot simply get the actual file casing:
+        /// https://github.com/dotnet/corefx/issues/1086
+        /// This lookup table stores a list of actual filenames.
+        /// </summary>
+        public HashSet<string> FileNames => _fileNames.Value;
+
+        /// <summary>
         /// Gets the initial build scope.
         /// </summary>
         public HashSet<Document> BuildScope => _buildScope.Value;
@@ -115,6 +122,7 @@ namespace Microsoft.Docs.Build
         private readonly CommandLineOptions _options;
         private readonly ErrorLog _errorLog;
         private readonly ConcurrentDictionary<string, Lazy<Repository>> _repositories;
+        private readonly Lazy<HashSet<string>> _fileNames;
         private readonly Lazy<HashSet<Document>> _buildScope;
         private readonly Lazy<HashSet<Document>> _scanScope;
         private readonly Lazy<RedirectionMap> _redirections;
@@ -183,6 +191,7 @@ namespace Microsoft.Docs.Build
             var glob = GlobUtility.CreateGlobMatcher(Config.Files, Config.Exclude.Concat(Config.DefaultExclude).ToArray());
 
             // pass on the command line options to its children
+            _fileNames = new Lazy<HashSet<string>>(() => GetFileNames(DocsetPath));
             _buildScope = new Lazy<HashSet<Document>>(() => CreateBuildScope(Redirections.Files, glob));
             _redirections = new Lazy<RedirectionMap>(() =>
             {
@@ -272,22 +281,26 @@ namespace Microsoft.Docs.Build
             return JsonUtility.ToObject<JsonSchema>(token).value;
         }
 
+        private static HashSet<string> GetFileNames(string docsetPath)
+        {
+            return Directory.GetFiles(docsetPath, "*.*", SearchOption.AllDirectories)
+                            .Select(path => Path.GetRelativePath(docsetPath, path).Replace('\\', '/'))
+                            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+        }
+
         private HashSet<Document> CreateBuildScope(IEnumerable<Document> redirections, Func<string, bool> glob)
         {
             using (Progress.Start("Globbing files"))
             {
                 var files = new ListBuilder<Document>();
 
-                ParallelUtility.ForEach(
-                    Directory.EnumerateFiles(DocsetPath, "*.*", SearchOption.AllDirectories),
-                    file =>
+                ParallelUtility.ForEach(FileNames, file =>
+                {
+                    if (glob(file))
                     {
-                        var relativePath = Path.GetRelativePath(DocsetPath, file);
-                        if (glob(relativePath))
-                        {
-                            files.Add(Document.CreateFromFile(this, relativePath));
-                        }
-                    });
+                        files.Add(Document.CreateFromFile(this, file));
+                    }
+                });
 
                 return new HashSet<Document>(files.ToList().Concat(redirections));
             }
