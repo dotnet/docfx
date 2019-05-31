@@ -228,10 +228,6 @@ $packages = @{
         "proj"    = $null;
         "nuspecs" = @("src/nuspec/docfx.console/docfx.console.nuspec");
     };
-    "DfmHttpService"            = @{
-        "proj"    = $null;
-        "nuspecs" = @("src/nuspec/DfmHttpService/DfmHttpService.nuspec");
-    };
     "MergeDeveloperComments"    = @{
         "proj"    = $null;
         "nuspecs" = @("src/nuspec/MergeDeveloperComments/MergeDeveloperComments.nuspec");
