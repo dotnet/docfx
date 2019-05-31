@@ -85,15 +85,3 @@ outputs:
   docs/A.json: |
     {"conceptual":"<p><a href=\"B\"></a></p>"}
   docs/B.json:
----
-# Use real file casing in manifest
-inputs:
-  docfx.yml: |
-    files: a.md
-  a.md: '[](B.png)'
-  b.png:
-outputs:
-  a.json: |
-    { "conceptual":"<p><a href=\"B\"></a></p>" }
-  b.png:
-
