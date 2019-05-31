@@ -79,11 +79,9 @@ namespace Microsoft.Docs.Build
                 {
                     error = Errors.EmptyMonikers($"No moniker intersection between docfx.yml/docfx.json and file metadata. Config moniker range '{configMonikerRange}' is '{string.Join(',', configMonikers.Select(x => x.MonikerName))}', while file moniker range '{fileMonikerRange}' is '{string.Join(',', fileMonikers.Select(x => x.MonikerName))}'");
                 }
-                intersection.OrderBy(x => x.MonikerName, Comparer);
                 return (error, intersection);
             }
 
-            configMonikers.OrderBy(x => x.MonikerName, Comparer);
             return (error, configMonikers);
         }
 
