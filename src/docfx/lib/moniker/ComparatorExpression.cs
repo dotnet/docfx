@@ -17,7 +17,7 @@ namespace Microsoft.Docs.Build
             Operand = operand;
         }
 
-        public IEnumerable<string> Accept(EvaluatorWithMonikersVisitor visitor)
+        public IEnumerable<Moniker> Accept(EvaluatorWithMonikersVisitor visitor)
         {
             return visitor.Visit(this);
         }
