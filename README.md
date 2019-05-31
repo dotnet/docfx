@@ -1,6 +1,6 @@
 # Generate your API documentation with *DocFX*
 
-[![devstatus](https://docfx.visualstudio.com/docfx/_apis/build/status/docfx-gated-checkin-CI)](https://docfx.visualstudio.com/docfx/_build/latest?definitionId=1)
+[![devstatus](https://docfx.visualstudio.com/docfx/_apis/build/status/docfx-gated-checkin-CI)](https://docfx.visualstudio.com/docfx/_build/latest?definitionId=2)
 [![Join the chat at https://gitter.im/dotnet/docfx](https://badges.gitter.im/dotnet/docfx.svg)](https://gitter.im/dotnet/docfx?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Github All Releases](https://img.shields.io/github/downloads/dotnet/docfx/total.svg?maxAge=600)](https://github.com/dotnet/docfx/releases/latest)
 [![Twitter Follow](https://img.shields.io/twitter/follow/docfxmsft.svg?style=social&label=Follow)](https://twitter.com/docfxmsft)

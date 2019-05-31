@@ -19,7 +19,7 @@ If you are interested in creating your own website with your own styles, you can
 For detailed description about DFM, please refer to [DFM](../spec/docfx_flavored_markdown.md).
 
 > [!Warning]
-> **Prerequisites** [Visual Studio 2017](https://www.visualstudio.com/downloads/) is needed for `docfx metadata` msbuild projects. It's not required when generating metadata directly from source code (`.cs`, `.vb`) or assemblies (`.dll`)
+> **Prerequisites** [Visual Studio 2019](https://www.visualstudio.com/downloads/) is needed for `docfx metadata` msbuild projects. It's not required when generating metadata directly from source code (`.cs`, `.vb`) or assemblies (`.dll`)
 
 ## 2. Use *DocFX* as a command-line tool
 
