@@ -280,15 +280,15 @@ namespace Microsoft.Docs.Build
 
             foreach (var (jsonPath, xrefProperty) in extensionData)
             {
-                var (uid, resolvedJsonPath) = MatchExtensionDataToUid(jsonPath);
+                var (uid, propertyName) = MatchExtensionDataToUid(jsonPath);
                 if (extensionDataByUid.ContainsKey(uid))
                 {
                     var (_, properties) = extensionDataByUid[uid];
-                    properties.Add(resolvedJsonPath, xrefProperty);
+                    properties.Add(propertyName, xrefProperty);
                 }
                 else
                 {
-                    extensionDataByUid.Add(uid, (string.IsNullOrEmpty(uidToJsonPath[uid]), new Dictionary<string, Lazy<JValue>> { { resolvedJsonPath, xrefProperty } }));
+                    extensionDataByUid.Add(uid, (string.IsNullOrEmpty(uidToJsonPath[uid]), new Dictionary<string, Lazy<JValue>> { { propertyName, xrefProperty } }));
                 }
             }
 
@@ -310,20 +310,11 @@ namespace Microsoft.Docs.Build
             string GetBookmarkFromUid(string uid)
                 => Regex.Replace(uid, @"\W", "_");
 
-            (string uid, string jsonPath) MatchExtensionDataToUid(string jsonPath)
+            (string uid, string propertyName) MatchExtensionDataToUid(string jsonPath)
             {
-                string subString;
-                var index = jsonPath.LastIndexOf('.');
-                if (index == -1)
-                {
-                    subString = string.Empty;
-                }
-                else
-                {
-                    subString = jsonPath.Substring(0, index);
-                }
+                var (parentPath, propertyName) = JsonUtility.GetPropertyNameFromJsonPath(jsonPath);
 
-                return jsonPathToUid.ContainsKey(subString) ? (jsonPathToUid[subString], jsonPath.Substring(index + 1)) : MatchExtensionDataToUid(subString);
+                return jsonPathToUid.ContainsKey(parentPath) ? (jsonPathToUid[parentPath], propertyName) : MatchExtensionDataToUid(parentPath);
             }
         }
 

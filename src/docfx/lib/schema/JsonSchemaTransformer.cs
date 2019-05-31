@@ -37,12 +37,7 @@ namespace Microsoft.Docs.Build
 
             void TransformXrefScalar(JsonSchema schema, JValue value)
             {
-                var name = value.Path;
-                if (!string.IsNullOrEmpty(value.Parent?.Parent?.Path))
-                {
-                    Debug.Assert(name.StartsWith(value.Parent.Parent.Path));
-                    name = name.Substring(value.Parent.Parent.Path.Length + 1).Trim(new char[] { '\'', ']', '[' });
-                }
+                var (_, name) = JsonUtility.GetPropertyNameFromJsonPath(value.Path);
                 if (schema.Parent?.XrefProperties.Contains(name) ?? false)
                 {
                     extensions[value.Path] = new Lazy<JValue>(
