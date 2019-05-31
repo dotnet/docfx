@@ -90,8 +90,6 @@ repos:
         template: https://docs.com/template1
         redirections:
           a.md: /b
-        routes:
-          /: rawmetadata
         gitHub:
           userCache: user_profile.json
           resolveUsers: true
@@ -334,8 +332,9 @@ inputs:
       'docs/v1/**': '< netcore-2.0'
     baseUrl: https://docs.com/docs
     routes:
-      docs/v1/: docs/
-      docs/v2/: docs/
+      docs/: .
+      docs/v1/: .
+      docs/v2/: .
     monikerDefinition: monikerDefinition.json
   docs/v1/a.md: |
   docs/a.md: |
