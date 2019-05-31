@@ -248,14 +248,6 @@ namespace Microsoft.Docs.Build
 
         private static (List<Error> errors, IReadOnlyList<InternalXrefSpec> specs) LoadSchemaDocument(Context context, JObject obj, Document file)
         {
-            var uidToJsonPath = new Dictionary<string, string>();
-            var jsonPathToUid = new Dictionary<string, string>();
-            GetUids(context, file.FilePath, obj, uidToJsonPath, jsonPathToUid);
-            if (uidToJsonPath.Count == 0)
-            {
-                return (new List<Error>(), new List<InternalXrefSpec>());
-            }
-
             if (file.Schema is null)
             {
                 throw Errors.SchemaNotFound(file.Mime).ToException();
@@ -268,31 +260,10 @@ namespace Microsoft.Docs.Build
                 throw Errors.SchemaNotFound(file.Mime).ToException();
             }
 
-            var (schemaErrors, extensionData) = schemaTransformer.TransformXref(file, context, obj);
+            var (schemaErrors, xrefPropertiesGroupByUid) = schemaTransformer.TransformXref(file, context, obj);
             errors.AddRange(schemaErrors);
 
-            var extensionDataByUid = new Dictionary<string, (bool isRoot, Dictionary<string, Lazy<JValue>> properties)>();
-
-            foreach (var (uid, jsonPath) in uidToJsonPath)
-            {
-                extensionDataByUid.Add(uid, (string.IsNullOrEmpty(jsonPath), new Dictionary<string, Lazy<JValue>>()));
-            }
-
-            foreach (var (jsonPath, xrefProperty) in extensionData)
-            {
-                var (uid, propertyName) = MatchExtensionDataToUid(jsonPath);
-                if (extensionDataByUid.ContainsKey(uid))
-                {
-                    var (_, properties) = extensionDataByUid[uid];
-                    properties.Add(propertyName, xrefProperty);
-                }
-                else
-                {
-                    extensionDataByUid.Add(uid, (string.IsNullOrEmpty(uidToJsonPath[uid]), new Dictionary<string, Lazy<JValue>> { { propertyName, xrefProperty } }));
-                }
-            }
-
-            var specs = extensionDataByUid.Select(item =>
+            var specs = xrefPropertiesGroupByUid.Select(item =>
             {
                 var (isRoot, properties) = item.Value;
                 var xref = new InternalXrefSpec
@@ -309,13 +280,6 @@ namespace Microsoft.Docs.Build
 
             string GetBookmarkFromUid(string uid)
                 => Regex.Replace(uid, @"\W", "_");
-
-            (string uid, string propertyName) MatchExtensionDataToUid(string jsonPath)
-            {
-                var (parentPath, propertyName) = JsonUtility.GetPropertyNameFromJsonPath(jsonPath);
-
-                return jsonPathToUid.ContainsKey(parentPath) ? (jsonPathToUid[parentPath], propertyName) : MatchExtensionDataToUid(parentPath);
-            }
         }
 
         private static void GetUids(Context context, string filePath, JObject token, Dictionary<string, string> uidToJsonPath, Dictionary<string, string> jsonPathToUid)

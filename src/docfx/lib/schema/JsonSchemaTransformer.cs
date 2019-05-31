@@ -27,21 +27,44 @@ namespace Microsoft.Docs.Build
             return (errors, token);
         }
 
-        public (List<Error> errors, Dictionary<string, Lazy<JValue>>) TransformXref(Document file, Context context, JToken token)
+        public (List<Error> errors, Dictionary<string, (bool, Dictionary<string, Lazy<JValue>>)> properties) TransformXref(Document file, Context context, JToken token)
         {
             var errors = new List<Error>();
-            var extensions = new Dictionary<string, Lazy<JValue>>();
-            Traverse(_schema, token, TransformXrefScalar);
-            return (errors, extensions);
+            var xrefPropertiesGroupByUid = new Dictionary<string, (bool, Dictionary<string, Lazy<JValue>>)>();
+            var uidJsonPaths = new HashSet<string>();
 
-            void TransformXrefScalar(JsonSchema parent, JsonSchema schema, JValue value)
+            Traverse(_schema, token, TransformXrefScalar);
+            return (errors, xrefPropertiesGroupByUid);
+
+            void TransformXrefScalar(JsonSchema parentSchema, JsonSchema schema, JValue value)
             {
-                var (_, name) = JsonUtility.GetPropertyNameFromJsonPath(value.Path);
-                if (parent?.XrefProperties.Contains(name) ?? false)
+                var (parent, name) = JsonUtility.GetPropertyNameFromJsonPath(value.Path);
+
+                if (value.Parent?.Parent is JObject parentObj &&
+                    parentObj.TryGetValue("uid", out var uidValue) &&
+                    uidValue is JValue uid &&
+                    uid.Value is string uidStr)
                 {
-                    extensions[value.Path] = new Lazy<JValue>(
-                        () => TransformScalar(schema, file, context, value, errors, buildChild: null),
-                        LazyThreadSafetyMode.PublicationOnly);
+                    if (uidJsonPaths.Add(uidValue.Path) && xrefPropertiesGroupByUid.ContainsKey(uidStr))
+                    {
+                        errors.Add(Errors.UidConflict(uidStr));
+                        return;
+                    }
+
+                    if (!xrefPropertiesGroupByUid.TryGetValue(uidStr, out var properties))
+                    {
+                        properties = (string.IsNullOrEmpty(parent), new Dictionary<string, Lazy<JValue>>());
+                    }
+
+                    // todo: support non-leaf nodes
+                    if (parentSchema?.XrefProperties.Contains(name) ?? false)
+                    {
+                        properties.Item2[name] = new Lazy<JValue>(
+                            () => TransformScalar(schema, file, context, value, errors, buildChild: null),
+                            LazyThreadSafetyMode.PublicationOnly);
+                    }
+
+                    xrefPropertiesGroupByUid[uidStr] = properties;
                 }
             }
         }
