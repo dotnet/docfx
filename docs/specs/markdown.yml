@@ -314,7 +314,8 @@ outputs:
 ---
 # validate internal/external bookmarks in markdown documents
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    template: {TEST_TEMPLATE_ROOT}
   docs/a.md: |
     # title 1
     [link to title 1](#title-1)

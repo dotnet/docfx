@@ -204,7 +204,8 @@ outputs:
 ---
 # Resolve link for landing page
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    template: {TEST_TEMPLATE_ROOT}
   docs/index.yml: |
     ### YamlMime:YamlDocument
     title: REST API Documentation
@@ -285,7 +286,8 @@ outputs:
 commands:
   - build --legacy
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    template: {TEST_TEMPLATE_ROOT}
   docs/a.yml: |
     #YamlMime:LandingData
     title: my title
@@ -293,6 +295,7 @@ inputs:
     metadata:
       key2: value2
 outputs:
+  docs/a.mta.json:
   docs/a.raw.page.json: |
     {"key1":"value1","key2":"value2"}
 ---
@@ -300,7 +303,8 @@ outputs:
 commands:
   - build --legacy
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    template: {TEST_TEMPLATE_ROOT}
   docs/a.yml: |
     #YamlMime: ContextObject
 outputs:

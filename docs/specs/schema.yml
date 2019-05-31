@@ -1,7 +1,8 @@
 ---
 # Support schema documents in YAML format
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    template: {TEST_TEMPLATE_ROOT}
   docs/a.yml: |
     #YamlMime:LandingData
     title: my title
@@ -16,7 +17,8 @@ outputs:
 ---
 # Support schema documents in JSON format
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    template: {TEST_TEMPLATE_ROOT}
   docs/a.json: |
     {
       "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/LandingData.json",
@@ -32,7 +34,8 @@ outputs:
 ---
 # Throw error when schema is not specified
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    template: {TEST_TEMPLATE_ROOT}
   docs/a.yml: |
     title: my title
   docs/b.json: |
@@ -47,7 +50,8 @@ outputs:
 ---
 # Fallback to documentType when yaml mime is YamlDocument
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    template: {TEST_TEMPLATE_ROOT}
   docs/a.yml: |
     #YamlMime:YamlDocument
     documentType: LandingData
@@ -60,7 +64,8 @@ outputs:
 ---
 # Throw error when defined schema is not found
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    template: {TEST_TEMPLATE_ROOT}
   docs/a.yml: |
     #YamlMime:SchemaNotExisting
     title: my title
@@ -78,7 +83,8 @@ outputs:
 ---
 # Support schema documents with Href content
 inputs:
-  docfx.yml:
+  docfx.yml:  |
+    template: {TEST_TEMPLATE_ROOT}
   docs/A/TOC.yml:
   docs/TOC.yml:
   docs/a.yml: |
@@ -105,7 +111,8 @@ outputs:
 ---
 # schema documents with Href content but wrong type
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    template: {TEST_TEMPLATE_ROOT}
   TOC.yml:
   docs/TOC.yml:
   docs/a.yml: |
@@ -122,7 +129,8 @@ outputs:
 ---
 # Schema documents with Href content referencing resource file, the resouce file should be outputed
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    template: {TEST_TEMPLATE_ROOT}
   docs/a.yml: |
     #YamlMime:TestPage
     href: image.png
@@ -134,7 +142,8 @@ outputs:
 ---
 # Support schema documents with Markdown content
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    template: {TEST_TEMPLATE_ROOT}
   docs/index.yml: |
     #YamlMime:TestPage
     description: Hello `docfx`! <a href="a.md">a</a>
@@ -146,7 +155,8 @@ outputs:
 ---
 # Markdown content with null value
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    template: {TEST_TEMPLATE_ROOT}
   docs/a.yml: |
     #YamlMime:TestPage
     description:
@@ -159,6 +169,7 @@ outputs:
 # Support schema documents with inline markdown content
 inputs:
   docfx.yml: |
+    template: {TEST_TEMPLATE_ROOT}
     rules:
       heading-not-found: error
   docs/a.yml: |
@@ -176,7 +187,8 @@ outputs:
 ---
 # Support schema documents with html content
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    template: {TEST_TEMPLATE_ROOT}
   docs/a.yml: |
     #YamlMime:TestPage
     html: link <a href="b.md"></a> <script></script>
@@ -188,7 +200,8 @@ outputs:
 ---
 # Support schema documents with href content
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    template: {TEST_TEMPLATE_ROOT}
   docs/a.yml: |
     #YamlMime:TestPage
     href: b.md
@@ -200,7 +213,8 @@ outputs:
 ---
 # Output data schema to json, output page schema to html
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    template: {TEST_TEMPLATE_ROOT}
   docs/a.md: |
     link to [data](data.yml) or [page](page.yml)
   docs/data.yml: |
@@ -215,7 +229,8 @@ outputs:
 ---
 # Markdown field with heading should not be removed
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    template: {TEST_TEMPLATE_ROOT}
   docs/data.yml: |
     #YamlMime:TestData
   docs/page.yml: |
@@ -244,7 +259,8 @@ outputs:
 ---
 # Invalid JSON
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    template: {TEST_TEMPLATE_ROOT}
   docs/a.json: |
     {a}/{b}/{c}
   docs/b.yml: |
