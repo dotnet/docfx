@@ -4,6 +4,20 @@ Besides using file path to link to another file, DocFX also allows you to give a
 - API reference documentation is usually auto generated so it's difficult to find its file path.
 - You want to reference to files in another project without need to know its file structure.
 
+## Feature Requirements/Scenarios
+- Define an internal UID and reference to this UID within the current repository
+- Define an internal UID with versioning and reference to this UID without versioning within the current repository
+- Define multiple UID with same value internally with different versioning and reference to this UID without versioning within the current repository
+    - If all versionings for this UID are within the same product, take the one with highest versioning respecting the referencing file
+    - If all versionings for this UID are from different products, take the highest one base on proudct namme alphabetically
+- Reference to an external UID without versioning
+    - The href of UID is from the same host name as the referencing repository
+    - The href of UID is from a different host name as the referencing repository
+        - If the resolved url is on live branch, it could be `review.docs.microsoft.com` if this branch not gone live
+- Reference to an external UID with versioning
+- Reference to an external UID with multiple versionings (not support for now)
+    - The resolve logic should be smilar to the internal resolving
+
 ## Define UID
 The unique identifier of a file is called UID (stands for unique identifier) in DocFX.
 - User can define UID in YAML header of markdown file
