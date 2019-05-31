@@ -51,7 +51,7 @@ namespace Microsoft.Docs.Build
             var docset = GetBuildDocset(new Docset(errorLog, docsetPath, locale, config, options, restoreMap, repository, fallbackRepo));
             var outputPath = Path.Combine(docsetPath, config.Output.Path);
             var (buildScopeErrors, buildScope) = BuildScope.Create(docset);
-            errorLog.Write(null, buildScopeErrors);
+            errorLog.Write(buildScopeErrors);
 
             using (var context = new Context(outputPath, errorLog, buildScope, docset, () => xrefMap))
             {

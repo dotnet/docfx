@@ -186,7 +186,7 @@ namespace Microsoft.Docs.Build
             // Pages outside build scope, don't build the file, use relative href
             if (error is null
                 && (file.ContentType == ContentType.Page || file.ContentType == ContentType.TableOfContents)
-                && !_buildScope.Files.Contains(file))
+                && !_buildScope.FilesWithFallback.Contains(file))
             {
                 return (Errors.LinkOutOfScope(href, file), relativeUrl + query + fragment, fragment, linkType, null);
             }
