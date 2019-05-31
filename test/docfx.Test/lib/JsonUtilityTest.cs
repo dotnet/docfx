@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
@@ -438,6 +439,20 @@ namespace Microsoft.Docs.Build
             var result = JsonUtility.Serialize(basic);
             Assert.Equal("{\"b\":1,\"d\":false}", result);
         }
+        [Theory]
+        [InlineData("a", "a", "")]
+        [InlineData("a.b", "b", "a")]
+        [InlineData("a.b.c", "c", "a.b")]
+        [InlineData("a[0].b.c", "c", "a[0].b")]
+        [InlineData("a['b.c']", "b.c", "a")]
+        [InlineData("a[0]['b.c']", "b.c", "a[0]")]
+        public void GetPropertyNameFromJsonPath(string jsonPath, string expectedPropertyName, string expectedParentPath)
+        {
+            var (parentPath, propertyName) = JsonUtility.GetPropertyNameFromJsonPath(jsonPath);
+            Assert.Equal(expectedPropertyName, propertyName);
+            Assert.Equal(expectedParentPath, parentPath);
+        }
+
 
         /// <summary>
         /// Deserialize from yaml string, return error list at the same time

@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -348,6 +349,8 @@ namespace Microsoft.Docs.Build
 
         public static (string parentPath, string propertyName) GetPropertyNameFromJsonPath(string jsonPath)
         {
+            Debug.Assert(!string.IsNullOrEmpty(jsonPath));
+
             string subString;
             string name;
             var index = jsonPath.LastIndexOf("[\'");
