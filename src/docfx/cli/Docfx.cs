@@ -5,6 +5,7 @@ using System;
 using System.Collections;
 using System.CommandLine;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -61,6 +62,8 @@ namespace Microsoft.Docs.Build
             {
                 return 1;
             }
+
+            CultureInfo.CurrentCulture = CultureInfo.CurrentUICulture = new CultureInfo("en-US");
 
             using (Log.BeginScope(options.Verbose))
             using (var errorLog = new ErrorLog(docset, options.Legacy))

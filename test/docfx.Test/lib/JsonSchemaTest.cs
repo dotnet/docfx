@@ -20,7 +20,6 @@ namespace Microsoft.Docs.Build
             "const",
             "contains",
             "definitions",
-            "dependencies",
             "exclusiveMaximum",
             "exclusiveMinimum",
             "if-then-else",
@@ -45,6 +44,11 @@ namespace Microsoft.Docs.Build
             "items and subitems",
             "with boolean schema",
             "patternProperties",
+
+            //dependencies
+            "dependencies with boolean subschemas",
+            "multiple dependencies subschema",
+            "dependencies with escaped characters",
 
              // ref
             "relative pointer ref to object",
@@ -188,6 +192,46 @@ namespace Microsoft.Docs.Build
         [InlineData("{'required': ['a']}", "{'a': 1}", "")]
         [InlineData("{'required': ['a']}", "{'b': 1}",
             "['warning','field-required','Missing required field 'a'','file',1,1]")]
+
+        // dependencies validation
+        [InlineData("{'dependencies': {}}", "{}", "")]
+        [InlineData("{'dependencies': {'key1': ['key2']}}", "{'key1' : 1, 'key2' : 2}", "")]
+        [InlineData("{'dependencies': {'key1': ['key2']}}", "{}", "")]
+        [InlineData("{'dependencies': {'key1': ['key2']}}", "{'key1' : 1}",
+            "['warning','lack-dependency','Missing field: 'key2'. If you specify 'key1', you must also specify 'key2'','file',1,1]")]
+        [InlineData("{'properties': {'keys': {'dependencies': {'key1': ['key2']}}}}", "{'keys' : {'key1' : 1, 'key2': 2}}", "")]
+        [InlineData("{'properties': {'keys': {'dependencies': {'key1': ['key2']}}}}", "{'keys' : {'key1' : 1}}",
+            "['warning','lack-dependency','Missing field: 'key2'. If you specify 'key1', you must also specify 'key2'','file',1,11]")]
+
+        // either validation
+        [InlineData("{'either': []}", "{}", "")]
+        [InlineData("{'either': [['key1', 'key2']]}", "{'key1': 1}", "")]
+        [InlineData("{'either': [['key1', 'key2']]}", "{'key1': 1, 'key2': 2}", "")]
+        [InlineData("{'either': [['key1', 'key2']]}", "{}",
+            "['warning','either-logic-failed','At least one of these fields: 'key1', 'key2' exists','file',1,1]")]
+        [InlineData("{'either': [['key1', 'key2', 'key3']]}", "{}",
+            "['warning','either-logic-failed','At least one of these fields: 'key1', 'key2', 'key3' exists','file',1,1]")]
+        [InlineData("{'either': [['key1', 'key2'], ['key3', 'key4']]}", "{}",
+            "['warning','either-logic-failed','At least one of these fields: 'key1', 'key2' exists','file',1,1]\n['warning','either-logic-failed','At least one of these fields: 'key3', 'key4' exists','file',1,1]")]
+        [InlineData("{'properties': {'keys': {'either': [['key1', 'key2']]}}}", "{'keys' : {'key1': 1}}", "")]
+        [InlineData("{'properties': {'keys': {'either': [['key1', 'key2']]}}}", "{'keys' : {'key1': 1, 'key2': 2}}", "")]
+        [InlineData("{'properties': {'keys': {'either': [['key1', 'key2']]}}}", "{'keys' : {}}",
+            "['warning','either-logic-failed','At least one of these fields: 'key1', 'key2' exists','file',1,11]")]
+
+        // precludes  validation
+        [InlineData("{'precludes': []}", "{}", "")]
+        [InlineData("{'precludes': [['key1', 'key2']]}", "{}", "")]
+        [InlineData("{'precludes': [['key1', 'key2']]}", "{'key1': 1}", "")]
+        [InlineData("{'precludes': [['key1', 'key2']]}", "{'key1': 1, 'key2': 2}",
+            "['warning','precludes-logic-failed','Only one of these fields: 'key1', 'key2' can exist at most','file',1,1]")]
+        [InlineData("{'precludes': [['key1', 'key2', 'key3']]}", "{'key1': 1, 'key2': 2, 'key3': 3}",
+            "['warning','precludes-logic-failed','Only one of these fields: 'key1', 'key2', 'key3' can exist at most','file',1,1]")]
+        [InlineData("{'precludes': [['key1', 'key2'], ['key3', 'key4']]}", "{'key1': 1, 'key2': 2, 'key3': 3, 'key4': 4}",
+            "['warning','precludes-logic-failed','Only one of these fields: 'key1', 'key2' can exist at most','file',1,1]\n['warning','precludes-logic-failed','Only one of these fields: 'key3', 'key4' can exist at most','file',1,1]")]
+        [InlineData("{'properties': {'keys': {'precludes': [['key1', 'key2']]}}}", "{'keys' : {}}", "")]
+        [InlineData("{'properties': {'keys': {'precludes': [['key1', 'key2']]}}}", "{'keys' : {'key1': 1}}", "")]
+        [InlineData("{'properties': {'keys': {'precludes': [['key1', 'key2']]}}}", "{'keys' : {'key1': 1, 'key2': 2}}",
+            "['warning','precludes-logic-failed','Only one of these fields: 'key1', 'key2' can exist at most','file',1,11]")]
         public void TestJsonSchemaValidation(string schema, string json, string expectedErrors)
         {
             var jsonSchema = JsonUtility.Deserialize<JsonSchema>(schema.Replace('\'', '"'), null);
