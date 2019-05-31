@@ -3,8 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
@@ -433,7 +431,7 @@ namespace Microsoft.Docs.Build
             {
                 B = 1,
                 Property = new SourceInfo<string>(null, new SourceInfo(string.Empty, 0, 0)),
-                Array = new SourceInfo<string[]>(new string[]{ }, new SourceInfo(string.Empty, 0, 0)),
+                Array = new SourceInfo<string[]>(new string[] { }, new SourceInfo(string.Empty, 0, 0)),
                 GenericArray = new SourceInfo<List<string>>(new List<string>(), new SourceInfo(string.Empty, 0, 0))
             };
             var result = JsonUtility.Serialize(basic);
@@ -452,7 +450,6 @@ namespace Microsoft.Docs.Build
             Assert.Equal(expectedPropertyName, propertyName);
             Assert.Equal(expectedParentPath, parentPath);
         }
-
 
         /// <summary>
         /// Deserialize from yaml string, return error list at the same time
