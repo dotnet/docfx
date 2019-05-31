@@ -36,7 +36,7 @@ namespace Microsoft.Docs.Build
             model.EnableLocSxs = file.Docset.Config.Localization.Bilingual;
             model.SiteName = file.Docset.Config.SiteName;
 
-            (model.DocumentId, model.DocumentVersionIndependentId) = file.Docset.Redirections.TryGetDocumentId(file, out var docId) ? docId : file.Id;
+            (model.DocumentId, model.DocumentVersionIndependentId) = context.BuildScope.Redirections.TryGetDocumentId(file, out var docId) ? docId : file.Id;
             (model.ContentGitUrl, model.OriginalContentGitUrl, model.OriginalContentGitUrlTemplate, model.Gitcommit) = context.ContributionProvider.GetGitUrls(file);
 
             List<Error> contributorErrors;

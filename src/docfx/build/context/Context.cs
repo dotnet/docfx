@@ -13,6 +13,7 @@ namespace Microsoft.Docs.Build
         public readonly ErrorLog ErrorLog;
         public readonly Cache Cache;
         public readonly Output Output;
+        public readonly BuildScope BuildScope;
         public readonly MetadataProvider MetadataProvider;
         public readonly MonikerProvider MonikerProvider;
         public readonly GitCommitProvider GitCommitProvider;
@@ -25,9 +26,10 @@ namespace Microsoft.Docs.Build
         public readonly PublishModelBuilder PublishModelBuilder;
         public readonly TemplateEngine Template;
 
-        public Context(string outputPath, ErrorLog errorLog, Docset docset, Func<XrefMap> xrefMap)
+        public Context(string outputPath, ErrorLog errorLog, BuildScope buildScope, Docset docset, Func<XrefMap> xrefMap)
         {
             ErrorLog = errorLog;
+            BuildScope = buildScope;
             Output = new Output(outputPath);
             Cache = new Cache();
             MetadataProvider = new MetadataProvider(docset);
@@ -36,8 +38,8 @@ namespace Microsoft.Docs.Build
             GitCommitProvider = new GitCommitProvider();
             BookmarkValidator = new BookmarkValidator();
             DependencyMapBuilder = new DependencyMapBuilder();
-            DependencyResolver = new DependencyResolver(GitCommitProvider, BookmarkValidator, DependencyMapBuilder, new Lazy<XrefMap>(xrefMap));
-            LandingPageDependencyResolver = new DependencyResolver(GitCommitProvider, BookmarkValidator, DependencyMapBuilder, new Lazy<XrefMap>(xrefMap), forLandingPage: true);
+            DependencyResolver = new DependencyResolver(BuildScope, GitCommitProvider, BookmarkValidator, DependencyMapBuilder, new Lazy<XrefMap>(xrefMap));
+            LandingPageDependencyResolver = new DependencyResolver(BuildScope, GitCommitProvider, BookmarkValidator, DependencyMapBuilder, new Lazy<XrefMap>(xrefMap), forLandingPage: true);
             ContributionProvider = new ContributionProvider(docset, GitHubUserCache, GitCommitProvider);
             PublishModelBuilder = new PublishModelBuilder();
             Template = TemplateEngine.Create(docset);

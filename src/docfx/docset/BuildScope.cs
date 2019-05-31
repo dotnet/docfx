@@ -4,67 +4,72 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Globalization;
 using System.IO;
 using System.Linq;
-using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
     internal class BuildScope
     {
-        public HashSet<Document> Files { get; }
+        public Func<string, bool> Glob { get; private set; }
 
-        /// <summary>
-        /// Gets the scan scope used to generate toc map, xref map, xxx map before build
-        /// </summary>
-        public HashSet<Document> ScanFiles { get; }
+        public HashSet<Document> Files { get; private set; }
 
-        /*
-        private HashSet<Document> CreateBuildScope(IEnumerable<Document> redirections, Func<string, bool> glob)
+        public HashSet<Document> FilesWithFallback { get; private set; }
+
+        public RedirectionMap Redirections { get; private set; }
+
+        public static (List<Error>, BuildScope) Create(Docset docset)
+        {
+            var glob = CreateGlob(docset);
+
+            var (errors, redirections) = RedirectionMap.Create(docset, glob);
+            var files = GetFiles(docset, glob).Concat(redirections.Files).ToHashSet();
+            var filesWithFallback = files;
+
+            if (docset.FallbackDocset != null)
+            {
+                filesWithFallback = files.Concat(
+                    GetFiles(docset.FallbackDocset, CreateGlob(docset.FallbackDocset))).ToHashSet();
+            }
+
+            var result = new BuildScope
+            {
+                Glob = glob,
+                Files = files,
+                FilesWithFallback = filesWithFallback,
+                Redirections = redirections,
+            };
+
+            return (errors, result);
+        }
+
+        private static Func<string, bool> CreateGlob(Docset docset)
+        {
+            return GlobUtility.CreateGlobMatcher(
+                  docset.Config.Files,
+                  docset.Config.Exclude.Concat(Config.DefaultExclude).ToArray());
+        }
+
+        private static IReadOnlyList<Document> GetFiles(Docset docset, Func<string, bool> glob)
         {
             using (Progress.Start("Globbing files"))
             {
                 var files = new ListBuilder<Document>();
 
                 ParallelUtility.ForEach(
-                    Directory.EnumerateFiles(DocsetPath, "*.*", SearchOption.AllDirectories),
+                    Directory.EnumerateFiles(docset.DocsetPath, "*.*", SearchOption.AllDirectories),
                     file =>
                     {
-                        var relativePath = Path.GetRelativePath(DocsetPath, file);
+                        var relativePath = Path.GetRelativePath(docset.DocsetPath, file);
                         if (glob(relativePath))
                         {
-                            files.Add(Document.CreateFromFile(this, relativePath));
+                            files.Add(Document.CreateFromFile(docset, relativePath));
                         }
                     });
 
-                return new HashSet<Document>(files.ToList().Concat(redirections));
+                return files.ToList();
             }
         }
-
-        private static HashSet<Document> GetScanScope(Docset docset)
-        {
-            var scanScopeFilePaths = new HashSet<string>(PathUtility.PathComparer);
-            var scanScope = new HashSet<Document>();
-
-            foreach (var buildScope in new[] { docset.LocalizationDocset?.BuildScope, docset.BuildScope, docset.FallbackDocset?.BuildScope })
-            {
-                if (buildScope is null)
-                {
-                    continue;
-                }
-
-                foreach (var document in buildScope)
-                {
-                    if (scanScopeFilePaths.Add(document.FilePath))
-                    {
-                        scanScope.Add(document);
-                    }
-                }
-            }
-
-            return scanScope;
-        }*/
     }
 }

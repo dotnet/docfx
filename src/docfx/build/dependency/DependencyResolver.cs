@@ -12,14 +12,22 @@ namespace Microsoft.Docs.Build
 {
     internal class DependencyResolver
     {
+        private readonly BuildScope _buildScope;
         private readonly BookmarkValidator _bookmarkValidator;
         private readonly DependencyMapBuilder _dependencyMapBuilder;
         private readonly GitCommitProvider _gitCommitProvider;
         private readonly Lazy<XrefMap> _xrefMap;
         private readonly bool _forLandingPage = false;
 
-        public DependencyResolver(GitCommitProvider gitCommitProvider, BookmarkValidator bookmarkValidator, DependencyMapBuilder dependencyMapBuilder, Lazy<XrefMap> xrefMap, bool forLandingPage = false)
+        public DependencyResolver(
+            BuildScope buildScope,
+            GitCommitProvider gitCommitProvider,
+            BookmarkValidator bookmarkValidator,
+            DependencyMapBuilder dependencyMapBuilder,
+            Lazy<XrefMap> xrefMap,
+            bool forLandingPage = false)
         {
+            _buildScope = buildScope;
             _bookmarkValidator = bookmarkValidator;
             _dependencyMapBuilder = dependencyMapBuilder;
             _gitCommitProvider = gitCommitProvider;
@@ -178,7 +186,7 @@ namespace Microsoft.Docs.Build
             // Pages outside build scope, don't build the file, use relative href
             if (error is null
                 && (file.ContentType == ContentType.Page || file.ContentType == ContentType.TableOfContents)
-                && !file.Docset.BuildScope.Contains(file))
+                && !_buildScope.Files.Contains(file))
             {
                 return (Errors.LinkOutOfScope(href, file), relativeUrl + query + fragment, fragment, linkType, null);
             }
@@ -208,7 +216,7 @@ namespace Microsoft.Docs.Build
                     var pathToDocset = ResolveToDocsetRelativePath(path, relativeTo);
 
                     // resolve from redirection files
-                    if (relativeTo.Docset.Redirections.TryGetRedirection(pathToDocset, out var redirectFile))
+                    if (_buildScope.Redirections.TryGetRedirection(pathToDocset, out var redirectFile))
                     {
                         return (null, redirectFile, query, fragment, LinkType.RelativePath, pathToDocset);
                     }

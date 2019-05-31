@@ -47,7 +47,7 @@ namespace Microsoft.Docs.Build
                     }, content);
                 }
             });
-            var internalXrefMap = CreateInternalXrefMap(context, docset.ScanScope);
+            var internalXrefMap = CreateInternalXrefMap(context, context.BuildScope.FilesWithFallback);
             return new XrefMap(context, BuildMap(externalXrefMap.ToDictionary(), internalXrefMap), internalXrefMap);
         }
 

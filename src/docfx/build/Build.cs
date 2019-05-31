@@ -50,11 +50,13 @@ namespace Microsoft.Docs.Build
 
             var docset = GetBuildDocset(new Docset(errorLog, docsetPath, locale, config, options, restoreMap, repository, fallbackRepo));
             var outputPath = Path.Combine(docsetPath, config.Output.Path);
+            var (buildScopeErrors, buildScope) = BuildScope.Create(docset);
+            errorLog.Write(null, buildScopeErrors);
 
-            using (var context = new Context(outputPath, errorLog, docset, () => xrefMap))
+            using (var context = new Context(outputPath, errorLog, buildScope, docset, () => xrefMap))
             {
                 xrefMap = XrefMapBuilder.Build(context, docset);
-                var tocMap = TableOfContentsMap.Create(context, docset);
+                var tocMap = TableOfContentsMap.Create(context);
 
                 var (publishManifest, fileManifests, sourceDependencies) = await BuildFiles(context, docset, tocMap);
 
@@ -94,7 +96,7 @@ namespace Microsoft.Docs.Build
                 var monikerMapBuilder = new MonikerMapBuilder();
 
                 await ParallelUtility.ForEach(
-                    docset.BuildScope,
+                    context.BuildScope.Files,
                     async (file, buildChild) => { monikerMapBuilder.Add(file, await BuildOneFile(file, buildChild, null)); },
                     (file) => ShouldBuildFile(file, new ContentType[] { ContentType.Page, ContentType.Redirection, ContentType.Resource }),
                     Progress.Update);
@@ -103,7 +105,7 @@ namespace Microsoft.Docs.Build
 
                 // Build TOC: since toc file depends on the build result of every node
                 await ParallelUtility.ForEach(
-                    GetTableOfContentsScope(docset, tocMap),
+                    GetTableOfContentsScope(context, docset, tocMap),
                     (file, buildChild) => BuildOneFile(file, buildChild, monikerMap),
                     ShouldBuildTocFile,
                     Progress.Update);
@@ -261,11 +263,11 @@ namespace Microsoft.Docs.Build
             return sourceDocset.LocalizationDocset ?? sourceDocset;
         }
 
-        private static IReadOnlyList<Document> GetTableOfContentsScope(Docset docset, TableOfContentsMap tocMap)
+        private static IReadOnlyList<Document> GetTableOfContentsScope(Context context, Docset docset, TableOfContentsMap tocMap)
         {
             Debug.Assert(tocMap != null);
 
-            var result = docset.BuildScope.Where(d => d.ContentType == ContentType.TableOfContents).ToList();
+            var result = context.BuildScope.Files.Where(d => d.ContentType == ContentType.TableOfContents).ToList();
 
             if (!docset.IsLocalized())
             {
