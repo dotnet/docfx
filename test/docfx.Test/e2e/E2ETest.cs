@@ -242,7 +242,7 @@ namespace Microsoft.Docs.Build
             var name = ToSafePathString(specName).Substring(0, Math.Min(30, specName.Length)) + "-" + yamlHash;
 
             var spec = YamlUtility.Deserialize<E2ESpec>(yaml, null);
-            
+
             var emptyEnvName = spec.Environments.FirstOrDefault(env => string.IsNullOrEmpty(Environment.GetEnvironmentVariable(env)));
             if (!string.IsNullOrEmpty(emptyEnvName))
             {
@@ -319,7 +319,7 @@ namespace Microsoft.Docs.Build
                 var mutableContent = content;
                 var filePath = Path.Combine(targetFolder, file);
                 PathUtility.CreateDirectoryFromFilePath(filePath);
-                if (Path.GetFileNameWithoutExtension(file) == "docfx")
+                if (Path.GetFileNameWithoutExtension(file) == "docfx" && !string.IsNullOrEmpty(mutableContent))
                 {
                     if (replaceEnvironments)
                     {
