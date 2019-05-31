@@ -36,6 +36,12 @@ namespace Microsoft.Docs.Build
             "redirected-id-conflict", "circular-reference", "moniker-overlapping", "empty-monikers"
         };
 
+        // for replacing reserved string in docfx.yml config file
+        private static readonly Dictionary<string, string> s_reservedConfigReplaceMap = new Dictionary<string, string>
+        {
+            { "TEST_TEMPLATE_ROOT", $"{AppContext.BaseDirectory}/data/template" }
+        };
+
         private static readonly ConcurrentDictionary<string, (int ordinal, string spec)> s_mockRepos = new ConcurrentDictionary<string, (int ordinal, string spec)>();
 
         public static readonly TheoryData<string> Specs = FindTestSpecs();
@@ -236,7 +242,7 @@ namespace Microsoft.Docs.Build
             var name = ToSafePathString(specName).Substring(0, Math.Min(30, specName.Length)) + "-" + yamlHash;
 
             var spec = YamlUtility.Deserialize<E2ESpec>(yaml, null);
-
+            
             var emptyEnvName = spec.Environments.FirstOrDefault(env => string.IsNullOrEmpty(Environment.GetEnvironmentVariable(env)));
             if (!string.IsNullOrEmpty(emptyEnvName))
             {
@@ -313,11 +319,18 @@ namespace Microsoft.Docs.Build
                 var mutableContent = content;
                 var filePath = Path.Combine(targetFolder, file);
                 PathUtility.CreateDirectoryFromFilePath(filePath);
-                if (replaceEnvironments && Path.GetFileNameWithoutExtension(file) == "docfx")
+                if (Path.GetFileNameWithoutExtension(file) == "docfx")
                 {
-                    foreach (var env in environmentVariables)
+                    if (replaceEnvironments)
                     {
-                        mutableContent = content.Replace($"{{{env}}}", Environment.GetEnvironmentVariable(env));
+                        foreach (var env in environmentVariables)
+                        {
+                            mutableContent = content.Replace($"{{{env}}}", Environment.GetEnvironmentVariable(env));
+                        }
+                    }
+                    foreach (var (replaceKey, replaceValue) in s_reservedConfigReplaceMap)
+                    {
+                        mutableContent = mutableContent.Replace($"{{{replaceKey}}}", replaceValue);
                     }
                 }
                 File.WriteAllText(filePath, mutableContent);
