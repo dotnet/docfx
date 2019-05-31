@@ -43,7 +43,7 @@ namespace Microsoft.Docs.Build
                 .ToDictionary(prop => prop.Key, prop => prop.Value.HtmlMetaName);
         }
 
-        public static (JsonSchemaValidator, JsonSchemaTransformer) GetJsonSchema(Schema schema)
+        public (JsonSchemaValidator, JsonSchemaTransformer) GetJsonSchema(Schema schema)
         {
             if (schema is null)
             {
@@ -51,7 +51,7 @@ namespace Microsoft.Docs.Build
             }
 
             // TODO: get schema from template
-            var schemaFilePath = Path.Combine(AppContext.BaseDirectory, $"data/{schema.Type.Name}.json");
+            var schemaFilePath = Path.Combine(_templateDir, $"ContentTemplate/schemas/{schema.Type.Name}.schema.json");
             return _jsonSchemas.GetOrAdd(schema.Type.Name, new Lazy<(JsonSchemaValidator, JsonSchemaTransformer)>(GetJsonSchemaCore)).Value;
 
             (JsonSchemaValidator, JsonSchemaTransformer) GetJsonSchemaCore()
@@ -161,6 +161,7 @@ namespace Microsoft.Docs.Build
 
         private JObject TransformPageMetadata(JObject rawMetadata, OutputModel pageModel)
         {
+            // TODO: should run based on schema name
             return RemoveUpdatedAtDateTime(
                 TransformSchema(
                     TransformMetadata("Conceptual.mta.json.js", rawMetadata), pageModel));
