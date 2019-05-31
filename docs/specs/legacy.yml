@@ -166,7 +166,7 @@ outputs:
         },
         "updated_at": "2018-10-30 12:00 AM",
         "content_git_url": "https://github.com/a/rawmetadata/blob/master/c.md",
-        "gitcommit": "https://github.com/a/rawmetadata/blob/799a3349a544536618e29e38515f68f273955151/c.md",
+        "gitcommit": "https://github.com/a/rawmetadata/blob/a4d4512285a54b1db9a73e567493315da3273a5f/c.md",
         "original_content_git_url": "https://github.com/a/rawmetadata/blob/master/c.md",
         "original_content_git_url_template": "{repo}/blob/{branch}/c.md",
         "!metadata": null,

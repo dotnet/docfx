@@ -183,7 +183,7 @@ inputs:
   docs/b.md:
 outputs:
   docs/a.json: |
-    { "content": { "html": "link <a href=\"b\"></a> " } }
+    { "content": { "html": "link <a href=\"b\"></a> <script></script>" } }
   docs/b.json:
 ---
 # Support schema documents with href content

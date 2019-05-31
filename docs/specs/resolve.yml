@@ -409,6 +409,6 @@ inputs:
   b.md: Token
 outputs:
   docs/a.json: |
-    { "conceptual": "[!include[B1](~/b.md)]<p>Token</p>\n" }
+    { "conceptual": "[!include[B1](~/b.md)]<p>Token</p>" }
   .errors.log: |
     ["warning","include-not-found","Cannot resolve '~/b.md' relative to 'docs/a.md'.","docs/a.md",1,1]

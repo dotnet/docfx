@@ -49,6 +49,7 @@ namespace Microsoft.Docs.Build
                 if (expectedValue is string expectedString && actualValue is string actualString)
                 {
                     expectedString = expectedString.Trim();
+                    actualString = actualString.Trim();
 
                     // Treat value as html if it looks like: <blablabla>
                     if (expectedString.StartsWith('<') && expectedString.EndsWith('>'))
@@ -59,6 +60,15 @@ namespace Microsoft.Docs.Build
                     else if (expectedString.StartsWith('!'))
                     {
                         Assert.NotEqual(expectedString, actualString);
+                    }
+                    else if (expectedString.StartsWith("*") && expectedString.EndsWith("*"))
+                    {
+                        expectedString = expectedString.Trim('*');
+                        Assert.True(actualString.Contains(expectedString), $"{expectedString} is not part of {actual}");
+                    }
+                    else
+                    {
+                        Assert.Equal(expectedString, actualString);
                     }
                 }
                 else
