@@ -13,7 +13,8 @@ Besides using file path to link to another file, DocFX also allows you to give a
 - Reference to an external UID without versioning
     - The href of UID is from the same host name as the referencing repository
     - The href of UID is from a different host name as the referencing repository
-        - If the resolved url is on live branch, it could be `review.docs.microsoft.com` if this branch not gone live
+        - If the current branch is live branch, the outout path could be 'review.docs', but the resolved url is 'docs', it will go to another site clicking on the url
+        - If the current branch is from a different site other than 'docs', we need to prioritize the uid from this site firstly if same uid defined in this site and 'docs' 
 - Reference to an external UID with versioning
 - Reference to an external UID with multiple versionings (not support for now)
     - The resolve logic should be smilar to the internal resolving
