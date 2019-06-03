@@ -240,6 +240,12 @@ namespace Microsoft.Docs.Build
         [InlineData("{'properties': {'key1': {'dateFormat': 'M/d/yyyy'}}}", "{'key1': 'Dec 5 2018'}",
             "['warning','date-format-invalid','The 'key1' needs to meet the 'M/d/yyyy' format','file',1,21]")]
 
+        // date range validation
+        [InlineData("{'properties': {'key1': {'dateFormat': 'M/d/yyyy', 'relativeMinDate': '-2:00:00', 'relativeMaxDate': '5:00:00:00'}}}", "{'key1': '04/26/2019'}",
+            "['warning','over-date-range','Based on the current time, 'key1' needs to be in this range: -02:00:00 <= 'key1' <= 5.00:00:00','file',1,21]")]
+        [InlineData("{'properties': {'key1': {'dateFormat': 'M/d/yyyy', 'relativeMinDate': '-2:00:00', 'relativeMaxDate': '5:00:00:00'}}}", "{'key1': '04/26/4019'}",
+            "['warning','over-date-range','Based on the current time, 'key1' needs to be in this range: -02:00:00 <= 'key1' <= 5.00:00:00','file',1,21]")]
+
         // deprecated validation
         [InlineData("{'properties': {'key1': {'replacedBy': 'key2'}}}", "{}", "")]
         [InlineData("{'properties': {'key1': {'replacedBy': ''}}}", "{'key1': 1}",
