@@ -93,7 +93,7 @@ inputs:
   a.md: '[](media/ImAGe.PNG) [](MEdia/ImAGe.PNG)'
   b.md: '[](MEdia/iMaGe.png) [](meDIa/ImAGe.PNG)'
   c.md: '[](meDia/imAgE.pNg) [](MEDIA/ImAGe.PNG)'
-  media/imAge.png:
+  mEDia/imAge.png:
 outputs:
   a.json: |
     { "conceptual":"<p><a href=\"media/image.png\"></a><a href=\"media/image.png\"></a></p>" }
@@ -114,8 +114,8 @@ outputs:
   .dependencymap.json: |
     {
       "dependencies": {
-          "a.md": [{ "source": "media/image.png", "type": "link" }],
-          "b.md": [{ "source": "media/image.png", "type": "link" }],
-          "c.md": [{ "source": "media/image.png", "type": "link" }]
+          "a.md": [{ "source": "mEDia/imAge.png", "type": "link" }],
+          "b.md": [{ "source": "mEDia/imAge.png", "type": "link" }],
+          "c.md": [{ "source": "mEDia/imAge.png", "type": "link" }]
       }
     }

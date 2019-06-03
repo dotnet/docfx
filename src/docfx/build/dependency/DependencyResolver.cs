@@ -207,6 +207,12 @@ namespace Microsoft.Docs.Build
                     // Resolve path relative to docset
                     var pathToDocset = ResolveToDocsetRelativePath(path, relativeTo);
 
+                    // Use the actual file name case
+                    if (relativeTo.Docset.FileNames.TryGetValue(pathToDocset, out var pathActualCase))
+                    {
+                        pathToDocset = pathActualCase;
+                    }
+
                     // resolve from redirection files
                     if (relativeTo.Docset.Redirections.TryGetRedirection(pathToDocset, out var redirectFile))
                     {
