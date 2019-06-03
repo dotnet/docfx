@@ -25,7 +25,7 @@ namespace Microsoft.Docs.Build
             _map = map;
         }
 
-        public (Error error, string href, string display, Document referencedFile) Resolve(string uid, SourceInfo<string> href, string displayPropertyName, Document relativeTo, Document rootFile, string moniker = null)
+        public (Error error, string href, IXrefSpec xrefSpec) Resolve(string uid, SourceInfo<string> href, string displayPropertyName, Document relativeTo, Document rootFile, string moniker = null)
         {
             if (t_recursionDetector.Value.Contains((uid, displayPropertyName, relativeTo)))
             {
@@ -38,7 +38,7 @@ namespace Microsoft.Docs.Build
             try
             {
                 t_recursionDetector.Value.Push((uid, displayPropertyName, relativeTo));
-                return ResolveCore(uid, href, displayPropertyName, rootFile, moniker);
+                return ResolveCore(uid, href, rootFile, moniker);
             }
             finally
             {
@@ -54,27 +54,21 @@ namespace Microsoft.Docs.Build
             context.Output.WriteJson(models, "xrefmap.json");
         }
 
-        private (Error error, string href, string display, Document referencedFile) ResolveCore(string uid, SourceInfo<string> href, string displayPropertyName, Document rootFile, string moniker = null)
+        private (Error error, string href, IXrefSpec xrefSpec) ResolveCore(string uid, SourceInfo<string> href, Document rootFile, string moniker = null)
         {
             string resolvedHref;
-            string displayPropertyValue;
-            string name;
             if (TryResolve(uid, href, moniker, out var spec))
             {
                 var (_, query, fragment) = UrlUtility.SplitUrl(spec.Href);
                 resolvedHref = UrlUtility.MergeUrl(spec.DeclairingFile != null ? RebaseResolvedHref(rootFile, spec.DeclairingFile) : RemoveHostnameIfSharingTheSameOne(spec.Href), query, fragment.Length == 0 ? "" : fragment.Substring(1));
-                name = spec.GetXrefPropertyValue("name");
-                displayPropertyValue = spec.GetXrefPropertyValue(displayPropertyName);
             }
             else
             {
-                return (Errors.XrefNotFound(href), null, null, null);
+                return (Errors.XrefNotFound(href), null, null);
             }
 
-            // fallback order:
-            // xrefSpec.displayPropertyName -> xrefSpec.name -> uid
-            string display = !string.IsNullOrEmpty(displayPropertyValue) ? displayPropertyValue : (!string.IsNullOrEmpty(name) ? name : uid);
-            return (null, resolvedHref, display, spec?.DeclairingFile);
+            Debug.Assert(!string.IsNullOrEmpty(resolvedHref));
+            return (null, resolvedHref, spec);
 
             string RemoveHostnameIfSharingTheSameOne(string input)
             {

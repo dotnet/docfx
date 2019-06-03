@@ -58,7 +58,7 @@ namespace Microsoft.Docs.Build
             return (error, link, file);
         }
 
-        public (Error error, string href, string display, Document file) ResolveXref(SourceInfo<string> href, Document relativeTo, Document rootFile)
+        public (Error error, string href, string display, IXrefSpec spec) ResolveXref(SourceInfo<string> href, Document relativeTo, Document rootFile)
         {
             var (uid, query, fragment) = UrlUtility.SplitUrl(href);
             string moniker = null;
@@ -71,11 +71,11 @@ namespace Microsoft.Docs.Build
             var displayProperty = queries?["displayProperty"];
 
             // need to url decode uid from input content
-            var (error, resolvedHref, display, referencedFile) = _xrefMap.Value.Resolve(Uri.UnescapeDataString(uid), href, displayProperty, relativeTo, rootFile, moniker);
+            var (error, resolvedHref, xrefSpec) = _xrefMap.Value.Resolve(Uri.UnescapeDataString(uid), href, displayProperty, relativeTo, rootFile, moniker);
 
-            if (referencedFile != null)
+            if (xrefSpec?.DeclairingFile != null)
             {
-                _dependencyMapBuilder.AddDependencyItem(rootFile, referencedFile, DependencyType.UidInclusion);
+                _dependencyMapBuilder.AddDependencyItem(rootFile, xrefSpec?.DeclairingFile, DependencyType.UidInclusion);
             }
 
             if (!string.IsNullOrEmpty(resolvedHref))
@@ -83,7 +83,22 @@ namespace Microsoft.Docs.Build
                 var monikerQuery = !string.IsNullOrEmpty(moniker) ? $"view={moniker}" : "";
                 resolvedHref = UrlUtility.MergeUrl(resolvedHref, monikerQuery, fragment.Length == 0 ? "" : fragment.Substring(1));
             }
-            return (error, resolvedHref, display, referencedFile);
+            return (error, resolvedHref, GetDisplayName(), xrefSpec);
+
+            string GetDisplayName()
+            {
+                if (xrefSpec == null)
+                {
+                    return null;
+                }
+
+                var name = xrefSpec.GetXrefPropertyValue("name");
+                var displayPropertyValue = xrefSpec.GetXrefPropertyValue(displayProperty);
+
+                // fallback order:
+                // xrefSpec.displayPropertyName -> xrefSpec.name -> uid
+                return !string.IsNullOrEmpty(displayPropertyValue) ? displayPropertyValue : (!string.IsNullOrEmpty(name) ? name : uid);
+            }
         }
 
         /// <summary>
@@ -124,8 +139,8 @@ namespace Microsoft.Docs.Build
             if (href.Value.StartsWith("xref:") != false)
             {
                 href.Value = href.Value.Substring("xref:".Length);
-                var (uidError, uidHref, _, referencedFile) = ResolveXref(href, relativeTo, resultRelativeTo);
-                return (uidError, uidHref, null, null, referencedFile);
+                var (uidError, uidHref, _, xrefSpec) = ResolveXref(href, relativeTo, resultRelativeTo);
+                return (uidError, uidHref, null, null, xrefSpec?.DeclairingFile);
             }
 
             var decodedHref = new SourceInfo<string>(Uri.UnescapeDataString(href), href);

@@ -94,7 +94,7 @@ namespace Microsoft.Docs.Build
             // TODO: now markdig engine combines all kinds of reference with inclusion, we need to split them out
             var result = t_status.Value.Peek().DependencyResolver.ResolveXref(new SourceInfo<string>(href, origin.ToSourceInfo()), (Document)InclusionContext.File, (Document)InclusionContext.RootFile);
             result.error = result.error?.WithSourceInfo(origin.ToSourceInfo());
-            return result;
+            return (result.error, result.href, result.display, result.spec?.DeclairingFile);
         }
 
         private static MarkdownPipeline CreateMarkdownPipeline()
