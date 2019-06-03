@@ -36,7 +36,7 @@ namespace Microsoft.Docs.Build
             void TransformXrefScalar(JsonSchema schema, JValue value)
             {
                 extensions[value.Path] = new Lazy<JValue>(
-                    () => TransformScalar(schema, file, context, value, errors, buildChild: null),
+                    () => (JValue)TransformScalar(schema, file, context, value, errors, buildChild: null),
                     LazyThreadSafetyMode.PublicationOnly);
             }
         }
@@ -73,7 +73,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private JValue TransformScalar(JsonSchema schema, Document file, Context context, JValue value, List<Error> errors, Action<Document> buildChild)
+        private JToken TransformScalar(JsonSchema schema, Document file, Context context, JValue value, List<Error> errors, Action<Document> buildChild)
         {
             if (value.Type == JTokenType.Null)
             {
@@ -134,10 +134,17 @@ namespace Microsoft.Docs.Build
                 case JsonSchemaContentType.Xref:
 
                     // TODO: how to fill xref resolving data besides href
-                    var (xrefError, xrefLink, _, _) = dependencyResolver.ResolveXref(content, file, file);
+                    var (xrefError, xrefLink, _, xrefSpec) = dependencyResolver.ResolveXref(content, file, file);
+
+                    if (xrefSpec is InternalXrefSpec internalSpec)
+                    {
+                        xrefSpec = internalSpec.ToExternalXrefSpec(context, file);
+                    }
                     errors.AddIfNotNull(xrefError);
-                    content = new SourceInfo<string>(xrefLink, content);
-                    break;
+
+                    var specObj = new JObject(xrefSpec);
+                    JsonUtility.SetSourceInfo(specObj, content);
+                    return specObj;
             }
 
             value = new JValue(content.Value);
