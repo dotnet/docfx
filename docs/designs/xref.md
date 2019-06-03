@@ -6,10 +6,83 @@ Besides using file path to link to another file, DocFX also allows you to give a
 
 ## Feature Requirements/Scenarios
 - Define an internal UID and reference to this UID within the current repository
-- Define an internal UID with versioning and reference to this UID without versioning within the current repository
+  ```yaml
+  inputs:
+    docs/a.md: |
+    ---
+    title: Title from yaml header a
+    uid: a
+    ---
+    docs/b.md: Link to @a
+  outputs:
+    docs/b.json: |
+        {"conceptual":"<p>Link to <a href=\"a\">Title from yaml header a</a></p>\n"}
+  ```
 - Define multiple UID with same value internally with different versioning and reference to this UID without versioning within the current repository
     - If all versionings for this UID are within the same product, take the one with highest versioning respecting the referencing file
-    - If all versionings for this UID are from different products, take the highest one base on proudct namme alphabetically
+      ```yaml
+        # v1: 1.0, 2.0, 3.0
+        # v2: 4.0, 5.0
+        # v3: 3.0 
+        # should take the highest version and respect the version of referencing file
+        inputs:
+            docs/v1/a.md: |
+            ---
+            title: Title from v1
+            uid: a
+            ---
+            docs/v2/a.md: |
+            ---
+            title: Title from v2
+            uid: a
+            ---
+            docs/v3/b.md: Link to @a
+        outputs:
+            docs/b.json: |
+                {"conceptual":"<p>Link to <a href=\"a\">Title from v1</a></p>\n"}
+        ```
+        ```yaml
+        # v1: 1.0, 2.0, 3.0
+        # v2: 4.0, 5.0
+        # should take the highest version
+        inputs:
+            docs/v1/a.md: |
+            ---
+            title: Title from v1
+            uid: a
+            ---
+            docs/v2/a.md: |
+            ---
+            title: Title from v2
+            uid: a
+            ---
+            docs/b.md: Link to @a
+        outputs:
+            docs/b.json: |
+                {"conceptual":"<p>Link to <a href=\"a\">Title from v2</a></p>\n"}
+        ```
+    - If all versions for this UID are from different products, take the highest one base on proudct namme alphabetically
+        ```yaml
+        # v1: a-1.0, a-2.0, a-3.0
+        # v2: b-4.0, b-5.0
+        # v3: c-1.0
+        # should take the hi
+        inputs:
+            docs/v1/a.md: |
+            ---
+            title: Title from v1
+            uid: a
+            ---
+            docs/v2/a.md: |
+            ---
+            title: Title from v2
+            uid: a
+            ---
+            docs/b.md: Link to @a
+        outputs:
+            docs/b.json: |
+                {"conceptual":"<p>Link to <a href=\"a\">Title from v2</a></p>\n"}
+        ```
 - Reference to an external UID without versioning
     - The href of UID is from the same host name as the referencing repository
     - The href of UID is from a different host name as the referencing repository
