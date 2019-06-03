@@ -3,57 +3,37 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace Microsoft.Docs.Build
 {
-    internal class MonikerComparer : IComparer<string>, IEqualityComparer<string>
+    internal class MonikerComparer : IComparer<string>
     {
-        private readonly Dictionary<string, int> _monikerOrder;
+        private readonly Dictionary<string, (string productName, int orderInProduct)> _monikerOrder;
 
-        public MonikerComparer(List<string> monikers)
+        public MonikerComparer(Dictionary<string, (string, int)> monikerOrder)
         {
-            _monikerOrder = GetMoninkerOrder(monikers);
+            _monikerOrder = monikerOrder;
         }
+
+        public object Assert { get; private set; }
 
         public int Compare(string x, string y)
         {
-            int result;
-            if (x is null || !TryGetMonikerOrderFromDefinition(x, out var orderX))
+            if (x is null || y is null || !_monikerOrder.ContainsKey(x) || !_monikerOrder.ContainsKey(y))
             {
-                result = -1;
+                Debug.Fail("Should not be here");
             }
-            else if (y is null || !TryGetMonikerOrderFromDefinition(y, out var orderY))
+
+            var (productNameX, orderXInProduct) = _monikerOrder[x];
+            var (productNameY, orderYInProduct) = _monikerOrder[y];
+            if (productNameX != productNameY)
             {
-                result = 1;
+                // compare moniker name from different product alphabetically on product name
+                return string.Compare(productNameX, productNameY);
             }
-            else
-            {
-                result = orderX.CompareTo(orderY);
-            }
-            return result;
-        }
 
-        public bool Equals(string x, string y)
-        {
-            return Compare(x, y) == 0;
-        }
-
-        public int GetHashCode(string obj)
-        {
-            return obj.GetHashCode();
-        }
-
-        private bool TryGetMonikerOrderFromDefinition(string moniker, out int order)
-            => _monikerOrder.TryGetValue(moniker, out order);
-
-        private Dictionary<string, int> GetMoninkerOrder(List<string> monikers)
-        {
-            var result = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
-            for (int i = 0; i < monikers.Count; i++)
-            {
-                result[monikers[i]] = i;
-            }
-            return result;
+            return orderXInProduct.CompareTo(orderYInProduct);
         }
     }
 }

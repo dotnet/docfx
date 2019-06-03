@@ -54,6 +54,7 @@ query ($login: String!) {
     name
     email
     databaseId
+    login
   }
 }";
 
@@ -111,12 +112,13 @@ query ($login: String!) {
                 {
                     Id = grahpApiResponse.data.user.databaseId,
                     Login = grahpApiResponse.data.user.login,
-                    Name = grahpApiResponse.data.user.name,
+                    Name = string.IsNullOrEmpty(grahpApiResponse.data.user.name) ? grahpApiResponse.data.user.login : grahpApiResponse.data.user.name,
                     Emails = !string.IsNullOrEmpty(grahpApiResponse.data.user.email) ? new[] { grahpApiResponse.data.user.email } : Array.Empty<string>(),
                 });
             }
             catch (Exception ex)
             {
+                Log.Write(ex);
                 return (Errors.GitHubApiFailed(_url, ex.InnerException?.Message ?? ex.Message), null);
             }
         }
@@ -244,7 +246,7 @@ query ($owner: String!, $name: String!, $commit: String!) {
                             {
                                 Id = node.author.user?.databaseId,
                                 Login = node.author.user?.login,
-                                Name = node.author.user?.name,
+                                Name = string.IsNullOrEmpty(node.author.user?.name) ? node.author.user?.login : node.author.user?.name,
                                 Emails = new[] { node.author.email },
                             });
                         }
@@ -255,6 +257,7 @@ query ($owner: String!, $name: String!, $commit: String!) {
             }
             catch (Exception ex)
             {
+                Log.Write(ex);
                 return (Errors.GitHubApiFailed(_url, ex.InnerException?.Message ?? ex.Message), null);
             }
         }
