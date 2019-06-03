@@ -523,7 +523,7 @@ outputs:
           { "name": "charlie", "profile_url": "https://github.com/charlie", "display_name": "Charlie", "id": "3" },
         "contributors": [
           { "name": "bob", "profile_url": "https://github.com/bob", "display_name": "Bob", "id": "2" },
-          { "name": "OsmondJiang", "profile_url": "https://github.com/OsmondJiang", "display_name": "osmondjiang", "id": "19990166" }
+          { "name": "Osmond Jiang", "profile_url": "https://github.com/OsmondJiang", "display_name": "osmondjiang", "id": "19990166" }
         ]
       },
       "updated_at": "2018-10-30 12:00 AM"
