@@ -269,3 +269,12 @@ outputs:
   docs/b.json:
   .errors.log: |
     ["error","json-syntax-error","Invalid JavaScript property identifier character: }.","docs/a.json",1,2]
+---
+# Throw when using SDP without specifing template config
+inputs:
+  docfx.yml: 
+  a.yml: |
+    #YamlMime:LandingData
+outputs:
+  .errors.log: |
+    ["error","template-not-defined","Template not defined, please specify template in config.","a.yml"]

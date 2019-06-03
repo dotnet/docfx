@@ -461,6 +461,14 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Error, "schema-not-found", !string.IsNullOrEmpty(source) ? $"Schema '{source}' not found." : $"Unknown schema '{source}'", source);
 
         /// <summary>
+        /// Template not declared.
+        /// Examples:
+        ///   - using schema document without specifying template in config
+        /// </summary>
+        public static Error TemplateNotDefined(Document file)
+            => new Error(ErrorLevel.Error, "template-not-defined", "Template not defined, please specify template in config.", file: file.ToString());
+
+        /// <summary>
         /// Build errors is larger than <see cref="OutputConfig.MaxErrors"/>.
         /// </summary>
         /// Behavior: ❌ Message: ❌

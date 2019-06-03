@@ -183,6 +183,11 @@ namespace Microsoft.Docs.Build
                 throw Errors.SchemaNotFound(file.Mime).ToException();
             }
 
+            if (context.Template is null)
+            {
+                throw Errors.TemplateNotDefined(file).ToException();
+            }
+
             var (schemaValidator, schemaTransformer) = context.Template.GetJsonSchema(file.Schema);
             if (schemaValidator is null || schemaTransformer is null)
             {
