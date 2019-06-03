@@ -441,14 +441,14 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Fields do not meet the requirements of either logic.
         /// </summary>
-        public static Error EitherLogicFailed(SourceInfo source, IEnumerable<object> fileds)
-            => new Error(ErrorLevel.Warning, "either-logic-failed", $"At least one of these fields: {Join(fileds)} exists", source);
+        public static Error EitherLogicFailed(SourceInfo source, IEnumerable<object> fields)
+            => new Error(ErrorLevel.Warning, "either-logic-failed", $"At least one of these fields: {Join(fields)} exists", source);
 
         /// <summary>
         /// Fields do not meet the requirements of precludes logic.
         /// </summary>
-        public static Error PrecludesLogicFailed(SourceInfo source, IEnumerable<object> fileds)
-            => new Error(ErrorLevel.Warning, "precludes-logic-failed", $"Only one of these fields: {Join(fileds)} can exist at most", source);
+        public static Error PrecludesLogicFailed(SourceInfo source, IEnumerable<object> fields)
+            => new Error(ErrorLevel.Warning, "precludes-logic-failed", $"Only one of these fields: {Join(fields)} can exist at most", source);
 
         /// <summary>
         /// A field does't conform to date format.
