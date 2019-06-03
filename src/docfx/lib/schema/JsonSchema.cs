@@ -148,6 +148,6 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Properties that are used to indicate the deprecated field
         /// </summary>
-        public JValue ReplacedBy { get; set; }
+        public string ReplacedBy { get; set; }
     }
 }
