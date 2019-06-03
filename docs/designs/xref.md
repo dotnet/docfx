@@ -18,13 +18,13 @@ Besides using file path to link to another file, DocFX also allows you to give a
     docs/b.json: |
         {"conceptual":"<p>Link to <a href=\"a\">Title from yaml header a</a></p>\n"}
   ```
-- Define multiple UID with same value internally with different versioning and reference to this UID without versioning within the current repository
-    - If all versionings for this UID are within the same product, take the one with highest versioning respecting the referencing file
+- Define multiple UID with same value internally with different versions and reference to this UID without versioning within the current repository
+    - If all versions for this UID are within the same product, take the one with highest versioning respecting the referencing file
       ```yaml
         # v1: 1.0, 2.0, 3.0
         # v2: 4.0, 5.0
         # v3: 3.0 
-        # should take the highest version and respect the version of referencing file
+        # should take the highest version and respect the version of the referencing file
         inputs:
             docs/v1/a.md: |
             ---
@@ -61,7 +61,7 @@ Besides using file path to link to another file, DocFX also allows you to give a
             docs/b.json: |
                 {"conceptual":"<p>Link to <a href=\"a\">Title from v2</a></p>\n"}
         ```
-    - If all versions for this UID are from different products, take the highest one base on proudct namme alphabetically
+    - If the versions for this UID are from different products, take the highest one base on proudct namme alphabetically
         ```yaml
         # v1: a-1.0, a-2.0, a-3.0
         # v2: b-4.0, b-5.0
@@ -84,11 +84,45 @@ Besides using file path to link to another file, DocFX also allows you to give a
                 {"conceptual":"<p>Link to <a href=\"a\">Title from v2</a></p>\n"}
         ```
 - Reference to an external UID without versioning
-    - The href of UID is from the same host name as the referencing repository
+    - The href of UID is from the same host name as the referencing repository.
+        - If the current branch is `live`, and the UID href is also from `live`, everything is OK
+        - If the current branch is `live`, and the UID href is from `review.docs`, the resolved url might not be found if non-live
+        - If the current branch is `master`, then the output site is `review.docs`, but the resovled url is `docs` which is `live`, while browsing the UID href, the user should not jump to another site(`docs`)
+        ```yaml
+          # External UID `a` is defined in `docs`, whose title is `Title from docs`
+          inputs:
+            docs/b.md: Link to @a
+          outputs:
+            # The output site will be `review.docs`, which is non-live
+            docs/b.json: |
+                {"conceptual":"<p>Link to <a href=\"/a\">Title from docs</a></p>\n"}
+        ```
+        - If the current branch is `test`, and the build type is `PR build` or `branch build`, the UID href should fall back to `master` because `test` might not exist on UID definition repository. And Document hosting service will not handle this fallback for build.
+          ```yaml
+          # External UID `a` is defined in `docs`, whose title is `Title from docs`
+          inputs:
+            docs/b.md: Link to @a
+          outputs:
+            # The output site will be `review.docs`, which is non-live
+            docs/b.json: |
+                {"conceptual":"<p>Link to <a href=\"/a?branch=master\">Title from docs</a></p>\n"}
+          ``` 
     - The href of UID is from a different host name as the referencing repository
-        - If the current branch is live branch, the outout path could be 'review.docs', but the resolved url is 'docs', it will go to another site clicking on the url
-        - If the current branch is from a different site other than 'docs', we need to prioritize the uid from this site firstly if same uid defined in this site and 'docs' 
-- Reference to an external UID with versioning
+        - If the current branch is from a different site other than `docs`, we need to prioritize the uid from this site firstly if same uid defined in this site and `docs`
+          ```yaml
+          # External UID `a` is defined in `docs`, whose title is `Title from docs`
+          inputs:
+            azure-cn/a.md: |
+            ---
+            title: Title from azure-cn
+            uid: a
+            ---
+            azure-cn/b.md: Link to @a
+          outputs:
+            azure-cn/b.json: |
+                {"conceptual":"<p>Link to <a href=\"a\">Title from azure-cn</a></p>\n"}
+          ```
+- Reference to an external UID with versioning, the resolving logic should be the same as internal UID without versioning. We only take consideration of 1 version for now.
 - Reference to an external UID with multiple versionings (not support for now)
     - The resolve logic should be smilar to the internal resolving
 
