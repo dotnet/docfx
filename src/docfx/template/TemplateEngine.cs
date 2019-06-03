@@ -56,6 +56,11 @@ namespace Microsoft.Docs.Build
 
             (JsonSchemaValidator, JsonSchemaTransformer) GetJsonSchemaCore()
             {
+                // TODO: LandingData.schema.json missing in template repo, fallback to our own json schema
+                if (string.Equals(schema.Type.Name, "LandingData"))
+                {
+                    schemaFilePath = $"{AppContext.BaseDirectory}/data/LandingData.schema.json";
+                }
                 if (!File.Exists(schemaFilePath))
                 {
                     return default;
