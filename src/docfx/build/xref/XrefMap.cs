@@ -59,7 +59,7 @@ namespace Microsoft.Docs.Build
             string resolvedHref;
             string displayPropertyValue;
             string name;
-            var (_, rootFileMonikers) = _context.MonikerProvider.GetFileLevelMonikers(rootFile, _context.MetadataProvider);
+            var (_, rootFileMonikers) = _context.MonikerProvider.GetFileLevelMonikersWithInfo(rootFile);
             if (TryResolve(uid, href, moniker, rootFileMonikers, out var spec))
             {
                 var (_, query, fragment) = UrlUtility.SplitUrl(spec.Href);
@@ -91,7 +91,7 @@ namespace Microsoft.Docs.Build
         private string RebaseResolvedHref(Document rootFile, Document referencedFile)
             => _context.DependencyResolver.GetRelativeUrl(rootFile, referencedFile);
 
-        private bool TryResolve(string uid, SourceInfo<string> href, string moniker, List<string> monikers, out IXrefSpec spec)
+        private bool TryResolve(string uid, SourceInfo<string> href, string moniker, List<Moniker> monikers, out IXrefSpec spec)
         {
             spec = null;
             if (_map.TryGetValue(uid, out var specs))
@@ -107,7 +107,7 @@ namespace Microsoft.Docs.Build
             return false;
         }
 
-        private IXrefSpec GetXrefSpec(string uid, SourceInfo<string> href, string moniker, List<IXrefSpec> specs)
+        private IXrefSpec GetXrefSpec(string uid, SourceInfo<string> href, string moniker, List<Moniker> monikers, List<IXrefSpec> specs)
         {
             if (!TryGetValidXrefSpecs(uid, specs, out var validSpecs))
                 return default;
@@ -125,7 +125,7 @@ namespace Microsoft.Docs.Build
                 // if the moniker is not defined with the uid
                 // log a warning and take the one with latest version
                 _context.ErrorLog.Write(Errors.InvalidUidMoniker(href, moniker, uid));
-                return GetLatestInternalXrefMap(validSpecs);
+                return GetLatestXrefSpec(validSpecs);
             }
 
             // For uid with and without moniker range, take the one without moniker range
@@ -138,7 +138,7 @@ namespace Microsoft.Docs.Build
             // For uid with moniker range, take the latest moniker if no moniker defined while resolving
             if (specs.Count > 1)
             {
-                return GetLatestInternalXrefMap(validSpecs, monikers);
+                return GetLatestXrefSpec(validSpecs, monikers);
             }
             else
             {
@@ -153,14 +153,14 @@ namespace Microsoft.Docs.Build
             {
                 if (TryGetValidXrefSpecs(uid, specsWithSameUid.Select(x => x.Value).ToList(), out var validInternalSpecs))
                 {
-                    var internalSpec = GetLatestInternalXrefMap(validInternalSpecs);
+                    var internalSpec = GetLatestXrefSpec(validInternalSpecs);
                     loadedInternalSpecs.Add((internalSpec as InternalXrefSpec).ToExternalXrefSpec(_context, internalSpec.DeclairingFile));
                 }
             }
             return loadedInternalSpecs;
         }
 
-        private (InternalXrefSpec spec, Document referencedFile) GetLatestInternalXrefMap(List<(InternalXrefSpec spec, Document referencedFile)> specs, List<string> monikers = null)
+        private IXrefSpec GetLatestXrefSpec(List<IXrefSpec> specs, List<Moniker> monikers = null)
         {
             if (monikers?.Any() != true)
             {
@@ -170,13 +170,13 @@ namespace Microsoft.Docs.Build
             {
                 // Firstly check if any spec has monikers intersecting with monikers of the root file
                 // If not, take the spec with highest version whose monikers are all lower than the lowest moniker of the root file
-                var (spec, referencedFile) = specs.FirstOrDefault(x => x.spec.Monikers.Intersect(monikers).Any());
+                var spec = specs.FirstOrDefault(x => x.Monikers.Select(moniker => moniker.MonikerName).Intersect(monikers.Select(moniker => moniker.MonikerName)).Any());
                 if (spec is null)
                 {
                     // TODO: Need to cover when the root file level moniker belongs to different product other than uid moniker
-                    (spec, referencedFile) = specs.FirstOrDefault(x => x.spec.Monikers.All(moniker => _context.MonikerProvider.Comparer.Compare(moniker, monikers.FirstOrDefault()) < 0));
+                    spec = specs.FirstOrDefault(x => x.Monikers.All(moniker => _context.MonikerProvider.Comparer.Compare(moniker.MonikerName, monikers.FirstOrDefault().MonikerName) < 0));
                 }
-                return (spec, referencedFile);
+                return spec;
             }
         }
 
