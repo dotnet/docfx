@@ -14,9 +14,11 @@ namespace Microsoft.Docs.Build
         private readonly static GitHubAccessor _github = new GitHubAccessor(_token);
 
         [Theory]
-        [InlineData("OsmondJiang", 19990166)]
-        [InlineData("N1o2t3E4x5i6s7t8N9a0m9e", null)]
-        public async Task GetUserByLogin(string login, int? id)
+        [InlineData("OsmondJiang", 19990166, "Osmond Jiang", "OsmondJiang")]
+        [InlineData("OPSTest", 23694395, "OPSTest", "OPSTest")]
+        [InlineData("luyajun0205", 15990849, "luyajun0205", "luyajun0205")]
+        [InlineData("N1o2t3E4x5i6s7t8N9a0m9e", null, null, null)]
+        public async Task GetUserByLogin(string login, int? expectedId, string expectedName, string expectedLogin)
         {
             var (error, profile) = await _github.GetUserByLogin(login);
 
@@ -24,15 +26,20 @@ namespace Microsoft.Docs.Build
             if (!string.IsNullOrEmpty(_token))
             {
                 Assert.Null(error?.Message);
-                Assert.Equal(id, profile?.Id);
+                Assert.Equal(expectedId, profile?.Id);
+                Assert.Equal(expectedName, profile?.Name);
+                Assert.Equal(expectedLogin, profile?.Login);
             }
         }
 
         [Theory]
-        [InlineData("docascode", "docfx-test-dependencies", "c467c848311ccd2550fdb25a77ef26f9d8a33d00", false, "OsmondJiang", 19990166)]
-        [InlineData("docascode", "docfx-test-dependencies", "deadbeefdeadbeefdeadbeefdeadbeefdeadbeef", false, null, null)]
-        [InlineData("docascode", "this-repo-does-not-exists", "deadbeefdeadbeefdeadbeefdeadbeefdeadbeef", true, null, null)]
-        public async Task GetUserByCommit(string repoOwner, string repoName, string commit, bool hasError, string login, int? id)
+        [InlineData("docascode", "docfx-test-dependencies", "c467c848311ccd2550fdb25a77ef26f9d8a33d00", false, "OsmondJiang", 19990166, "Osmond Jiang", new[] { "xinjiang@microsoft.com" })]
+        [InlineData("OPS-E2E-PPE", "E2E_Contribution_DocfxV3", "e0f6bbdf1c8809562ca7ea1b3749660078143607", false, "OPSTestPPE", 26447601, "OPSTestPPE", new[] { "opse2etestingppe@outlook.com" })]
+        [InlineData("OPS-E2E-PPE", "E2E_Contribution_DocfxV3", "c2f754e529491f59a7ceaa1376308820ba05f586", false, "luyajun0205", 15990849, "luyajun0205", new[] { "v-yajlu@microsoft.com" })]
+        [InlineData("docascode", "docfx-test-dependencies", "deadbeefdeadbeefdeadbeefdeadbeefdeadbeef", false, null, null, null, null)]
+        [InlineData("docascode", "contribution-test", "b2b280fbc64790011c7a4d01bca5b84b6d98e386", false, null, null, null, new[] { "51308672+disabled-account-osmond@users.noreply.github.com" })]
+        [InlineData("docascode", "this-repo-does-not-exists", "deadbeefdeadbeefdeadbeefdeadbeefdeadbeef", true, null, null, null, null)]
+        public async Task GetUserByCommit(string repoOwner, string repoName, string commit, bool hasError, string login, int? id, string name, string[] emails)
         {
             var (error, users) = await _github.GetUsersByCommit(repoOwner, repoName, commit);
 
@@ -47,6 +54,8 @@ namespace Microsoft.Docs.Build
                 var user = users?.FirstOrDefault();
                 Assert.Equal(login, user?.Login);
                 Assert.Equal(id, user?.Id);
+                Assert.Equal(name, user?.Name);
+                Assert.Equal(emails, user?.Emails);
             }
         }
     }
