@@ -118,6 +118,7 @@ query ($login: String!) {
             }
             catch (Exception ex)
             {
+                Log.Write(ex);
                 return (Errors.GitHubApiFailed(_url, ex.InnerException?.Message ?? ex.Message), null);
             }
         }
@@ -256,6 +257,7 @@ query ($owner: String!, $name: String!, $commit: String!) {
             }
             catch (Exception ex)
             {
+                Log.Write(ex);
                 return (Errors.GitHubApiFailed(_url, ex.InnerException?.Message ?? ex.Message), null);
             }
         }
