@@ -297,7 +297,7 @@ inputs:
 outputs:
   docs/a.mta.json:
   docs/a.raw.page.json: |
-    {"key1":"value1","key2":"value2"}
+    {"rawMetadata": {"key1":"value1","key2":"value2"}}
 ---
 # Context object type is TOC
 commands:
