@@ -29,61 +29,69 @@ namespace Microsoft.Docs.Build
 
         protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
         {
-            var prop = base.CreateProperty(member, memberSerialization);
-            ShouldNotSerializeEmptySourceInfo();
-            ShouldNotSerializeEmptyArray();
+            var property = base.CreateProperty(member, memberSerialization);
+            HandleSourceInfo(property);
+            DoNotSerializeEmptyArray(property);
             SetFieldWritable();
-            return prop;
-
-            // For SourceInfo<>, with value of empty array or null should not be serialized
-            void ShouldNotSerializeEmptySourceInfo()
-            {
-                if (prop.PropertyType.IsGenericType && prop.PropertyType.GetGenericTypeDefinition() == typeof(SourceInfo<>))
-                {
-                    var originalShouldSerialize = prop.ShouldSerialize;
-                    prop.ShouldSerialize =
-                        target =>
-                        {
-                            var value = prop.ValueProvider.GetValue(target);
-                            if (((SourceInfo)value)?.GetValue() is null)
-                                return false;
-
-                            if (IsEmptyArray(((SourceInfo)value).GetValue()))
-                            {
-                                return false;
-                            }
-                            return originalShouldSerialize?.Invoke(target) ?? true;
-                        };
-                }
-            }
-
-            void ShouldNotSerializeEmptyArray()
-            {
-                if (typeof(IEnumerable).IsAssignableFrom(prop.PropertyType) && !(prop.PropertyType == typeof(string)))
-                {
-                    prop.ShouldSerialize =
-                        target => !IsEmptyArray(prop.ValueProvider.GetValue(target));
-                }
-            }
-
-            bool IsEmptyArray(object value)
-            {
-                if (value is IEnumerable enumer && !enumer.GetEnumerator().MoveNext())
-                {
-                    return true;
-                }
-                return false;
-            }
+            return property;
 
             void SetFieldWritable()
             {
-                if (!prop.Writable)
+                if (!property.Writable)
                 {
                     if (member is FieldInfo f && f.IsPublic && !f.IsStatic)
                     {
-                        prop.Writable = true;
+                        property.Writable = true;
                     }
                 }
+            }
+        }
+
+        private void DoNotSerializeEmptyArray(JsonProperty property)
+        {
+            if (typeof(IEnumerable).IsAssignableFrom(property.PropertyType) && !(property.PropertyType == typeof(string)))
+            {
+                var originalShouldSerialize = property.ShouldSerialize;
+
+                property.ShouldSerialize = target =>
+                {
+                    if (IsEmptyArray(property.ValueProvider.GetValue(target)))
+                    {
+                        return false;
+                    }
+
+                    return originalShouldSerialize?.Invoke(target) ?? true;
+                };
+            }
+        }
+
+        private static bool IsEmptyArray(object value)
+        {
+            return !(value is string) && value is IEnumerable enumerable && !enumerable.GetEnumerator().MoveNext();
+        }
+
+        private static void HandleSourceInfo(JsonProperty property)
+        {
+            if (property.PropertyType.IsGenericType && property.PropertyType.GetGenericTypeDefinition() == typeof(SourceInfo<>))
+            {
+                // Allow source info propagation for null values
+                property.NullValueHandling = NullValueHandling.Include;
+
+                // Do not serialize empty array or null
+                var originalShouldSerialize = property.ShouldSerialize;
+
+                property.ShouldSerialize = target =>
+                {
+                    var sourceInfoValue = property.ValueProvider.GetValue(target);
+                    var value = ((SourceInfo)sourceInfoValue)?.GetValue();
+
+                    if (value is null || IsEmptyArray(value))
+                    {
+                        return false;
+                    }
+
+                    return originalShouldSerialize?.Invoke(target) ?? true;
+                };
             }
         }
     }

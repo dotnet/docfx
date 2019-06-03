@@ -6,7 +6,7 @@ repos:
   https://docs.com/legacy:
   - files:
       docfx.yml: |
-        theme: https://docs.com/template
+        template: https://docs.com/theme
         redirections:
           a.md: /b
         metadataSchema: schema.json
@@ -27,7 +27,7 @@ repos:
           },
           "htmlMetaHidden": ["conceptual", "is_dynamic_rendering", "canonical_url"]
         }
-  https://docs.com/template:
+  https://docs.com/theme:
   - files:
       ContentTemplate/Conceptual.mta.json.js: |
         exports.transform = function (model) {
@@ -87,11 +87,9 @@ repos:
     email: charlie@contoso.com
     files:
       docfx.yml: |
-        theme: https://docs.com/template1
+        template: https://docs.com/template1
         redirections:
           a.md: /b
-        routes:
-          /: rawmetadata
         gitHub:
           userCache: user_profile.json
           resolveUsers: true
@@ -168,7 +166,7 @@ outputs:
         },
         "updated_at": "2018-10-30 12:00 AM",
         "content_git_url": "https://github.com/a/rawmetadata/blob/master/c.md",
-        "gitcommit": "https://github.com/a/rawmetadata/blob/799a3349a544536618e29e38515f68f273955151/c.md",
+        "gitcommit": "https://github.com/a/rawmetadata/blob/a4d4512285a54b1db9a73e567493315da3273a5f/c.md",
         "original_content_git_url": "https://github.com/a/rawmetadata/blob/master/c.md",
         "original_content_git_url_template": "{repo}/blob/{branch}/c.md",
         "!metadata": null,
@@ -334,8 +332,9 @@ inputs:
       'docs/v1/**': '< netcore-2.0'
     baseUrl: https://docs.com/docs
     routes:
-      docs/v1/: docs/
-      docs/v2/: docs/
+      docs/: .
+      docs/v1/: .
+      docs/v2/: .
     monikerDefinition: monikerDefinition.json
   docs/v1/a.md: |
   docs/a.md: |

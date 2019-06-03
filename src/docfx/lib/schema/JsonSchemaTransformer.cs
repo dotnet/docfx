@@ -8,55 +8,72 @@ using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
-    internal static class JsonSchemaTransform
+    internal class JsonSchemaTransformer
     {
-        public static (List<Error> errors, JToken token) TransformContent(Document file, Context context, JsonSchema schema, JToken token, Action<Document> buildChild)
+        private readonly JsonSchema _schema;
+        private readonly JsonSchemaDefinition _definitions;
+
+        public JsonSchemaTransformer(JsonSchema schema)
+        {
+            _schema = schema;
+            _definitions = new JsonSchemaDefinition(schema);
+        }
+
+        public (List<Error> errors, JToken token) TransformContent(Document file, Context context, JToken token, Action<Document> buildChild)
         {
             var errors = new List<Error>();
-
-            Traverse(new JsonSchemaContext(schema), schema, token, (jsonSchema, scalar) => scalar.Replace(TransformScalar(file, context, jsonSchema, scalar, errors, buildChild)));
+            Traverse(_schema, token, (schema, value) => value.Replace(TransformScalar(schema, file, context, value, errors, buildChild)));
             return (errors, token);
         }
 
-        public static (List<Error> errors, Dictionary<string, Lazy<JValue>>) TransformXref(Document file, Context context, JsonSchema schema, JToken token)
+        public (List<Error> errors, Dictionary<string, Lazy<JValue>>) TransformXref(Document file, Context context, JToken token)
         {
             var errors = new List<Error>();
             var extensions = new Dictionary<string, Lazy<JValue>>();
-            Traverse(new JsonSchemaContext(schema), schema, token, (jsonSchema, scalar) => extensions[scalar.Path] = new Lazy<JValue>(() => TransformScalar(file, context, jsonSchema, scalar, errors, buildChild: null), LazyThreadSafetyMode.PublicationOnly));
+            Traverse(_schema, token, TransformXrefScalar);
             return (errors, extensions);
+
+            void TransformXrefScalar(JsonSchema schema, JValue value)
+            {
+                extensions[value.Path] = new Lazy<JValue>(
+                    () => TransformScalar(schema, file, context, value, errors, buildChild: null),
+                    LazyThreadSafetyMode.PublicationOnly);
+            }
         }
 
-        private static void Traverse(JsonSchemaContext jsonSchemaContext, JsonSchema schema, JToken token, Action<JsonSchema, JValue> transformScalar)
+        private void Traverse(JsonSchema schema, JToken token, Action<JsonSchema, JValue> transformScalar)
         {
-            schema = jsonSchemaContext.GetDefinition(schema);
+            schema = _definitions.GetDefinition(schema);
 
             switch (token)
             {
                 case JValue scalar:
                     transformScalar(schema, scalar);
                     break;
+
                 case JArray array:
                     if (schema.Items != null)
                     {
                         foreach (var item in array)
                         {
-                            Traverse(jsonSchemaContext, schema.Items, item, transformScalar);
+                            Traverse(schema.Items, item, transformScalar);
                         }
                     }
                     break;
+
                 case JObject obj:
                     foreach (var (key, value) in obj)
                     {
                         if (schema.Properties.TryGetValue(key, out var propertySchema))
                         {
-                            Traverse(jsonSchemaContext, propertySchema, value, transformScalar);
+                            Traverse(propertySchema, value, transformScalar);
                         }
                     }
                     break;
             }
         }
 
-        private static JValue TransformScalar(Document file, Context context, JsonSchema schema, JValue value, List<Error> errors, Action<Document> buildChild)
+        private JValue TransformScalar(JsonSchema schema, Document file, Context context, JValue value, List<Error> errors, Action<Document> buildChild)
         {
             if (value.Type == JTokenType.Null)
             {

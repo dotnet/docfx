@@ -102,7 +102,7 @@ namespace Microsoft.Docs.Build
                 var currentItem = new TableOfContentsItem();
                 if (block.Inline is null || !block.Inline.Any())
                 {
-                    errors.Add(Errors.MissingTocHead(new SourceInfo<string>(tocContent.Substring(block.Span.Start, block.Span.Length), block.ToSourceInfo(file: filePath))));
+                    currentItem.Name = new SourceInfo<string>(null, block.ToSourceInfo(file: filePath));
                     return currentItem;
                 }
 
@@ -138,7 +138,7 @@ namespace Microsoft.Docs.Build
                 return currentItem;
             }
 
-            string GetLiteral(ContainerInline inline)
+            SourceInfo<string> GetLiteral(ContainerInline inline)
             {
                 var result = new StringBuilder();
                 var child = inline.FirstChild;
@@ -156,7 +156,7 @@ namespace Microsoft.Docs.Build
                     child = child.NextSibling;
                 }
 
-                return result.ToString();
+                return new SourceInfo<string>(result.ToString(), inline.ToSourceInfo(file: filePath));
             }
         }
     }

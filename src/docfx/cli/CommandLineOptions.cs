@@ -11,6 +11,7 @@ namespace Microsoft.Docs.Build
         public bool Legacy;
         public bool Verbose;
         public string Locale;
+        public string Template;
         public int Port;
 
         public JObject ToJObject()
@@ -25,10 +26,13 @@ namespace Microsoft.Docs.Build
                 output["copyResources"] = false;
             }
 
-            return new JObject
-            {
-                ["output"] = output,
-            };
+            var result = new JObject();
+            result["output"] = output;
+
+            if (Template != null)
+                result["template"] = Template;
+
+            return result;
         }
     }
 }
