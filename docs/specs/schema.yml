@@ -174,7 +174,7 @@ outputs:
   docs/a.json: |
     { "content": { "inlineDescription": "This is a list:\n- Item 1\n- Item 2\n- <code>Item 3</code>## Not heading" } }
 ---
-# Support schema documents with html content
+# [skip] Support schema documents with html content
 inputs:
   docfx.yml:
   docs/a.yml: |
@@ -183,7 +183,7 @@ inputs:
   docs/b.md:
 outputs:
   docs/a.json: |
-    { "content": { "html": "link <a href=\"b\"></a> <script></script>" } }
+    { "content": { "html": "link <a href=\"b\"></a>" } }
   docs/b.json:
 ---
 # Support schema documents with href content
