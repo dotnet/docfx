@@ -7,15 +7,18 @@ using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
-    public class XrefSpec
+    internal class ExternalXrefSpec : IXrefSpec
     {
         public string Uid { get; set; }
 
+        public string Href { get; set; }
+
+        Document IXrefSpec.DeclairingFile => null;
+
+        // TODO: need a lookup table of moniker definition to get Moniker from moniker name
         // not into output for now
         [JsonIgnore]
-        public HashSet<string> Monikers { get; set; } = new HashSet<string>();
-
-        public string Href { get; set; }
+        public HashSet<Moniker> Monikers { get; set; } = new HashSet<Moniker>();
 
         [JsonExtensionData]
         public JObject ExtensionData { get; } = new JObject();

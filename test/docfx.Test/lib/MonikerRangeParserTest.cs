@@ -56,7 +56,7 @@ namespace Microsoft.Docs.Build
         {
             var monikersEvaluator = new EvaluatorWithMonikersVisitor(_monikerDefinition);
             _monikerRangeParser = new MonikerRangeParser(monikersEvaluator);
-            _monikerComparer = new MonikerComparer(monikersEvaluator.GetSortedMonikerNameList());
+            _monikerComparer = new MonikerComparer(monikersEvaluator.MonikerOrder);
         }
 
         [Theory]

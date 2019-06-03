@@ -6,16 +6,12 @@ namespace Microsoft.Docs.Build
     [PageSchema]
     public sealed class TestPage
     {
-        [Markdown]
         public string Description { get; set; }
 
-        [InlineMarkdown]
         public string InlineDescription { get; set; }
 
-        [Html]
         public string Html { get; set; }
 
-        [Href]
         public string Href { get; set; }
     }
 }

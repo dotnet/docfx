@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -26,10 +26,9 @@
     <PackageReference Include="Microsoft.AspNetCore" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="2.2.0" />
     <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.6.3" PrivateAssets="all" />
-    <PackageReference Include="Microsoft.DocAsCode.MarkdigEngine.Extensions" Version="2.43.0-b-190520010-g6beabd" />
+    <PackageReference Include="Microsoft.DocAsCode.MarkdigEngine.Extensions" Version="2.43.0-b-190523013-g6e786d" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
     <PackageReference Include="Jint" Version="2.11.58" />
-    <PackageReference Include="Octokit" Version="0.32.0" />
     <PackageReference Include="Stubble.Core" Version="1.2.7" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.1-rc.114" PrivateAssets="All" />
     <PackageReference Include="System.CommandLine" Version="0.1.0-preview2-180503-2" />

@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
@@ -142,10 +143,15 @@ namespace Microsoft.Docs.Build
                                         // clean existing work tree folder
                                         // it may be dirty caused by last failed restore action
                                         if (Directory.Exists(workTreePath))
-                                            Directory.Delete(workTreePath, true);
+                                        {
+                                            // https://stackoverflow.com/questions/24265481/after-directory-delete-the-directory-exists-returning-true-sometimes
+                                            var toDeleteDir = $"{workTreePath}-{Guid.NewGuid()}";
+                                            Directory.Move(workTreePath, toDeleteDir);
+                                            Directory.Delete(toDeleteDir, true);
+                                        }
 
-                                        // https://stackoverflow.com/questions/24265481/after-directory-delete-the-directory-exists-returning-true-sometimes
                                         Debug.Assert(!Directory.Exists(workTreePath));
+                                        GitUtility.PruneWorkTree(repoPath);
                                         GitUtility.AddWorkTree(repoPath, headCommit, workTreePath);
                                     }
                                     catch (Exception ex)
@@ -174,32 +180,26 @@ namespace Microsoft.Docs.Build
 
         private static IEnumerable<(string remote, string branch, GitFlags flags)> GetGitDependencies(Config config, string locale, Repository rootRepository)
         {
-            var dependencies = config.Dependencies.Values.Select(url =>
+            foreach (var (_, url) in config.Dependencies)
             {
                 var (remote, branch, _) = UrlUtility.SplitGitUrl(url);
-                return (remote, branch, GitFlags.DepthOne);
-            });
-
-            dependencies = dependencies.Concat(GetThemeGitDependencies(config, locale));
-
-            if (rootRepository != null)
-            {
-                dependencies = dependencies.Concat(GetLocalizationGitDependencies(rootRepository, config, locale));
+                if (UrlUtility.IsHttp(url))
+                {
+                    yield return (remote, branch, GitFlags.DepthOne);
+                }
             }
 
-            return dependencies;
-        }
-
-        private static IEnumerable<(string remote, string branch, GitFlags flags)> GetThemeGitDependencies(Config config, string locale)
-        {
-            if (string.IsNullOrEmpty(config.Theme))
+            if (UrlUtility.IsHttp(config.Template))
             {
-                yield break;
+                var (remote, branch) = LocalizationUtility.GetLocalizedTheme(config.Template, locale, config.Localization.DefaultLocale);
+
+                yield return (remote, branch, GitFlags.DepthOne);
             }
 
-            var (remote, branch) = LocalizationUtility.GetLocalizedTheme(config.Theme, locale, config.Localization.DefaultLocale);
-
-            yield return (remote, branch, GitFlags.DepthOne);
+            foreach (var item in GetLocalizationGitDependencies(rootRepository, config, locale))
+            {
+                yield return item;
+            }
         }
 
         /// <summary>

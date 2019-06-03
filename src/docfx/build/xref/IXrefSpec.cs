@@ -5,8 +5,14 @@ using System.Collections.Generic;
 
 namespace Microsoft.Docs.Build
 {
-    internal interface IExpression
+    internal interface IXrefSpec
     {
-        IEnumerable<Moniker> Accept(EvaluatorWithMonikersVisitor visitor);
+        string Href { get; }
+
+        Document DeclairingFile { get; }
+
+        HashSet<Moniker> Monikers { get; }
+
+        string GetXrefPropertyValue(string propertyName);
     }
 }

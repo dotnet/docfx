@@ -24,7 +24,7 @@ inputs:
   docfx.yml: |
     redirections:
       docs/redirect.md: /path
-      docs/redirect1.md: /PATH
+      docs/redirect1.md: /PATH1
   docs/a.md: |
     [redirect](REDIRECT.md)
 outputs:

@@ -5,8 +5,8 @@ using System.Collections.Generic;
 
 namespace Microsoft.Docs.Build
 {
-    public class XrefMapModel
+    internal class XrefMapModel
     {
-        public List<XrefSpec> References { get; } = new List<XrefSpec>();
+        public List<ExternalXrefSpec> References { get; } = new List<ExternalXrefSpec>();
     }
 }

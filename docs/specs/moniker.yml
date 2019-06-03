@@ -7,8 +7,9 @@ inputs:
       'docs/v2/**': '>= netcore-2.0'
     baseUrl: https://docs.com/docs
     routes:
-      docs/v1/: docs/
-      docs/v2/: docs/
+      docs/: .
+      docs/v1/: .
+      docs/v2/: .
     monikerDefinition: monikerDefinition.json
   docs/v1/a.md: |
     Moniker: netcore-1.0, netcore-1.1
@@ -631,7 +632,7 @@ outputs:
   .errors.log: |
     ["info","invalid-uid-moniker","Moniker 'netcore-1.0' is not defined with uid 'a'","docs/b.md",1,7]
 ---
-# Define same uid with and without moniker range
+# [skip] Define same uid with and without moniker range
 # while refer to it without moniker range, should pick the one without moniker range
 inputs:
   docfx.yml: |
@@ -801,6 +802,9 @@ inputs:
     ## [C](/c)
     ## [D](http://test.com/test)
     ### [A](xref:a)
+    ## E
+    ### [A](a.md)
+    ### [B](b.md)
   monikerDefinition.json: |
     {
       "monikers": [
@@ -832,10 +836,18 @@ outputs:
             { "name": "C", "href": "/c", "monikers": ["netcore-1.1", "netcore-1.2", "netcore-1.3"] },
             { 
               "name": "D",
-              "href": "http://test.com/test", 
-              "monikers": ["netcore-1.0", "netcore-1.1", "netcore-1.2", "netcore-1.3"],
+              "href": "http://test.com/test",
+              "monikers": ["netcore-1.1", "netcore-1.2", "netcore-1.3"],
               "items": [
                 { "name": "A", "href": "a", "monikers": ["netcore-1.0", "netcore-1.1"] }
+              ]
+            },
+            {
+              "name": "E",
+              "monikers": [ "netcore-1.0", "netcore-1.1", "netcore-1.2" ],
+              "items": [
+                { "name": "A", "href": "a", "monikers": [ "netcore-1.0", "netcore-1.1" ] },
+                { "name": "B", "href": "b", "monikers": [ "netcore-1.1", "netcore-1.2"] },
               ]
             }
           ],

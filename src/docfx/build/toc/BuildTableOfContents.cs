@@ -82,16 +82,24 @@ namespace Microsoft.Docs.Build
                     }
 
                     List<string> monikers = null;
+
+                    var linkType = UrlUtility.GetLinkType(item.Href?.Value);
+                    if (linkType == LinkType.External || linkType == LinkType.AbsolutePath)
+                    {
+                        item.Monikers = fileMonikers;
+                        continue;
+                    }
+
                     if (item.Href?.Value is null || !hrefMap.TryGetValue(item.Href, out monikers))
                     {
                         if (item.TopicHref is null || !hrefMap.TryGetValue(item.TopicHref, out monikers))
                         {
-                            monikers = fileMonikers;
+                            monikers = new List<string>();
                         }
                     }
 
                     var childrenMonikers = item.Items?.SelectMany(child => child?.Monikers ?? new List<string>()) ?? new List<string>();
-                    monikers = childrenMonikers.Union(monikers ?? new List<string>()).Distinct(context.MonikerProvider.Comparer).ToList();
+                    monikers = childrenMonikers.Union(monikers ?? new List<string>()).Distinct().ToList();
                     monikers.Sort(context.MonikerProvider.Comparer);
 
                     item.Monikers = monikers;

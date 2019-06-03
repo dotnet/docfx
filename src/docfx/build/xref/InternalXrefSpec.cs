@@ -7,15 +7,15 @@ using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
-    internal class InternalXrefSpec
+    internal class InternalXrefSpec : IXrefSpec
     {
         public string Uid { get; set; }
 
         public string Href { get; set; }
 
-        public Document ReferencedFile { get; set; }
+        public Document DeclairingFile { get; set; }
 
-        public HashSet<string> Monikers { get; set; } = new HashSet<string>();
+        public HashSet<Moniker> Monikers { get; set; } = new HashSet<Moniker>();
 
         public Dictionary<string, Lazy<JValue>> ExtensionData { get; } = new Dictionary<string, Lazy<JValue>>();
 
@@ -29,9 +29,9 @@ namespace Microsoft.Docs.Build
 
         public string GetName() => GetXrefPropertyValue("name");
 
-        public XrefSpec ToExternalXrefSpec(Context context, Document file)
+        public ExternalXrefSpec ToExternalXrefSpec(Context context, Document file)
         {
-            var spec = new XrefSpec
+            var spec = new ExternalXrefSpec
             {
                 Uid = Uid,
                 Monikers = Monikers,

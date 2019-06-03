@@ -15,19 +15,6 @@ outputs:
   docs/a.json: |
     { "conceptual": "<p><em>this</em> <em>is</em> an <em><strong>inline</strong></em> <code>markdown</code> <strong>test</strong></p>" }
 ---
-# Report warning when Yaml header has null value
-inputs:
-  docfx.yml:
-  docs/a.md: |
-    ---
-    title:
-    ---
-    hello
-outputs:
-  docs/a.json:
-  .errors.log: |
-    ["info","null-value","'title' contains null value","docs/a.md",2,1]
----
 # title metadata overrides h1
 inputs:
   docfx.yml:
@@ -260,7 +247,7 @@ repos:
   https://docs.com/markdown-note:
   - files:
       docfx.yml: |
-        theme: https://docs.com/template/token
+        template: https://docs.com/template/token
       docs/a.md: |
         >[!NOTE]
         >note

@@ -244,7 +244,7 @@ outputs:
   docs/b.json: |
     {"conceptual":"<p><a href=\"#self\"></a></p>"}
   .errors.log: |
-    ["warning","link-out-of-scope","File 'c.md' referenced by link '../c.md' will not be built because it is not included in docfx.yml","docs/a.md",1,9]
+    ["warning","link-out-of-scope","File 'c.md' referenced by link '../c.md' will not be built because it is not included in build scope","docs/a.md",1,9]
     ["suggestion","internal-bookmark-not-found","Cannot find bookmark '#self' in 'c.md'","c.md",1,1]
 ---
 # Don't show warning if link to a resource outside build scope
@@ -298,6 +298,18 @@ repos:
 outputs:
   docs/a.json: |
     {"conceptual":"<p>DEP</p>"}
+---
+# Dependency can be a file system folder
+inputs:
+  docfx.yml: |
+    dependencies:
+      dep: dependencies#branch
+  a.md: '[!include[dep](~/dep/dep.md)]'
+  dependencies/dep.md: DEP
+outputs:
+  a.json: |
+    {"conceptual":"<p>DEP</p>"}
+  dependencies/dep.json:
 ---
 # Link with `~` - default resolveAlias config
 inputs:
@@ -397,6 +409,6 @@ inputs:
   b.md: Token
 outputs:
   docs/a.json: |
-    { "conceptual": "[!include[B1](~/b.md)]<p>Token</p>\n" }
+    { "conceptual": "[!include[B1](~/b.md)]<p>Token</p>" }
   .errors.log: |
     ["warning","include-not-found","Cannot resolve '~/b.md' relative to 'docs/a.md'.","docs/a.md",1,1]

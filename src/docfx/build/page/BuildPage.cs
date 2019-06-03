@@ -183,18 +183,18 @@ namespace Microsoft.Docs.Build
                 throw Errors.SchemaNotFound(file.Mime).ToException();
             }
 
-            var jsonSchema = TemplateEngine.GetJsonSchema(file.Schema);
-            if (jsonSchema is null)
+            var (schemaValidator, schemaTransformer) = TemplateEngine.GetJsonSchema(file.Schema);
+            if (schemaValidator is null || schemaTransformer is null)
             {
                 throw Errors.SchemaNotFound(file.Mime).ToException();
             }
 
             // validate via json schema
-            var schemaValidationErrors = JsonSchemaValidation.Validate(jsonSchema, token);
+            var schemaValidationErrors = schemaValidator.Validate(token);
             errors.AddRange(schemaValidationErrors);
 
             // transform via json schema
-            var (schemaTransformError, transformedToken) = JsonSchemaTransform.Transform(file, context, jsonSchema, token, buildChild);
+            var (schemaTransformError, transformedToken) = schemaTransformer.TransformContent(file, context, token, buildChild);
             errors.AddRange(schemaTransformError);
 
             // TODO: remove schema validation in ToObject

@@ -365,7 +365,7 @@ repos:
           updateTimeAsCommitBuildTime: true
         docs/index.md: Alice creates this.
 cache:
-  history/build_history_0ad81e11-d18b-a417-bd25-94364d004cae_17190aeb-6297-d34d-a48f-a681d3061212.json: |
+  history/build_history_1026df13-852a-b3da-a226-492390c1c82e_17190aeb-6297-d34d-a48f-a681d3061212.json: |
     {
       "commits": [{ "sha": "7e6344c7275cccec2334ca04b73017bdeb7ecc2a", "built_at": "2019-04-23T00:00:00Z" }]
     }
@@ -502,7 +502,7 @@ inputs:
     gitHub:
       userCache: user_profile.json
       resolveUsers: true
-      authToken: {GITHUB_ACCESS_TOKEN}
+      authToken: {DOCS_GITHUB_TOKEN}
     contribution:
       repository: https://github.com/docascode/contribution-test
   user_profile.json: |
@@ -513,7 +513,7 @@ inputs:
         ]
       }
 environments:
-  - GITHUB_ACCESS_TOKEN
+  - DOCS_GITHUB_TOKEN
 outputs:
   docs/index.json: |
     {
@@ -523,7 +523,7 @@ outputs:
           { "name": "charlie", "profile_url": "https://github.com/charlie", "display_name": "Charlie", "id": "3" },
         "contributors": [
           { "name": "bob", "profile_url": "https://github.com/bob", "display_name": "Bob", "id": "2" },
-          { "name": "OsmondJiang", "profile_url": "https://github.com/OsmondJiang", "display_name": "osmondjiang", "id": "19990166" }
+          { "name": "OsmondJiang", "profile_url": "https://github.com/OsmondJiang", "display_name": "Osmond Jiang", "id": "19990166" }
         ]
       },
       "updated_at": "2018-10-30 12:00 AM"

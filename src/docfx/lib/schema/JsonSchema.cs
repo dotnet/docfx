@@ -55,6 +55,8 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public JValue[] Enum { get; set; }
 
+        public JsonSchemaStringFormat Format { get; set; }
+
         /// <summary>
         /// The maximum length of a string.
         /// </summary>
@@ -78,6 +80,11 @@ namespace Microsoft.Docs.Build
         /// Properties that are required to be present.
         /// </summary>
         public string[] Required { get; set; } = Array.Empty<string>();
+
+        /// <summary>
+        /// Properties that are used to indicate the dependencies between fields
+        /// </summary>
+        public Dictionary<string, string[]> Dependencies { get; set; } = new Dictionary<string, string[]>();
 
         // JSON schema custom validation extensions
         //-------------------------------------------
@@ -104,5 +111,43 @@ namespace Microsoft.Docs.Build
         /// Properties that are transformed using specified pipeline like 'markup'
         /// </summary>
         public JsonSchemaContentType ContentType { get; set; }
+
+        /// <summary>
+        /// Properties that are built into xref map
+        /// </summary>
+        public string[] XrefProperties { get; set; } = Array.Empty<string>();
+
+        // JSON schema metadata validation extensions
+        //-------------------------------------------
+
+        /// <summary>
+        /// Properties that are used to realize either logic
+        /// </summary>
+        public string[][] Either { get; set; } = Array.Empty<string[]>();
+
+        /// <summary>
+        /// Properties that are used to realize precludes logic
+        /// </summary>
+        public string[][] Precludes { get; set; } = Array.Empty<string[]>();
+
+        /// <summary>
+        /// Properties that are used to validate date format
+        /// </summary>
+        public string DateFormat { get; set; }
+
+        /// <summary>
+        /// Properties that are used to set maximum time range
+        /// </summary>
+        public TimeSpan? RelativeMaxDate { get; set; }
+
+        /// <summary>
+        /// Properties that are used to set minimum time range
+        /// </summary>
+        public TimeSpan? RelativeMinDate { get; set; }
+
+        /// <summary>
+        /// Properties that are used to indicate the deprecated field
+        /// </summary>
+        public string ReplacedBy { get; set; }
     }
 }

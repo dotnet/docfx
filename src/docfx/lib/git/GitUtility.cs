@@ -155,6 +155,12 @@ namespace Microsoft.Docs.Build
        }
 
         /// <summary>
+        /// Prune the worktree info
+        /// </summary>
+        public static void PruneWorkTree(string cwd)
+            => ExecuteNonQuery(cwd, $"-c core.longpaths=true worktree prune");
+
+        /// <summary>
         /// Create a work tree for a given repo
         /// </summary>
         /// <param name="cwd">The current working directory</param>

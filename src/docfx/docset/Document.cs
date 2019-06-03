@@ -242,7 +242,7 @@ namespace Microsoft.Docs.Build
             var type = isConfigReference ? ContentType.Unknown : GetContentType(filePath);
             var (mime, schema) = type == ContentType.Page ? Schema.ReadFromFile(filePath, Path.Combine(docset.DocsetPath, filePath)) : default;
             var isExperimental = Path.GetFileNameWithoutExtension(filePath).EndsWith(".experimental", PathUtility.PathComparison);
-            var routedFilePath = ApplyRoutes(filePath, docset.Routes);
+            var routedFilePath = ApplyRoutes(filePath, docset.Routes, docset.SiteBasePath);
 
             var sitePath = FilePathToSitePath(routedFilePath, type, schema, docset.Config.Output.Json, docset.Config.Output.UglifyUrl);
             if (docset.Config.Output.LowerCaseUrl)
@@ -403,7 +403,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static string ApplyRoutes(string path, IReadOnlyDictionary<string, string> routes)
+        private static string ApplyRoutes(string path, IReadOnlyDictionary<string, string> routes, string siteBasePath)
         {
             // the latter rule takes precedence of the former rule
             foreach (var (source, dest) in routes)
@@ -411,10 +411,11 @@ namespace Microsoft.Docs.Build
                 var result = ApplyRoutes(path, source, dest);
                 if (result != null)
                 {
-                    return result.Replace('\\', '/');
+                    path = result;
+                    break;
                 }
             }
-            return path;
+            return PathUtility.NormalizeFile(Path.Combine(siteBasePath, path));
         }
 
         private static string ApplyRoutes(string path, string source, string dest)
