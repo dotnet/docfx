@@ -10,7 +10,7 @@ namespace Microsoft.DocAsCode.Common
         public static bool TryGetStringValue(this XRefSpec spec, string key, out string value)
         {
 
-            if (spec.TryGetValue(key, out var objValue))
+            if (spec.TryGetValue(key, out var objValue) && objValue != null)
             {
                 if (objValue is string)
                 {
