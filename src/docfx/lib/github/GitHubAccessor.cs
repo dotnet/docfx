@@ -54,6 +54,7 @@ query ($login: String!) {
     name
     email
     databaseId
+    login
   }
 }";
 
@@ -111,7 +112,7 @@ query ($login: String!) {
                 {
                     Id = grahpApiResponse.data.user.databaseId,
                     Login = grahpApiResponse.data.user.login,
-                    Name = grahpApiResponse.data.user.name,
+                    Name = grahpApiResponse.data.user.name ?? grahpApiResponse.data.user.login,
                     Emails = !string.IsNullOrEmpty(grahpApiResponse.data.user.email) ? new[] { grahpApiResponse.data.user.email } : Array.Empty<string>(),
                 });
             }
@@ -244,7 +245,7 @@ query ($owner: String!, $name: String!, $commit: String!) {
                             {
                                 Id = node.author.user?.databaseId,
                                 Login = node.author.user?.login,
-                                Name = node.author.user?.name,
+                                Name = node.author.user?.name ?? node.author.user?.login,
                                 Emails = new[] { node.author.email },
                             });
                         }
