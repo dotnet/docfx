@@ -197,13 +197,13 @@ namespace Microsoft.Docs.Build
             var (schemaTransformError, transformedToken) = schemaTransformer.TransformContent(file, context, token, buildChild);
             errors.AddRange(schemaTransformError);
 
-            // TODO: remove schema validation in ToObject
-            var (_, content) = JsonUtility.ToObject(transformedToken, file.Schema.Type);
-
             // TODO: add check before to avoid case failure
             var yamlHeader = obj?.Value<JObject>("metadata") ?? new JObject();
             if (file.Docset.Legacy && file.Schema.Type == typeof(LandingData))
             {
+                // TODO: remove schema validation in ToObject
+                var (_, content) = JsonUtility.ToObject(transformedToken, file.Schema.Type);
+
                 // merge extension data to metadata in legacy model
                 var landingData = (LandingData)content;
                 var mergedMetadata = new JObject();
@@ -219,11 +219,11 @@ namespace Microsoft.Docs.Build
             if (file.Docset.Legacy && file.Schema.Attribute is PageSchemaAttribute)
             {
                 pageModel.Conceptual = HtmlUtility.HtmlPostProcess(
-                    await RazorTemplate.Render(file.Schema.Name, content), file.Docset.Culture);
+                    await RazorTemplate.Render(file.Schema.Name, transformedToken), file.Docset.Culture);
             }
             else
             {
-                pageModel.Content = content;
+                pageModel.Content = transformedToken;
             }
 
             pageModel.Title = title;
