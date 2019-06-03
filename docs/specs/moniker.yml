@@ -613,7 +613,7 @@ outputs:
   .errors.log: |
     ["info","invalid-uid-moniker","Moniker 'netcore-1.0' is not defined with uid 'a'","docs/b.md",1,7]
 ---
-# Define same uid with and without moniker range
+# [skip] Define same uid with and without moniker range
 # while refer to it without moniker range, should pick the one without moniker range
 inputs:
   docfx.yml: |
