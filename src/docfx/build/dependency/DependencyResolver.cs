@@ -71,7 +71,7 @@ namespace Microsoft.Docs.Build
             var displayProperty = queries?["displayProperty"];
 
             // need to url decode uid from input content
-            var (error, resolvedHref, xrefSpec) = _xrefMap.Value.Resolve(Uri.UnescapeDataString(uid), href, displayProperty, relativeTo, rootFile, moniker);
+            var (error, resolvedHref, display, xrefSpec) = _xrefMap.Value.Resolve(Uri.UnescapeDataString(uid), href, displayProperty, relativeTo, rootFile, moniker);
 
             if (xrefSpec?.DeclairingFile != null)
             {
@@ -83,22 +83,8 @@ namespace Microsoft.Docs.Build
                 var monikerQuery = !string.IsNullOrEmpty(moniker) ? $"view={moniker}" : "";
                 resolvedHref = UrlUtility.MergeUrl(resolvedHref, monikerQuery, fragment.Length == 0 ? "" : fragment.Substring(1));
             }
-            return (error, resolvedHref, GetDisplayName(), xrefSpec);
 
-            string GetDisplayName()
-            {
-                if (xrefSpec == null)
-                {
-                    return null;
-                }
-
-                var name = xrefSpec.GetXrefPropertyValue("name");
-                var displayPropertyValue = xrefSpec.GetXrefPropertyValue(displayProperty);
-
-                // fallback order:
-                // xrefSpec.displayPropertyName -> xrefSpec.name -> uid
-                return !string.IsNullOrEmpty(displayPropertyValue) ? displayPropertyValue : (!string.IsNullOrEmpty(name) ? name : uid);
-            }
+            return (error, resolvedHref, display, xrefSpec);
         }
 
         /// <summary>
