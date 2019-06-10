@@ -71,7 +71,7 @@ namespace Microsoft.Docs.Build
                 return (Errors.XrefNotFound(href), null, null, null);
             }
 
-            // fallback order: Debug.Assert(!string.IsNullOrEmpty(resolvedHref));
+            // fallback order:
             // xrefSpec.displayPropertyName -> xrefSpec.name -> uid
             string display = !string.IsNullOrEmpty(displayPropertyValue) ? displayPropertyValue : (!string.IsNullOrEmpty(name) ? name : uid);
             return (null, resolvedHref, display, spec);
