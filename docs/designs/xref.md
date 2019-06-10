@@ -85,15 +85,17 @@ Besides using file path to link to another file, DocFX also allows you to give a
         ```
 - Reference to an external UID without versioning
 
-    | Build Type | build branch | xref definition branch | append branch info |
-    | --- | --- | --- | --- |
-    | commit | master | master | yes/no(current branch is `master` already) |
-    | commit | test | master | yes(`test` branch may not exist in xref definition repo) |
-    | PR | test -> master | master | yes(`PR` branch may not exist in xref definition repo) |
-    | PR | master -> test | master | yes(`PR` branch may not exist in xref definition repo) |
-    | commit | live | live | no(`live` branch exists) |
-    | PR | test | live | no(resolved URL pointing to `live`) |
+    | Cross site | Build Type | build branch | xref definition branch | append branch info |
+    | --- | --- | --- | --- | --- |
+    | no | commit | master | master | yes/no(current branch is `master` already) |
+    | no | commit | test | master | yes(`test` branch may not exist in xref definition repo) |
+    | no | PR | test -> master | master | yes(`PR` branch may not exist in xref definition repo) |
+    | no | PR | master -> test | master | yes(`PR` branch may not exist in xref definition repo) |
+    | no | commit | live | live | no(`live` branch exists) |
+    | no | PR | test | live | no(resolved URL pointing to `live`) |
+    | yes | commit | master | master | yes(Jump to external site with branch info, implemented in v2) |
     > For the last scenario, the UID definition repo may not go live yet, so the correct resolved URL should be `review.docs.com`, but it is `docs.com`, which would not be found.
+    > For cross site reference, 
     - The href of UID is from the same host name as the referencing repository.
         - If the current branch is `live`, and the UID href is also from `live`, everything is OK
         - If the current branch is `master`, then the output site is `review.docs`, but the resovled url is `docs` which is `live`, while browsing the UID href, the user should not jump to another site(`docs`)
