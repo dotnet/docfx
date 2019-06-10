@@ -84,9 +84,18 @@ Besides using file path to link to another file, DocFX also allows you to give a
                 {"conceptual":"<p>Link to <a href=\"a\">Title from v2</a></p>\n"}
         ```
 - Reference to an external UID without versioning
+
+    | Build Type | build branch | xref definition branch | append branch info |
+    | --- | --- | --- | --- |
+    | commit | master | master | yes/no(current branch is `master` already) |
+    | commit | test | master | yes(`test` branch may not exist in xref definition repo) |
+    | PR | test -> master | master | yes(`PR` branch may not exist in xref definition repo) |
+    | PR | master -> test | master | yes(`PR` branch may not exist in xref definition repo) |
+    | commit | live | live | no(`live` branch exists) |
+    | PR | test | live | no(resolved URL pointing to `live`) |
+    > For the last scenario, the UID definition repo may not go live yet, so the correct resolved URL should be `review.docs.com`, but it is `docs.com`, which would not be found.
     - The href of UID is from the same host name as the referencing repository.
         - If the current branch is `live`, and the UID href is also from `live`, everything is OK
-        - If the current branch is `live`, and the UID href is from `review.docs`, the resolved url might not be found if non-live
         - If the current branch is `master`, then the output site is `review.docs`, but the resovled url is `docs` which is `live`, while browsing the UID href, the user should not jump to another site(`docs`)
         ```yaml
           # External UID `a` is defined in `docs`, whose title is `Title from docs`
