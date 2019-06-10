@@ -19,22 +19,9 @@ namespace Microsoft.Docs.Build
             Debug.Assert(monikerMap != null);
 
             // load toc model
-            var hrefMap = new Dictionary<string, List<string>>();
-            var (errors, model, refArticles, refTocs) = context.Cache.LoadTocModel(context, file);
-            foreach (var (doc, href) in refArticles)
-            {
-                if (!hrefMap.ContainsKey(href) && monikerMap.TryGetValue(doc, out var monikers))
-                {
-                    hrefMap[href] = monikers;
-                }
-            }
-
-            // resolve monikers
-            var (monikerError, fileMonikers) = context.MonikerProvider.GetFileLevelMonikers(file, model.Metadata.MonikerRange);
-            errors.AddIfNotNull(monikerError);
-
-            model.Metadata.Monikers = fileMonikers;
-            ResolveItemMonikers(model.Items);
+            // TODO: Add cache back after this issue resolved: https://github.com/dotnet/docfx/issues/4704
+            // var (errors, model, _, _) = context.Cache.LoadTocModel(context, file, monikerMap);
+            var (errors, model, _, _) = Load(context, file, monikerMap);
 
             // enable pdf
             var outputPath = file.GetOutputPath(model.Metadata.Monikers, file.Docset.SiteBasePath);
@@ -71,40 +58,6 @@ namespace Microsoft.Docs.Build
             }
 
             return (errors, publishItem);
-
-            void ResolveItemMonikers(List<TableOfContentsItem> items)
-            {
-                foreach (var item in items)
-                {
-                    if (item.Items != null)
-                    {
-                        ResolveItemMonikers(item.Items);
-                    }
-
-                    List<string> monikers = null;
-
-                    var linkType = UrlUtility.GetLinkType(item.Href?.Value);
-                    if (linkType == LinkType.External || linkType == LinkType.AbsolutePath)
-                    {
-                        item.Monikers = fileMonikers;
-                        continue;
-                    }
-
-                    if (item.Href?.Value is null || !hrefMap.TryGetValue(item.Href, out monikers))
-                    {
-                        if (item.TopicHref is null || !hrefMap.TryGetValue(item.TopicHref, out monikers))
-                        {
-                            monikers = new List<string>();
-                        }
-                    }
-
-                    var childrenMonikers = item.Items?.SelectMany(child => child?.Monikers ?? new List<string>()) ?? new List<string>();
-                    monikers = childrenMonikers.Union(monikers ?? new List<string>()).Distinct().ToList();
-                    monikers.Sort(context.MonikerProvider.Comparer);
-
-                    item.Monikers = monikers;
-                }
-            }
         }
 
         public static (
@@ -113,12 +66,11 @@ namespace Microsoft.Docs.Build
             List<(Document doc, string href)> referencedDocuments,
             List<Document> referencedTocs)
 
-            Load(Context context, Document fileToBuild)
+            Load(Context context, Document fileToBuild, MonikerMap monikerMap)
         {
             var errors = new List<Error>();
             var referencedDocuments = new List<(Document doc, string href)>();
             var referencedTocs = new List<Document>();
-            var hrefMap = new Dictionary<string, List<string>>();
 
             // load toc model
             var (loadErrors, model) = TableOfContentsParser.Load(
@@ -161,6 +113,14 @@ namespace Microsoft.Docs.Build
                     }
 
                     return (link, display, buildItem);
+                },
+                (document) =>
+                {
+                    if (monikerMap != null && document != null && monikerMap.TryGetValue(document, out var monikers))
+                    {
+                        return monikers;
+                    }
+                    return new List<string>();
                 });
 
             errors.AddRange(loadErrors);

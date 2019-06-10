@@ -33,9 +33,5 @@ namespace Microsoft.Docs.Build
 
         [JsonExtensionData]
         public JObject ExtensionData { get; set; }
-
-        internal Document Document { get; set; }
-
-        public bool ShouldSerializeDocument() => false;
     }
 }

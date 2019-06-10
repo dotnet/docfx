@@ -21,10 +21,12 @@ namespace Microsoft.Docs.Build
 
         public delegate (string content, Document file) ResolveContent(Document relativeTo, SourceInfo<string> href, bool isInclusion);
 
+        public delegate List<string> ResolveMoniker(Document doc);
+
         public static (List<Error> errors, TableOfContentsModel model)
-            Load(Context context, Document file, ResolveContent resolveContent, ResolveHref resolveHref, ResolveXref resolveXref)
+            Load(Context context, Document file, ResolveContent resolveContent, ResolveHref resolveHref, ResolveXref resolveXref, ResolveMoniker resolveMoniker)
         {
-            return LoadInternal(context, file, file, resolveContent, resolveHref, resolveXref, new List<Document>());
+            return LoadInternal(context, file, file, resolveContent, resolveHref, resolveXref, resolveMoniker, new List<Document>());
         }
 
         private static (List<Error> errors, TableOfContentsModel tocModel) LoadTocModel(Context context, Document file, string content = null)
@@ -86,6 +88,7 @@ namespace Microsoft.Docs.Build
             ResolveContent resolveContent,
             ResolveHref resolveHref,
             ResolveXref resolveXref,
+            ResolveMoniker resolveMoniker,
             List<Document> parents,
             string content = null)
         {
@@ -98,10 +101,27 @@ namespace Microsoft.Docs.Build
 
             var (errors, model) = LoadTocModel(context, file, content);
 
+            var extendResolveMoniker = resolveMoniker;
+            if (file == rootPath)
+            {
+                var (monikerError, fileMonikers) = context.MonikerProvider.GetFileLevelMonikers(file, model.Metadata.MonikerRange);
+                errors.AddIfNotNull(monikerError);
+
+                model.Metadata.Monikers = fileMonikers;
+                extendResolveMoniker = (document) =>
+                {
+                    if (document == rootPath)
+                    {
+                        return fileMonikers;
+                    }
+                    return resolveMoniker(document);
+                };
+            }
+
             if (model.Items.Count > 0)
             {
                 parents.Add(file);
-                errors.AddRange(ResolveTocModelItems(context, model.Items, parents, file, rootPath, resolveContent, resolveHref, resolveXref));
+                errors.AddRange(ResolveTocModelItems(context, model.Items, parents, file, rootPath, resolveContent, resolveHref, resolveXref, extendResolveMoniker));
                 parents.RemoveAt(parents.Count - 1);
             }
 
@@ -116,14 +136,15 @@ namespace Microsoft.Docs.Build
             Document rootPath,
             ResolveContent resolveContent,
             ResolveHref resolveHref,
-            ResolveXref resolveXref)
+            ResolveXref resolveXref,
+            ResolveMoniker resolveMoniker)
         {
             var errors = new List<Error>();
             foreach (var tocModelItem in tocModelItems)
             {
                 if (tocModelItem.Items != null && tocModelItem.Items.Any())
                 {
-                    errors.AddRange(ResolveTocModelItems(context, tocModelItem.Items, parents, filePath, rootPath, resolveContent, resolveHref, resolveXref));
+                    errors.AddRange(ResolveTocModelItems(context, tocModelItem.Items, parents, filePath, rootPath, resolveContent, resolveHref, resolveXref, resolveMoniker));
                 }
 
                 // process
@@ -131,14 +152,48 @@ namespace Microsoft.Docs.Build
                 var topicHref = GetTopicHref(tocModelItem);
                 var topicUid = tocModelItem.Uid;
 
+                var monikers = new List<string>();
+
                 var (resolvedTocHref, resolvedTopicItemFromTocHref, subChildren) = ProcessTocHref(tocHref);
                 var (resolvedTopicHref, resolvedTopicName, document) = ProcessTopicItem(topicUid, topicHref);
 
                 // set resolved href back
-                tocModelItem.Href = resolvedTocHref ?? resolvedTopicHref ?? resolvedTopicItemFromTocHref?.Href;
+                if (resolvedTocHref != null)
+                {
+                    // AbsolutePath
+                    tocModelItem.Href = resolvedTocHref;
+                    monikers = resolveMoniker(rootPath);
+                }
+                else if (resolvedTopicHref != null)
+                {
+                    // TopicHref
+                    tocModelItem.Href = resolvedTopicHref;
+
+                    var linkType = UrlUtility.GetLinkType(resolvedTopicHref);
+                    if (linkType == LinkType.External || linkType == LinkType.AbsolutePath)
+                    {
+                        monikers = resolveMoniker(rootPath);
+                    }
+                    else
+                    {
+                        monikers = resolveMoniker(document);
+                    }
+                }
+                else
+                {
+                    tocModelItem.Href = resolvedTopicItemFromTocHref?.Href;
+                    monikers = resolvedTopicItemFromTocHref?.Monikers;
+                }
+
                 tocModelItem.TocHref = resolvedTocHref;
                 tocModelItem.Name = tocModelItem.Name ?? resolvedTopicName;
                 tocModelItem.Items = subChildren?.Items ?? tocModelItem.Items;
+
+                // Union with children's monikers
+                var childrenMonikers = tocModelItem.Items?.SelectMany(child => child?.Monikers ?? new List<string>()) ?? new List<string>();
+                monikers = childrenMonikers.Union(monikers ?? new List<string>()).Distinct().ToList();
+                monikers.Sort(context.MonikerProvider.Comparer);
+                tocModelItem.Monikers = monikers;
 
                 // validate
                 // todo: how to do required validation in strong model
@@ -217,7 +272,7 @@ namespace Microsoft.Docs.Build
                 var (referencedTocContent, referenceTocFilePath) = ResolveTocHrefContent(tocHrefType, tocHref, filePath, resolveContent);
                 if (referencedTocContent != null)
                 {
-                    var (subErrors, nestedToc) = LoadInternal(context, referenceTocFilePath, rootPath, resolveContent, resolveHref, resolveXref, parents, referencedTocContent);
+                    var (subErrors, nestedToc) = LoadInternal(context, referenceTocFilePath, rootPath, resolveContent, resolveHref, resolveXref, resolveMoniker, parents, referencedTocContent);
                     errors.AddRange(subErrors);
                     if (tocHrefType == TocHrefType.RelativeFolder)
                     {
