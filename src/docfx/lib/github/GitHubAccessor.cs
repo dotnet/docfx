@@ -278,7 +278,7 @@ query ($owner: String!, $name: String!, $commit: String!) {
                            Content = new StringContent(JsonUtility.Serialize(request), System.Text.Encoding.UTF8, "application/json"),
                            Method = HttpMethod.Post,
                        }),
-                   ex => ex is OperationCanceledException);
+                   ex => ex is OperationCanceledException || ex is System.IO.IOException/*https://4lowtherabbit.github.io/blogs/2018/11/CaseStudy*/);
 
             if (!response.IsSuccessStatusCode)
             {
