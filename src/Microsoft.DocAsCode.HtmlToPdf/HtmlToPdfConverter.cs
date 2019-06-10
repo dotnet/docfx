@@ -130,13 +130,13 @@ namespace Microsoft.DocAsCode.HtmlToPdf
                     RedirectStandardOutput = _htmlToPdfOptions.IsOutputToStdout,
                     WindowStyle = ProcessWindowStyle.Hidden,
                     FileName = Constants.PdfCommandName,
-                    Arguments = _htmlToPdfOptions + (_htmlToPdfOptions.IsReadArgsFromStdin ? string.Empty : arguments)
+                    Arguments = _htmlToPdfOptions + (_htmlToPdfOptions.IsReadArgsFromStdin ? string.Empty : (" "+arguments)),
                 }
             })
             {
                 using(new LoggerPhaseScope(Constants.PdfCommandName))
                 {
-                    Logger.LogVerbose($"Executing {process.StartInfo.FileName} {process.StartInfo.Arguments} {arguments}");
+                    Logger.LogVerbose($"Executing {process.StartInfo.FileName} {process.StartInfo.Arguments} ({arguments})");
                     process.Start();
                     if (_htmlToPdfOptions.IsReadArgsFromStdin)
                     {
@@ -152,6 +152,8 @@ namespace Microsoft.DocAsCode.HtmlToPdf
                         {
                             standardOutput.BaseStream.CopyTo(stream);
                         }
+						if (stream.CanSeek)
+							Logger.LogVerbose($"got {process.StartInfo.FileName} output {stream.Length}Bytes");
                     }
                     process.WaitForExit(TimeoutInMilliseconds);
                 }

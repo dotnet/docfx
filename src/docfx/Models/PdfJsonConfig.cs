@@ -70,5 +70,12 @@ namespace Microsoft.DocAsCode
         /// </summary>
         [JsonProperty("coverTitle")]
         public string CoverPageTitle { get; set; } = "Cover Page";
-    }
+
+		/// <summary>
+		/// Are input arguments set using command line
+		/// </summary>
+		[JsonProperty("noInputStreamArgs")]
+		public bool NoInputStreamArgs { get; set; }
+
+	}
 }
