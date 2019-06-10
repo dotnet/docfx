@@ -199,6 +199,7 @@ namespace Microsoft.Docs.Build
 
             // TODO: add check before to avoid case failure
             var yamlHeader = obj?.Value<JObject>("metadata") ?? new JObject();
+            var conceptual = (string)null;
             if (file.Docset.Legacy && file.Schema.Type == typeof(LandingData))
             {
                 // TODO: remove schema validation in ToObject
@@ -210,16 +211,21 @@ namespace Microsoft.Docs.Build
                 JsonUtility.Merge(mergedMetadata, landingData.ExtensionData);
                 JsonUtility.Merge(mergedMetadata, yamlHeader);
                 yamlHeader = mergedMetadata;
-            }
-            var title = yamlHeader.Value<string>("title") ?? obj?.Value<string>("title");
 
+                if (file.Docset.Legacy)
+                {
+                    conceptual = HtmlUtility.HtmlPostProcess(
+                    await RazorTemplate.Render(file.Schema.Name, content), file.Docset.Culture);
+                }
+            }
+
+            var title = yamlHeader.Value<string>("title") ?? obj?.Value<string>("title");
             var (metaErrors, pageModel) = context.MetadataProvider.GetInputMetadata<OutputModel>(file, yamlHeader);
             errors.AddRange(metaErrors);
 
-            if (file.Docset.Legacy && file.Schema.Attribute is PageSchemaAttribute)
+            if (conceptual != null)
             {
-                pageModel.Conceptual = HtmlUtility.HtmlPostProcess(
-                    await RazorTemplate.Render(file.Schema.Name, transformedToken), file.Docset.Culture);
+                pageModel.Conceptual = conceptual;
             }
             else
             {
