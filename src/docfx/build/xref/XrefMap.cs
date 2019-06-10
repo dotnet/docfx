@@ -168,13 +168,25 @@ namespace Microsoft.Docs.Build
             }
             else
             {
-                // Firstly check if any spec has monikers intersecting with monikers of the root file
-                // If not, take the spec with highest version whose monikers are all lower than the lowest moniker of the root file
-                var spec = specs.FirstOrDefault(x => x.Monikers.Select(moniker => moniker.MonikerName).Intersect(monikers.Select(moniker => moniker.MonikerName)).Any());
+                // Firstly check if any spec shares the same product name with monikers of the root file
+                // And they should have intersection or the monikers from spec should be lower than the root file
+                var productGroups = monikers.GroupBy(x => x.ProductName).OrderByDescending(g => g.Key);
+                var spec = specs.Where(item =>
+                {
+                    foreach (var group in productGroups)
+                    {
+                        var monikersInProductName = item.Monikers.Where(x => x.ProductName == group.Key);
+                        return monikersInProductName.Intersect(group).Any()
+                            || (monikersInProductName.Any() && monikersInProductName.All(moniker => _context.MonikerProvider.Comparer.Compare(moniker.MonikerName, group.FirstOrDefault().MonikerName) < 0));
+                    }
+                    return false;
+                }).FirstOrDefault();
+
+                // If no spec containing monikers sharing the same product name with the root file,
+                // take the highest one based on the product name alphabetically
                 if (spec is null)
                 {
-                    // TODO: Need to cover when the root file level moniker belongs to different product other than uid moniker
-                    spec = specs.FirstOrDefault(x => x.Monikers.All(moniker => _context.MonikerProvider.Comparer.Compare(moniker.MonikerName, monikers.FirstOrDefault().MonikerName) < 0));
+                    spec = specs.OrderByDescending(x => x.Monikers.OrderByDescending(moniker => moniker.ProductName).First().ProductName).First();
                 }
                 return spec;
             }

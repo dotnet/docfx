@@ -530,9 +530,10 @@ outputs:
       "monikers": ["netcore-2.1","netcore-2.2"]
     }
   xrefmap.json: | 
-    {"references":[{"uid":"a","href":"https://docs.com/docs/a","name":"netcore-2.1"}]}
+    {"references":[{"uid":"a","href":"https://docs.com/docs/a","name":"netcore-1.2, netcore-2.0"}]}
 ---
-# [only]Define same uid with different moniker ranges containing different products
+# Define same uid with different moniker ranges containing different products
+# simple case, each spec contains 1 product
 inputs:
   docfx.yml: |
     monikerRange:
@@ -595,6 +596,75 @@ outputs:
   89bb347b/docs/b.json: |
     {
       "conceptual": "<p>Link to <a href=\"a\" data-linktype=\"relative-path\">b-1.0, b-2.0</a></p>\n",
+      "monikers":["c-2.0","c-3.0","c-4.0"]
+    }
+---
+# Define same uid with different moniker ranges containing different products
+# specs contains multiple products
+inputs:
+  docfx.yml: |
+    monikerRange:
+      'docs/v1/**': '>= a-1.0 < a-4.0'
+      'docs/v2/**': '< b-3.0 || > c-2.0'
+      'docs/v3/**': '>= c-2.0'
+    routes:
+      docs/v1/: docs/
+      docs/v2/: docs/
+      docs/v3/: docs/
+    monikerDefinition: monikerDefinition.json
+  docs/v1/a.md: |
+    ---
+    uid: a
+    title: a-1.0, a-2.0
+    monikerRange: '< a-3.0'
+    ---
+    Moniker:
+      - a-1.0
+      - a-2.0
+  docs/v2/a.md: |
+    ---
+    uid: a
+    title: b-1.0, b-2.0, c-3.0
+    monikerRange: '<= b-2.0 || > c-1.0'
+    ---
+    Moniker:
+      - b-1.0
+      - b-2.0
+      - c-3.0
+      - c-4.0
+  docs/v3/b.md: |
+    Link to @a
+  monikerDefinition.json: |
+    {
+      "monikers": [
+        { "moniker_name": "c-1.0", "product_name": "c" },
+        { "moniker_name": "c-2.0", "product_name": "c" },
+        { "moniker_name": "c-3.0", "product_name": "c" },
+        { "moniker_name": "c-4.0", "product_name": "c" },
+        { "moniker_name": "b-1.0", "product_name": "b" },
+        { "moniker_name": "b-2.0", "product_name": "b" },
+        { "moniker_name": "b-3.0", "product_name": "b" },
+        { "moniker_name": "b-4.0", "product_name": "b" },
+        { "moniker_name": "a-1.0", "product_name": "a" },
+        { "moniker_name": "a-2.0", "product_name": "a" },
+        { "moniker_name": "a-3.0", "product_name": "a" },
+        { "moniker_name": "a-4.0", "product_name": "a" },
+      ]
+    }
+outputs:
+  a194b48e/docs/a.json: |
+    {
+      "conceptual": "<p>Moniker:</p>\n<ul>\n<li>a-1.0</li>\n<li>a-2.0</li>\n</ul>\n",
+      "monikers":["a-1.0","a-2.0"]
+    }
+  01172b80/docs/a.json: |
+    {
+      "conceptual": "<p>Moniker:</p>\n<ul>\n<li>b-1.0</li>\n<li>b-2.0</li>\n<li>c-3.0</li>\n<li>c-4.0</li>\n</ul>\n",
+      "monikers":["b-1.0","b-2.0", "c-3.0", "c-4.0"]
+    }
+  89bb347b/docs/b.json: |
+    {
+      "conceptual": "<p>Link to <a href=\"a\" data-linktype=\"relative-path\">b-1.0, b-2.0, c-3.0</a></p>\n",
       "monikers":["c-2.0","c-3.0","c-4.0"]
     }
 ---
