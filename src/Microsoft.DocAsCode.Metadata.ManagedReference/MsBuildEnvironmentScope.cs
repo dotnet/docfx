@@ -13,8 +13,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Exceptions;
 
-    using AsyncGenerator.Internal;
-
     public class MSBuildEnvironmentScope : IDisposable
     {
         private const string VSInstallDirKey = "VSINSTALLDIR";
@@ -44,15 +42,14 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 return null;
             }
 
-            if (EnvironmentHelper.IsMono)
+            if (Type.GetType("Mono.Runtime") != null) // is mono
             {
-                string extensionPath = null;
-                string msbuildPath = null;
-                EnvironmentHelper.GetMonoMsBuildPath(monoDir =>
-                {
-                    extensionPath = Path.Combine(monoDir, "xbuild");
-                    msbuildPath = Path.Combine(monoDir, "msbuild", "15.0", "bin", "MSBuild.dll");
-                });
+                var assembly = typeof(System.Runtime.GCSettings).Assembly;
+                var assemblyDirectory = Path.GetDirectoryName(assembly.Location);
+                var monoDir = new DirectoryInfo(assemblyDirectory).Parent.FullName; // get mono directory
+
+                var extensionPath = Path.Combine(monoDir, "xbuild");
+                var msbuildPath = Path.Combine(monoDir, "msbuild", "15.0", "bin", "MSBuild.dll");
 
                 if (msbuildPath == null || !File.Exists(msbuildPath))
                 {
