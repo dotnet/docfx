@@ -133,7 +133,6 @@ namespace Microsoft.Docs.Build
 
                 case JsonSchemaContentType.Xref:
 
-                    // TODO: how to fill xref resolving data besides href
                     var (xrefError, xrefLink, _, xrefSpec) = dependencyResolver.ResolveXref(content, file, file);
 
                     if (xrefSpec is InternalXrefSpec internalSpec)
@@ -142,9 +141,15 @@ namespace Microsoft.Docs.Build
                     }
                     errors.AddIfNotNull(xrefError);
 
-                    var specObj = new JObject(xrefSpec);
-                    JsonUtility.SetSourceInfo(specObj, content);
-                    return specObj;
+                    if (xrefSpec != null)
+                    {
+                        var specObj = JsonUtility.ToJObject(xrefSpec);
+                        JsonUtility.SetSourceInfo(specObj, content);
+                        return specObj;
+                    }
+
+                    content = new SourceInfo<string>(null, content);
+                    break;
             }
 
             value = new JValue(content.Value);
