@@ -61,7 +61,7 @@ Besides using file path to link to another file, DocFX also allows you to give a
             docs/b.json: |
                 {"conceptual":"<p>Link to <a href=\"a\">Title from v2</a></p>\n"}
         ```
-    - If the versions for this UID are from different products, take the highest one base on proudct namme alphabetically
+    - If the versions for this UID are from different products, take the highest one base on proudct name alphabetically
         ```yaml
         # v1: a-1.0, a-2.0, a-3.0
         # v2: b-4.0, b-5.0
@@ -125,6 +125,7 @@ Besides using file path to link to another file, DocFX also allows you to give a
 - Reference to an external UID with versioning, the resolving logic should be the same as internal UID without versioning. We only take consideration of 1 version for now.
 - Reference to an external UID with multiple versionings (not support for now)
     - The resolve logic should be smilar to the internal resolving
+- [UID defnition](#define-uid)
 
 ## Define UID
 The unique identifier of a file is called UID (stands for unique identifier) in DocFX.
