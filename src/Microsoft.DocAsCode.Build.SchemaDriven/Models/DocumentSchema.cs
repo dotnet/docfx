@@ -15,8 +15,6 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
 
     public class DocumentSchema : BaseSchema
     {
-        private const string SchemaFileEnding = ".schema.json";
-
         public Uri SchemaVersion { get; set; }
 
         public string Version { get; set; }
@@ -28,6 +26,8 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
         public JsonPointer MetadataReference { get; private set; }
 
         public SchemaValidator Validator { get; private set; }
+
+        public string Hash { get; private set; }
 
         /// <summary>
         /// Overwrites are only allowed when the schema contains "uid" definition
@@ -97,6 +97,8 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
 
                 schema.MetadataReference = pointer;
                 schema.AllowOverwrite = CheckOverwriteAbility(schema);
+                schema.Hash = new JTokenEqualityComparer().GetHashCode(jObject).ToString();
+
                 return schema;
             }
         }
@@ -160,7 +162,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
                 return value.ToObject<T>();
             }
 
-            return default(T);
+            return default;
         }
 
         private static void CheckForNotSupportedKeyword(object keyword, string name)
