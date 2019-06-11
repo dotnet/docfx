@@ -216,6 +216,7 @@ namespace Microsoft.Docs.Build
                 pageModel.Content = content;
             }
 
+            pageModel.Title = pageModel.Title ?? obj?.Value<string>("title");
             pageModel.RawTitle = file.Docset.Legacy ? $"<h1>{obj?.Value<string>("title")}</h1>" : null;
 
             return (errors, file.Schema, pageModel);
