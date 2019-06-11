@@ -383,31 +383,28 @@ namespace Microsoft.DocAsCode.Build.Engine
                     foreach (var pair in resource.GetResourceStreams(@"^schemas/.*\.schema\.json"))
                     {
                         var fileName = Path.GetFileName(pair.Key);
+
                         using (new LoggerFileScope(fileName))
+                        using (var stream = pair.Value)
+                        using (var sr = new StreamReader(stream))
                         {
-                            using (var stream = pair.Value)
+                            DocumentSchema schema;
+                            try
                             {
-                                using (var sr = new StreamReader(stream))
-                                {
-                                    DocumentSchema schema;
-                                    try
-                                    {
-                                        schema = DocumentSchema.Load(sr, fileName.Remove(fileName.Length - ".schema.json".Length));
-                                    }
-                                    catch (Exception e)
-                                    {
-                                        Logger.LogError(e.Message);
-                                        throw;
-                                    }
-                                    var sdp = new SchemaDrivenDocumentProcessor(
-                                        schema,
-                                        new CompositionContainer(CompositionContainer.DefaultContainer),
-                                        markdigMarkdownService,
-                                        new FolderRedirectionManager(parameter.OverwriteFragmentsRedirectionRules));
-                                    Logger.LogVerbose($"\t{sdp.Name} with build steps ({string.Join(", ", from bs in sdp.BuildSteps orderby bs.BuildOrder select bs.Name)})");
-                                    result.Add(sdp);
-                                }
+                                schema = DocumentSchema.Load(sr, fileName.Remove(fileName.Length - ".schema.json".Length));
                             }
+                            catch (Exception e)
+                            {
+                                Logger.LogError(e.Message);
+                                throw;
+                            }
+                            var sdp = new SchemaDrivenDocumentProcessor(
+                                schema,
+                                new CompositionContainer(CompositionContainer.DefaultContainer),
+                                markdigMarkdownService,
+                                new FolderRedirectionManager(parameter.OverwriteFragmentsRedirectionRules));
+                            Logger.LogVerbose($"\t{sdp.Name} with build steps ({string.Join(", ", from bs in sdp.BuildSteps orderby bs.BuildOrder select bs.Name)})");
+                            result.Add(sdp);
                         }
                     }
                 }
