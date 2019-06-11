@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -109,6 +110,62 @@ namespace Microsoft.Docs.Build
             }
 
             return (null, content, etag);
+        }
+ 
+        public static ReadOnlySpan<byte> GetRestoredFileBytes(string docsetPath, SourceInfo<string> url, string fallbackDocset = null)
+        {
+            var fromUrl = UrlUtility.IsHttp(url);
+            if (!fromUrl)
+            {
+                // directly return the relative path
+                var fullPath = Path.Combine(docsetPath, url);
+                if (File.Exists(fullPath))
+                {
+                    return File.ReadAllBytes(fullPath);
+                }
+
+                if (!string.IsNullOrEmpty(fallbackDocset))
+                {
+                    fullPath = Path.Combine(fallbackDocset, url);
+                    if (File.Exists(fullPath))
+                    {
+                        return File.ReadAllBytes(fullPath);
+                    }
+                }
+
+                throw Errors.FileNotFound(url).ToException();
+            }
+
+            var bytes = TryGetRestoredFileBytes(url);
+            if (bytes.Length == 0)
+            {
+                throw Errors.NeedRestore(url).ToException();
+            }
+
+            return bytes;
+        }
+ 
+        public static ReadOnlySpan<byte> TryGetRestoredFileBytes(string url)
+        {
+            Debug.Assert(!string.IsNullOrEmpty(url));
+            Debug.Assert(UrlUtility.IsHttp(url));
+
+            var filePath = RestoreFile.GetRestoreContentPath(url);
+            using (InterProcessMutex.Create(filePath))
+            {
+                var content = GetFileBytesIfExists(filePath);
+                return content;
+
+                ReadOnlySpan<byte> GetFileBytesIfExists(string file)
+                {
+                    if (File.Exists(file))
+                    {
+                        return File.ReadAllBytes(file);
+                    }
+
+                    return null;
+                }
+            }
         }
 
         public static (string content, string etag) TryGetRestoredFileContent(string url)

@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -24,10 +25,10 @@ namespace Microsoft.Docs.Build
             var externalXrefMap = new DictionaryBuilder<string, Lazy<IXrefSpec>>();
             ParallelUtility.ForEach(docset.Config.Xref, url =>
             {
-                var (_, content, _) = RestoreMap.GetRestoredFileContent(docset, url);
                 XrefMapModel xrefMap = new XrefMapModel();
                 if (url?.Value.EndsWith(".yml", StringComparison.OrdinalIgnoreCase) != false)
                 {
+                    var (_, content, _) = RestoreMap.GetRestoredFileContent(docset, url);
                     xrefMap = YamlUtility.Deserialize<XrefMapModel>(content, url);
                     foreach (var spec in xrefMap.References)
                     {
@@ -36,12 +37,14 @@ namespace Microsoft.Docs.Build
                 }
                 else
                 {
+                    // Convert to array since ref local is not allowed to be used in lambda expression
+                    var content = RestoreMap.GetRestoredFileBytes(docset.DocsetPath, url).ToArray();
                     DeserializeAndPopulateXrefMap(
-                    (uid, startLine, startColumn, endLine, endColumn) =>
+                    (uid, startIndex, endIndex) =>
                     {
                         externalXrefMap.TryAdd(uid, new Lazy<IXrefSpec>(() =>
                         {
-                            var str = GetSubstringFromContent(content, startLine, endLine, startColumn, endColumn);
+                            var str = GetSubstringFromContent(content, startIndex, endIndex);
                             return JsonUtility.Deserialize<ExternalXrefSpec>(str, url);
                         }));
                     }, content);
@@ -66,95 +69,38 @@ namespace Microsoft.Docs.Build
             return map;
         }
 
-        private static void DeserializeAndPopulateXrefMap(Action<string, int, int, int, int> populate, string content)
+        private static void DeserializeAndPopulateXrefMap(Action<string, int, int> populate, ReadOnlySpan<byte> content)
         {
-            using (var reader = new StringReader(content))
-            using (var json = new JsonTextReader(reader))
+            var reader = new Utf8JsonReader(content, isFinalBlock: true, default);
+            string uid = null;
+            int startIndex = 0;
+            int endIndex = 0;
+            while (reader.Read())
             {
-                var currentProperty = string.Empty;
-                string uid = null;
-                var startLine = 1;
-                var endLine = 1;
-                var startColumn = 1;
-                var endColumn = 1;
-                while (json.Read())
+                switch (reader.TokenType)
                 {
-                    if (json.Value != null)
-                    {
-                        if (json.TokenType == JsonToken.PropertyName)
-                            currentProperty = json.Value.ToString();
-
-                        if (json.TokenType == JsonToken.String && currentProperty == "uid")
+                    case JsonTokenType.PropertyName:
+                        if (reader.TextEquals(Encoding.UTF8.GetBytes("uid")) && reader.Read() && reader.TokenType == JsonTokenType.String)
                         {
-                            uid = json.Value.ToString();
+                            uid = Encoding.UTF8.GetString(reader.ValueSpan);
                         }
-                    }
-                    else
-                    {
-                        if (json.TokenType == JsonToken.StartObject)
+                        break;
+                    case JsonTokenType.StartObject:
+                        startIndex = (int)reader.TokenStartIndex;
+                        break;
+                    case JsonTokenType.EndObject:
+                        if (uid != null)
                         {
-                            startLine = json.LineNumber;
-                            startColumn = json.LinePosition + 1;
+                            endIndex = (int)reader.TokenStartIndex;
+                            populate(uid, startIndex, endIndex);
                         }
-                        else if (json.TokenType == JsonToken.EndObject)
-                        {
-                            endLine = json.LineNumber;
-                            endColumn = json.LinePosition + 1;
-                            if (uid != null)
-                            {
-                                populate(uid, startLine, endLine, startColumn, endColumn);
-                                uid = null;
-                            }
-                        }
-                    }
+                        break;
                 }
             }
         }
 
-        private static string GetSubstringFromContent(string content, int startLine, int startColumn, int endLine, int endColumn)
-        {
-            var result = new StringBuilder();
-            var currentLine = 1;
-            var currentColumn = 1;
-
-            // for better performance by accessing index when content is 1 line
-            if (currentLine == startLine && currentLine == endLine)
-            {
-                return content.Substring(startColumn - 1, endColumn - startColumn + 1);
-            }
-
-            foreach (var ch in content)
-            {
-                if (ch == '\n')
-                {
-                    currentLine += 1;
-                    currentColumn = 1;
-                }
-
-                // start and end in the same line
-                if (currentLine == startLine && currentLine == endLine)
-                {
-                    if (currentColumn >= startColumn && currentColumn <= endColumn)
-                    {
-                        result.Append(ch);
-                    }
-                }
-
-                // start and end in multiple lines
-                else
-                {
-                    if ((currentLine == startLine && currentColumn >= startColumn)
-                        || (currentLine == endLine && currentColumn <= endColumn)
-                        || (currentLine > startLine && currentLine < endLine))
-                    {
-                        result.Append(ch);
-                    }
-                }
-
-                currentColumn += 1;
-            }
-            return result.ToString();
-        }
+        private static string GetSubstringFromContent(ReadOnlySpan<byte> content, int startIndex, int endIndex)
+            => Encoding.UTF8.GetString(content.Slice(startIndex, endIndex - startIndex + 1));
 
         private static Dictionary<string, List<Lazy<IXrefSpec>>>
             CreateInternalXrefMap(Context context, IEnumerable<Document> files)
