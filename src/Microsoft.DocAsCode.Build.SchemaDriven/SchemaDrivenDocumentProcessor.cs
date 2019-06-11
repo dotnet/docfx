@@ -28,13 +28,12 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
         private readonly ResourcePoolManager<JsonSerializer> _serializerPool;
         private readonly string _schemaName;
         private readonly DocumentSchema _schema;
-        private readonly SchemaValidator _schemaValidator;
         private readonly bool _allowOverwrite;
         private readonly MarkdigMarkdownService _markdigMarkdownService;
         private readonly FolderRedirectionManager _folderRedirectionManager;
         #endregion
 
-        public SchemaValidator SchemaValidator => _schemaValidator;
+        public SchemaValidator SchemaValidator { get; }
         #region Constructors
 
         public SchemaDrivenDocumentProcessor(
@@ -50,7 +49,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
 
             _schemaName = schema.Title;
             _schema = schema;
-            _schemaValidator = schema.Validator;
+            SchemaValidator = schema.Validator;
             _allowOverwrite = schema.AllowOverwrite;
             _serializerPool = new ResourcePoolManager<JsonSerializer>(GetSerializer, 0x10);
             _markdigMarkdownService = markdigMarkdownService ?? throw new ArgumentNullException(nameof(MarkdigMarkdownService));
@@ -126,12 +125,11 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
                         else
                         {
                             // Validate against the schema first, only when markdown fragments don't exist
-                            _schemaValidator.Validate(obj);
+                            SchemaValidator.Validate(obj);
                         }
 
                         var content = ConvertToObjectHelper.ConvertToDynamic(obj);
-                        var pageMetadata = _schema.MetadataReference.GetValue(content) as IDictionary<string, object>;
-                        if (pageMetadata == null)
+                        if (!(_schema.MetadataReference.GetValue(content) is IDictionary<string, object> pageMetadata))
                         {
                             pageMetadata = new ExpandoObject();
                             _schema.MetadataReference.SetValue(ref content, pageMetadata);
@@ -228,10 +226,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
 
         #region ISupportIncrementalDocumentProcessor Members
 
-        public virtual string GetIncrementalContextHash()
-        {
-            return null;
-        }
+        public virtual string GetIncrementalContextHash() => _schema.Hash;
 
         public virtual void SaveIntermediateModel(FileModel model, Stream stream)
         {
