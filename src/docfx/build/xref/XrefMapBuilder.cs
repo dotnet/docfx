@@ -66,39 +66,6 @@ namespace Microsoft.Docs.Build
             return map;
         }
 
-        private static void DeserializeAndPopulateXrefMap(Action<string, int, int> populate, ReadOnlySpan<byte> content)
-        {
-            var reader = new Utf8JsonReader(content, isFinalBlock: true, default);
-            string uid = null;
-            int startIndex = 0;
-            int endIndex = 0;
-            while (reader.Read())
-            {
-                switch (reader.TokenType)
-                {
-                    case JsonTokenType.PropertyName:
-                        if (reader.TextEquals(Encoding.UTF8.GetBytes("uid")) && reader.Read() && reader.TokenType == JsonTokenType.String)
-                        {
-                            uid = Encoding.UTF8.GetString(reader.ValueSpan);
-                        }
-                        break;
-                    case JsonTokenType.StartObject:
-                        startIndex = (int)reader.TokenStartIndex;
-                        break;
-                    case JsonTokenType.EndObject:
-                        if (uid != null)
-                        {
-                            endIndex = (int)reader.TokenStartIndex;
-                            populate(uid, startIndex, endIndex);
-                        }
-                        break;
-                }
-            }
-        }
-
-        private static string GetSubstringFromContent(ReadOnlySpan<byte> content, int startIndex, int endIndex)
-            => Encoding.UTF8.GetString(content.Slice(startIndex, endIndex - startIndex + 1));
-
         private static Dictionary<string, List<Lazy<IXrefSpec>>>
             CreateInternalXrefMap(Context context, IEnumerable<Document> files)
         {

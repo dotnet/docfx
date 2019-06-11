@@ -12,6 +12,8 @@ namespace Microsoft.Docs.Build
 {
     internal class XrefMapLoader
     {
+        private static byte[] s_uidBytes = Encoding.UTF8.GetBytes("uid");
+
         public static ListBuilder<(string, Lazy<IXrefSpec>)> Load(string filePath)
         {
             var result = new ListBuilder<(string, Lazy<IXrefSpec>)>();
@@ -20,14 +22,17 @@ namespace Microsoft.Docs.Build
             // TODO: cache this position mapping if xref map file not updated, reuse it
             var xrefSpecPositions = GetXrefSpecPositions(content);
 
-            ParallelUtility.ForEach(xrefSpecPositions, item =>
+            foreach (var (uid, start, end) in xrefSpecPositions)
             {
-                using (var stream = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.Read))
+                result.Add((uid, new Lazy<IXrefSpec>(() =>
                 {
-                    var json = ReadJsonFragment(stream, item.start, item.end);
-                    result.Add((item.uid, new Lazy<IXrefSpec>(() => JsonUtility.Deserialize<ExternalXrefSpec>(json, filePath))));
-                }
-            });
+                    using (var stream = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.Read))
+                    {
+                        var json = ReadJsonFragment(stream, start, end);
+                        return JsonUtility.Deserialize<ExternalXrefSpec>(json, filePath);
+                    }
+                })));
+            }
             return result;
         }
 
@@ -43,7 +48,7 @@ namespace Microsoft.Docs.Build
                 switch (reader.TokenType)
                 {
                     case JsonTokenType.PropertyName:
-                        if (reader.TextEquals(Encoding.UTF8.GetBytes("uid")) && reader.Read() && reader.TokenType == JsonTokenType.String)
+                        if (reader.TextEquals(s_uidBytes) && reader.Read() && reader.TokenType == JsonTokenType.String)
                         {
                             uid = Encoding.UTF8.GetString(reader.ValueSpan);
                         }
@@ -54,7 +59,7 @@ namespace Microsoft.Docs.Build
                     case JsonTokenType.EndObject:
                         if (uid != null)
                         {
-                            endIndex = (int)reader.TokenStartIndex;
+                            endIndex = (int)reader.TokenStartIndex + 1;
                             result.Add((uid, startIndex, endIndex));
                         }
                         break;
@@ -65,18 +70,17 @@ namespace Microsoft.Docs.Build
 
         private static string ReadJsonFragment(Stream stream, long start, long end)
         {
+            var offset = 0;
             var bytesRead = 0;
-            var bytesToRead = end - start + 1;
+            var bytesToRead = end - start;
             var bytes = new byte[bytesToRead];
             stream.Position = start;
 
-            do
+            while (bytesToRead > 0 && (bytesRead = stream.Read(bytes, offset, (int)bytesToRead)) > 0)
             {
-                var read = stream.Read(bytes, bytesRead, (int)bytesToRead);
-                bytesRead += read;
-                bytesToRead -= read;
-            } while (bytesToRead > 0);
-            stream.Close();
+                offset += bytesRead;
+                bytesToRead -= bytesRead;
+            }
 
             return Encoding.UTF8.GetString(bytes);
         }

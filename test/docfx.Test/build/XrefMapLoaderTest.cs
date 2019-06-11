@@ -1,15 +1,12 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using Xunit;
 
-namespace Microsoft.Docs.Build.build
+namespace Microsoft.Docs.Build
 {
     public class XrefMapLoaderTest
     {
@@ -49,17 +46,16 @@ namespace Microsoft.Docs.Build.build
             {
                 Assert.Contains(uid, result.ToList().Select(x => x.Item1));
             }
-
-            if (File.Exists(filePath))
-            {
-                File.Delete(filePath);
-            }
         }
 
         private string WriteJsonToTempFile(string json)
         {
-            var tempFilePath = Path.GetTempFileName();
-            tempFilePath = Path.ChangeExtension(tempFilePath, ".json");
+            var directory = Path.Combine(AppContext.BaseDirectory, "xref-map-loader");
+            if (!Directory.Exists(directory))
+            {
+                Directory.CreateDirectory(directory);
+            }
+            var tempFilePath = Path.Combine(directory, Guid.NewGuid().ToString() + ".json");
             File.WriteAllText(tempFilePath, json.Replace('\'', '"'));
             return tempFilePath;
         }

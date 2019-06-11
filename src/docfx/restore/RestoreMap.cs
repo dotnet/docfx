@@ -145,22 +145,6 @@ namespace Microsoft.Docs.Build
             return filePath;
         }
 
-        public static string TryGetRestoredFilePath(string url)
-        {
-            Debug.Assert(!string.IsNullOrEmpty(url));
-            Debug.Assert(UrlUtility.IsHttp(url));
-
-            var filePath = RestoreFile.GetRestoreContentPath(url);
-            using (InterProcessMutex.Create(filePath))
-            {
-                if (File.Exists(filePath))
-                {
-                    return filePath;
-                }
-                return null;
-            }
-        }
-
         public static (string content, string etag) TryGetRestoredFileContent(string url)
         {
             Debug.Assert(!string.IsNullOrEmpty(url));
@@ -272,6 +256,19 @@ namespace Microsoft.Docs.Build
 
         public static bool ReleaseGit(DependencyGit git, LockType lockType, bool successed = true)
             => DependencySlotPool<DependencyGit>.ReleaseSlot(git, lockType, successed);
+
+        private static string TryGetRestoredFilePath(string url)
+        {
+            Debug.Assert(!string.IsNullOrEmpty(url));
+            Debug.Assert(UrlUtility.IsHttp(url));
+
+            var filePath = RestoreFile.GetRestoreContentPath(url);
+            if (File.Exists(filePath))
+            {
+                return filePath;
+            }
+            return null;
+        }
 
         private static (string path, DependencyGit git) AcquireGit(string remote, string branch, string commit, LockType type)
         {
