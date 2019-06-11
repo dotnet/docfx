@@ -54,11 +54,9 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             while (currentInline != null)
             {
-                if (currentInline is LinkDelimiterInline delimiter &&
-                    delimiter.IsActive &&
-                    delimiter.Type == DelimiterType.Open)
+                if (currentInline is LinkDelimiterInline delimiter && delimiter.IsActive)
                 {
-                    return false;
+                    return delimiter.Type == DelimiterType.Close;
                 }
 
                 currentInline = currentInline.Parent;
