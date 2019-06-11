@@ -168,7 +168,7 @@ namespace Microsoft.Docs.Build
                 else
                 {
                     tocModelItem.Href = resolvedTopicItemFromTocHref?.Href;
-                    monikers = resolvedTopicItemFromTocHref?.Monikers;
+                    monikers = resolvedTopicItemFromTocHref?.Monikers ?? new List<string>();
                 }
 
                 tocModelItem.TocHref = resolvedTocHref;
@@ -177,7 +177,7 @@ namespace Microsoft.Docs.Build
 
                 // Union with children's monikers
                 var childrenMonikers = tocModelItem.Items?.SelectMany(child => child?.Monikers ?? new List<string>()) ?? new List<string>();
-                monikers = childrenMonikers.Union(monikers ?? new List<string>()).Distinct().ToList();
+                monikers = childrenMonikers.Union(monikers).Distinct().ToList();
                 monikers.Sort(context.MonikerProvider.Comparer);
                 tocModelItem.Monikers = monikers;
 
