@@ -40,5 +40,9 @@ namespace Microsoft.DocAsCode
 
         [Option("basePath", HelpText = "Specify the base path to generate external link, {host}/{locale}/{basePath}")]
         public string BasePath { get; set; }
+
+        [Option("noStdin", HelpText = "Do not use stdin when wkhtmltopdf is executed")]
+		public bool? NoInputStreamArgs { get; set; }
+
     }
 }

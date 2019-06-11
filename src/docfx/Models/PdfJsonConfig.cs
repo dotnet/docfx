@@ -74,7 +74,7 @@ namespace Microsoft.DocAsCode
 		/// <summary>
 		/// Are input arguments set using command line
 		/// </summary>
-		[JsonProperty("noInputStreamArgs")]
+        [JsonProperty("noStdin")]
 		public bool NoInputStreamArgs { get; set; }
 
 	}

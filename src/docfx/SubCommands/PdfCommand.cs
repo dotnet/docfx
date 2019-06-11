@@ -183,6 +183,11 @@ namespace Microsoft.DocAsCode.SubCommands
             {
                 config.GeneratesExternalLink = options.GeneratesExternalLink.Value;
             }
+
+			if (options.NoInputStreamArgs.HasValue)
+			{
+				config.NoInputStreamArgs = options.NoInputStreamArgs.Value;
+			}
         }
 
         private sealed class PdfConfig
