@@ -102,7 +102,6 @@ namespace Microsoft.Docs.Build
 
             var (errors, model) = LoadTocModel(context, file, content);
 
-            var extendResolveMoniker = resolveMoniker;
             if (file == rootPath)
             {
                 var (monikerError, fileMonikers) = context.MonikerProvider.GetFileLevelMonikers(file, model.Metadata.MonikerRange);
@@ -115,7 +114,7 @@ namespace Microsoft.Docs.Build
             if (model.Items.Count > 0)
             {
                 parents.Add(file);
-                errors.AddRange(ResolveTocModelItems(context, model.Items, parents, file, rootPath, resolveContent, resolveHref, resolveXref, extendResolveMoniker, rootFileMonikers));
+                errors.AddRange(ResolveTocModelItems(context, model.Items, parents, file, rootPath, resolveContent, resolveHref, resolveXref, resolveMoniker, rootFileMonikers));
                 parents.RemoveAt(parents.Count - 1);
             }
 
