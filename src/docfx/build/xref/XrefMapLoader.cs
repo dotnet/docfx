@@ -39,28 +39,28 @@ namespace Microsoft.Docs.Build
         private static List<(string uid, long start, long end)> GetXrefSpecPositions(ReadOnlySpan<byte> content)
         {
             var result = new List<(string uid, long start, long end)>();
+            var stack = new Stack<(string uid, long start)>();
             var reader = new Utf8JsonReader(content, isFinalBlock: true, default);
-            string uid = null;
-            int startIndex = 0;
-            int endIndex = 0;
             while (reader.Read())
             {
                 switch (reader.TokenType)
                 {
                     case JsonTokenType.PropertyName:
-                        if (reader.TextEquals(s_uidBytes) && reader.Read() && reader.TokenType == JsonTokenType.String)
+                        if (reader.TextEquals(s_uidBytes) && reader.Read() && reader.TokenType == JsonTokenType.String && stack.TryPop(out var top))
                         {
-                            uid = Encoding.UTF8.GetString(reader.ValueSpan);
+                            stack.Push((Encoding.UTF8.GetString(reader.ValueSpan), top.start));
                         }
                         break;
                     case JsonTokenType.StartObject:
-                        startIndex = (int)reader.TokenStartIndex;
+                        stack.Push((null, (int)reader.TokenStartIndex));
                         break;
                     case JsonTokenType.EndObject:
-                        if (uid != null)
+                        if (stack.TryPop(out var item))
                         {
-                            endIndex = (int)reader.TokenStartIndex + 1;
-                            result.Add((uid, startIndex, endIndex));
+                            if (item.uid != null)
+                            {
+                                result.Add((item.uid, item.start, (int)reader.TokenStartIndex + 1));
+                            }
                         }
                         break;
                 }
@@ -72,11 +72,11 @@ namespace Microsoft.Docs.Build
         {
             var offset = 0;
             var bytesRead = 0;
-            var bytesToRead = end - start;
+            var bytesToRead = (int)(end - start);
             var bytes = new byte[bytesToRead];
             stream.Position = start;
 
-            while (bytesToRead > 0 && (bytesRead = stream.Read(bytes, offset, (int)bytesToRead)) > 0)
+            while (bytesToRead > 0 && (bytesRead = stream.Read(bytes, offset, bytesToRead)) > 0)
             {
                 offset += bytesRead;
                 bytesToRead -= bytesRead;

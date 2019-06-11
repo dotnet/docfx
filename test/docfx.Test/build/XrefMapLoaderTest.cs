@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Xunit;
@@ -38,14 +39,17 @@ namespace Microsoft.Docs.Build
 'name': 'Title from yaml header b' } ]
 }",
             "a", "b")]
+        [InlineData(@"{'references':[{'uid': 'a', 'prop': {'test':1}}, {'uid': 'b', 'prop': {'test':2}}]}", "a", "b")]
         public void LoadXrefMapFile(string json, params string[] uids)
         {
             var filePath = WriteJsonToTempFile(json);
             var result = XrefMapLoader.Load(filePath);
-            foreach (var uid in uids)
+            var resultUids = new List<string>();
+            foreach(var (uid, spec) in result.ToList())
             {
-                Assert.Contains(uid, result.ToList().Select(x => x.Item1));
+                resultUids.Add(((ExternalXrefSpec)spec.Value).Uid);
             }
+            Assert.Equal(uids, resultUids);
         }
 
         private string WriteJsonToTempFile(string json)
