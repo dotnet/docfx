@@ -149,7 +149,7 @@ namespace Microsoft.Docs.Build
 
             pageModel.Conceptual = HtmlUtility.HtmlPostProcess(htmlDom, file.Docset.Culture);
             pageModel.Title = yamlHeader.Value<string>("title") ?? title;
-            pageModel.RawTitle = rawTitle + "haha";
+            pageModel.RawTitle = rawTitle;
             pageModel.WordCount = wordCount;
             pageModel.Monikers = monikers;
 
