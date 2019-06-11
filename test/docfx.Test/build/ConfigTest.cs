@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.IO;
+using System.Runtime.InteropServices;
 using Xunit;
 
 namespace Microsoft.Docs.Build
@@ -166,17 +167,20 @@ namespace Microsoft.Docs.Build
         [InlineData("hi-in", true)]
         [InlineData("th-th", true)]
         [InlineData("ko-kr", true)]
-        [InlineData("zh-CN", true)]
-        [InlineData("zh-tw", true)]
-        [InlineData("zh-hk", true)]
         [InlineData("ja-jp", true)]
         [InlineData("bs-cyrl-ba", true)]
         [InlineData("sr-cyrl-rs", true)]
         [InlineData("sr-latn-rs", true)]
         [InlineData("bs-latn-ba", true)]
-        public static void IsValidLocale(string locale,  bool valid)
+        [InlineData("zh-CN", true, true)]
+        [InlineData("zh-tw", true, true)]
+        [InlineData("zh-hk", true, true)]
+        public static void IsValidLocale(string locale,  bool valid, bool? windowsOnly = null)
         {
-            Assert.Equal(valid, LocalizationUtility.IsValidLocale(locale));
+            if (windowsOnly == null || windowsOnly.Value)
+            {
+                Assert.Equal(valid, LocalizationUtility.IsValidLocale(locale));
+            }
         }
     }
 }
