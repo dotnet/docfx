@@ -314,7 +314,7 @@ namespace Microsoft.Docs.Build
                 if (pos >= 1)
                 {
                     var urlLocale = href.Substring(1, pos - 1);
-                    if (urlLocale.Contains("-"))
+                    if (LocalizationUtility.IsValidLocale(urlLocale))
                     {
                         return href;
                     }
