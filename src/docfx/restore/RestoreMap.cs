@@ -111,7 +111,7 @@ namespace Microsoft.Docs.Build
 
             return (null, content, etag);
         }
- 
+
         public static ReadOnlySpan<byte> GetRestoredFileBytes(string docsetPath, SourceInfo<string> url, string fallbackDocset = null)
         {
             var fromUrl = UrlUtility.IsHttp(url);
@@ -144,7 +144,7 @@ namespace Microsoft.Docs.Build
 
             return bytes;
         }
- 
+
         public static ReadOnlySpan<byte> TryGetRestoredFileBytes(string url)
         {
             Debug.Assert(!string.IsNullOrEmpty(url));
