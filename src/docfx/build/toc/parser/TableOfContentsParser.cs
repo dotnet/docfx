@@ -74,7 +74,7 @@ namespace Microsoft.Docs.Build
             else if (tocToken is JObject tocObject)
             {
                 // toc root model
-                return JsonUtility.ToObject<TableOfContentsModel>(tocToken);
+                return JsonUtility.ToObject<TableOfContentsModel>(tocObject);
             }
             return (new List<Error>(), new TableOfContentsModel());
         }
@@ -126,6 +126,7 @@ namespace Microsoft.Docs.Build
                     errors.AddRange(ResolveTocModelItems(context, tocModelItem.Items, parents, filePath, rootPath, resolveContent, resolveHref, resolveXref));
                 }
 
+                // process
                 var tocHref = GetTocHref(tocModelItem);
                 var topicHref = GetTopicHref(tocModelItem);
                 var topicUid = tocModelItem.Uid;
@@ -138,6 +139,13 @@ namespace Microsoft.Docs.Build
                 tocModelItem.TocHref = resolvedTocHref;
                 tocModelItem.Name = tocModelItem.Name ?? resolvedTopicName;
                 tocModelItem.Items = subChildren?.Items ?? tocModelItem.Items;
+
+                // validate
+                // todo: how to do required validation in strong model
+                if (tocModelItem.Name != null && string.IsNullOrEmpty(tocModelItem.Name))
+                {
+                    errors.Add(Errors.MissingTocHead(tocModelItem.Name));
+                }
             }
 
             return errors;
@@ -224,7 +232,7 @@ namespace Microsoft.Docs.Build
                 return default;
             }
 
-            (SourceInfo<string> resolvedTopicHref, string resolvedTopicName, Document file) ProcessTopicItem(SourceInfo<string> uid, SourceInfo<string> topicHref)
+            (SourceInfo<string> resolvedTopicHref, SourceInfo<string> resolvedTopicName, Document file) ProcessTopicItem(SourceInfo<string> uid, SourceInfo<string> topicHref)
             {
                 // process uid first
                 if (!string.IsNullOrEmpty(uid))
@@ -232,8 +240,7 @@ namespace Microsoft.Docs.Build
                     var (uidHref, uidDisplayName, uidFile) = resolveXref.Invoke(rootPath, uid);
                     if (!string.IsNullOrEmpty(uidHref))
                     {
-                        uid.Value = uidHref;
-                        return (uid, uidDisplayName, uidFile);
+                        return (new SourceInfo<string>(uidHref, uid), new SourceInfo<string>(uidDisplayName, uid), uidFile);
                     }
                 }
 

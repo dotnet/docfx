@@ -238,7 +238,7 @@ namespace Microsoft.Docs.Build
             };
             xref.ExtensionData["name"] = new Lazy<JValue>(() => new JValue(string.IsNullOrEmpty(metadata.Title) ? metadata.Uid : metadata.Title));
 
-            var (error, monikers) = context.MonikerProvider.GetFileLevelMonikers(file, metadata.MonikerRange);
+            var (error, monikers) = context.MonikerProvider.GetFileLevelMonikersWithInfo(file, metadata.MonikerRange);
             foreach (var moniker in monikers)
             {
                 xref.Monikers.Add(moniker);
