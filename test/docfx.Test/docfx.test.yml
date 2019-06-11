@@ -1,9 +1,10 @@
 # default config for specs in docfx
 baseUrl: https://docs.com
 rules:
-  heading-not-found: off
-  resolve-author-failed: off
-  resolve-commit-failed: off
+  link-is-empty: info
+  redirection-out-of-scope: info
+  at-xref-not-found: info
+  invalid-uid-moniker: info
 output:
   json: true
 gitHub:

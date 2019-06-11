@@ -226,7 +226,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         /// Behavior: ✔️ Message: ❌
         public static Error LinkIsEmpty(Document relativeTo)
-            => new Error(ErrorLevel.Info, "link-is-empty", "Link is empty", relativeTo.ToString());
+            => new Error(ErrorLevel.Off, "link-is-empty", "Link is empty", relativeTo.ToString());
 
         /// <summary>
         /// Link which's resolved to a file out of build scope.
@@ -240,7 +240,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         /// Behavior: ✔️ Message: ❌
         public static Error RedirectionOutOfScope(SourceInfo source, string redirection)
-            => new Error(ErrorLevel.Info, "redirection-out-of-scope", $"Redirection file '{redirection}' will not be built because it is not included in build scope", source);
+            => new Error(ErrorLevel.Off, "redirection-out-of-scope", $"Redirection file '{redirection}' will not be built because it is not included in build scope", source);
 
         /// <summary>
         /// Link which's resolved to a file in dependency repo won't be built.
@@ -259,11 +259,11 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Warning, "local-file-path", $"Link '{path}' points to a local file. Use a relative path instead", relativeTo.ToString());
 
         /// <summary>
-        /// The fisrt tag in an article.md isn't h1 tag.
+        /// The first tag in an article.md isn't h1 tag.
         /// </summary>
         /// Behavior: ✔️ Message: ❌
         public static Error HeadingNotFound(Document file)
-            => new Error(ErrorLevel.Info, "heading-not-found", $"The first visible block is not a heading block with `#`, `##` or `###`", file.ToString());
+            => new Error(ErrorLevel.Off, "heading-not-found", $"The first visible block is not a heading block with `#`, `##` or `###`", file.ToString());
 
         /// <summary>
         /// Can't find a file referenced by configuration, or user writes a non-existing link.
@@ -295,7 +295,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         /// Behavior: ❌ Message: ✔️
         public static Error AtXrefNotFound(SourceInfo<string> source)
-            => new Error(ErrorLevel.Info, "at-xref-not-found", $"Cross reference not found: '{source}'", source);
+            => new Error(ErrorLevel.Off, "at-xref-not-found", $"Cross reference not found: '{source}'", source);
 
         /// <summary>
         /// Failed to resolve uid defined by [link](xref:uid) or <xref:uid> syntax.
@@ -541,7 +541,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         /// Behavior: ✔️ Message: ❌
         public static Error InvalidUidMoniker(SourceInfo source, string moniker, string uid)
-            => new Error(ErrorLevel.Info, "invalid-uid-moniker", $"Moniker '{moniker}' is not defined with uid '{uid}'", source);
+            => new Error(ErrorLevel.Off, "invalid-uid-moniker", $"Moniker '{moniker}' is not defined with uid '{uid}'", source);
 
         /// <summary>
         /// Custom 404 page is not supported
