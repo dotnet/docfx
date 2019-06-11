@@ -112,7 +112,7 @@ namespace Microsoft.Docs.Build
             return (null, content, etag);
         }
 
-        public static ReadOnlySpan<byte> GetRestoredFileBytes(string docsetPath, SourceInfo<string> url, string fallbackDocset = null)
+        public static string GetRestoredFilePath(string docsetPath, SourceInfo<string> url, string fallbackDocset = null)
         {
             var fromUrl = UrlUtility.IsHttp(url);
             if (!fromUrl)
@@ -121,7 +121,7 @@ namespace Microsoft.Docs.Build
                 var fullPath = Path.Combine(docsetPath, url);
                 if (File.Exists(fullPath))
                 {
-                    return File.ReadAllBytes(fullPath);
+                    return fullPath;
                 }
 
                 if (!string.IsNullOrEmpty(fallbackDocset))
@@ -129,23 +129,23 @@ namespace Microsoft.Docs.Build
                     fullPath = Path.Combine(fallbackDocset, url);
                     if (File.Exists(fullPath))
                     {
-                        return File.ReadAllBytes(fullPath);
+                        return fullPath;
                     }
                 }
 
                 throw Errors.FileNotFound(url).ToException();
             }
 
-            var bytes = TryGetRestoredFileBytes(url);
-            if (bytes.Length == 0)
+            var filePath = TryGetRestoredFilePath(url);
+            if (filePath is null)
             {
                 throw Errors.NeedRestore(url).ToException();
             }
 
-            return bytes;
+            return filePath;
         }
 
-        public static ReadOnlySpan<byte> TryGetRestoredFileBytes(string url)
+        public static string TryGetRestoredFilePath(string url)
         {
             Debug.Assert(!string.IsNullOrEmpty(url));
             Debug.Assert(UrlUtility.IsHttp(url));
@@ -153,18 +153,11 @@ namespace Microsoft.Docs.Build
             var filePath = RestoreFile.GetRestoreContentPath(url);
             using (InterProcessMutex.Create(filePath))
             {
-                var content = GetFileBytesIfExists(filePath);
-                return content;
-
-                ReadOnlySpan<byte> GetFileBytesIfExists(string file)
+                if (File.Exists(filePath))
                 {
-                    if (File.Exists(file))
-                    {
-                        return File.ReadAllBytes(file);
-                    }
-
-                    return null;
+                    return filePath;
                 }
+                return null;
             }
         }
 

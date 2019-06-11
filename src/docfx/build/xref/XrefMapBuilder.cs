@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
@@ -38,16 +39,12 @@ namespace Microsoft.Docs.Build
                 else
                 {
                     // Convert to array since ref local is not allowed to be used in lambda expression
-                    var content = RestoreMap.GetRestoredFileBytes(docset.DocsetPath, url).ToArray();
-                    DeserializeAndPopulateXrefMap(
-                    (uid, startIndex, endIndex) =>
+                    var filePath = RestoreMap.GetRestoredFilePath(docset.DocsetPath, url);
+                    var result = XrefMapLoader.Load(filePath);
+                    foreach (var (uid, spec) in result.ToList())
                     {
-                        externalXrefMap.TryAdd(uid, new Lazy<IXrefSpec>(() =>
-                        {
-                            var str = GetSubstringFromContent(content, startIndex, endIndex);
-                            return JsonUtility.Deserialize<ExternalXrefSpec>(str, url);
-                        }));
-                    }, content);
+                        externalXrefMap.TryAdd(uid, spec);
+                    }
                 }
             });
             var internalXrefMap = CreateInternalXrefMap(context, docset.ScanScope);
