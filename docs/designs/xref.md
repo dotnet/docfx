@@ -83,7 +83,7 @@ Besides using file path to link to another file, DocFX also allows you to give a
             docs/b.json: |
                 {"conceptual":"<p>Link to <a href=\"a\">Title from v2</a></p>\n"}
         ```
-- Reference to an external UID without versioning
+- Reference to an external UID without versioning. DHS does not handle the branch fallback logic for build, the complete list of all scenarios is as below
 
     | Cross site | Build Type | build branch | xref definition branch | append branch info |
     | --- | --- | --- | --- | --- |
@@ -98,7 +98,7 @@ Besides using file path to link to another file, DocFX also allows you to give a
     | yes | PR | test -> master | master | yes |
     | yes | PR | test -> live | live | no |
     > For the last scenario, the UID definition repo may not go live yet, so the correct resolved URL should be `review.docs.com`, but it is `docs.com`, which would not be found.
-    > For cross site reference, 
+    > For cross site reference, branch info is also appended to the resolved URL as implemented in v2.
     - The href of UID is from the same host name as the referencing repository.
         - If the current branch is `live`, and the UID href is also from `live`, everything is OK
         - If the current branch is `master`, then the output site is `review.docs`, but the resovled url is `docs` which is `live`, while browsing the UID href, the user should not jump to another site(`docs`)
@@ -111,7 +111,7 @@ Besides using file path to link to another file, DocFX also allows you to give a
             docs/b.json: |
                 {"conceptual":"<p>Link to <a href=\"/a\">Title from docs</a></p>\n"}
         ```
-        - If the current branch is `test`, and the build type is `PR build` or `branch build`, the UID href should fall back to `master` because `test` might not exist on UID definition repository. And Document hosting service will not handle this fallback for build.
+        - If the current branch is `test`, and the build type is `PR build` or `branch build`, the UID href should fall back to `master` because `test` might not exist on UID definition repository.
           ```yaml
           # External UID `a` is defined in `docs`, whose title is `Title from docs`
           inputs:
