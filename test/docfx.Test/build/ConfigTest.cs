@@ -172,15 +172,10 @@ namespace Microsoft.Docs.Build
         [InlineData("sr-cyrl-rs", true)]
         [InlineData("sr-latn-rs", true)]
         [InlineData("bs-latn-ba", true)]
-        [InlineData("zh-CN", true, true)]
-        [InlineData("zh-tw", true, true)]
-        [InlineData("zh-hk", true, true)]
-        public static void IsValidLocale(string locale,  bool valid, bool? windowsOnly = null)
-        {
-            if (windowsOnly == null || windowsOnly.Value)
-            {
-                Assert.Equal(valid, LocalizationUtility.IsValidLocale(locale));
-            }
-        }
+        [InlineData("zh-CN", true)]
+        [InlineData("zh-tw", true)]
+        [InlineData("zh-hk", true)]
+        public static void IsValidLocale(string locale, bool valid)
+            => Assert.Equal(valid, LocalizationUtility.IsValidLocale(locale));
     }
 }

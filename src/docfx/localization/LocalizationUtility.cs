@@ -13,7 +13,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class LocalizationUtility
     {
-        private static readonly HashSet<string> s_locales = new HashSet<string>(CultureInfo.GetCultures(CultureTypes.AllCultures).Except(CultureInfo.GetCultures(CultureTypes.NeutralCultures)).Select(c => c.Name), StringComparer.OrdinalIgnoreCase);
+        private static readonly HashSet<string> s_locales = new HashSet<string>(CultureInfo.GetCultures(CultureTypes.AllCultures).Except(CultureInfo.GetCultures(CultureTypes.NeutralCultures)).Select(c => c.Name).Concat(new[] { "zh-cn", "zh-tw", "zh-hk", "zh-sg", "zh-mo" }), StringComparer.OrdinalIgnoreCase);
         private static readonly Regex s_nameWithLocale = new Regex(@"^.+?(\.[a-z]{2,4}-[a-z]{2,4}(-[a-z]{2,4})?|\.loc)?$", RegexOptions.IgnoreCase);
         private static readonly Regex s_lrmAdjustment = new Regex(@"(^|\s|\>)(C#|F#|C\+\+)(\s*|[.!?;:]*)(\<|[\n\r]|$)", RegexOptions.IgnoreCase);
 
