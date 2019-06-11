@@ -137,3 +137,4 @@ jobs:
       DOCS_GITHUB_TOKEN: $(DOCS_GITHUB_TOKEN)
       AZURE_DEVOPS_TOKEN: $(AZURE_DEVOPS_TOKEN)
       AzureServicesAuthConnectionString: $(AzureServicesAuthConnectionString)
+      PULL_REQUEST_NUMBER : $(System.PullRequest.PullRequestNumber)
