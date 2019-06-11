@@ -21,7 +21,6 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
 
     using Xunit;
     using Microsoft.DocAsCode.Glob;
-    using Microsoft.DocAsCode.Build.SchemaDriven;
 
     [Trait("Owner", "xuzho")]
     [Trait("EntityType", "DocumentBuilder")]
@@ -5591,7 +5590,6 @@ tagRules : [
             yield return typeof(TocDocumentProcessor).Assembly;
             yield return typeof(RestApiDocumentProcessor).Assembly;
             yield return typeof(YamlDocumentProcessor).Assembly;
-            yield return typeof(SchemaDrivenDocumentProcessor).Assembly;
             if (enableSplit)
             {
                 yield return typeof(SplitClassPageToMemberLevel).Assembly;

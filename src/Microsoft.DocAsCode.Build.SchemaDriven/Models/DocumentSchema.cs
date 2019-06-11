@@ -12,6 +12,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
     using Newtonsoft.Json.Schema;
 
     using Microsoft.DocAsCode.Exceptions;
+    using Microsoft.DocAsCode.Common;
 
     public class DocumentSchema : BaseSchema
     {
@@ -97,7 +98,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
 
                 schema.MetadataReference = pointer;
                 schema.AllowOverwrite = CheckOverwriteAbility(schema);
-                schema.Hash = new JTokenEqualityComparer().GetHashCode(jObject).ToString();
+                schema.Hash = JsonUtility.Serialize(jObject).GetMd5String();
 
                 return schema;
             }
