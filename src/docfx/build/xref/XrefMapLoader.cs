@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -14,9 +13,9 @@ namespace Microsoft.Docs.Build
     {
         private static byte[] s_uidBytes = Encoding.UTF8.GetBytes("uid");
 
-        public static ListBuilder<(string, Lazy<IXrefSpec>)> Load(string filePath)
+        public static List<(string, Lazy<IXrefSpec>)> Load(string filePath)
         {
-            var result = new ListBuilder<(string, Lazy<IXrefSpec>)>();
+            var result = new List<(string, Lazy<IXrefSpec>)>();
             var content = File.ReadAllBytes(filePath);
 
             // TODO: cache this position mapping if xref map file not updated, reuse it
@@ -55,12 +54,9 @@ namespace Microsoft.Docs.Build
                         stack.Push((null, (int)reader.TokenStartIndex));
                         break;
                     case JsonTokenType.EndObject:
-                        if (stack.TryPop(out var item))
+                        if (stack.TryPop(out var item) && item.uid != null)
                         {
-                            if (item.uid != null)
-                            {
-                                result.Add((item.uid, item.start, (int)reader.TokenStartIndex + 1));
-                            }
+                            result.Add((item.uid, item.start, (int)reader.TokenStartIndex + 1));
                         }
                         break;
                 }
