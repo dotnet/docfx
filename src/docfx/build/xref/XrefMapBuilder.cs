@@ -7,7 +7,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -24,10 +26,10 @@ namespace Microsoft.Docs.Build
             var externalXrefMap = new DictionaryBuilder<string, Lazy<IXrefSpec>>();
             ParallelUtility.ForEach(docset.Config.Xref, url =>
             {
-                var (_, content, _) = RestoreMap.GetRestoredFileContent(docset, url);
                 XrefMapModel xrefMap = new XrefMapModel();
                 if (url?.Value.EndsWith(".yml", StringComparison.OrdinalIgnoreCase) != false)
                 {
+                    var (_, content, _) = RestoreMap.GetRestoredFileContent(docset, url);
                     xrefMap = YamlUtility.Deserialize<XrefMapModel>(content, url);
                     foreach (var spec in xrefMap.References)
                     {
@@ -36,15 +38,13 @@ namespace Microsoft.Docs.Build
                 }
                 else
                 {
-                    DeserializeAndPopulateXrefMap(
-                    (uid, startLine, startColumn, endLine, endColumn) =>
+                    // Convert to array since ref local is not allowed to be used in lambda expression
+                    var filePath = RestoreMap.GetRestoredFilePath(docset.DocsetPath, url);
+                    var result = XrefMapLoader.Load(filePath);
+                    foreach (var (uid, spec) in result.ToList())
                     {
-                        externalXrefMap.TryAdd(uid, new Lazy<IXrefSpec>(() =>
-                        {
-                            var str = GetSubstringFromContent(content, startLine, endLine, startColumn, endColumn);
-                            return JsonUtility.Deserialize<ExternalXrefSpec>(str, url);
-                        }));
-                    }, content);
+                        externalXrefMap.TryAdd(uid, spec);
+                    }
                 }
             });
             var internalXrefMap = CreateInternalXrefMap(context, docset.ScanScope);
@@ -64,96 +64,6 @@ namespace Microsoft.Docs.Build
                 }
             }
             return map;
-        }
-
-        private static void DeserializeAndPopulateXrefMap(Action<string, int, int, int, int> populate, string content)
-        {
-            using (var reader = new StringReader(content))
-            using (var json = new JsonTextReader(reader))
-            {
-                var currentProperty = string.Empty;
-                string uid = null;
-                var startLine = 1;
-                var endLine = 1;
-                var startColumn = 1;
-                var endColumn = 1;
-                while (json.Read())
-                {
-                    if (json.Value != null)
-                    {
-                        if (json.TokenType == JsonToken.PropertyName)
-                            currentProperty = json.Value.ToString();
-
-                        if (json.TokenType == JsonToken.String && currentProperty == "uid")
-                        {
-                            uid = json.Value.ToString();
-                        }
-                    }
-                    else
-                    {
-                        if (json.TokenType == JsonToken.StartObject)
-                        {
-                            startLine = json.LineNumber;
-                            startColumn = json.LinePosition;
-                        }
-                        else if (json.TokenType == JsonToken.EndObject)
-                        {
-                            endLine = json.LineNumber;
-                            endColumn = json.LinePosition;
-                            if (uid != null)
-                            {
-                                populate(uid, startLine, endLine, startColumn, endColumn);
-                                uid = null;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        private static string GetSubstringFromContent(string content, int startLine, int startColumn, int endLine, int endColumn)
-        {
-            var result = new StringBuilder();
-            var currentLine = 1;
-            var currentColumn = 1;
-
-            // for better performance by accessing index when content is 1 line
-            if (currentLine == startLine && currentLine == endLine)
-            {
-                return content.Substring(startColumn - 1, endColumn - startColumn + 1);
-            }
-
-            foreach (var ch in content)
-            {
-                if (ch == '\n')
-                {
-                    currentLine += 1;
-                    currentColumn = 1;
-                }
-
-                // start and end in the same line
-                if (currentLine == startLine && currentLine == endLine)
-                {
-                    if (currentColumn >= startColumn && currentColumn <= endColumn)
-                    {
-                        result.Append(ch);
-                    }
-                }
-
-                // start and end in multiple lines
-                else
-                {
-                    if ((currentLine == startLine && currentColumn >= startColumn)
-                        || (currentLine == endLine && currentColumn <= endColumn)
-                        || (currentLine > startLine && currentLine < endLine))
-                    {
-                        result.Append(ch);
-                    }
-                }
-
-                currentColumn += 1;
-            }
-            return result.ToString();
         }
 
         private static Dictionary<string, List<Lazy<IXrefSpec>>>
