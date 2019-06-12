@@ -220,27 +220,11 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Error, "json-syntax-error", message, source);
 
         /// <summary>
-        /// Used empty link in article.md.
-        /// Examples:
-        ///   - [link]()
-        /// </summary>
-        /// Behavior: ✔️ Message: ❌
-        public static Error LinkIsEmpty(Document relativeTo)
-            => new Error(ErrorLevel.Off, "link-is-empty", "Link is empty", relativeTo.ToString());
-
-        /// <summary>
         /// Link which's resolved to a file out of build scope.
         /// </summary>
         /// Behavior: ✔️ Message: ❌
         public static Error LinkOutOfScope(SourceInfo<string> source, Document file)
             => new Error(ErrorLevel.Warning, "link-out-of-scope", $"File '{file}' referenced by link '{source}' will not be built because it is not included in build scope", source);
-
-        /// <summary>
-        /// Defined a redirection entry that's not matched by config's files glob patterns.
-        /// </summary>
-        /// Behavior: ✔️ Message: ❌
-        public static Error RedirectionOutOfScope(SourceInfo source, string redirection)
-            => new Error(ErrorLevel.Off, "redirection-out-of-scope", $"Redirection file '{redirection}' will not be built because it is not included in build scope", source);
 
         /// <summary>
         /// Link which's resolved to a file in dependency repo won't be built.
@@ -533,15 +517,6 @@ namespace Microsoft.Docs.Build
         /// Behavior: ✔️ Message: ❌
         public static Error EmptyMonikers(string message)
             => new Error(ErrorLevel.Warning, "empty-monikers", message);
-
-        /// <summary>
-        /// Referenced an article using uid with invalid moniker(?view=).
-        /// Examples:
-        ///   - article with uid `a` has only netcore-1.0 & netcore-1.1 version, but get referenced with @a?view=netcore-2.0
-        /// </summary>
-        /// Behavior: ✔️ Message: ❌
-        public static Error InvalidUidMoniker(SourceInfo source, string moniker, string uid)
-            => new Error(ErrorLevel.Off, "invalid-uid-moniker", $"Moniker '{moniker}' is not defined with uid '{uid}'", source);
 
         /// <summary>
         /// Custom 404 page is not supported

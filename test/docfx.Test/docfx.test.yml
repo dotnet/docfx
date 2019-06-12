@@ -1,10 +1,5 @@
 # default config for specs in docfx
 baseUrl: https://docs.com
-rules:
-  link-is-empty: info
-  redirection-out-of-scope: info
-  at-xref-not-found: info
-  invalid-uid-moniker: info
 output:
   json: true
 gitHub:
