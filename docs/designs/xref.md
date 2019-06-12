@@ -222,13 +222,15 @@ There are two parts of xref map, internal and external.
 User can define uids in the same repository and reference to them, and these defined uids will be outputted as `.xrefmap.json`.
 
 ### External xref map
-User can reference uids defined by other repositories as well, just define the urls of `.xrefmap.json` in `docfx.yml`.
+User can reference uids defined by other repositories as well, just define the urls of `.xrefmap.json` in `docfx.yml`. Please notice that, the url can also be a local zip file.
 ```yml
 xref:
   - http://url1/.xrefmap.json
   - http://url2/.xrefmap.json
+  - _zip/missingapi.yml
 ```
 During `docfx restore`, all the JSON files will be restored and merged.
+< Notice: 
 
 ## Resolve xref
 ### Using `xref` to reference a uid in markdown
