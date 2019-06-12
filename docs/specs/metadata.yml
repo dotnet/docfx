@@ -13,19 +13,24 @@ outputs:
   docs/a.json: |
     { "key": "header", "KEY": "HEADER" }
 ---
-# Preserve null custom metadata
+# Preserve custom metadata
+# read-only metadata will be keep as user input, no matter they are known by docfx or not, like uid
+# overwritable metadta will be overwrite by docfx when the input is valid, like breadcrumb_path
 inputs:
   docfx.yml:
   docs/a.md: |
     ---
     ms.custom-metadata:
-    author:
+    author: xxx
     uid:
-    locale: "en-us"
+    title:
+    breadcrumb_path: "wrong"
     ---
 outputs:
   docs/a.json: |
-    { "ms.custom-metadata": null, "author":null, "uid": null, "locale": "en-us"}
+    { "ms.custom-metadata": null, "author":"xxx", "uid": null, "title": null, "breadcrumb_path": "wrong"}
+  .errors.log: |
+    ["warning","file-not-found","Invalid file link: 'wrong'.","docs/a.md",6,18]
 ---
 # Overwrite global metadata with null in yaml header
 inputs:

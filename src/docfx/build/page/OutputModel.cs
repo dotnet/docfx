@@ -11,6 +11,8 @@ namespace Microsoft.Docs.Build
     [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
     public class OutputModel
     {
+        public string Locale { get; set; }
+
         [JsonIgnore]
         public string SchemaType { get; set; }
 
