@@ -90,10 +90,7 @@ namespace Microsoft.Docs.Build
                 var callStack = new List<Document> { file };
                 if (file.FilePath.EndsWith(".md", PathUtility.PathComparison))
                 {
-                    var (yamlHeaderErrors, yamlHeader) = ExtractYamlHeader.Extract(file, context);
-                    errors.AddRange(yamlHeaderErrors);
-
-                    var (fileMetaErrors, fileMetadata) = context.MetadataProvider.GetInputMetadata<InputMetadata>(file, yamlHeader);
+                    var (fileMetaErrors, fileMetadata) = context.MetadataProvider.GetMetadata(file);
                     errors.AddRange(fileMetaErrors);
 
                     if (!string.IsNullOrEmpty(fileMetadata.Uid))
@@ -148,7 +145,7 @@ namespace Microsoft.Docs.Build
             };
             xref.ExtensionData["name"] = new Lazy<JValue>(() => new JValue(string.IsNullOrEmpty(metadata.Title) ? metadata.Uid : metadata.Title));
 
-            var (error, monikers) = context.MonikerProvider.GetFileLevelMonikersWithInfo(file, metadata.MonikerRange);
+            var (error, monikers) = context.MonikerProvider.GetFileLevelMonikers(file);
             foreach (var moniker in monikers)
             {
                 xref.Monikers.Add(moniker);
