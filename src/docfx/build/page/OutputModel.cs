@@ -18,8 +18,6 @@ namespace Microsoft.Docs.Build
 
         public string Conceptual { get; set; }
 
-        public string Locale { get; set; }
-
         [JsonProperty("wordCount")]
         public long WordCount { get; set; }
 
@@ -29,6 +27,8 @@ namespace Microsoft.Docs.Build
         public string RawTitle { get; set; }
 
         public string CanonicalUrl { get; set; }
+
+        public string RedirectUrl { get; set; }
 
         public string DocumentId { get; set; }
 

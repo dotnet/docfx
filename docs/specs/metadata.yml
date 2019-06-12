@@ -21,12 +21,11 @@ inputs:
     ms.custom-metadata:
     author:
     uid:
-    locale:
-
+    locale: "en-us"
     ---
 outputs:
   docs/a.json: |
-    { "ms.custom-metadata": null, "author":null, "uid": null, "locale": null}
+    { "ms.custom-metadata": null, "author":null, "uid": null, "locale": "en-us"}
 ---
 # Overwrite global metadata with null in yaml header
 inputs:

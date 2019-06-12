@@ -32,7 +32,7 @@ namespace Microsoft.Docs.Build
             }
 
             model.SchemaType = schema.Name;
-            model.Locale = file.Docset.Locale;
+            model.OverwriteMetadata("locale", file.Docset.Locale);
             model.TocRel = tocMap.FindTocRelativePath(file);
             model.CanonicalUrl = file.CanonicalUrl;
             model.EnableLocSxs = file.Docset.Config.Localization.Bilingual;
@@ -55,7 +55,7 @@ namespace Microsoft.Docs.Build
             model.CanonicalUrlPrefix = $"{file.Docset.HostName}/{file.Docset.Locale}/{file.Docset.SiteBasePath}/";
 
             if (file.Docset.Config.Output.Pdf)
-                model.PdfUrlPrefixTemplate = $"{file.Docset.HostName}/pdfstore/{model.Locale}/{file.Docset.Config.Product}.{file.Docset.Config.Name}/{{branchName}}";
+                model.PdfUrlPrefixTemplate = $"{file.Docset.HostName}/pdfstore/{file.Docset.Locale}/{file.Docset.Config.Product}.{file.Docset.Config.Name}/{{branchName}}";
 
             if (contributorErrors != null)
                 errors.AddRange(contributorErrors);

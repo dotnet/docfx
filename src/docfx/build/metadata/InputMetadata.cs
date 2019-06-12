@@ -9,6 +9,8 @@ namespace Microsoft.Docs.Build
     [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
     public class InputMetadata
     {
+        public string Locale { get; set; }
+
         public string Title { get; set; }
 
         public SourceInfo<string> Author { get; set; }
