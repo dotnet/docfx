@@ -19,6 +19,8 @@ namespace Microsoft.Docs.Build
 
         public SourceInfo<string> TocHref { get; set; }
 
+        public string Homepage { get; set; }
+
         public SourceInfo<string> Uid { get; set; }
 
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]

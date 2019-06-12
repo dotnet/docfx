@@ -87,6 +87,7 @@ outputs:
   docs/B.json:
 ---
 # Use real file casing in manifest
+os: windows, osx
 inputs:
   docfx.yml: |
     files: '*'

@@ -285,7 +285,7 @@ namespace Microsoft.Docs.Build
         {
             return Directory.GetFiles(docsetPath, "*.*", SearchOption.AllDirectories)
                             .Select(path => Path.GetRelativePath(docsetPath, path).Replace('\\', '/'))
-                            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+                            .ToHashSet(PathUtility.PathComparer);
         }
 
         private HashSet<Document> CreateBuildScope(IEnumerable<Document> redirections, Func<string, bool> glob)

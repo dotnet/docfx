@@ -56,7 +56,7 @@ namespace Microsoft.Docs.Build
             {
                 content = content ?? file.ReadText();
                 GitUtility.CheckMergeConflictMarker(content, file.FilePath);
-                return MarkdownTocMarkup.LoadMdTocModel(content, file, context);
+                return MarkdownTocMarkup.LoadMdTocModel(content, file);
             }
 
             throw new NotSupportedException($"{filePath} is an unknown TOC file");
@@ -172,6 +172,7 @@ namespace Microsoft.Docs.Build
                 }
 
                 tocModelItem.TocHref = resolvedTocHref;
+                tocModelItem.Homepage = resolvedTopicHref;
                 tocModelItem.Name = tocModelItem.Name ?? resolvedTopicName;
                 tocModelItem.Items = subChildren?.Items ?? tocModelItem.Items;
 
