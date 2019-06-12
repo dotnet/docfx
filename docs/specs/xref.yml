@@ -94,6 +94,33 @@ outputs:
           ]
       }
     }
+------
+# The same uid in internal and external
+# should resolve it from the internal one
+inputs:
+  docfx.yml: |
+    xref: xrefmap.json
+  docs/a.md: |
+    ---
+    title: Title from internal a
+    uid: a
+    ---
+  docs/b.md: |
+    Link to @a
+  xrefmap.json: | 
+    {
+      "references":[
+        {
+          "uid": "a",
+          "href": "https://docs.com/docs/a",
+          "name": "Title from external a"
+        }
+      ]
+    }
+outputs:
+  docs/a.json:
+  docs/b.json: |
+    {"conceptual":"<p>Link to <a href=\"a\" data-linktype=\"relative-path\">Title from internal a</a></p>\n"}
 ---
 # Define uid in SDP
 # Resolve xref with display property in conceptual document

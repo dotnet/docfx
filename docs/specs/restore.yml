@@ -41,6 +41,20 @@ outputs:
   docs/a.json: |
     {"conceptual":"<p><a href=\"%7E/docfx-test-dependencies1/docs/a.md\">link to 1</a></p>\n<p>a1</p>\n"}
 ---
+# Template could be a local folder
+inputs:
+  docfx.yml: |
+    files: '*'
+    template: _template
+  a.md: |
+    >[!NOTE]
+    >note
+  _template/ContentTemplate/token.json: |
+    { "note": "<p>my note</p>" }
+outputs:
+  a.json: |
+    { "conceptual": "<div class=\"NOTE\"><p>my note</p><p>note</p></div>" }
+---
 # Restore urls
 repos:
   https://github.com/restore/b:
@@ -162,25 +176,6 @@ outputs:
     {
       "conceptual": "<p>for long file path test.</p>"
     }
----
-# [Skip] Restore private azure repos with dependencies
-# VSTS recently are not really stable, so skip this test for now
-inputs:
-  docfx.yml: |
-    dependencies:
-      dep: https://ceapex.visualstudio.com/Engineering/_git/docs-host-vnext#c9c018c
-    http:
-      https://ceapex.visualstudio.com:
-        headers:
-          Authorization: Bearer {SYSTEM_ACCESS_TOKEN}
-  docs/a.md: |
-    [link to readmd](~/dep/README.md)
-environments:
-  - SYSTEM_ACCESS_TOKEN
-outputs:
-  docs/a.json:
-  .errors.log: |
-    ["warning","link-is-dependency","File 'README.md' referenced by link '~/dep/README.md' will not be built because it is from a dependency docset","docs/a.md",1,1]
 ---
 # Restored repo should be always retrieved
 repos:

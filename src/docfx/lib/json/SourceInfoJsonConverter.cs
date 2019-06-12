@@ -21,7 +21,14 @@ namespace Microsoft.Docs.Build
             var value = serializer.Deserialize(reader, valueType);
 
             if (value is null)
-                return null;
+            {
+                JsonUtility.SkipToken(reader);
+
+                if (existingValue is SourceInfo existingSourceInfo)
+                {
+                    value = existingSourceInfo.GetValue();
+                }
+            }
 
             return Activator.CreateInstance(objectType, value, source);
         }

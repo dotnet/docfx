@@ -74,7 +74,6 @@ namespace Microsoft.Docs.Build
             var (deserializeErrors, config) = JsonUtility.ToObject<Config>(configObject);
             errors.AddRange(deserializeErrors);
 
-            config.ConfigFileName = configFileName;
             return (errors, config);
 
             string GetBranch()

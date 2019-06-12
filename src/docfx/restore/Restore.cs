@@ -34,7 +34,7 @@ namespace Microsoft.Docs.Build
                         {
                             errorLog.Configure(config);
                         }
-                        errorLog.Write(config.ConfigFileName, errors);
+                        errorLog.Write(errors);
 
                         // no need to restore child docsets' loc repository
                         return await RestoreOneDocset(
@@ -66,7 +66,7 @@ namespace Microsoft.Docs.Build
 
                 // extend the config before loading
                 var (errors, extendedConfig) = ConfigLoader.TryLoad(docset, options, locale, extend: true);
-                errorLog.Write(extendedConfig.ConfigFileName, errors);
+                errorLog.Write(errors);
 
                 // restore and load dependency lock if need
                 if (UrlUtility.IsHttp(extendedConfig.DependencyLock))

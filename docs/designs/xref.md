@@ -177,6 +177,42 @@ There are some other UID reference formats supported in docfx V2, which are not 
 - [Markdown link style](https://dotnet.github.io/docfx/tutorial/links_and_cross_references.html#markdown-link)
 - [Advanced options](https://dotnet.github.io/docfx/tutorial/links_and_cross_references.html#advanced-more-options-for-cross-reference)
 
+## Resolve uid with versioning
+### Internal uid with multiple versioning
+- multiple versioning with the same product name, 
+resolving uid `a` should take the one with the highest version and also respect the version of file `b`
+```
+inputs:
+    folder-1(1.0, 2.0):
+        - a.md(uid: a, title: A1)
+    folder-2(3.0,4.0):
+        - a.md(uid: a, title: A2)
+    folder-3(2.0):
+        - b.md(@a)
+outputs:
+    folder-3:
+        - b.md(<a href="url">A1</a>)
+```
+- multiple versioning with different product names, take the one with highest product name alphabetically
+```
+inputs:
+    folder-1(a-1.0, a-2.0):
+        - a.md(uid:a, title: A1)
+    folder-2(b-1.0, b-2.0):
+        - a.md(uid:a, title: A2)
+    folder-3(c-1.0, c-2.0):
+        - b.md(@a)
+outputs:
+    folder-3(c-1.0, c-2.0):
+        - b.md(<a href="url">A2</a>)
+```
+
+### External uid with multiple versioning
+The resolving logic for external uid is the same as internal uid, but how to consume `xrefmap` is different.
+v3 is consuming `xrefmap.json` of v2 output for now. And for multiple versioning, v2 would output multiple `xrefmap-versionxx.json` files. There are two options here:
+- switch to consume `xrefmap.json` from v3 output, we need to publish `xrefmap.json` with multiple versioning in v3
+- v2 needs to modify `xrefspec` model to include versioning information, and combine multiple `xrefmap-versionxx.json` into one `xrefmap.json`
+> We should notice that, the versioning information for conceptual versioning in v2 is inaccurate. The versioning information is the group definition, which could be larger than the actual file versioning. While consuming the output from v3, we should have the accurate versioning information in place.
 ## Performance tuning
 During creating internal xref map, docfx needs to go through all the files containing uid, and during building pages docfx needs to go through all the files again. We can add some cache to avoid doing the same thing twice.
 

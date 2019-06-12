@@ -17,7 +17,8 @@ namespace Microsoft.Docs.Build
     internal class TemplateEngine
     {
         private static readonly string[] s_resourceFolders = new[] { "global", "css", "fonts" };
-        private static readonly ConcurrentDictionary<string, JsonSchema> _jsonSchemas = new ConcurrentDictionary<string, JsonSchema>();
+        private static readonly ConcurrentDictionary<string, Lazy<(JsonSchemaValidator, JsonSchemaTransformer)>> _jsonSchemas
+                          = new ConcurrentDictionary<string, Lazy<(JsonSchemaValidator, JsonSchemaTransformer)>>();
 
         private readonly string _templateDir;
         private readonly LiquidTemplate _liquid;
@@ -42,32 +43,41 @@ namespace Microsoft.Docs.Build
                 .ToDictionary(prop => prop.Key, prop => prop.Value.HtmlMetaName);
         }
 
-        public static JsonSchema GetJsonSchema(Schema schema)
+        public static (JsonSchemaValidator, JsonSchemaTransformer) GetJsonSchema(Schema schema)
         {
-            if (schema == null)
+            if (schema is null)
             {
-                return null;
+                return default;
             }
 
             // TODO: get schema from template
             var schemaFilePath = Path.Combine(AppContext.BaseDirectory, $"data/{schema.Type.Name}.json");
-            return _jsonSchemas.GetOrAdd(
-                schema.Type.Name,
-                File.Exists(schemaFilePath) ? JsonUtility.Deserialize<JsonSchema>(File.ReadAllText(schemaFilePath), schemaFilePath) : null);
+            return _jsonSchemas.GetOrAdd(schema.Type.Name, new Lazy<(JsonSchemaValidator, JsonSchemaTransformer)>(GetJsonSchemaCore)).Value;
+
+            (JsonSchemaValidator, JsonSchemaTransformer) GetJsonSchemaCore()
+            {
+                if (!File.Exists(schemaFilePath))
+                {
+                    return default;
+                }
+
+                var jsonSchema = JsonUtility.Deserialize<JsonSchema>(File.ReadAllText(schemaFilePath), schemaFilePath);
+                return (new JsonSchemaValidator(jsonSchema), new JsonSchemaTransformer(jsonSchema));
+            }
         }
 
         public static TemplateEngine Create(Docset docset)
         {
             Debug.Assert(docset != null);
 
-            if (string.IsNullOrEmpty(docset.Config.Theme))
+            if (string.IsNullOrEmpty(docset.Config.Template))
             {
                 return null;
             }
 
-            var (themeRemote, themeBranch) = LocalizationUtility.GetLocalizedTheme(docset.Config.Theme, docset.Locale, docset.Config.Localization.DefaultLocale);
-            var (themePath, themeRestoreMap) = docset.RestoreMap.GetGitRestorePath($"{themeRemote}#{themeBranch}");
-            Log.Write($"Using theme '{themeRemote}#{themeRestoreMap.DependencyLock.Commit}' at '{themePath}'");
+            var (themeRemote, themeBranch) = LocalizationUtility.GetLocalizedTheme(docset.Config.Template, docset.Locale, docset.Config.Localization.DefaultLocale);
+            var (themePath, themeRestoreMap) = docset.RestoreMap.GetGitRestorePath(themeRemote, themeBranch, docset.DocsetPath);
+            Log.Write($"Using theme '{themeRemote}#{themeRestoreMap.DependencyLock?.Commit}' at '{themePath}'");
 
             return new TemplateEngine(themePath, docset.MetadataSchema);
         }

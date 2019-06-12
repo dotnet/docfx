@@ -154,7 +154,6 @@ outputs:
   docs/a.json: |
     { "content": {} }
   .errors.log: |
-    ["info","null-value","'description' contains null value","docs/a.yml",2,1]
     ["warning","unexpected-type","Expect type 'String' but got 'Null'","docs/a.yml",2,13]
 ---
 # Support schema documents with inline markdown content
@@ -175,7 +174,7 @@ outputs:
   docs/a.json: |
     { "content": { "inlineDescription": "This is a list:\n- Item 1\n- Item 2\n- <code>Item 3</code>## Not heading" } }
 ---
-# Support schema documents with html content
+# [skip] Support schema documents with html content
 inputs:
   docfx.yml:
   docs/a.yml: |
@@ -184,7 +183,7 @@ inputs:
   docs/b.md:
 outputs:
   docs/a.json: |
-    { "content": { "html": "link <a href=\"b\"></a> " } }
+    { "content": { "html": "link <a href=\"b\"></a>" } }
   docs/b.json:
 ---
 # Support schema documents with href content
