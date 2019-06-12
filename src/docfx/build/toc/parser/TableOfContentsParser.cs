@@ -26,7 +26,14 @@ namespace Microsoft.Docs.Build
         public static (List<Error> errors, TableOfContentsModel model)
             Load(Context context, Document file, ResolveContent resolveContent, ResolveHref resolveHref, ResolveXref resolveXref, ResolveMoniker resolveMoniker)
         {
-            return LoadInternal(context, file, file, resolveContent, resolveHref, resolveXref, resolveMoniker, new List<Document>(), new List<string>());
+            var errors = new List<Error>();
+            var (monikerError, fileMonikers) = context.MonikerProvider.GetFileLevelMonikers(file);
+            errors.AddIfNotNull(monikerError);
+
+            var (loadErrors, model) = LoadInternal(context, file, file, resolveContent, resolveHref, resolveXref, resolveMoniker, new List<Document>(), fileMonikers);
+            model.Metadata.Monikers = fileMonikers;
+            errors.AddRange(loadErrors);
+            return (errors, model);
         }
 
         private static (List<Error> errors, TableOfContentsModel tocModel) LoadTocModel(Context context, Document file, string content = null)
@@ -101,15 +108,6 @@ namespace Microsoft.Docs.Build
             }
 
             var (errors, model) = LoadTocModel(context, file, content);
-
-            if (file == rootPath)
-            {
-                var (monikerError, fileMonikers) = context.MonikerProvider.GetFileLevelMonikers(file, model.Metadata.MonikerRange);
-                errors.AddIfNotNull(monikerError);
-
-                model.Metadata.Monikers = fileMonikers;
-                rootFileMonikers = fileMonikers;
-            }
 
             if (model.Items.Count > 0)
             {

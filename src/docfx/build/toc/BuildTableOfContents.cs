@@ -19,9 +19,7 @@ namespace Microsoft.Docs.Build
             Debug.Assert(monikerMap != null);
 
             // load toc model
-            // TODO: Add cache back after this issue resolved: https://github.com/dotnet/docfx/issues/4704
-            // var (errors, model, _, _) = context.Cache.LoadTocModel(context, file, monikerMap);
-            var (errors, model, _, _) = Load(context, file, monikerMap);
+            var (errors, model, _, _) = context.Cache.LoadTocModel(context, file);
 
             // enable pdf
             var outputPath = file.GetOutputPath(model.Metadata.Monikers, file.Docset.SiteBasePath);
@@ -66,7 +64,7 @@ namespace Microsoft.Docs.Build
             List<(Document doc, string href)> referencedDocuments,
             List<Document> referencedTocs)
 
-            Load(Context context, Document fileToBuild, MonikerMap monikerMap)
+            Load(Context context, Document fileToBuild)
         {
             var errors = new List<Error>();
             var referencedDocuments = new List<(Document doc, string href)>();
@@ -116,8 +114,9 @@ namespace Microsoft.Docs.Build
                 },
                 (document) =>
                 {
-                    if (monikerMap != null && document != null && monikerMap.TryGetValue(document, out var monikers))
+                    if (document != null)
                     {
+                        var (_, monikers) = context.MonikerProvider.GetFileLevelMonikers(document);
                         return monikers;
                     }
                     return new List<string>();

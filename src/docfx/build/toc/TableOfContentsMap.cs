@@ -104,7 +104,7 @@ namespace Microsoft.Docs.Build
                     Debug.Assert(tocMapBuilder != null);
                     Debug.Assert(fileToBuild != null);
 
-                    var (errors, _, referencedDocuments, referencedTocs) = context.Cache.LoadTocModel(context, fileToBuild, null);
+                    var (errors, _, referencedDocuments, referencedTocs) = context.Cache.LoadTocModel(context, fileToBuild);
                     context.ErrorLog.Write(fileToBuild.ToString(), errors);
 
                     tocMapBuilder.Add(fileToBuild, referencedDocuments.Select(r => r.doc), referencedTocs);

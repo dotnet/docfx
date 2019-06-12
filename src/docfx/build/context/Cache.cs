@@ -30,11 +30,11 @@ namespace Microsoft.Docs.Build
                 return JsonUtility.Parse(content, file.FilePath);
             })).Value;
 
-        public (List<Error>, TableOfContentsModel, List<(Document doc, string herf)>, List<Document>) LoadTocModel(Context context, Document file, MonikerMap monikerMap)
+        public (List<Error>, TableOfContentsModel, List<(Document doc, string herf)>, List<Document>) LoadTocModel(Context context, Document file)
             => _tocModelCache.GetOrAdd(
                 file.FilePath,
                 new Lazy<(List<Error>, TableOfContentsModel, List<(Document doc, string herf)>, List<Document>)>(
-                    () => BuildTableOfContents.Load(context, file, monikerMap))).Value;
+                    () => BuildTableOfContents.Load(context, file))).Value;
 
         private string GetKeyFromFile(Document file)
         {
