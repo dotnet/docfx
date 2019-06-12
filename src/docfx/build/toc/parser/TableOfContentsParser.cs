@@ -137,6 +137,7 @@ namespace Microsoft.Docs.Build
                 // set resolved href back
                 tocModelItem.Href = resolvedTocHref ?? resolvedTopicHref ?? resolvedTopicItemFromTocHref?.Href;
                 tocModelItem.TocHref = resolvedTocHref;
+                tocModelItem.Homepage = resolvedTopicHref;
                 tocModelItem.Name = tocModelItem.Name ?? resolvedTopicName;
                 tocModelItem.Items = subChildren?.Items ?? tocModelItem.Items;
 
