@@ -253,7 +253,13 @@ namespace Microsoft.Docs.Build
         private static (List<Error>, OutputModel, InputMetadata) GetModels(JObject inputMetadata)
         {
             var (toObjectErrors, metadataModel) = JsonUtility.ToObject<InputMetadata>(inputMetadata);
-            return (toObjectErrors, new OutputModel { ExtensionData = inputMetadata }, metadataModel);
+
+            var clonedMetadata = (JObject)inputMetadata.DeepClone();
+
+            // todo: fix extension data overwriting defined property
+            clonedMetadata.Remove("monikerRange");
+            clonedMetadata.Remove("document_id");
+            return (toObjectErrors, new OutputModel { ExtensionData = clonedMetadata }, metadataModel);
         }
 
         private static void OverwriteMetadata(this OutputModel outputModel, string key, string value, bool overwriteWhenExists = false)

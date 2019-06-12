@@ -70,8 +70,5 @@ namespace Microsoft.Docs.Build
 
         [JsonExtensionData]
         public JObject ExtensionData { get; set; } = new JObject();
-
-        [JsonProperty("monikerRange")]
-        public SourceInfo<string> MonikerRange { get; set; }
     }
 }
