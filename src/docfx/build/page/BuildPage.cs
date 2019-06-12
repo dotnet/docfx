@@ -45,7 +45,7 @@ namespace Microsoft.Docs.Build
 
             List<Error> contributorErrors;
             (contributorErrors, model.ContributionInfo) = await context.ContributionProvider.GetContributionInfo(file, inputMetadata.Author);
-            model.OverwriteMetadata("author", new SourceInfo<string>(model.ContributionInfo?.Author?.Name, inputMetadata.Author), true);
+            model.OverwriteMetadata("author", new SourceInfo<string>(model.ContributionInfo?.Author?.Name, inputMetadata.Author));
             model.UpdatedAt = model.ContributionInfo?.UpdatedAtDateTime.ToString("yyyy-MM-dd hh:mm tt");
 
             model.DepotName = $"{file.Docset.Config.Product}.{file.Docset.Config.Name}";
@@ -144,8 +144,8 @@ namespace Microsoft.Docs.Build
             var (metadataErrors, metadataObject) = context.MetadataProvider.GetMetadata(file);
             errors.AddRange(metadataErrors);
 
-            var (validationErrors, pageModel, inputMetadata) = GetModels(metadataObject);
-            errors.AddRange(validationErrors);
+            var (toObjectErrors, pageModel, inputMetadata) = GetModels(metadataObject);
+            errors.AddRange(toObjectErrors);
 
             pageModel.Conceptual = HtmlUtility.HtmlPostProcess(htmlDom, file.Docset.Culture);
             pageModel.OverwriteMetadata("title", inputMetadata.Title ?? title);
@@ -202,8 +202,8 @@ namespace Microsoft.Docs.Build
             var (metaErrors, metadataObject) = context.MetadataProvider.GetMetadata(file);
             errors.AddRange(metaErrors);
 
-            var (validationErrors, pageModel, inputMetadata) = GetModels(metadataObject);
-            errors.AddRange(validationErrors);
+            var (toObjectErrors, pageModel, inputMetadata) = GetModels(metadataObject);
+            errors.AddRange(toObjectErrors);
 
             if (file.Docset.Legacy && file.Schema.Type == typeof(LandingData))
             {
@@ -262,21 +262,14 @@ namespace Microsoft.Docs.Build
             return (toObjectErrors, new OutputModel { ExtensionData = clonedMetadata }, metadataModel);
         }
 
-        private static void OverwriteMetadata(this OutputModel outputModel, string key, string value, bool overwriteWhenExists = false)
+        private static void OverwriteMetadata(this OutputModel outputModel, string key, string value)
         {
             if (value is null)
             {
                 return;
             }
 
-            if (outputModel.ExtensionData.TryGetValue(key, out var existingValue))
-            {
-                existingValue.Replace(new JValue(value));
-            }
-            else if (!overwriteWhenExists)
-            {
-                outputModel.ExtensionData[key] = value;
-            }
+            outputModel.ExtensionData[key] = value;
         }
     }
 }
