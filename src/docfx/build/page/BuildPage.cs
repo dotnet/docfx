@@ -12,8 +12,6 @@ namespace Microsoft.Docs.Build
 {
     internal static class BuildPage
     {
-        private static HashSet<string> s_OutputModelPropertyNames = new HashSet<string>(JsonUtility.GetPropertyNames(typeof(OutputModel)));
-
         public static async Task<(IEnumerable<Error> errors, PublishItem publishItem)> Build(
             Context context,
             Document file,
@@ -255,12 +253,6 @@ namespace Microsoft.Docs.Build
         private static (List<Error>, OutputModel, InputMetadata) GetModels(JObject inputMetadata)
         {
             var (toObjectErrors, metadataModel) = JsonUtility.ToObject<InputMetadata>(inputMetadata);
-
-            // todo: fix bug of extension data overwriting defined property
-            foreach (var reservedName in s_OutputModelPropertyNames)
-            {
-                inputMetadata.Remove(reservedName);
-            }
             return (toObjectErrors, new OutputModel { ExtensionData = inputMetadata }, metadataModel);
         }
 
