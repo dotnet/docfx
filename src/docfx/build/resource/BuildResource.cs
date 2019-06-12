@@ -13,7 +13,10 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(file.ContentType == ContentType.Resource);
 
-            var (errors, monikers) = context.MonikerProvider.GetFileLevelMonikers(file, context.MetadataProvider);
+            var errors = new List<Error>();
+            var (monikerError, monikers) = context.MonikerProvider.GetFileLevelMonikers(file);
+            errors.AddIfNotNull(monikerError);
+
             var outputPath = file.GetOutputPath(monikers, file.Docset.SiteBasePath);
 
             // Output path is source file path relative to output folder when copy resource is disabled

@@ -46,7 +46,7 @@ namespace Microsoft.Docs.Build
             Document file,
             DependencyResolver dependencyResolver,
             Action<Document> buildChild,
-            Func<SourceInfo<string>, List<string>> parseMonikerRange,
+            MonikerProvider monikerProvider,
             Func<string, string> getToken,
             MarkdownPipelineType pipelineType)
         {
@@ -58,7 +58,7 @@ namespace Microsoft.Docs.Build
                     {
                         Errors = new List<Error>(),
                         DependencyResolver = dependencyResolver,
-                        ParseMonikerRangeDelegate = parseMonikerRange,
+                        MonikerProvider = monikerProvider,
                         GetToken = getToken,
                         BuildChild = buildChild,
                     };
@@ -167,7 +167,13 @@ namespace Microsoft.Docs.Build
             return (content, file);
         }
 
-        private static List<string> ParseMonikerRange(SourceInfo<string> monikerRange) => t_status.Value.Peek().ParseMonikerRangeDelegate(monikerRange);
+        private static List<string> ParseMonikerRange(SourceInfo<string> monikerRange)
+        {
+            var status = t_status.Value.Peek();
+            var (error, monikers) = status.MonikerProvider.GetZoneLevelMonikers((Document)InclusionContext.File, monikerRange);
+            status.Errors.AddIfNotNull(error);
+            return monikers;
+        }
 
         private sealed class Status
         {
@@ -177,7 +183,7 @@ namespace Microsoft.Docs.Build
 
             public Action<Document> BuildChild;
 
-            public Func<SourceInfo<string>, List<string>> ParseMonikerRangeDelegate;
+            public MonikerProvider MonikerProvider;
 
             public Func<string, string> GetToken;
         }

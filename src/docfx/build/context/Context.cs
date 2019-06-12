@@ -30,8 +30,8 @@ namespace Microsoft.Docs.Build
             ErrorLog = errorLog;
             Output = new Output(outputPath);
             Cache = new Cache();
-            MetadataProvider = new MetadataProvider(docset);
-            MonikerProvider = new MonikerProvider(docset);
+            MetadataProvider = new MetadataProvider(docset, Cache);
+            MonikerProvider = new MonikerProvider(docset, MetadataProvider);
             GitHubUserCache = new GitHubUserCache(docset.Config);
             GitCommitProvider = new GitCommitProvider();
             BookmarkValidator = new BookmarkValidator();

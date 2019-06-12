@@ -36,6 +36,10 @@ namespace Microsoft.Docs.Build
             model.EnableLocSxs = file.Docset.Config.Localization.Bilingual;
             model.SiteName = file.Docset.Config.SiteName;
 
+            var (monikerError, monikers) = context.MonikerProvider.GetFileLevelMonikers(file);
+            errors.AddIfNotNull(monikerError);
+            model.Monikers = monikers;
+
             (model.DocumentId, model.DocumentVersionIndependentId) = file.Docset.Redirections.TryGetDocumentId(file, out var docId) ? docId : file.Id;
             (model.ContentGitUrl, model.OriginalContentGitUrl, model.OriginalContentGitUrlTemplate, model.Gitcommit) = context.ContributionProvider.GetGitUrls(file);
 
@@ -118,22 +122,12 @@ namespace Microsoft.Docs.Build
             var content = file.ReadText();
             GitUtility.CheckMergeConflictMarker(content, file.FilePath);
 
-            var (yamlHeaderErrors, yamlHeader) = ExtractYamlHeader.Extract(file, context);
-            errors.AddRange(yamlHeaderErrors);
-
-            var (metaErrors, pageModel) = context.MetadataProvider.GetInputMetadata<OutputModel>(file, yamlHeader);
-            errors.AddRange(metaErrors);
-
-            var (error, monikers) = context.MonikerProvider.GetFileLevelMonikers(file, pageModel.MonikerRange);
-            errors.AddIfNotNull(error);
-
-            // TODO: handle blank page
             var (markupErrors, html) = MarkdownUtility.ToHtml(
                 content,
                 file,
                 context.DependencyResolver,
                 buildChild,
-                rangeString => context.MonikerProvider.GetZoneMonikers(rangeString, monikers, errors),
+                context.MonikerProvider,
                 key => context.Template?.GetToken(key),
                 MarkdownPipelineType.Markdown);
             errors.AddRange(markupErrors);
@@ -147,11 +141,13 @@ namespace Microsoft.Docs.Build
                 errors.Add(Errors.HeadingNotFound(file));
             }
 
+            var (metadataErrors, pageModel) = context.MetadataProvider.GetMetadata(file);
+            errors.AddRange(metadataErrors);
+
             pageModel.Conceptual = HtmlUtility.HtmlPostProcess(htmlDom, file.Docset.Culture);
-            pageModel.Title = yamlHeader.Value<string>("title") ?? title;
+            pageModel.Title = pageModel.Title ?? title;
             pageModel.RawTitle = rawTitle;
             pageModel.WordCount = wordCount;
-            pageModel.Monikers = monikers;
 
             context.BookmarkValidator.AddBookmarks(file, bookmarks);
 
@@ -200,21 +196,15 @@ namespace Microsoft.Docs.Build
             // TODO: remove schema validation in ToObject
             var (_, content) = JsonUtility.ToObject(transformedToken, file.Schema.Type);
 
-            // TODO: add check before to avoid case failure
-            var yamlHeader = obj?.Value<JObject>("metadata") ?? new JObject();
+            var (metaErrors, pageModel) = context.MetadataProvider.GetMetadata(file);
+            errors.AddRange(metaErrors);
+
             if (file.Docset.Legacy && file.Schema.Type == typeof(LandingData))
             {
                 // merge extension data to metadata in legacy model
                 var landingData = (LandingData)content;
-                var mergedMetadata = new JObject();
-                JsonUtility.Merge(mergedMetadata, landingData.ExtensionData);
-                JsonUtility.Merge(mergedMetadata, yamlHeader);
-                yamlHeader = mergedMetadata;
+                JsonUtility.Merge(pageModel.ExtensionData, landingData.ExtensionData);
             }
-            var title = yamlHeader.Value<string>("title") ?? obj?.Value<string>("title");
-
-            var (metaErrors, pageModel) = context.MetadataProvider.GetInputMetadata<OutputModel>(file, yamlHeader);
-            errors.AddRange(metaErrors);
 
             if (file.Docset.Legacy && file.Schema.Attribute is PageSchemaAttribute)
             {
@@ -226,9 +216,8 @@ namespace Microsoft.Docs.Build
                 pageModel.Content = content;
             }
 
-            pageModel.Title = title;
+            pageModel.Title = pageModel.Title ?? obj?.Value<string>("title");
             pageModel.RawTitle = file.Docset.Legacy ? $"<h1>{obj?.Value<string>("title")}</h1>" : null;
-            pageModel.Monikers = new List<string>();
 
             return (errors, file.Schema, pageModel);
         }
