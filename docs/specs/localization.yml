@@ -98,8 +98,6 @@ repos:
     - files:
         docfx.yml: |
           xref: xrefmap.json
-          dependencies:
-            child1: https://docs.com/d/restore5
         xrefmap.json: |
           { "references": [{ "uid": "System.String", "name": "String", "href": "//docs.com" }] }
   https://github.com/d/restore5.zh-cn#master:
@@ -135,6 +133,9 @@ repos:
   https://github.com/d/restore6.loc#master.zh-cn:
     - files:
         a.md: '@System.String'
+  https://docs.com/d/restore6#master:
+    - files:
+        docs/d.md: d
 outputs:
   a.json: |
     { "conceptual":"<p><a href=\"//docs.com\">String</a></p>" }
@@ -823,13 +824,6 @@ repos:
           gitHub:
             userCache: github-user.json
             resolveUsers: true
-        github-user.json: |
-          { "users": [
-              {"name": "Alice", "login": "alice", "id": 1, "emails": ["alice@contoso.com"]},
-              {"name": "Bob", "login": "bob", "id": 2, "emails": ["bob@contoso.com"]},
-              {"name": "Terry", "login": "terry", "id": 3, "emails": ["terry@contoso.com"]},
-            ]
-          }
   https://github.com/ss/b.loc#master-sxs.zh-cn:
     - files:
         docs/a.md: a
@@ -844,6 +838,14 @@ repos:
         docs/a.md: cd
       author: Terry
       email: terry@contoso.com
+cache:
+  github-users.json: |
+    { "users": [
+        {"name": "Alice", "login": "alice", "id": 1, "emails": ["alice@contoso.com"]},
+        {"name": "Bob", "login": "bob", "id": 2, "emails": ["bob@contoso.com"]},
+        {"name": "Terry", "login": "terry", "id": 3, "emails": ["terry@contoso.com"]},
+      ]
+    }
 outputs:
   docs/a.json: |
     {

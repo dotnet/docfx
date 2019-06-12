@@ -45,7 +45,7 @@ namespace Microsoft.Docs.Build
 
             if (File.Exists(_cachePath))
             {
-                var cache = JsonUtility.Deserialize<GitHubUserCacheModel>(ProcessUtility.ReadFile(_cachePath), _cachePath);
+                var cache = JsonUtility.Deserialize<GitHubUserCacheFile>(ProcessUtility.ReadFile(_cachePath), _cachePath);
                 UpdateUsers(cache.Users);
             }
         }
@@ -137,7 +137,7 @@ namespace Microsoft.Docs.Build
 
                 try
                 {
-                    var content = JsonUtility.Serialize(new GitHubUserCacheModel { Users = Users.ToArray() });
+                    var content = JsonUtility.Serialize(new GitHubUserCacheFile { Users = Users.ToArray() });
 
                     PathUtility.CreateDirectoryFromFilePath(_cachePath);
                     ProcessUtility.WriteFile(_cachePath, content);

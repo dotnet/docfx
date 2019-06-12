@@ -5,7 +5,7 @@ using System;
 
 namespace Microsoft.Docs.Build
 {
-    internal class GitHubUserCacheModel
+    internal class GitHubUserCacheFile
     {
         public GitHubUser[] Users { get; set; } = Array.Empty<GitHubUser>();
     }
