@@ -98,17 +98,20 @@ repos:
     - files:
         docfx.yml: |
           xref: xrefmap.json
+          dependencies:
+            child1: https://docs.com/d/restore5
         xrefmap.json: |
           { "references": [{ "uid": "System.String", "name": "String", "href": "//docs.com" }] }
   https://github.com/d/restore5.zh-cn#master:
     - files:
-        a.md: '@System.String'
+        a.md: |
+          @System.String [!include[](~/child1/d.md)]
   https://docs.com/d/restore5:
     - files:
         d.md: d
 outputs:
   a.json: |
-    { "conceptual":"<p><a href=\"//docs.com\">String</a></p>" }
+    { "conceptual":"<p><a href=\"//docs.com\">String</a> d </p>" }
 ---
 # loc docset share the source docset's restore map 2
 # [branch mapping] & bilingual
@@ -129,16 +132,17 @@ repos:
           { "references": [{ "uid": "System.String", "name": "String", "href": "//docs.com" }] }
   https://github.com/d/restore6.loc#master-sxs.zh-cn:
     - files:
-        a.md: '@System.String'
+        a.md: |
+          @System.String [!include[](~/child1/d.md)]
   https://github.com/d/restore6.loc#master.zh-cn:
     - files:
         a.md: '@System.String'
   https://docs.com/d/restore6#master:
     - files:
-        docs/d.md: d
+        d.md: d
 outputs:
   a.json: |
-    { "conceptual":"<p><a href=\"//docs.com\">String</a></p>" }
+    { "conceptual":"<p><a href=\"//docs.com\">String</a> d </p>" }
 ---
 # edit url convention without source locale 1
 # [repository mapping] 
