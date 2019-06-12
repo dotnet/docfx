@@ -12,6 +12,8 @@ namespace Microsoft.Docs.Build
 {
     internal static class BuildPage
     {
+        private static HashSet<string> s_OutputModelPropertyNames = new HashSet<string>(JsonUtility.GetPropertyNames(typeof(OutputModel)));
+
         public static async Task<(IEnumerable<Error> errors, PublishItem publishItem)> Build(
             Context context,
             Document file,
@@ -20,13 +22,13 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(file.ContentType == ContentType.Page);
 
-            var (errors, schema, model) = await Load(context, file, buildChild);
+            var (errors, schema, model, inputMetadata) = await Load(context, file, buildChild);
 
-            if (!string.IsNullOrEmpty(model.BreadcrumbPath))
+            if (!string.IsNullOrEmpty(inputMetadata.BreadcrumbPath))
             {
-                var (breadcrumbError, breadcrumbPath, _) = context.DependencyResolver.ResolveLink(model.BreadcrumbPath, file, file, buildChild);
+                var (breadcrumbError, breadcrumbPath, _) = context.DependencyResolver.ResolveLink(inputMetadata.BreadcrumbPath, file, file, buildChild);
                 errors.AddIfNotNull(breadcrumbError);
-                model.BreadcrumbPath.Value = breadcrumbPath;
+                model.OverwriteMetadata("breadcrumb_path", breadcrumbPath);
             }
 
             model.SchemaType = schema.Name;
@@ -44,8 +46,8 @@ namespace Microsoft.Docs.Build
             (model.ContentGitUrl, model.OriginalContentGitUrl, model.OriginalContentGitUrlTemplate, model.Gitcommit) = context.ContributionProvider.GetGitUrls(file);
 
             List<Error> contributorErrors;
-            (contributorErrors, model.ContributionInfo) = await context.ContributionProvider.GetContributionInfo(file, model.Author);
-            model.Author = new SourceInfo<string>(model.ContributionInfo?.Author?.Name, model.Author);
+            (contributorErrors, model.ContributionInfo) = await context.ContributionProvider.GetContributionInfo(file, inputMetadata.Author);
+            model.OverwriteMetadata("author", new SourceInfo<string>(model.ContributionInfo?.Author?.Name, inputMetadata.Author), true);
             model.UpdatedAt = model.ContributionInfo?.UpdatedAtDateTime.ToString("yyyy-MM-dd hh:mm tt");
 
             model.DepotName = $"{file.Docset.Config.Product}.{file.Docset.Config.Name}";
@@ -99,7 +101,7 @@ namespace Microsoft.Docs.Build
             return (errors, publishItem);
         }
 
-        private static async Task<(List<Error> errors, Schema schema, OutputModel model)>
+        private static async Task<(List<Error> errors, Schema schema, OutputModel model, InputMetadata inputMetadata)>
             Load(Context context, Document file, Action<Document> buildChild)
         {
             if (file.FilePath.EndsWith(".md", PathUtility.PathComparison))
@@ -115,7 +117,7 @@ namespace Microsoft.Docs.Build
             return await LoadJson(context, file, buildChild);
         }
 
-        private static (List<Error> errors, Schema schema, OutputModel model)
+        private static (List<Error> errors, Schema schema, OutputModel model, InputMetadata inputMetadata)
             LoadMarkdown(Context context, Document file, Action<Document> buildChild)
         {
             var errors = new List<Error>();
@@ -141,20 +143,23 @@ namespace Microsoft.Docs.Build
                 errors.Add(Errors.HeadingNotFound(file));
             }
 
-            var (metadataErrors, pageModel) = context.MetadataProvider.GetMetadata(file);
+            var (metadataErrors, metadataObject) = context.MetadataProvider.GetMetadata(file);
             errors.AddRange(metadataErrors);
 
+            var (validationErrors, pageModel, inputMetadata) = GetModels(metadataObject);
+            errors.AddRange(validationErrors);
+
             pageModel.Conceptual = HtmlUtility.HtmlPostProcess(htmlDom, file.Docset.Culture);
-            pageModel.Title = pageModel.Title ?? title;
+            pageModel.OverwriteMetadata("title", inputMetadata.Title ?? title);
             pageModel.RawTitle = rawTitle;
             pageModel.WordCount = wordCount;
 
             context.BookmarkValidator.AddBookmarks(file, bookmarks);
 
-            return (errors, Schema.Conceptual, pageModel);
+            return (errors, Schema.Conceptual, pageModel, inputMetadata);
         }
 
-        private static async Task<(List<Error> errors, Schema schema, OutputModel model)>
+        private static async Task<(List<Error> errors, Schema schema, OutputModel model, InputMetadata inputMetadata)>
             LoadYaml(Context context, Document file, Action<Document> buildChild)
         {
             var (errors, token) = YamlUtility.Parse(file, context);
@@ -162,7 +167,7 @@ namespace Microsoft.Docs.Build
             return await LoadSchemaDocument(context, errors, token, file, buildChild);
         }
 
-        private static async Task<(List<Error> errors, Schema schema, OutputModel model)>
+        private static async Task<(List<Error> errors, Schema schema, OutputModel model, InputMetadata inputMetadata)>
             LoadJson(Context context, Document file, Action<Document> buildChild)
         {
             var (errors, token) = JsonUtility.Parse(file, context);
@@ -170,7 +175,7 @@ namespace Microsoft.Docs.Build
             return await LoadSchemaDocument(context, errors, token, file, buildChild);
         }
 
-        private static async Task<(List<Error> errors, Schema schema, OutputModel model)>
+        private static async Task<(List<Error> errors, Schema schema, OutputModel model, InputMetadata inputMetadata)>
             LoadSchemaDocument(Context context, List<Error> errors, JToken token, Document file, Action<Document> buildChild)
         {
             var obj = token as JObject;
@@ -196,8 +201,11 @@ namespace Microsoft.Docs.Build
             // TODO: remove schema validation in ToObject
             var (_, content) = JsonUtility.ToObject(transformedToken, file.Schema.Type);
 
-            var (metaErrors, pageModel) = context.MetadataProvider.GetMetadata(file);
+            var (metaErrors, metadataObject) = context.MetadataProvider.GetMetadata(file);
             errors.AddRange(metaErrors);
+
+            var (validationErrors, pageModel, inputMetadata) = GetModels(metadataObject);
+            errors.AddRange(validationErrors);
 
             if (file.Docset.Legacy && file.Schema.Type == typeof(LandingData))
             {
@@ -216,10 +224,10 @@ namespace Microsoft.Docs.Build
                 pageModel.Content = content;
             }
 
-            pageModel.Title = pageModel.Title ?? obj?.Value<string>("title");
+            pageModel.OverwriteMetadata("title", inputMetadata.Title ?? obj?.Value<string>("title"));
             pageModel.RawTitle = file.Docset.Legacy ? $"<h1>{obj?.Value<string>("title")}</h1>" : null;
 
-            return (errors, file.Schema, pageModel);
+            return (errors, file.Schema, pageModel, inputMetadata);
         }
 
         private static (object output, JObject extensionData) ApplyTemplate(Context context, Document file, OutputModel model, bool isPage)
@@ -242,6 +250,35 @@ namespace Microsoft.Docs.Build
             }
 
             return (model, isPage ? rawMetadata : null);
+        }
+
+        private static (List<Error>, OutputModel, InputMetadata) GetModels(JObject inputMetadata)
+        {
+            var (toObjectErrors, metadataModel) = JsonUtility.ToObject<InputMetadata>(inputMetadata);
+
+            // todo: fix bug of extension data overwriting defined property
+            foreach (var reservedName in s_OutputModelPropertyNames)
+            {
+                inputMetadata.Remove(reservedName);
+            }
+            return (toObjectErrors, new OutputModel { ExtensionData = inputMetadata }, metadataModel);
+        }
+
+        private static void OverwriteMetadata(this OutputModel outputModel, string key, string value, bool overwriteWhenExists = false)
+        {
+            if (value is null)
+            {
+                return;
+            }
+
+            if (outputModel.ExtensionData.TryGetValue(key, out var existingValue))
+            {
+                existingValue.Replace(new JValue(value));
+            }
+            else if (!overwriteWhenExists)
+            {
+                outputModel.ExtensionData[key] = value;
+            }
         }
     }
 }

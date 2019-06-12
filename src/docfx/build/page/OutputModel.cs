@@ -3,12 +3,13 @@
 
 using System.Collections.Generic;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 
 namespace Microsoft.Docs.Build
 {
     [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
-    public class OutputModel : InputMetadata
+    public class OutputModel
     {
         [JsonIgnore]
         public string SchemaType { get; set; }
@@ -16,6 +17,8 @@ namespace Microsoft.Docs.Build
         public object Content { get; set; }
 
         public string Conceptual { get; set; }
+
+        public string Locale { get; set; }
 
         [JsonProperty("wordCount")]
         public long WordCount { get; set; }
@@ -26,8 +29,6 @@ namespace Microsoft.Docs.Build
         public string RawTitle { get; set; }
 
         public string CanonicalUrl { get; set; }
-
-        public string RedirectUrl { get; set; }
 
         public string DocumentId { get; set; }
 
@@ -66,5 +67,8 @@ namespace Microsoft.Docs.Build
 
         // todo: remove this if `enable_loc_sxs` works well
         public string BilingualType => EnableLocSxs ? "hover over" : null;
+
+        [JsonExtensionData]
+        public JObject ExtensionData { get; set; } = new JObject();
     }
 }

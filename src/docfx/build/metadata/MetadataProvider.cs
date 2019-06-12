@@ -18,8 +18,8 @@ namespace Microsoft.Docs.Build
         private readonly HashSet<string> _reservedMetadata;
         private readonly List<(Func<string, bool> glob, string key, JToken value)> _rules = new List<(Func<string, bool> glob, string key, JToken value)>();
 
-        private readonly ConcurrentDictionary<Document, (List<Error> errors, OutputModel metadata)> _metadataCache
-                   = new ConcurrentDictionary<Document, (List<Error> errors, OutputModel metadata)>();
+        private readonly ConcurrentDictionary<Document, (List<Error> errors, JObject metadata)> _metadataCache
+                   = new ConcurrentDictionary<Document, (List<Error> errors, JObject metadata)>();
 
         public MetadataProvider(Docset docset, Cache cache)
         {
@@ -41,16 +41,25 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public (List<Error> errors, OutputModel metadata) GetMetadata(Document file)
+        public (List<Error> errors, InputMetadata metadata) GetMetadataModel(Document file)
+        {
+            var (errors, metadataObject) = _metadataCache.GetOrAdd(file, GetMetadataCore);
+            var (validationErrors, metadataModel) = JsonUtility.ToObject<InputMetadata>(metadataObject);
+            errors.AddRange(validationErrors);
+
+            return (errors, metadataModel);
+        }
+
+        public (List<Error> errors, JObject metadata) GetMetadata(Document file)
         {
             return _metadataCache.GetOrAdd(file, GetMetadataCore);
         }
 
-        private (List<Error> errors, OutputModel metadata) GetMetadataCore(Document file)
+        private (List<Error> errors, JObject metadata) GetMetadataCore(Document file)
         {
             if (file.ContentType != ContentType.Page && file.ContentType != ContentType.TableOfContents)
             {
-                return (new List<Error>(), new OutputModel());
+                return (new List<Error>(), new JObject());
             }
 
             var result = new JObject();
@@ -74,9 +83,6 @@ namespace Microsoft.Docs.Build
             JsonUtility.Merge(result, fileMetadata);
             JsonUtility.Merge(result, yamlHeader);
 
-            var (toObjectErrors, metadata) = JsonUtility.ToObject<OutputModel>(result);
-            errors.AddRange(toObjectErrors);
-
             foreach (var property in result.Properties())
             {
                 if (_reservedMetadata.Contains(property.Name))
@@ -91,7 +97,7 @@ namespace Microsoft.Docs.Build
 
             errors.AddRange(_schemaValidator.Validate(result));
 
-            return (errors, metadata);
+            return (errors, result);
         }
 
         private static bool IsValidMetadataType(JToken token)
