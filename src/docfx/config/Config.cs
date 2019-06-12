@@ -181,11 +181,5 @@ namespace Microsoft.Docs.Build
         /// for the latest commit that touches that document.
         /// </summary>
         public readonly bool UpdateTimeAsCommitBuildTime = false;
-
-        /// <summary>
-        /// Gets the config file name.
-        /// </summary>
-        [JsonIgnore]
-        public string ConfigFileName { get; set; } = "docfx.yml";
     }
 }

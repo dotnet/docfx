@@ -15,7 +15,7 @@ namespace Microsoft.Docs.Build
 
         public Document DeclairingFile { get; set; }
 
-        public HashSet<string> Monikers { get; set; } = new HashSet<string>();
+        public HashSet<Moniker> Monikers { get; set; } = new HashSet<Moniker>();
 
         public Dictionary<string, Lazy<JValue>> ExtensionData { get; } = new Dictionary<string, Lazy<JValue>>();
 

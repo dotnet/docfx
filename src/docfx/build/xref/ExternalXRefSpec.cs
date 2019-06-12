@@ -15,9 +15,10 @@ namespace Microsoft.Docs.Build
 
         Document IXrefSpec.DeclairingFile => null;
 
+        // TODO: need a lookup table of moniker definition to get Moniker from moniker name
         // not into output for now
         [JsonIgnore]
-        public HashSet<string> Monikers { get; set; } = new HashSet<string>();
+        public HashSet<Moniker> Monikers { get; set; } = new HashSet<Moniker>();
 
         [JsonExtensionData]
         public JObject ExtensionData { get; } = new JObject();

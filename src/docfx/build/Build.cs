@@ -45,7 +45,7 @@ namespace Microsoft.Docs.Build
             errorLog.Configure(config);
 
             // just return if config loading has errors
-            if (errorLog.Write(config.ConfigFileName, configErrors))
+            if (errorLog.Write(configErrors))
                 return;
 
             var docset = GetBuildDocset(new Docset(errorLog, docsetPath, locale, config, options, restoreMap, repository, fallbackRepo));
