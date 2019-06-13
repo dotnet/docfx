@@ -15476,6 +15476,19 @@ references:
   isSpec: "True"
   fullName: Microsoft.DocAsCode.Build.SchemaDriven.DocumentSchema.AllowOverwrite
   nameWithType: DocumentSchema.AllowOverwrite
+- uid: Microsoft.DocAsCode.Build.SchemaDriven.DocumentSchema.Hash
+  name: Hash
+  href: api/Microsoft.DocAsCode.Build.SchemaDriven.DocumentSchema.html#Microsoft_DocAsCode_Build_SchemaDriven_DocumentSchema_Hash
+  commentId: P:Microsoft.DocAsCode.Build.SchemaDriven.DocumentSchema.Hash
+  fullName: Microsoft.DocAsCode.Build.SchemaDriven.DocumentSchema.Hash
+  nameWithType: DocumentSchema.Hash
+- uid: Microsoft.DocAsCode.Build.SchemaDriven.DocumentSchema.Hash*
+  name: Hash
+  href: api/Microsoft.DocAsCode.Build.SchemaDriven.DocumentSchema.html#Microsoft_DocAsCode_Build_SchemaDriven_DocumentSchema_Hash_
+  commentId: Overload:Microsoft.DocAsCode.Build.SchemaDriven.DocumentSchema.Hash
+  isSpec: "True"
+  fullName: Microsoft.DocAsCode.Build.SchemaDriven.DocumentSchema.Hash
+  nameWithType: DocumentSchema.Hash
 - uid: Microsoft.DocAsCode.Build.SchemaDriven.DocumentSchema.Id
   name: Id
   href: api/Microsoft.DocAsCode.Build.SchemaDriven.DocumentSchema.html#Microsoft_DocAsCode_Build_SchemaDriven_DocumentSchema_Id
