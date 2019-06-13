@@ -47,8 +47,5 @@ namespace Microsoft.Docs.Build
             }
             return (errors, new JObject());
         }
-
-        public static (List<Error> errors, JObject metadata) Extract(Document file, Context context)
-            => context.Cache.ExtractMetadata(file);
     }
 }

@@ -115,7 +115,7 @@ namespace Microsoft.Docs.Build
             {
                 foreach (var spec in validSpecs)
                 {
-                    if (spec.Monikers.Select(x => x.MonikerName).Contains(moniker))
+                    if (spec.Monikers.Contains(moniker))
                     {
                         return spec;
                     }
@@ -161,7 +161,7 @@ namespace Microsoft.Docs.Build
 
         private IXrefSpec GetLatestInternalXrefMap(List<IXrefSpec> specs)
             => specs.SingleOrDefault(x => x.Monikers?.Any() != true)
-               ?? specs.Where(x => x.Monikers?.Any() != false).OrderByDescending(item => item.Monikers.FirstOrDefault().MonikerName, _context.MonikerProvider.Comparer).FirstOrDefault();
+               ?? specs.Where(x => x.Monikers?.Any() != false).OrderByDescending(item => item.Monikers.FirstOrDefault(), _context.MonikerProvider.Comparer).FirstOrDefault();
 
         private bool TryGetValidXrefSpecs(string uid, List<IXrefSpec> specsWithSameUid, out List<IXrefSpec> validSpecs)
         {
@@ -191,7 +191,7 @@ namespace Microsoft.Docs.Build
             var conflictsWithMoniker = specsWithSameUid.Where(x => x.Monikers.Count > 0);
             if (CheckOverlappingMonikers(specsWithSameUid, out var overlappingMonikers))
             {
-                _context.ErrorLog.Write(Errors.MonikerOverlapping(overlappingMonikers.Select(x => x.MonikerName).ToList()));
+                _context.ErrorLog.Write(Errors.MonikerOverlapping(overlappingMonikers));
                 return false;
             }
 
@@ -203,11 +203,11 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private bool CheckOverlappingMonikers(IEnumerable<IXrefSpec> specsWithSameUid, out HashSet<Moniker> overlappingMonikers)
+        private bool CheckOverlappingMonikers(IEnumerable<IXrefSpec> specsWithSameUid, out HashSet<string> overlappingMonikers)
         {
             bool isOverlapping = false;
-            overlappingMonikers = new HashSet<Moniker>();
-            var monikerHashSet = new HashSet<Moniker>();
+            overlappingMonikers = new HashSet<string>();
+            var monikerHashSet = new HashSet<string>();
             foreach (var spec in specsWithSameUid)
             {
                 foreach (var moniker in spec.Monikers)

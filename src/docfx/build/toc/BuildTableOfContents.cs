@@ -30,7 +30,7 @@ namespace Microsoft.Docs.Build
             }
 
             // resolve monikers
-            var (monikerError, fileMonikers) = context.MonikerProvider.GetFileLevelMonikers(file, model.Metadata.MonikerRange);
+            var (monikerError, fileMonikers) = context.MonikerProvider.GetFileLevelMonikers(file);
             errors.AddIfNotNull(monikerError);
 
             model.Metadata.Monikers = fileMonikers;
