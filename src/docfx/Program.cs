@@ -64,7 +64,7 @@ namespace Microsoft.DocAsCode
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex.ToString());
+                Logger.LogError(ex.ToString(), code: ErrorCodes.Build.FatalError);
                 if (controller != null)
                 {
                     Console.WriteLine(controller.GetHelpText());
@@ -94,12 +94,12 @@ namespace Microsoft.DocAsCode
             }
             catch (Exception e) when (e is DocumentException || e is DocfxException)
             {
-                Logger.LogError(e.Message);
+                Logger.LogError(e.Message, code: ErrorCodes.Build.FatalError);
                 return 1;
             }
             catch (Exception e)
             {
-                Logger.LogError(e.ToString());
+                Logger.LogError(e.ToString(), code: ErrorCodes.Build.FatalError);
                 return 1;
             }
             finally
