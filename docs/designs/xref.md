@@ -5,19 +5,21 @@ Besides using file path to link to another file, DocFX also allows you to give a
 - You want to reference to files in another project without need to know its file structure.
 
 ## Feature Requirements/Scenarios
-- Define an internal UID and reference to this UID within the current repository
+- Define an internal UID in `.md` and reference to this UID within the current repository
   ```yaml
   inputs:
     docs/a.md: |
     ---
     title: Title from yaml header a
     uid: a
+    description: some description
     ---
     docs/b.md: Link to @a
   outputs:
     docs/b.json: |
         {"conceptual":"<p>Link to <a href=\"a\">Title from yaml header a</a></p>\n"}
   ```
+  > **_Notice_**: Only title will be considered as xref properrty for `uid` definition in `.md` files
 - Define multiple UID with same value internally with different versions and reference to this UID without versioning within the current repository
     - If all versions for this UID are within the same product, take the one with highest versioning respecting the referencing file
       ```yaml
@@ -101,7 +103,7 @@ Besides using file path to link to another file, DocFX also allows you to give a
     | yes | PR | test -> master | master | yes | |
     | yes | PR | test -> live | live(go-live) | no | |
     | yes | PR | test -> live | live(not-go-live) | no | |
-    > For cross site reference, branch info is also appended to the resolved URL as implemented in v2.
+    > For the last scenario, the output url would be `review.docs.microsoft.com` and the resolved uid url would be `docs.microsoft.com`, while clicking to this url, the user will go to another site `docs.microsoft.com` instead. Is this expected behavior?
     - The href of UID is from the same host name as the referencing repository.
         - If the current branch is `live`, and the UID href is also from `live`, everything is OK
         - If the current branch is `master`, then the output site is `review.docs`, but the resovled url is `docs` which is `live`, while browsing the UID href, the user should not jump to another site(`docs`)
