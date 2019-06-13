@@ -1,8 +1,11 @@
 Version Notes (Current Version: v2.43)
 =======================================
 
-v2.43(Pre-Release)
+v2.43
 -----------
+1. Support Visual Studio 2019. (#4437)
+
+    **[Note]** This will break running under Linux/Mono. Before it is fixed, you can keep using v2.42.4.
 
 v2.42.4
 -----------
