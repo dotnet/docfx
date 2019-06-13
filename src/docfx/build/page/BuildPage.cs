@@ -12,6 +12,8 @@ namespace Microsoft.Docs.Build
 {
     internal static class BuildPage
     {
+        private static HashSet<string> s_outputMetadatas = new HashSet<string>(JsonUtility.GetPropertyNames(typeof(OutputModel)));
+
         public static async Task<(IEnumerable<Error> errors, PublishItem publishItem)> Build(
             Context context,
             Document file,
@@ -258,7 +260,10 @@ namespace Microsoft.Docs.Build
 
             // todo: fix extension data overwriting defined property
             clonedMetadata.Remove("monikerRange");
-            clonedMetadata.Remove("document_id");
+            foreach (var reserved in s_outputMetadatas)
+            {
+                clonedMetadata.Remove(reserved);
+            }
             return (toObjectErrors, new OutputModel { ExtensionData = clonedMetadata }, metadataModel);
         }
 
