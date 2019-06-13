@@ -507,6 +507,24 @@ outputs:
        ]
     }
 ---
+# Homepage only shows when topic href is set
+inputs:
+  docfx.yml:
+  docs/TOC.yml: |
+    - name: name
+      href: /f1/a
+outputs:
+  docs/toc.json: |
+    {
+       "items":[
+          {
+             "name":"name",
+             "href":"/f1/a",
+             "!homepage": "f1/a"
+          }
+       ]
+    }
+---
 # Toc href takes precedence over topic href
 inputs:
   docfx.yml:
