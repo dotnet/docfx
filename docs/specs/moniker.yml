@@ -877,7 +877,7 @@ inputs:
       'docs/v1/**': '>= netcore-1.0 <= netcore-1.3'
     routes:
       docs/v1/: docs/
-    monikerDefinition: https://raw.githubusercontent.com/docascode/docfx-test-dependencies/master/monikerDefinition
+    monikerDefinition: '{APP_BASE_PATH}/data/monikers.json'
   docs/v1/b.md: |
     ---
     monikerRange: netcore-1.0
@@ -958,7 +958,7 @@ inputs:
       'docs/v1/**': '>= netcore-1.0 <= netcore-1.3'
     routes:
       docs/v1/: docs/
-    monikerDefinition: https://raw.githubusercontent.com/docascode/docfx-test-dependencies/master/monikerDefinition
+    monikerDefinition: '{APP_BASE_PATH}/data/monikers.json'
   docs/v1/b.md: |
     ---
     monikerRange: netcore-1.0
