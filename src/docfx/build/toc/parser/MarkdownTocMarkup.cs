@@ -108,7 +108,8 @@ namespace Microsoft.Docs.Build
                 var currentItem = new TableOfContentsItem();
                 if (block.Inline is null || !block.Inline.Any())
                 {
-                    return null;
+                    currentItem.Name = new SourceInfo<string>(null, block.ToSourceInfo(file: filePath));
+                    return currentItem;
                 }
 
                 if (block.Inline.Count() > 1 && block.Inline.Any(l => l is XrefInline || l is LinkInline))
