@@ -85,19 +85,22 @@ Besides using file path to link to another file, DocFX also allows you to give a
         ```
 - Reference to an external UID without versioning. DHS does not handle the branch fallback logic for build, the complete list of all scenarios is as below
 
-    | Cross site | Build Type | build branch | xref definition branch | append branch info |
-    | --- | --- | --- | --- | --- |
-    | no | commit | master | master | yes/no(current branch is `master` already) |
-    | no | commit | test | master | yes(`test` branch may not exist in xref definition repo) |
-    | no | PR | test -> master | master | yes(`PR` branch may not exist in xref definition repo) |
-    | no | PR | master -> test | master | yes(`PR` branch may not exist in xref definition repo) |
-    | no | commit | live | live | no(`live` branch exists) |
-    | no | PR | test -> live | live | no(resolved URL pointing to `live`) |
-    | yes | commit | master | master | yes(Jump to external site with branch info, implemented in v2) |
-    | yes | commit | live | live | no |
-    | yes | PR | test -> master | master | yes |
-    | yes | PR | test -> live | live | no |
-    > For the last scenario, the UID definition repo may not go live yet, so the correct resolved URL should be `review.docs.com`, but it is `docs.com`, which would not be found.
+    | Cross site | Build Type | build branch | xref definition branch | append branch info | v2 actual behavior |
+    | --- | --- | --- | --- | --- | --- |
+    | no | commit | master | master | yes(current branch is `master` already) | |
+    | no | commit | test | master | yes(`test` branch may not exist in xref definition repo) | |
+    | no | PR | test -> master | master | yes(`PR` branch may not exist in xref definition repo) | |
+    | no | PR | master -> test | master | yes(`PR` branch may not exist in xref definition repo) | |
+    | no | commit | live | live(go-live) | no(`live` branch exists) | |
+    | no | commit | live | live(not-go-live) | no(uid-not-found) | |
+    | no | PR | test -> live | live(go-live) | no(resolved URL pointing to `live`) | |
+    | no | PR | test -> live | live(not-go-live) | no(uid-not-found) | |
+    | yes | commit | master | master | yes(Jump to external site with branch info, implemented in v2) | |
+    | yes | commit | live | live(go-live) | no | |
+    | yes | commit | live | live(not-go-live) | no(uid-not-found) | |
+    | yes | PR | test -> master | master | yes | |
+    | yes | PR | test -> live | live(go-live) | no | |
+    | yes | PR | test -> live | live(not-go-live) | no | |
     > For cross site reference, branch info is also appended to the resolved URL as implemented in v2.
     - The href of UID is from the same host name as the referencing repository.
         - If the current branch is `live`, and the UID href is also from `live`, everything is OK
@@ -140,6 +143,8 @@ Besides using file path to link to another file, DocFX also allows you to give a
 - Reference to an external UID with multiple versionings (not support for now)
     - The resolve logic should be smilar to the internal resolving
 - [UID defnition](#define-uid)
+- Needs to check if we have any conceptual repo output non-empty xrefmap.json. If yes, and auto-complete in xref service is still in use xref service needs to consume `xrefmap.json` instead of `xrefmap.yml` before v3 xref on-boarding.
+- In v2, `xrefservice` can be defined in `docfx.json` then the user can query `uid` universally, which will be removed during the migration to v3 and related tags should be added to `.openpublishing.publish.config.json`.
 
 ## Define UID
 The unique identifier of a file is called UID (stands for unique identifier) in DocFX.
@@ -230,7 +235,6 @@ xref:
   - _zip/missingapi.yml
 ```
 During `docfx restore`, all the JSON files will be restored and merged.
-< Notice: 
 
 ## Resolve xref
 ### Using `xref` to reference a uid in markdown
