@@ -5,13 +5,8 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Text.Json;
 using System.Text.RegularExpressions;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -24,7 +19,7 @@ namespace Microsoft.Docs.Build
             // https://github.com/dotnet/corefx/issues/12067
             // Prefer Dictionary with manual lock to ConcurrentDictionary while only adding
             var externalXrefMap = new DictionaryBuilder<string, Lazy<IXrefSpec>>();
-            ParallelUtility.ForEach(docset.Config.Xref, url =>
+            foreach (var url in docset.Config.Xref)
             {
                 XrefMapModel xrefMap = new XrefMapModel();
                 if (url?.Value.EndsWith(".yml", StringComparison.OrdinalIgnoreCase) != false)
@@ -46,7 +41,7 @@ namespace Microsoft.Docs.Build
                         externalXrefMap.TryAdd(uid, spec);
                     }
                 }
-            });
+            }
             var internalXrefMap = CreateInternalXrefMap(context, docset.ScanScope);
             return new XrefMap(context, BuildMap(externalXrefMap.ToDictionary(), internalXrefMap), internalXrefMap);
         }
