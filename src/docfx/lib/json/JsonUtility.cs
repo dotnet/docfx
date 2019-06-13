@@ -332,7 +332,7 @@ namespace Microsoft.Docs.Build
             return token.Annotation<SourceInfo>();
         }
 
-        internal static JsonSchema GenerateJsonSchema(Type type, JsonSchema rootJsonSchema = null)
+        internal static JsonSchema GenerateJsonSchema(Type type, JsonSchema rootJsonSchema = null, JsonConverter jsonConverter = null)
         {
             var jsonSchema = new JsonSchema();
             rootJsonSchema = rootJsonSchema ?? jsonSchema;
@@ -361,11 +361,7 @@ namespace Microsoft.Docs.Build
 
                     foreach (var prop in jsonObjectContract.Properties)
                     {
-                        if (prop.PropertyName == "valueEnum")
-                        {
-                            Console.WriteLine("");
-                        }
-                        rootJsonSchema.Definitions[type.Name].Properties.Add(prop.PropertyName, GenerateJsonSchema(prop.PropertyType, rootJsonSchema));
+                        rootJsonSchema.Definitions[type.Name].Properties.Add(prop.PropertyName, GenerateJsonSchema(prop.PropertyType, rootJsonSchema, prop.Converter));
                     }
                 }
 
@@ -382,6 +378,11 @@ namespace Microsoft.Docs.Build
             {
                 jsonSchema.Items = GenerateJsonSchema(jsonArrayContract.CollectionItemType, rootJsonSchema);
                 jsonSchema.Type = new[] { JsonSchemaType.Array };
+
+                if (jsonConverter != null && jsonConverter is OneOrManyConverter && s_contractResolver.ResolveContract(jsonArrayContract.CollectionItemType) is JsonPrimitiveContract jsonItemPrimitiveContract)
+                {
+                    jsonSchema.Type = new[] { JsonSchemaType.Array,  GetJsonSchemaTypeFromPrimitiveContract(jsonItemPrimitiveContract) };
+                }
             }
 
             if (jsonContract is JsonPrimitiveContract jsonPrimitiveContract)
