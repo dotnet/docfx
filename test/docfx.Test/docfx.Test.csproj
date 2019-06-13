@@ -33,4 +33,10 @@
     <ProjectReference Include="../../src/docfx/docfx.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="data\jschema\testSchema.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

@@ -2,12 +2,12 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
-using DotLiquid.Tags;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
@@ -17,6 +17,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class JsonUtility
     {
+        private static readonly ConcurrentDictionary<Type, JsonSchemaValidator> s_jsonSchemaValidator = new ConcurrentDictionary<Type, JsonSchemaValidator>();
         private static readonly NamingStrategy s_namingStrategy = new CamelCaseNamingStrategy();
         private static readonly JsonConverter[] s_jsonConverters =
         {
@@ -26,25 +27,17 @@ namespace Microsoft.Docs.Build
         };
 
         private static readonly JsonContractResolver s_contractResolver = new JsonContractResolver { NamingStrategy = s_namingStrategy };
-
-        private static readonly JsonSerializer s_serializer = JsonSerializer.Create(new JsonSerializerSettings
-        {
-            NullValueHandling = NullValueHandling.Ignore,
-            MetadataPropertyHandling = MetadataPropertyHandling.Ignore,
-            DateParseHandling = DateParseHandling.None,
-            Converters = s_jsonConverters,
-            ContractResolver = s_contractResolver,
-        });
-
-        private static readonly JsonSerializer s_schemaValidationSerializer = JsonSerializer.Create(new JsonSerializerSettings
-        {
-            NullValueHandling = NullValueHandling.Ignore,
-            MetadataPropertyHandling = MetadataPropertyHandling.Ignore,
-            Converters = s_jsonConverters,
-            ContractResolver = s_contractResolver,
-        });
-
         private static readonly JsonSerializer s_indentSerializer = JsonSerializer.Create(new JsonSerializerSettings
+        {
+            Formatting = Formatting.Indented,
+            NullValueHandling = NullValueHandling.Ignore,
+            MetadataPropertyHandling = MetadataPropertyHandling.Ignore,
+            Converters = s_jsonConverters,
+            ContractResolver = s_contractResolver,
+            Error = (a, b) => { b.ErrorContext.Handled = true; },
+        });
+
+        private static readonly JsonSerializer s_serializerWithoutErrorHandling = JsonSerializer.Create(new JsonSerializerSettings
         {
             Formatting = Formatting.Indented,
             NullValueHandling = NullValueHandling.Ignore,
@@ -53,16 +46,15 @@ namespace Microsoft.Docs.Build
             ContractResolver = s_contractResolver,
         });
 
-        private static readonly ThreadLocal<Stack<Status>> t_status = new ThreadLocal<Stack<Status>>(() => new Stack<Status>());
-
-        internal static JsonSerializer Serializer => s_serializer;
-
-        internal static Status State => t_status.Value.Peek();
-
-        static JsonUtility()
+        internal static JsonSerializer Serializer { get; } = JsonSerializer.Create(new JsonSerializerSettings
         {
-            s_schemaValidationSerializer.Error += HandleError;
-        }
+            NullValueHandling = NullValueHandling.Ignore,
+            MetadataPropertyHandling = MetadataPropertyHandling.Ignore,
+            DateParseHandling = DateParseHandling.None,
+            Converters = s_jsonConverters,
+            ContractResolver = s_contractResolver,
+            Error = (a, b) => { b.ErrorContext.Handled = true; },
+        });
 
         /// <summary>
         /// Fast pass to read MIME from $schema attribute.
@@ -88,7 +80,7 @@ namespace Microsoft.Docs.Build
 
         public static IEnumerable<string> GetPropertyNames(Type type)
         {
-            return ((JsonObjectContract)s_serializer.ContractResolver.ResolveContract(type)).Properties.Select(prop => prop.PropertyName);
+            return ((JsonObjectContract)Serializer.ContractResolver.ResolveContract(type)).Properties.Select(prop => prop.PropertyName);
         }
 
         /// <summary>
@@ -96,7 +88,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static void Serialize(TextWriter writer, object graph, bool indent = false)
         {
-            var serializer = indent ? s_indentSerializer : s_serializer;
+            var serializer = indent ? s_indentSerializer : Serializer;
             serializer.Serialize(writer, graph);
         }
 
@@ -123,7 +115,7 @@ namespace Microsoft.Docs.Build
             {
                 try
                 {
-                    return s_serializer.Deserialize<T>(reader);
+                    return s_serializerWithoutErrorHandling.Deserialize<T>(reader);
                 }
                 catch (JsonReaderException ex)
                 {
@@ -141,7 +133,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static JObject ToJObject(object model)
         {
-            return JObject.FromObject(model, s_serializer);
+            return JObject.FromObject(model, Serializer);
         }
 
         /// <summary>
@@ -157,21 +149,10 @@ namespace Microsoft.Docs.Build
             JToken token,
             Type type)
         {
-            try
-            {
-                var errors = new List<Error>();
-                var status = new Status { Errors = errors, Reader = new JTokenReader(token) };
+            var validator = GetJsonSchemaValidation(type);
+            var errors = validator.Validate(token);
 
-                t_status.Value.Push(status);
-
-                var value = s_schemaValidationSerializer.Deserialize(status.Reader, type);
-
-                return (errors, value);
-            }
-            finally
-            {
-                t_status.Value.Pop();
-            }
+            return (errors, Serializer.Deserialize(new JTokenReader(token), type));
         }
 
         /// <summary>
@@ -354,7 +335,7 @@ namespace Microsoft.Docs.Build
             var jsonSchema = new JsonSchema();
             rootJsonSchema = rootJsonSchema ?? jsonSchema;
 
-            if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(SourceInfo<>))
+            if (type.IsGenericType && (type.GetGenericTypeDefinition() == typeof(SourceInfo<>) || type.GetGenericTypeDefinition() == typeof(Nullable<>)))
             {
                 type = type.GetGenericArguments()[0];
             }
@@ -371,21 +352,35 @@ namespace Microsoft.Docs.Build
 
                     foreach (var prop in jsonObjectContract.Properties)
                     {
+                        if (prop.PropertyName == "valueEnum")
+                        {
+                            Console.WriteLine("");
+                        }
                         rootJsonSchema.Definitions[type.Name].Properties.Add(prop.PropertyName, GenerateJsonSchema(prop.PropertyType, rootJsonSchema));
                     }
                 }
 
                 jsonSchema.Ref = $"#/definitions/{type.Name}";
             }
+            if (jsonContract is JsonDictionaryContract jsonDictionaryContract)
+            {
+                jsonSchema.Type = new[] { JsonSchemaType.Object };
+                jsonSchema.AdditionalProperties = (true, GenerateJsonSchema(jsonDictionaryContract.DictionaryKeyType, rootJsonSchema));
+            }
 
             if (jsonContract is JsonArrayContract jsonArrayContract)
             {
                 jsonSchema.Items = GenerateJsonSchema(jsonArrayContract.CollectionItemType, rootJsonSchema);
+                jsonSchema.Type = new[] { JsonSchemaType.Array };
             }
 
             if (jsonContract is JsonPrimitiveContract jsonPrimitiveContract)
             {
                 jsonSchema.Type = new[] { GetJsonSchemaTypeFromPrimitiveContract(jsonPrimitiveContract) };
+                if (jsonPrimitiveContract.UnderlyingType.IsEnum)
+                {
+                    jsonSchema.Enum = jsonPrimitiveContract.UnderlyingType.GetEnumNames().Select(en => new JValue(en)).ToArray();
+                }
             }
 
             return jsonSchema;
@@ -410,6 +405,11 @@ namespace Microsoft.Docs.Build
                 if (contract.UnderlyingType == typeof(int))
                 {
                     return JsonSchemaType.Integer;
+                }
+
+                if (contract.UnderlyingType.IsEnum)
+                {
+                    return JsonSchemaType.String;
                 }
 
                 return JsonSchemaType.None;
@@ -469,6 +469,11 @@ namespace Microsoft.Docs.Build
             }
         }
 
+        private static JsonSchemaValidator GetJsonSchemaValidation(Type type)
+        {
+            return s_jsonSchemaValidator.GetOrAdd(type, new JsonSchemaValidator(GenerateJsonSchema(type)));
+        }
+
         private static bool IsNullOrUndefined(this JToken token)
         {
             return
@@ -506,20 +511,6 @@ namespace Microsoft.Docs.Build
             return token;
         }
 
-        private static void HandleError(object sender, Newtonsoft.Json.Serialization.ErrorEventArgs args)
-        {
-            // only log an error once
-            if (args.CurrentObject == args.ErrorContext.OriginalObject)
-            {
-                if (args.ErrorContext.Error is JsonReaderException || args.ErrorContext.Error is JsonSerializationException)
-                {
-                    var state = t_status.Value.Peek();
-                    state.Errors.Add(Errors.ViolateSchema(GetSourceInfo(state.Reader.CurrentToken), ParseException(args.ErrorContext.Error).message));
-                    args.ErrorContext.Handled = true;
-                }
-            }
-        }
-
         private static Error ToError(Exception ex, string file)
         {
             var (message, line, column) = ParseException(ex);
@@ -548,13 +539,6 @@ namespace Microsoft.Docs.Build
                 return "Expected type String, please input String or type compatible with String.";
             }
             return message;
-        }
-
-        internal class Status
-        {
-            public JTokenReader Reader { get; set; }
-
-            public List<Error> Errors { get; set; }
         }
     }
 }

@@ -1,0 +1,219 @@
+{
+    "definitions": {
+        "ClassWithMoreMembers": {
+            "type": [
+                "object"
+            ],
+            "properties": {
+                "valueDict": {
+                    "type": [
+                        "object"
+                    ],
+                    "additionalProperties": {
+                        "item1": true,
+                        "item2": {
+                            "type": [
+                                "string"
+                            ]
+                        }
+                    }
+                },
+                "valueList": {
+                    "type": [
+                        "array"
+                    ],
+                    "items": {
+                        "type": [
+                            "string"
+                        ]
+                    }
+                },
+                "valueBasic": {
+                    "$ref": "#/definitions/BasicClass"
+                },
+                "items": {
+                    "type": [
+                        "array"
+                    ],
+                    "items": {
+                        "$ref": "#/definitions/BasicClass"
+                    }
+                },
+                "anotherItems": {
+                    "type": [
+                        "array"
+                    ],
+                    "items": {
+                        "$ref": "#/definitions/AnotherBasicClass"
+                    }
+                },
+                "nestedItems": {
+                    "type": [
+                        "array"
+                    ],
+                    "items": {
+                        "type": [
+                            "array"
+                        ],
+                        "items": {
+                            "$ref": "#/definitions/AnotherBasicClass"
+                        }
+                    }
+                },
+                "numberList": {
+                    "type": [
+                        "array"
+                    ],
+                    "items": {
+                        "type": [
+                            "integer"
+                        ]
+                    }
+                },
+                "nestedMember": {
+                    "$ref": "#/definitions/NestedClass"
+                },
+                "valueEnum": {
+                    "type": [
+                        "string"
+                    ],
+                    "enum": [
+                        "One",
+                        "Two",
+                        "Three"
+                    ]
+                },
+                "c": {
+                    "type": [
+                        "string"
+                    ]
+                },
+                "b": {
+                    "type": [
+                        "integer"
+                    ]
+                },
+                "d": {
+                    "type": [
+                        "boolean"
+                    ]
+                },
+                "property": {
+                    "type": [
+                        "string"
+                    ]
+                },
+                "genericArray": {
+                    "type": [
+                        "array"
+                    ],
+                    "items": {
+                        "type": [
+                            "string"
+                        ]
+                    }
+                },
+                "array": {
+                    "type": [
+                        "array"
+                    ],
+                    "items": {
+                        "type": [
+                            "string"
+                        ]
+                    }
+                }
+            }
+        },
+        "BasicClass": {
+            "type": [
+                "object"
+            ],
+            "properties": {
+                "c": {
+                    "type": [
+                        "string"
+                    ]
+                },
+                "b": {
+                    "type": [
+                        "integer"
+                    ]
+                },
+                "d": {
+                    "type": [
+                        "boolean"
+                    ]
+                },
+                "property": {
+                    "type": [
+                        "string"
+                    ]
+                },
+                "genericArray": {
+                    "type": [
+                        "array"
+                    ],
+                    "items": {
+                        "type": [
+                            "string"
+                        ]
+                    }
+                },
+                "array": {
+                    "type": [
+                        "array"
+                    ],
+                    "items": {
+                        "type": [
+                            "string"
+                        ]
+                    }
+                }
+            }
+        },
+        "AnotherBasicClass": {
+            "type": [
+                "object"
+            ],
+            "properties": {
+                "f": {
+                    "type": [
+                        "integer"
+                    ]
+                },
+                "g": {
+                    "type": [
+                        "string"
+                    ]
+                },
+                "h": {
+                    "type": [
+                        "boolean"
+                    ]
+                },
+                "items": {
+                    "type": [
+                        "array"
+                    ],
+                    "items": {
+                        "$ref": "#/definitions/BasicClass"
+                    }
+                }
+            }
+        },
+        "NestedClass": {
+            "type": [
+                "object"
+            ],
+            "properties": {
+                "valueWithLengthRestriction": {
+                    "type": [
+                        "string"
+                    ]
+                }
+            }
+        }
+    },
+    "$ref": "#/definitions/ClassWithMoreMembers"
+}

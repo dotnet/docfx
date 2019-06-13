@@ -94,21 +94,6 @@ namespace Microsoft.Docs.Build
         }
 
         [Fact]
-        public void TestBoolean()
-        {
-            var sw = new StringWriter();
-            JsonUtility.Serialize(sw, new object[] { true, false });
-            var json = sw.ToString();
-            Assert.Equal("[true,false]", json);
-            var (errors, value) = DeserializeWithValidation<object[]>(json);
-            Assert.Empty(errors);
-            Assert.NotNull(value);
-            Assert.Equal(2, value.Length);
-            Assert.True((bool)value[0]);
-            Assert.False((bool)value[1]);
-        }
-
-        [Fact]
         public void TestListOfBasicClass()
         {
             var json = JsonUtility.Serialize(
@@ -241,9 +226,9 @@ namespace Microsoft.Docs.Build
         [Theory]
         [InlineData(@"{
 'numberList':
-  [1, 'a']}", ErrorLevel.Error, "violate-schema", 3, 9)]
-        [InlineData(@"{'b' : 'b'}", ErrorLevel.Error, "violate-schema", 1, 10)]
-        [InlineData(@"{'valueEnum':'Four'}", ErrorLevel.Error, "violate-schema", 1, 19)]
+  [1, 'a']}", ErrorLevel.Warning, "unexpected-type", 3, 9)]
+        [InlineData(@"{'b' : 'b'}", ErrorLevel.Warning, "unexpected-type", 1, 10)]
+        [InlineData(@"{'valueEnum':'Four'}", ErrorLevel.Warning, "undefined-value", 1, 19)]
         internal void TestMismatchingPrimitiveFieldType(string json, ErrorLevel expectedErrorLevel, string expectedErrorCode,
             int expectedErrorLine, int expectedErrorColumn)
         {
@@ -294,22 +279,22 @@ namespace Microsoft.Docs.Build
             Assert.Collection(errors,
             error =>
             {
-                Assert.Equal(ErrorLevel.Error, error.Level);
-                Assert.Equal("violate-schema", error.Code);
+                Assert.Equal(ErrorLevel.Warning, error.Level);
+                Assert.Equal("unexpected-type", error.Code);
                 Assert.Equal(2, error.Line);
                 Assert.Equal(21, error.Column);
             },
             error =>
             {
-                Assert.Equal(ErrorLevel.Error, error.Level);
-                Assert.Equal("violate-schema", error.Code);
+                Assert.Equal(ErrorLevel.Warning, error.Level);
+                Assert.Equal("unexpected-type", error.Code);
                 Assert.Equal(3, error.Line);
                 Assert.Equal(9, error.Column);
             },
             error =>
             {
-                Assert.Equal(ErrorLevel.Error, error.Level);
-                Assert.Equal("violate-schema", error.Code);
+                Assert.Equal(ErrorLevel.Warning, error.Level);
+                Assert.Equal("undefined-value", error.Code);
                 Assert.Equal(4, error.Line);
                 Assert.Equal(18, error.Column);
             });
@@ -333,17 +318,17 @@ namespace Microsoft.Docs.Build
             Assert.Collection(errors,
             error =>
             {
-                Assert.Equal(ErrorLevel.Error, error.Level);
+                Assert.Equal(ErrorLevel.Warning, error.Level);
                 Assert.Equal(4, error.Line);
                 Assert.Equal(27, error.Column);
-                Assert.Equal("Error converting value \"notArray\" to type 'System.Collections.Generic.List`1[Microsoft.Docs.Build.JsonUtilityTest+BasicClass]'.", error.Message);
+                Assert.Equal("Expect type 'Array' but got 'String'", error.Message);
             },
             error =>
             {
-                Assert.Equal(ErrorLevel.Error, error.Level);
+                Assert.Equal(ErrorLevel.Warning, error.Level);
                 Assert.Equal(5, error.Line);
                 Assert.Equal(22, error.Column);
-                Assert.Equal("Could not convert string to boolean: notBool.", error.Message);
+                Assert.Equal("Expect type 'Boolean' but got 'String'", error.Message);
             });
         }
 
@@ -442,34 +427,8 @@ namespace Microsoft.Docs.Build
         [Fact]
         public void CreateJsonSchemaBasedOnType()
         {
-            var jsonSchema = JsonUtility.GenerateJsonSchema(typeof(ClassWithSourceInfo));
-
-            Assert.Single(jsonSchema.Definitions);
-            Assert.True(jsonSchema.Definitions.TryGetValue("ClassWithSourceInfo", out var schemaDefinition));
-            Assert.Equal("#/definitions/ClassWithSourceInfo", jsonSchema.Ref);
-            Assert.Equal(4, schemaDefinition.Properties.Count);
-            Assert.Collection(schemaDefinition.Properties,
-                kvp =>
-                {
-                    Assert.Equal("a", kvp.Key);
-                    Assert.Equal(JsonSchemaType.String, kvp.Value.Type[0]);
-                },
-                kvp =>
-                {
-                    Assert.Equal("b", kvp.Key);
-                    Assert.Equal(JsonSchemaType.String, kvp.Value.Type[0]);
-
-                },
-                kvp =>
-                {
-                    Assert.Equal("next", kvp.Key);
-                    Assert.Equal("#/definitions/ClassWithSourceInfo", kvp.Value.Ref);
-                },
-                kvp =>
-                {
-                    Assert.Equal("c", kvp.Key);
-                    Assert.Equal(JsonSchemaType.String, kvp.Value.Type[0]);
-                });
+            var jsonSchema = JsonUtility.GenerateJsonSchema(typeof(ClassWithMoreMembers));
+            TestUtility.VerifyJsonContainEquals(JsonUtility.Parse(File.ReadAllText("data/jschema/testSchema.json"), null).value, JsonUtility.ToJObject(jsonSchema));
         }
 
         /// <summary>
