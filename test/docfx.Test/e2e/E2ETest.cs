@@ -306,7 +306,7 @@ namespace Microsoft.Docs.Build
 
             foreach (var (file, content) in files)
             {
-                var mutableContent = content;
+                var mutableContent = content ?? "";
                 var filePath = Path.Combine(targetFolder, file);
                 PathUtility.CreateDirectoryFromFilePath(filePath);
                 if (Path.GetFileNameWithoutExtension(file) == "docfx")
