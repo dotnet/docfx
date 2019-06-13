@@ -46,7 +46,7 @@ inputs:
     ---
 outputs:
   .errors.log: |
-    ["error","violate-schema","Expected type String, please input String or type compatible with String.","docs/a.md",2,9]
+    ["warning","unexpected-type","Expect type 'String' but got 'Object'","docs/a.md",2,9]
     ["error","invalid-metadata-type","Metadata 'locale' can only be a scalar value or string array","docs/a.md",2,9]
 ---
 # Report error for invalid yaml header value type as array
@@ -60,7 +60,9 @@ inputs:
     ---
 outputs:
   .errors.log: |
-    ["error","violate-schema","Cannot deserialize the current JSON array *","docs/a.md",3,3]
+    ["warning","unexpected-type","Expect type 'String' but got 'Array'","docs/a.md",3,3]
+  docs/a.json: |
+    {"!author": null}
 ---
 # generate normal document id and version id
 # backward compatible to docs.com
@@ -188,12 +190,12 @@ inputs:
     redirections:
       sccm/mdm/index.md: ""
       "": /docfx/test
-      a.md:
+      a.md: ""
 outputs:
   .errors.log: |
     ["error","redirection-is-empty","The key or value of redirection 'sccm/mdm/index.md: ' is null or empty","docfx.yml",2,22]
     ["error","redirection-is-empty","The key or value of redirection ': /docfx/test' is null or empty","docfx.yml",3,7]
-    ["error","redirection-is-empty","The key or value of redirection 'a.md: ' is null or empty","docfx.yml",4,8]
+    ["error","redirection-is-empty","The key or value of redirection 'a.md: ' is null or empty","docfx.yml",4,9]
 ---
 # generate document id with depot mapping and directory mapping
 # id = hash({mapped_depot_name}|{mapped_file_in_docset})

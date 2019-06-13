@@ -371,7 +371,7 @@ namespace Microsoft.Docs.Build
             if (jsonContract is JsonDictionaryContract jsonDictionaryContract)
             {
                 jsonSchema.Type = new[] { JsonSchemaType.Object };
-                jsonSchema.AdditionalProperties = (true, GenerateJsonSchema(jsonDictionaryContract.DictionaryKeyType, rootJsonSchema));
+                jsonSchema.AdditionalProperties = (true, GenerateJsonSchema(jsonDictionaryContract.DictionaryValueType, rootJsonSchema));
             }
 
             if (jsonContract is JsonArrayContract jsonArrayContract)
@@ -379,9 +379,9 @@ namespace Microsoft.Docs.Build
                 jsonSchema.Items = GenerateJsonSchema(jsonArrayContract.CollectionItemType, rootJsonSchema);
                 jsonSchema.Type = new[] { JsonSchemaType.Array };
 
-                if (jsonConverter != null && jsonConverter is OneOrManyConverter && s_contractResolver.ResolveContract(jsonArrayContract.CollectionItemType) is JsonPrimitiveContract jsonItemPrimitiveContract)
+                if (jsonConverter != null && jsonConverter is OneOrManyConverter)
                 {
-                    jsonSchema.Type = new[] { JsonSchemaType.Array,  GetJsonSchemaTypeFromPrimitiveContract(jsonItemPrimitiveContract) };
+                    jsonSchema.Type = jsonSchema.Type.Concat(jsonSchema.Items.Type).ToArray();
                 }
             }
 
@@ -390,7 +390,8 @@ namespace Microsoft.Docs.Build
                 jsonSchema.Type = new[] { GetJsonSchemaTypeFromPrimitiveContract(jsonPrimitiveContract) };
                 if (jsonPrimitiveContract.UnderlyingType.IsEnum)
                 {
-                    jsonSchema.Enum = jsonPrimitiveContract.UnderlyingType.GetEnumNames().Select(en => new JValue(en)).ToArray();
+                    // todo: get enum names from contract
+                    jsonSchema.Enum = jsonPrimitiveContract.UnderlyingType.GetEnumNames().SelectMany(en => new[] { new JValue(en.ToLowerInvariant()), new JValue(en) }).ToArray();
                 }
             }
 

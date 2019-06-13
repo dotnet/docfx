@@ -172,7 +172,9 @@ inputs:
     ---
 outputs:
   .errors.log: |
-    ["error","violate-schema","Expected type String, please input String or type compatible with String.","docs/TOC.md",2,20]
+    ["warning","unexpected-type","Expect type 'String' but got 'Array'","docs/TOC.md",2,20]
+  docs/toc.json: |
+    {"metadata":{}}
 ---
 # Absolute file reference
 inputs:
@@ -979,6 +981,8 @@ outputs:
   docs/f1/b.json:
   docs/toc.json: |
     { "items":[{ "!tocHref": null }] }
+  .errors.log: |
+    ["warning","unexpected-type","Expect type 'String' but got 'Null'","docs/TOC.yml",3,11]
 ---
 # Toc with violation
 inputs:
@@ -998,6 +1002,8 @@ outputs:
   docs/f1/a.json:
   docs/f1/b.json:
   .errors.log: |
+    ["warning","unexpected-type","Expect type 'String' but got 'Null'","docs/TOC.yml",2,11]
+    ["warning","unexpected-type","Expect type 'String' but got 'Null'","docs/TOC.yml",5,8]
     ["error","missing-toc-head","The toc head name is missing","docs/TOC.yml",5,8]
     ["error","missing-toc-head","The toc head name is missing","docs/f1/TOC.md",1,1]
 ---

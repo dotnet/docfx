@@ -72,7 +72,7 @@ outputs:
   docs/b.json: |
     { "key1": "value", "key2": 2 }
 ---
-# Global metadata schema violation
+# Global metadata schema validation
 inputs:
   docfx.yml: |
     globalMetadata:
@@ -83,7 +83,9 @@ inputs:
   docs/b.md:
 outputs:
   .errors.log: |
-    ["error","violate-schema","Expected type String, please input String or type compatible with String.","docfx.yml",3,5]
+    ["warning","unexpected-type","Expect type 'String' but got 'Array'","docfx.yml",3,5]
+  docs/a.json:
+  docs/b.json:
 ---
 # File metadata of object form
 inputs:
@@ -440,6 +442,8 @@ inputs:
 outputs:
   a.json:
   b.png:
+  .errors.log: |
+    ["warning","unexpected-type","Expect type 'Boolean' but got 'Null'","docfx.yml",10,19]
 ---
 # invalid overwrite config
 commands:
@@ -485,7 +489,8 @@ inputs:
   docs/a.md:
 outputs:
   .errors.log: |
-    ["error","violate-schema","Expected type String, please input String or type compatible with String.","docfx.yml",4,7]
+    ["warning","unexpected-type","Expect type 'String' but got 'Array'","docfx.yml",4,7]
+  docs/a.json:
 ---
 # Should not change files out of outputFolder
 inputs:

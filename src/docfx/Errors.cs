@@ -384,13 +384,6 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Warning, "unknown-field", $"Could not find member '{propName}' on object of type '{typeName}'.", source);
 
         /// <summary>
-        /// Schema document with violate content type/value against predefined models(not syntax error).
-        /// </summary>
-        /// Behavior: ❌ Message: ❌
-        public static Error ViolateSchema(SourceInfo source, string message)
-            => new Error(ErrorLevel.Error, "violate-schema", message, source);
-
-        /// <summary>
         /// The input value type does not match expected value type.
         /// </summary>
         /// Behavior: ✔️ Message: ❌
