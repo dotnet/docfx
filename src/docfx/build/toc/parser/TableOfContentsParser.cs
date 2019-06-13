@@ -137,14 +137,36 @@ namespace Microsoft.Docs.Build
                 var topicHref = GetTopicHref(tocModelItem);
                 var topicUid = tocModelItem.Uid;
 
-                var monikers = new List<string>();
-
                 var (resolvedTocHref, resolvedTopicItemFromTocHref, subChildren) = ProcessTocHref(tocHref);
                 var (resolvedTopicHref, resolvedTopicName, document) = ProcessTopicItem(topicUid, topicHref);
 
                 // set resolved href back
                 tocModelItem.Href = resolvedTocHref ?? resolvedTopicHref ?? resolvedTopicItemFromTocHref?.Href;
-                if (resolvedTocHref != null || resolvedTopicHref != null)
+                tocModelItem.TocHref = resolvedTocHref;
+                tocModelItem.Homepage = resolvedTopicHref;
+                tocModelItem.Name = tocModelItem.Name ?? resolvedTopicName;
+                tocModelItem.Items = subChildren?.Items ?? tocModelItem.Items;
+                tocModelItem.Monikers = GetMonikers(resolvedTocHref, resolvedTopicHref, resolvedTopicItemFromTocHref, tocModelItem, document);
+
+                // validate
+                // todo: how to do required validation in strong model
+                if (tocModelItem.Name != null && string.IsNullOrEmpty(tocModelItem.Name))
+                {
+                    errors.Add(Errors.MissingTocHead(tocModelItem.Name));
+                }
+            }
+
+            return errors;
+
+            List<string> GetMonikers(
+                string resolvedTocHref,
+                string resolvedTopicHref,
+                TableOfContentsItem resolvedTopicItemFromTocHref,
+                TableOfContentsItem tocModelItem,
+                Document document)
+            {
+                var monikers = new List<string>();
+                if (!string.IsNullOrEmpty(resolvedTocHref) || !string.IsNullOrEmpty(resolvedTopicHref))
                 {
                     var linkType = UrlUtility.GetLinkType(resolvedTopicHref);
                     if (linkType == LinkType.External || linkType == LinkType.AbsolutePath)
@@ -158,30 +180,15 @@ namespace Microsoft.Docs.Build
                 }
                 else
                 {
-                    tocModelItem.Href = resolvedTopicItemFromTocHref?.Href;
                     monikers = resolvedTopicItemFromTocHref?.Monikers ?? new List<string>();
                 }
 
-                tocModelItem.TocHref = resolvedTocHref;
-                tocModelItem.Homepage = resolvedTopicHref;
-                tocModelItem.Name = tocModelItem.Name ?? resolvedTopicName;
-                tocModelItem.Items = subChildren?.Items ?? tocModelItem.Items;
-
                 // Union with children's monikers
-                var childrenMonikers = tocModelItem.Items?.SelectMany(child => child?.Monikers ?? new List<string>()) ?? new List<string>();
+                var childrenMonikers = tocModelItem.Items?.SelectMany(child => child.Monikers) ?? new List<string>();
                 monikers = childrenMonikers.Union(monikers).Distinct().ToList();
                 monikers.Sort(context.MonikerProvider.Comparer);
-                tocModelItem.Monikers = monikers;
-
-                // validate
-                // todo: how to do required validation in strong model
-                if (tocModelItem.Name != null && string.IsNullOrEmpty(tocModelItem.Name))
-                {
-                    errors.Add(Errors.MissingTocHead(tocModelItem.Name));
-                }
+                return monikers;
             }
-
-            return errors;
 
             SourceInfo<string> GetTocHref(TableOfContentsItem tocInputModel)
             {
