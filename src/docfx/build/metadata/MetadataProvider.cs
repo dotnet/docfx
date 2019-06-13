@@ -21,6 +21,9 @@ namespace Microsoft.Docs.Build
         private readonly ConcurrentDictionary<Document, (List<Error> errors, JObject metadata)> _metadataCache
                    = new ConcurrentDictionary<Document, (List<Error> errors, JObject metadata)>();
 
+        private readonly ConcurrentDictionary<Document, (List<Error> errors, InputMetadata metadata)> _metadataModelCache
+                   = new ConcurrentDictionary<Document, (List<Error> errors, InputMetadata metadata)>();
+
         public MetadataProvider(Docset docset, Cache cache)
         {
             _cache = cache;
@@ -43,11 +46,14 @@ namespace Microsoft.Docs.Build
 
         public (List<Error> errors, InputMetadata metadata) GetMetadataModel(Document file)
         {
-            var (errors, metadataObject) = _metadataCache.GetOrAdd(file, GetMetadataCore);
-            var (validationErrors, metadataModel) = JsonUtility.ToObject<InputMetadata>(metadataObject);
-            errors.AddRange(validationErrors);
+            return _metadataModelCache.GetOrAdd(file, _ =>
+            {
+                var (errors, metadataObject) = GetMetadata(file);
+                var (validationErrors, metadataModel) = JsonUtility.ToObject<InputMetadata>(metadataObject);
+                errors.AddRange(validationErrors);
 
-            return (errors, metadataModel);
+                return (errors, metadataModel);
+            });
         }
 
         public (List<Error> errors, JObject metadata) GetMetadata(Document file)

@@ -13,6 +13,12 @@ namespace Microsoft.Docs.Build
     {
         public string Locale { get; set; }
 
+        public string Title { get; set; }
+
+        public string Author { get; set; }
+
+        public string BreadcrumbPath { get; set; }
+
         [JsonIgnore]
         public string SchemaType { get; set; }
 

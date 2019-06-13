@@ -28,7 +28,7 @@ namespace Microsoft.Docs.Build
             {
                 var (breadcrumbError, breadcrumbPath, _) = context.DependencyResolver.ResolveLink(inputMetadata.BreadcrumbPath, file, file, buildChild);
                 errors.AddIfNotNull(breadcrumbError);
-                model.OverwriteMetadata("breadcrumb_path", breadcrumbPath);
+                model.BreadcrumbPath = breadcrumbPath;
             }
 
             model.SchemaType = schema.Name;
@@ -47,7 +47,7 @@ namespace Microsoft.Docs.Build
 
             List<Error> contributorErrors;
             (contributorErrors, model.ContributionInfo) = await context.ContributionProvider.GetContributionInfo(file, inputMetadata.Author);
-            model.OverwriteMetadata("author", new SourceInfo<string>(model.ContributionInfo?.Author?.Name, inputMetadata.Author));
+            model.Author = model.ContributionInfo?.Author?.Name;
             model.UpdatedAt = model.ContributionInfo?.UpdatedAtDateTime.ToString("yyyy-MM-dd hh:mm tt");
 
             model.DepotName = $"{file.Docset.Config.Product}.{file.Docset.Config.Name}";
@@ -150,7 +150,7 @@ namespace Microsoft.Docs.Build
             errors.AddRange(toObjectErrors);
 
             pageModel.Conceptual = HtmlUtility.HtmlPostProcess(htmlDom, file.Docset.Culture);
-            pageModel.OverwriteMetadata("title", inputMetadata.Title ?? title);
+            pageModel.Title = inputMetadata.Title ?? title;
             pageModel.RawTitle = rawTitle;
             pageModel.WordCount = wordCount;
 
@@ -224,7 +224,7 @@ namespace Microsoft.Docs.Build
                 pageModel.Content = content;
             }
 
-            pageModel.OverwriteMetadata("title", inputMetadata.Title ?? obj?.Value<string>("title"));
+            pageModel.Title = inputMetadata.Title ?? obj?.Value<string>("title");
             pageModel.RawTitle = file.Docset.Legacy ? $"<h1>{obj?.Value<string>("title")}</h1>" : null;
 
             return (errors, file.Schema, pageModel, inputMetadata);
@@ -265,16 +265,6 @@ namespace Microsoft.Docs.Build
                 clonedMetadata.Remove(reserved);
             }
             return (toObjectErrors, new OutputModel { ExtensionData = clonedMetadata }, metadataModel);
-        }
-
-        private static void OverwriteMetadata(this OutputModel outputModel, string key, string value)
-        {
-            if (value is null)
-            {
-                return;
-            }
-
-            outputModel.ExtensionData[key] = value;
         }
     }
 }
