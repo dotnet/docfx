@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
+using DotLiquid.Tags;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
@@ -24,13 +25,15 @@ namespace Microsoft.Docs.Build
             new JTokenJsonConverter { },
         };
 
+        private static readonly JsonContractResolver s_contractResolver = new JsonContractResolver { NamingStrategy = s_namingStrategy };
+
         private static readonly JsonSerializer s_serializer = JsonSerializer.Create(new JsonSerializerSettings
         {
             NullValueHandling = NullValueHandling.Ignore,
             MetadataPropertyHandling = MetadataPropertyHandling.Ignore,
             DateParseHandling = DateParseHandling.None,
             Converters = s_jsonConverters,
-            ContractResolver = new JsonContractResolver { NamingStrategy = s_namingStrategy },
+            ContractResolver = s_contractResolver,
         });
 
         private static readonly JsonSerializer s_schemaValidationSerializer = JsonSerializer.Create(new JsonSerializerSettings
@@ -38,7 +41,7 @@ namespace Microsoft.Docs.Build
             NullValueHandling = NullValueHandling.Ignore,
             MetadataPropertyHandling = MetadataPropertyHandling.Ignore,
             Converters = s_jsonConverters,
-            ContractResolver = new JsonContractResolver { NamingStrategy = s_namingStrategy },
+            ContractResolver = s_contractResolver,
         });
 
         private static readonly JsonSerializer s_indentSerializer = JsonSerializer.Create(new JsonSerializerSettings
@@ -47,7 +50,7 @@ namespace Microsoft.Docs.Build
             NullValueHandling = NullValueHandling.Ignore,
             MetadataPropertyHandling = MetadataPropertyHandling.Ignore,
             Converters = s_jsonConverters,
-            ContractResolver = new JsonContractResolver { NamingStrategy = s_namingStrategy },
+            ContractResolver = s_contractResolver,
         });
 
         private static readonly ThreadLocal<Stack<Status>> t_status = new ThreadLocal<Stack<Status>>(() => new Stack<Status>());
@@ -346,6 +349,73 @@ namespace Microsoft.Docs.Build
             return token.Annotation<SourceInfo>();
         }
 
+        internal static JsonSchema GenerateJsonSchema(Type type, JsonSchema rootJsonSchema = null)
+        {
+            var jsonSchema = new JsonSchema();
+            rootJsonSchema = rootJsonSchema ?? jsonSchema;
+
+            if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(SourceInfo<>))
+            {
+                type = type.GetGenericArguments()[0];
+            }
+
+            var jsonContract = s_contractResolver.ResolveContract(type);
+            if (jsonContract is JsonObjectContract jsonObjectContract)
+            {
+                if (!rootJsonSchema.Definitions.TryGetValue(type.Name, out _))
+                {
+                    rootJsonSchema.Definitions[type.Name] = new JsonSchema
+                    {
+                        Type = new[] { JsonSchemaType.Object },
+                    };
+
+                    foreach (var prop in jsonObjectContract.Properties)
+                    {
+                        rootJsonSchema.Definitions[type.Name].Properties.Add(prop.PropertyName, GenerateJsonSchema(prop.PropertyType, rootJsonSchema));
+                    }
+                }
+
+                jsonSchema.Ref = $"#/definitions/{type.Name}";
+            }
+
+            if (jsonContract is JsonArrayContract jsonArrayContract)
+            {
+                jsonSchema.Items = GenerateJsonSchema(jsonArrayContract.CollectionItemType, rootJsonSchema);
+            }
+
+            if (jsonContract is JsonPrimitiveContract jsonPrimitiveContract)
+            {
+                jsonSchema.Type = new[] { GetJsonSchemaTypeFromPrimitiveContract(jsonPrimitiveContract) };
+            }
+
+            return jsonSchema;
+
+            JsonSchemaType GetJsonSchemaTypeFromPrimitiveContract(JsonPrimitiveContract contract)
+            {
+                if (contract.UnderlyingType == typeof(string))
+                {
+                    return JsonSchemaType.String;
+                }
+
+                if (contract.UnderlyingType == typeof(double))
+                {
+                    return JsonSchemaType.Number;
+                }
+
+                if (contract.UnderlyingType == typeof(bool))
+                {
+                    return JsonSchemaType.Boolean;
+                }
+
+                if (contract.UnderlyingType == typeof(int))
+                {
+                    return JsonSchemaType.Integer;
+                }
+
+                return JsonSchemaType.None;
+            }
+        }
+
         internal static JToken SetSourceInfo(JToken token, SourceInfo source)
         {
             token.RemoveAnnotations<SourceInfo>();
@@ -485,6 +555,6 @@ namespace Microsoft.Docs.Build
             public JTokenReader Reader { get; set; }
 
             public List<Error> Errors { get; set; }
-       }
+        }
     }
 }

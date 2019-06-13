@@ -439,6 +439,39 @@ namespace Microsoft.Docs.Build
             Assert.Equal("{\"b\":1,\"d\":false}", result);
         }
 
+        [Fact]
+        public void CreateJsonSchemaBasedOnType()
+        {
+            var jsonSchema = JsonUtility.GenerateJsonSchema(typeof(ClassWithSourceInfo));
+
+            Assert.Single(jsonSchema.Definitions);
+            Assert.True(jsonSchema.Definitions.TryGetValue("ClassWithSourceInfo", out var schemaDefinition));
+            Assert.Equal("#/definitions/ClassWithSourceInfo", jsonSchema.Ref);
+            Assert.Equal(4, schemaDefinition.Properties.Count);
+            Assert.Collection(schemaDefinition.Properties,
+                kvp =>
+                {
+                    Assert.Equal("a", kvp.Key);
+                    Assert.Equal(JsonSchemaType.String, kvp.Value.Type[0]);
+                },
+                kvp =>
+                {
+                    Assert.Equal("b", kvp.Key);
+                    Assert.Equal(JsonSchemaType.String, kvp.Value.Type[0]);
+
+                },
+                kvp =>
+                {
+                    Assert.Equal("next", kvp.Key);
+                    Assert.Equal("#/definitions/ClassWithSourceInfo", kvp.Value.Ref);
+                },
+                kvp =>
+                {
+                    Assert.Equal("c", kvp.Key);
+                    Assert.Equal(JsonSchemaType.String, kvp.Value.Type[0]);
+                });
+        }
+
         /// <summary>
         /// Deserialize from yaml string, return error list at the same time
         /// </summary>
