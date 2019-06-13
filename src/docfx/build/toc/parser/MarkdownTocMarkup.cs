@@ -74,6 +74,11 @@ namespace Microsoft.Docs.Build
             do
             {
                 var item = GetItem(headingBlocks[i]);
+                if (item == null)
+                {
+                    continue;
+                }
+
                 items.Add(item);
                 var currentLevel = headingBlocks[i].Level;
                 if (i + 1 < headingBlocks.Length && headingBlocks[i + 1].Level > currentLevel)
@@ -103,15 +108,14 @@ namespace Microsoft.Docs.Build
                 var currentItem = new TableOfContentsItem();
                 if (block.Inline is null || !block.Inline.Any())
                 {
-                    currentItem.Name = new SourceInfo<string>(null, block.ToSourceInfo(file: filePath));
-                    return currentItem;
+                    return null;
                 }
 
                 if (block.Inline.Count() > 1 && block.Inline.Any(l => l is XrefInline || l is LinkInline))
                 {
                     var invalidTocSyntaxContent = tocContent.Substring(block.Span.Start, block.Span.Length);
                     errors.Add(Errors.InvalidTocSyntax(new SourceInfo<string>(invalidTocSyntaxContent, block.ToSourceInfo(file: filePath)), "multiple inlines in one heading block is not allowed"));
-                    return currentItem;
+                    return null;
                 }
 
                 var xrefLink = block.Inline.FirstOrDefault(l => l is XrefInline);
