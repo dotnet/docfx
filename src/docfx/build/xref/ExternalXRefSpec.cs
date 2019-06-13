@@ -15,7 +15,6 @@ namespace Microsoft.Docs.Build
 
         Document IXrefSpec.DeclairingFile => null;
 
-        // not into output for now
         [JsonIgnore]
         public HashSet<string> Monikers { get; set; } = new HashSet<string>();
 

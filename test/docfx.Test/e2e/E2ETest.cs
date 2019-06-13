@@ -185,13 +185,13 @@ namespace Microsoft.Docs.Build
                 {
                     var yaml = section.Trim('\r', '\n', '-');
                     var header = YamlUtility.ReadHeader(yaml) ?? "";
-                    if (string.IsNullOrEmpty(header) || header.Contains("[Skip]"))
+                    if (string.IsNullOrEmpty(header) || header.Contains("[skip]", StringComparison.OrdinalIgnoreCase))
                     {
                         i++;
                         continue;
                     }
 #if DEBUG
-                    var only = header.Contains("[ONLY]", StringComparison.OrdinalIgnoreCase);
+                    var only = header.Contains("[only]", StringComparison.OrdinalIgnoreCase);
 #else
                     var only = false;
 #endif

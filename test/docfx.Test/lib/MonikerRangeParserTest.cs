@@ -56,7 +56,7 @@ namespace Microsoft.Docs.Build
         {
             var monikersEvaluator = new EvaluatorWithMonikersVisitor(_monikerDefinition);
             _monikerRangeParser = new MonikerRangeParser(monikersEvaluator);
-            _monikerComparer = new MonikerComparer(monikersEvaluator.GetSortedMonikerNameList());
+            _monikerComparer = new MonikerComparer(monikersEvaluator.MonikerOrder);
         }
 
         [Theory]
@@ -71,10 +71,10 @@ namespace Microsoft.Docs.Build
             "netcore-1.0")]
         [InlineData(
             "netcore-1.0 || dotnet-3.0",
-             "dotnet-3.0 netcore-1.0")]
+             "netcore-1.0 dotnet-3.0")]
         [InlineData(
             "dotnet-3.0 || netcore-1.0",
-             "dotnet-3.0 netcore-1.0")]
+             "netcore-1.0 dotnet-3.0")]
         [InlineData(
             ">netcore-1.0<netcore-3.0",
             "netcore-2.0")]
@@ -86,10 +86,10 @@ namespace Microsoft.Docs.Build
             "netcore-1.0")]
         [InlineData(
             ">= netcore-1.0 < netcore-2.0 || dotnet-3.0",
-            "dotnet-3.0 netcore-1.0")]
+            "netcore-1.0 dotnet-3.0")]
         [InlineData(
             ">= netcore-2.0 || > dotnet-2.0",
-            "dotnet-3.0 netcore-2.0 netcore-3.0")]
+            "netcore-2.0 netcore-3.0 dotnet-3.0")]
         public void TestEvaluateMonikerRange(string rangeString, string expectedMonikers)
         {
             var result = _monikerRangeParser.Parse(new SourceInfo<string>(rangeString)).ToList();

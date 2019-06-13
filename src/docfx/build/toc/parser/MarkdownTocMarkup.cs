@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using Markdig.Extensions.Yaml;
@@ -15,7 +16,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class MarkdownTocMarkup
     {
-        public static (List<Error> errors, TableOfContentsModel model) LoadMdTocModel(string tocContent, Document file, Context context)
+        public static (List<Error> errors, TableOfContentsModel model) LoadMdTocModel(string tocContent, Document file)
         {
             var errors = new List<Error>();
             var headingBlocks = new List<HeadingBlock>();
@@ -38,7 +39,7 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            var (metaErrors, metadata) = ExtractYamlHeader.Extract(file, context);
+            var (metaErrors, metadata) = ExtractYamlHeader.Extract(new StringReader(tocContent), file.FilePath);
             errors.AddRange(metaErrors);
 
             var (validationErrors, tocMetadata) = JsonUtility.ToObject<TableOfContentsMetadata>(metadata);

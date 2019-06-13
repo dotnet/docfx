@@ -30,7 +30,7 @@ namespace Microsoft.Docs.Build
             }
 
             // resolve monikers
-            var (monikerError, fileMonikers) = context.MonikerProvider.GetFileLevelMonikers(file, model.Metadata.MonikerRange);
+            var (monikerError, fileMonikers) = context.MonikerProvider.GetFileLevelMonikers(file);
             errors.AddIfNotNull(monikerError);
 
             model.Metadata.Monikers = fileMonikers;
@@ -99,7 +99,7 @@ namespace Microsoft.Docs.Build
                     }
 
                     var childrenMonikers = item.Items?.SelectMany(child => child?.Monikers ?? new List<string>()) ?? new List<string>();
-                    monikers = childrenMonikers.Union(monikers ?? new List<string>()).Distinct(context.MonikerProvider.Comparer).ToList();
+                    monikers = childrenMonikers.Union(monikers ?? new List<string>()).Distinct().ToList();
                     monikers.Sort(context.MonikerProvider.Comparer);
 
                     item.Monikers = monikers;

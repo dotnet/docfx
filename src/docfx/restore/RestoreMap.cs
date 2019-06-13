@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -111,6 +112,39 @@ namespace Microsoft.Docs.Build
             return (null, content, etag);
         }
 
+        public static string GetRestoredFilePath(string docsetPath, SourceInfo<string> url, string fallbackDocset = null)
+        {
+            var fromUrl = UrlUtility.IsHttp(url);
+            if (!fromUrl)
+            {
+                // directly return the relative path
+                var fullPath = Path.Combine(docsetPath, url);
+                if (File.Exists(fullPath))
+                {
+                    return fullPath;
+                }
+
+                if (!string.IsNullOrEmpty(fallbackDocset))
+                {
+                    fullPath = Path.Combine(fallbackDocset, url);
+                    if (File.Exists(fullPath))
+                    {
+                        return fullPath;
+                    }
+                }
+
+                throw Errors.FileNotFound(url).ToException();
+            }
+
+            var filePath = TryGetRestoredFilePath(url);
+            if (filePath is null)
+            {
+                throw Errors.NeedRestore(url).ToException();
+            }
+
+            return filePath;
+        }
+
         public static (string content, string etag) TryGetRestoredFileContent(string url)
         {
             Debug.Assert(!string.IsNullOrEmpty(url));
@@ -118,13 +152,13 @@ namespace Microsoft.Docs.Build
 
             var filePath = RestoreFile.GetRestoreContentPath(url);
             var etagPath = RestoreFile.GetRestoreEtagPath(url);
-            string etag = null;
-            string content = null;
 
-            ProcessUtility.RunInsideMutex(filePath, () =>
+            using (InterProcessMutex.Create(filePath))
             {
-                content = GetFileContentIfExists(filePath);
-                etag = GetFileContentIfExists(etagPath);
+                var content = GetFileContentIfExists(filePath);
+                var etag = GetFileContentIfExists(etagPath);
+
+                return (content, etag);
 
                 string GetFileContentIfExists(string file)
                 {
@@ -135,9 +169,7 @@ namespace Microsoft.Docs.Build
 
                     return null;
                 }
-            });
-
-            return (content, etag);
+            }
         }
 
         /// <summary>
@@ -224,6 +256,19 @@ namespace Microsoft.Docs.Build
 
         public static bool ReleaseGit(DependencyGit git, LockType lockType, bool successed = true)
             => DependencySlotPool<DependencyGit>.ReleaseSlot(git, lockType, successed);
+
+        private static string TryGetRestoredFilePath(string url)
+        {
+            Debug.Assert(!string.IsNullOrEmpty(url));
+            Debug.Assert(UrlUtility.IsHttp(url));
+
+            var filePath = RestoreFile.GetRestoreContentPath(url);
+            if (File.Exists(filePath))
+            {
+                return filePath;
+            }
+            return null;
+        }
 
         private static (string path, DependencyGit git) AcquireGit(string remote, string branch, string commit, LockType type)
         {

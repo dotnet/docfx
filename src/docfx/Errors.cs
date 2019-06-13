@@ -13,8 +13,8 @@ namespace Microsoft.Docs.Build
         /// Defined same redirection entry in both <see cref="Config.Redirections"/> and <see cref="Config.RedirectionsWithoutId"/>.
         /// </summary>
         /// Behavior: ✔️ Message: ❌
-        public static Error RedirectionConflict(string redirectFrom)
-            => new Error(ErrorLevel.Error, "redirection-conflict", $"The '{redirectFrom}' appears twice or more in the redirection mappings");
+        public static Error RedirectionConflict(SourceInfo source, string path)
+            => new Error(ErrorLevel.Error, "redirection-conflict", $"The '{path}' appears twice or more in the redirection mappings", source);
 
         /// <summary>
         /// Redirection entry isn't a conceptual article(*.{md,json,yml}).
@@ -32,9 +32,16 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Defined redirect dest not starting with '\' in <see cref="Config.Redirections"/>.
         /// </summary>
+        public static Error RedirectionUrlInvalid(SourceInfo<string> source)
+            => new Error(ErrorLevel.Warning, "redirection-url-invalid", $"The redirect url '{source}' must start with '/'", source);
+
+        /// <summary>
+        /// Multiple files defined in <see cref="Config.Redirections"/> are redirected to the same url,
+        /// can't decide which entry to use when computing document id.
+        /// </summary>
         /// Behavior: ✔️ Message: ❌
-        public static Error InvalidRedirectTo(SourceInfo<string> source)
-            => new Error(ErrorLevel.Warning, "invalid-redirect-to", $"The redirect url '{source}' must start with '/'", source);
+        public static Error RedirectionUrlConflict(SourceInfo<string> source)
+            => new Error(ErrorLevel.Warning, "redirection-url-conflict", $"The '{source}' appears twice or more in the redirection mappings", source);
 
         /// <summary>
         /// Used invalid glob pattern in configuration.
@@ -225,8 +232,8 @@ namespace Microsoft.Docs.Build
         /// Link which's resolved to a file out of build scope.
         /// </summary>
         /// Behavior: ✔️ Message: ❌
-        public static Error LinkOutOfScope(SourceInfo<string> source, Document file, string configFile)
-            => new Error(ErrorLevel.Warning, "link-out-of-scope", $"File '{file}' referenced by link '{source}' will not be built because it is not included in {configFile}", source);
+        public static Error LinkOutOfScope(SourceInfo<string> source, Document file)
+            => new Error(ErrorLevel.Warning, "link-out-of-scope", $"File '{file}' referenced by link '{source}' will not be built because it is not included in build scope", source);
 
         /// <summary>
         /// Defined a redirection entry that's not matched by config's files glob patterns.
@@ -316,14 +323,6 @@ namespace Microsoft.Docs.Build
         /// Behavior: ✔️ Message: ❌
         public static Error OutputPathConflict(string path, IEnumerable<Document> files)
             => new Error(ErrorLevel.Error, "output-path-conflict", $"Two or more files output to the same path '{path}': {Join(files, file => file.ContentType == ContentType.Redirection ? $"{file} <redirection>" : file.ToString())}");
-
-        /// <summary>
-        /// Multiple files defined in <see cref="Config.Redirections"/> are redirected to the same url,
-        /// can't decide which entry to use when computing document id.
-        /// </summary>
-        /// Behavior: ✔️ Message: ❌
-        public static Error RedirectionDocumentIdConflict(IEnumerable<Document> redirectFromDocs, string redirectTo)
-            => new Error(ErrorLevel.Warning, "redirected-id-conflict", $"Multiple documents redirected to '{redirectTo}' with document id: {Join(redirectFromDocs)}");
 
         /// <summary>
         /// Used docfx output model property which are not defined in input model.
@@ -441,14 +440,35 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Fields do not meet the requirements of either logic.
         /// </summary>
-        public static Error EitherLogicFailed(SourceInfo source, IEnumerable<object> fileds)
-            => new Error(ErrorLevel.Warning, "either-logic-failed", $"At least one of these fields: {Join(fileds)} exists", source);
+        public static Error EitherLogicFailed(SourceInfo source, IEnumerable<object> fields)
+            => new Error(ErrorLevel.Warning, "either-logic-failed", $"At least one of these fields: {Join(fields)} exists", source);
 
         /// <summary>
         /// Fields do not meet the requirements of precludes logic.
         /// </summary>
-        public static Error PrecludesLogicFailed(SourceInfo source, IEnumerable<object> fileds)
-            => new Error(ErrorLevel.Warning, "precludes-logic-failed", $"Only one of these fields: {Join(fileds)} can exist at most", source);
+        public static Error PrecludesLogicFailed(SourceInfo source, IEnumerable<object> fields)
+            => new Error(ErrorLevel.Warning, "precludes-logic-failed", $"Only one of these fields: {Join(fields)} can exist at most", source);
+
+        /// <summary>
+        /// A field does't conform to date format.
+        /// </summary>
+        /// Behavior: ✔️ Message: ❌
+        public static Error DateFormatInvalid(SourceInfo source, string name, string format)
+            => new Error(ErrorLevel.Warning, "date-format-invalid", $"The '{name}' needs to meet the '{format}' format", source);
+
+        /// <summary>
+        /// Date out of range.
+        /// </summary>
+        /// Behavior: ✔️ Message: ❌
+        public static Error OverDateRange(SourceInfo source, string name, TimeSpan? relativeMinDate, TimeSpan? relativeMaxDate)
+            => new Error(ErrorLevel.Warning, "over-date-range", $"Based on the current time, '{name}' needs to be in this range: {(relativeMinDate.HasValue ? $"{relativeMinDate} <= " : "")}'{name}'{(relativeMaxDate.HasValue ? $" <= {relativeMaxDate}" : "")}", source);
+
+        /// <summary>
+        /// A field is deprecated.
+        /// </summary>
+        /// Behavior: ✔️ Message: ❌
+        public static Error FieldDeprecated(SourceInfo source, string name, string replacedBy)
+            => new Error(ErrorLevel.Warning, "field-deprecated", $"Deprecated field: '{name}'{(string.IsNullOrEmpty(replacedBy) ? "." : $", use '{replacedBy}' instead")}", source);
 
         /// <summary>
         /// Used unknown YamlMime.
