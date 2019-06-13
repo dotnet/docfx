@@ -1,6 +1,8 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Runtime.CompilerServices;
+
 namespace Microsoft.Docs.Build
 {
     public readonly struct SourceInfo<T> : ISourceInfo
@@ -11,16 +13,24 @@ namespace Microsoft.Docs.Build
 
         public override string ToString() => Value?.ToString();
 
-        public SourceInfo<T> Or(in SourceInfo<T> value) => Value != null ? this : value;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public SourceInfo<T> Or(SourceInfo<T> other)
+            => new SourceInfo<T>(Value != null ? Value : other.Value, other.Source ?? Source);
 
-        public SourceInfo<T> Or(in SourceInfo<T>? value) => Value != null ? this : (value != null ? value.Value : default);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public SourceInfo<T> Or(SourceInfo<T>? other)
+            => new SourceInfo<T>(Value != null ? Value : (other != null ? other.Value : default), other?.Source ?? Source);
 
-        public static implicit operator T(in SourceInfo<T> value) => value.Value;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static implicit operator T(SourceInfo<T> value) => value.Value;
 
-        public static implicit operator T(in SourceInfo<T>? value) => value != null ? value.Value : default;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static implicit operator T(SourceInfo<T>? value) => value != null ? value.Value : default;
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static implicit operator SourceInfo(in SourceInfo<T> value) => value.Source;
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static implicit operator SourceInfo(in SourceInfo<T>? value) => value?.Source;
 
         object ISourceInfo.GetValue() => Value;
