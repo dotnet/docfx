@@ -116,7 +116,8 @@ namespace Microsoft.Docs.Build
                 {
                     if (document != null)
                     {
-                        var (_, monikers) = context.MonikerProvider.GetFileLevelMonikers(document);
+                        var (error, monikers) = context.MonikerProvider.GetFileLevelMonikers(document);
+                        errors.AddIfNotNull(error);
                         return monikers;
                     }
                     return new List<string>();

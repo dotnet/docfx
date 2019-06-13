@@ -26,13 +26,8 @@ namespace Microsoft.Docs.Build
         public static (List<Error> errors, TableOfContentsModel model)
             Load(Context context, Document file, ResolveContent resolveContent, ResolveHref resolveHref, ResolveXref resolveXref, ResolveMoniker resolveMoniker)
         {
-            var errors = new List<Error>();
-            var (monikerError, fileMonikers) = context.MonikerProvider.GetFileLevelMonikers(file);
-            errors.AddIfNotNull(monikerError);
-
-            var (loadErrors, model) = LoadInternal(context, file, file, resolveContent, resolveHref, resolveXref, resolveMoniker, new List<Document>(), fileMonikers);
-            model.Metadata.Monikers = fileMonikers;
-            errors.AddRange(loadErrors);
+            var (errors, model) = LoadInternal(context, file, file, resolveContent, resolveHref, resolveXref, resolveMoniker, new List<Document>());
+            model.Metadata.Monikers = resolveMoniker(file);
             return (errors, model);
         }
 
@@ -97,7 +92,6 @@ namespace Microsoft.Docs.Build
             ResolveXref resolveXref,
             ResolveMoniker resolveMoniker,
             List<Document> parents,
-            List<string> rootFileMonikers,
             string content = null)
         {
             // add to parent path
@@ -112,7 +106,7 @@ namespace Microsoft.Docs.Build
             if (model.Items.Count > 0)
             {
                 parents.Add(file);
-                errors.AddRange(ResolveTocModelItems(context, model.Items, parents, file, rootPath, resolveContent, resolveHref, resolveXref, resolveMoniker, rootFileMonikers));
+                errors.AddRange(ResolveTocModelItems(context, model.Items, parents, file, rootPath, resolveContent, resolveHref, resolveXref, resolveMoniker));
                 parents.RemoveAt(parents.Count - 1);
             }
 
@@ -128,15 +122,14 @@ namespace Microsoft.Docs.Build
             ResolveContent resolveContent,
             ResolveHref resolveHref,
             ResolveXref resolveXref,
-            ResolveMoniker resolveMoniker,
-            List<string> rootFileMonikers)
+            ResolveMoniker resolveMoniker)
         {
             var errors = new List<Error>();
             foreach (var tocModelItem in tocModelItems)
             {
                 if (tocModelItem.Items != null && tocModelItem.Items.Any())
                 {
-                    errors.AddRange(ResolveTocModelItems(context, tocModelItem.Items, parents, filePath, rootPath, resolveContent, resolveHref, resolveXref, resolveMoniker, rootFileMonikers));
+                    errors.AddRange(ResolveTocModelItems(context, tocModelItem.Items, parents, filePath, rootPath, resolveContent, resolveHref, resolveXref, resolveMoniker));
                 }
 
                 // process
@@ -156,7 +149,7 @@ namespace Microsoft.Docs.Build
                     var linkType = UrlUtility.GetLinkType(resolvedTopicHref);
                     if (linkType == LinkType.External || linkType == LinkType.AbsolutePath)
                     {
-                        monikers = rootFileMonikers;
+                        monikers = resolveMoniker(rootPath);
                     }
                     else
                     {
@@ -257,7 +250,7 @@ namespace Microsoft.Docs.Build
                 var (referencedTocContent, referenceTocFilePath) = ResolveTocHrefContent(tocHrefType, tocHref, filePath, resolveContent);
                 if (referencedTocContent != null)
                 {
-                    var (subErrors, nestedToc) = LoadInternal(context, referenceTocFilePath, rootPath, resolveContent, resolveHref, resolveXref, resolveMoniker, parents, rootFileMonikers, referencedTocContent);
+                    var (subErrors, nestedToc) = LoadInternal(context, referenceTocFilePath, rootPath, resolveContent, resolveHref, resolveXref, resolveMoniker, parents, referencedTocContent);
                     errors.AddRange(subErrors);
                     if (tocHrefType == TocHrefType.RelativeFolder)
                     {
