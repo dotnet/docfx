@@ -13,9 +13,15 @@ namespace Microsoft.Docs.Build
 
         public SourceInfo<T> Or(in SourceInfo<T> value) => Value != null ? this : value;
 
+        public SourceInfo<T> Or(in SourceInfo<T>? value) => Value != null ? this : (value != null ? value.Value : default);
+
         public static implicit operator T(in SourceInfo<T> value) => value.Value;
 
+        public static implicit operator T(in SourceInfo<T>? value) => value != null ? value.Value : default;
+
         public static implicit operator SourceInfo(in SourceInfo<T> value) => value.Source;
+
+        public static implicit operator SourceInfo(in SourceInfo<T>? value) => value?.Source;
 
         object ISourceInfo.GetValue() => Value;
 

@@ -124,7 +124,7 @@ namespace Microsoft.Docs.Build
             if (href.Value.StartsWith("xref:") != false)
             {
                 var uid = new SourceInfo<string>(href.Value.Substring("xref:".Length), href);
-                var (uidError, uidHref, _, referencedFile) = ResolveXref(href, relativeTo, resultRelativeTo);
+                var (uidError, uidHref, _, referencedFile) = ResolveXref(uid, relativeTo, resultRelativeTo);
                 return (uidError, uidHref, null, null, referencedFile);
             }
 
