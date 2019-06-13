@@ -25,8 +25,18 @@ namespace Microsoft.Docs.Build
             new SourceInfoJsonConverter { },
             new JTokenJsonConverter { },
         };
-
         private static readonly JsonContractResolver s_contractResolver = new JsonContractResolver { NamingStrategy = s_namingStrategy };
+
+        private static readonly JsonSerializer s_serializer = JsonSerializer.Create(new JsonSerializerSettings
+        {
+            NullValueHandling = NullValueHandling.Ignore,
+            MetadataPropertyHandling = MetadataPropertyHandling.Ignore,
+            DateParseHandling = DateParseHandling.None,
+            Converters = s_jsonConverters,
+            ContractResolver = s_contractResolver,
+            Error = (a, b) => { b.ErrorContext.Handled = true; },
+        });
+
         private static readonly JsonSerializer s_indentSerializer = JsonSerializer.Create(new JsonSerializerSettings
         {
             Formatting = Formatting.Indented,
@@ -46,15 +56,7 @@ namespace Microsoft.Docs.Build
             ContractResolver = s_contractResolver,
         });
 
-        internal static JsonSerializer Serializer { get; } = JsonSerializer.Create(new JsonSerializerSettings
-        {
-            NullValueHandling = NullValueHandling.Ignore,
-            MetadataPropertyHandling = MetadataPropertyHandling.Ignore,
-            DateParseHandling = DateParseHandling.None,
-            Converters = s_jsonConverters,
-            ContractResolver = s_contractResolver,
-            Error = (a, b) => { b.ErrorContext.Handled = true; },
-        });
+        internal static JsonSerializer Serializer => s_serializer;
 
         /// <summary>
         /// Fast pass to read MIME from $schema attribute.
@@ -80,7 +82,7 @@ namespace Microsoft.Docs.Build
 
         public static IEnumerable<string> GetPropertyNames(Type type)
         {
-            return ((JsonObjectContract)Serializer.ContractResolver.ResolveContract(type)).Properties.Select(prop => prop.PropertyName);
+            return ((JsonObjectContract)s_serializer.ContractResolver.ResolveContract(type)).Properties.Select(prop => prop.PropertyName);
         }
 
         /// <summary>
@@ -88,7 +90,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static void Serialize(TextWriter writer, object graph, bool indent = false)
         {
-            var serializer = indent ? s_indentSerializer : Serializer;
+            var serializer = indent ? s_indentSerializer : s_serializer;
             serializer.Serialize(writer, graph);
         }
 
@@ -133,7 +135,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static JObject ToJObject(object model)
         {
-            return JObject.FromObject(model, Serializer);
+            return JObject.FromObject(model, s_serializer);
         }
 
         /// <summary>
@@ -152,7 +154,7 @@ namespace Microsoft.Docs.Build
             var validator = GetJsonSchemaValidation(type);
             var errors = validator.Validate(token);
 
-            return (errors, Serializer.Deserialize(new JTokenReader(token), type));
+            return (errors, s_serializer.Deserialize(new JTokenReader(token), type));
         }
 
         /// <summary>
@@ -341,6 +343,7 @@ namespace Microsoft.Docs.Build
             }
 
             var jsonContract = s_contractResolver.ResolveContract(type);
+
             if (jsonContract is JsonObjectContract jsonObjectContract)
             {
                 if (!rootJsonSchema.Definitions.TryGetValue(type.Name, out _))
@@ -362,6 +365,7 @@ namespace Microsoft.Docs.Build
 
                 jsonSchema.Ref = $"#/definitions/{type.Name}";
             }
+
             if (jsonContract is JsonDictionaryContract jsonDictionaryContract)
             {
                 jsonSchema.Type = new[] { JsonSchemaType.Object };
