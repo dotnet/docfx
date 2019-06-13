@@ -8,7 +8,7 @@
     <title>How-to: Build your own type of documentation with a custom plug-in | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="How-to: Build your own type of documentation with a custom plug-in | DocFX website ">
-    <meta name="generator" content="docfx 2.42.4.0">
+    <meta name="generator" content="docfx 2.43.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -98,7 +98,7 @@
 </ol>
 <h2 id="preparation">Preparation</h2>
 <ol>
-<li><p>Create a new C# class library project in <code>Visual Studio</code>, targets .NET Framework 4.6.1.</p>
+<li><p>Create a new C# class library project in <code>Visual Studio</code>, targets .NET Framework 4.7.2.</p>
 </li>
 <li><p>Add nuget packages:</p>
 <ul>
@@ -111,7 +111,7 @@ If building DocFX from source code then add a reference to the project,
 otherwise add the nuget packages with the same version as DocFX.</p>
 </li>
 <li><p>Add framework assembly references:
-<code>PresentationCore</code>, <code>PresentationFramework</code>, <code>WindowsBase</code>. (This step is optional in Visual Studio 2017)</p>
+<code>PresentationCore</code>, <code>PresentationFramework</code>, <code>WindowsBase</code>. (This step is optional in Visual Studio 2017 or above)</p>
 </li>
 <li><p>Add a project for converting rtf to html:<br>
 Clone project <a href="https://github.com/mmanela/MarkupConverter">MarkupConverter</a>, and reference it.</p>
