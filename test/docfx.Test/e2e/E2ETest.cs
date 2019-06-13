@@ -313,7 +313,7 @@ namespace Microsoft.Docs.Build
                 {
                     foreach (var env in environmentVariables)
                     {
-                        mutableContent = content.Replace($"{{{env}}}", Environment.GetEnvironmentVariable(env));
+                        mutableContent = mutableContent.Replace($"{{{env}}}", Environment.GetEnvironmentVariable(env));
                     }
                     mutableContent = mutableContent.Replace("{APP_BASE_PATH}", AppContext.BaseDirectory);
                 }
