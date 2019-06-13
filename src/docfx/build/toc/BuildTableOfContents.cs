@@ -10,13 +10,9 @@ namespace Microsoft.Docs.Build
 {
     internal static class BuildTableOfContents
     {
-        public static (IEnumerable<Error>, PublishItem publishItem) Build(
-            Context context,
-            Document file,
-            MonikerMap monikerMap)
+        public static (IEnumerable<Error>, PublishItem publishItem) Build(Context context, Document file)
         {
             Debug.Assert(file.ContentType == ContentType.TableOfContents);
-            Debug.Assert(monikerMap != null);
 
             // load toc model
             var (errors, model, _, _) = context.Cache.LoadTocModel(context, file);

@@ -844,17 +844,17 @@ inputs:
     monikerRange:
       'docs/v1/**': 'netcore-1.0'
       'docs/v2/**': 'netcore-2.0'
-      'docs/v3/**': 'netcore-1.0 || netcore-2.0'
+      'docs/v1-v2/**': 'netcore-1.0 || netcore-2.0'
     routes:
       docs/v1/: docs/
       docs/v2/: docs/
-      docs/v3/: docs/
+      docs/v1-v2/: docs/
     monikerDefinition: https://raw.githubusercontent.com/docascode/docfx-test-dependencies/master/monikerDefinition
   docs/v1/a.md: |
     Moniker: netcore-1.0
   docs/v2/a.md: |
     Moniker: netcore-2.0
-  docs/v3/TOC.md: |
+  docs/v1-v2/TOC.md: |
     # [A-1](../v1/a.md)
     # [A-2](../v2/a.md)
 outputs:
