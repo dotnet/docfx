@@ -94,6 +94,21 @@ namespace Microsoft.Docs.Build
         }
 
         [Fact]
+        public void TestBoolean()
+        {
+            var sw = new StringWriter();
+            JsonUtility.Serialize(sw, new object[] { true, false });
+            var json = sw.ToString();
+            Assert.Equal("[true,false]", json);
+            var (errors, value) = DeserializeWithValidation<object[]>(json);
+            Assert.Empty(errors);
+            Assert.NotNull(value);
+            Assert.Equal(2, value.Length);
+            Assert.True((bool)value[0]);
+            Assert.False((bool)value[1]);
+        }
+
+        [Fact]
         public void TestListOfBasicClass()
         {
             var json = JsonUtility.Serialize(

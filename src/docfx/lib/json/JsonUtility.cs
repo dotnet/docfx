@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Threading;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
@@ -25,6 +24,7 @@ namespace Microsoft.Docs.Build
             new SourceInfoJsonConverter { },
             new JTokenJsonConverter { },
         };
+
         private static readonly JsonContractResolver s_contractResolver = new JsonContractResolver { NamingStrategy = s_namingStrategy };
 
         private static readonly JsonSerializer s_serializer = JsonSerializer.Create(new JsonSerializerSettings
@@ -56,7 +56,7 @@ namespace Microsoft.Docs.Build
             ContractResolver = s_contractResolver,
         });
 
-        internal static JsonSerializer Serializer => s_serializer;
+        internal static JsonSerializer Serializer => s_serializerWithoutErrorHandling;
 
         /// <summary>
         /// Fast pass to read MIME from $schema attribute.
@@ -343,6 +343,12 @@ namespace Microsoft.Docs.Build
             }
 
             var jsonContract = s_contractResolver.ResolveContract(type);
+
+            if (type == typeof(object))
+            {
+                jsonSchema.Type = new[] { JsonSchemaType.Array, JsonSchemaType.Boolean, JsonSchemaType.Integer, JsonSchemaType.Number, JsonSchemaType.Null, JsonSchemaType.Object, JsonSchemaType.String };
+                return jsonSchema;
+            }
 
             if (jsonContract is JsonObjectContract jsonObjectContract)
             {
