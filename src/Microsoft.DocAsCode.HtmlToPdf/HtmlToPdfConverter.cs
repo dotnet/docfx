@@ -9,12 +9,14 @@ namespace Microsoft.DocAsCode.HtmlToPdf
     using System.Diagnostics;
     using System.IO;
     using System.Linq;
+    using System.Text;
     using System.Threading.Tasks;
     using System.Web;
 
     using iTextSharp.text.pdf;
 
     using Microsoft.DocAsCode.Common;
+    using Microsoft.DocAsCode.Exceptions;
     using Microsoft.DocAsCode.Plugins;
 
     public class HtmlToPdfConverter
@@ -118,7 +120,7 @@ namespace Microsoft.DocAsCode.HtmlToPdf
             // disable the quiet mode so problems can be diagnosed.
             if (!string.IsNullOrEmpty(this._htmlToPdfOptions.AdditionalArguments))
             {
-                this._htmlToPdfOptions.IsQuiet = false;
+                _htmlToPdfOptions.IsQuiet = false;
             }
 
             using (var process = new Process
@@ -128,13 +130,16 @@ namespace Microsoft.DocAsCode.HtmlToPdf
                     UseShellExecute = false,
                     RedirectStandardInput = _htmlToPdfOptions.IsReadArgsFromStdin,
                     RedirectStandardOutput = _htmlToPdfOptions.IsOutputToStdout,
+                    StandardOutputEncoding = Encoding.UTF8,
+                    RedirectStandardError = true,
+                    StandardErrorEncoding = Encoding.UTF8,
                     WindowStyle = ProcessWindowStyle.Hidden,
                     FileName = Constants.PdfCommandName,
                     Arguments = _htmlToPdfOptions + (_htmlToPdfOptions.IsReadArgsFromStdin ? string.Empty : arguments)
                 }
             })
             {
-                using(new LoggerPhaseScope(Constants.PdfCommandName))
+                using (new LoggerPhaseScope(Constants.PdfCommandName))
                 {
                     Logger.LogVerbose($"Executing {process.StartInfo.FileName} {process.StartInfo.Arguments} {arguments}");
                     process.Start();
@@ -154,6 +159,15 @@ namespace Microsoft.DocAsCode.HtmlToPdf
                         }
                     }
                     process.WaitForExit(TimeoutInMilliseconds);
+                    if (process.ExitCode != 0)
+                    {
+                        using (var standardError = process.StandardError)
+                        {
+                            var message = $"Failed to generating PDF with {Constants.PdfCommandName}: {standardError.ReadToEnd()}";
+                            Logger.LogError(message);
+                            throw new DocfxException(message);
+                        }
+                    }
                 }
             }
         }
