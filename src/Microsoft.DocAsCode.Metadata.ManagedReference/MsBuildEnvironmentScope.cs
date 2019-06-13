@@ -13,8 +13,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Exceptions;
 
-    using AsyncGenerator.Internal;
-
     public class MSBuildEnvironmentScope : IDisposable
     {
         private const string VSInstallDirKey = "VSINSTALLDIR";
@@ -44,15 +42,14 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 return null;
             }
 
-            if (EnvironmentHelper.IsMono)
+            if (Type.GetType("Mono.Runtime") != null) // is mono
             {
-                string extensionPath = null;
-                string msbuildPath = null;
-                EnvironmentHelper.GetMonoMsBuildPath(monoDir =>
-                {
-                    extensionPath = Path.Combine(monoDir, "xbuild");
-                    msbuildPath = Path.Combine(monoDir, "msbuild", "15.0", "bin", "MSBuild.dll");
-                });
+                var assembly = typeof(System.Runtime.GCSettings).Assembly;
+                var assemblyDirectory = Path.GetDirectoryName(assembly.Location);
+                var monoDir = new DirectoryInfo(assemblyDirectory).Parent.FullName; // get mono directory
+
+                var extensionPath = Path.Combine(monoDir, "xbuild");
+                var msbuildPath = Path.Combine(monoDir, "msbuild", "15.0", "bin", "MSBuild.dll");
 
                 if (msbuildPath == null || !File.Exists(msbuildPath))
                 {
@@ -91,7 +88,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 {
                     // workaround for https://github.com/dotnet/docfx/issues/1969
                     // FYI https://github.com/dotnet/roslyn/issues/21799#issuecomment-343695700
-                    var latest = instances.FirstOrDefault(a => a.Version.Major >= 16);
+                    var latest = instances.FirstOrDefault(a => a.Version.Major >= 15);
                     if (latest != null)
                     {
                         Logger.LogInfo($"Using msbuild {latest.MSBuildPath} as inner compiler.");
@@ -104,7 +101,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     }
                     else
                     {
-                        Logger.LogWarning("Fail to find MSBuild >= 16.0 on machine. Please install Visual Studio 2019 with MSBuild >= 16.0: https://visualstudio.microsoft.com/vs/");
+                        Logger.LogWarning("Fail to find MSBuild >= 15.0 on machine. Please install Visual Studio 2017 with MSBuild >= 15.0: https://visualstudio.microsoft.com/vs/");
                     }
                 }
             }

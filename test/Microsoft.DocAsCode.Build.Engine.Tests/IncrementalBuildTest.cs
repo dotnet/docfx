@@ -21,6 +21,9 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
 
     using Xunit;
     using Microsoft.DocAsCode.Glob;
+    using Microsoft.DocAsCode.Build.SchemaDriven;
+    using System.Composition;
+    using System.Collections;
 
     [Trait("Owner", "xuzho")]
     [Trait("EntityType", "DocumentBuilder")]
@@ -5343,6 +5346,104 @@ tagRules : [
         }
 
 
+        [Fact]
+        public void TestSchemaDrivenDocumentProcessorWithSchemaChange()
+        {
+            // arrange
+            var inputFolder = GetRandomFolder();
+            var outputFolder = GetRandomFolder();
+            var templateFolder = GetRandomFolder();
+            var intermediateFolder = GetRandomFolder();
+
+            var contentFile = CreateFile(
+                "content.yml",
+                new[] { "### YamlMime:Test", "", "description: test" },
+                inputFolder);
+
+            CreateFile(
+                "schemas/Test.schema.json",
+                "{'title':'Test','version':'1.0.0','$schema':'https://dotnet.github.io/docfx/schemas/v1.0/schema.json#','type':'object','properties':{'description':{'type':'string'}}}".Replace('\'', '\"'),
+                templateFolder); ;
+
+            FileCollection files = new FileCollection(Directory.GetCurrentDirectory());
+            files.Add(DocumentType.Article, new[] { contentFile });
+
+            var phase = "IncrementalBuild.TestSchemaDrivenDocumentProcessorWithPlugin";
+            Init(phase);
+            var outputFolderFirst = Path.Combine(outputFolder, "first");
+            var outputFolderForIncremental = Path.Combine(outputFolder, "second");
+            var outputFolderForCompare = Path.Combine(outputFolder, "second-force");
+            try
+            {
+                // first run
+                using (new LoggerPhaseScope(phase + "-first"))
+                {
+                    BuildDocument(
+                        files,
+                        inputFolder,
+                        outputFolderFirst,
+                        new Dictionary<string, object> { ["meta"] = "Hello world!", },
+                        applyTemplateSettings: new ApplyTemplateSettings(inputFolder, outputFolderFirst)
+                        {
+                            RawModelExportSettings = { Export = true },
+                            TransformDocument = true,
+                        },
+                        intermediateFolder: intermediateFolder,
+                        templateHash: "first",
+                        templateFolder: templateFolder); ;
+                }
+                ClearListener();
+
+                // second run
+                UpdateFile(
+                    "schemas/Test.schema.json",
+                    "{'metadata':'/metadata','title':'Test','version':'1.0.0','$schema':'https://dotnet.github.io/docfx/schemas/v1.0/schema.json#','type':'object','properties':{'description':{'type':'string'}}}".Replace('\'', '\"'),
+                    templateFolder);
+                using (new LoggerPhaseScope(phase + "-second"))
+                {
+                    BuildDocument(
+                        files,
+                        inputFolder,
+                        outputFolderForIncremental,
+                        new Dictionary<string, object> { ["meta"] = "Hello world!", },
+                        applyTemplateSettings: new ApplyTemplateSettings(inputFolder, outputFolderForIncremental)
+                        {
+                            RawModelExportSettings = { Export = true },
+                            TransformDocument = true,
+                        },
+                        intermediateFolder: intermediateFolder,
+                        templateHash: "updated",
+                        templateFolder: templateFolder);
+                }
+
+                // force run
+                using (new LoggerPhaseScope(phase + "-forcebuild-second"))
+                {
+                    BuildDocument(
+                        files,
+                        inputFolder,
+                        outputFolderForCompare,
+                        new Dictionary<string, object> { ["meta"] = "Hello world!", },
+                        applyTemplateSettings: new ApplyTemplateSettings(inputFolder, outputFolderForCompare)
+                        {
+                            RawModelExportSettings = { Export = true },
+                            TransformDocument = true,
+                        },
+                        templateHash: "updated",
+                        templateFolder: templateFolder);
+                }
+
+                // assert
+                {
+                    Assert.True(CompareDir(outputFolderForIncremental, outputFolderForCompare));
+                }
+            }
+            finally
+            {
+                CleanUp();
+            }
+        }
+
         [Fact(Skip = "wait for fix")]
         public void TestDestinationFolderUpdate()
         {
@@ -5590,6 +5691,7 @@ tagRules : [
             yield return typeof(TocDocumentProcessor).Assembly;
             yield return typeof(RestApiDocumentProcessor).Assembly;
             yield return typeof(YamlDocumentProcessor).Assembly;
+            yield return typeof(SchemaDrivenDocumentProcessor).Assembly;
             if (enableSplit)
             {
                 yield return typeof(SplitClassPageToMemberLevel).Assembly;
@@ -5601,6 +5703,40 @@ tagRules : [
             var newIntermediateFolder = MoveToRandomFolder(intermediateFolder);
             Environment.SetEnvironmentVariable("cache", Path.GetFullPath(newIntermediateFolder));
             return newIntermediateFolder;
+        }
+
+        [Export(nameof(SchemaDrivenDocumentProcessor), typeof(IDocumentBuildStep))]
+        private class SdpPlugin : ISupportIncrementalBuildStep
+        {
+            public string Name => nameof(SdpPlugin);
+
+            public int BuildOrder => 0x20;
+
+            public IEnumerable<FileModel> Prebuild(ImmutableList<FileModel> models, IHostService host)
+            {
+                return models;
+            }
+
+            public void Build(FileModel model, IHostService host)
+            {
+                var metadata = (IDictionary<string, object>)model.Properties.Metadata;
+                metadata["plugin"] = "set in build";
+            }
+
+            public void Postbuild(ImmutableList<FileModel> models, IHostService host)
+            {
+                foreach (var model in models)
+                {
+                    var metadata = (IDictionary<string, object>)model.Properties.Metadata;
+                    metadata["plugin"] = "change in post build";
+                }
+            }
+
+            public string GetIncrementalContextHash() => null;
+
+            public bool CanIncrementalBuild(FileAndType fileAndType) => true;
+
+            public IEnumerable<DependencyType> GetDependencyTypesToRegister() => null;
         }
     }
 }

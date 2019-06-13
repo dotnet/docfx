@@ -110,6 +110,24 @@ namespace Microsoft.DocAsCode.Tests.Common
             return CreateFile(fileName, lines, baseFolder);
         }
 
+        protected static string UpdateFile(string fileName, string content, string baseFolder)
+        {
+            if (fileName == null)
+            {
+                throw new ArgumentNullException(nameof(fileName));
+            }
+            if (content == null)
+            {
+                throw new ArgumentNullException(nameof(content));
+            }
+            if (baseFolder == null)
+            {
+                throw new ArgumentNullException(nameof(baseFolder));
+            }
+            File.Delete(Path.Combine(baseFolder, fileName));
+            return CreateFile(fileName, content, baseFolder);
+        }
+
         protected static string CreateDirectory(string dir, string baseFolder)
         {
             if (string.IsNullOrEmpty(dir))
