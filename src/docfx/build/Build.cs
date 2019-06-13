@@ -247,11 +247,9 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(tocMap != null);
 
-            var buildScope = docset.BuildScope.ToList();
-
             if (!docset.IsLocalized())
             {
-                return buildScope;
+                return docset.BuildScope.ToList();
             }
 
             // if A toc includes B toc and only B toc is localized, then A need to be included and built
@@ -265,6 +263,7 @@ namespace Microsoft.Docs.Build
                 }
             }
 
+            var buildScope = docset.BuildScope.ToList();
             buildScope.AddRange(fallbackTocs);
 
             return buildScope;
