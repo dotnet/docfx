@@ -44,7 +44,7 @@ namespace Microsoft.Docs.Build
         {
             var errors = new List<Error>();
             var redirections = new HashSet<Document>();
-            var redirectionsByRedirectionUrl = new Dictionary<string, Document>();
+            var redirectionsByRedirectionUrl = new Dictionary<string, Document>(PathUtility.PathComparer);
 
             // load redirections with document id
             AddRedirections(docset.Config.Redirections, redirectDocumentId: true);
