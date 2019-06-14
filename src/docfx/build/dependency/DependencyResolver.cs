@@ -191,7 +191,7 @@ namespace Microsoft.Docs.Build
         {
             if (string.IsNullOrEmpty(href))
             {
-                return (Errors.LinkIsEmpty(relativeTo), null, null, null, null, null);
+                return default;
             }
 
             var (path, query, fragment) = UrlUtility.SplitUrl(href);

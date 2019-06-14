@@ -139,5 +139,3 @@ outputs:
             Link to @a&amp;c
           </p>
         "}
-  .errors.log: |
-    ["info","at-xref-not-found","Cross reference not found: '@a&c'","html-xref.md",5,10]
