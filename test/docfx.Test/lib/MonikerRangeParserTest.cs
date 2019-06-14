@@ -90,6 +90,9 @@ namespace Microsoft.Docs.Build
         [InlineData(
             ">= netcore-2.0 || > dotnet-2.0",
             "netcore-2.0 netcore-3.0 dotnet-3.0")]
+        [InlineData(
+            ">= netcore-2.0 > dotnet-2.0",
+            "")]
         public void TestEvaluateMonikerRange(string rangeString, string expectedMonikers)
         {
             var result = _monikerRangeParser.Parse(new SourceInfo<string>(rangeString)).ToList();

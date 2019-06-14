@@ -11,7 +11,7 @@ namespace Microsoft.Docs.Build
 
         Document DeclairingFile { get; }
 
-        HashSet<Moniker> Monikers { get; }
+        HashSet<string> Monikers { get; }
 
         string GetXrefPropertyValue(string propertyName);
     }

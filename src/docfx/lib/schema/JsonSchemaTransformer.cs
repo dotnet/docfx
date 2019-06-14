@@ -98,7 +98,7 @@ namespace Microsoft.Docs.Build
                         file,
                         dependencyResolver,
                         buildChild,
-                        null,
+                        context.MonikerProvider,
                         key => context.Template?.GetToken(key),
                         MarkdownPipelineType.Markdown);
 
@@ -112,7 +112,7 @@ namespace Microsoft.Docs.Build
                         file,
                         dependencyResolver,
                         buildChild,
-                        null,
+                        context.MonikerProvider,
                         key => context.Template?.GetToken(key),
                         MarkdownPipelineType.InlineMarkdown);
 

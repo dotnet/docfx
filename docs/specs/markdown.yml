@@ -34,9 +34,7 @@ outputs:
 ---
 # extract rawTitle from h1 to h3
 inputs:
-  docfx.yml: |
-    rules:
-      heading-not-found: info
+  docfx.yml:
   h1.md: |
     # h1 title
   h2.md: |
@@ -67,14 +65,10 @@ outputs:
       "rawTitle": "",
       "conceptual": "<h4 id=\"h4-title\">h4 title</h4>",
     }
-  .errors.log: |
-    ["info","heading-not-found","The first visible block is not a heading block with `#`, `##` or `###`","h4.md"]
 ---
 # remove title from html
 inputs:
-  docfx.yml: |
-    rules:
-      heading-not-found: info
+  docfx.yml:
   h1ToRemove.md: |
     # h1 title
   h1ToKeep.md: |
@@ -94,9 +88,7 @@ outputs:
 ---
 # No H1
 inputs:
-  docfx.yml: |
-    rules:
-      heading-not-found: info
+  docfx.yml:
   docs/a.md: |
     ---
     title: Title from yaml header
@@ -105,14 +97,10 @@ inputs:
     hello
 outputs:
   docs/a.json:
-  .errors.log: |
-    ["info","heading-not-found","The first visible block is not a heading block with `#`, `##` or `###`","docs/a.md"]
 ---
 # Non-comments block between yaml-header and H1
 inputs:
-  docfx.yml: |
-    rules:
-      heading-not-found: info
+  docfx.yml:
   docs/a.md: |
     ---
     title: Title from yaml header
@@ -126,9 +114,7 @@ outputs:
 ---
 # Include block before h1
 inputs:
-  docfx.yml: |
-    rules:
-      heading-not-found: info
+  docfx.yml:
   docs/a.md: |
     [!include[]()]
     # Heading
@@ -187,8 +173,6 @@ outputs:
 inputs:
   docfx.yml: |
     files: docs/a.md
-    rules:
-      heading-not-found: info
   docs/a.md: |
     [!INCLUDE[B](b.md)]
     [!INCLUDE[C](c.md)]
@@ -209,8 +193,6 @@ outputs:
 inputs:
   docfx.yml: |
     files: docs/a.md
-    rules:
-      heading-not-found: info
   docs/a.md: |
     [!INCLUDE[B](b.md)]
     [!INCLUDE[C](c.md)]

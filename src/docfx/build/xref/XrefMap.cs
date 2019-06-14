@@ -59,7 +59,7 @@ namespace Microsoft.Docs.Build
             string resolvedHref;
             string displayPropertyValue;
             string name;
-            if (TryResolve(uid, href, moniker, out var spec))
+            if (TryResolve(uid, moniker, out var spec))
             {
                 var (_, query, fragment) = UrlUtility.SplitUrl(spec.Href);
                 resolvedHref = UrlUtility.MergeUrl(spec.DeclairingFile != null ? RebaseResolvedHref(rootFile, spec.DeclairingFile) : RemoveHostnameIfSharingTheSameOne(spec.Href), query, fragment.Length == 0 ? "" : fragment.Substring(1));
@@ -90,12 +90,12 @@ namespace Microsoft.Docs.Build
         private string RebaseResolvedHref(Document rootFile, Document referencedFile)
             => _context.DependencyResolver.GetRelativeUrl(rootFile, referencedFile);
 
-        private bool TryResolve(string uid, SourceInfo<string> href, string moniker, out IXrefSpec spec)
+        private bool TryResolve(string uid, string moniker, out IXrefSpec spec)
         {
             spec = null;
             if (_map.TryGetValue(uid, out var specs))
             {
-                spec = GetXrefSpec(uid, href, moniker, specs.Select(x => x.Value).ToList());
+                spec = GetXrefSpec(uid, moniker, specs.Select(x => x.Value).ToList());
 
                 if (spec is null)
                 {
@@ -106,7 +106,7 @@ namespace Microsoft.Docs.Build
             return false;
         }
 
-        private IXrefSpec GetXrefSpec(string uid, SourceInfo<string> href, string moniker, List<IXrefSpec> specs)
+        private IXrefSpec GetXrefSpec(string uid, string moniker, List<IXrefSpec> specs)
         {
             if (!TryGetValidXrefSpecs(uid, specs, out var validSpecs))
                 return default;
@@ -115,15 +115,12 @@ namespace Microsoft.Docs.Build
             {
                 foreach (var spec in validSpecs)
                 {
-                    if (spec.Monikers.Select(x => x.MonikerName).Contains(moniker))
+                    if (spec.Monikers.Contains(moniker))
                     {
                         return spec;
                     }
                 }
 
-                // if the moniker is not defined with the uid
-                // log a warning and take the one with latest version
-                _context.ErrorLog.Write(Errors.InvalidUidMoniker(href, moniker, uid));
                 return GetLatestInternalXrefMap(validSpecs);
             }
 
@@ -161,7 +158,7 @@ namespace Microsoft.Docs.Build
 
         private IXrefSpec GetLatestInternalXrefMap(List<IXrefSpec> specs)
             => specs.SingleOrDefault(x => x.Monikers?.Any() != true)
-               ?? specs.Where(x => x.Monikers?.Any() != false).OrderByDescending(item => item.Monikers.FirstOrDefault().MonikerName, _context.MonikerProvider.Comparer).FirstOrDefault();
+               ?? specs.Where(x => x.Monikers?.Any() != false).OrderByDescending(item => item.Monikers.FirstOrDefault(), _context.MonikerProvider.Comparer).FirstOrDefault();
 
         private bool TryGetValidXrefSpecs(string uid, List<IXrefSpec> specsWithSameUid, out List<IXrefSpec> validSpecs)
         {
@@ -191,7 +188,7 @@ namespace Microsoft.Docs.Build
             var conflictsWithMoniker = specsWithSameUid.Where(x => x.Monikers.Count > 0);
             if (CheckOverlappingMonikers(specsWithSameUid, out var overlappingMonikers))
             {
-                _context.ErrorLog.Write(Errors.MonikerOverlapping(overlappingMonikers.Select(x => x.MonikerName).ToList()));
+                _context.ErrorLog.Write(Errors.MonikerOverlapping(overlappingMonikers));
                 return false;
             }
 
@@ -203,11 +200,11 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private bool CheckOverlappingMonikers(IEnumerable<IXrefSpec> specsWithSameUid, out HashSet<Moniker> overlappingMonikers)
+        private bool CheckOverlappingMonikers(IEnumerable<IXrefSpec> specsWithSameUid, out HashSet<string> overlappingMonikers)
         {
             bool isOverlapping = false;
-            overlappingMonikers = new HashSet<Moniker>();
-            var monikerHashSet = new HashSet<Moniker>();
+            overlappingMonikers = new HashSet<string>();
+            var monikerHashSet = new HashSet<string>();
             foreach (var spec in specsWithSameUid)
             {
                 foreach (var moniker in spec.Monikers)

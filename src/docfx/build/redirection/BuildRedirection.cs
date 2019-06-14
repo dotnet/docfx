@@ -12,11 +12,14 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(file.ContentType == ContentType.Redirection);
 
-            var (errors, monikers) = context.MonikerProvider.GetFileLevelMonikers(file, context.MetadataProvider);
+            var errors = new List<Error>();
+            var (monikerError, monikers) = context.MonikerProvider.GetFileLevelMonikers(file);
+            errors.AddIfNotNull(monikerError);
 
             var publishItem = new PublishItem
             {
                 Url = file.SiteUrl,
+                SourcePath = file.FilePath,
                 Locale = file.Docset.Locale,
                 RedirectUrl = file.RedirectionUrl,
                 Monikers = monikers,

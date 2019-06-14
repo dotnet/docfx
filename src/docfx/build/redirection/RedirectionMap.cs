@@ -39,7 +39,7 @@ namespace Microsoft.Docs.Build
             return false;
         }
 
-        public static (List<Error> errors, RedirectionMap map) Create(Docset docset, Func<string, bool> glob)
+        public static (List<Error> errors, RedirectionMap map) Create(Docset docset)
         {
             var errors = new List<Error>();
             var redirections = new HashSet<Document>();
@@ -76,10 +76,6 @@ namespace Microsoft.Docs.Build
                     if (type != ContentType.Page)
                     {
                         errors.Add(Errors.RedirectionInvalid(redirectUrl, path));
-                    }
-                    else if (!glob(pathToDocset))
-                    {
-                        errors.Add(Errors.RedirectionOutOfScope(redirectUrl, pathToDocset));
                     }
                     else if (checkRedirectUrl && !redirectUrl.Value.StartsWith('/'))
                     {
