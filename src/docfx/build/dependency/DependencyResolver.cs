@@ -180,7 +180,7 @@ namespace Microsoft.Docs.Build
                 && (file.ContentType == ContentType.Page || file.ContentType == ContentType.TableOfContents)
                 && !file.Docset.BuildScope.Contains(file))
             {
-                return (Errors.LinkOutOfScope(href, file, file.Docset.Config.ConfigFileName), relativeUrl + query + fragment, fragment, linkType, null);
+                return (Errors.LinkOutOfScope(href, file), relativeUrl + query + fragment, fragment, linkType, null);
             }
 
             return (error, relativeUrl + query + fragment, fragment, linkType, file);
@@ -190,7 +190,7 @@ namespace Microsoft.Docs.Build
         {
             if (string.IsNullOrEmpty(href))
             {
-                return (Errors.LinkIsEmpty(relativeTo), null, null, null, null, null);
+                return default;
             }
 
             var (path, query, fragment) = UrlUtility.SplitUrl(href);
@@ -206,6 +206,12 @@ namespace Microsoft.Docs.Build
                 case LinkType.RelativePath:
                     // Resolve path relative to docset
                     var pathToDocset = ResolveToDocsetRelativePath(path, relativeTo);
+
+                    // Use the actual file name case
+                    if (relativeTo.Docset.FileNames.TryGetValue(pathToDocset, out var pathActualCase))
+                    {
+                        pathToDocset = pathActualCase;
+                    }
 
                     // resolve from redirection files
                     if (relativeTo.Docset.Redirections.TryGetRedirection(pathToDocset, out var redirectFile))

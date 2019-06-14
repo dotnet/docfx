@@ -13,8 +13,8 @@ namespace Microsoft.Docs.Build
         /// Defined same redirection entry in both <see cref="Config.Redirections"/> and <see cref="Config.RedirectionsWithoutId"/>.
         /// </summary>
         /// Behavior: ✔️ Message: ❌
-        public static Error RedirectionConflict(string redirectFrom)
-            => new Error(ErrorLevel.Error, "redirection-conflict", $"The '{redirectFrom}' appears twice or more in the redirection mappings");
+        public static Error RedirectionConflict(SourceInfo source, string path)
+            => new Error(ErrorLevel.Error, "redirection-conflict", $"The '{path}' appears twice or more in the redirection mappings", source);
 
         /// <summary>
         /// Redirection entry isn't a conceptual article(*.{md,json,yml}).
@@ -32,9 +32,16 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Defined redirect dest not starting with '\' in <see cref="Config.Redirections"/>.
         /// </summary>
+        public static Error RedirectionUrlInvalid(SourceInfo<string> source)
+            => new Error(ErrorLevel.Warning, "redirection-url-invalid", $"The redirect url '{source}' must start with '/'", source);
+
+        /// <summary>
+        /// Multiple files defined in <see cref="Config.Redirections"/> are redirected to the same url,
+        /// can't decide which entry to use when computing document id.
+        /// </summary>
         /// Behavior: ✔️ Message: ❌
-        public static Error InvalidRedirectTo(SourceInfo<string> source)
-            => new Error(ErrorLevel.Warning, "invalid-redirect-to", $"The redirect url '{source}' must start with '/'", source);
+        public static Error RedirectionUrlConflict(SourceInfo<string> source)
+            => new Error(ErrorLevel.Warning, "redirection-url-conflict", $"The '{source}' appears twice or more in the redirection mappings", source);
 
         /// <summary>
         /// Used invalid glob pattern in configuration.
@@ -213,27 +220,11 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Error, "json-syntax-error", message, source);
 
         /// <summary>
-        /// Used empty link in article.md.
-        /// Examples:
-        ///   - [link]()
-        /// </summary>
-        /// Behavior: ✔️ Message: ❌
-        public static Error LinkIsEmpty(Document relativeTo)
-            => new Error(ErrorLevel.Info, "link-is-empty", "Link is empty", relativeTo.ToString());
-
-        /// <summary>
         /// Link which's resolved to a file out of build scope.
         /// </summary>
         /// Behavior: ✔️ Message: ❌
-        public static Error LinkOutOfScope(SourceInfo<string> source, Document file, string configFile)
-            => new Error(ErrorLevel.Warning, "link-out-of-scope", $"File '{file}' referenced by link '{source}' will not be built because it is not included in {configFile}", source);
-
-        /// <summary>
-        /// Defined a redirection entry that's not matched by config's files glob patterns.
-        /// </summary>
-        /// Behavior: ✔️ Message: ❌
-        public static Error RedirectionOutOfScope(SourceInfo source, string redirection)
-            => new Error(ErrorLevel.Info, "redirection-out-of-scope", $"Redirection file '{redirection}' will not be built because it is not included in build scope", source);
+        public static Error LinkOutOfScope(SourceInfo<string> source, Document file)
+            => new Error(ErrorLevel.Warning, "link-out-of-scope", $"File '{file}' referenced by link '{source}' will not be built because it is not included in build scope", source);
 
         /// <summary>
         /// Link which's resolved to a file in dependency repo won't be built.
@@ -252,11 +243,11 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Warning, "local-file-path", $"Link '{path}' points to a local file. Use a relative path instead", relativeTo.ToString());
 
         /// <summary>
-        /// The fisrt tag in an article.md isn't h1 tag.
+        /// The first tag in an article.md isn't h1 tag.
         /// </summary>
         /// Behavior: ✔️ Message: ❌
         public static Error HeadingNotFound(Document file)
-            => new Error(ErrorLevel.Info, "heading-not-found", $"The first visible block is not a heading block with `#`, `##` or `###`", file.ToString());
+            => new Error(ErrorLevel.Off, "heading-not-found", $"The first visible block is not a heading block with `#`, `##` or `###`", file.ToString());
 
         /// <summary>
         /// Can't find a file referenced by configuration, or user writes a non-existing link.
@@ -288,7 +279,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         /// Behavior: ❌ Message: ✔️
         public static Error AtXrefNotFound(SourceInfo<string> source)
-            => new Error(ErrorLevel.Info, "at-xref-not-found", $"Cross reference not found: '{source}'", source);
+            => new Error(ErrorLevel.Off, "at-xref-not-found", $"Cross reference not found: '{source}'", source);
 
         /// <summary>
         /// Failed to resolve uid defined by [link](xref:uid) or <xref:uid> syntax.
@@ -316,14 +307,6 @@ namespace Microsoft.Docs.Build
         /// Behavior: ✔️ Message: ❌
         public static Error OutputPathConflict(string path, IEnumerable<Document> files)
             => new Error(ErrorLevel.Error, "output-path-conflict", $"Two or more files output to the same path '{path}': {Join(files, file => file.ContentType == ContentType.Redirection ? $"{file} <redirection>" : file.ToString())}");
-
-        /// <summary>
-        /// Multiple files defined in <see cref="Config.Redirections"/> are redirected to the same url,
-        /// can't decide which entry to use when computing document id.
-        /// </summary>
-        /// Behavior: ✔️ Message: ❌
-        public static Error RedirectionDocumentIdConflict(IEnumerable<Document> redirectFromDocs, string redirectTo)
-            => new Error(ErrorLevel.Warning, "redirected-id-conflict", $"Multiple documents redirected to '{redirectTo}' with document id: {Join(redirectFromDocs)}");
 
         /// <summary>
         /// Used docfx output model property which are not defined in input model.
@@ -439,6 +422,39 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Warning, "lack-dependency", $"Missing field: '{otherKey}'. If you specify '{name}', you must also specify '{otherKey}'", source);
 
         /// <summary>
+        /// Fields do not meet the requirements of either logic.
+        /// </summary>
+        public static Error EitherLogicFailed(SourceInfo source, IEnumerable<object> fields)
+            => new Error(ErrorLevel.Warning, "either-logic-failed", $"At least one of these fields: {Join(fields)} exists", source);
+
+        /// <summary>
+        /// Fields do not meet the requirements of precludes logic.
+        /// </summary>
+        public static Error PrecludesLogicFailed(SourceInfo source, IEnumerable<object> fields)
+            => new Error(ErrorLevel.Warning, "precludes-logic-failed", $"Only one of these fields: {Join(fields)} can exist at most", source);
+
+        /// <summary>
+        /// A field does't conform to date format.
+        /// </summary>
+        /// Behavior: ✔️ Message: ❌
+        public static Error DateFormatInvalid(SourceInfo source, string name, string format)
+            => new Error(ErrorLevel.Warning, "date-format-invalid", $"The '{name}' needs to meet the '{format}' format", source);
+
+        /// <summary>
+        /// Date out of range.
+        /// </summary>
+        /// Behavior: ✔️ Message: ❌
+        public static Error OverDateRange(SourceInfo source, string name, TimeSpan? relativeMinDate, TimeSpan? relativeMaxDate)
+            => new Error(ErrorLevel.Warning, "over-date-range", $"Based on the current time, '{name}' needs to be in this range: {(relativeMinDate.HasValue ? $"{relativeMinDate} <= " : "")}'{name}'{(relativeMaxDate.HasValue ? $" <= {relativeMaxDate}" : "")}", source);
+
+        /// <summary>
+        /// A field is deprecated.
+        /// </summary>
+        /// Behavior: ✔️ Message: ❌
+        public static Error FieldDeprecated(SourceInfo source, string name, string replacedBy)
+            => new Error(ErrorLevel.Warning, "field-deprecated", $"Deprecated field: '{name}'{(string.IsNullOrEmpty(replacedBy) ? "." : $", use '{replacedBy}' instead")}", source);
+
+        /// <summary>
         /// Used unknown YamlMime.
         /// Examples:
         ///   - forgot to define schema in schema document(yml)
@@ -501,15 +517,6 @@ namespace Microsoft.Docs.Build
         /// Behavior: ✔️ Message: ❌
         public static Error EmptyMonikers(string message)
             => new Error(ErrorLevel.Warning, "empty-monikers", message);
-
-        /// <summary>
-        /// Referenced an article using uid with invalid moniker(?view=).
-        /// Examples:
-        ///   - article with uid `a` has only netcore-1.0 & netcore-1.1 version, but get referenced with @a?view=netcore-2.0
-        /// </summary>
-        /// Behavior: ✔️ Message: ❌
-        public static Error InvalidUidMoniker(SourceInfo source, string moniker, string uid)
-            => new Error(ErrorLevel.Info, "invalid-uid-moniker", $"Moniker '{moniker}' is not defined with uid '{uid}'", source);
 
         /// <summary>
         /// Custom 404 page is not supported

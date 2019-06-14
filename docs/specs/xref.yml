@@ -9,25 +9,35 @@ outputs:
   .errors.log: |
     ["warning","xref-not-found","Cross reference not found: '<xref:a>'","docs/a.md",1,9]
 ---
-# Unknown xrefs using @ syntax are output as is with a informational message
+# Unknown xrefs using @ syntax are not included in error log
 inputs:
   docfx.yml:
   docs/a.md: Link to @a
 outputs:
   docs/a.json: |
     { "conceptual": "<p>Link to @a</p>" }
-  .errors.log: |
-    ["info","at-xref-not-found","Cross reference not found: '@a'","docs/a.md",1,10]
 ---
 # Restore xref map from configured url and use the map for resolving
 # hostname should be removed if docset sharing the same one
 inputs:
   docfx.yml: |
     baseUrl: https://docs.microsoft.com
-    xref: xrefmap.json
+    xref: 
+      - 1.xrefmap.json
+      - 2.xrefmap.json
   docs/a.md: Link to @System.String
-  xrefmap.json: |
-    { "references":[{"uid": "System.String", "name": "String", "fullName": "System.String", "href": "https://docs.microsoft.com/en-us/dotnet/api/system.string", "nameWithType": "System.String"}],"Others":{"properties":{"vendor":"dotnet-api-docs","tags":["/dotnet","public"]}},"IsEmbeddedRedirections":false}
+  1.xrefmap.json: |
+    {
+      "references":[{
+          "uid": "System.String",
+          "name": "String",
+          "fullName": "System.String",
+          "href": "https://docs.microsoft.com/en-us/dotnet/api/system.string",
+          "nameWithType": "System.String"
+      }]
+    }
+  2.xrefmap.json: |
+    { "references":[{"uid": "a", "name": "a", "fullName": "a", "href": "https://docs.microsoft.com/en-us/a", "nameWithType": "a"}]}
 outputs:
   docs/a.json: |
     { "conceptual": "<p>Link to <a href=\"/en-us/dotnet/api/system.string\">String</a></p>\n"}
@@ -177,7 +187,6 @@ outputs:
     {"conceptual":"<p>Link to @a</p>\n"}
   .errors.log: |
     ["error","uid-conflict","UID 'a' is defined in more than one file: 'docs/a.yml', 'docs/b.json'"]
-    ["info","at-xref-not-found","Cross reference not found: '@a'","docs/c.md",1,10]
   xrefmap.json: | 
     {"!references":null}
 ---
@@ -697,11 +706,6 @@ outputs:
     {"conceptual" : "<p>str <a href='c'>Title from yaml header c</a>\nstr @mention\nsome text\nstr @higher\nmultiple xref @mentione some text @mentionf</p>\n<p>\n  @mentione\n  some text\n  mentionf\n</p>\n"}
   docs/c.json:
   .errors.log: |
-    ["info","at-xref-not-found","Cross reference not found: '<xref href=\"d\" data-raw-source=\"@mention\">'","docs/a.md",2,12]
-    ["info","at-xref-not-found","Cross reference not found: '<xref href=\"d\" data-raw-html=\"@higher\" data-raw-source=\"@mention\">'","docs/a.md",4,12]
-    ["info","at-xref-not-found","Cross reference not found: '<xref href=\"e\" data-raw-source=\"@mentione\">'","docs/a.md",5,12]
-    ["info","at-xref-not-found","Cross reference not found: '<xref href=\"f\" data-raw-source=\"@mentionf\">'","docs/a.md",5,12]
-    ["info","at-xref-not-found","Cross reference not found: '<p>\n  <xref href=\"e\" data-raw-source=\"@mentione\" />\n  some text\n  <xref href=\"f\" data-raw-source=\"mentionf\" />\n</p>'","docs/a.md",6,18]
     ["warning","xref-not-found","Cross reference not found: '<p>\n  <xref href=\"e\" data-raw-source=\"@mentione\" />\n  some text\n  <xref href=\"f\" data-raw-source=\"mentionf\" />\n</p>'","docs/a.md",6,78]
 ---
 # support multiple uids with different xref properties
@@ -790,3 +794,24 @@ outputs:
             }
         ]
     }
+---
+# uid resolving should respect the order of xref settings
+inputs:
+  docfx.yml: |
+    baseUrl: https://docs.microsoft.com
+    xref: 
+      - 1.xrefmap.json
+      - 2.xrefmap.json
+  docs/a.md: Link to @System.String
+  1.xrefmap.json: |
+    {
+      "references":[{
+          "uid": "System.String",
+          "href": "https://docs.microsoft.com/en-us/dotnet/api/system.string"
+      }]
+    }
+  2.xrefmap.json: |
+    { "references":[{"uid": "System.String", "href": "https://2.docs.microsoft.com/en-us/system.string"}]}
+outputs:
+  docs/a.json: |
+    { "conceptual": "<p>Link to <a href=\"/en-us/dotnet/api/system.string\">System.String</a></p>\n"}

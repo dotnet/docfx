@@ -7,6 +7,6 @@ namespace Microsoft.Docs.Build
 {
     internal interface IExpression
     {
-        IEnumerable<string> Accept(EvaluatorWithMonikersVisitor visitor);
+        IEnumerable<Moniker> Accept(EvaluatorWithMonikersVisitor visitor);
     }
 }

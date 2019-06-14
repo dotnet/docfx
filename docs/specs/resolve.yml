@@ -149,7 +149,6 @@ outputs:
   docs/a.json: |
     { "conceptual": "<p><a href=\"\">Empty</a><a href=\"a%3C%3Eb.md\">Invalid</a><a href=\"c.md\">Missing</a></p>" }
   .errors.log: |
-    ["info","link-is-empty","Link is empty","docs/a.md",1,1]
     ["warning","file-not-found","Invalid file link: 'a<>b.md'.","docs/a.md",1,11]
     ["warning","file-not-found","Invalid file link: 'c.md'.","b.md",1,1]
 ---
@@ -244,7 +243,7 @@ outputs:
   docs/b.json: |
     {"conceptual":"<p><a href=\"#self\"></a></p>"}
   .errors.log: |
-    ["warning","link-out-of-scope","File 'c.md' referenced by link '../c.md' will not be built because it is not included in docfx.yml","docs/a.md",1,9]
+    ["warning","link-out-of-scope","File 'c.md' referenced by link '../c.md' will not be built because it is not included in build scope","docs/a.md",1,9]
     ["suggestion","internal-bookmark-not-found","Cannot find bookmark '#self' in 'c.md'","c.md",1,1]
 ---
 # Don't show warning if link to a resource outside build scope
@@ -409,6 +408,6 @@ inputs:
   b.md: Token
 outputs:
   docs/a.json: |
-    { "conceptual": "[!include[B1](~/b.md)]<p>Token</p>\n" }
+    { "conceptual": "[!include[B1](~/b.md)]<p>Token</p>" }
   .errors.log: |
     ["warning","include-not-found","Cannot resolve '~/b.md' relative to 'docs/a.md'.","docs/a.md",1,1]

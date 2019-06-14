@@ -2,8 +2,9 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using Newtonsoft.Json.Linq;
 
@@ -11,13 +12,18 @@ namespace Microsoft.Docs.Build
 {
     internal class MetadataProvider
     {
+        private readonly Cache _cache;
         private readonly JsonSchemaValidator _schemaValidator;
         private readonly JObject _globalMetadata;
         private readonly HashSet<string> _reservedMetadata;
         private readonly List<(Func<string, bool> glob, string key, JToken value)> _rules = new List<(Func<string, bool> glob, string key, JToken value)>();
 
-        public MetadataProvider(Docset docset)
+        private readonly ConcurrentDictionary<Document, (List<Error> errors, OutputModel metadata)> _metadataCache
+                   = new ConcurrentDictionary<Document, (List<Error> errors, OutputModel metadata)>();
+
+        public MetadataProvider(Docset docset, Cache cache)
         {
+            _cache = cache;
             _schemaValidator = new JsonSchemaValidator(docset.MetadataSchema);
             _globalMetadata = docset.Config.GlobalMetadata;
 
@@ -35,15 +41,22 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public (List<Error> errors, T metadata) GetInputMetadata<T>(Document file, JObject yamlHeader = null) where T : InputMetadata
+        public (List<Error> errors, OutputModel metadata) GetMetadata(Document file)
         {
-            Debug.Assert(file != null);
+            return _metadataCache.GetOrAdd(file, GetMetadataCore);
+        }
+
+        private (List<Error> errors, OutputModel metadata) GetMetadataCore(Document file)
+        {
+            if (file.ContentType != ContentType.Page && file.ContentType != ContentType.TableOfContents)
+            {
+                return (new List<Error>(), new OutputModel());
+            }
 
             var result = new JObject();
-            if (yamlHeader != null)
-            {
-                JsonUtility.SetSourceInfo(result, JsonUtility.GetSourceInfo(yamlHeader));
-            }
+
+            var (errors, yamlHeader) = LoadMetadata(file);
+            JsonUtility.SetSourceInfo(result, JsonUtility.GetSourceInfo(yamlHeader));
 
             JsonUtility.Merge(result, _globalMetadata);
 
@@ -59,13 +72,10 @@ namespace Microsoft.Docs.Build
                 }
             }
             JsonUtility.Merge(result, fileMetadata);
+            JsonUtility.Merge(result, yamlHeader);
 
-            if (yamlHeader != null)
-            {
-                JsonUtility.Merge(result, yamlHeader);
-            }
-
-            var (errors, metadata) = JsonUtility.ToObject<T>(result);
+            var (toObjectErrors, metadata) = JsonUtility.ToObject<OutputModel>(result);
+            errors.AddRange(toObjectErrors);
 
             foreach (var property in result.Properties())
             {
@@ -97,6 +107,47 @@ namespace Microsoft.Docs.Build
             }
 
             return true;
+        }
+
+        private (List<Error> errors, JObject metadata) LoadMetadata(Document file)
+        {
+            if (file.FilePath.EndsWith(".md", PathUtility.PathComparison))
+            {
+                using (var reader = new StreamReader(file.ReadStream()))
+                {
+                    return ExtractYamlHeader.Extract(reader, file.FilePath);
+                }
+            }
+
+            if (file.FilePath.EndsWith(".yml", PathUtility.PathComparison))
+            {
+                return LoadSchemaDocumentMetadata(_cache.LoadYamlFile(file), file.FilePath);
+            }
+
+            if (file.FilePath.EndsWith(".json", PathUtility.PathComparison))
+            {
+                return LoadSchemaDocumentMetadata(_cache.LoadJsonFile(file), file.FilePath);
+            }
+
+            return (new List<Error>(), new JObject());
+        }
+
+        private static (List<Error> errors, JObject metadata) LoadSchemaDocumentMetadata((List<Error>, JToken) document, string file)
+        {
+            var (errors, token) = document;
+            var metadata = token is JObject tokenObj ? tokenObj["metadata"] : null;
+
+            if (metadata != null)
+            {
+                if (metadata is JObject obj)
+                {
+                    return (errors, obj);
+                }
+
+                errors.Add(Errors.YamlHeaderNotObject(isArray: metadata is JArray, file));
+            }
+
+            return (errors, new JObject());
         }
     }
 }
