@@ -253,6 +253,12 @@ namespace Microsoft.Docs.Build
             "['warning','field-deprecated','Deprecated field: 'key1'.','file',1,10]")]
         [InlineData("{'properties': {'key1': {'replacedBy': 'key2'}}}", "{'key1': 1}",
             "['warning','field-deprecated','Deprecated field: 'key1', use 'key2' instead','file',1,10]")]
+
+        // dependent enums validation
+        [InlineData("{'properties': {'key1': {'type': 'string', 'enum': ['.net', 'yammer']}, 'key2': {'type': 'string'}}, 'dependentEnums': { 'key2': { 'key1': { '.net': ['', 'csharp', 'devlang'], 'yammer': ['', 'tabs', 'vba']}}}}",
+            "{'key1': 'yammer', 'key2': 'tabs'}", "")]
+        [InlineData("{'properties': {'key1': {'type': 'string', 'enum': ['.net', 'yammer']}, 'key2': {'type': 'string'}}, 'dependentEnums': { 'key2': { 'key1': { '.net': ['', 'csharp', 'devlang'], 'yammer': ['', 'tabs', 'vba']}}}}",
+            "{'key1': 'yammer'}", "")]
         public void TestJsonSchemaValidation(string schema, string json, string expectedErrors)
         {
             var jsonSchema = JsonUtility.Deserialize<JsonSchema>(schema.Replace('\'', '"'), null);

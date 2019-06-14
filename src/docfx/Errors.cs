@@ -391,6 +391,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// The string type's value doesn't match given format.
         /// </summary>
+        /// Behavior: ✔️ Message: ❌
         public static Error FormatInvalid(SourceInfo source, string value, JsonSchemaStringFormat type)
             => new Error(ErrorLevel.Warning, "format-invalid", $"String '{value}' is not a valid '{type}'", source);
 
@@ -453,6 +454,13 @@ namespace Microsoft.Docs.Build
         /// Behavior: ✔️ Message: ❌
         public static Error FieldDeprecated(SourceInfo source, string name, string replacedBy)
             => new Error(ErrorLevel.Warning, "field-deprecated", $"Deprecated field: '{name}'{(string.IsNullOrEmpty(replacedBy) ? "." : $", use '{replacedBy}' instead")}", source);
+
+        /// <summary>
+        /// The values of the two fields do not match.
+        /// </summary>
+        /// Behavior: ✔️ Message: ❌
+        public static Error ValuesNotMatch(SourceInfo source, string name, string value, string dependentFieldName, string dependentFieldValue)
+            => new Error(ErrorLevel.Warning, "values-not-match", $"Invalid value for {name}: '{value}' is not valid with '{dependentFieldName}' value '{dependentFieldValue}'", source);
 
         /// <summary>
         /// Used unknown YamlMime.
