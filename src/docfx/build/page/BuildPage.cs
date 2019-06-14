@@ -204,9 +204,8 @@ namespace Microsoft.Docs.Build
 
                 // merge extension data to metadata in legacy model
                 var landingData = (LandingData)content;
-                var mergedMetadata = new JObject();
+                var mergedMetadata = JsonUtility.ToJObject(pageModel as InputMetadata);
                 JsonUtility.Merge(mergedMetadata, landingData.ExtensionData);
-                JsonUtility.Merge(mergedMetadata, landingData.Metadata);
 
                 (_, pageModel) = JsonUtility.ToObject<OutputModel>(mergedMetadata);
 
