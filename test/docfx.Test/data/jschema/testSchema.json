@@ -13,13 +13,7 @@
                         "item1": true,
                         "item2": {
                             "type": [
-                                "array",
-                                "boolean",
-                                "integer",
-                                "number",
-                                "null",
-                                "object",
-                                "string"
+                                "none"
                             ]
                         }
                     }

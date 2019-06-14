@@ -346,7 +346,7 @@ namespace Microsoft.Docs.Build
 
             if (type == typeof(object))
             {
-                jsonSchema.Type = new[] { JsonSchemaType.Array, JsonSchemaType.Boolean, JsonSchemaType.Integer, JsonSchemaType.Number, JsonSchemaType.Null, JsonSchemaType.Object, JsonSchemaType.String };
+                jsonSchema.Type = new[] { JsonSchemaType.None };
                 return jsonSchema;
             }
 
