@@ -694,8 +694,6 @@ repos:
         docs/b.md: |
           link to @c
 outputs:
-  .errors.log: |
-    ["info","at-xref-not-found","Cross reference not found: '@c'","docs/b.md",1,10]
   docs/a.json:
   docs/b.json:
 ---
@@ -717,8 +715,6 @@ inputs:
     ---
   localization/zh-cn/docs/b.md: link to @c
 outputs:
-  .errors.log: |
-    ["info","at-xref-not-found","Cross reference not found: '@c'","docs/b.md",1,10]
   docs/a.json:
   docs/b.json:
 ---

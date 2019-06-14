@@ -6,7 +6,6 @@ namespace Microsoft.Docs.Build
     internal enum ErrorLevel
     {
         Off,
-        Info,
         Suggestion,
         Warning,
         Error,

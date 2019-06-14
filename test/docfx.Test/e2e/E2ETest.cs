@@ -304,21 +304,18 @@ namespace Microsoft.Docs.Build
         {
             environmentVariables = environmentVariables ?? Array.Empty<string>();
 
-            var replaceEnvironments =
-                environmentVariables.Length > 0 &&
-                !environmentVariables.Any(env => string.IsNullOrEmpty(Environment.GetEnvironmentVariable(env)));
-
             foreach (var (file, content) in files)
             {
-                var mutableContent = content;
+                var mutableContent = content ?? "";
                 var filePath = Path.Combine(targetFolder, file);
                 PathUtility.CreateDirectoryFromFilePath(filePath);
-                if (replaceEnvironments && Path.GetFileNameWithoutExtension(file) == "docfx")
+                if (Path.GetFileNameWithoutExtension(file) == "docfx")
                 {
                     foreach (var env in environmentVariables)
                     {
-                        mutableContent = content.Replace($"{{{env}}}", Environment.GetEnvironmentVariable(env));
+                        mutableContent = mutableContent.Replace($"{{{env}}}", Environment.GetEnvironmentVariable(env));
                     }
+                    mutableContent = mutableContent.Replace("{APP_BASE_PATH}", AppContext.BaseDirectory);
                 }
                 File.WriteAllText(filePath, mutableContent);
             }
@@ -477,7 +474,7 @@ namespace Microsoft.Docs.Build
                 Assert.True(lastModifyTime == currentFile.LastWriteTime, $"Input file {currentFile.Name} has been changed");
                 currentFiles.Remove(file);
             }
-            Assert.True(currentFiles.Count == 0, $"New files {string.Join(",", currentFiles.Count > 3 ? currentFiles.SkipLast(currentFiles.Count-3) : currentFiles)} has been generated in input folder");
+            Assert.True(currentFiles.Count == 0, $"New files {string.Join(",", currentFiles.Count > 3 ? currentFiles.SkipLast(currentFiles.Count - 3) : currentFiles)} has been generated in input folder");
         }
     }
 }

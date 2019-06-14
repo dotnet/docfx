@@ -278,7 +278,9 @@ query ($owner: String!, $name: String!, $commit: String!) {
                            Content = new StringContent(JsonUtility.Serialize(request), System.Text.Encoding.UTF8, "application/json"),
                            Method = HttpMethod.Post,
                        }),
-                   ex => ex is OperationCanceledException);
+                   ex =>
+                    (ex.InnerException ?? ex) is OperationCanceledException ||
+                    (ex.InnerException ?? ex) is System.IO.IOException);
 
             if (!response.IsSuccessStatusCode)
             {

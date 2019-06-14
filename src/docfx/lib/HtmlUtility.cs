@@ -308,23 +308,16 @@ namespace Microsoft.Docs.Build
 
         private static string AddLocaleIfMissing(string href, string locale)
         {
-            try
+            var pos = href.IndexOfAny(new[] { '/', '\\' }, 1);
+            if (pos >= 1)
             {
-                var pos = href.IndexOfAny(new[] { '/', '\\' }, 1);
-                if (pos >= 1)
+                var urlLocale = href.Substring(1, pos - 1);
+                if (LocalizationUtility.IsValidLocale(urlLocale))
                 {
-                    var urlLocale = href.Substring(1, pos - 1);
-                    if (urlLocale.Contains("-"))
-                    {
-                        return href;
-                    }
+                    return href;
                 }
-                return '/' + locale + href;
             }
-            catch (CultureNotFoundException)
-            {
-                return '/' + locale + href;
-            }
+            return '/' + locale + href;
         }
 
         private static int CountWordInText(string text)

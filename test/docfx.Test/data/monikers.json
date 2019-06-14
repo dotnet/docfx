@@ -1,0 +1,41 @@
+
+{
+    "monikers": [
+        {
+            "moniker_name": "netcore-1.0",
+            "product_name": ".NET Core"
+        },
+        {
+            "moniker_name": "netcore-1.1",
+            "product_name": ".NET Core"
+        },
+        {
+            "moniker_name": "netcore-1.2",
+            "product_name": ".NET Core"
+        },
+        {
+            "moniker_name": "netcore-1.3",
+            "product_name": ".NET Core"
+        },
+        {
+            "moniker_name": "netcore-2.1",
+            "product_name": ".NET Core",
+            "order": 21
+        },
+        {
+            "moniker_name": "netcore-2.0",
+            "product_name": ".NET Core",
+            "order": 20
+        },
+        {
+            "moniker_name": "netcore-2.2",
+            "product_name": ".NET Core",
+            "order": 22
+        },
+        {
+            "moniker_name": "netcore-2.3",
+            "product_name": ".NET Core",
+            "order": 23
+        }
+    ]
+}

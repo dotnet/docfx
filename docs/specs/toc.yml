@@ -501,7 +501,26 @@ outputs:
        "items":[  
           {  
              "name":"File Reference",
-             "href":"f1/a"
+             "href":"f1/a",
+             "homepage": "f1/a"
+          }
+       ]
+    }
+---
+# Homepage only shows when topic href is set
+inputs:
+  docfx.yml:
+  docs/TOC.yml: |
+    - name: name
+      href: /f1/a
+outputs:
+  docs/toc.json: |
+    {
+       "items":[
+          {
+             "name":"name",
+             "href":"/f1/a",
+             "!homepage": "f1/a"
           }
        ]
     }
@@ -521,7 +540,8 @@ outputs:
           "name": "Azure",
           "href": "/azure/",
           "tocHref": "/azure/",
-          "topicHref": "/azure/index"
+          "topicHref": "/azure/index",
+          "homepage": "/azure/index"
         }
       ]
     }

@@ -5,7 +5,7 @@ using Xunit;
 
 namespace Microsoft.Docs.Build
 {
-    public class ReportTest
+    public class ErrorLogTest
     {
         [Fact]
         public void DedupErrors()

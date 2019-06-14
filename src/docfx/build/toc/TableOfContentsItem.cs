@@ -19,6 +19,8 @@ namespace Microsoft.Docs.Build
 
         public SourceInfo<string> TocHref { get; set; }
 
+        public string Homepage { get; set; }
+
         public SourceInfo<string> Uid { get; set; }
 
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
@@ -27,7 +29,7 @@ namespace Microsoft.Docs.Build
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
         public bool MaintainContext { get; set; }
 
-        public List<string> Monikers { get; set; }
+        public List<string> Monikers { get; set; } = new List<string>();
 
         public List<TableOfContentsItem> Items { get; set; } = new List<TableOfContentsItem>();
 
