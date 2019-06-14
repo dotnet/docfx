@@ -19,6 +19,7 @@ namespace Microsoft.Docs.Build
             var publishItem = new PublishItem
             {
                 Url = file.SiteUrl,
+                SourcePath = file.FilePath,
                 Locale = file.Docset.Locale,
                 RedirectUrl = file.RedirectionUrl,
                 Monikers = monikers,

@@ -32,6 +32,7 @@ namespace Microsoft.Docs.Build
             {
                 Url = file.SiteUrl,
                 Path = outputPath,
+                SourcePath = file.FilePath,
                 Locale = file.Docset.Locale,
                 Monikers = model.Metadata.Monikers,
                 MonikerGroup = MonikerUtility.GetGroup(model.Metadata.Monikers),

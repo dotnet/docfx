@@ -91,7 +91,7 @@ namespace Microsoft.Docs.Build
                         var file = new LegacyManifestItem
                         {
                             AssetId = legacySiteUrlRelativeToSiteBasePath,
-                            Original = document.FilePath,
+                            Original = fileManifest.Value.SourcePath,
                             SourceRelativePath = document.ToLegacyPathRelativeToBasePath(docset),
                             OriginalType = GetOriginalType(document.ContentType),
                             Type = GetType(document.ContentType, document.Schema),

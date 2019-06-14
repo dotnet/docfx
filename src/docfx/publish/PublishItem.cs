@@ -15,6 +15,8 @@ namespace Microsoft.Docs.Build
 
         public string Path { get; set; }
 
+        public string SourcePath { get; set; }
+
         public string MonikerGroup { get; set; }
 
         public string Locale { get; set; }
