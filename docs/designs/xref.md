@@ -89,21 +89,23 @@ Besides using file path to link to another file, DocFX also allows you to give a
 
     | Cross site | Build Type | build branch | xref definition branch | append branch info | v2 actual behavior |
     | --- | --- | --- | --- | --- | --- |
-    | no | commit | master | master | yes(current branch is `master` already) | |
-    | no | commit | test | master | yes(`test` branch may not exist in xref definition repo) | |
-    | no | PR | test -> master | master | yes(`PR` branch may not exist in xref definition repo) | |
-    | no | PR | master -> test | master | yes(`PR` branch may not exist in xref definition repo) | |
-    | no | commit | live | live(go-live) | no(`live` branch exists) | |
-    | no | commit | live | live(not-go-live) | no(uid-not-found) | |
-    | no | PR | test -> live | live(go-live) | no(resolved URL pointing to `live`) | |
-    | no | PR | test -> live | live(not-go-live) | no(uid-not-found) | |
+    | no | commit | master | master | yes(current branch is `master` already) | yes |
+    | no | commit | test | master | yes(`test` branch may not exist in xref definition repo) | yes |
+    | no | commit | live | live(go-live) | no(`live` branch exists) | no |
+    | no | commit | live | live(not-go-live) | no(uid-not-found) | no(uid-not-found) |
+    | no | PR | test -> master | master | yes(`PR` branch may not exist in xref definition repo) | yes |
+    | no | PR | master -> test | master | yes(`PR` branch may not exist in xref definition repo) | yes |
+    | no | PR | test -> live | live(go-live) | no(resolved URL pointing to `live`) | yes(url appending with ?branch=live) |
+    | no | PR | test -> live | live(not-go-live) | no(uid-not-found) | no(uid-not-found) |
     | yes | commit | master | master | yes(Jump to external site with branch info, implemented in v2) | |
+    | yes | commit | test | master | yes(Jump to external site with branch info, implemented in v2) | |
     | yes | commit | live | live(go-live) | no | |
     | yes | commit | live | live(not-go-live) | no(uid-not-found) | |
     | yes | PR | test -> master | master | yes | |
-    | yes | PR | test -> live | live(go-live) | no | |
-    | yes | PR | test -> live | live(not-go-live) | no | |
-    > For the last scenario, the output url would be `review.docs.microsoft.com` and the resolved uid url would be `docs.microsoft.com`, while clicking to this url, the user will go to another site `docs.microsoft.com` instead. Is this expected behavior?
+    | yes | PR | master -> test | master | yes | |
+    | yes | PR | test -> live | live(go-live) | no |  |
+    | yes | PR | test -> live | live(not-go-live) | no(uid-not-found) |  |
+    > For the last scenario, the output url would be `review.docs.microsoft.com` and the resolved uid url would be `docs.microsoft.com`, while clicking to this url, the user will go to another site `docs.microsoft.com` instead. Removing host for `uid` resolved URL can resolve this.
     - The href of UID is from the same host name as the referencing repository.
         - If the current branch is `live`, and the UID href is also from `live`, everything is OK
         - If the current branch is `master`, then the output site is `review.docs`, but the resovled url is `docs` which is `live`, while browsing the UID href, the user should not jump to another site(`docs`)
