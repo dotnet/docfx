@@ -256,16 +256,16 @@ namespace Microsoft.Docs.Build
 
         private void ValidateEnumDependencies(JsonSchema schema, JObject map, List<Error> errors)
         {
-            foreach (var fieldName in schema.EnumDependencies .Keys)
+            foreach (var (fieldName, enumDependencyRules) in schema.EnumDependencies)
             {
                 if (map.TryGetValue(fieldName, out var fieldValue) && fieldValue.Type == JTokenType.String)
                 {
-                    foreach (var dependentFieldName in schema.EnumDependencies [fieldName].Keys)
+                    foreach (var (dependentFieldName, allowLists) in enumDependencyRules)
                     {
                         if (map.TryGetValue(dependentFieldName, out var dependentFieldValue))
                         {
                             if (dependentFieldValue.Type == JTokenType.String &&
-                                schema.EnumDependencies [fieldName][dependentFieldName].TryGetValue((string)dependentFieldValue, out var allowList) &&
+                                allowLists.TryGetValue((string)dependentFieldValue, out var allowList) &&
                                 Array.IndexOf(allowList, (string)fieldValue) == -1)
                             {
                                 errors.Add(Errors.ValuesNotMatch(JsonUtility.GetSourceInfo(map), fieldName, (string)fieldValue, dependentFieldName, (string)dependentFieldValue));
