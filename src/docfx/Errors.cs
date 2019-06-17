@@ -459,8 +459,8 @@ namespace Microsoft.Docs.Build
         /// The values of the two fields do not match.
         /// </summary>
         /// Behavior: ✔️ Message: ❌
-        public static Error ValuesNotMatch(SourceInfo source, string name, object value, string dependentFieldName, object dependentFieldValue)
-            => new Error(ErrorLevel.Warning, "values-not-match", $"Invalid value for {name}: '{value}' is not valid with '{dependentFieldName}' value '{dependentFieldValue}'", source);
+        public static Error ValuesNotMatch(SourceInfo source, string name, object value, string dependentFieldName, object dependentFieldValue, IEnumerable<object> validValues)
+            => new Error(ErrorLevel.Warning, "values-not-match", $"Invalid value for {name}: '{value}' is not valid with '{dependentFieldName}' value '{dependentFieldValue}'. Valid values: {Join(validValues)}", source);
 
         /// <summary>
         /// Used unknown YamlMime.
