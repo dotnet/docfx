@@ -447,16 +447,14 @@ inputs:
 outputs:
   a.json:
 ---
-# redirect to in config.redirections must start with '/'
+# redirect to in config.redirections should be relative or absoute path
 inputs:
   docfx.yml: |
     redirections:
       a.md: https://docs.microsoft.com/docfx/a
-      b.md: a
 outputs:
   .errors.log: |
-    ["warning","redirection-url-invalid","The redirect url 'https://docs.microsoft.com/docfx/a' must start with '/'","docfx.yml",2,9]
-    ["warning","redirection-url-invalid","The redirect url 'a' must start with '/'","docfx.yml",3,9]
+    ["warning","redirection-url-invalid","The redirect url 'https://docs.microsoft.com/docfx/a' should be absolute or relative path.","docfx.yml",2,9]
 ---
 # redirect to not starting with '/' is allowed in config.redirectionWithoutIds
 inputs:

@@ -15,6 +15,17 @@ namespace Microsoft.Docs.Build
         [InlineData("a", "a")]
         [InlineData("a.b", "a.b")]
         [InlineData("\\a", "/a")]
+        [InlineData("a\\", "a/")]
+        [InlineData("a/b/c/../d", "a/b/d")]
+        [InlineData("a/b/c/../d/", "a/b/d/")]
+        public static void Normalize(string path, string expected)
+            => Assert.Equal(expected, PathUtility.Normalize(path));
+
+        [Theory]
+        [InlineData(".", "")]
+        [InlineData("a", "a")]
+        [InlineData("a.b", "a.b")]
+        [InlineData("\\a", "/a")]
         [InlineData("a\\b./c/d../e", "a/b./c/d../e")]
         [InlineData("a\\b\\./c/d/../e", "a/b/c/e")]
         [InlineData("/a\\b\\./c/d/../e", "/a/b/c/e")]

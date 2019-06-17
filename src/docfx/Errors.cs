@@ -33,7 +33,7 @@ namespace Microsoft.Docs.Build
         /// Defined redirect dest not starting with '\' in <see cref="Config.Redirections"/>.
         /// </summary>
         public static Error RedirectionUrlInvalid(SourceInfo<string> source)
-            => new Error(ErrorLevel.Warning, "redirection-url-invalid", $"The redirect url '{source}' must start with '/'", source);
+            => new Error(ErrorLevel.Warning, "redirection-url-invalid", $"The redirect url '{source}' should be absolute or relative path.", source);
 
         /// <summary>
         /// Multiple files defined in <see cref="Config.Redirections"/> are redirected to the same url,
