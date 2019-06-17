@@ -95,16 +95,16 @@ Besides using file path to link to another file, DocFX also allows you to give a
     | no | commit | live | live(not-go-live) | no(uid-not-found) | no(uid-not-found) |
     | no | PR | test -> master | master | yes(`PR` branch may not exist in xref definition repo) | yes |
     | no | PR | master -> test | master | yes(`PR` branch may not exist in xref definition repo) | yes |
-    | no | PR | test -> live | live(go-live) | no(resolved URL pointing to `live`) | yes(url appending with ?branch=live) |
+    | no | PR | test -> live | live(go-live) | no | yes(url appending with `?branch=live`) |
     | no | PR | test -> live | live(not-go-live) | no(uid-not-found) | no(uid-not-found) |
-    | yes | commit | master | master | yes(Jump to external site with branch info, implemented in v2) | |
-    | yes | commit | test | master | yes(Jump to external site with branch info, implemented in v2) | |
-    | yes | commit | live | live(go-live) | no | |
-    | yes | commit | live | live(not-go-live) | no(uid-not-found) | |
-    | yes | PR | test -> master | master | yes | |
-    | yes | PR | master -> test | master | yes | |
-    | yes | PR | test -> live | live(go-live) | no |  |
-    | yes | PR | test -> live | live(not-go-live) | no(uid-not-found) |  |
+    | yes | commit | master | master | yes(Jump to external site with `brnach=master`) | yes(Jump to external site with `?branch=master`) |
+    | yes | commit | test | master | yes(Jump to external site with `?branch=master`) | yes(append with `?branch=master`) |
+    | yes | commit | live | live(go-live) | no | no |
+    | yes | commit | live | live(not-go-live) | no(uid-not-found) | no(uid-not-found) |
+    | yes | PR | test -> master | master | yes(Jump to external site with `?branch=master`) | yes(Jump to external site with `?branch=master`) |
+    | yes | PR | master -> test | master | yes | yes |
+    | yes | PR | test -> live | live(go-live) | no | yes(append with `?branch=live`) |
+    | yes | PR | test -> live | live(not-go-live) | no(uid-not-found) | no(uid-not-found) |
     > For the last scenario, the output url would be `review.docs.microsoft.com` and the resolved uid url would be `docs.microsoft.com`, while clicking to this url, the user will go to another site `docs.microsoft.com` instead. Removing host for `uid` resolved URL can resolve this.
     - The href of UID is from the same host name as the referencing repository.
         - If the current branch is `live`, and the UID href is also from `live`, everything is OK
