@@ -23,7 +23,6 @@ namespace Microsoft.Docs.Build
         public (List<Error> errors, JToken token) TransformContent(Document file, Context context, JToken token, Action<Document> buildChild)
         {
             var errors = new List<Error>();
-            token = JsonUtility.DeepClone(token); // remove this line when transfromXref share JToken with transformContent
             Transform(file, context, _schema, token, errors, buildChild);
             return (errors, token);
         }
@@ -35,69 +34,64 @@ namespace Microsoft.Docs.Build
             var uidJsonPaths = new HashSet<string>();
 
             token = JsonUtility.DeepClone(token); // remove this line when transfromXref share JToken with transformContent
-            TransformXref(_schema, token, true);
+            Travels(file, context, _schema, token, errors, buildChild, (schema, node) =>
+            {
+                if (node is JObject obj)
+                {
+                    var uid = obj.TryGetValue("uid", out var uidValue) && uidValue is JValue uidJValue && uidJValue.Value is string uidStr ? uidStr : null;
+                    if (uid != null)
+                    {
+                        if (uidJsonPaths.Add(uidValue.Path) && xrefPropertiesGroupByUid.ContainsKey(uid))
+                        {
+                            errors.Add(Errors.UidConflict(uid));
+                            return default;
+                        }
+
+                        if (!xrefPropertiesGroupByUid.TryGetValue(uid, out _))
+                        {
+                            xrefPropertiesGroupByUid[uid] = (obj.Parent == null, new Dictionary<string, Lazy<JToken>>());
+                        }
+                    }
+
+                    foreach (var (key, value) in obj)
+                    {
+                        if (uid != null && schema.XrefProperties.Contains(key))
+                        {
+                            var propertySchema = TryGetPropertyJsonSchema(schema, key, out var subSchema) ? subSchema : null;
+                            xrefPropertiesGroupByUid[uid].Item2[key] = new Lazy<JToken>(
+                            () =>
+                            {
+                                Transform(file, context, propertySchema, value, errors, buildChild);
+                                return obj[key];
+                            }, LazyThreadSafetyMode.PublicationOnly);
+                        }
+                    }
+                    return uid != null ? schema.XrefProperties : default;
+                }
+
+                return default;
+            });
 
             return (errors, xrefPropertiesGroupByUid);
-
-            void TransformXref(JsonSchema schema, JToken node, bool isRoot = false)
-            {
-                schema = _definitions.GetDefinition(schema);
-
-                switch (node)
-                {
-                    case JObject obj:
-
-                        var uid = obj.TryGetValue("uid", out var uidValue) && uidValue is JValue uidJValue && uidJValue.Value is string uidStr ? uidStr : null;
-                        if (uid != null)
-                        {
-                            if (uidJsonPaths.Add(uidValue.Path) && xrefPropertiesGroupByUid.ContainsKey(uid))
-                            {
-                                errors.Add(Errors.UidConflict(uid));
-                                return;
-                            }
-
-                            if (!xrefPropertiesGroupByUid.TryGetValue(uid, out _))
-                            {
-                                xrefPropertiesGroupByUid[uid] = (isRoot, new Dictionary<string, Lazy<JToken>>());
-                            }
-                        }
-
-                        foreach (var (key, value) in obj)
-                        {
-                            if (uid != null && schema.XrefProperties.Contains(key))
-                            {
-                                var propertySchema = TryGetPropertyJsonSchema(schema, key, out var subSchema) ? subSchema : null;
-                                xrefPropertiesGroupByUid[uid].Item2[key] = new Lazy<JToken>(
-                                () =>
-                                {
-                                    Transform(file, context, propertySchema, value, errors, buildChild);
-                                    return obj[key];
-                                }, LazyThreadSafetyMode.PublicationOnly);
-                            }
-                            else
-                            {
-                                if (TryGetPropertyJsonSchema(schema, key, out var propertySchema))
-                                {
-                                    TransformXref(propertySchema, value);
-                                }
-                            }
-                        }
-                        break;
-                    case JArray array:
-
-                        if (schema.Items != null)
-                        {
-                            foreach (var item in array)
-                            {
-                                TransformXref(schema.Items, item);
-                            }
-                        }
-                        break;
-                }
-            }
         }
 
         private void Transform(Document file, Context context, JsonSchema schema, JToken token, List<Error> errors, Action<Document> buildChild)
+        {
+            Travels(file, context, schema, token, errors, buildChild, (subSchema, node) =>
+            {
+                if (node.Type == JTokenType.Array || node.Type == JTokenType.Object)
+                {
+                    // don't support array/object transform now
+                    return default;
+                }
+
+                node.Replace(TransformScalar(subSchema, file, context, node as JValue, errors, buildChild));
+
+                return default;
+            });
+        }
+
+        private void Travels(Document file, Context context, JsonSchema schema, JToken token, List<Error> errors, Action<Document> buildChild, Func<JsonSchema, JToken, string[]> transform)
         {
             schema = _definitions.GetDefinition(schema);
             if (schema == null)
@@ -105,19 +99,16 @@ namespace Microsoft.Docs.Build
                 return;
             }
 
+            var transformedKeys = transform(schema, token) ?? Array.Empty<string>();
+
             switch (token)
             {
-                case JValue scalar:
-                    var transformedScalar = TransformScalar(schema, file, context, scalar, errors, buildChild);
-                    token.Replace(transformedScalar);
-                    break;
-
                 case JArray array:
                     if (schema.Items != null)
                     {
                         foreach (var item in array)
                         {
-                            Transform(file, context, schema.Items, item, errors, buildChild);
+                            Travels(file, context, schema.Items, item, errors, buildChild, transform);
                         }
                     }
                     break;
@@ -125,9 +116,9 @@ namespace Microsoft.Docs.Build
                 case JObject obj:
                     foreach (var (key, value) in obj)
                     {
-                        if (TryGetPropertyJsonSchema(schema, key, out var propertySchema))
+                        if (!transformedKeys.Contains(key) && TryGetPropertyJsonSchema(schema, key, out var propertySchema))
                         {
-                            Transform(file, context, propertySchema, value, errors, buildChild);
+                            Travels(file, context, propertySchema, value, errors, buildChild, transform);
                         }
                     }
                     break;
