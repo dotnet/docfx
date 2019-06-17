@@ -23,7 +23,7 @@ namespace Microsoft.Docs.Build
         public (List<Error> errors, JToken token) TransformContent(Document file, Context context, JToken token, Action<Document> buildChild)
         {
             var errors = new List<Error>();
-            token = JsonUtility.DeepClone(token);
+            token = JsonUtility.DeepClone(token); // remove this line when transfromXref share JToken with transformContent
             Transform(file, context, _schema, token, errors, buildChild);
             return (errors, token);
         }
@@ -31,10 +31,10 @@ namespace Microsoft.Docs.Build
         public (List<Error> errors, Dictionary<string, (bool, Dictionary<string, Lazy<JToken>>)> properties) TransformXref(Document file, Context context, JToken token, Action<Document> buildChild)
         {
             var errors = new List<Error>();
-            token = JsonUtility.DeepClone(token);
             var xrefPropertiesGroupByUid = new Dictionary<string, (bool, Dictionary<string, Lazy<JToken>>)>();
             var uidJsonPaths = new HashSet<string>();
 
+            token = JsonUtility.DeepClone(token); // remove this line when transfromXref share JToken with transformContent
             TransformXref(_schema, token, true);
 
             return (errors, xrefPropertiesGroupByUid);
@@ -105,8 +105,8 @@ namespace Microsoft.Docs.Build
             {
                 case JValue scalar:
                     var transformedScalar = TransformScalar(schema, file, context, scalar, errors, buildChild);
-                    scalar.Replace(transformedScalar);
-                    break;
+                    token.Replace(transformedScalar);
+                    return transformedScalar;
 
                 case JArray array:
                     if (schema.Items != null)

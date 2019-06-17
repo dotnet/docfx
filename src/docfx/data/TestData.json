@@ -16,11 +16,18 @@
                 },
                 "child.c": {
                     "type": "string"
+                },
+                "monikers": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 }
             },
             "xrefProperties": [
                 "a",
-                "child.c"
+                "child.c",
+                "monikers"
             ]
         }
     },
@@ -69,6 +76,12 @@
         },
         "$schema": {
             "type": "string"
+        },
+        "monikers": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
         }
     },
     "xrefProperties": [
@@ -76,6 +89,7 @@
         "fullName",
         "description",
         "summary",
-        "inlineDescription"
+        "inlineDescription",
+        "monikers"
     ]
 }

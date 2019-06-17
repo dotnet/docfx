@@ -41,7 +41,7 @@ namespace Microsoft.Docs.Build
             {
                 try
                 {
-                    spec.ExtensionData[key] = GetXrefPropertyValue(key);
+                    spec.ExtensionData[key] = ExtensionData[key].Value;
                 }
                 catch (DocfxException ex)
                 {

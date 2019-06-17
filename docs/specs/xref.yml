@@ -815,3 +815,67 @@ inputs:
 outputs:
   docs/a.json: |
     { "conceptual": "<p>Link to <a href=\"/en-us/dotnet/api/system.string\">System.String</a></p>\n"}
+---
+# support non-leaf nodes for xref properties
+inputs:
+  docfx.yml:
+  docs/a.yml: |
+    #YamlMime:TestData
+    uid: a
+    monikers:
+      - "1.0"
+      - "2.0"
+      - "3.0"
+    child:
+      uid: child
+      monikers:
+        - "2.0"
+        - "3.0"
+    children:
+      - uid: children.a
+        monikers:
+          - "1.0"
+      - uid: children.b
+        monikers:
+          - "2.0"
+          - "3.0"
+outputs:
+  docs/a.json:
+  xrefmap.json: |
+    {
+        "references": [
+            {
+                "uid": "a",
+                "href": "https://docs.com/docs/a.json",
+                "monikers": [
+                    "1.0",
+                    "2.0",
+                    "3.0"
+                ]
+            },
+            {
+                "uid": "child",
+                "href": "https://docs.com/docs/a.json#child",
+                "monikers": [
+                    "2.0",
+                    "3.0"
+                ]
+            },
+            {
+                "uid": "children.a",
+                "href": "https://docs.com/docs/a.json#children_a",
+                "monikers": [
+                    "1.0"
+                ]
+            },
+            {
+                "uid": "children.b",
+                "href": "https://docs.com/docs/a.json#children_b",
+                "monikers": [
+                    "2.0",
+                    "3.0"
+                ]
+            }
+        ]
+    }
+

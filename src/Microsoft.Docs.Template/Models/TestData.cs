@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using Newtonsoft.Json;
-using System.Collections.Generic;
 
 namespace Microsoft.Docs.Build
 {
@@ -30,6 +29,8 @@ namespace Microsoft.Docs.Build
         public TestChild Child { get; set; }
 
         public TestChild[] Children { get; set; }
+
+        public string[] Monikers { get; set; }
     }
 
     public sealed class TestChild
@@ -43,5 +44,6 @@ namespace Microsoft.Docs.Build
         [JsonProperty("child.c")]
         public string C { get; set; }
 
+        public string[] Monikers { get; set; }
     }
 }
