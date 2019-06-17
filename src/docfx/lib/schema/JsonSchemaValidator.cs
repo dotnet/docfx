@@ -258,23 +258,21 @@ namespace Microsoft.Docs.Build
         {
             foreach (var (fieldName, enumDependencyRules) in schema.EnumDependencies)
             {
-                if (map.TryGetValue(fieldName, out var fieldValue) && fieldValue.Type == JTokenType.String)
+                foreach (var (dependentFieldName, allowLists) in enumDependencyRules)
                 {
-                    foreach (var (dependentFieldName, allowLists) in enumDependencyRules)
+                    if (map.TryGetValue(dependentFieldName, out var dependentFieldValue))
                     {
-                        if (map.TryGetValue(dependentFieldName, out var dependentFieldValue))
+                        if (map.TryGetValue(fieldName, out var fieldValue) &&
+                            dependentFieldValue.Type == fieldValue.Type &&
+                            allowLists.TryGetValue((JValue)dependentFieldValue, out var allowList) &&
+                            Array.IndexOf(allowList, fieldValue) == -1)
                         {
-                            if (dependentFieldValue.Type == JTokenType.String &&
-                                allowLists.TryGetValue((string)dependentFieldValue, out var allowList) &&
-                                Array.IndexOf(allowList, (string)fieldValue) == -1)
-                            {
-                                errors.Add(Errors.ValuesNotMatch(JsonUtility.GetSourceInfo(map), fieldName, (string)fieldValue, dependentFieldName, (string)dependentFieldValue));
-                            }
+                            errors.Add(Errors.ValuesNotMatch(JsonUtility.GetSourceInfo(map), fieldName, fieldValue, dependentFieldName, dependentFieldValue));
                         }
-                        else
-                        {
-                            errors.Add(Errors.LackDependency(JsonUtility.GetSourceInfo(map), fieldName, dependentFieldName));
-                        }
+                    }
+                    else
+                    {
+                        errors.Add(Errors.LackDependency(JsonUtility.GetSourceInfo(map), fieldName, dependentFieldName));
                     }
                 }
             }
