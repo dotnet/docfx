@@ -158,13 +158,8 @@ namespace Microsoft.Docs.Build
                 return (new List<Error>(), new List<InternalXrefSpec>());
             }
 
-            if (file.Schema is null)
-            {
-                throw Errors.SchemaNotFound(file.Mime).ToException();
-            }
-
             var errors = new List<Error>();
-            var (schemaValidator, schemaTransformer) = TemplateEngine.GetJsonSchema(file.Schema);
+            var (schemaValidator, schemaTransformer) = TemplateEngine.GetJsonSchema(file.Mime);
             if (schemaValidator is null || schemaTransformer is null)
             {
                 throw Errors.SchemaNotFound(file.Mime).ToException();

@@ -28,11 +28,6 @@ namespace Microsoft.Docs.Build
         public SourceInfo<string> Mime { get; }
 
         /// <summary>
-        /// Gets the schema identified by <see cref="Mime"/>.
-        /// </summary>
-        public Schema Schema { get; }
-
-        /// <summary>
         /// Gets the source file path relative to docset folder that is:
         ///
         ///  - Normalized using <see cref="PathUtility.NormalizeFile(string)"/>
@@ -101,7 +96,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Gets a value indicating whether the current document is schema data
         /// </summary>
-        public bool IsSchemaData => Schema != null && !Schema.IsPage;
+        public bool IsSchemaData => !Schema.IsPage(Mime);
 
         /// <summary>
         /// Gets the repository
@@ -123,7 +118,6 @@ namespace Microsoft.Docs.Build
             string canonicalUrl,
             ContentType contentType,
             SourceInfo<string> mime,
-            Schema schema,
             bool isExperimental,
             string redirectionUrl = null,
             bool isFromHistory = false)
@@ -139,7 +133,6 @@ namespace Microsoft.Docs.Build
             CanonicalUrl = canonicalUrl;
             ContentType = contentType;
             Mime = mime;
-            Schema = schema;
             IsExperimental = isExperimental;
             RedirectionUrl = redirectionUrl;
             IsFromHistory = isFromHistory;
@@ -240,22 +233,22 @@ namespace Microsoft.Docs.Build
             var filePath = PathUtility.NormalizeFile(path);
             var isConfigReference = docset.Config.Extend.Concat(docset.Config.GetFileReferences()).Contains(filePath, PathUtility.PathComparer);
             var type = isConfigReference ? ContentType.Unknown : GetContentType(filePath);
-            var (mime, schema) = type == ContentType.Page ? Schema.ReadFromFile(filePath, Path.Combine(docset.DocsetPath, filePath)) : default;
+            var mime = type == ContentType.Page ? Schema.ReadFromFile(filePath, Path.Combine(docset.DocsetPath, filePath)) : default;
             var isExperimental = Path.GetFileNameWithoutExtension(filePath).EndsWith(".experimental", PathUtility.PathComparison);
             var routedFilePath = ApplyRoutes(filePath, docset.Routes, docset.SiteBasePath);
 
-            var sitePath = FilePathToSitePath(routedFilePath, type, schema, docset.Config.Output.Json, docset.Config.Output.UglifyUrl);
+            var sitePath = FilePathToSitePath(routedFilePath, type, mime, docset.Config.Output.Json, docset.Config.Output.UglifyUrl);
             if (docset.Config.Output.LowerCaseUrl)
             {
                 sitePath = sitePath.ToLowerInvariant();
             }
 
-            var siteUrl = PathToAbsoluteUrl(sitePath, type, schema, docset.Config.Output.Json);
+            var siteUrl = PathToAbsoluteUrl(sitePath, type, mime, docset.Config.Output.Json);
             var contentType = redirectionUrl != null ? ContentType.Redirection : type;
-            var canonicalUrl = GetCanonicalUrl(siteUrl, sitePath, docset, isExperimental, contentType, schema);
-            var canonicalUrlWithoutLocale = GetCanonicalUrl(siteUrl, sitePath, docset, isExperimental, contentType, schema, false);
+            var canonicalUrl = GetCanonicalUrl(siteUrl, sitePath, docset, isExperimental, contentType, mime);
+            var canonicalUrlWithoutLocale = GetCanonicalUrl(siteUrl, sitePath, docset, isExperimental, contentType, mime, false);
 
-            return new Document(docset, filePath, sitePath, siteUrl, canonicalUrlWithoutLocale, canonicalUrl, contentType, mime, schema, isExperimental, redirectionUrl, isFromHistory);
+            return new Document(docset, filePath, sitePath, siteUrl, canonicalUrlWithoutLocale, canonicalUrl, contentType, mime, isExperimental, redirectionUrl, isFromHistory);
         }
 
         /// <summary>
@@ -320,12 +313,12 @@ namespace Microsoft.Docs.Build
             return ContentType.Page;
         }
 
-        internal static string FilePathToSitePath(string path, ContentType contentType, Schema schema, bool json, bool uglifyUrl)
+        internal static string FilePathToSitePath(string path, ContentType contentType, string mime, bool json, bool uglifyUrl)
         {
             switch (contentType)
             {
                 case ContentType.Page:
-                    if (schema is null || schema.IsPage)
+                    if (mime is null || Schema.IsPage(mime))
                     {
                         if (Path.GetFileNameWithoutExtension(path).Equals("index", PathUtility.PathComparison))
                         {
@@ -350,13 +343,13 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        internal static string PathToAbsoluteUrl(string path, ContentType contentType, Schema schema, bool json)
+        internal static string PathToAbsoluteUrl(string path, ContentType contentType, string mime, bool json)
         {
-            var url = PathToRelativeUrl(path, contentType, schema, json);
+            var url = PathToRelativeUrl(path, contentType, mime, json);
             return url == "./" ? "/" : "/" + url;
         }
 
-        internal static string PathToRelativeUrl(string path, ContentType contentType, Schema schema, bool json)
+        internal static string PathToRelativeUrl(string path, ContentType contentType, string mime, bool json)
         {
             var url = path.Replace('\\', '/');
 
@@ -364,7 +357,7 @@ namespace Microsoft.Docs.Build
             {
                 case ContentType.Redirection:
                 case ContentType.Page:
-                    if (schema is null || schema.IsPage)
+                    if (mime is null || Schema.IsPage(mime))
                     {
                         var fileName = Path.GetFileNameWithoutExtension(path);
                         if (fileName.Equals("index", PathUtility.PathComparison))
@@ -385,13 +378,13 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static string GetCanonicalUrl(string siteUrl, string sitePath, Docset docset, bool isExperimental, ContentType contentType, Schema schema, bool withLocale = true)
+        private static string GetCanonicalUrl(string siteUrl, string sitePath, Docset docset, bool isExperimental, ContentType contentType, string mime, bool withLocale = true)
         {
             var config = docset.Config;
             if (isExperimental)
             {
                 sitePath = ReplaceLast(sitePath, ".experimental", "");
-                siteUrl = Document.PathToAbsoluteUrl(sitePath, contentType, schema, config.Output.Json);
+                siteUrl = Document.PathToAbsoluteUrl(sitePath, contentType, mime, config.Output.Json);
             }
 
             return withLocale ? $"{docset.HostName}/{docset.Locale}{siteUrl}" : $"{config.BaseUrl}{siteUrl}";
@@ -461,7 +454,7 @@ namespace Microsoft.Docs.Build
                 : mappedSourcePath;
 
             // if source is landing page, change it to *.md
-            if (Schema?.Is(typeof(LandingData)) ?? false)
+            if (Schema.Is(Mime, typeof(LandingData)))
             {
                 sourcePath = Path.ChangeExtension(sourcePath, ".md");
             }

@@ -43,16 +43,16 @@ namespace Microsoft.Docs.Build
                 .ToDictionary(prop => prop.Key, prop => prop.Value.HtmlMetaName);
         }
 
-        public static (JsonSchemaValidator, JsonSchemaTransformer) GetJsonSchema(Schema schema)
+        public static (JsonSchemaValidator, JsonSchemaTransformer) GetJsonSchema(string schemaName)
         {
-            if (schema is null)
+            if (schemaName is null)
             {
                 return default;
             }
 
             // TODO: get schema from template
-            var schemaFilePath = Path.Combine(AppContext.BaseDirectory, $"data/{schema.Name}.json");
-            return _jsonSchemas.GetOrAdd(schema.Name, new Lazy<(JsonSchemaValidator, JsonSchemaTransformer)>(GetJsonSchemaCore)).Value;
+            var schemaFilePath = Path.Combine(AppContext.BaseDirectory, $"data/{schemaName}.json");
+            return _jsonSchemas.GetOrAdd(schemaName, new Lazy<(JsonSchemaValidator, JsonSchemaTransformer)>(GetJsonSchemaCore)).Value;
 
             (JsonSchemaValidator, JsonSchemaTransformer) GetJsonSchemaCore()
             {

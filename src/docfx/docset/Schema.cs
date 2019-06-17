@@ -10,11 +10,6 @@ namespace Microsoft.Docs.Build
 {
     internal class Schema
     {
-        public static readonly Schema Conceptual = new Schema(typeof(Conceptual));
-
-        // todo: get page type from json schema
-        public bool IsPage => !string.Equals(Name, "ContextObject", StringComparison.OrdinalIgnoreCase) && !string.Equals(Name, "TestData", StringComparison.OrdinalIgnoreCase);
-
         public string Name { get; }
 
         // todo: read schema from template
@@ -25,14 +20,9 @@ namespace Microsoft.Docs.Build
             Name = name;
         }
 
-        private Schema(Type type)
-            : this(type.Name)
-        {
-        }
-
         public bool Is(Type type) => string.Equals(type.Name, Name, StringComparison.OrdinalIgnoreCase);
 
-        public static (SourceInfo<string> mime, Schema schema) ReadFromFile(string pathToDocset, string filePath)
+        public static SourceInfo<string> ReadFromFile(string pathToDocset, string filePath)
         {
             SourceInfo<string> mime = null;
 
@@ -57,12 +47,37 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            if (mime?.Value != null && s_schemas.TryGetValue(mime, out var schema))
+            return mime;
+        }
+
+        public static string GetSchemaName(string mime)
+        {
+            if (mime != null && s_schemas.TryGetValue(mime, out var schema))
             {
-                return (mime, schema);
+                return schema.Name;
             }
 
-            return (mime, null);
+            return default;
+        }
+
+        public static bool IsPage(string mime)
+        {
+            if (mime != null && s_schemas.TryGetValue(mime, out var schema))
+            {
+                return !string.Equals(schema.Name, "ContextObject", StringComparison.OrdinalIgnoreCase) && !string.Equals(schema.Name, "TestData", StringComparison.OrdinalIgnoreCase);
+            }
+
+            return false;
+        }
+
+        public static bool Is(string mime, Type type)
+        {
+            if (mime != null && s_schemas.TryGetValue(mime, out var schema))
+            {
+                return schema.Is(type);
+            }
+
+            return false;
         }
     }
 }

@@ -80,7 +80,7 @@ namespace Microsoft.Docs.Build
                 return value;
             }
 
-            var dependencyResolver = file.Schema.Is(typeof(LandingData)) ? context.LandingPageDependencyResolver : context.DependencyResolver;
+            var dependencyResolver = Schema.Is(file.Mime, typeof(LandingData)) ? context.LandingPageDependencyResolver : context.DependencyResolver;
 
             var sourceInfo = JsonUtility.GetSourceInfo(value);
             var content = new SourceInfo<string>(value.Value<string>(), sourceInfo);
