@@ -535,7 +535,10 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Warning, "custom-404-page", $"Custom 404 page is not supported", file);
 
         private static string Join<T>(IEnumerable<T> source, Func<T, string> selector = null)
-            => string.Join(", ", source.Select(item => $"{selector?.Invoke(item) ?? item.ToString()}").OrderBy(_ => _, StringComparer.Ordinal).Select(_ => $"'{_}'").Take(5));
+        {
+            var formatSource = source.Select(item => $"{selector?.Invoke(item) ?? item.ToString()}").OrderBy(_ => _, StringComparer.Ordinal).Select(_ => $"'{_}'");
+            return $"{string.Join(", ", formatSource.Take(5))}{(formatSource.Count() > 5 ? "..." : "")}";
+        }
 
         /// <summary>
         /// Find the string that best matches <paramref name="target"/> from <paramref name="candidates"/>,

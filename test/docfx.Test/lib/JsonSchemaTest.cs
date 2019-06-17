@@ -254,7 +254,7 @@ namespace Microsoft.Docs.Build
         [InlineData("{'properties': {'key1': {'replacedBy': 'key2'}}}", "{'key1': 1}",
             "['warning','field-deprecated','Deprecated field: 'key1', use 'key2' instead','file',1,10]")]
 
-        // dependent enums validation
+        // enum dependencies validation
         [InlineData("{'properties': {'key1': {'type': 'string', 'enum': ['.net', 'yammer']}, 'key2': {'type': 'string'}}, 'dependentEnums': { 'key2': { 'key1': { '.net': ['', 'csharp', 'devlang'], 'yammer': ['', 'tabs', 'vba']}}}}",
             "{'key1': 'yammer', 'key2': 'tabs'}", "")]
         [InlineData("{'properties': {'key1': {'type': 'string', 'enum': ['.net', 'yammer']}, 'key2': {'type': 'string'}}, 'dependentEnums': { 'key2': { 'key1': { '.net': ['', 'csharp', 'devlang'], 'yammer': ['', 'tabs', 'vba']}}}}",

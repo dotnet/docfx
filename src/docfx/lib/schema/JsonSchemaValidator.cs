@@ -121,7 +121,7 @@ namespace Microsoft.Docs.Build
             ValidateDependencies(schema, map, errors);
             ValidateEither(schema, map, errors);
             ValidatePrecludes(schema, map, errors);
-            ValidateDependentEnums(schema, map, errors);
+            ValidateEnumDependencies(schema, map, errors);
 
             foreach (var (key, value) in map)
             {
@@ -254,18 +254,18 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private void ValidateDependentEnums(JsonSchema schema, JObject map, List<Error> errors)
+        private void ValidateEnumDependencies(JsonSchema schema, JObject map, List<Error> errors)
         {
-            foreach (var fieldName in schema.DependentEnums.Keys)
+            foreach (var fieldName in schema.EnumDependencies .Keys)
             {
                 if (map.TryGetValue(fieldName, out var fieldValue) && fieldValue.Type == JTokenType.String)
                 {
-                    foreach (var dependentFieldName in schema.DependentEnums[fieldName].Keys)
+                    foreach (var dependentFieldName in schema.EnumDependencies [fieldName].Keys)
                     {
                         if (map.TryGetValue(dependentFieldName, out var dependentFieldValue))
                         {
                             if (dependentFieldValue.Type == JTokenType.String &&
-                                schema.DependentEnums[fieldName][dependentFieldName].TryGetValue((string)dependentFieldValue, out var allowList) &&
+                                schema.EnumDependencies [fieldName][dependentFieldName].TryGetValue((string)dependentFieldValue, out var allowList) &&
                                 Array.IndexOf(allowList, (string)fieldValue) == -1)
                             {
                                 errors.Add(Errors.ValuesNotMatch(JsonUtility.GetSourceInfo(map), fieldName, (string)fieldValue, dependentFieldName, (string)dependentFieldValue));
