@@ -327,20 +327,6 @@ outputs:
       ]
     }
 ---
-# Redirection file path should be normalized
-inputs:
-  docfx.yml: |
-    exclude: '*'
-    redirections:
-      a.md: \redirect\path
-outputs:
-  .publish.json: |
-    {
-      "files": [
-        { "url": "/a", "redirect_url": "/redirect/path" },
-      ]
-    }
----
 # Multiple redirection errors
 inputs:
   docfx.yml: |

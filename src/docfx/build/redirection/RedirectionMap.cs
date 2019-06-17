@@ -79,13 +79,13 @@ namespace Microsoft.Docs.Build
                         continue;
                     }
 
-                    var resolveRedirectUrl = false;
+                    var combineRedirectUrl = false;
                     if (redirectDocumentId)
                     {
                         switch (UrlUtility.GetLinkType(redirectUrl))
                         {
                             case LinkType.RelativePath:
-                                resolveRedirectUrl = true;
+                                combineRedirectUrl = true;
                                 break;
                             case LinkType.AbsolutePath:
                                 break;
@@ -95,7 +95,7 @@ namespace Microsoft.Docs.Build
                         }
                     }
 
-                    Document redirect = Document.Create(docset, pathToDocset, redirectUrl, resolveRedirectUrl: resolveRedirectUrl);
+                    Document redirect = Document.Create(docset, pathToDocset, redirectUrl, combineRedirectUrl: combineRedirectUrl);
                     if (redirectDocumentId && !redirectUrls.Add(redirect.RedirectionUrl))
                     {
                         errors.Add(Errors.RedirectionUrlConflict(redirectUrl));
