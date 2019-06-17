@@ -180,7 +180,7 @@ inputs:
   docs/a.md: Link to [index](a/index.md)
 outputs:
   docs/a/index.json: |
-    { "conceptual": "<p>Link to <a href=\".\">1</a> <a href=\"a\">2</a></p>" }
+    { "conceptual": "<p>Link to <a href=\"../a\">1</a> <a href=\"a\">2</a></p>" }
   docs/a/a.json: |
     { "conceptual": "<p>Link to <a href=\"./\">index</a></p>" }
   docs/a.json: |

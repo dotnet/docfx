@@ -68,11 +68,16 @@ namespace Microsoft.Docs.Build
         [InlineData("/a", "/b", "b")]
         [InlineData("/a/b", "/b/c", "../b/c")]
         [InlineData("/a", "/a/", "a/")]
-        [InlineData("/a/", "/a", ".")]
+        [InlineData("/a/b", "/a/", "./")]
+        [InlineData("/a/", "/a", "../a")]
+        [InlineData("/a/b/", "/a", "../../a")]
+        [InlineData("/a/b/c/", "/a", "../../../a")]
         [InlineData("/a/", "/a/", "./")]
         [InlineData("/a/", "/b", "../b")]
         [InlineData("/", "/a", "a")]
+        [InlineData("/ab", "/a", "a")]
         [InlineData("/a", "/", "./")]
+        [InlineData("/a/", "/", "../")]
         public static void GetRelativeUrl(string relativeToUrl, string url, string expected)
         {
             Assert.Equal(expected, UrlUtility.GetRelativeUrl(relativeToUrl, url));
