@@ -82,15 +82,16 @@ namespace Microsoft.Docs.Build
                     var resolveRedirectUrl = false;
                     if (redirectDocumentId)
                     {
-                        var linkType = UrlUtility.GetLinkType(redirectUrl);
-                        if (linkType == LinkType.RelativePath)
+                        switch (UrlUtility.GetLinkType(redirectUrl))
                         {
-                            resolveRedirectUrl = true;
-                        }
-                        else if (linkType != LinkType.AbsolutePath)
-                        {
-                            errors.Add(Errors.RedirectionUrlInvalid(redirectUrl));
-                            continue;
+                            case LinkType.RelativePath:
+                                resolveRedirectUrl = true;
+                                break;
+                            case LinkType.AbsolutePath:
+                                break;
+                            default:
+                                errors.Add(Errors.RedirectionUrlInvalid(redirectUrl));
+                                continue;
                         }
                     }
 
