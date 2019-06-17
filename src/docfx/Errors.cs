@@ -391,6 +391,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// The string type's value doesn't match given format.
         /// </summary>
+        /// Behavior: ✔️ Message: ❌
         public static Error FormatInvalid(SourceInfo source, string value, JsonSchemaStringFormat type)
             => new Error(ErrorLevel.Warning, "format-invalid", $"String '{value}' is not a valid '{type}'", source);
 
@@ -453,6 +454,13 @@ namespace Microsoft.Docs.Build
         /// Behavior: ✔️ Message: ❌
         public static Error FieldDeprecated(SourceInfo source, string name, string replacedBy)
             => new Error(ErrorLevel.Warning, "field-deprecated", $"Deprecated field: '{name}'{(string.IsNullOrEmpty(replacedBy) ? "." : $", use '{replacedBy}' instead")}", source);
+
+        /// <summary>
+        /// The values of the two fields do not match.
+        /// </summary>
+        /// Behavior: ✔️ Message: ❌
+        public static Error ValuesNotMatch(SourceInfo source, string name, object value, string dependentFieldName, object dependentFieldValue, IEnumerable<object> validValues)
+            => new Error(ErrorLevel.Warning, "values-not-match", $"Invalid value for {name}: '{value}' is not valid with '{dependentFieldName}' value '{dependentFieldValue}'. Valid values: {Join(validValues)}", source);
 
         /// <summary>
         /// Used unknown YamlMime.
@@ -527,7 +535,10 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Warning, "custom-404-page", $"Custom 404 page is not supported", file);
 
         private static string Join<T>(IEnumerable<T> source, Func<T, string> selector = null)
-            => string.Join(", ", source.Select(item => $"{selector?.Invoke(item) ?? item.ToString()}").OrderBy(_ => _, StringComparer.Ordinal).Select(_ => $"'{_}'").Take(5));
+        {
+            var formatSource = source.Select(item => $"{selector?.Invoke(item) ?? item.ToString()}").OrderBy(_ => _, StringComparer.Ordinal).Select(_ => $"'{_}'");
+            return $"{string.Join(", ", formatSource.Take(5))}{(formatSource.Count() > 5 ? "..." : "")}";
+        }
 
         /// <summary>
         /// Find the string that best matches <paramref name="target"/> from <paramref name="candidates"/>,
