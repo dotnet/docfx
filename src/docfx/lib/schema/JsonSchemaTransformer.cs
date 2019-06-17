@@ -68,7 +68,11 @@ namespace Microsoft.Docs.Build
                             {
                                 var propertySchema = TryGetPropertyJsonSchema(schema, key, out var subSchema) ? subSchema : null;
                                 xrefPropertiesGroupByUid[uid].Item2[key] = new Lazy<JToken>(
-                                () => Transform(file, context, propertySchema, value, errors, buildChild), LazyThreadSafetyMode.PublicationOnly);
+                                () =>
+                                {
+                                    Transform(file, context, propertySchema, value, errors, buildChild);
+                                    return obj[key];
+                                }, LazyThreadSafetyMode.PublicationOnly);
                             }
                             else
                             {
@@ -93,12 +97,12 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private JToken Transform(Document file, Context context, JsonSchema schema, JToken token, List<Error> errors, Action<Document> buildChild)
+        private void Transform(Document file, Context context, JsonSchema schema, JToken token, List<Error> errors, Action<Document> buildChild)
         {
             schema = _definitions.GetDefinition(schema);
             if (schema == null)
             {
-                return token;
+                return;
             }
 
             switch (token)
@@ -106,7 +110,7 @@ namespace Microsoft.Docs.Build
                 case JValue scalar:
                     var transformedScalar = TransformScalar(schema, file, context, scalar, errors, buildChild);
                     token.Replace(transformedScalar);
-                    return transformedScalar;
+                    break;
 
                 case JArray array:
                     if (schema.Items != null)
@@ -128,8 +132,6 @@ namespace Microsoft.Docs.Build
                     }
                     break;
             }
-
-            return token;
         }
 
         private static bool TryGetPropertyJsonSchema(JsonSchema jsonSchema, string key, out JsonSchema propertySchema)
