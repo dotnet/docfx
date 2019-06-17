@@ -32,7 +32,7 @@ namespace Microsoft.Docs.Build
             Cache = new Cache();
             MetadataProvider = new MetadataProvider(docset, Cache);
             MonikerProvider = new MonikerProvider(docset, MetadataProvider);
-            GitHubUserCache = GitHubUserCache.Create(docset);
+            GitHubUserCache = new GitHubUserCache(docset.Config);
             GitCommitProvider = new GitCommitProvider();
             BookmarkValidator = new BookmarkValidator();
             DependencyMapBuilder = new DependencyMapBuilder();

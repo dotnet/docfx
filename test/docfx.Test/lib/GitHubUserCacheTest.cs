@@ -199,19 +199,6 @@ namespace Microsoft.Docs.Build
                 1,
                 1
             };
-            yield return new object[]
-            {
-                "Prefer existing email name",
-                (Func<GitHubUserCache, Task>)(async (cache) =>
-                    {
-                        await cache.GetByCommit("bob1@contoso.com", "owner", "name", "4");
-                        await cache.GetByCommit("bob2@contoso.com", "owner", "name", "5");
-                    }),
-                "[]",
-                "[{'id':2,'login':'bob','name':'bob1','emails':['bob1@contoso.com','bob2@contoso.com']}]",
-                0,
-                2
-            };
         }
 
         private void AssertUsersEqual(GitHubUser[] expectedUsers, GitHubUser[] actualUsers)

@@ -210,7 +210,16 @@ outputs:
   docs/a.json:
   docs/b.json: | 
     {
-      "content": {"xref": "a.json"}
+      "content": {
+        "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
+        "xref": {
+            "href": "https://docs.com/docs/a.json",
+            "uid": "a",
+            "name": "test",
+            "fullName": "test.test",
+            "description": "a.description"
+        }
+      }
     }
   xrefmap.json: | 
     {"references":[{"uid":"a","href":"https://docs.com/docs/a.json"}]}
@@ -244,7 +253,7 @@ inputs:
     }
 outputs:
   docs/b.json: | 
-    { "content": {"!xref": null}}
+    { "content": {"xref": null}}
   .errors.log: |
     ["error","json-syntax-error","Unexpected character encountered while parsing value: }.","docs/a.json",7]
     ["warning","xref-not-found","Cross reference not found: 'a'","docs/b.json",3,13]
