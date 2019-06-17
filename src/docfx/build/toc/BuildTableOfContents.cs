@@ -10,13 +10,9 @@ namespace Microsoft.Docs.Build
 {
     internal static class BuildTableOfContents
     {
-        public static (IEnumerable<Error>, PublishItem publishItem) Build(
-            Context context,
-            Document file,
-            MonikerMap monikerMap)
+        public static (IEnumerable<Error>, PublishItem publishItem) Build(Context context, Document file)
         {
             Debug.Assert(file.ContentType == ContentType.TableOfContents);
-            Debug.Assert(monikerMap != null);
 
             // load toc model
             var (errors, model, _, _) = context.Cache.LoadTocModel(context, file);
@@ -36,6 +32,7 @@ namespace Microsoft.Docs.Build
             {
                 Url = file.SiteUrl,
                 Path = outputPath,
+                SourcePath = file.FilePath,
                 Locale = file.Docset.Locale,
                 Monikers = model.Metadata.Monikers,
                 MonikerGroup = MonikerUtility.GetGroup(model.Metadata.Monikers),
@@ -102,15 +99,15 @@ namespace Microsoft.Docs.Build
                 {
                     // add to referenced document list
                     // TODO: pass line info into ResolveXref
-                    var (error, link, display, buildItem) = context.DependencyResolver.ResolveXref(uid, file, file);
+                    var (error, link, display, xrefSpec) = context.DependencyResolver.ResolveXref(uid, file, file);
                     errors.AddIfNotNull(error);
 
-                    if (buildItem != null)
+                    if (xrefSpec?.DeclairingFile != null)
                     {
-                        referencedDocuments.Add((buildItem, link));
+                        referencedDocuments.Add((xrefSpec?.DeclairingFile, link));
                     }
 
-                    return (link, display, buildItem);
+                    return (link, display, xrefSpec?.DeclairingFile);
                 },
                 (document) =>
                 {

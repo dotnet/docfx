@@ -195,7 +195,7 @@ namespace Microsoft.Docs.Build
             _buildScope = new Lazy<HashSet<Document>>(() => CreateBuildScope(Redirections.Files, glob));
             _redirections = new Lazy<RedirectionMap>(() =>
             {
-                var (errors, map) = RedirectionMap.Create(this, glob);
+                var (errors, map) = RedirectionMap.Create(this);
                 errorLog.Write(errors);
                 return map;
             });

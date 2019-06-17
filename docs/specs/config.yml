@@ -240,8 +240,7 @@ inputs:
     extend:
       - docs/a.yml
       - docs/b.yml
-    gitHub:
-      userCache: docs/d.json
+    xref: docs/d.json
   docs/a.yml:
   docs/b.yml:
   docs/d.json: '{}'
@@ -275,11 +274,11 @@ inputs:
   docfx.yml: |
     rules:
       file-not-found: off
-    gitHub:
-      userCache: user_profile.json
+    xref: xref.json
+  a.md: '@System.String'
 outputs:
   .errors.log: |
-    ["error","file-not-found","Invalid file link: 'user_profile.json'.","*",4,14]
+    ["error","file-not-found","Invalid file link: 'xref.json'.","*",3,7]
 ---
 # Treat warnings as errors
 inputs:
@@ -311,7 +310,7 @@ outputs:
   .errors.log: |
     ["error","redirection-conflict","The 'docs/a.md' appears twice or more in the redirection mappings","docfx.yml",4,14]
 ---
-# Redirection file out of build scope
+# Redirection file is independent of build scope
 inputs:
   docfx.yml: |
     exclude: '*'
@@ -319,20 +318,13 @@ inputs:
       docs/a.md: /absolute/path1
       b.md: /absolute/path2
 outputs:
-  .errors.log: |
-    ["info","redirection-out-of-scope","Redirection file 'b.md' will not be built because it is not included in build scope","docfx.yml",4,9]
----
-# Redirection file out of build scope with conflicted id
-inputs:
-  docfx.yml: |
-    exclude: '*'
-    redirections:
-      a.md: /absolute/path1
-      b.md: /absolute/path1
-outputs:
-  .errors.log: |
-    ["info","redirection-out-of-scope","Redirection file 'a.md' will not be built because it is not included in build scope","docfx.yml",3,9]
-    ["info","redirection-out-of-scope","Redirection file 'b.md' will not be built because it is not included in build scope","docfx.yml",4,9]
+  .publish.json: |
+    {
+      "files": [
+        { "url": "/b", "redirect_url": "/absolute/path2" },
+        { "url": "/docs/a", "redirect_url": "/absolute/path1" }
+      ]
+    }
 ---
 # Multiple redirection errors
 inputs:
