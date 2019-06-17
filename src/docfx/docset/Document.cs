@@ -255,14 +255,7 @@ namespace Microsoft.Docs.Build
             if (redirectionUrl != null)
             {
                 contentType = ContentType.Redirection;
-                if (redirectionUrl.EndsWith('/') || redirectionUrl.EndsWith('\\'))
-                {
-                    redirectionUrl = PathUtility.NormalizeFolder(resolveRedirectUrl ? Path.Combine(Path.GetDirectoryName(siteUrl), redirectionUrl) : redirectionUrl);
-                }
-                else
-                {
-                    redirectionUrl = PathUtility.NormalizeFile(resolveRedirectUrl ? Path.Combine(Path.GetDirectoryName(siteUrl), redirectionUrl) : redirectionUrl);
-                }
+                redirectionUrl = PathUtility.Normalize(resolveRedirectUrl ? Path.Combine(Path.GetDirectoryName(siteUrl), redirectionUrl) : redirectionUrl);
             }
             var canonicalUrl = GetCanonicalUrl(siteUrl, sitePath, docset, isExperimental, contentType, schema);
             var canonicalUrlWithoutLocale = GetCanonicalUrl(siteUrl, sitePath, docset, isExperimental, contentType, schema, false);
