@@ -258,21 +258,22 @@ namespace Microsoft.Docs.Build
         {
             foreach (var (fieldName, enumDependencyRules) in schema.EnumDependencies)
             {
-                foreach (var (dependentFieldName, allowLists) in enumDependencyRules)
+                if (map.TryGetValue(fieldName, out var fieldValue))
                 {
-                    if (map.TryGetValue(dependentFieldName, out var dependentFieldValue))
+                    foreach (var (dependentFieldName, allowLists) in enumDependencyRules)
                     {
-                        if (map.TryGetValue(fieldName, out var fieldValue) &&
-                            dependentFieldValue.Type == fieldValue.Type &&
-                            allowLists.TryGetValue((JValue)dependentFieldValue, out var allowList) &&
-                            Array.IndexOf(allowList, fieldValue) == -1)
+                        if (map.TryGetValue(dependentFieldName, out var dependentFieldValue))
                         {
-                            errors.Add(Errors.ValuesNotMatch(JsonUtility.GetSourceInfo(map), fieldName, fieldValue, dependentFieldName, dependentFieldValue));
+                            if (allowLists.TryGetValue(dependentFieldValue, out var allowList) &&
+                                Array.IndexOf(allowList, fieldValue) == -1)
+                            {
+                                errors.Add(Errors.ValuesNotMatch(JsonUtility.GetSourceInfo(map), fieldName, fieldValue, dependentFieldName, dependentFieldValue));
+                            }
                         }
-                    }
-                    else
-                    {
-                        errors.Add(Errors.LackDependency(JsonUtility.GetSourceInfo(map), fieldName, dependentFieldName));
+                        else
+                        {
+                            errors.Add(Errors.LackDependency(JsonUtility.GetSourceInfo(map), fieldName, dependentFieldName));
+                        }
                     }
                 }
             }
