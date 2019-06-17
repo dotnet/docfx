@@ -68,7 +68,7 @@ namespace Microsoft.Docs.Build
 
         private void ValidateScalar(JsonSchema schema, JValue scalar, List<Error> errors)
         {
-            if (schema.Enum != null && !schema.Enum.Contains(scalar))
+            if (schema.Enum != null && Array.IndexOf(schema.Enum, scalar) == -1)
             {
                 errors.Add(Errors.UndefinedValue(JsonUtility.GetSourceInfo(scalar), scalar, schema.Enum));
             }
