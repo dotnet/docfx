@@ -13,7 +13,7 @@ namespace Microsoft.Docs.Build
         public static readonly Schema Conceptual = new Schema(typeof(Conceptual));
 
         // todo: get page type from json schema
-        public bool IsPage => !string.Equals(Name, "ContextObject", StringComparison.OrdinalIgnoreCase);
+        public bool IsPage => !string.Equals(Name, "ContextObject", StringComparison.OrdinalIgnoreCase) && !string.Equals(Name, "TestData", StringComparison.OrdinalIgnoreCase);
 
         public string Name { get; }
 

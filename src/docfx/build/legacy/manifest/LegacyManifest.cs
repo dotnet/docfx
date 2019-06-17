@@ -152,7 +152,7 @@ namespace Microsoft.Docs.Build
 
         private static string GetType(ContentType type, Schema schema)
         {
-            if (type == ContentType.Page && !schema.IsPage)
+            if (type == ContentType.Page && schema != null && !schema.IsPage)
             {
                 return "Toc";
             }
