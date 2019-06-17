@@ -165,7 +165,7 @@ outputs:
               "url": "/partner-center-sdk/agreement-metadata",
               "source_path": "develop/agreement-metadata.md",
               "locale": "en-us",
-              "redirect_url": "agreement-metadata-resources"
+              "redirect_url": "/partner-center-sdk/agreement-metadata-resources"
           },
           {
               "url": "/partner-center-sdk/agreement-metadata-resources",

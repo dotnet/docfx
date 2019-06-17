@@ -231,7 +231,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         /// <param name="docset">The current docset</param>
         /// <param name="path">The path relative to docset root</param>
-        public static Document Create(Docset docset, string path, string redirectionUrl = null, bool isFromHistory = false)
+        public static Document Create(Docset docset, string path, string redirectionUrl = null, bool isFromHistory = false, bool resolveRedirectUrl = false)
         {
             Debug.Assert(docset != null);
             Debug.Assert(!string.IsNullOrEmpty(path));
@@ -254,6 +254,11 @@ namespace Microsoft.Docs.Build
             var contentType = redirectionUrl != null ? ContentType.Redirection : type;
             var canonicalUrl = GetCanonicalUrl(siteUrl, sitePath, docset, isExperimental, contentType, schema);
             var canonicalUrlWithoutLocale = GetCanonicalUrl(siteUrl, sitePath, docset, isExperimental, contentType, schema, false);
+
+            if (resolveRedirectUrl && !string.IsNullOrEmpty(redirectionUrl))
+            {
+                redirectionUrl = PathUtility.NormalizeFile(Path.Combine(Path.GetDirectoryName(siteUrl), redirectionUrl));
+            }
 
             return new Document(docset, filePath, sitePath, siteUrl, canonicalUrlWithoutLocale, canonicalUrl, contentType, mime, schema, isExperimental, redirectionUrl, isFromHistory);
         }

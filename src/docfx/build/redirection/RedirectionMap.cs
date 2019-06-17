@@ -44,10 +44,12 @@ namespace Microsoft.Docs.Build
         {
             var errors = new List<Error>();
             var redirections = new HashSet<Document>();
-            var redirectionsByRedirectionUrl = new Dictionary<string, Document>(PathUtility.PathComparer);
 
             // load redirections with document id
             AddRedirections(docset.Config.Redirections, redirectDocumentId: true);
+            var redirectionsByRedirectionUrl = redirections
+                .GroupBy(file => file.RedirectionUrl, PathUtility.PathComparer)
+                .ToDictionary(group => group.Key, group => group.First(), PathUtility.PathComparer);
 
             // load redirections without document id
             AddRedirections(docset.Config.RedirectionsWithoutId);
@@ -77,26 +79,26 @@ namespace Microsoft.Docs.Build
                         continue;
                     }
 
-                    Document redirect = Document.Create(docset, pathToDocset, redirectUrl);
+                    var resolveRedirectUrl = false;
                     if (redirectDocumentId)
                     {
                         var linkType = UrlUtility.GetLinkType(redirectUrl);
-                        string mutableRedirectUrl = redirectUrl;
                         if (linkType == LinkType.RelativePath)
                         {
-                            mutableRedirectUrl = PathUtility.NormalizeFile(Path.Combine(Path.GetDirectoryName(redirect.SiteUrl), redirectUrl));
+                            resolveRedirectUrl = true;
                         }
                         else if (linkType != LinkType.AbsolutePath)
                         {
                             errors.Add(Errors.RedirectionUrlInvalid(redirectUrl));
                             continue;
                         }
+                    }
 
-                        if (!redirectionsByRedirectionUrl.TryAdd(mutableRedirectUrl, redirect))
-                        {
-                            errors.Add(Errors.RedirectionUrlConflict(redirectUrl));
-                            continue;
-                        }
+                    Document redirect = Document.Create(docset, pathToDocset, redirectUrl, resolveRedirectUrl: resolveRedirectUrl);
+                    if (redirectDocumentId && !redirectUrls.Add(redirect.RedirectionUrl))
+                    {
+                        errors.Add(Errors.RedirectionUrlConflict(redirectUrl));
+                        continue;
                     }
 
                     if (!redirections.Add(redirect))
