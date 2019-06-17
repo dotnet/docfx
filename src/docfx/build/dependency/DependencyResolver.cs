@@ -122,7 +122,7 @@ namespace Microsoft.Docs.Build
             Debug.Assert(resultRelativeTo != null);
             Debug.Assert(href != null);
 
-            if (!href.Value.StartsWith("xref:"))
+            if (href.Value.StartsWith("xref:"))
             {
                 var uid = new SourceInfo<string>(href.Value.Substring("xref:".Length), href);
                 var (uidError, uidHref, _, xrefSpec) = ResolveXref(uid, relativeTo, resultRelativeTo);
