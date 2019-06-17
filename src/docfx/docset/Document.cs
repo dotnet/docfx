@@ -391,7 +391,7 @@ namespace Microsoft.Docs.Build
             if (isExperimental)
             {
                 sitePath = ReplaceLast(sitePath, ".experimental", "");
-                siteUrl = Document.PathToAbsoluteUrl(sitePath, contentType, schema, config.Output.Json);
+                siteUrl = PathToAbsoluteUrl(sitePath, contentType, schema, config.Output.Json);
             }
 
             return withLocale ? $"{docset.HostName}/{docset.Locale}{siteUrl}" : $"{config.BaseUrl}{siteUrl}";

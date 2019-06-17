@@ -7,18 +7,24 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Web;
+using Microsoft.DocAsCode.MarkdigEngine.Extensions;
 
 namespace Microsoft.Docs.Build
 {
     internal class DependencyResolver
     {
+        // This magic string identifies if an URL should be transformed into relative URL during HtmlPostProcess.
+        // A custom HTML attribute is not enough because we allow template to define HTML links for SDP content.
+        public const string RelativeUrlMarker = "6docfx6/";
+
         private readonly BookmarkValidator _bookmarkValidator;
         private readonly DependencyMapBuilder _dependencyMapBuilder;
         private readonly GitCommitProvider _gitCommitProvider;
         private readonly Lazy<XrefMap> _xrefMap;
         private readonly bool _forLandingPage = false;
 
-        public DependencyResolver(GitCommitProvider gitCommitProvider, BookmarkValidator bookmarkValidator, DependencyMapBuilder dependencyMapBuilder, Lazy<XrefMap> xrefMap, bool forLandingPage = false)
+        public DependencyResolver(
+            GitCommitProvider gitCommitProvider, BookmarkValidator bookmarkValidator, DependencyMapBuilder dependencyMapBuilder, Lazy<XrefMap> xrefMap, bool forLandingPage = false)
         {
             _bookmarkValidator = bookmarkValidator;
             _dependencyMapBuilder = dependencyMapBuilder;
@@ -39,15 +45,28 @@ namespace Microsoft.Docs.Build
             return (error, content, child);
         }
 
-        public (Error error, string link, Document file) ResolveLink(SourceInfo<string> path, Document relativeTo, Document resultRelativeTo, Action<Document> buildChild)
+        public (Error error, string link, Document file) ResolveRelativeLink(SourceInfo<string> path, Document relativeTo, Document resultRelativeTo, Action<Document> buildChild)
         {
-            var (error, link, fragment, linkType, file) = TryResolveHref(relativeTo, path, resultRelativeTo);
+            var (error, link, file) = ResolveLink(path, relativeTo, buildChild);
+
+            if (link != null && link.StartsWith(RelativeUrlMarker))
+            {
+                link = UrlUtility.GetRelativeUrl(resultRelativeTo.SiteUrl, link.Substring(RelativeUrlMarker.Length));
+            }
+
+            return (error, link, file);
+        }
+
+        public (Error error, string link, Document file) ResolveLink(SourceInfo<string> path, Document relativeTo, Action<Document> buildChild)
+        {
+            var (error, link, fragment, linkType, file) = TryResolveLink(relativeTo, path);
 
             if (file != null && buildChild != null)
             {
                 buildChild(file);
             }
 
+            var resultRelativeTo = (Document)InclusionContext.RootFile ?? relativeTo;
             var isSelfBookmark = linkType == LinkType.SelfBookmark || resultRelativeTo == file;
             if (isSelfBookmark || file != null)
             {
@@ -58,7 +77,19 @@ namespace Microsoft.Docs.Build
             return (error, link, file);
         }
 
-        public (Error error, string href, string display, Document file) ResolveXref(SourceInfo<string> href, Document relativeTo, Document rootFile)
+        public (Error error, string href, string display, Document file) ResolveRelativeXref(SourceInfo<string> href, Document relativeTo)
+        {
+            var result = ResolveXref(href, relativeTo);
+
+            if (result.href != null && result.href.StartsWith(RelativeUrlMarker))
+            {
+                result.href = UrlUtility.GetRelativeUrl(relativeTo.SiteUrl, result.href.Substring(RelativeUrlMarker.Length));
+            }
+
+            return result;
+        }
+
+        public (Error error, string href, string display, Document file) ResolveXref(SourceInfo<string> href, Document relativeTo)
         {
             var (uid, query, fragment) = UrlUtility.SplitUrl(href);
             string moniker = null;
@@ -71,11 +102,11 @@ namespace Microsoft.Docs.Build
             var displayProperty = queries?["displayProperty"];
 
             // need to url decode uid from input content
-            var (error, resolvedHref, display, referencedFile) = _xrefMap.Value.Resolve(Uri.UnescapeDataString(uid), href, displayProperty, relativeTo, rootFile, moniker);
+            var (error, resolvedHref, display, referencedFile) = _xrefMap.Value.Resolve(Uri.UnescapeDataString(uid), href, displayProperty, relativeTo, moniker);
 
             if (referencedFile != null)
             {
-                _dependencyMapBuilder.AddDependencyItem(rootFile, referencedFile, DependencyType.UidInclusion);
+                _dependencyMapBuilder.AddDependencyItem(relativeTo, referencedFile, DependencyType.UidInclusion);
             }
 
             if (!string.IsNullOrEmpty(resolvedHref))
@@ -84,15 +115,6 @@ namespace Microsoft.Docs.Build
                 resolvedHref = UrlUtility.MergeUrl(resolvedHref, monikerQuery, fragment.Length == 0 ? "" : fragment.Substring(1));
             }
             return (error, resolvedHref, display, referencedFile);
-        }
-
-        /// <summary>
-        /// Get relative url from file to the file relative to
-        /// </summary>
-        public string GetRelativeUrl(Document fileRelativeTo, Document file)
-        {
-            var relativePath = PathUtility.GetRelativePathToFile(fileRelativeTo.SitePath, file.SitePath);
-            return Document.PathToRelativeUrl(relativePath, file.ContentType, file.Schema, file.Docset.Config.Output.Json);
         }
 
         private (Error error, string content, Document file) TryResolveContent(Document relativeTo, SourceInfo<string> href)
@@ -116,15 +138,14 @@ namespace Microsoft.Docs.Build
             return file != null ? (error, file.ReadText(), file) : default;
         }
 
-        private (Error error, string href, string fragment, LinkType? linkType, Document file) TryResolveHref(Document relativeTo, SourceInfo<string> href, Document resultRelativeTo)
+        private (Error error, string href, string fragment, LinkType? linkType, Document file) TryResolveLink(Document relativeTo, SourceInfo<string> href)
         {
-            Debug.Assert(resultRelativeTo != null);
             Debug.Assert(href != null);
 
             if (href.Value.StartsWith("xref:") != false)
             {
                 href.Value = href.Value.Substring("xref:".Length);
-                var (uidError, uidHref, _, referencedFile) = ResolveXref(href, relativeTo, resultRelativeTo);
+                var (uidError, uidHref, _, referencedFile) = ResolveXref(href, relativeTo);
                 return (uidError, uidHref, null, null, referencedFile);
             }
 
@@ -167,12 +188,9 @@ namespace Microsoft.Docs.Build
                 return (Errors.LinkIsDependency(relativeTo, file, href), href, fragment, linkType, null);
             }
 
-            // Make result relative to `resultRelativeTo`
-            var relativeUrl = GetRelativeUrl(resultRelativeTo, file);
-
             if (file?.RedirectionUrl != null)
             {
-                return (error, relativeUrl + query + fragment, null, linkType, null);
+                return (error, RelativeUrlMarker + file.SiteUrl + query + fragment, null, linkType, null);
             }
 
             // Pages outside build scope, don't build the file, use relative href
@@ -180,10 +198,10 @@ namespace Microsoft.Docs.Build
                 && (file.ContentType == ContentType.Page || file.ContentType == ContentType.TableOfContents)
                 && !file.Docset.BuildScope.Contains(file))
             {
-                return (Errors.LinkOutOfScope(href, file), relativeUrl + query + fragment, fragment, linkType, null);
+                return (Errors.LinkOutOfScope(href, file), RelativeUrlMarker + file.SiteUrl + query + fragment, fragment, linkType, null);
             }
 
-            return (error, relativeUrl + query + fragment, fragment, linkType, file);
+            return (error, RelativeUrlMarker + file.SiteUrl + query + fragment, fragment, linkType, file);
         }
 
         private (Error error, Document file, string query, string fragment, LinkType? linkType, string pathToDocset) TryResolveFile(Document relativeTo, SourceInfo<string> href)
@@ -228,7 +246,7 @@ namespace Microsoft.Docs.Build
                         file = Document.CreateFromFile(relativeTo.Docset, pathToDocset);
                     }
 
-                    return (file != null ? null : (_forLandingPage ? null : Errors.FileNotFound(new SourceInfo<string>(path, href))), file, query, fragment, null, pathToDocset);
+                    return (file != null ? null : (_forLandingPage ? null : Errors.FileNotFound(new SourceInfo<string>(path, href))), file, query, fragment, default, pathToDocset);
 
                 default:
                     return default;

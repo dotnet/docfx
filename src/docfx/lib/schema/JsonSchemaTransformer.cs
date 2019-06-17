@@ -87,7 +87,7 @@ namespace Microsoft.Docs.Build
             switch (schema.ContentType)
             {
                 case JsonSchemaContentType.Href:
-                    var (error, link, _) = dependencyResolver.ResolveLink(content, file, file, buildChild);
+                    var (error, link, _) = dependencyResolver.ResolveRelativeLink(content, file, file, buildChild);
                     errors.AddIfNotNull(error);
                     content = new SourceInfo<string>(link, content);
                     break;
@@ -120,10 +120,11 @@ namespace Microsoft.Docs.Build
                     content = new SourceInfo<string>(inlineHtml, content);
                     break;
 
+                // TODO: remove JsonSchemaContentType.Html after LandingData is migrated
                 case JsonSchemaContentType.Html:
                     var htmlWithLinks = HtmlUtility.TransformLinks(content, (href, _) =>
                     {
-                        var (htmlError, htmlLink, _) = dependencyResolver.ResolveLink(new SourceInfo<string>(href, content), file, file, buildChild);
+                        var (htmlError, htmlLink, _) = dependencyResolver.ResolveLink(new SourceInfo<string>(href, content), file, buildChild);
                         errors.AddIfNotNull(htmlError);
                         return htmlLink;
                     });
@@ -134,7 +135,7 @@ namespace Microsoft.Docs.Build
                 case JsonSchemaContentType.Xref:
 
                     // TODO: how to fill xref resolving data besides href
-                    var (xrefError, xrefLink, _, _) = dependencyResolver.ResolveXref(content, file, file);
+                    var (xrefError, xrefLink, _, _) = dependencyResolver.ResolveRelativeXref(content, file);
                     errors.AddIfNotNull(xrefError);
                     content = new SourceInfo<string>(xrefLink, content);
                     break;

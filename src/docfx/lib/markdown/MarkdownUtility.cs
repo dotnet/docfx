@@ -67,7 +67,7 @@ namespace Microsoft.Docs.Build
 
                     var html = Markdown.ToHtml(markdown, s_markdownPipelines[(int)pipelineType]);
 
-                    return (status.Errors, html);
+                    return (status.Errors, HtmlUtility.TransformRelativeLinks(html, file.SiteUrl));
                 }
                 finally
                 {
@@ -81,10 +81,10 @@ namespace Microsoft.Docs.Build
             t_status.Value.Peek().Errors.Add(error);
         }
 
-        internal static string GetLink(string path, object relativeTo, object resultRelativeTo, MarkdownObject origin, int columnOffset = 0)
+        internal static string GetLink(string path, object relativeTo, MarkdownObject origin, int columnOffset = 0)
         {
             var status = t_status.Value.Peek();
-            var (error, link, _) = status.DependencyResolver.ResolveLink(new SourceInfo<string>(path, origin.ToSourceInfo(columnOffset: columnOffset)), (Document)relativeTo, (Document)resultRelativeTo, status.BuildChild);
+            var (error, link, _) = status.DependencyResolver.ResolveLink(new SourceInfo<string>(path, origin.ToSourceInfo(columnOffset: columnOffset)), (Document)relativeTo, status.BuildChild);
             status.Errors.AddIfNotNull(error?.WithSourceInfo(origin.ToSourceInfo()));
             return link;
         }
@@ -92,7 +92,7 @@ namespace Microsoft.Docs.Build
         internal static (Error error, string href, string display, Document file) ResolveXref(string href, MarkdownObject origin)
         {
             // TODO: now markdig engine combines all kinds of reference with inclusion, we need to split them out
-            var result = t_status.Value.Peek().DependencyResolver.ResolveXref(new SourceInfo<string>(href, origin.ToSourceInfo()), (Document)InclusionContext.File, (Document)InclusionContext.RootFile);
+            var result = t_status.Value.Peek().DependencyResolver.ResolveXref(new SourceInfo<string>(href, origin.ToSourceInfo()), (Document)InclusionContext.File);
             result.error = result.error?.WithSourceInfo(origin.ToSourceInfo());
             return result;
         }

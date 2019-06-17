@@ -12,17 +12,16 @@ namespace Microsoft.Docs.Build
 {
     internal static class HtmlUtility
     {
-        private static readonly Func<HtmlAgilityPack.HtmlAttribute, int> s_getValueStartIndex =
-            ReflectionUtility.CreateInstanceFieldGetter<HtmlAgilityPack.HtmlAttribute, int>("_valuestartindex");
+        private static readonly Func<HtmlAttribute, int> s_getValueStartIndex =
+            ReflectionUtility.CreateInstanceFieldGetter<HtmlAttribute, int>("_valuestartindex");
 
-        public static string HtmlPostProcess(string html, CultureInfo culture) => HtmlPostProcess(LoadHtml(html), culture);
-
-        public static string HtmlPostProcess(HtmlNode html, CultureInfo culture)
+        public static string HtmlPostProcess(this HtmlNode html, CultureInfo culture)
         {
             html = html.StripTags();
             html = html.AddLinkType(culture.Name.ToLowerInvariant())
                        .RemoveRerunCodepenIframes();
 
+            // Hosting layers treats empty content as 404, so generate an empty <div></div>
             if (string.IsNullOrWhiteSpace(html.OuterHtml))
             {
                 return "<div></div>";
@@ -227,6 +226,18 @@ namespace Microsoft.Docs.Build
                 return n.NodeType == HtmlNodeType.Comment ||
                     (n.NodeType == HtmlNodeType.Text && string.IsNullOrWhiteSpace(n.OuterHtml));
             }
+        }
+
+        public static string TransformRelativeLinks(string html, string siteUrl)
+        {
+            return TransformLinks(html, (href, _) =>
+            {
+                if (href.StartsWith(DependencyResolver.RelativeUrlMarker))
+                {
+                    return UrlUtility.GetRelativeUrl(siteUrl, href.Substring(DependencyResolver.RelativeUrlMarker.Length));
+                }
+                return href;
+            });
         }
 
         private static HtmlNode AddLinkType(this HtmlNode html, string locale)

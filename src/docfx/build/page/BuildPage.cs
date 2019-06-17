@@ -24,7 +24,7 @@ namespace Microsoft.Docs.Build
 
             if (!string.IsNullOrEmpty(model.BreadcrumbPath))
             {
-                var (breadcrumbError, breadcrumbPath, _) = context.DependencyResolver.ResolveLink(model.BreadcrumbPath, file, file, buildChild);
+                var (breadcrumbError, breadcrumbPath, _) = context.DependencyResolver.ResolveRelativeLink(model.BreadcrumbPath, file, file, buildChild);
                 errors.AddIfNotNull(breadcrumbError);
                 model.BreadcrumbPath.Value = breadcrumbPath;
             }
@@ -208,8 +208,8 @@ namespace Microsoft.Docs.Build
 
             if (file.Docset.Legacy && file.Schema.Attribute is PageSchemaAttribute)
             {
-                pageModel.Conceptual = HtmlUtility.HtmlPostProcess(
-                    await RazorTemplate.Render(file.Schema.Name, content), file.Docset.Culture);
+                var html = await RazorTemplate.Render(file.Schema.Name, content);
+                pageModel.Conceptual = HtmlUtility.LoadHtml(html).HtmlPostProcess(file.Docset.Culture);
             }
             else
             {

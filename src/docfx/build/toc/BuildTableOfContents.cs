@@ -84,7 +84,7 @@ namespace Microsoft.Docs.Build
                 },
                 (file, href, resultRelativeTo) =>
                 {
-                    var (error, link, buildItem) = context.DependencyResolver.ResolveLink(href, file, resultRelativeTo, null);
+                    var (error, link, buildItem) = context.DependencyResolver.ResolveRelativeLink(href, file, resultRelativeTo, null);
                     errors.AddIfNotNull(error);
 
                     if (buildItem != null)
@@ -98,7 +98,7 @@ namespace Microsoft.Docs.Build
                 {
                     // add to referenced document list
                     // TODO: pass line info into ResolveXref
-                    var (error, link, display, buildItem) = context.DependencyResolver.ResolveXref(uid, file, file);
+                    var (error, link, display, buildItem) = context.DependencyResolver.ResolveRelativeXref(uid, file);
                     errors.AddIfNotNull(error);
 
                     if (buildItem != null)

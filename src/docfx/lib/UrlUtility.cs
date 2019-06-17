@@ -3,6 +3,7 @@
 
 using System;
 using System.Diagnostics;
+using System.IO;
 using System.Text.RegularExpressions;
 using System.Web;
 
@@ -108,6 +109,24 @@ namespace Microsoft.Docs.Build
             Debug.Assert(string.IsNullOrEmpty(fragment) || fragment[0] == '#');
 
             return fragment != null && fragment.Length > 1 ? DependencyType.Bookmark : DependencyType.Link;
+        }
+
+        public static string GetRelativeUrl(string relativeToUrl, string url)
+        {
+            if (!url.StartsWith('/'))
+            {
+                throw new InvalidOperationException();
+            }
+
+            var relativeToFolder = relativeToUrl.EndsWith('/') ? relativeToUrl : Path.GetDirectoryName(relativeToUrl);
+            if (url.EndsWith('/'))
+            {
+                var result = Path.GetRelativePath(relativeToFolder, url + "index").Replace('\\', '/');
+                result = result.Substring(0, result.Length - "index".Length);
+                return result.Length == 0 ? "./" : result;
+            }
+
+            return Path.GetRelativePath(relativeToFolder, url).Replace('\\', '/');
         }
 
         public static LinkType GetLinkType(string link)
