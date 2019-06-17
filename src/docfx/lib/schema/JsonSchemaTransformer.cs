@@ -34,7 +34,7 @@ namespace Microsoft.Docs.Build
             var uidJsonPaths = new HashSet<string>();
 
             token = JsonUtility.DeepClone(token); // remove this line when transfromXref share JToken with transformContent
-            Travels(file, context, _schema, token, errors, buildChild, (schema, node) =>
+            Travels(_schema, token, (schema, node) =>
             {
                 if (node is JObject obj)
                 {
@@ -77,7 +77,7 @@ namespace Microsoft.Docs.Build
 
         private void Transform(Document file, Context context, JsonSchema schema, JToken token, List<Error> errors, Action<Document> buildChild)
         {
-            Travels(file, context, schema, token, errors, buildChild, (subSchema, node) =>
+            Travels(schema, token, (subSchema, node) =>
             {
                 if (node.Type == JTokenType.Array || node.Type == JTokenType.Object)
                 {
@@ -91,7 +91,7 @@ namespace Microsoft.Docs.Build
             });
         }
 
-        private void Travels(Document file, Context context, JsonSchema schema, JToken token, List<Error> errors, Action<Document> buildChild, Func<JsonSchema, JToken, string[]> transform)
+        private void Travels(JsonSchema schema, JToken token, Func<JsonSchema, JToken, string[]> transform)
         {
             schema = _definitions.GetDefinition(schema);
             if (schema == null)
@@ -108,7 +108,7 @@ namespace Microsoft.Docs.Build
                     {
                         foreach (var item in array)
                         {
-                            Travels(file, context, schema.Items, item, errors, buildChild, transform);
+                            Travels(schema.Items, item, transform);
                         }
                     }
                     break;
@@ -118,7 +118,7 @@ namespace Microsoft.Docs.Build
                     {
                         if (!transformedKeys.Contains(key) && TryGetPropertyJsonSchema(schema, key, out var propertySchema))
                         {
-                            Travels(file, context, propertySchema, value, errors, buildChild, transform);
+                            Travels(propertySchema, value, transform);
                         }
                     }
                     break;
