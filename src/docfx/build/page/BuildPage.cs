@@ -194,27 +194,36 @@ namespace Microsoft.Docs.Build
             var (schemaTransformError, transformedToken) = schemaTransformer.TransformContent(file, context, token, buildChild);
             errors.AddRange(schemaTransformError);
 
-            // TODO: remove schema validation in ToObject
-            var (_, content) = JsonUtility.ToObject(transformedToken, file.Schema.Type);
-
             var (metaErrors, pageModel) = context.MetadataProvider.GetMetadata(file);
             errors.AddRange(metaErrors);
 
+            var conceptual = (string)null;
             if (file.Docset.Legacy && file.Schema.Type == typeof(LandingData))
             {
+                // TODO: remove schema validation in ToObject
+                var (_, content) = JsonUtility.ToObject(transformedToken, file.Schema.Type);
+
                 // merge extension data to metadata in legacy model
                 var landingData = (LandingData)content;
-                JsonUtility.Merge(pageModel.ExtensionData, landingData.ExtensionData);
+                var mergedMetadata = JsonUtility.ToJObject(pageModel as InputMetadata);
+                JsonUtility.Merge(mergedMetadata, landingData.ExtensionData);
+
+                (_, pageModel) = JsonUtility.ToObject<OutputModel>(mergedMetadata);
+
+                if (file.Docset.Legacy)
+                {
+                    conceptual = HtmlUtility.HtmlPostProcess(
+                    await RazorTemplate.Render(file.Schema.Name, content), file.Docset.Culture);
+                }
             }
 
-            if (file.Docset.Legacy && file.Schema.Attribute is PageSchemaAttribute)
+            if (conceptual != null)
             {
-                pageModel.Conceptual = HtmlUtility.HtmlPostProcess(
-                    await RazorTemplate.Render(file.Schema.Name, content), file.Docset.Culture);
+                pageModel.Conceptual = conceptual;
             }
             else
             {
-                pageModel.Content = content;
+                pageModel.Content = transformedToken;
             }
 
             pageModel.Title = pageModel.Title ?? obj?.Value<string>("title");
