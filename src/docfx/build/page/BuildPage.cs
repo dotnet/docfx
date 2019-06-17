@@ -58,7 +58,7 @@ namespace Microsoft.Docs.Build
             if (contributorErrors != null)
                 errors.AddRange(contributorErrors);
 
-            var isPage = schema.Attribute is PageSchemaAttribute;
+            var isPage = schema.IsPage;
             var outputPath = file.GetOutputPath(model.Monikers, file.Docset.SiteBasePath, isPage);
             var (output, extensionData) = ApplyTemplate(context, file, model, isPage);
 
@@ -198,10 +198,10 @@ namespace Microsoft.Docs.Build
             errors.AddRange(metaErrors);
 
             var conceptual = (string)null;
-            if (file.Docset.Legacy && file.Schema.Type == typeof(LandingData))
+            if (file.Docset.Legacy && file.Schema.Is(typeof(LandingData)))
             {
                 // TODO: remove schema validation in ToObject
-                var (_, content) = JsonUtility.ToObject(transformedToken, file.Schema.Type);
+                var (_, content) = JsonUtility.ToObject(transformedToken, typeof(LandingData));
 
                 // merge extension data to metadata in legacy model
                 var landingData = (LandingData)content;

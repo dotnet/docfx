@@ -101,7 +101,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Gets a value indicating whether the current document is schema data
         /// </summary>
-        public bool IsSchemaData => Schema != null && Schema.Attribute as PageSchemaAttribute is null;
+        public bool IsSchemaData => Schema != null && !Schema.IsPage;
 
         /// <summary>
         /// Gets the repository
@@ -325,7 +325,7 @@ namespace Microsoft.Docs.Build
             switch (contentType)
             {
                 case ContentType.Page:
-                    if (schema is null || schema.Attribute is PageSchemaAttribute)
+                    if (schema is null || schema.IsPage)
                     {
                         if (Path.GetFileNameWithoutExtension(path).Equals("index", PathUtility.PathComparison))
                         {
@@ -364,7 +364,7 @@ namespace Microsoft.Docs.Build
             {
                 case ContentType.Redirection:
                 case ContentType.Page:
-                    if (schema is null || schema.Attribute is PageSchemaAttribute)
+                    if (schema is null || schema.IsPage)
                     {
                         var fileName = Path.GetFileNameWithoutExtension(path);
                         if (fileName.Equals("index", PathUtility.PathComparison))
@@ -461,7 +461,7 @@ namespace Microsoft.Docs.Build
                 : mappedSourcePath;
 
             // if source is landing page, change it to *.md
-            if (Schema?.Type == typeof(LandingData))
+            if (Schema?.Is(typeof(LandingData)) ?? false)
             {
                 sourcePath = Path.ChangeExtension(sourcePath, ".md");
             }

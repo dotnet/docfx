@@ -51,8 +51,8 @@ namespace Microsoft.Docs.Build
             }
 
             // TODO: get schema from template
-            var schemaFilePath = Path.Combine(AppContext.BaseDirectory, $"data/{schema.Type.Name}.json");
-            return _jsonSchemas.GetOrAdd(schema.Type.Name, new Lazy<(JsonSchemaValidator, JsonSchemaTransformer)>(GetJsonSchemaCore)).Value;
+            var schemaFilePath = Path.Combine(AppContext.BaseDirectory, $"data/{schema.Name}.json");
+            return _jsonSchemas.GetOrAdd(schema.Name, new Lazy<(JsonSchemaValidator, JsonSchemaTransformer)>(GetJsonSchemaCore)).Value;
 
             (JsonSchemaValidator, JsonSchemaTransformer) GetJsonSchemaCore()
             {

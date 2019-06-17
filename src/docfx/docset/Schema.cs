@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 
 namespace Microsoft.Docs.Build
 {
@@ -13,27 +12,25 @@ namespace Microsoft.Docs.Build
     {
         public static readonly Schema Conceptual = new Schema(typeof(Conceptual));
 
-        public Type Type { get; }
+        // todo: get page type from json schema
+        public bool IsPage => !string.Equals(Name, "ContextObject", StringComparison.OrdinalIgnoreCase);
 
-        public DataSchemaAttribute Attribute { get; }
+        public string Name { get; }
 
-        public string Name => Type.Name;
+        // todo: read schema from template
+        private static readonly Dictionary<string, Schema> s_schemas = Directory.EnumerateFiles("data", "*.json", SearchOption.TopDirectoryOnly).ToDictionary(k => Path.GetFileNameWithoutExtension(k), v => new Schema(Path.GetFileNameWithoutExtension(v)));
+
+        private Schema(string name)
+        {
+            Name = name;
+        }
 
         private Schema(Type type)
+            : this(type.Name)
         {
-            Type = type;
-            Attribute = type.GetCustomAttribute<DataSchemaAttribute>();
         }
 
-        private static readonly IReadOnlyDictionary<string, Schema> s_schemas =
-            typeof(TestData).Assembly.ExportedTypes
-            .Where(type => type.GetCustomAttribute<DataSchemaAttribute>() != null)
-            .ToDictionary(item => item.Name, item => new Schema(item), StringComparer.OrdinalIgnoreCase);
-
-        public static Schema GetSchema(string mime)
-        {
-            return mime != null && s_schemas.TryGetValue(mime, out var result) ? result : null;
-        }
+        public bool Is(Type type) => string.Equals(type.Name, Name, StringComparison.OrdinalIgnoreCase);
 
         public static (SourceInfo<string> mime, Schema schema) ReadFromFile(string pathToDocset, string filePath)
         {
