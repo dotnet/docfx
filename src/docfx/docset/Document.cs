@@ -251,14 +251,21 @@ namespace Microsoft.Docs.Build
             }
 
             var siteUrl = PathToAbsoluteUrl(sitePath, type, schema, docset.Config.Output.Json);
-            var contentType = redirectionUrl != null ? ContentType.Redirection : type;
+            var contentType = type;
+            if (redirectionUrl != null)
+            {
+                contentType = ContentType.Redirection;
+                if (redirectionUrl.EndsWith('/') || redirectionUrl.EndsWith('\\'))
+                {
+                    redirectionUrl = PathUtility.NormalizeFolder(resolveRedirectUrl ? Path.Combine(Path.GetDirectoryName(siteUrl), redirectionUrl) : redirectionUrl);
+                }
+                else
+                {
+                    redirectionUrl = PathUtility.NormalizeFile(resolveRedirectUrl ? Path.Combine(Path.GetDirectoryName(siteUrl), redirectionUrl) : redirectionUrl);
+                }
+            }
             var canonicalUrl = GetCanonicalUrl(siteUrl, sitePath, docset, isExperimental, contentType, schema);
             var canonicalUrlWithoutLocale = GetCanonicalUrl(siteUrl, sitePath, docset, isExperimental, contentType, schema, false);
-
-            if (resolveRedirectUrl && !string.IsNullOrEmpty(redirectionUrl))
-            {
-                redirectionUrl = PathUtility.NormalizeFile(Path.Combine(Path.GetDirectoryName(siteUrl), redirectionUrl));
-            }
 
             return new Document(docset, filePath, sitePath, siteUrl, canonicalUrlWithoutLocale, canonicalUrl, contentType, mime, schema, isExperimental, redirectionUrl, isFromHistory);
         }
