@@ -20,7 +20,7 @@ namespace Microsoft.Docs.Build
         /// Redirection entry isn't a conceptual article(*.{md,json,yml}).
         /// </summary>
         /// Behavior: ✔️ Message: ✔️
-        public static Error RedirectionInvalid(SourceInfo source, string path)
+        public static Error RedirectionInvalid(SourceInfo<string> source, string path)
             => new Error(ErrorLevel.Error, "redirection-invalid", $"File '{path}' is redirected to '{source}'. Only content files can be redirected.", source);
 
         /// <summary>

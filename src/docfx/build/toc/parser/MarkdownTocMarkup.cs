@@ -74,6 +74,11 @@ namespace Microsoft.Docs.Build
             do
             {
                 var item = GetItem(headingBlocks[i]);
+                if (item == null)
+                {
+                    continue;
+                }
+
                 items.Add(item);
                 var currentLevel = headingBlocks[i].Level;
                 if (i + 1 < headingBlocks.Length && headingBlocks[i + 1].Level > currentLevel)
@@ -111,7 +116,7 @@ namespace Microsoft.Docs.Build
                 {
                     var invalidTocSyntaxContent = tocContent.Substring(block.Span.Start, block.Span.Length);
                     errors.Add(Errors.InvalidTocSyntax(new SourceInfo<string>(invalidTocSyntaxContent, block.ToSourceInfo(file: filePath)), "multiple inlines in one heading block is not allowed"));
-                    return currentItem;
+                    return null;
                 }
 
                 var xrefLink = block.Inline.FirstOrDefault(l => l is XrefInline);
@@ -134,7 +139,10 @@ namespace Microsoft.Docs.Build
                     currentItem.Name = GetLiteral(linkInline);
                 }
 
-                currentItem.Name = currentItem.Name ?? GetLiteral(block.Inline);
+                if (currentItem.Name.Value is null)
+                {
+                    currentItem.Name = GetLiteral(block.Inline);
+                }
 
                 return currentItem;
             }
@@ -149,7 +157,7 @@ namespace Microsoft.Docs.Build
                     if (!(child is LiteralInline literal))
                     {
                         errors.Add(Errors.InvalidTocSyntax(new SourceInfo<string>(tocContent.Substring(inline.Span.Start, inline.Span.Length), inline.ToSourceInfo(file: filePath))));
-                        return null;
+                        return default;
                     }
 
                     var content = literal.Content;
