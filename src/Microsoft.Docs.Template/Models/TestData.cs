@@ -30,7 +30,7 @@ namespace Microsoft.Docs.Build
 
         public TestChild[] Children { get; set; }
 
-        public string[] Monikers { get; set; }
+        public string[] List { get; set; }
     }
 
     public sealed class TestChild
@@ -44,6 +44,6 @@ namespace Microsoft.Docs.Build
         [JsonProperty("child.c")]
         public string C { get; set; }
 
-        public string[] Monikers { get; set; }
+        public string[] List { get; set; }
     }
 }

@@ -822,21 +822,21 @@ inputs:
   docs/a.yml: |
     #YamlMime:TestData
     uid: a
-    monikers:
+    list:
       - "1.0"
       - "2.0"
       - "3.0"
     child:
       uid: child
-      monikers:
+      list:
         - "2.0"
         - "3.0"
     children:
       - uid: children.a
-        monikers:
+        list:
           - "1.0"
       - uid: children.b
-        monikers:
+        list:
           - "2.0"
           - "3.0"
 outputs:
@@ -847,7 +847,7 @@ outputs:
             {
                 "uid": "a",
                 "href": "https://docs.com/docs/a.json",
-                "monikers": [
+                "list": [
                     "1.0",
                     "2.0",
                     "3.0"
@@ -856,7 +856,7 @@ outputs:
             {
                 "uid": "child",
                 "href": "https://docs.com/docs/a.json#child",
-                "monikers": [
+                "list": [
                     "2.0",
                     "3.0"
                 ]
@@ -864,14 +864,14 @@ outputs:
             {
                 "uid": "children.a",
                 "href": "https://docs.com/docs/a.json#children_a",
-                "monikers": [
+                "list": [
                     "1.0"
                 ]
             },
             {
                 "uid": "children.b",
                 "href": "https://docs.com/docs/a.json#children_b",
-                "monikers": [
+                "list": [
                     "2.0",
                     "3.0"
                 ]

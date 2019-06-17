@@ -17,7 +17,7 @@
                 "child.c": {
                     "type": "string"
                 },
-                "monikers": {
+                "list": {
                     "type": "array",
                     "items": {
                         "type": "string"
@@ -27,7 +27,7 @@
             "xrefProperties": [
                 "a",
                 "child.c",
-                "monikers"
+                "list"
             ]
         }
     },
@@ -77,7 +77,7 @@
         "$schema": {
             "type": "string"
         },
-        "monikers": {
+        "list": {
             "type": "array",
             "items": {
                 "type": "string"
@@ -90,6 +90,6 @@
         "description",
         "summary",
         "inlineDescription",
-        "monikers"
+        "list"
     ]
 }
