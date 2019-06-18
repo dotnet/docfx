@@ -25,7 +25,7 @@ namespace Microsoft.Docs.Build
             _map = map;
         }
 
-        public (Error error, string href, string display, Document referencedFile) Resolve(string uid, SourceInfo<string> href, string displayPropertyName, Document relativeTo, string moniker = null)
+        public (Error error, string href, string display, IXrefSpec xrefSpec) Resolve(string uid, SourceInfo<string> href, string displayPropertyName, Document relativeTo, string moniker = null)
         {
             if (t_recursionDetector.Value.Contains((uid, displayPropertyName, relativeTo)))
             {
@@ -54,7 +54,7 @@ namespace Microsoft.Docs.Build
             context.Output.WriteJson(models, "xrefmap.json");
         }
 
-        private (Error error, string href, string display, Document referencedFile) ResolveCore(
+        private (Error error, string href, string display, IXrefSpec xrefSpec) ResolveCore(
             string uid, SourceInfo<string> href, string displayPropertyName, Document relativeTo, string moniker = null)
         {
             string resolvedHref;
@@ -82,7 +82,7 @@ namespace Microsoft.Docs.Build
             // fallback order:
             // xrefSpec.displayPropertyName -> xrefSpec.name -> uid
             string display = !string.IsNullOrEmpty(displayPropertyValue) ? displayPropertyValue : (!string.IsNullOrEmpty(name) ? name : uid);
-            return (null, resolvedHref, display, spec?.DeclairingFile);
+            return (null, resolvedHref, display, spec);
 
             string RemoveHostnameIfSharingTheSameOne(string input)
             {

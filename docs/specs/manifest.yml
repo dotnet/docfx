@@ -14,10 +14,10 @@ outputs:
   .publish.json: |
     {
       "files": [
-        { "url": "/docs/a", "path": "docs/a.json" },
-        { "url": "/docs/folder/b~$", "path": "docs/folder/b~$.json" },
-        { "url": "/docs/", "path": "docs/index.json" },
-        { "url": "/docs/toc.json", "path": "docs/toc.json" }
+        { "url": "/docs/a", "path": "docs/a.json", "source_path": "docs/a.md" },
+        { "url": "/docs/folder/b~$", "path": "docs/folder/b~$.json", "source_path": "docs/folder/b~$.md" },
+        { "url": "/docs/", "path": "docs/index.json", "source_path": "docs/index.md" },
+        { "url": "/docs/toc.json", "path": "docs/toc.json", "source_path": "docs/TOC.md" }
       ]
     }
 ---
@@ -32,7 +32,7 @@ outputs:
   .publish.json: |
     {
       "files": [
-        { "url": "/a.png", "path": "../a.png" }
+        { "url": "/a.png", "path": "../a.png", "source_path": "a.png" }
       ]
     }
 ---
@@ -44,7 +44,7 @@ inputs:
 outputs:
   .publish.json: |
     {
-      "files": [{ "url": "/a", "redirect_url": "/b", "!path": null, "!hash": null }]
+      "files": [{ "url": "/a", "redirect_url": "/b", "!path": null, "source_path": "a.md", "!hash": null }]
     }
 ---
 # Publish manifest for articles contains custom metadata

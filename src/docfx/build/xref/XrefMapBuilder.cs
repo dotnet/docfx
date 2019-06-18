@@ -5,13 +5,8 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Text.Json;
 using System.Text.RegularExpressions;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -20,14 +15,11 @@ namespace Microsoft.Docs.Build
     {
         public static XrefMap Build(Context context, Docset docset)
         {
-            // TODO: not considering same uid with multiple specs, it will be Dictionary<string, List<T>>
-            // https://github.com/dotnet/corefx/issues/12067
-            // Prefer Dictionary with manual lock to ConcurrentDictionary while only adding
-            var externalXrefMap = new DictionaryBuilder<string, Lazy<IXrefSpec>>();
-            ParallelUtility.ForEach(docset.Config.Xref, url =>
+            var externalXrefMap = new Dictionary<string, Lazy<IXrefSpec>>();
+            foreach (var url in docset.Config.Xref)
             {
                 XrefMapModel xrefMap = new XrefMapModel();
-                if (url?.Value.EndsWith(".yml", StringComparison.OrdinalIgnoreCase) != false)
+                if (url.Value.EndsWith(".yml", StringComparison.OrdinalIgnoreCase))
                 {
                     var (_, content, _) = RestoreMap.GetRestoredFileContent(docset, url);
                     xrefMap = YamlUtility.Deserialize<XrefMapModel>(content, url);
@@ -39,16 +31,19 @@ namespace Microsoft.Docs.Build
                 else
                 {
                     // Convert to array since ref local is not allowed to be used in lambda expression
-                    var filePath = RestoreMap.GetRestoredFilePath(docset.DocsetPath, url);
+                    //
+                    // TODO: It is very easy to forget passing fallbackDocsetPath, the RestoreMap interface needs improvement
+                    var filePath = RestoreMap.GetRestoredFilePath(docset.DocsetPath, url, docset.FallbackDocset?.DocsetPath);
                     var result = XrefMapLoader.Load(filePath);
                     foreach (var (uid, spec) in result.ToList())
                     {
+                        // for same uid with multiple specs, we should respect the order of the list
                         externalXrefMap.TryAdd(uid, spec);
                     }
                 }
-            });
+            }
             var internalXrefMap = CreateInternalXrefMap(context, docset.ScanScope);
-            return new XrefMap(context, BuildMap(externalXrefMap.ToDictionary(), internalXrefMap), internalXrefMap);
+            return new XrefMap(context, BuildMap(externalXrefMap, internalXrefMap), internalXrefMap);
         }
 
         private static Dictionary<string, List<Lazy<IXrefSpec>>> BuildMap(IReadOnlyDictionary<string, Lazy<IXrefSpec>> externalXrefMap, Dictionary<string, List<Lazy<IXrefSpec>>> internalXrefMap)

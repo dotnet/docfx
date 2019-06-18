@@ -32,6 +32,7 @@ namespace Microsoft.Docs.Build
             {
                 Url = file.SiteUrl,
                 Path = outputPath,
+                SourcePath = file.FilePath,
                 Locale = file.Docset.Locale,
                 Monikers = model.Metadata.Monikers,
                 MonikerGroup = MonikerUtility.GetGroup(model.Metadata.Monikers),
@@ -84,7 +85,7 @@ namespace Microsoft.Docs.Build
                 },
                 (file, href, resultRelativeTo) =>
                 {
-                    var (error, link, buildItem) = context.DependencyResolver.ResolveRelativeLink(href, file, resultRelativeTo, null);
+                    var (error, link, buildItem) = context.DependencyResolver.ResolveRelativeLink(href, file, resultRelativeTo);
                     errors.AddIfNotNull(error);
 
                     if (buildItem != null)
@@ -98,15 +99,15 @@ namespace Microsoft.Docs.Build
                 {
                     // add to referenced document list
                     // TODO: pass line info into ResolveXref
-                    var (error, link, display, buildItem) = context.DependencyResolver.ResolveRelativeXref(uid, file);
+                    var (error, link, display, xrefSpec) = context.DependencyResolver.ResolveXref(uid, file);
                     errors.AddIfNotNull(error);
 
-                    if (buildItem != null)
+                    if (xrefSpec?.DeclairingFile != null)
                     {
-                        referencedDocuments.Add((buildItem, link));
+                        referencedDocuments.Add((xrefSpec?.DeclairingFile, link));
                     }
 
-                    return (link, display, buildItem);
+                    return (link, display, xrefSpec?.DeclairingFile);
                 },
                 (document) =>
                 {

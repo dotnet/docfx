@@ -37,7 +37,7 @@ namespace Microsoft.Docs.Build
 
         public static (SourceInfo<string> mime, Schema schema) ReadFromFile(string pathToDocset, string filePath)
         {
-            SourceInfo<string> mime = null;
+            SourceInfo<string> mime = default;
 
             if (filePath.EndsWith(".json", PathUtility.PathComparison))
             {
@@ -60,7 +60,7 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            if (mime?.Value != null && s_schemas.TryGetValue(mime, out var schema))
+            if (mime.Value != null && s_schemas.TryGetValue(mime, out var schema))
             {
                 return (mime, schema);
             }
