@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -15,16 +14,15 @@ namespace Microsoft.Docs.Build
         public static async Task<(IEnumerable<Error> errors, PublishItem publishItem)> Build(
             Context context,
             Document file,
-            TableOfContentsMap tocMap,
-            Action<Document> buildChild)
+            TableOfContentsMap tocMap)
         {
             Debug.Assert(file.ContentType == ContentType.Page);
 
-            var (errors, isPage, model) = await Load(context, file, buildChild);
+            var (errors, isPage, model) = await Load(context, file);
 
             if (!string.IsNullOrEmpty(model.BreadcrumbPath))
             {
-                var (breadcrumbError, breadcrumbPath, _) = context.DependencyResolver.ResolveLink(model.BreadcrumbPath, file, file, buildChild);
+                var (breadcrumbError, breadcrumbPath, _) = context.DependencyResolver.ResolveLink(model.BreadcrumbPath, file, file);
                 errors.AddIfNotNull(breadcrumbError);
                 model.BreadcrumbPath = new SourceInfo<string>(breadcrumbPath, model.BreadcrumbPath);
             }
@@ -99,35 +97,32 @@ namespace Microsoft.Docs.Build
         }
 
         private static async Task<(List<Error> errors, bool isPage, OutputModel model)>
-            Load(Context context, Document file, Action<Document> buildChild)
+            Load(Context context, Document file)
         {
             if (file.FilePath.EndsWith(".md", PathUtility.PathComparison))
             {
-                return LoadMarkdown(context, file, buildChild);
+                return LoadMarkdown(context, file);
             }
             if (file.FilePath.EndsWith(".yml", PathUtility.PathComparison))
             {
-                return await LoadYaml(context, file, buildChild);
+                return await LoadYaml(context, file);
             }
 
             Debug.Assert(file.FilePath.EndsWith(".json", PathUtility.PathComparison));
-            return await LoadJson(context, file, buildChild);
+            return await LoadJson(context, file);
         }
 
         private static (List<Error> errors, bool isPage, OutputModel model)
-            LoadMarkdown(Context context, Document file, Action<Document> buildChild)
+            LoadMarkdown(Context context, Document file)
         {
             var errors = new List<Error>();
             var content = file.ReadText();
             GitUtility.CheckMergeConflictMarker(content, file.FilePath);
 
             var (markupErrors, html) = MarkdownUtility.ToHtml(
+                context,
                 content,
                 file,
-                context.DependencyResolver,
-                buildChild,
-                context.MonikerProvider,
-                key => context.Template?.GetToken(key),
                 MarkdownPipelineType.Markdown);
             errors.AddRange(markupErrors);
 
@@ -155,23 +150,23 @@ namespace Microsoft.Docs.Build
         }
 
         private static async Task<(List<Error> errors, bool isPage, OutputModel model)>
-            LoadYaml(Context context, Document file, Action<Document> buildChild)
+            LoadYaml(Context context, Document file)
         {
             var (errors, token) = YamlUtility.Parse(file, context);
 
-            return await LoadSchemaDocument(context, errors, token, file, buildChild);
+            return await LoadSchemaDocument(context, errors, token, file);
         }
 
         private static async Task<(List<Error> errors, bool isPage, OutputModel model)>
-            LoadJson(Context context, Document file, Action<Document> buildChild)
+            LoadJson(Context context, Document file)
         {
             var (errors, token) = JsonUtility.Parse(file, context);
 
-            return await LoadSchemaDocument(context, errors, token, file, buildChild);
+            return await LoadSchemaDocument(context, errors, token, file);
         }
 
         private static async Task<(List<Error> errors, bool isPage, OutputModel model)>
-            LoadSchemaDocument(Context context, List<Error> errors, JToken token, Document file, Action<Document> buildChild)
+            LoadSchemaDocument(Context context, List<Error> errors, JToken token, Document file)
         {
             var obj = token as JObject;
 
@@ -186,7 +181,7 @@ namespace Microsoft.Docs.Build
             errors.AddRange(schemaValidationErrors);
 
             // transform via json schema
-            var (schemaTransformError, transformedToken) = schemaTransformer.TransformContent(file, context, token, buildChild);
+            var (schemaTransformError, transformedToken) = schemaTransformer.TransformContent(file, context, token);
             errors.AddRange(schemaTransformError);
 
             var (metaErrors, pageModel) = context.MetadataProvider.GetMetadata(file);

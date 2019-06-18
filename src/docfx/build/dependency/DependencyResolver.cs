@@ -12,22 +12,24 @@ namespace Microsoft.Docs.Build
 {
     internal class DependencyResolver
     {
+        private readonly WorkQueue<Document> _buildQueue;
         private readonly BookmarkValidator _bookmarkValidator;
         private readonly DependencyMapBuilder _dependencyMapBuilder;
         private readonly GitCommitProvider _gitCommitProvider;
         private readonly Lazy<XrefMap> _xrefMap;
-        private readonly bool _forLandingPage = false;
 
-        public DependencyResolver(GitCommitProvider gitCommitProvider, BookmarkValidator bookmarkValidator, DependencyMapBuilder dependencyMapBuilder, Lazy<XrefMap> xrefMap, bool forLandingPage = false)
+        public DependencyResolver(
+            WorkQueue<Document> buildQueue,
+            GitCommitProvider gitCommitProvider,
+            BookmarkValidator bookmarkValidator,
+            DependencyMapBuilder dependencyMapBuilder,
+            Lazy<XrefMap> xrefMap)
         {
+            _buildQueue = buildQueue;
             _bookmarkValidator = bookmarkValidator;
             _dependencyMapBuilder = dependencyMapBuilder;
             _gitCommitProvider = gitCommitProvider;
             _xrefMap = xrefMap;
-
-            // forLandingPage should not be used, it is a hack to handle some specific logic for landing page based on the user input for now
-            // which needs to be removed once the user input is correct
-            _forLandingPage = forLandingPage;
         }
 
         public (Error error, string content, Document file) ResolveContent(SourceInfo<string> path, Document relativeTo, DependencyType dependencyType = DependencyType.Inclusion)
@@ -39,13 +41,13 @@ namespace Microsoft.Docs.Build
             return (error, content, child);
         }
 
-        public (Error error, string link, Document file) ResolveLink(SourceInfo<string> path, Document relativeTo, Document resultRelativeTo, Action<Document> buildChild)
+        public (Error error, string link, Document file) ResolveLink(SourceInfo<string> path, Document relativeTo, Document resultRelativeTo)
         {
             var (error, link, fragment, linkType, file) = TryResolveHref(relativeTo, path, resultRelativeTo);
 
-            if (file != null && buildChild != null)
+            if (file != null)
             {
-                buildChild(file);
+                _buildQueue.Enqueue(file);
             }
 
             var isSelfBookmark = linkType == LinkType.SelfBookmark || resultRelativeTo == file;
@@ -223,13 +225,17 @@ namespace Microsoft.Docs.Build
                     var file = Document.CreateFromFile(relativeTo.Docset, pathToDocset);
 
                     // try to resolve with .md for landing page
-                    if (file is null && _forLandingPage)
+                    //
+                    // forLandingPage should not be used, it is a hack to handle some specific logic for landing page based on the user input for now
+                    // which needs to be removed once the user input is correct
+                    var forLandingPage = relativeTo.Schema?.Type == typeof(LandingData);
+                    if (file is null && forLandingPage)
                     {
                         pathToDocset = ResolveToDocsetRelativePath($"{path}.md", relativeTo);
                         file = Document.CreateFromFile(relativeTo.Docset, pathToDocset);
                     }
 
-                    return (file != null ? null : (_forLandingPage ? null : Errors.FileNotFound(new SourceInfo<string>(path, href))), file, query, fragment, null, pathToDocset);
+                    return (file != null ? null : (forLandingPage ? null : Errors.FileNotFound(new SourceInfo<string>(path, href))), file, query, fragment, null, pathToDocset);
 
                 default:
                     return default;

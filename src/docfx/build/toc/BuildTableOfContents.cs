@@ -85,7 +85,7 @@ namespace Microsoft.Docs.Build
                 },
                 (file, href, resultRelativeTo) =>
                 {
-                    var (error, link, buildItem) = context.DependencyResolver.ResolveLink(href, file, resultRelativeTo, null);
+                    var (error, link, buildItem) = context.DependencyResolver.ResolveLink(href, file, resultRelativeTo);
                     errors.AddIfNotNull(error);
 
                     if (buildItem != null)
