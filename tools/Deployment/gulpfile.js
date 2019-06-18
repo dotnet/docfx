@@ -172,7 +172,6 @@ gulp.task("packAssetZip", () => {
 
 gulp.task("publish:gh-release", () => {
     Guard.argumentNotNullOrEmpty(config.docfx.releaseNotePath, "config.docfx.releaseNotePath", "Can't find RELEASENOTE.md in configuartion.");
-    Guard.argumentNotNullOrEmpty(config.docfx.assetZipPath, "config.docfx.assetZipPath", "Can't find asset zip destination folder in configuration.");
     Guard.argumentNotNullOrEmpty(process.env.TOKEN, "process.env.TOKEN", "No github account token in the environment.");
 
     let githubToken = process.env.TOKEN;
@@ -181,13 +180,12 @@ gulp.task("publish:gh-release", () => {
 });
 
 gulp.task("publish:gh-asset", () => {
-    Guard.argumentNotNullOrEmpty(config.docfx.releaseNotePath, "config.docfx.releaseNotePath", "Can't find RELEASENOTE.md in configuartion.");
     Guard.argumentNotNullOrEmpty(config.docfx.assetZipPath, "config.docfx.assetZipPath", "Can't find asset zip destination folder in configuration.");
     Guard.argumentNotNullOrEmpty(process.env.TOKEN, "process.env.TOKEN", "No github account token in the environment.");
 
     let githubToken = process.env.TOKEN;
     let assetZipPath = path.resolve(config.docfx["assetZipPath"]);
-    return Github.updateGithubReleaseAsync(config.docfx.sshRepoUrl, assetZipPath, githubToken);
+    return Github.updateGithubAssetAsync(config.docfx.sshRepoUrl, assetZipPath, githubToken);
 });
 
 gulp.task("publish:chocolatey", () => {
