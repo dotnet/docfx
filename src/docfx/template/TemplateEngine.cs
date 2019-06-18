@@ -17,7 +17,7 @@ namespace Microsoft.Docs.Build
     internal class TemplateEngine
     {
         // todo: read schema from template
-        private static readonly HashSet<string> s_schemas = new HashSet<string>(Directory.EnumerateFiles("data", "*.json", SearchOption.TopDirectoryOnly).Select(k => Path.GetFileNameWithoutExtension(k)));
+        private static readonly HashSet<string> s_schemas = new HashSet<string>(Directory.EnumerateFiles(Path.Combine(AppContext.BaseDirectory, "data"), "*.json", SearchOption.TopDirectoryOnly).Select(k => Path.GetFileNameWithoutExtension(k)));
 
         private static readonly string[] s_resourceFolders = new[] { "global", "css", "fonts" };
         private static readonly ConcurrentDictionary<string, Lazy<(JsonSchemaValidator, JsonSchemaTransformer)>> _jsonSchemas
