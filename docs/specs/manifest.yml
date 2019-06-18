@@ -161,6 +161,7 @@ outputs:
     {  
        "dependencies":{
           "docs/TOC.md":[
+             { "source":"docs/a/b.md", "type":"link" },
              { "source":"docs/a/TOC.md", "type":"tocInclusion" }
           ],
           "docs/a/TOC.md":[  
