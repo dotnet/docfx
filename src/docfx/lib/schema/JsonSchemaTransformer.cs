@@ -86,7 +86,7 @@ namespace Microsoft.Docs.Build
             switch (schema.ContentType)
             {
                 case JsonSchemaContentType.Href:
-                    var (error, link, _) = context.DependencyResolver.ResolveLink(content, file);
+                    var (error, link, _) = context.DependencyResolver.ResolveRelativeLink(content, file, file);
                     errors.AddIfNotNull(error);
                     content = new SourceInfo<string>(link, content);
                     break;

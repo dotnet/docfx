@@ -78,13 +78,13 @@ namespace Microsoft.Docs.Build
             return (error, link, file);
         }
 
-        public (Error error, string href, string display, IXrefSpec spec) ResolveRelativeXref(SourceInfo<string> href, Document relativeTo)
+        public (Error error, string href, string display, IXrefSpec spec) ResolveRelativeXref(SourceInfo<string> href, Document relativeTo, Document resultRelativeTo)
         {
             var result = ResolveXref(href, relativeTo);
 
             if (result.href != null && result.href.StartsWith(RelativeUrlMarker))
             {
-                result.href = UrlUtility.GetRelativeUrl(relativeTo.SiteUrl, result.href.Substring(RelativeUrlMarker.Length));
+                result.href = UrlUtility.GetRelativeUrl(resultRelativeTo.SiteUrl, result.href.Substring(RelativeUrlMarker.Length));
             }
 
             return result;
