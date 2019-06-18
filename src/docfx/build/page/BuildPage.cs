@@ -20,7 +20,7 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(file.ContentType == ContentType.Page);
 
-            var (errors, model) = await Load(context, file, buildChild);
+            var (errors, isPage, model) = await Load(context, file, buildChild);
 
             if (!string.IsNullOrEmpty(model.BreadcrumbPath))
             {
@@ -57,7 +57,6 @@ namespace Microsoft.Docs.Build
             if (contributorErrors != null)
                 errors.AddRange(contributorErrors);
 
-            var isPage = TemplateEngine.IsPage(file.Mime);
             var outputPath = file.GetOutputPath(model.Monikers, file.Docset.SiteBasePath, isPage);
             var (output, extensionData) = ApplyTemplate(context, file, model, isPage);
 
@@ -99,7 +98,7 @@ namespace Microsoft.Docs.Build
             return (errors, publishItem);
         }
 
-        private static async Task<(List<Error> errors, OutputModel model)>
+        private static async Task<(List<Error> errors, bool isPage, OutputModel model)>
             Load(Context context, Document file, Action<Document> buildChild)
         {
             if (file.FilePath.EndsWith(".md", PathUtility.PathComparison))
@@ -115,7 +114,7 @@ namespace Microsoft.Docs.Build
             return await LoadJson(context, file, buildChild);
         }
 
-        private static (List<Error> errors, OutputModel model)
+        private static (List<Error> errors, bool isPage, OutputModel model)
             LoadMarkdown(Context context, Document file, Action<Document> buildChild)
         {
             var errors = new List<Error>();
@@ -152,10 +151,10 @@ namespace Microsoft.Docs.Build
 
             context.BookmarkValidator.AddBookmarks(file, bookmarks);
 
-            return (errors, pageModel);
+            return (errors, true, pageModel);
         }
 
-        private static async Task<(List<Error> errors, OutputModel model)>
+        private static async Task<(List<Error> errors, bool isPage, OutputModel model)>
             LoadYaml(Context context, Document file, Action<Document> buildChild)
         {
             var (errors, token) = YamlUtility.Parse(file, context);
@@ -163,7 +162,7 @@ namespace Microsoft.Docs.Build
             return await LoadSchemaDocument(context, errors, token, file, buildChild);
         }
 
-        private static async Task<(List<Error> errors, OutputModel model)>
+        private static async Task<(List<Error> errors, bool isPage, OutputModel model)>
             LoadJson(Context context, Document file, Action<Document> buildChild)
         {
             var (errors, token) = JsonUtility.Parse(file, context);
@@ -171,7 +170,7 @@ namespace Microsoft.Docs.Build
             return await LoadSchemaDocument(context, errors, token, file, buildChild);
         }
 
-        private static async Task<(List<Error> errors, OutputModel model)>
+        private static async Task<(List<Error> errors, bool isPage, OutputModel model)>
             LoadSchemaDocument(Context context, List<Error> errors, JToken token, Document file, Action<Document> buildChild)
         {
             var obj = token as JObject;
@@ -226,7 +225,7 @@ namespace Microsoft.Docs.Build
             pageModel.RawTitle = file.Docset.Legacy ? $"<h1>{obj?.Value<string>("title")}</h1>" : null;
             pageModel.SchemaType = TemplateEngine.GetSchemaName(file.Mime);
 
-            return (errors, pageModel);
+            return (errors, TemplateEngine.IsPage(file.Mime), pageModel);
         }
 
         private static (object output, JObject extensionData) ApplyTemplate(Context context, Document file, OutputModel model, bool isPage)
