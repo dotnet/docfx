@@ -228,7 +228,7 @@ namespace Microsoft.Docs.Build
                     //
                     // forLandingPage should not be used, it is a hack to handle some specific logic for landing page based on the user input for now
                     // which needs to be removed once the user input is correct
-                    var forLandingPage = relativeTo.Schema?.Type == typeof(LandingData);
+                    var forLandingPage = TemplateEngine.IsLandingData(file.Mime);
                     if (file is null && forLandingPage)
                     {
                         pathToDocset = ResolveToDocsetRelativePath($"{path}.md", relativeTo);
