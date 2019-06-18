@@ -57,7 +57,7 @@ namespace Microsoft.Docs.Build
             if (contributorErrors != null)
                 errors.AddRange(contributorErrors);
 
-            var isPage = Schema.IsPage(file.Mime);
+            var isPage = TemplateEngine.IsPage(file.Mime);
             var outputPath = file.GetOutputPath(model.Monikers, file.Docset.SiteBasePath, isPage);
             var (output, extensionData) = ApplyTemplate(context, file, model, isPage);
 
@@ -194,7 +194,7 @@ namespace Microsoft.Docs.Build
             errors.AddRange(metaErrors);
 
             var conceptual = (string)null;
-            if (file.Docset.Legacy && Schema.Is(file.Mime, typeof(LandingData)))
+            if (file.Docset.Legacy && TemplateEngine.Is(file.Mime, typeof(LandingData)))
             {
                 // TODO: remove schema validation in ToObject
                 var (_, content) = JsonUtility.ToObject(transformedToken, typeof(LandingData));
@@ -224,7 +224,7 @@ namespace Microsoft.Docs.Build
 
             pageModel.Title = pageModel.Title ?? obj?.Value<string>("title");
             pageModel.RawTitle = file.Docset.Legacy ? $"<h1>{obj?.Value<string>("title")}</h1>" : null;
-            pageModel.SchemaType = Schema.GetSchemaName(file.Mime);
+            pageModel.SchemaType = TemplateEngine.GetSchemaName(file.Mime);
 
             return (errors, pageModel);
         }

@@ -96,7 +96,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Gets a value indicating whether the current document is schema data
         /// </summary>
-        public bool IsSchemaData => !Schema.IsPage(Mime);
+        public bool IsSchemaData => !TemplateEngine.IsPage(Mime);
 
         /// <summary>
         /// Gets the repository
@@ -233,7 +233,7 @@ namespace Microsoft.Docs.Build
             var filePath = PathUtility.NormalizeFile(path);
             var isConfigReference = docset.Config.Extend.Concat(docset.Config.GetFileReferences()).Contains(filePath, PathUtility.PathComparer);
             var type = isConfigReference ? ContentType.Unknown : GetContentType(filePath);
-            var mime = type == ContentType.Page ? Schema.ReadFromFile(filePath, Path.Combine(docset.DocsetPath, filePath)) : default;
+            var mime = type == ContentType.Page ? TemplateEngine.ReadMimeFromFile(filePath, Path.Combine(docset.DocsetPath, filePath)) : default;
             var isExperimental = Path.GetFileNameWithoutExtension(filePath).EndsWith(".experimental", PathUtility.PathComparison);
             var routedFilePath = ApplyRoutes(filePath, docset.Routes, docset.SiteBasePath);
 
@@ -318,7 +318,7 @@ namespace Microsoft.Docs.Build
             switch (contentType)
             {
                 case ContentType.Page:
-                    if (mime is null || Schema.IsPage(mime))
+                    if (mime is null || TemplateEngine.IsPage(mime))
                     {
                         if (Path.GetFileNameWithoutExtension(path).Equals("index", PathUtility.PathComparison))
                         {
@@ -357,7 +357,7 @@ namespace Microsoft.Docs.Build
             {
                 case ContentType.Redirection:
                 case ContentType.Page:
-                    if (mime is null || Schema.IsPage(mime))
+                    if (mime is null || TemplateEngine.IsPage(mime))
                     {
                         var fileName = Path.GetFileNameWithoutExtension(path);
                         if (fileName.Equals("index", PathUtility.PathComparison))
@@ -454,7 +454,7 @@ namespace Microsoft.Docs.Build
                 : mappedSourcePath;
 
             // if source is landing page, change it to *.md
-            if (Schema.Is(Mime, typeof(LandingData)))
+            if (TemplateEngine.Is(Mime, typeof(LandingData)))
             {
                 sourcePath = Path.ChangeExtension(sourcePath, ".md");
             }

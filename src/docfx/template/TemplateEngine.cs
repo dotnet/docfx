@@ -16,6 +16,9 @@ namespace Microsoft.Docs.Build
 {
     internal class TemplateEngine
     {
+        // todo: read schema from template
+        private static readonly HashSet<string> s_schemas = new HashSet<string>(Directory.EnumerateFiles("data", "*.json", SearchOption.TopDirectoryOnly).Select(k => Path.GetFileNameWithoutExtension(k)));
+
         private static readonly string[] s_resourceFolders = new[] { "global", "css", "fonts" };
         private static readonly ConcurrentDictionary<string, Lazy<(JsonSchemaValidator, JsonSchemaTransformer)>> _jsonSchemas
                           = new ConcurrentDictionary<string, Lazy<(JsonSchemaValidator, JsonSchemaTransformer)>>();
@@ -41,6 +44,65 @@ namespace Microsoft.Docs.Build
             _htmlMetaNames = metadataSchema.Properties
                 .Where(prop => !string.IsNullOrEmpty(prop.Value.HtmlMetaName))
                 .ToDictionary(prop => prop.Key, prop => prop.Value.HtmlMetaName);
+        }
+
+        public static SourceInfo<string> ReadMimeFromFile(string pathToDocset, string filePath)
+        {
+            SourceInfo<string> mime = null;
+
+            if (filePath.EndsWith(".json", PathUtility.PathComparison))
+            {
+                if (File.Exists(filePath))
+                {
+                    using (var reader = new StreamReader(filePath))
+                    {
+                        mime = JsonUtility.ReadMime(reader, pathToDocset);
+                    }
+                }
+            }
+            else if (filePath.EndsWith(".yml", PathUtility.PathComparison))
+            {
+                if (File.Exists(filePath))
+                {
+                    using (var reader = new StreamReader(filePath))
+                    {
+                        mime = new SourceInfo<string>(YamlUtility.ReadMime(reader), new SourceInfo(pathToDocset, 1, 1));
+                    }
+                }
+            }
+
+            return mime;
+        }
+
+        public static string GetSchemaName(string mime)
+        {
+            if (mime != null && s_schemas.TryGetValue(mime, out var schema))
+            {
+                return schema;
+            }
+
+            return default;
+        }
+
+        public static bool IsPage(string mime)
+        {
+            // todo: get `isPage` from template JINT script name
+            if (mime != null && s_schemas.TryGetValue(mime, out var schema))
+            {
+                return !string.Equals(schema, "ContextObject", StringComparison.OrdinalIgnoreCase) && !string.Equals(schema, "TestData", StringComparison.OrdinalIgnoreCase);
+            }
+
+            return false;
+        }
+
+        public static bool Is(string mime, Type type)
+        {
+            if (mime != null && s_schemas.TryGetValue(mime, out var schema))
+            {
+                return string.Equals(type.Name, schema, StringComparison.OrdinalIgnoreCase);
+            }
+
+            return false;
         }
 
         public static (JsonSchemaValidator, JsonSchemaTransformer) GetJsonSchema(string schemaName)

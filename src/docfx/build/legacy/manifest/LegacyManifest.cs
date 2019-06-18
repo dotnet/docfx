@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using DotLiquid;
 
 namespace Microsoft.Docs.Build
 {
@@ -152,7 +153,7 @@ namespace Microsoft.Docs.Build
 
         private static string GetType(ContentType type, Document doc)
         {
-            if (type == ContentType.Page && !Schema.IsPage(doc.Mime))
+            if (type == ContentType.Page && !TemplateEngine.IsPage(doc.Mime))
             {
                 return "Toc";
             }
