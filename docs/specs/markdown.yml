@@ -531,10 +531,8 @@ outputs:
 inputs:
   docfx.yml:
   docs/a.md: |
-    some text
-    <div>
-      <p>Link to <a href="#top">text</a></p>
-    </div>
+    [some text](#top)
+    [some text](#)
 outputs:
   docs/a.json:
 
