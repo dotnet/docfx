@@ -19,10 +19,10 @@ namespace Microsoft.Docs.Build
             _definitions = new JsonSchemaDefinition(schema);
         }
 
-        public (List<Error> errors, JToken token) TransformContent(Document file, Context context, JToken token, Action<Document> buildChild)
+        public (List<Error> errors, JToken token) TransformContent(Document file, Context context, JToken token)
         {
             var errors = new List<Error>();
-            Traverse(_schema, token, (schema, value) => value.Replace(TransformScalar(schema, file, context, value, errors, buildChild)));
+            Traverse(_schema, token, (schema, value) => value.Replace(TransformScalar(schema, file, context, value, errors)));
             return (errors, token);
         }
 
@@ -36,7 +36,7 @@ namespace Microsoft.Docs.Build
             void TransformXrefScalar(JsonSchema schema, JValue value)
             {
                 extensions[value.Path] = new Lazy<JValue>(
-                    () => (JValue)TransformScalar(schema, file, context, value, errors, buildChild: null), // todo: support JToken
+                    () => (JValue)TransformScalar(schema, file, context, value, errors), // todo: support JToken
                     LazyThreadSafetyMode.PublicationOnly);
             }
         }
@@ -73,33 +73,29 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private JToken TransformScalar(JsonSchema schema, Document file, Context context, JValue value, List<Error> errors, Action<Document> buildChild)
+        private JToken TransformScalar(JsonSchema schema, Document file, Context context, JValue value, List<Error> errors)
         {
             if (value.Type == JTokenType.Null)
             {
                 return value;
             }
 
-            var dependencyResolver = file.Schema.Type == typeof(LandingData) ? context.LandingPageDependencyResolver : context.DependencyResolver;
             var sourceInfo = JsonUtility.GetSourceInfo(value);
             var content = new SourceInfo<string>(value.Value<string>(), sourceInfo);
 
             switch (schema.ContentType)
             {
                 case JsonSchemaContentType.Href:
-                    var (error, link, _) = dependencyResolver.ResolveLink(content, file, file, buildChild);
+                    var (error, link, _) = context.DependencyResolver.ResolveLink(content, file, file);
                     errors.AddIfNotNull(error);
                     content = new SourceInfo<string>(link, content);
                     break;
 
                 case JsonSchemaContentType.Markdown:
                     var (markupErrors, html) = MarkdownUtility.ToHtml(
+                        context,
                         content,
                         file,
-                        dependencyResolver,
-                        buildChild,
-                        context.MonikerProvider,
-                        key => context.Template?.GetToken(key),
                         MarkdownPipelineType.Markdown);
 
                     errors.AddRange(markupErrors);
@@ -108,12 +104,9 @@ namespace Microsoft.Docs.Build
 
                 case JsonSchemaContentType.InlineMarkdown:
                     var (inlineMarkupErrors, inlineHtml) = MarkdownUtility.ToHtml(
+                        context,
                         content,
                         file,
-                        dependencyResolver,
-                        buildChild,
-                        context.MonikerProvider,
-                        key => context.Template?.GetToken(key),
                         MarkdownPipelineType.InlineMarkdown);
 
                     errors.AddRange(inlineMarkupErrors);
@@ -123,7 +116,7 @@ namespace Microsoft.Docs.Build
                 case JsonSchemaContentType.Html:
                     var htmlWithLinks = HtmlUtility.TransformLinks(content, (href, _) =>
                     {
-                        var (htmlError, htmlLink, _) = dependencyResolver.ResolveLink(new SourceInfo<string>(href, content), file, file, buildChild);
+                        var (htmlError, htmlLink, _) = context.DependencyResolver.ResolveLink(new SourceInfo<string>(href, content), file, file);
                         errors.AddIfNotNull(htmlError);
                         return htmlLink;
                     });
@@ -133,7 +126,7 @@ namespace Microsoft.Docs.Build
 
                 case JsonSchemaContentType.Xref:
 
-                    var (xrefError, xrefLink, _, xrefSpec) = dependencyResolver.ResolveXref(content, file, file);
+                    var (xrefError, xrefLink, _, xrefSpec) = context.DependencyResolver.ResolveXref(content, file, file);
 
                     if (xrefSpec is InternalXrefSpec internalSpec)
                     {
