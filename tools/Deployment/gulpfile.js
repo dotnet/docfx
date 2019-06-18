@@ -237,6 +237,6 @@ gulp.task("dev", gulp.series("clean", "build", "e2eTest"));
 
 gulp.task("master:build", gulp.series("clean", "build:release", "e2eTest", "updateGhPage"));
 gulp.task("master:release", gulp.series("packAssetZip", "publish:myget-master", "publish:gh-release", "publish:gh-asset", "publish:chocolatey"));
-gulp.task("master:releaseAssetAndChocolatey", gulp,series("packAssetZip", "publish:gh-asset", "publish:chocolatey"));
+gulp.task("master:releaseAssetAndChocolatey", gulp.series("packAssetZip", "publish:gh-asset", "publish:chocolatey"));
 
 gulp.task("default", gulp.series("dev"));
