@@ -233,7 +233,7 @@ namespace Microsoft.Docs.Build
             var filePath = PathUtility.NormalizeFile(path);
             var isConfigReference = docset.Config.Extend.Concat(docset.Config.GetFileReferences()).Contains(filePath, PathUtility.PathComparer);
             var type = isConfigReference ? ContentType.Unknown : GetContentType(filePath);
-            var mime = type == ContentType.Page ? TemplateEngine.ReadMimeFromFile(filePath, Path.Combine(docset.DocsetPath, filePath)) : default;
+            var mime = type == ContentType.Page ? ReadMimeFromFile(filePath, Path.Combine(docset.DocsetPath, filePath)) : default;
             var isExperimental = Path.GetFileNameWithoutExtension(filePath).EndsWith(".experimental", PathUtility.PathComparison);
             var routedFilePath = ApplyRoutes(filePath, docset.Routes, docset.SiteBasePath);
 
@@ -459,7 +459,7 @@ namespace Microsoft.Docs.Build
                 : mappedSourcePath;
 
             // if source is landing page, change it to *.md
-            if (TemplateEngine.Is(Mime, typeof(LandingData)))
+            if (TemplateEngine.IsLandingData(Mime))
             {
                 sourcePath = Path.ChangeExtension(sourcePath, ".md");
             }
@@ -499,6 +499,34 @@ namespace Microsoft.Docs.Build
 
             resolvedDocset = null;
             return false;
+        }
+
+        private static SourceInfo<string> ReadMimeFromFile(string pathToDocset, string filePath)
+        {
+            SourceInfo<string> mime = default;
+
+            if (filePath.EndsWith(".json", PathUtility.PathComparison))
+            {
+                if (File.Exists(filePath))
+                {
+                    using (var reader = new StreamReader(filePath))
+                    {
+                        mime = JsonUtility.ReadMime(reader, pathToDocset);
+                    }
+                }
+            }
+            else if (filePath.EndsWith(".yml", PathUtility.PathComparison))
+            {
+                if (File.Exists(filePath))
+                {
+                    using (var reader = new StreamReader(filePath))
+                    {
+                        mime = new SourceInfo<string>(YamlUtility.ReadMime(reader), new SourceInfo(pathToDocset, 1, 1));
+                    }
+                }
+            }
+
+            return mime;
         }
     }
 }

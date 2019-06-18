@@ -193,7 +193,7 @@ namespace Microsoft.Docs.Build
             errors.AddRange(metaErrors);
 
             var conceptual = (string)null;
-            if (file.Docset.Legacy && TemplateEngine.Is(file.Mime, typeof(LandingData)))
+            if (file.Docset.Legacy && TemplateEngine.IsLandingData(file.Mime))
             {
                 // TODO: remove schema validation in ToObject
                 var (_, content) = JsonUtility.ToObject(transformedToken, typeof(LandingData));
@@ -223,7 +223,7 @@ namespace Microsoft.Docs.Build
 
             pageModel.Title = pageModel.Title ?? obj?.Value<string>("title");
             pageModel.RawTitle = file.Docset.Legacy ? $"<h1>{obj?.Value<string>("title")}</h1>" : null;
-            pageModel.SchemaType = TemplateEngine.GetSchemaName(file.Mime);
+            pageModel.SchemaType = file.Mime;
 
             return (errors, !TemplateEngine.IsData(file.Mime), pageModel);
         }

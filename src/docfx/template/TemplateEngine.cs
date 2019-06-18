@@ -46,44 +46,6 @@ namespace Microsoft.Docs.Build
                 .ToDictionary(prop => prop.Key, prop => prop.Value.HtmlMetaName);
         }
 
-        public static SourceInfo<string> ReadMimeFromFile(string pathToDocset, string filePath)
-        {
-            SourceInfo<string> mime = default;
-
-            if (filePath.EndsWith(".json", PathUtility.PathComparison))
-            {
-                if (File.Exists(filePath))
-                {
-                    using (var reader = new StreamReader(filePath))
-                    {
-                        mime = JsonUtility.ReadMime(reader, pathToDocset);
-                    }
-                }
-            }
-            else if (filePath.EndsWith(".yml", PathUtility.PathComparison))
-            {
-                if (File.Exists(filePath))
-                {
-                    using (var reader = new StreamReader(filePath))
-                    {
-                        mime = new SourceInfo<string>(YamlUtility.ReadMime(reader), new SourceInfo(pathToDocset, 1, 1));
-                    }
-                }
-            }
-
-            return mime;
-        }
-
-        public static string GetSchemaName(string mime)
-        {
-            if (mime != null && s_schemas.TryGetValue(mime, out var schema))
-            {
-                return schema;
-            }
-
-            return default;
-        }
-
         public static bool IsData(string mime)
         {
             // todo: get `isData` from template JINT script name
@@ -95,11 +57,11 @@ namespace Microsoft.Docs.Build
             return false;
         }
 
-        public static bool Is(string mime, Type type)
+        public static bool IsLandingData(string mime)
         {
             if (mime != null && s_schemas.TryGetValue(mime, out var schema))
             {
-                return string.Equals(type.Name, schema, StringComparison.OrdinalIgnoreCase);
+                return string.Equals(typeof(LandingData).Name, schema, StringComparison.OrdinalIgnoreCase);
             }
 
             return false;
