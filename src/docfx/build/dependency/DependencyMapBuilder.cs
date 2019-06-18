@@ -83,6 +83,6 @@ namespace Microsoft.Docs.Build
         }
 
         private bool CanTransit(DependencyItem dependencyItem)
-            => dependencyItem.Type == DependencyType.Inclusion;
+            => dependencyItem.Type == DependencyType.Inclusion || dependencyItem.Type == DependencyType.TocInclusion;
     }
 }
