@@ -51,6 +51,12 @@ namespace Microsoft.Docs.Build
         public int? MinItems { get; set; }
 
         /// <summary>
+        /// Current valid must be this const value.
+        /// </summary>
+        [JsonProperty(NullValueHandling = NullValueHandling.Include)]
+        public JToken Const { get; set; }
+
+        /// <summary>
         /// An array of valid values for the current value.
         /// </summary>
         public JValue[] Enum { get; set; }
