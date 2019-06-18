@@ -18,7 +18,15 @@ namespace Microsoft.Docs.Build
         [JsonProperty(PropertyName = "asset_id")]
         public string AssetId { get; set; }
 
-        public LegacyFileMapItem(string legacyOutputFilePathRelativeToSiteBasePath, string legacySiteUrlRelativeToSiteBasePath, ContentType contentType)
+        [JsonProperty(PropertyName = "version")]
+        public string Version { get; set; }
+
+        [JsonProperty(PropertyName = "is_moniker_range")]
+        public bool IsMonikerRange { get; set; } = true;
+
+        public bool ShouldSerializeIsMonikerRange() => !string.IsNullOrEmpty(Version);
+
+        public LegacyFileMapItem(string legacyOutputFilePathRelativeToSiteBasePath, string legacySiteUrlRelativeToSiteBasePath, ContentType contentType, string version)
         {
             switch (contentType)
             {
@@ -27,11 +35,13 @@ namespace Microsoft.Docs.Build
                     Type = "Content";
                     OutputRelativePath = PathUtility.NormalizeFile(LegacyUtility.ChangeExtension(legacyOutputFilePathRelativeToSiteBasePath, ".html"));
                     AssetId = legacySiteUrlRelativeToSiteBasePath;
+                    Version = version;
                     break;
                 case ContentType.Resource:
                     Type = "Resource";
                     OutputRelativePath = PathUtility.NormalizeFile(legacyOutputFilePathRelativeToSiteBasePath);
                     AssetId = legacySiteUrlRelativeToSiteBasePath;
+                    Version = version;
                     break;
                 case ContentType.TableOfContents:
                 default:
@@ -39,14 +49,14 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public static LegacyFileMapItem Instance(string legacyOutputFilePathRelativeToSiteBasePath, string legacySiteUrlRelativeToSiteBasePath, ContentType contentType)
+        public static LegacyFileMapItem Instance(string legacyOutputFilePathRelativeToSiteBasePath, string legacySiteUrlRelativeToSiteBasePath, ContentType contentType, string version)
         {
             if (contentType == ContentType.TableOfContents || contentType == ContentType.Unknown)
             {
                 return null;
             }
 
-            return new LegacyFileMapItem(legacyOutputFilePathRelativeToSiteBasePath, legacySiteUrlRelativeToSiteBasePath, contentType);
+            return new LegacyFileMapItem(legacyOutputFilePathRelativeToSiteBasePath, legacySiteUrlRelativeToSiteBasePath, contentType, version);
         }
 
         private static string RemoveExtension(string path)

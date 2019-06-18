@@ -122,10 +122,10 @@ namespace Microsoft.Docs.Build
             Debug.Assert(resultRelativeTo != null);
             Debug.Assert(href != null);
 
-            if (href.Value.StartsWith("xref:") != false)
+            if (href.Value.StartsWith("xref:"))
             {
-                href.Value = href.Value.Substring("xref:".Length);
-                var (uidError, uidHref, _, xrefSpec) = ResolveXref(href, relativeTo, resultRelativeTo);
+                var uid = new SourceInfo<string>(href.Value.Substring("xref:".Length), href);
+                var (uidError, uidHref, _, xrefSpec) = ResolveXref(uid, relativeTo, resultRelativeTo);
                 return (uidError, uidHref, null, null, xrefSpec?.DeclairingFile);
             }
 

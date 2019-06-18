@@ -48,7 +48,7 @@ namespace Microsoft.Docs.Build
 
         public static SourceInfo<string> ReadMimeFromFile(string pathToDocset, string filePath)
         {
-            SourceInfo<string> mime = null;
+            SourceInfo<string> mime = default;
 
             if (filePath.EndsWith(".json", PathUtility.PathComparison))
             {

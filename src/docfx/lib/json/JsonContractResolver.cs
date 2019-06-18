@@ -83,7 +83,7 @@ namespace Microsoft.Docs.Build
                 property.ShouldSerialize = target =>
                 {
                     var sourceInfoValue = property.ValueProvider.GetValue(target);
-                    var value = ((SourceInfo)sourceInfoValue)?.GetValue();
+                    var value = ((ISourceInfo)sourceInfoValue).GetValue();
 
                     if (value is null || IsEmptyArray(value))
                     {

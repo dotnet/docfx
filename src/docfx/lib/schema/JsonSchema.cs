@@ -149,5 +149,11 @@ namespace Microsoft.Docs.Build
         /// Properties that are used to indicate the deprecated field
         /// </summary>
         public string ReplacedBy { get; set; }
+
+        /// <summary>
+        /// Properties that are used to indicate the value relationship between two fields
+        /// Mapping relationship: enumDependencies --> <field-name> --> <dependent-field-name> --> <dependent-field-value> --> <allowed-field-values>
+        /// </summary>
+        public Dictionary<string, Dictionary<string, Dictionary<JToken, JValue[]>>> EnumDependencies { get; set; } = new Dictionary<string, Dictionary<string, Dictionary<JToken, JValue[]>>>();
     }
 }
