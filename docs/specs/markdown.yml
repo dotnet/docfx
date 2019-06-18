@@ -526,4 +526,15 @@ outputs:
   docs/404.json:
   .errors.log: |
     ["warning","custom-404-page","Custom 404 page is not supported","docs/404.md"]
+---
+# bookmark as HTML predefined url
+inputs:
+  docfx.yml:
+  docs/a.md: |
+    some text
+    <div>
+      <p>Link to <a href="#top">text</a></p>
+    </div>
+outputs:
+  docs/a.json:
 

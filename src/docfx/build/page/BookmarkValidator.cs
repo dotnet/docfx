@@ -9,6 +9,8 @@ namespace Microsoft.Docs.Build
 {
     internal class BookmarkValidator
     {
+        // #top is HTMl predefined URL, which points to the top of the page
+        private readonly HashSet<string> _whiltelist = new HashSet<string> { "top" };
         private readonly DictionaryBuilder<Document, HashSet<string>> _bookmarksByFile = new DictionaryBuilder<Document, HashSet<string>>();
         private readonly ListBuilder<(Document file, Document dependency, string bookmark, bool isSelfBookmark, SourceInfo source)> _references = new ListBuilder<(Document file, Document dependency, string bookmark, bool isSelfBookmark, SourceInfo source)>();
 
@@ -40,7 +42,7 @@ namespace Microsoft.Docs.Build
 
             foreach (var (file, reference, bookmark, isSelfBookmark, source) in _references.ToList())
             {
-                if (_bookmarksByFile.ToDictionary().TryGetValue(reference, out var bookmarks) && bookmarks.Contains(bookmark))
+                if (_whiltelist.Contains(bookmark) || (_bookmarksByFile.ToDictionary().TryGetValue(reference, out var bookmarks) && bookmarks.Contains(bookmark)))
                 {
                     continue;
                 }
