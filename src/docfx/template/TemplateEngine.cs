@@ -84,12 +84,12 @@ namespace Microsoft.Docs.Build
             return default;
         }
 
-        public static bool IsPage(string mime)
+        public static bool IsData(string mime)
         {
-            // todo: get `isPage` from template JINT script name
+            // todo: get `isData` from template JINT script name
             if (mime != null && s_schemas.TryGetValue(mime, out var schema))
             {
-                return !string.Equals(schema, "ContextObject", StringComparison.OrdinalIgnoreCase) && !string.Equals(schema, "TestData", StringComparison.OrdinalIgnoreCase);
+                return string.Equals(schema, "ContextObject", StringComparison.OrdinalIgnoreCase) || string.Equals(schema, "TestData", StringComparison.OrdinalIgnoreCase);
             }
 
             return false;

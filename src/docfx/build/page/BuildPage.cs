@@ -225,7 +225,7 @@ namespace Microsoft.Docs.Build
             pageModel.RawTitle = file.Docset.Legacy ? $"<h1>{obj?.Value<string>("title")}</h1>" : null;
             pageModel.SchemaType = TemplateEngine.GetSchemaName(file.Mime);
 
-            return (errors, TemplateEngine.IsPage(file.Mime), pageModel);
+            return (errors, !TemplateEngine.IsData(file.Mime), pageModel);
         }
 
         private static (object output, JObject extensionData) ApplyTemplate(Context context, Document file, OutputModel model, bool isPage)

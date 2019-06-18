@@ -96,7 +96,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Gets a value indicating whether the current document is schema data
         /// </summary>
-        public bool IsSchemaData => !TemplateEngine.IsPage(Mime);
+        public bool IsSchemaData => TemplateEngine.IsData(Mime);
 
         /// <summary>
         /// Gets the repository
@@ -318,7 +318,7 @@ namespace Microsoft.Docs.Build
             switch (contentType)
             {
                 case ContentType.Page:
-                    if (mime is null || TemplateEngine.IsPage(mime))
+                    if (mime is null || !TemplateEngine.IsData(mime))
                     {
                         if (Path.GetFileNameWithoutExtension(path).Equals("index", PathUtility.PathComparison))
                         {
@@ -357,7 +357,7 @@ namespace Microsoft.Docs.Build
             {
                 case ContentType.Redirection:
                 case ContentType.Page:
-                    if (mime is null || TemplateEngine.IsPage(mime))
+                    if (mime is null || !TemplateEngine.IsData(mime))
                     {
                         var fileName = Path.GetFileNameWithoutExtension(path);
                         if (fileName.Equals("index", PathUtility.PathComparison))

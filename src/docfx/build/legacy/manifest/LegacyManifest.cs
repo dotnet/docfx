@@ -152,7 +152,7 @@ namespace Microsoft.Docs.Build
 
         private static string GetType(ContentType type, Document doc)
         {
-            if (type == ContentType.Page && !TemplateEngine.IsPage(doc.Mime))
+            if (type == ContentType.Page && TemplateEngine.IsData(doc.Mime))
             {
                 return "Toc";
             }
