@@ -107,32 +107,47 @@ namespace Microsoft.Docs.Build
 
         private void ValidateObject(JsonSchema schema, JObject map, List<Error> errors)
         {
-            ValidateAdditionalProperties(schema, map, errors);
-            ValidatePatternProperties(schema, map, errors);
             ValidateRequired(schema, map, errors);
             ValidateDependencies(schema, map, errors);
             ValidateEither(schema, map, errors);
             ValidatePrecludes(schema, map, errors);
             ValidateEnumDependencies(schema, map, errors);
-
-            foreach (var (key, value) in map)
-            {
-                if (schema.Properties.TryGetValue(key, out var propertySchema))
-                {
-                    Validate(propertySchema, value, errors);
-                }
-            }
+            ValidateProperties(schema, map, errors);
         }
 
-        private void ValidatePatternProperties(JsonSchema schema, JObject map, List<Error> errors)
+        private void ValidateProperties(JsonSchema schema, JObject map, List<Error> errors)
         {
             foreach (var (key, value) in map)
             {
-                foreach (var (pattern, propertySchema) in schema.PatternProperties)
+                var isAdditonalProperty = true;
+
+                // properties
+                if (schema.Properties.TryGetValue(key, out var propertySchema))
+                {
+                    Validate(propertySchema, value, errors);
+                    isAdditonalProperty = false;
+                }
+
+                // patternProperties
+                foreach (var (pattern, patternPropertySchema) in schema.PatternProperties)
                 {
                     if (Regex.IsMatch(key, pattern))
                     {
-                        Validate(propertySchema, value, errors);
+                        Validate(patternPropertySchema, value, errors);
+                        isAdditonalProperty = false;
+                    }
+                }
+
+                // additionalProperties
+                if (isAdditonalProperty)
+                {
+                    if (schema.AdditionalProperties.schema != null)
+                    {
+                        Validate(schema.AdditionalProperties.schema, value, errors);
+                    }
+                    else if (!schema.AdditionalProperties.value)
+                    {
+                        errors.Add(Errors.UnknownField(JsonUtility.GetSourceInfo(value), key, value.Type.ToString()));
                     }
                 }
             }
@@ -174,30 +189,6 @@ namespace Microsoft.Docs.Build
 
             if (schema.ExclusiveMinimum.HasValue && number <= schema.ExclusiveMinimum)
                 errors.Add(Errors.NumberInvalid(JsonUtility.GetSourceInfo(scalar), scalar.Path, $"> {schema.ExclusiveMinimum}"));
-        }
-
-        private void ValidateAdditionalProperties(JsonSchema schema, JObject map, List<Error> errors)
-        {
-            if (schema.AdditionalProperties.additionalPropertyJsonSchema != null)
-            {
-                foreach (var (key, value) in map)
-                {
-                    if (!schema.Properties.Keys.Contains(key))
-                    {
-                        Validate(schema.AdditionalProperties.additionalPropertyJsonSchema, value, errors);
-                    }
-                }
-            }
-            else if (!schema.AdditionalProperties.additionalProperties)
-            {
-                foreach (var (key, value) in map)
-                {
-                    if (!schema.Properties.Keys.Contains(key))
-                    {
-                        errors.Add(Errors.UnknownField(JsonUtility.GetSourceInfo(value), key, value.Type.ToString()));
-                    }
-                }
-            }
         }
 
         private void ValidateDependencies(JsonSchema schema, JObject map, List<Error> errors)

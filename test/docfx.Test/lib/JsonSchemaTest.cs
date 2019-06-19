@@ -54,9 +54,6 @@ namespace Microsoft.Docs.Build
             "$ref to boolean schema false",
             "Recursive references between schemas",
             "refs with quote",
-
-            // additional properties
-            "non-ASCII pattern with additionalProperties", // has patternProperties
         };
 
         public static TheoryData<string, string, string> GetJsonSchemaTestSuite()

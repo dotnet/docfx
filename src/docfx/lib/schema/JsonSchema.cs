@@ -42,7 +42,7 @@ namespace Microsoft.Docs.Build
         ///     - object: the schema for the additional properties
         /// </summary>
         [JsonConverter(typeof(ValueOrObjectConverter))]
-        public (bool additionalProperties, JsonSchema additionalPropertyJsonSchema) AdditionalProperties { get; set; } = (true, null);
+        public (bool value, JsonSchema schema) AdditionalProperties { get; set; } = (true, null);
 
         /// <summary>
         /// The JSON schema applied to each property that matches a regular expression

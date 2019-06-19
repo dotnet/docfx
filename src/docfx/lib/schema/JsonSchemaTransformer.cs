@@ -141,9 +141,9 @@ namespace Microsoft.Docs.Build
                 return true;
             }
 
-            if (jsonSchema.AdditionalProperties.additionalPropertyJsonSchema != null)
+            if (jsonSchema.AdditionalProperties.schema != null)
             {
-                propertySchema = jsonSchema.AdditionalProperties.additionalPropertyJsonSchema;
+                propertySchema = jsonSchema.AdditionalProperties.schema;
                 return true;
             }
 
