@@ -36,6 +36,11 @@ namespace Microsoft.Docs.Build
         public Dictionary<string, JsonSchema> Properties { get; } = new Dictionary<string, JsonSchema>();
 
         /// <summary>
+        /// The JSON schema applied to each property that matches a regular expression
+        /// </summary>
+        public Dictionary<string, JsonSchema> PatternProperties { get; set; } = new Dictionary<string, JsonSchema>();
+
+        /// <summary>
         /// An object can have extra keys not defined in properties.
         /// This can be:
         ///     - boolean: allow/disallow additional properties
@@ -43,11 +48,6 @@ namespace Microsoft.Docs.Build
         /// </summary>
         [JsonConverter(typeof(ValueOrObjectConverter))]
         public (bool value, JsonSchema schema) AdditionalProperties { get; set; } = (true, null);
-
-        /// <summary>
-        /// The JSON schema applied to each property that matches a regular expression
-        /// </summary>
-        public Dictionary<string, JsonSchema> PatternProperties { get; set; } = new Dictionary<string, JsonSchema>();
 
         /// <summary>
         /// The JSON schema that applies to the array items if the current value is array.
