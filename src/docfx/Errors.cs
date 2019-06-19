@@ -177,9 +177,15 @@ namespace Microsoft.Docs.Build
         /// Examples:
         ///   - restore a repo with bad url
         /// </summary>
-        /// Behavior: ✔️ Message: ❌
+        /// Behavior: ✔️ Message: ✔️
         public static Error GitCloneFailed(string url, IEnumerable<string> branches)
-            => new Error(ErrorLevel.Error, "git-clone-failed", $"Cloning git repository '{url}' ({Join(branches)}) failed.");
+        {
+            var message = $"Failure to clone the repository `{url} ({Join(branches)})`."
+                      + "This could be caused by an incorrect repository URL, please verify the URL on the Docs Portal (https://ops.docs.com)."
+                      + "This could also be caused by not having the proper permission the repository, "
+                      + "please confirm that the GitHub group/team that triggered the build has access to the repository.";
+            return new Error(ErrorLevel.Error, "git-clone-failed", message);
+        }
 
         /// <summary>
         /// Yaml header defined in article.md isn't an object.
