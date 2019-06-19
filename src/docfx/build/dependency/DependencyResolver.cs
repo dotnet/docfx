@@ -13,10 +13,6 @@ namespace Microsoft.Docs.Build
 {
     internal class DependencyResolver
     {
-        // This magic string identifies if an URL should be transformed into relative URL during HtmlPostProcess.
-        // A custom HTML attribute is not enough because we allow template to define HTML links for SDP content.
-        public const string RelativeUrlMarker = "6docfx6/";
-
         private readonly WorkQueue<Document> _buildQueue;
         private readonly BookmarkValidator _bookmarkValidator;
         private readonly DependencyMapBuilder _dependencyMapBuilder;
@@ -48,17 +44,17 @@ namespace Microsoft.Docs.Build
 
         public (Error error, string link, Document file) ResolveRelativeLink(SourceInfo<string> path, Document relativeTo, Document resultRelativeTo)
         {
-            var (error, link, file) = ResolveLink(path, relativeTo);
+            var (error, link, linkType, file) = ResolveLink(path, relativeTo);
 
-            if (link != null && link.StartsWith(RelativeUrlMarker))
+            if (linkType == LinkType.RelativePath)
             {
-                link = UrlUtility.GetRelativeUrl(resultRelativeTo.SiteUrl, link.Substring(RelativeUrlMarker.Length));
+                link = UrlUtility.GetRelativeUrl(resultRelativeTo.SiteUrl, link);
             }
 
             return (error, link, file);
         }
 
-        public (Error error, string link, Document file) ResolveLink(SourceInfo<string> path, Document relativeTo)
+        public (Error error, string link, LinkType linkType, Document file) ResolveLink(SourceInfo<string> path, Document relativeTo)
         {
             var (error, link, fragment, linkType, file) = TryResolveLink(relativeTo, path);
 
@@ -75,19 +71,19 @@ namespace Microsoft.Docs.Build
                 _bookmarkValidator.AddBookmarkReference(relativeTo, isSelfBookmark ? resultRelativeTo : file, fragment, isSelfBookmark, path);
             }
 
-            return (error, link, file);
+            return (error, link, linkType, file);
         }
 
         public (Error error, string href, string display, IXrefSpec spec) ResolveRelativeXref(SourceInfo<string> href, Document relativeTo, Document resultRelativeTo)
         {
-            var result = ResolveXref(href, relativeTo);
+            var (error, link, display, spec) = ResolveXref(href, relativeTo);
 
-            if (result.href != null && result.href.StartsWith(RelativeUrlMarker))
+            if (spec?.DeclairingFile != null)
             {
-                result.href = UrlUtility.GetRelativeUrl(resultRelativeTo.SiteUrl, result.href.Substring(RelativeUrlMarker.Length));
+                link = UrlUtility.GetRelativeUrl(resultRelativeTo.SiteUrl, link);
             }
 
-            return result;
+            return (error, link, display, spec);
         }
 
         public (Error error, string href, string display, IXrefSpec spec) ResolveXref(SourceInfo<string> href, Document relativeTo)
@@ -140,7 +136,7 @@ namespace Microsoft.Docs.Build
             return file != null ? (error, file.ReadText(), file) : default;
         }
 
-        private (Error error, string href, string fragment, LinkType? linkType, Document file) TryResolveLink(Document relativeTo, SourceInfo<string> href)
+        private (Error error, string href, string fragment, LinkType linkType, Document file) TryResolveLink(Document relativeTo, SourceInfo<string> href)
         {
             Debug.Assert(href != null);
 
@@ -148,7 +144,9 @@ namespace Microsoft.Docs.Build
             {
                 var uid = new SourceInfo<string>(href.Value.Substring("xref:".Length), href);
                 var (uidError, uidHref, _, xrefSpec) = ResolveXref(uid, relativeTo);
-                return (uidError, uidHref, null, null, xrefSpec?.DeclairingFile);
+                var xrefLinkType = xrefSpec?.DeclairingFile != null ? LinkType.RelativePath : LinkType.External;
+
+                return (uidError, uidHref, null, xrefLinkType, xrefSpec?.DeclairingFile);
             }
 
             var decodedHref = new SourceInfo<string>(Uri.UnescapeDataString(href), href);
@@ -180,7 +178,7 @@ namespace Microsoft.Docs.Build
                     return (error, query + fragment, fragment, linkType, null);
                 }
                 var selfUrl = Document.PathToRelativeUrl(
-                    Path.GetFileName(file.SitePath), file.ContentType, file.Schema, file.Docset.Config.Output.Json);
+                    Path.GetFileName(file.SitePath), file.ContentType, file.Mime, file.Docset.Config.Output.Json);
                 return (error, selfUrl + query + fragment, fragment, LinkType.SelfBookmark, null);
             }
 
@@ -192,7 +190,7 @@ namespace Microsoft.Docs.Build
 
             if (file?.RedirectionUrl != null)
             {
-                return (error, RelativeUrlMarker + file.SiteUrl + query + fragment, null, linkType, null);
+                return (error, file.SiteUrl + query + fragment, null, linkType, null);
             }
 
             // Pages outside build scope, don't build the file, use relative href
@@ -200,13 +198,13 @@ namespace Microsoft.Docs.Build
                 && (file.ContentType == ContentType.Page || file.ContentType == ContentType.TableOfContents)
                 && !file.Docset.BuildScope.Contains(file))
             {
-                return (Errors.LinkOutOfScope(href, file), RelativeUrlMarker + file.SiteUrl + query + fragment, fragment, linkType, null);
+                return (Errors.LinkOutOfScope(href, file), file.SiteUrl + query + fragment, fragment, linkType, null);
             }
 
-            return (error, RelativeUrlMarker + file.SiteUrl + query + fragment, fragment, linkType, file);
+            return (error, file.SiteUrl + query + fragment, fragment, linkType, file);
         }
 
-        private (Error error, Document file, string query, string fragment, LinkType? linkType, string pathToDocset) TryResolveFile(Document relativeTo, SourceInfo<string> href)
+        private (Error error, Document file, string query, string fragment, LinkType linkType, string pathToDocset) TryResolveFile(Document relativeTo, SourceInfo<string> href)
         {
             if (string.IsNullOrEmpty(href))
             {
@@ -241,18 +239,27 @@ namespace Microsoft.Docs.Build
 
                     var file = Document.CreateFromFile(relativeTo.Docset, pathToDocset);
 
-                    // try to resolve with .md for landing page
-                    //
                     // forLandingPage should not be used, it is a hack to handle some specific logic for landing page based on the user input for now
                     // which needs to be removed once the user input is correct
-                    var forLandingPage = relativeTo.Schema?.Type == typeof(LandingData);
-                    if (file is null && forLandingPage)
+                    if (TemplateEngine.IsLandingData(relativeTo.Mime))
                     {
-                        pathToDocset = ResolveToDocsetRelativePath($"{path}.md", relativeTo);
-                        file = Document.CreateFromFile(relativeTo.Docset, pathToDocset);
+                        if (file is null)
+                        {
+                            // try to resolve with .md for landing page
+                            pathToDocset = ResolveToDocsetRelativePath($"{path}.md", relativeTo);
+                            file = Document.CreateFromFile(relativeTo.Docset, pathToDocset);
+                        }
+
+                        // Do not report error for landing page
+                        return (null, file, query, fragment, LinkType.RelativePath, pathToDocset);
                     }
 
-                    return (file != null ? null : (forLandingPage ? null : Errors.FileNotFound(new SourceInfo<string>(path, href))), file, query, fragment, default, pathToDocset);
+                    if (file is null)
+                    {
+                        return (Errors.FileNotFound(new SourceInfo<string>(path, href)), null, query, fragment, default, null);
+                    }
+
+                    return (null, file, query, fragment, LinkType.RelativePath, pathToDocset);
 
                 default:
                     return default;

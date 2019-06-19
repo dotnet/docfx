@@ -64,6 +64,10 @@ namespace Microsoft.Docs.Build
         }
 
         [Theory]
+        [InlineData("/", null, null)]
+        [InlineData("/", "", "")]
+        [InlineData("/", "https://github.com", "https://github.com")]
+        [InlineData("/", "a", "a")]
         [InlineData("/", "/", "./")]
         [InlineData("/a", "/b", "b")]
         [InlineData("/a/b", "/b/c", "../b/c")]

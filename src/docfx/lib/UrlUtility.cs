@@ -118,9 +118,9 @@ namespace Microsoft.Docs.Build
                 throw new ArgumentException("", nameof(relativeToUrl));
             }
 
-            if (!url.StartsWith('/'))
+            if (url == null || !url.StartsWith('/'))
             {
-                throw new ArgumentException("", nameof(url));
+                return url;
             }
 
             // Find the last common segment

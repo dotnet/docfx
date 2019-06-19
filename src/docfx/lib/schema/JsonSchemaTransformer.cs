@@ -117,7 +117,8 @@ namespace Microsoft.Docs.Build
                 case JsonSchemaContentType.Html:
                     var htmlWithLinks = HtmlUtility.TransformLinks(content, (href, _) =>
                     {
-                        var (htmlError, htmlLink, _) = context.DependencyResolver.ResolveLink(new SourceInfo<string>(href, content), file);
+                        var (htmlError, htmlLink, _) = context.DependencyResolver.ResolveRelativeLink(
+                            new SourceInfo<string>(href, content), file, file);
                         errors.AddIfNotNull(htmlError);
                         return htmlLink;
                     });

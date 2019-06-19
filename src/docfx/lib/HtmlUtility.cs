@@ -228,18 +228,6 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public static string TransformRelativeLinks(string html, string siteUrl)
-        {
-            return TransformLinks(html, (href, _) =>
-            {
-                if (href.StartsWith(DependencyResolver.RelativeUrlMarker))
-                {
-                    return UrlUtility.GetRelativeUrl(siteUrl, href.Substring(DependencyResolver.RelativeUrlMarker.Length));
-                }
-                return href;
-            });
-        }
-
         private static HtmlNode AddLinkType(this HtmlNode html, string locale)
         {
             AddLinkType(html, "a", "href", locale);

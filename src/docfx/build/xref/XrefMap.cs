@@ -66,11 +66,6 @@ namespace Microsoft.Docs.Build
                 resolvedHref = UrlUtility.MergeUrl(
                     RemoveHostnameIfSharingTheSameOne(spec.Href), query, fragment.Length == 0 ? "" : fragment.Substring(1));
 
-                if (spec.DeclairingFile != null)
-                {
-                    resolvedHref = DependencyResolver.RelativeUrlMarker + resolvedHref;
-                }
-
                 name = spec.GetXrefPropertyValue("name");
                 displayPropertyValue = spec.GetXrefPropertyValue(displayPropertyName);
             }
