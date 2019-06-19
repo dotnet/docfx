@@ -22,7 +22,7 @@ namespace Microsoft.Docs.Build
 
             if (!string.IsNullOrEmpty(model.BreadcrumbPath))
             {
-                var (breadcrumbError, breadcrumbPath, _) = context.DependencyResolver.ResolveRelativeLink(model.BreadcrumbPath, file, file);
+                var (breadcrumbError, breadcrumbPath, _) = context.DependencyResolver.ResolveRelativeLink(file, model.BreadcrumbPath, file);
                 errors.AddIfNotNull(breadcrumbError);
                 model.BreadcrumbPath = new SourceInfo<string>(breadcrumbPath, model.BreadcrumbPath);
             }
