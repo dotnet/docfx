@@ -8,8 +8,12 @@ using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
+    [JsonConverter(typeof(JsonSchemaConverter))]
     internal class JsonSchema
     {
+        public static readonly JsonSchema TrueSchema = new JsonSchema();
+        public static readonly JsonSchema FalseSchema = new JsonSchema();
+
         // A core subset of JSON schema
         //-------------------------------------------
 

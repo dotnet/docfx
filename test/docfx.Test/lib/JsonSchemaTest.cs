@@ -17,7 +17,6 @@ namespace Microsoft.Docs.Build
             "additionalItems",
             "allOf",
             "anyOf",
-            "boolean_schema",
             "const",
             "contains",
             "definitions",

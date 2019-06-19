@@ -36,6 +36,7 @@ namespace Microsoft.Docs.Build
             }
 
             ValidateDeprecated(schema, token, errors);
+            ValidateBoolean(schema, token, errors);
 
             switch (token)
             {
@@ -129,6 +130,18 @@ namespace Microsoft.Docs.Build
                 {
                     Validate(propertySchema, value, errors);
                 }
+            }
+        }
+
+        private void ValidateBoolean(JsonSchema schema, JToken token, List<Error> errors)
+        {
+            if (schema == JsonSchema.TrueSchema)
+            {
+
+            }
+            else if (schema == JsonSchema.FalseSchema)
+            {
+
             }
         }
 
