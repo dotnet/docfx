@@ -537,6 +537,7 @@ wkhtmltopdf              | Contains additional options specific to wkhtmltopdf w
 coverTitle               | The name of the bookmark to use for the cover page. If omitted, "Cover Page" will be used.
 tocTitle                 | The name of the bookmark to use for the "Table of Contents". If omitted, "Table of Contents" will be used.
 outline                  | The type of outline to use. Valid values are `NoOutline`, `DefaultOutline`, `WkDefaultOutline`. If not specified, the default value is `DefaultOutline`. If `WkDefaultOutline` is specified, `--outline` is passed to wkhtmltopdf; otherwise `--no-outline` is passed to wkhtmltopdf.
+noStdin                  | Do not use `--read-args-from-stdin` for the wkhtmltopdf. Html input file names are set using the command line. It has been introduced to use in the Azure pipeline build. Can cause maximum allowed arguments length overflow if too many input parts (like Appendices, TocTitle, CoverPageTitle) were set for certain html source file.
 
 #### 3.3.1 Properties for the `wkhtmltopdf` Key
 
