@@ -17,14 +17,14 @@ namespace Microsoft.Docs.Build
 
         public HashSet<string> Monikers { get; set; } = new HashSet<string>();
 
-        public Dictionary<string, Lazy<JValue>> ExtensionData { get; } = new Dictionary<string, Lazy<JValue>>();
+        public Dictionary<string, Lazy<JToken>> ExtensionData { get; } = new Dictionary<string, Lazy<JToken>>();
 
         public string GetXrefPropertyValue(string propertyName)
         {
             if (propertyName is null)
                 return null;
 
-            return ExtensionData.TryGetValue(propertyName, out var internalValue) && internalValue.Value.Value is string internalStr ? internalStr : null;
+            return ExtensionData.TryGetValue(propertyName, out var property) && property.Value is JValue propertyValue && propertyValue.Value is string internalStr ? internalStr : null;
         }
 
         public string GetName() => GetXrefPropertyValue("name");
@@ -41,7 +41,7 @@ namespace Microsoft.Docs.Build
             {
                 try
                 {
-                    spec.ExtensionData[key] = GetXrefPropertyValue(key);
+                    spec.ExtensionData[key] = ExtensionData[key].Value;
                 }
                 catch (DocfxException ex)
                 {

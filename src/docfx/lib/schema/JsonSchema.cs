@@ -82,6 +82,35 @@ namespace Microsoft.Docs.Build
         public int? MinLength { get; set; }
 
         /// <summary>
+        /// The inclusive maximum value of a number.
+        /// </summary>
+        public double? Maximum { get; set; }
+
+        /// <summary>
+        /// The inclusive minimum value of a number.
+        /// </summary>
+        public double? Minimum { get; set; }
+
+        /// <summary>
+        /// The exclusive maximum value of a number.
+        /// </summary>
+        public double? ExclusiveMaximum { get; set; }
+
+        /// <summary>
+        /// The exclusive minimum value of a number.
+        /// </summary>
+        public double? ExclusiveMinimum { get; set; }
+
+        /// <summary>
+        /// An object can have extra keys not defined in properties.
+        /// This can be:
+        ///     - boolean: allow/disallow additional properties
+        ///     - object: the schema for the additional properties
+        /// </summary>
+        [JsonConverter(typeof(ValueOrObjectConverter))]
+        public (bool additionalProperties, JsonSchema additionalPropertyJsonSchema) AdditionalProperties { get; set; } = (true, null);
+
+        /// <summary>
         /// Properties that are required to be present.
         /// </summary>
         public string[] Required { get; set; } = Array.Empty<string>();
