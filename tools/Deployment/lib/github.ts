@@ -11,12 +11,10 @@ export class Github {
     static async updateGithubReleaseAsync(
         repoUrl: string,
         releaseNotePath: string,
-        assetZipPath: string,
         githubToken: string): Promise<void> {
 
         Guard.argumentNotNullOrEmpty(repoUrl, "repoUrl");
         Guard.argumentNotNullOrEmpty(releaseNotePath, "releaseNotePath");
-        Guard.argumentNotNullOrEmpty(assetZipPath, "assetZipPath");
         Guard.argumentNotNullOrEmpty(githubToken, "githubToken");
 
         let isUpdated = await Common.isReleaseNoteVersionChangedAsync(releaseNotePath);
@@ -28,11 +26,22 @@ export class Github {
         let githubApi = new GithubApi(repoUrl, githubToken);
         let releaseDescription = this.getReleaseDescription(releaseNotePath);
 
-        let data = fs.readFileSync(releaseNotePath);
-        let arrayBuffer = new Uint8Array(data).buffer;
+        return githubApi.publishReleaseAsync(releaseDescription);
+    }
+
+    static async updateGithubAssetAsync(
+        repoUrl: string,
+        assetZipPath: string,
+        githubToken: string): Promise<void> {
+
+        Guard.argumentNotNullOrEmpty(repoUrl, "repoUrl");
+        Guard.argumentNotNullOrEmpty(assetZipPath, "assetZipPath");
+        Guard.argumentNotNullOrEmpty(githubToken, "githubToken");
+
+        let githubApi = new GithubApi(repoUrl, githubToken);
         let assetInfo = this.getAssetZipInfo(assetZipPath);
 
-        return githubApi.publishReleaseAndAssetAsync(releaseDescription, assetInfo);
+        return githubApi.publishAssetAsync(assetInfo);
     }
 
     static async updateGhPagesAsync(
