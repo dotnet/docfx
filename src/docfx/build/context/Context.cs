@@ -13,33 +13,33 @@ namespace Microsoft.Docs.Build
         public readonly ErrorLog ErrorLog;
         public readonly Cache Cache;
         public readonly Output Output;
+        public readonly WorkQueue<Document> BuildQueue;
         public readonly MetadataProvider MetadataProvider;
         public readonly MonikerProvider MonikerProvider;
         public readonly GitCommitProvider GitCommitProvider;
         public readonly BookmarkValidator BookmarkValidator;
         public readonly DependencyMapBuilder DependencyMapBuilder;
         public readonly DependencyResolver DependencyResolver;
-        public readonly DependencyResolver LandingPageDependencyResolver;
         public readonly GitHubUserCache GitHubUserCache;
         public readonly ContributionProvider ContributionProvider;
         public readonly PublishModelBuilder PublishModelBuilder;
         public readonly TemplateEngine Template;
 
-        public Context(string outputPath, ErrorLog errorLog, Docset docset, Func<XrefMap> xrefMap)
+        public Context(string outputPath, ErrorLog errorLog,  Docset docset, Func<XrefMap> xrefMap)
         {
             ErrorLog = errorLog;
             Output = new Output(outputPath);
             Cache = new Cache();
+            BuildQueue = new WorkQueue<Document>();
             MetadataProvider = new MetadataProvider(docset, Cache);
             MonikerProvider = new MonikerProvider(docset, MetadataProvider);
-            GitHubUserCache = GitHubUserCache.Create(docset);
+            GitHubUserCache = new GitHubUserCache(docset.Config);
             GitCommitProvider = new GitCommitProvider();
+            PublishModelBuilder = new PublishModelBuilder();
             BookmarkValidator = new BookmarkValidator();
             DependencyMapBuilder = new DependencyMapBuilder();
-            DependencyResolver = new DependencyResolver(GitCommitProvider, BookmarkValidator, DependencyMapBuilder, new Lazy<XrefMap>(xrefMap));
-            LandingPageDependencyResolver = new DependencyResolver(GitCommitProvider, BookmarkValidator, DependencyMapBuilder, new Lazy<XrefMap>(xrefMap), forLandingPage: true);
+            DependencyResolver = new DependencyResolver(BuildQueue, GitCommitProvider, BookmarkValidator, DependencyMapBuilder, new Lazy<XrefMap>(xrefMap));
             ContributionProvider = new ContributionProvider(docset, GitHubUserCache, GitCommitProvider);
-            PublishModelBuilder = new PublishModelBuilder();
             Template = TemplateEngine.Create(docset);
         }
 

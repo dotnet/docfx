@@ -97,70 +97,21 @@ repos:
   https://github.com/d/restore5#master:
     - files:
         docfx.yml: |
-          gitHub:
-            userCache: github-user.json
-            resolveUsers: true
+          xref: xrefmap.json
           dependencies:
             child1: https://docs.com/d/restore5
-        github-user.json: |
-          {
-            "users": [
-              {
-                "name": "Osmond Jiang",
-                "login": "OsmondJiang",
-                "id": 19990166,
-                "expiry":"2099-01-01T00:00:00.00000Z",
-                "emails": [
-                  "xinjiang@microsoft.com"
-                ]
-              },
-              {
-                "name": "Renze Yu",
-                "login": "superyyrrzz",
-                "id": 3831744,
-                "expiry":"2099-01-01T00:00:00.00000Z",
-                "emails": [
-                  "renzeyu@microsoft.com",
-                  "superyyrrzz@gmail.com"
-                ]
-              },
-              {
-                "name": "Yufei Huang",
-                "login": "yufeih",
-                "id": 511355,
-                "expiry":"2099-01-01T00:00:00.00000Z",
-                "emails": [
-                  "yufeih@users.noreply.github.com",
-                  "yufeih@live.com"
-                ]
-              }
-            ]
-          }
+        xrefmap.json: |
+          { "references": [{ "uid": "System.String", "name": "String", "href": "//docs.com" }] }
   https://github.com/d/restore5.zh-cn#master:
     - files:
-        docs/a.md: |
-          [!include[](~/child1/docs/d.md)]
-      author: yufeih
-      email: yufeih@live.com
-    - files:
-        docs/a.md: a
-      author: OsmondJiang
-      email: xinjiang@microsoft.com
+        a.md: |
+          @System.String [!include[](~/child1/d.md)]
   https://docs.com/d/restore5:
     - files:
-        docs/d.md: d
+        d.md: d
 outputs:
-  docs/a.json: |
-    {
-      "conceptual":"<p>d</p>\n",
-      "_op_gitContributorInformation":
-      {
-        "author":
-          {"display_name":"Osmond Jiang","id":"19990166"},
-        "contributors":
-          [{"display_name":"Yufei Huang","id":"511355"}],
-      }
-    }
+  a.json: |
+    { "conceptual":"<p><a href=\"//docs.com\">String</a> d </p>" }
 ---
 # loc docset share the source docset's restore map 2
 # [branch mapping] & bilingual
@@ -174,74 +125,24 @@ repos:
           localization:
             bilingual: true
             mapping: Branch
-          gitHub:
-            userCache: github-user.json
-            resolveUsers: true
+          xref: xrefmap.json
           dependencies:
             child1: https://docs.com/d/restore6
-        github-user.json: |
-          {
-            "users": [
-              {
-                "name": "Osmond Jiang",
-                "login": "OsmondJiang",
-                "id": 19990166,
-                "expiry":"2099-01-01T00:00:00.00000Z",
-                "emails": [
-                  "xinjiang@microsoft.com"
-                ]
-              },
-              {
-                "name": "Renze Yu",
-                "login": "superyyrrzz",
-                "id": 3831744,
-                "expiry":"2099-01-01T00:00:00.00000Z",
-                "emails": [
-                  "renzeyu@microsoft.com",
-                  "superyyrrzz@gmail.com"
-                ]
-              },
-              {
-                "name": "Yufei Huang",
-                "login": "yufeih",
-                "id": 511355,
-                "expiry":"2099-01-01T00:00:00.00000Z",
-                "emails": [
-                  "yufeih@users.noreply.github.com",
-                  "yufeih@live.com"
-                ]
-              }
-            ]
-          }
+        xrefmap.json: |
+          { "references": [{ "uid": "System.String", "name": "String", "href": "//docs.com" }] }
   https://github.com/d/restore6.loc#master-sxs.zh-cn:
     - files:
-        docs/a.md: |
-          [!include[](~/child1/docs/d.md)]
+        a.md: |
+          @System.String [!include[](~/child1/d.md)]
   https://github.com/d/restore6.loc#master.zh-cn:
     - files:
-        docs/a.md: |
-          [!include[](~/child1/docs/d.md)]
-      author: yufeih
-      email: yufeih@live.com
+        a.md: '@System.String'
+  https://docs.com/d/restore6#master:
     - files:
-        docs/a.md: a
-      author: OsmondJiang
-      email: xinjiang@microsoft.com
-  https://docs.com/d/restore6:
-    - files:
-        docs/d.md: d
+        d.md: d
 outputs:
-  docs/a.json: |
-    {
-      "conceptual":"<p>d</p>\n",
-      "_op_gitContributorInformation":
-      {
-        "author":
-          {"display_name":"Osmond Jiang","id":"19990166"},
-        "contributors":
-          [{"display_name":"Yufei Huang","id":"511355"}],
-      }
-    }
+  a.json: |
+    { "conceptual":"<p><a href=\"//docs.com\">String</a> d </p>" }
 ---
 # edit url convention without source locale 1
 # [repository mapping] 
@@ -923,13 +824,6 @@ repos:
           gitHub:
             userCache: github-user.json
             resolveUsers: true
-        github-user.json: |
-          { "users": [
-              {"name": "Alice", "login": "alice", "id": 1, "emails": ["alice@contoso.com"]},
-              {"name": "Bob", "login": "bob", "id": 2, "emails": ["bob@contoso.com"]},
-              {"name": "Terry", "login": "terry", "id": 3, "emails": ["terry@contoso.com"]},
-            ]
-          }
   https://github.com/ss/b.loc#master-sxs.zh-cn:
     - files:
         docs/a.md: a
@@ -944,6 +838,14 @@ repos:
         docs/a.md: cd
       author: Terry
       email: terry@contoso.com
+cache:
+  github-users.json: |
+    { "users": [
+        {"name": "Alice", "login": "alice", "id": 1, "emails": ["alice@contoso.com"]},
+        {"name": "Bob", "login": "bob", "id": 2, "emails": ["bob@contoso.com"]},
+        {"name": "Terry", "login": "terry", "id": 3, "emails": ["terry@contoso.com"]},
+      ]
+    }
 outputs:
   docs/a.json: |
     {
