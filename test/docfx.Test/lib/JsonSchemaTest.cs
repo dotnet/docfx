@@ -32,7 +32,6 @@ namespace Microsoft.Docs.Build
             "not",
             "oneOf",
             "pattern",
-            "patternProperties",
             "propertyNames",
             "refRemote",
             "uniqueItems"
@@ -44,7 +43,6 @@ namespace Microsoft.Docs.Build
             "an array of schemas for items",
             "items and subitems",
             "with boolean schema",
-            "patternProperties",
 
             //dependencies
             "dependencies with boolean subschemas",

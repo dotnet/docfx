@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -117,6 +118,7 @@ namespace Microsoft.Docs.Build
         private void ValidateObject(JsonSchema schema, JObject map, List<Error> errors)
         {
             ValidateAdditionalProperties(schema, map, errors);
+            ValidatePatternProperties(schema, map, errors);
             ValidateRequired(schema, map, errors);
             ValidateDependencies(schema, map, errors);
             ValidateEither(schema, map, errors);
@@ -128,6 +130,20 @@ namespace Microsoft.Docs.Build
                 if (schema.Properties.TryGetValue(key, out var propertySchema))
                 {
                     Validate(propertySchema, value, errors);
+                }
+            }
+        }
+
+        private void ValidatePatternProperties(JsonSchema schema, JObject map, List<Error> errors)
+        {
+            foreach (var (key, value) in map)
+            {
+                foreach (var (pattern, propertySchema) in schema.PatternProperties)
+                {
+                    if (Regex.IsMatch(key, pattern))
+                    {
+                        Validate(propertySchema, value, errors);
+                    }
                 }
             }
         }
