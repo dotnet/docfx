@@ -41,8 +41,8 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
 &quot;@&quot;a<a href=""link"">test</a>
 <xref href=""hehe"" data-throw-if-not-resolved=""False"" data-raw-source=""@hehe""></xref></p>
 <p><img src=""src"" alt=""img @hehe a"" title=""title @hehe b"" />
-![img @hehe a
-![img @hehe a](src &quot;title @hehe b&quot;
+![img <xref href=""hehe"" data-throw-if-not-resolved=""False"" data-raw-source=""@hehe""></xref> a
+![img <xref href=""hehe"" data-throw-if-not-resolved=""False"" data-raw-source=""@hehe""></xref> a](src &quot;title <xref href=""hehe"" data-throw-if-not-resolved=""False"" data-raw-source=""@hehe""></xref> b&quot;
 <img src=""src"" alt=""this img @hehe a haha"" title=""title @hehe b"" /></p>
 <p><xref href=""Microsoft.Build.Tasks?text=Tasks"" data-throw-if-not-resolved=""False"" data-raw-source=""@&quot;Microsoft.Build.Tasks?text=Tasks&quot;""></xref>
 <a href=""xref:Microsoft.Build.Tasks"">link_text</a>

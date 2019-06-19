@@ -3,13 +3,16 @@
 
 namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
+    using System;
+    using System.Collections.Generic;
     using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
 
     using Markdig.Helpers;
     using Markdig.Parsers;
     using Markdig.Renderers.Html;
     using Markdig.Syntax;
-    using Markdig.Syntax.Inlines;
 
     class XrefInlineShortParser : InlineParser
     {
@@ -30,11 +33,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 return false;
             }
 
-            if (!ValidInCurrentContext(processor))
-            {
-                return false;
-            }
-
             c = slice.NextChar();
 
             if (c == '\'' || c == '"')
@@ -45,24 +43,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             {
                 return MatchXrefShortcut(processor, ref slice);
             }
-        }
-
-        private bool ValidInCurrentContext(InlineProcessor processor)
-        {
-            // Xref links are not valid inside link content
-            var currentInline = processor.Inline;
-
-            while (currentInline != null)
-            {
-                if (currentInline is LinkDelimiterInline delimiter && delimiter.IsActive)
-                {
-                    return delimiter.Type == DelimiterType.Close;
-                }
-
-                currentInline = currentInline.Parent;
-            }
-
-            return true;
         }
 
         private bool MatchXrefShortcut(InlineProcessor processor, ref StringSlice slice)
