@@ -39,7 +39,6 @@ namespace Microsoft.Docs.Build
             RestoreMap restoreMap,
             Repository fallbackRepo = null)
         {
-            XrefMap xrefMap = null;
             var (configErrors, config) = GetBuildConfig(docsetPath, options, locale, fallbackRepo);
             errorLog.Configure(config);
 
@@ -50,9 +49,10 @@ namespace Microsoft.Docs.Build
             var docset = GetBuildDocset(new Docset(errorLog, docsetPath, locale, config, options, restoreMap, repository, fallbackRepo));
             var outputPath = Path.Combine(docsetPath, config.Output.Path);
 
-            using (var context = new Context(outputPath, errorLog, docset, () => xrefMap))
+            using (var context = new Context(outputPath, errorLog, docset))
             {
-                xrefMap = XrefMapBuilder.Build(context, docset);
+                context.XrefSpecProvider.Initialize(context, docset);
+
                 var tocMap = TableOfContentsMap.Create(context, docset);
 
                 context.BuildQueue.Enqueue(GetBuildScope(docset, tocMap));
@@ -67,8 +67,9 @@ namespace Microsoft.Docs.Build
 
                 var (publishModel, fileManifests) = context.PublishModelBuilder.Build(context, docset.Legacy);
                 var dependencyMap = context.DependencyMapBuilder.Build();
+                var xrefmap = context.XrefSpecProvider.BuildXrefMap();
 
-                xrefMap.OutputXrefMap(context);
+                context.Output.WriteJson(xrefmap, "xrefmap.json");
                 context.Output.WriteJson(publishModel, ".publish.json");
                 context.Output.WriteJson(dependencyMap.ToDependencyMapModel(), ".dependencymap.json");
 

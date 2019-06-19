@@ -15,21 +15,13 @@ namespace Microsoft.Docs.Build
 
         public Document DeclairingFile { get; set; }
 
-        public HashSet<string> Monikers { get; set; } = new HashSet<string>();
+        public string[] Monikers { get; set; } = Array.Empty<string>();
 
-        public Dictionary<string, Lazy<JValue>> ExtensionData { get; } = new Dictionary<string, Lazy<JValue>>();
+        public Dictionary<string, Lazy<JToken>> ExtensionData { get; } = new Dictionary<string, Lazy<JToken>>();
 
-        public string GetXrefPropertyValue(string propertyName)
-        {
-            if (propertyName is null)
-                return null;
+        public JToken GetXrefProperty(string propertyName) => ExtensionData[propertyName]?.Value;
 
-            return ExtensionData.TryGetValue(propertyName, out var internalValue) && internalValue.Value.Value is string internalStr ? internalStr : null;
-        }
-
-        public string GetName() => GetXrefPropertyValue("name");
-
-        public ExternalXrefSpec ToExternalXrefSpec(Context context, Document file)
+        public ExternalXrefSpec ToExternalXrefSpec()
         {
             var spec = new ExternalXrefSpec
             {
@@ -37,17 +29,12 @@ namespace Microsoft.Docs.Build
                 Monikers = Monikers,
                 Href = Href,
             };
+
             foreach (var (key, value) in ExtensionData)
             {
-                try
-                {
-                    spec.ExtensionData[key] = GetXrefPropertyValue(key);
-                }
-                catch (DocfxException ex)
-                {
-                    context.ErrorLog.Write(file.FilePath, ex.Error);
-                }
+                spec.ExtensionData[key] = value.Value;
             }
+
             return spec;
         }
     }

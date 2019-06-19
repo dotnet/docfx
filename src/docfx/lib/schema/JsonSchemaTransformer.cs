@@ -26,17 +26,17 @@ namespace Microsoft.Docs.Build
             return (errors, token);
         }
 
-        public (List<Error> errors, Dictionary<string, Lazy<JValue>>) TransformXref(Document file, Context context, JToken token)
+        public (List<Error> errors, Dictionary<string, Lazy<JToken>>) TransformXref(Document file, Context context, JToken token)
         {
             var errors = new List<Error>();
-            var extensions = new Dictionary<string, Lazy<JValue>>();
+            var extensions = new Dictionary<string, Lazy<JToken>>();
             Traverse(_schema, token, TransformXrefScalar);
             return (errors, extensions);
 
             void TransformXrefScalar(JsonSchema schema, JValue value)
             {
-                extensions[value.Path] = new Lazy<JValue>(
-                    () => (JValue)TransformScalar(schema, file, context, value, errors), // todo: support JToken
+                extensions[value.Path] = new Lazy<JToken>(
+                    () => TransformScalar(schema, file, context, value, errors),
                     LazyThreadSafetyMode.PublicationOnly);
             }
         }
@@ -130,7 +130,7 @@ namespace Microsoft.Docs.Build
 
                     if (xrefSpec is InternalXrefSpec internalSpec)
                     {
-                        xrefSpec = internalSpec.ToExternalXrefSpec(context, file);
+                        xrefSpec = internalSpec.ToExternalXrefSpec();
                     }
                     errors.AddIfNotNull(xrefError);
 

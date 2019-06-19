@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Collections.Generic;
+using System;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -13,23 +13,14 @@ namespace Microsoft.Docs.Build
 
         public string Href { get; set; }
 
-        Document IXrefSpec.DeclairingFile => null;
-
         [JsonIgnore]
-        public HashSet<string> Monikers { get; set; } = new HashSet<string>();
+        public string[] Monikers { get; set; } = Array.Empty<string>();
 
         [JsonExtensionData]
         public JObject ExtensionData { get; } = new JObject();
 
-        public string GetName() => GetXrefPropertyValue("name");
+        Document IXrefSpec.DeclairingFile => null;
 
-        public string GetXrefPropertyValue(string propertyName)
-        {
-            if (propertyName != null && ExtensionData.TryGetValue<JValue>(propertyName, out var v))
-            {
-                return v.Value is string str ? str : null;
-            }
-            return null;
-        }
+        JToken IXrefSpec.GetXrefProperty(string propertyName) => ExtensionData[propertyName];
     }
 }

@@ -18,6 +18,7 @@ namespace Microsoft.Docs.Build
         public readonly MonikerProvider MonikerProvider;
         public readonly GitCommitProvider GitCommitProvider;
         public readonly BookmarkValidator BookmarkValidator;
+        public readonly XrefSpecProvider XrefSpecProvider;
         public readonly DependencyMapBuilder DependencyMapBuilder;
         public readonly DependencyResolver DependencyResolver;
         public readonly GitHubUserCache GitHubUserCache;
@@ -25,7 +26,7 @@ namespace Microsoft.Docs.Build
         public readonly PublishModelBuilder PublishModelBuilder;
         public readonly TemplateEngine Template;
 
-        public Context(string outputPath, ErrorLog errorLog,  Docset docset, Func<XrefMap> xrefMap)
+        public Context(string outputPath, ErrorLog errorLog,  Docset docset)
         {
             ErrorLog = errorLog;
             Output = new Output(outputPath);
@@ -37,8 +38,9 @@ namespace Microsoft.Docs.Build
             GitCommitProvider = new GitCommitProvider();
             PublishModelBuilder = new PublishModelBuilder();
             BookmarkValidator = new BookmarkValidator();
+            XrefSpecProvider = new XrefSpecProvider();
             DependencyMapBuilder = new DependencyMapBuilder();
-            DependencyResolver = new DependencyResolver(BuildQueue, GitCommitProvider, BookmarkValidator, DependencyMapBuilder, new Lazy<XrefMap>(xrefMap));
+            DependencyResolver = new DependencyResolver(BuildQueue, GitCommitProvider, BookmarkValidator, DependencyMapBuilder, new Lazy<XrefSpecProvider>(() => XrefSpecProvider));
             ContributionProvider = new ContributionProvider(docset, GitHubUserCache, GitCommitProvider);
             Template = TemplateEngine.Create(docset);
         }

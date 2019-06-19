@@ -16,14 +16,14 @@ namespace Microsoft.Docs.Build
         private readonly BookmarkValidator _bookmarkValidator;
         private readonly DependencyMapBuilder _dependencyMapBuilder;
         private readonly GitCommitProvider _gitCommitProvider;
-        private readonly Lazy<XrefMap> _xrefMap;
+        private readonly Lazy<XrefSpecProvider> _xrefMap;
 
         public DependencyResolver(
             WorkQueue<Document> buildQueue,
             GitCommitProvider gitCommitProvider,
             BookmarkValidator bookmarkValidator,
             DependencyMapBuilder dependencyMapBuilder,
-            Lazy<XrefMap> xrefMap)
+            Lazy<XrefSpecProvider> xrefMap)
         {
             _buildQueue = buildQueue;
             _bookmarkValidator = bookmarkValidator;
@@ -73,7 +73,7 @@ namespace Microsoft.Docs.Build
             var displayProperty = queries?["displayProperty"];
 
             // need to url decode uid from input content
-            var (error, resolvedHref, display, xrefSpec) = _xrefMap.Value.Resolve(Uri.UnescapeDataString(uid), href, displayProperty, relativeTo, rootFile, moniker);
+            var (error, xrefSpec) = _xrefMap.Value.GetXrefSpec(Uri.UnescapeDataString(uid));
 
             if (xrefSpec?.DeclairingFile != null)
             {
