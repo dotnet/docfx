@@ -68,9 +68,9 @@ namespace Microsoft.DocAsCode.HtmlToPdf
             return path?.Length == 0 ? path : path + "/";
         }
 
-		/// <summary>
-		/// Are input arguments set using command line
-		/// </summary>
-		public bool NoInputStreamArgs { get; set; }
+        /// <summary>
+        /// Are input arguments set using command line
+        /// </summary>
+        public bool NoInputStreamArgs { get; set; }
 	}
 }

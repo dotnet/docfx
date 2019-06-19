@@ -130,7 +130,7 @@ namespace Microsoft.DocAsCode.HtmlToPdf
                     RedirectStandardOutput = _htmlToPdfOptions.IsOutputToStdout,
                     WindowStyle = ProcessWindowStyle.Hidden,
                     FileName = Constants.PdfCommandName,
-                    Arguments = _htmlToPdfOptions + (_htmlToPdfOptions.IsReadArgsFromStdin ? string.Empty : (" "+arguments)),
+                    Arguments = _htmlToPdfOptions + (_htmlToPdfOptions.IsReadArgsFromStdin ? string.Empty : (" " + arguments)),
                 }
             })
             {
@@ -152,8 +152,8 @@ namespace Microsoft.DocAsCode.HtmlToPdf
                         {
                             standardOutput.BaseStream.CopyTo(stream);
                         }
-						if (stream.CanSeek)
-							Logger.LogVerbose($"got {process.StartInfo.FileName} output {stream.Length}Bytes");
+                        if (stream.CanSeek)
+                            Logger.LogVerbose($"got {process.StartInfo.FileName} output {stream.Length}Bytes");
                     }
                     process.WaitForExit(TimeoutInMilliseconds);
                 }

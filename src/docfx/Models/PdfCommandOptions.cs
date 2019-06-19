@@ -42,7 +42,7 @@ namespace Microsoft.DocAsCode
         public string BasePath { get; set; }
 
         [Option("noStdin", HelpText = "Do not use stdin when wkhtmltopdf is executed")]
-		public bool? NoInputStreamArgs { get; set; }
+        public bool? NoInputStreamArgs { get; set; }
 
     }
 }

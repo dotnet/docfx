@@ -67,7 +67,7 @@ namespace Microsoft.DocAsCode.SubCommands
                 TocTitle = _config.TocTitle,
                 OutlineOption = _config.OutlineOption,
                 CoverPageTitle = _config.CoverPageTitle,
-				NoInputStreamArgs = _config.NoInputStreamArgs,
+                NoInputStreamArgs = _config.NoInputStreamArgs,
 			};
 
             // 1. call BuildCommand to generate html files first
@@ -184,10 +184,10 @@ namespace Microsoft.DocAsCode.SubCommands
                 config.GeneratesExternalLink = options.GeneratesExternalLink.Value;
             }
 
-			if (options.NoInputStreamArgs.HasValue)
-			{
-				config.NoInputStreamArgs = options.NoInputStreamArgs.Value;
-			}
+            if (options.NoInputStreamArgs.HasValue)
+            {
+	            config.NoInputStreamArgs = options.NoInputStreamArgs.Value;
+            }
         }
 
         private sealed class PdfConfig
