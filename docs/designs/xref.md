@@ -19,7 +19,7 @@ Besides using file path to link to another file, DocFX also allows you to give a
     docs/b.json: |
         {"conceptual":"<p>Link to <a href=\"a\">Title from yaml header a</a></p>\n"}
   ```
-  > **_Notice_**: Only title will be considered as xref properrty for `uid` definition in `.md` files
+  > **_Notice_**: Only title will be considered as xref property for `uid` definition in `.md` files
 - Define multiple UID with same value internally with different versions and reference to this UID without versioning within the current repository
     - If all versions for this UID are within the same product, take the one with highest versioning respecting the referencing file
       ```yaml
@@ -85,10 +85,18 @@ Besides using file path to link to another file, DocFX also allows you to give a
             docs/b.json: |
                 {"conceptual":"<p>Link to <a href=\"a\">Title from v2</a></p>\n"}
         ```
-- Reference to an external UID without versioning. DHS does not handle the branch fallback logic for build, the complete list of all scenarios is as below
+- Reference to an external UID without versioning. DHS always append the `branch` info within cookie cache, due to this limitation, docs build needs to append `branch` info for resolved URL. The complete list of all scenarios is as below
 
     | Cross site | Build Type | build branch | xref definition branch | append branch info | v2 actual behavior |
     | --- | --- | --- | --- | --- | --- |
+    | yes | commit | master | master | yes(Jump to external site with `?brnach=master`) | yes(Jump to external site with `?branch=master`) |
+    | yes | commit | test | master | yes(Jump to external site with `?branch=master`) | yes(append with `?branch=master`) |
+    | yes | commit | live | live(go-live) | no | no |
+    | yes | commit | live | live(not-go-live) | no(uid-not-found) | no(uid-not-found) |
+    | yes | PR | test -> master | master | yes(Jump to external site with `?branch=master`) | yes(Jump to external site with `?branch=master`) |
+    | yes | PR | master -> test | master | yes | yes |
+    | yes | PR | test -> live | live(go-live) | no | yes(append with `?branch=live`, `branch` info is set on OPS service and it could not tell cross-site or not) |
+    | yes | PR | test -> live | live(not-go-live) | no(uid-not-found) | no(uid-not-found) |
     | no | commit | master | master | yes(append `?branch=master` to avoid redirecting) | yes(append `?branch=master`) |
     | no | commit | test | master | yes(`test` branch may not exist in xref definition repo) | yes(append `?branch=master`) |
     | no | commit | live | live(go-live) | no(`live` branch exists) | no |
@@ -97,14 +105,6 @@ Besides using file path to link to another file, DocFX also allows you to give a
     | no | PR | master -> test | master | yes(`PR` branch may not exist in xref definition repo) | yes(append `?branch=master`) |
     | no | PR | test -> live | live(go-live) | no | yes(url appending with `?branch=live`) |
     | no | PR | test -> live | live(not-go-live) | no(uid-not-found) | no(uid-not-found) |
-    | yes | commit | master | master | yes(Jump to external site with `brnach=master`) | yes(Jump to external site with `?branch=master`) |
-    | yes | commit | test | master | yes(Jump to external site with `?branch=master`) | yes(append with `?branch=master`) |
-    | yes | commit | live | live(go-live) | no | no |
-    | yes | commit | live | live(not-go-live) | no(uid-not-found) | no(uid-not-found) |
-    | yes | PR | test -> master | master | yes(Jump to external site with `?branch=master`) | yes(Jump to external site with `?branch=master`) |
-    | yes | PR | master -> test | master | yes | yes |
-    | yes | PR | test -> live | live(go-live) | no | yes(append with `?branch=live`) |
-    | yes | PR | test -> live | live(not-go-live) | no(uid-not-found) | no(uid-not-found) |
     > For the second last scenario, the output url would be `review.docs.microsoft.com` and the resolved uid url would be `docs.microsoft.com`, while clicking to this url, the user will go to another site `docs.microsoft.com` instead. Removing host for `uid` resolved URL can resolve this.
     - The href of UID is from the same host name as the referencing repository.
         - If the current branch is `live`, and the UID href is also from `live`, everything is OK
