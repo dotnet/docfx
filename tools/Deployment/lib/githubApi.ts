@@ -19,16 +19,10 @@ export class GithubApi {
         });
     }
 
-    async publishReleaseAndAssetAsync(releaseDescription: ReleaseDescription, assetInfo: AssetInfo) {
-        Guard.argumentNotNull(releaseDescription, "releaseDescription");
-        Guard.argumentNotNull(assetInfo, "assetInfo");
-
-        await this.publishReleaseAsync(releaseDescription);
-        return this.publishAssetAsync(assetInfo);
-    }
-
     // publish asset to latest release
     async publishAssetAsync(info: AssetInfo) {
+        Guard.argumentNotNull(info, "assetInfo");
+
         const latestReleaseInfo = await this.getLatestReleaseAsync();
         if (latestReleaseInfo.data["assets"]) {
             const assets = latestReleaseInfo.data["assets"];
@@ -43,6 +37,8 @@ export class GithubApi {
 
     // publish release
     async publishReleaseAsync(description: ReleaseDescription) {
+        Guard.argumentNotNull(description, "releaseDescription");
+
         let latestReleaseInfo;
         try {
             latestReleaseInfo = await this.getLatestReleaseAsync();

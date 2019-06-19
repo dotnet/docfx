@@ -172,15 +172,20 @@ gulp.task("packAssetZip", () => {
 
 gulp.task("publish:gh-release", () => {
     Guard.argumentNotNullOrEmpty(config.docfx.releaseNotePath, "config.docfx.releaseNotePath", "Can't find RELEASENOTE.md in configuartion.");
+    Guard.argumentNotNullOrEmpty(process.env.TOKEN, "process.env.TOKEN", "No github account token in the environment.");
+
+    let githubToken = process.env.TOKEN;
+    let releaseNotePath = path.resolve(config.docfx["releaseNotePath"]);
+    return Github.updateGithubReleaseAsync(config.docfx.sshRepoUrl, releaseNotePath, githubToken);
+});
+
+gulp.task("publish:gh-asset", () => {
     Guard.argumentNotNullOrEmpty(config.docfx.assetZipPath, "config.docfx.assetZipPath", "Can't find asset zip destination folder in configuration.");
     Guard.argumentNotNullOrEmpty(process.env.TOKEN, "process.env.TOKEN", "No github account token in the environment.");
 
     let githubToken = process.env.TOKEN;
-
-    let releaseNotePath = path.resolve(config.docfx["releaseNotePath"]);
     let assetZipPath = path.resolve(config.docfx["assetZipPath"]);
-
-    return Github.updateGithubReleaseAsync(config.docfx.sshRepoUrl, releaseNotePath, assetZipPath, githubToken);
+    return Github.updateGithubAssetAsync(config.docfx.sshRepoUrl, assetZipPath, githubToken);
 });
 
 gulp.task("publish:chocolatey", () => {
@@ -227,10 +232,9 @@ gulp.task("syncBranchCore", () => {
 });
 gulp.task("test", gulp.series("clean", "build", "e2eTest", "publish:myget-test"));
 gulp.task("dev", gulp.series("clean", "build", "e2eTest"));
-gulp.task("stable", gulp.series("clean", "build", "e2eTest", "publish:myget-dev")); // `stable` branch is obsolete. Run this task directly against `dev` branch
+gulp.task("dev:release", gulp.series("clean", "build", "e2eTest", "publish:myget-dev"));
 
 gulp.task("master:build", gulp.series("clean", "build:release", "e2eTest", "updateGhPage"));
-gulp.task("master:release", gulp.series("packAssetZip", "publish:myget-master", "publish:gh-release", "publish:chocolatey"));
+gulp.task("master:release", gulp.series("packAssetZip", "publish:myget-master", "publish:gh-release", "publish:gh-asset", "publish:chocolatey"));
 
-gulp.task("syncBranch", gulp.series("syncBranchCore")); // `stable` branch is obsolete. This task is of no use now.
 gulp.task("default", gulp.series("dev"));
