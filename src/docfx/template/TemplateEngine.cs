@@ -16,6 +16,9 @@ namespace Microsoft.Docs.Build
 {
     internal class TemplateEngine
     {
+        // todo: read schema from template
+        private static readonly HashSet<string> s_schemas = new HashSet<string>(Directory.EnumerateFiles(Path.Combine(AppContext.BaseDirectory, "data"), "*.json", SearchOption.TopDirectoryOnly).Select(k => Path.GetFileNameWithoutExtension(k)));
+
         private static readonly string[] s_resourceFolders = new[] { "global", "css", "fonts" };
         private static readonly ConcurrentDictionary<string, Lazy<(JsonSchemaValidator, JsonSchemaTransformer)>> _jsonSchemas
                           = new ConcurrentDictionary<string, Lazy<(JsonSchemaValidator, JsonSchemaTransformer)>>();
@@ -43,16 +46,37 @@ namespace Microsoft.Docs.Build
                 .ToDictionary(prop => prop.Key, prop => prop.Value.HtmlMetaName);
         }
 
-        public static (JsonSchemaValidator, JsonSchemaTransformer) GetJsonSchema(Schema schema)
+        public static bool IsData(string mime)
         {
-            if (schema is null)
+            // todo: get `isData` from template JINT script name
+            if (mime != null && s_schemas.TryGetValue(mime, out var schema))
+            {
+                return string.Equals(schema, "ContextObject", StringComparison.OrdinalIgnoreCase) || string.Equals(schema, "TestData", StringComparison.OrdinalIgnoreCase);
+            }
+
+            return false;
+        }
+
+        public static bool IsLandingData(string mime)
+        {
+            if (mime != null && s_schemas.TryGetValue(mime, out var schema))
+            {
+                return string.Equals(typeof(LandingData).Name, schema, StringComparison.OrdinalIgnoreCase);
+            }
+
+            return false;
+        }
+
+        public static (JsonSchemaValidator, JsonSchemaTransformer) GetJsonSchema(string schemaName)
+        {
+            if (schemaName is null)
             {
                 return default;
             }
 
             // TODO: get schema from template
-            var schemaFilePath = Path.Combine(AppContext.BaseDirectory, $"data/{schema.Type.Name}.json");
-            return _jsonSchemas.GetOrAdd(schema.Type.Name, new Lazy<(JsonSchemaValidator, JsonSchemaTransformer)>(GetJsonSchemaCore)).Value;
+            var schemaFilePath = Path.Combine(AppContext.BaseDirectory, $"data/{schemaName}.json");
+            return _jsonSchemas.GetOrAdd(schemaName, new Lazy<(JsonSchemaValidator, JsonSchemaTransformer)>(GetJsonSchemaCore)).Value;
 
             (JsonSchemaValidator, JsonSchemaTransformer) GetJsonSchemaCore()
             {
