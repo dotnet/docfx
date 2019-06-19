@@ -80,6 +80,7 @@ namespace Microsoft.Docs.Build
                     }
 
                     var combineRedirectUrl = false;
+                    var mutableRedirectUrl = redirectUrl.Value;
                     if (redirectDocumentId)
                     {
                         switch (UrlUtility.GetLinkType(redirectUrl))
@@ -95,7 +96,7 @@ namespace Microsoft.Docs.Build
                         }
                     }
 
-                    Document redirect = Document.Create(docset, pathToDocset, redirectUrl, combineRedirectUrl: combineRedirectUrl);
+                    Document redirect = Document.Create(docset, pathToDocset, mutableRedirectUrl, combineRedirectUrl: combineRedirectUrl);
                     if (redirectDocumentId && !redirectUrls.Add(redirect.RedirectionUrl))
                     {
                         errors.Add(Errors.RedirectionUrlConflict(redirectUrl));
