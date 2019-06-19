@@ -68,6 +68,26 @@ namespace Microsoft.Docs.Build
         public int? MinLength { get; set; }
 
         /// <summary>
+        /// The inclusive maximum value of a number.
+        /// </summary>
+        public double? Maximum { get; set; }
+
+        /// <summary>
+        /// The inclusive minimum value of a number.
+        /// </summary>
+        public double? Minimum { get; set; }
+
+        /// <summary>
+        /// The exclusive maximum value of a number.
+        /// </summary>
+        public double? ExclusiveMaximum { get; set; }
+
+        /// <summary>
+        /// The exclusive minimum value of a number.
+        /// </summary>
+        public double? ExclusiveMinimum { get; set; }
+
+        /// <summary>
         /// An object can have extra keys not defined in properties.
         /// This can be:
         ///     - boolean: allow/disallow additional properties
