@@ -94,7 +94,7 @@ namespace Microsoft.Docs.Build
                             Original = fileManifest.Value.SourcePath,
                             SourceRelativePath = document.ToLegacyPathRelativeToBasePath(docset),
                             OriginalType = GetOriginalType(document.ContentType),
-                            Type = GetType(document.ContentType, document.Schema),
+                            Type = GetType(document.ContentType, document),
                             Output = output,
                             SkipNormalization = !(document.ContentType == ContentType.Resource),
                             SkipSchemaCheck = !(document.ContentType == ContentType.Resource),
@@ -150,9 +150,9 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static string GetType(ContentType type, Schema schema)
+        private static string GetType(ContentType type, Document doc)
         {
-            if (type == ContentType.Page && schema?.Type == typeof(ContextObject))
+            if (type == ContentType.Page && TemplateEngine.IsData(doc.Mime))
             {
                 return "Toc";
             }
