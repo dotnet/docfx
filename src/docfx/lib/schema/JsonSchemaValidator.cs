@@ -135,7 +135,7 @@ namespace Microsoft.Docs.Build
 
         private void ValidateConst(JsonSchema schema, JToken token, List<Error> errors)
         {
-            if (schema.Const != null && !JTokenEquals(schema.Const, token))
+            if (schema.Const != null && !JTokenDeepEquals(schema.Const, token))
             {
                 errors.Add(Errors.UndefinedValue(JsonUtility.GetSourceInfo(token), token, new object[] { schema.Const }));
             }
@@ -311,7 +311,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static bool JTokenEquals(JToken a, JToken b)
+        private static bool JTokenDeepEquals(JToken a, JToken b)
         {
             switch (a)
             {
@@ -326,7 +326,7 @@ namespace Microsoft.Docs.Build
 
                     for (var i = 0; i < arrayA.Count; i++)
                     {
-                        if (!JTokenEquals(arrayA[i], arrayB[i]))
+                        if (!JTokenDeepEquals(arrayA[i], arrayB[i]))
                         {
                             return false;
                         }
@@ -341,7 +341,7 @@ namespace Microsoft.Docs.Build
 
                     foreach (var (key, valueA) in mapA)
                     {
-                        if (!mapB.TryGetValue(key, out var valueB) || !JTokenEquals(valueA, valueB))
+                        if (!mapB.TryGetValue(key, out var valueB) || !JTokenDeepEquals(valueA, valueB))
                         {
                             return false;
                         }
