@@ -140,6 +140,42 @@ outputs:
   sccm/mdm/understand/hybrid-mobile-device-management.json: |
     { "document_id": "7412621b-4920-dc7e-bed6-1f1ea774f7dd", "document_version_independent_id": "de5d1641-2c0e-1158-7611-e52a22d96a5e" }
 ---
+# redirect with document id resolve relative redirect_url
+# publish item's redirect_url keeps user's input
+inputs:
+  docfx.yml: |
+    documentId:
+      sourceBasePath: develop
+    name: partner-center-sdk
+    product: MSDN
+    files: "develop/**/*"
+    baseUrl: https://docs.com/partner-center-sdk
+    routes:
+      develop/: .
+    redirections:
+      develop/agreement-metadata.md: agreement-metadata-resources
+  develop/agreement-metadata-resources.md:
+outputs:
+  partner-center-sdk/agreement-metadata-resources.json: |
+    { "document_id": "ad740933-6e60-291e-14ba-8a4e81133047", "document_version_independent_id": "e8a46a09-153a-2eac-1bd0-0aad104a6616" }
+  .publish.json: |
+    {
+      "files": [
+          {
+              "url": "/partner-center-sdk/agreement-metadata",
+              "source_path": "develop/agreement-metadata.md",
+              "locale": "en-us",
+              "redirect_url": "/partner-center-sdk/agreement-metadata-resources"
+          },
+          {
+              "url": "/partner-center-sdk/agreement-metadata-resources",
+              "path": "partner-center-sdk/agreement-metadata-resources.json",
+              "source_path": "develop/agreement-metadata-resources.md",
+              "locale": "en-us"
+          }
+      ]
+    }
+---
 # Show warning if two or more files redirect to the same file with document id
 inputs:
   docfx.yml: |

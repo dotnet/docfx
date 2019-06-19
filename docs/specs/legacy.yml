@@ -363,6 +363,12 @@ outputs:
     {
       "file_mapping":{
         "docs/a.md":{"type":"Content","output_relative_path":"a.html","asset_id":"a"},
-        "docs/v1/a.md":{"type":"Content","output_relative_path":"9d4e15fd/a.html","asset_id":"a"}
+        "docs/v1/a.md:< netcore-2.0":{
+          "type":"Content",
+          "output_relative_path":"9d4e15fd/a.html",
+          "asset_id":"a",
+          "version": "< netcore-2.0",
+          "is_moniker_range": true
+        }
       }
     }

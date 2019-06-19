@@ -403,14 +403,14 @@ namespace Microsoft.Docs.Build
             Assert.NotNull(obj?.A);
 
             Assert.Null(obj.A.Value);
-            Assert.Equal(1, obj.A.Line);
-            Assert.Equal(10, obj.A.Column);
-            Assert.Equal("file", obj.A.File);
+            Assert.Equal(1, obj.A.Source.Line);
+            Assert.Equal(10, obj.A.Source.Column);
+            Assert.Equal("file", obj.A.Source.File);
 
             Assert.Equal("b", obj.B.Value);
-            Assert.Equal(1, obj.B.Line);
-            Assert.Equal(20, obj.B.Column);
-            Assert.Equal("file", obj.B.File);
+            Assert.Equal(1, obj.B.Source.Line);
+            Assert.Equal(20, obj.B.Source.Column);
+            Assert.Equal("file", obj.B.Source.File);
         }
 
         [Fact]
