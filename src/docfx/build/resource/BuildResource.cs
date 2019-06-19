@@ -31,6 +31,7 @@ namespace Microsoft.Docs.Build
             {
                 Url = file.SiteUrl,
                 Path = publishPath,
+                SourcePath = file.FilePath,
                 Locale = file.Docset.Locale,
                 Monikers = monikers,
                 MonikerGroup = MonikerUtility.GetGroup(monikers),

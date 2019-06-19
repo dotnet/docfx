@@ -127,27 +127,6 @@ outputs:
   sccm/mdm/understand/hybrid-mobile-device-management.json: |
     { "document_id": "1c42a151-6248-df0c-15e6-3b1158d7bee3", "document_version_independent_id": "beb14a44-b076-14b8-b9c5-b42f9e36b973" }
 ---
-# generate different document id and version id with 'redirection with document id' when it's out of build scope
-# A => B, A is out of build scope, B's ids should be different with A's
-inputs:
-  docfx.yml: |
-    documentId:
-      sourceBasePath: sccm
-    name: sccm
-    product: Win
-    files: "sccm/mdm/understand/hybrid-mobile-device-management.md"
-    baseUrl: https://docs.com/sccm
-    redirections:
-      sccm/mdm/index.md: /sccm/mdm/understand/hybrid-mobile-device-management
-    routes:
-      sccm/: .
-  sccm/mdm/understand/hybrid-mobile-device-management.md:
-outputs:
-  sccm/mdm/understand/hybrid-mobile-device-management.json: |
-    { "document_id": "7412621b-4920-dc7e-bed6-1f1ea774f7dd", "document_version_independent_id": "de5d1641-2c0e-1158-7611-e52a22d96a5e" }
-  .errors.log: |
-    ["info","redirection-out-of-scope","Redirection file 'sccm/mdm/index.md' will not be built because it is not included in build scope","docfx.yml",8,22]
----
 # generate different document id and version id with 'redirection without document id'
 inputs:
   docfx.yml: |
@@ -165,6 +144,42 @@ inputs:
 outputs:
   sccm/mdm/understand/hybrid-mobile-device-management.json: |
     { "document_id": "7412621b-4920-dc7e-bed6-1f1ea774f7dd", "document_version_independent_id": "de5d1641-2c0e-1158-7611-e52a22d96a5e" }
+---
+# redirect with document id resolve relative redirect_url
+# publish item's redirect_url keeps user's input
+inputs:
+  docfx.yml: |
+    documentId:
+      sourceBasePath: develop
+    name: partner-center-sdk
+    product: MSDN
+    files: "develop/**/*"
+    baseUrl: https://docs.com/partner-center-sdk
+    routes:
+      develop/: .
+    redirections:
+      develop/agreement-metadata.md: agreement-metadata-resources
+  develop/agreement-metadata-resources.md:
+outputs:
+  partner-center-sdk/agreement-metadata-resources.json: |
+    { "document_id": "ad740933-6e60-291e-14ba-8a4e81133047", "document_version_independent_id": "e8a46a09-153a-2eac-1bd0-0aad104a6616" }
+  .publish.json: |
+    {
+      "files": [
+          {
+              "url": "/partner-center-sdk/agreement-metadata",
+              "source_path": "develop/agreement-metadata.md",
+              "locale": "en-us",
+              "redirect_url": "/partner-center-sdk/agreement-metadata-resources"
+          },
+          {
+              "url": "/partner-center-sdk/agreement-metadata-resources",
+              "path": "partner-center-sdk/agreement-metadata-resources.json",
+              "source_path": "develop/agreement-metadata-resources.md",
+              "locale": "en-us"
+          }
+      ]
+    }
 ---
 # Show warning if two or more files redirect to the same file with document id
 inputs:
@@ -357,6 +372,7 @@ outputs:
     { "document_id": "89987066-1e32-4f92-1957-329cfa9de0a0", "document_version_independent_id": "8f254336-d196-b36f-649e-dec30465941b"}
 ---
 # index.yml's document id also follows the redirection rules
+# trailing 'index' redirect-to will be trimmed
 inputs:
   docfx.yml: |
     product: Azure
@@ -366,7 +382,7 @@ inputs:
     routes:
       articles/: .
     redirections:
-      articles/virtual-machines/windows/classic/web-app-visual-studio.md: /azure/app-service/
+      articles/virtual-machines/windows/classic/web-app-visual-studio.md: /azure/app-service/index
   articles/app-service/index.yml : |
     ### YamlMime:YamlDocument
     documentType: LandingData

@@ -37,10 +37,15 @@ namespace Microsoft.Docs.Build
         public List<(Error error, Document file)> Validate()
         {
             var result = new List<(Error error, Document file)>();
-
+            var bookmarksByFile = _bookmarksByFile.ToDictionary();
             foreach (var (file, reference, bookmark, isSelfBookmark, source) in _references.ToList())
             {
-                if (_bookmarksByFile.ToDictionary().TryGetValue(reference, out var bookmarks) && bookmarks.Contains(bookmark))
+                // #top is HTMl predefined URL, which points to the top of the page
+                if (bookmark == "top")
+                {
+                    continue;
+                }
+                if (bookmarksByFile.TryGetValue(reference, out var bookmarks) && bookmarks.Contains(bookmark))
                 {
                     continue;
                 }

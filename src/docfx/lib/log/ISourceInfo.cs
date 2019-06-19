@@ -3,11 +3,8 @@
 
 namespace Microsoft.Docs.Build
 {
-    internal enum ErrorLevel
+    internal interface ISourceInfo
     {
-        Off,
-        Suggestion,
-        Warning,
-        Error,
+        object GetValue();
     }
 }

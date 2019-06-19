@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -56,20 +55,29 @@ namespace Microsoft.Docs.Build
                 xrefMap = XrefMapBuilder.Build(context, docset);
                 var tocMap = TableOfContentsMap.Create(context, docset);
 
-                var (publishManifest, fileManifests, sourceDependencies) = await BuildFiles(context, docset, tocMap);
+                context.BuildQueue.Enqueue(GetBuildScope(docset, tocMap));
 
-                var saveGitHubUserCache = context.GitHubUserCache.SaveChanges(config);
+                using (Progress.Start("Building files"))
+                {
+                    await context.BuildQueue.Drain(item => BuildFile(context, item, docset, tocMap), Progress.Update);
+                }
+
+                context.GitCommitProvider.SaveGitCommitCache();
+                ValidateBookmarks();
+
+                var (publishModel, fileManifests) = context.PublishModelBuilder.Build(context, docset.Legacy);
+                var dependencyMap = context.DependencyMapBuilder.Build();
 
                 xrefMap.OutputXrefMap(context);
-                context.Output.WriteJson(publishManifest, ".publish.json");
-                context.Output.WriteJson(sourceDependencies.ToDependencyMapModel(), ".dependencymap.json");
+                context.Output.WriteJson(publishModel, ".publish.json");
+                context.Output.WriteJson(dependencyMap.ToDependencyMapModel(), ".dependencymap.json");
 
                 if (options.Legacy)
                 {
                     if (config.Output.Json)
                     {
                         // TODO: decouple files and dependencies from legacy.
-                        Legacy.ConvertToLegacyModel(docset, context, fileManifests, sourceDependencies, tocMap);
+                        Legacy.ConvertToLegacyModel(docset, context, fileManifests, dependencyMap, tocMap);
                     }
                     else
                     {
@@ -77,66 +85,8 @@ namespace Microsoft.Docs.Build
                     }
                 }
 
-                context.ErrorLog.Write(await saveGitHubUserCache);
-
-                context.ContributionProvider.UpdateCommitBuildTime();
-            }
-        }
-
-        private static async Task<(PublishModel, Dictionary<Document, PublishItem>, DependencyMap)> BuildFiles(
-            Context context,
-            Docset docset,
-            TableOfContentsMap tocMap)
-        {
-            using (Progress.Start("Building files"))
-            {
-                var recurseDetector = new ConcurrentHashSet<Document>();
-                var monikerMapBuilder = new MonikerMapBuilder();
-
-                await ParallelUtility.ForEach(
-                    docset.BuildScope,
-                    async (file, buildChild) => { monikerMapBuilder.Add(file, await BuildOneFile(file, buildChild, null)); },
-                    (file) => ShouldBuildFile(file, new ContentType[] { ContentType.Page, ContentType.Redirection, ContentType.Resource }),
-                    Progress.Update);
-
-                var monikerMap = monikerMapBuilder.Build();
-
-                // Build TOC: since toc file depends on the build result of every node
-                await ParallelUtility.ForEach(
-                    GetTableOfContentsScope(docset, tocMap),
-                    (file, buildChild) => BuildOneFile(file, buildChild, monikerMap),
-                    ShouldBuildTocFile,
-                    Progress.Update);
-
-                context.GitCommitProvider.SaveGitCommitCache();
-
-                ValidateBookmarks();
-
-                var (publishModel, fileManifests) = context.PublishModelBuilder.Build(context, docset.Legacy);
-                var dependencyMap = context.DependencyMapBuilder.Build();
-
-                return (publishModel, fileManifests, dependencyMap);
-
-                async Task<List<string>> BuildOneFile(
-                    Document file,
-                    Action<Document> buildChild,
-                    MonikerMap fileMonikerMap)
-                {
-                    return await BuildFile(context, file, tocMap, fileMonikerMap, buildChild);
-                }
-
-                bool ShouldBuildFile(Document file, ContentType[] shouldBuildContentTypes)
-                {
-                    // source content in a localization docset
-                    if (docset.IsLocalized() && !file.Docset.IsLocalized())
-                    {
-                        return false;
-                    }
-
-                    return shouldBuildContentTypes.Contains(file.ContentType) && recurseDetector.TryAdd(file);
-                }
-
-                bool ShouldBuildTocFile(Document file) => file.ContentType == ContentType.TableOfContents && tocMap.Contains(file);
+                context.GitHubUserCache.Save();
+                context.ContributionProvider.Save();
 
                 void ValidateBookmarks()
                 {
@@ -152,13 +102,19 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static async Task<List<string>> BuildFile(
-            Context context,
-            Document file,
-            TableOfContentsMap tocMap,
-            MonikerMap monikerMap,
-            Action<Document> buildChild)
+        private static async Task BuildFile(Context context, Document file, Docset docset, TableOfContentsMap tocMap)
         {
+            // source content in a localization docset
+            if (file.ContentType != ContentType.TableOfContents && docset.IsLocalized() && !file.Docset.IsLocalized())
+            {
+                return;
+            }
+
+            if (file.ContentType == ContentType.TableOfContents && !tocMap.Contains(file))
+            {
+                return;
+            }
+
             try
             {
                 var publishItem = default(PublishItem);
@@ -170,11 +126,11 @@ namespace Microsoft.Docs.Build
                         (errors, publishItem) = BuildResource.Build(context, file);
                         break;
                     case ContentType.Page:
-                        (errors, publishItem) = await BuildPage.Build(context, file, tocMap, buildChild);
+                        (errors, publishItem) = await BuildPage.Build(context, file, tocMap);
                         break;
                     case ContentType.TableOfContents:
                         // TODO: improve error message for toc monikers overlap
-                        (errors, publishItem) = BuildTableOfContents.Build(context, file, monikerMap);
+                        (errors, publishItem) = BuildTableOfContents.Build(context, file);
                         break;
                     case ContentType.Redirection:
                         (errors, publishItem) = BuildRedirection.Build(context, file);
@@ -188,13 +144,11 @@ namespace Microsoft.Docs.Build
                 }
 
                 Telemetry.TrackBuildItemCount(file.ContentType);
-                return publishItem.Monikers;
             }
             catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
             {
                 context.ErrorLog.Write(file.ToString(), dex.Error);
                 context.PublishModelBuilder.MarkError(file);
-                return new List<string>();
             }
             catch
             {
@@ -261,20 +215,19 @@ namespace Microsoft.Docs.Build
             return sourceDocset.LocalizationDocset ?? sourceDocset;
         }
 
-        private static IReadOnlyList<Document> GetTableOfContentsScope(Docset docset, TableOfContentsMap tocMap)
+        private static IReadOnlyList<Document> GetBuildScope(Docset docset, TableOfContentsMap tocMap)
         {
             Debug.Assert(tocMap != null);
 
-            var result = docset.BuildScope.Where(d => d.ContentType == ContentType.TableOfContents).ToList();
-
             if (!docset.IsLocalized())
             {
-                return result;
+                return docset.BuildScope.ToList();
             }
 
             // if A toc includes B toc and only B toc is localized, then A need to be included and built
+            var tocBuildScope = docset.BuildScope.Where(d => d.ContentType == ContentType.TableOfContents).ToList();
             var fallbackTocs = new List<Document>();
-            foreach (var toc in result)
+            foreach (var toc in tocBuildScope)
             {
                 if (tocMap.TryFindParents(toc, out var parents))
                 {
@@ -282,9 +235,10 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            result.AddRange(fallbackTocs);
+            var buildScope = docset.BuildScope.ToList();
+            buildScope.AddRange(fallbackTocs);
 
-            return result;
+            return buildScope;
         }
     }
 }

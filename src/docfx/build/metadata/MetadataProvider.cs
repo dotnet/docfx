@@ -18,11 +18,8 @@ namespace Microsoft.Docs.Build
         private readonly HashSet<string> _reservedMetadata;
         private readonly List<(Func<string, bool> glob, string key, JToken value)> _rules = new List<(Func<string, bool> glob, string key, JToken value)>();
 
-        private readonly ConcurrentDictionary<Document, (List<Error> errors, JObject metadata)> _metadataCache
-                   = new ConcurrentDictionary<Document, (List<Error> errors, JObject metadata)>();
-
-        private readonly ConcurrentDictionary<Document, (List<Error> errors, InputMetadata metadata)> _metadataModelCache
-                   = new ConcurrentDictionary<Document, (List<Error> errors, InputMetadata metadata)>();
+        private readonly ConcurrentDictionary<Document, (List<Error> errors, JObject metadata, InputMetadata metadataModel)> _metadataCache
+                   = new ConcurrentDictionary<Document, (List<Error> errors, JObject metadata, InputMetadata metadataModel)>();
 
         public MetadataProvider(Docset docset, Cache cache)
         {
@@ -44,28 +41,16 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public (List<Error> errors, InputMetadata metadata) GetMetadataModel(Document file)
-        {
-            return _metadataModelCache.GetOrAdd(file, _ =>
-            {
-                var (errors, metadataObject) = GetMetadata(file);
-                var (validationErrors, metadataModel) = JsonUtility.ToObject<InputMetadata>(metadataObject);
-                errors.AddRange(validationErrors);
-
-                return (errors, metadataModel);
-            });
-        }
-
-        public (List<Error> errors, JObject metadata) GetMetadata(Document file)
+        public (List<Error> errors, JObject metadata, InputMetadata metadataModel) GetMetadata(Document file)
         {
             return _metadataCache.GetOrAdd(file, GetMetadataCore);
         }
 
-        private (List<Error> errors, JObject metadata) GetMetadataCore(Document file)
+        private (List<Error> errors, JObject metadata, InputMetadata metadataModel) GetMetadataCore(Document file)
         {
             if (file.ContentType != ContentType.Page && file.ContentType != ContentType.TableOfContents)
             {
-                return (new List<Error>(), new JObject());
+                return (new List<Error>(), new JObject(), new InputMetadata());
             }
 
             var result = new JObject();
@@ -103,7 +88,10 @@ namespace Microsoft.Docs.Build
 
             errors.AddRange(_schemaValidator.Validate(result));
 
-            return (errors, result);
+            var (validationErrors, metadataModel) = JsonUtility.ToObject<InputMetadata>(result);
+            errors.AddRange(validationErrors);
+
+            return (errors, result, metadataModel);
         }
 
         private static bool IsValidMetadataType(JToken token)

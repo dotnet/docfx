@@ -41,18 +41,6 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public static Task<HttpResponseMessage> PutAsync(string requestUri, HttpContent content, Config config, EntityTagHeaderValue etag = null)
-        {
-            var message = CreateHttpRequestMessage(requestUri, config);
-            message.Method = HttpMethod.Put;
-            message.Content = content;
-            if (etag != null)
-            {
-                message.Headers.IfMatch.Add(etag);
-            }
-            return s_httpClient.SendAsync(message);
-        }
-
         private static HttpRequestMessage CreateHttpRequestMessage(string requestUri, Config config)
         {
             var message = new HttpRequestMessage();

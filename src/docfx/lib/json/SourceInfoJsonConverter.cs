@@ -24,7 +24,7 @@ namespace Microsoft.Docs.Build
             {
                 JsonUtility.SkipToken(reader);
 
-                if (existingValue is SourceInfo existingSourceInfo)
+                if (existingValue is ISourceInfo existingSourceInfo)
                 {
                     value = existingSourceInfo.GetValue();
                 }
@@ -35,7 +35,7 @@ namespace Microsoft.Docs.Build
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
-            serializer.Serialize(writer, ((SourceInfo)value)?.GetValue());
+            serializer.Serialize(writer, ((ISourceInfo)value).GetValue());
         }
     }
 }

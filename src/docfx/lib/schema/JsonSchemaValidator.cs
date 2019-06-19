@@ -68,7 +68,7 @@ namespace Microsoft.Docs.Build
 
         private void ValidateScalar(JsonSchema schema, JValue scalar, List<Error> errors)
         {
-            if (schema.Enum != null && !schema.Enum.Contains(scalar))
+            if (schema.Enum != null && Array.IndexOf(schema.Enum, scalar) == -1)
             {
                 errors.Add(Errors.UndefinedValue(JsonUtility.GetSourceInfo(scalar), scalar, schema.Enum));
             }
@@ -121,6 +121,7 @@ namespace Microsoft.Docs.Build
             ValidateDependencies(schema, map, errors);
             ValidateEither(schema, map, errors);
             ValidatePrecludes(schema, map, errors);
+            ValidateEnumDependencies(schema, map, errors);
 
             foreach (var (key, value) in map)
             {
@@ -250,6 +251,31 @@ namespace Microsoft.Docs.Build
             if (schema.ReplacedBy != null)
             {
                 errors.Add(Errors.FieldDeprecated(JsonUtility.GetSourceInfo(token), token.Path, schema.ReplacedBy));
+            }
+        }
+
+        private void ValidateEnumDependencies(JsonSchema schema, JObject map, List<Error> errors)
+        {
+            foreach (var (fieldName, enumDependencyRules) in schema.EnumDependencies)
+            {
+                if (map.TryGetValue(fieldName, out var fieldValue))
+                {
+                    foreach (var (dependentFieldName, allowLists) in enumDependencyRules)
+                    {
+                        if (map.TryGetValue(dependentFieldName, out var dependentFieldValue))
+                        {
+                            if (allowLists.TryGetValue(dependentFieldValue, out var allowList) &&
+                                Array.IndexOf(allowList, fieldValue) == -1)
+                            {
+                                errors.Add(Errors.ValuesNotMatch(JsonUtility.GetSourceInfo(map), fieldName, fieldValue, dependentFieldName, dependentFieldValue, allowList));
+                            }
+                        }
+                        else
+                        {
+                            errors.Add(Errors.LackDependency(JsonUtility.GetSourceInfo(map), fieldName, dependentFieldName));
+                        }
+                    }
+                }
             }
         }
 
