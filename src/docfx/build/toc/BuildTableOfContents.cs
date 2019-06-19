@@ -71,12 +71,12 @@ namespace Microsoft.Docs.Build
             var (loadErrors, model) = TableOfContentsParser.Load(
                 context,
                 fileToBuild,
-                (file, href, isInclude) =>
+                (file, href, dependencyType) =>
                 {
-                    var (error, referencedTocContent, referencedToc) = context.DependencyResolver.ResolveContent(href, file, isInclude ? (DependencyType?)DependencyType.TocInclusion : null);
+                    var (error, referencedTocContent, referencedToc) = context.DependencyResolver.ResolveContent(href, file, dependencyType);
                     errors.AddIfNotNull(error);
 
-                    if (referencedToc != null && isInclude)
+                    if (referencedToc != null && dependencyType == DependencyType.TocInclusion)
                     {
                         // add to referenced toc list
                         referencedTocs.Add(referencedToc);

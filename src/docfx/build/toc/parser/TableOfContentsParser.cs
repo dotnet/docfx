@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using Microsoft.Extensions.DependencyModel;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -19,7 +20,7 @@ namespace Microsoft.Docs.Build
 
         public delegate (string resolvedTopicHref, string resolvedTopicName, Document file) ResolveXref(Document relativeTo, SourceInfo<string> uid);
 
-        public delegate (string content, Document file) ResolveContent(Document relativeTo, SourceInfo<string> href, bool isInclusion);
+        public delegate (string content, Document file) ResolveContent(Document relativeTo, SourceInfo<string> href, DependencyType dependencyType);
 
         public delegate List<string> ResolveMoniker(Document doc);
 
@@ -345,14 +346,14 @@ namespace Microsoft.Docs.Build
                     }
                     return default;
                 case TocHrefType.TocFile:
-                    return resolveContent(filePath, href, isInclusion: true);
+                    return resolveContent(filePath, href, DependencyType.TocInclusion);
                 default:
                     return default;
             }
 
             (string content, Document filePath)? Resolve(string name)
             {
-                var content = resolveContent(filePath, new SourceInfo<string>(Path.Combine(href, name), href), isInclusion: false);
+                var content = resolveContent(filePath, new SourceInfo<string>(Path.Combine(href, name), href), DependencyType.TocFolderInclusion);
                 if (content.file != null)
                 {
                     return content;
