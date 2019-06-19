@@ -39,23 +39,26 @@ namespace Microsoft.Docs.Build
                 if (node is JObject obj)
                 {
                     var uid = obj.TryGetValue("uid", out var uidValue) && uidValue is JValue uidJValue && uidJValue.Value is string uidStr ? uidStr : null;
-                    if (uid != null)
-                    {
-                        if (uidJsonPaths.Add(uidValue.Path) && xrefPropertiesGroupByUid.ContainsKey(uid))
-                        {
-                            errors.Add(Errors.UidConflict(uid));
-                            return default;
-                        }
 
-                        if (!xrefPropertiesGroupByUid.TryGetValue(uid, out _))
-                        {
-                            xrefPropertiesGroupByUid[uid] = (obj.Parent == null, new Dictionary<string, Lazy<JToken>>());
-                        }
+                    if (uid == null)
+                    {
+                        return default;
+                    }
+
+                    if (uidJsonPaths.Add(uidValue.Path) && xrefPropertiesGroupByUid.ContainsKey(uid))
+                    {
+                        errors.Add(Errors.UidConflict(uid));
+                        return default;
+                    }
+
+                    if (!xrefPropertiesGroupByUid.TryGetValue(uid, out _))
+                    {
+                        xrefPropertiesGroupByUid[uid] = (obj.Parent == null, new Dictionary<string, Lazy<JToken>>());
                     }
 
                     foreach (var (key, value) in obj)
                     {
-                        if (uid != null && schema.XrefProperties.Contains(key))
+                        if (schema.XrefProperties.Contains(key))
                         {
                             var propertySchema = TryGetPropertyJsonSchema(schema, key, out var subSchema) ? subSchema : null;
                             xrefPropertiesGroupByUid[uid].Item2[key] = new Lazy<JToken>(
@@ -66,7 +69,7 @@ namespace Microsoft.Docs.Build
                             }, LazyThreadSafetyMode.PublicationOnly);
                         }
                     }
-                    return uid != null ? schema.XrefProperties : default;
+                    return schema.XrefProperties;
                 }
 
                 return default;
