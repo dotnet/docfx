@@ -63,6 +63,7 @@ namespace Microsoft.Docs.Build
                 _buildQueue.Enqueue(file);
             }
 
+            // NOTE: bookmark validation result depend on current inclusion stack
             var resultRelativeTo = (Document)InclusionContext.RootFile ?? relativeTo;
             var isSelfBookmark = linkType == LinkType.SelfBookmark || resultRelativeTo == file;
             if (isSelfBookmark || file != null)
@@ -256,7 +257,7 @@ namespace Microsoft.Docs.Build
 
                     if (file is null)
                     {
-                        return (Errors.FileNotFound(new SourceInfo<string>(path, href)), null, query, fragment, default, null);
+                        return (Errors.FileNotFound(new SourceInfo<string>(path, href)), null, query, fragment, LinkType.RelativePath, pathToDocset);
                     }
 
                     return (null, file, query, fragment, LinkType.RelativePath, pathToDocset);
