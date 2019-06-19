@@ -94,11 +94,6 @@ namespace Microsoft.Docs.Build
                                 errors.Add(Errors.RedirectionUrlInvalid(redirectUrl));
                                 continue;
                         }
-
-                        if (redirectUrl.Value.EndsWith("index"))
-                        {
-                            mutableRedirectUrl = redirectUrl.Value.Substring(0, redirectUrl.Value.LastIndexOf("index"));
-                        }
                     }
 
                     Document redirect = Document.Create(docset, pathToDocset, mutableRedirectUrl, combineRedirectUrl: combineRedirectUrl);
