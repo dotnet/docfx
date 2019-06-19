@@ -37,6 +37,7 @@ export class Github {
         Guard.argumentNotNullOrEmpty(repoUrl, "repoUrl");
         Guard.argumentNotNullOrEmpty(assetZipPath, "assetZipPath");
         Guard.argumentNotNullOrEmpty(githubToken, "githubToken");
+        // TODO: add check: if this zip has been publish, skip this step
 
         let githubApi = new GithubApi(repoUrl, githubToken);
         let assetInfo = this.getAssetZipInfo(assetZipPath);
