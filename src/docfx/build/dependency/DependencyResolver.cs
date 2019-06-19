@@ -30,11 +30,12 @@ namespace Microsoft.Docs.Build
             _forLandingPage = forLandingPage;
         }
 
-        public (Error error, string content, Document file) ResolveContent(SourceInfo<string> path, Document relativeTo, DependencyType dependencyType = DependencyType.Inclusion)
+        public (Error error, string content, Document file) ResolveContent(SourceInfo<string> path, Document relativeTo, DependencyType? dependencyType = DependencyType.Inclusion)
         {
             var (error, content, child) = TryResolveContent(relativeTo, path);
 
-            _dependencyMapBuilder.AddDependencyItem(relativeTo, child, dependencyType);
+            if (content != null && child != null && dependencyType != null)
+                _dependencyMapBuilder.AddDependencyItem(relativeTo, child, dependencyType.Value);
 
             return (error, content, child);
         }
