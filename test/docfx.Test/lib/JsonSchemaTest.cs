@@ -267,7 +267,7 @@ namespace Microsoft.Docs.Build
             var (_, payload) = JsonUtility.Parse(json.Replace('\'', '"'), "file");
             var errors = new JsonSchemaValidator(jsonSchema).Validate(payload);
             var expected = string.Join('\n', expectedErrors.Split('\n').Select(err => err.Trim()));
-            var actual = string.Join('\n', errors.Select(err => err.ToString()).OrderBy(err => err).ToArray()).Replace('"', '\'');
+            var actual = string.Join('\n', errors.Select(err => err.ToString().Replace("\\r", "")).OrderBy(err => err).ToArray()).Replace('"', '\'');
             Assert.Equal(expected, actual);
         }
     }
