@@ -36,6 +36,8 @@ namespace Microsoft.Docs.Build
             else
             {
                 // todo: support data page template
+                output = mergedOutputMetadata;
+                metadata = null;
             }
 
             var publishItem = new PublishItem
