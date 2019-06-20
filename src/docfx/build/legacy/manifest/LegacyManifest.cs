@@ -33,7 +33,7 @@ namespace Microsoft.Docs.Build
 
                         var output = new LegacyManifestOutput
                         {
-                            MetadataOutput = TemplateEngine.IsData(document.Mime) || document.ContentType == ContentType.Resource
+                            MetadataOutput = document.IsSchemaData || document.ContentType == ContentType.Resource
                             ? null
                             : new LegacyManifestOutputItem
                             {

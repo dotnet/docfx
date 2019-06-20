@@ -87,7 +87,7 @@ namespace Microsoft.Docs.Build
                 }
 
                 var transformedScalar = TransformScalar(subSchema, file, context, node as JValue, errors);
-                JsonUtility.SetSourceInfo(transformedScalar, JsonUtility.GetSourceInfo(token));
+                JsonUtility.SetSourceInfo(transformedScalar, JsonUtility.GetSourceInfo(node));
                 return (default, transformedScalar);
             });
         }
