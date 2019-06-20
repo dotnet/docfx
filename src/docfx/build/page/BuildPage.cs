@@ -27,8 +27,8 @@ namespace Microsoft.Docs.Build
             JsonUtility.Merge(mergedOutputMetadata, JsonUtility.ToJObject(outputMetadata));
             var outputPath = file.GetOutputPath(outputMetadata.Monikers, file.Docset.SiteBasePath, isPage);
 
-            var output = (object)null;
-            var metadata = (JObject)null;
+            object output = null;
+            JObject metadata = null;
             if (isPage)
             {
                 (output, metadata) = ApplyPageTemplate(context, file, mergedOutputMetadata, outputMetadata.Conceptual);
