@@ -184,7 +184,6 @@ namespace Microsoft.Docs.Build
                         {
                             monikers = new List<string>();
                         }
-
                     }
                 }
                 else
