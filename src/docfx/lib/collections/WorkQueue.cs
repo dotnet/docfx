@@ -33,11 +33,6 @@ namespace Microsoft.Docs.Build
 
         public void Enqueue(T item)
         {
-            if (_drainTcs.Task.IsCompleted)
-            {
-                throw new InvalidOperationException();
-            }
-
             if (!_recurseDetector.TryAdd(item))
             {
                 return;
