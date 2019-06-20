@@ -76,13 +76,13 @@ namespace Microsoft.Docs.Build
             switch (scalar.Value)
             {
                 case string str:
-                    ValidateString(schema, scalar, errors, str);
+                    ValidateString(schema, scalar, str, errors);
                     break;
 
                 case double _:
                 case float _:
                 case long _:
-                    ValidateNumber(schema, scalar, errors, Convert.ToDouble(scalar.Value));
+                    ValidateNumber(schema, scalar, Convert.ToDouble(scalar.Value), errors);
                     break;
             }
         }
@@ -122,7 +122,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private void ValidateString(JsonSchema schema, JValue scalar, List<Error> errors, string str)
+        private void ValidateString(JsonSchema schema, JValue scalar, string str, List<Error> errors)
         {
             ValidateDateFormat(schema, scalar, str, errors);
 
@@ -145,7 +145,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static void ValidateNumber(JsonSchema schema, JValue scalar, List<Error> errors, double number)
+        private static void ValidateNumber(JsonSchema schema, JValue scalar, double number, List<Error> errors)
         {
             if (schema.Maximum.HasValue && number > schema.Maximum)
                 errors.Add(Errors.NumberInvalid(JsonUtility.GetSourceInfo(scalar), scalar.Path, $"<= {schema.Maximum}"));
