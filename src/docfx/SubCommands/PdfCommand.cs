@@ -66,7 +66,8 @@ namespace Microsoft.DocAsCode.SubCommands
                 AdditionalPdfCommandArgs = _config.Wkhtmltopdf?.AdditionalArguments,
                 TocTitle = _config.TocTitle,
                 OutlineOption = _config.OutlineOption,
-                CoverPageTitle = _config.CoverPageTitle
+                CoverPageTitle = _config.CoverPageTitle,
+                NoInputStreamArgs = _config.NoInputStreamArgs,
             };
 
             // 1. call BuildCommand to generate html files first
@@ -181,6 +182,11 @@ namespace Microsoft.DocAsCode.SubCommands
             if (options.GeneratesExternalLink.HasValue)
             {
                 config.GeneratesExternalLink = options.GeneratesExternalLink.Value;
+            }
+
+            if (options.NoInputStreamArgs.HasValue)
+            {
+                config.NoInputStreamArgs = options.NoInputStreamArgs.Value;
             }
         }
 

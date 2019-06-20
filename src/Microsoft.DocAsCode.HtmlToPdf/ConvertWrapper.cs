@@ -336,7 +336,8 @@ namespace Microsoft.DocAsCode.HtmlToPdf
                     UserStyleSheet = _pdfOptions.CssFilePath,
                     LoadErrorHandling = _pdfOptions.LoadErrorHandling,
                     AdditionalArguments = _pdfOptions.AdditionalPdfCommandArgs,
-                    OutlineOption = _pdfOptions.OutlineOption
+                    OutlineOption = _pdfOptions.OutlineOption,
+                    IsReadArgsFromStdin = !_pdfOptions.NoInputStreamArgs,
                 });
 
             converter.Save(Path.Combine(_pdfOptions.DestDirectory, pdfFileName));
