@@ -44,7 +44,7 @@ Current approved dependencies are:
 * Jint
 * HtmlAgilityPack
 * Nustache
-* PDFSharp
+* iTextSharp
 * YamlDotNet
 
 ### Code reviews and checkins

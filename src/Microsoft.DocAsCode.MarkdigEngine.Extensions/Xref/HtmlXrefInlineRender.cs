@@ -3,12 +3,6 @@
 
 namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
-
     using Markdig.Renderers;
     using Markdig.Renderers.Html;
 
@@ -19,6 +13,17 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             if (renderer.EnableHtmlForInline)
             {
                 renderer.Write("<xref href=\"").Write(obj.Href).Write("\"").WriteAttributes(obj).Write("></xref>");
+            }
+            else
+            {
+                foreach (var pair in obj.GetAttributes().Properties)
+                {
+                    if (pair.Key == "data-raw-source")
+                    {
+                        renderer.Write(pair.Value);
+                        break;
+                    }
+                }
             }
         }
     }
