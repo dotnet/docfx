@@ -173,10 +173,18 @@ namespace Microsoft.Docs.Build
                     }
                     else
                     {
-                        var (error, referenceFileMonikers) = context.MonikerProvider.GetFileLevelMonikers(document);
-                        errors.AddIfNotNull(error);
+                        if (document != null)
+                        {
+                            var (error, referenceFileMonikers) = context.MonikerProvider.GetFileLevelMonikers(document);
+                            errors.AddIfNotNull(error);
 
-                        monikers = referenceFileMonikers;
+                            monikers = referenceFileMonikers;
+                        }
+                        else
+                        {
+                            monikers = new List<string>();
+                        }
+
                     }
                 }
                 else
@@ -277,7 +285,7 @@ namespace Microsoft.Docs.Build
                 // process uid first
                 if (!string.IsNullOrEmpty(uid))
                 {
-                    var (uidError, uidLink, display, xrefSpec) = context.DependencyResolver.ResolveXref(uid, filePath, filePath);
+                    var (uidError, uidLink, display, xrefSpec) = context.DependencyResolver.ResolveXref(uid, filePath, rootPath);
                     errors.AddIfNotNull(uidError);
 
                     if (xrefSpec?.DeclairingFile != null)
