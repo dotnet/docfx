@@ -75,8 +75,5 @@ namespace Microsoft.Docs.Build
 
         // todo: remove this if `enable_loc_sxs` works well
         public string BilingualType => EnableLocSxs ? "hover over" : null;
-
-        [JsonExtensionData]
-        public JObject ExtensionData { get; set; } = new JObject();
     }
 }
