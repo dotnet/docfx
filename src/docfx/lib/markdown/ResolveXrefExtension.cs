@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using Markdig;
 using Markdig.Helpers;
@@ -17,46 +16,42 @@ namespace Microsoft.Docs.Build
     {
         public static MarkdownPipelineBuilder UseResolveXref(
             this MarkdownPipelineBuilder builder,
-            Func<string, MarkdownObject, (Error error, string href, string display, Document file)> resolveXref)
+            Func<string, bool, MarkdownObject, (string href, string display)> resolveXref)
         {
             return builder.Use(document =>
-             {
-                 document.Replace(node =>
-                 {
-                     var file = ((Document)InclusionContext.File).FilePath;
-                     if (node is XrefInline xref)
-                     {
-                         var (_, href, display, _) = resolveXref(xref.Href, xref);
-                         if (href is null)
-                         {
-                             var raw = new SourceInfo<string>(xref.GetAttributes().Properties.First(p => p.Key == "data-raw-source").Value, node.ToSourceInfo());
-                             var error = raw.Value.StartsWith("@")
-                                 ? Errors.AtXrefNotFound(raw)
-                                 : Errors.XrefNotFound(raw);
+            {
+                document.Replace(node =>
+                {
+                    var file = ((Document)InclusionContext.File).FilePath;
+                    if (node is XrefInline xref)
+                    {
+                        var isShorthand = xref.GetAttributes().Properties.Any(p => p.Key == "data-raw-source" && p.Value.StartsWith("@"));
+                        var (href, display) = resolveXref(xref.Href, isShorthand, xref);
+                        if (href is null)
+                        {
+                            return node;
+                        }
 
-                             MarkdownUtility.LogError(error);
-                             return new LiteralInline(raw);
-                         }
-                         return new LinkInline(href, null).AppendChild(new LiteralInline(display));
-                     }
-                     else if (node is HtmlBlock block)
-                     {
-                         var (errors, result) = ResolveXref(block.Lines.ToString(), block.ToSourceInfo().Line, file, block);
-                         errors.ForEach(e => MarkdownUtility.LogError(e));
-                         block.Lines = new StringLineGroup(result);
-                     }
-                     else if (node is HtmlInline inline)
-                     {
-                         var (errors, result) = ResolveXref(inline.Tag, inline.ToSourceInfo().Line, file, inline);
-                         errors.ForEach(e => MarkdownUtility.LogError(e));
-                         inline.Tag = result;
-                     }
-                     return node;
-                 });
-             });
+                        return new LinkInline(href, null).AppendChild(new LiteralInline(display));
+                    }
+                    else if (node is HtmlBlock block)
+                    {
+                        block.Lines = new StringLineGroup(ResolveXref(block.Lines.ToString(), block.ToSourceInfo().Line, file, block));
+                    }
+                    else if (node is HtmlInline inline)
+                    {
+                        inline.Tag = ResolveXref(inline.Tag, inline.ToSourceInfo().Line, file, inline);
+                    }
+                    return node;
+                });
+            });
 
-            (List<Error>, string) ResolveXref(string html, int startLine, string file, MarkdownObject block)
-                => HtmlUtility.TransformXref(html, startLine, file, href => MarkdownUtility.ResolveXref(href, block));
+            string ResolveXref(string html, int startLine, string file, MarkdownObject block)
+            {
+                return HtmlUtility.TransformXref(
+                    html,
+                    (href, isShorthand) => resolveXref(href, isShorthand, block));
+            }
         }
     }
 }

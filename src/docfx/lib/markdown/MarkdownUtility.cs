@@ -70,25 +70,25 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        internal static void LogError(Error error)
-        {
-            t_status.Value.Peek().Errors.Add(error);
-        }
-
-        internal static string GetLink(string path, object relativeTo, object resultRelativeTo, MarkdownObject origin, int columnOffset = 0)
+        private static string GetLink(string path, MarkdownObject origin, int columnOffset)
         {
             var status = t_status.Value.Peek();
-            var (error, link, _) = status.Context.DependencyResolver.ResolveLink(new SourceInfo<string>(path, origin.ToSourceInfo(columnOffset: columnOffset)), (Document)relativeTo, (Document)resultRelativeTo);
-            status.Errors.AddIfNotNull(error?.WithSourceInfo(origin.ToSourceInfo()));
+            var (error, link, _) = status.Context.DependencyResolver.ResolveLink(new SourceInfo<string>(path, origin.ToSourceInfo(columnOffset: columnOffset)), (Document)InclusionContext.File, (Document)InclusionContext.RootFile);
+            status.Errors.AddIfNotNull(error);
             return link;
         }
 
-        internal static (Error error, string href, string display, Document file) ResolveXref(string href, MarkdownObject origin)
+        private static (string href, string display) GetXref(string href, bool isShorthand, MarkdownObject origin)
         {
-            // TODO: now markdig engine combines all kinds of reference with inclusion, we need to split them out
-            var result = t_status.Value.Peek().Context.DependencyResolver.ResolveXref(new SourceInfo<string>(href, origin.ToSourceInfo()), (Document)InclusionContext.File, (Document)InclusionContext.RootFile);
-            result.error = result.error?.WithSourceInfo(origin.ToSourceInfo());
-            return (result.error, result.href, result.display, result.spec?.DeclairingFile);
+            var status = t_status.Value.Peek();
+            var source = new SourceInfo<string>(href, origin.ToSourceInfo());
+            var (error, link, display, _) = status.Context.DependencyResolver.ResolveXref(source, (Document)InclusionContext.File, (Document)InclusionContext.RootFile);
+
+            if (!isShorthand)
+            {
+                status.Errors.AddIfNotNull(error);
+            }
+            return (link, display);
         }
 
         private static MarkdownPipeline CreateMarkdownPipeline()
@@ -98,8 +98,8 @@ namespace Microsoft.Docs.Build
             return new MarkdownPipelineBuilder()
                 .UseYamlFrontMatter()
                 .UseDocfxExtensions(markdownContext)
-                .UseResolveLink()
-                .UseResolveXref(ResolveXref)
+                .UseResolveLink(GetLink)
+                .UseResolveXref(GetXref)
                 .UseMonikerZone(ParseMonikerRange)
                 .Build();
         }
@@ -111,8 +111,8 @@ namespace Microsoft.Docs.Build
             return new MarkdownPipelineBuilder()
                 .UseYamlFrontMatter()
                 .UseDocfxExtensions(markdownContext)
-                .UseResolveLink()
-                .UseResolveXref(ResolveXref)
+                .UseResolveLink(GetLink)
+                .UseResolveXref(GetXref)
                 .UseMonikerZone(ParseMonikerRange)
                 .UseInlineOnly()
                 .Build();
@@ -157,7 +157,7 @@ namespace Microsoft.Docs.Build
         {
             var status = t_status.Value.Peek();
             var (error, content, file) = status.Context.DependencyResolver.ResolveContent(new SourceInfo<string>(path, origin.ToSourceInfo()), (Document)relativeTo);
-            status.Errors.AddIfNotNull(error?.WithSourceInfo(origin.ToSourceInfo()));
+            status.Errors.AddIfNotNull(error);
             return (content, file);
         }
 

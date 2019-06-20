@@ -25,7 +25,7 @@ namespace Microsoft.Docs.Build
             _map = map;
         }
 
-        public (Error error, string href, string display, IXrefSpec xrefSpec) Resolve(string uid, SourceInfo<string> href, string displayPropertyName, Document relativeTo, Document rootFile, string moniker = null)
+        public (Error error, string href, string display, IXrefSpec xrefSpec) Resolve(SourceInfo<string> uid, string displayPropertyName, Document relativeTo, Document rootFile, string moniker = null)
         {
             if (t_recursionDetector.Value.Contains((uid, displayPropertyName, relativeTo)))
             {
@@ -38,7 +38,7 @@ namespace Microsoft.Docs.Build
             try
             {
                 t_recursionDetector.Value.Push((uid, displayPropertyName, relativeTo));
-                return ResolveCore(uid, href, displayPropertyName, rootFile, moniker);
+                return ResolveCore(uid, displayPropertyName, rootFile, moniker);
             }
             finally
             {
@@ -54,7 +54,7 @@ namespace Microsoft.Docs.Build
             context.Output.WriteJson(models, "xrefmap.json");
         }
 
-        private (Error error, string href, string display, IXrefSpec xrefSpec) ResolveCore(string uid, SourceInfo<string> href, string displayPropertyName, Document rootFile, string moniker = null)
+        private (Error error, string href, string display, IXrefSpec xrefSpec) ResolveCore(SourceInfo<string> uid, string displayPropertyName, Document rootFile, string moniker = null)
         {
             string resolvedHref;
             string displayPropertyValue;
@@ -68,7 +68,7 @@ namespace Microsoft.Docs.Build
             }
             else
             {
-                return (Errors.XrefNotFound(href), null, null, null);
+                return (Errors.XrefNotFound(uid), null, null, null);
             }
 
             // fallback order:

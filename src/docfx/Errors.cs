@@ -92,8 +92,8 @@ namespace Microsoft.Docs.Build
         ///   - defined a non-existent author
         /// </summary>
         /// Behavior: ✔️ Message: ✔️
-        public static Error AuthorNotFound(string login)
-            => new Error(ErrorLevel.Warning, "author-not-found", $"Invalid value for author: '{login}' is not a valid GitHub ID");
+        public static Error AuthorNotFound(SourceInfo<string> login)
+            => new Error(ErrorLevel.Warning, "author-not-found", $"Invalid value for author: '{login}' is not a valid GitHub ID", login);
 
         /// <summary>
         /// Failed to call a github api, e.g. GET /users/login.
@@ -230,8 +230,8 @@ namespace Microsoft.Docs.Build
         /// Link which's resolved to a file in dependency repo won't be built.
         /// </summary>
         /// Behavior: ✔️ Message: ❌
-        public static Error LinkIsDependency(Document relativeTo, Document file, string href)
-            => new Error(ErrorLevel.Warning, "link-is-dependency", $"File '{file}' referenced by link '{href}' will not be built because it is from a dependency docset", relativeTo.ToString());
+        public static Error LinkIsDependency(SourceInfo source, Document file, string href)
+            => new Error(ErrorLevel.Warning, "link-is-dependency", $"File '{file}' referenced by link '{href}' will not be built because it is from a dependency docset", source);
 
         /// <summary>
         /// Used a link pointing to an rooted absolute file path.
@@ -239,8 +239,8 @@ namespace Microsoft.Docs.Build
         ///   - [Absolute](C:/a.md)
         /// </summary>
         /// Behavior: ✔️ Message: ✔️
-        public static Error LocalFilePath(Document relativeTo, string path)
-            => new Error(ErrorLevel.Warning, "local-file-path", $"Link '{path}' points to a local file. Use a relative path instead", relativeTo.ToString());
+        public static Error LocalFilePath(SourceInfo source, string path)
+            => new Error(ErrorLevel.Warning, "local-file-path", $"Link '{path}' points to a local file. Use a relative path instead", source);
 
         /// <summary>
         /// The first tag in an article.md isn't h1 tag.
@@ -278,15 +278,15 @@ namespace Microsoft.Docs.Build
         /// Failed to resolve uid defined by @ syntax.
         /// </summary>
         /// Behavior: ❌ Message: ✔️
-        public static Error AtXrefNotFound(SourceInfo<string> source)
-            => new Error(ErrorLevel.Off, "at-xref-not-found", $"Cross reference not found: '{source}'", source);
+        public static Error AtXrefNotFound(SourceInfo<string> uid)
+            => new Error(ErrorLevel.Off, "at-xref-not-found", $"Cross reference not found: '{uid}'", uid);
 
         /// <summary>
         /// Failed to resolve uid defined by [link](xref:uid) or <xref:uid> syntax.
         /// </summary>
         /// Behavior: ❌ Message: ✔️
-        public static Error XrefNotFound(SourceInfo<string> source)
-            => new Error(ErrorLevel.Warning, "xref-not-found", $"Cross reference not found: '{source}'", source);
+        public static Error XrefNotFound(SourceInfo<string> uid)
+            => new Error(ErrorLevel.Warning, "xref-not-found", $"Cross reference not found: '{uid}'", uid);
 
         /// <summary>
         /// Files published to the same url have no monikers or share common monikers.

@@ -73,7 +73,8 @@ namespace Microsoft.Docs.Build
             var displayProperty = queries?["displayProperty"];
 
             // need to url decode uid from input content
-            var (error, resolvedHref, display, xrefSpec) = _xrefMap.Value.Resolve(Uri.UnescapeDataString(uid), href, displayProperty, relativeTo, rootFile, moniker);
+            var (error, resolvedHref, display, xrefSpec) = _xrefMap.Value.Resolve(
+                new SourceInfo<string>(Uri.UnescapeDataString(uid), href), displayProperty, relativeTo, rootFile, moniker);
 
             if (xrefSpec?.DeclairingFile != null)
             {
@@ -167,7 +168,7 @@ namespace Microsoft.Docs.Build
             // Link to dependent repo, don't build the file, leave href as is
             if (relativeTo.Docset.DependencyDocsets.Values.Any(v => file.Docset == v))
             {
-                return (Errors.LinkIsDependency(relativeTo, file, href), href, fragment, linkType, null);
+                return (Errors.LinkIsDependency(href, file, href), href, fragment, linkType, null);
             }
 
             // Make result relative to `resultRelativeTo`
@@ -204,7 +205,7 @@ namespace Microsoft.Docs.Build
                     return (null, relativeTo, query, fragment, LinkType.SelfBookmark, null);
 
                 case LinkType.WindowsAbsolutePath:
-                    return (Errors.LocalFilePath(relativeTo, path), null, null, null, LinkType.WindowsAbsolutePath, null);
+                    return (Errors.LocalFilePath(href, path), null, null, null, LinkType.WindowsAbsolutePath, null);
 
                 case LinkType.RelativePath:
                     // Resolve path relative to docset

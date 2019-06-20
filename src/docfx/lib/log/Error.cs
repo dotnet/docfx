@@ -19,7 +19,6 @@ namespace Microsoft.Docs.Build
 
         public string Message { get; }
 
-        // TODO: can be removed while file always filled in SourceInfo
         public string File { get; }
 
         public int Line { get; }
@@ -49,8 +48,6 @@ namespace Microsoft.Docs.Build
             EndLine = endLine;
             EndColumn = endColumn;
         }
-
-        public Error WithSourceInfo(SourceInfo source) => new Error(Level, Code, Message, source);
 
         public override string ToString() => ToString(Level);
 

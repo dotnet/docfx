@@ -128,14 +128,12 @@ namespace Microsoft.Docs.Build
             return result.ToString();
         }
 
-        public static (List<Error>, string) TransformXref(string html, int lineNumber, string file, Func<string, (Error error, string href, string display, Document file)> transform)
+        public static string TransformXref(string html, Func<string, bool, (string href, string display)> transform)
         {
-            var errors = new List<Error>();
-
             // Fast pass it does not have <xref> tag
             if (!(html.Contains("<xref", StringComparison.OrdinalIgnoreCase) && html.Contains("href", StringComparison.OrdinalIgnoreCase)))
             {
-                return (errors, html);
+                return html;
             }
 
             var doc = new HtmlDocument();
@@ -150,29 +148,18 @@ namespace Microsoft.Docs.Build
                     continue;
                 }
 
-                var xref = node.Attributes["href"];
-                if (xref is null)
-                {
-                    continue;
-                }
+                var xref = HttpUtility.HtmlDecode(node.GetAttributeValue("href", ""));
 
-                // data-throw-if-not-resolved from v2 is not needed any more since we can decide if warning throw by checking raw
-                var rawSource = node.GetAttributeValue("data-raw-source", null);
-                var rawHtml = node.GetAttributeValue("data-raw-html", null);
-                var raw = HttpUtility.HtmlDecode(!string.IsNullOrEmpty(rawHtml) ? rawHtml : rawSource);
-                var (_, resolvedHref, display, _) = transform(HttpUtility.HtmlDecode(xref.Value));
+                var raw = HttpUtility.HtmlDecode(
+                    node.GetAttributeValue("data-raw-html", null) ?? node.GetAttributeValue("data-raw-source", null) ?? "");
+
+                var isShorthand = raw.StartsWith("@");
+
+                var (resolvedHref, display) = transform(xref, isShorthand);
 
                 var resolvedNode = new HtmlDocument();
                 if (string.IsNullOrEmpty(resolvedHref))
                 {
-                    if (raw?.StartsWith("@") != false)
-                    {
-                        errors.Add(Errors.AtXrefNotFound(new SourceInfo<string>(html, new SourceInfo(file, lineNumber, s_getValueStartIndex(xref)))));
-                    }
-                    else
-                    {
-                        errors.Add(Errors.XrefNotFound(new SourceInfo<string>(html, new SourceInfo(file, lineNumber, s_getValueStartIndex(xref)))));
-                    }
                     resolvedNode.LoadHtml(raw);
                 }
                 else
@@ -187,7 +174,7 @@ namespace Microsoft.Docs.Build
                 node.ParentNode.ReplaceChild(resolvedNode, node);
             }
 
-            return (errors, doc.DocumentNode.WriteTo());
+            return doc.DocumentNode.WriteTo();
         }
 
         /// <summary>
