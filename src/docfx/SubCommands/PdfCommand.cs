@@ -68,7 +68,7 @@ namespace Microsoft.DocAsCode.SubCommands
                 OutlineOption = _config.OutlineOption,
                 CoverPageTitle = _config.CoverPageTitle,
                 NoInputStreamArgs = _config.NoInputStreamArgs,
-			};
+            };
 
             // 1. call BuildCommand to generate html files first
             // Output build command exec result to temp folder
@@ -186,7 +186,7 @@ namespace Microsoft.DocAsCode.SubCommands
 
             if (options.NoInputStreamArgs.HasValue)
             {
-	            config.NoInputStreamArgs = options.NoInputStreamArgs.Value;
+                config.NoInputStreamArgs = options.NoInputStreamArgs.Value;
             }
         }
 
