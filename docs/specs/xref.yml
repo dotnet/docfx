@@ -147,11 +147,13 @@ inputs:
     }
   docs/c.md: |
     Link to <xref:a?displayProperty=fullName>
+    Link to <xref:a??displayProperty=fullName>
     Link to @a?displayProperty=fullName
+    Link to @a??displayProperty=fullName
     Link to <xref:a?displayProperty=notExisting>
 outputs:
   docs/c.json: | 
-    {"conceptual":"<p>Link to <a href=\"a.json\">test.test</a>\nLink to <a href=\"a.json\">test.test</a>\nLink to <a href=\"a.json\">test</a></p>\n"}
+    {"conceptual":"<p>Link to <a href=\"a.json\">test.test</a>\nLink to <a href=\"a.json\">test</a>\nLink to <a href=\"a.json\">test.test</a>\nLink to <a href=\"a.json\">test</a>??displayProperty=fullName\nLink to <a href=\"a.json\">test</a></p>\n"}
   docs/a.json:
   xrefmap.json: | 
     {"references":[{"uid":"a","href":"https://docs.com/docs/a.json"}]}
