@@ -48,20 +48,24 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 var assemblyDirectory = Path.GetDirectoryName(assembly.Location);
                 var monoDir = new DirectoryInfo(assemblyDirectory).Parent.FullName; // get mono directory
 
-                var extensionPath = Path.Combine(monoDir, "xbuild");
-                var msbuildPath = Path.Combine(monoDir, "msbuild", "15.0", "bin", "MSBuild.dll");
+                var msbuildBasePath = Path.Combine(monoDir, "msbuild", "15.0", "bin");
+                var msbuildPath = Path.Combine(msbuildBasePath, "MSBuild.dll");
 
-                if (msbuildPath == null || !File.Exists(msbuildPath))
+                if (!File.Exists(msbuildPath))
                 {
                     var message = $"Unable to find msbuild from {msbuildPath}, please try downloading latest mono to solve the issue.";
                     Logger.LogError(message);
                     throw new DocfxException(message);
                 }
 
+                Logger.LogInfo($"Using mono {msbuildPath} as inner compiler.");
+                MSBuildLocator.RegisterMSBuildPath(msbuildBasePath);
+
                 return new EnvironmentScope(new Dictionary<string, string>
                 {
                     [MSBuildExePathKey] = msbuildPath,
-                    ["MSBuildExtensionsPath"] = extensionPath
+                    ["MSBuildExtensionsPath"] = Path.Combine(monoDir, "xbuild"),
+                    ["MSBuildSDKsPath"] = Path.Combine(msbuildBasePath, "Sdks")
                 });
             }
 
