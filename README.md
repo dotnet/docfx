@@ -53,7 +53,7 @@ For more information see the [.NET Foundation Code of Conduct](http://www.dotnet
 #### Steps
 
 - Option 1: Run `build.cmd` under *DocFX* code repo.
-- Option 2: Open `All.sln` under *DocFX* code repo in Visual Studio and build All.sln.
+- Option 2: Open `docfx.sln` under *DocFX* code repo in Visual Studio and build docfx.sln.
 
 ### Build Status
 
