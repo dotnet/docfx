@@ -36,6 +36,7 @@ namespace Microsoft.Docs.Build
             }
 
             ValidateDeprecated(schema, token, errors);
+            ValidateConst(schema, token, errors);
 
             switch (token)
             {
@@ -68,7 +69,7 @@ namespace Microsoft.Docs.Build
 
         private void ValidateScalar(JsonSchema schema, JValue scalar, List<Error> errors)
         {
-            if (schema.Enum != null && !schema.Enum.Contains(scalar))
+            if (schema.Enum != null && Array.IndexOf(schema.Enum, scalar) == -1)
             {
                 errors.Add(Errors.UndefinedValue(JsonUtility.GetSourceInfo(scalar), scalar, schema.Enum));
             }
@@ -121,6 +122,7 @@ namespace Microsoft.Docs.Build
             ValidateDependencies(schema, map, errors);
             ValidateEither(schema, map, errors);
             ValidatePrecludes(schema, map, errors);
+            ValidateEnumDependencies(schema, map, errors);
 
             foreach (var (key, value) in map)
             {
@@ -128,6 +130,14 @@ namespace Microsoft.Docs.Build
                 {
                     Validate(propertySchema, value, errors);
                 }
+            }
+        }
+
+        private void ValidateConst(JsonSchema schema, JToken token, List<Error> errors)
+        {
+            if (schema.Const != null && !JTokenDeepEquals(schema.Const, token))
+            {
+                errors.Add(Errors.UndefinedValue(JsonUtility.GetSourceInfo(token), token, new object[] { schema.Const }));
             }
         }
 
@@ -253,6 +263,31 @@ namespace Microsoft.Docs.Build
             }
         }
 
+        private void ValidateEnumDependencies(JsonSchema schema, JObject map, List<Error> errors)
+        {
+            foreach (var (fieldName, enumDependencyRules) in schema.EnumDependencies)
+            {
+                if (map.TryGetValue(fieldName, out var fieldValue))
+                {
+                    foreach (var (dependentFieldName, allowLists) in enumDependencyRules)
+                    {
+                        if (map.TryGetValue(dependentFieldName, out var dependentFieldValue))
+                        {
+                            if (allowLists.TryGetValue(dependentFieldValue, out var allowList) &&
+                                Array.IndexOf(allowList, fieldValue) == -1)
+                            {
+                                errors.Add(Errors.ValuesNotMatch(JsonUtility.GetSourceInfo(map), fieldName, fieldValue, dependentFieldName, dependentFieldValue, allowList));
+                            }
+                        }
+                        else
+                        {
+                            errors.Add(Errors.LackDependency(JsonUtility.GetSourceInfo(map), fieldName, dependentFieldName));
+                        }
+                    }
+                }
+            }
+        }
+
         private static bool TypeMatches(JsonSchemaType schemaType, JTokenType tokenType)
         {
             switch (schemaType)
@@ -273,6 +308,48 @@ namespace Microsoft.Docs.Build
                     return tokenType == JTokenType.String;
                 default:
                     return true;
+            }
+        }
+
+        private static bool JTokenDeepEquals(JToken a, JToken b)
+        {
+            switch (a)
+            {
+                case JValue valueA when b is JValue valueB:
+                    return Equals(valueA.Value, valueB.Value);
+
+                case JArray arrayA when b is JArray arrayB:
+                    if (arrayA.Count != arrayB.Count)
+                    {
+                        return false;
+                    }
+
+                    for (var i = 0; i < arrayA.Count; i++)
+                    {
+                        if (!JTokenDeepEquals(arrayA[i], arrayB[i]))
+                        {
+                            return false;
+                        }
+                    }
+                    return true;
+
+                case JObject mapA when b is JObject mapB:
+                    if (mapA.Count != mapB.Count)
+                    {
+                        return false;
+                    }
+
+                    foreach (var (key, valueA) in mapA)
+                    {
+                        if (!mapB.TryGetValue(key, out var valueB) || !JTokenDeepEquals(valueA, valueB))
+                        {
+                            return false;
+                        }
+                    }
+                    return true;
+
+                default:
+                    return false;
             }
         }
     }

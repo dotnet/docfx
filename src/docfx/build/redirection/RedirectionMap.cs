@@ -39,14 +39,13 @@ namespace Microsoft.Docs.Build
             return false;
         }
 
-        public static (List<Error> errors, RedirectionMap map) Create(Docset docset)
+        public static (List<Error> errors, RedirectionMap map) Create(Docset docset, Func<string, bool> glob)
         {
             var errors = new List<Error>();
             var redirections = new HashSet<Document>();
 
             // load redirections with document id
-            AddRedirections(docset.Config.Redirections, checkRedirectUrl: true);
-
+            AddRedirections(docset.Config.Redirections, redirectDocumentId: true);
             var redirectionsByRedirectionUrl = redirections
                 .GroupBy(file => file.RedirectionUrl, PathUtility.PathComparer)
                 .ToDictionary(group => group.Key, group => group.First(), PathUtility.PathComparer);
@@ -58,7 +57,7 @@ namespace Microsoft.Docs.Build
 
             return (errors, new RedirectionMap(redirectionsBySourcePath, redirectionsByRedirectionUrl));
 
-            void AddRedirections(Dictionary<string, SourceInfo<string>> items, bool checkRedirectUrl = false)
+            void AddRedirections(Dictionary<string, SourceInfo<string>> items, bool redirectDocumentId = false)
             {
                 var redirectUrls = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
@@ -71,21 +70,44 @@ namespace Microsoft.Docs.Build
                         continue;
                     }
 
+                    if (!glob(path))
+                    {
+                        continue;
+                    }
+
                     var pathToDocset = PathUtility.NormalizeFile(path);
                     var type = Document.GetContentType(pathToDocset);
                     if (type != ContentType.Page)
                     {
                         errors.Add(Errors.RedirectionInvalid(redirectUrl, path));
+                        continue;
                     }
-                    else if (checkRedirectUrl && !redirectUrl.Value.StartsWith('/'))
+
+                    var combineRedirectUrl = false;
+                    var mutableRedirectUrl = redirectUrl.Value;
+                    if (redirectDocumentId)
                     {
-                        errors.Add(Errors.RedirectionUrlInvalid(redirectUrl));
+                        switch (UrlUtility.GetLinkType(redirectUrl))
+                        {
+                            case LinkType.RelativePath:
+                                combineRedirectUrl = true;
+                                break;
+                            case LinkType.AbsolutePath:
+                                break;
+                            default:
+                                errors.Add(Errors.RedirectionUrlInvalid(redirectUrl));
+                                continue;
+                        }
                     }
-                    else if (checkRedirectUrl && !redirectUrls.Add(redirectUrl))
+
+                    Document redirect = Document.Create(docset, pathToDocset, mutableRedirectUrl, combineRedirectUrl: combineRedirectUrl);
+                    if (redirectDocumentId && !redirectUrls.Add(redirect.RedirectionUrl))
                     {
                         errors.Add(Errors.RedirectionUrlConflict(redirectUrl));
+                        continue;
                     }
-                    else if (!redirections.Add(Document.Create(docset, pathToDocset, redirectUrl)))
+
+                    if (!redirections.Add(redirect))
                     {
                         errors.Add(Errors.RedirectionConflict(redirectUrl, pathToDocset));
                     }

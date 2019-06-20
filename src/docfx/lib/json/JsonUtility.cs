@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -67,20 +68,12 @@ namespace Microsoft.Docs.Build
         public static SourceInfo<string> ReadMime(TextReader reader, string file)
         {
             var schema = ReadSchema(reader, file);
-            if (schema?.Value is null)
+            if (schema.Value is null)
                 return schema;
 
             // TODO: be more strict
             var mime = schema.Value.Split('/').LastOrDefault();
-            if (mime != null)
-            {
-                schema.Value = Path.GetFileNameWithoutExtension(schema);
-            }
-            else
-            {
-                schema.Value = null;
-            }
-            return schema;
+            return new SourceInfo<string>(mime != null ? Path.GetFileNameWithoutExtension(schema) : null, schema.Source);
         }
 
         public static IEnumerable<string> GetPropertyNames(Type type)
@@ -395,7 +388,7 @@ namespace Microsoft.Docs.Build
             }
             catch (JsonReaderException)
             {
-                return null;
+                return default;
             }
         }
 

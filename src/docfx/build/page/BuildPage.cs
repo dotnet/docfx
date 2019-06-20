@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -15,21 +14,19 @@ namespace Microsoft.Docs.Build
         public static async Task<(IEnumerable<Error> errors, PublishItem publishItem)> Build(
             Context context,
             Document file,
-            TableOfContentsMap tocMap,
-            Action<Document> buildChild)
+            TableOfContentsMap tocMap)
         {
             Debug.Assert(file.ContentType == ContentType.Page);
 
-            var (errors, schema, model) = await Load(context, file, buildChild);
+            var (errors, isPage, model) = await Load(context, file);
 
             if (!string.IsNullOrEmpty(model.BreadcrumbPath))
             {
-                var (breadcrumbError, breadcrumbPath, _) = context.DependencyResolver.ResolveLink(model.BreadcrumbPath, file, file, buildChild);
+                var (breadcrumbError, breadcrumbPath, _) = context.DependencyResolver.ResolveLink(model.BreadcrumbPath, file, file);
                 errors.AddIfNotNull(breadcrumbError);
-                model.BreadcrumbPath.Value = breadcrumbPath;
+                model.BreadcrumbPath = new SourceInfo<string>(breadcrumbPath, model.BreadcrumbPath);
             }
 
-            model.SchemaType = schema.Name;
             model.Locale = file.Docset.Locale;
             model.TocRel = tocMap.FindTocRelativePath(file);
             model.CanonicalUrl = file.CanonicalUrl;
@@ -58,7 +55,6 @@ namespace Microsoft.Docs.Build
             if (contributorErrors != null)
                 errors.AddRange(contributorErrors);
 
-            var isPage = schema.Attribute is PageSchemaAttribute;
             var outputPath = file.GetOutputPath(model.Monikers, file.Docset.SiteBasePath, isPage);
             var (output, extensionData) = ApplyTemplate(context, file, model, isPage);
 
@@ -100,36 +96,33 @@ namespace Microsoft.Docs.Build
             return (errors, publishItem);
         }
 
-        private static async Task<(List<Error> errors, Schema schema, OutputModel model)>
-            Load(Context context, Document file, Action<Document> buildChild)
+        private static async Task<(List<Error> errors, bool isPage, OutputModel model)>
+            Load(Context context, Document file)
         {
             if (file.FilePath.EndsWith(".md", PathUtility.PathComparison))
             {
-                return LoadMarkdown(context, file, buildChild);
+                return LoadMarkdown(context, file);
             }
             if (file.FilePath.EndsWith(".yml", PathUtility.PathComparison))
             {
-                return await LoadYaml(context, file, buildChild);
+                return await LoadYaml(context, file);
             }
 
             Debug.Assert(file.FilePath.EndsWith(".json", PathUtility.PathComparison));
-            return await LoadJson(context, file, buildChild);
+            return await LoadJson(context, file);
         }
 
-        private static (List<Error> errors, Schema schema, OutputModel model)
-            LoadMarkdown(Context context, Document file, Action<Document> buildChild)
+        private static (List<Error> errors, bool isPage, OutputModel model)
+            LoadMarkdown(Context context, Document file)
         {
             var errors = new List<Error>();
             var content = file.ReadText();
             GitUtility.CheckMergeConflictMarker(content, file.FilePath);
 
             var (markupErrors, html) = MarkdownUtility.ToHtml(
+                context,
                 content,
                 file,
-                context.DependencyResolver,
-                buildChild,
-                context.MonikerProvider,
-                key => context.Template?.GetToken(key),
                 MarkdownPipelineType.Markdown);
             errors.AddRange(markupErrors);
 
@@ -149,38 +142,35 @@ namespace Microsoft.Docs.Build
             pageModel.Title = pageModel.Title ?? title;
             pageModel.RawTitle = rawTitle;
             pageModel.WordCount = wordCount;
+            pageModel.SchemaType = "Conceptual";
 
             context.BookmarkValidator.AddBookmarks(file, bookmarks);
 
-            return (errors, Schema.Conceptual, pageModel);
+            return (errors, true, pageModel);
         }
 
-        private static async Task<(List<Error> errors, Schema schema, OutputModel model)>
-            LoadYaml(Context context, Document file, Action<Document> buildChild)
+        private static async Task<(List<Error> errors, bool isPage, OutputModel model)>
+            LoadYaml(Context context, Document file)
         {
             var (errors, token) = YamlUtility.Parse(file, context);
 
-            return await LoadSchemaDocument(context, errors, token, file, buildChild);
+            return await LoadSchemaDocument(context, errors, token, file);
         }
 
-        private static async Task<(List<Error> errors, Schema schema, OutputModel model)>
-            LoadJson(Context context, Document file, Action<Document> buildChild)
+        private static async Task<(List<Error> errors, bool isPage, OutputModel model)>
+            LoadJson(Context context, Document file)
         {
             var (errors, token) = JsonUtility.Parse(file, context);
 
-            return await LoadSchemaDocument(context, errors, token, file, buildChild);
+            return await LoadSchemaDocument(context, errors, token, file);
         }
 
-        private static async Task<(List<Error> errors, Schema schema, OutputModel model)>
-            LoadSchemaDocument(Context context, List<Error> errors, JToken token, Document file, Action<Document> buildChild)
+        private static async Task<(List<Error> errors, bool isPage, OutputModel model)>
+            LoadSchemaDocument(Context context, List<Error> errors, JToken token, Document file)
         {
             var obj = token as JObject;
-            if (file.Schema is null)
-            {
-                throw Errors.SchemaNotFound(file.Mime).ToException();
-            }
 
-            var (schemaValidator, schemaTransformer) = TemplateEngine.GetJsonSchema(file.Schema);
+            var (schemaValidator, schemaTransformer) = TemplateEngine.GetJsonSchema(file.Mime);
             if (schemaValidator is null || schemaTransformer is null)
             {
                 throw Errors.SchemaNotFound(file.Mime).ToException();
@@ -191,36 +181,46 @@ namespace Microsoft.Docs.Build
             errors.AddRange(schemaValidationErrors);
 
             // transform via json schema
-            var (schemaTransformError, transformedToken) = schemaTransformer.TransformContent(file, context, token, buildChild);
+            var (schemaTransformError, transformedToken) = schemaTransformer.TransformContent(file, context, token);
             errors.AddRange(schemaTransformError);
-
-            // TODO: remove schema validation in ToObject
-            var (_, content) = JsonUtility.ToObject(transformedToken, file.Schema.Type);
 
             var (metaErrors, pageModel) = context.MetadataProvider.GetMetadata(file);
             errors.AddRange(metaErrors);
 
-            if (file.Docset.Legacy && file.Schema.Type == typeof(LandingData))
+            var conceptual = (string)null;
+            if (file.Docset.Legacy && TemplateEngine.IsLandingData(file.Mime))
             {
+                // TODO: remove schema validation in ToObject
+                var (_, content) = JsonUtility.ToObject(transformedToken, typeof(LandingData));
+
                 // merge extension data to metadata in legacy model
                 var landingData = (LandingData)content;
-                JsonUtility.Merge(pageModel.ExtensionData, landingData.ExtensionData);
+                var mergedMetadata = JsonUtility.ToJObject(pageModel as InputMetadata);
+                JsonUtility.Merge(mergedMetadata, landingData.ExtensionData);
+
+                (_, pageModel) = JsonUtility.ToObject<OutputModel>(mergedMetadata);
+
+                if (file.Docset.Legacy)
+                {
+                    conceptual = HtmlUtility.HtmlPostProcess(
+                    await RazorTemplate.Render(file.Mime, content), file.Docset.Culture);
+                }
             }
 
-            if (file.Docset.Legacy && file.Schema.Attribute is PageSchemaAttribute)
+            if (conceptual != null)
             {
-                pageModel.Conceptual = HtmlUtility.HtmlPostProcess(
-                    await RazorTemplate.Render(file.Schema.Name, content), file.Docset.Culture);
+                pageModel.Conceptual = conceptual;
             }
             else
             {
-                pageModel.Content = content;
+                pageModel.Content = transformedToken;
             }
 
             pageModel.Title = pageModel.Title ?? obj?.Value<string>("title");
             pageModel.RawTitle = file.Docset.Legacy ? $"<h1>{obj?.Value<string>("title")}</h1>" : null;
+            pageModel.SchemaType = file.Mime;
 
-            return (errors, file.Schema, pageModel);
+            return (errors, !TemplateEngine.IsData(file.Mime), pageModel);
         }
 
         private static (object output, JObject extensionData) ApplyTemplate(Context context, Document file, OutputModel model, bool isPage)

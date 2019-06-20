@@ -3,10 +3,10 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
-
+using Jint.Parser;
+using Microsoft.VisualStudio.TestPlatform.Utilities;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Xunit;
@@ -403,14 +403,14 @@ namespace Microsoft.Docs.Build
             Assert.NotNull(obj?.A);
 
             Assert.Null(obj.A.Value);
-            Assert.Equal(1, obj.A.Line);
-            Assert.Equal(10, obj.A.Column);
-            Assert.Equal("file", obj.A.File);
+            Assert.Equal(1, obj.A.Source.Line);
+            Assert.Equal(10, obj.A.Source.Column);
+            Assert.Equal("file", obj.A.Source.File);
 
             Assert.Equal("b", obj.B.Value);
-            Assert.Equal(1, obj.B.Line);
-            Assert.Equal(20, obj.B.Column);
-            Assert.Equal("file", obj.B.File);
+            Assert.Equal(1, obj.B.Source.Line);
+            Assert.Equal(20, obj.B.Source.Column);
+            Assert.Equal("file", obj.B.Source.File);
         }
 
         [Fact]
@@ -432,7 +432,7 @@ namespace Microsoft.Docs.Build
             {
                 B = 1,
                 Property = new SourceInfo<string>(null, new SourceInfo(string.Empty, 0, 0)),
-                Array = new SourceInfo<string[]>(new string[]{ }, new SourceInfo(string.Empty, 0, 0)),
+                Array = new SourceInfo<string[]>(new string[] { }, new SourceInfo(string.Empty, 0, 0)),
                 GenericArray = new SourceInfo<List<string>>(new List<string>(), new SourceInfo(string.Empty, 0, 0))
             };
             var result = JsonUtility.Serialize(basic);

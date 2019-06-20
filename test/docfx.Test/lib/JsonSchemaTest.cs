@@ -18,7 +18,6 @@ namespace Microsoft.Docs.Build
             "allOf",
             "anyOf",
             "boolean_schema",
-            "const",
             "contains",
             "definitions",
             "exclusiveMaximum",
@@ -127,6 +126,13 @@ namespace Microsoft.Docs.Build
         [InlineData("{'type': ['string', 'null']}", "1",
             "['warning','unexpected-type','Expect type 'String, Null' but got 'Integer'','file',1,1]")]
 
+        // const validation
+        [InlineData("{'const': 1}", "1", "")]
+        [InlineData("{'const': 'string'}", "'unknown'",
+            "['warning','undefined-value','Value 'unknown' is not accepted. Valid values: 'string'','file',1,9]")]
+        [InlineData("{'const': {'a': 1}}", "{}",
+            "['warning','undefined-value','Value '{}' is not accepted. Valid values: '{\\n  \\'a\\': 1\\n}'','file',1,1]")]
+
         // enum validation
         [InlineData("{'type': 'string', 'enum': ['a', 'b']}", "'a'", "")]
         [InlineData("{'type': 'string', 'enum': []}", "'unknown'",
@@ -213,7 +219,8 @@ namespace Microsoft.Docs.Build
         [InlineData("{'either': [['key1', 'key2', 'key3']]}", "{}",
             "['warning','either-logic-failed','At least one of these fields: 'key1', 'key2', 'key3' exists','file',1,1]")]
         [InlineData("{'either': [['key1', 'key2'], ['key3', 'key4']]}", "{}",
-            "['warning','either-logic-failed','At least one of these fields: 'key1', 'key2' exists','file',1,1]\n['warning','either-logic-failed','At least one of these fields: 'key3', 'key4' exists','file',1,1]")]
+            @"['warning','either-logic-failed','At least one of these fields: 'key1', 'key2' exists','file',1,1]
+              ['warning','either-logic-failed','At least one of these fields: 'key3', 'key4' exists','file',1,1]")]
         [InlineData("{'properties': {'keys': {'either': [['key1', 'key2']]}}}", "{'keys' : {'key1': 1}}", "")]
         [InlineData("{'properties': {'keys': {'either': [['key1', 'key2']]}}}", "{'keys' : {'key1': 1, 'key2': 2}}", "")]
         [InlineData("{'properties': {'keys': {'either': [['key1', 'key2']]}}}", "{'keys' : {}}",
@@ -228,7 +235,8 @@ namespace Microsoft.Docs.Build
         [InlineData("{'precludes': [['key1', 'key2', 'key3']]}", "{'key1': 1, 'key2': 2, 'key3': 3}",
             "['warning','precludes-logic-failed','Only one of these fields: 'key1', 'key2', 'key3' can exist at most','file',1,1]")]
         [InlineData("{'precludes': [['key1', 'key2'], ['key3', 'key4']]}", "{'key1': 1, 'key2': 2, 'key3': 3, 'key4': 4}",
-            "['warning','precludes-logic-failed','Only one of these fields: 'key1', 'key2' can exist at most','file',1,1]\n['warning','precludes-logic-failed','Only one of these fields: 'key3', 'key4' can exist at most','file',1,1]")]
+            @"['warning','precludes-logic-failed','Only one of these fields: 'key1', 'key2' can exist at most','file',1,1]
+              ['warning','precludes-logic-failed','Only one of these fields: 'key3', 'key4' can exist at most','file',1,1]")]
         [InlineData("{'properties': {'keys': {'precludes': [['key1', 'key2']]}}}", "{'keys' : {}}", "")]
         [InlineData("{'properties': {'keys': {'precludes': [['key1', 'key2']]}}}", "{'keys' : {'key1': 1}}", "")]
         [InlineData("{'properties': {'keys': {'precludes': [['key1', 'key2']]}}}", "{'keys' : {'key1': 1, 'key2': 2}}",
@@ -253,13 +261,21 @@ namespace Microsoft.Docs.Build
             "['warning','field-deprecated','Deprecated field: 'key1'.','file',1,10]")]
         [InlineData("{'properties': {'key1': {'replacedBy': 'key2'}}}", "{'key1': 1}",
             "['warning','field-deprecated','Deprecated field: 'key1', use 'key2' instead','file',1,10]")]
+
+        // enum dependencies validation
+        [InlineData("{'properties': {'key1': {'type': 'string', 'enum': ['.net', 'yammer']}, 'key2': {'type': 'string'}}, 'enumDependencies': { 'key2': { 'key1': { '.net': ['', 'csharp', 'devlang'], 'yammer': ['', 'tabs', 'vba']}}}}", "{'key1': 'yammer', 'key2': 'tabs'}", "")]
+        [InlineData("{'properties': {'key1': {'type': 'string', 'enum': ['.net', 'yammer']}, 'key2': {'type': 'string'}}, 'enumDependencies': { 'key2': { 'key1': { '.net': ['', 'csharp', 'devlang'], 'yammer': ['', 'tabs', 'vba']}}}}", "{'key1': 'yammer'}", "")]
+        [InlineData("{'properties': {'key1': {'type': 'string', 'enum': ['.net', 'yammer']}, 'key2': {'type': 'string'}}, 'enumDependencies': { 'key2': { 'key1': { '.net': ['', 'csharp', 'devlang'], 'yammer': ['', 'tabs', 'vba']}}}}", "{'key1': 'yammer', 'key2': 'abc'}",
+            "['warning','values-not-match','Invalid value for key2: 'abc' is not valid with 'key1' value 'yammer'. Valid values: '', 'tabs', 'vba'','file',1,1]")]
+        [InlineData("{'properties': {'key1': {'type': 'string', 'enum': ['.net', 'yammer']}, 'key2': {'type': 'string'}}, 'enumDependencies': { 'key2': { 'key1': { '.net': ['', 'csharp', 'devlang'], 'yammer': ['', 'tabs', 'vba']}}}}", "{'key2': 'tabs'}",
+            "['warning','lack-dependency','Missing field: 'key1'. If you specify 'key2', you must also specify 'key1'','file',1,1]")]
         public void TestJsonSchemaValidation(string schema, string json, string expectedErrors)
         {
             var jsonSchema = JsonUtility.Deserialize<JsonSchema>(schema.Replace('\'', '"'), null);
             var (_, payload) = JsonUtility.Parse(json.Replace('\'', '"'), "file");
             var errors = new JsonSchemaValidator(jsonSchema).Validate(payload);
             var expected = string.Join('\n', expectedErrors.Split('\n').Select(err => err.Trim()));
-            var actual = string.Join('\n', errors.Select(err => err.ToString()).OrderBy(err => err).ToArray()).Replace('"', '\'');
+            var actual = string.Join('\n', errors.Select(err => err.ToString().Replace("\\r", "")).OrderBy(err => err).ToArray()).Replace('"', '\'');
             Assert.Equal(expected, actual);
         }
     }
