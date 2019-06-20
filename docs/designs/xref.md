@@ -5,6 +5,7 @@ Besides using file path to link to another file, DocFX also allows you to give a
 - You want to reference to files in another project without need to know its file structure.
 
 ## Feature Requirements/Scenarios
+### Internal UID
 - Define an internal UID in `.md` and reference to this UID within the current repository
   ```yaml
   inputs:
@@ -63,7 +64,7 @@ Besides using file path to link to another file, DocFX also allows you to give a
             docs/b.json: |
                 {"conceptual":"<p>Link to <a href=\"a\">Title from v2</a></p>\n"}
         ```
-    - If the versions for this UID are from different products, take the highest one base on proudct name alphabetically
+    - If the versions for this UID are from different products, take the highest one base on proudct name alphabetically, and we only consider the overlapping products
         ```yaml
         # v1: a-1.0, a-2.0, a-3.0
         # v2: b-4.0, b-5.0
@@ -85,6 +86,7 @@ Besides using file path to link to another file, DocFX also allows you to give a
             docs/b.json: |
                 {"conceptual":"<p>Link to <a href=\"a\">Title from v2</a></p>\n"}
         ```
+### External UID
 - Reference to an external UID without versioning. DHS always append the `branch` info within cookie cache, due to this limitation, docs build needs to append `branch` info for resolved URL. The complete list of all scenarios is as below
 
     | Cross site | Build Type | build branch | xref definition branch | append branch info | v2 actual behavior |
@@ -143,7 +145,7 @@ Besides using file path to link to another file, DocFX also allows you to give a
             azure-cn/b.json: |
                 {"conceptual":"<p>Link to <a href=\"a\">Title from azure-cn</a></p>\n"}
           ```
-- Reference to an external UID with versioning, the resolving logic should be the same as internal UID without versioning. We only take consideration of 1 version for now.
+- Reference to an external UID with versioning, we only take consideration of 1 version for now and do not output versioning information.
 - Reference to an external UID with multiple versionings (not support for now)
     - The resolve logic should be smilar to the internal resolving
 - [UID defnition](#define-uid)
