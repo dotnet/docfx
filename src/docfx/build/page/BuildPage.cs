@@ -18,13 +18,13 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(file.ContentType == ContentType.Page);
 
-            var (errors, isPage, outputMetadata, (inputMetadata, metadataObject)) = await Load(context, file);
-            outputMetadata = await GenerateOutputMetadata();
+            var (errors, isPage, outputModel, (inputMetadata, metadataObject)) = await Load(context, file);
+            var (generateErrors, outputMetadata) = await GenerateOutputMetadata(context, file, tocMap, inputMetadata, outputModel);
+            errors.AddRange(generateErrors);
 
             var mergedOutputMetadata = new JObject();
             JsonUtility.Merge(mergedOutputMetadata, metadataObject);
             JsonUtility.Merge(mergedOutputMetadata, JsonUtility.ToJObject(outputMetadata));
-            mergedOutputMetadata.Remove("monikerRange");
             var outputPath = file.GetOutputPath(outputMetadata.Monikers, file.Docset.SiteBasePath, isPage);
 
             var output = (object)null;
@@ -76,46 +76,52 @@ namespace Microsoft.Docs.Build
             }
 
             return (errors, publishItem);
+        }
 
-            async Task<OutputModel> GenerateOutputMetadata()
+        private static async Task<(List<Error>, OutputModel)> GenerateOutputMetadata(
+                Context context,
+                Document file,
+                TableOfContentsMap tocMap,
+                InputMetadata inputMetadata,
+                OutputModel outputMetadata)
+        {
+            var errors = new List<Error>();
+            if (!string.IsNullOrEmpty(inputMetadata.BreadcrumbPath))
             {
-                if (!string.IsNullOrEmpty(inputMetadata.BreadcrumbPath))
-                {
-                    var (breadcrumbError, breadcrumbPath, _) = context.DependencyResolver.ResolveLink(inputMetadata.BreadcrumbPath, file, file);
-                    errors.AddIfNotNull(breadcrumbError);
-                    outputMetadata.BreadcrumbPath = breadcrumbPath;
-                }
-
-                outputMetadata.Locale = file.Docset.Locale;
-                outputMetadata.TocRel = tocMap.FindTocRelativePath(file);
-                outputMetadata.CanonicalUrl = file.CanonicalUrl;
-                outputMetadata.EnableLocSxs = file.Docset.Config.Localization.Bilingual;
-                outputMetadata.SiteName = file.Docset.Config.SiteName;
-
-                var (monikerError, monikers) = context.MonikerProvider.GetFileLevelMonikers(file);
-                errors.AddIfNotNull(monikerError);
-                outputMetadata.Monikers = monikers;
-
-                (outputMetadata.DocumentId, outputMetadata.DocumentVersionIndependentId) = file.Docset.Redirections.TryGetDocumentId(file, out var docId) ? docId : file.Id;
-                (outputMetadata.ContentGitUrl, outputMetadata.OriginalContentGitUrl, outputMetadata.OriginalContentGitUrlTemplate, outputMetadata.Gitcommit) = context.ContributionProvider.GetGitUrls(file);
-
-                List<Error> contributorErrors;
-                (contributorErrors, outputMetadata.ContributionInfo) = await context.ContributionProvider.GetContributionInfo(file, inputMetadata.Author);
-                outputMetadata.Author = outputMetadata.ContributionInfo?.Author?.Name;
-                outputMetadata.UpdatedAt = outputMetadata.ContributionInfo?.UpdatedAtDateTime.ToString("yyyy-MM-dd hh:mm tt");
-
-                outputMetadata.DepotName = $"{file.Docset.Config.Product}.{file.Docset.Config.Name}";
-                outputMetadata.Path = PathUtility.NormalizeFile(Path.GetRelativePath(file.Docset.SiteBasePath, file.SitePath));
-                outputMetadata.CanonicalUrlPrefix = $"{file.Docset.HostName}/{outputMetadata.Locale}/{file.Docset.SiteBasePath}/";
-
-                if (file.Docset.Config.Output.Pdf)
-                    outputMetadata.PdfUrlPrefixTemplate = $"{file.Docset.HostName}/pdfstore/{outputMetadata.Locale}/{file.Docset.Config.Product}.{file.Docset.Config.Name}/{{branchName}}";
-
-                if (contributorErrors != null)
-                    errors.AddRange(contributorErrors);
-
-                return outputMetadata;
+                var (breadcrumbError, breadcrumbPath, _) = context.DependencyResolver.ResolveLink(inputMetadata.BreadcrumbPath, file, file);
+                errors.AddIfNotNull(breadcrumbError);
+                outputMetadata.BreadcrumbPath = breadcrumbPath;
             }
+
+            outputMetadata.Locale = file.Docset.Locale;
+            outputMetadata.TocRel = tocMap.FindTocRelativePath(file);
+            outputMetadata.CanonicalUrl = file.CanonicalUrl;
+            outputMetadata.EnableLocSxs = file.Docset.Config.Localization.Bilingual;
+            outputMetadata.SiteName = file.Docset.Config.SiteName;
+
+            var (monikerError, monikers) = context.MonikerProvider.GetFileLevelMonikers(file);
+            errors.AddIfNotNull(monikerError);
+            outputMetadata.Monikers = monikers;
+
+            (outputMetadata.DocumentId, outputMetadata.DocumentVersionIndependentId) = file.Docset.Redirections.TryGetDocumentId(file, out var docId) ? docId : file.Id;
+            (outputMetadata.ContentGitUrl, outputMetadata.OriginalContentGitUrl, outputMetadata.OriginalContentGitUrlTemplate, outputMetadata.Gitcommit) = context.ContributionProvider.GetGitUrls(file);
+
+            List<Error> contributorErrors;
+            (contributorErrors, outputMetadata.ContributionInfo) = await context.ContributionProvider.GetContributionInfo(file, inputMetadata.Author);
+            outputMetadata.Author = outputMetadata.ContributionInfo?.Author?.Name;
+            outputMetadata.UpdatedAt = outputMetadata.ContributionInfo?.UpdatedAtDateTime.ToString("yyyy-MM-dd hh:mm tt");
+
+            outputMetadata.DepotName = $"{file.Docset.Config.Product}.{file.Docset.Config.Name}";
+            outputMetadata.Path = PathUtility.NormalizeFile(Path.GetRelativePath(file.Docset.SiteBasePath, file.SitePath));
+            outputMetadata.CanonicalUrlPrefix = $"{file.Docset.HostName}/{outputMetadata.Locale}/{file.Docset.SiteBasePath}/";
+
+            if (file.Docset.Config.Output.Pdf)
+                outputMetadata.PdfUrlPrefixTemplate = $"{file.Docset.HostName}/pdfstore/{outputMetadata.Locale}/{file.Docset.Config.Product}.{file.Docset.Config.Name}/{{branchName}}";
+
+            if (contributorErrors != null)
+                errors.AddRange(contributorErrors);
+
+            return (errors, outputMetadata);
         }
 
         private static async Task<(List<Error> errors, bool isPage, OutputModel model, (InputMetadata, JObject) inputMetadata)>
