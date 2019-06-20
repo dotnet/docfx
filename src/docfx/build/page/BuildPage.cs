@@ -21,23 +21,21 @@ namespace Microsoft.Docs.Build
             var (errors, isPage, outputMetadata, (inputMetadata, metadataObject)) = await Load(context, file);
             outputMetadata = await GenerateOutputMetadata();
 
-            var outputModel = new JObject();
-            JsonUtility.Merge(outputModel, metadataObject);
-            JsonUtility.Merge(outputModel, JsonUtility.ToJObject(outputMetadata));
-            outputModel.Remove("monikerRange");
+            var mergedOutputMetadata = new JObject();
+            JsonUtility.Merge(mergedOutputMetadata, metadataObject);
+            JsonUtility.Merge(mergedOutputMetadata, JsonUtility.ToJObject(outputMetadata));
+            mergedOutputMetadata.Remove("monikerRange");
             var outputPath = file.GetOutputPath(outputMetadata.Monikers, file.Docset.SiteBasePath, isPage);
 
-            object output = null;
-            JObject metadata = null;
+            var output = (object)null;
+            var metadata = (JObject)null;
             if (isPage)
             {
-                (output, metadata) = ApplyPageTemplate(context, file, outputModel, outputMetadata.Conceptual);
+                (output, metadata) = ApplyPageTemplate(context, file, mergedOutputMetadata, outputMetadata.Conceptual);
             }
             else
             {
                 // todo: support data page template
-                output = outputModel;
-                metadata = null;
             }
 
             var publishItem = new PublishItem
@@ -255,12 +253,9 @@ namespace Microsoft.Docs.Build
                 return (context.Template.Render(conceptual, file, rawMetadata, file.Mime), null);
             }
 
-            if (file.Docset.Legacy)
+            if (file.Docset.Legacy && context.Template != null)
             {
-                if (context.Template != null)
-                    return context.Template.Transform(conceptual, rawMetadata, file.Mime);
-
-                return (output, null);
+                return context.Template.Transform(conceptual, rawMetadata, file.Mime);
             }
 
             return (output, rawMetadata);
