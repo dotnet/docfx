@@ -33,7 +33,6 @@ namespace Microsoft.Docs.Build
             var xrefPropertiesGroupByUid = new Dictionary<string, (bool, Dictionary<string, Lazy<JToken>>)>();
             var uidJsonPaths = new HashSet<string>();
 
-            token = JsonUtility.DeepClone(token); // remove this line when transfromXref share JToken with transformContent
             Traverse(_schema, token, (schema, node) =>
             {
                 if (node is JObject obj)
@@ -64,8 +63,10 @@ namespace Microsoft.Docs.Build
                             xrefPropertiesGroupByUid[uid].Item2[key] = new Lazy<JToken>(
                             () =>
                             {
-                                Transform(file, context, propertySchema, value, errors);
-                                return obj[key];
+                                // todo: change transform to `return` model instead of `replace` model
+                                var clonedObj = JsonUtility.DeepClone(obj);
+                                Transform(file, context, propertySchema, clonedObj[key], errors);
+                                return clonedObj[key];
                             }, LazyThreadSafetyMode.PublicationOnly);
                         }
                     }
