@@ -449,8 +449,6 @@ outputs:
       "conceptual": "<p>Moniker: netcore-2.0</p>",
       "monikers": ["netcore-2.0"]
     }
-  xrefmap.json: | 
-    {"references":[{"uid":"a","href":"https://docs.com/docs/a","name":"netcore-2.0"}]}
 ---
 # Define same uid with multiple moniker ranges, 
 # reference to it without moniker in the same docset, shoule take the latest one
@@ -511,8 +509,6 @@ outputs:
       "conceptual": "<p>Moniker: netcore-2.0</p>",
       "monikers": ["netcore-2.0"]
     }
-  xrefmap.json: | 
-    {"references":[{"uid":"a","href":"https://docs.com/docs/a","name":"netcore-2.0"}]}
 ---
 # Define same uid with overlapping moniker range
 inputs:
@@ -607,8 +603,6 @@ outputs:
       "conceptual": "<p>Moniker: netcore-2.0</p>",
       "monikers": ["netcore-2.0"]
     }
-  xrefmap.json: | 
-    {"references":[{"uid":"a","href":"https://docs.com/docs/a","name":"netcore-2.0"}]}
 ---
 # [skip] Define same uid with and without moniker range
 # while refer to it without moniker range, should pick the one without moniker range

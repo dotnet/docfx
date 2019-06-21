@@ -163,7 +163,7 @@ outputs:
     }
   docs/a.json:
   xrefmap.json: | 
-    {"references":[{"uid":"a","href":"https://docs.com/docs/a.json"}]}
+    {"references":[{"uid":"a"}]}
   .dependencymap.json: |
     {
       "dependencies": {
@@ -298,32 +298,26 @@ outputs:
     {
       "references": [{
         "uid": "a",
-        "href": "https://docs.com/docs/a.json",
         "description": "description for a"
       }, 
       {
         "uid": "a.b",
-        "href": "https://docs.com/docs/a.json#a_b",
         "description": "description for a.b"
       },
       {
         "uid": "a.b.d",
-        "href": "https://docs.com/docs/a.json#a_b_d",
         "description": "description for a.b.d"
       },
       {
         "uid": "a.b.e",
-        "href": "https://docs.com/docs/a.json#a_b_e",
         "description": "description for a.b.e"
       }, 
       {
         "uid": "a.c",
-        "href": "https://docs.com/docs/a.json#a_c",
         "description": "description for a.c"
       },
       {
         "uid": "a.data",
-        "href": "https://docs.com/docs/a.json#a_data",
         "description": "description for a.data"
       }]
     }
@@ -344,8 +338,6 @@ outputs:
   docs/a.json:
   .errors.log: |
     ["error","uid-conflict","The same Uid 'a' has been defined multiple times in the same file","docs/a.json"]
-  xrefmap.json: |
-    {"references":[{"uid":"a","href":"https://docs.com/docs/a.json"}]}
 ---
 # uid conflict in non-root level and another SDP
 inputs:
@@ -384,7 +376,7 @@ inputs:
 outputs:
   docs/a.json:
   xrefmap.json: | 
-    {"references":[{"uid":"a","href":"https://docs.com/docs/a.json","summary":"<pre><code>Hello `docfx`!\n</code></pre>\n"}]}
+    {"references":[{"uid":"a","summary":"<pre><code>Hello `docfx`!\n</code></pre>\n"}]}
 ---
 # Xref property field which supports inline markdown content
 inputs:
@@ -398,7 +390,7 @@ inputs:
 outputs:
   docs/a.json:
   xrefmap.json: | 
-    {"references":[{"uid":"a","href":"https://docs.com/docs/a.json","inlineDescription":"Hello <code>docfx</code>!"}]}
+    {"references":[{"uid":"a","inlineDescription":"Hello <code>docfx</code>!"}]}
 ---
 # Xref property field with dependecy
 inputs:
@@ -415,7 +407,7 @@ outputs:
   docs/a.json:
   docs/b.json:
   xrefmap.json: | 
-    {"references":[{"uid":"a","href":"https://docs.com/docs/a.json","inlineDescription":"Hello <code>docfx</code>!"}]}
+    {"references":[{"uid":"a","inlineDescription":"Hello <code>docfx</code>!"}]}
 ---
 # Refer to uid with hashtag
 inputs:
@@ -787,27 +779,22 @@ outputs:
         "references": [
             {
                 "uid": "a",
-                "href": "https://docs.com/docs/a.json",
                 "description": "description for a"
             },
             {
                 "uid": "child",
-                "href": "https://docs.com/docs/a.json#child",
                 "a": "child aaaaa",
                 "child.c": "child.c cccccc"
             },
             {
                 "uid": "children.a",
-                "href": "https://docs.com/docs/a.json#children_a"
             },
             {
                 "uid": "children.b",
-                "href": "https://docs.com/docs/a.json#children_b",
                 "a": "children.b aaaaa"
             },
             {
                 "uid": "children.c",
-                "href": "https://docs.com/docs/a.json#children_c",
                 "child.c": "children.c cccccc"
             }
         ]
