@@ -222,7 +222,7 @@ outputs:
       "content": {
         "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
         "xref": {
-            "href": "https://docs.com/docs/a.json",
+            "href": "/docs/a.json",
             "uid": "a",
             "name": "test",
             "fullName": "test.test",

@@ -35,16 +35,13 @@ namespace Microsoft.Docs.Build
             {
                 Uid = Uid,
                 Monikers = Monikers,
-
-                // DHS appends branch infomation from cookie cache to URL, which is wrong for UID resolved URL
-                // output xref map with URL appending "?branch=master" for master branch
-                Href = file.Docset.Repository.Branch == "master" ? file.CanonicalUrlWithoutLocale + "?branch=master" : file.CanonicalUrlWithoutLocale,
+                Href = Href,
             };
             foreach (var (key, value) in ExtensionData)
             {
                 try
                 {
-                    spec.ExtensionData[key] = ExtensionData[key].Value;
+                    spec.ExtensionData[key] = value.Value;
                 }
                 catch (DocfxException ex)
                 {
