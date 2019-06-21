@@ -40,7 +40,7 @@ inputs:
     { "references":[{"uid": "a", "name": "a", "fullName": "a", "href": "https://docs.microsoft.com/en-us/a", "nameWithType": "a"}]}
 outputs:
   docs/a.json: |
-    { "conceptual": "<p>Link to <a href=\"/en-us/dotnet/api/system.string\">String</a></p>\n"}
+    { "conceptual": "<p>Link to <a href=\"https://docs.microsoft.com/en-us/dotnet/api/system.string\">String</a></p>\n"}
 ---
 # Restore xref map from configured url and use the YAML file for resolving
 inputs:
@@ -832,7 +832,7 @@ inputs:
     { "references":[{"uid": "System.String", "href": "https://2.docs.microsoft.com/en-us/system.string"}]}
 outputs:
   docs/a.json: |
-    { "conceptual": "<p>Link to <a href=\"/en-us/dotnet/api/system.string\">System.String</a></p>\n"}
+    { "conceptual": "<p>Link to <a href=\"https://docs.microsoft.com/en-us/dotnet/api/system.string\">System.String</a></p>\n"}
 ---
 # support non-leaf nodes for xref properties
 inputs:
@@ -896,4 +896,35 @@ outputs:
             }
         ]
     }
+---
+# define UID in master branch
+repos:
+  https://docs.com/test#master:
+    - files:
+        docfx.yml:
+        docs/a.md: |
+          ---
+          title: Title from yaml header a
+          uid: a
+          ---
+outputs:
+  docs/a.json:
+  xrefmap.json: |
+    {"references":[{"uid":"a", href: "https://docs.com/docs/a?branch=master"}]}
+---
+# define UID in live branch
+repos:
+  https://docs.com/test#live:
+    - files:
+        docfx.yml:
+        docs/a.md: |
+          ---
+          title: Title from yaml header a
+          uid: a
+          ---
+outputs:
+  docs/a.json:
+  xrefmap.json: |
+    {"references":[{"uid":"a", href: "https://docs.com/docs/a"}]}
+          
 

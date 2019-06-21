@@ -62,7 +62,7 @@ namespace Microsoft.Docs.Build
             if (TryResolve(uid, moniker, out var spec))
             {
                 var (_, query, fragment) = UrlUtility.SplitUrl(spec.Href);
-                resolvedHref = UrlUtility.MergeUrl(spec.DeclairingFile != null ? RebaseResolvedHref(rootFile, spec.DeclairingFile) : RemoveHostnameIfSharingTheSameOne(spec.Href), query, fragment.Length == 0 ? "" : fragment.Substring(1));
+                resolvedHref = UrlUtility.MergeUrl(spec.DeclairingFile != null ? RebaseResolvedHref(rootFile, spec.DeclairingFile) : spec.Href, query, fragment.Length == 0 ? "" : fragment.Substring(1));
                 name = spec.GetXrefPropertyValue("name");
                 displayPropertyValue = spec.GetXrefPropertyValue(displayPropertyName);
             }
@@ -75,16 +75,6 @@ namespace Microsoft.Docs.Build
             // xrefSpec.displayPropertyName -> xrefSpec.name -> uid
             string display = !string.IsNullOrEmpty(displayPropertyValue) ? displayPropertyValue : (!string.IsNullOrEmpty(name) ? name : uid);
             return (null, resolvedHref, display, spec);
-
-            string RemoveHostnameIfSharingTheSameOne(string input)
-            {
-                var hostname = rootFile.Docset.HostName;
-                if (input.StartsWith(hostname, StringComparison.OrdinalIgnoreCase))
-                {
-                    return input.Substring(hostname.Length);
-                }
-                return input;
-            }
         }
 
         private string RebaseResolvedHref(Document rootFile, Document referencedFile)
