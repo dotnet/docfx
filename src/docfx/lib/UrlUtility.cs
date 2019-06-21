@@ -3,6 +3,7 @@
 
 using System;
 using System.Diagnostics;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
 
@@ -108,6 +109,69 @@ namespace Microsoft.Docs.Build
             Debug.Assert(string.IsNullOrEmpty(fragment) || fragment[0] == '#');
 
             return fragment != null && fragment.Length > 1 ? DependencyType.Bookmark : DependencyType.Link;
+        }
+
+        public static string GetRelativeUrl(string relativeToUrl, string url)
+        {
+            if (!relativeToUrl.StartsWith('/'))
+            {
+                throw new ArgumentException("", nameof(relativeToUrl));
+            }
+
+            if (url == null || !url.StartsWith('/'))
+            {
+                return url;
+            }
+
+            // Find the last common segment
+            var i = 0;
+            var segmentIndex = 0;
+            while (i < url.Length && i < relativeToUrl.Length)
+            {
+                var ch = url[i];
+                if (ch != relativeToUrl[i])
+                {
+                    break;
+                }
+
+                i++;
+                if (ch == '/')
+                {
+                    segmentIndex = i;
+                }
+            }
+
+            // Count remaining segments in relativeToUrl
+            var remainingSegmentCount = 0;
+            for (i = segmentIndex; i < relativeToUrl.Length; i++)
+            {
+                if (relativeToUrl[i] == '/')
+                {
+                    remainingSegmentCount++;
+                }
+            }
+
+            // Build result
+            var result = new StringBuilder(url.Length);
+
+            for (i = 0; i < remainingSegmentCount; i++)
+            {
+                result.Append("../");
+            }
+
+            if (segmentIndex >= url.Length)
+            {
+                if (remainingSegmentCount == 0)
+                {
+                    result.Append("./");
+                }
+            }
+            else
+            {
+                result.Append(url, segmentIndex, url.Length - segmentIndex);
+            }
+
+            return result.ToString();
         }
 
         public static LinkType GetLinkType(string link)

@@ -90,7 +90,7 @@ namespace Microsoft.Docs.Build
             var errors = new List<Error>();
             if (!string.IsNullOrEmpty(inputMetadata.BreadcrumbPath))
             {
-                var (breadcrumbError, breadcrumbPath, _) = context.DependencyResolver.ResolveLink(inputMetadata.BreadcrumbPath, file, file);
+                var (breadcrumbError, breadcrumbPath, _) = context.DependencyResolver.ResolveRelativeLink(file, inputMetadata.BreadcrumbPath, file);
                 errors.AddIfNotNull(breadcrumbError);
                 outputMetadata.BreadcrumbPath = breadcrumbPath;
             }
@@ -237,7 +237,7 @@ namespace Microsoft.Docs.Build
 
                 pageModel = new JObject()
                 {
-                    ["conceptual"] = HtmlUtility.HtmlPostProcess(await RazorTemplate.Render(file.Mime, content), file.Docset.Culture),
+                    ["conceptual"] = HtmlUtility.LoadHtml(await RazorTemplate.Render(file.Mime, content)).HtmlPostProcess(file.Docset.Culture),
                 };
             }
 
