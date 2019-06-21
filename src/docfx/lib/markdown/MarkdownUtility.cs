@@ -91,10 +91,10 @@ namespace Microsoft.Docs.Build
         internal static string GetLink(string path, object relativeTo, MarkdownObject origin, int columnOffset = 0)
         {
             var status = t_status.Value.Peek();
-            var (error, link, linkType, _) = status.Context.DependencyResolver.ResolveLink(new SourceInfo<string>(path, origin.ToSourceInfo(columnOffset: columnOffset)), (Document)relativeTo);
+            var (error, link, linkType, file) = status.Context.DependencyResolver.ResolveLink(new SourceInfo<string>(path, origin.ToSourceInfo(columnOffset: columnOffset)), (Document)relativeTo);
             status.Errors.AddIfNotNull(error?.WithSourceInfo(origin.ToSourceInfo()));
 
-            if (linkType == LinkType.RelativePath)
+            if (file != null)
             {
                 link = RelativeUrlMarker + link;
             }

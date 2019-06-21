@@ -191,15 +191,15 @@ namespace Microsoft.Docs.Build
 
             if (file?.RedirectionUrl != null)
             {
-                return (error, file.SiteUrl + query + fragment, null, linkType, null);
+                return (error, file.SiteUrl + query + fragment, null, linkType, file);
             }
 
-            // Pages outside build scope, don't build the file, use relative href
+            // Pages outside build scope, don't build the file, leave href as is
             if (error is null
                 && (file.ContentType == ContentType.Page || file.ContentType == ContentType.TableOfContents)
                 && !file.Docset.BuildScope.Contains(file))
             {
-                return (Errors.LinkOutOfScope(href, file), file.SiteUrl + query + fragment, fragment, linkType, null);
+                return (Errors.LinkOutOfScope(href, file), href, fragment, linkType, null);
             }
 
             return (error, file.SiteUrl + query + fragment, fragment, linkType, file);
