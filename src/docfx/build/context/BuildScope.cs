@@ -17,6 +17,9 @@ namespace Microsoft.Docs.Build
         private readonly HashSet<string> _fileNames;
         private readonly Func<string, bool> _glob;
 
+        /// <summary>
+        /// Gets all the files to build, including redirections and fallback files.
+        /// </summary>
         public HashSet<Document> Files { get; }
 
         public RedirectionMap Redirections { get; }
