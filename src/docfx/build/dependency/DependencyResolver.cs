@@ -204,7 +204,7 @@ namespace Microsoft.Docs.Build
             // Pages outside build scope, don't build the file, leave href as is
             if (error is null
                 && (file.ContentType == ContentType.Page || file.ContentType == ContentType.TableOfContents)
-                && !_buildScope.Files.Contains(file))
+                && !_buildScope.FilesAndFallbackFiles.Contains(file))
             {
                 return (Errors.LinkOutOfScope(href, file), href, fragment, linkType, null);
             }

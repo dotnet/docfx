@@ -86,7 +86,7 @@ namespace Microsoft.Docs.Build
             using (Progress.Start("Loading TOC"))
             {
                 var builder = new TableOfContentsMapBuilder();
-                var tocFiles = context.BuildScope.FilesWithFallback.Where(f => f.ContentType == ContentType.TableOfContents);
+                var tocFiles = context.BuildScope.FilesAndFallbackFiles.Where(f => f.ContentType == ContentType.TableOfContents);
                 if (!tocFiles.Any())
                 {
                     return builder.Build();

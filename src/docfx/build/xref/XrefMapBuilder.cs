@@ -66,7 +66,7 @@ namespace Microsoft.Docs.Build
             var xrefsByUid = new ConcurrentDictionary<string, ConcurrentBag<IXrefSpec>>();
             using (Progress.Start("Building Xref map"))
             {
-                ParallelUtility.ForEach(context.BuildScope.FilesWithFallback.Where(f => f.ContentType == ContentType.Page), file => Load(context, xrefsByUid, file), Progress.Update);
+                ParallelUtility.ForEach(context.BuildScope.FilesAndFallbackFiles.Where(f => f.ContentType == ContentType.Page), file => Load(context, xrefsByUid, file), Progress.Update);
                 return xrefsByUid.ToList().OrderBy(item => item.Key).ToDictionary(item => item.Key, item => item.Value.Select(x => new Lazy<IXrefSpec>(() => x)).ToList());
             }
         }

@@ -19,26 +19,29 @@ namespace Microsoft.Docs.Build
 
         public HashSet<Document> Files { get; }
 
-        public HashSet<Document> FilesWithFallback { get; }
+        public HashSet<Document> FilesAndFallbackFiles { get; }
 
         public RedirectionMap Redirections { get; }
 
         public BuildScope(ErrorLog errorLog, Docset docset)
         {
-            var docsetPath = docset.DocsetPath;
             var config = docset.Config;
 
             _glob = CreateGlob(config);
 
-            _fileNames = Directory.GetFiles(docsetPath, "*.*", SearchOption.AllDirectories)
-                                  .Select(path => Path.GetRelativePath(docsetPath, path).Replace('\\', '/'))
-                                  .ToHashSet(PathUtility.PathComparer);
+            var (fileNames, files) = GetFiles(docset, _glob);
+
+            _fileNames = fileNames;
 
             Redirections = RedirectionMap.Create(errorLog, docset, _glob);
 
-            Files = new HashSet<Document>(GetFiles(docset, _glob).Concat(Redirections.Files));
+            Files = files.Concat(Redirections.Files).ToHashSet();
 
-            FilesWithFallback = GetFilesWithFallback(docset);
+            var fallbackFiles = docset.FallbackDocset != null
+                ? GetFiles(docset.FallbackDocset, CreateGlob(docset.FallbackDocset.Config)).files
+                : Enumerable.Empty<Document>();
+
+            FilesAndFallbackFiles = Files.Concat(fallbackFiles.Where(file => !_fileNames.Contains(file.FilePath))).ToHashSet();
         }
 
         public bool GetActualFileName(string fileName, out string actualFileName)
@@ -46,13 +49,18 @@ namespace Microsoft.Docs.Build
             return _fileNames.TryGetValue(fileName, out actualFileName);
         }
 
-        private IReadOnlyList<Document> GetFiles(Docset docset, Func<string, bool> glob)
+        private (HashSet<string> fileNames, IReadOnlyList<Document> files) GetFiles(Docset docset, Func<string, bool> glob)
         {
             using (Progress.Start("Globbing files"))
             {
+                var docsetPath = docset.DocsetPath;
                 var files = new ListBuilder<Document>();
+                var fileNames = Directory
+                    .GetFiles(docsetPath, "*.*", SearchOption.AllDirectories)
+                    .Select(path => Path.GetRelativePath(docsetPath, path).Replace('\\', '/'))
+                    .ToHashSet(PathUtility.PathComparer);
 
-                ParallelUtility.ForEach(_fileNames, file =>
+                ParallelUtility.ForEach(fileNames, file =>
                 {
                     if (glob(file))
                     {
@@ -60,31 +68,15 @@ namespace Microsoft.Docs.Build
                     }
                 });
 
-                return files.ToList();
+                return (fileNames, files.ToList());
             }
         }
 
         private static Func<string, bool> CreateGlob(Config config)
         {
-            return GlobUtility.CreateGlobMatcher(config.Files, config.Exclude.Concat(Config.DefaultExclude).ToArray());
-        }
-
-        private HashSet<Document> GetFilesWithFallback(Docset docset)
-        {
-            var filesWithFallback = Files.ToHashSet();
-
-            if (docset.FallbackDocset != null)
-            {
-                foreach (var document in GetFiles(docset.FallbackDocset, _glob))
-                {
-                    if (!_fileNames.Contains(document.FilePath))
-                    {
-                        filesWithFallback.Add(document);
-                    }
-                }
-            }
-
-            return filesWithFallback;
+            return GlobUtility.CreateGlobMatcher(
+                config.Files,
+                config.Exclude.Concat(Config.DefaultExclude).ToArray());
         }
     }
 }
