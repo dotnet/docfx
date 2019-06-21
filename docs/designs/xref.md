@@ -107,7 +107,7 @@ Besides using file path to link to another file, DocFX also allows you to give a
     | no | PR | master -> test | master | yes(`PR` branch may not exist in xref definition repo) | yes(append `?branch=master`) |
     | no | PR | test -> live | live(go-live) | no | yes(url appending with `?branch=live`) |
     | no | PR | test -> live | live(not-go-live) | no(uid-not-found) | no(uid-not-found) |
-    > For the second last scenario, the output url would be `review.docs.microsoft.com` and the resolved uid url would be `docs.microsoft.com`, while clicking to this url, the user will go to another site `docs.microsoft.com` instead. Removing host for `uid` resolved URL can resolve this.
+    > For the second last scenario, the output url would be `review.docs.microsoft.com` and the resolved uid url would be `docs.microsoft.com`, while clicking to this url, the user will go to another site `docs.microsoft.com` instead. Confirmed with PM, this is not an legitimate concern.
     - The href of UID is from the same host name as the referencing repository.
         - If the current branch is `live`, and the UID href is also from `live`, everything is OK
         - If the current branch is `master`, then the output site is `review.docs`, but the resovled url is `docs` which is `live`, while browsing the UID href, the user should not jump to another site(`docs`)
