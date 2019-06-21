@@ -67,7 +67,7 @@ namespace Microsoft.Docs.Build
             NameValueCollection queries = null;
             if (!string.IsNullOrEmpty(query))
             {
-                queries = HttpUtility.ParseQueryString(query.Substring(1));
+                queries = HttpUtility.ParseQueryString(query);
                 moniker = queries?["view"];
             }
             var displayProperty = queries?["displayProperty"];
