@@ -96,11 +96,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     ContractName = "html",
                     Processor = new HtmlPostProcessor
                     {
-                        Handlers =
-                        {
-                            new ValidateBookmark(),
-                            new RemoveDebugInfo(),
-                        },
+                      
                     }
                 });
         }
