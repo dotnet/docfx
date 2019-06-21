@@ -25,7 +25,7 @@ namespace Microsoft.Docs.Build
             _map = map;
         }
 
-        public (Error error, string href, string display, IXrefSpec xrefSpec) Resolve(string uid, SourceInfo<string> href, string displayPropertyName, Document relativeTo, Document rootFile, string moniker = null)
+        public (Error error, string href, string display, IXrefSpec xrefSpec) Resolve(string uid, SourceInfo<string> href, string displayPropertyName, Document relativeTo, string moniker = null)
         {
             if (t_recursionDetector.Value.Contains((uid, displayPropertyName, relativeTo)))
             {
@@ -38,7 +38,7 @@ namespace Microsoft.Docs.Build
             try
             {
                 t_recursionDetector.Value.Push((uid, displayPropertyName, relativeTo));
-                return ResolveCore(uid, href, displayPropertyName, rootFile, moniker);
+                return ResolveCore(uid, href, displayPropertyName, relativeTo, moniker);
             }
             finally
             {
@@ -54,7 +54,8 @@ namespace Microsoft.Docs.Build
             context.Output.WriteJson(models, "xrefmap.json");
         }
 
-        private (Error error, string href, string display, IXrefSpec xrefSpec) ResolveCore(string uid, SourceInfo<string> href, string displayPropertyName, Document rootFile, string moniker = null)
+        private (Error error, string href, string display, IXrefSpec xrefSpec) ResolveCore(
+            string uid, SourceInfo<string> href, string displayPropertyName, Document relativeTo, string moniker = null)
         {
             string resolvedHref;
             string displayPropertyValue;
@@ -62,7 +63,9 @@ namespace Microsoft.Docs.Build
             if (TryResolve(uid, moniker, out var spec))
             {
                 var (_, query, fragment) = UrlUtility.SplitUrl(spec.Href);
-                resolvedHref = UrlUtility.MergeUrl(spec.DeclairingFile != null ? RebaseResolvedHref(rootFile, spec.DeclairingFile) : RemoveHostnameIfSharingTheSameOne(spec.Href), query, fragment.Length == 0 ? "" : fragment.Substring(1));
+                resolvedHref = UrlUtility.MergeUrl(
+                    RemoveHostnameIfSharingTheSameOne(spec.Href), query, fragment.Length == 0 ? "" : fragment.Substring(1));
+
                 name = spec.GetXrefPropertyValue("name");
                 displayPropertyValue = spec.GetXrefPropertyValue(displayPropertyName);
             }
@@ -78,7 +81,7 @@ namespace Microsoft.Docs.Build
 
             string RemoveHostnameIfSharingTheSameOne(string input)
             {
-                var hostname = rootFile.Docset.HostName;
+                var hostname = relativeTo.Docset.HostName;
                 if (input.StartsWith(hostname, StringComparison.OrdinalIgnoreCase))
                 {
                     return input.Substring(hostname.Length);
@@ -86,9 +89,6 @@ namespace Microsoft.Docs.Build
                 return input;
             }
         }
-
-        private string RebaseResolvedHref(Document rootFile, Document referencedFile)
-            => _context.DependencyResolver.GetRelativeUrl(rootFile, referencedFile);
 
         private bool TryResolve(string uid, string moniker, out IXrefSpec spec)
         {

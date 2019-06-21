@@ -88,7 +88,7 @@ namespace Microsoft.Docs.Build
             var errors = new List<Error>();
             if (!string.IsNullOrEmpty(inputMetadata.BreadcrumbPath))
             {
-                var (breadcrumbError, breadcrumbPath, _) = context.DependencyResolver.ResolveLink(inputMetadata.BreadcrumbPath, file, file);
+                var (breadcrumbError, breadcrumbPath, _) = context.DependencyResolver.ResolveRelativeLink(file, inputMetadata.BreadcrumbPath, file);
                 errors.AddIfNotNull(breadcrumbError);
                 outputMetadata.BreadcrumbPath = breadcrumbPath;
             }
@@ -231,8 +231,8 @@ namespace Microsoft.Docs.Build
 
                 if (file.Docset.Legacy)
                 {
-                    conceptual = HtmlUtility.HtmlPostProcess(
-                    await RazorTemplate.Render(file.Mime, content), file.Docset.Culture);
+                    var html = await RazorTemplate.Render(file.Mime, content);
+                    conceptual = HtmlUtility.LoadHtml(html).HtmlPostProcess(file.Docset.Culture);
                 }
             }
 
