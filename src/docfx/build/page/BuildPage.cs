@@ -224,7 +224,10 @@ namespace Microsoft.Docs.Build
             errors.AddRange(metaErrors);
 
             var pageMetadata = new OutputMetadata();
-            var pageModel = transformedToken;
+            var pageModel = new JObject
+            {
+                ["content"] = transformedToken,
+            };
 
             if (file.Docset.Legacy && TemplateEngine.IsLandingData(file.Mime))
             {
@@ -245,7 +248,7 @@ namespace Microsoft.Docs.Build
             pageMetadata.RawTitle = file.Docset.Legacy ? $"<h1>{obj?.Value<string>("title")}</h1>" : null;
             pageMetadata.SchemaType = file.Mime;
 
-            return (errors, !TemplateEngine.IsData(file.Mime), (pageMetadata, (JObject)pageModel), (inputMetadata, metadataObject));
+            return (errors, !TemplateEngine.IsData(file.Mime), (pageMetadata, pageModel), (inputMetadata, metadataObject));
         }
 
         private static (object model, JObject metadata) ApplyPageTemplate(Context context, Document file, JObject output, string conceptual)
