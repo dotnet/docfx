@@ -60,19 +60,21 @@ outputs:
     { "conceptual": "<p>Link to <a href=\"https://docs.microsoft.com/en-us/dotnet/api/system.string\">String</a></p>\n"}
 ---
 # Define uid in conceptual, resolve it
-inputs:
-  docfx.yml:
-  docs/a.md: |
-    ---
-    title: Title from yaml header a
-    uid: a
-    ---
-  docs/b.md: |
-    ---
-    title: Title from yaml header b
-    uid: b
-    ---
-  docs/c.md: Link to @a
+repos:
+  https://docs.com/test#live:
+    - files:
+        docfx.yml:
+        docs/a.md: |
+          ---
+          title: Title from yaml header a
+          uid: a
+          ---
+        docs/b.md: |
+          ---
+          title: Title from yaml header b
+          uid: b
+          ---
+        docs/c.md: Link to @a
 outputs:
   docs/c.json: | 
     {"conceptual":"<p>Link to <a href=\"a\">Title from yaml header a</a></p>\n"}
@@ -104,7 +106,7 @@ outputs:
           ]
       }
     }
-------
+---
 # The same uid in internal and external
 # should resolve it from the internal one
 inputs:
@@ -200,21 +202,23 @@ outputs:
     {"!references":null}
 ---
 # Resolve xref in SDP
-inputs:
-  docfx.yml:
-  docs/a.json: |
-    {
-      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
-      "uid": "a",
-      "name": "test",
-      "fullName": "test.test",
-      "description": "a.description"
-    }
-  docs/b.json: | 
-    {
-      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
-      "xref": "a"
-    }
+repos:
+  https://docs.com/test#live:
+    - files:
+        docfx.yml:
+        docs/a.json: |
+          {
+            "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
+            "uid": "a",
+            "name": "test",
+            "fullName": "test.test",
+            "description": "a.description"
+          }
+        docs/b.json: | 
+          {
+            "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
+            "xref": "a"
+          }
 outputs:
   docs/a.json:
   docs/b.json: | 
@@ -832,28 +836,30 @@ outputs:
     { "conceptual": "<p>Link to <a href=\"https://docs.microsoft.com/en-us/dotnet/api/system.string\">System.String</a></p>\n"}
 ---
 # support non-leaf nodes for xref properties
-inputs:
-  docfx.yml:
-  docs/a.yml: |
-    #YamlMime:TestData
-    uid: a
-    list:
-      - "1.0"
-      - "2.0"
-      - "3.0"
-    child:
-      uid: child
-      list:
-        - "2.0"
-        - "3.0"
-    children:
-      - uid: children.a
-        list:
-          - "1.0"
-      - uid: children.b
-        list:
-          - "2.0"
-          - "3.0"
+repos:
+  https://docs.com/test#live:
+    - files:
+        docfx.yml:
+        docs/a.yml: |
+          #YamlMime:TestData
+          uid: a
+          list:
+            - "1.0"
+            - "2.0"
+            - "3.0"
+          child:
+            uid: child
+            list:
+              - "2.0"
+              - "3.0"
+          children:
+            - uid: children.a
+              list:
+                - "1.0"
+            - uid: children.b
+              list:
+                - "2.0"
+                - "3.0"
 outputs:
   docs/a.json:
   xrefmap.json: |
