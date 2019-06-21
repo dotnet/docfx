@@ -38,7 +38,7 @@ namespace Microsoft.Docs.Build
 
                 // DHS appends branch infomation from cookie cache to URL, which is wrong for UID resolved URL
                 // output xref map with URL appending "?branch=master" for master branch
-                Href = file.Docset.Repository.Branch == "master" ? Href + "?branch=master" : Href,
+                Href = file.Docset.Repository.Branch == "master" ? file.CanonicalUrlWithoutLocale + "?branch=master" : file.CanonicalUrlWithoutLocale,
             };
             foreach (var (key, value) in ExtensionData)
             {

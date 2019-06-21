@@ -135,7 +135,7 @@ namespace Microsoft.Docs.Build
             var xref = new InternalXrefSpec
             {
                 Uid = metadata.Uid,
-                Href = file.CanonicalUrlWithoutLocale,
+                Href = file.SiteUrl,
                 DeclairingFile = file,
             };
             xref.ExtensionData["name"] = new Lazy<JToken>(() => new JValue(string.IsNullOrEmpty(metadata.Title) ? metadata.Uid : metadata.Title));
