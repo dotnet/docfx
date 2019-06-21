@@ -33,7 +33,6 @@ namespace Microsoft.Docs.Build
             var xrefPropertiesGroupByUid = new Dictionary<string, (bool, Dictionary<string, Lazy<JToken>>)>();
             var uidJsonPaths = new HashSet<string>();
 
-            token = JsonUtility.DeepClone(token); // remove this line when transfromXref share JToken with transformContent
             Traverse(_schema, token, (schema, node) =>
             {
                 if (node is JObject obj)
@@ -64,8 +63,10 @@ namespace Microsoft.Docs.Build
                             xrefPropertiesGroupByUid[uid].Item2[key] = new Lazy<JToken>(
                             () =>
                             {
-                                Transform(file, context, propertySchema, value, errors);
-                                return obj[key];
+                                // todo: change transform to `return` model instead of `replace` model
+                                var clonedObj = JsonUtility.DeepClone(obj);
+                                Transform(file, context, propertySchema, clonedObj[key], errors);
+                                return clonedObj[key];
                             }, LazyThreadSafetyMode.PublicationOnly);
                         }
                     }
@@ -163,7 +164,7 @@ namespace Microsoft.Docs.Build
             switch (schema.ContentType)
             {
                 case JsonSchemaContentType.Href:
-                    var (error, link, _) = context.DependencyResolver.ResolveLink(content, file, file);
+                    var (error, link, _) = context.DependencyResolver.ResolveRelativeLink(file, content, file);
                     errors.AddIfNotNull(error);
                     content = new SourceInfo<string>(link, content);
                     break;
@@ -190,10 +191,12 @@ namespace Microsoft.Docs.Build
                     content = new SourceInfo<string>(inlineHtml, content);
                     break;
 
+                // TODO: remove JsonSchemaContentType.Html after LandingData is migrated
                 case JsonSchemaContentType.Html:
                     var htmlWithLinks = HtmlUtility.TransformLinks(content, (href, _) =>
                     {
-                        var (htmlError, htmlLink, _) = context.DependencyResolver.ResolveLink(new SourceInfo<string>(href, content), file, file);
+                        var (htmlError, htmlLink, _) = context.DependencyResolver.ResolveRelativeLink(
+                            file, new SourceInfo<string>(href, content), file);
                         errors.AddIfNotNull(htmlError);
                         return htmlLink;
                     });
@@ -203,7 +206,7 @@ namespace Microsoft.Docs.Build
 
                 case JsonSchemaContentType.Xref:
 
-                    var (xrefError, xrefLink, _, xrefSpec) = context.DependencyResolver.ResolveXref(content, file, file);
+                    var (xrefError, xrefLink, _, xrefSpec) = context.DependencyResolver.ResolveXref(content, file);
 
                     if (xrefSpec is InternalXrefSpec internalSpec)
                     {

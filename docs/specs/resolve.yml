@@ -239,7 +239,7 @@ inputs:
   c.md: '[](#self)'
 outputs:
   docs/a.json: |
-    {"conceptual":"<p>Link to <a href=\"../c\">c</a></p>"}
+    {"conceptual":"<p>Link to <a href=\"../c.md\">c</a></p>"}
   docs/b.json: |
     {"conceptual":"<p><a href=\"#self\"></a></p>"}
   .errors.log: |

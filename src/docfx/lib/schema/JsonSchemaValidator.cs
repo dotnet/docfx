@@ -37,6 +37,7 @@ namespace Microsoft.Docs.Build
             }
 
             ValidateDeprecated(schema, token, errors);
+            ValidateConst(schema, token, errors);
 
             switch (token)
             {
@@ -77,13 +78,13 @@ namespace Microsoft.Docs.Build
             switch (scalar.Value)
             {
                 case string str:
-                    ValidateString(schema, scalar, errors, str);
+                    ValidateString(schema, scalar, str, errors);
                     break;
 
                 case double _:
                 case float _:
                 case long _:
-                    ValidateNumber(schema, scalar, errors, Convert.ToDouble(scalar.Value));
+                    ValidateNumber(schema, scalar, Convert.ToDouble(scalar.Value), errors);
                     break;
             }
         }
@@ -150,6 +151,52 @@ namespace Microsoft.Docs.Build
                         errors.Add(Errors.UnknownField(JsonUtility.GetSourceInfo(value), key, value.Type.ToString()));
                     }
                 }
+            }
+        }
+
+        private void ValidateString(JsonSchema schema, JValue scalar, string str, List<Error> errors)
+        {
+            ValidateDateFormat(schema, scalar, str, errors);
+
+            if (schema.MaxLength.HasValue || schema.MinLength.HasValue)
+            {
+                var unicodeLength = str.Where(c => !char.IsLowSurrogate(c)).Count();
+                if (schema.MaxLength.HasValue && unicodeLength > schema.MaxLength.Value)
+                    errors.Add(Errors.StringLengthInvalid(JsonUtility.GetSourceInfo(scalar), scalar.Path, $"<= {schema.MaxLength}"));
+
+                if (schema.MinLength.HasValue && unicodeLength < schema.MinLength.Value)
+                    errors.Add(Errors.StringLengthInvalid(JsonUtility.GetSourceInfo(scalar), scalar.Path, $">= {schema.MinLength}"));
+            }
+
+            switch (schema.Format)
+            {
+                case JsonSchemaStringFormat.DateTime:
+                    if (!DateTime.TryParse(str, out var _))
+                        errors.Add(Errors.FormatInvalid(JsonUtility.GetSourceInfo(scalar), scalar.Value<string>(), JsonSchemaStringFormat.DateTime));
+                    break;
+            }
+        }
+
+        private static void ValidateNumber(JsonSchema schema, JValue scalar, double number, List<Error> errors)
+        {
+            if (schema.Maximum.HasValue && number > schema.Maximum)
+                errors.Add(Errors.NumberInvalid(JsonUtility.GetSourceInfo(scalar), scalar.Path, $"<= {schema.Maximum}"));
+
+            if (schema.Minimum.HasValue && number < schema.Minimum)
+                errors.Add(Errors.NumberInvalid(JsonUtility.GetSourceInfo(scalar), scalar.Path, $">= {schema.Minimum}"));
+
+            if (schema.ExclusiveMaximum.HasValue && number >= schema.ExclusiveMaximum)
+                errors.Add(Errors.NumberInvalid(JsonUtility.GetSourceInfo(scalar), scalar.Path, $"< {schema.ExclusiveMaximum}"));
+
+            if (schema.ExclusiveMinimum.HasValue && number <= schema.ExclusiveMinimum)
+                errors.Add(Errors.NumberInvalid(JsonUtility.GetSourceInfo(scalar), scalar.Path, $"> {schema.ExclusiveMinimum}"));
+        }
+
+        private void ValidateConst(JsonSchema schema, JToken token, List<Error> errors)
+        {
+            if (schema.Const != null && !JTokenDeepEquals(schema.Const, token))
+            {
+                errors.Add(Errors.UndefinedValue(JsonUtility.GetSourceInfo(token), token, new object[] { schema.Const }));
             }
         }
 
@@ -334,6 +381,48 @@ namespace Microsoft.Docs.Build
                     return tokenType == JTokenType.String;
                 default:
                     return true;
+            }
+        }
+
+        private static bool JTokenDeepEquals(JToken a, JToken b)
+        {
+            switch (a)
+            {
+                case JValue valueA when b is JValue valueB:
+                    return Equals(valueA.Value, valueB.Value);
+
+                case JArray arrayA when b is JArray arrayB:
+                    if (arrayA.Count != arrayB.Count)
+                    {
+                        return false;
+                    }
+
+                    for (var i = 0; i < arrayA.Count; i++)
+                    {
+                        if (!JTokenDeepEquals(arrayA[i], arrayB[i]))
+                        {
+                            return false;
+                        }
+                    }
+                    return true;
+
+                case JObject mapA when b is JObject mapB:
+                    if (mapA.Count != mapB.Count)
+                    {
+                        return false;
+                    }
+
+                    foreach (var (key, valueA) in mapA)
+                    {
+                        if (!mapB.TryGetValue(key, out var valueB) || !JTokenDeepEquals(valueA, valueB))
+                        {
+                            return false;
+                        }
+                    }
+                    return true;
+
+                default:
+                    return false;
             }
         }
     }

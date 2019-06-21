@@ -147,11 +147,20 @@ inputs:
     }
   docs/c.md: |
     Link to <xref:a?displayProperty=fullName>
+    Link to <xref:a??displayProperty=fullName>
     Link to @a?displayProperty=fullName
+    Link to @a??displayProperty=fullName
     Link to <xref:a?displayProperty=notExisting>
 outputs:
   docs/c.json: | 
-    {"conceptual":"<p>Link to <a href=\"a.json\">test.test</a>\nLink to <a href=\"a.json\">test.test</a>\nLink to <a href=\"a.json\">test</a></p>\n"}
+    {
+      "conceptual":"<p>
+                        Link to <a href=\"a.json\">test.test</a>
+                        Link to <a href=\"a.json\">test</a>
+                        Link to <a href=\"a.json\">test.test</a>
+                        Link to <a href=\"a.json\">test</a>??displayProperty=fullName
+                        Link to <a href=\"a.json\">test</a></p>"
+    }
   docs/a.json:
   xrefmap.json: | 
     {"references":[{"uid":"a","href":"https://docs.com/docs/a.json"}]}
@@ -712,7 +721,19 @@ inputs:
     ---
 outputs:
   docs/a.json: |
-    {"conceptual" : "<p>str <a href='c'>Title from yaml header c</a>\nstr @mention\nsome text\nstr @higher\nmultiple xref @mentione some text @mentionf</p>\n<p>\n  @mentione\n  some text\n  mentionf\n</p>\n"}
+    {
+      "conceptual" : "
+        <p>str <a href='c'>Title from yaml header c</a>
+        str @mention
+        some text
+        str @higher
+        multiple xref @mentione some text @mentionf</p>
+        <p>
+          @mentione
+          some text
+          mentionf
+        </p>"
+    }
   docs/c.json:
   .errors.log: |
     ["warning","xref-not-found","Cross reference not found: '<p>\n  <xref href=\"e\" data-raw-source=\"@mentione\" />\n  some text\n  <xref href=\"f\" data-raw-source=\"mentionf\" />\n</p>'","docs/a.md",6,78]
