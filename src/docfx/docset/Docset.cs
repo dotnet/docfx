@@ -43,11 +43,6 @@ namespace Microsoft.Docs.Build
         public bool Legacy => _options.Legacy;
 
         /// <summary>
-        /// Gets the resolve alias
-        /// </summary>
-        public IReadOnlyDictionary<string, string> ResolveAlias { get; }
-
-        /// <summary>
         /// Gets the localization docset, it will be set when the current build locale is different with default locale
         /// </summary>
         public Docset LocalizationDocset { get; private set; }
@@ -186,7 +181,6 @@ namespace Microsoft.Docs.Build
             (HostName, SiteBasePath) = SplitBaseUrl(config.BaseUrl);
 
             MetadataSchema = LoadMetadataSchema(Config);
-            ResolveAlias = LoadResolveAlias(Config);
             Repository = repository ?? Repository.Create(DocsetPath, branch: null);
             var glob = GlobUtility.CreateGlobMatcher(Config.Files, Config.Exclude.Concat(Config.DefaultExclude).ToArray());
 
@@ -256,18 +250,6 @@ namespace Microsoft.Docs.Build
             {
                 throw Errors.LocaleInvalid(locale).ToException();
             }
-        }
-
-        private Dictionary<string, string> LoadResolveAlias(Config config)
-        {
-            var result = new Dictionary<string, string>(PathUtility.PathComparer);
-
-            foreach (var (alias, aliasPath) in config.ResolveAlias)
-            {
-                result.TryAdd(PathUtility.NormalizeFolder(alias), PathUtility.NormalizeFolder(aliasPath));
-            }
-
-            return result.Reverse().ToDictionary(item => item.Key, item => item.Value);
         }
 
         private JsonSchema LoadMetadataSchema(Config config)

@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
@@ -17,9 +18,11 @@ namespace Microsoft.Docs.Build
         private readonly BookmarkValidator _bookmarkValidator;
         private readonly DependencyMapBuilder _dependencyMapBuilder;
         private readonly GitCommitProvider _gitCommitProvider;
+        private readonly IReadOnlyDictionary<string, string> _resolveAlias;
         private readonly Lazy<XrefMap> _xrefMap;
 
         public DependencyResolver(
+            Config config,
             WorkQueue<Document> buildQueue,
             GitCommitProvider gitCommitProvider,
             BookmarkValidator bookmarkValidator,
@@ -31,6 +34,7 @@ namespace Microsoft.Docs.Build
             _dependencyMapBuilder = dependencyMapBuilder;
             _gitCommitProvider = gitCommitProvider;
             _xrefMap = xrefMap;
+            _resolveAlias = LoadResolveAlias(config);
         }
 
         public (Error error, string content, Document file) ResolveContent(SourceInfo<string> path, Document declaringFile, DependencyType dependencyType = DependencyType.Inclusion)
@@ -272,7 +276,7 @@ namespace Microsoft.Docs.Build
             var docsetRelativePath = PathUtility.NormalizeFile(Path.Combine(Path.GetDirectoryName(declaringFile.FilePath), path));
             if (!File.Exists(Path.Combine(declaringFile.Docset.DocsetPath, docsetRelativePath)))
             {
-                foreach (var (alias, aliasPath) in declaringFile.Docset.ResolveAlias)
+                foreach (var (alias, aliasPath) in _resolveAlias)
                 {
                     if (path.StartsWith(alias, PathUtility.PathComparison))
                     {
@@ -349,6 +353,18 @@ namespace Microsoft.Docs.Build
 
             // source docset in source build
             return null;
+        }
+
+        private static Dictionary<string, string> LoadResolveAlias(Config config)
+        {
+            var result = new Dictionary<string, string>(PathUtility.PathComparer);
+
+            foreach (var (alias, aliasPath) in config.ResolveAlias)
+            {
+                result.TryAdd(PathUtility.NormalizeFolder(alias), PathUtility.NormalizeFolder(aliasPath));
+            }
+
+            return result.Reverse().ToDictionary(item => item.Key, item => item.Value);
         }
     }
 }
