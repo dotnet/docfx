@@ -58,13 +58,13 @@ namespace Microsoft.Docs.Build
         public static (
             List<Error> errors,
             TableOfContentsModel model,
-            List<(Document doc, string href)> referencedDocuments,
+            List<Document> referencedDocuments,
             List<Document> referencedTocs)
 
             Load(Context context, Document fileToBuild)
         {
             var errors = new List<Error>();
-            var referencedDocuments = new List<(Document doc, string href)>();
+            var referencedDocuments = new List<Document>();
             var referencedTocs = new List<Document>();
 
             // load toc model
@@ -91,7 +91,7 @@ namespace Microsoft.Docs.Build
                     if (buildItem != null)
                     {
                         // add to referenced document list
-                        referencedDocuments.Add((buildItem, link));
+                        referencedDocuments.Add(buildItem);
                     }
                     return (link, buildItem);
                 },
@@ -104,7 +104,7 @@ namespace Microsoft.Docs.Build
 
                     if (xrefSpec?.DeclairingFile != null)
                     {
-                        referencedDocuments.Add((xrefSpec?.DeclairingFile, link));
+                        referencedDocuments.Add(xrefSpec?.DeclairingFile);
                     }
 
                     return (link, display, xrefSpec?.DeclairingFile);

@@ -107,7 +107,7 @@ namespace Microsoft.Docs.Build
                     var (errors, _, referencedDocuments, referencedTocs) = context.Cache.LoadTocModel(context, fileToBuild);
                     context.ErrorLog.Write(fileToBuild.ToString(), errors);
 
-                    tocMapBuilder.Add(fileToBuild, referencedDocuments.Select(r => r.doc), referencedTocs);
+                    tocMapBuilder.Add(fileToBuild, referencedDocuments, referencedTocs);
                 }
                 catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
                 {
