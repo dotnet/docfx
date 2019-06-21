@@ -27,7 +27,7 @@ namespace Microsoft.Docs.Build
             _schemaValidator = new JsonSchemaValidator(docset.MetadataSchema);
             _globalMetadata = docset.Config.GlobalMetadata;
 
-            _reservedMetadata = JsonUtility.GetPropertyNames(typeof(OutputModel))
+            _reservedMetadata = JsonUtility.GetPropertyNames(typeof(OutputMetadata))
                 .Concat(docset.MetadataSchema.Reserved)
                 .Except(JsonUtility.GetPropertyNames(typeof(InputMetadata)))
                 .ToHashSet();
