@@ -219,20 +219,18 @@ inputs:
 outputs:
   docs/index.json: |
     {
-      "content": {
-        "title": "REST API Documentation",
-        "abstract": {
-            "description": "<p><a href=\"../b\">&quot;b&quot;</a></p>\n",
-            "menu": {
-                "items": [
-                    {
-                        "href": "../b"
-                    }
-                ]
-            }
-        },
-        "documentType": "LandingData"
-      }
+      "title": "REST API Documentation",
+      "abstract": {
+          "description": "<p><a href=\"../b\">&quot;b&quot;</a></p>\n",
+          "menu": {
+              "items": [
+                  {
+                      "href": "../b"
+                  }
+              ]
+          }
+      },
+      "documentType": "LandingData"
     }
   b.json:
 ---

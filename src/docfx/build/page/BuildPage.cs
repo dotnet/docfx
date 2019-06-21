@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
+using YamlDotNet.Core;
 
 namespace Microsoft.Docs.Build
 {
@@ -15,25 +16,26 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(file.ContentType == ContentType.Page);
 
-            var (errors, isPage, outputModel, (inputMetadata, metadataObject)) = await Load(context, file);
-            var (generateErrors, outputMetadata) = await GenerateOutputMetadata(context, file, tocMap, inputMetadata, outputModel);
+            var (errors, isPage, (pageMetadata, pageModel), (inputMetadata, metadataObject)) = await Load(context, file);
+            var (generateErrors, outputMetadata) = await GenerateOutputMetadata(context, file, tocMap, inputMetadata, pageMetadata);
             errors.AddRange(generateErrors);
 
-            var mergedOutputMetadata = new JObject();
-            JsonUtility.Merge(mergedOutputMetadata, metadataObject);
-            JsonUtility.Merge(mergedOutputMetadata, JsonUtility.ToJObject(outputMetadata));
             var outputPath = file.GetOutputPath(outputMetadata.Monikers, file.Docset.SiteBasePath, isPage);
 
             object output = null;
             JObject metadata = null;
             if (isPage)
             {
-                (output, metadata) = ApplyPageTemplate(context, file, mergedOutputMetadata, outputMetadata.Conceptual);
+                var mergedOutputModel = new JObject();
+                JsonUtility.Merge(mergedOutputModel, metadataObject);
+                JsonUtility.Merge(mergedOutputModel, JsonUtility.ToJObject(outputMetadata));
+                JsonUtility.Merge(mergedOutputModel, pageModel);
+                (output, metadata) = ApplyPageTemplate(context, file, mergedOutputModel, pageModel.Value<string>("conceptual"));
             }
             else
             {
                 // todo: support data page template
-                output = mergedOutputMetadata;
+                output = pageModel;
                 metadata = null;
             }
 
@@ -75,12 +77,12 @@ namespace Microsoft.Docs.Build
             return errors;
         }
 
-        private static async Task<(List<Error>, OutputModel)> GenerateOutputMetadata(
+        private static async Task<(List<Error>, OutputMetadata)> GenerateOutputMetadata(
                 Context context,
                 Document file,
                 TableOfContentsMap tocMap,
                 InputMetadata inputMetadata,
-                OutputModel outputMetadata)
+                OutputMetadata outputMetadata)
         {
             var errors = new List<Error>();
             if (!string.IsNullOrEmpty(inputMetadata.BreadcrumbPath))
@@ -121,7 +123,7 @@ namespace Microsoft.Docs.Build
             return (errors, outputMetadata);
         }
 
-        private static async Task<(List<Error> errors, bool isPage, OutputModel model, (InputMetadata, JObject) inputMetadata)>
+        private static async Task<(List<Error> errors, bool isPage, (OutputMetadata metadata, JObject model) output, (InputMetadata, JObject) inputMetadata)>
             Load(Context context, Document file)
         {
             if (file.FilePath.EndsWith(".md", PathUtility.PathComparison))
@@ -137,7 +139,7 @@ namespace Microsoft.Docs.Build
             return await LoadJson(context, file);
         }
 
-        private static (List<Error> errors, bool isPage, OutputModel model, (InputMetadata, JObject) inputMetadata)
+        private static (List<Error> errors, bool isPage, (OutputMetadata metadata, JObject model) output, (InputMetadata, JObject) inputMetadata)
             LoadMarkdown(Context context, Document file)
         {
             var errors = new List<Error>();
@@ -163,20 +165,24 @@ namespace Microsoft.Docs.Build
             var (metadataErrors, metadataObject, inputMetadata) = context.MetadataProvider.GetMetadata(file);
             errors.AddRange(metadataErrors);
 
-            var pageModel = new OutputModel();
+            var pageMetadata = new OutputMetadata();
 
-            pageModel.Conceptual = HtmlUtility.HtmlPostProcess(htmlDom, file.Docset.Culture);
-            pageModel.Title = inputMetadata.Title ?? title;
-            pageModel.RawTitle = rawTitle;
-            pageModel.WordCount = wordCount;
-            pageModel.SchemaType = "Conceptual";
+            pageMetadata.Title = inputMetadata.Title ?? title;
+            pageMetadata.RawTitle = rawTitle;
+            pageMetadata.SchemaType = "Conceptual";
+
+            var pageModel = new JObject
+            {
+                ["conceptual"] = HtmlUtility.HtmlPostProcess(htmlDom, file.Docset.Culture),
+                ["wordCount"] = wordCount,
+            };
 
             context.BookmarkValidator.AddBookmarks(file, bookmarks);
 
-            return (errors, true, pageModel, (inputMetadata, metadataObject));
+            return (errors, true, (pageMetadata, pageModel), (inputMetadata, metadataObject));
         }
 
-        private static async Task<(List<Error> errors, bool isPage, OutputModel model, (InputMetadata, JObject) inputMetadata)>
+        private static async Task<(List<Error> errors, bool isPage, (OutputMetadata metadata, JObject model) output, (InputMetadata, JObject) inputMetadata)>
             LoadYaml(Context context, Document file)
         {
             var (errors, token) = YamlUtility.Parse(file, context);
@@ -184,7 +190,7 @@ namespace Microsoft.Docs.Build
             return await LoadSchemaDocument(context, errors, token, file);
         }
 
-        private static async Task<(List<Error> errors, bool isPage, OutputModel model, (InputMetadata, JObject) inputMetadata)>
+        private static async Task<(List<Error> errors, bool isPage, (OutputMetadata metadata, JObject model) output, (InputMetadata, JObject) inputMetadata)>
             LoadJson(Context context, Document file)
         {
             var (errors, token) = JsonUtility.Parse(file, context);
@@ -192,7 +198,7 @@ namespace Microsoft.Docs.Build
             return await LoadSchemaDocument(context, errors, token, file);
         }
 
-        private static async Task<(List<Error> errors, bool isPage, OutputModel model, (InputMetadata, JObject) inputMetadata)>
+        private static async Task<(List<Error> errors, bool isPage, (OutputMetadata metadata, JObject model) output, (InputMetadata, JObject) inputMetadata)>
             LoadSchemaDocument(Context context, List<Error> errors, JToken token, Document file)
         {
             var obj = token as JObject;
@@ -214,8 +220,8 @@ namespace Microsoft.Docs.Build
             var (metaErrors, metadataObject, inputMetadata) = context.MetadataProvider.GetMetadata(file);
             errors.AddRange(metaErrors);
 
-            var conceptual = (string)null;
-            var pageModel = new OutputModel();
+            var pageMetadata = new OutputMetadata();
+            var pageModel = transformedToken;
 
             if (file.Docset.Legacy && TemplateEngine.IsLandingData(file.Mime))
             {
@@ -226,27 +232,17 @@ namespace Microsoft.Docs.Build
                 var landingData = (LandingData)content;
                 JsonUtility.Merge(metadataObject, landingData.ExtensionData);
 
-                if (file.Docset.Legacy)
+                pageModel = new JObject()
                 {
-                    var html = await RazorTemplate.Render(file.Mime, content);
-                    conceptual = HtmlUtility.LoadHtml(html).HtmlPostProcess(file.Docset.Culture);
-                }
+                    ["conceptual"] = HtmlUtility.LoadHtml(await RazorTemplate.Render(file.Mime, content)).HtmlPostProcess(file.Docset.Culture),
+                };
             }
 
-            if (conceptual != null)
-            {
-                pageModel.Conceptual = conceptual;
-            }
-            else
-            {
-                pageModel.Content = transformedToken;
-            }
+            pageMetadata.Title = inputMetadata.Title ?? obj?.Value<string>("title");
+            pageMetadata.RawTitle = file.Docset.Legacy ? $"<h1>{obj?.Value<string>("title")}</h1>" : null;
+            pageMetadata.SchemaType = file.Mime;
 
-            pageModel.Title = inputMetadata.Title ?? obj?.Value<string>("title");
-            pageModel.RawTitle = file.Docset.Legacy ? $"<h1>{obj?.Value<string>("title")}</h1>" : null;
-            pageModel.SchemaType = file.Mime;
-
-            return (errors, !TemplateEngine.IsData(file.Mime), pageModel, (inputMetadata, metadataObject));
+            return (errors, !TemplateEngine.IsData(file.Mime), (pageMetadata, pageModel as JObject), (inputMetadata, metadataObject));
         }
 
         private static (object model, JObject metadata) ApplyPageTemplate(Context context, Document file, JObject output, string conceptual)
