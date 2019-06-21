@@ -13,16 +13,22 @@ outputs:
   docs/a.json: |
     { "key": "header", "KEY": "HEADER" }
 ---
-# Preserve null custom metadata
+# Preserve custom metadata
+# read-only metadata will be kept as user input, no matter they are known by docfx or not, like uid
+# overwritable metadta will be overwritten by docfx when the input is valid, otherwise it's will not be changed
 inputs:
   docfx.yml:
   docs/a.md: |
     ---
     ms.custom-metadata:
+    uid:
+    breadcrumb_path: "/breadcrumb_path"
+    author: xxx
     ---
+    # Title
 outputs:
   docs/a.json: |
-    { "ms.custom-metadata": null }
+    { "ms.custom-metadata": null, "author":"xxx", "uid": null, "breadcrumb_path": "/breadcrumb_path", "title": "Title"}
 ---
 # Overwrite global metadata with null in yaml header
 inputs:
@@ -42,12 +48,12 @@ inputs:
   docfx.yml:
   docs/a.md: |
     ---
-    locale: {}
+    title: {}
     ---
 outputs:
   .errors.log: |
-    ["error","violate-schema","Expected type String, please input String or type compatible with String.","docs/a.md",2,9]
-    ["error","invalid-metadata-type","Metadata 'locale' can only be a scalar value or string array","docs/a.md",2,9]
+    ["error","violate-schema","Expected type String, please input String or type compatible with String.","docs/a.md",2,8]
+    ["error","invalid-metadata-type","Metadata 'title' can only be a scalar value or string array","docs/a.md",2,8]
 ---
 # Report error for invalid yaml header value type as array
 inputs:
