@@ -112,19 +112,15 @@ namespace Microsoft.Docs.Build
 
                 case JArray array:
 
+                    if (schema.Items == null || schema.ContentType != JsonSchemaContentType.None)
+                        return array;
+
                     var newArray = new JArray();
                     JsonUtility.SetSourceInfo(newArray, sourceInfo);
                     foreach (var item in array)
                     {
-                        if (schema.Items != null)
-                        {
-                            var newItem = Traverse(schema.Items, item, transform);
-                            newArray.Add(newItem);
-                        }
-                        else
-                        {
-                            newArray.Add(item);
-                        }
+                        var newItem = Traverse(schema.Items, item, transform);
+                        newArray.Add(newItem);
                     }
 
                     return newArray;
@@ -174,7 +170,7 @@ namespace Microsoft.Docs.Build
 
         private JToken TransformScalar(JsonSchema schema, Document file, Context context, JValue value, List<Error> errors)
         {
-            if (value.Type == JTokenType.Null)
+            if (value.Type == JTokenType.Null || schema.ContentType == JsonSchemaContentType.None)
             {
                 return value;
             }
