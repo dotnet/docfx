@@ -299,7 +299,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     // DHS appends branch infomation from cookie cache to URL, which is wrong for UID resolved URL
                     // output xref map with URL appending "?branch=master" for master branch
                     Href = context.UpdateHref(xref.Href, RelativePath.WorkingFolder) 
-                            + (Environment.ExpandEnvironmentVariables("branch").Equals("master", StringComparison.OrdinalIgnoreCase) ? "?branch=master" : "")
+                            + (Environment.GetEnvironmentVariable("branch").Equals("master", StringComparison.OrdinalIgnoreCase) ? "?branch=master" : "")
                  }).ToList();
             xrefMap.Sort();
             string xrefMapFileNameWithVersion = GetXrefMapFileNameWithGroup(parameters);
