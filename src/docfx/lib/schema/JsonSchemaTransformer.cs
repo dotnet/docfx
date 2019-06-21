@@ -59,7 +59,7 @@ namespace Microsoft.Docs.Build
                     {
                         if (schema.XrefProperties.Contains(key))
                         {
-                            var propertySchema = TryGetPropertyJsonSchema(schema, key, out var subSchema) ? subSchema : null;
+                            var propertySchema = schema.Properties.TryGetValue(key, out var subSchema) ? subSchema : null;
                             xrefPropertiesGroupByUid[uid].Item2[key] = new Lazy<JToken>(
                             () =>
                             {
@@ -120,35 +120,13 @@ namespace Microsoft.Docs.Build
                 case JObject obj:
                     foreach (var (key, value) in obj)
                     {
-                        if (!transformedKeys.Contains(key) && TryGetPropertyJsonSchema(schema, key, out var propertySchema))
+                        if (!transformedKeys.Contains(key) && schema.Properties.TryGetValue(key, out var propertySchema))
                         {
                             Traverse(propertySchema, value, transform);
                         }
                     }
                     break;
             }
-        }
-
-        private static bool TryGetPropertyJsonSchema(JsonSchema jsonSchema, string key, out JsonSchema propertySchema)
-        {
-            propertySchema = null;
-            if (jsonSchema == null)
-            {
-                return false;
-            }
-
-            if (jsonSchema.Properties.TryGetValue(key, out propertySchema))
-            {
-                return true;
-            }
-
-            if (jsonSchema.AdditionalProperties.additionalPropertyJsonSchema != null)
-            {
-                propertySchema = jsonSchema.AdditionalProperties.additionalPropertyJsonSchema;
-                return true;
-            }
-
-            return false;
         }
 
         private JToken TransformScalar(JsonSchema schema, Document file, Context context, JValue value, List<Error> errors)
