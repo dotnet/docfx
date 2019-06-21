@@ -245,7 +245,7 @@ namespace Microsoft.Docs.Build
             pageMetadata.RawTitle = file.Docset.Legacy ? $"<h1>{obj?.Value<string>("title")}</h1>" : null;
             pageMetadata.SchemaType = file.Mime;
 
-            return (errors, !TemplateEngine.IsData(file.Mime), (pageMetadata, transformedToken as JObject), (inputMetadata, metadataObject));
+            return (errors, !TemplateEngine.IsData(file.Mime), (pageMetadata, pageModel as JObject), (inputMetadata, metadataObject));
         }
 
         private static (object model, JObject metadata) ApplyPageTemplate(Context context, Document file, JObject output, string conceptual)
