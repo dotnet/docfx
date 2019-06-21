@@ -3,13 +3,22 @@
 
 using System.Collections.Generic;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 
 namespace Microsoft.Docs.Build
 {
     [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
-    public class OutputModel : InputMetadata
+    public class OutputModel
     {
+        public string Locale { get; set; }
+
+        public string Title { get; set; }
+
+        public string Author { get; set; }
+
+        public string BreadcrumbPath { get; set; }
+
         [JsonIgnore]
         public string SchemaType { get; set; }
 

@@ -58,13 +58,13 @@ namespace Microsoft.Docs.Build
         public static (
             List<Error> errors,
             TableOfContentsModel model,
-            List<(Document doc, string href)> referencedDocuments,
+            List<Document> referencedDocuments,
             List<Document> referencedTocs)
 
             Load(Context context, Document fileToBuild)
         {
             var errors = new List<Error>();
-            var referencedDocuments = new List<(Document doc, string href)>();
+            var referencedDocuments = new List<Document>();
             var referencedTocs = new List<Document>();
 
             // load toc model
@@ -83,15 +83,15 @@ namespace Microsoft.Docs.Build
                     }
                     return (referencedTocContent, referencedToc);
                 },
-                (file, href, resultRelativeTo) =>
+                (file, href, relativeToFile) =>
                 {
-                    var (error, link, buildItem) = context.DependencyResolver.ResolveLink(href, file, resultRelativeTo);
+                    var (error, link, buildItem) = context.DependencyResolver.ResolveRelativeLink(relativeToFile, href, file);
                     errors.AddIfNotNull(error);
 
                     if (buildItem != null)
                     {
                         // add to referenced document list
-                        referencedDocuments.Add((buildItem, link));
+                        referencedDocuments.Add(buildItem);
                     }
                     return (link, buildItem);
                 },
@@ -99,12 +99,12 @@ namespace Microsoft.Docs.Build
                 {
                     // add to referenced document list
                     // TODO: pass line info into ResolveXref
-                    var (error, link, display, xrefSpec) = context.DependencyResolver.ResolveXref(uid, file, file);
+                    var (error, link, display, xrefSpec) = context.DependencyResolver.ResolveRelativeXref(file, uid, file);
                     errors.AddIfNotNull(error);
 
                     if (xrefSpec?.DeclairingFile != null)
                     {
-                        referencedDocuments.Add((xrefSpec?.DeclairingFile, link));
+                        referencedDocuments.Add(xrefSpec?.DeclairingFile);
                     }
 
                     return (link, display, xrefSpec?.DeclairingFile);
