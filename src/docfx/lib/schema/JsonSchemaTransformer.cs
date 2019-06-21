@@ -197,7 +197,7 @@ namespace Microsoft.Docs.Build
 
                 case JsonSchemaContentType.Xref:
 
-                    var (xrefError, xrefLink, _, xrefSpec) = context.LinkResolver.ResolveXref(content, file);
+                    var (xrefError, xrefLink, _, xrefSpec) = context.LinkResolver.ResolveAbsoluteXref(content, file);
 
                     if (xrefSpec is InternalXrefSpec internalSpec)
                     {

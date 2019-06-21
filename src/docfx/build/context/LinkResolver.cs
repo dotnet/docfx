@@ -77,7 +77,7 @@ namespace Microsoft.Docs.Build
 
         public (Error error, string href, string display, IXrefSpec spec) ResolveRelativeXref(Document relativeToFile, SourceInfo<string> href, Document declaringFile)
         {
-            var (error, link, display, spec) = ResolveXref(href, declaringFile);
+            var (error, link, display, spec) = ResolveAbsoluteXref(href, declaringFile);
 
             if (spec?.DeclairingFile != null)
             {
@@ -87,7 +87,7 @@ namespace Microsoft.Docs.Build
             return (error, link, display, spec);
         }
 
-        public (Error error, string href, string display, IXrefSpec spec) ResolveXref(SourceInfo<string> href, Document declaringFile)
+        public (Error error, string href, string display, IXrefSpec spec) ResolveAbsoluteXref(SourceInfo<string> href, Document declaringFile)
         {
             var (uid, query, fragment) = UrlUtility.SplitUrl(href);
             string moniker = null;
@@ -144,7 +144,7 @@ namespace Microsoft.Docs.Build
             if (href.Value.StartsWith("xref:"))
             {
                 var uid = new SourceInfo<string>(href.Value.Substring("xref:".Length), href);
-                var (uidError, uidHref, _, xrefSpec) = ResolveXref(uid, declaringFile);
+                var (uidError, uidHref, _, xrefSpec) = ResolveAbsoluteXref(uid, declaringFile);
                 var xrefLinkType = xrefSpec?.DeclairingFile != null ? LinkType.RelativePath : LinkType.External;
 
                 return (uidError, uidHref, null, xrefLinkType, xrefSpec?.DeclairingFile);
