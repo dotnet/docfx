@@ -210,7 +210,7 @@ namespace Microsoft.Docs.Build
 
                     if (xrefSpec is InternalXrefSpec internalSpec)
                     {
-                        xrefSpec = internalSpec.ToExternalXrefSpec(context, file);
+                        xrefSpec = internalSpec.ToExternalXrefSpec(context, file, forOutput: false);
                     }
                     errors.AddIfNotNull(xrefError);
 
