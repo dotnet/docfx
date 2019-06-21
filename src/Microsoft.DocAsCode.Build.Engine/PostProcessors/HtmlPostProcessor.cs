@@ -28,7 +28,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         public ImmutableDictionary<string, object> PrepareMetadata(ImmutableDictionary<string, object> metadata)
         {
             Handlers.Add(new ValidateBookmark());
-            if (!metadata.ContainsKey("_enableDebugInfo") || ((bool)metadata["_enableDebugInfo"]) == false)
+            if (!metadata.ContainsKey("_keepDebugInfo") || ((bool)metadata["_keepDebugInfo"]) == false)
             {
                 Handlers.Add(new RemoveDebugInfo());
             }

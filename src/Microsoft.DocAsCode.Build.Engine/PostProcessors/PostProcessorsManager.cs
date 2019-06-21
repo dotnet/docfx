@@ -94,10 +94,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 new PostProcessor
                 {
                     ContractName = "html",
-                    Processor = new HtmlPostProcessor
-                    {
-                      
-                    }
+                    Processor = new HtmlPostProcessor()
                 });
         }
 
