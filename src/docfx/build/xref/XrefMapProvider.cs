@@ -4,13 +4,18 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 
 namespace Microsoft.Docs.Build
 {
     internal class XrefMapProvider
     {
         private Lazy<IReadOnlyDictionary<string, Lazy<ExternalXrefSpec>>> _externalXrefMap;
+
+        // uid --> internal xref specs sorted by moniker
         private Lazy<IReadOnlyDictionary<string, InternalXrefSpec[]>> _internalXrefMap;
+
+        private static ThreadLocal<Stack<string>> t_recursionDetector = new ThreadLocal<Stack<string>>(() => new Stack<string>());
 
         public void Initialize(Context context, Docset docset)
         {
@@ -21,19 +26,20 @@ namespace Microsoft.Docs.Build
                 () => InternalXrefMapBuilder.Build(context, docset));
         }
 
-        public (Error error, IXrefSpec[] xrefSpecs) GetXrefSpec(SourceInfo<string> uid)
+        public (Error error, IXrefSpec xrefSpec) ResolveXrefSpec(SourceInfo<string> uid, string moniker = null)
         {
-            if (_internalXrefMap.Value.TryGetValue(uid, out var internalXrefSpecs))
+            var result = ResolveInternalXrefSpec(uid, moniker);
+            if (result != null)
             {
-                return (null, internalXrefSpecs);
+                return (null, result);
             }
 
             if (_externalXrefMap.Value.TryGetValue(uid, out var externalXrefSpec))
             {
-                return (null, new IXrefSpec[] { externalXrefSpec.Value });
+                return (null, externalXrefSpec.Value);
             }
 
-            return (Errors.XrefNotFound(uid), Array.Empty<IXrefSpec>());
+            return (Errors.XrefNotFound(uid), null);
         }
 
         public XrefMapModel BuildXrefMap()
@@ -46,6 +52,47 @@ namespace Microsoft.Docs.Build
             }
 
             return model;
+        }
+
+        private IXrefSpec ResolveInternalXrefSpec(SourceInfo<string> uid, string moniker)
+        {
+            var recursionDetector = t_recursionDetector.Value;
+            if (recursionDetector.Contains(uid))
+            {
+                throw Errors.CircularReference(recursionDetector).ToException();
+            }
+
+            try
+            {
+                recursionDetector.Push(uid);
+
+                return ResolveInternalXrefSpecCore(uid, moniker);
+            }
+            finally
+            {
+                recursionDetector.Pop();
+            }
+        }
+
+        private IXrefSpec ResolveInternalXrefSpecCore(SourceInfo<string> uid, string moniker)
+        {
+            if (!_internalXrefMap.Value.TryGetValue(uid, out var specs))
+            {
+                return null;
+            }
+
+            if (!string.IsNullOrEmpty(moniker))
+            {
+                foreach (var spec in specs)
+                {
+                    if (spec.Monikers.Contains(moniker))
+                    {
+                        return spec;
+                    }
+                }
+            }
+
+            return specs.Length > 0 ? specs[0] : null;
         }
     }
 }

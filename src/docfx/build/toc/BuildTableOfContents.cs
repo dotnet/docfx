@@ -99,15 +99,15 @@ namespace Microsoft.Docs.Build
                 {
                     // add to referenced document list
                     // TODO: pass line info into ResolveXref
-                    var (error, link, display, xrefSpec) = context.DependencyResolver.ResolveRelativeXref(file, uid, file);
+                    var (error, link, display, xrefFile) = context.DependencyResolver.ResolveRelativeXref(file, uid, file);
                     errors.AddIfNotNull(error);
 
-                    if (xrefSpec?.DeclairingFile != null)
+                    if (xrefFile != null)
                     {
-                        referencedDocuments.Add(xrefSpec?.DeclairingFile);
+                        referencedDocuments.Add(xrefFile);
                     }
 
-                    return (link, display, xrefSpec?.DeclairingFile);
+                    return (link, display, xrefFile);
                 },
                 (document) =>
                 {

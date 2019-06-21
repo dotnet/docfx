@@ -24,7 +24,10 @@ namespace Microsoft.Docs.Build
                     Progress.Update);
             }
 
-            return result.ToList().GroupBy(item => item.Uid).ToDictionary(g => g.Key, g => g.ToArray());
+            return result
+                .ToList()
+                .GroupBy(item => item.Uid)
+                .ToDictionary(g => g.Key, g => AggregateXrefSpecs(context, g.Key, g.ToArray()));
         }
 
         private static void Load(Context context, ListBuilder<InternalXrefSpec> xrefs, Document file)
@@ -156,6 +159,56 @@ namespace Microsoft.Docs.Build
                     }
                 }
             }
+        }
+
+        private static InternalXrefSpec[] AggregateXrefSpecs(Context context, string uid, InternalXrefSpec[] specsWithSameUid)
+        {
+            // no conflicts
+            if (specsWithSameUid.Length <= 1)
+            {
+                return specsWithSameUid;
+            }
+
+            // multiple uid conflicts without moniker range definition, drop the uid and log an error
+            var conflictsWithoutMoniker = specsWithSameUid.Where(item => item.Monikers.Length == 0).ToArray();
+            if (conflictsWithoutMoniker.Length > 1)
+            {
+                var orderedConflict = conflictsWithoutMoniker.OrderBy(item => item.Href);
+                context.ErrorLog.Write(Errors.UidConflict(uid, orderedConflict.Select(x => x.DeclairingFile.FilePath)));
+                return Array.Empty<InternalXrefSpec>();
+            }
+
+            // uid conflicts with overlapping monikers, drop the uid and log an error
+            var conflictsWithMoniker = specsWithSameUid.Where(x => x.Monikers.Length > 0).ToArray();
+            if (CheckOverlappingMonikers(specsWithSameUid, out var overlappingMonikers))
+            {
+                context.ErrorLog.Write(Errors.MonikerOverlapping(overlappingMonikers));
+                return Array.Empty<InternalXrefSpec>();
+            }
+
+            // Sort by monikers
+            return conflictsWithoutMoniker.Concat(
+                conflictsWithMoniker.OrderByDescending(
+                    spec => spec.Monikers[0], context.MonikerProvider.Comparer)).ToArray();
+        }
+
+        private static bool CheckOverlappingMonikers(IXrefSpec[] specsWithSameUid, out HashSet<string> overlappingMonikers)
+        {
+            var isOverlapping = false;
+            overlappingMonikers = new HashSet<string>();
+            var monikerHashSet = new HashSet<string>();
+            foreach (var spec in specsWithSameUid)
+            {
+                foreach (var moniker in spec.Monikers)
+                {
+                    if (!monikerHashSet.Add(moniker))
+                    {
+                        overlappingMonikers.Add(moniker);
+                        isOverlapping = true;
+                    }
+                }
+            }
+            return isOverlapping;
         }
     }
 }

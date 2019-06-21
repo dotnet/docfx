@@ -105,14 +105,14 @@ namespace Microsoft.Docs.Build
         internal static (Error error, string href, string display, Document file) ResolveXref(string href, MarkdownObject origin)
         {
             // TODO: now markdig engine combines all kinds of reference with inclusion, we need to split them out
-            var (error, link, display, spec) = t_status.Value.Peek().Context.DependencyResolver.ResolveXref(new SourceInfo<string>(href, origin.ToSourceInfo()), (Document)InclusionContext.File);
+            var (error, link, display, file) = t_status.Value.Peek().Context.DependencyResolver.ResolveXref(new SourceInfo<string>(href, origin.ToSourceInfo()), (Document)InclusionContext.File);
 
-            if (spec?.DeclairingFile != null)
+            if (file != null)
             {
                 link = RelativeUrlMarker + link;
             }
 
-            return (error, link, display, spec?.DeclairingFile);
+            return (error, link, display, file);
         }
 
         private static MarkdownPipeline CreateMarkdownPipeline()

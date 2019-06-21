@@ -206,13 +206,13 @@ namespace Microsoft.Docs.Build
 
                 case JsonSchemaContentType.Xref:
 
-                    var (xrefError, xrefLink, _, xrefSpec) = context.DependencyResolver.ResolveXref(content, file);
+                    var (xrefError, xrefSpec) = context.XrefMapProvider.ResolveXrefSpec(content);
+                    errors.AddIfNotNull(xrefError);
 
                     if (xrefSpec is InternalXrefSpec internalSpec)
                     {
                         xrefSpec = internalSpec.ToExternalXrefSpec();
                     }
-                    errors.AddIfNotNull(xrefError);
 
                     if (xrefSpec != null)
                     {

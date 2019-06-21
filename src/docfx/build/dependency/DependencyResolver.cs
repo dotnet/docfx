@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Web;
 using Microsoft.DocAsCode.MarkdigEngine.Extensions;
+using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -75,19 +76,19 @@ namespace Microsoft.Docs.Build
             return (error, link, file);
         }
 
-        public (Error error, string href, string display, IXrefSpec spec) ResolveRelativeXref(Document relativeToFile, SourceInfo<string> href, Document declaringFile)
+        public (Error error, string href, string display, Document file) ResolveRelativeXref(Document relativeToFile, SourceInfo<string> href, Document declaringFile)
         {
-            var (error, link, display, spec) = ResolveXref(href, declaringFile);
+            var (error, link, display, file) = ResolveXref(href, declaringFile);
 
-            if (spec?.DeclairingFile != null)
+            if (file != null)
             {
                 link = UrlUtility.GetRelativeUrl(relativeToFile.SiteUrl, link);
             }
 
-            return (error, link, display, spec);
+            return (error, link, display, file);
         }
 
-        public (Error error, string href, string display, IXrefSpec spec) ResolveXref(SourceInfo<string> href, Document declaringFile)
+        public (Error error, string href, string display, Document file) ResolveXref(SourceInfo<string> href, Document declaringFile)
         {
             var (uid, query, fragment) = UrlUtility.SplitUrl(href);
             string moniker = null;
@@ -97,15 +98,21 @@ namespace Microsoft.Docs.Build
                 queries = HttpUtility.ParseQueryString(query);
                 moniker = queries?["view"];
             }
-            var displayProperty = queries?["displayProperty"];
 
             // need to url decode uid from input content
-            var (error, xrefSpec) = _xrefMap.Value.GetXrefSpec(Uri.UnescapeDataString(uid));
-
-            if (xrefSpec?.DeclairingFile != null)
+            var (error, xrefSpec) = _xrefMap.Value.ResolveXrefSpec(new SourceInfo<string>(Uri.UnescapeDataString(uid), href));
+            if (xrefSpec == null)
             {
-                _dependencyMapBuilder.AddDependencyItem(declaringFile, xrefSpec?.DeclairingFile, DependencyType.UidInclusion);
+                return (error, href, "", null);
             }
+
+            var file = xrefSpec.DeclairingFile;
+            if (file != null)
+            {
+                _dependencyMapBuilder.AddDependencyItem(declaringFile, file, DependencyType.UidInclusion);
+            }
+
+            var resolvedHref = xrefSpec.Href;
 
             if (!string.IsNullOrEmpty(resolvedHref))
             {
@@ -113,7 +120,17 @@ namespace Microsoft.Docs.Build
                 resolvedHref = UrlUtility.MergeUrl(resolvedHref, monikerQuery, fragment.Length == 0 ? "" : fragment.Substring(1));
             }
 
-            return (error, resolvedHref, display, xrefSpec);
+            var displayProperty = queries?["displayProperty"];
+            var display = GetXrefPropertyAsString(xrefSpec, displayProperty)
+                       ?? GetXrefPropertyAsString(xrefSpec, "name")
+                       ?? GetXrefPropertyAsString(xrefSpec, "title");
+
+            return (error, resolvedHref, display, file);
+
+            string GetXrefPropertyAsString(IXrefSpec spec, string key)
+            {
+                return spec.GetXrefProperty(key) is JValue value && value.Value is string str ? str : null;
+            }
         }
 
         private (Error error, string content, Document file) TryResolveContent(Document declaringFile, SourceInfo<string> href)
@@ -144,10 +161,10 @@ namespace Microsoft.Docs.Build
             if (href.Value.StartsWith("xref:"))
             {
                 var uid = new SourceInfo<string>(href.Value.Substring("xref:".Length), href);
-                var (uidError, uidHref, _, xrefSpec) = ResolveXref(uid, declaringFile);
-                var xrefLinkType = xrefSpec?.DeclairingFile != null ? LinkType.RelativePath : LinkType.External;
+                var (uidError, uidHref, _, uidFile) = ResolveXref(uid, declaringFile);
+                var xrefLinkType = uidFile != null ? LinkType.RelativePath : LinkType.External;
 
-                return (uidError, uidHref, null, xrefLinkType, xrefSpec?.DeclairingFile);
+                return (uidError, uidHref, null, xrefLinkType, uidFile);
             }
 
             var decodedHref = new SourceInfo<string>(Uri.UnescapeDataString(href), href);
