@@ -90,7 +90,7 @@ namespace Microsoft.Docs.Build
             var errors = new List<Error>();
             if (!string.IsNullOrEmpty(inputMetadata.BreadcrumbPath))
             {
-                var (breadcrumbError, breadcrumbPath, _) = context.DependencyResolver.ResolveRelativeLink(file, inputMetadata.BreadcrumbPath, file);
+                var (breadcrumbError, breadcrumbPath, _) = context.LinkResolver.ResolveRelativeLink(file, inputMetadata.BreadcrumbPath, file);
                 errors.AddIfNotNull(breadcrumbError);
                 outputMetadata.BreadcrumbPath = breadcrumbPath;
             }
