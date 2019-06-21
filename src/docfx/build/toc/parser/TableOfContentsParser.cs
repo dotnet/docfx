@@ -284,7 +284,7 @@ namespace Microsoft.Docs.Build
                 // process uid first
                 if (!string.IsNullOrEmpty(uid))
                 {
-                    var (uidError, uidLink, display, xrefSpec) = context.DependencyResolver.ResolveXref(uid, filePath, rootPath);
+                    var (uidError, uidLink, display, xrefSpec) = context.DependencyResolver.ResolveXref(uid, filePath);
                     errors.AddIfNotNull(uidError);
 
                     if (xrefSpec?.DeclairingFile != null)
@@ -307,7 +307,7 @@ namespace Microsoft.Docs.Build
                 var topicHrefType = GetHrefType(topicHref);
                 Debug.Assert(topicHrefType == TocHrefType.AbsolutePath || !IsIncludeHref(topicHrefType));
 
-                var (error, link, resolvedFile) = context.DependencyResolver.ResolveLink(topicHref, filePath, rootPath);
+                var (error, link, resolvedFile) = context.DependencyResolver.ResolveLink(topicHref, filePath);
                 errors.AddIfNotNull(error);
 
                 if (resolvedFile != null)
