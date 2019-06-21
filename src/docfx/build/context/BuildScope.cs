@@ -19,8 +19,6 @@ namespace Microsoft.Docs.Build
 
         public HashSet<Document> Files { get; }
 
-        public HashSet<Document> FilesAndFallbackFiles { get; }
-
         public RedirectionMap Redirections { get; }
 
         public BuildScope(ErrorLog errorLog, Docset docset)
@@ -31,17 +29,17 @@ namespace Microsoft.Docs.Build
 
             var (fileNames, files) = GetFiles(docset, _glob);
 
-            _fileNames = fileNames;
-
-            Redirections = RedirectionMap.Create(errorLog, docset, _glob);
-
-            Files = files.Concat(Redirections.Files).ToHashSet();
-
             var fallbackFiles = docset.FallbackDocset != null
                 ? GetFiles(docset.FallbackDocset, CreateGlob(docset.FallbackDocset.Config)).files
                 : Enumerable.Empty<Document>();
 
-            FilesAndFallbackFiles = Files.Concat(fallbackFiles.Where(file => !_fileNames.Contains(file.FilePath))).ToHashSet();
+            _fileNames = fileNames;
+
+            Redirections = RedirectionMap.Create(errorLog, docset, _glob);
+
+            Files = files.Concat(fallbackFiles.Where(file => !_fileNames.Contains(file.FilePath)))
+                         .Concat(Redirections.Files)
+                         .ToHashSet();
         }
 
         public bool GetActualFileName(string fileName, out string actualFileName)

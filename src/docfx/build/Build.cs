@@ -59,7 +59,7 @@ namespace Microsoft.Docs.Build
 
                 using (Progress.Start("Building files"))
                 {
-                    await context.BuildQueue.Drain(item => BuildFile(context, item, docset, tocMap), Progress.Update);
+                    await context.BuildQueue.Drain(item => BuildFile(context, item, tocMap), Progress.Update);
                 }
 
                 context.GitCommitProvider.SaveGitCommitCache();
@@ -102,38 +102,26 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static async Task BuildFile(Context context, Document file, Docset docset, TableOfContentsMap tocMap)
+        private static async Task BuildFile(Context context, Document file, TableOfContentsMap tocMap)
         {
-            // source content in a localization docset
-            if (file.ContentType != ContentType.TableOfContents && docset.IsLocalized() && !file.Docset.IsLocalized())
-            {
-                return;
-            }
-
-            if (file.ContentType == ContentType.TableOfContents && !tocMap.Contains(file))
-            {
-                return;
-            }
-
             try
             {
-                var publishItem = default(PublishItem);
                 var errors = Enumerable.Empty<Error>();
 
                 switch (file.ContentType)
                 {
-                    case ContentType.Resource:
-                        (errors, publishItem) = BuildResource.Build(context, file);
+                    case ContentType.Resource when !file.Docset.IsFallback():
+                        errors = BuildResource.Build(context, file);
                         break;
-                    case ContentType.Page:
-                        (errors, publishItem) = await BuildPage.Build(context, file, tocMap);
+                    case ContentType.Page when !file.Docset.IsFallback():
+                        errors = await BuildPage.Build(context, file, tocMap);
                         break;
                     case ContentType.TableOfContents:
                         // TODO: improve error message for toc monikers overlap
-                        (errors, publishItem) = BuildTableOfContents.Build(context, file, tocMap);
+                        errors = BuildTableOfContents.Build(context, file, tocMap);
                         break;
-                    case ContentType.Redirection:
-                        (errors, publishItem) = BuildRedirection.Build(context, file);
+                    case ContentType.Redirection when !file.Docset.IsFallback():
+                        errors = BuildRedirection.Build(context, file);
                         break;
                 }
 

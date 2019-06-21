@@ -11,10 +11,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class BuildPage
     {
-        public static async Task<(IEnumerable<Error> errors, PublishItem publishItem)> Build(
-            Context context,
-            Document file,
-            TableOfContentsMap tocMap)
+        public static async Task<IEnumerable<Error>> Build(Context context, Document file, TableOfContentsMap tocMap)
         {
             Debug.Assert(file.ContentType == ContentType.Page);
 
@@ -75,7 +72,7 @@ namespace Microsoft.Docs.Build
                 errors.Add(Errors.Custom404Page(file.FilePath));
             }
 
-            return (errors, publishItem);
+            return errors;
         }
 
         private static async Task<(List<Error>, OutputModel)> GenerateOutputMetadata(
