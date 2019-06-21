@@ -61,7 +61,7 @@ outputs:
 ---
 # Define uid in conceptual, resolve it
 repos:
-  https://docs.com/test#live:
+  https://docs.com/test-uid-conceptual#live:
     - files:
         docfx.yml:
         docs/a.md: |
@@ -203,7 +203,7 @@ outputs:
 ---
 # Resolve xref in SDP
 repos:
-  https://docs.com/test#live:
+  https://docs.com/test-xref-sdp#live:
     - files:
         docfx.yml:
         docs/a.json: |
@@ -837,7 +837,7 @@ outputs:
 ---
 # support non-leaf nodes for xref properties
 repos:
-  https://docs.com/test#live:
+  https://docs.com/test-non-leaf-xref#live:
     - files:
         docfx.yml:
         docs/a.yml: |
