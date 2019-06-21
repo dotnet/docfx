@@ -87,7 +87,6 @@ namespace Microsoft.Docs.Build
                 }
 
                 var transformedScalar = TransformScalar(subSchema, file, context, node as JValue, errors);
-                JsonUtility.SetSourceInfo(transformedScalar, JsonUtility.GetSourceInfo(node));
                 return (default, transformedScalar);
             });
         }
@@ -95,7 +94,6 @@ namespace Microsoft.Docs.Build
         private JToken Traverse(JsonSchema schema, JToken token, Func<JsonSchema, JToken, (string[], JToken)> transform)
         {
             schema = _definitions.GetDefinition(schema);
-            var sourceInfo = JsonUtility.GetSourceInfo(token);
             if (schema == null)
             {
                 return token;
@@ -116,7 +114,6 @@ namespace Microsoft.Docs.Build
                         return array;
 
                     var newArray = new JArray();
-                    JsonUtility.SetSourceInfo(newArray, sourceInfo);
                     foreach (var item in array)
                     {
                         var newItem = Traverse(schema.Items, item, transform);
@@ -128,7 +125,6 @@ namespace Microsoft.Docs.Build
                 case JObject obj:
 
                     var newObject = new JObject();
-                    JsonUtility.SetSourceInfo(newObject, sourceInfo);
                     foreach (var (key, value) in obj)
                     {
                         if (!transformedKeys.Contains(key) && TryGetPropertyJsonSchema(schema, key, out var propertySchema))
