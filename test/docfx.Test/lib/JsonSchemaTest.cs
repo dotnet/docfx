@@ -20,12 +20,8 @@ namespace Microsoft.Docs.Build
             "boolean_schema",
             "contains",
             "definitions",
-            "exclusiveMaximum",
-            "exclusiveMinimum",
             "if-then-else",
-            "maximum",
             "maxProperties",
-            "minimum",
             "minProperties",
             "multipleOf",
             "not",
@@ -147,15 +143,25 @@ namespace Microsoft.Docs.Build
         // string length validation
         [InlineData("{'type': 'string', 'minLength': 1, 'maxLength': 5}", "'a'", "")]
         [InlineData("{'type': 'string', 'maxLength': 1}", "'1963-06-19T08:30:06Z'",
-            "['warning','string-length-invalid','String length should be <= 1','file',1,22]")]
+            "['warning','string-length-invalid','String '' length should be <= 1','file',1,22]")]
         [InlineData("{'properties': {'str': {'minLength': 1, 'maxLength': 5}}}", "{'str': null}","")]
         [InlineData("{'type': 'string', 'minLength': 1}", "''",
-            "['warning','string-length-invalid','String length should be >= 1','file',1,2]")]
+            "['warning','string-length-invalid','String '' length should be >= 1','file',1,2]")]
         [InlineData("{'type': 'string', 'maxLength': 1}", "'ab'",
-            "['warning','string-length-invalid','String length should be <= 1','file',1,4]")]
+            "['warning','string-length-invalid','String '' length should be <= 1','file',1,4]")]
         [InlineData("{'properties': {'str': {'maxLength': 2, 'minLength': 4}}}", "{'str': 'abc'}",
             @"['warning','string-length-invalid','String 'str' length should be <= 2','file',1,13]
               ['warning','string-length-invalid','String 'str' length should be >= 4','file',1,13]")]
+
+        // number validation
+        [InlineData("{'minimum': 1, 'maximum': 1}", "1", "")]
+        [InlineData("{'exclusiveMinimum': 0.99, 'exclusiveMaximum': 1.01}", "1", "")]
+        [InlineData("{'minimum': 100, 'maximum': -100}", "1",
+            @"['warning','number-invalid','Number '' should be <= -100','file',1,1]
+              ['warning','number-invalid','Number '' should be >= 100','file',1,1]")]
+        [InlineData("{'exclusiveMinimum': 100, 'exclusiveMaximum': -100}", "1",
+            @"['warning','number-invalid','Number '' should be < -100','file',1,1]
+              ['warning','number-invalid','Number '' should be > 100','file',1,1]")]
 
         // string format validation
         [InlineData("{'type': ['string'], 'format': 'date-time'}", "'1963-06-19T08:30:06Z'", "")]
@@ -189,10 +195,10 @@ namespace Microsoft.Docs.Build
         [InlineData("{'properties': {'arr': {'maxItems': 3, 'minItems': 1}}}", "{'arr': ['a','b','c','d']}",
             "['warning','array-length-invalid','Array 'arr' length should be <= 3','file',1,9]")]
         [InlineData("{'maxItems': 3, 'minItems': 1}", "[]",
-            "['warning','array-length-invalid','Array length should be >= 1','file',1,1]")]
+            "['warning','array-length-invalid','Array '' length should be >= 1','file',1,1]")]
         [InlineData("{'maxItems': 2, 'minItems': 4}", "['a','b','c']",
-            @"['warning','array-length-invalid','Array length should be <= 2','file',1,1]
-              ['warning','array-length-invalid','Array length should be >= 4','file',1,1]")]
+            @"['warning','array-length-invalid','Array '' length should be <= 2','file',1,1]
+              ['warning','array-length-invalid','Array '' length should be >= 4','file',1,1]")]
 
         // required validation
         [InlineData("{'required': []}", "{}", "")]
