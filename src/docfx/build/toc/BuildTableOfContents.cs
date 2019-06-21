@@ -4,15 +4,20 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 
 namespace Microsoft.Docs.Build
 {
     internal static class BuildTableOfContents
     {
-        public static (IEnumerable<Error>, PublishItem publishItem) Build(Context context, Document file)
+        public static (IEnumerable<Error>, PublishItem publishItem) Build(Context context, Document file, TableOfContentsMap tocMap)
         {
             Debug.Assert(file.ContentType == ContentType.TableOfContents);
+
+            // if A toc includes B toc and only B toc is localized, then A need to be included and built
+            if (file.Docset.IsLocalized() && tocMap.TryFindParents(file, out var parents))
+            {
+                context.BuildQueue.Enqueue(parents);
+            }
 
             // load toc model
             var (errors, model, _, _) = context.Cache.LoadTocModel(context, file);

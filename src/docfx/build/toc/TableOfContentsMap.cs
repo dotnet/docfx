@@ -81,12 +81,12 @@ namespace Microsoft.Docs.Build
             })?.Toc;
         }
 
-        public static TableOfContentsMap Create(Context context, Docset docset)
+        public static TableOfContentsMap Create(Context context)
         {
             using (Progress.Start("Loading TOC"))
             {
                 var builder = new TableOfContentsMapBuilder();
-                var tocFiles = docset.ScanScope.Where(f => f.ContentType == ContentType.TableOfContents);
+                var tocFiles = context.BuildScope.FilesWithFallback.Where(f => f.ContentType == ContentType.TableOfContents);
                 if (!tocFiles.Any())
                 {
                     return builder.Build();

@@ -53,9 +53,9 @@ namespace Microsoft.Docs.Build
             using (var context = new Context(outputPath, errorLog, docset, () => xrefMap))
             {
                 xrefMap = XrefMapBuilder.Build(context, docset);
-                var tocMap = TableOfContentsMap.Create(context, docset);
+                var tocMap = TableOfContentsMap.Create(context);
 
-                context.BuildQueue.Enqueue(GetBuildScope(docset, tocMap));
+                context.BuildQueue.Enqueue(context.BuildScope.Files);
 
                 using (Progress.Start("Building files"))
                 {
@@ -130,7 +130,7 @@ namespace Microsoft.Docs.Build
                         break;
                     case ContentType.TableOfContents:
                         // TODO: improve error message for toc monikers overlap
-                        (errors, publishItem) = BuildTableOfContents.Build(context, file);
+                        (errors, publishItem) = BuildTableOfContents.Build(context, file, tocMap);
                         break;
                     case ContentType.Redirection:
                         (errors, publishItem) = BuildRedirection.Build(context, file);
@@ -213,32 +213,6 @@ namespace Microsoft.Docs.Build
             Debug.Assert(sourceDocset != null);
 
             return sourceDocset.LocalizationDocset ?? sourceDocset;
-        }
-
-        private static IReadOnlyList<Document> GetBuildScope(Docset docset, TableOfContentsMap tocMap)
-        {
-            Debug.Assert(tocMap != null);
-
-            if (!docset.IsLocalized())
-            {
-                return docset.BuildScope.ToList();
-            }
-
-            // if A toc includes B toc and only B toc is localized, then A need to be included and built
-            var tocBuildScope = docset.BuildScope.Where(d => d.ContentType == ContentType.TableOfContents).ToList();
-            var fallbackTocs = new List<Document>();
-            foreach (var toc in tocBuildScope)
-            {
-                if (tocMap.TryFindParents(toc, out var parents))
-                {
-                    fallbackTocs.AddRange(parents);
-                }
-            }
-
-            var buildScope = docset.BuildScope.ToList();
-            buildScope.AddRange(fallbackTocs);
-
-            return buildScope;
         }
     }
 }

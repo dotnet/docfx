@@ -42,7 +42,7 @@ namespace Microsoft.Docs.Build
                     }
                 }
             }
-            var internalXrefMap = CreateInternalXrefMap(context, docset.ScanScope);
+            var internalXrefMap = CreateInternalXrefMap(context);
             return new XrefMap(context, BuildMap(externalXrefMap, internalXrefMap), internalXrefMap);
         }
 
@@ -61,14 +61,12 @@ namespace Microsoft.Docs.Build
             return map;
         }
 
-        private static Dictionary<string, List<Lazy<IXrefSpec>>>
-            CreateInternalXrefMap(Context context, IEnumerable<Document> files)
+        private static Dictionary<string, List<Lazy<IXrefSpec>>> CreateInternalXrefMap(Context context)
         {
             var xrefsByUid = new ConcurrentDictionary<string, ConcurrentBag<IXrefSpec>>();
-            Debug.Assert(files != null);
             using (Progress.Start("Building Xref map"))
             {
-                ParallelUtility.ForEach(files.Where(f => f.ContentType == ContentType.Page), file => Load(context, xrefsByUid, file), Progress.Update);
+                ParallelUtility.ForEach(context.BuildScope.FilesWithFallback.Where(f => f.ContentType == ContentType.Page), file => Load(context, xrefsByUid, file), Progress.Update);
                 return xrefsByUid.ToList().OrderBy(item => item.Key).ToDictionary(item => item.Key, item => item.Value.Select(x => new Lazy<IXrefSpec>(() => x)).ToList());
             }
         }
