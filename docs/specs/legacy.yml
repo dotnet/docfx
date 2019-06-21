@@ -219,20 +219,18 @@ inputs:
 outputs:
   docs/index.json: |
     {
-      "content": {
-        "title": "REST API Documentation",
-        "abstract": {
-            "description": "<p><a href=\"../b\">&quot;b&quot;</a></p>\n",
-            "menu": {
-                "items": [
-                    {
-                        "href": "../b"
-                    }
-                ]
-            }
-        },
-        "documentType": "LandingData"
-      }
+      "title": "REST API Documentation",
+      "abstract": {
+          "description": "<p><a href=\"../b\">&quot;b&quot;</a></p>\n",
+          "menu": {
+              "items": [
+                  {
+                      "href": "../b"
+                  }
+              ]
+          }
+      },
+      "documentType": "LandingData"
     }
   b.json:
 ---
@@ -257,6 +255,7 @@ inputs:
   a.md: |
     [link](redirect.md)
 outputs:
+  a.mta.json:
   a.raw.page.json: |
     { "conceptual": "<p>\n<a data-linktype=\"relative-path\" href=\"redirect\">link</a></p>" }
   redirect.mta.json:
@@ -295,6 +294,7 @@ inputs:
 outputs:
   docs/a.raw.page.json: |
     {"key1":"value1","key2":"value2"}
+  docs/a.mta.json:
 ---
 # Context object type is TOC
 commands:
@@ -348,7 +348,9 @@ inputs:
       ]
     }
 outputs:
+  docs/a.mta.json:
   docs/a.raw.page.json:
+  docs/9d4e15fd/a.mta.json:
   docs/9d4e15fd/a.raw.page.json:
   docs/.dependency-map.json:
   docs/.manifest.json: |
