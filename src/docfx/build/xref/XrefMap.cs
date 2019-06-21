@@ -38,7 +38,7 @@ namespace Microsoft.Docs.Build
             try
             {
                 t_recursionDetector.Value.Push((uid, displayPropertyName, relativeTo));
-                return ResolveCore(uid, href, displayPropertyName, relativeTo, moniker);
+                return ResolveCore(uid, href, displayPropertyName, moniker);
             }
             finally
             {
@@ -55,7 +55,7 @@ namespace Microsoft.Docs.Build
         }
 
         private (Error error, string href, string display, IXrefSpec xrefSpec) ResolveCore(
-            string uid, SourceInfo<string> href, string displayPropertyName, Document relativeTo, string moniker = null)
+            string uid, SourceInfo<string> href, string displayPropertyName, string moniker = null)
         {
             string resolvedHref;
             string displayPropertyValue;
