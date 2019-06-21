@@ -23,22 +23,22 @@ namespace Microsoft.Docs.Build
             var (generateErrors, outputMetadata) = await GenerateOutputMetadata(context, file, tocMap, inputMetadata, pageMetadata);
             errors.AddRange(generateErrors);
 
-            var mergedOutputModel = new JObject();
-            JsonUtility.Merge(mergedOutputModel, metadataObject);
-            JsonUtility.Merge(mergedOutputModel, JsonUtility.ToJObject(outputMetadata));
-            JsonUtility.Merge(mergedOutputModel, pageModel);
             var outputPath = file.GetOutputPath(outputMetadata.Monikers, file.Docset.SiteBasePath, isPage);
 
             object output = null;
             JObject metadata = null;
             if (isPage)
             {
+                var mergedOutputModel = new JObject();
+                JsonUtility.Merge(mergedOutputModel, metadataObject);
+                JsonUtility.Merge(mergedOutputModel, JsonUtility.ToJObject(outputMetadata));
+                JsonUtility.Merge(mergedOutputModel, pageModel);
                 (output, metadata) = ApplyPageTemplate(context, file, mergedOutputModel, pageModel.Value<string>("conceptual"));
             }
             else
             {
                 // todo: support data page template
-                output = mergedOutputModel;
+                output = pageModel;
                 metadata = null;
             }
 
