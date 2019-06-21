@@ -44,9 +44,9 @@ namespace Microsoft.Docs.Build
 
         public (Error error, string link, Document file) ResolveRelativeLink(Document relativeToFile, SourceInfo<string> path, Document declaringFile)
         {
-            var (error, link, linkType, file) = ResolveLink(path, declaringFile);
+            var (error, link, file) = ResolveLink(path, declaringFile);
 
-            if (linkType == LinkType.RelativePath)
+            if (file != null)
             {
                 link = UrlUtility.GetRelativeUrl(relativeToFile.SiteUrl, link);
             }
@@ -54,7 +54,7 @@ namespace Microsoft.Docs.Build
             return (error, link, file);
         }
 
-        public (Error error, string link, LinkType linkType, Document file) ResolveLink(SourceInfo<string> path, Document declaringFile)
+        public (Error error, string link, Document file) ResolveLink(SourceInfo<string> path, Document declaringFile)
         {
             var (error, link, fragment, linkType, file) = TryResolveLink(declaringFile, path);
 
@@ -72,7 +72,7 @@ namespace Microsoft.Docs.Build
                 _bookmarkValidator.AddBookmarkReference(declaringFile, isSelfBookmark ? relativeToFile : file, fragment, isSelfBookmark, path);
             }
 
-            return (error, link, linkType, file);
+            return (error, link, file);
         }
 
         public (Error error, string href, string display, IXrefSpec spec) ResolveRelativeXref(Document relativeToFile, SourceInfo<string> href, Document declaringFile)

@@ -676,14 +676,14 @@ outputs:
              "items":[  
                 {  
                    "name":"Index Reference",
-                   "href":"f11/n1"
+                   "href":"n1.md"
                 }
              ],
              "name":"Toc Reference 1",
-             "href":"f11/n1"
+             "href":"f11/n1.md"
           },
           {  
-             "href":"f11/n1",
+             "href":"n1.md",
              "name":"Toc Reference 2"
           }
        ]
