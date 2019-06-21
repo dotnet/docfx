@@ -219,15 +219,13 @@ outputs:
   docs/a.json:
   docs/b.json: | 
     {
-      "content": {
-        "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
-        "xref": {
-            "href": "https://docs.com/docs/a.json",
-            "uid": "a",
-            "name": "test",
-            "fullName": "test.test",
-            "description": "a.description"
-        }
+      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
+      "xref": {
+          "href": "https://docs.com/docs/a.json",
+          "uid": "a",
+          "name": "test",
+          "fullName": "test.test",
+          "description": "a.description"
       }
     }
   xrefmap.json: | 
@@ -262,7 +260,7 @@ inputs:
     }
 outputs:
   docs/b.json: | 
-    { "content": {"xref": null}}
+    {"xref": null}
   .errors.log: |
     ["error","json-syntax-error","Unexpected character encountered while parsing value: }.","docs/a.json",7]
     ["warning","xref-not-found","Cross reference not found: 'a'","docs/b.json",3,13]
@@ -540,7 +538,7 @@ inputs:
 outputs:
   docs/a.json:
   docs/b.json: |
-    { "content":{"name":"name for b","description":"description for b"} }
+    { "name":"name for b","description":"description for b" }
 ---
 # SDP non-cyclic xref reference should be resolved
 # whose display properties are plain text
@@ -565,23 +563,17 @@ inputs:
 outputs:
   docs/a.json: |
     {
-      "content": 
-      {
-        "name": "name for a",
-        "summary": "<p>Link to <a href=\"b.json\">description for b</a></p>\n",
-        "inlineDescription": "description for a",
-        "uid": "a"
-      }
+      "name": "name for a",
+      "summary": "<p>Link to <a href=\"b.json\">description for b</a></p>\n",
+      "inlineDescription": "description for a",
+      "uid": "a"
     }
   docs/b.json: |
     {
-      "content": 
-      {
-        "name": "name for b",
-        "summary": "<p>Link to <a href=\"a.json\">name for a</a></p>\n",
-        "inlineDescription": "description for b",
-        "uid": "b"
-      }
+      "name": "name for b",
+      "summary": "<p>Link to <a href=\"a.json\">name for a</a></p>\n",
+      "inlineDescription": "description for b",
+      "uid": "b"
     }
 ---
 # SDP cyclic xref reference whose display properties referring to another uid
@@ -614,7 +606,7 @@ inputs:
     }
 outputs:
   docs/c.json: |
-    {"content":{"name":"name for c","summary":"<p>Link to <a href=\"a.json\">name for a</a></p>\n","inlineDescription":"description for c","uid":"c"}}
+    {"name":"name for c","summary":"<p>Link to <a href=\"a.json\">name for a</a></p>\n","inlineDescription":"description for c","uid":"c"}
   .errors.log: |
     ["error","circular-reference","Build has identified file(s) referencing each other: 'docs/a.json' --> 'docs/b.json' --> 'docs/a.json'","docs/a.json"]
     ["error","circular-reference","Build has identified file(s) referencing each other: 'docs/b.json' --> 'docs/a.json' --> 'docs/b.json'","docs/b.json"]
@@ -721,7 +713,19 @@ inputs:
     ---
 outputs:
   docs/a.json: |
-    {"conceptual" : "<p>str <a href='c'>Title from yaml header c</a>\nstr @mention\nsome text\nstr @higher\nmultiple xref @mentione some text @mentionf</p>\n<p>\n  @mentione\n  some text\n  mentionf\n</p>\n"}
+    {
+      "conceptual" : "
+        <p>str <a href='c'>Title from yaml header c</a>
+        str @mention
+        some text
+        str @higher
+        multiple xref @mentione some text @mentionf</p>
+        <p>
+          @mentione
+          some text
+          mentionf
+        </p>"
+    }
   docs/c.json:
   .errors.log: |
     ["warning","xref-not-found","Cross reference not found: '<p>\n  <xref href=\"e\" data-raw-source=\"@mentione\" />\n  some text\n  <xref href=\"f\" data-raw-source=\"mentionf\" />\n</p>'","docs/a.md",6,78]
