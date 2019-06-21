@@ -36,6 +36,7 @@ namespace Microsoft.Docs.Build
             }
 
             ValidateDeprecated(schema, token, errors);
+            ValidateConst(schema, token, errors);
 
             switch (token)
             {
@@ -129,6 +130,14 @@ namespace Microsoft.Docs.Build
                 {
                     Validate(propertySchema, value, errors);
                 }
+            }
+        }
+
+        private void ValidateConst(JsonSchema schema, JToken token, List<Error> errors)
+        {
+            if (schema.Const != null && !JTokenDeepEquals(schema.Const, token))
+            {
+                errors.Add(Errors.UndefinedValue(JsonUtility.GetSourceInfo(token), token, new object[] { schema.Const }));
             }
         }
 
@@ -299,6 +308,48 @@ namespace Microsoft.Docs.Build
                     return tokenType == JTokenType.String;
                 default:
                     return true;
+            }
+        }
+
+        private static bool JTokenDeepEquals(JToken a, JToken b)
+        {
+            switch (a)
+            {
+                case JValue valueA when b is JValue valueB:
+                    return Equals(valueA.Value, valueB.Value);
+
+                case JArray arrayA when b is JArray arrayB:
+                    if (arrayA.Count != arrayB.Count)
+                    {
+                        return false;
+                    }
+
+                    for (var i = 0; i < arrayA.Count; i++)
+                    {
+                        if (!JTokenDeepEquals(arrayA[i], arrayB[i]))
+                        {
+                            return false;
+                        }
+                    }
+                    return true;
+
+                case JObject mapA when b is JObject mapB:
+                    if (mapA.Count != mapB.Count)
+                    {
+                        return false;
+                    }
+
+                    foreach (var (key, valueA) in mapA)
+                    {
+                        if (!mapB.TryGetValue(key, out var valueB) || !JTokenDeepEquals(valueA, valueB))
+                        {
+                            return false;
+                        }
+                    }
+                    return true;
+
+                default:
+                    return false;
             }
         }
     }

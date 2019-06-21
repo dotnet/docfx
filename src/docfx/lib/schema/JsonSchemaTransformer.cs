@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using Newtonsoft.Json.Linq;
 
@@ -22,41 +23,96 @@ namespace Microsoft.Docs.Build
         public (List<Error> errors, JToken token) TransformContent(Document file, Context context, JToken token)
         {
             var errors = new List<Error>();
-            Traverse(_schema, token, (schema, value) => value.Replace(TransformScalar(schema, file, context, value, errors)));
+            Transform(file, context, _schema, token, errors);
             return (errors, token);
         }
 
-        public (List<Error> errors, Dictionary<string, Lazy<JValue>>) TransformXref(Document file, Context context, JToken token)
+        public (List<Error> errors, Dictionary<string, (bool, Dictionary<string, Lazy<JToken>>)> properties) TransformXref(Document file, Context context, JToken token)
         {
             var errors = new List<Error>();
-            var extensions = new Dictionary<string, Lazy<JValue>>();
-            Traverse(_schema, token, TransformXrefScalar);
-            return (errors, extensions);
+            var xrefPropertiesGroupByUid = new Dictionary<string, (bool, Dictionary<string, Lazy<JToken>>)>();
+            var uidJsonPaths = new HashSet<string>();
 
-            void TransformXrefScalar(JsonSchema schema, JValue value)
+            Traverse(_schema, token, (schema, node) =>
             {
-                extensions[value.Path] = new Lazy<JValue>(
-                    () => (JValue)TransformScalar(schema, file, context, value, errors), // todo: support JToken
-                    LazyThreadSafetyMode.PublicationOnly);
-            }
+                if (node is JObject obj)
+                {
+                    var uid = obj.TryGetValue("uid", out var uidValue) && uidValue is JValue uidJValue && uidJValue.Value is string uidStr ? uidStr : null;
+
+                    if (uid == null)
+                    {
+                        return default;
+                    }
+
+                    if (uidJsonPaths.Add(uidValue.Path) && xrefPropertiesGroupByUid.ContainsKey(uid))
+                    {
+                        errors.Add(Errors.UidConflict(uid));
+                        return default;
+                    }
+
+                    if (!xrefPropertiesGroupByUid.TryGetValue(uid, out _))
+                    {
+                        xrefPropertiesGroupByUid[uid] = (obj.Parent == null, new Dictionary<string, Lazy<JToken>>());
+                    }
+
+                    foreach (var (key, value) in obj)
+                    {
+                        if (schema.XrefProperties.Contains(key))
+                        {
+                            var propertySchema = TryGetPropertyJsonSchema(schema, key, out var subSchema) ? subSchema : null;
+                            xrefPropertiesGroupByUid[uid].Item2[key] = new Lazy<JToken>(
+                            () =>
+                            {
+                                // todo: change transform to `return` model instead of `replace` model
+                                var clonedObj = JsonUtility.DeepClone(obj);
+                                Transform(file, context, propertySchema, clonedObj[key], errors);
+                                return clonedObj[key];
+                            }, LazyThreadSafetyMode.PublicationOnly);
+                        }
+                    }
+                    return schema.XrefProperties;
+                }
+
+                return default;
+            });
+
+            return (errors, xrefPropertiesGroupByUid);
         }
 
-        private void Traverse(JsonSchema schema, JToken token, Action<JsonSchema, JValue> transformScalar)
+        private void Transform(Document file, Context context, JsonSchema schema, JToken token, List<Error> errors)
+        {
+            Traverse(schema, token, (subSchema, node) =>
+            {
+                if (node.Type == JTokenType.Array || node.Type == JTokenType.Object)
+                {
+                    // don't support array/object transform now
+                    return default;
+                }
+
+                node.Replace(TransformScalar(subSchema, file, context, node as JValue, errors));
+
+                return default;
+            });
+        }
+
+        private void Traverse(JsonSchema schema, JToken token, Func<JsonSchema, JToken, string[]> transform)
         {
             schema = _definitions.GetDefinition(schema);
+            if (schema == null)
+            {
+                return;
+            }
+
+            var transformedKeys = transform(schema, token) ?? Array.Empty<string>();
 
             switch (token)
             {
-                case JValue scalar:
-                    transformScalar(schema, scalar);
-                    break;
-
                 case JArray array:
                     if (schema.Items != null)
                     {
                         foreach (var item in array)
                         {
-                            Traverse(schema.Items, item, transformScalar);
+                            Traverse(schema.Items, item, transform);
                         }
                     }
                     break;
@@ -64,13 +120,35 @@ namespace Microsoft.Docs.Build
                 case JObject obj:
                     foreach (var (key, value) in obj)
                     {
-                        if (schema.Properties.TryGetValue(key, out var propertySchema))
+                        if (!transformedKeys.Contains(key) && TryGetPropertyJsonSchema(schema, key, out var propertySchema))
                         {
-                            Traverse(propertySchema, value, transformScalar);
+                            Traverse(propertySchema, value, transform);
                         }
                     }
                     break;
             }
+        }
+
+        private static bool TryGetPropertyJsonSchema(JsonSchema jsonSchema, string key, out JsonSchema propertySchema)
+        {
+            propertySchema = null;
+            if (jsonSchema == null)
+            {
+                return false;
+            }
+
+            if (jsonSchema.Properties.TryGetValue(key, out propertySchema))
+            {
+                return true;
+            }
+
+            if (jsonSchema.AdditionalProperties.additionalPropertyJsonSchema != null)
+            {
+                propertySchema = jsonSchema.AdditionalProperties.additionalPropertyJsonSchema;
+                return true;
+            }
+
+            return false;
         }
 
         private JToken TransformScalar(JsonSchema schema, Document file, Context context, JValue value, List<Error> errors)
