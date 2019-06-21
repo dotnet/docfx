@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace Microsoft.Docs.Build
 {
-    internal class XrefSpecProvider
+    internal class XrefMapProvider
     {
         private Lazy<IReadOnlyDictionary<string, Lazy<ExternalXrefSpec>>> _externalXrefMap;
         private Lazy<IReadOnlyDictionary<string, InternalXrefSpec[]>> _internalXrefMap;
@@ -15,10 +15,10 @@ namespace Microsoft.Docs.Build
         public void Initialize(Context context, Docset docset)
         {
             _externalXrefMap = new Lazy<IReadOnlyDictionary<string, Lazy<ExternalXrefSpec>>>(
-                () => ExternalXrefSpecLoader.Load(docset));
+                () => ExternalXrefMapLoader.Load(docset));
 
             _internalXrefMap = new Lazy<IReadOnlyDictionary<string, InternalXrefSpec[]>>(
-                () => InternalXrefSpecBuilder.Build(context, docset));
+                () => InternalXrefMapBuilder.Build(context, docset));
         }
 
         public (Error error, IXrefSpec[] xrefSpecs) GetXrefSpec(SourceInfo<string> uid)

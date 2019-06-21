@@ -10,7 +10,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
-    internal static class InternalXrefSpecBuilder
+    internal static class InternalXrefMapBuilder
     {
         public static IReadOnlyDictionary<string, InternalXrefSpec[]> Build(Context context, Docset docset)
         {

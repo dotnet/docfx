@@ -17,14 +17,14 @@ namespace Microsoft.Docs.Build
         private readonly BookmarkValidator _bookmarkValidator;
         private readonly DependencyMapBuilder _dependencyMapBuilder;
         private readonly GitCommitProvider _gitCommitProvider;
-        private readonly Lazy<XrefSpecProvider> _xrefMap;
+        private readonly Lazy<XrefMapProvider> _xrefMap;
 
         public DependencyResolver(
             WorkQueue<Document> buildQueue,
             GitCommitProvider gitCommitProvider,
             BookmarkValidator bookmarkValidator,
             DependencyMapBuilder dependencyMapBuilder,
-            Lazy<XrefSpecProvider> xrefMap)
+            Lazy<XrefMapProvider> xrefMap)
         {
             _buildQueue = buildQueue;
             _bookmarkValidator = bookmarkValidator;

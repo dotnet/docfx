@@ -9,7 +9,7 @@ using System.Text.Json;
 
 namespace Microsoft.Docs.Build
 {
-    internal class ExternalXrefSpecLoader
+    internal class ExternalXrefMapLoader
     {
         private static byte[] s_uidBytes = Encoding.UTF8.GetBytes("uid");
 
