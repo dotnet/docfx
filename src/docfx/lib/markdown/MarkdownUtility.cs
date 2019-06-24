@@ -91,7 +91,7 @@ namespace Microsoft.Docs.Build
         internal static string GetLink(string path, object relativeTo, MarkdownObject origin, int columnOffset = 0)
         {
             var status = t_status.Value.Peek();
-            var (error, link, file) = status.Context.DependencyResolver.ResolveLink(new SourceInfo<string>(path, origin.ToSourceInfo(columnOffset: columnOffset)), (Document)relativeTo);
+            var (error, link, file) = status.Context.DependencyResolver.ResolveAbsoluteLink(new SourceInfo<string>(path, origin.ToSourceInfo(columnOffset: columnOffset)), (Document)relativeTo);
             status.Errors.AddIfNotNull(error?.WithSourceInfo(origin.ToSourceInfo()));
 
             if (file != null)
@@ -105,7 +105,7 @@ namespace Microsoft.Docs.Build
         internal static (Error error, string href, string display, Document file) ResolveXref(string href, MarkdownObject origin)
         {
             // TODO: now markdig engine combines all kinds of reference with inclusion, we need to split them out
-            var (error, link, display, spec) = t_status.Value.Peek().Context.DependencyResolver.ResolveXref(new SourceInfo<string>(href, origin.ToSourceInfo()), (Document)InclusionContext.File);
+            var (error, link, display, spec) = t_status.Value.Peek().Context.DependencyResolver.ResolveAbsoluteXref(new SourceInfo<string>(href, origin.ToSourceInfo()), (Document)InclusionContext.File);
 
             if (spec?.DeclairingFile != null)
             {
