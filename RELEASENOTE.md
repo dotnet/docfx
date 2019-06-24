@@ -5,7 +5,7 @@ v2.43.2
 -----------
 1. Bug fix:
   1. Fix running under Linux/Mono (#4728). Thanks @tibel!
-  2. Fix #4488 with a new config `noStdin` (#4719). Thanks @oleksabor!
+  2. Fix PDF build failure under Azure DevOps with a new config `noStdin` (#4488). Thanks @oleksabor!
   3. Fix truncation issue in side bar (#3166). Thanks @icnocop!
   4. Fix an scrolling issue when clike same achor twice (#3133). Thanks @icnocop!
 
