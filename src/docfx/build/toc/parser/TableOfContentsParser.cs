@@ -129,12 +129,12 @@ namespace Microsoft.Docs.Build
             (TableOfContentsItem item, Document doc) firstChild = default;
             foreach (var tocModelItem in tocModelItems)
             {
+                (TableOfContentsItem item, Document doc) subFirstChild = default;
                 if (tocModelItem.Items != null && tocModelItem.Items.Any())
                 {
-                    var (resolveErros, subFirstChild) = ResolveTocModelItems(context, tocModelItem.Items, parents, filePath, rootPath, referencedFiles, referencedTocs);
+                    var (resolveErros, resolvedSubFirstChild) = ResolveTocModelItems(context, tocModelItem.Items, parents, filePath, rootPath, referencedFiles, referencedTocs);
                     errors.AddRange(resolveErros);
-                    if (subFirstChild != default)
-                        subFirstChildren.Add(subFirstChild);
+                    subFirstChild = resolvedSubFirstChild;
                 }
 
                 // process
@@ -142,21 +142,23 @@ namespace Microsoft.Docs.Build
                 var topicHref = GetTopicHref(tocModelItem);
                 var topicUid = tocModelItem.Uid;
 
-                var (resolvedTocHref, subChildren, (firstItem, firstDoc)) = ProcessTocHref(tocHref);
+                var (resolvedTocHref, subChildren, (firstItem, firstDoc), tocHrefType) = ProcessTocHref(tocHref);
                 var (resolvedTopicHref, resolvedTopicName, document) = ProcessTopicItem(topicUid, topicHref);
 
                 // set resolved href back
-                tocModelItem.Href = resolvedTocHref.Or(resolvedTopicHref).Or(firstItem?.Href);
+                tocModelItem.Href = resolvedTocHref.Or(resolvedTopicHref).Or((tocHrefType == TocHrefType.RelativeFolder ? firstItem : null)?.Href);
                 tocModelItem.TocHref = resolvedTocHref;
                 tocModelItem.Homepage = !string.IsNullOrEmpty(tocModelItem.TopicHref) ? resolvedTopicHref : default;
                 tocModelItem.Name = tocModelItem.Name.Or(resolvedTopicName);
-                tocModelItem.Items = subChildren?.Items ?? tocModelItem.Items;
-                tocModelItem.Monikers = GetMonikers(resolvedTocHref, resolvedTopicHref, firstItem, tocModelItem, document);
+                tocModelItem.Items = (tocHrefType == TocHrefType.TocFile ? subChildren : null)?.Items ?? tocModelItem.Items;
+                tocModelItem.Monikers = GetMonikers(resolvedTocHref, resolvedTopicHref, tocHrefType == TocHrefType.RelativeFolder ? firstItem : null, tocModelItem, document);
 
-                if (tocModelItem.Href != null && firstChild == default)
+                ProcessSubChildren(subFirstChild, (firstItem, firstDoc));
+
+                if (firstChild == default && !string.IsNullOrEmpty(tocModelItem.Href))
                 {
                     firstChild.item = tocModelItem;
-                    firstChild.doc = document;
+                    firstChild.doc = document ?? firstDoc;
                 }
 
                 // validate
@@ -173,6 +175,19 @@ namespace Microsoft.Docs.Build
             }
 
             return (errors, firstChild);
+
+            void ProcessSubChildren((TableOfContentsItem item, Document doc) subChildFromItems, (TableOfContentsItem item, Document doc) subChildFromTocHref)
+            {
+                if (subChildFromTocHref != default)
+                {
+                    subFirstChildren.Add(subChildFromTocHref);
+                }
+                else
+                {
+                    if (subChildFromItems != default)
+                        subFirstChildren.Add(subChildFromItems);
+                }
+            }
 
             List<string> GetMonikers(
                 string resolvedTocHref,
@@ -265,11 +280,11 @@ namespace Microsoft.Docs.Build
                 return default;
             }
 
-            (SourceInfo<string> resolvedTocHref, TableOfContentsModel subChildren, (TableOfContentsItem item, Document doc) firstChild) ProcessTocHref(SourceInfo<string> tocHref)
+            (SourceInfo<string> resolvedTocHref, TableOfContentsModel subChildren, (TableOfContentsItem item, Document doc) firstChild, TocHrefType tocHrefType) ProcessTocHref(SourceInfo<string> tocHref)
             {
                 if (string.IsNullOrEmpty(tocHref))
                 {
-                    return (tocHref, default, default);
+                    return (tocHref, default, default, default);
                 }
 
                 var tocHrefType = GetHrefType(tocHref);
@@ -277,7 +292,7 @@ namespace Microsoft.Docs.Build
 
                 if (tocHrefType == TocHrefType.AbsolutePath)
                 {
-                    return (tocHref, default, default);
+                    return (tocHref, default, default, tocHrefType);
                 }
 
                 var (hrefPath, fragment, query) = UrlUtility.SplitUrl(tocHref);
@@ -290,13 +305,10 @@ namespace Microsoft.Docs.Build
 
                     if (tocHrefType == TocHrefType.RelativeFolder)
                     {
-                        context.DependencyMapBuilder.AddDependencyItem(rootPath, firstItemDoc, DependencyType.Link);
-                        return (default, default, (firstItem, firstItemDoc));
+                        context.DependencyMapBuilder.AddDependencyItem(filePath, firstItemDoc, DependencyType.Link);
                     }
-                    else
-                    {
-                        return (default, nestedToc, default);
-                    }
+
+                    return (default, nestedToc, (firstItem, firstItemDoc), tocHrefType);
                 }
 
                 return default;
@@ -414,6 +426,7 @@ namespace Microsoft.Docs.Build
 
         private enum TocHrefType
         {
+            None,
             AbsolutePath,
             RelativeFile,
             RelativeFolder,

@@ -261,7 +261,11 @@ outputs:
 # docs/TOC.md -> docs/f1/TOC.md  -> docs/f2/TOC.md
 #             -> docs/f2/TOC.md --> docs/f1/f11/TOC.md
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    files:
+      - docs/TOC.md
+      - docs/f1/f11/index.md
+      - docs/f1/f11/a.md
   docs/TOC.md: |
     # [Reference TOC File 1](f1/TOC.md)
     # [Reference TOC File 2](~/docs/f2/TOC.yml)
@@ -325,8 +329,12 @@ outputs:
             ],
             "docs/f1/TOC.md": [
                 {
-                    "source": "docs/f2/TOC.yml",
-                    "type": "tocFolderInclusion"
+                  "source": "docs/f1/f11/index.md",
+                  "type": "link"
+                },
+                {
+                  "source": "docs/f2/TOC.yml",
+                  "type": "tocFolderInclusion"
                 }
             ],
             "docs/f2/TOC.yml": [
