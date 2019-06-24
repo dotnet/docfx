@@ -52,7 +52,7 @@ namespace Microsoft.Docs.Build
 
             using (var context = new Context(outputPath, errorLog, docset, () => xrefMap))
             {
-                xrefMap = XrefMapBuilder.Build(context, docset);
+                xrefMap = new XrefMap(context, docset);
                 var tocMap = TableOfContentsMap.Create(context, docset);
 
                 context.BuildQueue.Enqueue(GetBuildScope(docset, tocMap));
@@ -67,8 +67,9 @@ namespace Microsoft.Docs.Build
 
                 var (publishModel, fileManifests) = context.PublishModelBuilder.Build(context, docset.Legacy);
                 var dependencyMap = context.DependencyMapBuilder.Build();
+                var xrefMapModel = xrefMap.ToXrefMapModel(context);
 
-                xrefMap.OutputXrefMap(context);
+                context.Output.WriteJson(xrefMapModel, "xrefmap.json");
                 context.Output.WriteJson(publishModel, ".publish.json");
                 context.Output.WriteJson(dependencyMap.ToDependencyMapModel(), ".dependencymap.json");
 

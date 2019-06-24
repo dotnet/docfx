@@ -13,9 +13,41 @@ namespace Microsoft.Docs.Build
     {
         private static byte[] s_uidBytes = Encoding.UTF8.GetBytes("uid");
 
-        public static List<(string, Lazy<IXrefSpec>)> Load(string filePath)
+        public static IReadOnlyDictionary<string, Lazy<ExternalXrefSpec>> Load(Docset docset)
         {
-            var result = new List<(string, Lazy<IXrefSpec>)>();
+            var result = new Dictionary<string, Lazy<ExternalXrefSpec>>();
+
+            foreach (var url in docset.Config.Xref)
+            {
+                if (url.Value.EndsWith(".yml", StringComparison.OrdinalIgnoreCase))
+                {
+                    var (_, content, _) = RestoreMap.GetRestoredFileContent(docset, url);
+                    var xrefMap = YamlUtility.Deserialize<XrefMapModel>(content, url);
+                    foreach (var spec in xrefMap.References)
+                    {
+                        result.TryAdd(spec.Uid, new Lazy<ExternalXrefSpec>(() => spec));
+                    }
+                }
+                else
+                {
+                    // Convert to array since ref local is not allowed to be used in lambda expression
+                    //
+                    // TODO: It is very easy to forget passing fallbackDocsetPath, the RestoreMap interface needs improvement
+                    var filePath = RestoreMap.GetRestoredFilePath(docset.DocsetPath, url, docset.FallbackDocset?.DocsetPath);
+                    foreach (var (uid, spec) in Load(filePath))
+                    {
+                        // for same uid with multiple specs, we should respect the order of the list
+                        result.TryAdd(uid, spec);
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        public static List<(string, Lazy<ExternalXrefSpec>)> Load(string filePath)
+        {
+            var result = new List<(string, Lazy<ExternalXrefSpec>)>();
             var content = File.ReadAllBytes(filePath);
 
             // TODO: cache this position mapping if xref map file not updated, reuse it
@@ -23,7 +55,7 @@ namespace Microsoft.Docs.Build
 
             foreach (var (uid, start, end) in xrefSpecPositions)
             {
-                result.Add((uid, new Lazy<IXrefSpec>(() =>
+                result.Add((uid, new Lazy<ExternalXrefSpec>(() =>
                 {
                     using (var stream = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.Read))
                     {

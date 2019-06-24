@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Collections.Generic;
+using System;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -16,7 +16,7 @@ namespace Microsoft.Docs.Build
         Document IXrefSpec.DeclairingFile => null;
 
         [JsonIgnore]
-        public HashSet<string> Monikers { get; set; } = new HashSet<string>();
+        public string[] Monikers { get; set; } = Array.Empty<string>();
 
         [JsonExtensionData]
         public JObject ExtensionData { get; } = new JObject();

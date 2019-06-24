@@ -15,7 +15,7 @@ namespace Microsoft.Docs.Build
 
         public Document DeclairingFile { get; set; }
 
-        public HashSet<string> Monikers { get; set; } = new HashSet<string>();
+        public string[] Monikers { get; set; } = Array.Empty<string>();
 
         public Dictionary<string, Lazy<JToken>> ExtensionData { get; } = new Dictionary<string, Lazy<JToken>>();
 
@@ -29,7 +29,7 @@ namespace Microsoft.Docs.Build
 
         public string GetName() => GetXrefPropertyValue("name");
 
-        public ExternalXrefSpec ToExternalXrefSpec(Context context, Document file)
+        public ExternalXrefSpec ToExternalXrefSpec(Context context)
         {
             var spec = new ExternalXrefSpec
             {
@@ -45,7 +45,7 @@ namespace Microsoft.Docs.Build
                 }
                 catch (DocfxException ex)
                 {
-                    context.ErrorLog.Write(file.FilePath, ex.Error);
+                    context.ErrorLog.Write(DeclairingFile.FilePath, ex.Error);
                 }
             }
             return spec;
