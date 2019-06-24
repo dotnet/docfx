@@ -50,16 +50,13 @@ namespace Microsoft.Docs.Build
             var docset = GetBuildDocset(new Docset(errorLog, docsetPath, locale, config, options, restoreMap, repository, fallbackRepo));
             var outputPath = Path.Combine(docsetPath, config.Output.Path);
 
-            using (var context = new Context(outputPath, errorLog, docset, () => xrefMap))
+            using (var context = new Context(outputPath, errorLog, docset, BuildFile))
             {
-                xrefMap = XrefMapBuilder.Build(context, docset);
-                var tocMap = TableOfContentsMap.Create(context);
-
                 context.BuildQueue.Enqueue(context.BuildScope.Files);
 
                 using (Progress.Start("Building files"))
                 {
-                    await context.BuildQueue.Drain(item => BuildFile(context, item, tocMap), Progress.Update);
+                    await context.BuildQueue.Drain(Progress.Update);
                 }
 
                 context.GitCommitProvider.SaveGitCommitCache();
@@ -77,7 +74,7 @@ namespace Microsoft.Docs.Build
                     if (config.Output.Json)
                     {
                         // TODO: decouple files and dependencies from legacy.
-                        Legacy.ConvertToLegacyModel(docset, context, fileManifests, dependencyMap, tocMap);
+                        Legacy.ConvertToLegacyModel(docset, context, fileManifests, dependencyMap);
                     }
                     else
                     {
@@ -102,25 +99,30 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static async Task BuildFile(Context context, Document file, TableOfContentsMap tocMap)
+        private static async Task BuildFile(Context context, Document file)
         {
+            if (ShouldBuildFile())
+            {
+                return;
+            }
+
             try
             {
                 var errors = Enumerable.Empty<Error>();
 
                 switch (file.ContentType)
                 {
-                    case ContentType.Resource when !file.Docset.IsFallback():
+                    case ContentType.Resource:
                         errors = BuildResource.Build(context, file);
                         break;
-                    case ContentType.Page when !file.Docset.IsFallback():
-                        errors = await BuildPage.Build(context, file, tocMap);
+                    case ContentType.Page:
+                        errors = await BuildPage.Build(context, file);
                         break;
                     case ContentType.TableOfContents:
                         // TODO: improve error message for toc monikers overlap
-                        errors = BuildTableOfContents.Build(context, file, tocMap);
+                        errors = BuildTableOfContents.Build(context, file);
                         break;
-                    case ContentType.Redirection when !file.Docset.IsFallback():
+                    case ContentType.Redirection:
                         errors = BuildRedirection.Build(context, file);
                         break;
                 }
@@ -142,6 +144,22 @@ namespace Microsoft.Docs.Build
             {
                 Console.WriteLine($"Build {file.FilePath} failed");
                 throw;
+            }
+
+            bool ShouldBuildFile()
+            {
+                if (file.ContentType == ContentType.TableOfContents)
+                {
+                    if (!context.TocMap.Contains(file))
+                    {
+                        return false;
+                    }
+
+                    // if A toc includes B toc and only B toc is localized, then A need to be included and built
+                    return !file.Docset.IsFallback() || (context.TocMap.TryGetTocReferences(file, out var tocReferences) && tocReferences.Any(toc => !toc.Docset.IsFallback()));
+                }
+
+                return !file.Docset.IsFallback();
             }
         }
 

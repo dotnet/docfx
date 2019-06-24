@@ -12,7 +12,11 @@ namespace Microsoft.Docs.Build
 {
     internal static class LegacyDependencyMap
     {
-        public static Dictionary<string, List<LegacyDependencyMapItem>> Convert(Docset docset, Context context, List<Document> documemts, DependencyMap dependencyMap, TableOfContentsMap tocMap)
+        public static Dictionary<string, List<LegacyDependencyMapItem>> Convert(
+            Docset docset,
+            Context context,
+            List<Document> documemts,
+            DependencyMap dependencyMap)
         {
             using (Progress.Start("Convert Legacy Dependency Map"))
             {
@@ -30,7 +34,7 @@ namespace Microsoft.Docs.Build
                         {
                             return;
                         }
-                        var toc = tocMap.GetNearestToc(document);
+                        var toc = context.TocMap.GetNearestToc(document);
                         if (toc != null)
                         {
                             legacyDependencyMap.Add(new LegacyDependencyMapItem
