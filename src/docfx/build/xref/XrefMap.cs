@@ -139,7 +139,12 @@ namespace Microsoft.Docs.Build
                 if (TryGetValidXrefSpecs(uid, specsWithSameUid.Select(x => x.Value).ToList(), out var validInternalSpecs))
                 {
                     var internalSpec = GetLatestInternalXrefMap(validInternalSpecs);
-                    loadedInternalSpecs.Add((internalSpec as InternalXrefSpec).ToExternalXrefSpec(_context, internalSpec.DeclairingFile));
+                    var spec = (internalSpec as InternalXrefSpec).ToExternalXrefSpec(_context, internalSpec.DeclairingFile);
+
+                    // DHS appends branch infomation from cookie cache to URL, which is wrong for UID resolved URL
+                    // output xref map with URL appending "?branch=master" for master branch
+                    spec.Href += internalSpec.DeclairingFile.Docset.Repository?.Branch == "master" ? "?branch=master" : "";
+                    loadedInternalSpecs.Add(spec);
                 }
             }
             return loadedInternalSpecs;
