@@ -132,7 +132,7 @@ namespace Microsoft.Docs.Build
         public readonly GitHubConfig GitHub = new GitHubConfig();
 
         /// <summary>
-        /// Gets the configurations related to GitHub APIs, usually related to resolve contributors.
+        /// Gets the configurations related to Json Schema.
         /// </summary>
         public readonly JsonSchemaConfig JsonSchema = new JsonSchemaConfig();
 

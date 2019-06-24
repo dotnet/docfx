@@ -29,7 +29,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public async Task<MicrosoftAlias> GetAsync(string alias)
+        public Task<MicrosoftAlias> GetAsync(string alias)
         {
             if (string.IsNullOrEmpty(alias))
                 return null;
@@ -44,12 +44,15 @@ namespace Microsoft.Docs.Build
                 }
                 else
                 {
-                    var msAlias = new MicrosoftAlias()
+                    var newMsAlias = new MicrosoftAlias()
                     {
                         Alias = alias,
                         IsValid = await ValidateAliasByMsGraphAsync(alias),
-                        Expiry = NextExpiry()
+                        Expiry = NextExpiry(),
                     };
+
+                    _aliases.Add(alias, newMsAlias);
+                    return newMsAlias;
                 }
             }
         }
