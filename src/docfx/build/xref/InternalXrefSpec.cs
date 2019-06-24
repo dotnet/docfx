@@ -29,19 +29,35 @@ namespace Microsoft.Docs.Build
 
         public string GetName() => GetXrefPropertyValue("name");
 
-        public ExternalXrefSpec ToExternalXrefSpec(Context context)
+        public ExternalXrefSpec ToExternalXrefSpec(Context context, bool forXrefMapOutput)
         {
             var spec = new ExternalXrefSpec
             {
                 Uid = Uid,
                 Monikers = Monikers,
-                Href = Href,
             };
+
+            if (forXrefMapOutput)
+            {
+                var (_, _, fragment) = UrlUtility.SplitUrl(Href);
+                var path = DeclairingFile.CanonicalUrlWithoutLocale;
+
+                // DHS appends branch infomation from cookie cache to URL, which is wrong for UID resolved URL
+                // output xref map with URL appending "?branch=master" for master branch
+                var query = DeclairingFile.Docset.Repository?.Branch == "master" ? "?branch=master" : "";
+                spec.Href = path + query + fragment;
+            }
+            else
+            {
+                // relative path for internal UID resolving
+                spec.Href = PathUtility.GetRelativePathToFile(DeclairingFile.SiteUrl, Href);
+            }
+
             foreach (var (key, value) in ExtensionData)
             {
                 try
                 {
-                    spec.ExtensionData[key] = ExtensionData[key].Value;
+                    spec.ExtensionData[key] = value.Value;
                 }
                 catch (DocfxException ex)
                 {

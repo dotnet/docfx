@@ -36,7 +36,7 @@ namespace Microsoft.Docs.Build
             try
             {
                 t_recursionDetector.Value.Push((uid, displayPropertyName, relativeTo));
-                return ResolveCore(uid, href, displayPropertyName, relativeTo, moniker);
+                return ResolveCore(uid, href, displayPropertyName, moniker);
             }
             finally
             {
@@ -48,14 +48,14 @@ namespace Microsoft.Docs.Build
         public XrefMapModel ToXrefMapModel(Context context)
         {
             var references = _internalXrefMap.Values
-                .Select(xref => xref[0].ToExternalXrefSpec(context))
+                .Select(xref => xref[0].ToExternalXrefSpec(context, forXrefMapOutput: true))
                 .OrderBy(xref => xref.Uid).ToArray();
 
             return new XrefMapModel { References = references };
         }
 
         private (Error error, string href, string display, IXrefSpec xrefSpec) ResolveCore(
-            string uid, SourceInfo<string> href, string displayPropertyName, Document relativeTo, string moniker = null)
+            string uid, SourceInfo<string> href, string displayPropertyName, string moniker = null)
         {
             var spec = ResolveXrefSpec(uid, moniker);
             if (spec == null)
@@ -64,8 +64,7 @@ namespace Microsoft.Docs.Build
             }
 
             var (_, query, fragment) = UrlUtility.SplitUrl(spec.Href);
-            var resolvedHref = UrlUtility.MergeUrl(
-                RemoveHostnameIfSharingTheSameOne(spec.Href), query, fragment.Length == 0 ? "" : fragment.Substring(1));
+            var resolvedHref = UrlUtility.MergeUrl(spec.Href, query, fragment.Length == 0 ? "" : fragment.Substring(1));
 
             var name = spec.GetXrefPropertyValue("name");
             var displayPropertyValue = spec.GetXrefPropertyValue(displayPropertyName);
@@ -74,16 +73,6 @@ namespace Microsoft.Docs.Build
             // xrefSpec.displayPropertyName -> xrefSpec.name -> uid
             var display = !string.IsNullOrEmpty(displayPropertyValue) ? displayPropertyValue : (!string.IsNullOrEmpty(name) ? name : uid);
             return (null, resolvedHref, display, spec);
-
-            string RemoveHostnameIfSharingTheSameOne(string input)
-            {
-                var hostname = relativeTo.Docset.HostName;
-                if (input.StartsWith(hostname, StringComparison.OrdinalIgnoreCase))
-                {
-                    return input.Substring(hostname.Length);
-                }
-                return input;
-            }
         }
 
         private IXrefSpec ResolveXrefSpec(string uid, string moniker)

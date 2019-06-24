@@ -40,7 +40,7 @@ inputs:
     { "references":[{"uid": "a", "name": "a", "fullName": "a", "href": "https://docs.microsoft.com/en-us/a", "nameWithType": "a"}]}
 outputs:
   docs/a.json: |
-    { "conceptual": "<p>Link to <a href=\"/en-us/dotnet/api/system.string\">String</a></p>\n"}
+    { "conceptual": "<p>Link to <a href=\"https://docs.microsoft.com/en-us/dotnet/api/system.string\">String</a></p>\n"}
 ---
 # Restore xref map from configured url and use the YAML file for resolving
 inputs:
@@ -60,19 +60,21 @@ outputs:
     { "conceptual": "<p>Link to <a href=\"https://docs.microsoft.com/en-us/dotnet/api/system.string\">String</a></p>\n"}
 ---
 # Define uid in conceptual, resolve it
-inputs:
-  docfx.yml:
-  docs/a.md: |
-    ---
-    title: Title from yaml header a
-    uid: a
-    ---
-  docs/b.md: |
-    ---
-    title: Title from yaml header b
-    uid: b
-    ---
-  docs/c.md: Link to @a
+repos:
+  https://docs.com/test-uid-conceptual#live:
+    - files:
+        docfx.yml:
+        docs/a.md: |
+          ---
+          title: Title from yaml header a
+          uid: a
+          ---
+        docs/b.md: |
+          ---
+          title: Title from yaml header b
+          uid: b
+          ---
+        docs/c.md: Link to @a
 outputs:
   docs/c.json: | 
     {"conceptual":"<p>Link to <a href=\"a\">Title from yaml header a</a></p>\n"}
@@ -104,7 +106,7 @@ outputs:
           ]
       }
     }
-------
+---
 # The same uid in internal and external
 # should resolve it from the internal one
 inputs:
@@ -163,7 +165,7 @@ outputs:
     }
   docs/a.json:
   xrefmap.json: | 
-    {"references":[{"uid":"a","href":"https://docs.com/docs/a.json"}]}
+    {"references":[{"uid":"a"}]}
   .dependencymap.json: |
     {
       "dependencies": {
@@ -200,28 +202,30 @@ outputs:
     {"!references":null}
 ---
 # Resolve xref in SDP
-inputs:
-  docfx.yml:
-  docs/a.json: |
-    {
-      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
-      "uid": "a",
-      "name": "test",
-      "fullName": "test.test",
-      "description": "a.description"
-    }
-  docs/b.json: | 
-    {
-      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
-      "xref": "a"
-    }
+repos:
+  https://docs.com/test-xref-sdp#live:
+    - files:
+        docfx.yml:
+        docs/a.json: |
+          {
+            "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
+            "uid": "a",
+            "name": "test",
+            "fullName": "test.test",
+            "description": "a.description"
+          }
+        docs/b.json: | 
+          {
+            "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
+            "xref": "a"
+          }
 outputs:
   docs/a.json:
   docs/b.json: | 
     {
       "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
       "xref": {
-          "href": "https://docs.com/docs/a.json",
+          "href": "a.json",
           "uid": "a",
           "name": "test",
           "fullName": "test.test",
@@ -296,32 +300,26 @@ outputs:
     {
       "references": [{
         "uid": "a",
-        "href": "https://docs.com/docs/a.json",
         "description": "description for a"
       }, 
       {
         "uid": "a.b",
-        "href": "https://docs.com/docs/a.json#a_b",
         "description": "description for a.b"
       },
       {
         "uid": "a.b.d",
-        "href": "https://docs.com/docs/a.json#a_b_d",
         "description": "description for a.b.d"
       },
       {
         "uid": "a.b.e",
-        "href": "https://docs.com/docs/a.json#a_b_e",
         "description": "description for a.b.e"
       }, 
       {
         "uid": "a.c",
-        "href": "https://docs.com/docs/a.json#a_c",
         "description": "description for a.c"
       },
       {
         "uid": "a.data",
-        "href": "https://docs.com/docs/a.json#a_data",
         "description": "description for a.data"
       }]
     }
@@ -342,8 +340,6 @@ outputs:
   docs/a.json:
   .errors.log: |
     ["error","uid-conflict","The same Uid 'a' has been defined multiple times in the same file","docs/a.json"]
-  xrefmap.json: |
-    {"references":[{"uid":"a","href":"https://docs.com/docs/a.json"}]}
 ---
 # uid conflict in non-root level and another SDP
 inputs:
@@ -367,8 +363,6 @@ outputs:
   docs/b.json:
   .errors.log: |
     ["error","uid-conflict","UID 'b' is defined in more than one file: 'docs/a.json', 'docs/b.json'"]
-  xrefmap.json: |
-    {"references":[{"uid":"a","href":"https://docs.com/docs/a.json"}]}
 ---
 # Xref property field which supports markdown content
 inputs:
@@ -382,7 +376,7 @@ inputs:
 outputs:
   docs/a.json:
   xrefmap.json: | 
-    {"references":[{"uid":"a","href":"https://docs.com/docs/a.json","summary":"<pre><code>Hello `docfx`!\n</code></pre>\n"}]}
+    {"references":[{"uid":"a","summary":"<pre><code>Hello `docfx`!\n</code></pre>\n"}]}
 ---
 # Xref property field which supports inline markdown content
 inputs:
@@ -396,7 +390,7 @@ inputs:
 outputs:
   docs/a.json:
   xrefmap.json: | 
-    {"references":[{"uid":"a","href":"https://docs.com/docs/a.json","inlineDescription":"Hello <code>docfx</code>!"}]}
+    {"references":[{"uid":"a","inlineDescription":"Hello <code>docfx</code>!"}]}
 ---
 # Xref property field with dependecy
 inputs:
@@ -413,7 +407,7 @@ outputs:
   docs/a.json:
   docs/b.json:
   xrefmap.json: | 
-    {"references":[{"uid":"a","href":"https://docs.com/docs/a.json","inlineDescription":"Hello <code>docfx</code>!"}]}
+    {"references":[{"uid":"a","inlineDescription":"Hello <code>docfx</code>!"}]}
 ---
 # Refer to uid with hashtag
 inputs:
@@ -731,39 +725,41 @@ outputs:
     ["warning","xref-not-found","Cross reference not found: '<p>\n  <xref href=\"e\" data-raw-source=\"@mentione\" />\n  some text\n  <xref href=\"f\" data-raw-source=\"mentionf\" />\n</p>'","docs/a.md",6,78]
 ---
 # support multiple uids with different xref properties
-inputs:
-  docfx.yml:
-  docs/a.yml: |
-    #YamlMime:TestData
-    uid: a
-    description: description for a
-    child:
-      uid: child
-      a: child aaaaa
-      b: child bbbbb
-      child.c: "child.c cccccc"
-    children:
-      - uid: children.a
-        b: children.a bbbbb
-      - uid: children.b
-        a: children.b aaaaa
-      - uid: children.c
-        child.c: "children.c cccccc"
-  docs/b.md: |
-    Link to @a?displayProperty=description
-    Link to @a?displayProperty=fullName
-    Link to @a?displayProperty=non-exist-property
-    Link to @child?displayProperty=a
-    Link to @child?displayProperty=b
-    Link to @child?displayProperty=child.c
-    Link to @child?displayProperty=non-exist-property
-    Link to @children.a?displayProperty=a
-    Link to @children.a?displayProperty=b
-    Link to @children.a?displayProperty=non-exist-property
-    Link to @children.b?displayProperty=a
-    Link to @children.b?displayProperty=b
-    Link to @children.b?displayProperty=non-exist-property
-    Link to @children.c?displayProperty=child.c
+repos:
+  https://docs.com/test-multiple-uid-different-xref-property#live:
+    - files:
+        docfx.yml:
+        docs/a.yml: |
+          #YamlMime:TestData
+          uid: a
+          description: description for a
+          child:
+            uid: child
+            a: child aaaaa
+            b: child bbbbb
+            child.c: "child.c cccccc"
+          children:
+            - uid: children.a
+              b: children.a bbbbb
+            - uid: children.b
+              a: children.b aaaaa
+            - uid: children.c
+              child.c: "children.c cccccc"
+        docs/b.md: |
+          Link to @a?displayProperty=description
+          Link to @a?displayProperty=fullName
+          Link to @a?displayProperty=non-exist-property
+          Link to @child?displayProperty=a
+          Link to @child?displayProperty=b
+          Link to @child?displayProperty=child.c
+          Link to @child?displayProperty=non-exist-property
+          Link to @children.a?displayProperty=a
+          Link to @children.a?displayProperty=b
+          Link to @children.a?displayProperty=non-exist-property
+          Link to @children.b?displayProperty=a
+          Link to @children.b?displayProperty=b
+          Link to @children.b?displayProperty=non-exist-property
+          Link to @children.c?displayProperty=child.c
 outputs:
   docs/a.json:
   docs/b.json: |
@@ -836,31 +832,33 @@ inputs:
     { "references":[{"uid": "System.String", "href": "https://2.docs.microsoft.com/en-us/system.string"}]}
 outputs:
   docs/a.json: |
-    { "conceptual": "<p>Link to <a href=\"/en-us/dotnet/api/system.string\">System.String</a></p>\n"}
+    { "conceptual": "<p>Link to <a href=\"https://docs.microsoft.com/en-us/dotnet/api/system.string\">System.String</a></p>\n"}
 ---
 # support non-leaf nodes for xref properties
-inputs:
-  docfx.yml:
-  docs/a.yml: |
-    #YamlMime:TestData
-    uid: a
-    list:
-      - "1.0"
-      - "2.0"
-      - "3.0"
-    child:
-      uid: child
-      list:
-        - "2.0"
-        - "3.0"
-    children:
-      - uid: children.a
-        list:
-          - "1.0"
-      - uid: children.b
-        list:
-          - "2.0"
-          - "3.0"
+repos:
+  https://docs.com/test-non-leaf-xref#live:
+    - files:
+        docfx.yml:
+        docs/a.yml: |
+          #YamlMime:TestData
+          uid: a
+          list:
+            - "1.0"
+            - "2.0"
+            - "3.0"
+          child:
+            uid: child
+            list:
+              - "2.0"
+              - "3.0"
+          children:
+            - uid: children.a
+              list:
+                - "1.0"
+            - uid: children.b
+              list:
+                - "2.0"
+                - "3.0"
 outputs:
   docs/a.json:
   xrefmap.json: |
@@ -900,4 +898,35 @@ outputs:
             }
         ]
     }
+---
+# define UID in master branch
+repos:
+  https://docs.com/test#master:
+    - files:
+        docfx.yml:
+        docs/a.md: |
+          ---
+          title: Title from yaml header a
+          uid: a
+          ---
+outputs:
+  docs/a.json:
+  xrefmap.json: |
+    {"references":[{"uid":"a", href: "https://docs.com/docs/a?branch=master"}]}
+---
+# define UID in live branch
+repos:
+  https://docs.com/test#live:
+    - files:
+        docfx.yml:
+        docs/a.md: |
+          ---
+          title: Title from yaml header a
+          uid: a
+          ---
+outputs:
+  docs/a.json:
+  xrefmap.json: |
+    {"references":[{"uid":"a", href: "https://docs.com/docs/a"}]}
+          
 
