@@ -34,10 +34,11 @@ namespace Microsoft.Docs.Build
         private readonly Lazy<XrefMap> _xrefMap;
         private readonly Lazy<TableOfContentsMap> _tocMap;
 
-        public Context(string outputPath, ErrorLog errorLog,  Docset docset, Func<Context, Document, Task> buildFile)
+        public Context(string outputPath, ErrorLog errorLog, Docset docset, Func<Context, Document, Task> buildFile)
         {
             _xrefMap = new Lazy<XrefMap>(() => XrefMapBuilder.Build(this, docset));
             _tocMap = new Lazy<TableOfContentsMap>(() => TableOfContentsMap.Create(this));
+            BuildQueue = new WorkQueue<Document>(doc => buildFile(this, doc));
 
             ErrorLog = errorLog;
             Output = new Output(outputPath);
@@ -54,7 +55,6 @@ namespace Microsoft.Docs.Build
                 docset.Config, BuildScope, BuildQueue, GitCommitProvider, BookmarkValidator, DependencyMapBuilder, _xrefMap);
             ContributionProvider = new ContributionProvider(docset, GitHubUserCache, GitCommitProvider);
             Template = TemplateEngine.Create(docset);
-            BuildQueue = new WorkQueue<Document>(doc => buildFile(this, doc));
         }
 
         public void Dispose()

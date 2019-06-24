@@ -13,7 +13,7 @@ namespace Microsoft.Docs.Build
     {
         private readonly Func<T, Task> _run;
         private readonly ConcurrentQueue<T> _queue = new ConcurrentQueue<T>();
-        private readonly ConcurrentHashSet<T> _recurseDetector = new ConcurrentHashSet<T>();
+        private readonly ConcurrentHashSet<T> _duplicationDetector = new ConcurrentHashSet<T>();
 
         private readonly TaskCompletionSource<int> _drainTcs = new TaskCompletionSource<int>();
 
@@ -39,7 +39,7 @@ namespace Microsoft.Docs.Build
 
         public void Enqueue(T item)
         {
-            if (!_recurseDetector.TryAdd(item))
+            if (!_duplicationDetector.TryAdd(item))
             {
                 return;
             }
