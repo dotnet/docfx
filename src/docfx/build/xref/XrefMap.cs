@@ -19,8 +19,8 @@ namespace Microsoft.Docs.Build
 
         public XrefMap(Context context, Docset docset)
         {
-            _internalXrefMap = XrefMapBuilder.Build(context, docset);
-            _externalXrefMap = XrefMapLoader.Load(docset);
+            _internalXrefMap = InternalXrefMapBuilder.Build(context, docset);
+            _externalXrefMap = ExternalXrefMapLoader.Load(docset);
         }
 
         public (Error error, string href, string display, IXrefSpec xrefSpec) Resolve(string uid, SourceInfo<string> href, string displayPropertyName, Document relativeTo, string moniker = null)
