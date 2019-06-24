@@ -38,7 +38,7 @@ namespace Microsoft.Docs.Build
             try
             {
                 t_recursionDetector.Value.Push((uid, displayPropertyName, relativeTo));
-                return ResolveCore(uid, href, displayPropertyName, relativeTo, moniker);
+                return ResolveCore(uid, href, displayPropertyName, moniker);
             }
             finally
             {
@@ -55,7 +55,7 @@ namespace Microsoft.Docs.Build
         }
 
         private (Error error, string href, string display, IXrefSpec xrefSpec) ResolveCore(
-            string uid, SourceInfo<string> href, string displayPropertyName, Document relativeTo, string moniker = null)
+            string uid, SourceInfo<string> href, string displayPropertyName, string moniker = null)
         {
             string resolvedHref;
             string displayPropertyValue;
@@ -63,8 +63,7 @@ namespace Microsoft.Docs.Build
             if (TryResolve(uid, moniker, out var spec))
             {
                 var (_, query, fragment) = UrlUtility.SplitUrl(spec.Href);
-                resolvedHref = UrlUtility.MergeUrl(
-                    RemoveHostnameIfSharingTheSameOne(spec.Href), query, fragment.Length == 0 ? "" : fragment.Substring(1));
+                resolvedHref = UrlUtility.MergeUrl(spec.Href, query, fragment.Length == 0 ? "" : fragment.Substring(1));
 
                 name = spec.GetXrefPropertyValue("name");
                 displayPropertyValue = spec.GetXrefPropertyValue(displayPropertyName);
@@ -78,16 +77,6 @@ namespace Microsoft.Docs.Build
             // xrefSpec.displayPropertyName -> xrefSpec.name -> uid
             string display = !string.IsNullOrEmpty(displayPropertyValue) ? displayPropertyValue : (!string.IsNullOrEmpty(name) ? name : uid);
             return (null, resolvedHref, display, spec);
-
-            string RemoveHostnameIfSharingTheSameOne(string input)
-            {
-                var hostname = relativeTo.Docset.HostName;
-                if (input.StartsWith(hostname, StringComparison.OrdinalIgnoreCase))
-                {
-                    return input.Substring(hostname.Length);
-                }
-                return input;
-            }
         }
 
         private bool TryResolve(string uid, string moniker, out IXrefSpec spec)
@@ -150,7 +139,12 @@ namespace Microsoft.Docs.Build
                 if (TryGetValidXrefSpecs(uid, specsWithSameUid.Select(x => x.Value).ToList(), out var validInternalSpecs))
                 {
                     var internalSpec = GetLatestInternalXrefMap(validInternalSpecs);
-                    loadedInternalSpecs.Add((internalSpec as InternalXrefSpec).ToExternalXrefSpec(_context, internalSpec.DeclairingFile));
+                    var spec = (internalSpec as InternalXrefSpec).ToExternalXrefSpec(_context, internalSpec.DeclairingFile);
+
+                    // DHS appends branch infomation from cookie cache to URL, which is wrong for UID resolved URL
+                    // output xref map with URL appending "?branch=master" for master branch
+                    spec.Href += internalSpec.DeclairingFile.Docset.Repository?.Branch == "master" ? "?branch=master" : "";
+                    loadedInternalSpecs.Add(spec);
                 }
             }
             return loadedInternalSpecs;
