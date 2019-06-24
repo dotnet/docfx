@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 
 namespace Microsoft.Docs.Build
@@ -40,7 +39,7 @@ namespace Microsoft.Docs.Build
             return false;
         }
 
-        public static (List<Error> errors, RedirectionMap map) Create(Docset docset)
+        public static (List<Error> errors, RedirectionMap map) Create(Docset docset, Func<string, bool> glob)
         {
             var errors = new List<Error>();
             var redirections = new HashSet<Document>();
@@ -71,6 +70,11 @@ namespace Microsoft.Docs.Build
                         continue;
                     }
 
+                    if (!glob(path))
+                    {
+                        continue;
+                    }
+
                     var pathToDocset = PathUtility.NormalizeFile(path);
                     var type = Document.GetContentType(pathToDocset);
                     if (type != ContentType.Page)
@@ -80,6 +84,7 @@ namespace Microsoft.Docs.Build
                     }
 
                     var combineRedirectUrl = false;
+                    var mutableRedirectUrl = redirectUrl.Value;
                     if (redirectDocumentId)
                     {
                         switch (UrlUtility.GetLinkType(redirectUrl))
@@ -95,7 +100,7 @@ namespace Microsoft.Docs.Build
                         }
                     }
 
-                    Document redirect = Document.Create(docset, pathToDocset, redirectUrl, combineRedirectUrl: combineRedirectUrl);
+                    Document redirect = Document.Create(docset, pathToDocset, mutableRedirectUrl, combineRedirectUrl: combineRedirectUrl);
                     if (redirectDocumentId && !redirectUrls.Add(redirect.RedirectionUrl))
                     {
                         errors.Add(Errors.RedirectionUrlConflict(redirectUrl));

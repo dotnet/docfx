@@ -575,12 +575,20 @@ outputs:
             ],
             "docs/TOC.md": [
                 {
-                    "source": "docs/f1/TOC.md",
-                    "type": "tocFolderInclusion"
+                  "source": "docs/f1/b.md",
+                  "type": "link"
                 },
                 {
-                    "source": "docs/f2/TOC.md",
-                    "type": "tocFolderInclusion"
+                  "source": "docs/f1/TOC.md",
+                  "type": "tocFolderInclusion"
+                },
+                {
+                  "source": "docs/f2/a.md",
+                  "type": "link"
+                },
+                {
+                  "source": "docs/f2/TOC.md",
+                  "type": "tocFolderInclusion"
                 }
             ]
         }
@@ -746,7 +754,7 @@ outputs:
        "items":[  
           {  
              "name":"topic href has higher priority",
-             "href":"n2",
+             "href":"~/docs/f1/n2.md",
           }
        ]
     }
@@ -775,14 +783,14 @@ outputs:
              "items":[  
                 {  
                    "name":"Index Reference",
-                   "href":"f11/n1"
+                   "href":"n1.md"
                 }
              ],
              "name":"Toc Reference 1",
-             "href":"f11/n1"
+             "href":"f11/n1.md"
           },
           {  
-             "href":"f11/n1",
+             "href":"n1.md",
              "name":"Toc Reference 2"
           }
        ]

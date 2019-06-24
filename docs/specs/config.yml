@@ -310,7 +310,7 @@ outputs:
   .errors.log: |
     ["error","redirection-conflict","The 'docs/a.md' appears twice or more in the redirection mappings","docfx.yml",4,14]
 ---
-# Redirection file is independent of build scope
+# Redirection file out of build scope
 inputs:
   docfx.yml: |
     exclude: '*'
@@ -318,13 +318,15 @@ inputs:
       docs/a.md: /absolute/path1
       b.md: /absolute/path2
 outputs:
-  .publish.json: |
-    {
-      "files": [
-        { "url": "/b", "redirect_url": "/absolute/path2" },
-        { "url": "/docs/a", "redirect_url": "/absolute/path1" }
-      ]
-    }
+---
+# Redirection file out of build scope with conflicted id
+inputs:
+  docfx.yml: |
+    exclude: '*'
+    redirections:
+      a.md: /absolute/path1
+      b.md: /absolute/path1
+outputs:
 ---
 # Multiple redirection errors
 inputs:

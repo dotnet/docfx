@@ -51,6 +51,12 @@ namespace Microsoft.Docs.Build
         public int? MinItems { get; set; }
 
         /// <summary>
+        /// Current value must be this constant.
+        /// </summary>
+        [JsonProperty(NullValueHandling = NullValueHandling.Include)]
+        public JToken Const { get; set; }
+
+        /// <summary>
         /// An array of valid values for the current value.
         /// </summary>
         public JValue[] Enum { get; set; }
@@ -66,6 +72,26 @@ namespace Microsoft.Docs.Build
         /// The minimum length of a string.
         /// </summary>
         public int? MinLength { get; set; }
+
+        /// <summary>
+        /// The inclusive maximum value of a number.
+        /// </summary>
+        public double? Maximum { get; set; }
+
+        /// <summary>
+        /// The inclusive minimum value of a number.
+        /// </summary>
+        public double? Minimum { get; set; }
+
+        /// <summary>
+        /// The exclusive maximum value of a number.
+        /// </summary>
+        public double? ExclusiveMaximum { get; set; }
+
+        /// <summary>
+        /// The exclusive minimum value of a number.
+        /// </summary>
+        public double? ExclusiveMinimum { get; set; }
 
         /// <summary>
         /// An object can have extra keys not defined in properties.

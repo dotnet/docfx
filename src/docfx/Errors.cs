@@ -177,9 +177,15 @@ namespace Microsoft.Docs.Build
         /// Examples:
         ///   - restore a repo with bad url
         /// </summary>
-        /// Behavior: ✔️ Message: ❌
+        /// Behavior: ✔️ Message: ✔️
         public static Error GitCloneFailed(string url, IEnumerable<string> branches)
-            => new Error(ErrorLevel.Error, "git-clone-failed", $"Cloning git repository '{url}' ({Join(branches)}) failed.");
+        {
+            var message = $"Failure to clone the repository `{url} ({Join(branches)})`."
+                      + "This could be caused by an incorrect repository URL, please verify the URL on the Docs Portal (https://ops.docs.com)."
+                      + "This could also be caused by not having the proper permission the repository, "
+                      + "please confirm that the GitHub group/team that triggered the build has access to the repository.";
+            return new Error(ErrorLevel.Error, "git-clone-failed", message);
+        }
 
         /// <summary>
         /// Yaml header defined in article.md isn't an object.
@@ -399,15 +405,22 @@ namespace Microsoft.Docs.Build
         /// Array length not within min and max.
         /// </summary>
         /// Behavior: ✔️ Message: ❌
-        public static Error ArrayLengthInvalid(SourceInfo source, string propName, int? minItems = null, int? maxItems = null)
-            => new Error(ErrorLevel.Warning, "array-length-invalid", $"Array {(string.IsNullOrEmpty(propName) ? "" : $"'{propName}' ")}length should be {(minItems.HasValue ? $">= {minItems.Value}" : $"<= {maxItems.Value}")}", source);
+        public static Error ArrayLengthInvalid(SourceInfo source, string propName, string criteria)
+            => new Error(ErrorLevel.Warning, "array-length-invalid", $"Array '{propName}' length should be {criteria}", source);
 
         /// <summary>
         /// String length not within min and max.
         /// </summary>
         /// Behavior: ✔️ Message: ❌
-        public static Error StringLengthInvalid(SourceInfo source, string propName, int? minLength = null, int? maxLength = null)
-            => new Error(ErrorLevel.Warning, "string-length-invalid", $"String {(string.IsNullOrEmpty(propName) ? "" : $"'{propName}' ")}length should be {(minLength.HasValue ? $">= {minLength.Value}" : $"<= {maxLength.Value}")}", source);
+        public static Error StringLengthInvalid(SourceInfo source, string propName, string criteria)
+            => new Error(ErrorLevel.Warning, "string-length-invalid", $"String '{propName}' length should be {criteria}", source);
+
+        /// <summary>
+        /// Number not within min and max.
+        /// </summary>
+        /// Behavior: ✔️ Message: ❌
+        public static Error NumberInvalid(SourceInfo source, string propName, string criteria)
+            => new Error(ErrorLevel.Warning, "number-invalid", $"Number '{propName}' should be {criteria}", source);
 
         /// <summary>
         /// A required field is missing.
