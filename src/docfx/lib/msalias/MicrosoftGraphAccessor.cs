@@ -13,10 +13,19 @@ namespace Microsoft.Docs.Build
         private readonly IGraphServiceClient _msGraphClient;
         private readonly MicrosoftGraphAuthenticationProvider _microsoftGraphAuthenticationProvider;
 
+        public bool Connected { get; } = true;
+
         public MicrosoftGraphAccessor(string tenantId, string clientId, string clientSecret)
         {
-            _microsoftGraphAuthenticationProvider = new MicrosoftGraphAuthenticationProvider(tenantId, clientId, clientSecret);
-            _msGraphClient = new GraphServiceClient(_microsoftGraphAuthenticationProvider);
+            try
+            {
+                _microsoftGraphAuthenticationProvider = new MicrosoftGraphAuthenticationProvider(tenantId, clientId, clientSecret);
+                _msGraphClient = new GraphServiceClient(_microsoftGraphAuthenticationProvider);
+            }
+            catch
+            {
+                Connected = false;
+            }
         }
 
         public async Task<bool> ValidateAlias(string alias)
@@ -38,7 +47,10 @@ namespace Microsoft.Docs.Build
 
         public void Dispose()
         {
-            _microsoftGraphAuthenticationProvider.Dispose();
+            if (_microsoftGraphAuthenticationProvider != null)
+            {
+                _microsoftGraphAuthenticationProvider.Dispose();
+            }
         }
     }
 }

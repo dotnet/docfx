@@ -52,15 +52,23 @@ namespace Microsoft.Docs.Build
                 }
                 else
                 {
-                    var newMsAlias = new MicrosoftAlias()
+                    if (_microsoftGraphAccessor.Connected)
                     {
-                        Alias = alias,
-                        IsValid = await _microsoftGraphAccessor.ValidateAlias(alias),
-                        Expiry = NextExpiry(),
-                    };
+                        var newMsAlias = new MicrosoftAlias()
+                        {
+                            Alias = alias,
+                            IsValid = await _microsoftGraphAccessor.ValidateAlias(alias),
+                            Expiry = NextExpiry(),
+                        };
 
-                    _aliases.Add(alias, newMsAlias);
-                    return newMsAlias;
+                        _aliases.Add(alias, newMsAlias);
+
+                        return newMsAlias;
+                    }
+                    else
+                    {
+                        return null;
+                    }
                 }
             }
         }

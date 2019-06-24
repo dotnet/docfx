@@ -33,7 +33,7 @@ namespace Microsoft.Docs.Build
             Cache = new Cache();
             BuildQueue = new WorkQueue<Document>();
             MicrosoftAliasCache = new MicrosoftAliasCache(docset.Config);
-            MetadataProvider = new MetadataProvider(docset, Cache);
+            MetadataProvider = new MetadataProvider(docset, Cache, MicrosoftAliasCache);
             MonikerProvider = new MonikerProvider(docset, MetadataProvider);
             GitHubUserCache = new GitHubUserCache(docset.Config);
             GitCommitProvider = new GitCommitProvider();
