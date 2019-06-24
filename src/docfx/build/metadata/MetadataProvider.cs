@@ -46,6 +46,17 @@ namespace Microsoft.Docs.Build
             return _metadataCache.GetOrAdd(file, GetMetadataCore);
         }
 
+        public static JsonSchema LoadMetadataSchema(Config config, string docsetPath, string fallbackDocsetPath)
+        {
+            var token = new JObject();
+            foreach (var metadataSchemaPath in config.MetadataSchema)
+            {
+                var (_, content, _) = RestoreMap.GetRestoredFileContent(docsetPath, metadataSchemaPath, fallbackDocsetPath);
+                JsonUtility.Merge(token, JsonUtility.Parse(content, metadataSchemaPath).value as JObject);
+            }
+            return JsonUtility.ToObject<JsonSchema>(token).value;
+        }
+
         private (List<Error> errors, JObject metadata, InputMetadata metadataModel) GetMetadataCore(Document file)
         {
             if (file.ContentType != ContentType.Page && file.ContentType != ContentType.TableOfContents)

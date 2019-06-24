@@ -46,7 +46,7 @@ namespace Microsoft.Docs.Build
             // just return if config loading has errors
             if (errorLog.Write(configErrors))
                 return;
-            var metadataSchema = LoadMetadataSchema(config, docsetPath, fallbackRepo?.Path);
+            var metadataSchema = MetadataProvider.LoadMetadataSchema(config, docsetPath, fallbackRepo?.Path);
 
             var docset = GetBuildDocset(new Docset(errorLog, docsetPath, locale, config, options, restoreMap, repository, fallbackRepo));
 
@@ -241,17 +241,6 @@ namespace Microsoft.Docs.Build
             buildScope.AddRange(fallbackTocs);
 
             return buildScope;
-        }
-
-        private static JsonSchema LoadMetadataSchema(Config config, string docsetPath, string fallbackDocsetPath)
-        {
-            var token = new JObject();
-            foreach (var metadataSchemaPath in config.MetadataSchema)
-            {
-                var (_, content, _) = RestoreMap.GetRestoredFileContent(docsetPath, metadataSchemaPath, fallbackDocsetPath);
-                JsonUtility.Merge(token, JsonUtility.Parse(content, metadataSchemaPath).value as JObject);
-            }
-            return JsonUtility.ToObject<JsonSchema>(token).value;
         }
     }
 }
