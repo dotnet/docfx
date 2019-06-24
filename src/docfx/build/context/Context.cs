@@ -13,6 +13,7 @@ namespace Microsoft.Docs.Build
         public readonly ErrorLog ErrorLog;
         public readonly Cache Cache;
         public readonly Output Output;
+        public readonly BuildScope BuildScope;
         public readonly WorkQueue<Document> BuildQueue;
         public readonly MetadataProvider MetadataProvider;
         public readonly MonikerProvider MonikerProvider;
@@ -30,6 +31,7 @@ namespace Microsoft.Docs.Build
             ErrorLog = errorLog;
             Output = new Output(outputPath);
             Cache = new Cache();
+            BuildScope = new BuildScope(errorLog, docset);
             BuildQueue = new WorkQueue<Document>();
             MetadataProvider = new MetadataProvider(docset, Cache);
             MonikerProvider = new MonikerProvider(docset, MetadataProvider);
@@ -38,7 +40,9 @@ namespace Microsoft.Docs.Build
             PublishModelBuilder = new PublishModelBuilder();
             BookmarkValidator = new BookmarkValidator();
             DependencyMapBuilder = new DependencyMapBuilder();
-            DependencyResolver = new DependencyResolver(BuildQueue, GitCommitProvider, BookmarkValidator, DependencyMapBuilder, new Lazy<XrefMap>(xrefMap));
+            DependencyResolver = new DependencyResolver(
+                docset.Config, BuildScope, BuildQueue, GitCommitProvider, BookmarkValidator, DependencyMapBuilder, new Lazy<XrefMap>(xrefMap));
+
             ContributionProvider = new ContributionProvider(docset, GitHubUserCache, GitCommitProvider);
             Template = TemplateEngine.Create(docset);
         }

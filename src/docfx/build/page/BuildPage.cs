@@ -12,10 +12,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class BuildPage
     {
-        public static async Task<(IEnumerable<Error> errors, PublishItem publishItem)> Build(
-            Context context,
-            Document file,
-            TableOfContentsMap tocMap)
+        public static async Task<IEnumerable<Error>> Build(Context context, Document file, TableOfContentsMap tocMap)
         {
             Debug.Assert(file.ContentType == ContentType.Page);
 
@@ -77,7 +74,7 @@ namespace Microsoft.Docs.Build
                 errors.Add(Errors.Custom404Page(file.FilePath));
             }
 
-            return (errors, publishItem);
+            return errors;
         }
 
         private static async Task<(List<Error>, OutputMetadata)> GenerateOutputMetadata(
@@ -105,7 +102,7 @@ namespace Microsoft.Docs.Build
             errors.AddIfNotNull(monikerError);
             outputMetadata.Monikers = monikers;
 
-            (outputMetadata.DocumentId, outputMetadata.DocumentVersionIndependentId) = file.Docset.Redirections.TryGetDocumentId(file, out var docId) ? docId : file.Id;
+            (outputMetadata.DocumentId, outputMetadata.DocumentVersionIndependentId) = context.BuildScope.Redirections.TryGetDocumentId(file, out var docId) ? docId : file.Id;
             (outputMetadata.ContentGitUrl, outputMetadata.OriginalContentGitUrl, outputMetadata.OriginalContentGitUrlTemplate, outputMetadata.Gitcommit) = context.ContributionProvider.GetGitUrls(file);
 
             List<Error> contributorErrors;

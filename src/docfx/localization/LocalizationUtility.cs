@@ -154,6 +154,8 @@ namespace Microsoft.Docs.Build
             return false;
         }
 
+        public static bool IsFallback(this Docset docset) => docset.LocalizationDocset != null;
+
         public static bool IsLocalized(this Docset docset) => docset.FallbackDocset != null;
 
         public static bool IsLocalizedBuild(this Docset docset) => docset.FallbackDocset != null || docset.LocalizationDocset != null;
