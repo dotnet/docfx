@@ -22,6 +22,7 @@ namespace Microsoft.Docs.Build
         [JsonIgnore]
         public string SchemaType { get; set; }
 
+        [JsonProperty("_tocRel")]
         public string TocRel { get; set; }
 
         [JsonProperty(PropertyName = "rawTitle")]
