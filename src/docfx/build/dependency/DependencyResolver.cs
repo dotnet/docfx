@@ -37,8 +37,7 @@ namespace Microsoft.Docs.Build
         {
             var (error, content, child) = TryResolveContent(declaringFile, path);
 
-            if (content != null && child != null)
-                _dependencyMapBuilder.AddDependencyItem(declaringFile, child, dependencyType);
+            _dependencyMapBuilder.AddDependencyItem(declaringFile, child, dependencyType);
 
             return (error, content, child);
         }

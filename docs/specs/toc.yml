@@ -261,11 +261,7 @@ outputs:
 # docs/TOC.md -> docs/f1/TOC.md  -> docs/f2/TOC.md
 #             -> docs/f2/TOC.md --> docs/f1/f11/TOC.md
 inputs:
-  docfx.yml: |
-    files:
-      - docs/TOC.md
-      - docs/f1/f11/index.md
-      - docs/f1/f11/a.md
+  docfx.yml:
   docs/TOC.md: |
     # [Reference TOC File 1](f1/TOC.md)
     # [Reference TOC File 2](~/docs/f2/TOC.yml)
