@@ -19,7 +19,7 @@ namespace Microsoft.Docs.Build
 
         public XrefMap(Context context, Docset docset)
         {
-            _internalXrefMap = InternalXrefMapBuilder.Build(context, docset);
+            _internalXrefMap = InternalXrefMapBuilder.Build(context);
             _externalXrefMap = ExternalXrefMapLoader.Load(docset);
         }
 

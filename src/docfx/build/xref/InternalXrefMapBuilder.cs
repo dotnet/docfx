@@ -12,14 +12,14 @@ namespace Microsoft.Docs.Build
 {
     internal static class InternalXrefMapBuilder
     {
-        public static IReadOnlyDictionary<string, InternalXrefSpec[]> Build(Context context, Docset docset)
+        public static IReadOnlyDictionary<string, InternalXrefSpec[]> Build(Context context)
         {
             var builder = new ListBuilder<InternalXrefSpec>();
 
             using (Progress.Start("Building Xref map"))
             {
                 ParallelUtility.ForEach(
-                    docset.ScanScope.Where(f => f.ContentType == ContentType.Page),
+                    context.BuildScope.Files.Where(f => f.ContentType == ContentType.Page),
                     file => Load(context, builder, file),
                     Progress.Update);
             }

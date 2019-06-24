@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
@@ -13,24 +14,30 @@ namespace Microsoft.Docs.Build
 {
     internal class DependencyResolver
     {
+        private readonly BuildScope _buildScope;
         private readonly WorkQueue<Document> _buildQueue;
         private readonly BookmarkValidator _bookmarkValidator;
         private readonly DependencyMapBuilder _dependencyMapBuilder;
         private readonly GitCommitProvider _gitCommitProvider;
+        private readonly IReadOnlyDictionary<string, string> _resolveAlias;
         private readonly Lazy<XrefMap> _xrefMap;
 
         public DependencyResolver(
+            Config config,
+            BuildScope buildScope,
             WorkQueue<Document> buildQueue,
             GitCommitProvider gitCommitProvider,
             BookmarkValidator bookmarkValidator,
             DependencyMapBuilder dependencyMapBuilder,
             Lazy<XrefMap> xrefMap)
         {
+            _buildScope = buildScope;
             _buildQueue = buildQueue;
             _bookmarkValidator = bookmarkValidator;
             _dependencyMapBuilder = dependencyMapBuilder;
             _gitCommitProvider = gitCommitProvider;
             _xrefMap = xrefMap;
+            _resolveAlias = LoadResolveAlias(config);
         }
 
         public (Error error, string content, Document file) ResolveContent(SourceInfo<string> path, Document declaringFile, DependencyType dependencyType = DependencyType.Inclusion)
@@ -197,7 +204,7 @@ namespace Microsoft.Docs.Build
             // Pages outside build scope, don't build the file, leave href as is
             if (error is null
                 && (file.ContentType == ContentType.Page || file.ContentType == ContentType.TableOfContents)
-                && !file.Docset.BuildScope.Contains(file))
+                && !_buildScope.Files.Contains(file))
             {
                 return (Errors.LinkOutOfScope(href, file), href, fragment, linkType, null);
             }
@@ -227,13 +234,13 @@ namespace Microsoft.Docs.Build
                     var pathToDocset = ResolveToDocsetRelativePath(path, declaringFile);
 
                     // Use the actual file name case
-                    if (declaringFile.Docset.FileNames.TryGetValue(pathToDocset, out var pathActualCase))
+                    if (_buildScope.GetActualFileName(pathToDocset, out var pathActualCase))
                     {
                         pathToDocset = pathActualCase;
                     }
 
                     // resolve from redirection files
-                    if (declaringFile.Docset.Redirections.TryGetRedirection(pathToDocset, out var redirectFile))
+                    if (_buildScope.Redirections.TryGetRedirection(pathToDocset, out var redirectFile))
                     {
                         return (null, redirectFile, query, fragment, LinkType.RelativePath, pathToDocset);
                     }
@@ -272,7 +279,7 @@ namespace Microsoft.Docs.Build
             var docsetRelativePath = PathUtility.NormalizeFile(Path.Combine(Path.GetDirectoryName(declaringFile.FilePath), path));
             if (!File.Exists(Path.Combine(declaringFile.Docset.DocsetPath, docsetRelativePath)))
             {
-                foreach (var (alias, aliasPath) in declaringFile.Docset.ResolveAlias)
+                foreach (var (alias, aliasPath) in _resolveAlias)
                 {
                     if (path.StartsWith(alias, PathUtility.PathComparison))
                     {
@@ -349,6 +356,18 @@ namespace Microsoft.Docs.Build
 
             // source docset in source build
             return null;
+        }
+
+        private static Dictionary<string, string> LoadResolveAlias(Config config)
+        {
+            var result = new Dictionary<string, string>(PathUtility.PathComparer);
+
+            foreach (var (alias, aliasPath) in config.ResolveAlias)
+            {
+                result.TryAdd(PathUtility.NormalizeFolder(alias), PathUtility.NormalizeFolder(aliasPath));
+            }
+
+            return result.Reverse().ToDictionary(item => item.Key, item => item.Value);
         }
     }
 }
