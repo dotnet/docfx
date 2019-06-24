@@ -8,7 +8,7 @@
     <title>Engineering Guidelines | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Engineering Guidelines | DocFX website ">
-    <meta name="generator" content="docfx 2.43.1.0">
+    <meta name="generator" content="docfx 2.43.2.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -111,7 +111,7 @@
 <li>Jint</li>
 <li>HtmlAgilityPack</li>
 <li>Nustache</li>
-<li>PDFSharp</li>
+<li>iTextSharp</li>
 <li>YamlDotNet</li>
 </ul>
 <h3 id="code-reviews-and-checkins">Code reviews and checkins</h3>
@@ -127,7 +127,7 @@
 <li><code>dev</code> has the code that is being worked on but that we have not yet released. This is the branch into which developers normally submit pull requests and merge changes into. We run daily CI towards <code>dev</code> branch and generate pre-release nuget package, e.g. <code>1.0.1-alpha-9-abcdefsd</code>.</li>
 </ul>
 <h3 id="solution-and-project-folder-structure-and-naming">Solution and project folder structure and naming</h3>
-<p>Solution files go in the repo root. The default entry point is <code>All.sln</code>.</p>
+<p>Solution files go in the repo root. The default entry point is <code>docfx.sln</code>.</p>
 <p>Every project also needs a <code>project.json</code> and a matching <code>.xproj</code> file. This <code>project.json</code> is the source of truth for a project's dependencies and configuration options.</p>
 <p>The solution needs to contain solution folders that match the physical folder (<code>src</code>, <code>test</code>, <code>tools</code>, etc.).</p>
 <h3 id="assembly-naming-pattern">Assembly naming pattern</h3>

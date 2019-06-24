@@ -8,7 +8,7 @@
     <title>docfx.exe User Manual | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="docfx.exe User Manual | DocFX website ">
-    <meta name="generator" content="docfx 2.43.1.0">
+    <meta name="generator" content="docfx 2.43.2.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -784,6 +784,10 @@ Url pattern: <code>http://{%test%}.contoso.com/?uid={uid}|&gt; removeHost</code>
 <tr>
 <td>outline</td>
 <td>The type of outline to use. Valid values are <code>NoOutline</code>, <code>DefaultOutline</code>, <code>WkDefaultOutline</code>. If not specified, the default value is <code>DefaultOutline</code>. If <code>WkDefaultOutline</code> is specified, <code>--outline</code> is passed to wkhtmltopdf; otherwise <code>--no-outline</code> is passed to wkhtmltopdf.</td>
+</tr>
+<tr>
+<td>noStdin</td>
+<td>Do not use <code>--read-args-from-stdin</code> for the wkhtmltopdf. Html input file names are set using the command line. It has been introduced to use in the Azure pipeline build. Can cause maximum allowed arguments length overflow if too many input parts (like Appendices, TocTitle, CoverPageTitle) were set for certain html source file.</td>
 </tr>
 </tbody>
 </table>
