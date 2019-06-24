@@ -93,7 +93,7 @@ namespace Microsoft.Docs.Build
             }
 
             outputMetadata.Locale = file.Docset.Locale;
-            outputMetadata.TocRel = tocMap.FindTocRelativePath(file);
+            outputMetadata.TocRel = !string.IsNullOrEmpty(inputMetadata.TocRel) ? inputMetadata.TocRel : tocMap.FindTocRelativePath(file);
             outputMetadata.CanonicalUrl = file.CanonicalUrl;
             outputMetadata.EnableLocSxs = file.Docset.Config.Localization.Bilingual;
             outputMetadata.SiteName = file.Docset.Config.SiteName;

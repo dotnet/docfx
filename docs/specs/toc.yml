@@ -1382,3 +1382,20 @@ outputs:
   docs/toc.json: |
     {"items":[{"name":"test","href":"a"}],"!ms.contentlocale":null,"!ms.translationtype":null }
   docs/a.json:
+---
+# respects user input _tocRel
+inputs:
+  docfx.yml:
+  docs/f1/TOC.md: |
+    # [File Reference](../index.md)
+  docs/f2/TOC.md: |
+    # Nothing here
+  docs/index.md: |
+    ---
+    _tocRel: f2/toc.json
+    ---
+outputs:
+  docs/index.json: |
+    {"_tocRel": "f2/toc.json"}
+  docs/f1/toc.json:
+  docs/f2/toc.json:
