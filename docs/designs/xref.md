@@ -64,6 +64,27 @@ Besides using file path to link to another file, DocFX also allows you to give a
             docs/b.json: |
                 {"conceptual":"<p>Link to <a href=\"a\">Title from v2</a></p>\n"}
         ```
+    - Define multiple UID with same value internally with overlapping versions, we should throw `moniker-overlapping` error. Because during the resolving, we would not know which one to choose from.
+        ```yaml
+            # v1: 1.0, 2.0, 3.0
+            # v2: 2.0, 3.0
+            # should throw `moniker-overlapping`
+            inputs:
+                docs/v1/a.md: |
+                ---
+                title: Title from v1
+                uid: a
+                ---
+                docs/v2/a.md: |
+                ---
+                title: Title from v2
+                uid: a
+                ---
+                docs/b.md: Link to @a
+            outputs:
+                .errors.log: |
+                    ["error","moniker-overlapping","Two or more documents have defined overlapping moniker: '2.0', '3.0'"]
+            ```
     - If the versions for this UID are from different products, take the highest one base on proudct name alphabetically, and we only consider the overlapping products
         ```yaml
         # v1: a-1.0, a-2.0, a-3.0
@@ -210,6 +231,7 @@ outputs:
   .xrefmap.json: | 
     {"references":[{"uid":"a","href":"docs/a.json","summary":"<p>Link to <a href=\"b\">b</a></p>\n"}]}
 ```
+- UID defined both in a file without versioning and a file with versioning. Since we will throw `publish-url-conflict` error to user when same file without versioning and with versioning defined, this UID definition case is disallowed at the same time.
 
 ## Output xref map
 Docfx will output a JSON file named `.xrefmap.json`. In V2, docfx used to output `xrefmap.yml`, it took much longer to be de-serialized compared to JSON format.
