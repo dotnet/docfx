@@ -21,6 +21,7 @@ namespace Microsoft.Docs.Build
         private readonly GitCommitProvider _gitCommitProvider;
         private readonly IReadOnlyDictionary<string, string> _resolveAlias;
         private readonly Lazy<XrefMap> _xrefMap;
+        private readonly TemplateEngine _templateEngine;
 
         public DependencyResolver(
             Config config,
@@ -29,7 +30,8 @@ namespace Microsoft.Docs.Build
             GitCommitProvider gitCommitProvider,
             BookmarkValidator bookmarkValidator,
             DependencyMapBuilder dependencyMapBuilder,
-            Lazy<XrefMap> xrefMap)
+            Lazy<XrefMap> xrefMap,
+            TemplateEngine templateEngine)
         {
             _buildScope = buildScope;
             _buildQueue = buildQueue;
@@ -38,6 +40,7 @@ namespace Microsoft.Docs.Build
             _gitCommitProvider = gitCommitProvider;
             _xrefMap = xrefMap;
             _resolveAlias = LoadResolveAlias(config);
+            _templateEngine = templateEngine;
         }
 
         public (Error error, string content, Document file) ResolveContent(SourceInfo<string> path, Document declaringFile, DependencyType dependencyType = DependencyType.Inclusion)
@@ -186,7 +189,7 @@ namespace Microsoft.Docs.Build
                     return (error, query + fragment, fragment, linkType, null);
                 }
                 var selfUrl = Document.PathToRelativeUrl(
-                    Path.GetFileName(file.SitePath), file.ContentType, file.Mime, file.Docset.Config.Output.Json);
+                    Path.GetFileName(file.SitePath), file.ContentType, file.Mime, file.Docset.Config.Output.Json, file.IsData);
                 return (error, selfUrl + query + fragment, fragment, LinkType.SelfBookmark, null);
             }
 
@@ -245,17 +248,17 @@ namespace Microsoft.Docs.Build
                         return (null, redirectFile, query, fragment, LinkType.RelativePath, pathToDocset);
                     }
 
-                    var file = Document.CreateFromFile(declaringFile.Docset, pathToDocset);
+                    var file = Document.CreateFromFile(declaringFile.Docset, pathToDocset, _templateEngine);
 
                     // forLandingPage should not be used, it is a hack to handle some specific logic for landing page based on the user input for now
                     // which needs to be removed once the user input is correct
-                    if (TemplateEngine.IsLandingData(declaringFile.Mime))
+                    if (_templateEngine.IsLandingData(declaringFile.Mime))
                     {
                         if (file is null)
                         {
                             // try to resolve with .md for landing page
                             pathToDocset = ResolveToDocsetRelativePath($"{path}.md", declaringFile);
-                            file = Document.CreateFromFile(declaringFile.Docset, pathToDocset);
+                            file = Document.CreateFromFile(declaringFile.Docset, pathToDocset, _templateEngine);
                         }
 
                         // Do not report error for landing page

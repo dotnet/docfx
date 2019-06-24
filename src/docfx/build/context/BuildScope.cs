@@ -16,6 +16,7 @@ namespace Microsoft.Docs.Build
         // This lookup table stores a list of actual filenames.
         private readonly HashSet<string> _fileNames;
         private readonly Func<string, bool> _glob;
+        private readonly TemplateEngine _templateEngine;
 
         /// <summary>
         /// Gets all the files to build, including redirections and fallback files.
@@ -24,11 +25,12 @@ namespace Microsoft.Docs.Build
 
         public RedirectionMap Redirections { get; }
 
-        public BuildScope(ErrorLog errorLog, Docset docset)
+        public BuildScope(ErrorLog errorLog, Docset docset, TemplateEngine templateEngine)
         {
             var config = docset.Config;
 
             _glob = CreateGlob(config);
+            _templateEngine = templateEngine;
 
             var (fileNames, files) = GetFiles(docset, _glob);
 
@@ -65,7 +67,7 @@ namespace Microsoft.Docs.Build
                 {
                     if (glob(file))
                     {
-                        files.Add(Document.CreateFromFile(docset, file));
+                        files.Add(Document.CreateFromFile(docset, file, _templateEngine));
                     }
                 });
 

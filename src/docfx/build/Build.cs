@@ -77,7 +77,7 @@ namespace Microsoft.Docs.Build
                     }
                     else
                     {
-                        context.Template.CopyTo(outputPath);
+                        context.TemplateEngine.CopyTo(outputPath);
                     }
                 }
 

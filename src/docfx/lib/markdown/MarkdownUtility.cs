@@ -164,7 +164,7 @@ namespace Microsoft.Docs.Build
 
         private static string GetToken(string key)
         {
-            return t_status.Value.Peek().Context.Template?.GetToken(key);
+            return t_status.Value.Peek().Context.TemplateEngine?.GetToken(key);
         }
 
         private static void LogError(string code, string message, MarkdownObject origin, int? line)

@@ -16,29 +16,32 @@ namespace Microsoft.Docs.Build
 {
     internal class TemplateEngine
     {
-        // todo: read schema from template
-        private static readonly HashSet<string> s_schemas = new HashSet<string>(Directory.EnumerateFiles(Path.Combine(AppContext.BaseDirectory, "data"), "*.json", SearchOption.TopDirectoryOnly).Select(k => Path.GetFileNameWithoutExtension(k)));
-
         private static readonly string[] s_resourceFolders = new[] { "global", "css", "fonts" };
         private static readonly ConcurrentDictionary<string, Lazy<(JsonSchemaValidator, JsonSchemaTransformer)>> _jsonSchemas
                           = new ConcurrentDictionary<string, Lazy<(JsonSchemaValidator, JsonSchemaTransformer)>>();
 
         private readonly string _templateDir;
+        private readonly string _schemaDir;
         private readonly LiquidTemplate _liquid;
         private readonly JavascriptEngine _js;
         private readonly HashSet<string> _htmlMetaHidden;
         private readonly Dictionary<string, string> _htmlMetaNames;
+        private readonly HashSet<string> _schemas;
 
         public JObject Global { get; }
 
         private TemplateEngine(string templateDir, JsonSchema metadataSchema)
         {
             var contentTemplateDir = Path.Combine(templateDir, "ContentTemplate");
+            var schemaDir = Path.Combine(contentTemplateDir, "schemas");
 
             _templateDir = templateDir;
+            _schemaDir = schemaDir;
             _liquid = new LiquidTemplate(templateDir);
             _js = new JavascriptEngine(contentTemplateDir);
             Global = LoadGlobalTokens(contentTemplateDir);
+            _schemas = new HashSet<string>(Directory.EnumerateFiles(schemaDir, "*.schema.json", SearchOption.TopDirectoryOnly)
+                                           .Select(k => k.Substring(0, k.Length - ".schema.json".Length)));
 
             _htmlMetaHidden = metadataSchema.HtmlMetaHidden.ToHashSet();
             _htmlMetaNames = metadataSchema.Properties
@@ -46,10 +49,10 @@ namespace Microsoft.Docs.Build
                 .ToDictionary(prop => prop.Key, prop => prop.Value.HtmlMetaName);
         }
 
-        public static bool IsData(string mime)
+        public bool IsData(string mime)
         {
             // todo: get `isData` from template JINT script name
-            if (mime != null && s_schemas.TryGetValue(mime, out var schema))
+            if (mime != null && _schemas.TryGetValue(mime, out var schema))
             {
                 return string.Equals(schema, "ContextObject", StringComparison.OrdinalIgnoreCase) || string.Equals(schema, "TestData", StringComparison.OrdinalIgnoreCase);
             }
@@ -57,9 +60,9 @@ namespace Microsoft.Docs.Build
             return false;
         }
 
-        public static bool IsLandingData(string mime)
+        public bool IsLandingData(string mime)
         {
-            if (mime != null && s_schemas.TryGetValue(mime, out var schema))
+            if (mime != null && _schemas.TryGetValue(mime, out var schema))
             {
                 return string.Equals(typeof(LandingData).Name, schema, StringComparison.OrdinalIgnoreCase);
             }
@@ -67,15 +70,14 @@ namespace Microsoft.Docs.Build
             return false;
         }
 
-        public static (JsonSchemaValidator, JsonSchemaTransformer) GetJsonSchema(string schemaName)
+        public (JsonSchemaValidator, JsonSchemaTransformer) GetJsonSchema(string schemaName)
         {
             if (schemaName is null)
             {
                 return default;
             }
 
-            // TODO: get schema from template
-            var schemaFilePath = Path.Combine(AppContext.BaseDirectory, $"data/{schemaName}.json");
+            var schemaFilePath = Path.Combine(_schemaDir, $"/{schemaName}.schema.json");
             return _jsonSchemas.GetOrAdd(schemaName, new Lazy<(JsonSchemaValidator, JsonSchemaTransformer)>(GetJsonSchemaCore)).Value;
 
             (JsonSchemaValidator, JsonSchemaTransformer) GetJsonSchemaCore()
