@@ -30,8 +30,6 @@ namespace Microsoft.Docs.Build
                 }
                 else
                 {
-                    // Convert to array since ref local is not allowed to be used in lambda expression
-                    //
                     // TODO: It is very easy to forget passing fallbackDocsetPath, the RestoreMap interface needs improvement
                     var filePath = RestoreMap.GetRestoredFilePath(docset.DocsetPath, url, docset.FallbackDocset?.DocsetPath);
                     foreach (var (uid, spec) in Load(filePath))
