@@ -949,9 +949,9 @@ inputs:
   docs/a.md:
 outputs:
   docs/index.json: |
-    {"toc_rel": "f1/toc.json"}
+    {"_tocRel": "f1/toc.json"}
   docs/a.json: |
-    {"!toc_rel": null}
+    {"!_tocRel": null}
   docs/f1/toc.json:
   docs/f1/toc.experimental.json:
 ---
@@ -1028,9 +1028,9 @@ inputs:
 outputs:
   docs/dir1/toc.json:
   docs/file-with-no-toc.json: |
-    {"!toc_rel": null}
+    {"!_tocRel": null}
   docs/dir1/dir2/file-with-toc.json: |
-    {"toc_rel": "../toc.json"}
+    {"_tocRel": "../toc.json"}
 ---
 # File referenced by multiple toc with same parent and subdir count, use order alphabetical. For other tests, reference build/TocTest.
 inputs:
@@ -1050,7 +1050,7 @@ outputs:
   docs/dir1/b/toc.json:
   docs/dir1/aa/toc.json:
   docs/dir1/c/file1.json: |
-    {"toc_rel": "../a/toc.json"}
+    {"_tocRel": "../a/toc.json"}
 ---
 # Bad Toc markdown
 inputs:
@@ -1125,7 +1125,7 @@ inputs:
   docs/a.md:
 outputs:
   docs/a.json: |
-    {"toc_rel": "toc.json"}
+    {"_tocRel": "toc.json"}
   .errors.log: |
     ["error","output-path-conflict","Two or more files output to the same path 'docs/toc.json': 'docs/TOC.md', 'docs/TOC.yml'"]
 ---
