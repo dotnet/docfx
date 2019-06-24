@@ -227,7 +227,7 @@ namespace Microsoft.Docs.Build
             var pageMetadata = new OutputMetadata();
             var pageModel = transformedToken;
 
-            if (file.Docset.Legacy && context.TemplateEngine.IsLandingData(file.Mime))
+            if (file.Docset.Legacy && TemplateEngine.IsLandingData(file.Mime))
             {
                 // TODO: remove schema validation in ToObject
                 var (_, content) = JsonUtility.ToObject(transformedToken, typeof(LandingData));

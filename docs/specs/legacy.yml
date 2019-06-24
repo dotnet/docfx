@@ -203,7 +203,8 @@ outputs:
 ---
 # Resolve link for landing page
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    template: {APP_BASE_PATH}data/template
   docs/index.yml: |
     ### YamlMime:YamlDocument
     title: REST API Documentation
@@ -283,7 +284,8 @@ outputs:
 commands:
   - build --legacy
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    template: {APP_BASE_PATH}data/template
   docs/a.yml: |
     #YamlMime:LandingData
     title: my title
@@ -291,15 +293,17 @@ inputs:
     metadata:
       key2: value2
 outputs:
+  docs/a.mta.json:
   docs/a.raw.page.json: |
-    {"key1":"value1","key2":"value2"}
+    {"rawMetadata": {"key1":"value1","key2":"value2"}}
   docs/a.mta.json:
 ---
 # Context object type is TOC
 commands:
   - build --legacy
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    template: {APP_BASE_PATH}data/template
   docs/a.yml: |
     #YamlMime: ContextObject
 outputs:

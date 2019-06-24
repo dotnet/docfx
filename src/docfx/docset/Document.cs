@@ -463,7 +463,7 @@ namespace Microsoft.Docs.Build
                 : mappedSourcePath;
 
             // if source is landing page, change it to *.md
-            if (IsData)
+            if (TemplateEngine.IsLandingData(Mime))
             {
                 sourcePath = Path.ChangeExtension(sourcePath, ".md");
             }

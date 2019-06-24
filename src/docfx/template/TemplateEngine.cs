@@ -40,8 +40,9 @@ namespace Microsoft.Docs.Build
             _liquid = new LiquidTemplate(templateDir);
             _js = new JavascriptEngine(contentTemplateDir);
             Global = LoadGlobalTokens(contentTemplateDir);
-            _schemas = new HashSet<string>(Directory.EnumerateFiles(schemaDir, "*.schema.json", SearchOption.TopDirectoryOnly)
-                                           .Select(k => k.Substring(0, k.Length - ".schema.json".Length)));
+            _schemas = Directory.Exists(schemaDir) ? new HashSet<string>(Directory.EnumerateFiles(schemaDir, "*.schema.json", SearchOption.TopDirectoryOnly)
+                                                                        .Select(k => Path.GetFileNameWithoutExtension(k))
+                                                                        .Select(k => k.Substring(0, k.Length - ".schema".Length))) : new HashSet<string>();
 
             _htmlMetaHidden = metadataSchema.HtmlMetaHidden.ToHashSet();
             _htmlMetaNames = metadataSchema.Properties
@@ -60,11 +61,11 @@ namespace Microsoft.Docs.Build
             return false;
         }
 
-        public bool IsLandingData(string mime)
+        public static bool IsLandingData(string mime)
         {
-            if (mime != null && _schemas.TryGetValue(mime, out var schema))
+            if (mime != null)
             {
-                return string.Equals(typeof(LandingData).Name, schema, StringComparison.OrdinalIgnoreCase);
+                return string.Equals(typeof(LandingData).Name, mime, StringComparison.OrdinalIgnoreCase);
             }
 
             return false;
@@ -77,7 +78,7 @@ namespace Microsoft.Docs.Build
                 return default;
             }
 
-            var schemaFilePath = Path.Combine(_schemaDir, $"/{schemaName}.schema.json");
+            var schemaFilePath = Path.Combine(_schemaDir, $"{schemaName}.schema.json");
             return _jsonSchemas.GetOrAdd(schemaName, new Lazy<(JsonSchemaValidator, JsonSchemaTransformer)>(GetJsonSchemaCore)).Value;
 
             (JsonSchemaValidator, JsonSchemaTransformer) GetJsonSchemaCore()

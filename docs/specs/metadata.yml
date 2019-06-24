@@ -358,6 +358,7 @@ inputs:
     name: azure-documents
     files: "**/*"
     baseUrl: https://docs.com/articles
+    template: {APP_BASE_PATH}data/template
     routes:
       articles/: .
   articles/active-directory-b2c/index.yml : |
@@ -380,6 +381,7 @@ inputs:
     name: azure-documents
     files: "**/*"
     baseUrl: https://docs.com/azure
+    template: {APP_BASE_PATH}data/template
     routes:
       articles/: .
     redirections:
@@ -434,7 +436,8 @@ outputs:
 ---
 # document_id defined in YAML file metadata is not supported
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    template: {APP_BASE_PATH}data/template
   docs/index.yml: |
     ### YamlMime:YamlDocument
     documentType: LandingData

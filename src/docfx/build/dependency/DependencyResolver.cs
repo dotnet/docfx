@@ -250,9 +250,9 @@ namespace Microsoft.Docs.Build
 
                     var file = Document.CreateFromFile(declaringFile.Docset, pathToDocset, _templateEngine);
 
-                    // forLandingPage should not be used, it is a hack to handle some specific logic for landing page based on the user input for now
+                    // for LandingPage should not be used, it is a hack to handle some specific logic for landing page based on the user input for now
                     // which needs to be removed once the user input is correct
-                    if (_templateEngine.IsLandingData(declaringFile.Mime))
+                    if (_templateEngine != null && TemplateEngine.IsLandingData(declaringFile.Mime))
                     {
                         if (file is null)
                         {
