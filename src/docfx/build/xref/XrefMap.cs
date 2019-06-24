@@ -58,7 +58,7 @@ namespace Microsoft.Docs.Build
             string uid, SourceInfo<string> href, string displayPropertyName, string moniker = null)
         {
             var spec = ResolveXrefSpec(uid, moniker);
-            if (spec == null)
+            if (spec is null)
             {
                 return (Errors.XrefNotFound(href), null, null, null);
             }

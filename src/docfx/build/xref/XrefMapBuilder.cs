@@ -94,7 +94,7 @@ namespace Microsoft.Docs.Build
             xref.ExtensionData["name"] = new Lazy<JToken>(() => new JValue(string.IsNullOrEmpty(metadata.Title) ? metadata.Uid : metadata.Title));
 
             var (error, monikers) = context.MonikerProvider.GetFileLevelMonikers(file);
-            xref.Monikers = monikers.ToArray();
+            xref.Monikers = monikers.ToHashSet();
             return (error, xref, file);
         }
 
@@ -173,7 +173,7 @@ namespace Microsoft.Docs.Build
             }
 
             // multiple uid conflicts without moniker range definition, drop the uid and log an error
-            var conflictsWithoutMoniker = specsWithSameUid.Where(item => item.Monikers.Length == 0).ToArray();
+            var conflictsWithoutMoniker = specsWithSameUid.Where(item => item.Monikers.Count == 0).ToArray();
             if (conflictsWithoutMoniker.Length > 1)
             {
                 var orderedConflict = conflictsWithoutMoniker.OrderBy(item => item.Href);
@@ -182,7 +182,7 @@ namespace Microsoft.Docs.Build
             }
 
             // uid conflicts with overlapping monikers, drop the uid and log an error
-            var conflictsWithMoniker = specsWithSameUid.Where(x => x.Monikers.Length > 0).ToArray();
+            var conflictsWithMoniker = specsWithSameUid.Where(x => x.Monikers.Count > 0).ToArray();
             if (CheckOverlappingMonikers(specsWithSameUid, out var overlappingMonikers))
             {
                 context.ErrorLog.Write(Errors.MonikerOverlapping(overlappingMonikers));
@@ -192,7 +192,7 @@ namespace Microsoft.Docs.Build
             // Sort by monikers
             return conflictsWithoutMoniker.Concat(
                 conflictsWithMoniker.OrderByDescending(
-                    spec => spec.Monikers[0], context.MonikerProvider.Comparer)).ToArray();
+                    spec => spec.Monikers.First(), context.MonikerProvider.Comparer)).ToArray();
         }
 
         private static bool CheckOverlappingMonikers(IXrefSpec[] specsWithSameUid, out HashSet<string> overlappingMonikers)
