@@ -6,16 +6,12 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
-using YamlDotNet.Core;
 
 namespace Microsoft.Docs.Build
 {
     internal static class BuildPage
     {
-        public static async Task<(IEnumerable<Error> errors, PublishItem publishItem)> Build(
-            Context context,
-            Document file,
-            TableOfContentsMap tocMap)
+        public static async Task<List<Error>> Build(Context context, Document file, TableOfContentsMap tocMap)
         {
             Debug.Assert(file.ContentType == ContentType.Page);
 
@@ -40,6 +36,12 @@ namespace Microsoft.Docs.Build
                 // todo: support data page template
                 output = pageModel;
                 metadata = null;
+            }
+
+            if (Path.GetFileNameWithoutExtension(file.FilePath).Equals("404", PathUtility.PathComparison))
+            {
+                // custom 404 page is not supported
+                errors.Add(Errors.Custom404Page(file.FilePath));
             }
 
             var publishItem = new PublishItem
@@ -71,13 +73,7 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            if (Path.GetFileNameWithoutExtension(file.FilePath).Equals("404", PathUtility.PathComparison))
-            {
-                // custom 404 page is not supported
-                errors.Add(Errors.Custom404Page(file.FilePath));
-            }
-
-            return (errors, publishItem);
+            return errors;
         }
 
         private static async Task<(List<Error>, OutputMetadata)> GenerateOutputMetadata(

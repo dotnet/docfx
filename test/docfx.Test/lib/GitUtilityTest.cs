@@ -55,7 +55,7 @@ namespace Microsoft.Docs.Build
                     exe.Replace("\r", ""),
                     string.Join("\n", lib.Select(c => $"{c.Sha}|{c.Time.ToString("s")}{c.Time.ToString("zzz")}|{c.AuthorName}|{c.AuthorEmail}")));
 
-                gitCommitProvider.SaveGitCommitCache();
+                gitCommitProvider.Save();
             }
 
         }

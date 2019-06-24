@@ -62,8 +62,7 @@ namespace Microsoft.Docs.Build
                     await context.BuildQueue.Drain(item => BuildFile(context, item, docset, tocMap), Progress.Update);
                 }
 
-                context.GitCommitProvider.SaveGitCommitCache();
-                ValidateBookmarks();
+                context.BookmarkValidator.Validate();
 
                 var (publishModel, fileManifests) = context.PublishModelBuilder.Build(context, docset.Legacy);
                 var dependencyMap = context.DependencyMapBuilder.Build();
@@ -87,18 +86,7 @@ namespace Microsoft.Docs.Build
 
                 context.GitHubUserCache.Save();
                 context.ContributionProvider.Save();
-
-                void ValidateBookmarks()
-                {
-                    foreach (var (error, file) in context.BookmarkValidator.Validate())
-                    {
-                        // TODO: clean up ErrorLog.Write inputting file, should take file from Error
-                        if (context.ErrorLog.Write(file.FilePath, new List<Error> { error }))
-                        {
-                            context.PublishModelBuilder.MarkError(file);
-                        }
-                    }
-                }
+                context.GitCommitProvider.Save();
             }
         }
 
@@ -117,23 +105,21 @@ namespace Microsoft.Docs.Build
 
             try
             {
-                var publishItem = default(PublishItem);
                 var errors = Enumerable.Empty<Error>();
-
                 switch (file.ContentType)
                 {
                     case ContentType.Resource:
-                        (errors, publishItem) = BuildResource.Build(context, file);
+                        errors = BuildResource.Build(context, file);
                         break;
                     case ContentType.Page:
-                        (errors, publishItem) = await BuildPage.Build(context, file, tocMap);
+                        errors = await BuildPage.Build(context, file, tocMap);
                         break;
                     case ContentType.TableOfContents:
                         // TODO: improve error message for toc monikers overlap
-                        (errors, publishItem) = BuildTableOfContents.Build(context, file);
+                        errors = BuildTableOfContents.Build(context, file);
                         break;
                     case ContentType.Redirection:
-                        (errors, publishItem) = BuildRedirection.Build(context, file);
+                        errors = BuildRedirection.Build(context, file);
                         break;
                 }
 

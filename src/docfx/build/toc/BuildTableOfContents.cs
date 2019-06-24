@@ -4,13 +4,12 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 
 namespace Microsoft.Docs.Build
 {
     internal static class BuildTableOfContents
     {
-        public static (IEnumerable<Error>, PublishItem publishItem) Build(Context context, Document file)
+        public static List<Error> Build(Context context, Document file)
         {
             Debug.Assert(file.ContentType == ContentType.TableOfContents);
 
@@ -52,7 +51,7 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            return (errors, publishItem);
+            return errors;
         }
     }
 }
