@@ -9,7 +9,7 @@ using Newtonsoft.Json.Serialization;
 namespace Microsoft.Docs.Build
 {
     [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
-    public class OutputModel
+    public class OutputMetadata
     {
         public string Locale { get; set; }
 
@@ -21,13 +21,6 @@ namespace Microsoft.Docs.Build
 
         [JsonIgnore]
         public string SchemaType { get; set; }
-
-        public object Content { get; set; }
-
-        public string Conceptual { get; set; }
-
-        [JsonProperty("wordCount")]
-        public long WordCount { get; set; }
 
         public string TocRel { get; set; }
 
