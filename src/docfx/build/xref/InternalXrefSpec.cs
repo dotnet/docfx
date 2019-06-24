@@ -43,7 +43,7 @@ namespace Microsoft.Docs.Build
             if (forOutput)
             {
                 var (_, query, fragment) = UrlUtility.SplitUrl(Href);
-                var path = DeclairingFile.Docset.Repository.Branch == "master"
+                var path = DeclairingFile.Docset.Repository?.Branch == "master"
                                     ? DeclairingFile.CanonicalUrlWithoutLocale + "?branch=master"
                                     : DeclairingFile.CanonicalUrlWithoutLocale;
                 spec.Href = UrlUtility.MergeUrl(path, query?.Length > 0 ? query.Substring(1) : query, fragment?.Length > 0 ? fragment.Substring(1) : fragment);
