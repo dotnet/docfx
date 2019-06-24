@@ -25,13 +25,13 @@ namespace Microsoft.Docs.Build
         public readonly PublishModelBuilder PublishModelBuilder;
         public readonly TemplateEngine Template;
 
-        public Context(string outputPath, ErrorLog errorLog,  Docset docset, Func<XrefMap> xrefMap)
+        public Context(string outputPath, ErrorLog errorLog,  Docset docset, Func<XrefMap> xrefMap, JsonSchema metadataSchema)
         {
             ErrorLog = errorLog;
             Output = new Output(outputPath);
             Cache = new Cache();
             BuildQueue = new WorkQueue<Document>();
-            MetadataProvider = new MetadataProvider(docset, Cache);
+            MetadataProvider = new MetadataProvider(docset, metadataSchema, Cache);
             MonikerProvider = new MonikerProvider(docset, MetadataProvider);
             GitHubUserCache = new GitHubUserCache(docset.Config);
             GitCommitProvider = new GitCommitProvider();
@@ -40,7 +40,7 @@ namespace Microsoft.Docs.Build
             DependencyMapBuilder = new DependencyMapBuilder();
             DependencyResolver = new DependencyResolver(BuildQueue, GitCommitProvider, BookmarkValidator, DependencyMapBuilder, new Lazy<XrefMap>(xrefMap));
             ContributionProvider = new ContributionProvider(docset, GitHubUserCache, GitCommitProvider);
-            Template = TemplateEngine.Create(docset);
+            Template = TemplateEngine.Create(docset, metadataSchema);
         }
 
         public void Dispose()

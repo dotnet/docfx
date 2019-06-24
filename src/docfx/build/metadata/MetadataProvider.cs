@@ -21,14 +21,14 @@ namespace Microsoft.Docs.Build
         private readonly ConcurrentDictionary<Document, (List<Error> errors, JObject metadata, InputMetadata metadataModel)> _metadataCache
                    = new ConcurrentDictionary<Document, (List<Error> errors, JObject metadata, InputMetadata metadataModel)>();
 
-        public MetadataProvider(Docset docset, Cache cache)
+        public MetadataProvider(Docset docset, JsonSchema metadataSchema, Cache cache)
         {
             _cache = cache;
-            _schemaValidator = new JsonSchemaValidator(docset.MetadataSchema);
+            _schemaValidator = new JsonSchemaValidator(metadataSchema);
             _globalMetadata = docset.Config.GlobalMetadata;
 
             _reservedMetadata = JsonUtility.GetPropertyNames(typeof(OutputMetadata))
-                .Concat(docset.MetadataSchema.Reserved)
+                .Concat(metadataSchema.Reserved)
                 .Except(JsonUtility.GetPropertyNames(typeof(InputMetadata)))
                 .ToHashSet();
 

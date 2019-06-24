@@ -73,11 +73,6 @@ namespace Microsoft.Docs.Build
         public DependencyLockModel DependencyLock { get; }
 
         /// <summary>
-        /// Gets the metadata JSON schema
-        /// </summary>
-        public JsonSchema MetadataSchema { get; }
-
-        /// <summary>
         /// Gets the dependency repos/file mappings
         /// </summary>
         public RestoreMap RestoreMap { get; }
@@ -185,7 +180,6 @@ namespace Microsoft.Docs.Build
             FallbackDocset = fallbackDocset;
             (HostName, SiteBasePath) = SplitBaseUrl(config.BaseUrl);
 
-            MetadataSchema = LoadMetadataSchema(Config);
             ResolveAlias = LoadResolveAlias(Config);
             Repository = repository ?? Repository.Create(DocsetPath, branch: null);
             var glob = GlobUtility.CreateGlobMatcher(Config.Files, Config.Exclude.Concat(Config.DefaultExclude).ToArray());
@@ -268,17 +262,6 @@ namespace Microsoft.Docs.Build
             }
 
             return result.Reverse().ToDictionary(item => item.Key, item => item.Value);
-        }
-
-        private JsonSchema LoadMetadataSchema(Config config)
-        {
-            var token = new JObject();
-            foreach (var metadataSchema in config.MetadataSchema)
-            {
-                var (_, content, _) = RestoreMap.GetRestoredFileContent(this, metadataSchema);
-                JsonUtility.Merge(token, JsonUtility.Parse(content, metadataSchema).value as JObject);
-            }
-            return JsonUtility.ToObject<JsonSchema>(token).value;
         }
 
         private static HashSet<string> GetFileNames(string docsetPath)

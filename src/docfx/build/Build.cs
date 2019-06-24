@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -19,7 +20,6 @@ namespace Microsoft.Docs.Build
 
             var locale = LocalizationUtility.GetLocale(repository?.Remote, repository?.Branch, options);
             var (restoreMap, fallbackRepo) = LoadRestoreMap(docsetPath, locale, repository, options);
-
             try
             {
                 await Run(docsetPath, repository, locale, options, errorLog, restoreMap, fallbackRepo);
@@ -46,11 +46,13 @@ namespace Microsoft.Docs.Build
             // just return if config loading has errors
             if (errorLog.Write(configErrors))
                 return;
+            var metadataSchema = LoadMetadataSchema(config, docsetPath, fallbackRepo?.Path);
 
             var docset = GetBuildDocset(new Docset(errorLog, docsetPath, locale, config, options, restoreMap, repository, fallbackRepo));
+
             var outputPath = Path.Combine(docsetPath, config.Output.Path);
 
-            using (var context = new Context(outputPath, errorLog, docset, () => xrefMap))
+            using (var context = new Context(outputPath, errorLog, docset, () => xrefMap, metadataSchema))
             {
                 xrefMap = XrefMapBuilder.Build(context, docset);
                 var tocMap = TableOfContentsMap.Create(context, docset);
@@ -239,6 +241,17 @@ namespace Microsoft.Docs.Build
             buildScope.AddRange(fallbackTocs);
 
             return buildScope;
+        }
+
+        private static JsonSchema LoadMetadataSchema(Config config, string docsetPath, string fallbackDocsetPath)
+        {
+            var token = new JObject();
+            foreach (var metadataSchemaPath in config.MetadataSchema)
+            {
+                var (_, content, _) = RestoreMap.GetRestoredFileContent(docsetPath, metadataSchemaPath, fallbackDocsetPath);
+                JsonUtility.Merge(token, JsonUtility.Parse(content, metadataSchemaPath).value as JObject);
+            }
+            return JsonUtility.ToObject<JsonSchema>(token).value;
         }
     }
 }

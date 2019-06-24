@@ -90,7 +90,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public static TemplateEngine Create(Docset docset)
+        public static TemplateEngine Create(Docset docset, JsonSchema metadataSchema)
         {
             Debug.Assert(docset != null);
 
@@ -103,7 +103,7 @@ namespace Microsoft.Docs.Build
             var (themePath, themeRestoreMap) = docset.RestoreMap.GetGitRestorePath(themeRemote, themeBranch, docset.DocsetPath);
             Log.Write($"Using theme '{themeRemote}#{themeRestoreMap.DependencyLock?.Commit}' at '{themePath}'");
 
-            return new TemplateEngine(themePath, docset.MetadataSchema);
+            return new TemplateEngine(themePath, metadataSchema);
         }
 
         public string Render(string content, Document file, JObject rawMetadata, string mime)
