@@ -32,10 +32,10 @@ namespace Microsoft.Docs.Build
             Output = new Output(outputPath);
             Cache = new Cache();
             BuildQueue = new WorkQueue<Document>();
+            MicrosoftAliasCache = new MicrosoftAliasCache(docset.Config);
             MetadataProvider = new MetadataProvider(docset, Cache);
             MonikerProvider = new MonikerProvider(docset, MetadataProvider);
             GitHubUserCache = new GitHubUserCache(docset.Config);
-            MicrosoftAliasCache = new MicrosoftAliasCache(docset.Config);
             GitCommitProvider = new GitCommitProvider();
             PublishModelBuilder = new PublishModelBuilder();
             BookmarkValidator = new BookmarkValidator();

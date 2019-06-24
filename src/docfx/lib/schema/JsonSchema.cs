@@ -159,6 +159,6 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Properties that are used to validate microsoft alias
         /// </summary>
-        public MicrosoftAliasSchema MicrosoftAlias { get; set; } = new MicrosoftAliasSchema();
+        public MicrosoftAliasSchema MicrosoftAlias { get; set; }
     }
 }

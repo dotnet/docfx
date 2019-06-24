@@ -15,12 +15,18 @@ namespace Microsoft.Docs.Build
         private readonly string _cachePath;
         private readonly double _expirationInHours;
         private readonly SemaphoreSlim _syncRoot = new SemaphoreSlim(1, 1);
-        private Dictionary<string, MicrosoftAlias> _aliases;
+        private readonly MicrosoftGraphAccessor _microsoftGraphAccessor;
+        private Dictionary<string, MicrosoftAlias> _aliases = new Dictionary<string, MicrosoftAlias>();
 
         public MicrosoftAliasCache(Config config)
         {
             _cachePath = AppData.MicrosoftAliasCachePath;
             _expirationInHours = config.JsonSchema.MicrosoftAliasCacheExpirationInHours;
+
+            _microsoftGraphAccessor = new MicrosoftGraphAccessor(
+                config.JsonSchema.MicrosoftGraphTenantId,
+                config.JsonSchema.MicrosoftGraphClientId,
+                config.JsonSchema.MicrosoftGraphClientSecret);
 
             if (File.Exists(_cachePath))
             {
@@ -32,7 +38,9 @@ namespace Microsoft.Docs.Build
         public Task<MicrosoftAlias> GetAsync(string alias)
         {
             if (string.IsNullOrEmpty(alias))
+            {
                 return null;
+            }
 
             return Synchronized(GetAsyncCore);
 
@@ -47,7 +55,7 @@ namespace Microsoft.Docs.Build
                     var newMsAlias = new MicrosoftAlias()
                     {
                         Alias = alias,
-                        IsValid = await ValidateAliasByMsGraphAsync(alias),
+                        IsValid = await _microsoftGraphAccessor.ValidateAlias(alias),
                         Expiry = NextExpiry(),
                     };
 
@@ -57,14 +65,10 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public async Task<bool> ValidateAliasByMsGraphAsync(string alias)
-        {
-            return true;
-        }
-
         public void Dispose()
         {
             _syncRoot.Dispose();
+            _microsoftGraphAccessor.Dispose();
         }
 
         private DateTime NextExpiry() => DateTime.UtcNow.AddHours(_expirationInHours);

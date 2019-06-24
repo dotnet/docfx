@@ -12,11 +12,13 @@ namespace Microsoft.Docs.Build
     {
         private readonly JsonSchema _schema;
         private readonly JsonSchemaDefinition _definitions;
+        private readonly MicrosoftAliasCache _microsoftAliasCache;
 
-        public JsonSchemaValidator(JsonSchema schema)
+        public JsonSchemaValidator(JsonSchema schema, MicrosoftAliasCache microsoftAliasCache = null)
         {
             _schema = schema;
             _definitions = new JsonSchemaDefinition(schema);
+            _microsoftAliasCache = microsoftAliasCache;
         }
 
         public List<Error> Validate(JToken token)
@@ -76,6 +78,7 @@ namespace Microsoft.Docs.Build
             if (scalar.Value is string str)
             {
                 ValidateDateFormat(schema, scalar, str, errors);
+                ValidateMicrosoftAlias(schema, scalar, str, errors);
 
                 if (schema.MaxLength.HasValue || schema.MinLength.HasValue)
                 {
@@ -232,6 +235,20 @@ namespace Microsoft.Docs.Build
                 else
                 {
                     errors.Add(Errors.DateFormatInvalid(JsonUtility.GetSourceInfo(scalar), scalar.Path, schema.DateFormat));
+                }
+            }
+        }
+
+        private void ValidateMicrosoftAlias(JsonSchema schema, JValue scalar, string alias, List<Error> errors)
+        {
+            if (schema.MicrosoftAlias != null)
+            {
+                if (Array.IndexOf(schema.MicrosoftAlias.AllowedDLs, alias) == -1)
+                {
+                    if (_microsoftAliasCache != null && _microsoftAliasCache.GetAsync(alias).GetAwaiter().GetResult().IsValid)
+                    {
+                        errors.Add(Errors.MsAliasInvalid(JsonUtility.GetSourceInfo(scalar), scalar.Path, alias));
+                    }
                 }
             }
         }
