@@ -94,14 +94,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 new PostProcessor
                 {
                     ContractName = "html",
-                    Processor = new HtmlPostProcessor
-                    {
-                        Handlers =
-                        {
-                            new ValidateBookmark(),
-                            new RemoveDebugInfo(),
-                        },
-                    }
+                    Processor = new HtmlPostProcessor()
                 });
         }
 
