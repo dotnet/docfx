@@ -74,16 +74,13 @@ namespace Microsoft.Docs.Build
                     select d).ToArray();
 
                 var dependencyList =
-                    from d in sorted
-                    group d by d.To into g
-                    let first = g.OrderBy(_ => _.From).FirstOrDefault()
-                    where first != null
+                    from dep in sorted
                     select JsonUtility.Serialize(new
                     {
-                        dependency_type = first.Type,
-                        from_file_path = Path.GetFullPath(Path.Combine(docset.DocsetPath, docset.Config.DocumentId.SourceBasePath, first.From.Substring(2))),
-                        to_file_path = Path.GetFullPath(Path.Combine(docset.DocsetPath, docset.Config.DocumentId.SourceBasePath, first.To.Substring(2))),
-                        version = first.Version,
+                        dependency_type = dep.Type,
+                        from_file_path = Path.GetFullPath(Path.Combine(docset.DocsetPath, docset.Config.DocumentId.SourceBasePath, dep.From.Substring(2))),
+                        to_file_path = Path.GetFullPath(Path.Combine(docset.DocsetPath, docset.Config.DocumentId.SourceBasePath, dep.To.Substring(2))),
+                        version = dep.Version,
                     });
 
                 var dependencyListText = string.Join('\n', dependencyList);
@@ -91,13 +88,13 @@ namespace Microsoft.Docs.Build
                 context.Output.WriteText(dependencyListText, "full-dependent-list.txt");
                 context.Output.WriteText(dependencyListText, "server-side-dependent-list.txt");
 
-                return sorted.Select(x => new LegacyDependencyMapItem {
+                return sorted.Select(x => new LegacyDependencyMapItem
+                {
                     From = x.From.Substring(2),
                     To = x.To.Substring(2),
                     Type = x.Type,
                     Version = x.Version,
-                })
-                    .GroupBy(x => x.From).ToDictionary(g => g.Key, g => g.ToList());
+                }).GroupBy(x => x.From).ToDictionary(g => g.Key, g => g.ToList());
             }
         }
 
