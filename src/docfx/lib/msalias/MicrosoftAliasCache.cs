@@ -17,6 +17,7 @@ namespace Microsoft.Docs.Build
         private readonly SemaphoreSlim _syncRoot = new SemaphoreSlim(1, 1);
         private readonly MicrosoftGraphAccessor _microsoftGraphAccessor;
         private Dictionary<string, MicrosoftAlias> _aliases = new Dictionary<string, MicrosoftAlias>();
+        private bool _needUpdate = false;
 
         public MicrosoftAliasCache(Config config)
         {
@@ -30,8 +31,8 @@ namespace Microsoft.Docs.Build
 
             if (File.Exists(_cachePath))
             {
-                var cacheContent = JsonUtility.Deserialize<MicrosoftAlias[]>(ProcessUtility.ReadFile(_cachePath), _cachePath);
-                _aliases = cacheContent.Where(msAlias => msAlias.Expiry >= DateTime.UtcNow).ToDictionary(msAlias => msAlias.Alias);
+                var cacheFile = JsonUtility.Deserialize<MicrosoftAliasCacheFile>(ProcessUtility.ReadFile(_cachePath), _cachePath);
+                _aliases = cacheFile.Aliases.Where(msAlias => msAlias.Expiry >= DateTime.UtcNow).ToDictionary(msAlias => msAlias.Alias);
             }
         }
 
@@ -61,6 +62,7 @@ namespace Microsoft.Docs.Build
                         };
 
                         _aliases.Add(alias, new MicrosoftAlias() { Alias = alias, Expiry = NextExpiry() });
+                        _needUpdate = true;
 
                         return newMsAlias;
                     }
@@ -68,6 +70,27 @@ namespace Microsoft.Docs.Build
                     {
                         return null;
                     }
+                }
+            }
+        }
+
+        public void Save()
+        {
+            if (_needUpdate)
+            {
+                _syncRoot.Wait();
+
+                try
+                {
+                    var content = JsonUtility.Serialize(new MicrosoftAliasCacheFile { Aliases = _aliases.Values.ToArray() });
+
+                    PathUtility.CreateDirectoryFromFilePath(_cachePath);
+                    ProcessUtility.WriteFile(_cachePath, content);
+                    _needUpdate = false;
+                }
+                finally
+                {
+                    _syncRoot.Release();
                 }
             }
         }
