@@ -17,8 +17,7 @@ outputs:
 ---
 # Support schema documents in JSON format
 inputs:
-  docfx.yml: |
-    template: {APP_BASE_PATH}data/template
+  docfx.yml:
   docs/a.json: |
     {
       "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/LandingData.json",
@@ -34,8 +33,7 @@ outputs:
 ---
 # Throw error when schema is not specified
 inputs:
-  docfx.yml: |
-    template: {APP_BASE_PATH}data/template
+  docfx.yml:
   docs/a.yml: |
     title: my title
   docs/b.json: |
@@ -50,8 +48,7 @@ outputs:
 ---
 # Fallback to documentType when yaml mime is YamlDocument
 inputs:
-  docfx.yml: |
-    template: {APP_BASE_PATH}data/template
+  docfx.yml:
   docs/a.yml: |
     #YamlMime:YamlDocument
     documentType: LandingData
