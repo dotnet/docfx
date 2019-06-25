@@ -41,6 +41,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
         {
             using (JsonReader reader = new JsonTextReader(EnvironmentContext.FileAbstractLayer.OpenReadText(swaggerPath)))
             {
+                reader.DateParseHandling = DateParseHandling.None;
                 var token = JToken.ReadFrom(reader);
                 return LoadCore(token, swaggerPath);
             }
