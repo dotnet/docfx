@@ -3,7 +3,6 @@
 
 using System.Collections.Generic;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 
 namespace Microsoft.Docs.Build
@@ -66,8 +65,5 @@ namespace Microsoft.Docs.Build
 
         [JsonProperty("_op_pdfUrlPrefixTemplate")]
         public string PdfUrlPrefixTemplate { get; set; }
-
-        // todo: remove this if `enable_loc_sxs` works well
-        public string BilingualType => EnableLocSxs ? "hover over" : null;
     }
 }
