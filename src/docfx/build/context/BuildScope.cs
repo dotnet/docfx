@@ -40,7 +40,7 @@ namespace Microsoft.Docs.Build
 
             _fileNames = fileNames;
 
-            Redirections = RedirectionMap.Create(errorLog, docset, _glob);
+            Redirections = RedirectionMap.Create(errorLog, docset, _glob, templateEngine);
 
             Files = files.Concat(fallbackFiles.Where(file => !_fileNames.Contains(file.FilePath)))
                          .Concat(Redirections.Files)

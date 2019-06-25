@@ -137,7 +137,7 @@ namespace Microsoft.Docs.Build
 
             if (file is null)
             {
-                var (content, fileFromHistory) = TryResolveContentFromHistory(_gitCommitProvider, declaringFile.Docset, pathToDocset);
+                var (content, fileFromHistory) = TryResolveContentFromHistory(_gitCommitProvider, declaringFile.Docset, pathToDocset, _templateEngine);
                 if (fileFromHistory != null)
                 {
                     return (null, content, fileFromHistory);
@@ -171,7 +171,7 @@ namespace Microsoft.Docs.Build
             // Cannot resolve the file, leave href as is
             if (file is null)
             {
-                file = TryResolveResourceFromHistory(_gitCommitProvider, declaringFile.Docset, pathToDocset);
+                file = TryResolveResourceFromHistory(_gitCommitProvider, declaringFile.Docset, pathToDocset, _templateEngine);
                 if (file is null)
                 {
                     return (error, href, fragment, linkType, null);
@@ -293,7 +293,7 @@ namespace Microsoft.Docs.Build
             return docsetRelativePath;
         }
 
-        private static Document TryResolveResourceFromHistory(GitCommitProvider gitCommitProvider, Docset docset, string pathToDocset)
+        private static Document TryResolveResourceFromHistory(GitCommitProvider gitCommitProvider, Docset docset, string pathToDocset, TemplateEngine templateEngine)
         {
             if (string.IsNullOrEmpty(pathToDocset))
             {
@@ -307,14 +307,14 @@ namespace Microsoft.Docs.Build
                 var (repo, pathToRepo, commits) = gitCommitProvider.GetCommitHistory(fallbackDocset, pathToDocset);
                 if (repo != null && commits.Count > 0)
                 {
-                    return Document.Create(fallbackDocset, pathToDocset, isFromHistory: true);
+                    return Document.Create(fallbackDocset, pathToDocset, templateEngine, isFromHistory: true);
                 }
             }
 
             return default;
         }
 
-        private static (string content, Document file) TryResolveContentFromHistory(GitCommitProvider gitCommitProvider, Docset docset, string pathToDocset)
+        private static (string content, Document file) TryResolveContentFromHistory(GitCommitProvider gitCommitProvider, Docset docset, string pathToDocset, TemplateEngine templateEngine)
         {
             if (string.IsNullOrEmpty(pathToDocset))
             {
@@ -334,7 +334,7 @@ namespace Microsoft.Docs.Build
                         // the latest commit would be deleting it from repo
                         if (GitUtility.TryGetContentFromHistory(repoPath, pathToRepo, commits[1].Sha, out var content))
                         {
-                            return (content, Document.Create(fallbackDocset, pathToDocset, isFromHistory: true));
+                            return (content, Document.Create(fallbackDocset, pathToDocset, templateEngine, isFromHistory: true));
                         }
                     }
                 }

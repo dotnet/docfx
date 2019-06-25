@@ -226,7 +226,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         /// <param name="docset">The current docset</param>
         /// <param name="path">The path relative to docset root</param>
-        public static Document Create(Docset docset, string path, string redirectionUrl = null, bool isFromHistory = false, bool combineRedirectUrl = false, TemplateEngine templateEngine = null)
+        public static Document Create(Docset docset, string path, TemplateEngine templateEngine, string redirectionUrl = null, bool isFromHistory = false, bool combineRedirectUrl = false)
         {
             Debug.Assert(docset != null);
             Debug.Assert(!string.IsNullOrEmpty(path));
@@ -276,7 +276,7 @@ namespace Microsoft.Docs.Build
 
             if (TryResolveDocset(docset, pathToDocset, out var resolvedDocset))
             {
-                return Create(resolvedDocset, pathToDocset, templateEngine: templateEngine);
+                return Create(resolvedDocset, pathToDocset, templateEngine);
             }
 
             // resolve from dependent docsets
