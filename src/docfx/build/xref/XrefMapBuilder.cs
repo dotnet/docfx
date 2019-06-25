@@ -148,10 +148,6 @@ namespace Microsoft.Docs.Build
 
         private static (List<Error> errors, IReadOnlyList<InternalXrefSpec> specs) LoadSchemaDocument(Context context, JObject obj, Document file)
         {
-            if (context.TemplateEngine is null)
-            {
-                throw Errors.TemplateNotDefined(file).ToException();
-            }
             var errors = new List<Error>();
             var (schemaValidator, schemaTransformer) = context.TemplateEngine.GetJsonSchema(file.Mime);
             if (schemaValidator is null || schemaTransformer is null)

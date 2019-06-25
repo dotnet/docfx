@@ -202,11 +202,6 @@ namespace Microsoft.Docs.Build
         {
             var obj = token as JObject;
 
-            if (context.TemplateEngine is null)
-            {
-                throw Errors.TemplateNotDefined(file).ToException();
-            }
-
             var (schemaValidator, schemaTransformer) = context.TemplateEngine.GetJsonSchema(file.Mime);
             if (schemaValidator is null || schemaTransformer is null)
             {
