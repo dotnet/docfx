@@ -8,7 +8,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class BuildRedirection
     {
-        internal static (List<Error> errors, PublishItem publishItem) Build(Context context, Document file)
+        internal static List<Error> Build(Context context, Document file)
         {
             Debug.Assert(file.ContentType == ContentType.Redirection);
 
@@ -19,6 +19,7 @@ namespace Microsoft.Docs.Build
             var publishItem = new PublishItem
             {
                 Url = file.SiteUrl,
+                SourcePath = file.FilePath,
                 Locale = file.Docset.Locale,
                 RedirectUrl = file.RedirectionUrl,
                 Monikers = monikers,
@@ -46,7 +47,7 @@ namespace Microsoft.Docs.Build
                 context.Output.WriteJson(metadata, metadataPath);
             }
 
-            return (errors, publishItem);
+            return errors;
         }
     }
 }

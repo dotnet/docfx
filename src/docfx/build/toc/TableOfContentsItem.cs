@@ -29,7 +29,7 @@ namespace Microsoft.Docs.Build
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
         public bool MaintainContext { get; set; }
 
-        public List<string> Monikers { get; set; }
+        public List<string> Monikers { get; set; } = new List<string>();
 
         public List<TableOfContentsItem> Items { get; set; } = new List<TableOfContentsItem>();
 

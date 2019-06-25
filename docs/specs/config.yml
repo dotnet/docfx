@@ -242,8 +242,7 @@ inputs:
     extend:
       - docs/a.yml
       - docs/b.yml
-    gitHub:
-      userCache: docs/d.json
+    xref: docs/d.json
   docs/a.yml:
   docs/b.yml:
   docs/d.json: '{}'
@@ -277,11 +276,11 @@ inputs:
   docfx.yml: |
     rules:
       file-not-found: off
-    gitHub:
-      userCache: user_profile.json
+    xref: xref.json
+  a.md: '@System.String'
 outputs:
   .errors.log: |
-    ["error","file-not-found","Invalid file link: 'user_profile.json'.","*",4,14]
+    ["error","file-not-found","Invalid file link: 'xref.json'.","*",3,7]
 ---
 # Treat warnings as errors
 inputs:
@@ -321,8 +320,6 @@ inputs:
       docs/a.md: /absolute/path1
       b.md: /absolute/path2
 outputs:
-  .errors.log: |
-    ["info","redirection-out-of-scope","Redirection file 'b.md' will not be built because it is not included in build scope","docfx.yml",4,9]
 ---
 # Redirection file out of build scope with conflicted id
 inputs:
@@ -332,9 +329,6 @@ inputs:
       a.md: /absolute/path1
       b.md: /absolute/path1
 outputs:
-  .errors.log: |
-    ["info","redirection-out-of-scope","Redirection file 'a.md' will not be built because it is not included in build scope","docfx.yml",3,9]
-    ["info","redirection-out-of-scope","Redirection file 'b.md' will not be built because it is not included in build scope","docfx.yml",4,9]
 ---
 # Multiple redirection errors
 inputs:
@@ -459,16 +453,14 @@ inputs:
 outputs:
   a.json:
 ---
-# redirect to in config.redirections must start with '/'
+# redirect to in config.redirections should be relative or absoute path
 inputs:
   docfx.yml: |
     redirections:
       a.md: https://docs.microsoft.com/docfx/a
-      b.md: a
 outputs:
   .errors.log: |
-    ["warning","redirection-url-invalid","The redirect url 'https://docs.microsoft.com/docfx/a' must start with '/'","docfx.yml",2,9]
-    ["warning","redirection-url-invalid","The redirect url 'a' must start with '/'","docfx.yml",3,9]
+    ["warning","redirection-url-invalid","The redirect url 'https://docs.microsoft.com/docfx/a' should be absolute or relative path.","docfx.yml",2,9]
 ---
 # redirect to not starting with '/' is allowed in config.redirectionWithoutIds
 inputs:

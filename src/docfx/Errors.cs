@@ -20,7 +20,7 @@ namespace Microsoft.Docs.Build
         /// Redirection entry isn't a conceptual article(*.{md,json,yml}).
         /// </summary>
         /// Behavior: ✔️ Message: ✔️
-        public static Error RedirectionInvalid(SourceInfo source, string path)
+        public static Error RedirectionInvalid(SourceInfo<string> source, string path)
             => new Error(ErrorLevel.Error, "redirection-invalid", $"File '{path}' is redirected to '{source}'. Only content files can be redirected.", source);
 
         /// <summary>
@@ -33,7 +33,7 @@ namespace Microsoft.Docs.Build
         /// Defined redirect dest not starting with '\' in <see cref="Config.Redirections"/>.
         /// </summary>
         public static Error RedirectionUrlInvalid(SourceInfo<string> source)
-            => new Error(ErrorLevel.Warning, "redirection-url-invalid", $"The redirect url '{source}' must start with '/'", source);
+            => new Error(ErrorLevel.Warning, "redirection-url-invalid", $"The redirect url '{source}' should be absolute or relative path.", source);
 
         /// <summary>
         /// Multiple files defined in <see cref="Config.Redirections"/> are redirected to the same url,
@@ -177,9 +177,15 @@ namespace Microsoft.Docs.Build
         /// Examples:
         ///   - restore a repo with bad url
         /// </summary>
-        /// Behavior: ✔️ Message: ❌
+        /// Behavior: ✔️ Message: ✔️
         public static Error GitCloneFailed(string url, IEnumerable<string> branches)
-            => new Error(ErrorLevel.Error, "git-clone-failed", $"Cloning git repository '{url}' ({Join(branches)}) failed.");
+        {
+            var message = $"Failure to clone the repository `{url} ({Join(branches)})`."
+                      + "This could be caused by an incorrect repository URL, please verify the URL on the Docs Portal (https://ops.docs.com)."
+                      + "This could also be caused by not having the proper permission the repository, "
+                      + "please confirm that the GitHub group/team that triggered the build has access to the repository.";
+            return new Error(ErrorLevel.Error, "git-clone-failed", message);
+        }
 
         /// <summary>
         /// Yaml header defined in article.md isn't an object.
@@ -220,27 +226,11 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Error, "json-syntax-error", message, source);
 
         /// <summary>
-        /// Used empty link in article.md.
-        /// Examples:
-        ///   - [link]()
-        /// </summary>
-        /// Behavior: ✔️ Message: ❌
-        public static Error LinkIsEmpty(Document relativeTo)
-            => new Error(ErrorLevel.Info, "link-is-empty", "Link is empty", relativeTo.ToString());
-
-        /// <summary>
         /// Link which's resolved to a file out of build scope.
         /// </summary>
         /// Behavior: ✔️ Message: ❌
         public static Error LinkOutOfScope(SourceInfo<string> source, Document file)
             => new Error(ErrorLevel.Warning, "link-out-of-scope", $"File '{file}' referenced by link '{source}' will not be built because it is not included in build scope", source);
-
-        /// <summary>
-        /// Defined a redirection entry that's not matched by config's files glob patterns.
-        /// </summary>
-        /// Behavior: ✔️ Message: ❌
-        public static Error RedirectionOutOfScope(SourceInfo source, string redirection)
-            => new Error(ErrorLevel.Info, "redirection-out-of-scope", $"Redirection file '{redirection}' will not be built because it is not included in build scope", source);
 
         /// <summary>
         /// Link which's resolved to a file in dependency repo won't be built.
@@ -259,11 +249,11 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Warning, "local-file-path", $"Link '{path}' points to a local file. Use a relative path instead", relativeTo.ToString());
 
         /// <summary>
-        /// The fisrt tag in an article.md isn't h1 tag.
+        /// The first tag in an article.md isn't h1 tag.
         /// </summary>
         /// Behavior: ✔️ Message: ❌
         public static Error HeadingNotFound(Document file)
-            => new Error(ErrorLevel.Info, "heading-not-found", $"The first visible block is not a heading block with `#`, `##` or `###`", file.ToString());
+            => new Error(ErrorLevel.Off, "heading-not-found", $"The first visible block is not a heading block with `#`, `##` or `###`", file.ToString());
 
         /// <summary>
         /// Can't find a file referenced by configuration, or user writes a non-existing link.
@@ -295,7 +285,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         /// Behavior: ❌ Message: ✔️
         public static Error AtXrefNotFound(SourceInfo<string> source)
-            => new Error(ErrorLevel.Info, "at-xref-not-found", $"Cross reference not found: '{source}'", source);
+            => new Error(ErrorLevel.Off, "at-xref-not-found", $"Cross reference not found: '{source}'", source);
 
         /// <summary>
         /// Failed to resolve uid defined by [link](xref:uid) or <xref:uid> syntax.
@@ -400,6 +390,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// The string type's value doesn't match given format.
         /// </summary>
+        /// Behavior: ✔️ Message: ❌
         public static Error FormatInvalid(SourceInfo source, string value, JsonSchemaStringFormat type)
             => new Error(ErrorLevel.Warning, "format-invalid", $"String '{value}' is not a valid '{type}'", source);
 
@@ -407,15 +398,22 @@ namespace Microsoft.Docs.Build
         /// Array length not within min and max.
         /// </summary>
         /// Behavior: ✔️ Message: ❌
-        public static Error ArrayLengthInvalid(SourceInfo source, string propName, int? minItems = null, int? maxItems = null)
-            => new Error(ErrorLevel.Warning, "array-length-invalid", $"Array {(string.IsNullOrEmpty(propName) ? "" : $"'{propName}' ")}length should be {(minItems.HasValue ? $">= {minItems.Value}" : $"<= {maxItems.Value}")}", source);
+        public static Error ArrayLengthInvalid(SourceInfo source, string propName, string criteria)
+            => new Error(ErrorLevel.Warning, "array-length-invalid", $"Array '{propName}' length should be {criteria}", source);
 
         /// <summary>
         /// String length not within min and max.
         /// </summary>
         /// Behavior: ✔️ Message: ❌
-        public static Error StringLengthInvalid(SourceInfo source, string propName, int? minLength = null, int? maxLength = null)
-            => new Error(ErrorLevel.Warning, "string-length-invalid", $"String {(string.IsNullOrEmpty(propName) ? "" : $"'{propName}' ")}length should be {(minLength.HasValue ? $">= {minLength.Value}" : $"<= {maxLength.Value}")}", source);
+        public static Error StringLengthInvalid(SourceInfo source, string propName, string criteria)
+            => new Error(ErrorLevel.Warning, "string-length-invalid", $"String '{propName}' length should be {criteria}", source);
+
+        /// <summary>
+        /// Number not within min and max.
+        /// </summary>
+        /// Behavior: ✔️ Message: ❌
+        public static Error NumberInvalid(SourceInfo source, string propName, string criteria)
+            => new Error(ErrorLevel.Warning, "number-invalid", $"Number '{propName}' should be {criteria}", source);
 
         /// <summary>
         /// A required field is missing.
@@ -462,6 +460,13 @@ namespace Microsoft.Docs.Build
         /// Behavior: ✔️ Message: ❌
         public static Error FieldDeprecated(SourceInfo source, string name, string replacedBy)
             => new Error(ErrorLevel.Warning, "field-deprecated", $"Deprecated field: '{name}'{(string.IsNullOrEmpty(replacedBy) ? "." : $", use '{replacedBy}' instead")}", source);
+
+        /// <summary>
+        /// The values of the two fields do not match.
+        /// </summary>
+        /// Behavior: ✔️ Message: ❌
+        public static Error ValuesNotMatch(SourceInfo source, string name, object value, string dependentFieldName, object dependentFieldValue, IEnumerable<object> validValues)
+            => new Error(ErrorLevel.Warning, "values-not-match", $"Invalid value for {name}: '{value}' is not valid with '{dependentFieldName}' value '{dependentFieldValue}'. Valid values: {Join(validValues)}", source);
 
         /// <summary>
         /// Used unknown YamlMime.
@@ -528,15 +533,6 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Warning, "empty-monikers", message);
 
         /// <summary>
-        /// Referenced an article using uid with invalid moniker(?view=).
-        /// Examples:
-        ///   - article with uid `a` has only netcore-1.0 & netcore-1.1 version, but get referenced with @a?view=netcore-2.0
-        /// </summary>
-        /// Behavior: ✔️ Message: ❌
-        public static Error InvalidUidMoniker(SourceInfo source, string moniker, string uid)
-            => new Error(ErrorLevel.Info, "invalid-uid-moniker", $"Moniker '{moniker}' is not defined with uid '{uid}'", source);
-
-        /// <summary>
         /// Custom 404 page is not supported
         /// Example:
         ///   - user want their 404.md to be built and shown as their 404 page of the website.
@@ -545,7 +541,10 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Warning, "custom-404-page", $"Custom 404 page is not supported", file);
 
         private static string Join<T>(IEnumerable<T> source, Func<T, string> selector = null)
-            => string.Join(", ", source.Select(item => $"{selector?.Invoke(item) ?? item.ToString()}").OrderBy(_ => _, StringComparer.Ordinal).Select(_ => $"'{_}'").Take(5));
+        {
+            var formatSource = source.Select(item => $"{selector?.Invoke(item) ?? item.ToString()}").OrderBy(_ => _, StringComparer.Ordinal).Select(_ => $"'{_}'");
+            return $"{string.Join(", ", formatSource.Take(5))}{(formatSource.Count() > 5 ? "..." : "")}";
+        }
 
         /// <summary>
         /// Find the string that best matches <paramref name="target"/> from <paramref name="candidates"/>,

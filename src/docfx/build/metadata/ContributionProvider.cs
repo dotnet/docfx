@@ -210,11 +210,11 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public void UpdateCommitBuildTime()
+        public void Save()
         {
             if (_commitBuildTimeProvider != null)
             {
-                _commitBuildTimeProvider.UpdateAndSaveCache();
+                _commitBuildTimeProvider.Save();
             }
         }
 

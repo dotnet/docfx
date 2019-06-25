@@ -25,7 +25,7 @@ namespace Microsoft.Docs.Build
             _map = map;
         }
 
-        public (Error error, string href, string display, Document referencedFile) Resolve(string uid, SourceInfo<string> href, string displayPropertyName, Document relativeTo, Document rootFile, string moniker = null)
+        public (Error error, string href, string display, IXrefSpec xrefSpec) Resolve(string uid, SourceInfo<string> href, string displayPropertyName, Document relativeTo, string moniker = null)
         {
             if (t_recursionDetector.Value.Contains((uid, displayPropertyName, relativeTo)))
             {
@@ -38,7 +38,7 @@ namespace Microsoft.Docs.Build
             try
             {
                 t_recursionDetector.Value.Push((uid, displayPropertyName, relativeTo));
-                return ResolveCore(uid, href, displayPropertyName, rootFile, moniker);
+                return ResolveCore(uid, href, displayPropertyName, moniker);
             }
             finally
             {
@@ -54,15 +54,17 @@ namespace Microsoft.Docs.Build
             context.Output.WriteJson(models, "xrefmap.json");
         }
 
-        private (Error error, string href, string display, Document referencedFile) ResolveCore(string uid, SourceInfo<string> href, string displayPropertyName, Document rootFile, string moniker = null)
+        private (Error error, string href, string display, IXrefSpec xrefSpec) ResolveCore(
+            string uid, SourceInfo<string> href, string displayPropertyName, string moniker = null)
         {
             string resolvedHref;
             string displayPropertyValue;
             string name;
-            if (TryResolve(uid, href, moniker, out var spec))
+            if (TryResolve(uid, moniker, out var spec))
             {
                 var (_, query, fragment) = UrlUtility.SplitUrl(spec.Href);
-                resolvedHref = UrlUtility.MergeUrl(spec.DeclairingFile != null ? RebaseResolvedHref(rootFile, spec.DeclairingFile) : RemoveHostnameIfSharingTheSameOne(spec.Href), query, fragment.Length == 0 ? "" : fragment.Substring(1));
+                resolvedHref = UrlUtility.MergeUrl(spec.Href, query, fragment.Length == 0 ? "" : fragment.Substring(1));
+
                 name = spec.GetXrefPropertyValue("name");
                 displayPropertyValue = spec.GetXrefPropertyValue(displayPropertyName);
             }
@@ -74,28 +76,15 @@ namespace Microsoft.Docs.Build
             // fallback order:
             // xrefSpec.displayPropertyName -> xrefSpec.name -> uid
             string display = !string.IsNullOrEmpty(displayPropertyValue) ? displayPropertyValue : (!string.IsNullOrEmpty(name) ? name : uid);
-            return (null, resolvedHref, display, spec?.DeclairingFile);
-
-            string RemoveHostnameIfSharingTheSameOne(string input)
-            {
-                var hostname = rootFile.Docset.HostName;
-                if (input.StartsWith(hostname, StringComparison.OrdinalIgnoreCase))
-                {
-                    return input.Substring(hostname.Length);
-                }
-                return input;
-            }
+            return (null, resolvedHref, display, spec);
         }
 
-        private string RebaseResolvedHref(Document rootFile, Document referencedFile)
-            => _context.DependencyResolver.GetRelativeUrl(rootFile, referencedFile);
-
-        private bool TryResolve(string uid, SourceInfo<string> href, string moniker, out IXrefSpec spec)
+        private bool TryResolve(string uid, string moniker, out IXrefSpec spec)
         {
             spec = null;
             if (_map.TryGetValue(uid, out var specs))
             {
-                spec = GetXrefSpec(uid, href, moniker, specs.Select(x => x.Value).ToList());
+                spec = GetXrefSpec(uid, moniker, specs.Select(x => x.Value).ToList());
 
                 if (spec is null)
                 {
@@ -106,7 +95,7 @@ namespace Microsoft.Docs.Build
             return false;
         }
 
-        private IXrefSpec GetXrefSpec(string uid, SourceInfo<string> href, string moniker, List<IXrefSpec> specs)
+        private IXrefSpec GetXrefSpec(string uid, string moniker, List<IXrefSpec> specs)
         {
             if (!TryGetValidXrefSpecs(uid, specs, out var validSpecs))
                 return default;
@@ -121,9 +110,6 @@ namespace Microsoft.Docs.Build
                     }
                 }
 
-                // if the moniker is not defined with the uid
-                // log a warning and take the one with latest version
-                _context.ErrorLog.Write(Errors.InvalidUidMoniker(href, moniker, uid));
                 return GetLatestInternalXrefMap(validSpecs);
             }
 
@@ -153,7 +139,12 @@ namespace Microsoft.Docs.Build
                 if (TryGetValidXrefSpecs(uid, specsWithSameUid.Select(x => x.Value).ToList(), out var validInternalSpecs))
                 {
                     var internalSpec = GetLatestInternalXrefMap(validInternalSpecs);
-                    loadedInternalSpecs.Add((internalSpec as InternalXrefSpec).ToExternalXrefSpec(_context, internalSpec.DeclairingFile));
+                    var spec = (internalSpec as InternalXrefSpec).ToExternalXrefSpec(_context, internalSpec.DeclairingFile);
+
+                    // DHS appends branch infomation from cookie cache to URL, which is wrong for UID resolved URL
+                    // output xref map with URL appending "?branch=master" for master branch
+                    spec.Href += internalSpec.DeclairingFile.Docset.Repository?.Branch == "master" ? "?branch=master" : "";
+                    loadedInternalSpecs.Add(spec);
                 }
             }
             return loadedInternalSpecs;

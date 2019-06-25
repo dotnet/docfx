@@ -135,7 +135,64 @@ namespace Microsoft.Docs.Build
         /// <returns>The normalized file path</returns>
         public static string NormalizeFile(string path)
         {
-            return Normalize(path);
+            path = Normalize(path);
+            return path.EndsWith('/') ? path.Substring(0, path.Length - 1) : path;
+        }
+
+        /// <summary>
+        /// Normalize '\', './', '..' in given path string.
+        /// </summary>
+        /// <param name="path">The path want to be normalized</param>
+        /// <returns>The normalized path</returns>
+        public static string Normalize(string path)
+        {
+            path = path.Replace('\\', '/');
+
+            if (path.IndexOf('.') == -1 && !path.Contains("//"))
+            {
+                return path;
+            }
+
+            var isDirectory = path.EndsWith('/');
+            var parentCount = 0;
+            var rooted = path[0] == '/';
+            var stack = new List<string>();
+            foreach (var segment in path.Split('/'))
+            {
+                if (segment == ".." && stack.Count > 0)
+                    stack.RemoveAt(stack.Count - 1);
+                else if (segment == "..")
+                    parentCount++;
+                else if (segment != "." && !string.IsNullOrEmpty(segment))
+                    stack.Add(segment);
+            }
+
+            var res = new StringBuilder();
+            if (rooted)
+            {
+                res.Append('/');
+            }
+            else
+            {
+                while (parentCount-- > 0)
+                {
+                    res.Append("../");
+                }
+            }
+
+            var i = 0;
+            foreach (var segment in stack)
+            {
+                if (segment.Length > 0)
+                {
+                    if (i++ > 0)
+                    {
+                        res.Append('/');
+                    }
+                    res.Append(segment);
+                }
+            }
+            return isDirectory ? $"{res.ToString()}/" : res.ToString();
         }
 
         /// <summary>
@@ -210,56 +267,6 @@ namespace Microsoft.Docs.Build
         private static string RemoveQueryForBlobUrl(string url)
         {
             return Regex.Replace(url, @"^(https:\/\/.+?.blob.core.windows.net\/)(.*)\?(.*)$", match => $"{match.Groups[1]}{match.Groups[2]}");
-        }
-
-        private static string Normalize(string path)
-        {
-            path = path.Replace('\\', '/');
-
-            if (path.IndexOf('.') == -1 && !path.Contains("//") && !path.EndsWith('/'))
-            {
-                return path;
-            }
-
-            var parentCount = 0;
-            var rooted = path[0] == '/';
-            var stack = new List<string>();
-            foreach (var segment in path.Split('/'))
-            {
-                if (segment == ".." && stack.Count > 0)
-                    stack.RemoveAt(stack.Count - 1);
-                else if (segment == "..")
-                    parentCount++;
-                else if (segment != "." && !string.IsNullOrEmpty(segment))
-                    stack.Add(segment);
-            }
-
-            var res = new StringBuilder();
-            if (rooted)
-            {
-                res.Append('/');
-            }
-            else
-            {
-                while (parentCount-- > 0)
-                {
-                    res.Append("../");
-                }
-            }
-
-            var i = 0;
-            foreach (var segment in stack)
-            {
-                if (segment.Length > 0)
-                {
-                    if (i++ > 0)
-                    {
-                        res.Append('/');
-                    }
-                    res.Append(segment);
-                }
-            }
-            return res.ToString();
         }
 
         private static bool GetIsCaseSensitive()

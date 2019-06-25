@@ -9,7 +9,7 @@ namespace Microsoft.Docs.Build
 {
     internal class BuildResource
     {
-        internal static (List<Error> errors, PublishItem publishItem) Build(Context context, Document file)
+        internal static List<Error> Build(Context context, Document file)
         {
             Debug.Assert(file.ContentType == ContentType.Resource);
 
@@ -31,6 +31,7 @@ namespace Microsoft.Docs.Build
             {
                 Url = file.SiteUrl,
                 Path = publishPath,
+                SourcePath = file.FilePath,
                 Locale = file.Docset.Locale,
                 Monikers = monikers,
                 MonikerGroup = MonikerUtility.GetGroup(monikers),
@@ -41,7 +42,7 @@ namespace Microsoft.Docs.Build
                 context.Output.Copy(file, outputPath);
             }
 
-            return (errors, publishItem);
+            return errors;
         }
     }
 }

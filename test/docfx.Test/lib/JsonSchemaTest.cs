@@ -18,21 +18,15 @@ namespace Microsoft.Docs.Build
             "allOf",
             "anyOf",
             "boolean_schema",
-            "const",
             "contains",
             "definitions",
-            "exclusiveMaximum",
-            "exclusiveMinimum",
             "if-then-else",
-            "maximum",
             "maxProperties",
-            "minimum",
             "minProperties",
             "multipleOf",
             "not",
             "oneOf",
             "pattern",
-            "patternProperties",
             "propertyNames",
             "refRemote",
             "uniqueItems"
@@ -44,7 +38,6 @@ namespace Microsoft.Docs.Build
             "an array of schemas for items",
             "items and subitems",
             "with boolean schema",
-            "patternProperties",
 
             //dependencies
             "dependencies with boolean subschemas",
@@ -60,9 +53,6 @@ namespace Microsoft.Docs.Build
             "$ref to boolean schema false",
             "Recursive references between schemas",
             "refs with quote",
-
-            // additional properties
-            "non-ASCII pattern with additionalProperties", // has patternProperties
         };
 
         public static TheoryData<string, string, string> GetJsonSchemaTestSuite()
@@ -127,6 +117,13 @@ namespace Microsoft.Docs.Build
         [InlineData("{'type': ['string', 'null']}", "1",
             "['warning','unexpected-type','Expect type 'String, Null' but got 'Integer'','file',1,1]")]
 
+        // const validation
+        [InlineData("{'const': 1}", "1", "")]
+        [InlineData("{'const': 'string'}", "'unknown'",
+            "['warning','undefined-value','Value 'unknown' is not accepted. Valid values: 'string'','file',1,9]")]
+        [InlineData("{'const': {'a': 1}}", "{}",
+            "['warning','undefined-value','Value '{}' is not accepted. Valid values: '{\\n  \\'a\\': 1\\n}'','file',1,1]")]
+
         // enum validation
         [InlineData("{'type': 'string', 'enum': ['a', 'b']}", "'a'", "")]
         [InlineData("{'type': 'string', 'enum': []}", "'unknown'",
@@ -141,15 +138,25 @@ namespace Microsoft.Docs.Build
         // string length validation
         [InlineData("{'type': 'string', 'minLength': 1, 'maxLength': 5}", "'a'", "")]
         [InlineData("{'type': 'string', 'maxLength': 1}", "'1963-06-19T08:30:06Z'",
-            "['warning','string-length-invalid','String length should be <= 1','file',1,22]")]
+            "['warning','string-length-invalid','String '' length should be <= 1','file',1,22]")]
         [InlineData("{'properties': {'str': {'minLength': 1, 'maxLength': 5}}}", "{'str': null}","")]
         [InlineData("{'type': 'string', 'minLength': 1}", "''",
-            "['warning','string-length-invalid','String length should be >= 1','file',1,2]")]
+            "['warning','string-length-invalid','String '' length should be >= 1','file',1,2]")]
         [InlineData("{'type': 'string', 'maxLength': 1}", "'ab'",
-            "['warning','string-length-invalid','String length should be <= 1','file',1,4]")]
+            "['warning','string-length-invalid','String '' length should be <= 1','file',1,4]")]
         [InlineData("{'properties': {'str': {'maxLength': 2, 'minLength': 4}}}", "{'str': 'abc'}",
             @"['warning','string-length-invalid','String 'str' length should be <= 2','file',1,13]
               ['warning','string-length-invalid','String 'str' length should be >= 4','file',1,13]")]
+
+        // number validation
+        [InlineData("{'minimum': 1, 'maximum': 1}", "1", "")]
+        [InlineData("{'exclusiveMinimum': 0.99, 'exclusiveMaximum': 1.01}", "1", "")]
+        [InlineData("{'minimum': 100, 'maximum': -100}", "1",
+            @"['warning','number-invalid','Number '' should be <= -100','file',1,1]
+              ['warning','number-invalid','Number '' should be >= 100','file',1,1]")]
+        [InlineData("{'exclusiveMinimum': 100, 'exclusiveMaximum': -100}", "1",
+            @"['warning','number-invalid','Number '' should be < -100','file',1,1]
+              ['warning','number-invalid','Number '' should be > 100','file',1,1]")]
 
         // string format validation
         [InlineData("{'type': ['string'], 'format': 'date-time'}", "'1963-06-19T08:30:06Z'", "")]
@@ -183,10 +190,10 @@ namespace Microsoft.Docs.Build
         [InlineData("{'properties': {'arr': {'maxItems': 3, 'minItems': 1}}}", "{'arr': ['a','b','c','d']}",
             "['warning','array-length-invalid','Array 'arr' length should be <= 3','file',1,9]")]
         [InlineData("{'maxItems': 3, 'minItems': 1}", "[]",
-            "['warning','array-length-invalid','Array length should be >= 1','file',1,1]")]
+            "['warning','array-length-invalid','Array '' length should be >= 1','file',1,1]")]
         [InlineData("{'maxItems': 2, 'minItems': 4}", "['a','b','c']",
-            @"['warning','array-length-invalid','Array length should be <= 2','file',1,1]
-              ['warning','array-length-invalid','Array length should be >= 4','file',1,1]")]
+            @"['warning','array-length-invalid','Array '' length should be <= 2','file',1,1]
+              ['warning','array-length-invalid','Array '' length should be >= 4','file',1,1]")]
 
         // required validation
         [InlineData("{'required': []}", "{}", "")]
@@ -213,7 +220,8 @@ namespace Microsoft.Docs.Build
         [InlineData("{'either': [['key1', 'key2', 'key3']]}", "{}",
             "['warning','either-logic-failed','At least one of these fields: 'key1', 'key2', 'key3' exists','file',1,1]")]
         [InlineData("{'either': [['key1', 'key2'], ['key3', 'key4']]}", "{}",
-            "['warning','either-logic-failed','At least one of these fields: 'key1', 'key2' exists','file',1,1]\n['warning','either-logic-failed','At least one of these fields: 'key3', 'key4' exists','file',1,1]")]
+            @"['warning','either-logic-failed','At least one of these fields: 'key1', 'key2' exists','file',1,1]
+              ['warning','either-logic-failed','At least one of these fields: 'key3', 'key4' exists','file',1,1]")]
         [InlineData("{'properties': {'keys': {'either': [['key1', 'key2']]}}}", "{'keys' : {'key1': 1}}", "")]
         [InlineData("{'properties': {'keys': {'either': [['key1', 'key2']]}}}", "{'keys' : {'key1': 1, 'key2': 2}}", "")]
         [InlineData("{'properties': {'keys': {'either': [['key1', 'key2']]}}}", "{'keys' : {}}",
@@ -228,7 +236,8 @@ namespace Microsoft.Docs.Build
         [InlineData("{'precludes': [['key1', 'key2', 'key3']]}", "{'key1': 1, 'key2': 2, 'key3': 3}",
             "['warning','precludes-logic-failed','Only one of these fields: 'key1', 'key2', 'key3' can exist at most','file',1,1]")]
         [InlineData("{'precludes': [['key1', 'key2'], ['key3', 'key4']]}", "{'key1': 1, 'key2': 2, 'key3': 3, 'key4': 4}",
-            "['warning','precludes-logic-failed','Only one of these fields: 'key1', 'key2' can exist at most','file',1,1]\n['warning','precludes-logic-failed','Only one of these fields: 'key3', 'key4' can exist at most','file',1,1]")]
+            @"['warning','precludes-logic-failed','Only one of these fields: 'key1', 'key2' can exist at most','file',1,1]
+              ['warning','precludes-logic-failed','Only one of these fields: 'key3', 'key4' can exist at most','file',1,1]")]
         [InlineData("{'properties': {'keys': {'precludes': [['key1', 'key2']]}}}", "{'keys' : {}}", "")]
         [InlineData("{'properties': {'keys': {'precludes': [['key1', 'key2']]}}}", "{'keys' : {'key1': 1}}", "")]
         [InlineData("{'properties': {'keys': {'precludes': [['key1', 'key2']]}}}", "{'keys' : {'key1': 1, 'key2': 2}}",
@@ -253,13 +262,21 @@ namespace Microsoft.Docs.Build
             "['warning','field-deprecated','Deprecated field: 'key1'.','file',1,10]")]
         [InlineData("{'properties': {'key1': {'replacedBy': 'key2'}}}", "{'key1': 1}",
             "['warning','field-deprecated','Deprecated field: 'key1', use 'key2' instead','file',1,10]")]
+
+        // enum dependencies validation
+        [InlineData("{'properties': {'key1': {'type': 'string', 'enum': ['.net', 'yammer']}, 'key2': {'type': 'string'}}, 'enumDependencies': { 'key2': { 'key1': { '.net': ['', 'csharp', 'devlang'], 'yammer': ['', 'tabs', 'vba']}}}}", "{'key1': 'yammer', 'key2': 'tabs'}", "")]
+        [InlineData("{'properties': {'key1': {'type': 'string', 'enum': ['.net', 'yammer']}, 'key2': {'type': 'string'}}, 'enumDependencies': { 'key2': { 'key1': { '.net': ['', 'csharp', 'devlang'], 'yammer': ['', 'tabs', 'vba']}}}}", "{'key1': 'yammer'}", "")]
+        [InlineData("{'properties': {'key1': {'type': 'string', 'enum': ['.net', 'yammer']}, 'key2': {'type': 'string'}}, 'enumDependencies': { 'key2': { 'key1': { '.net': ['', 'csharp', 'devlang'], 'yammer': ['', 'tabs', 'vba']}}}}", "{'key1': 'yammer', 'key2': 'abc'}",
+            "['warning','values-not-match','Invalid value for key2: 'abc' is not valid with 'key1' value 'yammer'. Valid values: '', 'tabs', 'vba'','file',1,1]")]
+        [InlineData("{'properties': {'key1': {'type': 'string', 'enum': ['.net', 'yammer']}, 'key2': {'type': 'string'}}, 'enumDependencies': { 'key2': { 'key1': { '.net': ['', 'csharp', 'devlang'], 'yammer': ['', 'tabs', 'vba']}}}}", "{'key2': 'tabs'}",
+            "['warning','lack-dependency','Missing field: 'key1'. If you specify 'key2', you must also specify 'key1'','file',1,1]")]
         public void TestJsonSchemaValidation(string schema, string json, string expectedErrors)
         {
             var jsonSchema = JsonUtility.Deserialize<JsonSchema>(schema.Replace('\'', '"'), null);
             var (_, payload) = JsonUtility.Parse(json.Replace('\'', '"'), "file");
             var errors = new JsonSchemaValidator(jsonSchema).Validate(payload);
             var expected = string.Join('\n', expectedErrors.Split('\n').Select(err => err.Trim()));
-            var actual = string.Join('\n', errors.Select(err => err.ToString()).OrderBy(err => err).ToArray()).Replace('"', '\'');
+            var actual = string.Join('\n', errors.Select(err => err.ToString().Replace("\\r", "")).OrderBy(err => err).ToArray()).Replace('"', '\'');
             Assert.Equal(expected, actual);
         }
     }
