@@ -96,7 +96,6 @@ namespace Microsoft.Docs.Build
                     return LegacyDependencyMapType.File;
                 case DependencyType.Inclusion:
                 case DependencyType.TocInclusion:
-                case DependencyType.TocFolderInclusion:
                     return LegacyDependencyMapType.Include;
                 case DependencyType.UidInclusion:
                     return LegacyDependencyMapType.Uid;

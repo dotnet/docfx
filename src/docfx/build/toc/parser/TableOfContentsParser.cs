@@ -385,7 +385,7 @@ namespace Microsoft.Docs.Build
 
                 (string content, Document filePath)? Resolve(string name)
                 {
-                    var (_, referencedTocContent, referencedToc) = context.DependencyResolver.ResolveContent(new SourceInfo<string>(Path.Combine(href, name), href), filePath, DependencyType.TocFolderInclusion);
+                    var (_, referencedTocContent, referencedToc) = context.DependencyResolver.ResolveContent(new SourceInfo<string>(Path.Combine(href, name), href), filePath, DependencyType.TocInclusion);
 
                     if (referencedTocContent != null && referencedToc != null)
                         return (referencedTocContent, referencedToc);

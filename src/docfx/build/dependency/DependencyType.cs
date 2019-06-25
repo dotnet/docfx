@@ -11,6 +11,5 @@ namespace Microsoft.Docs.Build
         Inclusion, // token or codesnippet
         Overwrite, // overwrite markdown reference
         TocInclusion, // toc includes toc
-        TocFolderInclusion, // toc includes toc first item
     }
 }
