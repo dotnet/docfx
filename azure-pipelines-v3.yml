@@ -122,6 +122,16 @@ jobs:
       AZURE_DEVOPS_TOKEN: $(AZURE_DEVOPS_TOKEN)
       PULL_REQUEST_SOURCE_BRANCH: $(System.PullRequest.SourceBranch)
 
+  # Restore nuget packages
+  - task: DotNetCoreCLI@2
+    displayName: Restore nuget packages
+    inputs:
+      command: restore
+      projects: '../Docs.Build/**/*.csproj'
+      feedsToUse: config 
+      nugetConfigPath: NuGet.config
+      externalFeedCredentials: OpenPublishingService
+
   # Build
   - powershell: ../Docs.Build/build.ps1 -noTest
     displayName: Build
