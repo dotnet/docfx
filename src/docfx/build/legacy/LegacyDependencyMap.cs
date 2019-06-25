@@ -17,7 +17,6 @@ namespace Microsoft.Docs.Build
             Context context,
             List<Document> documemts,
             DependencyMap dependencyMap,
-            TableOfContentsMap tocMap,
             LegacyVersionProvider legacyVersionProvider)
         {
             using (Progress.Start("Convert Legacy Dependency Map"))
@@ -36,7 +35,7 @@ namespace Microsoft.Docs.Build
                         {
                             return;
                         }
-                        var toc = tocMap.GetNearestToc(document);
+                        var toc = context.TocMap.GetNearestToc(document);
                         if (toc != null)
                         {
                             legacyDependencyMap.Add(new LegacyDependencyMapItem

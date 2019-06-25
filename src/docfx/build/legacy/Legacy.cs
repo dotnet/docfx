@@ -12,8 +12,7 @@ namespace Microsoft.Docs.Build
             Docset docset,
             Context context,
             Dictionary<Document, PublishItem> fileManifests,
-            DependencyMap dependencyMap,
-            TableOfContentsMap tocMap)
+            DependencyMap dependencyMap)
         {
             using (Progress.Start("Converting to legacy"))
             {
@@ -21,7 +20,7 @@ namespace Microsoft.Docs.Build
                 var legacyVersionProvider = new LegacyVersionProvider(docset);
 
                 LegacyManifest.Convert(docset, context, fileManifests);
-                var legacyDependencyMap = LegacyDependencyMap.Convert(docset, context, files, dependencyMap, tocMap, legacyVersionProvider);
+                var legacyDependencyMap = LegacyDependencyMap.Convert(docset, context, files, dependencyMap, legacyVersionProvider);
                 LegacyFileMap.Convert(docset, context, files, legacyDependencyMap, fileManifests, legacyVersionProvider);
             }
         }
