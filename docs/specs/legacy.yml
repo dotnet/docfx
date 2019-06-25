@@ -70,7 +70,6 @@ outputs:
   toc.json:
   toc.mta.json:
   .manifest.json:
-  .dependency-map.json:
   filemap.json:
   op_aggregated_file_map_info.json:
   .publish.json:
@@ -351,7 +350,7 @@ outputs:
   docs/a.raw.page.json:
   docs/9d4e15fd/a.mta.json:
   docs/9d4e15fd/a.raw.page.json:
-  docs/.dependency-map.json:
+  full-dependent-list.txt:
   docs/.manifest.json: |
     {
       "files":[
@@ -369,6 +368,7 @@ outputs:
           "output_relative_path":"9d4e15fd/a.html",
           "asset_id":"a",
           "version": "< netcore-2.0",
+          "monikers":["netcore-1.0","netcore-1.1"],
           "is_moniker_range": true
         }
       }
