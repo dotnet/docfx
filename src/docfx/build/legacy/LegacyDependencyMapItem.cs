@@ -9,6 +9,8 @@ namespace Microsoft.Docs.Build
 
         public string To { get; set; }
 
+        public string Version { get; set; }
+
         public LegacyDependencyMapType Type { get; set; }
     }
 }

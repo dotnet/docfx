@@ -26,11 +26,18 @@ namespace Microsoft.Docs.Build
                 var aggregatedFileMapItem = new
                 {
                     dependencies = dependencyMap.ContainsKey(legacyFilePathRelativeToBaseFolder)
-                                    ? dependencyMap[legacyFilePathRelativeToBaseFolder].Select(x => new DependencyItem { FromFilePath = PathUtility.NormalizeFile(Path.Combine(docset.Config.DocumentId.SourceBasePath, x.From)), ToFilePath = PathUtility.NormalizeFile(Path.Combine(docset.Config.DocumentId.SourceBasePath, x.To)), DependencyType = x.Type })
+                                    ? dependencyMap[legacyFilePathRelativeToBaseFolder].Select(
+                                        x => new DependencyItem
+                                        {
+                                            FromFilePath = PathUtility.NormalizeFile(Path.Combine(docset.Config.DocumentId.SourceBasePath, x.From)),
+                                            ToFilePath = PathUtility.NormalizeFile(Path.Combine(docset.Config.DocumentId.SourceBasePath, x.To)),
+                                            DependencyType = x.Type,
+                                            Version = x.Version,
+                                        })
                                     : new List<DependencyItem>(),
-                    aggregated_monikers = Array.Empty<string>(), // todo
+                    aggregated_monikers = fileMapItem.Monikers,
                     docset_names = new[] { docset.Config.Name },
-                    has_non_moniker_url = true, // todo
+                    has_non_moniker_url = fileMapItem.Monikers.Count == 0,
                     type = fileMapItem.Type,
                 };
 
@@ -58,6 +65,8 @@ namespace Microsoft.Docs.Build
             public string FromFilePath { get; set; }
 
             public string ToFilePath { get; set; }
+
+            public string Version { get; set; }
 
             public LegacyDependencyMapType DependencyType { get; set; }
         }

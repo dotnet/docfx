@@ -12,7 +12,13 @@ namespace Microsoft.Docs.Build
 {
     internal static class LegacyDependencyMap
     {
-        public static Dictionary<string, List<LegacyDependencyMapItem>> Convert(Docset docset, Context context, List<Document> documemts, DependencyMap dependencyMap, TableOfContentsMap tocMap)
+        public static Dictionary<string, List<LegacyDependencyMapItem>> Convert(
+            Docset docset,
+            Context context,
+            List<Document> documemts,
+            DependencyMap dependencyMap,
+            TableOfContentsMap tocMap,
+            LegacyVersionProvider legacyVersionProvider)
         {
             using (Progress.Start("Convert Legacy Dependency Map"))
             {
@@ -38,6 +44,7 @@ namespace Microsoft.Docs.Build
                                 From = $"~/{document.ToLegacyPathRelativeToBasePath(docset)}",
                                 To = $"~/{toc.ToLegacyPathRelativeToBasePath(docset)}",
                                 Type = LegacyDependencyMapType.Metadata,
+                                Version = legacyVersionProvider.GetLegacyVersion(document),
                             });
                         }
                     });
@@ -56,6 +63,7 @@ namespace Microsoft.Docs.Build
                             From = $"~/{source.ToLegacyPathRelativeToBasePath(docset)}",
                             To = $"~/{dependencyItem.To.ToLegacyPathRelativeToBasePath(docset)}",
                             Type = dependencyItem.Type.ToLegacyDependencyMapType(),
+                            Version = legacyVersionProvider.GetLegacyVersion(source),
                         });
                     }
                 }
@@ -73,8 +81,9 @@ namespace Microsoft.Docs.Build
                     select JsonUtility.Serialize(new
                     {
                         dependency_type = first.Type,
-                        from_file_path = Path.GetFullPath(Path.Combine(docset.DocsetPath, first.From.Substring(2))),
-                        to_file_path = Path.GetFullPath(Path.Combine(docset.DocsetPath, first.To.Substring(2))),
+                        from_file_path = Path.GetFullPath(Path.Combine(docset.DocsetPath, docset.Config.DocumentId.SourceBasePath, first.From.Substring(2))),
+                        to_file_path = Path.GetFullPath(Path.Combine(docset.DocsetPath, docset.Config.DocumentId.SourceBasePath, first.To.Substring(2))),
+                        version = first.Version,
                     });
 
                 var dependencyListText = string.Join('\n', dependencyList);
@@ -83,7 +92,12 @@ namespace Microsoft.Docs.Build
                 context.Output.WriteText(dependencyListText, "server-side-dependent-list.txt");
                 context.Output.WriteJson(sorted, Path.Combine(docset.SiteBasePath, ".dependency-map.json"));
 
-                return sorted.Select(x => new LegacyDependencyMapItem { From = x.From.Substring(2), To = x.To.Substring(2), Type = x.Type })
+                return sorted.Select(x => new LegacyDependencyMapItem {
+                    From = x.From.Substring(2),
+                    To = x.To.Substring(2),
+                    Type = x.Type,
+                    Version = x.Version,
+                })
                     .GroupBy(x => x.From).ToDictionary(g => g.Key, g => g.ToList());
             }
         }
