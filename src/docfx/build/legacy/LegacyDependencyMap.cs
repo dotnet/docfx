@@ -90,7 +90,6 @@ namespace Microsoft.Docs.Build
 
                 context.Output.WriteText(dependencyListText, "full-dependent-list.txt");
                 context.Output.WriteText(dependencyListText, "server-side-dependent-list.txt");
-                context.Output.WriteJson(sorted, Path.Combine(docset.SiteBasePath, ".dependency-map.json"));
 
                 return sorted.Select(x => new LegacyDependencyMapItem {
                     From = x.From.Substring(2),
