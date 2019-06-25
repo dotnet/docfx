@@ -13,26 +13,23 @@ namespace Microsoft.Docs.Build
         private readonly IGraphServiceClient _msGraphClient;
         private readonly MicrosoftGraphAuthenticationProvider _microsoftGraphAuthenticationProvider;
 
-        public bool Connected { get; } = true;
+        public bool _connected = false;
 
         public MicrosoftGraphAccessor(string tenantId, string clientId, string clientSecret)
         {
-            try
+            if (!string.IsNullOrEmpty(clientSecret))
             {
                 _microsoftGraphAuthenticationProvider = new MicrosoftGraphAuthenticationProvider(tenantId, clientId, clientSecret);
                 _msGraphClient = new GraphServiceClient(_microsoftGraphAuthenticationProvider);
-            }
-            catch
-            {
-                Connected = false;
+                _connected = true;
             }
         }
 
-        public async Task<bool> ValidateAlias(string alias)
+        public async Task<(Error error, bool isValid)> ValidateAlias(string alias)
         {
-            if (string.IsNullOrWhiteSpace(alias))
+            if (string.IsNullOrWhiteSpace(alias) || !_connected)
             {
-                return false;
+                return (null, false);
             }
 
             var options = new List<Option>
@@ -41,8 +38,15 @@ namespace Microsoft.Docs.Build
                 new QueryOption("$filter", $"mailNickname eq '{alias}'"),
             };
 
-            var users = await _msGraphClient.Users.Request(options).GetAsync();
-            return users.Count > 0;
+            try
+            {
+                var users = await _msGraphClient.Users.Request(options).GetAsync();
+                return (null, users.Count > 0);
+            }
+            catch (Exception e)
+            {
+                return (Errors.GraphApiGetUsersFailed(e.Message), false);
+            }
         }
 
         public void Dispose()

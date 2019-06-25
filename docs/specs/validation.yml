@@ -114,7 +114,7 @@ outputs:
   a.json: |
     { "ms.author": "o365devx" }
 ---
-# Json schema microsoft alias rule: the author is not in the allow list and no graph call
+# Json schema microsoft alias rule: the author is not in the allow list and without graph call
 inputs:
   docfx.yml: |
     metadataSchema:
@@ -140,4 +140,148 @@ outputs:
   a.json:
   .errors.log: |
     ["warning","ms-alias-invalid","Invalid value for 'ms.author', 'over123' is not a valid Microsoft alias","a.md",2,12]
+---
+# Json schema microsoft alias rule: the author is in the cache
+inputs:
+  docfx.yml: |
+    metadataSchema:
+      - schema.json
+  schema.json: |
+    { 
+      "properties":
+      { 
+        "ms.author":
+        { 
+          "microsoftAlias": 
+          {
+            "allowedDLs":[]
+          }
+        }
+      } 
+    }
+  a.md: |
+    ---
+    ms.author: yazhao
+    ---
+cache:
+  microsoft-aliases.json: |
+    { 
+      "aliases":
+      [
+        {
+          "alias": "yazhao",
+          "expiry": "4019-06-09T19:39:07.9918016Z"
+        },
+        {
+          "alias": "zikun",
+          "expiry": "2019-06-08T01:40:33.1981669Z"
+        }
+      ]
+    }
+outputs:
+  a.json: |
+    { "ms.author": "yazhao" }
+---
+# Json schema microsoft alias rule: the author information has expired and without graph call 
+inputs:
+  docfx.yml: |
+    metadataSchema:
+      - schema.json
+  schema.json: |
+    { 
+      "properties":
+      { 
+        "ms.author":
+        { 
+          "microsoftAlias": 
+          {
+            "allowedDLs":[]
+          }
+        }
+      } 
+    }
+  a.md: |
+    ---
+    ms.author: zikun
+    ---
+cache:
+  microsoft-aliases.json: |
+    { 
+      "aliases":
+      [
+        {
+          "alias": "yazhao",
+          "expiry": "4019-06-09T19:39:07.9918016Z"
+        },
+        {
+          "alias": "zikun",
+          "expiry": "2019-06-08T01:40:33.1981669Z"
+        }
+      ]
+    }
+outputs:
+  a.json:
+  .errors.log: |
+    ["warning","ms-alias-invalid","Invalid value for 'ms.author', 'zikun' is not a valid Microsoft alias","a.md",2,12]
+---
+# Json schema microsoft alias rule: the author is valid with graph call 
+inputs:
+  docfx.yml: |
+    metadataSchema:
+      - schema.json
+    jsonSchema:
+      microsoftGraphClientSecret: {MICROSOFT_GRAPH_CLIENT_SECRET}
+  schema.json: |
+    { 
+      "properties":
+      { 
+        "ms.author":
+        { 
+          "microsoftAlias": 
+          {
+            "allowedDLs":[]
+          }
+        }
+      } 
+    }
+  a.md: |
+    ---
+    ms.author: yazhao
+    ---
+environments:
+  - MICROSOFT_GRAPH_CLIENT_SECRET
+outputs:
+  a.json: |
+    { "ms.author": "yazhao" }
+---
+# Json schema microsoft alias rule: the author is invalid with graph call 
+inputs:
+  docfx.yml: |
+    metadataSchema:
+      - schema.json
+    jsonSchema:
+      microsoftGraphClientSecret: {MICROSOFT_GRAPH_CLIENT_SECRET}
+  schema.json: |
+    { 
+      "properties":
+      { 
+        "ms.author":
+        { 
+          "microsoftAlias": 
+          {
+            "allowedDLs":[]
+          }
+        }
+      } 
+    }
+  a.md: |
+    ---
+    ms.author: abc1234
+    ---
+environments:
+  - MICROSOFT_GRAPH_CLIENT_SECRET
+outputs:
+  a.json:
+  .errors.log: |
+    ["warning","ms-alias-invalid","Invalid value for 'ms.author', 'abc1234' is not a valid Microsoft alias","a.md",2,12]
 ---

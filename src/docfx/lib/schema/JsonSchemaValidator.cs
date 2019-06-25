@@ -245,9 +245,18 @@ namespace Microsoft.Docs.Build
             {
                 if (Array.IndexOf(schema.MicrosoftAlias.AllowedDLs, alias) == -1)
                 {
-                    if (_microsoftAliasCache != null && _microsoftAliasCache.GetAsync(alias).GetAwaiter().GetResult() == null)
+                    if (_microsoftAliasCache != null)
                     {
-                        errors.Add(Errors.MsAliasInvalid(JsonUtility.GetSourceInfo(scalar), name, alias));
+                        var (error, msAlias) = _microsoftAliasCache.GetAsync(alias).GetAwaiter().GetResult();
+
+                        if (error != null)
+                        {
+                            errors.Add(error);
+                        }
+                        else if (msAlias == null)
+                        {
+                            errors.Add(Errors.MsAliasInvalid(JsonUtility.GetSourceInfo(scalar), name, alias));
+                        }
                     }
                 }
             }

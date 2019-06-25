@@ -36,24 +36,26 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public Task<MicrosoftAlias> GetAsync(string alias)
+        public Task<(Error error, MicrosoftAlias msAlias)> GetAsync(string alias)
         {
             if (string.IsNullOrEmpty(alias))
             {
-                return null;
+                return new Task<(Error error, MicrosoftAlias msAlias)>(null, null);
             }
 
             return Synchronized(GetAsyncCore);
 
-            async Task<MicrosoftAlias> GetAsyncCore()
+            async Task<(Error error, MicrosoftAlias msAlias)> GetAsyncCore()
             {
                 if (_aliases.TryGetValue(alias, out var msAlias))
                 {
-                    return msAlias;
+                    return (null, msAlias);
                 }
                 else
                 {
-                    if (_microsoftGraphAccessor.Connected && await _microsoftGraphAccessor.ValidateAlias(alias))
+                    var (error, isValid) = await _microsoftGraphAccessor.ValidateAlias(alias);
+
+                    if (error == null && isValid)
                     {
                         var newMsAlias = new MicrosoftAlias()
                         {
@@ -64,11 +66,11 @@ namespace Microsoft.Docs.Build
                         _aliases.Add(alias, new MicrosoftAlias() { Alias = alias, Expiry = NextExpiry() });
                         _needUpdate = true;
 
-                        return newMsAlias;
+                        return (error, newMsAlias);
                     }
                     else
                     {
-                        return null;
+                        return (error, null);
                     }
                 }
             }
