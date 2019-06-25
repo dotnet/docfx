@@ -9,8 +9,6 @@ namespace Microsoft.Docs.Build
     {
         public string Alias { get; set; }
 
-        public bool IsValid { get; set; }
-
         public DateTime Expiry { get; set; }
     }
 }

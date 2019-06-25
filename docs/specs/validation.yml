@@ -88,3 +88,56 @@ outputs:
     ["warning","field-required","Missing required field 'a'","a.md",2,1]
     ["warning","unexpected-type","Expect type 'String' but got 'Array'","a.md",2,6]
 ---
+# Json schema microsoft alias rule: the author is in the allow list
+inputs:
+  docfx.yml: |
+    metadataSchema:
+      - schema.json
+  schema.json: |
+    { 
+      "properties":
+      { 
+        "ms.author":
+        { 
+          "microsoftAlias": 
+          {
+            "allowedDLs":["amlstudiodocs", "o365devx"]
+          }
+        }
+      } 
+    }
+  a.md: |
+    ---
+    ms.author: o365devx
+    ---
+outputs:
+  a.json: |
+    { "ms.author": "o365devx" }
+---
+# Json schema microsoft alias rule: the author is not in the allow list and no graph call
+inputs:
+  docfx.yml: |
+    metadataSchema:
+      - schema.json
+  schema.json: |
+    { 
+      "properties":
+      { 
+        "ms.author":
+        { 
+          "microsoftAlias": 
+          {
+            "allowedDLs":["amlstudiodocs", "o365devx"]
+          }
+        }
+      } 
+    }
+  a.md: |
+    ---
+    ms.author: over123
+    ---
+outputs:
+  a.json:
+  .errors.log: |
+    ["warning","ms-alias-invalid","Invalid value for 'ms.author', 'over123' is not a valid Microsoft alias","a.md",2,12]
+---
