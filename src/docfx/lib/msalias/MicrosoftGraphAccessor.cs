@@ -10,10 +10,11 @@ namespace Microsoft.Docs.Build
 {
     internal class MicrosoftGraphAccessor : IDisposable
     {
+        private const int MaxRetries = 4;
+        private readonly TimeSpan _retryDelay = TimeSpan.FromSeconds(3);
         private readonly IGraphServiceClient _msGraphClient;
         private readonly MicrosoftGraphAuthenticationProvider _microsoftGraphAuthenticationProvider;
-
-        public bool _connected = false;
+        private bool _connected = false;
 
         public MicrosoftGraphAccessor(string tenantId, string clientId, string clientSecret)
         {
@@ -38,15 +39,27 @@ namespace Microsoft.Docs.Build
                 new QueryOption("$filter", $"mailNickname eq '{alias}'"),
             };
 
-            try
+            for (int i = 0; i < MaxRetries; i++)
             {
-                var users = await _msGraphClient.Users.Request(options).GetAsync();
-                return (null, users.Count > 0);
+                try
+                {
+                    var users = await _msGraphClient.Users.Request(options).GetAsync();
+                    return (null, users.Count > 0);
+                }
+                catch (Exception e)
+                {
+                    if (i == MaxRetries - 1)
+                    {
+                        return (Errors.GraphApiGetUsersFailed(e.Message), false);
+                    }
+                    else
+                    {
+                        await Task.Delay(_retryDelay);
+                    }
+                }
             }
-            catch (Exception e)
-            {
-                return (Errors.GraphApiGetUsersFailed(e.Message), false);
-            }
+
+            return (null, false);
         }
 
         public void Dispose()

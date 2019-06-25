@@ -17,6 +17,7 @@ namespace Microsoft.Docs.Build
         private readonly SemaphoreSlim _syncRoot = new SemaphoreSlim(1, 1);
         private readonly MicrosoftGraphAccessor _microsoftGraphAccessor;
         private Dictionary<string, MicrosoftAlias> _aliases = new Dictionary<string, MicrosoftAlias>();
+        private IList<string> _tempInvalidAliases = new List<string>();
         private bool _needUpdate = false;
 
         public MicrosoftAliasCache(Config config)
@@ -53,9 +54,19 @@ namespace Microsoft.Docs.Build
                 }
                 else
                 {
+                    if (_tempInvalidAliases.Contains(alias))
+                    {
+                        return (null, null);
+                    }
+
                     var (error, isValid) = await _microsoftGraphAccessor.ValidateAlias(alias);
 
-                    if (error == null && isValid)
+                    if (error != null)
+                    {
+                        return (error, null);
+                    }
+
+                    if (isValid)
                     {
                         var newMsAlias = new MicrosoftAlias()
                         {
@@ -70,6 +81,7 @@ namespace Microsoft.Docs.Build
                     }
                     else
                     {
+                        _tempInvalidAliases.Add(alias);
                         return (error, null);
                     }
                 }
