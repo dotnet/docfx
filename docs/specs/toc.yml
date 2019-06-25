@@ -272,7 +272,7 @@ inputs:
       href: ../f1/f11/TOC.md
   docs/f1/f11/TOC.md: |
     # [Index Reference](index.md)
-    # [A File ference](a.md)
+    # [A File reference](a.md)
   docs/f1/f11/index.md:
   docs/f1/f11/a.md:
 outputs:
@@ -301,7 +301,7 @@ outputs:
                                 "href": "f1/f11/"
                             },
                             {
-                                "name": "A File ference",
+                                "name": "A File reference",
                                 "href": "f1/f11/a"
                             }
                         ]
