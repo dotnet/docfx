@@ -12,12 +12,12 @@ namespace Microsoft.Docs.Build
 {
     internal static class BuildPage
     {
-        public static async Task<IEnumerable<Error>> Build(Context context, Document file, TableOfContentsMap tocMap)
+        public static async Task<IEnumerable<Error>> Build(Context context, Document file)
         {
             Debug.Assert(file.ContentType == ContentType.Page);
 
             var (errors, isPage, (pageMetadata, pageModel), (inputMetadata, metadataObject)) = await Load(context, file);
-            var (generateErrors, outputMetadata) = await GenerateOutputMetadata(context, file, tocMap, inputMetadata, pageMetadata);
+            var (generateErrors, outputMetadata) = await GenerateOutputMetadata(context, file, inputMetadata, pageMetadata);
             errors.AddRange(generateErrors);
 
             var outputPath = file.GetOutputPath(outputMetadata.Monikers, file.Docset.SiteBasePath, isPage);
@@ -80,7 +80,6 @@ namespace Microsoft.Docs.Build
         private static async Task<(List<Error>, OutputMetadata)> GenerateOutputMetadata(
                 Context context,
                 Document file,
-                TableOfContentsMap tocMap,
                 InputMetadata inputMetadata,
                 OutputMetadata outputMetadata)
         {
@@ -93,7 +92,7 @@ namespace Microsoft.Docs.Build
             }
 
             outputMetadata.Locale = file.Docset.Locale;
-            outputMetadata.TocRel = !string.IsNullOrEmpty(inputMetadata.TocRel) ? inputMetadata.TocRel : tocMap.FindTocRelativePath(file);
+            outputMetadata.TocRel = !string.IsNullOrEmpty(inputMetadata.TocRel) ? inputMetadata.TocRel : context.TocMap.FindTocRelativePath(file);
             outputMetadata.CanonicalUrl = file.CanonicalUrl;
             outputMetadata.EnableLocSxs = file.Docset.Config.Localization.Bilingual;
             outputMetadata.SiteName = file.Docset.Config.SiteName;

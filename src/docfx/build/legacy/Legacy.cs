@@ -12,15 +12,14 @@ namespace Microsoft.Docs.Build
             Docset docset,
             Context context,
             Dictionary<Document, PublishItem> fileManifests,
-            DependencyMap dependencyMap,
-            TableOfContentsMap tocMap)
+            DependencyMap dependencyMap)
         {
             using (Progress.Start("Converting to legacy"))
             {
                 var files = fileManifests.Keys.ToList();
 
                 LegacyManifest.Convert(docset, context, fileManifests);
-                var legacyDependencyMap = LegacyDependencyMap.Convert(docset, context, files, dependencyMap, tocMap);
+                var legacyDependencyMap = LegacyDependencyMap.Convert(docset, context, files, dependencyMap);
                 LegacyFileMap.Convert(docset, context, files, legacyDependencyMap, fileManifests);
             }
         }
