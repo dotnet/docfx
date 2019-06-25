@@ -108,7 +108,7 @@ namespace Microsoft.Docs.Build
 
             if (string.IsNullOrEmpty(docset.Config.Template))
             {
-                return default;
+                return new TemplateEngine("", null);
             }
 
             var (themeRemote, themeBranch) = LocalizationUtility.GetLocalizedTheme(docset.Config.Template, docset.Locale, docset.Config.Localization.DefaultLocale);

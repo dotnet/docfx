@@ -246,14 +246,14 @@ namespace Microsoft.Docs.Build
 
         private static (object model, JObject metadata) ApplyPageTemplate(Context context, Document file, JObject output, string conceptual)
         {
-            var rawMetadata = context.TemplateEngine is null ? output : context.TemplateEngine.CreateRawMetadata(output, file);
+            var rawMetadata = context.TemplateEngine.CreateRawMetadata(output, file);
 
-            if (!file.Docset.Config.Output.Json && context.TemplateEngine != null)
+            if (!file.Docset.Config.Output.Json)
             {
                 return (context.TemplateEngine.Render(conceptual, file, rawMetadata, file.Mime), null);
             }
 
-            if (file.Docset.Legacy && context.TemplateEngine != null)
+            if (file.Docset.Legacy)
             {
                 return context.TemplateEngine.Transform(conceptual, rawMetadata, file.Mime);
             }

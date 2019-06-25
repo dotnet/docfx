@@ -239,6 +239,7 @@ commands:
   - build --legacy
 inputs:
   docfx.yml: |
+    template: {APP_BASE_PATH}data/template
     redirections:
       docs/a.md: /asdf
   docs/a.md:
@@ -250,6 +251,7 @@ commands:
   - build --legacy
 inputs:
   docfx.yml: |
+    template: {APP_BASE_PATH}data/template
     redirections:
       redirect.md: /redirect/to
   a.md: |
@@ -257,7 +259,7 @@ inputs:
 outputs:
   a.mta.json:
   a.raw.page.json: |
-    { "conceptual": "<p>\n<a data-linktype=\"relative-path\" href=\"redirect\">link</a></p>" }
+    { "content": "<p>\n<a data-linktype=\"relative-path\" href=\"redirect\">link</a></p>" }
   redirect.mta.json:
   redirect.raw.page.json:
 ---
@@ -331,6 +333,7 @@ commands:
   - build --legacy
 inputs:
   docfx.yml: |
+    template: {APP_BASE_PATH}data/template
     monikerRange:
       'docs/v1/**': '< netcore-2.0'
     baseUrl: https://docs.com/docs
