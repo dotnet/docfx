@@ -20,6 +20,9 @@ namespace Microsoft.Docs.Build
         private static readonly ConcurrentDictionary<string, Lazy<(JsonSchemaValidator, JsonSchemaTransformer)>> _jsonSchemas
                           = new ConcurrentDictionary<string, Lazy<(JsonSchemaValidator, JsonSchemaTransformer)>>();
 
+        private static readonly string s_systemSchemasDir = Path.Combine(AppContext.BaseDirectory, "data", "schemas");
+        private static readonly HashSet<string> s_schemas = new HashSet<string>(Directory.EnumerateFiles(s_systemSchemasDir, "*.json", SearchOption.TopDirectoryOnly).Select(k => Path.GetFileNameWithoutExtension(k)));
+
         private readonly string _templateDir;
         private readonly string _schemaDir;
         private readonly LiquidTemplate _liquid;
@@ -43,11 +46,17 @@ namespace Microsoft.Docs.Build
             _schemas = Directory.Exists(schemaDir) ? new HashSet<string>(Directory.EnumerateFiles(schemaDir, "*.schema.json", SearchOption.TopDirectoryOnly)
                                                                         .Select(k => Path.GetFileNameWithoutExtension(k))
                                                                         .Select(k => k.Substring(0, k.Length - ".schema".Length))) : new HashSet<string>();
-
-            _htmlMetaHidden = metadataSchema.HtmlMetaHidden.ToHashSet();
-            _htmlMetaNames = metadataSchema.Properties
-                .Where(prop => !string.IsNullOrEmpty(prop.Value.HtmlMetaName))
-                .ToDictionary(prop => prop.Key, prop => prop.Value.HtmlMetaName);
+            foreach (var schema in s_schemas)
+            {
+                _schemas.Add(schema);
+            }
+            if (metadataSchema != null)
+            {
+                _htmlMetaHidden = metadataSchema.HtmlMetaHidden.ToHashSet();
+                _htmlMetaNames = metadataSchema.Properties
+                    .Where(prop => !string.IsNullOrEmpty(prop.Value.HtmlMetaName))
+                    .ToDictionary(prop => prop.Key, prop => prop.Value.HtmlMetaName);
+            }
         }
 
         public bool IsData(string mime)
@@ -83,11 +92,11 @@ namespace Microsoft.Docs.Build
 
             (JsonSchemaValidator, JsonSchemaTransformer) GetJsonSchemaCore()
             {
-                if (!File.Exists(schemaFilePath))
+                if (!File.Exists(schemaFilePath) &&
+                    !File.Exists(schemaFilePath = Path.Combine(s_systemSchemasDir, $"{schemaName}.json")))
                 {
                     return default;
                 }
-
                 var jsonSchema = JsonUtility.Deserialize<JsonSchema>(File.ReadAllText(schemaFilePath), schemaFilePath);
                 return (new JsonSchemaValidator(jsonSchema), new JsonSchemaTransformer(jsonSchema));
             }
@@ -99,7 +108,7 @@ namespace Microsoft.Docs.Build
 
             if (string.IsNullOrEmpty(docset.Config.Template))
             {
-                return null;
+                return default;
             }
 
             var (themeRemote, themeBranch) = LocalizationUtility.GetLocalizedTheme(docset.Config.Template, docset.Locale, docset.Config.Localization.DefaultLocale);
@@ -115,7 +124,7 @@ namespace Microsoft.Docs.Build
             rawMetadata = TransformPageMetadata(rawMetadata, mime);
             var metadata = CreateMetadata(rawMetadata);
 
-            var layout = rawMetadata.Value<string>("layout");
+            var layout = rawMetadata.Value<string>("layout") ?? "";
             var themeRelativePath = PathUtility.GetRelativePathToFile(file.SitePath, "_themes");
 
             var liquidModel = new JObject
