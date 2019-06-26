@@ -130,6 +130,7 @@ jobs:
 
   # Run integration tests
   - powershell: dotnet run -p ../Docs.Build/test/integration-test -c Release
+    condition: succeeded()
     displayName: Run integration tests
     env:
       BUILD_REASON: $(Build.Reason)
