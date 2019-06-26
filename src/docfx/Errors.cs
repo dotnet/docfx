@@ -405,15 +405,22 @@ namespace Microsoft.Docs.Build
         /// Array length not within min and max.
         /// </summary>
         /// Behavior: ✔️ Message: ❌
-        public static Error ArrayLengthInvalid(SourceInfo source, string propName, int? minItems = null, int? maxItems = null)
-            => new Error(ErrorLevel.Warning, "array-length-invalid", $"Array {(string.IsNullOrEmpty(propName) ? "" : $"'{propName}' ")}length should be {(minItems.HasValue ? $">= {minItems.Value}" : $"<= {maxItems.Value}")}", source);
+        public static Error ArrayLengthInvalid(SourceInfo source, string propName, string criteria)
+            => new Error(ErrorLevel.Warning, "array-length-invalid", $"Array '{propName}' length should be {criteria}", source);
 
         /// <summary>
         /// String length not within min and max.
         /// </summary>
         /// Behavior: ✔️ Message: ❌
-        public static Error StringLengthInvalid(SourceInfo source, string propName, int? minLength = null, int? maxLength = null)
-            => new Error(ErrorLevel.Warning, "string-length-invalid", $"String {(string.IsNullOrEmpty(propName) ? "" : $"'{propName}' ")}length should be {(minLength.HasValue ? $">= {minLength.Value}" : $"<= {maxLength.Value}")}", source);
+        public static Error StringLengthInvalid(SourceInfo source, string propName, string criteria)
+            => new Error(ErrorLevel.Warning, "string-length-invalid", $"String '{propName}' length should be {criteria}", source);
+
+        /// <summary>
+        /// Number not within min and max.
+        /// </summary>
+        /// Behavior: ✔️ Message: ❌
+        public static Error NumberInvalid(SourceInfo source, string propName, string criteria)
+            => new Error(ErrorLevel.Warning, "number-invalid", $"Number '{propName}' should be {criteria}", source);
 
         /// <summary>
         /// A required field is missing.

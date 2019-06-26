@@ -23,7 +23,7 @@ namespace Microsoft.Docs.Build
                     }
                     else if (node is LinkInline link && !link.IsAutoLink)
                     {
-                        link.Url = MarkdownUtility.GetLink(link.Url, InclusionContext.File, InclusionContext.RootFile, link) ?? link.Url;
+                        link.Url = MarkdownUtility.GetLink(link.Url, InclusionContext.File, link) ?? link.Url;
                     }
                     else if (node is HtmlBlock block)
                     {
@@ -41,7 +41,7 @@ namespace Microsoft.Docs.Build
             {
                 return HtmlUtility.TransformLinks(
                     html,
-                    (href, columnOffset) => MarkdownUtility.GetLink(href, InclusionContext.File, InclusionContext.RootFile, block, columnOffset));
+                    (href, columnOffset) => MarkdownUtility.GetLink(href, InclusionContext.File, block, columnOffset));
             }
         }
     }

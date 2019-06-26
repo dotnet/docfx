@@ -9,7 +9,7 @@ using Microsoft.DocAsCode.MarkdigEngine.Extensions;
 
 namespace Microsoft.Docs.Build
 {
-    internal static class MonikerZone
+    internal static class MonikerZoneExtension
     {
         public static MarkdownPipelineBuilder UseMonikerZone(this MarkdownPipelineBuilder builder, Func<SourceInfo<string>, List<string>> parseMonikerRange)
         {

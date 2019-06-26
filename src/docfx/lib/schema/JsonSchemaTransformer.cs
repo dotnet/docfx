@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using Newtonsoft.Json.Linq;
 
@@ -22,60 +23,128 @@ namespace Microsoft.Docs.Build
         public (List<Error> errors, JToken token) TransformContent(Document file, Context context, JToken token)
         {
             var errors = new List<Error>();
-            Traverse(_schema, token, (schema, value) => value.Replace(TransformScalar(schema, file, context, value, errors)));
-            return (errors, token);
+            var transformedToken = Transform(file, context, _schema, token, errors);
+            return (errors, transformedToken);
         }
 
-        public (List<Error> errors, Dictionary<string, Lazy<JValue>>) TransformXref(Document file, Context context, JToken token)
+        public (List<Error> errors, Dictionary<string, (bool, Dictionary<string, Lazy<JToken>>)> properties) TransformXref(Document file, Context context, JToken token)
         {
             var errors = new List<Error>();
-            var extensions = new Dictionary<string, Lazy<JValue>>();
-            Traverse(_schema, token, TransformXrefScalar);
-            return (errors, extensions);
+            var xrefPropertiesGroupByUid = new Dictionary<string, (bool, Dictionary<string, Lazy<JToken>>)>();
+            var uidJsonPaths = new HashSet<string>();
 
-            void TransformXrefScalar(JsonSchema schema, JValue value)
+            Traverse(_schema, token, (schema, node) =>
             {
-                extensions[value.Path] = new Lazy<JValue>(
-                    () => (JValue)TransformScalar(schema, file, context, value, errors), // todo: support JToken
-                    LazyThreadSafetyMode.PublicationOnly);
-            }
-        }
+                if (node is JObject obj)
+                {
+                    var uid = obj.TryGetValue("uid", out var uidValue) && uidValue is JValue uidJValue && uidJValue.Value is string uidStr ? uidStr : null;
 
-        private void Traverse(JsonSchema schema, JToken token, Action<JsonSchema, JValue> transformScalar)
-        {
-            schema = _definitions.GetDefinition(schema);
-
-            switch (token)
-            {
-                case JValue scalar:
-                    transformScalar(schema, scalar);
-                    break;
-
-                case JArray array:
-                    if (schema.Items != null)
+                    if (uid == null)
                     {
-                        foreach (var item in array)
-                        {
-                            Traverse(schema.Items, item, transformScalar);
-                        }
+                        return (default, node);
                     }
-                    break;
 
-                case JObject obj:
+                    if (uidJsonPaths.Add(uidValue.Path) && xrefPropertiesGroupByUid.ContainsKey(uid))
+                    {
+                        errors.Add(Errors.UidConflict(uid));
+                        return (default, node);
+                    }
+
+                    if (!xrefPropertiesGroupByUid.TryGetValue(uid, out _))
+                    {
+                        xrefPropertiesGroupByUid[uid] = (obj.Parent == null, new Dictionary<string, Lazy<JToken>>());
+                    }
+
                     foreach (var (key, value) in obj)
                     {
-                        if (schema.Properties.TryGetValue(key, out var propertySchema))
+                        if (schema.XrefProperties.Contains(key))
                         {
-                            Traverse(propertySchema, value, transformScalar);
+                            var propertySchema = schema.Properties.TryGetValue(key, out var subSchema) ? subSchema : null;
+                            xrefPropertiesGroupByUid[uid].Item2[key] = new Lazy<JToken>(
+                            () =>
+                            {
+                                return Transform(file, context, propertySchema, value, errors);
+                            }, LazyThreadSafetyMode.PublicationOnly);
                         }
                     }
-                    break;
+                    return (schema.XrefProperties, node);
+                }
+
+                return (default, node);
+            });
+
+            return (errors, xrefPropertiesGroupByUid);
+        }
+
+        private JToken Transform(Document file, Context context, JsonSchema schema, JToken token, List<Error> errors)
+        {
+            return Traverse(schema, token, (subSchema, node) =>
+            {
+                if (node.Type == JTokenType.Array || node.Type == JTokenType.Object)
+                {
+                    // don't support array/object transform now
+                    return (default, node);
+                }
+
+                var transformedScalar = TransformScalar(subSchema, file, context, node as JValue, errors);
+                return (default, transformedScalar);
+            });
+        }
+
+        private JToken Traverse(JsonSchema schema, JToken token, Func<JsonSchema, JToken, (string[], JToken)> transform)
+        {
+            schema = _definitions.GetDefinition(schema);
+            if (schema == null)
+            {
+                return token;
             }
+
+            var (transformedKeys, transformedToken) = transform(schema, token);
+            transformedKeys = transformedKeys ?? Array.Empty<string>();
+
+            switch (transformedToken)
+            {
+                case JValue scalar:
+
+                    return scalar;
+
+                case JArray array:
+
+                    if (schema.Items == null || schema.ContentType != JsonSchemaContentType.None)
+                        return array;
+
+                    var newArray = new JArray();
+                    foreach (var item in array)
+                    {
+                        var newItem = Traverse(schema.Items, item, transform);
+                        newArray.Add(newItem);
+                    }
+
+                    return newArray;
+
+                case JObject obj:
+
+                    var newObject = new JObject();
+                    foreach (var (key, value) in obj)
+                    {
+                        if (!transformedKeys.Contains(key) && schema.Properties.TryGetValue(key, out var propertySchema))
+                        {
+                            newObject[key] = Traverse(propertySchema, value, transform);
+                        }
+                        else
+                        {
+                            newObject[key] = value;
+                        }
+                    }
+                    return newObject;
+            }
+
+            throw new NotSupportedException();
         }
 
         private JToken TransformScalar(JsonSchema schema, Document file, Context context, JValue value, List<Error> errors)
         {
-            if (value.Type == JTokenType.Null)
+            if (value.Type == JTokenType.Null || schema.ContentType == JsonSchemaContentType.None)
             {
                 return value;
             }
@@ -86,7 +155,7 @@ namespace Microsoft.Docs.Build
             switch (schema.ContentType)
             {
                 case JsonSchemaContentType.Href:
-                    var (error, link, _) = context.DependencyResolver.ResolveLink(content, file, file);
+                    var (error, link, _) = context.DependencyResolver.ResolveRelativeLink(file, content, file);
                     errors.AddIfNotNull(error);
                     content = new SourceInfo<string>(link, content);
                     break;
@@ -113,10 +182,12 @@ namespace Microsoft.Docs.Build
                     content = new SourceInfo<string>(inlineHtml, content);
                     break;
 
+                // TODO: remove JsonSchemaContentType.Html after LandingData is migrated
                 case JsonSchemaContentType.Html:
                     var htmlWithLinks = HtmlUtility.TransformLinks(content, (href, _) =>
                     {
-                        var (htmlError, htmlLink, _) = context.DependencyResolver.ResolveLink(new SourceInfo<string>(href, content), file, file);
+                        var (htmlError, htmlLink, _) = context.DependencyResolver.ResolveRelativeLink(
+                            file, new SourceInfo<string>(href, content), file);
                         errors.AddIfNotNull(htmlError);
                         return htmlLink;
                     });
@@ -126,11 +197,11 @@ namespace Microsoft.Docs.Build
 
                 case JsonSchemaContentType.Xref:
 
-                    var (xrefError, xrefLink, _, xrefSpec) = context.DependencyResolver.ResolveXref(content, file, file);
+                    var (xrefError, xrefLink, _, xrefSpec) = context.DependencyResolver.ResolveAbsoluteXref(content, file);
 
                     if (xrefSpec is InternalXrefSpec internalSpec)
                     {
-                        xrefSpec = internalSpec.ToExternalXrefSpec(context, file);
+                        xrefSpec = internalSpec.ToExternalXrefSpec(context, file, forOutput: false);
                     }
                     errors.AddIfNotNull(xrefError);
 

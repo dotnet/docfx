@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
 {
@@ -13,6 +14,7 @@ namespace Microsoft.Docs.Build
         public readonly ErrorLog ErrorLog;
         public readonly Cache Cache;
         public readonly Output Output;
+        public readonly BuildScope BuildScope;
         public readonly WorkQueue<Document> BuildQueue;
         public readonly MetadataProvider MetadataProvider;
         public readonly MonikerProvider MonikerProvider;
@@ -26,12 +28,23 @@ namespace Microsoft.Docs.Build
         public readonly PublishModelBuilder PublishModelBuilder;
         public readonly TemplateEngine Template;
 
-        public Context(string outputPath, ErrorLog errorLog,  Docset docset, Func<XrefMap> xrefMap)
+        public XrefMap XrefMap => _xrefMap.Value;
+
+        public TableOfContentsMap TocMap => _tocMap.Value;
+
+        private readonly Lazy<XrefMap> _xrefMap;
+        private readonly Lazy<TableOfContentsMap> _tocMap;
+
+        public Context(string outputPath, ErrorLog errorLog, Docset docset, Func<Context, Document, Task> buildFile)
         {
+            _xrefMap = new Lazy<XrefMap>(() => XrefMapBuilder.Build(this, docset));
+            _tocMap = new Lazy<TableOfContentsMap>(() => TableOfContentsMap.Create(this));
+            BuildQueue = new WorkQueue<Document>(doc => buildFile(this, doc));
+
             ErrorLog = errorLog;
             Output = new Output(outputPath);
             Cache = new Cache();
-            BuildQueue = new WorkQueue<Document>();
+            BuildScope = new BuildScope(errorLog, docset);
             MicrosoftAliasCache = new MicrosoftAliasCache(docset.Config);
             MetadataProvider = new MetadataProvider(docset, Cache, MicrosoftAliasCache);
             MonikerProvider = new MonikerProvider(docset, MetadataProvider);
@@ -40,7 +53,8 @@ namespace Microsoft.Docs.Build
             PublishModelBuilder = new PublishModelBuilder();
             BookmarkValidator = new BookmarkValidator();
             DependencyMapBuilder = new DependencyMapBuilder();
-            DependencyResolver = new DependencyResolver(BuildQueue, GitCommitProvider, BookmarkValidator, DependencyMapBuilder, new Lazy<XrefMap>(xrefMap));
+            DependencyResolver = new DependencyResolver(
+                docset.Config, BuildScope, BuildQueue, GitCommitProvider, BookmarkValidator, DependencyMapBuilder, _xrefMap);
             ContributionProvider = new ContributionProvider(docset, GitHubUserCache, GitCommitProvider);
             Template = TemplateEngine.Create(docset);
         }
