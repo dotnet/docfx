@@ -1400,7 +1400,7 @@ outputs:
   docs/f1/toc.json:
   docs/f2/toc.json:
 ---
-# turn skip-level toc error to warnings
+# turn skip-level toc error to warning
 inputs:
   docfx.yml: |
     rules:
