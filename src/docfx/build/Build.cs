@@ -136,7 +136,7 @@ namespace Microsoft.Docs.Build
             }
             catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
             {
-                context.ErrorLog.Write(file.ToString(), dex.Error);
+                context.ErrorLog.Write(file.ToString(), dex.Error, true);
                 context.PublishModelBuilder.MarkError(file);
             }
             catch

@@ -1399,3 +1399,30 @@ outputs:
     {"_tocRel": "f2/toc.json"}
   docs/f1/toc.json:
   docs/f2/toc.json:
+---
+# turn skip-level toc error to warnings
+inputs:
+  docfx.yml: |
+    rules:
+      invalid-toc-level: warning
+  docs/TOC.md: |
+    # level 1
+    ### level 3
+    #### level 4
+    ## level 2
+outputs:
+  .errors.log: |
+    ["warning","invalid-toc-level","The toc level can't be skipped from 1 to 3","docs/TOC.md",2,1]
+  docs/toc.json: |
+    {
+        "items": [
+            {
+                "name": "level 1",
+                "items": [
+                    {
+                        "name": "level 2"
+                    }
+                ]
+            }
+        ]
+    }
