@@ -36,7 +36,7 @@ namespace Microsoft.Docs.Build
 
         public Context(string outputPath, ErrorLog errorLog, Docset docset, Func<Context, Document, Task> buildFile)
         {
-            _xrefMap = new Lazy<XrefMap>(() => XrefMapBuilder.Build(this, docset));
+            _xrefMap = new Lazy<XrefMap>(() => new XrefMap(this, docset));
             _tocMap = new Lazy<TableOfContentsMap>(() => TableOfContentsMap.Create(this));
             BuildQueue = new WorkQueue<Document>(doc => buildFile(this, doc));
 
