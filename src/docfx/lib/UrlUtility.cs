@@ -3,6 +3,7 @@
 
 using System;
 using System.Diagnostics;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
@@ -28,40 +29,13 @@ namespace Microsoft.Docs.Build
         /// <returns>The splited path, query and fragment</returns>
         public static (string path, string query, string fragment) SplitUrl(string url)
         {
-            var path = "";
-            var query = "";
-            var fragment = "";
-
-            var fragmentIndex = url.IndexOf('#');
-            if (fragmentIndex >= 0)
+            if (string.IsNullOrEmpty(url))
             {
-                fragment = url.Substring(fragmentIndex);
-                var queryIndex = url.IndexOf('?', 0, fragmentIndex);
-                if (queryIndex >= 0)
-                {
-                    query = url.Substring(queryIndex, fragmentIndex - queryIndex);
-                    path = url.Substring(0, queryIndex);
-                }
-                else
-                {
-                    path = url.Substring(0, fragmentIndex);
-                }
-            }
-            else
-            {
-                var queryIndex = url.IndexOf('?');
-                if (queryIndex >= 0)
-                {
-                    query = url.Substring(queryIndex);
-                    path = url.Substring(0, queryIndex);
-                }
-                else
-                {
-                    path = url;
-                }
+                return (string.Empty, string.Empty, string.Empty);
             }
 
-            return (path, query, fragment);
+            var uri = new UriBuilder(url);
+            return (uri.Host, uri.Query, HttpUtility.UrlDecode(uri.Fragment));
         }
 
         /// <summary>
@@ -69,22 +43,27 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static string MergeUrl(string targetUrl, string sourceQuery, string sourceFragment)
         {
-            var (targetPath, targetQuery, targetFragment) = SplitUrl(targetUrl);
-            if (string.IsNullOrEmpty(targetPath))
-                return targetUrl;
+            if (string.IsNullOrEmpty(targetUrl))
+            {
+                return string.Empty;
+            }
 
-            var targetQueryParameters = HttpUtility.ParseQueryString(targetQuery.Length == 0 ? "" : targetQuery.Substring(1));
+            var uri = new UriBuilder(targetUrl);
+            var targetQueryParameters = HttpUtility.ParseQueryString(uri.Query);
             var sourceQueryParameters = HttpUtility.ParseQueryString(sourceQuery);
 
             foreach (var key in sourceQueryParameters.AllKeys)
             {
                 targetQueryParameters.Set(key, sourceQueryParameters[key]);
             }
+            uri.Query = targetQueryParameters.ToString();
 
-            var query = targetQueryParameters.HasKeys() ? "?" + targetQueryParameters.ToString() : string.Empty;
-            var fragment = (sourceFragment == null || sourceFragment.Length == 0) ? targetFragment : "#" + sourceFragment;
+            if (!string.IsNullOrEmpty(sourceFragment))
+            {
+                uri.Fragment = sourceFragment;
+            }
 
-            return targetPath + query + fragment;
+            return uri.Host + uri.Query + HttpUtility.UrlDecode(uri.Fragment);
         }
 
         /// <summary>
