@@ -21,6 +21,7 @@ namespace Microsoft.Docs.Build
         private readonly GitCommitProvider _gitCommitProvider;
         private readonly IReadOnlyDictionary<string, string> _resolveAlias;
         private readonly Lazy<XrefMap> _xrefMap;
+        private readonly TemplateEngine _templateEngine;
 
         public DependencyResolver(
             Config config,
@@ -29,7 +30,8 @@ namespace Microsoft.Docs.Build
             GitCommitProvider gitCommitProvider,
             BookmarkValidator bookmarkValidator,
             DependencyMapBuilder dependencyMapBuilder,
-            Lazy<XrefMap> xrefMap)
+            Lazy<XrefMap> xrefMap,
+            TemplateEngine templateEngine)
         {
             _buildScope = buildScope;
             _buildQueue = buildQueue;
@@ -38,6 +40,7 @@ namespace Microsoft.Docs.Build
             _gitCommitProvider = gitCommitProvider;
             _xrefMap = xrefMap;
             _resolveAlias = LoadResolveAlias(config);
+            _templateEngine = templateEngine;
         }
 
         public (Error error, string content, Document file) ResolveContent(SourceInfo<string> path, Document declaringFile, DependencyType dependencyType = DependencyType.Inclusion)
@@ -134,7 +137,7 @@ namespace Microsoft.Docs.Build
 
             if (file is null)
             {
-                var (content, fileFromHistory) = TryResolveContentFromHistory(_gitCommitProvider, declaringFile.Docset, pathToDocset);
+                var (content, fileFromHistory) = TryResolveContentFromHistory(_gitCommitProvider, declaringFile.Docset, pathToDocset, _templateEngine);
                 if (fileFromHistory != null)
                 {
                     return (null, content, fileFromHistory);
@@ -168,7 +171,7 @@ namespace Microsoft.Docs.Build
             // Cannot resolve the file, leave href as is
             if (file is null)
             {
-                file = TryResolveResourceFromHistory(_gitCommitProvider, declaringFile.Docset, pathToDocset);
+                file = TryResolveResourceFromHistory(_gitCommitProvider, declaringFile.Docset, pathToDocset, _templateEngine);
                 if (file is null)
                 {
                     return (error, href, fragment, linkType, null);
@@ -186,7 +189,7 @@ namespace Microsoft.Docs.Build
                     return (error, query + fragment, fragment, linkType, null);
                 }
                 var selfUrl = Document.PathToRelativeUrl(
-                    Path.GetFileName(file.SitePath), file.ContentType, file.Mime, file.Docset.Config.Output.Json);
+                    Path.GetFileName(file.SitePath), file.ContentType, file.Mime, file.Docset.Config.Output.Json, file.IsData);
                 return (error, selfUrl + query + fragment, fragment, LinkType.SelfBookmark, null);
             }
 
@@ -245,17 +248,17 @@ namespace Microsoft.Docs.Build
                         return (null, redirectFile, query, fragment, LinkType.RelativePath, pathToDocset);
                     }
 
-                    var file = Document.CreateFromFile(declaringFile.Docset, pathToDocset);
+                    var file = Document.CreateFromFile(declaringFile.Docset, pathToDocset, _templateEngine);
 
-                    // forLandingPage should not be used, it is a hack to handle some specific logic for landing page based on the user input for now
+                    // for LandingPage should not be used, it is a hack to handle some specific logic for landing page based on the user input for now
                     // which needs to be removed once the user input is correct
-                    if (TemplateEngine.IsLandingData(declaringFile.Mime))
+                    if (_templateEngine != null && TemplateEngine.IsLandingData(declaringFile.Mime))
                     {
                         if (file is null)
                         {
                             // try to resolve with .md for landing page
                             pathToDocset = ResolveToDocsetRelativePath($"{path}.md", declaringFile);
-                            file = Document.CreateFromFile(declaringFile.Docset, pathToDocset);
+                            file = Document.CreateFromFile(declaringFile.Docset, pathToDocset, _templateEngine);
                         }
 
                         // Do not report error for landing page
@@ -290,7 +293,7 @@ namespace Microsoft.Docs.Build
             return docsetRelativePath;
         }
 
-        private static Document TryResolveResourceFromHistory(GitCommitProvider gitCommitProvider, Docset docset, string pathToDocset)
+        private static Document TryResolveResourceFromHistory(GitCommitProvider gitCommitProvider, Docset docset, string pathToDocset, TemplateEngine templateEngine)
         {
             if (string.IsNullOrEmpty(pathToDocset))
             {
@@ -304,14 +307,14 @@ namespace Microsoft.Docs.Build
                 var (repo, pathToRepo, commits) = gitCommitProvider.GetCommitHistory(fallbackDocset, pathToDocset);
                 if (repo != null && commits.Count > 0)
                 {
-                    return Document.Create(fallbackDocset, pathToDocset, isFromHistory: true);
+                    return Document.Create(fallbackDocset, pathToDocset, templateEngine, isFromHistory: true);
                 }
             }
 
             return default;
         }
 
-        private static (string content, Document file) TryResolveContentFromHistory(GitCommitProvider gitCommitProvider, Docset docset, string pathToDocset)
+        private static (string content, Document file) TryResolveContentFromHistory(GitCommitProvider gitCommitProvider, Docset docset, string pathToDocset, TemplateEngine templateEngine)
         {
             if (string.IsNullOrEmpty(pathToDocset))
             {
@@ -331,7 +334,7 @@ namespace Microsoft.Docs.Build
                         // the latest commit would be deleting it from repo
                         if (GitUtility.TryGetContentFromHistory(repoPath, pathToRepo, commits[1].Sha, out var content))
                         {
-                            return (content, Document.Create(fallbackDocset, pathToDocset, isFromHistory: true));
+                            return (content, Document.Create(fallbackDocset, pathToDocset, templateEngine, isFromHistory: true));
                         }
                     }
                 }

@@ -52,12 +52,13 @@ namespace Microsoft.Docs.Build
         public static void FindTocRelativePath(string[] tocFiles, string file, string expectedTocPath, string expectedOrphanTocPath)
         {
             var builder = new TableOfContentsMapBuilder();
-            var document = Document.Create(s_docset, file);
+            var templateEngine = TemplateEngine.Create(s_docset);
+            var document = Document.Create(s_docset, file, templateEngine);
 
             // test multiple reference case
             foreach (var tocFile in tocFiles)
             {
-                var toc = Document.Create(s_docset, tocFile);
+                var toc = Document.Create(s_docset, tocFile, templateEngine);
                 builder.Add(toc, new List<Document> { document }, new List<Document>());
             }
 
@@ -68,7 +69,7 @@ namespace Microsoft.Docs.Build
             builder = new TableOfContentsMapBuilder();
             foreach (var tocFile in tocFiles)
             {
-                var toc = Document.Create(s_docset, tocFile);
+                var toc = Document.Create(s_docset, tocFile, templateEngine);
                 builder.Add(toc, new List<Document>(), new List<Document>());
             }
             tocMap = builder.Build();
