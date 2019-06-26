@@ -6,7 +6,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
-using YamlDotNet.Core;
 
 namespace Microsoft.Docs.Build
 {
@@ -26,11 +25,10 @@ namespace Microsoft.Docs.Build
             JObject metadata = null;
             if (isPage)
             {
-                var mergedOutputModel = new JObject();
-                JsonUtility.Merge(mergedOutputModel, metadataObject);
-                JsonUtility.Merge(mergedOutputModel, JsonUtility.ToJObject(outputMetadata));
-                JsonUtility.Merge(mergedOutputModel, pageModel);
-                (output, metadata) = ApplyPageTemplate(context, file, mergedOutputModel, pageModel.Value<string>("conceptual"));
+                var mergedMetadata = new JObject();
+                JsonUtility.Merge(mergedMetadata, metadataObject);
+                JsonUtility.Merge(mergedMetadata, JsonUtility.ToJObject(outputMetadata));
+                (output, metadata) = ApplyPageTemplate(context, file, mergedMetadata, pageModel, pageMetadata.SchemaType == "Conceptual" || TemplateEngine.IsLandingData(file.Mime));
             }
             else
             {
@@ -169,11 +167,11 @@ namespace Microsoft.Docs.Build
             pageMetadata.Title = inputMetadata.Title ?? title;
             pageMetadata.RawTitle = rawTitle;
             pageMetadata.SchemaType = "Conceptual";
+            pageMetadata.WordCount = wordCount;
 
             var pageModel = new JObject
             {
                 ["conceptual"] = HtmlUtility.HtmlPostProcess(htmlDom, file.Docset.Culture),
-                ["wordCount"] = wordCount,
             };
 
             context.BookmarkValidator.AddBookmarks(file, bookmarks);
@@ -244,21 +242,29 @@ namespace Microsoft.Docs.Build
             return (errors, !file.IsData, (pageMetadata, pageModel as JObject), (inputMetadata, metadataObject));
         }
 
-        private static (object model, JObject metadata) ApplyPageTemplate(Context context, Document file, JObject output, string conceptual)
+        private static (object model, JObject metadata) ApplyPageTemplate(Context context, Document file, JObject pageMetadata, JObject pageModel, bool isConceptual)
         {
-            var rawMetadata = context.TemplateEngine.CreateRawMetadata(output, file);
+            var conceptual = isConceptual ? pageModel.Value<string>("conceptual") : string.Empty;
+            pageMetadata = context.TemplateEngine.PreprocessMetadata(pageMetadata, file);
 
             if (!file.Docset.Config.Output.Json)
             {
-                return (context.TemplateEngine.Render(conceptual, file, rawMetadata, file.Mime), null);
+                return (context.TemplateEngine.Render(conceptual, file, pageMetadata, file.Mime), null);
             }
 
             if (file.Docset.Legacy)
             {
-                return context.TemplateEngine.Transform(conceptual, rawMetadata, file.Mime);
+                if (!isConceptual)
+                {
+                    // run sdp JINT and mustache to generate html
+                    // conceptual = context.TemplateEngine.Render(file.Mime, pageModel);
+                }
+
+                return context.TemplateEngine.Transform(conceptual, pageMetadata, file.Mime);
             }
 
-            return (output, rawMetadata);
+            JsonUtility.Merge(pageModel, pageMetadata);
+            return (pageModel, pageMetadata);
         }
     }
 }
