@@ -104,7 +104,7 @@ namespace Microsoft.Docs.Build
             }
 
             var (content, etag) = TryGetRestoredFileContent(url);
-            if (content != null)
+            if (content == null)
             {
                 throw Errors.NeedRestore(url).ToException();
             }
