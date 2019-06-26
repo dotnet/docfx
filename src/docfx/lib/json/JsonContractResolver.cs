@@ -32,14 +32,18 @@ namespace Microsoft.Docs.Build
             var property = base.CreateProperty(member, memberSerialization);
             HandleSourceInfo(property);
             DoNotSerializeEmptyArray(property);
-            SetFieldWritable();
+            SetMemberWritable();
             return property;
 
-            void SetFieldWritable()
+            void SetMemberWritable()
             {
                 if (!property.Writable)
                 {
                     if (member is FieldInfo f && f.IsPublic && !f.IsStatic)
+                    {
+                        property.Writable = true;
+                    }
+                    else if (member is PropertyInfo p && p.CanWrite)
                     {
                         property.Writable = true;
                     }

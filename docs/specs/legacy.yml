@@ -62,7 +62,6 @@ outputs:
         <meta name=\"search.ms_product\" content=\"\" />
         <meta name=\"search.ms_sitename\" content=\"Docs\" />
         <meta name=\"site_name\" content=\"Docs\" />
-        <meta name=\"toc_rel\" content=\"toc.json\" />
         <meta name=\"updated_at\" content=\"2018-10-30 12:00 AM\" />
         <meta name=\"wordCount\" content=\"1\" />"
     }
@@ -71,7 +70,6 @@ outputs:
   toc.json:
   toc.mta.json:
   .manifest.json:
-  .dependency-map.json:
   filemap.json:
   op_aggregated_file_map_info.json:
   .publish.json:
@@ -145,7 +143,7 @@ outputs:
         },
         "conceptual": "\n<p><a href=\"d.png\">d</a></p>\n",
         "_path": "c.json",
-        "toc_rel": "toc.json",
+        "_tocRel": "toc.json",
         "wordCount": 2,
         "title": "Title",
         "rawTitle": "<h1 id=\"title\">Title</h1>",
@@ -352,7 +350,7 @@ outputs:
   docs/a.raw.page.json:
   docs/9d4e15fd/a.mta.json:
   docs/9d4e15fd/a.raw.page.json:
-  docs/.dependency-map.json:
+  full-dependent-list.txt:
   docs/.manifest.json: |
     {
       "files":[
@@ -370,6 +368,7 @@ outputs:
           "output_relative_path":"9d4e15fd/a.html",
           "asset_id":"a",
           "version": "< netcore-2.0",
+          "monikers":["netcore-1.0","netcore-1.1"],
           "is_moniker_range": true
         }
       }

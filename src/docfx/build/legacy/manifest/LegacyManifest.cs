@@ -18,7 +18,6 @@ namespace Microsoft.Docs.Build
                 var itemsToPublish = new List<LegacyItemToPublish>
                 {
                     new LegacyItemToPublish { RelativePath = "filemap.json", Type = "filemap" },
-                    new LegacyItemToPublish { RelativePath = ".dependency-map.json", Type = "unknown" },
                 };
 
                 var dictionaryBuilder = new DictionaryBuilder<string, List<string>>();

@@ -19,5 +19,8 @@ namespace Microsoft.Docs.Build
         public SourceInfo<string> MonikerRange { get; set; }
 
         public string Uid { get; set; }
+
+        [JsonProperty("_tocRel")]
+        public string TocRel { get; set; }
     }
 }
