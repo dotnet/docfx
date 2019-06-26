@@ -580,8 +580,20 @@ items:
 ", FileType.MarkdownToc);
             var files = new FileCollection(_inputFolder);
             files.Add(DocumentType.Article, new[] { toc });
-            var e = Assert.Throws<DocumentException>(() => BuildDocument(files));
-            Assert.Equal($"Referenced TOC file {StringExtension.ToDisplayPath(Path.GetFullPath(Path.Combine(_inputFolder, pathToReferencedToc)))} does not exist.", e.Message, true);
+
+            var listener = TestLoggerListener.CreateLoggerListenerWithCodesFilter(new List<string> { ErrorCodes.Build.InvalidTocInclude});
+            Logger.RegisterListener(listener);
+            using (new LoggerPhaseScope(nameof(TocDocumentProcessorTest)))
+            {
+                BuildDocument(files);
+            }
+            Logger.UnregisterListener(listener);
+
+            Assert.Single(listener.Items);
+
+            Assert.Equal(ErrorCodes.Build.InvalidTocInclude, listener.Items[0].Code);
+            Assert.Equal($"Referenced TOC file {StringExtension.ToDisplayPath(Path.GetFullPath(Path.Combine(_inputFolder, pathToReferencedToc)))} does not exist.", listener.Items[0].Message, true);
+            Assert.Equal(LogLevel.Error, listener.Items[0].LogLevel);
         }
 
         [Fact]
@@ -594,8 +606,20 @@ items:
 ", FileType.YamlToc);
             var files = new FileCollection(_inputFolder);
             files.Add(DocumentType.Article, new[] { toc });
-            var e = Assert.Throws<DocumentException>(() => BuildDocument(files));
-            Assert.Equal($"Referenced TOC file {StringExtension.ToDisplayPath(Path.GetFullPath(Path.Combine(_inputFolder, pathToReferencedToc)))} does not exist.", e.Message, true);
+
+            var listener = TestLoggerListener.CreateLoggerListenerWithCodesFilter(new List<string> { ErrorCodes.Build.InvalidTocInclude });
+            Logger.RegisterListener(listener);
+            using (new LoggerPhaseScope(nameof(TocDocumentProcessorTest)))
+            {
+                BuildDocument(files);
+            }
+            Logger.UnregisterListener(listener);
+
+            Assert.Single(listener.Items);
+
+            Assert.Equal(ErrorCodes.Build.InvalidTocInclude, listener.Items[0].Code);
+            Assert.Equal($"Referenced TOC file {StringExtension.ToDisplayPath(Path.GetFullPath(Path.Combine(_inputFolder, pathToReferencedToc)))} does not exist.", listener.Items[0].Message, true);
+            Assert.Equal(LogLevel.Error, listener.Items[0].LogLevel);
         }
 
         [Fact]
