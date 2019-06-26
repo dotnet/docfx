@@ -28,7 +28,7 @@ namespace Microsoft.Docs.Build
                     documents,
                     document =>
                     {
-                        if (document.IsSchemaData)
+                        if (document.IsData)
                         {
                             return;
                         }

@@ -10,6 +10,6 @@ namespace Microsoft.Docs.Build
         UidInclusion, // uid reference with display property
         Inclusion, // token or codesnippet
         Overwrite, // overwrite markdown reference
-        TocInclusion, // toc reference toc
+        TocInclusion, // toc includes toc
     }
 }

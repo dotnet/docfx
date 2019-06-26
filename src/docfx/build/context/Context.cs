@@ -25,7 +25,7 @@ namespace Microsoft.Docs.Build
         public readonly GitHubUserCache GitHubUserCache;
         public readonly ContributionProvider ContributionProvider;
         public readonly PublishModelBuilder PublishModelBuilder;
-        public readonly TemplateEngine Template;
+        public readonly TemplateEngine TemplateEngine;
 
         public XrefMap XrefMap => _xrefMap.Value;
 
@@ -36,14 +36,15 @@ namespace Microsoft.Docs.Build
 
         public Context(string outputPath, ErrorLog errorLog, Docset docset, Func<Context, Document, Task> buildFile)
         {
-            _xrefMap = new Lazy<XrefMap>(() => XrefMapBuilder.Build(this, docset));
+            _xrefMap = new Lazy<XrefMap>(() => new XrefMap(this, docset));
             _tocMap = new Lazy<TableOfContentsMap>(() => TableOfContentsMap.Create(this));
             BuildQueue = new WorkQueue<Document>(doc => buildFile(this, doc));
 
             ErrorLog = errorLog;
             Output = new Output(outputPath);
             Cache = new Cache();
-            BuildScope = new BuildScope(errorLog, docset);
+            TemplateEngine = TemplateEngine.Create(docset);
+            BuildScope = new BuildScope(errorLog, docset, TemplateEngine);
             MetadataProvider = new MetadataProvider(docset, Cache);
             MonikerProvider = new MonikerProvider(docset, MetadataProvider);
             GitHubUserCache = new GitHubUserCache(docset.Config);
@@ -52,9 +53,8 @@ namespace Microsoft.Docs.Build
             BookmarkValidator = new BookmarkValidator();
             DependencyMapBuilder = new DependencyMapBuilder();
             DependencyResolver = new DependencyResolver(
-                docset.Config, BuildScope, BuildQueue, GitCommitProvider, BookmarkValidator, DependencyMapBuilder, _xrefMap);
+                docset.Config, BuildScope, BuildQueue, GitCommitProvider, BookmarkValidator, DependencyMapBuilder, _xrefMap, TemplateEngine);
             ContributionProvider = new ContributionProvider(docset, GitHubUserCache, GitCommitProvider);
-            Template = TemplateEngine.Create(docset);
         }
 
         public void Dispose()
