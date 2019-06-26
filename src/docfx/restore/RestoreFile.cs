@@ -28,7 +28,8 @@ namespace Microsoft.Docs.Build
 
             using (InterProcessMutex.Create(filePath))
             {
-                if (File.Exists(etagPath))
+                var etagContent = File.Exists(etagPath) ? File.ReadAllText(etagPath) : null;
+                if (!string.IsNullOrEmpty(etagContent))
                 {
                     existingEtag = EntityTagHeaderValue.Parse(File.ReadAllText(etagPath));
                 }
@@ -53,7 +54,10 @@ namespace Microsoft.Docs.Build
                     File.Delete(tempFile);
                 }
 
-                File.WriteAllText(etagPath, etag?.ToString());
+                if (etag != null)
+                {
+                    File.WriteAllText(etagPath, etag.ToString());
+                }
             }
         }
 
