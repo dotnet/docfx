@@ -13,21 +13,16 @@ namespace Microsoft.Docs.Build
     {
         private readonly IGraphServiceClient _msGraphClient;
         private readonly MicrosoftGraphAuthenticationProvider _microsoftGraphAuthenticationProvider;
-        private bool _connected = false;
 
         public MicrosoftGraphAccessor(string tenantId, string clientId, string clientSecret)
         {
-            if (!string.IsNullOrEmpty(clientSecret))
-            {
-                _microsoftGraphAuthenticationProvider = new MicrosoftGraphAuthenticationProvider(tenantId, clientId, clientSecret);
-                _msGraphClient = new GraphServiceClient(_microsoftGraphAuthenticationProvider);
-                _connected = true;
-            }
+            _microsoftGraphAuthenticationProvider = new MicrosoftGraphAuthenticationProvider(tenantId, clientId, clientSecret);
+            _msGraphClient = new GraphServiceClient(_microsoftGraphAuthenticationProvider);
         }
 
         public async Task<(Error error, bool isValid)> ValidateAlias(string alias)
         {
-            if (string.IsNullOrWhiteSpace(alias) || !_connected)
+            if (string.IsNullOrWhiteSpace(alias))
             {
                 return (null, false);
             }

@@ -308,11 +308,9 @@ namespace Microsoft.Docs.Build
                     {
                         var (error, msAlias) = _microsoftGraphCache.GetMicrosoftAliasAsync(alias).GetAwaiter().GetResult();
 
-                        if (error != null)
-                        {
-                            errors.Add(error);
-                        }
-                        else if (msAlias == null)
+                        errors.AddIfNotNull(error);
+
+                        if (msAlias == null)
                         {
                             errors.Add(Errors.MsAliasInvalid(JsonUtility.GetSourceInfo(scalar), name, alias));
                         }

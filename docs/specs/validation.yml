@@ -260,7 +260,7 @@ inputs:
     metadataSchema:
       - schema.json
     microsoftGraph:
-      microsoftGraphClientSecret: zdxkwWOD814?(-*dfUJNB27
+      microsoftGraphClientSecret: {MICROSOFT_GRAPH_CLIENT_SECRET}
   schema.json: |
     { 
       "properties":
@@ -278,6 +278,8 @@ inputs:
     ---
     ms.author: abc1234cba
     ---
+environments:
+  - MICROSOFT_GRAPH_CLIENT_SECRET
 outputs:
   a.json:
   .errors.log: |
