@@ -31,6 +31,7 @@ namespace Microsoft.DocAsCode.Common
             public const string ReferencedXrefPropertyNotString = "ReferencedXrefPropertyNotString";
             public const string UnknownContentType = "UnknownContentType";
             public const string UnknownContentTypeForTemplate = "UnknownContentTypeForTemplate";
+            public const string InvalidTocInclude = "InvalidTocInclude";
         }
 
         public static class Markdown

@@ -230,7 +230,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
                         // For referenced toc, content from referenced toc is expanded as the items of current toc item,
                         // Href is reset to the homepage of current toc item
                         item.Href = item.TopicHref;
-                        var referencedTocClone = referencedToc.Items?.Clone();
+                        var referencedTocClone = referencedToc?.Items?.Clone();
 
                         // For [reference](a/toc.md), and toc.md contains not-exist.md, the included not-exist.md should be resolved to a/not-exist.md
                         item.Items = UpdateOriginalHref(referencedTocClone, href);
@@ -280,9 +280,10 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
                 {
                     referencedTocItemViewModel = TocHelper.LoadSingleToc(tocFile.FullPath);
                 }
-                catch (FileNotFoundException fnfe)
+                catch (FileNotFoundException)
                 {
-                    throw new DocumentException($"Referenced TOC file {tocFile.FullPath} does not exist.", fnfe);
+                    Logger.LogError($"Referenced TOC file {tocFile.FullPath} does not exist.", code: WarningCodes.Build.InvalidTocInclude);
+                    return null;
                 }
 
                 referencedTocFileModel = new TocItemInfo(tocFile, referencedTocItemViewModel);
