@@ -51,12 +51,7 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            var (_, content, _) = RestoreMap.GetRestoredFileContent(docset, dependencyLockPath);
-
-            if (string.IsNullOrEmpty(content))
-            {
-                return null;
-            }
+            var content = RestoreMap.GetRestoredFileContent(docset, dependencyLockPath);
 
             return JsonUtility.Deserialize<DependencyLockModel>(content, dependencyLockPath);
         }
