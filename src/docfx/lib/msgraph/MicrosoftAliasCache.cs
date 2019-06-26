@@ -23,12 +23,12 @@ namespace Microsoft.Docs.Build
         public MicrosoftAliasCache(Config config)
         {
             _cachePath = AppData.MicrosoftAliasCachePath;
-            _expirationInHours = config.JsonSchema.MicrosoftAliasCacheExpirationInHours;
+            _expirationInHours = config.MicrosoftGraph.MicrosoftAliasCacheExpirationInHours;
 
             _microsoftGraphAccessor = new MicrosoftGraphAccessor(
-                config.JsonSchema.MicrosoftGraphTenantId,
-                config.JsonSchema.MicrosoftGraphClientId,
-                config.JsonSchema.MicrosoftGraphClientSecret);
+                config.MicrosoftGraph.MicrosoftGraphTenantId,
+                config.MicrosoftGraph.MicrosoftGraphClientId,
+                config.MicrosoftGraph.MicrosoftGraphClientSecret);
 
             if (File.Exists(_cachePath))
             {

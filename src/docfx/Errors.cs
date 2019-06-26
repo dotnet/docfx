@@ -487,7 +487,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         /// Behavior: ✔️ Message: ❌
         public static Error GraphApiGetUsersFailed(string exMessage)
-            => new Error(ErrorLevel.Warning, "graph-api-get-users-failed", $"Call to Ms Graph Api to get users failed: {exMessage} Try closing and reopening the PR. If you get this Error again, file an issue.");
+            => new Error(ErrorLevel.Warning, "graph-api-get-users-failed", $"Call to Microsoft Graph API to get users failed: {exMessage} Try closing and reopening the PR. If you get this Error again, file an issue.");
 
         /// <summary>
         /// Used unknown YamlMime.

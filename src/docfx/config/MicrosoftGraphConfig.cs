@@ -3,7 +3,7 @@
 
 namespace Microsoft.Docs.Build
 {
-    internal sealed class JsonSchemaConfig
+    internal sealed class MicrosoftGraphConfig
     {
         /// <summary>
         /// Determines how long at most an alias remains valid in cache.

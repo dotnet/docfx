@@ -133,9 +133,9 @@ namespace Microsoft.Docs.Build
         public readonly GitHubConfig GitHub = new GitHubConfig();
 
         /// <summary>
-        /// Gets the configurations related to Json Schema.
+        /// Gets the configurations related to Microsoft Graph.
         /// </summary>
-        public readonly JsonSchemaConfig JsonSchema = new JsonSchemaConfig();
+        public readonly MicrosoftGraphConfig MicrosoftGraph = new MicrosoftGraphConfig();
 
         /// <summary>
         /// Gets whether warnings should be treated as errors.
