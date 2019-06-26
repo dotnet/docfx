@@ -52,38 +52,36 @@ namespace Microsoft.Docs.Build
                 {
                     return (null, msAlias);
                 }
+
+                if (_tempInvalidAliases.Contains(alias))
+                {
+                    return default;
+                }
+
+                var (error, isValid) = await _microsoftGraphAccessor.ValidateAlias(alias);
+
+                if (error != null)
+                {
+                    return (error, null);
+                }
+
+                if (isValid)
+                {
+                    var newMsAlias = new MicrosoftAlias()
+                    {
+                        Alias = alias,
+                        Expiry = NextExpiry(),
+                    };
+
+                    _aliases.Add(alias, new MicrosoftAlias() { Alias = alias, Expiry = NextExpiry() });
+                    _needUpdate = true;
+
+                    return (error, newMsAlias);
+                }
                 else
                 {
-                    if (_tempInvalidAliases.Contains(alias))
-                    {
-                        return (null, null);
-                    }
-
-                    var (error, isValid) = await _microsoftGraphAccessor.ValidateAlias(alias);
-
-                    if (error != null)
-                    {
-                        return (error, null);
-                    }
-
-                    if (isValid)
-                    {
-                        var newMsAlias = new MicrosoftAlias()
-                        {
-                            Alias = alias,
-                            Expiry = NextExpiry(),
-                        };
-
-                        _aliases.Add(alias, new MicrosoftAlias() { Alias = alias, Expiry = NextExpiry() });
-                        _needUpdate = true;
-
-                        return (error, newMsAlias);
-                    }
-                    else
-                    {
-                        _tempInvalidAliases.Add(alias);
-                        return (error, null);
-                    }
+                    _tempInvalidAliases.Add(alias);
+                    return (error, null);
                 }
             }
         }

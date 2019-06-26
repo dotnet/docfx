@@ -229,7 +229,7 @@ inputs:
   docfx.yml: |
     metadataSchema:
       - schema.json
-    jsonSchema:
+    microsoftGraph:
       microsoftGraphClientSecret: {MICROSOFT_GRAPH_CLIENT_SECRET}
   schema.json: |
     { 
@@ -259,8 +259,8 @@ inputs:
   docfx.yml: |
     metadataSchema:
       - schema.json
-    jsonSchema:
-      microsoftGraphClientSecret: {MICROSOFT_GRAPH_CLIENT_SECRET}
+    microsoftGraph:
+      microsoftGraphClientSecret: zdxkwWOD814?(-*dfUJNB27
   schema.json: |
     { 
       "properties":
@@ -278,8 +278,6 @@ inputs:
     ---
     ms.author: abc1234cba
     ---
-environments:
-  - MICROSOFT_GRAPH_CLIENT_SECRET
 outputs:
   a.json:
   .errors.log: |

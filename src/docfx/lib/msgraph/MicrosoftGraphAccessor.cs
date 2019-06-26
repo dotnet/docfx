@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.Graph;
 
@@ -10,8 +11,6 @@ namespace Microsoft.Docs.Build
 {
     internal class MicrosoftGraphAccessor : IDisposable
     {
-        private const int MaxRetries = 4;
-        private readonly TimeSpan _retryDelay = TimeSpan.FromSeconds(3);
         private readonly IGraphServiceClient _msGraphClient;
         private readonly MicrosoftGraphAuthenticationProvider _microsoftGraphAuthenticationProvider;
         private bool _connected = false;
@@ -39,27 +38,18 @@ namespace Microsoft.Docs.Build
                 new QueryOption("$filter", $"mailNickname eq '{alias}'"),
             };
 
-            for (int i = 0; i < MaxRetries; i++)
+            try
             {
-                try
-                {
-                    var users = await _msGraphClient.Users.Request(options).GetAsync();
-                    return (null, users.Count > 0);
-                }
-                catch (Exception e)
-                {
-                    if (i == MaxRetries - 1)
-                    {
-                        return (Errors.GraphApiGetUsersFailed(e.Message), false);
-                    }
-                    else
-                    {
-                        await Task.Delay(_retryDelay);
-                    }
-                }
-            }
+                var users = await RetryUtility.Retry(
+                    () => _msGraphClient.Users.Request(options).GetAsync(),
+                    ex => ex is ServiceException);
 
-            return (null, false);
+                return (null, users != null ? users.Count > 0 : false);
+            }
+            catch (Exception e)
+            {
+                return (Errors.GraphApiGetUsersFailed(e.Message), false);
+            }
         }
 
         public void Dispose()
