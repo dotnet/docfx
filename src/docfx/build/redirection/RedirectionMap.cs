@@ -39,7 +39,7 @@ namespace Microsoft.Docs.Build
             return false;
         }
 
-        public static RedirectionMap Create(ErrorLog errorLog, Docset docset, Func<string, bool> glob)
+        public static RedirectionMap Create(ErrorLog errorLog, Docset docset, Func<string, bool> glob, TemplateEngine templateEngine)
         {
             var redirections = new HashSet<Document>();
 
@@ -99,7 +99,7 @@ namespace Microsoft.Docs.Build
                         }
                     }
 
-                    Document redirect = Document.Create(docset, pathToDocset, mutableRedirectUrl, combineRedirectUrl: combineRedirectUrl);
+                    Document redirect = Document.Create(docset, pathToDocset, templateEngine, mutableRedirectUrl, combineRedirectUrl: combineRedirectUrl);
                     if (redirectDocumentId && !redirectUrls.Add(redirect.RedirectionUrl))
                     {
                         errorLog.Write(Errors.RedirectionUrlConflict(redirectUrl));
