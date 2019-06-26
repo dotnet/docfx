@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 
 namespace Microsoft.Docs.Build
@@ -40,9 +39,8 @@ namespace Microsoft.Docs.Build
             return false;
         }
 
-        public static (List<Error> errors, RedirectionMap map) Create(Docset docset)
+        public static RedirectionMap Create(ErrorLog errorLog, Docset docset, Func<string, bool> glob)
         {
-            var errors = new List<Error>();
             var redirections = new HashSet<Document>();
 
             // load redirections with document id
@@ -56,7 +54,7 @@ namespace Microsoft.Docs.Build
 
             var redirectionsBySourcePath = redirections.ToDictionary(file => file.FilePath, PathUtility.PathComparer);
 
-            return (errors, new RedirectionMap(redirectionsBySourcePath, redirectionsByRedirectionUrl));
+            return new RedirectionMap(redirectionsBySourcePath, redirectionsByRedirectionUrl);
 
             void AddRedirections(Dictionary<string, SourceInfo<string>> items, bool redirectDocumentId = false)
             {
@@ -67,7 +65,12 @@ namespace Microsoft.Docs.Build
                     // TODO: ensure `SourceInfo<T>` is always not null
                     if (string.IsNullOrEmpty(path) || string.IsNullOrEmpty(redirectUrl))
                     {
-                        errors.Add(Errors.RedirectionIsNullOrEmpty(redirectUrl, path));
+                        errorLog.Write(Errors.RedirectionIsNullOrEmpty(redirectUrl, path));
+                        continue;
+                    }
+
+                    if (!glob(path))
+                    {
                         continue;
                     }
 
@@ -75,7 +78,7 @@ namespace Microsoft.Docs.Build
                     var type = Document.GetContentType(pathToDocset);
                     if (type != ContentType.Page)
                     {
-                        errors.Add(Errors.RedirectionInvalid(redirectUrl, path));
+                        errorLog.Write(Errors.RedirectionInvalid(redirectUrl, path));
                         continue;
                     }
 
@@ -91,7 +94,7 @@ namespace Microsoft.Docs.Build
                             case LinkType.AbsolutePath:
                                 break;
                             default:
-                                errors.Add(Errors.RedirectionUrlInvalid(redirectUrl));
+                                errorLog.Write(Errors.RedirectionUrlInvalid(redirectUrl));
                                 continue;
                         }
                     }
@@ -99,13 +102,13 @@ namespace Microsoft.Docs.Build
                     Document redirect = Document.Create(docset, pathToDocset, mutableRedirectUrl, combineRedirectUrl: combineRedirectUrl);
                     if (redirectDocumentId && !redirectUrls.Add(redirect.RedirectionUrl))
                     {
-                        errors.Add(Errors.RedirectionUrlConflict(redirectUrl));
+                        errorLog.Write(Errors.RedirectionUrlConflict(redirectUrl));
                         continue;
                     }
 
                     if (!redirections.Add(redirect))
                     {
-                        errors.Add(Errors.RedirectionConflict(redirectUrl, pathToDocset));
+                        errorLog.Write(Errors.RedirectionConflict(redirectUrl, pathToDocset));
                     }
                 }
             }

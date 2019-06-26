@@ -13,15 +13,10 @@ namespace Microsoft.Docs.Build
     internal class TableOfContentsMapBuilder
     {
         /// <summary>
-        /// Tracks toc files which are included by other toc files
-        /// Included toc files are excluded when finding nearest toc for an article.
-        /// </summary>
-        private readonly ConcurrentDictionary<Document, ConcurrentBag<Document>> _referencedTocs = new ConcurrentDictionary<Document, ConcurrentBag<Document>>();
-
-        /// <summary>
         /// Mappings between toc and a collection of document
         /// </summary>
-        private readonly DictionaryBuilder<Document, IEnumerable<Document>> _tocToDocuments = new DictionaryBuilder<Document, IEnumerable<Document>>();
+        private readonly DictionaryBuilder<Document, (List<Document> files, List<Document> tocs)> _tocReferences
+                   = new DictionaryBuilder<Document, (List<Document> files, List<Document> tocs)>();
 
         /// <summary>
         /// Add toc files and toc mappings
@@ -29,24 +24,9 @@ namespace Microsoft.Docs.Build
         /// <param name="tocFile">The toc file being built</param>
         /// <param name="referencedDocuments">The document files which are referenced by the toc file being built</param>
         /// <param name="referencedTocs">The toc files which are referenced by the toc file being built</param>
-        public void Add(Document tocFile, IEnumerable<Document> referencedDocuments, IEnumerable<Document> referencedTocs)
+        public void Add(Document tocFile, List<Document> referencedDocuments, List<Document> referencedTocs)
         {
-            _tocToDocuments.TryAdd(tocFile, referencedDocuments);
-
-            if (referencedTocs != null)
-            {
-                foreach (var referencedToc in referencedTocs)
-                {
-                    _referencedTocs.AddOrUpdate(
-                        referencedToc,
-                        new ConcurrentBag<Document> { tocFile },
-                        (_, oldValue) =>
-                        {
-                            oldValue.Add(tocFile);
-                            return oldValue;
-                        });
-                }
-            }
+            _tocReferences.TryAdd(tocFile, (referencedDocuments, referencedTocs));
         }
 
         /// <summary>
@@ -61,13 +41,14 @@ namespace Microsoft.Docs.Build
             // order by toc path
             var allTocs = new List<Document>();
             var experimentalTocs = new List<Document>();
-            var referencedTocs = new HashSet<Document>(_referencedTocs.Keys);
+            var tocReferences = _tocReferences.ToDictionary();
+            var includedTocs = tocReferences.Values.SelectMany(item => item.tocs).ToHashSet();
 
-            foreach (var (toc, documents) in _tocToDocuments.ToDictionary())
+            foreach (var (toc, (documents, _)) in _tocReferences.ToDictionary())
             {
-                if (referencedTocs.Contains(toc))
+                if (includedTocs.Contains(toc))
                 {
-                    // referenced toc's mapping will be ignored
+                    // TOC been included by other TOCs will be ignored
                     continue;
                 }
 
@@ -94,7 +75,7 @@ namespace Microsoft.Docs.Build
                 allTocs,
                 experimentalTocs,
                 documentToTocs,
-                _referencedTocs.ToDictionary(k => k.Key, v => new HashSet<Document>(v.Value)));
+                tocReferences.ToDictionary(k => k.Key, v => v.Value.tocs));
         }
     }
 }

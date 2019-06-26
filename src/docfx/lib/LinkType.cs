@@ -6,6 +6,11 @@ namespace Microsoft.Docs.Build
     public enum LinkType
     {
         /// <summary>
+        /// The link is empty
+        /// </summary>
+        Empty,
+
+        /// <summary>
         /// The link points to an external URL, e.g. https://docs.com
         /// </summary>
         External,

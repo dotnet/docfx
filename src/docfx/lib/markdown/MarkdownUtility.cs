@@ -14,6 +14,10 @@ namespace Microsoft.Docs.Build
 {
     internal static class MarkdownUtility
     {
+        // This magic string identifies if an URL was a relative URL in source,
+        // URLs starting with this magic string are transformed into relative URL after markup.
+        private const string RelativeUrlMarker = "//////";
+
         private static readonly MarkdownPipeline[] s_markdownPipelines = new[]
         {
             CreateMarkdownPipeline(),
@@ -61,7 +65,16 @@ namespace Microsoft.Docs.Build
 
                     var html = Markdown.ToHtml(markdown, s_markdownPipelines[(int)pipelineType]);
 
-                    return (status.Errors, html);
+                    var htmlWithRelativeLink = HtmlUtility.TransformLinks(html, (href, _) =>
+                    {
+                        if (href.StartsWith(RelativeUrlMarker))
+                        {
+                            return UrlUtility.GetRelativeUrl(file.SiteUrl, href.Substring(RelativeUrlMarker.Length));
+                        }
+                        return href;
+                    });
+
+                    return (status.Errors, htmlWithRelativeLink);
                 }
                 finally
                 {
@@ -75,20 +88,31 @@ namespace Microsoft.Docs.Build
             t_status.Value.Peek().Errors.Add(error);
         }
 
-        internal static string GetLink(string path, object relativeTo, object resultRelativeTo, MarkdownObject origin, int columnOffset = 0)
+        internal static string GetLink(string path, object relativeTo, MarkdownObject origin, int columnOffset = 0)
         {
             var status = t_status.Value.Peek();
-            var (error, link, _) = status.Context.DependencyResolver.ResolveLink(new SourceInfo<string>(path, origin.ToSourceInfo(columnOffset: columnOffset)), (Document)relativeTo, (Document)resultRelativeTo);
+            var (error, link, file) = status.Context.DependencyResolver.ResolveAbsoluteLink(new SourceInfo<string>(path, origin.ToSourceInfo(columnOffset: columnOffset)), (Document)relativeTo);
             status.Errors.AddIfNotNull(error?.WithSourceInfo(origin.ToSourceInfo()));
+
+            if (file != null)
+            {
+                link = RelativeUrlMarker + link;
+            }
+
             return link;
         }
 
         internal static (Error error, string href, string display, Document file) ResolveXref(string href, MarkdownObject origin)
         {
             // TODO: now markdig engine combines all kinds of reference with inclusion, we need to split them out
-            var result = t_status.Value.Peek().Context.DependencyResolver.ResolveXref(new SourceInfo<string>(href, origin.ToSourceInfo()), (Document)InclusionContext.File, (Document)InclusionContext.RootFile);
-            result.error = result.error?.WithSourceInfo(origin.ToSourceInfo());
-            return (result.error, result.href, result.display, result.spec?.DeclairingFile);
+            var (error, link, display, spec) = t_status.Value.Peek().Context.DependencyResolver.ResolveAbsoluteXref(new SourceInfo<string>(href, origin.ToSourceInfo()), (Document)InclusionContext.File);
+
+            if (spec?.DeclairingFile != null)
+            {
+                link = RelativeUrlMarker + link;
+            }
+
+            return (error, link, display, spec?.DeclairingFile);
         }
 
         private static MarkdownPipeline CreateMarkdownPipeline()

@@ -17,19 +17,19 @@ namespace Microsoft.Docs.Build
 
         public HashSet<string> Monikers { get; set; } = new HashSet<string>();
 
-        public Dictionary<string, Lazy<JValue>> ExtensionData { get; } = new Dictionary<string, Lazy<JValue>>();
+        public Dictionary<string, Lazy<JToken>> ExtensionData { get; } = new Dictionary<string, Lazy<JToken>>();
 
         public string GetXrefPropertyValue(string propertyName)
         {
             if (propertyName is null)
                 return null;
 
-            return ExtensionData.TryGetValue(propertyName, out var internalValue) && internalValue.Value.Value is string internalStr ? internalStr : null;
+            return ExtensionData.TryGetValue(propertyName, out var property) && property.Value is JValue propertyValue && propertyValue.Value is string internalStr ? internalStr : null;
         }
 
         public string GetName() => GetXrefPropertyValue("name");
 
-        public ExternalXrefSpec ToExternalXrefSpec(Context context, Document file)
+        public ExternalXrefSpec ToExternalXrefSpec(Context context, Document file, bool forOutput = true)
         {
             var spec = new ExternalXrefSpec
             {
@@ -37,11 +37,24 @@ namespace Microsoft.Docs.Build
                 Monikers = Monikers,
                 Href = Href,
             };
+
+            if (forOutput)
+            {
+                var (_, query, fragment) = UrlUtility.SplitUrl(Href);
+                var path = DeclairingFile.CanonicalUrlWithoutLocale;
+                spec.Href = UrlUtility.MergeUrl(path, query?.Length > 0 ? query.Substring(1) : query, fragment?.Length > 0 ? fragment.Substring(1) : fragment);
+            }
+            else
+            {
+                // relative path for internal UID resolving
+                spec.Href = PathUtility.GetRelativePathToFile(file.SiteUrl, Href);
+            }
+
             foreach (var (key, value) in ExtensionData)
             {
                 try
                 {
-                    spec.ExtensionData[key] = GetXrefPropertyValue(key);
+                    spec.ExtensionData[key] = value.Value;
                 }
                 catch (DocfxException ex)
                 {
