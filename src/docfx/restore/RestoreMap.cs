@@ -157,22 +157,7 @@ namespace Microsoft.Docs.Build
 
             try
             {
-                foreach (var gitVersion in dependencyLock.Git)
-                {
-                    var (remote, branch, _) = UrlUtility.SplitGitUrl(gitVersion.Key);
-                    if (!acquired.ContainsKey((remote, branch, gitVersion.Value.Commit/*commit*/)))
-                    {
-                        var (path, git) = AcquireGit(remote, branch, gitVersion.Value.Commit, LockType.Shared);
-                        acquired[(remote, branch, gitVersion.Value.Commit/*commit*/)] = (path, git);
-                    }
-
-                    CreateCore(gitVersion.Value, acquired);
-                }
-
-                return new RestoreMap(acquired)
-                {
-                    DependencyLock = dependencyLock,
-                };
+                return CreateCore(dependencyLock, acquired);
             }
             catch
             {
