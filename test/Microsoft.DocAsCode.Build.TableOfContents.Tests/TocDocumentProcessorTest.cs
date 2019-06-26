@@ -571,7 +571,7 @@ items:
         }
 
         [Fact]
-        public void ProcessMarkdownTocWithNonExistentReferencedTocShouldFail()
+        public void ProcessMarkdownTocWithNonExistentReferencedTocShouldLogError()
         {
             var pathToReferencedToc = "non-existent/toc.yml";
             var toc = _fileCreator.CreateFile($@"
@@ -597,7 +597,7 @@ items:
         }
 
         [Fact]
-        public void ProcessYamlTocWithNonExistentReferencedTocShouldFail()
+        public void ProcessYamlTocWithNonExistentReferencedTocShouldLogError()
         {
             var pathToReferencedToc = "non-existent/TOC.md";
             var toc = _fileCreator.CreateFile($@"
