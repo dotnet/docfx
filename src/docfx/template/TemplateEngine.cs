@@ -16,6 +16,7 @@ namespace Microsoft.Docs.Build
 {
     internal class TemplateEngine
     {
+        private const string DefaultTemplateDir = "_themes";
         private static readonly string[] s_resourceFolders = new[] { "global", "css", "fonts" };
         private static readonly ConcurrentDictionary<string, Lazy<(JsonSchemaValidator, JsonSchemaTransformer)>> _jsonSchemas
                           = new ConcurrentDictionary<string, Lazy<(JsonSchemaValidator, JsonSchemaTransformer)>>();
@@ -104,7 +105,7 @@ namespace Microsoft.Docs.Build
 
             if (string.IsNullOrEmpty(docset.Config.Template))
             {
-                return new TemplateEngine("", new JsonSchema());
+                return new TemplateEngine(DefaultTemplateDir, new JsonSchema());
             }
 
             var (themeRemote, themeBranch) = LocalizationUtility.GetLocalizedTheme(docset.Config.Template, docset.Locale, docset.Config.Localization.DefaultLocale);
