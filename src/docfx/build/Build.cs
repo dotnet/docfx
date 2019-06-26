@@ -82,7 +82,7 @@ namespace Microsoft.Docs.Build
                 }
 
                 context.GitHubUserCache.Save();
-                context.MicrosoftAliasCache.Save();
+                context.MicrosoftGraphCache.Save();
                 context.ContributionProvider.Save();
 
                 void ValidateBookmarks()

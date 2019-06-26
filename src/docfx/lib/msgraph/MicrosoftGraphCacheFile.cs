@@ -5,7 +5,7 @@ using System;
 
 namespace Microsoft.Docs.Build
 {
-    internal class MicrosoftAliasCacheFile
+    internal class MicrosoftGraphCacheFile
     {
         public MicrosoftAlias[] Aliases { get; set; } = Array.Empty<MicrosoftAlias>();
     }

@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
 {
-    internal class MicrosoftAliasCache : IDisposable
+    internal class MicrosoftGraphCache : IDisposable
     {
         private readonly string _cachePath;
         private readonly double _expirationInHours;
@@ -20,9 +20,9 @@ namespace Microsoft.Docs.Build
         private IList<string> _tempInvalidAliases = new List<string>();
         private bool _needUpdate = false;
 
-        public MicrosoftAliasCache(Config config)
+        public MicrosoftGraphCache(Config config)
         {
-            _cachePath = AppData.MicrosoftAliasCachePath;
+            _cachePath = AppData.MicrosoftGraphCachePath;
             _expirationInHours = config.MicrosoftGraph.MicrosoftAliasCacheExpirationInHours;
 
             _microsoftGraphAccessor = new MicrosoftGraphAccessor(
@@ -32,12 +32,12 @@ namespace Microsoft.Docs.Build
 
             if (File.Exists(_cachePath))
             {
-                var cacheFile = JsonUtility.Deserialize<MicrosoftAliasCacheFile>(ProcessUtility.ReadFile(_cachePath), _cachePath);
+                var cacheFile = JsonUtility.Deserialize<MicrosoftGraphCacheFile>(ProcessUtility.ReadFile(_cachePath), _cachePath);
                 _aliases = cacheFile.Aliases.Where(msAlias => msAlias.Expiry >= DateTime.UtcNow).ToDictionary(msAlias => msAlias.Alias);
             }
         }
 
-        public Task<(Error error, MicrosoftAlias msAlias)> GetAsync(string alias)
+        public Task<(Error error, MicrosoftAlias msAlias)> GetMicrosoftAliasAsync(string alias)
         {
             if (string.IsNullOrEmpty(alias))
             {
@@ -96,7 +96,7 @@ namespace Microsoft.Docs.Build
 
                 try
                 {
-                    var content = JsonUtility.Serialize(new MicrosoftAliasCacheFile { Aliases = _aliases.Values.ToArray() });
+                    var content = JsonUtility.Serialize(new MicrosoftGraphCacheFile { Aliases = _aliases.Values.ToArray() });
 
                     PathUtility.CreateDirectoryFromFilePath(_cachePath);
                     ProcessUtility.WriteFile(_cachePath, content);

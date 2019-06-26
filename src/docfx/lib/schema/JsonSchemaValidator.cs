@@ -13,13 +13,13 @@ namespace Microsoft.Docs.Build
     {
         private readonly JsonSchema _schema;
         private readonly JsonSchemaDefinition _definitions;
-        private readonly MicrosoftAliasCache _microsoftAliasCache;
+        private readonly MicrosoftGraphCache _microsoftGraphCache;
 
-        public JsonSchemaValidator(JsonSchema schema, MicrosoftAliasCache microsoftAliasCache = null)
+        public JsonSchemaValidator(JsonSchema schema, MicrosoftGraphCache microsoftGraphCache = null)
         {
             _schema = schema;
             _definitions = new JsonSchemaDefinition(schema);
-            _microsoftAliasCache = microsoftAliasCache;
+            _microsoftGraphCache = microsoftGraphCache;
         }
 
         public List<Error> Validate(JToken token)
@@ -304,9 +304,9 @@ namespace Microsoft.Docs.Build
             {
                 if (Array.IndexOf(schema.MicrosoftAlias.AllowedDLs, alias) == -1)
                 {
-                    if (_microsoftAliasCache != null)
+                    if (_microsoftGraphCache != null)
                     {
-                        var (error, msAlias) = _microsoftAliasCache.GetAsync(alias).GetAwaiter().GetResult();
+                        var (error, msAlias) = _microsoftGraphCache.GetMicrosoftAliasAsync(alias).GetAwaiter().GetResult();
 
                         if (error != null)
                         {

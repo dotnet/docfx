@@ -164,7 +164,7 @@ inputs:
     ms.author: yazhao
     ---
 cache:
-  microsoft-aliases.json: |
+  microsoft-graph.json: |
     { 
       "aliases":
       [
@@ -205,7 +205,7 @@ inputs:
     ms.author: zikun
     ---
 cache:
-  microsoft-aliases.json: |
+  microsoft-graph.json: |
     { 
       "aliases":
       [
