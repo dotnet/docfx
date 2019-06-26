@@ -230,7 +230,7 @@ inputs:
     name: azure-documents
     product: Azure
     files: "**/*"
-    baseUrl: https://docs.com/azure
+    baseUrl: https://docs.com/Azure
     routes:
       articles/: .
   articles/iot-central/concepts-architecture.md:

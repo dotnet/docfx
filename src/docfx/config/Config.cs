@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -58,7 +59,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// {Schema}://{Hostname}/{SiteBasePath}: https://docs.microsoft.com/dotnet
         /// </summary>
-        public readonly string BaseUrl = string.Empty;
+        public string BaseUrl { get; private set; } = string.Empty;
 
         /// <summary>
         /// The extend file addresses
@@ -181,5 +182,14 @@ namespace Microsoft.Docs.Build
         /// for the latest commit that touches that document.
         /// </summary>
         public readonly bool UpdateTimeAsCommitBuildTime = false;
+
+        [OnDeserialized]
+        private void OnDeserialized(StreamingContext context)
+        {
+            if (Output.LowerCaseUrl)
+            {
+                BaseUrl = BaseUrl.ToLowerInvariant();
+            }
+        }
     }
 }
