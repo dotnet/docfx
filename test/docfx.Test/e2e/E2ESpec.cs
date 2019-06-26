@@ -25,7 +25,7 @@ namespace Microsoft.Docs.Build
         {
             "xrefmap.json", ".publish.json", ".dependencymap.json",
             // legacy
-            ".manifest.json", ".dependency-map.json", "filemap.json", "op_aggregated_file_map_info.json",
+            ".manifest.json", "filemap.json", "op_aggregated_file_map_info.json",
             "server-side-dependent-list.txt", "full-dependent-list.txt"
         };
 

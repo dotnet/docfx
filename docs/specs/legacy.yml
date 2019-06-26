@@ -202,7 +202,8 @@ outputs:
 ---
 # Resolve link for landing page
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    template: {APP_BASE_PATH}data/template
   docs/index.yml: |
     ### YamlMime:YamlDocument
     title: REST API Documentation
@@ -237,6 +238,7 @@ commands:
   - build --legacy
 inputs:
   docfx.yml: |
+    template: {APP_BASE_PATH}data/template
     redirections:
       docs/a.md: /asdf
   docs/a.md:
@@ -248,6 +250,7 @@ commands:
   - build --legacy
 inputs:
   docfx.yml: |
+    template: {APP_BASE_PATH}data/template
     redirections:
       redirect.md: /redirect/to
   a.md: |
@@ -255,7 +258,7 @@ inputs:
 outputs:
   a.mta.json:
   a.raw.page.json: |
-    { "conceptual": "<p>\n<a data-linktype=\"relative-path\" href=\"redirect\">link</a></p>" }
+    { "content": "<p>\n<a data-linktype=\"relative-path\" href=\"redirect\">link</a></p>" }
   redirect.mta.json:
   redirect.raw.page.json:
 ---
@@ -282,7 +285,8 @@ outputs:
 commands:
   - build --legacy
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    template: {APP_BASE_PATH}data/template
   docs/a.yml: |
     #YamlMime:LandingData
     title: my title
@@ -290,15 +294,17 @@ inputs:
     metadata:
       key2: value2
 outputs:
+  docs/a.mta.json:
   docs/a.raw.page.json: |
-    {"key1":"value1","key2":"value2"}
+    {"rawMetadata": {"key1":"value1","key2":"value2"}}
   docs/a.mta.json:
 ---
 # Context object type is TOC
 commands:
   - build --legacy
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    template: {APP_BASE_PATH}data/template
   docs/a.yml: |
     #YamlMime: ContextObject
 outputs:
@@ -326,6 +332,7 @@ commands:
   - build --legacy
 inputs:
   docfx.yml: |
+    template: {APP_BASE_PATH}data/template
     monikerRange:
       'docs/v1/**': '< netcore-2.0'
     baseUrl: https://docs.com/docs

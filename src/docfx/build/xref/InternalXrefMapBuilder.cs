@@ -4,77 +4,38 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
-    internal static class XrefMapBuilder
+    internal static class InternalXrefMapBuilder
     {
-        public static XrefMap Build(Context context, Docset docset)
+        public static IReadOnlyDictionary<string, InternalXrefSpec[]> Build(Context context)
         {
-            var externalXrefMap = new Dictionary<string, Lazy<IXrefSpec>>();
-            foreach (var url in docset.Config.Xref)
-            {
-                XrefMapModel xrefMap = new XrefMapModel();
-                if (url.Value.EndsWith(".yml", StringComparison.OrdinalIgnoreCase))
-                {
-                    var (_, content, _) = RestoreMap.GetRestoredFileContent(docset, url);
-                    xrefMap = YamlUtility.Deserialize<XrefMapModel>(content, url);
-                    foreach (var spec in xrefMap.References)
-                    {
-                        externalXrefMap.TryAdd(spec.Uid, new Lazy<IXrefSpec>(() => spec));
-                    }
-                }
-                else
-                {
-                    // Convert to array since ref local is not allowed to be used in lambda expression
-                    //
-                    // TODO: It is very easy to forget passing fallbackDocsetPath, the RestoreMap interface needs improvement
-                    var filePath = RestoreMap.GetRestoredFilePath(docset.DocsetPath, url, docset.FallbackDocset?.DocsetPath);
-                    var result = XrefMapLoader.Load(filePath);
-                    foreach (var (uid, spec) in result.ToList())
-                    {
-                        // for same uid with multiple specs, we should respect the order of the list
-                        externalXrefMap.TryAdd(uid, spec);
-                    }
-                }
-            }
-            var internalXrefMap = CreateInternalXrefMap(context);
-            return new XrefMap(context, BuildMap(externalXrefMap, internalXrefMap), internalXrefMap);
-        }
+            var builder = new ListBuilder<InternalXrefSpec>();
 
-        private static Dictionary<string, List<Lazy<IXrefSpec>>> BuildMap(IReadOnlyDictionary<string, Lazy<IXrefSpec>> externalXrefMap, Dictionary<string, List<Lazy<IXrefSpec>>> internalXrefMap)
-        {
-            var map = new Dictionary<string, List<Lazy<IXrefSpec>>>();
-            map.AddRange(internalXrefMap);
-
-            foreach (var (key, value) in externalXrefMap)
-            {
-                if (!map.TryGetValue(key, out var specs))
-                {
-                    map[key] = new List<Lazy<IXrefSpec>> { value };
-                }
-            }
-            return map;
-        }
-
-        private static Dictionary<string, List<Lazy<IXrefSpec>>> CreateInternalXrefMap(Context context)
-        {
-            var xrefsByUid = new ConcurrentDictionary<string, ConcurrentBag<IXrefSpec>>();
             using (Progress.Start("Building Xref map"))
             {
-                ParallelUtility.ForEach(context.BuildScope.Files.Where(f => f.ContentType == ContentType.Page), file => Load(context, xrefsByUid, file), Progress.Update);
-                return xrefsByUid.ToList().OrderBy(item => item.Key).ToDictionary(item => item.Key, item => item.Value.Select(x => new Lazy<IXrefSpec>(() => x)).ToList());
+                ParallelUtility.ForEach(
+                    context.BuildScope.Files.Where(f => f.ContentType == ContentType.Page),
+                    file => Load(context, builder, file),
+                    Progress.Update);
             }
+
+            var result =
+                from spec in builder.ToList()
+                group spec by spec.Uid into g
+                let uid = g.Key
+                let specs = AggregateXrefSpecs(context, uid, g.ToArray())
+                where specs.Length > 0
+                select (uid, specs);
+
+            return result.ToDictionary(item => item.uid, item => item.specs);
         }
 
-        private static void Load(
-            Context context,
-            ConcurrentDictionary<string, ConcurrentBag<IXrefSpec>> xrefsByUid,
-            Document file)
+        private static void Load(Context context, ListBuilder<InternalXrefSpec> xrefs, Document file)
         {
             try
             {
@@ -90,7 +51,7 @@ namespace Microsoft.Docs.Build
                     {
                         var (error, spec, _) = LoadMarkdown(context, fileMetadata, file);
                         errors.AddIfNotNull(error);
-                        TryAddXref(xrefsByUid, fileMetadata.Uid, spec);
+                        xrefs.Add(spec);
                     }
                 }
                 else if (file.FilePath.EndsWith(".yml", PathUtility.PathComparison))
@@ -99,10 +60,7 @@ namespace Microsoft.Docs.Build
                     errors.AddRange(yamlErrors);
                     var (schemaErrors, specs) = LoadSchemaDocument(context, token as JObject, file);
                     errors.AddRange(schemaErrors);
-                    foreach (var spec in specs)
-                    {
-                        TryAddXref(xrefsByUid, spec.Uid, spec);
-                    }
+                    xrefs.AddRange(specs);
                 }
                 else if (file.FilePath.EndsWith(".json", PathUtility.PathComparison))
                 {
@@ -110,10 +68,7 @@ namespace Microsoft.Docs.Build
                     errors.AddRange(jsonErrors);
                     var (schemaErrors, specs) = LoadSchemaDocument(context, token as JObject, file);
                     errors.AddRange(schemaErrors);
-                    foreach (var spec in specs)
-                    {
-                        TryAddXref(xrefsByUid, spec.Uid, spec);
-                    }
+                    xrefs.AddRange(specs);
                 }
                 context.ErrorLog.Write(file.ToString(), errors);
             }
@@ -139,17 +94,14 @@ namespace Microsoft.Docs.Build
             xref.ExtensionData["name"] = new Lazy<JToken>(() => new JValue(string.IsNullOrEmpty(metadata.Title) ? metadata.Uid : metadata.Title));
 
             var (error, monikers) = context.MonikerProvider.GetFileLevelMonikers(file);
-            foreach (var moniker in monikers)
-            {
-                xref.Monikers.Add(moniker);
-            }
+            xref.Monikers = monikers.ToHashSet();
             return (error, xref, file);
         }
 
         private static (List<Error> errors, IReadOnlyList<InternalXrefSpec> specs) LoadSchemaDocument(Context context, JObject obj, Document file)
         {
             var errors = new List<Error>();
-            var (schemaValidator, schemaTransformer) = TemplateEngine.GetJsonSchema(file.Mime);
+            var (schemaValidator, schemaTransformer) = context.TemplateEngine.GetJsonSchema(file.Mime);
             if (schemaValidator is null || schemaTransformer is null)
             {
                 throw Errors.SchemaNotFound(file.Mime).ToException();
@@ -212,14 +164,54 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static void TryAddXref(ConcurrentDictionary<string, ConcurrentBag<IXrefSpec>> xrefsByUid, string uid, InternalXrefSpec spec)
+        private static InternalXrefSpec[] AggregateXrefSpecs(Context context, string uid, InternalXrefSpec[] specsWithSameUid)
         {
-            if (spec is null)
+            // no conflicts
+            if (specsWithSameUid.Length <= 1)
             {
-                throw new ArgumentNullException(nameof(spec));
+                return specsWithSameUid;
             }
 
-            xrefsByUid.GetOrAdd(uid, _ => new ConcurrentBag<IXrefSpec>()).Add(spec);
+            // multiple uid conflicts without moniker range definition, drop the uid and log an error
+            var conflictsWithoutMoniker = specsWithSameUid.Where(item => item.Monikers.Count == 0).ToArray();
+            if (conflictsWithoutMoniker.Length > 1)
+            {
+                var orderedConflict = conflictsWithoutMoniker.OrderBy(item => item.Href);
+                context.ErrorLog.Write(Errors.UidConflict(uid, orderedConflict.Select(x => x.DeclairingFile.FilePath)));
+                return Array.Empty<InternalXrefSpec>();
+            }
+
+            // uid conflicts with overlapping monikers, drop the uid and log an error
+            var conflictsWithMoniker = specsWithSameUid.Where(x => x.Monikers.Count > 0).ToArray();
+            if (CheckOverlappingMonikers(specsWithSameUid, out var overlappingMonikers))
+            {
+                context.ErrorLog.Write(Errors.MonikerOverlapping(overlappingMonikers));
+                return Array.Empty<InternalXrefSpec>();
+            }
+
+            // Sort by monikers
+            return conflictsWithoutMoniker.Concat(
+                conflictsWithMoniker.OrderByDescending(
+                    spec => spec.Monikers.First(), context.MonikerProvider.Comparer)).ToArray();
+        }
+
+        private static bool CheckOverlappingMonikers(IXrefSpec[] specsWithSameUid, out HashSet<string> overlappingMonikers)
+        {
+            var isOverlapping = false;
+            overlappingMonikers = new HashSet<string>();
+            var monikerHashSet = new HashSet<string>();
+            foreach (var spec in specsWithSameUid)
+            {
+                foreach (var moniker in spec.Monikers)
+                {
+                    if (!monikerHashSet.Add(moniker))
+                    {
+                        overlappingMonikers.Add(moniker);
+                        isOverlapping = true;
+                    }
+                }
+            }
+            return isOverlapping;
         }
     }
 }

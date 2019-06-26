@@ -138,7 +138,8 @@ outputs:
 # Resolve xref with display property in conceptual document
 # Resolve xref with non-existing display property, display name
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    template: {APP_BASE_PATH}data/template
   docs/a.json: |
     {
       "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
@@ -181,7 +182,8 @@ outputs:
 # Define duplicate uid in conceptual and SDP 
 # should output error and uid cannot be resolved
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    template: {APP_BASE_PATH}data/template
   docs/a.yml: |
     #YamlMime:TestData
     uid: a
@@ -205,7 +207,8 @@ outputs:
 repos:
   https://docs.com/test-xref-sdp#live:
     - files:
-        docfx.yml:
+        docfx.yml: |
+          template: {APP_BASE_PATH}data/template
         docs/a.json: |
           {
             "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
@@ -248,7 +251,8 @@ outputs:
 ---
 # Define uid with error
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    template: {APP_BASE_PATH}data/template
   docs/a.json: |
     {
       "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
@@ -273,7 +277,8 @@ outputs:
 ---
 # support multiple uids in the same array in one SDP
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    template: {APP_BASE_PATH}data/template
   docs/a.yml: |
     #YamlMime:TestData
     uid: a
@@ -326,7 +331,8 @@ outputs:
 ---
 # uid conflict in one SDP
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    template: {APP_BASE_PATH}data/template
   docs/a.json: |
     {
       "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
@@ -343,7 +349,8 @@ outputs:
 ---
 # uid conflict in non-root level and another SDP
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    template: {APP_BASE_PATH}data/template
   docs/a.json: |
     {
       "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
@@ -366,7 +373,8 @@ outputs:
 ---
 # Xref property field which supports markdown content
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    template: {APP_BASE_PATH}data/template
   docs/a.json: |
     {
       "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
@@ -380,7 +388,8 @@ outputs:
 ---
 # Xref property field which supports inline markdown content
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    template: {APP_BASE_PATH}data/template
   docs/a.json: |
     {
       "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
@@ -394,7 +403,8 @@ outputs:
 ---
 # Xref property field with dependecy
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    template: {APP_BASE_PATH}data/template
   docs/a.json: |
     {
       "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
@@ -514,7 +524,8 @@ outputs:
 ---
 # Markdown and SDP non-cyclic xref reference
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    template: {APP_BASE_PATH}data/template
   docs/a.md: |
     ---
     title: Title from yaml header a
@@ -537,7 +548,8 @@ outputs:
 # SDP non-cyclic xref reference should be resolved
 # whose display properties are plain text
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    template: {APP_BASE_PATH}data/template
   docs/a.json: |
     {
       "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
@@ -573,7 +585,8 @@ outputs:
 # SDP cyclic xref reference whose display properties referring to another uid
 # a.json -> b.json -> a.json && b.json -> a.json -> b.json
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    template: {APP_BASE_PATH}data/template
   docs/a.json: |
     {
       "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
@@ -608,7 +621,8 @@ outputs:
 # SDP cyclic xref reference whose display properties referring to another uid
 # b.json -> c.json -> b.json && b.json -> c.json -> b.json && c.json -> b.json -> c.json
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    template: {APP_BASE_PATH}data/template
   docs/a.json: |
     {
       "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
@@ -641,7 +655,8 @@ outputs:
 ---
 # SDP cyclic xref reference to itself
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    template: {APP_BASE_PATH}data/template
   docs/a.json: |
     {
       "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
@@ -656,7 +671,8 @@ outputs:
 ---
 # SDP non-cyclic xref reference, whose property references can be resolved
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    template: {APP_BASE_PATH}data/template
   docs/a.json: |
     {
       "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
@@ -679,7 +695,8 @@ outputs:
 ---
 # input json file is not object
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    template: {APP_BASE_PATH}data/template
   docs/a.json: |
     1
 outputs:
@@ -728,7 +745,8 @@ outputs:
 repos:
   https://docs.com/test-multiple-uid-different-xref-property#live:
     - files:
-        docfx.yml:
+        docfx.yml: |
+          template: {APP_BASE_PATH}data/template
         docs/a.yml: |
           #YamlMime:TestData
           uid: a
@@ -838,7 +856,8 @@ outputs:
 repos:
   https://docs.com/test-non-leaf-xref#live:
     - files:
-        docfx.yml:
+        docfx.yml: |
+          template: {APP_BASE_PATH}data/template
         docs/a.yml: |
           #YamlMime:TestData
           uid: a

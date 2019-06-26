@@ -17,6 +17,17 @@ namespace System.Collections.Concurrent
             }
         }
 
+        public void AddRange(IReadOnlyList<T> items)
+        {
+            lock (_array)
+            {
+                for (var i = 0; i < items.Count; i++)
+                {
+                    _array.Add(items[i]);
+                }
+            }
+        }
+
         public IReadOnlyList<T> ToList() => _array;
     }
 }
