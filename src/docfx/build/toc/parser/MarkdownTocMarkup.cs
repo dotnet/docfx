@@ -46,15 +46,7 @@ namespace Microsoft.Docs.Build
             errors.AddRange(validationErrors);
 
             var tocModel = new TableOfContentsModel { Metadata = tocMetadata };
-
-            try
-            {
-                tocModel.Items = ConvertTo(tocContent, file.FilePath, headingBlocks.ToArray(), errors).children;
-            }
-            catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
-            {
-                errors.Add(dex.Error);
-            }
+            tocModel.Items = ConvertTo(tocContent, file.FilePath, headingBlocks.ToArray(), errors).children;
 
             return (errors, tocModel);
         }
@@ -81,16 +73,12 @@ namespace Microsoft.Docs.Build
 
                 items.Add(item);
                 var currentLevel = headingBlocks[i].Level;
-                if (i + 1 < headingBlocks.Length && headingBlocks[i + 1].Level > currentLevel)
+                var (nextLevelDistance, skipped) = GetNextLevelDistance(i, headingBlocks[i].Level);
+                if (nextLevelDistance > 0)
                 {
-                    if (headingBlocks[i + 1].Level - currentLevel > 1)
-                    {
-                        throw Errors.InvalidTocLevel(headingBlocks[i + 1].ToSourceInfo(file: filePath), currentLevel, headingBlocks[i + 1].Level).ToException();
-                    }
-
-                    var (children, count) = ConvertTo(tocContent, filePath, headingBlocks, errors, i + 1);
+                    var (children, count) = ConvertTo(tocContent, filePath, headingBlocks, errors, i + nextLevelDistance);
                     item.Items = children;
-                    i += count;
+                    i = i + count + skipped;
                     childrenCount += count;
                 }
 
@@ -102,6 +90,31 @@ namespace Microsoft.Docs.Build
             while (++i < headingBlocks.Length);
 
             return (items, items.Count + childrenCount);
+
+            (int distance, int skipped) GetNextLevelDistance(int currentIndex, int currentLevel)
+            {
+                int distance = 0;
+                int reported = 0;
+                for (int j = currentIndex + 1; j < headingBlocks.Length; j++)
+                {
+                    if (headingBlocks[j].Level <= currentLevel)
+                    {
+                        break;
+                    }
+
+                    distance++;
+
+                    if (headingBlocks[j].Level - currentLevel == 1)
+                    {
+                        break;
+                    }
+
+                    if (reported++ == 0)
+                        errors.Add(Errors.InvalidTocLevel(headingBlocks[j].ToSourceInfo(file: filePath), currentLevel, headingBlocks[j].Level));
+                }
+
+                return (distance, distance > 0 ? distance - 1 : 0);
+            }
 
             TableOfContentsItem GetItem(HeadingBlock block)
             {
