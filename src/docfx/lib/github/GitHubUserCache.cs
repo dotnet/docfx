@@ -60,7 +60,7 @@ namespace Microsoft.Docs.Build
             UpdateUsers(users);
         }
 
-        public Task<(Error error, GitHubUser user)> GetByLogin(string login)
+        public Task<(Error error, GitHubUser user)> GetByLogin(SourceInfo<string> login)
         {
             if (string.IsNullOrEmpty(login))
                 return default;

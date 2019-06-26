@@ -69,7 +69,7 @@ namespace Microsoft.Docs.Build
             yield return new object[]
             {
                 "Get user by login",
-                 (Func<GitHubUserCache, Task>) ( async (cache) => await cache.GetByLogin("alice")),
+                 (Func<GitHubUserCache, Task>) ( async (cache) => await cache.GetByLogin(new SourceInfo<string>("alice"))),
                 "[]",
                 "[{'id':1,'login':'alice','name':'Alice','emails':['alice@contoso.com']}]",
                 1,
@@ -80,7 +80,7 @@ namespace Microsoft.Docs.Build
                 "Get same user by login multiple times should call GitHub once",
                 (Func<GitHubUserCache, Task>)(async (cache) =>
                     {
-                        await ParallelUtility.ForEach(Enumerable.Range(0, 20), async (_) => await cache.GetByLogin("alice"));
+                        await ParallelUtility.ForEach(Enumerable.Range(0, 20), async (_) => await cache.GetByLogin(new SourceInfo<string>("alice")));
                     }),
                 "[]",
                 "[{'id':1,'login':'alice','name':'Alice','emails':['alice@contoso.com']}]",
@@ -90,7 +90,7 @@ namespace Microsoft.Docs.Build
             yield return new object[]
             {
                 "Get user by login from cache",
-                 (Func<GitHubUserCache, Task>) ( async (cache) => await cache.GetByLogin("alice")),
+                 (Func<GitHubUserCache, Task>) ( async (cache) => await cache.GetByLogin(new SourceInfo<string>("alice"))),
                 "[{'id':1,'login':'alice','name':'Alice','emails':['alice@contoso.com']}]",
                 "[{'id':1,'login':'alice','name':'Alice','emails':['alice@contoso.com']}]",
                 0,
@@ -99,7 +99,7 @@ namespace Microsoft.Docs.Build
             yield return new object[]
             {
                 "Get user by login from cache but cache expired",
-                 (Func<GitHubUserCache, Task>) ( async (cache) => await cache.GetByLogin("alice")),
+                 (Func<GitHubUserCache, Task>) ( async (cache) => await cache.GetByLogin(new SourceInfo<string>("alice"))),
                 "[{'id':1,'login':'alice','name':'Obsolete name of Alice','emails':['alice@contoso.com'],'expiry':'2000-01-01'}]",
                 "[{'id':1,'login':'alice','name':'Alice','emails':['alice@contoso.com']}]",
                 1,
@@ -171,7 +171,7 @@ namespace Microsoft.Docs.Build
             yield return new object[]
             {
                 "Get user by invalid login",
-                (Func<GitHubUserCache, Task>) ( async (cache) => await cache.GetByLogin("invalid")),
+                (Func<GitHubUserCache, Task>) ( async (cache) => await cache.GetByLogin(new SourceInfo<string>("invalid"))),
                 "[]",
                 "[{'login':'invalid','emails':[]}]",
                 1,
@@ -180,7 +180,7 @@ namespace Microsoft.Docs.Build
             yield return new object[]
             {
                 "Get user by invalid login from cache",
-               (Func<GitHubUserCache, Task>) ( async (cache) => await cache.GetByLogin("invalid")),
+               (Func<GitHubUserCache, Task>) ( async (cache) => await cache.GetByLogin(new SourceInfo<string>("invalid"))),
                 "[{'login':'invalid','emails':[]}]",
                 "[{'login':'invalid','emails':[]}]",
                 0,
@@ -191,7 +191,7 @@ namespace Microsoft.Docs.Build
                 "Dot not update cache when call GitHub API failed",
                 (Func<GitHubUserCache, Task>)(async (cache) =>
                     {
-                        await cache.GetByLogin("github-fail");
+                        await cache.GetByLogin(new SourceInfo<string>("github-fail"));
                         await cache.GetByCommit("github-fail@contoso.com", "owner", "name", "2");
                     }),
                 "[]",
