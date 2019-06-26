@@ -43,7 +43,7 @@ namespace Microsoft.Docs.Build
             {
                 if (file.Docset.Legacy)
                 {
-                    var output = context.Template.TransformTocMetadata(JsonUtility.ToJObject(model));
+                    var output = context.TemplateEngine.TransformTocMetadata(JsonUtility.ToJObject(model));
                     context.Output.WriteJson(output, outputPath);
                     context.Output.WriteJson(model.Metadata, LegacyUtility.ChangeExtension(outputPath, ".mta.json"));
                 }

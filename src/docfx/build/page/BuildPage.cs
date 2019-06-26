@@ -202,7 +202,7 @@ namespace Microsoft.Docs.Build
         {
             var obj = token as JObject;
 
-            var (schemaValidator, schemaTransformer) = TemplateEngine.GetJsonSchema(file.Mime);
+            var (schemaValidator, schemaTransformer) = context.TemplateEngine.GetJsonSchema(file.Mime);
             if (schemaValidator is null || schemaTransformer is null)
             {
                 throw Errors.SchemaNotFound(file.Mime).ToException();
@@ -241,21 +241,21 @@ namespace Microsoft.Docs.Build
             pageMetadata.RawTitle = file.Docset.Legacy ? $"<h1>{obj?.Value<string>("title")}</h1>" : null;
             pageMetadata.SchemaType = file.Mime;
 
-            return (errors, !TemplateEngine.IsData(file.Mime), (pageMetadata, pageModel as JObject), (inputMetadata, metadataObject));
+            return (errors, !file.IsData, (pageMetadata, pageModel as JObject), (inputMetadata, metadataObject));
         }
 
         private static (object model, JObject metadata) ApplyPageTemplate(Context context, Document file, JObject output, string conceptual)
         {
-            var rawMetadata = context.Template is null ? output : context.Template.CreateRawMetadata(output, file);
+            var rawMetadata = context.TemplateEngine.CreateRawMetadata(output, file);
 
-            if (!file.Docset.Config.Output.Json && context.Template != null)
+            if (!file.Docset.Config.Output.Json)
             {
-                return (context.Template.Render(conceptual, file, rawMetadata, file.Mime), null);
+                return (context.TemplateEngine.Render(conceptual, file, rawMetadata, file.Mime), null);
             }
 
-            if (file.Docset.Legacy && context.Template != null)
+            if (file.Docset.Legacy)
             {
-                return context.Template.Transform(conceptual, rawMetadata, file.Mime);
+                return context.TemplateEngine.Transform(conceptual, rawMetadata, file.Mime);
             }
 
             return (output, rawMetadata);

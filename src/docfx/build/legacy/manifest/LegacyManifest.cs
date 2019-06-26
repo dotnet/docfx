@@ -32,7 +32,7 @@ namespace Microsoft.Docs.Build
 
                         var output = new LegacyManifestOutput
                         {
-                            MetadataOutput = document.IsSchemaData || document.ContentType == ContentType.Resource
+                            MetadataOutput = document.IsData || document.ContentType == ContentType.Resource
                             ? null
                             : new LegacyManifestOutputItem
                             {
@@ -69,7 +69,7 @@ namespace Microsoft.Docs.Build
                         if (document.ContentType == ContentType.Page ||
                             document.ContentType == ContentType.Redirection)
                         {
-                            if (document.IsSchemaData)
+                            if (document.IsData)
                             {
                                 output.TocOutput = new LegacyManifestOutputItem
                                 {
@@ -151,7 +151,7 @@ namespace Microsoft.Docs.Build
 
         private static string GetType(ContentType type, Document doc)
         {
-            if (type == ContentType.Page && TemplateEngine.IsData(doc.Mime))
+            if (type == ContentType.Page && doc.IsData)
             {
                 return "Toc";
             }

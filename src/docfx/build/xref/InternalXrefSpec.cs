@@ -29,25 +29,28 @@ namespace Microsoft.Docs.Build
 
         public string GetName() => GetXrefPropertyValue("name");
 
-        public ExternalXrefSpec ToExternalXrefSpec(Context context, Document file, bool forOutput = true)
+        public ExternalXrefSpec ToExternalXrefSpec(Context context, bool forXrefMapOutput)
         {
             var spec = new ExternalXrefSpec
             {
                 Uid = Uid,
                 Monikers = Monikers,
-                Href = Href,
             };
 
-            if (forOutput)
+            if (forXrefMapOutput)
             {
-                var (_, query, fragment) = UrlUtility.SplitUrl(Href);
+                var (_, _, fragment) = UrlUtility.SplitUrl(Href);
                 var path = DeclairingFile.CanonicalUrlWithoutLocale;
-                spec.Href = UrlUtility.MergeUrl(path, query?.Length > 0 ? query.Substring(1) : query, fragment?.Length > 0 ? fragment.Substring(1) : fragment);
+
+                // DHS appends branch infomation from cookie cache to URL, which is wrong for UID resolved URL
+                // output xref map with URL appending "?branch=master" for master branch
+                var query = DeclairingFile.Docset.Repository?.Branch == "master" ? "?branch=master" : "";
+                spec.Href = path + query + fragment;
             }
             else
             {
                 // relative path for internal UID resolving
-                spec.Href = PathUtility.GetRelativePathToFile(file.SiteUrl, Href);
+                spec.Href = PathUtility.GetRelativePathToFile(DeclairingFile.SiteUrl, Href);
             }
 
             foreach (var (key, value) in ExtensionData)
@@ -58,7 +61,7 @@ namespace Microsoft.Docs.Build
                 }
                 catch (DocfxException ex)
                 {
-                    context.ErrorLog.Write(file.FilePath, ex.Error);
+                    context.ErrorLog.Write(DeclairingFile.FilePath, ex.Error);
                 }
             }
             return spec;
