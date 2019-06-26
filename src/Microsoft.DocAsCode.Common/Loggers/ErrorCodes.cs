@@ -10,7 +10,6 @@ namespace Microsoft.DocAsCode.Common
             public const string InvalidPropertyFormat = "InvalidPropertyFormat";
             public const string InvalidInputFile = "InvalidInputFile";
             public const string FatalError = "FatalError";
-            public const string InvalidTocInclude = "InvalidTocInclude";
         }
     }
 }

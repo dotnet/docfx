@@ -282,7 +282,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
                 }
                 catch (FileNotFoundException)
                 {
-                    Logger.LogError($"Referenced TOC file {tocFile.FullPath} does not exist.", code: ErrorCodes.Build.InvalidTocInclude);
+                    Logger.LogError($"Referenced TOC file {tocFile.FullPath} does not exist.", code: WarningCodes.Build.InvalidTocInclude);
                     return null;
                 }
 
