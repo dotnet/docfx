@@ -92,7 +92,7 @@ namespace Microsoft.Docs.Build
         {
             var status = t_status.Value.Peek();
             var (error, link, file) = status.Context.DependencyResolver.ResolveAbsoluteLink(new SourceInfo<string>(path, origin.ToSourceInfo(columnOffset: columnOffset)), (Document)relativeTo);
-            status.Errors.AddIfNotNull(error?.WithSourceInfo(origin.ToSourceInfo()));
+            status.Errors.AddIfNotNull(error);
 
             if (file != null)
             {
@@ -181,7 +181,7 @@ namespace Microsoft.Docs.Build
         {
             var status = t_status.Value.Peek();
             var (error, content, file) = status.Context.DependencyResolver.ResolveContent(new SourceInfo<string>(path, origin.ToSourceInfo()), (Document)relativeTo);
-            status.Errors.AddIfNotNull(error?.WithSourceInfo(origin.ToSourceInfo()));
+            status.Errors.AddIfNotNull(error);
             return (content, file);
         }
 
