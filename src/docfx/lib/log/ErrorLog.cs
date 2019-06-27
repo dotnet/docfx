@@ -82,14 +82,16 @@ namespace Microsoft.Docs.Build
             return hasErrors;
         }
 
-        public bool Write(string file, Error error)
+        public bool Write(string file, Error error, bool force = false)
         {
             if (error is null)
                 return false;
 
-            return Write(file == error.File || !string.IsNullOrEmpty(error.File)
+            return Write(
+                file == error.File || !string.IsNullOrEmpty(error.File)
                     ? error
-                    : new Error(error.Level, error.Code, error.Message, file, error.Line, error.Column));
+                    : new Error(error.Level, error.Code, error.Message, file, error.Line, error.Column),
+                force);
         }
 
         public bool Write(Error error, bool force = false)
