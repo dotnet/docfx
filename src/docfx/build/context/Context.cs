@@ -52,7 +52,7 @@ namespace Microsoft.Docs.Build
             GitHubUserCache = new GitHubUserCache(docset.Config);
             GitCommitProvider = new GitCommitProvider();
             PublishModelBuilder = new PublishModelBuilder();
-            BookmarkValidator = new BookmarkValidator();
+            BookmarkValidator = new BookmarkValidator(errorLog, PublishModelBuilder);
             DependencyMapBuilder = new DependencyMapBuilder();
             DependencyResolver = new DependencyResolver(
                 docset.Config, BuildScope, BuildQueue, GitCommitProvider, BookmarkValidator, DependencyMapBuilder, _xrefMap, TemplateEngine);
