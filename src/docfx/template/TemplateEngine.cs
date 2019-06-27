@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
 using Newtonsoft.Json.Linq;
@@ -18,8 +19,6 @@ namespace Microsoft.Docs.Build
     {
         private const string DefaultTemplateDir = "_themes";
         private static readonly string[] s_resourceFolders = new[] { "global", "css", "fonts" };
-        private static readonly ConcurrentDictionary<string, Lazy<(JsonSchemaValidator, JsonSchemaTransformer)>> _jsonSchemas
-                          = new ConcurrentDictionary<string, Lazy<(JsonSchemaValidator, JsonSchemaTransformer)>>();
 
         private readonly string _templateDir;
         private readonly string _schemaDir;
@@ -28,6 +27,11 @@ namespace Microsoft.Docs.Build
         private readonly HashSet<string> _htmlMetaHidden;
         private readonly Dictionary<string, string> _htmlMetaNames;
         private readonly HashSet<string> _schemas;
+        private readonly ConcurrentDictionary<string, Lazy<(JsonSchemaValidator, JsonSchemaTransformer)>> _jsonSchemas
+                          = new ConcurrentDictionary<string, Lazy<(JsonSchemaValidator, JsonSchemaTransformer)>>();
+
+        private readonly Dictionary<string, (bool isData, bool transformMetadata)> _schemaTemplates
+                          = new Dictionary<string, (bool isData, bool transformMetadata)>();
 
         public JObject Global { get; }
 
@@ -36,15 +40,43 @@ namespace Microsoft.Docs.Build
             var contentTemplateDir = Path.Combine(templateDir, "ContentTemplate");
             var schemaDir = Path.Combine(contentTemplateDir, "schemas");
 
+            Global = LoadGlobalTokens(contentTemplateDir);
             _templateDir = templateDir;
             _schemaDir = schemaDir;
             _liquid = new LiquidTemplate(templateDir);
             _js = new JavascriptEngine(contentTemplateDir);
-            Global = LoadGlobalTokens(contentTemplateDir);
             _schemas = Directory.Exists(schemaDir) ? Directory.EnumerateFiles(schemaDir, "*.schema.json", SearchOption.TopDirectoryOnly)
                                                     .Select(k => Path.GetFileNameWithoutExtension(k))
                                                     .Select(k => k.Substring(0, k.Length - ".schema".Length)).ToHashSet() : new HashSet<string>();
+            foreach (var schema in _schemas)
+            {
+                _schemaTemplates.Add(schema, (true, false));
+            }
             _schemas.Add("LandingData");
+            _schemaTemplates.Add("LandingData", (false, false));
+
+            if (Directory.Exists(contentTemplateDir))
+            {
+                var allJsFiles = Directory.EnumerateFiles(contentTemplateDir, "*.js", SearchOption.TopDirectoryOnly)
+                             .Select(k => Path.GetFileNameWithoutExtension(k))
+                             .GroupBy(k => k.Split('.').First());
+                foreach (var jsFiles in allJsFiles)
+                {
+                    if (_schemas.TryGetValue(jsFiles.Key, out var schema))
+                    {
+                        bool isData = true;
+                        bool transformMetadata = false;
+                        foreach (var jsFile in jsFiles)
+                        {
+                            if (jsFile.EndsWith(".html.primary"))
+                                isData = false;
+                            if (jsFile.EndsWith(".mta.json"))
+                                transformMetadata = true;
+                        }
+                        _schemaTemplates[schema] = (isData, transformMetadata);
+                    }
+                }
+            }
 
             _htmlMetaHidden = metadataSchema.HtmlMetaHidden.ToHashSet();
             _htmlMetaNames = metadataSchema.Properties
@@ -54,10 +86,9 @@ namespace Microsoft.Docs.Build
 
         public bool IsData(string mime)
         {
-            // todo: get `isData` from template JINT script name
-            if (mime != null && _schemas.TryGetValue(mime, out var schema))
+            if (mime != null && _schemaTemplates.TryGetValue(mime, out var schemaTemplate) && schemaTemplate.isData)
             {
-                return string.Equals(schema, "ContextObject", StringComparison.OrdinalIgnoreCase) || string.Equals(schema, "TestData", StringComparison.OrdinalIgnoreCase);
+                return true;
             }
 
             return false;
@@ -115,6 +146,12 @@ namespace Microsoft.Docs.Build
             return new TemplateEngine(themePath, docset.MetadataSchema);
         }
 
+        public string GenerateHtml(JToken xxx)
+        {
+            // TODO: run JINT + mustache
+            throw new NotImplementedException();
+        }
+
         public string Render(string content, Document file, JObject rawMetadata, string mime)
         {
             // TODO: only works for conceptual
@@ -135,7 +172,7 @@ namespace Microsoft.Docs.Build
             return _liquid.Render(layout, liquidModel);
         }
 
-        public (TemplateModel model, JObject metadata) Transform(string conceptual, JObject rawMetadata, string mime)
+        public (TemplateModel model, JObject metadata) TransformToTemplateModel(string conceptual, JObject rawMetadata, string mime)
         {
             rawMetadata = TransformPageMetadata(rawMetadata, mime);
             var metadata = CreateMetadata(rawMetadata);
@@ -193,6 +230,7 @@ namespace Microsoft.Docs.Build
 
         private JObject TransformPageMetadata(JObject rawMetadata, string mime)
         {
+            // TODO: transform based on mime
             rawMetadata = TransformMetadata("Conceptual.mta.json.js", rawMetadata);
 
             if (IsLandingData(mime))
