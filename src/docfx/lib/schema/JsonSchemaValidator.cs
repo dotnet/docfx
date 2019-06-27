@@ -310,7 +310,8 @@ namespace Microsoft.Docs.Build
 
                         errors.AddIfNotNull(error);
 
-                        if (msAlias == null)
+                        // Mute error, when unable to connect to Microsoft Graph API
+                        if (msAlias == null && _microsoftGraphCache.IsConnectedToGraphApi())
                         {
                             errors.Add(Errors.MsAliasInvalid(JsonUtility.GetSourceInfo(scalar), name, alias));
                         }

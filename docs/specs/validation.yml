@@ -88,7 +88,7 @@ outputs:
     ["warning","field-required","Missing required field 'a'","a.md",2,1]
     ["warning","unexpected-type","Expect type 'String' but got 'Array'","a.md",2,6]
 ---
-# Json schema microsoft alias rule: The author is in the allow list
+# Json schema microsoft alias rule: Metu error, when no connection with Graph API
 inputs:
   docfx.yml: |
     metadataSchema:
@@ -101,33 +101,7 @@ inputs:
         { 
           "microsoftAlias": 
           {
-            "allowedDLs":["amlstudiodocs", "o365devx"]
-          }
-        }
-      } 
-    }
-  a.md: |
-    ---
-    ms.author: o365devx
-    ---
-outputs:
-  a.json: |
-    { "ms.author": "o365devx" }
----
-# Json schema microsoft alias rule: The author is not in the allow list and without graph call
-inputs:
-  docfx.yml: |
-    metadataSchema:
-      - schema.json
-  schema.json: |
-    { 
-      "properties":
-      { 
-        "ms.author":
-        { 
-          "microsoftAlias": 
-          {
-            "allowedDLs":["amlstudiodocs", "o365devx"]
+            "allowedDLs":[]
           }
         }
       } 
@@ -137,15 +111,46 @@ inputs:
     ms.author: over123
     ---
 outputs:
-  a.json:
-  .errors.log: |
-    ["warning","ms-alias-invalid","Invalid value for 'ms.author', 'over123' is not a valid Microsoft alias","a.md",2,12]
+  a.json: |
+    { "ms.author": "over123" }
+---
+# Json schema microsoft alias rule: The author is in the allow list
+inputs:
+  docfx.yml: |
+    metadataSchema:
+      - schema.json
+    microsoftGraph:
+      microsoftGraphClientSecret: {MICROSOFT_GRAPH_CLIENT_SECRET}
+  schema.json: |
+    { 
+      "properties":
+      { 
+        "ms.author":
+        { 
+          "microsoftAlias": 
+          {
+            "allowedDLs":["amlstudiodocs", "over123"]
+          }
+        }
+      } 
+    }
+  a.md: |
+    ---
+    ms.author: over123
+    ---
+environments:
+  - MICROSOFT_GRAPH_CLIENT_SECRET
+outputs:
+  a.json: |
+    { "ms.author": "over123" }
 ---
 # Json schema microsoft alias rule: The author is in the cache
 inputs:
   docfx.yml: |
     metadataSchema:
       - schema.json
+    microsoftGraph:
+      microsoftGraphClientSecret: {MICROSOFT_GRAPH_CLIENT_SECRET}
   schema.json: |
     { 
       "properties":
@@ -161,7 +166,7 @@ inputs:
     }
   a.md: |
     ---
-    ms.author: yazhao
+    ms.author: over123
     ---
 cache:
   microsoft-graph.json: |
@@ -169,7 +174,7 @@ cache:
       "aliases":
       [
         {
-          "alias": "yazhao",
+          "alias": "over123",
           "expiry": "4019-06-09T19:39:07.9918016Z"
         },
         {
@@ -178,15 +183,19 @@ cache:
         }
       ]
     }
+environments:
+  - MICROSOFT_GRAPH_CLIENT_SECRET
 outputs:
   a.json: |
-    { "ms.author": "yazhao" }
+    { "ms.author": "over123" }
 ---
-# Json schema microsoft alias rule: The author information has expired and without graph call 
+# Json schema microsoft alias rule: The author information has expired 
 inputs:
   docfx.yml: |
     metadataSchema:
       - schema.json
+    microsoftGraph:
+      microsoftGraphClientSecret: {MICROSOFT_GRAPH_CLIENT_SECRET}
   schema.json: |
     { 
       "properties":
@@ -202,7 +211,7 @@ inputs:
     }
   a.md: |
     ---
-    ms.author: zikun
+    ms.author: 123over123
     ---
 cache:
   microsoft-graph.json: |
@@ -214,15 +223,17 @@ cache:
           "expiry": "4019-06-09T19:39:07.9918016Z"
         },
         {
-          "alias": "zikun",
+          "alias": "123over123",
           "expiry": "2019-06-08T01:40:33.1981669Z"
         }
       ]
     }
+environments:
+  - MICROSOFT_GRAPH_CLIENT_SECRET
 outputs:
   a.json:
   .errors.log: |
-    ["warning","ms-alias-invalid","Invalid value for 'ms.author', 'zikun' is not a valid Microsoft alias","a.md",2,12]
+    ["warning","ms-alias-invalid","Invalid value for 'ms.author', '123over123' is not a valid Microsoft alias","a.md",2,12]
 ---
 # Json schema microsoft alias rule: The author is valid with graph call 
 inputs:

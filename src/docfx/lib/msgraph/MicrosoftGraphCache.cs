@@ -16,8 +16,9 @@ namespace Microsoft.Docs.Build
         private readonly double _expirationInHours;
         private readonly SemaphoreSlim _syncRoot = new SemaphoreSlim(1, 1);
         private readonly MicrosoftGraphAccessor _microsoftGraphAccessor = null;
-        private Dictionary<string, MicrosoftAlias> _aliases = new Dictionary<string, MicrosoftAlias>();
         private readonly List<string> _tempInvalidAliases = new List<string>();
+
+        private Dictionary<string, MicrosoftAlias> _aliases = new Dictionary<string, MicrosoftAlias>();
         private bool _needUpdate = false;
 
         public MicrosoftGraphCache(Config config)
@@ -94,6 +95,11 @@ namespace Microsoft.Docs.Build
                     return (error, null);
                 }
             }
+        }
+
+        public bool IsConnectedToGraphApi()
+        {
+            return _microsoftGraphAccessor != null;
         }
 
         public void Save()
