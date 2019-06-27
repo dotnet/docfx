@@ -251,11 +251,11 @@ namespace Microsoft.Docs.Build
         private static (object model, JObject metadata) ApplyPageTemplate(Context context, Document file, JObject pageMetadata, JObject pageModel, bool isConceptual)
         {
             var conceptual = isConceptual ? pageModel.Value<string>("conceptual") : string.Empty;
-            pageMetadata = context.TemplateEngine.PreprocessMetadata(pageMetadata, file);
+            var processedMetadata = context.TemplateEngine.PreprocessMetadata(isConceptual ? pageModel : pageMetadata, file);
 
             if (!file.Docset.Config.Output.Json)
             {
-                return (context.TemplateEngine.Render(conceptual, file, pageMetadata, file.Mime), null);
+                return (context.TemplateEngine.Render(conceptual, file, processedMetadata, file.Mime), null);
             }
 
             if (file.Docset.Legacy)
@@ -266,10 +266,10 @@ namespace Microsoft.Docs.Build
                     // conceptual = context.TemplateEngine.Render(file.Mime, pageModel);
                 }
 
-                return context.TemplateEngine.Transform(conceptual, pageMetadata, file.Mime);
+                return context.TemplateEngine.Transform(conceptual, processedMetadata, file.Mime);
             }
 
-            return (pageModel, pageMetadata);
+            return (pageModel, processedMetadata);
         }
     }
 }

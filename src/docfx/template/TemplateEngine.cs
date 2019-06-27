@@ -178,13 +178,14 @@ namespace Microsoft.Docs.Build
         {
             var docset = file.Docset;
 
-            outputMetadata["search.ms_docsetname"] = docset.Config.Name;
-            outputMetadata["search.ms_product"] = docset.Config.Product;
-            outputMetadata["search.ms_sitename"] = "Docs";
+            var processedMetadata = (JObject)JsonUtility.DeepClone(outputMetadata);
+            processedMetadata["search.ms_docsetname"] = docset.Config.Name;
+            processedMetadata["search.ms_product"] = docset.Config.Product;
+            processedMetadata["search.ms_sitename"] = "Docs";
 
-            outputMetadata["__global"] = Global;
+            processedMetadata["__global"] = Global;
 
-            return outputMetadata;
+            return processedMetadata;
         }
 
         public JObject TransformTocMetadata(object model)
