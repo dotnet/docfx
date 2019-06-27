@@ -120,11 +120,7 @@ namespace Microsoft.Docs.Build
         public void Dispose()
         {
             _syncRoot.Dispose();
-
-            if (_microsoftGraphAccessor != null)
-            {
-                _microsoftGraphAccessor.Dispose();
-            }
+            _microsoftGraphAccessor?.Dispose();
         }
 
         private DateTime NextExpiry() => DateTime.UtcNow.AddHours(_expirationInHours);

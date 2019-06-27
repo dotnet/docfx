@@ -43,7 +43,7 @@ namespace Microsoft.Docs.Build
             }
             catch (Exception e)
             {
-                return (Errors.GraphApiGetUsersFailed(e.Message), false);
+                return (Errors.MicrosoftGraphApiFailed(e.Message), false);
             }
         }
 
