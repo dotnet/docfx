@@ -174,17 +174,18 @@ namespace Microsoft.Docs.Build
             return Global[key]?.ToString();
         }
 
-        public JObject CreateRawMetadata(JObject outputModel, Document file)
+        public JObject PreprocessMetadata(JObject outputMetadata, Document file)
         {
             var docset = file.Docset;
 
-            outputModel["search.ms_docsetname"] = docset.Config.Name;
-            outputModel["search.ms_product"] = docset.Config.Product;
-            outputModel["search.ms_sitename"] = "Docs";
+            var processedMetadata = (JObject)JsonUtility.DeepClone(outputMetadata);
+            processedMetadata["search.ms_docsetname"] = docset.Config.Name;
+            processedMetadata["search.ms_product"] = docset.Config.Product;
+            processedMetadata["search.ms_sitename"] = "Docs";
 
-            outputModel["__global"] = Global;
+            processedMetadata["__global"] = Global;
 
-            return outputModel;
+            return processedMetadata;
         }
 
         public JObject TransformTocMetadata(object model)

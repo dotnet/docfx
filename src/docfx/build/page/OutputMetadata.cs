@@ -33,6 +33,9 @@ namespace Microsoft.Docs.Build
 
         public string DocumentId { get; set; }
 
+        [JsonProperty("wordCount")]
+        public long? WordCount { get; set; }
+
         public string DocumentVersionIndependentId { get; set; }
 
         [JsonProperty("_op_gitContributorInformation")]
