@@ -17,7 +17,7 @@ namespace Microsoft.Docs.Build
         private static string[] scopes = new string[] { resource };
 
         private readonly ConfidentialClientApplication cca;
-        private AuthenticationResult authenticationResult;
+        private readonly AuthenticationResult authenticationResult;
         private SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
 
         public MicrosoftGraphAuthenticationProvider(string tenantId, string clientId, string clientSecret)

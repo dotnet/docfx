@@ -8,7 +8,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Determines how long at most an alias remains valid in cache.
         /// </summary>
-        public readonly int MicrosoftAliasCacheExpirationInHours = 30 * 24;
+        public readonly int MicrosoftGraphCacheExpirationInHours = 30 * 24;
 
         /// <summary>
         /// Tenant id that can be used to access the Microsoft Graph API.

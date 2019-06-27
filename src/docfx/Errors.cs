@@ -483,11 +483,11 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Warning, "ms-alias-invalid", $"Invalid value for '{name}', '{alias}' is not a valid Microsoft alias", source);
 
         /// <summary>
-        /// The value is not a valid Microsoft alias
+        /// Call Microsoft Graph API failed
         /// </summary>
         /// Behavior: ✔️ Message: ❌
-        public static Error GraphApiGetUsersFailed(string exMessage)
-            => new Error(ErrorLevel.Warning, "graph-api-get-users-failed", $"Call to Microsoft Graph API to get users failed: {exMessage} Try closing and reopening the PR. If you get this Error again, file an issue.");
+        public static Error MicrosoftGraphApiFailed(string exMessage)
+            => new Error(ErrorLevel.Warning, "microsoft-graph-api-failed", $"Call to Microsoft Graph API failed: {exMessage} Try closing and reopening the PR. If you get this Error again, file an issue.");
 
         /// <summary>
         /// Used unknown YamlMime.

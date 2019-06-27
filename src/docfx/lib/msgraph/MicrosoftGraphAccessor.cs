@@ -49,10 +49,7 @@ namespace Microsoft.Docs.Build
 
         public void Dispose()
         {
-            if (_microsoftGraphAuthenticationProvider != null)
-            {
-                _microsoftGraphAuthenticationProvider.Dispose();
-            }
+            _microsoftGraphAuthenticationProvider?.Dispose();
         }
     }
 }
