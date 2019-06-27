@@ -93,9 +93,13 @@ namespace Microsoft.Docs.Build
 
         public bool Write(Error error, bool isException = false)
         {
-            var level = isException ? ErrorLevel.Error : error.Level;
+            var level = error.Level;
 
-            if (_config != null && _config.Rules.TryGetValue(error.Code, out var overrideLevel))
+            if (isException)
+            {
+                level = ErrorLevel.Error;
+            }
+            else if (_config != null && _config.Rules.TryGetValue(error.Code, out var overrideLevel))
             {
                 level = overrideLevel;
             }
