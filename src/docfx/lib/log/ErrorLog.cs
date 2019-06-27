@@ -82,7 +82,7 @@ namespace Microsoft.Docs.Build
             return hasErrors;
         }
 
-        public bool Write(string file, Error error, bool force = false)
+        public bool Write(string file, Error error, bool isException = false)
         {
             if (error is null)
                 return false;
@@ -90,18 +90,17 @@ namespace Microsoft.Docs.Build
             return Write(
                 file == error.File || !string.IsNullOrEmpty(error.File)
                     ? error
-                    : new Error(error.Level, error.Code, error.Message, file, error.Line, error.Column),
-                force);
+                    : new Error(error.Level, error.Code, error.Message, file, error.Line, error.Column));
         }
 
-        public bool Write(Error error, bool force = false)
+        public bool Write(Error error, bool isException = false)
         {
-            if (error is null)
-                return false;
+            var level = isException ? ErrorLevel.Error : error.Level;
 
-            var level = !force && _config != null && _config.Rules.TryGetValue(error.Code, out var overrideLevel)
-                ? overrideLevel
-                : error.Level;
+            if (_config != null && _config.Rules.TryGetValue(error.Code, out var overrideLevel))
+            {
+                level = overrideLevel;
+            }
 
             if (level == ErrorLevel.Off)
             {
