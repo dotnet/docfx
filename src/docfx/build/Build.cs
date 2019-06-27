@@ -58,8 +58,7 @@ namespace Microsoft.Docs.Build
                     await context.BuildQueue.Drain(Progress.Update);
                 }
 
-                context.GitCommitProvider.SaveGitCommitCache();
-                ValidateBookmarks();
+                context.BookmarkValidator.Validate();
 
                 var (publishModel, fileManifests) = context.PublishModelBuilder.Build(context, docset.Legacy);
                 var dependencyMap = context.DependencyMapBuilder.Build();
@@ -84,18 +83,7 @@ namespace Microsoft.Docs.Build
 
                 context.GitHubUserCache.Save();
                 context.ContributionProvider.Save();
-
-                void ValidateBookmarks()
-                {
-                    foreach (var (error, file) in context.BookmarkValidator.Validate())
-                    {
-                        // TODO: clean up ErrorLog.Write inputting file, should take file from Error
-                        if (context.ErrorLog.Write(file.FilePath, new List<Error> { error }))
-                        {
-                            context.PublishModelBuilder.MarkError(file);
-                        }
-                    }
-                }
+                context.GitCommitProvider.Save();
             }
         }
 
@@ -109,7 +97,6 @@ namespace Microsoft.Docs.Build
             try
             {
                 var errors = Enumerable.Empty<Error>();
-
                 switch (file.ContentType)
                 {
                     case ContentType.Resource:
@@ -137,7 +124,7 @@ namespace Microsoft.Docs.Build
             }
             catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
             {
-                context.ErrorLog.Write(file.ToString(), dex.Error);
+                context.ErrorLog.Write(file.ToString(), dex.Error, true);
                 context.PublishModelBuilder.MarkError(file);
             }
             catch

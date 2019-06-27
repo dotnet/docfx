@@ -114,7 +114,7 @@ namespace Microsoft.Docs.Build
                 {
                     // Remove author from contributors if author name is specified
                     var (error, result) = await _gitHubUserCache.GetByLogin(authorName);
-                    errors.AddIfNotNull(error?.WithSourceInfo(authorName));
+                    errors.AddIfNotNull(error);
                     return result?.ToContributor();
                 }
                 else if (contributors.Count > 0)
