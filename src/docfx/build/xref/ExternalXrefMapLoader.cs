@@ -21,7 +21,7 @@ namespace Microsoft.Docs.Build
             {
                 if (url.Value.EndsWith(".yml", StringComparison.OrdinalIgnoreCase))
                 {
-                    var (_, content, _) = RestoreMap.GetRestoredFileContent(docset, url);
+                    var content = RestoreMap.GetRestoredFileContent(docset, url);
                     var xrefMap = YamlUtility.Deserialize<XrefMapModel>(content, url);
                     foreach (var spec in xrefMap.References)
                     {
