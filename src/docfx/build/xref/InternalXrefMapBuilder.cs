@@ -101,13 +101,13 @@ namespace Microsoft.Docs.Build
         private static (List<Error> errors, IReadOnlyList<InternalXrefSpec> specs) LoadSchemaDocument(Context context, JObject obj, Document file)
         {
             var errors = new List<Error>();
-            var (schemaValidator, schemaTransformer) = context.TemplateEngine.GetJsonSchema(file.Mime);
-            if (schemaValidator is null || schemaTransformer is null)
+            var schemaTemplate = context.TemplateEngine.GetJsonSchema(file.Mime);
+            if (schemaTemplate.JsonSchemaValidator is null || schemaTemplate.JsonSchemaTransformer is null)
             {
                 throw Errors.SchemaNotFound(file.Mime).ToException();
             }
 
-            var (schemaErrors, xrefPropertiesGroupByUid) = schemaTransformer.TransformXref(file, context, obj);
+            var (schemaErrors, xrefPropertiesGroupByUid) = schemaTemplate.JsonSchemaTransformer.TransformXref(file, context, obj);
             errors.AddRange(schemaErrors);
 
             var specs = xrefPropertiesGroupByUid.Select(item =>

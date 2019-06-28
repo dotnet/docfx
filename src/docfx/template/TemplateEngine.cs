@@ -2,17 +2,14 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
 using Newtonsoft.Json.Linq;
-using YamlDotNet.Core.Tokens;
 
 namespace Microsoft.Docs.Build
 {
@@ -26,7 +23,7 @@ namespace Microsoft.Docs.Build
         private readonly JavascriptEngine _js;
         private readonly HashSet<string> _htmlMetaHidden;
         private readonly Dictionary<string, string> _htmlMetaNames;
-        private readonly IReadOnlyDictionary<string, (bool isData, bool transformMetadata, (JsonSchemaValidator, JsonSchemaTransformer) jsonSchema)> _schemas;
+        private readonly IReadOnlyDictionary<string, TemplateSchema> _schemas;
 
         public JObject Global { get; }
 
@@ -49,7 +46,7 @@ namespace Microsoft.Docs.Build
 
         public bool IsData(string mime)
         {
-            if (mime != null && _schemas.TryGetValue(mime, out var schema) && schema.isData)
+            if (mime != null && _schemas.TryGetValue(mime, out var schemaTemplate) && schemaTemplate.IsData)
             {
                 return true;
             }
@@ -67,9 +64,9 @@ namespace Microsoft.Docs.Build
             return false;
         }
 
-        public (JsonSchemaValidator, JsonSchemaTransformer) GetJsonSchema(string schemaName)
+        public TemplateSchema GetJsonSchema(string schemaName)
         {
-            return !string.IsNullOrEmpty(schemaName) && _schemas.TryGetValue(schemaName, out var schema) ? schema.jsonSchema : default;
+            return !string.IsNullOrEmpty(schemaName) && _schemas.TryGetValue(schemaName, out var schemaTemplate) ? schemaTemplate : default;
         }
 
         public static TemplateEngine Create(Docset docset)
@@ -170,56 +167,17 @@ namespace Microsoft.Docs.Build
         public JObject TransformTocMetadata(object model)
             => TransformMetadata("toc.json.js", JsonUtility.ToJObject(model));
 
-        private IReadOnlyDictionary<string, (bool isData, bool transformMetadata, (JsonSchemaValidator, JsonSchemaTransformer) jsonSchema)>
+        private IReadOnlyDictionary<string, TemplateSchema>
             LoadSchemas(string schemaDir, string contentTemplateDir)
         {
-            var schemas = new Dictionary<string, (bool isData, bool transformMetadata, (JsonSchemaValidator, JsonSchemaTransformer) jsonSchema)>();
-            var schemaNames = Directory.Exists(schemaDir) ? Directory.EnumerateFiles(schemaDir, "*.schema.json", SearchOption.TopDirectoryOnly)
-                                                    .Select(k => Path.GetFileNameWithoutExtension(k))
-                                                    .Select(k => k.Substring(0, k.Length - ".schema".Length)) : new List<string>();
-            var allJsFiles = Directory.Exists(contentTemplateDir) ? Directory.EnumerateFiles(contentTemplateDir, "*.js", SearchOption.TopDirectoryOnly)
-                             .Select(k => Path.GetFileNameWithoutExtension(k))
-                             .GroupBy(k => Regex.Replace(k, "(\\.html\\.primary|\\.mta\\.json)$", ""))
-                             .ToDictionary(g => g.Key, g => g.ToList()) : default;
-            foreach (var schemaName in schemaNames)
-            {
-                bool isData = true;
-                bool transformMetadata = false;
-                if (allJsFiles.TryGetValue(schemaName, out var jsFiles))
-                {
-                    foreach (var jsFile in jsFiles)
-                    {
-                        if (jsFile.EndsWith(".html.primary"))
-                            isData = false;
-                        if (jsFile.EndsWith(".mta.json"))
-                            transformMetadata = true;
-                    }
-                }
-                schemas.Add(schemaName, (isData, transformMetadata, new Lazy<(JsonSchemaValidator, JsonSchemaTransformer)>(() => GetJsonSchemaCore(schemaName)).Value));
-            }
-            schemas.Add("LandingData", (false, false, new Lazy<(JsonSchemaValidator, JsonSchemaTransformer)>(() => GetJsonSchemaCore("LandingData")).Value));
+            var schemas = new Dictionary<string, TemplateSchema>();
+            var schemaNames = Directory.Exists(schemaDir) ? (from k in Directory.EnumerateFiles(schemaDir, "*.schema.json", SearchOption.TopDirectoryOnly)
+                                                             let fileName = Path.GetFileName(k)
+                                                             select fileName.Substring(0, fileName.Length - ".schema.json".Length)).ToList() : new List<string>();
+
+            schemaNames.ForEach(schemaName => schemas.Add(schemaName, new TemplateSchema(schemaName, schemaDir, contentTemplateDir)));
+            schemas.Add("LandingData", new TemplateSchema("LandingData", schemaDir, contentTemplateDir));
             return schemas;
-
-            (JsonSchemaValidator, JsonSchemaTransformer) GetJsonSchemaCore(string schemaName)
-            {
-                if (schemaName is null)
-                {
-                    return default;
-                }
-
-                var schemaFilePath = Path.Combine(schemaDir, $"{schemaName}.schema.json");
-                if (string.Equals(schemaName, "LandingData", StringComparison.OrdinalIgnoreCase))
-                {
-                    schemaFilePath = Path.Combine(AppContext.BaseDirectory, "data", "schemas", "LandingData.json");
-                }
-                if (!File.Exists(schemaFilePath))
-                {
-                    return default;
-                }
-
-                var jsonSchema = JsonUtility.Deserialize<JsonSchema>(File.ReadAllText(schemaFilePath), schemaFilePath);
-                return (new JsonSchemaValidator(jsonSchema), new JsonSchemaTransformer(jsonSchema));
-            }
         }
 
         private JObject TransformPageMetadata(JObject rawMetadata, string mime)
