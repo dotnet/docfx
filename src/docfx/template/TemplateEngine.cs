@@ -78,7 +78,7 @@ namespace Microsoft.Docs.Build
 
             if (string.IsNullOrEmpty(docset.Config.Template))
             {
-                return new TemplateEngine(DefaultTemplateDir, new JsonSchema());
+                return new TemplateEngine(Path.Combine(docset.DocsetPath, DefaultTemplateDir), new JsonSchema());
             }
 
             var (themeRemote, themeBranch) = LocalizationUtility.GetLocalizedTheme(docset.Config.Template, docset.Locale, docset.Config.Localization.DefaultLocale);

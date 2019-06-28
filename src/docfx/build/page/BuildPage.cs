@@ -266,7 +266,7 @@ namespace Microsoft.Docs.Build
                     // conceptual = context.TemplateEngine.Render(file.Mime, pageModel);
                 }
 
-                return context.TemplateEngine.Transform(conceptual, processedMetadata, file.Mime);
+                return context.TemplateEngine.TransformToTemplateModel(conceptual, processedMetadata, file.Mime);
             }
 
             return (pageModel, processedMetadata);
