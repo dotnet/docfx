@@ -176,7 +176,7 @@ namespace Microsoft.Docs.Build
             var schemas = new Dictionary<string, (bool isData, bool transformMetadata, (JsonSchemaValidator, JsonSchemaTransformer) jsonSchema)>();
             var schemaNames = Directory.Exists(schemaDir) ? Directory.EnumerateFiles(schemaDir, "*.schema.json", SearchOption.TopDirectoryOnly)
                                                     .Select(k => Path.GetFileNameWithoutExtension(k))
-                                                    .Select(k => k.Substring(0, k.Length - ".schema".Length)).ToHashSet() : new HashSet<string>();
+                                                    .Select(k => k.Substring(0, k.Length - ".schema".Length)) : new List<string>();
             var allJsFiles = Directory.Exists(contentTemplateDir) ? Directory.EnumerateFiles(contentTemplateDir, "*.js", SearchOption.TopDirectoryOnly)
                              .Select(k => Path.GetFileNameWithoutExtension(k))
                              .GroupBy(k => Regex.Replace(k, "(\\.html\\.primary|\\.mta\\.json)$", ""))
