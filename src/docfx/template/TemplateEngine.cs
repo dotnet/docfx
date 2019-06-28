@@ -65,12 +65,7 @@ namespace Microsoft.Docs.Build
 
         public static bool IsLandingData(string mime)
         {
-            if (mime != null)
-            {
-                return string.Equals(typeof(LandingData).Name, mime, StringComparison.OrdinalIgnoreCase);
-            }
-
-            return false;
+            return string.Equals(typeof(LandingData).Name, mime, StringComparison.OrdinalIgnoreCase);
         }
 
         public (JsonSchemaValidator, JsonSchemaTransformer) GetJsonSchema(string schemaName)

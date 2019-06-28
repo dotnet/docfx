@@ -18,9 +18,6 @@ namespace Microsoft.Docs.Build
 
         public string BreadcrumbPath { get; set; }
 
-        [JsonIgnore]
-        public string SchemaType { get; set; }
-
         [JsonProperty("_tocRel")]
         public string TocRel { get; set; }
 

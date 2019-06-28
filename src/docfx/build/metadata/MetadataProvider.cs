@@ -18,8 +18,8 @@ namespace Microsoft.Docs.Build
         private readonly HashSet<string> _reservedMetadata;
         private readonly List<(Func<string, bool> glob, string key, JToken value)> _rules = new List<(Func<string, bool> glob, string key, JToken value)>();
 
-        private readonly ConcurrentDictionary<Document, (List<Error> errors, JObject metadata, InputMetadata metadataModel)> _metadataCache
-                   = new ConcurrentDictionary<Document, (List<Error> errors, JObject metadata, InputMetadata metadataModel)>();
+        private readonly ConcurrentDictionary<Document, (List<Error> errors, InputMetadata metadata)> _metadataCache
+                   = new ConcurrentDictionary<Document, (List<Error> errors, InputMetadata metadata)>();
 
         public MetadataProvider(Docset docset, Cache cache)
         {
@@ -41,24 +41,24 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public (List<Error> errors, JObject metadata, InputMetadata metadataModel) GetMetadata(Document file)
+        public (List<Error> errors, InputMetadata metadataModel) GetMetadata(Document file)
         {
             return _metadataCache.GetOrAdd(file, GetMetadataCore);
         }
 
-        private (List<Error> errors, JObject metadata, InputMetadata metadataModel) GetMetadataCore(Document file)
+        private (List<Error> errors, InputMetadata metadataModel) GetMetadataCore(Document file)
         {
             if (file.ContentType != ContentType.Page && file.ContentType != ContentType.TableOfContents)
             {
-                return (new List<Error>(), new JObject(), new InputMetadata());
+                return (new List<Error>(), new InputMetadata());
             }
 
-            var result = new JObject();
+            var rawMetadata = new JObject();
 
             var (errors, yamlHeader) = LoadMetadata(file);
-            JsonUtility.SetSourceInfo(result, JsonUtility.GetSourceInfo(yamlHeader));
+            JsonUtility.SetSourceInfo(rawMetadata, JsonUtility.GetSourceInfo(yamlHeader));
 
-            JsonUtility.Merge(result, _globalMetadata);
+            JsonUtility.Merge(rawMetadata, _globalMetadata);
 
             var fileMetadata = new JObject();
             foreach (var (glob, key, value) in _rules)
@@ -71,10 +71,10 @@ namespace Microsoft.Docs.Build
                     JsonUtility.SetSourceInfo(fileMetadata.Property(key), JsonUtility.GetSourceInfo(value));
                 }
             }
-            JsonUtility.Merge(result, fileMetadata);
-            JsonUtility.Merge(result, yamlHeader);
+            JsonUtility.Merge(rawMetadata, fileMetadata);
+            JsonUtility.Merge(rawMetadata, yamlHeader);
 
-            foreach (var property in result.Properties())
+            foreach (var property in rawMetadata.Properties())
             {
                 if (_reservedMetadata.Contains(property.Name))
                 {
@@ -86,12 +86,14 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            errors.AddRange(_schemaValidator.Validate(result));
+            errors.AddRange(_schemaValidator.Validate(rawMetadata));
 
-            var (validationErrors, metadataModel) = JsonUtility.ToObject<InputMetadata>(result);
+            var (validationErrors, metadata) = JsonUtility.ToObject<InputMetadata>(rawMetadata);
             errors.AddRange(validationErrors);
 
-            return (errors, result, metadataModel);
+            metadata.RawMetadata = rawMetadata;
+
+            return (errors, metadata);
         }
 
         private static bool IsValidMetadataType(JToken token)

@@ -32,6 +32,11 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public readonly int EndColumn;
 
+        public SourceInfo(string file)
+        {
+            File = file;
+        }
+
         public SourceInfo(string file, int line, int column)
         {
             File = file;
