@@ -11,28 +11,25 @@ namespace Microsoft.Docs.Build
     {
         private string _htmlTransformJsPath;
         private string _metadataTransformJsPath;
-        private Lazy<bool> _isData;
-        private Lazy<bool> _transformMetadata;
-        private Lazy<(JsonSchemaValidator JsonSchemaValidator, JsonSchemaTransformer JsonSchemaTransformer)> _jsonSchema;
 
         public string SchemaName { get; }
 
-        public bool IsData => _isData.Value;
+        public bool IsData { get; }
 
-        public bool TransformMetadata => _transformMetadata.Value;
+        public bool TransformMetadata { get; }
 
-        public JsonSchemaValidator JsonSchemaValidator => _jsonSchema.Value.JsonSchemaValidator;
+        public JsonSchemaValidator JsonSchemaValidator { get; }
 
-        public JsonSchemaTransformer JsonSchemaTransformer => _jsonSchema.Value.JsonSchemaTransformer;
+        public JsonSchemaTransformer JsonSchemaTransformer { get; }
 
         public TemplateSchema(string schemaName, string schemaDir, string contentTemplateDir)
         {
             Debug.Assert(!string.IsNullOrEmpty(schemaName));
 
             SchemaName = SchemaName;
-            _isData = new Lazy<bool>(() => GetIsDataCore(schemaName, contentTemplateDir));
-            _transformMetadata = new Lazy<bool>(() => File.Exists(_metadataTransformJsPath = Path.Combine(contentTemplateDir, $"{schemaName}.mta.json.js")));
-            _jsonSchema = new Lazy<(JsonSchemaValidator, JsonSchemaTransformer)>(GetJsonSchemaCore(schemaDir, schemaName));
+            IsData = GetIsDataCore(schemaName, contentTemplateDir);
+            TransformMetadata = File.Exists(_metadataTransformJsPath = Path.Combine(contentTemplateDir, $"{schemaName}.mta.json.js"));
+            (JsonSchemaValidator, JsonSchemaTransformer) = GetJsonSchemaCore(schemaDir, schemaName);
         }
 
         private bool GetIsDataCore(string schemaName, string contentTemplateDir)

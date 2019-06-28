@@ -23,7 +23,7 @@ namespace Microsoft.Docs.Build
         private readonly JavascriptEngine _js;
         private readonly HashSet<string> _htmlMetaHidden;
         private readonly Dictionary<string, string> _htmlMetaNames;
-        private readonly IReadOnlyDictionary<string, TemplateSchema> _schemas;
+        private readonly IReadOnlyDictionary<string, Lazy<TemplateSchema>> _schemas;
 
         public JObject Global { get; }
 
@@ -46,7 +46,7 @@ namespace Microsoft.Docs.Build
 
         public bool IsData(string mime)
         {
-            if (mime != null && _schemas.TryGetValue(mime, out var schemaTemplate) && schemaTemplate.IsData)
+            if (mime != null && _schemas.TryGetValue(mime, out var schemaTemplate) && schemaTemplate.Value.IsData)
             {
                 return true;
             }
@@ -66,7 +66,7 @@ namespace Microsoft.Docs.Build
 
         public TemplateSchema GetJsonSchema(string schemaName)
         {
-            return !string.IsNullOrEmpty(schemaName) && _schemas.TryGetValue(schemaName, out var schemaTemplate) ? schemaTemplate : default;
+            return !string.IsNullOrEmpty(schemaName) && _schemas.TryGetValue(schemaName, out var schemaTemplate) ? schemaTemplate.Value : default;
         }
 
         public static TemplateEngine Create(Docset docset)
@@ -167,16 +167,16 @@ namespace Microsoft.Docs.Build
         public JObject TransformTocMetadata(object model)
             => TransformMetadata("toc.json.js", JsonUtility.ToJObject(model));
 
-        private IReadOnlyDictionary<string, TemplateSchema>
+        private IReadOnlyDictionary<string, Lazy<TemplateSchema>>
             LoadSchemas(string schemaDir, string contentTemplateDir)
         {
-            var schemas = new Dictionary<string, TemplateSchema>();
-            var schemaNames = Directory.Exists(schemaDir) ? (from k in Directory.EnumerateFiles(schemaDir, "*.schema.json", SearchOption.TopDirectoryOnly)
-                                                             let fileName = Path.GetFileName(k)
-                                                             select fileName.Substring(0, fileName.Length - ".schema.json".Length)).ToList() : new List<string>();
+            var schemas = Directory.Exists(schemaDir) ? (from k in Directory.EnumerateFiles(schemaDir, "*.schema.json", SearchOption.TopDirectoryOnly)
+                                                         let fileName = Path.GetFileName(k)
+                                                         select fileName.Substring(0, fileName.Length - ".schema.json".Length))
+                                                         .ToDictionary(schemaName => schemaName, schemaName => new Lazy<TemplateSchema>(() => new TemplateSchema(schemaName, schemaDir, contentTemplateDir)))
+                                                         : new Dictionary<string, Lazy<TemplateSchema>>();
 
-            schemaNames.ForEach(schemaName => schemas.Add(schemaName, new TemplateSchema(schemaName, schemaDir, contentTemplateDir)));
-            schemas.Add("LandingData", new TemplateSchema("LandingData", schemaDir, contentTemplateDir));
+            schemas.Add("LandingData", new Lazy<TemplateSchema>(() => new TemplateSchema("LandingData", schemaDir, contentTemplateDir)));
             return schemas;
         }
 

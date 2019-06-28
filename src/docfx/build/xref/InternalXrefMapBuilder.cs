@@ -102,7 +102,7 @@ namespace Microsoft.Docs.Build
         {
             var errors = new List<Error>();
             var schemaTemplate = context.TemplateEngine.GetJsonSchema(file.Mime);
-            if (schemaTemplate.JsonSchemaValidator is null || schemaTemplate.JsonSchemaTransformer is null)
+            if (schemaTemplate is null)
             {
                 throw Errors.SchemaNotFound(file.Mime).ToException();
             }
