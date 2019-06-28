@@ -6,7 +6,6 @@ namespace Microsoft.DocAsCode.Build.Engine
     using System;
     using System.Collections.Specialized;
     using System.Linq;
-    using System.Text.RegularExpressions;
     using System.Web;
 
     using Microsoft.DocAsCode.MarkdownLite;
@@ -19,13 +18,14 @@ namespace Microsoft.DocAsCode.Build.Engine
     public sealed class XRefDetails
     {
         public string Uid { get; private set; }
-        public string Anchor { get; private set; }
+        public string Query { get; private set; } = string.Empty;
+        public string Anchor { get; private set; } = string.Empty;
         public string Title { get; private set; }
         public string Href { get; private set; }
         public string Raw { get; private set; }
         public string RawSource { get; private set; }
-        public string DisplayProperty { get; private set; }
-        public string AltProperty { get; private set; }
+        public string DisplayProperty { get; private set; } = "name";
+        public string AltProperty { get; private set; } = "fullName";
         public string InnerHtml { get; private set; }
         public string Text { get; private set; }
         public string Alt { get; private set; }
@@ -40,61 +40,56 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public static XRefDetails From(HtmlNode node)
         {
-            if (node.Name != "xref") throw new NotSupportedException("Only xref node is supported!");
-            var xref = new XRefDetails();
-            var uid = node.GetAttributeValue("uid", null);
-            var rawHref = node.GetAttributeValue("href", null);
-            NameValueCollection queryString = null;
+            if (node.Name != "xref")
+            {
+                throw new NotSupportedException("Only xref node is supported!");
+            }
+            var rawUid = node.GetAttributeValue("uid", null);
+            var xref = new XRefDetails()
+            {
+                InnerHtml = node.InnerHtml,
+                Uid = rawUid,
+                SourceFile = node.GetAttributeValue("sourceFile", null),
+                SourceStartLineNumber = node.GetAttributeValue("sourceStartLineNumber", 0),
+                SourceEndLineNumber = node.GetAttributeValue("sourceEndLineNumber", 0),
+                RawSource = node.GetAttributeValue("data-raw-source", null),
+                ThrowIfNotResolved = node.GetAttributeValue("data-throw-if-not-resolved", false),
+                TemplatePath = StringHelper.HtmlDecode(node.GetAttributeValue("template", null)),
+            };
 
+            var rawHref = node.GetAttributeValue("href", null);
             if (!string.IsNullOrEmpty(rawHref))
             {
-                if (!string.IsNullOrEmpty(uid))
+                if (!string.IsNullOrEmpty(rawUid))
                 {
                     Logger.LogWarning($"Both href and uid attribute are defined for {node.OuterHtml}, use href instead of uid.");
                 }
 
-                string others;
-                var anchorIndex = rawHref.IndexOf("#");
-                if (anchorIndex == -1)
-                {
-                    xref.Anchor = string.Empty;
-                    others = rawHref;
-                }
-                else
-                {
-                    xref.Anchor = rawHref.Substring(anchorIndex);
-                    others = rawHref.Remove(anchorIndex);
-                }
-                var queryIndex = others.IndexOf("?");
-                if (queryIndex == -1)
-                {
-                    xref.Uid = HttpUtility.UrlDecode(others);
-                }
-                else
-                {
-                    xref.Uid = HttpUtility.UrlDecode(others.Remove(queryIndex));
-                    queryString = HttpUtility.ParseQueryString(others.Substring(queryIndex));
-                }
-            }
-            else
-            {
-                xref.Uid = uid;
+                var (path, query, fragment) = UriUtility.Split(rawHref);
+                xref.Uid = HttpUtility.UrlDecode(path);
+                xref.Anchor = fragment;
+
+                // extract values from query
+                var queryValueCollection = HttpUtility.ParseQueryString(query);
+                xref.DisplayProperty = ExtractValue(queryValueCollection, "displayProperty") ?? xref.DisplayProperty;
+                xref.AltProperty = ExtractValue(queryValueCollection, "altProperty") ?? xref.AltProperty;
+                xref.Text = StringHelper.HtmlEncode(ExtractValue(queryValueCollection, "text")) ?? xref.Text;
+                xref.Alt = StringHelper.HtmlEncode(ExtractValue(queryValueCollection, "alt")) ?? xref.Alt;
+                xref.Title = ExtractValue(queryValueCollection, "title") ?? xref.Title;
+
+                var remainingQuery = queryValueCollection.ToString();
+                xref.Query = string.IsNullOrEmpty(remainingQuery) ? string.Empty : "?" + remainingQuery;
             }
 
-            xref.InnerHtml = node.InnerHtml;
-            xref.DisplayProperty = node.GetAttributeValue("displayProperty", queryString?.Get("displayProperty") ?? XRefSpec.NameKey);
-            xref.AltProperty = node.GetAttributeValue("altProperty", queryString?.Get("altProperty") ?? "fullName");
-            xref.Text = node.GetAttributeValue("text", node.GetAttributeValue("name", StringHelper.HtmlEncode(queryString?.Get("text"))));
-            xref.Alt = node.GetAttributeValue("alt", node.GetAttributeValue("fullname", StringHelper.HtmlEncode(queryString?.Get("alt"))));
-
-            xref.Title = node.GetAttributeValue("title", queryString?.Get("title"));
-            xref.SourceFile = node.GetAttributeValue("sourceFile", null);
-            xref.SourceStartLineNumber = node.GetAttributeValue("sourceStartLineNumber", 0);
-            xref.SourceEndLineNumber = node.GetAttributeValue("sourceEndLineNumber", 0);
+            // extract values from HTML attributes
+            xref.DisplayProperty = node.GetAttributeValue("displayProperty", xref.DisplayProperty);
+            xref.AltProperty = node.GetAttributeValue("altProperty", xref.AltProperty);
+            xref.Text = node.GetAttributeValue("text", node.GetAttributeValue("name", xref.Text));
+            xref.Alt = node.GetAttributeValue("alt", node.GetAttributeValue("fullname", xref.Alt));
+            xref.Title = node.GetAttributeValue("title", xref.Title);
 
             // Both `data-raw-html` and `data-raw-source` are html encoded. Use `data-raw-html` with higher priority.
             // `data-raw-html` will be decoded then displayed, while `data-raw-source` will be displayed directly.
-            xref.RawSource = node.GetAttributeValue("data-raw-source", null);
             var raw = node.GetAttributeValue("data-raw-html", null);
             if (!string.IsNullOrEmpty(raw))
             {
@@ -105,14 +100,14 @@ namespace Microsoft.DocAsCode.Build.Engine
                 xref.Raw = xref.RawSource;
             }
 
-            xref.ThrowIfNotResolved = node.GetAttributeValue("data-throw-if-not-resolved", false);
-            var templatePath = node.GetAttributeValue("template", null);
-            if (templatePath != null)
-            {
-                xref.TemplatePath = StringHelper.HtmlDecode(templatePath);
-            }
-
             return xref;
+
+            string ExtractValue(NameValueCollection collection, string properName)
+            {
+                var value = collection[properName];
+                collection.Remove(properName);
+                return value;
+            }
         }
 
         public void ApplyXrefSpec(XRefSpec spec)
@@ -125,11 +120,8 @@ namespace Microsoft.DocAsCode.Build.Engine
             // TODO: What if href is not html?
             if (!string.IsNullOrEmpty(spec.Href))
             {
-                Href = UriUtility.GetNonFragment(spec.Href);
-                if (string.IsNullOrEmpty(Anchor))
-                {
-                    Anchor = UriUtility.GetFragment(spec.Href);
-                }
+                var href = UriUtility.MergeHref(spec.Href, Query + Anchor);
+                (Href, Query, Anchor) = UriUtility.Split(href);
             }
             Spec = spec;
         }
@@ -160,21 +152,21 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 if (!string.IsNullOrEmpty(InnerHtml))
                 {
-                    return GetAnchorNode(Href, Anchor, Title, InnerHtml, RawSource, SourceFile, SourceStartLineNumber, SourceEndLineNumber);
+                    return GetAnchorNode(Href, Query + Anchor, Title, InnerHtml, RawSource, SourceFile, SourceStartLineNumber, SourceEndLineNumber);
                 }
                 if (!string.IsNullOrEmpty(Text))
                 {
-                    return GetAnchorNode(Href, Anchor, Title, Text, RawSource, SourceFile, SourceStartLineNumber, SourceEndLineNumber);
+                    return GetAnchorNode(Href, Query + Anchor, Title, Text, RawSource, SourceFile, SourceStartLineNumber, SourceEndLineNumber);
                 }
                 if (Spec != null)
                 {
                     var value = StringHelper.HtmlEncode(GetLanguageSpecificAttribute(Spec, language, DisplayProperty, "name"));
                     if (!string.IsNullOrEmpty(value))
                     {
-                        return GetAnchorNode(Href, Anchor, Title, value, RawSource, SourceFile, SourceStartLineNumber, SourceEndLineNumber);
+                        return GetAnchorNode(Href, Query + Anchor, Title, value, RawSource, SourceFile, SourceStartLineNumber, SourceEndLineNumber);
                     }
                 }
-                return GetAnchorNode(Href, Anchor, Title, Uid, RawSource, SourceFile, SourceStartLineNumber, SourceEndLineNumber);
+                return GetAnchorNode(Href, Query + Anchor, Title, Uid, RawSource, SourceFile, SourceStartLineNumber, SourceEndLineNumber);
             }
             else
             {
