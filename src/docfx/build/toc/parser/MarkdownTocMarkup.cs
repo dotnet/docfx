@@ -12,7 +12,7 @@ using Microsoft.DocAsCode.MarkdigEngine.Extensions;
 
 namespace Microsoft.Docs.Build
 {
-    internal static class MarkdownTocParser
+    internal static class MarkdownTocMarkup
     {
         public static (List<Error> errors, TableOfContentsModel model) Parse(string tocContent, Document file)
         {
