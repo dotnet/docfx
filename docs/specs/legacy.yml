@@ -139,8 +139,6 @@ outputs:
         "search.ms_sitename": "Docs",
         "locale": "en-us",
         "site_name": "Docs",
-        "__global": {
-        },
         "_path": "c.json",
         "_tocRel": "toc.json",
         "wordCount": 2,
