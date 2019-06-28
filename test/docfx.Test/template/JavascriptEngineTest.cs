@@ -19,7 +19,7 @@ namespace Microsoft.Docs.Build
         {
             var inputJson = JObject.Parse(input.Replace('\'', '"'));
             var outputJson = _js.Run("index.js", "main", inputJson);
-            (outputJson as JObject).Property("__global")?.Remove();
+            (outputJson as JObject)?.Property("__global")?.Remove();
             Assert.Equal(output.Replace('\'', '"'), outputJson.ToString(Formatting.None));
         }
 
