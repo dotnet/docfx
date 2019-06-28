@@ -15,21 +15,26 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(file.ContentType == ContentType.Page);
 
-            var (errors, isPage, (pageMetadata, pageModel), (inputMetadata, metadataObject)) = await Load(context, file);
+            var (errors, (pageMetadata, pageModel), (inputMetadata, metadataObject)) = await Load(context, file);
             var (generateErrors, outputMetadata) = await GenerateOutputMetadata(context, file, inputMetadata, pageMetadata);
             errors.AddRange(generateErrors);
 
-            var outputPath = file.GetOutputPath(outputMetadata.Monikers, file.Docset.SiteBasePath, isPage);
+            var outputPath = file.GetOutputPath(outputMetadata.Monikers, file.Docset.SiteBasePath, !file.IsData);
 
             object output = null;
             JObject metadata = null;
-            if (isPage)
+            if (!file.IsData)
             {
-                var mergedOutputModel = new JObject();
-                JsonUtility.Merge(mergedOutputModel, metadataObject);
-                JsonUtility.Merge(mergedOutputModel, JsonUtility.ToJObject(outputMetadata));
-                JsonUtility.Merge(mergedOutputModel, pageModel);
-                (output, metadata) = ApplyPageTemplate(context, file, mergedOutputModel, pageModel.Value<string>("conceptual"));
+                var mergedMetadata = new JObject();
+                JsonUtility.Merge(mergedMetadata, metadataObject);
+                JsonUtility.Merge(mergedMetadata, JsonUtility.ToJObject(outputMetadata));
+
+                var mergeModel = new JObject();
+                JsonUtility.Merge(mergeModel, mergedMetadata);
+                JsonUtility.Merge(mergeModel, pageModel);
+
+                var isConceptual = pageMetadata.SchemaType == "Conceptual" || TemplateEngine.IsLandingData(file.Mime);
+                (output, metadata) = ApplyPageTemplate(context, file, mergedMetadata, mergeModel, isConceptual);
             }
             else
             {
@@ -108,7 +113,9 @@ namespace Microsoft.Docs.Build
             outputMetadata.Author = outputMetadata.ContributionInfo?.Author?.Name;
             outputMetadata.UpdatedAt = outputMetadata.ContributionInfo?.UpdatedAtDateTime.ToString("yyyy-MM-dd hh:mm tt");
 
-            outputMetadata.DepotName = $"{file.Docset.Config.Product}.{file.Docset.Config.Name}";
+            outputMetadata.SearchProduct = file.Docset.Config.Product;
+            outputMetadata.SearchDocsetName = file.Docset.Config.Name;
+
             outputMetadata.Path = PathUtility.NormalizeFile(Path.GetRelativePath(file.Docset.SiteBasePath, file.SitePath));
             outputMetadata.CanonicalUrlPrefix = $"{file.Docset.HostName}/{outputMetadata.Locale}/{file.Docset.SiteBasePath}/";
 
@@ -121,7 +128,7 @@ namespace Microsoft.Docs.Build
             return (errors, outputMetadata);
         }
 
-        private static async Task<(List<Error> errors, bool isPage, (OutputMetadata metadata, JObject model) output, (InputMetadata, JObject) inputMetadata)>
+        private static async Task<(List<Error> errors, (OutputMetadata metadata, JObject model) output, (InputMetadata, JObject) inputMetadata)>
             Load(Context context, Document file)
         {
             if (file.FilePath.EndsWith(".md", PathUtility.PathComparison))
@@ -137,7 +144,7 @@ namespace Microsoft.Docs.Build
             return await LoadJson(context, file);
         }
 
-        private static (List<Error> errors, bool isPage, (OutputMetadata metadata, JObject model) output, (InputMetadata, JObject) inputMetadata)
+        private static (List<Error> errors, (OutputMetadata metadata, JObject model) output, (InputMetadata, JObject) inputMetadata)
             LoadMarkdown(Context context, Document file)
         {
             var errors = new List<Error>();
@@ -168,19 +175,19 @@ namespace Microsoft.Docs.Build
             pageMetadata.Title = inputMetadata.Title ?? title;
             pageMetadata.RawTitle = rawTitle;
             pageMetadata.SchemaType = "Conceptual";
+            pageMetadata.WordCount = wordCount;
 
             var pageModel = new JObject
             {
                 ["conceptual"] = HtmlUtility.HtmlPostProcess(htmlDom, file.Docset.Culture),
-                ["wordCount"] = wordCount,
             };
 
             context.BookmarkValidator.AddBookmarks(file, bookmarks);
 
-            return (errors, true, (pageMetadata, pageModel), (inputMetadata, metadataObject));
+            return (errors, (pageMetadata, pageModel), (inputMetadata, metadataObject));
         }
 
-        private static async Task<(List<Error> errors, bool isPage, (OutputMetadata metadata, JObject model) output, (InputMetadata, JObject) inputMetadata)>
+        private static async Task<(List<Error> errors, (OutputMetadata metadata, JObject model) output, (InputMetadata, JObject) inputMetadata)>
             LoadYaml(Context context, Document file)
         {
             var (errors, token) = YamlUtility.Parse(file, context);
@@ -188,7 +195,7 @@ namespace Microsoft.Docs.Build
             return await LoadSchemaDocument(context, errors, token, file);
         }
 
-        private static async Task<(List<Error> errors, bool isPage, (OutputMetadata metadata, JObject model) output, (InputMetadata, JObject) inputMetadata)>
+        private static async Task<(List<Error> errors, (OutputMetadata metadata, JObject model) output, (InputMetadata, JObject) inputMetadata)>
             LoadJson(Context context, Document file)
         {
             var (errors, token) = JsonUtility.Parse(file, context);
@@ -196,7 +203,7 @@ namespace Microsoft.Docs.Build
             return await LoadSchemaDocument(context, errors, token, file);
         }
 
-        private static async Task<(List<Error> errors, bool isPage, (OutputMetadata metadata, JObject model) output, (InputMetadata, JObject) inputMetadata)>
+        private static async Task<(List<Error> errors, (OutputMetadata metadata, JObject model) output, (InputMetadata, JObject) inputMetadata)>
             LoadSchemaDocument(Context context, List<Error> errors, JToken token, Document file)
         {
             var obj = token as JObject;
@@ -240,24 +247,31 @@ namespace Microsoft.Docs.Build
             pageMetadata.RawTitle = file.Docset.Legacy ? $"<h1>{obj?.Value<string>("title")}</h1>" : null;
             pageMetadata.SchemaType = file.Mime;
 
-            return (errors, !file.IsData, (pageMetadata, pageModel as JObject), (inputMetadata, metadataObject));
+            return (errors, (pageMetadata, pageModel as JObject), (inputMetadata, metadataObject));
         }
 
-        private static (object model, JObject metadata) ApplyPageTemplate(Context context, Document file, JObject output, string conceptual)
+        private static (object model, JObject metadata) ApplyPageTemplate(Context context, Document file, JObject pageMetadata, JObject pageModel, bool isConceptual)
         {
-            var rawMetadata = context.TemplateEngine.CreateRawMetadata(output, file);
+            var conceptual = isConceptual ? pageModel.Value<string>("conceptual") : string.Empty;
+            var processedMetadata = isConceptual ? pageModel : pageMetadata;
 
             if (!file.Docset.Config.Output.Json)
             {
-                return (context.TemplateEngine.Render(conceptual, file, rawMetadata, file.Mime), null);
+                return (context.TemplateEngine.Render(conceptual, file, processedMetadata, file.Mime), null);
             }
 
             if (file.Docset.Legacy)
             {
-                return context.TemplateEngine.Transform(conceptual, rawMetadata, file.Mime);
+                if (!isConceptual)
+                {
+                    // run sdp JINT and mustache to generate html
+                    // conceptual = context.TemplateEngine.Render(file.Mime, pageModel);
+                }
+
+                return context.TemplateEngine.Transform(conceptual, processedMetadata, file.Mime);
             }
 
-            return (output, rawMetadata);
+            return (pageModel, processedMetadata);
         }
     }
 }

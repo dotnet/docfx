@@ -50,8 +50,6 @@ namespace Microsoft.Docs.Build
             EndColumn = endColumn;
         }
 
-        public Error WithSourceInfo(SourceInfo source) => new Error(Level, Code, Message, source);
-
         public override string ToString() => ToString(Level);
 
         public string ToString(ErrorLevel level)

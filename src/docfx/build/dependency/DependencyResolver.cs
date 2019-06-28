@@ -196,7 +196,7 @@ namespace Microsoft.Docs.Build
             // Link to dependent repo, don't build the file, leave href as is
             if (declaringFile.Docset.DependencyDocsets.Values.Any(v => file.Docset == v))
             {
-                return (Errors.LinkIsDependency(declaringFile, file, href), href, fragment, linkType, null);
+                return (Errors.LinkIsDependency(href, file), href, fragment, linkType, null);
             }
 
             if (file?.RedirectionUrl != null)
@@ -230,7 +230,7 @@ namespace Microsoft.Docs.Build
                     return (null, declaringFile, query, fragment, LinkType.SelfBookmark, null);
 
                 case LinkType.WindowsAbsolutePath:
-                    return (Errors.LocalFilePath(declaringFile, path), null, null, null, LinkType.WindowsAbsolutePath, null);
+                    return (Errors.LocalFilePath(href), null, null, null, LinkType.WindowsAbsolutePath, null);
 
                 case LinkType.RelativePath:
                     // Resolve path relative to docset

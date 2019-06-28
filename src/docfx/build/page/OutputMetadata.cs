@@ -33,6 +33,9 @@ namespace Microsoft.Docs.Build
 
         public string DocumentId { get; set; }
 
+        [JsonProperty("wordCount")]
+        public long? WordCount { get; set; }
+
         public string DocumentVersionIndependentId { get; set; }
 
         [JsonProperty("_op_gitContributorInformation")]
@@ -55,7 +58,16 @@ namespace Microsoft.Docs.Build
 
         public string SiteName { get; set; }
 
-        public string DepotName { get; set; }
+        public string DepotName => $"{SearchProduct}.{SearchDocsetName}";
+
+        [JsonProperty("search.ms_docsetname")]
+        public string SearchDocsetName { get; set; }
+
+        [JsonProperty("search.ms_product")]
+        public string SearchProduct { get; set; }
+
+        [JsonProperty("search.ms_sitename")]
+        public string SearchSiteName => SiteName;
 
         [JsonProperty("_path")]
         public string Path { get; set; }

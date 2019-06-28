@@ -82,6 +82,7 @@ namespace Microsoft.Docs.Build
                 }
 
                 context.GitHubUserCache.Save();
+                context.MicrosoftGraphCache.Save();
                 context.ContributionProvider.Save();
                 context.GitCommitProvider.Save();
             }
