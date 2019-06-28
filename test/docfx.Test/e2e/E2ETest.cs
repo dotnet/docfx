@@ -23,7 +23,7 @@ namespace Microsoft.Docs.Build
     {
         private static readonly string[] s_errorCodesWithoutLineInfo =
         {
-            "need-restore", "heading-not-found", "config-not-found", "committish-not-found", "custom-404-page",
+            "need-restore", "heading-not-found", "config-not-found", "committish-not-found", "custom-404-page", "json-syntax-error",
 
             // can be removed
             "moniker-config-missing",
@@ -302,23 +302,30 @@ namespace Microsoft.Docs.Build
 
         private static void CreateFiles(Dictionary<string, string> files, string targetFolder, string[] environmentVariables = null)
         {
-            environmentVariables = environmentVariables ?? Array.Empty<string>();
+            
 
             foreach (var (file, content) in files)
             {
-                var mutableContent = content ?? "";
+                var mutableContent = content;
                 var filePath = Path.Combine(targetFolder, file);
                 PathUtility.CreateDirectoryFromFilePath(filePath);
                 if (Path.GetFileNameWithoutExtension(file) == "docfx")
                 {
-                    foreach (var env in environmentVariables)
-                    {
-                        mutableContent = mutableContent.Replace($"{{{env}}}", Environment.GetEnvironmentVariable(env));
-                    }
-                    mutableContent = mutableContent.Replace("{APP_BASE_PATH}", AppContext.BaseDirectory);
+                    mutableContent = ParsePreservedKeys(mutableContent, environmentVariables);
                 }
                 File.WriteAllText(filePath, mutableContent);
             }
+        }
+
+        private static string ParsePreservedKeys(string content, string[] environmentVariables = null)
+        {
+            environmentVariables = environmentVariables ?? Array.Empty<string>();
+            content = content ?? "";
+            foreach (var env in environmentVariables)
+            {
+                content = content.Replace($"{{{env}}}", Environment.GetEnvironmentVariable(env));
+            }
+            return content.Replace("{APP_BASE_PATH}", AppContext.BaseDirectory);
         }
 
         private static string ToSafePathString(string value)
@@ -373,7 +380,12 @@ namespace Microsoft.Docs.Build
 
                             foreach (var (path, content) in commit.Files)
                             {
-                                var blob = repo.ObjectDatabase.CreateBlob(new MemoryStream(Encoding.UTF8.GetBytes(content?.Replace("\r", "") ?? "")));
+                                var mutableContent = content;
+                                if (Path.GetFileNameWithoutExtension(path) == "docfx")
+                                {
+                                    mutableContent = ParsePreservedKeys(mutableContent);
+                                }
+                                var blob = repo.ObjectDatabase.CreateBlob(new MemoryStream(Encoding.UTF8.GetBytes(mutableContent?.Replace("\r", "") ?? "")));
                                 tree.Add(path, blob, LibGit2Sharp.Mode.NonExecutableFile);
                             }
 

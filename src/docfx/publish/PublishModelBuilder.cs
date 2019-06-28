@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
@@ -18,6 +19,8 @@ namespace Microsoft.Docs.Build
 
         public void MarkError(Document file)
         {
+            // TODO: If Error has a Document identifier, we can retrieve files with errors from
+            //       error log without explicitly call PublishModelBuilder.MarkError
             _filesWithErrors.Add(file);
         }
 

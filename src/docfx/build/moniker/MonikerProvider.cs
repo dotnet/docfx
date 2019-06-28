@@ -25,7 +25,7 @@ namespace Microsoft.Docs.Build
             var monikerDefinition = new MonikerDefinitionModel();
             if (!string.IsNullOrEmpty(docset.Config.MonikerDefinition))
             {
-                var (_, content, _) = RestoreMap.GetRestoredFileContent(docset, docset.Config.MonikerDefinition);
+                var content = RestoreMap.GetRestoredFileContent(docset, docset.Config.MonikerDefinition);
                 monikerDefinition = JsonUtility.Deserialize<MonikerDefinitionModel>(content, docset.Config.MonikerDefinition);
             }
             var monikersEvaluator = new EvaluatorWithMonikersVisitor(monikerDefinition);
@@ -70,7 +70,7 @@ namespace Microsoft.Docs.Build
         private (Error error, List<string> monikers) GetFileLevelMonikersCore(Document file)
         {
             var errors = new List<Error>();
-            var (_, metadata) = _metadataProvider.GetMetadata(file);
+            var (_, _, metadata) = _metadataProvider.GetMetadata(file);
 
             string configMonikerRange = null;
             var configMonikers = new List<string>();

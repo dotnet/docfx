@@ -39,7 +39,6 @@ namespace Microsoft.Docs.Build
             RestoreMap restoreMap,
             Repository fallbackRepo = null)
         {
-            XrefMap xrefMap = null;
             var (configErrors, config) = GetBuildConfig(docsetPath, options, locale, fallbackRepo);
             errorLog.Configure(config);
 
@@ -50,25 +49,22 @@ namespace Microsoft.Docs.Build
             var docset = GetBuildDocset(new Docset(errorLog, docsetPath, locale, config, options, restoreMap, repository, fallbackRepo));
             var outputPath = Path.Combine(docsetPath, config.Output.Path);
 
-            using (var context = new Context(outputPath, errorLog, docset, () => xrefMap))
+            using (var context = new Context(outputPath, errorLog, docset, BuildFile))
             {
-                xrefMap = XrefMapBuilder.Build(context, docset);
-                var tocMap = TableOfContentsMap.Create(context, docset);
-
-                context.BuildQueue.Enqueue(GetBuildScope(docset, tocMap));
+                context.BuildQueue.Enqueue(context.BuildScope.Files);
 
                 using (Progress.Start("Building files"))
                 {
-                    await context.BuildQueue.Drain(item => BuildFile(context, item, docset, tocMap), Progress.Update);
+                    await context.BuildQueue.Drain(Progress.Update);
                 }
 
-                context.GitCommitProvider.SaveGitCommitCache();
-                ValidateBookmarks();
+                context.BookmarkValidator.Validate();
 
                 var (publishModel, fileManifests) = context.PublishModelBuilder.Build(context, docset.Legacy);
                 var dependencyMap = context.DependencyMapBuilder.Build();
+                var xrefMapModel = context.XrefMap.ToXrefMapModel(context);
 
-                xrefMap.OutputXrefMap(context);
+                context.Output.WriteJson(xrefMapModel, "xrefmap.json");
                 context.Output.WriteJson(publishModel, ".publish.json");
                 context.Output.WriteJson(dependencyMap.ToDependencyMapModel(), ".dependencymap.json");
 
@@ -77,63 +73,45 @@ namespace Microsoft.Docs.Build
                     if (config.Output.Json)
                     {
                         // TODO: decouple files and dependencies from legacy.
-                        Legacy.ConvertToLegacyModel(docset, context, fileManifests, dependencyMap, tocMap);
+                        Legacy.ConvertToLegacyModel(docset, context, fileManifests, dependencyMap);
                     }
                     else
                     {
-                        context.Template.CopyTo(outputPath);
+                        context.TemplateEngine.CopyTo(outputPath);
                     }
                 }
 
                 context.GitHubUserCache.Save();
+                context.MicrosoftGraphCache.Save();
                 context.ContributionProvider.Save();
-
-                void ValidateBookmarks()
-                {
-                    foreach (var (error, file) in context.BookmarkValidator.Validate())
-                    {
-                        // TODO: clean up ErrorLog.Write inputting file, should take file from Error
-                        if (context.ErrorLog.Write(file.FilePath, new List<Error> { error }))
-                        {
-                            context.PublishModelBuilder.MarkError(file);
-                        }
-                    }
-                }
+                context.GitCommitProvider.Save();
             }
         }
 
-        private static async Task BuildFile(Context context, Document file, Docset docset, TableOfContentsMap tocMap)
+        private static async Task BuildFile(Context context, Document file)
         {
-            // source content in a localization docset
-            if (file.ContentType != ContentType.TableOfContents && docset.IsLocalized() && !file.Docset.IsLocalized())
-            {
-                return;
-            }
-
-            if (file.ContentType == ContentType.TableOfContents && !tocMap.Contains(file))
+            if (!ShouldBuildFile())
             {
                 return;
             }
 
             try
             {
-                var publishItem = default(PublishItem);
                 var errors = Enumerable.Empty<Error>();
-
                 switch (file.ContentType)
                 {
                     case ContentType.Resource:
-                        (errors, publishItem) = BuildResource.Build(context, file);
+                        errors = BuildResource.Build(context, file);
                         break;
                     case ContentType.Page:
-                        (errors, publishItem) = await BuildPage.Build(context, file, tocMap);
+                        errors = await BuildPage.Build(context, file);
                         break;
                     case ContentType.TableOfContents:
                         // TODO: improve error message for toc monikers overlap
-                        (errors, publishItem) = BuildTableOfContents.Build(context, file);
+                        errors = BuildTableOfContents.Build(context, file);
                         break;
                     case ContentType.Redirection:
-                        (errors, publishItem) = BuildRedirection.Build(context, file);
+                        errors = BuildRedirection.Build(context, file);
                         break;
                 }
 
@@ -147,13 +125,29 @@ namespace Microsoft.Docs.Build
             }
             catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
             {
-                context.ErrorLog.Write(file.ToString(), dex.Error);
+                context.ErrorLog.Write(file.ToString(), dex.Error, true);
                 context.PublishModelBuilder.MarkError(file);
             }
             catch
             {
                 Console.WriteLine($"Build {file.FilePath} failed");
                 throw;
+            }
+
+            bool ShouldBuildFile()
+            {
+                if (file.ContentType == ContentType.TableOfContents)
+                {
+                    if (!context.TocMap.Contains(file))
+                    {
+                        return false;
+                    }
+
+                    // if A toc includes B toc and only B toc is localized, then A need to be included and built
+                    return !file.Docset.IsFallback() || (context.TocMap.TryGetTocReferences(file, out var tocReferences) && tocReferences.Any(toc => !toc.Docset.IsFallback()));
+                }
+
+                return !file.Docset.IsFallback();
             }
         }
 
@@ -213,32 +207,6 @@ namespace Microsoft.Docs.Build
             Debug.Assert(sourceDocset != null);
 
             return sourceDocset.LocalizationDocset ?? sourceDocset;
-        }
-
-        private static IReadOnlyList<Document> GetBuildScope(Docset docset, TableOfContentsMap tocMap)
-        {
-            Debug.Assert(tocMap != null);
-
-            if (!docset.IsLocalized())
-            {
-                return docset.BuildScope.ToList();
-            }
-
-            // if A toc includes B toc and only B toc is localized, then A need to be included and built
-            var tocBuildScope = docset.BuildScope.Where(d => d.ContentType == ContentType.TableOfContents).ToList();
-            var fallbackTocs = new List<Document>();
-            foreach (var toc in tocBuildScope)
-            {
-                if (tocMap.TryFindParents(toc, out var parents))
-                {
-                    fallbackTocs.AddRange(parents);
-                }
-            }
-
-            var buildScope = docset.BuildScope.ToList();
-            buildScope.AddRange(fallbackTocs);
-
-            return buildScope;
         }
     }
 }

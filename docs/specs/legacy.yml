@@ -48,7 +48,7 @@ outputs:
   c.raw.page.json: |
     {
       "content": "<p><a href=\"d.png\" data-linktype=\"relative-path\">d</a></p>",
-      "rawMetadata": { "conceptual": "<p><a href=\"d.png\" data-linktype=\"relative-path\">d</a></p>\n", "ms.author": "yufeih", "!robots": null, "api_name": ["API Name"] },
+      "rawMetadata": { "ms.author": "yufeih", "!robots": null, "api_name": ["API Name"] },
       "themesRelativePathToOutputRoot": "_themes/",
       "pageMetadata": "
         <meta name=\"APIName\" content=\"API Name\" />
@@ -62,7 +62,6 @@ outputs:
         <meta name=\"search.ms_product\" content=\"\" />
         <meta name=\"search.ms_sitename\" content=\"Docs\" />
         <meta name=\"site_name\" content=\"Docs\" />
-        <meta name=\"toc_rel\" content=\"toc.json\" />
         <meta name=\"updated_at\" content=\"2018-10-30 12:00 AM\" />
         <meta name=\"wordCount\" content=\"1\" />"
     }
@@ -71,7 +70,6 @@ outputs:
   toc.json:
   toc.mta.json:
   .manifest.json:
-  .dependency-map.json:
   filemap.json:
   op_aggregated_file_map_info.json:
   .publish.json:
@@ -143,9 +141,8 @@ outputs:
         "site_name": "Docs",
         "__global": {
         },
-        "conceptual": "\n<p><a href=\"d.png\">d</a></p>\n",
         "_path": "c.json",
-        "toc_rel": "toc.json",
+        "_tocRel": "toc.json",
         "wordCount": 2,
         "title": "Title",
         "rawTitle": "<h1 id=\"title\">Title</h1>",
@@ -204,7 +201,8 @@ outputs:
 ---
 # Resolve link for landing page
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    template: {APP_BASE_PATH}data/template
   docs/index.yml: |
     ### YamlMime:YamlDocument
     title: REST API Documentation
@@ -219,20 +217,18 @@ inputs:
 outputs:
   docs/index.json: |
     {
-      "content": {
-        "title": "REST API Documentation",
-        "abstract": {
-            "description": "<p><a href=\"../b\">&quot;b&quot;</a></p>\n",
-            "menu": {
-                "items": [
-                    {
-                        "href": "../b"
-                    }
-                ]
-            }
-        },
-        "documentType": "LandingData"
-      }
+      "title": "REST API Documentation",
+      "abstract": {
+          "description": "<p><a href=\"../b\">&quot;b&quot;</a></p>\n",
+          "menu": {
+              "items": [
+                  {
+                      "href": "../b"
+                  }
+              ]
+          }
+      },
+      "documentType": "LandingData"
     }
   b.json:
 ---
@@ -241,6 +237,7 @@ commands:
   - build --legacy
 inputs:
   docfx.yml: |
+    template: {APP_BASE_PATH}data/template
     redirections:
       docs/a.md: /asdf
   docs/a.md:
@@ -252,13 +249,15 @@ commands:
   - build --legacy
 inputs:
   docfx.yml: |
+    template: {APP_BASE_PATH}data/template
     redirections:
       redirect.md: /redirect/to
   a.md: |
     [link](redirect.md)
 outputs:
+  a.mta.json:
   a.raw.page.json: |
-    { "conceptual": "<p>\n<a data-linktype=\"relative-path\" href=\"redirect\">link</a></p>" }
+    { "content": "<p>\n<a data-linktype=\"relative-path\" href=\"redirect\">link</a></p>" }
   redirect.mta.json:
   redirect.raw.page.json:
 ---
@@ -285,7 +284,8 @@ outputs:
 commands:
   - build --legacy
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    template: {APP_BASE_PATH}data/template
   docs/a.yml: |
     #YamlMime:LandingData
     title: my title
@@ -293,14 +293,17 @@ inputs:
     metadata:
       key2: value2
 outputs:
+  docs/a.mta.json:
   docs/a.raw.page.json: |
-    {"key1":"value1","key2":"value2"}
+    {"rawMetadata": {"key1":"value1","key2":"value2"}}
+  docs/a.mta.json:
 ---
 # Context object type is TOC
 commands:
   - build --legacy
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    template: {APP_BASE_PATH}data/template
   docs/a.yml: |
     #YamlMime: ContextObject
 outputs:
@@ -328,6 +331,7 @@ commands:
   - build --legacy
 inputs:
   docfx.yml: |
+    template: {APP_BASE_PATH}data/template
     monikerRange:
       'docs/v1/**': '< netcore-2.0'
     baseUrl: https://docs.com/docs
@@ -348,9 +352,11 @@ inputs:
       ]
     }
 outputs:
+  docs/a.mta.json:
   docs/a.raw.page.json:
+  docs/9d4e15fd/a.mta.json:
   docs/9d4e15fd/a.raw.page.json:
-  docs/.dependency-map.json:
+  full-dependent-list.txt:
   docs/.manifest.json: |
     {
       "files":[
@@ -368,6 +374,7 @@ outputs:
           "output_relative_path":"9d4e15fd/a.html",
           "asset_id":"a",
           "version": "< netcore-2.0",
+          "monikers":["netcore-1.0","netcore-1.1"],
           "is_moniker_range": true
         }
       }

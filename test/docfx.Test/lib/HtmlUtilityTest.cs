@@ -38,7 +38,7 @@ namespace Microsoft.Docs.Build
         [InlineData("<div><script></script></div>", "<div></div>")]
         public void HtmlPostProcess(string input, string output)
         {
-            var actual = HtmlUtility.HtmlPostProcess(input, new CultureInfo("zh-CN"));
+            var actual = HtmlUtility.LoadHtml(input).HtmlPostProcess(new CultureInfo("zh-CN"));
 
             Assert.Equal(TestUtility.NormalizeHtml(output), TestUtility.NormalizeHtml(actual));
         }

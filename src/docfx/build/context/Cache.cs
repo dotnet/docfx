@@ -12,7 +12,7 @@ namespace Microsoft.Docs.Build
     internal class Cache
     {
         private readonly ConcurrentDictionary<string, Lazy<(List<Error>, JToken)>> _tokenCache = new ConcurrentDictionary<string, Lazy<(List<Error>, JToken)>>();
-        private readonly ConcurrentDictionary<string, Lazy<(List<Error>, TableOfContentsModel, List<(Document doc, string herf)>, List<Document>)>> _tocModelCache = new ConcurrentDictionary<string, Lazy<(List<Error>, TableOfContentsModel, List<(Document doc, string herf)>, List<Document>)>>();
+        private readonly ConcurrentDictionary<string, Lazy<(List<Error> errors, TableOfContentsModel tocModel, List<Document> referencedFiles, List<Document> referencedTocs)>> _tocModelCache = new ConcurrentDictionary<string, Lazy<(List<Error>, TableOfContentsModel, List<Document>, List<Document>)>>();
 
         public (List<Error> errors, JToken token) LoadYamlFile(Document file)
             => _tokenCache.GetOrAdd(GetKeyFromFile(file), new Lazy<(List<Error>, JToken)>(() =>
@@ -30,11 +30,11 @@ namespace Microsoft.Docs.Build
                 return JsonUtility.Parse(content, file.FilePath);
             })).Value;
 
-        public (List<Error>, TableOfContentsModel, List<(Document doc, string herf)>, List<Document>) LoadTocModel(Context context, Document file)
+        public (List<Error> errors, TableOfContentsModel tocModel, List<Document> referencedFiles, List<Document> referencedTocs) LoadTocModel(Context context, Document file)
             => _tocModelCache.GetOrAdd(
                 file.FilePath,
-                new Lazy<(List<Error>, TableOfContentsModel, List<(Document doc, string herf)>, List<Document>)>(
-                    () => BuildTableOfContents.Load(context, file))).Value;
+                new Lazy<(List<Error>, TableOfContentsModel, List<Document>, List<Document>)>(
+                    () => TableOfContentsParser.Load(context, file))).Value;
 
         private string GetKeyFromFile(Document file)
         {

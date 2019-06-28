@@ -1,7 +1,8 @@
 ---
 # Support schema documents in YAML format
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    template: {APP_BASE_PATH}data/template
   docs/a.yml: |
     #YamlMime:LandingData
     title: my title
@@ -10,7 +11,7 @@ inputs:
 outputs:
   docs/a.json: |
     {
-      "content": { "title": "my title" },
+      "title": "my title",
       "key": "value"
     }
 ---
@@ -26,7 +27,7 @@ inputs:
 outputs:
   docs/a.json: |
     { 
-      "content": { "title": "my title" },
+      "title": "my title",
       "key": "value" 
     }
 ---
@@ -55,12 +56,13 @@ inputs:
 outputs:
   docs/a.json: |
     {
-      "content": { "title": "my title" }
+      "title": "my title"
     }
 ---
 # Throw error when defined schema is not found
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    template: {APP_BASE_PATH}data/template
   docs/a.yml: |
     #YamlMime:SchemaNotExisting
     title: my title
@@ -78,7 +80,8 @@ outputs:
 ---
 # Support schema documents with Href content
 inputs:
-  docfx.yml:
+  docfx.yml:  |
+    template: {APP_BASE_PATH}data/template
   docs/A/TOC.yml:
   docs/TOC.yml:
   docs/a.yml: |
@@ -91,7 +94,9 @@ outputs:
   docs/a/toc.json:
   docs/a.json: |
     {
-      "content": { "brand": "azure", "breadcrumb_path": "toc.json", "toc_rel": "a/toc.json" },
+      "brand": "azure",
+      "breadcrumb_path": "toc.json",
+      "toc_rel": "a/toc.json"
     }
   .dependencymap.json: |
       {
@@ -105,7 +110,8 @@ outputs:
 ---
 # schema documents with Href content but wrong type
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    template: {APP_BASE_PATH}data/template
   TOC.yml:
   docs/TOC.yml:
   docs/a.yml: |
@@ -122,43 +128,46 @@ outputs:
 ---
 # Schema documents with Href content referencing resource file, the resouce file should be outputed
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    template: {APP_BASE_PATH}data/template
   docs/a.yml: |
     #YamlMime:TestPage
     href: image.png
   docs/image.png:
 outputs:
   docs/a.json: |
-    {"content": {"href": "image.png"}}
+    {"href": "image.png"}
   docs/image.png:
 ---
 # Support schema documents with Markdown content
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    template: {APP_BASE_PATH}data/template
   docs/index.yml: |
     #YamlMime:TestPage
     description: Hello `docfx`! <a href="a.md">a</a>
   docs/a.md:
 outputs:
   docs/index.json: |
-    { "content": { "description": "<p>Hello <code>docfx</code>! <a href=\"a\">a</a></p>" } }
+    { "description": "<p>Hello <code>docfx</code>! <a href=\"a\">a</a></p>" }
   docs/a.json:
 ---
 # Markdown content with null value
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    template: {APP_BASE_PATH}data/template
   docs/a.yml: |
     #YamlMime:TestPage
     description:
 outputs:
-  docs/a.json: |
-    { "content": {} }
+  docs/a.json:
   .errors.log: |
     ["warning","unexpected-type","Expect type 'String' but got 'Null'","docs/a.yml",2,13]
 ---
 # Support schema documents with inline markdown content
 inputs:
   docfx.yml: |
+    template: {APP_BASE_PATH}data/template
     rules:
       heading-not-found: error
   docs/a.yml: |
@@ -172,35 +181,38 @@ inputs:
       ## Not heading
 outputs:
   docs/a.json: |
-    { "content": { "inlineDescription": "This is a list:\n- Item 1\n- Item 2\n- <code>Item 3</code>## Not heading" } }
+    { "inlineDescription": "This is a list:\n- Item 1\n- Item 2\n- <code>Item 3</code>## Not heading" }
 ---
 # [skip] Support schema documents with html content
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    template: {APP_BASE_PATH}data/template
   docs/a.yml: |
     #YamlMime:TestPage
     html: link <a href="b.md"></a> <script></script>
   docs/b.md:
 outputs:
   docs/a.json: |
-    { "content": { "html": "link <a href=\"b\"></a>" } }
+    { "html": "link <a href=\"b\"></a>" }
   docs/b.json:
 ---
 # Support schema documents with href content
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    template: {APP_BASE_PATH}data/template
   docs/a.yml: |
     #YamlMime:TestPage
     href: b.md
   docs/b.md:
 outputs:
   docs/a.json: |
-    { "content": { "href": "b" } }
+    { "href": "b" }
   docs/b.json:
 ---
 # Output data schema to json, output page schema to html
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    template: {APP_BASE_PATH}data/template
   docs/a.md: |
     link to [data](data.yml) or [page](page.yml)
   docs/data.yml: |
@@ -215,7 +227,8 @@ outputs:
 ---
 # Markdown field with heading should not be removed
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    template: {APP_BASE_PATH}data/template
   docs/data.yml: |
     #YamlMime:TestData
   docs/page.yml: |
@@ -226,7 +239,7 @@ outputs:
   docs/data.json:
   docs/page.json: |
     {
-      "content": { "description": "<h1 id=\"heading\">Heading</h1>" }
+      "description": "<h1 id=\"heading\">Heading</h1>"
     }
 ---
 # Show yaml, json syntax error
@@ -244,7 +257,8 @@ outputs:
 ---
 # Invalid JSON
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    template: {APP_BASE_PATH}data/template
   docs/a.json: |
     {a}/{b}/{c}
   docs/b.yml: |

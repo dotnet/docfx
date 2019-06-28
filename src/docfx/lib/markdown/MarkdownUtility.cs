@@ -14,6 +14,10 @@ namespace Microsoft.Docs.Build
 {
     internal static class MarkdownUtility
     {
+        // This magic string identifies if an URL was a relative URL in source,
+        // URLs starting with this magic string are transformed into relative URL after markup.
+        private const string RelativeUrlMarker = "//////";
+
         private static readonly MarkdownPipeline[] s_markdownPipelines = new[]
         {
             CreateMarkdownPipeline(),
@@ -61,7 +65,16 @@ namespace Microsoft.Docs.Build
 
                     var html = Markdown.ToHtml(markdown, s_markdownPipelines[(int)pipelineType]);
 
-                    return (status.Errors, html);
+                    var htmlWithRelativeLink = HtmlUtility.TransformLinks(html, (href, _) =>
+                    {
+                        if (href.StartsWith(RelativeUrlMarker))
+                        {
+                            return UrlUtility.GetRelativeUrl(file.SiteUrl, href.Substring(RelativeUrlMarker.Length));
+                        }
+                        return href;
+                    });
+
+                    return (status.Errors, htmlWithRelativeLink);
                 }
                 finally
                 {
@@ -82,7 +95,12 @@ namespace Microsoft.Docs.Build
         {
             var status = t_status.Value.Peek();
             var source = new SourceInfo<string>(href, origin.ToSourceInfo());
-            var (error, link, display, _) = status.Context.DependencyResolver.ResolveXref(source, (Document)InclusionContext.File, (Document)InclusionContext.RootFile);
+            var (error, link, display, spec) = status.Context.DependencyResolver.ResolveXref(source, (Document)InclusionContext.File, (Document)InclusionContext.RootFile);
+
+            if (spec?.DeclairingFile != null)
+            {
+                link = RelativeUrlMarker + link;
+            }
 
             if (!isShorthand)
             {
@@ -140,7 +158,7 @@ namespace Microsoft.Docs.Build
 
         private static string GetToken(string key)
         {
-            return t_status.Value.Peek().Context.Template?.GetToken(key);
+            return t_status.Value.Peek().Context.TemplateEngine.GetToken(key);
         }
 
         private static void LogError(string code, string message, MarkdownObject origin, int? line)
