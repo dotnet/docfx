@@ -117,7 +117,7 @@ namespace Microsoft.Docs.Build
                     result.Append(HttpUtility.HtmlEncode(transformed));
                 }
                 pos = valueStartIndex + link.Value.Length;
-                columnOffset += 1;
+                columnOffset++;
             }
 
             if (html.Length > pos)
@@ -127,7 +127,7 @@ namespace Microsoft.Docs.Build
             return result.ToString();
         }
 
-        public static string TransformXref(string html, Func<string, bool, (string href, string display)> transform)
+        public static string TransformXref(string html, Func<string, bool, int, (string href, string display)> transform)
         {
             // Fast pass it does not have <xref> tag
             if (!(html.Contains("<xref", StringComparison.OrdinalIgnoreCase) && html.Contains("href", StringComparison.OrdinalIgnoreCase)))
@@ -138,7 +138,8 @@ namespace Microsoft.Docs.Build
             var doc = new HtmlDocument();
             doc.LoadHtml(html);
 
-            // TODO: get accurate line and column for HTML block lasting several lines and multiple nodes in the same line
+            // TODO: remove this column offset hack while we have accurate line info for link in HTML block
+            var columnOffset = 0;
             var replacingNodes = new List<(HtmlNode, HtmlNode)>();
             foreach (var node in doc.DocumentNode.Descendants())
             {
@@ -154,7 +155,7 @@ namespace Microsoft.Docs.Build
 
                 var isShorthand = raw.StartsWith("@");
 
-                var (resolvedHref, display) = transform(xref, isShorthand);
+                var (resolvedHref, display) = transform(xref, isShorthand, columnOffset);
 
                 var resolvedNode = new HtmlDocument();
                 if (string.IsNullOrEmpty(resolvedHref))
@@ -166,6 +167,7 @@ namespace Microsoft.Docs.Build
                     resolvedNode.LoadHtml($"<a href='{HttpUtility.HtmlEncode(resolvedHref)}'>{HttpUtility.HtmlEncode(display)}</a>");
                 }
                 replacingNodes.Add((node, resolvedNode.DocumentNode));
+                columnOffset++;
             }
 
             foreach (var (node, resolvedNode) in replacingNodes)

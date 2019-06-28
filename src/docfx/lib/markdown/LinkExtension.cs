@@ -10,10 +10,10 @@ using Microsoft.DocAsCode.MarkdigEngine.Extensions;
 
 namespace Microsoft.Docs.Build
 {
-    internal static class ResolveLinkExtension
+    internal static class LinkExtension
     {
-        public static MarkdownPipelineBuilder UseResolveLink(
-            this MarkdownPipelineBuilder builder, Func<string, MarkdownObject, int, string> getLink)
+        public static MarkdownPipelineBuilder UseLink(
+            this MarkdownPipelineBuilder builder, Func<SourceInfo<string>, string> getLink)
         {
             return builder.Use(document =>
             {
@@ -25,7 +25,8 @@ namespace Microsoft.Docs.Build
                     }
                     else if (node is LinkInline link && !link.IsAutoLink)
                     {
-                        link.Url = getLink(link.Url, link, 0) ?? link.Url;
+                        var href = new SourceInfo<string>(link.Url, link.ToSourceInfo());
+                        link.Url = getLink(href) ?? link.Url;
                     }
                     else if (node is HtmlBlock block)
                     {
@@ -43,7 +44,8 @@ namespace Microsoft.Docs.Build
             {
                 return HtmlUtility.TransformLinks(
                     html,
-                    (href, columnOffset) => getLink(href, block, columnOffset));
+                    (href, columnOffset) => getLink(
+                        new SourceInfo<string>(href, block.ToSourceInfo(columnOffset: columnOffset))));
             }
         }
     }

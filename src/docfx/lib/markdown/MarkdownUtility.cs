@@ -90,8 +90,8 @@ namespace Microsoft.Docs.Build
             return new MarkdownPipelineBuilder()
                 .UseYamlFrontMatter()
                 .UseDocfxExtensions(markdownContext)
-                .UseResolveLink(GetLink)
-                .UseResolveXref(GetXref)
+                .UseLink(GetLink)
+                .UseXref(GetXref)
                 .UseMonikerZone(GetMonikerRange)
                 .Build();
         }
@@ -103,8 +103,8 @@ namespace Microsoft.Docs.Build
             return new MarkdownPipelineBuilder()
                 .UseYamlFrontMatter()
                 .UseDocfxExtensions(markdownContext)
-                .UseResolveLink(GetLink)
-                .UseResolveXref(GetXref)
+                .UseLink(GetLink)
+                .UseXref(GetXref)
                 .UseMonikerZone(GetMonikerRange)
                 .UseInlineOnly()
                 .Build();
@@ -153,23 +153,26 @@ namespace Microsoft.Docs.Build
             return (content, file);
         }
 
-        private static string GetLink(string path, MarkdownObject origin, int columnOffset)
+        private static string GetLink(SourceInfo<string> href)
         {
             var status = t_status.Value.Peek();
-            var source = new SourceInfo<string>(path, origin.ToSourceInfo(columnOffset: columnOffset));
-            var (error, link, _) = status.Context.DependencyResolver.ResolveAbsoluteLink(
-                source, (Document)InclusionContext.File);
+            var (error, link, file) = status.Context.DependencyResolver.ResolveAbsoluteLink(
+                href, (Document)InclusionContext.File);
+
+            if (file != null)
+            {
+                link = RelativeUrlMarker + link;
+            }
 
             status.Errors.AddIfNotNull(error);
             return link;
         }
 
-        private static (string href, string display) GetXref(string href, bool isShorthand, MarkdownObject origin)
+        private static (string href, string display) GetXref(SourceInfo<string> href, bool isShorthand)
         {
             var status = t_status.Value.Peek();
-            var source = new SourceInfo<string>(href, origin.ToSourceInfo());
             var (error, link, display, spec) = status.Context.DependencyResolver.ResolveAbsoluteXref(
-                source, (Document)InclusionContext.File);
+                href, (Document)InclusionContext.File);
 
             if (spec?.DeclairingFile != null)
             {

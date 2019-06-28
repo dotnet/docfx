@@ -12,45 +12,48 @@ using Microsoft.DocAsCode.MarkdigEngine.Extensions;
 
 namespace Microsoft.Docs.Build
 {
-    internal static class ResolveXrefExtension
+    internal static class XrefExtension
     {
-        public static MarkdownPipelineBuilder UseResolveXref(
+        public static MarkdownPipelineBuilder UseXref(
             this MarkdownPipelineBuilder builder,
-            Func<string, bool, MarkdownObject, (string href, string display)> resolveXref)
+            Func<SourceInfo<string>, bool, (string href, string display)> resolveXref)
         {
             return builder.Use(document =>
             {
                 document.Replace(node =>
                 {
-                    var file = ((Document)InclusionContext.File).FilePath;
                     if (node is XrefInline xref)
                     {
-                        var isShorthand = xref.GetAttributes().Properties.Any(p => p.Key == "data-raw-source" && p.Value.StartsWith("@"));
-                        var (href, display) = resolveXref(xref.Href, isShorthand, xref);
+                        var raw = xref.GetAttributes().Properties.First(p => p.Key == "data-raw-source").Value;
+                        var isShorthand = raw.StartsWith("@");
+                        var source = new SourceInfo<string>(xref.Href, xref.ToSourceInfo());
+                        var (href, display) = resolveXref(source, isShorthand);
+
                         if (href is null)
                         {
-                            return node;
+                            return new LiteralInline(raw);
                         }
 
                         return new LinkInline(href, null).AppendChild(new LiteralInline(display));
                     }
                     else if (node is HtmlBlock block)
                     {
-                        block.Lines = new StringLineGroup(ResolveXref(block.Lines.ToString(), block.ToSourceInfo().Line, file, block));
+                        block.Lines = new StringLineGroup(ResolveXref(block.Lines.ToString(), block.ToSourceInfo().Line, block));
                     }
                     else if (node is HtmlInline inline)
                     {
-                        inline.Tag = ResolveXref(inline.Tag, inline.ToSourceInfo().Line, file, inline);
+                        inline.Tag = ResolveXref(inline.Tag, inline.ToSourceInfo().Line, inline);
                     }
                     return node;
                 });
             });
 
-            string ResolveXref(string html, int startLine, string file, MarkdownObject block)
+            string ResolveXref(string html, int startLine, MarkdownObject block)
             {
                 return HtmlUtility.TransformXref(
                     html,
-                    (href, isShorthand) => resolveXref(href, isShorthand, block));
+                    (href, isShorthand, columnOffset) => resolveXref(
+                        new SourceInfo<string>(href, block.ToSourceInfo(columnOffset: columnOffset)), isShorthand));
             }
         }
     }
