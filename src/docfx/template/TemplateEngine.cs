@@ -17,13 +17,13 @@ namespace Microsoft.Docs.Build
     {
         private const string DefaultTemplateDir = "_themes";
         private static readonly string[] s_resourceFolders = new[] { "global", "css", "fonts" };
+        private static IReadOnlyDictionary<string, Lazy<TemplateSchema>> _schemas;
 
         private readonly string _templateDir;
         private readonly LiquidTemplate _liquid;
         private readonly JavascriptEngine _js;
         private readonly HashSet<string> _htmlMetaHidden;
         private readonly Dictionary<string, string> _htmlMetaNames;
-        private readonly IReadOnlyDictionary<string, Lazy<TemplateSchema>> _schemas;
 
         public JObject Global { get; }
 
