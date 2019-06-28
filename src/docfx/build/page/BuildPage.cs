@@ -79,6 +79,7 @@ namespace Microsoft.Docs.Build
         {
             var errors = new List<Error>();
 
+            // Create output metadata
             var (inputMetadataErrors, inputMetadata) = context.MetadataProvider.GetMetadata(file);
             errors.AddRange(inputMetadataErrors);
 
