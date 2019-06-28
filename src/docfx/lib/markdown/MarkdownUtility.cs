@@ -83,32 +83,6 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static string GetLink(string path, MarkdownObject origin, int columnOffset)
-        {
-            var status = t_status.Value.Peek();
-            var (error, link, _) = status.Context.DependencyResolver.ResolveLink(new SourceInfo<string>(path, origin.ToSourceInfo(columnOffset: columnOffset)), (Document)InclusionContext.File, (Document)InclusionContext.RootFile);
-            status.Errors.AddIfNotNull(error);
-            return link;
-        }
-
-        private static (string href, string display) GetXref(string href, bool isShorthand, MarkdownObject origin)
-        {
-            var status = t_status.Value.Peek();
-            var source = new SourceInfo<string>(href, origin.ToSourceInfo());
-            var (error, link, display, spec) = status.Context.DependencyResolver.ResolveXref(source, (Document)InclusionContext.File, (Document)InclusionContext.RootFile);
-
-            if (spec?.DeclairingFile != null)
-            {
-                link = RelativeUrlMarker + link;
-            }
-
-            if (!isShorthand)
-            {
-                status.Errors.AddIfNotNull(error);
-            }
-            return (link, display);
-        }
-
         private static MarkdownPipeline CreateMarkdownPipeline()
         {
             var markdownContext = new MarkdownContext(GetToken, LogWarning, LogError, ReadFile);
@@ -118,7 +92,7 @@ namespace Microsoft.Docs.Build
                 .UseDocfxExtensions(markdownContext)
                 .UseResolveLink(GetLink)
                 .UseResolveXref(GetXref)
-                .UseMonikerZone(ParseMonikerRange)
+                .UseMonikerZone(GetMonikerRange)
                 .Build();
         }
 
@@ -131,7 +105,7 @@ namespace Microsoft.Docs.Build
                 .UseDocfxExtensions(markdownContext)
                 .UseResolveLink(GetLink)
                 .UseResolveXref(GetXref)
-                .UseMonikerZone(ParseMonikerRange)
+                .UseMonikerZone(GetMonikerRange)
                 .UseInlineOnly()
                 .Build();
         }
@@ -179,7 +153,37 @@ namespace Microsoft.Docs.Build
             return (content, file);
         }
 
-        private static List<string> ParseMonikerRange(SourceInfo<string> monikerRange)
+        private static string GetLink(string path, MarkdownObject origin, int columnOffset)
+        {
+            var status = t_status.Value.Peek();
+            var source = new SourceInfo<string>(path, origin.ToSourceInfo(columnOffset: columnOffset));
+            var (error, link, _) = status.Context.DependencyResolver.ResolveAbsoluteLink(
+                source, (Document)InclusionContext.File);
+
+            status.Errors.AddIfNotNull(error);
+            return link;
+        }
+
+        private static (string href, string display) GetXref(string href, bool isShorthand, MarkdownObject origin)
+        {
+            var status = t_status.Value.Peek();
+            var source = new SourceInfo<string>(href, origin.ToSourceInfo());
+            var (error, link, display, spec) = status.Context.DependencyResolver.ResolveAbsoluteXref(
+                source, (Document)InclusionContext.File);
+
+            if (spec?.DeclairingFile != null)
+            {
+                link = RelativeUrlMarker + link;
+            }
+
+            if (!isShorthand)
+            {
+                status.Errors.AddIfNotNull(error);
+            }
+            return (link, display);
+        }
+
+        private static List<string> GetMonikerRange(SourceInfo<string> monikerRange)
         {
             var status = t_status.Value.Peek();
             var (error, monikers) = status.Context.MonikerProvider.GetZoneLevelMonikers((Document)InclusionContext.File, monikerRange);

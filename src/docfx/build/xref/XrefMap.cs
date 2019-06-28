@@ -60,7 +60,7 @@ namespace Microsoft.Docs.Build
             var spec = ResolveXrefSpec(uid, moniker);
             if (spec is null)
             {
-                return (Errors.XrefNotFound(uid), null, null, null);
+                return (Errors.XrefNotFound(href), null, null, null);
             }
 
             var (_, query, fragment) = UrlUtility.SplitUrl(spec.Href);

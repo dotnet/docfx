@@ -284,15 +284,15 @@ namespace Microsoft.Docs.Build
         /// Failed to resolve uid defined by @ syntax.
         /// </summary>
         /// Behavior: ❌ Message: ✔️
-        public static Error AtXrefNotFound(SourceInfo<string> uid)
-            => new Error(ErrorLevel.Off, "at-xref-not-found", $"Cross reference not found: '{uid}'", uid);
+        public static Error AtXrefNotFound(SourceInfo<string> source)
+            => new Error(ErrorLevel.Off, "at-xref-not-found", $"Cross reference not found: '{source}'", source);
 
         /// <summary>
         /// Failed to resolve uid defined by [link](xref:uid) or <xref:uid> syntax.
         /// </summary>
         /// Behavior: ❌ Message: ✔️
-        public static Error XrefNotFound(SourceInfo<string> uid)
-            => new Error(ErrorLevel.Warning, "xref-not-found", $"Cross reference not found: '{uid}'", uid);
+        public static Error XrefNotFound(SourceInfo<string> source)
+            => new Error(ErrorLevel.Warning, "xref-not-found", $"Cross reference not found: '{source}'", source);
 
         /// <summary>
         /// Files published to the same url have no monikers or share common monikers.
