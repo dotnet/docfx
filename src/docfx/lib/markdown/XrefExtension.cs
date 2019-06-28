@@ -38,17 +38,17 @@ namespace Microsoft.Docs.Build
                     }
                     else if (node is HtmlBlock block)
                     {
-                        block.Lines = new StringLineGroup(ResolveXref(block.Lines.ToString(), block.ToSourceInfo().Line, block));
+                        block.Lines = new StringLineGroup(ResolveXref(block.Lines.ToString(), block));
                     }
                     else if (node is HtmlInline inline)
                     {
-                        inline.Tag = ResolveXref(inline.Tag, inline.ToSourceInfo().Line, inline);
+                        inline.Tag = ResolveXref(inline.Tag, inline);
                     }
                     return node;
                 });
             });
 
-            string ResolveXref(string html, int startLine, MarkdownObject block)
+            string ResolveXref(string html, MarkdownObject block)
             {
                 return HtmlUtility.TransformXref(
                     html,
