@@ -19,8 +19,8 @@ namespace Microsoft.Docs.Build
             var (errors, model) = await Load(context, file);
 
             var (outputErrors, output, metadata) = file.IsData
-                ? CreateDataOutput(context, file, model)
-                : CreatePageOutput(context, file, model);
+                ? CreateDataOutput(model)
+                : await CreatePageOutput(context, file, model);
 
             errors.AddRange(outputErrors);
 
@@ -57,7 +57,7 @@ namespace Microsoft.Docs.Build
                     context.Output.WriteJson(output, publishItem.Path);
                 }
 
-                if (file.Docset.Legacy && metadata != null)
+                if (file.Docset.Legacy && metadata.Count > 0)
                 {
                     var metadataPath = outputPath.Substring(0, outputPath.Length - ".raw.page.json".Length) + ".mta.json";
                     context.Output.WriteJson(metadata, metadataPath);
@@ -67,10 +67,11 @@ namespace Microsoft.Docs.Build
             return errors;
         }
 
-        private static async Task<(List<Error> errors, object output, JObject metadata)>
-            CreateDataOutput(Context context, Document file, JObject model)
+        private static (List<Error> errors, object output, JObject metadata)
+            CreateDataOutput(JObject model)
         {
-            throw new NotSupportedException();
+            // TODO: run jint
+            return (new List<Error>(), model, new JObject());
         }
 
         private static async Task<(List<Error> errors, object output, JObject metadata)>
@@ -82,17 +83,34 @@ namespace Microsoft.Docs.Build
             errors.AddRange(inputMetadataErrors);
 
             var (outputMetadataErrors, outputMetadata) = await CreateOutputMetadata(context, file, inputMetadata);
+            var rawOutputMetadata = JsonUtility.ToJObject(outputMetadata);
+
             errors.AddRange(outputMetadataErrors);
 
+            // Create page model
             var pageModel = new JObject();
 
             JsonUtility.Merge(pageModel, model);
-            JsonUtility.Merge(pageModel, inputMetadata.RawMetadata);
-            JsonUtility.Merge(pageModel, JsonUtility.ToJObject(outputMetadata));
+            JsonUtility.Merge(pageModel, inputMetadata.RawObject);
+            JsonUtility.Merge(pageModel, rawOutputMetadata);
 
+            if (file.Docset.Config.Output.Json && !file.Docset.Legacy)
+            {
+                return (errors, pageModel, rawOutputMetadata);
+            }
+
+            // Create template model
             var (templateModel, metadata) = CreateTemplateModel(context, file, pageModel);
 
-            return (errors, templateModel, metadata);
+            if (file.Docset.Config.Output.Json)
+            {
+                return (errors, templateModel, metadata);
+            }
+
+            // Create HTML
+            var html = context.TemplateEngine.RunLiquid(templateModel, file);
+
+            return (errors, html, metadata);
         }
 
         private static async Task<(List<Error>, OutputMetadata)> CreateOutputMetadata(Context context, Document file, InputMetadata inputMetadata)
@@ -243,23 +261,6 @@ namespace Microsoft.Docs.Build
             var rawMetadata = context.TemplateEngine.CreateRawMetadata(pageModel, file);
 
             return context.TemplateEngine.Transform(conceptual, rawMetadata, file.Mime);
-        }
-
-        private static (object model, JObject metadata) ApplyPageTemplate(Context context, Document file, JObject output, string conceptual)
-        {
-            var rawMetadata = context.TemplateEngine.CreateRawMetadata(output, file);
-
-            if (!file.Docset.Config.Output.Json)
-            {
-                return (context.TemplateEngine.Render(conceptual, file, rawMetadata, file.Mime), null);
-            }
-
-            if (file.Docset.Legacy)
-            {
-                return context.TemplateEngine.Transform(conceptual, rawMetadata, file.Mime);
-            }
-
-            return (output, rawMetadata);
         }
     }
 }

@@ -110,20 +110,16 @@ namespace Microsoft.Docs.Build
             return new TemplateEngine(themePath, docset.MetadataSchema);
         }
 
-        public string Render(string content, Document file, JObject rawMetadata, string mime)
+        public string RunLiquid(TemplateModel model, Document file)
         {
-            // TODO: only works for conceptual
-            rawMetadata = TransformPageMetadata(rawMetadata, mime);
-            var metadata = CreateMetadata(rawMetadata);
-
-            var layout = rawMetadata.Value<string>("layout") ?? "";
+            var layout = model.RawMetadata.Value<string>("layout") ?? "";
             var themeRelativePath = PathUtility.GetRelativePathToFile(file.SitePath, "_themes");
 
             var liquidModel = new JObject
             {
-                ["content"] = content,
-                ["page"] = rawMetadata,
-                ["metadata"] = metadata,
+                ["content"] = model.Content,
+                ["page"] = model.RawMetadata,
+                ["metadata"] = new JObject(),
                 ["theme_rel"] = themeRelativePath,
             };
 

@@ -91,7 +91,7 @@ namespace Microsoft.Docs.Build
             var (validationErrors, metadata) = JsonUtility.ToObject<InputMetadata>(rawMetadata);
             errors.AddRange(validationErrors);
 
-            metadata.RawMetadata = rawMetadata;
+            metadata.RawObject = rawMetadata;
 
             return (errors, metadata);
         }

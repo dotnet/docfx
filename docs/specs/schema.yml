@@ -49,13 +49,13 @@ outputs:
 # Throw error when content is not an object
 inputs:
   docfx.yml:
-  _theme/schemas/test.json
+  _theme/schemas/test.json: '{}'
   a.yml: |
     #YamlMime:test
-    []
+    - array
 outputs:
   .errors.log: |
-   ["error","schema-not-found","Unknown schema ''","docs/a.yml",1,1]
+   ["error","schema-not-found","Unknown schema ''","a.yml",1,1]
 ---
 # Fallback to documentType when yaml mime is YamlDocument
 inputs:

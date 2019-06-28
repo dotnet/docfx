@@ -25,6 +25,6 @@ namespace Microsoft.Docs.Build
         public string TocRel { get; set; }
 
         [JsonIgnore]
-        public JObject RawMetadata { get; set; } = new JObject();
+        public JObject RawObject { get; set; } = new JObject();
     }
 }
