@@ -11,5 +11,6 @@ namespace Microsoft.Docs.Build
         InlineMarkdown,
         Html,
         Xref,
+        Uid, // TODO: check v2's behavior for this type
     }
 }

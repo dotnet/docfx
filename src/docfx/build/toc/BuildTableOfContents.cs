@@ -1,16 +1,16 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 
 namespace Microsoft.Docs.Build
 {
     internal static class BuildTableOfContents
     {
-        public static (IEnumerable<Error>, PublishItem publishItem) Build(Context context, Document file)
+        public static List<Error> Build(Context context, Document file)
         {
             Debug.Assert(file.ContentType == ContentType.TableOfContents);
 
@@ -42,7 +42,7 @@ namespace Microsoft.Docs.Build
             {
                 if (file.Docset.Legacy)
                 {
-                    var output = context.Template.TransformTocMetadata(JsonUtility.ToJObject(model));
+                    var output = context.TemplateEngine.TransformTocMetadata(JsonUtility.ToJObject(model));
                     context.Output.WriteJson(output, outputPath);
                     context.Output.WriteJson(model.Metadata, LegacyUtility.ChangeExtension(outputPath, ".mta.json"));
                 }
@@ -52,77 +52,7 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            return (errors, publishItem);
-        }
-
-        public static (
-            List<Error> errors,
-            TableOfContentsModel model,
-            List<(Document doc, string href)> referencedDocuments,
-            List<Document> referencedTocs)
-
-            Load(Context context, Document fileToBuild)
-        {
-            var errors = new List<Error>();
-            var referencedDocuments = new List<(Document doc, string href)>();
-            var referencedTocs = new List<Document>();
-
-            // load toc model
-            var (loadErrors, model) = TableOfContentsParser.Load(
-                context,
-                fileToBuild,
-                (file, href, isInclude) =>
-                {
-                    var (error, referencedTocContent, referencedToc) = context.DependencyResolver.ResolveContent(href, file, DependencyType.TocInclusion);
-                    errors.AddIfNotNull(error);
-
-                    if (referencedToc != null && isInclude)
-                    {
-                        // add to referenced toc list
-                        referencedTocs.Add(referencedToc);
-                    }
-                    return (referencedTocContent, referencedToc);
-                },
-                (file, href, resultRelativeTo) =>
-                {
-                    var (error, link, buildItem) = context.DependencyResolver.ResolveLink(href, file, resultRelativeTo);
-                    errors.AddIfNotNull(error);
-
-                    if (buildItem != null)
-                    {
-                        // add to referenced document list
-                        referencedDocuments.Add((buildItem, link));
-                    }
-                    return (link, buildItem);
-                },
-                (file, uid) =>
-                {
-                    // add to referenced document list
-                    // TODO: pass line info into ResolveXref
-                    var (error, link, display, xrefSpec) = context.DependencyResolver.ResolveXref(uid, file, file);
-                    errors.AddIfNotNull(error);
-
-                    if (xrefSpec?.DeclairingFile != null)
-                    {
-                        referencedDocuments.Add((xrefSpec?.DeclairingFile, link));
-                    }
-
-                    return (link, display, xrefSpec?.DeclairingFile);
-                },
-                (document) =>
-                {
-                    if (document != null)
-                    {
-                        var (error, monikers) = context.MonikerProvider.GetFileLevelMonikers(document);
-                        errors.AddIfNotNull(error);
-                        return monikers;
-                    }
-                    return new List<string>();
-                });
-
-            errors.AddRange(loadErrors);
-
-            return (errors, model, referencedDocuments, referencedTocs);
+            return errors;
         }
     }
 }

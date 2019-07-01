@@ -278,7 +278,7 @@ inputs:
   a.md: '@System.String'
 outputs:
   .errors.log: |
-    ["error","file-not-found","Invalid file link: 'xref.json'.","*",3,7]
+    ["error","file-not-found","Invalid file link: 'xref.json'.","docfx.yml",3,7]
 ---
 # Treat warnings as errors
 inputs:

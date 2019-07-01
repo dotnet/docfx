@@ -38,7 +38,7 @@ namespace Microsoft.Docs.Build
         [InlineData("<div><script></script></div>", "<div></div>")]
         public void HtmlPostProcess(string input, string output)
         {
-            var actual = HtmlUtility.HtmlPostProcess(input, new CultureInfo("zh-CN"));
+            var actual = HtmlUtility.LoadHtml(input).HtmlPostProcess(new CultureInfo("zh-CN"));
 
             Assert.Equal(TestUtility.NormalizeHtml(output), TestUtility.NormalizeHtml(actual));
         }
@@ -70,8 +70,7 @@ namespace Microsoft.Docs.Build
         [InlineData(@"<xref href='a&amp;b' data-raw-source='@lower&amp;'>", "c&d", "", @"<a href='c&amp;d'></a>")]
         public void TransformXrefs(string input, string xref, string display, string output)
         {
-            var (_, result) = HtmlUtility.TransformXref(input, default, string.Empty, _ => (default, xref, display, default));
-            Assert.Equal(output, result);
+            Assert.Equal(output, HtmlUtility.TransformXref(input, (href, isShorthand, _) => (xref, display)));
         }
 
         [Theory]

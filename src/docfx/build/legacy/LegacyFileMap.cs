@@ -17,24 +17,18 @@ namespace Microsoft.Docs.Build
             Context context,
             List<Document> documents,
             Dictionary<string, List<LegacyDependencyMapItem>> dependencyMap,
-            Dictionary<Document, PublishItem> fileManifests)
+            Dictionary<Document, PublishItem> fileManifests,
+            LegacyVersionProvider legacyVersionProvider)
         {
             using (Progress.Start("Convert Legacy File Map"))
             {
                 var listBuilder = new ListBuilder<(string legacyFilePathRelativeToBaseFolder, LegacyFileMapItem fileMapItem)>();
 
-                var monikerRangeConfigs = new Dictionary<Func<string, bool>, string>();
-                foreach (var (key, monikerRange) in docset.Config.MonikerRange)
-                {
-                    monikerRangeConfigs.Add(GlobUtility.CreateGlobMatcher(key), monikerRange);
-                }
-                monikerRangeConfigs.Reverse();
-
                 Parallel.ForEach(
                     documents,
                     document =>
                     {
-                        if (document.IsSchemaData)
+                        if (document.IsData)
                         {
                             return;
                         }
@@ -42,8 +36,8 @@ namespace Microsoft.Docs.Build
                         var legacyOutputFilePathRelativeToSiteBasePath = document.ToLegacyOutputPathRelativeToSiteBasePath(docset, publishItem);
                         var legacySiteUrlRelativeToSiteBasePath = document.ToLegacySiteUrlRelativeToSiteBasePath(docset);
 
-                        var monikerRange = GetMonikerRangeConfig(document);
-                        var fileItem = LegacyFileMapItem.Instance(legacyOutputFilePathRelativeToSiteBasePath, legacySiteUrlRelativeToSiteBasePath, document.ContentType, monikerRange);
+                        var version = legacyVersionProvider.GetLegacyVersion(document);
+                        var fileItem = LegacyFileMapItem.Instance(legacyOutputFilePathRelativeToSiteBasePath, legacySiteUrlRelativeToSiteBasePath, document.ContentType, version, publishItem.Monikers);
                         if (fileItem != null)
                         {
                             listBuilder.Add((PathUtility.NormalizeFile(document.ToLegacyPathRelativeToBasePath(docset)), fileItem));
@@ -53,18 +47,6 @@ namespace Microsoft.Docs.Build
                 var fileMapItems = listBuilder.ToList();
                 Convert(docset, context, fileMapItems);
                 LegacyAggregatedFileMap.Convert(docset, context, fileMapItems, dependencyMap);
-
-                string GetMonikerRangeConfig(Document file)
-                {
-                    foreach (var (glob, monikerRange) in monikerRangeConfigs)
-                    {
-                        if (glob(file.FilePath))
-                        {
-                            return monikerRange;
-                        }
-                    }
-                    return default;
-                }
             }
         }
 

@@ -43,11 +43,6 @@ namespace Microsoft.Docs.Build
         public bool Legacy => _options.Legacy;
 
         /// <summary>
-        /// Gets the resolve alias
-        /// </summary>
-        public IReadOnlyDictionary<string, string> ResolveAlias { get; }
-
-        /// <summary>
         /// Gets the localization docset, it will be set when the current build locale is different with default locale
         /// </summary>
         public Docset LocalizationDocset { get; private set; }
@@ -97,35 +92,9 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public IReadOnlyDictionary<string, Docset> DependencyDocsets => _dependencyDocsets.Value;
 
-        /// <summary>
-        /// Gets the redirection map.
-        /// </summary>
-        public RedirectionMap Redirections => _redirections.Value;
-
-        /// <summary>
-        /// On a case insensitive system, cannot simply get the actual file casing:
-        /// https://github.com/dotnet/corefx/issues/1086
-        /// This lookup table stores a list of actual filenames.
-        /// </summary>
-        public HashSet<string> FileNames => _fileNames.Value;
-
-        /// <summary>
-        /// Gets the initial build scope.
-        /// </summary>
-        public HashSet<Document> BuildScope => _buildScope.Value;
-
-        /// <summary>
-        /// Gets the scan scope used to generate toc map, xref map, xxx map before build
-        /// </summary>
-        public HashSet<Document> ScanScope => _scanScope.Value;
-
         private readonly CommandLineOptions _options;
         private readonly ErrorLog _errorLog;
         private readonly ConcurrentDictionary<string, Lazy<Repository>> _repositories;
-        private readonly Lazy<HashSet<string>> _fileNames;
-        private readonly Lazy<HashSet<Document>> _buildScope;
-        private readonly Lazy<HashSet<Document>> _scanScope;
-        private readonly Lazy<RedirectionMap> _redirections;
         private readonly Lazy<IReadOnlyDictionary<string, Docset>> _dependencyDocsets;
 
         public Docset(
@@ -186,20 +155,7 @@ namespace Microsoft.Docs.Build
             (HostName, SiteBasePath) = SplitBaseUrl(config.BaseUrl);
 
             MetadataSchema = LoadMetadataSchema(Config);
-            ResolveAlias = LoadResolveAlias(Config);
             Repository = repository ?? Repository.Create(DocsetPath, branch: null);
-            var glob = GlobUtility.CreateGlobMatcher(Config.Files, Config.Exclude.Concat(Config.DefaultExclude).ToArray());
-
-            // pass on the command line options to its children
-            _fileNames = new Lazy<HashSet<string>>(() => GetFileNames(DocsetPath));
-            _buildScope = new Lazy<HashSet<Document>>(() => CreateBuildScope(Redirections.Files, glob));
-            _redirections = new Lazy<RedirectionMap>(() =>
-            {
-                var (errors, map) = RedirectionMap.Create(this, glob);
-                errorLog.Write(errors);
-                return map;
-            });
-            _scanScope = new Lazy<HashSet<Document>>(() => GetScanScope(this));
 
             _dependencyDocsets = new Lazy<IReadOnlyDictionary<string, Docset>>(() =>
             {
@@ -258,52 +214,15 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private Dictionary<string, string> LoadResolveAlias(Config config)
-        {
-            var result = new Dictionary<string, string>(PathUtility.PathComparer);
-
-            foreach (var (alias, aliasPath) in config.ResolveAlias)
-            {
-                result.TryAdd(PathUtility.NormalizeFolder(alias), PathUtility.NormalizeFolder(aliasPath));
-            }
-
-            return result.Reverse().ToDictionary(item => item.Key, item => item.Value);
-        }
-
         private JsonSchema LoadMetadataSchema(Config config)
         {
             var token = new JObject();
             foreach (var metadataSchema in config.MetadataSchema)
             {
-                var (_, content, _) = RestoreMap.GetRestoredFileContent(this, metadataSchema);
+                var content = RestoreMap.GetRestoredFileContent(this, metadataSchema);
                 JsonUtility.Merge(token, JsonUtility.Parse(content, metadataSchema).value as JObject);
             }
             return JsonUtility.ToObject<JsonSchema>(token).value;
-        }
-
-        private static HashSet<string> GetFileNames(string docsetPath)
-        {
-            return Directory.GetFiles(docsetPath, "*.*", SearchOption.AllDirectories)
-                            .Select(path => Path.GetRelativePath(docsetPath, path).Replace('\\', '/'))
-                            .ToHashSet(PathUtility.PathComparer);
-        }
-
-        private HashSet<Document> CreateBuildScope(IEnumerable<Document> redirections, Func<string, bool> glob)
-        {
-            using (Progress.Start("Globbing files"))
-            {
-                var files = new ListBuilder<Document>();
-
-                ParallelUtility.ForEach(FileNames, file =>
-                {
-                    if (glob(file))
-                    {
-                        files.Add(Document.CreateFromFile(this, file));
-                    }
-                });
-
-                return new HashSet<Document>(files.ToList().Concat(redirections));
-            }
         }
 
         private static (List<Error>, Dictionary<string, Docset>) LoadDependencies(
@@ -324,30 +243,6 @@ namespace Microsoft.Docs.Build
                 result.TryAdd(PathUtility.NormalizeFolder(name), new Docset(errorLog, dir, locale, subConfig, options, subRestoreMap, isDependency: true));
             }
             return (errors, result);
-        }
-
-        private static HashSet<Document> GetScanScope(Docset docset)
-        {
-            var scanScopeFilePaths = new HashSet<string>(PathUtility.PathComparer);
-            var scanScope = new HashSet<Document>();
-
-            foreach (var buildScope in new[] { docset.LocalizationDocset?.BuildScope, docset.BuildScope, docset.FallbackDocset?.BuildScope })
-            {
-                if (buildScope is null)
-                {
-                    continue;
-                }
-
-                foreach (var document in buildScope)
-                {
-                    if (scanScopeFilePaths.Add(document.FilePath))
-                    {
-                        scanScope.Add(document);
-                    }
-                }
-            }
-
-            return scanScope;
         }
 
         private static (string hostName, string siteBasePath) SplitBaseUrl(string baseUrl)

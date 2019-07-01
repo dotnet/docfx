@@ -35,7 +35,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public void SaveGitCommitCache()
+        public void Save()
         {
             foreach (var p in _fileCommitProvidersByRepoPath.Values)
             {

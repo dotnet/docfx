@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using Newtonsoft.Json;
 
@@ -24,9 +25,12 @@ namespace Microsoft.Docs.Build
         [JsonProperty(PropertyName = "is_moniker_range")]
         public bool IsMonikerRange { get; set; } = true;
 
+        [JsonProperty(PropertyName = "monikers")]
+        public List<string> Monikers { get; set; } = new List<string>();
+
         public bool ShouldSerializeIsMonikerRange() => !string.IsNullOrEmpty(Version);
 
-        public LegacyFileMapItem(string legacyOutputFilePathRelativeToSiteBasePath, string legacySiteUrlRelativeToSiteBasePath, ContentType contentType, string version)
+        public LegacyFileMapItem(string legacyOutputFilePathRelativeToSiteBasePath, string legacySiteUrlRelativeToSiteBasePath, ContentType contentType, string version, List<string> monikers)
         {
             switch (contentType)
             {
@@ -36,12 +40,14 @@ namespace Microsoft.Docs.Build
                     OutputRelativePath = PathUtility.NormalizeFile(LegacyUtility.ChangeExtension(legacyOutputFilePathRelativeToSiteBasePath, ".html"));
                     AssetId = legacySiteUrlRelativeToSiteBasePath;
                     Version = version;
+                    Monikers = monikers;
                     break;
                 case ContentType.Resource:
                     Type = "Resource";
                     OutputRelativePath = PathUtility.NormalizeFile(legacyOutputFilePathRelativeToSiteBasePath);
                     AssetId = legacySiteUrlRelativeToSiteBasePath;
                     Version = version;
+                    Monikers = monikers;
                     break;
                 case ContentType.TableOfContents:
                 default:
@@ -49,14 +55,14 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public static LegacyFileMapItem Instance(string legacyOutputFilePathRelativeToSiteBasePath, string legacySiteUrlRelativeToSiteBasePath, ContentType contentType, string version)
+        public static LegacyFileMapItem Instance(string legacyOutputFilePathRelativeToSiteBasePath, string legacySiteUrlRelativeToSiteBasePath, ContentType contentType, string version, List<string> monikers)
         {
             if (contentType == ContentType.TableOfContents || contentType == ContentType.Unknown)
             {
                 return null;
             }
 
-            return new LegacyFileMapItem(legacyOutputFilePathRelativeToSiteBasePath, legacySiteUrlRelativeToSiteBasePath, contentType, version);
+            return new LegacyFileMapItem(legacyOutputFilePathRelativeToSiteBasePath, legacySiteUrlRelativeToSiteBasePath, contentType, version, monikers);
         }
 
         private static string RemoveExtension(string path)

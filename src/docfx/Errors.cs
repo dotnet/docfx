@@ -92,8 +92,8 @@ namespace Microsoft.Docs.Build
         ///   - defined a non-existent author
         /// </summary>
         /// Behavior: ✔️ Message: ✔️
-        public static Error AuthorNotFound(string login)
-            => new Error(ErrorLevel.Warning, "author-not-found", $"Invalid value for author: '{login}' is not a valid GitHub ID");
+        public static Error AuthorNotFound(SourceInfo<string> login)
+            => new Error(ErrorLevel.Warning, "author-not-found", $"Invalid value for author: '{login}' is not a valid GitHub ID", login);
 
         /// <summary>
         /// Failed to call a github api, e.g. GET /users/login.
@@ -236,8 +236,8 @@ namespace Microsoft.Docs.Build
         /// Link which's resolved to a file in dependency repo won't be built.
         /// </summary>
         /// Behavior: ✔️ Message: ❌
-        public static Error LinkIsDependency(Document relativeTo, Document file, string href)
-            => new Error(ErrorLevel.Warning, "link-is-dependency", $"File '{file}' referenced by link '{href}' will not be built because it is from a dependency docset", relativeTo.ToString());
+        public static Error LinkIsDependency(SourceInfo<string> href, Document file)
+            => new Error(ErrorLevel.Warning, "link-is-dependency", $"File '{file}' referenced by link '{href}' will not be built because it is from a dependency docset", href);
 
         /// <summary>
         /// Used a link pointing to an rooted absolute file path.
@@ -245,8 +245,8 @@ namespace Microsoft.Docs.Build
         ///   - [Absolute](C:/a.md)
         /// </summary>
         /// Behavior: ✔️ Message: ✔️
-        public static Error LocalFilePath(Document relativeTo, string path)
-            => new Error(ErrorLevel.Warning, "local-file-path", $"Link '{path}' points to a local file. Use a relative path instead", relativeTo.ToString());
+        public static Error LocalFilePath(SourceInfo<string> path)
+            => new Error(ErrorLevel.Warning, "local-file-path", $"Link '{path}' points to a local file. Use a relative path instead", path);
 
         /// <summary>
         /// The first tag in an article.md isn't h1 tag.
@@ -405,15 +405,22 @@ namespace Microsoft.Docs.Build
         /// Array length not within min and max.
         /// </summary>
         /// Behavior: ✔️ Message: ❌
-        public static Error ArrayLengthInvalid(SourceInfo source, string propName, int? minItems = null, int? maxItems = null)
-            => new Error(ErrorLevel.Warning, "array-length-invalid", $"Array {(string.IsNullOrEmpty(propName) ? "" : $"'{propName}' ")}length should be {(minItems.HasValue ? $">= {minItems.Value}" : $"<= {maxItems.Value}")}", source);
+        public static Error ArrayLengthInvalid(SourceInfo source, string propName, string criteria)
+            => new Error(ErrorLevel.Warning, "array-length-invalid", $"Array '{propName}' length should be {criteria}", source);
 
         /// <summary>
         /// String length not within min and max.
         /// </summary>
         /// Behavior: ✔️ Message: ❌
-        public static Error StringLengthInvalid(SourceInfo source, string propName, int? minLength = null, int? maxLength = null)
-            => new Error(ErrorLevel.Warning, "string-length-invalid", $"String {(string.IsNullOrEmpty(propName) ? "" : $"'{propName}' ")}length should be {(minLength.HasValue ? $">= {minLength.Value}" : $"<= {maxLength.Value}")}", source);
+        public static Error StringLengthInvalid(SourceInfo source, string propName, string criteria)
+            => new Error(ErrorLevel.Warning, "string-length-invalid", $"String '{propName}' length should be {criteria}", source);
+
+        /// <summary>
+        /// Number not within min and max.
+        /// </summary>
+        /// Behavior: ✔️ Message: ❌
+        public static Error NumberInvalid(SourceInfo source, string propName, string criteria)
+            => new Error(ErrorLevel.Warning, "number-invalid", $"Number '{propName}' should be {criteria}", source);
 
         /// <summary>
         /// A required field is missing.
@@ -467,6 +474,20 @@ namespace Microsoft.Docs.Build
         /// Behavior: ✔️ Message: ❌
         public static Error ValuesNotMatch(SourceInfo source, string name, object value, string dependentFieldName, object dependentFieldValue, IEnumerable<object> validValues)
             => new Error(ErrorLevel.Warning, "values-not-match", $"Invalid value for {name}: '{value}' is not valid with '{dependentFieldName}' value '{dependentFieldValue}'. Valid values: {Join(validValues)}", source);
+
+        /// <summary>
+        /// The value is not a valid Microsoft alias
+        /// </summary>
+        /// Behavior: ✔️ Message: ❌
+        public static Error MsAliasInvalid(SourceInfo source, string name, string alias)
+            => new Error(ErrorLevel.Warning, "ms-alias-invalid", $"Invalid value for '{name}', '{alias}' is not a valid Microsoft alias", source);
+
+        /// <summary>
+        /// Call Microsoft Graph API failed
+        /// </summary>
+        /// Behavior: ✔️ Message: ❌
+        public static Error MicrosoftGraphApiFailed(string exMessage)
+            => new Error(ErrorLevel.Warning, "microsoft-graph-api-failed", $"Call to Microsoft Graph API failed: {exMessage} Try closing and reopening the PR. If you get this Error again, file an issue.");
 
         /// <summary>
         /// Used unknown YamlMime.

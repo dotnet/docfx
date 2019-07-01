@@ -30,8 +30,7 @@ outputs:
   docs/9d4e15fd/a.json: |
     {
       "conceptual": "<p>Moniker: netcore-1.0, netcore-1.1</p>",
-      "monikers": ["netcore-1.0", "netcore-1.1"],
-      "!monikerRange": null
+      "monikers": ["netcore-1.0", "netcore-1.1"]
     }
   docs/23d205a5/a.json: |
     {
@@ -115,19 +114,16 @@ outputs:
     {
       "conceptual": "<p>No version</p>",
       "!monikers": null,
-      "!monikerRange": null,
     }
   218c13d0/docs/a.json: |
     {
       "conceptual": "<p>Moniker: netcore-1.1</p>",
       "monikers": ["netcore-1.1"],
-      "!monikerRange": null,
     }
   4667fedf/docs/a.json: |
     {
       "conceptual": "<p>Moniker: netcore-2.0</p>",
       "monikers": ["netcore-2.0"],
-      "!monikerRange": null,
     }
   .publish.json: |
     {
@@ -449,8 +445,6 @@ outputs:
       "conceptual": "<p>Moniker: netcore-2.0</p>",
       "monikers": ["netcore-2.0"]
     }
-  xrefmap.json: | 
-    {"references":[{"uid":"a","href":"https://docs.com/docs/a","name":"netcore-2.0"}]}
 ---
 # Define same uid with multiple moniker ranges, 
 # reference to it without moniker in the same docset, shoule take the latest one
@@ -511,8 +505,6 @@ outputs:
       "conceptual": "<p>Moniker: netcore-2.0</p>",
       "monikers": ["netcore-2.0"]
     }
-  xrefmap.json: | 
-    {"references":[{"uid":"a","href":"https://docs.com/docs/a","name":"netcore-2.0"}]}
 ---
 # Define same uid with overlapping moniker range
 inputs:
@@ -607,8 +599,6 @@ outputs:
       "conceptual": "<p>Moniker: netcore-2.0</p>",
       "monikers": ["netcore-2.0"]
     }
-  xrefmap.json: | 
-    {"references":[{"uid":"a","href":"https://docs.com/docs/a","name":"netcore-2.0"}]}
 ---
 # [skip] Define same uid with and without moniker range
 # while refer to it without moniker range, should pick the one without moniker range
