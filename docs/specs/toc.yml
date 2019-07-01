@@ -1164,6 +1164,16 @@ outputs:
   .errors.log: |
     ["error","invalid-toc-level","The toc level can't be skipped from 1 to 3","docs/TOC.md",2,1]
 ---
+# Markdown TOC root can start from any level, but must be aligned
+inputs:
+  docfx.yml:
+  TOC.md: |
+    ## level 2
+    # level 1
+outputs:
+  .errors.log: |
+    ["error","invalid-toc-level","The toc level can't be skipped from 1 to 1","TOC.md",2,1]
+---
 # Missing TOC head name
 inputs:
   docfx.yml:

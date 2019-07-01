@@ -54,8 +54,10 @@ namespace Microsoft.Docs.Build
         {
             var result = new TableOfContentsItem();
             var stack = new Stack<(int level, TableOfContentsItem item)>();
-            var top = (level: 0, node: result);
-            stack.Push(top);
+
+            var rootLevel = -1;
+            var parent = (level: rootLevel, node: result);
+            stack.Push(parent);
 
             foreach (var block in blocks)
             {
@@ -66,18 +68,28 @@ namespace Microsoft.Docs.Build
                     continue;
                 }
 
-                while (stack.TryPeek(out top) && top.level >= currentLevel)
+                while (stack.TryPeek(out parent) && parent.level >= currentLevel)
                 {
                     stack.Pop();
                 }
 
-                if (top.level != 0 && currentLevel - top.level > 1)
+                // Level of root node is determined by its first child
+                if (parent.level < 0)
                 {
-                    errors.Add(Errors.InvalidTocLevel(block.ToSourceInfo(file: filePath), top.level, currentLevel));
+                    if (rootLevel < 0)
+                    {
+                        rootLevel = currentLevel - 1;
+                    }
+                    parent.level = rootLevel;
+                }
+
+                if (currentLevel != parent.level + 1)
+                {
+                    errors.Add(Errors.InvalidTocLevel(block.ToSourceInfo(file: filePath), parent.level, currentLevel));
                 }
                 else
                 {
-                    top.node.Items.Add(currentItem);
+                    parent.node.Items.Add(currentItem);
                 }
 
                 stack.Push((currentLevel, currentItem));
