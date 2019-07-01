@@ -1172,7 +1172,7 @@ inputs:
     # level 1
 outputs:
   .errors.log: |
-    ["error","invalid-toc-level","The toc level can't be skipped from 1 to 1","TOC.md",2,1]
+    ["error","invalid-toc-level","The toc level can't be skipped from 0 to 1","TOC.md",2,1]
 ---
 # Missing TOC head name
 inputs:

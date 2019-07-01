@@ -52,11 +52,16 @@ namespace Microsoft.Docs.Build
 
         private static TableOfContentsItem BuildTree(List<Error> errors, string filePath, List<HeadingBlock> blocks)
         {
+            if (blocks.Count <= 0)
+            {
+                return new TableOfContentsItem();
+            }
+
             var result = new TableOfContentsItem();
             var stack = new Stack<(int level, TableOfContentsItem item)>();
 
-            var rootLevel = -1;
-            var parent = (level: rootLevel, node: result);
+            // Level of root node is determined by its first child
+            var parent = (level: blocks[0].Level - 1, node: result);
             stack.Push(parent);
 
             foreach (var block in blocks)
@@ -73,17 +78,7 @@ namespace Microsoft.Docs.Build
                     stack.Pop();
                 }
 
-                // Level of root node is determined by its first child
-                if (parent.level < 0)
-                {
-                    if (rootLevel < 0)
-                    {
-                        rootLevel = currentLevel - 1;
-                    }
-                    parent.level = rootLevel;
-                }
-
-                if (currentLevel != parent.level + 1)
+                if (parent.node is null || currentLevel != parent.level + 1)
                 {
                     errors.Add(Errors.InvalidTocLevel(block.ToSourceInfo(file: filePath), parent.level, currentLevel));
                 }
