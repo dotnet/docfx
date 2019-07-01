@@ -30,18 +30,33 @@ namespace Microsoft.Docs.Build
         private static readonly Engine s_engine = new Engine();
 
         private readonly string _scriptDir;
+        private readonly JsValue _global;
         private readonly ConcurrentDictionary<string, ThreadLocal<JsValue>> _scripts
                    = new ConcurrentDictionary<string, ThreadLocal<JsValue>>();
 
-        public JavascriptEngine(string scriptDir) => _scriptDir = scriptDir;
+        public JavascriptEngine(string scriptDir, JObject global = null)
+        {
+            _scriptDir = scriptDir;
+            _global = ToJsValue(global ?? new JObject());
+        }
 
-        public JToken Run(string scriptPath, string methodName, params JToken[] args)
+        public JToken Run(string scriptPath, string methodName, JToken arg)
         {
             var scriptFullPath = Path.GetFullPath(Path.Combine(_scriptDir, scriptPath));
             var exports = _scripts.GetOrAdd(scriptFullPath, file => new ThreadLocal<JsValue>(() => Run(file))).Value;
             var method = exports.AsObject().Get(methodName);
 
-            return ToJToken(Invoke(method, Array.ConvertAll(args, ToJsValue)));
+            var jsArg = ToJsValue(arg);
+            jsArg.AsObject()?.Put("__global", _global, throwOnError: true);
+
+            try
+            {
+                return ToJToken(method.Invoke(jsArg));
+            }
+            catch (JavaScriptException jse)
+            {
+                throw new JintException(jse.Error.ToString() + "\n" + jse.CallStack);
+            }
         }
 
         private static JsValue Run(string entryScriptPath)
@@ -78,18 +93,6 @@ namespace Microsoft.Docs.Build
                 {
                     return RunCore(Path.Combine(dirname, arguments[0].AsString()));
                 }
-            }
-        }
-
-        private static JsValue Invoke(JsValue func, params JsValue[] args)
-        {
-            try
-            {
-                return func.Invoke(args);
-            }
-            catch (JavaScriptException jse)
-            {
-                throw new JintException(jse.Error.ToString() + "\n" + jse.CallStack);
             }
         }
 

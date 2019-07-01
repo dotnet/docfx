@@ -23,24 +23,24 @@ namespace Microsoft.Docs.Build
 
         private readonly string _templateDir;
         private readonly string _schemaDir;
+        private readonly JObject _global;
         private readonly LiquidTemplate _liquid;
         private readonly JavascriptEngine _js;
         private readonly HashSet<string> _htmlMetaHidden;
         private readonly Dictionary<string, string> _htmlMetaNames;
         private readonly HashSet<string> _schemas;
 
-        public JObject Global { get; }
-
         private TemplateEngine(string templateDir, JsonSchema metadataSchema)
         {
             var contentTemplateDir = Path.Combine(templateDir, "ContentTemplate");
             var schemaDir = Path.Combine(contentTemplateDir, "schemas");
 
+            _global = LoadGlobalTokens(contentTemplateDir);
+
             _templateDir = templateDir;
             _schemaDir = schemaDir;
             _liquid = new LiquidTemplate(templateDir);
-            _js = new JavascriptEngine(contentTemplateDir);
-            Global = LoadGlobalTokens(contentTemplateDir);
+            _js = new JavascriptEngine(contentTemplateDir, _global);
             _schemas = Directory.Exists(schemaDir) ? Directory.EnumerateFiles(schemaDir, "*.schema.json", SearchOption.TopDirectoryOnly)
                                                     .Select(k => Path.GetFileNameWithoutExtension(k))
                                                     .Select(k => k.Substring(0, k.Length - ".schema".Length)).ToHashSet() : new HashSet<string>();
@@ -171,21 +171,7 @@ namespace Microsoft.Docs.Build
 
         public string GetToken(string key)
         {
-            return Global[key]?.ToString();
-        }
-
-        public JObject PreprocessMetadata(JObject outputMetadata, Document file)
-        {
-            var docset = file.Docset;
-
-            var processedMetadata = (JObject)JsonUtility.DeepClone(outputMetadata);
-            processedMetadata["search.ms_docsetname"] = docset.Config.Name;
-            processedMetadata["search.ms_product"] = docset.Config.Product;
-            processedMetadata["search.ms_sitename"] = "Docs";
-
-            processedMetadata["__global"] = Global;
-
-            return processedMetadata;
+            return _global[key]?.ToString();
         }
 
         public JObject TransformTocMetadata(object model)
@@ -287,16 +273,6 @@ namespace Microsoft.Docs.Build
                 ((JObject)rawMetadata["_op_gitContributorInformation"]).Remove("updated_at_date_time");
             }
             return rawMetadata;
-        }
-
-        private static JObject ToJObject(Contributor info)
-        {
-            return new JObject
-            {
-                ["display_name"] = !string.IsNullOrEmpty(info.DisplayName) ? info.DisplayName : info.Name,
-                ["id"] = info.Id,
-                ["profile_url"] = info.ProfileUrl,
-            };
         }
     }
 }
