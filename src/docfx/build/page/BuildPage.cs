@@ -208,18 +208,18 @@ namespace Microsoft.Docs.Build
         {
             var obj = token as JObject;
 
-            var (schemaValidator, schemaTransformer) = context.TemplateEngine.GetJsonSchema(file.Mime);
-            if (schemaValidator is null || schemaTransformer is null)
+            var schemaTemplate = context.TemplateEngine.GetJsonSchema(file.Mime);
+            if (schemaTemplate is null)
             {
                 throw Errors.SchemaNotFound(file.Mime).ToException();
             }
 
             // validate via json schema
-            var schemaValidationErrors = schemaValidator.Validate(token);
+            var schemaValidationErrors = schemaTemplate.JsonSchemaValidator.Validate(token);
             errors.AddRange(schemaValidationErrors);
 
             // transform via json schema
-            var (schemaTransformError, transformedToken) = schemaTransformer.TransformContent(file, context, token);
+            var (schemaTransformError, transformedToken) = schemaTemplate.JsonSchemaTransformer.TransformContent(file, context, token);
             errors.AddRange(schemaTransformError);
 
             var (metaErrors, metadataObject, inputMetadata) = context.MetadataProvider.GetMetadata(file);
@@ -268,7 +268,7 @@ namespace Microsoft.Docs.Build
                     // conceptual = context.TemplateEngine.Render(file.Mime, pageModel);
                 }
 
-                return context.TemplateEngine.Transform(conceptual, processedMetadata, file.Mime);
+                return context.TemplateEngine.TransformToTemplateModel(conceptual, processedMetadata, file.Mime);
             }
 
             return (pageModel, processedMetadata);
