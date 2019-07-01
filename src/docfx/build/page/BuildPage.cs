@@ -175,8 +175,8 @@ namespace Microsoft.Docs.Build
             {
                 ["conceptual"] = HtmlUtility.HtmlPostProcess(htmlDom, file.Docset.Culture),
                 ["wordCount"] = wordCount,
-                ["raw_title"] = rawTitle,
-                ["title"] = title,
+                ["rawTitle"] = rawTitle,
+                ["title"] = inputMetadata.Title ?? title,
             };
 
             context.BookmarkValidator.AddBookmarks(file, bookmarks);
@@ -241,7 +241,7 @@ namespace Microsoft.Docs.Build
             }
 
             pageModel["title"] = inputMetadata.Title ?? obj?.Value<string>("title");
-            pageModel["raw_title"] = file.Docset.Legacy ? $"<h1>{obj?.Value<string>("title")}</h1>" : null;
+            pageModel["rawTitle"] = file.Docset.Legacy ? $"<h1>{obj?.Value<string>("title")}</h1>" : null;
 
             return (errors, pageModel as JObject, inputMetadata);
         }

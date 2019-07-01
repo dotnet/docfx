@@ -12,8 +12,6 @@ namespace Microsoft.Docs.Build
     {
         public string Locale { get; set; }
 
-        public string Title { get; set; }
-
         public string Author { get; set; }
 
         public string BreadcrumbPath { get; set; }
@@ -24,17 +22,11 @@ namespace Microsoft.Docs.Build
         [JsonProperty("_tocRel")]
         public string TocRel { get; set; }
 
-        [JsonProperty(PropertyName = "rawTitle")]
-        public string RawTitle { get; set; }
-
         public string CanonicalUrl { get; set; }
 
         public string RedirectUrl { get; set; }
 
         public string DocumentId { get; set; }
-
-        [JsonProperty("wordCount")]
-        public long? WordCount { get; set; }
 
         public string DocumentVersionIndependentId { get; set; }
 
