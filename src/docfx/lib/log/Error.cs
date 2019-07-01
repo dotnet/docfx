@@ -13,7 +13,7 @@ namespace Microsoft.Docs.Build
     {
         public static readonly IEqualityComparer<Error> Comparer = new EqualityComparer();
 
-        public ErrorLevel Level { get; set; }
+        public ErrorLevel Level { get; }
 
         public string Code { get; }
 
