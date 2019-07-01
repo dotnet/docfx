@@ -113,7 +113,9 @@ namespace Microsoft.Docs.Build
             outputMetadata.Author = outputMetadata.ContributionInfo?.Author?.Name;
             outputMetadata.UpdatedAt = outputMetadata.ContributionInfo?.UpdatedAtDateTime.ToString("yyyy-MM-dd hh:mm tt");
 
-            outputMetadata.DepotName = $"{file.Docset.Config.Product}.{file.Docset.Config.Name}";
+            outputMetadata.SearchProduct = file.Docset.Config.Product;
+            outputMetadata.SearchDocsetName = file.Docset.Config.Name;
+
             outputMetadata.Path = PathUtility.NormalizeFile(Path.GetRelativePath(file.Docset.SiteBasePath, file.SitePath));
             outputMetadata.CanonicalUrlPrefix = $"{file.Docset.HostName}/{outputMetadata.Locale}/{file.Docset.SiteBasePath}/";
 
@@ -251,7 +253,7 @@ namespace Microsoft.Docs.Build
         private static (object model, JObject metadata) ApplyPageTemplate(Context context, Document file, JObject pageMetadata, JObject pageModel, bool isConceptual)
         {
             var conceptual = isConceptual ? pageModel.Value<string>("conceptual") : string.Empty;
-            var processedMetadata = context.TemplateEngine.PreprocessMetadata(isConceptual ? pageModel : pageMetadata, file);
+            var processedMetadata = isConceptual ? pageModel : pageMetadata;
 
             if (!file.Docset.Config.Output.Json)
             {
