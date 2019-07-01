@@ -476,6 +476,20 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Warning, "values-not-match", $"Invalid value for {name}: '{value}' is not valid with '{dependentFieldName}' value '{dependentFieldValue}'. Valid values: {Join(validValues)}", source);
 
         /// <summary>
+        /// The value is not a valid Microsoft alias
+        /// </summary>
+        /// Behavior: ✔️ Message: ❌
+        public static Error MsAliasInvalid(SourceInfo source, string name, string alias)
+            => new Error(ErrorLevel.Warning, "ms-alias-invalid", $"Invalid value for '{name}', '{alias}' is not a valid Microsoft alias", source);
+
+        /// <summary>
+        /// Call Microsoft Graph API failed
+        /// </summary>
+        /// Behavior: ✔️ Message: ❌
+        public static Error MicrosoftGraphApiFailed(string exMessage)
+            => new Error(ErrorLevel.Warning, "microsoft-graph-api-failed", $"Call to Microsoft Graph API failed: {exMessage} Try closing and reopening the PR. If you get this Error again, file an issue.");
+
+        /// <summary>
         /// Used unknown YamlMime.
         /// Examples:
         ///   - forgot to define schema in schema document(yml)

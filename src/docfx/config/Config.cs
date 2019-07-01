@@ -15,6 +15,7 @@ namespace Microsoft.Docs.Build
         {
             "_site/**",             // Default output location
             "localization/**",      // Localization file when using folder convention
+            "_themes/**",           // Default template location
         };
 
         private static readonly string[] s_defaultInclude = new[] { "**/*.{md,yml,json}" };
@@ -131,6 +132,11 @@ namespace Microsoft.Docs.Build
         /// Gets the configurations related to GitHub APIs, usually related to resolve contributors.
         /// </summary>
         public readonly GitHubConfig GitHub = new GitHubConfig();
+
+        /// <summary>
+        /// Gets the configurations related to Microsoft Graph.
+        /// </summary>
+        public readonly MicrosoftGraphConfig MicrosoftGraph = new MicrosoftGraphConfig();
 
         /// <summary>
         /// Gets whether warnings should be treated as errors.

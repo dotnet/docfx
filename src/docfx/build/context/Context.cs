@@ -23,6 +23,7 @@ namespace Microsoft.Docs.Build
         public readonly DependencyMapBuilder DependencyMapBuilder;
         public readonly DependencyResolver DependencyResolver;
         public readonly GitHubUserCache GitHubUserCache;
+        public readonly MicrosoftGraphCache MicrosoftGraphCache;
         public readonly ContributionProvider ContributionProvider;
         public readonly PublishModelBuilder PublishModelBuilder;
         public readonly TemplateEngine TemplateEngine;
@@ -45,7 +46,8 @@ namespace Microsoft.Docs.Build
             Cache = new Cache();
             TemplateEngine = TemplateEngine.Create(docset);
             BuildScope = new BuildScope(errorLog, docset, TemplateEngine);
-            MetadataProvider = new MetadataProvider(docset, Cache);
+            MicrosoftGraphCache = new MicrosoftGraphCache(docset.Config);
+            MetadataProvider = new MetadataProvider(docset, Cache, MicrosoftGraphCache);
             MonikerProvider = new MonikerProvider(docset, MetadataProvider);
             GitHubUserCache = new GitHubUserCache(docset.Config);
             GitCommitProvider = new GitCommitProvider();
@@ -61,6 +63,7 @@ namespace Microsoft.Docs.Build
         {
             GitCommitProvider.Dispose();
             GitHubUserCache.Dispose();
+            MicrosoftGraphCache.Dispose();
         }
     }
 }

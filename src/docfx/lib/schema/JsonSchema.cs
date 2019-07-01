@@ -186,5 +186,10 @@ namespace Microsoft.Docs.Build
         /// Mapping relationship: enumDependencies --> <field-name> --> <dependent-field-name> --> <dependent-field-value> --> <allowed-field-values>
         /// </summary>
         public Dictionary<string, Dictionary<string, Dictionary<JToken, JValue[]>>> EnumDependencies { get; set; } = new Dictionary<string, Dictionary<string, Dictionary<JToken, JValue[]>>>();
+
+        /// <summary>
+        /// Properties that are used to validate microsoft alias
+        /// </summary>
+        public MicrosoftAliasSchema MicrosoftAlias { get; set; }
     }
 }

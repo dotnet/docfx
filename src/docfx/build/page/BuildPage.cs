@@ -131,6 +131,8 @@ namespace Microsoft.Docs.Build
             result.CanonicalUrl = file.CanonicalUrl;
             result.EnableLocSxs = file.Docset.Config.Localization.Bilingual;
             result.SiteName = file.Docset.Config.SiteName;
+            result.SearchDocsetName = file.Docset.Config.Name;
+            result.SearchProduct = file.Docset.Config.Product;
 
             var (monikerError, monikers) = context.MonikerProvider.GetFileLevelMonikers(file);
             errors.AddIfNotNull(monikerError);
@@ -144,7 +146,6 @@ namespace Microsoft.Docs.Build
             result.Author = result.ContributionInfo?.Author?.Name;
             result.UpdatedAt = result.ContributionInfo?.UpdatedAtDateTime.ToString("yyyy-MM-dd hh:mm tt");
 
-            result.DepotName = $"{file.Docset.Config.Product}.{file.Docset.Config.Name}";
             result.Path = PathUtility.NormalizeFile(Path.GetRelativePath(file.Docset.SiteBasePath, file.SitePath));
             result.CanonicalUrlPrefix = $"{file.Docset.HostName}/{result.Locale}/{file.Docset.SiteBasePath}/";
 
@@ -223,18 +224,13 @@ namespace Microsoft.Docs.Build
 
         private static async Task<(List<Error> errors, JObject model)> LoadSchemaDocument(Context context, JToken token, Document file)
         {
-            var (schemaValidator, schemaTransformer) = context.TemplateEngine.GetJsonSchema(file.Mime);
-            if (schemaValidator is null || schemaTransformer is null)
-            {
-                throw Errors.SchemaNotFound(file.Mime).ToException();
-            }
-
+            var schema = context.TemplateEngine.GetSchema(file.Mime);
             var errors = new List<Error>();
 
-            var schemaValidationErrors = schemaValidator.Validate(token);
+            var schemaValidationErrors = schema.JsonSchemaValidator.Validate(token);
             errors.AddRange(schemaValidationErrors);
 
-            var (schemaTransformError, transformedToken) = schemaTransformer.TransformContent(file, context, token);
+            var (schemaTransformError, transformedToken) = schema.JsonSchemaTransformer.TransformContent(file, context, token);
             errors.AddRange(schemaTransformError);
 
             if (!(transformedToken is JObject model))
@@ -259,9 +255,7 @@ namespace Microsoft.Docs.Build
             var isConceptual = string.IsNullOrEmpty(file.Mime) || TemplateEngine.IsLandingData(file.Mime);
             var conceptual = isConceptual ? pageModel.Value<string>("conceptual") : null;
 
-            var rawMetadata = context.TemplateEngine.CreateRawMetadata(pageModel, file);
-
-            return context.TemplateEngine.Transform(conceptual, rawMetadata, file.Mime);
+            return context.TemplateEngine.TransformToTemplateModel(conceptual, pageModel, file.Mime);
         }
     }
 }

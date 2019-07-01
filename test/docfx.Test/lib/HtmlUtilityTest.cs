@@ -70,8 +70,7 @@ namespace Microsoft.Docs.Build
         [InlineData(@"<xref href='a&amp;b' data-raw-source='@lower&amp;'>", "c&d", "", @"<a href='c&amp;d'></a>")]
         public void TransformXrefs(string input, string xref, string display, string output)
         {
-            var (_, result) = HtmlUtility.TransformXref(input, default, string.Empty, _ => (default, xref, display, default));
-            Assert.Equal(output, result);
+            Assert.Equal(output, HtmlUtility.TransformXref(input, (href, isShorthand, _) => (xref, display)));
         }
 
         [Theory]

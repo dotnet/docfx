@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -18,33 +17,25 @@ namespace Microsoft.Docs.Build
     {
         private const string DefaultTemplateDir = "_themes";
         private static readonly string[] s_resourceFolders = new[] { "global", "css", "fonts" };
-        private static readonly ConcurrentDictionary<string, Lazy<(JsonSchemaValidator, JsonSchemaTransformer)>> _jsonSchemas
-                          = new ConcurrentDictionary<string, Lazy<(JsonSchemaValidator, JsonSchemaTransformer)>>();
 
         private readonly string _templateDir;
-        private readonly string _schemaDir;
+        private readonly JObject _global;
         private readonly LiquidTemplate _liquid;
         private readonly JavascriptEngine _js;
         private readonly HashSet<string> _htmlMetaHidden;
         private readonly Dictionary<string, string> _htmlMetaNames;
-        private readonly HashSet<string> _schemas;
-
-        public JObject Global { get; }
+        private readonly IReadOnlyDictionary<string, Lazy<TemplateSchema>> _schemas;
 
         private TemplateEngine(string templateDir, JsonSchema metadataSchema)
         {
             var contentTemplateDir = Path.Combine(templateDir, "ContentTemplate");
             var schemaDir = Path.Combine(contentTemplateDir, "schemas");
 
+            _global = LoadGlobalTokens(contentTemplateDir);
+            _schemas = LoadSchemas(schemaDir, contentTemplateDir);
             _templateDir = templateDir;
-            _schemaDir = schemaDir;
             _liquid = new LiquidTemplate(templateDir);
-            _js = new JavascriptEngine(contentTemplateDir);
-            Global = LoadGlobalTokens(contentTemplateDir);
-            _schemas = Directory.Exists(schemaDir) ? Directory.EnumerateFiles(schemaDir, "*.schema.json", SearchOption.TopDirectoryOnly)
-                                                    .Select(k => Path.GetFileNameWithoutExtension(k))
-                                                    .Select(k => k.Substring(0, k.Length - ".schema".Length)).ToHashSet() : new HashSet<string>();
-            _schemas.Add("LandingData");
+            _js = new JavascriptEngine(contentTemplateDir, _global);
 
             _htmlMetaHidden = metadataSchema.HtmlMetaHidden.ToHashSet();
             _htmlMetaNames = metadataSchema.Properties
@@ -54,60 +45,19 @@ namespace Microsoft.Docs.Build
 
         public bool IsData(string mime)
         {
-            // todo: get `isData` from template JINT script name
-            if (mime != null && _schemas.TryGetValue(mime, out var schema))
+            if (mime != null && _schemas.TryGetValue(mime, out var schemaTemplate) && schemaTemplate.Value.IsData)
             {
-                return string.Equals(schema, "ContextObject", StringComparison.OrdinalIgnoreCase) || string.Equals(schema, "TestData", StringComparison.OrdinalIgnoreCase);
+                return true;
             }
 
             return false;
         }
 
-        public static bool IsLandingData(string mime)
+        public TemplateSchema GetSchema(SourceInfo<string> schemaName)
         {
-            return string.Equals(typeof(LandingData).Name, mime, StringComparison.OrdinalIgnoreCase);
-        }
-
-        public (JsonSchemaValidator, JsonSchemaTransformer) GetJsonSchema(string schemaName)
-        {
-            if (schemaName is null)
-            {
-                return default;
-            }
-
-            var schemaFilePath = Path.Combine(_schemaDir, $"{schemaName}.schema.json");
-            return _jsonSchemas.GetOrAdd(schemaName, new Lazy<(JsonSchemaValidator, JsonSchemaTransformer)>(GetJsonSchemaCore)).Value;
-
-            (JsonSchemaValidator, JsonSchemaTransformer) GetJsonSchemaCore()
-            {
-                if (string.Equals(schemaName, "LandingData", StringComparison.OrdinalIgnoreCase))
-                {
-                    schemaFilePath = Path.Combine(AppContext.BaseDirectory, "data", "schemas", "LandingData.json");
-                }
-                if (!File.Exists(schemaFilePath))
-                {
-                    return default;
-                }
-
-                var jsonSchema = JsonUtility.Deserialize<JsonSchema>(File.ReadAllText(schemaFilePath), schemaFilePath);
-                return (new JsonSchemaValidator(jsonSchema), new JsonSchemaTransformer(jsonSchema));
-            }
-        }
-
-        public static TemplateEngine Create(Docset docset)
-        {
-            Debug.Assert(docset != null);
-
-            if (string.IsNullOrEmpty(docset.Config.Template))
-            {
-                return new TemplateEngine(DefaultTemplateDir, new JsonSchema());
-            }
-
-            var (themeRemote, themeBranch) = LocalizationUtility.GetLocalizedTheme(docset.Config.Template, docset.Locale, docset.Config.Localization.DefaultLocale);
-            var (themePath, themeRestoreMap) = docset.RestoreMap.GetGitRestorePath(themeRemote, themeBranch, docset.DocsetPath);
-            Log.Write($"Using theme '{themeRemote}#{themeRestoreMap.DependencyLock?.Commit}' at '{themePath}'");
-
-            return new TemplateEngine(themePath, docset.MetadataSchema);
+            return _schemas.TryGetValue(schemaName, out var schemaTemplate)
+                ? schemaTemplate.Value
+                : throw Errors.SchemaNotFound(schemaName).ToException();
         }
 
         public string RunLiquid(TemplateModel model, Document file)
@@ -126,7 +76,7 @@ namespace Microsoft.Docs.Build
             return _liquid.Render(layout, liquidModel);
         }
 
-        public (TemplateModel model, JObject metadata) Transform(string conceptual, JObject rawMetadata, string mime)
+        public (TemplateModel model, JObject metadata) TransformToTemplateModel(string conceptual, JObject rawMetadata, string mime)
         {
             rawMetadata = TransformPageMetadata(rawMetadata, mime);
             var metadata = CreateMetadata(rawMetadata);
@@ -162,27 +112,41 @@ namespace Microsoft.Docs.Build
 
         public string GetToken(string key)
         {
-            return Global[key]?.ToString();
-        }
-
-        public JObject CreateRawMetadata(JObject outputModel, Document file)
-        {
-            var docset = file.Docset;
-
-            outputModel["search.ms_docsetname"] = docset.Config.Name;
-            outputModel["search.ms_product"] = docset.Config.Product;
-            outputModel["search.ms_sitename"] = "Docs";
-
-            outputModel["__global"] = Global;
-
-            return outputModel;
+            return _global[key]?.ToString();
         }
 
         public JObject TransformTocMetadata(object model)
             => TransformMetadata("toc.json.js", JsonUtility.ToJObject(model));
 
+        public static bool IsLandingData(string mime)
+        {
+            if (mime != null)
+            {
+                return string.Equals(typeof(LandingData).Name, mime, StringComparison.OrdinalIgnoreCase);
+            }
+
+            return false;
+        }
+
+        public static TemplateEngine Create(Docset docset)
+        {
+            Debug.Assert(docset != null);
+
+            if (string.IsNullOrEmpty(docset.Config.Template))
+            {
+                return new TemplateEngine(Path.Combine(docset.DocsetPath, DefaultTemplateDir), new JsonSchema());
+            }
+
+            var (themeRemote, themeBranch) = LocalizationUtility.GetLocalizedTheme(docset.Config.Template, docset.Locale, docset.Config.Localization.DefaultLocale);
+            var (themePath, themeRestoreMap) = docset.RestoreMap.GetGitRestorePath(themeRemote, themeBranch, docset.DocsetPath);
+            Log.Write($"Using theme '{themeRemote}#{themeRestoreMap.DependencyLock?.Commit}' at '{themePath}'");
+
+            return new TemplateEngine(themePath, docset.MetadataSchema);
+        }
+
         private JObject TransformPageMetadata(JObject rawMetadata, string mime)
         {
+            // TODO: transform based on mime
             rawMetadata = TransformMetadata("Conceptual.mta.json.js", rawMetadata);
 
             if (IsLandingData(mime))
@@ -207,6 +171,19 @@ namespace Microsoft.Docs.Build
         private JObject TransformMetadata(string scriptPath, JObject model)
         {
             return JObject.Parse(((JObject)_js.Run(scriptPath, "transform", model)).Value<string>("content"));
+        }
+
+        private static IReadOnlyDictionary<string, Lazy<TemplateSchema>>
+            LoadSchemas(string schemaDir, string contentTemplateDir)
+        {
+            var schemas = Directory.Exists(schemaDir) ? (from k in Directory.EnumerateFiles(schemaDir, "*.schema.json", SearchOption.TopDirectoryOnly)
+                                                         let fileName = Path.GetFileName(k)
+                                                         select fileName.Substring(0, fileName.Length - ".schema.json".Length))
+                                                         .ToDictionary(schemaName => schemaName, schemaName => new Lazy<TemplateSchema>(() => new TemplateSchema(schemaName, schemaDir, contentTemplateDir)))
+                                                         : new Dictionary<string, Lazy<TemplateSchema>>();
+
+            schemas.Add("LandingData", new Lazy<TemplateSchema>(() => new TemplateSchema("LandingData", schemaDir, contentTemplateDir)));
+            return schemas;
         }
 
         private static JObject CreateMetadata(JObject rawMetadata)
@@ -277,16 +254,6 @@ namespace Microsoft.Docs.Build
                 ((JObject)rawMetadata["_op_gitContributorInformation"]).Remove("updated_at_date_time");
             }
             return rawMetadata;
-        }
-
-        private static JObject ToJObject(Contributor info)
-        {
-            return new JObject
-            {
-                ["display_name"] = !string.IsNullOrEmpty(info.DisplayName) ? info.DisplayName : info.Name,
-                ["id"] = info.Id,
-                ["profile_url"] = info.ProfileUrl,
-            };
         }
     }
 }

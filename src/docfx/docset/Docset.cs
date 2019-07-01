@@ -219,7 +219,7 @@ namespace Microsoft.Docs.Build
             var token = new JObject();
             foreach (var metadataSchema in config.MetadataSchema)
             {
-                var (_, content, _) = RestoreMap.GetRestoredFileContent(this, metadataSchema);
+                var content = RestoreMap.GetRestoredFileContent(this, metadataSchema);
                 JsonUtility.Merge(token, JsonUtility.Parse(content, metadataSchema).value as JObject);
             }
             return JsonUtility.ToObject<JsonSchema>(token).value;

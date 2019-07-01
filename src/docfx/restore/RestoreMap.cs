@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -74,12 +73,12 @@ namespace Microsoft.Docs.Build
             return released;
         }
 
-        public static (string localPath, string content, string etag) GetRestoredFileContent(Docset docset, SourceInfo<string> url)
+        public static string GetRestoredFileContent(Docset docset, SourceInfo<string> url)
         {
             return GetRestoredFileContent(docset.DocsetPath, url, docset.FallbackDocset?.DocsetPath);
         }
 
-        public static (string localPath, string content, string etag) GetRestoredFileContent(string docsetPath, SourceInfo<string> url, string fallbackDocset = null)
+        public static string GetRestoredFileContent(string docsetPath, SourceInfo<string> url, string fallbackDocset = null)
         {
             var fromUrl = UrlUtility.IsHttp(url);
             if (!fromUrl)
@@ -88,7 +87,7 @@ namespace Microsoft.Docs.Build
                 var fullPath = Path.Combine(docsetPath, url);
                 if (File.Exists(fullPath))
                 {
-                    return (fullPath, File.ReadAllText(fullPath), null);
+                    return File.ReadAllText(fullPath);
                 }
 
                 if (!string.IsNullOrEmpty(fallbackDocset))
@@ -96,20 +95,23 @@ namespace Microsoft.Docs.Build
                     fullPath = Path.Combine(fallbackDocset, url);
                     if (File.Exists(fullPath))
                     {
-                        return (fullPath, File.ReadAllText(fullPath), null);
+                        return File.ReadAllText(fullPath);
                     }
                 }
 
                 throw Errors.FileNotFound(url).ToException();
             }
 
-            var (content, etag) = TryGetRestoredFileContent(url);
-            if (content == null)
+            var filePath = RestoreFile.GetRestoreContentPath(url);
+            if (!File.Exists(filePath))
             {
                 throw Errors.NeedRestore(url).ToException();
             }
 
-            return (null, content, etag);
+            using (InterProcessMutex.Create(filePath))
+            {
+                return File.ReadAllText(filePath);
+            }
         }
 
         public static string GetRestoredFilePath(string docsetPath, SourceInfo<string> url, string fallbackDocset = null)
@@ -136,8 +138,8 @@ namespace Microsoft.Docs.Build
                 throw Errors.FileNotFound(url).ToException();
             }
 
-            var filePath = TryGetRestoredFilePath(url);
-            if (filePath is null)
+            var filePath = RestoreFile.GetRestoreContentPath(url);
+            if (!File.Exists(filePath))
             {
                 throw Errors.NeedRestore(url).ToException();
             }
@@ -145,81 +147,25 @@ namespace Microsoft.Docs.Build
             return filePath;
         }
 
-        public static (string content, string etag) TryGetRestoredFileContent(string url)
-        {
-            Debug.Assert(!string.IsNullOrEmpty(url));
-            Debug.Assert(UrlUtility.IsHttp(url));
-
-            var filePath = RestoreFile.GetRestoreContentPath(url);
-            var etagPath = RestoreFile.GetRestoreEtagPath(url);
-
-            using (InterProcessMutex.Create(filePath))
-            {
-                var content = GetFileContentIfExists(filePath);
-                var etag = GetFileContentIfExists(etagPath);
-
-                return (content, etag);
-
-                string GetFileContentIfExists(string file)
-                {
-                    if (File.Exists(file))
-                    {
-                        return File.ReadAllText(file);
-                    }
-
-                    return null;
-                }
-            }
-        }
-
         /// <summary>
         /// Acquired all shared git based on dependency lock
         /// The dependency lock must be loaded before using this method
         /// </summary>
-        public static RestoreMap
-            Create(
-            DependencyLockModel dependencyLock,
-            Dictionary<(string remote, string branch, string commit), (string path, DependencyGit git)> acquired = null)
+        public static RestoreMap Create(DependencyLockModel dependencyLock)
         {
-            Debug.Assert(dependencyLock != null);
+            var acquired = new Dictionary<(string remote, string branch, string commit), (string path, DependencyGit git)>();
 
-            var root = acquired is null;
-            acquired = acquired ?? new Dictionary<(string remote, string branch, string commit), (string path, DependencyGit git)>();
-
-            var successed = true;
             try
             {
-                foreach (var gitVersion in dependencyLock.Git)
-                {
-                    var (remote, branch, _) = UrlUtility.SplitGitUrl(gitVersion.Key);
-                    if (!acquired.ContainsKey((remote, branch, gitVersion.Value.Commit/*commit*/)))
-                    {
-                        var (path, git) = AcquireGit(remote, branch, gitVersion.Value.Commit, LockType.Shared);
-                        acquired[(remote, branch, gitVersion.Value.Commit/*commit*/)] = (path, git);
-                    }
-
-                    Create(gitVersion.Value, acquired);
-                }
-
-                return new RestoreMap(acquired)
-                {
-                    DependencyLock = dependencyLock,
-                };
+                return CreateCore(dependencyLock, acquired);
             }
             catch
             {
-                successed = false;
-                throw;
-            }
-            finally
-            {
-                if (!successed && root)
+                foreach (var (k, v) in acquired)
                 {
-                    foreach (var (k, v) in acquired)
-                    {
-                        ReleaseGit(v.git, LockType.Shared, false);
-                    }
+                    ReleaseGit(v.git, LockType.Shared, false);
                 }
+                throw;
             }
         }
 
@@ -257,17 +203,28 @@ namespace Microsoft.Docs.Build
         public static bool ReleaseGit(DependencyGit git, LockType lockType, bool successed = true)
             => DependencySlotPool<DependencyGit>.ReleaseSlot(git, lockType, successed);
 
-        private static string TryGetRestoredFilePath(string url)
+        private static RestoreMap CreateCore(
+            DependencyLockModel dependencyLock,
+            Dictionary<(string remote, string branch, string commit), (string path, DependencyGit git)> acquired)
         {
-            Debug.Assert(!string.IsNullOrEmpty(url));
-            Debug.Assert(UrlUtility.IsHttp(url));
+            Debug.Assert(dependencyLock != null);
 
-            var filePath = RestoreFile.GetRestoreContentPath(url);
-            if (File.Exists(filePath))
+            foreach (var gitVersion in dependencyLock.Git)
             {
-                return filePath;
+                var (remote, branch, _) = UrlUtility.SplitGitUrl(gitVersion.Key);
+                if (!acquired.ContainsKey((remote, branch, gitVersion.Value.Commit/*commit*/)))
+                {
+                    var (path, git) = AcquireGit(remote, branch, gitVersion.Value.Commit, LockType.Shared);
+                    acquired[(remote, branch, gitVersion.Value.Commit/*commit*/)] = (path, git);
+                }
+
+                CreateCore(gitVersion.Value, acquired);
             }
-            return null;
+
+            return new RestoreMap(acquired)
+            {
+                DependencyLock = dependencyLock,
+            };
         }
 
         private static (string path, DependencyGit git) AcquireGit(string remote, string branch, string commit, LockType type)
