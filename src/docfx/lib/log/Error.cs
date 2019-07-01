@@ -13,13 +13,12 @@ namespace Microsoft.Docs.Build
     {
         public static readonly IEqualityComparer<Error> Comparer = new EqualityComparer();
 
-        public ErrorLevel Level { get; set; }
+        public ErrorLevel Level { get; }
 
         public string Code { get; }
 
         public string Message { get; }
 
-        // TODO: can be removed while file always filled in SourceInfo
         public string File { get; }
 
         public int Line { get; }

@@ -83,38 +83,6 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        internal static void LogError(Error error)
-        {
-            t_status.Value.Peek().Errors.Add(error);
-        }
-
-        internal static string GetLink(string path, object relativeTo, MarkdownObject origin, int columnOffset = 0)
-        {
-            var status = t_status.Value.Peek();
-            var (error, link, file) = status.Context.DependencyResolver.ResolveAbsoluteLink(new SourceInfo<string>(path, origin.ToSourceInfo(columnOffset: columnOffset)), (Document)relativeTo);
-            status.Errors.AddIfNotNull(error);
-
-            if (file != null)
-            {
-                link = RelativeUrlMarker + link;
-            }
-
-            return link;
-        }
-
-        internal static (Error error, string href, string display, Document file) ResolveXref(string href, MarkdownObject origin)
-        {
-            // TODO: now markdig engine combines all kinds of reference with inclusion, we need to split them out
-            var (error, link, display, spec) = t_status.Value.Peek().Context.DependencyResolver.ResolveAbsoluteXref(new SourceInfo<string>(href, origin.ToSourceInfo()), (Document)InclusionContext.File);
-
-            if (spec?.DeclairingFile != null)
-            {
-                link = RelativeUrlMarker + link;
-            }
-
-            return (error, link, display, spec?.DeclairingFile);
-        }
-
         private static MarkdownPipeline CreateMarkdownPipeline()
         {
             var markdownContext = new MarkdownContext(GetToken, LogWarning, LogError, ReadFile);
@@ -122,9 +90,9 @@ namespace Microsoft.Docs.Build
             return new MarkdownPipelineBuilder()
                 .UseYamlFrontMatter()
                 .UseDocfxExtensions(markdownContext)
-                .UseResolveLink()
-                .UseResolveXref(ResolveXref)
-                .UseMonikerZone(ParseMonikerRange)
+                .UseLink(GetLink)
+                .UseXref(GetXref)
+                .UseMonikerZone(GetMonikerRange)
                 .Build();
         }
 
@@ -135,9 +103,9 @@ namespace Microsoft.Docs.Build
             return new MarkdownPipelineBuilder()
                 .UseYamlFrontMatter()
                 .UseDocfxExtensions(markdownContext)
-                .UseResolveLink()
-                .UseResolveXref(ResolveXref)
-                .UseMonikerZone(ParseMonikerRange)
+                .UseLink(GetLink)
+                .UseXref(GetXref)
+                .UseMonikerZone(GetMonikerRange)
                 .UseInlineOnly()
                 .Build();
         }
@@ -185,7 +153,40 @@ namespace Microsoft.Docs.Build
             return (content, file);
         }
 
-        private static List<string> ParseMonikerRange(SourceInfo<string> monikerRange)
+        private static string GetLink(SourceInfo<string> href)
+        {
+            var status = t_status.Value.Peek();
+            var (error, link, file) = status.Context.DependencyResolver.ResolveAbsoluteLink(
+                href, (Document)InclusionContext.File);
+
+            if (file != null)
+            {
+                link = RelativeUrlMarker + link;
+            }
+
+            status.Errors.AddIfNotNull(error);
+            return link;
+        }
+
+        private static (string href, string display) GetXref(SourceInfo<string> href, bool isShorthand)
+        {
+            var status = t_status.Value.Peek();
+            var (error, link, display, spec) = status.Context.DependencyResolver.ResolveAbsoluteXref(
+                href, (Document)InclusionContext.File);
+
+            if (spec?.DeclairingFile != null)
+            {
+                link = RelativeUrlMarker + link;
+            }
+
+            if (!isShorthand)
+            {
+                status.Errors.AddIfNotNull(error);
+            }
+            return (link, display);
+        }
+
+        private static List<string> GetMonikerRange(SourceInfo<string> monikerRange)
         {
             var status = t_status.Value.Peek();
             var (error, monikers) = status.Context.MonikerProvider.GetZoneLevelMonikers((Document)InclusionContext.File, monikerRange);
