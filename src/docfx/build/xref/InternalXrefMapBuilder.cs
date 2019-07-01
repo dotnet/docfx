@@ -58,16 +58,20 @@ namespace Microsoft.Docs.Build
                 {
                     var (yamlErrors, token) = YamlUtility.Parse(file, context);
                     errors.AddRange(yamlErrors);
-                    var (schemaErrors, specs) = LoadSchemaDocument(context, token as JObject, file);
+
+                    var (schemaErrors, specs) = LoadSchemaDocument(context, token, file);
                     errors.AddRange(schemaErrors);
+
                     xrefs.AddRange(specs);
                 }
                 else if (file.FilePath.EndsWith(".json", PathUtility.PathComparison))
                 {
                     var (jsonErrors, token) = JsonUtility.Parse(file, context);
                     errors.AddRange(jsonErrors);
-                    var (schemaErrors, specs) = LoadSchemaDocument(context, token as JObject, file);
+
+                    var (schemaErrors, specs) = LoadSchemaDocument(context, token, file);
                     errors.AddRange(schemaErrors);
+
                     xrefs.AddRange(specs);
                 }
                 context.ErrorLog.Write(file.ToString(), errors);
@@ -98,7 +102,7 @@ namespace Microsoft.Docs.Build
             return (error, xref, file);
         }
 
-        private static (List<Error> errors, IReadOnlyList<InternalXrefSpec> specs) LoadSchemaDocument(Context context, JObject obj, Document file)
+        private static (List<Error> errors, IReadOnlyList<InternalXrefSpec> specs) LoadSchemaDocument(Context context, JToken obj, Document file)
         {
             var errors = new List<Error>();
             var schemaTemplate = context.TemplateEngine.GetSchema(file.Mime);

@@ -48,13 +48,13 @@ outputs:
 # Throw error when content is not an object
 inputs:
   docfx.yml:
-  _theme/schemas/test.json: '{}'
+  _themes/ContentTemplate/schemas/test.schema.json: '{}'
   a.yml: |
     #YamlMime:test
     - array
 outputs:
   .errors.log: |
-   ["error","schema-not-found","Unknown schema ''","a.yml",1,1]
+    ["error","unexpected-type","Expect type 'Object' but got 'Array'","a.yml",1,1]
 ---
 # Fallback to documentType when yaml mime is YamlDocument
 inputs:
@@ -83,9 +83,9 @@ inputs:
     { "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/SchemaNotExisting.json"}
 outputs:
   .errors.log: |
-   ["error","schema-not-found","Schema 'SchemaNotExisting' not found.","docs/a.yml",1,1]
-   ["error","schema-not-found","Schema 'SchemaNotExisting' not found.","docs/b.json",2,95]
-   ["error","schema-not-found","Schema 'SchemaNotExisting' not found.","docs/c.json",1,95]
+    ["error","schema-not-found","Unknown schema 'SchemaNotExisting'","docs/b.json",2,95]
+    ["error","schema-not-found","Unknown schema 'SchemaNotExisting'","docs/a.yml",1,1]
+    ["error","schema-not-found","Unknown schema 'SchemaNotExisting'","docs/c.json",1,95]
 ---
 # Support schema documents with Href content
 inputs:

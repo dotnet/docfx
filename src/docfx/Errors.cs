@@ -497,7 +497,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         /// Behavior: ❌ Message: ✔️
         public static Error SchemaNotFound(SourceInfo<string> source)
-            => new Error(ErrorLevel.Error, "schema-not-found", !string.IsNullOrEmpty(source) ? $"Schema '{source}' not found." : $"Unknown schema '{source}'", source);
+            => new Error(ErrorLevel.Error, "schema-not-found", $"Unknown schema '{source}'", source);
 
         /// <summary>
         /// Build errors is larger than <see cref="OutputConfig.MaxErrors"/>.

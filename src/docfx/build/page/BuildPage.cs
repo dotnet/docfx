@@ -85,8 +85,8 @@ namespace Microsoft.Docs.Build
 
             var (outputMetadataErrors, outputMetadata) = await CreateOutputMetadata(context, file, inputMetadata);
             var rawOutputMetadata = JsonUtility.ToJObject(outputMetadata);
-
             errors.AddRange(outputMetadataErrors);
+            JsonUtility.Merge(rawOutputMetadata, inputMetadata.RawObject);
 
             // Create page model
             var pageModel = new JObject();
@@ -235,7 +235,7 @@ namespace Microsoft.Docs.Build
 
             if (!(transformedToken is JObject model))
             {
-                throw Errors.UnexpectedType(new SourceInfo(file.FilePath), JTokenType.Object, token.Type).ToException();
+                throw Errors.UnexpectedType(new SourceInfo(file.FilePath, 1, 1), JTokenType.Object, token.Type).ToException();
             }
 
             if (TemplateEngine.IsLandingData(file.Mime))

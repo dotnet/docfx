@@ -45,17 +45,12 @@ namespace Microsoft.Docs.Build
 
         public bool IsData(string mime)
         {
-            if (mime != null && _schemas.TryGetValue(mime, out var schemaTemplate) && schemaTemplate.Value.IsData)
-            {
-                return true;
-            }
-
-            return false;
+            return mime != null && _schemas.TryGetValue(mime, out var schemaTemplate) && schemaTemplate.Value.IsData;
         }
 
         public TemplateSchema GetSchema(SourceInfo<string> schemaName)
         {
-            return _schemas.TryGetValue(schemaName, out var schemaTemplate)
+            return schemaName.Value != null && _schemas.TryGetValue(schemaName, out var schemaTemplate)
                 ? schemaTemplate.Value
                 : throw Errors.SchemaNotFound(schemaName).ToException();
         }
@@ -134,7 +129,7 @@ namespace Microsoft.Docs.Build
 
             if (string.IsNullOrEmpty(docset.Config.Template))
             {
-                return new TemplateEngine(Path.Combine(docset.DocsetPath, DefaultTemplateDir), new JsonSchema());
+                return new TemplateEngine(Path.Combine(docset.DocsetPath, DefaultTemplateDir), docset.MetadataSchema);
             }
 
             var (themeRemote, themeBranch) = LocalizationUtility.GetLocalizedTheme(docset.Config.Template, docset.Locale, docset.Config.Localization.DefaultLocale);
