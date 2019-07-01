@@ -106,7 +106,7 @@ namespace Microsoft.DocAsCode.Common
             return path + query + fragment;
         }
 
-        private static (string path, string query, string fragment) Split(string uri)
+        public static (string path, string query, string fragment) Split(string uri)
         {
             if (uri == null)
             {
