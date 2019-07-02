@@ -40,7 +40,7 @@ namespace Microsoft.Docs.Build
             }
             else
             {
-                output = ApplyDataTemplage(context, file, pageModel);
+                output = ApplyDataTemplate(context, file, pageModel);
                 metadata = null;
             }
 
@@ -219,7 +219,6 @@ namespace Microsoft.Docs.Build
             var (metaErrors, inputMetadata) = context.MetadataProvider.GetMetadata(file);
             errors.AddRange(metaErrors);
 
-            var pageMetadata = new OutputMetadata();
             var pageModel = transformedToken;
 
             if (file.Docset.Legacy && TemplateEngine.IsLandingData(file.Mime))
@@ -244,7 +243,7 @@ namespace Microsoft.Docs.Build
             return (errors, pageModel as JObject, inputMetadata);
         }
 
-        private static object ApplyDataTemplage(Context context, Document file, JObject pageModel)
+        private static object ApplyDataTemplate(Context context, Document file, JObject pageModel)
         {
             return context.TemplateEngine.TransformData(file, pageModel);
         }
