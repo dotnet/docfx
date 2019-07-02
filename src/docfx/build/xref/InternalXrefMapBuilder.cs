@@ -44,7 +44,7 @@ namespace Microsoft.Docs.Build
                 var callStack = new List<Document> { file };
                 if (file.FilePath.EndsWith(".md", PathUtility.PathComparison))
                 {
-                    var (fileMetaErrors, _, fileMetadata) = context.MetadataProvider.GetMetadata(file);
+                    var (fileMetaErrors, fileMetadata) = context.MetadataProvider.GetMetadata(file);
                     errors.AddRange(fileMetaErrors);
 
                     if (!string.IsNullOrEmpty(fileMetadata.Uid))
