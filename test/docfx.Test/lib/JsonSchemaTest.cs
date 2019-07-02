@@ -27,7 +27,6 @@ namespace Microsoft.Docs.Build
             "not",
             "oneOf",
             "pattern",
-            "propertyNames",
             "refRemote",
             "uniqueItems"
         };
@@ -179,6 +178,11 @@ namespace Microsoft.Docs.Build
             "['warning','unexpected-type','Expect type 'Number' but got 'String'','file',1,33]")]
         [InlineData("{'properties': {'key': {'type': 'string'}}, 'additionalProperties': {'type': 'string', 'enum': ['a']}}", "{'key': 'value', 'key1': 'value1'}",
             "['warning','undefined-value','Value 'value1' is not accepted. Valid values: 'a'','file',1,33]")]
+
+        // property name validation
+        [InlineData("{'propertyNames': {'maxLength': 1}}", "{'a': 0}", "")]
+        [InlineData("{'propertyNames': {'maxLength': 1}}", "{'ab': 0}",
+            "['warning','string-length-invalid','String 'ab' length should be <= 1','file',1,6]")]
 
         // array validation
         [InlineData("{'items': {'type': 'string'}}", "['a','b']", "")]

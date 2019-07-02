@@ -50,6 +50,11 @@ namespace Microsoft.Docs.Build
         public (bool value, JsonSchema schema) AdditionalProperties { get; set; } = (true, null);
 
         /// <summary>
+        /// The JSON schema that applies to property names.
+        /// </summary>
+        public JsonSchema PropertyNames { get; set; }
+
+        /// <summary>
         /// The JSON schema that applies to the array items if the current value is array.
         /// </summary>
         public JsonSchema Items { get; set; }
