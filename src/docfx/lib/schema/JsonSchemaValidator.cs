@@ -101,11 +101,30 @@ namespace Microsoft.Docs.Build
                 }
             }
 
+            if (schema.UniqueItems)
+            {
+                ValidateUniqueItems(schema, name, array, errors);
+            }
+
             if (schema.MaxItems.HasValue && array.Count > schema.MaxItems.Value)
                 errors.Add(Errors.ArrayLengthInvalid(JsonUtility.GetSourceInfo(array), array.Path, $"<= {schema.MaxItems}"));
 
             if (schema.MinItems.HasValue && array.Count < schema.MinItems.Value)
                 errors.Add(Errors.ArrayLengthInvalid(JsonUtility.GetSourceInfo(array), array.Path, $">= {schema.MinItems}"));
+        }
+
+        private void ValidateUniqueItems(JsonSchema schema, string name, JArray array, List<Error> errors)
+        {
+            for (var i = 0; i < array.Count; i++)
+            {
+                for (var j = i; j < array.Count; j++)
+                {
+                    if (JTokenDeepEquals(array[i], array[j]))
+                    {
+                        errors.Add(Errors.ArrayNotUnique(JsonUtility.GetSourceInfo(array), name));
+                    }
+                }
+            }
         }
 
         private void ValidateObject(JsonSchema schema, string name, JObject map, List<Error> errors)

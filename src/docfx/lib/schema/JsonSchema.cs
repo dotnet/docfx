@@ -55,6 +55,11 @@ namespace Microsoft.Docs.Build
         public JsonSchema Items { get; set; }
 
         /// <summary>
+        /// Whether each item in array must be unique.
+        /// </summary>
+        public bool UniqueItems { get; set; }
+
+        /// <summary>
         /// The maximum item count that an array can hold.
         /// </summary>
         public int? MaxItems { get; set; }

@@ -28,8 +28,7 @@ namespace Microsoft.Docs.Build
             "oneOf",
             "pattern",
             "propertyNames",
-            "refRemote",
-            "uniqueItems"
+            "refRemote"
         };
 
         private static readonly string[] s_notSupportedTests =
@@ -194,6 +193,11 @@ namespace Microsoft.Docs.Build
         [InlineData("{'maxItems': 2, 'minItems': 4}", "['a','b','c']",
             @"['warning','array-length-invalid','Array '' length should be <= 2','file',1,1]
               ['warning','array-length-invalid','Array '' length should be >= 4','file',1,1]")]
+
+        // uniqueItems validation
+        [InlineData("{'uniqueItems': true}", "[1, 2]", "")]
+        [InlineData("{'uniqueItems': true}", "[1, 1]",
+            @"['warning','array-not-unique','Array '' items should be unique','file',1,1]")]
 
         // required validation
         [InlineData("{'required': []}", "{}", "")]
