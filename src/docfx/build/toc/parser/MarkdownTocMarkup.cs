@@ -43,18 +43,18 @@ namespace Microsoft.Docs.Build
             var (validationErrors, tocMetadata) = JsonUtility.ToObject<TableOfContentsMetadata>(metadata);
             errors.AddRange(validationErrors);
 
-            var tree = BuildTree(errors, file.FilePath, headingBlocks);
+            var items = BuildTree(errors, file.FilePath, headingBlocks);
 
-            var tocModel = new TableOfContentsModel { Metadata = tocMetadata, Items = tree.Items };
+            var tocModel = new TableOfContentsModel { Metadata = tocMetadata, Items = items };
 
             return (errors, tocModel);
         }
 
-        private static TableOfContentsItem BuildTree(List<Error> errors, string filePath, List<HeadingBlock> blocks)
+        private static List<TableOfContentsItem> BuildTree(List<Error> errors, string filePath, List<HeadingBlock> blocks)
         {
             if (blocks.Count <= 0)
             {
-                return new TableOfContentsItem();
+                return new List<TableOfContentsItem>();
             }
 
             var result = new TableOfContentsItem();
@@ -90,7 +90,7 @@ namespace Microsoft.Docs.Build
                 stack.Push((currentLevel, currentItem));
             }
 
-            return result;
+            return result.Items;
         }
 
         private static TableOfContentsItem GetItem(List<Error> errors, string filePath, HeadingBlock block)
