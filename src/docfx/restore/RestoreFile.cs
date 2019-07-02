@@ -44,15 +44,10 @@ namespace Microsoft.Docs.Build
 
             using (InterProcessMutex.Create(filePath))
             {
-                if (!File.Exists(filePath))
-                {
-                    PathUtility.CreateDirectoryFromFilePath(filePath);
-                    File.Move(tempFile, filePath);
-                }
-                else
-                {
-                    File.Delete(tempFile);
-                }
+                PathUtility.CreateDirectoryFromFilePath(filePath);
+
+                File.Copy(tempFile, filePath, true);
+                File.Delete(tempFile);
 
                 if (etag != null)
                 {
