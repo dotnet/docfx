@@ -103,7 +103,7 @@ namespace Microsoft.Docs.Build
 
             if (schema.UniqueItems)
             {
-                ValidateUniqueItems(schema, name, array, errors);
+                ValidateUniqueItems(name, array, errors);
             }
 
             if (schema.MaxItems.HasValue && array.Count > schema.MaxItems.Value)
@@ -113,11 +113,11 @@ namespace Microsoft.Docs.Build
                 errors.Add(Errors.ArrayLengthInvalid(JsonUtility.GetSourceInfo(array), array.Path, $">= {schema.MinItems}"));
         }
 
-        private void ValidateUniqueItems(JsonSchema schema, string name, JArray array, List<Error> errors)
+        private void ValidateUniqueItems(string name, JArray array, List<Error> errors)
         {
             for (var i = 0; i < array.Count; i++)
             {
-                for (var j = i; j < array.Count; j++)
+                for (var j = i + 1; j < array.Count; j++)
                 {
                     if (JTokenDeepEquals(array[i], array[j]))
                     {
