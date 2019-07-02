@@ -173,17 +173,17 @@ namespace Microsoft.Docs.Build
             var (metadataErrors, inputMetadata) = context.MetadataProvider.GetMetadata(file);
             errors.AddRange(metadataErrors);
 
-            var pageModel = new ConceptualModel
+            var pageModel = JsonUtility.ToJObject(new ConceptualModel
             {
                 Conceptual = HtmlUtility.HtmlPostProcess(htmlDom, file.Docset.Culture),
                 WordCount = wordCount,
                 RawTitle = rawTitle,
                 Title = inputMetadata.Title ?? title,
-            };
+            });
 
             context.BookmarkValidator.AddBookmarks(file, bookmarks);
 
-            return (errors, JsonUtility.ToJObject(pageModel), inputMetadata);
+            return (errors, pageModel, inputMetadata);
         }
 
         private static async Task<(List<Error> errors, JObject model, InputMetadata inputMetadata)>
