@@ -123,13 +123,16 @@ namespace Microsoft.Docs.Build
                 return url;
             }
 
+            var (relativeToPath, _, _) = SplitUrl(relativeToUrl);
+            var (path, query, fragment) = SplitUrl(url);
+
             // Find the last common segment
             var i = 0;
             var segmentIndex = 0;
-            while (i < url.Length && i < relativeToUrl.Length)
+            while (i < path.Length && i < relativeToPath.Length)
             {
-                var ch = url[i];
-                if (ch != relativeToUrl[i])
+                var ch = path[i];
+                if (ch != relativeToPath[i])
                 {
                     break;
                 }
@@ -143,23 +146,23 @@ namespace Microsoft.Docs.Build
 
             // Count remaining segments in relativeToUrl
             var remainingSegmentCount = 0;
-            for (i = segmentIndex; i < relativeToUrl.Length; i++)
+            for (i = segmentIndex; i < relativeToPath.Length; i++)
             {
-                if (relativeToUrl[i] == '/')
+                if (relativeToPath[i] == '/')
                 {
                     remainingSegmentCount++;
                 }
             }
 
             // Build result
-            var result = new StringBuilder(url.Length);
+            var result = new StringBuilder(path.Length);
 
             for (i = 0; i < remainingSegmentCount; i++)
             {
                 result.Append("../");
             }
 
-            if (segmentIndex >= url.Length)
+            if (segmentIndex >= path.Length)
             {
                 if (remainingSegmentCount == 0)
                 {
@@ -168,9 +171,11 @@ namespace Microsoft.Docs.Build
             }
             else
             {
-                result.Append(url, segmentIndex, url.Length - segmentIndex);
+                result.Append(path, segmentIndex, path.Length - segmentIndex);
             }
 
+            result.Append(query);
+            result.Append(fragment);
             return result.ToString();
         }
 

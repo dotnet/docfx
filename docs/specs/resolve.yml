@@ -79,6 +79,20 @@ outputs:
     ["suggestion","internal-bookmark-not-found","Cannot find bookmark '#heading2' in 'docs/includes/b.md', did you mean '#heading'?","docs/includes/b.md",5,9]
     ["suggestion","internal-bookmark-not-found","Cannot find bookmark '#heading1' in 'docs/includes/b.md', did you mean '#heading'?","docs/includes/b.md",4,9]
 ---
+# Links to bookmarks in index.md
+inputs:
+  docfx.yml:
+  a.md: |
+    Link to [](index.md#hello-world)
+  index.md: |
+    # Hello World
+outputs:
+  a.json: |
+    {
+      "conceptual": "<p>Link to <a href=\"./#hello-world\"></a></p>" 
+    }
+  index.json:
+---
 # Support both / and \ as directory seperator
 inputs:
   docfx.yml:
