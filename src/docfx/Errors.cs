@@ -409,6 +409,13 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Warning, "array-length-invalid", $"Array '{propName}' length should be {criteria}", source);
 
         /// <summary>
+        /// Object property count not within min and max.
+        /// </summary>
+        /// Behavior: ✔️ Message: ❌
+        public static Error PropertyCountInvalid(SourceInfo source, string propName, string criteria)
+            => new Error(ErrorLevel.Warning, "property-count-invalid", $"Object '{propName}' property count should be {criteria}", source);
+
+        /// <summary>
         /// String length not within min and max.
         /// </summary>
         /// Behavior: ✔️ Message: ❌
