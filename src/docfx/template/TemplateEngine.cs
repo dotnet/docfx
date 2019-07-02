@@ -44,25 +44,16 @@ namespace Microsoft.Docs.Build
         }
 
         public bool IsData(string mime)
-        {
-            if (mime != null && _schemas.TryGetValue(mime, out var schemaTemplate) && schemaTemplate.Value.IsData)
-            {
-                return true;
-            }
-
-            return false;
-        }
+            => mime != null && _schemas.TryGetValue(mime, out var schemaTemplate) && schemaTemplate.Value.IsData;
 
         public TemplateSchema GetJsonSchema(string schemaName)
-        {
-            return !string.IsNullOrEmpty(schemaName) && _schemas.TryGetValue(schemaName, out var schemaTemplate) ? schemaTemplate.Value : default;
-        }
+            => !string.IsNullOrEmpty(schemaName) && _schemas.TryGetValue(schemaName, out var schemaTemplate) ? schemaTemplate.Value : default;
 
-        public string Render(string content, Document file, JObject rawMetadata, string mime)
+        public string RunLiquid(string content, Document file, JObject rawMetadata, string mime)
         {
             // TODO: only works for conceptual
             rawMetadata = TransformPageMetadata(rawMetadata, mime);
-            var metadata = CreateMetadata(rawMetadata);
+            var metadata = TemplateUtility.CreateMetadata(rawMetadata);
 
             var layout = rawMetadata.Value<string>("layout") ?? "";
             var themeRelativePath = PathUtility.GetRelativePathToFile(file.SitePath, "_themes");
@@ -78,11 +69,17 @@ namespace Microsoft.Docs.Build
             return _liquid.Render(layout, liquidModel);
         }
 
+        public string RenderMustache(string mime, JObject pageModel)
+        {
+            // TODO: run JINT + mustache
+            throw new NotImplementedException();
+        }
+
         public (TemplateModel model, JObject metadata) TransformToTemplateModel(string conceptual, JObject rawMetadata, string mime)
         {
             rawMetadata = TransformPageMetadata(rawMetadata, mime);
-            var metadata = CreateMetadata(rawMetadata);
-            var pageMetadata = CreateHtmlMetaTags(metadata);
+            var metadata = TemplateUtility.CreateMetadata(rawMetadata);
+            var pageMetadata = TemplateUtility.CreateHtmlMetaTags(metadata, _htmlMetaHidden, _htmlMetaNames);
 
             var model = new TemplateModel
             {
@@ -118,7 +115,21 @@ namespace Microsoft.Docs.Build
         }
 
         public JObject TransformTocMetadata(object model)
-            => TransformMetadata("toc.json.js", JsonUtility.ToJObject(model));
+            => RunJintTransform("toc.json.js", JsonUtility.ToJObject(model));
+
+        public JObject TransformData(Document file, JObject pageModel)
+        {
+            Debug.Assert(file.IsData);
+
+            _ = _schemas.TryGetValue(file.Mime, out var templateSchema);
+            Debug.Assert(templateSchema.Value != null);
+
+            if (templateSchema.Value.HasDataTransformJs)
+            {
+                return RunJintTransform(templateSchema.Value.DataTransformJsPath, pageModel);
+            }
+            return pageModel;
+        }
 
         public static bool IsLandingData(string mime)
         {
@@ -149,7 +160,7 @@ namespace Microsoft.Docs.Build
         private JObject TransformPageMetadata(JObject rawMetadata, string mime)
         {
             // TODO: transform based on mime
-            rawMetadata = TransformMetadata("Conceptual.mta.json.js", rawMetadata);
+            rawMetadata = RunJintTransform("Conceptual.mta.json.js", rawMetadata);
 
             if (IsLandingData(mime))
             {
@@ -161,7 +172,7 @@ namespace Microsoft.Docs.Build
                 rawMetadata.Remove("_op_allContributorsStr");
             }
 
-            return RemoveUpdatedAtDateTime(rawMetadata);
+            return TemplateUtility.RemoveUpdatedAtDateTime(rawMetadata);
         }
 
         private JObject LoadGlobalTokens(string contentTemplateDir)
@@ -170,9 +181,14 @@ namespace Microsoft.Docs.Build
             return File.Exists(path) ? JObject.Parse(File.ReadAllText(path)) : new JObject();
         }
 
-        private JObject TransformMetadata(string scriptPath, JObject model)
+        private JObject RunJintTransform(string scriptPath, JObject model)
         {
             return JObject.Parse(((JObject)_js.Run(scriptPath, "transform", model)).Value<string>("content"));
+        }
+
+        private string RunMustache(string scriptPath, JObject model)
+        {
+            throw new NotImplementedException();
         }
 
         private static IReadOnlyDictionary<string, Lazy<TemplateSchema>>
@@ -186,76 +202,6 @@ namespace Microsoft.Docs.Build
 
             schemas.Add("LandingData", new Lazy<TemplateSchema>(() => new TemplateSchema("LandingData", schemaDir, contentTemplateDir)));
             return schemas;
-        }
-
-        private static JObject CreateMetadata(JObject rawMetadata)
-        {
-            var metadata = new JObject();
-
-            foreach (var (key, value) in rawMetadata)
-            {
-                if (!key.StartsWith("_"))
-                {
-                    metadata[key] = value;
-                }
-            }
-
-            metadata["is_dynamic_rendering"] = true;
-
-            return metadata;
-        }
-
-        private string CreateHtmlMetaTags(JObject metadata)
-        {
-            var result = new StringBuilder();
-
-            foreach (var property in metadata.Properties().OrderBy(p => p.Name))
-            {
-                var key = property.Name;
-                var value = property.Value;
-                if (value is JObject || _htmlMetaHidden.Contains(key))
-                {
-                    continue;
-                }
-
-                var content = "";
-                var name = _htmlMetaNames.TryGetValue(key, out var diplayName) ? diplayName : key;
-
-                if (value is JArray arr)
-                {
-                    foreach (var v in value)
-                    {
-                        if (v is JValue)
-                        {
-                            result.AppendLine($"<meta name=\"{HttpUtility.HtmlEncode(name)}\" content=\"{HttpUtility.HtmlEncode(v)}\" />");
-                        }
-                    }
-                    continue;
-                }
-                else if (value.Type == JTokenType.Boolean)
-                {
-                    content = (bool)value ? "true" : "false";
-                }
-                else
-                {
-                    content = value.ToString();
-                }
-
-                result.AppendLine($"<meta name=\"{HttpUtility.HtmlEncode(name)}\" content=\"{HttpUtility.HtmlEncode(content)}\" />");
-            }
-
-            return result.ToString();
-        }
-
-        private static JObject RemoveUpdatedAtDateTime(JObject rawMetadata)
-        {
-            JToken gitContributorInformation;
-            if (rawMetadata.TryGetValue("_op_gitContributorInformation", out gitContributorInformation)
-                && ((JObject)gitContributorInformation).ContainsKey("updated_at_date_time"))
-            {
-                ((JObject)rawMetadata["_op_gitContributorInformation"]).Remove("updated_at_date_time");
-            }
-            return rawMetadata;
         }
     }
 }

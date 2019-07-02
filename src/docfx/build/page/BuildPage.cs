@@ -1,10 +1,12 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -19,7 +21,7 @@ namespace Microsoft.Docs.Build
             var (generateErrors, outputMetadata) = await GenerateOutputMetadata(context, file, inputMetadata);
             errors.AddRange(generateErrors);
 
-            var outputPath = file.GetOutputPath(outputMetadata.Monikers, file.Docset.SiteBasePath, !file.IsData);
+            var outputPath = file.GetOutputPath(outputMetadata.Monikers, file.Docset.SiteBasePath, file.IsData);
 
             object output = null;
             JObject metadata = null;
@@ -38,8 +40,7 @@ namespace Microsoft.Docs.Build
             }
             else
             {
-                // todo: support data page template
-                output = pageModel;
+                output = ApplyDataTemplage(context, file, pageModel);
                 metadata = null;
             }
 
@@ -240,10 +241,16 @@ namespace Microsoft.Docs.Build
                 };
             }
 
+            // TODO:? is this only for page?
             pageModel["title"] = inputMetadata.Title ?? obj?.Value<string>("title");
             pageModel["rawTitle"] = file.Docset.Legacy ? $"<h1>{obj?.Value<string>("title")}</h1>" : null;
 
             return (errors, pageModel as JObject, inputMetadata);
+        }
+
+        private static object ApplyDataTemplage(Context context, Document file, JObject pageModel)
+        {
+            return context.TemplateEngine.TransformData(file, pageModel);
         }
 
         private static (object model, JObject metadata) ApplyPageTemplate(Context context, Document file, JObject pageMetadata, JObject pageModel, bool isConceptual)
@@ -253,7 +260,7 @@ namespace Microsoft.Docs.Build
 
             if (!file.Docset.Config.Output.Json)
             {
-                return (context.TemplateEngine.Render(conceptual, file, processedMetadata, file.Mime), null);
+                return (context.TemplateEngine.RunLiquid(conceptual, file, processedMetadata, file.Mime), null);
             }
 
             if (file.Docset.Legacy)
@@ -261,7 +268,7 @@ namespace Microsoft.Docs.Build
                 if (!isConceptual)
                 {
                     // run sdp JINT and mustache to generate html
-                    // conceptual = context.TemplateEngine.Render(file.Mime, pageModel);
+                    conceptual = context.TemplateEngine.RenderMustache(file.Mime, pageModel);
                 }
 
                 return context.TemplateEngine.TransformToTemplateModel(conceptual, processedMetadata, file.Mime);

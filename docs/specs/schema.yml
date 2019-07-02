@@ -318,3 +318,32 @@ inputs:
 outputs:
   .errors.log: |
     ["error","json-syntax-error","Invalid JavaScript property identifier character: }.","docs/a.json",1,2]
+---
+# Run data-transform in legacy mode
+inputs:
+  docfx.yml:
+  a.yml: |
+    #YamlMime:TestData
+    prop: value
+  _themes/ContentTemplate/TestData.json.js: |
+    exports.transform = function (model) {
+      return {
+        content: JSON.stringify({result: model.prop + " has run js data transform"})
+      }
+    }
+  _themes/ContentTemplate/schemas/TestData.schema.json: "{}"
+outputs:
+  a.json: |
+    {"result": "value has run js data transform"}
+---
+# Don's run data-transform if corresponding js not provided
+inputs:
+  docfx.yml:
+  a.yml: |
+    #YamlMime:TestData
+    prop: value
+  _themes/ContentTemplate/schemas/TestData.schema.json: "{}"
+outputs:
+  a.json: |
+    {"prop": "value"}
+---

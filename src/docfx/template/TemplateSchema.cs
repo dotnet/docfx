@@ -9,14 +9,19 @@ namespace Microsoft.Docs.Build
 {
     internal class TemplateSchema
     {
-        private string _htmlTransformJsPath;
-        private string _metadataTransformJsPath;
-
         public string SchemaName { get; }
 
         public bool IsData { get; }
 
         public bool TransformMetadata { get; }
+
+        public bool HasDataTransformJs { get; }
+
+        public string DataTransformJsPath { get; }
+
+        public string HtmlTransformJsPath { get; private set; }
+
+        public string MetadataTransformJsPath { get; }
 
         public JsonSchemaValidator JsonSchemaValidator { get; }
 
@@ -28,15 +33,18 @@ namespace Microsoft.Docs.Build
 
             SchemaName = SchemaName;
             IsData = GetIsDataCore(schemaName, contentTemplateDir);
-            TransformMetadata = File.Exists(_metadataTransformJsPath = Path.Combine(contentTemplateDir, $"{schemaName}.mta.json.js"));
+            TransformMetadata = File.Exists(MetadataTransformJsPath = Path.Combine(contentTemplateDir, $"{schemaName}.mta.json.js"));
+            HasDataTransformJs = File.Exists(DataTransformJsPath = Path.Combine(contentTemplateDir, $"{schemaName}.json.js"));
             (JsonSchemaValidator, JsonSchemaTransformer) = GetJsonSchemaCore(schemaDir, schemaName);
+
+            Debug.Assert(IsData || (!IsData && !HasDataTransformJs));
         }
 
         private bool GetIsDataCore(string schemaName, string contentTemplateDir)
         {
             if (string.Equals(schemaName, "LandingData"))
                 return false;
-            return !File.Exists(_htmlTransformJsPath = Path.Combine(contentTemplateDir, $"{schemaName}.html.primary.js"));
+            return !File.Exists(HtmlTransformJsPath = Path.Combine(contentTemplateDir, $"{schemaName}.html.primary.js"));
         }
 
         private (JsonSchemaValidator, JsonSchemaTransformer) GetJsonSchemaCore(string schemaDir, string schemaName)

@@ -174,14 +174,14 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public string GetOutputPath(List<string> monikers, string siteBasePath, bool rawPage = false)
+        public string GetOutputPath(List<string> monikers, string siteBasePath, bool isData = true)
         {
             var outputPath = PathUtility.NormalizeFile(Path.Combine(
                 siteBasePath,
                 $"{MonikerUtility.GetGroup(monikers)}",
                 Path.GetRelativePath(siteBasePath, SitePath)));
 
-            return Docset.Legacy && rawPage ? LegacyUtility.ChangeExtension(outputPath, ".raw.page.json") : outputPath;
+            return Docset.Legacy && !isData ? LegacyUtility.ChangeExtension(outputPath, ".raw.page.json") : outputPath;
         }
 
         public override int GetHashCode()
