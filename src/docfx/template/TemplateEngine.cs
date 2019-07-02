@@ -46,8 +46,10 @@ namespace Microsoft.Docs.Build
         public bool IsData(string mime)
             => mime != null && _schemas.TryGetValue(mime, out var schemaTemplate) && schemaTemplate.Value.IsData;
 
-        public TemplateSchema GetJsonSchema(string schemaName)
-            => !string.IsNullOrEmpty(schemaName) && _schemas.TryGetValue(schemaName, out var schemaTemplate) ? schemaTemplate.Value : default;
+        public TemplateSchema GetJsonSchema(SourceInfo<string> schemaName)
+            => !string.IsNullOrEmpty(schemaName) && _schemas.TryGetValue(schemaName, out var schemaTemplate)
+               ? schemaTemplate.Value
+               : throw Errors.SchemaNotFound(schemaName).ToException();
 
         public string RunLiquid(string content, Document file, JObject rawMetadata, string mime)
         {

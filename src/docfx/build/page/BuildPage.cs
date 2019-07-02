@@ -207,10 +207,6 @@ namespace Microsoft.Docs.Build
             var obj = token as JObject;
 
             var schemaTemplate = context.TemplateEngine.GetJsonSchema(file.Mime);
-            if (schemaTemplate is null)
-            {
-                throw Errors.SchemaNotFound(file.Mime).ToException();
-            }
 
             // validate via json schema
             var schemaValidationErrors = schemaTemplate.JsonSchemaValidator.Validate(token);

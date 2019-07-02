@@ -102,10 +102,6 @@ namespace Microsoft.Docs.Build
         {
             var errors = new List<Error>();
             var schemaTemplate = context.TemplateEngine.GetJsonSchema(file.Mime);
-            if (schemaTemplate is null)
-            {
-                throw Errors.SchemaNotFound(file.Mime).ToException();
-            }
 
             var (schemaErrors, xrefPropertiesGroupByUid) = schemaTemplate.JsonSchemaTransformer.TransformXref(file, context, obj);
             errors.AddRange(schemaErrors);
