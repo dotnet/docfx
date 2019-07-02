@@ -93,6 +93,12 @@ namespace Microsoft.Docs.Build
 
         private void ValidateArray(JsonSchema schema, string name, JArray array, List<Error> errors)
         {
+            if (schema.MaxItems.HasValue && array.Count > schema.MaxItems.Value)
+                errors.Add(Errors.ArrayLengthInvalid(JsonUtility.GetSourceInfo(array), array.Path, $"<= {schema.MaxItems}"));
+
+            if (schema.MinItems.HasValue && array.Count < schema.MinItems.Value)
+                errors.Add(Errors.ArrayLengthInvalid(JsonUtility.GetSourceInfo(array), array.Path, $">= {schema.MinItems}"));
+
             if (schema.Items != null)
             {
                 foreach (var item in array)
@@ -100,12 +106,6 @@ namespace Microsoft.Docs.Build
                     Validate(schema.Items, name, item, errors);
                 }
             }
-
-            if (schema.MaxItems.HasValue && array.Count > schema.MaxItems.Value)
-                errors.Add(Errors.ArrayLengthInvalid(JsonUtility.GetSourceInfo(array), array.Path, $"<= {schema.MaxItems}"));
-
-            if (schema.MinItems.HasValue && array.Count < schema.MinItems.Value)
-                errors.Add(Errors.ArrayLengthInvalid(JsonUtility.GetSourceInfo(array), array.Path, $">= {schema.MinItems}"));
         }
 
         private void ValidateObject(JsonSchema schema, string name, JObject map, List<Error> errors)
@@ -120,6 +120,12 @@ namespace Microsoft.Docs.Build
 
         private void ValidateProperties(JsonSchema schema, string name, JObject map, List<Error> errors)
         {
+            if (schema.MaxProperties.HasValue && map.Count > schema.MaxProperties.Value)
+                errors.Add(Errors.PropertyCountInvalid(JsonUtility.GetSourceInfo(map), map.Path, $"<= {schema.MaxProperties}"));
+
+            if (schema.MinProperties.HasValue && map.Count < schema.MinProperties.Value)
+                errors.Add(Errors.PropertyCountInvalid(JsonUtility.GetSourceInfo(map), map.Path, $">= {schema.MinProperties}"));
+
             foreach (var (key, value) in map)
             {
                 var isAdditonalProperty = true;
