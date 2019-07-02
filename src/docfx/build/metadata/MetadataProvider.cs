@@ -41,24 +41,24 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public (List<Error> errors, InputMetadata metadataModel) GetMetadata(Document file)
+        public (List<Error> errors, InputMetadata metadata) GetMetadata(Document file)
         {
             return _metadataCache.GetOrAdd(file, GetMetadataCore);
         }
 
-        private (List<Error> errors, InputMetadata metadataModel) GetMetadataCore(Document file)
+        private (List<Error> errors, InputMetadata metadata) GetMetadataCore(Document file)
         {
             if (file.ContentType != ContentType.Page && file.ContentType != ContentType.TableOfContents)
             {
                 return (new List<Error>(), new InputMetadata());
             }
 
-            var rawMetadata = new JObject();
+            var result = new JObject();
 
             var (errors, yamlHeader) = LoadMetadata(file);
-            JsonUtility.SetSourceInfo(rawMetadata, JsonUtility.GetSourceInfo(yamlHeader));
+            JsonUtility.SetSourceInfo(result, JsonUtility.GetSourceInfo(yamlHeader));
 
-            JsonUtility.Merge(rawMetadata, _globalMetadata);
+            JsonUtility.Merge(result, _globalMetadata);
 
             var fileMetadata = new JObject();
             foreach (var (glob, key, value) in _rules)
@@ -71,10 +71,10 @@ namespace Microsoft.Docs.Build
                     JsonUtility.SetSourceInfo(fileMetadata.Property(key), JsonUtility.GetSourceInfo(value));
                 }
             }
-            JsonUtility.Merge(rawMetadata, fileMetadata);
-            JsonUtility.Merge(rawMetadata, yamlHeader);
+            JsonUtility.Merge(result, fileMetadata);
+            JsonUtility.Merge(result, yamlHeader);
 
-            foreach (var property in rawMetadata.Properties())
+            foreach (var property in result.Properties())
             {
                 if (_reservedMetadata.Contains(property.Name))
                 {
@@ -86,12 +86,13 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            errors.AddRange(_schemaValidator.Validate(rawMetadata));
+            errors.AddRange(_schemaValidator.Validate(result));
 
-            var (validationErrors, metadata) = JsonUtility.ToObject<InputMetadata>(rawMetadata);
+            var (validationErrors, metadata) = JsonUtility.ToObject<InputMetadata>(result);
+
+            metadata.RawJObject = result;
+
             errors.AddRange(validationErrors);
-
-            metadata.RawObject = rawMetadata;
 
             return (errors, metadata);
         }

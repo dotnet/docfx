@@ -86,13 +86,13 @@ namespace Microsoft.Docs.Build
             var (outputMetadataErrors, outputMetadata) = await CreateOutputMetadata(context, file, inputMetadata);
             var rawOutputMetadata = JsonUtility.ToJObject(outputMetadata);
             errors.AddRange(outputMetadataErrors);
-            JsonUtility.Merge(rawOutputMetadata, inputMetadata.RawObject);
+            JsonUtility.Merge(rawOutputMetadata, inputMetadata.RawJObject);
 
             // Create page model
             var pageModel = new JObject();
 
             JsonUtility.Merge(pageModel, model);
-            JsonUtility.Merge(pageModel, inputMetadata.RawObject);
+            JsonUtility.Merge(pageModel, inputMetadata.RawJObject);
             JsonUtility.Merge(pageModel, rawOutputMetadata);
 
             if (file.Docset.Config.Output.Json && !file.Docset.Legacy)
