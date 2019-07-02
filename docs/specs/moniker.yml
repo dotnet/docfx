@@ -588,7 +588,7 @@ outputs:
   xrefmap.json: | 
     {"!references":null}
 ---
-# Define uid with moniker range, refer to it with invalid moniker, could fall back to the one with any one
+# Define uid with moniker range, refer to it with invalid moniker, could fall back to anyone
 inputs:
   docfx.yml: |
     monikerRange:
