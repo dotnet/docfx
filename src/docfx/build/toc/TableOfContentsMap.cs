@@ -120,7 +120,7 @@ namespace Microsoft.Docs.Build
             GetRelativeDirectoryInfo(Document file, Document toc)
         {
             var relativePath = PathUtility.NormalizeFile(
-                Path.GetDirectoryName(PathUtility.GetRelativePathToFile(file.SitePath, toc.SitePath)));
+                Path.GetDirectoryName(PathUtility.GetRelativePathToFile(file.FilePath, toc.FilePath)));
             if (string.IsNullOrEmpty(relativePath))
             {
                 return default;
