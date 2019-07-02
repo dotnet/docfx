@@ -701,7 +701,7 @@ inputs:
     1
 outputs:
   .errors.log: |
-    ["error","schema-not-found","Unknown schema ''","docs/a.json",1,1]
+    ["error","unexpected-type","Expect type 'Object' but got 'Integer'","docs/a.json",1,1]
 ---
 # support <xref href="uid"></xref>
 inputs:

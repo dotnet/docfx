@@ -205,7 +205,10 @@ namespace Microsoft.Docs.Build
         private static async Task<(List<Error> errors, JObject model, InputMetadata inputMetadata)>
             LoadSchemaDocument(Context context, List<Error> errors, JToken token, Document file)
         {
-            var obj = token as JObject;
+            if (!(token is JObject obj))
+            {
+                throw Errors.UnexpectedType(new SourceInfo(file.FilePath, 1, 1), JTokenType.Object, token.Type).ToException();
+            }
 
             var schemaTemplate = context.TemplateEngine.GetJsonSchema(file.Mime);
             if (schemaTemplate is null)
@@ -214,17 +217,17 @@ namespace Microsoft.Docs.Build
             }
 
             // validate via json schema
-            var schemaValidationErrors = schemaTemplate.JsonSchemaValidator.Validate(token);
+            var schemaValidationErrors = schemaTemplate.JsonSchemaValidator.Validate(obj);
             errors.AddRange(schemaValidationErrors);
 
             // transform via json schema
-            var (schemaTransformError, transformedToken) = schemaTemplate.JsonSchemaTransformer.TransformContent(file, context, token);
+            var (schemaTransformError, transformedToken) = schemaTemplate.JsonSchemaTransformer.TransformContent(file, context, obj);
             errors.AddRange(schemaTransformError);
 
             var (metaErrors, inputMetadata) = context.MetadataProvider.GetMetadata(file);
             errors.AddRange(metaErrors);
 
-            var pageModel = transformedToken;
+            var pageModel = transformedToken as JObject;
             if (file.Docset.Legacy && TemplateEngine.IsLandingData(file.Mime))
             {
                 // TODO: remove schema validation in ToObject
@@ -242,7 +245,7 @@ namespace Microsoft.Docs.Build
                 });
             }
 
-            return (errors, pageModel as JObject, inputMetadata);
+            return (errors, pageModel, inputMetadata);
         }
 
         private static (object model, JObject metadata) ApplyPageTemplate(Context context, Document file, JObject pageMetadata, JObject pageModel, bool isConceptual)
@@ -267,20 +270,6 @@ namespace Microsoft.Docs.Build
             }
 
             return (pageModel, processedMetadata);
-        }
-
-        [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
-        internal class ConceptualModel
-        {
-            public string Conceptual { get; set; }
-
-            [JsonProperty("wordCount")]
-            public long? WordCount { get; set; }
-
-            public string Title { get; set; }
-
-            [JsonProperty("rawTitle")]
-            public string RawTitle { get; set; }
         }
     }
 }
