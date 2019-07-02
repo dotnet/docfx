@@ -26,7 +26,6 @@ namespace Microsoft.Docs.Build
             "multipleOf",
             "not",
             "oneOf",
-            "pattern",
             "propertyNames",
             "refRemote",
             "uniqueItems"
@@ -134,6 +133,11 @@ namespace Microsoft.Docs.Build
         [InlineData("{'type': 'number', 'enum': [1, 2]}", "1", "")]
         [InlineData("{'type': 'number', 'enum': [1, 2]}", "3",
             "['warning','undefined-value','Value '3' is not accepted. Valid values: '1', '2'','file',1,1]")]
+
+        // pattern validation
+        [InlineData("{'pattern': '^a.*'}", "'a'", "")]
+        [InlineData("{'pattern': '^a.*'}", "'b'",
+            "['warning','format-invalid','String 'b' is not a valid '^a.*'','file',1,3]")]
 
         // string length validation
         [InlineData("{'type': 'string', 'minLength': 1, 'maxLength': 5}", "'a'", "")]

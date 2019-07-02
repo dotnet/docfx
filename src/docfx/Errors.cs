@@ -398,7 +398,7 @@ namespace Microsoft.Docs.Build
         /// The string type's value doesn't match given format.
         /// </summary>
         /// Behavior: ✔️ Message: ❌
-        public static Error FormatInvalid(SourceInfo source, string value, JsonSchemaStringFormat type)
+        public static Error FormatInvalid(SourceInfo source, string value, object type)
             => new Error(ErrorLevel.Warning, "format-invalid", $"String '{value}' is not a valid '{type}'", source);
 
         /// <summary>

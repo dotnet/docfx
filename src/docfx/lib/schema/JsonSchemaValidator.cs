@@ -171,11 +171,16 @@ namespace Microsoft.Docs.Build
                     errors.Add(Errors.StringLengthInvalid(JsonUtility.GetSourceInfo(scalar), scalar.Path, $">= {schema.MinLength}"));
             }
 
+            if (schema.Pattern != null && !Regex.IsMatch(str, schema.Pattern))
+            {
+                errors.Add(Errors.FormatInvalid(JsonUtility.GetSourceInfo(scalar), str, schema.Pattern));
+            }
+
             switch (schema.Format)
             {
                 case JsonSchemaStringFormat.DateTime:
                     if (!DateTime.TryParse(str, out var _))
-                        errors.Add(Errors.FormatInvalid(JsonUtility.GetSourceInfo(scalar), scalar.Value<string>(), JsonSchemaStringFormat.DateTime));
+                        errors.Add(Errors.FormatInvalid(JsonUtility.GetSourceInfo(scalar), str, JsonSchemaStringFormat.DateTime));
                     break;
             }
         }
