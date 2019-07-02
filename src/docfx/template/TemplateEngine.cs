@@ -122,8 +122,6 @@ namespace Microsoft.Docs.Build
             Debug.Assert(file.IsData);
 
             _ = _schemas.TryGetValue(file.Mime, out var templateSchema);
-            Debug.Assert(templateSchema.Value != null);
-
             if (templateSchema.Value.HasDataTransformJs)
             {
                 return RunJintTransform(templateSchema.Value.DataTransformJsPath, pageModel);

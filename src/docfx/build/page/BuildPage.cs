@@ -268,7 +268,7 @@ namespace Microsoft.Docs.Build
                 if (!isConceptual)
                 {
                     // run sdp JINT and mustache to generate html
-                    conceptual = context.TemplateEngine.RenderMustache(file.Mime, pageModel);
+                    // conceptual = context.TemplateEngine.RenderMustache(file.Mime, pageModel);
                 }
 
                 return context.TemplateEngine.TransformToTemplateModel(conceptual, processedMetadata, file.Mime);

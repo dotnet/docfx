@@ -135,8 +135,8 @@ namespace Microsoft.Docs.Build
         ///   - The toc syntax '# @b abc' is invalid, multiple inlines in one heading block is not allowed
         /// </summary>
         /// Behavior: ✔️ Message: ❌
-        public static Error InvalidTocSyntax(SourceInfo<string> source, string hint = null)
-            => new Error(ErrorLevel.Error, "invalid-toc-syntax", $"The toc syntax '{source}' is invalid, {hint ?? "the opening sequence of # characters must be followed by a space or by the end of line"}. Refer to [ATX heading](https://spec.commonmark.org/0.28/#atx-heading) to fix it", source);
+        public static Error InvalidTocSyntax(SourceInfo source)
+            => new Error(ErrorLevel.Error, "invalid-toc-syntax", $"The toc syntax is invalid, each line must be a valid markdown [ATX heading](https://spec.commonmark.org/0.28/#atx-heading) with a single link, xref link or literal text", source);
 
         /// <summary>
         /// In markdown-format toc, header level should be continuous, it shouldn't skip a level.
