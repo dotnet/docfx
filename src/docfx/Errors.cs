@@ -523,6 +523,17 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
+        /// Same uid defined within different versions with the different name.
+        /// Examples:
+        ///   - Same uid defined in multiple .md files with different versions have different titles.
+        /// </summary>
+        /// Behavior: ❌ Message: ❌
+        public static Error UidNameConflict(string uid, IEnumerable<string> nameConflicts)
+        {
+            return new Error(ErrorLevel.Error, "uid-name-conflict", $"UID '{uid}' is defined with different names: {Join(nameConflicts)}");
+        }
+
+        /// <summary>
         /// Multiple articles with same uid contain overlapped monikers,
         /// and can't decide which article to use when referencing that uid with this overlapped version
         /// </summary>

@@ -189,10 +189,15 @@ namespace Microsoft.Docs.Build
                 return Array.Empty<InternalXrefSpec>();
             }
 
-            // Sort by monikers
-            return conflictsWithoutMoniker.Concat(
-                conflictsWithMoniker.OrderByDescending(
-                    spec => spec.Monikers.First(), context.MonikerProvider.Comparer)).ToArray();
+            // uid conflicts with different names, drop the uid and log an error
+            var conflictingNames = specsWithSameUid.Select(x => x.GetName()).Distinct();
+            if (conflictingNames.Count() > 1)
+            {
+                context.ErrorLog.Write(Errors.UidNameConflict(uid, conflictingNames));
+                return Array.Empty<InternalXrefSpec>();
+            }
+
+            return conflictsWithoutMoniker.Concat(conflictsWithMoniker).ToArray();
         }
 
         private static bool CheckOverlappingMonikers(IXrefSpec[] specsWithSameUid, out HashSet<string> overlappingMonikers)
