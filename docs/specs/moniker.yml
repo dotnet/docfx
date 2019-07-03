@@ -679,21 +679,21 @@ inputs:
   docs/v1/a.md: |
     ---
     uid: a
-    title: netcore-1.1
+    title: netcore
     monikerRange: '> netcore-1.0'
     ---
     Moniker: netcore-1.1
   docs/v2/a.md: |
     ---
     uid: a
-    title: netcore-2.0
+    title: netcore
     monikerRange: '<= netcore-2.0'
     ---
     Moniker: netcore-2.0
   docs/a.md: |
     ---
     uid: a
-    title: no version
+    title: netcore
     ---
     No version
   docs/b.md: |
@@ -717,7 +717,7 @@ outputs:
   docs/b.json:
   docs/c.json: |
     {
-      "conceptual": "<p>Link to @a</p>",
+      "conceptual": "<p>Link to <a href=\"a\" data-linktype=\"relative-path\">netcore</a></p>",
       "!monikers": null
     }
   docs/a.json: |
@@ -736,9 +736,9 @@ outputs:
       "monikers": ["netcore-2.0"]
     }
   xrefmap.json: | 
-    {"!references":null}
+    {"references":[{"uid":"a","href":"https://docs.com/docs/a","name":"netcore"}]}
   .errors.log: |
-    ["error","uid-conflict","UID 'a' is defined in more than one file: 'docs/a.md', 'docs/b.md'"]
+    ["warning","uid-conflict","UID 'a' is defined in more than one file: 'docs/a.md', 'docs/b.md'"]
 ---
 # Build toc with monikers info
 inputs:

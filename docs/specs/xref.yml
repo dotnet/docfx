@@ -369,7 +369,7 @@ outputs:
   docs/a.json:
   docs/b.json:
   .errors.log: |
-    ["error","uid-conflict","UID 'b' is defined in more than one file: 'docs/a.json', 'docs/b.json'"]
+    ["warning","uid-conflict","UID 'b' is defined in more than one file: 'docs/a.json', 'docs/b.json'"]
 ---
 # Xref property field which supports markdown content
 inputs:
