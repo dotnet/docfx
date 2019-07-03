@@ -527,10 +527,10 @@ namespace Microsoft.Docs.Build
         /// Examples:
         ///   - Same uid defined in multiple .md files with different versions have different titles.
         /// </summary>
-        /// Behavior: ❌ Message: ❌
-        public static Error UidNameConflict(string uid, IEnumerable<string> nameConflicts)
+        /// Behavior: ✔️ Message: ❌
+        public static Error UidPropertyConflict(string uid, string propertyName, IEnumerable<string> conflicts)
         {
-            return new Error(ErrorLevel.Error, "uid-name-conflict", $"UID '{uid}' is defined with different names: {Join(nameConflicts)}");
+            return new Error(ErrorLevel.Warning, "uid-property-conflict", $"UID '{uid}' is defined with different {propertyName}s: {Join(conflicts)}");
         }
 
         /// <summary>
