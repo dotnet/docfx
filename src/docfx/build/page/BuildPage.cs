@@ -171,13 +171,13 @@ namespace Microsoft.Docs.Build
             var (metadataErrors, inputMetadata) = context.MetadataProvider.GetMetadata(file);
             errors.AddRange(metadataErrors);
 
-            var pageModel = new JObject
+            var pageModel = JsonUtility.ToJObject(new ConceptualModel
             {
-                ["conceptual"] = HtmlUtility.HtmlPostProcess(htmlDom, file.Docset.Culture),
-                ["wordCount"] = wordCount,
-                ["rawTitle"] = rawTitle,
-                ["title"] = inputMetadata.Title ?? title,
-            };
+                Conceptual = HtmlUtility.HtmlPostProcess(htmlDom, file.Docset.Culture),
+                WordCount = wordCount,
+                RawTitle = rawTitle,
+                Title = inputMetadata.Title ?? title,
+            });
 
             context.BookmarkValidator.AddBookmarks(file, bookmarks);
 
@@ -203,28 +203,29 @@ namespace Microsoft.Docs.Build
         private static async Task<(List<Error> errors, JObject model, InputMetadata inputMetadata)>
             LoadSchemaDocument(Context context, List<Error> errors, JToken token, Document file)
         {
-            var obj = token as JObject;
-
             var schemaTemplate = context.TemplateEngine.GetJsonSchema(file.Mime);
             if (schemaTemplate is null)
             {
                 throw Errors.SchemaNotFound(file.Mime).ToException();
             }
 
+            if (!(token is JObject obj))
+            {
+                throw Errors.UnexpectedType(new SourceInfo(file.FilePath, 1, 1), JTokenType.Object, token.Type).ToException();
+            }
+
             // validate via json schema
-            var schemaValidationErrors = schemaTemplate.JsonSchemaValidator.Validate(token);
+            var schemaValidationErrors = schemaTemplate.JsonSchemaValidator.Validate(obj);
             errors.AddRange(schemaValidationErrors);
 
             // transform via json schema
-            var (schemaTransformError, transformedToken) = schemaTemplate.JsonSchemaTransformer.TransformContent(file, context, token);
+            var (schemaTransformError, transformedToken) = schemaTemplate.JsonSchemaTransformer.TransformContent(file, context, obj);
             errors.AddRange(schemaTransformError);
 
             var (metaErrors, inputMetadata) = context.MetadataProvider.GetMetadata(file);
             errors.AddRange(metaErrors);
 
-            var pageMetadata = new OutputMetadata();
-            var pageModel = transformedToken;
-
+            var pageModel = (JObject)transformedToken;
             if (file.Docset.Legacy && TemplateEngine.IsLandingData(file.Mime))
             {
                 // TODO: remove schema validation in ToObject
@@ -234,16 +235,15 @@ namespace Microsoft.Docs.Build
                 var landingData = (LandingData)content;
                 JsonUtility.Merge(inputMetadata.RawJObject, landingData.ExtensionData);
 
-                pageModel = new JObject()
+                pageModel = JsonUtility.ToJObject(new ConceptualModel
                 {
-                    ["conceptual"] = HtmlUtility.LoadHtml(await RazorTemplate.Render(file.Mime, content)).HtmlPostProcess(file.Docset.Culture),
-                };
+                    Conceptual = HtmlUtility.LoadHtml(await RazorTemplate.Render(file.Mime, content)).HtmlPostProcess(file.Docset.Culture),
+                    Title = inputMetadata.Title ?? obj?.Value<string>("title"),
+                    RawTitle = $"<h1>{obj?.Value<string>("title")}</h1>",
+                });
             }
 
-            pageModel["title"] = inputMetadata.Title ?? obj?.Value<string>("title");
-            pageModel["rawTitle"] = file.Docset.Legacy ? $"<h1>{obj?.Value<string>("title")}</h1>" : null;
-
-            return (errors, pageModel as JObject, inputMetadata);
+            return (errors, pageModel, inputMetadata);
         }
 
         private static (object model, JObject metadata) ApplyPageTemplate(Context context, Document file, JObject pageMetadata, JObject pageModel, bool isConceptual)

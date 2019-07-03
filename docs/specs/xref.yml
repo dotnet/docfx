@@ -695,15 +695,16 @@ outputs:
   docs/a.json:
   docs/b.json:
 ---
-# input json file is not object
+# input yml file is not object
 inputs:
   docfx.yml: |
     template: {APP_BASE_PATH}data/template
-  docs/a.json: |
+  docs/a.yml: |
+    #YamlMime:TestData
     1
 outputs:
   .errors.log: |
-    ["error","schema-not-found","Unknown schema ''","docs/a.json",1,1]
+    ["error","unexpected-type","Expect type 'Object' but got 'Integer'","docs/a.yml",1,1]
 ---
 # support <xref href="uid"></xref>
 inputs:

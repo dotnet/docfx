@@ -57,7 +57,7 @@ namespace Microsoft.Docs.Build
                 {
                     var (yamlErrors, token) = YamlUtility.Parse(file, context);
                     errors.AddRange(yamlErrors);
-                    var (schemaErrors, specs) = LoadSchemaDocument(context, token as JObject, file);
+                    var (schemaErrors, specs) = LoadSchemaDocument(context, token, file);
                     errors.AddRange(schemaErrors);
                     xrefs.AddRange(specs);
                 }
@@ -65,7 +65,7 @@ namespace Microsoft.Docs.Build
                 {
                     var (jsonErrors, token) = JsonUtility.Parse(file, context);
                     errors.AddRange(jsonErrors);
-                    var (schemaErrors, specs) = LoadSchemaDocument(context, token as JObject, file);
+                    var (schemaErrors, specs) = LoadSchemaDocument(context, token, file);
                     errors.AddRange(schemaErrors);
                     xrefs.AddRange(specs);
                 }
@@ -97,7 +97,7 @@ namespace Microsoft.Docs.Build
             return (error, xref, file);
         }
 
-        private static (List<Error> errors, IReadOnlyList<InternalXrefSpec> specs) LoadSchemaDocument(Context context, JObject obj, Document file)
+        private static (List<Error> errors, IReadOnlyList<InternalXrefSpec> specs) LoadSchemaDocument(Context context, JToken token, Document file)
         {
             var errors = new List<Error>();
             var schemaTemplate = context.TemplateEngine.GetJsonSchema(file.Mime);
@@ -106,7 +106,7 @@ namespace Microsoft.Docs.Build
                 throw Errors.SchemaNotFound(file.Mime).ToException();
             }
 
-            var (schemaErrors, xrefPropertiesGroupByUid) = schemaTemplate.JsonSchemaTransformer.TransformXref(file, context, obj);
+            var (schemaErrors, xrefPropertiesGroupByUid) = schemaTemplate.JsonSchemaTransformer.TransformXref(file, context, token);
             errors.AddRange(schemaErrors);
 
             var specs = xrefPropertiesGroupByUid.Select(item =>
