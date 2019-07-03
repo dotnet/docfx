@@ -336,7 +336,7 @@ outputs:
   a.json: |
     {"result": "value has run js data transform"}
 ---
-# Don's run data-transform if corresponding js not provided
+# Don't run data-transform if corresponding js not provided
 inputs:
   docfx.yml:
   a.yml: |
