@@ -50,6 +50,10 @@ namespace Microsoft.Docs.Build
         public (bool value, JsonSchema schema) AdditionalProperties { get; set; } = (true, null);
 
         /// <summary>
+        /// The JSON schema that applies to property names.
+        /// </summary>
+        public JsonSchema PropertyNames { get; set; }
+
         /// The maximum property count that an array can hold.
         /// </summary>
         public int? MaxProperties { get; set; }
