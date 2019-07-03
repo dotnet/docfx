@@ -129,43 +129,6 @@ namespace Microsoft.Docs.Build
                 => Regex.Replace(uid, @"\W", "_");
         }
 
-        private static void GetUids(Context context, string filePath, JObject token, Dictionary<string, List<string>> uidToJsonPath, Dictionary<string, string> jsonPathToUid)
-        {
-            if (token is null)
-                return;
-
-            if (token.TryGetValue("uid", out var value) && value is JValue v && v.Value is string str)
-            {
-                if (uidToJsonPath.TryGetValue(str, out var paths))
-                {
-                    paths.Add(token.Path);
-                    //context.ErrorLog.Write(filePath, Errors.UidConflict(str));
-                }
-                else
-                {
-                    uidToJsonPath.Add(str, new List<string> { token.Path });
-                }
-                jsonPathToUid.TryAdd(token.Path, str);
-            }
-
-            foreach (var item in token.Children())
-            {
-                var property = item as JProperty;
-                if (property.Value is JObject obj)
-                {
-                    GetUids(context, filePath, obj, uidToJsonPath, jsonPathToUid);
-                }
-
-                if (property.Value is JArray array)
-                {
-                    foreach (var child in array.Children())
-                    {
-                        GetUids(context, filePath, child as JObject, uidToJsonPath, jsonPathToUid);
-                    }
-                }
-            }
-        }
-
         private static InternalXrefSpec[] AggregateXrefSpecs(Context context, string uid, InternalXrefSpec[] specsWithSameUid)
         {
             // no conflicts
