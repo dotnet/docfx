@@ -530,12 +530,23 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
+        /// Same uid defined within different versions with the different name.
+        /// Examples:
+        ///   - Same uid defined in multiple .md files with different versions have different titles.
+        /// </summary>
+        /// Behavior: ✔️ Message: ❌
+        public static Error UidPropertyConflict(string uid, string propertyName, IEnumerable<string> conflicts)
+        {
+            return new Error(ErrorLevel.Warning, "xref-property-conflict", $"UID '{uid}' is defined with different {propertyName}s: {Join(conflicts)}");
+        }
+
+        /// <summary>
         /// Multiple articles with same uid contain overlapped monikers,
         /// and can't decide which article to use when referencing that uid with this overlapped version
         /// </summary>
         /// Behavior: ✔️ Message: ❌
         public static Error MonikerOverlapping(IEnumerable<string> overlappingmonikers)
-            => new Error(ErrorLevel.Error, "moniker-overlapping", $"Two or more documents have defined overlapping moniker: {Join(overlappingmonikers)}");
+            => new Error(ErrorLevel.Warning, "moniker-overlapping", $"Two or more documents have defined overlapping moniker: {Join(overlappingmonikers)}");
 
         /// <summary>
         /// Failed to parse moniker string.
