@@ -419,21 +419,11 @@ namespace Microsoft.Docs.Build
                             JToken.Parse(File.ReadAllText(file)));
                     }
                     break;
+                case ".txt":
+                    VerifyWithRegex();
+                    break;
                 case ".log":
-                    if (!string.IsNullOrEmpty(content))
-                    {
-                        var expected = content.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).OrderBy(_ => _).ToArray();
-                        var actual = File.ReadAllLines(file).OrderBy(_ => _).ToArray();
-                        if (expected.Any(str => str.Contains("*")))
-                        {
-                            Assert.Matches("^" + Regex.Escape(string.Join("\n", expected)).Replace("\\*", ".*") + "$", string.Join("\n", actual));
-                        }
-                        else
-                        {
-                            Assert.Equal(string.Join("\n", expected), string.Join("\n", actual));
-                        }
-                        VerifyLogsHasLineInfo(actual);
-                    }
+                    VerifyLogsHasLineInfo(VerifyWithRegex());
                     break;
                 case ".html":
                     if (!string.IsNullOrEmpty(content))
@@ -454,6 +444,24 @@ namespace Microsoft.Docs.Build
                             ignoreWhiteSpaceDifferences: true);
                     }
                     break;
+            }
+
+            string[] VerifyWithRegex()
+            {
+                if (!string.IsNullOrEmpty(content))
+                {
+                    var expected = content.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).OrderBy(_ => _).ToArray();
+                    var actual = File.ReadAllLines(file).OrderBy(_ => _).ToArray();
+                    if (expected.Any(str => str.Contains("*")))
+                    {
+                        Assert.Matches("^" + Regex.Escape(string.Join("\n", expected)).Replace("\\*", ".*") + "$", string.Join("\n", actual));
+                    }
+                    else
+                    {
+                        Assert.Equal(string.Join("\n", expected), string.Join("\n", actual));
+                    }
+                }
+                return Array.Empty<string>();
             }
         }
 
