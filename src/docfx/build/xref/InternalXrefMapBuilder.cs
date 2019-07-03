@@ -138,11 +138,11 @@ namespace Microsoft.Docs.Build
             }
 
             // multiple uid conflicts without moniker range definition
-            // order by href, take the first one
+            // order by the declairing file, take the first one
             var conflictsWithoutMoniker = specsWithSameUid.Where(item => item.Monikers.Count == 0).ToArray();
             if (conflictsWithoutMoniker.Length > 1)
             {
-                var orderedConflict = conflictsWithoutMoniker.OrderBy(item => item.Href);
+                var orderedConflict = conflictsWithoutMoniker.OrderBy(item => item.DeclairingFile);
                 context.ErrorLog.Write(Errors.UidConflict(uid, orderedConflict.Select(x => x.DeclairingFile.FilePath)));
                 return new InternalXrefSpec[] { orderedConflict.First() };
             }
