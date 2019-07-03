@@ -138,7 +138,7 @@ namespace Microsoft.Docs.Build
             }
 
             // multiple uid conflicts without moniker range definition
-            // log an warning and take the first one order by the declairing file
+            // log an warning and take the first one order by the declaring file
             var conflictsWithoutMoniker = specsWithSameUid.Where(item => item.Monikers.Count == 0).ToArray();
             if (conflictsWithoutMoniker.Length > 1)
             {
