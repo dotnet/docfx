@@ -131,9 +131,9 @@ namespace Microsoft.Docs.Build
         private static InternalXrefSpec AggregateXrefSpecs(Context context, string uid, InternalXrefSpec[] specsWithSameUid)
         {
             // no conflicts
-            if (specsWithSameUid.Length <= 1)
+            if (specsWithSameUid.Length == 1)
             {
-                return specsWithSameUid.FirstOrDefault();
+                return specsWithSameUid.First();
             }
 
             // multiple uid conflicts without moniker range definition

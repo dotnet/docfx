@@ -23,7 +23,7 @@ namespace Microsoft.Docs.Build
             _externalXrefMap = ExternalXrefMapLoader.Load(docset);
         }
 
-        public (Error error, string href, string display, IXrefSpec xrefSpec) Resolve(string uid, SourceInfo<string> href, string displayPropertyName, Document relativeTo, string moniker = null)
+        public (Error error, string href, string display, IXrefSpec xrefSpec) Resolve(string uid, SourceInfo<string> href, string displayPropertyName, Document relativeTo)
         {
             if (t_recursionDetector.Value.Contains((uid, displayPropertyName, relativeTo)))
             {
@@ -36,7 +36,7 @@ namespace Microsoft.Docs.Build
             try
             {
                 t_recursionDetector.Value.Push((uid, displayPropertyName, relativeTo));
-                return ResolveCore(uid, href, displayPropertyName, moniker);
+                return ResolveCore(uid, href, displayPropertyName);
             }
             finally
             {
@@ -55,9 +55,9 @@ namespace Microsoft.Docs.Build
         }
 
         private (Error error, string href, string display, IXrefSpec xrefSpec) ResolveCore(
-            string uid, SourceInfo<string> href, string displayPropertyName, string moniker = null)
+            string uid, SourceInfo<string> href, string displayPropertyName)
         {
-            var spec = ResolveXrefSpec(uid, moniker);
+            var spec = ResolveXrefSpec(uid);
             if (spec is null)
             {
                 return (Errors.XrefNotFound(href), null, null, null);
@@ -75,9 +75,9 @@ namespace Microsoft.Docs.Build
             return (null, resolvedHref, display, spec);
         }
 
-        private IXrefSpec ResolveXrefSpec(string uid, string moniker)
+        private IXrefSpec ResolveXrefSpec(string uid)
         {
-            return ResolveInternalXrefSpec(uid, moniker) ?? ResolveExternalXrefSpec(uid);
+            return ResolveInternalXrefSpec(uid) ?? ResolveExternalXrefSpec(uid);
         }
 
         private IXrefSpec ResolveExternalXrefSpec(string uid)
@@ -85,14 +85,9 @@ namespace Microsoft.Docs.Build
             return _externalXrefMap.TryGetValue(uid, out var result) ? result.Value : null;
         }
 
-        private IXrefSpec ResolveInternalXrefSpec(string uid, string moniker)
+        private IXrefSpec ResolveInternalXrefSpec(string uid)
         {
-            if (!_internalXrefMap.TryGetValue(uid, out var spec))
-            {
-                return null;
-            }
-
-            return spec;
+            return _internalXrefMap.TryGetValue(uid, out var spec) ? spec : null;
         }
     }
 }
