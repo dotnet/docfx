@@ -46,6 +46,7 @@ namespace Microsoft.Docs.Build
 
                     if (uidJsonPaths.Add(uidValue.Path) && xrefPropertiesGroupByUid.ContainsKey(uid))
                     {
+                        // TODO: should throw warning and take the first one order by json path
                         errors.Add(Errors.UidConflict(uid));
                         return (default, node);
                     }

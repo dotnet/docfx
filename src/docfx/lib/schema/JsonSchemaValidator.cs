@@ -86,13 +86,19 @@ namespace Microsoft.Docs.Build
                 case double _:
                 case float _:
                 case long _:
-                    ValidateNumber(schema, scalar, Convert.ToDouble(scalar.Value), errors);
+                    ValidateNumber(schema, name, scalar, Convert.ToDouble(scalar.Value), errors);
                     break;
             }
         }
 
         private void ValidateArray(JsonSchema schema, string name, JArray array, List<Error> errors)
         {
+            if (schema.MaxItems.HasValue && array.Count > schema.MaxItems.Value)
+                errors.Add(Errors.ArrayLengthInvalid(JsonUtility.GetSourceInfo(array), name, $"<= {schema.MaxItems}"));
+
+            if (schema.MinItems.HasValue && array.Count < schema.MinItems.Value)
+                errors.Add(Errors.ArrayLengthInvalid(JsonUtility.GetSourceInfo(array), name, $">= {schema.MinItems}"));
+
             if (schema.Items != null)
             {
                 foreach (var item in array)
@@ -100,12 +106,6 @@ namespace Microsoft.Docs.Build
                     Validate(schema.Items, name, item, errors);
                 }
             }
-
-            if (schema.MaxItems.HasValue && array.Count > schema.MaxItems.Value)
-                errors.Add(Errors.ArrayLengthInvalid(JsonUtility.GetSourceInfo(array), array.Path, $"<= {schema.MaxItems}"));
-
-            if (schema.MinItems.HasValue && array.Count < schema.MinItems.Value)
-                errors.Add(Errors.ArrayLengthInvalid(JsonUtility.GetSourceInfo(array), array.Path, $">= {schema.MinItems}"));
         }
 
         private void ValidateObject(JsonSchema schema, string name, JObject map, List<Error> errors)
@@ -120,8 +120,24 @@ namespace Microsoft.Docs.Build
 
         private void ValidateProperties(JsonSchema schema, string name, JObject map, List<Error> errors)
         {
-            foreach (var (key, value) in map)
+            if (schema.MaxProperties.HasValue && map.Count > schema.MaxProperties.Value)
+                errors.Add(Errors.PropertyCountInvalid(JsonUtility.GetSourceInfo(map), name, $"<= {schema.MaxProperties}"));
+
+            if (schema.MinProperties.HasValue && map.Count < schema.MinProperties.Value)
+                errors.Add(Errors.PropertyCountInvalid(JsonUtility.GetSourceInfo(map), name, $">= {schema.MinProperties}"));
+
+            foreach (var property in map.Properties())
             {
+                var key = property.Name;
+                var value = property.Value;
+
+                if (schema.PropertyNames != null)
+                {
+                    var propertyName = new JValue(key);
+                    JsonUtility.SetSourceInfo(propertyName, JsonUtility.GetSourceInfo(property));
+                    Validate(schema.PropertyNames, key, propertyName, errors);
+                }
+
                 var isAdditonalProperty = true;
 
                 // properties
@@ -165,10 +181,10 @@ namespace Microsoft.Docs.Build
             {
                 var unicodeLength = str.Where(c => !char.IsLowSurrogate(c)).Count();
                 if (schema.MaxLength.HasValue && unicodeLength > schema.MaxLength.Value)
-                    errors.Add(Errors.StringLengthInvalid(JsonUtility.GetSourceInfo(scalar), scalar.Path, $"<= {schema.MaxLength}"));
+                    errors.Add(Errors.StringLengthInvalid(JsonUtility.GetSourceInfo(scalar), name, $"<= {schema.MaxLength}"));
 
                 if (schema.MinLength.HasValue && unicodeLength < schema.MinLength.Value)
-                    errors.Add(Errors.StringLengthInvalid(JsonUtility.GetSourceInfo(scalar), scalar.Path, $">= {schema.MinLength}"));
+                    errors.Add(Errors.StringLengthInvalid(JsonUtility.GetSourceInfo(scalar), name, $">= {schema.MinLength}"));
             }
 
             switch (schema.Format)
@@ -180,19 +196,19 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static void ValidateNumber(JsonSchema schema, JValue scalar, double number, List<Error> errors)
+        private static void ValidateNumber(JsonSchema schema, string name, JValue scalar, double number, List<Error> errors)
         {
             if (schema.Maximum.HasValue && number > schema.Maximum)
-                errors.Add(Errors.NumberInvalid(JsonUtility.GetSourceInfo(scalar), scalar.Path, $"<= {schema.Maximum}"));
+                errors.Add(Errors.NumberInvalid(JsonUtility.GetSourceInfo(scalar), name, $"<= {schema.Maximum}"));
 
             if (schema.Minimum.HasValue && number < schema.Minimum)
-                errors.Add(Errors.NumberInvalid(JsonUtility.GetSourceInfo(scalar), scalar.Path, $">= {schema.Minimum}"));
+                errors.Add(Errors.NumberInvalid(JsonUtility.GetSourceInfo(scalar), name, $">= {schema.Minimum}"));
 
             if (schema.ExclusiveMaximum.HasValue && number >= schema.ExclusiveMaximum)
-                errors.Add(Errors.NumberInvalid(JsonUtility.GetSourceInfo(scalar), scalar.Path, $"< {schema.ExclusiveMaximum}"));
+                errors.Add(Errors.NumberInvalid(JsonUtility.GetSourceInfo(scalar), name, $"< {schema.ExclusiveMaximum}"));
 
             if (schema.ExclusiveMinimum.HasValue && number <= schema.ExclusiveMinimum)
-                errors.Add(Errors.NumberInvalid(JsonUtility.GetSourceInfo(scalar), scalar.Path, $"> {schema.ExclusiveMinimum}"));
+                errors.Add(Errors.NumberInvalid(JsonUtility.GetSourceInfo(scalar), name, $"> {schema.ExclusiveMinimum}"));
         }
 
         private void ValidateConst(JsonSchema schema, JToken token, List<Error> errors)
@@ -201,21 +217,6 @@ namespace Microsoft.Docs.Build
             {
                 errors.Add(Errors.UndefinedValue(JsonUtility.GetSourceInfo(token), token, new object[] { schema.Const }));
             }
-        }
-
-        private static void ValidateNumber(JsonSchema schema, JValue scalar, List<Error> errors, double number)
-        {
-            if (schema.Maximum.HasValue && number > schema.Maximum)
-                errors.Add(Errors.NumberInvalid(JsonUtility.GetSourceInfo(scalar), scalar.Path, $"<= {schema.Maximum}"));
-
-            if (schema.Minimum.HasValue && number < schema.Minimum)
-                errors.Add(Errors.NumberInvalid(JsonUtility.GetSourceInfo(scalar), scalar.Path, $">= {schema.Minimum}"));
-
-            if (schema.ExclusiveMaximum.HasValue && number >= schema.ExclusiveMaximum)
-                errors.Add(Errors.NumberInvalid(JsonUtility.GetSourceInfo(scalar), scalar.Path, $"< {schema.ExclusiveMaximum}"));
-
-            if (schema.ExclusiveMinimum.HasValue && number <= schema.ExclusiveMinimum)
-                errors.Add(Errors.NumberInvalid(JsonUtility.GetSourceInfo(scalar), scalar.Path, $"> {schema.ExclusiveMinimum}"));
         }
 
         private void ValidateDependencies(JsonSchema schema, JObject map, List<Error> errors)

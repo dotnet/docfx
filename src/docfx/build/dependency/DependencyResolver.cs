@@ -89,7 +89,7 @@ namespace Microsoft.Docs.Build
         {
             var (error, link, display, spec) = ResolveAbsoluteXref(href, declaringFile);
 
-            if (spec?.DeclairingFile != null)
+            if (spec?.DeclaringFile != null)
             {
                 link = UrlUtility.GetRelativeUrl(relativeToFile.SiteUrl, link);
             }
@@ -110,11 +110,11 @@ namespace Microsoft.Docs.Build
             var displayProperty = queries?["displayProperty"];
 
             // need to url decode uid from input content
-            var (error, resolvedHref, display, xrefSpec) = _xrefMap.Value.Resolve(Uri.UnescapeDataString(uid), href, displayProperty, declaringFile, moniker);
+            var (error, resolvedHref, display, xrefSpec) = _xrefMap.Value.Resolve(Uri.UnescapeDataString(uid), href, displayProperty, declaringFile);
 
-            if (xrefSpec?.DeclairingFile != null)
+            if (xrefSpec?.DeclaringFile != null)
             {
-                _dependencyMapBuilder.AddDependencyItem(declaringFile, xrefSpec?.DeclairingFile, DependencyType.UidInclusion);
+                _dependencyMapBuilder.AddDependencyItem(declaringFile, xrefSpec?.DeclaringFile, DependencyType.UidInclusion);
             }
 
             if (!string.IsNullOrEmpty(resolvedHref))
@@ -155,9 +155,9 @@ namespace Microsoft.Docs.Build
             {
                 var uid = new SourceInfo<string>(href.Value.Substring("xref:".Length), href);
                 var (uidError, uidHref, _, xrefSpec) = ResolveAbsoluteXref(uid, declaringFile);
-                var xrefLinkType = xrefSpec?.DeclairingFile != null ? LinkType.RelativePath : LinkType.External;
+                var xrefLinkType = xrefSpec?.DeclaringFile != null ? LinkType.RelativePath : LinkType.External;
 
-                return (uidError, uidHref, null, xrefLinkType, xrefSpec?.DeclairingFile);
+                return (uidError, uidHref, null, xrefLinkType, xrefSpec?.DeclaringFile);
             }
 
             var decodedHref = new SourceInfo<string>(Uri.UnescapeDataString(href), href);
