@@ -203,15 +203,15 @@ namespace Microsoft.Docs.Build
         private static async Task<(List<Error> errors, JObject model, InputMetadata inputMetadata)>
             LoadSchemaDocument(Context context, List<Error> errors, JToken token, Document file)
         {
-            if (!(token is JObject obj))
-            {
-                throw Errors.UnexpectedType(new SourceInfo(file.FilePath, 1, 1), JTokenType.Object, token.Type).ToException();
-            }
-
             var schemaTemplate = context.TemplateEngine.GetJsonSchema(file.Mime);
             if (schemaTemplate is null)
             {
                 throw Errors.SchemaNotFound(file.Mime).ToException();
+            }
+
+            if (!(token is JObject obj))
+            {
+                throw Errors.UnexpectedType(new SourceInfo(file.FilePath, 1, 1), JTokenType.Object, token.Type).ToException();
             }
 
             // validate via json schema
