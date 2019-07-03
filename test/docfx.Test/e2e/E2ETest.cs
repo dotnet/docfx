@@ -302,8 +302,6 @@ namespace Microsoft.Docs.Build
 
         private static void CreateFiles(Dictionary<string, string> files, string targetFolder, string[] environmentVariables = null)
         {
-            
-
             foreach (var (file, content) in files)
             {
                 var mutableContent = content;
