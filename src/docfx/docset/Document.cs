@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace Microsoft.Docs.Build
 {
-    internal class Document
+    internal class Document : IEquatable<Document>, IComparable<Document>
     {
         /// <summary>
         /// Gets the owning docset of this document. A document can only belong to one docset.
@@ -184,9 +184,22 @@ namespace Microsoft.Docs.Build
             return Docset.Legacy && rawPage ? LegacyUtility.ChangeExtension(outputPath, ".raw.page.json") : outputPath;
         }
 
+        public int CompareTo(Document other)
+        {
+            var result = PathUtility.PathComparer.Compare(Docset.DocsetPath, other.Docset.DocsetPath);
+            if (result == 0)
+                result = ContentType.CompareTo(other.ContentType);
+            if (result == 0)
+                result = PathUtility.PathComparer.Compare(FilePath, other.FilePath);
+            return result;
+        }
+
         public override int GetHashCode()
         {
-            return HashCode.Combine(Docset, PathUtility.PathComparer.GetHashCode(FilePath), ContentType);
+            return HashCode.Combine(
+                PathUtility.PathComparer.GetHashCode(Docset.DocsetPath),
+                PathUtility.PathComparer.GetHashCode(FilePath),
+                ContentType);
         }
 
         public bool Equals(Document other)
@@ -196,9 +209,9 @@ namespace Microsoft.Docs.Build
                 return false;
             }
 
-            return Docset == other.Docset &&
-                   ContentType == other.ContentType &&
-                   string.Equals(FilePath, other.FilePath, PathUtility.PathComparison);
+            return string.Equals(Docset.DocsetPath, other.Docset.DocsetPath, PathUtility.PathComparison) &&
+                   string.Equals(FilePath, other.FilePath, PathUtility.PathComparison) &&
+                   ContentType == other.ContentType;
         }
 
         public override bool Equals(object obj)
