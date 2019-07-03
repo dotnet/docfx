@@ -679,21 +679,21 @@ inputs:
   docs/v1/a.md: |
     ---
     uid: a
-    title: netcore
+    title: netcore-1.1
     monikerRange: '> netcore-1.0'
     ---
     Moniker: netcore-1.1
   docs/v2/a.md: |
     ---
     uid: a
-    title: netcore
+    title: netcore-2.0
     monikerRange: '<= netcore-2.0'
     ---
     Moniker: netcore-2.0
   docs/a.md: |
     ---
     uid: a
-    title: netcore
+    title: no version
     ---
     No version
   docs/b.md: |
@@ -717,7 +717,7 @@ outputs:
   docs/b.json:
   docs/c.json: |
     {
-      "conceptual": "<p>Link to <a href=\"a\" data-linktype=\"relative-path\">netcore</a></p>",
+      "conceptual": "<p>Link to <a href=\"a\" data-linktype=\"relative-path\">no version</a></p>",
       "!monikers": null
     }
   docs/a.json: |
@@ -736,7 +736,7 @@ outputs:
       "monikers": ["netcore-2.0"]
     }
   xrefmap.json: | 
-    {"references":[{"uid":"a","href":"https://docs.com/docs/a","name":"netcore"}]}
+    {"references":[{"uid":"a","href":"https://docs.com/docs/a","name":"no version"}]}
   .errors.log: |
     ["warning","uid-conflict","UID 'a' is defined in more than one file: 'docs/a.md', 'docs/b.md'"]
 ---
