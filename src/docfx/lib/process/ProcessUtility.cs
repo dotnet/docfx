@@ -185,6 +185,9 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static string Execute(string fileName, string commandLineArgs, string cwd = null, bool stdout = true, string[] secrets = null)
         {
+            var sanitizedCommandLineArgs = secrets != null ? secrets.Aggregate(commandLineArgs, (arg, secret) => arg.Replace(secret, "***")) : commandLineArgs;
+            Log.Write($"Running '\"{fileName}\" {sanitizedCommandLineArgs}' in '{Path.GetFullPath(cwd ?? ".")}'");
+
             var psi = new ProcessStartInfo
             {
                 FileName = fileName,
@@ -206,7 +209,6 @@ namespace Microsoft.Docs.Build
 
             if (process.ExitCode != 0)
             {
-                var sanitizedCommandLineArgs = secrets != null ? secrets.Aggregate(commandLineArgs, (arg, secret) => arg.Replace(secret, "***")) : commandLineArgs;
                 throw new InvalidOperationException($"'\"{fileName}\" {sanitizedCommandLineArgs}' failed in directory '{cwd}' with exit code {process.ExitCode}: \nSTDOUT:'{result}'");
             }
 
