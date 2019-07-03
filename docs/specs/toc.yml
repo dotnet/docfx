@@ -1159,8 +1159,8 @@ outputs:
   docs/.manifest.json:
   docs/filemap.json:
   full-dependent-list.txt: |
-    {"dependency_type":"metadata","from_file_path":"*docs\\v1\\f1\\a.md","to_file_path":"*docs\\v1\\toc.md","version":"netcore-1.0"}
-    {"dependency_type":"metadata","from_file_path":"*docs\\v2\\f1\\a.md","to_file_path":"*docs\\v2\\toc.md","version":"netcore-2.0"}
+    {"dependency_type":"metadata","from_file_path":"*docs\\v1\\f1\\a.md*","to_file_path":"*docs\\v1\\toc.md*","version":"netcore-1.0"}
+    {"dependency_type":"metadata","from_file_path":"*docs\\v2\\f1\\a.md*","to_file_path":"*docs\\v2\\toc.md*","version":"netcore-2.0"}
 ---
 # File referenced by multiple toc with same parent and subdir count, use order alphabetical. For other tests, reference build/TocTest.
 inputs:

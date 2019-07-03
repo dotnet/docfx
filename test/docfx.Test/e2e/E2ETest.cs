@@ -408,50 +408,32 @@ namespace Microsoft.Docs.Build
 
         private static void VerifyFile(string file, string content)
         {
-            switch (Path.GetExtension(file.ToLowerInvariant()))
+            if (string.IsNullOrEmpty(content))
             {
-                case ".json":
-                    if (!string.IsNullOrEmpty(content))
-                    {
-                        TestUtility.VerifyJsonContainEquals(
-                            // Test expectation can use YAML for readability
-                            content.StartsWith("{") ? JToken.Parse(content) : YamlUtility.Parse(content, null).Item2,
-                            JToken.Parse(File.ReadAllText(file)));
-                    }
-                    break;
-                case ".txt":
-                    VerifyWithRegex();
-                    break;
-                case ".log":
-                    VerifyLogsHasLineInfo(VerifyWithRegex());
-                    break;
-                case ".html":
-                    if (!string.IsNullOrEmpty(content))
-                    {
-                        Assert.Equal(
-                            TestUtility.NormalizeHtml(content),
-                            TestUtility.NormalizeHtml(File.ReadAllText(file)));
-                    }
-                    break;
-                default:
-                    if (!string.IsNullOrEmpty(content))
-                    {
-                        Assert.Equal(
-                            content?.Trim() ?? "",
-                            File.ReadAllText(file).Trim(),
-                            ignoreCase: false,
-                            ignoreLineEndingDifferences: true,
-                            ignoreWhiteSpaceDifferences: true);
-                    }
-                    break;
+                return;
             }
 
-            string[] VerifyWithRegex()
+            string[] actual, expected;
+            switch (Path.GetExtension(file.ToLowerInvariant()))
             {
-                if (!string.IsNullOrEmpty(content))
-                {
-                    var expected = content.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).OrderBy(_ => _).ToArray();
-                    var actual = File.ReadAllLines(file).OrderBy(_ => _).ToArray();
+                case ".txt":
+                    expected = content.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).OrderBy(_ => _).ToArray();
+                    actual = File.ReadAllLines(file).OrderBy(_ => _).ToArray();
+                    Assert.Equal(expected.Length, actual.Length);
+                    for (var i = 0; i < expected.Length; i++)
+                    {
+                        TestUtility.VerifyJsonContainEquals(JToken.Parse(expected[i]), JToken.Parse(actual[i]));
+                    }
+                    break;
+                case ".json":
+                    TestUtility.VerifyJsonContainEquals(
+                        // Test expectation can use YAML for readability
+                        content.StartsWith("{") ? JToken.Parse(content) : YamlUtility.Parse(content, null).Item2,
+                        JToken.Parse(File.ReadAllText(file)));
+                    break;
+                case ".log":
+                    expected = content.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).OrderBy(_ => _).ToArray();
+                    actual = File.ReadAllLines(file).OrderBy(_ => _).ToArray();
                     if (expected.Any(str => str.Contains("*")))
                     {
                         Assert.Matches("^" + Regex.Escape(string.Join("\n", expected)).Replace("\\*", ".*") + "$", string.Join("\n", actual));
@@ -460,8 +442,20 @@ namespace Microsoft.Docs.Build
                     {
                         Assert.Equal(string.Join("\n", expected), string.Join("\n", actual));
                     }
-                }
-                return Array.Empty<string>();
+                    break;
+                case ".html":
+                    Assert.Equal(
+                        TestUtility.NormalizeHtml(content),
+                        TestUtility.NormalizeHtml(File.ReadAllText(file)));
+                    break;
+                default:
+                    Assert.Equal(
+                        content?.Trim() ?? "",
+                        File.ReadAllText(file).Trim(),
+                        ignoreCase: false,
+                        ignoreLineEndingDifferences: true,
+                        ignoreWhiteSpaceDifferences: true);
+                    break;
             }
         }
 
