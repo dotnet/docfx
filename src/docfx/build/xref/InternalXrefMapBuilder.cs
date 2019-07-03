@@ -129,41 +129,6 @@ namespace Microsoft.Docs.Build
                 => Regex.Replace(uid, @"\W", "_");
         }
 
-        private static void GetUids(Context context, string filePath, JObject token, Dictionary<string, string> uidToJsonPath, Dictionary<string, string> jsonPathToUid)
-        {
-            if (token is null)
-                return;
-
-            if (token.TryGetValue("uid", out var value) && value is JValue v && v.Value is string str)
-            {
-                if (!uidToJsonPath.TryAdd(str, token.Path))
-                {
-                    context.ErrorLog.Write(filePath, Errors.UidConflict(str));
-                }
-                else
-                {
-                    jsonPathToUid.TryAdd(token.Path, str);
-                }
-            }
-
-            foreach (var item in token.Children())
-            {
-                var property = item as JProperty;
-                if (property.Value is JObject obj)
-                {
-                    GetUids(context, filePath, obj, uidToJsonPath, jsonPathToUid);
-                }
-
-                if (property.Value is JArray array)
-                {
-                    foreach (var child in array.Children())
-                    {
-                        GetUids(context, filePath, child as JObject, uidToJsonPath, jsonPathToUid);
-                    }
-                }
-            }
-        }
-
         private static InternalXrefSpec[] AggregateXrefSpecs(Context context, string uid, InternalXrefSpec[] specsWithSameUid)
         {
             var orderedSpecs = specsWithSameUid.OrderBy(spec => spec.DeclairingFile);
@@ -174,13 +139,14 @@ namespace Microsoft.Docs.Build
                 return specsWithSameUid;
             }
 
-            // multiple uid conflicts without moniker range definition, drop the uid and log an error
+            // multiple uid conflicts without moniker range definition
+            // order by the declairing file, take the first one
             var conflictsWithoutMoniker = specsWithSameUid.Where(item => item.Monikers.Count == 0).ToArray();
             if (conflictsWithoutMoniker.Length > 1)
             {
-                var orderedConflict = conflictsWithoutMoniker.OrderBy(item => item.Href);
+                var orderedConflict = conflictsWithoutMoniker.OrderBy(item => item.DeclairingFile);
                 context.ErrorLog.Write(Errors.UidConflict(uid, orderedConflict.Select(x => x.DeclairingFile.FilePath)));
-                return Array.Empty<InternalXrefSpec>();
+                return new InternalXrefSpec[] { orderedConflict.First() };
             }
 
             // uid conflicts with different names
