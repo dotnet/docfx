@@ -46,8 +46,10 @@ namespace Microsoft.Docs.Build
             {
                 PathUtility.CreateDirectoryFromFilePath(filePath);
 
-                File.Copy(tempFile, filePath, true);
-                File.Delete(tempFile);
+                if (File.Exists(filePath))
+                    File.Delete(filePath);
+
+                File.Move(tempFile, filePath);
 
                 if (etag != null)
                 {
