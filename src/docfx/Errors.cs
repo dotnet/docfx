@@ -537,7 +537,7 @@ namespace Microsoft.Docs.Build
         /// Behavior: ✔️ Message: ❌
         public static Error UidPropertyConflict(string uid, string propertyName, IEnumerable<string> conflicts)
         {
-            return new Error(ErrorLevel.Warning, "uid-property-conflict", $"UID '{uid}' is defined with different {propertyName}s: {Join(conflicts)}");
+            return new Error(ErrorLevel.Warning, "xref-property-conflict", $"UID '{uid}' is defined with different {propertyName}s: {Join(conflicts)}");
         }
 
         /// <summary>
@@ -546,7 +546,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         /// Behavior: ✔️ Message: ❌
         public static Error MonikerOverlapping(IEnumerable<string> overlappingmonikers)
-            => new Error(ErrorLevel.Error, "moniker-overlapping", $"Two or more documents have defined overlapping moniker: {Join(overlappingmonikers)}");
+            => new Error(ErrorLevel.Warning, "moniker-overlapping", $"Two or more documents have defined overlapping moniker: {Join(overlappingmonikers)}");
 
         /// <summary>
         /// Failed to parse moniker string.

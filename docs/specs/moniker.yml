@@ -484,7 +484,7 @@ outputs:
   218c13d0/docs/a.json:
   4667fedf/docs/a.json:
   .errors.log: |
-    ["warning","uid-property-conflict","UID 'a' is defined with different names: 'netcore-1.1', 'netcore-2.0'"]
+    ["warning","xref-property-conflict","UID 'a' is defined with different names: 'netcore-1.1', 'netcore-2.0'"]
 ---
 # Define same uid with multiple moniker ranges with same name, 
 # reference to it without moniker in the same docset, anyone can be taken
@@ -581,12 +581,12 @@ inputs:
     }
 outputs:
   docs/c.json: |
-    {"conceptual":"<p>Link to @a</p>"}
+    {"conceptual":"<p>Link to <a href=\"a\" data-linktype=\"relative-path\">netcore-1.1, netcore-2.0</a></p>"}
   .errors.log: |
-    ["error","moniker-overlapping","Two or more documents have defined overlapping moniker: 'netcore-2.0'"]
+    ["warning","moniker-overlapping","Two or more documents have defined overlapping moniker: 'netcore-2.0'"]
     ["error","publish-url-conflict","Two or more files of the same version('netcore-2.0') publish to the same url '/docs/a': 'docs/v1/a.md', 'docs/v2/a.md'"]
   xrefmap.json: | 
-    {"!references":null}
+    {"references":[{"uid":"a","name":"netcore-1.1, netcore-2.0"}]}
 ---
 # Define uid with moniker range, refer to it with invalid moniker, could fall back to anyone
 inputs:
