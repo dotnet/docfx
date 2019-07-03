@@ -21,8 +21,6 @@ namespace Microsoft.Docs.Build
             "contains",
             "definitions",
             "if-then-else",
-            "maxProperties",
-            "minProperties",
             "multipleOf",
             "not",
             "oneOf",
@@ -183,6 +181,16 @@ namespace Microsoft.Docs.Build
         [InlineData("{'propertyNames': {'maxLength': 1}}", "{'a': 0}", "")]
         [InlineData("{'propertyNames': {'maxLength': 1}}", "{'ab': 0}",
             "['warning','string-length-invalid','String 'ab' length should be <= 1','file',1,6]")]
+
+        // property count validation
+        [InlineData("{'maxProperties': 3}", "{}", "")]
+        [InlineData("{'maxProperties': 0}", "{'key': 0}",
+            "['warning','property-count-invalid','Object '' property count should be <= 0','file',1,1]")]
+        [InlineData("{'minProperties': 1}", "{}",
+            "['warning','property-count-invalid','Object '' property count should be >= 1','file',1,1]")]
+        [InlineData("{'maxProperties': 0, 'minProperties': 4}", "{'key': 0}",
+            @"['warning','property-count-invalid','Object '' property count should be <= 0','file',1,1]
+              ['warning','property-count-invalid','Object '' property count should be >= 4','file',1,1]")]
 
         // array validation
         [InlineData("{'items': {'type': 'string'}}", "['a','b']", "")]

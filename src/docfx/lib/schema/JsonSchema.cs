@@ -54,6 +54,15 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public JsonSchema PropertyNames { get; set; }
 
+        /// The maximum property count that an array can hold.
+        /// </summary>
+        public int? MaxProperties { get; set; }
+
+        /// <summary>
+        /// The minimum item count that an array can hold.
+        /// </summary>
+        public int? MinProperties { get; set; }
+
         /// <summary>
         /// The JSON schema that applies to the array items if the current value is array.
         /// </summary>
