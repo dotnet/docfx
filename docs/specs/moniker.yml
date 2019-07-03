@@ -717,7 +717,7 @@ outputs:
   docs/b.json:
   docs/c.json: |
     {
-      "conceptual": "<p>Link to @a</p>",
+      "conceptual": "<p>Link to <a href=\"a\" data-linktype=\"relative-path\">no version</a></p>",
       "!monikers": null
     }
   docs/a.json: |
@@ -736,9 +736,9 @@ outputs:
       "monikers": ["netcore-2.0"]
     }
   xrefmap.json: | 
-    {"!references":null}
+    {"references":[{"uid":"a","name":"no version"}]}
   .errors.log: |
-    ["error","uid-conflict","UID 'a' is defined in more than one file: 'docs/a.md', 'docs/b.md'"]
+    ["warning","uid-conflict","UID 'a' is defined in more than one file: 'docs/a.md', 'docs/b.md'"]
 ---
 # Build toc with monikers info
 inputs:
