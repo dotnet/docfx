@@ -87,7 +87,7 @@ namespace Microsoft.Docs.Build
                     {
                         try
                         {
-                            Console.WriteLine($"Cloning {remote}");
+                            Console.WriteLine($"Cloning '{remote}'");
                             GitUtility.CloneOrUpdateBare(repoPath, remote, branchesToFetch, depthOne, config);
                         }
                         catch (Exception ex)
