@@ -181,18 +181,20 @@ outputs:
 ---
 # Define duplicate uid in conceptual and SDP 
 # should output error and uid cannot be resolved
-inputs:
-  docfx.yml: |
-    template: {APP_BASE_PATH}data/template
-  docs/a.yml: |
-    #YamlMime:TestData
-    uid: a
-  docs/b.json: |
-    {
-      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
-      "uid": "a"
-    }
-  docs/c.md: Link to @a
+repos:
+  https://docs.com/define-duplciate-uid#master:
+    - files:
+        docfx.yml: |
+          template: {APP_BASE_PATH}data/template
+        docs/a.yml: |
+          #YamlMime:TestData
+          uid: a
+        docs/b.json: |
+          {
+            "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
+            "uid": "a"
+          }
+        docs/c.md: Link to @a
 outputs:
   docs/a.json:
   docs/b.json: 
@@ -201,7 +203,7 @@ outputs:
   .errors.log: |
     ["warning","uid-conflict","UID 'a' is defined in more than one file: 'docs/a.yml', 'docs/b.json'"]
   xrefmap.json: | 
-    {"references":[{"uid":"a","href":"https://docs.com/docs/a.json"}]}
+    {"references":[{"uid":"a","href":"https://docs.com/docs/a.json?branch=master"}]}
 ---
 # Resolve xref in SDP
 repos:

@@ -736,7 +736,7 @@ outputs:
       "monikers": ["netcore-2.0"]
     }
   xrefmap.json: | 
-    {"references":[{"uid":"a","href":"https://docs.com/docs/a","name":"no version"}]}
+    {"references":[{"uid":"a","name":"no version"}]}
   .errors.log: |
     ["warning","uid-conflict","UID 'a' is defined in more than one file: 'docs/a.md', 'docs/b.md'"]
 ---
