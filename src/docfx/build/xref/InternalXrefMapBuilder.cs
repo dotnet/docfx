@@ -131,8 +131,6 @@ namespace Microsoft.Docs.Build
 
         private static InternalXrefSpec[] AggregateXrefSpecs(Context context, string uid, InternalXrefSpec[] specsWithSameUid)
         {
-            var orderedSpecs = specsWithSameUid.OrderBy(spec => spec.DeclairingFile);
-
             // no conflicts
             if (specsWithSameUid.Length <= 1)
             {
@@ -149,21 +147,21 @@ namespace Microsoft.Docs.Build
                 return new InternalXrefSpec[] { orderedConflict.First() };
             }
 
-            // uid conflicts with different names
-            // log an warning and take the first one order by the declaring file
-            var conflictingNames = specsWithSameUid.Select(x => x.GetName()).Distinct();
-            if (conflictingNames.Count() > 1)
-            {
-                context.ErrorLog.Write(Errors.UidPropertyConflict(uid, "name", conflictingNames));
-                return new InternalXrefSpec[] { orderedSpecs.First() };
-            }
-
             // uid conflicts with overlapping monikers, drop the uid and log an error
             var conflictsWithMoniker = specsWithSameUid.Where(x => x.Monikers.Count > 0).ToArray();
             if (CheckOverlappingMonikers(specsWithSameUid, out var overlappingMonikers))
             {
                 context.ErrorLog.Write(Errors.MonikerOverlapping(overlappingMonikers));
                 return Array.Empty<InternalXrefSpec>();
+            }
+
+            // uid conflicts with different names
+            // log an warning and take the first one order by the declaring file
+            var conflictingNames = specsWithSameUid.Select(x => x.GetName()).Distinct();
+            if (conflictingNames.Count() > 1)
+            {
+                context.ErrorLog.Write(Errors.UidPropertyConflict(uid, "name", conflictingNames));
+                return new InternalXrefSpec[] { specsWithSameUid.OrderBy(spec => spec.DeclairingFile).First() };
             }
 
             return conflictsWithoutMoniker.Concat(conflictsWithMoniker).ToArray();

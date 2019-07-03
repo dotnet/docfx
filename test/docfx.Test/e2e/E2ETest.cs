@@ -32,7 +32,7 @@ namespace Microsoft.Docs.Build
             "download-failed", "locale-invalid",
 
             // show multiple errors with line info
-            "publish-url-conflict", "output-path-conflict", "uid-conflict", "uid-name-conflict", "redirection-conflict",
+            "publish-url-conflict", "output-path-conflict", "uid-conflict", "uid-property-conflict", "redirection-conflict",
             "redirected-id-conflict", "circular-reference", "moniker-overlapping", "empty-monikers"
         };
 
