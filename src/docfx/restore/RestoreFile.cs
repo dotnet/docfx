@@ -22,6 +22,8 @@ namespace Microsoft.Docs.Build
 
         public static async Task Restore(string url, Config config)
         {
+            Console.WriteLine($"Downloading '{url}'");
+
             var filePath = GetRestoreContentPath(url);
             var etagPath = GetRestoreEtagPath(url);
             var existingEtag = default(EntityTagHeaderValue);

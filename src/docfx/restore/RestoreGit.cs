@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
@@ -88,6 +87,7 @@ namespace Microsoft.Docs.Build
                     {
                         try
                         {
+                            Console.WriteLine($"Cloning {remote}");
                             GitUtility.CloneOrUpdateBare(repoPath, remote, branchesToFetch, depthOne, config);
                         }
                         catch (Exception ex)
