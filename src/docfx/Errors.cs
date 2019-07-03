@@ -181,7 +181,7 @@ namespace Microsoft.Docs.Build
         public static Error GitCloneFailed(string url, IEnumerable<string> branches)
         {
             var message = $"Failure to clone the repository `{url} ({Join(branches)})`."
-                      + "This could be caused by an incorrect repository URL, please verify the URL on the Docs Portal (https://ops.docs.com)."
+                      + "This could be caused by an incorrect repository URL, please verify the URL on the Docs Portal (https://ops.microsoft.com)."
                       + "This could also be caused by not having the proper permission the repository, "
                       + "please confirm that the GitHub group/team that triggered the build has access to the repository.";
             return new Error(ErrorLevel.Error, "git-clone-failed", message);
@@ -407,6 +407,13 @@ namespace Microsoft.Docs.Build
         /// Behavior: ✔️ Message: ❌
         public static Error ArrayLengthInvalid(SourceInfo source, string propName, string criteria)
             => new Error(ErrorLevel.Warning, "array-length-invalid", $"Array '{propName}' length should be {criteria}", source);
+
+        /// <summary>
+        /// Object property count not within min and max.
+        /// </summary>
+        /// Behavior: ✔️ Message: ❌
+        public static Error PropertyCountInvalid(SourceInfo source, string propName, string criteria)
+            => new Error(ErrorLevel.Warning, "property-count-invalid", $"Object '{propName}' property count should be {criteria}", source);
 
         /// <summary>
         /// String length not within min and max.
