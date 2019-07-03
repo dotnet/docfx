@@ -94,10 +94,10 @@ namespace Microsoft.Docs.Build
         private void ValidateArray(JsonSchema schema, string name, JArray array, List<Error> errors)
         {
             if (schema.MaxItems.HasValue && array.Count > schema.MaxItems.Value)
-                errors.Add(Errors.ArrayLengthInvalid(JsonUtility.GetSourceInfo(array), array.Path, $"<= {schema.MaxItems}"));
+                errors.Add(Errors.ArrayLengthInvalid(JsonUtility.GetSourceInfo(array), name, $"<= {schema.MaxItems}"));
 
             if (schema.MinItems.HasValue && array.Count < schema.MinItems.Value)
-                errors.Add(Errors.ArrayLengthInvalid(JsonUtility.GetSourceInfo(array), array.Path, $">= {schema.MinItems}"));
+                errors.Add(Errors.ArrayLengthInvalid(JsonUtility.GetSourceInfo(array), name, $">= {schema.MinItems}"));
 
             if (schema.Items != null)
             {
@@ -121,10 +121,10 @@ namespace Microsoft.Docs.Build
         private void ValidateProperties(JsonSchema schema, string name, JObject map, List<Error> errors)
         {
             if (schema.MaxProperties.HasValue && map.Count > schema.MaxProperties.Value)
-                errors.Add(Errors.PropertyCountInvalid(JsonUtility.GetSourceInfo(map), map.Path, $"<= {schema.MaxProperties}"));
+                errors.Add(Errors.PropertyCountInvalid(JsonUtility.GetSourceInfo(map), name, $"<= {schema.MaxProperties}"));
 
             if (schema.MinProperties.HasValue && map.Count < schema.MinProperties.Value)
-                errors.Add(Errors.PropertyCountInvalid(JsonUtility.GetSourceInfo(map), map.Path, $">= {schema.MinProperties}"));
+                errors.Add(Errors.PropertyCountInvalid(JsonUtility.GetSourceInfo(map), name, $">= {schema.MinProperties}"));
 
             foreach (var property in map.Properties())
             {
