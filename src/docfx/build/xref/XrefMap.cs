@@ -13,7 +13,7 @@ namespace Microsoft.Docs.Build
     {
         // TODO: key could be uid+moniker+locale
         private readonly IReadOnlyDictionary<string, Lazy<ExternalXrefSpec>> _externalXrefMap;
-        private readonly IReadOnlyDictionary<string, InternalXrefSpec[]> _internalXrefMap;
+        private readonly IReadOnlyDictionary<string, InternalXrefSpec> _internalXrefMap;
 
         private static ThreadLocal<Stack<(string uid, string propertyName, Document parent)>> t_recursionDetector = new ThreadLocal<Stack<(string, string, Document)>>(() => new Stack<(string, string, Document)>());
 
@@ -48,7 +48,7 @@ namespace Microsoft.Docs.Build
         public XrefMapModel ToXrefMapModel(Context context)
         {
             var references = _internalXrefMap.Values
-                .Select(xref => xref[0].ToExternalXrefSpec(context, forXrefMapOutput: true))
+                .Select(xref => xref.ToExternalXrefSpec(context, forXrefMapOutput: true))
                 .OrderBy(xref => xref.Uid).ToArray();
 
             return new XrefMapModel { References = references };
@@ -87,23 +87,12 @@ namespace Microsoft.Docs.Build
 
         private IXrefSpec ResolveInternalXrefSpec(string uid, string moniker)
         {
-            if (!_internalXrefMap.TryGetValue(uid, out var specs))
+            if (!_internalXrefMap.TryGetValue(uid, out var spec))
             {
                 return null;
             }
 
-            if (!string.IsNullOrEmpty(moniker))
-            {
-                foreach (var spec in specs)
-                {
-                    if (spec.Monikers.Contains(moniker))
-                    {
-                        return spec;
-                    }
-                }
-            }
-
-            return specs[0];
+            return spec;
         }
     }
 }

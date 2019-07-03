@@ -12,7 +12,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class InternalXrefMapBuilder
     {
-        public static IReadOnlyDictionary<string, InternalXrefSpec[]> Build(Context context)
+        public static IReadOnlyDictionary<string, InternalXrefSpec> Build(Context context)
         {
             var builder = new ListBuilder<InternalXrefSpec>();
 
@@ -28,11 +28,10 @@ namespace Microsoft.Docs.Build
                 from spec in builder.ToList()
                 group spec by spec.Uid into g
                 let uid = g.Key
-                let specs = AggregateXrefSpecs(context, uid, g.ToArray())
-                where specs.Length > 0
-                select (uid, specs);
+                let spec = AggregateXrefSpecs(context, uid, g.ToArray())
+                select (uid, spec);
 
-            return result.ToDictionary(item => item.uid, item => item.specs);
+            return result.ToDictionary(item => item.uid, item => item.spec);
         }
 
         private static void Load(Context context, ListBuilder<InternalXrefSpec> xrefs, Document file)
@@ -89,7 +88,7 @@ namespace Microsoft.Docs.Build
             {
                 Uid = metadata.Uid,
                 Href = file.SiteUrl,
-                DeclairingFile = file,
+                DeclaringFile = file,
             };
             xref.ExtensionData["name"] = new Lazy<JToken>(() => new JValue(string.IsNullOrEmpty(metadata.Title) ? metadata.Uid : metadata.Title));
 
@@ -117,7 +116,7 @@ namespace Microsoft.Docs.Build
                 {
                     Uid = item.Key,
                     Href = isRoot ? file.SiteUrl : $"{file.SiteUrl}#{GetBookmarkFromUid(item.Key)}",
-                    DeclairingFile = file,
+                    DeclaringFile = file,
                 };
                 xref.ExtensionData.AddRange(properties);
                 return xref;
@@ -129,12 +128,12 @@ namespace Microsoft.Docs.Build
                 => Regex.Replace(uid, @"\W", "_");
         }
 
-        private static InternalXrefSpec[] AggregateXrefSpecs(Context context, string uid, InternalXrefSpec[] specsWithSameUid)
+        private static InternalXrefSpec AggregateXrefSpecs(Context context, string uid, InternalXrefSpec[] specsWithSameUid)
         {
             // no conflicts
             if (specsWithSameUid.Length <= 1)
             {
-                return specsWithSameUid;
+                return specsWithSameUid.FirstOrDefault();
             }
 
             // multiple uid conflicts without moniker range definition
@@ -142,9 +141,8 @@ namespace Microsoft.Docs.Build
             var conflictsWithoutMoniker = specsWithSameUid.Where(item => item.Monikers.Count == 0).ToArray();
             if (conflictsWithoutMoniker.Length > 1)
             {
-                var orderedConflict = conflictsWithoutMoniker.OrderBy(item => item.DeclairingFile);
-                context.ErrorLog.Write(Errors.UidConflict(uid, orderedConflict.Select(x => x.DeclairingFile.FilePath)));
-                return new InternalXrefSpec[] { orderedConflict.First() };
+                var orderedConflict = conflictsWithoutMoniker.OrderBy(item => item.DeclaringFile);
+                context.ErrorLog.Write(Errors.UidConflict(uid, orderedConflict.Select(x => x.DeclaringFile.FilePath)));
             }
 
             // uid conflicts with overlapping monikers
@@ -153,7 +151,6 @@ namespace Microsoft.Docs.Build
             if (CheckOverlappingMonikers(specsWithSameUid, out var overlappingMonikers))
             {
                 context.ErrorLog.Write(Errors.MonikerOverlapping(overlappingMonikers));
-                return new InternalXrefSpec[] { conflictsWithMoniker.OrderBy(item => item.DeclairingFile).First() };
             }
 
             // uid conflicts with different names
@@ -162,10 +159,9 @@ namespace Microsoft.Docs.Build
             if (conflictingNames.Count() > 1)
             {
                 context.ErrorLog.Write(Errors.UidPropertyConflict(uid, "name", conflictingNames));
-                return new InternalXrefSpec[] { specsWithSameUid.OrderBy(spec => spec.DeclairingFile).First() };
             }
 
-            return conflictsWithoutMoniker.Concat(conflictsWithMoniker).ToArray();
+            return specsWithSameUid.OrderBy(spec => spec.DeclaringFile).First();
         }
 
         private static bool CheckOverlappingMonikers(IXrefSpec[] specsWithSameUid, out HashSet<string> overlappingMonikers)

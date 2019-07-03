@@ -584,6 +584,7 @@ outputs:
     {"conceptual":"<p>Link to <a href=\"a\" data-linktype=\"relative-path\">netcore-1.1, netcore-2.0</a></p>"}
   .errors.log: |
     ["warning","moniker-overlapping","Two or more documents have defined overlapping moniker: 'netcore-2.0'"]
+    ["warning","xref-property-conflict","UID 'a' is defined with different names: 'netcore-1.1, netcore-2.0', 'netcore-2.0, netcore-2.1'"]
     ["error","publish-url-conflict","Two or more files of the same version('netcore-2.0') publish to the same url '/docs/a': 'docs/v1/a.md', 'docs/v2/a.md'"]
   xrefmap.json: | 
     {"references":[{"uid":"a","name":"netcore-1.1, netcore-2.0"}]}
@@ -779,6 +780,7 @@ outputs:
     {"references":[{"uid":"a","name":"no version"}]}
   .errors.log: |
     ["warning","uid-conflict","UID 'a' is defined in more than one file: 'docs/a.md', 'docs/b.md'"]
+    ["warning","xref-property-conflict","UID 'a' is defined with different names: 'b with no version', 'netcore-1.1', 'netcore-2.0', 'no version'"]
 ---
 # Build toc with monikers info
 inputs:
