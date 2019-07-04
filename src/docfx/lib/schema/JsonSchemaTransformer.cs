@@ -27,7 +27,7 @@ namespace Microsoft.Docs.Build
             return (errors, transformedToken);
         }
 
-        public (List<Error> errors, Dictionary<string, List<(bool isRoot, string jsonPath, Dictionary<string, Lazy<JToken>> propertiesByUid)>> properties) TransformXref(Document file, Context context, JToken token)
+        public (List<Error> errors, Dictionary<string, List<(bool isRoot, string jsonPath, Dictionary<string, Lazy<JToken>> propertiesByUid)>> xrefPropertiesGroupByUid) TransformXref(Document file, Context context, JToken token)
         {
             var errors = new List<Error>();
             var xrefPropertiesGroupByUid = new Dictionary<string, List<(bool, string, Dictionary<string, Lazy<JToken>>)>>();
