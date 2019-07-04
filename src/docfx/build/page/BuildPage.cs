@@ -40,7 +40,7 @@ namespace Microsoft.Docs.Build
             }
             else
             {
-                output = ApplyDataTemplate(context, file, pageModel);
+                output = context.TemplateEngine.RunJint($"{file.Mime}.json.js", pageModel);
                 metadata = null;
             }
 
@@ -243,11 +243,6 @@ namespace Microsoft.Docs.Build
             return (errors, pageModel, inputMetadata);
         }
 
-        private static object ApplyDataTemplate(Context context, Document file, JObject pageModel)
-        {
-            return context.TemplateEngine.RunJint($"{file.Mime}.json.js", pageModel);
-        }
-
         private static (object model, JObject metadata) ApplyPageTemplate(Context context, Document file, JObject pageMetadata, JObject pageModel, bool isConceptual)
         {
             var conceptual = isConceptual ? pageModel.Value<string>("conceptual") : string.Empty;
@@ -262,8 +257,8 @@ namespace Microsoft.Docs.Build
             {
                 if (!isConceptual)
                 {
-                    // run sdp JINT and mustache to generate html
-                    // conceptual = context.TemplateEngine.RenderMustache(file.Mime, pageModel);
+                    // TODO: run sdp JINT and mustache to generate html
+                    // whether input needs metadata?
                 }
 
                 return TransformToTemplateModel(context, conceptual, processedMetadata, file.Mime);
@@ -272,26 +267,26 @@ namespace Microsoft.Docs.Build
             return (pageModel, processedMetadata);
         }
 
-        private static (TemplateModel model, JObject metadata) TransformToTemplateModel(Context context, string conceptual, JObject rawMetadata, string mime)
+        private static (TemplateModel model, JObject metadata) TransformToTemplateModel(Context context, string conceptual, JObject pageModel, string mime)
         {
             // TODO: run page transform based on mime
-            rawMetadata = context.TemplateEngine.RunJint("Conceptual.mta.json.js", rawMetadata);
+            pageModel = context.TemplateEngine.RunJint("Conceptual.mta.json.js", pageModel);
             if (TemplateEngine.IsLandingData(mime))
             {
-                rawMetadata["_op_layout"] = "LandingPage";
-                rawMetadata["layout"] = "LandingPage";
-                rawMetadata["page_type"] = "landingdata";
+                pageModel["_op_layout"] = "LandingPage";
+                pageModel["layout"] = "LandingPage";
+                pageModel["page_type"] = "landingdata";
 
-                rawMetadata.Remove("_op_gitContributorInformation");
-                rawMetadata.Remove("_op_allContributorsStr");
+                pageModel.Remove("_op_gitContributorInformation");
+                pageModel.Remove("_op_allContributorsStr");
             }
-            var metadata = TemplateEngine.CreateMetadata(rawMetadata);
+            var metadata = TemplateEngine.CreateMetadata(pageModel);
             var pageMetadata = HtmlUtility.CreateHtmlMetaTags(metadata, context.TemplateEngine.HtmlMetaConfigs);
 
             var model = new TemplateModel
             {
                 Content = conceptual,
-                RawMetadata = rawMetadata,
+                RawMetadata = pageModel,
                 PageMetadata = pageMetadata,
                 ThemesRelativePathToOutputRoot = "_themes/",
             };
