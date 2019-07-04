@@ -21,9 +21,9 @@ Besides using file path to link to another file, DocFX also allows you to give a
         {"conceptual":"<p>Link to <a href=\"a\">Title from yaml header a</a></p>\n"}
   ```
   > **_Notice_**: Only title will be considered as xref property for `uid` definition in `.md` files
-- Define multiple UID with same value internally with different versions and reference to this UID without versioning within the current repository
-    - If all versions for this UID are within the same product, take the one with highest versioning respecting the referencing file
-      ```yaml
+- Define multiple UID with same value internally with different versions and reference to this UID without versioning within the current repository. 
+    - The use should not define UID of the same value with different `title` for conceeptual repository. Otherwise, a `xref-property-conflict` warning will be logged and the first UID order by the declaring file will be picked
+        ```yaml
         # v1: 1.0, 2.0, 3.0
         # v2: 4.0, 5.0
         # v3: 3.0 
@@ -43,28 +43,10 @@ Besides using file path to link to another file, DocFX also allows you to give a
         outputs:
             docs/b.json: |
                 {"conceptual":"<p>Link to <a href=\"a\">Title from v1</a></p>\n"}
+            .errors.log: |
+                ["warning","xref-property-conflict","UID 'a' is defined with different names: 'netcore-1.1', 'netcore-2.0'"]
         ```
-        ```yaml
-        # v1: 1.0, 2.0, 3.0
-        # v2: 4.0, 5.0
-        # should take the highest version
-        inputs:
-            docs/v1/a.md: |
-            ---
-            title: Title from v1
-            uid: a
-            ---
-            docs/v2/a.md: |
-            ---
-            title: Title from v2
-            uid: a
-            ---
-            docs/b.md: Link to @a
-        outputs:
-            docs/b.json: |
-                {"conceptual":"<p>Link to <a href=\"a\">Title from v2</a></p>\n"}
-        ```
-    - Define multiple UID with same value internally with overlapping versions, we should throw `moniker-overlapping` error. Because during the resolving, we would not know which one to choose from.
+    - Define multiple UID with same value internally with overlapping versions, we should throw `moniker-overlapping` warning. And the first UID order by the declaring file will be picked.
         ```yaml
             # v1: 1.0, 2.0, 3.0
             # v2: 2.0, 3.0
@@ -82,31 +64,11 @@ Besides using file path to link to another file, DocFX also allows you to give a
                 ---
                 docs/b.md: Link to @a
             outputs:
+                docs/b.json: |
+                    {"conceptual":"<p>Link to <a href=\"a\">Title from v1</a></p>\n"}
                 .errors.log: |
-                    ["error","moniker-overlapping","Two or more documents have defined overlapping moniker: '2.0', '3.0'"]
+                    ["warning","moniker-overlapping","Two or more documents have defined overlapping moniker: '2.0', '3.0'"]
             ```
-    - If the versions for this UID are from different products, take the highest one base on proudct name alphabetically, and we only consider the overlapping products
-        ```yaml
-        # v1: a-1.0, a-2.0, a-3.0
-        # v2: b-4.0, b-5.0
-        # v3: c-1.0
-        # should take the hi
-        inputs:
-            docs/v1/a.md: |
-            ---
-            title: Title from v1
-            uid: a
-            ---
-            docs/v2/a.md: |
-            ---
-            title: Title from v2
-            uid: a
-            ---
-            docs/b.md: Link to @a
-        outputs:
-            docs/b.json: |
-                {"conceptual":"<p>Link to <a href=\"a\">Title from v2</a></p>\n"}
-        ```
 ### External UID
 - Reference to an external UID without versioning. DHS always append the `branch` info within cookie cache, due to this limitation, docs build needs to append `branch` info for resolved URL. The complete list of all scenarios is as below
 
@@ -170,7 +132,7 @@ Besides using file path to link to another file, DocFX also allows you to give a
 - Reference to an external UID with multiple versionings (not support for now)
     - The resolve logic should be smilar to the internal resolving
 - [UID defnition](#define-uid)
-- Needs to check if we have any conceptual repo output non-empty xrefmap.json. If yes, and auto-complete in xref service is still in use xref service needs to consume `xrefmap.json` instead of `xrefmap.yml` before v3 xref on-boarding.
+- xref service needs to consume `xrefmap.json` instead of `xrefmap.yml` after the conceptual repository switching to docfx v3.
 - In v2, `xrefservice` can be defined in `docfx.json` then the user can query `uid` universally, which will be removed during the migration to v3 and related tags should be added to `.openpublishing.publish.config.json`.
 
 ## Define UID
