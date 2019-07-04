@@ -264,7 +264,7 @@ namespace Microsoft.Docs.Build
                         t_mockedRepos.Value = mockedRepos;
 
                         var (remote, refspec, _) = UrlUtility.SplitGitUrl(inputRepo);
-                        GitUtility.CloneOrUpdate(inputFolder, remote, refspec);
+                        GitUtility.InitFetchCheckout(inputFolder, remote, refspec);
                         Process.Start(new ProcessStartInfo("git", "submodule update --init") { WorkingDirectory = inputFolder }).WaitForExit();
                     }
                     finally
@@ -471,12 +471,22 @@ namespace Microsoft.Docs.Build
         private static void VerifyNoChangesOnInputFiles(Dictionary<string, DateTime> inputFiles, string[] skippableInputs, string docsetPath)
         {
             var dir = new DirectoryInfo(docsetPath);
+            var gitdir = Path.GetFullPath(Path.Combine(docsetPath, ".git/"));
             var currentFiles = dir.GetFiles("*", SearchOption.AllDirectories)
                                 .Where(file => !skippableInputs.Contains(file.Name))
                                 .Select(file => file.FullName)
-                                .Except(dir.GetFiles($"_site/*", SearchOption.AllDirectories).Select(file => file.FullName)).ToList();
+                                .Except(dir.GetFiles($"_site/*", SearchOption.AllDirectories)
+                                .Select(file => file.FullName))
+                                .ToList();
+
             foreach (var (file, lastModifyTime) in inputFiles)
             {
+                if (file.StartsWith(gitdir))
+                {
+                    currentFiles.Remove(file);
+                    continue;
+                }
+
                 var currentFile = new FileInfo(file);
                 if (skippableInputs.Contains(currentFile.Name))
                 {
@@ -486,7 +496,10 @@ namespace Microsoft.Docs.Build
                 Assert.True(lastModifyTime == currentFile.LastWriteTime, $"Input file {currentFile.Name} has been changed");
                 currentFiles.Remove(file);
             }
-            Assert.True(currentFiles.Count == 0, $"New files {string.Join(",", currentFiles.Count > 3 ? currentFiles.SkipLast(currentFiles.Count - 3) : currentFiles)} has been generated in input folder");
+
+            Assert.True(
+                currentFiles.Count == 0,
+                $"New files {string.Join(",", currentFiles.Count > 3 ? currentFiles.SkipLast(currentFiles.Count - 3) : currentFiles)} has been generated in input folder");
         }
     }
 }

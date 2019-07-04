@@ -102,18 +102,18 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Clones or update a git repository to the latest version.
         /// </summary>
-        public static void CloneOrUpdate(string path, string url, string committish, Config config = null)
+        public static void InitFetchCheckout(string path, string url, string committish, Config config = null)
         {
-            CloneOrUpdate(path, url, new[] { committish }, bare: false, depthOne: false, prune: true, config);
+            InitFetch(path, url, new[] { committish }, bare: false, depthOne: false, prune: true, config);
             ExecuteNonQuery(path, $"-c core.longpaths=true checkout --force --progress {committish}");
         }
 
         /// <summary>
         /// Clones or update a git bare repository to the latest version.
         /// </summary>
-        public static void CloneOrUpdateBare(string path, string url, IEnumerable<string> committishes, bool depthOne, Config config = null)
+        public static void InitFetchBare(string path, string url, IEnumerable<string> committishes, bool depthOne, Config config = null)
         {
-            CloneOrUpdate(path, url, committishes, bare: true, depthOne, prune: true, config);
+            InitFetch(path, url, committishes, bare: true, depthOne, prune: true, config);
         }
 
         /// <summary>
@@ -301,7 +301,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Clones or update a git repository to the latest version.
         /// </summary>
-        private static void CloneOrUpdate(string path, string url, IEnumerable<string> committishes, bool bare, bool depthOne, bool prune, Config config)
+        private static void InitFetch(string path, string url, IEnumerable<string> committishes, bool bare, bool depthOne, bool prune, Config config)
         {
             // Unifies clone and fetch using a single flow:
             // - git init
