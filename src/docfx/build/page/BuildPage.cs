@@ -245,7 +245,7 @@ namespace Microsoft.Docs.Build
 
         private static object ApplyDataTemplate(Context context, Document file, JObject pageModel)
         {
-            return context.TemplateEngine.TransformData(file.Mime, pageModel);
+            return context.TemplateEngine.RunJintTransform($"{file.Mime}.json.js", pageModel);
         }
 
         private static (object model, JObject metadata) ApplyPageTemplate(Context context, Document file, JObject pageMetadata, JObject pageModel, bool isConceptual)
@@ -255,7 +255,7 @@ namespace Microsoft.Docs.Build
 
             if (!file.Docset.Config.Output.Json)
             {
-                return (context.TemplateEngine.RunLiquid(conceptual, file, processedMetadata, file.Mime), null);
+                return (context.TemplateEngine.RunLiquid(conceptual, file, processedMetadata), null);
             }
 
             if (file.Docset.Legacy)
@@ -266,10 +266,37 @@ namespace Microsoft.Docs.Build
                     // conceptual = context.TemplateEngine.RenderMustache(file.Mime, pageModel);
                 }
 
-                return context.TemplateEngine.TransformToTemplateModel(conceptual, processedMetadata, file.Mime);
+                return TransformToTemplateModel(context, conceptual, processedMetadata, file.Mime);
             }
 
             return (pageModel, processedMetadata);
+        }
+
+        private static (TemplateModel model, JObject metadata) TransformToTemplateModel(Context context, string conceptual, JObject rawMetadata, string mime)
+        {
+            // TODO: run page transform based on mime
+            rawMetadata = context.TemplateEngine.RunJintTransform("Conceptual.mta.json.js", rawMetadata);
+            if (TemplateEngine.IsLandingData(mime))
+            {
+                rawMetadata["_op_layout"] = "LandingPage";
+                rawMetadata["layout"] = "LandingPage";
+                rawMetadata["page_type"] = "landingdata";
+
+                rawMetadata.Remove("_op_gitContributorInformation");
+                rawMetadata.Remove("_op_allContributorsStr");
+            }
+            var metadata = TemplateEngine.CreateMetadata(rawMetadata);
+            var pageMetadata = HtmlUtility.CreateHtmlMetaTags(metadata, context.TemplateEngine.HtmlMetaConfigs);
+
+            var model = new TemplateModel
+            {
+                Content = conceptual,
+                RawMetadata = rawMetadata,
+                PageMetadata = pageMetadata,
+                ThemesRelativePathToOutputRoot = "_themes/",
+            };
+
+            return (model, metadata);
         }
     }
 }

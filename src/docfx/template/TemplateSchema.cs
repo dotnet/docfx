@@ -13,10 +13,6 @@ namespace Microsoft.Docs.Build
 
         public bool IsData { get; }
 
-        public bool HasDataTransformJs { get; }
-
-        public string DataTransformJsPath { get; }
-
         public JsonSchemaValidator JsonSchemaValidator { get; }
 
         public JsonSchemaTransformer JsonSchemaTransformer { get; }
@@ -27,10 +23,7 @@ namespace Microsoft.Docs.Build
 
             SchemaName = SchemaName;
             IsData = GetIsDataCore(schemaName, contentTemplateDir);
-            HasDataTransformJs = File.Exists(DataTransformJsPath = Path.Combine(contentTemplateDir, $"{schemaName}.json.js"));
             (JsonSchemaValidator, JsonSchemaTransformer) = GetJsonSchemaCore(schemaDir, schemaName);
-
-            Debug.Assert(IsData || (!IsData && !HasDataTransformJs));
         }
 
         private bool GetIsDataCore(string schemaName, string contentTemplateDir)
