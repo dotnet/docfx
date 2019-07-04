@@ -22,12 +22,11 @@ Besides using file path to link to another file, DocFX also allows you to give a
   ```
   > **_Notice_**: Only title will be considered as xref property for `uid` definition in `.md` files
 - Define multiple UID with same value internally with different versions and reference to this UID without versioning within the current repository. 
-    - The use should not define UID of the same value with different `title` for conceeptual repository. Otherwise, a `xref-property-conflict` warning will be logged and the first UID order by the declaring file will be picked
+    - The user should define multiple UID of the same value with the same `title` for conceeptual repository. Otherwise, a `xref-property-conflict` warning will be logged and the first UID order by the declaring file will be picked
         ```yaml
         # v1: 1.0, 2.0, 3.0
         # v2: 4.0, 5.0
         # v3: 3.0 
-        # should take the highest version and respect the version of the referencing file
         inputs:
             docs/v1/a.md: |
             ---
@@ -50,7 +49,6 @@ Besides using file path to link to another file, DocFX also allows you to give a
         ```yaml
             # v1: 1.0, 2.0, 3.0
             # v2: 2.0, 3.0
-            # should throw `moniker-overlapping`
             inputs:
                 docs/v1/a.md: |
                 ---
@@ -193,8 +191,26 @@ outputs:
   .xrefmap.json: | 
     {"references":[{"uid":"a","href":"docs/a.json","summary":"<p>Link to <a href=\"b\">b</a></p>\n"}]}
 ```
+- Multiple UID defined with same value without versioning is not allowed, a `uid-conflict` warning will be logged and the first UID will be picked order by the declaring file.
+    ```yaml
+    inputs:
+        docs/a.md: |
+        ---
+        title: Title from v1
+        uid: a
+        ---
+        docs/c.md: |
+        ---
+        title: Title from v2
+        uid: a
+        ---
+        docs/b.md: Link to @a
+    outputs:
+        docs/b.json: |
+            {"conceptual":"<p>Link to <a href=\"a\">Title from v1</a></p>\n"}
+        .errors.log: |
+            ["warning","uid-conflict","UID 'a' is defined in more than one file: 'docs/a.md', 'docs/c.md'"]
 - UID defined both in a file without versioning and a file with versioning. Since we will throw `publish-url-conflict` error to user when same file without versioning and with versioning defined, this UID definition case is disallowed at the same time.
-
 ## Output xref map
 Docfx will output a JSON file named `.xrefmap.json`. In V2, docfx used to output `xrefmap.yml`, it took much longer to be de-serialized compared to JSON format.
 ```json
