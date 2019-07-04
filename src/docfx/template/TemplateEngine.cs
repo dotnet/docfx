@@ -169,7 +169,7 @@ namespace Microsoft.Docs.Build
             return File.Exists(path) ? JObject.Parse(File.ReadAllText(path)) : new JObject();
         }
 
-        private JObject RunJintTransform(string scriptPath, JObject model, bool tryDeserializeFromContent = true)
+        private JObject RunJintTransform(string scriptPath, JObject model)
         {
             return JObject.Parse(((JObject)_js.Run(scriptPath, "transform", model)).Value<string>("content"));
         }
