@@ -122,6 +122,11 @@ namespace Microsoft.Docs.Build
         public double? ExclusiveMinimum { get; set; }
 
         /// <summary>
+        /// The regular expression applied to strings
+        /// </summary>
+        public string Pattern { get; set; }
+
+        /// <summary>
         /// Properties that are required to be present.
         /// </summary>
         public string[] Required { get; set; } = Array.Empty<string>();
