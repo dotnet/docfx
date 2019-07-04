@@ -42,9 +42,9 @@ namespace Microsoft.Docs.Build
                 .ToDictionary(prop => prop.Key, prop => prop.Value.HtmlMetaName));
         }
 
-        public bool IsData(string mime)
+        public bool IsPage(string mime)
         {
-            return mime != null && _schemas.TryGetValue(mime, out var schemaTemplate) && schemaTemplate.Value.IsData;
+            return mime == null || !_schemas.TryGetValue(mime, out var schemaTemplate) || schemaTemplate.Value.IsPage;
         }
 
         public TemplateSchema GetJsonSchema(SourceInfo<string> schemaName)

@@ -17,7 +17,7 @@ namespace Microsoft.Docs.Build
             var (monikerError, monikers) = context.MonikerProvider.GetFileLevelMonikers(file);
             errors.AddIfNotNull(monikerError);
 
-            var outputPath = file.GetOutputPath(monikers, file.Docset.SiteBasePath);
+            var outputPath = file.GetOutputPath(monikers, file.Docset.SiteBasePath, isPage: false);
 
             // Output path is source file path relative to output folder when copy resource is disabled
             var publishPath = file.Docset.Config.Output.CopyResources

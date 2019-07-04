@@ -11,7 +11,7 @@ namespace Microsoft.Docs.Build
     {
         public string SchemaName { get; }
 
-        public bool IsData { get; }
+        public bool IsPage { get; }
 
         public JsonSchemaValidator JsonSchemaValidator { get; }
 
@@ -22,15 +22,15 @@ namespace Microsoft.Docs.Build
             Debug.Assert(!string.IsNullOrEmpty(schemaName));
 
             SchemaName = SchemaName;
-            IsData = GetIsDataCore(schemaName, contentTemplateDir);
+            IsPage = GetIsPageCore(schemaName, contentTemplateDir);
             (JsonSchemaValidator, JsonSchemaTransformer) = GetJsonSchemaCore(schemaDir, schemaName);
         }
 
-        private bool GetIsDataCore(string schemaName, string contentTemplateDir)
+        private bool GetIsPageCore(string schemaName, string contentTemplateDir)
         {
             if (string.Equals(schemaName, "LandingData"))
-                return false;
-            return !File.Exists(Path.Combine(contentTemplateDir, $"{schemaName}.html.primary.js"));
+                return true;
+            return File.Exists(Path.Combine(contentTemplateDir, $"{schemaName}.html.primary.js"));
         }
 
         private (JsonSchemaValidator, JsonSchemaTransformer) GetJsonSchemaCore(string schemaDir, string schemaName)

@@ -18,7 +18,7 @@ namespace Microsoft.Docs.Build
             var (errors, model, _, _) = context.Cache.LoadTocModel(context, file);
 
             // enable pdf
-            var outputPath = file.GetOutputPath(model.Metadata.Monikers, file.Docset.SiteBasePath);
+            var outputPath = file.GetOutputPath(model.Metadata.Monikers, file.Docset.SiteBasePath, isPage: false);
 
             if (file.Docset.Config.Output.Pdf)
             {

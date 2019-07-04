@@ -21,11 +21,11 @@ namespace Microsoft.Docs.Build
             var (generateErrors, outputMetadata) = await GenerateOutputMetadata(context, file, inputMetadata);
             errors.AddRange(generateErrors);
 
-            var outputPath = file.GetOutputPath(outputMetadata.Monikers, file.Docset.SiteBasePath, file.IsData);
+            var outputPath = file.GetOutputPath(outputMetadata.Monikers, file.Docset.SiteBasePath, file.IsPage);
 
             object output = null;
             JObject metadata = null;
-            if (!file.IsData)
+            if (file.IsPage)
             {
                 var mergedMetadata = new JObject();
                 JsonUtility.Merge(mergedMetadata, inputMetadata.RawJObject);

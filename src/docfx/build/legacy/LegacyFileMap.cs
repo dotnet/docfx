@@ -28,7 +28,7 @@ namespace Microsoft.Docs.Build
                     documents,
                     document =>
                     {
-                        if (document.IsData)
+                        if (!document.IsPage)
                         {
                             return;
                         }
