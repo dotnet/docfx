@@ -28,7 +28,7 @@ namespace Microsoft.Docs.Build
 
             if (file.Docset.Legacy)
             {
-                publishItem.Path = file.GetOutputPath(monikers, file.Docset.SiteBasePath, rawPage: true);
+                publishItem.Path = file.GetOutputPath(monikers, file.Docset.SiteBasePath);
             }
 
             if (context.PublishModelBuilder.TryAdd(file, publishItem) && file.Docset.Legacy)

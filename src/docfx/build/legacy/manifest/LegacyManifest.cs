@@ -32,7 +32,7 @@ namespace Microsoft.Docs.Build
 
                         var output = new LegacyManifestOutput
                         {
-                            MetadataOutput = document.IsData || document.ContentType == ContentType.Resource
+                            MetadataOutput = !document.IsPage || document.ContentType == ContentType.Resource
                             ? null
                             : new LegacyManifestOutputItem
                             {
@@ -69,20 +69,20 @@ namespace Microsoft.Docs.Build
                         if (document.ContentType == ContentType.Page ||
                             document.ContentType == ContentType.Redirection)
                         {
-                            if (document.IsData)
-                            {
-                                output.TocOutput = new LegacyManifestOutputItem
-                                {
-                                    IsRawPage = false,
-                                    RelativePath = legacyOutputPathRelativeToSiteBasePath,
-                                };
-                            }
-                            else
+                            if (document.IsPage)
                             {
                                 output.PageOutput = new LegacyManifestOutputItem
                                 {
                                     IsRawPage = false,
                                     RelativePath = LegacyUtility.ChangeExtension(legacyOutputPathRelativeToSiteBasePath, ".raw.page.json"),
+                                };
+                            }
+                            else
+                            {
+                                output.TocOutput = new LegacyManifestOutputItem
+                                {
+                                    IsRawPage = false,
+                                    RelativePath = legacyOutputPathRelativeToSiteBasePath,
                                 };
                             }
                         }
@@ -151,7 +151,7 @@ namespace Microsoft.Docs.Build
 
         private static string GetType(ContentType type, Document doc)
         {
-            if (type == ContentType.Page && doc.IsData)
+            if (type == ContentType.Page && !doc.IsPage)
             {
                 return "Toc";
             }

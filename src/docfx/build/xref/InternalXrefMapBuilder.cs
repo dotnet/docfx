@@ -100,11 +100,7 @@ namespace Microsoft.Docs.Build
         private static (List<Error> errors, IReadOnlyList<InternalXrefSpec> specs) LoadSchemaDocument(Context context, JToken token, Document file)
         {
             var errors = new List<Error>();
-            var schemaTemplate = context.TemplateEngine.GetJsonSchema(file.Mime);
-            if (schemaTemplate is null)
-            {
-                throw Errors.SchemaNotFound(file.Mime).ToException();
-            }
+            var schemaTemplate = context.TemplateEngine.GetSchema(file.Mime);
 
             var (schemaErrors, xrefPropertiesGroupByUid) = schemaTemplate.JsonSchemaTransformer.TransformXref(file, context, token);
             errors.AddRange(schemaErrors);

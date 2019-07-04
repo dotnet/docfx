@@ -1,10 +1,12 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -19,11 +21,11 @@ namespace Microsoft.Docs.Build
             var (generateErrors, outputMetadata) = await GenerateOutputMetadata(context, file, inputMetadata);
             errors.AddRange(generateErrors);
 
-            var outputPath = file.GetOutputPath(outputMetadata.Monikers, file.Docset.SiteBasePath, !file.IsData);
+            var outputPath = file.GetOutputPath(outputMetadata.Monikers, file.Docset.SiteBasePath, file.IsPage);
 
             object output = null;
             JObject metadata = null;
-            if (!file.IsData)
+            if (file.IsPage)
             {
                 var mergedMetadata = new JObject();
                 JsonUtility.Merge(mergedMetadata, inputMetadata.RawJObject);
@@ -38,8 +40,7 @@ namespace Microsoft.Docs.Build
             }
             else
             {
-                // todo: support data page template
-                output = pageModel;
+                output = context.TemplateEngine.RunJint($"{file.Mime}.json.js", pageModel);
                 metadata = null;
             }
 
@@ -203,11 +204,7 @@ namespace Microsoft.Docs.Build
         private static async Task<(List<Error> errors, JObject model, InputMetadata inputMetadata)>
             LoadSchemaDocument(Context context, List<Error> errors, JToken token, Document file)
         {
-            var schemaTemplate = context.TemplateEngine.GetJsonSchema(file.Mime);
-            if (schemaTemplate is null)
-            {
-                throw Errors.SchemaNotFound(file.Mime).ToException();
-            }
+            var schemaTemplate = context.TemplateEngine.GetSchema(file.Mime);
 
             if (!(token is JObject obj))
             {
@@ -253,21 +250,48 @@ namespace Microsoft.Docs.Build
 
             if (!file.Docset.Config.Output.Json)
             {
-                return (context.TemplateEngine.Render(conceptual, file, processedMetadata, file.Mime), null);
+                return (context.TemplateEngine.RunLiquid(conceptual, file, processedMetadata), null);
             }
 
             if (file.Docset.Legacy)
             {
                 if (!isConceptual)
                 {
-                    // run sdp JINT and mustache to generate html
-                    // conceptual = context.TemplateEngine.Render(file.Mime, pageModel);
+                    // TODO: run sdp JINT and mustache to generate html
+                    // whether input needs metadata?
                 }
 
-                return context.TemplateEngine.TransformToTemplateModel(conceptual, processedMetadata, file.Mime);
+                return TransformToTemplateModel(context, conceptual, processedMetadata, file.Mime);
             }
 
             return (pageModel, processedMetadata);
+        }
+
+        private static (TemplateModel model, JObject metadata) TransformToTemplateModel(Context context, string conceptual, JObject pageModel, string mime)
+        {
+            // TODO: run page transform based on mime
+            pageModel = context.TemplateEngine.RunJint("Conceptual.mta.json.js", pageModel);
+            if (TemplateEngine.IsLandingData(mime))
+            {
+                pageModel["_op_layout"] = "LandingPage";
+                pageModel["layout"] = "LandingPage";
+                pageModel["page_type"] = "landingdata";
+
+                pageModel.Remove("_op_gitContributorInformation");
+                pageModel.Remove("_op_allContributorsStr");
+            }
+            var metadata = TemplateEngine.CreateMetadata(pageModel);
+            var pageMetadata = HtmlUtility.CreateHtmlMetaTags(metadata, context.TemplateEngine.HtmlMetaConfigs);
+
+            var model = new TemplateModel
+            {
+                Content = conceptual,
+                RawMetadata = pageModel,
+                PageMetadata = pageMetadata,
+                ThemesRelativePathToOutputRoot = "_themes/",
+            };
+
+            return (model, metadata);
         }
     }
 }
