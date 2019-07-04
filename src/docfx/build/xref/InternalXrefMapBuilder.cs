@@ -129,17 +129,13 @@ namespace Microsoft.Docs.Build
                 => Regex.Replace(uid, @"\W", "_");
         }
 
-        private static (Error, (bool isRoot, string jsonPath, Dictionary<string, Lazy<JToken>> propertiesByUid)) AggregateXrefSpecProperties(string uid, List<(bool isRoot, string jsonPath, Dictionary<string, Lazy<JToken>> properties)> uidWithProperties)
+        private static (Error, (bool isRoot, SourceInfo source, Dictionary<string, Lazy<JToken>> propertiesByUid)) AggregateXrefSpecProperties(string uid, List<(bool isRoot, SourceInfo source, Dictionary<string, Lazy<JToken>> properties)> uidWithProperties)
         {
             if (uidWithProperties.Count > 1)
             {
-                return (Errors.UidConflict(uid), uidWithProperties.OrderBy(x => x.jsonPath).First());
+                return (Errors.UidConflict(uid), uidWithProperties.OrderBy(x => x.source).First());
             }
-            else if (uidWithProperties.Count == 1)
-            {
-                return (null, uidWithProperties.First());
-            }
-            throw new NotImplementedException();
+            return (null, uidWithProperties.First());
         }
 
         private static InternalXrefSpec AggregateXrefSpecs(Context context, string uid, InternalXrefSpec[] specsWithSameUid)

@@ -55,6 +55,8 @@
     <!-- CA1064: Implement standard exception constructors -->
     <Rule Id="CA1032" Action="None" />
     <Rule Id="CA1033" Action="Warning" />
+    <!-- CA1036: Override methods on comparable types -->
+    <Rule Id="CA1036" Action="None" />
     <Rule Id="CA1049" Action="Warning" />
     <!-- CA1051: Do not declare visible instance fields -->
     <Rule Id="CA1051" Action="None" />
