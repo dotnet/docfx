@@ -1102,9 +1102,11 @@ inputs:
 outputs:
   docs/f1/a.json:
   docs/f1/b.json:
+  docs/toc.json:
+  docs/f1/toc.json:
   .errors.log: |
-    ["error","missing-toc-head","The toc head name is missing","docs/TOC.yml",5,8]
-    ["error","missing-toc-head","The toc head name is missing","docs/f1/TOC.md",1,1]
+    ["warning","missing-toc-head","The toc head name is missing","docs/TOC.yml",5,8]
+    ["warning","missing-toc-head","The toc head name is missing","docs/f1/TOC.md",1,1]
 ---
 # Orphan file(not explicitly referenced in toc file)'s toc, only look up parent folder toc files
 inputs:
@@ -1181,8 +1183,9 @@ inputs:
     # Title
     ##
 outputs:
+  docs/toc.json:
   .errors.log: |
-    ["error","missing-toc-head","The toc head name is missing","docs/TOC.md",2,1]
+    ["warning","missing-toc-head","The toc head name is missing","docs/TOC.md",2,1]
 ---
 # Multiple leaf inlines in toc title
 inputs:
