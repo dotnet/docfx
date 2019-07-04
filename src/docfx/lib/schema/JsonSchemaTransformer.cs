@@ -27,11 +27,10 @@ namespace Microsoft.Docs.Build
             return (errors, transformedToken);
         }
 
-        public (List<Error> errors, Dictionary<string, (bool, Dictionary<string, Lazy<JToken>>)> properties) TransformXref(Document file, Context context, JToken token)
+        public (List<Error> errors, Dictionary<string, List<(bool isRoot, string jsonPath, Dictionary<string, Lazy<JToken>> propertiesByUid)>> properties) TransformXref(Document file, Context context, JToken token)
         {
             var errors = new List<Error>();
-            var xrefPropertiesGroupByUid = new Dictionary<string, (bool, Dictionary<string, Lazy<JToken>>)>();
-            var uidJsonPaths = new HashSet<string>();
+            var xrefPropertiesGroupByUid = new Dictionary<string, List<(bool, string, Dictionary<string, Lazy<JToken>>)>>();
 
             Traverse(_schema, token, (schema, node) =>
             {
@@ -44,30 +43,15 @@ namespace Microsoft.Docs.Build
                         return (default, node);
                     }
 
-                    if (uidJsonPaths.Add(uidValue.Path) && xrefPropertiesGroupByUid.ContainsKey(uid))
-                    {
-                        // TODO: should throw warning and take the first one order by json path
-                        errors.Add(Errors.UidConflict(uid));
-                        return (default, node);
-                    }
-
                     if (!xrefPropertiesGroupByUid.TryGetValue(uid, out _))
                     {
-                        xrefPropertiesGroupByUid[uid] = (obj.Parent == null, new Dictionary<string, Lazy<JToken>>());
+                        xrefPropertiesGroupByUid[uid] = new List<(bool, string, Dictionary<string, Lazy<JToken>>)> { (obj.Parent == null, obj.Path, BuildXrefPropertiesForUid(schema, obj)) };
+                    }
+                    else
+                    {
+                        xrefPropertiesGroupByUid[uid].Add((obj.Parent == null, obj.Path, BuildXrefPropertiesForUid(schema, obj)));
                     }
 
-                    foreach (var (key, value) in obj)
-                    {
-                        if (schema.XrefProperties.Contains(key))
-                        {
-                            var propertySchema = schema.Properties.TryGetValue(key, out var subSchema) ? subSchema : null;
-                            xrefPropertiesGroupByUid[uid].Item2[key] = new Lazy<JToken>(
-                            () =>
-                            {
-                                return Transform(file, context, propertySchema, value, errors);
-                            }, LazyThreadSafetyMode.PublicationOnly);
-                        }
-                    }
                     return (schema.XrefProperties, node);
                 }
 
@@ -75,6 +59,24 @@ namespace Microsoft.Docs.Build
             });
 
             return (errors, xrefPropertiesGroupByUid);
+
+            Dictionary<string, Lazy<JToken>> BuildXrefPropertiesForUid(JsonSchema schema, JObject obj)
+            {
+                var dict = new Dictionary<string, Lazy<JToken>>();
+                foreach (var (key, value) in obj)
+                {
+                    if (schema.XrefProperties.Contains(key))
+                    {
+                        var propertySchema = schema.Properties.TryGetValue(key, out var subSchema) ? subSchema : null;
+                        dict[key] = new Lazy<JToken>(
+                        () =>
+                        {
+                            return Transform(file, context, propertySchema, value, errors);
+                        }, LazyThreadSafetyMode.PublicationOnly);
+                    }
+                }
+                return dict;
+            }
         }
 
         private JToken Transform(Document file, Context context, JsonSchema schema, JToken token, List<Error> errors)

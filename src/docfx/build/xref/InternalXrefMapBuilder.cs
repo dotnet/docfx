@@ -111,7 +111,8 @@ namespace Microsoft.Docs.Build
 
             var specs = xrefPropertiesGroupByUid.Select(item =>
             {
-                var (isRoot, properties) = item.Value;
+                var (error, (isRoot, _, properties)) = AggregateXrefSpecProperties(item.Key, item.Value);
+                errors.AddIfNotNull(error);
                 var xref = new InternalXrefSpec
                 {
                     Uid = item.Key,
@@ -126,6 +127,19 @@ namespace Microsoft.Docs.Build
 
             string GetBookmarkFromUid(string uid)
                 => Regex.Replace(uid, @"\W", "_");
+        }
+
+        private static (Error, (bool isRoot, string jsonPath, Dictionary<string, Lazy<JToken>> propertiesByUid)) AggregateXrefSpecProperties(string uid, List<(bool isRoot, string jsonPath, Dictionary<string, Lazy<JToken>> properties)> uidWithProperties)
+        {
+            if (uidWithProperties.Count > 1)
+            {
+                return (Errors.UidConflict(uid), uidWithProperties.OrderBy(x => x.jsonPath).First());
+            }
+            else if (uidWithProperties.Count == 1)
+            {
+                return (null, uidWithProperties.First());
+            }
+            throw new NotImplementedException();
         }
 
         private static InternalXrefSpec AggregateXrefSpecs(Context context, string uid, InternalXrefSpec[] specsWithSameUid)

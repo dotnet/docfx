@@ -340,12 +340,19 @@ inputs:
       "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
       "uid": "a",
       "data": 
-      { 
+      {
         "uid": "a"
       }
     }
+  docs/b.json: | 
+    {
+      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
+      "xref": "a"
+    }
 outputs:
   docs/a.json:
+  docs/b.json: |
+    {"xref":{"uid":"a","href":"a.json"}}
   .errors.log: |
     ["warning","uid-conflict","The same Uid 'a' has been defined multiple times in the same file","docs/a.json"]
 ---
