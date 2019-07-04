@@ -204,7 +204,7 @@ namespace Microsoft.Docs.Build
         private static async Task<(List<Error> errors, JObject model, InputMetadata inputMetadata)>
             LoadSchemaDocument(Context context, List<Error> errors, JToken token, Document file)
         {
-            var schemaTemplate = context.TemplateEngine.GetJsonSchema(file.Mime);
+            var schemaTemplate = context.TemplateEngine.GetSchema(file.Mime);
 
             if (!(token is JObject obj))
             {
@@ -245,7 +245,7 @@ namespace Microsoft.Docs.Build
 
         private static object ApplyDataTemplate(Context context, Document file, JObject pageModel)
         {
-            return context.TemplateEngine.RunJintTransform($"{file.Mime}.json.js", pageModel);
+            return context.TemplateEngine.RunJint($"{file.Mime}.json.js", pageModel);
         }
 
         private static (object model, JObject metadata) ApplyPageTemplate(Context context, Document file, JObject pageMetadata, JObject pageModel, bool isConceptual)
@@ -275,7 +275,7 @@ namespace Microsoft.Docs.Build
         private static (TemplateModel model, JObject metadata) TransformToTemplateModel(Context context, string conceptual, JObject rawMetadata, string mime)
         {
             // TODO: run page transform based on mime
-            rawMetadata = context.TemplateEngine.RunJintTransform("Conceptual.mta.json.js", rawMetadata);
+            rawMetadata = context.TemplateEngine.RunJint("Conceptual.mta.json.js", rawMetadata);
             if (TemplateEngine.IsLandingData(mime))
             {
                 rawMetadata["_op_layout"] = "LandingPage";

@@ -47,7 +47,7 @@ namespace Microsoft.Docs.Build
             return mime == null || !_schemas.TryGetValue(mime, out var schemaTemplate) || schemaTemplate.Value.IsPage;
         }
 
-        public TemplateSchema GetJsonSchema(SourceInfo<string> schemaName)
+        public TemplateSchema GetSchema(SourceInfo<string> schemaName)
         {
             return !string.IsNullOrEmpty(schemaName) && _schemas.TryGetValue(schemaName, out var schemaTemplate)
                ? schemaTemplate.Value
@@ -73,9 +73,9 @@ namespace Microsoft.Docs.Build
             return _liquid.Render(layout, liquidModel);
         }
 
-        public string Render(string mime, JObject pageModel)
+        public string Render(string templateName, JObject pageModel)
         {
-            // TODO: run JINT + mustache
+            // TODO: run mustache
             throw new NotImplementedException();
         }
 
@@ -96,17 +96,12 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public string GetToken(string key)
-        {
-            return _global[key]?.ToString();
-        }
-
-        public JObject RunJintTransform(string scriptName, JObject model)
+        public JObject RunJint(string scriptName, JObject model, string methodName = "transform")
         {
             var scriptPath = Path.Combine(_templateDir, "ContentTemplate", scriptName);
             if (File.Exists(scriptPath))
             {
-                return JObject.Parse(((JObject)_js.Run(scriptPath, "transform", model)).Value<string>("content"));
+                return JObject.Parse(((JObject)_js.Run(scriptPath, methodName, model)).Value<string>("content"));
             }
             return model;
         }
@@ -114,6 +109,11 @@ namespace Microsoft.Docs.Build
         public static bool IsLandingData(string mime)
         {
             return mime != null && string.Equals(typeof(LandingData).Name, mime, StringComparison.OrdinalIgnoreCase);
+        }
+
+        public string GetToken(string key)
+        {
+            return _global[key]?.ToString();
         }
 
         public static TemplateEngine Create(Docset docset)
@@ -153,11 +153,6 @@ namespace Microsoft.Docs.Build
         {
             var path = Path.Combine(contentTemplateDir, "token.json");
             return File.Exists(path) ? JObject.Parse(File.ReadAllText(path)) : new JObject();
-        }
-
-        private string RunMustache(string scriptPath, JObject model)
-        {
-            throw new NotImplementedException();
         }
 
         private static IReadOnlyDictionary<string, Lazy<TemplateSchema>>
