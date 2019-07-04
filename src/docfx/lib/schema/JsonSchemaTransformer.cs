@@ -41,44 +41,49 @@ namespace Microsoft.Docs.Build
 
             JToken TransformXref(JsonSchema schema, JToken node)
             {
-                if (node is JObject obj)
+                switch (node)
                 {
-                    var uid = obj.TryGetValue("uid", out var uidValue) && uidValue is JValue uidJValue && uidJValue.Value is string uidStr ? uidStr : null;
+                    case JObject obj:
+                        var uid = obj.TryGetValue("uid", out var uidValue) && uidValue is JValue uidJValue && uidJValue.Value is string uidStr ? uidStr : null;
 
-                    if (uid == null)
-                    {
-                        return TraverseObject(schema, obj, TransformXref);
-                    }
-
-                    if (uidJsonPaths.Add(uidValue.Path) && xrefPropertiesGroupByUid.ContainsKey(uid))
-                    {
-                        // TODO: should throw warning and take the first one order by json path
-                        errors.Add(Errors.UidConflict(uid));
-                        return TraverseObject(schema, obj, TransformXref);
-                    }
-
-                    if (!xrefPropertiesGroupByUid.TryGetValue(uid, out _))
-                    {
-                        xrefPropertiesGroupByUid[uid] = (obj.Parent == null, new Dictionary<string, Lazy<JToken>>());
-                    }
-
-                    foreach (var (key, value) in obj)
-                    {
-                        var propertySchema = schema.Properties.TryGetValue(key, out var subSchema) ? subSchema : null;
-                        if (!schema.XrefProperties.Contains(key))
+                        if (uid == null)
                         {
-                            return Traverse(propertySchema, value, TransformXref);
+                            return TraverseObject(schema, obj, TransformXref);
                         }
 
-                        xrefPropertiesGroupByUid[uid].Item2[key] = new Lazy<JToken>(
-                            () =>
+                        if (uidJsonPaths.Add(uidValue.Path) && xrefPropertiesGroupByUid.ContainsKey(uid))
+                        {
+                            // TODO: should throw warning and take the first one order by json path
+                            errors.Add(Errors.UidConflict(uid));
+                            return TraverseObject(schema, obj, TransformXref);
+                        }
+
+                        if (!xrefPropertiesGroupByUid.TryGetValue(uid, out _))
+                        {
+                            xrefPropertiesGroupByUid[uid] = (obj.Parent == null, new Dictionary<string, Lazy<JToken>>());
+                        }
+
+                        foreach (var (key, value) in obj)
+                        {
+                            var propertySchema = schema.Properties.TryGetValue(key, out var subSchema) ? subSchema : null;
+                            if (!schema.XrefProperties.Contains(key))
                             {
-                                return TransformToken(file, context, propertySchema, value, errors);
-                            }, LazyThreadSafetyMode.PublicationOnly);
-                    }
+                                return Traverse(propertySchema, value, TransformXref);
+                            }
+
+                            xrefPropertiesGroupByUid[uid].Item2[key] = new Lazy<JToken>(
+                                () =>
+                                {
+                                    return TransformToken(file, context, propertySchema, value, errors);
+                                }, LazyThreadSafetyMode.PublicationOnly);
+                        }
+                        break;
+
+                    case JArray array:
+                        return TraverseArray(schema, array, TransformXref);
                 }
 
-                return Traverse(schema, node, TransformXref);
+                return node;
             }
         }
 
@@ -90,6 +95,7 @@ namespace Microsoft.Docs.Build
             {
                 switch (node)
                 {
+                    // transform array and object is not supported yet
                     case JArray array:
                         return TraverseArray(subSchema, array, TransformToken);
 
