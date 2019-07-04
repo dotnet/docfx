@@ -14,12 +14,13 @@ namespace Microsoft.Docs.Build
     {
         private readonly JsonSchema _schema;
         private readonly JsonSchemaDefinition _definitions;
-        private readonly ConcurrentDictionary<Document, Dictionary<JToken, Lazy<JToken>>> _properties;
+        private readonly ConcurrentDictionary<Document, Dictionary<string, Lazy<JToken>>> _properties;
 
         public JsonSchemaTransformer(JsonSchema schema)
         {
             _schema = schema;
             _definitions = new JsonSchemaDefinition(schema);
+            _properties = new ConcurrentDictionary<Document, Dictionary<string, Lazy<JToken>>>();
         }
 
         public (List<Error> errors, JToken token) TransformContent(Document file, Context context, JToken token)
@@ -34,6 +35,7 @@ namespace Microsoft.Docs.Build
             var errors = new List<Error>();
             var xrefPropertiesGroupByUid = new Dictionary<string, (bool, Dictionary<string, Lazy<JToken>>)>();
             var uidJsonPaths = new HashSet<string>();
+            var cachedProperties = _properties.GetOrAdd(file, new Dictionary<string, Lazy<JToken>>());
 
             TransformXref(_schema, token);
 
@@ -71,11 +73,16 @@ namespace Microsoft.Docs.Build
                                 return TransformXref(propertySchema, propertyValue);
                             }
 
-                            xrefPropertiesGroupByUid[uid].Item2[propertyKey] = new Lazy<JToken>(
+                            if (!cachedProperties.TryGetValue(propertyValue.Path, out var lazyValue))
+                            {
+                                cachedProperties[propertyValue.Path] = lazyValue = new Lazy<JToken>(
                                 () =>
                                 {
                                     return TransformToken(file, context, propertySchema, propertyValue, errors);
                                 }, LazyThreadSafetyMode.PublicationOnly);
+                            }
+
+                            xrefPropertiesGroupByUid[uid].Item2[propertyKey] = lazyValue;
 
                             return propertyValue;
                         });
