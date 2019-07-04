@@ -377,3 +377,47 @@ outputs:
         }
       }
     }
+---
+# Orphan file, with multiple toc of same site path, look up by filepath
+os: windows
+commands:
+  - build --legacy # only legacy has toc dependency for orphan file
+inputs:
+  docfx.yml: |
+    template: {APP_BASE_PATH}data/template
+    monikerRange:
+      'docs/v1/**': 'netcore-1.0'
+      'docs/v2/**': 'netcore-2.0'
+    baseUrl: https://docs.com/docs
+    routes:
+      docs/: .
+      docs/v1/: .
+      docs/v2/: .
+    monikerDefinition: monikerDefinition.json
+  docs/v1/TOC.md:
+  docs/v1/f1/a.md:
+  docs/v2/TOC.md:
+  docs/v2/f1/a.md:
+  monikerDefinition.json: |
+    {
+      "monikers": [
+        { "moniker_name": "netcore-1.0", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-2.0", "product_name": ".NET Core" },
+      ]
+    }
+outputs:
+  docs/136a42ac/toc.json:
+  docs/136a42ac/toc.mta.json:
+  docs/136a42ac/f1/a.mta.json:
+  docs/136a42ac/f1/a.raw.page.json: |
+    {"rawMetadata":{"_tocRel": "../toc.json"}}
+  docs/4667fedf/toc.json:
+  docs/4667fedf/toc.mta.json:
+  docs/4667fedf/f1/a.mta.json:
+  docs/4667fedf/f1/a.raw.page.json: |
+    {"rawMetadata":{"_tocRel": "../toc.json"}}
+  docs/.manifest.json:
+  docs/filemap.json:
+  full-dependent-list.txt: |
+    {"dependency_type":"metadata","from_file_path":"*docs\\v1\\f1\\a.md*","to_file_path":"*docs\\v1\\TOC.md*","version":"netcore-1.0"}
+    {"dependency_type":"metadata","from_file_path":"*docs\\v2\\f1\\a.md*","to_file_path":"*docs\\v2\\TOC.md*","version":"netcore-2.0"}
