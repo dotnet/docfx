@@ -310,6 +310,7 @@ namespace Microsoft.Docs.Build
             }
 
             var (httpConfig, secrets) = GetGitCommandLineConfig(url, config);
+
             try
             {
                 ExecuteNonQuery(path, $"{httpConfig} fetch --tags --progress --update-head-ok {pruneSwitch} {depth} \"{url}\" {refspecs}", secrets);
