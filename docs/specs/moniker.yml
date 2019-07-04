@@ -400,14 +400,14 @@ inputs:
   docs/v1/a.md: |
     ---
     uid: a
-    title: netcore-1.1
+    title: netcore
     monikerRange: '> netcore-1.0'
     ---
     Moniker: netcore-1.1
   docs/v2/a.md: |
     ---
     uid: a
-    title: netcore-2.0
+    title: netcore
     monikerRange: '<= netcore-2.0'
     ---
     Moniker: netcore-2.0
@@ -427,7 +427,7 @@ inputs:
 outputs:
   docs/b.json: |
     {
-      "conceptual": "<p>Link to <a href=\"a?view=netcore-1.1\">netcore-1.1</a></p>",
+      "conceptual": "<p>Link to <a href=\"a?view=netcore-1.1\">netcore</a></p>",
       "!monikers": null
     }
   docs/a.json: |
@@ -446,8 +446,8 @@ outputs:
       "monikers": ["netcore-2.0"]
     }
 ---
-# Define same uid with multiple moniker ranges, 
-# reference to it without moniker in the same docset, shoule take the latest one
+# Define same uid with multiple moniker ranges in .md,
+# title should be the same
 inputs:
   docfx.yml: |
     monikerRange:
@@ -471,6 +471,46 @@ inputs:
     monikerRange: '<= netcore-2.0'
     ---
     Moniker: netcore-2.0
+  monikerDefinition.json: |
+    {
+      "monikers": [
+        { "moniker_name": "netcore-1.0", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-1.1", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-2.0", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-2.1", "product_name": ".NET Core" }
+      ]
+    }
+outputs:
+  218c13d0/docs/a.json:
+  4667fedf/docs/a.json:
+  .errors.log: |
+    ["warning","xref-property-conflict","UID 'a' is defined with different names: 'netcore-1.1', 'netcore-2.0'"]
+---
+# Define same uid with multiple moniker ranges with same name, 
+# reference to it without moniker in the same docset, anyone can be taken
+inputs:
+  docfx.yml: |
+    monikerRange:
+      'docs/v1/**': '< netcore-2.0'
+      'docs/v2/**': '>= netcore-2.0'
+    routes:
+      docs/v1/: docs/
+      docs/v2/: docs/
+    monikerDefinition: monikerDefinition.json
+  docs/v1/a.md: |
+    ---
+    uid: a
+    title: netcore
+    monikerRange: '> netcore-1.0'
+    ---
+    Moniker: netcore-1.1
+  docs/v2/a.md: |
+    ---
+    uid: a
+    title: netcore
+    monikerRange: '<= netcore-2.0'
+    ---
+    Moniker: netcore-2.0
   docs/a.md: |
     No version
   docs/b.md: |
@@ -487,7 +527,7 @@ inputs:
 outputs:
   docs/b.json: |
     {
-      "conceptual": "<p>Link to <a href=\"a\">netcore-2.0</a></p>",
+      "conceptual": "<p>Link to <a href=\"a\">netcore</a></p>",
       "!monikers": null
     }
   docs/a.json: |
@@ -541,14 +581,15 @@ inputs:
     }
 outputs:
   docs/c.json: |
-    {"conceptual":"<p>Link to @a</p>"}
+    {"conceptual":"<p>Link to <a href=\"a\" data-linktype=\"relative-path\">netcore-1.1, netcore-2.0</a></p>"}
   .errors.log: |
-    ["error","moniker-overlapping","Two or more documents have defined overlapping moniker: 'netcore-2.0'"]
+    ["warning","moniker-overlapping","Two or more documents have defined overlapping moniker: 'netcore-2.0'"]
+    ["warning","xref-property-conflict","UID 'a' is defined with different names: 'netcore-1.1, netcore-2.0', 'netcore-2.0, netcore-2.1'"]
     ["error","publish-url-conflict","Two or more files of the same version('netcore-2.0') publish to the same url '/docs/a': 'docs/v1/a.md', 'docs/v2/a.md'"]
   xrefmap.json: | 
-    {"!references":null}
+    {"references":[{"uid":"a","name":"netcore-1.1, netcore-2.0"}]}
 ---
-# Define uid with moniker range, refer to it with invalid moniker, should fall back to the one with latest moniker
+# Define uid with moniker range, refer to it with invalid moniker, could fall back to anyone
 inputs:
   docfx.yml: |
     monikerRange:
@@ -561,14 +602,14 @@ inputs:
   docs/v1/a.md: |
     ---
     uid: a
-    title: netcore-1.1
+    title: netcore
     monikerRange: '> netcore-1.0'
     ---
     Moniker: netcore-1.1
   docs/v2/a.md: |
     ---
     uid: a
-    title: netcore-2.0
+    title: netcore
     monikerRange: '<= netcore-2.0'
     ---
     Moniker: netcore-2.0
@@ -586,7 +627,7 @@ inputs:
 outputs:
   docs/b.json: |
     {
-      "conceptual": "<p>Link <a href=\"a?view=netcore-1.0\">netcore-2.0</a></p>",
+      "conceptual": "<p>Link <a href=\"a?view=netcore-1.0\">netcore</a></p>",
       "!monikers": null
     }
   218c13d0/docs/a.json: |
@@ -717,7 +758,7 @@ outputs:
   docs/b.json:
   docs/c.json: |
     {
-      "conceptual": "<p>Link to @a</p>",
+      "conceptual": "<p>Link to <a href=\"a\" data-linktype=\"relative-path\">no version</a></p>",
       "!monikers": null
     }
   docs/a.json: |
@@ -736,9 +777,10 @@ outputs:
       "monikers": ["netcore-2.0"]
     }
   xrefmap.json: | 
-    {"!references":null}
+    {"references":[{"uid":"a","name":"no version"}]}
   .errors.log: |
-    ["error","uid-conflict","UID 'a' is defined in more than one file: 'docs/a.md', 'docs/b.md'"]
+    ["warning","uid-conflict","UID 'a' is defined in more than one file: 'docs/a.md', 'docs/b.md'"]
+    ["warning","xref-property-conflict","UID 'a' is defined with different names: 'b with no version', 'netcore-1.1', 'netcore-2.0', 'no version'"]
 ---
 # Build toc with monikers info
 inputs:

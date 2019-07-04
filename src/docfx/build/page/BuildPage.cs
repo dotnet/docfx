@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -193,13 +192,13 @@ namespace Microsoft.Docs.Build
 
             context.BookmarkValidator.AddBookmarks(file, bookmarks);
 
-            var model = new JObject
+            var model = JsonUtility.ToJObject(new ConceptualModel
             {
-                ["conceptual"] = HtmlUtility.HtmlPostProcess(htmlDom, file.Docset.Culture),
-                ["wordCount"] = wordCount,
-                ["rawTitle"] = rawTitle,
-                ["title"] = title,
-            };
+                Conceptual = HtmlUtility.HtmlPostProcess(htmlDom, file.Docset.Culture),
+                WordCount = wordCount,
+                RawTitle = rawTitle,
+                Title = title,
+            });
 
             return (errors, model);
         }
@@ -224,16 +223,29 @@ namespace Microsoft.Docs.Build
 
         private static async Task<(List<Error> errors, JObject model)> LoadSchemaDocument(Context context, JToken token, Document file)
         {
-            var schema = context.TemplateEngine.GetSchema(file.Mime);
+            var schemaTemplate = context.TemplateEngine.GetSchema(file.Mime);
+            if (schemaTemplate is null)
+            {
+                throw Errors.SchemaNotFound(file.Mime).ToException();
+            }
+
+            if (!(token is JObject obj))
+            {
+                throw Errors.UnexpectedType(new SourceInfo(file.FilePath, 1, 1), JTokenType.Object, token.Type).ToException();
+            }
+
             var errors = new List<Error>();
 
-            var schemaValidationErrors = schema.JsonSchemaValidator.Validate(token);
+            // validate via json schema
+            var schemaValidationErrors = schemaTemplate.JsonSchemaValidator.Validate(obj);
             errors.AddRange(schemaValidationErrors);
 
-            var (schemaTransformError, transformedToken) = schema.JsonSchemaTransformer.TransformContent(file, context, token);
+            // transform via json schema
+            var (schemaTransformError, transformedToken) = schemaTemplate.JsonSchemaTransformer.TransformContent(file, context, obj);
             errors.AddRange(schemaTransformError);
 
-            if (!(transformedToken is JObject model))
+            var model = (JObject)transformedToken;
+            if (file.Docset.Legacy && TemplateEngine.IsLandingData(file.Mime))
             {
                 throw Errors.UnexpectedType(new SourceInfo(file.FilePath, 1, 1), JTokenType.Object, token.Type).ToException();
             }
@@ -243,8 +255,11 @@ namespace Microsoft.Docs.Build
                 var content = model.ToObject<LandingData>();
                 var conceptual = HtmlUtility.LoadHtml(await RazorTemplate.Render(file.Mime, content)).HtmlPostProcess(file.Docset.Culture);
 
-                model["rawTitle"] = $"<h1>{model?.Value<string>("title")}</h1>";
-                model["conceptual"] = conceptual;
+                model = JsonUtility.ToJObject(new ConceptualModel
+                {
+                    Conceptual = conceptual,
+                    RawTitle = $"<h1>{obj?.Value<string>("title")}</h1>",
+                });
             }
 
             return (errors, model);

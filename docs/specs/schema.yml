@@ -329,3 +329,14 @@ inputs:
 outputs:
   .errors.log: |
     ["error","json-syntax-error","Invalid JavaScript property identifier character: }.","docs/a.json",1,2]
+---
+# Throw error when content is not an object
+inputs:
+  docfx.yml:
+  _themes/ContentTemplate/schemas/test.schema.json: '{}'
+  a.yml: |
+    #YamlMime:test
+    - array
+outputs:
+  .errors.log: |
+    ["error","unexpected-type","Expect type 'Object' but got 'Array'","a.yml",1,1]

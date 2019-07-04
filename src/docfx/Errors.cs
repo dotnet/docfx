@@ -181,7 +181,7 @@ namespace Microsoft.Docs.Build
         public static Error GitCloneFailed(string url, IEnumerable<string> branches)
         {
             var message = $"Failure to clone the repository `{url} ({Join(branches)})`."
-                      + "This could be caused by an incorrect repository URL, please verify the URL on the Docs Portal (https://ops.docs.com)."
+                      + "This could be caused by an incorrect repository URL, please verify the URL on the Docs Portal (https://ops.microsoft.com)."
                       + "This could also be caused by not having the proper permission the repository, "
                       + "please confirm that the GitHub group/team that triggered the build has access to the repository.";
             return new Error(ErrorLevel.Error, "git-clone-failed", message);
@@ -409,6 +409,13 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Warning, "array-length-invalid", $"Array '{propName}' length should be {criteria}", source);
 
         /// <summary>
+        /// Object property count not within min and max.
+        /// </summary>
+        /// Behavior: ✔️ Message: ❌
+        public static Error PropertyCountInvalid(SourceInfo source, string propName, string criteria)
+            => new Error(ErrorLevel.Warning, "property-count-invalid", $"Object '{propName}' property count should be {criteria}", source);
+
+        /// <summary>
         /// String length not within min and max.
         /// </summary>
         /// Behavior: ✔️ Message: ❌
@@ -511,15 +518,26 @@ namespace Microsoft.Docs.Build
         /// Examples:
         ///   - both files with no monikers defined same uid
         /// </summary>
-        /// Behavior: ❌ Message: ✔️
+        /// Behavior: ✔️ Message: ✔️
         public static Error UidConflict(string uid, IEnumerable<string> conflicts = null)
         {
             if (conflicts is null)
             {
-                return new Error(ErrorLevel.Error, "uid-conflict", $"The same Uid '{uid}' has been defined multiple times in the same file");
+                return new Error(ErrorLevel.Warning, "uid-conflict", $"The same Uid '{uid}' has been defined multiple times in the same file");
             }
 
-            return new Error(ErrorLevel.Error, "uid-conflict", $"UID '{uid}' is defined in more than one file: {Join(conflicts)}");
+            return new Error(ErrorLevel.Warning, "uid-conflict", $"UID '{uid}' is defined in more than one file: {Join(conflicts)}");
+        }
+
+        /// <summary>
+        /// Same uid defined within different versions with the different name.
+        /// Examples:
+        ///   - Same uid defined in multiple .md files with different versions have different titles.
+        /// </summary>
+        /// Behavior: ✔️ Message: ❌
+        public static Error UidPropertyConflict(string uid, string propertyName, IEnumerable<string> conflicts)
+        {
+            return new Error(ErrorLevel.Warning, "xref-property-conflict", $"UID '{uid}' is defined with different {propertyName}s: {Join(conflicts)}");
         }
 
         /// <summary>
@@ -528,7 +546,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         /// Behavior: ✔️ Message: ❌
         public static Error MonikerOverlapping(IEnumerable<string> overlappingmonikers)
-            => new Error(ErrorLevel.Error, "moniker-overlapping", $"Two or more documents have defined overlapping moniker: {Join(overlappingmonikers)}");
+            => new Error(ErrorLevel.Warning, "moniker-overlapping", $"Two or more documents have defined overlapping moniker: {Join(overlappingmonikers)}");
 
         /// <summary>
         /// Failed to parse moniker string.
