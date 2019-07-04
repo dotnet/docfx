@@ -224,7 +224,7 @@ namespace Microsoft.Docs.Build
             {
                 // fallback to master
                 if (sourceBranch != "master" &&
-                    !GitUtility.RemoteBranchExists(sourceRemote, sourceBranch))
+                    !GitUtility.RemoteBranchExists(sourceRemote, sourceBranch, config))
                 {
                     sourceBranch = "master";
                 }

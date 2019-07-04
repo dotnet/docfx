@@ -137,7 +137,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Check if remote branch exists
         /// </summary>
-        public static bool RemoteBranchExists(string remote, string branch)
+        public static bool RemoteBranchExists(string remote, string branch, Config config)
         {
             try
             {
@@ -146,7 +146,11 @@ namespace Microsoft.Docs.Build
                     remote = GitRemoteProxy(remote);
                 }
 
-                return Execute(".", $"ls-remote --heads \"{remote}\" {branch}").Split('\n', StringSplitOptions.RemoveEmptyEntries).Any();
+                var (httpConfig, secrets) = GetGitCommandLineConfig(remote, config);
+
+                return Execute(".", $"{httpConfig} ls-remote --heads \"{remote}\" {branch}", secrets: secrets)
+                    .Split('\n', StringSplitOptions.RemoveEmptyEntries)
+                    .Any();
             }
             catch (InvalidOperationException)
             {
