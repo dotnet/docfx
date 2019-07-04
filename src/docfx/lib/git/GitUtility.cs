@@ -2,12 +2,12 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Runtime.InteropServices;
 using System.Text;
 
@@ -361,9 +361,19 @@ namespace Microsoft.Docs.Build
                 from http in config.Http
                 where url.StartsWith(http.Key)
                 from header in http.Value.Headers
-                select (cmd: $"-c http.{http.Key}.extraheader=\"{header.Key}: {header.Value}\"", secret: header.Value)).ToArray();
+                select (cmd: $"-c http.{http.Key}.extraheader=\"{header.Key}: {header.Value}\"", secret: GetSecretFromHeader(header))).ToArray();
 
             return (string.Join(' ', gitConfigs.Select(item => item.cmd)), gitConfigs.Select(item => item.secret).ToArray());
+
+            string GetSecretFromHeader(KeyValuePair<string, string> header)
+            {
+                if (header.Key.Equals("Authorization", StringComparison.OrdinalIgnoreCase) &&
+                    AuthenticationHeaderValue.TryParse(header.Value, out var value))
+                {
+                    return value.Parameter;
+                }
+                return header.Value;
+            }
         }
     }
 }
