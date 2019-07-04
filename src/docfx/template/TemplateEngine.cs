@@ -96,14 +96,29 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public JObject RunJint(string scriptName, JObject model, string methodName = "transform")
+        public JObject RunJint(string scriptName, JObject model, string methodName = "transform", bool tryParseFromContent = true)
         {
             var scriptPath = Path.Combine(_templateDir, "ContentTemplate", scriptName);
-            if (File.Exists(scriptPath))
+            if (!File.Exists(scriptPath))
             {
-                return JObject.Parse(((JObject)_js.Run(scriptPath, methodName, model)).Value<string>("content"));
+                return model;
             }
-            return model;
+
+            var result = (JObject)_js.Run(scriptPath, methodName, model);
+            if (tryParseFromContent
+                && result.TryGetValue<JValue>("content", out var value)
+                && value.Value is string content)
+            {
+                try
+                {
+                    return JObject.Parse(content);
+                }
+                catch
+                {
+                    return result;
+                }
+            }
+            return result;
         }
 
         public static bool IsLandingData(string mime)
