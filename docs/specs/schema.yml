@@ -319,7 +319,7 @@ outputs:
   .errors.log: |
     ["error","json-syntax-error","Invalid JavaScript property identifier character: }.","docs/a.json",1,2]
 ---
-# Run data-transform in legacy mode
+# Run data-transform if provided, by default return {"content": "serialized json"}
 inputs:
   docfx.yml:
   a.yml: |

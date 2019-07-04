@@ -245,7 +245,7 @@ namespace Microsoft.Docs.Build
 
         private static object ApplyDataTemplate(Context context, Document file, JObject pageModel)
         {
-            return context.TemplateEngine.TransformData(file, pageModel);
+            return context.TemplateEngine.TransformData(file.Mime, pageModel);
         }
 
         private static (object model, JObject metadata) ApplyPageTemplate(Context context, Document file, JObject pageMetadata, JObject pageModel, bool isConceptual)

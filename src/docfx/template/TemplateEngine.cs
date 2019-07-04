@@ -69,7 +69,7 @@ namespace Microsoft.Docs.Build
             return _liquid.Render(layout, liquidModel);
         }
 
-        public string RenderMustache(string mime, JObject pageModel)
+        public string Render(string mime, JObject pageModel)
         {
             // TODO: run JINT + mustache
             throw new NotImplementedException();
@@ -117,11 +117,9 @@ namespace Microsoft.Docs.Build
         public JObject TransformTocMetadata(object model)
             => RunJintTransform("toc.json.js", JsonUtility.ToJObject(model));
 
-        public JObject TransformData(Document file, JObject pageModel)
+        public JObject TransformData(string mime, JObject pageModel)
         {
-            Debug.Assert(file.IsData);
-
-            if (_schemas.TryGetValue(file.Mime, out var templateSchema) && templateSchema.Value.HasDataTransformJs)
+            if (_schemas.TryGetValue(mime, out var templateSchema) && templateSchema.Value.HasDataTransformJs)
             {
                 return RunJintTransform(templateSchema.Value.DataTransformJsPath, pageModel);
             }
@@ -129,14 +127,7 @@ namespace Microsoft.Docs.Build
         }
 
         public static bool IsLandingData(string mime)
-        {
-            if (mime != null)
-            {
-                return string.Equals(typeof(LandingData).Name, mime, StringComparison.OrdinalIgnoreCase);
-            }
-
-            return false;
-        }
+            => mime != null && string.Equals(typeof(LandingData).Name, mime, StringComparison.OrdinalIgnoreCase);
 
         public static TemplateEngine Create(Docset docset)
         {
@@ -178,7 +169,7 @@ namespace Microsoft.Docs.Build
             return File.Exists(path) ? JObject.Parse(File.ReadAllText(path)) : new JObject();
         }
 
-        private JObject RunJintTransform(string scriptPath, JObject model)
+        private JObject RunJintTransform(string scriptPath, JObject model, bool tryDeserializeFromContent = true)
         {
             return JObject.Parse(((JObject)_js.Run(scriptPath, "transform", model)).Value<string>("content"));
         }
