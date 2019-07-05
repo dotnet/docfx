@@ -54,7 +54,7 @@ namespace Microsoft.Docs.Build
 
         public int CompareTo(SourceInfo other)
         {
-            var result = PathUtility.PathComparer..Compare(File, other.File);
+            var result = PathUtility.PathComparer.Compare(File, other.File);
             if (result == 0)
                 result = Line - other.Line;
             if (result == 0)
