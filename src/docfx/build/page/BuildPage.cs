@@ -1,10 +1,12 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -19,11 +21,11 @@ namespace Microsoft.Docs.Build
             var (generateErrors, outputMetadata) = await GenerateOutputMetadata(context, file, inputMetadata);
             errors.AddRange(generateErrors);
 
-            var outputPath = file.GetOutputPath(outputMetadata.Monikers, file.Docset.SiteBasePath, !file.IsData);
+            var outputPath = file.GetOutputPath(outputMetadata.Monikers, file.Docset.SiteBasePath, file.IsPage);
 
             object output = null;
             JObject metadata = null;
-            if (!file.IsData)
+            if (file.IsPage)
             {
                 var mergedMetadata = new JObject();
                 JsonUtility.Merge(mergedMetadata, inputMetadata.RawJObject);
@@ -38,8 +40,7 @@ namespace Microsoft.Docs.Build
             }
             else
             {
-                // todo: support data page template
-                output = pageModel;
+                output = context.TemplateEngine.RunJint($"{file.Mime}.json.js", pageModel);
                 metadata = null;
             }
 
@@ -171,13 +172,13 @@ namespace Microsoft.Docs.Build
             var (metadataErrors, inputMetadata) = context.MetadataProvider.GetMetadata(file);
             errors.AddRange(metadataErrors);
 
-            var pageModel = new JObject
+            var pageModel = JsonUtility.ToJObject(new ConceptualModel
             {
-                ["conceptual"] = HtmlUtility.HtmlPostProcess(htmlDom, file.Docset.Culture),
-                ["wordCount"] = wordCount,
-                ["rawTitle"] = rawTitle,
-                ["title"] = inputMetadata.Title ?? title,
-            };
+                Conceptual = HtmlUtility.HtmlPostProcess(htmlDom, file.Docset.Culture),
+                WordCount = wordCount,
+                RawTitle = rawTitle,
+                Title = inputMetadata.Title ?? title,
+            });
 
             context.BookmarkValidator.AddBookmarks(file, bookmarks);
 
@@ -203,28 +204,25 @@ namespace Microsoft.Docs.Build
         private static async Task<(List<Error> errors, JObject model, InputMetadata inputMetadata)>
             LoadSchemaDocument(Context context, List<Error> errors, JToken token, Document file)
         {
-            var obj = token as JObject;
+            var schemaTemplate = context.TemplateEngine.GetSchema(file.Mime);
 
-            var schemaTemplate = context.TemplateEngine.GetJsonSchema(file.Mime);
-            if (schemaTemplate is null)
+            if (!(token is JObject obj))
             {
-                throw Errors.SchemaNotFound(file.Mime).ToException();
+                throw Errors.UnexpectedType(new SourceInfo(file.FilePath, 1, 1), JTokenType.Object, token.Type).ToException();
             }
 
             // validate via json schema
-            var schemaValidationErrors = schemaTemplate.JsonSchemaValidator.Validate(token);
+            var schemaValidationErrors = schemaTemplate.JsonSchemaValidator.Validate(obj);
             errors.AddRange(schemaValidationErrors);
 
             // transform via json schema
-            var (schemaTransformError, transformedToken) = schemaTemplate.JsonSchemaTransformer.TransformContent(file, context, token);
+            var (schemaTransformError, transformedToken) = schemaTemplate.JsonSchemaTransformer.TransformContent(file, context, obj);
             errors.AddRange(schemaTransformError);
 
             var (metaErrors, inputMetadata) = context.MetadataProvider.GetMetadata(file);
             errors.AddRange(metaErrors);
 
-            var pageMetadata = new OutputMetadata();
-            var pageModel = transformedToken;
-
+            var pageModel = (JObject)transformedToken;
             if (file.Docset.Legacy && TemplateEngine.IsLandingData(file.Mime))
             {
                 // TODO: remove schema validation in ToObject
@@ -234,16 +232,15 @@ namespace Microsoft.Docs.Build
                 var landingData = (LandingData)content;
                 JsonUtility.Merge(inputMetadata.RawJObject, landingData.ExtensionData);
 
-                pageModel = new JObject()
+                pageModel = JsonUtility.ToJObject(new ConceptualModel
                 {
-                    ["conceptual"] = HtmlUtility.LoadHtml(await RazorTemplate.Render(file.Mime, content)).HtmlPostProcess(file.Docset.Culture),
-                };
+                    Conceptual = HtmlUtility.LoadHtml(await RazorTemplate.Render(file.Mime, content)).HtmlPostProcess(file.Docset.Culture),
+                    Title = inputMetadata.Title ?? obj?.Value<string>("title"),
+                    RawTitle = $"<h1>{obj?.Value<string>("title")}</h1>",
+                });
             }
 
-            pageModel["title"] = inputMetadata.Title ?? obj?.Value<string>("title");
-            pageModel["rawTitle"] = file.Docset.Legacy ? $"<h1>{obj?.Value<string>("title")}</h1>" : null;
-
-            return (errors, pageModel as JObject, inputMetadata);
+            return (errors, pageModel, inputMetadata);
         }
 
         private static (object model, JObject metadata) ApplyPageTemplate(Context context, Document file, JObject pageMetadata, JObject pageModel, bool isConceptual)
@@ -253,21 +250,48 @@ namespace Microsoft.Docs.Build
 
             if (!file.Docset.Config.Output.Json)
             {
-                return (context.TemplateEngine.Render(conceptual, file, processedMetadata, file.Mime), null);
+                return (context.TemplateEngine.RunLiquid(conceptual, file, processedMetadata), null);
             }
 
             if (file.Docset.Legacy)
             {
                 if (!isConceptual)
                 {
-                    // run sdp JINT and mustache to generate html
-                    // conceptual = context.TemplateEngine.Render(file.Mime, pageModel);
+                    // TODO: run sdp JINT and mustache to generate html
+                    // whether input needs metadata?
                 }
 
-                return context.TemplateEngine.TransformToTemplateModel(conceptual, processedMetadata, file.Mime);
+                return TransformToTemplateModel(context, conceptual, processedMetadata, file.Mime);
             }
 
             return (pageModel, processedMetadata);
+        }
+
+        private static (TemplateModel model, JObject metadata) TransformToTemplateModel(Context context, string conceptual, JObject pageModel, string mime)
+        {
+            // TODO: run page transform based on mime
+            pageModel = context.TemplateEngine.RunJint("Conceptual.mta.json.js", pageModel);
+            if (TemplateEngine.IsLandingData(mime))
+            {
+                pageModel["_op_layout"] = "LandingPage";
+                pageModel["layout"] = "LandingPage";
+                pageModel["page_type"] = "landingdata";
+
+                pageModel.Remove("_op_gitContributorInformation");
+                pageModel.Remove("_op_allContributorsStr");
+            }
+            var metadata = TemplateEngine.CreateMetadata(pageModel);
+            var pageMetadata = HtmlUtility.CreateHtmlMetaTags(metadata, context.TemplateEngine.HtmlMetaConfigs);
+
+            var model = new TemplateModel
+            {
+                Content = conceptual,
+                RawMetadata = pageModel,
+                PageMetadata = pageMetadata,
+                ThemesRelativePathToOutputRoot = "_themes/",
+            };
+
+            return (model, metadata);
         }
     }
 }

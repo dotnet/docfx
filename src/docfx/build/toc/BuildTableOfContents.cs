@@ -18,7 +18,7 @@ namespace Microsoft.Docs.Build
             var (errors, model, _, _) = context.Cache.LoadTocModel(context, file);
 
             // enable pdf
-            var outputPath = file.GetOutputPath(model.Metadata.Monikers, file.Docset.SiteBasePath);
+            var outputPath = file.GetOutputPath(model.Metadata.Monikers, file.Docset.SiteBasePath, isPage: false);
 
             if (file.Docset.Config.Output.Pdf)
             {
@@ -42,7 +42,7 @@ namespace Microsoft.Docs.Build
             {
                 if (file.Docset.Legacy)
                 {
-                    var output = context.TemplateEngine.TransformTocMetadata(JsonUtility.ToJObject(model));
+                    var output = context.TemplateEngine.RunJint("toc.json.js", JsonUtility.ToJObject(model));
                     context.Output.WriteJson(output, outputPath);
                     context.Output.WriteJson(model.Metadata, LegacyUtility.ChangeExtension(outputPath, ".mta.json"));
                 }

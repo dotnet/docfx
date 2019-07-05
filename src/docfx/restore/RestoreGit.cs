@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
@@ -88,7 +87,8 @@ namespace Microsoft.Docs.Build
                     {
                         try
                         {
-                            GitUtility.CloneOrUpdateBare(repoPath, remote, branchesToFetch, depthOne, config);
+                            Console.WriteLine($"Cloning '{remote}'");
+                            GitUtility.InitFetchBare(repoPath, remote, branchesToFetch, depthOne, config);
                         }
                         catch (Exception ex)
                         {
@@ -224,7 +224,7 @@ namespace Microsoft.Docs.Build
             {
                 // fallback to master
                 if (sourceBranch != "master" &&
-                    !GitUtility.RemoteBranchExists(sourceRemote, sourceBranch))
+                    !GitUtility.RemoteBranchExists(sourceRemote, sourceBranch, config))
                 {
                     sourceBranch = "master";
                 }

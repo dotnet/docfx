@@ -61,7 +61,7 @@ outputs:
     }
   h4.json: |
     {
-      "title": null,
+      "!title": null,
       "rawTitle": "",
       "conceptual": "<h4 id=\"h4-title\">h4 title</h4>",
     }
