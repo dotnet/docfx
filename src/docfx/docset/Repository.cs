@@ -9,13 +9,13 @@ namespace Microsoft.Docs.Build
 {
     internal class Repository
     {
-        public string Remote { get; private set; }
+        public string Remote { get; }
 
-        public string Branch { get; private set; }
+        public string Branch { get; }
 
-        public string Commit { get; private set; }
+        public string Commit { get; }
 
-        public string Path { get; private set; }
+        public string Path { get; }
 
         private Repository(string remote, string branch, string commit, string path)
         {
@@ -41,7 +41,7 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(!string.IsNullOrEmpty(path));
 
-            var repoPath = GitUtility.FindRepo(path);
+            var repoPath = GitUtility.FindRepo(System.IO.Path.GetFullPath(path));
 
             if (repoPath is null)
                 return null;

@@ -88,7 +88,7 @@ namespace Microsoft.Docs.Build
                         try
                         {
                             Console.WriteLine($"Cloning '{remote}'");
-                            GitUtility.CloneOrUpdateBare(repoPath, remote, branchesToFetch, depthOne, config);
+                            GitUtility.InitFetchBare(repoPath, remote, branchesToFetch, depthOne, config);
                         }
                         catch (Exception ex)
                         {
@@ -224,7 +224,7 @@ namespace Microsoft.Docs.Build
             {
                 // fallback to master
                 if (sourceBranch != "master" &&
-                    !GitUtility.RemoteBranchExists(sourceRemote, sourceBranch))
+                    !GitUtility.RemoteBranchExists(sourceRemote, sourceBranch, config))
                 {
                     sourceBranch = "master";
                 }
