@@ -40,6 +40,7 @@ namespace Microsoft.Docs.Build
 
             ValidateDeprecated(schema, name, token, errors);
             ValidateConst(schema, token, errors);
+            ValidateEnum(schema, token, errors);
 
             switch (token)
             {
@@ -72,11 +73,6 @@ namespace Microsoft.Docs.Build
 
         private void ValidateScalar(JsonSchema schema, string name, JValue scalar, List<Error> errors)
         {
-            if (schema.Enum != null && Array.IndexOf(schema.Enum, scalar) == -1)
-            {
-                errors.Add(Errors.UndefinedValue(JsonUtility.GetSourceInfo(scalar), scalar, schema.Enum));
-            }
-
             switch (scalar.Value)
             {
                 case string str:
@@ -226,6 +222,14 @@ namespace Microsoft.Docs.Build
             if (schema.Const != null && !JsonUtility.DeepEqualsComparer.Equals(schema.Const, token))
             {
                 errors.Add(Errors.UndefinedValue(JsonUtility.GetSourceInfo(token), token, new object[] { schema.Const }));
+            }
+        }
+
+        private void ValidateEnum(JsonSchema schema, JToken token, List<Error> errors)
+        {
+            if (schema.Enum != null && !schema.Enum.Contains(token, JsonUtility.DeepEqualsComparer))
+            {
+                errors.Add(Errors.UndefinedValue(JsonUtility.GetSourceInfo(token), token, schema.Enum));
             }
         }
 

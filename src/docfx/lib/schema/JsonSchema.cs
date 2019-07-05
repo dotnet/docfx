@@ -93,7 +93,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// An array of valid values for the current value.
         /// </summary>
-        public JValue[] Enum { get; set; }
+        public JToken[] Enum { get; set; }
 
         public JsonSchemaStringFormat Format { get; set; }
 

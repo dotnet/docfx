@@ -29,7 +29,6 @@ namespace Microsoft.Docs.Build
 
         private static readonly string[] s_notSupportedTests =
         {
-            "heterogeneous enum validation",
             "an array of schemas for items",
             "items and subitems",
             "with boolean schema",
