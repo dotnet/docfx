@@ -415,6 +415,7 @@ namespace Microsoft.Docs.Build
         public static Error ArrayNotUnique(SourceInfo source, string propName)
             => new Error(ErrorLevel.Warning, "array-not-unique", $"Array '{propName}' items should be unique", source);
 
+        /// <summary>
         /// Object property count not within min and max.
         /// </summary>
         /// Behavior: ✔️ Message: ❌
