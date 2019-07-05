@@ -24,8 +24,6 @@ namespace Microsoft.Docs.Build
             "multipleOf",
             "not",
             "oneOf",
-            "pattern",
-            "propertyNames",
             "refRemote"
         };
 
