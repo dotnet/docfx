@@ -71,7 +71,7 @@ namespace Microsoft.Docs.Build
             if (other is null)
                 return false;
 
-            return string.Equals(File, other.File)
+            return PathUtility.PathComparer.Equals(File, other.File)
                 && Line == other.Line
                 && Column == other.Column
                 && EndLine == other.EndLine
@@ -82,7 +82,7 @@ namespace Microsoft.Docs.Build
             => Equals(obj as SourceInfo);
 
         public override int GetHashCode()
-            => HashCode.Combine(File, Line, Column, EndLine, EndColumn);
+            => HashCode.Combine(PathUtility.PathComparer.GetHashCode(File), Line, Column, EndLine, EndColumn);
 
         public static bool operator ==(SourceInfo obj1, SourceInfo obj2)
             => Equals(obj1, obj2);
