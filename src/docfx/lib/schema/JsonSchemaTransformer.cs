@@ -53,14 +53,27 @@ namespace Microsoft.Docs.Build
                             break;
                         }
 
-                        if (!xrefPropertiesGroupByUid.TryGetValue(uid, out _))
+                        if (!xrefPropertiesGroupByUid.TryGetValue(uid, out var xrefPropertyList))
                         {
-                            xrefPropertiesGroupByUid[uid] = new List<(bool, SourceInfo, Dictionary<string, Lazy<JToken>>)> { (obj.Parent is null, JsonUtility.GetSourceInfo(obj), BuildXrefPropertiesForUid(obj)) };
+                            xrefPropertiesGroupByUid[uid] = xrefPropertyList = new List<(bool, SourceInfo, Dictionary<string, Lazy<JToken>>)>();
                         }
-                        else
+
+                        var xrefProperties = new Dictionary<string, Lazy<JToken>>();
+                        TraverseObjectXref(obj, (propertySchema, key, value) =>
                         {
-                            xrefPropertiesGroupByUid[uid].Add((obj.Parent is null, JsonUtility.GetSourceInfo(obj), BuildXrefPropertiesForUid(obj)));
-                        }
+                            if (schema.XrefProperties.Contains(key))
+                            {
+                                xrefProperties[key] = new Lazy<JToken>(
+                                    () =>
+                                    {
+                                        return TransformToken(file, context, propertySchema, value, errors);
+                                    }, LazyThreadSafetyMode.PublicationOnly);
+                                return true;
+                            }
+
+                            return false;
+                        });
+                        xrefPropertyList.Add((obj.Parent is null, JsonUtility.GetSourceInfo(obj), xrefProperties));
 
                         break;
                     case JArray array:
@@ -70,26 +83,6 @@ namespace Microsoft.Docs.Build
                                 TraverseXref(schema.Items, item);
                         }
                         break;
-                }
-
-                Dictionary<string, Lazy<JToken>> BuildXrefPropertiesForUid(JObject obj)
-                {
-                    var dict = new Dictionary<string, Lazy<JToken>>();
-                    TraverseObjectXref(obj, (propertySchema, key, value) =>
-                    {
-                        if (schema.XrefProperties.Contains(key))
-                        {
-                            dict[key] = new Lazy<JToken>(
-                                () =>
-                                {
-                                    return TransformToken(file, context, propertySchema, value, errors);
-                                }, LazyThreadSafetyMode.PublicationOnly);
-                            return true;
-                        }
-
-                        return false;
-                    });
-                    return dict;
                 }
 
                 void TraverseObjectXref(JObject obj, Func<JsonSchema, string, JToken, bool> action = null)
