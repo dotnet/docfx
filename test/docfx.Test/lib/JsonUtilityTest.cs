@@ -60,8 +60,8 @@ namespace Microsoft.Docs.Build
             var json = JsonUtility.Serialize(new BasicClass { B = 1, C = "Good!", D = true }, indent: true);
             Assert.Equal(
                 @"{
-  ""b"": 1,
   ""c"": ""Good!"",
+  ""b"": 1,
   ""d"": true
 }".Replace("\r\n", "\n"),
                 json.Replace("\r\n", "\n"));
@@ -152,9 +152,9 @@ namespace Microsoft.Docs.Build
                     C = "Good!",
                     ValueDict = new Dictionary<string, object>
                     {
-                        { "a", true },
                         { "b", "valueA" },
                         { "c", 10 },
+                        { "a", true }
                     },
                     ValueList = new List<string> { "b", "a", },
                     ValueBasic = new BasicClass
@@ -165,25 +165,25 @@ namespace Microsoft.Docs.Build
                     },
                 }, indent: true);
             var json = sw.ToString();
-           Assert.Equal(
+            Assert.Equal(
                 @"{
-  ""b"": 1,
-  ""c"": ""Good!"",
-  ""d"": true,
-  ""valueBasic"": {
-    ""b"": 5,
-    ""c"": ""Amazing!"",
-    ""d"": false
-  },
   ""valueDict"": {
-    ""a"": true,
     ""b"": ""valueA"",
-    ""c"": 10
+    ""c"": 10,
+    ""a"": true
   },
   ""valueList"": [
     ""b"",
     ""a""
-  ]
+  ],
+  ""valueBasic"": {
+    ""c"": ""Amazing!"",
+    ""b"": 5,
+    ""d"": false
+  },
+  ""c"": ""Good!"",
+  ""b"": 1,
+  ""d"": true
 }".Replace("\r\n", "\n"),
                 json.Replace("\r\n", "\n"));
             var (errors, value) = DeserializeWithValidation<ClassWithMoreMembers>(json);
