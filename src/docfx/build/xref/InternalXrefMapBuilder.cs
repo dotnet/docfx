@@ -106,7 +106,7 @@ namespace Microsoft.Docs.Build
                 throw Errors.SchemaNotFound(file.Mime).ToException();
             }
 
-            var (schemaErrors, xrefPropertiesGroupByUid) = schemaTemplate.JsonSchemaTransformer.TransformXref(file, context, token);
+            var (schemaErrors, xrefPropertiesGroupByUid) = schemaTemplate.JsonSchemaTransformer.TraverseXref(file, context, token);
             errors.AddRange(schemaErrors);
 
             var specs = xrefPropertiesGroupByUid.Select(item =>
