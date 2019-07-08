@@ -185,7 +185,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static string Execute(string fileName, string commandLineArgs, string cwd = null, bool stdout = true, string[] secrets = null)
         {
-            var sanitizedCommandLineArgs = secrets != null ? secrets.Aggregate(commandLineArgs, (arg, secret) => arg.Replace(secret, "***")) : commandLineArgs;
+            var sanitizedCommandLineArgs = secrets != null ? secrets.Aggregate(commandLineArgs, HideSecrets) : commandLineArgs;
             Log.Write($"Running '\"{fileName}\" {sanitizedCommandLineArgs}' in '{Path.GetFullPath(cwd ?? ".")}'");
 
             var psi = new ProcessStartInfo
@@ -213,6 +213,11 @@ namespace Microsoft.Docs.Build
             }
 
             return result;
+
+            string HideSecrets(string arg, string secret)
+            {
+                return arg.Replace(secret, secret.Length > 5 ? secret.Substring(0, 5) + "***" : "***");
+            }
         }
 
         /// <summary>

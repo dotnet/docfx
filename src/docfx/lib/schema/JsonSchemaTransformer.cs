@@ -30,11 +30,10 @@ namespace Microsoft.Docs.Build
             return (errors, transformedToken);
         }
 
-        public (List<Error> errors, Dictionary<string, (bool, Dictionary<string, Lazy<JToken>>)> properties) TraverseXref(Document file, Context context, JToken token)
+        public (List<Error> errors, Dictionary<string, List<(bool isRoot, SourceInfo source, Dictionary<string, Lazy<JToken>> propertiesByUid)>> xrefPropertiesGroupByUid) TraverseXref(Document file, Context context, JToken token)
         {
             var errors = new List<Error>();
-            var xrefPropertiesGroupByUid = new Dictionary<string, (bool, Dictionary<string, Lazy<JToken>>)>();
-            var uidJsonPaths = new HashSet<string>();
+            var xrefPropertiesGroupByUid = new Dictionary<string, List<(bool, SourceInfo, Dictionary<string, Lazy<JToken>>)>>();
 
             TraverseXref(_schema, token);
 
@@ -54,35 +53,16 @@ namespace Microsoft.Docs.Build
                             break;
                         }
 
-                        if (uidJsonPaths.Add(uidValue.Path) && xrefPropertiesGroupByUid.ContainsKey(uid))
-                        {
-                            // TODO: should throw warning and take the first one order by json path
-                            errors.Add(Errors.UidConflict(uid));
-                            TraverseObjectXref(obj);
-                            break;
-                        }
-
                         if (!xrefPropertiesGroupByUid.TryGetValue(uid, out _))
                         {
-                            xrefPropertiesGroupByUid[uid] = (obj.Parent == null, new Dictionary<string, Lazy<JToken>>());
+                            xrefPropertiesGroupByUid[uid] = new List<(bool, SourceInfo, Dictionary<string, Lazy<JToken>>)> { (obj.Parent is null, JsonUtility.GetSourceInfo(obj), BuildXrefPropertiesForUid(obj)) };
+                        }
+                        else
+                        {
+                            xrefPropertiesGroupByUid[uid].Add((obj.Parent is null, JsonUtility.GetSourceInfo(obj), BuildXrefPropertiesForUid(obj)));
                         }
 
-                        TraverseObjectXref(obj, (propertySchema, key, value) =>
-                        {
-                            if (schema.XrefProperties.Contains(key))
-                            {
-                                xrefPropertiesGroupByUid[uid].Item2[key] = new Lazy<JToken>(
-                                   () =>
-                                   {
-                                       return TransformToken(file, context, propertySchema, value, errors);
-                                   }, LazyThreadSafetyMode.PublicationOnly);
-                                return true;
-                            }
-
-                            return false;
-                        });
                         break;
-
                     case JArray array:
                         foreach (var item in array)
                         {
@@ -90,6 +70,26 @@ namespace Microsoft.Docs.Build
                                 TraverseXref(schema.Items, item);
                         }
                         break;
+                }
+
+                Dictionary<string, Lazy<JToken>> BuildXrefPropertiesForUid(JObject obj)
+                {
+                    var dict = new Dictionary<string, Lazy<JToken>>();
+                    TraverseObjectXref(obj, (propertySchema, key, value) =>
+                    {
+                        if (schema.XrefProperties.Contains(key))
+                        {
+                            dict[key] = new Lazy<JToken>(
+                                () =>
+                                {
+                                    return TransformToken(file, context, propertySchema, value, errors);
+                                }, LazyThreadSafetyMode.PublicationOnly);
+                            return true;
+                        }
+
+                        return false;
+                    });
+                    return dict;
                 }
 
                 void TraverseObjectXref(JObject obj, Func<JsonSchema, string, JToken, bool> action = null)

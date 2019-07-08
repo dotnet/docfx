@@ -54,6 +54,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public JsonSchema PropertyNames { get; set; }
 
+        /// <summary>
         /// The maximum property count that an array can hold.
         /// </summary>
         public int? MaxProperties { get; set; }
@@ -120,6 +121,11 @@ namespace Microsoft.Docs.Build
         /// The exclusive minimum value of a number.
         /// </summary>
         public double? ExclusiveMinimum { get; set; }
+
+        /// <summary>
+        /// The regular expression applied to strings
+        /// </summary>
+        public string Pattern { get; set; }
 
         /// <summary>
         /// Properties that are required to be present.

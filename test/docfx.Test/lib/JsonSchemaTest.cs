@@ -132,6 +132,11 @@ namespace Microsoft.Docs.Build
         [InlineData("{'type': 'number', 'enum': [1, 2]}", "3",
             "['warning','undefined-value','Value '3' is not accepted. Valid values: '1', '2'','file',1,1]")]
 
+        // pattern validation
+        [InlineData("{'pattern': '^a.*'}", "'a'", "")]
+        [InlineData("{'pattern': '^a.*'}", "'b'",
+            "['warning','format-invalid','String 'b' is not a valid '^a.*'','file',1,3]")]
+
         // string length validation
         [InlineData("{'type': 'string', 'minLength': 1, 'maxLength': 5}", "'a'", "")]
         [InlineData("{'type': 'string', 'maxLength': 1}", "'1963-06-19T08:30:06Z'",

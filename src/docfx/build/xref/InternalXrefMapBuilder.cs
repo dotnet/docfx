@@ -100,18 +100,15 @@ namespace Microsoft.Docs.Build
         private static (List<Error> errors, IReadOnlyList<InternalXrefSpec> specs) LoadSchemaDocument(Context context, JToken token, Document file)
         {
             var errors = new List<Error>();
-            var schemaTemplate = context.TemplateEngine.GetJsonSchema(file.Mime);
-            if (schemaTemplate is null)
-            {
-                throw Errors.SchemaNotFound(file.Mime).ToException();
-            }
+            var schemaTemplate = context.TemplateEngine.GetSchema(file.Mime);
 
             var (schemaErrors, xrefPropertiesGroupByUid) = schemaTemplate.JsonSchemaTransformer.TraverseXref(file, context, token);
             errors.AddRange(schemaErrors);
 
             var specs = xrefPropertiesGroupByUid.Select(item =>
             {
-                var (isRoot, properties) = item.Value;
+                var (error, (isRoot, _, properties)) = AggregateXrefSpecProperties(item.Key, item.Value);
+                errors.AddIfNotNull(error);
                 var xref = new InternalXrefSpec
                 {
                     Uid = item.Key,
@@ -126,6 +123,15 @@ namespace Microsoft.Docs.Build
 
             string GetBookmarkFromUid(string uid)
                 => Regex.Replace(uid, @"\W", "_");
+        }
+
+        private static (Error, (bool isRoot, SourceInfo source, Dictionary<string, Lazy<JToken>> propertiesByUid)) AggregateXrefSpecProperties(string uid, List<(bool isRoot, SourceInfo source, Dictionary<string, Lazy<JToken>> properties)> uidWithProperties)
+        {
+            if (uidWithProperties.Count > 1)
+            {
+                return (Errors.UidConflict(uid), uidWithProperties.OrderBy(x => x.source).First());
+            }
+            return (null, uidWithProperties.First());
         }
 
         private static InternalXrefSpec AggregateXrefSpecs(Context context, string uid, InternalXrefSpec[] specsWithSameUid)

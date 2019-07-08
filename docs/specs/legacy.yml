@@ -149,7 +149,6 @@ outputs:
         "document_version_independent_id": "92a5a770-f05f-b8bb-81c9-a8d786a9e608",
         "_op_gitContributorInformation": {
         "update_at": "10/30/2018",
-        "updated_at_date_time": "2018-10-30T00:00:00Z",
           "contributors": [{
             "display_name": "Charlie",
             "id": "3"
@@ -181,7 +180,6 @@ outputs:
         "_path": "index.json",
         "_op_gitContributorInformation": {
           "update_at": "10/30/2018",
-          "updated_at_date_time": "2018-10-30T00:00:00Z",
           "author": {
             "name": "charlie",
             "profile_url": "https://github.com/charlie",

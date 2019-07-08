@@ -125,7 +125,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         /// Behavior: ✔️ Message: ❌
         public static Error MissingTocHead(SourceInfo source)
-            => new Error(ErrorLevel.Error, "missing-toc-head", $"The toc head name is missing", source);
+            => new Error(ErrorLevel.Warning, "missing-toc-head", $"The toc head name is missing", source);
 
         /// <summary>
         /// In markdown-format toc, used wrong toc syntax.
@@ -398,7 +398,7 @@ namespace Microsoft.Docs.Build
         /// The string type's value doesn't match given format.
         /// </summary>
         /// Behavior: ✔️ Message: ❌
-        public static Error FormatInvalid(SourceInfo source, string value, JsonSchemaStringFormat type)
+        public static Error FormatInvalid(SourceInfo source, string value, object type)
             => new Error(ErrorLevel.Warning, "format-invalid", $"String '{value}' is not a valid '{type}'", source);
 
         /// <summary>

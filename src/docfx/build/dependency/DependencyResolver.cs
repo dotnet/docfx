@@ -189,7 +189,7 @@ namespace Microsoft.Docs.Build
                     return (error, query + fragment, fragment, linkType, null);
                 }
                 var selfUrl = Document.PathToRelativeUrl(
-                    Path.GetFileName(file.SitePath), file.ContentType, file.Mime, file.Docset.Config.Output.Json, file.IsData);
+                    Path.GetFileName(file.SitePath), file.ContentType, file.Mime, file.Docset.Config.Output.Json, file.IsPage);
                 return (error, selfUrl + query + fragment, fragment, LinkType.SelfBookmark, null);
             }
 

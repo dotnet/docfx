@@ -198,6 +198,7 @@ namespace Microsoft.Docs.Build
 # docfx crash report: {exception.GetType()}
 
 docfx: `{GetDocfxVersion()}`
+dotnet: `{GetDotnetVersion()}`
 x64: `{Environment.Is64BitProcess}`
 git: `{GetGitVersion()}`
 {GetDocfxEnvironmentVariables()}
@@ -209,12 +210,6 @@ Run `{Environment.CommandLine}` in `{Directory.GetCurrentDirectory()}`
 
 ```
 {exception}
-```
-
-## dotnet --info
-
-```
-{GetDotnetInfo()}
 ```
 ";
             try
@@ -261,11 +256,11 @@ Run `{Environment.CommandLine}` in `{Directory.GetCurrentDirectory()}`
             }
         }
 
-        private static string GetDotnetInfo()
+        private static string GetDotnetVersion()
         {
             try
             {
-                var process = Process.Start(new ProcessStartInfo { FileName = "dotnet", Arguments = "--info", RedirectStandardOutput = true });
+                var process = Process.Start(new ProcessStartInfo { FileName = "dotnet", Arguments = "--version", RedirectStandardOutput = true });
                 process.WaitForExit(2000);
                 return process.StandardOutput.ReadToEnd().Trim();
             }
