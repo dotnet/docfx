@@ -1,12 +1,11 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -58,7 +57,7 @@ namespace Microsoft.Docs.Build
                 Locale = file.Docset.Locale,
                 Monikers = outputMetadata.Monikers,
                 MonikerGroup = MonikerUtility.GetGroup(outputMetadata.Monikers),
-                ExtensionData = metadata,
+                ExtensionData = metadata is null ? null : new JObject(metadata.Properties().OrderBy(p => p.Name)),
             };
 
             if (context.PublishModelBuilder.TryAdd(file, publishItem))
