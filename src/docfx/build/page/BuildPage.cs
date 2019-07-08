@@ -36,6 +36,7 @@ namespace Microsoft.Docs.Build
 
                 var isConceptual = string.IsNullOrEmpty(file.Mime) || TemplateEngine.IsLandingData(file.Mime);
                 (output, metadata) = ApplyPageTemplate(context, file, mergedMetadata, mergeModel, isConceptual);
+                metadata = metadata is null ? null : new JObject(metadata.Properties().OrderBy(p => p.Name));
             }
             else
             {
@@ -57,7 +58,7 @@ namespace Microsoft.Docs.Build
                 Locale = file.Docset.Locale,
                 Monikers = outputMetadata.Monikers,
                 MonikerGroup = MonikerUtility.GetGroup(outputMetadata.Monikers),
-                ExtensionData = metadata is null ? null : new JObject(metadata.Properties().OrderBy(p => p.Name)),
+                ExtensionData = metadata,
             };
 
             if (context.PublishModelBuilder.TryAdd(file, publishItem))
