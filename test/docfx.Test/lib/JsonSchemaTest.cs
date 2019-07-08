@@ -21,13 +21,10 @@ namespace Microsoft.Docs.Build
             "contains",
             "definitions",
             "if-then-else",
-            "maxProperties",
-            "minProperties",
             "multipleOf",
             "not",
             "oneOf",
             "pattern",
-            "propertyNames",
             "refRemote",
             "uniqueItems"
         };
@@ -135,6 +132,11 @@ namespace Microsoft.Docs.Build
         [InlineData("{'type': 'number', 'enum': [1, 2]}", "3",
             "['warning','undefined-value','Value '3' is not accepted. Valid values: '1', '2'','file',1,1]")]
 
+        // pattern validation
+        [InlineData("{'pattern': '^a.*'}", "'a'", "")]
+        [InlineData("{'pattern': '^a.*'}", "'b'",
+            "['warning','format-invalid','String 'b' is not a valid '^a.*'','file',1,3]")]
+
         // string length validation
         [InlineData("{'type': 'string', 'minLength': 1, 'maxLength': 5}", "'a'", "")]
         [InlineData("{'type': 'string', 'maxLength': 1}", "'1963-06-19T08:30:06Z'",
@@ -179,6 +181,21 @@ namespace Microsoft.Docs.Build
             "['warning','unexpected-type','Expect type 'Number' but got 'String'','file',1,33]")]
         [InlineData("{'properties': {'key': {'type': 'string'}}, 'additionalProperties': {'type': 'string', 'enum': ['a']}}", "{'key': 'value', 'key1': 'value1'}",
             "['warning','undefined-value','Value 'value1' is not accepted. Valid values: 'a'','file',1,33]")]
+
+        // property name validation
+        [InlineData("{'propertyNames': {'maxLength': 1}}", "{'a': 0}", "")]
+        [InlineData("{'propertyNames': {'maxLength': 1}}", "{'ab': 0}",
+            "['warning','string-length-invalid','String 'ab' length should be <= 1','file',1,6]")]
+
+        // property count validation
+        [InlineData("{'maxProperties': 3}", "{}", "")]
+        [InlineData("{'maxProperties': 0}", "{'key': 0}",
+            "['warning','property-count-invalid','Object '' property count should be <= 0','file',1,1]")]
+        [InlineData("{'minProperties': 1}", "{}",
+            "['warning','property-count-invalid','Object '' property count should be >= 1','file',1,1]")]
+        [InlineData("{'maxProperties': 0, 'minProperties': 4}", "{'key': 0}",
+            @"['warning','property-count-invalid','Object '' property count should be <= 0','file',1,1]
+              ['warning','property-count-invalid','Object '' property count should be >= 4','file',1,1]")]
 
         // array validation
         [InlineData("{'items': {'type': 'string'}}", "['a','b']", "")]

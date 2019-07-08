@@ -4,9 +4,11 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Text;
 using System.Web;
 using HtmlAgilityPack;
+using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -215,6 +217,48 @@ namespace Microsoft.Docs.Build
                 return n.NodeType == HtmlNodeType.Comment ||
                     (n.NodeType == HtmlNodeType.Text && string.IsNullOrWhiteSpace(n.OuterHtml));
             }
+        }
+
+        public static string CreateHtmlMetaTags(JObject metadata, (HashSet<string> htmlMetaHidden, Dictionary<string, string> htmlMetaNames) htmlMetaConfigs)
+        {
+            var result = new StringBuilder();
+
+            foreach (var property in metadata.Properties().OrderBy(p => p.Name))
+            {
+                var key = property.Name;
+                var value = property.Value;
+                if (value is JObject || htmlMetaConfigs.htmlMetaHidden.Contains(key))
+                {
+                    continue;
+                }
+
+                var content = "";
+                var name = htmlMetaConfigs.htmlMetaNames.TryGetValue(key, out var diplayName) ? diplayName : key;
+
+                if (value is JArray arr)
+                {
+                    foreach (var v in value)
+                    {
+                        if (v is JValue)
+                        {
+                            result.AppendLine($"<meta name=\"{HttpUtility.HtmlEncode(name)}\" content=\"{HttpUtility.HtmlEncode(v)}\" />");
+                        }
+                    }
+                    continue;
+                }
+                else if (value.Type == JTokenType.Boolean)
+                {
+                    content = (bool)value ? "true" : "false";
+                }
+                else
+                {
+                    content = value.ToString();
+                }
+
+                result.AppendLine($"<meta name=\"{HttpUtility.HtmlEncode(name)}\" content=\"{HttpUtility.HtmlEncode(content)}\" />");
+            }
+
+            return result.ToString();
         }
 
         private static HtmlNode AddLinkType(this HtmlNode html, string locale)

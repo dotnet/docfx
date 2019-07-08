@@ -32,7 +32,7 @@ namespace Microsoft.Docs.Build
             "download-failed", "locale-invalid",
 
             // show multiple errors with line info
-            "publish-url-conflict", "output-path-conflict", "uid-conflict", "redirection-conflict",
+            "publish-url-conflict", "output-path-conflict", "uid-conflict", "xref-property-conflict", "redirection-conflict",
             "redirected-id-conflict", "circular-reference", "moniker-overlapping", "empty-monikers"
         };
 
@@ -264,7 +264,7 @@ namespace Microsoft.Docs.Build
                         t_mockedRepos.Value = mockedRepos;
 
                         var (remote, refspec, _) = UrlUtility.SplitGitUrl(inputRepo);
-                        GitUtility.CloneOrUpdate(inputFolder, remote, refspec);
+                        GitUtility.InitFetchCheckout(inputFolder, remote, refspec);
                         Process.Start(new ProcessStartInfo("git", "submodule update --init") { WorkingDirectory = inputFolder }).WaitForExit();
                     }
                     finally
@@ -302,8 +302,6 @@ namespace Microsoft.Docs.Build
 
         private static void CreateFiles(Dictionary<string, string> files, string targetFolder, string[] environmentVariables = null)
         {
-            
-
             foreach (var (file, content) in files)
             {
                 var mutableContent = content;
@@ -408,51 +406,53 @@ namespace Microsoft.Docs.Build
 
         private static void VerifyFile(string file, string content)
         {
+            if (string.IsNullOrEmpty(content))
+            {
+                return;
+            }
+
+            string[] actual, expected;
             switch (Path.GetExtension(file.ToLowerInvariant()))
             {
-                case ".json":
-                    if (!string.IsNullOrEmpty(content))
+                case ".txt":
+                    expected = content.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).OrderBy(_ => _).ToArray();
+                    actual = File.ReadAllLines(file).OrderBy(_ => _).ToArray();
+                    Assert.Equal(expected.Length, actual.Length);
+                    for (var i = 0; i < expected.Length; i++)
                     {
-                        TestUtility.VerifyJsonContainEquals(
-                            // Test expectation can use YAML for readability
-                            content.StartsWith("{") ? JToken.Parse(content) : YamlUtility.Parse(content, null).Item2,
-                            JToken.Parse(File.ReadAllText(file)));
+                        TestUtility.VerifyJsonContainEquals(JToken.Parse(expected[i]), JToken.Parse(actual[i]));
                     }
                     break;
+                case ".json":
+                    TestUtility.VerifyJsonContainEquals(
+                        // Test expectation can use YAML for readability
+                        content.StartsWith("{") ? JToken.Parse(content) : YamlUtility.Parse(content, null).Item2,
+                        JToken.Parse(File.ReadAllText(file)));
+                    break;
                 case ".log":
-                    if (!string.IsNullOrEmpty(content))
+                    expected = content.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).OrderBy(_ => _).ToArray();
+                    actual = File.ReadAllLines(file).OrderBy(_ => _).ToArray();
+                    if (expected.Any(str => str.Contains("*")))
                     {
-                        var expected = content.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).OrderBy(_ => _).ToArray();
-                        var actual = File.ReadAllLines(file).OrderBy(_ => _).ToArray();
-                        if (expected.Any(str => str.Contains("*")))
-                        {
-                            Assert.Matches("^" + Regex.Escape(string.Join("\n", expected)).Replace("\\*", ".*") + "$", string.Join("\n", actual));
-                        }
-                        else
-                        {
-                            Assert.Equal(string.Join("\n", expected), string.Join("\n", actual));
-                        }
-                        VerifyLogsHasLineInfo(actual);
+                        Assert.Matches("^" + Regex.Escape(string.Join("\n", expected)).Replace("\\*", ".*") + "$", string.Join("\n", actual));
+                    }
+                    else
+                    {
+                        Assert.Equal(string.Join("\n", expected), string.Join("\n", actual));
                     }
                     break;
                 case ".html":
-                    if (!string.IsNullOrEmpty(content))
-                    {
-                        Assert.Equal(
-                            TestUtility.NormalizeHtml(content),
-                            TestUtility.NormalizeHtml(File.ReadAllText(file)));
-                    }
+                    Assert.Equal(
+                        TestUtility.NormalizeHtml(content),
+                        TestUtility.NormalizeHtml(File.ReadAllText(file)));
                     break;
                 default:
-                    if (!string.IsNullOrEmpty(content))
-                    {
-                        Assert.Equal(
-                            content?.Trim() ?? "",
-                            File.ReadAllText(file).Trim(),
-                            ignoreCase: false,
-                            ignoreLineEndingDifferences: true,
-                            ignoreWhiteSpaceDifferences: true);
-                    }
+                    Assert.Equal(
+                        content?.Trim() ?? "",
+                        File.ReadAllText(file).Trim(),
+                        ignoreCase: false,
+                        ignoreLineEndingDifferences: true,
+                        ignoreWhiteSpaceDifferences: true);
                     break;
             }
         }
@@ -471,12 +471,22 @@ namespace Microsoft.Docs.Build
         private static void VerifyNoChangesOnInputFiles(Dictionary<string, DateTime> inputFiles, string[] skippableInputs, string docsetPath)
         {
             var dir = new DirectoryInfo(docsetPath);
+            var gitdir = Path.GetFullPath(Path.Combine(docsetPath, ".git/"));
             var currentFiles = dir.GetFiles("*", SearchOption.AllDirectories)
                                 .Where(file => !skippableInputs.Contains(file.Name))
                                 .Select(file => file.FullName)
-                                .Except(dir.GetFiles($"_site/*", SearchOption.AllDirectories).Select(file => file.FullName)).ToList();
+                                .Except(dir.GetFiles($"_site/*", SearchOption.AllDirectories)
+                                .Select(file => file.FullName))
+                                .ToList();
+
             foreach (var (file, lastModifyTime) in inputFiles)
             {
+                if (file.StartsWith(gitdir))
+                {
+                    currentFiles.Remove(file);
+                    continue;
+                }
+
                 var currentFile = new FileInfo(file);
                 if (skippableInputs.Contains(currentFile.Name))
                 {
@@ -486,7 +496,10 @@ namespace Microsoft.Docs.Build
                 Assert.True(lastModifyTime == currentFile.LastWriteTime, $"Input file {currentFile.Name} has been changed");
                 currentFiles.Remove(file);
             }
-            Assert.True(currentFiles.Count == 0, $"New files {string.Join(",", currentFiles.Count > 3 ? currentFiles.SkipLast(currentFiles.Count - 3) : currentFiles)} has been generated in input folder");
+
+            Assert.True(
+                currentFiles.Count == 0,
+                $"New files {string.Join(",", currentFiles.Count > 3 ? currentFiles.SkipLast(currentFiles.Count - 3) : currentFiles)} has been generated in input folder");
         }
     }
 }

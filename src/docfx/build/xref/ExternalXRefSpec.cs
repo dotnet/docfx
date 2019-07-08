@@ -13,7 +13,7 @@ namespace Microsoft.Docs.Build
 
         public string Href { get; set; }
 
-        Document IXrefSpec.DeclairingFile => null;
+        Document IXrefSpec.DeclaringFile => null;
 
         [JsonIgnore]
         public HashSet<string> Monikers { get; set; } = new HashSet<string>();

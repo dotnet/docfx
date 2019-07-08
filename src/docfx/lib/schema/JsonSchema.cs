@@ -50,6 +50,21 @@ namespace Microsoft.Docs.Build
         public (bool value, JsonSchema schema) AdditionalProperties { get; set; } = (true, null);
 
         /// <summary>
+        /// The JSON schema that applies to property names.
+        /// </summary>
+        public JsonSchema PropertyNames { get; set; }
+
+        /// <summary>
+        /// The maximum property count that an array can hold.
+        /// </summary>
+        public int? MaxProperties { get; set; }
+
+        /// <summary>
+        /// The minimum item count that an array can hold.
+        /// </summary>
+        public int? MinProperties { get; set; }
+
+        /// <summary>
         /// The JSON schema that applies to the array items if the current value is array.
         /// </summary>
         public JsonSchema Items { get; set; }
@@ -106,6 +121,11 @@ namespace Microsoft.Docs.Build
         /// The exclusive minimum value of a number.
         /// </summary>
         public double? ExclusiveMinimum { get; set; }
+
+        /// <summary>
+        /// The regular expression applied to strings
+        /// </summary>
+        public string Pattern { get; set; }
 
         /// <summary>
         /// Properties that are required to be present.

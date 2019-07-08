@@ -125,7 +125,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         /// Behavior: ✔️ Message: ❌
         public static Error MissingTocHead(SourceInfo source)
-            => new Error(ErrorLevel.Error, "missing-toc-head", $"The toc head name is missing", source);
+            => new Error(ErrorLevel.Warning, "missing-toc-head", $"The toc head name is missing", source);
 
         /// <summary>
         /// In markdown-format toc, used wrong toc syntax.
@@ -135,8 +135,8 @@ namespace Microsoft.Docs.Build
         ///   - The toc syntax '# @b abc' is invalid, multiple inlines in one heading block is not allowed
         /// </summary>
         /// Behavior: ✔️ Message: ❌
-        public static Error InvalidTocSyntax(SourceInfo<string> source, string hint = null)
-            => new Error(ErrorLevel.Error, "invalid-toc-syntax", $"The toc syntax '{source}' is invalid, {hint ?? "the opening sequence of # characters must be followed by a space or by the end of line"}. Refer to [ATX heading](https://spec.commonmark.org/0.28/#atx-heading) to fix it", source);
+        public static Error InvalidTocSyntax(SourceInfo source)
+            => new Error(ErrorLevel.Error, "invalid-toc-syntax", $"The toc syntax is invalid, each line must be a valid markdown [ATX heading](https://spec.commonmark.org/0.28/#atx-heading) with a single link, xref link or literal text", source);
 
         /// <summary>
         /// In markdown-format toc, header level should be continuous, it shouldn't skip a level.
@@ -181,7 +181,7 @@ namespace Microsoft.Docs.Build
         public static Error GitCloneFailed(string url, IEnumerable<string> branches)
         {
             var message = $"Failure to clone the repository `{url} ({Join(branches)})`."
-                      + "This could be caused by an incorrect repository URL, please verify the URL on the Docs Portal (https://ops.docs.com)."
+                      + "This could be caused by an incorrect repository URL, please verify the URL on the Docs Portal (https://ops.microsoft.com)."
                       + "This could also be caused by not having the proper permission the repository, "
                       + "please confirm that the GitHub group/team that triggered the build has access to the repository.";
             return new Error(ErrorLevel.Error, "git-clone-failed", message);
@@ -384,7 +384,7 @@ namespace Microsoft.Docs.Build
         /// The input value type does not match expected value type.
         /// </summary>
         /// Behavior: ✔️ Message: ❌
-        public static Error UnexpectedType(SourceInfo source, string expectedType, string actualType)
+        public static Error UnexpectedType(SourceInfo source, object expectedType, object actualType)
             => new Error(ErrorLevel.Warning, "unexpected-type", $"Expect type '{expectedType}' but got '{actualType}'", source);
 
         /// <summary>
@@ -398,7 +398,7 @@ namespace Microsoft.Docs.Build
         /// The string type's value doesn't match given format.
         /// </summary>
         /// Behavior: ✔️ Message: ❌
-        public static Error FormatInvalid(SourceInfo source, string value, JsonSchemaStringFormat type)
+        public static Error FormatInvalid(SourceInfo source, string value, object type)
             => new Error(ErrorLevel.Warning, "format-invalid", $"String '{value}' is not a valid '{type}'", source);
 
         /// <summary>
@@ -407,6 +407,13 @@ namespace Microsoft.Docs.Build
         /// Behavior: ✔️ Message: ❌
         public static Error ArrayLengthInvalid(SourceInfo source, string propName, string criteria)
             => new Error(ErrorLevel.Warning, "array-length-invalid", $"Array '{propName}' length should be {criteria}", source);
+
+        /// <summary>
+        /// Object property count not within min and max.
+        /// </summary>
+        /// Behavior: ✔️ Message: ❌
+        public static Error PropertyCountInvalid(SourceInfo source, string propName, string criteria)
+            => new Error(ErrorLevel.Warning, "property-count-invalid", $"Object '{propName}' property count should be {criteria}", source);
 
         /// <summary>
         /// String length not within min and max.
@@ -511,15 +518,26 @@ namespace Microsoft.Docs.Build
         /// Examples:
         ///   - both files with no monikers defined same uid
         /// </summary>
-        /// Behavior: ❌ Message: ✔️
+        /// Behavior: ✔️ Message: ✔️
         public static Error UidConflict(string uid, IEnumerable<string> conflicts = null)
         {
             if (conflicts is null)
             {
-                return new Error(ErrorLevel.Error, "uid-conflict", $"The same Uid '{uid}' has been defined multiple times in the same file");
+                return new Error(ErrorLevel.Warning, "uid-conflict", $"The same Uid '{uid}' has been defined multiple times in the same file");
             }
 
-            return new Error(ErrorLevel.Error, "uid-conflict", $"UID '{uid}' is defined in more than one file: {Join(conflicts)}");
+            return new Error(ErrorLevel.Warning, "uid-conflict", $"UID '{uid}' is defined in more than one file: {Join(conflicts)}");
+        }
+
+        /// <summary>
+        /// Same uid defined within different versions with the different name.
+        /// Examples:
+        ///   - Same uid defined in multiple .md files with different versions have different titles.
+        /// </summary>
+        /// Behavior: ✔️ Message: ❌
+        public static Error UidPropertyConflict(string uid, string propertyName, IEnumerable<string> conflicts)
+        {
+            return new Error(ErrorLevel.Warning, "xref-property-conflict", $"UID '{uid}' is defined with different {propertyName}s: {Join(conflicts)}");
         }
 
         /// <summary>
@@ -528,7 +546,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         /// Behavior: ✔️ Message: ❌
         public static Error MonikerOverlapping(IEnumerable<string> overlappingmonikers)
-            => new Error(ErrorLevel.Error, "moniker-overlapping", $"Two or more documents have defined overlapping moniker: {Join(overlappingmonikers)}");
+            => new Error(ErrorLevel.Warning, "moniker-overlapping", $"Two or more documents have defined overlapping moniker: {Join(overlappingmonikers)}");
 
         /// <summary>
         /// Failed to parse moniker string.

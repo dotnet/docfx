@@ -174,7 +174,7 @@ namespace Microsoft.Docs.Build
             var (error, link, display, spec) = status.Context.DependencyResolver.ResolveAbsoluteXref(
                 href, (Document)InclusionContext.File);
 
-            if (spec?.DeclairingFile != null)
+            if (spec?.DeclaringFile != null)
             {
                 link = RelativeUrlMarker + link;
             }

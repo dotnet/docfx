@@ -13,7 +13,7 @@ namespace Microsoft.Docs.Build
 
         public string Href { get; set; }
 
-        public Document DeclairingFile { get; set; }
+        public Document DeclaringFile { get; set; }
 
         public HashSet<string> Monikers { get; set; } = new HashSet<string>();
 
@@ -40,17 +40,17 @@ namespace Microsoft.Docs.Build
             if (forXrefMapOutput)
             {
                 var (_, _, fragment) = UrlUtility.SplitUrl(Href);
-                var path = DeclairingFile.CanonicalUrlWithoutLocale;
+                var path = DeclaringFile.CanonicalUrlWithoutLocale;
 
                 // DHS appends branch infomation from cookie cache to URL, which is wrong for UID resolved URL
                 // output xref map with URL appending "?branch=master" for master branch
-                var query = DeclairingFile.Docset.Repository?.Branch == "master" ? "?branch=master" : "";
+                var query = DeclaringFile.Docset.Repository?.Branch == "master" ? "?branch=master" : "";
                 spec.Href = path + query + fragment;
             }
             else
             {
                 // relative path for internal UID resolving
-                spec.Href = PathUtility.GetRelativePathToFile(DeclairingFile.SiteUrl, Href);
+                spec.Href = PathUtility.GetRelativePathToFile(DeclaringFile.SiteUrl, Href);
             }
 
             foreach (var (key, value) in ExtensionData)
@@ -61,7 +61,7 @@ namespace Microsoft.Docs.Build
                 }
                 catch (DocfxException ex)
                 {
-                    context.ErrorLog.Write(DeclairingFile.FilePath, ex.Error);
+                    context.ErrorLog.Write(DeclaringFile.FilePath, ex.Error);
                 }
             }
             return spec;
