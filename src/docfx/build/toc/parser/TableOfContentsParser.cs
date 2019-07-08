@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-
+using Microsoft.Graph;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -105,16 +105,17 @@ namespace Microsoft.Docs.Build
             if (model.Items.Count > 0)
             {
                 parents.Add(file);
-                var (resolveErros, resolvedFirstChild) = ResolveTocModelItems(context, model.Items, parents, file, rootPath, referencedFiles, referencedTocs);
+                var (resolveErros, newItems, resolvedFirstChild) = ResolveTocModelItems(context, model.Items, parents, file, rootPath, referencedFiles, referencedTocs);
                 errors.AddRange(resolveErros);
                 firstChild = resolvedFirstChild;
+                model.Items = newItems;
                 parents.RemoveAt(parents.Count - 1);
             }
 
             return (errors, model, firstChild);
         }
 
-        private static (List<Error> errors, (TableOfContentsItem item, Document doc) firstChild) ResolveTocModelItems(
+        private static (List<Error> errors, List<TableOfContentsItem> items, (TableOfContentsItem item, Document doc) firstChild) ResolveTocModelItems(
             Context context,
             List<TableOfContentsItem> tocModelItems,
             List<Document> parents,
@@ -127,16 +128,9 @@ namespace Microsoft.Docs.Build
             var subFirstChildren = new List<(TableOfContentsItem item, Document doc)>();
 
             (TableOfContentsItem item, Document doc) firstChild = default;
+            var newTocModelItems = new List<TableOfContentsItem>();
             foreach (var tocModelItem in tocModelItems)
             {
-                (TableOfContentsItem item, Document doc) subFirstChild = default;
-                if (tocModelItem.Items != null && tocModelItem.Items.Any())
-                {
-                    var (resolveErros, resolvedSubFirstChild) = ResolveTocModelItems(context, tocModelItem.Items, parents, filePath, rootPath, referencedFiles, referencedTocs);
-                    errors.AddRange(resolveErros);
-                    subFirstChild = resolvedSubFirstChild;
-                }
-
                 // process
                 var tocHref = GetTocHref(tocModelItem);
                 var topicHref = GetTopicHref(tocModelItem);
@@ -146,19 +140,38 @@ namespace Microsoft.Docs.Build
                 var (resolvedTopicHref, resolvedTopicName, document) = ProcessTopicItem(topicUid, topicHref);
 
                 // set resolved href back
-                tocModelItem.Href = resolvedTocHref.Or(resolvedTopicHref).Or((tocHrefType == TocHrefType.RelativeFolder ? firstItem : null)?.Href);
-                tocModelItem.TocHref = resolvedTocHref;
-                tocModelItem.Homepage = !string.IsNullOrEmpty(tocModelItem.TopicHref) ? resolvedTopicHref : default;
-                tocModelItem.Name = tocModelItem.Name.Or(resolvedTopicName);
-                tocModelItem.Items = (tocHrefType == TocHrefType.TocFile ? subChildren : null)?.Items ?? tocModelItem.Items;
-                tocModelItem.Monikers = GetMonikers(resolvedTocHref, resolvedTopicHref, tocHrefType == TocHrefType.RelativeFolder ? firstItem : null, tocModelItem, document);
+                var newTocModelItem = new TableOfContentsItem();
+                newTocModelItem.Href = resolvedTocHref.Or(resolvedTopicHref).Or((tocHrefType == TocHrefType.RelativeFolder ? firstItem : null)?.Href);
+                newTocModelItem.TocHref = resolvedTocHref;
+                newTocModelItem.Homepage = !string.IsNullOrEmpty(tocModelItem.TopicHref) ? resolvedTopicHref : default;
+                newTocModelItem.Name = tocModelItem.Name.Or(resolvedTopicName);
+                newTocModelItem.Items = (tocHrefType == TocHrefType.TocFile ? subChildren : null)?.Items ?? tocModelItem.Items;
 
-                ProcessSubChildren(subFirstChild, (firstItem, firstDoc));
-
-                if (firstChild == default && !string.IsNullOrEmpty(tocModelItem.Href))
+                var childrenMonikers = firstItem?.Monikers;
+                if (subChildren == null && tocModelItem.Items != null)
                 {
-                    firstChild.item = tocModelItem;
-                    firstChild.doc = document ?? firstDoc;
+                    var (subErrors, subItems, subFirstChild) = ResolveTocModelItems(context, tocModelItem.Items, parents, filePath, rootPath, referencedFiles, referencedTocs);
+                    (firstItem, firstDoc) = subFirstChild;
+                    childrenMonikers = subItems.SelectMany(i => i.Monikers).ToList();
+                    newTocModelItem.Items = subItems;
+                    errors.AddRange(subErrors);
+                }
+
+                tocModelItem.Monikers = GetMonikers(resolvedTocHref, resolvedTopicHref, childrenMonikers, document);
+                newTocModelItems.Add(newTocModelItem);
+
+                if (firstChild == default)
+                {
+                    if (!string.IsNullOrEmpty(tocModelItem.Href))
+                    {
+                        firstChild.item = tocModelItem;
+                        firstChild.doc = document ?? firstDoc;
+                    }
+                    else
+                    {
+                        firstChild.item = firstItem;
+                        firstChild.doc = firstDoc;
+                    }
                 }
 
                 // validate
@@ -169,31 +182,12 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            if (firstChild == default)
-            {
-                firstChild = subFirstChildren.FirstOrDefault();
-            }
-
-            return (errors, firstChild);
-
-            void ProcessSubChildren((TableOfContentsItem item, Document doc) subChildFromItems, (TableOfContentsItem item, Document doc) subChildFromTocHref)
-            {
-                if (subChildFromTocHref != default)
-                {
-                    subFirstChildren.Add(subChildFromTocHref);
-                }
-                else
-                {
-                    if (subChildFromItems != default)
-                        subFirstChildren.Add(subChildFromItems);
-                }
-            }
+            return (errors, newTocModelItems, firstChild);
 
             List<string> GetMonikers(
                 string resolvedTocHref,
                 string resolvedTopicHref,
-                TableOfContentsItem resolvedTopicItemFromTocHref,
-                TableOfContentsItem tocModelItem,
+                List<string> subMonikers,
                 Document document)
             {
                 var monikers = new List<string>();
@@ -222,13 +216,9 @@ namespace Microsoft.Docs.Build
                         }
                     }
                 }
-                else
-                {
-                    monikers = resolvedTopicItemFromTocHref?.Monikers ?? new List<string>();
-                }
 
                 // Union with children's monikers
-                var childrenMonikers = tocModelItem.Items?.SelectMany(child => child.Monikers) ?? new List<string>();
+                var childrenMonikers = subMonikers ?? new List<string>();
                 monikers = childrenMonikers.Union(monikers).Distinct().ToList();
                 monikers.Sort(context.MonikerProvider.Comparer);
                 return monikers;
