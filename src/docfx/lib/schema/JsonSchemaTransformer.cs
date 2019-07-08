@@ -41,7 +41,7 @@ namespace Microsoft.Docs.Build
 
             return (errors, xrefPropertiesGroupByUid);
 
-            JToken TransformXref(JsonSchema schema, JToken node)
+            void TransformXref(JsonSchema schema, JToken node)
             {
                 schema = _definitions.GetDefinition(schema);
                 switch (node)
@@ -51,14 +51,16 @@ namespace Microsoft.Docs.Build
 
                         if (uid == null)
                         {
-                            return TransformObject(schema, obj, (a, b, c) => TransformXref(a, c));
+                            TransformObjectXref(obj);
+                            break;
                         }
 
                         if (uidJsonPaths.Add(uidValue.Path) && xrefPropertiesGroupByUid.ContainsKey(uid))
                         {
                             // TODO: should throw warning and take the first one order by json path
                             errors.Add(Errors.UidConflict(uid));
-                            return TransformObject(schema, obj, (a, b, c) => TransformXref(a, c));
+                            TransformObjectXref(obj);
+                            break;
                         }
 
                         if (!xrefPropertiesGroupByUid.TryGetValue(uid, out _))
@@ -66,32 +68,44 @@ namespace Microsoft.Docs.Build
                             xrefPropertiesGroupByUid[uid] = (obj.Parent == null, new Dictionary<string, Lazy<JToken>>());
                         }
 
-                        return TransformObject(schema, obj, (propertySchema, propertyKey, propertyValue) =>
+                        TransformObjectXref(obj, (propertySchema, key, value) =>
                         {
-                            if (!schema.XrefProperties.Contains(propertyKey))
+                            if (schema.XrefProperties.Contains(key))
                             {
-                                return TransformXref(propertySchema, propertyValue);
+                                xrefPropertiesGroupByUid[uid].Item2[key] = new Lazy<JToken>(
+                                   () =>
+                                   {
+                                       return TransformToken(file, context, propertySchema, value, errors);
+                                   }, LazyThreadSafetyMode.PublicationOnly);
+                                return true;
                             }
 
-                            if (!cachedProperties.TryGetValue(propertyValue.Path, out var lazyValue))
-                            {
-                                cachedProperties[propertyValue.Path] = lazyValue = new Lazy<JToken>(
-                                () =>
-                                {
-                                    return TransformToken(file, context, propertySchema, propertyValue, errors);
-                                }, LazyThreadSafetyMode.PublicationOnly);
-                            }
-
-                            xrefPropertiesGroupByUid[uid].Item2[propertyKey] = lazyValue;
-
-                            return propertyValue;
+                            return false;
                         });
+                        break;
 
                     case JArray array:
-                        return TransformArray(schema, array, TransformXref);
+                        foreach (var item in array)
+                        {
+                            if (schema.Items != null)
+                                TransformXref(schema.Items, item);
+                        }
+                        break;
                 }
 
-                return node;
+                void TransformObjectXref(JObject obj, Func<JsonSchema, string, JToken, bool> action = null)
+                {
+                    foreach (var (key, value) in obj)
+                    {
+                        if (schema.Properties.TryGetValue(key, out var propertySchema))
+                        {
+                            if (action?.Invoke(propertySchema, key, value) ?? false)
+                                continue;
+
+                            TransformXref(propertySchema, value);
+                        }
+                    }
+                }
             }
         }
 
@@ -106,10 +120,29 @@ namespace Microsoft.Docs.Build
                 {
                     // transform array and object is not supported yet
                     case JArray array:
-                        return TransformArray(subSchema, array, TransformToken);
+                        var newArray = new JArray();
+                        foreach (var item in array)
+                        {
+                            var newItem = TransformToken(subSchema.Items, item);
+                            newArray.Add(newItem);
+                        }
+
+                        return newArray;
 
                     case JObject obj:
-                        return TransformObject(subSchema, obj, (a, b, c) => TransformToken(a, c));
+                        var newObject = new JObject();
+                        foreach (var (key, value) in obj)
+                        {
+                            if (subSchema.Properties.TryGetValue(key, out var propertySchema))
+                            {
+                                newObject[key] = TransformToken(propertySchema, value);
+                            }
+                            else
+                            {
+                                newObject[key] = value;
+                            }
+                        }
+                        return newObject;
 
                     case JValue value:
                         return TransformScalar(subSchema, file, context, value, errors);
@@ -117,35 +150,6 @@ namespace Microsoft.Docs.Build
 
                 throw new NotSupportedException();
             }
-        }
-
-        private JArray TransformArray(JsonSchema schema, JArray array, Func<JsonSchema, JToken, JToken> transform)
-        {
-            var newArray = new JArray();
-            foreach (var item in array)
-            {
-                var newItem = transform(schema.Items, item);
-                newArray.Add(newItem);
-            }
-
-            return newArray;
-        }
-
-        private JObject TransformObject(JsonSchema schema, JObject obj, Func<JsonSchema, string, JToken, JToken> transform)
-        {
-            var newObject = new JObject();
-            foreach (var (key, value) in obj)
-            {
-                if (schema.Properties.TryGetValue(key, out var propertySchema))
-                {
-                    newObject[key] = transform(propertySchema, key, value);
-                }
-                else
-                {
-                    newObject[key] = value;
-                }
-            }
-            return newObject;
         }
 
         private JToken TransformScalar(JsonSchema schema, Document file, Context context, JValue value, List<Error> errors)
