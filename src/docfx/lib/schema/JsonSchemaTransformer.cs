@@ -47,7 +47,7 @@ namespace Microsoft.Docs.Build
                     case JObject obj:
                         var uid = obj.TryGetValue("uid", out var uidValue) && uidValue is JValue uidJValue && uidJValue.Value is string uidStr ? uidStr : null;
 
-                        if (uid == null)
+                        if (uid is null)
                         {
                             TraverseObjectXref(obj);
                             break;
@@ -152,9 +152,10 @@ namespace Microsoft.Docs.Build
 
                         case JValue value:
                             return TransformScalar(subSchema, file, context, value, errors);
-                    }
 
-                    throw new NotSupportedException();
+                        default:
+                            throw new NotSupportedException();
+                    }
                 }
             }
         }
