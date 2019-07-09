@@ -69,10 +69,6 @@ namespace Microsoft.Docs.Build
                 {
                     context.Output.WriteText(str, publishItem.Path);
                 }
-                else if (output is JObject obj)
-                {
-                    context.Output.WriteJson(obj is null ? null : new JObject(obj.Properties().OrderBy(p => p.Name)), publishItem.Path);
-                }
                 else
                 {
                     context.Output.WriteJson(output, publishItem.Path);
