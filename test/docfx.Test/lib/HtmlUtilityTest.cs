@@ -104,7 +104,7 @@ namespace Microsoft.Docs.Build
         [Theory]
         [InlineData("", "")]
         [InlineData("rétablir", "rétablir")]
-        [InlineData("&<>\"'/", "&amp;&lt;&gt;&quot;&#x27;&#x2F;")]
+        [InlineData("&<>\"'", "&amp;&lt;&gt;&quot;&#x27;")]
         public static void Encode(string input, string expected)
         {
             Assert.Equal(expected, HtmlUtility.Encode(input));
