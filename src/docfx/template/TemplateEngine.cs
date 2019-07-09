@@ -148,7 +148,7 @@ namespace Microsoft.Docs.Build
 
         private JObject LoadGlobalTokens()
         {
-            var path = Path.Combine(_templateDir, "token.json");
+            var path = Path.Combine(_contentTemplateDir, "token.json");
             return File.Exists(path) ? JObject.Parse(File.ReadAllText(path)) : new JObject();
         }
 
