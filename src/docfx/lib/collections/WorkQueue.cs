@@ -29,8 +29,8 @@ namespace Microsoft.Docs.Build
         // For completion detection
         private int _remainingCount = 0;
 
-        // When an exception occurs, store it here, 
-        // then wait until all jobs to complete before Drain returns. 
+        // When an exception occurs, store it here,
+        // then wait until all jobs to complete before Drain returns.
         // This ensures _run callback is never executed once Drain returns.
         private volatile Exception _exception;
 
