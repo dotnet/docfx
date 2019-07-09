@@ -71,7 +71,7 @@ namespace Microsoft.Docs.Build
                 {
                     if (_exception != null)
                     {
-                        OnComplete(Task.CompletedTask);
+                        OnComplete();
                         continue;
                     }
 
@@ -83,50 +83,57 @@ namespace Microsoft.Docs.Build
             {
                 if (_exception != null)
                 {
-                    OnComplete(Task.CompletedTask);
+                    OnComplete();
                     return;
                 }
 
+                Task task;
+
                 try
                 {
-                    _run(item).ContinueWith(OnComplete, default, TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
+                    task = _run(item);
                 }
                 catch (Exception ex)
                 {
-                    _exception = ex;
+                    OnComplete(ex);
+                    return;
                 }
+
+                task.ContinueWith(
+                    t => OnComplete(t.Exception?.InnerException),
+                    default,
+                    TaskContinuationOptions.ExecuteSynchronously,
+                    TaskScheduler.Default);
             }
 
-            void OnComplete(Task task)
+            void OnComplete(Exception exception = null)
             {
                 try
                 {
-                    if (task.Exception != null)
-                    {
-                        _exception = task.Exception.InnerException;
-                    }
-                    else if (Interlocked.Decrement(ref _remainingCount) == 0)
-                    {
-                        var exception = _exception;
-                        if (exception is null)
-                        {
-                            _drainTcs.SetResult(0);
-                        }
-                        else
-                        {
-                            _drainTcs.SetException(exception);
-                        }
-                    }
-                    else
-                    {
-                        DrainCore();
-                    }
-
                     progress?.Invoke(Interlocked.Increment(ref _processedCount), _totalCount);
                 }
                 catch (Exception ex)
                 {
-                    _exception = ex;
+                    exception = ex;
+                }
+
+                if (exception != null)
+                {
+                    _exception = exception;
+                }
+
+                DrainCore();
+
+                if (Interlocked.Decrement(ref _remainingCount) == 0)
+                {
+                    if (_exception is null)
+                    {
+                        _drainTcs.SetResult(0);
+                    }
+                    else
+                    {
+                        _drainTcs.SetException(_exception);
+                    }
                 }
             }
         }
