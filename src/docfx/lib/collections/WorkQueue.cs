@@ -29,9 +29,9 @@ namespace Microsoft.Docs.Build
         // For completion detection
         private int _remainingCount = 0;
 
-        // When an exception occured, store it here, 
+        // When an exception occurs, store it here, 
         // then wait until all jobs to complete before Drain returns. 
-        // This ensures _run callback is never executed once Drain returns in case of exception.
+        // This ensures _run callback is never executed once Drain returns.
         private volatile Exception _exception;
 
         public void Enqueue(IEnumerable<T> items)
@@ -71,8 +71,11 @@ namespace Microsoft.Docs.Build
                 {
                     if (_exception != null)
                     {
-                        ThreadPool.QueueUserWorkItem(Run, item, preferLocal: true);
+                        OnComplete(Task.CompletedTask);
+                        continue;
                     }
+
+                    ThreadPool.QueueUserWorkItem(Run, item, preferLocal: true);
                 }
             }
 
