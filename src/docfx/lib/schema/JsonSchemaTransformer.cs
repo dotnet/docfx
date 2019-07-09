@@ -104,11 +104,17 @@ namespace Microsoft.Docs.Build
         private JToken TransformToken(Document file, Context context, JsonSchema schema, JToken token, List<Error> errors)
         {
             var cachedTransformedProperties = _transformedProperties.GetOrAdd(file, new Dictionary<JToken, JToken>());
+
             return TransformToken(schema, token);
 
             JToken TransformToken(JsonSchema subSchema, JToken node)
             {
                 subSchema = _definitions.GetDefinition(subSchema);
+
+                if (subSchema == null)
+                {
+                    return node;
+                }
 
                 if (!cachedTransformedProperties.TryGetValue(node, out var transformedNode))
                 {

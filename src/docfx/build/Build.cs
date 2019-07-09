@@ -14,6 +14,8 @@ namespace Microsoft.Docs.Build
     {
         public static async Task Run(string docsetPath, CommandLineOptions options, ErrorLog errorLog)
         {
+            Debugger.Launch();
+
             var repository = Repository.Create(docsetPath);
             Telemetry.SetRepository(repository?.Remote, repository?.Branch);
 
