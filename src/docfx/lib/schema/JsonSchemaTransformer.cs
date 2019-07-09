@@ -14,13 +14,13 @@ namespace Microsoft.Docs.Build
     {
         private readonly JsonSchema _schema;
         private readonly JsonSchemaDefinition _definitions;
-        private readonly ConcurrentDictionary<Document, Dictionary<JToken, JToken>> _transformedProperties;
+        private readonly ConcurrentDictionary<JToken, JToken> _transformedProperties;
 
         public JsonSchemaTransformer(JsonSchema schema)
         {
             _schema = schema;
             _definitions = new JsonSchemaDefinition(schema);
-            _transformedProperties = new ConcurrentDictionary<Document, Dictionary<JToken, JToken>>();
+            _transformedProperties = new ConcurrentDictionary<JToken, JToken>(ReferenceEqualsComparer.Default);
         }
 
         public (List<Error> errors, JToken token) TransformContent(Document file, Context context, JToken token)
@@ -103,8 +103,6 @@ namespace Microsoft.Docs.Build
 
         private JToken TransformToken(Document file, Context context, JsonSchema schema, JToken token, List<Error> errors)
         {
-            var cachedTransformedProperties = _transformedProperties.GetOrAdd(file, new Dictionary<JToken, JToken>());
-
             return TransformToken(schema, token);
 
             JToken TransformToken(JsonSchema subSchema, JToken node)
@@ -116,15 +114,7 @@ namespace Microsoft.Docs.Build
                     return node;
                 }
 
-                if (!cachedTransformedProperties.TryGetValue(node, out var transformedNode))
-                {
-                    transformedNode = Transform();
-
-                    if (subSchema.ContentType != JsonSchemaContentType.None)
-                        cachedTransformedProperties[node] = transformedNode;
-                }
-
-                return transformedNode;
+                return _transformedProperties.GetOrAdd(node, _ => Transform());
 
                 JToken Transform()
                 {
