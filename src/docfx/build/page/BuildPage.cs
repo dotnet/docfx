@@ -1,12 +1,11 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -36,6 +35,9 @@ namespace Microsoft.Docs.Build
                 JsonUtility.Merge(mergeModel, pageModel);
 
                 var isConceptual = string.IsNullOrEmpty(file.Mime) || TemplateEngine.IsLandingData(file.Mime);
+
+                mergedMetadata = new JObject(mergedMetadata.Properties().OrderBy(p => p.Name));
+                mergeModel = new JObject(mergeModel.Properties().OrderBy(p => p.Name));
                 (output, metadata) = ApplyPageTemplate(context, file, mergedMetadata, mergeModel, isConceptual);
             }
             else
