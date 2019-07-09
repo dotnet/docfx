@@ -94,15 +94,14 @@ namespace Microsoft.Docs.Build
             var isConceptual = string.IsNullOrEmpty(file.Mime) || TemplateEngine.IsLandingData(file.Mime);
             var conceptual = isConceptual ? model.Value<string>("conceptual") : string.Empty;
 
-            var (templateModel, metadata) = TransformToTemplateModel(context, conceptual, pageModel, file.Mime, isConceptual);
+            if (file.Docset.Config.Output.Json && !file.Docset.Legacy)
+            {
+                return (model, mergedMetadata);
+            }
 
+            var (templateModel, metadata) = TransformToTemplateModel(context, conceptual, pageModel, file.Mime, isConceptual);
             if (file.Docset.Config.Output.Json)
             {
-                if (!file.Docset.Legacy)
-                {
-                    return (model, mergedMetadata);
-                }
-
                 return (templateModel, metadata);
             }
 
