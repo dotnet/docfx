@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -72,77 +71,46 @@ namespace Microsoft.Docs.Build
             return errors;
         }
 
-        private static async Task<object> CreatePageOutput(List<Error> errors, Context context, Document file, JObject pageModel)
+        private static async Task<(object output, JObject metadata)> CreatePageOutput(List<Error> errors, Context context, Document file, JObject model)
         {
             var (inputMetaErrors, inputMetadata) = context.MetadataProvider.GetMetadata(file);
             errors.AddRange(inputMetaErrors);
 
-            var (outputMetaErrors, outputMetadata) = await GenerateOutputMetadata(context, file, inputMetadata);
+            var (outputMetaErrors, outputMetadata) = await CreateOutputMetadata(context, file, inputMetadata);
             errors.AddRange(outputMetaErrors);
 
-            var mergeModel = new JObject();
-            JsonUtility.Merge(mergeModel, inputMetadata.RawJObject);
-            JsonUtility.Merge(mergeModel, JsonUtility.ToJObject(outputMetadata));
-            JsonUtility.Merge(mergeModel, pageModel);
+            var mergedMetadata = new JObject();
+            JsonUtility.Merge(mergedMetadata, inputMetadata.RawJObject);
+            JsonUtility.Merge(mergedMetadata, JsonUtility.ToJObject(outputMetadata));
+
+            var pageModel = new JObject();
+            JsonUtility.Merge(pageModel, mergedMetadata);
+            JsonUtility.Merge(pageModel, model);
+            if (inputMetadata.Title != null)
+            {
+                pageModel["Title"] = inputMetadata.Title;
+            }
 
             var isConceptual = string.IsNullOrEmpty(file.Mime) || TemplateEngine.IsLandingData(file.Mime);
-            var conceptual = isConceptual ? pageModel.Value<string>("conceptual") : string.Empty;
-            var processedMetadata = pageModel;
+            var conceptual = isConceptual ? model.Value<string>("conceptual") : string.Empty;
 
-            if (file.Docset.Config.Output.Json && !file.Docset.Legacy)
-            {
-                return pageModel;
-            }
+            var (templateModel, metadata) = TransformToTemplateModel(context, conceptual, pageModel, file.Mime, isConceptual);
 
-            if (!file.Docset.Config.Output.Json)
+            if (file.Docset.Config.Output.Json)
             {
-                return context.TemplateEngine.RunLiquid(conceptual, file, processedMetadata);
-            }
-
-            if (file.Docset.Legacy)
-            {
-                if (!isConceptual)
+                if (!file.Docset.Legacy)
                 {
-                    // TODO: run sdp JINT and mustache to generate html
-                    // whether input needs metadata?
+                    return (model, mergedMetadata);
                 }
 
-                return TransformToTemplateModel(context, conceptual, processedMetadata, file.Mime);
+                return (templateModel, metadata);
             }
 
-            return (pageModel, processedMetadata);
+            var html = context.TemplateEngine.RunLiquid(conceptual, file, mergedMetadata);
+            return (html, metadata);
         }
 
-        private static (object model, JObject metadata) ApplyPageTemplate(Context context, Document file, JObject pageModel, bool isConceptual)
-        {
-            var conceptual = isConceptual ? pageModel.Value<string>("conceptual") : string.Empty;
-            var processedMetadata = pageModel;
-
-            if (file.Docset.Config.Output.Json && !file.Docset.Legacy)
-            {
-                return (pageModel, )
-            }
-
-            if (!file.Docset.Config.Output.Json)
-            {
-                return (context.TemplateEngine.RunLiquid(conceptual, file, processedMetadata), null);
-            }
-
-            if (file.Docset.Legacy)
-            {
-                if (!isConceptual)
-                {
-                    // TODO: run sdp JINT and mustache to generate html
-                    // whether input needs metadata?
-                }
-
-                return TransformToTemplateModel(context, conceptual, processedMetadata, file.Mime);
-            }
-
-            return (pageModel, processedMetadata);
-        }
-
-        private static async Task<(List<Error>, OutputMetadata)> GenerateOutputMetadata(
+        private static async Task<(List<Error>, OutputMetadata)> CreateOutputMetadata(
                 Context context,
                 Document file,
                 InputMetadata inputMetadata)
@@ -234,8 +202,6 @@ namespace Microsoft.Docs.Build
                 Conceptual = HtmlUtility.HtmlPostProcess(htmlDom, file.Docset.Culture),
                 WordCount = wordCount,
                 RawTitle = rawTitle,
-
-                // TODO: set the title outside
                 Title = title,
             });
 
@@ -283,12 +249,9 @@ namespace Microsoft.Docs.Build
             {
                 var content = pageModel.ToObject<LandingData>();
 
-                // TODO: merge extension data to metadata in legacy model outside
                 pageModel = JsonUtility.ToJObject(new ConceptualModel
                 {
                     Conceptual = HtmlUtility.LoadHtml(await RazorTemplate.Render(file.Mime, content)).HtmlPostProcess(file.Docset.Culture),
-
-                    // TODO: set title outside
                     Title = obj?.Value<string>("title"),
                     RawTitle = $"<h1>{obj?.Value<string>("title")}</h1>",
                 });
@@ -297,10 +260,11 @@ namespace Microsoft.Docs.Build
             return (errors, pageModel);
         }
 
-        private static (TemplateModel model, JObject metadata) TransformToTemplateModel(Context context, string conceptual, JObject pageModel, string mime)
+        private static (TemplateModel model, JObject metadata) TransformToTemplateModel(Context context, string conceptual, JObject pageModel, string mime, bool isConceptual)
         {
-            // TODO: run page transform based on mime
-            pageModel = context.TemplateEngine.RunJint("Conceptual.mta.json.js", pageModel);
+            // TODO: run jint + mustache to generate template model and metadata
+            // no need to run conceptual.html.primary.js for conceptual
+            pageModel = context.TemplateEngine.RunJint(isConceptual ? "Conceptual.mta.json.js" : $"{mime}.mta.json.js", pageModel);
             if (TemplateEngine.IsLandingData(mime))
             {
                 pageModel["_op_layout"] = "LandingPage";
