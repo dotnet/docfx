@@ -16,17 +16,17 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(file.ContentType == ContentType.Page);
 
-            var (errors, pageModel, inputMetadata) = await Load(context, file);
-            var (generateErrors, outputMetadata) = await GenerateOutputMetadata(context, file, inputMetadata);
-            errors.AddRange(generateErrors);
+            var (errors, pageModel) = await Load(context, file);
+            var (monikerError, monikers) = context.MonikerProvider.GetFileLevelMonikers(file);
+            errors.AddIfNotNull(monikerError);
 
-            var outputPath = file.GetOutputPath(outputMetadata.Monikers, file.Docset.SiteBasePath, file.IsPage);
+            var outputPath = file.GetOutputPath(monikers, file.Docset.SiteBasePath, file.IsPage);
 
             object output = null;
             JObject metadata = null;
             if (file.IsPage)
             {
-                (output, metadata) = await CreatePageOutput(context, file, pageModel, inputMetadata, outputMetadata);
+                (output, metadata) = await CreatePageOutput(errors, context, file, pageModel);
             }
             else
             {
@@ -46,8 +46,8 @@ namespace Microsoft.Docs.Build
                 Path = outputPath,
                 SourcePath = file.FilePath,
                 Locale = file.Docset.Locale,
-                Monikers = outputMetadata.Monikers,
-                MonikerGroup = MonikerUtility.GetGroup(outputMetadata.Monikers),
+                Monikers = monikers,
+                MonikerGroup = MonikerUtility.GetGroup(monikers),
                 ExtensionData = metadata,
             };
 
@@ -72,28 +72,56 @@ namespace Microsoft.Docs.Build
             return errors;
         }
 
-        private static async Task<(Object output, JObject metadata)> CreatePageOutput(Context context, Document file, JObject pageModel)
+        private static async Task<object> CreatePageOutput(List<Error> errors, Context context, Document file, JObject pageModel)
         {
-            var errors = new List<Error>();
             var (inputMetaErrors, inputMetadata) = context.MetadataProvider.GetMetadata(file);
             errors.AddRange(inputMetaErrors);
 
-            var mergedMetadata = new JObject();
-            JsonUtility.Merge(mergedMetadata, inputMetadata.RawJObject);
-            JsonUtility.Merge(mergedMetadata, JsonUtility.ToJObject(outputMetadata));
+            var (outputMetaErrors, outputMetadata) = await GenerateOutputMetadata(context, file, inputMetadata);
+            errors.AddRange(outputMetaErrors);
 
             var mergeModel = new JObject();
-            JsonUtility.Merge(mergeModel, mergedMetadata);
+            JsonUtility.Merge(mergeModel, inputMetadata.RawJObject);
+            JsonUtility.Merge(mergeModel, JsonUtility.ToJObject(outputMetadata));
             JsonUtility.Merge(mergeModel, pageModel);
 
             var isConceptual = string.IsNullOrEmpty(file.Mime) || TemplateEngine.IsLandingData(file.Mime);
-            return ApplyPageTemplate(context, file, mergedMetadata, mergeModel, isConceptual);
+            var conceptual = isConceptual ? pageModel.Value<string>("conceptual") : string.Empty;
+            var processedMetadata = pageModel;
+
+            if (file.Docset.Config.Output.Json && !file.Docset.Legacy)
+            {
+                return pageModel;
+            }
+
+            if (!file.Docset.Config.Output.Json)
+            {
+                return context.TemplateEngine.RunLiquid(conceptual, file, processedMetadata);
+            }
+
+            if (file.Docset.Legacy)
+            {
+                if (!isConceptual)
+                {
+                    // TODO: run sdp JINT and mustache to generate html
+                    // whether input needs metadata?
+                }
+
+                return TransformToTemplateModel(context, conceptual, processedMetadata, file.Mime);
+            }
+
+            return (pageModel, processedMetadata);
         }
 
-        private static (object model, JObject metadata) ApplyPageTemplate(Context context, Document file, JObject pageMetadata, JObject pageModel, bool isConceptual)
+        private static (object model, JObject metadata) ApplyPageTemplate(Context context, Document file, JObject pageModel, bool isConceptual)
         {
             var conceptual = isConceptual ? pageModel.Value<string>("conceptual") : string.Empty;
-            var processedMetadata = isConceptual ? pageModel : pageMetadata;
+            var processedMetadata = pageModel;
+
+            if (file.Docset.Config.Output.Json && !file.Docset.Legacy)
+            {
+                return (pageModel, )
+            }
 
             if (!file.Docset.Config.Output.Json)
             {
@@ -213,7 +241,7 @@ namespace Microsoft.Docs.Build
 
             context.BookmarkValidator.AddBookmarks(file, bookmarks);
 
-            return (errors, pageModel, inputMetadata);
+            return (errors, pageModel);
         }
 
         private static async Task<(List<Error> errors, JObject model)>
