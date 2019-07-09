@@ -249,7 +249,7 @@ namespace Microsoft.Docs.Build
                 return default;
             }
 
-            (SourceInfo<string> resolvedTocHref, TableOfContentsModel subChildren, TableOfContentsItem firstItem) ProcessTocHref(SourceInfo<string> tocHref)
+            (SourceInfo<string> resolvedTocHref, TableOfContentsModel subChildren, TableOfContentsItem subChildrenFirstItem) ProcessTocHref(SourceInfo<string> tocHref)
             {
                 if (string.IsNullOrEmpty(tocHref))
                 {
@@ -272,11 +272,11 @@ namespace Microsoft.Docs.Build
                     var (subErrors, nestedToc) = LoadInternal(context, referenceTocFilePath, rootPath, referencedFiles, referencedTocs, parents, referencedTocContent);
                     errors.AddRange(subErrors);
 
-                    var firstItem = GetFirstItem(nestedToc.Items);
                     if (tocHrefType == TocHrefType.RelativeFolder)
                     {
-                        context.DependencyMapBuilder.AddDependencyItem(filePath, firstItem?.Document, DependencyType.Link);
-                        return (default, default, firstItem);
+                        var nestedTocFirstItem = GetFirstItem(nestedToc.Items);
+                        context.DependencyMapBuilder.AddDependencyItem(filePath, nestedTocFirstItem?.Document, DependencyType.Link);
+                        return (default, default, nestedTocFirstItem);
                     }
 
                     return (default, nestedToc, default);
