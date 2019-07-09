@@ -29,6 +29,11 @@ namespace Microsoft.Docs.Build
         // For completion detection
         private int _remainingCount = 0;
 
+        // When an exception occured, store it here, 
+        // then wait until all jobs to complete before Drain returns. 
+        // This ensures _run callback is never executed once Drain returns in case of exception.
+        private volatile Exception _exception;
+
         public void Enqueue(IEnumerable<T> items)
         {
             foreach (var item in items)
@@ -64,14 +69,18 @@ namespace Microsoft.Docs.Build
             {
                 while (!_drainTcs.Task.IsCompleted && _queue.TryDequeue(out var item))
                 {
-                    ThreadPool.QueueUserWorkItem(Run, item, preferLocal: true);
+                    if (_exception != null)
+                    {
+                        ThreadPool.QueueUserWorkItem(Run, item, preferLocal: true);
+                    }
                 }
             }
 
             void Run(T item)
             {
-                if (_drainTcs.Task.IsCompleted)
+                if (_exception != null)
                 {
+                    OnComplete(Task.CompletedTask);
                     return;
                 }
 
@@ -81,7 +90,7 @@ namespace Microsoft.Docs.Build
                 }
                 catch (Exception ex)
                 {
-                    _drainTcs.TrySetException(ex);
+                    _exception = ex;
                 }
             }
 
@@ -91,11 +100,19 @@ namespace Microsoft.Docs.Build
                 {
                     if (task.Exception != null)
                     {
-                        _drainTcs.TrySetException(task.Exception.InnerException);
+                        _exception = task.Exception.InnerException;
                     }
                     else if (Interlocked.Decrement(ref _remainingCount) == 0)
                     {
-                        _drainTcs.TrySetResult(0);
+                        var exception = _exception;
+                        if (exception is null)
+                        {
+                            _drainTcs.SetResult(0);
+                        }
+                        else
+                        {
+                            _drainTcs.SetException(exception);
+                        }
                     }
                     else
                     {
@@ -106,7 +123,7 @@ namespace Microsoft.Docs.Build
                 }
                 catch (Exception ex)
                 {
-                    _drainTcs.TrySetException(ex);
+                    _exception = ex;
                 }
             }
         }
