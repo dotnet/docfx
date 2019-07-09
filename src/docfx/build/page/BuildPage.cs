@@ -26,7 +26,7 @@ namespace Microsoft.Docs.Build
             JObject metadata = null;
             if (file.IsPage)
             {
-                (output, metadata) = await CreatePageOutput(errors, context, file, new JObject(mergeModel.Properties().OrderBy(p => p.Name)));
+                (output, metadata) = await CreatePageOutput(errors, context, file, new JObject(pageModel.Properties().OrderBy(p => p.Name)));
             }
             else
             {
@@ -87,7 +87,7 @@ namespace Microsoft.Docs.Build
 
             if (file.Docset.Config.Output.Json && !file.Docset.Legacy)
             {
-                return (model, new JObject());
+                return (pageModel, new JObject());
             }
 
             var (templateModel, metadata) = TransformToTemplateModel(context, pageModel, file);
@@ -288,15 +288,7 @@ namespace Microsoft.Docs.Build
                     result.Remove("_op_allContributorsStr");
                 }
 
-                foreach (var (key, value) in result)
-                {
-                    if (key.StartsWith("_"))
-                    {
-                        result.Remove(key);
-                    }
-                }
-
-                return result;
+                return new JObject(result.Properties().Where(p => !p.Name.StartsWith("_")));
             }
         }
     }
