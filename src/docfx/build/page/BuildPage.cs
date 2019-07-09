@@ -79,33 +79,23 @@ namespace Microsoft.Docs.Build
             var (outputMetaErrors, outputMetadata) = await CreateOutputMetadata(context, file, inputMetadata);
             errors.AddRange(outputMetaErrors);
 
-            var mergedMetadata = new JObject();
-            JsonUtility.Merge(mergedMetadata, inputMetadata.RawJObject);
-            JsonUtility.Merge(mergedMetadata, JsonUtility.ToJObject(outputMetadata));
-
             var pageModel = new JObject();
-            JsonUtility.Merge(pageModel, mergedMetadata);
             JsonUtility.Merge(pageModel, model);
-            if (inputMetadata.Title != null)
-            {
-                pageModel["Title"] = inputMetadata.Title;
-            }
-
-            var isConceptual = string.IsNullOrEmpty(file.Mime) || TemplateEngine.IsLandingData(file.Mime);
-            var conceptual = isConceptual ? model.Value<string>("conceptual") : string.Empty;
+            JsonUtility.Merge(pageModel, inputMetadata.RawJObject);
+            JsonUtility.Merge(pageModel, JsonUtility.ToJObject(outputMetadata));
 
             if (file.Docset.Config.Output.Json && !file.Docset.Legacy)
             {
-                return (model, mergedMetadata);
+                return (model, new JObject());
             }
 
-            var (templateModel, metadata) = TransformToTemplateModel(context, conceptual, pageModel, file.Mime, isConceptual);
+            var (templateModel, metadata) = TransformToTemplateModel(context, pageModel, file);
             if (file.Docset.Config.Output.Json)
             {
                 return (templateModel, metadata);
             }
 
-            var html = context.TemplateEngine.RunLiquid(conceptual, file, mergedMetadata);
+            var html = context.TemplateEngine.RunLiquid(file, templateModel);
             return (html, metadata);
         }
 
@@ -259,32 +249,54 @@ namespace Microsoft.Docs.Build
             return (errors, pageModel);
         }
 
-        private static (TemplateModel model, JObject metadata) TransformToTemplateModel(Context context, string conceptual, JObject pageModel, string mime, bool isConceptual)
+        private static (TemplateModel model, JObject metadata) TransformToTemplateModel(Context context, JObject pageModel, Document file)
         {
-            // TODO: run jint + mustache to generate template model and metadata
-            // no need to run conceptual.html.primary.js for conceptual
-            pageModel = context.TemplateEngine.RunJint(isConceptual ? "Conceptual.mta.json.js" : $"{mime}.mta.json.js", pageModel);
-            if (TemplateEngine.IsLandingData(mime))
-            {
-                pageModel["_op_layout"] = "LandingPage";
-                pageModel["layout"] = "LandingPage";
-                pageModel["page_type"] = "landingdata";
+            var isConceptual = string.IsNullOrEmpty(file.Mime) || TemplateEngine.IsLandingData(file.Mime);
+            var conceptual = isConceptual ? pageModel.Value<string>("conceptual") : string.Empty;
 
-                pageModel.Remove("_op_gitContributorInformation");
-                pageModel.Remove("_op_allContributorsStr");
+            var templateMetadata = CreateMetadata();
+
+            if (!isConceptual)
+            {
+                var jintResult = context.TemplateEngine.RunJint($"{file.Mime}.html.primary.js", pageModel);
+                conceptual = context.TemplateEngine.RunMustache($"{file.Mime}.html.primary.tmpl", jintResult);
             }
-            var metadata = TemplateEngine.CreateMetadata(pageModel);
-            var pageMetadata = HtmlUtility.CreateHtmlMetaTags(metadata, context.TemplateEngine.HtmlMetaConfigs);
+
+            var pageMetadata = HtmlUtility.CreateHtmlMetaTags(templateMetadata, context.TemplateEngine.HtmlMetaConfigs);
 
             var model = new TemplateModel
             {
                 Content = conceptual,
-                RawMetadata = pageModel,
+                RawMetadata = templateMetadata,
                 PageMetadata = pageMetadata,
                 ThemesRelativePathToOutputRoot = "_themes/",
             };
 
-            return (model, metadata);
+            return (model, templateMetadata);
+
+            JObject CreateMetadata()
+            {
+                var result = context.TemplateEngine.RunJint(isConceptual ? "Conceptual.mta.json.js" : $"{file.Mime}.mta.json.js", pageModel);
+                if (TemplateEngine.IsLandingData(file.Mime))
+                {
+                    result["_op_layout"] = "LandingPage";
+                    result["layout"] = "LandingPage";
+                    result["page_type"] = "landingdata";
+
+                    result.Remove("_op_gitContributorInformation");
+                    result.Remove("_op_allContributorsStr");
+                }
+
+                foreach (var (key, value) in result)
+                {
+                    if (key.StartsWith("_"))
+                    {
+                        result.Remove(key);
+                    }
+                }
+
+                return result;
+            }
         }
     }
 }
