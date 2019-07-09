@@ -163,16 +163,6 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Error, "download-failed", $"Download failed for file '{url}'. Try closing and reopening the PR. If you get this Error again, file an issue.");
 
         /// <summary>
-        /// Failed to update user profile cache file.
-        /// Examples:
-        ///   - when <see cref="GitHubConfig.UpdateRemoteUserCache"/> is turned on, and docfx fails to
-        ///     update the file cache with put request
-        /// </summary>
-        /// Behavior: ❌ Message: ✔️
-        public static Error UploadFailed(string url, string message)
-            => new Error(ErrorLevel.Warning, "upload-failed", $"Upload failed for '{url}': {message} Try closing and reopening the PR. If you get this Error again, file an issue.");
-
-        /// <summary>
         /// Failed to run `git fetch` or `git worktree add`.
         /// Examples:
         ///   - restore a repo with bad url
@@ -552,8 +542,8 @@ namespace Microsoft.Docs.Build
         /// Failed to parse moniker string.
         /// </summary>
         /// Behavior: ✔️ Message: ❌
-        public static Error MonikerRangeInvalid(SourceInfo<string> source, string message)
-            => new Error(ErrorLevel.Error, "moniker-range-invalid", $"Invalid moniker range: '{source}': {message}", source);
+        public static Error MonikerRangeInvalid(SourceInfo<string> source, Exception ex)
+            => new Error(ErrorLevel.Error, "moniker-range-invalid", $"Invalid moniker range: '{source}': {ex.Message}", source);
 
         /// <summary>
         /// MonikerRange is not defined in docfx.yml or doesn't match an article.md,
@@ -568,8 +558,11 @@ namespace Microsoft.Docs.Build
         /// or moniker-zone defined in article.md has no intersection with file-level monikers.
         /// </summary>
         /// Behavior: ✔️ Message: ❌
-        public static Error EmptyMonikers(string message)
-            => new Error(ErrorLevel.Warning, "empty-monikers", message);
+        public static Error EmptyMonikers(SourceInfo<string> rangeString, IReadOnlyList<string> zoneLevelMonikers, List<string> fileLevelMonikers)
+            => new Error(ErrorLevel.Warning, "empty-monikers", $"No intersection between zone and file level monikers. The result of zone level range string '{rangeString}' is '{string.Join(',', zoneLevelMonikers)}', while file level monikers is '{string.Join(',', fileLevelMonikers)}'.");
+
+        public static Error EmptyMonikers(string configMonikerRange, List<string> configMonikers, SourceInfo<string> monikerRange, IReadOnlyList<string> fileMonikers)
+            => new Error(ErrorLevel.Warning, "empty-monikers", $"No moniker intersection between docfx.yml/docfx.json and file metadata. Config moniker range '{configMonikerRange}' is '{string.Join(',', configMonikers)}', while file moniker range '{monikerRange}' is '{string.Join(',', fileMonikers)}'");
 
         /// <summary>
         /// Custom 404 page is not supported
