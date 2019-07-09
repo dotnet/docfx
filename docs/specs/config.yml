@@ -206,7 +206,7 @@ outputs:
 # absolute url extend
 inputs:
   docfx.yml: |
-    extend: https://raw.githubusercontent.com/docascode/docfx-test-dependencies/62b0448/extend1.yml
+    extend: https://raw.githubusercontent.com/docascode/docfx-test-dependencies/master/extend1.yml
   a.md:
 outputs:
   a.json:

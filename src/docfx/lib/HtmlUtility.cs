@@ -223,7 +223,7 @@ namespace Microsoft.Docs.Build
         {
             var result = new StringBuilder();
 
-            foreach (var property in metadata.Properties().OrderBy(p => p.Name))
+            foreach (var property in metadata.Properties())
             {
                 var key = property.Name;
                 var value = property.Value;

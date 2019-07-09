@@ -4,6 +4,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 
@@ -25,7 +26,7 @@ namespace Microsoft.Docs.Build
             JObject metadata = null;
             if (file.IsPage)
             {
-                (output, metadata) = await CreatePageOutput(errors, context, file, pageModel);
+                (output, metadata) = await CreatePageOutput(errors, context, file, new JObject(mergeModel.Properties().OrderBy(p => p.Name)));
             }
             else
             {
