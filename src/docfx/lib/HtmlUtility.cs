@@ -267,7 +267,7 @@ namespace Microsoft.Docs.Build
                     .Replace("<", "&lt;")
                     .Replace(">", "&gt;")
                     .Replace("\"", "&quot;")
-                    .Replace("'", "&#x27;");
+                    .Replace("'", "&#39;");
         }
 
         private static HtmlNode AddLinkType(this HtmlNode html, string locale)
