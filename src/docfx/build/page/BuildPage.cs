@@ -35,8 +35,10 @@ namespace Microsoft.Docs.Build
                 JsonUtility.Merge(mergeModel, pageModel);
 
                 var isConceptual = string.IsNullOrEmpty(file.Mime) || TemplateEngine.IsLandingData(file.Mime);
+
+                mergedMetadata = new JObject(mergedMetadata.Properties().OrderBy(p => p.Name));
+                mergeModel = new JObject(mergeModel.Properties().OrderBy(p => p.Name));
                 (output, metadata) = ApplyPageTemplate(context, file, mergedMetadata, mergeModel, isConceptual);
-                metadata = metadata is null ? null : new JObject(metadata.Properties().OrderBy(p => p.Name));
             }
             else
             {
@@ -66,6 +68,10 @@ namespace Microsoft.Docs.Build
                 if (output is string str)
                 {
                     context.Output.WriteText(str, publishItem.Path);
+                }
+                else if (output is JObject obj)
+                {
+                    context.Output.WriteJson(obj is null ? null : new JObject(obj.Properties().OrderBy(p => p.Name)), publishItem.Path);
                 }
                 else
                 {
