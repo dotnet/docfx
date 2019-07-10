@@ -4,12 +4,16 @@ commands:
   - build --legacy
 repos:
   https://docs.com/legacy:
-  - files:
+  - author: Charlie
+    email: charlie@contoso.com
+    files:
       docfx.yml: |
         template: https://docs.com/theme
         redirections:
           a.md: /b
         metadataSchema: schema.json
+        gitHub:
+          resolveUsers: true
       c.md: |
         ---
         api_name:
@@ -41,6 +45,12 @@ repos:
             content: JSON.stringify(model)
           }
         }
+cache:
+  github-users.json: |
+    { "users": [
+        {"name": "Charlie", "login": "charlie", "id": 3, "emails": ["charlie@contoso.com"]}
+      ]
+    }
 outputs:
   a.raw.page.json:
   a.mta.json: |
@@ -48,10 +58,18 @@ outputs:
   c.raw.page.json: |
     {
       "content": "<p><a href=\"d.png\" data-linktype=\"relative-path\">d</a></p>",
-      "rawMetadata": { "ms.author": "yufeih", "!robots": null, "api_name": ["API Name"] },
+      "rawMetadata": {
+        "ms.author": "yufeih",
+        "!robots": null,
+        "api_name": ["API Name"],
+        "_op_gitContributorInformation": {
+          "!updated_at_date_time": null
+        }
+      },
       "themesRelativePathToOutputRoot": "_themes/",
       "pageMetadata": "
         <meta name=\"APIName\" content=\"API Name\" />
+        <meta name=\"author\" content=\"charlie\" />
         <meta name=\"depot_name\" content=\".\" />
         <meta name=\"document_id\" content=\"fdb5a0d7-b68e-c465-9c5e-54a5cda94902\" />
         <meta name=\"document_version_independent_id\" content=\"92a5a770-f05f-b8bb-81c9-a8d786a9e608\" />
