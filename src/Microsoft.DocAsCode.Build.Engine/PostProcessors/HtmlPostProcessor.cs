@@ -25,12 +25,18 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public List<IHtmlDocumentHandler> Handlers { get; } = new List<IHtmlDocumentHandler>();
 
+        private bool _handlerInitialized;
+
         public ImmutableDictionary<string, object> PrepareMetadata(ImmutableDictionary<string, object> metadata)
         {
-            Handlers.Add(new ValidateBookmark());
-            if (!metadata.ContainsKey("_keepDebugInfo") || ((bool)metadata["_keepDebugInfo"]) == false)
+            if (!_handlerInitialized)
             {
-                Handlers.Add(new RemoveDebugInfo());
+                Handlers.Add(new ValidateBookmark());
+                if (!metadata.ContainsKey("_keepDebugInfo") || ((bool)metadata["_keepDebugInfo"]) == false)
+                {
+                    Handlers.Add(new RemoveDebugInfo());
+                }
+                _handlerInitialized = true;
             }
 
             return metadata;
