@@ -161,7 +161,7 @@ outputs:
 ---
 # Author can be excluded if it is not specified in YAML header
 repos:
-  https://github.com/testowner/testrepo#master-exclude-contributors:
+  https://github.com/testowner/testrepo#master-exclude-author:
     - author: Alice 
       email: alice@contoso.com
       files:
