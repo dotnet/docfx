@@ -37,6 +37,7 @@ namespace Microsoft.Docs.Build
                 var isConceptual = string.IsNullOrEmpty(file.Mime) || TemplateEngine.IsLandingData(file.Mime);
 
                 (output, metadata) = ApplyPageTemplate(context, file, mergedMetadata, mergeModel, isConceptual);
+                metadata = new JObject(metadata.Properties().OrderBy(p => p.Name));
             }
             else
             {
