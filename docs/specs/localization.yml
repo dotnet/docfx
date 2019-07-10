@@ -1507,3 +1507,19 @@ repos:
 outputs:
   docs/a.json: |
     { "conceptual":"<p>master</p>"}
+---
+# Do not validate bookmark for fallback content
+commands:
+  - restore --locale zh-cn
+  - build --locale zh-cn
+repos:
+  https://docs.com/fallback-content-bookmark-validation#master:
+    - files:
+        docfx.yml:
+        a.md:
+  https://docs.com/fallback-content-bookmark-validation.zh-cn#master:
+    - files:
+        docfx.yml:
+        b.md: '[](a.md#invalid-bookmark)'
+outputs:
+  b.json:
