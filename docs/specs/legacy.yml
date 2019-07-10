@@ -63,7 +63,7 @@ outputs:
         "!robots": null,
         "api_name": ["API Name"],
         "_op_gitContributorInformation": {
-          "!updated_at_date_time": null
+          "updated_at_date_time": "2018-10-30T00:00:00.0000000Z"
         }
       },
       "themesRelativePathToOutputRoot": "_themes/",
