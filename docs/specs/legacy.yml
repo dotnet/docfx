@@ -119,91 +119,10 @@ cache:
       ]
     }
 outputs:
-  rawmetadata/c.json: |
-    {
-      "conceptual": "\n<p><a href=\"d.png\" data-linktype=\"relative-path\">d</a></p>\n",
-      "wordCount": 2,
-      "title": "Title",
-      "rawTitle": "<h1 id=\"title\">Title</h1>",
-      "api_name": [
-        "API Name"
-      ],
-      "ms.author": "bob",
-      "author": "bob",
-      "locale": "en-us",
-      "_tocRel": "toc.json",
-      "canonical_url": "https://docs.com/en-us/rawmetadata/c",
-      "document_id": "fdb5a0d7-b68e-c465-9c5e-54a5cda94902",
-      "document_version_independent_id": "92a5a770-f05f-b8bb-81c9-a8d786a9e608",
-      "_op_gitContributorInformation": {
-        "update_at": "10/30/2018",
-        "contributors": [
-          {
-            "name": "charlie",
-            "profile_url": "https://github.com/charlie",
-            "display_name": "Charlie",
-            "id": "3"
-          }
-        ],
-        "author": {
-          "name": "bob",
-          "profile_url": "https://github.com/bob",
-          "display_name": "Bob",
-          "id": "2"
-        }
-      },
-      "updated_at": "2018-10-30 12:00 AM",
-      "content_git_url": "https://github.com/a/rawmetadata/blob/master/c.md",
-      "original_content_git_url": "https://github.com/a/rawmetadata/blob/master/c.md",
-      "original_content_git_url_template": "{repo}/blob/{branch}/c.md",
-      "gitcommit": "https://github.com/a/rawmetadata/blob/5cb844f400525147e40455b6f1adf54646de2693/c.md",
-      "site_name": "Docs",
-      "depot_name": ".",
-      "search.ms_docsetname": "",
-      "search.ms_product": "",
-      "search.ms_sitename": "Docs",
-      "_path": "c.json",
-      "_op_canonicalUrlPrefix": "https://docs.com/en-us/rawmetadata/",
-      "is_dynamic_rendering": true
-    }
+  rawmetadata/c.json:
   rawmetadata/d.png:
-  rawmetadata/toc.json: |
-    {"metadata":{},"items":[{"name":"c","href":"c"}]}
-  rawmetadata/index.json: |
-    {
-      "documentType": "LandingData",
-      "metadata": {
-        "document_id": "abc"
-      },
-      "document_id": "b3c1f04b-5bdb-1c10-5237-024cf382b4cc",
-      "locale": "en-us",
-      "author": "charlie",
-      "_tocRel": "toc.json",
-      "canonical_url": "https://docs.com/en-us/rawmetadata/",
-      "document_version_independent_id": "a79c6ec2-6514-508d-7d8a-5afe2098424f",
-      "_op_gitContributorInformation": {
-        "update_at": "10/30/2018",
-        "author": {
-          "name": "charlie",
-          "profile_url": "https://github.com/charlie",
-          "display_name": "Charlie",
-          "id": "3"
-        }
-      },
-      "updated_at": "2018-10-30 12:00 AM",
-      "content_git_url": "https://github.com/a/rawmetadata/blob/master/index.yml",
-      "original_content_git_url": "https://github.com/a/rawmetadata/blob/master/index.yml",
-      "original_content_git_url_template": "{repo}/blob/{branch}/index.yml",
-      "gitcommit": "https://github.com/a/rawmetadata/blob/5cb844f400525147e40455b6f1adf54646de2693/index.yml",
-      "site_name": "Docs",
-      "depot_name": ".",
-      "search.ms_docsetname": "",
-      "search.ms_product": "",
-      "search.ms_sitename": "Docs",
-      "_path": "index.json",
-      "_op_canonicalUrlPrefix": "https://docs.com/en-us/rawmetadata/",
-      "is_dynamic_rendering": true
-    }
+  rawmetadata/toc.json:
+  rawmetadata/index.json:
   .publish.json: |
     {"files": [
       {
@@ -212,12 +131,66 @@ outputs:
       }, 
       {
         "url": "/rawmetadata/c",
+        "path": "rawmetadata/c.json",
+        "source_path": "c.md",
+        "locale": "en-us",
+        "api_name": [
+          "API Name"
+        ],
+        "ms.author": "bob",
+        "author": "bob",
+        "_tocRel": "toc.json",
+        "canonical_url": "https://docs.com/en-us/rawmetadata/c",
+        "document_id": "fdb5a0d7-b68e-c465-9c5e-54a5cda94902",
+        "document_version_independent_id": "92a5a770-f05f-b8bb-81c9-a8d786a9e608",
+        "_op_gitContributorInformation": {
+          "update_at": "10/30/2018",
+          "contributors": [
+            {
+              "name": "charlie",
+              "profile_url": "https://github.com/charlie",
+              "display_name": "Charlie",
+              "id": "3"
+            }
+          ],
+          "author": {
+            "name": "bob",
+            "profile_url": "https://github.com/bob",
+            "display_name": "Bob",
+            "id": "2"
+          }
+        },
+        "updated_at": "2018-10-30 12:00 AM",
+        "content_git_url": "https://github.com/a/rawmetadata/blob/master/c.md",
+        "original_content_git_url": "https://github.com/a/rawmetadata/blob/master/c.md",
+        "original_content_git_url_template": "{repo}/blob/{branch}/c.md",
+        "gitcommit": "https://github.com/a/rawmetadata/blob/5cb844f400525147e40455b6f1adf54646de2693/c.md",
+        "site_name": "Docs",
+        "depot_name": ".",
+        "search.ms_docsetname": "",
+        "search.ms_product": "",
+        "search.ms_sitename": "Docs",
+        "_path": "c.json",
+        "_op_canonicalUrlPrefix": "https://docs.com/en-us/rawmetadata/",
+        "is_dynamic_rendering": true
       },
       {
         "url": "/rawmetadata/d.png"
       },
       {
-        "url": "/rawmetadata/"
+        "url": "/rawmetadata/",
+        "document_id": "b3c1f04b-5bdb-1c10-5237-024cf382b4cc",
+        "_path": "index.json",
+        "_op_gitContributorInformation": {
+          "update_at": "10/30/2018",
+          "author": {
+            "name": "charlie",
+            "profile_url": "https://github.com/charlie",
+            "display_name": "Charlie",
+            "id": "3"
+          },
+          "!contributors": null
+      },
       },
       {
         "url": "/rawmetadata/toc.json"

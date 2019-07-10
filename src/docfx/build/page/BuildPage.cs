@@ -80,14 +80,17 @@ namespace Microsoft.Docs.Build
             var (outputMetaErrors, outputMetadata) = await CreateOutputMetadata(context, file, inputMetadata);
             errors.AddRange(outputMetaErrors);
 
+            var mergedMetadata = new JObject();
+            JsonUtility.Merge(mergedMetadata, inputMetadata.RawJObject);
+            JsonUtility.Merge(mergedMetadata, JsonUtility.ToJObject(outputMetadata));
+
             var pageModel = new JObject();
             JsonUtility.Merge(pageModel, model);
-            JsonUtility.Merge(pageModel, inputMetadata.RawJObject);
-            JsonUtility.Merge(pageModel, JsonUtility.ToJObject(outputMetadata));
+            JsonUtility.Merge(pageModel, mergedMetadata);
 
             if (file.Docset.Config.Output.Json && !file.Docset.Legacy)
             {
-                return (pageModel, new JObject());
+                return (pageModel, mergedMetadata);
             }
 
             var (templateModel, metadata) = TransformToTemplateModel(context, new JObject(pageModel.Properties().OrderBy(p => p.Name)), file);
@@ -237,13 +240,14 @@ namespace Microsoft.Docs.Build
             var pageModel = (JObject)transformedToken;
             if (file.Docset.Legacy && TemplateEngine.IsLandingData(file.Mime))
             {
-                var content = pageModel.ToObject<LandingData>();
+                var landingData = pageModel.ToObject<LandingData>();
 
                 pageModel = JsonUtility.ToJObject(new ConceptualModel
                 {
-                    Conceptual = HtmlUtility.LoadHtml(await RazorTemplate.Render(file.Mime, content)).HtmlPostProcess(file.Docset.Culture),
+                    Conceptual = HtmlUtility.LoadHtml(await RazorTemplate.Render(file.Mime, landingData)).HtmlPostProcess(file.Docset.Culture),
                     Title = obj?.Value<string>("title"),
                     RawTitle = $"<h1>{obj?.Value<string>("title")}</h1>",
+                    ExtensionData = landingData.ExtensionData,
                 });
             }
 
@@ -268,7 +272,7 @@ namespace Microsoft.Docs.Build
             var model = new TemplateModel
             {
                 Content = conceptual,
-                RawMetadata = templateMetadata,
+                RawMetadata = pageModel,
                 PageMetadata = pageMetadata,
                 ThemesRelativePathToOutputRoot = "_themes/",
             };
