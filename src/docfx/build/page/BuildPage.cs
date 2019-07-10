@@ -26,7 +26,7 @@ namespace Microsoft.Docs.Build
             JObject metadata = null;
             if (file.IsPage)
             {
-                (output, metadata) = await CreatePageOutput(errors, context, file, new JObject(pageModel.Properties().OrderBy(p => p.Name)));
+                (output, metadata) = await CreatePageOutput(errors, context, file, pageModel);
             }
             else
             {
@@ -90,7 +90,7 @@ namespace Microsoft.Docs.Build
                 return (pageModel, new JObject());
             }
 
-            var (templateModel, metadata) = TransformToTemplateModel(context, pageModel, file);
+            var (templateModel, metadata) = TransformToTemplateModel(context, new JObject(pageModel.Properties().OrderBy(p => p.Name)), file);
             if (file.Docset.Config.Output.Json)
             {
                 return (templateModel, metadata);
