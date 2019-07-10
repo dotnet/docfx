@@ -54,7 +54,8 @@ namespace Microsoft.Docs.Build
                 if (bookmark == "top")
                     continue;
 
-                // Do not validate bookmark if the target file doesn't report bookmarks
+                // Do not validate bookmark if the target file doesn't report bookmarks.
+                // When the target file does not have bookmarks, it'll still report with an empty array.
                 if (!bookmarksByFile.TryGetValue(reference, out var bookmarks))
                     continue;
 
