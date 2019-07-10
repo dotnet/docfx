@@ -27,6 +27,7 @@ namespace Microsoft.Docs.Build
             if (file.IsPage)
             {
                 (output, metadata) = await CreatePageOutput(errors, context, file, pageModel);
+                metadata = new JObject(metadata.Properties().OrderBy(p => p.Name));
             }
             else
             {
