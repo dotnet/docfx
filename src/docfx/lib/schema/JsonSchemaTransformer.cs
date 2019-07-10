@@ -14,20 +14,18 @@ namespace Microsoft.Docs.Build
     {
         private readonly JsonSchema _schema;
         private readonly JsonSchemaDefinition _definitions;
-        private readonly ConcurrentDictionary<JToken, JToken> _transformedProperties;
+        private readonly ConcurrentDictionary<JToken, (List<Error>, JToken)> _transformedProperties;
 
         public JsonSchemaTransformer(JsonSchema schema)
         {
             _schema = schema;
             _definitions = new JsonSchemaDefinition(schema);
-            _transformedProperties = new ConcurrentDictionary<JToken, JToken>(ReferenceEqualsComparer.Default);
+            _transformedProperties = new ConcurrentDictionary<JToken, (List<Error>, JToken)>(ReferenceEqualsComparer.Default);
         }
 
         public (List<Error> errors, JToken token) TransformContent(Document file, Context context, JToken token)
         {
-            var errors = new List<Error>();
-            var transformedToken = TransformToken(file, context, _schema, token, errors);
-            return (errors, transformedToken);
+            return TransformToken(file, context, _schema, token);
         }
 
         public (List<Error> errors, Dictionary<string, List<(bool isRoot, SourceInfo source, Dictionary<string, Lazy<JToken>> propertiesByUid)>> xrefPropertiesGroupByUid) TraverseXref(Document file, Context context, JToken token)
@@ -66,7 +64,9 @@ namespace Microsoft.Docs.Build
                                 xrefProperties[key] = new Lazy<JToken>(
                                     () =>
                                     {
-                                        return TransformToken(file, context, propertySchema, value, errors);
+                                        var (transformErrors, transformedToken) = TransformToken(file, context, propertySchema, value);
+                                        context.ErrorLog.Write(transformErrors);
+                                        return transformedToken;
                                     }, LazyThreadSafetyMode.PublicationOnly);
                                 return true;
                             }
@@ -101,23 +101,22 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private JToken TransformToken(Document file, Context context, JsonSchema schema, JToken token, List<Error> errors)
+        private (List<Error>, JToken) TransformToken(Document file, Context context, JsonSchema schema, JToken token)
         {
             return TransformToken(schema, token);
 
-            JToken TransformToken(JsonSchema subSchema, JToken node)
+            (List<Error>, JToken) TransformToken(JsonSchema subSchema, JToken node)
             {
                 subSchema = _definitions.GetDefinition(subSchema);
 
                 if (subSchema == null)
                 {
-                    return node;
+                    return (new List<Error>(), node);
                 }
 
-                return _transformedProperties.GetOrAdd(node, _ => Transform());
-
-                JToken Transform()
+                return _transformedProperties.GetOrAdd(node, _ =>
                 {
+                    var errors = new List<Error>();
                     switch (node)
                     {
                         // transform array and object is not supported yet
@@ -125,11 +124,12 @@ namespace Microsoft.Docs.Build
                             var newArray = new JArray();
                             foreach (var item in array)
                             {
-                                var newItem = TransformToken(subSchema.Items, item);
+                                var (arrayErrors, newItem) = TransformToken(subSchema.Items, item);
+                                errors.AddRange(arrayErrors);
                                 newArray.Add(newItem);
                             }
 
-                            return newArray;
+                            return (errors, newArray);
 
                         case JObject obj:
                             var newObject = new JObject();
@@ -137,30 +137,33 @@ namespace Microsoft.Docs.Build
                             {
                                 if (subSchema.Properties.TryGetValue(key, out var propertySchema))
                                 {
-                                    newObject[key] = TransformToken(propertySchema, value);
+                                    var (propertyErrors, transformedValue) = TransformToken(propertySchema, value);
+                                    errors.AddRange(propertyErrors);
+                                    newObject[key] = transformedValue;
                                 }
                                 else
                                 {
                                     newObject[key] = value;
                                 }
                             }
-                            return newObject;
+                            return (errors, newObject);
 
                         case JValue value:
-                            return TransformScalar(subSchema, file, context, value, errors);
+                            return TransformScalar(subSchema, file, context, value);
 
                         default:
                             throw new NotSupportedException();
                     }
-                }
+                });
             }
         }
 
-        private JToken TransformScalar(JsonSchema schema, Document file, Context context, JValue value, List<Error> errors)
+        private (List<Error>, JToken) TransformScalar(JsonSchema schema, Document file, Context context, JValue value)
         {
+            var errors = new List<Error>();
             if (value.Type == JTokenType.Null || schema.ContentType == JsonSchemaContentType.None)
             {
-                return value;
+                return (errors, value);
             }
 
             var sourceInfo = JsonUtility.GetSourceInfo(value);
@@ -223,7 +226,7 @@ namespace Microsoft.Docs.Build
                     {
                         var specObj = JsonUtility.ToJObject(xrefSpec);
                         JsonUtility.SetSourceInfo(specObj, content);
-                        return specObj;
+                        return (errors, specObj);
                     }
 
                     content = new SourceInfo<string>(null, content);
@@ -232,7 +235,7 @@ namespace Microsoft.Docs.Build
 
             value = new JValue(content.Value);
             JsonUtility.SetSourceInfo(value, content);
-            return value;
+            return (errors, value);
         }
     }
 }
