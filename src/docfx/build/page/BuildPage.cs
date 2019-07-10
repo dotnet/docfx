@@ -260,7 +260,16 @@ namespace Microsoft.Docs.Build
             var isConceptual = string.IsNullOrEmpty(file.Mime) || TemplateEngine.IsLandingData(file.Mime);
             var conceptual = isConceptual ? pageModel.Value<string>("conceptual") : string.Empty;
 
-            var templateMetadata = CreateMetadata();
+            var templateMetadata = context.TemplateEngine.RunJint(isConceptual ? "Conceptual.mta.json.js" : $"{file.Mime}.mta.json.js", pageModel);
+            if (TemplateEngine.IsLandingData(file.Mime))
+            {
+                templateMetadata["_op_layout"] = "LandingPage";
+                templateMetadata["layout"] = "LandingPage";
+                templateMetadata["page_type"] = "landingdata";
+
+                templateMetadata.Remove("_op_gitContributorInformation");
+                templateMetadata.Remove("_op_allContributorsStr");
+            }
 
             if (!isConceptual)
             {
@@ -273,28 +282,12 @@ namespace Microsoft.Docs.Build
             var model = new TemplateModel
             {
                 Content = conceptual,
-                RawMetadata = pageModel,
+                RawMetadata = templateMetadata,
                 PageMetadata = pageMetadata,
                 ThemesRelativePathToOutputRoot = "_themes/",
             };
 
             return (model, templateMetadata);
-
-            JObject CreateMetadata()
-            {
-                var result = context.TemplateEngine.RunJint(isConceptual ? "Conceptual.mta.json.js" : $"{file.Mime}.mta.json.js", pageModel);
-                if (TemplateEngine.IsLandingData(file.Mime))
-                {
-                    result["_op_layout"] = "LandingPage";
-                    result["layout"] = "LandingPage";
-                    result["page_type"] = "landingdata";
-
-                    result.Remove("_op_gitContributorInformation");
-                    result.Remove("_op_allContributorsStr");
-                }
-
-                return new JObject(result.Properties().Where(p => !p.Name.StartsWith("_")));
-            }
         }
     }
 }

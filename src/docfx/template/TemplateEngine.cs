@@ -103,7 +103,15 @@ namespace Microsoft.Docs.Build
                 return model;
             }
 
-            var result = (JObject)_js.Run(scriptPath, methodName, model);
+            var jsResult = _js.Run(scriptPath, methodName, model);
+            JObject result = new JObject();
+            if (jsResult is JValue)
+            {
+                result["content"] = jsResult;
+                return result;
+            }
+
+            result = (JObject)_js.Run(scriptPath, methodName, model);
             if (tryParseFromContent
                 && result.TryGetValue<JValue>("content", out var value)
                 && value.Value is string content)

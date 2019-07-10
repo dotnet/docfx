@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Text;
 using System.Web;
 using HtmlAgilityPack;
@@ -227,7 +226,7 @@ namespace Microsoft.Docs.Build
             {
                 var key = property.Name;
                 var value = property.Value;
-                if (value is JObject || htmlMetaConfigs.htmlMetaHidden.Contains(key))
+                if (key.StartsWith("_") || value is JObject || htmlMetaConfigs.htmlMetaHidden.Contains(key))
                 {
                     continue;
                 }
