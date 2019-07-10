@@ -36,8 +36,6 @@ namespace Microsoft.Docs.Build
 
                 var isConceptual = string.IsNullOrEmpty(file.Mime) || TemplateEngine.IsLandingData(file.Mime);
 
-                mergedMetadata = new JObject(mergedMetadata.Properties().OrderBy(p => p.Name));
-                mergeModel = new JObject(mergeModel.Properties().OrderBy(p => p.Name));
                 (output, metadata) = ApplyPageTemplate(context, file, mergedMetadata, mergeModel, isConceptual);
             }
             else
@@ -263,7 +261,7 @@ namespace Microsoft.Docs.Build
                     // whether input needs metadata?
                 }
 
-                return TransformToTemplateModel(context, conceptual, processedMetadata, file.Mime);
+                return TransformToTemplateModel(context, conceptual, new JObject(processedMetadata.Properties().OrderBy(p => p.Name)), file.Mime);
             }
 
             return (pageModel, processedMetadata);
