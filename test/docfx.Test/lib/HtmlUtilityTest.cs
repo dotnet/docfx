@@ -100,5 +100,14 @@ namespace Microsoft.Docs.Build
         {
             Assert.Equal(expected, string.Join(", ", HtmlUtility.GetBookmarks(HtmlUtility.LoadHtml(html))));
         }
+
+        [Theory]
+        [InlineData("", "")]
+        [InlineData("rétablir", "rétablir")]
+        [InlineData("&<>\"'", "&amp;&lt;&gt;&quot;&#39;")]
+        public static void Encode(string input, string expected)
+        {
+            Assert.Equal(expected, HtmlUtility.Encode(input));
+        }
     }
 }
