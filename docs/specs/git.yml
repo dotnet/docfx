@@ -162,11 +162,6 @@ outputs:
 # Author can be excluded if it is not specified in YAML header
 repos:
   https://github.com/testowner/testrepo#master-exclude-contributors:
-    - author: Bob 
-      email: bob@contoso.com
-      files:
-        docs/index.md: |
-          Alice creates this. Bob updates this. Bob becomes author
     - author: Alice 
       email: alice@contoso.com
       files:
@@ -178,24 +173,13 @@ inputs:
       resolveUsers: true
     contribution:
       excludedContributors:
-        - AlIcE
+        - Alice
 cache:
   github-users.json: |
-      { "users": [
-          {"name": "Alice", "login": "alice", "id": 1, "emails": ["alice@contoso.com"]},
-          {"name": "Bob", "login": "bob", "id": 2, "emails": ["bob@contoso.com"]},
-        ]
-      }
+      { "users": [{"name": "Alice", "login": "alice", "id": 1, "emails": ["alice@contoso.com"]}]}
 outputs:
   docs/index.json: |
-    {
-      "_op_gitContributorInformation":
-      {
-        "author": 
-          { "name": "bob", "profile_url": "https://github.com/bob", "display_name": "Bob", "id": "2" },
-        "!contributors": null
-      }
-    }
+    { "_op_gitContributorInformation": { "!author": null } }
 ---
 # Use the earliest contributor as author if author not specified in YAML header
 repos:
