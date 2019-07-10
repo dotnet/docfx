@@ -66,7 +66,6 @@ namespace Microsoft.Docs.Build
 
                 context.Output.WriteJson(xrefMapModel, "xrefmap.json");
                 var temp = JsonUtility.Serialize(publishModel);
-                context.Output.WriteJson(publishModel, ".publish.json");
                 context.Output.WriteJson(dependencyMap.ToDependencyMapModel(), ".dependencymap.json");
 
                 if (options.Legacy)
