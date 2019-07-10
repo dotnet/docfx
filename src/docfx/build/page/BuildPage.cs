@@ -277,7 +277,8 @@ namespace Microsoft.Docs.Build
                 conceptual = context.TemplateEngine.RunMustache($"{file.Mime}.html.primary.tmpl", jintResult);
             }
 
-            var pageMetadata = HtmlUtility.CreateHtmlMetaTags(templateMetadata, context.TemplateEngine.HtmlMetaConfigs);
+            var metadata = new JObject(templateMetadata.Properties().Where(p => !p.Name.StartsWith("_")));
+            var pageMetadata = HtmlUtility.CreateHtmlMetaTags(metadata, context.TemplateEngine.HtmlMetaConfigs);
 
             var model = new TemplateModel
             {
@@ -287,7 +288,7 @@ namespace Microsoft.Docs.Build
                 ThemesRelativePathToOutputRoot = "_themes/",
             };
 
-            return (model, templateMetadata);
+            return (model, metadata);
         }
     }
 }

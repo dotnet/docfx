@@ -226,7 +226,7 @@ namespace Microsoft.Docs.Build
             {
                 var key = property.Name;
                 var value = property.Value;
-                if (key.StartsWith("_") || value is JObject || htmlMetaConfigs.htmlMetaHidden.Contains(key))
+                if (value is JObject || htmlMetaConfigs.htmlMetaHidden.Contains(key))
                 {
                     continue;
                 }
