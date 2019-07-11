@@ -16,25 +16,15 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(file.ContentType == ContentType.Page);
 
-            var (errors, pageModel) = await Load(context, file);
+            var (errors, sourceModel) = await Load(context, file);
             var (monikerError, monikers) = context.MonikerProvider.GetFileLevelMonikers(file);
             errors.AddIfNotNull(monikerError);
 
             var outputPath = file.GetOutputPath(monikers, file.Docset.SiteBasePath, file.IsPage);
 
-            object output = null;
-            JObject metadata = null;
-            if (file.IsPage)
-            {
-                List<Error> pageOutputErrors = null;
-                (pageOutputErrors, output, metadata) = await CreatePageOutput(context, file, pageModel);
-                errors.AddRange(pageOutputErrors);
-                metadata = new JObject(metadata.Properties().OrderBy(p => p.Name));
-            }
-            else
-            {
-                output = context.TemplateEngine.RunJint($"{file.Mime}.json.js", pageModel);
-            }
+            var (outputErrors, output, metadata) =
+                file.IsPage ? await CreatePageOutput(context, file, sourceModel) : CreateDataOutput(context, file, sourceModel);
+            errors.AddRange(outputErrors);
 
             if (Path.GetFileNameWithoutExtension(file.FilePath).Equals("404", PathUtility.PathComparison))
             {
@@ -74,7 +64,8 @@ namespace Microsoft.Docs.Build
             return errors;
         }
 
-        private static async Task<(List<Error> errors, object output, JObject metadata)> CreatePageOutput(Context context, Document file, JObject model)
+        private static async Task<(List<Error> errors, object output, JObject metadata)>
+            CreatePageOutput(Context context, Document file, JObject sourcecModel)
         {
             var errors = new List<Error>();
             var (inputMetaErrors, inputMetadata) = context.MetadataProvider.GetMetadata(file);
@@ -88,23 +79,30 @@ namespace Microsoft.Docs.Build
             JsonUtility.Merge(mergedMetadata, JsonUtility.ToJObject(outputMetadata));
 
             var pageModel = new JObject();
-            JsonUtility.Merge(pageModel, model);
+            JsonUtility.Merge(pageModel, sourcecModel);
             JsonUtility.Merge(pageModel, mergedMetadata);
 
             if (file.Docset.Config.Output.Json && !file.Docset.Legacy)
             {
-                return (errors, pageModel, mergedMetadata);
+                return (errors, pageModel, SortProperties(mergedMetadata));
             }
 
-            var (templateModel, metadata) = TransformToTemplateModel(context, new JObject(pageModel.Properties().OrderBy(p => p.Name)), file);
+            var (templateModel, metadata) = CreateTemplateModel(context, new JObject(pageModel.Properties().OrderBy(p => p.Name)), file);
             if (file.Docset.Config.Output.Json)
             {
-                return (errors, templateModel, metadata);
+                return (errors, templateModel, SortProperties(metadata));
             }
 
             var html = context.TemplateEngine.RunLiquid(file, templateModel);
-            return (errors, html, metadata);
+            return (errors, html, SortProperties(metadata));
+
+            JObject SortProperties(JObject obj)
+                => new JObject(obj.Properties().OrderBy(p => p.Value));
         }
+
+        private static (List<Error> errors, object output, JObject metadata)
+            CreateDataOutput(Context context, Document file, JObject sourceModel)
+            => (new List<Error>(), context.TemplateEngine.RunJint($"{file.Mime}.json.js", sourceModel), null);
 
         private static async Task<(List<Error>, OutputMetadata)> CreateOutputMetadata(
                 Context context,
@@ -257,7 +255,7 @@ namespace Microsoft.Docs.Build
             return (errors, pageModel);
         }
 
-        private static (TemplateModel model, JObject metadata) TransformToTemplateModel(Context context, JObject pageModel, Document file)
+        private static (TemplateModel model, JObject metadata) CreateTemplateModel(Context context, JObject pageModel, Document file)
         {
             var isConceptual = string.IsNullOrEmpty(file.Mime) || TemplateEngine.IsLandingData(file.Mime);
             var conceptual = isConceptual ? pageModel.Value<string>("conceptual") : string.Empty;
