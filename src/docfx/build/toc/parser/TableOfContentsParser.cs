@@ -142,7 +142,7 @@ namespace Microsoft.Docs.Build
                     Name = tocModelItem.Name.Or(resolvedTopicName),
                     Document = document ?? subChildrenFirstItem?.Document,
                     Items = subChildren?.Items ?? tocModelItem.Items,
-                    Monikers = string.IsNullOrEmpty(resolvedTocHref) && string.IsNullOrEmpty(resolvedTopicHref) ? subChildrenFirstItem?.Monikers ?? new List<string>() : tocModelItem.Monikers,
+                    Monikers = string.IsNullOrEmpty(resolvedTocHref) && string.IsNullOrEmpty(resolvedTopicHref) ? subChildrenFirstItem?.Monikers ?? new List<string>() : new List<string>(),
                 };
 
                 // resolve children
