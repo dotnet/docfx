@@ -277,9 +277,13 @@ namespace Microsoft.Docs.Build
                 conceptual = context.TemplateEngine.RunMustache($"{file.Mime}.html.primary.tmpl", jintResult);
             }
 
+            // content for *.mta.json
             var metadata = new JObject(templateMetadata.Properties().Where(p => !p.Name.StartsWith("_")));
+            metadata["is_dynamic_rendering"] = true;
+
             var pageMetadata = HtmlUtility.CreateHtmlMetaTags(metadata, context.TemplateEngine.HtmlMetaConfigs);
 
+            // content for *.raw.page.json
             var model = new TemplateModel
             {
                 Content = conceptual,

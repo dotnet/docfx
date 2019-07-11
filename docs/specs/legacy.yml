@@ -189,8 +189,7 @@ outputs:
         "search.ms_product": "",
         "search.ms_sitename": "Docs",
         "_path": "c.json",
-        "_op_canonicalUrlPrefix": "https://docs.com/en-us/rawmetadata/",
-        "is_dynamic_rendering": true
+        "_op_canonicalUrlPrefix": "https://docs.com/en-us/rawmetadata/"
       },
       {
         "url": "/rawmetadata/d.png"
