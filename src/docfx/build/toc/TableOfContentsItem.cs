@@ -52,7 +52,6 @@ namespace Microsoft.Docs.Build
             MaintainContext = item.MaintainContext;
             ExtensionData = item.ExtensionData;
             Items = item.Items;
-            Monikers = item.Monikers;
             Document = item.Document;
         }
 
