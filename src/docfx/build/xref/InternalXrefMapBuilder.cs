@@ -102,7 +102,7 @@ namespace Microsoft.Docs.Build
             var errors = new List<Error>();
             var schemaTemplate = context.TemplateEngine.GetSchema(file.Mime);
 
-            var (schemaErrors, xrefPropertiesGroupByUid) = schemaTemplate.JsonSchemaTransformer.TransformXref(file, context, token);
+            var (schemaErrors, xrefPropertiesGroupByUid) = schemaTemplate.JsonSchemaTransformer.TraverseXref(file, context, token);
             errors.AddRange(schemaErrors);
 
             var specs = xrefPropertiesGroupByUid.Select(item =>

@@ -347,7 +347,8 @@ inputs:
       ~: docs
       $ROOT: .
   docs/a.md: |
-    Link to [B1](~/b.md)
+    Link to [B1.1](~/b.md)
+    Link to [B1.2](~////b.md)
     Link to [B2]($ROOT/docs/b.md)
     Link to [B3](~/docs/b.md)
     ![C](~/c.png)
@@ -355,11 +356,16 @@ inputs:
   docs/c.png:
 outputs:
   docs/a.json: |
-    { "conceptual": "<p>Link to <a href=\"b\">B1</a>\nLink to <a href=\"b\">B2</a>\nLink to <a href=\"%7E/docs/b.md\">B3</a>\n<img src=\"c.png\" alt=\"C\"></p>\n" }
+    { "conceptual": "<p>Link to <a href=\"b\">B1.1</a>
+                        Link to <a href=\"b\">B1.2</a>
+                        Link to <a href=\"b\">B2</a>
+                        Link to <a href=\"%7E/docs/b.md\">B3</a>
+                        <img src=\"c.png\" alt=\"C\"></p>" 
+    }
   docs/b.json:
   docs/c.png:
   .errors.log: |
-    ["warning","file-not-found","Invalid file link: '~/docs/b.md'.","docs/a.md",3,9]
+    ["warning","file-not-found","Invalid file link: '~/docs/b.md'.","docs/a.md",4,9]
 ---
 # Multiple matched alias, use the last one
 inputs:

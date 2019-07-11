@@ -14,7 +14,6 @@ namespace Microsoft.Docs.Build
     {
         public string UpdateAt { get; set; }
 
-        [JsonIgnore]
         public DateTime UpdatedAtDateTime { get; set; }
 
         public List<Contributor> Contributors { get; set; }

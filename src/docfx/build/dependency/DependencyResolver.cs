@@ -286,7 +286,7 @@ namespace Microsoft.Docs.Build
                 {
                     if (path.StartsWith(alias, PathUtility.PathComparison))
                     {
-                        return PathUtility.NormalizeFile(Path.Combine(aliasPath, path.Substring(alias.Length)));
+                        return PathUtility.NormalizeFile(aliasPath + path.Substring(alias.Length));
                     }
                 }
             }

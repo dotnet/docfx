@@ -67,6 +67,7 @@ namespace Microsoft.Docs.Build
         [JsonProperty("_op_pdfUrlPrefixTemplate")]
         public string PdfUrlPrefixTemplate { get; set; }
 
+        [JsonIgnore]
         public bool IsDynamicRendering => true;
     }
 }
