@@ -1,12 +1,11 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -36,7 +35,9 @@ namespace Microsoft.Docs.Build
                 JsonUtility.Merge(mergeModel, pageModel);
 
                 var isConceptual = string.IsNullOrEmpty(file.Mime) || TemplateEngine.IsLandingData(file.Mime);
+
                 (output, metadata) = ApplyPageTemplate(context, file, mergedMetadata, mergeModel, isConceptual);
+                metadata = new JObject(metadata.Properties().OrderBy(p => p.Name));
             }
             else
             {
@@ -261,7 +262,7 @@ namespace Microsoft.Docs.Build
                     // whether input needs metadata?
                 }
 
-                return TransformToTemplateModel(context, conceptual, processedMetadata, file.Mime);
+                return TransformToTemplateModel(context, conceptual, new JObject(processedMetadata.Properties().OrderBy(p => p.Name)), file.Mime);
             }
 
             return (pageModel, processedMetadata);
@@ -280,6 +281,7 @@ namespace Microsoft.Docs.Build
                 pageModel.Remove("_op_gitContributorInformation");
                 pageModel.Remove("_op_allContributorsStr");
             }
+
             var metadata = TemplateEngine.CreateMetadata(pageModel);
             var pageMetadata = HtmlUtility.CreateHtmlMetaTags(metadata, context.TemplateEngine.HtmlMetaConfigs);
 
