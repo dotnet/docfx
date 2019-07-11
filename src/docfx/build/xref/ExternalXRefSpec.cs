@@ -15,6 +15,8 @@ namespace Microsoft.Docs.Build
 
         Document IXrefSpec.DeclaringFile => null;
 
+        SourceInfo IXrefSpec.Source => null;
+
         [JsonIgnore]
         public HashSet<string> Monikers { get; set; } = new HashSet<string>();
 
