@@ -76,7 +76,7 @@ namespace Microsoft.Docs.Build
         public string Render(string templateName, JObject pageModel)
         {
             // TODO: run mustache
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         public void CopyTo(string outputPath)

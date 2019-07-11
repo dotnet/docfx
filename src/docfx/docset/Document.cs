@@ -239,21 +239,32 @@ namespace Microsoft.Docs.Build
         /// </summary>
         /// <param name="docset">The current docset</param>
         /// <param name="path">The path relative to docset root</param>
-        public static Document Create(Docset docset, string path, TemplateEngine templateEngine, string redirectionUrl = null, bool isFromHistory = false, bool combineRedirectUrl = false)
+        public static Document Create(
+            Docset docset,
+            string path,
+            TemplateEngine templateEngine,
+            string redirectionUrl = null,
+            bool isFromHistory = false,
+            bool combineRedirectUrl = false)
         {
             Debug.Assert(docset != null);
             Debug.Assert(!string.IsNullOrEmpty(path));
             Debug.Assert(!Path.IsPathRooted(path));
 
             var filePath = PathUtility.NormalizeFile(path);
-            var isConfigReference = docset.Config.Extend.Concat(docset.Config.GetFileReferences()).Contains(filePath, PathUtility.PathComparer);
+
+            var isConfigReference =
+                docset.Config.Extend.Concat(docset.Config.GetFileReferences()).Contains(filePath, PathUtility.PathComparer);
+
             var type = isConfigReference ? ContentType.Unknown : GetContentType(filePath);
             var mime = type == ContentType.Page ? ReadMimeFromFile(filePath, Path.Combine(docset.DocsetPath, filePath)) : default;
             var isPage = templateEngine.IsPage(mime);
             var isExperimental = Path.GetFileNameWithoutExtension(filePath).EndsWith(".experimental", PathUtility.PathComparison);
             var routedFilePath = ApplyRoutes(filePath, docset.Routes, docset.SiteBasePath);
 
-            var sitePath = FilePathToSitePath(routedFilePath, type, mime, docset.Config.Output.Json, docset.Config.Output.UglifyUrl, isPage);
+            var sitePath = FilePathToSitePath(
+                routedFilePath, type, mime, docset.Config.Output.Json, docset.Config.Output.UglifyUrl, isPage);
+
             if (docset.Config.Output.LowerCaseUrl)
             {
                 sitePath = sitePath.ToLowerInvariant();
@@ -261,16 +272,34 @@ namespace Microsoft.Docs.Build
 
             var siteUrl = PathToAbsoluteUrl(sitePath, type, mime, docset.Config.Output.Json, isPage);
             var contentType = type;
+
             if (redirectionUrl != null)
             {
                 contentType = ContentType.Redirection;
-                redirectionUrl = combineRedirectUrl ? PathUtility.Normalize(Path.Combine(Path.GetDirectoryName(siteUrl), redirectionUrl)) : redirectionUrl;
-                redirectionUrl = redirectionUrl.EndsWith("/index") ? redirectionUrl.Substring(0, redirectionUrl.Length - "index".Length) : redirectionUrl;
-            }
-            var canonicalUrl = GetCanonicalUrl(siteUrl, sitePath, docset, isExperimental, contentType, mime, isPage);
-            var canonicalUrlWithoutLocale = GetCanonicalUrl(siteUrl, sitePath, docset, isExperimental, contentType, mime, isPage, withLocale: false);
 
-            return new Document(docset, filePath, sitePath, siteUrl, canonicalUrlWithoutLocale, canonicalUrl, contentType, mime, isExperimental, redirectionUrl, isFromHistory, isPage);
+                if (combineRedirectUrl)
+                    redirectionUrl = PathUtility.Normalize(Path.Combine(Path.GetDirectoryName(siteUrl), redirectionUrl));
+                if (redirectionUrl.EndsWith("/index"))
+                    redirectionUrl = redirectionUrl.Substring(0, redirectionUrl.Length - "index".Length);
+            }
+
+            var canonicalUrl = GetCanonicalUrl(siteUrl, sitePath, docset, isExperimental, contentType, mime, isPage);
+            var canonicalUrlWithoutLocale = GetCanonicalUrl(
+                siteUrl, sitePath, docset, isExperimental, contentType, mime, isPage, withLocale: false);
+
+            return new Document(
+                docset,
+                filePath,
+                sitePath,
+                siteUrl,
+                canonicalUrlWithoutLocale,
+                canonicalUrl,
+                contentType,
+                mime,
+                isExperimental,
+                redirectionUrl,
+                isFromHistory,
+                isPage);
         }
 
         /// <summary>
