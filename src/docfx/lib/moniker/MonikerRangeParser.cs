@@ -39,7 +39,7 @@ namespace Microsoft.Docs.Build
                     }
                     catch (MonikerRangeException ex)
                     {
-                        throw Errors.MonikerRangeInvalid(rangeString, ex.Message).ToException();
+                        throw Errors.MonikerRangeInvalid(rangeString, ex).ToException();
                     }
 
                     return monikers;
