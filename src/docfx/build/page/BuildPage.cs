@@ -97,7 +97,7 @@ namespace Microsoft.Docs.Build
             return (errors, html, SortProperties(metadata));
 
             JObject SortProperties(JObject obj)
-                => new JObject(obj.Properties().OrderBy(p => p.Value));
+                => new JObject(obj.Properties().OrderBy(p => p.Name));
         }
 
         private static (List<Error> errors, object output, JObject metadata)
