@@ -281,6 +281,7 @@ namespace Microsoft.Docs.Build
                 pageModel.Remove("_op_gitContributorInformation");
                 pageModel.Remove("_op_allContributorsStr");
             }
+
             var metadata = TemplateEngine.CreateMetadata(pageModel);
             var pageMetadata = HtmlUtility.CreateHtmlMetaTags(metadata, context.TemplateEngine.HtmlMetaConfigs);
 
