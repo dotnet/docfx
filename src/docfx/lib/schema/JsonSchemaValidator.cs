@@ -82,7 +82,7 @@ namespace Microsoft.Docs.Build
                 case double _:
                 case float _:
                 case long _:
-                    ValidateNumber(schema, name, scalar, Convert.ToDouble(scalar.Value), errors);
+                    ValidateNumber(schema, scalar, Convert.ToDouble(scalar.Value), errors);
                     break;
             }
         }
@@ -202,19 +202,26 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static void ValidateNumber(JsonSchema schema, string name, JValue scalar, double number, List<Error> errors)
+        private static void ValidateNumber(JsonSchema schema, JValue scalar, double number, List<Error> errors)
         {
             if (schema.Maximum.HasValue && number > schema.Maximum)
-                errors.Add(Errors.NumberInvalid(JsonUtility.GetSourceInfo(scalar), name, $"<= {schema.Maximum}"));
+                errors.Add(Errors.NumberInvalid(JsonUtility.GetSourceInfo(scalar), number, $"<= {schema.Maximum}"));
 
             if (schema.Minimum.HasValue && number < schema.Minimum)
-                errors.Add(Errors.NumberInvalid(JsonUtility.GetSourceInfo(scalar), name, $">= {schema.Minimum}"));
+                errors.Add(Errors.NumberInvalid(JsonUtility.GetSourceInfo(scalar), number, $">= {schema.Minimum}"));
 
             if (schema.ExclusiveMaximum.HasValue && number >= schema.ExclusiveMaximum)
-                errors.Add(Errors.NumberInvalid(JsonUtility.GetSourceInfo(scalar), name, $"< {schema.ExclusiveMaximum}"));
+                errors.Add(Errors.NumberInvalid(JsonUtility.GetSourceInfo(scalar), number, $"< {schema.ExclusiveMaximum}"));
 
             if (schema.ExclusiveMinimum.HasValue && number <= schema.ExclusiveMinimum)
-                errors.Add(Errors.NumberInvalid(JsonUtility.GetSourceInfo(scalar), name, $"> {schema.ExclusiveMinimum}"));
+                errors.Add(Errors.NumberInvalid(JsonUtility.GetSourceInfo(scalar), number, $"> {schema.ExclusiveMinimum}"));
+
+            if (schema.MultipleOf.HasValue)
+            {
+                var n = number / schema.MultipleOf.Value;
+                if (Math.Abs(n - Math.Floor(n)) > double.Epsilon)
+                    errors.Add(Errors.NumberInvalid(JsonUtility.GetSourceInfo(scalar), number, $"multiple of {schema.MultipleOf.Value}"));
+            }
         }
 
         private void ValidateConst(JsonSchema schema, JToken token, List<Error> errors)

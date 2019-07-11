@@ -128,6 +128,11 @@ namespace Microsoft.Docs.Build
         public double? ExclusiveMinimum { get; set; }
 
         /// <summary>
+        /// The number must be multiple of this value.
+        /// </summary>
+        public double? MultipleOf { get; set; }
+
+        /// <summary>
         /// The regular expression applied to strings
         /// </summary>
         public string Pattern { get; set; }

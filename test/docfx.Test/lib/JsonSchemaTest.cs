@@ -21,7 +21,6 @@ namespace Microsoft.Docs.Build
             "contains",
             "definitions",
             "if-then-else",
-            "multipleOf",
             "not",
             "oneOf",
             "refRemote"
@@ -151,11 +150,15 @@ namespace Microsoft.Docs.Build
         [InlineData("{'minimum': 1, 'maximum': 1}", "1", "")]
         [InlineData("{'exclusiveMinimum': 0.99, 'exclusiveMaximum': 1.01}", "1", "")]
         [InlineData("{'minimum': 100, 'maximum': -100}", "1",
-            @"['warning','number-invalid','Number '' should be <= -100','file',1,1]
-              ['warning','number-invalid','Number '' should be >= 100','file',1,1]")]
+            @"['warning','number-invalid','Number '1' should be <= -100','file',1,1]
+              ['warning','number-invalid','Number '1' should be >= 100','file',1,1]")]
         [InlineData("{'exclusiveMinimum': 100, 'exclusiveMaximum': -100}", "1",
-            @"['warning','number-invalid','Number '' should be < -100','file',1,1]
-              ['warning','number-invalid','Number '' should be > 100','file',1,1]")]
+            @"['warning','number-invalid','Number '1' should be < -100','file',1,1]
+              ['warning','number-invalid','Number '1' should be > 100','file',1,1]")]
+
+        [InlineData("{'multipleOf': 1}", "1", "")]
+        [InlineData("{'multipleOf': 2}", "1",
+            "['warning','number-invalid','Number '1' should be multiple of 2','file',1,1]")]
 
         // string format validation
         [InlineData("{'type': ['string'], 'format': 'date-time'}", "'1963-06-19T08:30:06Z'", "")]
