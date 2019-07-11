@@ -275,9 +275,8 @@ namespace Microsoft.Docs.Build
 
             if (!isConceptual)
             {
-                // TODO: comment this out for now since we have issues running *.html.primary.js
-                // var jintResult = context.TemplateEngine.RunJint($"{file.Mime}.html.primary.js", pageModel);
-                // conceptual = context.TemplateEngine.RunMustache($"{file.Mime}.html.primary.tmpl", jintResult);
+                var jintResult = context.TemplateEngine.RunJint($"{file.Mime}.html.primary.js", pageModel);
+                conceptual = context.TemplateEngine.RunMustache($"{file.Mime}.html.primary.tmpl", jintResult);
             }
 
             // content for *.mta.json
