@@ -26,13 +26,14 @@ namespace Microsoft.Docs.Build
             JObject metadata = null;
             if (file.IsPage)
             {
-                (output, metadata) = await CreatePageOutput(errors, context, file, pageModel);
+                List<Error> pageOutputErrors = null;
+                (pageOutputErrors, output, metadata) = await CreatePageOutput(context, file, pageModel);
+                errors.AddRange(pageOutputErrors);
                 metadata = new JObject(metadata.Properties().OrderBy(p => p.Name));
             }
             else
             {
                 output = context.TemplateEngine.RunJint($"{file.Mime}.json.js", pageModel);
-                metadata = null;
             }
 
             if (Path.GetFileNameWithoutExtension(file.FilePath).Equals("404", PathUtility.PathComparison))
@@ -73,8 +74,9 @@ namespace Microsoft.Docs.Build
             return errors;
         }
 
-        private static async Task<(object output, JObject metadata)> CreatePageOutput(List<Error> errors, Context context, Document file, JObject model)
+        private static async Task<(List<Error> errors, object output, JObject metadata)> CreatePageOutput(Context context, Document file, JObject model)
         {
+            var errors = new List<Error>();
             var (inputMetaErrors, inputMetadata) = context.MetadataProvider.GetMetadata(file);
             errors.AddRange(inputMetaErrors);
 
@@ -91,17 +93,17 @@ namespace Microsoft.Docs.Build
 
             if (file.Docset.Config.Output.Json && !file.Docset.Legacy)
             {
-                return (pageModel, mergedMetadata);
+                return (errors, pageModel, mergedMetadata);
             }
 
             var (templateModel, metadata) = TransformToTemplateModel(context, new JObject(pageModel.Properties().OrderBy(p => p.Name)), file);
             if (file.Docset.Config.Output.Json)
             {
-                return (templateModel, metadata);
+                return (errors, templateModel, metadata);
             }
 
             var html = context.TemplateEngine.RunLiquid(file, templateModel);
-            return (html, metadata);
+            return (errors, html, metadata);
         }
 
         private static async Task<(List<Error>, OutputMetadata)> CreateOutputMetadata(
@@ -273,14 +275,16 @@ namespace Microsoft.Docs.Build
 
             if (!isConceptual)
             {
-                // comment this out for now, since we have issues running *.html.primary.js
+                // TODO: comment this out for now since we have issues running *.html.primary.js
                 // var jintResult = context.TemplateEngine.RunJint($"{file.Mime}.html.primary.js", pageModel);
                 // conceptual = context.TemplateEngine.RunMustache($"{file.Mime}.html.primary.tmpl", jintResult);
             }
 
             // content for *.mta.json
-            var metadata = new JObject(templateMetadata.Properties().Where(p => !p.Name.StartsWith("_")));
-            metadata["is_dynamic_rendering"] = true;
+            var metadata = new JObject(templateMetadata.Properties().Where(p => !p.Name.StartsWith("_")))
+            {
+                ["is_dynamic_rendering"] = true,
+            };
 
             var pageMetadata = HtmlUtility.CreateHtmlMetaTags(metadata, context.TemplateEngine.HtmlMetaConfigs);
 

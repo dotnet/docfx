@@ -107,6 +107,7 @@ namespace Microsoft.Docs.Build
             JObject result = new JObject();
             if (jsResult is JValue)
             {
+                // workaround for result is not JObject
                 result["content"] = jsResult;
                 return result;
             }
