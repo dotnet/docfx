@@ -10027,6 +10027,19 @@ references:
   isSpec: "True"
   fullName: Microsoft.DocAsCode.Build.Engine.XRefDetails.InnerHtml
   nameWithType: XRefDetails.InnerHtml
+- uid: Microsoft.DocAsCode.Build.Engine.XRefDetails.Query
+  name: Query
+  href: api/Microsoft.DocAsCode.Build.Engine.XRefDetails.html#Microsoft_DocAsCode_Build_Engine_XRefDetails_Query
+  commentId: P:Microsoft.DocAsCode.Build.Engine.XRefDetails.Query
+  fullName: Microsoft.DocAsCode.Build.Engine.XRefDetails.Query
+  nameWithType: XRefDetails.Query
+- uid: Microsoft.DocAsCode.Build.Engine.XRefDetails.Query*
+  name: Query
+  href: api/Microsoft.DocAsCode.Build.Engine.XRefDetails.html#Microsoft_DocAsCode_Build_Engine_XRefDetails_Query_
+  commentId: Overload:Microsoft.DocAsCode.Build.Engine.XRefDetails.Query
+  isSpec: "True"
+  fullName: Microsoft.DocAsCode.Build.Engine.XRefDetails.Query
+  nameWithType: XRefDetails.Query
 - uid: Microsoft.DocAsCode.Build.Engine.XRefDetails.Raw
   name: Raw
   href: api/Microsoft.DocAsCode.Build.Engine.XRefDetails.html#Microsoft_DocAsCode_Build_Engine_XRefDetails_Raw
