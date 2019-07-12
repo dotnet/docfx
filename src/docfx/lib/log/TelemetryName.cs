@@ -11,6 +11,6 @@ namespace Microsoft.Docs.Build
         LoadCommitHistory,
         BuildItems,
         BuildCommits,
-        MicrosoftGraphCache,
+        MicrosoftGraphAlias,
     }
 }

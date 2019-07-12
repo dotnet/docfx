@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -14,9 +15,9 @@ namespace Microsoft.Docs.Build
         private readonly string _cachePath;
         private readonly double _expirationInHours;
         private readonly MicrosoftGraphAccessor _microsoftGraphAccessor = null;
-        private readonly List<string> _tempInvalidAliases = new List<string>();
+        private readonly ConcurrentBag<string> _tempInvalidAliases = new ConcurrentBag<string>();
 
-        private Dictionary<string, MicrosoftAlias> _aliases = new Dictionary<string, MicrosoftAlias>();
+        private ConcurrentDictionary<string, MicrosoftAlias> _aliases = new ConcurrentDictionary<string, MicrosoftAlias>();
         private bool _needUpdate = false;
 
         public MicrosoftGraphCache(Config config)
@@ -37,7 +38,7 @@ namespace Microsoft.Docs.Build
             if (File.Exists(_cachePath))
             {
                 var cacheFile = JsonUtility.Deserialize<MicrosoftGraphCacheFile>(ProcessUtility.ReadFile(_cachePath), _cachePath);
-                _aliases = cacheFile.Aliases.Where(msAlias => msAlias.Expiry >= DateTime.UtcNow).ToDictionary(msAlias => msAlias.Alias);
+                _aliases = new ConcurrentDictionary<string, MicrosoftAlias>(cacheFile.Aliases.Where(msAlias => msAlias.Expiry >= DateTime.UtcNow).ToDictionary(msAlias => msAlias.Alias));
             }
         }
 
@@ -58,12 +59,12 @@ namespace Microsoft.Docs.Build
                 return default;
             }
 
-            Telemetry.TrackCacheTotalCount(TelemetryName.MicrosoftGraphCache);
+            Telemetry.TrackCacheTotalCount(TelemetryName.MicrosoftGraphAlias);
 
             var (error, isValid) = await _microsoftGraphAccessor.ValidateAlias(alias);
 
             Log.Write($"Calling Microsoft Graph API to validate {alias}");
-            Telemetry.TrackCacheMissCount(TelemetryName.MicrosoftGraphCache);
+            Telemetry.TrackCacheMissCount(TelemetryName.MicrosoftGraphAlias);
 
             if (error != null)
             {
@@ -78,7 +79,7 @@ namespace Microsoft.Docs.Build
                     Expiry = NextExpiry(),
                 };
 
-                _aliases.Add(alias, new MicrosoftAlias() { Alias = alias, Expiry = NextExpiry() });
+                _aliases.TryAdd(alias, new MicrosoftAlias() { Alias = alias, Expiry = NextExpiry() });
                 _needUpdate = true;
 
                 return (error, newMsAlias);
