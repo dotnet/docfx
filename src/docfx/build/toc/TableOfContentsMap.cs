@@ -20,23 +20,23 @@ namespace Microsoft.Docs.Build
 
         private readonly IReadOnlyDictionary<Document, HashSet<Document>> _documentToTocs;
 
-        private readonly IReadOnlyDictionary<Document, HashSet<Document>> _tocToTocs;
+        private readonly IReadOnlyDictionary<Document, List<Document>> _tocReferences;
 
         public TableOfContentsMap(
             List<Document> tocs,
             List<Document> experimentalTocs,
             Dictionary<Document, HashSet<Document>> documentToTocs,
-            Dictionary<Document, HashSet<Document>> tocToTocs)
+            Dictionary<Document, List<Document>> tocReferences)
         {
             _tocs = new HashSet<Document>(tocs ?? throw new ArgumentNullException(nameof(tocs)));
             _experimentalTocs = new HashSet<Document>(experimentalTocs ?? throw new ArgumentNullException(nameof(experimentalTocs)));
             _documentToTocs = documentToTocs ?? throw new ArgumentNullException(nameof(documentToTocs));
-            _tocToTocs = tocToTocs ?? throw new ArgumentNullException(nameof(tocToTocs));
+            _tocReferences = tocReferences ?? throw new ArgumentNullException(nameof(tocReferences));
         }
 
-        public bool TryFindParents(Document toc, out HashSet<Document> parents)
+        public bool TryGetTocReferences(Document toc, out List<Document> tocs)
         {
-            return _tocToTocs.TryGetValue(toc, out parents);
+            return _tocReferences.TryGetValue(toc, out tocs);
         }
 
         /// <summary>
@@ -81,12 +81,12 @@ namespace Microsoft.Docs.Build
             })?.Toc;
         }
 
-        public static TableOfContentsMap Create(Context context, Docset docset)
+        public static TableOfContentsMap Create(Context context)
         {
             using (Progress.Start("Loading TOC"))
             {
                 var builder = new TableOfContentsMapBuilder();
-                var tocFiles = docset.ScanScope.Where(f => f.ContentType == ContentType.TableOfContents);
+                var tocFiles = context.BuildScope.Files.Where(f => f.ContentType == ContentType.TableOfContents);
                 if (!tocFiles.Any())
                 {
                     return builder.Build();
@@ -107,11 +107,11 @@ namespace Microsoft.Docs.Build
                     var (errors, _, referencedDocuments, referencedTocs) = context.Cache.LoadTocModel(context, fileToBuild);
                     context.ErrorLog.Write(fileToBuild.ToString(), errors);
 
-                    tocMapBuilder.Add(fileToBuild, referencedDocuments.Select(r => r.doc), referencedTocs);
+                    tocMapBuilder.Add(fileToBuild, referencedDocuments, referencedTocs);
                 }
                 catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
                 {
-                    context.ErrorLog.Write(fileToBuild.ToString(), dex.Error);
+                    context.ErrorLog.Write(fileToBuild.ToString(), dex.Error, isException: true);
                 }
             }
         }
@@ -120,7 +120,7 @@ namespace Microsoft.Docs.Build
             GetRelativeDirectoryInfo(Document file, Document toc)
         {
             var relativePath = PathUtility.NormalizeFile(
-                Path.GetDirectoryName(PathUtility.GetRelativePathToFile(file.SitePath, toc.SitePath)));
+                Path.GetDirectoryName(PathUtility.GetRelativePathToFile(file.FilePath, toc.FilePath)));
             if (string.IsNullOrEmpty(relativePath))
             {
                 return default;
@@ -182,13 +182,7 @@ namespace Microsoft.Docs.Build
                 return parentDirCompareResult;
             }
 
-            var sitePathCompareResult = StringComparer.OrdinalIgnoreCase.Compare(candidateX.Toc.SitePath, candidateY.Toc.SitePath);
-            if (!(sitePathCompareResult == 0))
-            {
-                return sitePathCompareResult;
-            }
-
-            return StringComparer.OrdinalIgnoreCase.Compare(candidateX.Toc.FilePath, candidateY.Toc.FilePath);
+            return candidateX.Toc.CompareTo(candidateY.Toc);
         }
     }
 }

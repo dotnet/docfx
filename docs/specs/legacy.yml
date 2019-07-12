@@ -4,12 +4,16 @@ commands:
   - build --legacy
 repos:
   https://docs.com/legacy:
-  - files:
+  - author: Charlie
+    email: charlie@contoso.com
+    files:
       docfx.yml: |
         template: https://docs.com/theme
         redirections:
           a.md: /b
         metadataSchema: schema.json
+        gitHub:
+          resolveUsers: true
       c.md: |
         ---
         api_name:
@@ -41,6 +45,12 @@ repos:
             content: JSON.stringify(model)
           }
         }
+cache:
+  github-users.json: |
+    { "users": [
+        {"name": "Charlie", "login": "charlie", "id": 3, "emails": ["charlie@contoso.com"]}
+      ]
+    }
 outputs:
   a.raw.page.json:
   a.mta.json: |
@@ -48,10 +58,18 @@ outputs:
   c.raw.page.json: |
     {
       "content": "<p><a href=\"d.png\" data-linktype=\"relative-path\">d</a></p>",
-      "rawMetadata": { "conceptual": "<p><a href=\"d.png\" data-linktype=\"relative-path\">d</a></p>\n", "ms.author": "yufeih", "!robots": null, "api_name": ["API Name"] },
+      "rawMetadata": {
+        "ms.author": "yufeih",
+        "!robots": null,
+        "api_name": ["API Name"],
+        "_op_gitContributorInformation": {
+          "updated_at_date_time": "2018-10-30T00:00:00.0000000Z"
+        }
+      },
       "themesRelativePathToOutputRoot": "_themes/",
       "pageMetadata": "
         <meta name=\"APIName\" content=\"API Name\" />
+        <meta name=\"author\" content=\"charlie\" />
         <meta name=\"depot_name\" content=\".\" />
         <meta name=\"document_id\" content=\"fdb5a0d7-b68e-c465-9c5e-54a5cda94902\" />
         <meta name=\"document_version_independent_id\" content=\"92a5a770-f05f-b8bb-81c9-a8d786a9e608\" />
@@ -62,7 +80,6 @@ outputs:
         <meta name=\"search.ms_product\" content=\"\" />
         <meta name=\"search.ms_sitename\" content=\"Docs\" />
         <meta name=\"site_name\" content=\"Docs\" />
-        <meta name=\"toc_rel\" content=\"toc.json\" />
         <meta name=\"updated_at\" content=\"2018-10-30 12:00 AM\" />
         <meta name=\"wordCount\" content=\"1\" />"
     }
@@ -71,7 +88,6 @@ outputs:
   toc.json:
   toc.mta.json:
   .manifest.json:
-  .dependency-map.json:
   filemap.json:
   op_aggregated_file_map_info.json:
   .publish.json:
@@ -141,11 +157,8 @@ outputs:
         "search.ms_sitename": "Docs",
         "locale": "en-us",
         "site_name": "Docs",
-        "__global": {
-        },
-        "conceptual": "\n<p><a href=\"d.png\">d</a></p>\n",
         "_path": "c.json",
-        "toc_rel": "toc.json",
+        "_tocRel": "toc.json",
         "wordCount": 2,
         "title": "Title",
         "rawTitle": "<h1 id=\"title\">Title</h1>",
@@ -154,7 +167,6 @@ outputs:
         "document_version_independent_id": "92a5a770-f05f-b8bb-81c9-a8d786a9e608",
         "_op_gitContributorInformation": {
         "update_at": "10/30/2018",
-        "updated_at_date_time": "2018-10-30T00:00:00Z",
           "contributors": [{
             "display_name": "Charlie",
             "id": "3"
@@ -186,7 +198,6 @@ outputs:
         "_path": "index.json",
         "_op_gitContributorInformation": {
           "update_at": "10/30/2018",
-          "updated_at_date_time": "2018-10-30T00:00:00Z",
           "author": {
             "name": "charlie",
             "profile_url": "https://github.com/charlie",
@@ -204,7 +215,8 @@ outputs:
 ---
 # Resolve link for landing page
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    template: {APP_BASE_PATH}data/template
   docs/index.yml: |
     ### YamlMime:YamlDocument
     title: REST API Documentation
@@ -219,20 +231,18 @@ inputs:
 outputs:
   docs/index.json: |
     {
-      "content": {
-        "title": "REST API Documentation",
-        "abstract": {
-            "description": "<p><a href=\"../b\">&quot;b&quot;</a></p>\n",
-            "menu": {
-                "items": [
-                    {
-                        "href": "../b"
-                    }
-                ]
-            }
-        },
-        "documentType": "LandingData"
-      }
+      "title": "REST API Documentation",
+      "abstract": {
+          "description": "<p><a href=\"../b\">&quot;b&quot;</a></p>\n",
+          "menu": {
+              "items": [
+                  {
+                      "href": "../b"
+                  }
+              ]
+          }
+      },
+      "documentType": "LandingData"
     }
   b.json:
 ---
@@ -241,6 +251,7 @@ commands:
   - build --legacy
 inputs:
   docfx.yml: |
+    template: {APP_BASE_PATH}data/template
     redirections:
       docs/a.md: /asdf
   docs/a.md:
@@ -252,13 +263,15 @@ commands:
   - build --legacy
 inputs:
   docfx.yml: |
+    template: {APP_BASE_PATH}data/template
     redirections:
       redirect.md: /redirect/to
   a.md: |
     [link](redirect.md)
 outputs:
+  a.mta.json:
   a.raw.page.json: |
-    { "conceptual": "<p>\n<a data-linktype=\"relative-path\" href=\"redirect\">link</a></p>" }
+    { "content": "<p>\n<a data-linktype=\"relative-path\" href=\"redirect\">link</a></p>" }
   redirect.mta.json:
   redirect.raw.page.json:
 ---
@@ -285,7 +298,8 @@ outputs:
 commands:
   - build --legacy
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    template: {APP_BASE_PATH}data/template
   docs/a.yml: |
     #YamlMime:LandingData
     title: my title
@@ -293,14 +307,17 @@ inputs:
     metadata:
       key2: value2
 outputs:
+  docs/a.mta.json:
   docs/a.raw.page.json: |
-    {"key1":"value1","key2":"value2"}
+    {"rawMetadata": {"key1":"value1","key2":"value2"}}
+  docs/a.mta.json:
 ---
 # Context object type is TOC
 commands:
   - build --legacy
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    template: {APP_BASE_PATH}data/template
   docs/a.yml: |
     #YamlMime: ContextObject
 outputs:
@@ -328,6 +345,7 @@ commands:
   - build --legacy
 inputs:
   docfx.yml: |
+    template: {APP_BASE_PATH}data/template
     monikerRange:
       'docs/v1/**': '< netcore-2.0'
     baseUrl: https://docs.com/docs
@@ -348,9 +366,11 @@ inputs:
       ]
     }
 outputs:
+  docs/a.mta.json:
   docs/a.raw.page.json:
+  docs/9d4e15fd/a.mta.json:
   docs/9d4e15fd/a.raw.page.json:
-  docs/.dependency-map.json:
+  full-dependent-list.txt:
   docs/.manifest.json: |
     {
       "files":[
@@ -368,7 +388,52 @@ outputs:
           "output_relative_path":"9d4e15fd/a.html",
           "asset_id":"a",
           "version": "< netcore-2.0",
+          "monikers":["netcore-1.0","netcore-1.1"],
           "is_moniker_range": true
         }
       }
     }
+---
+# Orphan file, with multiple toc of same site path, look up by filepath
+os: windows
+commands:
+  - build --legacy # only legacy has toc dependency for orphan file
+inputs:
+  docfx.yml: |
+    template: {APP_BASE_PATH}data/template
+    monikerRange:
+      'docs/v1/**': 'netcore-1.0'
+      'docs/v2/**': 'netcore-2.0'
+    baseUrl: https://docs.com/docs
+    routes:
+      docs/: .
+      docs/v1/: .
+      docs/v2/: .
+    monikerDefinition: monikerDefinition.json
+  docs/v1/TOC.md:
+  docs/v1/f1/a.md:
+  docs/v2/TOC.md:
+  docs/v2/f1/a.md:
+  monikerDefinition.json: |
+    {
+      "monikers": [
+        { "moniker_name": "netcore-1.0", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-2.0", "product_name": ".NET Core" },
+      ]
+    }
+outputs:
+  docs/136a42ac/toc.json:
+  docs/136a42ac/toc.mta.json:
+  docs/136a42ac/f1/a.mta.json:
+  docs/136a42ac/f1/a.raw.page.json: |
+    {"rawMetadata":{"_tocRel": "../toc.json"}}
+  docs/4667fedf/toc.json:
+  docs/4667fedf/toc.mta.json:
+  docs/4667fedf/f1/a.mta.json:
+  docs/4667fedf/f1/a.raw.page.json: |
+    {"rawMetadata":{"_tocRel": "../toc.json"}}
+  docs/.manifest.json:
+  docs/filemap.json:
+  full-dependent-list.txt: |
+    {"dependency_type":"metadata","from_file_path":"*docs\\v1\\f1\\a.md*","to_file_path":"*docs\\v1\\TOC.md*","version":"netcore-1.0"}
+    {"dependency_type":"metadata","from_file_path":"*docs\\v2\\f1\\a.md*","to_file_path":"*docs\\v2\\TOC.md*","version":"netcore-2.0"}

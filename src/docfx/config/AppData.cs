@@ -28,6 +28,8 @@ namespace Microsoft.Docs.Build
 
         public static string GitHubUserCachePath => Path.Combine(CacheRoot, "github-users.json");
 
+        public static string MicrosoftGraphCachePath => Path.Combine(CacheRoot, "microsoft-graph.json");
+
         public static string GetGitDir(string remote)
         {
             Debug.Assert(!remote.Contains('#'));

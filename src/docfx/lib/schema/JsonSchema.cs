@@ -40,9 +40,43 @@ namespace Microsoft.Docs.Build
         public Dictionary<string, JsonSchema> Properties { get; } = new Dictionary<string, JsonSchema>();
 
         /// <summary>
+        /// The JSON schema applied to each property that matches a regular expression
+        /// </summary>
+        public Dictionary<string, JsonSchema> PatternProperties { get; set; } = new Dictionary<string, JsonSchema>();
+
+        /// <summary>
+        /// An object can have extra keys not defined in properties.
+        /// This can be:
+        ///     - boolean: allow/disallow additional properties
+        ///     - object: the schema for the additional properties
+        /// </summary>
+        [JsonConverter(typeof(ValueOrObjectConverter))]
+        public (bool value, JsonSchema schema) AdditionalProperties { get; set; } = (true, null);
+
+        /// <summary>
+        /// The JSON schema that applies to property names.
+        /// </summary>
+        public JsonSchema PropertyNames { get; set; }
+
+        /// <summary>
+        /// The maximum property count that an array can hold.
+        /// </summary>
+        public int? MaxProperties { get; set; }
+
+        /// <summary>
+        /// The minimum item count that an array can hold.
+        /// </summary>
+        public int? MinProperties { get; set; }
+
+        /// <summary>
         /// The JSON schema that applies to the array items if the current value is array.
         /// </summary>
         public JsonSchema Items { get; set; }
+
+        /// <summary>
+        /// Whether each item in array must be unique.
+        /// </summary>
+        public bool UniqueItems { get; set; }
 
         /// <summary>
         /// The maximum item count that an array can hold.
@@ -55,9 +89,15 @@ namespace Microsoft.Docs.Build
         public int? MinItems { get; set; }
 
         /// <summary>
+        /// Current value must be this constant.
+        /// </summary>
+        [JsonProperty(NullValueHandling = NullValueHandling.Include)]
+        public JToken Const { get; set; }
+
+        /// <summary>
         /// An array of valid values for the current value.
         /// </summary>
-        public JValue[] Enum { get; set; }
+        public JToken[] Enum { get; set; }
 
         public JsonSchemaStringFormat Format { get; set; }
 
@@ -72,13 +112,29 @@ namespace Microsoft.Docs.Build
         public int? MinLength { get; set; }
 
         /// <summary>
-        /// An object can have extra keys not defined in properties.
-        /// This can be:
-        ///     - boolean: allow/disallow additional properties
-        ///     - object: the schema for the additional properties
+        /// The inclusive maximum value of a number.
         /// </summary>
-        [JsonConverter(typeof(ValueOrObjectConverter))]
-        public (bool additionalProperties, JsonSchema additionalPropertyJsonSchema) AdditionalProperties { get; set; } = (true, null);
+        public double? Maximum { get; set; }
+
+        /// <summary>
+        /// The inclusive minimum value of a number.
+        /// </summary>
+        public double? Minimum { get; set; }
+
+        /// <summary>
+        /// The exclusive maximum value of a number.
+        /// </summary>
+        public double? ExclusiveMaximum { get; set; }
+
+        /// <summary>
+        /// The exclusive minimum value of a number.
+        /// </summary>
+        public double? ExclusiveMinimum { get; set; }
+
+        /// <summary>
+        /// The regular expression applied to strings
+        /// </summary>
+        public string Pattern { get; set; }
 
         /// <summary>
         /// Properties that are required to be present.
@@ -159,5 +215,10 @@ namespace Microsoft.Docs.Build
         /// Mapping relationship: enumDependencies --> <field-name> --> <dependent-field-name> --> <dependent-field-value> --> <allowed-field-values>
         /// </summary>
         public Dictionary<string, Dictionary<string, Dictionary<JToken, JValue[]>>> EnumDependencies { get; set; } = new Dictionary<string, Dictionary<string, Dictionary<JToken, JValue[]>>>();
+
+        /// <summary>
+        /// Properties that are used to validate microsoft alias
+        /// </summary>
+        public MicrosoftAliasSchema MicrosoftAlias { get; set; }
     }
 }

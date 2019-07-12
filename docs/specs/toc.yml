@@ -266,42 +266,90 @@ inputs:
     # [Reference TOC File 1](f1/TOC.md)
     # [Reference TOC File 2](~/docs/f2/TOC.yml)
   docs/f1/TOC.md: |
-    # [Reference TOC File](../f2/)
+    # [Reference TOC Folder](../f2/)
   docs/f2/TOC.yml: |
     - name: Toc Reference
       href: ../f1/f11/TOC.md
   docs/f1/f11/TOC.md: |
     # [Index Reference](index.md)
+    # [A File reference](a.md)
   docs/f1/f11/index.md:
+  docs/f1/f11/a.md:
 outputs:
   docs/f1/f11/index.json:
+  docs/f1/f11/a.json:
   docs/toc.json: |
-   {  
-       "items":[  
-          {  
-             "items":[  
-                {  
-                   "href": "f1/f11/",
-                   "name":"Reference TOC File"
+   {
+        "items": [
+            {
+                "name": "Reference TOC File 1",
+                "items": [
+                    {
+                        "name": "Reference TOC Folder",
+                        "href": "f1/f11/"
+                    }
+                ]
+            },
+            {
+                "name": "Reference TOC File 2",
+                "items": [
+                    {
+                        "name": "Toc Reference",
+                        "items": [
+                            {
+                                "name": "Index Reference",
+                                "href": "f1/f11/"
+                            },
+                            {
+                                "name": "A File reference",
+                                "href": "f1/f11/a"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+  .dependencymap.json: |
+    {
+        "dependencies": {
+            "docs/f1/f11/TOC.md": [
+                {
+                    "source": "docs/f1/f11/a.md",
+                    "type": "link"
+                },
+                {
+                    "source": "docs/f1/f11/index.md",
+                    "type": "link"
                 }
-             ],
-             "name":"Reference TOC File 1"
-          },
-          {  
-             "items":[  
-                {  
-                   "items":[  
-                      {  
-                         "name":"Index Reference",
-                         "href":"f1/f11/"
-                      }
-                   ],
-                   "name":"Toc Reference"
+            ],
+            "docs/f1/TOC.md": [
+                {
+                  "source": "docs/f1/f11/index.md",
+                  "type": "link"
+                },
+                {
+                  "source": "docs/f2/TOC.yml",
+                  "type": "tocInclusion"
                 }
-             ],
-             "name":"Reference TOC File 2"
-          }
-       ]
+            ],
+            "docs/f2/TOC.yml": [
+                {
+                    "source": "docs/f1/f11/TOC.md",
+                    "type": "tocInclusion"
+                }
+            ],
+            "docs/TOC.md": [
+                {
+                    "source": "docs/f1/TOC.md",
+                    "type": "tocInclusion"
+                },
+                {
+                    "source": "docs/f2/TOC.yml",
+                    "type": "tocInclusion"
+                },
+            ]
+        }
     }
 ---
 # Title with # or End with #
@@ -466,8 +514,10 @@ inputs:
     # [File Reference](a.md)
   docs/f1/b.md:
   docs/f2/a.md:
+  docs/f2/b.md:
 outputs:
   docs/f2/a.json:
+  docs/f2/b.json:
   docs/f1/b.json:
   docs/toc.json: |
    {  
@@ -484,8 +534,45 @@ outputs:
     }
   docs/f1/toc.json:
   docs/f2/toc.json:
-  .errors.log: |
-    ["warning","file-not-found","Invalid file link: 'b.md'.","docs/f2/TOC.md",3,4]
+  .dependencymap.json: |
+    {
+        "dependencies": {
+            "docs/f1/TOC.md": [
+                {
+                    "source": "docs/f1/b.md",
+                    "type": "link"
+                }
+            ],
+            "docs/f2/TOC.md": [
+                {
+                    "source": "docs/f2/a.md",
+                    "type": "link"
+                },
+                {
+                    "source": "docs/f2/b.md",
+                    "type": "link"
+                }
+            ],
+            "docs/TOC.md": [
+                {
+                  "source": "docs/f1/b.md",
+                  "type": "link"
+                },
+                {
+                  "source": "docs/f1/TOC.md",
+                  "type": "tocInclusion"
+                },
+                {
+                  "source": "docs/f2/a.md",
+                  "type": "link"
+                },
+                {
+                  "source": "docs/f2/TOC.md",
+                  "type": "tocInclusion"
+                }
+            ]
+        }
+    }
 ---
 # Topic href can replace href
 inputs:
@@ -647,7 +734,7 @@ outputs:
        "items":[  
           {  
              "name":"topic href has higher priority",
-             "href":"n2",
+             "href":"~/docs/f1/n2.md",
           }
        ]
     }
@@ -676,14 +763,14 @@ outputs:
              "items":[  
                 {  
                    "name":"Index Reference",
-                   "href":"f11/n1"
+                   "href":"n1.md"
                 }
              ],
              "name":"Toc Reference 1",
-             "href":"f11/n1"
+             "href":"f11/n1.md"
           },
           {  
-             "href":"f11/n1",
+             "href":"n1.md",
              "name":"Toc Reference 2"
           }
        ]
@@ -949,9 +1036,9 @@ inputs:
   docs/a.md:
 outputs:
   docs/index.json: |
-    {"toc_rel": "f1/toc.json"}
+    {"_tocRel": "f1/toc.json"}
   docs/a.json: |
-    {"!toc_rel": null}
+    {"!_tocRel": null}
   docs/f1/toc.json:
   docs/f1/toc.experimental.json:
 ---
@@ -1015,9 +1102,11 @@ inputs:
 outputs:
   docs/f1/a.json:
   docs/f1/b.json:
+  docs/toc.json:
+  docs/f1/toc.json:
   .errors.log: |
-    ["error","missing-toc-head","The toc head name is missing","docs/TOC.yml",5,8]
-    ["error","missing-toc-head","The toc head name is missing","docs/f1/TOC.md",1,1]
+    ["warning","missing-toc-head","The toc head name is missing","docs/TOC.yml",5,8]
+    ["warning","missing-toc-head","The toc head name is missing","docs/f1/TOC.md",1,1]
 ---
 # Orphan file(not explicitly referenced in toc file)'s toc, only look up parent folder toc files
 inputs:
@@ -1028,9 +1117,9 @@ inputs:
 outputs:
   docs/dir1/toc.json:
   docs/file-with-no-toc.json: |
-    {"!toc_rel": null}
+    {"!_tocRel": null}
   docs/dir1/dir2/file-with-toc.json: |
-    {"toc_rel": "../toc.json"}
+    {"_tocRel": "../toc.json"}
 ---
 # File referenced by multiple toc with same parent and subdir count, use order alphabetical. For other tests, reference build/TocTest.
 inputs:
@@ -1050,7 +1139,7 @@ outputs:
   docs/dir1/b/toc.json:
   docs/dir1/aa/toc.json:
   docs/dir1/c/file1.json: |
-    {"toc_rel": "../a/toc.json"}
+    {"_tocRel": "../a/toc.json"}
 ---
 # Bad Toc markdown
 inputs:
@@ -1065,7 +1154,7 @@ inputs:
 outputs:
   docs/test.json:
   .errors.log: |
-    ["error","invalid-toc-syntax","The toc syntax '[bad1]()\n#[bad2](test.md)\n>_<\n#bad4' is invalid, the opening sequence of # characters must be followed by a space or by the end of line. Refer to [ATX heading](https://spec.commonmark.org/0.28/#atx-heading) to fix it","docs/TOC.md",2,1]
+    ["error","invalid-toc-syntax","The toc syntax is invalid, *",2,1]
 ---
 # Skip-level Toc markdown
 inputs:
@@ -1077,6 +1166,16 @@ outputs:
   .errors.log: |
     ["error","invalid-toc-level","The toc level can't be skipped from 1 to 3","docs/TOC.md",2,1]
 ---
+# Markdown TOC root can start from any level, but must be aligned
+inputs:
+  docfx.yml:
+  TOC.md: |
+    ## level 2
+    # level 1
+outputs:
+  .errors.log: |
+    ["error","invalid-toc-level","The toc level can't be skipped from 0 to 1","TOC.md",2,1]
+---
 # Missing TOC head name
 inputs:
   docfx.yml:
@@ -1084,8 +1183,9 @@ inputs:
     # Title
     ##
 outputs:
+  docs/toc.json:
   .errors.log: |
-    ["error","missing-toc-head","The toc head name is missing","docs/TOC.md",2,1]
+    ["warning","missing-toc-head","The toc head name is missing","docs/TOC.md",2,1]
 ---
 # Multiple leaf inlines in toc title
 inputs:
@@ -1125,7 +1225,7 @@ inputs:
   docs/a.md:
 outputs:
   docs/a.json: |
-    {"toc_rel": "toc.json"}
+    {"_tocRel": "toc.json"}
   .errors.log: |
     ["error","output-path-conflict","Two or more files output to the same path 'docs/toc.json': 'docs/TOC.md', 'docs/TOC.yml'"]
 ---
@@ -1347,14 +1447,14 @@ outputs:
   docs/a.json:
   docs/b.json:
   .errors.log: |
-    ["error","invalid-toc-syntax","The toc syntax '# @b abc' is invalid, multiple inlines in one heading block is not allowed. Refer to [ATX heading](https://spec.commonmark.org/0.28/#atx-heading) to fix it","docs/TOC.md",1,1]
-    ["error","invalid-toc-syntax","The toc syntax '# @b @a' is invalid, multiple inlines in one heading block is not allowed. Refer to [ATX heading](https://spec.commonmark.org/0.28/#atx-heading) to fix it","docs/TOC.md",2,1]
-    ["error","invalid-toc-syntax","The toc syntax '# [Title X](a.md) bcd' is invalid, multiple inlines in one heading block is not allowed. Refer to [ATX heading](https://spec.commonmark.org/0.28/#atx-heading) to fix it","docs/TOC.md",3,1]
-    ["error","invalid-toc-syntax","The toc syntax '# [Title X](a.md) [Title Y](b.md)' is invalid, multiple inlines in one heading block is not allowed. Refer to [ATX heading](https://spec.commonmark.org/0.28/#atx-heading) to fix it","docs/TOC.md",4,1]
-    ["error","invalid-toc-syntax","The toc syntax '# @b [Title X](a.md)' is invalid, multiple inlines in one heading block is not allowed. Refer to [ATX heading](https://spec.commonmark.org/0.28/#atx-heading) to fix it","docs/TOC.md",5,1]
-    ["error","invalid-toc-syntax","The toc syntax '# [Title X](a.md) @b' is invalid, multiple inlines in one heading block is not allowed. Refer to [ATX heading](https://spec.commonmark.org/0.28/#atx-heading) to fix it","docs/TOC.md",6,1]
-    ["error","invalid-toc-syntax","The toc syntax '# [Title X](xref: a) @b' is invalid, multiple inlines in one heading block is not allowed. Refer to [ATX heading](https://spec.commonmark.org/0.28/#atx-heading) to fix it","docs/TOC.md",7,1]
-    ["error","invalid-toc-syntax","The toc syntax '# Title1 Title2 [Title3](a.md)' is invalid, multiple inlines in one heading block is not allowed. Refer to [ATX heading](https://spec.commonmark.org/0.28/#atx-heading) to fix it","docs/TOC.md",8,1]
+    ["error","invalid-toc-syntax","The toc syntax is invalid, *",1,1]
+    ["error","invalid-toc-syntax","The toc syntax is invalid, *",2,1]
+    ["error","invalid-toc-syntax","The toc syntax is invalid, *",3,1]
+    ["error","invalid-toc-syntax","The toc syntax is invalid, *",4,1]
+    ["error","invalid-toc-syntax","The toc syntax is invalid, *",5,1]
+    ["error","invalid-toc-syntax","The toc syntax is invalid, *",6,1]
+    ["error","invalid-toc-syntax","The toc syntax is invalid, *",7,1]
+    ["error","invalid-toc-syntax","The toc syntax is invalid, *",8,1]
 ---
 # more than 6 leading count of `#`
 inputs:
@@ -1382,3 +1482,47 @@ outputs:
   docs/toc.json: |
     {"items":[{"name":"test","href":"a"}],"!ms.contentlocale":null,"!ms.translationtype":null }
   docs/a.json:
+---
+# respects user input _tocRel
+inputs:
+  docfx.yml:
+  docs/f1/TOC.md: |
+    # [File Reference](../index.md)
+  docs/f2/TOC.md: |
+    # Nothing here
+  docs/index.md: |
+    ---
+    _tocRel: f2/toc.json
+    ---
+outputs:
+  docs/index.json: |
+    {"_tocRel": "f2/toc.json"}
+  docs/f1/toc.json:
+  docs/f2/toc.json:
+---
+# turn skip-level toc error to warning
+inputs:
+  docfx.yml: |
+    rules:
+      invalid-toc-level: warning
+  docs/TOC.md: |
+    # level 1
+    ### level 3
+    #### level 4
+    ## level 2
+outputs:
+  .errors.log: |
+    ["warning","invalid-toc-level","The toc level can't be skipped from 1 to 3","docs/TOC.md",2,1]
+  docs/toc.json: |
+    {
+        "items": [
+            {
+                "name": "level 1",
+                "items": [
+                    {
+                        "name": "level 2"
+                    }
+                ]
+            }
+        ]
+    }

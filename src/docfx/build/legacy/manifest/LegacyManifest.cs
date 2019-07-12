@@ -18,7 +18,6 @@ namespace Microsoft.Docs.Build
                 var itemsToPublish = new List<LegacyItemToPublish>
                 {
                     new LegacyItemToPublish { RelativePath = "filemap.json", Type = "filemap" },
-                    new LegacyItemToPublish { RelativePath = ".dependency-map.json", Type = "unknown" },
                 };
 
                 var dictionaryBuilder = new DictionaryBuilder<string, List<string>>();
@@ -33,7 +32,7 @@ namespace Microsoft.Docs.Build
 
                         var output = new LegacyManifestOutput
                         {
-                            MetadataOutput = document.IsSchemaData || document.ContentType == ContentType.Resource
+                            MetadataOutput = !document.IsPage || document.ContentType == ContentType.Resource
                             ? null
                             : new LegacyManifestOutputItem
                             {
@@ -70,20 +69,20 @@ namespace Microsoft.Docs.Build
                         if (document.ContentType == ContentType.Page ||
                             document.ContentType == ContentType.Redirection)
                         {
-                            if (document.IsSchemaData)
-                            {
-                                output.TocOutput = new LegacyManifestOutputItem
-                                {
-                                    IsRawPage = false,
-                                    RelativePath = legacyOutputPathRelativeToSiteBasePath,
-                                };
-                            }
-                            else
+                            if (document.IsPage)
                             {
                                 output.PageOutput = new LegacyManifestOutputItem
                                 {
                                     IsRawPage = false,
                                     RelativePath = LegacyUtility.ChangeExtension(legacyOutputPathRelativeToSiteBasePath, ".raw.page.json"),
+                                };
+                            }
+                            else
+                            {
+                                output.TocOutput = new LegacyManifestOutputItem
+                                {
+                                    IsRawPage = false,
+                                    RelativePath = legacyOutputPathRelativeToSiteBasePath,
                                 };
                             }
                         }
@@ -94,7 +93,7 @@ namespace Microsoft.Docs.Build
                             Original = fileManifest.Value.SourcePath,
                             SourceRelativePath = document.ToLegacyPathRelativeToBasePath(docset),
                             OriginalType = GetOriginalType(document.ContentType),
-                            Type = GetType(document.ContentType, document.Schema),
+                            Type = GetType(document.ContentType, document),
                             Output = output,
                             SkipNormalization = !(document.ContentType == ContentType.Resource),
                             SkipSchemaCheck = !(document.ContentType == ContentType.Resource),
@@ -150,9 +149,9 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static string GetType(ContentType type, Schema schema)
+        private static string GetType(ContentType type, Document doc)
         {
-            if (type == ContentType.Page && schema?.Type == typeof(ContextObject))
+            if (type == ContentType.Page && !doc.IsPage)
             {
                 return "Toc";
             }

@@ -18,16 +18,16 @@ namespace Microsoft.Docs.Build
         private readonly HashSet<string> _reservedMetadata;
         private readonly List<(Func<string, bool> glob, string key, JToken value)> _rules = new List<(Func<string, bool> glob, string key, JToken value)>();
 
-        private readonly ConcurrentDictionary<Document, (List<Error> errors, OutputModel metadata)> _metadataCache
-                   = new ConcurrentDictionary<Document, (List<Error> errors, OutputModel metadata)>();
+        private readonly ConcurrentDictionary<Document, (List<Error> errors, InputMetadata metadata)> _metadataCache
+                   = new ConcurrentDictionary<Document, (List<Error> errors, InputMetadata metadata)>();
 
-        public MetadataProvider(Docset docset, Cache cache)
+        public MetadataProvider(Docset docset, Cache cache, MicrosoftGraphCache microsoftGraphCache)
         {
             _cache = cache;
-            _schemaValidator = new JsonSchemaValidator(docset.MetadataSchema);
+            _schemaValidator = new JsonSchemaValidator(docset.MetadataSchema, microsoftGraphCache);
             _globalMetadata = docset.Config.GlobalMetadata;
 
-            _reservedMetadata = JsonUtility.GetPropertyNames(typeof(OutputModel))
+            _reservedMetadata = JsonUtility.GetPropertyNames(typeof(OutputMetadata))
                 .Concat(docset.MetadataSchema.Reserved)
                 .Except(JsonUtility.GetPropertyNames(typeof(InputMetadata)))
                 .ToHashSet();
@@ -41,16 +41,16 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public (List<Error> errors, OutputModel metadata) GetMetadata(Document file)
+        public (List<Error> errors, InputMetadata metadata) GetMetadata(Document file)
         {
             return _metadataCache.GetOrAdd(file, GetMetadataCore);
         }
 
-        private (List<Error> errors, OutputModel metadata) GetMetadataCore(Document file)
+        private (List<Error> errors, InputMetadata metadata) GetMetadataCore(Document file)
         {
             if (file.ContentType != ContentType.Page && file.ContentType != ContentType.TableOfContents)
             {
-                return (new List<Error>(), new OutputModel());
+                return (new List<Error>(), new InputMetadata());
             }
 
             var result = new JObject();
@@ -74,9 +74,6 @@ namespace Microsoft.Docs.Build
             JsonUtility.Merge(result, fileMetadata);
             JsonUtility.Merge(result, yamlHeader);
 
-            var (toObjectErrors, metadata) = JsonUtility.ToObject<OutputModel>(result);
-            errors.AddRange(toObjectErrors);
-
             foreach (var property in result.Properties())
             {
                 if (_reservedMetadata.Contains(property.Name))
@@ -90,6 +87,12 @@ namespace Microsoft.Docs.Build
             }
 
             errors.AddRange(_schemaValidator.Validate(result));
+
+            var (validationErrors, metadata) = JsonUtility.ToObject<InputMetadata>(result);
+
+            metadata.RawJObject = result;
+
+            errors.AddRange(validationErrors);
 
             return (errors, metadata);
         }

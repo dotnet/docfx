@@ -13,39 +13,55 @@ namespace Microsoft.Docs.Build
 
         public string Href { get; set; }
 
-        public Document DeclairingFile { get; set; }
+        public Document DeclaringFile { get; set; }
 
         public HashSet<string> Monikers { get; set; } = new HashSet<string>();
 
-        public Dictionary<string, Lazy<JValue>> ExtensionData { get; } = new Dictionary<string, Lazy<JValue>>();
+        public Dictionary<string, Lazy<JToken>> ExtensionData { get; } = new Dictionary<string, Lazy<JToken>>();
 
         public string GetXrefPropertyValue(string propertyName)
         {
             if (propertyName is null)
                 return null;
 
-            return ExtensionData.TryGetValue(propertyName, out var internalValue) && internalValue.Value.Value is string internalStr ? internalStr : null;
+            return ExtensionData.TryGetValue(propertyName, out var property) && property.Value is JValue propertyValue && propertyValue.Value is string internalStr ? internalStr : null;
         }
 
         public string GetName() => GetXrefPropertyValue("name");
 
-        public ExternalXrefSpec ToExternalXrefSpec(Context context, Document file)
+        public ExternalXrefSpec ToExternalXrefSpec(Context context, bool forXrefMapOutput)
         {
             var spec = new ExternalXrefSpec
             {
                 Uid = Uid,
                 Monikers = Monikers,
-                Href = Href,
             };
+
+            if (forXrefMapOutput)
+            {
+                var (_, _, fragment) = UrlUtility.SplitUrl(Href);
+                var path = DeclaringFile.CanonicalUrlWithoutLocale;
+
+                // DHS appends branch infomation from cookie cache to URL, which is wrong for UID resolved URL
+                // output xref map with URL appending "?branch=master" for master branch
+                var query = DeclaringFile.Docset.Repository?.Branch == "master" ? "?branch=master" : "";
+                spec.Href = path + query + fragment;
+            }
+            else
+            {
+                // relative path for internal UID resolving
+                spec.Href = PathUtility.GetRelativePathToFile(DeclaringFile.SiteUrl, Href);
+            }
+
             foreach (var (key, value) in ExtensionData)
             {
                 try
                 {
-                    spec.ExtensionData[key] = GetXrefPropertyValue(key);
+                    spec.ExtensionData[key] = value.Value;
                 }
                 catch (DocfxException ex)
                 {
-                    context.ErrorLog.Write(file.FilePath, ex.Error);
+                    context.ErrorLog.Write(DeclaringFile.FilePath, ex.Error);
                 }
             }
             return spec;

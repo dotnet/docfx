@@ -14,6 +14,10 @@ namespace Microsoft.Docs.Build
 {
     internal static class MarkdownUtility
     {
+        // This magic string identifies if an URL was a relative URL in source,
+        // URLs starting with this magic string are transformed into relative URL after markup.
+        private const string RelativeUrlMarker = "//////";
+
         private static readonly MarkdownPipeline[] s_markdownPipelines = new[]
         {
             CreateMarkdownPipeline(),
@@ -61,34 +65,22 @@ namespace Microsoft.Docs.Build
 
                     var html = Markdown.ToHtml(markdown, s_markdownPipelines[(int)pipelineType]);
 
-                    return (status.Errors, html);
+                    var htmlWithRelativeLink = HtmlUtility.TransformLinks(html, (href, _) =>
+                    {
+                        if (href.StartsWith(RelativeUrlMarker))
+                        {
+                            return UrlUtility.GetRelativeUrl(file.SiteUrl, href.Substring(RelativeUrlMarker.Length));
+                        }
+                        return href;
+                    });
+
+                    return (status.Errors, htmlWithRelativeLink);
                 }
                 finally
                 {
                     t_status.Value.Pop();
                 }
             }
-        }
-
-        internal static void LogError(Error error)
-        {
-            t_status.Value.Peek().Errors.Add(error);
-        }
-
-        internal static string GetLink(string path, object relativeTo, object resultRelativeTo, MarkdownObject origin, int columnOffset = 0)
-        {
-            var status = t_status.Value.Peek();
-            var (error, link, _) = status.Context.DependencyResolver.ResolveLink(new SourceInfo<string>(path, origin.ToSourceInfo(columnOffset: columnOffset)), (Document)relativeTo, (Document)resultRelativeTo);
-            status.Errors.AddIfNotNull(error?.WithSourceInfo(origin.ToSourceInfo()));
-            return link;
-        }
-
-        internal static (Error error, string href, string display, Document file) ResolveXref(string href, MarkdownObject origin)
-        {
-            // TODO: now markdig engine combines all kinds of reference with inclusion, we need to split them out
-            var result = t_status.Value.Peek().Context.DependencyResolver.ResolveXref(new SourceInfo<string>(href, origin.ToSourceInfo()), (Document)InclusionContext.File, (Document)InclusionContext.RootFile);
-            result.error = result.error?.WithSourceInfo(origin.ToSourceInfo());
-            return (result.error, result.href, result.display, result.spec?.DeclairingFile);
         }
 
         private static MarkdownPipeline CreateMarkdownPipeline()
@@ -98,9 +90,9 @@ namespace Microsoft.Docs.Build
             return new MarkdownPipelineBuilder()
                 .UseYamlFrontMatter()
                 .UseDocfxExtensions(markdownContext)
-                .UseResolveLink()
-                .UseResolveXref(ResolveXref)
-                .UseMonikerZone(ParseMonikerRange)
+                .UseLink(GetLink)
+                .UseXref(GetXref)
+                .UseMonikerZone(GetMonikerRange)
                 .Build();
         }
 
@@ -111,9 +103,9 @@ namespace Microsoft.Docs.Build
             return new MarkdownPipelineBuilder()
                 .UseYamlFrontMatter()
                 .UseDocfxExtensions(markdownContext)
-                .UseResolveLink()
-                .UseResolveXref(ResolveXref)
-                .UseMonikerZone(ParseMonikerRange)
+                .UseLink(GetLink)
+                .UseXref(GetXref)
+                .UseMonikerZone(GetMonikerRange)
                 .UseInlineOnly()
                 .Build();
         }
@@ -140,7 +132,7 @@ namespace Microsoft.Docs.Build
 
         private static string GetToken(string key)
         {
-            return t_status.Value.Peek().Context.Template?.GetToken(key);
+            return t_status.Value.Peek().Context.TemplateEngine.GetToken(key);
         }
 
         private static void LogError(string code, string message, MarkdownObject origin, int? line)
@@ -157,11 +149,44 @@ namespace Microsoft.Docs.Build
         {
             var status = t_status.Value.Peek();
             var (error, content, file) = status.Context.DependencyResolver.ResolveContent(new SourceInfo<string>(path, origin.ToSourceInfo()), (Document)relativeTo);
-            status.Errors.AddIfNotNull(error?.WithSourceInfo(origin.ToSourceInfo()));
+            status.Errors.AddIfNotNull(error);
             return (content, file);
         }
 
-        private static List<string> ParseMonikerRange(SourceInfo<string> monikerRange)
+        private static string GetLink(SourceInfo<string> href)
+        {
+            var status = t_status.Value.Peek();
+            var (error, link, file) = status.Context.DependencyResolver.ResolveAbsoluteLink(
+                href, (Document)InclusionContext.File);
+
+            if (file != null)
+            {
+                link = RelativeUrlMarker + link;
+            }
+
+            status.Errors.AddIfNotNull(error);
+            return link;
+        }
+
+        private static (string href, string display) GetXref(SourceInfo<string> href, bool isShorthand)
+        {
+            var status = t_status.Value.Peek();
+            var (error, link, display, spec) = status.Context.DependencyResolver.ResolveAbsoluteXref(
+                href, (Document)InclusionContext.File);
+
+            if (spec?.DeclaringFile != null)
+            {
+                link = RelativeUrlMarker + link;
+            }
+
+            if (!isShorthand)
+            {
+                status.Errors.AddIfNotNull(error);
+            }
+            return (link, display);
+        }
+
+        private static List<string> GetMonikerRange(SourceInfo<string> monikerRange)
         {
             var status = t_status.Value.Peek();
             var (error, monikers) = status.Context.MonikerProvider.GetZoneLevelMonikers((Document)InclusionContext.File, monikerRange);

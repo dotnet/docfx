@@ -1,12 +1,12 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Collections.Generic;
+using System;
 
 namespace Microsoft.Docs.Build
 {
     internal class XrefMapModel
     {
-        public List<ExternalXrefSpec> References { get; } = new List<ExternalXrefSpec>();
+        public ExternalXrefSpec[] References { get; set; } = Array.Empty<ExternalXrefSpec>();
     }
 }

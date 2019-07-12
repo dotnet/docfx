@@ -4,25 +4,26 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Text;
 using System.Web;
 using HtmlAgilityPack;
+using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
     internal static class HtmlUtility
     {
-        private static readonly Func<HtmlAgilityPack.HtmlAttribute, int> s_getValueStartIndex =
-            ReflectionUtility.CreateInstanceFieldGetter<HtmlAgilityPack.HtmlAttribute, int>("_valuestartindex");
+        private static readonly Func<HtmlAttribute, int> s_getValueStartIndex =
+            ReflectionUtility.CreateInstanceFieldGetter<HtmlAttribute, int>("_valuestartindex");
 
-        public static string HtmlPostProcess(string html, CultureInfo culture) => HtmlPostProcess(LoadHtml(html), culture);
-
-        public static string HtmlPostProcess(HtmlNode html, CultureInfo culture)
+        public static string HtmlPostProcess(this HtmlNode html, CultureInfo culture)
         {
             html = html.StripTags();
             html = html.AddLinkType(culture.Name.ToLowerInvariant())
                        .RemoveRerunCodepenIframes();
 
+            // Hosting layers treats empty content as 404, so generate an empty <div></div>
             if (string.IsNullOrWhiteSpace(html.OuterHtml))
             {
                 return "<div></div>";
@@ -118,7 +119,7 @@ namespace Microsoft.Docs.Build
                     result.Append(HttpUtility.HtmlEncode(transformed));
                 }
                 pos = valueStartIndex + link.Value.Length;
-                columnOffset += 1;
+                columnOffset++;
             }
 
             if (html.Length > pos)
@@ -128,20 +129,19 @@ namespace Microsoft.Docs.Build
             return result.ToString();
         }
 
-        public static (List<Error>, string) TransformXref(string html, int lineNumber, string file, Func<string, (Error error, string href, string display, Document file)> transform)
+        public static string TransformXref(string html, Func<string, bool, int, (string href, string display)> transform)
         {
-            var errors = new List<Error>();
-
             // Fast pass it does not have <xref> tag
             if (!(html.Contains("<xref", StringComparison.OrdinalIgnoreCase) && html.Contains("href", StringComparison.OrdinalIgnoreCase)))
             {
-                return (errors, html);
+                return html;
             }
 
             var doc = new HtmlDocument();
             doc.LoadHtml(html);
 
-            // TODO: get accurate line and column for HTML block lasting several lines and multiple nodes in the same line
+            // TODO: remove this column offset hack while we have accurate line info for link in HTML block
+            var columnOffset = 0;
             var replacingNodes = new List<(HtmlNode, HtmlNode)>();
             foreach (var node in doc.DocumentNode.Descendants())
             {
@@ -150,29 +150,18 @@ namespace Microsoft.Docs.Build
                     continue;
                 }
 
-                var xref = node.Attributes["href"];
-                if (xref is null)
-                {
-                    continue;
-                }
+                var xref = HttpUtility.HtmlDecode(node.GetAttributeValue("href", ""));
 
-                // data-throw-if-not-resolved from v2 is not needed any more since we can decide if warning throw by checking raw
-                var rawSource = node.GetAttributeValue("data-raw-source", null);
-                var rawHtml = node.GetAttributeValue("data-raw-html", null);
-                var raw = HttpUtility.HtmlDecode(!string.IsNullOrEmpty(rawHtml) ? rawHtml : rawSource);
-                var (_, resolvedHref, display, _) = transform(HttpUtility.HtmlDecode(xref.Value));
+                var raw = HttpUtility.HtmlDecode(
+                    node.GetAttributeValue("data-raw-html", null) ?? node.GetAttributeValue("data-raw-source", null) ?? "");
+
+                var isShorthand = raw.StartsWith("@");
+
+                var (resolvedHref, display) = transform(xref, isShorthand, columnOffset);
 
                 var resolvedNode = new HtmlDocument();
                 if (string.IsNullOrEmpty(resolvedHref))
                 {
-                    if (raw?.StartsWith("@") != false)
-                    {
-                        errors.Add(Errors.AtXrefNotFound(new SourceInfo<string>(html, new SourceInfo(file, lineNumber, s_getValueStartIndex(xref)))));
-                    }
-                    else
-                    {
-                        errors.Add(Errors.XrefNotFound(new SourceInfo<string>(html, new SourceInfo(file, lineNumber, s_getValueStartIndex(xref)))));
-                    }
                     resolvedNode.LoadHtml(raw);
                 }
                 else
@@ -180,6 +169,7 @@ namespace Microsoft.Docs.Build
                     resolvedNode.LoadHtml($"<a href='{HttpUtility.HtmlEncode(resolvedHref)}'>{HttpUtility.HtmlEncode(display)}</a>");
                 }
                 replacingNodes.Add((node, resolvedNode.DocumentNode));
+                columnOffset++;
             }
 
             foreach (var (node, resolvedNode) in replacingNodes)
@@ -187,7 +177,7 @@ namespace Microsoft.Docs.Build
                 node.ParentNode.ReplaceChild(resolvedNode, node);
             }
 
-            return (errors, doc.DocumentNode.WriteTo());
+            return doc.DocumentNode.WriteTo();
         }
 
         /// <summary>
@@ -227,6 +217,57 @@ namespace Microsoft.Docs.Build
                 return n.NodeType == HtmlNodeType.Comment ||
                     (n.NodeType == HtmlNodeType.Text && string.IsNullOrWhiteSpace(n.OuterHtml));
             }
+        }
+
+        public static string CreateHtmlMetaTags(JObject metadata, (HashSet<string> htmlMetaHidden, Dictionary<string, string> htmlMetaNames) htmlMetaConfigs)
+        {
+            var result = new StringBuilder();
+
+            foreach (var property in metadata.Properties())
+            {
+                var key = property.Name;
+                var value = property.Value;
+                if (value is JObject || htmlMetaConfigs.htmlMetaHidden.Contains(key))
+                {
+                    continue;
+                }
+
+                var content = "";
+                var name = htmlMetaConfigs.htmlMetaNames.TryGetValue(key, out var diplayName) ? diplayName : key;
+
+                if (value is JArray arr)
+                {
+                    foreach (var v in value)
+                    {
+                        if (v is JValue)
+                        {
+                            result.AppendLine($"<meta name=\"{Encode(name)}\" content=\"{Encode(v.ToString())}\" />");
+                        }
+                    }
+                    continue;
+                }
+                else if (value.Type == JTokenType.Boolean)
+                {
+                    content = (bool)value ? "true" : "false";
+                }
+                else
+                {
+                    content = value.ToString();
+                }
+
+                result.AppendLine($"<meta name=\"{Encode(name)}\" content=\"{Encode(content)}\" />");
+            }
+
+            return result.ToString();
+        }
+
+        public static string Encode(string s)
+        {
+            return s.Replace("&", "&amp;")
+                    .Replace("<", "&lt;")
+                    .Replace(">", "&gt;")
+                    .Replace("\"", "&quot;")
+                    .Replace("'", "&#39;");
         }
 
         private static HtmlNode AddLinkType(this HtmlNode html, string locale)

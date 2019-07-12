@@ -4,6 +4,135 @@ Besides using file path to link to another file, DocFX also allows you to give a
 - API reference documentation is usually auto generated so it's difficult to find its file path.
 - You want to reference to files in another project without need to know its file structure.
 
+## Feature Requirements/Scenarios
+### Internal UID
+- Define an internal UID in `.md` and reference to this UID within the current repository
+  ```yaml
+  inputs:
+    docs/a.md: |
+    ---
+    title: Title from yaml header a
+    uid: a
+    description: some description
+    ---
+    docs/b.md: Link to @a
+  outputs:
+    docs/b.json: |
+        {"conceptual":"<p>Link to <a href=\"a\">Title from yaml header a</a></p>\n"}
+  ```
+  > **_Notice_**: Only title will be considered as xref property for `uid` definition in `.md` files
+- Define multiple UID with same value internally with different versions and reference to this UID without versioning within the current repository. 
+    - The user should define multiple UID of the same value with the same `title` for conceeptual repository. Otherwise, a `xref-property-conflict` warning will be logged and the first UID order by the declaring file will be picked
+        ```yaml
+        # v1: 1.0, 2.0, 3.0
+        # v2: 4.0, 5.0
+        # v3: 3.0 
+        inputs:
+            docs/v1/a.md: |
+            ---
+            title: Title from v1
+            uid: a
+            ---
+            docs/v2/a.md: |
+            ---
+            title: Title from v2
+            uid: a
+            ---
+            docs/v3/b.md: Link to @a
+        outputs:
+            docs/b.json: |
+                {"conceptual":"<p>Link to <a href=\"a\">Title from v1</a></p>\n"}
+            .errors.log: |
+                ["warning","xref-property-conflict","UID 'a' is defined with different names: 'netcore-1.1', 'netcore-2.0'"]
+        ```
+    - Define multiple UID with same value internally with overlapping versions, we should throw `moniker-overlapping` warning. And the first UID order by the declaring file will be picked.
+        ```yaml
+            # v1: 1.0, 2.0, 3.0
+            # v2: 2.0, 3.0
+            inputs:
+                docs/v1/a.md: |
+                ---
+                title: Title from v1
+                uid: a
+                ---
+                docs/v2/a.md: |
+                ---
+                title: Title from v2
+                uid: a
+                ---
+                docs/b.md: Link to @a
+            outputs:
+                docs/b.json: |
+                    {"conceptual":"<p>Link to <a href=\"a\">Title from v1</a></p>\n"}
+                .errors.log: |
+                    ["warning","moniker-overlapping","Two or more documents have defined overlapping moniker: '2.0', '3.0'"]
+            ```
+### External UID
+- Reference to an external UID without versioning. DHS always append the `branch` info within cookie cache, due to this limitation, docs build needs to append `branch` info for resolved URL. The complete list of all scenarios is as below
+
+    | Cross site | Build Type | build branch | xref definition branch | append branch info | v2 actual behavior |
+    | --- | --- | --- | --- | --- | --- |
+    | yes | commit | master | master | yes(Jump to external site with `?brnach=master`) | yes(Jump to external site with `?branch=master`) |
+    | yes | commit | test | master | yes(Jump to external site with `?branch=master`) | yes(append with `?branch=master`) |
+    | yes | commit | live | live(go-live) | no | no |
+    | yes | commit | live | live(not-go-live) | no(uid-not-found) | no(uid-not-found) |
+    | yes | PR | test -> master | master | yes(Jump to external site with `?branch=master`) | yes(Jump to external site with `?branch=master`) |
+    | yes | PR | master -> test | master | yes | yes |
+    | yes | PR | test -> live | live(go-live) | no | yes(append with `?branch=live`, `branch` info is set on OPS service and it could not tell cross-site or not) |
+    | yes | PR | test -> live | live(not-go-live) | no(uid-not-found) | no(uid-not-found) |
+    | no | commit | master | master | yes(append `?branch=master` to avoid redirecting) | yes(append `?branch=master`) |
+    | no | commit | test | master | yes(`test` branch may not exist in xref definition repo) | yes(append `?branch=master`) |
+    | no | commit | live | live(go-live) | no(`live` branch exists) | no |
+    | no | commit | live | live(not-go-live) | no(uid-not-found) | no(uid-not-found) |
+    | no | PR | test -> master | master | yes(`PR` branch may not exist in xref definition repo) | yes(append `?branch=master`) |
+    | no | PR | master -> test | master | yes(`PR` branch may not exist in xref definition repo) | yes(append `?branch=master`) |
+    | no | PR | test -> live | live(go-live) | no | yes(url appending with `?branch=live`) |
+    | no | PR | test -> live | live(not-go-live) | no(uid-not-found) | no(uid-not-found) |
+    > For the second last scenario, the output url would be `review.docs.microsoft.com` and the resolved uid url would be `docs.microsoft.com`, while clicking to this url, the user will go to another site `docs.microsoft.com` instead. Confirmed with PM, this is not an legitimate concern.
+    - The href of UID is from the same host name as the referencing repository.
+        - If the current branch is `live`, and the UID href is also from `live`, everything is OK
+        - If the current branch is `master`, then the output site is `review.docs`, but the resovled url is `docs` which is `live`, while browsing the UID href, the user should not jump to another site(`docs`)
+        ```yaml
+          # External UID `a` is defined in `docs`, whose title is `Title from docs`
+          inputs:
+            docs/b.md: Link to @a
+          outputs:
+            # The output site will be `review.docs`, which is non-live
+            docs/b.json: |
+                {"conceptual":"<p>Link to <a href=\"/a\">Title from docs</a></p>\n"}
+        ```
+        - If the current branch is `test`, and the build type is `PR build` or `branch build`, the UID href should fall back to `master` because `test` might not exist on UID definition repository.
+          ```yaml
+          # External UID `a` is defined in `docs`, whose title is `Title from docs`
+          inputs:
+            docs/b.md: Link to @a
+          outputs:
+            # The output site will be `review.docs`, which is non-live
+            docs/b.json: |
+                {"conceptual":"<p>Link to <a href=\"/a?branch=master\">Title from docs</a></p>\n"}
+          ``` 
+    - The href of UID is from a different host name as the referencing repository
+        - If the current branch is from a different site other than `docs`, we need to prioritize the uid from this site firstly if same uid defined in this site and `docs`
+          ```yaml
+          # External UID `a` is defined in `docs`, whose title is `Title from docs`
+          inputs:
+            azure-cn/a.md: |
+            ---
+            title: Title from azure-cn
+            uid: a
+            ---
+            azure-cn/b.md: Link to @a
+          outputs:
+            azure-cn/b.json: |
+                {"conceptual":"<p>Link to <a href=\"a\">Title from azure-cn</a></p>\n"}
+          ```
+- Reference to an external UID with versioning, we only take consideration of 1 version for now and do not output versioning information.
+- Reference to an external UID with multiple versionings (not support for now)
+    - The resolve logic should be smilar to the internal resolving
+- [UID defnition](#define-uid)
+- xref service needs to consume `xrefmap.json` instead of `xrefmap.yml` after the conceptual repository switching to docfx v3.
+- In v2, `xrefservice` can be defined in `docfx.json` then the user can query `uid` universally, which will be removed during the migration to v3 and related tags should be added to `.openpublishing.publish.config.json`.
+
 ## Define UID
 The unique identifier of a file is called UID (stands for unique identifier) in DocFX.
 - User can define UID in YAML header of markdown file
@@ -62,7 +191,26 @@ outputs:
   .xrefmap.json: | 
     {"references":[{"uid":"a","href":"docs/a.json","summary":"<p>Link to <a href=\"b\">b</a></p>\n"}]}
 ```
-
+- Multiple UID defined with same value without versioning is not allowed, a `uid-conflict` warning will be logged and the first UID will be picked order by the declaring file.
+    ```yaml
+    inputs:
+        docs/a.md: |
+        ---
+        title: Title from v1
+        uid: a
+        ---
+        docs/c.md: |
+        ---
+        title: Title from v2
+        uid: a
+        ---
+        docs/b.md: Link to @a
+    outputs:
+        docs/b.json: |
+            {"conceptual":"<p>Link to <a href=\"a\">Title from v1</a></p>\n"}
+        .errors.log: |
+            ["warning","uid-conflict","UID 'a' is defined in more than one file: 'docs/a.md', 'docs/c.md'"]
+- UID defined both in a file without versioning and a file with versioning. Since we will throw `publish-url-conflict` error to user when same file without versioning and with versioning defined, this UID definition case is disallowed at the same time.
 ## Output xref map
 Docfx will output a JSON file named `.xrefmap.json`. In V2, docfx used to output `xrefmap.yml`, it took much longer to be de-serialized compared to JSON format.
 ```json
@@ -85,11 +233,12 @@ There are two parts of xref map, internal and external.
 User can define uids in the same repository and reference to them, and these defined uids will be outputted as `.xrefmap.json`.
 
 ### External xref map
-User can reference uids defined by other repositories as well, just define the urls of `.xrefmap.json` in `docfx.yml`.
+User can reference uids defined by other repositories as well, just define the urls of `.xrefmap.json` in `docfx.yml`. Please notice that, the url can also be a local zip file.
 ```yml
 xref:
   - http://url1/.xrefmap.json
   - http://url2/.xrefmap.json
+  - _zip/missingapi.yml
 ```
 During `docfx restore`, all the JSON files will be restored and merged.
 

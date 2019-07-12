@@ -64,6 +64,34 @@ namespace Microsoft.Docs.Build
         }
 
         [Theory]
+        [InlineData("/", null, null)]
+        [InlineData("/", "", "")]
+        [InlineData("/", "https://github.com", "https://github.com")]
+        [InlineData("/", "a", "a")]
+        [InlineData("/", "/", "./")]
+        [InlineData("/a", "/b", "b")]
+        [InlineData("/a/b", "/b/c", "../b/c")]
+        [InlineData("/a", "/a/", "a/")]
+        [InlineData("/a/b", "/a/", "./")]
+        [InlineData("/a/", "/a", "../a")]
+        [InlineData("/a/b/", "/a", "../../a")]
+        [InlineData("/a/b/c/", "/a", "../../../a")]
+        [InlineData("/a/", "/a/", "./")]
+        [InlineData("/a/", "/b", "../b")]
+        [InlineData("/", "/a", "a")]
+        [InlineData("/ab", "/a", "a")]
+        [InlineData("/a", "/", "./")]
+        [InlineData("/a", "/#bookmark", "./#bookmark")]
+        [InlineData("/a", "/?query", "./?query")]
+        [InlineData("/a#bookmark", "/", "./")]
+        [InlineData("/a?query", "/", "./")]
+        [InlineData("/a/", "/", "../")]
+        public static void GetRelativeUrl(string relativeToUrl, string url, string expected)
+        {
+            Assert.Equal(expected, UrlUtility.GetRelativeUrl(relativeToUrl, url));
+        }
+
+        [Theory]
         [InlineData("a", false)]
         [InlineData("a/b", false)]
         [InlineData("a\\b", false)]

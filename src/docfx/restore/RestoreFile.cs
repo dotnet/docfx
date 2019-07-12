@@ -22,10 +22,20 @@ namespace Microsoft.Docs.Build
 
         public static async Task Restore(string url, Config config)
         {
-            var filePath = GetRestoreContentPath(url);
+            Console.WriteLine($"Downloading '{url}'");
 
-            var (_, existingEtagContent) = RestoreMap.TryGetRestoredFileContent(url);
-            var existingEtag = !string.IsNullOrEmpty(existingEtagContent) ? EntityTagHeaderValue.Parse(existingEtagContent) : null;
+            var filePath = GetRestoreContentPath(url);
+            var etagPath = GetRestoreEtagPath(url);
+            var existingEtag = default(EntityTagHeaderValue);
+
+            using (InterProcessMutex.Create(filePath))
+            {
+                var etagContent = File.Exists(etagPath) ? File.ReadAllText(etagPath) : null;
+                if (!string.IsNullOrEmpty(etagContent))
+                {
+                    existingEtag = EntityTagHeaderValue.Parse(File.ReadAllText(etagPath));
+                }
+            }
 
             var (tempFile, etag) = await DownloadToTempFile(url, config, existingEtag);
             if (tempFile is null)
@@ -36,17 +46,17 @@ namespace Microsoft.Docs.Build
 
             using (InterProcessMutex.Create(filePath))
             {
-                if (!File.Exists(filePath))
-                {
-                    PathUtility.CreateDirectoryFromFilePath(filePath);
-                    File.Move(tempFile, filePath);
-                }
-                else
-                {
-                    File.Delete(tempFile);
-                }
+                PathUtility.CreateDirectoryFromFilePath(filePath);
 
-                File.WriteAllText(GetRestoreEtagPath(url), etag?.ToString());
+                if (File.Exists(filePath))
+                    File.Delete(filePath);
+
+                File.Move(tempFile, filePath);
+
+                if (etag != null)
+                {
+                    File.WriteAllText(etagPath, etag.ToString());
+                }
             }
         }
 

@@ -8,22 +8,16 @@ using Newtonsoft.Json.Serialization;
 namespace Microsoft.Docs.Build
 {
     [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
-    public class OutputModel : InputMetadata
+    public class OutputMetadata
     {
-        [JsonIgnore]
-        public string SchemaType { get; set; }
+        public string Locale { get; set; }
 
-        public object Content { get; set; }
+        public string Author { get; set; }
 
-        public string Conceptual { get; set; }
+        public string BreadcrumbPath { get; set; }
 
-        [JsonProperty("wordCount")]
-        public long WordCount { get; set; }
-
+        [JsonProperty("_tocRel")]
         public string TocRel { get; set; }
-
-        [JsonProperty(PropertyName = "rawTitle")]
-        public string RawTitle { get; set; }
 
         public string CanonicalUrl { get; set; }
 
@@ -53,7 +47,16 @@ namespace Microsoft.Docs.Build
 
         public string SiteName { get; set; }
 
-        public string DepotName { get; set; }
+        public string DepotName => $"{SearchProduct}.{SearchDocsetName}";
+
+        [JsonProperty("search.ms_docsetname")]
+        public string SearchDocsetName { get; set; }
+
+        [JsonProperty("search.ms_product")]
+        public string SearchProduct { get; set; }
+
+        [JsonProperty("search.ms_sitename")]
+        public string SearchSiteName => SiteName;
 
         [JsonProperty("_path")]
         public string Path { get; set; }
@@ -63,8 +66,5 @@ namespace Microsoft.Docs.Build
 
         [JsonProperty("_op_pdfUrlPrefixTemplate")]
         public string PdfUrlPrefixTemplate { get; set; }
-
-        // todo: remove this if `enable_loc_sxs` works well
-        public string BilingualType => EnableLocSxs ? "hover over" : null;
     }
 }

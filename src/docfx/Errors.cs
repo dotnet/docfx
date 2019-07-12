@@ -92,8 +92,8 @@ namespace Microsoft.Docs.Build
         ///   - defined a non-existent author
         /// </summary>
         /// Behavior: ✔️ Message: ✔️
-        public static Error AuthorNotFound(string login)
-            => new Error(ErrorLevel.Warning, "author-not-found", $"Invalid value for author: '{login}' is not a valid GitHub ID");
+        public static Error AuthorNotFound(SourceInfo<string> login)
+            => new Error(ErrorLevel.Warning, "author-not-found", $"Invalid value for author: '{login}' is not a valid GitHub ID", login);
 
         /// <summary>
         /// Failed to call a github api, e.g. GET /users/login.
@@ -125,7 +125,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         /// Behavior: ✔️ Message: ❌
         public static Error MissingTocHead(SourceInfo source)
-            => new Error(ErrorLevel.Error, "missing-toc-head", $"The toc head name is missing", source);
+            => new Error(ErrorLevel.Warning, "missing-toc-head", $"The toc head name is missing", source);
 
         /// <summary>
         /// In markdown-format toc, used wrong toc syntax.
@@ -135,8 +135,8 @@ namespace Microsoft.Docs.Build
         ///   - The toc syntax '# @b abc' is invalid, multiple inlines in one heading block is not allowed
         /// </summary>
         /// Behavior: ✔️ Message: ❌
-        public static Error InvalidTocSyntax(SourceInfo<string> source, string hint = null)
-            => new Error(ErrorLevel.Error, "invalid-toc-syntax", $"The toc syntax '{source}' is invalid, {hint ?? "the opening sequence of # characters must be followed by a space or by the end of line"}. Refer to [ATX heading](https://spec.commonmark.org/0.28/#atx-heading) to fix it", source);
+        public static Error InvalidTocSyntax(SourceInfo source)
+            => new Error(ErrorLevel.Error, "invalid-toc-syntax", $"The toc syntax is invalid, each line must be a valid markdown [ATX heading](https://spec.commonmark.org/0.28/#atx-heading) with a single link, xref link or literal text", source);
 
         /// <summary>
         /// In markdown-format toc, header level should be continuous, it shouldn't skip a level.
@@ -163,23 +163,19 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Error, "download-failed", $"Download failed for file '{url}'. Try closing and reopening the PR. If you get this Error again, file an issue.");
 
         /// <summary>
-        /// Failed to update user profile cache file.
-        /// Examples:
-        ///   - when <see cref="GitHubConfig.UpdateRemoteUserCache"/> is turned on, and docfx fails to
-        ///     update the file cache with put request
-        /// </summary>
-        /// Behavior: ❌ Message: ✔️
-        public static Error UploadFailed(string url, string message)
-            => new Error(ErrorLevel.Warning, "upload-failed", $"Upload failed for '{url}': {message} Try closing and reopening the PR. If you get this Error again, file an issue.");
-
-        /// <summary>
         /// Failed to run `git fetch` or `git worktree add`.
         /// Examples:
         ///   - restore a repo with bad url
         /// </summary>
-        /// Behavior: ✔️ Message: ❌
+        /// Behavior: ✔️ Message: ✔️
         public static Error GitCloneFailed(string url, IEnumerable<string> branches)
-            => new Error(ErrorLevel.Error, "git-clone-failed", $"Cloning git repository '{url}' ({Join(branches)}) failed.");
+        {
+            var message = $"Failure to clone the repository `{url} ({Join(branches)})`."
+                      + "This could be caused by an incorrect repository URL, please verify the URL on the Docs Portal (https://ops.microsoft.com)."
+                      + "This could also be caused by not having the proper permission the repository, "
+                      + "please confirm that the GitHub group/team that triggered the build has access to the repository.";
+            return new Error(ErrorLevel.Error, "git-clone-failed", message);
+        }
 
         /// <summary>
         /// Yaml header defined in article.md isn't an object.
@@ -230,8 +226,8 @@ namespace Microsoft.Docs.Build
         /// Link which's resolved to a file in dependency repo won't be built.
         /// </summary>
         /// Behavior: ✔️ Message: ❌
-        public static Error LinkIsDependency(Document relativeTo, Document file, string href)
-            => new Error(ErrorLevel.Warning, "link-is-dependency", $"File '{file}' referenced by link '{href}' will not be built because it is from a dependency docset", relativeTo.ToString());
+        public static Error LinkIsDependency(SourceInfo<string> href, Document file)
+            => new Error(ErrorLevel.Warning, "link-is-dependency", $"File '{file}' referenced by link '{href}' will not be built because it is from a dependency docset", href);
 
         /// <summary>
         /// Used a link pointing to an rooted absolute file path.
@@ -239,8 +235,8 @@ namespace Microsoft.Docs.Build
         ///   - [Absolute](C:/a.md)
         /// </summary>
         /// Behavior: ✔️ Message: ✔️
-        public static Error LocalFilePath(Document relativeTo, string path)
-            => new Error(ErrorLevel.Warning, "local-file-path", $"Link '{path}' points to a local file. Use a relative path instead", relativeTo.ToString());
+        public static Error LocalFilePath(SourceInfo<string> path)
+            => new Error(ErrorLevel.Warning, "local-file-path", $"Link '{path}' points to a local file. Use a relative path instead", path);
 
         /// <summary>
         /// The first tag in an article.md isn't h1 tag.
@@ -378,7 +374,7 @@ namespace Microsoft.Docs.Build
         /// The input value type does not match expected value type.
         /// </summary>
         /// Behavior: ✔️ Message: ❌
-        public static Error UnexpectedType(SourceInfo source, string expectedType, string actualType)
+        public static Error UnexpectedType(SourceInfo source, object expectedType, object actualType)
             => new Error(ErrorLevel.Warning, "unexpected-type", $"Expect type '{expectedType}' but got '{actualType}'", source);
 
         /// <summary>
@@ -392,22 +388,43 @@ namespace Microsoft.Docs.Build
         /// The string type's value doesn't match given format.
         /// </summary>
         /// Behavior: ✔️ Message: ❌
-        public static Error FormatInvalid(SourceInfo source, string value, JsonSchemaStringFormat type)
+        public static Error FormatInvalid(SourceInfo source, string value, object type)
             => new Error(ErrorLevel.Warning, "format-invalid", $"String '{value}' is not a valid '{type}'", source);
 
         /// <summary>
         /// Array length not within min and max.
         /// </summary>
         /// Behavior: ✔️ Message: ❌
-        public static Error ArrayLengthInvalid(SourceInfo source, string propName, int? minItems = null, int? maxItems = null)
-            => new Error(ErrorLevel.Warning, "array-length-invalid", $"Array {(string.IsNullOrEmpty(propName) ? "" : $"'{propName}' ")}length should be {(minItems.HasValue ? $">= {minItems.Value}" : $"<= {maxItems.Value}")}", source);
+        public static Error ArrayLengthInvalid(SourceInfo source, string propName, string criteria)
+            => new Error(ErrorLevel.Warning, "array-length-invalid", $"Array '{propName}' length should be {criteria}", source);
+
+        /// <summary>
+        /// Array length not within min and max.
+        /// </summary>
+        /// Behavior: ✔️ Message: ❌
+        public static Error ArrayNotUnique(SourceInfo source, string propName)
+            => new Error(ErrorLevel.Warning, "array-not-unique", $"Array '{propName}' items should be unique", source);
+
+        /// <summary>
+        /// Object property count not within min and max.
+        /// </summary>
+        /// Behavior: ✔️ Message: ❌
+        public static Error PropertyCountInvalid(SourceInfo source, string propName, string criteria)
+            => new Error(ErrorLevel.Warning, "property-count-invalid", $"Object '{propName}' property count should be {criteria}", source);
 
         /// <summary>
         /// String length not within min and max.
         /// </summary>
         /// Behavior: ✔️ Message: ❌
-        public static Error StringLengthInvalid(SourceInfo source, string propName, int? minLength = null, int? maxLength = null)
-            => new Error(ErrorLevel.Warning, "string-length-invalid", $"String {(string.IsNullOrEmpty(propName) ? "" : $"'{propName}' ")}length should be {(minLength.HasValue ? $">= {minLength.Value}" : $"<= {maxLength.Value}")}", source);
+        public static Error StringLengthInvalid(SourceInfo source, string propName, string criteria)
+            => new Error(ErrorLevel.Warning, "string-length-invalid", $"String '{propName}' length should be {criteria}", source);
+
+        /// <summary>
+        /// Number not within min and max.
+        /// </summary>
+        /// Behavior: ✔️ Message: ❌
+        public static Error NumberInvalid(SourceInfo source, string propName, string criteria)
+            => new Error(ErrorLevel.Warning, "number-invalid", $"Number '{propName}' should be {criteria}", source);
 
         /// <summary>
         /// A required field is missing.
@@ -463,6 +480,20 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Warning, "values-not-match", $"Invalid value for {name}: '{value}' is not valid with '{dependentFieldName}' value '{dependentFieldValue}'. Valid values: {Join(validValues)}", source);
 
         /// <summary>
+        /// The value is not a valid Microsoft alias
+        /// </summary>
+        /// Behavior: ✔️ Message: ❌
+        public static Error MsAliasInvalid(SourceInfo source, string name, string alias)
+            => new Error(ErrorLevel.Warning, "ms-alias-invalid", $"Invalid value for '{name}', '{alias}' is not a valid Microsoft alias", source);
+
+        /// <summary>
+        /// Call Microsoft Graph API failed
+        /// </summary>
+        /// Behavior: ✔️ Message: ❌
+        public static Error MicrosoftGraphApiFailed(string exMessage)
+            => new Error(ErrorLevel.Warning, "microsoft-graph-api-failed", $"Call to Microsoft Graph API failed: {exMessage} Try closing and reopening the PR. If you get this Error again, file an issue.");
+
+        /// <summary>
         /// Used unknown YamlMime.
         /// Examples:
         ///   - forgot to define schema in schema document(yml)
@@ -470,7 +501,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         /// Behavior: ❌ Message: ✔️
         public static Error SchemaNotFound(SourceInfo<string> source)
-            => new Error(ErrorLevel.Error, "schema-not-found", !string.IsNullOrEmpty(source) ? $"Schema '{source}' not found." : $"Unknown schema '{source}'", source);
+            => new Error(ErrorLevel.Error, "schema-not-found", $"Unknown schema '{source}'", source);
 
         /// <summary>
         /// Build errors is larger than <see cref="OutputConfig.MaxErrors"/>.
@@ -484,15 +515,26 @@ namespace Microsoft.Docs.Build
         /// Examples:
         ///   - both files with no monikers defined same uid
         /// </summary>
-        /// Behavior: ❌ Message: ✔️
+        /// Behavior: ✔️ Message: ✔️
         public static Error UidConflict(string uid, IEnumerable<string> conflicts = null)
         {
             if (conflicts is null)
             {
-                return new Error(ErrorLevel.Error, "uid-conflict", $"The same Uid '{uid}' has been defined multiple times in the same file");
+                return new Error(ErrorLevel.Warning, "uid-conflict", $"The same Uid '{uid}' has been defined multiple times in the same file");
             }
 
-            return new Error(ErrorLevel.Error, "uid-conflict", $"UID '{uid}' is defined in more than one file: {Join(conflicts)}");
+            return new Error(ErrorLevel.Warning, "uid-conflict", $"UID '{uid}' is defined in more than one file: {Join(conflicts)}");
+        }
+
+        /// <summary>
+        /// Same uid defined within different versions with the different name.
+        /// Examples:
+        ///   - Same uid defined in multiple .md files with different versions have different titles.
+        /// </summary>
+        /// Behavior: ✔️ Message: ❌
+        public static Error UidPropertyConflict(string uid, string propertyName, IEnumerable<string> conflicts)
+        {
+            return new Error(ErrorLevel.Warning, "xref-property-conflict", $"UID '{uid}' is defined with different {propertyName}s: {Join(conflicts)}");
         }
 
         /// <summary>
@@ -501,14 +543,14 @@ namespace Microsoft.Docs.Build
         /// </summary>
         /// Behavior: ✔️ Message: ❌
         public static Error MonikerOverlapping(IEnumerable<string> overlappingmonikers)
-            => new Error(ErrorLevel.Error, "moniker-overlapping", $"Two or more documents have defined overlapping moniker: {Join(overlappingmonikers)}");
+            => new Error(ErrorLevel.Warning, "moniker-overlapping", $"Two or more documents have defined overlapping moniker: {Join(overlappingmonikers)}");
 
         /// <summary>
         /// Failed to parse moniker string.
         /// </summary>
         /// Behavior: ✔️ Message: ❌
-        public static Error MonikerRangeInvalid(SourceInfo<string> source, string message)
-            => new Error(ErrorLevel.Error, "moniker-range-invalid", $"Invalid moniker range: '{source}': {message}", source);
+        public static Error MonikerRangeInvalid(SourceInfo<string> source, Exception ex)
+            => new Error(ErrorLevel.Error, "moniker-range-invalid", $"Invalid moniker range: '{source}': {ex.Message}", source);
 
         /// <summary>
         /// MonikerRange is not defined in docfx.yml or doesn't match an article.md,
@@ -523,8 +565,11 @@ namespace Microsoft.Docs.Build
         /// or moniker-zone defined in article.md has no intersection with file-level monikers.
         /// </summary>
         /// Behavior: ✔️ Message: ❌
-        public static Error EmptyMonikers(string message)
-            => new Error(ErrorLevel.Warning, "empty-monikers", message);
+        public static Error EmptyMonikers(SourceInfo<string> rangeString, IReadOnlyList<string> zoneLevelMonikers, List<string> fileLevelMonikers)
+            => new Error(ErrorLevel.Warning, "empty-monikers", $"No intersection between zone and file level monikers. The result of zone level range string '{rangeString}' is {Join(zoneLevelMonikers)}, while file level monikers is {Join(fileLevelMonikers)}.");
+
+        public static Error EmptyMonikers(string configMonikerRange, List<string> configMonikers, SourceInfo<string> monikerRange, IReadOnlyList<string> fileMonikers)
+            => new Error(ErrorLevel.Warning, "empty-monikers", $"No moniker intersection between docfx.yml/docfx.json and file metadata. Config moniker range '{configMonikerRange}' is {Join(configMonikers)}, while file moniker range '{monikerRange}' is {Join(fileMonikers)}");
 
         /// <summary>
         /// Custom 404 page is not supported

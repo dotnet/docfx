@@ -3,6 +3,7 @@
 
 using System;
 using System.Diagnostics;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
 
@@ -108,6 +109,74 @@ namespace Microsoft.Docs.Build
             Debug.Assert(string.IsNullOrEmpty(fragment) || fragment[0] == '#');
 
             return fragment != null && fragment.Length > 1 ? DependencyType.Bookmark : DependencyType.Link;
+        }
+
+        public static string GetRelativeUrl(string relativeToUrl, string url)
+        {
+            if (!relativeToUrl.StartsWith('/'))
+            {
+                throw new ArgumentException("", nameof(relativeToUrl));
+            }
+
+            if (url == null || !url.StartsWith('/'))
+            {
+                return url;
+            }
+
+            var (relativeToPath, _, _) = SplitUrl(relativeToUrl);
+            var (path, query, fragment) = SplitUrl(url);
+
+            // Find the last common segment
+            var i = 0;
+            var segmentIndex = 0;
+            while (i < path.Length && i < relativeToPath.Length)
+            {
+                var ch = path[i];
+                if (ch != relativeToPath[i])
+                {
+                    break;
+                }
+
+                i++;
+                if (ch == '/')
+                {
+                    segmentIndex = i;
+                }
+            }
+
+            // Count remaining segments in relativeToUrl
+            var remainingSegmentCount = 0;
+            for (i = segmentIndex; i < relativeToPath.Length; i++)
+            {
+                if (relativeToPath[i] == '/')
+                {
+                    remainingSegmentCount++;
+                }
+            }
+
+            // Build result
+            var result = new StringBuilder(path.Length);
+
+            for (i = 0; i < remainingSegmentCount; i++)
+            {
+                result.Append("../");
+            }
+
+            if (segmentIndex >= path.Length)
+            {
+                if (remainingSegmentCount == 0)
+                {
+                    result.Append("./");
+                }
+            }
+            else
+            {
+                result.Append(path, segmentIndex, path.Length - segmentIndex);
+            }
+
+            result.Append(query);
+            result.Append(fragment);
+            return result.ToString();
         }
 
         public static LinkType GetLinkType(string link)

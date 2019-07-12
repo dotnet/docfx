@@ -10,10 +10,6 @@ namespace Microsoft.Docs.Build
     [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
     public class InputMetadata
     {
-        public string Layout { get; set; }
-
-        public string Locale { get; set; }
-
         public string Title { get; set; }
 
         public SourceInfo<string> Author { get; set; }
@@ -25,9 +21,10 @@ namespace Microsoft.Docs.Build
 
         public string Uid { get; set; }
 
-        [JsonExtensionData]
-        public JObject ExtensionData { get; set; }
+        [JsonProperty("_tocRel")]
+        public string TocRel { get; set; }
 
-        public bool ShouldSerializeMonikerRange() => false;
+        [JsonIgnore]
+        public JObject RawJObject { get; set; } = new JObject();
     }
 }

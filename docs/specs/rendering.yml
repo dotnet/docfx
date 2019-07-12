@@ -1,5 +1,5 @@
 ---
-# Apply template and produce html page when output is not json
+# [skip] Apply template and produce html page when output is not json
 inputs:
   docfx.yml: |
     output:
@@ -8,7 +8,7 @@ inputs:
 outputs:
   docs/a/index.html:
 ---
-# Use .html extension on uglify url
+# [skip] Use .html extension on uglify url
 inputs:
   docfx.yml: |
     output:

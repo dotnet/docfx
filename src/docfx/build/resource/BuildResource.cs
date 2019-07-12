@@ -9,7 +9,7 @@ namespace Microsoft.Docs.Build
 {
     internal class BuildResource
     {
-        internal static (List<Error> errors, PublishItem publishItem) Build(Context context, Document file)
+        internal static List<Error> Build(Context context, Document file)
         {
             Debug.Assert(file.ContentType == ContentType.Resource);
 
@@ -17,7 +17,7 @@ namespace Microsoft.Docs.Build
             var (monikerError, monikers) = context.MonikerProvider.GetFileLevelMonikers(file);
             errors.AddIfNotNull(monikerError);
 
-            var outputPath = file.GetOutputPath(monikers, file.Docset.SiteBasePath);
+            var outputPath = file.GetOutputPath(monikers, file.Docset.SiteBasePath, isPage: false);
 
             // Output path is source file path relative to output folder when copy resource is disabled
             var publishPath = file.Docset.Config.Output.CopyResources
@@ -42,7 +42,7 @@ namespace Microsoft.Docs.Build
                 context.Output.Copy(file, outputPath);
             }
 
-            return (errors, publishItem);
+            return errors;
         }
     }
 }

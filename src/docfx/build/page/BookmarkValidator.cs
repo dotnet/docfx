@@ -9,8 +9,18 @@ namespace Microsoft.Docs.Build
 {
     internal class BookmarkValidator
     {
+        private readonly ErrorLog _errorLog;
+        private readonly PublishModelBuilder _publishModelBuilder;
+
         private readonly DictionaryBuilder<Document, HashSet<string>> _bookmarksByFile = new DictionaryBuilder<Document, HashSet<string>>();
-        private readonly ListBuilder<(Document file, Document dependency, string bookmark, bool isSelfBookmark, SourceInfo source)> _references = new ListBuilder<(Document file, Document dependency, string bookmark, bool isSelfBookmark, SourceInfo source)>();
+        private readonly ListBuilder<(Document file, Document dependency, string bookmark, bool isSelfBookmark, SourceInfo source)> _references
+                   = new ListBuilder<(Document file, Document dependency, string bookmark, bool isSelfBookmark, SourceInfo source)>();
+
+        public BookmarkValidator(ErrorLog errorLog, PublishModelBuilder publishModelBuilder)
+        {
+            _errorLog = errorLog;
+            _publishModelBuilder = publishModelBuilder;
+        }
 
         public void AddBookmarkReference(Document file, Document reference, string fragment, bool isSelfBookmark, SourceInfo source)
         {
@@ -34,26 +44,33 @@ namespace Microsoft.Docs.Build
             _bookmarksByFile.TryAdd(file, bookmarks);
         }
 
-        public List<(Error error, Document file)> Validate()
+        public void Validate()
         {
-            var result = new List<(Error error, Document file)>();
             var bookmarksByFile = _bookmarksByFile.ToDictionary();
+
             foreach (var (file, reference, bookmark, isSelfBookmark, source) in _references.ToList())
             {
                 // #top is HTMl predefined URL, which points to the top of the page
                 if (bookmark == "top")
-                {
                     continue;
-                }
-                if (bookmarksByFile.TryGetValue(reference, out var bookmarks) && bookmarks.Contains(bookmark))
-                {
-                    continue;
-                }
-                result.Add(isSelfBookmark ? (Errors.InternalBookmarkNotFound(source, file, bookmark, bookmarks), file) :
-                                            (Errors.ExternalBookmarkNotFound(source, reference, bookmark, bookmarks), file));
-            }
 
-            return result;
+                // Do not validate bookmark if the target file doesn't report bookmarks.
+                // When the target file does not have bookmarks, it'll still report with an empty array.
+                if (!bookmarksByFile.TryGetValue(reference, out var bookmarks))
+                    continue;
+
+                if (bookmarks.Contains(bookmark))
+                    continue;
+
+                var error = isSelfBookmark
+                    ? Errors.InternalBookmarkNotFound(source, file, bookmark, bookmarks)
+                    : Errors.ExternalBookmarkNotFound(source, reference, bookmark, bookmarks);
+
+                if (_errorLog.Write(error))
+                {
+                    _publishModelBuilder.MarkError(file);
+                }
+            }
         }
     }
 }

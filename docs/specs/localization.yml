@@ -526,9 +526,9 @@ repos:
           # [reference b](b.md)
 outputs:
   docs/a.json: |
-    {"toc_rel": "toc.json"}
+    {"_tocRel": "toc.json"}
   docs/b.json: |
-    {"toc_rel": "toc.json"}
+    {"_tocRel": "toc.json"}
   docs/toc.json: |
     {"items": [{"name": "reference a", "href": "a"},{"name": "reference b", "href": "b"}]}
 ---
@@ -550,7 +550,7 @@ repos:
         docs/b/b.md:
 outputs:
   docs/b/b.json: |
-    {"toc_rel": "toc.json"}
+    {"_tocRel": "toc.json"}
   docs/a/toc.json: |
     {"items": [{"name": "reference a", "href": "a"}]}
 ---
@@ -570,7 +570,7 @@ inputs:
     # [reference a](a.md)
 outputs:
   docs/b/b.json: |
-    {"toc_rel": "toc.json"}
+    {"_tocRel": "toc.json"}
   docs/a/toc.json: |
     {"items": [{"name": "reference a", "href": "a"}]}
 ---
@@ -645,7 +645,7 @@ outputs:
   docs/b.json: |
     {"conceptual":"<p>link to <a href=\"a\">a</a>\nlink to <a href=\"c\">c</a></p>\n"}
   xrefmap.json: |
-    {"references":[{"uid":"a","href":"https://docs.com/docs/a","name":"a"},{"uid":"c","href":"https://docs.com/docs/c","name":"c"}]}
+    {"references":[{"uid":"a","href":"https://docs.com/docs/a?branch=master","name":"a"},{"uid":"c","href":"https://docs.com/docs/c?branch=master","name":"c"}]}
 ---
 # loc folder should be excluded from source docset during loc docset build
 commands:
@@ -881,7 +881,7 @@ outputs:
 ---
 # conflicted toc files(source and loc)
 # 1. should not report warning
-# 2. `toc_rel` should be resolved to loc toc
+# 2. `_tocRel` should be resolved to loc toc
 commands:
   - restore --locale zh-cn
   - build --locale zh-cn
@@ -899,7 +899,7 @@ repos:
         docs/a/a.md:
 outputs:
   docs/a/a.json: |
-    {"toc_rel": "toc.json"}
+    {"_tocRel": "toc.json"}
   docs/a/toc.json: |
     {"items":[{"name": "yml reference a"}]}
 ---
@@ -1507,3 +1507,19 @@ repos:
 outputs:
   docs/a.json: |
     { "conceptual":"<p>master</p>"}
+---
+# Do not validate bookmark for fallback content
+commands:
+  - restore --locale zh-cn
+  - build --locale zh-cn
+repos:
+  https://docs.com/fallback-content-bookmark-validation#master:
+    - files:
+        docfx.yml:
+        a.md:
+  https://docs.com/fallback-content-bookmark-validation.zh-cn#master:
+    - files:
+        docfx.yml:
+        b.md: '[](a.md#invalid-bookmark)'
+outputs:
+  b.json:

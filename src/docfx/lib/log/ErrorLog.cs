@@ -82,24 +82,27 @@ namespace Microsoft.Docs.Build
             return hasErrors;
         }
 
-        public bool Write(string file, Error error)
+        public bool Write(string file, Error error, bool isException = false)
         {
-            if (error is null)
-                return false;
-
-            return Write(file == error.File || !string.IsNullOrEmpty(error.File)
+            return Write(
+                file == error.File || !string.IsNullOrEmpty(error.File)
                     ? error
-                    : new Error(error.Level, error.Code, error.Message, file, error.Line, error.Column));
+                    : new Error(error.Level, error.Code, error.Message, file, error.Line, error.Column),
+                isException);
         }
 
-        public bool Write(Error error, bool force = false)
+        public bool Write(Error error, bool isException = false)
         {
-            if (error is null)
-                return false;
+            var level = error.Level;
 
-            var level = !force && _config != null && _config.Rules.TryGetValue(error.Code, out var overrideLevel)
-                ? overrideLevel
-                : error.Level;
+            if (isException)
+            {
+                level = ErrorLevel.Error;
+            }
+            else if (_config != null && _config.Rules.TryGetValue(error.Code, out var overrideLevel))
+            {
+                level = overrideLevel;
+            }
 
             if (level == ErrorLevel.Off)
             {

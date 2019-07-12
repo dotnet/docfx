@@ -114,7 +114,7 @@ namespace Microsoft.Docs.Build
                 {
                     // Remove author from contributors if author name is specified
                     var (error, result) = await _gitHubUserCache.GetByLogin(authorName);
-                    errors.AddIfNotNull(error?.WithSourceInfo(authorName));
+                    errors.AddIfNotNull(error);
                     return result?.ToContributor();
                 }
                 else if (contributors.Count > 0)
@@ -123,7 +123,7 @@ namespace Microsoft.Docs.Build
                     for (var i = contributionCommits.Count - 1; i >= 0; i--)
                     {
                         var user = await GetContributor(contributionCommits[i]);
-                        if (user != null)
+                        if (user != null && !excludes.Contains(user.Name))
                         {
                             return user;
                         }
