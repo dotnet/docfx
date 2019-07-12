@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
@@ -14,7 +13,6 @@ namespace Microsoft.Docs.Build
     {
         private readonly string _cachePath;
         private readonly double _expirationInHours;
-        private readonly SemaphoreSlim _syncRoot = new SemaphoreSlim(1, 1);
         private readonly MicrosoftGraphAccessor _microsoftGraphAccessor = null;
         private readonly List<string> _tempInvalidAliases = new List<string>();
 
@@ -43,57 +41,52 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public Task<(Error error, MicrosoftAlias msAlias)> GetMicrosoftAliasAsync(string alias)
+        public async Task<(Error error, MicrosoftAlias msAlias)> GetMicrosoftAliasAsync(string alias)
         {
             if (string.IsNullOrEmpty(alias))
             {
-                return new Task<(Error error, MicrosoftAlias msAlias)>(null, null);
+                return default;
             }
 
-            return Synchronized(GetAsyncCore);
-
-            async Task<(Error error, MicrosoftAlias msAlias)> GetAsyncCore()
+            if (_aliases.TryGetValue(alias, out var msAlias))
             {
-                if (_aliases.TryGetValue(alias, out var msAlias))
+                return (null, msAlias);
+            }
+
+            if (_tempInvalidAliases.Contains(alias) || _microsoftGraphAccessor == null)
+            {
+                return default;
+            }
+
+            Telemetry.TrackCacheTotalCount(TelemetryName.MicrosoftGraphCache);
+
+            var (error, isValid) = await _microsoftGraphAccessor.ValidateAlias(alias);
+
+            Log.Write($"Calling Microsoft Graph API to validate {alias}");
+            Telemetry.TrackCacheMissCount(TelemetryName.MicrosoftGraphCache);
+
+            if (error != null)
+            {
+                return (error, null);
+            }
+
+            if (isValid)
+            {
+                var newMsAlias = new MicrosoftAlias()
                 {
-                    return (null, msAlias);
-                }
+                    Alias = alias,
+                    Expiry = NextExpiry(),
+                };
 
-                if (_tempInvalidAliases.Contains(alias) || _microsoftGraphAccessor == null)
-                {
-                    return default;
-                }
+                _aliases.Add(alias, new MicrosoftAlias() { Alias = alias, Expiry = NextExpiry() });
+                _needUpdate = true;
 
-                Telemetry.TrackCacheTotalCount(TelemetryName.GitHubUserCache);
-
-                var (error, isValid) = await _microsoftGraphAccessor.ValidateAlias(alias);
-
-                Log.Write($"Calling Microsoft Graph API to validate {alias}");
-                Telemetry.TrackCacheMissCount(TelemetryName.GitHubUserCache);
-
-                if (error != null)
-                {
-                    return (error, null);
-                }
-
-                if (isValid)
-                {
-                    var newMsAlias = new MicrosoftAlias()
-                    {
-                        Alias = alias,
-                        Expiry = NextExpiry(),
-                    };
-
-                    _aliases.Add(alias, new MicrosoftAlias() { Alias = alias, Expiry = NextExpiry() });
-                    _needUpdate = true;
-
-                    return (error, newMsAlias);
-                }
-                else
-                {
-                    _tempInvalidAliases.Add(alias);
-                    return (error, null);
-                }
+                return (error, newMsAlias);
+            }
+            else
+            {
+                _tempInvalidAliases.Add(alias);
+                return (error, null);
             }
         }
 
@@ -106,42 +99,18 @@ namespace Microsoft.Docs.Build
         {
             if (_needUpdate)
             {
-                _syncRoot.Wait();
-
-                try
-                {
-                    var content = JsonUtility.Serialize(new MicrosoftGraphCacheFile { Aliases = _aliases.Values.ToArray() });
-
-                    PathUtility.CreateDirectoryFromFilePath(_cachePath);
-                    ProcessUtility.WriteFile(_cachePath, content);
-                    _needUpdate = false;
-                }
-                finally
-                {
-                    _syncRoot.Release();
-                }
+                var content = JsonUtility.Serialize(new MicrosoftGraphCacheFile { Aliases = _aliases.Values.ToArray() });
+                PathUtility.CreateDirectoryFromFilePath(_cachePath);
+                ProcessUtility.WriteFile(_cachePath, content);
+                _needUpdate = false;
             }
         }
 
         public void Dispose()
         {
-            _syncRoot.Dispose();
             _microsoftGraphAccessor?.Dispose();
         }
 
         private DateTime NextExpiry() => DateTime.UtcNow.AddHours(_expirationInHours);
-
-        private async Task<T> Synchronized<T>(Func<Task<T>> action)
-        {
-            await _syncRoot.WaitAsync();
-            try
-            {
-                return await action();
-            }
-            finally
-            {
-                _syncRoot.Release();
-            }
-        }
     }
 }
