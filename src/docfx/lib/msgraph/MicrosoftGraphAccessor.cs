@@ -11,6 +11,8 @@ namespace Microsoft.Docs.Build
 {
     internal class MicrosoftGraphAccessor : IDisposable
     {
+        private const int UrlLengthLimit = 1000;
+
         private readonly IGraphServiceClient _msGraphClient;
         private readonly MicrosoftGraphAuthenticationProvider _microsoftGraphAuthenticationProvider;
 
@@ -20,39 +22,23 @@ namespace Microsoft.Docs.Build
             _msGraphClient = new GraphServiceClient(_microsoftGraphAuthenticationProvider);
         }
 
-        public async Task<(Dictionary<string, bool>, Error)> ValidateAliases(HashSet<string> aliases)
+        public async Task<(Dictionary<string, bool>, List<Error>)> ValidateAliases(HashSet<string> aliases)
         {
             var results = new Dictionary<string, bool>();
-            var fliterString = GetFliterString(aliases);
+            var errors = new List<Error>();
+            var fliterStrings = GetFliterStrings(aliases);
 
-            if (!string.IsNullOrEmpty(fliterString))
+            if (fliterStrings.Count != 0)
             {
-                var options = new List<Option>
-                {
-                    new QueryOption("$select", "mailNickname"),
-                    new QueryOption("$filter", fliterString),
-                };
+                var mailNicknames = await GetMailNicknames(fliterStrings, errors);
 
-                try
+                foreach (var alias in aliases)
                 {
-                    var userMailNicknames = (await RetryUtility.Retry(
-                        () => _msGraphClient.Users.Request(options).GetAsync(),
-                        ex => ex is ServiceException)).Select(user => user.MailNickname);
-
-                    foreach (var alias in aliases)
-                    {
-                        results.Add(alias, userMailNicknames.Any(mailNickname => string.Equals(mailNickname, alias, StringComparison.OrdinalIgnoreCase)));
-                    }
-
-                    return (results, null);
-                }
-                catch (Exception e)
-                {
-                    return (results, Errors.MicrosoftGraphApiFailed(e.Message));
+                    results.Add(alias, mailNicknames.Any(mailNickname => string.Equals(mailNickname, alias, StringComparison.OrdinalIgnoreCase)));
                 }
             }
 
-            return (results, null);
+            return (results, errors);
         }
 
         public void Dispose()
@@ -60,16 +46,55 @@ namespace Microsoft.Docs.Build
             _microsoftGraphAuthenticationProvider?.Dispose();
         }
 
-        private string GetFliterString(HashSet<string> aliases)
+        private async Task<HashSet<string>> GetMailNicknames(List<string> fliterStrings, List<Error> errors)
         {
+            var mailNicknames = new List<string>();
+            foreach (var fliterString in fliterStrings)
+            {
+                try
+                {
+                    var options = new List<Option>
+                    {
+                        new QueryOption("$select", "mailNickname"),
+                        new QueryOption("$filter", fliterString),
+                    };
+
+                    mailNicknames.AddRange((await RetryUtility.Retry(
+                        () => _msGraphClient.Users.Request(options).GetAsync(),
+                        ex => ex is ServiceException)).Select(user => user.MailNickname));
+                }
+                catch (Exception e)
+                {
+                    errors.Add(Errors.MicrosoftGraphApiFailed(e.Message));
+                }
+            }
+
+            return mailNicknames.ToHashSet();
+        }
+
+        private List<string> GetFliterStrings(HashSet<string> aliases)
+        {
+            var fliterStrings = new List<string>();
+
             var fliterString = string.Empty;
 
             foreach (var alias in aliases)
             {
                 fliterString = $"{fliterString}{(string.IsNullOrEmpty(fliterString) ? string.Empty : " or ")}mailNickname eq '{alias}'";
+
+                if (fliterString.Length > UrlLengthLimit)
+                {
+                    fliterStrings.Add(fliterString);
+                    fliterString = string.Empty;
+                }
             }
 
-            return fliterString;
+            if (!string.IsNullOrEmpty(fliterString))
+            {
+                fliterStrings.Add(fliterString);
+            }
+
+            return fliterStrings;
         }
     }
 }

@@ -66,7 +66,7 @@ namespace Microsoft.Docs.Build
             Log.Write($"Calling Microsoft Graph API to validate {_aliasesForOnlineValidation.Keys}");
             Telemetry.TrackCacheMissCount(TelemetryName.MicrosoftGraphAlias);
 
-            if (networkError != null)
+            if (networkError.Count != 0)
             {
                 _errorLog.Write(networkError);
                 return;
