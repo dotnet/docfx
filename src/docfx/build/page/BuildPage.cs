@@ -215,7 +215,7 @@ namespace Microsoft.Docs.Build
             }
 
             // validate via json schema
-            var schemaValidationErrors = schemaValidator.Validate(token);
+            var schemaValidationErrors = schemaValidator.Validate(file, token);
             errors.AddRange(schemaValidationErrors);
 
             // transform via json schema

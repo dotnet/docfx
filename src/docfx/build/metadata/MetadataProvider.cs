@@ -86,7 +86,7 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            errors.AddRange(_schemaValidator.Validate(result));
+            errors.AddRange(_schemaValidator.Validate(file, result));
 
             var (validationErrors, metadataModel) = JsonUtility.ToObject<InputMetadata>(result);
             errors.AddRange(validationErrors);

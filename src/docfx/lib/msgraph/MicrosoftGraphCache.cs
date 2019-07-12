@@ -15,17 +15,19 @@ namespace Microsoft.Docs.Build
         private readonly string _cachePath;
         private readonly double _expirationInHours;
         private readonly ErrorLog _errorLog;
+        private readonly PublishModelBuilder _publishModelBuilder;
         private readonly MicrosoftGraphAccessor _microsoftGraphAccessor = null;
-        private readonly ConcurrentDictionary<Error, string> _aliasesForOnlineValidation = new ConcurrentDictionary<Error, string>();
+        private readonly ConcurrentDictionary<Document, KeyValuePair<string, Error>> _aliasesForOnlineValidation = new ConcurrentDictionary<Document, KeyValuePair<string, Error>>();
 
         private ConcurrentDictionary<string, MicrosoftAlias> _aliases = new ConcurrentDictionary<string, MicrosoftAlias>();
         private bool _needUpdate = false;
 
-        public MicrosoftGraphCache(Config config, ErrorLog errorLog)
+        public MicrosoftGraphCache(Config config, ErrorLog errorLog, PublishModelBuilder publishModelBuilder)
         {
             _cachePath = AppData.MicrosoftGraphCachePath;
             _expirationInHours = config.MicrosoftGraph.MicrosoftGraphCacheExpirationInHours;
             _errorLog = errorLog;
+            _publishModelBuilder = publishModelBuilder;
 
             if (!string.IsNullOrEmpty(config.MicrosoftGraph.MicrosoftGraphTenantId) &&
                 !string.IsNullOrEmpty(config.MicrosoftGraph.MicrosoftGraphClientId) &&
@@ -44,12 +46,11 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public void AddMicrosoftAliasInfoForValidation(string alias, Error error)
+        public void AddMicrosoftAliasInfoForValidation(Document file, string alias, Error error)
         {
             if (!string.IsNullOrEmpty(alias) && !_aliases.ContainsKey(alias))
             {
-                // Error can distinguish files with same alias
-                _aliasesForOnlineValidation.TryAdd(error, alias);
+                _aliasesForOnlineValidation.TryAdd(file, new KeyValuePair<string, Error>(alias, error));
             }
         }
 
@@ -61,7 +62,7 @@ namespace Microsoft.Docs.Build
             }
 
             Telemetry.TrackCacheTotalCount(TelemetryName.MicrosoftGraphAlias);
-            var (validationResults, networkError) = await _microsoftGraphAccessor.ValidateAliases(_aliasesForOnlineValidation.Values.ToHashSet());
+            var (validationResults, networkError) = await _microsoftGraphAccessor.ValidateAliases(_aliasesForOnlineValidation.Values.Select(info => info.Key).ToHashSet());
             Log.Write($"Calling Microsoft Graph API to validate {_aliasesForOnlineValidation.Keys}");
             Telemetry.TrackCacheMissCount(TelemetryName.MicrosoftGraphAlias);
 
@@ -71,8 +72,11 @@ namespace Microsoft.Docs.Build
                 return;
             }
 
-            foreach (var (error, alias) in _aliasesForOnlineValidation)
+            foreach (var (file, info) in _aliasesForOnlineValidation)
             {
+                var alias = info.Key;
+                var error = info.Value;
+
                 if (validationResults.TryGetValue(alias, out bool isValid))
                 {
                     if (isValid)
@@ -88,7 +92,10 @@ namespace Microsoft.Docs.Build
                     }
                     else
                     {
-                        _errorLog.Write(error);
+                        if (_errorLog.Write(error))
+                        {
+                            _publishModelBuilder.MarkError(file);
+                        }
                     }
                 }
             }

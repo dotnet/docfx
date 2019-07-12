@@ -47,7 +47,7 @@ namespace Microsoft.Docs.Build
             PublishModelBuilder = new PublishModelBuilder();
             TemplateEngine = TemplateEngine.Create(docset);
             BuildScope = new BuildScope(errorLog, docset, TemplateEngine);
-            MicrosoftGraphCache = new MicrosoftGraphCache(docset.Config, errorLog);
+            MicrosoftGraphCache = new MicrosoftGraphCache(docset.Config, errorLog, PublishModelBuilder);
             MetadataProvider = new MetadataProvider(docset, Cache, MicrosoftGraphCache);
             MonikerProvider = new MonikerProvider(docset, MetadataProvider);
             GitHubUserCache = new GitHubUserCache(docset.Config);

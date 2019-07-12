@@ -89,7 +89,7 @@ namespace Microsoft.Docs.Build
         {
             var schema = JsonUtility.Deserialize<JsonSchema>(schemaText, "");
             var test = JObject.Parse(testText);
-            var errors = new JsonSchemaValidator(schema).Validate(test["data"]);
+            var errors = new JsonSchemaValidator(schema).Validate(null, test["data"]);
 
             Assert.True(test.Value<bool>("valid") == (errors.Count == 0), description);
         }
@@ -274,7 +274,7 @@ namespace Microsoft.Docs.Build
         {
             var jsonSchema = JsonUtility.Deserialize<JsonSchema>(schema.Replace('\'', '"'), null);
             var (_, payload) = JsonUtility.Parse(json.Replace('\'', '"'), "file");
-            var errors = new JsonSchemaValidator(jsonSchema).Validate(payload);
+            var errors = new JsonSchemaValidator(jsonSchema).Validate(null, payload);
             var expected = string.Join('\n', expectedErrors.Split('\n').Select(err => err.Trim()));
             var actual = string.Join('\n', errors.Select(err => err.ToString().Replace("\\r", "")).OrderBy(err => err).ToArray()).Replace('"', '\'');
             Assert.Equal(expected, actual);

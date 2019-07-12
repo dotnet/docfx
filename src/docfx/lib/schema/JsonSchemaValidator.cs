@@ -22,14 +22,14 @@ namespace Microsoft.Docs.Build
             _microsoftGraphCache = microsoftGraphCache;
         }
 
-        public List<Error> Validate(JToken token)
+        public List<Error> Validate(Document file, JToken token)
         {
             var errors = new List<Error>();
-            Validate(_schema, string.Empty, token, errors);
+            Validate(file, _schema, string.Empty, token, errors);
             return errors;
         }
 
-        private void Validate(JsonSchema schema, string name, JToken token, List<Error> errors)
+        private void Validate(Document file, JsonSchema schema, string name, JToken token, List<Error> errors)
         {
             schema = _definitions.GetDefinition(schema);
 
@@ -44,15 +44,15 @@ namespace Microsoft.Docs.Build
             switch (token)
             {
                 case JValue scalar:
-                    ValidateScalar(schema, name, scalar, errors);
+                    ValidateScalar(file, schema, name, scalar, errors);
                     break;
 
                 case JArray array:
-                    ValidateArray(schema, name, array, errors);
+                    ValidateArray(file, schema, name, array, errors);
                     break;
 
                 case JObject map:
-                    ValidateObject(schema, name, map, errors);
+                    ValidateObject(file, schema, name, map, errors);
                     break;
             }
         }
@@ -70,7 +70,7 @@ namespace Microsoft.Docs.Build
             return true;
         }
 
-        private void ValidateScalar(JsonSchema schema, string name, JValue scalar, List<Error> errors)
+        private void ValidateScalar(Document file, JsonSchema schema, string name, JValue scalar, List<Error> errors)
         {
             if (schema.Enum != null && Array.IndexOf(schema.Enum, scalar) == -1)
             {
@@ -80,7 +80,7 @@ namespace Microsoft.Docs.Build
             switch (scalar.Value)
             {
                 case string str:
-                    ValidateString(schema, name, scalar, str, errors);
+                    ValidateString(file, schema, name, scalar, str, errors);
                     break;
 
                 case double _:
@@ -91,13 +91,13 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private void ValidateArray(JsonSchema schema, string name, JArray array, List<Error> errors)
+        private void ValidateArray(Document file, JsonSchema schema, string name, JArray array, List<Error> errors)
         {
             if (schema.Items != null)
             {
                 foreach (var item in array)
                 {
-                    Validate(schema.Items, name, item, errors);
+                    Validate(file, schema.Items, name, item, errors);
                 }
             }
 
@@ -108,17 +108,17 @@ namespace Microsoft.Docs.Build
                 errors.Add(Errors.ArrayLengthInvalid(JsonUtility.GetSourceInfo(array), array.Path, $">= {schema.MinItems}"));
         }
 
-        private void ValidateObject(JsonSchema schema, string name, JObject map, List<Error> errors)
+        private void ValidateObject(Document file, JsonSchema schema, string name, JObject map, List<Error> errors)
         {
             ValidateRequired(schema, map, errors);
             ValidateDependencies(schema, map, errors);
             ValidateEither(schema, map, errors);
             ValidatePrecludes(schema, map, errors);
             ValidateEnumDependencies(schema, map, errors);
-            ValidateProperties(schema, name, map, errors);
+            ValidateProperties(file, schema, name, map, errors);
         }
 
-        private void ValidateProperties(JsonSchema schema, string name, JObject map, List<Error> errors)
+        private void ValidateProperties(Document file, JsonSchema schema, string name, JObject map, List<Error> errors)
         {
             foreach (var (key, value) in map)
             {
@@ -127,7 +127,7 @@ namespace Microsoft.Docs.Build
                 // properties
                 if (schema.Properties.TryGetValue(key, out var propertySchema))
                 {
-                    Validate(propertySchema, key, value, errors);
+                    Validate(file, propertySchema, key, value, errors);
                     isAdditonalProperty = false;
                 }
 
@@ -136,7 +136,7 @@ namespace Microsoft.Docs.Build
                 {
                     if (Regex.IsMatch(key, pattern))
                     {
-                        Validate(patternPropertySchema, key, value, errors);
+                        Validate(file, patternPropertySchema, key, value, errors);
                         isAdditonalProperty = false;
                     }
                 }
@@ -146,7 +146,7 @@ namespace Microsoft.Docs.Build
                 {
                     if (schema.AdditionalProperties.schema != null)
                     {
-                        Validate(schema.AdditionalProperties.schema, name, value, errors);
+                        Validate(file, schema.AdditionalProperties.schema, name, value, errors);
                     }
                     else if (!schema.AdditionalProperties.value)
                     {
@@ -156,10 +156,10 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private void ValidateString(JsonSchema schema, string name, JValue scalar, string str, List<Error> errors)
+        private void ValidateString(Document file, JsonSchema schema, string name, JValue scalar, string str, List<Error> errors)
         {
             ValidateDateFormat(schema, name, scalar, str, errors);
-            ValidateMicrosoftAlias(schema, name, scalar, str, errors);
+            ValidateMicrosoftAlias(file, schema, name, scalar, str, errors);
 
             if (schema.MaxLength.HasValue || schema.MinLength.HasValue)
             {
@@ -298,7 +298,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private void ValidateMicrosoftAlias(JsonSchema schema, string name, JValue scalar, string alias, List<Error> errors)
+        private void ValidateMicrosoftAlias(Document file, JsonSchema schema, string name, JValue scalar, string alias, List<Error> errors)
         {
             if (schema.MicrosoftAlias != null &&
                 Array.IndexOf(schema.MicrosoftAlias.AllowedDLs, alias) == -1 &&
@@ -308,7 +308,7 @@ namespace Microsoft.Docs.Build
                 if (!string.IsNullOrEmpty(alias))
                 {
                     // Collect Info for validating Microsoft Alias
-                    _microsoftGraphCache.AddMicrosoftAliasInfoForValidation(alias, Errors.MsAliasInvalid(JsonUtility.GetSourceInfo(scalar), name, alias));
+                    _microsoftGraphCache.AddMicrosoftAliasInfoForValidation(file, alias, Errors.MsAliasInvalid(JsonUtility.GetSourceInfo(scalar), name, alias));
                 }
                 else
                 {
