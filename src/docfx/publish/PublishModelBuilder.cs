@@ -69,12 +69,7 @@ namespace Microsoft.Docs.Build
 
                     foreach (var conflictingFile in files.Keys)
                     {
-                        if (_publishItems.TryGetValue(conflictingFile, out var item))
-                        {
-                            item.HasError = true;
-                            if (item.Path != null && IsInsideOutputFolder(item, conflictingFile.Docset))
-                                context.Output.Delete(item.Path, legacy);
-                        }
+                        HandleFileWithError(conflictingFile);
                     }
                 }
             }
@@ -98,13 +93,7 @@ namespace Microsoft.Docs.Build
 
                 foreach (var conflictingFile in conflictingFiles)
                 {
-                    if (_publishItems.TryGetValue(conflictingFile, out var item))
-                    {
-                        item.HasError = true;
-
-                        if (item.Path != null && IsInsideOutputFolder(item, conflictingFile.Docset))
-                            context.Output.Delete(item.Path, legacy);
-                    }
+                    HandleFileWithError(conflictingFile);
                 }
             }
 
@@ -113,13 +102,7 @@ namespace Microsoft.Docs.Build
             {
                 if (_filesBySiteUrl.TryRemove(file.SiteUrl, out _))
                 {
-                    if (_publishItems.TryGetValue(file, out var item))
-                    {
-                        item.HasError = true;
-
-                        if (item.Path != null && IsInsideOutputFolder(item, file.Docset))
-                            context.Output.Delete(item.Path, legacy);
-                    }
+                    HandleFileWithError(file);
                 }
             }
 
@@ -141,6 +124,17 @@ namespace Microsoft.Docs.Build
             var fileManifests = _publishItems.ToDictionary(item => item.Key, item => item.Value);
 
             return (model, fileManifests);
+
+            void HandleFileWithError(Document file)
+            {
+                if (_publishItems.TryGetValue(file, out var item))
+                {
+                    item.HasError = true;
+
+                    if (item.Path != null && IsInsideOutputFolder(item, file.Docset))
+                        context.Output.Delete(item.Path, legacy);
+                }
+            }
         }
 
         private bool IsInsideOutputFolder(PublishItem item, Docset docset)

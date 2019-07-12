@@ -253,7 +253,8 @@ outputs:
           "url": "/docs/a",
           "path": "docs/a.json",
           "source_path": "docs/a.md",
-          "locale": "en-us"
+          "locale": "en-us",
+          "has_error": true
         }
       ]
     }
