@@ -49,6 +49,7 @@ namespace Microsoft.Docs.Build
         private async Task<HashSet<string>> GetMailNicknames(List<string> fliterStrings, List<Error> errors)
         {
             var mailNicknames = new List<string>();
+
             foreach (var fliterString in fliterStrings)
             {
                 try
