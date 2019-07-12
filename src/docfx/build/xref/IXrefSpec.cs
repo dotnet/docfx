@@ -7,8 +7,6 @@ namespace Microsoft.Docs.Build
 {
     internal interface IXrefSpec
     {
-        SourceInfo Source { get; }
-
         string Href { get; }
 
         Document DeclaringFile { get; }
