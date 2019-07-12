@@ -388,7 +388,13 @@ inputs:
   a.yml: |
     #YamlMime:TestData
     prop: value
-    layout: test
+  _themes/ContentTemplate/TestData.mta.json.js: |
+    exports.transform = function (model) {
+      model.layout = "test"
+      return {
+        content: JSON.stringify(model)
+      }
+    }
   _themes/ContentTemplate/TestData.html.primary.tmpl: |
     <div>{{content}}</div>
   _themes/ContentTemplate/TestData.html.primary.js: |
