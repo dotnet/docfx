@@ -380,6 +380,10 @@ outputs:
     ["error","unexpected-type","Expect type 'Object' but got 'Array'","a.yml",1,1]
 ---
 # Verify SDP pipeline
+# YAML mime in the SDP document should have a corresponding *.html.primary.js file
+# Set config.output.json to false to run *.html.liquid to output static HTML
+# Provide *.mta.json.js to transform metadata
+# Provide *.html.primary.js and *.html.primary.tmpl to transform json content to HTML
 inputs:
   docfx.yml: |
     output:
