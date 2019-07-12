@@ -65,7 +65,7 @@ namespace Microsoft.Docs.Build
         }
 
         private static async Task<(List<Error> errors, object output, JObject metadata)>
-            CreatePageOutput(Context context, Document file, JObject sourcecModel)
+            CreatePageOutput(Context context, Document file, JObject sourceModel)
         {
             var errors = new List<Error>();
             var (inputMetaErrors, inputMetadata) = context.MetadataProvider.GetMetadata(file);
@@ -79,7 +79,7 @@ namespace Microsoft.Docs.Build
             JsonUtility.Merge(mergedMetadata, JsonUtility.ToJObject(outputMetadata));
 
             var pageModel = new JObject();
-            JsonUtility.Merge(pageModel, sourcecModel);
+            JsonUtility.Merge(pageModel, sourceModel);
             JsonUtility.Merge(pageModel, mergedMetadata);
 
             if (file.Docset.Config.Output.Json && !file.Docset.Legacy)
@@ -87,7 +87,7 @@ namespace Microsoft.Docs.Build
                 return (errors, pageModel, SortProperties(mergedMetadata));
             }
 
-            var (templateModel, metadata) = CreateTemplateModel(context, new JObject(pageModel.Properties().OrderBy(p => p.Name)), file);
+            var (templateModel, metadata) = CreateTemplateModel(context, SortProperties(pageModel), file);
             if (file.Docset.Config.Output.Json)
             {
                 return (errors, templateModel, SortProperties(metadata));

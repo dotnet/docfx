@@ -34,9 +34,9 @@ namespace Microsoft.Docs.Build
 
             _global = LoadGlobalTokens();
             _schemas = LoadSchemas(schemaDir, _contentTemplateDir);
-            _liquid = new LiquidTemplate(templateDir);
+            _liquid = new LiquidTemplate(_contentTemplateDir);
             _js = new JavascriptEngine(_contentTemplateDir, _global);
-            _mustacheTemplate = new MustacheTemplate(_templateDir);
+            _mustacheTemplate = new MustacheTemplate(_contentTemplateDir);
 
             HtmlMetaConfigs = (
                 metadataSchema.HtmlMetaHidden.ToHashSet(),
@@ -66,7 +66,7 @@ namespace Microsoft.Docs.Build
             {
                 ["content"] = model.Content,
                 ["page"] = model.RawMetadata,
-                ["metadata"] = new JObject(),
+                ["metadata"] = model.PageMetadata,
                 ["theme_rel"] = themeRelativePath,
             };
 

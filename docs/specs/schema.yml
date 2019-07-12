@@ -378,3 +378,32 @@ inputs:
 outputs:
   .errors.log: |
     ["error","unexpected-type","Expect type 'Object' but got 'Array'","a.yml",1,1]
+---
+# Verify SDP pipeline
+inputs:
+  docfx.yml: |
+    output:
+      json: false
+  _themes/ContentTemplate/schemas/TestData.schema.json: "{}"
+  a.yml: |
+    #YamlMime:TestData
+    prop: value
+    layout: test
+  _themes/ContentTemplate/TestData.html.primary.tmpl: |
+    <div>{{content}}</div>
+  _themes/ContentTemplate/TestData.html.primary.js: |
+    exports.transform = function (model) {
+      return model.prop;
+    }
+  _themes/ContentTemplate/test.html.liquid: |
+    <!DOCTYPE html>
+      <div>
+          {{content}}
+      </div>
+outputs:
+  a/index.html: |
+    <!DOCTYPE html>
+      <div>
+        <div>value</div>
+
+      </div>
