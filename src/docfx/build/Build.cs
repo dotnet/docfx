@@ -58,6 +58,7 @@ namespace Microsoft.Docs.Build
                     await context.BuildQueue.Drain(Progress.Update);
                 }
 
+                await context.MicrosoftGraphCache.ValidateAliases();
                 context.BookmarkValidator.Validate();
 
                 var (publishModel, fileManifests) = context.PublishModelBuilder.Build(context, docset.Legacy);

@@ -14,16 +14,18 @@ namespace Microsoft.Docs.Build
     {
         private readonly string _cachePath;
         private readonly double _expirationInHours;
+        private readonly ErrorLog _errorLog;
         private readonly MicrosoftGraphAccessor _microsoftGraphAccessor = null;
-        private readonly ConcurrentBag<string> _tempInvalidAliases = new ConcurrentBag<string>();
+        private readonly ConcurrentDictionary<Error, string> _aliasesForOnlineValidation = new ConcurrentDictionary<Error, string>();
 
         private ConcurrentDictionary<string, MicrosoftAlias> _aliases = new ConcurrentDictionary<string, MicrosoftAlias>();
         private bool _needUpdate = false;
 
-        public MicrosoftGraphCache(Config config)
+        public MicrosoftGraphCache(Config config, ErrorLog errorLog)
         {
             _cachePath = AppData.MicrosoftGraphCachePath;
             _expirationInHours = config.MicrosoftGraph.MicrosoftGraphCacheExpirationInHours;
+            _errorLog = errorLog;
 
             if (!string.IsNullOrEmpty(config.MicrosoftGraph.MicrosoftGraphTenantId) &&
                 !string.IsNullOrEmpty(config.MicrosoftGraph.MicrosoftGraphClientId) &&
@@ -42,52 +44,53 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public async Task<(Error error, MicrosoftAlias msAlias)> GetMicrosoftAliasAsync(string alias)
+        public void AddMicrosoftAliasInfoForValidation(string alias, Error error)
         {
-            if (string.IsNullOrEmpty(alias))
+            if (!string.IsNullOrEmpty(alias) && !_aliases.ContainsKey(alias))
             {
-                return default;
+                // Error can distinguish files with same alias
+                _aliasesForOnlineValidation.TryAdd(error, alias);
             }
+        }
 
-            if (_aliases.TryGetValue(alias, out var msAlias))
+        public async Task ValidateAliases()
+        {
+            if (_microsoftGraphAccessor == null)
             {
-                return (null, msAlias);
-            }
-
-            if (_tempInvalidAliases.Contains(alias) || _microsoftGraphAccessor == null)
-            {
-                return default;
+                return;
             }
 
             Telemetry.TrackCacheTotalCount(TelemetryName.MicrosoftGraphAlias);
-
-            var (error, isValid) = await _microsoftGraphAccessor.ValidateAlias(alias);
-
-            Log.Write($"Calling Microsoft Graph API to validate {alias}");
+            var (validationResults, networkError) = await _microsoftGraphAccessor.ValidateAliases(_aliasesForOnlineValidation.Values.ToHashSet());
+            Log.Write($"Calling Microsoft Graph API to validate {_aliasesForOnlineValidation.Keys}");
             Telemetry.TrackCacheMissCount(TelemetryName.MicrosoftGraphAlias);
 
-            if (error != null)
+            if (networkError != null)
             {
-                return (error, null);
+                _errorLog.Write(networkError);
+                return;
             }
 
-            if (isValid)
+            foreach (var (error, alias) in _aliasesForOnlineValidation)
             {
-                var newMsAlias = new MicrosoftAlias()
+                if (validationResults.TryGetValue(alias, out bool isValid))
                 {
-                    Alias = alias,
-                    Expiry = NextExpiry(),
-                };
+                    if (isValid)
+                    {
+                        var newMsAlias = new MicrosoftAlias()
+                        {
+                            Alias = alias,
+                            Expiry = NextExpiry(),
+                        };
 
-                _aliases.TryAdd(alias, new MicrosoftAlias() { Alias = alias, Expiry = NextExpiry() });
-                _needUpdate = true;
-
-                return (error, newMsAlias);
-            }
-            else
-            {
-                _tempInvalidAliases.Add(alias);
-                return (error, null);
+                        _aliases.TryAdd(alias, new MicrosoftAlias() { Alias = alias, Expiry = NextExpiry() });
+                        _needUpdate = true;
+                    }
+                    else
+                    {
+                        _errorLog.Write(error);
+                    }
+                }
             }
         }
 

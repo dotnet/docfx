@@ -44,14 +44,14 @@ namespace Microsoft.Docs.Build
             ErrorLog = errorLog;
             Output = new Output(outputPath);
             Cache = new Cache();
+            PublishModelBuilder = new PublishModelBuilder();
             TemplateEngine = TemplateEngine.Create(docset);
             BuildScope = new BuildScope(errorLog, docset, TemplateEngine);
-            MicrosoftGraphCache = new MicrosoftGraphCache(docset.Config);
+            MicrosoftGraphCache = new MicrosoftGraphCache(docset.Config, errorLog);
             MetadataProvider = new MetadataProvider(docset, Cache, MicrosoftGraphCache);
             MonikerProvider = new MonikerProvider(docset, MetadataProvider);
             GitHubUserCache = new GitHubUserCache(docset.Config);
             GitCommitProvider = new GitCommitProvider();
-            PublishModelBuilder = new PublishModelBuilder();
             BookmarkValidator = new BookmarkValidator(errorLog, PublishModelBuilder);
             DependencyMapBuilder = new DependencyMapBuilder();
             DependencyResolver = new DependencyResolver(

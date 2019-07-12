@@ -296,3 +296,40 @@ outputs:
   .errors.log: |
     ["warning","ms-alias-invalid","Invalid value for 'ms.author', 'abc1234cba' is not a valid Microsoft alias","a.md",2,12]
 ---
+# Json schema microsoft alias rule: The author is invalid with graph call (multiple files)
+inputs:
+  docfx.yml: |
+    metadataSchema:
+      - schema.json
+    microsoftGraph:
+      microsoftGraphClientSecret: {MICROSOFT_GRAPH_CLIENT_SECRET}
+  schema.json: |
+    { 
+      "properties":
+      { 
+        "ms.author":
+        { 
+          "microsoftAlias": 
+          {
+            "allowedDLs":[]
+          }
+        }
+      } 
+    }
+  a.md: |
+    ---
+    ms.author: abc1234cba
+    ---
+  b.md: |
+    ---
+    ms.author: abc1234cba
+    ---
+environments:
+  - MICROSOFT_GRAPH_CLIENT_SECRET
+outputs:
+  a.json:
+  b.json:
+  .errors.log: |
+    ["warning","ms-alias-invalid","Invalid value for 'ms.author', 'abc1234cba' is not a valid Microsoft alias","a.md",2,12]
+    ["warning","ms-alias-invalid","Invalid value for 'ms.author', 'abc1234cba' is not a valid Microsoft alias","b.md",2,12]
+---

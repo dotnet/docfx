@@ -300,22 +300,19 @@ namespace Microsoft.Docs.Build
 
         private void ValidateMicrosoftAlias(JsonSchema schema, string name, JValue scalar, string alias, List<Error> errors)
         {
-            if (schema.MicrosoftAlias != null)
+            if (schema.MicrosoftAlias != null &&
+                Array.IndexOf(schema.MicrosoftAlias.AllowedDLs, alias) == -1 &&
+                _microsoftGraphCache != null &&
+                _microsoftGraphCache.IsConnectedToGraphApi())
             {
-                if (Array.IndexOf(schema.MicrosoftAlias.AllowedDLs, alias) == -1)
+                if (!string.IsNullOrEmpty(alias))
                 {
-                    if (_microsoftGraphCache != null)
-                    {
-                        var (error, msAlias) = _microsoftGraphCache.GetMicrosoftAliasAsync(alias).GetAwaiter().GetResult();
-
-                        errors.AddIfNotNull(error);
-
-                        // Mute error, when unable to connect to Microsoft Graph API
-                        if (msAlias == null && _microsoftGraphCache.IsConnectedToGraphApi())
-                        {
-                            errors.Add(Errors.MsAliasInvalid(JsonUtility.GetSourceInfo(scalar), name, alias));
-                        }
-                    }
+                    // Collect Info for validating Microsoft Alias
+                    _microsoftGraphCache.AddMicrosoftAliasInfoForValidation(alias, Errors.MsAliasInvalid(JsonUtility.GetSourceInfo(scalar), name, alias));
+                }
+                else
+                {
+                    errors.Add(Errors.MsAliasInvalid(JsonUtility.GetSourceInfo(scalar), name, alias));
                 }
             }
         }
