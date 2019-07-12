@@ -70,6 +70,11 @@ namespace Microsoft.Docs.Build
 
             void Run(T item)
             {
+                if (_drainTcs.Task.IsCompleted)
+                {
+                    return;
+                }
+
                 try
                 {
                     _run(item).ContinueWith(OnComplete, default, TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);

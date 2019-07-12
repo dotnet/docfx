@@ -2,12 +2,12 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Runtime.InteropServices;
 using System.Text;
 
@@ -102,26 +102,58 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Clones or update a git repository to the latest version.
         /// </summary>
-        public static void CloneOrUpdate(string path, string url, string committish, Config config = null)
+        public static void InitFetchCheckout(string path, string url, string committish, Config config = null)
         {
-            CloneOrUpdate(path, url, new[] { committish }, bare: false, depthOne: false, prune: true, config);
+            InitFetch(path, url, new[] { committish }, bare: false, depthOne: false, prune: true, config);
             ExecuteNonQuery(path, $"-c core.longpaths=true checkout --force --progress {committish}");
         }
 
         /// <summary>
         /// Clones or update a git bare repository to the latest version.
         /// </summary>
-        public static void CloneOrUpdateBare(string path, string url, IEnumerable<string> committishes, bool depthOne, Config config = null)
+        public static void InitFetchBare(string path, string url, IEnumerable<string> committishes, bool depthOne, Config config = null)
         {
-            CloneOrUpdate(path, url, committishes, bare: true, depthOne, prune: true, config);
+            InitFetch(path, url, committishes, bare: true, depthOne, prune: true, config);
         }
 
         /// <summary>
         /// Fetch a git repository's updates
         /// </summary>
-        public static void Fetch(string path, string url, string committish, Config config = null)
+        public static void Fetch(string path, string url, string committishes, Config config)
         {
-            CloneOrUpdate(path, url, new[] { committish }, bare: false, depthOne: false, prune: false, config);
+            Fetch(path, url, new[] { committishes }, config, depthOne: false, prune: false);
+        }
+
+        /// <summary>
+        /// Fetch a git repository's updates
+        /// </summary>
+        public static void Fetch(string path, string url, IEnumerable<string> committishes, Config config, bool depthOne, bool prune)
+        {
+            var refspecs = string.Join(' ', committishes.Select(rev => $"+{rev}:{rev}"));
+            var depth = depthOne ? "--depth 1" : "--depth 9999999999";
+            var pruneSwitch = prune ? "--prune" : "";
+
+            // Allow test to proxy remotes to local folder
+            if (GitRemoteProxy != null)
+            {
+                url = GitRemoteProxy(url);
+                refspecs = "+refs/heads/*:refs/heads/* +refs/tags/*:refs/tags/*";
+                depth = "--depth 9999999999";
+            }
+
+            var (httpConfig, secrets) = GetGitCommandLineConfig(url, config);
+
+            try
+            {
+                ExecuteNonQuery(path, $"{httpConfig} fetch --tags --progress --update-head-ok {pruneSwitch} {depth} \"{url}\" {refspecs}", secrets);
+            }
+            catch (InvalidOperationException)
+            {
+                // Fallback to fetch all branches and tags if the input committish is not supported by fetch
+                depth = "--depth 9999999999";
+                refspecs = "+refs/heads/*:refs/heads/* +refs/tags/*:refs/tags/*";
+                ExecuteNonQuery(path, $"{httpConfig} fetch --tags --progress --update-head-ok {pruneSwitch} {depth} \"{url}\" {refspecs}", secrets);
+            }
         }
 
         /// <summary>
@@ -137,7 +169,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Check if remote branch exists
         /// </summary>
-        public static bool RemoteBranchExists(string remote, string branch)
+        public static bool RemoteBranchExists(string remote, string branch, Config config)
         {
             try
             {
@@ -146,7 +178,11 @@ namespace Microsoft.Docs.Build
                     remote = GitRemoteProxy(remote);
                 }
 
-                return Execute(".", $"ls-remote --heads \"{remote}\" {branch}").Split('\n', StringSplitOptions.RemoveEmptyEntries).Any();
+                var (httpConfig, secrets) = GetGitCommandLineConfig(remote, config);
+
+                return Execute(".", $"{httpConfig} ls-remote --heads \"{remote}\" {branch}", secrets: secrets)
+                    .Split('\n', StringSplitOptions.RemoveEmptyEntries)
+                    .Any();
             }
             catch (InvalidOperationException)
             {
@@ -265,7 +301,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Clones or update a git repository to the latest version.
         /// </summary>
-        private static void CloneOrUpdate(string path, string url, IEnumerable<string> committishes, bool bare, bool depthOne, bool prune, Config config)
+        private static void InitFetch(string path, string url, IEnumerable<string> committishes, bool bare, bool depthOne, bool prune, Config config)
         {
             // Unifies clone and fetch using a single flow:
             // - git init
@@ -297,30 +333,7 @@ namespace Microsoft.Docs.Build
 
             git_repository_free(repo);
 
-            var refspecs = string.Join(' ', committishes.Select(rev => $"+{rev}:{rev}"));
-            var depth = depthOne ? "--depth 1" : "--depth 9999999999";
-            var pruneSwitch = prune ? "--prune" : "";
-
-            // Allow test to proxy remotes to local folder
-            if (GitRemoteProxy != null)
-            {
-                url = GitRemoteProxy(url);
-                refspecs = "+refs/heads/*:refs/heads/* +refs/tags/*:refs/tags/*";
-                depth = "--depth 9999999999";
-            }
-
-            var (httpConfig, secrets) = GetGitCommandLineConfig(url, config);
-            try
-            {
-                ExecuteNonQuery(path, $"{httpConfig} fetch --tags --progress --update-head-ok {pruneSwitch} {depth} \"{url}\" {refspecs}", secrets);
-            }
-            catch (InvalidOperationException)
-            {
-                // Fallback to fetch all branches and tags if the input committish is not supported by fetch
-                depth = "--depth 9999999999";
-                refspecs = "+refs/heads/*:refs/heads/* +refs/tags/*:refs/tags/*";
-                ExecuteNonQuery(path, $"{httpConfig} fetch --tags --progress --update-head-ok {pruneSwitch} {depth} \"{url}\" {refspecs}", secrets);
-            }
+            Fetch(path, url, committishes, config, depthOne, prune);
         }
 
         private static void ExecuteNonQuery(string cwd, string commandLineArgs, string[] secrets = null)
@@ -356,9 +369,19 @@ namespace Microsoft.Docs.Build
                 from http in config.Http
                 where url.StartsWith(http.Key)
                 from header in http.Value.Headers
-                select (cmd: $"-c http.{http.Key}.extraheader=\"{header.Key}: {header.Value}\"", secret: header.Value)).ToArray();
+                select (cmd: $"-c http.{http.Key}.extraheader=\"{header.Key}: {header.Value}\"", secret: GetSecretFromHeader(header))).ToArray();
 
             return (string.Join(' ', gitConfigs.Select(item => item.cmd)), gitConfigs.Select(item => item.secret).ToArray());
+
+            string GetSecretFromHeader(KeyValuePair<string, string> header)
+            {
+                if (header.Key.Equals("Authorization", StringComparison.OrdinalIgnoreCase) &&
+                    AuthenticationHeaderValue.TryParse(header.Value, out var value))
+                {
+                    return value.Parameter;
+                }
+                return header.Value;
+            }
         }
     }
 }

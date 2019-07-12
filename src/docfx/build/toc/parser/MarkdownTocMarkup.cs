@@ -1,9 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -16,7 +14,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class MarkdownTocMarkup
     {
-        public static (List<Error> errors, TableOfContentsModel model) LoadMdTocModel(string tocContent, Document file)
+        public static (List<Error> errors, TableOfContentsModel model) Parse(string tocContent, Document file)
         {
             var errors = new List<Error>();
             var headingBlocks = new List<HeadingBlock>();
@@ -34,7 +32,7 @@ namespace Microsoft.Docs.Build
                     case HtmlBlock htmlBlock when htmlBlock.Type == HtmlBlockType.Comment:
                         break;
                     default:
-                        errors.Add(Errors.InvalidTocSyntax(new SourceInfo<string>(tocContent.Substring(block.Span.Start, block.Span.Length), block.ToSourceInfo(file: file.ToString()))));
+                        errors.Add(Errors.InvalidTocSyntax(block.ToSourceInfo(file: file.ToString())));
                         break;
                 }
             }
@@ -45,141 +43,118 @@ namespace Microsoft.Docs.Build
             var (validationErrors, tocMetadata) = JsonUtility.ToObject<TableOfContentsMetadata>(metadata);
             errors.AddRange(validationErrors);
 
-            var tocModel = new TableOfContentsModel { Metadata = tocMetadata };
-            tocModel.Items = ConvertTo(tocContent, file.FilePath, headingBlocks.ToArray(), errors).children;
+            var items = BuildTree(errors, file.FilePath, headingBlocks);
+
+            var tocModel = new TableOfContentsModel { Metadata = tocMetadata, Items = items };
 
             return (errors, tocModel);
         }
 
-        private static (List<TableOfContentsItem> children, int count) ConvertTo(string tocContent, string filePath, HeadingBlock[] headingBlocks, List<Error> errors, int startIndex = 0)
+        private static List<TableOfContentsItem> BuildTree(List<Error> errors, string filePath, List<HeadingBlock> blocks)
         {
-            if (headingBlocks.Length == 0)
+            if (blocks.Count <= 0)
             {
-                return (new List<TableOfContentsItem>(), 0);
+                return new List<TableOfContentsItem>();
             }
 
-            Debug.Assert(startIndex < headingBlocks.Length);
+            var result = new TableOfContentsItem();
+            var stack = new Stack<(int level, TableOfContentsItem item)>();
 
-            int i = startIndex;
-            var items = new List<TableOfContentsItem>();
-            var childrenCount = 0;
-            do
+            // Level of root node is determined by its first child
+            var parent = (level: blocks[0].Level - 1, node: result);
+            stack.Push(parent);
+
+            foreach (var block in blocks)
             {
-                var item = GetItem(headingBlocks[i]);
-                if (item == null)
+                var currentLevel = block.Level;
+                var currentItem = GetItem(errors, filePath, block);
+                if (currentItem == null)
                 {
                     continue;
                 }
 
-                items.Add(item);
-                var currentLevel = headingBlocks[i].Level;
-                var (nextLevelDistance, skipped) = GetNextLevelDistance(i, headingBlocks[i].Level);
-                if (nextLevelDistance > 0)
+                while (stack.TryPeek(out parent) && parent.level >= currentLevel)
                 {
-                    var (children, count) = ConvertTo(tocContent, filePath, headingBlocks, errors, i + nextLevelDistance);
-                    item.Items = children;
-                    i = i + count + skipped;
-                    childrenCount += count;
+                    stack.Pop();
                 }
 
-                if (i + 1 < headingBlocks.Length && headingBlocks[i + 1].Level < currentLevel)
+                if (parent.node is null || currentLevel != parent.level + 1)
                 {
-                    break;
+                    errors.Add(Errors.InvalidTocLevel(block.ToSourceInfo(file: filePath), parent.level, currentLevel));
                 }
-            }
-            while (++i < headingBlocks.Length);
-
-            return (items, items.Count + childrenCount);
-
-            (int distance, int skipped) GetNextLevelDistance(int currentIndex, int currentLevel)
-            {
-                int distance = 0;
-                int reported = 0;
-                for (int j = currentIndex + 1; j < headingBlocks.Length; j++)
+                else
                 {
-                    if (headingBlocks[j].Level <= currentLevel)
-                    {
-                        break;
-                    }
-
-                    distance++;
-
-                    if (headingBlocks[j].Level - currentLevel == 1)
-                    {
-                        break;
-                    }
-
-                    if (reported++ == 0)
-                        errors.Add(Errors.InvalidTocLevel(headingBlocks[j].ToSourceInfo(file: filePath), currentLevel, headingBlocks[j].Level));
+                    parent.node.Items.Add(currentItem);
                 }
 
-                return (distance, distance > 0 ? distance - 1 : 0);
+                stack.Push((currentLevel, currentItem));
             }
 
-            TableOfContentsItem GetItem(HeadingBlock block)
+            return result.Items;
+        }
+
+        private static TableOfContentsItem GetItem(List<Error> errors, string filePath, HeadingBlock block)
+        {
+            var currentItem = new TableOfContentsItem();
+            if (block.Inline is null || !block.Inline.Any())
             {
-                var currentItem = new TableOfContentsItem();
-                if (block.Inline is null || !block.Inline.Any())
-                {
-                    currentItem.Name = new SourceInfo<string>(null, block.ToSourceInfo(file: filePath));
-                    return currentItem;
-                }
-
-                if (block.Inline.Count() > 1 && block.Inline.Any(l => l is XrefInline || l is LinkInline))
-                {
-                    var invalidTocSyntaxContent = tocContent.Substring(block.Span.Start, block.Span.Length);
-                    errors.Add(Errors.InvalidTocSyntax(new SourceInfo<string>(invalidTocSyntaxContent, block.ToSourceInfo(file: filePath)), "multiple inlines in one heading block is not allowed"));
-                    return null;
-                }
-
-                var xrefLink = block.Inline.FirstOrDefault(l => l is XrefInline);
-                if (xrefLink != null && xrefLink is XrefInline xrefInline && !string.IsNullOrEmpty(xrefInline.Href))
-                {
-                    currentItem.Uid = new SourceInfo<string>(xrefInline.Href, xrefInline.ToSourceInfo(file: filePath));
-                    return currentItem;
-                }
-
-                var link = block.Inline.FirstOrDefault(l => l is LinkInline);
-                if (link != null && link is LinkInline linkInline)
-                {
-                    if (!string.IsNullOrEmpty(linkInline.Url))
-                    {
-                        currentItem.Href = new SourceInfo<string>(linkInline.Url, linkInline.ToSourceInfo(file: filePath));
-                    }
-                    if (!string.IsNullOrEmpty(linkInline.Title))
-                        currentItem.DisplayName = linkInline.Title;
-
-                    currentItem.Name = GetLiteral(linkInline);
-                }
-
-                if (currentItem.Name.Value is null)
-                {
-                    currentItem.Name = GetLiteral(block.Inline);
-                }
-
+                currentItem.Name = new SourceInfo<string>(null, block.ToSourceInfo(file: filePath));
                 return currentItem;
             }
 
-            SourceInfo<string> GetLiteral(ContainerInline inline)
+            if (block.Inline.Count() > 1 && block.Inline.Any(l => l is XrefInline || l is LinkInline))
             {
-                var result = new StringBuilder();
-                var child = inline.FirstChild;
+                errors.Add(Errors.InvalidTocSyntax(block.ToSourceInfo(file: filePath)));
+                return null;
+            }
 
-                while (child != null)
+            var xrefLink = block.Inline.FirstOrDefault(l => l is XrefInline);
+            if (xrefLink != null && xrefLink is XrefInline xrefInline && !string.IsNullOrEmpty(xrefInline.Href))
+            {
+                currentItem.Uid = new SourceInfo<string>(xrefInline.Href, xrefInline.ToSourceInfo(file: filePath));
+                return currentItem;
+            }
+
+            var link = block.Inline.FirstOrDefault(l => l is LinkInline);
+            if (link != null && link is LinkInline linkInline)
+            {
+                if (!string.IsNullOrEmpty(linkInline.Url))
                 {
-                    if (!(child is LiteralInline literal))
-                    {
-                        errors.Add(Errors.InvalidTocSyntax(new SourceInfo<string>(tocContent.Substring(inline.Span.Start, inline.Span.Length), inline.ToSourceInfo(file: filePath))));
-                        return default;
-                    }
+                    currentItem.Href = new SourceInfo<string>(linkInline.Url, linkInline.ToSourceInfo(file: filePath));
+                }
+                if (!string.IsNullOrEmpty(linkInline.Title))
+                    currentItem.DisplayName = linkInline.Title;
 
-                    var content = literal.Content;
-                    result.Append(content.Text, content.Start, content.Length);
-                    child = child.NextSibling;
+                currentItem.Name = GetLiteral(errors, filePath, linkInline);
+            }
+
+            if (currentItem.Name.Value is null)
+            {
+                currentItem.Name = GetLiteral(errors, filePath, block.Inline);
+            }
+
+            return currentItem;
+        }
+
+        private static SourceInfo<string> GetLiteral(List<Error> errors, string filePath, ContainerInline inline)
+        {
+            var result = new StringBuilder();
+            var child = inline.FirstChild;
+
+            while (child != null)
+            {
+                if (!(child is LiteralInline literal))
+                {
+                    errors.Add(Errors.InvalidTocSyntax(inline.ToSourceInfo(file: filePath)));
+                    return default;
                 }
 
-                return new SourceInfo<string>(result.ToString(), inline.ToSourceInfo(file: filePath));
+                var content = literal.Content;
+                result.Append(content.Text, content.Start, content.Length);
+                child = child.NextSibling;
             }
+
+            return new SourceInfo<string>(result.ToString(), inline.ToSourceInfo(file: filePath));
         }
     }
 }

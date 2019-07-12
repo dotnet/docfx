@@ -58,7 +58,7 @@ namespace Microsoft.Docs.Build
             {
                 content = content ?? file.ReadText();
                 GitUtility.CheckMergeConflictMarker(content, file.FilePath);
-                return MarkdownTocMarkup.LoadMdTocModel(content, file);
+                return MarkdownTocMarkup.Parse(content, file);
             }
 
             throw new NotSupportedException($"{filePath} is an unknown TOC file");
@@ -322,14 +322,14 @@ namespace Microsoft.Docs.Build
                     var (uidError, uidLink, display, xrefSpec) = context.DependencyResolver.ResolveRelativeXref(rootPath, uid, filePath);
                     errors.AddIfNotNull(uidError);
 
-                    if (xrefSpec?.DeclairingFile != null)
+                    if (xrefSpec?.DeclaringFile != null)
                     {
-                        referencedFiles.Add(xrefSpec?.DeclairingFile);
+                        referencedFiles.Add(xrefSpec?.DeclaringFile);
                     }
 
                     if (!string.IsNullOrEmpty(uidLink))
                     {
-                        return (new SourceInfo<string>(uidLink, uid), new SourceInfo<string>(display, uid), xrefSpec?.DeclairingFile);
+                        return (new SourceInfo<string>(uidLink, uid), new SourceInfo<string>(display, uid), xrefSpec?.DeclaringFile);
                     }
                 }
 

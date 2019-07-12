@@ -123,7 +123,7 @@ namespace Microsoft.Docs.Build
                     for (var i = contributionCommits.Count - 1; i >= 0; i--)
                     {
                         var user = await GetContributor(contributionCommits[i]);
-                        if (user != null)
+                        if (user != null && !excludes.Contains(user.Name))
                         {
                             return user;
                         }

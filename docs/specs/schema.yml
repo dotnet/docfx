@@ -1,8 +1,7 @@
 ---
 # Support schema documents in YAML format
 inputs:
-  docfx.yml: |
-    template: {APP_BASE_PATH}data/template
+  docfx.yml:
   docs/a.yml: |
     #YamlMime:LandingData
     title: my title
@@ -61,8 +60,7 @@ outputs:
 ---
 # Throw error when defined schema is not found
 inputs:
-  docfx.yml: |
-    template: {APP_BASE_PATH}data/template
+  docfx.yml:
   docs/a.yml: |
     #YamlMime:SchemaNotExisting
     title: my title
@@ -74,14 +72,13 @@ inputs:
     { "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/SchemaNotExisting.json"}
 outputs:
   .errors.log: |
-   ["error","schema-not-found","Schema 'SchemaNotExisting' not found.","docs/a.yml",1,1]
-   ["error","schema-not-found","Schema 'SchemaNotExisting' not found.","docs/b.json",2,95]
-   ["error","schema-not-found","Schema 'SchemaNotExisting' not found.","docs/c.json",1,95]
+   ["error","schema-not-found","Unknown schema 'SchemaNotExisting'","docs/a.yml",1,1]
+   ["error","schema-not-found","Unknown schema 'SchemaNotExisting'","docs/b.json",2,95]
+   ["error","schema-not-found","Unknown schema 'SchemaNotExisting'","docs/c.json",1,95]
 ---
 # Support schema documents with Href content
 inputs:
-  docfx.yml:  |
-    template: {APP_BASE_PATH}data/template
+  docfx.yml:
   docs/A/TOC.yml:
   docs/TOC.yml:
   docs/a.yml: |
@@ -89,6 +86,14 @@ inputs:
     brand: azure
     breadcrumb_path: TOC.yml
     toc_rel: A/TOC.yml
+  _themes/ContentTemplate/schemas/ContextObject.schema.json: |
+    {
+      "type": "object",
+      "properties": {
+          "breadcrumb_path": {"contentType": "Href"},
+          "toc_rel": {"contentType": "Href"},
+      }
+    }
 outputs:
   docs/toc.json:
   docs/a/toc.json:
@@ -110,8 +115,7 @@ outputs:
 ---
 # schema documents with Href content but wrong type
 inputs:
-  docfx.yml: |
-    template: {APP_BASE_PATH}data/template
+  docfx.yml:
   TOC.yml:
   docs/TOC.yml:
   docs/a.yml: |
@@ -119,6 +123,14 @@ inputs:
     brand: azure
     breadcrumb_path: {}
     toc_rel: ../TOC.yml
+  _themes/ContentTemplate/schemas/ContextObject.schema.json: |
+    {
+      "type": "object",
+      "properties": {
+          "breadcrumb_path": {"type": "string", "contentType": "Href"},
+          "toc_rel": {"type": "string", "contentType": "Href"},
+      }
+    }
 outputs:
   docs/a.json:
   toc.json:
@@ -128,12 +140,19 @@ outputs:
 ---
 # Schema documents with Href content referencing resource file, the resouce file should be outputed
 inputs:
-  docfx.yml: |
-    template: {APP_BASE_PATH}data/template
+  docfx.yml:
   docs/a.yml: |
     #YamlMime:TestPage
     href: image.png
   docs/image.png:
+  _themes/ContentTemplate/TestPage.html.primary.js:
+  _themes/ContentTemplate/schemas/TestPage.schema.json: |
+    {
+      "type": "object",
+      "properties": {
+        "href": {"contentType": "href"}
+      }
+    }
 outputs:
   docs/a.json: |
     {"href": "image.png"}
@@ -141,12 +160,19 @@ outputs:
 ---
 # Support schema documents with Markdown content
 inputs:
-  docfx.yml: |
-    template: {APP_BASE_PATH}data/template
+  docfx.yml:
   docs/index.yml: |
     #YamlMime:TestPage
     description: Hello `docfx`! <a href="a.md">a</a>
   docs/a.md:
+  _themes/ContentTemplate/TestPage.html.primary.js:
+  _themes/ContentTemplate/schemas/TestPage.schema.json: |
+    {
+      "type": "object",
+      "properties": {
+        "description": {"contentType": "Markdown"}
+      }
+    }
 outputs:
   docs/index.json: |
     { "description": "<p>Hello <code>docfx</code>! <a href=\"a\">a</a></p>" }
@@ -154,11 +180,18 @@ outputs:
 ---
 # Markdown content with null value
 inputs:
-  docfx.yml: |
-    template: {APP_BASE_PATH}data/template
+  docfx.yml:
   docs/a.yml: |
     #YamlMime:TestPage
     description:
+  _themes/ContentTemplate/TestPage.html.primary.js:
+  _themes/ContentTemplate/schemas/TestPage.schema.json: |
+    {
+      "type": "object",
+      "properties": {
+        "description": {"type": "string"}
+      }
+    }
 outputs:
   docs/a.json:
   .errors.log: |
@@ -167,7 +200,6 @@ outputs:
 # Support schema documents with inline markdown content
 inputs:
   docfx.yml: |
-    template: {APP_BASE_PATH}data/template
     rules:
       heading-not-found: error
   docs/a.yml: |
@@ -179,14 +211,21 @@ inputs:
         - `Item 3`
 
       ## Not heading
+  _themes/ContentTemplate/TestPage.html.primary.js:
+  _themes/ContentTemplate/schemas/TestPage.schema.json: |
+    {
+      "type": "object",
+      "properties": {
+        "inlineDescription": {"contentType": "InlineMarkdown"}
+      }
+    }
 outputs:
   docs/a.json: |
     { "inlineDescription": "This is a list:\n- Item 1\n- Item 2\n- <code>Item 3</code>## Not heading" }
 ---
 # [skip] Support schema documents with html content
 inputs:
-  docfx.yml: |
-    template: {APP_BASE_PATH}data/template
+  docfx.yml:
   docs/a.yml: |
     #YamlMime:TestPage
     html: link <a href="b.md"></a> <script></script>
@@ -198,12 +237,18 @@ outputs:
 ---
 # Support schema documents with href content
 inputs:
-  docfx.yml: |
-    template: {APP_BASE_PATH}data/template
+  docfx.yml:
   docs/a.yml: |
     #YamlMime:TestPage
     href: b.md
   docs/b.md:
+  _themes/ContentTemplate/schemas/TestPage.schema.json: |
+    {
+      "type": "object",
+      "properties": {
+        "href": {"contentType": "href"}
+      }
+    }
 outputs:
   docs/a.json: |
     { "href": "b" }
@@ -211,14 +256,16 @@ outputs:
 ---
 # Output data schema to json, output page schema to html
 inputs:
-  docfx.yml: |
-    template: {APP_BASE_PATH}data/template
+  docfx.yml:
   docs/a.md: |
     link to [data](data.yml) or [page](page.yml)
   docs/data.yml: |
     #YamlMime:TestData
   docs/page.yml: |
     #YamlMime:TestPage
+  _themes/ContentTemplate/schemas/TestData.schema.json: "{}"
+  _themes/ContentTemplate/TestPage.html.primary.js:
+  _themes/ContentTemplate/schemas/TestPage.schema.json: "{}"
 outputs:
   docs/a.json: |
     { "conceptual": "<p>link to <a href=\"data.json\"> data</a> or <a href=\"page\"> page</a></p>" }
@@ -227,14 +274,22 @@ outputs:
 ---
 # Markdown field with heading should not be removed
 inputs:
-  docfx.yml: |
-    template: {APP_BASE_PATH}data/template
+  docfx.yml:
   docs/data.yml: |
     #YamlMime:TestData
   docs/page.yml: |
     #YamlMime:TestPage
     description: >
       # Heading
+  _themes/ContentTemplate/schemas/TestData.schema.json: "{}"
+  _themes/ContentTemplate/TestPage.html.primary.js:
+  _themes/ContentTemplate/schemas/TestPage.schema.json: |
+    {
+      "type": "object",
+      "properties": {
+        "description": {"contentType": "Markdown"}
+      }
+    }
 outputs:
   docs/data.json:
   docs/page.json: |
@@ -257,13 +312,108 @@ outputs:
 ---
 # Invalid JSON
 inputs:
-  docfx.yml: |
-    template: {APP_BASE_PATH}data/template
+  docfx.yml:
   docs/a.json: |
     {a}/{b}/{c}
-  docs/b.yml: |
-    #YamlMime:TestData
 outputs:
-  docs/b.json:
   .errors.log: |
     ["error","json-syntax-error","Invalid JavaScript property identifier character: }.","docs/a.json",1,2]
+---
+# Run data-transform if provided, by default return {"content": "serialized json"}
+inputs:
+  docfx.yml:
+  a.yml: |
+    #YamlMime:TestData
+    prop: value
+  _themes/ContentTemplate/TestData.json.js: |
+    exports.transform = function (model) {
+      return {
+        content: JSON.stringify({result: model.prop + " has run js data transform"})
+      }
+    }
+  _themes/ContentTemplate/schemas/TestData.schema.json: "{}"
+outputs:
+  a.json: |
+    {"result": "value has run js data transform"}
+---
+# Run data-transform if provided, and return raw object if content property is not serialized json object
+inputs:
+  docfx.yml:
+  a.yml: |
+    #YamlMime:TestData
+    prop: value
+  _themes/ContentTemplate/TestData.json.js: |
+    exports.transform = function (model) {
+      return {
+        result: model.prop + " has run js data transform",
+        content: "raw string"
+      }
+    }
+  _themes/ContentTemplate/schemas/TestData.schema.json: "{}"
+outputs:
+  a.json: |
+    {
+      "result": "value has run js data transform",
+      "content": "raw string"
+    }
+---
+# Don't run data-transform if corresponding js not provided
+inputs:
+  docfx.yml:
+  a.yml: |
+    #YamlMime:TestData
+    prop: value
+  _themes/ContentTemplate/schemas/TestData.schema.json: "{}"
+outputs:
+  a.json: |
+    {"prop": "value"}
+---
+# Throw error when content is not an object
+inputs:
+  docfx.yml:
+  _themes/ContentTemplate/schemas/test.schema.json: '{}'
+  a.yml: |
+    #YamlMime:test
+    - array
+outputs:
+  .errors.log: |
+    ["error","unexpected-type","Expect type 'Object' but got 'Array'","a.yml",1,1]
+---
+# Verify SDP pipeline
+# YAML mime in the SDP document should have a corresponding *.html.primary.js file
+# Set config.output.json to false to run *.html.liquid to output static HTML
+# Provide *.mta.json.js to transform metadata
+# Provide *.html.primary.js and *.html.primary.tmpl to transform json content to HTML
+inputs:
+  docfx.yml: |
+    output:
+      json: false
+  _themes/ContentTemplate/schemas/TestData.schema.json: "{}"
+  a.yml: |
+    #YamlMime:TestData
+    prop: value
+  _themes/ContentTemplate/TestData.mta.json.js: |
+    exports.transform = function (model) {
+      model.layout = "test"
+      return {
+        content: JSON.stringify(model)
+      }
+    }
+  _themes/ContentTemplate/TestData.html.primary.tmpl: |
+    <div>{{content}}</div>
+  _themes/ContentTemplate/TestData.html.primary.js: |
+    exports.transform = function (model) {
+      return model.prop;
+    }
+  _themes/ContentTemplate/test.html.liquid: |
+    <!DOCTYPE html>
+      <div>
+          {{content}}
+      </div>
+outputs:
+  a/index.html: |
+    <!DOCTYPE html>
+      <div>
+        <div>value</div>
+
+      </div>

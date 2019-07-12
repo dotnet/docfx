@@ -77,8 +77,10 @@ namespace Microsoft.Docs.Build
                 var exports = modules[fullPath] = MakeObject();
                 var sourceCode = File.ReadAllText(fullPath);
                 var parserOptions = new ParserOptions { Source = fullPath };
+
+            // add process to input to get the correct file path while running script inside docs-ui
                 var script = $@"
-;(function (module, exports, __dirname, require) {{
+;(function (module, exports, __dirname, require, process) {{
 {sourceCode}
 }})
 ";
@@ -86,7 +88,7 @@ namespace Microsoft.Docs.Build
                 var require = new ClrFunctionInstance(engine, Require);
 
                 var func = engine.Execute(script, parserOptions).GetCompletionValue();
-                func.Invoke(MakeObject(), exports, dirname, require);
+                func.Invoke(MakeObject(), exports, dirname, require, MakeObject());
                 return exports;
 
                 JsValue Require(JsValue self, JsValue[] arguments)
