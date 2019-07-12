@@ -293,7 +293,8 @@ namespace Microsoft.DocAsCode.Build.Engine
                 Tags = context.GroupInfo?.XRefTags ?? context.XRefTags,
             };
             xrefMap.References =
-                (from xref in context.XRefSpecMap.Values.AsParallel().WithDegreeOfParallelism(parameters.MaxParallelism)
+                (from xrefList in context.XRefSpecMap.Values.AsParallel().WithDegreeOfParallelism(parameters.MaxParallelism)
+                 let xref = xrefList.First()
                  select new XRefSpec(xref)
                  {
                      Href = context.UpdateHref(xref.Href, RelativePath.WorkingFolder)
