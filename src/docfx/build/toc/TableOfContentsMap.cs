@@ -111,7 +111,7 @@ namespace Microsoft.Docs.Build
                 }
                 catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
                 {
-                    context.ErrorLog.Write(fileToBuild.ToString(), dex.Error, true);
+                    context.ErrorLog.Write(fileToBuild.ToString(), dex.Error, isException: true);
                 }
             }
         }
@@ -120,7 +120,7 @@ namespace Microsoft.Docs.Build
             GetRelativeDirectoryInfo(Document file, Document toc)
         {
             var relativePath = PathUtility.NormalizeFile(
-                Path.GetDirectoryName(PathUtility.GetRelativePathToFile(file.SitePath, toc.SitePath)));
+                Path.GetDirectoryName(PathUtility.GetRelativePathToFile(file.FilePath, toc.FilePath)));
             if (string.IsNullOrEmpty(relativePath))
             {
                 return default;
@@ -182,13 +182,7 @@ namespace Microsoft.Docs.Build
                 return parentDirCompareResult;
             }
 
-            var sitePathCompareResult = StringComparer.OrdinalIgnoreCase.Compare(candidateX.Toc.SitePath, candidateY.Toc.SitePath);
-            if (!(sitePathCompareResult == 0))
-            {
-                return sitePathCompareResult;
-            }
-
-            return StringComparer.OrdinalIgnoreCase.Compare(candidateX.Toc.FilePath, candidateY.Toc.FilePath);
+            return candidateX.Toc.CompareTo(candidateY.Toc);
         }
     }
 }

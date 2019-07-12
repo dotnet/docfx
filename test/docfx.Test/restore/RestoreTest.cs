@@ -132,7 +132,7 @@ dependencies:
             var restoreDir = AppData.GetFileDownloadDir(url);
 
             File.WriteAllText(Path.Combine(docsetPath, "docfx.yml"), $@"
-monikerDefinition: https://raw.githubusercontent.com/docascode/docfx-test-dependencies-clean/master/README.md");
+monikerDefinition: {url}");
 
             // run restore
             await Docfx.Run(new[] { "restore", docsetPath });
@@ -140,9 +140,15 @@ monikerDefinition: https://raw.githubusercontent.com/docascode/docfx-test-depend
             Assert.Equal(2, Directory.EnumerateFiles(restoreDir, "*").Count());
 
             // run restore again
+            var filePath = RestoreFile.GetRestoreContentPath(url);
+            var etagPath = RestoreFile.GetRestoreEtagPath(url);
+
+            File.Delete(etagPath);
+            File.WriteAllText(filePath, "1");
             await Docfx.Run(new[] { "restore", docsetPath });
 
             Assert.Equal(2, Directory.EnumerateFiles(restoreDir, "*").Count());
+            Assert.NotEqual("1", File.ReadAllText(filePath));
         }
 
         private static int GetWorkTreeFolderCount(string path)

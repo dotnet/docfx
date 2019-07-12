@@ -17,6 +17,8 @@ namespace Microsoft.Docs.Build
 {
     internal static class JsonUtility
     {
+        public static readonly JTokenDeepEqualsComparer DeepEqualsComparer = new JTokenDeepEqualsComparer();
+
         private static readonly NamingStrategy s_namingStrategy = new CamelCaseNamingStrategy();
         private static readonly JsonConverter[] s_jsonConverters =
         {

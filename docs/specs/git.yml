@@ -159,6 +159,28 @@ outputs:
       }
     }
 ---
+# Author can be excluded if it is not specified in YAML header
+repos:
+  https://github.com/testowner/testrepo#master-exclude-author:
+    - author: Alice 
+      email: alice@contoso.com
+      files:
+        docs/index.md: |
+          Alice creates this.
+inputs:
+  docfx.yml: |
+    gitHub:
+      resolveUsers: true
+    contribution:
+      excludedContributors:
+        - Alice
+cache:
+  github-users.json: |
+      { "users": [{"name": "Alice", "login": "alice", "id": 1, "emails": ["alice@contoso.com"]}]}
+outputs:
+  docs/index.json: |
+    { "_op_gitContributorInformation": { "!author": null } }
+---
 # Use the earliest contributor as author if author not specified in YAML header
 repos:
   https://github.com/testowner/testrepo#master-author-from-contributors:

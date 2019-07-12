@@ -81,6 +81,10 @@ namespace Microsoft.Docs.Build
         [InlineData("/", "/a", "a")]
         [InlineData("/ab", "/a", "a")]
         [InlineData("/a", "/", "./")]
+        [InlineData("/a", "/#bookmark", "./#bookmark")]
+        [InlineData("/a", "/?query", "./?query")]
+        [InlineData("/a#bookmark", "/", "./")]
+        [InlineData("/a?query", "/", "./")]
         [InlineData("/a/", "/", "../")]
         public static void GetRelativeUrl(string relativeToUrl, string url, string expected)
         {
