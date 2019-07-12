@@ -4,6 +4,9 @@ Version Notes (Current Version: v2.44)
 v2.44(Pre-Release)
 -----------
 
+v2.43.3
+-----------
+
 v2.43.2
 -----------
 1. Bug fix:
