@@ -260,6 +260,16 @@ outputs:
       "conceptual": "<p>Moniker: netcore-1.2</p>",
       "monikers": ["netcore-1.2"]
     }
+  .publish.json: |
+    {
+      "files": 
+      [
+        {"url": "/docs/a-old", "moniker_group": "e300a7df", "has_error": true},
+        {"url": "/docs/a-old", "moniker_group": "9d4e15fd", "has_error": true},
+        {"url": "/docs/a", "path": "9d4e15fd/docs/a.json", "has_error": false},
+        {"url": "/docs/a", "path": "b201e604/docs/a.json", "has_error": false},
+      ]
+    }
   .errors.log: |
     ["error","publish-url-conflict","Two or more files of the same version('netcore-1.1') publish to the same url '/docs/a-old': 'docs/v1/a-old.md <redirection>', 'docs/v2/a-old.md <redirection>'"]
 ---
@@ -289,6 +299,15 @@ inputs:
       ]
     }
 outputs:
+  .publish.json: |
+    {
+      "files":
+      [
+        {"url": "/docs/a", "path": "23d205a5/docs/a.json","has_error": true},
+        {"url": "/docs/a", "path": "docs/a.json","has_error": true},
+        {"url": "/docs/a", "path": "f7525be1/docs/a.json","has_error": true}
+      ]
+    }
   .errors.log: |
     ["error","publish-url-conflict","Two or more files of the same version('netcore-2.0') publish to the same url '/docs/a': 'docs/a.md', 'docs/v1/a.md', 'docs/v2/a.md'"]
 ---
@@ -588,6 +607,15 @@ outputs:
     ["error","publish-url-conflict","Two or more files of the same version('netcore-2.0') publish to the same url '/docs/a': 'docs/v1/a.md', 'docs/v2/a.md'"]
   xrefmap.json: | 
     {"references":[{"uid":"a","name":"netcore-1.1, netcore-2.0"}]}
+  .publish.json: |
+    {
+      "files": 
+      [
+        {"url": "/docs/a", "path": "23d205a5/docs/a.json", "has_error": true},
+        {"url": "/docs/a", "path": "afb33dd2/docs/a.json", "has_error": true,},
+        {"url": "/docs/c", "has_error": false}
+      ]
+    }
 ---
 # Define uid with moniker range, refer to it with invalid moniker, could fall back to anyone
 inputs:
@@ -1080,6 +1108,28 @@ inputs:
       ]
     }
 outputs:
+  .publish.json: |
+    {
+      "files":
+      [
+        {
+          "url": "/docs/toc.json",
+          "path": "4667fedf/docs/toc.json",
+          "source_path": "docs/v2/TOC.md",
+          "moniker_group": "4667fedf",
+          "locale": "en-us",
+          "has_error": true
+        },
+        {
+          "url": "/docs/toc.json",
+          "path": "e2dfe8fd/docs/toc.json",
+          "source_path": "docs/v1/TOC.md",
+          "moniker_group": "e2dfe8fd",
+          "locale": "en-us",
+          "has_error": true
+        }
+      ]
+    }
   .errors.log: |
     ["error","publish-url-conflict","Two or more files of the same version('netcore-2.0') publish to the same url '/docs/toc.json': 'docs/v1/TOC.md', 'docs/v2/TOC.md'"]
 ---
@@ -1192,7 +1242,9 @@ outputs:
     {
       "files": [
           { "url": "/docs/a" },
-          { "url": "/docs/a" }
+          { "url": "/docs/c.png", "has_error": true, "path": "9d4e15fd/docs/c.png"},
+          { "url": "/docs/a" },
+          { "url": "/docs/c.png", "has_error": true, "path": "e300a7df/docs/c.png"},
       ]
     }
   .errors.log: |

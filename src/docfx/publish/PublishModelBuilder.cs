@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
@@ -70,9 +69,11 @@ namespace Microsoft.Docs.Build
 
                     foreach (var conflictingFile in files.Keys)
                     {
-                        if (_publishItems.TryRemove(conflictingFile, out var item) && item.Path != null && IsInsideOutputFolder(item, conflictingFile.Docset))
+                        if (_publishItems.TryGetValue(conflictingFile, out var item))
                         {
-                            context.Output.Delete(item.Path, legacy);
+                            item.HasError = true;
+                            if (item.Path != null && IsInsideOutputFolder(item, conflictingFile.Docset))
+                                context.Output.Delete(item.Path, legacy);
                         }
                     }
                 }
@@ -97,9 +98,12 @@ namespace Microsoft.Docs.Build
 
                 foreach (var conflictingFile in conflictingFiles)
                 {
-                    if (_publishItems.TryRemove(conflictingFile, out var item) && item.Path != null && IsInsideOutputFolder(item, conflictingFile.Docset))
+                    if (_publishItems.TryGetValue(conflictingFile, out var item))
                     {
-                        context.Output.Delete(item.Path, legacy);
+                        item.HasError = true;
+
+                        if (item.Path != null && IsInsideOutputFolder(item, conflictingFile.Docset))
+                            context.Output.Delete(item.Path, legacy);
                     }
                 }
             }
@@ -109,9 +113,12 @@ namespace Microsoft.Docs.Build
             {
                 if (_filesBySiteUrl.TryRemove(file.SiteUrl, out _))
                 {
-                    if (_publishItems.TryRemove(file, out var item) && item.Path != null && IsInsideOutputFolder(item, file.Docset))
+                    if (_publishItems.TryGetValue(file, out var item))
                     {
-                        context.Output.Delete(item.Path, legacy);
+                        item.HasError = true;
+
+                        if (item.Path != null && IsInsideOutputFolder(item, file.Docset))
+                            context.Output.Delete(item.Path, legacy);
                     }
                 }
             }
