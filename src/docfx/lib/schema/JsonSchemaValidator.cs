@@ -136,7 +136,7 @@ namespace Microsoft.Docs.Build
                 {
                     var propertyName = new JValue(key);
                     JsonUtility.SetSourceInfo(propertyName, JsonUtility.GetSourceInfo(property));
-                    Validate(schema.PropertyNames, key, propertyName, errors);
+                    Validate(file, schema.PropertyNames, key, propertyName, errors);
                 }
 
                 var isAdditonalProperty = true;
