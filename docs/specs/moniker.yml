@@ -264,8 +264,8 @@ outputs:
     {
       "files": 
       [
-        {"url": "/docs/a-old", "moniker_group": "e300a7df", "has_error": true},
         {"url": "/docs/a-old", "moniker_group": "9d4e15fd", "has_error": true},
+        {"url": "/docs/a-old", "moniker_group": "e300a7df", "has_error": true},
         {"url": "/docs/a", "path": "9d4e15fd/docs/a.json", "has_error": false},
         {"url": "/docs/a", "path": "b201e604/docs/a.json", "has_error": false},
       ]

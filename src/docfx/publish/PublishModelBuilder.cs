@@ -130,6 +130,7 @@ namespace Microsoft.Docs.Build
                     .ThenBy(item => item.Path)
                     .ThenBy(item => item.Url)
                     .ThenBy(item => item.RedirectUrl)
+                    .ThenBy(item => item.MonikerGroup)
                     .ToArray(),
                 MonikerGroups = _publishItems.Values
                     .Where(item => !string.IsNullOrEmpty(item.MonikerGroup))
