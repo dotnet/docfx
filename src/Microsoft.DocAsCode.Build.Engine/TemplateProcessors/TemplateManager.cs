@@ -43,6 +43,9 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 return null;
             }
+
+            Logger.LogVerbose("Calculating template hash...");
+
             var sb = new StringBuilder();
             using (var templateResource = CreateTemplateResource(_templates))
             using (var md5 = MD5.Create())
@@ -51,17 +54,18 @@ namespace Microsoft.DocAsCode.Build.Engine
                                      orderby n
                                      select n)
                 {
+                    var hash = Convert.ToBase64String(md5.ComputeHash(templateResource.GetResourceStream(name)));
                     sb.Append(name);
                     sb.Append(":");
-                    sb.Append(
-                        Convert.ToBase64String(
-                            md5.ComputeHash(
-                                templateResource.GetResourceStream(
-                                    name))));
+                    sb.Append(hash);
                     sb.Append(";");
+                    Logger.LogVerbose($"New template resource info added, name: '{name}', hash: '{hash}'");
                 }
             }
-            return StringExtension.GetMd5String(sb.ToString());
+
+            var result = StringExtension.GetMd5String(sb.ToString());
+            Logger.LogVerbose($"Template hash is '{result}'");
+            return result;
         }
 
         public CompositeResourceReader CreateTemplateResource() => CreateTemplateResource(_templates);
