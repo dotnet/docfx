@@ -341,7 +341,7 @@ namespace Microsoft.Docs.Build
 
             if ((schema.RelativeMinDate.HasValue && diff < schema.RelativeMinDate) || (schema.RelativeMaxDate.HasValue && diff > schema.RelativeMaxDate))
             {
-                errors.Add(Errors.OverDateRange(JsonUtility.GetSourceInfo(scalar), name, schema.RelativeMinDate, schema.RelativeMaxDate));
+                errors.Add(Errors.DateOutOfRange(JsonUtility.GetSourceInfo(scalar), name, scalar.ToString()));
             }
         }
 

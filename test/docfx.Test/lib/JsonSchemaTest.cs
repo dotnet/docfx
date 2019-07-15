@@ -271,22 +271,22 @@ namespace Microsoft.Docs.Build
         // date range validation
         [InlineData("{'properties': {'key1': {'dateFormat': 'M/d/yyyy', 'relativeMinDate': '-10000000:00:00:00', 'relativeMaxDate': '5:00:00:00'}}}", "{'key1': '04/26/2019'}", "")]
         [InlineData("{'properties': {'key1': {'dateFormat': 'M/d/yyyy', 'relativeMinDate': '-2:00:00', 'relativeMaxDate': '5:00:00:00'}}}", "{'key1': '04/26/2019'}",
-            "['warning','over-date-range','Based on the current time, 'key1' needs to be in this range: -02:00:00 <= 'key1' <= 5.00:00:00','file',1,21]")]
+            "['suggestion','date-out-of-range','Value out of range for 'key1': '04/26/2019'','file',1,21]")]
         [InlineData("{'properties': {'key1': {'dateFormat': 'M/d/yyyy', 'relativeMinDate': '-2:00:00', 'relativeMaxDate': '5:00:00:00'}}}", "{'key1': '04/26/4019'}",
-            "['warning','over-date-range','Based on the current time, 'key1' needs to be in this range: -02:00:00 <= 'key1' <= 5.00:00:00','file',1,21]")]
+            "['suggestion','date-out-of-range','Value out of range for 'key1': '04/26/4019'','file',1,21]")]
 
         // deprecated validation
         [InlineData("{'properties': {'key1': {'replacedBy': 'key2'}}}", "{}", "")]
         [InlineData("{'properties': {'key1': {'replacedBy': ''}}}", "{'key1': 1}",
-            "['warning','field-deprecated','Deprecated field: 'key1'.','file',1,10]")]
+            "['suggestion','field-deprecated','Deprecated field: 'key1'.','file',1,10]")]
         [InlineData("{'properties': {'key1': {'replacedBy': 'key2'}}}", "{'key1': 1}",
-            "['warning','field-deprecated','Deprecated field: 'key1', use 'key2' instead','file',1,10]")]
+            "['suggestion','field-deprecated','Deprecated field: 'key1', use 'key2' instead','file',1,10]")]
 
         // enum dependencies validation
         [InlineData("{'properties': {'key1': {'type': 'string', 'enum': ['.net', 'yammer']}, 'key2': {'type': 'string'}}, 'enumDependencies': { 'key2': { 'key1': { '.net': ['', 'csharp', 'devlang'], 'yammer': ['', 'tabs', 'vba']}}}}", "{'key1': 'yammer', 'key2': 'tabs'}", "")]
         [InlineData("{'properties': {'key1': {'type': 'string', 'enum': ['.net', 'yammer']}, 'key2': {'type': 'string'}}, 'enumDependencies': { 'key2': { 'key1': { '.net': ['', 'csharp', 'devlang'], 'yammer': ['', 'tabs', 'vba']}}}}", "{'key1': 'yammer'}", "")]
         [InlineData("{'properties': {'key1': {'type': 'string', 'enum': ['.net', 'yammer']}, 'key2': {'type': 'string'}}, 'enumDependencies': { 'key2': { 'key1': { '.net': ['', 'csharp', 'devlang'], 'yammer': ['', 'tabs', 'vba']}}}}", "{'key1': 'yammer', 'key2': 'abc'}",
-            "['suggestion','invalid-paired-attribute','Invalid value for key2: 'abc' is not valid with 'key1' value 'yammer'','file',1,1]")]
+            "['suggestion','invalid-paired-attribute','Invalid value for 'key2': 'abc' is not valid with 'key1' value 'yammer'','file',1,1]")]
         [InlineData("{'properties': {'key1': {'type': 'string', 'enum': ['.net', 'yammer']}, 'key2': {'type': 'string'}}, 'enumDependencies': { 'key2': { 'key1': { '.net': ['', 'csharp', 'devlang'], 'yammer': ['', 'tabs', 'vba']}}}}", "{'key2': 'tabs'}",
             "['suggestion','missing-paired-attribute','Missing attribute: 'key1'. If you specify 'key2', you must also specify 'key1'','file',1,1]")]
         public void TestJsonSchemaValidation(string schema, string json, string expectedErrors)

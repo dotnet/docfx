@@ -462,23 +462,23 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Date out of range.
         /// </summary>
-        /// Behavior: ✔️ Message: ❌
-        public static Error OverDateRange(SourceInfo source, string name, TimeSpan? relativeMinDate, TimeSpan? relativeMaxDate)
-            => new Error(ErrorLevel.Warning, "over-date-range", $"Based on the current time, '{name}' needs to be in this range: {(relativeMinDate.HasValue ? $"{relativeMinDate} <= " : "")}'{name}'{(relativeMaxDate.HasValue ? $" <= {relativeMaxDate}" : "")}", source);
+        /// Behavior: ✔️ Message: ✔️
+        public static Error DateOutOfRange(SourceInfo source, string name, string value)
+            => new Error(ErrorLevel.Suggestion, "date-out-of-range", $"Value out of range for '{name}': '{value}'", source);
 
         /// <summary>
         /// A field is deprecated.
         /// </summary>
-        /// Behavior: ✔️ Message: ❌
+        /// Behavior: ✔️ Message: ✔️
         public static Error FieldDeprecated(SourceInfo source, string name, string replacedBy)
-            => new Error(ErrorLevel.Warning, "field-deprecated", $"Deprecated field: '{name}'{(string.IsNullOrEmpty(replacedBy) ? "." : $", use '{replacedBy}' instead")}", source);
+            => new Error(ErrorLevel.Suggestion, "field-deprecated", $"Deprecated field: '{name}'{(string.IsNullOrEmpty(replacedBy) ? "." : $", use '{replacedBy}' instead")}", source);
 
         /// <summary>
         /// The value of paired attribute is invalid.
         /// </summary>
         /// Behavior: ✔️ Message: ✔️
         public static Error InvalidPairedAttribute(SourceInfo source, string name, object value, string dependentFieldName, object dependentFieldValue)
-            => new Error(ErrorLevel.Suggestion, "invalid-paired-attribute", $"Invalid value for {name}: '{value}' is not valid with '{dependentFieldName}' value '{dependentFieldValue}'", source);
+            => new Error(ErrorLevel.Suggestion, "invalid-paired-attribute", $"Invalid value for '{name}': '{value}' is not valid with '{dependentFieldName}' value '{dependentFieldValue}'", source);
 
         /// <summary>
         /// The value is not a valid Microsoft alias
