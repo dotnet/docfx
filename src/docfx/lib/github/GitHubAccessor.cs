@@ -60,7 +60,10 @@ query ($login: String!) {
 
             try
             {
-                var (error, response) = await Query(query, new { login });
+                var (error, response) = await Query(query, new
+                {
+                    login,
+                });
 
                 if (error != null)
                 {

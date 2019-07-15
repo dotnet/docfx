@@ -9,8 +9,6 @@ namespace Microsoft.Docs.Build
 {
     internal static class Errors
     {
-#pragma warning disable MEN002 // Line is too long
-
         /// <summary>
         /// Defined same redirection entry in both <see cref="Config.Redirections"/> and <see cref="Config.RedirectionsWithoutId"/>.
         /// </summary>
@@ -610,7 +608,5 @@ namespace Microsoft.Docs.Build
                     : null;
             return !string.IsNullOrEmpty(bestMatch);
         }
-
-#pragma warning restore MEN002 // Line is too long
     }
 }
