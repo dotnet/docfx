@@ -176,7 +176,6 @@ namespace Microsoft.Docs.Build
         private void ValidateString(JsonSchema schema, string name, JValue scalar, string str, List<Error> errors)
         {
             ValidateDateFormat(schema, name, scalar, str, errors);
-            ValidateMicrosoftAlias(schema, name, scalar, str, errors);
 
             if (schema.MaxLength.HasValue || schema.MinLength.HasValue)
             {
