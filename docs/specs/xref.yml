@@ -530,6 +530,27 @@ outputs:
   docs/1/b.json: |
     { "conceptual": "<p>Link to <a href=\"../c\">title</a></p>" }
   docs/c.json:
+  .dependencymap: |
+    {
+      "dependencies": {
+        "docs/1/b.md": [
+          {
+            "source": "docs/c.md",
+            "type": "uidInclusion"
+          }
+        ],
+        "docs/a.md": [
+          {
+            "source": "docs/1/b.md",
+            "type": "inclusion"
+          },
+          {
+            "source": "docs/c.md",
+            "type": "uidInclusion"
+          }
+        ]
+      }
+    }
 ---
 # Markdown and SDP non-cyclic xref reference
 inputs:
@@ -957,5 +978,3 @@ outputs:
   docs/a.json:
   xrefmap.json: |
     {"references":[{"uid":"a", href: "https://docs.com/docs/a"}]}
-          
-
