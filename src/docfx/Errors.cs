@@ -375,7 +375,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         /// Behavior: ✔️ Message: ✔️
         public static Error UnexpectedType(SourceInfo source, object expectedType, object actualType)
-            => new Error(ErrorLevel.Suggestion, "unexpected-type", $"Expected type '{expectedType}' but got '{actualType}'", source);
+            => new Error(ErrorLevel.Warning, "unexpected-type", $"Expected type '{expectedType}' but got '{actualType}'", source);
 
         /// <summary>
         /// The input value is not defined in a valid value list.
