@@ -474,11 +474,11 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Warning, "field-deprecated", $"Deprecated field: '{name}'{(string.IsNullOrEmpty(replacedBy) ? "." : $", use '{replacedBy}' instead")}", source);
 
         /// <summary>
-        /// The values of the two fields do not match.
+        /// The value of paired attribute is invalid.
         /// </summary>
-        /// Behavior: ✔️ Message: ❌
-        public static Error ValuesNotMatch(SourceInfo source, string name, object value, string dependentFieldName, object dependentFieldValue, IEnumerable<object> validValues)
-            => new Error(ErrorLevel.Warning, "values-not-match", $"Invalid value for {name}: '{value}' is not valid with '{dependentFieldName}' value '{dependentFieldValue}'. Valid values: {Join(validValues)}", source);
+        /// Behavior: ✔️ Message: ✔️
+        public static Error InvalidPairedAttribute(SourceInfo source, string name, object value, string dependentFieldName, object dependentFieldValue)
+            => new Error(ErrorLevel.Suggestion, "invalid-paired-attribute", $"Invalid value for {name}: '{value}' is not valid with '{dependentFieldName}' value '{dependentFieldValue}'", source);
 
         /// <summary>
         /// The value is not a valid Microsoft alias
