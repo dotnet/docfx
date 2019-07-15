@@ -530,7 +530,7 @@ outputs:
   docs/1/b.json: |
     { "conceptual": "<p>Link to <a href=\"../c\">title</a></p>" }
   docs/c.json:
-  .dependencymap: |
+  .dependencymap.json: |
     {
       "dependencies": {
         "docs/1/b.md": [
