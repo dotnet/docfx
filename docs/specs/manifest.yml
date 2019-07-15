@@ -238,7 +238,7 @@ outputs:
        }
     }
 ---
-# Manifest does not include files with errors
+# Manifest includes files with errors
 inputs:
   docfx.yml: |
     rules:
@@ -251,8 +251,6 @@ outputs:
       [
         {
           "url": "/docs/a",
-          "path": "docs/a.json",
-          "source_path": "docs/a.md",
           "locale": "en-us",
           "has_error": true
         }

@@ -264,10 +264,10 @@ outputs:
     {
       "files": 
       [
-        {"url": "/docs/a-old", "moniker_group": "9d4e15fd", "has_error": true},
-        {"url": "/docs/a-old", "moniker_group": "e300a7df", "has_error": true},
-        {"url": "/docs/a", "path": "9d4e15fd/docs/a.json", "has_error": false},
-        {"url": "/docs/a", "path": "b201e604/docs/a.json", "has_error": false},
+        {"url": "/docs/a-old", "has_error": true, "moniker_group": "9d4e15fd"},
+        {"url": "/docs/a-old", "has_error": true, "moniker_group": "e300a7df"},
+        {"url": "/docs/a", "has_error": false, "path": "9d4e15fd/docs/a.json"},
+        {"url": "/docs/a", "has_error": false, "path": "b201e604/docs/a.json"},
       ]
     }
   .errors.log: |
@@ -303,9 +303,9 @@ outputs:
     {
       "files":
       [
-        {"url": "/docs/a", "path": "23d205a5/docs/a.json","has_error": true},
-        {"url": "/docs/a", "path": "docs/a.json","has_error": true},
-        {"url": "/docs/a", "path": "f7525be1/docs/a.json","has_error": true}
+        {"url": "/docs/a", "has_error": true, "path": "23d205a5/docs/a.json"},
+        {"url": "/docs/a", "has_error": true, "path": "docs/a.json"},
+        {"url": "/docs/a", "has_error": true, "path": "f7525be1/docs/a.json"}
       ]
     }
   .errors.log: |
@@ -611,8 +611,8 @@ outputs:
     {
       "files": 
       [
-        {"url": "/docs/a", "path": "23d205a5/docs/a.json", "has_error": true},
-        {"url": "/docs/a", "path": "afb33dd2/docs/a.json", "has_error": true,},
+        {"url": "/docs/a", "has_error": true, "path": "23d205a5/docs/a.json"},
+        {"url": "/docs/a", "has_error": true, "path": "afb33dd2/docs/a.json"},
         {"url": "/docs/c", "has_error": false}
       ]
     }
@@ -1114,17 +1114,11 @@ outputs:
       [
         {
           "url": "/docs/toc.json",
-          "path": "4667fedf/docs/toc.json",
-          "source_path": "docs/v2/TOC.md",
-          "moniker_group": "4667fedf",
           "locale": "en-us",
           "has_error": true
         },
         {
           "url": "/docs/toc.json",
-          "path": "e2dfe8fd/docs/toc.json",
-          "source_path": "docs/v1/TOC.md",
-          "moniker_group": "e2dfe8fd",
           "locale": "en-us",
           "has_error": true
         }
