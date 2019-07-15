@@ -60,7 +60,7 @@ namespace Microsoft.Docs.Build
 
             if (monikers.Count == 0)
             {
-                var error = Errors.EmptyMonikers($"No intersection between zone and file level monikers. The result of zone level range string '{rangeString}' is '{string.Join(',', zoneLevelMonikers)}', while file level monikers is '{string.Join(',', fileLevelMonikers)}'.");
+                var error = Errors.EmptyMonikers(rangeString, zoneLevelMonikers, fileLevelMonikers);
                 return (error, monikers);
             }
             monikers.Sort(Comparer);
@@ -101,7 +101,7 @@ namespace Microsoft.Docs.Build
                 // warn if no intersection of config monikers and file monikers
                 if (intersection.Count == 0)
                 {
-                    var error = Errors.EmptyMonikers($"No moniker intersection between docfx.yml/docfx.json and file metadata. Config moniker range '{configMonikerRange}' is '{string.Join(',', configMonikers)}', while file moniker range '{metadata.MonikerRange}' is '{string.Join(',', fileMonikers)}'");
+                    var error = Errors.EmptyMonikers(configMonikerRange, configMonikers, metadata.MonikerRange, fileMonikers);
                     return (error, intersection);
                 }
                 return (null, intersection);

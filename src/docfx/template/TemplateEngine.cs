@@ -19,21 +19,24 @@ namespace Microsoft.Docs.Build
         private static readonly string[] s_resourceFolders = new[] { "global", "css", "fonts" };
 
         private readonly string _templateDir;
+        private readonly string _contentTemplateDir;
         private readonly JObject _global;
         private readonly LiquidTemplate _liquid;
         private readonly JavascriptEngine _js;
         private readonly IReadOnlyDictionary<string, Lazy<TemplateSchema>> _schemas;
+        private readonly MustacheTemplate _mustacheTemplate;
 
         private TemplateEngine(string templateDir, JsonSchema metadataSchema)
         {
-            var contentTemplateDir = Path.Combine(templateDir, "ContentTemplate");
-            var schemaDir = Path.Combine(contentTemplateDir, "schemas");
-
-            _global = LoadGlobalTokens(contentTemplateDir);
-            _schemas = LoadSchemas(schemaDir, contentTemplateDir);
             _templateDir = templateDir;
-            _liquid = new LiquidTemplate(templateDir);
-            _js = new JavascriptEngine(contentTemplateDir, _global);
+            _contentTemplateDir = Path.Combine(templateDir, "ContentTemplate");
+            var schemaDir = Path.Combine(_contentTemplateDir, "schemas");
+
+            _global = LoadGlobalTokens();
+            _schemas = LoadSchemas(schemaDir, _contentTemplateDir);
+            _liquid = new LiquidTemplate(_contentTemplateDir);
+            _js = new JavascriptEngine(_contentTemplateDir, _global);
+            _mustacheTemplate = new MustacheTemplate(_contentTemplateDir);
 
             HtmlMetaConfigs = (
                 metadataSchema.HtmlMetaHidden.ToHashSet(),
@@ -54,29 +57,25 @@ namespace Microsoft.Docs.Build
                : throw Errors.SchemaNotFound(schemaName).ToException();
         }
 
-        public string RunLiquid(string content, Document file, JObject rawMetadata)
+        public string RunLiquid(Document file, TemplateModel model)
         {
-            // TODO: only works for conceptual
-            var metadata = CreateMetadata(rawMetadata);
-
-            var layout = rawMetadata.Value<string>("layout") ?? "";
+            var layout = model.RawMetadata.Value<string>("layout") ?? "";
             var themeRelativePath = PathUtility.GetRelativePathToFile(file.SitePath, "_themes");
 
             var liquidModel = new JObject
             {
-                ["content"] = content,
-                ["page"] = rawMetadata,
-                ["metadata"] = metadata,
+                ["content"] = model.Content,
+                ["page"] = model.RawMetadata,
+                ["metadata"] = model.PageMetadata,
                 ["theme_rel"] = themeRelativePath,
             };
 
             return _liquid.Render(layout, liquidModel);
         }
 
-        public string Render(string templateName, JObject pageModel)
+        public string RunMustache(string templateName, JObject pageModel)
         {
-            // TODO: run mustache
-            throw new NotSupportedException();
+            return _mustacheTemplate.Render(templateName, pageModel);
         }
 
         public void CopyTo(string outputPath)
@@ -98,13 +97,22 @@ namespace Microsoft.Docs.Build
 
         public JObject RunJint(string scriptName, JObject model, string methodName = "transform", bool tryParseFromContent = true)
         {
-            var scriptPath = Path.Combine(_templateDir, "ContentTemplate", scriptName);
+            var scriptPath = Path.Combine(_contentTemplateDir, scriptName);
             if (!File.Exists(scriptPath))
             {
                 return model;
             }
 
-            var result = (JObject)_js.Run(scriptPath, methodName, model);
+            var jsResult = _js.Run(scriptPath, methodName, model);
+            JObject result = new JObject();
+            if (jsResult is JValue)
+            {
+                // workaround for result is not JObject
+                result["content"] = jsResult;
+                return result;
+            }
+
+            result = (JObject)_js.Run(scriptPath, methodName, model);
             if (tryParseFromContent
                 && result.TryGetValue<JValue>("content", out var value)
                 && value.Value is string content)
@@ -147,26 +155,9 @@ namespace Microsoft.Docs.Build
             return new TemplateEngine(themePath, docset.MetadataSchema);
         }
 
-        public static JObject CreateMetadata(JObject rawMetadata)
+        private JObject LoadGlobalTokens()
         {
-            var metadata = new JObject();
-
-            foreach (var (key, value) in rawMetadata)
-            {
-                if (!key.StartsWith("_"))
-                {
-                    metadata[key] = value;
-                }
-            }
-
-            metadata["is_dynamic_rendering"] = true;
-
-            return metadata;
-        }
-
-        private JObject LoadGlobalTokens(string contentTemplateDir)
-        {
-            var path = Path.Combine(contentTemplateDir, "token.json");
+            var path = Path.Combine(_contentTemplateDir, "token.json");
             return File.Exists(path) ? JObject.Parse(File.ReadAllText(path)) : new JObject();
         }
 
