@@ -11,6 +11,7 @@ namespace Microsoft.Docs.Build
 {
     internal class WorkQueue<T>
     {
+        private readonly int _maxParallelisim = Environment.ProcessorCount;
         private readonly Func<T, Task> _run;
         private readonly ConcurrentQueue<T> _queue = new ConcurrentQueue<T>();
         private readonly ConcurrentHashSet<T> _duplicationDetector = new ConcurrentHashSet<T>();
@@ -28,6 +29,8 @@ namespace Microsoft.Docs.Build
 
         // For completion detection
         private int _remainingCount = 0;
+
+        private int _parallelisim;
 
         public void Enqueue(IEnumerable<T> items)
         {
@@ -62,8 +65,20 @@ namespace Microsoft.Docs.Build
 
             void DrainCore()
             {
-                while (!_drainTcs.Task.IsCompleted && _queue.TryDequeue(out var item))
+                while (!_drainTcs.Task.IsCompleted)
                 {
+                    if (Volatile.Read(ref _parallelisim) > _maxParallelisim)
+                    {
+                        break;
+                    }
+
+                    if (!_queue.TryDequeue(out var item))
+                    {
+                        break;
+                    }
+
+                    Interlocked.Increment(ref _parallelisim);
+
                     ThreadPool.QueueUserWorkItem(Run, item, preferLocal: true);
                 }
             }
@@ -72,6 +87,7 @@ namespace Microsoft.Docs.Build
             {
                 if (_drainTcs.Task.IsCompleted)
                 {
+                    Interlocked.Decrement(ref _parallelisim);
                     return;
                 }
 
@@ -89,6 +105,8 @@ namespace Microsoft.Docs.Build
             {
                 try
                 {
+                    Interlocked.Decrement(ref _parallelisim);
+
                     if (task.Exception != null)
                     {
                         _drainTcs.TrySetException(task.Exception.InnerException);
