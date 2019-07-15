@@ -510,16 +510,10 @@ outputs:
     {
         "files": [
             {
-                "url": "/a",
-                "source_path": "a.md",
-                "locale": "en-us",
-                "redirect_url": "/docs/path1"
+                "url": "/a"
             },
             {
-                "url": "/b",
-                "source_path": "b.md",
-                "locale": "en-us",
-                "redirect_url": "/docs/path1"
+                "url": "/b"
             },
             {
                 "url": "/docs/path1"
