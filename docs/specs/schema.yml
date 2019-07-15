@@ -136,7 +136,7 @@ outputs:
   toc.json:
   docs/toc.json:
   .errors.log: |
-    ["warning","unexpected-type","Expected type 'String' but got 'Object'","docs/a.yml",3,18]
+    ["suggestion","unexpected-type","Expected type 'String' but got 'Object'","docs/a.yml",3,18]
 ---
 # Schema documents with Href content referencing resource file, the resouce file should be outputed
 inputs:
@@ -195,7 +195,7 @@ inputs:
 outputs:
   docs/a.json:
   .errors.log: |
-    ["warning","unexpected-type","Expected type 'String' but got 'Null'","docs/a.yml",2,13]
+    ["suggestion","unexpected-type","Expected type 'String' but got 'Null'","docs/a.yml",2,13]
 ---
 # Support schema documents with inline markdown content
 inputs:
