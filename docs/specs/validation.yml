@@ -233,7 +233,7 @@ environments:
 outputs:
   a.json:
   .errors.log: |
-    ["warning","ms-alias-invalid","Invalid value for 'ms.author', '123over123' is not a valid Microsoft alias","a.md",2,12]
+    ["suggestion","ms-alias-invalid","Invalid value for 'ms.author', '123over123' is not a valid Microsoft alias","a.md",2,12]
 ---
 # [skip] Json schema microsoft alias rule: The author is valid with graph call 
 inputs:
@@ -294,5 +294,5 @@ environments:
 outputs:
   a.json:
   .errors.log: |
-    ["warning","ms-alias-invalid","Invalid value for 'ms.author', 'abc1234cba' is not a valid Microsoft alias","a.md",2,12]
+    ["suggestion","ms-alias-invalid","Invalid value for 'ms.author', 'abc1234cba' is not a valid Microsoft alias","a.md",2,12]
 ---

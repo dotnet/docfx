@@ -456,8 +456,8 @@ namespace Microsoft.Docs.Build
         /// A field does't conform to date format.
         /// </summary>
         /// Behavior: ✔️ Message: ❌
-        public static Error DateFormatInvalid(SourceInfo source, string name, string format)
-            => new Error(ErrorLevel.Warning, "date-format-invalid", $"The '{name}' needs to meet the '{format}' format", source);
+        public static Error DateFormatInvalid(SourceInfo source, string name, string value, string format)
+            => new Error(ErrorLevel.Suggestion, "date-format-invalid", $"Invalid format for '{name}': '{value}'. Dates must be specified as '{format}'", source);
 
         /// <summary>
         /// Date out of range.
@@ -483,9 +483,9 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// The value is not a valid Microsoft alias
         /// </summary>
-        /// Behavior: ✔️ Message: ❌
+        /// Behavior: ✔️ Message: ✔️
         public static Error MsAliasInvalid(SourceInfo source, string name, string alias)
-            => new Error(ErrorLevel.Warning, "ms-alias-invalid", $"Invalid value for '{name}', '{alias}' is not a valid Microsoft alias", source);
+            => new Error(ErrorLevel.Suggestion, "ms-alias-invalid", $"Invalid value for '{name}', '{alias}' is not a valid Microsoft alias", source);
 
         /// <summary>
         /// Call Microsoft Graph API failed

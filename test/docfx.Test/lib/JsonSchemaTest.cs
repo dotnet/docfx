@@ -266,7 +266,7 @@ namespace Microsoft.Docs.Build
         [InlineData("{'properties': {'key1': {'dateFormat': 'M/d/yyyy'}}}", "{}", "")]
         [InlineData("{'properties': {'key1': {'dateFormat': 'M/d/yyyy'}}}", "{'key1': '04/26/2019'}", "")]
         [InlineData("{'properties': {'key1': {'dateFormat': 'M/d/yyyy'}}}", "{'key1': 'Dec 5 2018'}",
-            "['warning','date-format-invalid','The 'key1' needs to meet the 'M/d/yyyy' format','file',1,21]")]
+            "['suggestion','date-format-invalid','Invalid format for 'key1': 'Dec 5 2018'. Dates must be specified as M/d/yyyy','file',1,21]")]
 
         // date range validation
         [InlineData("{'properties': {'key1': {'dateFormat': 'M/d/yyyy', 'relativeMinDate': '-10000000:00:00:00', 'relativeMaxDate': '5:00:00:00'}}}", "{'key1': '04/26/2019'}", "")]
