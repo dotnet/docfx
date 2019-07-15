@@ -69,7 +69,7 @@ namespace Microsoft.Docs.Build
 
                     foreach (var conflictingFile in files.Keys)
                     {
-                        HandleFileWithError(conflictingFile);
+                        HandleFileWithError(context, conflictingFile, legacy);
                     }
                 }
             }
@@ -93,7 +93,7 @@ namespace Microsoft.Docs.Build
 
                 foreach (var conflictingFile in conflictingFiles)
                 {
-                    HandleFileWithError(conflictingFile);
+                    HandleFileWithError(context, conflictingFile, legacy);
                 }
             }
 
@@ -102,7 +102,7 @@ namespace Microsoft.Docs.Build
             {
                 if (_filesBySiteUrl.TryRemove(file.SiteUrl, out _))
                 {
-                    HandleFileWithError(file);
+                    HandleFileWithError(context, file, legacy);
                 }
             }
 
@@ -124,16 +124,16 @@ namespace Microsoft.Docs.Build
             var fileManifests = _publishItems.ToDictionary(item => item.Key, item => item.Value);
 
             return (model, fileManifests);
+        }
 
-            void HandleFileWithError(Document file)
+        private void HandleFileWithError(Context context, Document file, bool legacy)
+        {
+            if (_publishItems.TryGetValue(file, out var item))
             {
-                if (_publishItems.TryGetValue(file, out var item))
-                {
-                    item.HasError = true;
+                item.HasError = true;
 
-                    if (item.Path != null && IsInsideOutputFolder(item, file.Docset))
-                        context.Output.Delete(item.Path, legacy);
-                }
+                if (item.Path != null && IsInsideOutputFolder(item, file.Docset))
+                    context.Output.Delete(item.Path, legacy);
             }
         }
 
