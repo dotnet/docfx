@@ -277,7 +277,7 @@ namespace Microsoft.Docs.Build
 
                 if (!result)
                 {
-                    errors.Add(Errors.EitherLogicFailed(JsonUtility.GetSourceInfo(map), keys));
+                    errors.Add(Errors.MissingEitherAttribute(JsonUtility.GetSourceInfo(map), keys));
                 }
             }
         }
@@ -291,7 +291,7 @@ namespace Microsoft.Docs.Build
                 {
                     if (map.ContainsKey(key) && ++existNum > 1)
                     {
-                        errors.Add(Errors.PrecludesLogicFailed(JsonUtility.GetSourceInfo(map), keys));
+                        errors.Add(Errors.PrecludedAttributes(JsonUtility.GetSourceInfo(map), keys));
                         break;
                     }
                 }
@@ -349,7 +349,7 @@ namespace Microsoft.Docs.Build
         {
             if (schema.ReplacedBy != null)
             {
-                errors.Add(Errors.FieldDeprecated(JsonUtility.GetSourceInfo(token), name, schema.ReplacedBy));
+                errors.Add(Errors.AttributeDeprecated(JsonUtility.GetSourceInfo(token), name, schema.ReplacedBy));
             }
         }
 

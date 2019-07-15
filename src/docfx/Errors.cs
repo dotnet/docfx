@@ -441,21 +441,23 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Suggestion, "missing-paired-attribute", $"Missing attribute: '{otherKey}'. If you specify '{name}', you must also specify '{otherKey}'", source);
 
         /// <summary>
-        /// Fields do not meet the requirements of either logic.
+        /// Attributes do not meet the requirements of either logic.
         /// </summary>
-        public static Error EitherLogicFailed(SourceInfo source, IEnumerable<object> fields)
-            => new Error(ErrorLevel.Warning, "either-logic-failed", $"At least one of these fields: {Join(fields)} exists", source);
+        /// Behavior: ✔️ Message: ✔️
+        public static Error MissingEitherAttribute(SourceInfo source, IEnumerable<object> attributes)
+            => new Error(ErrorLevel.Suggestion, "missing-either-attribute", $"One of the following attributes is required: {Join(attributes)}", source);
 
         /// <summary>
-        /// Fields do not meet the requirements of precludes logic.
+        /// Attributes do not meet the requirements of precludes logic.
         /// </summary>
-        public static Error PrecludesLogicFailed(SourceInfo source, IEnumerable<object> fields)
-            => new Error(ErrorLevel.Warning, "precludes-logic-failed", $"Only one of these fields: {Join(fields)} can exist at most", source);
+        /// Behavior: ✔️ Message: ✔️
+        public static Error PrecludedAttributes(SourceInfo source, IEnumerable<object> attributes)
+            => new Error(ErrorLevel.Suggestion, "precluded-attributes", $"Only one of the following attributes can exist: {Join(attributes)}", source);
 
         /// <summary>
-        /// A field does't conform to date format.
+        /// An attribute does't conform to date format.
         /// </summary>
-        /// Behavior: ✔️ Message: ❌
+        /// Behavior: ✔️ Message: ✔️
         public static Error DateFormatInvalid(SourceInfo source, string name, string value, string format)
             => new Error(ErrorLevel.Suggestion, "date-format-invalid", $"Invalid format for '{name}': '{value}'. Dates must be specified as '{format}'", source);
 
@@ -470,8 +472,8 @@ namespace Microsoft.Docs.Build
         /// A field is deprecated.
         /// </summary>
         /// Behavior: ✔️ Message: ✔️
-        public static Error FieldDeprecated(SourceInfo source, string name, string replacedBy)
-            => new Error(ErrorLevel.Suggestion, "field-deprecated", $"Deprecated field: '{name}'{(string.IsNullOrEmpty(replacedBy) ? "." : $", use '{replacedBy}' instead")}", source);
+        public static Error AttributeDeprecated(SourceInfo source, string name, string replacedBy)
+            => new Error(ErrorLevel.Suggestion, "attribute-deprecated", $"Deprecated attribute: '{name}'{(string.IsNullOrEmpty(replacedBy) ? "." : $", use '{replacedBy}' instead")}", source);
 
         /// <summary>
         /// The value of paired attribute is invalid.

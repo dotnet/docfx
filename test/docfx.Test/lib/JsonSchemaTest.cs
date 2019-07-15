@@ -235,32 +235,32 @@ namespace Microsoft.Docs.Build
         [InlineData("{'either': [['key1', 'key2']]}", "{'key1': 1}", "")]
         [InlineData("{'either': [['key1', 'key2']]}", "{'key1': 1, 'key2': 2}", "")]
         [InlineData("{'either': [['key1', 'key2']]}", "{}",
-            "['warning','either-logic-failed','At least one of these fields: 'key1', 'key2' exists','file',1,1]")]
+            "['suggestion','missing-either-attribute','One of the following attributes is required: 'key1', 'key2'','file',1,1]")]
         [InlineData("{'either': [['key1', 'key2', 'key3']]}", "{}",
-            "['warning','either-logic-failed','At least one of these fields: 'key1', 'key2', 'key3' exists','file',1,1]")]
+            "['suggestion','missing-either-attribute','One of the following attributes is required: 'key1', 'key2', 'key3'','file',1,1]")]
         [InlineData("{'either': [['key1', 'key2'], ['key3', 'key4']]}", "{}",
-            @"['warning','either-logic-failed','At least one of these fields: 'key1', 'key2' exists','file',1,1]
-              ['warning','either-logic-failed','At least one of these fields: 'key3', 'key4' exists','file',1,1]")]
+            @"['suggestion','missing-either-attribute','One of the following attributes is required: 'key1', 'key2'','file',1,1]
+              ['suggestion','missing-either-attribute','One of the following attributes is required: 'key3', 'key4'','file',1,1]")]
         [InlineData("{'properties': {'keys': {'either': [['key1', 'key2']]}}}", "{'keys' : {'key1': 1}}", "")]
         [InlineData("{'properties': {'keys': {'either': [['key1', 'key2']]}}}", "{'keys' : {'key1': 1, 'key2': 2}}", "")]
         [InlineData("{'properties': {'keys': {'either': [['key1', 'key2']]}}}", "{'keys' : {}}",
-            "['warning','either-logic-failed','At least one of these fields: 'key1', 'key2' exists','file',1,11]")]
+            "['suggestion','missing-either-attribute','One of the following attributes is required: 'key1', 'key2'','file',1,11]")]
 
         // precludes validation
         [InlineData("{'precludes': []}", "{}", "")]
         [InlineData("{'precludes': [['key1', 'key2']]}", "{}", "")]
         [InlineData("{'precludes': [['key1', 'key2']]}", "{'key1': 1}", "")]
         [InlineData("{'precludes': [['key1', 'key2']]}", "{'key1': 1, 'key2': 2}",
-            "['warning','precludes-logic-failed','Only one of these fields: 'key1', 'key2' can exist at most','file',1,1]")]
+            "['suggestion','precluded-attributes','Only one of the following attributes can exist: 'key1', 'key2'','file',1,1]")]
         [InlineData("{'precludes': [['key1', 'key2', 'key3']]}", "{'key1': 1, 'key2': 2, 'key3': 3}",
-            "['warning','precludes-logic-failed','Only one of these fields: 'key1', 'key2', 'key3' can exist at most','file',1,1]")]
+            "['suggestion','precluded-attributes','Only one of the following attributes can exist: 'key1', 'key2', 'key3'','file',1,1]")]
         [InlineData("{'precludes': [['key1', 'key2'], ['key3', 'key4']]}", "{'key1': 1, 'key2': 2, 'key3': 3, 'key4': 4}",
-            @"['warning','precludes-logic-failed','Only one of these fields: 'key1', 'key2' can exist at most','file',1,1]
-              ['warning','precludes-logic-failed','Only one of these fields: 'key3', 'key4' can exist at most','file',1,1]")]
+            @"['suggestion','precluded-attributes','Only one of the following attributes can exist: 'key1', 'key2'','file',1,1]
+              ['suggestion','precluded-attributes','Only one of the following attributes can exist: 'key3', 'key4'','file',1,1]")]
         [InlineData("{'properties': {'keys': {'precludes': [['key1', 'key2']]}}}", "{'keys' : {}}", "")]
         [InlineData("{'properties': {'keys': {'precludes': [['key1', 'key2']]}}}", "{'keys' : {'key1': 1}}", "")]
         [InlineData("{'properties': {'keys': {'precludes': [['key1', 'key2']]}}}", "{'keys' : {'key1': 1, 'key2': 2}}",
-            "['warning','precludes-logic-failed','Only one of these fields: 'key1', 'key2' can exist at most','file',1,11]")]
+            "['suggestion','precluded-attributes','Only one of the following attributes can exist: 'key1', 'key2'','file',1,11]")]
 
         // date format validation
         [InlineData("{'properties': {'key1': {'dateFormat': 'M/d/yyyy'}}}", "{}", "")]
@@ -278,9 +278,9 @@ namespace Microsoft.Docs.Build
         // deprecated validation
         [InlineData("{'properties': {'key1': {'replacedBy': 'key2'}}}", "{}", "")]
         [InlineData("{'properties': {'key1': {'replacedBy': ''}}}", "{'key1': 1}",
-            "['suggestion','field-deprecated','Deprecated field: 'key1'.','file',1,10]")]
+            "['suggestion','attribute-deprecated','Deprecated attribute: 'key1'.','file',1,10]")]
         [InlineData("{'properties': {'key1': {'replacedBy': 'key2'}}}", "{'key1': 1}",
-            "['suggestion','field-deprecated','Deprecated field: 'key1', use 'key2' instead','file',1,10]")]
+            "['suggestion','attribute-deprecated','Deprecated attribute: 'key1', use 'key2' instead','file',1,10]")]
 
         // enum dependencies validation
         [InlineData("{'properties': {'key1': {'type': 'string', 'enum': ['.net', 'yammer']}, 'key2': {'type': 'string'}}, 'enumDependencies': { 'key2': { 'key1': { '.net': ['', 'csharp', 'devlang'], 'yammer': ['', 'tabs', 'vba']}}}}", "{'key1': 'yammer', 'key2': 'tabs'}", "")]
