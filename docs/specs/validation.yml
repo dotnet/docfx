@@ -65,7 +65,7 @@ outputs:
     }
   .errors.log: |
     ["warning","unexpected-type","Expected type 'String' but got 'Array'","docfx.yml",3,9]
-    ["warning","undefined-value","Value 'XNAGameStudio' is not accepted. Valid values: 'MSDN', 'VS'","docfx.yml",6,13]
+    ["suggestion","invalid-value","Invalid value for 'key2': 'XNAGameStudio'","docfx.yml",6,13]
     ["warning","unexpected-type","Expected type 'Integer' but got 'String'","a.md",2,7]
 ---
 # Allow multiple metadata schema definitions

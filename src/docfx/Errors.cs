@@ -380,9 +380,9 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// The input value is not defined in a valid value list.
         /// </summary>
-        /// Behavior: ✔️ Message: ❌
-        public static Error UndefinedValue(SourceInfo source, object value, IEnumerable<object> validValues)
-            => new Error(ErrorLevel.Warning, "undefined-value", $"Value '{value}' is not accepted. Valid values: {Join(validValues)}", source);
+        /// Behavior: ✔️ Message: ✔️
+        public static Error InvalidValue(SourceInfo source, string name, object value)
+            => new Error(ErrorLevel.Suggestion, "invalid-value", $"Invalid value for '{name}': '{value}'", source);
 
         /// <summary>
         /// The string type's value doesn't match given format.

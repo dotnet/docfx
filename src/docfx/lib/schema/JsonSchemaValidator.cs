@@ -39,8 +39,8 @@ namespace Microsoft.Docs.Build
             }
 
             ValidateDeprecated(schema, name, token, errors);
-            ValidateConst(schema, token, errors);
-            ValidateEnum(schema, token, errors);
+            ValidateConst(schema, name, token, errors);
+            ValidateEnum(schema, name, token, errors);
 
             switch (token)
             {
@@ -217,19 +217,19 @@ namespace Microsoft.Docs.Build
                 errors.Add(Errors.NumberInvalid(JsonUtility.GetSourceInfo(scalar), name, $"> {schema.ExclusiveMinimum}"));
         }
 
-        private void ValidateConst(JsonSchema schema, JToken token, List<Error> errors)
+        private void ValidateConst(JsonSchema schema, string name, JToken token, List<Error> errors)
         {
             if (schema.Const != null && !JsonUtility.DeepEqualsComparer.Equals(schema.Const, token))
             {
-                errors.Add(Errors.UndefinedValue(JsonUtility.GetSourceInfo(token), token, new object[] { schema.Const }));
+                errors.Add(Errors.InvalidValue(JsonUtility.GetSourceInfo(token), name, token));
             }
         }
 
-        private void ValidateEnum(JsonSchema schema, JToken token, List<Error> errors)
+        private void ValidateEnum(JsonSchema schema, string name, JToken token, List<Error> errors)
         {
             if (schema.Enum != null && !schema.Enum.Contains(token, JsonUtility.DeepEqualsComparer))
             {
-                errors.Add(Errors.UndefinedValue(JsonUtility.GetSourceInfo(token), token, schema.Enum));
+                errors.Add(Errors.InvalidValue(JsonUtility.GetSourceInfo(token), name, token));
             }
         }
 

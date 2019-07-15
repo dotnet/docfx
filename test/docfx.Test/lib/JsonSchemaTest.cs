@@ -114,20 +114,20 @@ namespace Microsoft.Docs.Build
         // const validation
         [InlineData("{'const': 1}", "1", "")]
         [InlineData("{'const': 'string'}", "'unknown'",
-            "['warning','undefined-value','Value 'unknown' is not accepted. Valid values: 'string'','file',1,9]")]
+            "['suggestion','invalid-value','Invalid value for '': 'unknown'','file',1,9]")]
         [InlineData("{'const': {'a': 1}}", "{}",
-            "['warning','undefined-value','Value '{}' is not accepted. Valid values: '{\\n  \\'a\\': 1\\n}'','file',1,1]")]
+            "['suggestion','invalid-value','Invalid value for '': '{}'','file',1,1]")]
 
         // enum validation
         [InlineData("{'type': 'string', 'enum': ['a', 'b']}", "'a'", "")]
         [InlineData("{'type': 'string', 'enum': []}", "'unknown'",
-            "['warning','undefined-value','Value 'unknown' is not accepted. Valid values: ','file',1,9]")]
+            "['suggestion','invalid-value','Invalid value for '': 'unknown'','file',1,9]")]
         [InlineData("{'type': 'string', 'enum': ['a', 'b']}", "'unknown'",
-            "['warning','undefined-value','Value 'unknown' is not accepted. Valid values: 'a', 'b'','file',1,9]")]
+            "['suggestion','invalid-value','Invalid value for '': 'unknown'','file',1,9]")]
 
         [InlineData("{'type': 'number', 'enum': [1, 2]}", "1", "")]
         [InlineData("{'type': 'number', 'enum': [1, 2]}", "3",
-            "['warning','undefined-value','Value '3' is not accepted. Valid values: '1', '2'','file',1,1]")]
+            "['suggestion','invalid-value','Invalid value for '': '3'','file',1,1]")]
 
         // pattern validation
         [InlineData("{'pattern': '^a.*'}", "'a'", "")]
@@ -177,7 +177,7 @@ namespace Microsoft.Docs.Build
         [InlineData("{'properties': {'key': {'type': 'string'}}, 'additionalProperties': {'type': 'number'}}", "{'key': 'value', 'key1': 'value1'}",
             "['warning','unexpected-type','Expected type 'Number' but got 'String'','file',1,33]")]
         [InlineData("{'properties': {'key': {'type': 'string'}}, 'additionalProperties': {'type': 'string', 'enum': ['a']}}", "{'key': 'value', 'key1': 'value1'}",
-            "['warning','undefined-value','Value 'value1' is not accepted. Valid values: 'a'','file',1,33]")]
+            "['suggestion','invalid-value','Invalid value for '': 'value1'','file',1,33]")]
 
         // property name validation
         [InlineData("{'propertyNames': {'maxLength': 1}}", "{'a': 0}", "")]
