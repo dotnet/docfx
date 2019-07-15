@@ -434,10 +434,11 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Suggestion, "missing-attribute", $"Missing required attribute: '{name}'", source);
 
         /// <summary>
-        /// A field lacks the required dependency.
+        /// An attribute lacks the required dependency.
         /// </summary>
-        public static Error LackDependency(SourceInfo source, string name, string otherKey)
-            => new Error(ErrorLevel.Warning, "lack-dependency", $"Missing field: '{otherKey}'. If you specify '{name}', you must also specify '{otherKey}'", source);
+        /// Behavior: ✔️ Message: ✔️
+        public static Error MissingPairedAttribute(SourceInfo source, string name, string otherKey)
+            => new Error(ErrorLevel.Suggestion, "missing-paired-attribute", $"Missing attribute: '{otherKey}'. If you specify '{name}', you must also specify '{otherKey}'", source);
 
         /// <summary>
         /// Fields do not meet the requirements of either logic.

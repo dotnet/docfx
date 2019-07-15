@@ -225,10 +225,10 @@ namespace Microsoft.Docs.Build
         [InlineData("{'dependencies': {'key1': ['key2']}}", "{'key1' : 1, 'key2' : 2}", "")]
         [InlineData("{'dependencies': {'key1': ['key2']}}", "{}", "")]
         [InlineData("{'dependencies': {'key1': ['key2']}}", "{'key1' : 1}",
-            "['warning','lack-dependency','Missing field: 'key2'. If you specify 'key1', you must also specify 'key2'','file',1,1]")]
+            "['suggestion','missing-paired-attribute','Missing attribute: 'key2'. If you specify 'key1', you must also specify 'key2'','file',1,1]")]
         [InlineData("{'properties': {'keys': {'dependencies': {'key1': ['key2']}}}}", "{'keys' : {'key1' : 1, 'key2': 2}}", "")]
         [InlineData("{'properties': {'keys': {'dependencies': {'key1': ['key2']}}}}", "{'keys' : {'key1' : 1}}",
-            "['warning','lack-dependency','Missing field: 'key2'. If you specify 'key1', you must also specify 'key2'','file',1,11]")]
+            "['suggestion','missing-paired-attribute','Missing attribute: 'key2'. If you specify 'key1', you must also specify 'key2'','file',1,11]")]
 
         // either validation
         [InlineData("{'either': []}", "{}", "")]
@@ -288,7 +288,7 @@ namespace Microsoft.Docs.Build
         [InlineData("{'properties': {'key1': {'type': 'string', 'enum': ['.net', 'yammer']}, 'key2': {'type': 'string'}}, 'enumDependencies': { 'key2': { 'key1': { '.net': ['', 'csharp', 'devlang'], 'yammer': ['', 'tabs', 'vba']}}}}", "{'key1': 'yammer', 'key2': 'abc'}",
             "['warning','values-not-match','Invalid value for key2: 'abc' is not valid with 'key1' value 'yammer'. Valid values: '', 'tabs', 'vba'','file',1,1]")]
         [InlineData("{'properties': {'key1': {'type': 'string', 'enum': ['.net', 'yammer']}, 'key2': {'type': 'string'}}, 'enumDependencies': { 'key2': { 'key1': { '.net': ['', 'csharp', 'devlang'], 'yammer': ['', 'tabs', 'vba']}}}}", "{'key2': 'tabs'}",
-            "['warning','lack-dependency','Missing field: 'key1'. If you specify 'key2', you must also specify 'key1'','file',1,1]")]
+            "['suggestion','missing-paired-attribute','Missing attribute: 'key1'. If you specify 'key2', you must also specify 'key1'','file',1,1]")]
         public void TestJsonSchemaValidation(string schema, string json, string expectedErrors)
         {
             var jsonSchema = JsonUtility.Deserialize<JsonSchema>(schema.Replace('\'', '"'), null);

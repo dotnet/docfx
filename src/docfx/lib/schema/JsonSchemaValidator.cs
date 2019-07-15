@@ -243,7 +243,7 @@ namespace Microsoft.Docs.Build
                     {
                         if (!map.ContainsKey(otherKey))
                         {
-                            errors.Add(Errors.LackDependency(JsonUtility.GetSourceInfo(map), key, otherKey));
+                            errors.Add(Errors.MissingPairedAttribute(JsonUtility.GetSourceInfo(map), key, otherKey));
                         }
                     }
                 }
@@ -371,7 +371,7 @@ namespace Microsoft.Docs.Build
                         }
                         else
                         {
-                            errors.Add(Errors.LackDependency(JsonUtility.GetSourceInfo(map), fieldName, dependentFieldName));
+                            errors.Add(Errors.MissingPairedAttribute(JsonUtility.GetSourceInfo(map), fieldName, dependentFieldName));
                         }
                     }
                 }
