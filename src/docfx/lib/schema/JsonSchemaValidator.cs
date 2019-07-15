@@ -256,7 +256,7 @@ namespace Microsoft.Docs.Build
             {
                 if (!map.ContainsKey(key))
                 {
-                    errors.Add(Errors.FieldRequired(JsonUtility.GetSourceInfo(map), key));
+                    errors.Add(Errors.MissingAttribute(JsonUtility.GetSourceInfo(map), key));
                 }
             }
         }

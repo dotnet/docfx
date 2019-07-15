@@ -85,7 +85,7 @@ inputs:
 outputs:
   a.json:
   .errors.log: |
-    ["warning","field-required","Missing required field 'a'","a.md",2,1]
+    ["suggestion","missing-attribute","Missing required attribute: 'a'","a.md",2,1]
     ["warning","unexpected-type","Expected type 'String' but got 'Array'","a.md",2,6]
 ---
 # [skip] Json schema microsoft alias rule: Metu error, when no connection with Graph API

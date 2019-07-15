@@ -427,11 +427,11 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Warning, "number-invalid", $"Number '{propName}' should be {criteria}", source);
 
         /// <summary>
-        /// A required field is missing.
+        /// A required attribute is missing.
         /// </summary>
-        /// Behavior: ✔️ Message: ❌
-        public static Error FieldRequired(SourceInfo source, string name)
-            => new Error(ErrorLevel.Warning, "field-required", $"Missing required field '{name}'", source);
+        /// Behavior: ✔️ Message: ✔️
+        public static Error MissingAttribute(SourceInfo source, string name)
+            => new Error(ErrorLevel.Suggestion, "missing-attribute", $"Missing required attribute: '{name}'", source);
 
         /// <summary>
         /// A field lacks the required dependency.

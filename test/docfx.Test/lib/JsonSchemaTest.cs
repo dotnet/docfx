@@ -218,7 +218,7 @@ namespace Microsoft.Docs.Build
         [InlineData("{'required': []}", "{}", "")]
         [InlineData("{'required': ['a']}", "{'a': 1}", "")]
         [InlineData("{'required': ['a']}", "{'b': 1}",
-            "['warning','field-required','Missing required field 'a'','file',1,1]")]
+            "['suggestion','missing-attribute','Missing required attribute: 'a'','file',1,1]")]
 
         // dependencies validation
         [InlineData("{'dependencies': {}}", "{}", "")]
