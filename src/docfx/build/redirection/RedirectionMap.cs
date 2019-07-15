@@ -47,7 +47,7 @@ namespace Microsoft.Docs.Build
             AddRedirections(docset.Config.Redirections, redirectDocumentId: true);
             var redirectionsByRedirectionUrl = redirections
                 .GroupBy(file => file.RedirectionUrl, PathUtility.PathComparer)
-                .ToDictionary(group => group.Key, group => group.First(), PathUtility.PathComparer);
+                .ToDictionary(group => group.Key, group => group.OrderBy(r => r).First(), PathUtility.PathComparer);
 
             // load redirections without document id
             AddRedirections(docset.Config.RedirectionsWithoutId);
@@ -103,7 +103,6 @@ namespace Microsoft.Docs.Build
                     if (redirectDocumentId && !redirectUrls.Add(redirect.RedirectionUrl))
                     {
                         errorLog.Write(Errors.RedirectionUrlConflict(redirectUrl));
-                        continue;
                     }
 
                     if (!redirections.Add(redirect))
