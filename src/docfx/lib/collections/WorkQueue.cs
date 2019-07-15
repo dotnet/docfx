@@ -29,6 +29,11 @@ namespace Microsoft.Docs.Build
         // For completion detection
         private int _remainingCount = 0;
 
+        // When an exception occurs, store it here,
+        // then wait until all jobs to complete before Drain returns.
+        // This ensures _run callback is never executed once Drain returns.
+        private volatile Exception _exception;
+
         public void Enqueue(IEnumerable<T> items)
         {
             foreach (var item in items)
@@ -64,44 +69,71 @@ namespace Microsoft.Docs.Build
             {
                 while (!_drainTcs.Task.IsCompleted && _queue.TryDequeue(out var item))
                 {
+                    if (_exception != null)
+                    {
+                        OnComplete();
+                        continue;
+                    }
+
                     ThreadPool.QueueUserWorkItem(Run, item, preferLocal: true);
                 }
             }
 
             void Run(T item)
             {
+                if (_exception != null)
+                {
+                    OnComplete();
+                    return;
+                }
+
+                Task task;
+
                 try
                 {
-                    _run(item).ContinueWith(OnComplete, default, TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
+                    task = _run(item);
                 }
                 catch (Exception ex)
                 {
-                    _drainTcs.TrySetException(ex);
+                    OnComplete(ex);
+                    return;
                 }
+
+                task.ContinueWith(
+                    t => OnComplete(t.Exception?.InnerException),
+                    default,
+                    TaskContinuationOptions.ExecuteSynchronously,
+                    TaskScheduler.Default);
             }
 
-            void OnComplete(Task task)
+            void OnComplete(Exception exception = null)
             {
                 try
                 {
-                    if (task.Exception != null)
-                    {
-                        _drainTcs.TrySetException(task.Exception.InnerException);
-                    }
-                    else if (Interlocked.Decrement(ref _remainingCount) == 0)
-                    {
-                        _drainTcs.TrySetResult(0);
-                    }
-                    else
-                    {
-                        DrainCore();
-                    }
-
                     progress?.Invoke(Interlocked.Increment(ref _processedCount), _totalCount);
                 }
                 catch (Exception ex)
                 {
-                    _drainTcs.TrySetException(ex);
+                    exception = ex;
+                }
+
+                if (exception != null)
+                {
+                    _exception = exception;
+                }
+
+                DrainCore();
+
+                if (Interlocked.Decrement(ref _remainingCount) == 0)
+                {
+                    if (_exception is null)
+                    {
+                        _drainTcs.SetResult(0);
+                    }
+                    else
+                    {
+                        _drainTcs.SetException(_exception);
+                    }
                 }
             }
         }

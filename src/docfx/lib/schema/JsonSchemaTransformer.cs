@@ -2,8 +2,10 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using Newtonsoft.Json.Linq;
 
@@ -13,143 +15,171 @@ namespace Microsoft.Docs.Build
     {
         private readonly JsonSchema _schema;
         private readonly JsonSchemaDefinition _definitions;
+        private readonly ConcurrentDictionary<JToken, (List<Error>, JToken)> _transformedProperties;
 
         public JsonSchemaTransformer(JsonSchema schema)
         {
             _schema = schema;
             _definitions = new JsonSchemaDefinition(schema);
+            _transformedProperties = new ConcurrentDictionary<JToken, (List<Error>, JToken)>(ReferenceEqualsComparer.Default);
         }
 
         public (List<Error> errors, JToken token) TransformContent(Document file, Context context, JToken token)
         {
-            var errors = new List<Error>();
-            var transformedToken = Transform(file, context, _schema, token, errors);
-            return (errors, transformedToken);
+            return TransformToken(file, context, _schema, token);
         }
 
-        public (List<Error> errors, Dictionary<string, List<(bool isRoot, SourceInfo source, Dictionary<string, Lazy<JToken>> propertiesByUid)>> xrefPropertiesGroupByUid) TransformXref(Document file, Context context, JToken token)
+        public (List<Error>, IReadOnlyList<InternalXrefSpec>) LoadXrefSpecs(Document file, Context context, JToken token)
         {
             var errors = new List<Error>();
-            var xrefPropertiesGroupByUid = new Dictionary<string, List<(bool, SourceInfo, Dictionary<string, Lazy<JToken>>)>>();
+            var uids = new HashSet<string>();
 
-            Traverse(_schema, token, (schema, node) =>
+            return (errors, LoadXrefSpecs(_schema, token));
+
+            List<InternalXrefSpec> LoadXrefSpecs(JsonSchema schema, JToken node)
             {
-                if (node is JObject obj)
+                var xrefSpecs = new List<InternalXrefSpec>();
+                schema = _definitions.GetDefinition(schema);
+                switch (node)
                 {
-                    var uid = obj.TryGetValue("uid", out var uidValue) && uidValue is JValue uidJValue && uidJValue.Value is string uidStr ? uidStr : null;
+                    case JObject obj:
+                        var uid = obj.TryGetValue("uid", out var uidValue) && uidValue is JValue uidJValue && uidJValue.Value is string uidStr ? uidStr : null;
 
-                    if (uid == null)
-                    {
-                        return (default, node);
-                    }
-
-                    if (!xrefPropertiesGroupByUid.TryGetValue(uid, out _))
-                    {
-                        xrefPropertiesGroupByUid[uid] = new List<(bool, SourceInfo, Dictionary<string, Lazy<JToken>>)> { (obj.Parent is null, JsonUtility.GetSourceInfo(obj), BuildXrefPropertiesForUid(schema, obj)) };
-                    }
-                    else
-                    {
-                        xrefPropertiesGroupByUid[uid].Add((obj.Parent is null, JsonUtility.GetSourceInfo(obj), BuildXrefPropertiesForUid(schema, obj)));
-                    }
-
-                    return (schema.XrefProperties, node);
-                }
-
-                return (default, node);
-            });
-
-            return (errors, xrefPropertiesGroupByUid);
-
-            Dictionary<string, Lazy<JToken>> BuildXrefPropertiesForUid(JsonSchema schema, JObject obj)
-            {
-                var dict = new Dictionary<string, Lazy<JToken>>();
-                foreach (var (key, value) in obj)
-                {
-                    if (schema.XrefProperties.Contains(key))
-                    {
-                        var propertySchema = schema.Properties.TryGetValue(key, out var subSchema) ? subSchema : null;
-                        dict[key] = new Lazy<JToken>(
-                        () =>
+                        if (uid is null)
                         {
-                            return Transform(file, context, propertySchema, value, errors);
-                        }, LazyThreadSafetyMode.PublicationOnly);
-                    }
-                }
-                return dict;
-            }
-        }
+                            TraverseObjectXref(obj);
+                            break;
+                        }
 
-        private JToken Transform(Document file, Context context, JsonSchema schema, JToken token, List<Error> errors)
-        {
-            return Traverse(schema, token, (subSchema, node) =>
-            {
-                if (node.Type == JTokenType.Array || node.Type == JTokenType.Object)
-                {
-                    // don't support array/object transform now
-                    return (default, node);
-                }
-
-                var transformedScalar = TransformScalar(subSchema, file, context, node as JValue, errors);
-                return (default, transformedScalar);
-            });
-        }
-
-        private JToken Traverse(JsonSchema schema, JToken token, Func<JsonSchema, JToken, (string[], JToken)> transform)
-        {
-            schema = _definitions.GetDefinition(schema);
-            if (schema == null)
-            {
-                return token;
-            }
-
-            var (transformedKeys, transformedToken) = transform(schema, token);
-            transformedKeys = transformedKeys ?? Array.Empty<string>();
-
-            switch (transformedToken)
-            {
-                case JValue scalar:
-
-                    return scalar;
-
-                case JArray array:
-
-                    if (schema.Items == null || schema.ContentType != JsonSchemaContentType.None)
-                        return array;
-
-                    var newArray = new JArray();
-                    foreach (var item in array)
-                    {
-                        var newItem = Traverse(schema.Items, item, transform);
-                        newArray.Add(newItem);
-                    }
-
-                    return newArray;
-
-                case JObject obj:
-
-                    var newObject = new JObject();
-                    foreach (var (key, value) in obj)
-                    {
-                        if (!transformedKeys.Contains(key) && schema.Properties.TryGetValue(key, out var propertySchema))
+                        if (uids.Add(uid))
                         {
-                            newObject[key] = Traverse(propertySchema, value, transform);
+                            xrefSpecs.Add(GetXrefSpec(uid, obj));
                         }
                         else
                         {
-                            newObject[key] = value;
+                            errors.Add(Errors.UidConflict(uid));
+                        }
+
+                        break;
+                    case JArray array:
+                        foreach (var item in array)
+                        {
+                            if (schema.Items != null)
+                                xrefSpecs.AddRange(LoadXrefSpecs(schema.Items, item));
+                        }
+                        break;
+                }
+
+                return xrefSpecs;
+
+                InternalXrefSpec GetXrefSpec(string uid, JObject obj)
+                {
+                    var xrefProperties = new Dictionary<string, Lazy<JToken>>();
+                    TraverseObjectXref(obj, (propertySchema, key, value) =>
+                    {
+                        if (schema.XrefProperties.Contains(key))
+                        {
+                            xrefProperties[key] = new Lazy<JToken>(
+                                () =>
+                                {
+                                    var (transformErrors, transformedToken) = TransformToken(file, context, propertySchema, value);
+                                    context.ErrorLog.Write(transformErrors);
+                                    return transformedToken;
+                                }, LazyThreadSafetyMode.PublicationOnly);
+                            return true;
+                        }
+
+                        return false;
+                    });
+
+                    var xref = new InternalXrefSpec
+                    {
+                        Uid = uid,
+                        Source = JsonUtility.GetSourceInfo(obj),
+                        Href = obj.Parent is null ? file.SiteUrl : $"{file.SiteUrl}#{GetBookmarkFromUid(uid)}",
+                        DeclaringFile = file,
+                    };
+                    xref.ExtensionData.AddRange(xrefProperties);
+                    return xref;
+                }
+
+                string GetBookmarkFromUid(string uid)
+                    => Regex.Replace(uid, @"\W", "_");
+
+                void TraverseObjectXref(JObject obj, Func<JsonSchema, string, JToken, bool> action = null)
+                {
+                    foreach (var (key, value) in obj)
+                    {
+                        if (schema.Properties.TryGetValue(key, out var propertySchema))
+                        {
+                            if (action?.Invoke(propertySchema, key, value) ?? false)
+                                continue;
+
+                            xrefSpecs.AddRange(LoadXrefSpecs(propertySchema, value));
                         }
                     }
-                    return newObject;
+                }
             }
-
-            throw new NotSupportedException();
         }
 
-        private JToken TransformScalar(JsonSchema schema, Document file, Context context, JValue value, List<Error> errors)
+        private (List<Error>, JToken) TransformToken(Document file, Context context, JsonSchema schema, JToken token)
         {
+            schema = _definitions.GetDefinition(schema);
+
+            if (schema == null)
+            {
+                return (new List<Error>(), token);
+            }
+
+            return _transformedProperties.GetOrAdd(token, _ =>
+            {
+                var errors = new List<Error>();
+                switch (token)
+                {
+                    // transform array and object is not supported yet
+                    case JArray array:
+                        var newArray = new JArray();
+                        foreach (var item in array)
+                        {
+                            var (arrayErrors, newItem) = TransformToken(file, context, schema.Items, item);
+                            errors.AddRange(arrayErrors);
+                            newArray.Add(newItem);
+                        }
+
+                        return (errors, newArray);
+
+                    case JObject obj:
+                        var newObject = new JObject();
+                        foreach (var (key, value) in obj)
+                        {
+                            if (schema.Properties.TryGetValue(key, out var propertySchema))
+                            {
+                                var (propertyErrors, transformedValue) = TransformToken(file, context, propertySchema, value);
+                                errors.AddRange(propertyErrors);
+                                newObject[key] = transformedValue;
+                            }
+                            else
+                            {
+                                newObject[key] = value;
+                            }
+                        }
+                        return (errors, newObject);
+
+                    case JValue value:
+                        return TransformScalar(schema, file, context, value);
+
+                    default:
+                        throw new NotSupportedException();
+                }
+            });
+        }
+
+        private (List<Error>, JToken) TransformScalar(JsonSchema schema, Document file, Context context, JValue value)
+        {
+            var errors = new List<Error>();
             if (value.Type == JTokenType.Null || schema.ContentType == JsonSchemaContentType.None)
             {
-                return value;
+                return (errors, value);
             }
 
             var sourceInfo = JsonUtility.GetSourceInfo(value);
@@ -212,7 +242,7 @@ namespace Microsoft.Docs.Build
                     {
                         var specObj = JsonUtility.ToJObject(xrefSpec);
                         JsonUtility.SetSourceInfo(specObj, content);
-                        return specObj;
+                        return (errors, specObj);
                     }
 
                     content = new SourceInfo<string>(null, content);
@@ -221,7 +251,7 @@ namespace Microsoft.Docs.Build
 
             value = new JValue(content.Value);
             JsonUtility.SetSourceInfo(value, content);
-            return value;
+            return (errors, value);
         }
     }
 }

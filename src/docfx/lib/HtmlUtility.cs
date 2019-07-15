@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Text;
 using System.Web;
 using HtmlAgilityPack;
@@ -223,7 +222,7 @@ namespace Microsoft.Docs.Build
         {
             var result = new StringBuilder();
 
-            foreach (var property in metadata.Properties().OrderBy(p => p.Name))
+            foreach (var property in metadata.Properties())
             {
                 var key = property.Name;
                 var value = property.Value;
@@ -241,7 +240,7 @@ namespace Microsoft.Docs.Build
                     {
                         if (v is JValue)
                         {
-                            result.AppendLine($"<meta name=\"{HttpUtility.HtmlEncode(name)}\" content=\"{HttpUtility.HtmlEncode(v)}\" />");
+                            result.AppendLine($"<meta name=\"{Encode(name)}\" content=\"{Encode(v.ToString())}\" />");
                         }
                     }
                     continue;
@@ -255,10 +254,19 @@ namespace Microsoft.Docs.Build
                     content = value.ToString();
                 }
 
-                result.AppendLine($"<meta name=\"{HttpUtility.HtmlEncode(name)}\" content=\"{HttpUtility.HtmlEncode(content)}\" />");
+                result.AppendLine($"<meta name=\"{Encode(name)}\" content=\"{Encode(content)}\" />");
             }
 
             return result.ToString();
+        }
+
+        public static string Encode(string s)
+        {
+            return s.Replace("&", "&amp;")
+                    .Replace("<", "&lt;")
+                    .Replace(">", "&gt;")
+                    .Replace("\"", "&quot;")
+                    .Replace("'", "&#39;");
         }
 
         private static HtmlNode AddLinkType(this HtmlNode html, string locale)

@@ -40,6 +40,7 @@ namespace Microsoft.Docs.Build
 
             ValidateDeprecated(schema, name, token, errors);
             ValidateConst(schema, token, errors);
+            ValidateEnum(schema, token, errors);
 
             switch (token)
             {
@@ -72,11 +73,6 @@ namespace Microsoft.Docs.Build
 
         private void ValidateScalar(JsonSchema schema, string name, JValue scalar, List<Error> errors)
         {
-            if (schema.Enum != null && Array.IndexOf(schema.Enum, scalar) == -1)
-            {
-                errors.Add(Errors.UndefinedValue(JsonUtility.GetSourceInfo(scalar), scalar, schema.Enum));
-            }
-
             switch (scalar.Value)
             {
                 case string str:
@@ -105,6 +101,11 @@ namespace Microsoft.Docs.Build
                 {
                     Validate(schema.Items, name, item, errors);
                 }
+            }
+
+            if (schema.UniqueItems && array.Distinct(JsonUtility.DeepEqualsComparer).Count() != array.Count)
+            {
+                errors.Add(Errors.ArrayNotUnique(JsonUtility.GetSourceInfo(array), name));
             }
         }
 
@@ -175,7 +176,6 @@ namespace Microsoft.Docs.Build
         private void ValidateString(JsonSchema schema, string name, JValue scalar, string str, List<Error> errors)
         {
             ValidateDateFormat(schema, name, scalar, str, errors);
-            ValidateMicrosoftAlias(schema, name, scalar, str, errors);
 
             if (schema.MaxLength.HasValue || schema.MinLength.HasValue)
             {
@@ -218,9 +218,17 @@ namespace Microsoft.Docs.Build
 
         private void ValidateConst(JsonSchema schema, JToken token, List<Error> errors)
         {
-            if (schema.Const != null && !JTokenDeepEquals(schema.Const, token))
+            if (schema.Const != null && !JsonUtility.DeepEqualsComparer.Equals(schema.Const, token))
             {
                 errors.Add(Errors.UndefinedValue(JsonUtility.GetSourceInfo(token), token, new object[] { schema.Const }));
+            }
+        }
+
+        private void ValidateEnum(JsonSchema schema, JToken token, List<Error> errors)
+        {
+            if (schema.Enum != null && !schema.Enum.Contains(token, JsonUtility.DeepEqualsComparer))
+            {
+                errors.Add(Errors.UndefinedValue(JsonUtility.GetSourceInfo(token), token, schema.Enum));
             }
         }
 
@@ -389,48 +397,6 @@ namespace Microsoft.Docs.Build
                     return tokenType == JTokenType.String;
                 default:
                     return true;
-            }
-        }
-
-        private static bool JTokenDeepEquals(JToken a, JToken b)
-        {
-            switch (a)
-            {
-                case JValue valueA when b is JValue valueB:
-                    return Equals(valueA.Value, valueB.Value);
-
-                case JArray arrayA when b is JArray arrayB:
-                    if (arrayA.Count != arrayB.Count)
-                    {
-                        return false;
-                    }
-
-                    for (var i = 0; i < arrayA.Count; i++)
-                    {
-                        if (!JTokenDeepEquals(arrayA[i], arrayB[i]))
-                        {
-                            return false;
-                        }
-                    }
-                    return true;
-
-                case JObject mapA when b is JObject mapB:
-                    if (mapA.Count != mapB.Count)
-                    {
-                        return false;
-                    }
-
-                    foreach (var (key, valueA) in mapA)
-                    {
-                        if (!mapB.TryGetValue(key, out var valueB) || !JTokenDeepEquals(valueA, valueB))
-                        {
-                            return false;
-                        }
-                    }
-                    return true;
-
-                default:
-                    return false;
             }
         }
     }

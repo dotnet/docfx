@@ -4,12 +4,16 @@ commands:
   - build --legacy
 repos:
   https://docs.com/legacy:
-  - files:
+  - author: Charlie
+    email: charlie@contoso.com
+    files:
       docfx.yml: |
         template: https://docs.com/theme
         redirections:
           a.md: /b
         metadataSchema: schema.json
+        gitHub:
+          resolveUsers: true
       c.md: |
         ---
         api_name:
@@ -41,6 +45,12 @@ repos:
             content: JSON.stringify(model)
           }
         }
+cache:
+  github-users.json: |
+    { "users": [
+        {"name": "Charlie", "login": "charlie", "id": 3, "emails": ["charlie@contoso.com"]}
+      ]
+    }
 outputs:
   a.raw.page.json:
   a.mta.json: |
@@ -48,10 +58,18 @@ outputs:
   c.raw.page.json: |
     {
       "content": "<p><a href=\"d.png\" data-linktype=\"relative-path\">d</a></p>",
-      "rawMetadata": { "ms.author": "yufeih", "!robots": null, "api_name": ["API Name"] },
+      "rawMetadata": {
+        "ms.author": "yufeih",
+        "!robots": null,
+        "api_name": ["API Name"],
+        "_op_gitContributorInformation": {
+          "updated_at_date_time": "2018-10-30T00:00:00.0000000Z"
+        }
+      },
       "themesRelativePathToOutputRoot": "_themes/",
       "pageMetadata": "
         <meta name=\"APIName\" content=\"API Name\" />
+        <meta name=\"author\" content=\"charlie\" />
         <meta name=\"depot_name\" content=\".\" />
         <meta name=\"document_id\" content=\"fdb5a0d7-b68e-c465-9c5e-54a5cda94902\" />
         <meta name=\"document_version_independent_id\" content=\"92a5a770-f05f-b8bb-81c9-a8d786a9e608\" />
@@ -131,45 +149,47 @@ outputs:
       }, 
       {
         "url": "/rawmetadata/c",
-        "api_name": ["API Name"],
-        "ms.author": "bob",
-        "depot_name": ".",
-        "search.ms_docsetname": "",
-        "search.ms_product": "",
-        "search.ms_sitename": "Docs",
+        "path": "rawmetadata/c.json",
+        "source_path": "c.md",
         "locale": "en-us",
-        "site_name": "Docs",
-        "_path": "c.json",
+        "api_name": [
+          "API Name"
+        ],
+        "ms.author": "bob",
+        "author": "bob",
         "_tocRel": "toc.json",
-        "wordCount": 2,
-        "title": "Title",
-        "rawTitle": "<h1 id=\"title\">Title</h1>",
-        "_op_canonicalUrlPrefix": "https://docs.com/en-us/rawmetadata/",
+        "canonical_url": "https://docs.com/en-us/rawmetadata/c",
         "document_id": "fdb5a0d7-b68e-c465-9c5e-54a5cda94902",
         "document_version_independent_id": "92a5a770-f05f-b8bb-81c9-a8d786a9e608",
         "_op_gitContributorInformation": {
-        "update_at": "10/30/2018",
-          "contributors": [{
-            "display_name": "Charlie",
-            "id": "3"
-          }],
+          "update_at": "10/30/2018",
+          "contributors": [
+            {
+              "name": "charlie",
+              "profile_url": "https://github.com/charlie",
+              "display_name": "Charlie",
+              "id": "3"
+            }
+          ],
           "author": {
+            "name": "bob",
+            "profile_url": "https://github.com/bob",
             "display_name": "Bob",
-            "id": "2",
+            "id": "2"
           }
         },
         "updated_at": "2018-10-30 12:00 AM",
         "content_git_url": "https://github.com/a/rawmetadata/blob/master/c.md",
-        "gitcommit": "https://github.com/a/rawmetadata/blob/5cb844f400525147e40455b6f1adf54646de2693/c.md",
         "original_content_git_url": "https://github.com/a/rawmetadata/blob/master/c.md",
         "original_content_git_url_template": "{repo}/blob/{branch}/c.md",
-        "!metadata": null,
-        "!contributors": null,
-        "!enable_loc_sxs": null,
-        "!content": null,
-        "!schema_type": null,
-        "!author_info": null,
-        "!monikers": null,
+        "gitcommit": "https://github.com/a/rawmetadata/blob/5cb844f400525147e40455b6f1adf54646de2693/c.md",
+        "site_name": "Docs",
+        "depot_name": ".",
+        "search.ms_docsetname": "",
+        "search.ms_product": "",
+        "search.ms_sitename": "Docs",
+        "_path": "c.json",
+        "_op_canonicalUrlPrefix": "https://docs.com/en-us/rawmetadata/"
       },
       {
         "url": "/rawmetadata/d.png"
