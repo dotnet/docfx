@@ -99,17 +99,17 @@ namespace Microsoft.Docs.Build
         [InlineData("{'type': 'number'}", "123.456", "")]
         [InlineData("{'type': 'number'}", "123", "")]
         [InlineData("{'type': 'boolean'}", "'string'",
-            "['warning','unexpected-type','Expect type 'Boolean' but got 'String'','file',1,8]")]
+            "['warning','unexpected-type','Expected type 'Boolean' but got 'String'','file',1,8]")]
         [InlineData("{'type': 'object'}", "1",
-            "['warning','unexpected-type','Expect type 'Object' but got 'Integer'','file',1,1]")]
+            "['warning','unexpected-type','Expected type 'Object' but got 'Integer'','file',1,1]")]
         [InlineData("{'type': 'string'}", "1",
-            "['warning','unexpected-type','Expect type 'String' but got 'Integer'','file',1,1]")]
+            "['warning','unexpected-type','Expected type 'String' but got 'Integer'','file',1,1]")]
 
         // union type validation
         [InlineData("{'type': ['string', 'null']}", "'a'", "")]
         [InlineData("{'properties': {'a': {'type': ['string', 'null']}}}", "{'a': null}", "")]
         [InlineData("{'type': ['string', 'null']}", "1",
-            "['warning','unexpected-type','Expect type 'String, Null' but got 'Integer'','file',1,1]")]
+            "['warning','unexpected-type','Expected type 'String, Null' but got 'Integer'','file',1,1]")]
 
         // const validation
         [InlineData("{'const': 1}", "1", "")]
@@ -166,7 +166,7 @@ namespace Microsoft.Docs.Build
         // properties validation
         [InlineData("{'properties': {'key': {'type': 'string'}}}", "{'key': 'value'}", "")]
         [InlineData("{'properties': {'key': {'type': 'string'}}}", "{'key': 1}",
-            "['warning','unexpected-type','Expect type 'String' but got 'Integer'','file',1,9]")]
+            "['warning','unexpected-type','Expected type 'String' but got 'Integer'','file',1,9]")]
 
         // additional properties validation
         // AdditionalProperty is enabled with explicit false
@@ -175,7 +175,7 @@ namespace Microsoft.Docs.Build
         [InlineData("{'properties': {'key': {'type': 'string'}}, 'additionalProperties': false}", "{'key': 'value', 'key1': 'value1'}",
             "['warning','unknown-field','Could not find member 'key1' on object of type 'String'.','file',1,33]")]
         [InlineData("{'properties': {'key': {'type': 'string'}}, 'additionalProperties': {'type': 'number'}}", "{'key': 'value', 'key1': 'value1'}",
-            "['warning','unexpected-type','Expect type 'Number' but got 'String'','file',1,33]")]
+            "['warning','unexpected-type','Expected type 'Number' but got 'String'','file',1,33]")]
         [InlineData("{'properties': {'key': {'type': 'string'}}, 'additionalProperties': {'type': 'string', 'enum': ['a']}}", "{'key': 'value', 'key1': 'value1'}",
             "['warning','undefined-value','Value 'value1' is not accepted. Valid values: 'a'','file',1,33]")]
 
@@ -197,8 +197,8 @@ namespace Microsoft.Docs.Build
         // array validation
         [InlineData("{'items': {'type': 'string'}}", "['a','b']", "")]
         [InlineData("{'items': {'type': 'boolean'}}", "['a','b']",
-            @"['warning','unexpected-type','Expect type 'Boolean' but got 'String'','file',1,4]
-              ['warning','unexpected-type','Expect type 'Boolean' but got 'String'','file',1,8]")]
+            @"['warning','unexpected-type','Expected type 'Boolean' but got 'String'','file',1,4]
+              ['warning','unexpected-type','Expected type 'Boolean' but got 'String'','file',1,8]")]
 
         [InlineData("{'maxItems': 3, 'minItems': 1}", "['a','b']", "")]
         [InlineData("{'properties': {'arr': {'maxItems': 3, 'minItems': 1}}}", "{'arr': ['a','b','c','d']}",

@@ -136,7 +136,7 @@ outputs:
   toc.json:
   docs/toc.json:
   .errors.log: |
-    ["warning","unexpected-type","Expect type 'String' but got 'Object'","docs/a.yml",3,18]
+    ["warning","unexpected-type","Expected type 'String' but got 'Object'","docs/a.yml",3,18]
 ---
 # Schema documents with Href content referencing resource file, the resouce file should be outputed
 inputs:
@@ -195,7 +195,7 @@ inputs:
 outputs:
   docs/a.json:
   .errors.log: |
-    ["warning","unexpected-type","Expect type 'String' but got 'Null'","docs/a.yml",2,13]
+    ["warning","unexpected-type","Expected type 'String' but got 'Null'","docs/a.yml",2,13]
 ---
 # Support schema documents with inline markdown content
 inputs:
@@ -377,7 +377,7 @@ inputs:
     - array
 outputs:
   .errors.log: |
-    ["error","unexpected-type","Expect type 'Object' but got 'Array'","a.yml",1,1]
+    ["error","unexpected-type","Expected type 'Object' but got 'Array'","a.yml",1,1]
 ---
 # Verify SDP pipeline
 # YAML mime in the SDP document should have a corresponding *.html.primary.js file
