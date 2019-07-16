@@ -266,8 +266,8 @@ outputs:
       [
         {"url": "/docs/a-old", "has_error": true, "moniker_group": "9d4e15fd"},
         {"url": "/docs/a-old", "has_error": true, "moniker_group": "e300a7df"},
-        {"url": "/docs/a", "has_error": false, "path": "9d4e15fd/docs/a.json"},
-        {"url": "/docs/a", "has_error": false, "path": "b201e604/docs/a.json"},
+        {"url": "/docs/a", "path": "9d4e15fd/docs/a.json"},
+        {"url": "/docs/a", "path": "b201e604/docs/a.json"},
       ]
     }
   .errors.log: |
@@ -613,7 +613,7 @@ outputs:
       [
         {"url": "/docs/a", "has_error": true, "path": "23d205a5/docs/a.json"},
         {"url": "/docs/a", "has_error": true, "path": "afb33dd2/docs/a.json"},
-        {"url": "/docs/c", "has_error": false}
+        {"url": "/docs/c"}
       ]
     }
 ---
