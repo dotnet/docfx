@@ -103,7 +103,6 @@ namespace Microsoft.Docs.Build
                     if (redirectDocumentId && !redirectUrls.Add(redirect.RedirectionUrl))
                     {
                         errorLog.Write(Errors.RedirectionUrlConflict(redirectUrl));
-                        continue;
                     }
 
                     if (!redirections.Add(redirect))
