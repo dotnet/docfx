@@ -64,7 +64,7 @@ namespace Microsoft.Docs.Build
             {
                 if (!schema.Type.Any(schemaType => TypeMatches(schemaType, token.Type)))
                 {
-                    errors.Add(Errors.UnexpectedType(JsonUtility.GetSourceInfo(token), string.Join(", ", schema.Type), token.Type.ToString()));
+                    errors.Add(Errors.UnexpectedType(JsonUtility.GetSourceInfo(token), string.Join(", ", schema.Type), token.Type.ToString()).ToSuggestion());
                     return false;
                 }
             }

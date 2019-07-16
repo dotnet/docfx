@@ -469,7 +469,7 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Suggestion, "date-out-of-range", $"Value out of range for '{name}': '{value}'", source);
 
         /// <summary>
-        /// A field is deprecated.
+        /// An attribute is deprecated.
         /// </summary>
         /// Behavior: ✔️ Message: ✔️
         public static Error AttributeDeprecated(SourceInfo source, string name, string replacedBy)
