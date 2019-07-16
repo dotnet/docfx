@@ -13,7 +13,7 @@ namespace Microsoft.Docs.Build
     {
         public static readonly IEqualityComparer<Error> Comparer = new EqualityComparer();
 
-        public ErrorLevel Level { get; set; }
+        public ErrorLevel Level { get; }
 
         public string Code { get; }
 
@@ -66,12 +66,6 @@ namespace Microsoft.Docs.Build
         public DocfxException ToException(Exception innerException = null)
         {
             return new DocfxException(this, innerException);
-        }
-
-        public Error ToSuggestion()
-        {
-            this.Level = ErrorLevel.Suggestion;
-            return this;
         }
 
         private class EqualityComparer : IEqualityComparer<Error>

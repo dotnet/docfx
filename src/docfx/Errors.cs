@@ -382,7 +382,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         /// Behavior: ✔️ Message: ✔️
         public static Error InvalidValue(SourceInfo source, string name, object value)
-            => new Error(ErrorLevel.Suggestion, "invalid-value", $"Invalid value for '{name}': '{value}'", source);
+            => new Error(ErrorLevel.Warning, "invalid-value", $"Invalid value for '{name}': '{value}'", source);
 
         /// <summary>
         /// The string type's value doesn't match given format.
@@ -431,63 +431,63 @@ namespace Microsoft.Docs.Build
         /// </summary>
         /// Behavior: ✔️ Message: ✔️
         public static Error MissingAttribute(SourceInfo source, string name)
-            => new Error(ErrorLevel.Suggestion, "missing-attribute", $"Missing required attribute: '{name}'", source);
+            => new Error(ErrorLevel.Warning, "missing-attribute", $"Missing required attribute: '{name}'", source);
 
         /// <summary>
         /// An attribute lacks the required dependency.
         /// </summary>
         /// Behavior: ✔️ Message: ✔️
         public static Error MissingPairedAttribute(SourceInfo source, string name, string otherKey)
-            => new Error(ErrorLevel.Suggestion, "missing-paired-attribute", $"Missing attribute: '{otherKey}'. If you specify '{name}', you must also specify '{otherKey}'", source);
+            => new Error(ErrorLevel.Warning, "missing-paired-attribute", $"Missing attribute: '{otherKey}'. If you specify '{name}', you must also specify '{otherKey}'", source);
 
         /// <summary>
         /// Attributes do not meet the requirements of either logic.
         /// </summary>
         /// Behavior: ✔️ Message: ✔️
         public static Error MissingEitherAttribute(SourceInfo source, IEnumerable<object> attributes)
-            => new Error(ErrorLevel.Suggestion, "missing-either-attribute", $"One of the following attributes is required: {Join(attributes)}", source);
+            => new Error(ErrorLevel.Warning, "missing-either-attribute", $"One of the following attributes is required: {Join(attributes)}", source);
 
         /// <summary>
         /// Attributes do not meet the requirements of precludes logic.
         /// </summary>
         /// Behavior: ✔️ Message: ✔️
         public static Error PrecludedAttributes(SourceInfo source, IEnumerable<object> attributes)
-            => new Error(ErrorLevel.Suggestion, "precluded-attributes", $"Only one of the following attributes can exist: {Join(attributes)}", source);
+            => new Error(ErrorLevel.Warning, "precluded-attributes", $"Only one of the following attributes can exist: {Join(attributes)}", source);
 
         /// <summary>
         /// An attribute does't conform to date format.
         /// </summary>
         /// Behavior: ✔️ Message: ✔️
         public static Error DateFormatInvalid(SourceInfo source, string name, string value, string format)
-            => new Error(ErrorLevel.Suggestion, "date-format-invalid", $"Invalid format for '{name}': '{value}'. Dates must be specified as '{format}'", source);
+            => new Error(ErrorLevel.Warning, "date-format-invalid", $"Invalid format for '{name}': '{value}'. Dates must be specified as '{format}'", source);
 
         /// <summary>
         /// Date out of range.
         /// </summary>
         /// Behavior: ✔️ Message: ✔️
         public static Error DateOutOfRange(SourceInfo source, string name, string value)
-            => new Error(ErrorLevel.Suggestion, "date-out-of-range", $"Value out of range for '{name}': '{value}'", source);
+            => new Error(ErrorLevel.Warning, "date-out-of-range", $"Value out of range for '{name}': '{value}'", source);
 
         /// <summary>
         /// An attribute is deprecated.
         /// </summary>
         /// Behavior: ✔️ Message: ✔️
         public static Error AttributeDeprecated(SourceInfo source, string name, string replacedBy)
-            => new Error(ErrorLevel.Suggestion, "attribute-deprecated", $"Deprecated attribute: '{name}'{(string.IsNullOrEmpty(replacedBy) ? "." : $", use '{replacedBy}' instead")}", source);
+            => new Error(ErrorLevel.Warning, "attribute-deprecated", $"Deprecated attribute: '{name}'{(string.IsNullOrEmpty(replacedBy) ? "." : $", use '{replacedBy}' instead")}", source);
 
         /// <summary>
         /// The value of paired attribute is invalid.
         /// </summary>
         /// Behavior: ✔️ Message: ✔️
         public static Error InvalidPairedAttribute(SourceInfo source, string name, object value, string dependentFieldName, object dependentFieldValue)
-            => new Error(ErrorLevel.Suggestion, "invalid-paired-attribute", $"Invalid value for '{name}': '{value}' is not valid with '{dependentFieldName}' value '{dependentFieldValue}'", source);
+            => new Error(ErrorLevel.Warning, "invalid-paired-attribute", $"Invalid value for '{name}': '{value}' is not valid with '{dependentFieldName}' value '{dependentFieldValue}'", source);
 
         /// <summary>
         /// The value is not a valid Microsoft alias
         /// </summary>
         /// Behavior: ✔️ Message: ✔️
         public static Error MsAliasInvalid(SourceInfo source, string name, string alias)
-            => new Error(ErrorLevel.Suggestion, "ms-alias-invalid", $"Invalid value for '{name}', '{alias}' is not a valid Microsoft alias", source);
+            => new Error(ErrorLevel.Warning, "ms-alias-invalid", $"Invalid value for '{name}', '{alias}' is not a valid Microsoft alias", source);
 
         /// <summary>
         /// Call Microsoft Graph API failed
