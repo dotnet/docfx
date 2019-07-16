@@ -115,7 +115,6 @@ namespace Microsoft.Docs.Build
 
             if (schema.Contains != null && !array.Any(item => Validate(schema.Contains, item).Count == 0))
             {
-                var a = JsonUtility.ToJObject(schema.Contains).ToString();
                 errors.Add(Errors.ArrayContainsFailed(JsonUtility.GetSourceInfo(array), name));
             }
         }
