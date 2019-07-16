@@ -732,7 +732,7 @@ inputs:
     1
 outputs:
   .errors.log: |
-    ["error","unexpected-type","Expect type 'Object' but got 'Integer'","docs/a.yml",1,1]
+    ["error","unexpected-type","Expected type 'Object' but got 'Integer'","docs/a.yml",1,1]
 ---
 # support <xref href="uid"></xref>
 inputs:
