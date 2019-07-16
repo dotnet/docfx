@@ -120,14 +120,7 @@ namespace Microsoft.Docs.Build
                 else if (contributors.Count > 0)
                 {
                     // When author name is not specified, last contributor is author
-                    for (var i = contributionCommits.Count - 1; i >= 0; i--)
-                    {
-                        var user = await GetContributor(contributionCommits[i]);
-                        if (user != null && !excludes.Contains(user.Name))
-                        {
-                            return user;
-                        }
-                    }
+                    return contributors[contributors.Count - 1];
                 }
                 return null;
             }
