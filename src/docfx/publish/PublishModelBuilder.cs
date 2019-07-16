@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
@@ -70,10 +69,7 @@ namespace Microsoft.Docs.Build
 
                     foreach (var conflictingFile in files.Keys)
                     {
-                        if (_publishItems.TryRemove(conflictingFile, out var item) && item.Path != null && IsInsideOutputFolder(item, conflictingFile.Docset))
-                        {
-                            context.Output.Delete(item.Path, legacy);
-                        }
+                        HandleFileWithError(context, conflictingFile, legacy);
                     }
                 }
             }
@@ -97,10 +93,7 @@ namespace Microsoft.Docs.Build
 
                 foreach (var conflictingFile in conflictingFiles)
                 {
-                    if (_publishItems.TryRemove(conflictingFile, out var item) && item.Path != null && IsInsideOutputFolder(item, conflictingFile.Docset))
-                    {
-                        context.Output.Delete(item.Path, legacy);
-                    }
+                    HandleFileWithError(context, conflictingFile, legacy);
                 }
             }
 
@@ -109,10 +102,7 @@ namespace Microsoft.Docs.Build
             {
                 if (_filesBySiteUrl.TryRemove(file.SiteUrl, out _))
                 {
-                    if (_publishItems.TryRemove(file, out var item) && item.Path != null && IsInsideOutputFolder(item, file.Docset))
-                    {
-                        context.Output.Delete(item.Path, legacy);
-                    }
+                    HandleFileWithError(context, file, legacy);
                 }
             }
 
@@ -123,6 +113,7 @@ namespace Microsoft.Docs.Build
                     .ThenBy(item => item.Path)
                     .ThenBy(item => item.Url)
                     .ThenBy(item => item.RedirectUrl)
+                    .ThenBy(item => item.MonikerGroup)
                     .ToArray(),
                 MonikerGroups = _publishItems.Values
                     .Where(item => !string.IsNullOrEmpty(item.MonikerGroup))
@@ -133,6 +124,17 @@ namespace Microsoft.Docs.Build
             var fileManifests = _publishItems.ToDictionary(item => item.Key, item => item.Value);
 
             return (model, fileManifests);
+        }
+
+        private void HandleFileWithError(Context context, Document file, bool legacy)
+        {
+            if (_publishItems.TryGetValue(file, out var item))
+            {
+                item.HasError = true;
+
+                if (item.Path != null && IsInsideOutputFolder(item, file.Docset))
+                    context.Output.Delete(item.Path, legacy);
+            }
         }
 
         private bool IsInsideOutputFolder(PublishItem item, Docset docset)

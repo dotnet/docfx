@@ -530,6 +530,27 @@ outputs:
   docs/1/b.json: |
     { "conceptual": "<p>Link to <a href=\"../c\">title</a></p>" }
   docs/c.json:
+  .dependencymap.json: |
+    {
+      "dependencies": {
+        "docs/1/b.md": [
+          {
+            "source": "docs/c.md",
+            "type": "uidInclusion"
+          }
+        ],
+        "docs/a.md": [
+          {
+            "source": "docs/1/b.md",
+            "type": "inclusion"
+          },
+          {
+            "source": "docs/c.md",
+            "type": "uidInclusion"
+          }
+        ]
+      }
+    }
 ---
 # Markdown and SDP non-cyclic xref reference
 inputs:
@@ -711,7 +732,7 @@ inputs:
     1
 outputs:
   .errors.log: |
-    ["error","unexpected-type","Expect type 'Object' but got 'Integer'","docs/a.yml",1,1]
+    ["error","unexpected-type","Expected type 'Object' but got 'Integer'","docs/a.yml",1,1]
 ---
 # support <xref href="uid"></xref>
 inputs:
@@ -957,5 +978,3 @@ outputs:
   docs/a.json:
   xrefmap.json: |
     {"references":[{"uid":"a", href: "https://docs.com/docs/a"}]}
-          
-

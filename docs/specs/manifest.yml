@@ -238,7 +238,7 @@ outputs:
        }
     }
 ---
-# Manifest does not include files with errors
+# Manifest includes files with errors
 inputs:
   docfx.yml: |
     rules:
@@ -247,7 +247,15 @@ inputs:
     a [](b)
 outputs:
   .publish.json: |
-    { "!files": null }
+    { "files": 
+      [
+        {
+          "url": "/docs/a",
+          "locale": "en-us",
+          "has_error": true
+        }
+      ]
+    }
   .errors.log: |
     ["error","file-not-found","Invalid file link: 'b'.","docs/a.md",1,3]
 ---
