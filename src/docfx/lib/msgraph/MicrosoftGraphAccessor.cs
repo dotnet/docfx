@@ -11,7 +11,7 @@ namespace Microsoft.Docs.Build
 {
     internal class MicrosoftGraphAccessor : IDisposable
     {
-        private const int UrlLengthLimit = 1000;
+        private const int FliterCountLimit = 10;
 
         private readonly IGraphServiceClient _msGraphClient;
         private readonly MicrosoftGraphAuthenticationProvider _microsoftGraphAuthenticationProvider;
@@ -76,17 +76,19 @@ namespace Microsoft.Docs.Build
         private List<string> GetFliterStrings(HashSet<string> aliases)
         {
             var fliterStrings = new List<string>();
-
             var fliterString = string.Empty;
+            var nowCount = 0;
 
             foreach (var alias in aliases)
             {
                 fliterString = $"{fliterString}{(string.IsNullOrEmpty(fliterString) ? string.Empty : " or ")}mailNickname eq '{alias}'";
+                nowCount++;
 
-                if (fliterString.Length > UrlLengthLimit)
+                if (nowCount == FliterCountLimit)
                 {
                     fliterStrings.Add(fliterString);
                     fliterString = string.Empty;
+                    nowCount = 0;
                 }
             }
 
