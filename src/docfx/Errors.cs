@@ -96,6 +96,13 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Warning, "author-not-found", $"Invalid value for author: '{login}' is not a valid GitHub ID", login);
 
         /// <summary>
+        /// Failed to get a user by email from neither user cache nor github api by commit.
+        /// </summary>
+        /// Behavior: ✔️ Message: ✔️
+        public static Error AuthorEmailNotFound(string email)
+            => new Error(ErrorLevel.Warning, "author-not-found", $"Invalid value for author email: '{email}' doesn't belong to any GitHub user");
+
+        /// <summary>
         /// Failed to call a github api, e.g. GET /users/login.
         /// Examples:
         ///   - the api call reach github limit
