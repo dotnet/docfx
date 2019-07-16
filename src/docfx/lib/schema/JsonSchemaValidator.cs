@@ -321,12 +321,12 @@ namespace Microsoft.Docs.Build
                 {
                     if (_microsoftGraphCache != null)
                     {
-                        var (error, msAlias) = _microsoftGraphCache.GetMicrosoftAliasAsync(alias).GetAwaiter().GetResult();
+                        var (error, msAlias) = _microsoftGraphCache.GetMicrosoftAlias(alias).GetAwaiter().GetResult();
 
                         errors.AddIfNotNull(error);
 
                         // Mute error, when unable to connect to Microsoft Graph API
-                        if (msAlias == null && _microsoftGraphCache.IsConnectedToGraphApi())
+                        if (msAlias == null && _microsoftGraphCache.IsConnectedToGraphApi)
                         {
                             errors.Add(Errors.MsAliasInvalid(JsonUtility.GetSourceInfo(scalar), name, alias));
                         }
