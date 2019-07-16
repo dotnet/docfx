@@ -93,7 +93,7 @@ namespace Microsoft.Docs.Build
         }
 
         public bool GetByEmail(string authorEmail, out GitHubUser githubUser)
-            => _usersByEmail.TryGetValue(authorEmail, out githubUser);
+            => _usersByEmail.TryGetValue(authorEmail, out githubUser) && githubUser.IsValid();
 
         public Task<(Error error, GitHubUser user)> GetByCommit(string authorEmail, string repoOwner, string repoName, string commitSha)
         {
