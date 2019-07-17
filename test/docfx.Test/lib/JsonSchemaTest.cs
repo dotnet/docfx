@@ -295,9 +295,9 @@ namespace Microsoft.Docs.Build
             "['suggestion','author-missing','Add a valid GitHub ID.','file',1,1]")]
         [InlineData("{'required': ['author'], 'additionalErrors': {'author': {'missing-attribute': {'severity': 'off', 'code': 'author-missing', 'additionalErrorMessage': 'Add a valid GitHub ID.'}}}}", "{'b': 1}",
             "['warning','author-missing','Add a valid GitHub ID.','file',1,1]")]
-        [InlineData("{'properties': {'key1': {'replacedBy': 'key2'}}, 'additionalErrors': {'key1': {'attribute-deprecated': {'severity': 'suggestion', 'code': 'key1-attribute-deprecated', 'additionalErrorMessage': null}}}}", "{'key1': 1}",
+        [InlineData("{'properties': {'key1': {'replacedBy': 'key2'}}, 'additionalErrors': {'key1': {'attribute-deprecated': {'severity': 'suggestion', 'code': 'key1-attribute-deprecated', 'message': null}}}}", "{'key1': 1}",
             "['suggestion','key1-attribute-deprecated','Deprecated attribute: 'key1', use 'key2' instead','file',1,10]")]
-        [InlineData("{'properties': {'keys': {'precludes': [['key1', 'key2']], 'additionalErrors': {'key1': {'precluded-attributes': {'severity': 'error', 'code': null, 'additionalErrorMessage': null}}}}}, 'additionalErrors': {'key1': {'precluded-attributes': {'severity': 'suggestion', 'code': null, 'additionalErrorMessage': null}}}}", "{'keys' : {'key1': 1, 'key2': 2}}",
+        [InlineData("{'properties': {'keys': {'precludes': [['key1', 'key2']], 'additionalErrors': {'key1': {'precluded-attributes': {'severity': 'error', 'code': null, 'additionalErrorMessage': null}}}}}, 'additionalErrors': {'key1': {'precluded-attributes': {'severity': 'suggestion', 'code': null, 'message': null}}}}", "{'keys' : {'key1': 1, 'key2': 2}}",
             "['error','precluded-attributes','Only one of the following attributes can exist: 'key1', 'key2'','file',1,11]")]
         public void TestJsonSchemaValidation(string schema, string json, string expectedErrors)
         {
