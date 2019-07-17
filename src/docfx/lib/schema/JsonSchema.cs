@@ -216,5 +216,13 @@ namespace Microsoft.Docs.Build
         /// Properties that are used to validate microsoft alias
         /// </summary>
         public MicrosoftAliasSchema MicrosoftAlias { get; set; }
+
+        // JSON schema metadata validation error extensions
+        //-------------------------------------------
+
+        /// <summary>
+        /// Properties that are used to provide additional errors
+        /// </summary>
+        public Dictionary<string, Dictionary<string, AdditionalErrorSchema>> AdditionalErrors { get; set; } = new Dictionary<string, Dictionary<string, AdditionalErrorSchema>>();
     }
 }
