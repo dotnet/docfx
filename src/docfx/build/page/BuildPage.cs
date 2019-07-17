@@ -28,13 +28,9 @@ namespace Microsoft.Docs.Build
             var (outputMetadataErrors, outputMetadata) = await CreateOutputMetadata(context, file, inputMetadata);
             errors.AddRange(outputMetadataErrors);
 
-            var mergedMetadata = new JObject();
-            JsonUtility.Merge(mergedMetadata, inputMetadata.RawJObject);
-            JsonUtility.Merge(mergedMetadata, JsonUtility.ToJObject(outputMetadata));
-
             var (output, metadata) = file.IsPage
-            ? CreatePageOutput(context, file, sourceModel, mergedMetadata)
-            : CreateDataOutput(context, file, sourceModel, mergedMetadata);
+            ? CreatePageOutput(context, file, sourceModel, inputMetadata, outputMetadata)
+            : CreateDataOutput(context, file, sourceModel, inputMetadata, outputMetadata);
 
             if (Path.GetFileNameWithoutExtension(file.FilePath).Equals("404", PathUtility.PathComparison))
             {
@@ -78,8 +74,13 @@ namespace Microsoft.Docs.Build
             Context context,
             Document file,
             JObject sourceModel,
-            JObject mergedMetadata)
+            InputMetadata inputMetadata,
+            OutputMetadata outputMetadata)
         {
+            var mergedMetadata = new JObject();
+            JsonUtility.Merge(mergedMetadata, inputMetadata.RawJObject);
+            JsonUtility.Merge(mergedMetadata, JsonUtility.ToJObject(outputMetadata));
+
             var pageModel = new JObject();
             JsonUtility.Merge(pageModel, sourceModel);
             JsonUtility.Merge(pageModel, mergedMetadata);
@@ -103,8 +104,11 @@ namespace Microsoft.Docs.Build
         }
 
         private static (object output, JObject metadata)
-            CreateDataOutput(Context context, Document file, JObject sourceModel, JObject mergedMetadata)
+            CreateDataOutput(Context context, Document file, JObject sourceModel, InputMetadata inputMetadata, OutputMetadata outputMetadata)
         {
+            var mergedMetadata = new JObject();
+            JsonUtility.Merge(mergedMetadata, inputMetadata.RawJObject);
+            JsonUtility.Merge(mergedMetadata, JsonUtility.ToJObject(outputMetadata));
             sourceModel["metadata"] = mergedMetadata;
             return (context.TemplateEngine.RunJint($"{file.Mime}.json.js", sourceModel), null);
         }
