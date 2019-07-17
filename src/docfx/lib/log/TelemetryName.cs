@@ -8,6 +8,7 @@ namespace Microsoft.Docs.Build
         GitCommitCache,
         GitRepositoryCache,
         GitHubUserCache,
+        MicrosoftGraphValidateAlias,
         LoadCommitHistory,
         BuildItems,
         BuildCommits,
