@@ -22,8 +22,15 @@ namespace Microsoft.Docs.Build
 
             var outputPath = file.GetOutputPath(monikers, file.Docset.SiteBasePath, file.IsPage);
 
-            var (mergedMetadataErrors, mergedMetadata) = await CreateMergedMetadata(context, file);
-            errors.AddRange(mergedMetadataErrors);
+            var (inputMetaErrors, inputMetadata) = context.MetadataProvider.GetMetadata(file);
+            errors.AddRange(inputMetaErrors);
+
+            var (outputMetadataErrors, outputMetadata) = await CreateOutputMetadata(context, file, inputMetadata);
+            errors.AddRange(outputMetadataErrors);
+
+            var mergedMetadata = new JObject();
+            JsonUtility.Merge(mergedMetadata, inputMetadata.RawJObject);
+            JsonUtility.Merge(mergedMetadata, JsonUtility.ToJObject(outputMetadata));
 
             var (output, metadata) = file.IsPage
             ? CreatePageOutput(context, file, sourceModel, mergedMetadata)
@@ -67,7 +74,11 @@ namespace Microsoft.Docs.Build
             return errors;
         }
 
-        private static (object output, JObject metadata) CreatePageOutput(Context context, Document file, JObject sourceModel, JObject mergedMetadata)
+        private static (object output, JObject metadata) CreatePageOutput(
+            Context context,
+            Document file,
+            JObject sourceModel,
+            JObject mergedMetadata)
         {
             var pageModel = new JObject();
             JsonUtility.Merge(pageModel, sourceModel);
@@ -98,11 +109,9 @@ namespace Microsoft.Docs.Build
             return (context.TemplateEngine.RunJint($"{file.Mime}.json.js", sourceModel), null);
         }
 
-        private static async Task<(List<Error>, JObject)> CreateMergedMetadata(Context context, Document file)
+        private static async Task<(List<Error>, OutputMetadata)> CreateOutputMetadata(Context context, Document file, InputMetadata inputMetadata)
         {
             var errors = new List<Error>();
-            var (inputMetaErrors, inputMetadata) = context.MetadataProvider.GetMetadata(file);
-            errors.AddRange(inputMetaErrors);
 
             var outputMetadata = new OutputMetadata();
 
@@ -143,10 +152,7 @@ namespace Microsoft.Docs.Build
             if (contributorErrors != null)
                 errors.AddRange(contributorErrors);
 
-            var mergedMetadata = new JObject();
-            JsonUtility.Merge(mergedMetadata, inputMetadata.RawJObject);
-            JsonUtility.Merge(mergedMetadata, JsonUtility.ToJObject(outputMetadata));
-            return (errors, mergedMetadata);
+            return (errors, outputMetadata);
         }
 
         private static async Task<(List<Error> errors, JObject model)>
