@@ -9,6 +9,6 @@ namespace Microsoft.Docs.Build
 
         public string Code { get; set; }
 
-        public string AdditionalErrorMessage { get; set; }
+        public string Message { get; set; }
     }
 }

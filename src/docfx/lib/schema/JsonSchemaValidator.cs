@@ -395,7 +395,7 @@ namespace Microsoft.Docs.Build
                 return new Error(
                     additionalError.Severity == ErrorLevel.Off ? baseError.Level : additionalError.Severity,
                     string.IsNullOrEmpty(additionalError.Code) ? baseError.Code : additionalError.Code,
-                    string.IsNullOrEmpty(additionalError.AdditionalErrorMessage) ? baseError.Message : additionalError.AdditionalErrorMessage,
+                    string.IsNullOrEmpty(additionalError.Message) ? baseError.Message : additionalError.Message,
                     JsonUtility.GetSourceInfo(token));
             }
 
