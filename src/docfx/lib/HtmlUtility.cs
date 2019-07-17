@@ -152,7 +152,7 @@ namespace Microsoft.Docs.Build
                 var xref = HttpUtility.HtmlDecode(node.GetAttributeValue("href", ""));
 
                 var raw = HttpUtility.HtmlDecode(
-                    node.GetAttributeValue("data-raw-html", null) ?? node.GetAttributeValue("data-raw-source", null) ?? "");
+                    node.GetAttributeValue("data-raw-html", null) ?? node.GetAttributeValue("data-raw-source", null) ?? $"<span class=\"xref\">{UrlUtility.SplitUrl(xref).path}</span>");
 
                 var isShorthand = raw.StartsWith("@");
 
