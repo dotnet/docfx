@@ -100,7 +100,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         /// Behavior: ✔️ Message: ✔️
         public static Error AuthorEmailNotFound(string email)
-            => new Error(ErrorLevel.Warning, "author-not-found", $"Invalid value for author email: '{email}' doesn't belong to any GitHub user");
+            => new Error(ErrorLevel.Warning, "author-email-not-found", $"Invalid value for author email: '{email}' doesn't belong to any GitHub user");
 
         /// <summary>
         /// Failed to call a github api, e.g. GET /users/login.

@@ -46,7 +46,6 @@ namespace Microsoft.Docs.Build
             var contributors = new List<(Contributor contributor, GitCommit commit)>();
             var errors = new List<Error>();
             var emails = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-            var userIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             var updatedDateTime = GetUpdatedAt(document, commits);
             var contributionInfo = updatedDateTime != default
                 ? new ContributionInfo
@@ -74,7 +73,7 @@ namespace Microsoft.Docs.Build
                         continue;
 
                     var contributor = await GetContributor(commit);
-                    if (contributor == null || (!excludes.Contains(contributor.Name) && userIds.Add(contributor.Id)))
+                    if (contributor == null || (!excludes.Contains(contributor.Name)))
                     {
                         contributors.Add((contributor, commit));
                     }
@@ -90,7 +89,11 @@ namespace Microsoft.Docs.Build
             if (contributionInfo != null)
             {
                 contributionInfo.Author = author;
-                contributionInfo.Contributors = contributors.Where(c => c.contributor != null).Select(c => c.contributor).ToList();
+                contributionInfo.Contributors = contributors
+                    .Where(c => c.contributor != null)
+                    .GroupBy(c => c.contributor.Id, StringComparer.OrdinalIgnoreCase)
+                    .Select(c => c.First().contributor)
+                    .ToList();
             }
 
             return (errors, contributionInfo);
