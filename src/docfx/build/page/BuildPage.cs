@@ -101,7 +101,7 @@ namespace Microsoft.Docs.Build
         private static async Task<(List<Error>, JObject)> CreateMergedMetadata(Context context, Document file)
         {
             var errors = new List<Error>();
-            var (inputMetaErrors, inputMetadata) = context.MetadataProvider.GetInputMetadata(file);
+            var (inputMetaErrors, inputMetadata) = context.MetadataProvider.GetMetadata(file);
             errors.AddRange(inputMetaErrors);
 
             var outputMetadata = new OutputMetadata();
