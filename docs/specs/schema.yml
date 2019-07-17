@@ -275,13 +275,10 @@ outputs:
 # Markdown field with heading should not be removed
 inputs:
   docfx.yml:
-  docs/data.yml: |
-    #YamlMime:TestData
   docs/page.yml: |
     #YamlMime:TestPage
     description: >
       # Heading
-  _themes/ContentTemplate/schemas/TestData.schema.json: "{}"
   _themes/ContentTemplate/TestPage.html.primary.js:
   _themes/ContentTemplate/schemas/TestPage.schema.json: |
     {
@@ -291,7 +288,6 @@ inputs:
       }
     }
 outputs:
-  docs/data.json:
   docs/page.json: |
     {
       "description": "<h1 id=\"heading\">Heading</h1>"
@@ -367,6 +363,33 @@ inputs:
 outputs:
   a.json: |
     {"prop": "value"}
+---
+# Data-transform's input should have both system and user metadata
+inputs:
+  docfx.yml: |
+    globalMetadata:
+      globalMta: global
+    fileMetadata:
+      fileMta:
+        a.yml: file
+  a.yml: |
+    #YamlMime:TestData
+    prop: value
+    metadata:
+      userMta: user
+  _themes/ContentTemplate/schemas/TestData.schema.json: "{}"
+outputs:
+  a.json: |
+    {
+      "prop": "value",
+      "metadata": {
+        "globalMta": "global",
+        "fileMta": "file",
+        "userMta": "user",
+        "locale": "en-us",
+        "document_id": "*"
+      }
+    }
 ---
 # Throw error when content is not an object
 inputs:

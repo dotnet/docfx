@@ -70,7 +70,7 @@ namespace Microsoft.Docs.Build
         private (Error error, List<string> monikers) GetFileLevelMonikersCore(Document file)
         {
             var errors = new List<Error>();
-            var (_, metadata) = _metadataProvider.GetMetadata(file);
+            var (_, metadata) = _metadataProvider.GetInputMetadata(file);
 
             string configMonikerRange = null;
             var configMonikers = new List<string>();

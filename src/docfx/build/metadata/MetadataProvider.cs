@@ -41,7 +41,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public (List<Error> errors, InputMetadata metadata) GetMetadata(Document file)
+        public (List<Error> errors, InputMetadata metadata) GetInputMetadata(Document file)
         {
             return _metadataCache.GetOrAdd(file, GetMetadataCore);
         }

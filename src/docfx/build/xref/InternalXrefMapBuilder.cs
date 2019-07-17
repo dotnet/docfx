@@ -5,7 +5,6 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -43,7 +42,7 @@ namespace Microsoft.Docs.Build
                 var callStack = new List<Document> { file };
                 if (file.FilePath.EndsWith(".md", PathUtility.PathComparison))
                 {
-                    var (fileMetaErrors, fileMetadata) = context.MetadataProvider.GetMetadata(file);
+                    var (fileMetaErrors, fileMetadata) = context.MetadataProvider.GetInputMetadata(file);
                     errors.AddRange(fileMetaErrors);
 
                     if (!string.IsNullOrEmpty(fileMetadata.Uid))
