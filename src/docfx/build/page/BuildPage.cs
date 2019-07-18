@@ -25,7 +25,7 @@ namespace Microsoft.Docs.Build
             var (inputMetaErrors, inputMetadata) = context.MetadataProvider.GetMetadata(file);
             errors.AddRange(inputMetaErrors);
 
-            var (outputMetadataErrors, outputMetadata) = await CreateOutputMetadata(context, file, inputMetadata, sourceModel);
+            var (outputMetadataErrors, outputMetadata) = await CreateOutputMetadata(context, file, inputMetadata);
             errors.AddRange(outputMetadataErrors);
 
             var (output, metadata) = file.IsPage
@@ -111,7 +111,7 @@ namespace Microsoft.Docs.Build
             return (context.TemplateEngine.RunJint($"{file.Mime}.json.js", sourceModel), null);
         }
 
-        private static async Task<(List<Error>, OutputMetadata)> CreateOutputMetadata(Context context, Document file, InputMetadata inputMetadata, JObject sourceModel)
+        private static async Task<(List<Error>, OutputMetadata)> CreateOutputMetadata(Context context, Document file, InputMetadata inputMetadata)
         {
             var errors = new List<Error>();
 
@@ -147,7 +147,6 @@ namespace Microsoft.Docs.Build
 
             outputMetadata.Path = PathUtility.NormalizeFile(Path.GetRelativePath(file.Docset.SiteBasePath, file.SitePath));
             outputMetadata.CanonicalUrlPrefix = $"{file.Docset.HostName}/{outputMetadata.Locale}/{file.Docset.SiteBasePath}/";
-            outputMetadata.Title = inputMetadata.Title ?? sourceModel.Value<string>("title");
 
             if (file.Docset.Config.Output.Pdf)
                 outputMetadata.PdfUrlPrefixTemplate = $"{file.Docset.HostName}/pdfstore/{outputMetadata.Locale}/{file.Docset.Config.Product}.{file.Docset.Config.Name}/{{branchName}}";
@@ -197,12 +196,13 @@ namespace Microsoft.Docs.Build
                 errors.Add(Errors.HeadingNotFound(file));
             }
 
+            var (_, inputMetadata) = context.MetadataProvider.GetMetadata(file);
             var pageModel = JsonUtility.ToJObject(new ConceptualModel
             {
                 Conceptual = HtmlUtility.HtmlPostProcess(htmlDom, file.Docset.Culture),
                 WordCount = wordCount,
                 RawTitle = rawTitle,
-                Title = title,
+                Title = inputMetadata.Title ?? title,
             });
 
             context.BookmarkValidator.AddBookmarks(file, bookmarks);
@@ -247,12 +247,13 @@ namespace Microsoft.Docs.Build
             var pageModel = (JObject)transformedToken;
             if (file.Docset.Legacy && TemplateEngine.IsLandingData(file.Mime))
             {
+                var (_, inputMetadata) = context.MetadataProvider.GetMetadata(file);
                 var landingData = pageModel.ToObject<LandingData>();
 
                 pageModel = JsonUtility.ToJObject(new ConceptualModel
                 {
                     Conceptual = HtmlUtility.LoadHtml(await RazorTemplate.Render(file.Mime, landingData)).HtmlPostProcess(file.Docset.Culture),
-                    Title = obj?.Value<string>("title"),
+                    Title = inputMetadata.Title ?? obj?.Value<string>("title"),
                     RawTitle = $"<h1>{obj?.Value<string>("title")}</h1>",
                     ExtensionData = landingData.ExtensionData,
                 });

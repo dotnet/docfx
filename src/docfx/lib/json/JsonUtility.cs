@@ -201,6 +201,28 @@ namespace Microsoft.Docs.Build
             }
         }
 
+        public static void Merge(JObject container, JObject overwrite)
+        {
+            if (overwrite is null)
+                return;
+
+            foreach (var property in overwrite.Properties())
+            {
+                var key = property.Name;
+                var value = property.Value;
+
+                if (container[key] is JObject containerObj && value is JObject overwriteObj)
+                {
+                    Merge(containerObj, overwriteObj);
+                }
+                else
+                {
+                    container[key] = DeepClone(value);
+                    SetSourceInfo(container.Property(key), property.Annotation<SourceInfo>());
+                }
+            }
+        }
+
         public static JToken DeepClone(JToken token)
         {
             if (token is JValue v)
@@ -419,28 +441,6 @@ namespace Microsoft.Docs.Build
             return token;
         }
 
-        private static void Merge(JObject container, JObject overwrite)
-        {
-            if (overwrite is null)
-                return;
-
-            foreach (var property in overwrite.Properties())
-            {
-                var key = property.Name;
-                var value = property.Value;
-
-                if (container[key] is JObject containerObj && value is JObject overwriteObj)
-                {
-                    Merge(containerObj, overwriteObj);
-                }
-                else
-                {
-                    container[key] = DeepClone(value);
-                    SetSourceInfo(container.Property(key), property.Annotation<SourceInfo>());
-                }
-            }
-        }
-
         private static void HandleError(object sender, Newtonsoft.Json.Serialization.ErrorEventArgs args)
         {
             // only log an error once
@@ -490,6 +490,6 @@ namespace Microsoft.Docs.Build
             public JTokenReader Reader { get; set; }
 
             public List<Error> Errors { get; set; }
-       }
+        }
     }
 }

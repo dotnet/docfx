@@ -38,8 +38,6 @@ namespace Microsoft.Docs.Build
 
         public string OriginalContentGitUrlTemplate { get; set; }
 
-        public string Title { get; set; }
-
         public string Gitcommit { get; set; }
 
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
