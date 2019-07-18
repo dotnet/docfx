@@ -43,14 +43,14 @@ namespace Microsoft.Docs.Build
 
             var excludes = document.Docset.Config.Contribution.ExcludedContributors;
 
-            var contributors = new List<(Contributor contributor, GitCommit commit)>();
+            var contributors = new List<Contributor>();
             var errors = new List<Error>();
             var emails = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             var updatedDateTime = GetUpdatedAt(document, commits);
             var contributionInfo = updatedDateTime != default
                 ? new ContributionInfo
                 {
-                    Contributors = new List<Contributor>(),
+                    Contributors = contributors,
                     UpdateAt = updatedDateTime.ToString(document.Docset.Locale == "en-us" ? "M/d/yyyy" : document.Docset.Culture.DateTimeFormat.ShortDatePattern),
                     UpdatedAtDateTime = updatedDateTime,
                 }
@@ -73,9 +73,9 @@ namespace Microsoft.Docs.Build
                         continue;
 
                     var contributor = await GetContributor(commit);
-                    if (contributor == null || (!excludes.Contains(contributor.Name)))
+                    if (contributor != null && !excludes.Contains(contributor.Name))
                     {
-                        contributors.Add((contributor, commit));
+                        contributors.Add(contributor);
                     }
                 }
             }
@@ -83,16 +83,15 @@ namespace Microsoft.Docs.Build
             var author = await GetAuthor();
             if (author != null)
             {
-                contributors.RemoveAll(c => c.contributor?.Id == author.Id);
+                contributors.RemoveAll(c => c.Id == author.Id);
             }
 
             if (contributionInfo != null)
             {
                 contributionInfo.Author = author;
                 contributionInfo.Contributors = contributors
-                    .Where(c => c.contributor != null)
-                    .GroupBy(c => c.contributor.Id, StringComparer.OrdinalIgnoreCase)
-                    .Select(c => c.First().contributor)
+                    .GroupBy(c => c.Id, StringComparer.OrdinalIgnoreCase)
+                    .Select(c => c.First())
                     .ToList();
             }
 
@@ -123,18 +122,7 @@ namespace Microsoft.Docs.Build
                 else if (contributors.Count > 0)
                 {
                     // When author name is not specified, last contributor is author
-                    for (var i = contributors.Count - 1; i >= 0; i--)
-                    {
-                        if (!string.IsNullOrEmpty(contributors[i].commit.AuthorEmail))
-                        {
-                            if (contributors[i].contributor is null)
-                            {
-                                errors.Add(Errors.AuthorEmailNotFound(contributors[i].commit.AuthorEmail));
-                            }
-
-                            return contributors[i].contributor;
-                        }
-                    }
+                    return contributors[contributors.Count - 1];
                 }
                 return null;
             }
