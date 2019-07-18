@@ -509,3 +509,19 @@ outputs:
     {"!a": null, "title": "B"}
   .errors.log: |
     ["warning","yaml-header-syntax-error","Mapping values are not allowed in this context.","docs/a.md",2,5]
+---
+# Input metadata doesn't overwrite system generated metadata
+inputs:
+  docfx.yml:
+  docs/a.md: |
+    ---
+    wordCount: 15
+    document_id: 123
+    ---
+outputs:
+  docs/a.json: |
+    { "wordCount": 0, "document_id": "fa697b4e-3e52-77f6-2219-39040f6070da" }
+  .errors.log: |
+    ["warning","attribute-reserved","Attribute wordCount is reserved for use by Docs. Remove it from your file metadata.","docs/a.md",2,1]
+    ["warning","attribute-reserved","Attribute document_id is reserved for use by Docs. Remove it from your file metadata.","docs/a.md",3,1]
+
