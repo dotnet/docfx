@@ -542,15 +542,15 @@ inputs:
   docfx.yml:
   docs/1/a.md: |
     [non-existed file](~/c.md)
-    [non-existed file](~/2/d)
+    [non-existed file](../2/b.md)
 outputs:
   docs/1/a.json: |
     conceptual: |
       <p>
-        <a href="..%5C..%5Cc" data-linktype="relative-path">non-existed file</a>
-        <a href="..%5C..%5C2%5Cd" data-linktype="relative-path">non-existed file</a>
+        <a href="../../c" data-linktype="relative-path">non-existed file</a>
+        <a href="../2/b" data-linktype="relative-path">non-existed file</a>
       </p>
   .errors.log: |
     ["warning","file-not-found","Invalid file link: '~/c.md'.","docs/1/a.md",1,1]
-    ["warning","file-not-found","Invalid file link: '~/2/d'.","docs/1/a.md",2,1]
+    ["warning","file-not-found","Invalid file link: '../2/b.md'.","docs/1/a.md",2,1]
 

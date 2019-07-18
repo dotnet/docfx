@@ -175,9 +175,13 @@ namespace Microsoft.Docs.Build
                 if (file is null)
                 {
                     // the relative path can just be href when the migration from v2 to v3 is done
-                    var extensionIndex = pathToDocset.IndexOf('.');
-                    var pathToDocsetWithoutExtension = extensionIndex != -1 ? pathToDocset.Substring(0, extensionIndex) : pathToDocset;
-                    return (error, PathUtility.GetRelativePathToFile(declaringFile.FilePath, pathToDocsetWithoutExtension), fragment, linkType, null, false);
+                    var relativePath = PathUtility.GetRelativePathToFile(declaringFile.FilePath, pathToDocset);
+                    return (error,
+                        Document.PathToRelativeUrl(relativePath, ContentType.Page, null, declaringFile.Docset.Config.Output.Json, true),
+                        fragment,
+                        linkType,
+                        null,
+                        false);
                 }
 
                 // set file to resource got from histroy, reset the error
