@@ -3,7 +3,7 @@
 
 namespace Microsoft.Docs.Build
 {
-    internal class AdditionalErrorSchema
+    internal class OverwriteErrorSchema
     {
         public ErrorLevel Severity { get; set; }
 

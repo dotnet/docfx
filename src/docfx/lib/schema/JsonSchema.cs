@@ -221,8 +221,8 @@ namespace Microsoft.Docs.Build
         //-------------------------------------------
 
         /// <summary>
-        /// Properties that are used to provide additional errors
+        /// This field is used to provide overwrite error information and only can be set in root level of schema
         /// </summary>
-        public Dictionary<string, Dictionary<string, AdditionalErrorSchema>> AdditionalErrors { get; set; } = new Dictionary<string, Dictionary<string, AdditionalErrorSchema>>();
+        public Dictionary<string, Dictionary<string, OverwriteErrorSchema>> OverwriteErrors { get; set; } = new Dictionary<string, Dictionary<string, OverwriteErrorSchema>>();
     }
 }
