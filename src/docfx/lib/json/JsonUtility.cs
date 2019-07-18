@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -199,28 +198,6 @@ namespace Microsoft.Docs.Build
             foreach (var overwrite in overwrites)
             {
                 Merge(container, overwrite);
-            }
-        }
-
-        public static void Merge(JObject container, JObject overwrite)
-        {
-            if (overwrite is null)
-                return;
-
-            foreach (var property in overwrite.Properties())
-            {
-                var key = property.Name;
-                var value = property.Value;
-
-                if (container[key] is JObject containerObj && value is JObject overwriteObj)
-                {
-                    Merge(containerObj, overwriteObj);
-                }
-                else
-                {
-                    container[key] = DeepClone(value);
-                    SetSourceInfo(container.Property(key), property.Annotation<SourceInfo>());
-                }
             }
         }
 
@@ -440,6 +417,28 @@ namespace Microsoft.Docs.Build
             }
 
             return token;
+        }
+
+        private static void Merge(JObject container, JObject overwrite)
+        {
+            if (overwrite is null)
+                return;
+
+            foreach (var property in overwrite.Properties())
+            {
+                var key = property.Name;
+                var value = property.Value;
+
+                if (container[key] is JObject containerObj && value is JObject overwriteObj)
+                {
+                    Merge(containerObj, overwriteObj);
+                }
+                else
+                {
+                    container[key] = DeepClone(value);
+                    SetSourceInfo(container.Property(key), property.Annotation<SourceInfo>());
+                }
+            }
         }
 
         private static void HandleError(object sender, Newtonsoft.Json.Serialization.ErrorEventArgs args)
