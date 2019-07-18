@@ -5,7 +5,7 @@ namespace Microsoft.Docs.Build
 {
     internal class OverwriteErrorSchema
     {
-        public ErrorLevel Severity { get; set; }
+        public ErrorLevel? Severity { get; set; }
 
         public string Code { get; set; }
 
