@@ -71,7 +71,8 @@ namespace Microsoft.Docs.Build
             {
                 Log.Write($"Using docfx {GetDocfxVersion()}");
 
-                ThreadPool.SetMinThreads(32, 32);
+                var minThreads = Math.Max(32, Environment.ProcessorCount * 4);
+                ThreadPool.SetMinThreads(minThreads, minThreads);
 
                 try
                 {
