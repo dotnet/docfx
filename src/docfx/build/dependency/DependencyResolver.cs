@@ -174,7 +174,8 @@ namespace Microsoft.Docs.Build
                 file = TryResolveResourceFromHistory(_gitCommitProvider, declaringFile.Docset, pathToDocset, _templateEngine);
                 if (file is null)
                 {
-                    return (error, href, fragment, linkType, null, false);
+                    // the relative path can just be href when the migration from v2 to v3 is done
+                    return (error, PathUtility.GetRelativePathToFile(declaringFile.FilePath, pathToDocset), fragment, linkType, null, false);
                 }
 
                 // set file to resource got from histroy, reset the error
