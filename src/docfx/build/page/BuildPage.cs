@@ -25,7 +25,7 @@ namespace Microsoft.Docs.Build
             var (inputMetaErrors, inputMetadata) = context.MetadataProvider.GetMetadata(file);
             errors.AddRange(inputMetaErrors);
 
-            var (outputMetadataErrors, outputMetadata) = await CreateOutputMetadata(context, file, inputMetadata);
+            var (outputMetadataErrors, outputMetadata) = await CreateOutputMetadata(context, file, inputMetadata, sourceModel);
             errors.AddRange(outputMetadataErrors);
 
             var (output, metadata) = file.IsPage
@@ -78,12 +78,10 @@ namespace Microsoft.Docs.Build
             OutputMetadata outputMetadata)
         {
             var mergedMetadata = new JObject();
-            JsonUtility.Merge(mergedMetadata, inputMetadata.RawJObject);
-            JsonUtility.Merge(mergedMetadata, JsonUtility.ToJObject(outputMetadata));
+            JsonUtility.Merge(mergedMetadata, inputMetadata.RawJObject, JsonUtility.ToJObject(outputMetadata));
 
             var pageModel = new JObject();
-            JsonUtility.Merge(pageModel, sourceModel);
-            JsonUtility.Merge(pageModel, mergedMetadata);
+            JsonUtility.Merge(pageModel, inputMetadata.RawJObject, sourceModel, JsonUtility.ToJObject(outputMetadata));
 
             if (file.Docset.Config.Output.Json && !file.Docset.Legacy)
             {
@@ -113,7 +111,7 @@ namespace Microsoft.Docs.Build
             return (context.TemplateEngine.RunJint($"{file.Mime}.json.js", sourceModel), null);
         }
 
-        private static async Task<(List<Error>, OutputMetadata)> CreateOutputMetadata(Context context, Document file, InputMetadata inputMetadata)
+        private static async Task<(List<Error>, OutputMetadata)> CreateOutputMetadata(Context context, Document file, InputMetadata inputMetadata, JObject sourceModel)
         {
             var errors = new List<Error>();
 
@@ -149,6 +147,7 @@ namespace Microsoft.Docs.Build
 
             outputMetadata.Path = PathUtility.NormalizeFile(Path.GetRelativePath(file.Docset.SiteBasePath, file.SitePath));
             outputMetadata.CanonicalUrlPrefix = $"{file.Docset.HostName}/{outputMetadata.Locale}/{file.Docset.SiteBasePath}/";
+            outputMetadata.Title = inputMetadata.Title ?? sourceModel.Value<string>("title");
 
             if (file.Docset.Config.Output.Pdf)
                 outputMetadata.PdfUrlPrefixTemplate = $"{file.Docset.HostName}/pdfstore/{outputMetadata.Locale}/{file.Docset.Config.Product}.{file.Docset.Config.Name}/{{branchName}}";

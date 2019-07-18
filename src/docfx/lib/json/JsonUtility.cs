@@ -191,6 +191,17 @@ namespace Microsoft.Docs.Build
             }
         }
 
+        public static void Merge(JObject container, params JObject[] overwrites)
+        {
+            if (overwrites == null)
+                return;
+
+            foreach (var overwrite in overwrites)
+            {
+                Merge(container, overwrite);
+            }
+        }
+
         public static void Merge(JObject container, JObject overwrite)
         {
             if (overwrite is null)
