@@ -5,7 +5,14 @@ namespace Microsoft.Docs.Build
 {
     public enum FileFrom
     {
+        /// <summary>
+        /// Current repository
+        /// </summary>
         Current,
+
+        /// <summary>
+        /// Fallback repository
+        /// </summary>
         Fallback,
     }
 }

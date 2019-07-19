@@ -8,16 +8,15 @@ namespace Microsoft.Docs.Build
 {
     internal class FilePath : IEquatable<FilePath>, IComparable<FilePath>
     {
+        /// <summary>
+        /// The file relative path
+        /// </summary>
         public string Path { get; }
 
+        /// <summary>
+        /// Gets the value to indicate where is this file from
+        /// </summary>
         public FileFrom From { get; }
-
-        public override string ToString() => Path;
-
-        public bool Equals(FilePath other)
-        {
-            return other?.Path == Path && other?.From == From;
-        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static implicit operator string(FilePath filePath) => filePath?.Path;
@@ -33,6 +32,8 @@ namespace Microsoft.Docs.Build
             From = from;
         }
 
+        public override string ToString() => Path;
+
         public override bool Equals(object obj)
         {
             return Equals(obj as FilePath);
@@ -41,6 +42,11 @@ namespace Microsoft.Docs.Build
         public override int GetHashCode()
         {
             return HashCode.Combine(PathUtility.PathComparer.GetHashCode(Path), From);
+        }
+
+        public bool Equals(FilePath other)
+        {
+            return other?.Path == Path && other?.From == From;
         }
 
         public int CompareTo(FilePath other)

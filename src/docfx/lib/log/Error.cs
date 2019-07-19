@@ -56,10 +56,10 @@ namespace Microsoft.Docs.Build
 
         public string ToString(ErrorLevel level)
         {
-            object[] payload = { level, Code, Message, File, Line, Column };
+            object[] payload = { level, Code, Message, File, Line, Column, From };
 
             var i = payload.Length - 1;
-            while (i >= 0 && (Equals(payload[i], null) || Equals(payload[i], "") || Equals(payload[i], 0)))
+            while (i >= 0 && (Equals(payload[i], null) || Equals(payload[i], "") || Equals(payload[i], 0) || Equals(payload[i], FileFrom.Current)))
             {
                 i--;
             }
@@ -79,6 +79,7 @@ namespace Microsoft.Docs.Build
                        x.Code == y.Code &&
                        x.Message == y.Message &&
                        x.File == y.File &&
+                       x.From == y.From &&
                        x.Line == y.Line &&
                        x.Column == y.Column;
             }
@@ -90,6 +91,7 @@ namespace Microsoft.Docs.Build
                     obj.Code,
                     obj.Message,
                     obj.File,
+                    obj.From,
                     obj.Line,
                     obj.Column);
             }
