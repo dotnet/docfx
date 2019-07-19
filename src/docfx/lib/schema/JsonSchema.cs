@@ -70,6 +70,11 @@ namespace Microsoft.Docs.Build
         public JsonSchema Items { get; set; }
 
         /// <summary>
+        /// Whether an array contains this element.
+        /// </summary>
+        public JsonSchema Contains { get; set; }
+
+        /// <summary>
         /// Whether each item in array must be unique.
         /// </summary>
         public bool UniqueItems { get; set; }
@@ -216,5 +221,13 @@ namespace Microsoft.Docs.Build
         /// Properties that are used to validate microsoft alias
         /// </summary>
         public MicrosoftAliasSchema MicrosoftAlias { get; set; }
+
+        // JSON schema metadata validation error extensions
+        //-------------------------------------------
+
+        /// <summary>
+        /// This field is used to provide overwrite error information and only can be set in root level of schema
+        /// </summary>
+        public Dictionary<string, Dictionary<string, OverwriteErrorSchema>> OverwriteErrors { get; set; } = new Dictionary<string, Dictionary<string, OverwriteErrorSchema>>();
     }
 }
