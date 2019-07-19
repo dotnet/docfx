@@ -174,7 +174,12 @@ namespace Microsoft.Docs.Build
                 file = TryResolveResourceFromHistory(_gitCommitProvider, declaringFile.Docset, pathToDocset, _templateEngine);
                 if (file is null)
                 {
-                    // the relative path can just be href when the migration from v2 to v3 is done
+                    if (linkType != LinkType.RelativePath)
+                    {
+                        return (error, href, fragment, linkType, null, false);
+                    }
+
+                    // the relocation of relative path can be removed when migration from v2 to v3 is done
                     var relativePath = PathUtility.GetRelativePathToFile(declaringFile.FilePath, pathToDocset);
                     return (error,
                         Document.PathToRelativeUrl(relativePath, ContentType.Page, null, declaringFile.Docset.Config.Output.Json, true),
