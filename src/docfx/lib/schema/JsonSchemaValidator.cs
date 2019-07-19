@@ -24,8 +24,13 @@ namespace Microsoft.Docs.Build
 
         public List<Error> Validate(JToken token)
         {
+            return Validate(_schema, token);
+        }
+
+        private List<Error> Validate(JsonSchema schema, JToken token)
+        {
             var errors = new List<(string name, Error)>();
-            Validate(_schema, string.Empty, token, errors);
+            Validate(schema, "", token, errors);
             return errors.Select(info => OverwriteError(_schema, info.name, info.Item2)).ToList();
         }
 
@@ -106,6 +111,11 @@ namespace Microsoft.Docs.Build
             if (schema.UniqueItems && array.Distinct(JsonUtility.DeepEqualsComparer).Count() != array.Count)
             {
                 errors.Add((name, Errors.ArrayNotUnique(JsonUtility.GetSourceInfo(array), name)));
+            }
+
+            if (schema.Contains != null && !array.Any(item => Validate(schema.Contains, item).Count == 0))
+            {
+                errors.Add((name, Errors.ArrayContainsFailed(JsonUtility.GetSourceInfo(array), name)));
             }
         }
 
@@ -345,7 +355,7 @@ namespace Microsoft.Docs.Build
 
         private void ValidateDateRange(JsonSchema schema, string name, JValue scalar, DateTime date, string dateString, List<(string name, Error)> errors)
         {
-            var diff = date - DateTime.Now;
+            var diff = date - DateTime.UtcNow;
 
             if ((schema.RelativeMinDate.HasValue && diff < schema.RelativeMinDate) || (schema.RelativeMaxDate.HasValue && diff > schema.RelativeMaxDate))
             {

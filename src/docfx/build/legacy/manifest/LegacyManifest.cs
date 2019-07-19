@@ -112,7 +112,7 @@ namespace Microsoft.Docs.Build
                 context.Output.WriteJson(
                 new
                 {
-                    groups = monikerGroups.Any() ? monikerGroups.Select(item => new
+                    groups = monikerGroups.Any() ? monikerGroups.OrderBy(item => item.Key).Select(item => new
                     {
                         group = item.Key,
                         monikers = item.Value,
