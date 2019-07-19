@@ -400,11 +400,18 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Warning, "array-length-invalid", $"Array '{propName}' length should be {criteria}", source);
 
         /// <summary>
-        /// Array length not within min and max.
+        /// Array items not unique.
         /// </summary>
         /// Behavior: ✔️ Message: ❌
         public static Error ArrayNotUnique(SourceInfo source, string propName)
             => new Error(ErrorLevel.Warning, "array-not-unique", $"Array '{propName}' items should be unique", source);
+
+        /// <summary>
+        /// Array items not unique.
+        /// </summary>
+        /// Behavior: ✔️ Message: ❌
+        public static Error ArrayContainsFailed(SourceInfo source, string propName)
+            => new Error(ErrorLevel.Warning, "array-contains-failed", $"Array '{propName}' should contain at least one item that matches JSON schema", source);
 
         /// <summary>
         /// Object property count not within min and max.

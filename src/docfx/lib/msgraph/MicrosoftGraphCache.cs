@@ -64,12 +64,12 @@ namespace Microsoft.Docs.Build
                     return default;
                 }
 
-                Telemetry.TrackCacheTotalCount(TelemetryName.GitHubUserCache);
+                Telemetry.TrackCacheTotalCount(TelemetryName.MicrosoftGraphValidateAlias);
 
                 var (error, isValid) = await _microsoftGraphAccessor.ValidateAlias(alias);
 
                 Log.Write($"Calling Microsoft Graph API to validate {alias}");
-                Telemetry.TrackCacheMissCount(TelemetryName.GitHubUserCache);
+                Telemetry.TrackCacheMissCount(TelemetryName.MicrosoftGraphValidateAlias);
 
                 if (error != null)
                 {
