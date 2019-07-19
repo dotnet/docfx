@@ -27,7 +27,7 @@ namespace Microsoft.Docs.Build
                 {
                     try
                     {
-                        var (yamlErrors, yamlHeaderObj) = YamlUtility.Parse(builder.ToString(), file.FilePath);
+                        var (yamlErrors, yamlHeaderObj) = YamlUtility.Parse(builder.ToString(), file?.FilePath);
                         errors.AddRange(yamlErrors);
 
                         if (yamlHeaderObj is JObject obj)
@@ -35,7 +35,7 @@ namespace Microsoft.Docs.Build
                             return (errors, obj);
                         }
 
-                        errors.Add(Errors.YamlHeaderNotObject(isArray: yamlHeaderObj is JArray, file.FilePath));
+                        errors.Add(Errors.YamlHeaderNotObject(isArray: yamlHeaderObj is JArray, file?.FilePath));
                     }
                     catch (DocfxException ex) when (ex.Error.Code == "yaml-syntax-error")
                     {

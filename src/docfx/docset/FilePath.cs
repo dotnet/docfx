@@ -2,12 +2,11 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.IO;
 using System.Runtime.CompilerServices;
 
 namespace Microsoft.Docs.Build
 {
-    internal class FilePath : IEquatable<FilePath>
+    internal class FilePath : IEquatable<FilePath>, IComparable<FilePath>
     {
         public string Path { get; }
 
@@ -42,6 +41,15 @@ namespace Microsoft.Docs.Build
         public override int GetHashCode()
         {
             return HashCode.Combine(PathUtility.PathComparer.GetHashCode(Path), From);
+        }
+
+        public int CompareTo(FilePath other)
+        {
+            var result = PathUtility.PathComparer.Compare(Path, other.Path);
+            if (result == 0)
+                result = From.CompareTo(other.From);
+
+            return result;
         }
     }
 }

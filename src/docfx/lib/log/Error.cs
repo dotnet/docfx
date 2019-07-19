@@ -19,7 +19,9 @@ namespace Microsoft.Docs.Build
 
         public string Message { get; }
 
-        public FilePath File { get; }
+        public string File { get; }
+
+        public FileFrom? From { get; }
 
         public int Line { get; }
 
@@ -42,7 +44,8 @@ namespace Microsoft.Docs.Build
             Level = level;
             Code = code;
             Message = message;
-            File = file;
+            File = file?.Path;
+            From = file?.From;
             Line = line;
             Column = column;
             EndLine = endLine;
