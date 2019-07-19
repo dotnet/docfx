@@ -9,6 +9,8 @@ namespace Microsoft.Docs.Build
 {
     internal class InternalXrefSpec : IXrefSpec
     {
+        public SourceInfo Source { get; set; }
+
         public string Uid { get; set; }
 
         public string Href { get; set; }

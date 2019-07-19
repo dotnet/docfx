@@ -136,7 +136,7 @@ outputs:
   toc.json:
   docs/toc.json:
   .errors.log: |
-    ["warning","unexpected-type","Expect type 'String' but got 'Object'","docs/a.yml",3,18]
+    ["warning","unexpected-type","Expected type 'String' but got 'Object'","docs/a.yml",3,18]
 ---
 # Schema documents with Href content referencing resource file, the resouce file should be outputed
 inputs:
@@ -195,7 +195,7 @@ inputs:
 outputs:
   docs/a.json:
   .errors.log: |
-    ["warning","unexpected-type","Expect type 'String' but got 'Null'","docs/a.yml",2,13]
+    ["warning","unexpected-type","Expected type 'String' but got 'Null'","docs/a.yml",2,13]
 ---
 # Support schema documents with inline markdown content
 inputs:
@@ -275,13 +275,10 @@ outputs:
 # Markdown field with heading should not be removed
 inputs:
   docfx.yml:
-  docs/data.yml: |
-    #YamlMime:TestData
   docs/page.yml: |
     #YamlMime:TestPage
     description: >
       # Heading
-  _themes/ContentTemplate/schemas/TestData.schema.json: "{}"
   _themes/ContentTemplate/TestPage.html.primary.js:
   _themes/ContentTemplate/schemas/TestPage.schema.json: |
     {
@@ -291,7 +288,6 @@ inputs:
       }
     }
 outputs:
-  docs/data.json:
   docs/page.json: |
     {
       "description": "<h1 id=\"heading\">Heading</h1>"
@@ -368,6 +364,33 @@ outputs:
   a.json: |
     {"prop": "value"}
 ---
+# Data-transform's input should have both system and user metadata
+inputs:
+  docfx.yml: |
+    globalMetadata:
+      globalMta: global
+    fileMetadata:
+      fileMta:
+        a.yml: file
+  a.yml: |
+    #YamlMime:TestData
+    prop: value
+    metadata:
+      userMta: user
+  _themes/ContentTemplate/schemas/TestData.schema.json: "{}"
+outputs:
+  a.json: |
+    {
+      "prop": "value",
+      "metadata": {
+        "globalMta": "global",
+        "fileMta": "file",
+        "userMta": "user",
+        "locale": "en-us",
+        "document_id": "*"
+      }
+    }
+---
 # Throw error when content is not an object
 inputs:
   docfx.yml:
@@ -377,4 +400,43 @@ inputs:
     - array
 outputs:
   .errors.log: |
-    ["error","unexpected-type","Expect type 'Object' but got 'Array'","a.yml",1,1]
+    ["error","unexpected-type","Expected type 'Object' but got 'Array'","a.yml",1,1]
+---
+# Verify SDP pipeline
+# YAML mime in the SDP document should have a corresponding *.html.primary.js file
+# Set config.output.json to false to run *.html.liquid to output static HTML
+# Provide *.mta.json.js to transform metadata
+# Provide *.html.primary.js and *.html.primary.tmpl to transform json content to HTML
+inputs:
+  docfx.yml: |
+    output:
+      json: false
+  _themes/ContentTemplate/schemas/TestData.schema.json: "{}"
+  a.yml: |
+    #YamlMime:TestData
+    prop: value
+  _themes/ContentTemplate/TestData.mta.json.js: |
+    exports.transform = function (model) {
+      model.layout = "test"
+      return {
+        content: JSON.stringify(model)
+      }
+    }
+  _themes/ContentTemplate/TestData.html.primary.tmpl: |
+    <div>{{content}}</div>
+  _themes/ContentTemplate/TestData.html.primary.js: |
+    exports.transform = function (model) {
+      return model.prop;
+    }
+  _themes/ContentTemplate/test.html.liquid: |
+    <!DOCTYPE html>
+      <div>
+          {{content}}
+      </div>
+outputs:
+  a/index.html: |
+    <!DOCTYPE html>
+      <div>
+        <div>value</div>
+
+      </div>

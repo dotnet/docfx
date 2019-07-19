@@ -23,6 +23,9 @@ namespace Microsoft.Docs.Build
 
         public string RedirectUrl { get; set; }
 
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
+        public bool HasError { get; set; }
+
         [JsonIgnore]
         public List<string> Monikers { get; set; } = new List<string>();
 

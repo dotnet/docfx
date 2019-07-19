@@ -39,8 +39,8 @@ namespace Microsoft.Docs.Build
             }
 
             ValidateDeprecated(schema, name, token, errors);
-            ValidateConst(schema, token, errors);
-            ValidateEnum(schema, token, errors);
+            ValidateConst(schema, name, token, errors);
+            ValidateEnum(schema, name, token, errors);
 
             switch (token)
             {
@@ -224,19 +224,19 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private void ValidateConst(JsonSchema schema, JToken token, List<Error> errors)
+        private void ValidateConst(JsonSchema schema, string name, JToken token, List<Error> errors)
         {
             if (schema.Const != null && !JsonUtility.DeepEqualsComparer.Equals(schema.Const, token))
             {
-                errors.Add(Errors.UndefinedValue(JsonUtility.GetSourceInfo(token), token, new object[] { schema.Const }));
+                errors.Add(Errors.InvalidValue(JsonUtility.GetSourceInfo(token), name, token));
             }
         }
 
-        private void ValidateEnum(JsonSchema schema, JToken token, List<Error> errors)
+        private void ValidateEnum(JsonSchema schema, string name, JToken token, List<Error> errors)
         {
             if (schema.Enum != null && !schema.Enum.Contains(token, JsonUtility.DeepEqualsComparer))
             {
-                errors.Add(Errors.UndefinedValue(JsonUtility.GetSourceInfo(token), token, schema.Enum));
+                errors.Add(Errors.InvalidValue(JsonUtility.GetSourceInfo(token), name, token));
             }
         }
 
@@ -250,7 +250,7 @@ namespace Microsoft.Docs.Build
                     {
                         if (!map.ContainsKey(otherKey))
                         {
-                            errors.Add(Errors.LackDependency(JsonUtility.GetSourceInfo(map), key, otherKey));
+                            errors.Add(Errors.MissingPairedAttribute(JsonUtility.GetSourceInfo(map), key, otherKey));
                         }
                     }
                 }
@@ -263,7 +263,7 @@ namespace Microsoft.Docs.Build
             {
                 if (!map.ContainsKey(key))
                 {
-                    errors.Add(Errors.FieldRequired(JsonUtility.GetSourceInfo(map), key));
+                    errors.Add(Errors.MissingAttribute(JsonUtility.GetSourceInfo(map), key));
                 }
             }
         }
@@ -284,7 +284,7 @@ namespace Microsoft.Docs.Build
 
                 if (!result)
                 {
-                    errors.Add(Errors.EitherLogicFailed(JsonUtility.GetSourceInfo(map), keys));
+                    errors.Add(Errors.MissingEitherAttribute(JsonUtility.GetSourceInfo(map), keys));
                 }
             }
         }
@@ -298,7 +298,7 @@ namespace Microsoft.Docs.Build
                 {
                     if (map.ContainsKey(key) && ++existNum > 1)
                     {
-                        errors.Add(Errors.PrecludesLogicFailed(JsonUtility.GetSourceInfo(map), keys));
+                        errors.Add(Errors.PrecludedAttributes(JsonUtility.GetSourceInfo(map), keys));
                         break;
                     }
                 }
@@ -311,11 +311,11 @@ namespace Microsoft.Docs.Build
             {
                 if (DateTime.TryParseExact(dateString, schema.DateFormat, null, System.Globalization.DateTimeStyles.None, out var date))
                 {
-                    ValidateDateRange(schema, name, scalar, date, errors);
+                    ValidateDateRange(schema, name, scalar, date, dateString, errors);
                 }
                 else
                 {
-                    errors.Add(Errors.DateFormatInvalid(JsonUtility.GetSourceInfo(scalar), name, schema.DateFormat));
+                    errors.Add(Errors.DateFormatInvalid(JsonUtility.GetSourceInfo(scalar), name, dateString, schema.DateFormat));
                 }
             }
         }
@@ -342,13 +342,13 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private void ValidateDateRange(JsonSchema schema, string name, JValue scalar, DateTime date, List<Error> errors)
+        private void ValidateDateRange(JsonSchema schema, string name, JValue scalar, DateTime date, string dateString, List<Error> errors)
         {
             var diff = date - DateTime.Now;
 
             if ((schema.RelativeMinDate.HasValue && diff < schema.RelativeMinDate) || (schema.RelativeMaxDate.HasValue && diff > schema.RelativeMaxDate))
             {
-                errors.Add(Errors.OverDateRange(JsonUtility.GetSourceInfo(scalar), name, schema.RelativeMinDate, schema.RelativeMaxDate));
+                errors.Add(Errors.DateOutOfRange(JsonUtility.GetSourceInfo(scalar), name, dateString));
             }
         }
 
@@ -356,7 +356,7 @@ namespace Microsoft.Docs.Build
         {
             if (schema.ReplacedBy != null)
             {
-                errors.Add(Errors.FieldDeprecated(JsonUtility.GetSourceInfo(token), name, schema.ReplacedBy));
+                errors.Add(Errors.AttributeDeprecated(JsonUtility.GetSourceInfo(token), name, schema.ReplacedBy));
             }
         }
 
@@ -373,12 +373,12 @@ namespace Microsoft.Docs.Build
                             if (allowLists.TryGetValue(dependentFieldValue, out var allowList) &&
                                 Array.IndexOf(allowList, fieldValue) == -1)
                             {
-                                errors.Add(Errors.ValuesNotMatch(JsonUtility.GetSourceInfo(map), fieldName, fieldValue, dependentFieldName, dependentFieldValue, allowList));
+                                errors.Add(Errors.InvalidPairedAttribute(JsonUtility.GetSourceInfo(map), fieldName, fieldValue, dependentFieldName, dependentFieldValue));
                             }
                         }
                         else
                         {
-                            errors.Add(Errors.LackDependency(JsonUtility.GetSourceInfo(map), fieldName, dependentFieldName));
+                            errors.Add(Errors.MissingPairedAttribute(JsonUtility.GetSourceInfo(map), fieldName, dependentFieldName));
                         }
                     }
                 }
