@@ -18,16 +18,16 @@ namespace Microsoft.Docs.Build
             => _tokenCache.GetOrAdd(GetKeyFromFile(file), new Lazy<(List<Error>, JToken)>(() =>
             {
                 var content = file.ReadText();
-                GitUtility.CheckMergeConflictMarker(content, file.FilePath);
-                return YamlUtility.Parse(content, file.FilePath);
+                GitUtility.CheckMergeConflictMarker(content, file);
+                return YamlUtility.Parse(content, new FilePath(file));
             })).Value;
 
         public (List<Error> errors, JToken token) LoadJsonFile(Document file)
             => _tokenCache.GetOrAdd(GetKeyFromFile(file), new Lazy<(List<Error>, JToken)>(() =>
             {
                 var content = file.ReadText();
-                GitUtility.CheckMergeConflictMarker(content, file.FilePath);
-                return JsonUtility.Parse(content, file.FilePath);
+                GitUtility.CheckMergeConflictMarker(content, file);
+                return JsonUtility.Parse(content, new FilePath(file));
             })).Value;
 
         public (List<Error> errors, TableOfContentsModel tocModel, List<Document> referencedFiles, List<Document> referencedTocs) LoadTocModel(Context context, Document file)

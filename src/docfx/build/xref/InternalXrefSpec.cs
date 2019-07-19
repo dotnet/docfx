@@ -63,7 +63,7 @@ namespace Microsoft.Docs.Build
                 }
                 catch (DocfxException ex)
                 {
-                    context.ErrorLog.Write(DeclaringFile.FilePath, ex.Error);
+                    context.ErrorLog.Write(DeclaringFile, ex.Error);
                 }
             }
             return spec;

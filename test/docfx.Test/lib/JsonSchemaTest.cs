@@ -81,7 +81,7 @@ namespace Microsoft.Docs.Build
         [MemberData(nameof(GetJsonSchemaTestSuite))]
         public void TestJsonSchemaConfirmance(string description, string schemaText, string testText)
         {
-            var schema = JsonUtility.Deserialize<JsonSchema>(schemaText, "");
+            var schema = JsonUtility.Deserialize<JsonSchema>(schemaText, new FilePath(""));
             var test = JObject.Parse(testText);
             var errors = new JsonSchemaValidator(schema).Validate(test["data"]);
 
@@ -292,7 +292,7 @@ namespace Microsoft.Docs.Build
         public void TestJsonSchemaValidation(string schema, string json, string expectedErrors)
         {
             var jsonSchema = JsonUtility.Deserialize<JsonSchema>(schema.Replace('\'', '"'), null);
-            var (_, payload) = JsonUtility.Parse(json.Replace('\'', '"'), "file");
+            var (_, payload) = JsonUtility.Parse(json.Replace('\'', '"'), new FilePath("file"));
             var errors = new JsonSchemaValidator(jsonSchema).Validate(payload);
             var expected = string.Join('\n', expectedErrors.Split('\n').Select(err => err.Trim()));
             var actual = string.Join('\n', errors.Select(err => err.ToString().Replace("\\r", "")).OrderBy(err => err).ToArray()).Replace('"', '\'');

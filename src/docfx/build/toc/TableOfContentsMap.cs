@@ -105,13 +105,13 @@ namespace Microsoft.Docs.Build
                     Debug.Assert(fileToBuild != null);
 
                     var (errors, _, referencedDocuments, referencedTocs) = context.Cache.LoadTocModel(context, fileToBuild);
-                    context.ErrorLog.Write(fileToBuild.ToString(), errors);
+                    context.ErrorLog.Write(fileToBuild, errors);
 
                     tocMapBuilder.Add(fileToBuild, referencedDocuments, referencedTocs);
                 }
                 catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
                 {
-                    context.ErrorLog.Write(fileToBuild.ToString(), dex.Error, isException: true);
+                    context.ErrorLog.Write(fileToBuild, dex.Error, isException: true);
                 }
             }
         }

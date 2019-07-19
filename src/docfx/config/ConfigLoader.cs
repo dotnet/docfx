@@ -86,15 +86,16 @@ namespace Microsoft.Docs.Build
 
         private static (List<Error>, JObject) LoadConfigObject(string fileName, string content)
         {
+            // todo: config may from source repo for overwrite case
             var errors = new List<Error>();
             JToken config = null;
             if (fileName.EndsWith(".yml", StringComparison.OrdinalIgnoreCase))
             {
-                (errors, config) = YamlUtility.Parse(content, fileName);
+                (errors, config) = YamlUtility.Parse(content, new FilePath(fileName));
             }
             else if (fileName.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
             {
-                (errors, config) = JsonUtility.Parse(content, fileName);
+                (errors, config) = JsonUtility.Parse(content, new FilePath(fileName));
             }
 
             JsonUtility.TrimStringValues(config);

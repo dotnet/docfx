@@ -26,7 +26,7 @@ namespace Microsoft.Docs.Build
         [InlineData(" { \"$schema\" : \"https://a.com/b.json\" }", "b")]
         public void TestReadMime(string input, string schema)
         {
-            var result = JsonUtility.ReadMime(new StringReader(input), string.Empty);
+            var result = JsonUtility.ReadMime(new StringReader(input), new FilePath(""));
             Assert.Equal(schema, result);
         }
 
@@ -397,7 +397,7 @@ namespace Microsoft.Docs.Build
         [Fact]
         public void NullValueHasSourceInfo()
         {
-            var (_, json) = JsonUtility.Parse("{'a': null,'b': null}".Replace('\'', '"'), "file");
+            var (_, json) = JsonUtility.Parse("{'a': null,'b': null}".Replace('\'', '"'), new FilePath("file"));
             var (_, obj) = JsonUtility.ToObject<ClassWithSourceInfo>(json);
 
             Assert.NotNull(obj?.A);
@@ -417,7 +417,7 @@ namespace Microsoft.Docs.Build
         public void JsonWithTypeErrorsHasCorrectSourceInfo()
         {
             var (_, json) = JsonUtility.Parse(
-                "{'next': {'a': ['a1','a2'],'b': 'b'}, 'c': 'c'}".Replace('\'', '"'), "file");
+                "{'next': {'a': ['a1','a2'],'b': 'b'}, 'c': 'c'}".Replace('\'', '"'), new FilePath("file"));
             var (errors, obj) = JsonUtility.ToObject<ClassWithSourceInfo>(json);
 
             Assert.Null(obj.Next.A.Value);
@@ -431,9 +431,9 @@ namespace Microsoft.Docs.Build
             var basic = new BasicClass
             {
                 B = 1,
-                Property = new SourceInfo<string>(null, new SourceInfo(string.Empty, 0, 0)),
-                Array = new SourceInfo<string[]>(new string[] { }, new SourceInfo(string.Empty, 0, 0)),
-                GenericArray = new SourceInfo<List<string>>(new List<string>(), new SourceInfo(string.Empty, 0, 0))
+                Property = new SourceInfo<string>(null, new SourceInfo(new FilePath(""), 0, 0)),
+                Array = new SourceInfo<string[]>(new string[] { }, new SourceInfo(new FilePath(""), 0, 0)),
+                GenericArray = new SourceInfo<List<string>>(new List<string>(), new SourceInfo(new FilePath(""), 0, 0))
             };
             var result = JsonUtility.Serialize(basic);
             Assert.Equal("{\"b\":1,\"d\":false}", result);
@@ -450,7 +450,7 @@ namespace Microsoft.Docs.Build
             return (errors, result);
         }
 
-        public class ClassWithSourceInfo
+        internal class ClassWithSourceInfo
         {
             public SourceInfo<string> A { get; set; }
             public SourceInfo<string> B { get; set; } = new SourceInfo<string>("b");
@@ -458,7 +458,7 @@ namespace Microsoft.Docs.Build
             public string C { get; set; }
         }
 
-        public class EmptyEnumerable
+        internal class EmptyEnumerable
         {
             public string A { get; set; } = "";
             public List<string> B { get; set; } = new List<string>();
@@ -469,7 +469,7 @@ namespace Microsoft.Docs.Build
             public Dictionary<string, Dictionary<string, object>> G = new Dictionary<string, Dictionary<string, object>>();
         }
 
-        public class BasicClass
+        internal class BasicClass
         {
             public string C { get; set; }
 
@@ -484,7 +484,7 @@ namespace Microsoft.Docs.Build
             public SourceInfo<string[]> Array { get; set; }
         }
 
-        public sealed class AnotherBasicClass
+        internal sealed class AnotherBasicClass
         {
             public int F { get; set; }
 
@@ -495,12 +495,12 @@ namespace Microsoft.Docs.Build
             public List<BasicClass> Items { get; set; }
         }
 
-        public sealed class ClassWithReadOnlyField
+        internal sealed class ClassWithReadOnlyField
         {
             public readonly string B;
         }
 
-        public sealed class ClassWithMoreMembers : BasicClass
+        internal sealed class ClassWithMoreMembers : BasicClass
         {
             public Dictionary<string, object> ValueDict { get; set; }
 
@@ -523,24 +523,24 @@ namespace Microsoft.Docs.Build
 
         }
 
-        public class NotSealedClass : BasicClass
+        internal class NotSealedClass : BasicClass
         {
             public NestedClass NestedSealedMember { get; set; }
         }
 
-        public sealed class SealedClassNestedWithNotSealedType : BasicClass
+        internal sealed class SealedClassNestedWithNotSealedType : BasicClass
         {
             public NotSealedClass Data { get; set; }
 
             public List<NotSealedClass> Items { get; set; }
         }
 
-        public sealed class NestedClass
+        internal sealed class NestedClass
         {
             public string ValueWithLengthRestriction { get; set; }
         }
 
-        public enum BasicEnum
+        internal enum BasicEnum
         {
             One,
             Two,

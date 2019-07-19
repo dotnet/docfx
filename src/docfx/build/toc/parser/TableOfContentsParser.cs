@@ -42,14 +42,14 @@ namespace Microsoft.Docs.Build
 
             if (filePath.EndsWith(".yml", PathUtility.PathComparison))
             {
-                var (errors, tocToken) = content is null ? YamlUtility.Parse(file, context) : YamlUtility.Parse(content, file.FilePath);
+                var (errors, tocToken) = content is null ? YamlUtility.Parse(file, context) : YamlUtility.Parse(content, new FilePath(file));
                 var (loadErrors, toc) = LoadTocModel(tocToken);
                 errors.AddRange(loadErrors);
                 return (errors, toc);
             }
             else if (filePath.EndsWith(".json", PathUtility.PathComparison))
             {
-                var (errors, tocToken) = content is null ? JsonUtility.Parse(file, context) : JsonUtility.Parse(content, file.FilePath);
+                var (errors, tocToken) = content is null ? JsonUtility.Parse(file, context) : JsonUtility.Parse(content, new FilePath(file));
                 var (loadErrors, toc) = LoadTocModel(tocToken);
                 errors.AddRange(loadErrors);
                 return (errors, toc);
@@ -57,7 +57,7 @@ namespace Microsoft.Docs.Build
             else if (filePath.EndsWith(".md", PathUtility.PathComparison))
             {
                 content = content ?? file.ReadText();
-                GitUtility.CheckMergeConflictMarker(content, file.FilePath);
+                GitUtility.CheckMergeConflictMarker(content, file);
                 return MarkdownTocMarkup.Parse(content, file);
             }
 

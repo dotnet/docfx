@@ -7,7 +7,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
-    public class TableOfContentsItem
+    internal class TableOfContentsItem
     {
         public SourceInfo<string> Name { get; set; }
 

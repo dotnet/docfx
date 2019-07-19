@@ -19,7 +19,7 @@ namespace Microsoft.Docs.Build
 
         public string Message { get; }
 
-        public string File { get; }
+        public FilePath File { get; }
 
         public int Line { get; }
 
@@ -33,7 +33,7 @@ namespace Microsoft.Docs.Build
             : this(level, code, message, source?.File, source?.Line ?? 0, source?.Column ?? 0, source?.EndLine ?? 0, source?.EndColumn ?? 0)
         { }
 
-        public Error(ErrorLevel level, string code, string message, string file = null, int line = 0, int column = 0, int endLine = 0, int endColumn = 0)
+        public Error(ErrorLevel level, string code, string message, FilePath file = null, int line = 0, int column = 0, int endLine = 0, int endColumn = 0)
         {
             Debug.Assert(!string.IsNullOrEmpty(code));
             Debug.Assert(Regex.IsMatch(code, "^[a-z0-9-]{5,32}$"), "Error code should only contain dash and letters in lowercase");

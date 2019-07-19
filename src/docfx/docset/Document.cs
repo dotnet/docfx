@@ -248,7 +248,7 @@ namespace Microsoft.Docs.Build
             var filePath = PathUtility.NormalizeFile(path);
             var isConfigReference = docset.Config.Extend.Concat(docset.Config.GetFileReferences()).Contains(filePath, PathUtility.PathComparer);
             var type = isConfigReference ? ContentType.Unknown : GetContentType(filePath);
-            var mime = type == ContentType.Page ? ReadMimeFromFile(filePath, Path.Combine(docset.DocsetPath, filePath)) : default;
+            var mime = type == ContentType.Page ? ReadMimeFromFile(docset, filePath, Path.Combine(docset.DocsetPath, filePath)) : default;
             var isPage = templateEngine.IsPage(mime);
             var isExperimental = Path.GetFileNameWithoutExtension(filePath).EndsWith(".experimental", PathUtility.PathComparison);
             var routedFilePath = ApplyRoutes(filePath, docset.Routes, docset.SiteBasePath);
@@ -518,7 +518,7 @@ namespace Microsoft.Docs.Build
             return false;
         }
 
-        private static SourceInfo<string> ReadMimeFromFile(string pathToDocset, string filePath)
+        private static SourceInfo<string> ReadMimeFromFile(Docset docset, string pathToDocset, string filePath)
         {
             SourceInfo<string> mime = default;
 
@@ -528,7 +528,7 @@ namespace Microsoft.Docs.Build
                 {
                     using (var reader = new StreamReader(filePath))
                     {
-                        mime = JsonUtility.ReadMime(reader, pathToDocset);
+                        mime = JsonUtility.ReadMime(reader, new FilePath(pathToDocset, docset));
                     }
                 }
             }
@@ -538,7 +538,7 @@ namespace Microsoft.Docs.Build
                 {
                     using (var reader = new StreamReader(filePath))
                     {
-                        mime = new SourceInfo<string>(YamlUtility.ReadMime(reader), new SourceInfo(pathToDocset, 1, 1));
+                        mime = new SourceInfo<string>(YamlUtility.ReadMime(reader), new SourceInfo(new FilePath(pathToDocset, docset), 1, 1));
                     }
                 }
             }

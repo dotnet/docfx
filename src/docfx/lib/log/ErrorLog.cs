@@ -69,7 +69,7 @@ namespace Microsoft.Docs.Build
             return hasErrors;
         }
 
-        public bool Write(string file, IEnumerable<Error> errors)
+        public bool Write(Document file, IEnumerable<Error> errors)
         {
             var hasErrors = false;
             foreach (var error in errors)
@@ -82,12 +82,13 @@ namespace Microsoft.Docs.Build
             return hasErrors;
         }
 
-        public bool Write(string file, Error error, bool isException = false)
+        public bool Write(Document file, Error error, bool isException = false)
         {
+            var filePath = new FilePath(file);
             return Write(
-                file == error.File || !string.IsNullOrEmpty(error.File)
+                filePath == error.File || !string.IsNullOrEmpty(error.File)
                     ? error
-                    : new Error(error.Level, error.Code, error.Message, file, error.Line, error.Column),
+                    : new Error(error.Level, error.Code, error.Message, filePath, error.Line, error.Column),
                 isException);
         }
 

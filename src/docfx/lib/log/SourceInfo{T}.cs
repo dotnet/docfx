@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 
 namespace Microsoft.Docs.Build
 {
-    public readonly struct SourceInfo<T> : ISourceInfo
+    internal readonly struct SourceInfo<T> : ISourceInfo
     {
         public readonly T Value;
 

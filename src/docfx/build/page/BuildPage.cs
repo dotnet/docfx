@@ -35,7 +35,7 @@ namespace Microsoft.Docs.Build
             if (Path.GetFileNameWithoutExtension(file.FilePath).Equals("404", PathUtility.PathComparison))
             {
                 // custom 404 page is not supported
-                errors.Add(Errors.Custom404Page(file.FilePath));
+                errors.Add(Errors.Custom404Page(file));
             }
 
             var publishItem = new PublishItem
@@ -180,7 +180,7 @@ namespace Microsoft.Docs.Build
         {
             var errors = new List<Error>();
             var content = file.ReadText();
-            GitUtility.CheckMergeConflictMarker(content, file.FilePath);
+            GitUtility.CheckMergeConflictMarker(content, file);
 
             var (markupErrors, html) = MarkdownUtility.ToHtml(
                 context,
@@ -234,7 +234,7 @@ namespace Microsoft.Docs.Build
 
             if (!(token is JObject obj))
             {
-                throw Errors.UnexpectedType(new SourceInfo(file.FilePath, 1, 1), JTokenType.Object, token.Type).ToException();
+                throw Errors.UnexpectedType(new SourceInfo(new FilePath(file), 1, 1), JTokenType.Object, token.Type).ToException();
             }
 
             // validate via json schema
