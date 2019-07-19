@@ -135,7 +135,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// The number must be multiple of this value.
         /// </summary>
-        public double? MultipleOf { get; set; }
+        public double MultipleOf { get; set; }
 
         /// <summary>
         /// The regular expression applied to strings

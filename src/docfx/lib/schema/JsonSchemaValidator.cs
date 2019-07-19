@@ -226,11 +226,11 @@ namespace Microsoft.Docs.Build
             if (schema.ExclusiveMinimum.HasValue && number <= schema.ExclusiveMinimum)
                 errors.Add(Errors.NumberInvalid(JsonUtility.GetSourceInfo(scalar), number, $"> {schema.ExclusiveMinimum}"));
 
-            if (schema.MultipleOf.HasValue)
+            if (schema.MultipleOf != 0)
             {
-                var n = number / schema.MultipleOf.Value;
+                var n = number / schema.MultipleOf;
                 if (Math.Abs(n - Math.Floor(n)) > double.Epsilon)
-                    errors.Add(Errors.NumberInvalid(JsonUtility.GetSourceInfo(scalar), number, $"multiple of {schema.MultipleOf.Value}"));
+                    errors.Add(Errors.NumberInvalid(JsonUtility.GetSourceInfo(scalar), number, $"multiple of {schema.MultipleOf}"));
             }
         }
 

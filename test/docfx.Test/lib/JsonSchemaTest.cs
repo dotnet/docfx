@@ -156,6 +156,8 @@ namespace Microsoft.Docs.Build
               ['warning','number-invalid','Number '1' should be > 100','file',1,1]")]
 
         [InlineData("{'multipleOf': 1}", "1", "")]
+        [InlineData("{'multipleOf': 0}", "1", "")]
+        [InlineData("{'multipleOf': 0.0}", "1", "")]
         [InlineData("{'multipleOf': 2}", "1",
             "['warning','number-invalid','Number '1' should be multiple of 2','file',1,1]")]
 
