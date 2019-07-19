@@ -86,7 +86,7 @@ namespace Microsoft.Docs.Build
 
         private static (List<Error>, JObject) LoadConfigObject(string fileName, string content)
         {
-            // todo: config may from source repo for overwrite case
+            // todo: config may come from source repo/fallback repo
             var errors = new List<Error>();
             JToken config = null;
             if (fileName.EndsWith(".yml", StringComparison.OrdinalIgnoreCase))

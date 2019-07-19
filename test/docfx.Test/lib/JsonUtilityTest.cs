@@ -405,12 +405,12 @@ namespace Microsoft.Docs.Build
             Assert.Null(obj.A.Value);
             Assert.Equal(1, obj.A.Source.Line);
             Assert.Equal(10, obj.A.Source.Column);
-            Assert.Equal("file", obj.A.Source.File);
+            Assert.Equal("file", obj.A.Source.File.Path);
 
             Assert.Equal("b", obj.B.Value);
             Assert.Equal(1, obj.B.Source.Line);
             Assert.Equal(20, obj.B.Source.Column);
-            Assert.Equal("file", obj.B.Source.File);
+            Assert.Equal("file", obj.B.Source.File.Path);
         }
 
         [Fact]

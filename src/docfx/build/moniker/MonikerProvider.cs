@@ -77,7 +77,7 @@ namespace Microsoft.Docs.Build
 
             foreach (var (glob, (monikerRange, monikers)) in _rules)
             {
-                if (glob(file.FilePath))
+                if (glob(file.FilePath.Path))
                 {
                     configMonikerRange = monikerRange;
                     configMonikers.AddRange(monikers);

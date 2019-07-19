@@ -25,7 +25,7 @@ namespace Microsoft.Docs.Build
                     d => d.Key.FilePath,
                     d => (from v in d.Value
                           orderby v.To.FilePath, v.Type
-                          select new DependencyManifestItem { Source = v.To.FilePath, Type = v.Type }).ToArray());
+                          select new DependencyManifestItem { Source = v.To.FilePath.Path, Type = v.Type }).ToArray());
 
             return new { dependencies };
         }

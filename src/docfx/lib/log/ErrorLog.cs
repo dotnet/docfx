@@ -85,7 +85,7 @@ namespace Microsoft.Docs.Build
         public bool Write(Document file, Error error, bool isException = false)
         {
             return Write(
-                file.FilePath == error.File || !string.IsNullOrEmpty(error.File)
+                file.FilePath == error.FilePath || error.FilePath != null
                     ? error
                     : new Error(error.Level, error.Code, error.Message, file.FilePath, error.Line, error.Column),
                 isException);
@@ -192,10 +192,10 @@ namespace Microsoft.Docs.Build
             var message_severity = level;
             var code = error.Code;
             var message = error.Message;
-            var file = error.File;
+            var file = error.FilePath?.Path;
             var line = error.Line;
             var date_time = DateTime.UtcNow;
-            var from = error.From != null && error.From != default ? error.From : null;
+            var from = error.FilePath?.From != null && error.FilePath.From != default ? error.FilePath.From : (FileFrom?)null;
 
             return JsonUtility.Serialize(new { message_severity, code, message, file, line, date_time, from });
         }
@@ -213,7 +213,7 @@ namespace Microsoft.Docs.Build
                 Console.ForegroundColor = GetColor(level);
                 output.Write(error.Code + " ");
                 Console.ResetColor();
-                output.WriteLine($"{error.File}({error.Line},{error.Column}): {error.Message}");
+                output.WriteLine($"{error.FilePath}({error.Line},{error.Column}): {error.Message}");
             }
         }
 

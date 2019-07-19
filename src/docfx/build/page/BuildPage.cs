@@ -32,7 +32,7 @@ namespace Microsoft.Docs.Build
             ? CreatePageOutput(context, file, sourceModel, inputMetadata, outputMetadata)
             : CreateDataOutput(context, file, sourceModel, inputMetadata, outputMetadata);
 
-            if (Path.GetFileNameWithoutExtension(file.FilePath).Equals("404", PathUtility.PathComparison))
+            if (Path.GetFileNameWithoutExtension(file.FilePath.Path).Equals("404", PathUtility.PathComparison))
             {
                 // custom 404 page is not supported
                 errors.Add(Errors.Custom404Page(file));
@@ -42,7 +42,7 @@ namespace Microsoft.Docs.Build
             {
                 Url = file.SiteUrl,
                 Path = outputPath,
-                SourcePath = file.FilePath,
+                SourcePath = file.FilePath.Path,
                 Locale = file.Docset.Locale,
                 Monikers = monikers,
                 MonikerGroup = MonikerUtility.GetGroup(monikers),
@@ -180,7 +180,7 @@ namespace Microsoft.Docs.Build
         {
             var errors = new List<Error>();
             var content = file.ReadText();
-            GitUtility.CheckMergeConflictMarker(content, file);
+            GitUtility.CheckMergeConflictMarker(content, file.FilePath);
 
             var (markupErrors, html) = MarkdownUtility.ToHtml(
                 context,

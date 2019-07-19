@@ -236,7 +236,7 @@ namespace Microsoft.Docs.Build
             return result;
         }
 
-        public static void CheckMergeConflictMarker(string content, Document file)
+        public static void CheckMergeConflictMarker(string content, FilePath file)
         {
             var start = content.StartsWith("<<<<<<<") ? 0 : content.IndexOf("\n<<<<<<<");
             if (start >= 0 && content.Contains("\n>>>>>>>") && content.Contains("\n======="))
@@ -248,7 +248,7 @@ namespace Microsoft.Docs.Build
                         line++;
                 }
 
-                var source = new SourceInfo(file.FilePath, line, 1);
+                var source = new SourceInfo(file, line, 1);
                 throw Errors.MergeConflict(source).ToException();
             }
         }

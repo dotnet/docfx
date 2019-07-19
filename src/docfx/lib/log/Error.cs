@@ -19,9 +19,7 @@ namespace Microsoft.Docs.Build
 
         public string Message { get; }
 
-        public string File { get; }
-
-        public FileFrom? From { get; }
+        public FilePath FilePath { get; }
 
         public int Line { get; }
 
@@ -44,8 +42,7 @@ namespace Microsoft.Docs.Build
             Level = level;
             Code = code;
             Message = message;
-            File = file?.Path;
-            From = file?.From;
+            FilePath = file;
             Line = line;
             Column = column;
             EndLine = endLine;
@@ -56,7 +53,7 @@ namespace Microsoft.Docs.Build
 
         public string ToString(ErrorLevel level)
         {
-            object[] payload = { level, Code, Message, File, Line, Column, From };
+            object[] payload = { level, Code, Message, FilePath?.Path, Line, Column, FilePath?.From };
 
             var i = payload.Length - 1;
             while (i >= 0 && (Equals(payload[i], null) || Equals(payload[i], "") || Equals(payload[i], 0) || Equals(payload[i], FileFrom.Current)))
@@ -78,8 +75,7 @@ namespace Microsoft.Docs.Build
                 return x.Level == y.Level &&
                        x.Code == y.Code &&
                        x.Message == y.Message &&
-                       x.File == y.File &&
-                       x.From == y.From &&
+                       x.FilePath == y.FilePath &&
                        x.Line == y.Line &&
                        x.Column == y.Column;
             }
@@ -90,8 +86,7 @@ namespace Microsoft.Docs.Build
                     obj.Level,
                     obj.Code,
                     obj.Message,
-                    obj.File,
-                    obj.From,
+                    obj.FilePath,
                     obj.Line,
                     obj.Column);
             }

@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Runtime.CompilerServices;
 
 namespace Microsoft.Docs.Build
 {
@@ -18,9 +17,6 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public FileFrom From { get; }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static implicit operator string(FilePath filePath) => filePath?.Path;
-
         public FilePath(string path, Docset docset)
             : this(path, docset != null && docset.IsFallback() ? FileFrom.Fallback : FileFrom.Current)
         {
@@ -31,6 +27,12 @@ namespace Microsoft.Docs.Build
             Path = path;
             From = from;
         }
+
+        public static bool operator ==(FilePath a, FilePath b)
+            => Equals(a, b);
+
+        public static bool operator !=(FilePath a, FilePath b)
+           => !(a == b);
 
         public override string ToString() => Path;
 

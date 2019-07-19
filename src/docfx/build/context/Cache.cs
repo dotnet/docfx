@@ -18,7 +18,7 @@ namespace Microsoft.Docs.Build
             => _tokenCache.GetOrAdd(GetKeyFromFile(file), new Lazy<(List<Error>, JToken)>(() =>
             {
                 var content = file.ReadText();
-                GitUtility.CheckMergeConflictMarker(content, file);
+                GitUtility.CheckMergeConflictMarker(content, file.FilePath);
                 return YamlUtility.Parse(content, file.FilePath);
             })).Value;
 
@@ -26,19 +26,19 @@ namespace Microsoft.Docs.Build
             => _tokenCache.GetOrAdd(GetKeyFromFile(file), new Lazy<(List<Error>, JToken)>(() =>
             {
                 var content = file.ReadText();
-                GitUtility.CheckMergeConflictMarker(content, file);
+                GitUtility.CheckMergeConflictMarker(content, file.FilePath);
                 return JsonUtility.Parse(content, file.FilePath);
             })).Value;
 
         public (List<Error> errors, TableOfContentsModel tocModel, List<Document> referencedFiles, List<Document> referencedTocs) LoadTocModel(Context context, Document file)
             => _tocModelCache.GetOrAdd(
-                file.FilePath,
+                file.FilePath.Path,
                 new Lazy<(List<Error>, TableOfContentsModel, List<Document>, List<Document>)>(
                     () => TableOfContentsParser.Load(context, file))).Value;
 
         private string GetKeyFromFile(Document file)
         {
-            var filePath = Path.Combine(file.Docset.DocsetPath, file.FilePath);
+            var filePath = Path.Combine(file.Docset.DocsetPath, file.FilePath.Path);
             return filePath + new FileInfo(filePath).LastWriteTime;
         }
     }

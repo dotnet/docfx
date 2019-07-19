@@ -42,7 +42,7 @@ namespace Microsoft.Docs.Build
 
             Redirections = RedirectionMap.Create(errorLog, docset, _glob, templateEngine);
 
-            Files = files.Concat(fallbackFiles.Where(file => !_fileNames.Contains(file.FilePath)))
+            Files = files.Concat(fallbackFiles.Where(file => !_fileNames.Contains(file.FilePath.Path)))
                          .Concat(Redirections.Files)
                          .ToHashSet();
         }

@@ -63,7 +63,7 @@ namespace Microsoft.Docs.Build
             var fileMetadata = new JObject();
             foreach (var (glob, key, value) in _rules)
             {
-                if (glob(file.FilePath))
+                if (glob(file.FilePath.Path))
                 {
                     // Assign a JToken to a property erases line info, so clone here.
                     // See https://github.com/JamesNK/Newtonsoft.Json/issues/2055
