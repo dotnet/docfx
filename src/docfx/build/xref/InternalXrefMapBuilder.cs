@@ -40,7 +40,7 @@ namespace Microsoft.Docs.Build
                 var errors = new List<Error>();
                 var content = file.ReadText();
                 var callStack = new List<Document> { file };
-                if (file.FilePath.Path.EndsWith(".md", PathUtility.PathComparison))
+                if (file.FilePath.EndsWith(".md", PathUtility.PathComparison))
                 {
                     var (fileMetaErrors, fileMetadata) = context.MetadataProvider.GetMetadata(file);
                     errors.AddRange(fileMetaErrors);
@@ -52,7 +52,7 @@ namespace Microsoft.Docs.Build
                         xrefs.Add(spec);
                     }
                 }
-                else if (file.FilePath.Path.EndsWith(".yml", PathUtility.PathComparison))
+                else if (file.FilePath.EndsWith(".yml", PathUtility.PathComparison))
                 {
                     var (yamlErrors, token) = YamlUtility.Parse(file, context);
                     errors.AddRange(yamlErrors);
@@ -60,7 +60,7 @@ namespace Microsoft.Docs.Build
                     errors.AddRange(schemaErrors);
                     xrefs.AddRange(specs);
                 }
-                else if (file.FilePath.Path.EndsWith(".json", PathUtility.PathComparison))
+                else if (file.FilePath.EndsWith(".json", PathUtility.PathComparison))
                 {
                     var (jsonErrors, token) = JsonUtility.Parse(file, context);
                     errors.AddRange(jsonErrors);

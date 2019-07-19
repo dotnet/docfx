@@ -51,9 +51,9 @@ namespace Microsoft.Docs.Build
 
         public int CompareTo(FilePath other)
         {
-            var result = PathUtility.PathComparer.Compare(Path, other.Path);
+            var result = PathUtility.PathComparer.Compare(Path, other?.Path);
             if (result == 0)
-                result = From.CompareTo(other.From);
+                result = From.CompareTo(other?.From);
 
             return result;
         }

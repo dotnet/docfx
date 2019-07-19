@@ -28,7 +28,7 @@ namespace Microsoft.Docs.Build
 
             // only validate against markdown files
             if (reference.ContentType == ContentType.Page &&
-                reference.FilePath.Path.EndsWith(".md", PathUtility.PathComparison) &&
+                reference.FilePath.EndsWith(".md", PathUtility.PathComparison) &&
                 !string.IsNullOrEmpty(fragment))
             {
                 var bookmark = fragment.Substring(1).Trim();

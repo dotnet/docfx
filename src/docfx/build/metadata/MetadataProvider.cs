@@ -114,7 +114,7 @@ namespace Microsoft.Docs.Build
 
         private (List<Error> errors, JObject metadata) LoadMetadata(Document file)
         {
-            if (file.FilePath.Path.EndsWith(".md", PathUtility.PathComparison))
+            if (file.FilePath.EndsWith(".md", PathUtility.PathComparison))
             {
                 using (var reader = new StreamReader(file.ReadStream()))
                 {
@@ -122,12 +122,12 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            if (file.FilePath.Path.EndsWith(".yml", PathUtility.PathComparison))
+            if (file.FilePath.EndsWith(".yml", PathUtility.PathComparison))
             {
                 return LoadSchemaDocumentMetadata(_cache.LoadYamlFile(file), file);
             }
 
-            if (file.FilePath.Path.EndsWith(".json", PathUtility.PathComparison))
+            if (file.FilePath.EndsWith(".json", PathUtility.PathComparison))
             {
                 return LoadSchemaDocumentMetadata(_cache.LoadJsonFile(file), file);
             }

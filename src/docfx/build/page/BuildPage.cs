@@ -162,16 +162,16 @@ namespace Microsoft.Docs.Build
         private static async Task<(List<Error> errors, JObject model)>
             Load(Context context, Document file)
         {
-            if (file.FilePath.Path.EndsWith(".md", PathUtility.PathComparison))
+            if (file.FilePath.EndsWith(".md", PathUtility.PathComparison))
             {
                 return LoadMarkdown(context, file);
             }
-            if (file.FilePath.Path.EndsWith(".yml", PathUtility.PathComparison))
+            if (file.FilePath.EndsWith(".yml", PathUtility.PathComparison))
             {
                 return await LoadYaml(context, file);
             }
 
-            Debug.Assert(file.FilePath.Path.EndsWith(".json", PathUtility.PathComparison));
+            Debug.Assert(file.FilePath.EndsWith(".json", PathUtility.PathComparison));
             return await LoadJson(context, file);
         }
 
