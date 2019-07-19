@@ -18,7 +18,6 @@ namespace Microsoft.Docs.Build
             "allOf",
             "anyOf",
             "boolean_schema",
-            "contains",
             "definitions",
             "if-then-else",
             "multipleOf",
@@ -213,6 +212,11 @@ namespace Microsoft.Docs.Build
         [InlineData("{'uniqueItems': true}", "[1, 2]", "")]
         [InlineData("{'uniqueItems': true}", "[1, 1]",
             @"['warning','array-not-unique','Array '' items should be unique','file',1,1]")]
+
+        // contains validation
+        [InlineData("{'contains': {'const': 1}}", "[1]", "")]
+        [InlineData("{'contains': {'const': 1}}", "[2]",
+            @"['warning','array-contains-failed','Array '' should contain at least one item that matches JSON schema','file',1,1]")]
 
         // required validation
         [InlineData("{'required': []}", "{}", "")]
