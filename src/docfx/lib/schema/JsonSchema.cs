@@ -70,6 +70,11 @@ namespace Microsoft.Docs.Build
         public JsonSchema Items { get; set; }
 
         /// <summary>
+        /// Whether an array contains this element.
+        /// </summary>
+        public JsonSchema Contains { get; set; }
+
+        /// <summary>
         /// Whether each item in array must be unique.
         /// </summary>
         public bool UniqueItems { get; set; }
