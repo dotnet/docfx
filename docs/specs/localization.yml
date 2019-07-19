@@ -1522,6 +1522,7 @@ repos:
         docfx.yml:
         b.md: '[](a.md#invalid-bookmark)'
 outputs:
+  b.json:
 ---
 # errors from source repo [repo mapping]
 commands:
