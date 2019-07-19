@@ -321,6 +321,9 @@ namespace Microsoft.Docs.Build
                 {
                     if (_microsoftGraphCache != null)
                     {
+                        // NOTE: this line block waits an asynchronious method to simplify code structure.
+                        // It does not have much performance impact because most of the time
+                        // the returned task is a completed task due to cache hit.
                         var (error, msAlias) = _microsoftGraphCache.GetMicrosoftAlias(alias).GetAwaiter().GetResult();
 
                         errors.AddIfNotNull(error);
