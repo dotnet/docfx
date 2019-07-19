@@ -298,6 +298,16 @@ namespace Microsoft.Docs.Build
             "['warning','invalid-paired-attribute','Invalid value for 'key2': 'abc' is not valid with 'key1' value 'yammer'','file',1,1]")]
         [InlineData("{'properties': {'key1': {'type': 'string', 'enum': ['.net', 'yammer']}, 'key2': {'type': 'string'}}, 'enumDependencies': { 'key2': { 'key1': { '.net': ['', 'csharp', 'devlang'], 'yammer': ['', 'tabs', 'vba']}}}}", "{'key2': 'tabs'}",
             "['warning','missing-paired-attribute','Missing attribute: 'key1'. If you specify 'key2', you must also specify 'key1'','file',1,1]")]
+
+        // overwrite errors
+        [InlineData("{'required': ['author'], 'overwriteErrors': {'author': {'missing-attribute': {'severity': 'suggestion', 'code': 'author-missing', 'message': 'Add a valid GitHub ID.'}}}}", "{'b': 1}",
+            "['suggestion','author-missing','Add a valid GitHub ID.','file',1,1]")]
+        [InlineData("{'required': ['author'], 'overwriteErrors': {'author': {'missing-attribute': {'severity': null, 'code': 'author-missing', 'message': 'Add a valid GitHub ID.'}}}}", "{'b': 1}",
+            "['warning','author-missing','Add a valid GitHub ID.','file',1,1]")]
+        [InlineData("{'properties': {'key1': {'replacedBy': 'key2'}}, 'overwriteErrors': {'key1': {'attribute-deprecated': {'severity': 'suggestion', 'code': 'key1-attribute-deprecated', 'message': null}}}}", "{'key1': 1}",
+            "['suggestion','key1-attribute-deprecated','Deprecated attribute: 'key1', use 'key2' instead','file',1,10]")]
+        [InlineData("{'properties': {'keys': {'precludes': [['key1', 'key2']]}}, 'overwriteErrors': {'key1': {'precluded-attributes': {'severity': 'error', 'code': null, 'message': null}}}}", "{'keys' : {'key1': 1, 'key2': 2}}",
+            "['error','precluded-attributes','Only one of the following attributes can exist: 'key1', 'key2'','file',1,11]")]
         public void TestJsonSchemaValidation(string schema, string json, string expectedErrors)
         {
             var jsonSchema = JsonUtility.Deserialize<JsonSchema>(schema.Replace('\'', '"'), null);
