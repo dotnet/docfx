@@ -476,4 +476,4 @@ outputs:
   docs/a.mta.json:
   docs/a.raw.page.json:
   .errors.log: |
-    {"message_severity":"error","code":"violate-schema","message":"Expected type String, please input String or type compatible with String.","file":"docs/b.md","line":2,"from":"fallback"}
+    {"message_severity":"error","code":"violate-schema","message":"Expected type String, please input String or type compatible with String.","file":"docs/b.md","line":2,"date_time":"*","from":"fallback"}
