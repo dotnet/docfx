@@ -15,15 +15,6 @@ namespace Microsoft.Docs.Build
     {
         public IEnumerable<GitHubUser> Users => _usersByLogin.Values.Concat(_usersByEmail.Values).Distinct();
 
-        // calls GitHubAccessor.GetUserByLogin, which only for private use, and tests can swap this out
-        internal Func<string, Task<(Error, GitHubUser)>> _getUserByLoginFromGitHub;
-
-        // calls GitHubAccessor.GetLoginByCommit, which ohly for private use, and tests can swap this out
-        internal Func<string, string, string, Task<(Error, IEnumerable<GitHubUser>)>> _getUsersByCommitFromGitHub;
-
-        private static int s_randomSeed = Environment.TickCount;
-        private static ThreadLocal<Random> t_random = new ThreadLocal<Random>(() => new Random(Interlocked.Increment(ref s_randomSeed)));
-
         private readonly Dictionary<string, GitHubUser> _usersByLogin = new Dictionary<string, GitHubUser>(StringComparer.OrdinalIgnoreCase);
         private readonly Dictionary<string, GitHubUser> _usersByEmail = new Dictionary<string, GitHubUser>(StringComparer.OrdinalIgnoreCase);
 
@@ -32,6 +23,13 @@ namespace Microsoft.Docs.Build
         private readonly GitHubAccessor _githubAccessor;
         private readonly string _cachePath;
         private readonly double _expirationInHours;
+
+        // calls GitHubAccessor.GetUserByLogin, which only for private use, and tests can swap this out
+        internal Func<string, Task<(Error, GitHubUser)>> _getUserByLoginFromGitHub;
+
+        // calls GitHubAccessor.GetLoginByCommit, which ohly for private use, and tests can swap this out
+        internal Func<string, string, string, Task<(Error, IEnumerable<GitHubUser>)>> _getUsersByCommitFromGitHub;
+
         private bool _updated = false;
 
         public GitHubUserCache(Config config)
@@ -195,7 +193,7 @@ namespace Microsoft.Docs.Build
             }
 
             if (user.Expiry is null)
-                user.Expiry = NextExpiry();
+                user.Expiry = DateTime.UtcNow.AddHours(RandomUtility.NextEvenDistribution(_expirationInHours));
 
             if (user.Login != null)
                 _usersByLogin[user.Login] = user;
@@ -227,9 +225,6 @@ namespace Microsoft.Docs.Build
                 UpdateUser(user);
             }
         }
-
-        private DateTime NextExpiry()
-            => DateTime.UtcNow.AddHours((_expirationInHours / 2) + (t_random.Value.NextDouble() * _expirationInHours / 2));
 
         private async Task<T> Synchronized<T>(Func<Task<T>> action)
         {
