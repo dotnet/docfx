@@ -248,7 +248,7 @@ namespace Microsoft.Docs.Build
                         line++;
                 }
 
-                var source = new SourceInfo(new FilePath(file), line, 1);
+                var source = new SourceInfo(file.FilePath, line, 1);
                 throw Errors.MergeConflict(source).ToException();
             }
         }

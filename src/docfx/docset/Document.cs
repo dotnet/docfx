@@ -34,7 +34,7 @@ namespace Microsoft.Docs.Build
         ///  - Does not start with '/'
         ///  - Does not end with '/'
         /// </summary>
-        public string FilePath { get; }
+        public FilePath FilePath { get; }
 
         /// <summary>
         /// Gets file path relative to site root that is:
@@ -127,7 +127,7 @@ namespace Microsoft.Docs.Build
             Debug.Assert(ContentType == ContentType.Redirection ? redirectionUrl != null : true);
 
             Docset = docset;
-            FilePath = filePath;
+            FilePath = new FilePath(filePath, docset);
             SitePath = sitePath;
             SiteUrl = siteUrl;
             CanonicalUrlWithoutLocale = canonicalUrlWithoutLocale;

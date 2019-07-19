@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.IO;
 using System.Runtime.CompilerServices;
 
 namespace Microsoft.Docs.Build
@@ -22,11 +23,6 @@ namespace Microsoft.Docs.Build
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static implicit operator string(FilePath filePath) => filePath?.Path;
 
-        public FilePath(Document file)
-            : this(file?.FilePath, file?.Docset)
-        {
-        }
-
         public FilePath(string path, Docset docset)
             : this(path, docset != null && docset.IsFallback() ? FileFrom.Fallback : FileFrom.Current)
         {
@@ -41,6 +37,11 @@ namespace Microsoft.Docs.Build
         public override bool Equals(object obj)
         {
             return Equals(obj as FilePath);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(PathUtility.PathComparer.GetHashCode(Path), From);
         }
     }
 }

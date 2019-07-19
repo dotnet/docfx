@@ -19,7 +19,7 @@ namespace Microsoft.Docs.Build
             {
                 var content = file.ReadText();
                 GitUtility.CheckMergeConflictMarker(content, file);
-                return YamlUtility.Parse(content, new FilePath(file));
+                return YamlUtility.Parse(content, file.FilePath);
             })).Value;
 
         public (List<Error> errors, JToken token) LoadJsonFile(Document file)
@@ -27,7 +27,7 @@ namespace Microsoft.Docs.Build
             {
                 var content = file.ReadText();
                 GitUtility.CheckMergeConflictMarker(content, file);
-                return JsonUtility.Parse(content, new FilePath(file));
+                return JsonUtility.Parse(content, file.FilePath);
             })).Value;
 
         public (List<Error> errors, TableOfContentsModel tocModel, List<Document> referencedFiles, List<Document> referencedTocs) LoadTocModel(Context context, Document file)

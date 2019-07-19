@@ -84,11 +84,10 @@ namespace Microsoft.Docs.Build
 
         public bool Write(Document file, Error error, bool isException = false)
         {
-            var filePath = new FilePath(file);
             return Write(
-                filePath == error.File || !string.IsNullOrEmpty(error.File)
+                file.FilePath == error.File || !string.IsNullOrEmpty(error.File)
                     ? error
-                    : new Error(error.Level, error.Code, error.Message, filePath, error.Line, error.Column),
+                    : new Error(error.Level, error.Code, error.Message, file.FilePath, error.Line, error.Column),
                 isException);
         }
 

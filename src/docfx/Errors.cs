@@ -244,7 +244,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         /// Behavior: ✔️ Message: ❌
         public static Error HeadingNotFound(Document file)
-            => new Error(ErrorLevel.Off, "heading-not-found", $"The first visible block is not a heading block with `#`, `##` or `###`", new FilePath(file));
+            => new Error(ErrorLevel.Off, "heading-not-found", $"The first visible block is not a heading block with `#`, `##` or `###`", file.FilePath);
 
         /// <summary>
         /// Can't find a file referenced by configuration, or user writes a non-existing link.
@@ -581,7 +581,7 @@ namespace Microsoft.Docs.Build
         ///   - user want their 404.md to be built and shown as their 404 page of the website.
         /// </summary>
         public static Error Custom404Page(Document file)
-            => new Error(ErrorLevel.Warning, "custom-404-page", $"Custom 404 page is not supported", new FilePath(file));
+            => new Error(ErrorLevel.Warning, "custom-404-page", $"Custom 404 page is not supported", file.FilePath);
 
         private static string Join<T>(IEnumerable<T> source, Func<T, string> selector = null)
         {
