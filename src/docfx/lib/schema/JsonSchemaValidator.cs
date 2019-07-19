@@ -212,19 +212,26 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private void ValidateNumber(JsonSchema schema, string name, JValue scalar, double number, List<(string name, Error)> errors)
+        private static void ValidateNumber(JsonSchema schema, string name, JValue scalar, double number, List<(string name, Error)> errors)
         {
             if (schema.Maximum.HasValue && number > schema.Maximum)
-                errors.Add((name, Errors.NumberInvalid(JsonUtility.GetSourceInfo(scalar), name, $"<= {schema.Maximum}")));
+                errors.Add((name, Errors.NumberInvalid(JsonUtility.GetSourceInfo(scalar), number, $"<= {schema.Maximum}")));
 
             if (schema.Minimum.HasValue && number < schema.Minimum)
-                errors.Add((name, Errors.NumberInvalid(JsonUtility.GetSourceInfo(scalar), name, $">= {schema.Minimum}")));
+                errors.Add((name, Errors.NumberInvalid(JsonUtility.GetSourceInfo(scalar), number, $">= {schema.Minimum}")));
 
             if (schema.ExclusiveMaximum.HasValue && number >= schema.ExclusiveMaximum)
-                errors.Add((name, Errors.NumberInvalid(JsonUtility.GetSourceInfo(scalar), name, $"< {schema.ExclusiveMaximum}")));
+                errors.Add((name, Errors.NumberInvalid(JsonUtility.GetSourceInfo(scalar), number, $"< {schema.ExclusiveMaximum}")));
 
             if (schema.ExclusiveMinimum.HasValue && number <= schema.ExclusiveMinimum)
-                errors.Add((name, Errors.NumberInvalid(JsonUtility.GetSourceInfo(scalar), name, $"> {schema.ExclusiveMinimum}")));
+                errors.Add((name, Errors.NumberInvalid(JsonUtility.GetSourceInfo(scalar), number, $"> {schema.ExclusiveMinimum}")));
+
+            if (schema.MultipleOf != 0)
+            {
+                var n = number / schema.MultipleOf;
+                if (Math.Abs(n - Math.Floor(n)) > double.Epsilon)
+                    errors.Add((name, Errors.NumberInvalid(JsonUtility.GetSourceInfo(scalar), number, $"multiple of {schema.MultipleOf}")));
+            }
         }
 
         private void ValidateConst(JsonSchema schema, string name, JToken token, List<(string name, Error)> errors)
