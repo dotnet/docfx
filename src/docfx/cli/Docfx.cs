@@ -10,6 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 
@@ -69,6 +70,9 @@ namespace Microsoft.Docs.Build
             using (var errorLog = new ErrorLog(docset, options.Legacy))
             {
                 Log.Write($"Using docfx {GetDocfxVersion()}");
+
+                var minThreads = Math.Max(32, Environment.ProcessorCount * 4);
+                ThreadPool.SetMinThreads(minThreads, minThreads);
 
                 try
                 {
