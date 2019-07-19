@@ -431,8 +431,8 @@ namespace Microsoft.Docs.Build
         /// Number not within min and max.
         /// </summary>
         /// Behavior: ✔️ Message: ❌
-        public static Error NumberInvalid(SourceInfo source, string propName, string criteria)
-            => new Error(ErrorLevel.Warning, "number-invalid", $"Number '{propName}' should be {criteria}", source);
+        public static Error NumberInvalid(SourceInfo source, double value, string criteria)
+            => new Error(ErrorLevel.Warning, "number-invalid", $"Number '{value}' should be {criteria}", source);
 
         /// <summary>
         /// A required attribute is missing.
