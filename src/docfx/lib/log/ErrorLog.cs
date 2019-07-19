@@ -195,9 +195,9 @@ namespace Microsoft.Docs.Build
             var file = error.FilePath?.Path;
             var line = error.Line;
             var date_time = DateTime.UtcNow;
-            var from = error.FilePath?.From != null && error.FilePath.From != default ? error.FilePath.From : (FileFrom?)null;
+            var origin = error.FilePath?.Origin != null && error.FilePath.Origin != default ? error.FilePath.Origin : (FileOrigin?)null;
 
-            return JsonUtility.Serialize(new { message_severity, code, message, file, line, date_time, from });
+            return JsonUtility.Serialize(new { message_severity, code, message, file, line, date_time, origin });
         }
 
         private static void ConsoleLog(ErrorLevel level, Error error)

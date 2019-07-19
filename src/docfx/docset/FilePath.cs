@@ -15,17 +15,17 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Gets the value to indicate where is this file from
         /// </summary>
-        public FileFrom From { get; }
+        public FileOrigin Origin { get; }
 
         public FilePath(string path, Docset docset)
-            : this(path, docset != null && docset.IsFallback() ? FileFrom.Fallback : FileFrom.Current)
+            : this(path, docset != null && docset.IsFallback() ? FileOrigin.Fallback : FileOrigin.Current)
         {
         }
 
-        public FilePath(string path, FileFrom from = FileFrom.Current)
+        public FilePath(string path, FileOrigin from = FileOrigin.Current)
         {
             Path = path;
-            From = from;
+            Origin = from;
         }
 
         public static bool operator ==(FilePath a, FilePath b)
@@ -43,19 +43,19 @@ namespace Microsoft.Docs.Build
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(PathUtility.PathComparer.GetHashCode(Path), From);
+            return HashCode.Combine(PathUtility.PathComparer.GetHashCode(Path), Origin);
         }
 
         public bool Equals(FilePath other)
         {
-            return other?.Path == Path && other?.From == From;
+            return other?.Path == Path && other?.Origin == Origin;
         }
 
         public int CompareTo(FilePath other)
         {
             var result = PathUtility.PathComparer.Compare(Path, other?.Path);
             if (result == 0)
-                result = From.CompareTo(other?.From);
+                result = Origin.CompareTo(other?.Origin);
 
             return result;
         }

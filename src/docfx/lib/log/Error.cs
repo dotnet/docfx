@@ -53,10 +53,10 @@ namespace Microsoft.Docs.Build
 
         public string ToString(ErrorLevel level)
         {
-            object[] payload = { level, Code, Message, FilePath?.Path, Line, Column, FilePath?.From };
+            object[] payload = { level, Code, Message, FilePath?.Path, Line, Column, FilePath?.Origin };
 
             var i = payload.Length - 1;
-            while (i >= 0 && (Equals(payload[i], null) || Equals(payload[i], "") || Equals(payload[i], 0) || Equals(payload[i], FileFrom.Current)))
+            while (i >= 0 && (Equals(payload[i], null) || Equals(payload[i], "") || Equals(payload[i], 0) || Equals(payload[i], FileOrigin.Current)))
             {
                 i--;
             }

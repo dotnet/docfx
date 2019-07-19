@@ -3,7 +3,7 @@
 
 namespace Microsoft.Docs.Build
 {
-    public enum FileFrom
+    public enum FileOrigin
     {
         /// <summary>
         /// Current repository
