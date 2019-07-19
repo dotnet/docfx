@@ -456,7 +456,7 @@ outputs:
     {"dependency_type":"metadata","from_file_path":"*docs\\v1\\f1\\a.md*","to_file_path":"*docs\\v1\\TOC.md*","version":"netcore-1.0"}
     {"dependency_type":"metadata","from_file_path":"*docs\\v2\\f1\\a.md*","to_file_path":"*docs\\v2\\TOC.md*","version":"netcore-2.0"}
 ---
-# legacy erros from source repo [repo mapping]
+# legacy errors from source repo [repo mapping]
 commands:
   - restore --locale zh-cn --legacy
   - build --locale zh-cn --legacy

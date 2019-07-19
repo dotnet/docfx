@@ -1524,7 +1524,7 @@ repos:
 outputs:
   b.json:
 ---
-# erros from source repo [repo mapping]
+# errors from source repo [repo mapping]
 commands:
   - restore --locale zh-cn
   - build --locale zh-cn
@@ -1545,7 +1545,7 @@ outputs:
   .errors.log: |
     ["error","violate-schema","Expected type String, please input String or type compatible with String.","docs/b.md",2,8,"fallback"]
 ---
-# erros from source repo [repo mapping & bilingual]
+# errors from source repo [repo mapping & bilingual]
 commands:
   - restore --locale zh-cn
   - build --locale zh-cn
@@ -1571,7 +1571,7 @@ outputs:
   .errors.log: |
     ["error","violate-schema","Expected type String, please input String or type compatible with String.","docs/b.md",2,8,"fallback"]
 ---
-# erros from source repo [branch mapping]
+# errors from source repo [branch mapping]
 commands:
   - restore --locale zh-cn
   - build --locale zh-cn
@@ -1594,7 +1594,7 @@ outputs:
   .errors.log: |
     ["error","violate-schema","Expected type String, please input String or type compatible with String.","docs/b.md",2,8,"fallback"]
 ---
-# erros from source repo [branch mapping & bilingual]
+# errors from source repo [branch mapping & bilingual]
 commands:
   - restore --locale zh-cn
   - build --locale zh-cn
