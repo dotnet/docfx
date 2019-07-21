@@ -10,29 +10,20 @@ namespace Microsoft.Docs.Build
     {
         public override bool CanConvert(Type objectType) => objectType == typeof(JsonSchema);
 
+        public override bool CanWrite => false;
+
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
             if (reader.TokenType == JsonToken.Boolean)
             {
-                return reader.ReadAsBoolean() == true ? JsonSchema.TrueSchema : JsonSchema.FalseSchema;
+                return reader.Value is true ? JsonSchema.TrueSchema : JsonSchema.FalseSchema;
             }
-            return serializer.Deserialize(reader, objectType);
+
+            var result = new JsonSchema();
+            serializer.Populate(reader, result);
+            return result;
         }
 
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
-        {
-            if (value == JsonSchema.TrueSchema)
-            {
-                writer.WriteValue(true);
-            }
-            else if (value == JsonSchema.FalseSchema)
-            {
-                writer.WriteValue(false);
-            }
-            else
-            {
-                serializer.Serialize(writer, value);
-            }
-        }
+        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer) => throw new NotSupportedException();
     }
 }
