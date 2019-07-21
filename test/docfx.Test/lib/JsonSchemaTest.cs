@@ -29,7 +29,6 @@ namespace Microsoft.Docs.Build
         {
             "an array of schemas for items",
             "items and subitems",
-            "with boolean schema",
 
             //dependencies
             "dependencies with boolean subschemas",
@@ -41,8 +40,6 @@ namespace Microsoft.Docs.Build
             "relative pointer ref to array",
             "escaped pointer ref",
             "remote ref, containing refs itself",
-            "$ref to boolean schema true",
-            "$ref to boolean schema false",
             "Recursive references between schemas",
             "refs with quote",
         };
