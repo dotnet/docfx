@@ -170,7 +170,7 @@ namespace Microsoft.Docs.Build
                 }
 
                 // additionalProperties
-                if (isAdditonalProperty)
+                if (isAdditonalProperty && schema.AdditionalProperties != null)
                 {
                     if (schema.AdditionalProperties == JsonSchema.FalseSchema)
                     {

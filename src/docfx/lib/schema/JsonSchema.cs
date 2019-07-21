@@ -50,7 +50,7 @@ namespace Microsoft.Docs.Build
         ///     - boolean: allow/disallow additional properties
         ///     - object: the schema for the additional properties
         /// </summary>
-        public JsonSchema AdditionalProperties { get; set; } = TrueSchema;
+        public JsonSchema AdditionalProperties { get; set; }
 
         /// <summary>
         /// The JSON schema that applies to property names.
