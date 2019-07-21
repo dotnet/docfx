@@ -64,9 +64,9 @@ outputs:
       "key3": "net462"
     }
   .errors.log: |
-    ["warning","unexpected-type","Expect type 'String' but got 'Array'","docfx.yml",3,9]
-    ["warning","undefined-value","Value 'XNAGameStudio' is not accepted. Valid values: 'MSDN', 'VS'","docfx.yml",6,13]
-    ["warning","unexpected-type","Expect type 'Integer' but got 'String'","a.md",2,7]
+    ["warning","unexpected-type","Expected type 'String' but got 'Array'","docfx.yml",3,9]
+    ["warning","invalid-value","Invalid value for 'key2': 'XNAGameStudio'","docfx.yml",6,13]
+    ["warning","unexpected-type","Expected type 'Integer' but got 'String'","a.md",2,7]
 ---
 # Allow multiple metadata schema definitions
 inputs:
@@ -85,8 +85,8 @@ inputs:
 outputs:
   a.json:
   .errors.log: |
-    ["warning","field-required","Missing required field 'a'","a.md",2,1]
-    ["warning","unexpected-type","Expect type 'String' but got 'Array'","a.md",2,6]
+    ["warning","missing-attribute","Missing required attribute: 'a'","a.md",2,1]
+    ["warning","unexpected-type","Expected type 'String' but got 'Array'","a.md",2,6]
 ---
 # Json schema microsoft alias rule: Metu error, when no connection with Graph API
 inputs:

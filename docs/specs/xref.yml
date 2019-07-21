@@ -530,6 +530,27 @@ outputs:
   docs/1/b.json: |
     { "conceptual": "<p>Link to <a href=\"../c\">title</a></p>" }
   docs/c.json:
+  .dependencymap.json: |
+    {
+      "dependencies": {
+        "docs/1/b.md": [
+          {
+            "source": "docs/c.md",
+            "type": "uidInclusion"
+          }
+        ],
+        "docs/a.md": [
+          {
+            "source": "docs/1/b.md",
+            "type": "inclusion"
+          },
+          {
+            "source": "docs/c.md",
+            "type": "uidInclusion"
+          }
+        ]
+      }
+    }
 ---
 # Markdown and SDP non-cyclic xref reference
 inputs:
@@ -711,13 +732,14 @@ inputs:
     1
 outputs:
   .errors.log: |
-    ["error","unexpected-type","Expect type 'Object' but got 'Integer'","docs/a.yml",1,1]
+    ["error","unexpected-type","Expected type 'Object' but got 'Integer'","docs/a.yml",1,1]
 ---
 # support <xref href="uid"></xref>
 inputs:
   docfx.yml:
   docs/a.md: |
     str <xref href="c"></xref>
+    str <xref href="d?action=xxx"></xref>
     str <xref href="d" data-raw-source="@mention"></xref>
     some text
     str <xref href="d" data-raw-html="@higher" data-raw-source="@mention"></xref>
@@ -737,6 +759,7 @@ outputs:
     {
       "conceptual" : "
         <p>str <a href='c'>Title from yaml header c</a>
+        str <span class=\"xref\">d</span>
         str @mention
         some text
         str @higher
@@ -749,7 +772,8 @@ outputs:
     }
   docs/c.json:
   .errors.log: |
-    ["warning","xref-not-found","Cross reference not found: 'f'","docs/a.md",6,2]
+    ["warning","xref-not-found","Cross reference not found: 'd?action=xxx'","docs/a.md",2,5]
+    ["warning","xref-not-found","Cross reference not found: 'f'","docs/a.md",7,2]
 ---
 # support multiple uids with different xref properties
 repos:
@@ -957,5 +981,3 @@ outputs:
   docs/a.json:
   xrefmap.json: |
     {"references":[{"uid":"a", href: "https://docs.com/docs/a"}]}
-          
-

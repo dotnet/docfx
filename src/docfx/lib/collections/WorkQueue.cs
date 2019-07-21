@@ -11,6 +11,8 @@ namespace Microsoft.Docs.Build
 {
     internal class WorkQueue<T>
     {
+        private static readonly int s_maxParallelism = Math.Max(8, Environment.ProcessorCount * 2);
+
         private readonly Func<T, Task> _run;
         private readonly ConcurrentQueue<T> _queue = new ConcurrentQueue<T>();
         private readonly ConcurrentHashSet<T> _duplicationDetector = new ConcurrentHashSet<T>();
@@ -28,6 +30,14 @@ namespace Microsoft.Docs.Build
 
         // For completion detection
         private int _remainingCount = 0;
+
+        // When an exception occurs, store it here,
+        // then wait until all jobs to complete before Drain returns.
+        // This ensures _run callback is never executed once Drain returns.
+        private volatile Exception _exception;
+
+        // Limit parallelism so we don't starve the thread pool.
+        private int _parallelism;
 
         public void Enqueue(IEnumerable<T> items)
         {
@@ -62,51 +72,92 @@ namespace Microsoft.Docs.Build
 
             void DrainCore()
             {
-                while (!_drainTcs.Task.IsCompleted && _queue.TryDequeue(out var item))
+                while (!_drainTcs.Task.IsCompleted)
                 {
+                    if (!_queue.TryPeek(out var item))
+                    {
+                        break;
+                    }
+
+                    if (Volatile.Read(ref _parallelism) > s_maxParallelism)
+                    {
+                        break;
+                    }
+
+                    if (!_queue.TryDequeue(out item))
+                    {
+                        break;
+                    }
+
+                    if (_exception != null)
+                    {
+                        OnComplete();
+                        break;
+                    }
+
+                    Interlocked.Increment(ref _parallelism);
+
                     ThreadPool.QueueUserWorkItem(Run, item, preferLocal: true);
                 }
             }
 
             void Run(T item)
             {
-                if (_drainTcs.Task.IsCompleted)
+                if (_exception != null)
                 {
+                    OnComplete();
                     return;
                 }
 
+                Task task;
+
                 try
                 {
-                    _run(item).ContinueWith(OnComplete, default, TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
+                    task = _run(item);
                 }
                 catch (Exception ex)
                 {
-                    _drainTcs.TrySetException(ex);
+                    OnComplete(ex);
+                    return;
                 }
+
+                task.ContinueWith(
+                    t => OnComplete(t.Exception?.InnerException),
+                    default,
+                    TaskContinuationOptions.ExecuteSynchronously,
+                    TaskScheduler.Default);
             }
 
-            void OnComplete(Task task)
+            void OnComplete(Exception exception = null)
             {
+                Interlocked.Decrement(ref _parallelism);
+
                 try
                 {
-                    if (task.Exception != null)
-                    {
-                        _drainTcs.TrySetException(task.Exception.InnerException);
-                    }
-                    else if (Interlocked.Decrement(ref _remainingCount) == 0)
-                    {
-                        _drainTcs.TrySetResult(0);
-                    }
-                    else
-                    {
-                        DrainCore();
-                    }
-
                     progress?.Invoke(Interlocked.Increment(ref _processedCount), _totalCount);
                 }
                 catch (Exception ex)
                 {
-                    _drainTcs.TrySetException(ex);
+                    exception = ex;
+                }
+
+                if (exception != null)
+                {
+                    _exception = exception;
+                }
+
+                DrainCore();
+
+                if (Interlocked.Decrement(ref _remainingCount) == 0)
+                {
+                    if (_exception is null)
+                    {
+                        _drainTcs.SetResult(0);
+                    }
+                    else
+                    {
+                        _drainTcs.SetException(_exception);
+                    }
                 }
             }
         }

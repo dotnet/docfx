@@ -37,11 +37,19 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public string Render(string templateName, JToken model)
+        public string Render(string templateFileName, JToken model)
         {
             var template = _templates.GetOrAdd(
-                templateName,
-                key => new Lazy<string>(() => File.ReadAllText(Path.Combine(_templateDir, key + ".html.primary.tmpl")))).Value;
+                templateFileName,
+                key => new Lazy<string>(() =>
+                {
+                    var fileName = Path.Combine(_templateDir, templateFileName);
+                    if (!File.Exists(fileName))
+                    {
+                        return JsonUtility.Serialize(model);
+                    }
+                    return File.ReadAllText(fileName);
+                })).Value;
 
             return _renderer.Render(template, model);
         }
