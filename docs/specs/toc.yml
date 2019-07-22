@@ -594,20 +594,28 @@ outputs:
        ]
     }
 ---
-# Homepage only shows when topic href is set
+# Homepage only shows when topic href is set and href is not 
 inputs:
   docfx.yml:
   docs/TOC.yml: |
-    - name: name
+    - name: name1
       href: /f1/a
+    - name: name2
+      href: /f2/a
+      topicHref: /f2/b
 outputs:
   docs/toc.json: |
     {
        "items":[
           {
-             "name":"name",
+             "name":"name1",
              "href":"/f1/a",
-             "!homepage": "f1/a"
+             "!homepage": null
+          },
+          {
+             "name":"name2",
+             "href":"/f1/a",
+             "!homepage": null
           }
        ]
     }
