@@ -134,19 +134,19 @@ outputs:
                   "items":[  
                       {  
                         "name":"Reference No-Existing File 1",
-                        "href":"no-existing.md"
+                        "href":"no-existing"
                       },
                       {  
                         "name":"Reference No-Existing File 2",
-                        "href":"no-existing.system.md"
+                        "href":"no-existing.system"
                       },
                       {  
                         "name":"Reference No-Existing File 3",
-                        "href":"../no-existing.md"
+                        "href":"../no-existing"
                       },
                       {  
                         "name":"Reference No-Existing File 4",
-                        "href":"~/docs/no-existing.md"
+                        "href":"no-existing"
                       }
                   ],
                   "name":"No Existing File Reference"
