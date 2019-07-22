@@ -83,7 +83,8 @@ namespace Microsoft.DocAsCode.Build.Engine
                  where !"bookmark".Equals(nocheck, StringComparison.OrdinalIgnoreCase)
                  let link = node.GetAttributeValue("href", null)
                  let bookmark = UriUtility.GetFragment(link).TrimStart('#')
-                 let decodedLink = RelativePath.TryParse(HttpUtility.UrlDecode(UriUtility.GetPath(link)))
+			     let decodedBookmark = HttpUtility.UrlDecode(bookmark)
+				 let decodedLink = RelativePath.TryParse(HttpUtility.UrlDecode(UriUtility.GetPath(link)))
                  where !string.IsNullOrEmpty(bookmark) && !WhiteList.Contains(bookmark)
                  where decodedLink != null
                  select new LinkItem
@@ -91,6 +92,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                      Title = node.InnerText,
                      Href = TransformPath(outputFile, decodedLink),
                      Bookmark = bookmark,
+					 DecodedBookmark = decodedBookmark,
                      SourceFragment = WebUtility.HtmlDecode(node.GetAttributeValue("data-raw-source", null)),
                      SourceFile = WebUtility.HtmlDecode(node.GetAttributeValue("sourceFile", null)),
                      SourceLineNumber = node.GetAttributeValue("sourceStartLineNumber", 0),
@@ -116,7 +118,10 @@ namespace Microsoft.DocAsCode.Build.Engine
                     string title = linkItem.Title;
                     string linkedToFile = linkItem.Href;
                     string bookmark = linkItem.Bookmark;
-                    if (_registeredBookmarks.TryGetValue(linkedToFile, out HashSet<string> bookmarks) && !bookmarks.Contains(bookmark))
+	                string decodedBookmark = linkItem.DecodedBookmark;
+                    if (_registeredBookmarks.TryGetValue(linkedToFile, out HashSet<string> bookmarks) 
+                        && !bookmarks.Contains(bookmark)
+                        && !bookmarks.Contains(decodedBookmark))
                     {
                         string currentFileSrc = linkItem.SourceFile ?? _fileMapping[currentFile];
                         string linkedToFileSrc = _fileMapping[linkedToFile];
@@ -202,6 +207,8 @@ namespace Microsoft.DocAsCode.Build.Engine
             public string Href { get; set; }
 
             public string Bookmark { get; set; }
+
+			public string DecodedBookmark { get; set; }
 
             public string SourceFragment { get; set; }
 
