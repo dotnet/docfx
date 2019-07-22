@@ -7,7 +7,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
-    public class TableOfContentsModel
+    internal class TableOfContentsModel
     {
         public TableOfContentsMetadata Metadata { get; set; } = new TableOfContentsMetadata();
 

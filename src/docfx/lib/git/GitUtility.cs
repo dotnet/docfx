@@ -236,7 +236,7 @@ namespace Microsoft.Docs.Build
             return result;
         }
 
-        public static void CheckMergeConflictMarker(string content, string file)
+        public static void CheckMergeConflictMarker(string content, FilePath file)
         {
             var start = content.StartsWith("<<<<<<<") ? 0 : content.IndexOf("\n<<<<<<<");
             if (start >= 0 && content.Contains("\n>>>>>>>") && content.Contains("\n======="))

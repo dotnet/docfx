@@ -20,12 +20,12 @@ namespace Microsoft.Docs.Build
         {
             // TODO: Make dependency map a data model once we remove legacy.
             var dependencies = this
-                .OrderBy(d => d.Key.FilePath)
+                .OrderBy(d => d.Key.FilePath.Path)
                 .ToDictionary(
-                    d => d.Key.FilePath,
+                    d => d.Key.FilePath.Path,
                     d => (from v in d.Value
-                          orderby v.To.FilePath, v.Type
-                          select new DependencyManifestItem { Source = v.To.FilePath, Type = v.Type }).ToArray());
+                          orderby v.To.FilePath.Path, v.Type
+                          select new DependencyManifestItem { Source = v.To.FilePath.Path, Type = v.Type }).ToArray());
 
             return new { dependencies };
         }

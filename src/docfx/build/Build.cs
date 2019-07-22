@@ -115,7 +115,7 @@ namespace Microsoft.Docs.Build
                         break;
                 }
 
-                var hasErrors = context.ErrorLog.Write(file.ToString(), errors);
+                var hasErrors = context.ErrorLog.Write(file, errors);
                 if (hasErrors)
                 {
                     context.PublishModelBuilder.MarkError(file);
@@ -125,7 +125,7 @@ namespace Microsoft.Docs.Build
             }
             catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
             {
-                context.ErrorLog.Write(file.ToString(), dex.Error, isException: true);
+                context.ErrorLog.Write(file, dex.Error, isException: true);
                 context.PublishModelBuilder.MarkError(file);
             }
             catch
