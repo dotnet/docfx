@@ -32,20 +32,20 @@ namespace Microsoft.Docs.Build
                     case HtmlBlock htmlBlock when htmlBlock.Type == HtmlBlockType.Comment:
                         break;
                     default:
-                        errors.Add(Errors.InvalidTocSyntax(block.ToSourceInfo(file: file.ToString())));
+                        errors.Add(Errors.InvalidTocSyntax(block.ToSourceInfo(file: file)));
                         break;
                 }
             }
 
             using (var reader = new StringReader(tocContent))
             {
-                var (metaErrors, metadata) = ExtractYamlHeader.Extract(reader, file.FilePath);
+                var (metaErrors, metadata) = ExtractYamlHeader.Extract(reader, file);
                 errors.AddRange(metaErrors);
 
                 var (validationErrors, tocMetadata) = JsonUtility.ToObject<TableOfContentsMetadata>(metadata);
                 errors.AddRange(validationErrors);
 
-                var items = BuildTree(errors, file.FilePath, headingBlocks);
+                var items = BuildTree(errors, file, headingBlocks);
 
                 var tocModel = new TableOfContentsModel { Metadata = tocMetadata, Items = items };
 
@@ -53,7 +53,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static List<TableOfContentsItem> BuildTree(List<Error> errors, string filePath, List<HeadingBlock> blocks)
+        private static List<TableOfContentsItem> BuildTree(List<Error> errors, Document filePath, List<HeadingBlock> blocks)
         {
             if (blocks.Count <= 0)
             {
@@ -96,7 +96,7 @@ namespace Microsoft.Docs.Build
             return result.Items;
         }
 
-        private static TableOfContentsItem GetItem(List<Error> errors, string filePath, HeadingBlock block)
+        private static TableOfContentsItem GetItem(List<Error> errors, Document filePath, HeadingBlock block)
         {
             var currentItem = new TableOfContentsItem();
             if (block.Inline is null || !block.Inline.Any())
@@ -139,7 +139,7 @@ namespace Microsoft.Docs.Build
             return currentItem;
         }
 
-        private static SourceInfo<string> GetLiteral(List<Error> errors, string filePath, ContainerInline inline)
+        private static SourceInfo<string> GetLiteral(List<Error> errors, Document filePath, ContainerInline inline)
         {
             var result = new StringBuilder();
             var child = inline.FirstChild;

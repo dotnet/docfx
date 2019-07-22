@@ -1523,3 +1523,100 @@ repos:
         b.md: '[](a.md#invalid-bookmark)'
 outputs:
   b.json:
+---
+# errors from source repo [repo mapping]
+commands:
+  - restore --locale zh-cn
+  - build --locale zh-cn
+repos:
+  https://docs.com/error-from-source1#test:
+    - files:
+        docfx.yml:
+        docs/b.md: |
+          ---
+          title: []
+          ---
+  https://docs.com/error-from-source1.zh-cn#test:
+    - files:
+        docs/a.md: |
+          @a
+outputs:
+  docs/a.json:
+  .errors.log: |
+    ["error","violate-schema","Expected type String, please input String or type compatible with String.","docs/b.md",2,8,"fallback"]
+---
+# errors from source repo [repo mapping & bilingual]
+commands:
+  - restore --locale zh-cn
+  - build --locale zh-cn
+repos:
+  https://docs.com/error-from-source2#test:
+    - files:
+        docfx.yml: |
+          localization:
+            bilingual: true
+        docs/b.md: |
+          ---
+          title: []
+          ---
+  https://docs.com/error-from-source2.zh-cn#test:
+    - files:
+        docs/a.md:
+  https://docs.com/error-from-source2.zh-cn#test-sxs:
+    - files:
+        docs/a.md: |
+          @a
+outputs:
+  docs/a.json:
+  .errors.log: |
+    ["error","violate-schema","Expected type String, please input String or type compatible with String.","docs/b.md",2,8,"fallback"]
+---
+# errors from source repo [branch mapping]
+commands:
+  - restore --locale zh-cn
+  - build --locale zh-cn
+repos:
+  https://docs.com/error-from-source3#test:
+    - files:
+        docfx.yml: |
+          localization:
+            mapping: Branch
+        docs/b.md: |
+          ---
+          title: []
+          ---
+  https://docs.com/error-from-source3.loc#test.zh-cn:
+    - files:
+        docs/a.md: |
+          @a
+outputs:
+  docs/a.json:
+  .errors.log: |
+    ["error","violate-schema","Expected type String, please input String or type compatible with String.","docs/b.md",2,8,"fallback"]
+---
+# errors from source repo [branch mapping & bilingual]
+commands:
+  - restore --locale zh-cn
+  - build --locale zh-cn
+repos:
+  https://docs.com/error-from-source4#test:
+    - files:
+        docfx.yml: |
+          localization:
+            mapping: Branch
+            bilingual: true
+        docs/b.md: |
+          ---
+          title: []
+          ---
+  https://docs.com/error-from-source4.loc#test.zh-cn:
+    - files:
+        docs/a.md:
+  https://docs.com/error-from-source4.loc#test-sxs.zh-cn:
+    - files:
+        docs/a.md: |
+          @a
+outputs:
+  docs/a.json:
+  .errors.log: |
+    ["error","violate-schema","Expected type String, please input String or type compatible with String.","docs/b.md",2,8,"fallback"]

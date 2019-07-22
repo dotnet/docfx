@@ -43,7 +43,7 @@ namespace Microsoft.Docs.Build
 
             if (File.Exists(_cachePath))
             {
-                var cache = JsonUtility.Deserialize<GitHubUserCacheFile>(ProcessUtility.ReadFile(_cachePath), _cachePath);
+                var cache = JsonUtility.Deserialize<GitHubUserCacheFile>(ProcessUtility.ReadFile(_cachePath), new FilePath(_cachePath));
                 UpdateUsers(cache.Users);
             }
         }
