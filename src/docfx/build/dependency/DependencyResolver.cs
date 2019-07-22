@@ -245,6 +245,11 @@ namespace Microsoft.Docs.Build
                     // Resolve path relative to docset
                     var pathToDocset = ResolveToDocsetRelativePath(path, declaringFile);
 
+                    if (pathToDocset.StartsWith(".."))
+                    {
+                        return (Errors.FilePathInvalid(href), null, null, null, LinkType.RelativePath, "");
+                    }
+
                     // Use the actual file name case
                     if (_buildScope.GetActualFileName(pathToDocset, out var pathActualCase))
                     {
@@ -276,7 +281,7 @@ namespace Microsoft.Docs.Build
 
                     if (file is null)
                     {
-                        return (Errors.FileNotFound(new SourceInfo<string>(path, href)), null, query, fragment, LinkType.RelativePath, pathToDocset);
+                        return (Errors.FileNotFound(href), null, query, fragment, LinkType.RelativePath, pathToDocset);
                     }
 
                     return (null, file, query, fragment, LinkType.RelativePath, pathToDocset);
