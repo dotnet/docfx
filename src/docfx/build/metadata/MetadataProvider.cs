@@ -28,6 +28,7 @@ namespace Microsoft.Docs.Build
             _globalMetadata = docset.Config.GlobalMetadata;
 
             _reservedMetadata = JsonUtility.GetPropertyNames(typeof(OutputMetadata))
+                .Concat(JsonUtility.GetPropertyNames(typeof(ConceptualModel)))
                 .Concat(docset.MetadataSchema.Reserved)
                 .Except(JsonUtility.GetPropertyNames(typeof(InputMetadata)))
                 .ToHashSet();

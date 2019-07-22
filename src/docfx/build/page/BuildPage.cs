@@ -22,9 +22,15 @@ namespace Microsoft.Docs.Build
 
             var outputPath = file.GetOutputPath(monikers, file.Docset.SiteBasePath, file.IsPage);
 
-            var (outputErrors, output, metadata) =
-                file.IsPage ? await CreatePageOutput(context, file, sourceModel) : CreateDataOutput(context, file, sourceModel);
-            errors.AddRange(outputErrors);
+            var (inputMetaErrors, inputMetadata) = context.MetadataProvider.GetMetadata(file);
+            errors.AddRange(inputMetaErrors);
+
+            var (outputMetadataErrors, outputMetadata) = await CreateOutputMetadata(context, file, inputMetadata);
+            errors.AddRange(outputMetadataErrors);
+
+            var (output, metadata) = file.IsPage
+            ? CreatePageOutput(context, file, sourceModel, inputMetadata, outputMetadata)
+            : CreateDataOutput(context, file, sourceModel, inputMetadata, outputMetadata);
 
             if (Path.GetFileNameWithoutExtension(file.FilePath).Equals("404", PathUtility.PathComparison))
             {
@@ -64,52 +70,51 @@ namespace Microsoft.Docs.Build
             return errors;
         }
 
-        private static async Task<(List<Error> errors, object output, JObject metadata)>
-            CreatePageOutput(Context context, Document file, JObject sourceModel)
+        private static (object output, JObject metadata) CreatePageOutput(
+            Context context,
+            Document file,
+            JObject sourceModel,
+            InputMetadata inputMetadata,
+            OutputMetadata outputMetadata)
         {
-            var errors = new List<Error>();
-            var (inputMetaErrors, inputMetadata) = context.MetadataProvider.GetMetadata(file);
-            errors.AddRange(inputMetaErrors);
-
-            var (outputMetaErrors, outputMetadata) = await CreateOutputMetadata(context, file, inputMetadata);
-            errors.AddRange(outputMetaErrors);
-
             var mergedMetadata = new JObject();
-            JsonUtility.Merge(mergedMetadata, inputMetadata.RawJObject);
-            JsonUtility.Merge(mergedMetadata, JsonUtility.ToJObject(outputMetadata));
+            JsonUtility.Merge(mergedMetadata, inputMetadata.RawJObject, JsonUtility.ToJObject(outputMetadata));
 
             var pageModel = new JObject();
-            JsonUtility.Merge(pageModel, sourceModel);
-            JsonUtility.Merge(pageModel, mergedMetadata);
+            JsonUtility.Merge(pageModel, inputMetadata.RawJObject, sourceModel, JsonUtility.ToJObject(outputMetadata));
 
             if (file.Docset.Config.Output.Json && !file.Docset.Legacy)
             {
-                return (errors, pageModel, SortProperties(mergedMetadata));
+                return (pageModel, SortProperties(mergedMetadata));
             }
 
             var (templateModel, metadata) = CreateTemplateModel(context, SortProperties(pageModel), file);
             if (file.Docset.Config.Output.Json)
             {
-                return (errors, templateModel, SortProperties(metadata));
+                return (templateModel, SortProperties(metadata));
             }
 
             var html = context.TemplateEngine.RunLiquid(file, templateModel);
-            return (errors, html, SortProperties(metadata));
+            return (html, SortProperties(metadata));
 
             JObject SortProperties(JObject obj)
                 => new JObject(obj.Properties().OrderBy(p => p.Name));
         }
 
-        private static (List<Error> errors, object output, JObject metadata)
-            CreateDataOutput(Context context, Document file, JObject sourceModel)
-            => (new List<Error>(), context.TemplateEngine.RunJint($"{file.Mime}.json.js", sourceModel), null);
+        private static (object output, JObject metadata)
+            CreateDataOutput(Context context, Document file, JObject sourceModel, InputMetadata inputMetadata, OutputMetadata outputMetadata)
+        {
+            var mergedMetadata = new JObject();
+            JsonUtility.Merge(mergedMetadata, inputMetadata.RawJObject);
+            JsonUtility.Merge(mergedMetadata, JsonUtility.ToJObject(outputMetadata));
+            sourceModel["metadata"] = mergedMetadata;
+            return (context.TemplateEngine.RunJint($"{file.Mime}.json.js", sourceModel), null);
+        }
 
-        private static async Task<(List<Error>, OutputMetadata)> CreateOutputMetadata(
-                Context context,
-                Document file,
-                InputMetadata inputMetadata)
+        private static async Task<(List<Error>, OutputMetadata)> CreateOutputMetadata(Context context, Document file, InputMetadata inputMetadata)
         {
             var errors = new List<Error>();
+
             var outputMetadata = new OutputMetadata();
 
             if (!string.IsNullOrEmpty(inputMetadata.BreadcrumbPath))
@@ -191,12 +196,15 @@ namespace Microsoft.Docs.Build
                 errors.Add(Errors.HeadingNotFound(file));
             }
 
+            var (metadataErrors, inputMetadata) = context.MetadataProvider.GetMetadata(file);
+            errors.AddRange(metadataErrors);
+
             var pageModel = JsonUtility.ToJObject(new ConceptualModel
             {
                 Conceptual = HtmlUtility.HtmlPostProcess(htmlDom, file.Docset.Culture),
                 WordCount = wordCount,
                 RawTitle = rawTitle,
-                Title = title,
+                Title = inputMetadata.Title ?? title,
             });
 
             context.BookmarkValidator.AddBookmarks(file, bookmarks);
@@ -241,12 +249,15 @@ namespace Microsoft.Docs.Build
             var pageModel = (JObject)transformedToken;
             if (file.Docset.Legacy && TemplateEngine.IsLandingData(file.Mime))
             {
+                var (metadataErrors, inputMetadata) = context.MetadataProvider.GetMetadata(file);
+                errors.AddRange(metadataErrors);
+
                 var landingData = pageModel.ToObject<LandingData>();
 
                 pageModel = JsonUtility.ToJObject(new ConceptualModel
                 {
                     Conceptual = HtmlUtility.LoadHtml(await RazorTemplate.Render(file.Mime, landingData)).HtmlPostProcess(file.Docset.Culture),
-                    Title = obj?.Value<string>("title"),
+                    Title = inputMetadata.Title ?? obj?.Value<string>("title"),
                     RawTitle = $"<h1>{obj?.Value<string>("title")}</h1>",
                     ExtensionData = landingData.ExtensionData,
                 });

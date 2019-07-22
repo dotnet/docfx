@@ -267,7 +267,7 @@ inputs:
     [b](b.md)
 outputs:
   docs/a.json: |
-    { "conceptual": "<p><a href=\"b.md\">b</a></p>" }
+    { "conceptual": "<p><a href=\"b\">b</a></p>" }
 ---
 # log with default log level when docfx crashes, even the corresponding rule is turned off
 inputs:
@@ -493,3 +493,32 @@ outputs:
   .publish.json: |
   .errors.log: |
       ["error","publish-url-conflict","Two or more files publish to the same url '/a.png': 'a.png', 'docs/a.png'"]
+---
+# Redirection files have conflicted ids
+# all redirection files will be built
+# redirection document id is retrieved from the first redirection file (a.md for below case)
+inputs:
+  docfx.yml: |
+    redirections:
+      a.md: /docs/path1
+      b.md: /docs/path1
+  docs/path1.md:
+outputs:
+  .errors.log: |
+    ["warning","redirection-url-conflict","The '/docs/path1' appears twice or more in the redirection mappings","docfx.yml",3,9]
+  .publish.json: |
+    {
+        "files": [
+            {
+                "url": "/a"
+            },
+            {
+                "url": "/b"
+            },
+            {
+                "url": "/docs/path1"
+            }
+        ]
+    }
+  docs/path1.json: |
+    {"document_id": "780484e9-a367-97ab-ba7d-a19f3b378a80", "document_version_independent_id": "e9b3f4e2-1a78-4b5d-fbb4-03e0a33e38f5",}
