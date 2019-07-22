@@ -101,13 +101,7 @@ namespace Microsoft.Docs.Build
             if (schema.MinItems.HasValue && array.Count < schema.MinItems.Value)
                 errors.Add((name, Errors.ArrayLengthInvalid(JsonUtility.GetSourceInfo(array), name, $">= {schema.MinItems}")));
 
-            if (schema.Items != null)
-            {
-                foreach (var item in array)
-                {
-                    Validate(schema.Items, name, item, errors);
-                }
-            }
+            ValidateItems(schema, name, array, errors);
 
             if (schema.UniqueItems && array.Distinct(JsonUtility.DeepEqualsComparer).Count() != array.Count)
             {
@@ -117,6 +111,33 @@ namespace Microsoft.Docs.Build
             if (schema.Contains != null && !array.Any(item => Validate(schema.Contains, item).Count == 0))
             {
                 errors.Add((name, Errors.ArrayContainsFailed(JsonUtility.GetSourceInfo(array), name)));
+            }
+        }
+
+        private void ValidateItems(JsonSchema schema, string name, JArray array, List<(string name, Error)> errors)
+        {
+            var (items, eachItem) = schema.Items;
+
+            if (items != null)
+            {
+                foreach (var item in array)
+                {
+                    Validate(items, name, item, errors);
+                }
+            }
+            else if (eachItem != null)
+            {
+                if (array.Count < eachItem.Length)
+                {
+                    errors.Add((name, Errors.ArrayLengthInvalid(JsonUtility.GetSourceInfo(array), name, $">= {eachItem.Length}")));
+                }
+                else
+                {
+                    for (var i = 0; i < eachItem.Length; i++)
+                    {
+                        Validate(eachItem[i], name, array[i], errors);
+                    }
+                }
             }
         }
 

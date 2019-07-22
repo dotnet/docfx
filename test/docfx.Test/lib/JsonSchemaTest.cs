@@ -27,10 +27,6 @@ namespace Microsoft.Docs.Build
 
         private static readonly string[] s_notSupportedTests =
         {
-            "an array of schemas for items",
-            "items and subitems",
-            "items with boolean schema",
-
             //dependencies
             "dependencies with boolean subschemas",
             "multiple dependencies subschema",
