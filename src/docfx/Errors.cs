@@ -399,11 +399,18 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Warning, "array-length-invalid", $"Array '{propName}' length should be {criteria}", source);
 
         /// <summary>
-        /// Array length not within min and max.
+        /// Array items not unique.
         /// </summary>
         /// Behavior: ✔️ Message: ❌
         public static Error ArrayNotUnique(SourceInfo source, string propName)
             => new Error(ErrorLevel.Warning, "array-not-unique", $"Array '{propName}' items should be unique", source);
+
+        /// <summary>
+        /// Array items not unique.
+        /// </summary>
+        /// Behavior: ✔️ Message: ❌
+        public static Error ArrayContainsFailed(SourceInfo source, string propName)
+            => new Error(ErrorLevel.Warning, "array-contains-failed", $"Array '{propName}' should contain at least one item that matches JSON schema", source);
 
         /// <summary>
         /// Object property count not within min and max.
@@ -423,8 +430,8 @@ namespace Microsoft.Docs.Build
         /// Number not within min and max.
         /// </summary>
         /// Behavior: ✔️ Message: ❌
-        public static Error NumberInvalid(SourceInfo source, string propName, string criteria)
-            => new Error(ErrorLevel.Warning, "number-invalid", $"Number '{propName}' should be {criteria}", source);
+        public static Error NumberInvalid(SourceInfo source, double value, string criteria)
+            => new Error(ErrorLevel.Warning, "number-invalid", $"Number '{value}' should be {criteria}", source);
 
         /// <summary>
         /// A required attribute is missing.
