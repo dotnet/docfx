@@ -29,6 +29,7 @@ namespace Microsoft.Docs.Build
         {
             "an array of schemas for items",
             "items and subitems",
+            "items with boolean schema",
 
             //dependencies
             "dependencies with boolean subschemas",
