@@ -159,8 +159,7 @@ namespace Microsoft.Docs.Build
             return (errors, outputMetadata);
         }
 
-        private static async Task<(List<Error> errors, JObject model)>
-            Load(Context context, Document file)
+        private static async Task<(List<Error> errors, JObject model)> Load(Context context, Document file)
         {
             if (file.FilePath.EndsWith(".md", PathUtility.PathComparison))
             {
@@ -175,8 +174,7 @@ namespace Microsoft.Docs.Build
             return await LoadJson(context, file);
         }
 
-        private static (List<Error> errors, JObject model)
-            LoadMarkdown(Context context, Document file)
+        private static (List<Error> errors, JObject model) LoadMarkdown(Context context, Document file)
         {
             var errors = new List<Error>();
             var content = file.ReadText();
@@ -211,16 +209,14 @@ namespace Microsoft.Docs.Build
             return (errors, pageModel);
         }
 
-        private static async Task<(List<Error> errors, JObject model)>
-            LoadYaml(Context context, Document file)
+        private static async Task<(List<Error> errors, JObject model)> LoadYaml(Context context, Document file)
         {
             var (errors, token) = YamlUtility.Parse(file, context);
 
             return await LoadSchemaDocument(context, errors, token, file);
         }
 
-        private static async Task<(List<Error> errors, JObject model)>
-            LoadJson(Context context, Document file)
+        private static async Task<(List<Error> errors, JObject model)> LoadJson(Context context, Document file)
         {
             var (errors, token) = JsonUtility.Parse(file, context);
 
