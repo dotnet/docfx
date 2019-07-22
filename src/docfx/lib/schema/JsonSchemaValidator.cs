@@ -394,6 +394,12 @@ namespace Microsoft.Docs.Build
                 if (map.TryGetValue(fieldName, out var fieldRawValue))
                 {
                     var fieldValue = GetFieldValue(fieldRawValue, fieldIndex);
+
+                    if (fieldValue == null)
+                    {
+                        return;
+                    }
+
                     if (allowList.TryGetValue(fieldValue, out var nextEnumDependencies))
                     {
                         ValidateEnumDependencies(nextEnumDependencies, fieldNameWithIndex, fieldName, fieldRawValue, fieldValue, map, errors);
@@ -447,6 +453,10 @@ namespace Microsoft.Docs.Build
                 if (fieldIndex < array.Count)
                 {
                     return (fieldRawValue as JArray)[fieldIndex];
+                }
+                else
+                {
+                    return null;
                 }
             }
 

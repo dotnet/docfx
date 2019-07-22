@@ -8,6 +8,5 @@ namespace Microsoft.Docs.Build
 {
     internal class EnumDependenciesSchema : Dictionary<string, Dictionary<JToken, EnumDependenciesSchema>>
     {
-
     }
 }
