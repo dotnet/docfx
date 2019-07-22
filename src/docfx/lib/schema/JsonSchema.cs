@@ -218,9 +218,8 @@ namespace Microsoft.Docs.Build
 
         /// <summary>
         /// Properties that are used to indicate the value relationship between two fields
-        /// Mapping relationship: enumDependencies --> <dependent-field-name> --> <dependent-field-value> --> <field-name> --> <allowed-field-values>
         /// </summary>
-        public Dictionary<string, Dictionary<JToken, Dictionary<string, JToken[]>>> EnumDependencies { get; set; } = new Dictionary<string, Dictionary<JToken, Dictionary<string, JToken[]>>>();
+        public EnumDependenciesSchema EnumDependencies { get; set; }
 
         /// <summary>
         /// Properties that are used to validate microsoft alias

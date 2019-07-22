@@ -125,7 +125,7 @@ namespace Microsoft.Docs.Build
             ValidateDependencies(schema, map, errors);
             ValidateEither(schema, map, errors);
             ValidatePrecludes(schema, map, errors);
-            ValidateEnumDependencies(schema, map, errors);
+            ValidateEnumDependencies(schema.EnumDependencies, string.Empty, string.Empty, null, null, map, errors);
             ValidateProperties(schema, name, map, errors);
         }
 
@@ -381,40 +381,41 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private void ValidateEnumDependencies(JsonSchema schema, JObject map, List<(string name, Error)> errors)
+        private void ValidateEnumDependencies(EnumDependenciesSchema enumDependencies, string dependentFieldNameWithIndex, string dependentFieldName, JToken dependentFieldRawValue, JToken dependentFieldValue, JObject map, List<(string name, Error)> errors)
         {
-            foreach (var (dependentFieldNameWithIndex, allowListForDependentField) in schema.EnumDependencies)
+            if (enumDependencies == null)
             {
-                var (dependentFieldName, dependentFieldIndex) = GetFieldNameAndIndex(dependentFieldNameWithIndex);
-                if (map.TryGetValue(dependentFieldName, out var dependentFieldRawValue))
+                return;
+            }
+
+            foreach (var (fieldNameWithIndex, allowList) in enumDependencies)
+            {
+                var (fieldName, fieldIndex) = GetFieldNameAndIndex(fieldNameWithIndex);
+                if (map.TryGetValue(fieldName, out var fieldRawValue))
                 {
-                    var dependentFieldValue = GetFieldValue(dependentFieldRawValue, dependentFieldIndex);
-                    if (allowListForDependentField.TryGetValue(dependentFieldValue, out var enumDependencyRules))
+                    var fieldValue = GetFieldValue(fieldRawValue, fieldIndex);
+                    if (allowList.TryGetValue(fieldValue, out var nextEnumDependencies))
                     {
-                        foreach (var (fieldNameWithIndex, allowList) in enumDependencyRules)
-                        {
-                            var (fieldName, fieldIndex) = GetFieldNameAndIndex(fieldNameWithIndex);
-                            if (map.TryGetValue(fieldName, out var fieldRawValue))
-                            {
-                                var fieldValue = GetFieldValue(fieldRawValue, fieldIndex);
-                                if (Array.IndexOf(allowList, fieldValue) == -1)
-                                {
-                                    errors.Add((dependentFieldName, Errors.InvalidPairedAttribute(
-                                        JsonUtility.GetSourceInfo(fieldValue),
-                                        fieldRawValue.Type == JTokenType.Array ? fieldNameWithIndex : fieldName,
-                                        fieldValue,
-                                        dependentFieldRawValue.Type == JTokenType.Array ? dependentFieldNameWithIndex : dependentFieldName,
-                                        dependentFieldValue)));
-                                }
-                            }
-                        }
+                        ValidateEnumDependencies(nextEnumDependencies, fieldNameWithIndex, fieldName, fieldRawValue, fieldValue, map, errors);
                     }
                     else
                     {
-                        errors.Add((dependentFieldName, Errors.InvalidValue(
-                            JsonUtility.GetSourceInfo(dependentFieldValue),
-                            dependentFieldRawValue.Type == JTokenType.Array ? dependentFieldNameWithIndex : dependentFieldName,
-                            dependentFieldValue)));
+                        if (string.IsNullOrEmpty(dependentFieldNameWithIndex))
+                        {
+                            errors.Add((fieldName, Errors.InvalidValue(
+                                JsonUtility.GetSourceInfo(fieldValue),
+                                fieldRawValue.Type == JTokenType.Array ? fieldNameWithIndex : fieldName,
+                                fieldValue)));
+                        }
+                        else
+                        {
+                            errors.Add((dependentFieldName, Errors.InvalidPairedAttribute(
+                                JsonUtility.GetSourceInfo(fieldValue),
+                                fieldRawValue.Type == JTokenType.Array ? fieldNameWithIndex : fieldName,
+                                fieldValue,
+                                dependentFieldRawValue.Type == JTokenType.Array ? dependentFieldNameWithIndex : dependentFieldName,
+                                dependentFieldValue)));
+                        }
                     }
                 }
             }
