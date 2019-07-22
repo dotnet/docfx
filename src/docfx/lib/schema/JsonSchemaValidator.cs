@@ -383,27 +383,73 @@ namespace Microsoft.Docs.Build
 
         private void ValidateEnumDependencies(JsonSchema schema, JObject map, List<(string name, Error)> errors)
         {
-            foreach (var (fieldName, enumDependencyRules) in schema.EnumDependencies)
+            foreach (var (dependentFieldNameWithIndex, allowListForDependentField) in schema.EnumDependencies)
             {
-                if (map.TryGetValue(fieldName, out var fieldValue))
+                var (dependentFieldName, dependentFieldIndex) = GetFieldNameAndIndex(dependentFieldNameWithIndex);
+                if (map.TryGetValue(dependentFieldName, out var dependentFieldRawValue))
                 {
-                    foreach (var (dependentFieldName, allowLists) in enumDependencyRules)
+                    var dependentFieldValue = GetFieldValue(dependentFieldRawValue, dependentFieldIndex);
+                    if (allowListForDependentField.TryGetValue(dependentFieldValue, out var enumDependencyRules))
                     {
-                        if (map.TryGetValue(dependentFieldName, out var dependentFieldValue))
+                        foreach (var (fieldNameWithIndex, allowList) in enumDependencyRules)
                         {
-                            if (allowLists.TryGetValue(dependentFieldValue, out var allowList) &&
-                                Array.IndexOf(allowList, fieldValue) == -1)
+                            var (fieldName, fieldIndex) = GetFieldNameAndIndex(fieldNameWithIndex);
+                            if (map.TryGetValue(fieldName, out var fieldRawValue))
                             {
-                                errors.Add((dependentFieldName, Errors.InvalidPairedAttribute(JsonUtility.GetSourceInfo(map), fieldName, fieldValue, dependentFieldName, dependentFieldValue)));
+                                var fieldValue = GetFieldValue(fieldRawValue, fieldIndex);
+                                if (Array.IndexOf(allowList, fieldValue) == -1)
+                                {
+                                    errors.Add((dependentFieldName, Errors.InvalidPairedAttribute(
+                                        JsonUtility.GetSourceInfo(fieldValue),
+                                        fieldRawValue.Type == JTokenType.Array ? fieldNameWithIndex : fieldName,
+                                        fieldValue,
+                                        dependentFieldRawValue.Type == JTokenType.Array ? dependentFieldNameWithIndex : dependentFieldName,
+                                        dependentFieldValue)));
+                                }
                             }
                         }
-                        else
-                        {
-                            errors.Add((fieldName, Errors.MissingPairedAttribute(JsonUtility.GetSourceInfo(map), fieldName, dependentFieldName)));
-                        }
+                    }
+                    else
+                    {
+                        errors.Add((dependentFieldName, Errors.InvalidValue(
+                            JsonUtility.GetSourceInfo(dependentFieldValue),
+                            dependentFieldRawValue.Type == JTokenType.Array ? dependentFieldNameWithIndex : dependentFieldName,
+                            dependentFieldValue)));
                     }
                 }
             }
+        }
+
+        // For string type: name = 'topic', output = ('topic', 0) or name = 'topic[0]', output = ('topic', 0)
+        // For array type: name = 'topic[0]', output = ('topic', 0) or name = 'topic[1]', output = ('topic', 1) or ...
+        private (string, int) GetFieldNameAndIndex(string name)
+        {
+            var match = Regex.Match(name, @"\[\d+\]$");
+
+            if (match.Success)
+            {
+                if (int.TryParse(match.Value.Substring(1, match.Value.Length - 2), out var index))
+                {
+                    return (name.Substring(0, name.Length - match.Value.Length), index);
+                }
+            }
+
+            return (name, 0);
+        }
+
+        private JToken GetFieldValue(JToken fieldRawValue, int fieldIndex)
+        {
+            if (fieldRawValue.Type == JTokenType.Array)
+            {
+                var array = fieldRawValue as JArray;
+
+                if (fieldIndex < array.Count)
+                {
+                    return (fieldRawValue as JArray)[fieldIndex];
+                }
+            }
+
+            return fieldRawValue;
         }
 
         private Error OverwriteError(JsonSchema schema, string name, Error baseError)

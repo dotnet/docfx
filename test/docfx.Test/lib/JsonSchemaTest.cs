@@ -292,12 +292,22 @@ namespace Microsoft.Docs.Build
             "['warning','attribute-deprecated','Deprecated attribute: 'key1', use 'key2' instead','file',1,10]")]
 
         // enum dependencies validation
-        [InlineData("{'properties': {'key1': {'type': 'string', 'enum': ['.net', 'yammer']}, 'key2': {'type': 'string'}}, 'enumDependencies': { 'key2': { 'key1': { '.net': ['', 'csharp', 'devlang'], 'yammer': ['', 'tabs', 'vba']}}}}", "{'key1': 'yammer', 'key2': 'tabs'}", "")]
-        [InlineData("{'properties': {'key1': {'type': 'string', 'enum': ['.net', 'yammer']}, 'key2': {'type': 'string'}}, 'enumDependencies': { 'key2': { 'key1': { '.net': ['', 'csharp', 'devlang'], 'yammer': ['', 'tabs', 'vba']}}}}", "{'key1': 'yammer'}", "")]
-        [InlineData("{'properties': {'key1': {'type': 'string', 'enum': ['.net', 'yammer']}, 'key2': {'type': 'string'}}, 'enumDependencies': { 'key2': { 'key1': { '.net': ['', 'csharp', 'devlang'], 'yammer': ['', 'tabs', 'vba']}}}}", "{'key1': 'yammer', 'key2': 'abc'}",
-            "['warning','invalid-paired-attribute','Invalid value for 'key2': 'abc' is not valid with 'key1' value 'yammer'','file',1,1]")]
-        [InlineData("{'properties': {'key1': {'type': 'string', 'enum': ['.net', 'yammer']}, 'key2': {'type': 'string'}}, 'enumDependencies': { 'key2': { 'key1': { '.net': ['', 'csharp', 'devlang'], 'yammer': ['', 'tabs', 'vba']}}}}", "{'key2': 'tabs'}",
-            "['warning','missing-paired-attribute','Missing attribute: 'key1'. If you specify 'key2', you must also specify 'key1'','file',1,1]")]
+        [InlineData("{'properties': {'key1': {'type': 'string'}, 'key2': {'type': 'string'}}, 'enumDependencies': { 'key1': { '.net': { 'key2': ['', 'csharp', 'devlang'] }, 'yammer': { 'key2': ['', 'tabs', 'vba']}}}}", "{'key1': 'yammer'}", "")]
+        [InlineData("{'properties': {'key1': {'type': 'string'}, 'key2': {'type': 'string'}}, 'enumDependencies': { 'key1[0]': { '.net': { 'key2[0]': ['', 'csharp', 'devlang'] }, 'yammer': { 'key2[0]': ['', 'tabs', 'vba']}}}}", "{'key1': 'yammer'}", "")]
+        [InlineData("{'properties': {'key1': {'type': 'string'}, 'key2': {'type': 'string'}}, 'enumDependencies': { 'key1': { '.net': { 'key2': ['', 'csharp', 'devlang'] }, 'yammer': { 'key2': ['', 'tabs', 'vba']}}}}", "{'key1': 'yammer', 'key2': 'tabs'}", "")]
+        [InlineData("{'properties': {'key1': {'type': 'string'}, 'key2': {'type': 'string'}}, 'enumDependencies': { 'key1[0]': { '.net': { 'key2[0]': ['', 'csharp', 'devlang'] }, 'yammer': { 'key2[0]': ['', 'tabs', 'vba']}}}}", "{'key1': 'yammer', 'key2': 'tabs'}", "")]
+        [InlineData("{'properties': {'key1': {'type': 'string'}, 'key2': {'type': 'string'}}, 'enumDependencies': { 'key1': { '.net': { 'key2': ['', 'csharp', 'devlang'] }, 'yammer': { 'key2': ['', 'tabs', 'vba']}}}}", "{'key1': 'yyy', 'key2': 'tabs'}",
+            "['warning','invalid-value','Invalid value for 'key1': 'yyy'','file',1,14]")]
+        [InlineData("{'properties': {'key1': {'type': 'string'}, 'key2': {'type': 'string'}}, 'enumDependencies': { 'key1[0]': { '.net': { 'key2[0]': ['', 'csharp', 'devlang'] }, 'yammer': { 'key2[0]': ['', 'tabs', 'vba']}}}}", "{'key1': 'yyy', 'key2': 'tabs'}",
+            "['warning','invalid-value','Invalid value for 'key1': 'yyy'','file',1,14]")]
+        [InlineData("{'properties': {'key1': {'type': 'string'}, 'key2': {'type': 'string'}}, 'enumDependencies': { 'key1': { '.net': { 'key2': ['', 'csharp', 'devlang'] }, 'yammer': { 'key2': ['', 'tabs', 'vba']}}}}", "{'key1': 'yammer', 'key2': 'abc'}",
+            "['warning','invalid-paired-attribute','Invalid value for 'key2': 'abc' is not valid with 'key1' value 'yammer'','file',1,32]")]
+        [InlineData("{'properties': {'key1': {'type': 'string'}, 'key2': {'type': 'string'}}, 'enumDependencies': { 'key1[0]': { '.net': { 'key2[0]': ['', 'csharp', 'devlang'] }, 'yammer': { 'key2[0]': ['', 'tabs', 'vba']}}}}", "{'key1': 'yammer', 'key2': 'abc'}",
+            "['warning','invalid-paired-attribute','Invalid value for 'key2': 'abc' is not valid with 'key1' value 'yammer'','file',1,32]")]
+        [InlineData("{'properties': {'key1': {'type': 'array', 'items': {'type': 'string'}}}, 'enumDependencies': { 'key1[0]': { '.net': { 'key1[1]': ['', 'csharp', 'devlang'] }, 'yammer': { 'key1[1]': ['', 'tabs', 'vba']}}}}", "{'key1': ['yammer','abc']}",
+            "['warning','invalid-paired-attribute','Invalid value for 'key1[1]': 'abc' is not valid with 'key1[0]' value 'yammer'','file',1,24]")]
+        [InlineData("{'properties': {'key1': {'type': 'array', 'items': {'type': 'string'}}}, 'enumDependencies': { 'key1[0]': { '.net': { 'key1[1]': ['', 'csharp', 'devlang'] }, 'yammer': { 'key1[1]': ['', 'tabs', 'vba']}}}}", "{'key1': ['yyy','tabs']}",
+            "['warning','invalid-value','Invalid value for 'key1[0]': 'yyy'','file',1,15]")]
 
         // overwrite errors
         [InlineData("{'required': ['author'], 'overwriteErrors': {'author': {'missing-attribute': {'severity': 'suggestion', 'code': 'author-missing', 'message': 'Add a valid GitHub ID.'}}}}", "{'b': 1}",
