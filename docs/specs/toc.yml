@@ -1526,3 +1526,23 @@ outputs:
             }
         ]
     }
+---
+# toc reference to a invalid link
+inputs:
+  docfx.yml:
+  docs/TOC.yml: |
+    items:
+      - name: test
+        href: 1/toc.yml
+  docs/1/toc.yml: |
+    - name: included toc
+      href: non-existing.md
+outputs:
+  docs/toc.json: |
+    items:
+      - name: test
+        items:
+          - name: included toc
+            href: 1/non-existing
+  .errors.log: |
+    ["warning","file-not-found","Invalid file link: 'non-existing.md'.","docs/1/toc.yml",2,9]

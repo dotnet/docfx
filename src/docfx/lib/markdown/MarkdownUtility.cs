@@ -156,10 +156,10 @@ namespace Microsoft.Docs.Build
         private static string GetLink(SourceInfo<string> href)
         {
             var status = t_status.Value.Peek();
-            var (error, link, file) = status.Context.DependencyResolver.ResolveAbsoluteLink(
+            var (error, link, file, linkType) = status.Context.DependencyResolver.ResolveAbsoluteLink(
                 href, (Document)InclusionContext.File);
 
-            if (file != null)
+            if (file != null || linkType == LinkType.RelativePath)
             {
                 link = RelativeUrlMarker + link;
             }

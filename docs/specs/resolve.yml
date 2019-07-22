@@ -161,7 +161,7 @@ inputs:
     [Missing](c.md)
 outputs:
   docs/a.json: |
-    { "conceptual": "<p><a href=\"\">Empty</a><a href=\"a%3C%3Eb\">Invalid</a><a href=\"c\">Missing</a></p>" }
+    { "conceptual": "<p><a href=\"\">Empty</a><a href=\"a%3C%3Eb\">Invalid</a><a href=\"../c\">Missing</a></p>" }
   .errors.log: |
     ["warning","file-not-found","Invalid file link: 'a<>b.md'.","docs/a.md",1,11]
     ["warning","file-not-found","Invalid file link: 'c.md'.","b.md",1,1]

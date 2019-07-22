@@ -54,9 +54,9 @@ namespace Microsoft.Docs.Build
 
         public (Error error, string link, Document file) ResolveRelativeLink(Document relativeToFile, SourceInfo<string> path, Document declaringFile)
         {
-            var (error, link, file) = ResolveAbsoluteLink(path, declaringFile);
+            var (error, link, file, linkType) = ResolveAbsoluteLink(path, declaringFile);
 
-            if (file != null)
+            if (file != null || linkType == LinkType.RelativePath)
             {
                 link = UrlUtility.GetRelativeUrl(relativeToFile.SiteUrl, link);
             }
@@ -64,7 +64,7 @@ namespace Microsoft.Docs.Build
             return (error, link, file);
         }
 
-        public (Error error, string link, Document file) ResolveAbsoluteLink(SourceInfo<string> path, Document declaringFile)
+        public (Error error, string link, Document file, LinkType linkType) ResolveAbsoluteLink(SourceInfo<string> path, Document declaringFile)
         {
             var (error, link, fragment, linkType, file, isCrossReference) = TryResolveAbsoluteLink(declaringFile, path);
 
@@ -82,7 +82,7 @@ namespace Microsoft.Docs.Build
                 _bookmarkValidator.AddBookmarkReference(declaringFile, isSelfBookmark ? relativeToFile : file, fragment, isSelfBookmark, path);
             }
 
-            return (error, link, file);
+            return (error, link, file, linkType);
         }
 
         public (Error error, string href, string display, IXrefSpec spec) ResolveRelativeXref(Document relativeToFile, SourceInfo<string> href, Document declaringFile)
@@ -181,9 +181,8 @@ namespace Microsoft.Docs.Build
 
                     // in v2, the non-reoslved link will be relocated to a relative path, v3 tries to avoid the behavior change here
                     // the relocation of relative path can be removed when migration from v2 to v3 is done
-                    var relativePath = PathUtility.GetRelativePathToFile(declaringFile.FilePath, pathToDocset);
-                    var relativeUrl = Document.PathToRelativeUrl(relativePath, Document.GetContentType(relativePath), null, declaringFile.Docset.Config.Output.Json, true);
-                    return (error, relativeUrl, fragment, linkType, null, false);
+                    var pathToDocsetAbosulteUrl = Document.PathToAbsoluteUrl(pathToDocset, Document.GetContentType(pathToDocset), null, declaringFile.Docset.Config.Output.Json, true);
+                    return (error, pathToDocsetAbosulteUrl, fragment, linkType, null, false);
                 }
 
                 // set file to resource got from histroy, reset the error
