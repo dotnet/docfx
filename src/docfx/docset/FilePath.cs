@@ -53,7 +53,7 @@ namespace Microsoft.Docs.Build
 
         public int CompareTo(FilePath other)
         {
-            var result = PathUtility.PathComparer.Compare(Path, other?.Path);
+            var result = string.Compare(Path, other?.Path, PathUtility.PathComparison);
             if (result == 0)
                 result = Origin.CompareTo(other?.Origin);
 
