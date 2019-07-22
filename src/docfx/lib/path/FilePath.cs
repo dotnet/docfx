@@ -48,7 +48,7 @@ namespace Microsoft.Docs.Build
                 return false;
             }
 
-            return other.Path == Path && other.Origin == Origin;
+            return string.Equals(Path, other.Path, PathUtility.PathComparison) && other.Origin == Origin;
         }
 
         public int CompareTo(FilePath other)
@@ -59,5 +59,8 @@ namespace Microsoft.Docs.Build
 
             return result;
         }
+
+        public bool EndsWith(string value, StringComparison stringComparison)
+            => Path.EndsWith(value, stringComparison);
     }
 }
