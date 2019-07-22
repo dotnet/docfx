@@ -11,6 +11,8 @@ namespace Microsoft.Docs.Build
 {
     internal class WorkQueue<T>
     {
+        private static readonly int s_maxParallelism = Math.Max(8, Environment.ProcessorCount * 2);
+
         private readonly Func<T, Task> _run;
         private readonly ConcurrentQueue<T> _queue = new ConcurrentQueue<T>();
         private readonly ConcurrentHashSet<T> _duplicationDetector = new ConcurrentHashSet<T>();
@@ -33,6 +35,9 @@ namespace Microsoft.Docs.Build
         // then wait until all jobs to complete before Drain returns.
         // This ensures _run callback is never executed once Drain returns.
         private volatile Exception _exception;
+
+        // Limit parallelism so we don't starve the thread pool.
+        private int _parallelism;
 
         public void Enqueue(IEnumerable<T> items)
         {
@@ -67,13 +72,30 @@ namespace Microsoft.Docs.Build
 
             void DrainCore()
             {
-                while (!_drainTcs.Task.IsCompleted && _queue.TryDequeue(out var item))
+                while (!_drainTcs.Task.IsCompleted)
                 {
+                    if (!_queue.TryPeek(out var item))
+                    {
+                        break;
+                    }
+
+                    if (Volatile.Read(ref _parallelism) > s_maxParallelism)
+                    {
+                        break;
+                    }
+
+                    if (!_queue.TryDequeue(out item))
+                    {
+                        break;
+                    }
+
                     if (_exception != null)
                     {
                         OnComplete();
-                        continue;
+                        break;
                     }
+
+                    Interlocked.Increment(ref _parallelism);
 
                     ThreadPool.QueueUserWorkItem(Run, item, preferLocal: true);
                 }
@@ -108,6 +130,8 @@ namespace Microsoft.Docs.Build
 
             void OnComplete(Exception exception = null)
             {
+                Interlocked.Decrement(ref _parallelism);
+
                 try
                 {
                     progress?.Invoke(Interlocked.Increment(ref _processedCount), _totalCount);

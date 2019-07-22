@@ -10,7 +10,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class ExtractYamlHeader
     {
-        public static (List<Error> errors, JObject metadata) Extract(TextReader reader, string file)
+        public static (List<Error> errors, JObject metadata) Extract(TextReader reader, Document file)
         {
             var builder = new StringBuilder("\n");
             var errors = new List<Error>();
@@ -27,7 +27,7 @@ namespace Microsoft.Docs.Build
                 {
                     try
                     {
-                        var (yamlErrors, yamlHeaderObj) = YamlUtility.Parse(builder.ToString(), file);
+                        var (yamlErrors, yamlHeaderObj) = YamlUtility.Parse(builder.ToString(), file?.FilePath);
                         errors.AddRange(yamlErrors);
 
                         if (yamlHeaderObj is JObject obj)
@@ -35,7 +35,7 @@ namespace Microsoft.Docs.Build
                             return (errors, obj);
                         }
 
-                        errors.Add(Errors.YamlHeaderNotObject(isArray: yamlHeaderObj is JArray, file));
+                        errors.Add(Errors.YamlHeaderNotObject(isArray: yamlHeaderObj is JArray, file?.FilePath));
                     }
                     catch (DocfxException ex) when (ex.Error.Code == "yaml-syntax-error")
                     {

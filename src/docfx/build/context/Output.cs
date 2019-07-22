@@ -43,7 +43,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public void Copy(Document file, string destRelativePath)
         {
-            var sourcePath = Path.Combine(file.Docset.DocsetPath, file.FilePath);
+            var sourcePath = Path.Combine(file.Docset.DocsetPath, file.FilePath.Path);
 
             File.Copy(sourcePath, GetDestinationPath(destRelativePath), overwrite: true);
         }

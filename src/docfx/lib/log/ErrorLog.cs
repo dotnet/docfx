@@ -69,7 +69,7 @@ namespace Microsoft.Docs.Build
             return hasErrors;
         }
 
-        public bool Write(string file, IEnumerable<Error> errors)
+        public bool Write(Document file, IEnumerable<Error> errors)
         {
             var hasErrors = false;
             foreach (var error in errors)
@@ -82,12 +82,12 @@ namespace Microsoft.Docs.Build
             return hasErrors;
         }
 
-        public bool Write(string file, Error error, bool isException = false)
+        public bool Write(Document file, Error error, bool isException = false)
         {
             return Write(
-                file == error.File || !string.IsNullOrEmpty(error.File)
+                file.FilePath == error.FilePath || error.FilePath != null
                     ? error
-                    : new Error(error.Level, error.Code, error.Message, file, error.Line, error.Column),
+                    : new Error(error.Level, error.Code, error.Message, file.FilePath, error.Line, error.Column),
                 isException);
         }
 
@@ -192,11 +192,12 @@ namespace Microsoft.Docs.Build
             var message_severity = level;
             var code = error.Code;
             var message = error.Message;
-            var file = error.File;
+            var file = error.FilePath?.Path;
             var line = error.Line;
             var date_time = DateTime.UtcNow;
+            var origin = error.FilePath?.Origin != null && error.FilePath.Origin != default ? error.FilePath.Origin : (FileOrigin?)null;
 
-            return JsonUtility.Serialize(new { message_severity, code, message, file, line, date_time });
+            return JsonUtility.Serialize(new { message_severity, code, message, file, line, date_time, origin });
         }
 
         private static void ConsoleLog(ErrorLevel level, Error error)
@@ -212,7 +213,7 @@ namespace Microsoft.Docs.Build
                 Console.ForegroundColor = GetColor(level);
                 output.Write(error.Code + " ");
                 Console.ResetColor();
-                output.WriteLine($"{error.File}({error.Line},{error.Column}): {error.Message}");
+                output.WriteLine($"{error.FilePath}({error.Line},{error.Column}): {error.Message}");
             }
         }
 

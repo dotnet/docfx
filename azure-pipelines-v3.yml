@@ -72,7 +72,8 @@ jobs:
 
 # Integration test
 - job: IntegrationTest
-  condition: or(eq(variables['Build.SourceBranch'], 'refs/heads/v3'), eq(variables['System.PullRequest.TargetBranch'], 'v3'))
+  dependsOn: WindowsBuild
+  condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/v3'), eq(variables['System.PullRequest.TargetBranch'], 'v3')))
   pool:
     name: DocFX
   steps:

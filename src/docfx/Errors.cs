@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace Microsoft.Docs.Build
@@ -182,7 +183,7 @@ namespace Microsoft.Docs.Build
         /// The line should always be 2 since the file should always start with "---"
         /// </summary>
         /// Behavior: ✔️ Message: ❌
-        public static Error YamlHeaderNotObject(bool isArray, string file)
+        public static Error YamlHeaderNotObject(bool isArray, FilePath file)
             => new Error(ErrorLevel.Warning, "yaml-header-not-object", $"Expect yaml header to be an object, but got {(isArray ? "an array" : "a scalar")}", new SourceInfo(file, 2, 1));
 
         /// <summary>
@@ -197,7 +198,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         /// Behavior: ✔️ Message: ❌
         public static Error YamlHeaderSyntaxError(Error error)
-            => new Error(ErrorLevel.Warning, "yaml-header-syntax-error", error.Message, error.File, error.Line, error.Column, error.EndLine, error.EndColumn);
+            => new Error(ErrorLevel.Warning, "yaml-header-syntax-error", error.Message, error.FilePath, error.Line, error.Column, error.EndLine, error.EndColumn);
 
         /// <summary>
         /// Used duplicate yaml key in markdown yml header or schema document(yml).
@@ -243,7 +244,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         /// Behavior: ✔️ Message: ❌
         public static Error HeadingNotFound(Document file)
-            => new Error(ErrorLevel.Off, "heading-not-found", $"The first visible block is not a heading block with `#`, `##` or `###`", file.ToString());
+            => new Error(ErrorLevel.Off, "heading-not-found", $"The first visible block is not a heading block with `#`, `##` or `###`", file.FilePath);
 
         /// <summary>
         /// Can't find a file referenced by configuration, or user writes a non-existing link.
@@ -373,16 +374,16 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// The input value type does not match expected value type.
         /// </summary>
-        /// Behavior: ✔️ Message: ❌
+        /// Behavior: ✔️ Message: ✔️
         public static Error UnexpectedType(SourceInfo source, object expectedType, object actualType)
-            => new Error(ErrorLevel.Warning, "unexpected-type", $"Expect type '{expectedType}' but got '{actualType}'", source);
+            => new Error(ErrorLevel.Warning, "unexpected-type", $"Expected type '{expectedType}' but got '{actualType}'", source);
 
         /// <summary>
         /// The input value is not defined in a valid value list.
         /// </summary>
-        /// Behavior: ✔️ Message: ❌
-        public static Error UndefinedValue(SourceInfo source, object value, IEnumerable<object> validValues)
-            => new Error(ErrorLevel.Warning, "undefined-value", $"Value '{value}' is not accepted. Valid values: {Join(validValues)}", source);
+        /// Behavior: ✔️ Message: ✔️
+        public static Error InvalidValue(SourceInfo source, string name, object value)
+            => new Error(ErrorLevel.Warning, "invalid-value", $"Invalid value for '{name}': '{value}'", source);
 
         /// <summary>
         /// The string type's value doesn't match given format.
@@ -399,11 +400,18 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Warning, "array-length-invalid", $"Array '{propName}' length should be {criteria}", source);
 
         /// <summary>
-        /// Array length not within min and max.
+        /// Array items not unique.
         /// </summary>
         /// Behavior: ✔️ Message: ❌
         public static Error ArrayNotUnique(SourceInfo source, string propName)
             => new Error(ErrorLevel.Warning, "array-not-unique", $"Array '{propName}' items should be unique", source);
+
+        /// <summary>
+        /// Array items not unique.
+        /// </summary>
+        /// Behavior: ✔️ Message: ❌
+        public static Error ArrayContainsFailed(SourceInfo source, string propName)
+            => new Error(ErrorLevel.Warning, "array-contains-failed", $"Array '{propName}' should contain at least one item that matches JSON schema", source);
 
         /// <summary>
         /// Object property count not within min and max.
@@ -423,66 +431,69 @@ namespace Microsoft.Docs.Build
         /// Number not within min and max.
         /// </summary>
         /// Behavior: ✔️ Message: ❌
-        public static Error NumberInvalid(SourceInfo source, string propName, string criteria)
-            => new Error(ErrorLevel.Warning, "number-invalid", $"Number '{propName}' should be {criteria}", source);
+        public static Error NumberInvalid(SourceInfo source, double value, string criteria)
+            => new Error(ErrorLevel.Warning, "number-invalid", $"Number '{value}' should be {criteria}", source);
 
         /// <summary>
-        /// A required field is missing.
+        /// A required attribute is missing.
         /// </summary>
-        /// Behavior: ✔️ Message: ❌
-        public static Error FieldRequired(SourceInfo source, string name)
-            => new Error(ErrorLevel.Warning, "field-required", $"Missing required field '{name}'", source);
+        /// Behavior: ✔️ Message: ✔️
+        public static Error MissingAttribute(SourceInfo source, string name)
+            => new Error(ErrorLevel.Warning, "missing-attribute", $"Missing required attribute: '{name}'", source);
 
         /// <summary>
-        /// A field lacks the required dependency.
+        /// An attribute lacks the required dependency.
         /// </summary>
-        public static Error LackDependency(SourceInfo source, string name, string otherKey)
-            => new Error(ErrorLevel.Warning, "lack-dependency", $"Missing field: '{otherKey}'. If you specify '{name}', you must also specify '{otherKey}'", source);
+        /// Behavior: ✔️ Message: ✔️
+        public static Error MissingPairedAttribute(SourceInfo source, string name, string otherKey)
+            => new Error(ErrorLevel.Warning, "missing-paired-attribute", $"Missing attribute: '{otherKey}'. If you specify '{name}', you must also specify '{otherKey}'", source);
 
         /// <summary>
-        /// Fields do not meet the requirements of either logic.
+        /// Attributes do not meet the requirements of either logic.
         /// </summary>
-        public static Error EitherLogicFailed(SourceInfo source, IEnumerable<object> fields)
-            => new Error(ErrorLevel.Warning, "either-logic-failed", $"At least one of these fields: {Join(fields)} exists", source);
+        /// Behavior: ✔️ Message: ✔️
+        public static Error MissingEitherAttribute(SourceInfo source, IEnumerable<object> attributes)
+            => new Error(ErrorLevel.Warning, "missing-either-attribute", $"One of the following attributes is required: {Join(attributes)}", source);
 
         /// <summary>
-        /// Fields do not meet the requirements of precludes logic.
+        /// Attributes do not meet the requirements of precludes logic.
         /// </summary>
-        public static Error PrecludesLogicFailed(SourceInfo source, IEnumerable<object> fields)
-            => new Error(ErrorLevel.Warning, "precludes-logic-failed", $"Only one of these fields: {Join(fields)} can exist at most", source);
+        /// Behavior: ✔️ Message: ✔️
+        public static Error PrecludedAttributes(SourceInfo source, IEnumerable<object> attributes)
+            => new Error(ErrorLevel.Warning, "precluded-attributes", $"Only one of the following attributes can exist: {Join(attributes)}", source);
 
         /// <summary>
-        /// A field does't conform to date format.
+        /// An attribute does't conform to date format.
         /// </summary>
-        /// Behavior: ✔️ Message: ❌
-        public static Error DateFormatInvalid(SourceInfo source, string name, string format)
-            => new Error(ErrorLevel.Warning, "date-format-invalid", $"The '{name}' needs to meet the '{format}' format", source);
+        /// Behavior: ✔️ Message: ✔️
+        public static Error DateFormatInvalid(SourceInfo source, string name, string value, string format)
+            => new Error(ErrorLevel.Warning, "date-format-invalid", $"Invalid format for '{name}': '{value}'. Dates must be specified as '{format}'", source);
 
         /// <summary>
         /// Date out of range.
         /// </summary>
-        /// Behavior: ✔️ Message: ❌
-        public static Error OverDateRange(SourceInfo source, string name, TimeSpan? relativeMinDate, TimeSpan? relativeMaxDate)
-            => new Error(ErrorLevel.Warning, "over-date-range", $"Based on the current time, '{name}' needs to be in this range: {(relativeMinDate.HasValue ? $"{relativeMinDate} <= " : "")}'{name}'{(relativeMaxDate.HasValue ? $" <= {relativeMaxDate}" : "")}", source);
+        /// Behavior: ✔️ Message: ✔️
+        public static Error DateOutOfRange(SourceInfo source, string name, string value)
+            => new Error(ErrorLevel.Warning, "date-out-of-range", $"Value out of range for '{name}': '{value}'", source);
 
         /// <summary>
-        /// A field is deprecated.
+        /// An attribute is deprecated.
         /// </summary>
-        /// Behavior: ✔️ Message: ❌
-        public static Error FieldDeprecated(SourceInfo source, string name, string replacedBy)
-            => new Error(ErrorLevel.Warning, "field-deprecated", $"Deprecated field: '{name}'{(string.IsNullOrEmpty(replacedBy) ? "." : $", use '{replacedBy}' instead")}", source);
+        /// Behavior: ✔️ Message: ✔️
+        public static Error AttributeDeprecated(SourceInfo source, string name, string replacedBy)
+            => new Error(ErrorLevel.Warning, "attribute-deprecated", $"Deprecated attribute: '{name}'{(string.IsNullOrEmpty(replacedBy) ? "." : $", use '{replacedBy}' instead")}", source);
 
         /// <summary>
-        /// The values of the two fields do not match.
+        /// The value of paired attribute is invalid.
         /// </summary>
-        /// Behavior: ✔️ Message: ❌
-        public static Error ValuesNotMatch(SourceInfo source, string name, object value, string dependentFieldName, object dependentFieldValue, IEnumerable<object> validValues)
-            => new Error(ErrorLevel.Warning, "values-not-match", $"Invalid value for {name}: '{value}' is not valid with '{dependentFieldName}' value '{dependentFieldValue}'. Valid values: {Join(validValues)}", source);
+        /// Behavior: ✔️ Message: ✔️
+        public static Error InvalidPairedAttribute(SourceInfo source, string name, object value, string dependentFieldName, object dependentFieldValue)
+            => new Error(ErrorLevel.Warning, "invalid-paired-attribute", $"Invalid value for '{name}': '{value}' is not valid with '{dependentFieldName}' value '{dependentFieldValue}'", source);
 
         /// <summary>
         /// The value is not a valid Microsoft alias
         /// </summary>
-        /// Behavior: ✔️ Message: ❌
+        /// Behavior: ✔️ Message: ✔️
         public static Error MsAliasInvalid(SourceInfo source, string name, string alias)
             => new Error(ErrorLevel.Warning, "ms-alias-invalid", $"Invalid value for '{name}', '{alias}' is not a valid Microsoft alias", source);
 
@@ -576,8 +587,8 @@ namespace Microsoft.Docs.Build
         /// Example:
         ///   - user want their 404.md to be built and shown as their 404 page of the website.
         /// </summary>
-        public static Error Custom404Page(string file)
-            => new Error(ErrorLevel.Warning, "custom-404-page", $"Custom 404 page is not supported", file);
+        public static Error Custom404Page(Document file)
+            => new Error(ErrorLevel.Warning, "custom-404-page", $"Custom 404 page is not supported", file.FilePath);
 
         private static string Join<T>(IEnumerable<T> source, Func<T, string> selector = null)
         {

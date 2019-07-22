@@ -350,6 +350,7 @@ inputs:
     template: {APP_BASE_PATH}data/template
     monikerRange:
       'docs/v1/**': '< netcore-2.0'
+      'docs/v2/**': 'netcore-2.0'
     baseUrl: https://docs.com/docs
     routes:
       docs/: .
@@ -357,6 +358,7 @@ inputs:
       docs/v2/: .
     monikerDefinition: monikerDefinition.json
   docs/v1/a.md: |
+  docs/v2/a.md: |
   docs/a.md: |
     No version
   monikerDefinition.json: |
@@ -370,6 +372,8 @@ inputs:
 outputs:
   docs/a.mta.json:
   docs/a.raw.page.json:
+  docs/4667fedf/a.mta.json:
+  docs/4667fedf/a.raw.page.json:
   docs/9d4e15fd/a.mta.json:
   docs/9d4e15fd/a.raw.page.json:
   full-dependent-list.txt:
@@ -377,9 +381,13 @@ outputs:
     {
       "files":[
         {"asset_id":"a","original":"docs/a.md","source_relative_path":"docs/a.md","output":{".mta.json":{"relative_path":"a.mta.json"},".raw.page.json":{"relative_path":"a.raw.page.json"}}},
-        {"asset_id":"a","original":"docs/v1/a.md","source_relative_path":"docs/v1/a.md","output":{".mta.json":{"relative_path":"9d4e15fd/a.mta.json"},".raw.page.json":{"relative_path":"9d4e15fd/a.raw.page.json"}},"group":"9d4e15fd"}
+        {"asset_id":"a","original":"docs/v1/a.md","source_relative_path":"docs/v1/a.md","output":{".mta.json":{"relative_path":"9d4e15fd/a.mta.json"},".raw.page.json":{"relative_path":"9d4e15fd/a.raw.page.json"}},"group":"9d4e15fd"},
+        {"asset_id":"a","original":"docs/v2/a.md","source_relative_path":"docs/v2/a.md","output":{".mta.json":{"relative_path":"4667fedf/a.mta.json"},".raw.page.json":{"relative_path":"4667fedf/a.raw.page.json"}},"group":"4667fedf"}
       ],
-      "groups":[{"group":"9d4e15fd","monikers":["netcore-1.0","netcore-1.1"]}]
+      "groups":[
+        {"group":"4667fedf","monikers":["netcore-2.0"]},
+        {"group":"9d4e15fd","monikers":["netcore-1.0","netcore-1.1"]}
+      ]
     }
   docs/filemap.json: |
     {
@@ -391,6 +399,14 @@ outputs:
           "asset_id":"a",
           "version": "< netcore-2.0",
           "monikers":["netcore-1.0","netcore-1.1"],
+          "is_moniker_range": true
+        },
+        "docs/v2/a.md:netcore-2.0":{
+          "type":"Content",
+          "output_relative_path":"4667fedf/a.html",
+          "asset_id":"a",
+          "version": "netcore-2.0",
+          "monikers":["netcore-2.0"],
           "is_moniker_range": true
         }
       }
@@ -439,3 +455,25 @@ outputs:
   full-dependent-list.txt: |
     {"dependency_type":"metadata","from_file_path":"*docs\\v1\\f1\\a.md*","to_file_path":"*docs\\v1\\TOC.md*","version":"netcore-1.0"}
     {"dependency_type":"metadata","from_file_path":"*docs\\v2\\f1\\a.md*","to_file_path":"*docs\\v2\\TOC.md*","version":"netcore-2.0"}
+---
+# legacy errors from source repo [repo mapping]
+commands:
+  - restore --locale zh-cn --legacy
+  - build --locale zh-cn --legacy
+repos:
+  https://docs.com/error-from-source-legacy#test:
+    - files:
+        docfx.yml:
+        docs/b.md: |
+          ---
+          title: []
+          ---
+  https://docs.com/error-from-source-legacy.zh-cn#test:
+    - files:
+        docs/a.md: |
+          @a
+outputs:
+  docs/a.mta.json:
+  docs/a.raw.page.json:
+  .errors.log: |
+    {"message_severity":"error","code":"violate-schema","message":"Expected type String, please input String or type compatible with String.","file":"docs/b.md","line":2,"date_time":"*","origin":"fallback"}

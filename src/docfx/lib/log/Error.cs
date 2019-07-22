@@ -19,7 +19,7 @@ namespace Microsoft.Docs.Build
 
         public string Message { get; }
 
-        public string File { get; }
+        public FilePath FilePath { get; }
 
         public int Line { get; }
 
@@ -33,7 +33,7 @@ namespace Microsoft.Docs.Build
             : this(level, code, message, source?.File, source?.Line ?? 0, source?.Column ?? 0, source?.EndLine ?? 0, source?.EndColumn ?? 0)
         { }
 
-        public Error(ErrorLevel level, string code, string message, string file = null, int line = 0, int column = 0, int endLine = 0, int endColumn = 0)
+        public Error(ErrorLevel level, string code, string message, FilePath file = null, int line = 0, int column = 0, int endLine = 0, int endColumn = 0)
         {
             Debug.Assert(!string.IsNullOrEmpty(code));
             Debug.Assert(Regex.IsMatch(code, "^[a-z0-9-]{5,32}$"), "Error code should only contain dash and letters in lowercase");
@@ -42,7 +42,7 @@ namespace Microsoft.Docs.Build
             Level = level;
             Code = code;
             Message = message;
-            File = file;
+            FilePath = file;
             Line = line;
             Column = column;
             EndLine = endLine;
@@ -53,10 +53,10 @@ namespace Microsoft.Docs.Build
 
         public string ToString(ErrorLevel level)
         {
-            object[] payload = { level, Code, Message, File, Line, Column };
+            object[] payload = { level, Code, Message, FilePath?.Path, Line, Column, FilePath?.Origin };
 
             var i = payload.Length - 1;
-            while (i >= 0 && (Equals(payload[i], null) || Equals(payload[i], "") || Equals(payload[i], 0)))
+            while (i >= 0 && (Equals(payload[i], null) || Equals(payload[i], "") || Equals(payload[i], 0) || Equals(payload[i], FileOrigin.Current)))
             {
                 i--;
             }
@@ -75,7 +75,7 @@ namespace Microsoft.Docs.Build
                 return x.Level == y.Level &&
                        x.Code == y.Code &&
                        x.Message == y.Message &&
-                       x.File == y.File &&
+                       x.FilePath == y.FilePath &&
                        x.Line == y.Line &&
                        x.Column == y.Column;
             }
@@ -86,7 +86,7 @@ namespace Microsoft.Docs.Build
                     obj.Level,
                     obj.Code,
                     obj.Message,
-                    obj.File,
+                    obj.FilePath,
                     obj.Line,
                     obj.Column);
             }

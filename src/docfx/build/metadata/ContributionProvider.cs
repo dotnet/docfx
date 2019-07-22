@@ -149,7 +149,7 @@ namespace Microsoft.Docs.Build
                     ? timeFromHistory
                     : fileCommits[0].Time.UtcDateTime;
             }
-            return File.GetLastWriteTimeUtc(Path.Combine(document.Docset.DocsetPath, document.FilePath));
+            return File.GetLastWriteTimeUtc(Path.Combine(document.Docset.DocsetPath, document.FilePath.Path));
         }
 
         public (string contentGitUrl, string originalContentGitUrl, string originalContentGitUrlTemplate, string gitCommit)
