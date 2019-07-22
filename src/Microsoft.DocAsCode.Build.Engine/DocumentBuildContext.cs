@@ -148,7 +148,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public ConcurrentDictionary<string, string> FileMap { get; } = new ConcurrentDictionary<string, string>(FilePathComparer.OSPlatformSensitiveStringComparer);
 
-        public ConcurrentDictionary<string, List<XRefSpec>> XRefSpecMap { get; } = new ConcurrentDictionary<string, List<XRefSpec>>();
+        public ConcurrentDictionary<string, XRefSpec> XRefSpecMap { get; } = new ConcurrentDictionary<string, XRefSpec>();
 
         public ConcurrentDictionary<string, HashSet<string>> TocMap { get; } = new ConcurrentDictionary<string, HashSet<string>>(FilePathComparer.OSPlatformSensitiveStringComparer);
 
@@ -486,12 +486,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 throw new ArgumentException("Only relative href path is supported");
             }
-            if (!XRefSpecMap.TryGetValue(xrefSpec.Uid, out var specs))
-            {
-                XRefSpecMap[xrefSpec.Uid] = specs = new List<XRefSpec>();
-            }
-            specs.Add(xrefSpec);
-            XRefSpecMap[xrefSpec.Uid] = specs.OrderBy(spec => spec.Href).ToList();
+            XRefSpecMap.AddOrUpdate(xrefSpec.Uid, xrefSpec, (_, old) => string.Compare(old.Href, xrefSpec.Href, PathUtility.IsPathCaseInsensitive()) > 0 ? xrefSpec : old);
         }
 
         public void RegisterInternalXrefSpecBookmark(string uid, string bookmark)
@@ -513,9 +508,8 @@ namespace Microsoft.DocAsCode.Build.Engine
                 return;
             }
 
-            if (XRefSpecMap.TryGetValue(uid, out List<XRefSpec> xrefList))
+            if (XRefSpecMap.TryGetValue(uid, out XRefSpec xref))
             {
-                XRefSpec xref = xrefList.First();
                 xref.Href = UriUtility.GetNonFragment(xref.Href) + "#" + bookmark;
             }
             else
@@ -531,12 +525,12 @@ namespace Microsoft.DocAsCode.Build.Engine
                 throw new ArgumentNullException(nameof(uid));
             }
 
-            if (XRefSpecMap.TryGetValue(uid, out List<XRefSpec> xrefList))
+            if (XRefSpecMap.TryGetValue(uid, out XRefSpec xref))
             {
-                return xrefList.First();
+                return xref;
             }
 
-            if (ExternalXRefSpec.TryGetValue(uid, out XRefSpec xref))
+            if (ExternalXRefSpec.TryGetValue(uid, out xref))
             {
                 return xref;
             }

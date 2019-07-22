@@ -119,13 +119,6 @@ namespace Microsoft.DocAsCode.Build.Engine
                         }
                     }
                 });
-                foreach (var spec in Context.XRefSpecMap)
-                {
-                    if (spec.Value.Count > 1)
-                    {
-                        LogDuplicateUidWarning(spec.Value.First());
-                    }
-                }
             }
             return manifestItems;
         }
@@ -197,16 +190,20 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private void RegisterXRefSpec(SaveResult result)
         {
-            foreach (var specGroup in result.XRefSpecs.GroupBy(spec => spec.Uid))
+            foreach (var spec in result.XRefSpecs)
             {
-                var defaultSpec = specGroup.OrderBy(spec => spec.Href).First();
-                if (specGroup.Count() > 1)
+                if (!string.IsNullOrWhiteSpace(spec?.Uid))
                 {
-                    LogDuplicateUidWarning(defaultSpec);
-                }
-                if (!string.IsNullOrWhiteSpace(defaultSpec?.Uid))
-                {
-                    Context.RegisterInternalXrefSpec(defaultSpec);
+                    if (Context.XRefSpecMap.TryGetValue(spec.Uid, out XRefSpec xref))
+                    {
+                        Logger.LogWarning(
+                           $"Uid({spec?.Uid}) has already been defined in {((RelativePath)spec?.Href).RemoveWorkingFolder()}.",
+                           null,
+                           null,
+                           null,
+                           WarningCodes.Build.DuplicateUids);
+                    }
+                    Context.RegisterInternalXrefSpec(spec);
                 }
             }
             foreach (var spec in result.ExternalXRefSpecs)
@@ -216,16 +213,6 @@ namespace Microsoft.DocAsCode.Build.Engine
                     Context.ReportExternalXRefSpec(spec);
                 }
             }
-        }
-
-        private void LogDuplicateUidWarning(XRefSpec spec)
-        {
-            Logger.LogWarning(
-                            $"Uid({spec?.Uid}) has already been defined in {((RelativePath)spec?.Href).RemoveWorkingFolder()}.",
-                            null,
-                            null,
-                            null,
-                            WarningCodes.Build.DuplicateUids);
         }
 
         private InternalManifestItem GetManifestItem(FileModel model, SaveResult result)
