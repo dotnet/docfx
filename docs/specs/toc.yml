@@ -1527,6 +1527,64 @@ outputs:
         ]
     }
 ---
+# don't respect monikers of input toc model
+inputs:
+  docfx.yml: |
+    monikerRange:
+      'docs/**/*.md': '>= 5.0'
+    monikerDefinition: monikerDefinition.json
+  monikerDefinition.json: |
+    {
+      "monikers": [
+        { "moniker_name": "1.0", "product_name": ".NET Core" },
+        { "moniker_name": "2.0", "product_name": ".NET Core" },
+        { "moniker_name": "3.0", "product_name": ".NET Core" },
+        { "moniker_name": "4.0", "product_name": ".NET Core" },
+        { "moniker_name": "5.0", "product_name": ".NET Core" },
+      ]
+    }
+  docs/b.md:
+  docs/TOC.yml: |
+    - name: item with children
+      href: /a
+      items:
+        - name: item with monikers
+          href: /b
+          monikers:
+            - "1.0"
+            - "2.0"
+    - name: item with monikers references a file with monikers
+      href: b.md
+      monikers:
+        - "3.0"
+        - "4.0"
+outputs:
+  336669db/docs/b.json:
+  docs/toc.json: |
+    {
+        "items": [
+            {
+                "name": "item with children",
+                "href": "/a",
+                "!monikers": null,
+                "items": [
+                    {
+                        "name": "item with monikers",
+                        "href": "/b",
+                        "!monikers": null
+                    }
+                ]
+            },
+            {
+                "name": "item with monikers references a file with monikers",
+                "href": "b",
+                "monikers": [
+                    "5.0"
+                ]
+            }
+        ]
+    }
+---
 # toc reference to a invalid link
 inputs:
   docfx.yml:
