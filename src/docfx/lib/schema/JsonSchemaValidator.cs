@@ -414,7 +414,7 @@ namespace Microsoft.Docs.Build
                     !overwriteError.Severity.HasValue ? baseError.Level : overwriteError.Severity.Value,
                     string.IsNullOrEmpty(overwriteError.Code) ? baseError.Code : overwriteError.Code,
                     string.IsNullOrEmpty(overwriteError.Message) ? baseError.Message : overwriteError.Message,
-                    baseError.File,
+                    baseError.FilePath,
                     baseError.Line,
                     baseError.Column,
                     baseError.EndLine,

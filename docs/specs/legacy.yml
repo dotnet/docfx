@@ -455,3 +455,25 @@ outputs:
   full-dependent-list.txt: |
     {"dependency_type":"metadata","from_file_path":"*docs\\v1\\f1\\a.md*","to_file_path":"*docs\\v1\\TOC.md*","version":"netcore-1.0"}
     {"dependency_type":"metadata","from_file_path":"*docs\\v2\\f1\\a.md*","to_file_path":"*docs\\v2\\TOC.md*","version":"netcore-2.0"}
+---
+# legacy errors from source repo [repo mapping]
+commands:
+  - restore --locale zh-cn --legacy
+  - build --locale zh-cn --legacy
+repos:
+  https://docs.com/error-from-source-legacy#test:
+    - files:
+        docfx.yml:
+        docs/b.md: |
+          ---
+          title: []
+          ---
+  https://docs.com/error-from-source-legacy.zh-cn#test:
+    - files:
+        docs/a.md: |
+          @a
+outputs:
+  docs/a.mta.json:
+  docs/a.raw.page.json:
+  .errors.log: |
+    {"message_severity":"error","code":"violate-schema","message":"Expected type String, please input String or type compatible with String.","file":"docs/b.md","line":2,"date_time":"*","origin":"fallback"}

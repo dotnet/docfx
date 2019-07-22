@@ -181,7 +181,7 @@ namespace Microsoft.Docs.Build
 
                     // in v2, the non-reoslved link will be relocated to a relative path, v3 tries to avoid the behavior change here
                     // the relocation of relative path can be removed when migration from v2 to v3 is done
-                    var relativePath = PathUtility.GetRelativePathToFile(declaringFile.FilePath, pathToDocset);
+                    var relativePath = PathUtility.GetRelativePathToFile(declaringFile.FilePath.Path, pathToDocset);
                     var relativeUrl = Document.PathToRelativeUrl(relativePath, Document.GetContentType(relativePath), null, declaringFile.Docset.Config.Output.Json, true);
                     return (error, relativeUrl, fragment, linkType, null, false);
                 }
@@ -288,7 +288,7 @@ namespace Microsoft.Docs.Build
 
         private string ResolveToDocsetRelativePath(string path, Document declaringFile)
         {
-            var docsetRelativePath = PathUtility.NormalizeFile(Path.Combine(Path.GetDirectoryName(declaringFile.FilePath), path));
+            var docsetRelativePath = PathUtility.NormalizeFile(Path.Combine(Path.GetDirectoryName(declaringFile.FilePath.Path), path));
             if (!File.Exists(Path.Combine(declaringFile.Docset.DocsetPath, docsetRelativePath)))
             {
                 foreach (var (alias, aliasPath) in _resolveAlias)
