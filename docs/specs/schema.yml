@@ -440,3 +440,47 @@ outputs:
         <div>value</div>
 
       </div>
+---
+# Validate bookmark against content HTML after applying template for SDP 
+commands:
+  - build --legacy
+inputs:
+  docfx.yml:
+  a.yml: |
+    #YamlMime:TestPage
+    heading: heading 1
+    description: |
+      ## heading 2
+  b.yml: |
+    #YamlMime:TestPage
+    heading: heading 1
+    description: |
+      ## heading 2
+      [](#heading-1)
+      [](#heading-2)
+      [](#heading-3)
+      [](a.yml#heading-1)
+      [](a.yml#heading-2)
+      [](a.yml#heading-3)
+  c.md: |
+      [](a.yml#heading-1)
+      [](a.yml#heading-2)
+      [](a.yml#heading-3)
+  _themes/ContentTemplate/schemas/TestPage.schema.json: |
+    {
+      "properties": {
+        "description": {"contentType": "Markdown"}
+      }
+    }
+  _themes/ContentTemplate/TestData.html.primary.tmpl: |
+    <h2 id="heading 1">{{description}}
+outputs:
+  .errors.log: |
+    []
+  a.mta.json:
+  a.raw.page.json:
+  b.mta.json:
+  b.raw.page.json:
+  c.mta.json:
+  c.raw.page.json:
+---
