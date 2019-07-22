@@ -177,6 +177,15 @@ outputs:
   .errors.log: |
     ["warning","local-file-path","Link 'C:/a.md' points to a local file. Use a relative path instead","docs/a.md",1,1]
 ---
+# Show warning if the link points to files outside docset folder
+inputs:
+  docfx.yml:
+  a.md: '[](../a.md)'
+outputs:
+  a.json: '{ "conceptual": "<p><a href=\"\"></a></p>" }'
+  .errors.log: |
+    ["warning","file-path-invalid","Link 'C:/a.md' points to a local file outside current directory","docs/a.md",1,1]
+---
 # Show warning if two files share the same site url
 inputs:
   docfx.yml:

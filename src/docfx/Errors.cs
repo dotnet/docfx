@@ -240,6 +240,15 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Warning, "local-file-path", $"Link '{path}' points to a local file. Use a relative path instead", path);
 
         /// <summary>
+        /// Used a link pointing to an rooted absolute file path.
+        /// Examples:
+        ///   - [Absolute](C:/a.md)
+        /// </summary>
+        /// Behavior: ✔️ Message: ❌
+        public static Error FilePathInvalid(SourceInfo<string> path)
+            => new Error(ErrorLevel.Warning, "file-path-invalid", $"Link '{path}' points to a local file outside current directory", path);
+
+        /// <summary>
         /// The first tag in an article.md isn't h1 tag.
         /// </summary>
         /// Behavior: ✔️ Message: ❌
