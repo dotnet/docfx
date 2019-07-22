@@ -448,12 +448,12 @@ inputs:
   docfx.yml:
   a.yml: |
     #YamlMime:TestPage
-    heading: heading 1
+    heading: heading-1
     description: |
       ## heading 2
   b.yml: |
     #YamlMime:TestPage
-    heading: heading 1
+    heading: heading-1
     description: |
       ## heading 2
       [](#heading-1)
@@ -472,15 +472,16 @@ inputs:
         "description": {"contentType": "Markdown"}
       }
     }
-  _themes/ContentTemplate/TestData.html.primary.tmpl: |
-    <h2 id="heading 1">{{description}}
+  _themes/ContentTemplate/TestPage.html.primary.tmpl: |
+    <h2 id="{{heading}}"></h2>{{{description}}}
 outputs:
   .errors.log: |
-    []
+    {"message_severity":"suggestion","code":"internal-bookmark-not-found","message":"Cannot find bookmark '#heading-3' in 'b.yml', did you mean '#heading-1'?","file":"b.yml","line":4}
+    {"message_severity":"warning","code":"external-bookmark-not-found","message":"Cannot find bookmark '#heading-3' in 'a.yml', did you mean '#heading-1'?","file":"c.md","line":3}
+    {"message_severity":"warning","code":"external-bookmark-not-found","message":"Cannot find bookmark '#heading-3' in 'a.yml', did you mean '#heading-1'?","file":"b.yml","line":7}
   a.mta.json:
   a.raw.page.json:
   b.mta.json:
   b.raw.page.json:
   c.mta.json:
   c.raw.page.json:
----

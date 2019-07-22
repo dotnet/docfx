@@ -431,7 +431,7 @@ namespace Microsoft.Docs.Build
                     break;
                 case ".log":
                     expected = content.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).OrderBy(_ => _).ToArray();
-                    actual = File.ReadAllLines(file).OrderBy(_ => _).ToArray();
+                    actual = File.ReadAllLines(file).Select(line => Regex.Replace(line, ",\"date_time\":.*?}", "}")).OrderBy(_ => _).ToArray();
                     if (expected.Any(str => str.Contains("*")))
                     {
                         Assert.Matches("^" + Regex.Escape(string.Join("\n", expected)).Replace("\\*", ".*") + "$", string.Join("\n", actual));
@@ -440,6 +440,7 @@ namespace Microsoft.Docs.Build
                     {
                         Assert.Equal(string.Join("\n", expected), string.Join("\n", actual));
                     }
+                    VerifyLogsHasLineInfo(actual);
                     break;
                 case ".html":
                     Assert.Equal(
@@ -459,11 +460,14 @@ namespace Microsoft.Docs.Build
 
         private static void VerifyLogsHasLineInfo(string[] logs)
         {
-            foreach (var log in Array.ConvertAll(logs, JArray.Parse))
+            if (logs.Length > 0 && logs[0].StartsWith("["))
             {
-                if (!s_errorCodesWithoutLineInfo.Contains(log[1].ToString()) && log.Count < 5)
+                foreach (var log in Array.ConvertAll(logs, JArray.Parse))
                 {
-                    Assert.True(false, $"Error code {log[1].ToString()} must have line info");
+                    if (!s_errorCodesWithoutLineInfo.Contains(log[1].ToString()) && log.Count < 5)
+                    {
+                        Assert.True(false, $"Error code {log[1].ToString()} must have line info");
+                    }
                 }
             }
         }
