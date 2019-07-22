@@ -196,7 +196,9 @@ namespace Microsoft.Docs.Build
                 errors.Add(Errors.HeadingNotFound(file));
             }
 
-            var (_, inputMetadata) = context.MetadataProvider.GetMetadata(file);
+            var (metadataErrors, inputMetadata) = context.MetadataProvider.GetMetadata(file);
+            errors.AddRange(metadataErrors);
+
             var pageModel = JsonUtility.ToJObject(new ConceptualModel
             {
                 Conceptual = HtmlUtility.HtmlPostProcess(htmlDom, file.Docset.Culture),
@@ -247,7 +249,9 @@ namespace Microsoft.Docs.Build
             var pageModel = (JObject)transformedToken;
             if (file.Docset.Legacy && TemplateEngine.IsLandingData(file.Mime))
             {
-                var (_, inputMetadata) = context.MetadataProvider.GetMetadata(file);
+                var (metadataErrors, inputMetadata) = context.MetadataProvider.GetMetadata(file);
+                errors.AddRange(metadataErrors);
+
                 var landingData = pageModel.ToObject<LandingData>();
 
                 pageModel = JsonUtility.ToJObject(new ConceptualModel
