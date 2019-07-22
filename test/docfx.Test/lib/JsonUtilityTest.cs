@@ -497,7 +497,7 @@ namespace Microsoft.Docs.Build
 
         internal sealed class ClassWithReadOnlyField
         {
-            public readonly string B;
+            public readonly string B = "";
         }
 
         internal sealed class ClassWithMoreMembers : BasicClass

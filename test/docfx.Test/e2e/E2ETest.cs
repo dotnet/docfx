@@ -423,15 +423,17 @@ namespace Microsoft.Docs.Build
                         TestUtility.VerifyJsonContainEquals(JToken.Parse(expected[i]), JToken.Parse(actual[i]));
                     }
                     break;
+
                 case ".json":
                     TestUtility.VerifyJsonContainEquals(
                         // Test expectation can use YAML for readability
                         content.StartsWith("{") ? JToken.Parse(content) : YamlUtility.Parse(content, null).Item2,
                         JToken.Parse(File.ReadAllText(file)));
                     break;
+
                 case ".log":
                     expected = content.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).OrderBy(_ => _).ToArray();
-                    actual = File.ReadAllLines(file).Select(line => Regex.Replace(line, ",\"date_time\":.*?}", "}")).OrderBy(_ => _).ToArray();
+                    actual = File.ReadAllLines(file).OrderBy(_ => _).ToArray();
                     if (expected.Any(str => str.Contains("*")))
                     {
                         Assert.Matches("^" + Regex.Escape(string.Join("\n", expected)).Replace("\\*", ".*") + "$", string.Join("\n", actual));
@@ -442,11 +444,13 @@ namespace Microsoft.Docs.Build
                     }
                     VerifyLogsHasLineInfo(actual);
                     break;
+
                 case ".html":
                     Assert.Equal(
                         TestUtility.NormalizeHtml(content),
                         TestUtility.NormalizeHtml(File.ReadAllText(file)));
                     break;
+
                 default:
                     Assert.Equal(
                         content?.Trim() ?? "",
