@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -188,6 +187,17 @@ namespace Microsoft.Docs.Build
             catch (JsonReaderException ex)
             {
                 throw ToError(ex, file).ToException(ex);
+            }
+        }
+
+        public static void Merge(JObject container, params JObject[] overwrites)
+        {
+            if (overwrites == null)
+                return;
+
+            foreach (var overwrite in overwrites)
+            {
+                Merge(container, overwrite);
             }
         }
 
@@ -480,6 +490,6 @@ namespace Microsoft.Docs.Build
             public JTokenReader Reader { get; set; }
 
             public List<Error> Errors { get; set; }
-       }
+        }
     }
 }

@@ -260,6 +260,21 @@ outputs:
       "metaKey": "metaValue"
     }
 ---
+# title from yaml header is null
+inputs:
+  docfx.yml:
+  docs/a.md: |
+    ---
+    title:
+    ---
+    # Title has value
+outputs:
+  docs/a.json: |
+    {
+      "title": "Title has value",
+      "rawTitle": "<h1 id=\"title-has-value\">Title has value</h1>",
+    }
+---
 # Errors from one file does not affect another file
 inputs:
   docfx.yml:
