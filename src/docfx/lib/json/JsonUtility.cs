@@ -66,7 +66,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Fast pass to read MIME from $schema attribute.
         /// </summary>
-        public static SourceInfo<string> ReadMime(TextReader reader, string file)
+        public static SourceInfo<string> ReadMime(TextReader reader, FilePath file)
         {
             var schema = ReadSchema(reader, file);
             if (schema.Value is null)
@@ -107,7 +107,7 @@ namespace Microsoft.Docs.Build
         /// De-serialize a data string, which is not user input, to an object
         /// schema validation errors will be ignored, syntax errors and type mismatching will be thrown
         /// </summary>
-        public static T Deserialize<T>(string json, string file)
+        public static T Deserialize<T>(string json, FilePath file)
         {
             using (var stringReader = new StringReader(json))
             using (var reader = new JsonTextReader(stringReader))
@@ -174,7 +174,7 @@ namespace Microsoft.Docs.Build
         /// Parse a string to JToken.
         /// Validate null value during the process.
         /// </summary>
-        public static (List<Error> errors, JToken value) Parse(string json, string file)
+        public static (List<Error> errors, JToken value) Parse(string json, FilePath file)
         {
             try
             {
@@ -379,7 +379,7 @@ namespace Microsoft.Docs.Build
         /// $schema must be the first attribute in the root object.
         /// Assume input is a valid JSON. Bad input will be processed through Json.NET
         /// </summary>
-        private static SourceInfo<string> ReadSchema(TextReader reader, string file)
+        private static SourceInfo<string> ReadSchema(TextReader reader, FilePath file)
         {
             try
             {
@@ -412,7 +412,7 @@ namespace Microsoft.Docs.Build
                 (token.Type == JTokenType.Undefined);
         }
 
-        private static JToken SetSourceInfo(JToken token, string file)
+        private static JToken SetSourceInfo(JToken token, FilePath file)
         {
             var lineInfo = (IJsonLineInfo)token;
             SetSourceInfo(token, new SourceInfo(file, lineInfo.LineNumber, lineInfo.LinePosition));
@@ -455,7 +455,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static Error ToError(Exception ex, string file)
+        private static Error ToError(Exception ex, FilePath file)
         {
             var (message, line, column) = ParseException(ex);
 

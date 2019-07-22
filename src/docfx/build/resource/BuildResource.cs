@@ -25,13 +25,13 @@ namespace Microsoft.Docs.Build
                 : PathUtility.NormalizeFile(
                     Path.GetRelativePath(
                         Path.GetFullPath(Path.Combine(file.Docset.DocsetPath, file.Docset.Config.Output.Path)),
-                        Path.GetFullPath(Path.Combine(file.Docset.DocsetPath, file.FilePath))));
+                        Path.GetFullPath(Path.Combine(file.Docset.DocsetPath, file.FilePath.Path))));
 
             var publishItem = new PublishItem
             {
                 Url = file.SiteUrl,
                 Path = publishPath,
-                SourcePath = file.FilePath,
+                SourcePath = file.FilePath.Path,
                 Locale = file.Docset.Locale,
                 Monikers = monikers,
                 MonikerGroup = MonikerUtility.GetGroup(monikers),

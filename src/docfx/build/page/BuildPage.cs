@@ -32,17 +32,17 @@ namespace Microsoft.Docs.Build
             ? CreatePageOutput(context, file, sourceModel, inputMetadata, outputMetadata)
             : CreateDataOutput(context, file, sourceModel, inputMetadata, outputMetadata);
 
-            if (Path.GetFileNameWithoutExtension(file.FilePath).Equals("404", PathUtility.PathComparison))
+            if (Path.GetFileNameWithoutExtension(file.FilePath.Path).Equals("404", PathUtility.PathComparison))
             {
                 // custom 404 page is not supported
-                errors.Add(Errors.Custom404Page(file.FilePath));
+                errors.Add(Errors.Custom404Page(file));
             }
 
             var publishItem = new PublishItem
             {
                 Url = file.SiteUrl,
                 Path = outputPath,
-                SourcePath = file.FilePath,
+                SourcePath = file.FilePath.Path,
                 Locale = file.Docset.Locale,
                 Monikers = monikers,
                 MonikerGroup = MonikerUtility.GetGroup(monikers),

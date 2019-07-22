@@ -52,7 +52,7 @@ namespace Microsoft.Docs.Build
             // load redirections without document id
             AddRedirections(docset.Config.RedirectionsWithoutId);
 
-            var redirectionsBySourcePath = redirections.ToDictionary(file => file.FilePath, PathUtility.PathComparer);
+            var redirectionsBySourcePath = redirections.ToDictionary(file => file.FilePath.Path, PathUtility.PathComparer);
 
             return new RedirectionMap(redirectionsBySourcePath, redirectionsByRedirectionUrl);
 

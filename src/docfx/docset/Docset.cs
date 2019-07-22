@@ -220,7 +220,7 @@ namespace Microsoft.Docs.Build
             foreach (var metadataSchema in config.MetadataSchema)
             {
                 var content = RestoreMap.GetRestoredFileContent(this, metadataSchema);
-                JsonUtility.Merge(token, JsonUtility.Parse(content, metadataSchema).value as JObject);
+                JsonUtility.Merge(token, JsonUtility.Parse(content, new FilePath(metadataSchema)).value as JObject);
             }
             return JsonUtility.ToObject<JsonSchema>(token).value;
         }

@@ -3,12 +3,12 @@
 
 namespace Microsoft.Docs.Build
 {
-    public class SourceInfo
+    internal class SourceInfo
     {
         /// <summary>
         /// Path to the source file.
         /// </summary>
-        public readonly string File;
+        public readonly FilePath File;
 
         /// <summary>
         /// A one based start line value.
@@ -30,16 +30,11 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public readonly int EndColumn;
 
-        public SourceInfo(string file, int line, int column)
-        {
-            File = file;
-            Line = line;
-            Column = column;
-            EndLine = line;
-            EndColumn = column;
-        }
+        public SourceInfo(FilePath file, int line, int column)
+            : this(file, line, column, line, column)
+        { }
 
-        public SourceInfo(string file, int startLine, int startColumn, int endLine, int endColumn)
+        public SourceInfo(FilePath file, int startLine, int startColumn, int endLine, int endColumn)
         {
             File = file;
             Line = startLine;
